@@ -1,139 +1,110 @@
-Return-Path: <linux-kernel+bounces-58923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1C6284EEAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:55:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D46084EEB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:59:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F12E1F277B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:55:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E5AA1C24560
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7514115AF;
-	Fri,  9 Feb 2024 01:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6DE5C96;
+	Fri,  9 Feb 2024 01:58:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="PewTwzEb"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="c3DSh6zr"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50659A5F
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 01:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2854C8B
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 01:58:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707443721; cv=none; b=MT8NMxBhQDDITZ4/oMYGQYUtScX3nY/eBs9lyxi2VJaDq0U348QOEvhRukyeBIpqTpVBaNq6q3OK3EW7hmJt3X8R1OT+BJKfz5ZXwC/GjGgrM9sLqqFcwcON7lokmJvHaegWIMRQSfqhtIqKFvyPu5f+yfYJkZME7TY39PzXszg=
+	t=1707443937; cv=none; b=nRxC1vl7ASihYKLLD3QSifQ7RZQnR9xxlHdDuUGt0UJ1ZcmneDT7j1opp+kj7Eo/ZrSR2wGP5rgR6gLjKPlMnkgNnc77cS+uRVoxyt7H0HqjjsE85R4RDSiY9ms7X+OD/FabOr1N8Sxk8khRw0AQE5sG3A0H/7+z9DY+OCDFgzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707443721; c=relaxed/simple;
-	bh=km8RfSoIhq4OlQItyglFP30YRBjC2JQ86CUek4SLJFM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tlgHCEvWGTIfiBWoaqrzcdG3Cl+uO6bMtUDm0htIK+k7L6/NlnGj0es7sP+ouK0RMarTCp5leUHirKcqX7KkpBh+dhD7WGqxElvVV4zZb36dRqQ9FwnV8uFw3ZrEyBQXyzs1q3+b0PR5vysUZaMKoOZ+dcejscxRddh+vEz2xYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=PewTwzEb; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d91397bd22so4084885ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 17:55:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707443719; x=1708048519; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FPcxmfF1K+emjGX7/juChDlmt4cDFHRmhTmTnNlE/Ts=;
-        b=PewTwzEbHpz1Myll3pCkxUeLClRcyX0uqOX91Bmk8gPFOSn3PDOzb64LZrg2ruLpYC
-         MbPWWJNF0GS2r/r4BJXOsBJLOi7e+SC6j8L4JHOsSTyWV69oQUE4mR/OHm0DLaRhrubG
-         BY+QJorXARzhLIbdGVeHl2ogW0DLJaFZQVmK+J0pJBe+idBNh9QzYYh7AC09aRQkpgxK
-         KrVnM7OtFR/UK8+uT+IHkqRSqn4JV3qPvmiJvQfsOfakQZQ+c9dN1SDdhhMepO/dM8uk
-         DYfBcDlpNr7CPCMp0FluTD0d+gUJa6ErwYu4wHYrol7XikMtYQhMffkAJPNf1VCa2gVT
-         hbOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707443719; x=1708048519;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FPcxmfF1K+emjGX7/juChDlmt4cDFHRmhTmTnNlE/Ts=;
-        b=IJlhB5AuSD+E97bq4D4IFCveDfsvUB1v6CGst3pg36eVpiVOpwxmkvGfe1dQzUtKHl
-         t1jeHGkXeyniZHQPhZzihk9cNVihhe2k5HHQJao+8Kzg7WAnTAinpEtJ2AzkotdVoGs3
-         srFwpGSFwm/AESsVfa+xqLz660pyWYXvvztnhxk33iuHt9yUbnqzBczl2bdwEjnLPgQt
-         P037+77Z1GrDYCDuEvvE8GIYyAq5Q0mLiKuA63Gyiwh+mR0lTWWm3mIeRbmqyL1VSqmF
-         RYeUcgDtkb2fQ1mURCxxyiZWSrlcLenBNeMmaMtbhgvle2d7FNZsEw2rnCiUEwnYLWhE
-         DfSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWc5/+c3sV/g5HxaIkQxiDRkoumGcQsLSmnz7uoQ+lACSbWLzJxeh3ErMECH44nDSl42VXXnP8ISdmsZ6ApfwVvqIzBYheoVBeTELqs
-X-Gm-Message-State: AOJu0YwJnFHdjnKf1n97UZihd1UySZ74SsW2uw3Lmx8pnFea4x8m1Bvr
-	NVy7vmQwLaL29gs085NQ3t6ZEhKOzKIAwwMDu76tcn0prhvV1BZhmvji4HrabyRISk/7iwQvVo8
-	v
-X-Google-Smtp-Source: AGHT+IGGQ//i5yw3BV9iZEZHf7YAhLEeHJnu7fbFVOuv6QJ6Q3i2u60pix7ahaQAHDgvGPyN99ChrQ==
-X-Received: by 2002:a17:903:40c7:b0:1d7:3067:aab5 with SMTP id t7-20020a17090340c700b001d73067aab5mr197967pld.57.1707443719552;
-        Thu, 08 Feb 2024 17:55:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU1PvnZbiSzchAIBR5d5DntiI+g6t6bp6Qdq9z31jaP4L/jxarBoPRNW5d+fcFZ0eWMk6rfe7NF1+jTu9kD9QccvyK0vfbpjx5xzZWHll0K3V17nWt87wHGkPe28UmC4RaTINg7WPROmJY3pRQCn69HstkGwG5hwU2pBTgBDhu3I3fMGyRWCfREIfZ0ZVdF
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id kj11-20020a17090306cb00b001d8edfec673sm423161plb.214.2024.02.08.17.55.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 17:55:19 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rYG6m-003y41-2g;
-	Fri, 09 Feb 2024 12:55:16 +1100
-Date: Fri, 9 Feb 2024 12:55:16 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Miklos Szeredi <miklos@szeredi.hu>,
-	lsf-pc <lsf-pc@lists.linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] tracing the source of errors
-Message-ID: <ZcWGBLGYzNWZC+ze@dread.disaster.area>
-References: <CAJfpegtw0-88qLjy0QDLyYFZEM7PJCG3R-mBMa9s8TNSVZmJTA@mail.gmail.com>
- <ZcP4GewZ9jPw5NbA@dread.disaster.area>
- <ZcT5540Bv7U8qoUa@casper.infradead.org>
+	s=arc-20240116; t=1707443937; c=relaxed/simple;
+	bh=SPMEhHXZ2gMON2Fdo5+psoDe8TKEgrIzCRXmLgoZkEo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ihuFTJt2EXgIcR+zI8US4hI4SK/rJ1fInKpQg13YfbBQwGqlq5maIh5pduOfRqqAfiqkoIqyELDsiJTXZWJKF+yoBPP/3pL4QKFuNe1AzWguc3YntaWeFzLlk6nMK3Ju9j7845vs1ilpd9DAbrKLBFGfhcBElFR5uPPkdve+YAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=c3DSh6zr; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=from:to:cc:subject:date:message-id
+	:mime-version:content-transfer-encoding; s=k1; bh=JkJiI1zdweLmw5
+	Brm11cP7jfynZIq7IJZmwIfkRRQnI=; b=c3DSh6zrTbJpNGfC2mXlrduQsNlpSf
+	C1KH2X+l+7gzNtMC69FHqTeiQkGUoW2BimDdKRoGWn+J/50DvhojlV4OW1yMFWOC
+	O6BpRoGF+YftBK/l2LtBIPnXT1gUz8HJ86GkvTIkwC8by9mJMEXemQaYkoq3CbdS
+	UcQ60GfRSQa4gzucpuljhoNjaw/7F7Wvf0TVDPWdmPWTPoL0Vi7i0UM/E0THMRhp
+	xWKNFy+phsoHzC/LutXtrUtwsn3JkiCB4srGwV6/vGK069TYqHQf9VLILaOzhBJJ
+	vW6BrmdEbO/2FD5ISHMbpyoSq0tmelNsJxjVPTgNqbxADpe3G8SlyDhQ==
+Received: (qmail 2792257 invoked from network); 9 Feb 2024 02:58:43 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 9 Feb 2024 02:58:43 +0100
+X-UD-Smtp-Session: l3s3148p1@sBmIROkQMuMujnsZ
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-renesas-soc@vger.kernel.org
+Cc: Lee Jones <lee@kernel.org>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-sh@vger.kernel.org
+Subject: [PATCH 0/6] mfd: tmio: simplify header and move to platform_data
+Date: Fri,  9 Feb 2024 02:58:15 +0100
+Message-ID: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZcT5540Bv7U8qoUa@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 08, 2024 at 03:57:27PM +0000, Matthew Wilcox wrote:
-> On Thu, Feb 08, 2024 at 08:37:29AM +1100, Dave Chinner wrote:
-> > ftrace using the function_graph tracer will emit the return values
-> > of the functions if you use it with the 'funcgraph-retval' option.
-> 
-> OK, but that may not be fine grained enough.  Why is mmap() returning
-> -ENOMEM?
-> 
-> unsigned long do_mmap(struct file *file, unsigned long addr,
-> ...
->        /* Careful about overflows.. */
->         len = PAGE_ALIGN(len);
->         if (!len)
->                 return -ENOMEM;
-> ...
->         /* Too many mappings? */
->         if (mm->map_count > sysctl_max_map_count)
->                 return -ENOMEM;
-> 
-> So it can distinguish between mmap() returning ENOMEM because
-> get_unmapped_area() returned ENOMEM and do_mmap() returning ENOMEM of
-> its own accord (right?),
+The MFD parts of the TMIO have been removed by Arnd, so that only the
+SD/MMC related functionality is left. Remove the outdated remains in the
+public header file and then move it to platform_data as the data is now
+specific for the SD/MMC part.
 
-The call stack trace should tell you which function the error
-originated from, yes?
+Based on 6.8-rc3, build bot is happy. Branch is here:
 
-> but it can't tell you which of the above two
-> cases you hit.  Or can it?
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git renesas/sdhi/tmio-simplification
 
-Never used it, but it might be able to - the "sym-offset" option
-will display exact offsets of the function in the trace. If you then
-add "funcgraph-tail" it will emit the function being returned from.
-If the return location is generated with an offset indicating the
-actual return, then it might tell you the exact location.
+I'd suggest this goes via the MFD tree, so the series would need acks
+from the MMC and SH maintainers. Is that okay with everyone?
 
-If it doesn't, then this would seem like a reasonable thing to add
-to ftrace - function return tracing with a filter to grab the return
-location when the return value is less than 0 seems exactly the sort
-of thing ftrace was intended to be used for...
+All the best!
 
--Dave.
+   Wolfram
+
+
+Wolfram Sang (6):
+  mfd: tmio: remove obsolete platform_data
+  mfd: tmio: remove obsolete io accessors
+  mmc: tmio/sdhi: fix includes
+  mfd: tmio: update include files
+  mfd: tmio: sanitize comments
+  mfd: tmio: move header to platform_data
+
+ MAINTAINERS                                   |   2 +-
+ arch/sh/boards/board-sh7757lcr.c              |   2 +-
+ arch/sh/boards/mach-ap325rxa/setup.c          |   2 +-
+ arch/sh/boards/mach-ecovec24/setup.c          |   2 +-
+ arch/sh/boards/mach-kfr2r09/setup.c           |   2 +-
+ arch/sh/boards/mach-migor/setup.c             |   2 +-
+ arch/sh/boards/mach-se/7724/setup.c           |   2 +-
+ drivers/mmc/host/renesas_sdhi_core.c          |   2 +-
+ drivers/mmc/host/renesas_sdhi_internal_dmac.c |   5 +-
+ drivers/mmc/host/renesas_sdhi_sys_dmac.c      |   5 +-
+ drivers/mmc/host/tmio_mmc_core.c              |   3 +-
+ drivers/mmc/host/uniphier-sd.c                |   2 +-
+ include/linux/mfd/tmio.h                      | 133 ------------------
+ include/linux/platform_data/tmio.h            |  64 +++++++++
+ 14 files changed, 81 insertions(+), 147 deletions(-)
+ delete mode 100644 include/linux/mfd/tmio.h
+ create mode 100644 include/linux/platform_data/tmio.h
+
 -- 
-Dave Chinner
-david@fromorbit.com
+2.43.0
+
 
