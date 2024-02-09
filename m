@@ -1,182 +1,269 @@
-Return-Path: <linux-kernel+bounces-59410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CB0184F675
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:05:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF36C84F722
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:20:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3480D2869A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:05:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE99F1C223AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3575A664AA;
-	Fri,  9 Feb 2024 14:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kVB7zAJP"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2044.outbound.protection.outlook.com [40.107.92.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139CE7BB0C;
+	Fri,  9 Feb 2024 14:14:53 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA0ED59169;
-	Fri,  9 Feb 2024 14:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707487540; cv=fail; b=O7IHzzZ23fTOg8/OyJYDz4+KpINgrG6VVq1lCj/0WY/rb2QqF7qxwUksFtSkmC7zfBJcihbtt+pDKSyTti0aRaPbFq28UTt8gEyKSUlaeGMHjSD2SDLM4ya35i+zibKLuHDh8pFMCA5Xhi4KbphQNOcOnY7l12CWUcVZRx/M6AY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707487540; c=relaxed/simple;
-	bh=VnaVAgshA1xZ1/RgmEZrF2afxeGxJx7M+PSzcz9nhG4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=GGSEBQ+VOGqYUVtSKbkGgk9gr4dyHmJgIP2OrXwuYW4xMk8g7kPIeAX/z+TAREUQq2Oxi1RlryLM5mwkoFT2cHu/uzI9V6Xr/mWPSGb8UJ59XaIwOWo0EXAfHX5kSWE+Y2yi44V/th+WLgX+y22G0HNN4ozFzzpUCY3A7N0Rk9M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kVB7zAJP; arc=fail smtp.client-ip=40.107.92.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H+ANe1hV4AAi3f0VYiuwFBGcQfRSwJLpqytYBmhl1HwaWBkiG2TwunkA3fZFGgYTMU5T0/GzBMCDzXs7IJvcpeH4nQR476vcwO9sll7666aEETYxK/13Wf6u2Y6F5dAnI3RtHZM5cfJXmPAw57TQwRG7exGCaPqy/7P+bBxL/USuKpbfCbTaZt4iuwvsFmQfeWC8kG7N2lxcoTkbuaSoiWGxlXtUnnPeTgOWQe8kVf/M5SwFO1G12hfMy5oCGrrzPhBAnke2PDVPhs5IiIBFpn4k7xQcn00h1N6lIR3+4WgmAR6MJE7h0CpxljT2MGn2kDdEY0ZVYdElCF/P2/pRww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8uQNLn4OM8ezhV5TqT3ehCuqDqCjcuma6wUWcIdI+2o=;
- b=OZgQdkF1kCCUdt9GXW2r8GFIaIDAOy0PSPXea0PJWHXJpiGsn+i5p7CJz40BqZibLmsllGk9TB5PYliM5/H7VGvuSciftrBTwgQVmr3iPH5qD7VBP5WGepRwBtbrlm+vYj45XVNb4P6VtQffdEjPsv906ictvL3eKXOUdncTYrmoovdBGwNREa1yFXl7V889wgJQ38IE3WwKmY5vEmkQu0t7fnBd8pqDBJeX5/zJy1r4RNYMNrwPxSnjcoo/YoZ69N9azf7yFQnYEKpx0p5yTcJ6KkjNv+HxEQkyLojNPBNnjbx4rTWQMQL10ASuV6iCEAdmV+XX9DNwIf/3XWDUIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8uQNLn4OM8ezhV5TqT3ehCuqDqCjcuma6wUWcIdI+2o=;
- b=kVB7zAJPVLyGXthYUSHmivSoWw6q7zXbNoQGvhjp/0FpFoLP5aRdQCHjaVJflpGpWK9REw16XSE7r3Tf68ClAqWKOvF+MvS5++B8NG/MYPuflasNnSLjvKcBQIc2SKfo9rodH7UyEfgAgNeRpHRVWk/BYGu+wFpsGnFXHOUHgOvifFDfoReFxfArbKVLg92K7n4kYryD4g16/E48yCkbbeHRbdT5OjtcLmt5ahGLbwjNoKCSlVpNscEEKgbLQJ/4w2W2k20FlTbiq8VRDv0t4OVLJGPFtCIUIDm/8acGej+9f1ng8pE+4NscUAjsZhmpPEL/rQycRR57igeYFBlu+w==
-Received: from MW4PR12MB7213.namprd12.prod.outlook.com (2603:10b6:303:22a::18)
- by DS0PR12MB7928.namprd12.prod.outlook.com (2603:10b6:8:14c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.15; Fri, 9 Feb
- 2024 14:05:33 +0000
-Received: from MW4PR12MB7213.namprd12.prod.outlook.com
- ([fe80::b68c:1caf:4ca5:b0a7]) by MW4PR12MB7213.namprd12.prod.outlook.com
- ([fe80::b68c:1caf:4ca5:b0a7%6]) with mapi id 15.20.7270.012; Fri, 9 Feb 2024
- 14:05:33 +0000
-From: Ankit Agrawal <ankita@nvidia.com>
-To: Catalin Marinas <catalin.marinas@arm.com>
-CC: Jason Gunthorpe <jgg@nvidia.com>, "maz@kernel.org" <maz@kernel.org>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>, "james.morse@arm.com"
-	<james.morse@arm.com>, "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>, "reinette.chatre@intel.com"
-	<reinette.chatre@intel.com>, "surenb@google.com" <surenb@google.com>,
-	"stefanha@redhat.com" <stefanha@redhat.com>, "brauner@kernel.org"
-	<brauner@kernel.org>, "will@kernel.org" <will@kernel.org>,
-	"mark.rutland@arm.com" <mark.rutland@arm.com>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, "kevin.tian@intel.com" <kevin.tian@intel.com>,
-	"yi.l.liu@intel.com" <yi.l.liu@intel.com>, "ardb@kernel.org"
-	<ardb@kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"andreyknvl@gmail.com" <andreyknvl@gmail.com>, "wangjinchao@xfusion.com"
-	<wangjinchao@xfusion.com>, "gshan@redhat.com" <gshan@redhat.com>,
-	"ricarkol@google.com" <ricarkol@google.com>, "linux-mm@kvack.org"
-	<linux-mm@kvack.org>, "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-	"rananta@google.com" <rananta@google.com>, "ryan.roberts@arm.com"
-	<ryan.roberts@arm.com>, Aniket Agashe <aniketa@nvidia.com>, Neo Jia
-	<cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun Gupta
- (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy
- Currid <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John
- Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, Matt Ochs
-	<mochs@nvidia.com>, Zhi Wang <zhiw@nvidia.com>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v6 3/4] kvm: arm64: set io memory s2 pte as normalnc for
- vfio pci device
-Thread-Topic: [PATCH v6 3/4] kvm: arm64: set io memory s2 pte as normalnc for
- vfio pci device
-Thread-Index: AQHaWgbqzxp12E+Dp0ie5adhqGIMC7EAiIsAgAGE4n0=
-Date: Fri, 9 Feb 2024 14:05:32 +0000
-Message-ID:
- <MW4PR12MB7213AB84261541A75F88FBFBB04B2@MW4PR12MB7213.namprd12.prod.outlook.com>
-References: <20240207204652.22954-1-ankita@nvidia.com>
- <20240207204652.22954-4-ankita@nvidia.com> <ZcTqcqE69zkLZgQx@arm.com>
-In-Reply-To: <ZcTqcqE69zkLZgQx@arm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW4PR12MB7213:EE_|DS0PR12MB7928:EE_
-x-ms-office365-filtering-correlation-id: caff373f-60c2-4853-2e5e-08dc29782e50
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Ksprs2g/kKYxTjwbnOEXoE/BC6jU8W9P8eGEar53VCggClLgcKwCI5hwkV/3vOrBPAeWJKaEHjaz2y+HRRBaz3+52rQ88mtd8RoMbZkje5HxDyco3M/1U8BSDMlX/yvPjVAlpOIaYRlEISmXgpAcBwSulxRFo8Jf6CRjP9/QwPSCmfw6RJRs2q/zNL9ZJwbAVxWxO7ckzjdbmBhAI2q1uoMXT9HL5kSgyOB3fNnAbSctSS/RrjIxYGd1Ano+sbt0JYCNdStBjKYzU5lt4iWeZqavGSKMrQBw6flJi065jAoAFqa8eq2MTQgQD1BRUuGlxB7pEccIGDfVlYvefqA/w/vIkmiUWG2+xHI5VZP3Vt/HLJiu0EfZ2ecVYWRo9BEVs2HY0G7K/rhDM7Kf8EfRBMx1PrvIuIS954IsklnvRRTCz02c0Lwnx2/ad2I55blGD4DhLXp24GCHyPGWvcdS9HApNbAZht7TD1IEWxXJmFlvy5Guq0oPGHh9ZVmpnRsGWFRJt/zAP31VEno6m1iVF4hy04e1zdQfL1652mczya1j+TfoQCCR4onNxHjoJzKd9fwHTAd5pk1NGygy24nGfFUKfdDk2a3HF2xHf3163jTGmUsYvo6NE626VraugeJg
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7213.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(396003)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(52536014)(7416002)(2906002)(5660300002)(41300700001)(4744005)(38070700009)(55016003)(86362001)(122000001)(26005)(33656002)(9686003)(478600001)(7696005)(6506007)(38100700002)(71200400001)(76116006)(66476007)(66946007)(66556008)(66446008)(6916009)(8936002)(91956017)(316002)(54906003)(64756008)(4326008)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?jPxiGhFH+Hw9pmYRBwzdlAVCfcMhUKzEYqBWwzlhrfoErghK3YHN+CNOMv?=
- =?iso-8859-1?Q?J99q32N8BgtO/5Dbj10GnnGt+I3joJyf7Uq+Qzp0gnVCMgLQ85gaaNdqHW?=
- =?iso-8859-1?Q?FS2jPgNQtEpb3E2a8SbDCdDqIncqaxUly1pUYrx61OwE5XkYgqWhbK+Xoi?=
- =?iso-8859-1?Q?CM/R2MMwYLY2pLja3TyPORUNr3dO3AnILFOTX2TPH6ZMd3OVUb4/FcCa+n?=
- =?iso-8859-1?Q?UXnymplzpI10tBUUIeC4vx+XAolzBikWtcgsDtUN3jSaVzBekZ2VJHv9x0?=
- =?iso-8859-1?Q?hlu/i2Zy26tOY3Zouvrw7NYzDNc1ZZEL+PikxlRl8BgkZCC8GLEGt3EKIQ?=
- =?iso-8859-1?Q?/jerygSlrMEpbNlcwqCiAWaNn/0MAqopSdM1haBBXVQa2wUOqjboe+Qipj?=
- =?iso-8859-1?Q?EXzJ4m6Aw+BynJXhfMslGYheS9CTc/vKXYAAJTcrcQzHgy44ZqGI5djMLi?=
- =?iso-8859-1?Q?W2qGKYpcrljoYyoypMP0vKK4JIKVpHGZNrtXXIiUkebtPdcc9F+DupFKzk?=
- =?iso-8859-1?Q?SsxsJ7JmaDg8F7/R63SLnikdb8sn/OzsNpCq/xGIx41qWN/Lk7G88bsYhn?=
- =?iso-8859-1?Q?0aSvMbKsbuZPntBSVLA2JjbyqFUmQr5/Hu0YTbxLTrtDBK8dhMDyA1XxAl?=
- =?iso-8859-1?Q?lqi6sU6C6rq5CafcfjQbqjMzSrAdbewQbeMIR7rOVHgMD6Nzal8hjITQx/?=
- =?iso-8859-1?Q?yj0SHh6xkdSdVBTHqZDnMReK7DQPaTM3ofN15lqEsxjInwMqzv5EVDC7fk?=
- =?iso-8859-1?Q?wwr65ZPcz0PFVhWcd8xEhC2+Vy0L+pVf78PHup6yy1bRe4XKyfLrThlJP1?=
- =?iso-8859-1?Q?dqGVaDxO6nF9I7DGWKUh5Fr5Dgbiv6vr7aPVENa0aZbaZ0w/sCgMhWkoI/?=
- =?iso-8859-1?Q?hV0KMmuNd0jnn5TPt0/Y/P6ltR2ganUwt1g5lLticoEXK8/yw6RwqyIrmC?=
- =?iso-8859-1?Q?i945/PI+RXH6OZCo/MrAgF8+ZNd+yLa4GKJpGwX21lBcsL2yv4iNFZ2v/Z?=
- =?iso-8859-1?Q?rbUboZGJz45IJOVYuoMHJGn2v6wei6LnaZGUg0ZhxP6JQ0ucxymEQvJJBh?=
- =?iso-8859-1?Q?L9Ri9pXEowtaYDJLn2aMvj+5gJua5XoPT9zf0gFzzrI5psfiM38MtXuuTs?=
- =?iso-8859-1?Q?Aui3Ndsk+tQ86UB+g+C979Pmjv5J3Q3GUdKt9nUvRwuNoRMeMC1DR2vnxs?=
- =?iso-8859-1?Q?pr2nofFVn51O4xXKHSRbVnBUjPxnJW8k1xjSC0H3phPaUmOPFv/Lzl65fJ?=
- =?iso-8859-1?Q?JyhaCxSnm76GLAAs3NXE3PCtPMwGDIhulUJ6m3dHGiA3s9Z9JIujrl/tLM?=
- =?iso-8859-1?Q?AEbivdPO9fCGJgSIafRgSawN3Lhgc3ufpZRk+oMCkuhF6QwBhhO+PW7tN+?=
- =?iso-8859-1?Q?zWVidHO2bFshEAORsWl5Gi++opmgiOVEg9ihFdbZYnvxId9cUhWb5YytPi?=
- =?iso-8859-1?Q?VOnAvmMrmsDJEKM2b5Xv7hVCnflbR9ANbcapZz5dy7Zp7vwRkkPx8aS+rh?=
- =?iso-8859-1?Q?Q9Btd5wYVdaQqnR+rce/FbYd2WX24+T+vH2Vl8QBG+CZkfkI/dyC2bxQUU?=
- =?iso-8859-1?Q?8N05T6pLi88fkMI+rS0V8FcuDAcyl1yESad2nOmoadqWX1sBavO8LQrune?=
- =?iso-8859-1?Q?rLIg5LkBlaRjo=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FE47867D;
+	Fri,  9 Feb 2024 14:14:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707488092; cv=none; b=GFAxptUVTRP+ML8qep92bi+6VcIsmWfPy5e+ewAeQmv2fI2jiSe/ao1LCFR7cHIcoYo4TC8nnEnyq6Ev/JNp9VU+yLpiRMNjRadg55YWClOLNlMhymY9RCKTk+wP5wB9HIi90EyITzABgP7I4YCQDbNjBTnLZTOjldicwb07HUM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707488092; c=relaxed/simple;
+	bh=iyvlwc3EOmpZ2lJqDjD3YbtFrwjtOtM4CH3EkmXDNX4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WzssANl7/BtvX+m2dFsYv/bkHStK9hoJ+Ad4tkxojeMS9CAxGAbDVyHuajy8VjDJZD1QWjEWrfoLuEq6yDh+bzrzhYBZN68i0Z0tt+US01gxs4kq9UOl9Zf8OLZQxpfdU7T4bg2fn2H/bGSzO+/o9QWFx6xby3AKKgi/4pwupGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id a66302ca18b67ebd; Fri, 9 Feb 2024 15:14:47 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id F0013669C4D;
+	Fri,  9 Feb 2024 15:14:46 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: Lukasz Luba <lukasz.luba@arm.com>, LKML <linux-kernel@vger.kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Zhang Rui <rui.zhang@intel.com>, netdev@vger.kernel.org,
+ Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+ Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+ linux-wireless@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+Subject: [PATCH v1 2/9] thermal: core: Add flags to struct thermal_trip
+Date: Fri, 09 Feb 2024 15:06:16 +0100
+Message-ID: <2002876.usQuhbGJ8B@kreacher>
+In-Reply-To: <3232442.5fSG56mABF@kreacher>
+References: <3232442.5fSG56mABF@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7213.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: caff373f-60c2-4853-2e5e-08dc29782e50
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2024 14:05:32.9239
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: B7dSH0bZftPm9hjnEx6BBnK8butiWhrwIUmQqmVSCjEWMdyX4IZqZeBHqIUULhjPUy4NE1pGVIvA7xG0aR+l3A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7928
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrtdeigdeiudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeduiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgr
+ nhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=16 Fuz1=16 Fuz2=16
 
->> +		/*=0A=
->> +		 * To provide VM with the ability to get device IO memory=0A=
->> +		 * with NormalNC property, map device MMIO as NormalNC in S2.=0A=
->> +		 */=0A=
->=0A=
-> nit: the comment doesn't provide anything of value, the logic is rather=
-=0A=
-> straightforward here.=0A=
-=0A=
-Sure, will remove it.=0A=
-=0A=
->>=0A=
->> +=A0=A0=A0=A0 vfio_allow_wc =3D (vma->vm_flags & VM_VFIO_ALLOW_WC);=0A=
->=0A=
-> Nitpick: no need for brackets, '=3D' has a pretty low precedence.=0A=
-> =0A=
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>=0A=
-=0A=
-Will change it. Thanks for the review.=
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+In order to allow thermal zone creators to specify the writability of
+trip point temperature and hysteresis on a per-trip basis, add a flags
+field to struct thermal_trip and define flags to represent the desired
+trip properties.
+
+Also make thermal_zone_device_register_with_trips() set the
+THERMAL_TRIP_WRITABLE_TEMP flag for all trips covered by the writable
+trips mask passed to it and modify the thermal sysfs code to look at
+the trip flags instead of using the writable trips mask directly or
+checking the presence of the .set_trip_hyst() zone callback.
+
+Additionally, make trip_point_temp_store() and trip_point_hyst_store()
+fail with an error code if the trip passed to one of them has
+THERMAL_TRIP_WRITABLE_TEMP or THERMAL_TRIP_WRITABLE_HYST,
+respectively, clear in its flags.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/thermal_core.c  |   12 +++++++++++-
+ drivers/thermal/thermal_core.h  |    2 +-
+ drivers/thermal/thermal_sysfs.c |   28 +++++++++++++++++++---------
+ include/linux/thermal.h         |    7 +++++++
+ 4 files changed, 38 insertions(+), 11 deletions(-)
+
+Index: linux-pm/include/linux/thermal.h
+===================================================================
+--- linux-pm.orig/include/linux/thermal.h
++++ linux-pm/include/linux/thermal.h
+@@ -64,15 +64,22 @@ enum thermal_notify_event {
+  * @threshold: trip crossing notification threshold miliCelsius
+  * @type: trip point type
+  * @priv: pointer to driver data associated with this trip
++ * @flags: flags representing binary properties of the trip
+  */
+ struct thermal_trip {
+ 	int temperature;
+ 	int hysteresis;
+ 	int threshold;
+ 	enum thermal_trip_type type;
++	u8 flags;
+ 	void *priv;
+ };
+ 
++#define THERMAL_TRIP_WRITABLE_TEMP	BIT(0)
++#define THERMAL_TRIP_WRITABLE_HYST	BIT(1)
++
++#define THERMAL_TRIP_WRITABLE	(THERMAL_TRIP_WRITABLE_TEMP | THERMAL_TRIP_WRITABLE_HYST)
++
+ struct thermal_zone_device_ops {
+ 	int (*bind) (struct thermal_zone_device *,
+ 		     struct thermal_cooling_device *);
+Index: linux-pm/drivers/thermal/thermal_core.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.c
++++ linux-pm/drivers/thermal/thermal_core.c
+@@ -1356,13 +1356,23 @@ thermal_zone_device_register_with_trips(
+ 	tz->devdata = devdata;
+ 	tz->trips = trips;
+ 	tz->num_trips = num_trips;
++	if (num_trips > 0) {
++		struct thermal_trip *trip;
++
++		for_each_trip(tz, trip) {
++			if (mask & 1)
++				trip->flags |= THERMAL_TRIP_WRITABLE_TEMP;
++
++			mask >>= 1;
++		}
++	}
+ 
+ 	thermal_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay);
+ 	thermal_set_delay_jiffies(&tz->polling_delay_jiffies, polling_delay);
+ 
+ 	/* sys I/F */
+ 	/* Add nodes that are always present via .groups */
+-	result = thermal_zone_create_device_groups(tz, mask);
++	result = thermal_zone_create_device_groups(tz);
+ 	if (result)
+ 		goto remove_id;
+ 
+Index: linux-pm/drivers/thermal/thermal_core.h
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.h
++++ linux-pm/drivers/thermal/thermal_core.h
+@@ -131,7 +131,7 @@ void thermal_zone_trip_updated(struct th
+ int __thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
+ 
+ /* sysfs I/F */
+-int thermal_zone_create_device_groups(struct thermal_zone_device *, int);
++int thermal_zone_create_device_groups(struct thermal_zone_device *tz);
+ void thermal_zone_destroy_device_groups(struct thermal_zone_device *);
+ void thermal_cooling_device_setup_sysfs(struct thermal_cooling_device *);
+ void thermal_cooling_device_destroy_sysfs(struct thermal_cooling_device *cdev);
+Index: linux-pm/drivers/thermal/thermal_sysfs.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_sysfs.c
++++ linux-pm/drivers/thermal/thermal_sysfs.c
+@@ -122,6 +122,11 @@ trip_point_temp_store(struct device *dev
+ 
+ 	trip = &tz->trips[trip_id];
+ 
++	if (!(trip->flags & THERMAL_TRIP_WRITABLE_TEMP)) {
++		ret = -EPERM;
++		goto unlock;
++	}
++
+ 	if (temp != trip->temperature) {
+ 		if (tz->ops->set_trip_temp) {
+ 			ret = tz->ops->set_trip_temp(tz, trip_id, temp);
+@@ -173,6 +178,11 @@ trip_point_hyst_store(struct device *dev
+ 
+ 	trip = &tz->trips[trip_id];
+ 
++	if (!(trip->flags & THERMAL_TRIP_WRITABLE_HYST)) {
++		ret = -EPERM;
++		goto unlock;
++	}
++
+ 	if (hyst != trip->hysteresis) {
+ 		if (tz->ops->set_trip_hyst) {
+ 			ret = tz->ops->set_trip_hyst(tz, trip_id, hyst);
+@@ -392,17 +402,16 @@ static const struct attribute_group *the
+ /**
+  * create_trip_attrs() - create attributes for trip points
+  * @tz:		the thermal zone device
+- * @mask:	Writeable trip point bitmap.
+  *
+  * helper function to instantiate sysfs entries for every trip
+  * point and its properties of a struct thermal_zone_device.
+  *
+  * Return: 0 on success, the proper error value otherwise.
+  */
+-static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
++static int create_trip_attrs(struct thermal_zone_device *tz)
+ {
++	const struct thermal_trip *trip;
+ 	struct attribute **attrs;
+-	int indx;
+ 
+ 	/* This function works only for zones with at least one trip */
+ 	if (tz->num_trips <= 0)
+@@ -437,7 +446,9 @@ static int create_trip_attrs(struct ther
+ 		return -ENOMEM;
+ 	}
+ 
+-	for (indx = 0; indx < tz->num_trips; indx++) {
++	for_each_trip(tz, trip) {
++		int indx = thermal_zone_trip_id(tz, trip);
++
+ 		/* create trip type attribute */
+ 		snprintf(tz->trip_type_attrs[indx].name, THERMAL_NAME_LENGTH,
+ 			 "trip_point_%d_type", indx);
+@@ -458,7 +469,7 @@ static int create_trip_attrs(struct ther
+ 						tz->trip_temp_attrs[indx].name;
+ 		tz->trip_temp_attrs[indx].attr.attr.mode = S_IRUGO;
+ 		tz->trip_temp_attrs[indx].attr.show = trip_point_temp_show;
+-		if (mask & (1 << indx)) {
++		if (trip->flags & THERMAL_TRIP_WRITABLE_TEMP) {
+ 			tz->trip_temp_attrs[indx].attr.attr.mode |= S_IWUSR;
+ 			tz->trip_temp_attrs[indx].attr.store =
+ 							trip_point_temp_store;
+@@ -473,7 +484,7 @@ static int create_trip_attrs(struct ther
+ 					tz->trip_hyst_attrs[indx].name;
+ 		tz->trip_hyst_attrs[indx].attr.attr.mode = S_IRUGO;
+ 		tz->trip_hyst_attrs[indx].attr.show = trip_point_hyst_show;
+-		if (tz->ops->set_trip_hyst) {
++		if (trip->flags & THERMAL_TRIP_WRITABLE_HYST) {
+ 			tz->trip_hyst_attrs[indx].attr.attr.mode |= S_IWUSR;
+ 			tz->trip_hyst_attrs[indx].attr.store =
+ 					trip_point_hyst_store;
+@@ -505,8 +516,7 @@ static void destroy_trip_attrs(struct th
+ 	kfree(tz->trips_attribute_group.attrs);
+ }
+ 
+-int thermal_zone_create_device_groups(struct thermal_zone_device *tz,
+-				      int mask)
++int thermal_zone_create_device_groups(struct thermal_zone_device *tz)
+ {
+ 	const struct attribute_group **groups;
+ 	int i, size, result;
+@@ -522,7 +532,7 @@ int thermal_zone_create_device_groups(st
+ 		groups[i] = thermal_zone_attribute_groups[i];
+ 
+ 	if (tz->num_trips) {
+-		result = create_trip_attrs(tz, mask);
++		result = create_trip_attrs(tz);
+ 		if (result) {
+ 			kfree(groups);
+ 
+
+
+
 
