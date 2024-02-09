@@ -1,137 +1,115 @@
-Return-Path: <linux-kernel+bounces-59701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E65D84FAAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:09:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 496E784FAB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:10:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACEB01F2A2C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:09:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7260C1C23508
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8107BAF1;
-	Fri,  9 Feb 2024 17:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8056C7BAFF;
+	Fri,  9 Feb 2024 17:10:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="ayKANL9g"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b/Ntb0GA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E80745ED
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52FE6DD18;
+	Fri,  9 Feb 2024 17:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707498586; cv=none; b=k0ZfKvWPGQ8/edOx8gbVzPIDcHKnEhB59k+eev9BQF7tMw5mOinsfQwq9bCZ4yQXavyHyuh2X11xOm4k8lM1nNJfbDEbd14gjpCEjz0iKc519jlrBQOuAVre4GGT71xiV5t6Ztq+QxvsZ3FjLIiBjdi8t3usiTHkmXRymb5F6Pg=
+	t=1707498634; cv=none; b=qIWDCNk4BJM14cIAZks0epRFB+I7z0jAJF+Yi/OzrSFJxIFRjH+imfjx7SESsFih/wbGlsc0hosQ+F0y7tjz5d1P2vJmT+b9bFiD4ybK7cJP8Ts69uTBlwVYsR/BdONA2L8Ia/2e9YDiwAxr2DGBf6hbq+PbeKJ59H+8O4Xn8sI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707498586; c=relaxed/simple;
-	bh=/mZM7kOeydyH3DyBrwRIF79NtTes3EiafP5SxsJdCb4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bzx/EdUejHcZERpXwHe2lIaAh9v1qkhbqd8BkCxn1XZFG0Eni93mOtBlqSn5dbTbJmqGGw04T/6R6Mb28pG4fzmYLntO/nJ2oGvSRnp2n0mz4ZJ/R7srlIffecxRbcPB/3HZt5qwS37OY5Ys/6GgKRqC3DFtVPwxtHeXpV72a6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=ayKANL9g; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33b6ae05d12so5972f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 09:09:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1707498583; x=1708103383; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qZ+D7kHi8Bz4iYvXGO/+VOikMobPY3Za8u7bXUaQ9Ms=;
-        b=ayKANL9gW5XECbQ4AJvBISlIVqNSP4aQhpLAeK09+MKdIk0Yn3v9rRWbq36mE/5T/O
-         c7iB3Dz8zshZbNNi2XuyujGSRVfkFCTff3WcQNEHPxbSuZdtRhbqxFkOVjIswJ9q7dh4
-         f0lkBXME9LE/eQ7WsiW9OzELylZFFxubPXj5T9vlxUdi3jah0Z+n0kN9eaOnSYR/fUuv
-         sb9x+hxlLkoO77IzPqm/CfSlJyYX3aakxMEiiV2nf2Fk4g/y5Go3zAszYw/dGQRTrXiS
-         0XB28C/fe6vGVR/Doow4sPstuhiQP5gViahGKgWmxEemEB7Mb5DFafzWP5zYkXKvIFfX
-         0fQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707498583; x=1708103383;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qZ+D7kHi8Bz4iYvXGO/+VOikMobPY3Za8u7bXUaQ9Ms=;
-        b=JhMS0LRVB2hEi3BqPx+iqPdfYZW9UX46eMdEd2Wpw6QD6WGJWPlqYDgCPiB9GrQS6y
-         G2zIL04d3Gwu8ibPmlpQ9HK6R0R2Cjmvriae3uuyQIcWlY9pLKNICqF25+5zGROyKEb/
-         m12KL6fg1ZKhBUwQ2jOhwgipY0bqZ+LM97FYFxNO75tDZQbt0r7Mt43EeZqZMbObIhFv
-         gcVqhuL3mbh3bELf6W2YrdMIKTcFuVHVj+JMd55gLiwmOSOagN7hAbVpoBDlpUlckd4u
-         Z7Jzmki6UmDsVIMJCdhPBBcORqPnXJ9ytxeqNdefKPEkVm8FNZzE0wstg2oc46BpMjet
-         CXvQ==
-X-Gm-Message-State: AOJu0YzzUrUrcyh8xMHzGmAhG0xuj4bBW5SkSnxEsawWYIuuKX65zb2Q
-	H1CuUudxxkgglt55jvK5JX+08NNA0gGtovAfzm++4/fQxeK36ESnk0gTM6F3k3kjxRSmZOSwh1z
-	T
-X-Google-Smtp-Source: AGHT+IEp0QVlvo7ZEvKRghApx/6PJy6AQV18rEKqJsvqLKSoyR/4kZ9TDNtXNk+ONjmtpUFG/KeE4g==
-X-Received: by 2002:a5d:54c8:0:b0:33b:38ce:b237 with SMTP id x8-20020a5d54c8000000b0033b38ceb237mr1441095wrv.37.1707498582867;
-        Fri, 09 Feb 2024 09:09:42 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUGno5o1g16eGmjm7LZ1OVLPVXGKJ4IJFKjKpmfIhvEpQvKW55DBk6rvM5MUSvBgLAKPhqhDZl4dzLWketTyOCk7o3sytyg9ohCNuPZzwJ5akkus3eYqs9jHzIFN3IIuROXnD7XGglL69iWGl7fInI/xy7kVzH9Jnv6p3h8K8XaTaEC/IJgZxiqem9v4xJiw920uaQJbPS3shX0mok6UiQ1PsS8w/E0B5B3qHWKlYRydUXuE0knZrBs8gVZWsfR79FWth/hQTiMh585E1IZ4mNzNlFkI4iI/DRRrPlsyz5SaiJgC8ark8pXUP0+
-Received: from ?IPV6:2a01:cb05:945b:7e00:9bdc:6887:23a2:4f31? (2a01cb05945b7e009bdc688723a24f31.ipv6.abo.wanadoo.fr. [2a01:cb05:945b:7e00:9bdc:6887:23a2:4f31])
-        by smtp.gmail.com with ESMTPSA id a10-20020a5d53ca000000b0033b58c43ca8sm2234199wrw.104.2024.02.09.09.09.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Feb 2024 09:09:42 -0800 (PST)
-Message-ID: <045d1d74-d369-40d7-ad34-2094afd2c47a@smile.fr>
-Date: Fri, 9 Feb 2024 18:09:41 +0100
+	s=arc-20240116; t=1707498634; c=relaxed/simple;
+	bh=1DJyQGZWkyINk+0P2VsSNjoETpjN/mE2UKBByCakbuc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=QUdFuQXXx0oV0s4UARDZryBv8s0GSm54hMEbICMBL6PopFWdsVL+BEIT6enDcPOxFZ1MD4nf3hHvTu7IImAyCVZrJhXg35jHyO3lpBp/83BMh6Fzmxi1XHfl5skZ+C458d8oFhqEhLpWTp6ULvVEdFWBOEENG+sC6N2oEVkXRzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b/Ntb0GA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2009C433F1;
+	Fri,  9 Feb 2024 17:10:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707498634;
+	bh=1DJyQGZWkyINk+0P2VsSNjoETpjN/mE2UKBByCakbuc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=b/Ntb0GAdQuPhorZNPOqkKxNKtS8/IC3CPaCzUNDjuhbYzgUQQpN1nmdSRvATUagt
+	 qR9FDSA7njDGtlOYo+Zr0LP43Yo+UHHd20nwenjRUDNlOxOJcwoh4KlYQ5IGHF6Vdu
+	 niQeED7H47m8v8MBn/PUy5rKWUTsf6A1c1IKtB0fAm75YTEE+pqEhfcoe67FWUJlZN
+	 FJlS+9EPDJKcR+ZnaskzZ3CYg7565Pehp9v35jt2ROMid1UdTUNQX0yBUEfpo5VObV
+	 v86ez5zUEaMr2Ym5FD/N5JAAciRcNcGrxxCM3Kn+eU0e5awsgmKEyLUo5ltCbxn+NR
+	 qlATClLOoxEzA==
+Date: Fri, 9 Feb 2024 11:10:32 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Mrinmay Sarkar <quic_msarkar@quicinc.com>, vkoul@kernel.org,
+	jingoohan1@gmail.com, conor+dt@kernel.org, konrad.dybcio@linaro.org,
+	manivannan.sadhasivam@linaro.org, robh+dt@kernel.org,
+	quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+	quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+	dmitry.baryshkov@linaro.org, quic_krichai@quicinc.com,
+	quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+	quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	mhi@lists.linux.dev
+Subject: Re: [PATCH v1 3/6] PCI: dwc: Add HDMA support
+Message-ID: <20240209171032.GA1004885@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: ti: k3-j721e-sk: fix PMIC interrupt
- number
-To: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, conor+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org, kristo@kernel.org,
- vigneshr@ti.com, nm@ti.com
-Cc: Neha Malcom Francis <n-francis@ti.com>
-References: <20240208212422.213693-1-romain.naour@smile.fr>
- <20240208212422.213693-2-romain.naour@smile.fr>
-Content-Language: fr
-From: Romain Naour <romain.naour@smile.fr>
-In-Reply-To: <20240208212422.213693-2-romain.naour@smile.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <oa76ts3zqud7mtkpilbo4uub7gazqncnbh6rma26kaz6wt6fch@ufv672fgrcgj>
 
-Hello,
+On Sat, Feb 03, 2024 at 12:40:39AM +0300, Serge Semin wrote:
+> On Fri, Jan 19, 2024 at 06:30:19PM +0530, Mrinmay Sarkar wrote:
+> > From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > 
+> > Hyper DMA (HDMA) is already supported by the dw-edma dmaengine driver.
+> > Unlike it's predecessor Embedded DMA (eDMA), HDMA supports only the
+> > unrolled mapping format. So the platform drivers need to provide a valid
+> > base address of the CSRs. Also, there is no standard way to auto detect
+> > the number of available read/write channels in a platform. So the platform
+> > drivers has to provide that information as well.
+> ...
 
-Le 08/02/2024 à 22:24, Romain Naour a écrit :
-> The tps659413 node set WKUP_GPIO0_7 (G28) pin as input to be used as
-> PMIC interrupt but uses 9 (WKUP_GPIO0_9) as "interrupts" property.
-> 
-> Replace 9 by 7 after checking in the board schematic [1].
-> 
-> [1] https://www.ti.com/tool/SK-TDA4VM
-> 
-> Fixes: b808cef0be46 ("arm64: dts: ti: k3-j721e-sk: Add TPS6594 family PMICs")
-> Cc: Neha Malcom Francis <n-francis@ti.com>
-> Signed-off-by: Romain Naour <romain.naour@smile.fr>
-> ---
->  arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-> index 188dfe291a32..6a8866055f77 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-> @@ -574,7 +574,7 @@ tps659413: pmic@48 {
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&pmic_irq_pins_default>;
->  		interrupt-parent = <&wkup_gpio0>;
-> -		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
-> +		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
+> Basically this change defines two versions of the eDMA info
+> initialization procedure:
+> 1. use pre-defined CSRs mapping format and amount of channels,
+> 2. auto-detect CSRs mapping and the amount of channels.
+> The second version also supports the optional CSRs mapping format
+> detection procedure by means of the DW_PCIE_CAP_EDMA_UNROLL flag
+> semantics. Thus should this patch is accepted there will be the
+> functionality duplication. I suggest to make things a bit more
+> flexible than that. Instead of creating the two types of the
+> init-methods selectable based on the mapping format, let's split up
+> the already available DW eDMA engine detection procedure into the next
+> three stages:
+> 1. initialize DW eDMA data,
+> 2. auto-detect the CSRs mapping format,
+> 3. auto-detect the amount of channels.
+> and convert the later two to being optional. They will be skipped in case
+> if the mapping format or the amount of channels have been pre-defined
+> by the platform drivers. Thus we can keep the eDMA data init procedure
+> more linear thus easier to read, drop redundant DW_PCIE_CAP_EDMA_UNROLL flag
+> and use the new functionality for the Renesas R-Car S4-8's PCIe
+> controller (for which the auto-detection didn't work), for HDMA with compat
+> and _native_ CSRs mapping. See the attached patches for details:
 
-We need to do this change for both tps659413 and tps659411 nodes for the
-k3-j721e-sk board.
+I am still bound by the opinion of Google's legal team that I cannot
+accept the code changes that were attached here.  I think it's fair to
+read the review comments (thank you for those), but I suggest not
+reading the patches that were attached.
 
-There is only one PMIC on k3-am69-sk.
-
-I'll send a v2.
-
-Best regards,
-Romain
-
-
->  		gpio-controller;
->  		#gpio-cells = <2>;
->  		ti,primary-pmic;
-
+Bjorn
 
