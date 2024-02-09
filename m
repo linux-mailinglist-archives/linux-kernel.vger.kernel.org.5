@@ -1,179 +1,111 @@
-Return-Path: <linux-kernel+bounces-59373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57B3284F605
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:31:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF75584F5BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:21:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B76F2B2624E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:31:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BF2E285411
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC703F9D4;
-	Fri,  9 Feb 2024 13:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5A3381DA;
+	Fri,  9 Feb 2024 13:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=paragon-software.com header.i=@paragon-software.com header.b="FVzXbfAl";
-	dkim=pass (1024-bit key) header.d=paragon-software.com header.i=@paragon-software.com header.b="hZHTL1FN"
-Received: from relayaws-01.paragon-software.com (relayaws-01.paragon-software.com [35.157.23.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YYrILTYn"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E6BB37703;
-	Fri,  9 Feb 2024 13:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.157.23.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6817C37716
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 13:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707485399; cv=none; b=QuFI4QHIRL4zgzsipncTelU76nOVc7VW8ytrSANM3G/7NCcpv/bPSRSqxb+U8qMGAwnEcOT5ffBEKpGLPpW4AeD9qiJaIMk2X1CsYV5BouE7Nq/Nxx7lSQtNdc1R0xwdnXy3fkCA0WBTYINroGJlnE0x9ng//gU0lcf0t9wn5lI=
+	t=1707484894; cv=none; b=Wq4Rw4YE0N4TU41oy2/iBO5jpvkWBBKlsLhYl7YYm7qXwhDh0e0DkAiLIfTa817pstGnCcZVdWEMWdWLeNqrwouGH7BKHjENAo5OCCB+SAenO5V+iLNazX6XZKpndR9tlBTqUm9Hz4Gyuj7luM6wP4TYalbnpWfbXkGVstTMmnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707485399; c=relaxed/simple;
-	bh=0SWT6R7olskxkBIvu3X8JlolZrl7KdkoDmusDzt+0fk=;
-	h=Message-ID:Date:MIME-Version:To:CC:From:Subject:Content-Type; b=jlG8qJV1hjnzwWNo4FT2onna0/gekEhC5qupLYPOrV2TO2O3y55spGJFhbIC7a9MGxs3J8oc36mru1lI0NXHRew8XyL+O6imOqmMmFlKN2PD4FebR9sCG1Uut4v04uQFnLtZan/A4yjXWXkQSuQnE7W1KZuRbflQqW3y5comt3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=paragon-software.com; spf=pass smtp.mailfrom=paragon-software.com; dkim=pass (1024-bit key) header.d=paragon-software.com header.i=@paragon-software.com header.b=FVzXbfAl; dkim=pass (1024-bit key) header.d=paragon-software.com header.i=@paragon-software.com header.b=hZHTL1FN; arc=none smtp.client-ip=35.157.23.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=paragon-software.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paragon-software.com
-Received: from relayfre-01.paragon-software.com (unknown [172.30.72.12])
-	by relayaws-01.paragon-software.com (Postfix) with ESMTPS id E74842138;
-	Fri,  9 Feb 2024 13:14:07 +0000 (UTC)
+	s=arc-20240116; t=1707484894; c=relaxed/simple;
+	bh=ZtD+/WHeA1U9jv7rkjFYm3MAbEKfaDxtr89VERessTA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tUqr0USF0rB8fqwmJ/n8TSiE/e2tmyye0aroehqk515hpdVJmyl10Fk9lKEiCH9JjWit7urvShjZ97pKQklDbMq5nUhBUWZheUB6F2R4J0Baxzjjl8sAaVcEB1TrSFJokqWcCc3oM2sWkAuVb5a+C8+I/+4WF1y6PnCwM2smVZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YYrILTYn; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6049ffb9cedso11423497b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 05:21:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=paragon-software.com; s=mail; t=1707484448;
-	bh=uuYj/CcYFjQxlauFBkgaaaXBEDed4li6W5TordQET3o=;
-	h=Date:To:CC:From:Subject;
-	b=FVzXbfAlmVhsag5ff502I69Ah8zd+/Blpp4xzH8xqhaksH+jQ5p8qhLeFSBJVNW4U
-	 8CUAXBR6oLF8LnPFKEVrWQVQofEwYr8p8noCmjEpLuHHTtBS7dmuXrZtuWmhbgKpOx
-	 1n/O5Ret0V3o6H/rVf3jkBC+GhwBcU6Dhv+DIYmM=
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-	by relayfre-01.paragon-software.com (Postfix) with ESMTPS id AA9AF21E2;
-	Fri,  9 Feb 2024 13:21:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=paragon-software.com; s=mail; t=1707484863;
-	bh=uuYj/CcYFjQxlauFBkgaaaXBEDed4li6W5TordQET3o=;
-	h=Date:To:CC:From:Subject;
-	b=hZHTL1FNyzbwt5yxm4eQ1cCdVJcRgjNhISS+RiqdVPNOeXufg9Eo06cJzaw5sowU4
-	 HRcxivHSwIQ0ScYAxEeOFOGXYb6kkhCzvd1WEogqeebFXHGSckDad2YJCQa6sRNqfK
-	 43+AKRDjTAZHyOgZABj+BgeCGNCtnTH4bZcuxuDo=
-Received: from [192.168.211.75] (192.168.211.75) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 9 Feb 2024 16:21:03 +0300
-Message-ID: <b586e5a4-5a12-412d-bed0-d3a8f630bbdb@paragon-software.com>
-Date: Fri, 9 Feb 2024 16:21:02 +0300
+        d=linaro.org; s=google; t=1707484892; x=1708089692; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZtD+/WHeA1U9jv7rkjFYm3MAbEKfaDxtr89VERessTA=;
+        b=YYrILTYnNPPEdJktOaghG+/wxvnh9wSr3H8objV4TzNhlfz8FcorBb0g3xXQmBcWxX
+         iaR57LqWXJcJ+OITtUCslKs4x/tU+RCHapaJmEkl4Ovc/ytnBRBn1vv1lT9aUiGYx1jI
+         Sh/YwGb2lDb33gkBUC/2Gxc+TI3e0+zLJri500f2OztF2NZaL2ssPfo5AgLT1fmsKtUz
+         +ZNlB6poXU5Nep1/w+DoI+rHX+9xheSVHfAiQB6oYf8fy+x5t9Pfc3IDsjYsaziYgEAI
+         P9IpcNWUYcYGw35QLJ4vHbQTPb9br50qOMLrGYCUs+HIGQguW1bpcg3H7UCYugQGgUGg
+         YQXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707484892; x=1708089692;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZtD+/WHeA1U9jv7rkjFYm3MAbEKfaDxtr89VERessTA=;
+        b=Gavj443YJt4J6TsfejQm77+MSx5yGbT/IudX8CGYzLOJXbZzTXSOH41sJqBmpKU8eI
+         utjeT7yyS2vIy/De7KM/s+WK3FvgcjkIFiifCkE9uCKUpOWaq2CybSVzvouzhSOWSlIc
+         yXPWFvQRgJPxEKfbcmvxfcFSo2gxAnXqyiFY1mPvdfB82E1stTpxVfyq19d9PZD7rQHo
+         +Av/CfpunJjWmW499oig5wQkWf4AzsFBQ0cICEtAxJDMJoZ7OaDOhRpoxeDHDzj0NFqq
+         LoS7qBcDMMzu2Z6ORljcwjJF7q9aqpwiqiqqQtJH+x67UQFiuJO58m8c27T2AoQ94C5B
+         SwlA==
+X-Forwarded-Encrypted: i=1; AJvYcCUS70LGb7dwMgoaimsQkiJ7IIcLL4JQBXmwTfAs8fBxN0JSv7DigvgyJY8CLM5MGBGafw+pfPs1dRAPYr3M/qJCD0j2FEbOoZ2w/a9W
+X-Gm-Message-State: AOJu0Yw1QyVZSrG6Uvem0+lKGlFVQc2nvp3GQgkbhddxK8MH8csj3l3G
+	1r5izgbGk5JoS0QTnKwyflOn5CrGIZ5LV68QXP58HCgzMSelqNudtgvNbykJ4NgROrkAl0GyoWI
+	GvoNLsXtT7MM620F0mYver6dpW+nMBJ1JExMioA==
+X-Google-Smtp-Source: AGHT+IEjM7GgnjpcPtlUob1IS5iqQNw6vC73GQjBO21vdyKgj22u/bvKegfjbQSVpbPqky+RFIRp6rUxjS3Vfp7883s=
+X-Received: by 2002:a81:c250:0:b0:5ff:981a:2aa5 with SMTP id
+ t16-20020a81c250000000b005ff981a2aa5mr1481737ywg.46.1707484892357; Fri, 09
+ Feb 2024 05:21:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>
-CC: <ntfs3@lists.linux.dev>, Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [GIT PULL] ntfs3: bugfixes for 6.8
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+References: <20240209-realtek_reverse-v6-0-0662f8cbc7b5@gmail.com> <20240209-realtek_reverse-v6-7-0662f8cbc7b5@gmail.com>
+In-Reply-To: <20240209-realtek_reverse-v6-7-0662f8cbc7b5@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 9 Feb 2024 14:21:21 +0100
+Message-ID: <CACRpkdaMBZyFoZZ22e3Th=Mw13BaQpWJ=VLMJR+xR=TYnETPtg@mail.gmail.com>
+Subject: Re: [PATCH net-next v6 07/11] net: dsa: realtek: get internal MDIO
+ node by name
+To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc: =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
+	Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
+	Vladimir Oltean <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Florian Fainelli <florian.fainelli@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Fri, Feb 9, 2024 at 6:04=E2=80=AFAM Luiz Angelo Daros de Luca
+<luizluca@gmail.com> wrote:
 
-Please pull this branch containing ntfs3 code for 6.8.
+> The binding docs requires for SMI-connected devices that the switch
+> must have a child node named "mdio" and with a compatible string of
+> "realtek,smi-mdio". Meanwile, for MDIO-connected switches, the binding
+> docs only requires a child node named "mdio".
+>
+> This patch changes the driver to use the common denominator for both
+> interfaces, looking for the MDIO node by name, ignoring the compatible
+> string.
+>
+> Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-Fixed:
-- size update for compressed file;
-- some logic errors, overflows;
-- memory leak;
-- some code was refactored.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Added:
-- implement super_operations::shutdown.
-
-Improved:
-- alternative boot processing;
-- reduced stack usage.
-
-All changed code was in linux-next branch for at least week.
-
-Regards,
-
-Konstantin
-
-----------------------------------------------------------------
-
-The following changes since commit 33cc938e65a98f1d29d0a18403dbbee050dcad9a:
-
-    Linux 6.7-rc4 (Sun Dec 3 18:52:56 2023 +0900)
-
-are available in the Git repository at:
-
-    https://github.com/Paragon-Software-Group/linux-ntfs3.git ntfs3_for_6.8
-
-for you to fetch changes up to 622cd3daa8eae37359a6fd3c07c36d19f66606b5:
-
-    fs/ntfs3: Slightly simplify ntfs_inode_printk() (Fri Nov 10 20:59:22 
-2023 +0100)
-
-----------------------------------------------------------------
-
-Christophe JAILLET (1):
-   fs/ntfs3: Slightly simplify ntfs_inode_printk()
-
-Dan Carpenter (1):
-   fs/ntfs3: Fix an NULL dereference bug
-
-Edward Adam Davis (1):
-   fs/ntfs3: Fix oob in ntfs_listxattr
-
-Ism Hong (1):
-   fs/ntfs3: use non-movable memory for ntfs3 MFT buffer cache
-
-Konstantin Komarov (23):
-   fs/ntfs3: Improve alternative boot processing
-   fs/ntfs3: Modified fix directory element type detection
-   fs/ntfs3: Improve ntfs_dir_count
-   fs/ntfs3: Correct hard links updating when dealing with DOS names
-   fs/ntfs3: Print warning while fixing hard links count
-   fs/ntfs3: Reduce stack usage
-   fs/ntfs3: Fix multithreaded stress test
-   fs/ntfs3: Fix detected field-spanning write (size 8) of single field 
-"le->name"
-   fs/ntfs3: Correct use bh_read
-   fs/ntfs3: Add file_modified
-   fs/ntfs3: Drop suid and sgid bits as a part of fpunch
-   fs/ntfs3: Implement super_operations::shutdown
-   fs/ntfs3: ntfs3_forced_shutdown use int instead of bool
-   fs/ntfs3: Add and fix comments
-   fs/ntfs3: Add NULL ptr dereference checking at the end of 
-attr_allocate_frame()
-   fs/ntfs3: Fix c/mtime typo
-   fs/ntfs3: Disable ATTR_LIST_ENTRY size check
-   fs/ntfs3: Use kvfree to free memory allocated by kvmalloc
-   fs/ntfs3: Prevent generic message "attempt to access beyond end of 
-device"
-   fs/ntfs3: Use i_size_read and i_size_write
-   fs/ntfs3: Correct function is_rst_area_valid
-   fs/ntfs3: Fixed overflow check in mi_enum_attr()
-   fs/ntfs3: Update inode->i_size after success write into compressed file
-
-Nekun (1):
-   fs/ntfs3: Add ioctl operation for directories (FITRIM)
-
-  fs/ntfs3/attrib.c   |  45 +++++----
-  fs/ntfs3/attrlist.c |  12 +--
-  fs/ntfs3/bitmap.c   |   4 +-
-  fs/ntfs3/dir.c      |  48 ++++++---
-  fs/ntfs3/file.c     |  76 +++++++++++----
-  fs/ntfs3/frecord.c  |  19 ++--
-  fs/ntfs3/fslog.c    | 232 ++++++++++++++++++++------------------------
-  fs/ntfs3/fsntfs.c   |  29 +++++-
-  fs/ntfs3/index.c    |   8 +-
-  fs/ntfs3/inode.c    |  32 ++++--
-  fs/ntfs3/namei.c    |  12 +++
-  fs/ntfs3/ntfs.h     |   4 +-
-  fs/ntfs3/ntfs_fs.h  |  29 +++---
-  fs/ntfs3/record.c   |  18 +++-
-  fs/ntfs3/super.c    |  54 ++++++-----
-  fs/ntfs3/xattr.c    |   6 ++
-  16 files changed, 381 insertions(+), 247 deletions(-)
-
-
+Yours,
+Linus Walleij
 
