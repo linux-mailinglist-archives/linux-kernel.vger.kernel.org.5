@@ -1,124 +1,153 @@
-Return-Path: <linux-kernel+bounces-59758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A7484FB70
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:02:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4484784FB73
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:02:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DD161F2A5E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:02:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 698781C27620
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:02:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22C07FBBC;
-	Fri,  9 Feb 2024 18:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D864D81AA5;
+	Fri,  9 Feb 2024 18:01:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iJiRiBSR"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OxlAsaTT"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D357BAF3
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B3280C18
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707501682; cv=none; b=tiAjzNktHq0PxrTuNm+kt09gbXi/RRPoX7Gdst6WN/e04ybc1Mjm5X2m9E+waT5de7O3AgJvXCVEUB7YwQQ7B3Gg5cLonCWnzbjU4YkGL8o4ODwrGFZ3MsVmDusGMT1ZYgqOfFZhm/Bd68ADQpTV44L154XmBTaAEeSOZ6q9oWQ=
+	t=1707501690; cv=none; b=SVuSn9y9j83YNlbrGDJfScnlbBEODuOThsL5mEMCqS9VyB1MHP6Q36ji4pK3C65wI0TA/Y6X1d5KxwZf8TVyWib+N8OYgg9kZOqVB+VSZgrllC+NepAEdizbadrTzeTzXVztDKOG+Hj7UUwJRsbYDSMAqSSOzeY3hZ17+jVLvuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707501682; c=relaxed/simple;
-	bh=tWnDDTX6hjvn4zZMWScUR1a3jczggxxhhlZFG78n9SA=;
+	s=arc-20240116; t=1707501690; c=relaxed/simple;
+	bh=ZIxcGmiR4gGSReoL37yMRXuMkVPpy2y+83NsY4EsGcM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EcYugDox1vvpmAChy5Xl+aJSHV1yjoUiwdzEc0c0sUeJUKuIdiKBet2s2JT/p9TlGds1qW6+KeM1C0WpUP18LncfKuXN3XZ2PRCaSMYUQ12s23hGIBcAyuqf9l01iIey2/R/2XKfLFZQ6XNnmD+LnUyuINdIp5RrWFoRa+CUrr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iJiRiBSR; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso1234148276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 10:01:19 -0800 (PST)
+	 To:Cc:Content-Type; b=GtTzBiUyNhJVTfPsjr/1Bh1ADcWMlG/msWAkobgbMJlnC0U58Pl4G8iP9F2U1gC3gvG97FLrERcrJJ+nQmWGi9kg97Paq58LDCs7pRYcfUoezh7UbcAEkYn1DqyRzGa+gI0ZDl6BcZTUcH85Mh9R+AgmVgl2PXfzkX2nV0gsVAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OxlAsaTT; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-604aab67616so13719267b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 10:01:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707501679; x=1708106479; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DxAXd9578hDdusxvxqROEMfzhHSW5iLGGo5hRVlkaFc=;
-        b=iJiRiBSRIncIsn3DVJ3tybiJ+sQA+7Bo4C9dA7k4FZy+QZLxXnRINZ/f9SR1DWhd5/
-         NHDhBlALK6qguizN8lwDn9SMBRvnD5mq+WraiRliah9nM31AXpcgM0vC5Zk4va+xuIZV
-         S5XZgZwsgRrJM+NDv86NLYComeWGhcp3nRE5o=
+        d=linaro.org; s=google; t=1707501687; x=1708106487; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lMOHoZq4LqJoeusiTjh5rsO9vvT8R6dscB00SY5z3ME=;
+        b=OxlAsaTTlzt7cAS/BB64nUD+6YK4RTVifQwQNa94upJvfjBH2Xh1BChn9TeomyPoGS
+         h95p4l6DwF8NzSkJ+zT/eU7vegbBSgQaHUcpbR/BLs7mSyI9gwdePByPNl+sax7cKp6Y
+         KI4g9TVRffoqyBsV+4vJmEjvy8IZ0ARrucQuCOMA3PZAaDW+VJzehFfVRPFVsgFQjzfm
+         TQhDMw0NXkLqLe41RdXDippRnH/6vyFYqSCmcq/P0YEEz9CNvWGiRu5688KO6oVAFyp6
+         Zuwv+rfyArtZCc9/oXKnjxuZx/gqjynNvxVrcHhfY4AOkPwrxTL/Q1CjQOUZpyIgvmPa
+         kEEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707501679; x=1708106479;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DxAXd9578hDdusxvxqROEMfzhHSW5iLGGo5hRVlkaFc=;
-        b=sLtPI0cAv8k8Bkzss2FMn/gxXPyi/YDjZW9NlFihUPqnS7yvRQ+mU0sArFdqCw+jwi
-         2iEkbuZjNjip+pgXE4FjFqVXoRYwjX1MX1n7Y/hqNvnDT996bHvhwP1dAfqO8OhgPJHT
-         oG8OQdIKOGnMhYpenPYqUHiar/zIZTOQDge1SbU8uu6t11KCXYc+olfXBaTzvLJbZ4mb
-         V5u1dHrw7ZfXFuJswvxd9yEmMmAHjtiFmCh/aMwpuw/jT6CC3BIScss4KRoqcZlfkkuZ
-         g1VEiZexbrEC51zbWYmrzj/CDiIMRXPERehXwLkr3aoEhbz9hmnfxC6E5wtEHjCltAx7
-         F0Sg==
-X-Gm-Message-State: AOJu0YxMx5ZhYBSUg0jF3tfpzzbsmhoORAUe0tGwAHrj27MHJtg9KN37
-	uaXy1l4SgE70QFGTl9CY6tnRonYk3Bh10tNZMPrZP25Gm0bEZBqfxO44qIzYhEN8szoI43fvXUD
-	seqTIh5Zms7oYeVzZiRD87oTJhByuJ5eAVMye
-X-Google-Smtp-Source: AGHT+IGn0jV1pZIEIiivUmj+U1vOUnk7Ltih/wE24bOuFmmcWlsGf0dF5J3/tWHDdX/y20KgLcQrUQao7heE0UcjZN0=
-X-Received: by 2002:a25:9cc8:0:b0:dc6:19ea:9204 with SMTP id
- z8-20020a259cc8000000b00dc619ea9204mr1878634ybo.61.1707501678528; Fri, 09 Feb
- 2024 10:01:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707501687; x=1708106487;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lMOHoZq4LqJoeusiTjh5rsO9vvT8R6dscB00SY5z3ME=;
+        b=Z08H5T/pDeAGvJOOgo+R3xv0hEgZcozAaJvqIZy0R1xv/FWOXi8k3zXidYdOVyPA++
+         KsZHvkGdfODX+pxx8CWwYT/9sEDzi1zhWuHJuFcY+a9l4BomueFzqm806Gr/9wj4KQ4q
+         0H8vuRW7QSLNi19xWFVvimJEyXi4PtxgfwSjZU2msuiZEPYmF9bCF0GsB4OmflEhfa15
+         K7yItJ8hfZ76bbuoY/2XH+ae9pAJDEKrjCYFQoWA28JfhPuKvbiEiyTC2L4lS2XXFwzc
+         Yv+Q5BE1tlDku2eRnYsp0JRww8kBSURa4Tt+/J4kJyxCB9BsKAS/9Ecjuf0gjInUDCMC
+         PFGA==
+X-Gm-Message-State: AOJu0YwOEHwxyOvdrkb4dli+BXBVmC0qjJNCUMPEDqeEc+X1/qUmrq0y
+	Rq+itGzE/BFss9qnSrQ0p48E5BbAZ/EgbNH3ME+2vuSYof2CvSA5JooP/I6LrYgLtCnk/d1J1nY
+	XBmA5rsGNHZB/W4iqRlG9bH9aQWJfYKQ7e8f7cg==
+X-Google-Smtp-Source: AGHT+IFPSOL9a8c/GVGVq9MDFtWcygLZBixUpmOLpueIbE9kRc9dfBdNvOhUVH/jwXvduN581cPLQQrKnVOPmbfI1hQ=
+X-Received: by 2002:a0d:cc95:0:b0:5fb:e74c:ff8d with SMTP id
+ o143-20020a0dcc95000000b005fbe74cff8dmr2647607ywd.10.1707501687222; Fri, 09
+ Feb 2024 10:01:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209060353.6613-1-abhishekpandit@chromium.org>
- <20240208220230.v4.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid> <ZcY2kVlUn7SJ5pW8@smile.fi.intel.com>
-In-Reply-To: <ZcY2kVlUn7SJ5pW8@smile.fi.intel.com>
-From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Date: Fri, 9 Feb 2024 10:01:07 -0800
-Message-ID: <CANFp7mW0F_zyaKJg0LusT6Cp4h0_8Z4jq+R1GUGtpyZrv99iVw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] usb: typec: ucsi: Limit read size on v1.2
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
-	jthies@google.com, pmalani@chromium.org, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
-	Rajaram Regupathy <rajaram.regupathy@intel.com>, Saranya Gopal <saranya.gopal@intel.com>, 
+References: <20240209-qcm6490-gcc-protected-clocks-v1-1-bd3487b2e7b1@quicinc.com>
+In-Reply-To: <20240209-qcm6490-gcc-protected-clocks-v1-1-bd3487b2e7b1@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 9 Feb 2024 20:01:15 +0200
+Message-ID: <CAA8EJpr987frG7rpceybSmg8TFj-OsQeoRKBdLT=dnTbfzruKQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Declare GCC clocks protected
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Taniya Das <quic_tdas@quicinc.com>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 9, 2024 at 6:28=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Fri, 9 Feb 2024 at 18:21, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
 >
-> On Thu, Feb 08, 2024 at 10:02:38PM -0800, Abhishek Pandit-Subedi wrote:
-> > Between UCSI 1.2 and UCSI 2.0, the size of the MESSAGE_IN region was
-> > increased from 16 to 256. In order to avoid overflowing reads for older
-> > systems, add a mechanism to use the read UCSI version to truncate read
-> > sizes on UCSI v1.2.
+> The SC7180 GCC binding describes clocks which, due to the difference in
+> security model, are not accessible on the RB3gen2 - in the same way seen
+> on QCM6490.
 >
-> ...
+> Mark these clocks as protected, to allow the board to boot.
 >
-> > +     if (ucsi->version <=3D UCSI_VERSION_1_2)
-> > +             buf_size =3D min_t(size_t, 16, buf_size);
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+> I did notice Taniya's patch [1] after writing this patch. I'd prefer to
+> merge this minimal set asap, to make the board boot, unless there's a
+> strong argument for including those other clocks in the protected list.
 >
-> Please, avoid using min_t(). Here the clamp() can be used.
-I think this is likely the 4th time I've been tripped up by an
-undocumented practice in this patch series. <linux/minmax.h> says
-nothing about avoiding min_t -- why prefer clamp()? Please add the
-recommendation here
-(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/in=
-clude/linux/minmax.h#n10)
-and I am more than happy to change it after.
+> [1] https://lore.kernel.org/linux-arm-msm/20240208062836.19767-6-quic_tdas@quicinc.com/
+> ---
+>  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> index 8bb7d13d85f6..97b1586f9f19 100644
+> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> @@ -413,6 +413,24 @@ vreg_bob_3p296: bob {
+>         };
+>  };
+>
+> +&gcc {
+> +       protected-clocks = <GCC_CFG_NOC_LPASS_CLK>,
+> +                          <GCC_EDP_CLKREF_EN>,
 
-> Shouldn't magic number be defined?
-The comment right above this line documents the number.
-As this is the only use right now, I don't see a need to make it a
-macro/constant yet.
+I'd say these two clocks looks strange in this list, but you probably
+know what you are doing. Thus:
 
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+> +                          <GCC_MSS_CFG_AHB_CLK>,
+> +                          <GCC_MSS_GPLL0_MAIN_DIV_CLK_SRC>,
+> +                          <GCC_MSS_OFFLINE_AXI_CLK>,
+> +                          <GCC_MSS_Q6SS_BOOT_CLK_SRC>,
+> +                          <GCC_MSS_Q6_MEMNOC_AXI_CLK>,
+> +                          <GCC_MSS_SNOC_AXI_CLK>,
+> +                          <GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
+> +                          <GCC_QSPI_CORE_CLK>,
+> +                          <GCC_QSPI_CORE_CLK_SRC>,
+> +                          <GCC_SEC_CTRL_CLK_SRC>,
+> +                          <GCC_WPSS_AHB_BDG_MST_CLK>,
+> +                          <GCC_WPSS_AHB_CLK>,
+> +                          <GCC_WPSS_RSCP_CLK>;
+> +};
+> +
+>  &qupv3_id_0 {
+>         status = "okay";
+>  };
 >
+> ---
+> base-commit: b1d3a0e70c3881d2f8cf6692ccf7c2a4fb2d030d
+> change-id: 20240209-qcm6490-gcc-protected-clocks-ee5fafdb76b3
+>
+> Best regards,
 > --
-> With Best Regards,
-> Andy Shevchenko
->
+> Bjorn Andersson <quic_bjorande@quicinc.com>
 >
 
-Cheers,
-Abhishek
+
+-- 
+With best wishes
+Dmitry
 
