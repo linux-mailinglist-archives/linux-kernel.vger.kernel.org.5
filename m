@@ -1,127 +1,203 @@
-Return-Path: <linux-kernel+bounces-60111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6C9A84FFFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:32:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD7A2850001
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7596B286A5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:32:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C4241C22EA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812CF3A8DF;
-	Fri,  9 Feb 2024 22:30:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BCC3D0D5;
+	Fri,  9 Feb 2024 22:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Qym7PzMa"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=grsecurity.net header.i=@grsecurity.net header.b="G4brQ5d7"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269E63FDF
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:30:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF1D3D0C2
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707517815; cv=none; b=CyBwDQJOkQClMU9UmrU0H+rj1fenqV7myD6aFVFHekm94VxnDaBDawDozZM36xm+niwLoXSDmx63a+2Hzeyq2E4a4str/4VX9ZtcT1HWmRp8DAsVydUX4UHn0TzvoDIG24ewmbJzblr7eVkUyfALj92VCSO9oMcXo4nlV0Ae34w=
+	t=1707517829; cv=none; b=PySq9lEW8TNtZWMpv/bpMiYsGXed18ZvBbjTC6Odbso7PQLirvK+hIQKHmS+0F5Mm/HHIqvoa9ZZT0bokqJJORjx6GP8vSk05I95lmiX6DUQkzv1IZqASqVyS3Aeh3c2I7MGzGF4EUhFWXOeyM9URatQwUzRculGICeAQpjIZnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707517815; c=relaxed/simple;
-	bh=L73hoB9xUTAeRKc4fnAAeVp0lZYHqGJZyHoGKniDhmA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=pHoNKpyP7+F+XfvIhHISdab1YGEKqbe6wzPYVzc08l8SIDdfMIgkM9MWtbOIv2w9oy63XUaE5teR+q5mSzYOhRdsemmJXA2wYLqfjSRvGqCfaWjrKG9UBKYWvovLUHSW3nabadcbOqkvjvy068ke1EMMhVGhCxxlps0VbhtDBeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Qym7PzMa; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 419LnGM0016710;
-	Fri, 9 Feb 2024 22:30:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2023-11-20;
- bh=moCCEpVANRkasMFH/GJCYekintrcdpGWHgEyFAi8gvs=;
- b=Qym7PzMa1tGuMCW/Yoafv234yADh7GieVk3eHZ9VPjYEDcONmXZmvu8B/hvW5o0txYrO
- qo9y/IthY45OFI276HpHzlYH6boSQLkFK602+sIKu4FpbYlutbm9M19RM8kbZmfQB7eV
- t76dR+G8uYmjvkHMiB1w9WGRPw88wUvKlUAA/CJUKFbsuQyEe8u/VEiRR/XeKQXm1ZkG
- lJ+tNACnKTYfJAxwE7tsfVtKKLK78eihkMyqC6qyEq3IN6W3K579osKYpssOExt4puGT
- AP9wsAygaVyC/zP/+tnvNteGBYTSLqLpoCTMbrOYSh12j7lG/zOObPhV65Tt1rBPEusu dA== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w5uuxg3vu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 09 Feb 2024 22:30:10 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 419LhasU039427;
-	Fri, 9 Feb 2024 22:30:08 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w1bxcgj2u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 09 Feb 2024 22:30:08 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 419MU83E031940;
-	Fri, 9 Feb 2024 22:30:08 GMT
-Received: from ca-dev63.us.oracle.com (ca-dev63.us.oracle.com [10.211.8.221])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w1bxcgj29-1;
-	Fri, 09 Feb 2024 22:30:08 +0000
-From: Steve Sistare <steven.sistare@oracle.com>
-To: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eugenio Perez Martin <eperezma@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Steve Sistare <steven.sistare@oracle.com>
-Subject: [PATCH V2] vdpa_sim: reset must not run
-Date: Fri,  9 Feb 2024 14:30:07 -0800
-Message-Id: <1707517807-137331-1-git-send-email-steven.sistare@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1707517829; c=relaxed/simple;
+	bh=Fy+DFfgl9iPfXE4Cc00lQVCWdaZmYtdMTKbSdOK6dr8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ldz1wgwWD0iIwoZCkT1GL1YZPjGaoP4E+sQf7Wj3ByA6T9ap6fKIA+dQNXEljiF+siZAC8MX44M7T7RtsKPK8M54hXvsmaHBYZgVKUR4FhpcYb8AoRfAJNNuNvscKEerc0JRv8+lMJ0TQzFfiozx+EMyr30sr3dcNSM4s6JHfVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=grsecurity.net; spf=pass smtp.mailfrom=opensrcsec.com; dkim=pass (2048-bit key) header.d=grsecurity.net header.i=@grsecurity.net header.b=G4brQ5d7; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=grsecurity.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensrcsec.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3832ef7726so177548966b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:30:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=grsecurity.net; s=grsec; t=1707517826; x=1708122626; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q334rdbHohWsxJ77bsjyPgsTUJYym92p9x/mltaYtVg=;
+        b=G4brQ5d77cF1vSB81B3cApym8KcnqmQTkHY/ti4R52o80rTHXJQxFOOSSGsqhZDbM1
+         /2LP7bUzmrcwhYRIbvrVzKBVrb185RMshNCy3M/Ymx1ON0rFl0ocZ1kRHvipokwFHO8T
+         SxjSKYt6+XVx2uhhra6pCHDzBUfxKoN+vrDKyKqsPNdTLgGlEX0+AD09Mfayq3geGSR5
+         6HZZLU5Luq7DLRxkLoZc1m1OSfi6DFYc5bnp6Vhwb+ZItd+r6OKdbuz5mPlX40Q02Qfd
+         UYoXgxeWPIsUE3D7UMN9C8hi+hNQ0tNSmrJvItcKMsrPpy5uMkZLH68yaK4FDJnkN08D
+         9bKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707517826; x=1708122626;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q334rdbHohWsxJ77bsjyPgsTUJYym92p9x/mltaYtVg=;
+        b=JqvgpqKZXDu2rq5/wKPp29AmqDVvcTvNmvWwkwv+tjo9KsReToZdOD+hROoNt2/J+0
+         rkObOYWva5UwO0BPfaCe6P9JSUKxTunGGLcknS+089IdvLXprxQOaVF3gsUfLR6YzYya
+         QgdHTMsr9h4ZPvwEazTD/jAXvT2yoQWfo3qH5VzT+MImWeShdCp6ptd0OkuiOiWzB1wS
+         ynaqmx6pp+ZX8hWQ54hI+pxPB495eFkZXcz1FnICbDuWQ2wf6AOamkU2KFHAI6a+kYva
+         2XB4BdKOqh37uGqa137PGzCLEiuZ/ADlH9X+PpzqxjJP7v5HvSGfJAqoo7G/yMEYv8lY
+         Q3BQ==
+X-Gm-Message-State: AOJu0YzsloEyhcg9WyNFTDADGpHCFSrs+lDQTWjd8D9EsPOFNmcvQq0Q
+	pcioqwQBlrn/xMQmNcp9Vyld38FeDByRN24ngYHkeuDprJcCtenfeXHg4105wxY=
+X-Google-Smtp-Source: AGHT+IE/3pC+fthtxR5cVJpZzV/OL1GamrSn10DOAVzpqvjahgRYZzWD7R97jCX60h8cwAfzW3AIcw==
+X-Received: by 2002:a17:906:68d8:b0:a38:96ef:4199 with SMTP id y24-20020a17090668d800b00a3896ef4199mr221824ejr.75.1707517825779;
+        Fri, 09 Feb 2024 14:30:25 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXmhADPjPQXFV6Z5GdiurBvyAgwNK0C3N9z8jawo/KNCwaAZNMD4Omlh3uuSxofmTcAOMTOPM/REeziKhZeuvQx6sG8n5NWEigzjfAgdeIRQv74hkcJtGgZQWWHikAQz3QF
+Received: from ?IPV6:2003:f6:af2c:a500:6e26:87f:cb2:6335? (p200300f6af2ca5006e26087f0cb26335.dip0.t-ipconnect.de. [2003:f6:af2c:a500:6e26:87f:cb2:6335])
+        by smtp.gmail.com with ESMTPSA id go43-20020a1709070dab00b00a385535a02asm1171411ejc.171.2024.02.09.14.30.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 14:30:25 -0800 (PST)
+Message-ID: <19824d6d-28f9-4aa0-8b10-bacefc49adfd@grsecurity.net>
+Date: Fri, 9 Feb 2024 23:30:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] KVM: x86: Open code all direct reads to guest DR6 and
+ DR7
+Content-Language: en-US, de-DE
+To: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240209220752.388160-1-seanjc@google.com>
+ <20240209220752.388160-3-seanjc@google.com>
+From: Mathias Krause <minipli@grsecurity.net>
+Autocrypt: addr=minipli@grsecurity.net; keydata=
+ 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
+ RzDVkdgPJkL/NFTKZHo5foFXNi89kA==
+In-Reply-To: <20240209220752.388160-3-seanjc@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_18,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 phishscore=0
- spamscore=0 adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402090165
-X-Proofpoint-GUID: BwBz77vBQK_ta7s46YbOE02rI5hx-ukT
-X-Proofpoint-ORIG-GUID: BwBz77vBQK_ta7s46YbOE02rI5hx-ukT
+Content-Transfer-Encoding: 7bit
 
-vdpasim_do_reset sets running to true, which is wrong, as it allows
-vdpasim_kick_vq to post work requests before the device has been
-configured.  To fix, do not set running until VIRTIO_CONFIG_S_DRIVER_OK
-is set.
+On 09.02.24 23:07, Sean Christopherson wrote:
+> Bite the bullet, and open code all direct reads of DR6 and DR7.  KVM
+> currently has a mix of open coded accesses and calls to kvm_get_dr(),
+> which is confusing and ugly because there's no rhyme or reason as to why
+> any particular chunk of code uses kvm_get_dr().
+> 
+> The obvious alternative is to force all accesses through kvm_get_dr(),
+> but it's not at all clear that doing so would be a net positive, e.g. even
+> if KVM ends up wanting/needing to force all reads through a common helper,
+> e.g. to play caching games, the cost of reverting this change is likely
+> lower than the ongoing cost of maintaining weird, arbitrary code.
+> 
+> No functional change intended.
+> 
+> Cc: Mathias Krause <minipli@grsecurity.net>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/smm.c        | 8 ++++----
+>  arch/x86/kvm/vmx/nested.c | 2 +-
+>  arch/x86/kvm/x86.c        | 2 +-
+>  3 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/smm.c b/arch/x86/kvm/smm.c
+> index 19a7a0a31953..d06d43d8d2aa 100644
+> --- a/arch/x86/kvm/smm.c
+> +++ b/arch/x86/kvm/smm.c
+> @@ -194,8 +194,8 @@ static void enter_smm_save_state_32(struct kvm_vcpu *vcpu,
+>  	for (i = 0; i < 8; i++)
+>  		smram->gprs[i] = kvm_register_read_raw(vcpu, i);
+>  
+> -	smram->dr6     = (u32)kvm_get_dr(vcpu, 6);
+> -	smram->dr7     = (u32)kvm_get_dr(vcpu, 7);
+> +	smram->dr6     = (u32)vcpu->arch.dr6;
+> +	smram->dr7     = (u32)vcpu->arch.dr7;
+>  
+>  	enter_smm_save_seg_32(vcpu, &smram->tr, &smram->tr_sel, VCPU_SREG_TR);
+>  	enter_smm_save_seg_32(vcpu, &smram->ldtr, &smram->ldtr_sel, VCPU_SREG_LDTR);
+> @@ -236,8 +236,8 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu,
+>  	smram->rip    = kvm_rip_read(vcpu);
+>  	smram->rflags = kvm_get_rflags(vcpu);
+>  
+> -	smram->dr6 = kvm_get_dr(vcpu, 6);
+> -	smram->dr7 = kvm_get_dr(vcpu, 7);
+> +	smram->dr6 = vcpu->arch.dr6;
+> +	smram->dr7 = vcpu->arch.dr7;
+>  
+>  	smram->cr0 = kvm_read_cr0(vcpu);
+>  	smram->cr3 = kvm_read_cr3(vcpu);
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 28d1088a1770..d05ddf751491 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -4433,7 +4433,7 @@ static void sync_vmcs02_to_vmcs12(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12)
+>  		(vm_entry_controls_get(to_vmx(vcpu)) & VM_ENTRY_IA32E_MODE);
+>  
+>  	if (vmcs12->vm_exit_controls & VM_EXIT_SAVE_DEBUG_CONTROLS)
+> -		vmcs12->guest_dr7 = kvm_get_dr(vcpu, 7);
+> +		vmcs12->guest_dr7 = vcpu->arch.dr7;
+>  
+>  	if (vmcs12->vm_exit_controls & VM_EXIT_SAVE_IA32_EFER)
+>  		vmcs12->guest_ia32_efer = vcpu->arch.efer;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index bfffc13f91e6..5a08d895bde6 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -5510,7 +5510,7 @@ static void kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
+>  	for (i = 0; i < ARRAY_SIZE(vcpu->arch.db); i++)
+>  		dbgregs->db[i] = vcpu->arch.db[i];
+>  
+> -	dbgregs->dr6 = kvm_get_dr(vcpu, 6);
+> +	dbgregs->dr6 = vcpu->arch.dr6;
+>  	dbgregs->dr7 = vcpu->arch.dr7;
+>  }
+>  
 
-Fixes: 0c89e2a3a9d0 ("vdpa_sim: Implement suspend vdpa op")
-Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-Reviewed-by: Eugenio Pérez <eperezma@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Reviewed-by: Mathias Krause <minipli@grsecurity.net>
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index be2925d0d283..18584ce70bf0 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -160,7 +160,7 @@ static void vdpasim_do_reset(struct vdpasim *vdpasim, u32 flags)
- 		}
- 	}
- 
--	vdpasim->running = true;
-+	vdpasim->running = false;
- 	spin_unlock(&vdpasim->iommu_lock);
- 
- 	vdpasim->features = 0;
-@@ -483,6 +483,7 @@ static void vdpasim_set_status(struct vdpa_device *vdpa, u8 status)
- 
- 	mutex_lock(&vdpasim->mutex);
- 	vdpasim->status = status;
-+	vdpasim->running = (status & VIRTIO_CONFIG_S_DRIVER_OK) != 0;
- 	mutex_unlock(&vdpasim->mutex);
- }
- 
--- 
-2.39.3
-
+Nice cleanup. Thanks a lot, Sean!
 
