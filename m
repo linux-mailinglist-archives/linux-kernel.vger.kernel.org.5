@@ -1,130 +1,129 @@
-Return-Path: <linux-kernel+bounces-59518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F000784F846
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62D0A84F84A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:14:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C93F1C236A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:13:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9627B1C235F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2394F6F086;
-	Fri,  9 Feb 2024 15:13:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5106F085;
+	Fri,  9 Feb 2024 15:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="a4P2MYPi"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Sa2vrYdZ"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22A96BFB6
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 15:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C1569DE5
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 15:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707491597; cv=none; b=OQ8LETfGqbjOwniA8ddJsozq5LdLbXI9yQldn8xVYTUZdye9S1x5OKFYplNUhu5LZvZmVQ0CxPQycwrPGw2eKwkmjtBW1ybKohWiw92fWsNZGBvtLkdBrl5iqGFk18DwHPghWInGwwLOgLH+n7LgYQIGp9IDHj0saUQbTtgQlWU=
+	t=1707491665; cv=none; b=EySTVEWtNCsahsf3po8TIayGpDSEabjfVGwKWYhY4qvwyL5Hw55YUdsx5oAaPlT0tw3Lq7n40xUVfV9sR2hxsBRfZ3L3f+ergUAbQb8hiFiga6F0mNcLDGMBs5l0TbOnEwN0aMYCydP90F4VwJQAaNx/N3kn7xoa7+vYliUjb4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707491597; c=relaxed/simple;
-	bh=Bug3A6ZbFfpsIwrLaT1Ik2CEiJjUByjmzkWryqfXzuU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=qRNQMTPGV4L38cUu7PSg3Y52hDaPIGuiB+fAuLIjZjkmZxjna3zFNxVpSWc1QfrT6rKmSDuCRGxHhXrD6YNn2WCuqBXWXV/b3fLGa9ORw3xtpb0ueRu9pAARq6ZdeYIG7cK0JA/kAu54OxHG6gAWhfa0GdJEuRok3SGDIj+6vyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=a4P2MYPi; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-297040eb356so1014441a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 07:13:15 -0800 (PST)
+	s=arc-20240116; t=1707491665; c=relaxed/simple;
+	bh=JnQWgOa5RsKDLidoGwqHhBQEnjeKf7MhKMdfRKVLKYE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=JCfx0gFx7aMmYnMqEIKvJ80gEFW1fxEl/2UGOMyXWIlef2zdePV0BhJjzRsyS6JVtfMOedB8YXSx5fc1rDP47aV/lrpmz2uNEhGSVj3L8Ele9WU71b+IKpFrVhlyL5gHPQGdC93xSNxSGEUc69s1g97vG0Adi8s/XVBgNKQH5nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Sa2vrYdZ; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so1524037a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 07:14:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707491595; x=1708096395; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cgGQ0Ler+WUl/NFsNP3EozyAO4eJj17xtfp/FQdoBaA=;
-        b=a4P2MYPii9U9dFha8muQhSlibGJcHS/HEg12A2KEcxd87hPxPxaZweI61ECvVY/IuK
-         H99IVJxKwz9CLA/PutPa/WcXTKubDkuvaH5gJcaFtahk/lsxTIYFeoKRRJLw4k3Hjqz0
-         S9g6yC1QlU8SFD/ga4KhjizWGcBCWTvNxpROC2dv/Cm6r5iQFGWaXo9MppRzx3y3Vf5L
-         vX6kXt7PG43n6H2yptbJXu1+IqwGWmkKqCJgvGI8OTN6+TQIvtVoM/MyWyST7ILjhV8c
-         w94xfiOtmyJxEWOYolOVEGp4bcmTXtBYlJWWxnFnypN/P8gw0b9IRoE5SJOz7m08pdsJ
-         qVSg==
+        d=linaro.org; s=google; t=1707491660; x=1708096460; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ssqSDwTHA+Cg2ijKB5pjXoS992iHVcyLNIc1aZBV/UQ=;
+        b=Sa2vrYdZk0+AltfAYcoM1y+ILrLWI8DtlALn953YzoZhLvqTzkZaMQh0HBGsYp2k8C
+         6lLVJr5v8qdupSDvImDp32HuFjTINoBsYdxIYVvCbPAanQgzGlnSfL2ZzccCKbsnd1vx
+         Kq3ej4cPygn5PbqKDviPcbFFubK93WSHzCyYOoRHrP0eD2DZAImM4TGmIkCJVv87wCHz
+         DtWyVT/6b50f+ewHv4hG0dlGUYjxz67wJTjw9EnqbZDDrTGoGQ7a4pc9LdN6xPNgpovu
+         QczPq1LQgPYuCj/gHMjo+b0vEkjTqkRpVCq4j1M+eSVa2+TAf2g9WfNs5jaY5sf8q+Kn
+         ooiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707491595; x=1708096395;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cgGQ0Ler+WUl/NFsNP3EozyAO4eJj17xtfp/FQdoBaA=;
-        b=K7M8WdI5aT5ochLS4ysEV5UJ/sb5skfHrOEpiHLq6MdehguYoKPyuk7Tpxnw2jDJVa
-         rYXtMM1ILpoht9ifFDN6JT/QWCJQU902wdzVb4A6r1dShQsKDRvQYeS75ppoez32bEcg
-         FMrhRz6zkq4+NL5jjSLA3Oya7GJ89dlgol5oUH5xI+XvZNwqzxZx4CkWHTS3CXvjiVck
-         B8jrbUY94opgg0A2zTeuxgVI0KxbRSR5W6wfpbBSZR0PPimHBi9t6H65oxRoswruuaRh
-         PVbDXDnzDGIhzsefAmd6xb+JXmtlWSSGV3gFOTReavnRO5YSPWRPvQKlhkskB8+xT46H
-         gpmg==
-X-Forwarded-Encrypted: i=1; AJvYcCVUsnjjK0oBRXyg/9eyR/p3TA1uCqf49Na5gABjZCKpeubLs0GApkUxvSID5L+ItG6XEoq4fyAEbRwsmXVEbI/roV/6WrREanORTLzc
-X-Gm-Message-State: AOJu0YyrAdkNz5F3d7b1ZiFdzihZV20xDuXggBJWsltlLYpM9hQ9lR1Y
-	wtqod6csDZULi6ikzy3+EasMlG6YF2N1k1H0HhKJI45xkRBzaToC/wqdhQVJk0uqSBDSf3V7dWJ
-	icQ==
-X-Google-Smtp-Source: AGHT+IGnxQ9hUZq2I0deBQMbaG7FpVg+3DEJAeDot7uWCeqlyGYIqcr+64bku6EdOLuv7fFuPPSWAvWzMMw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:2781:b0:296:aa24:8bc3 with SMTP id
- pw1-20020a17090b278100b00296aa248bc3mr23980pjb.5.1707491595319; Fri, 09 Feb
- 2024 07:13:15 -0800 (PST)
-Date: Fri, 9 Feb 2024 07:13:13 -0800
-In-Reply-To: <84d62953-527d-4837-acf8-315391f4b225@arm.com>
+        d=1e100.net; s=20230601; t=1707491660; x=1708096460;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ssqSDwTHA+Cg2ijKB5pjXoS992iHVcyLNIc1aZBV/UQ=;
+        b=BC3ILEjmTViCSw0KI1sVVIOjlMlTGakfVfupHv80/XghQPDOnEFCRwXu0erbPuZ3Ae
+         GPjWSJeuR+ggBFOTEptoHgVhqqNJNZ8F/nPbTGS/G2AWFfGMOQiwJUAXMvp1UEhYOfJG
+         1J5vu1BTtAihXaCfdu2JSnbQmecP/NYHKuL8mJrIXKQbq2ngFfvTaTQxLTVuMdogCnhX
+         qXzThwHpGfY9DNh8PqZI8Ktv9GEI0LZvEo5QZWwds9mGaPH+PuAi/jSP9VmIMqzDp6oj
+         XgBp3Nw3yBaBFZL9d6AZnABYAZ2Bn0hTqqdrWuNX7OcaBrACzw2QrQWuEq8lgCsLyrXS
+         7MJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUSiMF+i4ifcgKmjpnmFRTJoNWRgh49u9YSVt9LT/O0zcO+LRPzU5W9XrfctQfCsM58LanZ6+IyUl6snHZacUAHRnKEOzG/+OQyfalu
+X-Gm-Message-State: AOJu0YzKvm0K154tEZQQY+mOVEoBj6ZHs27FEsX+uSkGyE/AWW39qZlv
+	EQr2E1bUZBfKibO+nCEYk5VLI1pw8gwVo0CXQBuV9GxSrBS/4l24b3bQn45IRFQ=
+X-Google-Smtp-Source: AGHT+IHu9PVQg/r3sWuJHx1k2qkljpt+JWg2pF6vB0xvRGdbHye6OBmqU3LXCloNZ8Tem8RH0C6CTA==
+X-Received: by 2002:a05:6402:5172:b0:560:1c4:cb31 with SMTP id d18-20020a056402517200b0056001c4cb31mr1769965ede.17.1707491660328;
+        Fri, 09 Feb 2024 07:14:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXmZi9YsbyFKpWiZF4EXJr6enGQRn8co107vnc7hb4OYlCmiE4G/sQCGNg3B0WgqNPmQw8MkwSQGzK8cWdouIv5MedArdXKISw9tRbzTsTEnL47/a7m8HQMskWg06/CLDm5qGKJT/hSfzHG0PRDOevZjKwaeDh4s7FUmbTa3a4KWyg6A6uF7I1fRbsDE1anVtXsYiGNu8x8GjqoYbN27J3ZlipLfx1tKxSzqudwO7xonA7Y98S62U6ig6zQundfkGpJKNAQNnxcfr3c0xVov38Vh7r4iHt3UFhcYBvGYC8euYAz0KHx14VK43Z/Wk1t2LJXYe6Pt/arKH3+b7XA6rwNzlUzQmDLhm1mRcTFYGpiuHz80ShKE/lmk1GANu8hRziZP4+a2Q==
+Received: from [127.0.1.1] ([62.231.97.49])
+        by smtp.gmail.com with ESMTPSA id k6-20020a05640212c600b0055ef56f4575sm860240edx.39.2024.02.09.07.14.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 07:14:19 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH 0/2] phy: qcom: eusb2-repeater: Add support for SMB2360
+Date: Fri, 09 Feb 2024 17:14:08 +0200
+Message-Id: <20240209-phy-qualcomm-eusb2-repeater-smb2360-v1-0-af2ca4d95a67@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231016115028.996656-1-michael.roth@amd.com> <20231016115028.996656-5-michael.roth@amd.com>
- <e7125fcb-52b1-4942-9ae7-c85049e92e5c@arm.com> <ZcY2VRsRd03UQdF7@google.com> <84d62953-527d-4837-acf8-315391f4b225@arm.com>
-Message-ID: <ZcZBCdTA2kBoSeL8@google.com>
-Subject: Re: [PATCH RFC gmem v1 4/8] KVM: x86: Add gmem hook for invalidating memory
-From: Sean Christopherson <seanjc@google.com>
-To: Steven Price <steven.price@arm.com>
-Cc: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, "tabba@google.com" <tabba@google.com>, linux-coco@lists.linux.dev, 
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	pbonzini@redhat.com, isaku.yamahata@intel.com, ackerleytng@google.com, 
-	vbabka@suse.cz, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	jroedel@suse.de, pankaj.gupta@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEBBxmUC/x2NywrCMBAAf6Xk7EKykSL+injIY2sCSVp3jSil/
+ 27wOHOY2ZUQZxJ1nXbF9M6S1zbAnCYVkmsPghwHK9RojUGELX3h2V0Ja61AXTwC00buRQxSPdp
+ Zg9NLnHW0FwxnNUreCYFn10IardZLGXJjWvLnv77dj+MHSpZdtIoAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=674; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=JnQWgOa5RsKDLidoGwqHhBQEnjeKf7MhKMdfRKVLKYE=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlxkFCjPFNGqQEAHDMm8un4UpzIPoMi/I8tkss3
+ P6g/EWAxs2JAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZcZBQgAKCRAbX0TJAJUV
+ VkwJEAC5puaTIct3iYSEkrfTs/4Q04IUUS2TENsfwEEq39VB0Znx7YbU4aMr68tgNt4eVTLtRy+
+ aCqGdYGN1TCAHHn4VutMZLuh2tbzKwTtWUga8XGCDknU9hdZSrmiSI8z69eg8Qda4AW0CVWWhtA
+ 6RpCH/uRyoaV+M0pZQZOvnRn2O9enAwM52BCryNx+NyyZHUGa8E7+fYPuYe89oPUlE7MB2XRjkE
+ w97PvUNwRMJabXmdbTcvBwZblyP1x4Vi+nBWs/4AjEEZ7IAbeoS27AG+C3gp020VCS13hTWuOfP
+ d8JkrxTMB73pvnSXcsEMvo9fL6l/98LPLQon/a5XYuNxE0AaYXdB0trdS6WA4PzYwWeTfZbagyI
+ JCEtBTIA06tjEYZknf+QyLL9feXyLczCSrZRgnimIp64uWobxZbIeQ7jSMvRY4WGniBXZgAUTBL
+ 2PtvRlPGUlmbC6aYl1ZzavmmDDtzwOj36q5raxkTPcmrmkMlnUd2Orn33/1hcsIx1ngBS7ftbfh
+ BelVrvQUDjj7Y98Zz1UYsF7c9lpsXjP3DHYqOz8Ko2yn8M+zryURDlTQs0T140stp7g+kPq/dAA
+ e+AzKiU8zAxa3hGhnOEoVL1m6bpJMbkKabmdJerSmx9j88zxyPOQclHNBmS/MkKNIJj4B6v5RWl
+ 5nkQ1urMr/baffQ==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-On Fri, Feb 09, 2024, Steven Price wrote:
-> >> One option that I've considered is to implement a seperate CCA ioctl to
-> >> notify KVM whether the memory should be mapped protected.
-> > 
-> > That's what KVM_SET_MEMORY_ATTRIBUTES+KVM_MEMORY_ATTRIBUTE_PRIVATE is for, no?
-> 
-> Sorry, I really didn't explain that well. Yes effectively this is the
-> attribute flag, but there's corner cases for destruction of the VM. My
-> thought was that if the VMM wanted to tear down part of the protected
-> range (without making it shared) then a separate ioctl would be needed
-> to notify KVM of the unmap.
+This patchset adds support for the eUSB2 repeater provided
+by the SMB2360 PMICs.
 
-No new uAPI should be needed, because the only scenario time a benign VMM should
-do this is if the guest also knows the memory is being removed, in which case
-PUNCH_HOLE will suffice.
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Abel Vesa (2):
+      dt-bindings: phy: qcom,snps-eusb2-repeater: Add compatible for SMB2360
+      phy: qualcomm: phy-qcom-eusb2-repeater: Add support for SMB2360
 
-> >> This 'solves' the problem nicely except for the case where the VMM
-> >> deliberately punches holes in memory which the guest is using.
-> > 
-> > I don't see what problem there is to solve in this case.  PUNCH_HOLE is destructive,
-> > so don't do that.
-> 
-> A well behaving VMM wouldn't PUNCH_HOLE when the guest is using it, but
-> my concern here is a VMM which is trying to break the host. In this case
-> either the PUNCH_HOLE needs to fail, or we actually need to recover the
-> memory from the guest (effectively killing the guest in the process).
+ .../bindings/phy/qcom,snps-eusb2-repeater.yaml          |  1 +
+ drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c          | 17 +++++++++++++++++
+ 2 files changed, 18 insertions(+)
+---
+base-commit: 445a555e0623387fa9b94e68e61681717e70200a
+change-id: 20231122-phy-qualcomm-eusb2-repeater-smb2360-a0fd60d382c4
 
-The latter.  IIRC, we talked about this exact case somewhere in the hour-long
-rambling discussion on guest_memfd at PUCK[1].  And we've definitely discussed
-this multiple times on-list, though I don't know that there is a single thread
-that captures the entire plan.
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
-The TL;DR is that gmem will invoke an arch hook for every "struct kvm_gmem"
-instance that's attached to a given guest_memfd inode when a page is being fully
-removed, i.e. when a page is being freed back to the normal memory pool.  Something
-like this proposed SNP patch[2].
-
-Mike, do have WIP patches you can share?
-
-[1] https://drive.google.com/corp/drive/folders/116YTH1h9yBZmjqeJc03cV4_AhSe-VBkc?resourcekey=0-sOGeFEUi60-znJJmZBsTHQ
-[2] https://lore.kernel.org/all/20231230172351.574091-30-michael.roth@amd.com
 
