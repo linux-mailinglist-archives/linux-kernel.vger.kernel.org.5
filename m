@@ -1,94 +1,106 @@
-Return-Path: <linux-kernel+bounces-59919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22B0584FD53
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:05:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98D0B84FD55
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:09:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6EDEB25A97
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:05:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58F86286BD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A295F85C58;
-	Fri,  9 Feb 2024 20:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF018613E;
+	Fri,  9 Feb 2024 20:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vPT/xaDL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="O8MzgYqL"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E591283CA6
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:05:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197D1364DA;
+	Fri,  9 Feb 2024 20:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707509149; cv=none; b=OBNrIC4m6b9dFT+mmsOtDIfrAYrjYrSyk8VrGNXKsChkpmUcZqI5IbxbsUE2iJTBeMH4Be0IeMaWI2fh9X8wojjjJ3p2hYlpG+Xx84hRqUq1YHF8OZeGSfBXYLIIsRzLt80hcTPhdPuKH/KTwnbeH61r55whfqKeCfcTKdcBw+Q=
+	t=1707509376; cv=none; b=MSnFBLIgWoko0bwZiauC76/pBSW/be1jn1oqxBETzURXzHWI9kvQeY4iS5TENmqIab+tMpzGBJWd29Tw2fe5iF+n2Q2Hwn6Qj4dZYGqXyNFV4TPHeDZcRACvzEWEAaB1GbwGmU1Zt/mo+OEUO9AXCGBcg6dbb2vCEQRv2ECxIO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707509149; c=relaxed/simple;
-	bh=h8vMaK0XmFrUac9t64uAU7bBk89wrRc7eBHqG+ClLZc=;
+	s=arc-20240116; t=1707509376; c=relaxed/simple;
+	bh=avRF5KuBWc3ma8rB/3veb7AOZ1g3jgcb+O6RW9gVQRw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IlGpCrBzqPEiiEr4unw6jXS8GBRx/xiZ/Um6ILxPYvMHf8wc+6mr57ByWBfWWrOz+k7bsYBiU8J3VuixylP4kwES73fLpg7FSnRKFMpdL4YZtFGbFbh6wZChmu+eWW8hWrVSdXdmRimsr6Gq98UchoxrmV0bCtYHbu9gDWX5JRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vPT/xaDL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E191EC433C7;
-	Fri,  9 Feb 2024 20:05:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707509148;
-	bh=h8vMaK0XmFrUac9t64uAU7bBk89wrRc7eBHqG+ClLZc=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=pNLsWhypOBdgHCiuR1qgU4OKxcW3UmXoOsOi+ZDSG2tZ+vw7D3gvgtmFtaBgF6Rf3wDFlSNbeJkelqH+8d9KVZ0E1O3V7Y7TKBxOBMK8cC0UhhSptrJpL4i17yFd4vqfuYtFsVVbB0hsu7lw0rHouP7eqRHAtEsHkBQDGAouUpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=O8MzgYqL; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0242A40E01A9;
+	Fri,  9 Feb 2024 20:09:33 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id lwmklwoJTMGe; Fri,  9 Feb 2024 20:09:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707509369; bh=wVv1Ryzvn+UsKu2wdcKEViTQeQ4mNlo6bgwO9G+cMD8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vPT/xaDLXKvrzNbLoIhXl1A88RQABWXztDolIEj66i6t3WOOelzjqhZCsEhiWURSa
-	 Z8bDm2cnrCyT6CLAcS1aGNTBS0QDUqX0Q3RTy9aYkNXaA7KMaRz/DNSJn06NzoImfX
-	 fRmaRG7Tr+7f4yGoIbPkqzhWyU99rpBUIc5l28XQh2UZzzBpsgkE3qzi57oa6IVMfg
-	 5xVP2VWctqh/Va3evEpcVlenNysKcxe3w7SHYYap+hGcetZtozkXz80WeXmvMcP8gC
-	 yXDRlgWPW0Wer6aWowRX3UdcDIQgtyOAtYvBlKFCQhY9iIo0MUbAyaaAeO4G1ernMi
-	 iPK/htcgFz8yQ==
-Date: Fri, 9 Feb 2024 20:05:45 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regmap: kunit: Ensure that changed bytes are actually
- different
-Message-ID: <ZcaFmYGClhpj82Xo@finisterre.sirena.org.uk>
-References: <20240209-regmap-kunit-random-change-v1-1-ad2d76757583@kernel.org>
+	b=O8MzgYqLLK+u+My7C/3fSo2r2Xd86Q/yrubXDhvZO8u1b/iUBew83qfndl4VJH2Dq
+	 nd0Gz472VVWfzX8T3+zvG97PeS5dIm7rkg/gpKqw8/f/VQVyMkNAgOwtWoP2wFv1/L
+	 3oklS0/SuyXfht6YoZMEhJRC9hkGHGw91kzPi3FCqfalaj2PMK6Vg5wjVdfofaldCm
+	 u0jfHVfeAU1FGDYz98zAlSiNAZqfYn1TwfLMwFL3esfKQqD8phwxItxzsT2ZacvJ4e
+	 TdaP6oYjdNj/ikWJ74l0NS31d1Dk3yVVdtMFYRFWr8jQU2inan37Yh3cKrr+i3huJD
+	 zyIxO85QgOj8M5/FqP58qaJKKR0nnBIlYRv2RSszuTpghyfHA5Azfq99WlObBLZ8e4
+	 WE/xHubqaACHlZpxh3BVxv4Vg/vatHbOswu1jXzUyfGHYHWhma+ixdkfhcjUIqLEc/
+	 5fuTvNRIM2n7BcfbWs6/+30xz/pP/tHJ+ugTK2qbE5P3FCPPY43IrJ8cPQL7nbUrQF
+	 ZtKGwHeUl+SfTysM/g0FB+1ELbwzFnNiApS1dz7dzAsz2LIElaC6y2qt2XT+ZUMX8J
+	 Qbg3Ne/w5kq3W5Qn70i2MmT3ozI3UI0lr2IJrb21qmoniTCPfsog0/R8Jo4W+yaKIO
+	 ChjyjjjSJMqoMR6eX69RgKp4=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BC6CE40E0192;
+	Fri,  9 Feb 2024 20:09:21 +0000 (UTC)
+Date: Fri, 9 Feb 2024 21:09:20 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Naik, Avadhut" <avadnaik@amd.com>
+Cc: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org,
+	linux-edac@vger.kernel.org, tony.luck@intel.com,
+	linux-kernel@vger.kernel.org, yazen.ghannam@amd.com,
+	Avadhut Naik <avadhut.naik@amd.com>
+Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
+ Records pool
+Message-ID: <20240209200920.GFZcaGcOr757W9O3IG@fat_crate.local>
+References: <20240207225632.159276-1-avadhut.naik@amd.com>
+ <20240207225632.159276-3-avadhut.naik@amd.com>
+ <8b4f8ec2-7534-4f77-b44f-6728c699ff64@intel.com>
+ <51255499-0b5d-45c6-9c72-f353bae83c0d@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="MPLZbVRzcCcKrRpc"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240209-regmap-kunit-random-change-v1-1-ad2d76757583@kernel.org>
-X-Cookie: You might have mail.
+In-Reply-To: <51255499-0b5d-45c6-9c72-f353bae83c0d@amd.com>
 
+On Fri, Feb 09, 2024 at 02:02:49PM -0600, Naik, Avadhut wrote:
+> Is it safe to assume that users will always want to increase the size
+> of the pool and not decrease it?
 
---MPLZbVRzcCcKrRpc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Why don't you make the gen pool size a function of the number of CPUs on
+the system and have it all work automagically?
 
-On Fri, Feb 09, 2024 at 08:02:27PM +0000, Mark Brown wrote:
-> During the cache sync test we verify that values we expect to have been
-> written only to the cache do not appear in the hardware. This works most
-> of the time but since we randomly generate both the original and new values
-> there is a low probability that these values may actually be the same.
-> Wrap get_random_bytes() to ensure that the values are different, it is
-> likely we will want a similar pattern for other tests in the future.
+Burdening the user with yet another cmdline switch is a bad idea. We
+have way too many as it is.
 
-Sorry, works better if you actally check stuff in.  v2 coming.
+This stuff should work out-of-the-box, without user intervention if
+possible. And it is possible in this case.
 
---MPLZbVRzcCcKrRpc
-Content-Type: application/pgp-signature; name="signature.asc"
+Thx.
 
------BEGIN PGP SIGNATURE-----
+-- 
+Regards/Gruss,
+    Boris.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXGhZgACgkQJNaLcl1U
-h9DqRgf9H0t80XKzFa/Ni4fG45mZdju+7l5m0P+V55E4q1pk4S2c0+dZ747WTYqC
-vwVvWktGMgrvWwOR9bjtFkblPNZthl1PggMKegFtEeYC1YRVjqwREGoS0qwscRst
-pPwYgND5caSEeZOHg7hHicMGI3rdUL3aUbrzCdzFQ80/WbTuTNRYqC6chPgT9f/o
-UJ/jBoInKjnC7qH8VEaQqC7+vViIga9SLV9tVcnrGGgxTaecrhShd9D5mob+UlvT
-fzg7f4zV4n2ECg4SD9gnax4yDN841bkISmlhj/mag1pX2zG0uDWcz03h27/f43EO
-PtMA0znmMOsNPHsblYUkZfN5cFsScA==
-=1VR1
------END PGP SIGNATURE-----
-
---MPLZbVRzcCcKrRpc--
+https://people.kernel.org/tglx/notes-about-netiquette
 
