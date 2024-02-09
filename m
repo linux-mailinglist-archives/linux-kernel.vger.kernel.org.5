@@ -1,336 +1,195 @@
-Return-Path: <linux-kernel+bounces-59754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC3A984FB4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:56:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FC6E84FB46
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:51:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA0F51C2519A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:55:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77DA8284BE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5070E7F482;
-	Fri,  9 Feb 2024 17:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161D37EF09;
+	Fri,  9 Feb 2024 17:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Zo15Dvmb"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="MuGV5Rbv"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2052.outbound.protection.outlook.com [40.107.96.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCAB69E16
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707501352; cv=none; b=uHBQ34pu9Ca8fRPqYqI/Jr41ORMWxUx3sdIJf4M2rrLBlKcxTlUgtkNl64UDbg/DBZ+RemlZyE+/i7sPGcbpsVh4G+v3Y2bFIsxAPeSMKeSOcBpeqGhF/HUP8x4prK6vQWx8o5Uny/NJKHyGWR7zmLGo+aLmwZXmRg9a8Wdpzpc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707501352; c=relaxed/simple;
-	bh=RBWJR1Eh8vuN0h9bGi/ckIjItfaKvIijP5GV8KpjA6g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LlyZ5YEtCJiXKZ0BPDby16n8iXC2FJKuDvaB6PfRkgBa9oYOF8SYs5eTL0hHV6Fx7DAg+xMsvmakTd/SPM8/ar85byURSZQijMPkhOOSWQyqD3rFYc8ZejtmRe5d81BWssSy+L/r9Lzq6eKDqAD/myxjdjEVlt7rFW65G+vVc/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Zo15Dvmb; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707500883;
-	bh=RBWJR1Eh8vuN0h9bGi/ckIjItfaKvIijP5GV8KpjA6g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Zo15DvmbhKiWZ3g8bViki4F8JhXeNxInsld4DiG5mZ0IqCItf+wHi/EIXVzsUat8N
-	 UwinPaIi/47rIjEz206GtBO2+FIV0+yztwGFp+NI251s+yIXXOTJH8WcaxRLRD2NLb
-	 5GqXvOHgN5yE9JzyU5Qhs7qrsEMK1Pzwf9KShPl/yKlA3RV1UHN7UGh2vbKwDkCUWJ
-	 3PHBtbTpY4hTt5BMUOLV3zome9GKFPsMeJvg1HmAHlug32EsGCbPpQf42OLJ6vudSC
-	 FUz54tiv6WZwAph5yi7v7Qzsw/akbPxnSDpr1WwL9lvuenH6d0lY+1Uex/l9Z2iO1t
-	 1UazI/8BYvrOA==
-Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: koike)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 50EEA37813B6;
-	Fri,  9 Feb 2024 17:47:59 +0000 (UTC)
-Message-ID: <ae4e612a-47d2-4190-8547-2c8dc13b2cd6@collabora.com>
-Date: Fri, 9 Feb 2024 14:47:56 -0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43BD67EF06
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707501107; cv=fail; b=LoCn/X5vgZvYzUil/j2CiBvks6c6XqoYTU7W7+YIBhFp6LIgExLnh2UNu/s80++VLSwX6ZZYf/ISKLuOiTWuInHR6x3VXd9upZWTfIc2tOXsXGf4vkupqMNjOAuLtLy6ha2FqUZ7IEdfCcFtL5aoTcwVVph+OHEL3YdRbT5MTZ8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707501107; c=relaxed/simple;
+	bh=f7V47JgTSl+0YU+ZLnIkYDqthlACCWtxy1J1s28V0DE=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=W/5d4r5uSbqpQq7Ftl9zHHd0z8OVxfw0Yz6EaRkTLtWdwqQ8xL/C+23WzzgKCC/vqld/d/Dpr+jrRWZFXEIzEDYgRPgej3+lgavRuOLJ+CvXVFgchgQVqyNt92UV0TlXDGrZqp137p4HSTkq15vu2xFVUH2396IVAdprr/RpriE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=MuGV5Rbv; arc=fail smtp.client-ip=40.107.96.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RWv++JbwbjKQUg9JOvGVtQgRpmdW17zB8YX1CT3VL0hDRrDfoBePSOFPsFZcbZB5h9vL3rPxTafNMzi2FNrfy2wvMpCscggyoMI1t5NXsyxs3JWDTi2R44SDjOBsMhPhfI/2xejuHokvlU3B4qYedqBFZ3kgNSA522kRLYJa7N7S/FCy6/b+VdJvRxCgyLl0/V/+bG5eJT/Fi33aTS2CfUIbFyjIkHsoqrvVMBJ1f0fIOjpXsoFfuRf/HJdZ5CyUZAApUCkmaFq2Q3OPAHY6p+rrFki9tEWnQ4QcJ1hkPh36VCihSv0euqi5j//pLRhjgL/6JabzYEI/BStYh4T3kQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FuNJ8aK48GjL0ddxA+KWQrNrtDnSWSaBGrXRTBj8TaI=;
+ b=QRrQKQaK6nhhMX2l/ePoCcX/Q5b6BeReLGHLwDYUb/yYB9SiPrMAMdlFGoSM6vogAw+tWuvG077QxD5nI+kqZDIOoNJcPyRxQ3+/uyvYWKsuAYmeAVRTd/y2CfArEDn1SdqHvvuFgWvjW9CKOOp2gFXZ5LEMOh/aqq8vqTf6xPCrrqGUkZNGlg/fDzbNTVFu8vO1M3cCJ/IGztO4HN97gBMduo4qec5/giFXpXR07CnxlF5X7jfGkUkFoQBbTOjy1gd5h+9kIVESsp/N6t1bE7hs1+IADmE8bcwPWcQiZA3t+lHL0qEkpJlx8EplDAlH29WdKbO/6XQ5var9zJypIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FuNJ8aK48GjL0ddxA+KWQrNrtDnSWSaBGrXRTBj8TaI=;
+ b=MuGV5RbvQKg9YKbBclJF4N4GVyB+GhsT41pqbAIl0qiI0iLshCpctg/kDzhOUP6+Y2jqKXImc1iLzC4Ht7EF0G6UVvU6PZJMWsoeV0ohw9et1ZcS4js159C9FhOPrVTb9gvTovhR8QdPqyCqoHuIxmeC4yxwHEyvMzDoFwWvTVA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+ by MW5PR12MB5597.namprd12.prod.outlook.com (2603:10b6:303:192::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Fri, 9 Feb
+ 2024 17:51:40 +0000
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::f44f:4aa:d49e:d055]) by BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::f44f:4aa:d49e:d055%7]) with mapi id 15.20.7292.010; Fri, 9 Feb 2024
+ 17:51:39 +0000
+Message-ID: <5e4670e5-acc8-adf3-2a3d-eb02db7ed990@amd.com>
+Date: Fri, 9 Feb 2024 11:51:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] crypto: ccp - Have it depend on AMD_IOMMU
+Content-Language: en-US
+To: Borislav Petkov <bp@alien8.de>, Ashish Kalra <ashish.kalra@amd.com>,
+ Michael Roth <michael.roth@amd.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240207204721.6189-1-bp@alien8.de>
+From: Tom Lendacky <thomas.lendacky@amd.com>
+In-Reply-To: <20240207204721.6189-1-bp@alien8.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN4PR0501CA0036.namprd05.prod.outlook.com
+ (2603:10b6:803:40::49) To BL1PR12MB5732.namprd12.prod.outlook.com
+ (2603:10b6:208:387::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] drm/ci: add tests on vkms
-To: Vignesh Raman <vignesh.raman@collabora.com>,
- dri-devel@lists.freedesktop.org
-Cc: hamohammed.sa@gmail.com, daniels@collabora.com,
- rodrigosiqueiramelo@gmail.com, david.heidelberg@collabora.com,
- guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
- linux-kernel@vger.kernel.org, melissa.srw@gmail.com, mairacanal@riseup.net,
- daniel@ffwll.ch
-References: <20240201065346.801038-1-vignesh.raman@collabora.com>
-Content-Language: en-US
-From: Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20240201065346.801038-1-vignesh.raman@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|MW5PR12MB5597:EE_
+X-MS-Office365-Filtering-Correlation-Id: f2f4fc7b-2bc6-4505-34ba-08dc2997c4a4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Rg4y7zLWAKhnDYKl2v5vrWuIKwEXS/0tcaExJChGIsHqOke/yVtazxwwpLrhTMivqGbaXd7FDirZc11qqMcHWnGzgBf7xXnhfBEjJ9pejGYcSlUGqRP+4sX+SxGjeDUDjzLyv2s4C2Wcv6FmxHTwuBWLRW5nkrLHUvAf8R9xAoq4ukCU/de1+A6LkIoXmz6u2/p16SltwLqDby1IkFYgwIxv7mKh+xNI5KXvgC0APlTNaW9KkzFh0eVePOuK/LybRrcUcfyXrS1KOyT4Zj1BPA8MG4fdeaMgRXU6dDAvFFSJhZHQboO/JlmQSLO70lap1WfLQyztKleX21SGeCQx0/M2tD85vA8V/DXoofph3ADwWV1hx3aoydK8daHSvs5twnitevvdy8bERkCqe/Zzo2O0eyJKIEQQfbMJw6tXf6sw6M/PxvrkLUhe8PD0b9N3/gIgfMiXyd0uL20qwr9mSlsUEKE480/wkl6/KtwpepHPJYayAHwolaw+bevdN6dlSmHi87VYgGzQRZHf5NLNHFTGmdqUsUhmknKIeMorSOGv3Odlt5wTNUl97yU0O/Cp
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(39860400002)(396003)(376002)(346002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(2616005)(26005)(31686004)(41300700001)(66476007)(6512007)(66946007)(4326008)(53546011)(36756003)(66556008)(83380400001)(6506007)(6486002)(110136005)(478600001)(316002)(38100700002)(6636002)(5660300002)(2906002)(86362001)(8676002)(31696002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QVYrSGVjRTRxa3N0akJhNGVjYnVWbi85N2E5djVWczNCU1lwWWhNN3JNTDBL?=
+ =?utf-8?B?ZytIUnBTY2ZlU0kzNmZOSGhkcTlJb1hienVkODBndTZ5OCtHUENrNlZ6cGZM?=
+ =?utf-8?B?RGVOVHJ2UEFhMTBhQnJ3eUEwazRXMG41K1J1Uld6SUNxTnBoeFMxaENqKy9a?=
+ =?utf-8?B?cjZJNHlHWnRJWnRNdTNJVUxaNSttZzYyZjlDM0lPQ0N2cGVNMVd5dEFNNVdO?=
+ =?utf-8?B?R0daWUY1eC9SK01tQVp5NnQ3UFVRWDV1VlAySWtYVkxQTXF0SCtseEpqTzBl?=
+ =?utf-8?B?czhXRnQ4d1RZRHp4T3dtN054U1lOTDQ0TWVLTE92aFE2Y1hqMlNzdC9GWkFU?=
+ =?utf-8?B?OGgzeGhqZ29veGFSaUo3NEVvcUNqSDI0SE8xQU1ET0NnYWc4MXhhWGNmMWFI?=
+ =?utf-8?B?a2hKdTlWNzBLbmtpeDA1d1ZxbkJkNVhtTFBLSlhVaVI0NDFKRWdxZ2JIZ2VI?=
+ =?utf-8?B?KzZjUThWL0JDZThhUXU0cUs3Rzk4M1UzMC91RmRoeDJtbzNCSjRySFNRVGJh?=
+ =?utf-8?B?VGlUemU0aFFaQUZGYzRwOTNnUnFueWErMXBKbmhabmFpS2tGUDl4d3BEWW42?=
+ =?utf-8?B?QXNBQXF5MHN6d2V6OWd3YVREQUR0S24rcytQMHlHUHhNQ0s4TFFtWThqcjRt?=
+ =?utf-8?B?Q2U5bzE1RjVJSm1lTDFWNTJMZnZVYjB4VU56aXFXWUVoWXI4QmVsNENKZ2h5?=
+ =?utf-8?B?Q2NGR0RRQ0g5U3ZUL3hCS2Nka3dQd2gvVnNxY3NQVW90N21iTWI4QzFhK3B1?=
+ =?utf-8?B?SUFMQVBzN0l2SHhwNUp0QVBCWklqTkVOc0pxMi84dEo5UklNaUp6eEUxQ09q?=
+ =?utf-8?B?dGhCbWJ2YXo2c2oxMUlNeW9XOFJzNC9sUzE1Y3IzdjkxWHNOZFpNKzV0OWpm?=
+ =?utf-8?B?VEFpUWpxOVRta1VPTCtrMUlWU2RSdWdXNGttajd2VUNURDROTEE5STNxVkRT?=
+ =?utf-8?B?MC9KSEVuU2luU1BHYjdrajJoQ1VMRTNOQXBvbTNiTGRXV2NrR0MzMG1yK0Ur?=
+ =?utf-8?B?c0JNRlFrNk0xeERuWTNkYjBCS2Y0b2RvUWVMTElpSFRwREJzMWtyUDRvN2x5?=
+ =?utf-8?B?TDN1UVc5MVVvWjg4a0hGYXdqSTIzay9yUm1pRnc0VS8xdzdjM0ZiOTEza0xz?=
+ =?utf-8?B?cnkzUCs2RzJTSUhtcDZXVmF3UEJMK0JrK24vbmF3cHBPU2ZNOUdDVTh5eTlX?=
+ =?utf-8?B?MHMxUWRrd2RqVi9PTWpCVHVmZHVCZi9UMVFsOFM5UWdHcWtBaTR3c3gvamVh?=
+ =?utf-8?B?SDFQbXhuOURYK1M4ekZMaTZUakduQ21FS0N6dEExQzJ6ZmRDd3IrQWU1ajlJ?=
+ =?utf-8?B?WUowRi9UajFZdFU5U1BDa0ZBMzUzZThWRHVIU0tMMUFZYTdCL1JPeHh3eUpD?=
+ =?utf-8?B?b1A0cDRWQkNpWG9iWWJRM0RKSmdDQnRPU1QvSi9aa1VHMmxPUUN6VHpFZVBv?=
+ =?utf-8?B?blJwbmJEdm4zbVByblo2dVNoaVhTcWN5UDVubHlTM3lXM3IvQXNJM21INFVk?=
+ =?utf-8?B?SjlsVWphOC9sRzNBaDgwRlF0U1d3OTVFUXBCak5iU2VtVXd4TzA2VExyb1E4?=
+ =?utf-8?B?WHZ0THV3MStXWGplYTRLbEg1elN4YXJhU3puVFZPL2o0bjc0TCs5Q1M4b1JG?=
+ =?utf-8?B?N3E0cG1KSktLdW9uVHgxbk14MTFKZmZwZllNWnFnLzFpT3JRb1hYRHZzdnVw?=
+ =?utf-8?B?Y0IzVGdFUW1pZWh1emdPZ2FrRHJOWHN1NVRhRHVSMDNDZ2l5dGV1ZHkxd0tv?=
+ =?utf-8?B?ZHBMMUJaNDhpeTBTVWFkRDBTV2lxRTFqL0ROT0hLK3YrZ0ljNUR0Wi9YYmZE?=
+ =?utf-8?B?cVczMTd2NDFDdkFsR2VWU0R0NHFZcEY0cW1qS0l0ZUxPNUhHOUUrUTNhQTJR?=
+ =?utf-8?B?VU1nclNsbDZqUWk5N1B5Q21kQnFIRUo2bzNBUUJjR2c1R2ZuWXpnaEZadHhz?=
+ =?utf-8?B?cHhxYzNoVVVIZTNwc1RsN0IzalB6dmo3aGprS21iK1VqQWFia0oxNmpTTllN?=
+ =?utf-8?B?bVRGdlVUSlRBVWUyQ3Z0MVdlMlI1a0ordzBtVU52UmM5NVBoUS8xbmgxNHNt?=
+ =?utf-8?B?ZnMxQ3BXZlpUWEFQay81NkYzMm9TcytkNmMxblJNMzdGQkdlZUt2V29hT0h3?=
+ =?utf-8?Q?o1vK7mBzbaUyb9YUleGBqGOHv?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2f4fc7b-2bc6-4505-34ba-08dc2997c4a4
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 17:51:39.6973
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aFtsg3/VQ7OpWJ4Yk6NZirNH8D3OcfEG1B+FM/17U5LfS7LdGhTY51a8CTj0/cfWYQHMsUw8c4MExAdPnB4xUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR12MB5597
 
-
-
-On 01/02/2024 03:53, Vignesh Raman wrote:
-> Add job that runs igt on top of vkms.
+On 2/7/24 14:47, Borislav Petkov wrote:
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
 > 
-> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
-> Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> Tested-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> sev-dev.c calls code in the AMD IOMMU now but that can't really work if
+> latter is not enabled in Kconfig:
+> 
+>    ld: vmlinux.o: in function `__sev_firmware_shutdown.isra.0':
+>    sev-dev.c:(.text+0x2501f0e): undefined reference to `amd_iommu_snp_disable'
+>    ld: vmlinux.o: in function `snp_rmptable_init':
+>    sev.c:(.init.text+0x26260): undefined reference to `amd_iommu_snp_en'
+>    make[2]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 1
+>    make: *** [Makefile:240: __sub-make] Error 2
+> 
+> Fix those deps.
+> 
+> Fixes: f366a8dac1b8 ("iommu/amd: Clean up RMP entries for IOMMU pages during SNP shutdown")
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 > ---
+>   drivers/crypto/ccp/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> v2:
-> - do not mv modules to /lib/modules in the job definition, leave it to
->    crosvm-runner.sh
-> 
-> v3:
-> - Enable CONFIG_DRM_VKMS in x86_64.config and update xfails
-> 
-> v3:
-> - Build vkms as module and test with latest IGT.
->    This patch depends on https://lore.kernel.org/dri-devel/20240130150340.687871-1-vignesh.raman@collabora.com/
-> 
+> diff --git a/drivers/crypto/ccp/Kconfig b/drivers/crypto/ccp/Kconfig
+> index 32268e239bf1..f394e45e11ab 100644
+> --- a/drivers/crypto/ccp/Kconfig
+> +++ b/drivers/crypto/ccp/Kconfig
+> @@ -38,7 +38,7 @@ config CRYPTO_DEV_CCP_CRYPTO
+>   config CRYPTO_DEV_SP_PSP
+>   	bool "Platform Security Processor (PSP) device"
+>   	default y
+> -	depends on CRYPTO_DEV_CCP_DD && X86_64
+> +	depends on CRYPTO_DEV_CCP_DD && X86_64 && AMD_IOMMU
 
-Do you have a link of a pipeline with this job passing?
+Or should the ifdef around amd_iommu_snp_disable() in 
+include/linux/amd-iommu.h instead be:
 
-Thanks
-Helen
+#if defined(CONFIG_AMD_IOMMU) && defined(CONFIG_KVM_AMD_SEV)
 
-> ---
->   MAINTAINERS                                   |  1 +
->   drivers/gpu/drm/ci/build.sh                   |  1 -
->   drivers/gpu/drm/ci/gitlab-ci.yml              |  2 +-
->   drivers/gpu/drm/ci/igt_runner.sh              |  6 ++--
->   drivers/gpu/drm/ci/image-tags.yml             |  2 +-
->   drivers/gpu/drm/ci/test.yml                   | 24 +++++++++++++-
->   drivers/gpu/drm/ci/x86_64.config              |  1 +
->   .../drm/ci/xfails/virtio_gpu-none-fails.txt   |  1 -
->   drivers/gpu/drm/ci/xfails/vkms-none-fails.txt | 32 +++++++++++++++++++
->   .../gpu/drm/ci/xfails/vkms-none-flakes.txt    | 19 +++++++++++
->   drivers/gpu/drm/ci/xfails/vkms-none-skips.txt | 16 ++++++++++
->   11 files changed, 97 insertions(+), 8 deletions(-)
->   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index bcdc17d1aa26..09310a6f4b5f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6923,6 +6923,7 @@ L:	dri-devel@lists.freedesktop.org
->   S:	Maintained
->   T:	git git://anongit.freedesktop.org/drm/drm-misc
->   F:	Documentation/gpu/vkms.rst
-> +F:	drivers/gpu/drm/ci/xfails/vkms*
->   F:	drivers/gpu/drm/vkms/
->   
->   DRM DRIVER FOR VIRTUALBOX VIRTUAL GPU
-> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
-> index 331a61e0d25a..2e089e03f061 100644
-> --- a/drivers/gpu/drm/ci/build.sh
-> +++ b/drivers/gpu/drm/ci/build.sh
-> @@ -152,7 +152,6 @@ fi
->   
->   mkdir -p artifacts/install/lib
->   mv install/* artifacts/install/.
-> -rm -rf artifacts/install/modules
->   ln -s common artifacts/install/ci-common
->   cp .config artifacts/${CI_JOB_NAME}_config
->   
-> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
-> index e2b021616a8e..c69fb6af4cf8 100644
-> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
-> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
-> @@ -107,7 +107,7 @@ stages:
->     - meson
->     - msm
->     - rockchip
-> -  - virtio-gpu
-> +  - software-driver
->   
->   # YAML anchors for rule conditions
->   # --------------------------------
-> diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
-> index 2fd09b9b7cf6..3c7f000805e5 100755
-> --- a/drivers/gpu/drm/ci/igt_runner.sh
-> +++ b/drivers/gpu/drm/ci/igt_runner.sh
-> @@ -20,10 +20,10 @@ cat /sys/kernel/debug/dri/*/state
->   set -e
->   
->   case "$DRIVER_NAME" in
-> -    amdgpu)
-> +    amdgpu|vkms)
->           # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
-> -        mv /install/modules/lib/modules/* /lib/modules/.
-> -        modprobe amdgpu
-> +        mv /install/modules/lib/modules/* /lib/modules/. || true
-> +        modprobe --first-time $DRIVER_NAME
->           ;;
->   esac
->   
-> diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
-> index cf07c3e09b8c..bf861ab8b9c2 100644
-> --- a/drivers/gpu/drm/ci/image-tags.yml
-> +++ b/drivers/gpu/drm/ci/image-tags.yml
-> @@ -4,7 +4,7 @@ variables:
->      DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
->   
->      DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
-> -   DEBIAN_BUILD_TAG: "2023-10-08-config"
-> +   DEBIAN_BUILD_TAG: "2024-01-29-vkms"
->   
->      KERNEL_ROOTFS_TAG: "2023-10-06-amd"
->      PKG_REPO_REV: "67f2c46b"
-> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
-> index 8ab8a8f56d6a..58c3cf4b18e0 100644
-> --- a/drivers/gpu/drm/ci/test.yml
-> +++ b/drivers/gpu/drm/ci/test.yml
-> @@ -399,7 +399,7 @@ meson:g12b-display:
->       DRIVER_NAME: meson
->   
->   virtio_gpu:none:
-> -  stage: virtio-gpu
-> +  stage: software-driver
->     variables:
->       CROSVM_GALLIUM_DRIVER: llvmpipe
->       DRIVER_NAME: virtio_gpu
-> @@ -419,3 +419,25 @@ virtio_gpu:none:
->       - debian/x86_64_test-gl
->       - testing:x86_64
->       - igt:x86_64
-> +
-> +vkms:none:
-> +  stage: software-driver
-> +  variables:
-> +    DRIVER_NAME: vkms
-> +    GPU_VERSION: vkms-none
-> +  extends:
-> +    - .test-gl
-> +    - .test-rules
-> +  tags:
-> +    - kvm
-> +  script:
-> +    - ln -sf $CI_PROJECT_DIR/install /install
-> +    - mv install/bzImage /lava-files/bzImage
-> +    - mkdir -p /lib/modules
-> +    - mkdir -p $CI_PROJECT_DIR/results
-> +    - ln -sf $CI_PROJECT_DIR/results /results
-> +    - ./install/crosvm-runner.sh ./install/igt_runner.sh
-> +  needs:
-> +    - debian/x86_64_test-gl
-> +    - testing:x86_64
-> +    - igt:x86_64
-> diff --git a/drivers/gpu/drm/ci/x86_64.config b/drivers/gpu/drm/ci/x86_64.config
-> index 1cbd49a5b23a..8eaba388b141 100644
-> --- a/drivers/gpu/drm/ci/x86_64.config
-> +++ b/drivers/gpu/drm/ci/x86_64.config
-> @@ -24,6 +24,7 @@ CONFIG_DRM=y
->   CONFIG_DRM_PANEL_SIMPLE=y
->   CONFIG_PWM_CROS_EC=y
->   CONFIG_BACKLIGHT_PWM=y
-> +CONFIG_DRM_VKMS=m
->   
->   # Strip out some stuff we don't need for graphics testing, to reduce
->   # the build.
-> diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-> index 007f21e56d89..f82d437909b5 100644
-> --- a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-> +++ b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-> @@ -41,7 +41,6 @@ kms_flip@flip-vs-absolute-wf_vblank,Fail
->   kms_flip@flip-vs-absolute-wf_vblank-interruptible,Fail
->   kms_flip@flip-vs-blocking-wf-vblank,Fail
->   kms_flip@flip-vs-expired-vblank,Fail
-> -kms_flip@flip-vs-expired-vblank-interruptible,Fail
->   kms_flip@flip-vs-modeset-vs-hang,Fail
->   kms_flip@flip-vs-panning-vs-hang,Fail
->   kms_flip@flip-vs-wf_vblank-interruptible,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
-> new file mode 100644
-> index 000000000000..a8b9d79d9a16
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
-> @@ -0,0 +1,32 @@
-> +kms_cursor_crc@cursor-rapid-movement-128x128,Fail
-> +kms_cursor_crc@cursor-rapid-movement-128x42,Fail
-> +kms_cursor_crc@cursor-rapid-movement-256x256,Fail
-> +kms_cursor_crc@cursor-rapid-movement-256x85,Fail
-> +kms_cursor_crc@cursor-rapid-movement-32x10,Fail
-> +kms_cursor_crc@cursor-rapid-movement-32x32,Fail
-> +kms_cursor_crc@cursor-rapid-movement-512x170,Fail
-> +kms_cursor_crc@cursor-rapid-movement-512x512,Fail
-> +kms_cursor_crc@cursor-rapid-movement-64x21,Fail
-> +kms_cursor_crc@cursor-rapid-movement-64x64,Fail
-> +kms_cursor_legacy@basic-flip-before-cursor-atomic,Fail
-> +kms_cursor_legacy@basic-flip-before-cursor-legacy,Fail
-> +kms_cursor_legacy@cursor-vs-flip-atomic,Fail
-> +kms_cursor_legacy@cursor-vs-flip-legacy,Fail
-> +kms_cursor_legacy@cursor-vs-flip-toggle,Fail
-> +kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
-> +kms_cursor_legacy@flip-vs-cursor-atomic,Fail
-> +kms_cursor_legacy@flip-vs-cursor-crc-atomic,Fail
-> +kms_cursor_legacy@flip-vs-cursor-crc-legacy,Fail
-> +kms_cursor_legacy@flip-vs-cursor-legacy,Fail
-> +kms_flip@flip-vs-modeset-vs-hang,Fail
-> +kms_flip@flip-vs-panning-vs-hang,Fail
-> +kms_pipe_crc_basic@nonblocking-crc,Fail
-> +kms_pipe_crc_basic@nonblocking-crc-frame-sequence,Fail
-> +kms_pipe_crc_basic@suspend-read-crc,Fail
-> +kms_plane@plane-panning-bottom-right-suspend,Fail
-> +kms_universal_plane@universal-plane-pipe-A-sanity,Fail
-> +kms_vblank@pipe-A-ts-continuation-dpms-suspend,Fail
-> +kms_writeback@writeback-check-output,Fail
-> +kms_writeback@writeback-fb-id,Fail
-> +kms_writeback@writeback-invalid-parameters,Fail
-> +kms_writeback@writeback-pixel-formats,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
-> new file mode 100644
-> index 000000000000..18afbfcc1c52
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
-> @@ -0,0 +1,19 @@
-> +# Board Name: vkms
-> +# Bug Report: https://lore.kernel.org/dri-devel/005da8f1-8050-bffd-653c-2a87ae6376f7@collabora.com/T/#u
-> +# IGT Version: 1.28-gb0cc8160e
-> +# Linux Version: 6.7.0-rc3
-> +# Failure Rate: 50
-> +
-> +# Reported by deqp-runner
-> +kms_cursor_legacy@cursorA-vs-flipA-legacy
-> +kms_cursor_legacy@cursorA-vs-flipA-varying-size
-> +kms_flip@flip-vs-expired-vblank-interruptible
-> +kms_flip@flip-vs-expired-vblank
-> +kms_flip@plain-flip-fb-recreate
-> +kms_flip@plain-flip-fb-recreate-interruptible
-> +kms_flip@plain-flip-ts-check-interruptible
-> +
-> +# The below test shows inconsistency across multiple runs,
-> +# giving results of Pass and Fail alternately.
-> +kms_cursor_legacy@cursorA-vs-flipA-toggle
-> +kms_pipe_crc_basic@nonblocking-crc
-> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-> new file mode 100644
-> index 000000000000..524e7972c75a
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-> @@ -0,0 +1,16 @@
-> +# Hits:
-> +# rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> +# rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P749/1:b..l
-> +kms_prop_blob@invalid-get-prop
-> +
-> +# keeps printing vkms_vblank_simulate: vblank timer overrun and never ends
-> +kms_invalid_mode@int-max-clock
-> +
-> +# Suspend seems to be broken
-> +.*suspend.*
-> +
-> +# Hangs machine and timeout occurs
-> +kms_flip@flip-vs-absolute-wf_vblank-interruptible
-> +kms_invalid_mode@zero-hdisplay
-> +kms_invalid_mode@bad-vtotal
-> +kms_cursor_crc.*
+and amd_iommu_snp_en be protected in arch/x86/include/asm/iommu.h as:
+
+#ifdef CONFIG_AMD_IOMMU
+extern bool amd_iommu_snp_en;
+#else
+#define amd_iommu_snp_en false
+#endif
+
+I think this would be better in case these should be referenced elsewhere 
+in the future.
+
+Thanks,
+Tom
+
+>   	help
+>   	 Provide support for the AMD Platform Security Processor (PSP).
+>   	 The PSP is a dedicated processor that provides support for key
 
