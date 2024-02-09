@@ -1,193 +1,184 @@
-Return-Path: <linux-kernel+bounces-59938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E08F84FD96
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:31:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8A9884FD98
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6DE7287F72
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:31:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC291F24BC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:31:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C16F63C7;
-	Fri,  9 Feb 2024 20:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDD626139;
+	Fri,  9 Feb 2024 20:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N0FgUj9Q"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="lwDhLP6K"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993065677
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:30:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C4A5677
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707510654; cv=none; b=fSJGhx/ah5CjcrJSMXfNr3X7NCvE/8IHzk+V/RruEXUZcEG9uaQ7df2+DxAbxlN+OsU3YC9h3XwKMxK0xiTvyDSXvqr0d4rz8zXuWb0Kx9sn9PkmHZAUHmhcqe69aJcNSoS3S96PndJFd8Eq55nT720lrCjOYqWOft3yRGU4iHM=
+	t=1707510682; cv=none; b=aU7XbddoPC+Xn9sJrSpeUq/IIUG0tgxM+tr7dLTQeh4UgNZh2cqzRU3n28fByUwKRTWeMg2pgid0IeZsS9yvOocGjtyUjwbS7OTEpoYlhgWxzl0BEfz4IHAGbpcaRVlLKACkPnWoRNA2xlr6ZoD/kuGj/sfVDKQ5dAIiwoqrQP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707510654; c=relaxed/simple;
-	bh=KrHznBuwaabRsN5qbonlIYaEpCp/iU506qqInVuAJ1s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pvPS6UCKhhO2K8kWZr6sS1m/7Z0gSpmHkBnEHqrwtWE5xMVHD/dLa2vmMY2nVtuK7aCkAb/E1G54Z9oxqVJw63sZDhUmU4VbmYrUYje5zFqiO8qSg5gU6mSncrMucoOjAKTNdBXdc2ommKGiClTIGmNNY3aUc4FV2+p4GWaFLjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N0FgUj9Q; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707510651;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r8J/XbEGW4rTV6z/EaKBWgEwgI/IDyi1WgmOXHA89nc=;
-	b=N0FgUj9Q5AK+1OWY6KMcWcLFXB/nZbDYog2dGqDrcpbgUfbx5ZfyGNR2JUg7JV2lwnMGeH
-	kggPAdrbt4tgIPXLnqdhjVv03cLUuNRX0xpwiggwpKfTcv5dnQ69MHW5FtlDO0Hl7jRxg3
-	pJ4atz0DpzLjVyiY4rri7g79PERYhJY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-346-Oy5Rdq8vN0qXPmdGpYsydA-1; Fri, 09 Feb 2024 15:30:49 -0500
-X-MC-Unique: Oy5Rdq8vN0qXPmdGpYsydA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4107802453dso4619195e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 12:30:49 -0800 (PST)
+	s=arc-20240116; t=1707510682; c=relaxed/simple;
+	bh=jtlLdqT7JxvhfFw+24KTD5ocDWh9zjIw61lTQPuBtQU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bzWzt4LeiASaz36o4+8rIBnlQQ82ERRySUPCLquje6caOrw/j+PfY+DmMrG33LPwdxUM5rnbL25t9MKbNs4tMk9FNvfD6z9t+l8WArRbjbO9RDYP+vRN42knY/tXvIcB4ayKqzYz5DP0nNU/5/JvtGCeYt7J74VeE5yvyLDQwWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=lwDhLP6K; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7bf3283c18dso14732139f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 12:31:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707510679; x=1708115479; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O2KY1VYsqophcwtt4/SkR/t54NG5tkSwXfgubEbyghk=;
+        b=lwDhLP6KHkVT3YJcxK1mNRY2oOqyMAPb71CHyiIZOXLn7aFwtxVp13GuJOegPr+ueP
+         Ok6rY7/tsLQHamp59taTVQhhfjIu6ybqlfCKCuAPT37c/lEFD9Jsm/4ttUSUoQl4DzV7
+         JHfLpxkN6MVcuhCU9gUcbWaCtij6/aCNxLyKSVxsDoA9FZ6wR8MXLv6Rve9l0kUDyLTK
+         NL/IlwAdVO9G9Wpj+7HA+jlW80OY3LViChzrz9P85Y0rqn55h2kVMBfJoGLsaV14F5Lr
+         AOAucWQDy2QBkfPqwMUzwCT37WWZbS1or/tSWYTTrTCkRpB0a+l73yLN21DFSm/JRuaB
+         di2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707510648; x=1708115448;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r8J/XbEGW4rTV6z/EaKBWgEwgI/IDyi1WgmOXHA89nc=;
-        b=RsjYCNzoMQyqi9pSVZJqVPVD8YCsNVfFVRGiUSYQ72aQg2rdmyQOe7IwUiV9tCDIy6
-         XCfn4vyv+8rml9j3fHa38SD83X9GckkW7obIK+TUqlcN85fkC2AnXn3+p0ncBrDdjM4U
-         Ss/ZbLIUOBuKNh2dHGFcwWAPcLmMxgMB58xM8I4XcOvXJf4UfyvQwmM0RlHZh5eLrTW9
-         FVrzVxlRbc0z024nJ56E5PpJhh8/ICwMpX7RCjnUbYp1LcLGQ4h7vOKz04n0W+8+zjVU
-         kMKfYCCK9EpWVodTxSsazA3ujdOAS8GiG9TGF7TdE1KIu/rHsSDeFugrsGR6eHA78YpA
-         ohgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVmPnzIjH0fNVEqGV4Ldy0XcLglfwuj5z3n5m3UHziCHvLN7IMAaOmSQ7MwYxBF6YhSkYa9ikFs1QzML+v6ZHAartRiRKs3VzSF8Tkl
-X-Gm-Message-State: AOJu0YynPJrBCz9DGcLRDHR5Hs0EqG5PGq2pik4o2gifXH9tsCYfAPJk
-	xDVZrINGz1jQGHNxgPKQ3MAAmcS4jLZCx/BWYfICM0ODGyK1RqSYyqRZfYkoxPJa8JGMrAdXiL4
-	wjQMp6j7KSkLNa8aSyYskNBY263eJR9Ey7bFikAbYwxq1QONr/yifuU+46vcCGw==
-X-Received: by 2002:a05:600c:5248:b0:40e:f2d6:9dc with SMTP id fc8-20020a05600c524800b0040ef2d609dcmr299009wmb.33.1707510648622;
-        Fri, 09 Feb 2024 12:30:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHn7tTpFP36Rfj//rT72qd9+jvGx2yenpz6/LSui/V8HYLJ/ywcOwSHhBf9szBB3acqUagp1Q==
-X-Received: by 2002:a05:600c:5248:b0:40e:f2d6:9dc with SMTP id fc8-20020a05600c524800b0040ef2d609dcmr298995wmb.33.1707510648315;
-        Fri, 09 Feb 2024 12:30:48 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVcq9h0v46XkBbkpGmGw7p+gvFjC5M5dM9Vxo8+153Wr+2lSmDerGeFt0bQGagJ3AqQ62L9bMcfNAhyGp2EErv/jeUfhwoqxnFqHWXQmWyIufisWQ5NN+QWQZlhqNzGtg3ymkuvzMX62LPzGS7cu5QPu8iSUMsQ7o6o8mDsv/1PeyApbtC7c0tr4rM19hySOPuvNxflS+MbsX7T4dcy51FG4nTDSJDOHg2oTilImEUjF9D97lu6EPkSvViSU5ywMA6djQ5iy8zI6i8Z1CgH9ADUR4hIYgyTZ5dnpM5e3m41u/AzGTlyFFLd1f8XUHyiMrA2TbDmPUp5WspO/0kN3M4DJfVZl1bznOif8MLeUNZ6JMJUffSu4bpqe4e3RjzORPF4lNXqSILT96MQe6qWSLLYaiRE9viR3LceZoFPgmqQ4SLwrk5+FfsTiZKXV4pGD77JBdQi4X+LMuG+3Y6kX6rHBO1SJC2XaPIdkIlpeCi4v+S7sSmgEXReM8iiCvemxFkRuc3WnHLe1Fa0/cXLvqaT9xfK6QfieDTCNEXIlIWWWNaoUpH0eAyFuxH2qyqMoSV10vmbY//bU6qpp6m8rb//wF90dZGrVCRNumEXcMHCB/ll6EBPUktzLtXGDl4=
-Received: from toolbox ([2001:9e8:898e:7200:1f00:29c:19b0:2997])
-        by smtp.gmail.com with ESMTPSA id g7-20020a5d5407000000b003392206c808sm109606wrv.105.2024.02.09.12.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 12:30:47 -0800 (PST)
-Date: Fri, 9 Feb 2024 21:30:46 +0100
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>,
-	Sandy Huang <hjc@rock-chips.com>,
-	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB
- property
-Message-ID: <20240209203046.GA996172@toolbox>
-References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
- <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
- <20240115143308.GA159345@toolbox>
- <niqn7eql5neyfp5ficdfisdpmlwrprovqn5g7lgcfwoe74ds23@7fr4yv2miqe7>
+        d=1e100.net; s=20230601; t=1707510679; x=1708115479;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O2KY1VYsqophcwtt4/SkR/t54NG5tkSwXfgubEbyghk=;
+        b=oiGp/x5fybA3FflyLpiVMlGr5OU9XAehNx3bhMjHsR/YIQT/pVJ6g/cQyGki1kZqws
+         A8SxSIkPHAZwx+hqKX5gdJhrJ/n2JqvoyQ99Brrtt4TZu7WImGC9g21gfFhCUMlf6f+C
+         acp0Wor0EYpRS3jJL5E04kO3yEWWgeDFsUkEHATXhsQBC++E54gUbbvoO5I3R7MMUgzM
+         34JE6i9tgcRazGmUUnRhbCTROKhO0OzVitqR9j9ZFySbQfsivEl/GRgcvsbC9dJi8SGx
+         XBTamaJkasNRuYDxlRwXMF2RnigqeqNQOodZsJtKyxIpokrUoQ6WfXDAIsiyOJMmYnq5
+         tdVQ==
+X-Gm-Message-State: AOJu0YwGppX8jBgKuxXneoMlwdycZ6ot5K7lF35cnnmpoWUI2SbE5FjH
+	8JRbvj24xEYFrGhPjiUqoocRAIMfdtzqCi+Y/pS+2XYjoU40ZuuUobOUycfF6gY=
+X-Google-Smtp-Source: AGHT+IHcDmXuHAkGrM0JU+hJKxb+Mr26Xk4UsUGJPp6H3XHnx79km1fA7r4jshGN4U8romr1XVv5uQ==
+X-Received: by 2002:a5e:c706:0:b0:7c4:3a7e:ccc with SMTP id f6-20020a5ec706000000b007c43a7e0cccmr555511iop.0.1707510679074;
+        Fri, 09 Feb 2024 12:31:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU032Qk23ZO/SpfO9usp9xETVY6Y0LyvDwtcN9rGuAyd7wQ/bi9wtDDm4s8ZTW2T4bmdxoYdm9BaB0pS6JYTm6GJBpbNLZP0k9cMSFt7liNpVESHJxcDYLXh1iC6JDSgIZl79LSrrfG9SdKprmMTmcWCtRZN9Ly2oLL7Agb7qCKs/pjs2mH8SIsJthVL5PmPaQfTgKInH6BR3ccaFX62zUiAPzpd7CYB0/RK1VIkCVhhWnAks/BdOKPkIn+xrOyAHWhPPsuiPzMnx1GRNQ9M3VaTVsmADK244Uit0oAMayI2pjE9B0CmCBBfF574vXOnNPntEfKXgDAiElTroarmYfvOHyPjmK2gXCXNsOF2Zi7pH4oKqHHLuMVv7PQyAFTXrlltF90a9QJtnJvMQIgm0LXAywby8u0Fi6I2UiWrOJBANOZdlAseUaI4rr/k4cKaqMqE4CKO4ASh78GAjv56xPINNwRCTcL/0G7wA9svgzA62cMZJny7S1/vDAcLGrHKFJSaLo0jLBkGDEyD/Oy5MDEiyFvBfwwmMRPAQ==
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id p18-20020a5d9852000000b007c408b504f9sm24837ios.50.2024.02.09.12.31.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 12:31:18 -0800 (PST)
+Message-ID: <9285b29c-6556-46db-b0bb-7a85ad40d725@kernel.dk>
+Date: Fri, 9 Feb 2024 13:31:17 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <niqn7eql5neyfp5ficdfisdpmlwrprovqn5g7lgcfwoe74ds23@7fr4yv2miqe7>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/15] Coalesced Interrupt Delivery with posted MSI
+Content-Language: en-US
+To: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev,
+ Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
+ kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>,
+ Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+ Paul Luse <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+ Raj Ashok <ashok.raj@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+ maz@kernel.org, seanjc@google.com, Robin Murphy <robin.murphy@arm.com>
+References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
+ <051cf099-9ecf-4f5a-a3ac-ee2d63a62fa6@kernel.dk>
+ <20240209094307.4e7eacd0@jacob-builder>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240209094307.4e7eacd0@jacob-builder>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 02, 2024 at 04:49:04PM +0100, Maxime Ripard wrote:
-> Hi Sebastian,
+On 2/9/24 10:43 AM, Jacob Pan wrote:
+> Hi Jens,
 > 
-> On Mon, Jan 15, 2024 at 03:33:08PM +0100, Sebastian Wick wrote:
-> > >  /**
-> > >   * DOC: HDMI connector properties
-> > >   *
-> > > + * Broadcast RGB
-> > > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
-> > > + *      Infoframes will be generated according to that value.
-> > > + *
-> > > + *      The value of this property can be one of the following:
-> > > + *
-> > > + *      Automatic:
-> > > + *              RGB Range is selected automatically based on the mode
-> > > + *              according to the HDMI specifications.
-> > > + *
-> > > + *      Full:
-> > > + *              Full RGB Range is forced.
-> > > + *
-> > > + *      Limited 16:235:
-> > > + *              Limited RGB Range is forced. Unlike the name suggests,
-> > > + *              this works for any number of bits-per-component.
-> > > + *
-> > > + *      Drivers can set up this property by calling
-> > > + *      drm_connector_attach_broadcast_rgb_property().
-> > > + *
-> > 
-> > This is a good time to document this in more detail. There might be two
-> > different things being affected:
-> > 
-> > 1. The signalling (InfoFrame/SDP/...)
-> > 2. The color pipeline processing
-> > 
-> > All values of Broadcast RGB always affect the color pipeline processing
-> > such that a full-range input to the CRTC is converted to either full- or
-> > limited-range, depending on what the monitor is supposed to accept.
-> > 
-> > When automatic is selected, does that mean that there is no signalling,
-> > or that the signalling matches what the monitor is supposed to accept
-> > according to the spec? Also, is this really HDMI specific?
-> > 
-> > When full or limited is selected and the monitor doesn't support the
-> > signalling, what happens?
+> On Thu, 8 Feb 2024 08:34:55 -0700, Jens Axboe <axboe@kernel.dk> wrote:
 > 
-> Leaving the YCbCr vs RGB discussion aside, would this be better ?
+>> Hi Jacob,
+>>
+>> I gave this a quick spin, using 4 gen2 optane drives. Basic test, just
+>> IOPS bound on the drive, and using 1 thread per drive for IO. Random
+>> reads, using io_uring.
+>>
+>> For reference, using polled IO:
+>>
+>> IOPS=20.36M, BW=9.94GiB/s, IOS/call=31/31
+>> IOPS=20.36M, BW=9.94GiB/s, IOS/call=31/31
+>> IOPS=20.37M, BW=9.95GiB/s, IOS/call=31/31
+>>
+>> which is abount 5.1M/drive, which is what they can deliver.
+>>
+>> Before your patches, I see:
+>>
+>> IOPS=14.37M, BW=7.02GiB/s, IOS/call=32/32
+>> IOPS=14.38M, BW=7.02GiB/s, IOS/call=32/31
+>> IOPS=14.38M, BW=7.02GiB/s, IOS/call=32/31
+>> IOPS=14.37M, BW=7.02GiB/s, IOS/call=32/32
+>>
+>> at 2.82M ints/sec. With the patches, I see:
+>>
+>> IOPS=14.73M, BW=7.19GiB/s, IOS/call=32/31
+>> IOPS=14.90M, BW=7.27GiB/s, IOS/call=32/31
+>> IOPS=14.90M, BW=7.27GiB/s, IOS/call=31/32
+>>
+>> at 2.34M ints/sec. So a nice reduction in interrupt rate, though not
+>> quite at the extent I expected. Booted with 'posted_msi' and I do see
+>> posted interrupts increasing in the PMN in /proc/interrupts, 
+>>
+> The ints/sec reduction is not as high as I expected either, especially
+> at this high rate. Which means not enough coalescing going on to get the
+> performance benefits.
 
-Yes, it is. Thanks.
+Right, it means that we're getting pretty decent commands-per-int
+coalescing already. I added another drive and repeated, here's that one:
 
-We do have to resolve the YCbCr vs RGB issue though.
+IOPS w/polled: 25.7M IOPS
 
->  * Broadcast RGB (HDMI specific)
->  *      Indicates the Quantization Range (Full vs Limited) used. The color
->  *      processing pipeline will be adjusted to match the value of the
+Stock kernel:
 
-Ah, another thing no note here is that the CRTC as configured by user
-space must always produce full range pixels.
+IOPS=21.41M, BW=10.45GiB/s, IOS/call=32/32
+IOPS=21.44M, BW=10.47GiB/s, IOS/call=32/32
+IOPS=21.41M, BW=10.45GiB/s, IOS/call=32/32
 
->  *      property, and the Infoframes will be generated and sent accordingly.
->  *
->  *      The value of this property can be one of the following:
->  *
->  *      Automatic:
->  *              The quantization range is selected automatically based on the
->  *              mode according to the HDMI specifications (HDMI 1.4b - Section
->  *              6.6 - Video Quantization Ranges).
->  *
->  *      Full:
->  *              Full quantization range is forced.
->  *
->  *      Limited 16:235:
->  *              Limited quantization range is forced. Unlike the name suggests,
->  *              this works for any number of bits-per-component.
->  *
->  *      Property values other than Automatic can result in colors being off (if
->  *      limited is selected but the display expects full), or a black screen
->  *      (if full is selected but the display expects limited).
->  *
->  *      Drivers can set up this property by calling
->  *      drm_connector_attach_broadcast_rgb_property().
+at ~3.7M ints/sec, or about 5.8 IOPS / int on average.
+
+Patched kernel:
+
+IOPS=21.90M, BW=10.69GiB/s, IOS/call=31/32
+IOPS=21.89M, BW=10.69GiB/s, IOS/call=32/31
+IOPS=21.89M, BW=10.69GiB/s, IOS/call=32/32
+
+at the same interrupt rate. So not a reduction, but slighter higher
+perf. Maybe we're reaping more commands on average per interrupt.
+
+Anyway, not a lot of interesting data there, just figured I'd re-run it
+with the added drive.
+
+> The opportunity of IRQ coalescing is also dependent on how long the
+> driver's hardirq handler executes. In the posted MSI demux loop, it does
+> not wait for more MSIs to come before existing the pending IRQ polling
+> loop. So if the hardirq handler finishes very quickly, it may not coalesce
+> as much. Perhaps, we need to find more "useful" work to do to maximize the
+> window for coalescing.
 > 
-> Thanks!
-> Maxime
+> I am not familiar with optane driver, need to look into how its hardirq
+> handler work. I have only tested NVMe gen5 in terms of storage IO, i saw
+> 30-50% ints/sec reduction at even lower IRQ rate (200k/sec).
 
+It's just an nvme device, so it's the nvme driver. The IRQ side is very
+cheap - for as long as there are CQEs in the completion ring, it'll reap
+them and complete them. That does mean that if we get an IRQ and there's
+more than one entry to complete, we will do all of them. No IRQ
+coalescing is configured (nvme kind of sucks for that...), but optane
+media is much faster than flash, so that may be a difference.
+
+-- 
+Jens Axboe
 
 
