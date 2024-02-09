@@ -1,54 +1,74 @@
-Return-Path: <linux-kernel+bounces-59153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E501E84F230
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:21:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73AD384F231
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:22:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13EC91C214FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:21:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDBC21F23AB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:22:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A8567735;
-	Fri,  9 Feb 2024 09:21:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B63466B56;
+	Fri,  9 Feb 2024 09:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tFvDqK+k"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TkUW9vZN"
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EDC265BDB;
-	Fri,  9 Feb 2024 09:21:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EA18664CB
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 09:22:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707470510; cv=none; b=OOqAkWkOhXLYOZJcN2726KqCo3dVvkh1u9uW8WsXuuJRt0s46c4m21KRXS9Q6LVT9QK4Yn/O3BCk7PYGW9S2+5XYt3SzRQIbbT+xEffAOBtpItm2T0Ww4m2rYbMExYC59NMe79rok/9A5i5bNwOzcmlQe9wri8XwPMtbF1L0gFg=
+	t=1707470538; cv=none; b=YYTD3lEVMWOfr7XOA4dWnOa/kzBxbvZPB5tqrvZ8d21T8eDNMVswdg0zRuF2vGFNR3tLzQ5yXRvr7tUNsjAMCHC+e9jb+iRY5U/x1kNwuL7U3rR/AArjeQdC6Y8wNB0RvIKw+PnbnNYtZ0KvCcWCEv3bzgElSlYs0ZXRBQgsjo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707470510; c=relaxed/simple;
-	bh=JbZ74A9tk2UWT+VrLIApBOpqqPN0+cze41j1I55Ge6Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tF+R0NiCqHN4kCiqMUbgQ+I+/6iBZSog8OFcPoU0VTCbGB4E8U+Lg0IYeg5SAs5QjAMrNqMqBWmZDsUnTusY1TEANkoHabD/8/i2u0YW/uNhWVA+v2utImiJNjNYH5iD5mihKHWp4/TOSzlaWDQ8hIShWe+/F5YV9Hccn37IxLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tFvDqK+k; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707470507;
-	bh=JbZ74A9tk2UWT+VrLIApBOpqqPN0+cze41j1I55Ge6Q=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tFvDqK+klPRWkB14WAgjKKUsbzaEZMT8Qt6Dtt0PHCBG3BTF+I7tmwXivMImqGlqk
-	 DagdXAySSBDsAELUumgQ90DPTHZUHhKgAvW4sQhwhND6TX35JgguzCaOvyTb/SfDAP
-	 hzgf5v2gDCsFqLXznwjS9ZW+lqpCuF+wCsEzju29gDkwSlXO7xW/yMiMK682HUEM3j
-	 51/YLR51n2eL9Bqk8fWDMzddA4jsT1lCPwZqfwbvnn1HJVl1mK4isy5twQjsD3kdNn
-	 sWDtug2YaCF+E/e73GFO1BorESezwL7SbmGBcRem4+8YETBlEXTsXTgA5rB2tc2P2T
-	 VffYn3elHpc6A==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 74EE837811F4;
-	Fri,  9 Feb 2024 09:21:46 +0000 (UTC)
-Message-ID: <185865bb-983e-467f-be2d-4978c8f4d6dc@collabora.com>
-Date: Fri, 9 Feb 2024 10:21:45 +0100
+	s=arc-20240116; t=1707470538; c=relaxed/simple;
+	bh=e1KWj7ChASzrRiDmZPwMOrmy0d6A+CytRDz/mDR6qWo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Emd6FzGfoN0SCnYEIWjfupcmkIJc7ZxU7pT6+oMKSFQkUGejbFc1z9kWjkLNEl8fnkwY7AtqoWjsJ/MlTNtohfcZhZYneFh27WhxVTUYTif4JZN8oxWYnUPt/HL2IeVF6J5UnABAYFe0dLogi4NSxOJJoG19ltzxtEiKfs9lXPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TkUW9vZN; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bda4bd14e2so480904b6e.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 01:22:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707470536; x=1708075336; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TWHq1zXQ8MmhzUO08ghr2JTcELiMF8c3pam8DLxJkkk=;
+        b=TkUW9vZN7eNRo/AwS5eOWqSqE0EbCTENMwku4FNoebw6hBCkFfNC6hjk9zlVZhfMA3
+         M0y7NslxfQq7h4qFVTCubLYrChxWU4r0Nj1h6ZyQRi2/vuN1oxEf5Ha393lCcnCbFN1i
+         ssiMzshX0YT7DUJSkjvRA6z3TxbwyZVy9TO1iutoDyzpcGppbXcLr2h+zlNnt9IHcLy3
+         3vM8S9YBIylUfZArI4NbZBp/irpskhz73zMVtRM/wIzhIA5nDFTQZ32q8hiagL7lOX/E
+         NhfODvActTq81kEu0Bj47ZeYSlfjgQ1E1bMYtKNQyapBkaA8GgnH6mHkwlmbhZV6JLuT
+         HkwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707470536; x=1708075336;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TWHq1zXQ8MmhzUO08ghr2JTcELiMF8c3pam8DLxJkkk=;
+        b=w/xLjj5tzTuCXgjQbvZuRvoU1foVUU3HX8t+GOsbjYmXF7/P+6ky3hIDxzac1RUQ+C
+         q+4cs8uqLpJEo0myHMGc3VRN/+OVJfRnYhreaREupZxDHK4R952N7Sn0Z/qhpF30Us1U
+         SVEfgaLxtS1HSmnwoE5FjTxM1lLY0t2iskchKgkT40xkzqwY8J9YFw1koDgpKItRto4d
+         oP/H+Xj9C/H73xlKN6F6mAQc9gJ5jYlAWk0rhvzoTEHkR/w+EoYxF1y+Sy9nM9S6dgab
+         yb9XbOtyWdfe+VPn39zhwZhE6hY+YfnF9JbpgpZGd3t6QcNRykqE+2JEVRN2IvUrin0T
+         yNNA==
+X-Forwarded-Encrypted: i=1; AJvYcCVp8UOzzD+0CioEX2uy6S+PTdbkOumURmjqHLgk+KeQSnOv0GPc4f8ajt55+kEEUbVSwV9HcR/EQ6bghp9usgj3M8hwdS6OZN5OqxAg
+X-Gm-Message-State: AOJu0YzjHwDwdWbIPC7St7c4xi2seqzMYBChEtxtwaW1j1q4rimgJF+Y
+	Us2GgY7NP7UeUUg5BXcOOmOcK+IWpTO6QklCzNGyZ2yTMxfZ2hoGkZD7BpDol1M=
+X-Google-Smtp-Source: AGHT+IHwi3tEYCJ7uk67V4MsxL34IR3runYuZPc1NFV4wH8CNIJkeJqE/9aIJOdDKRSiIf31XL1eFg==
+X-Received: by 2002:a05:6808:1211:b0:3be:5d77:cfa7 with SMTP id a17-20020a056808121100b003be5d77cfa7mr1446843oil.1.1707470536371;
+        Fri, 09 Feb 2024 01:22:16 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVLFule9pZiW1RhWdAS93L9OMCNavd107i/l+lViJTyj4wMiOuIgH+dn5aAyDtyonI5xxBJ+wqTASb+j2iGfH8HQXk5Ioi9yurnt0Xx
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id w3-20020a63fb43000000b005d880b41598sm1254924pgj.94.2024.02.09.01.22.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 01:22:15 -0800 (PST)
+Message-ID: <81f2df0b-0780-458c-b432-5d61b78e8157@gmail.com>
+Date: Fri, 9 Feb 2024 16:22:12 +0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,110 +76,36 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 1/3] dt-bindings: arm: mediatek: convert hifsys to the
- json-schema clock
+Subject: Re: [PATCH] kernel: add boot param to disable stack dump on panic
 Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Russell King <linux@armlinux.org.uk>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, devicetree@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20240208215926.10085-1-zajec5@gmail.com>
- <20240208215926.10085-2-zajec5@gmail.com>
- <d4a4a468-4a81-413e-9de6-060c2ba9e0b6@collabora.com>
- <502836d9-5a57-4614-b908-2adc0f01df33@linaro.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <502836d9-5a57-4614-b908-2adc0f01df33@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Nir Lichtman <nir@lichtman.org>, linux-kernel@vger.kernel.org
+References: <20240206213902.GA1490631@lichtman.org>
+ <ZcLmjrBxE2BA_hLG@archie.me> <20240208081425.GA1511946@lichtman.org>
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20240208081425.GA1511946@lichtman.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Il 09/02/24 10:17, Krzysztof Kozlowski ha scritto:
-> On 09/02/2024 09:53, AngeloGioacchino Del Regno wrote:
->> Il 08/02/24 22:59, Rafał Miłecki ha scritto:
->>> From: Rafał Miłecki <rafal@milecki.pl>
->>>
->>> This helps validating DTS files. Introduced changes:
->>> 1. Documented "reg" property
->>> 2. Documented "#reset-cells" property
->>> 3. Dropped "syscon" as it was incorrectly used
->>> 4. Adjusted "compatible" and "reg" in example
->>>
->>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->>> ---
->>>    .../bindings/arm/mediatek/mediatek,hifsys.txt | 26 ----------
->>>    .../clock/mediatek,mt2701-hifsys.yaml         | 51 +++++++++++++++++++
->>>    2 files changed, 51 insertions(+), 26 deletions(-)
->>>    delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
->>>    create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt b/Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
->>> deleted file mode 100644
->>> index 323905af82c3..000000000000
->>> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
->>> +++ /dev/null
->>> @@ -1,26 +0,0 @@
->>> -Mediatek hifsys controller
->>> -============================
->>> -
->>> -The Mediatek hifsys controller provides various clocks and reset
->>> -outputs to the system.
->>> -
->>> -Required Properties:
->>> -
->>> -- compatible: Should be:
->>> -	- "mediatek,mt2701-hifsys", "syscon"
->>> -	- "mediatek,mt7622-hifsys", "syscon"
->>> -	- "mediatek,mt7623-hifsys", "mediatek,mt2701-hifsys", "syscon"
->>> -- #clock-cells: Must be 1
->>> -
->>> -The hifsys controller uses the common clk binding from
->>> -Documentation/devicetree/bindings/clock/clock-bindings.txt
->>> -The available clocks are defined in dt-bindings/clock/mt*-clk.h.
->>> -
->>> -Example:
->>> -
->>> -hifsys: clock-controller@1a000000 {
->>> -	compatible = "mediatek,mt2701-hifsys", "syscon";
->>> -	reg = <0 0x1a000000 0 0x1000>;
->>> -	#clock-cells = <1>;
->>> -	#reset-cells = <1>;
->>> -};
->>> diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
->>> new file mode 100644
->>> index 000000000000..eb429337cdf4
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
->>> @@ -0,0 +1,51 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/clock/mediatek,mt2701-hifsys.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Mediatek hifsys controller
->>
->> Please, "MediaTek HIFSYS controller"
+On 2/8/24 15:14, Nir Lichtman wrote:
+> In a lot of cases when there is a kernel panic it obscures on the display the previous problem that caused it and the main
+> reason is that the call stack prints a lot of lines on the display - and there is no way to scroll back up.
+> What led me to make this patch is that I was working on running the kernel on my old computer and when I passed root=/dev/sda
+> to the kernel there was a panic and it could not start init, but since the call stack took almost all the space on the screen,
+> I couldn't see the available partitions the kernel does detects.
 > 
-> Them maybe "clock controller" or "clock and reset controller"?
-
-Yeah, that's right, let's prefer "clock and reset controller", as this binding does
-describe exactly only those two functionalities of the whole HIFSYS block.
-
-Cheers,
-Angelo
-
-> 
-> 
-> Best regards,
-> Krzysztof
+> After this patch, I could just pass in the new boot parameter I added here and then it would not print the call stack,
+> and I saw the line in which the kernel prints the available partitions.
 > 
 
+Please don't top-post; reply inline with appropriate context instead.
 
+Thanks for the explanation. Now please send v2 with appropriate maintainers
+and lists Cc'ed (use scripts/get_maintainer.pl to find ones). Also read
+Documentation/process/submitting-patches.rst before sending.
+
+Ciao!
+
+-- 
+An old man doll... just what I always wanted! - Clara
 
 
