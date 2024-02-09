@@ -1,234 +1,169 @@
-Return-Path: <linux-kernel+bounces-59584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E28F84F957
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:09:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC1C084F8A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:33:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4776FB23092
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:09:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C186280E95
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:33:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A138762C9;
-	Fri,  9 Feb 2024 16:09:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5952274E12;
+	Fri,  9 Feb 2024 15:33:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ai8QzRi/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Bm0Uk1g4"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2100.outbound.protection.outlook.com [40.92.42.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B51D9692FC
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:09:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707494950; cv=none; b=YBknHtHnwpWkyfWQD70gA33ZiKzX8oOSOlFg86MC5+975n/dn6bbsEebfdRC2ahp0/i+Ze5vKUf5LWMQYXgo9uXGnNKlDtbtAjMkR5weLV7acTGoxWcSdE0KCJPW86LCcKP/MVzOuOc3pQHbfWWZNVeHfwTgqKVjTDlzYxRfpmo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707494950; c=relaxed/simple;
-	bh=IM34ld5UQY9RkQt7bVN6df1EDHk1RikgjaWYreQSvho=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m2i1Kit6nU/b3xvkJyWh0hWKcpTZgMzB/xoZcUbpdXNCCvNwaRwfi+UqvsO6Y/40Nz/rTTLl4mmFGCxSLskQAjDqFWyuI39OyIt8qeOns5Qn2CSDG1okwG4ecxODneoEwCwep6/bRpuNQde08NdWuLR7eOOmit4DqbA++iVPttw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ai8QzRi/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707494947;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Du2SfjHBpDjPlfaHFC+gaGPeR3k5e4CR2pmUQgD5lXg=;
-	b=ai8QzRi/Lh2MnOXnW1np3gloV23FITqZKe3jLigk4tgrzgAdvKapIc/srwUq/GPPnWn48Z
-	dZ9Is1zcKeEdyupjRs3zJaB0t/d79dlZUjOFrt0ypHSeJBeomz0yw85cLBqv2gwWVcTrh3
-	DtivZLAXYGkTSD6wCxSMkowPsXHkNak=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-480-yf3VcraqP-mnUSo7svD9jQ-1; Fri, 09 Feb 2024 11:09:04 -0500
-X-MC-Unique: yf3VcraqP-mnUSo7svD9jQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B69F7185A785;
-	Fri,  9 Feb 2024 16:09:03 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.4])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C8FA111FF;
-	Fri,  9 Feb 2024 16:09:03 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id 8C56A4039CA89; Fri,  9 Feb 2024 12:30:14 -0300 (-03)
-Date: Fri, 9 Feb 2024 12:30:14 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Leonardo Bras <leobras@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [patch 05/12] timekeeping_notify: use stop_machine_fail when
- appropriate
-Message-ID: <ZcZFBp2TBSm/RfQi@tpad>
-References: <20240206184911.248214633@redhat.com>
- <20240206185709.955049547@redhat.com>
- <87h6ikmqqo.ffs@tglx>
- <ZcN+XM4223HS42LM@tpad>
- <87zfwbkmi9.ffs@tglx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F186F06C;
+	Fri,  9 Feb 2024 15:33:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.42.100
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707492809; cv=fail; b=rktIhq3YaoQ+mtmaqN5zyZg934lnBC/UPnD1qJ+cj5Q5hjfqd0Wdde8sVIuICaWNrezSE0Loql8UAIeBxoQyxsv91Yb/E6oFqEzMACMBfvokbmMjZ3m9wo80H2AI5rsfYwxpPmmg4pGY6SoxHFfFYvcvngI00gJkYxt43cYl/gQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707492809; c=relaxed/simple;
+	bh=GoHwm58jGAdbaXhT6Ntnu7V5ieYE4SEshwlLTHUyRs4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=PkpXdeTMEb5GFU67pDBfiNBo/1emBNBDeIAo0kegyTpX4f9+AMw8o6Z8xPVFSOMx/t73sVILAscTEIGIIvjwaPu1MhqIEd5poJ8OQDsWUL0oyJwoA3yAO3wu1MAxCDZ2KMldf2ak2RqrP6CkwouAh4n1q2RBJMfFBC2AnWvkAxQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Bm0Uk1g4; arc=fail smtp.client-ip=40.92.42.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MODej/SHlckZp/6mpcgMktlCVTeCkcW8rZ6onJEnnFA6CHRcnhu8A0jqrAausPIzGNFoAnPXYdSe175AYGG3QMzLQfWBldwbSOlUbEagTxlny5xuzMXKxA++XOZ9Mn2BxOqq7wL/HKYZi4fi77B4xnZ8Qlz9EcT30L+N3fftLowaHaddZ3zzjWizD/Ks1l8f9RHNDjZUr+1K/+pzs2xHrQgh2lqxjI2Rzl+nskBvH+ZheOhBKj18VZ/m/MMbUQ7z5mIiyPbO0dloUYO99hsJgtEv+LPPqK86pEng1o59smlyHa08idy151zPpuR7XuRO6psWjecaAhCszbr7QvDc1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GoHwm58jGAdbaXhT6Ntnu7V5ieYE4SEshwlLTHUyRs4=;
+ b=hXaRWacJ+iww/e/Mcv42a0EpVfCwF97lBGMZ9B0qY7iYM8RVE4DszDM715vMeGalvOJ36g/fJPY+8+KdUxXHudenzXdDMuEcWNredr3ZX4/E1FvxlWSIKSJey0DkWWI4OYp3VD7Ypu09zw3QqgFZ0zFiIda1ztxgIa6qw3bdTDr0PXg1py7LOYMjda0dgwGd7Rc3G7uXfE38VhddAP42zKUXXq2WKRLJszHxoDidhYYPo8yzx8ZX9x+VOn6uXd9hO8GbMATgFt0MxKPPl000iy+ILE3B9w3bcJSRGNyXs7CQ2BCDzdujZLuJham1y11hLW7R/YnozQka+oXnRGlqFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GoHwm58jGAdbaXhT6Ntnu7V5ieYE4SEshwlLTHUyRs4=;
+ b=Bm0Uk1g4oUNK+iFymIOzqopBeCHl+M6vTpNVrWaZzcLM7RoIswqBxI719gLCZg3WgKzBksTedOCh7rxeXaC6ntjok46UG41d5N1k0NCXdgc8rB6BmWauiV87gwDuCjgarstOaiXWQm0kz8KtmnUbSmM0Q5axXz3Keu19MLrxBEG15hwsa8KT+W9NT/M6+OaAfQPJF/4O5PUHYlq6FmbpDBomArCBwvzjbbW71hfWAjQhNXAkkDoDoLqt02G70SZKUhU8gvT8BcqEQI5NDsdTdfLWwcLz25MWvgkppiEmPFh0vTZ8R1MBWKsh9R6oFWs4mXt7RIXJoo4GXyqUr4DUWg==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by LV3PR02MB10102.namprd02.prod.outlook.com (2603:10b6:408:19c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.38; Fri, 9 Feb
+ 2024 15:33:24 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7249.027; Fri, 9 Feb 2024
+ 15:33:24 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Wei Liu <wei.liu@kernel.org>
+CC: LKML <linux-kernel@vger.kernel.org>, Michael Kelley
+	<mhklinux@outlook.com>, Markus Elfring <Markus.Elfring@web.de>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, Dexuan Cui
+	<decui@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Dan Carpenter
+	<dan.carpenter@linaro.org>, "kernel-janitors@vger.kernel.org"
+	<kernel-janitors@vger.kernel.org>
+Subject: RE: [PATCH 1/2] Drivers: hv: vmbus: Remove duplication and cleanup
+ code in create_gpadl_header()
+Thread-Topic: [PATCH 1/2] Drivers: hv: vmbus: Remove duplication and cleanup
+ code in create_gpadl_header()
+Thread-Index: AQHaRK8CIUgdftXbBEW892p4qa59RLDV0xuAgACHZeCAK/YJYA==
+Date: Fri, 9 Feb 2024 15:33:24 +0000
+Message-ID:
+ <SN6PR02MB4157D586E6523E5747690FB0D44B2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240111165451.269418-1-mhklinux@outlook.com>
+ <de6c23b2-aa27-494a-a0ec-fe14a4289b38@web.de>
+ <SN6PR02MB4157A7AC71EF769E5B88202CD46F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+In-Reply-To:
+ <SN6PR02MB4157A7AC71EF769E5B88202CD46F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [4smyaC2m42CdGQS6sCXSRg7xopSvXXK6]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|LV3PR02MB10102:EE_
+x-ms-office365-filtering-correlation-id: 5a21f7c7-598e-4d9d-178e-08dc2984746a
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ ELrjOPdnQ4FI0HXH3VWrkiy5GlY6SFNf1EIFdBbd0zbDkLeubwuqBIfHnpsgmeCof+TSScv4+s3OEplRXTJ3UJA+0IVS0RmrysEPMutcVfAtmCmM++XJyiOUI0j/LGM6f1byWwLTnKfIt7Tqw41c8lrBtgWqkgoVCYSSg+8pmYRFN9rLbR7/jigtJrKz2ogz0SOBIkwWc80+RUrqnIhxgCvH5e5fd49KXLz6cMJQaIhDc5CQ3G5N3eXRtzWFcvzSQ4V5chOBWO8/uD2lpM1aUm9CexoQETfl0hP4Qd3crk2mwjHb94dopxSVJnRlMmhjowd15SeXftb4WDPC5pJWlN3sZEgrVvDpT6Cb7dPGhnVTtZxW8nDGmestQ61cst5UbtE5Zdg0PwkSPDwMKGVJFBCHqXkb6HYF3AOwr+wRfnZyD21dV6+4GOLMo24wRtrRx1g7uGUkch6E4jPpq2s8bEAt/OVUPmbGDDy+5VcYnH7uuFzwAlzxBOmthzRKJEjJ6jCbp/0k4UW7CsWeD+B0ryFePIPAoHCameeRGYnUNx8iNaveIf6rmcQBsDsb8ngXuFxeN+Y3MdG93SkIGyf/EA/RutZw4ZnIkycSnlwC0LCmf5gEd/Bovg1wk7gaqIiYQg4Bsf8XwU8ZOP3Y8tJEbR9nYnMZyn2PXr6I87c6TqU=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?YkUrODUvNXRJblBkSjlqSzNCVTJrNFpxM2RjNmt6ZkViNGVnVVZkMU5PdjE1?=
+ =?utf-8?B?M1VaUDdkU25ZSEkycnVxY283QTRRVUFkRDRxbWYrQXF1Nm1XTnpHcHpqcVdw?=
+ =?utf-8?B?Z0JzS21LckdrMUZyTTBodzVIOG5vMEQ5SGVtS1BnSUV3WEtGYnpOVUNlcXNH?=
+ =?utf-8?B?WWt6dTdvY05PbU9RVkhxUE5abVJYUzBvR2p0endjNUkwWitZUDF3SkpRaHNt?=
+ =?utf-8?B?ZXFiSFphQTdUUUYwQkdzUzdKMERDb1B0c2RlYWVWU3cxdzBCV0s5cnZmYTg3?=
+ =?utf-8?B?dU1QUksxK25SOXBZK2hGajZ3cEZhQlUyalBqRDg5bEpIWmxPbmQ3dnROMjVS?=
+ =?utf-8?B?cWVXS3gvMlNzOTRoVGVGRWxDVGxhcUcwaFVOQkhncE9GMks1dG91RXdtcGNY?=
+ =?utf-8?B?L2FzQWFJUm1XNFBwY0FBT0JYRVJ1cUhSSmZOWXVzajR1Z0NFTkJGTm8waGlL?=
+ =?utf-8?B?MW1mOHBtYysxUUZxVjdNYk81M2pxeHNQaUNIQW4rcnV3SEdxV3k1NE8rcS9J?=
+ =?utf-8?B?UzFmNWYvUllhMFRmUVFCNzd5aVZ0UGdvMC8wQzdtcldjMFI4dVduVzZ4cjUv?=
+ =?utf-8?B?anAzYVNYRFdDTlY0aG1TdkNlblpiV0V5SjJRV1h2a05QU0l0c09oZ0MyMUkv?=
+ =?utf-8?B?WGJlaG52Y00vQXFhWE5pVDY3S09hU2pDeUl3Z3JvbjN3eFExeGVtRCs3c0ZK?=
+ =?utf-8?B?SHYzdzY0QS9VWHVtMUpaUS8xYzQzWEdDamh5SzdnZWMyRElsY3M2RnVsUFRs?=
+ =?utf-8?B?WUI5VWEzdTVRaG1CZDFjRUVzR2lmSzk5UUt4M3VsdUZCUGVBckxnM2NZeEhy?=
+ =?utf-8?B?VVZCL0ROTC9heVRlUU9adys2YmF5MVNkdmFEb1RaV0sySmZQOTQ2U3Q3T1ZE?=
+ =?utf-8?B?Sk5PcW9Uc1EvSXhOZTlYb2JXVDVsQkRZUmVLQmlwU29WeXBEQXBJcGQyMUNx?=
+ =?utf-8?B?c1VITlpkaUtvbGN5RmhSQ0xaTUVmZUlWdXUzVldrTWNWeTFjYWlia294WFpF?=
+ =?utf-8?B?WTFtd2o5Nm9PenBBSk5PRnN2U2RwQkYrQ1p4OXZYVzF2SUJSbjZlbnBaejdy?=
+ =?utf-8?B?K2t2R2JUdGFXYU45Sm1aYWlEdXFJelJJeXFqWk5GKzkwSHBpWldVdjRPLzQv?=
+ =?utf-8?B?Q2xhdGx0RmN2NEdNcW16dGxMbzdYZFdUc01jTm5OUVFUOTJUNEJGbnpHWmZm?=
+ =?utf-8?B?YTVuZDc2MXFUclFZS3ZkMkZsU2E3dDdKd3gyWmR6b1prYlAxYU01UDJsa00x?=
+ =?utf-8?B?VHFzTkNNendkT2tNN1NwM2hVR1lvN3oyZkJrNTRZVUdkdGNBbHQ3RUppNmFq?=
+ =?utf-8?B?a3ZMWXFwbjFxYUtGSytzNGkydVNBUGV1RGRYVHRDeHAzSE9mazIrVjQvb2hv?=
+ =?utf-8?B?SHhqNTVqRTY0aUROUlNWdGR2UTRZaGQzUHpsMmhXL20xZFVzbG5LWHJjWHVK?=
+ =?utf-8?B?WXhpemhXS1p0Z2lORTVzTmFMZ01yREFoeEVyclhzYUZudGNNZUhwNU1JYUdm?=
+ =?utf-8?B?WnRJWncrR3lDT2NvUjBxa3F3M2N0WktmWFBoNTNqU3NqeHVpSGJIS2F6QzJ0?=
+ =?utf-8?B?Vk1XR2dOTVJ3eUdKZldPVjhIQlJTaGs5SkVpQjU1ajAyQ3B3RThVODc1SE1Q?=
+ =?utf-8?Q?V10vAj3myCoLoTqZUbr+49WYwNjM1mqT0ke9MBdmJSPc=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zfwbkmi9.ffs@tglx>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a21f7c7-598e-4d9d-178e-08dc2984746a
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2024 15:33:24.4833
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR02MB10102
 
-On Thu, Feb 08, 2024 at 04:23:58PM +0100, Thomas Gleixner wrote:
-> On Wed, Feb 07 2024 at 09:58, Marcelo Tosatti wrote:
-> > On Wed, Feb 07, 2024 at 12:57:19PM +0100, Thomas Gleixner wrote:
-> >> On Tue, Feb 06 2024 at 15:49, Marcelo Tosatti wrote:
-> >> > Change timekeeping_notify to use stop_machine_fail when appropriate,
-> >> > which will fail in case the target CPU is tagged as block interference
-> >> > CPU.
-> >> 
-> >> You completely fail to explain 'appropriate'. There is zero reason for
-> >> this churn, really.
-> >
-> > The churn is so that we can return an error to
-> > current_clocksource_store (sysfs handler for writes to
-> > /sys/devices/system/clocksource/clocksource0/current_clocksource).
-> 
-> What for? Why?
-> 
-> Writing to that file requires root. Root can rightfully screw up a
-> system and adding a debugfs based "prevention" mechanism is not making
-> this any better because root can just clear the CPU mask there and move
-> on.
-> 
-> So what is the actual real world problem solved by these patches?
-> 
-> All I've seen so far is handwaving about interference prevention and TBH
-> I can't squint hard enough to believe that.
-> 
-> Thanks,
-> 
->         tglx
-
-
-Thomas,
-
-The problem is an administrator is not aware of the relationship between
-
-Kernel interface        ->      generation of IPIs.
-
-
-Even less so of which applications in the system are accessing
-which kernel interfaces.
-
-Let me give some examples:
-
-1) Change of trip temperatures from userspace.
-
-static int
-sys_set_trip_temp(struct thermal_zone_device *tzd, int trip, int temp)
-{
-        struct zone_device *zonedev = thermal_zone_device_priv(tzd);
-        u32 l, h, mask, shift, intr;
-        int tj_max, val, ret;
-
-        tj_max = intel_tcc_get_tjmax(zonedev->cpu);
-        if (tj_max < 0)
-                return tj_max;
-        tj_max *= 1000;
-
-        val = (tj_max - temp)/1000;
-
-        if (trip >= MAX_NUMBER_OF_TRIPS || val < 0 || val > 0x7f)
-                return -EINVAL;
-
-        ret = rdmsr_on_cpu(zonedev->cpu, MSR_IA32_PACKAGE_THERM_INTERRUPT,
-                           &l, &h);
-        if (ret < 0)
-                return ret;
-
-        if (trip) {
-                mask = THERM_MASK_THRESHOLD1;
-                shift = THERM_SHIFT_THRESHOLD1;
-                intr = THERM_INT_THRESHOLD1_ENABLE;
-        } else {
-                mask = THERM_MASK_THRESHOLD0;
-                shift = THERM_SHIFT_THRESHOLD0;
-                intr = THERM_INT_THRESHOLD0_ENABLE;
-        }
-        l &= ~mask;
-        /*
-        * When users space sets a trip temperature == 0, which is indication
-        * that, it is no longer interested in receiving notifications.
-        */
-        if (!temp) {
-                l &= ~intr;
-        } else {
-                l |= val << shift;
-                l |= intr;
-        }
-
-        return wrmsr_on_cpu(zonedev->cpu, MSR_IA32_PACKAGE_THERM_INTERRUPT,
-                        l, h);
-}
-
-It seems plausible that userspace application decides to change trip temperature.
-
-2) Read of per-CPU registers (from sysfs).
-
-arch/arm64/kernel/topology.c
-
-static inline
-int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
-{
-        /*
-         * Abort call on counterless CPU or when interrupts are
-         * disabled - can lead to deadlock in smp sync call.
-         */
-        if (!cpu_has_amu_feat(cpu))
-                return -EOPNOTSUPP;
-
-        if (WARN_ON_ONCE(irqs_disabled()))
-                return -EPERM;
-
-        smp_call_function_single(cpu, func, val, 1);
-
-        return 0;
-}
-
-sysfs read -> cppc_get_perf_caps -> cpc_read -> cpc_read_ffh -> counters_read_on_cpu 
-
-#define define_one_cppc_ro(_name)               \
-static struct kobj_attribute _name =            \
-__ATTR(_name, 0444, show_##_name, NULL)
-
-This one does not even require root.
-
-Other interfaces on the same class:
-
-show_pw20_wait_time (PowerPC)
-uncore_read_freq (x86)
-..
-
-So while I understand your point that root can (and should be) 
-able to perform any operations on the system, this interface would 
-be along the lines of:
-
-"I don't want isolated CPUs to be interrupted, but i am not aware of
-which kernel interfaces can result in interruptions to isolated CPUs.
-
-Lets indicate through this cpumask, which the kernel can consult, 
-that we'd like userspace operations to fail, if they were going
-to interrupt an isolated CPU".
-
-Its the kernel that knows which operations might interrupt 
-isolated CPUs, not userspace.
-
-Also https://www.spinics.net/lists/kernel/msg5094328.html. 
-
+RnJvbTogTWljaGFlbCBLZWxsZXkgPG1oa2xpbnV4QG91dGxvb2suY29tPiBTZW50OiBGcmlkYXks
+IEphbnVhcnkgMTIsIDIwMjQgODoxOSBBTQ0KPiANCj4gRnJvbTogTWFya3VzIEVsZnJpbmcgPE1h
+cmt1cy5FbGZyaW5nQHdlYi5kZT4gU2VudDogRnJpZGF5LCBKYW51YXJ5IDEyLA0KPiAyMDI0IDEy
+OjA2IEFNDQo+ID4NCj4gPiDigKYNCj4gPiA+IEVsaW1pbmF0ZSB0aGUgZHVwbGljYXRpb24gYnkg
+bWFraW5nIG1pbm9yIHR3ZWFrcyB0byB0aGUgbG9naWMgYW5kDQo+ID4gPiBhc3NvY2lhdGVkIGNv
+bW1lbnRzLiBXaGlsZSBoZXJlLCBzaW1wbGlmeSB0aGUgaGFuZGxpbmcgb2YgbWVtb3J5DQo+ID4g
+PiBhbGxvY2F0aW9uIGVycm9ycywgYW5kIHVzZSB1bWluKCkgaW5zdGVhZCBvZiBvcGVuIGNvZGlu
+ZyBpdC4NCj4gPiDigKYNCj4gPg0KPiA+IEkgZ290IHRoZSBpbXByZXNzaW9uIHRoYXQgdGhlIGFk
+anVzdG1lbnQgZm9yIHRoZSBtZW50aW9uZWQgbWFjcm8NCj4gPiBzaG91bGQgYmUgcGVyZm9ybWVk
+IGluIGEgc2VwYXJhdGUgdXBkYXRlIHN0ZXAgb2YgdGhlIHByZXNlbnRlZCBwYXRjaCBzZXJpZXMu
+DQo+ID4gaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjYuNy9zb3VyY2UvaW5jbHVk
+ZS9saW51eC9taW5tYXguaCNMOTUNCj4gPg0KPiA+IFNlZSBhbHNvOg0KPiA+IGh0dHBzOi8vZ2l0
+Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC90
+cmVlL0RvY3UNCj4gPiBtZW50YXRpb24vcHJvY2Vzcy9zdWJtaXR0aW5nLXBhdGNoZXMucnN0P2g9
+djYuNyNuODENCj4gPg0KPiANCj4gVG8gbWUsIHRoaXMgaXMgYSBqdWRnbWVudCBjYWxsLiAgQnJl
+YWtpbmcgb3V0IHRoZSB1bWluKCkgY2hhbmdlIGludG8NCj4gYSBzZXBhcmF0ZSBwYXRjaCBpcyBP
+SywgYnV0IGZvciBjb25zaXN0ZW5jeSB0aGVuIEkgc2hvdWxkIHByb2JhYmx5DQo+IGJyZWFrIG91
+dCB0aGUgY2hhbmdlIHRvIG1lbW9yeSBhbGxvY2F0aW9uIGVycm9ycyBpbiB0aGUgc2FtZQ0KPiB3
+YXkuICAgVGhlbiB3ZSB3b3VsZCBoYXZlIHRocmVlIHBhdGNoZXMsIHBsdXMgdGhlIHBhdGNoIHRv
+DQo+IHNlcGFyYXRlbHkgaGFuZGxlIHRoZSBpbmRlbnRhdGlvbiBzbyB0aGUgY2hhbmdlcyBhcmUg
+cmV2aWV3YWJsZS4NCj4gVG8gbWUsIHRoYXQncyBvdmVya2lsbCBmb3IgdXBkYXRlcyB0byBhIHNp
+bmdsZSBmdW5jdGlvbiB0aGF0IGhhdmUNCj4gbm8gZnVuY3Rpb25hbGl0eSBjaGFuZ2UuICBUaGUg
+aW50ZW50IG9mIHRoZSBwYXRjaCBpcyB0byBjbGVhbnVwDQo+IGFuZCBzaW1wbGlmeSBhIHNpbmds
+ZSAxMy15ZWFyIG9sZCBmdW5jdGlvbiwgYW5kIGl0J3MgT0sgdG8gZG8NCj4gdGhhdCBpbiBhIHNp
+bmdsZSBwYXRjaCAocGx1cyB0aGUgaW5kZW50YXRpb24gcGF0Y2gpLg0KPiANCj4gV2VpIExpdSBp
+cyB0aGUgbWFpbnRhaW5lciBmb3IgdGhlIEh5cGVyLVYgY29kZS4gIFdlaSAtLSBhbnkNCj4gb2Jq
+ZWN0aW9ucyB0byBrZWVwaW5nIGEgc2luZ2xlIHBhdGNoIChwbHVzIHRoZSBpbmRlbnRhdGlvbiBw
+YXRjaCk/DQo+IEJ1dCBJJ2xsIGJyZWFrIGl0IG91dCBpZiB0aGF0J3MgeW91ciBwcmVmZXJlbmNl
+Lg0KPiANCg0KV2VpIExpdSAtLSBhbnkgaW5wdXQgb24gdGhpcz8gIFRoaXMgaXMganVzdCBhIGNs
+ZWFudXAvc2ltcGxpZmljYXRpb24NCnBhdGNoLCBzbyBpdCdzIG5vdCB1cmdlbnQuDQoNCk1pY2hh
+ZWwNCg==
 
