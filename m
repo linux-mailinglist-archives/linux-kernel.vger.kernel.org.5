@@ -1,62 +1,65 @@
-Return-Path: <linux-kernel+bounces-58934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF5684EED0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 03:16:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB4C84EED5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 03:27:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DC3A1C252AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:16:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44F941C249D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0FBE15CB;
-	Fri,  9 Feb 2024 02:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE64184F;
+	Fri,  9 Feb 2024 02:27:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RuT6M5jT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q/NNPHYt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7911847;
-	Fri,  9 Feb 2024 02:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C121215AF;
+	Fri,  9 Feb 2024 02:27:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707444958; cv=none; b=DqccfleeiZ8fQdlV9mmpYhquqfe7KheD/3Y8jFDLVG1hE8NICAFr7XP3CfAxHTYquhtJU2UMEult3n3Fl//mYWrS8skP7NGCyrVEZldpK5yGmYXEx6K7wNLdjzgYqhPSVCRMwWHpldmap1M3vRWlPOFP0qBSdp+EyAq/Imu0U40=
+	t=1707445653; cv=none; b=kQ2Uz7YaBsJ+LQivzTjvPQ4QS/X8McMcG9tYkaNE0o7SlblPw4bmi64iwb3mhJRuux51UPjqlPKflG2sDySaV/P+he0VCxccnOKgS/ssdwHahc+MdLTfbzhpSEMXI1SC7jS7bw5OWAJNuUbGgelfEZP2eZ88gOml+18lzGVFjgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707444958; c=relaxed/simple;
-	bh=K41srwnRLdSplv9McebjGI4ImuKEtYaNhWDWRSAPk2s=;
+	s=arc-20240116; t=1707445653; c=relaxed/simple;
+	bh=ns/Mvlqwop9xUQ+s6HUrxZXwL1LrVIE2gNKocZqIGZs=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rcwc6xSVWrDkgj/2AzyykipQ+Z6l2LXdqgWSlHyb+cmmQKBGO9mXleCyOfU7yW9jcbdL+l3vKbjzpr5+q6TLFdBUfu5//W56u8WJ2lqTQDoGMmrAv1waWYb3rsSgCvXGMp9nGlxz7FhThscKuMSFXg/hNjYwZehg9bZaH2vDPBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RuT6M5jT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75B96C433C7;
-	Fri,  9 Feb 2024 02:15:56 +0000 (UTC)
+	 MIME-Version:Content-Type; b=C5r7kZ1QzvGBTv6CZVLPI75kDvcytXrqOEVLEZMH5yENZidOOv+OCTflBz3l6M0SZaZshIHAePeRmZnh395xD1LncYu/ctsOU7xK+iqUZtkO382Tsb0SZ308pDzTEXWGwiKPVlptMWFXCPzEBlZD2d8bXekWyAzwSNYcRB4UscA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q/NNPHYt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 369AEC433F1;
+	Fri,  9 Feb 2024 02:27:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707444957;
-	bh=K41srwnRLdSplv9McebjGI4ImuKEtYaNhWDWRSAPk2s=;
+	s=k20201202; t=1707445653;
+	bh=ns/Mvlqwop9xUQ+s6HUrxZXwL1LrVIE2gNKocZqIGZs=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RuT6M5jTJijYFyI5SwRwHsw3lH3+l0Mkfq553+hVwJbhBQuNWfKvQnt63DSstFKL8
-	 /PTlhj50Af5gLbzj2hxKFOQAw26PD8Xj/j2skaLtvo/U5A1BwYYxtmwB3Pg2hFsHzA
-	 G4Fu9q3bzXgP5tVLJcfBQTLMQ76YXYlMlygqgYh3AaXCovwhXrend/cOxF0k4HJuKl
-	 iA12vZ7JxkFyIFNJBnhnaOVVBnWeEzUJmzg9p1Ik7w5LpwbzmysjvmjX3jnKMmYAeE
-	 y2QGK7LbMUG1m8AlUuVZSDiT6jOTsJRky2fvCliB53wrkvHkH1/9VCFRiEfFS5bUly
-	 BPNd5UhN7IYZw==
-Date: Thu, 8 Feb 2024 18:15:55 -0800
+	b=Q/NNPHYta14WToW10B1jDtf5GB71d020cOck6SAiVs0HxnVHub+JpbRUc15VBhWSV
+	 V0Xkl6/f3+xE2W2K3syL2s98cvi5JicoIUoXeFs0Bng4raT4MJ16l3wEXxczxJ4jet
+	 x+NV/1T3ib99o8aaqTxIKuGLUYy4W9T2oB510D0Oh7ayljAjCsslKEs8v5HQqxA0Ho
+	 cecWZQfXc40jjyqKPoO/i2Y9XuCaSzS2Zw8ml2zdA2fxO8bEXAvqsbNNgaWS1649nh
+	 Xny8qjuqDL4LLnpiavfCXKgj5mduYbXU/UDe4HT50WJboYrVh7dvSG1CLXt7E9vPBP
+	 9Jxs8eCX1K3Lg==
+Date: Thu, 8 Feb 2024 18:27:31 -0800
 From: Jakub Kicinski <kuba@kernel.org>
-To: Saeed Mahameed <saeed@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Leon Romanovsky <leonro@nvidia.com>, Jason
- Gunthorpe <jgg@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Leonid Bloch
- <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>, Saeed Mahameed
- <saeedm@nvidia.com>, David Ahern <dsahern@kernel.org>, Aron Silverton
- <aron.silverton@oracle.com>, Christoph Hellwig <hch@infradead.org>,
- andrew.gospodarek@broadcom.com, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240208181555.22d35b61@kernel.org>
-In-Reply-To: <ZcRgp76yWcDfEbMy@x130>
-References: <20240207072435.14182-1-saeed@kernel.org>
-	<20240207070342.21ad3e51@kernel.org>
-	<ZcRgp76yWcDfEbMy@x130>
+To: Stephen Hemminger <stephen@networkplumber.org>
+Cc: netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jamal Hadi Salim
+ <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko
+ <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org
+ (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+ linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH net-next v2] net/sched: actions report errors with
+ extack
+Message-ID: <20240208182731.682985dd@kernel.org>
+In-Reply-To: <20240205185537.216873-1-stephen@networkplumber.org>
+References: <20240205185537.216873-1-stephen@networkplumber.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,150 +69,112 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 7 Feb 2024 21:03:35 -0800 Saeed Mahameed wrote:
-> On 07 Feb 07:03, Jakub Kicinski wrote:
-> >On Tue,  6 Feb 2024 23:24:30 -0800 Saeed Mahameed wrote:  
-> >> From: Saeed Mahameed <saeedm@nvidia.com>
-> >>
-> >> Recap from V3 discussion:
-> >> =========================
-> >>
-> >> LWN has published an article on this series aptly summarizing the debate.
-> >> LINK: https://lwn.net/Articles/955001/
-> >>
-> >> We continue to think that mlx5ctl is reasonable and aligned with the
-> >> greater kernel community values. People have pointed to the HW RAID
-> >> miscdevices as a good analog. The MD developers did not get to block HW
-> >> RAID configuration on the basis that it undermines their work on the
-> >> software RAID stack. Further, while there is a superficial similarity to
-> >> the DRM/accel debate, that was grounded in a real concern that DRM values
-> >> on open source would be bypassed. That argument does not hold up here as
-> >> this does come with open source userspace and the functionality mlx5ctl
-> >> enables on lockdown has always been available to ConnectX users through
-> >> the non-lockdown PCI sysfs. netdev has been doing just fine despite the
-> >> long standing presence of this tooling and we have continued to work with
-> >> Jakub on building common APIs when appropriate. mlx5 already implements
-> >> a wide range of the netdev common interfaces, many of which were pushed
-> >> forward by our staff - the DPLL configuration netlink being a recent
-> >> example.  
-> >
-> >I appreciate Jiri's contributions (and you hired Maciej off of Intel at
-> >some point) but don't make it sound like nVidia lead DPLL, or pushed for
-> >a common interface :| Intel posted SyncE support. I asked them make it
-> >a standalone API family:
->
-> I will let the stats speak for itself.
-> $ git shortlog -sne --no-merges net/devlink 
-> and prior to commit f05bd8ebeb69 devlink: move code to a dedicated directory
-> $ git shortlog -sne --no-merges net/core/devlink.c
-> 
-> More than 70% of the commits are authored by more than 10 different individuals
-> form Mellanox/Nvidia .. 
+On Mon,  5 Feb 2024 10:52:40 -0800 Stephen Hemminger wrote:
+> -static int tcf_bpf_init_from_ops(struct nlattr **tb, struct tcf_bpf_cfg *cfg)
+> +static int tcf_bpf_init_from_ops(struct nlattr **tb, struct tcf_bpf_cfg *cfg,
+> +				 struct netlink_ext_ack *extack)
+>  {
+>  	struct sock_filter *bpf_ops;
+>  	struct sock_fprog_kern fprog_tmp;
+> @@ -193,12 +194,17 @@ static int tcf_bpf_init_from_ops(struct nlattr **tb, struct tcf_bpf_cfg *cfg)
+>  	int ret;
+>  
+>  	bpf_num_ops = nla_get_u16(tb[TCA_ACT_BPF_OPS_LEN]);
+> -	if (bpf_num_ops	> BPF_MAXINSNS || bpf_num_ops == 0)
+> +	if (bpf_num_ops	> BPF_MAXINSNS || bpf_num_ops == 0) {
+> +		NL_SET_ERR_MSG_FMT_MOD(extack,
+> +				       "Invalid number of BPF instructions %u", bpf_num_ops);
 
-I'm not questioning that there are folks at nVidia who prefer to go 
-the generic infrastructure route. Jiri and mlxsw team especially.
-I do worry that adding a pass thru interface will undermine them,
-but that wasn't my main point.
+out of range seems better than invalid.
+In fact it should be added to the policy.
 
-> Ok you don't like DPLL,
+>  		return -EINVAL;
+> +	}
+>  
+>  	bpf_size = bpf_num_ops * sizeof(*bpf_ops);
+> -	if (bpf_size != nla_len(tb[TCA_ACT_BPF_OPS]))
+> +	if (bpf_size != nla_len(tb[TCA_ACT_BPF_OPS])) {
+> +		NL_SET_ERR_MSG_FMT_MOD(extack, "BPF instruction size %u", bpf_size);
 
-I didn't say I dislike DPLL. I think it's a very odd example for
-you to pick for nVidia's contribution. My recollection is:
+Doesn't sound like an error.
+Something about number of instructions not matching the program size
+would be better
 
- - Maciej from Intel started developing upstream API for SyncE support
- - I asked him to generalize it to DPLL, he started working on it
- - nVidia expressed interest in creating a common interface, we thought
-   it'd be great to align vendors
- - nVidia hired Maciej from Intel, shutting down Intel's progress for a while
- - nVidia went AWoL, long response times, we held meetings to nudge
-   you along, no commitments
- - then after months and months Jiri started helping Arkadiusz and Vadim
+>  		return -EINVAL;
+> +	}
+>  
+>  	bpf_ops = kmemdup(nla_data(tb[TCA_ACT_BPF_OPS]), bpf_size, GFP_KERNEL);
+>  	if (bpf_ops == NULL)
+> @@ -221,7 +227,8 @@ static int tcf_bpf_init_from_ops(struct nlattr **tb, struct tcf_bpf_cfg *cfg)
+>  	return 0;
+>  }
+>  
+> -static int tcf_bpf_init_from_efd(struct nlattr **tb, struct tcf_bpf_cfg *cfg)
+> +static int tcf_bpf_init_from_efd(struct nlattr **tb, struct tcf_bpf_cfg *cfg,
+> +				 struct netlink_ext_ack *extack)
+>  {
+>  	struct bpf_prog *fp;
+>  	char *name = NULL;
+> @@ -230,8 +237,10 @@ static int tcf_bpf_init_from_efd(struct nlattr **tb, struct tcf_bpf_cfg *cfg)
+>  	bpf_fd = nla_get_u32(tb[TCA_ACT_BPF_FD]);
+>  
+>  	fp = bpf_prog_get_type(bpf_fd, BPF_PROG_TYPE_SCHED_ACT);
+> -	if (IS_ERR(fp))
+> +	if (IS_ERR(fp)) {
+> +		NL_SET_ERR_MSG_MOD(extack, "BPF program type mismatch");
+>  		return PTR_ERR(fp);
+> +	}
+>  
+>  	if (tb[TCA_ACT_BPF_NAME]) {
+>  		name = nla_memdup(tb[TCA_ACT_BPF_NAME], GFP_KERNEL);
+> @@ -292,16 +301,20 @@ static int tcf_bpf_init(struct net *net, struct nlattr *nla,
+>  	int ret, res = 0;
+>  	u32 index;
+>  
+> -	if (!nla)
+> +	if (!nla) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Bpf requires attributes to be passed");
 
-I remember thinking at the time that it must have been a terrible
-experience for Intel, definitely not how cooperation upstream should
-look :|
+You use "BPF" (capitals) elsewhere. Also not sure the "BPF" prefix is
+actually needed, given the _MOD() will prefix this with cls_bpf already.
 
-IDK how disconnected from upstream netdev you have to be to put that on
-your banner.
+>  		return -EINVAL;
+> +	}
+>  
+>  	ret = nla_parse_nested_deprecated(tb, TCA_ACT_BPF_MAX, nla,
+>  					  act_bpf_policy, NULL);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	if (!tb[TCA_ACT_BPF_PARMS])
+> +	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_ACT_BPF_PARMS)) {
+> +		NL_SET_ERR_MSG(extack, "Missing required attribute");
 
-> here is a list of some central devlink features we did 
-> push to the devlink standard API:
-> 
->   - subfunction API and devlink infrastructure
->   - Shared buffer API
->   - port function and rate API
->   - shared buffer
->   - health 
+Please fix the userspace to support missing attr parsing instead.
 
-I guess shared buffer was important enough to mention twice? :)
+>  		return -EINVAL;
+> +	}
+>  
+>  	parm = nla_data(tb[TCA_ACT_BPF_PARMS]);
+>  	index = parm->index;
+> @@ -336,14 +349,15 @@ static int tcf_bpf_init(struct net *net, struct nlattr *nla,
+>  	is_ebpf = tb[TCA_ACT_BPF_FD];
+>  
+>  	if (is_bpf == is_ebpf) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Can not specify both BPF fd and ops");
 
-> >https://lore.kernel.org/netdev/20210830162909.110753ec@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
-> >
-> >Vadim from Meta joined in and helped a lot based on the OCP time card.
-> >Then after some delaying and weird noises y'all started participating.
-> >  
-> 
-> I remember those discussions, and I agree it is very weird when it
-> takes 3 vendors and 2 years to get a simple devlink API for single bit
-> flip accepted.
+bytecode would be better than ops
 
-In hindsight it was naive of us to try to wait for nVidia.
-It's better to let one vendor blaze the trail and others to follow.
-
-> >>     i) mstreg
-> >>       The mlxreg utility allows users to obtain information regarding
-> >>       supported access registers, such as their fields  
-> >
-> >So the access mstreg gives over this interface is read only? That's
-> >what your description sounds like, but given your complaints about
-> >"inability to add knobs" and "control" in the name of the driver that
-> >must be false.
-> >  
-> 
-> Yes this is enforced by the mlx5ctl driver and FW using the special
-> debug uid.
-
-So we trust the proprietary FW not to let the proprietary user space
-do something out of scope. Got it.
-
-> >> Other usecases with umem:
-> >>   - dynamic HW and FW trace monitoring
-> >>   - high frequency diagnostic counters sampling  
-> >
-> >Ah yes, the high frequency counters. Something that is definitely
-> >impossible to implement in a generic way. You were literally in the
-> >room at netconf when David Ahern described his proposal for this.
-> >  
-> 
-> I was in the room and I am in support of David's idea, I like it a lot,
-> but I don't believe we have any concrete proposal, and we don't have any
-> use case for it in netdev for now, our use case for this is currently RDMA
-> and HPC specific.
-> 
-> Also siimilar to devlink we will be the first to jump in and implement
-> the new API once defined, but this doesn't mean I need to throw away the
-
-I'm not asking to throw it away. The question is only whether you get
-to push it upstream and skirt subsystem rules by posting a "misc" driver
-without even CCing the maintainers on v1 :|
-
-> whole driver just because one single use case will be implemented in netdev
-> one day, and I am sure the netdev implementation won't satisfy all the
-> use-cases of high frequency counters:
-> 
-> Also keep in mind high frequency counters is a very small part of the debug 
-> and access capabilities the mlx5ctl interface offers.
-> 
-> >Anyway, I don't want to waste any more time arguing with you.
-> >My opinion is that the kernel community is under no obligation to carry
-> >your proprietary gateway interfaces. I may be wrong, but I'm entitled
-> >to my opinion.
-> 
-> Thanks, I appreciate your honesty, but I must disagree with your Nack, we
-> provided enough argument for why we believe this approach is the right
-> way to go, it is clear from the responses on V3 and from the LWN article
-> that we have the community support for this open source project.
-
-Why don't you repost it to netdev and see how many acks you get?
-I'm not the only netdev maintainer.
+>  		ret = -EINVAL;
+>  		goto put_chain;
+>  	}
+>  
+>  	memset(&cfg, 0, sizeof(cfg));
+>  
+> -	ret = is_bpf ? tcf_bpf_init_from_ops(tb, &cfg) :
+> -		       tcf_bpf_init_from_efd(tb, &cfg);
+> +	ret = is_bpf ? tcf_bpf_init_from_ops(tb, &cfg, extack) :
+> +		       tcf_bpf_init_from_efd(tb, &cfg, extack);
+>  	if (ret < 0)
+>  		goto put_chain;
 
