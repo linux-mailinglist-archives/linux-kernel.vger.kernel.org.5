@@ -1,223 +1,223 @@
-Return-Path: <linux-kernel+bounces-60113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E42B850012
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:35:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DDA3850008
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:34:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DBE8B2CD1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:33:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDD201F2218E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:34:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F71A39AF9;
-	Fri,  9 Feb 2024 22:30:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE61C364D4;
+	Fri,  9 Feb 2024 22:31:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="XEtpvBpf";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="AerX8605"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OkOMwdti"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C04539AD1;
-	Fri,  9 Feb 2024 22:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01BD62E647
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:31:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707517852; cv=none; b=Ev5AbhJrXXlEz/HQhBr9RdapKgS9FJtYaMUfYnLCxpTnU1mHGGSOFPGTx1Ounm/xysviKLh/rBzN11PyJmbcbAgw3THJPdo+5X9R9JSDoXeNeWThUMYjtkJuxfrvQQCAMQ2rc4bheQWS7fA8Uxvtnlqg/xv89cxYz55hHde2+2E=
+	t=1707517891; cv=none; b=BgMx55TXbHEkLi/kVA4cddpe36P56We144ujnYazKss18pQgmz32sdPO/LSWVIy0zAhBvv1WZjZnbVT+gwcxdvSOWrcRxw11q/7/4TxkWKkasCXuxNWb/iuS3qFZoBpNJIQFLRz+yzDIL2Bw0HYj9fD1Nv8ztFvMCHdAlqEGzmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707517852; c=relaxed/simple;
-	bh=WfrDfJeZPwMlSR2dpbJWm5p2rTmdITk0It1fj0d3Urg=;
-	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=uXwlryZYVIUZJqkInniJ6aeXotaoWjZtW8OKq1ukSA6KWHE6KNaBeXFbahr6wkOtWFze4hyLthrf+MD2qiCyYMgnxfLnIsURb8Rw0waJ2CCZ4os7Ciadbcf0ZbbffeS2KiQJjU9VlRHMg3US9eka77/n615Q6Ve+a5ZBlOBma3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=XEtpvBpf; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=AerX8605; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1707517849;
-	bh=WfrDfJeZPwMlSR2dpbJWm5p2rTmdITk0It1fj0d3Urg=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=XEtpvBpfGPaoKFNnIq+ysOBrp9e/Ff/7ww0vCRd2nHG+toYTuMYu3oQDcMVIqOKWf
-	 49+NfKnnvREKjqERO6x7IB3x4VecfrU/FkvkXEk4YsZ++fNgJPAYc3fPjuXmxkm58Q
-	 BMhr/iUunYCHgB0RR9XTCNCKNdwu3WPln5K7Kl00=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 06E611286810;
-	Fri,  9 Feb 2024 17:30:49 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id LrY6INkDyhof; Fri,  9 Feb 2024 17:30:48 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1707517848;
-	bh=WfrDfJeZPwMlSR2dpbJWm5p2rTmdITk0It1fj0d3Urg=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=AerX8605vZmjHkSHN0qW+4kMCv1YEyA1szkhMLmWqgR0lTcs+fVo5rit2+QNkzzi4
-	 vvUNLAfpmXaSYFv1pQzLPhvoSzjmBQ/t0lmGruyWv0FY02U0fEz4tV47UFheKmSVCj
-	 OnLhGVlE7kbSzIJm4JCQeNXk368JUkcw/pKYLPrc=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 44AE51281625;
-	Fri,  9 Feb 2024 17:30:48 -0500 (EST)
-Message-ID: <df8e539e6f1e708d1a1b0025632ae3b42bb7ff84.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 6.8-rc3
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds
-	 <torvalds@linux-foundation.org>
-Cc: linux-scsi <linux-scsi@vger.kernel.org>, linux-kernel
-	 <linux-kernel@vger.kernel.org>
-Date: Fri, 09 Feb 2024 17:30:46 -0500
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1707517891; c=relaxed/simple;
+	bh=8p4VEXa0Kgv0eQllxoIvzZUOBBNqsem7R6zEKzU4i+U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Uid+laulm8XCNEoUreRsDp1bUvICIK0BcH5Vo+w1cMJt7UdK4rHCSQRqQdvRZLSj0rYM2AnkpoEjoD36rhxIuB0D+s8Oh8x6YJ67voYCdW0+waLSK4SazL+ysSrILsMeSW0VPTc61JLGfxVidENjzpo///+pnRBCJVQVUaecjSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OkOMwdti; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707517889;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=o84G0EeXm0vGHwnJrqDjJuR35i6L4PXjF7UAUJUO5no=;
+	b=OkOMwdtihkp7y8ghqhTO7TRvFeeYUr26INcVJX/IboMZSoLXlo5TpsR+lYtm6fd/GuJEdT
+	CsD+NQ7SwZsBW0B6yW8cB+WXxE91MFfWM/VMK9jPBkHZ/OMp0putJJatJ5t4PuH6eVdB+B
+	fClo4V8wzh8YeQ2PC9NQI6bF5DBgJM8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-nxr1xh6DN8KfPnUUS4lvZA-1; Fri, 09 Feb 2024 17:31:27 -0500
+X-MC-Unique: nxr1xh6DN8KfPnUUS4lvZA-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40fb74433ebso9224315e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:31:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707517886; x=1708122686;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o84G0EeXm0vGHwnJrqDjJuR35i6L4PXjF7UAUJUO5no=;
+        b=KrzXY+9x5XGpwz4PJLL80LZunu4hGKJ/dUWI0qpPnC11Qv+dgmC1r9cIUqSzGFG2GN
+         lfK0TWDbcTBTcrWuIcr01/FCX5XVxq51jWC8vT3yxupurTfULZyK3eekyTWuLhbzJL12
+         MlN7Km9m91WUWe9haQqKlBF/X+NYJ2ciZARyZL/F5xGfux4QwIy5VLDPYQpsJ+mEVStK
+         qVRYr5oLpWv/blrDgIoxKmbfaJgw20mJltm7EXjItahPD02qYxaaltSDPcGHjpyXg055
+         StxX9IRWFu1aF0iWlbZ3Hl27iyoPJSkYb6mrb5t0bMWAWuKLlDdJ8oGMFljPAW8QemVI
+         Zhhg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZfBPqedCaZQIomn05NqZmsaodq2TZ5IfmIt1/c5WIVonHbQMXaYz3z6wcsr1K4+sPpXq1fwpAijQrLj8+srr2vsCgz2bagfncMqGY
+X-Gm-Message-State: AOJu0Yzv491v5R5nLqQIiqslzlVTkQrjXobMOBjE8O8BRNarQVaijj5R
+	VEGBVjUTSUeRJj+TTNQIZJfL2tyl3F3gN3pI7rM9V20pjocC7k1eqsZRUAczoiV9i6OyzXTsSXs
+	oKM9JBCjv9BvJBsFrUNwMIFhZGnNMNji3J2URcVuTmCIheH7CEmv6HgY7faK1Ag==
+X-Received: by 2002:a05:600c:511e:b0:410:6dfb:6f25 with SMTP id o30-20020a05600c511e00b004106dfb6f25mr403443wms.0.1707517886319;
+        Fri, 09 Feb 2024 14:31:26 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEqvvdbZm3iOppsExvwbOrpna0M6WJoI2+u5jFx2mdU8IlBrJ2UWpAXEPWFdUTY4VYs6r1NEg==
+X-Received: by 2002:a05:600c:511e:b0:410:6dfb:6f25 with SMTP id o30-20020a05600c511e00b004106dfb6f25mr403438wms.0.1707517885959;
+        Fri, 09 Feb 2024 14:31:25 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXCxASgX/kyQYrW21Vn19V46vPe1WbfO3mvHkEC8NUHRjWNCYjfU1KBM5KSkdzZX/SaVNfh+1pFwPED/WHUzBIoN5xTywOAeC/UqhBqDRCI6zkxYQ5+VV3Q1a7FQQwT1vt5X5/kHVQ2dn4SA5PYUqvU+8dXoGRyN7Wok5wYnvf7
+Received: from ?IPV6:2003:cb:c718:6800:9d15:2b60:4f57:7998? (p200300cbc71868009d152b604f577998.dip0.t-ipconnect.de. [2003:cb:c718:6800:9d15:2b60:4f57:7998])
+        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b00410727c315fsm1779066wmb.16.2024.02.09.14.31.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 14:31:25 -0800 (PST)
+Message-ID: <2e7496af-0988-49fb-9582-bf6a94f08198@redhat.com>
+Date: Fri, 9 Feb 2024 23:31:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fs/proc/task_mmu: Add display flag for VM_MAYOVERLAY
+Content-Language: en-US
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20240208084805.1252337-1-anshuman.khandual@arm.com>
+ <fb157154-5661-4925-b2c5-7952188b28f5@redhat.com>
+ <20240208124035.1c96c256d6e8c65f70b18675@linux-foundation.org>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240208124035.1c96c256d6e8c65f70b18675@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-4 small fixes, 3 in drivers with the remaining core fix being a fixup
-to the one in the last pull request which didn't entirely move checking
-of scsi_host_busy() out from under the host lock.
+On 08.02.24 21:40, Andrew Morton wrote:
+> On Thu, 8 Feb 2024 17:48:26 +0100 David Hildenbrand <david@redhat.com> wrote:
+> 
+>> On 08.02.24 09:48, Anshuman Khandual wrote:
+>>> VM_UFFD_MISSING flag is mutually exclussive with VM_MAYOVERLAY flag as they
+>>> both use the same bit position i.e 0x00000200 in the vm_flags. Let's update
+>>> show_smap_vma_flags() to display the correct flags depending on CONFIG_MMU.
+>>>
+>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>> Cc: David Hildenbrand <david@redhat.com>
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Cc: linux-fsdevel@vger.kernel.org
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>> This applies on v6.8-rc3
+>>>
+>>>    fs/proc/task_mmu.c | 4 ++++
+>>>    1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+>>> index 3f78ebbb795f..1c4eb25cfc17 100644
+>>> --- a/fs/proc/task_mmu.c
+>>> +++ b/fs/proc/task_mmu.c
+>>> @@ -681,7 +681,11 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
+>>>    		[ilog2(VM_HUGEPAGE)]	= "hg",
+>>>    		[ilog2(VM_NOHUGEPAGE)]	= "nh",
+>>>    		[ilog2(VM_MERGEABLE)]	= "mg",
+>>> +#ifdef CONFIG_MMU
+>>>    		[ilog2(VM_UFFD_MISSING)]= "um",
+>>> +#else
+>>> +		[ilog2(VM_MAYOVERLAY)]	= "ov",
+>>> +#endif /* CONFIG_MMU */
+>>>    		[ilog2(VM_UFFD_WP)]	= "uw",
+>>>    #ifdef CONFIG_ARM64_MTE
+>>>    		[ilog2(VM_MTE)]		= "mt",
+>>
+>> Reviewed-by: David Hildenbrand <david@redhat.com>
+> 
+> I'm thinking
+> 
+> Fixes: b6b7a8faf05c ("mm/nommu: don't use VM_MAYSHARE for MAP_PRIVATE mappings")
+> Cc: <stable@vger.kernel.org>
 
-The patch is available here:
+I'm having a hard time believing that anybody that runs a !MMU kernel 
+would actually care about this bit being exposed as "ov" instead of "uw".
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+So in my thinking, one could even update 
+Documentation/filesystems/proc.rst to just mention that "uw" on !MMU is 
+only used for internal purposes.
 
-The short changelog is:
+But now, I actually read what that structure says:
 
-Alice Chao (1):
-      scsi: ufs: core: Fix shift issue in ufshcd_clear_cmd()
+"Don't forget to update Documentation/ on changes."
 
-Hannes Reinecke (1):
-      scsi: lpfc: Use unsigned type for num_sge
+So, let's look there: Documentation/filesystems/proc.rst
 
-Ming Lei (1):
-      scsi: core: Move scsi_host_busy() out of host lock if it is for per-command
+"Note that there is no guarantee that every flag and associated mnemonic 
+will be present in all further kernel releases. Things get changed, the 
+flags may be vanished or the reverse -- new added. Interpretation of 
+their meaning might change in future as well. So each consumer of these 
+flags has to follow each specific kernel version for the exact semantic.
 
-SEO HOYOUNG (1):
-      scsi: ufs: core: Remove the ufshcd_release() in ufshcd_err_handling_prepare()
+This file is only present if the CONFIG_MMU kernel configuration option 
+is enabled."
 
-And the diffstat:
+And in fact
 
- drivers/scsi/lpfc/lpfc_scsi.c | 12 ++++++------
- drivers/scsi/scsi_error.c     |  3 ++-
- drivers/scsi/scsi_lib.c       |  4 +++-
- drivers/ufs/core/ufshcd.c     |  5 +++--
- 4 files changed, 14 insertions(+), 10 deletions(-)
+$ git grep MMU fs/proc/Makefile
+fs/proc/Makefile:proc-$(CONFIG_MMU)     := task_mmu.o
 
-With full diff below.
 
-James
+So I rewoke my RB, this patch should be dropped and was never even 
+tested unless I am missing something important.
 
----
+-- 
+Cheers,
 
-diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
-index d26941b131fd..bf879d81846b 100644
---- a/drivers/scsi/lpfc/lpfc_scsi.c
-+++ b/drivers/scsi/lpfc/lpfc_scsi.c
-@@ -1918,7 +1918,7 @@ lpfc_bg_setup_bpl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
-  *
-  * Returns the number of SGEs added to the SGL.
-  **/
--static int
-+static uint32_t
- lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 		struct sli4_sge *sgl, int datasegcnt,
- 		struct lpfc_io_buf *lpfc_cmd)
-@@ -1926,8 +1926,8 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 	struct scatterlist *sgde = NULL; /* s/g data entry */
- 	struct sli4_sge_diseed *diseed = NULL;
- 	dma_addr_t physaddr;
--	int i = 0, num_sge = 0, status;
--	uint32_t reftag;
-+	int i = 0, status;
-+	uint32_t reftag, num_sge = 0;
- 	uint8_t txop, rxop;
- #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
- 	uint32_t rc;
-@@ -2099,7 +2099,7 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
-  *
-  * Returns the number of SGEs added to the SGL.
-  **/
--static int
-+static uint32_t
- lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 		struct sli4_sge *sgl, int datacnt, int protcnt,
- 		struct lpfc_io_buf *lpfc_cmd)
-@@ -2123,8 +2123,8 @@ lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 	uint32_t rc;
- #endif
- 	uint32_t checking = 1;
--	uint32_t dma_offset = 0;
--	int num_sge = 0, j = 2;
-+	uint32_t dma_offset = 0, num_sge = 0;
-+	int j = 2;
- 	struct sli4_hybrid_sgl *sgl_xtra = NULL;
- 
- 	sgpe = scsi_prot_sglist(sc);
-diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
-index 4f455884fdc4..612489afe8d2 100644
---- a/drivers/scsi/scsi_error.c
-+++ b/drivers/scsi/scsi_error.c
-@@ -282,11 +282,12 @@ static void scsi_eh_inc_host_failed(struct rcu_head *head)
- {
- 	struct scsi_cmnd *scmd = container_of(head, typeof(*scmd), rcu);
- 	struct Scsi_Host *shost = scmd->device->host;
-+	unsigned int busy = scsi_host_busy(shost);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(shost->host_lock, flags);
- 	shost->host_failed++;
--	scsi_eh_wakeup(shost, scsi_host_busy(shost));
-+	scsi_eh_wakeup(shost, busy);
- 	spin_unlock_irqrestore(shost->host_lock, flags);
- }
- 
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index 1fb80eae9a63..df5ac03d5d6c 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -278,9 +278,11 @@ static void scsi_dec_host_busy(struct Scsi_Host *shost, struct scsi_cmnd *cmd)
- 	rcu_read_lock();
- 	__clear_bit(SCMD_STATE_INFLIGHT, &cmd->state);
- 	if (unlikely(scsi_host_in_recovery(shost))) {
-+		unsigned int busy = scsi_host_busy(shost);
-+
- 		spin_lock_irqsave(shost->host_lock, flags);
- 		if (shost->host_failed || shost->host_eh_scheduled)
--			scsi_eh_wakeup(shost, scsi_host_busy(shost));
-+			scsi_eh_wakeup(shost, busy);
- 		spin_unlock_irqrestore(shost->host_lock, flags);
- 	}
- 	rcu_read_unlock();
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 029d017fc1b6..d77b25b79ae3 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -3057,7 +3057,7 @@ bool ufshcd_cmd_inflight(struct scsi_cmnd *cmd)
-  */
- static int ufshcd_clear_cmd(struct ufs_hba *hba, u32 task_tag)
- {
--	u32 mask = 1U << task_tag;
-+	u32 mask;
- 	unsigned long flags;
- 	int err;
- 
-@@ -3075,6 +3075,8 @@ static int ufshcd_clear_cmd(struct ufs_hba *hba, u32 task_tag)
- 		return 0;
- 	}
- 
-+	mask = 1U << task_tag;
-+
- 	/* clear outstanding transaction before retry */
- 	spin_lock_irqsave(hba->host->host_lock, flags);
- 	ufshcd_utrl_clear(hba, mask);
-@@ -6352,7 +6354,6 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
- 		ufshcd_hold(hba);
- 		if (!ufshcd_is_clkgating_allowed(hba))
- 			ufshcd_setup_clocks(hba, true);
--		ufshcd_release(hba);
- 		pm_op = hba->is_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
- 		ufshcd_vops_resume(hba, pm_op);
- 	} else {
+David / dhildenb
 
 
