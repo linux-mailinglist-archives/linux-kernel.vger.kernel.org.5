@@ -1,80 +1,130 @@
-Return-Path: <linux-kernel+bounces-59516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 594B184F841
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F000784F846
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:13:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8209C1C2519F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:11:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C93F1C236A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:13:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85776E2C1;
-	Fri,  9 Feb 2024 15:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2394F6F086;
+	Fri,  9 Feb 2024 15:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qXnBv+Pa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="a4P2MYPi"
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E821E6D1CB;
-	Fri,  9 Feb 2024 15:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22A96BFB6
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 15:13:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707491474; cv=none; b=iRL7xWLffef9BAzzlPWQJF+i3F8kPD2p6obUT55UOSEAEkP05cM+EuTZzjTa61s2mCprMFI/PJ583q8dCBd3HkcENt333LXL8EddJbcX/2UYCr5hUiG0YLlAv0F5aThpm68WIH2ViewWFZVoZz7EWcdndREOTaY6X2HknXdVR/E=
+	t=1707491597; cv=none; b=OQ8LETfGqbjOwniA8ddJsozq5LdLbXI9yQldn8xVYTUZdye9S1x5OKFYplNUhu5LZvZmVQ0CxPQycwrPGw2eKwkmjtBW1ybKohWiw92fWsNZGBvtLkdBrl5iqGFk18DwHPghWInGwwLOgLH+n7LgYQIGp9IDHj0saUQbTtgQlWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707491474; c=relaxed/simple;
-	bh=VwCqQlgMD5ijvTe1CDRtTpyuJtBMBP3AZJbX9C0U4eQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JVToFPgd3os8xSN2CS9NPPH/iCnqIujeZ9cV64F/vX/xQ+mNFDxpYwvwzzG9ucQ5+7NIbK7bD4DQjYX/z2FNd+BDQie6qlt1LEzw4AZN20jNZE5Ucq/39CBRTNliy1eXWBw9FOHAJFJwb5yxhQWYo1oN9xixpIQQXxeIntjrJzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qXnBv+Pa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09CE5C43390;
-	Fri,  9 Feb 2024 15:11:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707491473;
-	bh=VwCqQlgMD5ijvTe1CDRtTpyuJtBMBP3AZJbX9C0U4eQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qXnBv+PaprGtyM8d1vEJZaPYs8z9ZiMmYRLvBJdHcpmfzTRm/hr6im4QePAIUKTEy
-	 Ddhf8E9NuKTx0XAcqCj2daArr6uwjZ2vgA1MRLQ9yjdJbvvq0me0993N9AHRn7+h9p
-	 /VbpybhSp8acS4pkGLAoYvsKB65Rc4x7JmCqLjUCtg6BmuYD3i+PtBO54qoCnJntm+
-	 +yDl0XaZYeiRc+yyEAsEueh9L4EGrdEQ0I7jcBvOBfY9xerDLGRTQNo6v2lC3BJGD5
-	 UCG4OrrnTTqOcxYPoNL7eTN12PoYV9m/DKJaIEGx7KM3rTXW9XBL/1Q9hnAyOmRqXo
-	 0ckgim5vRfscA==
-Date: Fri, 9 Feb 2024 16:11:09 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>, Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] pidfd: change pidfd_send_signal() to respect
- PIDFD_THREAD
-Message-ID: <20240209-bockig-essverhalten-9d80946c0bf4@brauner>
-References: <20240209130620.GA8039@redhat.com>
- <20240209130650.GA8048@redhat.com>
+	s=arc-20240116; t=1707491597; c=relaxed/simple;
+	bh=Bug3A6ZbFfpsIwrLaT1Ik2CEiJjUByjmzkWryqfXzuU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=qRNQMTPGV4L38cUu7PSg3Y52hDaPIGuiB+fAuLIjZjkmZxjna3zFNxVpSWc1QfrT6rKmSDuCRGxHhXrD6YNn2WCuqBXWXV/b3fLGa9ORw3xtpb0ueRu9pAARq6ZdeYIG7cK0JA/kAu54OxHG6gAWhfa0GdJEuRok3SGDIj+6vyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=a4P2MYPi; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-297040eb356so1014441a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 07:13:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707491595; x=1708096395; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cgGQ0Ler+WUl/NFsNP3EozyAO4eJj17xtfp/FQdoBaA=;
+        b=a4P2MYPii9U9dFha8muQhSlibGJcHS/HEg12A2KEcxd87hPxPxaZweI61ECvVY/IuK
+         H99IVJxKwz9CLA/PutPa/WcXTKubDkuvaH5gJcaFtahk/lsxTIYFeoKRRJLw4k3Hjqz0
+         S9g6yC1QlU8SFD/ga4KhjizWGcBCWTvNxpROC2dv/Cm6r5iQFGWaXo9MppRzx3y3Vf5L
+         vX6kXt7PG43n6H2yptbJXu1+IqwGWmkKqCJgvGI8OTN6+TQIvtVoM/MyWyST7ILjhV8c
+         w94xfiOtmyJxEWOYolOVEGp4bcmTXtBYlJWWxnFnypN/P8gw0b9IRoE5SJOz7m08pdsJ
+         qVSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707491595; x=1708096395;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cgGQ0Ler+WUl/NFsNP3EozyAO4eJj17xtfp/FQdoBaA=;
+        b=K7M8WdI5aT5ochLS4ysEV5UJ/sb5skfHrOEpiHLq6MdehguYoKPyuk7Tpxnw2jDJVa
+         rYXtMM1ILpoht9ifFDN6JT/QWCJQU902wdzVb4A6r1dShQsKDRvQYeS75ppoez32bEcg
+         FMrhRz6zkq4+NL5jjSLA3Oya7GJ89dlgol5oUH5xI+XvZNwqzxZx4CkWHTS3CXvjiVck
+         B8jrbUY94opgg0A2zTeuxgVI0KxbRSR5W6wfpbBSZR0PPimHBi9t6H65oxRoswruuaRh
+         PVbDXDnzDGIhzsefAmd6xb+JXmtlWSSGV3gFOTReavnRO5YSPWRPvQKlhkskB8+xT46H
+         gpmg==
+X-Forwarded-Encrypted: i=1; AJvYcCVUsnjjK0oBRXyg/9eyR/p3TA1uCqf49Na5gABjZCKpeubLs0GApkUxvSID5L+ItG6XEoq4fyAEbRwsmXVEbI/roV/6WrREanORTLzc
+X-Gm-Message-State: AOJu0YyrAdkNz5F3d7b1ZiFdzihZV20xDuXggBJWsltlLYpM9hQ9lR1Y
+	wtqod6csDZULi6ikzy3+EasMlG6YF2N1k1H0HhKJI45xkRBzaToC/wqdhQVJk0uqSBDSf3V7dWJ
+	icQ==
+X-Google-Smtp-Source: AGHT+IGnxQ9hUZq2I0deBQMbaG7FpVg+3DEJAeDot7uWCeqlyGYIqcr+64bku6EdOLuv7fFuPPSWAvWzMMw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:2781:b0:296:aa24:8bc3 with SMTP id
+ pw1-20020a17090b278100b00296aa248bc3mr23980pjb.5.1707491595319; Fri, 09 Feb
+ 2024 07:13:15 -0800 (PST)
+Date: Fri, 9 Feb 2024 07:13:13 -0800
+In-Reply-To: <84d62953-527d-4837-acf8-315391f4b225@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240209130650.GA8048@redhat.com>
+Mime-Version: 1.0
+References: <20231016115028.996656-1-michael.roth@amd.com> <20231016115028.996656-5-michael.roth@amd.com>
+ <e7125fcb-52b1-4942-9ae7-c85049e92e5c@arm.com> <ZcY2VRsRd03UQdF7@google.com> <84d62953-527d-4837-acf8-315391f4b225@arm.com>
+Message-ID: <ZcZBCdTA2kBoSeL8@google.com>
+Subject: Re: [PATCH RFC gmem v1 4/8] KVM: x86: Add gmem hook for invalidating memory
+From: Sean Christopherson <seanjc@google.com>
+To: Steven Price <steven.price@arm.com>
+Cc: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, "tabba@google.com" <tabba@google.com>, linux-coco@lists.linux.dev, 
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	pbonzini@redhat.com, isaku.yamahata@intel.com, ackerleytng@google.com, 
+	vbabka@suse.cz, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	jroedel@suse.de, pankaj.gupta@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Fri, Feb 09, 2024 at 02:06:50PM +0100, Oleg Nesterov wrote:
-> Turn kill_pid_info() into kill_pid_info_type(), this allows to pass any
-> pid_type to group_send_sig_info(), despite its name it should work fine
-> even if type = PIDTYPE_PID.
+On Fri, Feb 09, 2024, Steven Price wrote:
+> >> One option that I've considered is to implement a seperate CCA ioctl to
+> >> notify KVM whether the memory should be mapped protected.
+> > 
+> > That's what KVM_SET_MEMORY_ATTRIBUTES+KVM_MEMORY_ATTRIBUTE_PRIVATE is for, no?
 > 
-> Change pidfd_send_signal() to use PIDTYPE_PID or PIDTYPE_TGID depending
-> on PIDFD_THREAD.
-> 
-> While at it kill another TODO comment in pidfd_show_fdinfo(). As Christian
-> expains fdinfo reports f_flags, userspace can already detect PIDFD_THREAD.
-> 
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-> ---
+> Sorry, I really didn't explain that well. Yes effectively this is the
+> attribute flag, but there's corner cases for destruction of the VM. My
+> thought was that if the VMM wanted to tear down part of the protected
+> range (without making it shared) then a separate ioctl would be needed
+> to notify KVM of the unmap.
 
-Looks good to me,
-Reviewed-by: Christian Brauner <brauner@kernel.org>
+No new uAPI should be needed, because the only scenario time a benign VMM should
+do this is if the guest also knows the memory is being removed, in which case
+PUNCH_HOLE will suffice.
+
+> >> This 'solves' the problem nicely except for the case where the VMM
+> >> deliberately punches holes in memory which the guest is using.
+> > 
+> > I don't see what problem there is to solve in this case.  PUNCH_HOLE is destructive,
+> > so don't do that.
+> 
+> A well behaving VMM wouldn't PUNCH_HOLE when the guest is using it, but
+> my concern here is a VMM which is trying to break the host. In this case
+> either the PUNCH_HOLE needs to fail, or we actually need to recover the
+> memory from the guest (effectively killing the guest in the process).
+
+The latter.  IIRC, we talked about this exact case somewhere in the hour-long
+rambling discussion on guest_memfd at PUCK[1].  And we've definitely discussed
+this multiple times on-list, though I don't know that there is a single thread
+that captures the entire plan.
+
+The TL;DR is that gmem will invoke an arch hook for every "struct kvm_gmem"
+instance that's attached to a given guest_memfd inode when a page is being fully
+removed, i.e. when a page is being freed back to the normal memory pool.  Something
+like this proposed SNP patch[2].
+
+Mike, do have WIP patches you can share?
+
+[1] https://drive.google.com/corp/drive/folders/116YTH1h9yBZmjqeJc03cV4_AhSe-VBkc?resourcekey=0-sOGeFEUi60-znJJmZBsTHQ
+[2] https://lore.kernel.org/all/20231230172351.574091-30-michael.roth@amd.com
 
