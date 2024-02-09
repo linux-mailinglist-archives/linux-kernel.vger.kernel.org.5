@@ -1,134 +1,133 @@
-Return-Path: <linux-kernel+bounces-59498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A270F84F802
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:59:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41BB084F80C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:00:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 603AA282D7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:59:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AD6B1C212D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93746D1A1;
-	Fri,  9 Feb 2024 14:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B246D1CB;
+	Fri,  9 Feb 2024 15:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MoSmMzOk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Emqn5i7E"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A90F4D112
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A56374CC;
+	Fri,  9 Feb 2024 15:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707490747; cv=none; b=Xt0ylXhRO71AhGPvF6KmtSEzO41CA7916G500MDgXN/RF95C55hkfhR+Ve3WxzTFQY8dsrHgM7HkbbM5I1x8cxju/XXbUCw29Ds4CAhD7Y0y70D3UP1hwoU1L7p6MmKfmoWAtUkSTG3mYx7Jr9hz028MAZaCJNd9J4eRA0N9OrY=
+	t=1707490808; cv=none; b=f3LTZaAHtIkPdPlvmQVnBzIsf316QTi95uypFMp0DBnjdb65T4KY96nQ12p5v3ZhdvruOXZK2eRC7o6z6TU4wKU3eWuvQ0j+o0WscdIUliK0pS7ZZSNPsJvDVQe/GtSmcUS+aBTukUShmcnI+PxemkKD8gcIfssE3ZLfRpxSPcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707490747; c=relaxed/simple;
-	bh=nwshd7swGuSMRtAuLH/JMEgmP/BeZTkB2Y6ZbhwBQL8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=l9TK41lQZUlbBDA8z39S88e/ZqXMUzC/b+Oup7u4a2fWYPfPPtN2Ew8DktY2h3CKzDlGV1lte1R5E6bCujdf1gJHjaM8rm+ELC9kF4kbpMPGpRUjAGRXABr6FR+TjJ5lPfjZ3NuKvdPY5ewHpuZptr8usadisnZRke0SB5yUHH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MoSmMzOk; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707490744;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=e8OyeWUTOX2hlvrd/mpZRRlBQxFqRED3bHw4tpIxF14=;
-	b=MoSmMzOkgRIvLeP7icOV0I1OmLnQ5bX/Xu/AyLBua+OCDv3jpVGiAj70FpGqUUyU4UNEGa
-	6YFwvCtSljF4ZPp4alqzUs+W0kAG26LPKZ0idsjf2byaJxypozunXnZxxWU/AKzcxKvuCZ
-	fPFpdkYExxT3m1UsiK+XgTRhVm8Xknc=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-511-OcAPx5DHMPWAjEIy7NJULA-1; Fri,
- 09 Feb 2024 09:59:02 -0500
-X-MC-Unique: OcAPx5DHMPWAjEIy7NJULA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CE29838062B7;
-	Fri,  9 Feb 2024 14:59:01 +0000 (UTC)
-Received: from llong.com (unknown [10.22.17.112])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8AB1D2026D06;
-	Fri,  9 Feb 2024 14:59:01 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH] workqueue: Fix kernel-doc comment of unplug_oldest_pwq()
-Date: Fri,  9 Feb 2024 09:58:50 -0500
-Message-Id: <20240209145850.1157304-1-longman@redhat.com>
+	s=arc-20240116; t=1707490808; c=relaxed/simple;
+	bh=TKruBJIwFASA/sqJRVaYjjQ7bhehm8QNQf9+1Z6gp7w=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=gLF1/Nvc7HXITYgCoxwiNzx0mZOFW54xsAuglgW+bvqarevS72jXA/LB7dm+UeRzQYi2XEp6jup227cHOC+iaik4jjQKna41nckofD8Avmiauag/VbAmQzTVP2Lm+z68iBkEd5c2yo0FZQlkFu5LuJFrGAiQcxBa1Dm3JxJ3BXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Emqn5i7E; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707490807; x=1739026807;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=TKruBJIwFASA/sqJRVaYjjQ7bhehm8QNQf9+1Z6gp7w=;
+  b=Emqn5i7EojHuTvdwdB/Add9+Llx5nFqK2mlyJhWZi3rVcuX7RegdTftf
+   WI6IM/YP49y3l8Ehln3AOZBq9p9DV/2DzSKFI9itZHXKkpJnj8/aqx/Tg
+   dKu9d8ZeV8dse6U4gZgXsx7dfZUYu/1oT69vjJoAyB7vGw6zFry+n/fSY
+   2nCsbSZWK269aDth7/GETsxKscrNxailK6rgOHiA+PE1JiUxKQdaY7OXi
+   48wv9rIKTh82HMpZEEMw2Oot6BNQWtDGk+EefqFNFx7U9agRD18LxSUWn
+   LUdYH4NIXoL7hrjhaT4QEUqhQM7etB/q7vSR2JxYG/jBSHr2znbwVpGVy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1574488"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="1574488"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 07:00:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="1991493"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.33.226])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 07:00:04 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 9 Feb 2024 16:59:59 +0200 (EET)
+To: Shravan Kumar Ramani <shravankr@nvidia.com>
+cc: Hans de Goede <hdegoede@redhat.com>, Vadim Pasternak <vadimp@nvidia.com>, 
+    David Thompson <davthompson@nvidia.com>, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/4] platform/mellanox: mlxbf-pmc: Replace uintN_t
+ with kernel-style types
+In-Reply-To: <73cd5e838695f8e20b022a523dcade108685350b.1707466888.git.shravankr@nvidia.com>
+Message-ID: <6905cf50-3314-2b3c-9bbf-eeb8000f0b54@linux.intel.com>
+References: <cover.1707466888.git.shravankr@nvidia.com> <73cd5e838695f8e20b022a523dcade108685350b.1707466888.git.shravankr@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Type: text/plain; charset=US-ASCII
 
-It turns out that it is not a good idea to put an ASCII diagram in the
-kernel-doc comment of unplug_oldest_pwq() as the tool puts out warnings
-about its format and will likely render it illegible anyway. Break the
-ASCII diagram out into its own comment block inside the function to
-avoid this problem.
+On Fri, 9 Feb 2024, Shravan Kumar Ramani wrote:
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/workqueue.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+Hi,
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index cd2c6edc5c66..f622f535bc00 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1790,25 +1790,29 @@ static bool pwq_activate_first_inactive(struct pool_workqueue *pwq, bool fill)
-  * unplug_oldest_pwq - restart an oldest plugged pool_workqueue
-  * @wq: workqueue_struct to be restarted
-  *
-- * pwq's are linked into wq->pwqs with the oldest first. For ordered
-- * workqueues, only the oldest pwq is unplugged, the others are plugged to
-- * suspend execution until the oldest one is drained. When this happens, the
-- * next oldest one (first plugged pwq in iteration) will be unplugged to
-- * restart work item execution to ensure proper work item ordering.
-- *
-- *    dfl_pwq --------------+     [P] - plugged
-- *                          |
-- *                          v
-- *    pwqs -> A -> B [P] -> C [P] (newest)
-- *            |    |        |
-- *            1    3        5
-- *            |    |        |
-- *            2    4        6
-+ * This function should only be called for ordered workqueues where only the
-+ * oldest pwq is unplugged, the others are plugged to suspend execution until
-+ * the oldest one is drained and removed. When this happens, the next oldest
-+ * one will be unplugged to restart work item execution to ensure proper work
-+ * item ordering. Note that pwq's are linked into wq->pwqs with the oldest
-+ * first, so the first one in the list is the oldest.
-  */
- static void unplug_oldest_pwq(struct workqueue_struct *wq)
- {
- 	struct pool_workqueue *pwq;
- 
-+	/*
-+	 * Layout of an ordered workqueue during a wq_unbound_cpumask update:
-+	 *
-+	 *    dfl_pwq --------------+     [P] - plugged
-+	 *                          |
-+	 *                          v
-+	 *    pwqs -> A -> B [P] -> C [P] (newest)
-+	 *            |    |        |
-+	 *            1    3        5
-+	 *            |    |        |
-+	 *            2    4        6
-+	 */
- 	lockdep_assert_held(&wq->mutex);
- 
- 	/* Caller should make sure that pwqs isn't empty before calling */
+You need to provice commit description here too. The shortlog on subject 
+line is not enough.
+
+> Signed-off-by: Shravan Kumar Ramani <shravankr@nvidia.com>
+> ---
+>  drivers/platform/mellanox/mlxbf-pmc.c | 121 +++++++++++++-------------
+>  1 file changed, 59 insertions(+), 62 deletions(-)
+> 
+> diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
+> index b1995ac268d7..71d919832e2a 100644
+> --- a/drivers/platform/mellanox/mlxbf-pmc.c
+> +++ b/drivers/platform/mellanox/mlxbf-pmc.c
+> @@ -149,17 +149,17 @@ struct mlxbf_pmc_block_info {
+>   */
+>  struct mlxbf_pmc_context {
+>  	struct platform_device *pdev;
+> -	uint32_t total_blocks;
+> -	uint32_t tile_count;
+> -	uint8_t llt_enable;
+> -	uint8_t mss_enable;
+> -	uint32_t group_num;
+> +	u32 total_blocks;
+> +	u32 tile_count;
+> +	u8 llt_enable;
+> +	u8 mss_enable;
+> +	u32 group_num;
+>  	struct device *hwmon_dev;
+>  	const char *block_name[MLXBF_PMC_MAX_BLOCKS];
+>  	struct mlxbf_pmc_block_info block[MLXBF_PMC_MAX_BLOCKS];
+>  	const struct attribute_group *groups[MLXBF_PMC_MAX_BLOCKS];
+>  	bool svc_sreg_support;
+> -	uint32_t sreg_tbl_perf;
+> +	u32 sreg_tbl_perf;
+>  	unsigned int event_set;
+>  };
+>  
+> @@ -865,8 +865,8 @@ static struct mlxbf_pmc_context *pmc;
+>  static const char *mlxbf_pmc_svc_uuid_str = "89c036b4-e7d7-11e6-8797-001aca00bfc4";
+>  
+>  /* Calls an SMC to access a performance register */
+> -static int mlxbf_pmc_secure_read(void __iomem *addr, uint32_t command,
+> -				 uint64_t *result)
+> +static int mlxbf_pmc_secure_read(void __iomem *addr, u32 command,
+> +				 u64 *result)
+
+Please remove unnecessary newlines too such as this one from the function 
+arguments.
+
+Other than those two things, this one looked fine. Thanks for doing this.
+
+
 -- 
-2.39.3
+ i.
 
 
