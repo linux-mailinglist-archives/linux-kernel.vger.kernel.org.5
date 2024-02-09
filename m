@@ -1,137 +1,146 @@
-Return-Path: <linux-kernel+bounces-59601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA58584F98F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:26:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E2EB84F996
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:27:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46C8C1F2479E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:26:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CD93B25E32
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D1E78693;
-	Fri,  9 Feb 2024 16:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EED47AE7A;
+	Fri,  9 Feb 2024 16:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZEwYP/v2"
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E02FXSbW"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E1038382
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D427317B
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707495956; cv=none; b=KCKb2kJU7uoBZQCpItc0sNIzNYlun4CEAvK4OTWO0U8ZIHCONCUs3mv/1zM+2zRgeFS9Y2o2b2h2pwJ3Jh9CGFjuHr2Kbxwk4iNCU/a/5az1IhIN5BJNXFoJntCTKOFPZ9y4uO5hEqJynNQpFOSVd7qVBZu61jHJtYfTR1QzoO4=
+	t=1707496007; cv=none; b=b/C7bjmuEBy6z6qOUv+D7N53iBA5VWfHJKpbJ236LFTsE+zNHI03UTBAn14PuVb7ygEauw9qRU+TP/qDiz5Pe/87nUo9rjYqnygngAvDkvs1rrekI/ZLCumCzFp7j4qgPyc+jXZyAN68l8ySr7JPk/gjrZRxaxYqUSDRUWKUOTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707495956; c=relaxed/simple;
-	bh=prs9mFOfhRSy1bBUr0Yw1ZHGngyahEvOOW8gQd86dw4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=HHuwYqE5Rgbl22mAvwlnodmGaN435cAvpZX+lUKjbaZJkE9sXDUmy1teIWtb/AlIl3lUPQZlt2M66r7IdYyHKS2549FwnCAlpthrlIq+adJCogOa0Ur/7zr4i2O3Minj0x9H3lj7K7gQWlFw2QWl2fgvTNX5eyieFDp42EZ/2a0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZEwYP/v2; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <67936300-7bfb-4f5e-9b80-ee339313fd61@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707495952;
+	s=arc-20240116; t=1707496007; c=relaxed/simple;
+	bh=xSVANJ9Sul+6tG8IyWGYziNKbkjPAgWV/TLqpKmQNq8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CJt536Nxf5DHjcSgzVtOIrtFQjyc2zwiCwbO/vQ2u6eZkxcTxceR5zA2QdDvpJtH4izAAsSxIM9WGqdXch4NSPCV9cxTN8MYQRTXBvocQ50yNis7c9Bge0o1eNPU+Qw8VPo5b8pWV01Ui9/c3QDgucVNuk5z8Z3Q3nF+AJ9WHgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E02FXSbW; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707496005;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5BnIaHou+tTqerewpAXrAwSWE/7/bxrlz0wZwxMI/Sw=;
-	b=ZEwYP/v2JvNMIGJVhm5yoS5MtyVa116To23vi0ejfFBimBywJI6GFlf2xhf3UzuNYoqLsx
-	vU+CtMI3OesuzthlpssnEr/k99cyAWBqEFti75zjWWNvRs+LbTjzqaFNlz/MAx76iAgyHu
-	UrGshGTP2yI9nWLdtg4il5N1KsmHGgk=
-Date: Sat, 10 Feb 2024 00:25:33 +0800
+	bh=xSVANJ9Sul+6tG8IyWGYziNKbkjPAgWV/TLqpKmQNq8=;
+	b=E02FXSbWkgj/FU+H2H20U117SYUoDWUlPwMDK9awyBr4bwiwliJZyOEH/fdxNgRho8kc04
+	n8N6kCl0rMk9C5mpPGEtDmW4A7BUZxvg3fVLJgVqB08PiHKqQ4+rarXg67dzUpeG3s1ash
+	oIsCyEVZvWVnW6OFHq+qLJjXweRvdgI=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-608-s2_DfHDEPf-HQO1u7QexFA-1; Fri, 09 Feb 2024 11:26:41 -0500
+X-MC-Unique: s2_DfHDEPf-HQO1u7QexFA-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a2c653c7b35so80373866b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 08:26:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707496000; x=1708100800;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xSVANJ9Sul+6tG8IyWGYziNKbkjPAgWV/TLqpKmQNq8=;
+        b=an3S+9E5catGgFZvT7poD9sS7zYX6u9SbY9iryRqHVileTw24AMyCrugkExBeMrkk3
+         GAQaQ9uWs+gxs3THhSiEpKAXOqsCTNgYphFKcLNqSH0I8E5LGWZO2C1rWprtydAGP275
+         465HJxddx0ycsDmD3NnTawMGRV+Em9/V9DGS1A/veMBNWghGiGFBRA4PB9qvXSE9joj9
+         jf6pfsvYuAi6f4bOcjOpSvJXgbTtGGaLqvvsEe65ZmHJf/wnzqgADf8xR9VsZhs89PdV
+         rGzYheH9SBKH6EAKbPzRiSBsJuXzA4ec4HELyTfuT9061uZmJKgf+/gJ3T+z5GaSxL+V
+         WY/w==
+X-Gm-Message-State: AOJu0Yxb9dRYzSVXF2Ql+mB2FZyb+bOuVj+yIye8e1O8MYCgLRngRCPX
+	rgzB5l60aO6dinGSa4nwWaTaJw0payDxMDCiNjOX42jDjmnyhzzCY7FEDp+FYEi6T2h4p4jCBt+
+	WuprJL9uYjg/9w6vR3meYnfHptb84jGuIqgzUnNS1Tgo9GA7VoJE4Tf7XoE3vWCpYGNouHM0QT+
+	IE4JLBnwSWhQyBaIrYlUap5056zZkGUBLH2IAX
+X-Received: by 2002:a17:906:a3d6:b0:a37:e35b:9a3e with SMTP id ca22-20020a170906a3d600b00a37e35b9a3emr1642617ejb.40.1707496000225;
+        Fri, 09 Feb 2024 08:26:40 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHy61pDxReOPip14CkIUEYp+eoqOxBTFmJqAoTo/34APibzrj1ifuHurTTUgT36YYc88gUAGfXaSJOT9jT1nF8=
+X-Received: by 2002:a17:906:a3d6:b0:a37:e35b:9a3e with SMTP id
+ ca22-20020a170906a3d600b00a37e35b9a3emr1642604ejb.40.1707495999966; Fri, 09
+ Feb 2024 08:26:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [etnaviv-next v13 7/7] drm/etnaviv: Add support for vivante GPU
- cores attached via PCI(e)
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
- Russell King <linux+etnaviv@armlinux.org.uk>,
- Christian Gmeiner <christian.gmeiner@gmail.com>,
- David Airlie <airlied@gmail.com>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240206172759.421737-1-sui.jingfeng@linux.dev>
- <20240206172759.421737-8-sui.jingfeng@linux.dev>
- <ZcNO9aZwWzyYs-Rv@phenom.ffwll.local>
- <jahydq72bqb27de2ijwwmdjh4ri326mxhfjn5pbvf7cqcpnauq@rw5hjdiroi5d>
- <ZcYGWEG8eqAiqqai@phenom.ffwll.local>
- <65qv24hhkmmy4haylh53muvz2xliejysc3uywq44pl3xx7rus4@ynyau4djposv>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <65qv24hhkmmy4haylh53muvz2xliejysc3uywq44pl3xx7rus4@ynyau4djposv>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org> <87bk8pve2z.fsf@toke.dk>
+In-Reply-To: <87bk8pve2z.fsf@toke.dk>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Fri, 9 Feb 2024 17:26:27 +0100
+Message-ID: <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, Feb 9, 2024 at 4:42=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen <to=
+ke@redhat.com> wrote:
+>
+> Benjamin Tissoires <bentiss@kernel.org> writes:
+>
+> > [Putting this as a RFC because I'm pretty sure I'm not doing the things
+> > correctly at the BPF level.]
+> > [Also using bpf-next as the base tree as there will be conflicting
+> > changes otherwise]
+> >
+> > Ideally I'd like to have something similar to bpf_timers, but not
+> > in soft IRQ context. So I'm emulating this with a sleepable
+> > bpf_tail_call() (see "HID: bpf: allow to defer work in a delayed
+> > workqueue").
+>
+> Why implement a new mechanism? Sounds like what you need is essentially
+> the bpf_timer functionality, just running in a different context, right?
 
-On 2024/2/9 23:15, Maxime Ripard wrote:
-> On Fri, Feb 09, 2024 at 12:02:48PM +0100, Daniel Vetter wrote:
->> On Thu, Feb 08, 2024 at 04:27:02PM +0100, Maxime Ripard wrote:
->>> On Wed, Feb 07, 2024 at 10:35:49AM +0100, Daniel Vetter wrote:
->>>> On Wed, Feb 07, 2024 at 01:27:59AM +0800, Sui Jingfeng wrote:
->>>>> The component helper functions are the glue, which is used to bind multiple
->>>>> GPU cores to a virtual master platform device. Which is fine and works well
->>>>> for the SoCs who contains multiple GPU cores.
->>>>>
->>>>> The problem is that usperspace programs (such as X server and Mesa) will
->>>>> search the PCIe device to use if it is exist. In other words, usperspace
->>>>> programs open the PCIe device with higher priority. Creating a virtual
->>>>> master platform device for PCI(e) GPUs is unnecessary, as the PCI device
->>>>> has been created by the time drm/etnaviv is loaded.
->>>>>
->>>>> we create virtual platform devices as a representation for the vivante GPU
->>>>> ip core. As all of subcomponent are attached via the PCIe master device,
->>>>> we reflect this hardware layout by binding all of the virtual child to the
->>>>> the real master.
->>>>>
->>>>> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
->>>> Uh so my understanding is that drivers really shouldn't create platform
->>>> devices of their own. For this case here I think the aux-bus framework is
->>>> the right thing to use. Alternatively would be some infrastructure where
->>>> you feed a DT tree to driver core or pci subsystem and it instantiates it
->>>> all for you correctly, and especially with hotunplug all done right since
->>>> this is pci now, not actually part of the soc that cannot be hotunplugged.
->>> I don't think we need intermediate platform devices at all. We just need
->>> to register our GPU against the PCI device and that's it. We don't need
->>> a platform device, we don't need the component framework.
->> Afaik that's what this series does. The component stuff is for the
->> internal structure of the gpu ip, so that the same modular approach that
->> works for arm-soc also works for pci chips.
-> But there should be a single PCI device, while we have multiple "DT"
-> devices, right? Or is there several PCI devices too on that PCI card?
+Heh, that's exactly why I put in a RFC :)
 
+So yes, the bpf_timer approach is cleaner, but I need it in a
+workqueue, as a hrtimer in a softIRQ would prevent me to kzalloc and
+wait for the device.
 
-There is only a single PCI(e) device on that PCI(e) card, this single
-PCI(e) device is selected as the component master. All other Hardware IP
-blocks are shipped by the single PCI(e) master. It may includes Display
-controllers, GPUs, video decoders, HDMI display bridges hardware unit etc.
+> So why not just add a flag to the timer setup that controls the callback
+> context? I've been toying with something similar for restarting XDP TX
+> for my queueing patch series (though I'm not sure if this will actually
+> end up being needed in the end):
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/commit/?h=
+=3Dxdp-queueing-08&id=3D54bc201a358d1ac6ebfe900099315bbd0a76e862
+>
 
-But all of those Hardware IP share the same MMIO registers PCI BAR, this
-PCI BAR is a kind of PCI(e) MEM resource. It is a relative *big* chunk,
-as large as 32MB in address ranges for the JingJia Macro dGPU. Therefore,
-I break the whole registers memory(MMIO) resource into smaller pieces by
-creating platform device manually, manually created platform device is
-called as virtual child in this series.
+Oh, nice. Good idea. But would it be OK to have a "timer-like" where
+it actually defers the job in a workqueue instead of using an hrtimer?
 
-In short, we cut the whole into smaller piece, each smaller piece is a
-single hardware IP block, thus deserve a single device driver. We will
-have multiple platform devices if the dGPU contains multiple hardware
-IP block. On the driver side, we bind all of the scattered driver module
-with component.
+I thought I would have to rewrite the entire bpf_timer approach
+without the softIRQ, but if I can just add a new flag, that will make
+things way simpler for me.
 
-Bind with another PCI(e) device is also possible, if it is going to be
-used under the same driver. It is just that this will not need us to
-create a platform device for it manually. We won't set its parent, they
-are siblings then.
-  
+This however raises another issue if I were to use the bpf_timers: now
+the HID-BPF kfuncs will not be available as they are only available to
+tracing prog types. And when I tried to call them from a bpf_timer (in
+softIRQ) they were not available.
 
-> Maxime
+Cheers,
+Benjamin
+
 
