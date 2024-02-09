@@ -1,308 +1,164 @@
-Return-Path: <linux-kernel+bounces-59187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 026A484F2D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:56:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3783084F2CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:56:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F3301C2505B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:56:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3673286371
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4091B69953;
-	Fri,  9 Feb 2024 09:56:27 +0000 (UTC)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFE667E80;
+	Fri,  9 Feb 2024 09:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=vaisala.com header.i=@vaisala.com header.b="vImKsyhY"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2130.outbound.protection.outlook.com [40.107.21.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CAA769946;
-	Fri,  9 Feb 2024 09:56:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707472586; cv=none; b=m7YguIhaM1t31d1IrJyvJLnOes5WPU7esOiciOt8XwvoY0ChpAbUP89cdcPvGqWqQ/kiMK34Q2blANASDpUtUn3Rlq39TkSzfmT3VutTOB5zApJ7aEvYb6+/6Nu56gcyz7sHH9B2tJqLuT3Ce7RWpS8myujvrt5ylxAI5LMRxHo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707472586; c=relaxed/simple;
-	bh=IIJB+il/YAqgBdhhLd/x55BSBVFoKksYvq3l+V1p/Vs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qkS+vgroR7TXcAKDLxaccuo+Ue7a7hmdaC9qtAr2QLztTDmWq8c8fnYhOCzMDtsYsHCisq7fqAvG3ylDJhnL1QQNkFDPCNlyupGeKsgwsl2XG6Z2/yn0FVPqdP9draEzod7JNQwZmu8QtxnEqQ8hTopik+Jrg+EuovtOqhMKj8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55f50cf2021so1177399a12.1;
-        Fri, 09 Feb 2024 01:56:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707472582; x=1708077382;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uin1djr9wjEmSC5e19XpHLz28aFoFMGRjrPrYFjt5vY=;
-        b=RQHGY3jKxEwqXVagp3Ymutom3zlxzpwaHHg6FUM2/Oxl/LEpVolwsbZ1Qoun6gVVra
-         wUbAdVzc5dZ18qU0k6nvENdgDmwHoGp2ps4IapuBs7XkR8jpcwDRoqAUuNgf6b+h6LRX
-         lgZlloZ8aubgvw0PYxEsU8vtmu4qjIUc2rn9t084zk1kPgt4SxWTtjwgaW5ERHjpAKm+
-         Te0razsDP6VqkRgMrop2GN1CubaEOpVHPIt6FMDAZW0MGnM7DSuzm+uww6kCmRbYVh7K
-         Td3LNwL4vetk+VYlkDSl5ZtVFmFFwIMuOJfpIm2N7hw2FuQ0UAJr+uuZ5PR3Nex3LuVb
-         XAbw==
-X-Forwarded-Encrypted: i=1; AJvYcCUkTIHOdWhPUFKI3ZvFJcYBqzr0y9Apyy0XxlXTcVkNDI0wHRXj16qQTgPKqsm3KcvcfpY+COhmgG7iONW2ypK4BRRjeEqTpemPYhnZ
-X-Gm-Message-State: AOJu0Yy2boDzWrh9oLx/bPnT4fYHPMC7/ccIqaRJ3foMa9Xc9Vm0KnSa
-	5r/azSbuZdaLp2iy34JGhmqFTkF2BUpqfK5lXVqOqrkvaC0LK/EL
-X-Google-Smtp-Source: AGHT+IHs+9l8aKZ19hOvC2jXHCv+iPMgv9WAYscFS2sh3Jeul6Kv3oCDFgLl25Yo8CAQn5mb3wfa7w==
-X-Received: by 2002:a05:6402:1ed3:b0:561:4020:982f with SMTP id g19-20020a0564021ed300b005614020982fmr911342edg.22.1707472582146;
-        Fri, 09 Feb 2024 01:56:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVbSl2hNlU4WsCI+NqYOEx9SQaLAJgRfQpxVSepjWk1PtiND6yCBP8k5iLpU9HoXzKF1IiRHZ164tV7B9sN19SFWtY0jKL7aA9uAC38XO377YB2mo3YfWpAyvDXkmA8puojk+ahxzhEIwV9j5zkERaen1q4RfuKW0WB4wmeASyDYeYxXL/eSg9vWGhHRnVT+jhcoWlNg7dpp9j9XYEG0dJHL/UM8EhETe+j1TYRTRAwF7s=
-Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id a23-20020aa7d757000000b005607fdd90b8sm624693eds.23.2024.02.09.01.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 01:56:21 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	Florian Fainelli <f.fainelli@gmail.com>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	horms@kernel.org
-Subject: [PATCH net] net: sysfs: Fix /sys/class/net/<iface> path for statistics
-Date: Fri,  9 Feb 2024 01:55:18 -0800
-Message-Id: <20240209095520.252555-1-leitao@debian.org>
-X-Mailer: git-send-email 2.39.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89CF7664CC;
+	Fri,  9 Feb 2024 09:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.130
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707472548; cv=fail; b=UKDtBFisSKyYtHSj1z08yA/WpR3NEQ+7ud+jM8LkJqr5JmAiGccUC83WHXMShe2kTEM2UNPr4syOXoSFaTyLjqQfQz9xG2R6ioz2sSUTm8XIFYc/qHqsKMnBpYtCcufvuqFn3AKPSZcCjw7fy5DC0vces5PCg+mxYs/V/fLsMhY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707472548; c=relaxed/simple;
+	bh=3yQGCLwFIonXvJgBuAFKRBsKCuGxIBNQcn/+QXlp8YU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=QUurLdmyWComkiMskyqeMkWf/RyPjvMEtW7aGg5Azmitt8XXOl/mdcLAblIWdGdDmzxESyfTvDLtQR5fKT95AiSsorUfO5v1RyumP4ZRPJPjdtQccnvb+JGWZFFznmgj8haW5fkZB/NvvpDRUdbQy8Pdj0Kzmb0eSHzSr7rN1/Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vaisala.com; spf=pass smtp.mailfrom=vaisala.com; dkim=pass (2048-bit key) header.d=vaisala.com header.i=@vaisala.com header.b=vImKsyhY; arc=fail smtp.client-ip=40.107.21.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vaisala.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vaisala.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=euYR7cFEdXe6+7YEtEPoPkR7zob5PCkBdsbPiKXI5so6it5hwaDsDV+TaaPKibJkWy4zNMKX/pny0Mjio5IIHhis1Lbu2bd0IIdGmZLeh2iRmKifUHS82tu7x8KCiM7lEiBToFUfGuGIwjbsocxjZD9VS9UPm+WTPnFgwOQf0Wu3U2iEMajYMrXEW9RTEC2T5Xlgl3GD5weNBltoPIpP3nG8M+HyqckgueEZpNNnRwOzhP9MgghHQPv+9dEDC4TthkKKciiMCbNhlX28Z8jkOswIosiTsM6BzPiZY9m48DLirJ1/JH+5OBN9pQX9fGU1MwzBMahzZ+K5q51XU/rtsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Pv0kjk2O6kI/rnTvn2aaW+dT+3choQclYzbCXho3JCg=;
+ b=NwQimp5il1ZsaBJZDJ3r6CTdJgykv46OOI96KWKmXaANriyHhOityARAuBD8/r8awEH201fJbd83ACDB2vP/p55Cjsk+Vo3OLYhTYZJT26l248ZzOtfL9yiEaoDFTjAAH3UJDW254dtw0tJEDoc6TkwWx93XJPS6A9QhKSOy+oIf8rT8ghQooq32BghIBHF5TuvlORIiQB0xWdQCUwrORpPgDQfceTEmg60XmrA6WF8vOmFeqni8jmMvOOs42G0azkqxiYXFGJLMdcE9JmvTwpIqx8e8pLgCM8Nd1mJbH3xenx//jg+ihZuD/N7Bq0iDBgEfs+dhF++TXGIwB70FfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vaisala.com; dmarc=pass action=none header.from=vaisala.com;
+ dkim=pass header.d=vaisala.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vaisala.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Pv0kjk2O6kI/rnTvn2aaW+dT+3choQclYzbCXho3JCg=;
+ b=vImKsyhYqlRxhFy170YCkCOK2GcS1y0IhR8noO+1rE2tjajYnulRtFJep2Hcakh6njaViOlNxtNhhlZW0qshto1lUBhAsRovMlPaTLdKmLnyAoWGDbLoXfcP66kUg3m4KTAKulqwX7v5mOr2b7WcyQK8By4ErMA3qzCTwaUOPQgln2kT4zm7TbPGvbO965RzLAhLMO0UvKDynxRD9ER1KNitIkZ9RwFRFpUdHrymbUE0gQUGAx6yU1py4wet3YDs1nQyeiVvG0HXWu6GgYZw4+d0P1smJU+8w+ymT7Akx1tc+OyRDAAsJJD/G+AQf7tDBtltyvuS5Z9gZTiiGemAsQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vaisala.com;
+Received: from AS4PR06MB8447.eurprd06.prod.outlook.com (2603:10a6:20b:4e2::11)
+ by PR3PR06MB6970.eurprd06.prod.outlook.com (2603:10a6:102:87::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.27; Fri, 9 Feb
+ 2024 09:55:42 +0000
+Received: from AS4PR06MB8447.eurprd06.prod.outlook.com
+ ([fe80::b5ae:8355:acaf:29e0]) by AS4PR06MB8447.eurprd06.prod.outlook.com
+ ([fe80::b5ae:8355:acaf:29e0%4]) with mapi id 15.20.7270.025; Fri, 9 Feb 2024
+ 09:55:42 +0000
+Message-ID: <3fdd409f-25de-4a5e-875a-8b59a1a0c0cc@vaisala.com>
+Date: Fri, 9 Feb 2024 11:55:40 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] usb: core: Make default authorization mode
+ configurable
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, vesa.jaaskelainen@vaisala.com
+References: <20240105114956.30714-1-niko.mauno@vaisala.com>
+ <20240105114956.30714-2-niko.mauno@vaisala.com>
+ <CAMuHMdUy793gzDVR0jfNnx5TUdJ_2MKH5NPGSgHkytAhArtqmw@mail.gmail.com>
+Content-Language: en-US
+From: Niko Mauno <niko.mauno@vaisala.com>
+In-Reply-To: <CAMuHMdUy793gzDVR0jfNnx5TUdJ_2MKH5NPGSgHkytAhArtqmw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: GV3P280CA0046.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:150:9::17) To AS4PR06MB8447.eurprd06.prod.outlook.com
+ (2603:10a6:20b:4e2::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS4PR06MB8447:EE_|PR3PR06MB6970:EE_
+X-MS-Office365-Filtering-Correlation-Id: d7ee3309-f6a2-45ab-fe0c-08dc2955473e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	UgvkU7vJ3cMzHMiFUL9op7G18ykIhaSeF4s/8v/1xU7LnFo0sPHwhRY9BzvVnH7AJr+APV8mJm8QP+AVchilz8ZSuqS9Ly6BEk0fmD7uLxZiYQ015R3F6ehoPPYDz7oU9CVVhJUNwYEV8cNvg5/4sdo+b+2huztywcR9gcRPlpcA/IHkk0iznnI3MbmVT/VuwTB4bdIU+nqN1KUeQCpZ741fkbSQZLjjvldg/FvwlrDetb9RoeFehvcN+G1T/VV6UxCHM5eU7jx0nseTOuNP0MVKAt7BjgEXETAAYLmrleczViSJrnbOA2g5ExabZG/XELIKt7IENazqDiux3F4QxdWw+aSl6PXIxE8b0Vqtio0AcMS4KBwPUVggWbZgnTV4ULz5cPiIHgN5mCsc6UIPkW5BfGPkzUAegjzA2z73agblDHAKYf195mblqBELzfuSmMjJF920CoN+XYAC2e0nwuox+JvnXffVKBVKqJfrx2qk4CX2Z3c55LLOt803sPQr4EznyHt3jGrzWQpb76MCjPGCFiYIDLS36nVwr/G6et31xEWIP7GhKk4p5w9RJeWy
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR06MB8447.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(396003)(366004)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(6506007)(53546011)(6512007)(6486002)(478600001)(83380400001)(26005)(107886003)(5660300002)(44832011)(2906002)(2616005)(4744005)(66476007)(6916009)(316002)(66556008)(66946007)(8676002)(8936002)(4326008)(36756003)(38100700002)(31696002)(86362001)(41300700001)(31686004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UHl6VUdKekNLblNzWHl2bkJXVUxsWjFHUk1UMytyaG8xb0J1eDRXMXJDenZo?=
+ =?utf-8?B?MDBZM0QwM0ZJck1DeHZDb3h0N3NqSnJuaGNxc01ZR3Eya0dqN2YrbG9XdDg0?=
+ =?utf-8?B?MXorSFNDdmhVS3luZHlFc2dNalhwUTRWaHpGSThaWWNEYUl4Yk9sUFZUUVBE?=
+ =?utf-8?B?UFhzYTZSZmZLSDlGR2xYN0VMenRJVGY1MklFcXZYM0NNT0FyT3JHcFA0czlW?=
+ =?utf-8?B?bDh3cFFJVDRVZStuL0o0dlF0elBEZVBSc3JEQS8zcFozOTJGWVl1aStYNlUy?=
+ =?utf-8?B?RXordWhZSzJPMmlveHBNZjE0RDIySmdSZXRXMEpDbjExaDQzaDNsNncvY3lJ?=
+ =?utf-8?B?Um8rUlNhZ3JvbVNGVU9QcC9CZHorS3FJTnN3eUdFbXlaZktqUDNLa3liM29M?=
+ =?utf-8?B?TjhNNmlNd2FKQnZ0RkowVkdEUTI3VUhjaHJqSXBpbzV0Q1djb2hoTDlBNzAx?=
+ =?utf-8?B?bk9EME91Y2wrTGhqblRzcXZ6TnI5YndGdFc0UjgvcThvVVpJcWM4cWQ5ZFUz?=
+ =?utf-8?B?K25hc2phdXcwTTE4YW55M2NqM1NtUjg4SkJqL0dpYTd1YjFmZ3JFTk5abW1H?=
+ =?utf-8?B?Ris5clhRRjVRcXBabVRac3g1WFlTcFo5R2RWRUE5Tm5mUWdLN3RyY2w0d0cx?=
+ =?utf-8?B?T2tIZlE3aFN4eVIzNWZSaHRlc2VKRVpNTVVIcnhvZy8rdm9DWDJMNm0vbms0?=
+ =?utf-8?B?VC9OcWc1NGlzc0VUSDZvYkdYaGRCK2R2R2tuRWlMcEVHKzYweVkvOWZVSWZw?=
+ =?utf-8?B?UUNISENwb3Y5Z0o4T2djYnU0Qk5zSXQwY05xczRMSG9BNjlLeXk3dG9KNFpN?=
+ =?utf-8?B?ekVTN0c1S1FRNW4zT0Q3OGx5dVZva2l6L01mSHVGTTcxaWpKYWU3Mk9RVkgw?=
+ =?utf-8?B?U05DWE15M1BudHVueXRnSVUraGpOcVAzcDlhTXNUMUUwNDhlbzRad0xjR2hO?=
+ =?utf-8?B?TEZuRXVJTzNlaU5QWjN4c1NlcXZoaEUveG1IaWtneUk2MEtjWGE4S0Z5bVJN?=
+ =?utf-8?B?QWMyQmhQUW5oVmEyRy9BRjVUMStHclNxWVJld3lIQktLMk1qVW1SN3hRQVdK?=
+ =?utf-8?B?Q2MyMjZhVVhTNDBpRGZLejZZQVcyVWdqMmdRMktvdkdxZS9uT05Ra2pwb0dZ?=
+ =?utf-8?B?ZTBrMGpNbE4vay9FT05QeHBrVnp2dGV4T0pKY1puUnY5WUQ3VHpjV29OMEJC?=
+ =?utf-8?B?TXpBMWlDTCtFWWRtRHVqbGxwWllqTm9DRTU5dnM2Sm9FYWV0VjZCQzN5d0dz?=
+ =?utf-8?B?c0ZYOEJrR0NJSHp2cnZpRnNzZ0VaaHRhQ2RlSTE4dmpNc0hZV1hJYUJlVy9Y?=
+ =?utf-8?B?T3RFUm41NThsOFV2aDYzZmE4Vy9ndGoxU1hlZmN0akZwZGFkai9ITGdiclNH?=
+ =?utf-8?B?QXZuZVBoemJ6S3AybkRmMzZUeDJMM0Vkc3lpSVRyTVg1S3hDZFMwakQrSWJh?=
+ =?utf-8?B?KzNONWU1WVFmME5LSVpYNFAxWTNPUFBWeUZXcjlEb3cyQTZJazRGUGRLNFl3?=
+ =?utf-8?B?cVBoSVJMSHR2N2tUYlI3b2k2dU1scnFwaDJqMzdpOCtZMG5tcm43SUppS3dm?=
+ =?utf-8?B?cTFHajlSbDNPclowS0JweC91QkJEOEJoMmJ0cWtGRDluVVV5UDc2WGZRL0Yv?=
+ =?utf-8?B?NjUySkFOZjFvNmM5NTFFZGpCdm5KNStsL1ZtbnNWSmQyN2p2WXkzV0dsNzlZ?=
+ =?utf-8?B?elYxUlVUclJyekYyY0laaWl0MVU1dVRZanpRWTJlaU45OTd6dU03M0ZuTVpN?=
+ =?utf-8?B?Q0ErdVYxckVqSFhiVElldWtacE5CRFFMZzFiU0hac2VBcUdKblE0T0ltRWJ4?=
+ =?utf-8?B?a2psS1YzWVorNm5tVWlsNEFpYTg4OStlcC9VbWRqcTljbTNLUGRFNUgvZnd1?=
+ =?utf-8?B?bGljbW1DWkk5WUdiTXZydEhXSVVKK2pIcVY1dlBVZVA3UmNEUTV6WnFHbWVq?=
+ =?utf-8?B?ZTZLWVJKSG1jN2Q1UjlvQ3FUUVdoMHh0eGd2OHQxcHNoazdQSUwzYko4dTNa?=
+ =?utf-8?B?NVlVaHY0NjlxTXRmMnF6YWIxNThNN3NYSExTbW9Za2x2TlFPcldTN0Vmbytp?=
+ =?utf-8?B?ZDhNRXJRclZ0ZHZpbW05RUxZM0tYM2owdkZ3d0tWcEtTdUZVMUJXSXF5ZDFM?=
+ =?utf-8?B?UzVQUk5vZ3QraWQ0RFhZRHN2VWJrM2xMcmxlSmMxcHJEUXNad2lYVlFaNHBD?=
+ =?utf-8?B?Unc9PQ==?=
+X-OriginatorOrg: vaisala.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7ee3309-f6a2-45ab-fe0c-08dc2955473e
+X-MS-Exchange-CrossTenant-AuthSource: AS4PR06MB8447.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 09:55:42.5723
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 6d7393e0-41f5-4c2e-9b12-4c2be5da5c57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ewUqsjHHPd7QIYlUmlrCCyPVMXT/A6+HcoQTosijBHWpAk5N2gX1illJO4GwOPCTgEGrgZNpDntBYx01T3hEaw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR06MB6970
 
-The Documentation/ABI/testing/sysfs-class-net-statistics documentation
-is pointing to the wrong path for the interface.  Documentation is
-pointing to /sys/class/<iface>, instead of /sys/class/net/<iface>.
+On 6.2.2024 16.33, Geert Uytterhoeven wrote:
+> On Fri, Jan 5, 2024 at 12:51 PM <niko.mauno@vaisala.com> wrote:
+..
+>> +         The available values have the following meanings:
+>> +               0 is unauthorized for all devices
+>> +               1 is authorized for all devices (default)
+>> +               2 is authorized for internal devices
+>> +
+>> +         If the default value is too permissive but you are unsure which mode
+>> +         to use, say 2.
+> 
+> I'm sorry, but I don't have any clue about what to answer to this question.
+> Usually, you are (or are not) authorized to do _something_, but the
+> /something/ is not mentioned at all here.
+> Can you please make this a bit more clear?
+> Thanks!
 
-Fix it by adding the `net/` directory before the interface.
-
-Fixes: 6044f9700645 ("net: sysfs: document /sys/class/net/statistics/*")
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- .../ABI/testing/sysfs-class-net-statistics    | 48 +++++++++----------
- 1 file changed, 24 insertions(+), 24 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-class-net-statistics b/Documentation/ABI/testing/sysfs-class-net-statistics
-index 55db27815361..53e508c6936a 100644
---- a/Documentation/ABI/testing/sysfs-class-net-statistics
-+++ b/Documentation/ABI/testing/sysfs-class-net-statistics
-@@ -1,4 +1,4 @@
--What:		/sys/class/<iface>/statistics/collisions
-+What:		/sys/class/net/<iface>/statistics/collisions
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -6,7 +6,7 @@ Description:
- 		Indicates the number of collisions seen by this network device.
- 		This value might not be relevant with all MAC layers.
- 
--What:		/sys/class/<iface>/statistics/multicast
-+What:		/sys/class/net/<iface>/statistics/multicast
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -14,7 +14,7 @@ Description:
- 		Indicates the number of multicast packets received by this
- 		network device.
- 
--What:		/sys/class/<iface>/statistics/rx_bytes
-+What:		/sys/class/net/<iface>/statistics/rx_bytes
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -23,7 +23,7 @@ Description:
- 		See the network driver for the exact meaning of when this
- 		value is incremented.
- 
--What:		/sys/class/<iface>/statistics/rx_compressed
-+What:		/sys/class/net/<iface>/statistics/rx_compressed
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -32,7 +32,7 @@ Description:
- 		network device. This value might only be relevant for interfaces
- 		that support packet compression (e.g: PPP).
- 
--What:		/sys/class/<iface>/statistics/rx_crc_errors
-+What:		/sys/class/net/<iface>/statistics/rx_crc_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -41,7 +41,7 @@ Description:
- 		by this network device. Note that the specific meaning might
- 		depend on the MAC layer used by the interface.
- 
--What:		/sys/class/<iface>/statistics/rx_dropped
-+What:		/sys/class/net/<iface>/statistics/rx_dropped
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -51,7 +51,7 @@ Description:
- 		packet processing. See the network driver for the exact
- 		meaning of this value.
- 
--What:		/sys/class/<iface>/statistics/rx_errors
-+What:		/sys/class/net/<iface>/statistics/rx_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -59,7 +59,7 @@ Description:
- 		Indicates the number of receive errors on this network device.
- 		See the network driver for the exact meaning of this value.
- 
--What:		/sys/class/<iface>/statistics/rx_fifo_errors
-+What:		/sys/class/net/<iface>/statistics/rx_fifo_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -68,7 +68,7 @@ Description:
- 		network device. See the network driver for the exact
- 		meaning of this value.
- 
--What:		/sys/class/<iface>/statistics/rx_frame_errors
-+What:		/sys/class/net/<iface>/statistics/rx_frame_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -78,7 +78,7 @@ Description:
- 		on the MAC layer protocol used. See the network driver for
- 		the exact meaning of this value.
- 
--What:		/sys/class/<iface>/statistics/rx_length_errors
-+What:		/sys/class/net/<iface>/statistics/rx_length_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -87,7 +87,7 @@ Description:
- 		error, oversized or undersized. See the network driver for the
- 		exact meaning of this value.
- 
--What:		/sys/class/<iface>/statistics/rx_missed_errors
-+What:		/sys/class/net/<iface>/statistics/rx_missed_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -96,7 +96,7 @@ Description:
- 		due to lack of capacity in the receive side. See the network
- 		driver for the exact meaning of this value.
- 
--What:		/sys/class/<iface>/statistics/rx_nohandler
-+What:		/sys/class/net/<iface>/statistics/rx_nohandler
- Date:		February 2016
- KernelVersion:	4.6
- Contact:	netdev@vger.kernel.org
-@@ -104,7 +104,7 @@ Description:
- 		Indicates the number of received packets that were dropped on
- 		an inactive device by the network core.
- 
--What:		/sys/class/<iface>/statistics/rx_over_errors
-+What:		/sys/class/net/<iface>/statistics/rx_over_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -114,7 +114,7 @@ Description:
- 		(e.g: larger than MTU). See the network driver for the exact
- 		meaning of this value.
- 
--What:		/sys/class/<iface>/statistics/rx_packets
-+What:		/sys/class/net/<iface>/statistics/rx_packets
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -122,7 +122,7 @@ Description:
- 		Indicates the total number of good packets received by this
- 		network device.
- 
--What:		/sys/class/<iface>/statistics/tx_aborted_errors
-+What:		/sys/class/net/<iface>/statistics/tx_aborted_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -132,7 +132,7 @@ Description:
- 		a medium collision). See the network driver for the exact
- 		meaning of this value.
- 
--What:		/sys/class/<iface>/statistics/tx_bytes
-+What:		/sys/class/net/<iface>/statistics/tx_bytes
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -143,7 +143,7 @@ Description:
- 		transmitted packets or all packets that have been queued for
- 		transmission.
- 
--What:		/sys/class/<iface>/statistics/tx_carrier_errors
-+What:		/sys/class/net/<iface>/statistics/tx_carrier_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -152,7 +152,7 @@ Description:
- 		because of carrier errors (e.g: physical link down). See the
- 		network driver for the exact meaning of this value.
- 
--What:		/sys/class/<iface>/statistics/tx_compressed
-+What:		/sys/class/net/<iface>/statistics/tx_compressed
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -161,7 +161,7 @@ Description:
- 		this might only be relevant for devices that support
- 		compression (e.g: PPP).
- 
--What:		/sys/class/<iface>/statistics/tx_dropped
-+What:		/sys/class/net/<iface>/statistics/tx_dropped
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -170,7 +170,7 @@ Description:
- 		See the driver for the exact reasons as to why the packets were
- 		dropped.
- 
--What:		/sys/class/<iface>/statistics/tx_errors
-+What:		/sys/class/net/<iface>/statistics/tx_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -179,7 +179,7 @@ Description:
- 		a network device. See the driver for the exact reasons as to
- 		why the packets were dropped.
- 
--What:		/sys/class/<iface>/statistics/tx_fifo_errors
-+What:		/sys/class/net/<iface>/statistics/tx_fifo_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -188,7 +188,7 @@ Description:
- 		FIFO error. See the driver for the exact reasons as to why the
- 		packets were dropped.
- 
--What:		/sys/class/<iface>/statistics/tx_heartbeat_errors
-+What:		/sys/class/net/<iface>/statistics/tx_heartbeat_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -197,7 +197,7 @@ Description:
- 		reported as heartbeat errors. See the driver for the exact
- 		reasons as to why the packets were dropped.
- 
--What:		/sys/class/<iface>/statistics/tx_packets
-+What:		/sys/class/net/<iface>/statistics/tx_packets
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
-@@ -206,7 +206,7 @@ Description:
- 		device. See the driver for whether this reports the number of all
- 		attempted or successful transmissions.
- 
--What:		/sys/class/<iface>/statistics/tx_window_errors
-+What:		/sys/class/net/<iface>/statistics/tx_window_errors
- Date:		April 2005
- KernelVersion:	2.6.12
- Contact:	netdev@vger.kernel.org
--- 
-2.39.3
-
+Thanks, submitted v3 which is hopefully better in this respect.
+-Niko
 
