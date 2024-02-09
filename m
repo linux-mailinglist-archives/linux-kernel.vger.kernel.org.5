@@ -1,112 +1,114 @@
-Return-Path: <linux-kernel+bounces-59744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67CEF84FB28
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:40:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAC5284FB2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:40:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AA9C1C2369A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:40:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FFDB1F272C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE0507E770;
-	Fri,  9 Feb 2024 17:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5B47EF06;
+	Fri,  9 Feb 2024 17:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hE2vaQub"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g9caa+Vk"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CDE053398
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EFA53398;
+	Fri,  9 Feb 2024 17:40:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707500411; cv=none; b=Gll39vLuNvS8Yc1sMcPC35vYXPKt+IpuVnJY2rQgx6AL63dpKBlkBdfsFn14J/Jgpocq5tjej3jEgOFYTpxiEo9I2uXqafFGcPNvaHBLIhZG8+UqUrV8JKXisFE25dCBF+kOpdZcnPDBVy4qGP+TijLBVCASvl/ReZ0N+X1dDuI=
+	t=1707500424; cv=none; b=Co+96Vv8Tg0Vm9C0XMyMIaDKOnkmyDc9E90kWgXFzu1NcAYsd9Qw5P+oSNgk9VV1VT7lM+ZgYHBUVU6jsNq8Pp0okvphIwEu+jwREUiBHEHRNQKLjgUWMEBHE4H5XJEd4knE2AqObCPDctFZL8DprZ+98IciGpjJZC0i+XWIc8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707500411; c=relaxed/simple;
-	bh=uNQQdtH6UFZLTLAbeZXvxiavQgfNt+/6JYRGrZdz8j4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HGwdgbuuPm3XwIHqUcvfs8r8Q2ffySkHw4gmGxFacxzTsYqRUMWwuBduZOqOSUTnwsCXQ6uE6FVWEwNDn+ISUWj7yfRSHgiq3X/qlQwQWPYA3Znve+Vtep+Vy2quAI0BOuEkRxevoOAI9MkUCCZ3PHiIaeWL7vOIcDjp5pzzTPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hE2vaQub; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10EF6C433C7;
-	Fri,  9 Feb 2024 17:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707500410;
-	bh=uNQQdtH6UFZLTLAbeZXvxiavQgfNt+/6JYRGrZdz8j4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hE2vaQubrJi583g3SJJKA3b6Ghlhd5vr0BbfGQgr7l4ks56TXGCW5QAsUfuX/OPG9
-	 VglhX8BON3RISzqRCNlx1ft+mq9zDb7NqVF6ux+qhAdAyd+wfW/XcpJ7I8s0X5SI/G
-	 3cMHiOT6f5h8eKDlxdndbdWIg2yMB54qVD+Cnn6nMjN3rWa+nq0yWn5UuaWr66c4aa
-	 3jNrWI3S68HsBvXhX2TrLdzMUV3AQTs40Bp94Cg7irN92nm6dRAlIA/xwPiVVokUi4
-	 lnLK42qiPC05UPzKldac8wkp85BfwJryjhj6sdpufZ3ZgV/tZJJUFlGwFWKP7Vawkn
-	 O0MhWwNjf8J3Q==
-Date: Fri, 9 Feb 2024 17:40:06 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Will Deacon <will@kernel.org>
-Cc: Doug Anderson <dianders@chromium.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Dave Martin <Dave.Martin@arm.com>, Oleg Nesterov <oleg@redhat.com>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/sve: Lower the maximum allocation for the SVE
- ptrace regset
-Message-ID: <ZcZjdnchVblj4iP+@finisterre.sirena.org.uk>
-References: <20240203-arm64-sve-ptrace-regset-size-v1-1-2c3ba1386b9e@kernel.org>
- <CAD=FV=XupbtO3_+P9=XO26vH_5nALSSLZZHZywPSR_hQsWxM0Q@mail.gmail.com>
- <20240209171155.GB25069@willie-the-truck>
+	s=arc-20240116; t=1707500424; c=relaxed/simple;
+	bh=ROnGNfaeD0/YKxBAw8frEflS/rFpbSY/kGI+18buZUA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=rMh/8MuuRENQIGf5ccMu3BBtHj1x9/14U7UWfz6Th3AY5Y7/Fp5nMkwdlk/gvektMarOE79+L6oU40JsKWtGod5zqHyULXNI8Pvq1/L7tZ9iJ8xIX/+QpgA+sGqFkx1TReEsaIdvg/AIOLLq1gBAjoIM2VukakMmZTq22On7VSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g9caa+Vk; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40fe03cd1caso11209275e9.0;
+        Fri, 09 Feb 2024 09:40:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707500421; x=1708105221; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=B7o1axzx5/29BUOyumXHlsexf5uphP2TrHuxCCp3IKM=;
+        b=g9caa+VkzUtV/blEzeUhbU2Isp5UIdt0cOrbUVX649ofK/y+qf+qsGcoOHKF/uT+Kf
+         ipr7iuvSmrkHZ0B0mpO2h0Kc1y/UxquSThJRo3SJTrleYNlYpTNeIA/5lRAXxgiBAjbV
+         WH7fGu1WA+SvIYRqI5dRf2lgTKejbsH2TL7Bsb5fktrYBK39WgQev+ZKRTtPZkbJNeIk
+         InXm0ThB7HtBv0XZZfO3GcN4UbXIr/NYDkzLfSKixU7+N2SouQ94pIhz+UUNmu/Esf9Q
+         LbLwQfZSg3Vy4bDKoe3+hNvt3XN+NTbP68XlZj1koiLl/9NChp7B0opWcYCwXEemYXFF
+         RfWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707500421; x=1708105221;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B7o1axzx5/29BUOyumXHlsexf5uphP2TrHuxCCp3IKM=;
+        b=Z/EOx+WT7CruBsp12ez1eodlexGQQSwoallefaa87OayyWRf1ZYt1Qp+NSxWex9mKB
+         9QLaZ1WJUN1Ft5s++Yg6y0mMSEIRkA4MLOMBW9cBpIhimBMSjhTdF41SyM5TTjyuZXvg
+         dPKLCV7YuLxOMTm4dJPAcQbbS3ayWNdUfTIDFiBOhv2P7rLGkqQJFp+swSvgMfYZYOtw
+         i0XZw+mPYAPUn7YGIaipB1zQCdreIFPM2S5Mc3ISdG52YMCigpKPr9dCUf4S5ORkb26g
+         ji0rflReOiuJhCVKdCDNFDAbAUopH0G26PD9mWzByvgnCLu3hc2ylVGS6cMlueWy/ICN
+         IRvw==
+X-Gm-Message-State: AOJu0YyJ0H7Z56PpzGpuilFb7UguR2jnsJxv+IrDiZoVE3p/Jkj+tjH5
+	ssqO0Y53gXOSoBxkVJWFkwvw9YBBgSE2YXjkr6+Zv7S59DiZUqwa
+X-Google-Smtp-Source: AGHT+IEtokBxjIdNhOmh8A68nah3DLmTE+sLMrL/Kgdxjz5r5d23ErT2ogib9AgEzsuBcTF7twxrIg==
+X-Received: by 2002:a05:600c:3b8a:b0:410:773e:c3d8 with SMTP id n10-20020a05600c3b8a00b00410773ec3d8mr15510wms.8.1707500420990;
+        Fri, 09 Feb 2024 09:40:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUIOqXUw3d1nTfvZcV0yzAkoNyy6hvU6EFjAQHC7E+mtCEA8QlFw80vRI/ONVOrcSeEIHvM9xzcGZjkwDDakAlLwxa2xgDiscZVc118DfVJP82HTimJQ8v1itETxplvM8Z82vn6xRYC30F1iuKBbUyOpFv9kT6fe3pkCt1zS4G/HdoBg0hCjvwyC+dNJ97P3+rlHPbY+0P84ttQ8x3fZQqc5m1b2Q==
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id fs20-20020a05600c3f9400b00410232ffb2csm1249064wmb.25.2024.02.09.09.40.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 09:40:20 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] mtd: rawnand: remove redundant assignment to variable bbtblocks
+Date: Fri,  9 Feb 2024 17:40:19 +0000
+Message-Id: <20240209174019.3933233-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bt/WGUaP7bIvKfoi"
-Content-Disposition: inline
-In-Reply-To: <20240209171155.GB25069@willie-the-truck>
-X-Cookie: You might have mail.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
+The variable bbtblocks is being assigned a value that is never
+read. The assignment is redundant and can be removed.
 
---bt/WGUaP7bIvKfoi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cleans up clang scan build warning:
+drivers/mtd/nand/raw/nand_bbt.c:579:3: warning: Value stored to
+'bbtblocks' is never read [deadcode.DeadStores]
 
-On Fri, Feb 09, 2024 at 05:11:55PM +0000, Will Deacon wrote:
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/mtd/nand/raw/nand_bbt.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> I can pick this up as a short-term hack if it solves the problem for you,
-> but I also saw that you posted:
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index e4664fa6fd9e..a8fba5f39f59 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -576,7 +576,6 @@ static int search_bbt(struct nand_chip *this, uint8_t *buf,
+ 		startblock &= bbtblocks - 1;
+ 	} else {
+ 		chips = 1;
+-		bbtblocks = mtd->size >> this->bbt_erase_shift;
+ 	}
+ 
+ 	for (i = 0; i < chips; i++) {
+-- 
+2.39.2
 
-> https://lore.kernel.org/r/20240205092626.v2.1.Id9ad163b60d21c9e56c2d686b0cc9083a8ba7924@changeid
-
-> to fallback onto vmalloc() for large allocations.
-
-> What's your preference for a fix?
-
-We need the change kvzalloc() regardless since the ZA regset is just
-over 64K which is on the big side, I do think that reducing the reported
-regset size is useful as a fix independently since even with kvzalloc()
-it's still pointless and rude to ask for such a big allocation and we
-might reasonably be generating core files or dumping crashing processes
-under memory pressure.
-
-Dave was looking at sizing the regsets dynamically but there's enough
-going on there that it's not great if people want to pick it up for
-stable.
-
---bt/WGUaP7bIvKfoi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXGY3YACgkQJNaLcl1U
-h9C/VAf/UtPKLS512P+gFBhbamgPYl2plAY+VsbTOvsLsMDb/VU58mlAJG7XYakP
-9JJfei4c2vAm6+uN00bqGQmmYQtTG+NPH0ZgNbMOcwqVHL9xlJgeBWD7OSgnHZVk
-VakcwgnF9mxv18L2+fMcKKe0a6GzXf7oPyfncbfoWMWqMcUDGNqkCHXs4psUuYav
-/rYOmcuS90M5oMylI9b/gSDpiYv2+Xh15SwghD5IB09weilR5mdHurHgEkItVVi1
-ocxqZKd/n+f9nkyjsJ/duyCp71hwrF0MERLMpIBMaNsiMH2IOnQEROC8Z9uhWfL1
-cRf+Al21F8Myp+cKA5CZ9jybWPsWnw==
-=2tur
------END PGP SIGNATURE-----
-
---bt/WGUaP7bIvKfoi--
 
