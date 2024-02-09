@@ -1,46 +1,86 @@
-Return-Path: <linux-kernel+bounces-59704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AD7884FAB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:11:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3010484FAB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:12:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA0DDB26B65
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:11:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E699B28F017
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5298A7BAF3;
-	Fri,  9 Feb 2024 17:11:23 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC274D112
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:11:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03F67BB18;
+	Fri,  9 Feb 2024 17:11:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="s6n60y/D"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1789733CF1
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707498682; cv=none; b=L7qHpyR7mam6i+bGMsP/8PLArlK0Okx7zghmxFC58InNq6oLV0IpxLZMomrJChH6W4Mt6NmiPpk1X8zemQlJCKUzbdUy7kX6nm+UPFoi7c8HWj70twLXxIukpdAPcYg5ZQjfp9AJheFMp2gPl6ytSLClQCvh4h4wLc1mnbHRUQs=
+	t=1707498713; cv=none; b=A10YTTSIRi+vL7RjbXp89ZI4/kzOmZ0WdaKJR/eNiYpwxnEi2y6lyWXnhcsMdL7ixP558ISlFExAVQLRBQEs0ENzZhdtnvWZEPEnbVqQSBTSZyk+NdV/vBfwl7xfyVzvf9QG2Ctlw0p77Crat4TzmLgmapxrQdc45YCnEtFJ7UY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707498682; c=relaxed/simple;
-	bh=2ubGVaizyiqtk+gGQol1RLvxzIDmXy1/p9toUpaKFdA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dFpr0/eDOm50KArXlnjAi1W1GEo/EPiu3Oj7hELOs3URvZqFxPzjXORST/2WnlnxjkknhRQePqXO56XdhFNpx2bd7iFTCzP8/dHiqk+3Kqzd0hSu0D4zp9gHoJNkYenT3t5UmuUkyXMpBQq7TjB5bE1WtUq+B28GjCReeEuTyPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2EB7DA7;
-	Fri,  9 Feb 2024 09:12:01 -0800 (PST)
-Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 145513F64C;
-	Fri,  9 Feb 2024 09:11:18 -0800 (PST)
-From: Robin Murphy <robin.murphy@arm.com>
-To: will@kernel.org
-Cc: mark.rutland@arm.com,
-	ilkka@os.amperecomputing.com,
+	s=arc-20240116; t=1707498713; c=relaxed/simple;
+	bh=Bjsp+KZtyL8O80qh9O9Z57mm54YKxPF3W3gwM9bSRzs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LXkeFsfXL4zkTM6t6V4EiQEkrxbZAgXdOGAc0KCzWQTkTXDMa/y5l+SZMCGZZcg6e2DojrfkS2vpxyoi5eOD0b+sXgPN2NhVlsHxYVXx9rqashrwrKm+CXRUWUDS2s6TqqtqSBuDPojNjKdbCC702xEk3G1XggS6QL/8wPoZwr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=s6n60y/D; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4103be6e938so10395815e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 09:11:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1707498709; x=1708103509; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ue3Hv5Tp9scHSTy47Ds5eoq01BRybMaUAWCl5QsfxDE=;
+        b=s6n60y/D8uuNaQaAiVLb9KCOOovA9VhkYxVUiN7vvSjhjHAKHkI+L9xPs7incctLlQ
+         /V0tHLMiorUdxlAA7sciC8Je1H1zBRUYBkjLZ41nI1GnAqCqiGWKeQTG2jN8LfCb4yDl
+         0QXjT7EruTPtjfRrrojCA85mGR+p0Q+aCg0dSqZ1196nXQwngUylcJygHKqDDFXEAZue
+         qrzcDFVp9/QenktIj2DoSAN/BvScQq14fTTaIMongtH1+CJJ9Qa2wRqb/snERwK/doLG
+         MMbKfoPNJlmltp8e0ZjFv04PA7FKAIhkYGPx7peghIgyUNkez+OgsdzyuZ/xeoEAXNRs
+         6ZqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707498709; x=1708103509;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ue3Hv5Tp9scHSTy47Ds5eoq01BRybMaUAWCl5QsfxDE=;
+        b=j5tTT7dWkdeg5UDuQG/aJJaLeA9ypDaw2Q45rWf48JXFeHFm4x59D81tjNfoL7Rjpa
+         BmJvaQ8+aVFqAVAobLeq9MjXvT92bDbYWPXC8DQv1gwG6URc02QqyKz8RLMCTsnQ4m/u
+         X/aJqkxAbvpG4TriYmQ6gx4FyQ187z5S53fsh0LmlxrJyjcnXzv4UKsMrFULASMRPhtL
+         YbOSXW5NHOil4ePdAJVFiHhJRsgRDyxVw9gw7qpYhq1WO18EIeqepAjlFMWHFjxxPA72
+         kHE3mtJmBQL1e1Cbp+OQtBws1anzgT2NQRmkUz9QG9luC8DfRFHvmiwovhvSp+sNuZNv
+         5Kng==
+X-Gm-Message-State: AOJu0Yy4viMy7YJPBPiLk99zsGSdliG1W0pGbN1qfew4CiYoqyGysWVT
+	nhy9FSdLx8vMN2OLhEIYXMobVyeL0mR3XKjlrm8Gyv8iqyxPYcO8uBWZ3pWrDwIg7LGL/VtH7GN
+	X
+X-Google-Smtp-Source: AGHT+IG3dN9xA5+wcmP96KwiTqU26PY7MdzhjfvXcbM2slJ41I/tBrhwgRalwRcfYEQbgIeuH0KsAw==
+X-Received: by 2002:a05:600c:4f4e:b0:40f:df17:f0ce with SMTP id m14-20020a05600c4f4e00b0040fdf17f0cemr1831671wmq.28.1707498709226;
+        Fri, 09 Feb 2024 09:11:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWnGar+cKZgWNeQ+21aAnbQeq2d4Yu8sDJR2KwQt0t2Wfq1JY6aOrqPBbuAEeCTxHBHSdNWhRKvRCRO/tQ6+//8xe9IpiwFKOfZl02woAXSjYD5u1kE4W8wrZyoSfUxYBgTZ1jHDzWEz0LnS1N+ZAXRsX6kVHUWhIu/vlFsX9X8MmKeZB3v7sBTXlfFyRLjzfUQa8S6/VoM9DzhRhAawEP4Does1m2A6wR34qifhA0LabZTvLF7+ouhkpZVgqt4/GbZlFmiPqr1nKnbLLE6uXztMdLyt0jqztuMJZ6rVr0TB11LjVwzqsnxPxodLgf1w9uxKq7azYG+xBeT8DuE
+Received: from P-NTS-Evian.home (2a01cb05945b7e009bdc688723a24f31.ipv6.abo.wanadoo.fr. [2a01:cb05:945b:7e00:9bdc:6887:23a2:4f31])
+        by smtp.gmail.com with ESMTPSA id a20-20020a05600c225400b004104ecb39d1sm1154711wmm.32.2024.02.09.09.11.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 09:11:48 -0800 (PST)
+From: Romain Naour <romain.naour@smile.fr>
+To: linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] perf/arm-cmn: Workaround AmpereOneX errata AC04_MESH_1 (incorrect child count)
-Date: Fri,  9 Feb 2024 17:11:09 +0000
-Message-Id: <ce4b1442135fe03d0de41859b04b268c88c854a3.1707498577.git.robin.murphy@arm.com>
-X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
+	conor+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org,
+	kristo@kernel.org,
+	vigneshr@ti.com,
+	nm@ti.com
+Cc: Romain Naour <romain.naour@smile.fr>,
+	Neha Malcom Francis <n-francis@ti.com>
+Subject: [PATCH v2 1/2] arm64: dts: ti: k3-am69-sk: fix PMIC interrupt number
+Date: Fri,  9 Feb 2024 18:11:45 +0100
+Message-ID: <20240209171146.307465-1-romain.naour@smile.fr>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,47 +89,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+The tps659413 node set WKUP_GPIO0_83 (AA37) pin as input to be used as
+PMIC interrupt but uses 39 (WKUP_GPIO0_39) as "interrupts" property.
 
-AmpereOneX mesh implementation has a bug in HN-P nodes that makes them
-report incorrect child count. The failing crosspoints report 8 children
-while they only have two.
+Replace 39 by 83 after checking in the board schematic [1].
 
-When the driver tries to access the inexistent child nodes, it believes it
-has reached an invalid node type and probing fails. The workaround is to
-ignore those incorrect child nodes and continue normally.
+[1] https://www.ti.com/tool/SK-AM69
 
-Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-[ rm: rewrote simpler generalised version ]
-Tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Fixes: 865a1593bf99 ("arm64: dts: ti: k3-am69-sk: Add support for TPS6594 PMIC")
+Cc: Neha Malcom Francis <n-francis@ti.com>
+Signed-off-by: Romain Naour <romain.naour@smile.fr>
 ---
- drivers/perf/arm-cmn.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
-index c584165b13ba..7e3aa7e2345f 100644
---- a/drivers/perf/arm-cmn.c
-+++ b/drivers/perf/arm-cmn.c
-@@ -2305,6 +2305,17 @@ static int arm_cmn_discover(struct arm_cmn *cmn, unsigned int rgn_offset)
- 				dev_dbg(cmn->dev, "ignoring external node %llx\n", reg);
- 				continue;
- 			}
-+			/*
-+			 * AmpereOneX erratum AC04_MESH_1 makes some XPs report a bogus
-+			 * child count larger than the number of valid child pointers.
-+			 * A child offset of 0 can only occur on CMN-600; otherwise it
-+			 * would imply the root node being its own grandchild, which
-+			 * we can safely dismiss in general.
-+			 */
-+			if (reg == 0 && cmn->part != PART_CMN600) {
-+				dev_dbg(cmn->dev, "bogus child pointer?\n");
-+				continue;
-+			}
- 
- 			arm_cmn_init_node_info(cmn, reg & CMN_CHILD_NODE_ADDR, dn);
- 
+diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+index 8da591579868..95c9d3da59d3 100644
+--- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+@@ -646,7 +646,7 @@ tps659413: pmic@48 {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pmic_irq_pins_default>;
+ 		interrupt-parent = <&wkup_gpio0>;
+-		interrupts = <39 IRQ_TYPE_EDGE_FALLING>;
++		interrupts = <83 IRQ_TYPE_EDGE_FALLING>;
+ 		gpio-controller;
+ 		#gpio-cells = <2>;
+ 		ti,primary-pmic;
 -- 
-2.39.2.101.g768bb238c484.dirty
+2.43.0
 
 
