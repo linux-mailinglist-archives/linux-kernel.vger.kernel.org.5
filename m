@@ -1,111 +1,233 @@
-Return-Path: <linux-kernel+bounces-60071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBDD484FF7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:14:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65BCE84FF85
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:15:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D2D71F24635
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:14:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 803321C21D5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:15:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE5724A18;
-	Fri,  9 Feb 2024 22:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507E525610;
+	Fri,  9 Feb 2024 22:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="kYFmOjvL"
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SHOzVEDj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293C314F6C
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE0723B1
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707516857; cv=none; b=MiowBLPUIGiLptlYBPRAVvExptZE5CmZTgDP4VQ8vp6BiLktRHNWEaccfEZFf2ynTSfllKtXxpr4DY6qBHx3tKE+5TYnBmvBjCo3n6W7ttC9mbjtTNZGW7K0CvTdBj2AV0RsvdTjVk4IRtlgZ/rC3PiR1P2/tp6AfVleBWuMfas=
+	t=1707516923; cv=none; b=V2yA6lU/RIqxUdITuRee202fvNerTSl+CVvDp62QGlGKbsoaJ8S99/3dIrQAm11iskjaop3IBqCuf+BxTyLthSWQ1l1reSTJao2UEeFttFDL5DqCSNXGYJf+igXZs+WdH3SogDTIcPvA2fHFEpyYJS5TDqSDkVaqYBakBRyNkgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707516857; c=relaxed/simple;
-	bh=rHZgrCLeMlII+qi8FZ1rKBlMwnLdJdbS7Gn8kvBazlQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=t5dUt6Tw5bcZT5l9va6AUXxuYzoHcYcZh30uG4Vvf+V38yhHVt02osydOuvF0KHNjYzmbclQs4ezEGBhOhDz1ZIHerlqAflTTjtZKZ0hoG23+BzEOg5F8eJ/7dwVvSclNS9aUhF4YniZ/FSI1Oo9NcM0DjXR0ZamA4fF3OgvhVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=kYFmOjvL; arc=none smtp.client-ip=209.85.166.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-363edc74eabso338635ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707516854; x=1708121654; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iHHrEy1QU6/3tm3dziYnjNjm04AxZNfRHfWpI6uOyB0=;
-        b=kYFmOjvLHQyTMTG5jhC96gYFMaI0sMf/DSHh6RnQCB7KJVnT7g8bbgphVW5gK3pmr2
-         StkE8IOW1oWw19cuoRuSRIeCzJwOFKfTI6ZP+bJtm1fCW3PW02mKI7Qk+B1hyRlF0hmv
-         FNrTbsnPLWPb9jk85aZsFKygV8BzMzJ5chSFS3TuV/oAPzdFhR0DWDOBaVabKjnmxanw
-         gcxfJrDyJPVGb5ADGs9b67VsrEqyZWF80ysHQ1ZSIiVmtoU9U3p7tBF+9CoaBJAN6TCE
-         8D7MYXlhlaXCWAoLxFyMn23Oep2frzpUv0XptAFEd2S3KjXKlZPTydzNX6Z7VwEHmHrM
-         QR9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707516854; x=1708121654;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iHHrEy1QU6/3tm3dziYnjNjm04AxZNfRHfWpI6uOyB0=;
-        b=EbCFcWFKqgBKx8s9ZZ2eE1QEClJ9lK3bo/O9DuT6DMJW5Lv/aWNoEeRJYEaYoc6npZ
-         k5DNBXf9sOoYsJdsdGQz9LUolWSD1mekvJ4BeqLRik2rNTsG2SF+GrSj15Jtj5T090no
-         HUthmcJ244FqY9WHoemruX8N8E0yDELW8hSdLJj3WKb3/22mobQbi6hgso+BE/z7Dq05
-         3rzsij7l+vA8b8ZtXtPCw49mnKQqiVdJNi1nwks3k336mX8/2nhyOXOyGNWHJYwEnH4h
-         ehSrdY9DhzrG9qK8GEiRIiH8tvWPOEdA1xKfnyQY+GDvPELW6WErpsd77a6dLNN/h3S6
-         baUw==
-X-Forwarded-Encrypted: i=1; AJvYcCWK/o7LbDvzk1+NYbDpqqaRkYbxeI2dY7y3OCflprqYqhO2luYY2ld1Nz8OmpVoA4Ix7rwvv2gh1C/iBUa2iQHrPcfuE0lbp+Qq9mQm
-X-Gm-Message-State: AOJu0YyKxoJxsVfYRQnfbxXtgjKIHyS+0DqHeCELZ2eRFi840GnYSEG4
-	rWN0dpD7ctTsGFlxWfOIE6+ALZVMz1WNFpGRdJar/lYe0xjEettSJ92Knaa/VVw=
-X-Google-Smtp-Source: AGHT+IE38G6ozuG6sB1WL3hQGUavb4WA/MOVVouMtOWmenub5ifqgVK5HeJdmoU6BqmBpeTrR2Tafg==
-X-Received: by 2002:a5e:8c11:0:b0:7c4:1966:63e3 with SMTP id n17-20020a5e8c11000000b007c4196663e3mr794385ioj.2.1707516854288;
-        Fri, 09 Feb 2024 14:14:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWHCzhgiLUxWyPqAqvdXPYUtFjW+UMQ93fBJp3wmGN3XlSU3wtWn9aKfBg0SVdLj6C2emVIhnvCGQeQYV5C2B2kFSesgnmJfBmJ3k6nF4lE8JK1Zdyvk/sZh7B4xGCo9t1BRAuMxlN/3fwdNrzIlgm8rJVoN22RWo0EM9b0ROxSHpwJ2FSOaVoiHQDsQyUAiaElgbT4G7aZOkHMcCUHgWM=
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id j28-20020a02cc7c000000b004711fb50f8dsm82492jaq.159.2024.02.09.14.14.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Feb 2024 14:14:13 -0800 (PST)
-Message-ID: <f7a6623d-b55f-4301-be1d-ee0327ebd353@kernel.dk>
-Date: Fri, 9 Feb 2024 15:14:11 -0700
+	s=arc-20240116; t=1707516923; c=relaxed/simple;
+	bh=3aVfhg/C+wAo1wz9GZnGBRw740WrndMiu2OG5sNBjh8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uzLEFc9AsjhPgerGyNNLuC5ewZw0vA6nESCTRy6Jbo2LEsvAr9f1FpP3Mhuf4HjQ4I/83wsuZve4VStngD8ZAloFzIXPBJAGR8xxKFfCL8VeU2jMhJDCMru8cJLUovzFXZOWacx0flXvCpbN51VsCkVrJtgKnYEAXBHna3y+pIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SHOzVEDj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707516920;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=IHB7ZolLgofmfMRsfkbwn2QUSh6DVNhQllqTULKzUgI=;
+	b=SHOzVEDjQ+4Y+h8yhuzoLSfLENz4pib2VDKT4VQx9+4blO+JsYWvJvYfd78LaRL6067XyE
+	xnaANZNrhUGNrXjJY0c9LoyZ/rFzHp1GIaIDfnkxqIEZi/x1AFdfWQSl9CYnilyeRX37r4
+	4t3QwsbDGibNwI7KOivSrP0l5siw8LQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-428-_SIakAvhN7i8GkgZgtC1Hw-1; Fri, 09 Feb 2024 17:15:17 -0500
+X-MC-Unique: _SIakAvhN7i8GkgZgtC1Hw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3532785A589;
+	Fri,  9 Feb 2024 22:15:16 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.39.194.59])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id CE8F71C14B04;
+	Fri,  9 Feb 2024 22:15:10 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Yin Fengwei <fengwei.yin@intel.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+	Nick Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org
+Subject: [PATCH v2 00/10] mm/memory: optimize unmap/zap with PTE-mapped THP
+Date: Fri,  9 Feb 2024 23:14:59 +0100
+Message-ID: <20240209221509.585251-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [io-uring?] KMSAN: uninit-value in io_rw_fail (2)
-Content-Language: en-US
-To: syzbot <syzbot+0198afa90d8c29ef9557@syzkaller.appspotmail.com>,
- asml.silence@gmail.com, io-uring@vger.kernel.org,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000004b1fa70610fa3230@google.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <0000000000004b1fa70610fa3230@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On 2/9/24 3:10 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    9f8413c4a66f Merge tag 'cgroup-for-6.8' of git://git.kerne..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1743d3e4180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
-> dashboard link: https://syzkaller.appspot.com/bug?extid=0198afa90d8c29ef9557
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+This series is based on [1]. Similar to what we did with fork(), let's
+implement PTE batching during unmap/zap when processing PTE-mapped THPs.
 
-This was fixed a while back, not sure why an old kernel is being tested. But
-in any case, the result of this was just garbage in cqe->res for a request
-that was prematurely errored. Nothing to worry about. In any case:
+We collect consecutive PTEs that map consecutive pages of the same large
+folio, making sure that the other PTE bits are compatible, and (a) adjust
+the refcount only once per batch, (b) call rmap handling functions only
+once per batch, (c) perform batch PTE setting/updates and (d) perform TLB
+entry removal once per batch.
 
-#syz fix: io_uring/rw: ensure io->bytes_done is always initialized
+Ryan was previously working on this in the context of cont-pte for
+arm64, int latest iteration [2] with a focus on arm6 with cont-pte only.
+This series implements the optimization for all architectures, independent
+of such PTE bits, teaches MMU gather/TLB code to be fully aware of such
+large-folio-pages batches as well, and amkes use of our new rmap batching
+function when removing the rmap.
 
+To achieve that, we have to enlighten MMU gather / page freeing code
+(i.e., everything that consumes encoded_page) to process unmapping
+of consecutive pages that all belong to the same large folio. I'm being
+very careful to not degrade order-0 performance, and it looks like I
+managed to achieve that.
+
+While this series should -- similar to [1] -- be beneficial for adding
+cont-pte support on arm64[2], it's one of the requirements for maintaining
+a total mapcount[3] for large folios with minimal added overhead and
+further changes[4] that build up on top of the total mapcount.
+
+Independent of all that, this series results in a speedup during munmap()
+and similar unmapping (process teardown, MADV_DONTNEED on larger ranges)
+with PTE-mapped THP, which is the default with THPs that are smaller than
+a PMD (for example, 16KiB to 1024KiB mTHPs for anonymous memory[5]).
+
+On an Intel Xeon Silver 4210R CPU, munmap'ing a 1GiB VMA backed by
+PTE-mapped folios of the same size (stddev < 1%) results in the following
+runtimes for munmap() in seconds (shorter is better):
+
+Folio Size | mm-unstable |      New | Change
+---------------------------------------------
+      4KiB |    0.058110 | 0.057715 |   - 1%
+     16KiB |    0.044198 | 0.035469 |   -20%
+     32KiB |    0.034216 | 0.023522 |   -31%
+     64KiB |    0.029207 | 0.018434 |   -37%
+    128KiB |    0.026579 | 0.014026 |   -47%
+    256KiB |    0.025130 | 0.011756 |   -53%
+    512KiB |    0.024292 | 0.010703 |   -56%
+   1024KiB |    0.023812 | 0.010294 |   -57%
+   2048KiB |    0.023785 | 0.009910 |   -58%
+
+CCing especially s390x folks, because they have a tlb freeing hooks that
+needs adjustment. Only tested on x86-64 for now, will have to do some more
+stress testing. Compile-tested on most other architectures. The PPC
+change is negleglible and makes my cross-compiler happy.
+
+[1] https://lkml.kernel.org/r/20240129124649.189745-1-david@redhat.com
+[2] https://lkml.kernel.org/r/20231218105100.172635-1-ryan.roberts@arm.com
+[3] https://lkml.kernel.org/r/20230809083256.699513-1-david@redhat.com
+[4] https://lkml.kernel.org/r/20231124132626.235350-1-david@redhat.com
+[5] https://lkml.kernel.org/r/20231207161211.2374093-1-ryan.roberts@arm.com
+
+---
+
+The performance numbers are from v1. I did a quick benchmark run of v2
+and nothing significantly changed -- because nothing in the code
+significantly changed. Sending this out ASAP, so Ryan can make progress
+with cont-pte.
+
+v1 -> v2:
+* "mm/memory: factor out zapping of present pte into zap_present_pte()"
+ -> Initialize "struct folio *folio" to NULL
+* "mm/memory: handle !page case in zap_present_pte() separately"
+ -> Extend description regarding arch_check_zapped_pte()
+* "mm/mmu_gather: add __tlb_remove_folio_pages()"
+ -> ENCODED_PAGE_BIT_NR_PAGES_NEXT
+ -> Extend patch description regarding "batching more"
+* "mm/mmu_gather: improve cond_resched() handling with large folios and
+   expensive page freeing"
+ -> Handle the (so far) theoretical case of possible soft lockups when
+    we zero/poison memory when freeing pages. Try to keep old behavior in
+    that corner case to be safe.
+* "mm/memory: optimize unmap/zap with PTE-mapped THP"
+ -> Clarify description of new ptep clearing functions regarding "present
+    PTEs"
+ -> Extend patch description regarding relaxed mapcount sanity checks
+ -> Improve zap_present_ptes() description
+* Pick up RB's
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Yin Fengwei <fengwei.yin@intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc: Nick Piggin <npiggin@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arch@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-s390@vger.kernel.org
+
+David Hildenbrand (10):
+  mm/memory: factor out zapping of present pte into zap_present_pte()
+  mm/memory: handle !page case in zap_present_pte() separately
+  mm/memory: further separate anon and pagecache folio handling in
+    zap_present_pte()
+  mm/memory: factor out zapping folio pte into zap_present_folio_pte()
+  mm/mmu_gather: pass "delay_rmap" instead of encoded page to
+    __tlb_remove_page_size()
+  mm/mmu_gather: define ENCODED_PAGE_FLAG_DELAY_RMAP
+  mm/mmu_gather: add tlb_remove_tlb_entries()
+  mm/mmu_gather: add __tlb_remove_folio_pages()
+  mm/mmu_gather: improve cond_resched() handling with large folios and
+    expensive page freeing
+  mm/memory: optimize unmap/zap with PTE-mapped THP
+
+ arch/powerpc/include/asm/tlb.h |   2 +
+ arch/s390/include/asm/tlb.h    |  30 ++++--
+ include/asm-generic/tlb.h      |  40 ++++++--
+ include/linux/mm_types.h       |  37 ++++++--
+ include/linux/pgtable.h        |  70 ++++++++++++++
+ mm/memory.c                    | 169 +++++++++++++++++++++++----------
+ mm/mmu_gather.c                | 107 ++++++++++++++++++---
+ mm/swap.c                      |  12 ++-
+ mm/swap_state.c                |  15 ++-
+ 9 files changed, 393 insertions(+), 89 deletions(-)
+
+
+base-commit: d7f43604944787ce929efeaabd0f462414002a8f
 -- 
-Jens Axboe
+2.43.0
 
 
