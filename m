@@ -1,121 +1,161 @@
-Return-Path: <linux-kernel+bounces-60126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7AF3850028
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:40:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0913185002B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:40:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E64E284F3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:40:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E2051C20E0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC4928370;
-	Fri,  9 Feb 2024 22:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0793A36120;
+	Fri,  9 Feb 2024 22:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jxahf/z6"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cj+6+PXF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33DD31E4AD
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21FD16439
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:40:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707518414; cv=none; b=QzQAcqranLNqFeO4c1NS0YYwObvX7OkpWFNj0h9CMKWi1QxYj2BB1ojOKC51p6jpR9lycOc42YF0rM5aNXthauPDdvKTALczr3O9le8mzxVVnuryozI7nnStwYVLycYx3xaclM5G/jHNAzJ5ECBNgi8ICnpSNa7PiHQrrP8+EU8=
+	t=1707518442; cv=none; b=CrxrGFQ3UomPcSNP1IanK8oK93L6FkBP9cvIqcmqSnl+p4+xzkDTkPx6sPybc6j061saJFY6iBhn3zsHqEqjJ5dFn/JSz1j3Ygo2TkPs7YxevZxTtUzUb2sSZrMSNCS8HWmrRdcV3nV+irwQcC36mHGc+IX+LyVqP7TLYzb0o9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707518414; c=relaxed/simple;
-	bh=6j+LVFkEKihPX4DewYRiGQc5v6xpaxu/+qjohBVCTQo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=apUpTTXZjYOj/BntjKklzi/XJPEn9kWlNdjSO98teiFovJJhEDj0YuWP+x2gvzQ67pxEpkEelxDGHEyLhALsBCd9Iq+Qoiz06wqhJDNGUWud4Z5/UAVaQ9kcrbUz3GGYpC/WWzAUs3FcKwjcGQkNKGNjyVZR/mju5COwl17iWvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jxahf/z6; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 419LvH9k006347;
-	Fri, 9 Feb 2024 22:39:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=6j+LVFkEKihPX4DewYRiGQc5v6xpaxu/+qjohBVCTQo=;
- b=jxahf/z6pUFetP3uU4Q42iWsI9bOBIidbVsdq81/7aBbEaLfiCMRp+hgkzXskEUOgpoK
- E+C12mltWGtpB4wDiW6A8sm21zgXhdU86alqLPmw3XrHkZmh7t1MUiRxKLTEax6dUU3v
- +YI2JNrBDmqdGpHI2F/sVF68cmSCzkDMclFq/KI+Wgu6zFFfpTKYZN7ykG3+jJ7czCoL
- WsWdm4V6mcZa749GaUhXw/nFFo6aJqTxdakO5KUcR8uuX4fpRoakCR9v5+qk7V1kQ5FL
- x5320qk8t2KzAijgoE3HKC2sViIejMmxdegOp6Rxv2ztWq4p+zf/FqGfelHvpAw9NfBJ Qw== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5vdqgx3k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 22:39:52 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 419JpGC8005756;
-	Fri, 9 Feb 2024 22:39:51 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w21am5t35-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 22:39:51 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 419Mdnbx6226616
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 9 Feb 2024 22:39:51 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EE644581B8;
-	Fri,  9 Feb 2024 22:39:48 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C160A581B0;
-	Fri,  9 Feb 2024 22:39:48 +0000 (GMT)
-Received: from [9.61.164.98] (unknown [9.61.164.98])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  9 Feb 2024 22:39:48 +0000 (GMT)
-Message-ID: <09d32259-ee80-4a52-aaac-eedb7589ab1e@linux.ibm.com>
-Date: Fri, 9 Feb 2024 16:39:48 -0600
+	s=arc-20240116; t=1707518442; c=relaxed/simple;
+	bh=5mTur19Rxbo1EgoDaluJz65rrbAQAX8fLUiZ9Ef5FE0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ChkDkMdQzAuQuqZ8ebGZcstUD/S62FhP6sF4bhnHyJhF37MW50i/JSwQRBC8z50NeSxpA/C6CAAlDOWJggY6WX01sHcv9LUIygP0AfZZ7fJTrLYAbocoPWNEQNtul/7A8GBfpqFQSFFqnXzHAa1GxeYakKOlEAOLOCEcWogryL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cj+6+PXF; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707518439;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0VQrsHUE/LptBa5nKpmriIWMNQMle8yxHNuy/INIktI=;
+	b=cj+6+PXFTFSqqTeA+toAxzLkikyxKRoC1dpJk3g173LHTGARa7DPiNFQHuQQ5ogjRdezq7
+	qPWlCh7XIGOKGDepgWBIRZKUzrigIfOeIVhYmJFonXxuvnHjN30c2o+VS90tydBPwwQbZ6
+	XJ0BOaHVNPop/YBhh5TQ0Bi8hfDEnGo=
+Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
+ [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-576-_jSmgKYxMZ2zEZIYdOjrEw-1; Fri, 09 Feb 2024 17:40:36 -0500
+X-MC-Unique: _jSmgKYxMZ2zEZIYdOjrEw-1
+Received: by mail-ua1-f72.google.com with SMTP id a1e0cc1a2514c-7d604e82b38so1133421241.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:40:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707518435; x=1708123235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0VQrsHUE/LptBa5nKpmriIWMNQMle8yxHNuy/INIktI=;
+        b=FGEYMKxQX9sb/k3sRbemSKtc0BPc0WoGSqrdkF6jpg+BP57dwp1ebTjzoql/+bk8ve
+         WE0W2gUSbNGXAcDMiRFfkz5uld1QK/0ln+vPIohPtnD7P7+Mp1GQvaWMk+fp4Q6ZECRB
+         hCPGqRC0NgVW0SlRoZa79SYFM0vgBDC8uey8YG122w742W4XG5I40BhnsLyllVYqXoR/
+         E7k8tv8Xw5Ddmo6Yd1D7l4Wbalc9pktEar6gh03vBEPTlFnBB4ghQIl9QMjT8bfFcjI8
+         sELbk4YKDkCr1oWjRuladfloll5D2hiiPkpegU7GlmGu1W342gGcqq3SQwwNfx0xPHTa
+         lFlQ==
+X-Gm-Message-State: AOJu0YzPKL7aX8grlRMmU4hWLegrmuLAOo1039aEyJD7Eds4FHO399/H
+	DtUMf6Xs5VRfhx73XSEPGf4kszvcSGofCW/pMXtqJGGMflf8G4ZWrUl7WF3QId+q1HlnaRLjTu1
+	vQlLVZHeK8iLRkc3fuDwEWahLknuVgeroSWmjvMpgWk5ZWSs69oVXqfhn+80rADhM7xmyyUz7XH
+	PKObBvw9eTxE/PC1R9zA8f5R0gtWHv5nnuXAg3
+X-Received: by 2002:a05:6102:198a:b0:46d:295d:1d9c with SMTP id jm10-20020a056102198a00b0046d295d1d9cmr966948vsb.21.1707518435618;
+        Fri, 09 Feb 2024 14:40:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGDT5FseOqjE7EgYc0WV0xo2jicn+bWaOOKx90vB2jZwvCrR/EUTmLrqEEMbxIhn/R3Z0xvt66ZxrXlXADlWgM=
+X-Received: by 2002:a05:6102:198a:b0:46d:295d:1d9c with SMTP id
+ jm10-20020a056102198a00b0046d295d1d9cmr966937vsb.21.1707518435345; Fri, 09
+ Feb 2024 14:40:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fsi: core: make fsi_bus_type const
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Jeremy Kerr <jk@ozlabs.org>, Joel Stanley <joel@jms.id.au>,
-        Alistar Popple <alistair@popple.id.au>, linux-fsi@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20240208-bus_cleanup-fsi-v1-1-0f13d4a4f920@marliere.net>
- <2024020948-xerox-exhaust-fb35@gregkh>
-Content-Language: en-US
-From: Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <2024020948-xerox-exhaust-fb35@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OgM7eALHKo5MTX74jXD_uHwUnyRlf6lZ
-X-Proofpoint-ORIG-GUID: OgM7eALHKo5MTX74jXD_uHwUnyRlf6lZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_18,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- malwarescore=0 mlxscore=0 phishscore=0 clxscore=1011 lowpriorityscore=0
- priorityscore=1501 mlxlogscore=808 suspectscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402090165
+References: <20240209183743.22030-1-pbonzini@redhat.com> <ZcZ_m5By49jsKNXn@google.com>
+In-Reply-To: <ZcZ_m5By49jsKNXn@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Fri, 9 Feb 2024 23:40:23 +0100
+Message-ID: <CABgObfaum2=MpXE2kJsETe31RqWnXJQWBQ2iCMvFUoJXJkhF+w@mail.gmail.com>
+Subject: Re: [PATCH 00/10] KVM: SEV: allow customizing VMSA features
+To: Sean Christopherson <seanjc@google.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
+	aik@amd.com, isaku.yamahata@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Feb 9, 2024 at 8:40=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
+> On Fri, Feb 09, 2024, Paolo Bonzini wrote:
+> > The idea that no parameter would ever be necessary when enabling SEV or
+> > SEV-ES for a VM was decidedly optimistic.
+>
+> That implies there was a conscious decision regarding the uAPI.  AFAICT, =
+all of
+> the SEV uAPIs are direct reflections of the PSP invocations.  Which is wh=
+y I'm
+> being so draconian about the SNP uAPIs; this time around, we need to actu=
+ally
+> design something.
 
-On 2/9/24 04:31, Greg Kroah-Hartman wrote:
-> On Thu, Feb 08, 2024 at 05:05:29PM -0300, Ricardo B. Marliere wrote:
->> Now that the driver core can properly handle constant struct bus_type,
->> move the fsi_bus_type variable to be a constant structure as well,
->> placing it into read-only memory which can not be modified at runtime.
->>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+You liked that word, heh? :) The part that I am less sure about, is
+that it's actually _possible_ to design something.
 
+If you end up with a KVM_CREATE_VM2 whose arguments are
 
-Thanks.
+   uint32_t flags;
+   uint32_t vm_type;
+   uint64_t arch_mishmash_0; /* Intel only */
+   uint64_t arch_mishmash_1; /* AMD only */
+   uint64_t arch_mishmash_2; /* Intel only */
+   uint64_t arch_mishmash_3; /* AMD only */
 
-Reviewed-by: Eddie James <eajames@linux.ibm.com>
+and half of the flags are Intel only, the other half are AMD only...
+do you actually gain anything over a vendor-specific ioctl?
 
+Case in point being that the SEV VMSA features would be one of the
+fields above, and they would obviously not be available for TDX.
 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+kvm_run is a different story because it's the result of mmap, and not
+a ioctl. But in this case we have:
+
+- pretty generic APIs like UPDATE_DATA and MEASURE that should just be
+renamed to remove SEV references. Even DBG_DECRYPT and DBG_ENCRYPT
+fall in this category
+
+- APIs that seem okay but may depend on specific initialization flows,
+for example LAUNCH_UPDATE_VMSA. One example of the problems with
+initialization flows is LAUNCH_FINISH, which seems pretty tame but is
+different between SEV{,-ES} and SNP. Another example could be CPUID
+which is slightly different between vendors.
+
+- APIs that are currently vendor-specific, but where a second version
+has a chance of being cross-vendor, for example LAUNCH_SECRET or
+GET_ATTESTATION_REPORT. Or maybe not.
+
+- others that have no hope, because they include so many pieces of
+vendor-specific data that there's hardly anything to share. INIT is
+one of them. I guess you could fit the Intel CPUID square hole into
+AMD's CPUID round peg or vice versa, but there's really little in
+common between the two.
+
+I think we should try to go for the first three, but realistically
+will have to stop at the first one in most cases. Honestly, this
+unified API effort should have started years ago if we wanted to go
+there. I see where you're coming from, but the benefits are marginal
+(like the amount of userspace code that could be reused) and the
+effort huge in comparison. And especially, it's much worse to get an
+attempt at a unified API wrong, than to have N different APIs.
+
+This is not a free-for-all, there are definitely some
+KVM_MEMORY_ENCRYPT_OP that can be shared between SEV and TDX. The
+series also adds VM type support for SEV which fixes a poor past
+choice. I don't think there's much to gain from sharing the whole INIT
+phase though.
+
+Paolo
+
 
