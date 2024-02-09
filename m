@@ -1,218 +1,101 @@
-Return-Path: <linux-kernel+bounces-59054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F30084F07E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:01:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 565FF84F095
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:04:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7590AB23AC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:01:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCBED1F21F7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:04:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 238C856B88;
-	Fri,  9 Feb 2024 07:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09CE4657C3;
+	Fri,  9 Feb 2024 07:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="E3VmzKT/"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="Sadvmouc"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44893651B4;
-	Fri,  9 Feb 2024 07:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC735657B6;
+	Fri,  9 Feb 2024 07:03:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707462087; cv=none; b=V++KNyoE2/sDxKwzM/Pe9uNWS3kNPgL/DKavNw0UExn/GhQ4/17ehY4pl5uX6MEnANPsYVbO/r2n20w3Q60ayrODmYV29W9YpCvoLALk2tW7vXnfpOGeeAmpvPAEs5aDH6MG/EROHq/XNobi0TOm72Eruz9794kT2XYFuf9vGEY=
+	t=1707462232; cv=none; b=ZJQrXP1AO5MiC/fm/rpKdISDb0ed5lGasUCVpA6y33H+iHmmz76ktHeqbfi1Uz9v0dFFmo4V4/KAPFQAwh6ODDivl4EOKsn9ssipGaV/WgCbZ6FonmOCzOFj0dPZVFdaplYWKYNNawRvm6uPo42/myqhC+6XIfCW3PgnATd5n/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707462087; c=relaxed/simple;
-	bh=FbvfLimCRTIizgrKaU2lF8zyXFZz6p1xNTqV1ED8pWU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iGgXLRCCeyp3Bglku9MB/iRyGPjEW1hXWZnGP3LPaBJyCoA1BCEKKqHUPtQxqKbZ1jnM00d0otsAEcLsVGBQjl9HadktAAM5+BGcQe2b0qur3b1kjwG/zMGGpjx/qfoTHnRTYYcBOeVEisqfcJv5JvET0Ios0KqgG7WEFttJ9lU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=E3VmzKT/; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4196TnCX007002;
-	Fri, 9 Feb 2024 07:01:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=SU+RhwOCJyXKUQy8eP7qCl/A4QdJg+opYZJ7tZXEN1I=;
- b=E3VmzKT/wdQxJHYFux42SZt3KUOjuOzpv2OWqdpyMb6FfU+tNPVF5m0msMviZsBNMDdR
- ql1BD2XaemQcBe1H8s8A2j2WJmRcm4O0ja5MS8rEfb6wILJkOVdlBZA3IYJJW6VphZ08
- KH8Qbn4Wvd3dOXYnJ7bEVZvSwzZKrKqlSCRG4+/hrCDbjibx91Wxu5oQIm72pxGEPrab
- LT+AkZuz7JF9Q5ZeMqyGxvPRDnJc36fQRJlfBfhZNkSf44OqT6Dk8s2FDTFMUgcvQ59X
- cQ2N05mPyt73a3dT1Y2ILC+hWKM4iaK7PfcrWAEqK4mvM+XQw9FLJvnjUhxFKbMgrWlG AA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5a6dxcd6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 07:01:05 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4196rnw5026969;
-	Fri, 9 Feb 2024 07:01:05 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5a6dxcc2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 07:01:05 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4194GSMg008539;
-	Fri, 9 Feb 2024 07:01:04 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w221kh8kv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 07:01:04 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 419712a842074864
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 9 Feb 2024 07:01:02 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 431092004F;
-	Fri,  9 Feb 2024 07:01:02 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0AC8220040;
-	Fri,  9 Feb 2024 07:00:59 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.98.150])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri,  9 Feb 2024 07:00:58 +0000 (GMT)
-Date: Fri, 9 Feb 2024 12:30:56 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: hch@lst.de, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
-        martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, jbongio@google.com
-Subject: Re: [PATCH 4/6] fs: xfs: Support atomic write for statx
-Message-ID: <ZcXNidyoaVJMFKYW@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-5-john.g.garry@oracle.com>
+	s=arc-20240116; t=1707462232; c=relaxed/simple;
+	bh=oD39GGpIa3n9RPnVlxvtta4sdl95u7aVxINCZb7pq1k=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=kjvG8Lst72ug1bL6hXh6fguun3UIT3/6lN0mTG8ntmTHa11UgvQ7u+NExmmZQMkRv9XMnb07gdBgqxx3l2EAGklqXJqEflrX4w5pVG2sDPoGcA17Ax4/U1gDYlQcuWXN3TZH3Sl+EjOKex97MxqsOEIDakcQbKpy55bxgzQdiv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=Sadvmouc; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=M5G8cq5/h5jaQJDYa4hbLffTd4p2e5waNZsFsoE+Gi4=;
+	t=1707462228; x=1708671828; b=Sadvmouc3lwDiRzqzNAuAAwKdAyat//69DcgmxpUtZSu8c2
+	NepdiJmcIbfhmZcwb1dL6DKgQKXB0AwF4hRQ4CSr0UZJ5IPdgt2tT2+aA68C4o48GuNiKRNRrZpKl
+	E8M4fFiPuWgHL0irrmcxCqaUdl54g22boUggs571MimoQQKVa67BAM9hA4yxNVX779DbzcLKkh+k7
+	L7dko1wCbQI3ViwVs3ezApRqc6XWv5I3/2rW0YVD0iWBg4hS/r1Bk0c02kwPi+00bcj5JIOWtXi4q
+	Mt98H4nb+FgUG85cyY0/zpfgILhFrI4PR1mOsySqKWTA9NnJu2F3+kGQfSCU9vvg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rYKvH-00000000xcM-0YZ9;
+	Fri, 09 Feb 2024 08:03:43 +0100
+Message-ID: <e42a9ad67eada684fc1ee3d272774248ead9ae26.camel@sipsolutions.net>
+Subject: Re: linux-next: manual merge of the wireless-next tree with the
+ wireless tree
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Kalle Valo <kvalo@kernel.org>
+Cc: Wireless <linux-wireless@vger.kernel.org>, Daniel Gabay
+ <daniel.gabay@intel.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Miri Korenblit
+ <miriam.rachel.korenblit@intel.com>
+Date: Fri, 09 Feb 2024 08:03:42 +0100
+In-Reply-To: <20240209105606.66e7808b@canb.auug.org.au>
+References: <20240209105606.66e7808b@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124142645.9334-5-john.g.garry@oracle.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Or_oZ37MC-AVzjU37NrZ8eyd8WXaqE_I
-X-Proofpoint-ORIG-GUID: AgQW3RwfUqVAr-JFgQp5bQTIRPYOtQ_Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_04,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- malwarescore=0 priorityscore=1501 suspectscore=0 clxscore=1015 spamscore=0
- impostorscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402090048
+X-malware-bazaar: not-scanned
 
-Hi John,
+Hi,
 
-Thanks for the patch, I've added some review comments and questions
-below.
+Thanks for the heads-up!
 
-On Wed, Jan 24, 2024 at 02:26:43PM +0000, John Garry wrote:
-> Support providing info on atomic write unit min and max for an inode.
-> 
-> For simplicity, currently we limit the min at the FS block size, but a
-> lower limit could be supported in future.
-> 
-> The atomic write unit min and max is limited by the guaranteed extent
-> alignment for the inode.
-> 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->  fs/xfs/xfs_iops.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
->  fs/xfs/xfs_iops.h |  4 ++++
->  2 files changed, 49 insertions(+)
-> 
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index a0d77f5f512e..0890d2f70f4d 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -546,6 +546,44 @@ xfs_stat_blksize(
->  	return PAGE_SIZE;
->  }
->  
-> +void xfs_get_atomic_write_attr(
-> +	struct xfs_inode *ip,
-> +	unsigned int *unit_min,
-> +	unsigned int *unit_max)
-> +{
-> +	xfs_extlen_t		extsz = xfs_get_extsz(ip);
-> +	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
-> +	struct block_device	*bdev = target->bt_bdev;
-> +	unsigned int		awu_min, awu_max, align;
-> +	struct request_queue	*q = bdev->bd_queue;
-> +	struct xfs_mount	*mp = ip->i_mount;
-> +
-> +	/*
-> +	 * Convert to multiples of the BLOCKSIZE (as we support a minimum
-> +	 * atomic write unit of BLOCKSIZE).
-> +	 */
-> +	awu_min = queue_atomic_write_unit_min_bytes(q);
-> +	awu_max = queue_atomic_write_unit_max_bytes(q);
-> +
-> +	awu_min &= ~mp->m_blockmask;
-> +	awu_max &= ~mp->m_blockmask;
+On Fri, 2024-02-09 at 10:56 +1100, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> Today's linux-next merge of the wireless-next tree got a conflict in:
+>=20
+>   drivers/net/wireless/intel/iwlwifi/mvm/tx.c
+>=20
+> between commit:
+>=20
+>   2e57b77583ca ("wifi: iwlwifi: mvm: use correct address 3 in A-MSDU")
+>=20
+> from the wireless tree and commit:
+>=20
+>   3d869feacb74 ("wifi: iwlwifi: mvm: use FW rate for non-data only on new=
+ devices")
 
-I don't understand why we try to round down the awu_max to blocks size
-here and not just have an explicit check of (awu_max < blocksize).
+I had a different (potential) conflict on my radar and pulled wireless
+into wireless-next to avoid it, but this one wasn't on my radar at all.
+Sorry about that.
 
-I think the issue with changing the awu_max is that we are using awu_max
-to also indirectly reflect the alignment so as to ensure we don't cross
-atomic boundaries set by the hw (eg we check uint_max % atomic alignment
-== 0 in scsi). So once we change the awu_max, there's a chance that even
-if an atomic write aligns to the new awu_max it still doesn't have the
-right alignment and fails. 
+> I fixed it up (see below)
 
-It works right now since eveything is power of 2 but it should cause
-issues incase we decide to remove that limitation.  Anyways, I think
-this implicit behavior of things working since eveything is a power of 2
-should atleast be documented in a comment, so these things are
-immediately clear. 
+That obviously looks fine, thanks!
 
-> +
-> +	align = XFS_FSB_TO_B(mp, extsz);
-> +
-> +	if (!awu_max || !xfs_inode_atomicwrites(ip) || !align ||
-> +	    !is_power_of_2(align)) {
-
-Correct me if I'm wrong but here as well, the is_power_of_2(align) is
-esentially checking if the align % uinit_max == 0 (or vice versa if
-unit_max is greater) so that an allocation of extsize will always align
-nicely as needed by the device. 
-
-So maybe we should use the % expression explicitly so that the intention
-is immediately clear.
-
-> +		*unit_min = 0;
-> +		*unit_max = 0;
-> +	} else {
-> +		if (awu_min)
-> +			*unit_min = min(awu_min, align);
-
-How will the min() here work? If awu_min is the minumum set by the
-device, how can statx be allowed to advertise something smaller than
-that?
-
-If I understand correctly, right now the way we set awu_min in scsi and
-nvme, the follwoing should usually be true for a sane device:
-
- awu_min <= blocks size of fs <= align
-
- so the min() anyways becomes redundant, but if we do assume that there
- might be some weird devices with awu_min absurdly large (SCSI with
- high atomic granularity) we still can't actually advertise a min
- smaller than that of the device, or am I missing something here?
-
-> +		else
-> +			*unit_min = mp->m_sb.sb_blocksize;
-> +
-> +		*unit_max = min(awu_max, align);
-> +	}
-> +}
-> +
-
-Regards,
-ojaswin
+johannes
 
