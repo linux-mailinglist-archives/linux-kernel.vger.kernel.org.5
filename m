@@ -1,109 +1,125 @@
-Return-Path: <linux-kernel+bounces-59293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77FE184F49E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:27:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B71384F4A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:29:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3355B2812A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:27:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADF9A1C230DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0308C2E3E8;
-	Fri,  9 Feb 2024 11:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C152D044;
+	Fri,  9 Feb 2024 11:29:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YQxUnoPL"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=northern.tech header.i=@northern.tech header.b="dmQ57Xu0"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7D028E39;
-	Fri,  9 Feb 2024 11:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734FC28DD3
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 11:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707478027; cv=none; b=ctMejorSyO1VENQlaZIJZ4Vb24pSP84TA49+NudF7gEpDgheE4M1GmQfudJ3VNWuFUoxeqxHCyyo/e1EACTTapFrH2U3p4bOUt0sZIohTTdRoLtTmh+RD1J4Cb1lmeavIeNqmTeM5YT6tOqosmqRu7wU1swWC50tGwJf1lSlCgY=
+	t=1707478160; cv=none; b=Mc/Gw06cjaB3mea/7eVMXAdbaHCKb+/Aqp8nx+I6DpEU83r21YOjHbyyUGlOYC6PmKU55J2z2iqmlI0S5Hw49hpBWfrO8c06obKdj+y2v2s8GPzT03OCt8zxnzVZBhRSs5uXI6YQhlsbxPOnJhBj5n8Rg0DLPHNkAtkbc+P7Mtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707478027; c=relaxed/simple;
-	bh=H3QtjLwENwH8j+2p8WMYSIrO+kI06uFriFXVO86tD48=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u5nB/63JipPz0O7NnI8hfmfKwiM2Ep1+5CQttYe/J2BBagMY0G6XJ2zxUt6wQPwba8QZcgB+AXRHfCyBv7lTMzNfKegxJGbDm85kShYCsBdbE05/NBFvbDreZ5QVr8ojdLRVHwBFSO8pnT+0zIfSbdVScHErcAaSMZ/Aad9gbes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YQxUnoPL; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7E592E0002;
-	Fri,  9 Feb 2024 11:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707478016;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kFiS6VysoE7c/fqD7Ci3p1ZOaIvulrackj6IyqZIj7M=;
-	b=YQxUnoPLZbf61T6Hc3+0+zgk9tnnExf29QPsrobouKvFY2ThlX7f2MBeeG5htyeQryaWK0
-	hLwcQFrVL+D/XGU6oUg4Mrsz3TapZK/PIQMRvRNbm/uoKoFNoCAmkMHV2mBbFv/WW0ECgP
-	Gl31Nuk58fim8XzfklTMZIiNKih+Ke0C0DAS2JQC1pa+yif839xbgaaT2CqQqPuDHd2n5f
-	mCZoVQJz77xkM4/T7c7BXR0FaZGH83G+8itymgUIHHT20+iUZdkPK+o1VKUL1QJfqt5Fsp
-	rtezFmYWg1ij2jJMk00U0ak5cxuY0QEQn7aAeLRhyHr8cIjcbCLtuAwZKTeYlw==
-Date: Fri, 9 Feb 2024 12:26:53 +0100
-From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
- <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Heiner
- Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v3 16/17] dt-bindings: net: pse-pd: Add
- bindings for TPS23881 PSE controller
-Message-ID: <20240209122653.7483f12d@kmaincent-XPS-13-7390>
-In-Reply-To: <20240208-feature_poe-v3-16-531d2674469e@bootlin.com>
-References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
-	<20240208-feature_poe-v3-16-531d2674469e@bootlin.com>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707478160; c=relaxed/simple;
+	bh=uXn05HTNeK17S4EFHfrNe1D1KfUmXrN5DtMJAXiQlIw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ojv02aSMq9S1XUshz2TWGNWYQFjMmBB0ZthW1LMnUVXjUhK/otdcMldN/1hisWf9EWxUkwexRn4y/S3NyevK8ZEfCc6aVUU6bFi3ow2JplZF4tnwFmen/V83XvwSfLZyuehZgixeK/M2Q6l5Wv/IHaiCW4U8Ox/hrQVwgRMnM40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=northern.tech; spf=pass smtp.mailfrom=northern.tech; dkim=pass (2048-bit key) header.d=northern.tech header.i=@northern.tech header.b=dmQ57Xu0; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=northern.tech
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=northern.tech
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51032058f17so1027335e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 03:29:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=northern.tech; s=google; t=1707478155; x=1708082955; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FyFCxCsEZK8CXF6NB/E1Fpp2yQNMSs6bghTaRTsKzw4=;
+        b=dmQ57Xu0u+X2r6e194nQ5LMpIUoxNm5MWgwmrzyHmtZ4pjXNUWx2zjFobmlN9At7uK
+         R1ZjNi5JIc6DHO6f1hFjn2/xMWC4Sr4Q28PHaLKvECQCixbQbYWmtOXAj4EaHZJPmDg0
+         NvYpeJ64AvqgkGvCPlQd3v0yWQ9McUC7hAH12cqVZtRB9px9Stnql32klOWwYNgwyEDx
+         aBdzJuVaMdrXhTCxSszes+Re9O6ERDVypjDhYxqZBqXtwGGQknmBTEr7Jh2nUYNOjuuj
+         pT9zvFJ0mwiJArsGq+ugR/l75ZXep7olvqxs8dDrrtf1LAt3FNg/o+yLqG6yKN4ztiQV
+         iIfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707478155; x=1708082955;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FyFCxCsEZK8CXF6NB/E1Fpp2yQNMSs6bghTaRTsKzw4=;
+        b=qaDrsxQFLxCpF4Qfm4wB6jWerIoxmnBBlP0mQDPqbILkdOJ8SCrhfoY4H3l7es8Ixw
+         WJxtZxp+gjdhP1qt/NDpgN02WDZi3EGhIZKjHaKIOTZzmHHpVmqzz8s9b6oRbCPwB2Ma
+         s641te+g6PgwIRmcmDp2CjUHIgbY5fsI4HinKmC9fznR2wCWKY7BPBkd7sVAxPEKr1Qg
+         fpyBAelI4448AOGxJGX7mvPKvkQX3+97m3ZMDaPH8OAbAZJIhbQFRSxlerOatmOLbDd0
+         Zq9SQpUB0G1c9+wwC3FiZUA5mboLDBOBcK6z/hxYQYclkO6K5hEOMv9uC/viZJfbPbUc
+         +z2A==
+X-Forwarded-Encrypted: i=1; AJvYcCUyPv9eZS8ylO1qjv63GL6gYSDLhlTDPPWIchSRvlQuBjWZmhEE73fV5LKJBc1zPoMqn0LbeB9QkPYUnmhGiBstsfbQneSOf51PErOd
+X-Gm-Message-State: AOJu0YxDMBlxVk1Mq8TvwuFFnyWbN0h+fsKvrUxUKFZ0jaiwtJA0ySZX
+	6qxhavJnsAFhvYUmWqHdJKO20Nmb8fyA2gKRYzdNnfKeCAU6Mr6OWlmNNiRY1O9Tv5yfnVbIZMb
+	2sqh5/Y7v8i81BmrECI0LSgXrdKbmZlo40NPYdn7xkFntX0/FYS4mTo/OZyED05+3M0nM9Q==
+X-Google-Smtp-Source: AGHT+IHdzCEB8/xRoowQ4A7RyhL8lGJOHjysQWb0vn2jNrf+kFLWRRNAzDZxgIVVWWQLQrknLNIrHA==
+X-Received: by 2002:ac2:457b:0:b0:511:5f08:f147 with SMTP id k27-20020ac2457b000000b005115f08f147mr805451lfm.25.1707478155262;
+        Fri, 09 Feb 2024 03:29:15 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUcS4zzPPC8FbJWfRCm0E7vCFdz+Z6eLuubnzXSb/Qunsfwwn8BDs7Gp9P3jWMbydXyKGob+H19eU5jxd1ZvAZrhWJdDfeOaJjLwNnJ+RGHX2ouGPEL+DqCvSNYaRPabg5vG3ie5gmkTqnqD97f/0xAFoQIhj1hccR3lbpRAgPkCQdbkEO4pswpz9JqWStPzDSIFbiyE6gGyUUmTN3NnjHYuaj+cbjpx1CmJfHnn3P/XICwg3NBnqIfXiFt8W5JAIkWM/ccTFpoFHIcdy9fzYMNQq9/Kqz9n0+ehR6ez0eLxLCzIYV9dm9rDYHnexbIKSX87lXZZPxbsf/JniSuiKBw9EWm95qnvAT2TJX03ef51TnaXacx3eRXijccb/9/qiHn9PBzSdKcwJbP6Sw6hs1l2GRxU33PyJqV289Agjz9nmCNR+UqSXnWgIW2olcBcdeYNjGnCXztO8KW4GxDWy0hDfp16GgZLwA3DKQhwD070i6ZFc3jBUn08KXC6dbaTyKW20W0wseUswt0PwyflnI/Jdhbr6Af9g==
+Received: from olepor.localhost ([2a02:d140:c013:1837:ca5b:76ff:fefb:c875])
+        by smtp.gmail.com with ESMTPSA id h3-20020a197003000000b0051154ac7267sm264061lfc.25.2024.02.09.03.29.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 03:29:14 -0800 (PST)
+From: "Ole P. Orhagen" <ole.orhagen@northern.tech>
+To: linux-arm-kernel@lists.infradead.org
+Cc: linus.walleij@linaro.org,
+	ole@orhagen.no,
+	kristian.amlie@northern.tech,
+	"Ole P. Orhagen" <ole.orhagen@northern.tech>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Liviu Dudau <liviu.dudau@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Peter Rosin <peda@axentia.se>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] ARM: dts: vexpress: Set stdout-path to serial0 in the chosen node
+Date: Fri,  9 Feb 2024 12:28:01 +0100
+Message-ID: <20240209112807.1345164-2-ole.orhagen@northern.tech>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Transfer-Encoding: 8bit
 
-On Thu, 08 Feb 2024 14:08:53 +0100
-Kory Maincent <kory.maincent@bootlin.com> wrote:
+Specify v2m_serial0 as the device for boot console output through the
+stdout-path in the chosen node.
 
-> Add the TPS23881 I2C Power Sourcing Equipment controller device tree
-> bindings documentation.
->=20
-> Sponsored-by: Dent Project <dentproject@linuxfoundation.org>
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
->=20
-> ---
-> Change in v3:
-> - New patch.
-> ---
->  .../bindings/net/pse-pd/ti,tps2388x.yaml           | 112
-> +++++++++++++++++++++ 1 file changed, 112 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/pse-pd/ti,tps2388x.yaml
-> b/Documentation/devicetree/bindings/net/pse-pd/ti,tps2388x.yaml new file =
-mode
+Signed-off-by: Ole P. Orhagen <ole.orhagen@northern.tech>
+---
+ arch/arm/boot/dts/arm/vexpress-v2p-ca9.dts | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Oops forgot to rename this binding to ti,tps23881.yaml, sorry will do in ne=
-xt
-version.
+diff --git a/arch/arm/boot/dts/arm/vexpress-v2p-ca9.dts b/arch/arm/boot/dts/arm/vexpress-v2p-ca9.dts
+index 5916e4877eac..8bf35666412b 100644
+--- a/arch/arm/boot/dts/arm/vexpress-v2p-ca9.dts
++++ b/arch/arm/boot/dts/arm/vexpress-v2p-ca9.dts
+@@ -20,7 +20,9 @@ / {
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+ 
+-	chosen { };
++	chosen {
++		stdout-path = &v2m_serial0;
++	};
+ 
+ 	aliases {
+ 		serial0 = &v2m_serial0;
+-- 
+2.43.0
 
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
 
