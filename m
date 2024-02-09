@@ -1,104 +1,119 @@
-Return-Path: <linux-kernel+bounces-59878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 603DE84FCD4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:29:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C9C384FCD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D45E28BE54
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:29:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB1FBB28B7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B6B127B78;
-	Fri,  9 Feb 2024 19:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4680128378;
+	Fri,  9 Feb 2024 19:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ddSupYo/"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iSNy5xom"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFAA82D76
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 19:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B063982D7D;
+	Fri,  9 Feb 2024 19:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707506864; cv=none; b=tEi+Obvc2DNdMYmCWJzfIWULvTWiVDMi5aZLVC0CK4nPbY1KWRlYECVCSzCEtCTvGvDWXBNvu9eCtDPCcQMhACwzcHJeIbuq/WiDvCOZlzOfe0EUxtirveQfdM+cNuFudECrKCvc/PEHr/ZboXbTqsT6l962xG2wWJbUabMizUU=
+	t=1707506866; cv=none; b=n6OGtqS5/17A+wDeS5BMxS4HxUcbir8nsdsKNV2auBYKhxCNpcvJ2Jr7QkOGH1jjtbACsDFnf3kb/WfXlMN3xRz7IImGNam8m/+dRB+iaDksh9qqjz/vsPwmECYT5KUVzBCkvNMfnni/mBL+MDToNyjhc9reHPMfwvp2SUyok/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707506864; c=relaxed/simple;
-	bh=0v6ED3snAjxM9vFfXv0XqE6tPOrUqXYAeIs2qAsIJZc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l4eIh0dmxQr4/WRDJ0msX2rMdTn/SLMINo7ksVU/scS1G5K8VGiOet6bPzd9neaVKdnarCVmyT9h3bCFbjvhZ3aKoaCwERqiHnakxcoJ0BqtYnyERr1Jy1GSfoh04O8IyohwzvtVbhkm5sZI9ysP/tEi99pOM1YEPPxknR0B2d8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ddSupYo/; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4105a6be071so8014085e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 11:27:42 -0800 (PST)
+	s=arc-20240116; t=1707506866; c=relaxed/simple;
+	bh=jDbzF6VScX3QUjdWze8ERiOzUBhPy/DsoADy5/uvQtM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WKQE26dZV8nfWMOaOvWaFl6Xl9UKnry3OBN5x560F4NDcat6PDgLVewHq948+mU2/7YcLWDpVreP60kaqLqinffuVvJLw1gL/gX8uGzODimTAvA5f79oDQWU6w5ODEpPiZ80jAQfAOK7dtBcJD1cFuPyr+e3wIsuOfwCkmqWLTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iSNy5xom; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d934c8f8f7so11344185ad.2;
+        Fri, 09 Feb 2024 11:27:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707506861; x=1708111661; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eZXVPA2Exz3NuK0lyDvz1cz+iATc7pFXb2hCpSkFusk=;
-        b=ddSupYo/lu4X+9x1c37MnfTqIDbW8wiFUa1axTjUpQT9LPkkq9w9IylH6NGvfoILNu
-         RxOSWvl7e08nolXYGiWwNbU1eFsnKuB6lAi11aytPcgf9rbW8lUmNRyX9HGGRDHx3cJl
-         HkZ/Txwa3Wl9nmncke74Y4/gboIHBmacmFVyZrWkFnyRDVVxfM4y6KoU0+4I5pPIUGcz
-         scwIu3mXMV09WMPZJso116IANBWSP+QANJYEstBCTVteNT8YrlqXT+xnZrB6AFTMk+Ov
-         PDWUj4w5iqYD3WgvAGprEJHTYrkk3QE9WFPX71iEedkxcb6eQvRuLpITOoY+fvPUg7wp
-         6WBw==
+        d=gmail.com; s=20230601; t=1707506864; x=1708111664; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=df/riqJTurTOuR2yinSUCFr965WEtGNwDF4ukmNTmMk=;
+        b=iSNy5xomJSsvvzYgh/CXxJ0nNOhPGZsxON4bJiFmhs6XBzcJvwdX6zoDOONXdHvPaM
+         k9RiBDe+xJEuP3lS68hWaz6sEbTc459nbT/ZXdKZcEnb2WgEdwPlRMeoirBE07LpJ1U1
+         aEpOGjvNfUpQUuRJqJQdNy9VTUyYq1SltMBF0+i2WG6bPMsDBwJ6q6g0wqQ8gniU9jMo
+         R2l1l0OelESiVfcGHrUJXK9u5Uia+wTdTB42cCjtl+hWfMaFfRlNUrUyGf7Q0+/cT0rX
+         yvIf0W9tT8mZoTWxwLJK1zQ4n1xrSv5+ndXbjU3Mfev93hKQWfdseVi6pLWyOEMSJQiz
+         auow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707506861; x=1708111661;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eZXVPA2Exz3NuK0lyDvz1cz+iATc7pFXb2hCpSkFusk=;
-        b=uCmkD7//+bEDofu9Z3xVZBBsp/eXHZrKNDlSUA11bzS6Mgi1XCx6kghAYDXrpDJ9pW
-         FWs+eDIM72IgW5QLfA6RSvAXX2EFAyBko+4fTUdYBgXnsYedSW6cIh2G8jHek4SnHoo6
-         d4DaUjW4necdGPRhK8WARvm+xeEALQB9pCZTyQL+4bUdmZTOBeJOD6t/jGEBjqWS/MKe
-         hFXk5dwJZxiygIb7RqBI/M+bSkowjWtBZuvahhIecE7mJ5Fhgqkg7/GDobqUJzIMSDKB
-         DtuijphzlGp7CbK16BR3PD8gx7xhwP98zZTurrJgJcoy/JaN/4swBHmOpkNhfKh+jENU
-         EesA==
-X-Gm-Message-State: AOJu0Ywe5VHPbhTuWNEVpxeQlUugAhRXw6FdM/xkYatA74XVrqKec7GP
-	CkBNkt5TmWjsPrKcnUbRCNxQp5usOof9polsFvbu8D8gruqA6ZSPnA8FNqfOPWCK2c6n9gxgJbd
-	dSCFtRukSvSngoq25MtJoAIt+gKBIvczbGDnK
-X-Google-Smtp-Source: AGHT+IEscmlZlnhTQjd2k6sf1c6n8zUq3B0h5Io2bVrrApwOwkAIiu7m8z3rcBwyvKP8/ZV3CGJXSuTlKQbPPleK0ds=
-X-Received: by 2002:a05:600c:b89:b0:410:8842:2bdf with SMTP id
- fl9-20020a05600c0b8900b0041088422bdfmr73952wmb.5.1707506860962; Fri, 09 Feb
- 2024 11:27:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707506864; x=1708111664;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=df/riqJTurTOuR2yinSUCFr965WEtGNwDF4ukmNTmMk=;
+        b=W6fIaFBbDN0yCREJFT4K2eVX+P2hoWRjKMih3wDVMqVFALV4SRYQaUBUYcnfwILwRp
+         EFfMbutzliYr0HxqhXycP2bWEejllyncKTXAVpvGrFN+tXPQJO7TTwWYq8dGHE+sWFx6
+         tRWjrbhGcK2fX18HKj1FzXgQ/lDERHH5Qch+DrPym8A7xyiVAtczS0tvJX2rg0z22PLc
+         q7uBP5f48MlT2GgcLwsN2rleZsUDnWoCVcdh337HL8ivUAwhtPO8c1d4D4hXlLohBhQE
+         hnl717pUnbD1ndgd+s2ZWT2fhaRyKrLh3fyF8GDEuPutXcc36APZgzuKpI/i5YlWd/Dl
+         E1mw==
+X-Gm-Message-State: AOJu0YyA93Tic3q9kI3+OBHc8UQKG3qfTJxorH0Zm/I0PCDXs4taLxFE
+	QRB4R+VqX+6Icg0EdJD6NBMlnSwx7VTIDA3blsmU8/+Wih0ZZrI/2Xm2Ng7o
+X-Google-Smtp-Source: AGHT+IHKo1JdiJyvK5M5ppYyDpZaWRQUWvwp3Fufr1nQ0FlyI+yVi2LRdYQCOqgQgn34mtIpveRN1A==
+X-Received: by 2002:a17:902:e746:b0:1d9:4d3f:cbf8 with SMTP id p6-20020a170902e74600b001d94d3fcbf8mr203653plf.22.1707506863600;
+        Fri, 09 Feb 2024 11:27:43 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXqcRVFQEdvxv3X2dx8Uc/6n9SUnjIbHxIPCu2Pp22tL5YM1YE//Sxapr/FUXwJ/mpEw3GTwTOlYpN0VacpW1jwlEnrTaZITmynvoKDwgCyL6Aa3WWRh+6FrD7K3+F7LqtkIdxa9I8fUi80g3/4e+gio/6IUq9RJrLwAG2U4zQVPHmINcSmzm/wgLBmSsKRkpqhVtX30o+VT6H4vhk61AUYMyqjaIxpGXhtI0wGo4tY+bNGRi3tiFTMyNIH92sjd3q7Qy0t+ErhhNvnExp9cggbT4Axw+9PHyoYh9dU+6t0GCogpf7yVUwbNngukSFqh8Q7gexQFuGCtqu4zJMf/NSleMwovOiIVZKAMH7aNYf6Qew=
+Received: from [192.168.54.105] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id kz7-20020a170902f9c700b001d9557f6c04sm1843104plb.267.2024.02.09.11.27.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 11:27:43 -0800 (PST)
+Message-ID: <45395395-9bbe-4ee8-9a4f-f1890cd85752@gmail.com>
+Date: Fri, 9 Feb 2024 16:27:38 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zbl49VAMZx2qrz-p@google.com> <20240130231903.293265-1-appsforartists@google.com>
- <ZcZ1Sn_iPwlgfI3s@google.com>
-In-Reply-To: <ZcZ1Sn_iPwlgfI3s@google.com>
-From: Brenton Simpson <appsforartists@google.com>
-Date: Fri, 9 Feb 2024 11:27:26 -0800
-Message-ID: <CAAL3-=-nonZbKM4co_jqFgcXEShu+QVCypojZoR8YF3YtBQ8Rg@mail.gmail.com>
-Subject: Re: [PATCH] Input: xpad - sort xpad_device by vendor and product ID
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, Cameron Gutman <aicommander@gmail.com>, 
-	Erica Taylor <rickytaylor26@gmail.com>, Ismael Ferreras Morezuelas <swyterzone@gmail.com>, 
-	Jonathan Frederick <doublej472@gmail.com>, Matthias Benkmann <matthias.benkmann@gmail.com>, 
-	Matthias Berndt <matthias_berndt@gmx.de>, nate@yocom.org, Sam Lantinga <slouken@libsdl.org>, 
-	Vicki Pfau <vi@endrift.com>, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	trivial@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rust: locks: Add `get_mut` method to `Lock`
+To: Mathys Gasnier <mathys35.gasnier@gmail.com>,
+ Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240209-rust-locks-get-mut-v1-1-ce351fc3de47@gmail.com>
+Content-Language: en-US
+From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20240209-rust-locks-get-mut-v1-1-ce351fc3de47@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 9, 2024 at 10:56=E2=80=AFAM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
-> Kernel style of multi-line comments is:
->
->         /*
->          * line 1
->          * line 2.
->          */
->
-> I adjusted and applied, thank you.
+On 2/9/24 13:22, Mathys-Gasnier wrote:
+> From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
+> 
+> Having a mutable reference guarantees that no other threads have
+> access to the lock, so we can take advantage of that to grant callers
+> access to the protected data without the the cost of acquiring and
+> releasing the locks. Since the lifetime of the data is tied to the
+> mutable reference, the borrow checker guarantees that the usage is safe.
+> 
+> Signed-off-by: Mathys-Gasnier <mathys35.gasnier@gmail.com>
+> ---
+> [...]
+> +    /// Gets the data contained in the lock
 
-Thanks!
+I wish that this doc comment mentioned what you've said about having a
+mutable reference avoids locking, much like the documentation on
+`std::sync::Mutex::get_mut`. If you do so then you can add my reviewed.
 
-I did scroll up to check comment style before I added those, but I
-must have caught one of the ones that's out of spec.  =F0=9F=99=83
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+
+> +    pub fn get_mut(&mut self) -> &mut T {
+> +        self.data.get_mut()
+> +    }
+>   }
+> [...]
 
