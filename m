@@ -1,118 +1,123 @@
-Return-Path: <linux-kernel+bounces-60131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C763D85003B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:58:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0855850089
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 00:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EA9D285FFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:58:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EBD4B232A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34BF436AF6;
-	Fri,  9 Feb 2024 22:58:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218B3374FA;
+	Fri,  9 Feb 2024 23:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h1Ijr/+G"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pwg24t6H"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76FD429D1C;
-	Fri,  9 Feb 2024 22:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D024125625;
+	Fri,  9 Feb 2024 23:00:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707519511; cv=none; b=XdCHPHFDwEHPxnumRuczdVbCJP/Sb2zFUMsLHy+ctR6iG0OVH2AVp0yPq1++PkMWrc5ucM45YwbfHbD1/QnKuY1/y1NUGg/2aW9u+0tmcT+E1L23OGUQNZtE9ca5Uw7Xta6MmnI0S+LxZmTL/ntxTsZQjqWkP7zF/Xp1688iCRg=
+	t=1707519638; cv=none; b=RAt+1jzy+gFdC00Nj178/+A4o5e1aLSYkj9DlxWna5ngcgQhjF9mfTSDMEIVQGe/l3Ypo4CuwE46NCnVn6NNPy7XWlTrAFDustYQQXP21FdLCjekWWnb5KxtFMVEJB7RboHNe5Zauumy87kRLpQ/FMcsi9IaGsalRJ96UxTFRM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707519511; c=relaxed/simple;
-	bh=M4wRQhJT3T7Q4Gek0ve4RZyq3rxj5DGP5SkKF3gO0NQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bWH4iaoOCuFLigHbZ9R/7Tc+EJ9GUdTHM9+02qtaRoEJCT8ShygEoG6Y3FzC5NP25qPAYiHvZDvIX2X6z15aQH8HuNgyU2UWdKoR9suXpExT//QpNcVLwePymjt443A2QXewSogCHAggkNqkZzTDTp5FHSd7tHb20mDDLzzDwKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h1Ijr/+G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7B80C433C7;
-	Fri,  9 Feb 2024 22:58:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707519510;
-	bh=M4wRQhJT3T7Q4Gek0ve4RZyq3rxj5DGP5SkKF3gO0NQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=h1Ijr/+GiV6aCqCrOpsXzxZbI5duN01e1sYF9UuFwmIBsoouyhTMmHV3dlICDgb+9
-	 OYscbS4ttfOA0EH795hCEK52216HLbQ4hISCThXwZnwM9TBLVE5TDs0DqTJybH63Gm
-	 3JBAfR4VHCk1GDPawaE5wEP79hdBEdi3qTiz8ZEpZ2akg5pojTLpG/qvV9oYnNlio1
-	 70DOR9HUkgErPciEodND8Cdw4P6f6ENT7ilvMme9/tBIzGpQ1R67j4zSXLC69suGAV
-	 6Ro4yaa2EQBbXgmrj6K54TzcFtqH8VTZF2AqSfCWdCfJ1AwZ2rPzMvfjVDuvF147Bk
-	 8UMmZhZwU0vng==
-Date: Fri, 9 Feb 2024 14:58:28 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: David Ahern <dsahern@kernel.org>
-Cc: Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Leon Romanovsky
- <leonro@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>, Jiri Pirko
- <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>, Itay Avraham
- <itayavr@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, Aron Silverton
- <aron.silverton@oracle.com>, Christoph Hellwig <hch@infradead.org>,
- andrew.gospodarek@broadcom.com, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240209145828.30e1d000@kernel.org>
-In-Reply-To: <2bdc5510-801a-4601-87a3-56eb941d661a@kernel.org>
-References: <20240207072435.14182-1-saeed@kernel.org>
-	<20240207070342.21ad3e51@kernel.org>
-	<ZcRgp76yWcDfEbMy@x130>
-	<20240208181555.22d35b61@kernel.org>
-	<2bdc5510-801a-4601-87a3-56eb941d661a@kernel.org>
+	s=arc-20240116; t=1707519638; c=relaxed/simple;
+	bh=T+PvjDwY/Hn8AAPu8/4akRrXz4Nvc83esFAymZg5xBE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=eunA/9msoPQ9YwjKMs1WkGl+hTtoc5dnt8XsvECAJFscdRruQr/jEhqYEBRowxVx4qVRDTV4LquPIj1+wa9lyrIQl8CrPuQbZHsytr8zN5PpKFWNSPHcdtwfldqOZ0gEK6ldaoIcGMMnwtuDEUKNhuNmjrvtZ0FFNNRiKVvTyJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pwg24t6H; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 419MwhK4030804;
+	Fri, 9 Feb 2024 23:00:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=2zBR+IkjLHI1yS66YvjnS+R0KDHeCNMM9/4VVTgmt+w=; b=pw
+	g24t6HHnMn0j+J6ME9wvDXyEKWj1xyG+lbFP6QIta1/bbzoxo6aQ+1J/Z0BZH8W7
+	H5FnzpLPL8/qMJ/FtVqdz/GaFrpdqoQKO7D8U0XbBLsTslV372ddnRJKoncFjUk7
+	jdNqXnLFVVrHkWJENXLl/aSfy5I0cgnsEi/0P89X7FI67CAYhmA9+/iqwzS5Utsy
+	3MvKp2eeO+95yZ7NJeXhGMyd9F9a5ghYkpdAXb0bZtAVNzDR7jhyU7Op0DTJzwl0
+	3SNlVz9VvVT/ZhxNkK1gZcXtTdqfkoNkYUpCJM+ndi/k3ENfybKI7R1Fu9SGvwDl
+	nL2dl2Rl2kWiYOIEUqEg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w5gk2hqf3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 23:00:16 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 419N0F7I010813
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 9 Feb 2024 23:00:15 GMT
+Received: from [10.110.93.252] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
+ 2024 15:00:14 -0800
+Message-ID: <cc9500fb-1d31-6878-4feb-595a67947991@quicinc.com>
+Date: Fri, 9 Feb 2024 15:00:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v14 45/53] ASoC: usb: Create SOC USB SND jack kcontrol
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
+References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
+ <20240208231406.27397-46-quic_wcheng@quicinc.com>
+ <87plx5294p.wl-tiwai@suse.de>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <87plx5294p.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 3Of01_LhwD_a14Q1kLsldSnmg9_zfk3q
+X-Proofpoint-GUID: 3Of01_LhwD_a14Q1kLsldSnmg9_zfk3q
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_18,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=447 spamscore=0 impostorscore=0
+ suspectscore=0 clxscore=1015 bulkscore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
+ definitions=main-2402090168
 
-On Fri, 9 Feb 2024 15:42:16 -0700 David Ahern wrote:
-> On 2/8/24 7:15 PM, Jakub Kicinski wrote:
-> >> I was in the room and I am in support of David's idea, I like it a lot,
-> >> but I don't believe we have any concrete proposal, and we don't have any
-> >> use case for it in netdev for now, our use case for this is currently RDMA
-> >> and HPC specific.
-> >>
-> >> Also siimilar to devlink we will be the first to jump in and implement
-> >> the new API once defined, but this doesn't mean I need to throw away the  
-> > 
-> > I'm not asking to throw it away. The question is only whether you get
-> > to push it upstream and skirt subsystem rules by posting a "misc" driver
-> > without even CCing the maintainers on v1 :|  
+Hi Takashi,
+
+On 2/9/2024 3:02 AM, Takashi Iwai wrote:
+> On Fri, 09 Feb 2024 00:13:58 +0100,
+> Wesley Cheng wrote:
+>>
+>> Expose API for creation of a jack control for notifying of available
+>> devices that are plugged in/discovered, and that support offloading.  This
+>> allows for control names to be standardized across implementations of USB
+>> audio offloading.
+>>
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 > 
-> Can you define what you mean by 'skirt subsystem rules'? That's a new
-> one to me.
-
-I mean that Saeed is well aware that direct FW <> user space interfaces
-are not allowed in netdev, so he posted this "misc" driver without
-CCing us, knowing we'd nack it.
-
-Maybe the baseline question is whether major subsystems are allowed to
-set their own rules. I think they should as historically we have a very
-broad range of, eh, openness in different fields. Networking is pretty
-open because of the necessary interoperability.
-
-> BTW, there is already a broadcom driver under drivers/misc that seems to
-> have a lot of overlap capability wise to this driver. Perhaps a Broadcom
-> person could chime in.
-
-I'm not aware. Or do you mean bcm-vk? That's a video encoder.
-
-> >> Thanks, I appreciate your honesty, but I must disagree with your Nack, we
-> >> provided enough argument for why we believe this approach is the right
-> >> way to go, it is clear from the responses on V3 and from the LWN article
-> >> that we have the community support for this open source project.  
-> > 
-> > Why don't you repost it to netdev and see how many acks you get?
-> > I'm not the only netdev maintainer.  
+> Again, use a more intuitive control element name.
 > 
-> I'll go out on that limb and say I would have no problem ACK'ing the
-> driver. It's been proven time and time again that these kinds of
-> debugging facilities are needed for these kinds of complex,
-> multifunction devices.
 
-Can we have bare minimum of honesty and stop pretending that his is
-primarily about debug :|
+Sorry, missed these.  Will fix.
+
+Thanks
+Wesley Cheng
 
