@@ -1,134 +1,124 @@
-Return-Path: <linux-kernel+bounces-59757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2721084FB5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:01:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A7484FB70
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:02:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11CE21C25423
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:01:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DD161F2A5E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAEBA7F493;
-	Fri,  9 Feb 2024 18:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22C07FBBC;
+	Fri,  9 Feb 2024 18:01:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fQe0EU8X"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iJiRiBSR"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92DD87BAF3
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D357BAF3
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707501654; cv=none; b=dCFlmTC1XMgGYhgxxYX7kkcmhseuYUzbLOwPwcPGM6Ri4DQBHNnbBa5kMaCS9vNVfGxj85Sff4/RUXsWreihrvRYx6pQmXwxK/1JVjSM7T6c2AI77xxbhla2Y6BgHXhIDP1o8BQwk4LBTLz2nTyhx5XOTYcOoeT3bsDplHm2uUY=
+	t=1707501682; cv=none; b=tiAjzNktHq0PxrTuNm+kt09gbXi/RRPoX7Gdst6WN/e04ybc1Mjm5X2m9E+waT5de7O3AgJvXCVEUB7YwQQ7B3Gg5cLonCWnzbjU4YkGL8o4ODwrGFZ3MsVmDusGMT1ZYgqOfFZhm/Bd68ADQpTV44L154XmBTaAEeSOZ6q9oWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707501654; c=relaxed/simple;
-	bh=QRdZxK7Tu+cNFBLPSs5931EMt7+QiU8yFs+2dn34QJw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HL0t+oXjhwyz5Wpt8rp5n6I0sSWlc/O2H4R5GOOA+1S8o0dKB27AmK8e4tZBNeXaR5gQJC1fpZW0RX9+fCjI7w70DjiRM9vo9coQKguFHu5qh/J4QSlnVIKldy/bYZ/NmxUS+LdvpEJ3G6AQj2PktVmOaEPiddoAZD6+Gini4kU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fQe0EU8X; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707501651;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/ylu12OBeg+Qpx23OaATwkmagVevzhUpZSCqsCihw3M=;
-	b=fQe0EU8XAtwnpth/wEkKuSDOgwFlftdKDtm5W3znydJfOo6Q2YDoJniy2XZYQZGK4XS/te
-	LKZKC0EXe2CIBhmdTwY0OvHL/xAAb5G6VrbHl3uF0JAM8JJOtk98B3tG4FiFgLv2yVO6kY
-	SOpWyPoaxPCw+9RixMfmX9frAzJiggE=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-621-Uhc-s4SwNXWL83wpW55tlw-1; Fri, 09 Feb 2024 13:00:50 -0500
-X-MC-Unique: Uhc-s4SwNXWL83wpW55tlw-1
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363be7d5b20so11630205ab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 10:00:49 -0800 (PST)
+	s=arc-20240116; t=1707501682; c=relaxed/simple;
+	bh=tWnDDTX6hjvn4zZMWScUR1a3jczggxxhhlZFG78n9SA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EcYugDox1vvpmAChy5Xl+aJSHV1yjoUiwdzEc0c0sUeJUKuIdiKBet2s2JT/p9TlGds1qW6+KeM1C0WpUP18LncfKuXN3XZ2PRCaSMYUQ12s23hGIBcAyuqf9l01iIey2/R/2XKfLFZQ6XNnmD+LnUyuINdIp5RrWFoRa+CUrr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iJiRiBSR; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso1234148276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 10:01:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707501679; x=1708106479; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DxAXd9578hDdusxvxqROEMfzhHSW5iLGGo5hRVlkaFc=;
+        b=iJiRiBSRIncIsn3DVJ3tybiJ+sQA+7Bo4C9dA7k4FZy+QZLxXnRINZ/f9SR1DWhd5/
+         NHDhBlALK6qguizN8lwDn9SMBRvnD5mq+WraiRliah9nM31AXpcgM0vC5Zk4va+xuIZV
+         S5XZgZwsgRrJM+NDv86NLYComeWGhcp3nRE5o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707501649; x=1708106449;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/ylu12OBeg+Qpx23OaATwkmagVevzhUpZSCqsCihw3M=;
-        b=bi76bmAiQ44lWMRxr8uNm4itTnvLTI0Ds8kLdBSpqdOBxMmyKnSbTMHTkw+MzpRBy/
-         ikFv0BR2IpHPPnSZkDZICMwRP3H96XRGDyQ4YqD/bVWoUby4TASgQRwDMceEzn2cmXYd
-         ZuuEAO+GF8DmKEyPnu4tw/yzwMOJasESWXGhAC9j13o8hqQQvvsX7l0yXXXahtPZvJHR
-         07MVyjc38A0PWlfvbHvRJ+fLaTX24TgJ7fs9J3EBFY/6b1sDE7JL5JiYOCOi3IOIXBeF
-         ZU9AoLQKg0/M+F1lUoZvjwjrtDCior7i4H3/y3ZLrDfFdrDwz9C7fb/6AU0iVMH4lxoW
-         BcPw==
-X-Gm-Message-State: AOJu0Yxx1667oFzcV83eTI1m2Rg7J5Xwk/rOgqCijSthXxTZBsGg9499
-	eMzCNACNvgOzvZZo1iUJTReMWKUd60BnYiNY0vZ+4ONN9p4NJh8xue5heAOOkBonj2wmCxXnj7x
-	69B0LDiSkhaRxzD2+Qz8V6OZvmjA5fP+pWdHgU7C5Gyvxyw433KzWvg/25cKCfg==
-X-Received: by 2002:a92:d6c9:0:b0:363:dec8:fedd with SMTP id z9-20020a92d6c9000000b00363dec8feddmr2458767ilp.12.1707501649234;
-        Fri, 09 Feb 2024 10:00:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEDO1vhR55/MuZNOdx0iksnkDWQ4ps5M/OOsVIbd4hXwhhNB2M2/k1IJDQuW5bFi6ICBG0vJg==
-X-Received: by 2002:a92:d6c9:0:b0:363:dec8:fedd with SMTP id z9-20020a92d6c9000000b00363dec8feddmr2458749ilp.12.1707501648980;
-        Fri, 09 Feb 2024 10:00:48 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUqTJ/AvYob1YGJIkPFFnbJSol62E5jK8DLlHBvkHgShAo6XP0ctsRuUoesVlHBjb6e4e0aleLFOqwvNApbP7bEkl55EiBjbpWCd+hpcV9lQoQnJ84HC9cx74g/N0/GjpjaNjz3uNAGUHah07yVF3y5X9//E65OBmk0/fTxkznB9KJC8x0A4z/XArB1QQvXa2r0QnAWci5TI3lS3Etr+3VRzwBNL8bNUbhX2l2vd5CHFykn+xLxcYY3srpcvzslAjWTfa/1R0jhGdGZfKOFp/cZku8AijaF+QWImVPUnlqkFT0ZvTa7YqV3xJmeR/n5z1SUBuPdiPPyI1Q6dqRjfkqQg2vAPURr+mKZvlbjAXD0r1rwntYjy+RZOh8cpcI5o0gH3Gpo6aT8J8P6WmIpmBJSE2iRxWHiQGIg9+V6QALh9JiT726dFcVG2t/S06EL/l8bP67i6WRGXZQGrFnp6CIbi64bgeyVkq4Go+U9pi6WEpQD9lLaGugXmvrjT1ndcwWM3UEhrw7TU6VCWJythFdKMhxVomh/tPHyeOn/1EdyKqnXInkRYsv8MlI77/qpepBaEMwDAHA8C288wh6wIi6aAlDaosIBqSfmo97WvVKfrmgLFShUYpqsjWM9NovkKVKW+kHVRLGZ7Shvlv6duNG0fpOpnmTuv3Gat/fFDmzfg6IvCAHESrzoJWxUecrejb0J58G15ceEp2mP9nTyvI2j711FTLKYdLyYWjRB33Fv77lPo6u56A45ZtK4QrFKCIYWXZJfzyKDqhzjoeevuoVYrZQTVCGMYJlxAVGQGpOiUdTGEjKMFEAs
-Received: from redhat.com ([38.15.36.11])
-        by smtp.gmail.com with ESMTPSA id z9-20020a023449000000b00473535d00absm108437jaz.16.2024.02.09.10.00.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 10:00:47 -0800 (PST)
-Date: Fri, 9 Feb 2024 11:00:44 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Ankit Agrawal <ankita@nvidia.com>, "Tian, Kevin" <kevin.tian@intel.com>,
- Yishai Hadas <yishaih@nvidia.com>, "mst@redhat.com" <mst@redhat.com>,
- "shameerali.kolothum.thodi@huawei.com"
- <shameerali.kolothum.thodi@huawei.com>, "clg@redhat.com" <clg@redhat.com>,
- "oleksandr@natalenko.name" <oleksandr@natalenko.name>, "K V P,
- Satyanarayana" <satyanarayana.k.v.p@intel.com>, "eric.auger@redhat.com"
- <eric.auger@redhat.com>, "brett.creeley@amd.com" <brett.creeley@amd.com>,
- "horms@kernel.org" <horms@kernel.org>, Rahul Rameshbabu
- <rrameshbabu@nvidia.com>, Aniket Agashe <aniketa@nvidia.com>, Neo Jia
- <cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun Gupta
- (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy
- Currid <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John
- Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>, "Anuj
- Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "virtualization@lists.linux-foundation.org"
- <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH v17 3/3] vfio/nvgrace-gpu: Add vfio pci variant module
- for grace hopper
-Message-ID: <20240209110044.0cb6707d.alex.williamson@redhat.com>
-In-Reply-To: <20240209171903.GQ10476@nvidia.com>
-References: <20240205230123.18981-1-ankita@nvidia.com>
-	<20240205230123.18981-4-ankita@nvidia.com>
-	<BN9PR11MB527666B48A975B7F4304837C8C442@BN9PR11MB5276.namprd11.prod.outlook.com>
-	<SA1PR12MB71996EBCA4142458E8BEE367B04B2@SA1PR12MB7199.namprd12.prod.outlook.com>
-	<20240209085531.73f25a98.alex.williamson@redhat.com>
-	<20240209171903.GQ10476@nvidia.com>
-Organization: Red Hat
+        d=1e100.net; s=20230601; t=1707501679; x=1708106479;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DxAXd9578hDdusxvxqROEMfzhHSW5iLGGo5hRVlkaFc=;
+        b=sLtPI0cAv8k8Bkzss2FMn/gxXPyi/YDjZW9NlFihUPqnS7yvRQ+mU0sArFdqCw+jwi
+         2iEkbuZjNjip+pgXE4FjFqVXoRYwjX1MX1n7Y/hqNvnDT996bHvhwP1dAfqO8OhgPJHT
+         oG8OQdIKOGnMhYpenPYqUHiar/zIZTOQDge1SbU8uu6t11KCXYc+olfXBaTzvLJbZ4mb
+         V5u1dHrw7ZfXFuJswvxd9yEmMmAHjtiFmCh/aMwpuw/jT6CC3BIScss4KRoqcZlfkkuZ
+         g1VEiZexbrEC51zbWYmrzj/CDiIMRXPERehXwLkr3aoEhbz9hmnfxC6E5wtEHjCltAx7
+         F0Sg==
+X-Gm-Message-State: AOJu0YxMx5ZhYBSUg0jF3tfpzzbsmhoORAUe0tGwAHrj27MHJtg9KN37
+	uaXy1l4SgE70QFGTl9CY6tnRonYk3Bh10tNZMPrZP25Gm0bEZBqfxO44qIzYhEN8szoI43fvXUD
+	seqTIh5Zms7oYeVzZiRD87oTJhByuJ5eAVMye
+X-Google-Smtp-Source: AGHT+IGn0jV1pZIEIiivUmj+U1vOUnk7Ltih/wE24bOuFmmcWlsGf0dF5J3/tWHDdX/y20KgLcQrUQao7heE0UcjZN0=
+X-Received: by 2002:a25:9cc8:0:b0:dc6:19ea:9204 with SMTP id
+ z8-20020a259cc8000000b00dc619ea9204mr1878634ybo.61.1707501678528; Fri, 09 Feb
+ 2024 10:01:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240209060353.6613-1-abhishekpandit@chromium.org>
+ <20240208220230.v4.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid> <ZcY2kVlUn7SJ5pW8@smile.fi.intel.com>
+In-Reply-To: <ZcY2kVlUn7SJ5pW8@smile.fi.intel.com>
+From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Date: Fri, 9 Feb 2024 10:01:07 -0800
+Message-ID: <CANFp7mW0F_zyaKJg0LusT6Cp4h0_8Z4jq+R1GUGtpyZrv99iVw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] usb: typec: ucsi: Limit read size on v1.2
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
+	jthies@google.com, pmalani@chromium.org, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
+	Rajaram Regupathy <rajaram.regupathy@intel.com>, Saranya Gopal <saranya.gopal@intel.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 9 Feb 2024 13:19:03 -0400
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Fri, Feb 9, 2024 at 6:28=E2=80=AFAM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Thu, Feb 08, 2024 at 10:02:38PM -0800, Abhishek Pandit-Subedi wrote:
+> > Between UCSI 1.2 and UCSI 2.0, the size of the MESSAGE_IN region was
+> > increased from 16 to 256. In order to avoid overflowing reads for older
+> > systems, add a mechanism to use the read UCSI version to truncate read
+> > sizes on UCSI v1.2.
+>
+> ...
+>
+> > +     if (ucsi->version <=3D UCSI_VERSION_1_2)
+> > +             buf_size =3D min_t(size_t, 16, buf_size);
+>
+> Please, avoid using min_t(). Here the clamp() can be used.
+I think this is likely the 4th time I've been tripped up by an
+undocumented practice in this patch series. <linux/minmax.h> says
+nothing about avoiding min_t -- why prefer clamp()? Please add the
+recommendation here
+(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/in=
+clude/linux/minmax.h#n10)
+and I am more than happy to change it after.
 
-> On Fri, Feb 09, 2024 at 08:55:31AM -0700, Alex Williamson wrote:
-> > I think Kevin's point is also relative to this latter scenario, in the
-> > L1 instance of the nvgrace-gpu driver the mmap of the usemem BAR is
-> > cachable, but in the L2 instance of the driver where we only use the
-> > vfio-pci-core ops nothing maintains that cachable mapping.  Is that a
-> > problem?  An uncached mapping on top of a cachable mapping is often
-> > prone to problems.    
-> 
-> On these CPUs the ARM architecture won't permit it, the L0 level
-> blocks uncachable using FWB and page table attributes. The VM, no
-> matter what it does, cannot make the cachable memory uncachable.
+> Shouldn't magic number be defined?
+The comment right above this line documents the number.
+As this is the only use right now, I don't see a need to make it a
+macro/constant yet.
 
-Great, thanks,
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
-Alex
-
+Cheers,
+Abhishek
 
