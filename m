@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-59090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29BD784F114
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:54:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525D684F116
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:55:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5916D1C22059
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:54:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E627B1F22F11
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074C465BB6;
-	Fri,  9 Feb 2024 07:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F2265BBF;
+	Fri,  9 Feb 2024 07:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YIYf2n/s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YLK4L/AZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ACC765BAD;
-	Fri,  9 Feb 2024 07:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F70465BB5;
+	Fri,  9 Feb 2024 07:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707465268; cv=none; b=RWKJwr4zY/PvrfPXApOsmD+FYmbAt2bAn5Wjlp3j8s9s82hh28fzz1KKUkgphKaQ7g5/hjUOO7VN6C9VWp2/whFmKTaXDct6schU2extkp8X/ELJXsg1urKrrXkCyadTNnVBkQMgq980JNc39CCOvMAuH6Do+lZn0SY339INE20=
+	t=1707465293; cv=none; b=TLMjmV1Pwdv3j/k14lZk6wqFHepDMXnH+A98v/S3PZfarb07roE/RKWtuZgw68uYEqqKHkIQlg1zByQDgu8sH2LSbTT/r/+Udky+OqQ34+AA2wukglU2PeIA8eei9XUE4pk5tQXdmZyfSu03a/ymTCwZLlvnCbSIGePCLbb8om8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707465268; c=relaxed/simple;
-	bh=tDbADdHiugy5HAcwsH0PsQLO0MCWnTycBqCPrNSiuA8=;
+	s=arc-20240116; t=1707465293; c=relaxed/simple;
+	bh=uea/SUE9zxpAMSQg4UhoAlPttpgNpN2dVO157l/Z6Ok=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=omBtH97DNKDotFODjbfa1bVlDTvxSliWO169ypK9DYKCO3+8KsTjuwft6DwaEScplOFJOGFzRIIX7palGx+sa9ArLwdI7nU3OzmogzfIbTxyn8NTB884WTsQjirvov2pSbs9IroMVjzwX4bWBECAfl96n83ahOOz5M5ZCgazrV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YIYf2n/s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8EA6C433F1;
-	Fri,  9 Feb 2024 07:54:26 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=dFWOhFabTZwJceUKL2ei8ILVlpitRE+MjJKsogJZTO2B6J/09aCoSew/bpHPOsRH5tuPHIvf7h38bA/Omu08zsiyfzubzpKQqIBLjpfftF2Xjbo30K+ZdEYkgM7Nb5ZPg1VV//c29f/wc8tCp/7lbzu6I6yKEY+tTXvKbAirz9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YLK4L/AZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08F14C433F1;
+	Fri,  9 Feb 2024 07:54:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707465267;
-	bh=tDbADdHiugy5HAcwsH0PsQLO0MCWnTycBqCPrNSiuA8=;
+	s=k20201202; t=1707465292;
+	bh=uea/SUE9zxpAMSQg4UhoAlPttpgNpN2dVO157l/Z6Ok=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YIYf2n/s0jIvllicuk2lMONPDbJZslGXjClO95rLhmCZmY+Q6uUvizjS4F7MN1/ke
-	 FxiZWo1TX5oJAh6URqnF+ymcAPMexDlSV50Yeb/ekYBQ5J5zghCi1sPeA0LJEckCnx
-	 5y7iSfB9JexhjMeYhtff544VUJWk0lFVxrZlvYA4dD7uRmNEsqXHmkDRCBsjy20U8J
-	 g8CPMmqyyxlF1jKgQHy/NIF6erXPbR/zHHWJ2HGsrj8cI886M5ozvU/vfJngPUG8al
-	 ErAe5sxh2eQUryAiSksKI40iq4i/6hJF4lk9hiBL/4q+OLjQSqXojzdU6RqpfhAwHX
-	 X5Oh29dZlCHjw==
-Date: Fri, 9 Feb 2024 07:54:23 +0000
+	b=YLK4L/AZANA7cB40pNOTkyaTAUBur1mtsh8clAHNSfCdaxV0T9TiSgs7nYdov6kFG
+	 9D5JA6KnKUwM04aTWD9fxLxcFoc+3Akg31TEeXNIBv9S3EHfCJ9mADXx7X826fPUOD
+	 0k3K3CdAlZBFqwQ4XQwyCjNdji0EA2m9nhrkujI5LTd+FuMohOkBZlVwZ0g1A+0rf/
+	 HazxtyEuAGvzQzI66y5GT30MvaIBnywABD16DG1gNEgwYFIX5SBxzArBI3wktOKgB6
+	 CExTIVLVLLdAD8BjEsP6PMGeReZPBB3miajBhI9O5SqYyMZxnbPNzfRfMCerVpciDm
+	 6ZY6adqeIRZDw==
+Date: Fri, 9 Feb 2024 07:54:49 +0000
 From: Lee Jones <lee@kernel.org>
 To: Wolfram Sang <wsa+renesas@sang-engineering.com>
 Cc: linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] mfd: tmio: remove obsolete platform_data
-Message-ID: <20240209075423.GC689448@google.com>
+Subject: Re: [PATCH 2/6] mfd: tmio: remove obsolete io accessors
+Message-ID: <20240209075449.GD689448@google.com>
 References: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
- <20240209015817.14627-9-wsa+renesas@sang-engineering.com>
+ <20240209015817.14627-10-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,57 +57,57 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240209015817.14627-9-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20240209015817.14627-10-wsa+renesas@sang-engineering.com>
 
 On Fri, 09 Feb 2024, Wolfram Sang wrote:
 
-> With commit 8971bb812e3c ("mfd: remove toshiba tmio drivers"), all users
-> of platform data for NAND and framebuffers are gone. So, remove
-> definitions from the header, too.
+> Since commit 568494db6809 ("mtd: remove tmio_nand driver") and commit
+> aceae7848624 ("fbdev: remove tmiofb driver"), these accessors have no
+> users anymore. Remove them.
 > 
 > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 > ---
->  include/linux/mfd/tmio.h | 27 ---------------------------
->  1 file changed, 27 deletions(-)
+>  include/linux/mfd/tmio.h | 25 -------------------------
+>  1 file changed, 25 deletions(-)
 
 Acked-by: Lee Jones <lee@kernel.org>
 
 > diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
-> index eace8ea6cda0..bc53323293a3 100644
+> index bc53323293a3..4223315d2b2a 100644
 > --- a/include/linux/mfd/tmio.h
 > +++ b/include/linux/mfd/tmio.h
-> @@ -103,31 +103,4 @@ struct tmio_mmc_data {
->  	void (*set_pwr)(struct platform_device *host, int state);
->  	void (*set_clk_div)(struct platform_device *host, int state);
->  };
+> @@ -10,31 +10,6 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+>  
+> -#define tmio_ioread8(addr) readb(addr)
+> -#define tmio_ioread16(addr) readw(addr)
+> -#define tmio_ioread16_rep(r, b, l) readsw(r, b, l)
+> -#define tmio_ioread32(addr) \
+> -	(((u32)readw((addr))) | (((u32)readw((addr) + 2)) << 16))
 > -
-> -/*
-> - * data for the NAND controller
-> - */
-> -struct tmio_nand_data {
-> -	struct nand_bbt_descr	*badblock_pattern;
-> -	struct mtd_partition	*partition;
-> -	unsigned int		num_partitions;
-> -	const char *const	*part_parsers;
-> -};
+> -#define tmio_iowrite8(val, addr) writeb((val), (addr))
+> -#define tmio_iowrite16(val, addr) writew((val), (addr))
+> -#define tmio_iowrite16_rep(r, b, l) writesw(r, b, l)
+> -#define tmio_iowrite32(val, addr) \
+> -	do { \
+> -		writew((val),       (addr)); \
+> -		writew((val) >> 16, (addr) + 2); \
+> -	} while (0)
 > -
-> -#define FBIO_TMIO_ACC_WRITE	0x7C639300
-> -#define FBIO_TMIO_ACC_SYNC	0x7C639301
+> -#define sd_config_write8(base, shift, reg, val) \
+> -	tmio_iowrite8((val), (base) + ((reg) << (shift)))
+> -#define sd_config_write16(base, shift, reg, val) \
+> -	tmio_iowrite16((val), (base) + ((reg) << (shift)))
+> -#define sd_config_write32(base, shift, reg, val) \
+> -	do { \
+> -		tmio_iowrite16((val), (base) + ((reg) << (shift)));   \
+> -		tmio_iowrite16((val) >> 16, (base) + ((reg + 2) << (shift))); \
+> -	} while (0)
 > -
-> -struct tmio_fb_data {
-> -	int			(*lcd_set_power)(struct platform_device *fb_dev,
-> -						 bool on);
-> -	int			(*lcd_mode)(struct platform_device *fb_dev,
-> -					    const struct fb_videomode *mode);
-> -	int			num_modes;
-> -	struct fb_videomode	*modes;
-> -
-> -	/* in mm: size of screen */
-> -	int			height;
-> -	int			width;
-> -};
-> -
->  #endif
+>  /* tmio MMC platform flags */
+>  /*
+>   * Some controllers can support a 2-byte block size when the bus width
 > -- 
 > 2.43.0
 > 
