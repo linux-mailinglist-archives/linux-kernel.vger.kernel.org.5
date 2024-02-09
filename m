@@ -1,181 +1,250 @@
-Return-Path: <linux-kernel+bounces-59088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A1484F10E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:51:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C1B884F111
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:53:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F071A1F226C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:51:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 584A91C215C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7A4065BA9;
-	Fri,  9 Feb 2024 07:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F021865BA2;
+	Fri,  9 Feb 2024 07:53:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lnPUwN+N"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TWNkmaZh"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BE365BA4;
-	Fri,  9 Feb 2024 07:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E32565BAE
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 07:53:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707465058; cv=none; b=dbKbO8yGzX1szZ8NbG7pSvbKVJhkidWhWk1eOTM6tfDDgKQnKXsKAtIXyl5SMDdfR1Xmv5keyY134lQsPqlGMBrw/mJ6X1c72TyuDvBADI7WcTT/8feJnCTsSHKOeightoCe2oyxuC8tYAhsVquAKtDiJDGZRouMp0pmMIxhAVU=
+	t=1707465202; cv=none; b=iymsm6QNWZglhLAWM5jnVjBcCI89sTmxX9dGEMro3P3zPxLJp79QMkUnyeKWCs5TN2GLNF8nio/yvl2pRjq6LbK7O7MwNnkxUEXCMem8p5dFxXlrEE1vmso5XtaTX3SY0kjWDvU0+vsBhAavWo68x1g22pNGZ3pVl/zj56a5dz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707465058; c=relaxed/simple;
-	bh=4P6Q65OM5G13zMp416D3cDinlUrcM6b83+wzrToei0M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xvi36v+myxiIako4urLW67sBqGZgku7WqLqqh7HU6HoKZaiKP7VGOxDVkjr+GlUF5eAm+moTFZjrmqMVOoMt8IPOUhvZ4rDPIcYkw0fN78NC+2PF7QQvbhmnmCCLgNG1ES2O/fkRCWWY5nQ9HeLdIZqOKhj5yCGDrTIB5garGzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lnPUwN+N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D91CDC433F1;
-	Fri,  9 Feb 2024 07:50:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707465057;
-	bh=4P6Q65OM5G13zMp416D3cDinlUrcM6b83+wzrToei0M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lnPUwN+N4dSqR1G2m4/Shb6BfsucY08qgzOFcXugXnckCcVdvF1wGZ0aILmxTOMsM
-	 C56jh6Jw+CakVwpePLel2TaWMoasjS/C5oqvus9tzKaHiA6L7taFAv1I5i6u807TVR
-	 90hYAIoQbOYugq8Ay1h/66+tVpfx4BMx2p2BVX55eavp98uoH0SxpiU8L1+AUsyfl0
-	 sMenFXiE/i9Tt/wyf0vgE4o7czT0/aEAbnlUpAIUIMynHFOWgLVZWMRScY+qG1lhnz
-	 QqHCuoHfOAlJYzoZSmy6Cowr+AVOiZF2a/7voIyUlS7aEYvEznJhP8c837/SyF/oVw
-	 cmewdN5M7vZhQ==
-Date: Fri, 9 Feb 2024 07:50:52 +0000
-From: Lee Jones <lee@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Flavio Suligoi <f.suligoi@asem.it>, dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v2 0/3] backlight: mp3309c: Allow to use on non-OF
- platforms
-Message-ID: <20240209075052.GB689448@google.com>
-References: <20240201151537.367218-1-andriy.shevchenko@linux.intel.com>
- <20240208113425.GK689448@google.com>
- <ZcUMMyV_vBTNw8Rz@smile.fi.intel.com>
- <20240208173946.GX689448@google.com>
- <ZcUYZRDVmHhKQu9j@smile.fi.intel.com>
- <20240208181455.GA689448@google.com>
- <ZcUcRlcQmQG4s42k@smile.fi.intel.com>
+	s=arc-20240116; t=1707465202; c=relaxed/simple;
+	bh=suOse5Wen6xta2bDSBDsXwEMYKfoqBmBOSz3/ys7ioQ=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=ODSpJGmKnrnPvg4YFrJlDXo06WJZ88jQeJtHc8SHuf8mYxQKcreJD3V9Xgp330va3/plULr8kh8RDuXcaALRYgc6ItVVS3W0n008txWTAxZuQgGiqR+qn9qC/cUJ2CD+xKWaJwPg2oW8oY1I3yRBKVCFP5QVuccjXN2JM+guh+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TWNkmaZh; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707465200; x=1739001200;
+  h=date:from:to:cc:subject:message-id;
+  bh=suOse5Wen6xta2bDSBDsXwEMYKfoqBmBOSz3/ys7ioQ=;
+  b=TWNkmaZhBS4z4MhwPaiKUc00ywP7se5DTRy/7hMCDxegIDslbQW3nznb
+   zyDNpxQX/7e7q2xPYTnQyfI8E9u765wb+dRk1EWWlVd2PhhLXd9kmhRvT
+   ZEpmiJqZ9npWFM0YRcoQtEKEEzYt6HIoa/tlTEodP/6Wef9EPosXbMh6M
+   AxJd5zFtymi2EvBr6TF5FcrhhDKOsDDcx9rYa1mqePPRQaECq8ZQocO+o
+   AhiWBMpBVdU464l7x+mQ7moFgxt5gXpFBdfUdYVyHB1HyP/MKzaX1nS/n
+   tUkPXiXoR1qigj1bL9TXg1/iLWwtXzdMcH9bJCvYrs4A/vlFTTmhWWaFC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="5204412"
+X-IronPort-AV: E=Sophos;i="6.05,256,1701158400"; 
+   d="scan'208";a="5204412"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 23:53:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,256,1701158400"; 
+   d="scan'208";a="25112363"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 08 Feb 2024 23:53:17 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rYLhC-0004VO-2u;
+	Fri, 09 Feb 2024 07:53:14 +0000
+Date: Fri, 09 Feb 2024 15:53:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/merge] BUILD SUCCESS
+ c7d0cc2959e14af04394242408fdb89d6a7713b5
+Message-ID: <202402091504.g5sNPci8-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZcUcRlcQmQG4s42k@smile.fi.intel.com>
 
-On Thu, 08 Feb 2024, Andy Shevchenko wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/merge
+branch HEAD: c7d0cc2959e14af04394242408fdb89d6a7713b5  Merge branch 'linus' into x86/merge, to ease integration testing
 
-> On Thu, Feb 08, 2024 at 06:14:55PM +0000, Lee Jones wrote:
-> > On Thu, 08 Feb 2024, Andy Shevchenko wrote:
-> > > On Thu, Feb 08, 2024 at 05:39:46PM +0000, Lee Jones wrote:
-> > > > On Thu, 08 Feb 2024, Andy Shevchenko wrote:
-> > > > > On Thu, Feb 08, 2024 at 11:34:25AM +0000, Lee Jones wrote:
-> > > > > > On Thu, 01 Feb 2024, Andy Shevchenko wrote:
-> 
-> ...
-> 
-> > > > > > >   backlight: mp3309c: Utilise temporary variable for struct device
-> > > > > 
-> > > > > (1)
-> > > > > 
-> > > > > > Set no longer applies.  Please rebase, thanks.
-> > > > > 
-> > > > > I got a contradictory messages:
-> > > > > 1) email that says that all had been applied;
-> > > > > 2) this email (that tells the complete opposite);
-> > > > > 3) the repository where the first two were applied.
-> > > > > 
-> > > > > While you can amend your scripts, I think I need to rebase only the last patch
-> > > > 
-> > > > This is what I assume happened:
-> > > > 
-> > > > 1. Attempted to apply the set (as a set)
-> > > > 2. 2 commits applied cleanly
-> > > > 3. The final commit conflicted
-> > > 
-> > > Which is really strange. I have just applied (with b4) on top of your changes
-> > > and no complains so far.
-> > > 
-> > > $ git am ./v2_20240201_andriy_shevchenko_backlight_mp3309c_allow_to_use_on_non_of_platforms.mbx
-> > > Applying: backlight: mp3309c: Make use of device properties
-> > > Applying: backlight: mp3309c: use dev_err_probe() instead of dev_err()
-> > > Applying: backlight: mp3309c: Utilise temporary variable for struct device
-> > > 
-> > > Can you show what b4 tells you about this?
-> > 
-> > Fetching patch(es)
-> > Analyzing 14 messages in the thread
-> > Checking attestation on all messages, may take a moment...
-> > ---
-> >   ✓ [PATCH v2 1/3] backlight: mp3309c: Make use of device properties
-> >     + Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org> (✓ DKIM/linaro.org)
-> >     + Link: https://lore.kernel.org/r/20240201151537.367218-2-andriy.shevchenko@linux.intel.com
-> >     + Signed-off-by: Lee Jones <lee@kernel.org>
-> >   ✓ [PATCH v2 2/3] backlight: mp3309c: use dev_err_probe() instead of dev_err()
-> >     + Tested-by: Flavio Suligoi <f.suligoi@asem.it> (✗ DKIM/asem.it)
-> >     + Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org> (✓ DKIM/linaro.org)
-> >     + Link: https://lore.kernel.org/r/20240201151537.367218-3-andriy.shevchenko@linux.intel.com
-> >     + Signed-off-by: Lee Jones <lee@kernel.org>
-> >   ✓ [PATCH v2 3/3] backlight: mp3309c: Utilise temporary variable for struct device
-> >     + Link: https://lore.kernel.org/r/20240201151537.367218-4-andriy.shevchenko@linux.intel.com
-> >     + Signed-off-by: Lee Jones <lee@kernel.org>
-> >   ---
-> >   ✓ Signed: DKIM/intel.com (From: andriy.shevchenko@linux.intel.com)
-> > ---
-> > Total patches: 3
-> > Prepared a fake commit range for 3-way merge (672ecc5199b5..d507b9f4c5b9)
-> > ---
-> >  Link: https://lore.kernel.org/r/20240201151537.367218-1-andriy.shevchenko@linux.intel.com
-> >  Base: not specified
-> > 
-> > Running through checkpatch.pl
-> > total: 0 errors, 0 warnings, 103 lines checked
-> > 
-> > "[PATCH v2 1/3] backlight: mp3309c: Make use of device properties" has no obvious style problems and is ready for submission.
-> > total: 0 errors, 0 warnings, 41 lines checked
-> > 
-> > "[PATCH v2 2/3] backlight: mp3309c: use dev_err_probe() instead of" has no obvious style problems and is ready for submission.
-> > total: 0 errors, 0 warnings, 81 lines checked
-> > 
-> > "[PATCH v2 3/3] backlight: mp3309c: Utilise temporary variable for" has no obvious style problems and is ready for submission.
-> > 
-> > Check the results (hit return to continue or Ctrl+c to exit)
-> > 
-> > 
-> > Applying patch(es)
-> > Applying: backlight: mp3309c: Make use of device properties
-> > Applying: backlight: mp3309c: use dev_err_probe() instead of dev_err()
-> > Applying: backlight: mp3309c: Utilise temporary variable for struct device
-> > Using index info to reconstruct a base tree...
-> > M	drivers/video/backlight/mp3309c.c
-> > Checking patch drivers/video/backlight/mp3309c.c...
-> > Applied patch drivers/video/backlight/mp3309c.c cleanly.
-> > Falling back to patching base and 3-way merge...
-> > error: Your local changes to the following files would be overwritten by merge:
-> > 	drivers/video/backlight/mp3309c.c
-> > Please commit your changes or stash them before you merge.
-> > Aborting
-> > error: Failed to merge in the changes.
-> > Patch failed at 0003 backlight: mp3309c: Utilise temporary variable for struct device
-> > hint: Use 'git am --show-current-patch=diff' to see the failed patch
-> > When you have resolved this problem, run "git am --continue".
-> > If you prefer to skip this patch, run "git am --skip" instead.
-> > To restore the original branch and stop patching, run "git am --abort".
-> 
-> Thank you!
-> 
-> It seems I have reduced context, so if you do `git am -C2 ...` it should apply.
-> Never mind, I'll send a new version which should work with -C3.
+elapsed time: 1469m
 
-I just use the default matching context lines.
+configs tested: 162
+configs skipped: 3
 
-Do you have a special config that reduces you context in patches?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240208   gcc  
+arc                   randconfig-002-20240208   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240208   gcc  
+arm                   randconfig-002-20240208   gcc  
+arm                   randconfig-003-20240208   gcc  
+arm                   randconfig-004-20240208   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240208   clang
+arm64                 randconfig-002-20240208   clang
+arm64                 randconfig-003-20240208   clang
+arm64                 randconfig-004-20240208   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240208   gcc  
+csky                  randconfig-002-20240208   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240208   clang
+hexagon               randconfig-002-20240208   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240208   gcc  
+i386         buildonly-randconfig-002-20240208   clang
+i386         buildonly-randconfig-003-20240208   gcc  
+i386         buildonly-randconfig-004-20240208   gcc  
+i386         buildonly-randconfig-005-20240208   gcc  
+i386         buildonly-randconfig-006-20240208   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240208   gcc  
+i386                  randconfig-002-20240208   gcc  
+i386                  randconfig-003-20240208   gcc  
+i386                  randconfig-004-20240208   clang
+i386                  randconfig-005-20240208   gcc  
+i386                  randconfig-006-20240208   gcc  
+i386                  randconfig-011-20240208   clang
+i386                  randconfig-012-20240208   clang
+i386                  randconfig-013-20240208   clang
+i386                  randconfig-014-20240208   clang
+i386                  randconfig-015-20240208   clang
+i386                  randconfig-016-20240208   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240208   gcc  
+loongarch             randconfig-002-20240208   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240208   gcc  
+nios2                 randconfig-002-20240208   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240208   gcc  
+parisc                randconfig-002-20240208   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240208   clang
+powerpc               randconfig-002-20240208   gcc  
+powerpc               randconfig-003-20240208   gcc  
+powerpc64             randconfig-001-20240208   gcc  
+powerpc64             randconfig-002-20240208   gcc  
+powerpc64             randconfig-003-20240208   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240208   gcc  
+riscv                 randconfig-002-20240208   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240208   clang
+s390                  randconfig-002-20240208   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240208   gcc  
+sh                    randconfig-002-20240208   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240208   gcc  
+sparc64               randconfig-002-20240208   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                    randconfig-001-20240208   clang
+um                    randconfig-002-20240208   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240208   clang
+x86_64       buildonly-randconfig-002-20240208   clang
+x86_64       buildonly-randconfig-003-20240208   gcc  
+x86_64       buildonly-randconfig-004-20240208   clang
+x86_64       buildonly-randconfig-005-20240208   clang
+x86_64       buildonly-randconfig-006-20240208   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240208   gcc  
+x86_64                randconfig-002-20240208   gcc  
+x86_64                randconfig-003-20240208   gcc  
+x86_64                randconfig-004-20240208   clang
+x86_64                randconfig-005-20240208   gcc  
+x86_64                randconfig-006-20240208   gcc  
+x86_64                randconfig-011-20240208   gcc  
+x86_64                randconfig-012-20240208   gcc  
+x86_64                randconfig-013-20240208   clang
+x86_64                randconfig-014-20240208   clang
+x86_64                randconfig-015-20240208   clang
+x86_64                randconfig-016-20240208   clang
+x86_64                randconfig-071-20240208   clang
+x86_64                randconfig-072-20240208   clang
+x86_64                randconfig-073-20240208   gcc  
+x86_64                randconfig-074-20240208   clang
+x86_64                randconfig-075-20240208   gcc  
+x86_64                randconfig-076-20240208   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240208   gcc  
+xtensa                randconfig-002-20240208   gcc  
 
 -- 
-Lee Jones [李琼斯]
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
