@@ -1,176 +1,176 @@
-Return-Path: <linux-kernel+bounces-60144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0738F8500B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 00:20:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D53F28500B6
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 00:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 731021F26E47
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:20:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0355E1C2113A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB8FF381B8;
-	Fri,  9 Feb 2024 23:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8861D38DDD;
+	Fri,  9 Feb 2024 23:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cN85CGzV"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aty1sJbu"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454BE36120
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 23:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55C6636AEF;
+	Fri,  9 Feb 2024 23:21:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707520845; cv=none; b=p6776rlscd5PPxUnuOQUZ9ikIEIJh1O45EacThWYNbI1pimGpQnzb/ObXRQjEMPP9Cr4XPPVNfcEjyFgbL3otoK08HHyinEcGWmtKJ87sUilsIC6llAr9pslgbNUsBfcVxHM7P6d9t7gtGaR3mG+8KMtmEe8pBnKnUj2mNF6kNw=
+	t=1707520917; cv=none; b=Hz1u5iTQ+YqCxdGKUVDw00KNOlXHECtR2jqf6+xSHbYfAwLKjOERrdIXwe6drLqKhMCE3y4I179fpkXdIjHeb3VYgI6atd8ZPfv4hikgQhA7Gv0cSwAPZUTGMh4YrQ75T+I8zoThRn3w63OYxJU2poqwhWnBJ9kr479x0ikadBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707520845; c=relaxed/simple;
-	bh=uf75RmmaasfJs85RE/vtD2MDKZCAkQJrySp0Fe5u+Lc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nX1qWk/6M6D+0O+6BTQGqtGy20rSmuTPAkaphkuCgQhjjUo3RvTHrlUTG7hIa+Fg4BzbGaWxF1AOrsTYoy4+AycQ5NIhBon/cqrBfuJdTGsW6570En2B07hmMokghdF3zj6y3KPWm0ChgJsN1gWR975kVIeKbZweKO0XxvIZhM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cN85CGzV; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2970f940b7cso550623a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 15:20:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707520842; x=1708125642; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=pUX7rZnvyFvDNPjdlReFBmCCuHj67RGrGqzMayPKgZI=;
-        b=cN85CGzV/8L9ObKB+yKGIAt3V4ZJrpyCNoUfkf1mSrLI+SlUtEn/XGKs/udlb3MQZU
-         E2sr9GtMGKWwy7SB/67H/jVfqvLLBMfpZbfENV6KBLWA2hnOdnOV9b9+lZDnn5czoW+S
-         zGGhxO76YqnPRRhLKNex48qcusq+Z8zIFtQfUENHPLt4pH+EOzdn/7yTrIZt0asf8kzZ
-         eELFsBSGLJcK+32GR9WEbAbasiFys1Abj3jMWh+ulL1MBnLQzo2KsDxTBSntWbm736lM
-         Uv/sWkwPRqRQAHnL6M3MnCUz66zMo56IjVEbn9+mN4sLDvUpNr4mukRO620GmPpoNnH7
-         ncgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707520842; x=1708125642;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pUX7rZnvyFvDNPjdlReFBmCCuHj67RGrGqzMayPKgZI=;
-        b=slqCkLZ3ScKhwghVOrGWE/Wc5Y7QFmbzmUf+GMVdRU8pVn8W5YN570VJ/24GWX9Ii9
-         QNs8NJQUVwZYlsC0HciDpy53nX8z9Xqa652mNhBCQ6NqqcjsqKeaacsgalFNztsIqB2O
-         zs+pVLsLpGJ64HQtQ4PiCFCPkF6MuUFBdIvLV08eesjCOVkG/KF8GsOX+hjMVW8MbJ9o
-         g4BFT5Ms7H9yz6Q24slog1XSsXJG0foH0jdw9ODaMbUZmuaJJa9sGqzQtPCZPuGM4Mow
-         6yrebScTolYnH291t/BYv3ARcg9XfCtcjnY+4o9G8F55DDyrsOmq/9w7ya1FM2Sl88LU
-         7xWg==
-X-Gm-Message-State: AOJu0Yz1vupFTs2KNwM2bssqiBfOqwEap+smmWqT6HDa9TFy8IQcD6Ys
-	5FhgjD4hsp0SJRwmfjGfIcMt2Ko/iUgWk6f+8fgic8PPvS79/zbSeUTIKTL5
-X-Google-Smtp-Source: AGHT+IGUsY5Q2E7R5Anl9qHZBwl21KIW3GdFPbhJ5W+fDcaCtamSmi8icEAHwM6sO8DraOi2XdhNNg==
-X-Received: by 2002:a17:90b:380e:b0:296:43a:932e with SMTP id mq14-20020a17090b380e00b00296043a932emr598534pjb.7.1707520842505;
-        Fri, 09 Feb 2024 15:20:42 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id fr21-20020a17090ae2d500b00296bb0b2f57sm2355152pjb.21.2024.02.09.15.20.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Feb 2024 15:20:41 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d2c9b610-ca76-4104-9969-7dded960d4a2@roeck-us.net>
-Date: Fri, 9 Feb 2024 15:20:40 -0800
+	s=arc-20240116; t=1707520917; c=relaxed/simple;
+	bh=JIhHPCLub+GIlJ4MJ6tsKD5RtbEyFnsXJnH4vNKqDqA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=bRojCzv4YrCaDTTBbyMo7C1lOOIyP+Crm4NgYPpvPm8ybmD7dZT60s1zo7w1Rm2n5KkmizUrv+Xc6awLlzlRKk/D700BtAJ3dkfc8Tas8VRDjMJy2rJ0sJ8TDvVwmQU6jV5jQzNERxb/ygQqCjt7NORK+gC3L2q2BoqqY3oNVn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aty1sJbu; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 419NGKCY018192;
+	Fri, 9 Feb 2024 23:21:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=cv5
+	SkJuNqt3ewpDLnxOENQWIUMdt2pVQ9B0+/buE1X4=; b=aty1sJbu/a8RHThCtxx
+	zSdhunB9uZ69YCWA2LY8jnjFdhRCjQn99V+SopdNZzZeSgbV1c1gTQKkNN2ytSqL
+	r46f8+vSGbIH2xw8sF1nkoiHWBMV3aOZhLzc9aA8ZsWzqRhOlNY/7QidoThI69dL
+	p8/9h9jsVJexHF+yZiBzt3X6f2CbekB42PXy0Uxmg/TyJKZ/vxOjXTGgUOV7FQyW
+	hhJ1qFXbTlt3irW3ZBs7aA+wvIcmtKmiMzhWaOj/tlJjYiRsrfCCNKd+YbyKVY37
+	1NuLZVs6WD6yNFiLMihkm5B91LjxowSMZkqnhKMuE5js5Y1VPHXcy7MNcCtFYemv
+	DwQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w5pgprwjs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 23:21:50 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 419NLnel028427
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 9 Feb 2024 23:21:49 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
+ 2024 15:21:48 -0800
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+Date: Fri, 9 Feb 2024 15:21:48 -0800
+Subject: [PATCH v2] arm64: dts: qcom: qcs6490-rb3gen2: Declare GCC clocks
+ protected
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] regmap: kunit: Ensure that changed bytes are actually
- different
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-References: <20240209-regmap-kunit-random-change-v2-1-be0a447c2891@kernel.org>
- <7d077da1-e792-4570-914e-5c26de420c43@roeck-us.net>
- <ZcapjWTuggJNdV/o@finisterre.sirena.org.uk>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <ZcapjWTuggJNdV/o@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-ID: <20240209-qcm6490-gcc-protected-clocks-v2-1-11cd5fc13bd0@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAIuzxmUC/43NQQ6CMBCF4auQrh3TFgRh5T0MCzodYKJQaJFoC
+ He3cgKX31v8bxOBPFMQVbIJTysHdmOEPiUC+2bsCNhGCy11JrUsYcYhz0oJHSJM3i2EC1nAp8N
+ HAKJL27TWFLlJRUxMnlp+H/l7Hd1zWJz/HG+r+q1/hlcFCoxNs2thNBVG3eYXI494RjeIet/3L
+ 4WuG37KAAAA
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>
+CC: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Luca Weiss <luca.weiss@fairphone.com>,
+        "Bjorn
+ Andersson" <quic_bjorande@quicinc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707520908; l=2379;
+ i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
+ bh=JIhHPCLub+GIlJ4MJ6tsKD5RtbEyFnsXJnH4vNKqDqA=;
+ b=oxOaWPD9bzFyxLTLusdZS7WLGJXt3FT5Z2Nzp9WkCleMwZRAuH0qbFAIDg8vUmHkJkomB/zzP
+ 49pO8QvI9h+Di8RnisP2Bd2hMlLtk8YjDHB4F8hjxLHZMJTFHKoY8m7
+X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
+ pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: y3XU2iUZMLsYXCszu7rQ59-sa0ONYbD9
+X-Proofpoint-GUID: y3XU2iUZMLsYXCszu7rQ59-sa0ONYbD9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_19,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 phishscore=0 clxscore=1015 impostorscore=0 mlxscore=0
+ priorityscore=1501 suspectscore=0 mlxlogscore=775 bulkscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402090171
 
-On 2/9/24 14:39, Mark Brown wrote:
-> On Fri, Feb 09, 2024 at 02:07:38PM -0800, Guenter Roeck wrote:
-> 
->> This is actually worse than v1 because hw_buf[6] isn't used anywhere.
->> Making sure that the values in the val[] array don't match the values
->> in hw_buf[6..7] doesn't add any value.
-> 
-> Yeah, I realised after reading your earlier mail.  It's passing for me
-> somehow.
-> 
+The SC7280 GCC binding describes clocks which, due to the difference in
+security model, are not accessible on the RB3gen2 - in the same way seen
+on QCM6490.
 
-It is passing because the probability for it to fail is really low.
-It only fails reliably with the cheat below.
+Mark these clocks as protected, to allow the board to boot. In contrast
+to the present QCM6490 boards GCC_EDP_CLKREF_EN is left out, as this
+does not need to be "protected" and is used on the RB3Gen2 board.
 
->> FWIW, I had struggled with the re-use of val[0] for two different tests
->> (on hw_buf[2] and hw_buf[4]) myself. The only solution other than making sure
->> that it neither matches hw_buf[2] nor hw_buf[4] I came up with was to use a
->> separate variable for the accesses to hw_buf[4] (or hw_buf[6] in the old code).
-> Indeed, it was fine with the old code due to not caring about having
-> different values but we need to generate three values now.
-> 
->>          get_changed_bytes(&hw_buf[6], &val[0], sizeof(val));
->> +       // Let's cheat.
->> +       // Remember, the above code doesn't look into hw_buf[2..5],
->> +       // so anything might be in there, including the values from
->> +       // the val[] array.
->> +       hw_buf[2] = val[0];
->> +       hw_buf[3] = val[1];
->> +       hw_buf[4] = val[0];
->> +       hw_buf[5] = val[1];
-> 
-> I don't understand how this interacts with the pre-sync check?
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Luca Weiss <luca.weiss@fairphone.com>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+---
+I did notice Taniya's patch [1] after writing this patch. I'd prefer to
+merge this minimal set asap, to make the board boot, unless there's a
+strong argument for including those other clocks in the protected list.
 
-That is because the test expects the memory in hw_buf[] and val[] to be
-different (because hw_buf[] wasn't updated to the new values). The above
-cheat forces hw_buf[2,3] and val[0,1] to be the same, so the pre-sync test
-fails. The post-sync test passes because the values are expected to be
-the same at that time.
+[1] https://lore.kernel.org/linux-arm-msm/20240208062836.19767-6-quic_tdas@quicinc.com/
+---
+Changes in v2:
+- Dropped GCC_EDP_CLKREF_EN from the list and expanded the commit
+  message to cover this descrepancy from QCM6490 devices.
+- Corrected SC7180 to SC7280 in commit message.
+- Link to v1: https://lore.kernel.org/r/20240209-qcm6490-gcc-protected-clocks-v1-1-bd3487b2e7b1@quicinc.com
+---
+ arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-Guenter
+diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+index 8bb7d13d85f6..ebbe2c1123f6 100644
+--- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
++++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+@@ -413,6 +413,23 @@ vreg_bob_3p296: bob {
+ 	};
+ };
+ 
++&gcc {
++	protected-clocks = <GCC_CFG_NOC_LPASS_CLK>,
++			   <GCC_MSS_CFG_AHB_CLK>,
++			   <GCC_MSS_GPLL0_MAIN_DIV_CLK_SRC>,
++			   <GCC_MSS_OFFLINE_AXI_CLK>,
++			   <GCC_MSS_Q6SS_BOOT_CLK_SRC>,
++			   <GCC_MSS_Q6_MEMNOC_AXI_CLK>,
++			   <GCC_MSS_SNOC_AXI_CLK>,
++			   <GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
++			   <GCC_QSPI_CORE_CLK>,
++			   <GCC_QSPI_CORE_CLK_SRC>,
++			   <GCC_SEC_CTRL_CLK_SRC>,
++			   <GCC_WPSS_AHB_BDG_MST_CLK>,
++			   <GCC_WPSS_AHB_CLK>,
++			   <GCC_WPSS_RSCP_CLK>;
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
+
+---
+base-commit: b1d3a0e70c3881d2f8cf6692ccf7c2a4fb2d030d
+change-id: 20240209-qcm6490-gcc-protected-clocks-ee5fafdb76b3
+
+Best regards,
+-- 
+Bjorn Andersson <quic_bjorande@quicinc.com>
 
 
