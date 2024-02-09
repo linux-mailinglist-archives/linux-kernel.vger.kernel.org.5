@@ -1,152 +1,103 @@
-Return-Path: <linux-kernel+bounces-59306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A9D184F4FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:03:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE40F84F510
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:11:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CAC31C25E21
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:03:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D3601C23694
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:11:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10E632C6C;
-	Fri,  9 Feb 2024 12:03:31 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE8C31759;
+	Fri,  9 Feb 2024 12:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="RfpvRoTd"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3812E630;
-	Fri,  9 Feb 2024 12:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007C1286AF
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 12:11:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707480211; cv=none; b=CXrAZ42b1z5HqaoB0Sn778zf1t4xyZH0kN+ddfOQDYZrizn9Ba5xTCs9G0FIy3lXwGHKF0pGAnB2dRarUL8M2CUJyjwdcYwWseTJW0MWA0JrgNXMAVuRo+8Gmgwuu5w8yIgfi0EuM3lay/YwVkCTV5rYQEeDtWamWrM6y/ZuiaM=
+	t=1707480670; cv=none; b=G/pvZ1+V9ZvVKDkigezWXcXLGs2JcKKISVzZk+ae2Et+ef+d3xGnT0qszLwP1dWEMEgitRHn4a09u/EH6yHht5g2YxAPNDSduAVCLm5u3vQPOwovcMHDbOd1ugHddclNx4oHJZPEScY0ognzUYLIN+QNrOIeOd5S5tUjiZV5lnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707480211; c=relaxed/simple;
-	bh=BhA/UikenM4m0IyfeHs3E+dkP69p7UWIJfw5VFHgk24=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=brJx/cQC5LWOZnAB7EiCvcPfLjwyigMZaHefHf1hZyqHCwZh4ThybmE52nP5ARE0e50TmXZEEBD+TO+mV2w5BbAQASuTVnKtgyjHUnzHnKZ7S7wckaYJgH0+F0KRz43oVDuKke+K6FfAHDqNY1l7ILNKjUEDXUfvd4JtboShyn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TWXDB6LM8z9xvhR;
-	Fri,  9 Feb 2024 19:48:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id DB61B14086B;
-	Fri,  9 Feb 2024 20:03:09 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwAXBChtFMZlv1EoAg--.21619S2;
-	Fri, 09 Feb 2024 13:03:09 +0100 (CET)
-Message-ID: <f61cb90858d866ed3eb7a2b607152c4aa2a52f5d.camel@huaweicloud.com>
-Subject: Re: [PATCH v9 12/25] security: Introduce file_post_open hook
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: viro@zeniv.linux.org.uk, chuck.lever@oracle.com, jlayton@kernel.org, 
- neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, 
- paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
- zohar@linux.ibm.com,  dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com,
- dhowells@redhat.com,  jarkko@kernel.org, stephen.smalley.work@gmail.com,
- eparis@parisplace.org,  casey@schaufler-ca.com, shuah@kernel.org,
- mic@digikod.net,  linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org,  linux-nfs@vger.kernel.org,
- linux-security-module@vger.kernel.org,  linux-integrity@vger.kernel.org,
- keyrings@vger.kernel.org,  selinux@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
- Stefan Berger <stefanb@linux.ibm.com>
-Date: Fri, 09 Feb 2024 13:02:49 +0100
-In-Reply-To: <20240209-giert-erlenholz-b131fa85ee36@brauner>
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
-	 <20240115181809.885385-13-roberto.sassu@huaweicloud.com>
-	 <20240209-luftleer-jobangebote-6d6ab29b7191@brauner>
-	 <86ab971f45c2ff11dcbdeab78b4b050f07495f55.camel@huaweicloud.com>
-	 <20240209-giert-erlenholz-b131fa85ee36@brauner>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1707480670; c=relaxed/simple;
+	bh=atP9nv+MGvE39dRptK4hR3mGbhmbsAAJvomQQDYlAF8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mobJzDlKPwlACQTpUTQAiEVpayR63Q+AaA5bej4Q6DhHdh9chYMjk0KgDAUPXW5DSXzwPL0OQHm0vsoOYjjZ4oOY7KAgN+A/yBSdNsLmO3LsHDQJjGgqeRaMBRv1T0XP8u7bD47RNCTRW93zv4FaGq42J6PFtXsnMBHqRFvHa/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=RfpvRoTd; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4194xG2U013736;
+	Fri, 9 Feb 2024 12:10:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=t15kCmhkTCQwnVv0g0xmHlVcnU7G0kxiC5XlL5Wt3is=;
+ b=RfpvRoTdvtsMZQBQtXgaThF2Hm17EtGsKrqr3wdYo2lP3nYdjzhH+orDpEBBmDxy/fxA
+ zGzg4Efg8ZnWSnyJQpHvy2am8JKucostfKNO3E2KOraoBMSKcfsemsEEBSGb/fph8N78
+ rtQJeabMfSUm7GGNyNN5pIY+1F+iqxIvgBSlqk3ZE7rxyIpEuaWnCnJBtfAfzw/r/RmJ
+ wyWtIrBoyxyLaU4YxMv6KYVnJr6YqSZMFBBBxm0uDN0fvb5xbE7AoP5LtrW/LA8kEpj7
+ 7vFVMv1f5654KizJNkGstSG6FovtyqQirBFEQcbsA7AH+CBLXa4hKmpe8zO7jpK321xp Gg== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w1cdd7a2w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 09 Feb 2024 12:10:53 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 419AcOmC038386;
+	Fri, 9 Feb 2024 12:10:52 GMT
+Received: from localhost.localdomain (dhcp-10-191-128-116.vpn.oracle.com [10.191.128.116])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3w1bxbvp30-1;
+	Fri, 09 Feb 2024 12:10:51 +0000
+From: Imran Khan <imran.f.khan@oracle.com>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH] connector/cn_proc: make comm length as TASK_COMM_LEN.
+Date: Fri,  9 Feb 2024 23:10:46 +1100
+Message-Id: <20240209121046.1192739-1-imran.f.khan@oracle.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwAXBChtFMZlv1EoAg--.21619S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr4UAr1ftFWDuF4xKF17KFg_yoW8Kw4rpa
-	y5J3Z8GF4kGry7Cr9IvF90qFnYg392qFyUXrZxX34UArnFqrnI9F47Cr15uFyqqr1xGr10
-	vr429r9xWr1UArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj5Y3PwAAsh
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_09,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ mlxlogscore=997 bulkscore=0 mlxscore=0 phishscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402090088
+X-Proofpoint-GUID: C7v74ijMVDLO7V_fagI9JMp8oDG3-h7m
+X-Proofpoint-ORIG-GUID: C7v74ijMVDLO7V_fagI9JMp8oDG3-h7m
 
-On Fri, 2024-02-09 at 12:34 +0100, Christian Brauner wrote:
-> On Fri, Feb 09, 2024 at 11:46:16AM +0100, Roberto Sassu wrote:
-> > On Fri, 2024-02-09 at 11:12 +0100, Christian Brauner wrote:
-> > > On Mon, Jan 15, 2024 at 07:17:56PM +0100, Roberto Sassu wrote:
-> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > >=20
-> > > > In preparation to move IMA and EVM to the LSM infrastructure, intro=
-duce the
-> > > > file_post_open hook. Also, export security_file_post_open() for NFS=
-.
-> > > >=20
-> > > > Based on policy, IMA calculates the digest of the file content and
-> > > > extends the TPM with the digest, verifies the file's integrity base=
-d on
-> > > > the digest, and/or includes the file digest in the audit log.
-> > > >=20
-> > > > LSMs could similarly take action depending on the file content and =
-the
-> > > > access mask requested with open().
-> > > >=20
-> > > > The new hook returns a value and can cause the open to be aborted.
-> > > >=20
-> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> > > > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-> > > > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> > > > ---
-> > > >  fs/namei.c                    |  2 ++
-> > > >  fs/nfsd/vfs.c                 |  6 ++++++
-> > > >  include/linux/lsm_hook_defs.h |  1 +
-> > > >  include/linux/security.h      |  6 ++++++
-> > > >  security/security.c           | 17 +++++++++++++++++
-> > > >  5 files changed, 32 insertions(+)
-> > > >=20
-> > > > diff --git a/fs/namei.c b/fs/namei.c
-> > > > index 71c13b2990b4..fb93d3e13df6 100644
-> > > > --- a/fs/namei.c
-> > > > +++ b/fs/namei.c
-> > > > @@ -3620,6 +3620,8 @@ static int do_open(struct nameidata *nd,
-> > > >  	error =3D may_open(idmap, &nd->path, acc_mode, open_flag);
-> > > >  	if (!error && !(file->f_mode & FMODE_OPENED))
-> > > >  		error =3D vfs_open(&nd->path, file);
-> > > > +	if (!error)
-> > > > +		error =3D security_file_post_open(file, op->acc_mode);
-> > >=20
-> > > What does it do for O_CREAT? IOW, we managed to create that thing and=
- we
-> > > managed to open that thing. Can security_file_post_open() and
-> > > ima_file_check() fail afterwards even for newly created files?
-> >=20
-> > $ strace touch test-file
-> > ...
-> > openat(AT_FDCWD, "test-file", O_WRONLY|O_CREAT|O_NOCTTY|O_NONBLOCK, 066=
-6) =3D -1 EPERM (Operation not permitted)
->=20
-> Ah, meh. I was hoping IMA just wouldn't care about this case.
+Since comm_proc_event::comm contains a task_struct::comm,
+make its size same as TASK_COMM_LEN and avoid magic number
+in buffer size.
 
-Actually it doesn't. I added code to artifically create the situation
-(to see what happens if a new LSM does that).
+Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
+---
+ include/uapi/linux/cn_proc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Roberto
+diff --git a/include/uapi/linux/cn_proc.h b/include/uapi/linux/cn_proc.h
+index f2afb7cc4926..fd876c9b284f 100644
+--- a/include/uapi/linux/cn_proc.h
++++ b/include/uapi/linux/cn_proc.h
+@@ -136,7 +136,7 @@ struct proc_event {
+ 		struct comm_proc_event {
+ 			__kernel_pid_t process_pid;
+ 			__kernel_pid_t process_tgid;
+-			char           comm[16];
++			char           comm[TASK_COMM_LEN];
+ 		} comm;
+ 
+ 		struct coredump_proc_event {
+-- 
+2.34.1
 
 
