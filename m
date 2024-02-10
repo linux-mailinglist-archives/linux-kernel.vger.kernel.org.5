@@ -1,58 +1,54 @@
-Return-Path: <linux-kernel+bounces-60442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EE01850500
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:52:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD32B850503
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:59:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DABC528407B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:52:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38F0EB22629
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:59:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA665BAFF;
-	Sat, 10 Feb 2024 15:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C78D5BAFF;
+	Sat, 10 Feb 2024 15:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rwW9dlAL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NTz1Qphl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4FA5BAC1;
-	Sat, 10 Feb 2024 15:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB875BACE;
+	Sat, 10 Feb 2024 15:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707580360; cv=none; b=AvZHv0NCLV0A3JA01os15BrKVwLh6eRQpDsRdumxkGRPeFa1TyTrqv8oE/Ge4IJv4QZqGYJeFBoQRgzzsyUaBnU+28hvq3+/dEBncJLX4iwKum2sakBgWTusvkUW2qfZ0dd/ETyqVZNYbYFU4W7yB4Fw3fJKfsbccMU7OuAE8Zo=
+	t=1707580750; cv=none; b=BE6k136rbRFAjpFrKzRqVMB4MHw55Ck5sJ89eHquoq59OWg+Q1Fvw8PJb8IN31y+K6vYseYx70h+CcJqrElxWdCCHNmESN2whLSkuppuqUKTaI1+a5CD7bYoVNQIVugFUmmxqyPcrv6u4OFLl1gxPg0qyyO0VRgPFT6xrz+Awec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707580360; c=relaxed/simple;
-	bh=KmRdhdIm1e1YU1Z6SApSOHV6og3dM5i8UxxHp/UIxk8=;
+	s=arc-20240116; t=1707580750; c=relaxed/simple;
+	bh=TOjZsjxJyygjDyYQGqewggBEGJHNfuXPQcHw7Mdj2+M=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D1OqDFRBZfx9IeG/KN9j0Aw3hQ7Dgs08Rjfhqmq+p0dLEnJRLCYTdVTFNVxVPdAMANML2QBOmdiLWV3QA80XcpJ2su7S2YB7NZFLA6vX5NG9e7aLiZxybdF+qK7W5vKtsnKuVu6YwZXq7PqH9KijBKpa60PqopyTaFullwyikaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rwW9dlAL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C405C433F1;
-	Sat, 10 Feb 2024 15:52:36 +0000 (UTC)
+	 MIME-Version:Content-Type; b=gIha+PqA+2e1VJW9D+czIjUKcjD6b/aFEhhMARuoys1fMXi7+EBOdCqvCV60XGcVOVy00pX0Mg1S2XxruadzJ4csKFXpuEEnZGKt4thKe/tMTtvDfJntD7C11xNe36IyQqRagZ3C/9O1DNgJ7EWXBN49yg6NyWvI6r5Z4CPsdUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NTz1Qphl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4380BC433C7;
+	Sat, 10 Feb 2024 15:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707580359;
-	bh=KmRdhdIm1e1YU1Z6SApSOHV6og3dM5i8UxxHp/UIxk8=;
+	s=k20201202; t=1707580749;
+	bh=TOjZsjxJyygjDyYQGqewggBEGJHNfuXPQcHw7Mdj2+M=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rwW9dlAL5q+YfP+CFq1zy21CHbAgsmxykad3Z/AfpPIYlpGU/jy4LJEXB7hMXySP7
-	 q/WeSdF1IJ5H7kXv4Pp1VI2QcsKXAGG0skbk9y7YsEFgYtuCFB2wSzrtungydqpQLU
-	 zgdg2i64goXJFGyCR8DZxF3DxqYlLLD9x7LwaJQWoI4ZPDUByJRORw+h2OityoT/qI
-	 gP28VBMucnmfn2pVXcT0lmECdQ7sOVeHzRDcmszK3SYREmRmJ9unUdVtHsHza7DqsM
-	 YWJOLDHUAfSb40EEk5rmOYpi6xWyYgSmM8fRXG/57Ptf6Yr1upNzfSEqnLJj97NR0R
-	 dZwd9Mcb+StwQ==
-Date: Sat, 10 Feb 2024 15:52:26 +0000
+	b=NTz1QphlwbzTHVWCSwPpgXWsOdAr4Hmt9aQX3r3RPrxQO0F4FVxHHRqNew5kozh2n
+	 XipNX/pb/hgXhgWozAgOwQ+GyvNeve5z8r5/1+GmKenekQU049HfMU9N7yJFgNybRr
+	 3InoHLMeyeucbBNvU4VvMuV51G+3IXGmYby08wLFCEaLcAgYudKRCC2ubI5T4egNCX
+	 oFL5CDyf1Q+SdDFNm71QlK8pN1tUIu470inhduSE3Tc1wQNfUJTWcIOjR3JN4bdJUD
+	 vK+pgK5hJFRvWEj86wtzTUELp17Cq4s17ROFs7gY7LqyAg6QSpEhi3j9ljPBAXVacn
+	 CvkTreJqeaKEw==
+Date: Sat, 10 Feb 2024 15:58:57 +0000
 From: Jonathan Cameron <jic23@kernel.org>
-To: Alisa-Dariana Roman <alisadariana@gmail.com>
-Cc: alexandru.tachici@analog.com, alisa.roman@analog.com,
- conor+dt@kernel.org, devicetree@vger.kernel.org, dlechner@baylibre.com,
- krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
- lars@metafoo.de, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
- michael.hennerich@analog.com, robh+dt@kernel.org
-Subject: Re: [PATCH v3 3/5] iio: adc: ad7192: Use standard attribute
-Message-ID: <20240210155226.5e509845@jic23-huawei>
-In-Reply-To: <20240208172459.280189-4-alisa.roman@analog.com>
-References: <20240208172459.280189-1-alisa.roman@analog.com>
-	<20240208172459.280189-4-alisa.roman@analog.com>
+To: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+Cc: Jonathan.Cameron@huawei.com, oskar.andero@gmail.com, lars@metafoo.de,
+ lukas@wunner.de, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: adc: mcp320x: Simplify device removal logic
+Message-ID: <20240210155857.59c58dcc@jic23-huawei>
+In-Reply-To: <20240208094339.82633-1-arturas.moskvinas@gmail.com>
+References: <20240208094339.82633-1-arturas.moskvinas@gmail.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -63,27 +59,88 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu,  8 Feb 2024 19:24:57 +0200
-Alisa-Dariana Roman <alisadariana@gmail.com> wrote:
+On Thu,  8 Feb 2024 11:43:39 +0200
+Arturas Moskvinas <arturas.moskvinas@gmail.com> wrote:
 
-> Replace custom attribute filter_low_pass_3db_frequency_available with
-> standard attribute.
+> Use devm_* APIs to enable regulator and to register in IIO infrastructure.
 > 
-> Store the available values in ad7192_state struct.
-> 
-> The function that used to compute those values replaced by
-> ad7192_update_filter_freq_avail().
-> 
-> Function ad7192_show_filter_avail() is no longer needed.
-> 
-> Note that the initial available values are hardcoded.
-> 
-> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
-Looks good. Thanks for tidying this up.
+> Signed-off-by: Arturas Moskvinas <arturas.moskvinas@gmail.com>
 
-I've nothing to add to other reviews that have already come in for v3.
+Don't get the same regulator twice so as automate turning it off.
+The devm_regulator_get_enable() call is carefully hiding the
+regulator for cases where the driver never accesses it.
 
-Thanks,
+Here we need it to read the voltage.
+
+To convert such a case to fully devm managed, use a
+devm_add_action_or_reset() and a custom callback.
+
+> ---
+>  drivers/iio/adc/mcp320x.c | 19 ++-----------------
+>  1 file changed, 2 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/mcp320x.c b/drivers/iio/adc/mcp320x.c
+> index f3b81798b3c9..4685eed35271 100644
+> --- a/drivers/iio/adc/mcp320x.c
+> +++ b/drivers/iio/adc/mcp320x.c
+> @@ -388,7 +388,6 @@ static int mcp320x_probe(struct spi_device *spi)
+>  	indio_dev->name = spi_get_device_id(spi)->name;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->info = &mcp320x_info;
+> -	spi_set_drvdata(spi, indio_dev);
+>  
+>  	device_index = spi_get_device_id(spi)->driver_data;
+>  	chip_info = &mcp320x_chip_infos[device_index];
+> @@ -441,31 +440,17 @@ static int mcp320x_probe(struct spi_device *spi)
+>  	if (IS_ERR(adc->reg))
+>  		return PTR_ERR(adc->reg);
+
+Just above here is the first regulator get. Whilst it may work
+we should not get it twice as the logic gets confused at the very least.
+
+
+>  
+> -	ret = regulator_enable(adc->reg);
+> +	ret = devm_regulator_get_enable(&spi->dev, "vref");
+>  	if (ret < 0)
+>  		return ret;
+>  
+>  	mutex_init(&adc->lock);
+>  
+> -	ret = iio_device_register(indio_dev);
+> -	if (ret < 0)
+> -		goto reg_disable;
+> -
+> -	return 0;
+> -
+> -reg_disable:
+> -	regulator_disable(adc->reg);
+> -
+> -	return ret;
+> +	return devm_iio_device_register(&spi->dev, indio_dev);
+>  }
+>  
+>  static void mcp320x_remove(struct spi_device *spi)
+>  {
+> -	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+> -	struct mcp320x *adc = iio_priv(indio_dev);
+> -
+> -	iio_device_unregister(indio_dev);
+> -	regulator_disable(adc->reg);
+>  }
+Had the change otherwise been ok...
+
+You should be able to remove this function completely now it is empty.
+https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L446
+checks it's existence before calling it.
+
+Thanks
 
 Jonathan
+
+>  
+>  static const struct of_device_id mcp320x_dt_ids[] = {
+> 
+> base-commit: 047371968ffc470769f541d6933e262dc7085456
+
 
