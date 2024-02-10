@@ -1,277 +1,259 @@
-Return-Path: <linux-kernel+bounces-60289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB2B8502B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 06:53:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268A98502B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 06:59:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E3CB1F25516
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:53:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D827A287C61
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4DF512E5F;
-	Sat, 10 Feb 2024 05:52:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF89412E7B;
+	Sat, 10 Feb 2024 05:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hWmsuegi"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GJVjBK4v"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4171079B;
-	Sat, 10 Feb 2024 05:52:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3500DCA7F;
+	Sat, 10 Feb 2024 05:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707544377; cv=none; b=sEuO4Gd9D/IKvqpdCGU/ZM0M1EkPClNQnjnnTEkxKgf5hcPsYmSaYqYS3/sHTCzXNU+aSC/k1RaiII1yYnrg22X56znX6WZUTx2fbfo/V8cA9wKsZCH8Yu3TczjYFufQCIFZWNvj6iwNRvsTeo505cqW6As1Tc5aPaw7x/NDdvk=
+	t=1707544783; cv=none; b=disIb8uoq1Gj1FVgrEFwK+Xaqexpl+bunukSeDZLB+OeMdBsNkShZ+VvExMjDF43gi8KsEKFZjLLSDBAr1/rZ7M4yTlDW8iD7Oml7qa64IoB/rohHanUXG5hKZh91oMJ6L3Hbd0YtAdte3SUJ6cD81BoZU4SuwdyzV24zumdOxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707544377; c=relaxed/simple;
-	bh=tNVV5xAQa/Ns4f4eY3Gv+4I22bHyCVvAM5GTe2Ptw3o=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=tjqGQv1Jro64RwZUAPFWh6+Oab3Sy4japQVFpvFfzKufdGy1Er2am9634xVfTENJ9F8tr2J+pMfbmtJ8rT2UWS1LgmsNlA3C/5QxCOIqjfUJXcsc1yfPFI/ALwsc9W3oE5PreRUQ7PFUMNz5XlhbHd0gjZTQwdMXijQK2f6RUe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hWmsuegi; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1707544783; c=relaxed/simple;
+	bh=y9kcuSiOiwy8MICB6Ar5PCUqfBTyww2F/Q1Q+SkDi0U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JxjGy49A5vYcjrtmKB14CFZ2TE4pZijIunw7S3DbgQpLMoxOWzfdXfKbTJiHH43hajPd/k2Ol/+t9j5WlmqL1m3d0heoEpBdUt9TQBqIW0rtDz1qDHhYDPWL9wtNztYP9Ggdj78VGXW/0tavnUnSh9HqpVXKeWXyzzRmTJjTVZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GJVjBK4v; arc=none smtp.client-ip=209.85.208.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d73066880eso14917605ad.3;
-        Fri, 09 Feb 2024 21:52:55 -0800 (PST)
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d0a0e40672so15659121fa.0;
+        Fri, 09 Feb 2024 21:59:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707544375; x=1708149175; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QVOtuarcn9KyJ3H+TrbVlWuC2CD/F+8dBTZNDoFsAgc=;
-        b=hWmsuegiYXNhfztKthAdyhLr4j1YyHnc3N0vmZmMBnCBrEgDh2ocqhV2RTt3nFKMxW
-         Ek6SzdeSjad1fcxl92AQNlYPMhvtMj4kEJDakgZxJ+qnK+2vzp2kIcMIPE8EJ8FjU8ax
-         EtVeZUJslehW0Q92WLtgdhcVDR6WjBhobvDL0lYva4fgn+SDfNZsU9YpUxNgngMANUHW
-         jWLvsiyTXMO7wQyDeIsCQoT+AcSyGzETb+nM89WgLAN/W4KbwuAt7SM/Z9Al4DiuqiPr
-         QRZkl2TUYmdzhXlU/9wGRFDox6oitku5zP0rJo8vm4emT3w51VffHZTrcDfKQz+SI9fy
-         SToQ==
+        d=gmail.com; s=20230601; t=1707544779; x=1708149579; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wek0JZ73neh6GWKWE+h3Kw/oFlmB85kyLUmRA1c2rc4=;
+        b=GJVjBK4vtckt6paP9jQAnbyXdy+rQqyAlAi1zSE75YFxSpEaiHa8zk1AWCxJ+3ib7L
+         VFbbt2tYCsadC4hwUjv2M1tqdrhzaLPrlhHkKD2e1IJLAPPvB2cdfz6mP5PBRtS2CO/t
+         dtgADBB5U/p7Tc0EstPKx0bQGUOaLhQnDhFggdpgwlFZhDUbVdI9vy0iUJDJ+u++ZYiX
+         jbSM4KyTnq6mh9ZAHzTS5W6I8X2wVqHExMBYZ1SBS6QodrvZfTMNxGHwpOjTGZPwupUZ
+         YVnUSEkJJOJf2rSD67rBPYOgRDBGCzQbebJ1pWyA7DLEakhHJMtbuQusGT8gNgY6AdE5
+         oh9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707544375; x=1708149175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QVOtuarcn9KyJ3H+TrbVlWuC2CD/F+8dBTZNDoFsAgc=;
-        b=RB8zbd4u65/qfq3QoFInHKLv/cn/homc7jI+cUqdbYGhF0P7Ssh9Tz0HEuGT76EKru
-         AZXTVzqxSvwjEt27ooUUzUHlFVni4s7+t09jwJ+KEAv81CUs/2nkV6EaG0Ok8bMIWo+e
-         dhndAFgxIak6A48kB9IFYyrCq56Xh9mZ9OQ8087Esxm4UpA5I9XLCJFbHEyqNH8ePJZr
-         1nj+xYIas/6jWKlzXTHhQ3LBlR/NPVKs0DHOWn9In8Rq/FO8gEqLz/Q4EAkriKKXjeE1
-         OXLsMk1m6tf7XxFmuCCUO59vWQ7qw8VSn4Sz8YXAx72EFkri77aO5BppQerCRvTYznwF
-         0vJg==
-X-Gm-Message-State: AOJu0Yzk7dsEDzdjWZrlqrbqVELa2suFBpJ2CUrdyHHmu28ogFAMsrgC
-	XmSPznf8z9vIAnR7yubRzrPmxqCFXiGPX5d+uaFClbnayMVdksnC
-X-Google-Smtp-Source: AGHT+IF6yohNKF0CwuZjooly/e4Yty8jgqVSTGrtRaieM/dwkr3YKNWCsM/JSAThMgecpz0cc05H9w==
-X-Received: by 2002:a17:903:2b0e:b0:1d9:b0fc:6e52 with SMTP id mc14-20020a1709032b0e00b001d9b0fc6e52mr2266434plb.59.1707544374677;
-        Fri, 09 Feb 2024 21:52:54 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV8PlnR3hhu4+ClCL7iVFO5GDqAB0B4UrtvtpaTzUTvcSmybXl7/x1roIEw3ChOYI202SiO1zhuYakzvF8E5hs5YbN0v+WC7eiSymzXDBkakgoXaa9FrpP4WA9IM3Ij5kSz4HUSvcvRWM06c6lsXlBC7N5nU0XjkGo4j3O3sItZrh08IKB/lDlqwB5NJOB86t4NYSEWR3t9N/+uTdZj/2jZPnhr5VMKrXKgvrkJK1AVrFJS7ysG6VagaU2oC6gCnHDNpFQ/iA7EB3F1gbEXS3rmy+9XxYbN3HjAYDHpBFuJ4MujYJRLcjXsPr7bEERdjc4+mA==
-Received: from DESKTOP-KA7F9LU.localdomain ([103.184.71.167])
-        by smtp.googlemail.com with ESMTPSA id mi12-20020a170902fccc00b001d74502d261sm2370887plb.115.2024.02.09.21.52.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 21:52:54 -0800 (PST)
-From: Vimal Kumar <vimal.kumar32@gmail.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>,
-	Len Brown <len.brown@intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: chinmoyghosh2001@gmail.com,
-	badolevishal1116@gmail.com,
-	mintupatel89@gmail.com,
-	Vimal Kumar <vimal.kumar32@gmail.com>
-Subject: [PATCH v5] PM / sleep: Mechanism to find source aborting kernel suspend transition
-Date: Sat, 10 Feb 2024 11:22:41 +0530
-Message-Id: <20240210055243.8508-1-vimal.kumar32@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1707544779; x=1708149579;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wek0JZ73neh6GWKWE+h3Kw/oFlmB85kyLUmRA1c2rc4=;
+        b=ji/F4gojVef2GCsnpKta5KEpyMNEQqSD68QXVg5OOgZlCbiOUQGUScDnzKscZ9/9V5
+         TCCYbTECcvjv0LTL9BVw8Cz6K1JysmMISjPT/ni4Ylr06SUMzBp8qNHVstqtsOd3ZQbr
+         r3FwBi5C3dj8vviqteKjuEOnwslQGe+rY+uRC4hQ4kyB3+KAZ7veCPvPxwmFBvKiiSkX
+         s8AALrIVeqPT60HMOOQ2XoWC0xiIJ8E+S3XTfWUHmNIZXAGSbN8MzB1u+s3i6j25YnKx
+         HyckDqOYMXQxtyr0G8mup3BDX0z3p/2UGE31Nkbm693AGm87i8dqbN9jwi9sr6odQFn8
+         3BoA==
+X-Forwarded-Encrypted: i=1; AJvYcCVNZt0LpscUI4Vn/Fcg6e3HVqQl/eXapF3R18YKNhcQxU5lOzlRSCJKyTQqrONV8dqo3ublzPrlNooNC25vDTuXDWNbxzxe14o4iqehy9cmLrDzkSrGJ5AuPYn5W63o27J6/S/gs9Lfcg==
+X-Gm-Message-State: AOJu0YwpjJ9SlIunjWKQVyzhvKknUiDzGiWUs4TOPWiodxhSY7+xQSzS
+	Ay7TF5sS3+rV80tY+deVcRED0x9HbNZFxS5YmePX4dkLWQiUcJVLVlEJ2zsvHPevI5otIjdMa+B
+	eE1IcGMFEMzSRFfuQYfctHHp/6Ao=
+X-Google-Smtp-Source: AGHT+IGUheCrBWLlcPoGm3XubVoPIaG12TmgizWAJUUFkm986wGle/8z1Qj10eQ/1UYDB1ycYIG+up5tXrPODBrikPU=
+X-Received: by 2002:a2e:bc08:0:b0:2cf:57d7:6d35 with SMTP id
+ b8-20020a2ebc08000000b002cf57d76d35mr1332543ljf.10.1707544778728; Fri, 09 Feb
+ 2024 21:59:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240209131552.471765-1-meetakshisetiyaoss@gmail.com>
+In-Reply-To: <20240209131552.471765-1-meetakshisetiyaoss@gmail.com>
+From: Steve French <smfrench@gmail.com>
+Date: Fri, 9 Feb 2024 23:59:26 -0600
+Message-ID: <CAH2r5mtdebsVFbOoQeYYL79GVXe0wn=GfdgVE1RkQrnowHOO5Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] smb: client: do not defer close open handles to
+ deleted files
+To: meetakshisetiyaoss@gmail.com
+Cc: sfrench@samba.org, pc@manguebit.com, ronniesahlberg@gmail.com, 
+	sprasad@microsoft.com, nspmangalore@gmail.com, tom@talpey.com, 
+	linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	samba-technical@lists.samba.org, bharathsm.hsk@gmail.com, 
+	Meetakshi Setiya <msetiya@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Sometimes kernel suspend transitions can be aborted unconditionally by
-manipulating pm_abort_suspend value using "hard" wakeup triggers or
-through "pm_system_wakeup()".
+could we make the "file_is_deleted" a boolean instead of using up more
+space making it an int?
 
-There is no way to trace the source path of module or subsystem which
-aborted the suspend transitions. This change will create a list of
-wakeup sources aborting suspend in progress through "hard" events as
-well as subsytems aborting suspend using "pm_system_wakeup()".
+Alternatively - would it be possible to simply look at the file
+attributes to see if it was marked as deleted (ie we should already be
+setting ATTR_DELETE_ON_CLOSE)
 
-Example: Existing suspend failure logs:
-[  349.708359] PM: Some devices failed to suspend, or early wake event detected
-[  350.327842] PM: suspend exit
+On Fri, Feb 9, 2024 at 7:17=E2=80=AFAM <meetakshisetiyaoss@gmail.com> wrote=
+:
+>
+> From: Meetakshi Setiya <msetiya@microsoft.com>
+>
+> When a file/dentry has been deleted before closing all its open handles,
+> currently, closing them can add them to the deferred close list. This can
+> lead to problems in creating file with the same name when the file is
+> re-created before the deferred close completes. This issue was seen while
+> reusing a client's already existing lease on a file for compound operatio=
+ns
+> and xfstest 591 failed because of the deferred close handle that remained
+> valid even after the file was deleted and was being reused to create a fi=
+le
+> with the same name. The server in this case returns an error on open with
+> STATUS_DELETE_PENDING. Recreating the file would fail till the deferred
+> handles are closed (duration specified in closetimeo).
+>
+> This patch fixes the issue by flagging all open handles for the deleted
+> file (file path to be precise) with FILE_DELETED at the end of the unlink
+> operation. A new field cflags has been introduced in the cifsFileInfo
+> structure to set the FILE_DELETED flag without interfering with the f_fla=
+gs
+> field. This cflags field could be useful in the future for setting more
+> flags specific to cfile.
+> When doing close in cifs_close for each of these handles, check the
+> FILE_DELETED flag and do not defer close these handles if the correspondi=
+ng
+> filepath has been deleted.
+>
+> Signed-off-by: Meetakshi Setiya <msetiya@microsoft.com>
+> ---
+>  fs/smb/client/cifsglob.h  |  3 +++
+>  fs/smb/client/cifsproto.h |  4 ++++
+>  fs/smb/client/file.c      |  3 ++-
+>  fs/smb/client/inode.c     |  2 ++
+>  fs/smb/client/misc.c      | 22 ++++++++++++++++++++++
+>  5 files changed, 33 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
+> index 16befff4cbb4..f6b4acdcdeb3 100644
+> --- a/fs/smb/client/cifsglob.h
+> +++ b/fs/smb/client/cifsglob.h
+> @@ -1398,6 +1398,8 @@ struct cifs_fid_locks {
+>         struct list_head locks;         /* locks held by fid above */
+>  };
+>
+> +#define FILE_DELETED 00000001
+> +
+>  struct cifsFileInfo {
+>         /* following two lists are protected by tcon->open_file_lock */
+>         struct list_head tlist; /* pointer to next fid owned by tcon */
+> @@ -1413,6 +1415,7 @@ struct cifsFileInfo {
+>         struct dentry *dentry;
+>         struct tcon_link *tlink;
+>         unsigned int f_flags;
+> +       unsigned int cflags;    /* flags for this file */
+>         bool invalidHandle:1;   /* file closed via session abend */
+>         bool swapfile:1;
+>         bool oplock_break_cancelled:1;
+> diff --git a/fs/smb/client/cifsproto.h b/fs/smb/client/cifsproto.h
+> index a841bf4967fa..f995b766b177 100644
+> --- a/fs/smb/client/cifsproto.h
+> +++ b/fs/smb/client/cifsproto.h
+> @@ -296,6 +296,10 @@ extern void cifs_close_all_deferred_files(struct cif=
+s_tcon *cifs_tcon);
+>
+>  extern void cifs_close_deferred_file_under_dentry(struct cifs_tcon *cifs=
+_tcon,
+>                                 const char *path);
+> +
+> +extern void cifs_mark_open_handles_for_deleted_file(struct cifs_tcon
+> +                               *cifs_tcon, const char *path);
+> +
+>  extern struct TCP_Server_Info *
+>  cifs_get_tcp_session(struct smb3_fs_context *ctx,
+>                      struct TCP_Server_Info *primary_server);
+> diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
+> index b75282c204da..91cf4d2df4de 100644
+> --- a/fs/smb/client/file.c
+> +++ b/fs/smb/client/file.c
+> @@ -483,6 +483,7 @@ struct cifsFileInfo *cifs_new_fileinfo(struct cifs_fi=
+d *fid, struct file *file,
+>         cfile->uid =3D current_fsuid();
+>         cfile->dentry =3D dget(dentry);
+>         cfile->f_flags =3D file->f_flags;
+> +       cfile->cflags =3D 0;
+>         cfile->invalidHandle =3D false;
+>         cfile->deferred_close_scheduled =3D false;
+>         cfile->tlink =3D cifs_get_tlink(tlink);
+> @@ -1085,7 +1086,7 @@ int cifs_close(struct inode *inode, struct file *fi=
+le)
+>                 if ((cifs_sb->ctx->closetimeo && cinode->oplock =3D=3D CI=
+FS_CACHE_RHW_FLG)
+>                     && cinode->lease_granted &&
+>                     !test_bit(CIFS_INO_CLOSE_ON_LOCK, &cinode->flags) &&
+> -                   dclose) {
+> +                   dclose && !(cfile->cflags & FILE_DELETED)) {
+>                         if (test_and_clear_bit(CIFS_INO_MODIFIED_ATTR, &c=
+inode->flags)) {
+>                                 inode_set_mtime_to_ts(inode,
+>                                                       inode_set_ctime_cur=
+rent(inode));
+> diff --git a/fs/smb/client/inode.c b/fs/smb/client/inode.c
+> index d02f8ba29cb5..8121b5b1aa22 100644
+> --- a/fs/smb/client/inode.c
+> +++ b/fs/smb/client/inode.c
+> @@ -1900,6 +1900,8 @@ int cifs_unlink(struct inode *dir, struct dentry *d=
+entry)
+>         cifs_inode =3D CIFS_I(dir);
+>         CIFS_I(dir)->time =3D 0;  /* force revalidate of dir as well */
+>  unlink_out:
+> +       if (rc =3D=3D 0)
+> +               cifs_mark_open_handles_for_deleted_file(tcon, full_path);
+>         free_dentry_path(page);
+>         kfree(attrs);
+>         free_xid(xid);
+> diff --git a/fs/smb/client/misc.c b/fs/smb/client/misc.c
+> index 0748d7b757b9..8e46dee1a36c 100644
+> --- a/fs/smb/client/misc.c
+> +++ b/fs/smb/client/misc.c
+> @@ -853,6 +853,28 @@ cifs_close_deferred_file_under_dentry(struct cifs_tc=
+on *tcon, const char *path)
+>         free_dentry_path(page);
+>  }
+>
+> +/*
+> + * If a dentry has been deleted, all corresponding open handles should k=
+now that
+> + * so that we do not defer close them.
+> + */
+> +void cifs_mark_open_handles_for_deleted_file(struct cifs_tcon *tcon,
+> +                                            const char *path)
+> +{
+> +       struct cifsFileInfo *cfile;
+> +       void *page;
+> +       const char *full_path;
+> +
+> +       page =3D alloc_dentry_path();
+> +       spin_lock(&tcon->open_file_lock);
+> +       list_for_each_entry(cfile, &tcon->openFileList, tlist) {
+> +               full_path =3D build_path_from_dentry(cfile->dentry, page)=
+;
+> +               if (strcmp(full_path, path) =3D=3D 0)
+> +                       cfile->cflags |=3D FILE_DELETED;
+> +       }
+> +       spin_unlock(&tcon->open_file_lock);
+> +       free_dentry_path(page);
+> +}
+> +
+>  /* parses DFS referral V3 structure
+>   * caller is responsible for freeing target_nodes
+>   * returns:
+> --
+> 2.39.2
+>
+>
 
-Suspend failure logs with this change:
-[  518.761835] PM: Some devices failed to suspend, or early wake event detected
-[  519.486939] PM: wakeup source or subsystem uart_suspend_port aborted suspend
-[  519.500594] PM: suspend exit
 
-Here we can clearly identify the module triggerring abort suspend.
+--=20
+Thanks,
 
-Co-developed-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
-Signed-off-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
-Co-developed-by: Mintu Patel <mintupatel89@gmail.com>
-Signed-off-by: Mintu Patel <mintupatel89@gmail.com>
-Co-developed-by: Vishal Badole <badolevishal1116@gmail.com>
-Signed-off-by: Vishal Badole <badolevishal1116@gmail.com>
-Signed-off-by: Vimal Kumar <vimal.kumar32@gmail.com>
----
-Changes in v5:
-- Removed CONFIG_PM_DEBUG
-- Moved conditional directives to .h file
-- Used spin_lock instead of raw_spin_lock
----
- drivers/base/power/power.h  | 14 ++++++
- drivers/base/power/wakeup.c | 86 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 99 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/base/power/power.h b/drivers/base/power/power.h
-index 922ed457db19..ace190358eb3 100644
---- a/drivers/base/power/power.h
-+++ b/drivers/base/power/power.h
-@@ -168,3 +168,17 @@ static inline void device_pm_init(struct device *dev)
-	device_pm_sleep_init(dev);
-	pm_runtime_init(dev);
- }
-+
-+#ifdef CONFIG_DEBUG_INFO
-+
-+static inline char *pm_abort_suspend_source_name(void)
-+{
-+	char *source_name = kasprintf(GFP_ATOMIC, "%pS", __builtin_return_address(0));
-+	return source_name;
-+}
-+
-+#else
-+
-+	static inline char *pm_abort_suspend_source_name(void) { return NULL; }
-+
-+#endif /* CONFIG_DEBUG_INFO */
-diff --git a/drivers/base/power/wakeup.c b/drivers/base/power/wakeup.c
-index a917219feea6..aae9a5329bcb 100644
---- a/drivers/base/power/wakeup.c
-+++ b/drivers/base/power/wakeup.c
-@@ -73,6 +73,14 @@ static struct wakeup_source deleted_ws = {
-
- static DEFINE_IDA(wakeup_ida);
-
-+static DEFINE_SPINLOCK(pm_abort_suspend_list_lock);
-+
-+struct pm_abort_suspend_source {
-+	struct list_head list;
-+	char *source_triggering_abort_suspend;
-+};
-+static LIST_HEAD(pm_abort_suspend_list);
-+
- /**
-  * wakeup_source_create - Create a struct wakeup_source object.
-  * @name: Name of the new wakeup source.
-@@ -575,6 +583,52 @@ static void wakeup_source_activate(struct wakeup_source *ws)
-	trace_wakeup_source_activate(ws->name, cec);
- }
-
-+/**
-+ * pm_abort_suspend_list_clear - Clear pm_abort_suspend_list.
-+ *
-+ * The pm_abort_suspend_list will be cleared when system PM exits.
-+ */
-+static void pm_abort_suspend_list_clear(void)
-+{
-+	unsigned long flags;
-+	struct pm_abort_suspend_source *info, *tmp;
-+
-+	spin_lock_irqsave(&pm_abort_suspend_list_lock, flags);
-+	list_for_each_entry_safe(info, tmp, &pm_abort_suspend_list, list) {
-+		list_del(&info->list);
-+		kfree(info);
-+	}
-+	spin_unlock_irqrestore(&pm_abort_suspend_list_lock, flags);
-+}
-+
-+/**
-+ * pm_abort_suspend_source_add - Update pm_abort_suspend_list
-+ * @source_name: Wakeup_source or function aborting suspend transitions.
-+ *
-+ * Add the source name responsible for updating the abort_suspend flag in the
-+ * pm_abort_suspend_list.
-+ */
-+static void pm_abort_suspend_source_add(const char *source_name)
-+{
-+	unsigned long flags;
-+	struct pm_abort_suspend_source *info;
-+
-+	info = kmalloc(sizeof(*info), GFP_ATOMIC);
-+	if (!info)
-+		return;
-+
-+	INIT_LIST_HEAD(&info->list);
-+	info->source_triggering_abort_suspend = kstrdup(source_name, GFP_ATOMIC);
-+	if (!info->source_triggering_abort_suspend) {
-+		kfree(info);
-+		return;
-+	}
-+
-+	spin_lock_irqsave(&pm_abort_suspend_list_lock, flags);
-+	list_add_tail(&info->list, &pm_abort_suspend_list);
-+	spin_unlock_irqrestore(&pm_abort_suspend_list_lock, flags);
-+}
-+
- /**
-  * wakeup_source_report_event - Report wakeup event using the given source.
-  * @ws: Wakeup source to report the event for.
-@@ -590,8 +644,11 @@ static void wakeup_source_report_event(struct wakeup_source *ws, bool hard)
-	if (!ws->active)
-		wakeup_source_activate(ws);
-
--	if (hard)
-+	if (hard) {
-+		if (pm_suspend_target_state != PM_SUSPEND_ON)
-+			pm_abort_suspend_source_add(ws->name);
-		pm_system_wakeup();
-+	}
- }
-
- /**
-@@ -893,12 +950,39 @@ bool pm_wakeup_pending(void)
-		pm_print_active_wakeup_sources();
-	}
-
-+	if (atomic_read(&pm_abort_suspend) > 0) {
-+		struct pm_abort_suspend_source *info;
-+
-+		spin_lock_irqsave(&pm_abort_suspend_list_lock, flags);
-+		list_for_each_entry(info, &pm_abort_suspend_list, list) {
-+			pm_pr_dbg("wakeup source or subsystem %s aborted suspend\n",
-+					info->source_triggering_abort_suspend);
-+		}
-+		spin_unlock_irqrestore(&pm_abort_suspend_list_lock, flags);
-+		pm_abort_suspend_list_clear();
-+	}
-+
-	return ret || atomic_read(&pm_abort_suspend) > 0;
- }
- EXPORT_SYMBOL_GPL(pm_wakeup_pending);
-
- void pm_system_wakeup(void)
- {
-+
-+	if (pm_suspend_target_state != PM_SUSPEND_ON) {
-+		char *source_name = pm_abort_suspend_source_name();
-+
-+		if (!source_name) {
-+			pm_pr_dbg("Some wakeup source or subsystem aborted suspend\n");
-+			goto exit;
-+		}
-+
-+		if (strcmp(source_name, "pm_wakeup_ws_event"))
-+			pm_abort_suspend_source_add(source_name);
-+
-+		kfree(source_name);
-+	}
-+exit:
-	atomic_inc(&pm_abort_suspend);
-	s2idle_wake();
- }
---
-2.25.1
+Steve
 
