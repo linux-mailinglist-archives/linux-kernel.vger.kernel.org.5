@@ -1,69 +1,68 @@
-Return-Path: <linux-kernel+bounces-60615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41C8C850778
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:58:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 330DA850779
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5E3E1F27B37
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:58:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5775D1C21A19
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D50E651BD;
-	Sat, 10 Feb 2024 23:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D795FF08;
+	Sat, 10 Feb 2024 23:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Bs3wjCUC"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZgGtHSlM"
+Received: from mail-lf1-f67.google.com (mail-lf1-f67.google.com [209.85.167.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B061564CC3
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 23:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4913864CF6
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 23:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707609086; cv=none; b=q1ozbVhvneK3WULzo/xWvC1IqB2ziE5QaFr5QAk9/Z+jT4I2T2133kP/sJWXGZW5Q0wQ1tUX8JHNHPvgK/lN72dUBTEoMIvXzBsssiX2Z+b0cYcyPjmRqqM4EHahm2Rdboyfv+Fzl8Nv7j8gHW52uQ0nCEDpUQfIG4++FnUWaJw=
+	t=1707609088; cv=none; b=J1SsMQwokzk3Zx6v0nUNMoRu6giY+Dbr/tpc3CYUkwpPyxT0HXMyXxyBaS/bezYYpJ6o2aoHfJ7P9g8we6WON0e+vBft8td1OT9w81u7t92hWVUU/WhYPMe4zYnDd+sikqN+LtibDg+G/wbqAAHJnUNbjaSAVGUZJP7JGti8LQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707609086; c=relaxed/simple;
-	bh=kmZcLZgcgEX3HM4KUb42z75HpNdgZ+0ModW5/sGCGLM=;
+	s=arc-20240116; t=1707609088; c=relaxed/simple;
+	bh=BgpJuFbGh1uswlxIaHPo2wvw9RKXh2Tg8JfjcMwd1b0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EH6opupXBwYjFhfKMQvjeykvuZvUQGaXRYrmUwQwsoZyCr5JR5mAub/7H6/v+6JXIWSLwut1/HU8mBqRhSgYcckHYxpS1D5o3qDkgCy1o1P2ej4s/ybCsYeD1a0/HFO1CzoCPCEjihg++h39sTVMWA5dSR/k+12MK7McSGZiX4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Bs3wjCUC; arc=none smtp.client-ip=209.85.167.47
+	 MIME-Version:Content-Type; b=bV18MIlZFDCV/lzYbTe22VDdK4RUHYqrCPaoZWSVgQSbspHmfyttOm9wHgmZ1rtS9nxpFr7RalX8EIm/CNST+z/rMLw8psHNEInFpgIzbrJwFQnqeV/0oDfnZa1uM6TcAoKNToH7uUgroPNNl6apCkfXVrFrHOhDJSyFaTlLP5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZgGtHSlM; arc=none smtp.client-ip=209.85.167.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5101cd91017so2348672e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:51:24 -0800 (PST)
+Received: by mail-lf1-f67.google.com with SMTP id 2adb3069b0e04-51168addef1so3887340e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:51:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707609083; x=1708213883; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707609084; x=1708213884; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CrA8jGQtE53SdlKFSoEE35NMqUSa28VzU3mFn5v5MeM=;
-        b=Bs3wjCUCR/EaCidgEUrFrMLOwSXsuZGmwjyAoZdJ3i1Jhz4Hxp/JiBy3XsoBR29fd4
-         wLjQt0n3zJ72naHFcjTUr8sNfq4ipt0ytjiYA5mBA67V4vZNwChwUrevtfQviy5zm0Ht
-         SPnpyUGbtabW57rrQ/D7igkH79zJrNxGEZiqQ=
+        bh=0fePKdpvwVIgbzeITeSRDnfaI3pNosmqbiOFvtjCGd4=;
+        b=ZgGtHSlMBHdlXSSArbiLbydJUD17HeurhXehlb2xa1YwEdiThxXw9oju9fgkStt+4S
+         ZRxH8mg4k7ofhhy9d5fWt+b/EtM/SSoCXOb9hZZmZOfq+q1aP68cP0bbyQdP2bqP5McT
+         QxbDVpQOoZXSdnO5+PFE7pPIc4ayqxWcVzyk4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707609083; x=1708213883;
+        d=1e100.net; s=20230601; t=1707609084; x=1708213884;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CrA8jGQtE53SdlKFSoEE35NMqUSa28VzU3mFn5v5MeM=;
-        b=iWScpy1bbVqwbJhgxFHOjbrsG70USBKQj+6FyTqTrplQU8eGkF2bE/ctjjqD423SkY
-         J7J4/FM1JjpFUIiza6ObxsN1j4wJEGMO6bdZsgvkT31Ln7hvEYvvO5vZ4yNd22j06AUP
-         UxWcTnXxzWGKKVCZCMySW1Golq/W1v5DSoAaQK4B+7EA2qViwqg56SHhJ7pCdyYEhRau
-         yjHUcFbsXvKrZN5lQLO1vlLjr57aSgSsG/rEiwBn/EsAPJ13RvEZFJNK6XoU1iJIG3wO
-         qsZhcphnLB9guJISmkGUr1x+8J0dBE+vLTSkcKV+xZaaaBYKCVQT/btCi1bEwACayQPx
-         XVvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXgcDm9QxCuHizNfhZC9kB6wUJEesns1DknGJ0KogVeU26uBppVeEEkGVbM2swH9DvxOG8BoVKJPFZpISNEJr0+lVAl5GRx8IHvq+ZZ
-X-Gm-Message-State: AOJu0YySnng9PeH7dEJBKqtJwFJwphGCMHenwNFTFakcKtOoKk8QryZD
-	O6xPQeVD48sITLrJTzi7ofJPXgSFgBpiYiYgH7bkQb8tSpCRV3D78nxdCWmn
-X-Google-Smtp-Source: AGHT+IFcTNTifmM62cjQ2W+LyReFJ3MwvhjUonLFs4bO8E7h3oi2iP+28+Ey8sNPTmPMULR6zuZ/bg==
-X-Received: by 2002:a05:6512:3246:b0:511:882e:aa2f with SMTP id c6-20020a056512324600b00511882eaa2fmr249640lfr.50.1707609082914;
-        Sat, 10 Feb 2024 15:51:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV3mlDLq60lZ+NQEvPkQnjMfS4Fx6p94KKHuhw4iVhbze76KzL8h0q4rnB2n2XNVhbVtuVpi6RDDiWiX5z+zS75Of2+y4wnwKoz/rNQ8tbHN+8teb+9Japy+4XkrsH6KW9XfFNit3dTGUbFimCLl3IKxduJkXx3VocU4FDvhT8UntjZLPE3Nb2DJuhx9ITuy8sA/yBFW5Io3Avc3NdwktWkagDcBceon+nyRDTI36uX2AuzfmIYomsEhYsIgD9oYuZ02WV1S8wwE2bTeAnuCHFEMXFVlfqRB5ZIWuYoM45OfC7Uur6YpNpE7o1rS3/AK3yI4A6+QrNeHyQwzsN9rka4nCa6XHBYmhsuNdnEAk0935RA1LE+xaoN22TiwkUb5phNOmq3e/pLYAjJAhRAXAOnxUETmpOr295SU1N00xYn9LPNZGBgZ20BEMrm3qP8gybUC8L4Gu9s5m1cTDg6x9IBw1pFrJT1eAh702YJnZOiNSnz2uLTXYhn2J63ue0Vq735+cT96yLr+J0hCKpn0uEEFr2hKzVOpXf1NfBg3F7cGZjHx22RYgwUs/BGk1BaiwrtdWCLA+kCpkRjryv6a4SHItL+NRSrEyPyXcyJP+KBgSlTEg==
+        bh=0fePKdpvwVIgbzeITeSRDnfaI3pNosmqbiOFvtjCGd4=;
+        b=uKOIp/vg4ucD25aGyIXsnlfSqoKMBxMNfjoNQw/4jgNwfy1c3jHdBQkGoT1JFIOqws
+         yFG9LHdAuwHyLWPXx/iTytHClxqwGNYtcefEml0r/WiYvK4ZsPCChiC+fhoqh1mtPvi+
+         bW7KxHDLdssYgEvkJ3Per6yHKBFBmECqrac9ul9336+Yc8GO9I4dLNFwkjHQbNPnd9QI
+         SQWadNVlZ3ojpRg+grnPK5IGpMhOGlvBgHHA3Im2OGDN+cXVQsXIkjGgZMKe22FqhNdI
+         7ZTdBak1eTvUfUJK9b9jHhgYMurNXFXMsM4YHy+2S4N2zt9EJQ6Fs7WX2oB/D+0lJeBc
+         Gm4w==
+X-Gm-Message-State: AOJu0YwFMyI0Cvs+498ZtKlHtrHUNnCXEnJ+Lbv4pwik/Lp0WL1VqtMn
+	FgZ6iH0wB2w+XOXE/i7nrP7Fw1+AQBSGPLc1b/8Q44XxV/tTWa4eNpLjIjs+
+X-Google-Smtp-Source: AGHT+IH3kiLAVwUDBpnlLlB///1mHF0xSi63b3pr/4UHDALv0F6GrYXIgV6pYsrUTvTSpTU6m/hvvw==
+X-Received: by 2002:ac2:485b:0:b0:511:5ef9:ebb0 with SMTP id 27-20020ac2485b000000b005115ef9ebb0mr1792496lfy.25.1707609084554;
+        Sat, 10 Feb 2024 15:51:24 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVe25uHF/Y6h5rhYjF7VhDkIljr93LL8p0J1F3LUwmAn/7U9VPhzTn/QCvhBXbjahw0V3qcMX0aw1kZU658PZh4oLCCYR3KmuEiJJw9a6XaZJnicBA2Ly4oilWLX2VKAixMLmou78F1vdvwei+pM8GGFvCxBWbXns8SJNbNabpmt23RsdMn2Lf7iRGISBK1xPHAJcK+/2q6lA8DhRUZBeFEfIzOk1FfSzhqKkw/ivPY4pQA2GJAS9jGs3XmewRKzxa/IgASN651oYd8S9Vp0QXUEgXy5m89gXVpS9h4xyZJWAGGULs1HPUpTWui+Q09vsa3462QT+Gykelb8HkZ54eiQB82x8f8pR8fbaMMc5Ees2dRUW/5udtR7dOghbogBsBplVQSGYSFrVQ9v2J/TG1IIIurutHekjF3Cxfw80Atlpvl48Cu3S7DAorBIqU8juja95tCwpijBiLQ25MKJlFMhLjlRtWpvwC7U19TJyeLZaGEJV8PnqHtvmU8FXaWRhiW2jZNOvvOBDJgkV6HTfFM2D8LYaxBdltM1Yn2nJNFcJavYekToXJu+lb/C4Jlj2Xk7zqhVpYxiI9nPZG1xHOxWpbnVnp/2cyhmec3Jo6iJGN7eA==
 Received: from ukaszb-l.roam.corp.google.com (alfa56.extreme-net.one.pl. [213.77.89.56])
-        by smtp.gmail.com with ESMTPSA id o27-20020a056512051b00b0051179ae1846sm365561lfb.280.2024.02.10.15.51.21
+        by smtp.gmail.com with ESMTPSA id o27-20020a056512051b00b0051179ae1846sm365561lfb.280.2024.02.10.15.51.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Feb 2024 15:51:22 -0800 (PST)
+        Sat, 10 Feb 2024 15:51:24 -0800 (PST)
 From: =?UTF-8?q?=C5=81ukasz=20Bartosik?= <ukaszb@chromium.org>
 To: Jason Baron <jbaron@akamai.com>,
 	Jim Cromie <jim.cromie@gmail.com>,
@@ -85,9 +84,9 @@ Cc: Guenter Roeck <groeck@google.com>,
 	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
 	linux-kernel@vger.kernel.org,
 	upstream@semihalf.com
-Subject: [PATCH v4 32/39] dyndbg-test: refactor test_private_trace_* tests
-Date: Sun, 11 Feb 2024 00:50:02 +0100
-Message-ID: <20240210235009.2405808-33-ukaszb@chromium.org>
+Subject: [PATCH v4 33/39] dyndbg-test: setup environment for tests execution
+Date: Sun, 11 Feb 2024 00:50:03 +0100
+Message-ID: <20240210235009.2405808-34-ukaszb@chromium.org>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 In-Reply-To: <20240210235009.2405808-1-ukaszb@chromium.org>
 References: <20240210235009.2405808-1-ukaszb@chromium.org>
@@ -100,240 +99,85 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Format, commment and add meaningful name to the following tests:
-- test_private_trace_2 -> test_private_trace_syntax_close_in_use,
-- test_private_trace_3 -> test_private_trace_syntax_rmmod,
-- test_private_trace_4 -> test_private_trace_syntax_delete_in_use_rmmod.
+Add function setup_env_for_tests which prepares dynamic debug
+and trace environment for tests execution. This is to clean up
+previous settings or leftovers after a failing test. The function
+setup_env_for_tests does the following to prepare the environment:
+- unloads test_dynamic_debug, test_dynamic_debug_submod modules
+if any of them is loaded,
+- it prints info about all callsites which have flags != "_" and
+sets these flags to "_:0",
+- it closes open trace instances and deletes their respective
+directories.
 
-Also update formatting and description of test_private_trace_simple_proper
-test.
+The patch also refactors ifrmmod function.
 
 Signed-off-by: Łukasz Bartosik <ukaszb@chromium.org>
 ---
- .../dynamic_debug/dyndbg_selftest.sh          | 127 ++++++++++--------
- 1 file changed, 71 insertions(+), 56 deletions(-)
+ .../dynamic_debug/dyndbg_selftest.sh          | 36 +++++++++++++++++--
+ 1 file changed, 34 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/dynamic_debug/dyndbg_selftest.sh b/tools/testing/selftests/dynamic_debug/dyndbg_selftest.sh
-index abe94af0f3eb..86bb039df4a1 100755
+index 86bb039df4a1..f8b81e8a3bd6 100755
 --- a/tools/testing/selftests/dynamic_debug/dyndbg_selftest.sh
 +++ b/tools/testing/selftests/dynamic_debug/dyndbg_selftest.sh
-@@ -357,19 +357,21 @@ function cycle_not_best_practices {
-     self_test_ delete_directory
+@@ -147,8 +147,8 @@ function error_log_ref {
  }
  
--# proper life cycle - open, enable:named, disable:named, close
-+# test verifies proper life cycle - open, enable:named, disable:named, close
- function test_private_trace_simple_proper {
-     echo -e "${GREEN}# TEST_PRIVATE_TRACE_1 ${NC}"
--    # ddcmd close kparm_stream
-+
-     ddcmd open kparm_stream
-     ddcmd module params +T:kparm_stream.mf
-     check_match_ct =T:kparm_stream.mf 4
-+
-     ddcmd module params -T:kparm_stream.mf
-     check_match_ct =T:kparm_stream.mf 0
-     is_trace_instance_opened kparm_stream
-     ddcmd module params +:0
-     ddcmd close kparm_stream
-     is_trace_instance_closed kparm_stream
-+
-     ddcmd =_
-     check_trace_instance_dir kparm_stream 1
-     is_trace_instance_closed kparm_stream
-@@ -377,115 +379,128 @@ function test_private_trace_simple_proper {
-     check_trace_instance_dir kparm_stream 0
+ function ifrmmod {
+-    lsmod | grep $1 2>&1>/dev/null || echo $1 not there
+-    lsmod | grep $1 2>&1>/dev/null && rmmod $1
++    lsmod | grep $1 2>&1>/dev/null || ([ "$2" == "-v" ] && echo "module '$1' is not loaded")
++    lsmod | grep $1 2>&1>/dev/null && rmmod $1 && [ "$2" == "-v" ] && echo "unload module '$1'"
  }
  
--function test_private_trace_2 {
--    echo -e "${GREEN}# TEST_PRIVATE_TRACE_2 ${NC}"
-+# test verifies new syntax and close attempt of trace instance which is still in use
-+function test_private_trace_syntax_close_in_use {
-+    echo -e "${GREEN}# TEST_PRIVATE_SYNTAX_CLOSE_IN_USE ${NC}"
-     ddcmd =_
-     echo > /sys/kernel/tracing/trace
-     echo 1 >/sys/kernel/tracing/tracing_on
-     echo 1 >/sys/kernel/tracing/events/dyndbg/enable
-+
-     ddcmd open foo
-     is_trace_instance_opened foo
-     check_trace_instance_dir foo 1
- 
-     modprobe test_dynamic_debug
--    ddcmd class,D2_CORE,+T:foo.l,%class,D2_KMS,+fT:foo.ml
-+    ddcmd class,D2_CORE,+T:foo.l,%class,D2_KMS,+fT:foo.ml	# test new syntax
-     check_match_ct =T:foo.l 1
-     check_match_ct =T:foo.mfl 1
- 
--    # purpose ?
--    echo 1 >/sys/kernel/tracing/tracing_on
--    echo 1 >/sys/kernel/tracing/events/dyndbg/enable
--
--    tmark test_private_trace about to do_prints
--    search_trace "test_private_trace about to do_prints"
--    search_trace_name "0" 1 "test_private_trace about to do_prints"
-+    tmark test_private_trace_syntax_close_in_use about to do_prints
-+    search_trace "test_private_trace_syntax_close_in_use about to do_prints"
-+    search_trace_name "0" 1 "test_private_trace_syntax_close_in_use about to do_prints"
- 
-     doprints
--    ddcmd class,D2_CORE,-T:foo
--    ddcmd close foo fail
--    check_err_msg "Device or resource busy"
--    ddcmd class,D2_KMS,-T:foo
--    ddcmd close foo
--    check_trace_instance_dir foo 1
--    is_trace_instance_closed foo
--    ddcmd close bar fail
--    check_err_msg "No such file or directory"
-+    ddcmd class,D2_CORE,-T:0
-+    ddcmd close foo fail	# close fails because foo is still being used
-+    check_err_msg "Device or resource busy"	# verify error message
-+
-+    ddcmd class,D2_KMS,-T:0
-+    ddcmd close foo	# now close succeeds
-+    check_trace_instance_dir foo 1	# verify trace instance foo dir exists
-+    is_trace_instance_closed foo	# verify trace instance foo is closed
-+
-+    ddcmd close bar fail	# try to close trace instance bar which is not opened
-+    check_err_msg "No such file or directory"	# verify error message
-+
-     ifrmmod test_dynamic_debug
-     search_trace_name foo 2 "D2_CORE msg"
-     search_trace_name foo 1 "D2_KMS msg"
--    del_trace_instance_dir foo 1
--    check_trace_instance_dir foo 0
-+    del_trace_instance_dir foo 1	# delete trace instance foo dir
-+    check_trace_instance_dir foo 0	# verify trace instance foo dir does not exist
+ # $1 - text to search for
+@@ -657,6 +657,37 @@ function test_private_trace_fill_trace_index {
+     check_trace_instance_dir trace_instance_63 0
  }
  
--function test_private_trace_3 {
--    echo -e "${GREEN}# TEST_PRIVATE_TRACE_3 ${NC}"
-+# test verifies new syntax and removal of module
-+function test_private_trace_syntax_rmmod {
-+    echo -e "${GREEN}# TEST_PRIVATE_TRACE_SYNTAX_RMMOD ${NC}"
-     ddcmd =_
-     echo > /sys/kernel/tracing/trace
-     echo 1 >/sys/kernel/tracing/tracing_on
-     echo 1 >/sys/kernel/tracing/events/dyndbg/enable
--    ddcmd open foo \; open bar
++# prepares dynamic debug and trace environment for tests execution
++function setup_env_for_tests {
++    echo -e "${GREEN}# SETUP_ENV_FOR_TESTS ${NC}"
 +
-+    ddcmd open foo \; open bar	# open foo and bar trace instances and verify they are opened
-     is_trace_instance_opened foo
-     is_trace_instance_opened bar
--    modprobe test_dynamic_debug
++    echo "MODULES"
++    ifrmmod test_dynamic_debug_submod -v	# unload test_dynamic_debug_submod module
++                                                # if it is loaded
++    ifrmmod test_dynamic_debug -v	# unload test_dynamic_debug module it if is loaded
++    echo
 +
-+    modprobe test_dynamic_debug	# load module and test new syntax
-     ddcmd class,D2_CORE,+T:foo
-     ddcmd class,D2_KMS,+T:foo
-     ddcmd class D2_CORE +T:foo \; class D2_KMS +T:foo
-     ddcmd "class,D2_CORE,+T:foo;,class,D2_KMS,+T:foo"
-     ddcmd class,D2_CORE,+T:foo\;class,D2_KMS,+T:foo
--    check_match_ct =T 2 -v
++    # display all callsites which have flags != "_"
++    echo "CALLSITES with flags != \":0\""
++    cat /proc/dynamic_debug/control | grep -v "=_" | grep -v "not set" | grep -v "^$" \
++	    | grep -v "#: Opened trace instances" | grep -v "#: Default trace destination"
++    ddcmd module,*,=_:0 # clear all flags and set dest to 0
++    echo
 +
-+    check_match_ct =T:foo 2 -v
-     check_match_ct =Tl 0
-     check_match_ct =Tmf 0
--    echo 1 >/sys/kernel/tracing/tracing_on
--    echo 1 >/sys/kernel/tracing/events/dyndbg/enable
--    tmark test_private_trace_2 about to do_prints
++    # close all opened trace instances and delete their respective directories
++    echo "OPEN trace instance"
++    output=$(tail -n9 /proc/dynamic_debug/control | grep "#: Opened trace instances" \
++	    | cut -f3 -d":" | xargs -n1)
++    for dst in $output
++    do
++        echo "close trace instance '$dst'"
++	echo close,$dst > /proc/dynamic_debug/control
++	echo "delete '/sys/kernel/debug/tracing/instances/$dst' directory"
++	rmdir /sys/kernel/debug/tracing/instances/$dst
++    done
++    echo
++}
 +
-+    tmark test_private_trace_syntax_rmmod about to do_prints
-     doprints
--    rmmod test_dynamic_debug
--    ddcmd "close bar;close foo"
--    is_trace_instance_closed bar
-+
-+    rmmod test_dynamic_debug	# remove module whose callsites are writing debug logs
-+                                # to trace instance foo
-+    ddcmd "close bar;close foo"	# close bar and foo trace instances, if usage count
-+                                # of foo instance was not correctly decremented during
-+				# removal of module then close will fail
-+
-+    is_trace_instance_closed bar	# verify that foo and bar trace instances are closed
-     is_trace_instance_closed foo
-     search_trace_name foo 2 "D2_CORE msg"
-     search_trace_name foo 1 "D2_KMS msg"
--    del_trace_instance_dir foo 1
-+
-+    del_trace_instance_dir foo 1	# delete trace instance foo and verify its
-+                                        # directory was removed
-     check_trace_instance_dir foo 0
--    search_trace "test_private_trace_2 about to do_prints"
--    del_trace_instance_dir bar 1
-+
-+    search_trace "test_private_trace_syntax_rmmod about to do_prints"
-+
-+    del_trace_instance_dir bar 1	# delete trace instance bar and verify its
-+                                        # directory was removed
-     check_trace_instance_dir bar 0
- }
+ tests_list=(
+     basic_tests
+     comma_terminator_tests
+@@ -680,6 +711,7 @@ tests_list=(
  
--function test_private_trace_4 {
--    echo -e "${GREEN}# TEST_PRIVATE_TRACE_4 ${NC}"
-+# test verifies new syntax and combination of delete attempt of trace
-+# instance which is still in use with module removal
-+function test_private_trace_syntax_delete_in_use_rmmod {
-+    echo -e "${GREEN}# TEST_PRIVATE_TRACE_SYNTAX_DELETE_IN_USE_RMMOD ${NC}"
-     ddcmd =_
-     echo > /sys/kernel/tracing/trace
-     echo 1 >/sys/kernel/tracing/tracing_on
-     echo 1 >/sys/kernel/tracing/events/dyndbg/enable
+ # Run tests
  
--    ddcmd open foo
-+    ddcmd open foo	# open trace instance foo and test new syntax
-     modprobe test_dynamic_debug dyndbg=class,D2_CORE,+T:foo%class,D2_KMS,+T:foo
-     check_match_ct =Tl 0
-     check_match_ct =Tmf 0
--    check_match_ct =T 2
--
--    # are these 2 doing anything ?
--    echo 1 >/sys/kernel/tracing/tracing_on
--    echo 1 >/sys/kernel/tracing/events/dyndbg/enable
-+    check_match_ct =T:foo 2 -v
- 
-     tmark should be ready
--    search_trace_name "0" 0 "should be ready"	# in global trace
-+    search_trace_name "0" 0 "should be ready"	# search in global trace
- 
-     doprints
--    search_trace_name foo 2 "D2_CORE msg"	# in private buf
-+    search_trace_name foo 2 "D2_CORE msg"	# search in trace instance foo
-     search_trace_name foo 1 "D2_KMS msg"
- 
-     # premature delete
--    del_trace_instance_dir foo 0
--    check_trace_instance_dir foo 1	# doesn't delete
-+    del_trace_instance_dir foo 0	# delete fails because foo is being used
-+    check_trace_instance_dir foo 1	# verify trace instance foo dir exists
-     ifrmmod test_dynamic_debug
- 
--    ddcmd "close foo"
--    is_trace_instance_closed foo
--    del_trace_instance_dir foo 1	# delete works now
-+    ddcmd "close foo"			# close will succeed only if foo usage count
-+                                        # was correctly decremented during module removal
-+    is_trace_instance_closed foo	# verify trace instance foo is closed
-+    del_trace_instance_dir foo 1	# foo delete works now
- 
--    check_trace_instance_dir foo 0
-+    check_trace_instance_dir foo 0	# verify trace instance foo dir does not exist
-     search_trace "should be ready"
- }
- 
-@@ -651,9 +666,9 @@ tests_list=(
-     cycle_not_best_practices
-     test_private_trace_1
-     test_private_trace_simple_proper
--    test_private_trace_2
--    test_private_trace_3
--    test_private_trace_4
-+    test_private_trace_syntax_close_in_use
-+    test_private_trace_syntax_rmmod
-+    test_private_trace_syntax_delete_in_use_rmmod
-     test_private_trace_mixed_class
-     test_private_trace_mixed_class  # again, to test pre,post conditions
- 
++setup_env_for_tests
+ for test in "${tests_list[@]}"
+ do
+     $test
 -- 
 2.43.0.687.g38aa6559b0-goog
 
