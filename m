@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-60483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A19A85057F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:01:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC54850583
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:03:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61749285F83
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:01:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48B991C2322C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 395055337B;
-	Sat, 10 Feb 2024 17:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED0C5CDE7;
+	Sat, 10 Feb 2024 17:03:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jti9DQCg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GJ8Mrr/U"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794B05C8E5;
-	Sat, 10 Feb 2024 17:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4914447F63;
+	Sat, 10 Feb 2024 17:03:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707584488; cv=none; b=c27MrwPsNBV2C+Farq88QLmbNKa3hTVNTgb1Au8vyHAO6PNfofE1siCAhX7XfI26qeLy85wHjjwRqbw7FfeOUfx5f6PHkbU0LzTbiN05/pDXCJzkG1dbJpOou6LIZYFzV9VwvLA/WxejnRf51WGIbU8puABMPw0LRUxmJDl99Xs=
+	t=1707584593; cv=none; b=s/A38j/7JpndJKn/ShJofo4fkvwqILCkC7p3BjekP3vzZh2h3plQGYhQsRB2ansmu53XZ/sv+B86q5WV3t5dW3PDwqIfroJphAvUgdVTsFpYZiOVgCbrIHH8g4b0FrVeCMhde4e9bo3J+zY5HQVqbd40elESX2LNli4KQbR9wjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707584488; c=relaxed/simple;
-	bh=wBaZwgCz9hDMOWTOOkxRLr2T1pQmpM9MV+Znrfc3GPE=;
+	s=arc-20240116; t=1707584593; c=relaxed/simple;
+	bh=dM5P/BLPpv65XEEBRcA7+EHDNw1b9Ov8MqVYouph3b8=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cEukKOvdWNyjd+ld9FcNEtrP3KwlMZyMxkCAu3C+G9Pnu1wcX2+yAXdCkTWgQzKjFc1UgkEGsfQpIcUtdr0nzUD/CPRkW9EZyN9mlgwQccZ6tJ2GOBcNPCVCyi8z7BTykjwfFguSC6O5GXLgKLeQK5lVfkVaHrM47quOZ5xeqWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jti9DQCg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAC73C433F1;
-	Sat, 10 Feb 2024 17:01:23 +0000 (UTC)
+	 MIME-Version:Content-Type; b=dlI4yLu/fMFbNGf1GNV9f97P+XjfkDNTYWyTZeIfiU4NBmtPPx0ktGlwlRMB5sOjBa8RmB9S5UnRXbk/fqOS3T2gKQqu+JKCahwLw86kRqz8DaL4BlKrLNjpiaeMNgqR0gXIRIgZF5WNxKeicmtn38xHw2qBGefpiOMUpV7YDpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GJ8Mrr/U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F50BC433F1;
+	Sat, 10 Feb 2024 17:03:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707584487;
-	bh=wBaZwgCz9hDMOWTOOkxRLr2T1pQmpM9MV+Znrfc3GPE=;
+	s=k20201202; t=1707584593;
+	bh=dM5P/BLPpv65XEEBRcA7+EHDNw1b9Ov8MqVYouph3b8=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Jti9DQCgOa1bYArslPlAj3zkaAxaVDja0M21z1Rvuol/alBRIECrnfwWERxVfZv8o
-	 Lp/8JbQU1N0rGdzYyb716MkdAsb0DOBwK21NpDRP8PVmLXsL6LWP8s/QB4rHcK1RUb
-	 4tqk9ARrED5fj9noZkUTBkKGlwa3f4B4jTorYjI73RVjyqD28JK4oOj1XnzYU12+U6
-	 NBVsgFf55Ikr25rkp4ag/OmImRgFaJ7V8jjSGr1OTq8sF13aZHfqNKkd/R9dqIjfOk
-	 ZkeET940pZGy6qUrIkKA2xz6rl2KCU32QOeSvWrX+Uasg2wzpfC4rHuVLLGIkR2SRX
-	 hQHemKzUMGbCw==
-Date: Sat, 10 Feb 2024 17:01:12 +0000
+	b=GJ8Mrr/UdwQenKyY57B8T2UMN3atxirCv0QJ6u41CB7hnqKyG4eK4f4952lhbkaTh
+	 N4CdNQhaVAScWHJql9TXS36o1q0+7x2LUTs4cEICafL8F7FzhwhZGJtlO+eyO0G1JU
+	 Jg4BM7Tk/g+HRC90Uq2/e8FXCUP+K6WFo9fl+3I2Ttz1Jw78zc//QeXW0c8vQ5ekAY
+	 kLnbZ+1ir+fib6H6/XmDq7KoReHJSKV++h/P16fu8myX7o/3cviGRPb7OF84S/92A3
+	 Hmy8uismDiisFZi2u4BkjWhm232sGhuxSJceS9aqoubelRBn2vqyTECu0oOS66NbyI
+	 Q1kXvyCVC9JMA==
+Date: Sat, 10 Feb 2024 17:02:58 +0000
 From: Jonathan Cameron <jic23@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>, Lars-Peter Clausen
+To: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Lars-Peter Clausen
  <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
  <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
  Matti Vaittinen <mazziesaccount@gmail.com>, Andy Shevchenko
@@ -53,15 +53,14 @@ Cc: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>, Lars-Peter Clausen
  Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
  linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/5] dt-bindings: iio: light: adps9300: Add property
- vdd-supply
-Message-ID: <20240210170112.6528a3d4@jic23-huawei>
-In-Reply-To: <0a03e639-9998-40b2-95bd-15dc40139509@linaro.org>
+Subject: Re: [PATCH v6 3/5] dt-bindings: iio: light: adps9300: Update
+ interrupt definitions
+Message-ID: <20240210170258.17fd1099@jic23-huawei>
+In-Reply-To: <9f806e4e-b4a4-4e85-9a68-332b7920bfce@tweaklogic.com>
 References: <20240206130017.7839-1-subhajit.ghosh@tweaklogic.com>
-	<20240206130017.7839-3-subhajit.ghosh@tweaklogic.com>
-	<dbfde067-50b8-4f86-a098-0fc160114854@linaro.org>
-	<84591019-6958-4685-8830-54260aadd26b@tweaklogic.com>
-	<0a03e639-9998-40b2-95bd-15dc40139509@linaro.org>
+	<20240206130017.7839-4-subhajit.ghosh@tweaklogic.com>
+	<4647ae5a-b700-4eb0-91a2-d9885bd60431@linaro.org>
+	<9f806e4e-b4a4-4e85-9a68-332b7920bfce@tweaklogic.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -72,55 +71,35 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Fri, 9 Feb 2024 08:33:11 +0100
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+On Thu, 8 Feb 2024 21:23:09 +1030
+Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
 
-> On 08/02/2024 11:40, Subhajit Ghosh wrote:
-> > Hi Krzysztof,
-> > 
-> > On 8/2/24 18:47, Krzysztof Kozlowski wrote:  
-> >> On 06/02/2024 14:00, Subhajit Ghosh wrote:  
-> >>> Add vdd-supply property which is valid and useful for all the
-> >>> devices in this schema.  
+> On 8/2/24 18:48, Krzysztof Kozlowski wrote:
+> > On 06/02/2024 14:00, Subhajit Ghosh wrote:  
+> >> Include irq.h and irq level macro in the example for readability
 > >>
-> >> Why is it useful? How is it useful? DT describes the hardware, not
-> >> because something is "useful".  
-> > I am adding this property based on a previous review:
-> > https://lore.kernel.org/all/20240121153655.5f734180@jic23-huawei/  
-> 
-> The property was there already.
-> 
+> >> this patch depends on patch:
+> >> "dt-bindings: iio: light: Add property vdd-supply"  
 > > 
-> > Does the below commit message in this context make sense to you?
-> > "Add vdd-supply property for all the devices in this schema."  
-> 
-> It's still poor. You should say why, e.g. because devices have it.
+> > Please, don't write such useless dependencies. This is neither true nor
+> > useful.  
+> Understood.
+Just for reference:
 
-I'd change the patch title to:
+If there were such a dependency (beyond noise in the diff) then there is
+still no need to state it when the patches are in the same series.
 
-dt-bindings: iio: light: adps9300: Add missing vdd-supply
-
-For description something simple like:
-
-All devices covered by the binding have a vdd supply.
+Jonathan
 
 
-> 
-> >>  
-> >>>
-> >>> this patch depends on patch:
-> >>> "dt-bindings: iio: light: Merge APDS9300 and APDS9960 schemas"  
-> >>
-> >> This is unrelated and does not make any sense in commit msg. Drop.  
-> > Apologies for the silly questions:
-> > What does the "Drop" signify? Are you asking me to drop/delete the above
-> > "...patch depends..." message or does it have any other meaning?  
-> 
-> Drop entire paragraph.
-> 
-> 
-> Best regards,
-> Krzysztof
+> > 
+> > 
+> > Best regards,
+> > Krzysztof
+> >   
+> Thank you for reviewing.
+> Regards,
+> Subhajit Ghosh
 > 
 
 
