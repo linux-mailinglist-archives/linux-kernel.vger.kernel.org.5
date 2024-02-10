@@ -1,78 +1,77 @@
-Return-Path: <linux-kernel+bounces-60295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C6A68502D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:56:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B10E8502D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:58:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 948F5B2443B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 06:56:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB6901F22881
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 06:58:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3261EF19;
-	Sat, 10 Feb 2024 06:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0EF22087;
+	Sat, 10 Feb 2024 06:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="d6LUHLFC"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YB+MfWvL"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498596AB7
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 06:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86121B7EE
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 06:58:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707548170; cv=none; b=bfuJmiraZkK9aNo9K04itouw1y6FOAvsiCKiBgyaIAyRoFvc5xOEwBkzwvPDwkEdzIp8feOASIqyNqHmPr1QwMiLIWCJ4DMV1j5DKURXQNxTCCe0e/RQJpb67KI+u2ijZ9MaWKCqTJvthE/crFW81JSDX1YUuJOTugiMgE+aMho=
+	t=1707548307; cv=none; b=PGxJeggii0ykM0FfRWjtHZ1/Oxc61Bd0+yvG6Cq5yqDaOCIxNQSTjpr+eMguVbtT/2wsr0xMe2P2cW3IaZpYHwXo9QMLKk2bbKbDCXukuLZeGrPBuf6D82MTTzWOqVa4POGuZ50smeoH9nko1num65Svud0J2lY/C6Y22g86Fus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707548170; c=relaxed/simple;
-	bh=NVSOZpQjmNZbvBbytVbKbYZTTj5KexVg9+EBMGPo8iA=;
+	s=arc-20240116; t=1707548307; c=relaxed/simple;
+	bh=puHg0dE4ceDi3jECbpQfs8pnGLC9kzH1lHUcziDIEEQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uNbH5vYVITgBcExlytfOua3UV0fGXtyz+vNVvVdS5Q0fUL7t0iLEQLrB904TZ7BFVAzWEQQ3Rm0uYXcgufCQY7xKCH9irrzJkrfwKfCfDDEwJ+ZUrZJifW2xXiIXfd2PESW60cDr0UCpCT0yIMfI0mUbRuFAxKkfCreEc7KOuxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=d6LUHLFC; arc=none smtp.client-ip=209.85.214.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=UaoeJ4GSbLRL1mzi6nC92CnsN4xJsaBdnwOp1/CO9kfGOpAmMfQ95QNe3u2NdrIzdeiVyNKiM1HHIt11q/F+5ABMETViUYigBSA2xYX5tuwRENDl5Y14VaiJ+N/SC7yo2hAk/y2RgdQ14JHVMtdNWsC1+7JQfFUJ79Zh2gpMx7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YB+MfWvL; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d7881b1843so15469525ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 22:56:08 -0800 (PST)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso1271411a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 22:58:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707548167; x=1708152967; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707548305; x=1708153105; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7lqdmVzIJwt0NdDv6XcYQYzL0U+gQtOwIYPw83OVL8g=;
-        b=d6LUHLFC9vd9PmKcO4dhOkt3K3zU5yRuw1C2EGhxy8e34ZJvfR3DP45U8XxFFeBLBZ
-         aPYbZ7p6Qs/h0PaMi4d1K0k/1hSrXIXnzMtnp6yT5LIfl6E82K4hb53oMaFjCnj6BmNs
-         vF5D7w7352R6gQK4GsaHgyDD14Aqn9iKzPOpg=
+        bh=qAvJAaHQK8DLdZ5GSxTHkSnAiWWlU+ZUiJ3CnzbG+aQ=;
+        b=YB+MfWvLtZwHBrDbBACwWcA5LAYhtgqUjiWwkTxmgN2FR9rBLWF//LVmKgNWe5Ax8g
+         RfPpoWY/+4UBEACcSEfRtzQel27iSyIaO5unX6/NR9zJXCULrn3wZ9+2svo0CCv3B6dn
+         uAnL1KjYx5BpkHS1TlYVURR8P1+afQhwyt4BE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707548167; x=1708152967;
+        d=1e100.net; s=20230601; t=1707548305; x=1708153105;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7lqdmVzIJwt0NdDv6XcYQYzL0U+gQtOwIYPw83OVL8g=;
-        b=M4JyiJTuDfUhLPkCGz1UhiBINuUzNdLsl8k3rfEbL8a/rIFNlk8rDCZar19zJUI8Cu
-         Cc/J/pjZ1MDAR2gQW1nNJuaiO04HiEJALDH6gzHkSte4ybZxUhNj/89oxdhKRhtZVtp1
-         tXnW3zmr4x0V+j7Cp3TGBA9Rij2JxkjNpzA5AangS4G1ie5yTc6xbmBWaJ6gqTWp9C35
-         CrGAqBTqOOBHT1MCLncZS76bfvPe3zlJotSplCJBW7AZ13XPLoMHGj983/QftrUcxjAB
-         xAjaswfZ+0fdx0Y6uUm+g5Jj7QNbT8zhLULoaEmxxrwk9bZEk9eGHTWFzJKLqswim8il
-         g97g==
-X-Gm-Message-State: AOJu0Yw0YMHnQBsGRZTqPnqB5Q1jQxNrQlxAxErleWhqJSJUnbpynxe9
-	H+P4iHi7t6p4fjq0qN6H5gm2lMFiwk9G54XBZnzZ+SNtts/24o3VSBE8srRQ8A==
-X-Google-Smtp-Source: AGHT+IG8Uvto3IXh7IM+fA+MZ+Inj6FlHN977ejGAfyv7OajcSC0CUdI70yPsphZgCB7gunDHexmGA==
-X-Received: by 2002:a17:902:f809:b0:1d9:7729:2a6f with SMTP id ix9-20020a170902f80900b001d977292a6fmr1497467plb.61.1707548167643;
-        Fri, 09 Feb 2024 22:56:07 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWHNFwtwo2sj5Hgq9iT4SeharaFb3De5jNs2sKKLiRzhEOcJt9l0HQWoxTSJBuBbvBTHHP+w5FoKVroZZDidVlFmiko3Q3RPTYxPY8x9vc974PFN7dkbXledwzEmaGTCFNB1mAzMCu+0ZatG2sAA/J08eE57foSNwEJSd716ibUiYWvTqrzGTU9I8XM+zcpoHD/fw==
+        bh=qAvJAaHQK8DLdZ5GSxTHkSnAiWWlU+ZUiJ3CnzbG+aQ=;
+        b=dEdvd1GLkyBW5nAgMRudUEvdm58yINYNEarDlw6exaCeFb/WD/T0AgY6GMS48Sk9nJ
+         hIXoWTlqxxGLiBHd5cdQlB5X13F5dEdb0vFI4hXwY9hlLs6ncjtwLRcToX/T7Auul4FC
+         Udkraf2fRgprMnLsYfFJzgCWKqmYoVgph6jiE8nc9LKPejlP7b2Wd1DosrBmr2pGu8uL
+         uthbX6JC4C+Fc5KacgWBgbz66lzqY2WPOXxXgjgqYiLrFpGSyPgWYE1qFSgDZt+dGPgH
+         9WfjN7VSy2QOe+GzEQhxWsFDjtWwIczsUbu4DSkJ2rj3bLdnivGczzkmV1P2XeMBR8UM
+         OHZw==
+X-Gm-Message-State: AOJu0Yyl1BXcCgUwEWrhdkUqO1zES7A+LK4Zw3mHoj9YN1qqOrdBUQsf
+	3Xh14xQknymWmbJPXkKsF43g493Ox9P5d9ss38KELQP1/uDyvZeDDa/OVv0viw==
+X-Google-Smtp-Source: AGHT+IFbR5sveqUOUpNF5YlLD7APcChRy/NH0dh5rqFO3MwE3/XFu8kPXSQGZ+FdAjtP6noQNRTYTw==
+X-Received: by 2002:a05:6a21:3514:b0:19e:b6e0:8d7d with SMTP id zc20-20020a056a21351400b0019eb6e08d7dmr1489594pzb.31.1707548305075;
+        Fri, 09 Feb 2024 22:58:25 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW7DXJ2uGVZJkNb1SJsoIgPlhJhej8RPGz7vL5zZJngjzfJYr/XGiM2wc/zYs+XyzVsgNXdwGOkWXJZ8bCP2AfjAaww0oVLy6vft+XiBtwoJI3TghXWF7IE9FF1qOS5PZ4Gl+A090Fyzzn8eIdI5vAkLi/FpUoSNgVKl5ybkvQMQLTnGhkgYRjBEK3Hvc4FPDc7e9nxM0TqSZxEyw==
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id jz15-20020a170903430f00b001d9a40f50c4sm2491642plb.301.2024.02.09.22.56.06
+        by smtp.gmail.com with ESMTPSA id sc1-20020a17090b510100b00296885dcef7sm2934250pjb.16.2024.02.09.22.58.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 22:56:06 -0800 (PST)
-Date: Fri, 9 Feb 2024 22:56:06 -0800
+        Fri, 09 Feb 2024 22:58:17 -0800 (PST)
+Date: Fri, 9 Feb 2024 22:58:16 -0800
 From: Kees Cook <keescook@chromium.org>
-To: tools@kernel.org, Joe Perches <joe@perches.com>
-Cc: Lee Jones <lee@kernel.org>, Bart Van Assche <bvanassche@acm.org>,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: .mailmap support for removals (was Re: [PATCH 00/10] scsi: Replace
- {v}snprintf() variants with safer alternatives)
-Message-ID: <202402092252.0A0A59A@keescook>
+To: Lee Jones <lee@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Adam Radford <aradford@gmail.com>, Joel Jacobson <linux@3ware.com>,
+	de Melo <acme@conectiva.com.br>, Andre Hedrick <andre@suse.com>
+Subject: Re: [PATCH 01/10] scsi: 3w-xxxx: Trivial: Remove trailing whitespace
+Message-ID: <202402092257.83ED709990@keescook>
 References: <20240208084512.3803250-1-lee@kernel.org>
- <c9129b08-50fb-4371-aa05-6f6c7cd7acfa@acm.org>
- <20240208174912.GZ689448@google.com>
+ <20240208084512.3803250-2-lee@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,30 +80,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240208174912.GZ689448@google.com>
+In-Reply-To: <20240208084512.3803250-2-lee@kernel.org>
 
-On Thu, Feb 08, 2024 at 05:49:12PM +0000, Lee Jones wrote:
-> On Thu, 08 Feb 2024, Bart Van Assche wrote:
-> 
-> > On 2/8/24 00:44, Lee Jones wrote:
-> > > Cc: Andre Hedrick <andre@suse.com>
-> > 
-> > Please take a look at https://lwn.net/Articles/508222/.
-> 
-> get_maintainer.pl pulled it from here:
-> 
-> https://github.com/torvalds/linux/blob/master/drivers/scsi/3w-xxxx.c#L11
+On Thu, Feb 08, 2024 at 08:44:13AM +0000, Lee Jones wrote:
+> Since 5a602de99797b ("Add .editorconfig file for basic formatting") my
+> editor has been forced to remove trailing whitespace from any file it
+> saves.  Instead of fighting this recent kernel default, let's start
+> chipping away at fixing the issues.
 
-Oh. Hm. It seems "git check-mailmap" (and get_maintainers.pl) don't
-support a way to remove an email address -- only redirect it.
+On, this is a fun addition to the codebase! I wonder how much churn it
+will actually create...
 
-It seems we may want to support "don't use this email address" for more
-than just the currently observed rationale. I don't have any good
-suggestions for what the format should look like? Perhaps:
+> Signed-off-by: Lee Jones <lee@kernel.org>
 
-"" <address-to-remove@example.com>
+Regardless, yeah, let's clean them up when we hit them.
 
-?
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
 Kees Cook
