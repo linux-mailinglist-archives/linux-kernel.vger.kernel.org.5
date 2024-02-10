@@ -1,180 +1,113 @@
-Return-Path: <linux-kernel+bounces-60275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E4F850280
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:09:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73BA5850281
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 892471F25021
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:09:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08EF31F2549C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B7A05684;
-	Sat, 10 Feb 2024 04:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161525C9C;
+	Sat, 10 Feb 2024 04:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SxJDS6MN"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pmqw9cfh"
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8635F20E4
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 04:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E695663;
+	Sat, 10 Feb 2024 04:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707538146; cv=none; b=jDT+aBtAuwMD5I++UEUpEQU2SYMs6zvA25CtwyP6EqNatEM8AEbbiRSSESboswEpu8WDSK1PZng9I0WTOG2juYUEiAuewafOKKYLHZu4GY4V/qmdP17ErK0bsvM794Jc4wMUdWtssXJlawiPCMJc98+hpQ4MKo7oIoTOqDv8WIM=
+	t=1707538435; cv=none; b=YGsTCDeI1qWI1Le5ykk6num7DCEWL9vWAtnBcv/KixpOoR6Qnh8596Ij1s3jmw8aL6J1+iee9ZZ/6dLehpOUH/I5H+/TJJ+eITvJuWRtUgGAc4qPY3vG0k4MGlhGNO0RxXIgXfqATq7Tub16/hyrX8PSt1Mz1V6azHUV2J5ZjoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707538146; c=relaxed/simple;
-	bh=APM0cgnaH/J0EqBdfKSjXSAi1Fj4kv2b2n11+OqFbZI=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Q5zpN6CWfEZ0lHIoILdUvgUj0yfMOMf87mH9aSv/uK1HPLHmBasnhA9Xg95sQVGvf3YMvuFQo0JZb7rAYsk/J255ogObAUyhCuwGEsqk5+8DSTKx+tkjguuFkVpUf4qhvsWrIuCyZLPDxhbzg+TPt+CnnktumqHd5koE1AoqXcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SxJDS6MN; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707538145; x=1739074145;
-  h=date:from:to:cc:subject:message-id;
-  bh=APM0cgnaH/J0EqBdfKSjXSAi1Fj4kv2b2n11+OqFbZI=;
-  b=SxJDS6MNvrWLgtRBCzVDN4Zd9m6Hu1SAdghp9ZOh7vKAExMZZfboOKPX
-   k2PU3TyQSv1sb9vNrehbuVuvzRFiq+Vk1MEsie8lHwmkU2mIgQ6CN/Ao8
-   o9Nqo5rMrkUaiIhMjA9Th5YyOJ/HiXz9UkEPwVlGtEZyez2IzUQtFFMUg
-   urxWctd8BTOfv9MqnmqDO6Tjf/vrZE8PngCDkPyrWfn+KbWP1vx12V7IO
-   9YGvAUNMgvU293NjvjHkcso5DPmSnXNbKW9uewM1FzHkCOYC8h9UUNBDS
-   Nmv+7YuDgcaVqSI+7IqVVPCbR469argTMgotqZxu0wyAChvKbbP/+P3GB
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="5387508"
-X-IronPort-AV: E=Sophos;i="6.05,258,1701158400"; 
-   d="scan'208";a="5387508"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 20:09:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,258,1701158400"; 
-   d="scan'208";a="2412794"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 09 Feb 2024 20:09:03 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rYefk-0005Km-1O;
-	Sat, 10 Feb 2024 04:09:00 +0000
-Date: Sat, 10 Feb 2024 12:08:10 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- f6a1892585cd19e63c4ef2334e26cd536d5b678d
-Message-ID: <202402101207.UCDnG2X1-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1707538435; c=relaxed/simple;
+	bh=oI4igA4qp4EXY2Og+SQxV/VkdWDjclYg15fKupckyik=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T9ezWPbUFPzcuBbAdt18zj7dFZ5qDQpFbBLX/M0Il5oJHRGRN8p0D3AFc4GXJgPLeqeWRr5s89lS1aVbXlc/Se4+h2kSbvMkdh4eDy8juZmawWqipqwjWIFimFlgWQGs3gt3bRTOu8wT809tAXr2vYHMJo3A/4dvVPKMWpAkDjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pmqw9cfh; arc=none smtp.client-ip=209.85.210.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e2b6461aeeso898412a34.0;
+        Fri, 09 Feb 2024 20:13:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707538433; x=1708143233; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g9l22/pwJVnGdloAJCNS/sXgALA4qBUOdE7DfdxKQE0=;
+        b=Pmqw9cfhS0IJSvX6LQOMDmBnoFWVLsSqEu8JhfBy7BLjAw0CELNHg1d6TMiljFzOX7
+         DrUgCLRU53yO3dpL0K1tvY5Jtqf6Kd1iGlYfLE4u5ZLgnFUz2r/ACQigvXVlTV+tyli4
+         R5cHklmV2ZCFqpihzXOGdBK28i5bjDrPppGVCspl+xJfX3JlUwlFutYfYRMsZCLwofc4
+         dnf04VsRe2YK2dVu+8OkMNLfEgLYL46mLm1cK/l/CjTPZKlWjAbaXdfJO31+awSOCEv+
+         Oy6zlp/ZI1crUNroQVL0/tT0N/0TeASdDfcJrmt0TRNuoZia87ndPih5D/vu9fh3UUQv
+         vT4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707538433; x=1708143233;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g9l22/pwJVnGdloAJCNS/sXgALA4qBUOdE7DfdxKQE0=;
+        b=YHZaUal4Tf3nj7v66oprBIT1ORgfqdtdNsHjI6x2bY7W+tw+gAEtMyCrBbpog2zVbD
+         E+OsrT2L7yPSypJfgd5ixl4RzAEjN4vSbDNyzjDddrVmurWB6r+S2lLzsaY4L1//zDKa
+         T31c9r6ufZD+r2DgFx0Z61okJM0aKtMypJkaUDHbI1CSj0RSvI1G/kCdH4subYfWDI4Z
+         HIQGRYGddqNLTDKTvkA+WdA9YYyqXIi/Z33tZMJQiVKyC0CtwpSXZAQQfePwOyzh06q1
+         1g/zm6CENSfvdV/cvTdshmCM40d+zhYruNjKgQhKpqMwUfOcpKXIR9/E+Qq1QbRvs1ty
+         LldA==
+X-Gm-Message-State: AOJu0YwKIC6s3qSFD+Lz82V/sWbP+kay6x+MuwgklGsItQUZwxnGHtND
+	5IR9T2ZgPQRWMZ6No/1w2WA26NejWrCLyScT2BffgkhwGit1hOS3
+X-Google-Smtp-Source: AGHT+IHnLJ1F0RxdwY2h9gdOC9vXnofcKuC7RC+W7eD5oOf4kJRXwBY488JvFZ3nky8s/W6NFW9gEg==
+X-Received: by 2002:a05:6358:1202:b0:176:4f31:75de with SMTP id h2-20020a056358120200b001764f3175demr2005822rwi.6.1707538432756;
+        Fri, 09 Feb 2024 20:13:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUNRUdECwuTDzYaCO+YkjpvJi02t/FWClTcm2hrwTlVtMQDAfWUoiQeYut5eDNWcgYcbh8FWgcQOUGM4/GjButZO2IiVad+Nz5bl+iwRguUWXVgzJjNBGW6Aac9Svc6g7DhjqxMwMDKMFDD4wL/qInz2gLMoeFdEUPV
+Received: from gmail.com ([192.184.167.79])
+        by smtp.gmail.com with ESMTPSA id pb14-20020a17090b3c0e00b002971b574ccdsm127083pjb.38.2024.02.09.20.13.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 20:13:52 -0800 (PST)
+Date: Fri, 9 Feb 2024 20:13:49 -0800
+From: Calvin Owens <jcalvinowens@gmail.com>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [BUG] Infinite loop in cleanup_mnt() task_work on 6.3-rc3
+Message-ID: <Zcb3_fdyJWUlZQci@gmail.com>
+References: <ZcKOGpTXnlmfplGR@gmail.com>
+ <20240206205014.GA608142@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240206205014.GA608142@ZenIV>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: f6a1892585cd19e63c4ef2334e26cd536d5b678d  x86/Kconfig: Transmeta Crusoe is CPU family 5, not 6
+On Tuesday 02/06 at 20:50 +0000, Al Viro wrote:
+> On Tue, Feb 06, 2024 at 11:52:58AM -0800, Calvin Owens wrote:
+> > Hello all,
+> >
+> > A couple times in the past week, my laptop has been wedged by a spinning
+> > cleanup_mnt() task_work from an exiting container runtime (bwrap).
+>
+> Check if git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #fixes
+>
+> helps.
 
-elapsed time: 731m
+That absolutely fixes it (the revert of 57851607).
 
-configs tested: 92
-configs skipped: 134
+This reproducer hits the bug 100% of the time on my Debian Sid GNOME box:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+	$ for i in {1..1000}; do \
+		dd if=/dev/urandom bs=65536 count=1 status=none | \
+		convert -size 256x256 -depth 8 GRAY:- ${i}.png; done
+	$ nautilus .
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                      jornada720_defconfig   clang
-arm                         lpc32xx_defconfig   clang
-arm                             mxs_defconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240210   clang
-i386         buildonly-randconfig-002-20240210   gcc  
-i386         buildonly-randconfig-003-20240210   clang
-i386         buildonly-randconfig-004-20240210   clang
-i386         buildonly-randconfig-005-20240210   clang
-i386         buildonly-randconfig-006-20240210   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240210   gcc  
-i386                  randconfig-002-20240210   gcc  
-i386                  randconfig-003-20240210   clang
-i386                  randconfig-004-20240210   clang
-i386                  randconfig-005-20240210   gcc  
-i386                  randconfig-006-20240210   gcc  
-i386                  randconfig-011-20240210   clang
-i386                  randconfig-012-20240210   clang
-i386                  randconfig-013-20240210   clang
-i386                  randconfig-014-20240210   gcc  
-i386                  randconfig-015-20240210   gcc  
-i386                  randconfig-016-20240210   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                           xway_defconfig   clang
-nios2                             allnoconfig   gcc  
-nios2                               defconfig   gcc  
-powerpc                      bamboo_defconfig   clang
-powerpc                      cm5200_defconfig   clang
-powerpc               mpc834x_itxgp_defconfig   clang
-powerpc                 mpc836x_rdk_defconfig   clang
-powerpc                      obs600_defconfig   clang
-riscv                               defconfig   clang
-s390                              allnoconfig   clang
-s390                                defconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240210   gcc  
-x86_64       buildonly-randconfig-002-20240210   gcc  
-x86_64       buildonly-randconfig-003-20240210   gcc  
-x86_64       buildonly-randconfig-004-20240210   clang
-x86_64       buildonly-randconfig-005-20240210   clang
-x86_64       buildonly-randconfig-006-20240210   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240210   clang
-x86_64                randconfig-002-20240210   clang
-x86_64                randconfig-003-20240210   gcc  
-x86_64                randconfig-004-20240210   clang
-x86_64                randconfig-005-20240210   clang
-x86_64                randconfig-006-20240210   gcc  
-x86_64                randconfig-011-20240210   gcc  
-x86_64                randconfig-012-20240210   clang
-x86_64                randconfig-013-20240210   clang
-x86_64                randconfig-014-20240210   clang
-x86_64                randconfig-015-20240210   gcc  
-x86_64                randconfig-016-20240210   clang
-x86_64                randconfig-071-20240210   gcc  
-x86_64                randconfig-072-20240210   gcc  
-x86_64                randconfig-073-20240210   clang
-x86_64                randconfig-074-20240210   gcc  
-x86_64                randconfig-075-20240210   clang
-x86_64                randconfig-076-20240210   clang
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+It turns out Nautilus was the trigger: it spawns and destroys containers
+in very quick succession to compute each thumbnail in a directory of
+images.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Calvin
 
