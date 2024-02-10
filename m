@@ -1,61 +1,74 @@
-Return-Path: <linux-kernel+bounces-60277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B96850287
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:20:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 931C4850289
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:24:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8B821F255D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:20:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1F6DB247A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A81A63BF;
-	Sat, 10 Feb 2024 04:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187AFCA7F;
+	Sat, 10 Feb 2024 04:23:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Grv1KxsD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CAGQ/ZZY"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B125684
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 04:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B195F23B9;
+	Sat, 10 Feb 2024 04:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707538810; cv=none; b=QfkVEIfFW6SwgTGTjvgjuyYA/m6CRr0lwp4wf/MRcXV87oPsgS4p009KfWiv6wcBBog/toAOwNl1W057QfPxERRW1D66FoVhWhQAdWXjbRSlOYNzTywjkwOkCbsqzW6K2mWkAi1HIi+H1AUSIHj0jsiKHnoqfCAD1GAQLhkw+YY=
+	t=1707539027; cv=none; b=pD5U+BJryvcARUAfRN0xZ64SwccJJ2vMjUM+Qb6Y9jlLYNYNnUtjIMa7415s+BGGLDZIVWqUpzIDu88mr0j3BqKNmAUpOYOkqrtWOR3m76Q9reUz3IvXJgZHep734I121KVp1eGDOO0Cj2qQs6fymH8tSsfYhqXZd+0O5BI/bbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707538810; c=relaxed/simple;
-	bh=MI1UER5k/zVC0RgJ6mRH32EW0jN5U9Mp1biZX1Oxpww=;
+	s=arc-20240116; t=1707539027; c=relaxed/simple;
+	bh=ln9JYS6GbPHPQxL+/Nc1r63uDX2PizaCmpKlb68JATg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n1KhwF7vmbkdXTt/bB5DRZLhmHO2RIs0HptoSqMp+UIFUqKZfbzbtUDjDZ9bAYPy7bYALtvBhqtxAXaZmBFwcFXaGhmWEh9Oc0LJXNcFyhahQVWIC6wDPXqcxB2CA4WEJ0B5v0xw/znJp9ZTzDasO5e84CR7gCCCLx1fW8cG5lU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Grv1KxsD; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707538807;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Qj8awdQxCDQMdFFZH7GYC8xsn8ZodHraAX8/7iY9PS8=;
-	b=Grv1KxsDQaskCRYcKWRLBkes3Ecje/g/VhuQe23bRd179VRHad3kN0Prk3qPqq5or/irSz
-	L3OyB/esyiAXdpjSXEayk63lFdW6/XdH6UhgQfpAUFe+mrpVKX+mrq4q7ZDTupFsO0cnKz
-	71UNeuEmC3SjSYU15qrzCBMxPAWWHFc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-589-1Up1vlD4PW-fA4xNBnYDpQ-1; Fri, 09 Feb 2024 23:20:02 -0500
-X-MC-Unique: 1Up1vlD4PW-fA4xNBnYDpQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2213E185A780;
-	Sat, 10 Feb 2024 04:20:01 +0000 (UTC)
-Received: from [10.22.17.112] (unknown [10.22.17.112])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 9B6762166B31;
-	Sat, 10 Feb 2024 04:19:58 +0000 (UTC)
-Message-ID: <b6e6454a-d08f-4a71-b546-16cf3e2b88a5@redhat.com>
-Date: Fri, 9 Feb 2024 23:19:58 -0500
+	 In-Reply-To:Content-Type; b=Dz+hkiegJK5XPEVlOCqSCGbfhSagHZYCjcknGFgKiI8WYEO2BjzqCGtBwv4ll/jbgw3iqGza+kkBnI39h2Agrjro+KZgkdyMOqEUJfNBorZMXuy8msklEIS7vbXlh2Yq/B/eR189pjVgbYzrpiP5CSNRyOaWeG2x0srE4ooB0IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CAGQ/ZZY; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6de3141f041so1264953b3a.0;
+        Fri, 09 Feb 2024 20:23:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707539025; x=1708143825; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+R0OcFh8QuVvnUOr/SAUhq/IMAFvrwIfBwIQpXf9tlQ=;
+        b=CAGQ/ZZYZ4fOjsZd99zoLU8f17XjFFtbkPnivQUVlfXZ9P5yhvPcMKBQ4WwnNhE10v
+         7mUZ1Z7d2KGHMUEq0MhunSJgh6LlBZh3a9RsLna54a9IfnFLtEy1cjFaIIl4O8/03oMz
+         zVtxi/gP2RiNAGe11cxAOGjx1zdeyOPV53kr7Lhj7xswF3VJbDDTyF8EToBN+vB5fBCy
+         4Imahk8YfOyDgDo2G9y3CntprdV+TFqAlZhN+pLk73BnR+drUSp5109Z7dgJVU7il5sB
+         T+elnZwBaPJqR0U19gE/7aDZyfafyUB7Xn6MqhTtOIutc1JFvhpl8PFWh6ga0vi+6ObV
+         FMUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707539025; x=1708143825;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+R0OcFh8QuVvnUOr/SAUhq/IMAFvrwIfBwIQpXf9tlQ=;
+        b=a/5BQNoPnhdu+zAgLxKqorGDOdJ3Y9UFxTo8G+eHKsyw6ZY4ufsZ4F4rfUGQrdYl1R
+         OIMK6n/Q4lhGfE46XlBtI9sDDtEgCnPLa8JFUSO2QMwSJRYMz1Yp1f6+j9evskttILah
+         BSCZY+63glzqXoiziYFLcTh5RW7Sem6Y40NeAFJAlCuREXwQdInbCppF5KMM0fxwbwUY
+         /FsWkw+XgsUsOR7q8HlwHVc3+a+ZWszdyYo5wJAlxD01VMPw/UUV1VmsiL/Fij4kEa30
+         uwT8Wzh8E249F/Ch/59jpfBO+500+vdoVNPr2z5Rh8Q1fTtOz6LYByd/x8qWyMtXWVGU
+         Op4w==
+X-Forwarded-Encrypted: i=1; AJvYcCWoQcT4UXAlzMHYIqgjaaNIhtddCmAnbRGEQbETnnl4uHXNBvdDd4NtlN0q5Ue80xCqJXwpSgUZHccer7LAIB8+2zkCP2IG/GO2ZoDznEbQp+9m6sgCqeS1fa2z8nGByuGI9gCDkbI0r17+EAI=
+X-Gm-Message-State: AOJu0YzdgcMtLueHEv449C0p2ogExKKFC6jq2HFFrFXNmEnx2GddrVWA
+	uzM06PsueD5PNBIEpL9gvPtijehQ+cA0DdPYKG8uRbrZnui+oE9i
+X-Google-Smtp-Source: AGHT+IHd1Lcc5MMpQyHrDTrH5tqwCgZsd0+wYJ2vs9KNP8mEmdgqizlw3H4odw2sax6sPK1jRbQVMQ==
+X-Received: by 2002:aa7:86d4:0:b0:6dd:c3fd:45fb with SMTP id h20-20020aa786d4000000b006ddc3fd45fbmr1203330pfo.24.1707539024775;
+        Fri, 09 Feb 2024 20:23:44 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVeHjFnDx6mul6waQi7Lp/LgSfsbqfN5PG95avU746wKv7PVDKFjFtsukaX+mRiLqYgTXbmvOvJFwsjO4i+IMBaKemdCX3ST8dNK8eHW4pQvbYJBBqDVpueN0vQV6s6NbeyiBwCn2Z8gwB4iFOpzNRTIe1HYBmlOVGqRz6pRa6/x9oSEW/RNqn7Nn2hQuk6BKfPCfKSRElcRBaeMgzG2CL7RJnATszXS0sPHIrJqRzS2FDbLfQyKoK9i4AswVpXlCnYDW/6euxGC5hMY+lOb3WFad7wW1u5Q7i3p6G2qOOTP6zcH0mvYLy13w9VHllPhIeO5LrJ0QUTm7SURQpmrLcSyxiBHdKTmDoD6/opgtpTFkuLU2f2K75XBSSJS/qtv8Zti7bkROSf6Duz+yjSm2Vz8cLjbpjCkWfDrrPSPpVd6PiWV6+yEPYPdTtACOfnYKegl5k9rTr9USnNM4BfEI9SXeiRyh+bqqpeeNvvAMxlTse2qTlrui/Vl8yMMPRsFLO9oeFh2ppXV8GJktZ/xEvTnZmh5X1ozaQ53nzZmdGwUHK64+hVjTqhgTBAb+NCiDHctB3937CkEAoTweFrCtMSjAPsN35UFdA2MXgVwbkfwsc069WdLIz0lqrjB3rJEz+1TVQhSc6ILk+bLYC2B3RUNSOCRTZLGNUaZcO7Xsv+MVYVBxpEpCXokGyOsawOoWYp6UBj
+Received: from [192.168.54.105] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id j19-20020a056a00175300b006e0436e08edsm1419682pfc.11.2024.02.09.20.23.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 20:23:44 -0800 (PST)
+Message-ID: <d35a656b-b802-4f1e-90d6-7320d61ed818@gmail.com>
+Date: Sat, 10 Feb 2024 01:23:38 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,139 +76,90 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
+Subject: Re: [PATCH v2 4/4] rust: add abstraction for `struct page`
 Content-Language: en-US
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
- Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>,
- Peter Hunt <pehunt@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>,
- Alex Gladkov <agladkov@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
- Phil Auld <pauld@redhat.com>, Paul Gortmaker <paul.gortmaker@windriver.com>,
- Daniel Bristot de Oliveira <bristot@kernel.org>,
- Juri Lelli <juri.lelli@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Costa Shulyupin <cshulyup@redhat.com>
-References: <20240117163511.88173-1-longman@redhat.com>
- <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
- <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
- <ZcIsd6fjgmsb2dxr@localhost.localdomain>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZcIsd6fjgmsb2dxr@localhost.localdomain>
+To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+ Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Kees Cook
+ <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+ Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+ Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas
+ <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>,
+ Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
+ Christian Brauner <brauner@kernel.org>
+References: <20240208-alice-mm-v2-0-d821250204a6@google.com>
+ <20240208-alice-mm-v2-4-d821250204a6@google.com>
+From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20240208-alice-mm-v2-4-d821250204a6@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Transfer-Encoding: 7bit
 
-On 2/6/24 07:56, Frederic Weisbecker wrote:
-> Le Wed, Jan 17, 2024 at 12:15:07PM -0500, Waiman Long a écrit :
->> On 1/17/24 12:07, Tejun Heo wrote:
->>> Hello,
->>>
->>> On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
->>>> The first 2 patches are adopted from Federic with minor twists to fix
->>>> merge conflicts and compilation issue. The rests are for implementing
->>>> the new cpuset.cpus.isolation_full interface which is essentially a flag
->>>> to globally enable or disable full CPU isolation on isolated partitions.
->>> I think the interface is a bit premature. The cpuset partition feature is
->>> already pretty restrictive and makes it really clear that it's to isolate
->>> the CPUs. I think it'd be better to just enable all the isolation features
->>> by default. If there are valid use cases which can't be served without
->>> disabling some isolation features, we can worry about adding the interface
->>> at that point.
->> My current thought is to make isolated partitions act like isolcpus=domain,
->> additional CPU isolation capabilities are optional and can be turned on
->> using isolation_full. However, I am fine with making all these turned on by
->> default if it is the consensus.
-> Right it was the consensus last time I tried. Along with the fact that mutating
-> this isolation_full set has to be done on offline CPUs to simplify the whole
-> picture.
->
-> So lemme try to summarize what needs to be done:
->
-> 1) An all-isolation feature file (that is, all the HK_TYPE_* things) on/off for
->    now. And if it ever proves needed, provide a way later for more finegrained
->    tuning.
-That is more or less the current plan. As detailed below, HK_TYPE_DOMAIN 
-& HK_TYPE_WQ isolation are included in the isolated partitions by 
-default. I am also thinking about including other relatively cheap 
-isolation flags by default. The expensive ones will have to be enabled 
-via isolation_full.
->
-> 2) This file must only apply to offline CPUs because it avoids migrations and
->    stuff.
-Well, the process of first moving the CPUs offline first is rather 
-expensive. I won't mind doing some partial offlining based on the 
-existing set of teardown and bringup callbacks, but I would try to avoid 
-fully offlining the CPUs first.
->
-> 3) I need to make RCU NOCB tunable only on offline CPUs, which isn't that much
->     changes.
->
-> 4) HK_TYPE_TIMER:
->     * Wrt. timers in general, not much needs to be done, the CPUs are
->       offline. But:
->     * arch/x86/kvm/x86.c does something weird
->     * drivers/char/random.c might need some care
->     * watchdog needs to be (de-)activated
->     
-> 5) HK_TYPE_DOMAIN:
->     * This one I fear is not mutable, this is isolcpus...
+On 2/8/24 12:47, Alice Ryhl wrote:
+> [...]
+> +    /// Maps the page and reads from it into the given buffer.
+> +    ///
+> +    /// This method will perform bounds checks on the page offset. If `offset ..
+> +    /// offset+len` goes outside ot the page, then this call returns `EINVAL`.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// * Callers must ensure that `dst` is valid for writing `len` bytes.
+> +    /// * Callers must ensure that this call does not race with a write to the
+> +    ///   same page that overlaps with this read.
 
-HK_TYPE_DOMAIN is already available via the current cpuset isolated 
-partition functionality. What I am currently doing is to extend that to 
-other HK_TYPE* flags.
+This safety section says that a call mustn't race with a page that
+overlaps this read, hmmmmm.
 
+> +    pub unsafe fn read_raw(&self, dst: *mut u8, offset: usize, len: usize) -> Result {
+> +        self.with_pointer_into_page(offset, len, move |src| {
+> +            // SAFETY: If `with_pointer_into_page` calls into this closure, then
+> +            // it has performed a bounds check and guarantees that `src` is
+> +            // valid for `len` bytes.
+> +            //
+> +            // There caller guarantees that there is no data race.
+> +            unsafe { ptr::copy(src, dst, len) };
 
->
-> 6) HK_TYPE_MANAGED_IRQ:
->     * I prefer not to think about it :-)
->
-> 7) HK_TYPE_TICK:
->     * Maybe some tiny ticks internals to revisit, I'll check that.
->     * There is a remote tick to take into consideration, but again the
->       CPUs are offline so it shouldn't be too complicated.
->
-> 8) HK_TYPE_WQ:
->     * Fortunately we already have all the mutable interface in place.
->       But we must make it live nicely with the sysfs workqueue affinity
->       files.
+If `src` and `dst` overlap then wouldn't that be a bad idea? If so then
+how about mentioning that callers have to ensure that `dst` does not
+overlap with the page that's being read and use
+`core::ptr::copy_nonoverlapping` instead, otherwise the doc comment
+could mention that `dst` can overlap.
 
-HK_TYPE_WQ is basically done and it is going to work properly with the 
-workqueue affinity sysfs files. From the workqueue of view, HK_TYPE_WQ 
-is currently treated the same as HK_TYPE_DOMAIN.
+> +            Ok(())
+> +        })
+> +    }
+> +
+> +    /// Maps the page and writes into it from the given buffer.
+> +    ///
+> +    /// This method will perform bounds checks on the page offset. If `offset ..
+> +    /// offset+len` goes outside ot the page, then this call returns `EINVAL`.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// * Callers must ensure that `src` is valid for reading `len` bytes.
+> +    /// * Callers must ensure that this call does not race with a read or write
+> +    ///   to the same page that overlaps with this write.
+> +    pub unsafe fn write_raw(&self, src: *const u8, offset: usize, len: usize) -> Result {
+> +        self.with_pointer_into_page(offset, len, move |dst| {
+> +            // SAFETY: If `with_pointer_into_page` calls into this closure, then
+> +            // it has performed a bounds check and guarantees that `dst` is
+> +            // valid for `len` bytes.
+> +            //
+> +            // There caller guarantees that there is no data race.
+> +            unsafe { ptr::copy(src, dst, len) };
 
->
-> 9) HK_FLAG_SCHED:
->     * Oops, this one is ignored by nohz_full/isolcpus, isn't it?
->     Should be removed?
-I don't think HK_FLAG_SCHED is being used at all. So I believe we should 
-remove it to avoid confusion.
->
-> 10) HK_TYPE_RCU:
->      * That's point 3) and also some kthreads to affine, which leads us
->       to the following in HK_TYPE_KTHREAD:
->
-> 11) HK_FLAG_KTHREAD:
->      * I'm guessing it's fine as long as isolation_full is also an
->        isolated partition. Then unbound kthreads shouldn't run there.
+Same as above
 
-Yes, isolation_full applies only to isolated partitions. It extends the 
-amount of CPU isolation by enabling all the other CPU available 
-isolation flags.
-
-Cheers,
-Longman
-
+> +            Ok(())
+> +        })
+> +    }
+> [...]
 
