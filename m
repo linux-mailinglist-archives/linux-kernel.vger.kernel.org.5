@@ -1,129 +1,127 @@
-Return-Path: <linux-kernel+bounces-60335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90FCC85034E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:40:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2092850350
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:41:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52C3E28329F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:40:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67B851F212B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:41:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695022E632;
-	Sat, 10 Feb 2024 07:40:25 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4678E2B9D0;
-	Sat, 10 Feb 2024 07:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25AEC2B9D0;
+	Sat, 10 Feb 2024 07:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="gb9FrysG"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B757927471
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:41:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707550825; cv=none; b=RfzZ0mjWxVwhLBhIxqcn9Gl1Q9F/IthGiADwuStyRFhcLYGubQiXXZ9u20+5UK8n7sgQIfD6nLQpxr7cIewaexmbFA7R7Fldz1FnVOX9+sgVsXmtJ4U7327yZt7SLvLxHOP4/u6H4PLZ4weBTfGcf0t4PLQTDeILWoebxtd+Udg=
+	t=1707550900; cv=none; b=WCttqGEeVhotXJ9dNaORjkSStEKl2D4DetQIHgc+tyOxEwThuyQ9vHJE98G4VDI1PrKr7tkQW9Uz/N90zyGhzhzVH6bBgM2y1jq9m2UXrpIKkQK8+tVOMfRfSmvTQqdPdbVXeZnr8B4YfWdpkdy4iDr91/Lr83FMfcC/5XVot34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707550825; c=relaxed/simple;
-	bh=+KkQP8rPRxFALZmaH1W8EE1iXXA0ldVNrbhffLjpYBo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ez1gi0AhamDn3nmb89UhjrGJmjcmlElPz52N2UYZ4IMpAIUfi/EZYI/GHdHOiB2rMuJBRF0jb2kG6Rorvms1/j43JrHav+qF36vracRl43M8PkaoZOAcwBRawlKR48e+XePPT7xE9OfsH38Y0GmmyKkzxgTUe2WXmg0BqOrbakU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E250DA7;
-	Fri,  9 Feb 2024 23:41:02 -0800 (PST)
-Received: from [10.57.65.183] (unknown [10.57.65.183])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 027533F762;
-	Fri,  9 Feb 2024 23:40:18 -0800 (PST)
-Message-ID: <17c0b7a1-6ec2-4504-8287-f0fa111b9748@arm.com>
-Date: Sat, 10 Feb 2024 07:40:16 +0000
+	s=arc-20240116; t=1707550900; c=relaxed/simple;
+	bh=B5Al9ZnS7QlBXv3l9vo86GjjY0RgUDiapvTDHOJYJTw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pNTjJw/owICQssTC4YsAXvLPjKSEUk380VzHtq9w+FrJS3HAiMhuDygqQZjUAsZ0Wof/2WREzFMryJdMOXwp0NCbAto7B8/CtSP6zR85cUYwU3ylvZlvZwen8au0PA9CjtPgbIXAUqOdNYpVhJo5gY2jG+CMIq8PxGZpD40vW0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=gb9FrysG; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so1670195276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 23:41:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1707550897; x=1708155697; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B5Al9ZnS7QlBXv3l9vo86GjjY0RgUDiapvTDHOJYJTw=;
+        b=gb9FrysGKkvT19tkjG2QIs8WkRCoiMR9LfseiFCMAYUUztoCET0nbec3vQGCKHtdhG
+         rNnaHyzLtt3XdiWpm94mhBNO9B8gdU03eI1Mgs2Mx47ryF9+vT/B/HhE4UPuWaFiHe7K
+         s5Y0SNeM0w1ecZAPtnABVx3pS5u0/bFkSWwph0mmcRfo3bT7pmVhluBdr9pFFzxyuQil
+         nhV42JfzGDvxJ2btM4cmK0OPcAGjEpxWn8Vf1LvgSH8XRPv6l33yPxcPA9AufSh6rqHm
+         WSKA4VpsUkBKm9/ZDE+IR/pZL47OiAPskrxiA0mLwBa5Q/2rHzIcqgzXLMdg1Ral4djn
+         uy4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707550897; x=1708155697;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B5Al9ZnS7QlBXv3l9vo86GjjY0RgUDiapvTDHOJYJTw=;
+        b=hjx029cqSkL/qzPWFP3NI0CE7+zrycBY09q50cxJuVpxqZv8TZV5Cx0TWdJizWZeME
+         qS9PaZOa5RKbhlGqjVjNJ5vJmJWbcCP3utGxDtvyv8DTaIccZvAWdhJ3St6qQuTqKqro
+         laW+LV+4IJbDz9CTq5SxGIdM+OIBsnwTN2ayElvZaeWxtJCJhSIotJFFwnvv2m8zvfN2
+         ZzkMyQTqyqkAfwVA4fQIYBUknYSObzaltrf4Wdev4rJPnwH3SQ2jkhHOBTmp7tDNpeyx
+         Qfr0jBXxLY/9PmnkITC5bk1xbnkWTW9sPbFo4PHRKkIB4h4h8EZKM0LGQNaEFd9dGsrW
+         h0Tg==
+X-Forwarded-Encrypted: i=1; AJvYcCXsKnyPklGTSUROZoxykoQIC8ItdZRhpVzZolheWexzVCRE5V+a4jQaSINC5LCHykgK9yIhrqpP+p5Di93ufyKrCB/BuYQYQjdER8RW
+X-Gm-Message-State: AOJu0Yx9igxhu/I4AhynrIYTEnczDSZGQOqFN49th8zKa/t+dR3G5gTt
+	lYW1jdXQplnz/+JZ/bKJfpypTfvVRgGdxQmJGgH9PQvQt2DEGagPPEBRSUd8Mfg27d+CeLlbnN6
+	VzlkoBhFLNCmaH26BqyoynwbCeVt30SZTiGpQAw==
+X-Google-Smtp-Source: AGHT+IHnlbSj0FDHgzJpeBPkGo7B3cT6BizUO+df4LqH/hYdfFmyafJnmzZ3R2Vcwt0bJ+2DTH/8T9e1RbiMTDAM9QY=
+X-Received: by 2002:a05:6902:542:b0:dc6:6307:d188 with SMTP id
+ z2-20020a056902054200b00dc66307d188mr1258983ybs.25.1707550897730; Fri, 09 Feb
+ 2024 23:41:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/mm: Don't needlessly use sudo to obtain root in
- run_vmtests.sh
-Content-Language: en-GB
-To: Mark Brown <broonie@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240209-kselftest-mm-check-deps-v1-1-19b09b151522@kernel.org>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240209-kselftest-mm-check-deps-v1-1-19b09b151522@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240209-alice-file-v5-0-a37886783025@google.com> <20240209-alice-file-v5-6-a37886783025@google.com>
+In-Reply-To: <20240209-alice-file-v5-6-a37886783025@google.com>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Sat, 10 Feb 2024 01:41:27 -0600
+Message-ID: <CALNs47vbaMgsJLwLZ0QJFQ=ckaihhYfueV4tRAFhk7jjEhOjKw@mail.gmail.com>
+Subject: Re: [PATCH v5 6/9] rust: file: add `FileDescriptorReservation`
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 09/02/2024 20:21, Mark Brown wrote:
-> When opening yama/ptrace_scope we unconditionally use sudo to ensure we
-> are running as root, resulting in failures if running in a minimal root
-> filesystem where sudo is not installed. Since automated test systems will
-> typically just run all of kselftest as root (and many kselftests rely on
-> this for full functionality) add a check to see if we're already root and
-> only invoke sudo if not.
+On Fri, Feb 9, 2024 at 5:21=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
+ote:
+>
+> From: Wedson Almeida Filho <wedsonaf@gmail.com>
+>
+> Allow for the creation of a file descriptor in two steps: first, we
+> reserve a slot for it, then we commit or drop the reservation. The first
+> step may fail (e.g., the current process ran out of available slots),
+> but commit and drop never fail (and are mutually exclusive).
+>
+> This is needed by Rust Binder when fds are sent from one process to
+> another. It has to be a two-step process to properly handle the case
+> where multiple fds are sent: The operation must fail or succeed
+> atomically, which we achieve by first reserving the fds we need, and
+> only installing the files once we have reserved enough fds to send the
+> files.
+>
+> Fd reservations assume that the value of `current` does not change
+> between the call to get_unused_fd_flags and the call to fd_install (or
+> put_unused_fd). By not implementing the Send trait, this abstraction
+> ensures that the `FileDescriptorReservation` cannot be moved into a
+> different process.
+>
+> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
+> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
+> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 
-I don't really see the point of this. run_vmtests.sh needs to be run as root;
-there are lots of operations that depend on it and most tests will fail if not
-root. So I think it would be much cleaner just to remove this instance sudo.
-
-The problem that I was referring to yesterday, about needing sudo was for this case:
-
-CATEGORY="mlock" run_test sudo -u nobody ./on-fault-limit
-
-Here, we are using sudo to deprivilege ourselves from root and run
-on-fault-limit as nobody. This is required because the test is checking an
-rlimit that is only enforced for normal users.
-
-Somebody on list was talking about skipping this test if sudo wasn't present a
-couple of weeks back. Not sure if that happened.
-
-> 
-> Since I am unclear what the intended effect of the command being run is I
-> have not added any error handling for the case where we fail to obtain
-> root.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  tools/testing/selftests/mm/run_vmtests.sh | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-> index fe140a9f4f9d..c8ca830dba93 100755
-> --- a/tools/testing/selftests/mm/run_vmtests.sh
-> +++ b/tools/testing/selftests/mm/run_vmtests.sh
-> @@ -248,6 +248,17 @@ run_test() {
->  
->  echo "TAP version 13" | tap_output
->  
-> +HAVE_ROOT=0
-> +if [ "$(id -u)" = "0" ]; then
-> +	AS_ROOT=
-> +	HAVE_ROOT=1
-> +elif [ "$(command -v sudo)" != "" ]; then
-> +	AS_ROOT=sudo
-> +	HAVE_ROOT=1
-> +else
-> +	echo # WARNING: Unable to run as root
-> +fi
-> +
->  CATEGORY="hugetlb" run_test ./hugepage-mmap
->  
->  shmmax=$(cat /proc/sys/kernel/shmmax)
-> @@ -363,7 +374,8 @@ CATEGORY="hmm" run_test bash ./test_hmm.sh smoke
->  # MADV_POPULATE_READ and MADV_POPULATE_WRITE tests
->  CATEGORY="madv_populate" run_test ./madv_populate
->  
-> -(echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope 2>&1) | tap_prefix
-> +# FIXME: What if we can't get root?
-> +(echo 0 | ${AS_ROOT} tee /proc/sys/kernel/yama/ptrace_scope 2>&1) | tap_prefix
->  CATEGORY="memfd_secret" run_test ./memfd_secret
->  
->  # KSM KSM_MERGE_TIME_HUGE_PAGES test with size of 100
-> 
-> ---
-> base-commit: 445a555e0623387fa9b94e68e61681717e70200a
-> change-id: 20240209-kselftest-mm-check-deps-01a825e5fed4
-> 
-> Best regards,
-
+Reviewed-by: Trevor Gross <tmgross@umich.edu>
 
