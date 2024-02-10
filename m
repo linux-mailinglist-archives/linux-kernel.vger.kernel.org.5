@@ -1,129 +1,126 @@
-Return-Path: <linux-kernel+bounces-60494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F39958505AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:20:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 141508505B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:22:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B46B8281356
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:20:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E97CB242C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088885CDEE;
-	Sat, 10 Feb 2024 17:20:10 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C149D5CDEA;
+	Sat, 10 Feb 2024 17:22:12 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 500005CDD8
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 17:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 674045BAF7
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 17:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707585609; cv=none; b=fw9O+YVEUmsBQ76/K7iekhoyRp/g0DpieerQc3CF9grStzYVwmQz1LfL2lOvsQyGPdMLZ7N2c7DYyc1FptwH3jIJw4WI+0TV0fHkeKPO+6MYC9lT0VoDyhV4ybEAKjs2BdlAE/vakmPf7CN71zqJkWYbprySGkCq1Gu0603BtL4=
+	t=1707585732; cv=none; b=lx2TSGJ5EcGrZi8MFQC4JSHhybgRpZl5cHZj2KdRZJOZ7zr6q7JeZ4LXjMkZbFEdjI1ZbS7vaYtlGhkFZ6g/GvNXu18jwv6jBOW1GhVDNCogWNBYzI1UW85SIcDEQenXk2TUGpNb8nhDt+0dK21bDKz4i+ZjnjmqFDmt7lT81yI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707585609; c=relaxed/simple;
-	bh=thHZbms70+r1Plin277E28ipagQgIRlFpWToc/CSe14=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=deZOKoe/IX0raVtiOd4whQ1/M/Fbp4jclHV4XxSMRn8VEBw3Oe9XreFLP7kl2yRKWy/VlWxzdGDGrib37BNxv+sZpxJP9FQxt0/N/vRQI420f4epLg/QoomC0PxZaN5ERyHj3q9NafuQzHre52LYfsOmccB6BykgeRXE05I3urg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rYr19-0003R7-0y; Sat, 10 Feb 2024 18:19:55 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rYr17-005ibu-V6; Sat, 10 Feb 2024 18:19:53 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rYr17-002FPS-2p;
-	Sat, 10 Feb 2024 18:19:53 +0100
-Date: Sat, 10 Feb 2024 18:19:53 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com, 
-	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com, linux-pwm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] pwm: dwc: Add 16 channel support for Intel
- Elkhart Lake
-Message-ID: <42pjh4zpbsyfdi6njcwhpoyllmqr6vv7u5h2lfakrje4dzitfj@3bsynlfj5mjj>
-References: <20240208070529.28562-1-raag.jadav@intel.com>
- <20240208070529.28562-3-raag.jadav@intel.com>
- <ZcUNe09gDtkztmbk@smile.fi.intel.com>
- <ZcZ6kUkf-GktlU4p@black.fi.intel.com>
- <ZcZ__nnOz1QA7uUZ@smile.fi.intel.com>
+	s=arc-20240116; t=1707585732; c=relaxed/simple;
+	bh=rbqMNhAMKFifaFYV+ZaFMyKtvq2I6Yd+9RUVEQM8R/E=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=XCTpmBi5+/5lvJnsJIujXC0+AhXj2XckuHYsSbspo0YToGtuLDaMy+9g1+9mMgYI1WtYNrZCSRu7Q6kAdQpZdj1VOo5SlbArBmjqKxr4BC6dXQZA92uSTDGc3Se2Je7fsTEy7dmXgW/47dio/dSZZD52IhyqWvuZ18d87ocIw6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-232-dhyRpcqeMt6KzxuBy0ecIw-1; Sat, 10 Feb 2024 17:22:06 +0000
+X-MC-Unique: dhyRpcqeMt6KzxuBy0ecIw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 10 Feb
+ 2024 17:21:45 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 10 Feb 2024 17:21:45 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Sean Christopherson' <seanjc@google.com>, Linus Torvalds
+	<torvalds@linux-foundation.org>
+CC: Nick Desaulniers <ndesaulniers@google.com>, Uros Bizjak
+	<ubizjak@gmail.com>, Jakub Jelinek <jakub@redhat.com>, "Andrew Pinski (QUIC)"
+	<quic_apinski@quicinc.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
+	"Peter Zijlstra" <peterz@infradead.org>, "kvm@vger.kernel.org"
+	<kvm@vger.kernel.org>
+Subject: RE: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on gcc-11
+ (and earlier)
+Thread-Topic: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on
+ gcc-11 (and earlier)
+Thread-Index: AQHaW6GAqckjYnd4VEGhBeXgBOKGT7ED0v0Q
+Date: Sat, 10 Feb 2024 17:21:45 +0000
+Message-ID: <9ba89b70e48143a69f76f6e0f276f149@AcuMS.aculab.com>
+References: <20240208220604.140859-1-seanjc@google.com>
+ <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
+ <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
+ <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
+ <ZcZyWrawr1NUCiQZ@google.com>
+ <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
+ <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
+ <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com>
+ <ZcadTKwaSvvywNA9@google.com>
+In-Reply-To: <ZcadTKwaSvvywNA9@google.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7wrw5534ju6dbfhh"
-Content-Disposition: inline
-In-Reply-To: <ZcZ__nnOz1QA7uUZ@smile.fi.intel.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---7wrw5534ju6dbfhh
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
-
-On Fri, Feb 09, 2024 at 09:41:50PM +0200, Andy Shevchenko wrote:
-> On Fri, Feb 09, 2024 at 09:18:41PM +0200, Raag Jadav wrote:
-> > On Thu, Feb 08, 2024 at 07:20:59PM +0200, Andy Shevchenko wrote:
-> > > On Thu, Feb 08, 2024 at 12:35:26PM +0530, Raag Jadav wrote:
-> > > > Intel Elkhart Lake PSE includes two instances of PWM as a single PCI
-> > > > function with 8 channels each. Add support for the remaining channe=
-ls.
-> > >=20
-> > > Side Q: Have you used --histogram diff algo when prepared the series?
-> > > If no, it's better to start using it.
-> >=20
-> > I used it for a few weeks, but I think I've grown a bit too comfortable
-> > with patience.
-> >=20
-> > I'll use histogram for pinctrl stuff if you insist :)
+From: Sean Christopherson
+> Sent: 09 February 2024 21:47
 >=20
-> It's recommended by Torvalds:
-> https://lore.kernel.org/linux-gpio/CAHk-=3DwiVNOFP1dzKdCqXvoery5p8QoBB5TH=
-iJUMbZ1TxJb7FhQ@mail.gmail.com/
+> On Fri, Feb 09, 2024, Linus Torvalds wrote:
+> > Sean? Does this work for the case you noticed?
+>=20
+> Yep.  You can quite literally see the effect of the asm("").  A "good" se=
+quence
+> directly propagates the result from the VMREAD's destination register to =
+its
+> final destination
+>=20
+>   <+1756>:  mov    $0x280e,%r13d
+>   <+1762>:  vmread %r13,%r13
+>   <+1766>:  jbe    0x209fa <sync_vmcs02_to_vmcs12+1834>
+>   <+1768>:  mov    %r13,0xe8(%rbx)
+>=20
+> whereas the "bad" sequence bounces through a different register.
+>=20
+>   <+1780>:  mov    $0x2810,%eax
+>   <+1785>:  vmread %rax,%rax
+>   <+1788>:  jbe    0x209e4 <sync_vmcs02_to_vmcs12+1812>
+>   <+1790>:  mov    %rax,%r12
+>   <+1793>:  mov    %r12,0xf0(%rbx)
+..
 
-BTW, the magic to use it by default is:
+Annoying, but I doubt it is measurable in this case.
+Firstly it could easily be a 'free' register rename.
+Secondly isn't vmread horribly slow anyway, so an extra
+clock or two won't matter?
 
-	git config --global diff.algorithm histogram
+The double register move that OPTIMER_HIDE_VAR() often
+generates is another matter entirely :-)
+In the old days the peephole optimiser would (should?)
+have removed most of these.
 
-Best regards
-Uwe
+=09David
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
---7wrw5534ju6dbfhh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXHsDgACgkQj4D7WH0S
-/k7o5ggAuZAAcD9U3AFoaxdfFfcjxJhpQeZsp94PbGD54FrscKmHbUW7FW1Xa8cW
-AD/a8f3huc9jkcrTKPCcTy+S3j3PmDhtvbTuIYnfqPeRxt013vtn8Z/gQg2qoCqB
-WWpOENycPaPsB+KaW9ho2ysg4nu2WwWB9Eoz+NIJz4B/On8IiJMO6/uvt5dKDtFE
-CKt/1FqIviC0bnfWQVgqfniKhIZS0kSGEymCiJbZoEGoFdUxTMV69uDwCXOs9Zt+
-Vv6Sd3VomCSfFwQVcJaATkC1K4mj3Ls8Pkkb5aqqlkP54g2kF4Qr6DkBjJAob7Go
-k4/AVWOEytofWkSbooZJ2rp0kHWmng==
-=k0XE
------END PGP SIGNATURE-----
-
---7wrw5534ju6dbfhh--
 
