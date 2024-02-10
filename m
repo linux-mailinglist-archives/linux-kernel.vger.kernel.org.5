@@ -1,195 +1,148 @@
-Return-Path: <linux-kernel+bounces-60253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A45BF850242
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:46:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91C37850246
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:59:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8ADD1C23A11
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 02:46:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4A2A1C240C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 02:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE5F1539C;
-	Sat, 10 Feb 2024 02:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44AE953B8;
+	Sat, 10 Feb 2024 02:59:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="bBDt3Or0"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="syYrFvDR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00BD4C81
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 02:46:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657AF5226;
+	Sat, 10 Feb 2024 02:59:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707533206; cv=none; b=ui35AHWzYh+DWmPSO1KLqQkQvFWWt8smY1KZ5zkYoZ6PkbUVFHlgqnopFRvgLa16Tg3WyJape+YyI45xrkmCvVrgjHn7/5+RRVCndf59flEImPjrXwMXO6ZOR1F1FbuhRLj0jnwHhbMpCIr+ngDz756Lf637Whw30nuvVJLG0KM=
+	t=1707533976; cv=none; b=stoYyxEAhke4ebkMQp3jHJn7LdGcxnYjFTV8FRDyT3xYjOe9iG3fp04FpefoEV9BZ7khQtAaBnF4Kv94m8hp0vr50hAal0Y09uuYNh4krqgiZ70TtD90Mn5vP33ZbPqIiJgGgj8eRsSIaZ42Rhsar+p+uYV7PDFOJ8NDdVB+zhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707533206; c=relaxed/simple;
-	bh=uLiR7Kz1MbofB8E4x+ZPySEkA1M0AMIiXoKEeJbpDXM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YLEsNYx7UKPsb12MktINtPVtcjDfdc2/mb4KWbeug4SkdlXPIC6njcKYp8EwIMJyyNKzXXs8rFnPr4zlb+7FFA0nqWbp4p8m0qvlNWdC/Y3XG1OTpeqccJeLOYrDqVM74u43nuhHAbHkxM1QuujwLBNycsdR/7jdLC7/gH7/43E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bBDt3Or0; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d89f0ab02bso50995ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 18:46:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707533203; x=1708138003; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gvPi1gupQqIT9F22A3YjxH75GO/tG9qnD/uz9dNXdsA=;
-        b=bBDt3Or0HXwHv8cIE4k9ENtqtkvQICUKscvsTOiZXGGSfucELfFJLHJDCUVgyrtbbS
-         Xn1seiv+0YdtiNrD8v6EQ4on3+maY9OgenyG+DZX/xNgUxEb4yftqHaN7JnD9Rf7O41Y
-         PXMJCF00fmv0s1kpcsVzeESt+eaDXZBsXyCjD1wvpZjcmvPrOPaiLcNjT5WwPxUUOv0v
-         Ztc6MfMOiYe8IvDxVxWoohv10pbHx5I1q80ehi4jPYHlKnPhC2AsKMBfFXj+AVmhOIXn
-         wZLyIg56rcy0Tx21R7zmMHsU4yeJgdolAJ0ZmgfWcYN/efk9ewHYWPb3GSzbNj1NTIdf
-         lrzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707533203; x=1708138003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gvPi1gupQqIT9F22A3YjxH75GO/tG9qnD/uz9dNXdsA=;
-        b=HT6KYiIGk1DDpGN5TOOwvbHJ8eUVBkV5zcQfW5FKeVmXOR/XIzs0ot4iVLQIiLYaxy
-         X5G02kdhZRP0Yp156/orNqxWJ9sn7otBmRk7KwA5mqufgpEQbgmvd1SKq9o1R5eVLaSW
-         lvjYOTqtZOdhDhmOnGxTB4t7lNjpjykBooCBR6k5YXnbagbVYm2gbXGSp2kmuzYPinbT
-         r6TQS5dvzkDgVaiHcoGQmMxZu36OyL9eknDg4O0Vk1t8R/czXGb1cXX2QN/OaOv5Ihuv
-         ME/fEC2FwlqAEA3AfsbjNQOzrdwQapPL49mALtqQ/wX3EE1THXrsj5dTJ7Q+QnV9Y0X5
-         4yHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU45iSqd4EPx/fs5BbxIg0l+PnnJC3WkDLWykOyNnoAhqbEUq5yndTs1FjXP8aPo55XiLvbhPKH368fxO7DwiZv44BZT4Tj9ncKEHF6
-X-Gm-Message-State: AOJu0Yyol+GWp7LVOfDaVCsxzI/P2Q7WS3hLX50VHjnMn4uB6G2NpYrg
-	/8+tUETTD/qWAi8bZhrfUkOM9PxpI/YWjeJeVUvHRwo9irFfxOi4umteZHE31XMZCPp2R/p1nsi
-	DLHg0FvXlDyJD9UFKtq3q6vHsKfqtUyFt5YRgUcEkn+VCuhWqz5bnowc=
-X-Google-Smtp-Source: AGHT+IGTCvpDi/N93KDltxbd+jCsgx+d2H4/3YL9Lk68bhh5nVQRaWaPF8hEL4Kp36NHmdjWMtDnU0IrZiIHcdBg/KA=
-X-Received: by 2002:a17:903:44b:b0:1d9:a393:4a38 with SMTP id
- iw11-20020a170903044b00b001d9a3934a38mr38401plb.26.1707533202817; Fri, 09 Feb
- 2024 18:46:42 -0800 (PST)
+	s=arc-20240116; t=1707533976; c=relaxed/simple;
+	bh=2lP+NSQhJ4c3moxHDlaunCfBTdIXLlNuFrDcFX1+1pE=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=nJHgTKX9g7+PGXh4dzsinlMNJFiIXhlEpbSuFScK8IB94q8nT5anSFwrCjPoXqCBAEWOjsbdKPfcmD8Ek0TSaNx65gmJvlrNVQR79sBsC29jhMD7La0jntORTD3Rl4uOlJdps2kUU/gEgOaPNO5WcAf9ONZzh445EBFwYu2L43k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=syYrFvDR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A872DC433F1;
+	Sat, 10 Feb 2024 02:59:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707533975;
+	bh=2lP+NSQhJ4c3moxHDlaunCfBTdIXLlNuFrDcFX1+1pE=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=syYrFvDRzT653oWWDp8sFGcDJPCsnBbiq/Rh5N533i/1ZAPuPKKfb2urx8dmIPuxN
+	 HvhWAo0LRLHoZLAfmr+r8pi/UTRSALYpQUk6iRbffi526uRWZXB8K7peKdASwUJiCx
+	 hueU0WPHflJ4Jouf6M2u3HuOlk+5SUEDEV+3OWMvW/UszAAS1QroWA/xKpM3O9AuuS
+	 MHyjv9m76ReLhXjfE20Nb2pXg4I4YocmFKiCYiGBtNOGuT4eKGTg8pwTJ8apJK9PHF
+	 KCTKL9oq6/oGGyP2PYqxSgpDqQeEr5ETzpglwUB0YrFKfLt9CvbFjX1mK5MJqw6Nor
+	 0EeXid8XjhdDg==
+Message-ID: <2185a3cc3152a0b9a94b0c64353bc9a1.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207223639.3139601-1-irogers@google.com> <CAM9d7chBixXozCQztM2WKGbfs_8C70vy6ROzKpwLSqq-upz5iQ@mail.gmail.com>
-In-Reply-To: <CAM9d7chBixXozCQztM2WKGbfs_8C70vy6ROzKpwLSqq-upz5iQ@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 9 Feb 2024 18:46:31 -0800
-Message-ID: <CAP-5=fUVkaq3dDoeMYYEN1N-ghnL-GiP8PV3N3pWpjQKpDTCHw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] maps memory improvements and fixes
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Miguel Ojeda <ojeda@kernel.org>, Liam Howlett <liam.howlett@oracle.com>, 
-	Colin Ian King <colin.i.king@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Artem Savkov <asavkov@redhat.com>, Changbin Du <changbin.du@huawei.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMuHMdUuP5Ya2gU3V_ET=Ji_+yx+jr7eCch5uDJSqvQN9jJM3g@mail.gmail.com>
+References: <20240202195909.3458162-1-sboyd@kernel.org> <20240202195909.3458162-8-sboyd@kernel.org> <CABVgOS=A8BQ6HHpBKFqg-N10ckk2XYavaS-MPXvZ0wenrVm=1g@mail.gmail.com> <89892ecd6b1b043db58258705c32b02b.sboyd@kernel.org> <CAMuHMdUuP5Ya2gU3V_ET=Ji_+yx+jr7eCch5uDJSqvQN9jJM3g@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] of: Add KUnit test to confirm DTB is loaded
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: David Gow <davidgow@google.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, patches@lists.linux.dev, linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Brendan Higgins <brendan.higgins@linux.dev>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 09 Feb 2024 18:59:33 -0800
+User-Agent: alot/0.10
 
-On Thu, Feb 8, 2024 at 9:44=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Hi Ian,
->
-> On Wed, Feb 7, 2024 at 2:37=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+Quoting Geert Uytterhoeven (2024-02-05 11:55:29)
+> On Mon, Feb 5, 2024 at 8:19=E2=80=AFPM Stephen Boyd <sboyd@kernel.org> wr=
 ote:
+> > Quoting David Gow (2024-02-02 20:10:17)
+> > > On Sat, 3 Feb 2024 at 03:59, Stephen Boyd <sboyd@kernel.org> wrote:
+> > > > Add a KUnit test that confirms a DTB has been loaded, i.e. there is=
+ a
+> > > > root node, and that the of_have_populated_dt() API works properly.
+> > > >
+> > > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > > Cc: Frank Rowand <frowand.list@gmail.com>
+> > > > Cc: David Gow <davidgow@google.com>
+> > > > Cc: Brendan Higgins <brendan.higgins@linux.dev>
+> > > > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> > > > ---
+> > >
+> > > This looks pretty good to me test-wise, though it still fails on m68k.
+> > > (Everything else I tried it on works, though I've definitely not tried
+> > > _every_ architecture.)
+> > >
+> > > aarch64: PASSED
+> > > i386: PASSED
+> > > x86_64: PASSED
+> > > x86_64 KASAN: PASSED
+> > > powerpc64: PASSED
+> > > UML: PASSED
+> > > UML LLVM: PASSED
+> > > m68k: FAILED
+> > > > $ qemu-system-m68k -nodefaults -m 1024 -kernel .kunit-all-m68k/vmli=
+nux -append 'kunit.enable=3D1 console=3Dhvc0 kunit_shutdown=3Dreboot' -no-r=
+eboot -nographic -serial stdio -machine virt
+> > > > [11:55:05] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D dtb (2 subtests) =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> > > > [11:55:05] # dtb_root_node_found_by_path: EXPECTATION FAILED at dri=
+vers/of/of_test.c:18
+> > > > [11:55:05] Expected np is not null, but is
+> > > > [11:55:05] [FAILED] dtb_root_node_found_by_path
+> > > > [11:55:05] # dtb_root_node_populates_of_root: EXPECTATION FAILED at=
+ drivers/of/of_test.c:28
+> > > > [11:55:05] Expected of_root is not null, but is
+> > > > [11:55:05] [FAILED] dtb_root_node_populates_of_root
+> > > > [11:55:05]     # module: of_test
+> > > > [11:55:05] # dtb: pass:0 fail:2 skip:0 total:2
+> > > > [11:55:05] # Totals: pass:0 fail:2 skip:0 total:2
+> > > > [11:55:05] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D [FAILED] dtb =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
 > >
-> > First 6 patches from:
-> > https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@google.co=
-m/
-> >
-> > v2. Fix NO_LIBUNWIND=3D1 build issue.
-> >
-> > Ian Rogers (6):
-> >   perf maps: Switch from rbtree to lazily sorted array for addresses
-> >   perf maps: Get map before returning in maps__find
-> >   perf maps: Get map before returning in maps__find_by_name
-> >   perf maps: Get map before returning in maps__find_next_entry
-> >   perf maps: Hide maps internals
-> >   perf maps: Locking tidy up of nr_maps
->
-> Now I see a perf test failure on the vmlinux test:
->
-> $ sudo ./perf test -v vmlinux
->   1: vmlinux symtab matches kallsyms                                 :
-> --- start ---
-> test child forked, pid 4164115
-> /proc/{kallsyms,modules} inconsistency while looking for
-> "[__builtin__kprobes]" module!
-> /proc/{kallsyms,modules} inconsistency while looking for
-> "[__builtin__kprobes]" module!
-> /proc/{kallsyms,modules} inconsistency while looking for
-> "[__builtin__ftrace]" module!
-> Looking at the vmlinux_path (8 entries long)
-> Using /usr/lib/debug/boot/vmlinux-6.5.13-1rodete2-amd64 for symbols
-> perf: Segmentation fault
-> Obtained 16 stack frames.
-> ./perf(+0x1b7dcd) [0x55c40be97dcd]
-> ./perf(+0x1b7eb7) [0x55c40be97eb7]
-> /lib/x86_64-linux-gnu/libc.so.6(+0x3c510) [0x7f33d7a5a510]
-> ./perf(+0x1c2e9c) [0x55c40bea2e9c]
-> ./perf(+0x1c43f6) [0x55c40bea43f6]
-> ./perf(+0x1c4649) [0x55c40bea4649]
-> ./perf(+0x1c46d3) [0x55c40bea46d3]
-> ./perf(+0x1c7303) [0x55c40bea7303]
-> ./perf(+0x1c70b5) [0x55c40bea70b5]
-> ./perf(+0x1c73e6) [0x55c40bea73e6]
-> ./perf(+0x11833e) [0x55c40bdf833e]
-> ./perf(+0x118f78) [0x55c40bdf8f78]
-> ./perf(+0x103d49) [0x55c40bde3d49]
-> ./perf(+0x103e75) [0x55c40bde3e75]
-> ./perf(+0x1044c0) [0x55c40bde44c0]
-> ./perf(+0x104de0) [0x55c40bde4de0]
-> test child interrupted
-> ---- end ----
-> vmlinux symtab matches kallsyms: FAILED!
+> > Ah yeah I forgot to mention that. m68k fails because it doesn't call the
+> > unflatten_(and_copy)?_device_tree() function, so we don't populate a
+> > root node on that architecture. One solution would be to make CONFIG_OF
+> > unavailable on m68k. Or we have to make sure DT works on any
+> > architecture. Rob, what do you prefer here?
+>=20
+> I guess the latter?
+> Alpha, hexagon, parisc, s390, and sparc are also lacking calls
+> to unflatten.*device_tree().
+>=20
 
-Ah, tripped over a latent bug summarized in this part of an asan stack trac=
-e:
-```
-freed by thread T0 here:
-   #0 0x7fa13bcd74b5 in __interceptor_realloc
-./../../../src/libsanitizer/asan/asan_malloc_linux.cpp:85
-   #1 0x561d66377713 in __maps__insert util/maps.c:353
-   #2 0x561d66377b89 in maps__insert util/maps.c:413
-   #3 0x561d6652911d in dso__process_kernel_symbol util/symbol-elf.c:1460
-   #4 0x561d6652aaae in dso__load_sym_internal util/symbol-elf.c:1675
-   #5 0x561d6652b6dc in dso__load_sym util/symbol-elf.c:1771
-   #6 0x561d66321a4e in dso__load util/symbol.c:1914
-   #7 0x561d66372cd9 in map__load util/map.c:353
-   #8 0x561d663730e7 in map__find_symbol_by_name_idx util/map.c:397
-   #9 0x561d663731e7 in map__find_symbol_by_name util/map.c:410
-   #10 0x561d66378208 in maps__find_symbol_by_name_cb util/maps.c:524
-   #11 0x561d66377f49 in maps__for_each_map util/maps.c:471
-   #12 0x561d663784a0 in maps__find_symbol_by_name util/maps.c:546
-   #13 0x561d662093e8 in machine__find_kernel_symbol_by_name util/machine.h=
-:243
-   #14 0x561d6620abbd in test__vmlinux_matches_kallsyms
-tests/vmlinux-kallsyms.c:330
-..
-```
-dso__process_kernel_symbol rewrites the kernel maps here:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/symbol-elf.c#n1378
-which resizes the maps_by_address array causing the maps__for_each_map
-iteration in frame 11 to be iterating over a stale/freed value.
+sparc does that on purpose. Perhaps it's simplest to call
+unflatten_device_tree() if of_root is still NULL after setup_arch()
+returns.
 
-The most correct solutions would be to clone the maps_by_address array
-prior to iteration, or reference count maps_by_address and its size.
-Neither of these solutions particularly appeal, so just reloading the
-maps_by_address and size on each iteration also fixes the problem, but
-possibly causes some maps to be skipped/repeated. I think this is
-acceptable correctness for the performance.
-
-Thanks,
-Ian
-
-> Thanks,
-> Namhyung
+---8<---
+diff --git a/init/main.c b/init/main.c
+index e24b0780fdff..02f5cf8be6c1 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -97,6 +97,8 @@
+ #include <linux/jump_label.h>
+ #include <linux/kcsan.h>
+ #include <linux/init_syscalls.h>
++#include <linux/of.h>
++#include <linux/of_fdt.h>
+ #include <linux/stackdepot.h>
+ #include <linux/randomize_kstack.h>
+ #include <net/net_namespace.h>
+@@ -895,6 +897,8 @@ void start_kernel(void)
+ 	pr_notice("%s", linux_banner);
+ 	early_security_init();
+ 	setup_arch(&command_line);
++	if (!of_root)
++		unflatten_device_tree();
+ 	setup_boot_config();
+ 	setup_command_line(command_line);
+ 	setup_nr_cpu_ids();
 
