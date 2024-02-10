@@ -1,120 +1,131 @@
-Return-Path: <linux-kernel+bounces-60523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7275850610
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 20:11:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC633850615
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 20:16:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D6E6B24068
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 19:11:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 922AA2854C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 19:16:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41315F56D;
-	Sat, 10 Feb 2024 19:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5075F567;
+	Sat, 10 Feb 2024 19:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Md2XEQjR"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K7ZBwBTJ"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43A75F549
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 19:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2422047F4B;
+	Sat, 10 Feb 2024 19:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707592295; cv=none; b=SdWfnq08RWN7Gl78/2R2Tbzvb9Mend4S9cAbaHH/nQk5fBDVwoH1i6GaWThMhPqq9VghaBo19ChDfy/FBCizN6dMAWXFoETuR7DcGUxaDJjxjB11Rwx/D6Ff3gQFHW/IBxybjMy9u9kAu3Bo4KNqtU+fnFBF+29Ht0ZfZ+3sVL8=
+	t=1707592561; cv=none; b=HlEC5DQ2dnT5HjUTdZhDOAuzUOcIhfVJNU2C01snYOX40p5evWmZZxX9MUhbNWe9Pg4tIeMRRan09l2r3OfFaJ/uV3lKE9FuSALhK4MrIViBHNVK+JKbGC4IPeuW38N6jzN7EP+KRqQoWJzLZ3MYpfAj52jjlwIGzCvNDrXEYKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707592295; c=relaxed/simple;
-	bh=x1GVwGorkcxO3IafmVnsCPl7EfeQZAKgg116i67uWXI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ck+M4TItzlYv0IysYTt9c0ChJmIpl4oTQplf+Iub1l1964pOUWQzKkJTxZ17Of0MQSPXD0X5hDzfCT4eEREqlXvsz1GbAivu+sJYK6Wh7hIzaKZMtytGN8L9uNQtiHPCdkMRBLO0GTPk5azAT8K96Yuw7YlUMjoGmeakqctHluc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Md2XEQjR; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3c3be8c988so48248666b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 11:11:31 -0800 (PST)
+	s=arc-20240116; t=1707592561; c=relaxed/simple;
+	bh=Hr5DTQhtEG2V6i/LKdZdekYO9OCFKxEe88RuI3FrWM0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YE1TlR7U63dn71kv8+Q3qATu6wfZAF1Xa/UlkOhSpVVLaVVjV/xgXKf5RxSOuPDffqlPKcB7F48skukqv0wG9BB+PN8Gioj9N/xu3qS9dy8o96QYlPVBHhtcqGdEfMThH4X9so0smdEkMHDCx9z+paVfTHWvvCEtkxAL12GoY1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K7ZBwBTJ; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so1354126a12.0;
+        Sat, 10 Feb 2024 11:15:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707592290; x=1708197090; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LEw2EnFXzQVU2p0mkCDlT1t0pyChlA/M+u/ewTeLVg8=;
-        b=Md2XEQjRapgSam1RkndwtnhBIv3IzIxZbgnC0YMxB+jcEEFtTgf5TE0OMNTSI2JuJo
-         racZVqE0L8xlygRZp24y7jq//YWoPoBPRaYJ+f5z5IxexF80XGsw221ofW335/mn03gU
-         cXuzf4/pFgkZ+0MpKmW4Srtm/0VJgk6HEG+TQQEK+nthppjoEsczu+0xpoOvV7fea6I7
-         VE795PiSP6a2tO/v+Cz9OvDcLlM8LEycyvnJW/phATcQhSIweORRYivp7ZiR/XCTTUnt
-         NbkcRLzWO/pTRYo4WS7eHXUasK9bjnUsAukIMYE5BPa9z+9FRl+vcYAzThqt62a9Gqk2
-         tOgA==
+        d=gmail.com; s=20230601; t=1707592559; x=1708197359; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=iDfKAj0v5RzuASeBKsae1qL39Hr/NnC2ebGMASs/ORc=;
+        b=K7ZBwBTJWWtjzFT8fs4UzYj+i8pQ7PNQmUouoWHk1RetiHXePzdlumSBOe+qgK6wSR
+         okdbMvMWhtZ2a5zK6yZ2wIgs7z/tmoZUNfTSFnRlHCkJwFW6maYbfefbzl2i35v19vM2
+         lVj6qnjRD6oCQPATIFRC2UNSGXUMKS1t9oi+/l2BPPgsWJegm7TwtBAaVHMsMg9oUKLN
+         W8uppTYU20TWnh9ACfw9JqA+EOzqlO9NKouD8czAHfaGa1o321D4ZZQx05y8Ut7ux+0A
+         xEph7s4WYz5ZXHryjl5yxitOF+DZo5D/S41pJzXYJmCGjEfy9G9sw3vs9Zsk1FrXYxS+
+         GhYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707592290; x=1708197090;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LEw2EnFXzQVU2p0mkCDlT1t0pyChlA/M+u/ewTeLVg8=;
-        b=XYbEY5kq8GZ3kf8wJffJGuSyktH39buSvL1QDYUTO6Fjr0Tc33bKljlvKCczbmE19J
-         Rm1gr6/q8Km7Dv2W+teRtegpY4//c4umv9oRcLp+22wv+FoC1vY9FdPkQa1KWin5wg8F
-         oRYrgmgnhtNTsfhaujiA5IzCsAD25qdVOwb8A/NYDuPQpphE8jP7SPjP3ChLJwIPcBrB
-         i1q0aLtxfAK2jeVjW+mqZjsq2QL5MnE2JtgtCRSEpcjFCrBJ3uZCf3y3ESFekihxjMG6
-         6ByBthgri+qS8exNL/+9CYHOKN1WOT8t4OlGuO9+9CVv4/b+GXTiPyUSDR4xFIqw1JCh
-         96CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUWV3qgxI10CS7GItQ/YeGGHZFWX1h0hOcSfbfaahcAwV8hMX9+ywTGOvEcVZwAqZ7WVrLscBTLdluNeorB7z0gs8uzHNkHXIzqzVJW
-X-Gm-Message-State: AOJu0YyISdkOt3cq30uV5A8VW44kKoWWScBxJqus+nMbpv5MG0Xuit+Z
-	X+IF7yRijSCj4ZdUHQ1RYIJfWSPxuwBNAi3V/G0mpo4iOH6BLn7LcyMSHZlX0Gg=
-X-Google-Smtp-Source: AGHT+IFQ1p9zAgzQOUSwl5Ea/XO5538HhUhx2MIaN+c3CTo0bUpLvWYiCGb3EOZeubpmv7KdMb4Lpw==
-X-Received: by 2002:a17:906:552:b0:a38:a174:1316 with SMTP id k18-20020a170906055200b00a38a1741316mr1910684eja.72.1707592289981;
-        Sat, 10 Feb 2024 11:11:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWiJrRAZbBqUDXJFWpkO0i+fsugtySrXkHVf/nkA66ymTNKN+pAUOFFjIqOwqSQrW4Oo/XrD4oJrk57DYMRjQC+gnbAQEvqZjIIveR9HzZw0qPE8I3EPPVIa2TT+7Di84fhT15I3NWIyknWFqblVVNW213nWW9x4j/KrKlhmx4QHbsMa+cYuiSnJB5MzR49nEC89AC1sIdBOROAko1SAoyG8tJdKkbW3njeLWpbPKKlAGYVsO0oesYed7a16kvV7/FPvplr8xO9Y+ud97ZONsUCfPNRnRcjpcfYiUi4QiDiKennm/kYxlyVZrPue9azFrCtZyn9pa9OsDe+oiu6TUf2nplRKErDDzCFzIKTUWCQJ6vl0vYg95nNyX3Sqb42puIfs6Kw6V6VQPFbf/wd11a54EwCpMGlM6dLQvxx
-Received: from [192.168.1.116] (abyl12.neoplus.adsl.tpnet.pl. [83.9.31.12])
-        by smtp.gmail.com with ESMTPSA id sf5-20020a1709078a8500b00a3bf0ab3f2bsm1789963ejc.21.2024.02.10.11.11.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Feb 2024 11:11:29 -0800 (PST)
-Message-ID: <9e1d7e08-ed17-4876-91df-f05529184e58@linaro.org>
-Date: Sat, 10 Feb 2024 20:11:25 +0100
+        d=1e100.net; s=20230601; t=1707592559; x=1708197359;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iDfKAj0v5RzuASeBKsae1qL39Hr/NnC2ebGMASs/ORc=;
+        b=fHW/lqPtu4q2qDth6zVrZS16SgIpd/oUDHWrB8t9dxY4vok/kJcshWVX2g4gM1LVym
+         /nRqq4pM8IJOv+BYd9cemUl683GN7I3LCEsOdIPmg52NtdklNZOw9hgLV8w0tRORZXrY
+         wc/fRYblhZMfCmgXxONc4e7Jv4KTsgovT7A6hiRaFm6Qoz1MOF7xjran6oojfpMsg8p8
+         XmEVe9leSMuR2VEAuiisNsaxttlBWl3Z3FBDinFlld6eGflxcfeYmIHZOSV1aeNIoBPK
+         P3+Wx/Z7EF5sMGv4Pu7Igh2hk+Tnn5LmEpfDqoQXJKZ0bGxHiWBH0XvYd+jewHSAcUTi
+         LLzg==
+X-Forwarded-Encrypted: i=1; AJvYcCUdOPTKCpeFlaF+UjvWuc4PPbZceWNG9dlh+8eOmaZQH93avvG9EmQlF1Sa+2pwYtU1clkBRcF2gOk3Uit/JK6wONPmRua5mvBnjiwYAJ5viK4VSz7sspla2PhTWni6cT6SI7W8q1Ji6UJM
+X-Gm-Message-State: AOJu0Yz6m1NjK77J+h/gx2oC+tjYSY6HiZyww4Zd2b+ZVgnWp1Q0vLAe
+	rcGvxnYfSasEug4rh4HxYOz3qCRNrHunLzGu+QXuaSFO33i0JzB/
+X-Google-Smtp-Source: AGHT+IFHCpdFR4msNmnbe4MRvNnQxnKmqk2SPXDSv6CJ03t/t44HNRdalPXSmLcgwHjC8N3kOsOi+Q==
+X-Received: by 2002:a05:6a21:3a87:b0:19c:b3e7:fe39 with SMTP id zv7-20020a056a213a8700b0019cb3e7fe39mr2763910pzb.0.1707592559228;
+        Sat, 10 Feb 2024 11:15:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUv1J/tvaE9WVliotr3VdvYKbFbvYl/n8c4814V1Lhe/W/AyK4sHsO0liPejvruKUFjIfyOMWXmzvC8b1gN29T7jwTakKtE8F40KxOMlAnPSNdSgVHoo/PFxY9ds1KR0ie0WeVytxJL/u1RZ/R2HNlCyQDaW3zfcdCpV7LWU1JMBWa0fZ8ErLKwxkde4V/iNVRHDq0dy5j6bQOj1XfyRIKXTStf5/fZy9sX
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id kx8-20020a17090b228800b00296f4f643d5sm3948962pjb.25.2024.02.10.11.15.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Feb 2024 11:15:58 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Helge Deller <deller@gmx.de>
+Cc: "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+	linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Palmer Dabbelt <palmer@rivosinc.com>
+Subject: [PATCH] parisc: Fix csum_ipv6_magic on 32-bit systems
+Date: Sat, 10 Feb 2024 11:15:56 -0800
+Message-Id: <20240210191556.3761064-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] ARM: dts: qcom: msm8226: Sort and clean up nodes
-To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, =?UTF-8?Q?Matti_Lehtim=C3=A4ki?=
- <matti.lehtimaki@gmail.com>
-References: <20240210-msm8226-cpu-v2-0-5d9cb4c35204@z3ntu.xyz>
- <20240210-msm8226-cpu-v2-2-5d9cb4c35204@z3ntu.xyz>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240210-msm8226-cpu-v2-2-5d9cb4c35204@z3ntu.xyz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+Calculating the IPv6 checksum on 32-bit systems missed overflows when
+adding the proto+len fields into the checksum. This results in the
+following unit test failure.
 
+    # test_csum_ipv6_magic: ASSERTION FAILED at lib/checksum_kunit.c:506
+    Expected ( u64)csum_result == ( u64)expected, but
+        ( u64)csum_result == 46722 (0xb682)
+        ( u64)expected == 46721 (0xb681)
+    not ok 5 test_csum_ipv6_magic
 
-On 2/10/24 17:28, Luca Weiss wrote:
-> From: Matti Lehtimäki <matti.lehtimaki@gmail.com>
-> 
-> Quite a few nodes haven't been sorted correctly by reg, so let's do this
-> now so that future nodes can be added at the correct place.
-> 
-> Also at the same time, move the status property last.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
-> [luca: add more text to commit message]
-> Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
+This is probably rarely seen in the real world because proto+len are
+usually small values which will rarely result in overflows when calculating
+the checksum. However, the unit test code uses large values for the length
+field, causing the test to fail.
 
-Due to the nature of this change, it's hard to thoroughly review,
-but nothing screams nuclear breakage, so:
+Fix the problem by adding the missing carry into the final checksum.
 
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Palmer Dabbelt <palmer@rivosinc.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ arch/parisc/include/asm/checksum.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Konrad
+diff --git a/arch/parisc/include/asm/checksum.h b/arch/parisc/include/asm/checksum.h
+index f705e5dd1074..e619e67440db 100644
+--- a/arch/parisc/include/asm/checksum.h
++++ b/arch/parisc/include/asm/checksum.h
+@@ -163,7 +163,8 @@ static __inline__ __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+ "	ldw,ma		4(%2), %7\n"	/* 4th daddr */
+ "	addc		%6, %0, %0\n"
+ "	addc		%7, %0, %0\n"
+-"	addc		%3, %0, %0\n"	/* fold in proto+len, catch carry */
++"	addc		%3, %0, %0\n"	/* fold in proto+len */
++"	addc		0, %0, %0\n"	/* add carry */
+ 
+ #endif
+ 	: "=r" (sum), "=r" (saddr), "=r" (daddr), "=r" (len),
+-- 
+2.39.2
+
 
