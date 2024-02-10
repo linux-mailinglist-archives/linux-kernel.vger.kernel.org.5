@@ -1,82 +1,82 @@
-Return-Path: <linux-kernel+bounces-60332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 547A8850345
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:19:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F09850348
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:25:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8B5E1F21A92
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:19:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DFC91C21BD8
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:25:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AADE288B0;
-	Sat, 10 Feb 2024 07:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5DF286AF;
+	Sat, 10 Feb 2024 07:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kN9mS19Q"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RvkQ25jh"
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21ED42555B
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2611C28DC9
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:25:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707549562; cv=none; b=uEmLjNipjvwgNT6MrXOFPF7Nhyq4UbbFaJ2eM45fEa6zXuv/t+3W7ZezH3oZC+BIfRg0hdSJcIX9dddz76WbL/FQSU9LcVxmOP4K4GfL0btCXhSU3SzqzIZVVIM4DuB38jUi9h9CXvFxWHK+IlpvlMunOxSXe2gYyyTns/n+UsQ=
+	t=1707549921; cv=none; b=jq3g+ZS8ENwSmQNu4bCeuqNny+CcWbZtf7akaC7PCPTvreUqnoPdrorwhVvqQDqAtcGrjY31Y+OvHKxvApg46rG6XsX1ouFGk7+LXoNN/aUFgXtH2WAnXm44dP8NRGfYuKJL1nCtaePwEsQaF1wrYSL3n/3ioJT3xQuigxH3ehE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707549562; c=relaxed/simple;
-	bh=Oc0EBRK9uqITwsszdT09901GM1Q/2u7GgM3/QDZCQZs=;
+	s=arc-20240116; t=1707549921; c=relaxed/simple;
+	bh=L0POMOG7TrbiWGoQ5l3VpV9fkdZx5fLFEvO60spaDg4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d46AaSTTRzb+Zg7EW9VsTdJyM3v4M7G7Qcg4MTPcv/C4wFMIx/vNU0nvptEb2GTGeQjKK+js4J0CaR+WluikXiV0lOAxQMiB3TsN/d1F0gz7nX97av2vVZ7x9X2c09miRhbSasYRV1mc2kc//U+bO47I363l/rXFt9GDE2Omc0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kN9mS19Q; arc=none smtp.client-ip=209.85.210.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=sNp2sdxEaaJQyntalkTTy+jYYPRIC20nb/Eg8BDCI5sEpUVP0BN0Ig+aOqFIVVDqgJ4BbYkOKXJ7KdkexGB6tBZL0I4qGv0CJgOKP2FqsPwiJNsO5UZ51mN97wN0Y2bWd3S2wqYYI2y8y971xgPFTn7+lcnBOydaa0FR7lzHjmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RvkQ25jh; arc=none smtp.client-ip=209.85.210.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e04fd5e05aso1136359b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 23:19:20 -0800 (PST)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6dc36e501e1so1129603a34.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 23:25:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707549560; x=1708154360; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707549917; x=1708154717; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yc89+WT2K9C7UzU3L+XR8z6YxT2I8PcZfmFzm/UVeHQ=;
-        b=kN9mS19QNfK0XOgLxiNMjsXQiNNP+q1mo/8QJtAbmBbMLIidXxooCnK2dYpsI0Usic
-         vXrHbE149J6jR3K0l9MyqlE75krsjkTAzK4TSM+5SReiFi0PzJHhCrqV7y2rHAA3nqI7
-         HsBpCorg04R+UqE5GDumcw+Dl2UQTsTadapME=
+        bh=8m8phvJbCBaUpR//XQr5m++ylbpQ4FZPXh/gWEIh+SE=;
+        b=RvkQ25jhHc3lzp0kdwXrt/WbI1OhHbjtwRYxdN7uuzWl3ztRGettY/kidqr6f4HU5g
+         dUkxQW6xWXnQFPC6xzQ825cZfrVsj88g7opbbC/fmEgIj3PsbcO5r5JMPYZCBeI414vh
+         3DU8GYlpg9GQsMhmPrabOqn0ggDgciefqKiG8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707549560; x=1708154360;
+        d=1e100.net; s=20230601; t=1707549917; x=1708154717;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yc89+WT2K9C7UzU3L+XR8z6YxT2I8PcZfmFzm/UVeHQ=;
-        b=nUDAGT2IfPcxKDH1BHzxwziGrGNlFy1xQCSddFsg24hawLVrP1/5COJVxKl+Wy64g/
-         +RzLCl2DkB7tL6j36chMZjm/ZFNnH07gHgX5MUCp+NlhoqQSOIUTWMuBCUtF6dhj0OQ6
-         n1C1Q72CbfwXOtDDLVzCmpF+6hMbawlS5XlKnwTv6KcoyWsbDZFHk2kK9Qe2Mkk+5iNy
-         755ViELXKx3sVWwfATUPsJAIBr4QzDdJ1kGeiOrWDsD+8uRIXqjMOU2atlRXobX2EZ5u
-         X+IiCrGxS3CteDpGMhHuvw0kg1bFsNE1Fjkqg26uaEphCCtJEIfuBReDDcEgVGh5loHu
-         GO8A==
-X-Forwarded-Encrypted: i=1; AJvYcCWbs6VwOM71forMzImGa1evWkvsHaEHMFaxyW0tUk9cDIrFchfTxmKnHmuXLU+nym8gkvQHc54sda559QyvvLNmy/vWlaDeOHtaQ/So
-X-Gm-Message-State: AOJu0YzZ6eqhL3iy30Y4mg71Mz+xVRabqin+gThKQcge78RUIqqBZig/
-	x/W2QpOBdUAt32znPIW40qzo3bHv5vQoOCehLRXy9dfU3TBuBywSeww5y/sEOA==
-X-Google-Smtp-Source: AGHT+IEPQDd3yzqq7wHAkPwcR++Y0e11jkamn1vFUyjID4OpZ/pAXWdBEBT2rm0acRY6Obyw9cqZ8A==
-X-Received: by 2002:a05:6a00:2d15:b0:6e0:a858:fd65 with SMTP id fa21-20020a056a002d1500b006e0a858fd65mr992866pfb.9.1707549560449;
-        Fri, 09 Feb 2024 23:19:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWgkLixkVIEesuTVj5IgZD9KSKNgHzC0ZsSGZur8TK9VNsdTuNu5uUrO6YwAxloZ+4r5VvZKjPf+1oxMDHVJXLjeoVN8D4iB3M3y9frd/iN10cxEZS6mpTy/Yk5O39X53fTkkwiRw4CrPhJDBi7uziDsUGBkpT6w2e40JGA5LssFipb/U1ZuF1OVGRjZIeL7yYFV8aBL8bGZ4v4fSgaXG+WfB2T5xqgY4Im5+CsNkwcP9vlLkba2HXjC03ENHUxFJro42dX6m9NosW9PbaQM8WPQvNS6A4iw+NMbFY1imIPEeASAr77X2SyyQezyb6fw+eAwVnD8w==
+        bh=8m8phvJbCBaUpR//XQr5m++ylbpQ4FZPXh/gWEIh+SE=;
+        b=BVflwvdP/r6dZhv4ILdoKOQj68SliTbzRMxpaqPmxCKCCcbiKURND6LAuk9Hd7phu1
+         Djcdepq9ityCNFtPvIHCr/KaLUCdNC23uy8cDlsGsA85Ls2KIBnTasvaISDJUsP5hDg5
+         epQ7Sz0SCWVu2BXVeZzXJ4UNHrdLi3/SX96duc+y2E73jc+0fbbYiNsKqnnggV5EavQe
+         JwF5p277yiUX2JAHtz3l55bTc/sMKH27ldX04HmjxuOBVFNu6Y0MbEnisQfScH9lAGKs
+         0t5wd7m3EFGhLXlKNSxxTKLb1cBxpqg4I3UeYytMCWbsF5sy0UF5c6x7L4mZfjP3vx5I
+         VwzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW8hlPH5BsLcq0Flaqxou86ZclobndedFcYuidAY6ml7hI8yd1TgQ79A9YKNDpEy1aXXfapTlXtAu/qa0067Sm45aV/T4eVJ9yIyixG
+X-Gm-Message-State: AOJu0Yz4hXwpzRtZGtDkFQaXKd+VFSVZgcdWcyEANkZYOkSlI7sR6TD1
+	X6E1GSWuVu3rNddds437dUslH/dUsmSDYD/ra7/yUbffTE+Jw5W7RUyVY8Uqaw==
+X-Google-Smtp-Source: AGHT+IElngRtfqOH7jE59C2E77px2P+jsgE2ilQV5OGTU5uO/TGyfz9K4uKnQQ8sPYMnkLE7+Gwnww==
+X-Received: by 2002:a9d:6c4d:0:b0:6e2:b26f:82d4 with SMTP id g13-20020a9d6c4d000000b006e2b26f82d4mr1634235otq.23.1707549917218;
+        Fri, 09 Feb 2024 23:25:17 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXWI+Qtz60dxMswupBxoATcUXayLu78VKmIYUB1WV7w5wAxJbzvFP5mOZyvKdqJTtivs97R3xpPqAcG6vl0W3hrjqBLJ4abTYwk+uFosaNu9NdJAdot9OanBEGqJvAYdugjCCKGmU3qXq3nHO6ohvfy9z/1wmNye7lW0R82vCupE6IcNGcmvVnS992QdBjh6V2xzVuTC3KBjMuGsM8KMF6iTUNlj9uiU/ZC5CFyoOU2FD701MXJ+2OabJHC8M1bcn+tks2vNmnOpfZ6wsrgBtWP5KLzxwcSLinuPpDj8Kr38lYK4rLetIFt3Rk9JInWt3sexODtvyg7pr3a9fmWNh95LflZZhHTXIcEEYWdOwb6MZLNXl/zTJmrmqUPQ/3eibOXfibW7jArw5x0i5Poqd+OuYu7gax/GbQ9Se9v2sVd4WYblg==
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id f32-20020a056a000b2000b006d9c0dd1b26sm1719746pfu.15.2024.02.09.23.19.19
+        by smtp.gmail.com with ESMTPSA id y20-20020a62b514000000b006ddb0dde293sm1669384pfe.65.2024.02.09.23.25.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 23:19:19 -0800 (PST)
-Date: Fri, 9 Feb 2024 23:19:18 -0800
+        Fri, 09 Feb 2024 23:25:16 -0800 (PST)
+Date: Fri, 9 Feb 2024 23:25:16 -0800
 From: Kees Cook <keescook@chromium.org>
-To: Andy Shevchenko <andy@black.fi.intel.com>
-Cc: Ingo Molnar <mingo@kernel.org>, Justin Stitt <justinstitt@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] x86/tdx: replace deprecated strncpy with strtomem_pad
-Message-ID: <202402092318.F5C569D7C@keescook>
-References: <20231003-strncpy-arch-x86-coco-tdx-tdx-c-v2-1-0bd21174a217@google.com>
- <ZR0VJsgA6g0Wk4dq@gmail.com>
- <ZcONt_he_08batik@black.fi.intel.com>
+To: Erick Archer <erick.archer@gmx.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] drm/i915: Add flex arrays to struct i915_syncmap
+Message-ID: <202402092322.09287B8@keescook>
+References: <20240208181318.4259-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,51 +85,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZcONt_he_08batik@black.fi.intel.com>
+In-Reply-To: <20240208181318.4259-1-erick.archer@gmx.com>
 
-On Wed, Feb 07, 2024 at 04:03:35PM +0200, Andy Shevchenko wrote:
-> On Wed, Oct 04, 2023 at 09:32:54AM +0200, Ingo Molnar wrote:
+On Thu, Feb 08, 2024 at 07:13:18PM +0100, Erick Archer wrote:
+> The "struct i915_syncmap" uses a dynamically sized set of trailing
+> elements. It can use an "u32" array or a "struct i915_syncmap *"
+> array.
 > 
-> ...
+> So, use the preferred way in the kernel declaring flexible arrays [1].
+> Because there are two possibilities for the trailing arrays, it is
+> necessary to declare a union and use the DECLARE_FLEX_ARRAY macro.
 > 
-> > > Note: Ingo Molnar has some concerns about the comment being out of sync
-> > > [1] but I believe the comment still has a place as we can still
-> > > theoretically copy 64 bytes into our destination buffer without a
-> > > NUL-byte. The extra information about the 65th byte being NUL may serve
-> > > helpful to future travelers of this code. What do we think? I can drop
-> > > the comment in a v3 if needed.
-> > 
-> > >  	/* VMM assumes '\0' in byte 65, if the message took all 64 bytes */
-> > > -	strncpy(message.str, msg, 64);
-> > > +	strtomem_pad(message.str, msg, '\0');
-> > 
-> > My concern was that with the old code it was obvious that the size
-> > of message.str was 64 bytes - but I judged this based on the
-> > patch context alone, which seemingly lost context due to the change.
-> > 
-> > In reality it's easy to see it when reading the code, because the
-> > length definition is right before the code:
-> > 
-> >         union {
-> >                 /* Define register order according to the GHCI */
-> >                 struct { u64 r14, r15, rbx, rdi, rsi, r8, r9, rdx; };
-> > 
-> >                 char str[64];
-> >                 ^^^^^^^^^^^^^
-> >         } message;
-> > 
-> >         /* VMM assumes '\0' in byte 65, if the message took all 64 bytes */
-> >         strtomem_pad(message.str, msg, '\0');
+> The comment can be removed as the union is now clear enough.
 > 
-> This comment and size of union seems not in agreement.
+> Also, avoid the open-coded arithmetic in the memory allocator functions
+> [2] using the "struct_size" macro.
+> 
+> Moreover, refactor the "__sync_seqno" and "__sync_child" functions due
+> to now it is possible to use the union members added to the structure.
+> This way, it is also possible to avoid the open-coded arithmetic in
+> pointers.
+> 
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-length-and-one-element-arrays [1]
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+> ---
+>  drivers/gpu/drm/i915/i915_syncmap.c | 19 ++++++++-----------
+>  1 file changed, 8 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/i915_syncmap.c b/drivers/gpu/drm/i915/i915_syncmap.c
+> index 60404dbb2e9f..df6437c37373 100644
+> --- a/drivers/gpu/drm/i915/i915_syncmap.c
+> +++ b/drivers/gpu/drm/i915/i915_syncmap.c
+> @@ -75,13 +75,10 @@ struct i915_syncmap {
+>  	unsigned int height;
+>  	unsigned int bitmap;
+>  	struct i915_syncmap *parent;
+> -	/*
+> -	 * Following this header is an array of either seqno or child pointers:
+> -	 * union {
+> -	 *	u32 seqno[KSYNCMAP];
+> -	 *	struct i915_syncmap *child[KSYNCMAP];
+> -	 * };
+> -	 */
+> +	union {
+> +		DECLARE_FLEX_ARRAY(u32, seqno);
+> +		DECLARE_FLEX_ARRAY(struct i915_syncmap *, child);
+> +	};
 
-It does agree -- the comment could be more clear.
+This is a new code pattern for me! Trailing arrays of different element
+sizes but with a fixed element count. :)
 
-> How does the previous code work if message indeed takes 64 bytes?
-> By luck?
+I hope when __counted_by is expanded to take expressions we can add a
+literal. :)
 
-It's saying "the non-existent 65th byte is assumed to be %NUL". As in,
-this is treated as a C string, even if it uses all 64 bytes.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
 Kees Cook
