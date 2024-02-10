@@ -1,163 +1,136 @@
-Return-Path: <linux-kernel+bounces-60269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B21850274
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:20:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8794850276
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:20:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 255D91F24C35
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:20:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A35E281225
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDFF236AEB;
-	Sat, 10 Feb 2024 03:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 670E75663;
+	Sat, 10 Feb 2024 03:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ueZrGJ0I"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QMq6HdU2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA5F171D0
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 03:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2FE1370;
+	Sat, 10 Feb 2024 03:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707535093; cv=none; b=aGVMbUQeAe44xO2Vrdjh5iQttEb+osLq12RFBpJfcL9q26J/jayPrU0rtWVmtMJO/OrbGUpKMLiVdSGS+1ineXu3emo3UigpQr3ZTWxhNh85tO9o/foKZLJX/AqjoX605VOvIbFS0gqzI6W4lQtZ98I0V53aVC5omS736bjQZnQ=
+	t=1707535231; cv=none; b=NT6puFOzNsTAxjH3pXbKf6WvnIRkPKX+yhsuRWRGERTKhCnOzzHNrud71iKQ3AY6r8pfe1DxYeI4BXR6sBAreVzUQ7t5s0tICTZ43NhFlcMpfIh2Mmkgg6ewHsmCE2qLUhNm9sLiFkDKJIuPdXWTk66TF9NBDNPDK3c5McuV4JE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707535093; c=relaxed/simple;
-	bh=fmY7OGiQyoafs0dUqE06bQrvTXGFG0wOIGJr3qrBCDk=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=b3dzlblQ8CCEmmcIstBhZTLoL7ms8kFVZs8lrD6Sx6sYkL2fh64OP2O4W5BFHvw8sgcFxs2vDM1h61NZ/TshgBcRLEpSrm4FDr9ng1+7XVjyIY2lrdtFnBjNvCS490UMJowsJjTcEl7iUTFVCbdo++qaQGRSBR+NfKXE/KZ0pYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ueZrGJ0I; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-603c0e020a6so25565527b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 19:18:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707535090; x=1708139890; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ie89sB6IlXpvkiQnUaYF5PTvKc7dfqYdcE9ndiylfmM=;
-        b=ueZrGJ0IuPfGlwXCKjovy5gGGS30jkNrGtsNC8pnicR1KIk7lhl7dwkZUTTREAOoJn
-         NztsMiVXbJgsmEcNLj4vd4HNyYmGU6iDVlGEsEDePPLWhfY0MrnR1rsXNVEXNnrUx7Xq
-         Ya6tpJEpWKjWuLP/CZ7d5tmfZU0ulM+GHc7NbiuEBH9vpd/pt/jYMMkvWMnni+Zhlab1
-         x7qQZ8ux3//bPdqmSGd+SC2MqMA0k3M7nDu8yY6UgHEBm/SlbSS5PKGXZnL/lP0dawbD
-         gMm2dlCbtU9N4Rx+SXav2XKoBtqnExXgy4hn2CCnLJNAsuhuna7RTGWqy4QthZpYDbwg
-         Iv2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707535090; x=1708139890;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ie89sB6IlXpvkiQnUaYF5PTvKc7dfqYdcE9ndiylfmM=;
-        b=SjyNw+J43iABMvDT8pQMuhRHfnJ+PvKUt/TisUECtemCZfCPZICLYlnJD0H1RGgFF9
-         i1iacZLmxMvjQ2csHvxvvkiNtAhLDeoKsUMmtjndmTA8VBiLDLP8j7kaCg0vzgdo2NYw
-         ge068lMmeO2pyKu2EuToifnwu5bpK4Vesgxqw610rB4RlJ988OoVozhnOXRam4A3Kf49
-         A2N78j5clyVGbbuQ9XShvpEY/ckedXxyDbaw3Ci9aSCAtys5tzLoPc7I70h4dNr/cBrS
-         HqYZRUE7dhOQ6+2/7zUTJbxacE0B2tN0NxJYUqnm1/+53T8E/Kvp7qmUmlT1vqYaoEKq
-         M30Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUwfHG71i0+M/VtGzEx/bMHc2ug+IxCyvK2JEoOXICnCt4ZnNNxnI0fZJTUqLNHvbSZ8h6qcnIQYVPgqvSCqtWKmgFaC+FzBSFIfTJD
-X-Gm-Message-State: AOJu0Yz6RVAZ5Uj0+puMaDHjlO+6DKMGjtReHREK5JFGKVKOTEOQUGCc
-	/vdocJ8ME/p861d46x1y2jWupIf5a/KcZQKNP+aGcO5JYI1dwxYhYYRozBMuw9v5jzKzrW0M0rW
-	YpWvqcQ==
-X-Google-Smtp-Source: AGHT+IFrn1CHZlVjSpwmvdN+dl+BaRe9nkKsGon6NJpS0hJXAXYFpUNu2G/yduT8mliL5SE1aGM0Nbh2LJ+v
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:877:241d:8c35:1c5b])
- (user=irogers job=sendgmr) by 2002:a0d:d549:0:b0:604:499:fee1 with SMTP id
- x70-20020a0dd549000000b006040499fee1mr191533ywd.6.1707535090579; Fri, 09 Feb
- 2024 19:18:10 -0800 (PST)
-Date: Fri,  9 Feb 2024 19:17:46 -0800
-In-Reply-To: <20240210031746.4057262-1-irogers@google.com>
-Message-Id: <20240210031746.4057262-7-irogers@google.com>
+	s=arc-20240116; t=1707535231; c=relaxed/simple;
+	bh=inh8wpC7E3QmfuR6VOWyQAlRN6uFRdc+6r3sM41j+P0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=KStXAnuueXugwXZF5ZxHzVi/kHbrSZBA0a6JJQcZeMnnSSMS6XcTBMmZ4AoFxtcLw4X07a5w/+JMM6UlSQfRyfW0RnyXW9U7Wm6TLW3W+Zi8CXhgKSUltMtraMaRJuevyFUB6Fom4/Yw5Vh0qAaDSxqd1i6Hu3JfFpHRY9g7nvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QMq6HdU2; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707535230; x=1739071230;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=inh8wpC7E3QmfuR6VOWyQAlRN6uFRdc+6r3sM41j+P0=;
+  b=QMq6HdU2BBq/a/boN1Q8yBUT9uWjvL36VVBiYqUJ589QON3PRM1wXEvB
+   dUx2JX2fexGFWWA/JCfLlI7hvyZxrursoJ5bBchOtdIUH2N98PbPipY2z
+   RvWvtbkEZziokL4gzBg2U7dNKeXlfeVpyH0YuQ5+rsXdo+fOkq2AHz324
+   Wu52t77EgpKmJDlKX8Y8NtQysP/WOpjc9eGNkURzwP7FT/d7WGk3xYpfE
+   +jY16BzPwj4DSQYR0/TGYDxdENklKLnozWgb5IF3nHpK9JpwEL7NZwoOF
+   BV7Zoei2f/OKlKP7QgCE85Zh72LQ5jsJ752LRWiddRn3IOQ5mg0JTqxaP
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1671197"
+X-IronPort-AV: E=Sophos;i="6.05,258,1701158400"; 
+   d="scan'208";a="1671197"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 19:20:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,258,1701158400"; 
+   d="scan'208";a="2086323"
+Received: from ticela-or-295.amr.corp.intel.com (HELO [10.209.25.188]) ([10.209.25.188])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 19:20:28 -0800
+Message-ID: <10d63412-583b-4647-bb5c-4113a466324e@linux.intel.com>
+Date: Fri, 9 Feb 2024 19:20:28 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240210031746.4057262-1-irogers@google.com>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Subject: [PATCH v3 6/6] perf maps: Locking tidy up of nr_maps
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Colin Ian King <colin.i.king@gmail.com>, Liam Howlett <liam.howlett@oracle.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Artem Savkov <asavkov@redhat.com>, 
-	Changbin Du <changbin.du@huawei.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	James Clark <james.clark@arm.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
-	Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] PCI/IOV: Revert "PCI/IOV: Serialize sysfs
+ sriov_numvfs reads vs writes"
+Content-Language: en-US
+To: Jim Harris <jim.harris@samsung.com>, Bjorn Helgaas <bhelgaas@google.com>,
+ "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Leon Romanovsky <leonro@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ "pierre.cregut@orange.com" <pierre.cregut@orange.com>
+References: <170752254154.1693615.9176696143128338408.stgit@bgt-140510-bm01.eng.stellus.in>
+ <CGME20240209235213uscas1p2e8de2bdf05e6e7cba51bd41ddb42a8e4@uscas1p2.samsung.com>
+ <170752273224.1693615.11371097645648272257.stgit@bgt-140510-bm01.eng.stellus.in>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <170752273224.1693615.11371097645648272257.stgit@bgt-140510-bm01.eng.stellus.in>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-After this change maps__nr_maps is only used by tests, existing users
-are migrated to maps__empty. Compute maps__empty under the read lock.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/machine.c |  2 +-
- tools/perf/util/maps.c    | 10 ++++++++--
- tools/perf/util/maps.h    |  4 ++--
- 3 files changed, 11 insertions(+), 5 deletions(-)
+On 2/9/24 3:52 PM, Jim Harris wrote:
+> If an SR-IOV enabled device is held by vfio, and the device is removed,
+> vfio will hold device lock and notify userspace of the removal. If
+> userspace reads the sriov_numvfs sysfs entry, that thread will be blocked
+> since sriov_numvfs_show() also tries to acquire the device lock. If that
+> same thread is responsible for releasing the device to vfio, it results in
+> a deadlock.
+>
+> The proper way to detect a change to the num_VFs value is to listen for a
+> sysfs event, not to add a device_lock() on the attribute _show() in the
+> kernel.
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 4911734411b5..3da92f18814a 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -440,7 +440,7 @@ static struct thread *findnew_guest_code(struct machine *machine,
- 		return NULL;
- 
- 	/* Assume maps are set up if there are any */
--	if (maps__nr_maps(thread__maps(thread)))
-+	if (!maps__empty(thread__maps(thread)))
- 		return thread;
- 
- 	host_thread = machine__find_thread(host_machine, -1, pid);
-diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-index 439cefab112a..53aea6d2ef93 100644
---- a/tools/perf/util/maps.c
-+++ b/tools/perf/util/maps.c
-@@ -541,7 +541,13 @@ void maps__remove(struct maps *maps, struct map *map)
- 
- bool maps__empty(struct maps *maps)
- {
--	return maps__nr_maps(maps) == 0;
-+	bool res;
-+
-+	down_read(maps__lock(maps));
-+	res = maps__nr_maps(maps) == 0;
-+	up_read(maps__lock(maps));
-+
-+	return res;
- }
- 
- bool maps__equal(struct maps *a, struct maps *b)
-@@ -871,7 +877,7 @@ int maps__copy_from(struct maps *dest, struct maps *parent)
- 
- 	parent_maps_by_address = maps__maps_by_address(parent);
- 	n = maps__nr_maps(parent);
--	if (maps__empty(dest)) {
-+	if (maps__nr_maps(dest) == 0) {
- 		/* No existing mappings so just copy from parent to avoid reallocs in insert. */
- 		unsigned int nr_maps_allocated = RC_CHK_ACCESS(parent)->nr_maps_allocated;
- 		struct map **dest_maps_by_address =
-diff --git a/tools/perf/util/maps.h b/tools/perf/util/maps.h
-index 4bcba136ffe5..d9aa62ed968a 100644
---- a/tools/perf/util/maps.h
-+++ b/tools/perf/util/maps.h
-@@ -43,8 +43,8 @@ int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map, void *data)
- void maps__remove_maps(struct maps *maps, bool (*cb)(struct map *map, void *data), void *data);
- 
- struct machine *maps__machine(const struct maps *maps);
--unsigned int maps__nr_maps(const struct maps *maps);
--refcount_t *maps__refcnt(struct maps *maps);
-+unsigned int maps__nr_maps(const struct maps *maps); /* Test only. */
-+refcount_t *maps__refcnt(struct maps *maps); /* Test only. */
- 
- #ifdef HAVE_LIBUNWIND_SUPPORT
- void *maps__addr_space(const struct maps *maps);
+Since you are reverting a commit that synchronizes SysFS read
+/write, please add some comments about why it is not an
+issue anymore.
+
+>
+> This reverts commit 35ff867b76576e32f34c698ccd11343f7d616204.
+> Revert had a small conflict, the sprintf() is now changed to sysfs_emit().
+>
+> Link: https://lore.kernel.org/linux-pci/ZXJI5+f8bUelVXqu@ubuntu/
+> Suggested-by: Leon Romanovsky <leonro@nvidia.com>
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Jim Harris <jim.harris@samsung.com>
+> ---
+>  drivers/pci/iov.c |    8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+>
+> diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> index aaa33e8dc4c9..0ca20cd518d5 100644
+> --- a/drivers/pci/iov.c
+> +++ b/drivers/pci/iov.c
+> @@ -395,14 +395,8 @@ static ssize_t sriov_numvfs_show(struct device *dev,
+>  				 char *buf)
+>  {
+>  	struct pci_dev *pdev = to_pci_dev(dev);
+> -	u16 num_vfs;
+> -
+> -	/* Serialize vs sriov_numvfs_store() so readers see valid num_VFs */
+> -	device_lock(&pdev->dev);
+> -	num_vfs = pdev->sriov->num_VFs;
+> -	device_unlock(&pdev->dev);
+>  
+> -	return sysfs_emit(buf, "%u\n", num_vfs);
+> +	return sysfs_emit(buf, "%u\n", pdev->sriov->num_VFs);
+>  }
+>  
+>  /*
+>
 -- 
-2.43.0.687.g38aa6559b0-goog
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
