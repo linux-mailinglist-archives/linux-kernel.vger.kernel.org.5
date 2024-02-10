@@ -1,165 +1,157 @@
-Return-Path: <linux-kernel+bounces-60406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4463B850475
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 13:57:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94576850476
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 13:59:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C913D2835D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:57:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47642283941
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA7D6481DD;
-	Sat, 10 Feb 2024 12:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6510B31A8F;
+	Sat, 10 Feb 2024 12:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sqvwW7T3"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FGz0+lSY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50ED54CB51;
-	Sat, 10 Feb 2024 12:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A82D47F63
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 12:59:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707569822; cv=none; b=FJnzhqG3R9jmqGnxcFvH/p8Uv3bim3JXabJpqGpgTxJL1Ct1kT/ltFhbMRwPzOiO0p8JiYSBCWjnQomFJHyPQwkFqZZa9TDUBJ8E8KkgIxD4zgj+hAajstjM0BcZDIglTKXD3vmITgFgrUZRfhoAOGa0zX46RQhPpjy23q2Ig2o=
+	t=1707569963; cv=none; b=CRxFJ2FKNjPffmeei2Ckkf4YStLRhax2o9k1XM8FwUtdqkwN/OK80p8nuGOg/MhmoijgQo1RnYr7c1FmyLuinFAgNyCNRJHWKI4ahkGwq+32YxrIxL1+xptowXv4SC9z1BpaHPOAT0yQy0mYmMniKCKkSzBeNuBE/UA7UXF4EHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707569822; c=relaxed/simple;
-	bh=XveJv1CTfFqEzUlKqPUXlyQYCkmqFnf5OOVS23W/ro8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hfrQIKTrANup0EV0XS+Mc3P6HXiqdbkaJRJ4nnqUlQFJ6QByPNahe0kqAkVZCdl3PIIZLOm6uiwd2xFaXm3LxJvh7LlJpyGRCZDGvJBzJLb3vQB0JWQukoA8SBi50n5onwevHobBdyOI2/o2qc9hqhqrRz6AdS/q3Zg4NyE1ZyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sqvwW7T3; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41AALlVT021376;
-	Sat, 10 Feb 2024 12:56:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=kcHxy6hR8JksGEBmB7+lME5RD90ChjNcUanlnTwLfK8=;
- b=sqvwW7T3m0oBxIbzTPKoXbPeEabRRXN4EbGdWdKTX0vGaP88z9aytVPQCMFAaR83X6Od
- h5NKx4DaXSMVNiC6GcvJgLqv95zQhzQaS92x5ntkjdVfxTY5FEGe1elnYg2jdAkRB3lF
- s6UNRZBOg33TdjPTnq2Ccpw9KRAqtZQ84A2Ept/S/8cIOfkNwdJ93qCWv58xSdWeoE5u
- xQUHHfzrRtzTP1ymwrDhdt/Mwqhn+u2ALCPmVIp/vXWUK8sI6749Ob12pAlQDDmOvP/O
- L8v96i7d2bauUoGGbnrJ75c5LZThMi73GXVfyu6fqF0mkpGJGZPRrItUjGo7mxOre3v9 2g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w67aw1u0a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 10 Feb 2024 12:56:46 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41ACuj6s016974;
-	Sat, 10 Feb 2024 12:56:45 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w67aw1u01-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 10 Feb 2024 12:56:45 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41A9lkLC014765;
-	Sat, 10 Feb 2024 12:56:44 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w20tph9fr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 10 Feb 2024 12:56:44 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41ACufT453018904
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 10 Feb 2024 12:56:43 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7BA3158058;
-	Sat, 10 Feb 2024 12:56:41 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 66FD058057;
-	Sat, 10 Feb 2024 12:56:39 +0000 (GMT)
-Received: from lingrow.int.hansenpartnership.com (unknown [9.67.183.218])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Sat, 10 Feb 2024 12:56:39 +0000 (GMT)
-Message-ID: <98bdd564c6bf1894717d060f3187c779e969fc5f.camel@linux.ibm.com>
-Subject: Re: [PATCH 03/10] scsi: NCR5380: Replace snprintf() with the safer
- scnprintf() variant
-From: James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To: Lee Jones <lee@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Finn
- Thain <fthain@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>, drew@colorado.edu,
-        Tnx
- to <Thomas_Roesch@m2.maus.de>, linux-scsi@vger.kernel.org
-Date: Sat, 10 Feb 2024 07:56:38 -0500
-In-Reply-To: <20240208102939.GF689448@google.com>
-References: <20240208084512.3803250-1-lee@kernel.org>
-	 <20240208084512.3803250-4-lee@kernel.org>
-	 <CAMuHMdX72mpGgb3Wp0WRX3V78nn+bWUqiYz25CjeMNPpWaPmxg@mail.gmail.com>
-	 <20240208102939.GF689448@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1707569963; c=relaxed/simple;
+	bh=Cb1Eh3O2qFMqBZxKzCU4auBY0R5n95zZ3gjKmSOb9JE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pDGuBhEOS0Rynopc/OFVFNXrQ09qT/HCNZbGElKfT3elowTdfDvyuzjToAmSTiC2OMzeV4DlrXG522QsdIAseQ966hI6cyFPQ0kL5iyBlg+XycaxGSbH/KiYCy2k45nKcK+jPKE+zkqo0aLZa6LNkvMjMe6fZaTsR6fh/2dc1G4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FGz0+lSY; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707569961; x=1739105961;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Cb1Eh3O2qFMqBZxKzCU4auBY0R5n95zZ3gjKmSOb9JE=;
+  b=FGz0+lSYHesRWo/GmlvBc/NA1qDyxm5801lnDFn6UxMipIpm7l/AQtUF
+   5bm2kpXqH9l5uTV7ZNUtn8oezpWVAv/AiXbTspueXRTS2Too4Qf/x/zLC
+   qlh5GgZrcx8y1dSjiCafX1rTEhIvL23ZivY71WoJ8pL+1KCph5Ta9i+0U
+   Z9MuFn9jr9OgQx0ZIqJN0Us1pAT0jSHzxLQadi8yPBE+Z9948VHXpHYDE
+   qf//YBSJ8JztoR0fEADz5hnsrSUzkdGlCzOozXtjtykC2ht74MDUF1p6j
+   PNexVq2kuypl1NKTRgNc9z9+VfgMAWXL9agPu2mdFKGwzzKy8iJZ9YKKK
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1449114"
+X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
+   d="scan'208";a="1449114"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2024 04:59:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
+   d="scan'208";a="2380396"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 10 Feb 2024 04:59:19 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rYmwv-0005fm-1n;
+	Sat, 10 Feb 2024 12:59:17 +0000
+Date: Sat, 10 Feb 2024 20:58:40 +0800
+From: kernel test robot <lkp@intel.com>
+To: Max Kellermann <max.kellermann@ionos.com>, linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Max Kellermann <max.kellermann@ionos.com>
+Subject: Re: [PATCH v2 02/35] include: remove unnecessary #include directives
+Message-ID: <202402102047.IswSP6zZ-lkp@intel.com>
+References: <20240209164027.2582906-3-max.kellermann@ionos.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0_0N3qv_PRysYJ0vGkw1IBX5PPhbpYFk
-X-Proofpoint-ORIG-GUID: r7E3Cnz4lFaJqGafNEcctfudfxufykah
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-10_12,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- clxscore=1011 suspectscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 mlxlogscore=501 adultscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402100110
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240209164027.2582906-3-max.kellermann@ionos.com>
 
-On Thu, 2024-02-08 at 10:29 +0000, Lee Jones wrote:
-> On Thu, 08 Feb 2024, Geert Uytterhoeven wrote:
-> 
-> > Hi Lee,
-> > 
-> > Thanks for your patch!
-> > 
-> > On Thu, Feb 8, 2024 at 9:48 AM Lee Jones <lee@kernel.org> wrote:
-> > > There is a general misunderstanding amongst engineers that
-> > > {v}snprintf()
-> > > returns the length of the data *actually* encoded into the
-> > > destination
-> > > array.  However, as per the C99 standard {v}snprintf() really
-> > > returns
-> > > the length of the data that *would have been* written if there
-> > > were
-> > > enough space for it.  This misunderstanding has led to buffer-
-> > > overruns
-> > > in the past.  It's generally considered safer to use the
-> > > {v}scnprintf()
-> > > variants in their place (or even sprintf() in simple cases).  So
-> > > let's
-> > > do that.
-> > 
-> > Confused... The return value is not used at all?
-> 
-> Future proofing.  The idea of the effort is to rid the use entirely.
-> 
->  - Usage is inside a sysfs handler passing PAGE_SIZE as the size
->    - s/snprintf/sysfs_emit/
->  - Usage is inside a sysfs handler passing a bespoke value as the
-> size
->    - s/snprintf/scnprintf/
->  - Return value used, but does *not* care about overflow
->    - s/snprintf/scnprintf/
->  - Return value used, caller *does* care about overflow
->    - s/snprintf/seq_buf/
->  - Return value not used
->    - s/snprintf/scnprintf/
-> 
-> This is the final case.
+Hi Max,
 
-To re-ask Geert's question: the last case can't ever lead to a bug or
-problem, what value does churning the kernel to change it provide?  As
-Finn said, if we want to deprecate it as a future pattern, put it in
-checkpatch.
+kernel test robot noticed the following build errors:
 
-James
+[auto build test ERROR on next-20240209]
+[cannot apply to drm-misc/drm-misc-next media-tree/master mkp-scsi/for-next linus/master v6.8-rc3 v6.8-rc2 v6.8-rc1 v6.8-rc3]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Max-Kellermann/include-add-missing-includes/20240210-005417
+base:   next-20240209
+patch link:    https://lore.kernel.org/r/20240209164027.2582906-3-max.kellermann%40ionos.com
+patch subject: [PATCH v2 02/35] include: remove unnecessary #include directives
+config: i386-buildonly-randconfig-006-20240210 (https://download.01.org/0day-ci/archive/20240210/202402102047.IswSP6zZ-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240210/202402102047.IswSP6zZ-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402102047.IswSP6zZ-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/gpu/drm/sun4i/sun4i_layer.c:28:3: error: call to undeclared function 'kfree'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      28 |                 kfree(state);
+         |                 ^
+   drivers/gpu/drm/sun4i/sun4i_layer.c:28:3: note: did you mean 'vfree'?
+   include/linux/vmalloc.h:160:13: note: 'vfree' declared here
+     160 | extern void vfree(const void *addr);
+         |             ^
+>> drivers/gpu/drm/sun4i/sun4i_layer.c:32:10: error: call to undeclared function 'kzalloc'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      32 |         state = kzalloc(sizeof(*state), GFP_KERNEL);
+         |                 ^
+   drivers/gpu/drm/sun4i/sun4i_layer.c:32:10: note: did you mean 'vzalloc'?
+   include/linux/vmalloc.h:140:14: note: 'vzalloc' declared here
+     140 | extern void *vzalloc(unsigned long size) __alloc_size(1);
+         |              ^
+>> drivers/gpu/drm/sun4i/sun4i_layer.c:32:8: error: incompatible integer to pointer conversion assigning to 'struct sun4i_layer_state *' from 'int' [-Wint-conversion]
+      32 |         state = kzalloc(sizeof(*state), GFP_KERNEL);
+         |               ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/sun4i/sun4i_layer.c:43:9: error: call to undeclared function 'kzalloc'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      43 |         copy = kzalloc(sizeof(*copy), GFP_KERNEL);
+         |                ^
+   drivers/gpu/drm/sun4i/sun4i_layer.c:43:7: error: incompatible integer to pointer conversion assigning to 'struct sun4i_layer_state *' from 'int' [-Wint-conversion]
+      43 |         copy = kzalloc(sizeof(*copy), GFP_KERNEL);
+         |              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/sun4i/sun4i_layer.c:60:2: error: call to undeclared function 'kfree'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      60 |         kfree(s_state);
+         |         ^
+   6 errors generated.
+
+
+vim +/kfree +28 drivers/gpu/drm/sun4i/sun4i_layer.c
+
+9026e0d122ac87 Maxime Ripard      2015-10-29  18  
+d540f82adf3577 Maxime Ripard      2018-01-22  19  static void sun4i_backend_layer_reset(struct drm_plane *plane)
+d540f82adf3577 Maxime Ripard      2018-01-22  20  {
+d540f82adf3577 Maxime Ripard      2018-01-22  21  	struct sun4i_layer_state *state;
+d540f82adf3577 Maxime Ripard      2018-01-22  22  
+d540f82adf3577 Maxime Ripard      2018-01-22  23  	if (plane->state) {
+d540f82adf3577 Maxime Ripard      2018-01-22  24  		state = state_to_sun4i_layer_state(plane->state);
+d540f82adf3577 Maxime Ripard      2018-01-22  25  
+d540f82adf3577 Maxime Ripard      2018-01-22  26  		__drm_atomic_helper_plane_destroy_state(&state->state);
+d540f82adf3577 Maxime Ripard      2018-01-22  27  
+d540f82adf3577 Maxime Ripard      2018-01-22 @28  		kfree(state);
+d540f82adf3577 Maxime Ripard      2018-01-22  29  		plane->state = NULL;
+d540f82adf3577 Maxime Ripard      2018-01-22  30  	}
+d540f82adf3577 Maxime Ripard      2018-01-22  31  
+d540f82adf3577 Maxime Ripard      2018-01-22 @32  	state = kzalloc(sizeof(*state), GFP_KERNEL);
+e4fff65fdb526a Maxime Ripard      2022-02-21  33  	if (state)
+60252323ec9c36 Alexandru Gheorghe 2018-08-04  34  		__drm_atomic_helper_plane_reset(plane, &state->state);
+d540f82adf3577 Maxime Ripard      2018-01-22  35  }
+d540f82adf3577 Maxime Ripard      2018-01-22  36  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
