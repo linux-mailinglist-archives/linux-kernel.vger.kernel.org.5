@@ -1,140 +1,136 @@
-Return-Path: <linux-kernel+bounces-60421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2CBC8504A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:16:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B8288504AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:20:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43C8A1F2294A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 14:16:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10F27284110
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 14:20:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342CC53E1F;
-	Sat, 10 Feb 2024 14:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6CC453E3C;
+	Sat, 10 Feb 2024 14:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B0OPgzFm"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="CLYuoMyR"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F582030B
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 14:16:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918C836B02;
+	Sat, 10 Feb 2024 14:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707574586; cv=none; b=fzvB/dfkrwJ/Sux1UiW0p7C6PZMwwjY3zyye5ECewmDZ/k51Tzy/0lWmkWqzyzHWgPwrN62O6qtlGji57GcZf7f+xSdLdbuJDyiihYfIHnTDci7SAY+fu8/FLad2ZuqChO5P93iLaxS3JbZ+5G4vAAvxVTzxtrGFZ4PalXBW29U=
+	t=1707574801; cv=none; b=qQDPje2GcMSi3HBQREyJBKgqRXWBMnGiZ6J7Ly2jMO7CqlLIca+wG4GoLZ+jfwYEhlKbPCnclqskIAzVeNPNnqAk7p/JYspR3KkOXtFkeeUSwXMdgCKkAmf++JTCO8SIsO+zxaLtKZTQ4qvGq4aV1V852jOvd5TnBUxxQNP1NBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707574586; c=relaxed/simple;
-	bh=xp9zH1WaW6uoig/Qd9fQ2SgwWOA/7EqqFkCeMF5KI/4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QNy4iE86pdmaTEQWru16P+jVElPQqxw88Aa8tMtq8FRN9LD6k+eWj1BmkbkJRK/jMd4LMDCx2tMNO3TPRCeedAAvxmQDtJBZkt+jwKTfVrBVMNiExk+NA7ssjLg5UWvl61uAu2E4f0+YQUlAvUPPTT3zJgcW9DdnKx38IEakg0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B0OPgzFm; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707574584; x=1739110584;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xp9zH1WaW6uoig/Qd9fQ2SgwWOA/7EqqFkCeMF5KI/4=;
-  b=B0OPgzFmcTD+yAz0ggJvrp4EQ+xBLwMDL15wdNa7fcXiQuEH6b+7tqbs
-   otr1Ggz7nW2a3mzPvkbbYSlivDv88OwCfaV2bMy56WXkUFXGxCtC3X13e
-   cIH4YDZ3iNzGDchNlm4v1w1nejvVag9EZooknQ3K+spjELhbQST1Z4Rmk
-   kMJgiCLwFXBgB6zK9yRPgWogVSxOMax9vUhEqcEP7T+jul7TMD5/rVLvg
-   xSVv3Ik1BJ8jzpyWwJsONB6RnXIwbvL03phhwdalP+Ed7Fv8aPkvhBHhC
-   8STOYn/9JiRimZA7Pgo5uHeYwISZ6Ha3k2wf+YlDkLaTg1YFCy9ORRQgY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1721049"
-X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
-   d="scan'208";a="1721049"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2024 06:16:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
-   d="scan'208";a="33257272"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 10 Feb 2024 06:16:21 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rYo9S-0005hy-2Y;
-	Sat, 10 Feb 2024 14:16:18 +0000
-Date: Sat, 10 Feb 2024 22:16:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Cc: oe-kbuild-all@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	s=arc-20240116; t=1707574801; c=relaxed/simple;
+	bh=QHEpmhKgjFPc76682sn4sIoMEGMcJgRjxAWR8n1DTeo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NvbYNebix/t0hDc80Ig/siiGOsfTbI5G8b4KT49twMFPCoQNnyS3INKWRaHC/ybPUGbCfmpK3rfzCId1GeMy7XoawjFzj75lHwUHMSMYuuHVS1TAKl2d4c+95ERDOIq+XWfWyxx3horuwwbbAXcW4sfxMvFjet6xRcFUDC80gH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=CLYuoMyR; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1707574768; x=1708179568; i=erick.archer@gmx.com;
+	bh=QHEpmhKgjFPc76682sn4sIoMEGMcJgRjxAWR8n1DTeo=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=CLYuoMyR/RfpN1p89s4CKg+E1TB8++6l2iGF2gXvnfMLbE9b6PMz9cd5qyfXvSoM
+	 LPQHJpXWyckAizctYuZhkFyakdBMG/I7a9DmSRe0tF/0b7WNguKne88f7j/KCte3F
+	 K4MRd7LRL4DvnLGDvkTCU7TGBV1Q+yNcdO+R6BUancgCipkanPVP2A19nB/NiIflm
+	 bUXRyvr+amviLy1ui9nOtpmE/RS6NFzEkO7B5md3jJtsyhIHpgNcDbkixk+pmSOup
+	 gEzlkhqSoHn17evvCwaEg2zGlwXzpf8C4HelCdGUnEB6oZGlTB7H+fCyp4ONfFxw9
+	 sxlZMwMM86q9H6GQMg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MtfJX-1qiDsO3GNL-00vA8E; Sat, 10 Feb 2024 15:19:27 +0100
+From: Erick Archer <erick.archer@gmx.com>
+To: Lucas De Marchi <lucas.demarchi@intel.com>,
+	Oded Gabbay <ogabbay@kernel.org>,
+	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Kees Cook <keescook@chromium.org>
+Cc: Erick Archer <erick.archer@gmx.com>,
+	intel-xe@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Ricardo B. Marliere" <ricardo@marliere.net>
-Subject: Re: [PATCH 4/4] powerpc: ibmebus: make ibmebus_bus_type const
-Message-ID: <202402102142.uphiKeqw-lkp@intel.com>
-References: <20240209-bus_cleanup-powerpc2-v1-4-79a56dcaebb1@marliere.net>
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] drm/xe: Prefer struct_size over open coded arithmetic
+Date: Sat, 10 Feb 2024 15:19:12 +0100
+Message-Id: <20240210141913.6611-1-erick.archer@gmx.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240209-bus_cleanup-powerpc2-v1-4-79a56dcaebb1@marliere.net>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Eah5uIlmx1Oy3vyLT4zwqfiQ5COrJpSQE4f6/oguSrE2kY86hdo
+ QIjW/Bs/9Xo0Qm3o7B3tEM/5G1hyC3HQsuMpWJx4b/bdceZiEsEWP/KmpQj1NKIEdPx0G5q
+ 2eeEy4B3+Csbkv9p9lnZCZE+bd2cADA4HhKSh3suTuHxjpueSp6JUsHY9VUhIBjRrnXfh3t
+ 5GbhzX0HiER7+MDJiic/A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:IhzvHcuJC+E=;GHJKGjSsCANS54bqCQNxN/44ifo
+ 9bqCvzBCyyIV5AAQy8U8INvWJk97jyY8ZGzj7mZTzjWOuOt7smSagbXITxKv4geCA3XJVu4vE
+ 0hYsfu3sWvy3fCNwJ6s6QkBNQb1BTMGw9mwy3poECc1wxqSWYuf3A2VVqwpBlj8slxgsPgQgq
+ syX6sEZDY3swhYf/zAN3socKGOStAUxhxAug7nOsrWmzKpJw/DqVVTEYPq3zH0WRlmTtRHLGA
+ 40Rx8L9wLQSnLQyZHuiMAsCXu4LCM5C+S7xIKwZiYPp/sedY8TnWkTGhhUuamhFaP7mQWSAFx
+ gWIZblydoT47nujdxItHU4Pchxv21B3hn7DV9t2jo/MFke0/tfxG/YgnjFzHxlTcWJgMK/eRj
+ r39nXPlktMP/WGhU9CFgt4RQIjX7+M9oh25lh8MsQG6yLNm/lD/FNsUY7eZ10c1tQYRK9Av6e
+ DTUK7/fyJ1mvHCwAGegKsvH4UjIIAw0cNeuXA5CKV1V24aCR94301qCEqn5Of6CSu+ZlCqx1e
+ Hc8YLjCL6tR8k/xpWHgnbxdWAw+PQXqfj1BMY9G5Cec/Y8eNrTC31fwJne/V5i2C4u3+PpI/I
+ y50J6IUjptVJVwlPulFqoOITs9Qy31YppK2J1pfXkAoC4rRNXMd0nmBFZmF8wP90h9gWAuh3F
+ JIM9kAh9YMRL2r//CFBoB5tqqf7+66erb4WC+idlctJvqdFrqlKSYFdgq30bl5RIpAGiOeKUA
+ Ns8GvXUrIin1O4SSgzRz2gaESJgvPZYFO+dlQOC78cvP5N7jlsHPru14iWXSwJsGTxUbh/AYI
+ 1Th85XbchPMIC00qz2yCW+fCe/5ZJux9ejnMRssskIR/0=
 
-Hi Ricardo,
+This is an effort to get rid of all multiplications from allocation
+functions in order to prevent integer overflows [1].
 
-kernel test robot noticed the following build errors:
+As the "q" variable is a pointer to "struct xe_exec_queue" and this
+structure ends in a flexible array:
 
-[auto build test ERROR on 41bccc98fb7931d63d03f326a746ac4d429c1dd3]
+struct xe_exec_queue {
+	[...]
+	struct xe_lrc lrc[];
+};
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ricardo-B-Marliere/powerpc-vio-move-device-attributes-into-a-new-ifdef/20240210-080925
-base:   41bccc98fb7931d63d03f326a746ac4d429c1dd3
-patch link:    https://lore.kernel.org/r/20240209-bus_cleanup-powerpc2-v1-4-79a56dcaebb1%40marliere.net
-patch subject: [PATCH 4/4] powerpc: ibmebus: make ibmebus_bus_type const
-config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20240210/202402102142.uphiKeqw-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240210/202402102142.uphiKeqw-lkp@intel.com/reproduce)
+the preferred way in the kernel is to use the struct_size() helper to
+do the arithmetic instead of the argument "size + size * count" in the
+kzalloc() function.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402102142.uphiKeqw-lkp@intel.com/
+This way, the code is more readable and more safer.
 
-All errors (new ones prefixed by >>):
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-=
+coded-arithmetic-in-allocator-arguments [1]
+Link: https://github.com/KSPP/linux/issues/160 [2]
+Signed-off-by: Erick Archer <erick.archer@gmx.com>
+=2D--
+ drivers/gpu/drm/xe/xe_exec_queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> arch/powerpc/platforms/pseries/ibmebus.c:58:17: error: conflicting type qualifiers for 'ibmebus_bus_type'
-      58 | struct bus_type ibmebus_bus_type;
-         |                 ^~~~~~~~~~~~~~~~
-   In file included from arch/powerpc/platforms/pseries/ibmebus.c:51:
-   arch/powerpc/include/asm/ibmebus.h:51:30: note: previous declaration of 'ibmebus_bus_type' with type 'const struct bus_type'
-      51 | extern const struct bus_type ibmebus_bus_type;
-         |                              ^~~~~~~~~~~~~~~~
-   In file included from arch/powerpc/platforms/pseries/ibmebus.c:40:
-   arch/powerpc/platforms/pseries/ibmebus.c:445:15: error: conflicting type qualifiers for 'ibmebus_bus_type'
-     445 | EXPORT_SYMBOL(ibmebus_bus_type);
-         |               ^~~~~~~~~~~~~~~~
-   include/linux/export.h:56:28: note: in definition of macro '__EXPORT_SYMBOL'
-      56 |         extern typeof(sym) sym;                                 \
-         |                            ^~~
-   include/linux/export.h:68:41: note: in expansion of macro '_EXPORT_SYMBOL'
-      68 | #define EXPORT_SYMBOL(sym)              _EXPORT_SYMBOL(sym, "")
-         |                                         ^~~~~~~~~~~~~~
-   arch/powerpc/platforms/pseries/ibmebus.c:445:1: note: in expansion of macro 'EXPORT_SYMBOL'
-     445 | EXPORT_SYMBOL(ibmebus_bus_type);
-         | ^~~~~~~~~~~~~
-   arch/powerpc/platforms/pseries/ibmebus.c:435:23: note: previous definition of 'ibmebus_bus_type' with type 'const struct bus_type'
-     435 | const struct bus_type ibmebus_bus_type = {
-         |                       ^~~~~~~~~~~~~~~~
+diff --git a/drivers/gpu/drm/xe/xe_exec_queue.c b/drivers/gpu/drm/xe/xe_ex=
+ec_queue.c
+index bcfc4127c7c5..f4e53cbccd04 100644
+=2D-- a/drivers/gpu/drm/xe/xe_exec_queue.c
++++ b/drivers/gpu/drm/xe/xe_exec_queue.c
+@@ -44,7 +44,7 @@ static struct xe_exec_queue *__xe_exec_queue_create(stru=
+ct xe_device *xe,
+ 	/* only kernel queues can be permanent */
+ 	XE_WARN_ON((flags & EXEC_QUEUE_FLAG_PERMANENT) && !(flags & EXEC_QUEUE_F=
+LAG_KERNEL));
 
+-	q =3D kzalloc(sizeof(*q) + sizeof(struct xe_lrc) * width, GFP_KERNEL);
++	q =3D kzalloc(struct_size(q, lrc, width), GFP_KERNEL);
+ 	if (!q)
+ 		return ERR_PTR(-ENOMEM);
 
-vim +/ibmebus_bus_type +58 arch/powerpc/platforms/pseries/ibmebus.c
+=2D-
+2.25.1
 
-d7a301033f1990 arch/powerpc/kernel/ibmebus.c Heiko J Schick 2005-11-16  57  
-6bccf755ff5324 arch/powerpc/kernel/ibmebus.c Joachim Fenkes 2007-03-09 @58  struct bus_type ibmebus_bus_type;
-6bccf755ff5324 arch/powerpc/kernel/ibmebus.c Joachim Fenkes 2007-03-09  59  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
