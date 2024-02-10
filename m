@@ -1,56 +1,61 @@
-Return-Path: <linux-kernel+bounces-60444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AA05850505
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F11C850509
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:09:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFA011F22F17
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:02:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 067C81F2207F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158FB5C03D;
-	Sat, 10 Feb 2024 16:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D4A5BAD8;
+	Sat, 10 Feb 2024 16:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H+l5UQja"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DqvRzvIt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC295B69C;
-	Sat, 10 Feb 2024 16:02:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB875BAFA;
+	Sat, 10 Feb 2024 16:09:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707580943; cv=none; b=OYmzP6GSJ7gVModYq4j1hdvRKy3q0UCUYK+8NpBOYzDxyrb1AF+MUUjuBJowalZjHEygeSOlpVSm9lXu3n/oWrUOqisXmK5qHXbFZ7givA1XtBty/RF+FLvga5B+8LViu8x76UULf5jjJ3JOosGlz/s0ycbJ3v4EO2Sr5cwBbPg=
+	t=1707581344; cv=none; b=ruE8Mofaf+KnMzyGWajeJW6yjRTVevxsFz5hGR9eYdFKsUGmDyNJnHm4t9y+hitwwqf+BfZXvHOUI+hRBzfJuPkMNlbxcYEYD9JzEeUciOjmY+PncgI8OsNqJekpFOBsOpouW/3wcxpMhhPYx/Co9LZEqlzEgibJXsHzqsnvGBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707580943; c=relaxed/simple;
-	bh=OJzXw3Ds337hCBpyFZS8yQw7PPY+pMe8+OVAJ3/GEiw=;
+	s=arc-20240116; t=1707581344; c=relaxed/simple;
+	bh=MzlWsgTMilMmEj3lEfAH8phdvW+GhcAh2UuWorwFEcU=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k7REHdmflc5ytykt9cunT5WKylcXGwx8sXk+TWQrVVltEEAEePLOLAbP/exdrR/O6JWM3Pat+deUmgUe71RrKoSI0VrnUhY9TO6q/+kHpYsV1sjk/L3fIaK0wStxr/bOBEAXk55Qz8JW0qTnU7HbzwVgNVWZcPuqcSyEARFsA4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H+l5UQja; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B95A4C433C7;
-	Sat, 10 Feb 2024 16:02:20 +0000 (UTC)
+	 MIME-Version:Content-Type; b=RD3RxFBKI3epZX2zFR4/J/nUO+CILYbio0DwtDZD8wY2rIp5CpmeeFLA1qyhXfXFiNOeboE9d58E8/1RE/waVz39izETRZcMuORsZqm4Df/gl/hdsnMMZSSbx964RJ0Vs6fMX6rkgfskoGPCHjjL5YWcx8HQRA/11Qi8nXXQzpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DqvRzvIt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08313C433C7;
+	Sat, 10 Feb 2024 16:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707580942;
-	bh=OJzXw3Ds337hCBpyFZS8yQw7PPY+pMe8+OVAJ3/GEiw=;
+	s=k20201202; t=1707581344;
+	bh=MzlWsgTMilMmEj3lEfAH8phdvW+GhcAh2UuWorwFEcU=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=H+l5UQjaSuCvsq3TbM/1CMjRayMNZszaahPc/lWGmsJuwvsltSsHmI+Uq1aGLCj8h
-	 8bcpeZUz5VaopkFyelJkSrGT9Gufy2QA+eVXiwseFJxAc+JYqHzjQMK/bzC8sES3bt
-	 amL+xIiIvvVjkm0wReIJWVgG8+SGGEvMB9AvXoaBMgl0C+jUb0MaFGpmLyEhDBVoW5
-	 e5PvFDT0k1h51jyLF1x6XTTdQ7q3UqNwfpdFPYkSZdmj28yG6rLp6Wgzdvo0lwzbDH
-	 Mo0S3ERWq0mWTuW0wUN/c+72ddAb/pAmZHn4MPNdc18fO3GtLwh4cgA8jIBVkrS8d5
-	 HhRTB0fq8WbRg==
-Date: Sat, 10 Feb 2024 16:02:10 +0000
+	b=DqvRzvItFtIPVzzkrI9R49WWlcjQGs+qIdS0RQohOn9eqMA/cGFYsjFArx5Rh+j1t
+	 7ogijSn+YOv3Dc3FLjzF8yJzn3ozPX+ppxNYt706SYw7IYlbHogw1WUovzOSBbkYLu
+	 MwE6vOAUK3fDWIgV0xWjoFphcTBadXSflU2mmtTpImXpVqjV7xT1Vp7ha5WyFiKzmQ
+	 Y32VyobI0/1grhrXO6yzocHGpkR/zzvKT9DdNRt2yuYKCrZw/es3YmcSfP7/3F0pEQ
+	 S1w5CRCCwk6HxvK9dogmRrcnJ9o9KsYoloKOUn4tr8GEgegnlrxyrL9dFTtwViyq2l
+	 WLOZajpDQWT2w==
+Date: Sat, 10 Feb 2024 16:08:50 +0000
 From: Jonathan Cameron <jic23@kernel.org>
-To: Jesus Gonzalez <jesusmgh@gmail.com>
-Cc: andriy.shevchenko@linux.intel.com, lars@metafoo.de,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/1] Add 10EC5280 to bmi160_i2c ACPI IDs to allow
- binding on some devices
-Message-ID: <20240210160210.65bb2c95@jic23-huawei>
-In-Reply-To: <20240207195549.37994-2-jesusmgh@gmail.com>
-References: <ZcOLql2RGmPP10EY@smile.fi.intel.com>
-	<20240207195549.37994-2-jesusmgh@gmail.com>
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ devicetree@vger.kernel.org, linux-iio@vger.kernel.org, Lars-Peter Clausen
+ <lars@metafoo.de>, Liam Beguin <liambeguin@gmail.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Maksim Kiselev <bigunclemax@gmail.com>, Marcus
+ Folkesson <marcus.folkesson@gmail.com>, Marius Cristea
+ <marius.cristea@microchip.com>, Mark Brown <broonie@kernel.org>, Niklas
+ Schnelle <schnelle@linux.ibm.com>, Okan Sahin <okan.sahin@analog.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] iio: adc: ti-ads1298: Add driver
+Message-ID: <20240210160850.7495b410@jic23-huawei>
+In-Reply-To: <7d7ea4e4-fcae-4966-b194-e1d328751b6b@topic.nl>
+References: <ZcDo6QvoE_e5s_f1@smile.fi.intel.com>
+	<7d7ea4e4-fcae-4966-b194-e1d328751b6b@topic.nl>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -61,83 +66,34 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed,  7 Feb 2024 20:55:50 +0100
-Jesus Gonzalez <jesusmgh@gmail.com> wrote:
 
-> "10EC5280" is used by several manufacturers like Lenovo, GPD, or AYA (and
-> probably others) in their ACPI table as the ID for the bmi160 IMU. This
-> means the bmi160_i2c driver won't bind to it, and the IMU is unavailable
-> to the user. Manufacturers have been approached on several occasions to
-> try getting a BIOS with a fixed ID, mostly without actual positive
-> results, and since affected devices are already a few years old, this is
-> not expected to change. This patch enables using the bmi160_i2c driver for
-> the bmi160 IMU on these devices.
 > 
-> Here is the relevant extract from the DSDT of a GPD Win Max 2 (AMD 6800U
-> model) with the latest firmware 1.05 installed. GPD sees this as WONTFIX
-> with the argument of the device working with the Windows drivers.
+> >  
+> >>> +	spinlock_t irq_busy_lock; /* Handshake between SPI and DRDY irqs */
+> >>> +	int rdata_xfer_busy;
+> >>> +
+> >>> +	/* Temporary storage for demuxing data after SPI transfer */
+> >>> +	u32 bounce_buffer[ADS1298_MAX_CHANNELS];
+> >>> +
+> >>> +	/* For synchronous SPI exchanges (read/write registers) */
+> >>> +	u8 cmd_buffer[ADS1298_SPI_CMD_BUFFER_SIZE] __aligned(IIO_DMA_MINALIGN);
+> >>> +
+> >>> +	/* Buffer used for incoming SPI data */
+> >>> +	u8 rx_buffer[ADS1298_SPI_RDATA_BUFFER_SIZE];  
+> > Cacheline aligned?
+> > I see the cmd_buffer, but shouldn't this be also aligned?  
 > 
-> 	Device (BMA2)
-> 	{
-> 	    Name (_ADR, Zero)  // _ADR: Address
-> 	    Name (_HID, "10EC5280")  // _HID: Hardware ID
-> 	    Name (_CID, "10EC5280")  // _CID: Compatible ID
-> 	    Name (_DDN, "Accelerometer")  // _DDN: DOS Device Name
-> 	    Name (_UID, One)  // _UID: Unique ID
-> 	    Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-> 	    {
-> 		Name (RBUF, ResourceTemplate ()
-> 		{
-> 		    I2cSerialBusV2 (0x0069, ControllerInitiated, 0x00061A80,
-> 		        AddressingMode7Bit, "\\_SB.I2CC",
-> 		        0x00, ResourceConsumer, , Exclusive,
-> 		        )
-> 		})
-> 		Return (RBUF) /* \_SB_.I2CC.BMA2._CRS.RBUF */
-> 	    }
-> 	    
-> 	    ...
-> 	    
-> 	}
+> I understood from Jonathan that that wasn't needed... "My" SPI 
+> controller is rather dumb and doesn't even have DMA.
 > 
-> Signed-off-by: Jesus Gonzalez <jesusmgh@gmail.com>
-For future reference don't send a new version in reply to the old one.
-It makes a big mess in many people's email clients
-if we get lots of versions.  The patch naming is enough to associate
-the different versions.
+> Will take a closer look though.
+It should be fine.  The aim here is to ensure that nothing access data in
+the same cacheline from the CPU side whilst DMA is ongoing (and unwanted
+write backs of stale data can occur). As long at the handling isn't
+very complex, a single marking of the first buffer used for DMA (and
+being sure there is nothing other than other DMA buffers after it
+the same cacheline (potentially multiple lines) is enough.
 
-Applied to the togreg branch of iio.git and pushed out as testing for 0-day
-to take a look at it.
-
-Thanks,
-
-Jonathan
-
-> ---
-> v4: Moved comment back to relevant position inside function
-> 
->  drivers/iio/imu/bmi160/bmi160_i2c.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/iio/imu/bmi160/bmi160_i2c.c b/drivers/iio/imu/bmi160/bmi160_i2c.c
-> index 81652c08e644..a081305254db 100644
-> --- a/drivers/iio/imu/bmi160/bmi160_i2c.c
-> +++ b/drivers/iio/imu/bmi160/bmi160_i2c.c
-> @@ -43,6 +43,15 @@ static const struct i2c_device_id bmi160_i2c_id[] = {
->  MODULE_DEVICE_TABLE(i2c, bmi160_i2c_id);
->  
->  static const struct acpi_device_id bmi160_acpi_match[] = {
-> +	/*
-> +	 * FIRMWARE BUG WORKAROUND
-> +	 * Some manufacturers like GPD, Lenovo or Aya used the incorrect
-> +	 * ID "10EC5280" for bmi160 in their DSDT. A fixed firmware is not
-> +	 * available as of Feb 2024 after trying to work with OEMs, and
-> +	 * this is not expected to change anymore since at least some of
-> +	 * the affected devices are from 2021/2022.
-> +	 */
-> +	{"10EC5280", 0},
->  	{"BMI0160", 0},
->  	{ },
->  };
-
+So the __aligend(IIO_DMA_MINALIGN) on cmd_buffer should work for allt hese
+buffers.
 
