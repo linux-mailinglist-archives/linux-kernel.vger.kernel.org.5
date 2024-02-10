@@ -1,109 +1,92 @@
-Return-Path: <linux-kernel+bounces-60438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E1358504F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:29:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42CBF8504F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EB731F23148
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:29:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0588E283E56
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF265BAE0;
-	Sat, 10 Feb 2024 15:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AzNCnSdl"
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 291995BAEA;
+	Sat, 10 Feb 2024 15:32:06 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67DB836AF0
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50ECC5BAC9
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707578968; cv=none; b=pjCtzxBtB55Vqr4SdMfpdjscME0zVrjQCr2ZzjWRnwcsEMR7snHxDEa12qjAmZQd1M+pyEsC6zmet8oaeQa11XukCAv5lU3qIOJnx7NHOByOoXcVkI9IlhH6aVSMheXxeTt0yNXC6YHXnXSpUQv9dOb3fHcrA3XqYKvde3aXSuA=
+	t=1707579125; cv=none; b=k4cdwhxvN13Fu8i8r26b8qlajTEX7Hc5IoNRz71tuPduIrNGKtbfvRzwg/Q9uaI9NAcY3a8Z3TEF5vmp57oTvueGA08AzL2xcQTlx9orRvDjOclu9mqiB6MSBsyTBoHpT10VmQ5f93jq19zO6xSxw+3FE+6o3G72oEbVqj1F6Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707578968; c=relaxed/simple;
-	bh=lJApX2EBAcNh34LWwrUaPax+BM9BG9Wp0v2CJOLi4BE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FEnTB2SdD83gi29hbyNwm54TYfxgQ/9fAKsyoxRwf8ZcV4dqzJQ6BjpSAT93bXsnHGsHUYx6PkW3knvcXjJah3dNFV/Ta3ZibQygskURuLc7cH43QfQVSovwfWfGLlBcca7Mxyr7vzUJth3cK03CsysdonMVe+1U/69Ir11TSIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AzNCnSdl; arc=none smtp.client-ip=209.85.167.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bba50cd318so1408452b6e.0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:29:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707578965; x=1708183765; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4+ZbG51dE6UVc7hzzIUXGXIlf8j/Yb+04IIzEUmAJ+Y=;
-        b=AzNCnSdlLqN4W16TGbOTum4svcz8ysI7XMrvtUdB2QhyX2+wE5Jd0axicDsX2U3bK+
-         D0gt+tMgZbAzBiZqHn6foFpUwaB+awiUMxq9ii65+oN28HyZ7hRQ3+ENVAjB4APaE//Y
-         mu771TaSY7Ju82esH4jZQHFolD7hs5jG3XCokYvOYrYsqqUHvLi4JTeoSkHUudmsvatk
-         6kH5Hv8VUp4UeiXIYS+mqHgawm+w5OmnRq0PB+iC3bW/8SnfQndAX2BTh4JX+l9zeAAI
-         MWobvYLp2tMvEMjX8Mai4IQ6KQAon+uMrMmHuoVuuUP6pmPSsh+hslDETMs7zRou8+Wh
-         gINw==
+	s=arc-20240116; t=1707579125; c=relaxed/simple;
+	bh=yd5Q1bNL3wVsXKQVoggLF1WFQ+ztPWjj6nCxqsQAfPc=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=YnBjSbBikE7rqJagDN/7sQj5Be1U7asft8ikSGQQBN/sgZGO93+yGDibB77r7TCKBWpjO7bJxVDBqCuowqjXXXcecvliqv97Vt995oe/G6KG7um9gG7fSx+XSuTT+AjiEl5D4kdPm372UO1BLXxxrP3H4TXgnQ+udiFgynEXBtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363ec32bca3so14451705ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:32:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707578965; x=1708183765;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4+ZbG51dE6UVc7hzzIUXGXIlf8j/Yb+04IIzEUmAJ+Y=;
-        b=j6fSbNVsTnZSxzcWHJgPpXzTObctu0F2G9naUnXROyXm6Up9wxUls1Uwkh7gR86/Cf
-         cnYQyEfHoWNRlpcDu5jlIpuszVr6vklRyyOzSwpPwPkOJj4XT1GVSLgViRjNeOG+se/O
-         3mERXmbUk+Zi9YRLYifIsd86/LoNW7mwJon+Ux7dU3ShHoKFn16mJwK+3fb5M4iQgARt
-         2GwIujkv8BTtffDXF/xyMhe6ExDvppG3/rCsdBcbNx1WDpMy660ArTLqntRgVhfISvUx
-         fmtSKBjHANjvKOf3Yq4gGDRXOohnEY5bI5AktEn+l+w0zu3pytZW8u0Dn8NtrqSiIF+y
-         SDwA==
-X-Forwarded-Encrypted: i=1; AJvYcCVUqbS5UM2GCs7BoHwxMa6WPMsLpsBnRywyeYkgUGefNNzTVI3HTCC4gxEMyrU+y7OJVZemXsT/vkLCJYTXH3GWwbHQjyIo/SzycPkL
-X-Gm-Message-State: AOJu0Ywe+bBOxMizvSvxnvtygag9ixI5JU7D2grlOfZN3nwYQsSbiMov
-	MA3jGPbnX0Bls3q15IW+4VmSY1K7xBUBTaAMW2y0csziC0iqisbR
-X-Google-Smtp-Source: AGHT+IGqbJYFgbLuFIwRZhe4bxE0vofbALM0acYfOPamrEqA2AXOaPJMq+11wP41/sQmVpjH7Z4gsQ==
-X-Received: by 2002:a05:6808:14d3:b0:3c0:2c0c:306 with SMTP id f19-20020a05680814d300b003c02c0c0306mr2472818oiw.0.1707578965484;
-        Sat, 10 Feb 2024 07:29:25 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWxk9m/zPRB4fDCKO8wso0ghzmTaleDwDzmgLTbUZQCa54Ht/q8hjFmPHQuWD6InvjeQ9VJVQs+3by8COedXnz1rGnpEPyxqejDAPW/mFs+LGYkUe5WyIIe2Zc8EFumdgKBqzbVdTMy5KDsYUZ+NIVsjz+V1Fnb40kwxDj1zt38A7SPDDvBxRC3azgAEDvHavGG/sTvKhFmtHry1sSfDx/8HmOIhJeBdh2SuHqpa7BLt+fcv0jTVYQEPd9BdFYGtAVvGZcCsJvppdrEqiJA3N3DqA7d2C95hFfL+9YNZ7mtpow=
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k70-20020a633d49000000b005cf450e91d2sm3716793pga.52.2024.02.10.07.29.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Feb 2024 07:29:24 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sat, 10 Feb 2024 07:29:23 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Christian Brauner <brauner@kernel.org>,
-	Jeff Layton <jlayton@kernel.org>,
-	Jia-Ju Bai <baijiaju1990@gmail.com>,
-	Edward Lo <loyuantsung@gmail.com>,
-	Abdun Nihaal <abdun.nihaal@gmail.com>, ntfs3@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ntfs3: avoid an unused variable warning
-Message-ID: <a47e652b-120f-4147-9163-cdef251616d1@roeck-us.net>
-References: <20240202125101.986302-1-arnd@kernel.org>
+        d=1e100.net; s=20230601; t=1707579123; x=1708183923;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iW/fdzhN655e76oqp6FV6OT5SDqBKN4BWEe6vzxQRIk=;
+        b=FhE5P391hjOURlnRqtLGe1icD8/keZb7ReSQQ+4KiKFQByQcpGNfXrZHkhJHKycDVH
+         i2kSFwvVH6gz5FHvAjzshhJueCh9WWAl7+OZfPYJu26MiGKoIppyfGTuBCIVJCWTCah6
+         05OdPO1A19qc8h2lxQxLKgSu1fcDsFtTZfdj6naeP4tLx8B7/jEKEUPvs7gNj1ckb/OA
+         G3Szxrwgb97IxGkwrzwtJV3q8fKIYRydHthKW8PxNM57+8i+kCEGV0SPymnRWWdKHwRN
+         a9GmAHlHa1/2DXXRPlyx7mp9gF80xx8opgpgLHvKYRpeOFVrNJdywR3RJNj1w8xFhpxS
+         qn+A==
+X-Forwarded-Encrypted: i=1; AJvYcCWjlUWxEJoHc7UPfjgvofHkY7wTqK4qhVRkO2c9nXJxMQ6azo4JiitMxqGTkGOQbX3mnNmfGSCJ/FIzWntGry/ByrCyRNC+qwv8QD4T
+X-Gm-Message-State: AOJu0YwJmTvgA0ieUdXQBLpsHd+yqC2zRq+lXBDH8tV8UWlnKx7Z3JwJ
+	Hmfg2aTME444en01iqtvvnsTW1B3UGHiKhUo+TS6Q2To/qO6q4ycKNi7e+S5WwCjB7uBpXlSD5S
+	aMbJ6xALI+BklFx3rMiJcbDNjhCH/bLI15z/YRat331V3jUlQvUtiH1I=
+X-Google-Smtp-Source: AGHT+IFaNAgr90nVgqByDRoV2YWYs+Q6Nvsd3PVBvPhWzfpkYUQjEDRjvU3oAgaTUkssN1JVEVSmjwAwnfWSvE+EplRu8KwdEHs+
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202125101.986302-1-arnd@kernel.org>
+X-Received: by 2002:a05:6e02:2162:b0:363:cc38:db1c with SMTP id
+ s2-20020a056e02216200b00363cc38db1cmr136461ilv.6.1707579123468; Sat, 10 Feb
+ 2024 07:32:03 -0800 (PST)
+Date: Sat, 10 Feb 2024 07:32:03 -0800
+In-Reply-To: <0000000000008ca4ed0610f6d017@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001493e2061108bfd4@google.com>
+Subject: Re: [syzbot] [block?] WARNING in bdev_file_open_by_dev
+From: syzbot <syzbot+96f61f1ad84e33cee93e@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, hch@lst.de, jack@suse.cz, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 02, 2024 at 01:50:56PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A newly introduced variable is only referenced in an #ifdef:
-> 
-> fs/ntfs3/frecord.c: In function 'ni_read_frame':
-> fs/ntfs3/frecord.c:2460:16: error: unused variable 'i_size' [-Werror=unused-variable]
-> 
-> Move it into the same conditional block.
-> 
-> Fixes: 4fd6c08a16d7 ("fs/ntfs3: Use i_size_read and i_size_write")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+syzbot has bisected this issue to:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+commit e6d7c6cd8e6aeb8b4add207d31dff240680ff573
+Author: Christian Brauner <brauner@kernel.org>
+Date:   Tue Jan 23 13:26:20 2024 +0000
+
+    block/genhd: port disk_scan_partitions() to file
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15805cec180000
+start commit:   445a555e0623 Add linux-next specific files for 20240209
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17805cec180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13805cec180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=85aa3388229f9ea9
+dashboard link: https://syzkaller.appspot.com/bug?extid=96f61f1ad84e33cee93e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178b1e20180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143db9f4180000
+
+Reported-by: syzbot+96f61f1ad84e33cee93e@syzkaller.appspotmail.com
+Fixes: e6d7c6cd8e6a ("block/genhd: port disk_scan_partitions() to file")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
