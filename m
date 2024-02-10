@@ -1,105 +1,148 @@
-Return-Path: <linux-kernel+bounces-60395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBA65850460
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 13:28:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C1DC850464
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 13:32:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D84D1F2251D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:28:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1E322817D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:32:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9AE83E464;
-	Sat, 10 Feb 2024 12:28:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F19047F59;
+	Sat, 10 Feb 2024 12:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JnloRa8r"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AXReNp7G"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8C63DBA8;
-	Sat, 10 Feb 2024 12:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C223EA66
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 12:31:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707568127; cv=none; b=WaWMNDK2OtsRWn6DiDJzRGeM5buRaHh11Q9ZNDpq60sGeTGVZIPWTi/PTHRx9krOAJ2NTRXAFz3PdiDyhvlA3dHTo0wTlJBSC4nwUaIBoOTRsu2LCHDxQawAdyXd+LdzIg2Baa46zIDKwVb2Qyptlo4iya12KiO+kUTgNetu6Go=
+	t=1707568318; cv=none; b=Hy0fv2sf7xej1OUtx+Hq9hawQ7s+3hfraFOHAYDk8Qj3DhAJOdTvjP/ipqluGb03n+7NYGEgP3lHK4uv4bx8O06pe1rS7rCargLJfxtcq2b4krJyT2tl+QUQT/mktp5Q/BTSfxobwEMBQ+rh6YOrobFZXLXI/FZQu3YT7f5i6Og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707568127; c=relaxed/simple;
-	bh=n1SXa45OWt5gxS1ZW4uwLNmbdEvh0C1qDEo0Ica0gGk=;
+	s=arc-20240116; t=1707568318; c=relaxed/simple;
+	bh=b/+bunSHR5UhPdFTXfBKcRLs2qkDpn8Qrz7Q+Zf0Neg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YrbPpVBDrb52YY0ZHbJwXe8iGAspZcFcL4eUA5soC/jitrsn2Fyb8ZtM0z1WAZdXbCZr0FJToyKMLFWnYGV94/plTC+Y+isIPMZ0pPB1XJi1Nzox3nUwKm97IS2JCasiGnUYKvVQcqydGp5qg5hfSegZaLMZ4087ALZtKiN3OGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JnloRa8r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99A0CC433F1;
-	Sat, 10 Feb 2024 12:28:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707568126;
-	bh=n1SXa45OWt5gxS1ZW4uwLNmbdEvh0C1qDEo0Ica0gGk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JnloRa8rVltZ3SRL0VcNKn6q1HNRxH1Uh6EKrvDehziH84t35RFqQJVveHHkUrgjd
-	 aXZfqAxxKEmibNkMHEBmaqLXtJfhOIyW9b9K/Cfwku0eH16KKlpAc5oLFdqg6tgNgI
-	 45w6KRyF4rI3kN+l/8jgERAkmzC10zYkvVp4ch1po4R57zvjNk707thJ5/kHD58Zoq
-	 LggCay+NDF9IOFOZ90Yu1IC/fUtLVaB8NJL0DRTWITGlb2mxBAxPIrn/I7pDEwZcjE
-	 5Pk4ugcteWCPuQ1leRsGRqte0e4jLyMboOQzz4w6cPCn3htUgGkJGX62bz7M0Vk+nH
-	 XZfl0jIQfjbwg==
-Date: Sat, 10 Feb 2024 12:28:41 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Sebastian Reichel <sre@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Dong Aisheng <aisheng.dong@nxp.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=RvfuV+3c0fL1222liOWND8UpxQkirLC6Bup8A4+ltOA7VrkahbvhChiL4RInwr/fCRRDWWYCqHf3z4PKWUg9pBXICsQ999OhoiSuHjjp/GNweooNFcQS2J0Br/YgxXfGVY97HpR7VLLIS7pe3xSh3cH4xndbeaPY1uHCbR5KdwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AXReNp7G; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707568316;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rsa8Sa2RaRjXmbcIJ9/cp3lURU1N9XcuIpnY+VN8kcI=;
+	b=AXReNp7GN5C3BWNiOzedgxO5AcPjqEQzg5JXDGWoRX71UiqUNqCSA4NItOwGvlS2Eivn+5
+	m083+AV/XjCFvjioZ3FvR4QAXB/KPX2is3eFv1Xff+YSzOO+6H2ipqEUfKRsmgH2u4USSE
+	sEYLEVmsFHEpRS+9F0Z4WPElOTLNr1s=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-562-euPsEMJsOUOA3OZtIC3yHg-1; Sat,
+ 10 Feb 2024 07:31:52 -0500
+X-MC-Unique: euPsEMJsOUOA3OZtIC3yHg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9B560380451B;
+	Sat, 10 Feb 2024 12:31:51 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.28])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 13E2840C9444;
+	Sat, 10 Feb 2024 12:31:49 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sat, 10 Feb 2024 13:30:35 +0100 (CET)
+Date: Sat, 10 Feb 2024 13:30:33 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 03/14] dt-bindings: sound: fsl,imx-asrc: convert to
- YAML
-Message-ID: <Zcdr+fMEpxNiqxQN@finisterre.sirena.org.uk>
-References: <20240210012114.489102-1-sre@kernel.org>
- <20240210012114.489102-4-sre@kernel.org>
+Subject: Re: [PATCH v2 2/2] pidfd: change pidfd_send_signal() to respect
+ PIDFD_THREAD
+Message-ID: <20240210123033.GA27557@redhat.com>
+References: <20240209130620.GA8039@redhat.com>
+ <20240209130650.GA8048@redhat.com>
+ <20240209-stangen-feuerzeug-17c8662854c9@brauner>
+ <20240209154305.GC3282@redhat.com>
+ <20240209-radeln-untrennbar-9d4ae05aa4cc@brauner>
+ <20240209155644.GD3282@redhat.com>
+ <20240210-abfinden-beimessen-2dbfea59b0da@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ipnWyDd7ObTvUGJ5"
-Content-Disposition: inline
-In-Reply-To: <20240210012114.489102-4-sre@kernel.org>
-X-Cookie: You might have mail.
-
-
---ipnWyDd7ObTvUGJ5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240210-abfinden-beimessen-2dbfea59b0da@brauner>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Sat, Feb 10, 2024 at 02:18:07AM +0100, Sebastian Reichel wrote:
-> Convert the i.MX ASRC DT binding to YAML.
+Christian,
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+Thanks again! the last 2 commits in vfs.pidfd look good to me.
 
---ipnWyDd7ObTvUGJ5
-Content-Type: application/pgp-signature; name="signature.asc"
+As for this patch, I am not sure I understand your concerns, and I
+have another concern, please see below.
 
------BEGIN PGP SIGNATURE-----
+For the moment, please forget about PIDFD_THREAD.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXHa/YACgkQJNaLcl1U
-h9AziQf5AY/umton2qczFUuj4rrGHyLDbZpR1VM3gWQ0qWK/C/755uYNgBIRkY3d
-ambo5whWDDiGbdcfJA3cPf5LLh2QfmrfRDOnMuDkpXgStOX8NM2dL9yYHVkFc00V
-a1EtiIlmF9m7WBS5/j5aWbjVxO5NNcgWzPeEAEB6tZSseolT0pCiU3QyTgy3pBdF
-O7ABOYC+EiMjBonkfIfNRtFo1LgtaCMDWUvAR1Zi9xQaK2Vt8kCwTV/ASmlaXEsO
-nUYkM/86Lh/nQ2GSBmi30LYspv4fRR4Z1P/lv6rLUaaSKkdMP588CiryVhzT7Rqn
-Bc96sxdnBNKPwiw9wnK20W3gsaV04w==
-=hDEo
------END PGP SIGNATURE-----
+On 02/10, Christian Brauner wrote:
+>
+> (1) kill(-1234) => kill process group with id 1234
+> (2) kill(0)     => kill process group of @current
+>
+> which implementation wise is indicated by
+>
+> __kill_pgrp_info(..., pid ? find_vpid(-pid) ? task_pgrp(current))
+>
+> We're obviously not going to implement (2) as that doesn't really make a
+> sense for pidfd_send_signal().
 
---ipnWyDd7ObTvUGJ5--
+Sure,
+
+> But (1) is also wrong for pidfd_send_signal(). If we'd ever implement
+> (1) it should be via pidfd_open(1234, PIDFD_PROCESS_GROUP).
+
+Why do you think we need another flag for open() ?
+
+To me it looks fine if we allow to send the signal to pgrp if
+flags & PIDFD_SIGNAL_PROCESS_GROUP.
+
+And pidfd_send_signal() can just do
+
+	if (PIDFD_SIGNAL_THREAD_GROUP)
+		ret = __kill_pgrp_info(sig, kinfo, pid);
+	else
+		ret = kill_pid_info_type(...);
+		
+(yes, yes, this needs tasklist, just a pseudo code to simpliy)
+
+Now lets recall about PIDFD_THREAD.
+
+If the target task is a group leader - there is no difference.
+
+If it is not a leader - then __kill_pgrp_info() will always return
+-ESRCH, do_each_pid_task(PIDTYPE_PGID) won't find any task.
+
+And personally I think this is all we need.
+
+------------------------------------------------------------------------------
+But if you want to make PIDFD_SIGNAL_THREAD_GROUP work even if the
+target task is not a leader, then yes, we need something like
+
+	task_pgrp(pid_task(pid, PIDTYPE_PID))
+
+like you did in the new kill_pgrp_info() helper in this patch.
+
+I won't argue, but do you think this makes a lot of sense?
+
+Oleg.
+
 
