@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-60378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C95A85043B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:36:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A08D85043C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:36:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F8C51F22E28
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:36:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4632D286F58
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8915D3CF57;
-	Sat, 10 Feb 2024 11:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1659F3D561;
+	Sat, 10 Feb 2024 11:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eLaly24H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ox5pYG88"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7543AC01
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 11:36:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FFC33D55A
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 11:36:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707564982; cv=none; b=NO4HmhsB8Yajiu74n+TGDjD25v3eqeoCQbILyJjD8Y/UQA4Xtg8Fh1NV8hhYBL7D7pUe09fVqrHhZeeYihZj8vETJ0AxfMj6KiY9ZNHAs53JpqHUl6Z3KypYwnkZhlAXM9KtEvBNPnPGgDeBvK1fhf5k3L6Wp9mzAqyitpERzBA=
+	t=1707564986; cv=none; b=eKtS/Lclhm/odPbZgpgM9CY9M3T4dSshpm029E9pLOFOMz8VjihzipiaSgQGAD3d6V/kdO4YKjhoFW6hQz0fx6wuu9+R4kYJDqmFbNL+jFWbDK3SRBFgApWL7wgJtgsrLqA9gAttvhS/a/GWPNqWGnDAjJjubUflL7D/4P0LmHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707564982; c=relaxed/simple;
-	bh=mofvx/4Gu5lY6rezEW+q6OTCAd/T7sEH3BGxSJ30Meg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aG9q3HvZxpDMf6GAwi7aw3Ntf5HZtzxyplIcALYFfBsD0dMXMZ89Em7hSJsdQK7J7j5APwNe+a5KYcTaTE/eiNqIP/gnsX1RuGsDEkedQf+awtjiC1zkFE0UQg5hVpCWrVdghnGONJzEH9qjBjc59wkgYY9BFuiuijvxjiknYU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eLaly24H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 641BDC433C7;
-	Sat, 10 Feb 2024 11:36:19 +0000 (UTC)
+	s=arc-20240116; t=1707564986; c=relaxed/simple;
+	bh=GN38axMpDXwM+LiQWv9rCHV4je3GH/IUMqqcPRYdILM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tbvyYeIytnmikZLRFMQutzW/D1N2haLc/bfAYs/f8p2dJ4h81MwgF+OwTNyFm53hytUVpCTrQrCM1rtH6rP3JjiwBv3ifkLNxLoM4rtXCS/eCvNO6ynoy/unmU3a/dQvL8XQnyEKeDm/U/+S8dTF1Nn8Ld7VF8ZsEUrDMb3CHU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ox5pYG88; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00256C43390;
+	Sat, 10 Feb 2024 11:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707564982;
-	bh=mofvx/4Gu5lY6rezEW+q6OTCAd/T7sEH3BGxSJ30Meg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=eLaly24HIsgzoTZ/SX6JRFlF4EusLbDp9ivgIHzCcbK8b02h03T/I7yvYhGw+UZg9
-	 vjM3VGwFKd/yGWA9vBmdDdaH7lFBWHrBRicIi4DgZoPuGtvTRhJOFmhVS9LRfJcTNI
-	 KWqmn0844+4aenw8yz3xh3Ir0/57DQLURgX4CfE9Bdc+06jKcnJL2QVujb2WfuRV9N
-	 l5QByd3tMoFnOcYwOQgtwhWOtffyxg/IMKFdunAo1GbrADy2rqdlBkQxncAlt2rvpT
-	 nm9ZHBTjROq9sFO0NudnSJkOUZQ1jnrIxRgfNeXe5MsrY7kyMUy4L8tjaVoLBHq5xO
-	 lq5DHK65LxNXQ==
+	s=k20201202; t=1707564985;
+	bh=GN38axMpDXwM+LiQWv9rCHV4je3GH/IUMqqcPRYdILM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Ox5pYG88JOmXeQa3kRbicKLfW7BrjOnejepA6G+79dw76I8L4Zb9sPD1+wnHMYSgV
+	 le+MqIeltleerizblAE4U/xg/PtbQ9wKTzCrpfaBtBV7gvBlbB4nnGMG5pOsJbhfUC
+	 R0njwsf+sv4BhUCJXGSMCwvgjcLRyiuBoU1TKrbTrtRpJqaBoQI0n9z+D9nqkH3o2N
+	 mBnkpu4xB0WwOkTNl7GqySpAgao/asJeUH2visJksyhpzHdgeN/sx/Sb0D+yhsDavW
+	 o8wnX6SkAhmn+PX6GKYL+eRt6smqAn2OKm1va9lOx63m2m83gfdW/KkcSjYds+JDJM
+	 GDqEePBQ4EKZQ==
 From: alexs@kernel.org
 To: Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -50,13 +51,15 @@ To: Ingo Molnar <mingo@redhat.com>,
 	Mel Gorman <mgorman@suse.de>,
 	Daniel Bristot de Oliveira <bristot@redhat.com>,
 	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org (open list:SCHEDULER)
-Cc: Alex Shi <alexs@kernel.org>,
+	linux-kernel@vger.kernel.org (open list:SCHEDULER),
 	Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Subject: [PATCH v5 1/5] sched/topology: Remove duplicate descriptions from TOPOLOGY_SD_FLAGS
-Date: Sat, 10 Feb 2024 19:39:19 +0800
-Message-ID: <20240210113924.1130448-1-alexs@kernel.org>
+Cc: Alex Shi <alexs@kernel.org>
+Subject: [PATCH v5 2/5] sched/fair: Remove unused parameters
+Date: Sat, 10 Feb 2024 19:39:20 +0800
+Message-ID: <20240210113924.1130448-2-alexs@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240210113924.1130448-1-alexs@kernel.org>
+References: <20240210113924.1130448-1-alexs@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,11 +70,9 @@ Content-Transfer-Encoding: 8bit
 
 From: Alex Shi <alexs@kernel.org>
 
-These flags are already documented in include/linux/sched/sd_flags.h.
-Also, add missing SD_CLUSTER and keep the comment on SD_ASYM_PACKING
-as it is a special case.
+The argument sds is not used in function sched_asym(). Remove it.
 
-Suggested-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Fixes: c9ca07886aaa ("sched/fair: Do not even the number of busy CPUs via asym_packing")
 Signed-off-by: Alex Shi <alexs@kernel.org>
 Cc: Valentin Schneider <vschneid@redhat.com>
 Cc: Vincent Guittot <vincent.guittot@linaro.org>
@@ -81,30 +82,40 @@ Cc: Ingo Molnar <mingo@redhat.com>
 Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 ---
- kernel/sched/topology.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ kernel/sched/fair.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 10d1391e7416..0b33f7b05d21 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1551,11 +1551,12 @@ static struct cpumask		***sched_domains_numa_masks;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 533547e3c90a..607dc310b355 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9749,7 +9749,6 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
+ /**
+  * sched_asym - Check if the destination CPU can do asym_packing load balance
+  * @env:	The load balancing environment
+- * @sds:	Load-balancing data with statistics of the local group
+  * @sgs:	Load-balancing statistics of the candidate busiest group
+  * @group:	The candidate busiest group
   *
-  * These flags are purely descriptive of the topology and do not prescribe
-  * behaviour. Behaviour is artificial and mapped in the below sd_init()
-- * function:
-+ * function. For details, see include/linux/sched/sd_flags.h.
-  *
-- *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
-- *   SD_SHARE_PKG_RESOURCES - describes shared caches
-- *   SD_NUMA                - describes NUMA topologies
-+ *   SD_SHARE_CPUCAPACITY
-+ *   SD_SHARE_PKG_RESOURCES
-+ *   SD_CLUSTER
-+ *   SD_NUMA
-  *
-  * Odd one out, which beside describing the topology has a quirk also
-  * prescribes the desired behaviour that goes along with it:
+@@ -9768,8 +9767,7 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
+  * otherwise.
+  */
+ static inline bool
+-sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
+-	   struct sched_group *group)
++sched_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
+ {
+ 	/* Ensure that the whole local core is idle, if applicable. */
+ 	if (!sched_use_asym_prio(env->sd, env->dst_cpu))
+@@ -9940,7 +9938,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+ 	/* Check if dst CPU is idle and preferred to this group */
+ 	if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
+ 	    env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
+-	    sched_asym(env, sds, sgs, group)) {
++	    sched_asym(env, sgs, group)) {
+ 		sgs->group_asym_packing = 1;
+ 	}
+ 
 -- 
 2.43.0
 
