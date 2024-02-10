@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-60607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FED4850770
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:56:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1A7C850771
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFD791F26308
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:56:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6836B288520
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B546262A10;
-	Sat, 10 Feb 2024 23:51:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AEB66311C;
+	Sat, 10 Feb 2024 23:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DH9efwl5"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="oQ8n6kz2"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D5B6281C
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 23:51:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEAF629FE
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 23:51:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707609073; cv=none; b=dlbOfd5Up4x2euhqQoCbkoGEus3OUp2Gg+LRNqyNLzG1s8ZCYqLyP9IxAVhGj6DH/sQ5LroyNNxcPzVbdJtVa+0aOvM0m9wec/EeR3/Rqlwdalms5/NJB2gfm0TjwJmyJWljc0B6fX7P8LmrOTQsSRvyYROvlAXwe9aAW/d8DnA=
+	t=1707609074; cv=none; b=lKYeTybRPl8uPV3tkgKJagWo2q9Bh7PcNqRa/GQLlnVXXPfmU7lS2ZkreULrYk6y0SQz2ZczGVEdDn/+Dws+2RaZXRyv+lA0HqS01VmZJAa2WkqDOLUCSVGJbYyrvpLmYg2QausLHhXKmHLB2NPDPw+vncx8Wj5X4uXKZwCiO3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707609073; c=relaxed/simple;
-	bh=Id7179WCdgrN+FSm22opqsAgq898l20m29SsJvJcSX8=;
+	s=arc-20240116; t=1707609074; c=relaxed/simple;
+	bh=32mpD1IVHOqTValUWgcEdGTVskgsJqtMGFjqMVc4u/8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WFQz7aDbJJdJQdLa6OtfzNZfoUqwXiedJIqg1o38YwqxNhp55tA77Cf49aZ9cUAt5zg9cDCu3YIZr21nhH6YToGqXK+oP/fokqoX55VXMNG032sZxOTheXapyit+xzVeFg2KsSWm7xUHgwnxtcsQBsW1Xt3+Hs15FFJ8Crvl+UE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DH9efwl5; arc=none smtp.client-ip=209.85.167.44
+	 MIME-Version:Content-Type; b=otLgBgS/7AM0XZS/sQeeRFtwKnhzhuyljk6s/JwCEZXXP48sx9VVsJPmD25IROTTGJhz5OOlPk+WxiJpn21YblvZFLZMKq+iXs8nzuzuskkrFo3x1hjlpfE7seyC01dh6y2AzfuwratnO8JOV570ZfX2qUZcgFWVPXSWzhDCUUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=oQ8n6kz2; arc=none smtp.client-ip=209.85.167.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51182ece518so659242e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:51:11 -0800 (PST)
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5116b017503so2861773e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:51:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707609069; x=1708213869; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707609071; x=1708213871; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WZ+n5vQl9SXL8QPoIUHsB3HUrPVSipwhNEZ+uqM/u1A=;
-        b=DH9efwl58sNiWSlsa7aQtkipzrw+KI6G/A2+z5DY0t+KDmGhvIaz1sMzbqLOJ+Hpoh
-         zu6qSzVyXjJBT5ExOIuzZN3NKPCudrpSO1m5mSGuqVdLZi4sMwrLMFQT58QsbFe/xxTu
-         TWbDu8yPqYztIqcdrk9Jzky8l1pAg9GhScmCg=
+        bh=zmhUVgCdk+qI3t9KK3oQMBouh6tU/rMtsVjdtdgFFTw=;
+        b=oQ8n6kz2hTq9NAxDYpVXRBqEkqp4V4B4wkx7uxBqJOpyG7sgp+0+iDmCeejgUKwPQT
+         OpRtM0D1V5qZlUGQDE+gZHrNazE8EpILKn7m+Idg39GJVGm/Atz7VGdduVGnaIgpPQyp
+         QTlEw3jS1R+hcC9pf+Kn594lGqwio/amWW1pQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707609069; x=1708213869;
+        d=1e100.net; s=20230601; t=1707609071; x=1708213871;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WZ+n5vQl9SXL8QPoIUHsB3HUrPVSipwhNEZ+uqM/u1A=;
-        b=E2umSh/Y+dVH1/d7V6Q/0pc6Y/L9YKQPdt7obkjcVWgoB9g7xNWtGrkydfc5Op12ZJ
-         ckhCV3x9493D1/h4eLfd5IShBcJ3IuIDbeuFg2jXjJVUUyAEWP5G1Fsc1kT1VagPiTN7
-         BUy1L1P1IQzphDmNUPG0WuhaSG96uOs1o/anAydbuH/XM+a0wldUn065zi9z5FzllD+z
-         iLS75ObENK2e/2JcZpaKOREUsyXR1Qz5SS9YtkSJGZ5j4fXeXBchir0Ppq6O8T3PwtNX
-         ESrbqpWw6Yuzru63V+kL0wHYy8UgEQGAcAAMWX6jRuoT+g5zOU+GV8cC5b35w4XJMSyW
-         CtpQ==
-X-Gm-Message-State: AOJu0YxVwyuscdIxzm5H9v4FzHUZQ8IaZ20aQtaVwLgLjLtElCJVQ1W0
-	gSku+Tc7nIzGhGaVaTbvsifywfe79p1q1VajIjBdQ5UfjZ6y7xIXARzcRaFt
-X-Google-Smtp-Source: AGHT+IH/qcS7sqCO3QyY6vKvWW/RPjYH/FMXLroY5OmuMCaUyphACiXQdTgCsWo4Ff94Eb8A9bKTAQ==
-X-Received: by 2002:a05:6512:400c:b0:511:5eec:9b9a with SMTP id br12-20020a056512400c00b005115eec9b9amr2585367lfb.52.1707609069628;
-        Sat, 10 Feb 2024 15:51:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU84YU62Gbc/sEoczwbwEueJdzT/vpIAqq0rJ3WslSyzSBLDrnvQfM974LIVoraHFAOYB951XUfArwYNDnheW1sLxBt30Yk+lwPwom7izbVUaBQgeArK3qBTTP24bfn4RkvSKhSkLlg4fs25h2yP5G3hbBpWsmiYbhn1CVT8yEiR5kSrMRulJ5aSjSeStP8wgD7a9qcS5uEl2MQECGvwTg4qKqWPidfZJhGAJ6JsuJzQDBApAT6g8udBuwPZ4VMVOpP1TBwdrdSxmZW4ms/nyIQGb2yDpw6StIFbVbXTfqKp4QFcpvqFBUNqul9WKAfVN6b94gs28nhxltPSykpKMnWZ80k9lID2elJXPE3Y2o4rDskSow0m/2P0BazOHBNNDv9JAFXT3sMblBvhXyJiTft6QaOzMDzxp/pKok8fHkcm6ZJAu8VktI7hMOm/9241kY/75+13IAS/1Q5Qw7fcvZdtSZGRpRPylrHZmiY/XYnFEGi/LfAHrQOV9YeBse+nPi566IsDXwe2oJMHmIurBHwxFZYUQDorGAzaoYSm9ObUUEk6sFLljVub/QpLtoQOvxRqAYzhy6z6ehuzxtHnWNuuXSsQDTZ4lDqXOvF3OxhVnEKKQ==
+        bh=zmhUVgCdk+qI3t9KK3oQMBouh6tU/rMtsVjdtdgFFTw=;
+        b=ZGwvbPPrb69FiNc4xgoqfpAzfrpqxFmG6yTeXLSpMM7Emam4dJZogUM1TiiBNN23D5
+         1EfqLfLsWaTVa/OFccNfzJXiqjwO4vj5Tf3OkzZFXGAGMoCHCcbSH4ErxnFxb67pwfjS
+         FTYXKOhESWnIV/svBbMDBqzb87eem9t1quV0HPqfh5uO3XtbzqbLQywtwByHBK9UQEss
+         Gbth3I+Rs7ZZBcO+5pu3koqLIu3D/Z5UA69BV5zINwZVe2NTVcNTklXUfHattrXxVmEe
+         e0xUNwa8uA7nOT0oT/Y34KjMCIzlyoHX43Bkw1dUFI4GVnaFSN3fnWYA/SiN+PHzrFAa
+         a+wA==
+X-Gm-Message-State: AOJu0YxoIrPCQ0a9fSinVIind8mTJy+/CiYOAJwmeleiAB6VOS7yU2mY
+	m/9KVlq4J2XVJ8mVB0qLgAEeaC1WvWAlRXmycz4DoFBnYfEMcq3Mm3ZnHSY2
+X-Google-Smtp-Source: AGHT+IFfGsK469pNloItUpLlNufIHL3CU7AZi3WunjJCeX7uNh0/b57qgGAG3Xb36wnXuRyAYbMoEA==
+X-Received: by 2002:a19:e002:0:b0:511:5a9c:c9c9 with SMTP id x2-20020a19e002000000b005115a9cc9c9mr1917171lfg.16.1707609071329;
+        Sat, 10 Feb 2024 15:51:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUFk5okXDi1WEVQdBUJMHlW02yUykfeDQpGNrpbCjqT8LDj1fDrB3RNq76mvm7/DbhbCY1KYUPMD6sXwodtifxb4LEHnndRSiV9Mn1iEZKPuc+RWiOBA6ioX9zBjQJgdrAZ73EuzuEiw4G1Wps9nSIiLmTdrExBGNxaPGPyhF/+slIe4VHb6kgnGIH863+82tiPGvi9ZNuV8b90kv4aMdrIMlQ6joe86hzIJr+Y9bXI2KC564pm7+kXOS906CsDcp/j8b8mIl6Dd9Fvjv1xhp2gpDOg7C1wIDnnyg6c03RRwjAMm3U9zHMvt3rudq3FuSSboWDe/hEme0Z5IXKDawdEFQvvaN1j/rRQKpfCqdWtCOW/Cumzk0uWXLJAUY3xutTfmLod+GIqDd8HSfFb94+vUIretMnLXDLSyS7G9i7bGuhliBRCdi1qFvLa/bn5cMjtLiqDCDnjRjB6zHvuzliqsKEHOxm8V07uUExQO29F2UUVkQOccrSzdDL3xWXpnd1qVsCCk1yt9O31HQmUixw0LLB+W8daokmECaMc3sUsyZsJo6eA0ss5Pfh81/4Ax0ZMwpJueD1RazBtaVPBDMugkJOvIVEVpnzbCrPOb4Ub85Iucw==
 Received: from ukaszb-l.roam.corp.google.com (alfa56.extreme-net.one.pl. [213.77.89.56])
-        by smtp.gmail.com with ESMTPSA id o27-20020a056512051b00b0051179ae1846sm365561lfb.280.2024.02.10.15.51.08
+        by smtp.gmail.com with ESMTPSA id o27-20020a056512051b00b0051179ae1846sm365561lfb.280.2024.02.10.15.51.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Feb 2024 15:51:09 -0800 (PST)
+        Sat, 10 Feb 2024 15:51:11 -0800 (PST)
 From: =?UTF-8?q?=C5=81ukasz=20Bartosik?= <ukaszb@chromium.org>
 To: Jason Baron <jbaron@akamai.com>,
 	Jim Cromie <jim.cromie@gmail.com>,
@@ -84,9 +84,9 @@ Cc: Guenter Roeck <groeck@google.com>,
 	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
 	linux-kernel@vger.kernel.org,
 	upstream@semihalf.com
-Subject: [PATCH v4 24/39] dyndbg: report err in ddebug_parse_flags when read_args fails
-Date: Sun, 11 Feb 2024 00:49:54 +0100
-Message-ID: <20240210235009.2405808-25-ukaszb@chromium.org>
+Subject: [PATCH v4 25/39] dyndbg: don't process queries when trace cmd fails
+Date: Sun, 11 Feb 2024 00:49:55 +0100
+Message-ID: <20240210235009.2405808-26-ukaszb@chromium.org>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 In-Reply-To: <20240210235009.2405808-1-ukaszb@chromium.org>
 References: <20240210235009.2405808-1-ukaszb@chromium.org>
@@ -96,35 +96,85 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Jim Cromie <jim.cromie@gmail.com>
+When trace open or close command fails then stop processing next
+queries in multiquery string. The rationale behing this behavior
+is to stop processing queries which might be dependent on success
+of open/close trace commands.
 
-read_args() fails on '_' (the last opt-char), and returns null.
-report this against the opt-char.
-
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+Signed-off-by: Łukasz Bartosik <ukaszb@chromium.org>
 ---
- lib/dynamic_debug.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ lib/dynamic_debug.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 089765afc972..3d0c6b5faa31 100644
+index 3d0c6b5faa31..d8cd40faeb4d 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -903,8 +903,11 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
- 				read_args = opt_array[i].read_args;
- 				if (read_args) {
- 					str = read_args(str, modifiers);
--					if (!str)
-+					if (!str) {
-+						pr_err("err on '%c'\n",
-+						       opt_array[i].opt_char);
- 						return -EINVAL;
-+					}
- 				}
- 				break;
- 			}
+@@ -939,7 +939,8 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
+ 	return 0;
+ }
+ 
+-static int ddebug_exec_query(char *query_string, const char *modname)
++static int ddebug_exec_query(char *query_string, const char *modname,
++			     bool *is_trace_cmd)
+ {
+ 	struct flag_settings modifiers = { .trace_dst = DST_NOT_SET };
+ 	struct ddebug_query query = {};
+@@ -954,7 +955,8 @@ static int ddebug_exec_query(char *query_string, const char *modname)
+ 	}
+ 
+ 	/* check for open, close commands */
+-	if (is_dd_trace_cmd(words[0]))
++	*is_trace_cmd = is_dd_trace_cmd(words[0]);
++	if (*is_trace_cmd)
+ 		return ddebug_parse_cmd(words, nwords-1);
+ 
+ 	if (ddebug_parse_query(words, nwords-1, &query, modname)) {
+@@ -991,16 +993,19 @@ static int ddebug_exec_query(char *query_string, const char *modname)
+ 	return -EINVAL;
+ }
+ 
+-/* handle multiple queries in query string, continue on error, return
+-   last error or number of matching callsites.  Module name is either
+-   in param (for boot arg) or perhaps in query string.
+-*/
++/* handle multiple queries in query string, continue on error with
++ * exception of open and close commands, return last error or number
++ * of matching callsites.  Module name is either in param (for boot arg)
++ * or perhaps in query string.
++ */
+ static int ddebug_exec_queries(char *query, const char *modname)
+ {
+ 	char *split;
+ 	int i, errs = 0, exitcode = 0, rc, nfound = 0;
+ 
+ 	for (i = 0; query; query = split) {
++		bool is_trace_cmd = false;
++
+ 		split = strpbrk(query, "%;\n");
+ 		if (split)
+ 			*split++ = '\0';
+@@ -1011,10 +1016,16 @@ static int ddebug_exec_queries(char *query, const char *modname)
+ 
+ 		vpr_info("query %d: \"%s\" mod:%s\n", i, query, modname ?: "*");
+ 
+-		rc = ddebug_exec_query(query, modname);
++		rc = ddebug_exec_query(query, modname, &is_trace_cmd);
+ 		if (rc < 0) {
+ 			errs++;
+ 			exitcode = rc;
++			/*
++			 * if open or close command failed then
++			 * do not continue with next queries
++			 */
++			if (is_trace_cmd)
++				break;
+ 		} else {
+ 			nfound += rc;
+ 		}
 -- 
 2.43.0.687.g38aa6559b0-goog
 
