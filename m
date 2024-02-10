@@ -1,120 +1,339 @@
-Return-Path: <linux-kernel+bounces-60397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C62F850465
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 13:35:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF907850469
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 13:35:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20DF92838A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:35:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 487BB1F21D4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:35:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9A643AAD;
-	Sat, 10 Feb 2024 12:35:08 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D874C3DE;
+	Sat, 10 Feb 2024 12:35:23 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467A1339AC
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 12:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9BC3E470;
+	Sat, 10 Feb 2024 12:35:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707568508; cv=none; b=bfKbEgweH0FuQ8FQ6zGp/0FiFi/Go9IcB1/GoCyZPHhD1Cr7nmMBc7uOKAWkAyrVghBbwwrX7wEp3N1WDhMlkLbntykuJWByB4BjUVwWolSsW1ncRWYelfJOoGeD5r6AaooV0XOKD3nnoU8n+1NuHCBjWvPOvIh9VdkX6W2/bnc=
+	t=1707568523; cv=none; b=N3pzMKg/R+46Yc5E1TNP+Nh1o+QqqKw8MkiR+A63yv0Na7UnpvR/qoK+N0Cy3nljm0qbPdPrPWVwJ0OSrPU2KHbQJYIz4wybFEEkATsWQhHfgSLu/f666aVz2DrNg3tqhDCu9S3NY/nXROQ8yMAmxs/UBaI7whIn7abTAU7uS8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707568508; c=relaxed/simple;
-	bh=kV1dH9N0wl6dbAp2XFipJ67xCC7y7WlCPuruPIHVk6U=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=Y4gvKk/IWxkX4SOEl0rp6x9r6F2SCXmzMHgsII6uapD8iamvRpa6A/RexaRv1RT9cx5cHN6pu54/ucg01wHec2aZHiI84uhrHiRJQiTRguky3aE81Xt82ZEFrsQPMSz05AFPb8N+WrAhVtT0RoychivGL51YzzjIVfqkhkNJkqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-285-B9mkscCCOyeXmvwkut24cQ-1; Sat, 10 Feb 2024 12:35:02 +0000
-X-MC-Unique: B9mkscCCOyeXmvwkut24cQ-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 10 Feb
- 2024 12:34:41 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sat, 10 Feb 2024 12:34:41 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Kees Cook' <keescook@chromium.org>, Justin Stitt <justinstitt@google.com>
-CC: Andy Shevchenko <andy@kernel.org>, "linux-hardening@vger.kernel.org"
-	<linux-hardening@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
-	"Anton Ivanov" <anton.ivanov@cambridgegreys.com>, Johannes Berg
-	<johannes@sipsolutions.net>, Willem de Bruijn
-	<willemdebruijn.kernel@gmail.com>, Jason Wang <jasowang@redhat.com>, "kernel
- test robot" <lkp@intel.com>, Nathan Chancellor <nathan@kernel.org>, "Azeem
- Shaikh" <azeemshaikh38@gmail.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-um@lists.infradead.org"
-	<linux-um@lists.infradead.org>
-Subject: RE: [PATCH v3 3/4] string: Allow 2-argument strscpy_pad()
-Thread-Topic: [PATCH v3 3/4] string: Allow 2-argument strscpy_pad()
-Thread-Index: AQHaWaavaD/gLIDMg0aBzFOj9pBKgrEDhhFw
-Date: Sat, 10 Feb 2024 12:34:41 +0000
-Message-ID: <d6710f82acfd4957a296601c420fba76@AcuMS.aculab.com>
-References: <20240206142027.make.107-kees@kernel.org>
- <20240206142221.2208763-3-keescook@chromium.org>
- <20240207005151.lyrtgqd4wekolwe7@google.com> <202402070115.2C86687F@keescook>
-In-Reply-To: <202402070115.2C86687F@keescook>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1707568523; c=relaxed/simple;
+	bh=AMmhrd5rdHuOoLyGE861LCgpjiOO84X5ONnrDHrdttc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QNYllTojpzZelOQX66P8BC/Mzl86b7Z6MM5hQvoUvOn74DcfJM1v9Z3bDtch1j5gwo8hxP/yMx2km/bT1fIhFQnzE9D9N020NPyEaVbIGWtUQ0ghdl/J05Nd+28QE45f+M4IfRQCGDbCqontMwCfnp9GdoY/rl3La12EIEWPabo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rYmZW-000591-1N;
+	Sat, 10 Feb 2024 12:35:06 +0000
+Date: Sat, 10 Feb 2024 12:34:55 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Elad Yifee <eladwf@gmail.com>
+Cc: Felix Fietkau <nbd@nbd.name>, Sean Wang <sean.wang@mediatek.com>,
+	Mark Lee <Mark-MC.Lee@mediatek.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v2] net: ethernet: mtk_eth_soc: ppe: add support
+ for multiple PPEs
+Message-ID: <Zcdtb-eyvxzX9yPe@makrotopia.org>
+References: <20240130160854.5221-1-eladwf@gmail.com>
+ <20240210115420.27003-1-eladwf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240210115420.27003-1-eladwf@gmail.com>
 
-From: Kees Cook
-> Sent: 07 February 2024 09:19
->=20
-> On Wed, Feb 07, 2024 at 12:51:51AM +0000, Justin Stitt wrote:
-> > Hi,
-> >
-> > On Tue, Feb 06, 2024 at 06:22:18AM -0800, Kees Cook wrote:
-> > > Similar to strscpy(), update strscpy_pad()'s 3rd argument to be
-> > > optional when the destination is a compile-time known size array.
-> >
-> > This patch is diff'd against Patch 1/4 in this series, right? I wonder
-> > why you split them up. If I hadn't literally just read that patch I
-> > would be mildly confused.
-> >
-> > I suppose one reason may be that 1/4 is a standalone change with a high
-> > percentage chance of landing whilst this overloading magic may not land
-> > as easily?
->=20
-> I viewed it as a distinct logical change. I could certainly combine
-> them, but I think it's easier to review the conversion from function to
-> macro without needing to consider anything else. No behavioral changes
-> are expected, etc.
+Hi Elad,
 
-I wonder about the code-bloat from inlining strscpy_pad()?
-Especially given the code that gcc is likely to generate
-for string ops.
+Given that this is what we want to do (assign each PPE to one of the
+Ethernet MACs) the patch looks good in general, some minor details
+in-line below.
 
-I strongly suspect that the end of strscpy() knows exactly
-you many bytes weren't written (in the non-truncate path).
-So maybe implement both strscpy() and strscp_pad() in terms
-of an inline function that has a parameter that 'turns on'
-padding.
+On Sat, Feb 10, 2024 at 01:53:28PM +0200, Elad Yifee wrote:
+> Add the missing pieces to allow multiple PPEs units, one for each GMAC.
+> mtk_gdm_config has been modified to work on targted mac ID,
+> the inner loop moved outside of the function to allow unrelated
+> operations like setting the MAC's PPE index.
+> 
+> Signed-off-by: Elad Yifee <eladwf@gmail.com>
+> ---
+> v2: fixed CI warnings
+> ---
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 86 +++++++++++--------
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.h   | 15 +++-
+>  .../net/ethernet/mediatek/mtk_ppe_offload.c   |  6 +-
+>  3 files changed, 68 insertions(+), 39 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> index a6e91573f8da..5a50c22179af 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> @@ -2175,9 +2175,11 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+>  				skb_dst_set_noref(skb, &eth->dsa_meta[port]->dst);
+>  		}
+>  
+> -		if (reason == MTK_PPE_CPU_REASON_HIT_UNBIND_RATE_REACHED)
+> -			mtk_ppe_check_skb(eth->ppe[0], skb, hash);
+> +		if (reason == MTK_PPE_CPU_REASON_HIT_UNBIND_RATE_REACHED) {
+> +			unsigned int ppe_index = eth->mac[mac]->ppe_idx;
 
-That way you get a simple call site and still only one
-implementation.
+Variable declarations should only be at the top of the function.
 
-=09David
+>  
+> +			mtk_ppe_check_skb(eth->ppe[ppe_index], skb, hash);
+> +		}
+>  		skb_record_rx_queue(skb, 0);
+>  		napi_gro_receive(napi, skb);
+>  
+> @@ -3267,37 +3269,27 @@ static int mtk_start_dma(struct mtk_eth *eth)
+>  	return 0;
+>  }
+>  
+> -static void mtk_gdm_config(struct mtk_eth *eth, u32 config)
+> +static void mtk_gdm_config(struct mtk_eth *eth, u32 id, u32 config)
+>  {
+> -	int i;
+> +	u32 val;
+>  
+>  	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628))
+>  		return;
+>  
+> -	for (i = 0; i < MTK_MAX_DEVS; i++) {
+> -		u32 val;
+> -
+> -		if (!eth->netdev[i])
+> -			continue;
+> -
+> -		val = mtk_r32(eth, MTK_GDMA_FWD_CFG(i));
+> +	val = mtk_r32(eth, MTK_GDMA_FWD_CFG(id));
+>  
+> -		/* default setup the forward port to send frame to PDMA */
+> -		val &= ~0xffff;
+> +	/* default setup the forward port to send frame to PDMA */
+> +	val &= ~0xffff;
+>  
+> -		/* Enable RX checksum */
+> -		val |= MTK_GDMA_ICS_EN | MTK_GDMA_TCS_EN | MTK_GDMA_UCS_EN;
+> +	/* Enable RX checksum */
+> +	val |= MTK_GDMA_ICS_EN | MTK_GDMA_TCS_EN | MTK_GDMA_UCS_EN;
+>  
+> -		val |= config;
+> +	val |= config;
+>  
+> -		if (netdev_uses_dsa(eth->netdev[i]))
+> -			val |= MTK_GDMA_SPECIAL_TAG;
+> +	if (eth->netdev[id] && netdev_uses_dsa(eth->netdev[id]))
+> +		val |= MTK_GDMA_SPECIAL_TAG;
+>  
+> -		mtk_w32(eth, val, MTK_GDMA_FWD_CFG(i));
+> -	}
+> -	/* Reset and enable PSE */
+> -	mtk_w32(eth, RST_GL_PSE, MTK_RST_GL);
+> -	mtk_w32(eth, 0, MTK_RST_GL);
+> +	mtk_w32(eth, val, MTK_GDMA_FWD_CFG(id));
+>  }
+>  
+>  
+> @@ -3369,6 +3361,7 @@ static int mtk_open(struct net_device *dev)
+>  	/* we run 2 netdevs on the same dma ring so we only bring it up once */
+>  	if (!refcount_read(&eth->dma_refcnt)) {
+>  		const struct mtk_soc_data *soc = eth->soc;
+> +		const u32 ppe_num = mtk_get_ppe_num(eth);
+>  		u32 gdm_config;
+>  		int i;
+>  
+> @@ -3381,18 +3374,39 @@ static int mtk_open(struct net_device *dev)
+>  		for (i = 0; i < ARRAY_SIZE(eth->ppe); i++)
+>  			mtk_ppe_start(eth->ppe[i]);
+>  
+> -		gdm_config = soc->offload_version ? soc->reg_map->gdma_to_ppe
+> -						  : MTK_GDMA_TO_PDMA;
+> -		mtk_gdm_config(eth, gdm_config);
+> +		for (i = 0; i < MTK_MAX_DEVS; i++) {
+> +			if (!eth->netdev[i])
+> +				break;
+> +			struct mtk_mac *target_mac;
+> +
+> +			target_mac = netdev_priv(eth->netdev[i]);
+> +			if (!soc->offload_version) {
+> +				target_mac->ppe_idx = 0;
+> +				gdm_config = MTK_GDMA_TO_PDMA;
+> +			} else if (ppe_num >= 3 && target_mac->id == 2) {
+> +				target_mac->ppe_idx = 2;
+> +				gdm_config = MTK_GDMA_TO_PPE2;
+> +			} else if (ppe_num >= 2 && target_mac->id == 1) {
+> +				target_mac->ppe_idx = 1;
+> +				gdm_config = MTK_GDMA_TO_PPE1;
+> +			} else {
+> +				target_mac->ppe_idx = 0;
+> +				gdm_config = soc->reg_map->gdma_to_ppe;
+> +			}
+> +			mtk_gdm_config(eth, target_mac->id, gdm_config);
+> +		}
+> +		/* Reset and enable PSE */
+> +		mtk_w32(eth, RST_GL_PSE, MTK_RST_GL);
+> +		mtk_w32(eth, 0, MTK_RST_GL);
+>  
+>  		napi_enable(&eth->tx_napi);
+>  		napi_enable(&eth->rx_napi);
+>  		mtk_tx_irq_enable(eth, MTK_TX_DONE_INT);
+>  		mtk_rx_irq_enable(eth, soc->txrx.rx_irq_done_mask);
+>  		refcount_set(&eth->dma_refcnt, 1);
+> -	}
+> -	else
+> +	} else {
+>  		refcount_inc(&eth->dma_refcnt);
+> +	}
+>  
+>  	phylink_start(mac->phylink);
+>  	netif_tx_start_all_queues(dev);
+> @@ -3469,7 +3483,8 @@ static int mtk_stop(struct net_device *dev)
+>  	if (!refcount_dec_and_test(&eth->dma_refcnt))
+>  		return 0;
+>  
+> -	mtk_gdm_config(eth, MTK_GDMA_DROP_ALL);
+> +	for (i = 0; i < MTK_MAX_DEVS; i++)
+> +		mtk_gdm_config(eth, i, MTK_GDMA_DROP_ALL);
+>  
+>  	mtk_tx_irq_disable(eth, MTK_TX_DONE_INT);
+>  	mtk_rx_irq_disable(eth, eth->soc->txrx.rx_irq_done_mask);
+> @@ -4945,23 +4960,24 @@ static int mtk_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	if (eth->soc->offload_version) {
+> -		u32 num_ppe = mtk_is_netsys_v2_or_greater(eth) ? 2 : 1;
+> +		u32 num_ppe = mtk_get_ppe_num(eth);
+>  
+>  		num_ppe = min_t(u32, ARRAY_SIZE(eth->ppe), num_ppe);
+>  		for (i = 0; i < num_ppe; i++) {
+> -			u32 ppe_addr = eth->soc->reg_map->ppe_base + i * 0x400;
+> +			u32 ppe_addr = eth->soc->reg_map->ppe_base;
+>  
+> +			ppe_addr += (i == 2 ? 0xC00 : i * 0x400);
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+Hex numbers in all small letter please.
 
+>  			eth->ppe[i] = mtk_ppe_init(eth, eth->base + ppe_addr, i);
+>  
+>  			if (!eth->ppe[i]) {
+>  				err = -ENOMEM;
+>  				goto err_deinit_ppe;
+>  			}
+> -		}
+> +			err = mtk_eth_offload_init(eth, i);
+>  
+> -		err = mtk_eth_offload_init(eth);
+> -		if (err)
+> -			goto err_deinit_ppe;
+> +			if (err)
+> +				goto err_deinit_ppe;
+> +		}
+>  	}
+>  
+>  	for (i = 0; i < MTK_MAX_DEVS; i++) {
+> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+> index 9ae3b8a71d0e..7654fa74e7fc 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+> @@ -124,6 +124,8 @@
+>  #define MTK_GDMA_UCS_EN		BIT(20)
+>  #define MTK_GDMA_STRP_CRC	BIT(16)
+>  #define MTK_GDMA_TO_PDMA	0x0
+> +#define MTK_GDMA_TO_PPE1	0x4444
+> +#define MTK_GDMA_TO_PPE2	0xcccc
+>  #define MTK_GDMA_DROP_ALL       0x7777
+>  
+>  /* GDM Egress Control Register */
+> @@ -1286,7 +1288,7 @@ struct mtk_eth {
+>  
+>  	struct metadata_dst		*dsa_meta[MTK_MAX_DSA_PORTS];
+>  
+> -	struct mtk_ppe			*ppe[2];
+> +	struct mtk_ppe			*ppe[3];
+>  	struct rhashtable		flow_table;
+>  
+>  	struct bpf_prog			__rcu *prog;
+> @@ -1311,6 +1313,7 @@ struct mtk_eth {
+>  struct mtk_mac {
+>  	int				id;
+>  	phy_interface_t			interface;
+> +	unsigned int			ppe_idx;
+
+u8 would be large enough.
+
+>  	int				speed;
+>  	struct device_node		*of_node;
+>  	struct phylink			*phylink;
+> @@ -1421,6 +1424,14 @@ static inline u32 mtk_get_ib2_multicast_mask(struct mtk_eth *eth)
+>  	return MTK_FOE_IB2_MULTICAST;
+>  }
+>  
+> +static inline u32 mtk_get_ppe_num(struct mtk_eth *eth)
+> +{
+> +	if (!eth->soc->offload_version)
+> +		return 0;
+> +
+> +	return eth->soc->version;
+> +}
+> +
+>  /* read the hardware status register */
+>  void mtk_stats_update_mac(struct mtk_mac *mac);
+>  
+> @@ -1432,7 +1443,7 @@ int mtk_gmac_sgmii_path_setup(struct mtk_eth *eth, int mac_id);
+>  int mtk_gmac_gephy_path_setup(struct mtk_eth *eth, int mac_id);
+>  int mtk_gmac_rgmii_path_setup(struct mtk_eth *eth, int mac_id);
+>  
+> -int mtk_eth_offload_init(struct mtk_eth *eth);
+> +int mtk_eth_offload_init(struct mtk_eth *eth, int id);
+>  int mtk_eth_setup_tc(struct net_device *dev, enum tc_setup_type type,
+>  		     void *type_data);
+>  int mtk_flow_offload_cmd(struct mtk_eth *eth, struct flow_cls_offload *cls,
+> diff --git a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
+> index fbb5e9d5af13..220685f6daaa 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
+> +++ b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
+> @@ -570,7 +570,7 @@ mtk_eth_setup_tc_block_cb(enum tc_setup_type type, void *type_data, void *cb_pri
+>  	if (type != TC_SETUP_CLSFLOWER)
+>  		return -EOPNOTSUPP;
+>  
+> -	return mtk_flow_offload_cmd(eth, cls, 0);
+> +	return mtk_flow_offload_cmd(eth, cls, mac->ppe_idx);
+>  }
+>  
+>  static int
+> @@ -633,7 +633,9 @@ int mtk_eth_setup_tc(struct net_device *dev, enum tc_setup_type type,
+>  	}
+>  }
+>  
+> -int mtk_eth_offload_init(struct mtk_eth *eth)
+> +int mtk_eth_offload_init(struct mtk_eth *eth, int id)
+>  {
+> +	if (!eth->ppe[id] || !eth->ppe[id]->foe_table)
+> +		return 0;
+>  	return rhashtable_init(&eth->flow_table, &mtk_flow_ht_params);
+>  }
+> -- 
+> 2.43.0
+> 
+> 
 
