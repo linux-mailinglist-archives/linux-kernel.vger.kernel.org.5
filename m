@@ -1,69 +1,68 @@
-Return-Path: <linux-kernel+bounces-60619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98C2A85077C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:59:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD78D85077D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:59:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 240191F28986
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:59:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 236BBB23325
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E50660881;
-	Sat, 10 Feb 2024 23:51:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830C16169A;
+	Sat, 10 Feb 2024 23:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lLHrWrQl"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FklFJpU3"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F4560268
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 23:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2116604BB
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 23:51:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707609093; cv=none; b=RmF50JJ2ipMYwnZwRPXdT8r1/nje0FGlRMfev2/0/c32JH93+NOmC9F0rntJutOcRgHbewMzHGl+klhuUOnMK/jqS1+ZY5MNuCblvlLw/hOe7tUFGo3gfsNdp6fSS1dGozSyXBuuP5tQ76FGMyjF6UP8MjMj/q8A5DYG6uqe02E=
+	t=1707609094; cv=none; b=Z6Cf8QqAW3dzrNxsyzlirJMuX68xas0HzIoMDFgySyXXTQbftK+oqRVf9RUR3lSEefjY6c0Iikqn3mU/A3ZcrNme752XNU727BKZpC8h1OF9cfZIrzLnLlV1v9NUFvc3QzZ8MrqTV9OONgz6s0vggqatwq9xN9W3aVLduutyuQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707609093; c=relaxed/simple;
-	bh=zZEwM/gqUeF4NTMAOJeq2huREDQyznDrJFeANKDhZqE=;
+	s=arc-20240116; t=1707609094; c=relaxed/simple;
+	bh=2dKMrYi5sXjxmg0BwHpJ1Xry5WL12IvHskjUlAQWeWk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=utvmsoxdNqf5U3A2DIykmf6Z1v4H+OxhnGvwNoTFzP/cd3r6UK/GJhKZaNUSojjh6e7TOfZlp/kGyo85PMnCWwmvB2/wtjfH3eo0wO9Gyu5BpjLDxUE9iUFlbwW7BuU7oPgbeT43gUUjAorpiG3Y00qRffscvTRHwUGhCruso6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lLHrWrQl; arc=none smtp.client-ip=209.85.208.170
+	 MIME-Version; b=eP3YkWaSXac8L+SdKlUxeilNsk5TNFOkmNusRfzWoUumgiwtPEd2AaB1+W9/O/80NRkuJ3RrCiq2O6wsWp0AmKJGIt6OJP3sxBp8aYjv2OnuPilrCAL7DVt9RCef44jdABwBCv0Y2fT4ft9QMMhXhKsvIQs5sq2Cwna/3pmgu28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FklFJpU3; arc=none smtp.client-ip=209.85.208.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d09cf00214so25712131fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:51:31 -0800 (PST)
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d0a96bad85so30189131fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:51:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707609089; x=1708213889; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707609091; x=1708213891; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=04DOjNYx+ySJBUJN4jTjo32xTfHUemVAvm6ro2HWNnI=;
-        b=lLHrWrQlNGBL5u9JL8URxZdXFL6SAVDnkA+4cPvXj88TdSkii/Zy7qFM8Xh0k2PFqX
-         Jw1W3lABS+XjcHMeUQ+airch34fCjAfwg38WJP0VBMMEVcGrNE83MN0SDTLZ2zvt9WBw
-         NODQPliXihVeKthiAIDL65Rm3mkT3H86twPpQ=
+        bh=VjLak+Dwda0WVoH4If4D1UzfhJc/HxH98/ccLVqTlaI=;
+        b=FklFJpU3MH9vjT3/T+zEBQZW7aEiR4dqmAICDBX+YNfsaCOyo2UONMSgmUIkwPGR6B
+         17nm0mrKbG1Pi/5nQnDm7UKHMkanCmU9wJthvmU/gCZmtFI0KUS3Z+k79Ayqa2yvPDug
+         9Tt+CfUuQ9nlAAtQ/yjXaXUAk+ZSJL+CeKe8o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707609089; x=1708213889;
+        d=1e100.net; s=20230601; t=1707609091; x=1708213891;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=04DOjNYx+ySJBUJN4jTjo32xTfHUemVAvm6ro2HWNnI=;
-        b=Ke9ggIYwBckhY6uZZDGgyOqUypC4CVVZgLnaH3QHGiMX9ucfRuobhIIA4r5d8keFXL
-         TM4giVjnpoZo173NKpVw8PXX5kDE7KhFuI2ewPsqgJNh5xrA3dl2IRMigacf7eFtGUZ8
-         FXaykZa8ns6RIQLw58cPHsvfixTIRX8GCSdCJkQBki7cR4kakXUeThyGWLbCjh1rQ8yU
-         zBSxG+JqAeghFWY/7JkpfIBmXqyDvFuRwa3sgkJSLnBXBQpnVWkbrCTTYe+TMsDaeTEF
-         iBxIt/4ffJoIXKx8BUFBrxha36pJI0Je0c82kaTM3DXubgRAi52kvRou27VlcbmFza0P
-         E6vw==
-X-Forwarded-Encrypted: i=1; AJvYcCUrrRtSZUG9g/BWOs3trEZIu+uninuJLrsMWhl7zMSdzoqD3Sd/m2SrIyZh+67dK3wJY4QWXdiboUuZ5sTqYiyhGxx8/Bo5zkzG5KNO
-X-Gm-Message-State: AOJu0YyzZkWkdI5ne4J3Xa1Q0rdHTUSJxywfc0HW07hz+C6eR26dmUOZ
-	muCB7B+Uxc3khjeyj+ue2YaF9hJ+v2Hk5p2BTFET+svqhOGcxS5Y+DJaRCKO
-X-Google-Smtp-Source: AGHT+IGGyzBouU5aBKag2uDdVT1DhOQTJAUyE/22kb9mMbn5vgu2e+hTYO6i987dgG0RuaP2HQaiMQ==
-X-Received: by 2002:a05:6512:10d5:b0:511:89b4:a6d9 with SMTP id k21-20020a05651210d500b0051189b4a6d9mr226162lfg.61.1707609089606;
-        Sat, 10 Feb 2024 15:51:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU5zw0fod6VLEAkrTkP63z8GZddxUioVyVS4dNaAUulOR68xdgwJobIbWqWlk1PDLToFRTsDjpcCnFzCY1W9J4wkqynom8YYYz2MfseauRbIKNqwEOsOcal3k6hm17tuY0xErYOffc86e2CcAjrKoSvqlwjw3idn85acNMQCEbpMC/UqFlFXXjYW54YVZhKyo7isr0q56/TRwOe6CAxekdW1Qk3FJTvHVjZqAsjL4kRhIuKZ43zjvSbuGeMeu0mXUABf3IPtWP5EOPdu3p8cctiwvFearSCRKhRpBvwpuxZ1kgGcmkYcFA6Q2wdDoicOA0VdLbda3RVKCCeLwzEhIvnJtmYQyzXW6/TLZi2N7VrXTuaL1k8UbKHRVBdz8ugslZAQSYKtBaXnSKye/u+MqDoljpS7YHi9ArfcA/8iQ+yVbWmgTF7uAMRlgjXx2HBhCR7we//HVvC3VFtIq3+Pd1aDE7qIY1FlbCnmAG4TQNYxELAG/kbJzb95ld4FDao+a8B+F+6SU+Su4iqkT1bi6/yXNbNFfz3nysoYr74+qTrkPcqdcRH2qB2M2DrlJOya/hWTbl2jR+J7vUejDABHZBRZvFj6am43ML+Q0xJLPdrp0Srmg==
+        bh=VjLak+Dwda0WVoH4If4D1UzfhJc/HxH98/ccLVqTlaI=;
+        b=h8z7rDePYjWeJOr8KDZFPgorvk0jr7rgSx5cB8NyKBPJeNaOL21vYc1SG8t6yTrf73
+         1oM6XyITNjHIdrK12MWNzCVOrK12ERRNSxPRq2LsfRiGe3531XWRxBXaYqkHvxlcVZ4q
+         jfGW9hssDCIoEESpCgdGU5+9MAlVXyge0GmFMMdLBw15hQ1TLdKP7Lpohne9dJmHWobP
+         Bd7+x+IzxkGKEmiYMZ3+A/OxOf7uraT6eoPl/aBWzyk2oSNMRu+Li3bO5eR+FVNkezjZ
+         GWl3ucT3BHzlhMxDXD7qOfWLTIdUWAOY0kZjNMUjVme3jOqSkQAfFsEYsKomlxOfrrzT
+         zBXg==
+X-Gm-Message-State: AOJu0YxvfyeWu9qZU37UCuBsLOufPfEri+WzioPujmj8EYL0IokHMigv
+	Uo6h3d4bg6IP8xAeKwqrNCy3b5GYPL7boEPt8e5HXLNrCsE3iXsoXPV/F6OY
+X-Google-Smtp-Source: AGHT+IHv0nWMfI6aq0b6eLdPi5BFXUpk1cm504MWLpXBDcdbghuBHDx91yOfrqeoI1etZZXos7SrEw==
+X-Received: by 2002:ac2:4288:0:b0:511:720b:fbe8 with SMTP id m8-20020ac24288000000b00511720bfbe8mr1620848lfh.54.1707609091187;
+        Sat, 10 Feb 2024 15:51:31 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU5eoCvO8633YPEthka68zBBHuwtTY4XB5QvFoSWLSCEoSn1lEq1mpI+WvkAfsljUv+zdZc6HiVmPJpICHtgcZvK8dfWy3JZ11a40jd8Xn2wPH/jh/dlufaduVEiZJsuZ5N/mL6aCKY/9DbiNo1+J7ahtooGTn44MZOzLkPdiApXIGEjCSGDSnwgnDJRVDnylIOT67OGHlrvGkejlEh5IXB10DigzJiXt9XbvW3nLHonb+DyzEBGmg52zNOFwqXgHHabJodaIJDnPUy9qJe+xEHa4cFdk9XUZs6oNeCdSHVeffbtITXlrnMM0CRnL4EABI0lHKFqHIp5R/i/7mK2xVCRBTyEugheHaH2ynJtau5tO+v74eovtUHueJCrOBKVt3bsXxXjTiCnOvAK3cXVsJ3PCQyAcVSFY+mh8sT4Ocgs9foIEhFx3q2y+f8z8v1TLnStM+0n64RsmyQeEwom2B0+B8wdRop0s75Vy3pfBWty2yC0TIrBlkn7GlmX28FDmSTIC81vauJ9Kgk40zGCn4gF5idznYQzYxlskeD2Uoo4pePpZj+Vw6s1aNb98I97p0H1s5sHtVFjpybLukhwyEuVjKqzO5XpZp3X3MFaY0yWzbExw==
 Received: from ukaszb-l.roam.corp.google.com (alfa56.extreme-net.one.pl. [213.77.89.56])
-        by smtp.gmail.com with ESMTPSA id o27-20020a056512051b00b0051179ae1846sm365561lfb.280.2024.02.10.15.51.28
+        by smtp.gmail.com with ESMTPSA id o27-20020a056512051b00b0051179ae1846sm365561lfb.280.2024.02.10.15.51.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Feb 2024 15:51:29 -0800 (PST)
+        Sat, 10 Feb 2024 15:51:30 -0800 (PST)
 From: =?UTF-8?q?=C5=81ukasz=20Bartosik?= <ukaszb@chromium.org>
 To: Jason Baron <jbaron@akamai.com>,
 	Jim Cromie <jim.cromie@gmail.com>,
@@ -85,9 +84,9 @@ Cc: Guenter Roeck <groeck@google.com>,
 	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
 	linux-kernel@vger.kernel.org,
 	upstream@semihalf.com
-Subject: [PATCH v4 36/39] dyndbg-test: add test for label keyword
-Date: Sun, 11 Feb 2024 00:50:06 +0100
-Message-ID: <20240210235009.2405808-37-ukaszb@chromium.org>
+Subject: [PATCH v4 37/39] docs/dyndbg: update examples \012 to \n
+Date: Sun, 11 Feb 2024 00:50:07 +0100
+Message-ID: <20240210235009.2405808-38-ukaszb@chromium.org>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 In-Reply-To: <20240210235009.2405808-1-ukaszb@chromium.org>
 References: <20240210235009.2405808-1-ukaszb@chromium.org>
@@ -101,108 +100,38 @@ Content-Transfer-Encoding: 8bit
 
 From: Jim Cromie <jim.cromie@gmail.com>
 
-Test the use of the label keyword by selecting, labelling, and
-re-labelling a handful of prdbgs:
+commit 47ea6f99d06e ("dyndbg: use ESCAPE_SPACE for cat control")
 
-4 in module/params.c -> param_log
-  these are labelled and enabled prior to modprobe test_dynamic_debug
-  trace output to the instance is verified
-
-4 in test-dynamic-debug -> param_log also
-  2 class'd, 2 un-class'd
-
-After modprobe, all param_log labels are relabelled to new_out, then
-doprints reruns the prdbgs, generating new trace output to the new_out
-instance.
+changed the control-file to display format strings with "\n" rather
+than "\012", etc.  Update the docs to match the new reality.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- .../dynamic_debug/dyndbg_selftest.sh          | 65 +++++++++++++++++++
- 1 file changed, 65 insertions(+)
+ Documentation/admin-guide/dynamic-debug-howto.rst | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/dynamic_debug/dyndbg_selftest.sh b/tools/testing/selftests/dynamic_debug/dyndbg_selftest.sh
-index ae386e4de6a4..c6d428a58889 100755
---- a/tools/testing/selftests/dynamic_debug/dyndbg_selftest.sh
-+++ b/tools/testing/selftests/dynamic_debug/dyndbg_selftest.sh
-@@ -859,6 +859,69 @@ function setup_env_for_tests {
-     echo
- }
+diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+index 90449a04946e..4d681c37e074 100644
+--- a/Documentation/admin-guide/dynamic-debug-howto.rst
++++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+@@ -52,12 +52,12 @@ query/commands to the control file.  Example::
+   # grease the interface
+   :#> alias ddcmd='echo $* > /proc/dynamic_debug/control'
  
-+function test_labelling {
-+    echo -e "${GREEN}# TEST_SITE_LABELLING - ${NC}"
-+    ifrmmod test_dynamic_debug
-+    ddcmd =_
-+
-+    # trace params processing of the modprobe
-+    ddcmd open,param_log%module,params,+T:param_log.tmfs
-+    check_match_ct =T:param_log 4 -r -v
-+
-+    # modprobe with params.  This uses the default_dest :param_log
-+    modprobe test_dynamic_debug \
-+	     dyndbg=class,D2_CORE,+Tmf%class,D2_KMS,+Tmf%class,D2_ATOMIC,+pmT
-+
-+    # check the trace for params processing during modprobe, with the expected prefixes
-+    search_trace_name param_log 5 "params:parse_args:kernel/params.c: doing test_dynamic_debug"
-+    search_trace_name param_log 4 "params:parse_one:kernel/params.c: doing test_dynamic_debug"
-+
-+    # and for the enabled test-module's pr-debugs
-+    search_trace_name param_log 3 "test_dynamic_debug:do_cats: test_dd: D2_CORE msg"
-+    search_trace_name param_log 2 "test_dynamic_debug:do_cats: test_dd: D2_KMS msg"
-+    search_trace_name param_log 1 "test_dynamic_debug: test_dd: D2_ATOMIC msg"
-+
-+    # now change the labelled sites, by using the existing label
-+    ddcmd open new_out
-+    ddcmd label param_log +T:new_out	# redirect unclassed
-+    check_match_ct =T:new_out 4	-r	# the module params prdbgs got moved
-+    check_match_ct =T:param_log 2 -r	# CORE, KMS remain
-+    ddcmd label param_log class D2_CORE +T:new_out	# must name class to change it
-+    ddcmd label param_log class D2_KMS  +T:new_out	# case for class D2_* (wildcard) ??
-+    check_match_ct =T:param_log 0
-+    check_match_ct =T:new_out 6	-r	# all are redirected
-+    check_match_ct =T:new_out.mfst 4	# module/params.c prdbgs still have the flags
-+
-+    doprints
-+    search_trace_name new_out 2 "test_dynamic_debug:do_cats: test_dd: D2_CORE msg"
-+    search_trace_name new_out 1 "test_dynamic_debug:do_cats: test_dd: D2_KMS msg"
-+
-+    check_match_ct =T.new_out 6 -r -v
-+    check_match_ct =T: 6 -r -v
-+
-+    # its not enough to turn off T
-+    ddcmd -T
-+    ddcmd class D2_CORE -T % class D2_KMS -T
-+    check_match_ct =T 0
-+    check_match_ct =:new_out 6 -r -v
-+
-+    # must un-label prdbgs to close the label
-+    ddcmd label new_out +:0
-+    ddcmd label new_out class D2_CORE +:0
-+    ddcmd label new_out class D2_KMS +:0
-+    ddcmd close new_out
-+
-+    check_match_ct =T:param_log 0	# ok, but
-+    check_match_ct :param_log 1 -r -v	# pick up the D2_ATOMIC
-+    ddcmd label param_log class D2_ATOMIC +:0
-+    ddcmd close param_log		# now it closes wo -EBUSY
-+
-+    ifrmmod test_dynamic_debug
-+
-+    del_trace_instance_dir param_log 1
-+    del_trace_instance_dir new_out 1
-+}
-+
- tests_list=(
-     basic_tests
-     comma_terminator_tests
-@@ -878,6 +941,8 @@ tests_list=(
+-  :#> ddcmd '-p; module main func run* +p'
++  :#> ddcmd '-p; module main func run* +p'	# disable all, then enable main
+   :#> grep =p /proc/dynamic_debug/control
+-  init/main.c:1424 [main]run_init_process =p "  with arguments:\012"
+-  init/main.c:1426 [main]run_init_process =p "    %s\012"
+-  init/main.c:1427 [main]run_init_process =p "  with environment:\012"
+-  init/main.c:1429 [main]run_init_process =p "    %s\012"
++  init/main.c:1424 [main]run_init_process =p "  with arguments:\n"
++  init/main.c:1426 [main]run_init_process =p "    %s\n"
++  init/main.c:1427 [main]run_init_process =p "  with environment:\n"
++  init/main.c:1429 [main]run_init_process =p "    %s\n"
  
-     test_private_trace_overlong_name
+ Error messages go to console/syslog::
  
-+    test_labelling
-+
-     # works, takes 30 sec
-     test_private_trace_fill_trace_index
- )
 -- 
 2.43.0.687.g38aa6559b0-goog
 
