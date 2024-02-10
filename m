@@ -1,92 +1,102 @@
-Return-Path: <linux-kernel+bounces-60428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDB5C8504CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:59:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8944E8504D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:09:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F02C28253B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 14:59:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28D31B20DB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93CED5BADE;
-	Sat, 10 Feb 2024 14:59:07 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43F525BAD7;
+	Sat, 10 Feb 2024 15:09:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TBxZ6iRT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA37136AEF
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 14:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8332436AF0;
+	Sat, 10 Feb 2024 15:09:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707577147; cv=none; b=AnxgpIJjeMDFHUA6CUb+DqkPm7OsW4a3zCM0PA1fIg2tnR5LxrbR0D1HUOy7wzLOD3COWpgNoQdRw2BmBlrM78kkBaw2Mk7dHa+tfULCMQN17yy/+FDxVijJi/4IdZGfm4Iq9tDavUAuT+N4EQoTTK81oRlVxuiIKRyvu0buOOs=
+	t=1707577760; cv=none; b=tbd6uyJnkm420E9p5M8Fs+SX0R7JX8O6P/iu3dOjl7+aM02yL5vned/l5mWin7z96FLRBIILKRWTbqtEugQ53qZTJdmFOrkV3J2NJXuOT/vwDsM45h2IjL20IpsxuqGYUk0bqz0dVZi6+llp+lpFX7PAx2B06Vh9jZUhb+pHcKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707577147; c=relaxed/simple;
-	bh=iMfLEeTHTbt85d74UE8+VxZe4C33mSor9bptkb0ZW3Q=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=HN+H68Pwq8uPqw77y9TK0sa9OTXB0AiumULaJ4hFdOfd8HS626CyoE67+lMoxSx9UbhSsdzh3gFoGfhRSUa8Knatvxmad0HJv4CRpn6tiRQWeHsKFJdtqbGcFy/9/NAfqMmKG+QSAGDrnnLUxjZJmkIEp8C8zHK/ZCicyphL8Uo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363ca646a1dso16887075ab.0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 06:59:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707577145; x=1708181945;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nBaTulYzbUdDpsiTgalVNpa6HlwtpwY9I9TOZGhZE/M=;
-        b=hCKkKDophRAn7bncbvQ46QXKxerlfTMVMMH5HdWxo/n8IVgbrmj35vHYXOjKdJwGSk
-         xHUKPRS69A8untY0b1c81BSTzHqFEFqX+d9ijvSOD+2Hh2c7oAbqyjRM1fbFZ3t1HbHc
-         ETIn96LpIUL5iVGT3K0yHR3RJBe56qB64V47YvZkjfOegr0S7tF5bmYEjtdXlcuvkAXV
-         h8m/g/3hRq140khBwJGloXFQT9/RxO5tALSrWITcUuKoIr9jd12JrfNnlJgpzj29MLg3
-         P3tSBsE1yaWhEJyC0WmqKXRk3rJ5DMAg3Oztt446E88Id6aXzcaWmcHuY75UlG6qhb2y
-         TOIg==
-X-Gm-Message-State: AOJu0YylOAdhWQr/beZB4VZEthnWrjvEH1HvBqSuWsG1Ivw7pj7ukrN1
-	TPuErm6uQcX2xOvnXjphu/9U5TQ2D/eyFRZ275S2UE18Ogi9QC1r/RRMJbY/4Fy/qGvE9b+PIkI
-	U/RUZJeWOyeE5UTQawBwCMLmq+XO3dwqDepTkf5Vf50h3nJlOvFDB8tQ=
-X-Google-Smtp-Source: AGHT+IGmAQRbDJqel4FaA4qUReFM5I2NwHCScpZnNSB6C4xHvyv5rabwFqEEw+dDZRjdgu4En3nr0xI0AspplmuTO0iQkmpt9pYy
+	s=arc-20240116; t=1707577760; c=relaxed/simple;
+	bh=pLfRpHjTu9m4W1qVp6S/4OIPP2Vk2vK5FIofqlCRYbw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IlKYsHOw5JWFRMas6qSFQ7ni6/EyeEwNZwEj2o1gDhDkeYXmY0P0OUkcjuM4KGTgTKVXQmUTQdPFEKApDypIos+if2xPVjTpKQw9soQKqPdCp48XcE00wGqIuzYRB+rPh5keR/mf61JOSbGKbRy8cqW42AfyCeJsoru4iIKuFyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TBxZ6iRT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02936C433C7;
+	Sat, 10 Feb 2024 15:09:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707577759;
+	bh=pLfRpHjTu9m4W1qVp6S/4OIPP2Vk2vK5FIofqlCRYbw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=TBxZ6iRTVK8O3qULrXjcu9aWbDLvDocrTlaznymZzOSUUDvG9DNb0cS6/ng7KG7KU
+	 B8bBeOTMeiTwKXzlQnJZecrw3WLlSIAcmax5EB2O1Y8MqnsvpHHMHxjbcp7TkVYYhK
+	 cGi43eDOCg32mB0olSZermbJQBBvv7RANHcgJ7y2NJTOxkjflaYtY8YBTiq0hl8ETP
+	 xZ9un7gG+nX6sx4F34kCEijzdGDJ0PsnbTkHLwHnEZV89Q1ay9fIjak06VcHbF+Y5l
+	 LubrmNj1nqLHksfS0DUsPiHfext2+lGklbuQ/R6pGgU64ZT9xJhy3v5cbTPE/pGx+h
+	 CjmqCKMNhaIFw==
+Date: Sat, 10 Feb 2024 15:09:07 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Petre Rodan <petre.rodan@subdimension.ro>
+Cc: andy.shevchenko@gmail.com, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 4/4] iio: pressure: hsc030pa add triggered buffer
+Message-ID: <20240210150907.40e27f53@jic23-huawei>
+In-Reply-To: <ZcEPJh1i7cc0xyBW@sunspire>
+References: <20240127160405.19696-1-petre.rodan@subdimension.ro>
+	<20240127160405.19696-5-petre.rodan@subdimension.ro>
+	<Zb-1UGJt27OV-vjc@surfacebook.localdomain>
+	<ZcEPJh1i7cc0xyBW@sunspire>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a2e:b0:363:ac48:e28d with SMTP id
- g14-20020a056e021a2e00b00363ac48e28dmr222334ile.3.1707577145096; Sat, 10 Feb
- 2024 06:59:05 -0800 (PST)
-Date: Sat, 10 Feb 2024 06:59:05 -0800
-In-Reply-To: <0000000000000126ec05ffd5a528@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002903a406110849e9@google.com>
-Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_enable_quotas
-From: syzbot <syzbot+693985588d7a5e439483@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
-	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org, 
-	ndesaulniers@google.com, syzkaller-bugs@googlegroups.com, trix@redhat.com, 
-	tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-syzbot suspects this issue was fixed by commit:
+On Mon, 5 Feb 2024 18:39:02 +0200
+Petre Rodan <petre.rodan@subdimension.ro> wrote:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+> hello Andy,
+> 
+> On Sun, Feb 04, 2024 at 06:03:28PM +0200, andy.shevchenko@gmail.com wrote:
+> [..]
+> > > +	memcpy(&data->scan.chan[1], &data->buffer[2], 2);  
+> > 
+> > Hmm... We don't have fixed-size memcpy() :-(  
+> 
+> 	__be16 *ptr;
+> 
+> 	ptr = (__be16 *) data->buffer;
+> 	data->scan.chan[0] = *ptr;
+> 	data->scan.chan[1] = *++ptr;
+> 
+> is this an acceptable replacement? I do not understand that your concern was, my
+> intent was to copy exactly 2 bytes over.
 
-    fs: Block writes to mounted block devices
+Andy?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=147e5b20180000
-start commit:   89bf6209cad6 Merge tag 'devicetree-fixes-for-6.5-2' of git..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=693985588d7a5e439483
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ba1fefa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1636640fa80000
+I'm not sure what you meant here either.  
 
-If the result looks correct, please mark the issue as fixed by replying with:
+There is an existing oddity that the read_raw deals with this as a be32 and
+masking out the right sections for each channel rather than perhaps more logical
+be16 pair here.
 
-#syz fix: fs: Block writes to mounted block devices
+Jonathan
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> > > +	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+> > > +					   iio_get_time_ns(indio_dev));  
+> 
+> thanks,
+> peter
+
 
