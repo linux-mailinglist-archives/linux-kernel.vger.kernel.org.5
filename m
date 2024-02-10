@@ -1,115 +1,124 @@
-Return-Path: <linux-kernel+bounces-60440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80058504F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:40:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA6138504FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:45:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E9351F23109
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:40:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0EE51C21B2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:45:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD63F5BAFF;
-	Sat, 10 Feb 2024 15:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35D85BAF6;
+	Sat, 10 Feb 2024 15:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f6T7GiZT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uXfjBnIn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A90A5381A;
-	Sat, 10 Feb 2024 15:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC202EAF9;
+	Sat, 10 Feb 2024 15:45:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707579632; cv=none; b=CHoKc1ihGXnW1t27LoWFjt9tkF7OiPNJ4U5nCHCAjUg+T/cHtvkMAk/OOvKc3iEPpukQ87UaIBVehCQw6o5Uzjqk/ZOeNdvRXB/kJ6j1IfD8MF0DD1O6HOb/IlkM8lH0S/4RpjRXic2wCFi6P1yzuA/bm9Hcq5yuOvBRWosEf9w=
+	t=1707579917; cv=none; b=KYpAIYh1x5N9ylCAmlqXaCB/V6S4O4sDvbz3Nt0FVNe6tNBDXwvWEuEAe2NyiHCh+vVimYGbHd0WdDzQQpasv+sJL5pRZb6UShjcLHLYSiMDEPyfGmmDqIXCXLnrKySKVVAwPFXCyDYGO30x6UFDGcI0K6HqULNJz/kVCrQCXE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707579632; c=relaxed/simple;
-	bh=o90dBGsaOc4h8XZXjOy2Vf5kYvkiA8PHxCs2WzXIIkE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=XgcXOW00RADCfs5lRzqMm2plwTZnB7M94Orrbd1OGVJDa3ZZYkj2udTVsOk0BYP/R/39v11A30I0hRxN7toXjNJO6g9cECi6QEPU3wEkNGXc9ByoVKZ8bqHxvtZXiB7sCOrRgxJhWUvQWhd0lGpNICaOxwzH07DD9e697jOojp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f6T7GiZT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 59049C43390;
-	Sat, 10 Feb 2024 15:40:31 +0000 (UTC)
+	s=arc-20240116; t=1707579917; c=relaxed/simple;
+	bh=5279zwp7RW9/rOcq5SM/+hk6cu+IlXnySNrsfEDG88E=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ibmAP2oovI5q6weV48zKYhIQLehBhd8woNWQorhb+qe2ThLi3KIkBrvG415XCVPnw3hfi3MAx4yxv0cSwjW6Oa1GoSy0N2WFhbCo7vziBDfbKs/HFB4rPPC0yOKDjDunv5stC6haZ5hUA6bV4jikAXLI2LdSLl80QcfCjZL2gqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uXfjBnIn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B59D1C433C7;
+	Sat, 10 Feb 2024 15:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707579631;
-	bh=o90dBGsaOc4h8XZXjOy2Vf5kYvkiA8PHxCs2WzXIIkE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=f6T7GiZTni50nnfBV1omFsyGeirpUSqU6elXu7ewt73RCq5+HOh7VkVrdRvFRHFXO
-	 jv/YxV4p119HjSnoK6JdqiqM2se0/BLhlu/K6z+glLLEJHnfWWuLzXOCPJtgBp/o2w
-	 tF2MawnXCGeor1yXB1IzOu3WSKSRwVk8/7LP3QkA+fzNPGE36vA+3s9beLRJ4tLU/t
-	 hJWl5aUoOkdvlFUIOG6/b0OwmVA+2dAlMGRMOtyyLdohaX6m0UxwcH3fzhK7W2dUtr
-	 9V/FXrJt4dFSdAnF9jCaKjiMQpdnnvGvSyxX9opVSY8ubbVEM1jzm2Is+qPH/0Abcf
-	 Ex1Gz38JgLzDA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3E5E6E2F2F0;
-	Sat, 10 Feb 2024 15:40:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1707579916;
+	bh=5279zwp7RW9/rOcq5SM/+hk6cu+IlXnySNrsfEDG88E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uXfjBnInypFv78kbYxBiI07S5cBKCGBgnjU9RMCWY40GE+SFnDlWh7RNAyiag4E/1
+	 bQ3IKHa85DjbcT9xJ13Vh+u9ZKmt/7nYfHCUBMNlz0UY4EILTWD6SAeXUrQ2BtSg6m
+	 ihjV9m48GP8ejex0QAl7kYk7xSW9R7mgRgahLEl/JX8PKImzqhXZ0b1gmoOP8OkfG6
+	 rSyNks18cKL0npHy7cGxbnj+zydy6/zfF2aHad36GA5n2LGyaAMAgOsvxBADp1gOwQ
+	 5BX0kOnCF4u/7ACvqHACoBncVkcXYB2sf3hPTK6wYr1i56iOpRu3mDDjxp5JtSDuQX
+	 ishNnFoFWR2BQ==
+Date: Sat, 10 Feb 2024 15:45:04 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
+Cc: "Ricardo B. Marliere" <ricardo@marliere.net>, Lars-Peter Clausen
+ <lars@metafoo.de>, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] iio: core: make iio_bus_type const
+Message-ID: <20240210154504.0656f230@jic23-huawei>
+In-Reply-To: <77e7ed84395c716e17d783e9411fd57ad8c22295.camel@gmail.com>
+References: <20240208-bus_cleanup-iio-v1-1-4a167c3b5fb3@marliere.net>
+	<77e7ed84395c716e17d783e9411fd57ad8c22295.camel@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH v7 00/10] net: phy: Introduce PHY Package concept
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170757963125.14284.2496460448206023966.git-patchwork-notify@kernel.org>
-Date: Sat, 10 Feb 2024 15:40:31 +0000
-References: <20240206173115.7654-1-ansuelsmth@gmail.com>
-In-Reply-To: <20240206173115.7654-1-ansuelsmth@gmail.com>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
- andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
- florian.fainelli@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
- robert.marko@sartura.hr, netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Fri, 09 Feb 2024 08:38:03 +0100
+Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+> On Thu, 2024-02-08 at 16:37 -0300, Ricardo B. Marliere wrote:
+> > Now that the driver core can properly handle constant struct bus_type,
+> > move the iio_bus_type variable to be a constant structure as well,
+> > placing it into read-only memory which can not be modified at runtime.
+> >=20
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> > --- =20
+>=20
+> Acked-by: Nuno Sa <nuno.sa@analog.com>
+Applied. Thanks,
 
-On Tue,  6 Feb 2024 18:31:03 +0100 you wrote:
-> Idea of this big series is to introduce the concept of PHY package in DT
-> and give PHY drivers a way to derive the base address from DT.
-> 
-> The concept of PHY package is nothing new and is already a thing in the
-> kernel with the API phy_package_join/leave/read/write.
-> 
-> What is currently lacking is describing this in DT and better reference
-> a base address to calculate offset from.
-> 
-> [...]
+Jonathan
 
-Here is the summary with links:
-  - [net-next,v7,01/10] dt-bindings: net: document ethernet PHY package nodes
-    https://git.kernel.org/netdev/net-next/c/8453c88c7a15
-  - [net-next,v7,02/10] net: phy: add support for scanning PHY in PHY packages nodes
-    https://git.kernel.org/netdev/net-next/c/385ef48f4686
-  - [net-next,v7,03/10] net: phy: add devm/of_phy_package_join helper
-    https://git.kernel.org/netdev/net-next/c/471e8fd3afce
-  - [net-next,v7,04/10] net: phy: qcom: move more function to shared library
-    https://git.kernel.org/netdev/net-next/c/737eb75a815f
-  - [net-next,v7,05/10] dt-bindings: net: Document Qcom QCA807x PHY package
-    https://git.kernel.org/netdev/net-next/c/dd87eaa13787
-  - [net-next,v7,06/10] net: phy: provide whether link has changed in c37_read_status
-    https://git.kernel.org/netdev/net-next/c/9b1d5e055508
-  - [net-next,v7,07/10] net: phy: qcom: add support for QCA807x PHY Family
-    https://git.kernel.org/netdev/net-next/c/d1cb613efbd3
-  - [net-next,v7,08/10] net: phy: qcom: move common qca808x LED define to shared header
-    https://git.kernel.org/netdev/net-next/c/ee9d9807bee0
-  - [net-next,v7,09/10] net: phy: qcom: generalize some qca808x LED functions
-    https://git.kernel.org/netdev/net-next/c/47b930d0dd43
-  - [net-next,v7,10/10] net: phy: qca807x: add support for configurable LED
-    https://git.kernel.org/netdev/net-next/c/f508a226b517
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+>=20
+> > =C2=A0drivers/iio/industrialio-core.c | 2 +-
+> > =C2=A0include/linux/iio/iio.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 | 2 +-
+> > =C2=A02 files changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio=
+-core.c
+> > index e8551a1636ba..9b2877fe8689 100644
+> > --- a/drivers/iio/industrialio-core.c
+> > +++ b/drivers/iio/industrialio-core.c
+> > @@ -42,7 +42,7 @@ static DEFINE_IDA(iio_ida);
+> > =C2=A0static dev_t iio_devt;
+> > =C2=A0
+> > =C2=A0#define IIO_DEV_MAX 256
+> > -struct bus_type iio_bus_type =3D {
+> > +const struct bus_type iio_bus_type =3D {
+> > =C2=A0	.name =3D "iio",
+> > =C2=A0};
+> > =C2=A0EXPORT_SYMBOL(iio_bus_type);
+> > diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> > index 4f89279e531c..e370a7bb3300 100644
+> > --- a/include/linux/iio/iio.h
+> > +++ b/include/linux/iio/iio.h
+> > @@ -669,7 +669,7 @@ DEFINE_GUARD_COND(iio_claim_direct, _try, ({
+> > =C2=A0int iio_device_claim_buffer_mode(struct iio_dev *indio_dev);
+> > =C2=A0void iio_device_release_buffer_mode(struct iio_dev *indio_dev);
+> > =C2=A0
+> > -extern struct bus_type iio_bus_type;
+> > +extern const struct bus_type iio_bus_type;
+> > =C2=A0
+> > =C2=A0/**
+> > =C2=A0 * iio_device_put() - reference counted deallocation of struct de=
+vice
+> >=20
+> > ---
+> > base-commit: 81e8e40ea16329914f78ca1f454d04f570540ca8
+> > change-id: 20240208-bus_cleanup-iio-1e5714e23bb9
+> >=20
+> > Best regards, =20
+>=20
 
 
