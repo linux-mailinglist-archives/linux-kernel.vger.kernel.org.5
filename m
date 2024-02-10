@@ -1,90 +1,117 @@
-Return-Path: <linux-kernel+bounces-60173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F501850107
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 01:17:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06A3E850109
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 01:19:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B20AE1C26CF7
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 00:17:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 945F2B20D38
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 00:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F111E23BD;
-	Sat, 10 Feb 2024 00:17:06 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2417111E;
+	Sat, 10 Feb 2024 00:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UYrDWC6t"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01977366
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 00:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D13AB37A
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 00:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707524226; cv=none; b=DKCTg7N4WYLQKbbmN2b6JcYIVaeJ7xcdycjGm3FEYvjV9MN0OSCURNYvqJzuAoxL63cFkpAJyECb9jBT6QGy2WqtLg0XNqN176Iwx0FnSTe/Zj9dnG4xsYL+a/JyXuv4fSs3yBKpEfY14VvFkT3GzQwWIU8IDKa8TTfNz/uIaKU=
+	t=1707524357; cv=none; b=RyV4U4YlyeS5Ll5FKGTAnnJXM/DrBvrhAA88EAffQTyw+ubCsnEc60ay/tPANSD7sFTuKGVscfPBQEKI9ugrva7mMD7FBc8s+oUtaMlBoVUFtMK93NazDgsDiyzSHJLPceXb4JVirv6R4DfQKWZ9Hqmg52JDXsx79az3/4whu94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707524226; c=relaxed/simple;
-	bh=NpdXnujk8uz7fyDvZkKu93W5CtUqe0+jwrGTxj/TXPw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=qhtmUCz15Z4BNaEggbhvDMnh8+cQzwmVAiPBN/HwIvpk4edMphIf06M8rcnoJ1JmnTt1xTHLIRDZc+yJKBGp913nXqa74KUzmLOaNryV9LZuNTEfEY+6HUy9ZhB0RqcG2U7bSCmtizMUzO1jNM5SoFlg8x1BsOxNnfGLeNsZE/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363c3eb458cso8641965ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 16:17:04 -0800 (PST)
+	s=arc-20240116; t=1707524357; c=relaxed/simple;
+	bh=iq6fpzNvbrNJsO1zqHNpHfgJclfdwgHoVjvfJjXyk8Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LgM8Yz8sjLSc+bl1BHTnW1GtYofwA29F+4vnxJWJ3Ob5R8pOS7v3ideLuZP3Z0ExsUzF1+GPUTbbKBSnn+6Pe7xfrYcBNGWkkbmh58ZxBzGDZqgfHtYq/SfiwJwu3QnuB+u59MtIsLz2IDghUhWoZ4d9f0B05MQytDlxGXDLdNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=UYrDWC6t; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d94323d547so14166265ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 16:19:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707524355; x=1708129155; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wpUjtDpALKnkVEQ80qom9sdufdRNVtjYZoE0nb9Fp9w=;
+        b=UYrDWC6tIM7omHrmRTTJsCJUa2c/XicRE2tzQ2uRVBXOTu8734asInWDCqR6lE2Sa3
+         CKUP+cdHX/SJx07MjXMaAySBfBEuR/GxyvhN//kdaqOv9tEXH8aqdbTIHLBc0lrvZn0v
+         UrD0j8OqRmniFiHZBdtPxlPvWo+G5pGJ4P13Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707524224; x=1708129024;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Ho2u/4j61/FIneEGCKP7KoT1wGfcKHFvYYyBQNKibs=;
-        b=xE+rzoXZkYCxbjYrluL7/I8d0QPZoSfMlxUyz6ttf4voR7bYcDzIQq4VrXiejlBCIP
-         S4tiTvojUIJ+04oKgwLRS55rA3Zhs7grPufX+QDCDuhdyjsJcD9wIGt3nXOGY9HII73K
-         qPN5mMdr7de/w2wM9azq3e1ZaCC2QQM+vYK1WdR1s6RL8CqArjimZRxGTGBfWzdTGE/K
-         Hu554AszFaIigsbzwMCMepiOClMF7a9WsDhbNt/b39VTKb+HUceL84lVAnT8GxRFgWQ0
-         uS5cmb+jLoal5YvSzPgYyaksGbM4afXRI1sxbQ+hmLTfKbC8I8J8TV+Dyf0aHOOTaIeO
-         NFCg==
-X-Gm-Message-State: AOJu0Ywc2lQRtVsI+GSHq/PYG8tmTyz2achd98ipyvd6ZWNjj10F3PE0
-	7rzuRM4y73GL2Gy8hJR4V8QfDz0oy+3WdeSPBwx3GmBCjvP9XAOStAPXHTESHrIM4i+ssGgmj68
-	NJrx8X6nzO1Wym0iUNU9h01GJ4DXrmuY01NJKsCFDHLh7klh2xsSQtxo=
-X-Google-Smtp-Source: AGHT+IHVwO1+Ok3Qs2xKgOA7VWr2yJxR61qKMQapUl1jOQtA/TDgElhaWMT1cLj+MV1sfU9WjvC3v/3ChfrWUnCgOgwH1ugEQChT
+        d=1e100.net; s=20230601; t=1707524355; x=1708129155;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wpUjtDpALKnkVEQ80qom9sdufdRNVtjYZoE0nb9Fp9w=;
+        b=c0AMmgMt+Ct0QneA817Jxlq+642eR+dXp/02vyttiPnrG3AEEC5pHnWIm1baRY3DD0
+         7NwHzPIzoS1bo/EqNbDHKwcEFQhdKi2cIeBRsrdWbwEPHdX9++1KBAcHHAgvaKys+TEH
+         DCrbQHbHKQt4RwxPd0fbo8t2/poyDFQrc7iMLpOxfkluOp/HyjNyWUQWLasaZBFpcJy0
+         XkQconHHiX0mivErKAr7bIohQjuHnjqPlodzQjsO5R9+xZOiaDUNA1Wh7RNtcqOS4xOy
+         YgZqF4YC8IlnQhTY7gVCJjqelRFIiAFT1Ye+Zt0BlUSRrcPiNNoNkOgzfqMfqvO/xNAj
+         yYGg==
+X-Forwarded-Encrypted: i=1; AJvYcCWsk51HzMXSMgPS9wODeL70bhuO/koYER1leMJhT7heLAuzxCSht/ZaAXVMdxtpHQZvJTq0Wul57Bga5nHVy4UZUwQQydqXYgQSGe/G
+X-Gm-Message-State: AOJu0YxU8JxLN6zdJpRTS5QiXFJiKRe9zQA8uwOA0XDQuVygymKnEmuX
+	B7yhHNj9ctBwJ/1MBAvEqJdIcs7oupEXegxoDPp7wsuZnGVI/HKPFiIGfcXlRQ==
+X-Google-Smtp-Source: AGHT+IEEBZzTNPkIRqK2x7x6H9MYcqdhzdSNvyTXpmFuzJHAi/DDHjTK4INmh8ggJYegRx2ervn7bw==
+X-Received: by 2002:a17:903:28e:b0:1d9:c0a0:b3c8 with SMTP id j14-20020a170903028e00b001d9c0a0b3c8mr1269965plr.17.1707524355084;
+        Fri, 09 Feb 2024 16:19:15 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVWzJB3vM8kE82tscM0uXjwXFtLiuKgEcIbJeO/MfXudqoMVv4GPR4GutCMGagbghF3TM43L91pHWQJS0YbZ/USWxr4nMQdu0MHtSxprge0pe8hl7WtjsO+43KuUT3djqjHrBDavO1+OJZWU1QI2x/1JnJ7rWWr2Js/rTMw7+TfobFYaR2TUmrWW18msicFvg8bVxr92aNyEcu6ygqKoN5u9hsvGkwkax6dLEdx7HSj6H2a9G4Xr1hbxbLP+mC/QntrZNQsFcDIpyOSQ+mNfk6uvOZyU8Sb5zuncks=
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id m2-20020a1709026bc200b001d958f8ab2bsm2043788plt.107.2024.02.09.16.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 16:19:14 -0800 (PST)
+Date: Fri, 9 Feb 2024 16:19:14 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Erick Archer <erick.archer@gmx.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] irqchip/bcm-6345-l1: Prefer struct_size over open coded
+ arithmetic
+Message-ID: <202402091619.80D0AE3141@keescook>
+References: <20240209181600.9472-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a82:b0:363:c8ba:ea5a with SMTP id
- k2-20020a056e021a8200b00363c8baea5amr48953ilv.6.1707524224116; Fri, 09 Feb
- 2024 16:17:04 -0800 (PST)
-Date: Fri, 09 Feb 2024 16:17:04 -0800
-In-Reply-To: <20240209-notdienst-watscheln-4ca4930cb089@brauner>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d2f71f0610fbf6d3@google.com>
-Subject: Re: [syzbot] [block?] WARNING in bdev_file_open_by_dev
-From: syzbot <syzbot+96f61f1ad84e33cee93e@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, linux-block@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240209181600.9472-1-erick.archer@gmx.com>
 
-Hello,
+On Fri, Feb 09, 2024 at 07:16:00PM +0100, Erick Archer wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1].
+> 
+> As the cpu variable is a pointer to "struct bcm6345_l1_cpu" and this
+> structure ends in a flexible array:
+> 
+> struct bcm6345_l1_cpu {
+> 	[...]
+> 	u32	enable_cache[];
+> };
+> 
+> the preferred way in the kernel is to use the struct_size() helper to
+> do the arithmetic instead of the argument "size + count * size" in the
+> kzalloc() function.
+> 
+> This way, the code is more readable and more safer.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162 [2]
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 
-syzbot tried to test the proposed patch but the build/boot failed:
+Thanks!
 
-failed to checkout kernel repo git@gitlab.com:brauner/linux.git/vfs.super: failed to run ["git" "fetch" "--force" "81e322358ba96b4e95306c1d79b01e0c61095de5" "vfs.super"]: exit status 128
-Host key verification failed.
-fatal: Could not read from remote repository.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Please make sure you have the correct access rights
-and the repository exists.
-
-
-
-Tested on:
-
-commit:         [unknown 
-git tree:       git@gitlab.com:brauner/linux.git vfs.super
-kernel config:  https://syzkaller.appspot.com/x/.config?x=85aa3388229f9ea9
-dashboard link: https://syzkaller.appspot.com/bug?extid=96f61f1ad84e33cee93e
-compiler:       
-
-Note: no patches were applied.
+-- 
+Kees Cook
 
