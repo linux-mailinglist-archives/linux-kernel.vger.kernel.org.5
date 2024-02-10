@@ -1,108 +1,169 @@
-Return-Path: <linux-kernel+bounces-60344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16DF285036F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:53:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C23A9850371
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 09:05:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7D311F23C2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:53:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E00C71C21C7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:05:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2883B2B9B7;
-	Sat, 10 Feb 2024 07:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC592B9CF;
+	Sat, 10 Feb 2024 08:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="DzwZGlZH"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="A7SRCENf"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0F5364BE;
-	Sat, 10 Feb 2024 07:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5136AB7
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 08:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707551595; cv=none; b=oGNjzq+cg6ycAzdFZLvjgAMXgF1IhoWN9wEy4TfjWNWSrhJJeTahmRHOS9vh2sVPGWJYU+bw8H5FM/OYqV0qVepdpsxxp0YP8QMYCrF14U9HhtrRdD4qBk1ZAF5+amg690mXlLatwJMWPrVnZZ2DUI6ut0MhEwHL4RXDMywJ41I=
+	t=1707552343; cv=none; b=RACz3ekF5N0iIAAn+AMlxL4FrW5YeMbVWZpo2shS8aBCTbpVUbKd96vXZ+C0WZ7mdfrMvvSDvMJOD2wmtX/MZhgh05ortyknYmCH9reI3XIdjX2hpHbbY1XaL6NkRCGAentsx+fY53TeYAEAnB7vnYWz3lCP9oFvW7I1hXPJFv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707551595; c=relaxed/simple;
-	bh=N/bMUlvEIHFtWC9m3ywNAcaX2rKlbaWGROOfKxrvTJI=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=OAJd9KmQxVBL100oNL/yDhWDS0enscunFC9kyWrPPl8qN+jP0cpXtE0Mu8s9JXRfjqFVOBbAm43tvSihluji08elU7LrAvsHewptB6r+v9kjGvYD6owsCyRsd3rBO/nMxHLQLMiv1b8FgryQEmHrq527JpMSVbKnYK0ksbhfPt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=DzwZGlZH; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5F39540E0192;
-	Sat, 10 Feb 2024 07:53:10 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id bDtIDKNp_WIC; Sat, 10 Feb 2024 07:53:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707551586; bh=DlcbY2ofqS2cG6ZOauI2M8Te0nskCJJ70t7PzuUSjsY=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=DzwZGlZHYZnC1dygrA6CdZ5GbW4FhvzFU6cySoTdT8ZMjQLd4o5JAMxxas9VgfU5Y
-	 cJF9701Mog3xoT44fA8tD/TcKEadwfQRHwgKq13fAkMuP6TUL1AzNWNLfeVl7gvdQw
-	 UcH9sLPsE2SLAdt+xTFlvVUVkQwZ4xXh9lQGDd6Gix879+F7nPByiZaC+3AwcatyPf
-	 M4M6uIQvqUiqiZGf6YUBEnDbqTDaSisLYwpIK3aXhOfsmJSMtKl6e/q5VRkPysw3ND
-	 Dy+rEPPOlJI+xRqFUSE5rmBU2/BkLTGRjWtZbsNy2EU2SFycpwtgwsQMOrQ8y+cyKt
-	 GO0fK1uo05XSB/eTDU1WYUKrevFQtRElw7y9KDeq1PwLAUsB4PljeMACpd5qTR117M
-	 T1GtcXFsv68TiM75qSxqGd6xc3DojuS7Ysj7j9gEWzXxr0HVFinepbe5TNFc+rclyT
-	 WlnNbPboT6Uu3lOQlhm2DQYrMWn51rH8uN1bG8clbPVRVadqdaBWyQ+GsJImNvx9ib
-	 4LnWpIs0PdXXIkIDhOHcTGlecOJ+V7A4R1rz4qpPyl60Tj2450qMcN3qWupk+M/hdX
-	 hiKb1Oj6Ln+/IwOQzMbV567I+tPGaSTj1bkKBduCJi3W73h9QxfSiY9rozYFyyJFie
-	 yj0fltcStP+JuyoWh0CH5lD4=
-Received: from [IPv6:::1] (p200300Ea97226B845026c69288948424.dip0.t-ipconnect.de [IPv6:2003:ea:9722:6b84:5026:c692:8894:8424])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C295340E01F7;
-	Sat, 10 Feb 2024 07:52:57 +0000 (UTC)
-Date: Sat, 10 Feb 2024 08:52:53 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Naik, Avadhut" <avadnaik@amd.com>
-CC: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org,
- linux-edac@vger.kernel.org, tony.luck@intel.com,
- linux-kernel@vger.kernel.org, yazen.ghannam@amd.com,
- Avadhut Naik <avadhut.naik@amd.com>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_2/2=5D_x86/MCE=3A_Add_command_?= =?US-ASCII?Q?line_option_to_extend_MCE_Records_pool?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20240209205111.GGZcaQP1gb6C9m0WZB@fat_crate.local>
-References: <20240207225632.159276-1-avadhut.naik@amd.com> <20240207225632.159276-3-avadhut.naik@amd.com> <8b4f8ec2-7534-4f77-b44f-6728c699ff64@intel.com> <51255499-0b5d-45c6-9c72-f353bae83c0d@amd.com> <20240209200920.GFZcaGcOr757W9O3IG@fat_crate.local> <7a4945b0-322a-444e-a0ca-860a062a49c3@amd.com> <20240209205111.GGZcaQP1gb6C9m0WZB@fat_crate.local>
-Message-ID: <5DB0FF8D-C6DA-45DC-B287-201A9BF48BDA@alien8.de>
+	s=arc-20240116; t=1707552343; c=relaxed/simple;
+	bh=2kk8zl7wmBntT6bZOZ9oR09/coMM4tEFb/OHSEp1i7Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=doFALNvNpAl5Q3f+KhOcDabJksG3pwOhSbAoLlBwpKihjGQLVlQffrADFgU24yL5u1l4rPb/1jzfLlFuAAIw6pechZXken/vJSnqzoejXqlAwymX0l7rubGBrQQaWGAeqH/AtGRQgPYqhx1ZAjCNjkP98Tp/gzn1irQLeThiXwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=A7SRCENf; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-603fd31f5c2so23642847b3.0
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 00:05:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1707552341; x=1708157141; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZaycG/k+YujivUfeaD+PrPikDMJQEOMrsakJhGd6CLE=;
+        b=A7SRCENfhkGrc2TRwgkBiKuVohyNrM5wRC+Z0RcEduqDUwl841BMJ9dFsOp8qvF76S
+         +WQP/FyjTf3yvuGmnRKjnN9VW1BaPghA5UP5pjBCXG+jeubFdm4z0Vj1g5oT9nM7H7Lm
+         +nvQefJh7uPrMNjSz9WUeb/SaQkLZN7ZLjfPoW0SzHI/dGDGn+ga+0h+jeaWDcyZasDy
+         rx0NJ3/3VQ6eoEg8ZYCvb6tMqXEUc+JZCyJKjtz8ez0ihCbL9yzgnocbfV1QkWMRaN/K
+         YcNvrSjsfWqppXn0nxwYUfpYuv4crfkIgBziiMooPDUEaaEtBotcHQV3bvQR7Eetocmf
+         wuiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707552341; x=1708157141;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZaycG/k+YujivUfeaD+PrPikDMJQEOMrsakJhGd6CLE=;
+        b=DSIm++6lBnQiovlv2gpgO71N/h9J7GmnBB5FQ5Xt89OTd3tfKkC30Xi0vkTFNTt6lw
+         d/XrC1++xWnyYi5s+Ku6fyQLtCUNXXsKj2JYb6uzYzA58hQX/glQJeIMlBGNV1DgWKDx
+         PZf3nTKqelN6M9DPoQ/FFVr2b3V+BkqhDJO6wwCHmp0kdYXH8cR6KbwiOMs9wuYsJM8h
+         URy7Xve1guyjtM4BgtzgCEquaxQoM5Bly073eOIXIPKHiHXIjSQt9YXnZaQRMkgN/Td+
+         kU/9BImUWxTaj1qCNgtEqhcXCfDcdzYAL4OmmCJabdTqzQmZfDj7jecHUDgH/xGOvtqd
+         CkEg==
+X-Gm-Message-State: AOJu0Yx/V1dNl7a2RVZ2RNXo5pfdxReUe0lp+75KTvY/RoEunKaHVkTd
+	+42wPrRto+jE5ACKledY1ZMYH2rjZxD6pm03JAeAGhWzedcXCHUAJI0IkBvJqxe3f1LzU/k2yQz
+	Dq4/7k/B/egxKFV0dOHCWEjyZfuLczK+fAJyLTw==
+X-Google-Smtp-Source: AGHT+IExADOTTgAs4pdlehx41o/HZWoMewbTcSoa8gDHsAPV2p0RvyXSubcT5QBZTFxP6p9x2sVexv1O8S7eEvFJAKw=
+X-Received: by 2002:a25:e0d3:0:b0:dc7:51eb:36dc with SMTP id
+ x202-20020a25e0d3000000b00dc751eb36dcmr2566819ybg.5.1707552340707; Sat, 10
+ Feb 2024 00:05:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20240205-b4-rbtree-v1-0-995e3eee38c0@google.com> <20240205-b4-rbtree-v1-1-995e3eee38c0@google.com>
+In-Reply-To: <20240205-b4-rbtree-v1-1-995e3eee38c0@google.com>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Sat, 10 Feb 2024 02:05:29 -0600
+Message-ID: <CALNs47vgryKctpsP9EV_SsVF8TX8kfwzQ4KCLy9vr5FS_vBq6A@mail.gmail.com>
+Subject: Re: [PATCH 1/6] rust: add `container_of!` macro
+To: mattgilbride@google.com
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Christian Brauner <brauner@kernel.org>, Rob Landley <rob@landley.net>, 
+	Davidlohr Bueso <dave@stgolabs.net>, Michel Lespinasse <michel@lespinasse.org>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On February 9, 2024 9:51:11 PM GMT+01:00, Borislav Petkov <bp@alien8=2Ede> =
-wrote:
->On Fri, Feb 09, 2024 at 02:35:12PM -0600, Naik, Avadhut wrote:
->> IIUC, this is exactly what the first patch in this series is trying to
->> accomplish=2E  Please correct me if I understood wrong=2E
+On Mon, Feb 5, 2024 at 9:50=E2=80=AFAM <mattgilbride@google.com> wrote:
 >
->Yes, you did=2E
+> From: Wedson Almeida Filho <wedsonaf@gmail.com>
 >
->I don't mean to extend it - I mean to allocate it from the very
->beginning to
+> This macro is used to obtain a pointer to an entire struct
+> when given a pointer to a field in that struct.
 >
->	min(4*PAGE_SIZE, num_possible_cpus() * PAGE_SIZE);
+> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
+> Signed-off-by: Matt Gilbride <mattgilbride@google.com>
+> ---
+>  rust/kernel/lib.rs | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>
+> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+> index 7ac39874aeac..c7963efd1318 100644
+> --- a/rust/kernel/lib.rs
+> +++ b/rust/kernel/lib.rs
+> @@ -102,3 +102,35 @@ fn panic(info: &core::panic::PanicInfo<'_>) -> ! {
+>      // SAFETY: FFI call.
+>      unsafe { bindings::BUG() };
+>  }
+> +
+> +/// Produces a pointer to an object from a pointer to one of its fields.
 
-max() ofc=2E
+It is in the examples but a note would be good to make it obvious:
 
->There's a sane minimum and one page pro logical CPU should be fine on
->pretty much every configuration=2E=2E=2E
->
->Thx=2E
->
+    ///
+    /// This macro must be called from within an `unsafe { }` block.
 
+> +/// # Safety
+> +///
+> +/// The pointer passed to this macro, and the pointer returned by this m=
+acro, must both be in
+> +/// bounds of the same allocation.
+> +///
+> +/// # Examples
+> +///
+> +/// ```
+> +/// # use kernel::container_of;
+> +/// struct Test {
+> +///     a: u64,
+> +///     b: u32,
+> +/// }
+> +///
+> +/// let test =3D Test { a: 10, b: 20 };
+> +/// let b_ptr =3D &test.b;
+> +/// // SAFETY: The pointer points at the `b` field of a `Test`, so the r=
+esulting pointer will be
+> +/// // in-bounds of the same allocation as `b_ptr`.
+> +/// let test_alias =3D unsafe { container_of!(b_ptr, Test, b) };
+> +/// assert!(core::ptr::eq(&test, test_alias));
+> +/// ```
+> +#[macro_export]
+> +macro_rules! container_of {
+> +    ($ptr:expr, $type:ty, $($f:tt)*) =3D> {{
+> +        let ptr =3D $ptr as *const _ as *const u8;
+> +        let offset: usize =3D ::core::mem::offset_of!($type, $($f)*);
 
---=20
-Sent from a small device: formatting sucks and brevity is inevitable=2E 
+`offset_of` will be stable in 1.77 BUT only for a single field [1]. I
+don't know if there are other blockers in the kernel already, but if
+this could be changed to call `offset_of!` recursively then  it will
+work with the stable version.
+
+We might want an `offset_of_many!(a, b, c)` macro somewhere if there
+are other places that need this nesting.
+
+[1]: https://github.com/rust-lang/rust/pull/118799
+
+> +        ptr.sub(offset) as *const $type
+
+Instead of casting to and from `u8`, you should be able to use `byte_sub`
+
+> +    }}
+> +}
+
+- Trevor
 
