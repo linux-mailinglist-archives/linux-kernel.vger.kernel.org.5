@@ -1,91 +1,106 @@
-Return-Path: <linux-kernel+bounces-60573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D70B8506E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B9B3850742
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:15:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FA43B237CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 22:56:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8B52B21C2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD575FEF0;
-	Sat, 10 Feb 2024 22:56:36 +0000 (UTC)
-Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00EDB5FEF7;
+	Sat, 10 Feb 2024 23:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SxDJ+Uav"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C58259B;
-	Sat, 10 Feb 2024 22:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46AF5FDD7
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 23:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707605796; cv=none; b=UnVXa71eSoT7x6TWMi4OaJLPB0ZYg0ZwXpAl66WO5eRINHj77gGz89Bs+KmkixK6iObaqLtg5rNyQKaKuiU2+a/ZKpQRHEaG20v9nEYK3PMNjDgwbGlV/m0femZrYJ/LE9QQnHJ9DB8DMNO6zMR8Z4mqGLzTnm3xCubuu+YmCYI=
+	t=1707606921; cv=none; b=mQA/LdvAnr+x4I1ECPCUlVIupoGyEBXifzqgKkL8b+blQKs5Jdx501WtrAaWH7VVxETm1onwtmpMPudXJF+DVc/w3gOV2RjQj2NCPp/LhWtNU3Mi88qRBx5dZ7ud98X4g12EDBkTfemx2Psz7VcJLROmSZu7t/zlHKcoJ/xL6pA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707605796; c=relaxed/simple;
-	bh=8tKZK6z3KddJFqAvQqo359iHqAsAGCKcJW+oBIFlSvM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=O5qKPsSZu1q+pMKglW3EUoEE2c1+n+7EetY0cYhsCc6X4lTWw7LvgUJGUDkZNKBzwIgAjgdF97Gak3W6EpfrdcuU3578PNURZ75F54wVWJO1My40xodm3CkTdb9qvzDiCGR4+04ec1o28ouEVFg5mHESI4W+3noYluXKy+egHLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
-Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay04.hostedemail.com (Postfix) with ESMTP id A21071A0663;
-	Sat, 10 Feb 2024 22:56:26 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 4593A2000F;
-	Sat, 10 Feb 2024 22:56:22 +0000 (UTC)
-Message-ID: <beff7f4411586efd8f08d7b3d94b0ca235375790.camel@perches.com>
-Subject: Re: .mailmap support for removals (was Re: [PATCH 00/10] scsi:
- Replace {v}snprintf() variants with safer alternatives)
-From: Joe Perches <joe@perches.com>
-To: Kees Cook <keescook@chromium.org>, tools@kernel.org
-Cc: Lee Jones <lee@kernel.org>, Bart Van Assche <bvanassche@acm.org>, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Date: Sat, 10 Feb 2024 14:56:21 -0800
-In-Reply-To: <202402092252.0A0A59A@keescook>
-References: <20240208084512.3803250-1-lee@kernel.org>
-	 <c9129b08-50fb-4371-aa05-6f6c7cd7acfa@acm.org>
-	 <20240208174912.GZ689448@google.com> <202402092252.0A0A59A@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1707606921; c=relaxed/simple;
+	bh=/3YzkBLodMNUrjnwjELpDTo92n8iOXA1+uqd9b5AE1c=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=dw9iGBeblLBqeURhYeF+FjygXAEch3CZyWf7uzZnLjsmL4llRkOK3gxEcxB/lr08LZ5d1NjuTy4TZYP7Nbft38zwnZff8K6s4zk7J8uY6VQYhNxbhYd9Rtaq3ksJenSBbp3ZevoRIxL6gr6B3dLCKw8+JEbArJ7KlzBGMTzheRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SxDJ+Uav; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b267bf11so2580777276.2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:15:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707606919; x=1708211719; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=X74cf6T8C4bXDHMgSvTgHCjENEzriqu7nAo5Mgz+MM4=;
+        b=SxDJ+Uav1JT1xkr11P8EWEEH4aiXtqA/CIPkKFuknE8oeTqX2JHCgSUINDuODtOmpq
+         pObCE5xGnFRkDYuBH9S0dR8GJtn58SBdpwz711//joxiINoHdiESNXrSXHHNQPmmPSGr
+         noebh6eRIBWeXMnrPEIJCsjCYa/MewornumtwWDCwKZvuTacIdfkiYrs+GFLv/uxpTjM
+         /sRHtp6Pv0BKDFoXrWNVgASVNLj5AA53fwHqWqSSjb2J5v7vwjO6Cn2swRXggb5tuaFt
+         J7yxGEWnqt0IBWXbzpnP4uG0J9DZ0Yi1mzweIxc6PXf2Y1RUcfwXFymIyTyG4oqiRxuA
+         MDjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707606919; x=1708211719;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X74cf6T8C4bXDHMgSvTgHCjENEzriqu7nAo5Mgz+MM4=;
+        b=b5NTK1lXE/Q4KAPi/KHS7wBGiUuqhuwZx/nDwniXnO0wLvbvpBg9d3jW31r8R3JtIn
+         ttYLme2xERZ5coGhJAxKWWZmH8vT/OjwgSI5LCXaR547zeI41mLLPRNQphmbrfq2NGhS
+         ZSrjf8nVyC8VxR/Dsi65GGuF0bacIpWx/h5iLyo/syVmbb87DmmzThxt4RWeBuTULRNs
+         UqSX1VZ3s5eHOPlFgnCXF6wVHWc4VfSLBR3AsRKiqi1AFCtxyfkDd+gZEna9qEFqB8tJ
+         136RJO8v9DIymIlRPWAwJCx+0kfeIcD3FLqvMHcS3IenwLkHpepfAUe5UXxPS7LxH8XV
+         0jRQ==
+X-Gm-Message-State: AOJu0YwDDjL+vT6JOhNMh5G4OH8qGBmEdY0YUJElCBv5HC4p/m9/Rg47
+	766jalRyZjEHkYW3NTH59aPlKvg3j6pcB1FNPrDCqckGjYfhGbbrJRkQVTD5cORUNDWXerRYUSf
+	e0f8HKNsk2jhNaA==
+X-Google-Smtp-Source: AGHT+IH2Adref4+yil6FrbE6d/7iC18rjqbq852WHMSpdwSZBvXZFSyEt1R4atXsHCbl3PmMo9FKTKBDAQtPReQ=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:80ad:1a11:8cc3:735])
+ (user=saravanak job=sendgmr) by 2002:a05:6902:2213:b0:dc6:ebd4:cca2 with SMTP
+ id dm19-20020a056902221300b00dc6ebd4cca2mr118406ybb.11.1707606918832; Sat, 10
+ Feb 2024 15:15:18 -0800 (PST)
+Date: Sat, 10 Feb 2024 15:15:12 -0800
+Message-Id: <20240210231513.111117-1-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Rspamd-Queue-Id: 4593A2000F
-X-Stat-Signature: bwbccfhzcjhn6x9rfoppaay1kuycw7fn
-X-Rspamd-Server: rspamout05
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18XdaBtlCF0Uon/g9L1Z+Hs0qwOLAsaqXA=
-X-HE-Tag: 1707605782-769569
-X-HE-Meta: U2FsdGVkX18RorYUsbIJWjdQMGidD7ifUMhZwGLP+HKmvn48l+vAsuV+JlhC6OZhTOHQDRvrFvLFk3kVmNjMYKT3KrgHmlQYrO9+IASqY9foKvNs4KfanWAesXOmAMTgS5uSkQ6ik/f5Cco+Syj7RHgHCmdTKu90Jtk7srjS8TZd37qluqy8UGDhgKaHltEYCBCl29pCAvlGc53VkNom+mUFtQZpW3ensQFjYHJaa0r5VK5Y3C3h0mhQRUPwBr+Ivy8+go9TGO33cZUoD+8s3tghZqbzBQ0LybuuWFm4r5+hqCRiF01oL7l8gcFcJJkG+VulL8vcEWI4e+H/DCt8vdtX56tVV43fAPazTRWCfdq7OK2avqXHVJUYqXTskUwryylnqNquWqUJ9d0bAa0pH09UL7MwpB7suoQxWqYaOQH2BnUsokr6wbudeZERrULu3z5eMJG+Imz+OTxJwlu73cyoQxNEC2DSRtwtAxrUmjnOLYJ1LH6Y/73Uyakp9sKADdOmPssjE7k=
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Subject: [PATCH] MAINTAINERS: of: Add Saravana Kannan
+From: Saravana Kannan <saravanak@google.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Saravana Kannan <saravanak@google.com>, devicetree@vger.kernel.org, 
+	kernel-team@android.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 2024-02-09 at 22:56 -0800, Kees Cook wrote:
-> On Thu, Feb 08, 2024 at 05:49:12PM +0000, Lee Jones wrote:
-> > On Thu, 08 Feb 2024, Bart Van Assche wrote:
-> >=20
-> > > On 2/8/24 00:44, Lee Jones wrote:
-> > > > Cc: Andre Hedrick <andre@suse.com>
-> > >=20
-> > > Please take a look at https://lwn.net/Articles/508222/.
-> >=20
-> > get_maintainer.pl pulled it from here:
-> >=20
-> > https://github.com/torvalds/linux/blob/master/drivers/scsi/3w-xxxx.c#L1=
-1
->=20
-> Oh. Hm. It seems "git check-mailmap" (and get_maintainers.pl) don't
-> support a way to remove an email address -- only redirect it.
->=20
-> It seems we may want to support "don't use this email address" for more
-> than just the currently observed rationale. I don't have any good
-> suggestions for what the format should look like? Perhaps:
->=20
-> "" <address-to-remove@example.com>
+Adding myself as a second maintainer for Open Firmware and Device Tree
+to help Rob out with reviews and other maintainer work.
 
-/dev/null ?
+Cc: devicetree@vger.kernel.org
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+Discussed this with Rob.
 
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b01f890ec789..45c6c13b4edf 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16359,6 +16359,7 @@ F:	drivers/infiniband/ulp/opa_vnic
+ 
+ OPEN FIRMWARE AND FLATTENED DEVICE TREE
+ M:	Rob Herring <robh@kernel.org>
++M:	Saravana Kannan <saravanak@google.com>
+ L:	devicetree@vger.kernel.org
+ S:	Maintained
+ W:	http://www.devicetree.org/
+-- 
+2.43.0.687.g38aa6559b0-goog
 
 
