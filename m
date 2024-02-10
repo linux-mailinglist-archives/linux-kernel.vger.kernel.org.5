@@ -1,90 +1,90 @@
-Return-Path: <linux-kernel+bounces-60247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DBF085022A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:25:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C66BC85022C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:31:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA6AB28911E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 02:25:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 053431C221A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 02:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04E74C6C;
-	Sat, 10 Feb 2024 02:25:51 +0000 (UTC)
-Received: from r3-17.sinamail.sina.com.cn (r3-17.sinamail.sina.com.cn [202.108.3.17])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25542522F;
+	Sat, 10 Feb 2024 02:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M/YR1G1J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEADC2119
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 02:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.108.3.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B53366;
+	Sat, 10 Feb 2024 02:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707531951; cv=none; b=pFdsO68VLGNit55yz8T4AxQBovGErMku8ap6SeNk0WxA3eBKQ9o0bUXJuVwXwiij3/wrznqv21h4Fxw9DdPZacFIJGqBW9SpwHy7qwsI3S6pjy5VHA8z2P/fKeUnBdhx1DRuk2yX3MClbwbOkDVojOQzBkoPxezyg8z3cZrvIFI=
+	t=1707532295; cv=none; b=SAXYSpcQrDnT8h3Il5/338AsZZB8owruBm82ainZDu3Ax/OKAXUHpPVJ/6J48vPSZShO50pX78FmNC0u2O6KAqb6nOf1ROMe+3qfMxOZKuEdQ4cLRkECqZZQUD3sXLiuFiclRkAgJXfuHqZS8b2q79sdPwNKvnSV/notPBfc1LM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707531951; c=relaxed/simple;
-	bh=RJLEaSg+FYQoepQjpqTmkY6iVzwvm2LFLKLBMAIgNwQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FMuB119zr4ZyS5t+ZGd0uYp03Gh/hsL8EPIKs1vZjN2msSW2/hzhaJGGQAHQhoVjvhDd1nrEJcmHZhMjB4RJwNcGdgSMlfMczZyDvzHX7kvCdwp9G/ZgMker+Tm0geRe0weXgaAiLX+cKJpt6RldGnyGAno6OVbgT6Zhug+8aJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=202.108.3.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([114.249.59.61])
-	by sina.com (10.182.253.22) with ESMTP
-	id 65C6DE7F00006955; Sat, 10 Feb 2024 10:25:05 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 7644666816216
-X-SMAIL-UIID: 861C7A751C854AFB8BA62E992CAFFF89-20240210-102505-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+5a630f8ca0120ab43f55@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [kernel?] KASAN: slab-use-after-free Read in __unix_gc
-Date: Sat, 10 Feb 2024 10:24:51 +0800
-Message-ID: <20240210022453.773-1-hdanton@sina.com>
-In-Reply-To: <000000000000ee09930610f42470@google.com>
-References: 
+	s=arc-20240116; t=1707532295; c=relaxed/simple;
+	bh=B/lPdAa1QyFMInjxuzXc0hyX6ToSI4+D9MPkWAYQwJM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=t01m+6w6qlDGzQP9y4uaKX/a/mX49i5oq1/h39dfYLLhupulQMS4DIGuZGg7SRDfkzUJXWtPkRD0uiKniyeAQAQLceB2teLPGzDKHzUBBy1mYZ4t3DmF2h4i64jzikSUPQ0WwcqHG1jPm9PVNgi56jeACe5x7WPOXWn7/RbZ+3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M/YR1G1J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1560CC433C7;
+	Sat, 10 Feb 2024 02:31:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707532294;
+	bh=B/lPdAa1QyFMInjxuzXc0hyX6ToSI4+D9MPkWAYQwJM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=M/YR1G1JhQNchuMT85aCDkvw/7jZKmYefBcYPekoAhbBOfX6SnHlrZG7QEpnu0ySp
+	 DlJR7K39SIvfFezJPZBHPntZPJ7km0spsMO8ojn/XIa5RkXSFlSF01YKxonfJolth/
+	 bEgPbvei5/kGsNu8Mng9ezwSawM8v0p+ku5ykD+1RB+sF5JAe/HUJWbbqVZIyU0Pne
+	 z4yaWFOJk+tyNPvMMnsL2uP14+7jHyBdCX6gVGEP4E6WYvNDgR4twFkjpjE8SKXM77
+	 555p1xOBzlflcx1v32UHJr4Lt4xgyysM3PV8nRHvw4LYyRHHzefqKx2UnQYlV/qlzA
+	 sznvme/24Q9DQ==
+Date: Fri, 9 Feb 2024 18:31:33 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Stephen Hemminger <stephen@networkplumber.org>
+Cc: netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jamal Hadi Salim
+ <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko
+ <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org
+ (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+ linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH net-next v2] net/sched: actions report errors with
+ extack
+Message-ID: <20240209183133.1cc0a4f5@kernel.org>
+In-Reply-To: <20240209155830.448c2215@hermes.local>
+References: <20240205185537.216873-1-stephen@networkplumber.org>
+	<20240208182731.682985dd@kernel.org>
+	<20240209131119.6399c91b@hermes.local>
+	<20240209134112.4795eb19@kernel.org>
+	<20240209155830.448c2215@hermes.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, 09 Feb 2024 06:57:17 -0800
-> HEAD commit:    e7689879d14e ethtool: do not use rtnl in ethnl_default_dum..
-> git tree:       net-next
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=165f9cec180000
+On Fri, 9 Feb 2024 15:58:30 -0800 Stephen Hemminger wrote:
+> > I mean that NL_REQ_ATTR_CHECK() should be more than enough by itself.
+> > We have full TC specs in YAML now, we can hack up a script to generate
+> > reverse parsing tables for iproute2 even if you don't want to go full
+> > YNL.  
+> 
+> Ok, then will take the err msg across all places using NL_REQ_ATTR_CHECK?
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git  e7689879d14e
+Take _out_ ? That'd be great, yup.
 
---- x/net/unix/garbage.c
-+++ y/net/unix/garbage.c
-@@ -119,6 +119,7 @@ void unix_inflight(struct user_struct *u
- 		if (!u->inflight) {
- 			WARN_ON_ONCE(!list_empty(&u->link));
- 			list_add_tail(&u->link, &gc_inflight_list);
-+			sock_hold(&u->sk);
- 		} else {
- 			WARN_ON_ONCE(list_empty(&u->link));
- 		}
-@@ -350,6 +351,11 @@ static void __unix_gc(struct work_struct
- 	}
- #endif
- 
-+	list_for_each_entry_safe(u, next, &gc_candidates, link) {
-+		list_del(&u->link);
-+		sock_put(&u->sk);
-+	}
-+
- 	spin_lock(&unix_gc_lock);
- 
- 	/* All candidates should have been detached by now. */
---
+> Would prefer not to add the complexity of reverse parsing tables, that gets ugly fast.
+
+"reverse" is probably to strong. It's just a parse which parses 
+the request instead of the response. ethtool CLI does it, too.
 
