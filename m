@@ -1,124 +1,215 @@
-Return-Path: <linux-kernel+bounces-60364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 326CD8503FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:41:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9CE5850403
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:44:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD4CA286F32
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 10:41:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A5971C21448
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 10:44:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E3E9364C7;
-	Sat, 10 Feb 2024 10:41:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15149364DB;
+	Sat, 10 Feb 2024 10:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="fiAme/xL"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="T/vpNaM/"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D402E3FE;
-	Sat, 10 Feb 2024 10:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D082030B;
+	Sat, 10 Feb 2024 10:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707561674; cv=none; b=qbs4PwRY6Y6/dpwBEWhDNDQ+YSPzfKDIRFcxi/Ejmwcdx5aIl6frNU2pMcwCPvoDJuxa422hg+7ESWAu/MgV29HHTT5Orh6kWdtSUjqRCm5zdHEBIMhAMK1srTmQ0m6jqd7t9o2g9otCtvUBsxmazc3Mp9Mr116q7a2OhTbXLi4=
+	t=1707561857; cv=none; b=BxLJKaB8cnWV/bCKngkYO0P1EQBqI6VgO7/nQbmAsG2J16ip31x6/bbN6X/qwaUvKFuwPtorxngYzhvh9ZRE6a0hBZHKmYYTushYomtmQJz1gItG53C9kGfpQHJQcQTPJljrFysLjE0oRZUdiZWur1m1WzamPXVFo39fljv/3rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707561674; c=relaxed/simple;
-	bh=x+rMoLaemDU7O0UiEISg9iBNvLvyhD2E78cUrJEqRBQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u1PeMY+WJrx+xLYGBTCZi0TxSwrfUnn0F26ugm/IKVgdn884fXpuULDdCoPcMb8BVc59JjRXV/Kpv7BBpXBpLHU3A94FCgKL7QSFrp2Mt2N99IIYkoyM5ucvwRACfNdYvs8m3dOwAv7wNMIbkPO/6xilVIMYl8nrV9J12wBurIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=fiAme/xL; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4C03140E023B;
-	Sat, 10 Feb 2024 10:41:09 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id m99D3Vit8Jsc; Sat, 10 Feb 2024 10:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707561663; bh=dSjCyKghVnE+pRQUrxWXdE0XNE6p+IPHoxYYpdgP9us=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fiAme/xLbxI9xs3wkAhG1kZG5wyVoM4V1XKCVCC0swGLdmtiwa7MaO03/y4OHEjNs
-	 VaB3vxeu4id6Kq/X3yNPcD5f5H/NYek5IrpW5gjDvSo7KZJ8r7i46phk+mNGdmIHl3
-	 3fJ/+riwV4dPYtLefa9scDtwq+7ImGpJuJBcQ2POuVrgufM4PatyrqhUBuR6r76AvS
-	 CBfq9BO8MC9J0ItBR9jHj0WjYaV+Fiscoe75TZI1h+bBM5mpo2buAfzDkV3Q5saYhb
-	 RGdVnfvTTJzDN6G2d9QAfhJmOO6G1Nmu4Yk24+t8OqHVoVoq1DsEU2kRzOq0BeF1Yq
-	 godtyWo/kG9rZ7GBvqawDR8utdWnKcBb85Adej0ZoXeIpTm6PJ9gyZO/3zFFZyHlCe
-	 PRBTcGwwo+lewUlDtol/IGPfY0Hb9lw5efXRXrIHcHLeou+Uaka93qqvFjUtVDYKJe
-	 lyiE/dWBk5LHnmJawWmL6J61WY+c51s4HkceOHpviRgQG5g1Bo/IU0IFGWoaM22+xj
-	 Z1GhrW365Yh7OxZaGQ/llEAaPNQULy7aiaOmn+wa7OOH32rElcV5XnxMjA+qh7tCiR
-	 ksU2V4la9EECtnshreDatfablejJLgN0BBsdz1khmWYmC8j4NpQijZw9yT2GljUtXb
-	 /OfWu6tyQrxRaT1hEIqhwm1Q=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A027140E016D;
-	Sat, 10 Feb 2024 10:40:45 +0000 (UTC)
-Date: Sat, 10 Feb 2024 11:40:39 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org,
-	Kevin Loughlin <kevinloughlin@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>,
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v3 06/19] x86/startup_64: Drop global variables keeping
- track of LA57 state
-Message-ID: <20240210104039.GAZcdSp7dRbgqBy3fg@fat_crate.local>
-References: <20240129180502.4069817-21-ardb+git@google.com>
- <20240129180502.4069817-27-ardb+git@google.com>
- <20240207132922.GSZcOFspSGaVluJo92@fat_crate.local>
- <CAMj1kXF+mHCYs08q58QFGuzZ4nzGd2sDr1gp2ydkOHHQ2LK5tQ@mail.gmail.com>
+	s=arc-20240116; t=1707561857; c=relaxed/simple;
+	bh=HdoGJKfM4IdFF97CvlZ7u9IYY/5htVYwh9r2vlaTMWM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=KWtqj7CdNLoOAae/pHJpnvK2nMejkDj9ZJz8UIyeH/tJAZJjyjXiCB3eMqPvwn67zMhe00l62OM5jLSluTYgLBIdASwHvUHoxIz/LzZy+HbpfQ4cd9u6gA7wTP6DR0NLMiZ3Oup8nEwdxfdVtcxHASY+yg0U6Uqk4jT4yCczZ7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=T/vpNaM/; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41AAfFDC018067;
+	Sat, 10 Feb 2024 10:44:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=UYh6Vys92a+IOZW81ElMcn3EE5XcVQKjyrgj0qy6/9k=; b=T/
+	vpNaM/eYQRs8mfiz9h7/9Rj+FTnCmM6hL3aBTTzasvbA1kcJrV5ih27OO0Pbn5p6
+	PVxQlsi3EEIOZNJ5qFAPt8bIM8fhonTh5mZyw+7cz72PhoKMxvPAyC+i/Pf6PwZ9
+	0F9Y2YI22hbUqfgOJrO68JFpa91SC9rElaLbstUrAVWZ4AZ4a1yQds53YhRMTuzJ
+	cVPTBbtOV9NoFTDBXlPSruWn6hGz1XjlHJE5LaxHMqVcpK490U7m6wUGoERB1r6d
+	4sibxEI8jt5N3QsffRKLnv0V2BLhQW6UlMJpFCyCFnVb0ddwyJr6zG9yjli9aiBS
+	rH/7Me8mxh1mrar+ZN0w==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w62pv8bwc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 10 Feb 2024 10:44:03 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41AAi2lK029254
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 10 Feb 2024 10:44:02 GMT
+Received: from [10.216.17.117] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 10 Feb
+ 2024 02:43:56 -0800
+Message-ID: <b5c25274-9af0-4b3e-ade7-9a55d3cecd29@quicinc.com>
+Date: Sat, 10 Feb 2024 16:13:51 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXF+mHCYs08q58QFGuzZ4nzGd2sDr1gp2ydkOHHQ2LK5tQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sa8540-ride: Enable first port of
+ tertiary usb controller
+To: Andrew Halaney <ahalaney@redhat.com>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>
+CC: <neil.armstrong@linaro.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Bjorn
+ Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>
+References: <20240206114745.1388491-1-quic_kriskura@quicinc.com>
+ <20240206114745.1388491-4-quic_kriskura@quicinc.com>
+ <23824242-1b37-4544-ae9a-0a5a0582580e@linaro.org>
+ <CAA8EJpqbXvKMQktGsxMFJnR+fXoOz8hFmm+E3ROPTjjiD0QLvg@mail.gmail.com>
+ <6q2ocvrujbli42rjddflyol74xianr7j47jwcgdnnmwjanv25d@uw2da7zulqqd>
+ <CAA8EJpr6k8c5C54S9xxQgZvd9NYFoxi5qQrOTz2AMrp0xeZZpw@mail.gmail.com>
+ <baw3wxbdvzpkqqb6a7iut2wpt6jgzyqii5uyfkzptzt4ryjvao@4tpee6nqup5w>
+Content-Language: en-US
+From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <baw3wxbdvzpkqqb6a7iut2wpt6jgzyqii5uyfkzptzt4ryjvao@4tpee6nqup5w>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: gLWvh4piTatOfY9fqLXs4PyYmy-tI6LZ
+X-Proofpoint-ORIG-GUID: gLWvh4piTatOfY9fqLXs4PyYmy-tI6LZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-10_10,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999 adultscore=0
+ suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402100090
 
-On Fri, Feb 09, 2024 at 01:55:02PM +0000, Ard Biesheuvel wrote:
-> I was trying to get rid of global variable assignments and accesses
-> from the 1:1 mapping, but since we cannot get rid of those entirely,
-> we might just keep __pgtable_l5_enabled but use RIP_REL_REF() in the
-> accessors, and move the assignment to the asm startup code.
+> Krishna, when you make v2 can you update the wording about the USB 2.0
+> mux? Maybe something like "which by default on boot is selected to mux
+> to the external port on the board (with the other option being a test
+> point)." instead of the wording I originally had? That way the
+> information Dmitry requested here is easily accessible in the future.
+> 
+>>
+>>>
 
-Yeah.
+[...]
 
->    asm(ALTERNATIVE_TERNARY(
->        "movq %%cr4, %[reg] \n\t btl %[la57], %k[reg]" CC_SET(c),
->        %P[feat], "stc", "clc")
->        : [reg] "=r" (r), CC_OUT(c) (ret)
->        : [feat] "i" (X86_FEATURE_LA57),
->          [la57] "i" (X86_CR4_LA57_BIT)
->        : "cc");
+>>>>>>    };
+>>>>>
+>>>>> Isn't gpio-hog the preferred way to describe that ?
+>>>>
+>>>> That depends. As this pinctrl describes board configuration, I'd agree
+>>>> with Neil.
+>>>
+>>> I unfortunately don't have the experience with gpio-hog to weigh in
+>>> here, but wouldn't be opposed to Krishna switching it if that's what's
+>>> recommended for this type of thing.
+>>
+>> Quoting gpio.txt:
+>>
+>> The GPIO chip may contain GPIO hog definitions. GPIO hogging is a mechanism
+>> providing automatic GPIO request and configuration as part of the
+>> gpio-controller's driver probe function.
+>>
+>> See sdm845-pinctrl.yaml for an example of the gpio-hog node.
+> 
+> Thanks, that seems like the way to go. Krishna please take note of this
+> for v2!
+> 
 
-Creative :)
+Hi Andrew,
 
-> but we'd still have two versions in that case.
+  Can you help test the following patch. It is just an add-on to your 
+original one. I don't have a SA8540P Ride at the moment and getting one 
+might take time. Incase you can confirm this patch is working. I can 
+push v2 of this series.
 
-Yap. RIP_REL_REF() ain't too bad ...
 
-Thx.
+diff --git 
+a/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml 
+b/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
+index ed344deaf8b9..aa42ac5a3197 100644
+--- a/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
+@@ -36,6 +36,10 @@ patternProperties:
+              $ref: "#/$defs/qcom-sc8280xp-tlmm-state"
+          additionalProperties: false
 
--- 
-Regards/Gruss,
-    Boris.
++  "-hog(-[0-9]+)?$":
++    required:
++      - gpio-hog
++
+  $defs:
+    qcom-sc8280xp-tlmm-state:
+      type: object
+diff --git a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts 
+b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+index b04f72ec097c..aa0cec0b4cc2 100644
+--- a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
++++ b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+@@ -503,6 +503,18 @@ &usb_2_qmpphy0 {
+         status = "okay";
+  };
 
-https://people.kernel.org/tglx/notes-about-netiquette
++&usb_2 {
++       pinctrl-0 = <&usb2_en_state>;
++       pinctrl-names = "default";
++
++       status = "okay";
++};
++
++&usb_2_dwc3 {
++       phy-names = "usb2-port0", "usb3-port0";
++       phys = <&usb_2_hsphy0>, <&usb_2_qmpphy0>;
++};
++
+  &xo_board_clk {
+         clock-frequency = <38400000>;
+  };
+@@ -655,4 +667,19 @@ wake-pins {
+                         bias-pull-up;
+                 };
+         };
++
++       usb2-en-hog {
++               gpio-hog;
++               gpios = <24 GPIO_ACTIVE_LOW>;
++               output-low;
++       };
++
++       usb2_en_state: usb2-en-state {
++               /* TS3USB221A USB2.0 mux select */
++               pins = "gpio24";
++               function = "gpio";
++               drive-strength = <2>;
++               bias-disable;
++               output-low;
++       };
+
+
+Regards,
+Krishna,
 
