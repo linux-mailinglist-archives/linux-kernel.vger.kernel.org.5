@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-60443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD32B850503
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:59:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AA05850505
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:02:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38F0EB22629
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:59:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFA011F22F17
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:02:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C78D5BAFF;
-	Sat, 10 Feb 2024 15:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158FB5C03D;
+	Sat, 10 Feb 2024 16:02:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NTz1Qphl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H+l5UQja"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB875BACE;
-	Sat, 10 Feb 2024 15:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC295B69C;
+	Sat, 10 Feb 2024 16:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707580750; cv=none; b=BE6k136rbRFAjpFrKzRqVMB4MHw55Ck5sJ89eHquoq59OWg+Q1Fvw8PJb8IN31y+K6vYseYx70h+CcJqrElxWdCCHNmESN2whLSkuppuqUKTaI1+a5CD7bYoVNQIVugFUmmxqyPcrv6u4OFLl1gxPg0qyyO0VRgPFT6xrz+Awec=
+	t=1707580943; cv=none; b=OYmzP6GSJ7gVModYq4j1hdvRKy3q0UCUYK+8NpBOYzDxyrb1AF+MUUjuBJowalZjHEygeSOlpVSm9lXu3n/oWrUOqisXmK5qHXbFZ7givA1XtBty/RF+FLvga5B+8LViu8x76UULf5jjJ3JOosGlz/s0ycbJ3v4EO2Sr5cwBbPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707580750; c=relaxed/simple;
-	bh=TOjZsjxJyygjDyYQGqewggBEGJHNfuXPQcHw7Mdj2+M=;
+	s=arc-20240116; t=1707580943; c=relaxed/simple;
+	bh=OJzXw3Ds337hCBpyFZS8yQw7PPY+pMe8+OVAJ3/GEiw=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gIha+PqA+2e1VJW9D+czIjUKcjD6b/aFEhhMARuoys1fMXi7+EBOdCqvCV60XGcVOVy00pX0Mg1S2XxruadzJ4csKFXpuEEnZGKt4thKe/tMTtvDfJntD7C11xNe36IyQqRagZ3C/9O1DNgJ7EWXBN49yg6NyWvI6r5Z4CPsdUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NTz1Qphl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4380BC433C7;
-	Sat, 10 Feb 2024 15:59:07 +0000 (UTC)
+	 MIME-Version:Content-Type; b=k7REHdmflc5ytykt9cunT5WKylcXGwx8sXk+TWQrVVltEEAEePLOLAbP/exdrR/O6JWM3Pat+deUmgUe71RrKoSI0VrnUhY9TO6q/+kHpYsV1sjk/L3fIaK0wStxr/bOBEAXk55Qz8JW0qTnU7HbzwVgNVWZcPuqcSyEARFsA4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H+l5UQja; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B95A4C433C7;
+	Sat, 10 Feb 2024 16:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707580749;
-	bh=TOjZsjxJyygjDyYQGqewggBEGJHNfuXPQcHw7Mdj2+M=;
+	s=k20201202; t=1707580942;
+	bh=OJzXw3Ds337hCBpyFZS8yQw7PPY+pMe8+OVAJ3/GEiw=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NTz1QphlwbzTHVWCSwPpgXWsOdAr4Hmt9aQX3r3RPrxQO0F4FVxHHRqNew5kozh2n
-	 XipNX/pb/hgXhgWozAgOwQ+GyvNeve5z8r5/1+GmKenekQU049HfMU9N7yJFgNybRr
-	 3InoHLMeyeucbBNvU4VvMuV51G+3IXGmYby08wLFCEaLcAgYudKRCC2ubI5T4egNCX
-	 oFL5CDyf1Q+SdDFNm71QlK8pN1tUIu470inhduSE3Tc1wQNfUJTWcIOjR3JN4bdJUD
-	 vK+pgK5hJFRvWEj86wtzTUELp17Cq4s17ROFs7gY7LqyAg6QSpEhi3j9ljPBAXVacn
-	 CvkTreJqeaKEw==
-Date: Sat, 10 Feb 2024 15:58:57 +0000
+	b=H+l5UQjaSuCvsq3TbM/1CMjRayMNZszaahPc/lWGmsJuwvsltSsHmI+Uq1aGLCj8h
+	 8bcpeZUz5VaopkFyelJkSrGT9Gufy2QA+eVXiwseFJxAc+JYqHzjQMK/bzC8sES3bt
+	 amL+xIiIvvVjkm0wReIJWVgG8+SGGEvMB9AvXoaBMgl0C+jUb0MaFGpmLyEhDBVoW5
+	 e5PvFDT0k1h51jyLF1x6XTTdQ7q3UqNwfpdFPYkSZdmj28yG6rLp6Wgzdvo0lwzbDH
+	 Mo0S3ERWq0mWTuW0wUN/c+72ddAb/pAmZHn4MPNdc18fO3GtLwh4cgA8jIBVkrS8d5
+	 HhRTB0fq8WbRg==
+Date: Sat, 10 Feb 2024 16:02:10 +0000
 From: Jonathan Cameron <jic23@kernel.org>
-To: Arturas Moskvinas <arturas.moskvinas@gmail.com>
-Cc: Jonathan.Cameron@huawei.com, oskar.andero@gmail.com, lars@metafoo.de,
- lukas@wunner.de, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: adc: mcp320x: Simplify device removal logic
-Message-ID: <20240210155857.59c58dcc@jic23-huawei>
-In-Reply-To: <20240208094339.82633-1-arturas.moskvinas@gmail.com>
-References: <20240208094339.82633-1-arturas.moskvinas@gmail.com>
+To: Jesus Gonzalez <jesusmgh@gmail.com>
+Cc: andriy.shevchenko@linux.intel.com, lars@metafoo.de,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] Add 10EC5280 to bmi160_i2c ACPI IDs to allow
+ binding on some devices
+Message-ID: <20240210160210.65bb2c95@jic23-huawei>
+In-Reply-To: <20240207195549.37994-2-jesusmgh@gmail.com>
+References: <ZcOLql2RGmPP10EY@smile.fi.intel.com>
+	<20240207195549.37994-2-jesusmgh@gmail.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,88 +61,83 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu,  8 Feb 2024 11:43:39 +0200
-Arturas Moskvinas <arturas.moskvinas@gmail.com> wrote:
+On Wed,  7 Feb 2024 20:55:50 +0100
+Jesus Gonzalez <jesusmgh@gmail.com> wrote:
 
-> Use devm_* APIs to enable regulator and to register in IIO infrastructure.
+> "10EC5280" is used by several manufacturers like Lenovo, GPD, or AYA (and
+> probably others) in their ACPI table as the ID for the bmi160 IMU. This
+> means the bmi160_i2c driver won't bind to it, and the IMU is unavailable
+> to the user. Manufacturers have been approached on several occasions to
+> try getting a BIOS with a fixed ID, mostly without actual positive
+> results, and since affected devices are already a few years old, this is
+> not expected to change. This patch enables using the bmi160_i2c driver for
+> the bmi160 IMU on these devices.
 > 
-> Signed-off-by: Arturas Moskvinas <arturas.moskvinas@gmail.com>
-
-Don't get the same regulator twice so as automate turning it off.
-The devm_regulator_get_enable() call is carefully hiding the
-regulator for cases where the driver never accesses it.
-
-Here we need it to read the voltage.
-
-To convert such a case to fully devm managed, use a
-devm_add_action_or_reset() and a custom callback.
-
-> ---
->  drivers/iio/adc/mcp320x.c | 19 ++-----------------
->  1 file changed, 2 insertions(+), 17 deletions(-)
+> Here is the relevant extract from the DSDT of a GPD Win Max 2 (AMD 6800U
+> model) with the latest firmware 1.05 installed. GPD sees this as WONTFIX
+> with the argument of the device working with the Windows drivers.
 > 
-> diff --git a/drivers/iio/adc/mcp320x.c b/drivers/iio/adc/mcp320x.c
-> index f3b81798b3c9..4685eed35271 100644
-> --- a/drivers/iio/adc/mcp320x.c
-> +++ b/drivers/iio/adc/mcp320x.c
-> @@ -388,7 +388,6 @@ static int mcp320x_probe(struct spi_device *spi)
->  	indio_dev->name = spi_get_device_id(spi)->name;
->  	indio_dev->modes = INDIO_DIRECT_MODE;
->  	indio_dev->info = &mcp320x_info;
-> -	spi_set_drvdata(spi, indio_dev);
->  
->  	device_index = spi_get_device_id(spi)->driver_data;
->  	chip_info = &mcp320x_chip_infos[device_index];
-> @@ -441,31 +440,17 @@ static int mcp320x_probe(struct spi_device *spi)
->  	if (IS_ERR(adc->reg))
->  		return PTR_ERR(adc->reg);
+> 	Device (BMA2)
+> 	{
+> 	    Name (_ADR, Zero)  // _ADR: Address
+> 	    Name (_HID, "10EC5280")  // _HID: Hardware ID
+> 	    Name (_CID, "10EC5280")  // _CID: Compatible ID
+> 	    Name (_DDN, "Accelerometer")  // _DDN: DOS Device Name
+> 	    Name (_UID, One)  // _UID: Unique ID
+> 	    Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+> 	    {
+> 		Name (RBUF, ResourceTemplate ()
+> 		{
+> 		    I2cSerialBusV2 (0x0069, ControllerInitiated, 0x00061A80,
+> 		        AddressingMode7Bit, "\\_SB.I2CC",
+> 		        0x00, ResourceConsumer, , Exclusive,
+> 		        )
+> 		})
+> 		Return (RBUF) /* \_SB_.I2CC.BMA2._CRS.RBUF */
+> 	    }
+> 	    
+> 	    ...
+> 	    
+> 	}
+> 
+> Signed-off-by: Jesus Gonzalez <jesusmgh@gmail.com>
+For future reference don't send a new version in reply to the old one.
+It makes a big mess in many people's email clients
+if we get lots of versions.  The patch naming is enough to associate
+the different versions.
 
-Just above here is the first regulator get. Whilst it may work
-we should not get it twice as the logic gets confused at the very least.
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day
+to take a look at it.
 
-
->  
-> -	ret = regulator_enable(adc->reg);
-> +	ret = devm_regulator_get_enable(&spi->dev, "vref");
->  	if (ret < 0)
->  		return ret;
->  
->  	mutex_init(&adc->lock);
->  
-> -	ret = iio_device_register(indio_dev);
-> -	if (ret < 0)
-> -		goto reg_disable;
-> -
-> -	return 0;
-> -
-> -reg_disable:
-> -	regulator_disable(adc->reg);
-> -
-> -	return ret;
-> +	return devm_iio_device_register(&spi->dev, indio_dev);
->  }
->  
->  static void mcp320x_remove(struct spi_device *spi)
->  {
-> -	struct iio_dev *indio_dev = spi_get_drvdata(spi);
-> -	struct mcp320x *adc = iio_priv(indio_dev);
-> -
-> -	iio_device_unregister(indio_dev);
-> -	regulator_disable(adc->reg);
->  }
-Had the change otherwise been ok...
-
-You should be able to remove this function completely now it is empty.
-https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L446
-checks it's existence before calling it.
-
-Thanks
+Thanks,
 
 Jonathan
 
->  
->  static const struct of_device_id mcp320x_dt_ids[] = {
+> ---
+> v4: Moved comment back to relevant position inside function
 > 
-> base-commit: 047371968ffc470769f541d6933e262dc7085456
+>  drivers/iio/imu/bmi160/bmi160_i2c.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/iio/imu/bmi160/bmi160_i2c.c b/drivers/iio/imu/bmi160/bmi160_i2c.c
+> index 81652c08e644..a081305254db 100644
+> --- a/drivers/iio/imu/bmi160/bmi160_i2c.c
+> +++ b/drivers/iio/imu/bmi160/bmi160_i2c.c
+> @@ -43,6 +43,15 @@ static const struct i2c_device_id bmi160_i2c_id[] = {
+>  MODULE_DEVICE_TABLE(i2c, bmi160_i2c_id);
+>  
+>  static const struct acpi_device_id bmi160_acpi_match[] = {
+> +	/*
+> +	 * FIRMWARE BUG WORKAROUND
+> +	 * Some manufacturers like GPD, Lenovo or Aya used the incorrect
+> +	 * ID "10EC5280" for bmi160 in their DSDT. A fixed firmware is not
+> +	 * available as of Feb 2024 after trying to work with OEMs, and
+> +	 * this is not expected to change anymore since at least some of
+> +	 * the affected devices are from 2021/2022.
+> +	 */
+> +	{"10EC5280", 0},
+>  	{"BMI0160", 0},
+>  	{ },
+>  };
 
 
