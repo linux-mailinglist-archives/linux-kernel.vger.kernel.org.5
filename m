@@ -1,294 +1,142 @@
-Return-Path: <linux-kernel+bounces-60372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3634E850424
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:26:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBD1850427
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:28:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F2561F22B24
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:26:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A40A31F2240B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6051D3CF76;
-	Sat, 10 Feb 2024 11:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83EC03D0C5;
+	Sat, 10 Feb 2024 11:28:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uS3WTuqW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SsEQCbYx"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6302D3C099;
-	Sat, 10 Feb 2024 11:26:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688243A1CD;
+	Sat, 10 Feb 2024 11:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707564387; cv=none; b=KEmkINylO/VN+rEJwzJnwfb5iSUYT1+8CK0Yy8QtZzywXa4PFSeRW1i+6u1SnD+N3wi48YTL3wIT7hK04+KviWqdbvdEMj+7VBscBh7SgPAspWsbuMZL0wS5/NjP4/8vp2oFMBxMe579SB3WhpX8eEWfwb1zrQ95hu49ZIapDHg=
+	t=1707564479; cv=none; b=IC+k2Q83F6i67adBX1Zj/Lzz83LKZ2FXHIZlOPnb15UoiKH8CG7Cn1AqankaQZDKlPpJeaydmDo/u2EoFNODHJu9r9TIneX6PrABN2DaC0UpUVetFszpvA+jLSbevFbfR68YF7tVYoW31//x1KO12qyW8YsR/lh6wVZQpQAxIg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707564387; c=relaxed/simple;
-	bh=L0ci31G0jYzl6VBiXaBLl3DHMQtouFJCjuDEsEbmM1I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZchU8M1j21yJInIKqNDEGWgwR+Inktm8k6WseqM88hjd6MXU7WVjdTSqJKJDZn5b0QXrtbpKk5dlEbxYmtDqrZOAMhBV556P2Z+jOF0K5vjwB9Xt40+MjuFvR4aGmKy98RA7Xa2lMP9tCc3EAvnj8oaUIDv4PUrNwOAoY6fMkRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uS3WTuqW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D428DC43390;
-	Sat, 10 Feb 2024 11:26:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707564386;
-	bh=L0ci31G0jYzl6VBiXaBLl3DHMQtouFJCjuDEsEbmM1I=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=uS3WTuqWK5m//0XlZlfvv4zylVUZ6S1WBcNbg5UoupukNn7eZbc2MMVolo7OqWUpl
-	 lMdcqn9VeaW4OqVX9JHgcPcc0E8UvhSukGP/eM5Wk78n1x9gCwj3785IwZhrHFAJcd
-	 cEPGa2K+WqwxWmzsMBhdoabMcGMLtlHQPf/uqsCxTq5C1FlDBA43WXzzAA46RtBXRr
-	 csMkRCZXqW+rDPhoFwiqFoLe7EFau/A76vVSvfSYpT8f3aVWbtLn7IKaF7UTdGXDd0
-	 aAwYQFc8t6FnBzwlfV5+P/zQSq88iLWPS1Vus1t9O0ic2HoWYzWPXVRPPYPHn5hVgd
-	 9QtYeMTEFMZqw==
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d0cdbd67f0so22921821fa.3;
-        Sat, 10 Feb 2024 03:26:26 -0800 (PST)
-X-Gm-Message-State: AOJu0YzzhXhCSBwgmoNB2tBFMzEYkUCxPuqAATgGAfagxORAcYSyt0yR
-	Ms1en/TkTaEv/kJkH8wXHRIr0ijNb1DEwMgGOkjOtj2ap0jYBfiGCyVE3e525/7i1HpwFluLrGH
-	teAUIWFFKQ+fdB+gEspZdhkUqmA==
-X-Google-Smtp-Source: AGHT+IGm5CAQFu2k6EUAvZ+8eqM1TlsDaGcpTUrthNslat/7K4fnyWnRVvu9hHQ3c+CErN8WYacAoVSbXGiF8UUqelU=
-X-Received: by 2002:a2e:3806:0:b0:2d0:a71f:5eab with SMTP id
- f6-20020a2e3806000000b002d0a71f5eabmr1287112lja.23.1707564384958; Sat, 10 Feb
- 2024 03:26:24 -0800 (PST)
+	s=arc-20240116; t=1707564479; c=relaxed/simple;
+	bh=4OyKZnmqJQZAOOTD2TG4WTVzLLJt8ZHseBX/iLb32yo=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ZX27Hqivv8S8qIWEr5+oEf2XNZZc3TbiWtyw+X8mE9iuIPAbUAFehIqHIwcbtrU2XeeuAZnHOgSI5D/7xLepjtLClM33nxcFdpP7RkpInUJ2v8PfhlEmQzgmYOrVJ4Q4XeOc6VZyMDnPf8NMRToNvMulwIH+/dQuEQ1JRjkcHDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SsEQCbYx; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707564477; x=1739100477;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=4OyKZnmqJQZAOOTD2TG4WTVzLLJt8ZHseBX/iLb32yo=;
+  b=SsEQCbYx8LOOHOst4N5PRqVZ8yG0HM30QNABpNWdtKb5D3TlOUXyJcAi
+   kSCnLi95cVE5u/78Wl+sl5QrtbGD7ZiyEqHxzP7Mk2ov8IvQDqM/AKOHW
+   S1rqX8oIj0pmxMrZAOomt3ELxXc7uUhMiLUgQ5euO6bMWBsq+YBN7DNYg
+   YBQjObw2J+mdiJEevlF1CBAdy1ZuidM4znJgtTGjZaoq45qWqUzesSy9n
+   D7l9oLKnBKlbNpWEAQayyEiOnG8vpKp8Omsp8+Ayj0XN2qGj5IDlZmHK8
+   VXjovVI/A/RnqxPkHkZAmGvWdXvpXooQxZs31Rki+WxXcQKk1kCjHNemv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="19063354"
+X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
+   d="scan'208";a="19063354"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2024 03:27:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
+   d="scan'208";a="6907193"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.152]) ([10.254.214.152])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2024 03:27:48 -0800
+Message-ID: <2a86f3d0-4aa7-4c32-afb9-e5a908a65d10@linux.intel.com>
+Date: Sat, 10 Feb 2024 19:27:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240210030549.4048795-1-saravanak@google.com> <20240210030549.4048795-4-saravanak@google.com>
-In-Reply-To: <20240210030549.4048795-4-saravanak@google.com>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Sat, 10 Feb 2024 11:26:13 +0000
-X-Gmail-Original-Message-ID: <CAL_Jsq+tMK6myLtvD2EYEE2juev+wMvWoVMnYpT8JPy2eD9hKA@mail.gmail.com>
-Message-ID: <CAL_Jsq+tMK6myLtvD2EYEE2juev+wMvWoVMnYpT8JPy2eD9hKA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] dt-bindings: Add post-init-supplier property
-To: Saravana Kannan <saravanak@google.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Ard Biesheuvel <ardb@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>, kernel-team@android.com, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Vineet Gupta <vgupta@kernel.org>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, Hanjun Guo
+ <guohanjun@huawei.com>, Sudeep Holla <sudeep.holla@arm.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>,
+ Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Niklas Schnelle <schnelle@linux.ibm.com>,
+ Matthew Rosato <mjrosato@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-acpi@vger.kernel.org, iommu@lists.linux.dev, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 6/7] iommu/dma: Centralise iommu_setup_dma_ops()
+To: Robin Murphy <robin.murphy@arm.com>
+References: <cover.1707493264.git.robin.murphy@arm.com>
+ <202fcca3269201bc9c4a8198253f195433d0c4ff.1707493264.git.robin.murphy@arm.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <202fcca3269201bc9c4a8198253f195433d0c4ff.1707493264.git.robin.murphy@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Feb 10, 2024 at 3:06=E2=80=AFAM Saravana Kannan <saravanak@google.c=
-om> wrote:
->
-> The post-init-supplier property can be used to break a dependency cycle b=
-y
-> marking some supplier(s) as a post device initialization supplier(s). Thi=
-s
-> allows the kernel to do a better job at ordering initialization and
-
-s/the kernel/an OS/
-
-> suspend/resume of the devices in a dependency cycle.
->
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+On 2024/2/10 0:50, Robin Murphy wrote:
+> It's somewhat hard to see, but arm64's arch_setup_dma_ops() should only
+> ever call iommu_setup_dma_ops() after a successful iommu_probe_device(),
+> which means there should be no harm in achieving the same order of
+> operations by running it off the back of iommu_probe_device() itself.
+> This then puts it in line with the x86 and s390 .probe_finalize bodges,
+> letting us pull it all into the main flow properly. As a bonus this lets
+> us fold in and de-scope the PCI workaround setup as well.
+> 
+> At this point we can also then pull the call up inside the group mutex,
+> and avoid having to think about whether iommu_group_store_type() could
+> theoretically race and free the domain if iommu_setup_dma_ops() ran just
+> *before*  iommu_device_use_default_domain() claims it... Furthermore we
+> replace one .probe_finalize call completely, since the only remaining
+> implementations are now one which only needs to run once for the initial
+> boot-time probe, and two which themselves render that path unreachable.
+> 
+> This leaves us a big step closer to realistically being able to unpick
+> the variety of different things that iommu_setup_dma_ops() has been
+> muddling together, and further streamline iommu-dma into core API flows
+> in future.
+> 
+> Signed-off-by: Robin Murphy<robin.murphy@arm.com>
 > ---
->  .../bindings/post-init-supplier.yaml          | 99 +++++++++++++++++++
+> v2: Shuffle around to make sure the iommu_group_do_probe_finalize() case
+>      is covered as well, with bonus side-effects as above.
+> v3:*Really*  do that, remembering the other two probe_finalize sites too.
+> ---
+>   arch/arm64/mm/dma-mapping.c  |  2 --
+>   drivers/iommu/amd/iommu.c    |  8 --------
+>   drivers/iommu/dma-iommu.c    | 18 ++++++------------
+>   drivers/iommu/dma-iommu.h    | 14 ++++++--------
+>   drivers/iommu/intel/iommu.c  |  7 -------
+>   drivers/iommu/iommu.c        | 20 +++++++-------------
+>   drivers/iommu/s390-iommu.c   |  6 ------
+>   drivers/iommu/virtio-iommu.c | 10 ----------
+>   include/linux/iommu.h        |  7 -------
+>   9 files changed, 19 insertions(+), 73 deletions(-)
 
-This should probably go into dtschema instead, but fine here now for review=
-ing.
+For changes in Intel IOMMU driver,
 
-We have to consider if this property should be automatically allowed
-on any node or nodes with specific suppliers, or if it should be
-explicit for users. The former needs tool support. I'm leaning towards
-the latter as I want to know when this is needed.
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
 
->  MAINTAINERS                                   |  3 +-
->  2 files changed, 101 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/post-init-supplier.=
-yaml
->
-> diff --git a/Documentation/devicetree/bindings/post-init-supplier.yaml b/=
-Documentation/devicetree/bindings/post-init-supplier.yaml
-> new file mode 100644
-> index 000000000000..cf9071ecd06e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/post-init-supplier.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright 2018 Linaro Ltd.
-
-?
-
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/post-init-supplier.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Post device initialization supplier
-> +
-> +maintainers:
-> +  - Saravana Kannan <saravanak@google.com>
-> +
-> +description: |
-> +  This property is used to indicate that the device(s) pointed to by the
-> +  property are not needed for the initialization of the device that list=
-s this
-> +  property.
-> +
-> +  A device can list its suppliers in devicetree using one or more of the
-> +  standard devicetree bindings. By default, it would be safe to assume t=
-he
-> +  supplier device can be initialized before the consumer device is initi=
-alized.
-> +
-> +  However, that assumption cannot be made when there are cyclic dependec=
-ies
-
-typo
-
-> +  between devices. Since each device is a supplier (directly or indirect=
-ly) of
-> +  the others in the cycle, there is no guaranteed safe order for initali=
-zing
-
-typo
-
-> +  the devices in a cycle. We can try to initialize them in an arbitrary =
-order
-> +  and eventually successfully initialize all of them, but that doesn't a=
-lways
-> +  work well.
-> +
-> +  For example, say,
-> +  * The device tree has the following cyclic dependency X -> Y -> Z -> X=
- (where
-> +    -> denotes "depends on").
-> +  * But X is not needed to fully initialize Z (X might be needed only wh=
-en a
-> +    specific functionality if requested post initialization).
-> +
-> +  If all the other -> are mandatory initialization dependencies, then tr=
-ying to
-> +  initialize the devices in a loop (or arbitrarily) will always eventual=
-ly end
-> +  up with the devices being initialized in the order Z, Y and X.
-> +
-> +  However, if Y is an optional supplier for X (where X provides limited
-> +  functionality when Y is not initialized and providing its services), t=
-hen
-> +  trying to initialize the devices in a loop (or arbitrarily) could end =
-up with
-> +  the devices being initialized in the following order:
-> +
-> +  * Z, Y and X - All devices provide full functionality
-> +  * Z, X and Y - X provides partial functionality
-> +  * X, Z and Y - X provides partial functionality
-> +
-> +  However, we always want to initialize the devices in the order Z, Y an=
-d X
-> +  since that provides the full functionality without interruptions.
-> +
-> +  One alternate option that might be suggested is to have the driver for=
- X
-> +  notice that Y became available at a later point and adjust the functio=
-nality
-> +  it provides. However, other userspace applications could have started =
-using X
-> +  with the limited functionality before Y was available and it might not=
- be
-> +  possible to transparently transition X or the users of X to full
-> +  functionality while X is in use.
-> +
-> +  Similarly, when it comes to suspend (resume) ordering, it's unclear wh=
-ich
-> +  device in a dependency cycle needs to be suspended/resumed first and t=
-rying
-> +  arbitrary orders can result in system crashes or instability.
-> +
-> +  Explicitly calling out which link in a cycle needs to be broken when
-> +  determining the order, simplifies things a lot, improves efficiency, m=
-akes
-> +  the behavior more deterministic and maximizes the functionality that c=
-an be
-> +  provided without interruption.
-> +
-> +  This property is used to provide this additional information between d=
-evices
-> +  in a cycle by telling which supplier(s) is not needed for initializing=
- the
-> +  device that lists this property.
-> +
-> +  In the example above, Z would list X as a post-init-supplier and the
-> +  initialization dependency would become X -> Y -> Z -/-> X. So the best=
- order
-> +  to initialize them become clear: Z, Y and then X.
-> +
-
-select: true
-
-Otherwise, this is never applied.
-
-> +properties:
-> +  # A dictionary of DT properties for this binding schema
-
-Drop
-
-> +  post-init-supplier:
-> +    # One or more suppliers can be marked as post initialization supplie=
-r
-> +    minItems: 1
-
-That's the default.
-
-> +    description:
-> +      List of phandles to suppliers that are not needed for initializing=
- or
-> +      resuming this device.
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-
-Should be phandle-array plus:
-
-items:
-  maxItems: 1
-
-(as each entry is a single phandle)
-
-> +
-> +examples:
-> +  - |
-> +    gcc: general-clock-controller@1000 {
-
-clock-controller@1000
-
-> +        compatible =3D "vendor,soc4-gcc", "vendor,soc1-gcc";
-> +        reg =3D <0x1000 0x80>;> +        clocks =3D <&dispcc 0x1>
-> +        #clock-cells =3D <1>;
-> +        post-init-supplier =3D <&dispcc>;
-> +    };
-> +    dispcc: display-clock-controller@2000 {
-
-clock-controller@2000
-
-> +        compatible =3D "vendor,soc4-dispcc", "vendor,soc1-dispcc";
-> +        reg =3D <0x2000 0x80>;
-> +        clocks =3D <&gcc 0xdd>
-> +        #clock-cells =3D <1>;
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3dfe7ea25320..40fd498543a5 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6055,10 +6055,11 @@ S:      Maintained
->  F:     drivers/base/devcoredump.c
->  F:     include/linux/devcoredump.h
->
-> -DEVICE DEPENDENCY HELPER SCRIPT
-> +FIRMWARE DEVICE LINK (fw_devlink)
->  M:     Saravana Kannan <saravanak@google.com>
->  L:     linux-kernel@vger.kernel.org
->  S:     Maintained
-> +F:     Documentation/devicetree/bindings/post-init-supplier.yaml
->  F:     scripts/dev-needs.sh
->
->  DEVICE DIRECT ACCESS (DAX)
-> --
-> 2.43.0.687.g38aa6559b0-goog
->
+Best regards,
+baolu
 
