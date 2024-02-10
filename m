@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-60491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBAB785059D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:13:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E50F850587
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:06:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5178E285CE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:13:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FD521C23D4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140125CDF1;
-	Sat, 10 Feb 2024 17:13:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559C35CDEB;
+	Sat, 10 Feb 2024 17:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="rfTWOn8h"
+	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="gOgtqA84"
 Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA07259B;
-	Sat, 10 Feb 2024 17:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198CE5CDD3;
+	Sat, 10 Feb 2024 17:06:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.177.23.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707585207; cv=none; b=c9jqSqK9BDk0gXNUDcZvV0INyye63f1GyN/8GvRND7f1XGr4+2OhvGIDuP9K9HIL1xtQbUqT75oc6esvOQD16oUHDbUo9MZVorDrYgL7UZroKsxzE9Mc4KgTOkM//TYpGzCL34cXZj0rZzRfQl94oMWpLukbrjqriMzfuKHa9bY=
+	t=1707584805; cv=none; b=EBa+G26s36PObFN5/vuQr8/DHdWbnhS0ws3xXSoTrgVWI95K3mi84NHDxyBUGLha4Moodim14NLtfE2AS0p3VLWOLw7F6yw0Q64scGehnBpYfGAxCYMyPtsAlYr+FVczmiH9YcId430507L0usll6ZQi4mqN0L2wVVI4lKL/KXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707585207; c=relaxed/simple;
+	s=arc-20240116; t=1707584805; c=relaxed/simple;
 	bh=Iegw3uSU/jDrRw1wO36FWEmxyFeRwPHeaAd3poNxct8=;
 	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=THskFI9oKadEHwJ1oFJlxsSCIuEXED2K/NRRIg1HXAfVr94j9bTK8O/JGVQ+LbGe3HHuBM+8zKgNLJS6kOQguOVkgfeThZ13YaeoFHr6H9RTFbkQzNJMomtZ3CB7MJZxY6kCbsLzZcVcwLWcSoUlfr8NPkqXM14fShF7cxyczsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz; spf=pass smtp.mailfrom=ixit.cz; dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b=rfTWOn8h; arc=none smtp.client-ip=89.177.23.149
+	 In-Reply-To:Content-Type; b=uaVgf+BsU15eXPlBdXoZK/ER//S1FGeBTVDfNls0uM/8cpr3JmoshnBJG5PqjJR1edgO0c0hck2HHO/GWIofn7kboJ29ie67bkPJZf7IGd9KauY6edpV07/AplKDYJa+OwN50WhYrHTZD6MPslJhmweVH1ECvCvi5h85jC1O30U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz; spf=pass smtp.mailfrom=ixit.cz; dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b=gOgtqA84; arc=none smtp.client-ip=89.177.23.149
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
 Received: from [10.0.0.200] (unknown [10.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id 2FD87165078;
-	Sat, 10 Feb 2024 18:05:59 +0100 (CET)
+	by ixit.cz (Postfix) with ESMTPSA id CB70D165072;
+	Sat, 10 Feb 2024 18:06:40 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1707584759;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	t=1707584800; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
 	bh=Iegw3uSU/jDrRw1wO36FWEmxyFeRwPHeaAd3poNxct8=;
-	b=rfTWOn8hsJZ9VO96OhUFvyS7X7tW6HR4nm4yJUON1G88hkdLFHSpP6QNFSfX68Mq/VOS/y
-	oCgFAQ870Sab3D6ElhOpIHrhlNikNqSDZkctZYUB3z0M9Tx0vjO06KjLyilLigQj14N/rp
-	b+uKFWQksnkgM+R9l/OlKw/9fbdcbp8=
-Message-ID: <fc4d00d3-0bdc-4583-bc25-a34b6632db32@ixit.cz>
-Date: Sat, 10 Feb 2024 18:05:58 +0100
+	b=gOgtqA84MbPtxjevQeqA35TmvVVl/iGM6Fi6Zq3tGgohl4g82DC4Sfmu7dkVwp5goDPO3S
+	mlM7TK0hmOFnhTqUwiroChzdccnT+jITdjMPxm4OIGOO1hJkn0y9cHoDYDYxXKonlGM/Xm
+	KksLfm620h9I3VwPVc6RDVg09QpZVDA=
+Message-ID: <6d15ee60-bd77-413d-be14-0e538f10b649@ixit.cz>
+Date: Sat, 10 Feb 2024 18:06:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,16 +60,16 @@ Cc: agross@kernel.org, airlied@gmail.com, andersson@kernel.org,
  conor+dt@kernel.org, daniel@ffwll.ch, devicetree@vger.kernel.org,
  dmitry.baryshkov@linaro.org, dri-devel@lists.freedesktop.org,
  freedreno@lists.freedesktop.org, konrad.dybcio@linaro.org,
- krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- maarten.lankhorst@linux.intel.com, marijn.suijten@somainline.org,
- mripard@kernel.org, phone-devel@vger.kernel.org, quic_abhinavk@quicinc.com,
- robdclark@gmail.com, robh+dt@kernel.org, sean@poorly.run,
- tzimmermann@suse.de, ~postmarketos/upstreaming@lists.sr.ht
-References: <20240121-msm8226-gpu-v2-1-77f4a6fbbca4@z3ntu.xyz>
-Subject: Re: [PATCH v2 1/2] dt-bindings: display/msm: gpu: Allow multiple
- digits for patchid
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+ marijn.suijten@somainline.org, mripard@kernel.org,
+ phone-devel@vger.kernel.org, quic_abhinavk@quicinc.com, robdclark@gmail.com,
+ robh+dt@kernel.org, sean@poorly.run, tzimmermann@suse.de,
+ ~postmarketos/upstreaming@lists.sr.ht
+References: <20240121-msm8226-gpu-v2-2-77f4a6fbbca4@z3ntu.xyz>
+Subject: Re: [PATCH v2 2/2] drm/msm/adreno: Add A305B support
 Content-Language: en-US
+Reply-To: 20240121-msm8226-gpu-v2-2-77f4a6fbbca4@z3ntu.xyz
 From: David Heidelberg <david@ixit.cz>
 Autocrypt: addr=david@ixit.cz; keydata=
  xsFNBF5v1x4BEADS3EddwsNsvVAI1XF8uQKbdYPY/GhjaSLziwVnbwv5BGwqB1tfXoHnccoA
@@ -114,7 +114,7 @@ Autocrypt: addr=david@ixit.cz; keydata=
  8udw5/rKxFMHhti1wgtklyJBc64JK2vgB6xJz9Zc4WoNnifc8QjyhsQ7K0UI9jykBXrb1ZZO
  DYlcrAqh9Sx4vNTmdi6pJWSsrhDtfmDIw81GIW5pc0QpZPqGeKMi5xEU8se5fQ21DuE5LRKF
  Zd4Uq64igWvLAgHIcJHgNbc5BruuZm9p1+S5SfQGfnOYxJM1PkY/E32H52iV/Babj30=
-In-Reply-To: <20240121-msm8226-gpu-v2-1-77f4a6fbbca4@z3ntu.xyz>
+In-Reply-To: <20240121-msm8226-gpu-v2-2-77f4a6fbbca4@z3ntu.xyz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
