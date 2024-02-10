@@ -1,78 +1,80 @@
-Return-Path: <linux-kernel+bounces-60178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA40F850112
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 01:23:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46940850113
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 01:23:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58C661F2A940
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 00:23:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68D2C1C22A2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 00:23:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021FCA28;
-	Sat, 10 Feb 2024 00:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C34B81FD1;
+	Sat, 10 Feb 2024 00:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dOjQouMt"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q+aknnIy"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E3A365
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 00:23:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E36B366
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 00:23:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707524619; cv=none; b=XtFIZCu2nLaQZh4cvE5Ry0/LG2FUnhNvvQXe2cChAb+TPmht+nqIUFtuS91nkRYAz/9njNwSji7K1NfkHm1VzvMPbM6s1IPQ6FfGwztdivQJIdzK5+ew2KsBS/B1UMWQ8u5Ylxok0v3XOry5VSyuMD7sRXo2sOklaBscKa5OLM4=
+	t=1707524620; cv=none; b=VPeZx5ytAZXiuXaCK1yDbh+koQWL/tj0MuOL1/VQoKK1DlVPjEFBy5Wl2XGaqc2EE60iW0SY1T+TvlapBskiuq68riDvKbGpOo8fOt+zueGnB9vzJg4Jf93MP89IrtPTx/5AKnF0Rjaovn6Vpcp9iiHA4qYmKiYHm0XAlLQA8RQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707524619; c=relaxed/simple;
-	bh=vT6pceY5FwfrwD/otpewURN85d7YkaAvyBFynPoyY1c=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=HNAPwdVzH9cvfBQKhtLfX2XU/3+dQHi1PvfeJVpJ1faRGf1vCQjXPMz/ei8rcbE9sSce3Pt/pEFoCvQmWKyfKX7Cg0naaIFr/S0QFO2nncevDKFHVB8nqrJEp8d7bZiTK3iqopcB4FqFSrV21RZ50AK7pW43dutr22F1rVsHWp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dOjQouMt; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1707524620; c=relaxed/simple;
+	bh=IKBIZO7VNkBwuj4wxvTwPDEHpZ4rKFOKNisGzOKffb0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=jusLE/2FFqiVtekuVfQIVgfUIRR3q3yYUfc0ga7bhKVJzgdvyVqk1J9p6Bhvd5DfXW/hb2NyAiieV9GakN6Bd2tVCFMzwbWGeSUozuM53Xny7E4D1PG7O3wJyrJAjcM4R9UUyCc3NTGpm3jygluaFRZ0Gjx9JzVUJSxXguD4X7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q+aknnIy; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc74897c041so2141678276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 16:23:36 -0800 (PST)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d1bffa322eso1870008a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 16:23:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707524616; x=1708129416; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Qcsz5yHj12g5NwTwJahjLXYHuW0vPJbg08cutrYM58=;
-        b=dOjQouMtiVIgIooRi8FOiE33uupzLJtwSLWRxc66flvPp4O8XE9FJupk4t0qF8PrL+
-         RhNw30QqAq5ON015iLHFLZPyPCZ2PWHgIjJ1xpSPP2j9UZQzrrufJBWRPOOGMjRW+uk8
-         QdrW+pvFmJFPyfNrunCev7i14sYC7yXRt1T1Rfm1lcUXhxQDkfDGPimspxsOtw485wUB
-         WlgkIAo5SNBUU0FSEKQ9pnqztoubttY9bZzZiY5xtmzEpKm7a6akORXwXC0HvCHYdXqe
-         wjOLLtPZ3g3cHN73+ZXJK3UPXFwSekrBSK7RbWOkfx0sfVPDAmP0JaLffM3BCgJ2/Cza
-         PpKg==
+        d=google.com; s=20230601; t=1707524618; x=1708129418; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=v86i1p3MWyXXcX4NFIra3i25a9IIHW2aJTwm0xruHMc=;
+        b=Q+aknnIyChfE4JQ0r+h61TDJd/HV6fvE/m8WbfI4VSSzO+DO/LGwz9qe+/xtC+Ck4U
+         9SOvL/o5pehL64hQbiRUuYAZqAscFoJfwORcYex49zf920fvDRArL9mINb2nAm2TJo4S
+         DIedNAeEzG/0r/iKbuz2MFXIT2i56QWuZ9tg4Nulr1vZKU82JLCyEc8FzBQF+jPofENt
+         uhBIb3MQWE8DeJEIXtFw0nij8hHJRaijAOExrw/O7uxQR9rAGaxC4JYnNhRHVb9wh/wW
+         jQpFpoqWmY11mnZi8yLXf3NiFca2CqiQ4L8iejAKmup/ii6K0b5bBnSXCzdBfDlhI5D+
+         e+WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707524616; x=1708129416;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5Qcsz5yHj12g5NwTwJahjLXYHuW0vPJbg08cutrYM58=;
-        b=ancUiwaj5QSqjOelrnVkc/cJufa+eNUQ5COis3ZBOrR0zB5YeGpGMHFQ8nTdXgTZWl
-         m4n1d7U8aFX50Oax4tyJnkraIdAbj9jYQvp2xsWGxasCMcVoWY2jP559E1cVQc7bZ6yp
-         YWUK/3fVf67h1opRPieALjxa8Fs9EAKX/3zUpc1U/QcdZxF8gHcfvz+HIO59vCZxrpaQ
-         LVwoanpt7B72LO788VS9kEytyUq0awdfV7H6YHhpuQXnLKIO2kdWyhzN3acZRljCF4Sd
-         +Xz6E+rty4FaXSwonk+EuBN+PifrpuWLpNYTr7zZYLxWSghdGjK9YmIRjoiJMM2Vdh5p
-         vHJQ==
-X-Gm-Message-State: AOJu0Yx/3dWlcLXf1iJf+jlUxAjSWZNEKLja400BaYyMKEuH31qrovfi
-	K0P+7DbTAD6GCGuZSmZhCzI28tDf5OGV3/qqApnvZRBgo31aPG6VuMu+U9xk362T2/gIFPNVZyi
-	QpsFLfPRKhXmjLqgv+B1ZBApv4I3SFL251HE+dS8GhjRtVhceSq2/AOQv7sUbgODP4erUPBjrBo
-	QwExcfzcDzhVBloy9Wx0pHO5tNY7XdsPq9yPBamvFHALvF
-X-Google-Smtp-Source: AGHT+IE0RAEDeuiZ0IkaEm2k8kB7+9CvNlUKRQKJIOO7MRgw+bCGYzypP2c6uZ6n21sdne/wB6DgW+QR7HmY
+        d=1e100.net; s=20230601; t=1707524618; x=1708129418;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v86i1p3MWyXXcX4NFIra3i25a9IIHW2aJTwm0xruHMc=;
+        b=dXK591uV57LGl37AVEa/F9pENaiRrSi9pnrxBwfTObfxt+rjVKk/wxWRfTY19xNLew
+         TaksYeh0XbP6A5Za8Qeq5qfkVfuubEVu65dP+oaFsmziEDV8otuhVHIr+cxt3YwPr1kd
+         aW87YbwVvjchWlc842/RKYNbSkmwi+1+fY3B0YnB4Ao1mIV5Ga3ml3KdRbWyfnhL2oEO
+         9rFtNeluMP1hP3js0NPPU+xp8sZ6TR9uFf6VxkfqJel24pcv+E0zpJP6GMlTjtySnsJH
+         qsUhFAXe4XTbZyReXjyCv2QkpnzPy7Ft6nrydieoEmcCYATSHqlcgA9eSRRcTWzXR1p4
+         NdRg==
+X-Gm-Message-State: AOJu0YxgxdD7ofdTK77ruTzrVisIxPJG9CWeCmrtvCzuhw5lGusiqOmh
+	HrxbQ7z+NjR2sYkrg/4qSdbVOw2UYGK+Fa+ktrPk+wuobGcmFXIoCUylG3seImxWwIjCQuje4GX
+	+SkuUkyI8/Hjn1xeAq6RgJt6kmadq4TsVKbEGdjTqkdxj8yh6/r4BLgvkZukb3GmXBlwAM4HmP0
+	GYEvBJFLeMDs7GcRpu1Q5eEEaIm5sEdoFRXjY/rVXSs3Ev
+X-Google-Smtp-Source: AGHT+IHSdWvcH06wBBAdV3Kru7QtL5fkvDA+TqRtjjwB0M8LSNQjFKRVfH8gBbOrXe1tM8bBCVb29asnIG7d
 X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a05:6902:e8d:b0:dc6:dc0a:1ff0 with SMTP id
- dg13-20020a0569020e8d00b00dc6dc0a1ff0mr19618ybb.12.1707524615577; Fri, 09 Feb
- 2024 16:23:35 -0800 (PST)
-Date: Fri,  9 Feb 2024 16:23:09 -0800
+ (user=jstultz job=sendgmr) by 2002:a05:6a02:185:b0:5dc:20fb:6698 with SMTP id
+ bj5-20020a056a02018500b005dc20fb6698mr1422pgb.10.1707524617455; Fri, 09 Feb
+ 2024 16:23:37 -0800 (PST)
+Date: Fri,  9 Feb 2024 16:23:10 -0800
+In-Reply-To: <20240210002328.4126422-1-jstultz@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240210002328.4126422-1-jstultz@google.com>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240210002328.4126422-1-jstultz@google.com>
-Subject: [PATCH v8 0/7] Preparatory changes for Proxy Execution v8
+Message-ID: <20240210002328.4126422-2-jstultz@google.com>
+Subject: [PATCH v8 1/7] locking/mutex: Remove wakeups from under mutex::wait_lock
 From: John Stultz <jstultz@google.com>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: John Stultz <jstultz@google.com>, Joel Fernandes <joelaf@google.com>, 
@@ -87,189 +89,9 @@ Cc: John Stultz <jstultz@google.com>, Joel Fernandes <joelaf@google.com>,
 	Metin Kaya <Metin.Kaya@arm.com>, Xuewen Yan <xuewen.yan94@gmail.com>, 
 	K Prateek Nayak <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-After sending out v7 of Proxy Execution, I got feedback that the
-patch series was getting a bit unwieldy to review, and Qais
-suggested I break out just the cleanups/preparatory components of
-the patch series and submit them on their own in the hope we can
-start to merge the less complex bits and discussion can focus on
-the more complicated portions afterwards.
-
-So for the v8 of this series, I=E2=80=99m only submitting those earlier
-cleanup/preparatory changes here. However work on the full series
-has continued, with some nice progress on the performance front.
-
-If you are interested, the full v8 series, it can be found here:
-  https://github.com/johnstultz-work/linux-dev/commits/proxy-exec-v8-6.8-rc=
-3
-  https://github.com/johnstultz-work/linux-dev.git proxy-exec-v8-6.8-rc3
-
-One bit of feedback I got earlier from K Prateek Nayak[1] was
-that while the Proxy Execution feature didn=E2=80=99t impact performance
-in most benchmarks he tried, it did cause major regressions with
-the `perf bench` test, which I isolated down to the patch series
-disabling optimistic spinning which has been a long term
-performance concern with the change.
-
-I spent some time looking for a way to walk the chain (across
-cpus) to see if the runnable owner was actually running, which
-would allow us to spin and avoid migrations. However, I realized
-that is actually a separate and more difficult problem (ie:
-migration avoidance) from simple optimistic spinning (a task
-trying to take a mutex where the owner is running). With Proxy
-Execution, the main focus is how we effectively boost
-*non-running* mutex owners by the blocked tasks. But when the
-contended mutex owner is running, we don=E2=80=99t need to do anything
-different from the existing optimistic spinning logic.
-
-So I=E2=80=99ve dropped the patches disabling optimistic spinning, and
-fixed up some further issues as the change opened some new races
-the later Proxy Execution patches weren=E2=80=99t expecting. The results
-are looking really good with the perf bench test, which
-previously regressed so badly, now seeing very close results
-(within 1.5%) with and without Proxy Execution. This alleviates
-a major concern I had with the series.
-
-Re-enabling optimistic spinning does open a question about if we
-should allow the optimistic spinning=E2=80=99s lock-stealing (instead of
-lock-handoff) when the runnable mutex owner is running as a proxy
-for a more important task. Ideally we probably want to hand it
-back up the chain which has donated the time (to avoid migrating
-the chain to the stealer=E2=80=99s cpu), so I have a patch I=E2=80=99m test=
-ing
-that special cases that situation, but so far in my testing I=E2=80=99m
-not seeing any large increase in latencies from the potential
-unfairness of lock-stealing. But I=E2=80=99ll be doing more investigation
-on this.
-
-New in v8:
----------
-* Re-ordered patch set to only submit cleanup & preparatory
-  changes, leaving more complicated changes for a future
-  submission (suggested by Qais Yousef)
-
-* Lots of spelling fixups and minor changes suggested by Randy
-  Dunlap and Metin Kaya
-
-* Cover letter was getting long winded by including boilerplate
-  sections, so please see earlier versions of the patch series or
-  this LWN article [2] for an overview of the functionality.
-
-* Re-enabled mutex optimistic spinning to resolve a major
-  performance regression in earlier versions of the series
-
-* Fixups for races discovered with optimistic spinning=20
-
-* Included trace events patch from Metin to better help us
-  analyze the costs of proxying.
-
-* Extended sched_football to use rtmtuexes when
-  !CONFIG_SCHED_PROXY_EXEC
-
-* Tweaked sched_football to bail if spawned players don=E2=80=99t check
-  in within 30s
-
-* Chased down a bug uncovered by sched_football that was
-  preventing unconstrained RT tasks from being put on the
-  pushable list, causing improper task starvation and
-  sched_football failures.
-
-Performance:
----------
-With the optimistic spinning re-enabled, the biggest concern I
-had wrt performance is much relieved. However, there is still the
-potential extra overhead of doing rq migrations/return migrations
-for the proxy case. The big hypothesis of this series is that the
-overall benefit from unblocking important tasks will well
-outweigh any extra cost, but if folks see anything of concern,
-I=E2=80=99d love to hear about it.
-
-Issues still to address:
----------
-* Enabling optimistic spinning uncovered a few interesting races
-  that were much harder to hit in v7. I=E2=80=99ve resolved most of
-  these, but there is a case I=E2=80=99ve occasionally seen where the in
-  try_to_wakeup(), the blocked_on_state transitions are too lax,
-  causing a transition to BO_RUNNABLE when we have not had a
-  chance to evaluate for return-migration (allowing tasks to
-  potentially run on cpus they shouldn=E2=80=99t). Unfortunately in
-  tightening the state handling to be more careful, I=E2=80=99ve run into
-  cases where we don=E2=80=99t transition to BO_RUNNABLE, and effectively
-  lose the wakeup. I=E2=80=99ve started to suspect the conceptual overlap
-  between task->blocked_on_state and task->__state suggests I
-  should consider condensing the BO_BLOCKED/BO_WAKING states into
-  new task states (ie: TASK_MUTEX_BLOCKED, TASK_PROXY_MIGRATED),
-  so we can handle the state transitions more correctly.
-
-* Closer evaluation of pros/cons of doing lock handoff vs
-  allowing lock-stealing when proxy tasks release locks.
-
-* The chain migration functionality needs further iterations and
-  better validation to ensure it truly maintains the RT/DL load
-  balancing invariants.
-
-* Xuewen Yan earlier pointed out that we may see task
-  mis-placement on EAS systems if we do return migration based
-  strictly on cpu allowability. I tried an optimization to always
-  try to return migrate to the wake_cpu (which was saved on
-  proxy-migration), but this seemed to undo a chunk of the
-  benefit I saw in moving return migration back to ttwu, at least
-  with my prio-inversion-demo microbenchmark. Need to do some
-  broader performance analysis with the variations there.
-
-* It would be nice to find optimization to avoid migrating
-  blocked tasks if the runnable lock-owner at the end of the
-  blocked_on chain is already running (though this is difficult
-  due to the limitations from locking rules needed to traverse
-  the blocked on chain across run queues).
-
-* CFS load balancing. There was concern blocked tasks may carry
-  forward load (PELT) to the lock owner's CPU, so CPU may look
-  like it is overloaded. Needs investigation
-
-* The sleeping owner handling (where we deactivate waiting tasks
-  and enqueue them onto a list, then reactivate them when the
-  owner wakes up) doesn=E2=80=99t feel great. This is in part because
-  when we want to activate tasks, we=E2=80=99re already holding a
-  task.pi_lock and a rq_lock, just not the locks for the task
-  we=E2=80=99re activating, nor the rq we=E2=80=99re enqueuing it onto. So =
-there
-  has to be a bit of lock juggling to drop and acquire the right
-  locks (in the right order). It feels like there=E2=80=99s got to be a
-  better way.
-
-* As discussed at OSPM[3], I=E2=80=99d like to split pick_next_task() up
-  into two phases selecting and setting the next tasks, as
-  currently pick_next_task() assumes the returned task will be
-  run which results in various side-effects in sched class logic
-  when it=E2=80=99s run. I tried to take a pass at this earlier, but it=E2=
-=80=99s
-  hairy and lower on the priority list for now.
-
-Credit/Disclaimer:
-=E2=80=94--------------------
-As mentioned previously, this Proxy Execution series has a long
-history: First described in a paper[4] by Watkins, Straub,
-Niehaus, then from patches from Peter Zijlstra, extended with
-lots of work by Juri Lelli, Valentin Schneider, and Connor
-O'Brien. (and thank you to Steven Rostedt for providing
-additional details here!)
-
-So again, many thanks to those above, as all the credit for this
-series really is due to them - while the mistakes are likely
-mine.
-
-As always, feedback is always appreciated.
-
-Thanks so much!
--john
-
-[1] https://lore.kernel.org/lkml/c6787831-f659-12cb-4954-fd13a05ed590@amd.c=
-om/
-[2] https://lwn.net/Articles/934114/
-[3] https://youtu.be/QEWqRhVS3lI (video of my OSPM talk)
-[4] https://static.lwn.net/images/conf/rtlws11/papers/proc/p38.pdf
+In preparation to nest mutex::wait_lock under rq::lock we need to remove
+wakeups from under it.
 
 Cc: Joel Fernandes <joelaf@google.com>
 Cc: Qais Yousef <qyousef@google.com>
@@ -294,37 +116,394 @@ Cc: Xuewen Yan <xuewen.yan94@gmail.com>
 Cc: K Prateek Nayak <kprateek.nayak@amd.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: kernel-team@android.com
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+[Heavily changed after 55f036ca7e74 ("locking: WW mutex cleanup") and
+08295b3b5bee ("locking: Implement an algorithm choice for Wound-Wait
+mutexes")]
+Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+[jstultz: rebased to mainline, added extra wake_up_q & init
+ to avoid hangs, similar to Connor's rework of this patch]
+Signed-off-by: John Stultz <jstultz@google.com>
+---
+v5:
+* Reverted back to an earlier version of this patch to undo
+  the change that kept the wake_q in the ctx structure, as
+  that broke the rule that the wake_q must always be on the
+  stack, as its not safe for concurrency.
+v6:
+* Made tweaks suggested by Waiman Long
+v7:
+* Fixups to pass wake_qs down for PREEMPT_RT logic
+---
+ kernel/locking/mutex.c       | 17 +++++++++++++----
+ kernel/locking/rtmutex.c     | 26 +++++++++++++++++---------
+ kernel/locking/rwbase_rt.c   |  4 +++-
+ kernel/locking/rwsem.c       |  4 ++--
+ kernel/locking/spinlock_rt.c |  3 ++-
+ kernel/locking/ww_mutex.h    | 29 ++++++++++++++++++-----------
+ 6 files changed, 55 insertions(+), 28 deletions(-)
 
-Connor O'Brien (2):
-  sched: Add do_push_task helper
-  sched: Consolidate pick_*_task to task_is_pushable helper
-
-John Stultz (2):
-  locking/mutex: Remove wakeups from under mutex::wait_lock
-  sched: Split out __schedule() deactivate task logic into a helper
-
-Juri Lelli (2):
-  locking/mutex: Make mutex::wait_lock irq safe
-  locking/mutex: Expose __mutex_owner()
-
-Peter Zijlstra (1):
-  sched: Split scheduler and execution contexts
-
- kernel/locking/mutex.c       |  60 +++++++----------
- kernel/locking/mutex.h       |  25 +++++++
- kernel/locking/rtmutex.c     |  26 +++++---
- kernel/locking/rwbase_rt.c   |   4 +-
- kernel/locking/rwsem.c       |   4 +-
- kernel/locking/spinlock_rt.c |   3 +-
- kernel/locking/ww_mutex.h    |  49 ++++++++------
- kernel/sched/core.c          | 122 +++++++++++++++++++++--------------
- kernel/sched/deadline.c      |  53 ++++++---------
- kernel/sched/fair.c          |  18 +++---
- kernel/sched/rt.c            |  59 +++++++----------
- kernel/sched/sched.h         |  44 ++++++++++++-
- 12 files changed, 268 insertions(+), 199 deletions(-)
-
---=20
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index cbae8c0b89ab..980ce630232c 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -575,6 +575,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		    struct lockdep_map *nest_lock, unsigned long ip,
+ 		    struct ww_acquire_ctx *ww_ctx, const bool use_ww_ctx)
+ {
++	DEFINE_WAKE_Q(wake_q);
+ 	struct mutex_waiter waiter;
+ 	struct ww_mutex *ww;
+ 	int ret;
+@@ -625,7 +626,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 	 */
+ 	if (__mutex_trylock(lock)) {
+ 		if (ww_ctx)
+-			__ww_mutex_check_waiters(lock, ww_ctx);
++			__ww_mutex_check_waiters(lock, ww_ctx, &wake_q);
+ 
+ 		goto skip_wait;
+ 	}
+@@ -645,7 +646,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		 * Add in stamp order, waking up waiters that must kill
+ 		 * themselves.
+ 		 */
+-		ret = __ww_mutex_add_waiter(&waiter, lock, ww_ctx);
++		ret = __ww_mutex_add_waiter(&waiter, lock, ww_ctx, &wake_q);
+ 		if (ret)
+ 			goto err_early_kill;
+ 	}
+@@ -681,6 +682,11 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		}
+ 
+ 		raw_spin_unlock(&lock->wait_lock);
++		/* Make sure we do wakeups before calling schedule */
++		if (!wake_q_empty(&wake_q)) {
++			wake_up_q(&wake_q);
++			wake_q_init(&wake_q);
++		}
+ 		schedule_preempt_disabled();
+ 
+ 		first = __mutex_waiter_is_first(lock, &waiter);
+@@ -714,7 +720,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		 */
+ 		if (!ww_ctx->is_wait_die &&
+ 		    !__mutex_waiter_is_first(lock, &waiter))
+-			__ww_mutex_check_waiters(lock, ww_ctx);
++			__ww_mutex_check_waiters(lock, ww_ctx, &wake_q);
+ 	}
+ 
+ 	__mutex_remove_waiter(lock, &waiter);
+@@ -730,6 +736,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		ww_mutex_lock_acquired(ww, ww_ctx);
+ 
+ 	raw_spin_unlock(&lock->wait_lock);
++	wake_up_q(&wake_q);
+ 	preempt_enable();
+ 	return 0;
+ 
+@@ -741,6 +748,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 	raw_spin_unlock(&lock->wait_lock);
+ 	debug_mutex_free_waiter(&waiter);
+ 	mutex_release(&lock->dep_map, ip);
++	wake_up_q(&wake_q);
+ 	preempt_enable();
+ 	return ret;
+ }
+@@ -934,6 +942,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
+ 		}
+ 	}
+ 
++	preempt_disable();
+ 	raw_spin_lock(&lock->wait_lock);
+ 	debug_mutex_unlock(lock);
+ 	if (!list_empty(&lock->wait_list)) {
+@@ -952,8 +961,8 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
+ 		__mutex_handoff(lock, next);
+ 
+ 	raw_spin_unlock(&lock->wait_lock);
+-
+ 	wake_up_q(&wake_q);
++	preempt_enable();
+ }
+ 
+ #ifndef CONFIG_DEBUG_LOCK_ALLOC
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index 4a10e8c16fd2..eaac8b196a69 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -34,13 +34,15 @@
+ 
+ static inline int __ww_mutex_add_waiter(struct rt_mutex_waiter *waiter,
+ 					struct rt_mutex *lock,
+-					struct ww_acquire_ctx *ww_ctx)
++					struct ww_acquire_ctx *ww_ctx,
++					struct wake_q_head *wake_q)
+ {
+ 	return 0;
+ }
+ 
+ static inline void __ww_mutex_check_waiters(struct rt_mutex *lock,
+-					    struct ww_acquire_ctx *ww_ctx)
++					    struct ww_acquire_ctx *ww_ctx,
++					    struct wake_q_head *wake_q)
+ {
+ }
+ 
+@@ -1206,6 +1208,7 @@ static int __sched task_blocks_on_rt_mutex(struct rt_mutex_base *lock,
+ 	struct rt_mutex_waiter *top_waiter = waiter;
+ 	struct rt_mutex_base *next_lock;
+ 	int chain_walk = 0, res;
++	DEFINE_WAKE_Q(wake_q);
+ 
+ 	lockdep_assert_held(&lock->wait_lock);
+ 
+@@ -1244,7 +1247,8 @@ static int __sched task_blocks_on_rt_mutex(struct rt_mutex_base *lock,
+ 
+ 		/* Check whether the waiter should back out immediately */
+ 		rtm = container_of(lock, struct rt_mutex, rtmutex);
+-		res = __ww_mutex_add_waiter(waiter, rtm, ww_ctx);
++		res = __ww_mutex_add_waiter(waiter, rtm, ww_ctx, &wake_q);
++		wake_up_q(&wake_q);
+ 		if (res) {
+ 			raw_spin_lock(&task->pi_lock);
+ 			rt_mutex_dequeue(lock, waiter);
+@@ -1677,7 +1681,8 @@ static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
+ 				       struct ww_acquire_ctx *ww_ctx,
+ 				       unsigned int state,
+ 				       enum rtmutex_chainwalk chwalk,
+-				       struct rt_mutex_waiter *waiter)
++				       struct rt_mutex_waiter *waiter,
++				       struct wake_q_head *wake_q)
+ {
+ 	struct rt_mutex *rtm = container_of(lock, struct rt_mutex, rtmutex);
+ 	struct ww_mutex *ww = ww_container_of(rtm);
+@@ -1688,7 +1693,7 @@ static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
+ 	/* Try to acquire the lock again: */
+ 	if (try_to_take_rt_mutex(lock, current, NULL)) {
+ 		if (build_ww_mutex() && ww_ctx) {
+-			__ww_mutex_check_waiters(rtm, ww_ctx);
++			__ww_mutex_check_waiters(rtm, ww_ctx, wake_q);
+ 			ww_mutex_lock_acquired(ww, ww_ctx);
+ 		}
+ 		return 0;
+@@ -1706,7 +1711,7 @@ static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
+ 		/* acquired the lock */
+ 		if (build_ww_mutex() && ww_ctx) {
+ 			if (!ww_ctx->is_wait_die)
+-				__ww_mutex_check_waiters(rtm, ww_ctx);
++				__ww_mutex_check_waiters(rtm, ww_ctx, wake_q);
+ 			ww_mutex_lock_acquired(ww, ww_ctx);
+ 		}
+ 	} else {
+@@ -1728,7 +1733,8 @@ static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
+ 
+ static inline int __rt_mutex_slowlock_locked(struct rt_mutex_base *lock,
+ 					     struct ww_acquire_ctx *ww_ctx,
+-					     unsigned int state)
++					     unsigned int state,
++					     struct wake_q_head *wake_q)
+ {
+ 	struct rt_mutex_waiter waiter;
+ 	int ret;
+@@ -1737,7 +1743,7 @@ static inline int __rt_mutex_slowlock_locked(struct rt_mutex_base *lock,
+ 	waiter.ww_ctx = ww_ctx;
+ 
+ 	ret = __rt_mutex_slowlock(lock, ww_ctx, state, RT_MUTEX_MIN_CHAINWALK,
+-				  &waiter);
++				  &waiter, wake_q);
+ 
+ 	debug_rt_mutex_free_waiter(&waiter);
+ 	return ret;
+@@ -1753,6 +1759,7 @@ static int __sched rt_mutex_slowlock(struct rt_mutex_base *lock,
+ 				     struct ww_acquire_ctx *ww_ctx,
+ 				     unsigned int state)
+ {
++	DEFINE_WAKE_Q(wake_q);
+ 	unsigned long flags;
+ 	int ret;
+ 
+@@ -1774,8 +1781,9 @@ static int __sched rt_mutex_slowlock(struct rt_mutex_base *lock,
+ 	 * irqsave/restore variants.
+ 	 */
+ 	raw_spin_lock_irqsave(&lock->wait_lock, flags);
+-	ret = __rt_mutex_slowlock_locked(lock, ww_ctx, state);
++	ret = __rt_mutex_slowlock_locked(lock, ww_ctx, state, &wake_q);
+ 	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
++	wake_up_q(&wake_q);
+ 	rt_mutex_post_schedule();
+ 
+ 	return ret;
+diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
+index 34a59569db6b..e9d2f38b70f3 100644
+--- a/kernel/locking/rwbase_rt.c
++++ b/kernel/locking/rwbase_rt.c
+@@ -69,6 +69,7 @@ static int __sched __rwbase_read_lock(struct rwbase_rt *rwb,
+ 				      unsigned int state)
+ {
+ 	struct rt_mutex_base *rtm = &rwb->rtmutex;
++	DEFINE_WAKE_Q(wake_q);
+ 	int ret;
+ 
+ 	rwbase_pre_schedule();
+@@ -110,7 +111,7 @@ static int __sched __rwbase_read_lock(struct rwbase_rt *rwb,
+ 	 * For rwlocks this returns 0 unconditionally, so the below
+ 	 * !ret conditionals are optimized out.
+ 	 */
+-	ret = rwbase_rtmutex_slowlock_locked(rtm, state);
++	ret = rwbase_rtmutex_slowlock_locked(rtm, state, &wake_q);
+ 
+ 	/*
+ 	 * On success the rtmutex is held, so there can't be a writer
+@@ -122,6 +123,7 @@ static int __sched __rwbase_read_lock(struct rwbase_rt *rwb,
+ 	if (!ret)
+ 		atomic_inc(&rwb->readers);
+ 	raw_spin_unlock_irq(&rtm->wait_lock);
++	wake_up_q(&wake_q);
+ 	if (!ret)
+ 		rwbase_rtmutex_unlock(rtm);
+ 
+diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+index 2340b6d90ec6..74ebb2915d63 100644
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -1415,8 +1415,8 @@ static inline void __downgrade_write(struct rw_semaphore *sem)
+ #define rwbase_rtmutex_lock_state(rtm, state)		\
+ 	__rt_mutex_lock(rtm, state)
+ 
+-#define rwbase_rtmutex_slowlock_locked(rtm, state)	\
+-	__rt_mutex_slowlock_locked(rtm, NULL, state)
++#define rwbase_rtmutex_slowlock_locked(rtm, state, wq)	\
++	__rt_mutex_slowlock_locked(rtm, NULL, state, wq)
+ 
+ #define rwbase_rtmutex_unlock(rtm)			\
+ 	__rt_mutex_unlock(rtm)
+diff --git a/kernel/locking/spinlock_rt.c b/kernel/locking/spinlock_rt.c
+index 38e292454fcc..fb1810a14c9d 100644
+--- a/kernel/locking/spinlock_rt.c
++++ b/kernel/locking/spinlock_rt.c
+@@ -162,7 +162,8 @@ rwbase_rtmutex_lock_state(struct rt_mutex_base *rtm, unsigned int state)
+ }
+ 
+ static __always_inline int
+-rwbase_rtmutex_slowlock_locked(struct rt_mutex_base *rtm, unsigned int state)
++rwbase_rtmutex_slowlock_locked(struct rt_mutex_base *rtm, unsigned int state,
++			       struct wake_q_head *wake_q)
+ {
+ 	rtlock_slowlock_locked(rtm);
+ 	return 0;
+diff --git a/kernel/locking/ww_mutex.h b/kernel/locking/ww_mutex.h
+index 3ad2cc4823e5..7189c6631d90 100644
+--- a/kernel/locking/ww_mutex.h
++++ b/kernel/locking/ww_mutex.h
+@@ -275,7 +275,7 @@ __ww_ctx_less(struct ww_acquire_ctx *a, struct ww_acquire_ctx *b)
+  */
+ static bool
+ __ww_mutex_die(struct MUTEX *lock, struct MUTEX_WAITER *waiter,
+-	       struct ww_acquire_ctx *ww_ctx)
++	       struct ww_acquire_ctx *ww_ctx, struct wake_q_head *wake_q)
+ {
+ 	if (!ww_ctx->is_wait_die)
+ 		return false;
+@@ -284,7 +284,7 @@ __ww_mutex_die(struct MUTEX *lock, struct MUTEX_WAITER *waiter,
+ #ifndef WW_RT
+ 		debug_mutex_wake_waiter(lock, waiter);
+ #endif
+-		wake_up_process(waiter->task);
++		wake_q_add(wake_q, waiter->task);
+ 	}
+ 
+ 	return true;
+@@ -299,7 +299,8 @@ __ww_mutex_die(struct MUTEX *lock, struct MUTEX_WAITER *waiter,
+  */
+ static bool __ww_mutex_wound(struct MUTEX *lock,
+ 			     struct ww_acquire_ctx *ww_ctx,
+-			     struct ww_acquire_ctx *hold_ctx)
++			     struct ww_acquire_ctx *hold_ctx,
++			     struct wake_q_head *wake_q)
+ {
+ 	struct task_struct *owner = __ww_mutex_owner(lock);
+ 
+@@ -331,7 +332,7 @@ static bool __ww_mutex_wound(struct MUTEX *lock,
+ 		 * wakeup pending to re-read the wounded state.
+ 		 */
+ 		if (owner != current)
+-			wake_up_process(owner);
++			wake_q_add(wake_q, owner);
+ 
+ 		return true;
+ 	}
+@@ -352,7 +353,8 @@ static bool __ww_mutex_wound(struct MUTEX *lock,
+  * The current task must not be on the wait list.
+  */
+ static void
+-__ww_mutex_check_waiters(struct MUTEX *lock, struct ww_acquire_ctx *ww_ctx)
++__ww_mutex_check_waiters(struct MUTEX *lock, struct ww_acquire_ctx *ww_ctx,
++			 struct wake_q_head *wake_q)
+ {
+ 	struct MUTEX_WAITER *cur;
+ 
+@@ -364,8 +366,8 @@ __ww_mutex_check_waiters(struct MUTEX *lock, struct ww_acquire_ctx *ww_ctx)
+ 		if (!cur->ww_ctx)
+ 			continue;
+ 
+-		if (__ww_mutex_die(lock, cur, ww_ctx) ||
+-		    __ww_mutex_wound(lock, cur->ww_ctx, ww_ctx))
++		if (__ww_mutex_die(lock, cur, ww_ctx, wake_q) ||
++		    __ww_mutex_wound(lock, cur->ww_ctx, ww_ctx, wake_q))
+ 			break;
+ 	}
+ }
+@@ -377,6 +379,8 @@ __ww_mutex_check_waiters(struct MUTEX *lock, struct ww_acquire_ctx *ww_ctx)
+ static __always_inline void
+ ww_mutex_set_context_fastpath(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
+ {
++	DEFINE_WAKE_Q(wake_q);
++
+ 	ww_mutex_lock_acquired(lock, ctx);
+ 
+ 	/*
+@@ -405,8 +409,10 @@ ww_mutex_set_context_fastpath(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
+ 	 * die or wound us.
+ 	 */
+ 	lock_wait_lock(&lock->base);
+-	__ww_mutex_check_waiters(&lock->base, ctx);
++	__ww_mutex_check_waiters(&lock->base, ctx, &wake_q);
+ 	unlock_wait_lock(&lock->base);
++
++	wake_up_q(&wake_q);
+ }
+ 
+ static __always_inline int
+@@ -488,7 +494,8 @@ __ww_mutex_check_kill(struct MUTEX *lock, struct MUTEX_WAITER *waiter,
+ static inline int
+ __ww_mutex_add_waiter(struct MUTEX_WAITER *waiter,
+ 		      struct MUTEX *lock,
+-		      struct ww_acquire_ctx *ww_ctx)
++		      struct ww_acquire_ctx *ww_ctx,
++		      struct wake_q_head *wake_q)
+ {
+ 	struct MUTEX_WAITER *cur, *pos = NULL;
+ 	bool is_wait_die;
+@@ -532,7 +539,7 @@ __ww_mutex_add_waiter(struct MUTEX_WAITER *waiter,
+ 		pos = cur;
+ 
+ 		/* Wait-Die: ensure younger waiters die. */
+-		__ww_mutex_die(lock, cur, ww_ctx);
++		__ww_mutex_die(lock, cur, ww_ctx, wake_q);
+ 	}
+ 
+ 	__ww_waiter_add(lock, waiter, pos);
+@@ -550,7 +557,7 @@ __ww_mutex_add_waiter(struct MUTEX_WAITER *waiter,
+ 		 * such that either we or the fastpath will wound @ww->ctx.
+ 		 */
+ 		smp_mb();
+-		__ww_mutex_wound(lock, ww_ctx, ww->ctx);
++		__ww_mutex_wound(lock, ww_ctx, ww->ctx, wake_q);
+ 	}
+ 
+ 	return 0;
+-- 
 2.43.0.687.g38aa6559b0-goog
 
 
