@@ -1,176 +1,181 @@
-Return-Path: <linux-kernel+bounces-60579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 461CC85074D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:36:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96997850751
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:42:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01DDD28639E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:36:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4FDD1C21697
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E148F5FEFE;
-	Sat, 10 Feb 2024 23:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A885FF0C;
+	Sat, 10 Feb 2024 23:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r6t6/Ssa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N8sfitrJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0E81E4B0;
-	Sat, 10 Feb 2024 23:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E03B5F552;
+	Sat, 10 Feb 2024 23:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707608194; cv=none; b=ii8CuukkAOm7uIoRIYa44h8bCtl95KT4Nzc2LCWrtND/nyt8HD9Z1SX7QdMSaPBV4YyDOykjM8yrEBomVHD4pysGBxe1tlr9xcIDREfhY9O8MdiY7qk64yHEZOLHD2Pl10OiFE4dzKdtXvtr+hxkc75wM0babVTApmCcnme7UpU=
+	t=1707608529; cv=none; b=LKgqHKVOeeBswNlBJWNt6Yk211ROqcw6WK0mKol2QBsbW63jjnwf1IB7qxsB2MLD876L0JMXO9I3TQSzL/zYPPRi4BPgYVN+6TRwuuZO+g4Lr2cS7RlK1tsDPRtdtkZ98d6sSfpNx1iDZ7knQ9QVMGahQuBlbXxdFmVbYjpKlCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707608194; c=relaxed/simple;
-	bh=8C4oWiGJS6yH0qp9Eaxr3aYeI/i7oae3HE05t0tAldw=;
+	s=arc-20240116; t=1707608529; c=relaxed/simple;
+	bh=tFeQveoRiLrfsqwNncZbXzJt0Qth44vsHgw3n1Z0lF8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PrS7sNumZTiMamOe3hoKKU8j6RJceHEutJxChSBMf6OXoVyhROkS696M0mNj9kDiFZzbDE1eQ7G/4cr1AcV6VQoFcrF0au7xvGksu6GbcllHhyG8S+o3JACo2+csnb2yimhZ5RJ6wV4EaNxPQa4hEiqkzcfvdVW8skm+W6ulz0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r6t6/Ssa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E07CBC433C7;
-	Sat, 10 Feb 2024 23:36:33 +0000 (UTC)
+	 To:Cc:Content-Type; b=tS3pLqGNtEqjVUqsz/VbtjrTO2qWiTJL/yespRiyxE6zV57wmEgpHuNsskjaHJj/p42UTi6t8MaOCpwbMCuxT4UwFLCyLU/0jOge72HCO/K0+nJGhncsCSzm/wF6LUFbEenXUStLawe2iJ3YCzMMqAWr3I0ty1OPWpvz7bEe/8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N8sfitrJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 780E0C43390;
+	Sat, 10 Feb 2024 23:42:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707608193;
-	bh=8C4oWiGJS6yH0qp9Eaxr3aYeI/i7oae3HE05t0tAldw=;
+	s=k20201202; t=1707608528;
+	bh=tFeQveoRiLrfsqwNncZbXzJt0Qth44vsHgw3n1Z0lF8=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=r6t6/SsaqOeeKJNUPVfZVjJbcNK3RRFmjuHojyVxfSItVDZ2TZuyB0EoFbkGs6cmN
-	 fGZld4TdjiPZzaIrvGq0du2QE1WrRIwg1uaqftL/+TqHZD3PNrucg9KdOFYRvRjKht
-	 Kk1w763J7dFF4u8iFKmo/Al3fa5jdjRgBZmxwu3QQfGQKxR2EAZ/epiWFzxP2MBMLL
-	 6EpLosITDbsxVYxLRJlLLsek+7D2LtphnIXyz/MDB66zxzPmJbFpf348/1QD6IEBDf
-	 JkxUs5J1dYgy0PVeh32WpGx+62i+nsng5YkqPRc8G/xgNnSiNVpMiC7yg4l3Cyh7DN
-	 UQ+VQmrfIJsvQ==
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3392b045e0aso1322796f8f.2;
-        Sat, 10 Feb 2024 15:36:33 -0800 (PST)
-X-Gm-Message-State: AOJu0YwPRaM8OrHd0NFs5WFUmhUwxfpT54x2p083qacR14RdRT+IcXyv
-	RJY1ai0UTrSXPvp7tclfdPUcsPVxovXwDih/8Q9FhFH0IZ/TcBNXFcUEQ7xwlE9gysDiVdZDcu1
-	tqdR5z5I9YxXGPBaS57FpaJY5y3g=
-X-Google-Smtp-Source: AGHT+IHoPMgBc81DnEPnPXoeHzmCqVcP4g7071LwOfBl3+AxfjKX8A2egkFqcIRNQszoXkfIPToNa/RR1WwBksr57rI=
-X-Received: by 2002:a19:e048:0:b0:511:68d4:1e39 with SMTP id
- g8-20020a19e048000000b0051168d41e39mr2050802lfj.0.1707608171430; Sat, 10 Feb
- 2024 15:36:11 -0800 (PST)
+	b=N8sfitrJHun5EHWTiV+Zk9uE6MBFV43sOsK1wsuiYVMMUJdcz6Vp/bZLhwlvmFUOT
+	 QH3iKkHx4nFkY00vyvrnSbVCDPMQFv01B+hB09STZPrZnqj7dob8TNVJ5+TbbPDfPa
+	 Rmemwde9W3hEqiyDGQrpH3vcmOJcBqtkjctTFIaNpYBvejdYHtqg9DgMVMoWB+SIke
+	 ofj/yToMLimy1zhMVkuAHAb9GLia3VgsGTvmbpKUZpWI2T7rx2ztcLmtp8JH9uvys+
+	 8QUhZV4hb51er5SbRXPnGtbtJa7V7Kq3Vd2w3nPd2/C5Sj+wnsHYFWA01kJ0z4FcQ/
+	 9c0cFjdvQSrGw==
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d0cdbd67f0so28139971fa.3;
+        Sat, 10 Feb 2024 15:42:08 -0800 (PST)
+X-Gm-Message-State: AOJu0YwThSOfbZbrtLiYyxjB8B9PdXpK1vtvbSV7waAW7+LInYCG90IJ
+	p4P5yljlOELOMNu0+gk3Q3oMvQ7T/cHmgNxQs8LhPs/z/jq9xSXzgm/9ClLbLCjohMvrBKD5r3l
+	4XFhkIfpqahPBqllZJIve2khiy/c=
+X-Google-Smtp-Source: AGHT+IEbJqaoSU1K/Jh9ePGBhLd0QyFl6xt2h9LMrFdHvv6qvuDg0vyFqvf0hRxTlY1FOCSFhj2zXOVaAxK8ZWQxkSI=
+X-Received: by 2002:a05:6512:ba0:b0:511:6f79:46e2 with SMTP id
+ b32-20020a0565120ba000b005116f7946e2mr2646301lfv.64.1707608527006; Sat, 10
+ Feb 2024 15:42:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240210074601.5363-1-xtex@envs.net> <20240210074601.5363-2-xtex@envs.net>
- <ZcdP7CC+OMbp5ZMi@shell.armlinux.org.uk> <ZcfoZKJHkdEh5JmV@fjasle.eu>
-In-Reply-To: <ZcfoZKJHkdEh5JmV@fjasle.eu>
+References: <20240207171020.41036-1-yoann.congal@smile.fr> <20240207171020.41036-2-yoann.congal@smile.fr>
+In-Reply-To: <20240207171020.41036-2-yoann.congal@smile.fr>
 From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sun, 11 Feb 2024 08:35:35 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQPm7PXoKM+id25wX9AtVmmXvE7i8GrGB9etU__EMUwdg@mail.gmail.com>
-Message-ID: <CAK7LNAQPm7PXoKM+id25wX9AtVmmXvE7i8GrGB9etU__EMUwdg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kbuild: Abort make on install failures
-To: Nicolas Schier <nicolas@fjasle.eu>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, Zhang Bingwu <xtex@envs.net>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
-	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Zhang Bingwu <xtexchooser@duck.com>, Nathan Chancellor <nathan@kernel.org>, x86@kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	sparclinux@vger.kernel.org
+Date: Sun, 11 Feb 2024 08:41:30 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQb=n1dWdEAJy_aJWnkW2M3bR768WKpxnUv=CtBEi28Xw@mail.gmail.com>
+Message-ID: <CAK7LNAQb=n1dWdEAJy_aJWnkW2M3bR768WKpxnUv=CtBEi28Xw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] printk: Fix LOG_CPU_MAX_BUF_SHIFT when BASE_SMALL
+ is enabled
+To: Yoann Congal <yoann.congal@smile.fr>
+Cc: linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, x86@kernel.org, 
+	=?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	Borislav Petkov <bp@alien8.de>, Darren Hart <dvhart@infradead.org>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Davidlohr Bueso <dave@stgolabs.net>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jiri Slaby <jirislaby@kernel.org>, 
+	John Ogness <john.ogness@linutronix.de>, Josh Triplett <josh@joshtriplett.org>, 
+	Matthew Wilcox <willy@infradead.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Petr Mladek <pmladek@suse.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 11, 2024 at 6:21=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu> =
-wrote:
+On Thu, Feb 8, 2024 at 2:10=E2=80=AFAM Yoann Congal <yoann.congal@smile.fr>=
+ wrote:
 >
-> On Sat, Feb 10, 2024 at 10:29:00AM +0000 Russell King (Oracle) wrote:
-> > On Sat, Feb 10, 2024 at 03:46:00PM +0800, Zhang Bingwu wrote:
-> > > From: Zhang Bingwu <xtexchooser@duck.com>
-> > >
-> > > Setting '-e' flag tells shells to exit with error exit code immediate=
-ly
-> > > after any of commands fails, and causes make(1) to regard recipes as
-> > > failed.
-> > >
-> > > Before this, make will still continue to succeed even after the
-> > > installation failed, for example, for insufficient permission or
-> > > directory does not exist.
-> > >
-> > > Signed-off-by: Zhang Bingwu <xtexchooser@duck.com>
-> > > ---
+> LOG_CPU_MAX_BUF_SHIFT default value depends on BASE_SMALL:
+>   config LOG_CPU_MAX_BUF_SHIFT
+>         default 12 if !BASE_SMALL
+>         default 0 if BASE_SMALL
+> But, BASE_SMALL is a config of type int and "!BASE_SMALL" is always
+> evaluated to true whatever is the value of BASE_SMALL.
 >
-> Thanks for fixing!
+> This patch fixes this by using the correct conditional operator for int
+> type : BASE_SMALL !=3D 0.
 >
-> [...]
-> > > diff --git a/arch/arm/boot/install.sh b/arch/arm/boot/install.sh
-> > > index 9ec11fac7d8d..34e2c6e31fd1 100755
-> > > --- a/arch/arm/boot/install.sh
-> > > +++ b/arch/arm/boot/install.sh
-> > > @@ -17,6 +17,8 @@
-> > >  #   $3 - kernel map file
-> > >  #   $4 - default install path (blank if root directory)
-> > >
-> > > +set -e
-> > > +
-> >
-> > What about #!/bin/sh -e on the first line, which is the more normal way
-> > to do this for an entire script?
+> Note: This changes CONFIG_LOG_CPU_MAX_BUF_SHIFT=3D12 to
+> CONFIG_LOG_CPU_MAX_BUF_SHIFT=3D0 for BASE_SMALL defconfigs, but that will
+> not be a big impact due to this code in kernel/printk/printk.c:
+>   /* by default this will only continue through for large > 64 CPUs */
+>   if (cpu_extra <=3D __LOG_BUF_LEN / 2)
+>           return;
+> Systems using CONFIG_BASE_SMALL and having 64+ CPUs should be quite
+> rare.
 >
-> are you sure?  I can find many more occurrences of 'set -e' than the
-> shebang version in the Linux tree, especially in the kbuild scripts, thus
-> it's bike-shedding, isn't it?
+> John Ogness <john.ogness@linutronix.de> (printk reviewer) wrote:
+> > For printk this will mean that BASE_SMALL systems were probably
+> > previously allocating/using the dynamic ringbuffer and now they will
+> > just continue to use the static ringbuffer. Which is fine and saves
+> > memory (as it should).
 >
-> Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+> Petr Mladek <pmladek@suse.com> (printk maintainer) wrote:
+> > More precisely, it allocated the buffer dynamically when the sum
+> > of per-CPU-extra space exceeded half of the default static ring
+> > buffer. This happened for systems with more than 64 CPUs with
+> > the default config values.
 >
-> Kind regards,
-> Nicolas
+> Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Closes: https://lore.kernel.org/all/CAMuHMdWm6u1wX7efZQf=3D2XUAHascps76YQ=
+ac6rdnQGhc8nop_Q@mail.gmail.com/
+> Reported-by: Vegard Nossum <vegard.nossum@oracle.com>
+> Closes: https://lore.kernel.org/all/f6856be8-54b7-0fa0-1d17-39632bf29ada@=
+oracle.com/
+> Fixes: 4e244c10eab3 ("kconfig: remove unneeded symbol_empty variable")
+>
+
+
+
+All the Reviewed-by tags are dropped every time, annoyingly.
+
+
+
+
+This is equivalent to v4, which had these tags:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
 
 
 
 
 
 
-When you put -e on the shebang line, like
-
-    #!/bin/sh -e
-
-the option -e is set when you do:
-
-    $ arch/arm/boot/install.sh
-
-
-But, -e is not set when you do:
-
-    $ sh arch/arm/boot/install.sh
-
-
-
-The reason is obvious because the latter case
-does not use the shebang line.
-
-
-
-
-In Kbuild, some places run the script directly like the former case,
-and others use CONFIG_SHELL like
-
-   $(CONFIG_SHELL) arch/arm/boot/install.sh
-
-
-The inconsistency is not nice, but that is a different issue.
-
-
-The separate 'set -e' statement works for both cases,
-so I think this is safer, though it is kind of bike-shedding.
 
 
 
 
 
---=20
+> ---
+> v3->v4:
+> * Fix BASE_SMALL usage instead of switching to BASE_FULL because
+>   BASE_FULL will be removed in the next patches of this series.
+> ---
+>  init/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index deda3d14135bb..d50ebd2a2ce42 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -734,8 +734,8 @@ config LOG_CPU_MAX_BUF_SHIFT
+>         int "CPU kernel log buffer size contribution (13 =3D> 8 KB, 17 =
+=3D> 128KB)"
+>         depends on SMP
+>         range 0 21
+> -       default 12 if !BASE_SMALL
+> -       default 0 if BASE_SMALL
+> +       default 0 if BASE_SMALL !=3D 0
+> +       default 12
+>         depends on PRINTK
+>         help
+>           This option allows to increase the default ring buffer size
+> --
+> 2.39.2
+>
+>
+
+
+--
 Best Regards
 Masahiro Yamada
 
