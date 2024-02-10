@@ -1,69 +1,59 @@
-Return-Path: <linux-kernel+bounces-60366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7132E85040D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:54:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3968850411
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:01:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38D58281D39
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 10:54:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08D5B1F23F6C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31936364C1;
-	Sat, 10 Feb 2024 10:53:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="UveCnvEH"
-Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD023364CF;
+	Sat, 10 Feb 2024 11:01:03 +0000 (UTC)
+Received: from mail3-162.sinamail.sina.com.cn (mail3-162.sinamail.sina.com.cn [202.108.3.162])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9E5364C4
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 10:53:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7A0259B
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 11:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.108.3.162
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707562426; cv=none; b=dJXkwGi3qO5//siWnfEjSvnowd7QfTZ++Q2M8e+ZUBRN8EgZoES/lYMZa81xfmEWXr5GLEEgOh94IHze4hUBcXLpxM7lIN4Gv3hB4MEGGQssWxqn+BXEj63dUDRJuFs/kagvc1PPkAAotrR2824XxOmu9Xyjk52qIQJzEtduasw=
+	t=1707562863; cv=none; b=DAE+jB2JdSl8PVfDEyIxXyroeGqD30aLVQoQK8+Ma3y2tuQ16KFk6boGDHFWWQBMy2PYWacemnr1Q/FlU3pBbvdNQ793p51aviNR5vcTYwQ91Cr3x2lrQiYcrS7nns0o0BIwtzY/OYodYbQ2XOB+tlPQyU7aoAZ9WbTBWuKkt4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707562426; c=relaxed/simple;
-	bh=ZNR0Ya2GtQ55/jW9CFZk6ueuv1ZGLDunwSJubLSmEUg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rpW6lMUCJAB8JWrf9b08k7KaO30cmvBO621gcV/0iuy+l5nmr+shR5w9rr7odITdcYfA6yQnnDiFiNPnHwoS/1K3eJ4op7h9OeinNfEYsuB2vffp1XyKLGwym1G8V89IvC/9lk05AK5DE1894lx1b5AL7g7dsVCBWbmzKlTGGow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=UveCnvEH; arc=none smtp.client-ip=80.12.242.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id YkzGrWWZFCB5QYkzGrUBap; Sat, 10 Feb 2024 11:53:36 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1707562416;
-	bh=7QYgDN3BJUEnPT+SJRI8j4ug6VUW8Hkqd9k+/x2jDfQ=;
-	h=From:To:Cc:Subject:Date;
-	b=UveCnvEHrvJuAAmeSuiaUhwqL3TLTowduXR5o9CGK3lhSCyJF+uEzXZgaNP3nfSWw
-	 8yTxdu8msgcHsVkmmtZfscQHT6SVI2QUJEQOCv8o24MDL/up9c8pZCqvT0ZiArXL1S
-	 tf9VC1ooyex07pt8kLEbxGSIDqv0UOxeIl1wEyywldPXmCP6Z+5sYRqrS/tgLHnkIQ
-	 ILJBl7d/07JlGnFZugaxOySNwljPdC07VNS3raJ/81DFeMlpoumlobh0haMvkBtItp
-	 oEdcNSer7Kwd4oW4uv2Mm4iE8YuxPQs7No8OXVl3y3uKRbNKNYznQLuIeWtVh95sHL
-	 dEA60srFFusVA==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 10 Feb 2024 11:53:36 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Or Gerlitz <ogerlitz@mellanox.com>,
-	Eli Cohen <eli@mellanox.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next] net/mlx5: Use kasprintf()
-Date: Sat, 10 Feb 2024 11:53:13 +0100
-Message-ID: <9bb8d927ec172df227f84694dfa5769623f48c89.1707562340.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707562863; c=relaxed/simple;
+	bh=cf5+1fQkMr7nWT21y+6t9ZWJSbi3v7BBMchlk6Kc5Jk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=mbHiioh5m5WQ21Lso+aMxBplT0qkTCF+RoXazEhB9G4mvXysBbBNaZSEkYysShJfQiC+KW6fwUuGP5CtN7wGrg5zkt+LR5EuaV8vZkcytqnYOpZBNrpMZb//iHj77U4BN0aiznZPIu3Qb5A97H4kXHxTVXelM28xF7fVqZAu+Yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=202.108.3.162
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([114.249.59.61])
+	by sina.com (10.182.253.22) with ESMTP
+	id 65C7576500007D89; Sat, 10 Feb 2024 19:00:55 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 7566756816312
+X-SMAIL-UIID: AD44519A6EF44531B70A437BDDCF86FD-20240210-190055-1
+From: Hillf Danton <hdanton@sina.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Wolfram Sang <wsa@the-dreams.de>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 01/24] gpio: protect the list of GPIO devices with SRCU
+Date: Sat, 10 Feb 2024 19:00:41 +0800
+Message-ID: <20240210110043.853-1-hdanton@sina.com>
+In-Reply-To: <20240208095920.8035-2-brgl@bgdev.pl>
+References: <20240208095920.8035-1-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,39 +62,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use kasprintf() instead of open-coding it.
-This saves some lines of code, avoid a hard-coded magic number and is more
-robust.
+On Thu,  8 Feb 2024 10:58:57 +0100 Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> @@ -382,11 +389,13 @@ static int gpiodev_add_to_list_unlocked(struct gpio_device *gdev)
+>  		/* add between prev and next */
+>  		if (prev->base + prev->ngpio <= gdev->base
+>  				&& gdev->base + gdev->ngpio <= next->base) {
+> -			list_add(&gdev->list, &prev->list);
+> +			list_add_rcu(&gdev->list, &prev->list);
+>  			return 0;
+>  		}
+>  	}
+>  
+> +	synchronize_srcu(&gpio_devices_srcu);
+> +
+If not typo, could you shed light on why this sync is needed?
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If you consider it as a bug fix, should 'name' overflow because of the
-hard-coded limit, then:
-Fixes: ac6ea6e81a80 ("net/mlx5_core: Use private health thread for each device")
----
- drivers/net/ethernet/mellanox/mlx5/core/health.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-index 8ff6dc9bc803..3f775da15afc 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-@@ -856,12 +856,11 @@ int mlx5_health_init(struct mlx5_core_dev *dev)
- 	mlx5_reporter_vnic_create(dev);
- 
- 	health = &dev->priv.health;
--	name = kmalloc(64, GFP_KERNEL);
-+	name = kasprintf(GFP_KERNEL,
-+			 "mlx5_health%s", dev_name(dev->device));
- 	if (!name)
- 		goto out_err;
- 
--	strcpy(name, "mlx5_health");
--	strcat(name, dev_name(dev->device));
- 	health->wq = create_singlethread_workqueue(name);
- 	kfree(name);
- 	if (!health->wq)
--- 
-2.43.0
-
+>  	return -EBUSY;
+>  }
 
