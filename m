@@ -1,148 +1,120 @@
-Return-Path: <linux-kernel+bounces-60396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C1DC850464
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 13:32:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C62F850465
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 13:35:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1E322817D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:32:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20DF92838A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F19047F59;
-	Sat, 10 Feb 2024 12:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AXReNp7G"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9A643AAD;
+	Sat, 10 Feb 2024 12:35:08 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C223EA66
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 12:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467A1339AC
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 12:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707568318; cv=none; b=Hy0fv2sf7xej1OUtx+Hq9hawQ7s+3hfraFOHAYDk8Qj3DhAJOdTvjP/ipqluGb03n+7NYGEgP3lHK4uv4bx8O06pe1rS7rCargLJfxtcq2b4krJyT2tl+QUQT/mktp5Q/BTSfxobwEMBQ+rh6YOrobFZXLXI/FZQu3YT7f5i6Og=
+	t=1707568508; cv=none; b=bfKbEgweH0FuQ8FQ6zGp/0FiFi/Go9IcB1/GoCyZPHhD1Cr7nmMBc7uOKAWkAyrVghBbwwrX7wEp3N1WDhMlkLbntykuJWByB4BjUVwWolSsW1ncRWYelfJOoGeD5r6AaooV0XOKD3nnoU8n+1NuHCBjWvPOvIh9VdkX6W2/bnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707568318; c=relaxed/simple;
-	bh=b/+bunSHR5UhPdFTXfBKcRLs2qkDpn8Qrz7Q+Zf0Neg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RvfuV+3c0fL1222liOWND8UpxQkirLC6Bup8A4+ltOA7VrkahbvhChiL4RInwr/fCRRDWWYCqHf3z4PKWUg9pBXICsQ999OhoiSuHjjp/GNweooNFcQS2J0Br/YgxXfGVY97HpR7VLLIS7pe3xSh3cH4xndbeaPY1uHCbR5KdwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AXReNp7G; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707568316;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rsa8Sa2RaRjXmbcIJ9/cp3lURU1N9XcuIpnY+VN8kcI=;
-	b=AXReNp7GN5C3BWNiOzedgxO5AcPjqEQzg5JXDGWoRX71UiqUNqCSA4NItOwGvlS2Eivn+5
-	m083+AV/XjCFvjioZ3FvR4QAXB/KPX2is3eFv1Xff+YSzOO+6H2ipqEUfKRsmgH2u4USSE
-	sEYLEVmsFHEpRS+9F0Z4WPElOTLNr1s=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-562-euPsEMJsOUOA3OZtIC3yHg-1; Sat,
- 10 Feb 2024 07:31:52 -0500
-X-MC-Unique: euPsEMJsOUOA3OZtIC3yHg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9B560380451B;
-	Sat, 10 Feb 2024 12:31:51 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.28])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 13E2840C9444;
-	Sat, 10 Feb 2024 12:31:49 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sat, 10 Feb 2024 13:30:35 +0100 (CET)
-Date: Sat, 10 Feb 2024 13:30:33 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] pidfd: change pidfd_send_signal() to respect
- PIDFD_THREAD
-Message-ID: <20240210123033.GA27557@redhat.com>
-References: <20240209130620.GA8039@redhat.com>
- <20240209130650.GA8048@redhat.com>
- <20240209-stangen-feuerzeug-17c8662854c9@brauner>
- <20240209154305.GC3282@redhat.com>
- <20240209-radeln-untrennbar-9d4ae05aa4cc@brauner>
- <20240209155644.GD3282@redhat.com>
- <20240210-abfinden-beimessen-2dbfea59b0da@brauner>
+	s=arc-20240116; t=1707568508; c=relaxed/simple;
+	bh=kV1dH9N0wl6dbAp2XFipJ67xCC7y7WlCPuruPIHVk6U=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=Y4gvKk/IWxkX4SOEl0rp6x9r6F2SCXmzMHgsII6uapD8iamvRpa6A/RexaRv1RT9cx5cHN6pu54/ucg01wHec2aZHiI84uhrHiRJQiTRguky3aE81Xt82ZEFrsQPMSz05AFPb8N+WrAhVtT0RoychivGL51YzzjIVfqkhkNJkqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-285-B9mkscCCOyeXmvwkut24cQ-1; Sat, 10 Feb 2024 12:35:02 +0000
+X-MC-Unique: B9mkscCCOyeXmvwkut24cQ-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 10 Feb
+ 2024 12:34:41 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 10 Feb 2024 12:34:41 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Kees Cook' <keescook@chromium.org>, Justin Stitt <justinstitt@google.com>
+CC: Andy Shevchenko <andy@kernel.org>, "linux-hardening@vger.kernel.org"
+	<linux-hardening@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
+	"Anton Ivanov" <anton.ivanov@cambridgegreys.com>, Johannes Berg
+	<johannes@sipsolutions.net>, Willem de Bruijn
+	<willemdebruijn.kernel@gmail.com>, Jason Wang <jasowang@redhat.com>, "kernel
+ test robot" <lkp@intel.com>, Nathan Chancellor <nathan@kernel.org>, "Azeem
+ Shaikh" <azeemshaikh38@gmail.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-um@lists.infradead.org"
+	<linux-um@lists.infradead.org>
+Subject: RE: [PATCH v3 3/4] string: Allow 2-argument strscpy_pad()
+Thread-Topic: [PATCH v3 3/4] string: Allow 2-argument strscpy_pad()
+Thread-Index: AQHaWaavaD/gLIDMg0aBzFOj9pBKgrEDhhFw
+Date: Sat, 10 Feb 2024 12:34:41 +0000
+Message-ID: <d6710f82acfd4957a296601c420fba76@AcuMS.aculab.com>
+References: <20240206142027.make.107-kees@kernel.org>
+ <20240206142221.2208763-3-keescook@chromium.org>
+ <20240207005151.lyrtgqd4wekolwe7@google.com> <202402070115.2C86687F@keescook>
+In-Reply-To: <202402070115.2C86687F@keescook>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240210-abfinden-beimessen-2dbfea59b0da@brauner>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Christian,
+From: Kees Cook
+> Sent: 07 February 2024 09:19
+>=20
+> On Wed, Feb 07, 2024 at 12:51:51AM +0000, Justin Stitt wrote:
+> > Hi,
+> >
+> > On Tue, Feb 06, 2024 at 06:22:18AM -0800, Kees Cook wrote:
+> > > Similar to strscpy(), update strscpy_pad()'s 3rd argument to be
+> > > optional when the destination is a compile-time known size array.
+> >
+> > This patch is diff'd against Patch 1/4 in this series, right? I wonder
+> > why you split them up. If I hadn't literally just read that patch I
+> > would be mildly confused.
+> >
+> > I suppose one reason may be that 1/4 is a standalone change with a high
+> > percentage chance of landing whilst this overloading magic may not land
+> > as easily?
+>=20
+> I viewed it as a distinct logical change. I could certainly combine
+> them, but I think it's easier to review the conversion from function to
+> macro without needing to consider anything else. No behavioral changes
+> are expected, etc.
 
-Thanks again! the last 2 commits in vfs.pidfd look good to me.
+I wonder about the code-bloat from inlining strscpy_pad()?
+Especially given the code that gcc is likely to generate
+for string ops.
 
-As for this patch, I am not sure I understand your concerns, and I
-have another concern, please see below.
+I strongly suspect that the end of strscpy() knows exactly
+you many bytes weren't written (in the non-truncate path).
+So maybe implement both strscpy() and strscp_pad() in terms
+of an inline function that has a parameter that 'turns on'
+padding.
 
-For the moment, please forget about PIDFD_THREAD.
+That way you get a simple call site and still only one
+implementation.
 
-On 02/10, Christian Brauner wrote:
->
-> (1) kill(-1234) => kill process group with id 1234
-> (2) kill(0)     => kill process group of @current
->
-> which implementation wise is indicated by
->
-> __kill_pgrp_info(..., pid ? find_vpid(-pid) ? task_pgrp(current))
->
-> We're obviously not going to implement (2) as that doesn't really make a
-> sense for pidfd_send_signal().
+=09David
 
-Sure,
-
-> But (1) is also wrong for pidfd_send_signal(). If we'd ever implement
-> (1) it should be via pidfd_open(1234, PIDFD_PROCESS_GROUP).
-
-Why do you think we need another flag for open() ?
-
-To me it looks fine if we allow to send the signal to pgrp if
-flags & PIDFD_SIGNAL_PROCESS_GROUP.
-
-And pidfd_send_signal() can just do
-
-	if (PIDFD_SIGNAL_THREAD_GROUP)
-		ret = __kill_pgrp_info(sig, kinfo, pid);
-	else
-		ret = kill_pid_info_type(...);
-		
-(yes, yes, this needs tasklist, just a pseudo code to simpliy)
-
-Now lets recall about PIDFD_THREAD.
-
-If the target task is a group leader - there is no difference.
-
-If it is not a leader - then __kill_pgrp_info() will always return
--ESRCH, do_each_pid_task(PIDTYPE_PGID) won't find any task.
-
-And personally I think this is all we need.
-
-------------------------------------------------------------------------------
-But if you want to make PIDFD_SIGNAL_THREAD_GROUP work even if the
-target task is not a leader, then yes, we need something like
-
-	task_pgrp(pid_task(pid, PIDTYPE_PID))
-
-like you did in the new kill_pgrp_info() helper in this patch.
-
-I won't argue, but do you think this makes a lot of sense?
-
-Oleg.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
 
