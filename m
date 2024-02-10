@@ -1,76 +1,78 @@
-Return-Path: <linux-kernel+bounces-60294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C0948502C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:44:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C6A68502D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:56:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32623B262D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 06:44:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 948F5B2443B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 06:56:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FC618C3D;
-	Sat, 10 Feb 2024 06:44:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3261EF19;
+	Sat, 10 Feb 2024 06:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="N560i041"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="d6LUHLFC"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E587168C2
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 06:44:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498596AB7
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 06:56:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707547452; cv=none; b=TDDDGJHKgpYBe2jSU517iLIPUbOvpN62txo97Gfo6NJTCK85vc7jRHOdfvheN2NRuSo6yeCoLc1k7hClso5H3UtVmqn1A6cxCJrvVvbElN2mTuvmwBsojh7R6+W5OLzovJplA6Xjvb06rRZX9ZsO0RaqWvrw4SkUkBgKf23/GJU=
+	t=1707548170; cv=none; b=bfuJmiraZkK9aNo9K04itouw1y6FOAvsiCKiBgyaIAyRoFvc5xOEwBkzwvPDwkEdzIp8feOASIqyNqHmPr1QwMiLIWCJ4DMV1j5DKURXQNxTCCe0e/RQJpb67KI+u2ijZ9MaWKCqTJvthE/crFW81JSDX1YUuJOTugiMgE+aMho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707547452; c=relaxed/simple;
-	bh=rVJjCi3N8tFMrvczpodogpdGzRK8ypIs28YYsOP9OUU=;
+	s=arc-20240116; t=1707548170; c=relaxed/simple;
+	bh=NVSOZpQjmNZbvBbytVbKbYZTTj5KexVg9+EBMGPo8iA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BF/UG/3Q0u7K3d7yIDAfS5b9Jg/4aQyxHYX1HUwiaQlrgWrhGeQts5KS34sqiDUGsRtonXFTgAdkArXoBnn3dAr1RMV2qGyYRi8iga8CLx6bp39pAMLP2bS2IURcaNm86mnOT3F3DcfVFahVwd/9FuUaTfsI+pUKS5sWaWX2gVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=N560i041; arc=none smtp.client-ip=209.85.214.180
+	 Content-Type:Content-Disposition:In-Reply-To; b=uNbH5vYVITgBcExlytfOua3UV0fGXtyz+vNVvVdS5Q0fUL7t0iLEQLrB904TZ7BFVAzWEQQ3Rm0uYXcgufCQY7xKCH9irrzJkrfwKfCfDDEwJ+ZUrZJifW2xXiIXfd2PESW60cDr0UCpCT0yIMfI0mUbRuFAxKkfCreEc7KOuxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=d6LUHLFC; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d918008b99so13060085ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 22:44:10 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d7881b1843so15469525ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 22:56:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707547450; x=1708152250; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707548167; x=1708152967; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nzzRqglaHu6KYBZMYaRVn/OJnKTukB5u8vObEjsjaYY=;
-        b=N560i041ETqWrrczx6n/aVllaGIG41Lis4bIEx57eZnZ8FNcoX7Qm+Ws2IetXfVv+C
-         61SMH/IB7YdXu2rynUfozZO1/M53ebL+CrWjnuE2Hk+OM0uNcesq4zlCgV9tapbcup72
-         vt0yYmWthK5v7H2x1KqJt4kAkgieH13aVfI6c=
+        bh=7lqdmVzIJwt0NdDv6XcYQYzL0U+gQtOwIYPw83OVL8g=;
+        b=d6LUHLFC9vd9PmKcO4dhOkt3K3zU5yRuw1C2EGhxy8e34ZJvfR3DP45U8XxFFeBLBZ
+         aPYbZ7p6Qs/h0PaMi4d1K0k/1hSrXIXnzMtnp6yT5LIfl6E82K4hb53oMaFjCnj6BmNs
+         vF5D7w7352R6gQK4GsaHgyDD14Aqn9iKzPOpg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707547450; x=1708152250;
+        d=1e100.net; s=20230601; t=1707548167; x=1708152967;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nzzRqglaHu6KYBZMYaRVn/OJnKTukB5u8vObEjsjaYY=;
-        b=iz2nHE7nO+3ATiMoV6JOvlWkFjJuVZtSynNeVzM/bbsWXjOvqVy8Udw+uiGo9RErWn
-         UrGVnJVyjchgqpX/TnJnhMGiPjBANo9dmiK2DAVC1VGWz79dJMlg1Prontcj2xEUKwDf
-         9K4oDK45jFoJry4WF0kRPdZarKVqMgzTAHLcWC809Q274oPNtn8GrdNiBXK3isGI+hrC
-         DrbBQmRy4yu4Gw7rqEJYi0m5+2g5ieLiOg6ZsCDocWC0kSuH9kW9ril6pz9bDjGNTZDW
-         18/7YSCpphuT6Ti3kw3j4+u8Tidj9gEBTStBzYkziaA05gFfuOfHTFTBPbQiKbcRDoUY
-         iLqg==
-X-Gm-Message-State: AOJu0Yy1cikWCkDrukXBe1O6sX4OfFbAHItNsYtMDccPhfQzChpgtArG
-	dv9ly8V3OgXIRlM2MyHpFqI5pXgB/otie6aKt8VbulOaHfgkx4QR1SbNLXMwDYhzftkwiB0ziLM
-	=
-X-Google-Smtp-Source: AGHT+IF/n9LddPfvqJcL7BuYnk/5KgvC1XuhGYDU21J2sba5hxtRpCu1IMoaSwUmtvIDuYhc9EieoA==
-X-Received: by 2002:a17:902:ee55:b0:1d8:b2f4:28ce with SMTP id 21-20020a170902ee5500b001d8b2f428cemr1318074plo.42.1707547449837;
-        Fri, 09 Feb 2024 22:44:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU1A8ml7120+1/TEaeBtijUSyOdzgTpH0u9DZ3YRPOgxeyZdHo3JDDaJrApPemRkdzvxM0f/YGknM0F4J/5caaKrSSUQKywSTQ4Bg==
+        bh=7lqdmVzIJwt0NdDv6XcYQYzL0U+gQtOwIYPw83OVL8g=;
+        b=M4JyiJTuDfUhLPkCGz1UhiBINuUzNdLsl8k3rfEbL8a/rIFNlk8rDCZar19zJUI8Cu
+         Cc/J/pjZ1MDAR2gQW1nNJuaiO04HiEJALDH6gzHkSte4ybZxUhNj/89oxdhKRhtZVtp1
+         tXnW3zmr4x0V+j7Cp3TGBA9Rij2JxkjNpzA5AangS4G1ie5yTc6xbmBWaJ6gqTWp9C35
+         CrGAqBTqOOBHT1MCLncZS76bfvPe3zlJotSplCJBW7AZ13XPLoMHGj983/QftrUcxjAB
+         xAjaswfZ+0fdx0Y6uUm+g5Jj7QNbT8zhLULoaEmxxrwk9bZEk9eGHTWFzJKLqswim8il
+         g97g==
+X-Gm-Message-State: AOJu0Yw0YMHnQBsGRZTqPnqB5Q1jQxNrQlxAxErleWhqJSJUnbpynxe9
+	H+P4iHi7t6p4fjq0qN6H5gm2lMFiwk9G54XBZnzZ+SNtts/24o3VSBE8srRQ8A==
+X-Google-Smtp-Source: AGHT+IG8Uvto3IXh7IM+fA+MZ+Inj6FlHN977ejGAfyv7OajcSC0CUdI70yPsphZgCB7gunDHexmGA==
+X-Received: by 2002:a17:902:f809:b0:1d9:7729:2a6f with SMTP id ix9-20020a170902f80900b001d977292a6fmr1497467plb.61.1707548167643;
+        Fri, 09 Feb 2024 22:56:07 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWHNFwtwo2sj5Hgq9iT4SeharaFb3De5jNs2sKKLiRzhEOcJt9l0HQWoxTSJBuBbvBTHHP+w5FoKVroZZDidVlFmiko3Q3RPTYxPY8x9vc974PFN7dkbXledwzEmaGTCFNB1mAzMCu+0ZatG2sAA/J08eE57foSNwEJSd716ibUiYWvTqrzGTU9I8XM+zcpoHD/fw==
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s13-20020a17090330cd00b001d9c0c321c6sm2465613plc.67.2024.02.09.22.44.09
+        by smtp.gmail.com with ESMTPSA id jz15-20020a170903430f00b001d9a40f50c4sm2491642plb.301.2024.02.09.22.56.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 22:44:09 -0800 (PST)
-Date: Fri, 9 Feb 2024 22:44:08 -0800
+        Fri, 09 Feb 2024 22:56:06 -0800 (PST)
+Date: Fri, 9 Feb 2024 22:56:06 -0800
 From: Kees Cook <keescook@chromium.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the kspp tree
-Message-ID: <202402092243.D04BE3C@keescook>
-References: <20240208144842.5491303d@canb.auug.org.au>
+To: tools@kernel.org, Joe Perches <joe@perches.com>
+Cc: Lee Jones <lee@kernel.org>, Bart Van Assche <bvanassche@acm.org>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: .mailmap support for removals (was Re: [PATCH 00/10] scsi: Replace
+ {v}snprintf() variants with safer alternatives)
+Message-ID: <202402092252.0A0A59A@keescook>
+References: <20240208084512.3803250-1-lee@kernel.org>
+ <c9129b08-50fb-4371-aa05-6f6c7cd7acfa@acm.org>
+ <20240208174912.GZ689448@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,23 +81,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240208144842.5491303d@canb.auug.org.au>
+In-Reply-To: <20240208174912.GZ689448@google.com>
 
-On Thu, Feb 08, 2024 at 02:48:42PM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Thu, Feb 08, 2024 at 05:49:12PM +0000, Lee Jones wrote:
+> On Thu, 08 Feb 2024, Bart Van Assche wrote:
 > 
-> After merging the kspp tree, today's linux-next build (htmldocs) produced
-> this warning:
+> > On 2/8/24 00:44, Lee Jones wrote:
+> > > Cc: Andre Hedrick <andre@suse.com>
+> > 
+> > Please take a look at https://lwn.net/Articles/508222/.
 > 
-> include/linux/string.h:142: warning: Function parameter or struct member 'dst' not described in 'strscpy_pad'
-> include/linux/string.h:142: warning: Excess function parameter 'dest' description in 'strscpy_pad'
-> include/linux/string.h:142: warning: Excess function parameter 'count' description in 'strscpy_pad'
+> get_maintainer.pl pulled it from here:
 > 
-> Introduced by commit
-> 
->   0bf7961afff1 ("string: Allow 2-argument strscpy_pad()")
+> https://github.com/torvalds/linux/blob/master/drivers/scsi/3w-xxxx.c#L11
 
-Thanks! This is fixed now.
+Oh. Hm. It seems "git check-mailmap" (and get_maintainers.pl) don't
+support a way to remove an email address -- only redirect it.
+
+It seems we may want to support "don't use this email address" for more
+than just the currently observed rationale. I don't have any good
+suggestions for what the format should look like? Perhaps:
+
+"" <address-to-remove@example.com>
+
+?
 
 -- 
 Kees Cook
