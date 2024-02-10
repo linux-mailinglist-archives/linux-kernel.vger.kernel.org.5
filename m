@@ -1,148 +1,113 @@
-Return-Path: <linux-kernel+bounces-60466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776B9850550
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:39:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16CA0850553
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:40:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA6F41C23777
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:39:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A597C1F255F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186355D473;
-	Sat, 10 Feb 2024 16:39:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="CgxKQ30o"
-Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1BB25C903;
+	Sat, 10 Feb 2024 16:40:04 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D04785C5E2;
-	Sat, 10 Feb 2024 16:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A874C2B9C8;
+	Sat, 10 Feb 2024 16:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707583152; cv=none; b=OcZVqeEqTRt0r8Ll4J0zPzxSborW6LG6h9+qidpC459ylqR31yn3pQkNbqBXkBffJr4nznoWGkydwKySyFql0jJoPqwUOGYfkVEsoKJi+o9jtNeejQ1/0qcUmYd5P3E6JkJOIhdHjEyMzxqQ2awixcutIps62PIRtr1Ozq2LUio=
+	t=1707583204; cv=none; b=EDcxEw240s12loXZbYU6lh3qzdQVC7rPsWFJ60wy10YmjRWkUGBMWfye3pGa49/UnUcYrFPQbSWqa8Af60X+RTpA4RVyywayo4/3sWjZo4jtxgKg9KrE2WnFbysKqv79mSTTwv8lH+HXYPORIkWu6BoqRhPYYRNQIn0NemhV4/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707583152; c=relaxed/simple;
-	bh=kgvAMPhT8w4j+/gc16d5E4a3wb/jg9/T4SXRJTUDi/w=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Bq9X0pHZF48YLb18pm3J/png4c0E24nqTP7Lg5FBzcs2f4Jc95l1HlcdNgJzkwieXXmHAxk9kgunQ7KJocIYG2uZx93Pu8v3GmM4o0KJA3dNNMVt86BG1gV8j4yxx41rn5gJZcOGdpWIu08E334/gWfRdLGKGbKIzuCsK9skebs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=CgxKQ30o; arc=none smtp.client-ip=128.199.32.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-	t=1707583149; bh=kgvAMPhT8w4j+/gc16d5E4a3wb/jg9/T4SXRJTUDi/w=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=CgxKQ30odRg8weEpgShVBLYP2myEEzO0LFQW8np5WbrvsfZPg0LsDVWmhvPjFLIey
-	 2FFTyZRsFov5t+Y+qIO0R67gjt+AiweEB2utwcpK2kMvfxWDExKle8uaKsieuBERUg
-	 Xnf9QhC+9faQ+p/qylCSXkY/iMoCwxsALMk70TIo=
-From: Luca Weiss <luca@z3ntu.xyz>
-Date: Sat, 10 Feb 2024 17:38:58 +0100
-Subject: [PATCH v2 3/3] pmdomain: qcom: rpmpd: Add MSM8974PRO+PMA8084 power
- domains
+	s=arc-20240116; t=1707583204; c=relaxed/simple;
+	bh=47Pbn7H5rtUEK9Ynn8IOSCRoCUwb4ZlGO0tW0914+F8=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=WD6t7Pys8HLmXNV+UU0iWA599Je4vi4bOEKyAG8ffWJG1dK8DnXK4u6VOHF0kiVkRv/w/67DTAuQGFJK9HFRZyolHso0ndxCnSNYzQFNtAPqyYXsyUt8wK7Aft7q3f1tZwZ94Zgl7oR6TA4LCNqSE1G5RwHcgz8hIpx0qzHhZ2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.86.126) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 10 Feb
+ 2024 19:39:52 +0300
+Subject: Re: [RFC PATCH net-next v2 3/7] net: ravb: Always process TX
+ descriptor ring
+To: Paul Barker <paul.barker.ct@bp.renesas.com>, "David S . Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+CC: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Wolfram Sang
+	<wsa+renesas@sang-engineering.com>, <netdev@vger.kernel.org>,
+	<linux-renesas-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240206091909.3191-1-paul.barker.ct@bp.renesas.com>
+ <20240206091909.3191-4-paul.barker.ct@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <a364963f-4e4f-dba5-cb59-b2125c14e8fc@omp.ru>
+Date: Sat, 10 Feb 2024 19:39:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <20240206091909.3191-4-paul.barker.ct@bp.renesas.com>
 Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240210-msm8974-rpmpd-v2-3-595e2ff80ea1@z3ntu.xyz>
-References: <20240210-msm8974-rpmpd-v2-0-595e2ff80ea1@z3ntu.xyz>
-In-Reply-To: <20240210-msm8974-rpmpd-v2-0-595e2ff80ea1@z3ntu.xyz>
-To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, 
- Stephan Gerhold <stephan@gerhold.net>, 
- =?utf-8?q?Matti_Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, 
- Luca Weiss <luca@z3ntu.xyz>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2210; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=kgvAMPhT8w4j+/gc16d5E4a3wb/jg9/T4SXRJTUDi/w=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlx6aphrHa+N0dggsH13/iZNAuwr08JNoIsdJ0+
- MYyk3kOGuKJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZcemqQAKCRBy2EO4nU3X
- VsHvEACk8q50ApttO6yx3gj3K6363npqMfi182GoUl1z8hdZcNwDoc/gBRE5IHfFWKcg2eU2RW9
- 6pZG9058GoQ6D+sDdmVdMKLV3821H+GrkHSJ4KLxNw0Wxoz51vIpsDNmNzVNgcGQMVVbB+VXp04
- 9DMZCSFP5+GbRXWeKu8OsjgLNEe4HuZ+50HJ+7EZRYxzXF1E61h/HeGnd51QNdAGil2ve9GoAoc
- kYyhGsp28NIB1+gOAxIGt8gLlMFxKtHwb0/+wCjU2WbRXfbOrepFr5jK5bbtBckZGMqeMDP8zru
- 1Jt/umoD1up6rRIPZRvJuuLTu9WR3A0UKD+61LSfzHVnWgFWidBceC20KwMGvYs8PfVJLV/jAZK
- 3iuwkmXmdlybBS5MpEq5d2XxslU971o7FrPF6o8f47xcb8w4Q+I1lyWn0qRtCJ9HYY/2jwJDIeK
- ZhTsVzNsHXdYXfE3i+hcwp8Ku2sHLL5VpKlp4Cl8CXgyT7CEu57LqORHrW/8zjJAJU10N48hGg+
- y07v/WsIO0q4eTwWsb1N+luHYKyW1vvra+/GFsPTPRLKYwNIT+nze6iSiXD3wb9auvi7MXInnnN
- ZxWb0Wf4ZNhoVNfMkN9hx86XFf2jwWnO5EsVTflccQEb2akEJkblePELsqNs3OOiWD2LN040IwX
- gkUXmLj5pt4joVw==
-X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
- fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
+X-ClientProxiedBy: msexch02.omp.ru (10.188.4.13) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/10/2024 16:25:06
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 183344 [Feb 10 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.126 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.126 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.86.126
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/10/2024 16:30:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 2/10/2024 2:13:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Add the power domains CX & GFX found on MSM8974 devices that use PMA8084
-instead of the standard PM8841+PM8941 combo.
+On 2/6/24 12:19 PM, Paul Barker wrote:
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
----
- drivers/pmdomain/qcom/rpmpd.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+> The TX queue should be serviced each time the poll function is called,
+> even if the full RX work budget has been consumed. This prevents
+> starvation of the TX queue when RX bandwidth usage is high.
+> 
+> Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
 
-diff --git a/drivers/pmdomain/qcom/rpmpd.c b/drivers/pmdomain/qcom/rpmpd.c
-index 3fa6a0325fc0..2d47e3357f10 100644
---- a/drivers/pmdomain/qcom/rpmpd.c
-+++ b/drivers/pmdomain/qcom/rpmpd.c
-@@ -252,6 +252,20 @@ static struct rpmpd cx_s2b_vfc = {
- };
- 
- /* G(F)X */
-+static struct rpmpd gfx_s7a_corner = {
-+	.pd = { .name = "gfx", },
-+	.res_type = RPMPD_SMPA,
-+	.res_id = 7,
-+	.key = KEY_CORNER,
-+};
-+
-+static struct rpmpd gfx_s7a_vfc = {
-+	.pd = { .name = "gfx_vfc", },
-+	.res_type = RPMPD_SMPA,
-+	.res_id = 7,
-+	.key = KEY_FLOOR_CORNER,
-+};
-+
- static struct rpmpd gfx_s2b_corner = {
- 	.pd = { .name = "gfx", },
- 	.res_type = RPMPD_SMPB,
-@@ -716,6 +730,20 @@ static const struct rpmpd_desc msm8974_desc = {
- 	.max_state = MAX_CORNER_RPMPD_STATE,
- };
- 
-+static struct rpmpd *msm8974pro_pma8084_rpmpds[] = {
-+	[MSM8974_VDDCX] =	&cx_s2a_corner,
-+	[MSM8974_VDDCX_AO] =	&cx_s2a_corner_ao,
-+	[MSM8974_VDDCX_VFC] =	&cx_s2a_vfc,
-+	[MSM8974_VDDGFX] =	&gfx_s7a_corner,
-+	[MSM8974_VDDGFX_VFC] =	&gfx_s7a_vfc,
-+};
-+
-+static const struct rpmpd_desc msm8974pro_pma8084_desc = {
-+	.rpmpds = msm8974pro_pma8084_rpmpds,
-+	.num_pds = ARRAY_SIZE(msm8974pro_pma8084_rpmpds),
-+	.max_state = MAX_CORNER_RPMPD_STATE,
-+};
-+
- static struct rpmpd *msm8976_rpmpds[] = {
- 	[MSM8976_VDDCX] =	&cx_s2a_lvl,
- 	[MSM8976_VDDCX_AO] =	&cx_s2a_lvl_ao,
-@@ -910,6 +938,7 @@ static const struct of_device_id rpmpd_match_table[] = {
- 	{ .compatible = "qcom,msm8939-rpmpd", .data = &msm8939_desc },
- 	{ .compatible = "qcom,msm8953-rpmpd", .data = &msm8953_desc },
- 	{ .compatible = "qcom,msm8974-rpmpd", .data = &msm8974_desc },
-+	{ .compatible = "qcom,msm8974pro-pma8084-rpmpd", .data = &msm8974pro_pma8084_desc },
- 	{ .compatible = "qcom,msm8976-rpmpd", .data = &msm8976_desc },
- 	{ .compatible = "qcom,msm8994-rpmpd", .data = &msm8994_desc },
- 	{ .compatible = "qcom,msm8996-rpmpd", .data = &msm8996_desc },
+   Also does look like a bug fix...
 
--- 
-2.43.0
+[...]
 
+MBR, Sergey
 
