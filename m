@@ -1,122 +1,125 @@
-Return-Path: <linux-kernel+bounces-60485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E50F850587
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:06:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DF7485058A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:10:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FD521C23D4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:06:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CC061F24E15
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559C35CDEB;
-	Sat, 10 Feb 2024 17:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B8235CDEB;
+	Sat, 10 Feb 2024 17:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b="gOgtqA84"
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DWyThwhk"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198CE5CDD3;
-	Sat, 10 Feb 2024 17:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.177.23.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D865651016
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 17:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707584805; cv=none; b=EBa+G26s36PObFN5/vuQr8/DHdWbnhS0ws3xXSoTrgVWI95K3mi84NHDxyBUGLha4Moodim14NLtfE2AS0p3VLWOLw7F6yw0Q64scGehnBpYfGAxCYMyPtsAlYr+FVczmiH9YcId430507L0usll6ZQi4mqN0L2wVVI4lKL/KXs=
+	t=1707585015; cv=none; b=gc9C5q0eOZeJo0oeOlLZVtZ0QpjViR5SpDoAn2qHEL2In+bfIgyWf2VCIXyt8lzVPP94fIld9deBePgCu/0PfQ8fUgUK1QvMmdq91Rt1z9H6kgjKEkYfgAfGIaSNaKwQ8G/ggrronxR1FyDCNgUZNLgbWkChLxyQvt9Iyq1FtqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707584805; c=relaxed/simple;
-	bh=Iegw3uSU/jDrRw1wO36FWEmxyFeRwPHeaAd3poNxct8=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=uaVgf+BsU15eXPlBdXoZK/ER//S1FGeBTVDfNls0uM/8cpr3JmoshnBJG5PqjJR1edgO0c0hck2HHO/GWIofn7kboJ29ie67bkPJZf7IGd9KauY6edpV07/AplKDYJa+OwN50WhYrHTZD6MPslJhmweVH1ECvCvi5h85jC1O30U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz; spf=pass smtp.mailfrom=ixit.cz; dkim=pass (1024-bit key) header.d=ixit.cz header.i=@ixit.cz header.b=gOgtqA84; arc=none smtp.client-ip=89.177.23.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ixit.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ixit.cz
-Received: from [10.0.0.200] (unknown [10.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ixit.cz (Postfix) with ESMTPSA id CB70D165072;
-	Sat, 10 Feb 2024 18:06:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-	t=1707584800; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Iegw3uSU/jDrRw1wO36FWEmxyFeRwPHeaAd3poNxct8=;
-	b=gOgtqA84MbPtxjevQeqA35TmvVVl/iGM6Fi6Zq3tGgohl4g82DC4Sfmu7dkVwp5goDPO3S
-	mlM7TK0hmOFnhTqUwiroChzdccnT+jITdjMPxm4OIGOO1hJkn0y9cHoDYDYxXKonlGM/Xm
-	KksLfm620h9I3VwPVc6RDVg09QpZVDA=
-Message-ID: <6d15ee60-bd77-413d-be14-0e538f10b649@ixit.cz>
-Date: Sat, 10 Feb 2024 18:06:40 +0100
+	s=arc-20240116; t=1707585015; c=relaxed/simple;
+	bh=BaU/bP7v133m08+SRbtNQA0dEb7SZt1w/Yj0I4z/vi8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=sLrtoYwQ9NLoywM8Qb7y7ycZy8tnowrhaem8zV9tpwMB3rk74FJr8SS/5jUBDm7dODG2aFAss00F478lF5o9ERBAa45dJ1t1yqxLFUGB9btip11UcIXGyslv9QxaOAoDD5KEX4yNW7VajHwX7r5M+MmW6OYQyQUELLaGtw5YxLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DWyThwhk; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5610c233b95so2150470a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 09:10:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707585012; x=1708189812; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ub3t1C16XKKLVPOgvYEAt5qRjsjAUqaoq3TtQjsnA8Y=;
+        b=DWyThwhk9S/AeiJp2XcUqp3ugX3TBOoCLUA1Fwkc6vHGSwyZspWiSRAoa1RYiMkxo1
+         nGQxO+TRX+KMKfOlHv3ISePZkGV+1fPs4MTRAuSqiueM0ZLJlVPgEGOGp3SSZ2RM2p+g
+         DxSQzh937uwWi51qctypRgX0CGgZDUw0vUlcSBlU23NwG5KyfEyBmNi5mJL5zEOfvVqN
+         FudlJIJEUglFzXOOt0VuQjm6PG7dUtZ55kxhiDoL9s+s6N/QWSVoAW6bNMrdGP5EQOae
+         YSvUS9evpFU88sMRX2P9hpxbyJJbaUAfB/y2PSbuj9LlEcdOpOYW8VcGASuVhwHbb9EO
+         P7mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707585012; x=1708189812;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ub3t1C16XKKLVPOgvYEAt5qRjsjAUqaoq3TtQjsnA8Y=;
+        b=GRkNyomPOPtS++hfYzhWE1zyuMWEWN7SElS+0uxKeRZ8WibCNzLS3uhtoAdodDVBv3
+         8QK8iFJi3xW0U/LQnIQXwAp+hHAPRCWlctJJHDIs7Oh4z2DAdJ6Cz3ocbKjDhtx+m1Vc
+         2nrMkKgCFJkmE9zCZhuHCDUr9xjaw2W+NY0h/qGCi+EjbdICqSPOb/AsthEZsTdSE21/
+         tSmLopvzGRXgAAV2xFQwoNiYQtFlKT1PD/ZrMixnZzGhz8Vp38FdvfgOMHCuAij6UUAf
+         uBKvrj5Qoc/lwPg1Xd6M2asrflD73JEfxQjoE1UEq7Cnx26jsI0AFID3WNrXMUgl5ehs
+         RKAQ==
+X-Gm-Message-State: AOJu0YxbrgZSP0mPnuiaOd1DeIs5wNWfzWs7irQ7TqPUcK8HKuPW9zN1
+	g8d692AhdPFDOv35V6mnRD3n82X4Ua1hRD/x30IbDA1Lc7I0WFcK8L5RMlw+8Eg=
+X-Google-Smtp-Source: AGHT+IExF/deVU4o4/K2ms8bjUDjITAx9RfeeX+sCanQBh2dY/Sb0Uw4sJCB71tV0mSzUGyVn7kvqw==
+X-Received: by 2002:a17:906:bc47:b0:a3c:2bfd:1495 with SMTP id s7-20020a170906bc4700b00a3c2bfd1495mr1389894ejv.59.1707585011898;
+        Sat, 10 Feb 2024 09:10:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUo3eDpPjMri7X98qBTjTw/GCgFdL055iuYdVbwRL7jqJSxjR0Wa9x1oicDkObOMIDb0OzOApIl+GYIPeIemivemNHEmoD1y52VRa+TxmXk7aFI7/4eAHeEhSyceTAVpsVgN5tlCKLKLmOq8UNSh9PlExAFmW4qH19kfeUtlAwspMikyvwXWXUpFDSWOKt+bfJI7EbgJb1XINT2E0WwQF5MQPfN6BBY5jY70k3+v8xdNUP3N/63/YjP7gZW6O4nUMHAKi0fFmcI99w+YjtTU1Va6sZu8LTQAeWgmCUeNgCAF8csv+EgNbHeVa7MUXc4keHF/aJ3gjwV5KVpn+4xcG8RI7FpgXMLD5FhiRvvLmRriey1oM3EZNmF07hDgunsUpwKLUwNDtFDcvM/gJR3tcNG++O2mCSFRFv8rw==
+Received: from [127.0.1.1] (abyl12.neoplus.adsl.tpnet.pl. [83.9.31.12])
+        by smtp.gmail.com with ESMTPSA id lg25-20020a170907181900b00a3c1e1ca800sm973242ejc.11.2024.02.10.09.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Feb 2024 09:10:11 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v2 0/3] Qualcomm PCIe RC shutdown & reinit
+Date: Sat, 10 Feb 2024 18:10:04 +0100
+Message-Id: <20240210-topic-8280_pcie-v2-0-1cef4b606883@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-To: luca@z3ntu.xyz
-Cc: agross@kernel.org, airlied@gmail.com, andersson@kernel.org,
- conor+dt@kernel.org, daniel@ffwll.ch, devicetree@vger.kernel.org,
- dmitry.baryshkov@linaro.org, dri-devel@lists.freedesktop.org,
- freedreno@lists.freedesktop.org, konrad.dybcio@linaro.org,
- krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, maarten.lankhorst@linux.intel.com,
- marijn.suijten@somainline.org, mripard@kernel.org,
- phone-devel@vger.kernel.org, quic_abhinavk@quicinc.com, robdclark@gmail.com,
- robh+dt@kernel.org, sean@poorly.run, tzimmermann@suse.de,
- ~postmarketos/upstreaming@lists.sr.ht
-References: <20240121-msm8226-gpu-v2-2-77f4a6fbbca4@z3ntu.xyz>
-Subject: Re: [PATCH v2 2/2] drm/msm/adreno: Add A305B support
-Content-Language: en-US
-Reply-To: 20240121-msm8226-gpu-v2-2-77f4a6fbbca4@z3ntu.xyz
-From: David Heidelberg <david@ixit.cz>
-Autocrypt: addr=david@ixit.cz; keydata=
- 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
-In-Reply-To: <20240121-msm8226-gpu-v2-2-77f4a6fbbca4@z3ntu.xyz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOytx2UC/x3MQQqAIBBA0avErBOmQUG7SkSEjTUbE40IpLsnL
+ d/i/wqFs3CBsauQ+ZYiZ2ygvgN/rHFnJVszEJJGGlBdZxKvLFlckhdW3ulg7GAskoNWpcxBnv8
+ 4ze/7ATcsVpVhAAAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Johan Hovold <johan+linaro@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Bjorn Andersson <quic_bjorande@quicinc.com>
+X-Mailer: b4 0.13-dev-0438c
 
-Reviewed-by: David Heidelberg <david@ixit.cz>
+This series implements shutdown & reinitialization of the PCIe RC on
+system suspend. Tested on 8280-crd.
+
+Changes in v2:
+* Rebase
+* Get rid of "Cache last icc bandwidth", use icc_enable instead
+* Don't permanently assert reset on clk enable fail in "Reshuffle reset.."
+* Drop fixes tag in "Reshuffle reset.."
+* Improve commit messages of "Reshuffle reset.." and "Implement RC shutdown.."
+* Only set icc tag on RPMh SoCs
+* Pick up rb
+Link to v1: https://lore.kernel.org/linux-arm-msm/20231227-topic-8280_pcie-v1-0-095491baf9e4@linaro.org/
+
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (3):
+      PCI: qcom: reshuffle reset logic in 2_7_0 .init
+      PCI: qcom: Read back PARF_LTSSM register
+      PCI: qcom: properly implement RC shutdown/power up
+
+ drivers/pci/controller/dwc/Kconfig     |   1 +
+ drivers/pci/controller/dwc/pcie-qcom.c | 178 +++++++++++++++++++++++++--------
+ 2 files changed, 135 insertions(+), 44 deletions(-)
+---
+base-commit: 445a555e0623387fa9b94e68e61681717e70200a
+change-id: 20240210-topic-8280_pcie-c94f58158029
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
 
