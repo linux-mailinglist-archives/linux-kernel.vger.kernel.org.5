@@ -1,133 +1,150 @@
-Return-Path: <linux-kernel+bounces-60337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96BFA850354
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C693C85035C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:47:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58C612833EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:43:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8923A2857DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3073611A;
-	Sat, 10 Feb 2024 07:43:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5722F2B9D0;
+	Sat, 10 Feb 2024 07:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="NnXklna1"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b="BHyKVslw"
+Received: from mail.envs.net (mail.envs.net [5.199.136.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE67E33CE7
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C9E288B0;
+	Sat, 10 Feb 2024 07:47:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.199.136.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707551007; cv=none; b=OTXpLpn7JN4ejw7X7YjXRlSVDI+4Pcv3ksP1MAznJLeW1eLD4nZc9aA740UmjzgQMKnZXDmzu7jEJxPNGBAs46cOx1MyavaWuiTKEENcNmDkUew1PqaXBctrEO5o8LSLu/mqj/JSeu+g7mKPeQL9Vzvxq0zE7xiwm0BKQiqjyyg=
+	t=1707551231; cv=none; b=tzZ1TPoajkAhw3sewlQuWPe7FFpgA/SSTK7kSgw8ESP5LfASNRnAPdUvagxFQLfTmKwHo2c+UlK8XmEKOyC3ecPoxt6xjQaglTN98hnQmLqlFNMmJfegHTONgHX9JEfFAwRykaqNnzul4zq3/9HWtZyS8CVsljf4hf+WZyiHhRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707551007; c=relaxed/simple;
-	bh=70bvpWCaiQjXnWwhjEaUPbh89LdTobpAVbcQg6lcPS4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TU5YHPo0a5rfnHWqwWcVZXAiYBRTfh5EfZKVV/4NEHtMJZEm0Tkwyfj6e+70G6ADJ6RNqDjqJINUvBiAgORW/hyi89Ihz9g5cVwRxIZW7GzyR6v/7tS4+kUH5CTR3K6YRAavDMDwXpfD5hraBagzH6xMw5qJPHuaFrkFbbg1Gw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=NnXklna1; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso1812134276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 23:43:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1707551005; x=1708155805; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OeBl8V4xziTqeBvkNb4bBS2gsfVXau2tJAbBS4r5lbM=;
-        b=NnXklna110vETvmOXKPtrZLvPfzGMwLGEQg2+L0/gj9+GBUBUV0jkLI5AZ8ebfcFPd
-         DUjBkQ5lqrpEnluxJQFOrQHfcFanZS6l9voQVVXSgm81sLgCFCu3U+n2wY1F6x0Koswg
-         dX2Uf8X2fDIWCIes7Vq9AeL7tnCJCcmu2cOTmRq4btdLgHOZ5GHBDChllO0yOWU28d0Y
-         xTH9iFdJELfY6kgX/b/SqfW9FMUlRTLbcft3LIN//0dhECaNNjR/DzUgO/3s5jOgbMKn
-         Ca/+Nygcl2e+6iof2JuQD0+QAPP9uR2fs6XQTMlfh7HoJAAGFyZ01002bWsWVTGJPWj0
-         VnPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707551005; x=1708155805;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OeBl8V4xziTqeBvkNb4bBS2gsfVXau2tJAbBS4r5lbM=;
-        b=cbRHrsjreLhrSJ++r/K0aFlg9l4fXQ+QgX7Eer5sjFwhQ+tZierI8QavlPDIXt//0/
-         4l4up4TaisHUSlMVMFT4x/3XaXqnGRTV8RRjMVQ11II4tkdlPgm/txT/7WXNYUDkioVP
-         /BjqOMxImruePKKAra0d/mXywr1MVZlxCSANhb8fwSYa38qvTPDbV+TQo3GTevSv71/7
-         NMycYUYPm5BJDpP6G6TCbU5vHyCyCbFd57I8fdlRmsKXNKqNBogwMgRyATexXCS1J2nH
-         OCjbHTsPbGBbZbkW8rz0EBUA4jiOdvQ6h1EKZsWyyVIfBJSpm/1Xd0nrwWxFDtnc7QRq
-         55bg==
-X-Gm-Message-State: AOJu0YydZ+N7EBUDJ3x4Ogm8G4MK9QC+Cv0PY+Y4GMl3+boVN1tGwUc2
-	j2xghB/SmTeXeIMvj0RG9C0ALbvZ2IV69RPCU79zvGjIIezaAoicikTH4PnoK9Nvyz/mASZe5Pd
-	ofpYLge2M598EeydJS1wfsksoDUrKkmdvyCyPuw==
-X-Google-Smtp-Source: AGHT+IFl5FcHat1JHQxNryrUO/E/1Hd3XDpn35ldMvTJDgxYyoKpvK33JNJBVWYNNocKEoxL/jwBa6CMYAQDaNVVO3w=
-X-Received: by 2002:a5b:c4a:0:b0:dc6:c619:61d8 with SMTP id
- d10-20020a5b0c4a000000b00dc6c61961d8mr1423355ybr.35.1707551004854; Fri, 09
- Feb 2024 23:43:24 -0800 (PST)
+	s=arc-20240116; t=1707551231; c=relaxed/simple;
+	bh=JON8F2LhEpKeCfNUzxa5Cw3iz9OiKleIBXDTxpGM5Ds=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D4AGlXHYX4uXuXDhxVlxtrAntn7oRmie1totdIR7AQK+oVdncRNBKpRSLfVP9OSGfNhrCUxXD8JZFg/gy6N1igj2U3JcnjtmyHeKeh3qbgR4w6nAolwX8TVzVHo6hKYCMpuU496BrrES41EVHfD/2CMSC12Lhrg4z/a3c1MkS98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net; spf=pass smtp.mailfrom=envs.net; dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b=BHyKVslw; arc=none smtp.client-ip=5.199.136.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=envs.net
+Received: from localhost (mail.envs.net [127.0.0.1])
+	by mail.envs.net (Postfix) with ESMTP id EC9A538A0669;
+	Sat, 10 Feb 2024 07:46:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=envs.net; s=modoboa;
+	t=1707551218; bh=B10Vnlot+2ilvHh7OCvlmhyXD6mosKAEgX9C4cq3ecg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BHyKVslwdL2RbJki6trr7V1cE+cbklBCioJup0TiYv412ptDhgE2fjt9lYE/d/fFA
+	 Cz1w+6hkQ8cXPkGa1zFHBj5Weha9RyeoQClD5I+GyKxk4wlSFDcW+myI/UlJVWNIG9
+	 hmKB2RkGQRDC4zEGXZENTHKaAQiISqv7dY7Ua+QI3j+OLEUs50+gi4SYvb+FLTicGh
+	 rrnQvy+DDOQX66lzlVh7+KRjVTyhgRUnadkv0y0oty+cgAr9g7iMjE+gKqMpDt7kPp
+	 ZoS6KtJdtrkI2e6ECI5s6CWMJ+fSz/DtZwJgDcF80COmLVvRuOYJ6ROnUFo083lh4B
+	 QfjTvAn9Ejs74dyGDoe6zJ91YPkgNi0aGGAZny98tNCoQEdQfXdYB4h0+l2MUbWIDr
+	 iueWpVRix1LCQXJ57a1Nsm16givXVaSyhXkeUWtJj9dBgaBSDPzxn2k7DUZsJBeC6s
+	 MCgwofjJSxeC0ZHRmhqoc0erGdJlmGI54cFaNOKgQ49n6yY2YOq6LBFhKgfPZCiGCs
+	 ONXpAgkORRJQzNqipwuYpdNzhEYr8NJ64k7v40/66WQZwi7KWrrtdHFcr5PnVgOEZW
+	 NChobvVcTbpIyWw2B0RCN4q5bm9KJa5fbZyrcyzCda7DEWj0hraUQ+I6558RXGLEYS
+	 I4Cq2Emxz6uouFP7bmdIqLPU=
+X-Virus-Scanned: Debian amavisd-new at mail.envs.net
+Received: from mail.envs.net ([127.0.0.1])
+	by localhost (mail.envs.net [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 7q0JDr8gKqlZ; Sat, 10 Feb 2024 07:46:47 +0000 (UTC)
+Received: from xtexx.eu.org (unknown [223.73.102.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.envs.net (Postfix) with ESMTPSA;
+	Sat, 10 Feb 2024 07:46:47 +0000 (UTC)
+From: Zhang Bingwu <xtex@envs.net>
+To: Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Zhang Bingwu <xtexchooser@duck.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>
+Cc: x86@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org
+Subject: [PATCH 0/2] kbuild: Fix install errors when INSTALL_PATH does not exist
+Date: Sat, 10 Feb 2024 15:45:59 +0800
+Message-ID: <20240210074601.5363-1-xtex@envs.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209-alice-file-v5-0-a37886783025@google.com> <20240209-alice-file-v5-7-a37886783025@google.com>
-In-Reply-To: <20240209-alice-file-v5-7-a37886783025@google.com>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Sat, 10 Feb 2024 01:43:14 -0600
-Message-ID: <CALNs47tTTbWL3T9rk_ismPT0Bwi8Kcm5aT9k8jfPsh=1wKvrPA@mail.gmail.com>
-Subject: Re: [PATCH v5 7/9] rust: file: add `Kuid` wrapper
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 9, 2024 at 5:22=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
-ote:
->
-> Adds a wrapper around `kuid_t` called `Kuid`. This allows us to define
-> various operations on kuids such as equality and current_euid. It also
-> lets us provide conversions from kuid into userspace values.
->
-> Rust Binder needs these operations because it needs to compare kuids for
-> equality, and it needs to tell userspace about the pid and uid of
-> incoming transactions.
->
-> To read kuids from a `struct task_struct`, you must currently use
-> various #defines that perform the appropriate field access under an RCU
-> read lock. Currently, we do not have a Rust wrapper for rcu_read_lock,
-> which means that for this patch, there are two ways forward:
->
->  1. Inline the methods into Rust code, and use __rcu_read_lock directly
->     rather than the rcu_read_lock wrapper. This gives up lockdep for
->     these usages of RCU.
->
->  2. Wrap the various #defines in helpers and call the helpers from Rust.
->
-> This patch uses the second option. One possible disadvantage of the
-> second option is the possible introduction of speculation gadgets, but
-> as discussed in [1], the risk appears to be acceptable.
->
-> Of course, once a wrapper for rcu_read_lock is available, it is
-> preferable to use that over either of the two above approaches.
+From: Zhang Bingwu <xtexchooser@duck.com>
 
-Is this worth a FIXME?
+When running 'make zinstall INSTALL_PATH=somepath'
+ where 'somepath' does not exist, the install
+ scripts (install.sh) print error messages
+ but also return a success status code.
+This will make 'make' regard 'install' (and 'zinstall', etc)
+ succeeded.
+When there are also other targets at the same time,
+ for example, 'make zinstall dtbs_install modules_install',
+ make will keep going on and other outputs will fill stdout,
+ and make the error message hard to find.
 
-> Link: https://lore.kernel.org/all/202312080947.674CD2DC7@keescook/ [1]
-> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+dtbs_install and modules_install creates the target directory
+ if it does not exist. install, zinstall and others should
+ have the same behaviour.
 
-Reviewed-by: Trevor Gross <tmgross@umich.edu>
+If INSTALL_PATH is not a valid directory, we should create it.
+If the installation process still fails with errors, for example,
+ insufficient space on disk or permission denied, make should regard
+ the install target failed, stop as soon as possible,
+ and exit with error.
+
+Zhang Bingwu (2):
+  kbuild: Abort make on install failures
+  kbuild: Create INSTALL_PATH directory if it does not exist
+
+ arch/arm/boot/install.sh   | 2 ++
+ arch/arm64/boot/install.sh | 2 ++
+ arch/m68k/install.sh       | 2 ++
+ arch/nios2/boot/install.sh | 2 ++
+ arch/parisc/install.sh     | 2 ++
+ arch/riscv/boot/install.sh | 2 ++
+ arch/s390/boot/install.sh  | 2 ++
+ arch/sparc/boot/install.sh | 2 ++
+ arch/x86/boot/install.sh   | 2 ++
+ scripts/install.sh         | 4 ++++
+ 10 files changed, 22 insertions(+)
+
+
+base-commit: d0f86d080e3d7d5e1e75a56d88daf8e5f56a4146
+-- 
+2.43.0
+
 
