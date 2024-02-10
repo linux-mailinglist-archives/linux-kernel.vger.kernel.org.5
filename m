@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-60471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 434B885055B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:41:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A272850558
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:41:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE7CE286181
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:41:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40A7A1F253BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:41:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEEA65D483;
-	Sat, 10 Feb 2024 16:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6707B5C909;
+	Sat, 10 Feb 2024 16:40:53 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B9E5C8E9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B525C8E8
 	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 16:40:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707583254; cv=none; b=ZqysewzqQqZsWivv5joxfGUtt37S1Ri129IAJuSDigzGKhLQhPSm4Q8e7pkaDpQDSth/ikmaaKJizAgRGo09bctWhILoAr+JhxpcTckPtP2IV12itEzK5B3EvtxmHKLuekrDorNzLbAX7BWXFhEnNWO1HvXc5Ct4O2F3VgU6IYg=
+	t=1707583253; cv=none; b=g/ZuRdVzAcOtc3N8eBGQCJhzI4VL5MFKbkmn/cWysUxen+Mt24KYQIlDpE4iSrC2ST45EGeFClhhtnawGR9MJr1CbkdmaIusjiNgynkUz9hrx3SilE+MU4xNAyrpjDVb0YieLsgzIjh0o9JSpXM+NJRYhiimi/VAdot5vYwW+9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707583254; c=relaxed/simple;
-	bh=CscG4XnYZ8gB9jKhA67cDKdK7kHCrNVWFAz8jn8AnuU=;
+	s=arc-20240116; t=1707583253; c=relaxed/simple;
+	bh=10BznG4/Q7I4p/NCADVIk4BSO8uNoZg982rmmdanDP0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YTz0el4Rq+Z8+UK7/dJJNcCc97eTxQaMgU2QXFxVDCr9snKWXNksIUHcoMrjuJggLtPAXrdvdfUAPQ6DGkOBYXEW3uZR25LFyaGitjMwxe72Bv+CMT2WWFP7GDxLsOEIX5JnqAhZ8fDzAmdGSnyYv/e8bIVHZMQJdNyOH5vh2zI=
+	 MIME-Version:Content-Type; b=BG28HT9/CD+lIEj0RIbMEJxczytkGdSl02IflvoGRZ1X8NwsgJZigkhRu6mDn5BKIATLU1vLeruGFL5CYg/5wpIxCLRkVYvCZYb/fEtPdzN5whk9l54jD1LCYMsSrzoHyaA88fuc2HgBZI4rUfuOIi5mn1iR41brEreljbVE6+c=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,15 +32,15 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rYqOt-0001IA-CA; Sat, 10 Feb 2024 17:40:23 +0100
+	id 1rYqOs-0001IB-Pk; Sat, 10 Feb 2024 17:40:22 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rYqOq-005i4A-RJ; Sat, 10 Feb 2024 17:40:20 +0100
+	id 1rYqOr-005i4D-24; Sat, 10 Feb 2024 17:40:21 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rYqOq-002ERB-2S;
+	id 1rYqOq-002ERK-39;
 	Sat, 10 Feb 2024 17:40:20 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Mark Brown <broonie@kernel.org>
@@ -50,11 +50,10 @@ Cc: kernel@pengutronix.de,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
 	Stephen Warren <swarren@wwwdotorg.org>,
 	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH 2/3] spi: ppc4xx: Fix fallout from rename in struct spi_bitbang
-Date: Sat, 10 Feb 2024 17:40:07 +0100
-Message-ID: <20240210164006.208149-7-u.kleine-koenig@pengutronix.de>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] spi: ppc4xx: Drop write-only variable
+Date: Sat, 10 Feb 2024 17:40:08 +0100
+Message-ID: <20240210164006.208149-8-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240210164006.208149-5-u.kleine-koenig@pengutronix.de>
 References: <20240210164006.208149-5-u.kleine-koenig@pengutronix.de>
@@ -65,7 +64,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1827; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=CscG4XnYZ8gB9jKhA67cDKdK7kHCrNVWFAz8jn8AnuU=; b=owGbwMvMwMXY3/A7olbonx/jabUkhtTjy15sdrJY9F8jIO+Kaaan0NOrB2xWBTr4/95UcFTOh JfFZt+5TkZjFgZGLgZZMUUW+8Y1mVZVcpGda/9dhhnEygQyhYGLUwAm0v2P/X/MGgUFI9ZodhFJ fU2vSK+abYtF5jtV+9/5f7bMWWXXht99awwil9p0hPjNqKxiUMnn4L/mKDA34Mn3NP8g+17Pu71 lWzZsFOCOj9sr+nHS2euG+WLO+qHeXz4Wx9SLyT1SSVt3QlS32k3/p49a7+xZr+8v5mjillqmeC znvMW/dlbtyJV1yT3yz7gyZrx9x1YSyP49t2SBgMx3E+aqXQ93CxW+ut6zLv3XrNMdpVKNzmev9 YpmXOk38d59Y8OrS5Enn8krHLLocj+0Y/d5sbt/21exnnlqeNz35YtDbVIMLm/aZuxuOnN/AUek Plf6lZ/uMhbi6z2DHC5rZhiruiyc9srR6LaNHrcdX0YKAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1352; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=10BznG4/Q7I4p/NCADVIk4BSO8uNoZg982rmmdanDP0=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlx6bqu4OIok6KAOl5u5CmjU5gQ1LXdKCj/lzYj wmW21P1rXyJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZcem6gAKCRCPgPtYfRL+ TiX/B/0cEuFK96ul4c/xZ283WZaBg1+kQ8qA0NWUk4lAxw8d7kjNPCAPuFc2sjFLD9zCleMGM/n /hhyCohFXxk4PAXOjzGKr+6x1odZwO3MbpAOrbFeKgx8F/WrVqyYiNMOwvtSmdkpZm96prEfnKi fhymfBMG1uicbzKhb6HVDfopsENqmDPsyotwUZoAulJAc9KyrQUGL/eYyxzWymRSC+pqhnZvzU0 b1eP0z8Kj+yw6t2kY5Tp5HkNnN0iOpKD0Xf1usiJyWnzr6Qw0meRbf82NNoxrOXm7hc0aj9VGI6 qVJ72xnijJQTyl8c5n0MJcUDDla22i2eXV3LjVcdoQApBZ9L
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -73,52 +72,43 @@ X-SA-Exim-Mail-From: ukl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-I failed to adapt this driver because it's not enabled in a powerpc
-allmodconfig build and also wasn't hit by my grep expertise. Fix
-accordingly.
+Since commit 24778be20f87 ("spi: convert drivers to use
+bits_per_word_mask") the bits_per_word variable is only written to. The
+check that was there before isn't needed any more as the spi core
+ensures that only 8 bit transfers are used, so the variable can go away
+together with all assignments to it.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402100815.XQXw9XCF-lkp@intel.com/
-Fixes: 2259233110d9 ("spi: bitbang: Follow renaming of SPI "master" to "controller"")
+Fixes: 24778be20f87 ("spi: convert drivers to use bits_per_word_mask")
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/spi/spi-ppc4xx.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/spi/spi-ppc4xx.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/drivers/spi/spi-ppc4xx.c b/drivers/spi/spi-ppc4xx.c
-index 2290b40459ef..2d5536efa9f8 100644
+index 2d5536efa9f8..942c3117ab3a 100644
 --- a/drivers/spi/spi-ppc4xx.c
 +++ b/drivers/spi/spi-ppc4xx.c
-@@ -364,22 +364,22 @@ static int spi_ppc4xx_of_probe(struct platform_device *op)
+@@ -168,10 +168,8 @@ static int spi_ppc4xx_setupxfer(struct spi_device *spi, struct spi_transfer *t)
+ 	int scr;
+ 	u8 cdm = 0;
+ 	u32 speed;
+-	u8 bits_per_word;
  
- 	/* Setup the state for the bitbang driver */
- 	bbp = &hw->bitbang;
--	bbp->master = hw->host;
-+	bbp->ctlr = hw->host;
- 	bbp->setup_transfer = spi_ppc4xx_setupxfer;
- 	bbp->txrx_bufs = spi_ppc4xx_txrx;
- 	bbp->use_dma = 0;
--	bbp->master->setup = spi_ppc4xx_setup;
--	bbp->master->cleanup = spi_ppc4xx_cleanup;
--	bbp->master->bits_per_word_mask = SPI_BPW_MASK(8);
--	bbp->master->use_gpio_descriptors = true;
-+	bbp->ctlr->setup = spi_ppc4xx_setup;
-+	bbp->ctlr->cleanup = spi_ppc4xx_cleanup;
-+	bbp->ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
-+	bbp->ctlr->use_gpio_descriptors = true;
+ 	/* Start with the generic configuration for this device. */
+-	bits_per_word = spi->bits_per_word;
+ 	speed = spi->max_speed_hz;
+ 
  	/*
- 	 * The SPI core will count the number of GPIO descriptors to figure
- 	 * out the number of chip selects available on the platform.
+@@ -179,9 +177,6 @@ static int spi_ppc4xx_setupxfer(struct spi_device *spi, struct spi_transfer *t)
+ 	 * the transfer to overwrite the generic configuration with zeros.
  	 */
--	bbp->master->num_chipselect = 0;
-+	bbp->ctlr->num_chipselect = 0;
- 
- 	/* the spi->mode bits understood by this driver: */
--	bbp->master->mode_bits =
-+	bbp->ctlr->mode_bits =
- 		SPI_CPHA | SPI_CPOL | SPI_CS_HIGH | SPI_LSB_FIRST;
- 
- 	/* Get the clock for the OPB */
+ 	if (t) {
+-		if (t->bits_per_word)
+-			bits_per_word = t->bits_per_word;
+-
+ 		if (t->speed_hz)
+ 			speed = min(t->speed_hz, spi->max_speed_hz);
+ 	}
 -- 
 2.43.0
 
