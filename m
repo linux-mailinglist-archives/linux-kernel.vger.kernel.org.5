@@ -1,155 +1,211 @@
-Return-Path: <linux-kernel+bounces-60512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 841FB8505E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 19:08:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81B628505E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 19:09:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 307B71F24449
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:08:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3324D2820AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816335D492;
-	Sat, 10 Feb 2024 18:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C68F5D485;
+	Sat, 10 Feb 2024 18:08:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AbAxYiQB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="3ep2BltL"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B065380C;
-	Sat, 10 Feb 2024 18:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6E85D484
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 18:08:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707588502; cv=none; b=QJhlR4swYbPn6fVrJhq4NBF6rwDy5oMUmfFn4uMx3+R0TvYwX/ilKcRgeLtl7sTp5ncedwR8wPX2R3cUDGp5egKFfaHcbvC2wRW+QIRfk2NkHYEw/VyryVzymajRwdSPcMLd0GMZDSq6sqqu/PxwPwMK8CC7oeum/ZLem783z5I=
+	t=1707588531; cv=none; b=hCC/Ji2s8InGfLLQie+9lfRCnuy/adSEKZR5WaD1Jn94G0ZSAlIVvnSn2Y2xuP/Nvs/PBYTiml8gaLu+6pv7MMky43wteofFDGt/epXaB7ub0TMj07qDlt6/u8ico/LQJQAaJyLBPSMycpdvN2LBJ+wwjdHcRPu9OeHU1kVcIiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707588502; c=relaxed/simple;
-	bh=pDQ9MEFZ8xbuu5cjngPIgjyWhjXzw1tFUlQOjXM53UU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fRgN98XghnJFTOAedU6JT+U0n8AQ29AoSGFojmSV6xmDK5m9tiZA9gdKX5Z/+E8tdjkaA/wO7cmV5nP6oQUjJJEIUc2zGMhnywWb9YKy5wiecWzO6DW9pc2uG7zpmBoD80ZzdSFlDg8As4ob25QUCuuArk+lAC4JeyXR5dtSSt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AbAxYiQB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B3D3C433C7;
-	Sat, 10 Feb 2024 18:08:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707588502;
-	bh=pDQ9MEFZ8xbuu5cjngPIgjyWhjXzw1tFUlQOjXM53UU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AbAxYiQBPcDTUZFpMI3VrfJxXdzpQnkE6EXur0GKqETKkOJl3zjcnVgoMY8TyZiE6
-	 NMy1mnSuW5i4gq8qZCE0/xfNIjbt25I1MzVCp3WOF/o0lyBHcqsGRyWhzpO6e5Y8z5
-	 JoUIE6b8UFbc1owojmnDGwY/a+pK3xwAhP3ji1xpJbLJWdkMG/Qkx4x3JxLrG/xCzx
-	 N1JrpRiqxGWl6D1+5DVcpdStAVAdPgPrDGtSwUoIzLqThiCNOHqROGVkMbWBzpkrUh
-	 CJ7Bvv3rQyJ94pQQ/nB3/gcqyea+8ENah1myGnT0/4eFGuFNWooWAzKj1ZIoN+123+
-	 fV0lbTq8RtStw==
-Date: Sat, 10 Feb 2024 18:08:09 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Ramona Gradinariu <ramona.gradinariu@analog.com>
-Cc: <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <nuno.sa@analog.com>,
- <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] docs: iio: add documentation for adis16475
- driver
-Message-ID: <20240210180809.1a01733e@jic23-huawei>
-In-Reply-To: <20240208100126.183697-4-ramona.gradinariu@analog.com>
-References: <20240208100126.183697-1-ramona.gradinariu@analog.com>
-	<20240208100126.183697-4-ramona.gradinariu@analog.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707588531; c=relaxed/simple;
+	bh=lcKrX2aRjFNkP4jX/gX7lMq1/swjJPiwcvS8JJ2UKac=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D/XBOE8aYikBA5kUx8l8ft5OJdmhlTDyJHgu3hxpYcZaqHe1rsX0W0OKtWu2JzkVkHonPRltp/6p1OuLfL0nxymkoUJnKdcIMPLhxXppCalx7nGFaLAOnxnGFYG1f6Mdl9Twr2Tk9LvP5HIpTfxFmGptciulbsJuHo4RWec+xVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3ep2BltL; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1da120617c7so74535ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 10:08:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707588529; x=1708193329; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XDX7C5VgeWEhXGxm3lJpibeXlVT0VMTj0KZSmCI04qk=;
+        b=3ep2BltLEN5gir0RHo2QpZrZuyUylLdYUQ5P8DRgG3Jhg1CzABm9+zSXoMfprD440G
+         ktZPSs9/BhYcSPPgXftY36CPBb3PhidItAZO1FXoO6Yvybx0iOpcxgUVK7xIaKSUmrac
+         3J7t8/yClwC+pS5WwYjmCz00c/EiKfRQeXmH/zwGphwzc/gbtnyFgLL8qedleupuYJFX
+         VXO2AxLHm4ROXfEo3iw2BxjQjekyfkZjNPej3mfg7sNgcSqkGw8n4mn572jVCov2kjUY
+         jymESrrTFH/W+F5H/V/EnshydNjkr3d74DGFgob43OXsMBRCyFFp49J/HmUZjCkYEoK0
+         YIPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707588529; x=1708193329;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XDX7C5VgeWEhXGxm3lJpibeXlVT0VMTj0KZSmCI04qk=;
+        b=JQ2tDd0EVua2PmuBV/5fSDqEjtM0a5suUhlXHJs3/BREFHcZFIpkcY7kVZkoovhgNN
+         tlYMnktiP4ZaZiuXFScLM5M6/O6E9D8c8mHZmv/5laf8x/sxS4vFvlp1jyHLiiy7oyjV
+         2Kv3/tDIbTjtCbQp5aaz0A/dTtSpQzZro8n8iP+mEUyGw13Cb65lTs1NlRlr31bwBDBl
+         o2GoRHvkhmsOiPjqc361NeybvF7B1hzAwk+1AyAa1ita/DEaauY6MKy1pVSEYxKIaRsm
+         Z0TL+dnJTTqCObJkPcAyhfS7i0lzooX6yXQPilwK8SyUtUEWW31K7aIWte+pFx9TBVw5
+         Tgcw==
+X-Forwarded-Encrypted: i=1; AJvYcCUE5SvaJ//Kjgvx1Xk1kHcdL7P6B0/6Eh5kwtyP4vIXgIoBlfLK8j0ymSEh50PwnMB8t+G5NFFLYNoNrhmh/3KXiel0TNt51DLYcdj3
+X-Gm-Message-State: AOJu0YyVweUzf0hY1KYHaQ5EmdQ+sL+LMtns1G0bumJgmchiGbUkxsHs
+	+m1ySf7dQHO/m1TS6j2akomG7nTpBocKBqj+2H1LaEWbMIKbuAIYHL+5cOdIm0+PfdiAYwJEwiC
+	ZnatNYRbKbF49OMtMjSiHiGEeqA/JcIKnKoY0
+X-Google-Smtp-Source: AGHT+IFy3H9+Iwf1AWzIzjSIJM9jx52R90mLMMKQKjC/oVRCYUD5d4W+fplaW0pXNusL1NHPcf+mHRVioCIfzLDLn9Q=
+X-Received: by 2002:a17:902:c24d:b0:1d9:6c20:b900 with SMTP id
+ 13-20020a170902c24d00b001d96c20b900mr64520plg.7.1707588529249; Sat, 10 Feb
+ 2024 10:08:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240207223639.3139601-1-irogers@google.com> <CAM9d7chBixXozCQztM2WKGbfs_8C70vy6ROzKpwLSqq-upz5iQ@mail.gmail.com>
+ <CAP-5=fUVkaq3dDoeMYYEN1N-ghnL-GiP8PV3N3pWpjQKpDTCHw@mail.gmail.com>
+In-Reply-To: <CAP-5=fUVkaq3dDoeMYYEN1N-ghnL-GiP8PV3N3pWpjQKpDTCHw@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Sat, 10 Feb 2024 10:08:35 -0800
+Message-ID: <CAP-5=fXs8=HvjGpkLwuZBi0Hh8jtmz7=0Tp7HRgU8FOFN0GZvg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] maps memory improvements and fixes
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
+	Miguel Ojeda <ojeda@kernel.org>, Liam Howlett <liam.howlett@oracle.com>, 
+	Colin Ian King <colin.i.king@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Artem Savkov <asavkov@redhat.com>, Changbin Du <changbin.du@huawei.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 8 Feb 2024 12:01:26 +0200
-Ramona Gradinariu <ramona.gradinariu@analog.com> wrote:
+On Fri, Feb 9, 2024 at 6:46=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> On Thu, Feb 8, 2024 at 9:44=E2=80=AFAM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+> >
+> > Hi Ian,
+> >
+> > On Wed, Feb 7, 2024 at 2:37=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> > >
+> > > First 6 patches from:
+> > > https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@google.=
+com/
+> > >
+> > > v2. Fix NO_LIBUNWIND=3D1 build issue.
+> > >
+> > > Ian Rogers (6):
+> > >   perf maps: Switch from rbtree to lazily sorted array for addresses
+> > >   perf maps: Get map before returning in maps__find
+> > >   perf maps: Get map before returning in maps__find_by_name
+> > >   perf maps: Get map before returning in maps__find_next_entry
+> > >   perf maps: Hide maps internals
+> > >   perf maps: Locking tidy up of nr_maps
+> >
+> > Now I see a perf test failure on the vmlinux test:
+> >
+> > $ sudo ./perf test -v vmlinux
+> >   1: vmlinux symtab matches kallsyms                                 :
+> > --- start ---
+> > test child forked, pid 4164115
+> > /proc/{kallsyms,modules} inconsistency while looking for
+> > "[__builtin__kprobes]" module!
+> > /proc/{kallsyms,modules} inconsistency while looking for
+> > "[__builtin__kprobes]" module!
+> > /proc/{kallsyms,modules} inconsistency while looking for
+> > "[__builtin__ftrace]" module!
+> > Looking at the vmlinux_path (8 entries long)
+> > Using /usr/lib/debug/boot/vmlinux-6.5.13-1rodete2-amd64 for symbols
+> > perf: Segmentation fault
+> > Obtained 16 stack frames.
+> > ./perf(+0x1b7dcd) [0x55c40be97dcd]
+> > ./perf(+0x1b7eb7) [0x55c40be97eb7]
+> > /lib/x86_64-linux-gnu/libc.so.6(+0x3c510) [0x7f33d7a5a510]
+> > ./perf(+0x1c2e9c) [0x55c40bea2e9c]
+> > ./perf(+0x1c43f6) [0x55c40bea43f6]
+> > ./perf(+0x1c4649) [0x55c40bea4649]
+> > ./perf(+0x1c46d3) [0x55c40bea46d3]
+> > ./perf(+0x1c7303) [0x55c40bea7303]
+> > ./perf(+0x1c70b5) [0x55c40bea70b5]
+> > ./perf(+0x1c73e6) [0x55c40bea73e6]
+> > ./perf(+0x11833e) [0x55c40bdf833e]
+> > ./perf(+0x118f78) [0x55c40bdf8f78]
+> > ./perf(+0x103d49) [0x55c40bde3d49]
+> > ./perf(+0x103e75) [0x55c40bde3e75]
+> > ./perf(+0x1044c0) [0x55c40bde44c0]
+> > ./perf(+0x104de0) [0x55c40bde4de0]
+> > test child interrupted
+> > ---- end ----
+> > vmlinux symtab matches kallsyms: FAILED!
+>
+> Ah, tripped over a latent bug summarized in this part of an asan stack tr=
+ace:
+> ```
+> freed by thread T0 here:
+>    #0 0x7fa13bcd74b5 in __interceptor_realloc
+> ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:85
+>    #1 0x561d66377713 in __maps__insert util/maps.c:353
+>    #2 0x561d66377b89 in maps__insert util/maps.c:413
+>    #3 0x561d6652911d in dso__process_kernel_symbol util/symbol-elf.c:1460
+>    #4 0x561d6652aaae in dso__load_sym_internal util/symbol-elf.c:1675
+>    #5 0x561d6652b6dc in dso__load_sym util/symbol-elf.c:1771
+>    #6 0x561d66321a4e in dso__load util/symbol.c:1914
+>    #7 0x561d66372cd9 in map__load util/map.c:353
+>    #8 0x561d663730e7 in map__find_symbol_by_name_idx util/map.c:397
+>    #9 0x561d663731e7 in map__find_symbol_by_name util/map.c:410
+>    #10 0x561d66378208 in maps__find_symbol_by_name_cb util/maps.c:524
+>    #11 0x561d66377f49 in maps__for_each_map util/maps.c:471
+>    #12 0x561d663784a0 in maps__find_symbol_by_name util/maps.c:546
+>    #13 0x561d662093e8 in machine__find_kernel_symbol_by_name util/machine=
+h:243
+>    #14 0x561d6620abbd in test__vmlinux_matches_kallsyms
+> tests/vmlinux-kallsyms.c:330
+> ...
+> ```
+> dso__process_kernel_symbol rewrites the kernel maps here:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/=
+tree/tools/perf/util/symbol-elf.c#n1378
+> which resizes the maps_by_address array causing the maps__for_each_map
+> iteration in frame 11 to be iterating over a stale/freed value.
+>
+> The most correct solutions would be to clone the maps_by_address array
+> prior to iteration, or reference count maps_by_address and its size.
+> Neither of these solutions particularly appeal, so just reloading the
+> maps_by_address and size on each iteration also fixes the problem, but
+> possibly causes some maps to be skipped/repeated. I think this is
+> acceptable correctness for the performance.
 
-> Add documentation for adis16475 driver which describes
-> the driver device files and shows how the user may use the
-> ABI for various scenarios (configuration, measurement, etc.).
-> 
-> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-> ---
-> changes in v3:
->  - fixed wrapping
->  - added sentence showing device files location
->  - fixed typo in device file names by adding the in_ prefix
->  - added new section for channels processed values
->  - rephrased the trigger setting section
->  - gave reference to iio_devbuf documentation for raw data
->  Documentation/iio/adis16475.rst | 381 ++++++++++++++++++++++++++++++++
->  Documentation/iio/index.rst     |   1 +
->  2 files changed, 382 insertions(+)
->  create mode 100644 Documentation/iio/adis16475.rst
-> 
-> diff --git a/Documentation/iio/adis16475.rst b/Documentation/iio/adis16475.rst
-> new file mode 100644
-> index 000000000000..192ec1225de5
-> --- /dev/null
-> +++ b/Documentation/iio/adis16475.rst
-> @@ -0,0 +1,381 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +================
-> +ADIS16475 driver
-> +================
-> +
-> +This driver supports Analog Device's IMUs on SPI bus.
-> +
-> +1. Supported devices
-> +====================
-> +
-> +* `ADIS16465 <https://www.analog.com/ADIS16465>`_
-> +* `ADIS16467 <https://www.analog.com/ADIS16467>`_
-> +* `ADIS16470 <https://www.analog.com/ADIS16470>`_
-> +* `ADIS16475 <https://www.analog.com/ADIS16475>`_
-> +* `ADIS16477 <https://www.analog.com/ADIS16477>`_
-> +* `ADIS16500 <https://www.analog.com/ADIS16500>`_
-> +* `ADIS16505 <https://www.analog.com/ADIS16505>`_
-> +* `ADIS16507 <https://www.analog.com/ADIS16507>`_
-> +
-> +Each supported device is a precision, miniature microelectromechanical system
-> +(MEMS) inertial measurement unit (IMU) that includes a triaxial gyroscope and a
-> +triaxial accelerometer. Each inertial sensor in the IMU device combines with
-> +signal conditioning that optimizes dynamic performance. The factory calibration
-> +characterizes each sensor for sensitivity, bias, alignment, linear acceleration
-> +(gyroscope bias), and point of percussion (accelerometer location). As a result,
-> +each sensor has dynamic compensation formulas that provide accurate sensor
-> +measurements over a broad set of conditions.
-> +
-> +2. Device attributes
-> +====================
-> +
-> +Accelerometer, gyroscope measures are always provided. Furthermore, the driver
-measurements (probably what you mean)
-
-> +offers the capability to retrieve the delta angle and the delta velocity
-> +measurements computed by the device.
-> +
-> +The delta angle measurements represent a calculation of angular displacement
-> +between each sample update, while  the delta velocity measurements represent a
-
-looks like an accidental extra space after while.
-
-> +calculation of linear velocity change between each sample update.
-> +
-> +Finally, temperature data are provided which show a coarse measurement of
-> +the temperature inside of the IMU device. This data is most useful for
-> +monitoring relative changes in the thermal environment.
->> +
-> +Usage examples
-> +--------------
-
-Whilst useful to lay this out, perhaps reference some standard tools that do all this
-for you? (either the really simple one in the kernel tree and/or libiio etc)
-
-Overall very nice docs.
+An aside, shouldn't taking a write lock to modify the maps deadlock
+with holding the read lock for iteration? Well no because
+perf_singlethreaded is true for the test:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/util/rwsem.c#n17
+Another perf_singlethreaded considered evil :-) Note, just getting rid
+of perf_singlethreaded means latent bugs like this will pop up and
+will need resolution.
 
 Thanks,
+Ian
 
-Jonathan
-
-
-
+> Thanks,
+> Ian
+>
+> > Thanks,
+> > Namhyung
 
