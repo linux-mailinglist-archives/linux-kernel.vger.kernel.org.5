@@ -1,75 +1,76 @@
-Return-Path: <linux-kernel+bounces-60433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD17F8504E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:14:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD2B98504E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:14:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87DE4283141
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:14:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A2841F22308
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9BC25BADF;
-	Sat, 10 Feb 2024 15:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26B55C5EC;
+	Sat, 10 Feb 2024 15:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="ApECabZt"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="ml2Dfs/y"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F765380D;
-	Sat, 10 Feb 2024 15:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6EC5BAEA;
+	Sat, 10 Feb 2024 15:14:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707578074; cv=none; b=ksZfjrR2yC1jqfpeBSqKtAE45/nuvsQF2RQYzpsJyLPeWlGxsWvxQQ9zIsA+iytTUKbS6czSdCXrfvWtmd2Q00U/92WsIZ2JPn7U6g9Pr4LBRPH1IM42ElGqid1yroCI7JMp0RDBdLKazEP/+jupGiwWwBJfXY1X0DFbIH6Zuok=
+	t=1707578077; cv=none; b=Fu4CsIZHZNefNjhCCeTY1mZyIOd6hAwZIZffc4iWq2gKT1KLc/gPjkZ6s7GKiwGzQzB3HYXCcHrDfi7wJrsbSiL7tq1bpfH3qQ4jefEbVaDhO3cexw8mXo58x8SAiHtdwhNvKKQiVKcHXaTc8ASC3N3oLfWeQ7APnl3GcVzWx78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707578074; c=relaxed/simple;
-	bh=kzuYAL0Q3W5IoevqxmRusinDuR6hBB8ObAvm8X5wMBM=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=rlWle6WgAYLTmCduq2Lx5l6F7gpivNvzxfoHGTyHo2j1fUX6HBiWASCTm9ehId0fJhP6N4pUX6FwbnRvNGoqQFoZ09uYUN7EVUOYB+3lA4yOHY+BXBSZbGPdTODJfdZS319GBXMHY888zUGrzsoPaqwPs70UFQJpZ/lL4b/fTHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=ApECabZt; arc=none smtp.client-ip=209.85.214.169
+	s=arc-20240116; t=1707578077; c=relaxed/simple;
+	bh=nd1L9dsPPe4pngs/YiF6AK1x1qGLgM6QNIrQbX5TN/4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=GnyGPV2rer1BCWDOtFDOgxvWhyhFcijxJOppvbpQ6LJaUBISgtiM8sFYhenjP98KVpnRHey3Zfcieh6MH5R2Uq11a77JP21Jzy3Y599VtYGG8Ix/fB0hPN9Jcj2gkStSFoNRd5HlWwES6PhGFV+5Ce/ZIwHWcC8E99+3wlXSrcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=ml2Dfs/y; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d8aadc624dso15273305ad.0;
-        Sat, 10 Feb 2024 07:14:32 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d73066880eso17385165ad.3;
+        Sat, 10 Feb 2024 07:14:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707578072; x=1708182872;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zQkaWqJl7pMIWT995zvqC9gdsJb2Z3jcvYFdnK+EjME=;
-        b=eE4vIQXDNjSdYQfEqGnENuJO5krQ1Y2FrFrNMu7iLm98BLrvOZyDdKpJzf0D0mam2Z
-         G2CFy9URWsGr9Dfz7RpCXGcqthU9B++uGnwYn0hZSLs7UfwdWvvS1whIgLHwndPpL7Vn
-         rzmsZ3LBWy20r0DSdJNpDoQc8Yy8uBVJBDxPdMjA2RcgHzKdp0Z9+ahqLM9JtPz7jBfr
-         w12FF5CgDyMhWvSEXPmN5Xwaj7P1EE9LmQOt1q3CrmcKj5DYGD6vxoQZHfED9IrcoYbi
-         ZWCgER/NNMpKWLfSDe/ljSEYb5xY6e0VhsS+q5S8lqyCCP5AnPhne/8ikE1/NzzebjDf
-         lMmA==
-X-Gm-Message-State: AOJu0YwxJR2HORS4Uo+8veegc4CoNgwbYSQrzvX/sREjvPH0MthAzzkk
-	Y5fkXMkmfqgqC1BWjZh7U8DHTuwjVu6M0m6Nn3Oxzg27tvi/mpwO
-X-Google-Smtp-Source: AGHT+IEdz/bpO2GULPdrY13S1STtbOkLXOlSe4oEyWSlw5VFStJBGV1Qf+9Ryfd0i06MTgqTdtqvqg==
-X-Received: by 2002:a17:902:d2c5:b0:1d9:bd7d:3c79 with SMTP id n5-20020a170902d2c500b001d9bd7d3c79mr2736458plc.26.1707578071716;
-        Sat, 10 Feb 2024 07:14:31 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXFYKIkxFttKdM3eJXrNabObw5BlBNpbjicdaGmAf54FIBXUGgHEGxkRAVjPrRx7JvWcCtdVGi7RKP25TSnLfssen1wPQaNZwJwHaotHXFlaYYr01+5rOoXN9tll9175aJJt+mCyxJWhw==
+        d=1e100.net; s=20230601; t=1707578075; x=1708182875;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:dkim-signature:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O1YK2Xi7YoM6Fuw/uyfUPTKNXnj0Kxs588qJa21lTm4=;
+        b=Zw0k4CAGK9a6zB/KMcuH7EGDSdmivnnKzPblc1AsyN38ESlPub/+Bv0Jc/lm1DVz88
+         lhOQ20oIcS3P+e5DPWQjl96jjhAePVg/4O+1JIl88coqwazFMjpwmVB2BoTuQveIZ3vG
+         LFWN39HSVs03NzfiqqN8yjsfdsu+O1jHdYhYZZYRJXeJiqmt+rvsJsFvjkL2a70nrcg3
+         y6XgvwJNgn8bMABVFEgDkxs3zUwZhXw0J/Qh7+n9uHICGGb2hcKUTVW9ETNA5sdPW+o0
+         eDTaMXLHfTGn0eTAY2wDORag78oEtLu3aoebrXdT4GdbU5CV892XI66PMISFvRxy3kLD
+         W4HQ==
+X-Gm-Message-State: AOJu0Yx8yS2kZxpLPU86qAa6uMESnjnvlnrpg4Uaw7ibG/+qiS45qQQQ
+	lnEPWwvUO94qKX8hw2j3P9EppCNUnGCHEPasrA8GUDUku2V/DhRqRowwCzNohwnlrw==
+X-Google-Smtp-Source: AGHT+IGmdJrNjvf8sjLdPp67KHOvEcnSFXCaSJbAOt2nQe0shE9bmb1whSEgQK9jDVKiBXGK+a0NhA==
+X-Received: by 2002:a17:902:e986:b0:1d8:d5b0:aadb with SMTP id f6-20020a170902e98600b001d8d5b0aadbmr2420584plb.66.1707578074912;
+        Sat, 10 Feb 2024 07:14:34 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVysw4uwwqZM+3PW+p4GJ2oKWLOl0X8to2u7NQ+S0omnTUHuoggCPfs59loVOHLZBdgy7ZGgjsdTYY6sSiPD5H91x96R44jCrL/xGmLZzFyOBVYu5+6pFqe/ENj7HMbCBiz2aeFLojLFQ==
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id kw14-20020a170902f90e00b001d949393c50sm3141350plb.187.2024.02.10.07.14.31
+        by smtp.gmail.com with ESMTPSA id d3-20020a170902c18300b001da1ecb05f9sm1093870pld.240.2024.02.10.07.14.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Feb 2024 07:14:31 -0800 (PST)
+        Sat, 10 Feb 2024 07:14:34 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707578069;
+	s=2024; t=1707578073;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=zQkaWqJl7pMIWT995zvqC9gdsJb2Z3jcvYFdnK+EjME=;
-	b=ApECabZtu4UycNwFSZiPmDvVZyRf1VZTfpJ0/CkhHFaC65RKh0DTmKxp4Z6YmcWXYEU4RS
-	/mwjzYeZBCkqO9SL5XqIeHubmXr2yfqBxKfxpF/tSrOXLx44LpcRNqp4NYy0f6d+QdWN2X
-	keWgnAAU9yF16Oy3SkX7iH+j193LC1pXfLfJuwl4nmzYpJDLzjDjPkPL5yDIMa+lKBvtZC
-	U2jkWVK6rZOfIKXoKDzNPAM1KMK7jgNHt0qX2OoCD/MSHml3RPXfD7b9sXhv6uaUzSYpYv
-	t08WfRU4jfgyNoLaSqyipxa80NCpevfHSs9Kju25vFhIxhOyFEjbaJEgmVwCcg==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O1YK2Xi7YoM6Fuw/uyfUPTKNXnj0Kxs588qJa21lTm4=;
+	b=ml2Dfs/ycTINTElcOg8QE2BFISiBR6ggIOrwVGol9uIuyfwPY8uttZRR5ks6rlsBYiNnXN
+	hcBIxaDSea7L63Q9J/0Z+lDI14bYG7wGLgOO0oCPMj9eem3W5tnXAwnhS/gaZ2OYOuUn8W
+	0HU0LPtyscwUdFZPQLwGXsBn56JpD+mT837sAEDzOGGSMQicKU4Nvzx/3dvi5MxQsuKJMs
+	XtY5MDECvVpx01wXrpRZRy5AjYioRpislfmqch0q+kZT3ifG4jxzANjJIc5ho3sAjvRQjT
+	eSHrJ9zXen+vddFKdDehVZnC1K+iaZcWeTCJXnDQJzHK6NHAItm7XPGjYK8afw==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Subject: [PATCH 0/2] Input: struct bus_type cleanup
-Date: Sat, 10 Feb 2024 12:15:00 -0300
-Message-Id: <20240210-bus_cleanup-input2-v1-0-0daef7e034e0@marliere.net>
+Date: Sat, 10 Feb 2024 12:15:01 -0300
+Subject: [PATCH 1/2] Input: synaptics-rmi4 - make rmi_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,56 +79,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAPSSx2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDI0MD3aTS4vjknNTEvNIC3cy8gtISI91U89Q000Qz41SLZBMloMaCotS
- 0zAqwodGxtbUAl5bBaGQAAAA=
+Message-Id: <20240210-bus_cleanup-input2-v1-1-0daef7e034e0@marliere.net>
+References: <20240210-bus_cleanup-input2-v1-0-0daef7e034e0@marliere.net>
+In-Reply-To: <20240210-bus_cleanup-input2-v1-0-0daef7e034e0@marliere.net>
 To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
  "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=902; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=kzuYAL0Q3W5IoevqxmRusinDuR6hBB8ObAvm8X5wMBM=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlx5L5jYGFYOw0CEdClRUvwTtw1ri8R6501vnwR
- i/MqNagmraJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZceS+QAKCRDJC4p8Y4ZY
- pkV8D/oDomaYy2QI1rFyYeP6jx/IyxWyYCn8QIq7R0edSYalgdHiPAWB2zissyuzBJRTQw3YKrc
- HSuwRdxW+Su42MFmBDUya8Y4RpTRQEm+wPJFULy0LJj10aFRNDsLWp5BMW+j8Y8rx0dUfte9FtQ
- 4X7gxiOwZXf3EPIrJkZwNCUkwGnOkRbkyhIDr+4qat1F5/vO+nc0xWR0P/RrgFXC2Zp9tj/FmbM
- sOKhX4VsaNDt7niq2Cg9R4mKP/QwXaDWrYAWndzwr7Nr7MPOds9yd7Cm3okeeocQPGoyagy1AqM
- vO2867J5iM9ODO2Y4YzJz+0SByrlcojteSXjoCGdqd+pmHGK86VF3if/e0PNXMd4HN3lVmeQIA3
- D1srtQVJqePcizSylEqLAd840rPYecb+8luw1MvMPsWhHRN3at1r2VcXwCF9WEd6lFnDH8lTjgE
- FB9/iI51M1VRzioXWtYTf9YcVJeZkxAHsfXu1fgNh1uEa30kPR+WY1YgeovDlNTyNpqrw/jbosZ
- FwKtLWoxcyK1BEVhpzIMuPO9w1hUzB2LDeVrngZiqKcGKC0Y4htxZjMW2o8Uu2ngxpLxgM54zPA
- e5ZOWtOYCXcGglBpzj6ggjzAYtqaMsbIgSoaWfOghuHZC2a+AmEkKvXGBE2yhKNaSvIklh8WvpC
- 3DNplai6i9XDb5g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1558; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=nd1L9dsPPe4pngs/YiF6AK1x1qGLgM6QNIrQbX5TN/4=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlx5L5/4DucfC8X49Z3npp/MXnWapGcnKf32oMU
+ nGVkTlnWymJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZceS+QAKCRDJC4p8Y4ZY
+ phMqD/95yAoKPPBvjJHk2CFOTXRI25iw6mZ4Of4kaFPvmMIeIgGGTAb5hoo2QiFXj/KPbw8CWSh
+ YcJP15jwWWL/y0YoxKQWBZ0EuMf85j7IiQH5PP9clsSSOYvHdTkBFJwTkhklSzsDN/KqPBYnMsN
+ aTEM1MPDln2HTg//+hfgmiHk7aHBoBwtOc6/wm5W8VpGcwLJ3YWm4PleumV37bKSBX93Kg6HyW3
+ HmQKBLwKYhgWWsxvxvY4CMhJ/MENpAbv6MAyrcycuZk97O4mvoy+Z3IqkSNngGi165xqaQA0laz
+ dYzYrG+JbMYpWoJaVaEw3wHn2DeLqDMKWF89VaJ0q0gP6JuoyzT8gAt/AsBIUQ8cTe1cMcNiIgs
+ n0V9zW0P5AsMH4bq9fZlloHfx9mHrCfjWnOi2Xjn7hCr/KjBJCvxqWakTVgPF9R+hPm8tByKZ4M
+ sb6wvwU/6ZaoLxHk6nCRNF/uyBIjYxC+/HqtKYAkYE0pGuGazhGnmxxO/CIcyDr/n4v/LsKqFmy
+ 8sAqItaN9TnviaIGgHX2prM9KIzbk2mdCREE6LTwF7CF/MUVfPVacyyLwRrfkT4EObbQy5tS+pN
+ XtURW4NWQTHhy7V0xRJRW4iToF5FhPAGZm7AtkJjt797E1pULIIiyHrV9X4g8mcgIuF/SfAzrPK
+ jfvVVfqE8EM49KQ==
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-This series is part of an effort to cleanup the users of the driver
-core, as can be seen in many recent patches authored by Greg across the
-tree (e.g. [1]).
-
----
-[1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
+Now that the driver core can properly handle constant struct bus_type,
+move the variable rmi_bus_type to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-
 ---
-Ricardo B. Marliere (2):
-      Input: synaptics-rmi4 - make rmi_bus_type const
-      Input: serio - make serio_bus const
-
  drivers/input/rmi4/rmi_bus.c | 2 +-
  drivers/input/rmi4/rmi_bus.h | 2 +-
- drivers/input/serio/serio.c  | 2 +-
- include/linux/serio.h        | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
----
-base-commit: d03f030115fe930de1222fef294730ba21b93045
-change-id: 20240210-bus_cleanup-input2-e7ef5a63e8c4
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Best regards,
+diff --git a/drivers/input/rmi4/rmi_bus.c b/drivers/input/rmi4/rmi_bus.c
+index 1b45b1d3077d..343030290d78 100644
+--- a/drivers/input/rmi4/rmi_bus.c
++++ b/drivers/input/rmi4/rmi_bus.c
+@@ -344,7 +344,7 @@ static int rmi_bus_match(struct device *dev, struct device_driver *drv)
+ 	return physical || rmi_function_match(dev, drv);
+ }
+ 
+-struct bus_type rmi_bus_type = {
++const struct bus_type rmi_bus_type = {
+ 	.match		= rmi_bus_match,
+ 	.name		= "rmi4",
+ };
+diff --git a/drivers/input/rmi4/rmi_bus.h b/drivers/input/rmi4/rmi_bus.h
+index 25df6320f9f1..ea46ad9447ec 100644
+--- a/drivers/input/rmi4/rmi_bus.h
++++ b/drivers/input/rmi4/rmi_bus.h
+@@ -185,7 +185,7 @@ static inline int rmi_write_block(struct rmi_device *d, u16 addr,
+ 
+ int rmi_for_each_dev(void *data, int (*func)(struct device *dev, void *data));
+ 
+-extern struct bus_type rmi_bus_type;
++extern const struct bus_type rmi_bus_type;
+ 
+ int rmi_of_property_read_u32(struct device *dev, u32 *result,
+ 				const char *prop, bool optional);
+
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
+2.43.0
 
 
