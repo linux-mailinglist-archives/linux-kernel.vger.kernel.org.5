@@ -1,98 +1,110 @@
-Return-Path: <linux-kernel+bounces-60424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B606D8504B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:23:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D633D8504B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 15:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E795F1C20DE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 14:23:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E42F28418B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 14:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 127E754656;
-	Sat, 10 Feb 2024 14:23:03 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23F6154679;
+	Sat, 10 Feb 2024 14:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wrpaDEIo"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF72F53E30
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 14:23:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7CE54278
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 14:23:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707574982; cv=none; b=n/VSn3fwMpdZst5MQghMb9lSVIbJ1EAXems6iFl0qvOoBdkY6kCIg8nP0E6VcOnvBBPtGZrpzzVkA0wfKImyXtNZ+ZsBZYtZKbxbPwS/j5VkG0alx6kur9iI9UbDqOuvyZBtnXmEmLWKe+VHE8e7RQI6vmiu+piTseYyBV2HpbE=
+	t=1707574998; cv=none; b=VzCe2WkLVqz1H1/0+/1yOhgojhOdJPFhB1qOaHXspwXNJ1xegLpkGISUaH52Scp9pHqfRD7NgrvPuWQXA8qRjDZOvfHRn/S4TfnyEyTrkdLpj6O40Uac0657Ib4I5gfM4uDuzvnfdOl2HwZWejOnmpclFx1+Xk9RjrBEFIP+r5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707574982; c=relaxed/simple;
-	bh=OCdrhsWhvA4a4/A756/EUUI1BZgzj9AkFJv1Fy6Ehpc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=i85F5f/c92+02H15ZPFX1Vf2IwTGvlR8g42pYCJJoLeRxM8O9dIkD8gEAo3ALOs9FEZzmchEauJWuRIfCrJP7Q/hu1kCksG3/Pz/Vxe8mRFiIe0eLA0wMox0yjfDZzau348OZ1Z38hhtUt/F8E5UiZIwG1szOkYAQOns8IvUTJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-285-P2GNB8rOM5-27t9QbLe7Bw-1; Sat, 10 Feb 2024 14:22:57 +0000
-X-MC-Unique: P2GNB8rOM5-27t9QbLe7Bw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 10 Feb
- 2024 14:22:36 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sat, 10 Feb 2024 14:22:36 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Lucas De Marchi' <lucas.demarchi@intel.com>, Andi Shyti
-	<andi.shyti@linux.intel.com>
-CC: Yury Norov <yury.norov@gmail.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, Andy Shevchenko
-	<andriy.shevchenko@linux.intel.com>, Jani Nikula
-	<jani.nikula@linux.intel.com>, "intel-xe@lists.freedesktop.org"
-	<intel-xe@lists.freedesktop.org>, "intel-gfx@lists.freedesktop.org"
-	<intel-gfx@lists.freedesktop.org>, Jani Nikula <jani.nikula@intel.com>
-Subject: RE: Re: [PATCH v3 2/3] bits: Introduce fixed-type BIT
-Thread-Topic: Re: [PATCH v3 2/3] bits: Introduce fixed-type BIT
-Thread-Index: AQHaWtQsWHNiAo+Zx0GwnNabxeNy8rEDowcg
-Date: Sat, 10 Feb 2024 14:22:36 +0000
-Message-ID: <d42dc197a15649e69d459362849a37f2@AcuMS.aculab.com>
-References: <20240208074521.577076-1-lucas.demarchi@intel.com>
- <20240208074521.577076-3-lucas.demarchi@intel.com>
- <ZcUz3V56qNeTVq66@ashyti-mobl2.lan>
- <ilppncjskpt52bijaoxlwcklawjpw5cqrndtx2g5xnwpj6bhbm@kn5yjscaha5e>
-In-Reply-To: <ilppncjskpt52bijaoxlwcklawjpw5cqrndtx2g5xnwpj6bhbm@kn5yjscaha5e>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1707574998; c=relaxed/simple;
+	bh=DaI34cmoQ2TTjezX6O9uXpwQhRxq41aFstLGILeGAGA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pFWJAIJjEaLUdSzdTVut5X8hCe2SxL0iwu2qewy+UtYU9jY2wqHFMzxGwYvqJscs83O03EHAmgpGxDkJudiaHbKwzvf/m6eNrZA8B7h6vKGJb7CPmBeLpSFIr/9NSzA1p4FjvcRmBzi1NOn7ehtoh8VfaQf/OaXEBprSG9unNCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wrpaDEIo; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so248965166b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 06:23:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707574995; x=1708179795; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E4HO4hLAzbgJmOVEY8MO0LN738x8Cz2lxnox/JBlwZw=;
+        b=wrpaDEIoEfZ6CvTreW7HMqeGmUiT+lNGKLlkeSu6zeFbdVZXXCdSLbO9zj37qc4aZF
+         iqGi4Lh0iP98qA/13t25XNM3LKius6SP+9x4eBBCkDt4fvc8aX+OupO7v2ay1p5bzyTQ
+         Ez8lOM82ntvl2ozKNYQHsb/jTLjdfnwLqXNBLIOuyb+GW9IB0uAgcHvAnE82OhF60fL/
+         tLiXaVFhQygaZrxokbYPjGJp1CUYlw/S01ImyA3vic50aWYv4qm2JM4D0DXoU1qOPXbX
+         1ev0Rc6+9yrt+G/CF4BHbo6iSzxJz3M6vys6VxdDnTpyxyxEu48k6Y2fUjvqvnEMpZAq
+         DMlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707574995; x=1708179795;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E4HO4hLAzbgJmOVEY8MO0LN738x8Cz2lxnox/JBlwZw=;
+        b=NJHVQlvH3CbuaKfpWHbCEN8AVn9C21fcL57xKLLiJnvAmLS4+F57qXE+q3tUFA+ajI
+         4UfdaamwD6p2sKc4um5tuQIfQpcD6VzHx/du2TlLYpa1xLTpu6/BuTL+vlibsVbBRxRO
+         Z4UePWL4K2OTCe2OqfxDngU0WmLsuPsmsiq+IhwDMj17yyyFvKusPhzXC9aUwqlOERUG
+         WThG6rqxOFiTtdS6VI3/h5CnT9UHbgMa2g2M+n0N9aRawxlckj+JwRWxFEy9eexGhqyL
+         GaJx9BIKW6en6i+cJL1Gmcgw6ObxaChU/IoA4EIxtSK5B4la0dHh6PuUNdFBP0nBON1q
+         zJcw==
+X-Gm-Message-State: AOJu0YydiTcLM9DHMDLyKClupStEjqQ3JEtbfT1zwVpEFpF4iS+tLwuy
+	poaslLet0yjXapsRxnFlBPT2Z3ckSHNbDVzXvz5wmyd6sCnch3eT5FVaNxhn550=
+X-Google-Smtp-Source: AGHT+IEJZtlhHoDZ5lAeCtmu7+okxoXyvoQMZqadchssc7Ffm8NwFqahbNXqLhMwFKdEQU7UwQkTSA==
+X-Received: by 2002:a17:906:2789:b0:a3c:4503:f72e with SMTP id j9-20020a170906278900b00a3c4503f72emr620585ejc.22.1707574995136;
+        Sat, 10 Feb 2024 06:23:15 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW+CqreWMjIfkQHM7lVlY9oTvW1YpdcnimBkIIejPItqBzmLjSfvYQEj6mBODYLt8dPX2VmVbmRbWe8DYKIb9R6CbpHVV98CYSpcZPxncrMTyAf2t7hOOZ8qTtNX0syvlT/xq2EyLX5Op92EGljvqQ+cucSsaulV7BUJZOOIfKCVDEuf+eydSe03EkjNY4Mf5LtZvhdDmaQpR8a/ecLZ+HLikQ+wKJw6nv/WtoOYdkUzi/7sg3PhWhQD8ugQe0FB1ZZHaUCaX1eCd9Ab7gMjSVHA8RcVq+8ELQouZ8DTpqgvIfhFyNOyssY5q0516SX+lCmCDOflEtY5+u25QIbiNy4fLwLm7MuyYnFKgfvNuDdYbyxeyn5xHbFRCtsmpMZrGxrw+Q2Xa4ihNnNKU0fjWtDdTY9JHfeEW4aoiEElvMb7QnHGQUMa0V4HoZFijsqkViY83SygbPRIfkRfSKh8ohuXR/s7OBo9SvzeZ2O3uwBMg==
+Received: from [192.168.1.116] (abyl12.neoplus.adsl.tpnet.pl. [83.9.31.12])
+        by smtp.gmail.com with ESMTPSA id k6-20020a1709061c0600b00a387d9d6dc5sm1858412ejg.174.2024.02.10.06.23.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Feb 2024 06:23:14 -0800 (PST)
+Message-ID: <38722fc3-b340-4ba0-9573-21eae476d2b3@linaro.org>
+Date: Sat, 10 Feb 2024 15:23:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] pmdomain: qcom: rpmpd: Add MSM8974PRO+PMA8084 power
+ domains
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
+ phone-devel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Stephan Gerhold <stephan@gerhold.net>,
+ =?UTF-8?Q?Matti_Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20240210-msm8974-rpmpd-v1-0-de9355e6842a@z3ntu.xyz>
+ <20240210-msm8974-rpmpd-v1-3-de9355e6842a@z3ntu.xyz>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240210-msm8974-rpmpd-v1-3-de9355e6842a@z3ntu.xyz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-..
-> >> +#define BIT_U8(b)=09=09((u8)(BIT_INPUT_CHECK(u8, b) + BIT(b)))
-> >> +#define BIT_U16(b)=09=09((u16)(BIT_INPUT_CHECK(u16, b) + BIT(b)))
-> >> +#define BIT_U32(b)=09=09((u32)(BIT_INPUT_CHECK(u32, b) + BIT(b)))
-> >> +#define BIT_U64(b)=09=09((u64)(BIT_INPUT_CHECK(u64, b) + BIT(b)))
-> >
-> >considering that BIT defines are always referred to unsigned
-> >types, I would just call them
 
-Except that pretty much as soon as you breath on them
-the u8 and u16 types get converted to int.
-If you want them to be an unsigned type then you need
-to cast them to (unsigned int).
 
-=09David
+On 2/10/24 15:12, Luca Weiss wrote:
+> Add the power domains CX & GFX found on MSM8974 devices that use PMA8084
+> instead of the standard PM8841+PM8941 combo.
+> 
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+Same comment as p2, gfx_ao may not make much sense on this
+platform
 
+Konrad
 
