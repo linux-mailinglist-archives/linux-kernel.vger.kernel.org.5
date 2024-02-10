@@ -1,125 +1,117 @@
-Return-Path: <linux-kernel+bounces-60255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A620A85024A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:01:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1AD085024D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:06:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BF3228CA2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:01:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 376161C23F20
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:06:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C488C523D;
-	Sat, 10 Feb 2024 03:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8426E523D;
+	Sat, 10 Feb 2024 03:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vq75Suos"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZUzekhGW"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F538149E12;
-	Sat, 10 Feb 2024 03:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FC923B9
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 03:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707534057; cv=none; b=MYI/YtlY8iQit8SnmUjyRqcZdlMCH41b8m81KC++wX0gpExgJqo3+mItwwyTIKn6HwpFu61DIWMFd5QdAbUKKIzE40X34P7fyNkvUg+yitauZVhWgDmA9bCAPuv5J3IhE4WBrXbTZOWfdpLy6ud0LtmlaNjtp+fgkpE5M5rijKg=
+	t=1707534354; cv=none; b=EY6+VcquGC8i2sp0IM4JbhIB4rYIdqHCcLPrCzTAaSKDh0RXTsL8cYzCQaIaX2GOpwblznvQJbdvBPnRf9Cawl9OQkAPiTLtEwDIQ299kByhWzyptws//v+l0cZgcwqrlqRgS7hHdgnaDCephSs7kclCxWXoEB0K/wTQP6Y1Vyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707534057; c=relaxed/simple;
-	bh=s+6djX/WTXkTUm/OOJnyCT2c88+8AQe3/IE6cDatMww=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=JfkdFkxXpiNVLVjRUEhrjhHnCtnl+6z2czb1h0IVOa/ZkZa+0WmBXwGEndWC6Xf5cmlUZnSzdtZBLm6WhNdxLRAmAjlYUDgkRHtAZHPTFjSPSMnSDvZaHcomn/HRymmEMhGtfT47qiuxmm/t0vXanob9GCkl2GnkYG/hSq5j5l4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vq75Suos; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d934c8f8f7so13912765ad.2;
-        Fri, 09 Feb 2024 19:00:54 -0800 (PST)
+	s=arc-20240116; t=1707534354; c=relaxed/simple;
+	bh=H9Reg8b+jS8TkwjOMN95FrdB7sOlVzGGwIlyR7QTdJA=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=VrEpAanJQ+7T8xkr6i0qTySkQ4pGsiRL6ADDXP4JzxcS82NVnCynkucSaUevaFGPqvC94CHoYTiJNOGWuqDo3gy6Z1t9wsfsZ0Wc4uvoCZfixmG2hPiuwI3mEOZqeOoxxiDshqATZaTLWpmcASH98pi/Prgl55hpgo6fECyd2oU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZUzekhGW; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-604a1a44b56so24653857b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 19:05:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707534054; x=1708138854; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+        d=google.com; s=20230601; t=1707534352; x=1708139152; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=R3IJGWTJWIPw+M65843DklH9eyEFW7vwcdstM0zz4C4=;
-        b=Vq75Suosfs/NrgPk5JainipgJkiZwF9l9FL4LSzXz7jzZ+Pov7rWib8DreKFk4QQnF
-         7G5R+qh5NCoPKEwWEXN/d+fX8KOluV7BSmdJ8FcD0NMDu/AwgoZs4LT+ZPIcQwhh/gJV
-         tH+OLNsrHdAJDXUCB5hz3ipM7SDc8m+yJ5sf8LLclgN0GM7fQQ11BJSVyFHkJ6GqbrrX
-         ZwFqH0uTz1mZ6EC2RzLVtoTNUsHWV7QhuLs+AewZ20uenWaOwKmiIe52uTm8D61UBGEz
-         g0/KSZvQg5zp65TEzagIYBvuHs7Ka+hidh2pAK0Eo9FGbsOiwT/SJku9DfkL/kVyOuRe
-         GgaQ==
+        bh=Lk+GB+kHbk4tJmAHLH1aR/cCxbbVSiuBX2AWpDuc13M=;
+        b=ZUzekhGW6kTW1J+jsmslEXjeEImuNOv27L1c+OnjlkhfQWf0Ln93kGZ3KRf+KvM2eg
+         I35b+9lz6tq37+AX6GChsK4emqmAfTc3CdnEHG8zBpY4ROi4YB1ALKgkypN4LuW7Q5nM
+         yXbq155Ps8CaL0miP6toTluQ87RoLUTW5PuqviVzBNqpj6EI54drEl6QAsvncl6337rQ
+         JHil91EgHpcOFJoqnN2xUh1nEoAnDeLv//ud6JpfCKvyzfyyLVfawK6Z+5/TgWzNMy5g
+         BG5pIoewdxyhCGClmqX8J1flow3h6LKmYkXBWmU/nP+rqMi5yibKjgrMOC2GXPiF14gG
+         5L/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707534054; x=1708138854;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+        d=1e100.net; s=20230601; t=1707534352; x=1708139152;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=R3IJGWTJWIPw+M65843DklH9eyEFW7vwcdstM0zz4C4=;
-        b=eX0nV4ZGhybU544rl9Mq0nwO4PYfy0o9x0rN1zqiamphiGzP8s9Yy7JwZuh/W4bfP7
-         Pz7rURB5HgZAutjVAXPcybbPQurRljumS3DegxyjaqwstrhqGs1GCogSL/pQrWZohUyC
-         kdVcm/5/EAM3KawTR9kABbjsBwWFVFWL9mfEhqmTEpFA+KS5iztd/GmtUJuVuG2xeH1p
-         r4KV/1/puhQUg3+on37f2i3rN1VR0UqQWHHv94JTA06BpVa80OMXxqsGde+K7KDyY6PR
-         ze3sOunf0o6aJzSHyBNvg6ntNpI3lkObBhSO/lqMWzseODrP8qJnwQMd2Z+NQw/Jz5V9
-         IPnw==
-X-Forwarded-Encrypted: i=1; AJvYcCXlGDH6HQAvgXoymRXefbhrsm8hpIIMFirI1xFjfcmEcVJF5NEtZ11UfK0blIIa1K8eS/sj3mJt8tkjmIoTKuR+wESosK7PhtkgtgxAM+hmDEqXJkjzbNlSIvsJXjqgz6SypLucxRmbsGMytA==
-X-Gm-Message-State: AOJu0YzhZ4yHhrujOsZqKU48GUiDwU1mjgBfOGoPj7T4vupsQCcInHIS
-	dNIZGv+xRHFztSnV00c/jX5NxItJn03v/ca28fAHO8da2a+otfzp
-X-Google-Smtp-Source: AGHT+IHUNt3lZOFNPsZ7DhYo9HuUfhWqlZhn6AHJ+/w7nIfoM+7ydXiUbGUVtQF9GQ2R73aeCQyPCQ==
-X-Received: by 2002:a17:902:b688:b0:1d9:c86c:39c2 with SMTP id c8-20020a170902b68800b001d9c86c39c2mr1115476pls.14.1707534054302;
-        Fri, 09 Feb 2024 19:00:54 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXtoL/jA1UuRhntMmsM4MTDQXi+O2ERiHQ92g3p5uymlaKsD5mJEmRvgXy9G6DDqfRkMytcfx9ZfgIudCR86GW2x/2gTg201T5LFcJxjXwecaP55iW9/WUJ/PKYrBYavGij35dSTDBg/BerrQa7UPU8YKLr6VVX6lEKwMW1wpZWNg18LS5su/7+0gRL6VkaOnSSayiazSpLnf6ARR8k1McJ+LGZ5+oVMr2J7qR4eQyjfoZ3ZZi6dC6H7+U=
-Received: from dw-tp ([171.76.84.200])
-        by smtp.gmail.com with ESMTPSA id q2-20020a170902edc200b001d91b617718sm2193534plk.98.2024.02.09.19.00.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 19:00:53 -0800 (PST)
-Date: Sat, 10 Feb 2024 08:30:27 +0530
-Message-Id: <874jehc9bo.fsf@doe.com>
-From: Ritesh Harjani <ritesh.list@gmail.com>
-To: Jeffrey Hugo <quic_jhugo@quicinc.com>, adrian.hunter@intel.com, quic_asutoshd@quicinc.com, quic_bjorande@quicinc.com
-Cc: linux-mmc@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Jeffrey Hugo <quic_jhugo@quicinc.com>
-Subject: Re: [PATCH v2] MAINTAINERS: Update bouncing @codeaurora addresses
-In-Reply-To: <20240209160934.3866475-1-quic_jhugo@quicinc.com>
+        bh=Lk+GB+kHbk4tJmAHLH1aR/cCxbbVSiuBX2AWpDuc13M=;
+        b=Rl2ga3IDvzN1zOtt/GDEsZB0bTNuTrUSen6eIrMen4qN74mkyresh20UjSFoUlC7VL
+         lIQqTZdol2HoU4LsjmQ9LXGWU4PqRZNKnTRDuLvvMfelNhm4H2Aw44+v1zIyCsH6qUwK
+         HumYeXtr7DYhHIzBnHmBXKC5HBA0Sy1gFJPTnN+nNTN0kPwr4Qw33dVMC0/9YS50Lj8T
+         bob3LlLALHvqBwGu5YYZUAm4UIR2ti+lRZCv59qFfTXv5GL++WRuLihY4HZb7DO0Wx4Z
+         54vNDgyZV35+VYgexlsu6LGJhgDilitSRf91ekU7NwJkz/hNWlXUPFUjF2eez9N+F7z1
+         jBMw==
+X-Gm-Message-State: AOJu0Yx6d8CvdPVvNjQTmZ616yerbcVAHQb1Li1ZEKwrG+F7SDgysLGK
+	Qw2G9oKsQO1nidXgX/Mv3fKySxCbA7OYfUpYnG7irWtDZFSd1OaKwYJ/B2lXO9NE7bQrYSYLJcA
+	/vZJdAezAyugIjQ==
+X-Google-Smtp-Source: AGHT+IE/uuWDxdol9sXaEnPCB66yNsPa4nWES8Tyh05rnMrvZgyjUNND+XZgyBWyRqOpm/3fC76p14pGakwp1i8=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:6b44:91e7:13e1:5d92])
+ (user=saravanak job=sendgmr) by 2002:a05:690c:a98:b0:5ee:d5ed:5f70 with SMTP
+ id ci24-20020a05690c0a9800b005eed5ed5f70mr243749ywb.9.1707534352400; Fri, 09
+ Feb 2024 19:05:52 -0800 (PST)
+Date: Fri,  9 Feb 2024 19:05:43 -0800
+Message-Id: <20240210030549.4048795-1-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Subject: [PATCH v1 0/4] Add post-init-supplier binding to improve
+ suspend/resume stability
+From: Saravana Kannan <saravanak@google.com>
+To: Saravana Kannan <saravanak@google.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Ard Biesheuvel <ardb@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>
+Cc: kernel-team@android.com, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-efi@vger.kernel.org, 
+	linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Jeffrey Hugo <quic_jhugo@quicinc.com> writes:
+This patch series adds a "post-init-supplier" device tree binding that
+can be used to break dependency cycles in device tree and enforce a more
+determinstic probe/suspend/resume order. This will also improve the
+stability of global async probing and async suspend/resume and allow us
+to enable them more easily. Yet another step away from playing initcall
+chicken with probing and step towards fully async probing and
+suspend/resume.
 
-> The @codeaurora email domain's servers have been decommissioned for a
-> long while now, and any emails addressed there will bounce.
->
-> Asutosh has an entry in .mailmap pointing to a new address, but
-> MAINTAINERS still lists an old @codeaurora address.  Update MAINTAINERS
-> to match .mailmap for anyone reading the file directly.
->
-> Ritesh appears to have changed jobs, but looks to be still active in the
-> community.  Update Ritesh's address to the one used in recient community
-> postings.  Also Ritesh has indicated their entry should be changed from
-> Maintainer (M:) to Reviewer (R:) so make that update while we are making
-> changes to the entry.
+Patch 3 (the binding docunentation) provide a lot more details and examples.
 
-Thank Jeffrey.
+Saravana Kannan (4):
+  driver core: Adds flags param to fwnode_link_add()
+  driver core: Add FWLINK_FLAG_IGNORE to completely ignore a fwnode link
+  dt-bindings: Add post-init-supplier property
+  of: property: fw_devlink: Add support for "post-init-supplier"
+    property
 
-Acked-by: Ritesh Harjani <ritesh.list@gmail.com>
+ .../bindings/post-init-supplier.yaml          | 99 +++++++++++++++++++
+ MAINTAINERS                                   |  3 +-
+ drivers/base/core.c                           | 14 ++-
+ drivers/firmware/efi/sysfb_efi.c              |  2 +-
+ drivers/of/property.c                         | 17 +++-
+ include/linux/fwnode.h                        |  5 +-
+ 6 files changed, 131 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/post-init-supplier.yaml
 
->
-> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> ---
->
-> v2: Change Ritesh to R: per Ritesh's suggestion
->
->  MAINTAINERS | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4be2fd097f26..56b3311e51de 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7832,8 +7832,8 @@ F:	drivers/media/usb/em28xx/
->  
->  EMMC CMDQ HOST CONTROLLER INTERFACE (CQHCI) DRIVER
->  M:	Adrian Hunter <adrian.hunter@intel.com>
-> -M:	Ritesh Harjani <riteshh@codeaurora.org>
-> -M:	Asutosh Das <asutoshd@codeaurora.org>
-> +M:	Asutosh Das <quic_asutoshd@quicinc.com>
-> +R:	Ritesh Harjani <ritesh.list@gmail.com>
->  L:	linux-mmc@vger.kernel.org
->  S:	Supported
->  F:	drivers/mmc/host/cqhci*
-> -- 
-> 2.34.1
+-- 
+2.43.0.687.g38aa6559b0-goog
+
 
