@@ -1,154 +1,120 @@
-Return-Path: <linux-kernel+bounces-60342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA39285036B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:52:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D82185036D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:53:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F0261F23CD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:52:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FBB72816BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B314931A98;
-	Sat, 10 Feb 2024 07:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD693611F;
+	Sat, 10 Feb 2024 07:53:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="p4Hz46jY"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MiBbS/fU"
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C6D525B
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610E436113
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707551549; cv=none; b=d/v6dfjFBx8BDhW61djW+C0tnjxTHKIShvHmq1g9v534+Ye8mXVelvXsMKxQgTGHe7snHKwzNye0KK7RV2TMYQx/cm6JsTolKdue5NWDxXjFlVi5IfgColg1n16QTihvuv9xDWg78EFl8/hjRv8yh18LXw1PlEvYVufR8ukJIxE=
+	t=1707551585; cv=none; b=OMb4DAo9n6VPd5MIWSaVMlq4uUFR23b2Q9XFKqdmaZaG8keeFZC9gDea/eebPVrZoDrIyJ9HPXPGGZqy+gldOacoAwOlJ56xAvekOpnVhxUf1xkuaJhpWxMzJi/qLuf/OxxtdiCLjZl+NVmplVGfRhzlvnjHxALcDeOaxcxgzPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707551549; c=relaxed/simple;
-	bh=gZo8nudx91n7QmkKsXW07rSEvmw1YmQIFCRQ9PVoTH4=;
+	s=arc-20240116; t=1707551585; c=relaxed/simple;
+	bh=nkyC8tK1dMd2dmSg/0e0LiBXB/pFACbP8NHTKyQBFww=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OCd1bLA9obcfzlCdvRGXz5vfXImD3HqNQx96hcMVjofSvD0SgL21GcD3KaHjLTMgtLLlqEr7PG9F1XMFcfyvi37bCKwL8BAwhzkuBscqeVafiSqy4fb0hhmP68LZUO33u0S0xr8CWZlzRiWX5dBmb+D38+n5/VIHRDxzreXXg6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=p4Hz46jY; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc755832968so1061160276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 23:52:26 -0800 (PST)
+	 To:Cc:Content-Type; b=CmPVnvLPNMSjlBSrptrllY/6GWGZ1o7rlZtU5oS7gGXGoW0qZHivsLvp2MaZ4t4pohPQcOGEuUamwZzTBvRC0kAUNQblDkLdqnIYTDUCqkOW1ZzfZUnlNeYFNSprt3wqB0xxqHxOBpvp6WeKaXOJ50PqEI56WliM5TEkbl0k7eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MiBbS/fU; arc=none smtp.client-ip=209.85.217.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-46d331e3fd2so979220137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 23:53:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1707551546; x=1708156346; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0g4QBN1/rGV7VTiFr0/5TgIubmQLI1xDKrfOY+r3ugk=;
-        b=p4Hz46jYpc+qRjV8GuJEwQaP4mM/nrHF0nqpHQAa4LELGQa9otfR+sukLDTAkeU0n5
-         aDHF4dZxbCh1GcYaW76hyT+S2OLWO2bYkKrFL6QKQMg8z16uBbmxlcStO/25b8sAn3sI
-         8DGybrgoPJslvavZbaNOJ3UnxDb5GO3XfurPTZBbHRjH0UDjfs/Zeub34NyX09bYHfx3
-         EJLVH2Po0vOBxf7771d71MLR97JST5rhWB7M6gE7CgTpr/N5UiZOu3Xr517spBbyIZcL
-         aZ27AfmdPhudqB0glav8lp5pjiMgKR34ZnRK3VvGhtQUxSNagjJVzpyBD7AZvsE8IhgE
-         L3gg==
+        d=google.com; s=20230601; t=1707551583; x=1708156383; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oh7b21hgViH6ruD4OjEdfH5S4LaVkUGIxCxXRvf2xsc=;
+        b=MiBbS/fU6+i38KTIU18eYGarG8sasDEsALDMQ8AS1On4XJZGpvkK1yzMbdpySo0Ffm
+         Qrxq7co/9WARQ+9slk86fVIsvAdvNoDOHf9zJr7XccxNzdp4xhHAY8a9bABhKndXBBrs
+         SDIzRaoZadcqDb6x64qIWH9ckR7jzq2ZZ+pC1HuXEkeZ6/vDSEQXXuGtRA1QvyBOiWv4
+         ip+QnLvVzDYH5CXW8YpLTYJA7l4kFR4/SdTCMnpwrDdwvCTr29AygFEVUoDkB8M/K9Zl
+         Hmwge0GeyN92sEydaqmIBmgfNDGGAZJiM6Cd8k0EqgYsJKMS+8sD9a2TNrobMCG2XILs
+         bTVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707551546; x=1708156346;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0g4QBN1/rGV7VTiFr0/5TgIubmQLI1xDKrfOY+r3ugk=;
-        b=LyHJN7IkxD2NM+tcHpCp6eOXZUf9jD3YIGpUzvGyqS4TFLCnhcpbtRDllcyZXRLLYF
-         JhYT6Nn0GXCz+cn7hoQ2l+VgS56prNbr4dzwLoXOWKolhsJgLilqYRqjfoE7hv0eSnWr
-         K3gJAOl1segNsJoQRTXcRNoLSTzpvywRw3jM56NkcQ0erHH/1kqJxVhH2/8hhfQJFyzD
-         wh9Nae2XGNnlZHpKCQblv/ZhcubtBq5wU7G6Ia9rOYccjQjxpsO80D6slSdSefQP06VW
-         ACm0WQ+MEW9ijLLJXwQqMQ8cSO7dGy2ZsP6lfAq5B1TKwdOJHNlzBwk1lwzG+Xno/XVG
-         AmPg==
-X-Forwarded-Encrypted: i=1; AJvYcCX+v+P0WphbawRHZ4U8vrk8amlSy3mHM49KXxG2LM7nPkmyICC9R4SLd/pttIbq6OG/yUlcqTmAAAp5WMCQKdg0KdZTo3QSuZt+stIs
-X-Gm-Message-State: AOJu0YymTuMnoi3fhwI0gsG3CC44nkvcHsAUHxukyArIero2ZOv8UJA6
-	OExECKUzWHgadO6ECqfYvNXEFP5zY1JchUUqMUwC0RDo9DQwbEQyUC5zCbe9TxQ83y0X45PmF+D
-	0AkTf4GuHYMBe1KQ9Jsblt/0Zc170ieugStBA5A==
-X-Google-Smtp-Source: AGHT+IEUiIzOiHLRzdgkH99+QuE32ywhnMdkTVC8NBgzI5fk5Ybz9uul1p9W6i4OO6rbzEw6xjwAViPCw8z3mDUGJlk=
-X-Received: by 2002:a25:28d:0:b0:dc6:d87e:77d1 with SMTP id
- 135-20020a25028d000000b00dc6d87e77d1mr1096217ybc.43.1707551545768; Fri, 09
- Feb 2024 23:52:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707551583; x=1708156383;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oh7b21hgViH6ruD4OjEdfH5S4LaVkUGIxCxXRvf2xsc=;
+        b=Fc6b23sbMmzWPv2a7IkX3W/QzK/e7pOIYKnG/GX1vHur3YawH+qjRgcnqcU15JLvfo
+         3pxuTg2Et5yzxqvtvFJSR/CJdN0wHQM3hqi/BbQwAkXigyi8qE2l0I82QHtHkUvoZEs4
+         Q4UcIykTA417izFxLJa4+fXn6ITc+MGyzhfh2MUkRXvmghzoQQDTv9AhC49HbgvFFOTy
+         CShwtF7noqgpEomyhY/D7XVJoDnUyW8z4n6K2opAwa1/qd4H4FYxolOtbZmL9gvcAGEy
+         bcdte93L0JctE7j+qCu5znLYWQ9uFj0DXTxWg1lZN8vaVr/CxQ7kd+1eVRdhJnE1Gj4t
+         IUyw==
+X-Gm-Message-State: AOJu0YyRnbKwQqigbZYCi42h9mjtXrQcjTP28VRcypJQt867oA9u0iPD
+	YTr8xXlCK71iUJvbrOOQQfJw57hnKCN9QxJRQWMa8kh+MZ3LSALo+BD3YDYz5pT3sUndGTwXHNM
+	o6rTrEub7OvT8AIMYfHDntE2JV4GOjinDsaD0
+X-Google-Smtp-Source: AGHT+IEy5rUmGLmkkY3OAPFo9Hk+pfbInuFkdngpUfw0cdyQRm4JJclp/RrYVG0JQ72JVRTrm/4TEUFpxSUyyzFVwAU=
+X-Received: by 2002:a05:6102:548c:b0:46d:2f69:c772 with SMTP id
+ bk12-20020a056102548c00b0046d2f69c772mr1600399vsb.11.1707551583163; Fri, 09
+ Feb 2024 23:53:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209-alice-file-v5-0-a37886783025@google.com> <20240209-alice-file-v5-9-a37886783025@google.com>
-In-Reply-To: <20240209-alice-file-v5-9-a37886783025@google.com>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Sat, 10 Feb 2024 01:52:14 -0600
-Message-ID: <CALNs47sV5QSgRkrFmazYvcKjY_TC2gP0oeg1TiT6YozBoTT-+w@mail.gmail.com>
-Subject: Re: [PATCH v5 9/9] rust: file: add abstraction for `poll_table`
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+References: <20240208234539.19113-1-osalvador@suse.de> <20240208234539.19113-4-osalvador@suse.de>
+ <CANpmjNNcPr=pPco_HN9nXBabubtfo02SAH=taZGNCvYDq42YUQ@mail.gmail.com>
+ <ZcaesCP4mY-94ciJ@localhost.localdomain> <ZcaxxQE1PkepEWwf@localhost.localdomain>
+In-Reply-To: <ZcaxxQE1PkepEWwf@localhost.localdomain>
+From: Marco Elver <elver@google.com>
+Date: Sat, 10 Feb 2024 08:52:25 +0100
+Message-ID: <CANpmjNOpfdgMT1jNPJev_e6tecZjGn4n8Sk6aoaLVDsqfJgmKg@mail.gmail.com>
+Subject: Re: [PATCH v7 3/4] mm,page_owner: Display all stacks and their count
+To: Oscar Salvador <osalvador@suse.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 9, 2024 at 5:22=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
-ote:
+On Sat, 10 Feb 2024 at 00:13, Oscar Salvador <osalvador@suse.de> wrote:
 >
-> The existing `CondVar` abstraction is a wrapper around
-> `wait_queue_head`, but it does not support all use-cases of the C
-> `wait_queue_head` type. To be specific, a `CondVar` cannot be registered
-> with a `struct poll_table`. This limitation has the advantage that you
-> do not need to call `synchronize_rcu` when destroying a `CondVar`.
+> On Fri, Feb 09, 2024 at 10:52:48PM +0100, Oscar Salvador wrote:
+> > Thinking about it some more, I think I made a mistake:
+> >
+> > I am walking all buckets, and within those buckets there are not only
+> > page_owner stack_records, which means that I could return a stack_record
+> > from e.g: KASAN (which I think can evict stack_records) and then
+> > everything goes off the rails.
+> > Which means I cannot walk the buckets like that.
+> >
+> > Actually, I think that having something like the following
+> >
+> >  struct list_stack_records {
+> >       struct stack_record *stack;
+> >       struct list_stack_records *next;
+> >  }
 >
-> However, we need the ability to register a `poll_table` with a
-> `wait_queue_head` in Rust Binder. To enable this, introduce a type
-> called `PollCondVar`, which is like `CondVar` except that you can
-> register a `poll_table`. We also introduce `PollTable`, which is a safe
-> wrapper around `poll_table` that is intended to be used with
-> `PollCondVar`.
+> Or, I could use the extra_bits field from handle_parts to flag that
+> when a depot_stack_handle_t is used by page_owner.
 >
-> The destructor of `PollCondVar` unconditionally calls `synchronize_rcu`
-> to ensure that the removal of epoll waiters has fully completed before
-> the `wait_queue_head` is destroyed.
+> Then __stack_depot_get_next_stack_record() would check whether
+> a stack_record->handle.extra_bits has the page_owner bit, and only
+> return those stacks that have such bit.
+> This would solve the problem of returning a potentially evictable stack
+> , only by returning page_owner's stack_records, and I would not have
+> to maintain my own list.
 >
-> That said, `synchronize_rcu` is rather expensive and is not needed in
-> all cases: If we have never registered a `poll_table` with the
-> `wait_queue_head`, then we don't need to call `synchronize_rcu`. (And
-> this is a common case in Binder - not all processes use Binder with
-> epoll.) The current implementation does not account for this, but if we
-> find that it is necessary to improve this, a future patch could store a
-> boolean next to the `wait_queue_head` to keep track of whether a
-> `poll_table` has ever been registered.
->
-> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> I yet have to see how that would look like, but sounds promising.
+> Do you think that is feasible Marco?
 
-One nit below
-
-Reviewed-by: Trevor Gross <tmgross@umich.edu>
-
-> +/// Creates a [`PollCondVar`] initialiser with the given name and a newl=
-y-created lock class.
-> +#[macro_export]
-> +macro_rules! new_poll_condvar {
-> +    ($($name:literal)?) =3D> {
-> +        $crate::sync::poll::PollCondVar::new($crate::optional_name!($($n=
-ame)?), $crate::static_lock_class!())
-> +    };
-> +}
-
-Length > 100, this could wrap:
-
-    macro_rules! new_poll_condvar {
-        ($($name:literal)?) =3D> {
-            $crate::sync::poll::PollCondVar::new(
-                $crate::optional_name!($($name)?), $crate::static_lock_clas=
-s!()
-            )
-        };
-    }
+The extra bits are used by KMSAN, and might conflict if enabled at the
+same time. I think the safest option is to keep your own list. I think
+that will also be more performant if there are other stackdepot users
+because you do not have to traverse any of the other entries.
 
