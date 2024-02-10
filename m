@@ -1,87 +1,180 @@
-Return-Path: <linux-kernel+bounces-60274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BE3E85027F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:08:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E4F850280
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:09:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 153161C237BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:08:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 892471F25021
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF2C566B;
-	Sat, 10 Feb 2024 04:08:06 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B7A05684;
+	Sat, 10 Feb 2024 04:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SxJDS6MN"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7325620E4
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 04:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8635F20E4
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 04:09:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707538085; cv=none; b=VBujo03ji14A9cBJR7FN6KrFA4kKDpx0xIo5Q1ICoPJpsLUdvzFVaZOICubvOCzikEzFdOLSv3Z7c7ZUR1x141Ct3/3NXuTJg+s8d2iSru96viLv0YcnKZ77yqza40hR6W/5CXmNQfaXGqgkGGB/60yKmZhji+dM+Sg4NnjNbZQ=
+	t=1707538146; cv=none; b=jDT+aBtAuwMD5I++UEUpEQU2SYMs6zvA25CtwyP6EqNatEM8AEbbiRSSESboswEpu8WDSK1PZng9I0WTOG2juYUEiAuewafOKKYLHZu4GY4V/qmdP17ErK0bsvM794Jc4wMUdWtssXJlawiPCMJc98+hpQ4MKo7oIoTOqDv8WIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707538085; c=relaxed/simple;
-	bh=ybnP3ZhiWDoYTWu5V/Xspe9zKXj8IbIPsZvC04akN34=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=ePagIecTayme9mnqOMWr+mhUj0sx3THffDLD6klW7lu8ez/JJYEhX1iGQHjO0lS0a1Q6jMqfvRglz9iwHjt+56xh+iChp8qaqhO+PedX7YWt+A9rdb9EYB28MRqrpp0OXqMvoHcxJk+LG/5DQXCYp5czjBua+ElYeSrrHWxdOm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363befae30fso13463025ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 20:08:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707538083; x=1708142883;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iLBJ1ysf/erCCObYNp8PsSlQqrZqwP8kcEaBiq+UZyE=;
-        b=XtcHrsuoprBbhJpuMavdCBOmB/5kU+o1l96yaX1p/E+Nfv7W/+lbR7TYk31eB2Ha4K
-         mZAndY+RZXZWwljhTGgNDEEdY7Fl+yAO63FXbCNbTLJoqNx+3BA/tYjWm/0LEZkhyxh8
-         29Zh2uYagqcj2PsdxxDSjYDkO/dhTV63JN0kAJWPnk1AKH0SVHKWzF1bsY1ErxiTfKg+
-         rcgyimgwUIuhMA0nwesEUvYuOpFak2ONRSwcgCPn/tBmlrdZ5LP7zGt/isEHy8pJYCwC
-         k/XpVcMa8L0nKi7T1sgyltuxfHGT9m2IwhfHyhJOARNywnudHedL3uVHv3KlXBIIMV/b
-         u+gg==
-X-Forwarded-Encrypted: i=1; AJvYcCVuGkiarxwHV4YBHV5Ic4/MrEbRbSj9VohzDEuMNAxCyHdvuYB+VkEb0EWbNuJXS2icVLbMjqjlj5l5oTV3CJp6m6eORxyAFyo9CcnO
-X-Gm-Message-State: AOJu0Yw6GvqcFMM+Mu5SV1QvhypjRPiP+XqeY6bxr/VyQwkkqEnYi8Bq
-	MdtAm8oQfmQflsk1u0FnfV+oVNDws77AncCLkBB1G4TWtLvgcdxHt+Z2cT2Mh4zquRWhFViJ5Bt
-	3iNbq6o8iWzS/kszDJ0mhe/R8aa8d0Wtc46EDAeT2dpqgM05uTHQlQ/A=
-X-Google-Smtp-Source: AGHT+IE8lR2YGgsRe1nB/6OT4L3CsM+WP6btBAKMg8HefhyRQLJovH3cjssFAeboeduVgEvsX9sjYtZIMbKCpACQ2TADmPQ0XUWb
+	s=arc-20240116; t=1707538146; c=relaxed/simple;
+	bh=APM0cgnaH/J0EqBdfKSjXSAi1Fj4kv2b2n11+OqFbZI=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=Q5zpN6CWfEZ0lHIoILdUvgUj0yfMOMf87mH9aSv/uK1HPLHmBasnhA9Xg95sQVGvf3YMvuFQo0JZb7rAYsk/J255ogObAUyhCuwGEsqk5+8DSTKx+tkjguuFkVpUf4qhvsWrIuCyZLPDxhbzg+TPt+CnnktumqHd5koE1AoqXcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SxJDS6MN; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707538145; x=1739074145;
+  h=date:from:to:cc:subject:message-id;
+  bh=APM0cgnaH/J0EqBdfKSjXSAi1Fj4kv2b2n11+OqFbZI=;
+  b=SxJDS6MNvrWLgtRBCzVDN4Zd9m6Hu1SAdghp9ZOh7vKAExMZZfboOKPX
+   k2PU3TyQSv1sb9vNrehbuVuvzRFiq+Vk1MEsie8lHwmkU2mIgQ6CN/Ao8
+   o9Nqo5rMrkUaiIhMjA9Th5YyOJ/HiXz9UkEPwVlGtEZyez2IzUQtFFMUg
+   urxWctd8BTOfv9MqnmqDO6Tjf/vrZE8PngCDkPyrWfn+KbWP1vx12V7IO
+   9YGvAUNMgvU293NjvjHkcso5DPmSnXNbKW9uewM1FzHkCOYC8h9UUNBDS
+   Nmv+7YuDgcaVqSI+7IqVVPCbR469argTMgotqZxu0wyAChvKbbP/+P3GB
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="5387508"
+X-IronPort-AV: E=Sophos;i="6.05,258,1701158400"; 
+   d="scan'208";a="5387508"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 20:09:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,258,1701158400"; 
+   d="scan'208";a="2412794"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 09 Feb 2024 20:09:03 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rYefk-0005Km-1O;
+	Sat, 10 Feb 2024 04:09:00 +0000
+Date: Sat, 10 Feb 2024 12:08:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ f6a1892585cd19e63c4ef2334e26cd536d5b678d
+Message-ID: <202402101207.UCDnG2X1-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20e2:b0:363:ab40:78c7 with SMTP id
- q2-20020a056e0220e200b00363ab4078c7mr84923ilv.6.1707538083553; Fri, 09 Feb
- 2024 20:08:03 -0800 (PST)
-Date: Fri, 09 Feb 2024 20:08:03 -0800
-In-Reply-To: <20240210022453.773-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e929570610ff30ef@google.com>
-Subject: Re: [syzbot] [kernel?] KASAN: slab-use-after-free Read in __unix_gc
-From: syzbot <syzbot+5a630f8ca0120ab43f55@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: f6a1892585cd19e63c4ef2334e26cd536d5b678d  x86/Kconfig: Transmeta Crusoe is CPU family 5, not 6
 
-syzbot tried to test the proposed patch but the build/boot failed:
+elapsed time: 731m
 
-failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git on commit e7689879d14e: failed to run ["git" "fetch" "--force" "--tags" "ee231638377c5338d84cc90b6c821555f8e3813f" "e7689879d14e"]: exit status 128
-fatal: couldn't find remote ref e7689879d14e
+configs tested: 92
+configs skipped: 134
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                      jornada720_defconfig   clang
+arm                         lpc32xx_defconfig   clang
+arm                             mxs_defconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240210   clang
+i386         buildonly-randconfig-002-20240210   gcc  
+i386         buildonly-randconfig-003-20240210   clang
+i386         buildonly-randconfig-004-20240210   clang
+i386         buildonly-randconfig-005-20240210   clang
+i386         buildonly-randconfig-006-20240210   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240210   gcc  
+i386                  randconfig-002-20240210   gcc  
+i386                  randconfig-003-20240210   clang
+i386                  randconfig-004-20240210   clang
+i386                  randconfig-005-20240210   gcc  
+i386                  randconfig-006-20240210   gcc  
+i386                  randconfig-011-20240210   clang
+i386                  randconfig-012-20240210   clang
+i386                  randconfig-013-20240210   clang
+i386                  randconfig-014-20240210   gcc  
+i386                  randconfig-015-20240210   gcc  
+i386                  randconfig-016-20240210   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                           xway_defconfig   clang
+nios2                             allnoconfig   gcc  
+nios2                               defconfig   gcc  
+powerpc                      bamboo_defconfig   clang
+powerpc                      cm5200_defconfig   clang
+powerpc               mpc834x_itxgp_defconfig   clang
+powerpc                 mpc836x_rdk_defconfig   clang
+powerpc                      obs600_defconfig   clang
+riscv                               defconfig   clang
+s390                              allnoconfig   clang
+s390                                defconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240210   gcc  
+x86_64       buildonly-randconfig-002-20240210   gcc  
+x86_64       buildonly-randconfig-003-20240210   gcc  
+x86_64       buildonly-randconfig-004-20240210   clang
+x86_64       buildonly-randconfig-005-20240210   clang
+x86_64       buildonly-randconfig-006-20240210   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240210   clang
+x86_64                randconfig-002-20240210   clang
+x86_64                randconfig-003-20240210   gcc  
+x86_64                randconfig-004-20240210   clang
+x86_64                randconfig-005-20240210   clang
+x86_64                randconfig-006-20240210   gcc  
+x86_64                randconfig-011-20240210   gcc  
+x86_64                randconfig-012-20240210   clang
+x86_64                randconfig-013-20240210   clang
+x86_64                randconfig-014-20240210   clang
+x86_64                randconfig-015-20240210   gcc  
+x86_64                randconfig-016-20240210   clang
+x86_64                randconfig-071-20240210   gcc  
+x86_64                randconfig-072-20240210   gcc  
+x86_64                randconfig-073-20240210   clang
+x86_64                randconfig-074-20240210   gcc  
+x86_64                randconfig-075-20240210   clang
+x86_64                randconfig-076-20240210   clang
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-Tested on:
-
-commit:         [unknown 
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git e7689879d14e
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ac1116e4986e7570
-dashboard link: https://syzkaller.appspot.com/bug?extid=5a630f8ca0120ab43f55
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16f3d320180000
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
