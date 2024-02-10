@@ -1,68 +1,69 @@
-Return-Path: <linux-kernel+bounces-60620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD78D85077D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:59:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1501D85077E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 01:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 236BBB23325
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:59:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 639BFB2326D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830C16169A;
-	Sat, 10 Feb 2024 23:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C4560278;
+	Sat, 10 Feb 2024 23:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FklFJpU3"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gFU5ZT5g"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2116604BB
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 23:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A63560BB8
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 23:51:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707609094; cv=none; b=Z6Cf8QqAW3dzrNxsyzlirJMuX68xas0HzIoMDFgySyXXTQbftK+oqRVf9RUR3lSEefjY6c0Iikqn3mU/A3ZcrNme752XNU727BKZpC8h1OF9cfZIrzLnLlV1v9NUFvc3QzZ8MrqTV9OONgz6s0vggqatwq9xN9W3aVLduutyuQ8=
+	t=1707609096; cv=none; b=Z10A8zL1y5tlZIlQwPLZ4T+KA9amm48vwQrJl6pv5B7Xn1frs0XKRSQxviNer5u/BQaWG73Owjh/8RB7e42DEMS3g/gyP34G0WeYluIRccH3IT1qor/5upz/SnEWXN6mQT0DCytYxaX6dZodIrfOHvLp8Li79zyHHThwVJkxbLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707609094; c=relaxed/simple;
-	bh=2dKMrYi5sXjxmg0BwHpJ1Xry5WL12IvHskjUlAQWeWk=;
+	s=arc-20240116; t=1707609096; c=relaxed/simple;
+	bh=E7G661369JAfDA2I7DCIVeqKZzJMxADI3GduPA8jgOU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eP3YkWaSXac8L+SdKlUxeilNsk5TNFOkmNusRfzWoUumgiwtPEd2AaB1+W9/O/80NRkuJ3RrCiq2O6wsWp0AmKJGIt6OJP3sxBp8aYjv2OnuPilrCAL7DVt9RCef44jdABwBCv0Y2fT4ft9QMMhXhKsvIQs5sq2Cwna/3pmgu28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FklFJpU3; arc=none smtp.client-ip=209.85.208.177
+	 MIME-Version; b=UDHVDFHdOIdQwNH5BNLS5+PjuM3S0zLyEyviUD36aTTSomrCx6qdXJK3hZt8IavHb53OAgjCZNtsynrGJAAJkdoJlXzyvC1fs6e2KMxXw0gemW7OYfByylk8vrpA2WWAmJNKsio2Xe3PXH7FNJSkbXBMdrRKnCRO0ursbgp3fTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gFU5ZT5g; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d0a96bad85so30189131fa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:51:32 -0800 (PST)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5101cd91017so2348731e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:51:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707609091; x=1708213891; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707609092; x=1708213892; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VjLak+Dwda0WVoH4If4D1UzfhJc/HxH98/ccLVqTlaI=;
-        b=FklFJpU3MH9vjT3/T+zEBQZW7aEiR4dqmAICDBX+YNfsaCOyo2UONMSgmUIkwPGR6B
-         17nm0mrKbG1Pi/5nQnDm7UKHMkanCmU9wJthvmU/gCZmtFI0KUS3Z+k79Ayqa2yvPDug
-         9Tt+CfUuQ9nlAAtQ/yjXaXUAk+ZSJL+CeKe8o=
+        bh=Dd8YxOHav2NIBiOCgFEkoV0Anep5oU6J4bZR+Xm4AWg=;
+        b=gFU5ZT5gpa7jZy6s7QOlgS92nUSSJctmlb+pOdh8dUzSf/FqhiPyVRn4LQY1yj29bO
+         4HyLsD6NvPss7SqNfrjK7IdPccBbelfkCJD4HbLNVF+lUibqrQcsmu8qzHE3SBLrhanO
+         GfVGrBVk1dzWuSp6FW2A9gwZknNOIhu0ML7nc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707609091; x=1708213891;
+        d=1e100.net; s=20230601; t=1707609092; x=1708213892;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VjLak+Dwda0WVoH4If4D1UzfhJc/HxH98/ccLVqTlaI=;
-        b=h8z7rDePYjWeJOr8KDZFPgorvk0jr7rgSx5cB8NyKBPJeNaOL21vYc1SG8t6yTrf73
-         1oM6XyITNjHIdrK12MWNzCVOrK12ERRNSxPRq2LsfRiGe3531XWRxBXaYqkHvxlcVZ4q
-         jfGW9hssDCIoEESpCgdGU5+9MAlVXyge0GmFMMdLBw15hQ1TLdKP7Lpohne9dJmHWobP
-         Bd7+x+IzxkGKEmiYMZ3+A/OxOf7uraT6eoPl/aBWzyk2oSNMRu+Li3bO5eR+FVNkezjZ
-         GWl3ucT3BHzlhMxDXD7qOfWLTIdUWAOY0kZjNMUjVme3jOqSkQAfFsEYsKomlxOfrrzT
-         zBXg==
-X-Gm-Message-State: AOJu0YxvfyeWu9qZU37UCuBsLOufPfEri+WzioPujmj8EYL0IokHMigv
-	Uo6h3d4bg6IP8xAeKwqrNCy3b5GYPL7boEPt8e5HXLNrCsE3iXsoXPV/F6OY
-X-Google-Smtp-Source: AGHT+IHv0nWMfI6aq0b6eLdPi5BFXUpk1cm504MWLpXBDcdbghuBHDx91yOfrqeoI1etZZXos7SrEw==
-X-Received: by 2002:ac2:4288:0:b0:511:720b:fbe8 with SMTP id m8-20020ac24288000000b00511720bfbe8mr1620848lfh.54.1707609091187;
-        Sat, 10 Feb 2024 15:51:31 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU5eoCvO8633YPEthka68zBBHuwtTY4XB5QvFoSWLSCEoSn1lEq1mpI+WvkAfsljUv+zdZc6HiVmPJpICHtgcZvK8dfWy3JZ11a40jd8Xn2wPH/jh/dlufaduVEiZJsuZ5N/mL6aCKY/9DbiNo1+J7ahtooGTn44MZOzLkPdiApXIGEjCSGDSnwgnDJRVDnylIOT67OGHlrvGkejlEh5IXB10DigzJiXt9XbvW3nLHonb+DyzEBGmg52zNOFwqXgHHabJodaIJDnPUy9qJe+xEHa4cFdk9XUZs6oNeCdSHVeffbtITXlrnMM0CRnL4EABI0lHKFqHIp5R/i/7mK2xVCRBTyEugheHaH2ynJtau5tO+v74eovtUHueJCrOBKVt3bsXxXjTiCnOvAK3cXVsJ3PCQyAcVSFY+mh8sT4Ocgs9foIEhFx3q2y+f8z8v1TLnStM+0n64RsmyQeEwom2B0+B8wdRop0s75Vy3pfBWty2yC0TIrBlkn7GlmX28FDmSTIC81vauJ9Kgk40zGCn4gF5idznYQzYxlskeD2Uoo4pePpZj+Vw6s1aNb98I97p0H1s5sHtVFjpybLukhwyEuVjKqzO5XpZp3X3MFaY0yWzbExw==
+        bh=Dd8YxOHav2NIBiOCgFEkoV0Anep5oU6J4bZR+Xm4AWg=;
+        b=uBbOiLJAXpfuhn+PC7eO29ln3aa+XDOzp1pWvWBcY35ROtgK4gLvdt92cigNofpB0a
+         WmuR1WNSRVYl2I5xrk6qLiymvFVnvBp4GK0FZBHCpxX2p4Z0q4hneO08o+rbIpG+gGMY
+         HO5dyYxAfyLb5NfeHc8IcuZo/ufyyxoyJ8IQhTplP1z14cBG/OCq9tTSDb2c+CYZBLv7
+         U38+h/mksqkIczHWJeFCfXx9/tpX13AY1X73aFqir0WjW4Vhlkktml46Y4jPZ/Bmxys4
+         b2nG8OoZOUfriK+4XMVEIgdyPAXUySEOG3N6GcOXfedYN6P0aXlyUCCa0eObZq1ZPbZp
+         OUuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWG7OTyWFbXsTKngG15le6VZcGw7sYinTVQKCMNQAp5coHBizCnInyTUE+258eD+uPmcV78nI/mSK5/KrSo5CHF//dWyARPzUWTeOA0
+X-Gm-Message-State: AOJu0Yy6DOv5NQuDdHxyTkxCFdBo1NR0Y1vhFmWNr/KRlfPI0saOxyz4
+	+xdiHP1fLrwJD6LxV+rN4saROZo/TkDp1anPALqtPLRtradhmoUQ8RwBJQig
+X-Google-Smtp-Source: AGHT+IHNpPgMm6BZ5MOph876RyUldOJ5TEgYUC5jUHT9Q4V/vp3Wrca8RyorGtDzCMd3guWrgH+WeA==
+X-Received: by 2002:a05:6512:3daa:b0:511:3a32:4e4f with SMTP id k42-20020a0565123daa00b005113a324e4fmr2117458lfv.18.1707609092754;
+        Sat, 10 Feb 2024 15:51:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVlaws3E7ysFmGoE+aYY8dL18c+FtxDH2nNX6KYz5MWHRf8pG4RMVxy0NShH3yVJWzE914hPswMarERotJ10Zgx4sU8E0l9N50xHOfE+fWwMmcrDvD+g19t4PYN1iV0V2vIk7m0sW+bAs3RKQsvjmDyuwXQDGpE1NytnCoIV0UJIPqga2SKHXDf7tFlXRZtWZhRsa0YaLZnNK5B4dRfy462i3psuwpv2Yli6DmGRsEHKQYFAK7uvskTppDQi9UXoMJGUy10L8tJmUkrBKWWrPH9RK71lkKy6xbr+sIBSWb5f/wWYAtYV7YeU7gtUu3gbu1f0KgY5gs6iWtAplZYSVovCibjwwFzqR3zoVcSQ5D9fDvwnpobaZG38814bfeeZOlqJK4W+l1i/S/nPQOLzxEqmxbLVOHYuYdl43ZWkQg5fAfhVFuUqHW1lGYOcop6WQ44Jm+LKUYupw8YAakSx9jJfEmdcjNIPyZV/vTES6u8mfJOq+e/ckfdLFZGz9z6+hR8Yn3loreULw5hUZ3Cs3Gi17vTghIxym1hZn53L7rmv8BKnIh8U42Iq+ak2iCoNbqLtjpO61HSutpajwtRQz3VN421sjRbyOWBVdBuYnWTlNkMNw==
 Received: from ukaszb-l.roam.corp.google.com (alfa56.extreme-net.one.pl. [213.77.89.56])
-        by smtp.gmail.com with ESMTPSA id o27-20020a056512051b00b0051179ae1846sm365561lfb.280.2024.02.10.15.51.29
+        by smtp.gmail.com with ESMTPSA id o27-20020a056512051b00b0051179ae1846sm365561lfb.280.2024.02.10.15.51.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Feb 2024 15:51:30 -0800 (PST)
+        Sat, 10 Feb 2024 15:51:32 -0800 (PST)
 From: =?UTF-8?q?=C5=81ukasz=20Bartosik?= <ukaszb@chromium.org>
 To: Jason Baron <jbaron@akamai.com>,
 	Jim Cromie <jim.cromie@gmail.com>,
@@ -84,9 +85,9 @@ Cc: Guenter Roeck <groeck@google.com>,
 	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
 	linux-kernel@vger.kernel.org,
 	upstream@semihalf.com
-Subject: [PATCH v4 37/39] docs/dyndbg: update examples \012 to \n
-Date: Sun, 11 Feb 2024 00:50:07 +0100
-Message-ID: <20240210235009.2405808-38-ukaszb@chromium.org>
+Subject: [PATCH v4 38/39] docs/dyndbg: explain new delimiters: comma, percent
+Date: Sun, 11 Feb 2024 00:50:08 +0100
+Message-ID: <20240210235009.2405808-39-ukaszb@chromium.org>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 In-Reply-To: <20240210235009.2405808-1-ukaszb@chromium.org>
 References: <20240210235009.2405808-1-ukaszb@chromium.org>
@@ -100,37 +101,69 @@ Content-Transfer-Encoding: 8bit
 
 From: Jim Cromie <jim.cromie@gmail.com>
 
-commit 47ea6f99d06e ("dyndbg: use ESCAPE_SPACE for cat control")
-
-changed the control-file to display format strings with "\n" rather
-than "\012", etc.  Update the docs to match the new reality.
+Add mention of comma and percent in their respective paragraphs.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- Documentation/admin-guide/dynamic-debug-howto.rst | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ .../admin-guide/dynamic-debug-howto.rst        | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
 diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index 90449a04946e..4d681c37e074 100644
+index 4d681c37e074..2d7ee4e558c8 100644
 --- a/Documentation/admin-guide/dynamic-debug-howto.rst
 +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -52,12 +52,12 @@ query/commands to the control file.  Example::
-   # grease the interface
-   :#> alias ddcmd='echo $* > /proc/dynamic_debug/control'
+@@ -73,16 +73,18 @@ Command Language Reference
+ ==========================
  
--  :#> ddcmd '-p; module main func run* +p'
-+  :#> ddcmd '-p; module main func run* +p'	# disable all, then enable main
-   :#> grep =p /proc/dynamic_debug/control
--  init/main.c:1424 [main]run_init_process =p "  with arguments:\012"
--  init/main.c:1426 [main]run_init_process =p "    %s\012"
--  init/main.c:1427 [main]run_init_process =p "  with environment:\012"
--  init/main.c:1429 [main]run_init_process =p "    %s\012"
-+  init/main.c:1424 [main]run_init_process =p "  with arguments:\n"
-+  init/main.c:1426 [main]run_init_process =p "    %s\n"
-+  init/main.c:1427 [main]run_init_process =p "  with environment:\n"
-+  init/main.c:1429 [main]run_init_process =p "    %s\n"
+ At the basic lexical level, a command is a sequence of words separated
+-by spaces or tabs.  So these are all equivalent::
++by spaces, tabs, or commas.  So these are all equivalent::
  
- Error messages go to console/syslog::
+   :#> ddcmd file svcsock.c line 1603 +p
+   :#> ddcmd "file svcsock.c line 1603 +p"
+   :#> ddcmd '  file   svcsock.c     line  1603 +p  '
++  :#> ddcmd file,svcsock.c,line,1603,+p
+ 
+-Command submissions are bounded by a write() system call.
+-Multiple commands can be written together, separated by ``;`` or ``\n``::
++Command submissions are bounded by a write() system call.  Multiple
++commands can be written together, separated by ``%``, ``;`` or ``\n``::
+ 
+-  :#> ddcmd "func pnpacpi_get_resources +p; func pnp_assign_mem +p"
++  :#> ddcmd func foo +p % func bar +p
++  :#> ddcmd func foo +p \; func bar +p
+   :#> ddcmd <<"EOC"
+   func pnpacpi_get_resources +p
+   func pnp_assign_mem +p
+@@ -104,7 +106,6 @@ The match-spec's select *prdbgs* from the catalog, upon which to apply
+ the flags-spec, all constraints are ANDed together.  An absent keyword
+ is the same as keyword "*".
+ 
+-
+ A match specification is a keyword, which selects the attribute of
+ the callsite to be compared, and a value to compare against.  Possible
+ keywords are:::
+@@ -128,7 +129,6 @@ keywords are:::
+   ``line-range`` cannot contain space, e.g.
+   "1-30" is valid range but "1 - 30" is not.
+ 
+-
+ The meanings of each keyword are:
+ 
+ func
+@@ -153,9 +153,11 @@ module
+     The given string is compared against the module name
+     of each callsite.  The module name is the string as
+     seen in ``lsmod``, i.e. without the directory or the ``.ko``
+-    suffix and with ``-`` changed to ``_``.  Examples::
++    suffix and with ``-`` changed to ``_``.
++
++    Examples::
+ 
+-	module sunrpc
++	module,sunrpc	# with ',' as token separator
+ 	module nfsd
+ 	module drm*	# both drm, drm_kms_helper
  
 -- 
 2.43.0.687.g38aa6559b0-goog
