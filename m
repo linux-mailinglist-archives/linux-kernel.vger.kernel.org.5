@@ -1,158 +1,111 @@
-Return-Path: <linux-kernel+bounces-60241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EAE78501D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 02:44:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58A0B8501D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 02:45:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7346B1C22CED
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 01:44:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05C301F29F33
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 01:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373C2F9D0;
-	Sat, 10 Feb 2024 01:44:01 +0000 (UTC)
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1999B5224;
-	Sat, 10 Feb 2024 01:43:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D4EC442C;
+	Sat, 10 Feb 2024 01:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JlIwYez/"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D828A2114;
+	Sat, 10 Feb 2024 01:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707529440; cv=none; b=Gy7rXXf59dzj4UeAtxmC7Sqpz75rRUMJyDDvdEnZtMXn/BbClKyxG8TDPvGY6fMG3gTZ2tEetNt7iNWc7pyGkYDSA+Z+AfU0llY4y+O9vanCydohRU0UFOMHKuKSxosNOm9imSNY0PBZOT+E4L4N5dIZt9kXu9uP6h44TwdeR3E=
+	t=1707529548; cv=none; b=d4ERJSs7QrZwAIRT0D+gga3rPDQcvt3/o4HiER/fPJ90ltg2t+nShX4tHfQuoayITs8XWej0HQ2Vb909EqhKTi3HDFXOfaN7haGLN1BsQbG4Ehecxoe8mwUkhm89jbcXWe1etRyMYgw6H6udnAcCdkhL1E+f0r6aFrnk1kg/PIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707529440; c=relaxed/simple;
-	bh=28h1Rh+hwi9ySwZ9U39BbdIl4KPwF0VAfeo/sYnViDs=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=u9n6ZQL9aAVzHahYFy0872XXFL1WVCCT3afFxheuzey3K0BN/H7b3WQFXwB2SpFQpiBFpcrx55z6ozqXKT63XF+T5ESa9nUNEvLDmlS3FQSpcHEgpNQbRLCTwAbvNCAMtCn7e0dnZDUpsAqyPe4c54abStbZ18NozSx1qMe3LVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 9A6E09200B3; Sat, 10 Feb 2024 02:43:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 9443B92009E;
-	Sat, 10 Feb 2024 01:43:56 +0000 (GMT)
-Date: Sat, 10 Feb 2024 01:43:56 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-    Bjorn Helgaas <bhelgaas@google.com>
-cc: Mika Westerberg <mika.westerberg@linux.intel.com>, 
-    linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] PCI: Use an error code with PCIe failed link
- retraining
-In-Reply-To: <alpine.DEB.2.21.2402092125070.2376@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2402100048440.2376@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2402092125070.2376@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1707529548; c=relaxed/simple;
+	bh=2yfvd+UOHE9k/whi9aCvesy2TCSIkYl20+/09zmCEro=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=nr46huJDLh2KEHeSkdQBYmqRStkys3MUBE+t0z2mnc6Up4xkQTDOQcNxKUWzlKPG6yoPM1vWwVEW0hSGBipqiQlnq2oSYOwYv0idVVmYmZei9EwFafYiGjidWFUcdK90Qk/ntA9FSRoPIMSStxES4GORSbAZIwMb8Ak2DKbpdxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JlIwYez/; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d0512f6e32so20645501fa.1;
+        Fri, 09 Feb 2024 17:45:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707529545; x=1708134345; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4wHnI+G2KlCxMV8YeoXbiNTjvO50wKmVlXFN7Oe6Ys0=;
+        b=JlIwYez/ab2GxIrEdk/ggc2hXq8dybquFkmx6YQmXidFkWknnRJfLFL29heiaCUzJe
+         YsyKs8d7FfgCSWAkLYOwWpU9IC+j0iLUcj3jeAJTqQamBFSzOlt7h5Wd82O4BTTwuKUQ
+         mhcKD6A6n5dxxJQWIvHVqpknWDZFyL1JSNHbW4+0w/aR58n2Mb/cg0QHN12x6sy35C12
+         9zzZEziL9QCrm1Or0U4UWwNAhOL7RYqF05IwlGfq5LwlZNf6rf7Zo1e0Ygak86GBCx8a
+         fHzLgpfY/umV8gGojkvFhWx6nMd0KC8TvWpWIKtoml9mU6kdQ5fJfz35VaZQzCl9Yg5Z
+         FweA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707529545; x=1708134345;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4wHnI+G2KlCxMV8YeoXbiNTjvO50wKmVlXFN7Oe6Ys0=;
+        b=vbpjLS1ZGPpdeqz7PQyY7VBdRhf8P9whnP4lPQETFU0ZoX14fLTNhattZ38xlQTq/t
+         At5Fx3TaGBpfudaX4W4w1ogAVYW6tmyxGr/obbrDzZyfBGQgjDKQPal2CXMeKeX4eyQn
+         WfAQK1tDOLBmSMxrd71DTa2Tpr/U89Jq+KL5Bt6Cp7m6IFMu/4D+Z0o3YEInE+btvQUv
+         cMBQ5F+2YBpcrNO86ubEA7JgKm9VWrUe/bM/UEYTwGcb/Xg9S0mAqE8X9bxbWuHwyoEe
+         o5y5i+bQm65nyoIGSxIotxye26WpcdMDLXsMoi69zX5WoMatJcnuAQ7kfbfML4KXXMv0
+         6haQ==
+X-Gm-Message-State: AOJu0YzwXI05XqslBcTxhTkDEpTwGPjBXPJeCFvGihZxxI7XHwZHgSP0
+	a7bZJE3WZeALCt8tSYtVn/P0DDl/OxES8pOUkECgn6lCAx3vsQ2PEb2ZYuoxk8sk8fPL52jt4+4
+	gJRBWG3V0TXwNgCWT4UlkTfhBNNKkfM935iGDGg==
+X-Google-Smtp-Source: AGHT+IE9fuBzla98nLgvABcO1uL+Qyv3kwu+7GCThsKpowKw6y3w6tVIO/HFVEWPq2tRQKUYf4YL/SzcbhrvTVJp4Pk=
+X-Received: by 2002:a05:651c:220d:b0:2d0:ae3d:d393 with SMTP id
+ y13-20020a05651c220d00b002d0ae3dd393mr502521ljq.1.1707529544518; Fri, 09 Feb
+ 2024 17:45:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+From: Steve French <smfrench@gmail.com>
+Date: Fri, 9 Feb 2024 19:45:31 -0600
+Message-ID: <CAH2r5mtdu3ng8E7e3h5iLYA+hcMQNjF+iwiAzh3xNw1dTnBydQ@mail.gmail.com>
+Subject: [GIT PULL] ksmbd server fixes
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: CIFS <linux-cifs@vger.kernel.org>, Namjae Jeon <linkinjeon@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Given how the call place in `pcie_wait_for_link_delay' got structured 
-now, and that `pcie_retrain_link' returns a potentially useful error 
-code, convert `pcie_failed_link_retrain' to return an error code rather 
-than a boolean status, fixing handling at the call site mentioned.  
-Update the other call site accordingly.
+Please pull the following changes since commit
+54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478:
 
-Fixes: 1abb47390350 ("Merge branch 'pci/enumeration'")
-Reported-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Link: https://lore.kernel.org/r/aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linux.intel.com/
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Cc: stable@vger.kernel.org # v6.5+
----
- drivers/pci/pci.c    |    2 +-
- drivers/pci/pci.h    |    6 +++---
- drivers/pci/quirks.c |   14 +++++++-------
- 3 files changed, 11 insertions(+), 11 deletions(-)
+  Linux 6.8-rc3 (2024-02-04 12:20:36 +0000)
 
-linux-pcie-failed-link-retrain-status-int.diff
-Index: linux-macro/drivers/pci/pci.c
-===================================================================
---- linux-macro.orig/drivers/pci/pci.c
-+++ linux-macro/drivers/pci/pci.c
-@@ -1263,7 +1263,7 @@ static int pci_dev_wait(struct pci_dev *
- 		if (delay > PCI_RESET_WAIT) {
- 			if (retrain) {
- 				retrain = false;
--				if (pcie_failed_link_retrain(bridge)) {
-+				if (pcie_failed_link_retrain(bridge) == 0) {
- 					delay = 1;
- 					continue;
- 				}
-Index: linux-macro/drivers/pci/pci.h
-===================================================================
---- linux-macro.orig/drivers/pci/pci.h
-+++ linux-macro/drivers/pci/pci.h
-@@ -540,7 +540,7 @@ void pci_acs_init(struct pci_dev *dev);
- int pci_dev_specific_acs_enabled(struct pci_dev *dev, u16 acs_flags);
- int pci_dev_specific_enable_acs(struct pci_dev *dev);
- int pci_dev_specific_disable_acs_redir(struct pci_dev *dev);
--bool pcie_failed_link_retrain(struct pci_dev *dev);
-+int pcie_failed_link_retrain(struct pci_dev *dev);
- #else
- static inline int pci_dev_specific_acs_enabled(struct pci_dev *dev,
- 					       u16 acs_flags)
-@@ -555,9 +555,9 @@ static inline int pci_dev_specific_disab
- {
- 	return -ENOTTY;
- }
--static inline bool pcie_failed_link_retrain(struct pci_dev *dev)
-+static inline int pcie_failed_link_retrain(struct pci_dev *dev)
- {
--	return false;
-+	return -ENOTTY;
- }
- #endif
- 
-Index: linux-macro/drivers/pci/quirks.c
-===================================================================
---- linux-macro.orig/drivers/pci/quirks.c
-+++ linux-macro/drivers/pci/quirks.c
-@@ -74,17 +74,17 @@
-  * firmware may have already arranged and lift it with ports that already
-  * report their data link being up.
-  *
-- * Return TRUE if the link has been successfully retrained, otherwise FALSE,
-+ * Return 0 if the link has been successfully retrained, otherwise an error,
-  * also when retraining was not needed in the first place.
-  */
--bool pcie_failed_link_retrain(struct pci_dev *dev)
-+int pcie_failed_link_retrain(struct pci_dev *dev)
- {
- 	static const struct pci_device_id ids[] = {
- 		{ PCI_VDEVICE(ASMEDIA, 0x2824) }, /* ASMedia ASM2824 */
- 		{}
- 	};
- 	u16 lnksta, lnkctl2;
--	bool ret = false;
-+	int ret = -ENOTTY;
- 
- 	if (!pci_is_pcie(dev) || !pcie_downstream_port(dev) ||
- 	    !pcie_cap_has_lnkctl2(dev) || !dev->link_active_reporting)
-@@ -100,8 +100,8 @@ bool pcie_failed_link_retrain(struct pci
- 		lnkctl2 |= PCI_EXP_LNKCTL2_TLS_2_5GT;
- 		pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
- 
--		ret = pcie_retrain_link(dev, false) == 0;
--		if (!ret) {
-+		ret = pcie_retrain_link(dev, false);
-+		if (ret) {
- 			pci_info(dev, "retraining failed\n");
- 			return ret;
- 		}
-@@ -120,8 +120,8 @@ bool pcie_failed_link_retrain(struct pci
- 		lnkctl2 |= lnkcap & PCI_EXP_LNKCAP_SLS;
- 		pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
- 
--		ret = pcie_retrain_link(dev, false) == 0;
--		if (!ret) {
-+		ret = pcie_retrain_link(dev, false);
-+		if (ret) {
- 			pci_info(dev, "retraining failed\n");
- 			return ret;
- 		}
+are available in the Git repository at:
+
+  git://git.samba.org/ksmbd.git tags/6.8-rc3-ksmbd-server-fixes
+
+for you to fetch changes up to 108a020c64434fed4b69762879d78cd24088b4c7:
+
+  ksmbd: free aux buffer if ksmbd_iov_pin_rsp_read fails (2024-02-07
+20:23:37 -0600)
+
+----------------------------------------------------------------
+Two small ksmbd server fixes:
+- one for a memory leak
+- the other a minor kernel-doc fix
+
+----------------------------------------------------------------
+Fedor Pchelkin (1):
+      ksmbd: free aux buffer if ksmbd_iov_pin_rsp_read fails
+
+Yang Li (1):
+      ksmbd: Add kernel-doc for ksmbd_extract_sharename() function
+
+ fs/smb/server/misc.c    | 1 +
+ fs/smb/server/smb2pdu.c | 8 ++++++--
+
+-- 
+Thanks,
+
+Steve
 
