@@ -1,227 +1,135 @@
-Return-Path: <linux-kernel+bounces-60567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A548506CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 22:59:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B0A98506D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:15:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B4DE1F21C2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 21:59:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAF53282BE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 22:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F27060272;
-	Sat, 10 Feb 2024 21:54:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF0255FEE7;
+	Sat, 10 Feb 2024 22:15:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cKGarICS"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YvM9JKh6"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CCA95FB9C;
-	Sat, 10 Feb 2024 21:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1975F84E;
+	Sat, 10 Feb 2024 22:15:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707602052; cv=none; b=HbAviWrk2swpVhR0H1vaSga0NSTn4jD/FnYTo5VA0G+4WPHZtk9z+VtC44Fw6TDZR1u3t8GGFMAZark48X+Wp8625afGCH+XyA7mQKF1xpN7I9xzmUVmDjBzVmUarB1p8Oo8dciHMm6JKg1RGq8fn7sAXjmi9/nSgDepdRuUGY0=
+	t=1707603329; cv=none; b=AKZwEXhBz1cMaHNK+L7ks8Vx62iXzGlyWTiZjQpnR+1ijHRrsu1yY1r8wkMNKQu3eGCxB7mhdJ0MDI9vYgX7z+wKuF0Lg1lPFrKTZx2PK2ufDvUIvkKf3sggYydV1vlqiHPdZp40PdixE/DBZ6inuvh54XWw12sKYi3ghciuoSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707602052; c=relaxed/simple;
-	bh=KVFXbPUNEoPkeJ8mNzkypEy02T30WqR5YO4BksHmEaY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ExYhxgk4hqSWrruFdAaIvIyNfABZQk2Mrx1pNH8XDfrZmoCLp5ytXf4tg7y58ZHK/EtfXgT5Lr6dZcsgEZuciZ7DTZS9F5kOg89Mn1eE34Jxa9meLjlsdD8IO5H8BNbquo4R1667bEbts5eMmvCaNwqbTGU4VmlTg5o+5m7CkU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cKGarICS; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1707603329; c=relaxed/simple;
+	bh=BRBXjjTaaIg/lDsxVQno90HBFLswvVpFxmbOQLTe0Dk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mVTCAZUB2gKiDPbCzCjtwwwStxC2pb6aioGeH/iN4fEDFc7SthzHQ2FjpKJrZkPV+RicHDo3mY9SyN1S+NwMJzorsFdKYu+RKD8jCXTQtPBuwUVI9D0jtafTUrKDG5VR47rpIHaXGs7x0XiCYikmw50Pi7/UbmXWpiRpwKufdLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YvM9JKh6; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso1535266a12.3;
-        Sat, 10 Feb 2024 13:54:10 -0800 (PST)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33b2960ff60so1727481f8f.1;
+        Sat, 10 Feb 2024 14:15:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707602050; x=1708206850; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=89qU8d2VqYcDbQy5/Hw7nV9wcyZeWc07Nb7qZWWr1PA=;
-        b=cKGarICSTCy8Jz696eS4/y+vfHpCe5bQTPtIHC4nzyudsjsGwmA8hzV8X6ZlAPxnwj
-         dbb0oLjsXPNs1eWVA2fu35jpTe8wtGcJGDaoMaxM0s/ptc1HWtKplB6+7idquBJUFl3j
-         GokFwSfiJMNiZQ9Ab0uMwdF61Nw+XYYhwxS28f9ZNeZ56A0R9N8BHbDQ5m9XpD3BAbrj
-         OaTrM8Fwp5AqOpY9VOULN3Uc3x6KtqaSqSMvU5ml0CudKISUldrDiADy3Ec5Z6EpvSPg
-         qb27TKPQHOoq2W27+tSV8iCNtTumSIyLw/toRYCNmGFPZ2ZPRd+36QaB63XQHFU7S48A
-         Fsaw==
+        d=gmail.com; s=20230601; t=1707603325; x=1708208125; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=X3rm1Ms90qHIEjQmaGDGejHMu8DwmDql6WBGu2dQWVI=;
+        b=YvM9JKh6PEBdwuaiG8LAjqF7LLEHpFZxrLiPZEWK31IohrpTpJSWxkej+zgOInZkU8
+         nUxStFcXDQgrSgaA+866XQxwclXuPTJ0dQvxxT1cEXiR0zDUgQKWK7QjMHGJv68OpUQ9
+         mQmJ/hthhCA69+1CUPoA49kIEv9ZzWKxH7Jv0hJal/9Zfy1+FD8dRG3Xz4y7TmqjLRDZ
+         ct/YQuYHfmmtxiiCrO/BRHP1vj2EaKOkeBAOkAj/XQFas9sHdYtdw7LqhZiwp4XYeHrY
+         qdU4sWY8D3Czu3Y22kRUyMyN2S4alJNrevmKV1Sd0cMBCA0BbwuDBoZX+orafuK/aXKe
+         FauA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707602050; x=1708206850;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1707603325; x=1708208125;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=89qU8d2VqYcDbQy5/Hw7nV9wcyZeWc07Nb7qZWWr1PA=;
-        b=liZS/7rnwitumXWXn0/KvJ/j2e+Os/qniQCpG3a9MWXwcx/K3Pp+FexRhorSu85Okx
-         KiopMd4Agc3OhA/+JlIklKr69v8yHSxQzgSiIFz5s9ZXHulO6cvaIVO9KGmGXCOOPw+i
-         fQQHiLJ43K0GiHIlSenR2LsdZzNjoaPddSchdI7iqRplMjmcklpESjWdbgRiGo+Hx3sx
-         VgxRQlisxoEU9rICg5jNzh0npPdJQoK1Ogm/zlMhPq8pGLpbnGm7J/omo47N0vUKzz5q
-         I8j7uJjhts4MwFN5tsC5anqPd3i0hksFWmWWqXPX20Ro1iS0qKntYkvNxC5ZSNLUrbTQ
-         OO8g==
-X-Gm-Message-State: AOJu0YyNI/UgpdfVHa7sMfkNtQ12qouhHSR9AgGhICNE9jiUK8wvQQ7q
-	8emvUzexTduBzokB/6aZMx7WkfsqS/HUXI9pj5uID+ZLy1mx4DSZ4zvak+iR
-X-Google-Smtp-Source: AGHT+IGyBIrAelcIVOfr88tJlGTTkRZkjbftFplbRBqjePHF1lg+rSJ5CgaF4pFPeb5cToCyOeOZjQ==
-X-Received: by 2002:a05:6a20:d708:b0:19e:bc25:c7de with SMTP id iz8-20020a056a20d70800b0019ebc25c7demr4858754pzb.48.1707602049846;
-        Sat, 10 Feb 2024 13:54:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVRz27U5kWKLd9NyPKyVXMdg0QO4g1UO3Tie0OuqWpy/ItBj4gXE7BMFxPb8sOuhSk3qRBysmpDr884PUS3x0hlnKCuPwsJXaX215QSjbQFLB9M+TlaT5jHPYi1s/m41K/XN3pZ0oW8jMhtfIBxUGT3G5b7u1HZW/IYHFviTyS7otT0
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n8-20020a056a000d4800b006d638fd230bsm2834128pfv.93.2024.02.10.13.54.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Feb 2024 13:54:09 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <0a0fbbd8-17dd-4f4c-9513-f3ac9749890b@roeck-us.net>
-Date: Sat, 10 Feb 2024 13:54:07 -0800
+        bh=X3rm1Ms90qHIEjQmaGDGejHMu8DwmDql6WBGu2dQWVI=;
+        b=k2eCXEGyxaZbHv72RvaJUC/aEny7HFQWgOktxpMSZJ6nTiosmdl2ub9TxpD65ncqLQ
+         fEZP0KwIQP0RqdL/lSQqPsRNHnfKSbD746EL0DSOIjvfisVsh5JR7PKf7HMPwtZAtckI
+         GpETw73F6H4wIAEOk9NpIOYg7QWVNG3GFl6/9FV2eRoGArFdcQ4vP628V/7fsU8Af5eM
+         kdnJ2oW8tcUCwkkwxZBxi8Zbv2+5WUufQ5oLy+QSVfPte7Y6BPDSqrtoynvUv2q/aksl
+         3h4NoslbY9El9V0uU415fsxYBftjZOqhHFIzTlza6hACQmxdXpdPLjM5V6Yh80F+oobF
+         6+TA==
+X-Gm-Message-State: AOJu0YyJv5GNN8wZZcxKk9Z9UvmHLNHKblobqE5r9xo4CyIobki94LtW
+	N/fsuftvV/Shz9fHOLNq+obE7uCCTqUGct9yRIvXJpmd0XEdPoIv
+X-Google-Smtp-Source: AGHT+IE0y+UCG4EdFJdQie7+RKChfwLRw3RuexFy6HM/rsWFm9N6XtTqLivyWTYUC7gXTGSRVK+0Sg==
+X-Received: by 2002:a5d:54c5:0:b0:33b:6cf0:e33f with SMTP id x5-20020a5d54c5000000b0033b6cf0e33fmr2406246wrv.7.1707603325409;
+        Sat, 10 Feb 2024 14:15:25 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWAwifN8+ycN566trEq3a6K9iz8dhjkjXHR4SH46LU6vsERvjPqq/72+WrhyoNBvYThpNo46kNZ8WfAizqqVrOF58Li3XYA/gnbu5jWtVI0Nzr9DRlJScSsvAGydFqJ6FohMSc5MsQvKIOVLJx27jUBAozY9NpK/ojPJClZLYXm9ymSryVRlMfM8iLQ1xmxEHX8HSBMklNyzg7o3VOQ8N+zTKv7dodE1GL19O+sSNDvFDCekbqLGCgl6lhbCKJ4HHrZ3LbGZD5JOXZuQpC9/cBzKoOTo3CjBlOErvYgnCCNaPiSSzKqjxtrXGRrRCo4UOmFMvM9sj550xjH5vx6NjcibQ==
+Received: from localhost.localdomain (cpc142640-benw12-2-0-cust620.16-2.cable.virginm.net. [82.0.14.109])
+        by smtp.gmail.com with ESMTPSA id n38-20020a05600c3ba600b0040fdb17e66csm4448843wms.4.2024.02.10.14.15.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Feb 2024 14:15:25 -0800 (PST)
+From: Youssef Quaisse <yquaisse@gmail.com>
+To: sakari.ailus@linux.intel.com,
+	bingbu.cao@intel.com,
+	tian.shu.qiu@intel.com,
+	mchehab@kernel.org,
+	gregkh@linuxfoundation.org,
+	skhan@linuxfoundation.org
+Cc: Youssef Quaisse <yquaisse@gmail.com>,
+	linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-media@vger.kernel.org
+Subject: [PATCH] Fix three warnings when running `make htmldocs`
+Date: Sat, 10 Feb 2024 22:14:38 +0000
+Message-ID: <20240210221451.27769-1-yquaisse@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Problems with csum_partial with misaligned buffers on sh4
- platform
-Content-Language: en-US
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <65ed7c95-712c-410b-84f3-58496b0c9649@roeck-us.net>
- <aedf7b7f39f820de555f1c41b6a8d663738eb3a2.camel@physik.fu-berlin.de>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <aedf7b7f39f820de555f1c41b6a8d663738eb3a2.camel@physik.fu-berlin.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Adrian,
+Running `make htmldocs` generates warnings for file
+drivers/staging/media/ipu3/include/uapi/intel-ipu3.h.
 
-On 2/10/24 12:12, John Paul Adrian Glaubitz wrote:
-> Hi Guenter,
-> 
-> On Sat, 2024-02-10 at 07:12 -0800, Guenter Roeck wrote:
->> when running checksum unit tests on sh4 qemu emulations, I get the following
->> errors.
->>
->>      KTAP version 1
->>      # Subtest: checksum
->>      # module: checksum_kunit
->>      1..5
->>      # test_csum_fixed_random_inputs: ASSERTION FAILED at lib/checksum_kunit.c:500
->>      Expected ( u64)result == ( u64)expec, but
->>          ( u64)result == 53378 (0xd082)
->>          ( u64)expec == 33488 (0x82d0)
->>      not ok 1 test_csum_fixed_random_inputs
->>      # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:525
->>      Expected ( u64)result == ( u64)expec, but
->>          ( u64)result == 65281 (0xff01)
->>          ( u64)expec == 65280 (0xff00)
->>      not ok 2 test_csum_all_carry_inputs
->>      # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:573
->>      Expected ( u64)result == ( u64)expec, but
->>          ( u64)result == 65535 (0xffff)
->>          ( u64)expec == 65534 (0xfffe)
->>      not ok 3 test_csum_no_carry_inputs
->>      ok 4 test_ip_fast_csum
->>      ok 5 test_csum_ipv6_magic
->> # checksum: pass:2 fail:3 skip:0 total:5
->>
->> The above is with from a little endian system. On a big endian system,
->> the test result is as follows.
->>
->>      KTAP version 1
->>      # Subtest: checksum
->>      # module: checksum_kunit
->>      1..5
->>      # test_csum_fixed_random_inputs: ASSERTION FAILED at lib/checksum_kunit.c:500
->>      Expected ( u64)result == ( u64)expec, but
->>          ( u64)result == 33488 (0x82d0)
->>          ( u64)expec == 53378 (0xd082)
->>      not ok 1 test_csum_fixed_random_inputs
->>      # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:525
->>      Expected ( u64)result == ( u64)expec, but
->>          ( u64)result == 65281 (0xff01)
->>          ( u64)expec == 255 (0xff)
->>      not ok 2 test_csum_all_carry_inputs
->>      # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:565
->>      Expected ( u64)result == ( u64)expec, but
->>          ( u64)result == 1020 (0x3fc)
->>          ( u64)expec == 0 (0x0)
->>      not ok 3 test_csum_no_carry_inputs
->>      # test_ip_fast_csum: ASSERTION FAILED at lib/checksum_kunit.c:589
->>      Expected ( u64)expected == ( u64)csum_result, but
->>          ( u64)expected == 55939 (0xda83)
->>          ( u64)csum_result == 33754 (0x83da)
->>      not ok 4 test_ip_fast_csum
->>      # test_csum_ipv6_magic: ASSERTION FAILED at lib/checksum_kunit.c:617
->>      Expected ( u64)expected_csum_ipv6_magic[i] == ( u64)csum_ipv6_magic(saddr, daddr, len, proto, csum), but
->>          ( u64)expected_csum_ipv6_magic[i] == 6356 (0x18d4)
->>          ( u64)csum_ipv6_magic(saddr, daddr, len, proto, csum) == 43586 (0xaa42)
->>      not ok 5 test_csum_ipv6_magic
->> # checksum: pass:0 fail:5 skip:0 total:5
->>
->> Note that test_ip_fast_csum and test_csum_ipv6_magic fail on all big endian
->> systems due to a bug in the test code, unrelated to this problem.
->>
->> Analysis shows that the errors are seen only if the buffer is misaligned.
->> Looking into arch/sh/lib/checksum.S, I found commit cadc4e1a2b4d2 ("sh:
->> Handle calling csum_partial with misaligned data") which seemed to be
->> related. Reverting that commit fixes the problem.
->> This suggests that something may be wrong with that commit. Alternatively,
->> of course, it may be possible that something is wrong with the qemu
->> emulation, but that seems unlikely.
-> 
-> I have not run these tests before. Can you tell me how these are run,
-> so I can verify these reproduce on real hardware?
-> 
+Fix was to remove the "excess" definitions.
 
-Enabling CONFIG_KUNIT and CONFIG_CHECKSUM_KUNIT on top of a working
-configuration should do the trick. Both can be built as module,
-so presumably one can build and load them separately. I have not tried
-that, though - I always build them into the kernel and boot the resulting
-image.
+Warnings in question:
 
-Hope this helps,
-Guenter
+```
+/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2522: warning: Excess struct member 'reserved1' description in 'ipu3_uapi_acc_param'
+/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2522: warning: Excess struct member 'reserved2' description in 'ipu3_uapi_acc_param'
+/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2778: warning: Excess struct member '__acc_osys' description in 'ipu3_uapi_flags'
+```
+
+Signed-off-by: Youssef Quaisse <yquaisse@gmail.com>
+---
+ drivers/staging/media/ipu3/include/uapi/intel-ipu3.h | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+index caa358e0bae4..4aa2797f5e3c 100644
+--- a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
++++ b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+@@ -2485,11 +2485,9 @@ struct ipu3_uapi_anr_config {
+  *		&ipu3_uapi_yuvp1_y_ee_nr_config
+  * @yds:	y down scaler config. See &ipu3_uapi_yuvp1_yds_config
+  * @chnr:	chroma noise reduction config. See &ipu3_uapi_yuvp1_chnr_config
+- * @reserved1: reserved
+  * @yds2:	y channel down scaler config. See &ipu3_uapi_yuvp1_yds_config
+  * @tcc:	total color correction config as defined in struct
+  *		&ipu3_uapi_yuvp2_tcc_static_config
+- * @reserved2: reserved
+  * @anr:	advanced noise reduction config.See &ipu3_uapi_anr_config
+  * @awb_fr:	AWB filter response config. See ipu3_uapi_awb_fr_config
+  * @ae:	auto exposure config  As specified by &ipu3_uapi_ae_config
+@@ -2724,7 +2722,6 @@ struct ipu3_uapi_obgrid_param {
+  * @acc_ae: 0 = no update, 1 = update.
+  * @acc_af: 0 = no update, 1 = update.
+  * @acc_awb: 0 = no update, 1 = update.
+- * @__acc_osys: 0 = no update, 1 = update.
+  * @reserved3: Not used.
+  * @lin_vmem_params: 0 = no update, 1 = update.
+  * @tnr3_vmem_params: 0 = no update, 1 = update.
+-- 
+2.43.0
 
 
