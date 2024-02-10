@@ -1,80 +1,79 @@
-Return-Path: <linux-kernel+bounces-60329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF0C85033F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:18:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AE3F850341
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:18:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32C391F2161F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:18:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E6AA1C213CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43AB028DC9;
-	Sat, 10 Feb 2024 07:13:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A940364C1;
+	Sat, 10 Feb 2024 07:13:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gcgMYLoc"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZdzPUxla"
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346F036114
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4F3364A1
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707549193; cv=none; b=ESNOfxKfnTcY40jzrJEkavpi7ZYhmnMNc+QxFX6lMkOEOJ8HRO1n69RktSTgz9LjoXkJtz91MopXdFHVBAxWaaAhngQzAqilixDgdOuZalE2aRwJguH+yGqAOolQHWcTJVcEXoz8ukCE0ICMccX8GCuX6llSa9yyETx66DtYGc0=
+	t=1707549212; cv=none; b=L+hVzykdXmsDXG+oV1zojG5FkEkPImbgW2VPOsBS93S0n4l/K1N1upqmtgdDVpT2XYc4SeVzRL/P1FQe4SWBBLt7lowPKVIUL0wjH5AxqYsdsA0Syjev5jX7nO19k0YpdiJD17yUXwtYxBcalgerD2EjLQOpHwhWeTiNsztOK44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707549193; c=relaxed/simple;
-	bh=qa6lwNwuaNmnSvIUXpbojAW7vqsJ6IReplZl0473XF8=;
+	s=arc-20240116; t=1707549212; c=relaxed/simple;
+	bh=eLNqhG6BuOwuEDtpbLnGq2B+ck6kSMVlJ6ab7q6aBbg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I+wgEfosidINgkO8FVBLmfawE2ub4R5ziwPpiM3u6d6XahKKlJ/HwNHbD6M+JECmmQpXRniXMIxMXZOQiNyseGhgPPFwLLJ6FCidT8P4dszXLFLvNGnB+9cd0utdQh/MkObFqXQXTdLk2chmcVDbhkjgTOAsF8syurYc50y5QeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gcgMYLoc; arc=none smtp.client-ip=209.85.214.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=fSM5XShT3LjivW8ZbL0u2U6dnuaH0RnAPSZ5hgE9o17UEND/E4wPJ6AchTynDRWP/puV+4KCbmJ4nsZzzJyiAhBgLzX5VFvkj8AfYFe/T2FFm7IKpFNhhyMTG4RBpCKB0ayGgOYSavlnJZET4lDRHr2J1l+PzaMLiNSmOEQ/bTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZdzPUxla; arc=none smtp.client-ip=209.85.160.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d91397bd22so14421845ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 23:13:12 -0800 (PST)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-21920c78c9fso881942fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 23:13:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707549191; x=1708153991; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707549209; x=1708154009; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ZRBOHYkP72NNNveV+hEVqEGZ7ldBtbUUMBQ0P3CVIk=;
-        b=gcgMYLocUStc53ai4JvFtG4qnGOEWc345nVX3KJrSHd0Vrkm3c90x1V0CC2I5qWZZ0
-         uPdu93dpjo2CJVPxPpcgN43hJIpe4hgD2dC3+aGfHiQjTcl/4otXb1B8oyeYIPqokp//
-         g/EMM1chtpAvfTZe5JhMFxUKuF6zBfDOhuhQM=
+        bh=ItG/RHS5QiD2KktNBEoaf7WVQ+4rUlZA95b1HY5B7yQ=;
+        b=ZdzPUxlaFF0gJTPgCWJ7o4KR72en/vdlxxnjlbAW7KVi5uedg4dWnB/jbJ8fUGd/r8
+         eblmpf+iTfZb3rdx9ABhQq4jrY5V6555iYIGgHIUYD+dqRj/726h67+nbEP7aZipvm9o
+         tgYUvblUrIsr/Gc/U5XUQHF8OV4FxZsfUmOGE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707549191; x=1708153991;
+        d=1e100.net; s=20230601; t=1707549209; x=1708154009;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3ZRBOHYkP72NNNveV+hEVqEGZ7ldBtbUUMBQ0P3CVIk=;
-        b=TQ8uqbQN7CqDI5pS5Dd0eeoE0RcoTCqmZ0pyfNIBsTJKnu+PV30OGhAZgJ0MWouUmq
-         O5koEfumrYUq8SnBV06DJ/gCKsfD6CvlvrjoVaA1uBi57sxLvnVJEeNV10szrAKTOHFv
-         OUYCOy1DMKAULORxmwjr7fgxz+WA2LZVFjvEjmzi6FCK7vI5h3YrRGVGZLVBAsz+qzqZ
-         Di/kQkVJFj+2mCgOEdAUutpSJ+JfFX5sXN5E2cvnsDkklg/ZhLGccnysDTh8MGtD7h7e
-         IJ2159c7Fcvd2jRK6LQz4uPpgz8tL/9pK8N4DMBO7NxM5OppOt5F5mHa+3wKeuYomWtA
-         dWIg==
-X-Gm-Message-State: AOJu0YzLj68IdXJefBixrzbjPH1m6AFynMMEX1ZvAKyc2z4rjukIgy0X
-	43hRO+04WOQmE+OWcmNpeY/TQzerIT2dek8k4R5Zfu7yagGFlemqpd8QhjcLcw==
-X-Google-Smtp-Source: AGHT+IHfnrueqCTQZn5yBVsCerNu9bFRsxFYoYcwRrkCE11kCBAFTjZ+205YnVm/uIms6cv0AEHi8Q==
-X-Received: by 2002:a17:902:ea94:b0:1d9:c37d:7194 with SMTP id x20-20020a170902ea9400b001d9c37d7194mr1528203plb.30.1707549191674;
-        Fri, 09 Feb 2024 23:13:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUjbPKyAh1Ahj3YvSqb2HTaAM0tr+qznBDgMHZs9QY0DF7fhQwtJlx6RJOp07ohJnXymDKfdvMYZYG8NIbJAcQqBqOYQ5nBlATpBS0D9wIpHEnM8lMGpalxtBzujnB+zE4PnFtE6rMoz2t0mnEWHUHbVZugV27I4P4KLBRnK49llqEuzVfFGjRQJAB6w4KKqiIQV9PCSWJJYkQVhQnbxPC69lqnery7gZnE2LEPPqHJmNmeRFLYAdb9QI2BEbBX18QAjfHlvrGURthc4KZ3hA==
+        bh=ItG/RHS5QiD2KktNBEoaf7WVQ+4rUlZA95b1HY5B7yQ=;
+        b=nLczGdPgHN0f7Sxm7iP/Rrm8+nl07zb2W43gDjAh4UqPflbKdL6Syonz1iRunnWwEf
+         wxScCyL9LqzkhWaLna3rprCNj1X/OuN6ggN+K4Mj9EC9SXO+thJM+dGxSgSSn4y7oTBO
+         D6F6cNg5Gv+S7RBtKgLYwm1KQ3A5qEztk+HLJzGBo5VTFQP9Ht2L0sTT7FTeDLdpNY+Z
+         vdRYBd7xhL/vB5DM2wC7nwjOhAaDsHhpdTJ4zWtkPtWeS00gITkZ6kTS35T+jF+avd77
+         7cYOpsBPQv4/Ik2wXx+eCVijsshpU8JF1k/b2YxssRC81Qj9SsoionOca3HWtp+x+Boc
+         0hbQ==
+X-Gm-Message-State: AOJu0YxR6qEfUEziOso+m4hMCicTWfNh3r+BOlNIIgJyCyBYYt5+BPBb
+	cNQWUZFerAw5KwzgFiLLX3cya18anGE1wqwBwg7wp9egXWJ+bai7Tv9OFW1LTw==
+X-Google-Smtp-Source: AGHT+IFvXEOJCe3uJjrX4Rbsofsi7PzYGuVSH33eHEMoSLRIq1/HcJ+88W1asbpwm5g/HR9s4Wh/Kg==
+X-Received: by 2002:a05:6870:e89:b0:21a:2e98:75ec with SMTP id mm9-20020a0568700e8900b0021a2e9875ecmr1764810oab.48.1707549209593;
+        Fri, 09 Feb 2024 23:13:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUfN/Cc5eb2GjsAXYbFZgDAw708o5YX2rlVLoKGUMfFqNNZA4uVKyw/8T6c8ZEHIJcuFLf5e93d/0zw0MoZSsyfO3o1SWHB6PNxMOk+thlGY1FIDz6LG2vxBDpx9TA8tALOPNXFbImXOALV05n1NmHiuN3atGtz2l740zsMhdSiE0Msafll2ubX2g/5FTYTt+SsosmJJN8fkKCb4vGM+bCgKixG41T+kBVJ0ZWLh8bUbcw=
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170903230400b001d9469967e8sm2500730plh.122.2024.02.09.23.13.11
+        by smtp.gmail.com with ESMTPSA id cl3-20020a056a02098300b005dbcff5d38esm2528518pgb.68.2024.02.09.23.13.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 23:13:11 -0800 (PST)
-Date: Fri, 9 Feb 2024 23:13:10 -0800
+        Fri, 09 Feb 2024 23:13:28 -0800 (PST)
+Date: Fri, 9 Feb 2024 23:13:28 -0800
 From: Kees Cook <keescook@chromium.org>
 To: Lee Jones <lee@kernel.org>
 Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
 	"James E.J. Bottomley" <jejb@linux.ibm.com>,
 	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	John Garry <john.g.garry@oracle.com>,
-	Luben Tuikov <luben_tuikov@adaptec.com>, linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 09/10] scsi: aic94xx: Remove snprintf() from sysfs
+	support@areca.com.tw, linux-scsi@vger.kernel.org
+Subject: Re: [PATCH 10/10] scsi: arcmsr: Remove snprintf() from sysfs
  call-backs and replace with sysfs_emit()
-Message-ID: <202402092307.FC979BCBA5@keescook>
+Message-ID: <202402092313.DF1409889@keescook>
 References: <20240208084512.3803250-1-lee@kernel.org>
- <20240208084512.3803250-10-lee@kernel.org>
+ <20240208084512.3803250-11-lee@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,9 +82,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240208084512.3803250-10-lee@kernel.org>
+In-Reply-To: <20240208084512.3803250-11-lee@kernel.org>
 
-On Thu, Feb 08, 2024 at 08:44:21AM +0000, Lee Jones wrote:
+On Thu, Feb 08, 2024 at 08:44:22AM +0000, Lee Jones wrote:
 > Since snprintf() has the documented, but still rather strange trait of
 > returning the length of the data that *would have been* written to the
 > array if space were available, rather than the arguably more useful
@@ -93,34 +92,12 @@ On Thu, Feb 08, 2024 at 08:44:21AM +0000, Lee Jones wrote:
 > something else instead in order to avoid confusion.
 > 
 > In the case of sysfs call-backs, new wrappers exist that do just that.
-
-Actually, a treewide replacement for snprintf(dst, PAGE_SIZE, ... to
-sysfs_emit might be workable too. Here's the .cocci file I made quickly:
-
-@replace@
-expression DST;
-@@
-
-- snprintf(DST, PAGE_SIZE,
-+ sysfs_emit(DST,
-  ...)
-
-This produced almost 1000 changes:
- 118 files changed, 964 insertions(+), 958 deletions(-)
-
-Some need some manual examination, like:
-
-arch/powerpc/platforms/ps3/system-bus.c:modalias_show() does:
-
-        return (len >= PAGE_SIZE) ? (PAGE_SIZE - 1) : len;
-
-which isn't needed any more.
-
-Regardless,
+> 
+> Link: https://lwn.net/Articles/69419/
+> Link: https://github.com/KSPP/linux/issues/105
+> Signed-off-by: Lee Jones <lee@kernel.org>
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
 
 -- 
 Kees Cook
