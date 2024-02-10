@@ -1,169 +1,212 @@
-Return-Path: <linux-kernel+bounces-60345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C23A9850371
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 09:05:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 131CD850376
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 09:09:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E00C71C21C7A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:05:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAA62B23C5A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC592B9CF;
-	Sat, 10 Feb 2024 08:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D815533CD2;
+	Sat, 10 Feb 2024 08:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="A7SRCENf"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KJoW4J71";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="DALLQMtL";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZTWz1/eC";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="xJIBcXYS"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5136AB7
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 08:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3098B23DB;
+	Sat, 10 Feb 2024 08:08:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707552343; cv=none; b=RACz3ekF5N0iIAAn+AMlxL4FrW5YeMbVWZpo2shS8aBCTbpVUbKd96vXZ+C0WZ7mdfrMvvSDvMJOD2wmtX/MZhgh05ortyknYmCH9reI3XIdjX2hpHbbY1XaL6NkRCGAentsx+fY53TeYAEAnB7vnYWz3lCP9oFvW7I1hXPJFv8=
+	t=1707552521; cv=none; b=OwGFxKA5M57o6TbtJYLLJec8nayWveFq4/A6TXx5fMIUV1lkxPDn1dlbXvWhAqlqi4MiqJoaDXXlIJu1EDfGu8RvX6Y6aA5fhx5x/uaJPaXGG7UZiCvxF3S4YRJfX80Z9IoTP12Y1wL1dGzmSKMHCnureubc92+3q6WPk8ThUt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707552343; c=relaxed/simple;
-	bh=2kk8zl7wmBntT6bZOZ9oR09/coMM4tEFb/OHSEp1i7Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=doFALNvNpAl5Q3f+KhOcDabJksG3pwOhSbAoLlBwpKihjGQLVlQffrADFgU24yL5u1l4rPb/1jzfLlFuAAIw6pechZXken/vJSnqzoejXqlAwymX0l7rubGBrQQaWGAeqH/AtGRQgPYqhx1ZAjCNjkP98Tp/gzn1irQLeThiXwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=A7SRCENf; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-603fd31f5c2so23642847b3.0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 00:05:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1707552341; x=1708157141; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZaycG/k+YujivUfeaD+PrPikDMJQEOMrsakJhGd6CLE=;
-        b=A7SRCENfhkGrc2TRwgkBiKuVohyNrM5wRC+Z0RcEduqDUwl841BMJ9dFsOp8qvF76S
-         +WQP/FyjTf3yvuGmnRKjnN9VW1BaPghA5UP5pjBCXG+jeubFdm4z0Vj1g5oT9nM7H7Lm
-         +nvQefJh7uPrMNjSz9WUeb/SaQkLZN7ZLjfPoW0SzHI/dGDGn+ga+0h+jeaWDcyZasDy
-         rx0NJ3/3VQ6eoEg8ZYCvb6tMqXEUc+JZCyJKjtz8ez0ihCbL9yzgnocbfV1QkWMRaN/K
-         YcNvrSjsfWqppXn0nxwYUfpYuv4crfkIgBziiMooPDUEaaEtBotcHQV3bvQR7Eetocmf
-         wuiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707552341; x=1708157141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZaycG/k+YujivUfeaD+PrPikDMJQEOMrsakJhGd6CLE=;
-        b=DSIm++6lBnQiovlv2gpgO71N/h9J7GmnBB5FQ5Xt89OTd3tfKkC30Xi0vkTFNTt6lw
-         d/XrC1++xWnyYi5s+Ku6fyQLtCUNXXsKj2JYb6uzYzA58hQX/glQJeIMlBGNV1DgWKDx
-         PZf3nTKqelN6M9DPoQ/FFVr2b3V+BkqhDJO6wwCHmp0kdYXH8cR6KbwiOMs9wuYsJM8h
-         URy7Xve1guyjtM4BgtzgCEquaxQoM5Bly073eOIXIPKHiHXIjSQt9YXnZaQRMkgN/Td+
-         kU/9BImUWxTaj1qCNgtEqhcXCfDcdzYAL4OmmCJabdTqzQmZfDj7jecHUDgH/xGOvtqd
-         CkEg==
-X-Gm-Message-State: AOJu0Yx/V1dNl7a2RVZ2RNXo5pfdxReUe0lp+75KTvY/RoEunKaHVkTd
-	+42wPrRto+jE5ACKledY1ZMYH2rjZxD6pm03JAeAGhWzedcXCHUAJI0IkBvJqxe3f1LzU/k2yQz
-	Dq4/7k/B/egxKFV0dOHCWEjyZfuLczK+fAJyLTw==
-X-Google-Smtp-Source: AGHT+IExADOTTgAs4pdlehx41o/HZWoMewbTcSoa8gDHsAPV2p0RvyXSubcT5QBZTFxP6p9x2sVexv1O8S7eEvFJAKw=
-X-Received: by 2002:a25:e0d3:0:b0:dc7:51eb:36dc with SMTP id
- x202-20020a25e0d3000000b00dc751eb36dcmr2566819ybg.5.1707552340707; Sat, 10
- Feb 2024 00:05:40 -0800 (PST)
+	s=arc-20240116; t=1707552521; c=relaxed/simple;
+	bh=F8DGyIH//SMvI1ax+96o/ObM1ZtA0zzCYF6zYzURkuY=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VhCY1L1lQi+MdjZS2jWDSFdycXNRwKP6xvGQD9BN6rFJ46d/6ijPOmZjlHzIeZsrJVepws8kchAfqha3LIIX59Sh/XEIaNfdRXHG05bJsHTw+vOXcb0JV42fnPdjdVE2aDEMqgRdN8OVNE7xmZkxnrmohCXGCl6VehNhjxbGRIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KJoW4J71; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=DALLQMtL; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZTWz1/eC; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=xJIBcXYS; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5A6711F871;
+	Sat, 10 Feb 2024 08:08:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707552517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
+	b=KJoW4J71U9ZLJ7gO2a8d/PIy4nhqzxY0s2zlnSK3EfY+kPyH4g9TEVPDrbfiXtcc/TIc19
+	rBz1R3rMMqHBFpfdklsVYAvJUBGeIBd1yEeUbyG+S4pvPUI3SlQWCdSERiYlNcqQK8aMbi
+	FLTcGWIGmoltnHEJ9DbUUfL3K59u3Cs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707552517;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
+	b=DALLQMtLxjWwWSgCINWrel5oJJeUceaqE4HtJb6m4CQza+kjwh0s/IV8ugvQhrrR/EzT5b
+	Us/14GhwwZ1wBUAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707552515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
+	b=ZTWz1/eCrW4xLIfHtnBLB6BnNE2Hyv+DpxtveF0h6zNq9n2cM02p5thixj/s3MPSNtnQ1z
+	oWVlRIw4qVHxPrc9pXXKeC739EKUY3jDKS0izOgEk9N/+8AYvkDEcvuryy8bu1Wg0PaJqU
+	w8ZfhTZZRJjf5urEpo/4ELDawf/K784=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707552515;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
+	b=xJIBcXYSPUlRFsJAH686aURuAcIgKNqRNMW8Sp8PsxJ1wmcHs6/sbp65Meumml9uDAWSPz
+	lg4vL/0gbcQppkBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A58C613867;
+	Sat, 10 Feb 2024 08:08:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dyCTJgIvx2VMcQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sat, 10 Feb 2024 08:08:34 +0000
+Date: Sat, 10 Feb 2024 09:08:34 +0100
+Message-ID: <875xywzqpp.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: <srinivas.kandagatla@linaro.org>,
+	<mathias.nyman@intel.com>,
+	<perex@perex.cz>,
+	<conor+dt@kernel.org>,
+	<corbet@lwn.net>,
+	<lgirdwood@gmail.com>,
+	<andersson@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>,
+	<gregkh@linuxfoundation.org>,
+	<Thinh.Nguyen@synopsys.com>,
+	<broonie@kernel.org>,
+	<bgoswami@quicinc.com>,
+	<tiwai@suse.com>,
+	<robh+dt@kernel.org>,
+	<konrad.dybcio@linaro.org>,
+	<linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>,
+	<linux-sound@vger.kernel.org>,
+	<linux-usb@vger.kernel.org>,
+	<linux-arm-msm@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v14 20/53] ASoC: Add SOC USB APIs for adding an USB backend
+In-Reply-To: <b007a78c-b8fb-83bc-3be6-963708182cee@quicinc.com>
+References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
+	<20240208231406.27397-21-quic_wcheng@quicinc.com>
+	<87r0hl29ha.wl-tiwai@suse.de>
+	<b007a78c-b8fb-83bc-3be6-963708182cee@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240205-b4-rbtree-v1-0-995e3eee38c0@google.com> <20240205-b4-rbtree-v1-1-995e3eee38c0@google.com>
-In-Reply-To: <20240205-b4-rbtree-v1-1-995e3eee38c0@google.com>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Sat, 10 Feb 2024 02:05:29 -0600
-Message-ID: <CALNs47vgryKctpsP9EV_SsVF8TX8kfwzQ4KCLy9vr5FS_vBq6A@mail.gmail.com>
-Subject: Re: [PATCH 1/6] rust: add `container_of!` macro
-To: mattgilbride@google.com
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Christian Brauner <brauner@kernel.org>, Rob Landley <rob@landley.net>, 
-	Davidlohr Bueso <dave@stgolabs.net>, Michel Lespinasse <michel@lespinasse.org>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="ZTWz1/eC";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=xJIBcXYS
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLe67txhfobum3fqdb5xx8e3au)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[dt];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[23];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,quicinc.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[linaro.org,intel.com,perex.cz,kernel.org,lwn.net,gmail.com,linuxfoundation.org,synopsys.com,quicinc.com,suse.com,vger.kernel.org,alsa-project.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -3.01
+X-Rspamd-Queue-Id: 5A6711F871
+X-Spam-Flag: NO
 
-On Mon, Feb 5, 2024 at 9:50=E2=80=AFAM <mattgilbride@google.com> wrote:
->
-> From: Wedson Almeida Filho <wedsonaf@gmail.com>
->
-> This macro is used to obtain a pointer to an entire struct
-> when given a pointer to a field in that struct.
->
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-> Signed-off-by: Matt Gilbride <mattgilbride@google.com>
-> ---
->  rust/kernel/lib.rs | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
->
-> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-> index 7ac39874aeac..c7963efd1318 100644
-> --- a/rust/kernel/lib.rs
-> +++ b/rust/kernel/lib.rs
-> @@ -102,3 +102,35 @@ fn panic(info: &core::panic::PanicInfo<'_>) -> ! {
->      // SAFETY: FFI call.
->      unsafe { bindings::BUG() };
->  }
-> +
-> +/// Produces a pointer to an object from a pointer to one of its fields.
+On Fri, 09 Feb 2024 21:34:39 +0100,
+Wesley Cheng wrote:
+> 
+> Hi Takashi,
+> 
+> On 2/9/2024 2:54 AM, Takashi Iwai wrote:
+> > On Fri, 09 Feb 2024 00:13:33 +0100,
+> > Wesley Cheng wrote:
+> >> 
+> >> Some platforms may have support for offloading USB audio devices to a
+> >> dedicated audio DSP.  Introduce a set of APIs that allow for management of
+> >> USB sound card and PCM devices enumerated by the USB SND class driver.
+> >> This allows for the ASoC components to be aware of what USB devices are
+> >> available for offloading.
+> >> 
+> >> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> > (snip)
+> >> --- a/sound/soc/Makefile
+> >> +++ b/sound/soc/Makefile
+> >> @@ -1,5 +1,5 @@
+> >>   # SPDX-License-Identifier: GPL-2.0
+> >> -snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-utils.o soc-dai.o soc-component.o
+> >> +snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-usb.o soc-utils.o soc-dai.o soc-component.o
+> >>   snd-soc-core-objs += soc-pcm.o soc-devres.o soc-ops.o soc-link.o soc-card.o
+> >>   snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
+> > 
+> > Do we really want to build this into ASoC core unconditionally?
+> > This is very specific to Qualcomm USB-offload stuff, so it's better to
+> > factor out.
+> > 
+> 
+> Ideally, the SOC USB part shouldn't be Qualcomm specific.  Since I
+> don't have access or insight into how other vendors are achieving the
+> same thing, I can only base the soc-usb layer to work with the
+> information that is required to get the audio stream up and running on
+> the QC platforms.  In its simplest form, its basically just a SW
+> entity that notifies ASoC components about changes occurring from USB
+> SND, and I think all vendors that have an ASoC based platform card
+> handling the offload will need this notification.
 
-It is in the examples but a note would be good to make it obvious:
+Yes, but it's not necessarily built into the snd-soc-core module at
+all, but can be split to another module, right?  Otherwise all
+machines must load this code even if it doesn't use at all.
+If this were common among various chips, it'd be worth to be merged
+into the default common module.  But I don't think that's the case.
 
-    ///
-    /// This macro must be called from within an `unsafe { }` block.
 
-> +/// # Safety
-> +///
-> +/// The pointer passed to this macro, and the pointer returned by this m=
-acro, must both be in
-> +/// bounds of the same allocation.
-> +///
-> +/// # Examples
-> +///
-> +/// ```
-> +/// # use kernel::container_of;
-> +/// struct Test {
-> +///     a: u64,
-> +///     b: u32,
-> +/// }
-> +///
-> +/// let test =3D Test { a: 10, b: 20 };
-> +/// let b_ptr =3D &test.b;
-> +/// // SAFETY: The pointer points at the `b` field of a `Test`, so the r=
-esulting pointer will be
-> +/// // in-bounds of the same allocation as `b_ptr`.
-> +/// let test_alias =3D unsafe { container_of!(b_ptr, Test, b) };
-> +/// assert!(core::ptr::eq(&test, test_alias));
-> +/// ```
-> +#[macro_export]
-> +macro_rules! container_of {
-> +    ($ptr:expr, $type:ty, $($f:tt)*) =3D> {{
-> +        let ptr =3D $ptr as *const _ as *const u8;
-> +        let offset: usize =3D ::core::mem::offset_of!($type, $($f)*);
+thanks,
 
-`offset_of` will be stable in 1.77 BUT only for a single field [1]. I
-don't know if there are other blockers in the kernel already, but if
-this could be changed to call `offset_of!` recursively then  it will
-work with the stable version.
-
-We might want an `offset_of_many!(a, b, c)` macro somewhere if there
-are other places that need this nesting.
-
-[1]: https://github.com/rust-lang/rust/pull/118799
-
-> +        ptr.sub(offset) as *const $type
-
-Instead of casting to and from `u8`, you should be able to use `byte_sub`
-
-> +    }}
-> +}
-
-- Trevor
+Takashi
 
