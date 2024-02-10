@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-60309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 551E4850300
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:11:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92BD0850304
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:11:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4B67B26026
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:10:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8632728501D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:11:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B2B936B15;
-	Sat, 10 Feb 2024 07:09:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351BD381BF;
+	Sat, 10 Feb 2024 07:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="V8Rpmmbt"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TyjwoXwY"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65415360BC
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:09:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD073364AC
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 07:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707548987; cv=none; b=erCiGttdWAbC99OAKcjr4TTg/b47WsIepCEG397COxbmvjktS8zhIcl2FBstqOejrjB52qTeCT3gSTWPZKOf5cUCyNf9cY9fKlqaYk+SX266Xd+NA8xcTDgdZLDujUWsHFAbBSGBMLfMHZ0hT3pNhlYNX99/Fowl8Rc0ct11JVo=
+	t=1707548989; cv=none; b=OTmohq7dXNKFwtCH8+TRDTDd88YecyKAKNGmY+gknTxuu8fQNKBizKMsJd/u6A6meJTFYSpZGQJFkOLmcaYpRk5kwHfKWHiOXolIiSHs4z2R5e47jTzfe89uYvwBwty2fwKi2Q/+gA6FLduMyxt7PrVNIrdZW1lbUzbI7T/RIxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707548987; c=relaxed/simple;
-	bh=PeDZQIpv2F0nTTHxmAelufZ+9YaQdvo2eTiG/pHOI/0=;
+	s=arc-20240116; t=1707548989; c=relaxed/simple;
+	bh=W4vZ4x3CP8SVyUrgLk7eS968yXX65ZHvPF7MpQkPKkM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KSe9Sz4nE+fk8FGGcvqkw0GRSDBfdLrNbYs2nOSP8QRYLUsHZRp7Nyrjzz1MH/Er+FjLsHFr6Dk0YHRPpRmXE8qY2qhZtWW7NSEfXXfATAiMP0Vl9zNjdVqVKG65eQVCnsMxNx/y3Ev5AesAuAWtM7Is4gjSOqUnkWavHWJh8NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=V8Rpmmbt; arc=none smtp.client-ip=209.85.214.176
+	 MIME-Version; b=DICVWzm35dHKlV7Z0J9xhWxEkRCy5I4vagnPaE06KPdh9mcMN9hLBPIiIbaTtI9AkrJWfKlZDpz9uOybf0enCNpg/ISvZXe/j2rnX6yUU2U0Qhg9jQ0vvnSgjW4b4XRA5etcsGlw4ade6mq7RsGRMi2Xl0z4QCAbwpJyk3zvY+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TyjwoXwY; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d7431e702dso15755315ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 23:09:45 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d7354ba334so14818075ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 23:09:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707548985; x=1708153785; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707548986; x=1708153786; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UENrcY9RF89XEYAUM3UR0Kbw3cAWGOtKrrlH+rPz1Os=;
-        b=V8RpmmbtVgxWHoxqOFc7tENIuYkwazXzg4eidDuBlO8Cq9PtVTk96TkMHZNBHr8LlV
-         bEP7G12qkPEmZbzH81YOLuf7qRWq/RQLZpIAQu33wcQq415kvWxBySIQ4uFLKsybJsL9
-         e2COkiut7CVrcyNLBGYULG5RSOideCB1ks9Kk=
+        bh=fkD+zP+NWB9AGWV79+gv+/kfpMf3rGsHXh6c/wyG7zI=;
+        b=TyjwoXwYgnd5orU7V6QnnN2OS9KYbnGH+gVPPF7XRwWQuAc1FxMfwBXZBSJlJqNOLt
+         c/11weyUy7oAyNbewcfYDqSTc2Jm+hMKYn2qePF8ny7grKTi1ws/OLrkYKrm0mIKkoKF
+         CTY+ov395mLQWmuFmGG5A/cd5od+1l16RwWwI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707548985; x=1708153785;
+        d=1e100.net; s=20230601; t=1707548986; x=1708153786;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UENrcY9RF89XEYAUM3UR0Kbw3cAWGOtKrrlH+rPz1Os=;
-        b=BABsPAep65zV4qCFBnMhqv4M1Ne5OkaJdGhouVsICvuv4T4ZD5S69934QDFtcKUKKq
-         mlSApwLLeJNYghiBvInVZ4Bc4nZqbgLwTpBlMUdcD/j7JA/Xy5hbJMDnTYscll8OPAU+
-         Gssq7blPC7k8O4VIyFseR1qgO1isXBVBLf/uX3H16reUcXj2v3FmZST/TK6pzdbBVhuF
-         Blg5BpxuAMNwRXKEskCkXzxZyyVCJbaM67VwaTwtS5STtup6a6ENS/th8pOzcVRoH/IQ
-         PS9C1VSUDqiS1PYTKTqSi01huK0T0F76ik0tddgjawa4IvOpcUugnCFzVsqH+PngqvT/
-         oN7A==
-X-Gm-Message-State: AOJu0YwwP41pMiLtHddSnRGAajoIwp2r5ujs2zkQt1VEL/PsGdQQvVmi
-	Za64iIsNtXBGPJwVFu9HtxNQ+aqU0mODkLLcWerT0HdsosmUYT3NN+WyK3gXIA==
-X-Google-Smtp-Source: AGHT+IGeYAK8ekxYXXY78qIHAecfdEKLr4g2+PQLKllAtw8+dhESn/vcq+039wpruZ/mWbRUYcdc5Q==
-X-Received: by 2002:a17:903:58b:b0:1d9:b789:b1bd with SMTP id jv11-20020a170903058b00b001d9b789b1bdmr1490617plb.9.1707548984724;
-        Fri, 09 Feb 2024 23:09:44 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW8sDzfMYBYjxyemsK+fiduXCKeElhlPm2IA15iWaQTyosgIv3SXegARx/7gWwIoNMf/OYJ1E5L5O5Yb2b2cIysWnO1oBD1SfE/Xesyq0bvl9Qttr51I2bt9ClXYAhX3IXr8h4Hu9CW6OoRfdlMa2TibWpE7LcBN1K8yo7rWf7F8oEzsK7wzzFq8ZitQ252uzLEjAaf+53MhwjFdA1ZyhuS8wLGDgnSyuia6hk1G3N/eEipCDs89DaebviqoHKBjDRZHKPc3zKsHGXtXUZUiqWOIKZLxWz89I6rUigdeA3U8/KzF/uxgWGJgOMP5mj52kafxMePldEjGbWkyKShGLNqo7W47/Z/OE8vsmZt8/drrEqhpc97BRAuzJ0UEJ+6JdgF89TFwnsdyCGgr29sP1qQcsFwW9SU6tKWO36qSqLHbn5pCKLzla/cJafZwaHTtTm2gWe9W6TnaLjptpvJDvFXaSttVVWHj7K67Uou9dL/lbB0Q+WtVQK/o8teLN2FjNT7QQlI
+        bh=fkD+zP+NWB9AGWV79+gv+/kfpMf3rGsHXh6c/wyG7zI=;
+        b=Vcuv7vOkesmdoz6NHPF2FR0n/efaB6uanKrRxY5AyfCVQaxWd96IjVe9nQZ/gfgyHi
+         nMMa/tYzWJFldP28J0aI3gZM/Hh4ZatveoqqbMAzX9OO1GtNkB6nsyadUdRK6N3y/W7t
+         cr4jHz7E6ehNmFfjNuLpCv+bgR9lWQRPN9R7ORvIeEucZmZTziH1m+era79r+DRZ3jxw
+         /BXtA1defmUaQY2dlFlXlV+WwPDpBddI+KPU5rBilqKcBEUa1Fj7SszOvE7uR5yB8xm+
+         WQHN1BruLFQv9Dlec3zBXjE5M89VBntEihvLHawQiBNFZgKK9CBeYLezYWu/gNEzmJJm
+         /2zg==
+X-Gm-Message-State: AOJu0YwqMAGm3VaOR6Ewbv6gRxV7QAiDmxHpsbhIDOXQyU+At+RbMiO+
+	OTLwRkdnGVoY7mJ7g86LxNBVI+EEu5oLsdo4JdEurd0Q445DZxS18gatZ6QnkA==
+X-Google-Smtp-Source: AGHT+IE/c8pAa5MU1KCu70BaKjPYC9gLrHaGU87OjcL/070j/D4osq6hs+au4elV+2dq4cOgocJ5RA==
+X-Received: by 2002:a17:902:be14:b0:1d9:a609:dd7e with SMTP id r20-20020a170902be1400b001d9a609dd7emr1710601pls.55.1707548986273;
+        Fri, 09 Feb 2024 23:09:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWI/ch18h9Q0LqkhYI9qvNSPXFKaQ+zZTw5iEWVutGXC3kUt5cSlLojPVIjctJzLIWli2TuZoulZ+xv5+4F5cm7BXzU7J5caPmQUVkQv44C6fgnze1u2LBEoJf8sgUoniTVtWZLh4LZvZ8AJIM0I7jYhvtvTaaRqt3PeoJmmTByxWzuN7Ik8fhGlYmoSGsGpd5UHFVZ9L0sCnLiMBuFuKlczas0/e64Cxru+iSkN39jwppcmC1t0TpWb8QRmt0LqsNfljAZTuKdWjvhzbz2EhmN/NRUdJVChHtcwqwPFitd97FaAVr1uzBS7oqnZruWzoFzq9fZSmAWd+ZAMD5jmNYZCDrPho+8AiRsCrSChYF0TsCKV8fj15RoxF6c8Rql53xnKG6zFvg2TN2LT5wAkXlr7HPGiA0ZcDk=
 Received: from localhost (175.199.125.34.bc.googleusercontent.com. [34.125.199.175])
-        by smtp.gmail.com with UTF8SMTPSA id d4-20020a170903230400b001d90a67e10bsm2489560plh.109.2024.02.09.23.09.43
+        by smtp.gmail.com with UTF8SMTPSA id s7-20020a170903320700b001d9b749d281sm2493240plh.53.2024.02.09.23.09.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Feb 2024 23:09:44 -0800 (PST)
+        Fri, 09 Feb 2024 23:09:45 -0800 (PST)
 From: Stephen Boyd <swboyd@chromium.org>
 To: chrome-platform@lists.linux.dev
 Cc: linux-kernel@vger.kernel.org,
@@ -73,15 +73,12 @@ Cc: linux-kernel@vger.kernel.org,
 	Douglas Anderson <dianders@chromium.org>,
 	Pin-yen Lin <treapking@chromium.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
 	Matthias Kaehlcke <mka@chromium.org>,
 	linux-usb@vger.kernel.org,
 	maciek swiech <drmasquatch@google.com>
-Subject: [PATCH 03/22] dt-bindings: usb: Add downstream facing ports to realtek binding
-Date: Fri,  9 Feb 2024 23:09:14 -0800
-Message-ID: <20240210070934.2549994-4-swboyd@chromium.org>
+Subject: [PATCH 04/22] usb: core: Set connect_type of ports based on DT node
+Date: Fri,  9 Feb 2024 23:09:15 -0800
+Message-ID: <20240210070934.2549994-5-swboyd@chromium.org>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 In-Reply-To: <20240210070934.2549994-1-swboyd@chromium.org>
 References: <20240210070934.2549994-1-swboyd@chromium.org>
@@ -93,16 +90,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a graph with 4 output endpoints to this hub binding to support the
-scenario where a downstream facing port is connected to a device that
-isn't a connector or a USB device with a VID:PID. This will be used to
-connect downstream facing ports to USB type-c switches so the USB
-superspeed and high speed lanes can be put onto USB connectors.
+When a USB hub is described in DT, such as any device that matches the
+onboard-hub driver, the connect_type is set to "unknown" or
+USB_PORT_CONNECT_TYPE_UNKNOWN. This makes any device plugged into that
+USB port report their 'removable' device attribute as "unknown". Improve
+the connect_type attribute for ports, and in turn the removable
+attribute for USB devices, by looking for child devices with a reg
+property or an OF graph when the device is described in DT.
+
+If the graph exists, endpoints that are connected to a remote node must
+be something like a usb-{a,b,c}-connector compatible node, or an
+intermediate node like a redriver, and not a hardwired USB device on the
+board. Set the connect_type to USB_PORT_CONNECT_TYPE_HOT_PLUG in this
+case because the device is going to be plugged in. Set the connect_type
+to USB_PORT_CONNECT_TYPE_HARD_WIRED if there's a child node for the port
+like 'device@2' for port2. Set the connect_type to USB_PORT_NOT_USED if
+there isn't an endpoint or child node corresponding to the port number.
+
+To make sure things don't change, only set the port to not used if
+there are child nodes. This way an onboard hub connect_type doesn't
+change until ports are added or child nodes are added to describe
+hardwired devices. It's assumed that all ports or no ports will be
+described for a device.
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Conor Dooley <conor+dt@kernel.org>
 Cc: Matthias Kaehlcke <mka@chromium.org>
 Cc: <linux-usb@vger.kernel.org>
 Cc: <devicetree@vger.kernel.org>
@@ -110,90 +121,72 @@ Cc: Pin-yen Lin <treapking@chromium.org>
 Cc: maciek swiech <drmasquatch@google.com>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- .../bindings/usb/realtek,rts5411.yaml         | 50 +++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ drivers/usb/core/port.c | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml b/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
-index f0784d2e86da..5480a31698be 100644
---- a/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
-+++ b/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
-@@ -21,6 +21,12 @@ properties:
+diff --git a/drivers/usb/core/port.c b/drivers/usb/core/port.c
+index c628c1abc907..622b8ada157c 100644
+--- a/drivers/usb/core/port.c
++++ b/drivers/usb/core/port.c
+@@ -9,6 +9,8 @@
  
-   reg: true
+ #include <linux/kstrtox.h>
+ #include <linux/slab.h>
++#include <linux/of.h>
++#include <linux/of_graph.h>
+ #include <linux/pm_qos.h>
+ #include <linux/component.h>
  
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-   vdd-supply:
-     description:
-       phandle to the regulator that provides power to the hub.
-@@ -30,6 +36,36 @@ properties:
-     description:
-       phandle to the peer hub on the controller.
+@@ -696,7 +698,10 @@ int usb_hub_create_port_device(struct usb_hub *hub, int port1)
+ {
+ 	struct usb_port *port_dev;
+ 	struct usb_device *hdev = hub->hdev;
++	struct device_node *np, *child, *ep, *remote_np, *port_np;
+ 	int retval;
++	enum usb_port_connect_type connect_type = USB_PORT_CONNECT_TYPE_UNKNOWN;
++	u32 reg;
  
-+  ports:
-+    $ref: /schemas/graph.yaml#/properties/ports
-+
-+    properties:
-+      port@1:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description:
-+          1st downstream facing USB port
-+
-+      port@2:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description:
-+          2nd downstream facing USB port
-+
-+      port@3:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description:
-+          3rd downstream facing USB port
-+
-+      port@4:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description:
-+          4th downstream facing USB port
-+
-+patternProperties:
-+  "^.*@[1-4]$":
-+    description: The hard wired USB devices
-+    type: object
-+    $ref: /schemas/usb/usb-device.yaml
-+
- required:
-   - peer-hub
-   - compatible
-@@ -50,6 +86,11 @@ examples:
-             reg = <1>;
-             vdd-supply = <&pp3300_hub>;
-             peer-hub = <&hub_3_0>;
-+            /* USB 2.0 device on port 2 */
-+            device@2 {
-+                compatible = "usb123,4567";
-+                reg = <2>;
-+            };
-         };
+ 	port_dev = kzalloc(sizeof(*port_dev), GFP_KERNEL);
+ 	if (!port_dev)
+@@ -708,6 +713,38 @@ int usb_hub_create_port_device(struct usb_hub *hub, int port1)
+ 		return -ENOMEM;
+ 	}
  
-         /* 3.0 hub on port 2 */
-@@ -58,5 +99,14 @@ examples:
-             reg = <2>;
-             vdd-supply = <&pp3300_hub>;
-             peer-hub = <&hub_2_0>;
++	np = hdev->dev.of_node;
++	/* Only set connect_type if binding has ports/hardwired devices. */
++	if (of_get_child_count(np))
++		connect_type = USB_PORT_NOT_USED;
 +
-+            ports {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+                port@0 {
-+                    reg = <0>;
-+                    remote-endpoint = <&usb_a0_ss>;
-+                };
-+            };
-         };
-     };
++	/* Hotplug ports are connected and available in the OF graph. */
++	if (of_graph_is_present(np)) {
++		port_np = of_graph_get_port_by_id(np, port1);
++		if (port_np) {
++			ep = of_graph_get_endpoint_by_regs(np, port1, -1);
++			if (ep) {
++				remote_np = of_graph_get_remote_port_parent(ep);
++				of_node_put(ep);
++				if (of_device_is_available(remote_np))
++					connect_type = USB_PORT_CONNECT_TYPE_HOT_PLUG;
++				of_node_put(remote_np);
++			}
++		}
++		of_node_put(port_np);
++	}
++
++	/*
++	 * Hard-wired ports are child nodes with a reg property corresponding
++	 * to the port number.
++	 */
++	for_each_available_child_of_node(np, child) {
++		if (!of_property_read_u32(child, "reg", &reg) && reg == port1)
++			connect_type = USB_PORT_CONNECT_TYPE_HARD_WIRED;
++	}
++
++	port_dev->connect_type = connect_type;
++
+ 	hub->ports[port1 - 1] = port_dev;
+ 	port_dev->portnum = port1;
+ 	set_bit(port1, hub->power_bits);
 -- 
 https://chromeos.dev
 
