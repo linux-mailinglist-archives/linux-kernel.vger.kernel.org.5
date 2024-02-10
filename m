@@ -1,157 +1,113 @@
-Return-Path: <linux-kernel+bounces-60407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94576850476
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 13:59:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35F90850478
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 14:02:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47642283941
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:59:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DACFC1F22952
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 13:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6510B31A8F;
-	Sat, 10 Feb 2024 12:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FGz0+lSY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7ACC481BE;
+	Sat, 10 Feb 2024 13:02:47 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A82D47F63
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 12:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772313D0DF
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 13:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707569963; cv=none; b=CRxFJ2FKNjPffmeei2Ckkf4YStLRhax2o9k1XM8FwUtdqkwN/OK80p8nuGOg/MhmoijgQo1RnYr7c1FmyLuinFAgNyCNRJHWKI4ahkGwq+32YxrIxL1+xptowXv4SC9z1BpaHPOAT0yQy0mYmMniKCKkSzBeNuBE/UA7UXF4EHc=
+	t=1707570167; cv=none; b=u1laY42ohMsfiWzAlkRV+/2+RI7m/0L3cPgDODfL6iOJIjZlg4hZv3nub8021AhsNQyW9wL/oapACMErn8oF377k2X2dqVi35t78JZiGwYujwlwyMe5iXdfM/PhI783nmV3KD/oOqcPm18nIn6KC8eKcM9hYS92d1IdEsbbtHFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707569963; c=relaxed/simple;
-	bh=Cb1Eh3O2qFMqBZxKzCU4auBY0R5n95zZ3gjKmSOb9JE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pDGuBhEOS0Rynopc/OFVFNXrQ09qT/HCNZbGElKfT3elowTdfDvyuzjToAmSTiC2OMzeV4DlrXG522QsdIAseQ966hI6cyFPQ0kL5iyBlg+XycaxGSbH/KiYCy2k45nKcK+jPKE+zkqo0aLZa6LNkvMjMe6fZaTsR6fh/2dc1G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FGz0+lSY; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707569961; x=1739105961;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Cb1Eh3O2qFMqBZxKzCU4auBY0R5n95zZ3gjKmSOb9JE=;
-  b=FGz0+lSYHesRWo/GmlvBc/NA1qDyxm5801lnDFn6UxMipIpm7l/AQtUF
-   5bm2kpXqH9l5uTV7ZNUtn8oezpWVAv/AiXbTspueXRTS2Too4Qf/x/zLC
-   qlh5GgZrcx8y1dSjiCafX1rTEhIvL23ZivY71WoJ8pL+1KCph5Ta9i+0U
-   Z9MuFn9jr9OgQx0ZIqJN0Us1pAT0jSHzxLQadi8yPBE+Z9948VHXpHYDE
-   qf//YBSJ8JztoR0fEADz5hnsrSUzkdGlCzOozXtjtykC2ht74MDUF1p6j
-   PNexVq2kuypl1NKTRgNc9z9+VfgMAWXL9agPu2mdFKGwzzKy8iJZ9YKKK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1449114"
-X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
-   d="scan'208";a="1449114"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2024 04:59:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
-   d="scan'208";a="2380396"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 10 Feb 2024 04:59:19 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rYmwv-0005fm-1n;
-	Sat, 10 Feb 2024 12:59:17 +0000
-Date: Sat, 10 Feb 2024 20:58:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Max Kellermann <max.kellermann@ionos.com>, linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Max Kellermann <max.kellermann@ionos.com>
-Subject: Re: [PATCH v2 02/35] include: remove unnecessary #include directives
-Message-ID: <202402102047.IswSP6zZ-lkp@intel.com>
-References: <20240209164027.2582906-3-max.kellermann@ionos.com>
+	s=arc-20240116; t=1707570167; c=relaxed/simple;
+	bh=z++avKfPq9qDu4RZiReKmDmUzs0wTT/wjh7b/cwG4bU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=N51oPHjCR+mwqaXkABEAly0L1povNHzWXLAkvoIMSvXcNiJ47tQh+727OWNf8RLEP++V1cHQyc2JaNQOpku+trIrSGLha8UGix/rXvu9z3TJk52ivxhGMteXozh+bn3Wb7c/XtdTGPAiYjNzWm1/uOpDZF68H65Pa7cmxERIr2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-102-tuk_flGuPWqAy7Bypew2Tg-1; Sat, 10 Feb 2024 13:02:41 +0000
+X-MC-Unique: tuk_flGuPWqAy7Bypew2Tg-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 10 Feb
+ 2024 13:02:21 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 10 Feb 2024 13:02:20 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Pavel Machek' <pavel@ucw.cz>, Justin Stitt <justinstitt@google.com>
+CC: Kees Cook <keescook@chromium.org>, Andy Shevchenko <andy@kernel.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC] string: Allow 2-argument strscpy()
+Thread-Topic: [RFC] string: Allow 2-argument strscpy()
+Thread-Index: AQHaWe5TIJbv1x38yUWctvLGNyIGYrEDjCtw
+Date: Sat, 10 Feb 2024 13:02:20 +0000
+Message-ID: <7060edadcbac4452bd70d7894a50568d@AcuMS.aculab.com>
+References: <20240129202901.work.282-kees@kernel.org>
+ <20240129215525.4uxchtrywzzsrauc@google.com> <ZcPDMZFPY08S4MGR@duo.ucw.cz>
+In-Reply-To: <ZcPDMZFPY08S4MGR@duo.ucw.cz>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240209164027.2582906-3-max.kellermann@ionos.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Max,
+From: Pavel Machek
+> Sent: 07 February 2024 17:52
+>=20
+> > > Using sizeof(dst) is the overwhelmingly common case for strscpy().
+> > > Instead of requiring this everywhere, allow a 2-argument version to b=
+e
+> > > used that will use the sizeof() internally.
+> >
+> > Yeah, this is definitely the case. I have a ton of patches replacing
+> > strncpy with strscpy [1] and many of them match the pattern of:
+> > | strscpy(dest, src, sizeof(dest))
+> >
+> > BTW, this hack for function overloading is insane. Never really looked =
+into
+> > it before.
+>=20
+> This hack is insane, but this is also highly confusing, please don't
+> do this.
 
-kernel test robot noticed the following build errors:
+An alternative would be to convert xxx(tgt, src, 0) to
+xxx(tgt, src, sizeof (tgt) - that is when the specified
+length is a compile-time constant zero.
 
-[auto build test ERROR on next-20240209]
-[cannot apply to drm-misc/drm-misc-next media-tree/master mkp-scsi/for-next linus/master v6.8-rc3 v6.8-rc2 v6.8-rc1 v6.8-rc3]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Either with:
+=09(__builtin_constat_p(len) && (len) =3D=3D 0 ? sizeof (dst) : (len))
+Or, leveraging is_constexpr() and doing (I've probably got the syntax wrong=
+):
+=09__Generic(0 ? (void *)(len) : (int *)0,
+=09=09void *: len,
+=09=09int *: sizeof (dst))
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Max-Kellermann/include-add-missing-includes/20240210-005417
-base:   next-20240209
-patch link:    https://lore.kernel.org/r/20240209164027.2582906-3-max.kellermann%40ionos.com
-patch subject: [PATCH v2 02/35] include: remove unnecessary #include directives
-config: i386-buildonly-randconfig-006-20240210 (https://download.01.org/0day-ci/archive/20240210/202402102047.IswSP6zZ-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240210/202402102047.IswSP6zZ-lkp@intel.com/reproduce)
+That probably needs a helper:
+=09is_constzero(value, if_zero, if_non_zero)
+to make it more generally useful.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402102047.IswSP6zZ-lkp@intel.com/
+=09David
 
-All errors (new ones prefixed by >>):
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
->> drivers/gpu/drm/sun4i/sun4i_layer.c:28:3: error: call to undeclared function 'kfree'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-      28 |                 kfree(state);
-         |                 ^
-   drivers/gpu/drm/sun4i/sun4i_layer.c:28:3: note: did you mean 'vfree'?
-   include/linux/vmalloc.h:160:13: note: 'vfree' declared here
-     160 | extern void vfree(const void *addr);
-         |             ^
->> drivers/gpu/drm/sun4i/sun4i_layer.c:32:10: error: call to undeclared function 'kzalloc'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-      32 |         state = kzalloc(sizeof(*state), GFP_KERNEL);
-         |                 ^
-   drivers/gpu/drm/sun4i/sun4i_layer.c:32:10: note: did you mean 'vzalloc'?
-   include/linux/vmalloc.h:140:14: note: 'vzalloc' declared here
-     140 | extern void *vzalloc(unsigned long size) __alloc_size(1);
-         |              ^
->> drivers/gpu/drm/sun4i/sun4i_layer.c:32:8: error: incompatible integer to pointer conversion assigning to 'struct sun4i_layer_state *' from 'int' [-Wint-conversion]
-      32 |         state = kzalloc(sizeof(*state), GFP_KERNEL);
-         |               ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/sun4i/sun4i_layer.c:43:9: error: call to undeclared function 'kzalloc'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-      43 |         copy = kzalloc(sizeof(*copy), GFP_KERNEL);
-         |                ^
-   drivers/gpu/drm/sun4i/sun4i_layer.c:43:7: error: incompatible integer to pointer conversion assigning to 'struct sun4i_layer_state *' from 'int' [-Wint-conversion]
-      43 |         copy = kzalloc(sizeof(*copy), GFP_KERNEL);
-         |              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/sun4i/sun4i_layer.c:60:2: error: call to undeclared function 'kfree'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-      60 |         kfree(s_state);
-         |         ^
-   6 errors generated.
-
-
-vim +/kfree +28 drivers/gpu/drm/sun4i/sun4i_layer.c
-
-9026e0d122ac87 Maxime Ripard      2015-10-29  18  
-d540f82adf3577 Maxime Ripard      2018-01-22  19  static void sun4i_backend_layer_reset(struct drm_plane *plane)
-d540f82adf3577 Maxime Ripard      2018-01-22  20  {
-d540f82adf3577 Maxime Ripard      2018-01-22  21  	struct sun4i_layer_state *state;
-d540f82adf3577 Maxime Ripard      2018-01-22  22  
-d540f82adf3577 Maxime Ripard      2018-01-22  23  	if (plane->state) {
-d540f82adf3577 Maxime Ripard      2018-01-22  24  		state = state_to_sun4i_layer_state(plane->state);
-d540f82adf3577 Maxime Ripard      2018-01-22  25  
-d540f82adf3577 Maxime Ripard      2018-01-22  26  		__drm_atomic_helper_plane_destroy_state(&state->state);
-d540f82adf3577 Maxime Ripard      2018-01-22  27  
-d540f82adf3577 Maxime Ripard      2018-01-22 @28  		kfree(state);
-d540f82adf3577 Maxime Ripard      2018-01-22  29  		plane->state = NULL;
-d540f82adf3577 Maxime Ripard      2018-01-22  30  	}
-d540f82adf3577 Maxime Ripard      2018-01-22  31  
-d540f82adf3577 Maxime Ripard      2018-01-22 @32  	state = kzalloc(sizeof(*state), GFP_KERNEL);
-e4fff65fdb526a Maxime Ripard      2022-02-21  33  	if (state)
-60252323ec9c36 Alexandru Gheorghe 2018-08-04  34  		__drm_atomic_helper_plane_reset(plane, &state->state);
-d540f82adf3577 Maxime Ripard      2018-01-22  35  }
-d540f82adf3577 Maxime Ripard      2018-01-22  36  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
