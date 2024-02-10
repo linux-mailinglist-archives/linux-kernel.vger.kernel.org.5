@@ -1,348 +1,74 @@
-Return-Path: <linux-kernel+bounces-60517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A9848505F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 19:23:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A47D8505F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 19:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 084B01F216D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:23:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF145B23129
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DBC5DF33;
-	Sat, 10 Feb 2024 18:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="jOhWIvfU"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476875DF3A;
+	Sat, 10 Feb 2024 18:28:23 +0000 (UTC)
+Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD84636B01
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 18:23:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75885C8FB;
+	Sat, 10 Feb 2024 18:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707589404; cv=none; b=K0uoBDbwykIWVSqnri/0vsQ/feg/9BgRDJuAJ6WofNXw4kFhawi3CzrOwpksYN0Lif5yFQDjB3jH8TYjWrOsZgrTJXk+t/0EKYPJnh0k2pxA3SBEJiF1WPnlR23RyhEeDC5E0x1i4g39NQ5VxEMNaeDbAQOYDyJtre2rnMDDBbU=
+	t=1707589702; cv=none; b=u8MFXzJ7r1At9gskR8yEH4GwEckV25Xt1a3oHE8XmvVGQCxdtN/H6fhqe68eXQJbldOjs8GlVFsj9TBJhbod3S2UuteIO7YkiYnMZPU06FhwjVcNFnC6SMNrOFw7FOoe0ELZcWm54w2dxoj7uzGCA3j7C+igcCxGbZa8B0ACDEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707589404; c=relaxed/simple;
-	bh=5TS0RLs4pnboNi9sa96idCty24ifS/kJiFjRRwQPGq4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bqo3U8nbebFvtyIsGLb2edEINGk+55jhJ2odUVFPwVFqW4WZ5aB9FjHHWDgeYEWtisFaCu0FN1WeQGbd7/jkYhKiciER5Zak2UqO1j8/hqL+FoQ4JXYJIABHAnI1byxFLD2MgocPx8Tdw6FP7rnUjx0MC0GQZvAHYvzhNPzvNQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=jOhWIvfU; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=xMWj3piIy3KgzhJZk3LuyDZFbaeOWc1pragfbI7gxLg=; b=jOhWIvfUNJL66KkQCWKFkhrPWT
-	BYF6GqH28pt1n7/+ZyIkY/JqYZr7rK+OgLK7hM4RehpYGHfiFFNxQqCZ6Xe3DVXMJtZZMWyEDU1VG
-	48MZ4Ok5wtzb2Nj+26iLPmjx22NDZLO4puAX7BXwA5ZjnXEVjqCqNZu8mT0pVkuM4qaYwwOBTThH7
-	wNUJJzQ/ZUXzxgJzaWMllcPEjbI8wiwU9d1x/Mg/zIos8whWHYjVTrY9jOY+k6wmhVpU3rHt2fzXn
-	2cQZTW6fsb9QChoAD08w6mQfqtbBbj5Xj5uMLvE8F3L6XtmGlC45gapprHwPhoB0x328XMEPUGsAb
-	l/UagVig==;
-Received: from [179.234.233.159] (helo=[192.168.1.212])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rYs0R-00FyEE-Mo; Sat, 10 Feb 2024 19:23:16 +0100
-Message-ID: <792d46b8-675a-4f5b-8db9-1c3dfa66bb92@igalia.com>
-Date: Sat, 10 Feb 2024 15:23:09 -0300
+	s=arc-20240116; t=1707589702; c=relaxed/simple;
+	bh=J1Ii1pmB0KX+fGzm1v3fncbFEfo+qoV5oXPke2TDW+s=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=mqoRl/4+lN5fOcD4HoeI9+K4C1EbTXO45ndFefXPT8nVCjcSuNabPeOWPq/un0CKDpz7pvC+6WWz9oZcFVX2SnEhNwK8TiafJ+OKKrhrOAQCMlvzL94NS04/A9vAfDH/uGidJX4TwPIBohQgcpe2J103BKUHYdMOYBR3sZpsuDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
+Received: from [192.168.2.4] (51b69e54.dsl.pool.telekom.hu [::ffff:81.182.158.84])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 0000000000073B2A.0000000065C7C03D.001B780A; Sat, 10 Feb 2024 19:28:12 +0100
+Message-ID: <79751864914857d6ed83a58acbd3134e79a3591f.camel@irl.hu>
+Subject: Re: [PATCH] ASoC: amd: yc: Fix non-functional mic on Lenovo 82UU
+From: Gergo Koteles <soyer@irl.hu>
+To: Attila =?UTF-8?Q?T=C5=91k=C3=A9s?= <attitokes@gmail.com>,
+  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Sat, 10 Feb 2024 19:28:12 +0100
+In-Reply-To: <20240210164703.141745-1-attitokes@gmail.com>
+References: <20240210164703.141745-1-attitokes@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] drm/ci: add tests on vkms
-Content-Language: en-US
-To: Vignesh Raman <vignesh.raman@collabora.com>,
- dri-devel@lists.freedesktop.org
-Cc: airlied@gmail.com, daniel@ffwll.ch, rodrigosiqueiramelo@gmail.com,
- melissa.srw@gmail.com, hamohammed.sa@gmail.com, robdclark@gmail.com,
- daniels@collabora.com, helen.koike@collabora.com,
- david.heidelberg@collabora.com, guilherme.gallo@collabora.com,
- sergi.blanch.torne@collabora.com, linux-kernel@vger.kernel.org
-References: <20240201065346.801038-1-vignesh.raman@collabora.com>
-From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
-Autocrypt: addr=mcanal@igalia.com; keydata=
- xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
- H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
- hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
- GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
- rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
- s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
- GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
- pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
-In-Reply-To: <20240201065346.801038-1-vignesh.raman@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-Hi Vignesh,
+Hi Attila,
 
-On 2/1/24 03:53, Vignesh Raman wrote:
-> Add job that runs igt on top of vkms.
-> 
-> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
-> Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> Tested-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+On Sat, 2024-02-10 at 18:47 +0200, Attila T=C5=91k=C3=A9s wrote:
+> Like many other models, the Lenovo 82UU (Yoga Slim 7 Pro 14ARH7)
+> needs a quirk entry for the internal microphone to function.
 > ---
-> 
-> v2:
-> - do not mv modules to /lib/modules in the job definition, leave it to
->    crosvm-runner.sh
-> 
-> v3:
-> - Enable CONFIG_DRM_VKMS in x86_64.config and update xfails
-> 
-> v3:
-> - Build vkms as module and test with latest IGT.
->    This patch depends on https://lore.kernel.org/dri-devel/20240130150340.687871-1-vignesh.raman@collabora.com/
 
-Considering that this patch depends on that series, I believe you
-could include this patch as part of that series. It will be easier for
-us to review and land it.
+Looks like you missed the Signed-off-by tag.
+It is required for every patch:
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign=
+-your-work-the-developer-s-certificate-of-origin
 
-Thanks for all the great work with the CI!
+I think you can also add a
+Cc: stable@vger.kernel.org
+tag.
 
-Best Regards,
-- Maíra
+Regards,
+Gergo
 
-> 
-> ---
->   MAINTAINERS                                   |  1 +
->   drivers/gpu/drm/ci/build.sh                   |  1 -
->   drivers/gpu/drm/ci/gitlab-ci.yml              |  2 +-
->   drivers/gpu/drm/ci/igt_runner.sh              |  6 ++--
->   drivers/gpu/drm/ci/image-tags.yml             |  2 +-
->   drivers/gpu/drm/ci/test.yml                   | 24 +++++++++++++-
->   drivers/gpu/drm/ci/x86_64.config              |  1 +
->   .../drm/ci/xfails/virtio_gpu-none-fails.txt   |  1 -
->   drivers/gpu/drm/ci/xfails/vkms-none-fails.txt | 32 +++++++++++++++++++
->   .../gpu/drm/ci/xfails/vkms-none-flakes.txt    | 19 +++++++++++
->   drivers/gpu/drm/ci/xfails/vkms-none-skips.txt | 16 ++++++++++
->   11 files changed, 97 insertions(+), 8 deletions(-)
->   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index bcdc17d1aa26..09310a6f4b5f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6923,6 +6923,7 @@ L:	dri-devel@lists.freedesktop.org
->   S:	Maintained
->   T:	git git://anongit.freedesktop.org/drm/drm-misc
->   F:	Documentation/gpu/vkms.rst
-> +F:	drivers/gpu/drm/ci/xfails/vkms*
->   F:	drivers/gpu/drm/vkms/
->   
->   DRM DRIVER FOR VIRTUALBOX VIRTUAL GPU
-> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
-> index 331a61e0d25a..2e089e03f061 100644
-> --- a/drivers/gpu/drm/ci/build.sh
-> +++ b/drivers/gpu/drm/ci/build.sh
-> @@ -152,7 +152,6 @@ fi
->   
->   mkdir -p artifacts/install/lib
->   mv install/* artifacts/install/.
-> -rm -rf artifacts/install/modules
->   ln -s common artifacts/install/ci-common
->   cp .config artifacts/${CI_JOB_NAME}_config
->   
-> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
-> index e2b021616a8e..c69fb6af4cf8 100644
-> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
-> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
-> @@ -107,7 +107,7 @@ stages:
->     - meson
->     - msm
->     - rockchip
-> -  - virtio-gpu
-> +  - software-driver
->   
->   # YAML anchors for rule conditions
->   # --------------------------------
-> diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
-> index 2fd09b9b7cf6..3c7f000805e5 100755
-> --- a/drivers/gpu/drm/ci/igt_runner.sh
-> +++ b/drivers/gpu/drm/ci/igt_runner.sh
-> @@ -20,10 +20,10 @@ cat /sys/kernel/debug/dri/*/state
->   set -e
->   
->   case "$DRIVER_NAME" in
-> -    amdgpu)
-> +    amdgpu|vkms)
->           # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
-> -        mv /install/modules/lib/modules/* /lib/modules/.
-> -        modprobe amdgpu
-> +        mv /install/modules/lib/modules/* /lib/modules/. || true
-> +        modprobe --first-time $DRIVER_NAME
->           ;;
->   esac
->   
-> diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
-> index cf07c3e09b8c..bf861ab8b9c2 100644
-> --- a/drivers/gpu/drm/ci/image-tags.yml
-> +++ b/drivers/gpu/drm/ci/image-tags.yml
-> @@ -4,7 +4,7 @@ variables:
->      DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
->   
->      DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
-> -   DEBIAN_BUILD_TAG: "2023-10-08-config"
-> +   DEBIAN_BUILD_TAG: "2024-01-29-vkms"
->   
->      KERNEL_ROOTFS_TAG: "2023-10-06-amd"
->      PKG_REPO_REV: "67f2c46b"
-> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
-> index 8ab8a8f56d6a..58c3cf4b18e0 100644
-> --- a/drivers/gpu/drm/ci/test.yml
-> +++ b/drivers/gpu/drm/ci/test.yml
-> @@ -399,7 +399,7 @@ meson:g12b-display:
->       DRIVER_NAME: meson
->   
->   virtio_gpu:none:
-> -  stage: virtio-gpu
-> +  stage: software-driver
->     variables:
->       CROSVM_GALLIUM_DRIVER: llvmpipe
->       DRIVER_NAME: virtio_gpu
-> @@ -419,3 +419,25 @@ virtio_gpu:none:
->       - debian/x86_64_test-gl
->       - testing:x86_64
->       - igt:x86_64
-> +
-> +vkms:none:
-> +  stage: software-driver
-> +  variables:
-> +    DRIVER_NAME: vkms
-> +    GPU_VERSION: vkms-none
-> +  extends:
-> +    - .test-gl
-> +    - .test-rules
-> +  tags:
-> +    - kvm
-> +  script:
-> +    - ln -sf $CI_PROJECT_DIR/install /install
-> +    - mv install/bzImage /lava-files/bzImage
-> +    - mkdir -p /lib/modules
-> +    - mkdir -p $CI_PROJECT_DIR/results
-> +    - ln -sf $CI_PROJECT_DIR/results /results
-> +    - ./install/crosvm-runner.sh ./install/igt_runner.sh
-> +  needs:
-> +    - debian/x86_64_test-gl
-> +    - testing:x86_64
-> +    - igt:x86_64
-> diff --git a/drivers/gpu/drm/ci/x86_64.config b/drivers/gpu/drm/ci/x86_64.config
-> index 1cbd49a5b23a..8eaba388b141 100644
-> --- a/drivers/gpu/drm/ci/x86_64.config
-> +++ b/drivers/gpu/drm/ci/x86_64.config
-> @@ -24,6 +24,7 @@ CONFIG_DRM=y
->   CONFIG_DRM_PANEL_SIMPLE=y
->   CONFIG_PWM_CROS_EC=y
->   CONFIG_BACKLIGHT_PWM=y
-> +CONFIG_DRM_VKMS=m
->   
->   # Strip out some stuff we don't need for graphics testing, to reduce
->   # the build.
-> diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-> index 007f21e56d89..f82d437909b5 100644
-> --- a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-> +++ b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-> @@ -41,7 +41,6 @@ kms_flip@flip-vs-absolute-wf_vblank,Fail
->   kms_flip@flip-vs-absolute-wf_vblank-interruptible,Fail
->   kms_flip@flip-vs-blocking-wf-vblank,Fail
->   kms_flip@flip-vs-expired-vblank,Fail
-> -kms_flip@flip-vs-expired-vblank-interruptible,Fail
->   kms_flip@flip-vs-modeset-vs-hang,Fail
->   kms_flip@flip-vs-panning-vs-hang,Fail
->   kms_flip@flip-vs-wf_vblank-interruptible,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
-> new file mode 100644
-> index 000000000000..a8b9d79d9a16
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
-> @@ -0,0 +1,32 @@
-> +kms_cursor_crc@cursor-rapid-movement-128x128,Fail
-> +kms_cursor_crc@cursor-rapid-movement-128x42,Fail
-> +kms_cursor_crc@cursor-rapid-movement-256x256,Fail
-> +kms_cursor_crc@cursor-rapid-movement-256x85,Fail
-> +kms_cursor_crc@cursor-rapid-movement-32x10,Fail
-> +kms_cursor_crc@cursor-rapid-movement-32x32,Fail
-> +kms_cursor_crc@cursor-rapid-movement-512x170,Fail
-> +kms_cursor_crc@cursor-rapid-movement-512x512,Fail
-> +kms_cursor_crc@cursor-rapid-movement-64x21,Fail
-> +kms_cursor_crc@cursor-rapid-movement-64x64,Fail
-> +kms_cursor_legacy@basic-flip-before-cursor-atomic,Fail
-> +kms_cursor_legacy@basic-flip-before-cursor-legacy,Fail
-> +kms_cursor_legacy@cursor-vs-flip-atomic,Fail
-> +kms_cursor_legacy@cursor-vs-flip-legacy,Fail
-> +kms_cursor_legacy@cursor-vs-flip-toggle,Fail
-> +kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
-> +kms_cursor_legacy@flip-vs-cursor-atomic,Fail
-> +kms_cursor_legacy@flip-vs-cursor-crc-atomic,Fail
-> +kms_cursor_legacy@flip-vs-cursor-crc-legacy,Fail
-> +kms_cursor_legacy@flip-vs-cursor-legacy,Fail
-> +kms_flip@flip-vs-modeset-vs-hang,Fail
-> +kms_flip@flip-vs-panning-vs-hang,Fail
-> +kms_pipe_crc_basic@nonblocking-crc,Fail
-> +kms_pipe_crc_basic@nonblocking-crc-frame-sequence,Fail
-> +kms_pipe_crc_basic@suspend-read-crc,Fail
-> +kms_plane@plane-panning-bottom-right-suspend,Fail
-> +kms_universal_plane@universal-plane-pipe-A-sanity,Fail
-> +kms_vblank@pipe-A-ts-continuation-dpms-suspend,Fail
-> +kms_writeback@writeback-check-output,Fail
-> +kms_writeback@writeback-fb-id,Fail
-> +kms_writeback@writeback-invalid-parameters,Fail
-> +kms_writeback@writeback-pixel-formats,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
-> new file mode 100644
-> index 000000000000..18afbfcc1c52
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
-> @@ -0,0 +1,19 @@
-> +# Board Name: vkms
-> +# Bug Report: https://lore.kernel.org/dri-devel/005da8f1-8050-bffd-653c-2a87ae6376f7@collabora.com/T/#u
-> +# IGT Version: 1.28-gb0cc8160e
-> +# Linux Version: 6.7.0-rc3
-> +# Failure Rate: 50
-> +
-> +# Reported by deqp-runner
-> +kms_cursor_legacy@cursorA-vs-flipA-legacy
-> +kms_cursor_legacy@cursorA-vs-flipA-varying-size
-> +kms_flip@flip-vs-expired-vblank-interruptible
-> +kms_flip@flip-vs-expired-vblank
-> +kms_flip@plain-flip-fb-recreate
-> +kms_flip@plain-flip-fb-recreate-interruptible
-> +kms_flip@plain-flip-ts-check-interruptible
-> +
-> +# The below test shows inconsistency across multiple runs,
-> +# giving results of Pass and Fail alternately.
-> +kms_cursor_legacy@cursorA-vs-flipA-toggle
-> +kms_pipe_crc_basic@nonblocking-crc
-> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-> new file mode 100644
-> index 000000000000..524e7972c75a
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-> @@ -0,0 +1,16 @@
-> +# Hits:
-> +# rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> +# rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P749/1:b..l
-> +kms_prop_blob@invalid-get-prop
-> +
-> +# keeps printing vkms_vblank_simulate: vblank timer overrun and never ends
-> +kms_invalid_mode@int-max-clock
-> +
-> +# Suspend seems to be broken
-> +.*suspend.*
-> +
-> +# Hangs machine and timeout occurs
-> +kms_flip@flip-vs-absolute-wf_vblank-interruptible
-> +kms_invalid_mode@zero-hdisplay
-> +kms_invalid_mode@bad-vtotal
-> +kms_cursor_crc.*
 
