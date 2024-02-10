@@ -1,147 +1,117 @@
-Return-Path: <linux-kernel+bounces-60526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36F2C850619
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 20:20:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1599D85061D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 20:29:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 696991C23EDF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 19:20:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ACA21C20FF2
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 19:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B7775F569;
-	Sat, 10 Feb 2024 19:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3855F570;
+	Sat, 10 Feb 2024 19:29:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="mTYKgMGh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EnQAerpi"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77FFD47F4B;
-	Sat, 10 Feb 2024 19:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5380D210EE;
+	Sat, 10 Feb 2024 19:29:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707592807; cv=none; b=sPdj5EW6ln1dRQGIx42wLaIiku6Odhx3chw49/CIg8l770AtYEyvGdXE7wc6J1Cxiz+SVEd+wdAswHYuLID2oJXI58Fz3Vdr5rbUB/ejWO6HmoMCjaX0Cf270pbf4QXpiBpcVMUO1mYVntZ8O2vJuBMT+G2EAKLjCaUy8KD9CPg=
+	t=1707593387; cv=none; b=Mz6v3YK1CS0zFvbEqSgjKX/9vFfwIp8f434R5sJsIofg3t/u2s7O8s+L4SWXmTTMcRgu0cfFQu6gA/jFLSLfXzgue4Z5tAtBj1Mp2VawHNFuIt1rllTjwTgwI21hXWuOSMUyqkuuhe/kPezv90QkhjIKYijlqxeK3HPAorp9Mgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707592807; c=relaxed/simple;
-	bh=Al1Z3XjT/ynok7TtIZl2sBGeHH7P1DKbNwiY2Cdkj38=;
-	h=Date:From:To:Cc:Subject:Message-Id:Mime-Version:Content-Type; b=NXqKz4cdBgyltxF4XxJStnuoqevYysDjMplErfC1rEzPx4/6N2W76sdC9iXHLX+m6t3bsREo+GbKiD6vCCX0fnQpQbmv+4mLdz54nrSUDeTKgZjRvuROi8KyXaXa8CO8mnQwDVc2vAaMTC1T6fa9pCwHXS6tHYksRlbQ3nz2iSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=mTYKgMGh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5543C43390;
-	Sat, 10 Feb 2024 19:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1707592806;
-	bh=Al1Z3XjT/ynok7TtIZl2sBGeHH7P1DKbNwiY2Cdkj38=;
-	h=Date:From:To:Cc:Subject:From;
-	b=mTYKgMGhzYC0UXw5LvoSIHQ/ghZNeO1puJSMEjT+gM/BP7FQE9a9BpqraY7lY+3og
-	 8ywWabody6pVlBOi/zipJEQG/X/Bj0WC5LHhaig1eFK/oyqdll8t8zdigZ2BxQRcf8
-	 Uzhxb6wv34ZchR1fRAuJ2ywQLd8mQc+/jLlsFcBc=
-Date: Sat, 10 Feb 2024 11:20:06 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mm@kvack.org, mm-commits@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hotfixes for 6.8-rc4
-Message-Id: <20240210112006.05781090736edc6e02de7e19@linux-foundation.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707593387; c=relaxed/simple;
+	bh=KU+LyuoLoBParnVjDFENTlgWEKKyx/4rdYR/ilGeQTQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=bzyScLzbjT6j8IFl8n62Z+1Ou+L0xO+/8eaoEp2XqV97OR9ecOjt3kuhAG073/mZQTOETFT/30h8k3yv/VGv/L/Evsoh0iWEGZIRtDJytdj8PaVSJFR96Z9mfPiGyAj2oeTQSeaX28Es3r2vxjTpOqXKOXDfx44UcdY47eUfTls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EnQAerpi; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41068e36cbbso13893515e9.2;
+        Sat, 10 Feb 2024 11:29:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707593384; x=1708198184; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7y4YKyttMpKUVwZxQNCkTT0b17KqO06VPlIQug/wxEY=;
+        b=EnQAerpiFoUlHT1n6ln87exc/S6VjACkLupzzSoZeVrTbG+T9Pgj2MrSRGXJO2E9yN
+         ExDdmpsbN2itraXPkiEZPPwwMoVecnGtiOTXFbcuwCjix3KjzzLHTIzVQ0YPvBnPhjYX
+         NOQ5hpr8cxFyT9XQoS1omC5pXe4fSE5nLMhfJSt4P8xNuYHz/Tc4kFqlMar/Mj0EAl1i
+         V+GTQWn9iOAPXh2PN3vxnruRP7Oo3opELpwTWWgBTZybTnaXzw/DnWAt7Y5FI7qZzmae
+         7sDxbfiTED+77zMsxfzaKIbLE/oHCSYVf46VQn1vxC+709GkISqOlk7q9yPS0iHplHU7
+         r44w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707593384; x=1708198184;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7y4YKyttMpKUVwZxQNCkTT0b17KqO06VPlIQug/wxEY=;
+        b=qgC3iRbW6YNFm6rv0vllulxbaPP2unFbGcBe+9MFAXPjomaj1JjvVq+Z6/9e+4gOwz
+         6EWZMJ50oGdC3hQ12rDepaGq/JwhzFKAif4aon45VQdtTZirQBlnhU2Nlz9ncfScVTQk
+         /r7/bXaYTV9JLOwsc1ECaTZF5Wquw+ZflCohB7ZQMBY/AUAC1hjUhndHPnxW8mWVTqVc
+         oKDw7tEAQTZwPg/nMTzNBRwBf9Fv2VOuAPjTImbewMmJ6mmlKjcO3nwJKxKc+TxB/DLg
+         zbTuLYq6lSCeqhDs0dWqgVX+ZdD5koPiPgwYaT/aGEQLd9KbJz5aWczDzDYVbyj3TfTW
+         mOYg==
+X-Gm-Message-State: AOJu0YzPJNSl9K3blHOvNoGJEVB5Pw5/XYgyEUU4r+E79TTX6QDFZjVS
+	Lo6Pdr4X/DS6q3HGvTocp5UwG+FUUVN8shmfQ4AP8N888diNDLaWznYh3aHyd94=
+X-Google-Smtp-Source: AGHT+IEtRN8jWq3itereeY01awfCLrbkLiagfMM/5xvfb7PW1whrXNrqYPeqjs++vG+UKqHtE/ZKTw==
+X-Received: by 2002:a05:600c:6007:b0:410:9ce0:2001 with SMTP id az7-20020a05600c600700b004109ce02001mr1446644wmb.38.1707593384317;
+        Sat, 10 Feb 2024 11:29:44 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX0ei8tZOc+SDcJw4EIEbkfPdJUW2RN78ZjruBoQfB8ky8n2his3bxu8rYaan0WfPPEgxK8no+YLecaEzzH/KpXS9nXlQ0YgD/xbsgHqi9G6PoyffJDpVxdZk3tCWyYyW0HtS2aFdwNjAWD+v6PTDmAEHq0qQG/BgAPVmpYUkdUhlj36o1S4tbw+GP5ZYJqIF6KzmJTJDI+MI57QgvH
+Received: from Attila-PC.. ([188.24.48.22])
+        by smtp.gmail.com with ESMTPSA id bv15-20020a0560001f0f00b0033b48190e5esm2540372wrb.67.2024.02.10.11.29.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Feb 2024 11:29:44 -0800 (PST)
+From: =?UTF-8?q?Attila=20T=C5=91k=C3=A9s?= <attitokes@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Attila=20T=C5=91k=C3=A9s?= <attitokes@gmail.com>
+Subject: [PATCH] ASoC: amd: yc: Fix non-functional mic on Lenovo 82UU
+Date: Sat, 10 Feb 2024 21:29:34 +0200
+Message-Id: <20240210192934.143491-1-attitokes@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Like many other models, the Lenovo 82UU (Yoga Slim 7 Pro 14ARH7)
+needs a quirk entry for the internal microphone to function.
 
-Linus, please merge this batch of MM and non-MM fixes, thanks.
+Signed-off-by: Attila Tőkés <attitokes@gmail.com>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-
-The following changes since commit c8bdef1560d976340e421d5e188f94789e4cfa28:
-
-  Merge branch 'master' into mm-hotfixes-stable (2024-02-04 14:09:33 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2024-02-10-11-16
-
-for you to fetch changes up to 5bc09b397cbf1221f8a8aacb1152650c9195b02b:
-
-  nilfs2: fix potential bug in end_buffer_async_write (2024-02-07 21:20:37 -0800)
-
-----------------------------------------------------------------
-21 hotfixes.  12 are cc:stable and the remainder pertain to post-6.7
-issues or aren't considered to be needed in earlier kernel versions.
-
-----------------------------------------------------------------
-Chengming Zhou (1):
-      mm/zswap: don't return LRU_SKIP if we have dropped lru lock
-
-Johannes Weiner (1):
-      mm: zswap: fix objcg use-after-free in entry destruction
-
-John Moon (1):
-      mailmap: switch email address for John Moon
-
-Leo Yan (1):
-      MAINTAINERS: Leo Yan has moved
-
-Miaohe Lin (1):
-      mm/memory-failure: fix crash in split_huge_page_to_list from soft_offline_page
-
-Muhammad Usama Anjum (1):
-      selftests: core: include linux/close_range.h for CLOSE_RANGE_* macros
-
-Oleg Nesterov (5):
-      getrusage: move thread_group_cputime_adjusted() outside of lock_task_sighand()
-      getrusage: use sig->stats_lock rather than lock_task_sighand()
-      fs/proc: do_task_stat: move thread_group_cputime_adjusted() outside of lock_task_sighand()
-      fs/proc: do_task_stat: use sig->stats_lock to gather the threads/children stats
-      exit: wait_task_zombie: kill the no longer necessary spin_lock_irq(siglock)
-
-Oscar Salvador (1):
-      fs,hugetlb: fix NULL pointer dereference in hugetlbs_fill_super
-
-Prakash Sangappa (1):
-      mm: hugetlb pages should not be reserved by shmat() if SHM_NORESERVE
-
-Ryan Roberts (1):
-      mm/userfaultfd: UFFDIO_MOVE implementation should use ptep_get()
-
-Ryusuke Konishi (3):
-      nilfs2: fix data corruption in dsync block recovery for small block sizes
-      nilfs2: fix hang in nilfs_lookup_dirty_data_buffers()
-      nilfs2: fix potential bug in end_buffer_async_write
-
-SeongJae Park (1):
-      mm/damon/sysfs-schemes: fix wrong DAMOS tried regions update timeout setup
-
-Sergey Senozhatsky (1):
-      mm/madvise: don't forget to leave lazy MMU mode in madvise_cold_or_pageout_pte_range()
-
-Suren Baghdasaryan (1):
-      arch/arm/mm: fix major fault accounting when retrying under per-VMA lock
-
-Yosry Ahmed (1):
-      mm: memcg: optimize parent iteration in memcg_rstat_updated()
-
- .mailmap                                        |  2 +
- MAINTAINERS                                     |  2 +-
- arch/arm/mm/fault.c                             |  2 +
- fs/hugetlbfs/inode.c                            | 19 +++++--
- fs/nilfs2/file.c                                |  8 ++-
- fs/nilfs2/recovery.c                            |  7 +--
- fs/nilfs2/segment.c                             |  8 +--
- fs/proc/array.c                                 | 66 ++++++++++++++-----------
- kernel/exit.c                                   | 10 ++--
- kernel/sys.c                                    | 50 ++++++++++++-------
- mm/damon/sysfs-schemes.c                        |  2 +-
- mm/madvise.c                                    |  1 +
- mm/memcontrol.c                                 | 56 +++++++++++++--------
- mm/memory-failure.c                             |  3 ++
- mm/userfaultfd.c                                | 14 +++---
- mm/zswap.c                                      | 12 ++---
- tools/testing/selftests/core/close_range_test.c |  1 +
- 17 files changed, 162 insertions(+), 101 deletions(-)
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 23d44a50d815..864976a81393 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -234,6 +234,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "82UG"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "82UU"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+-- 
+2.34.1
 
 
