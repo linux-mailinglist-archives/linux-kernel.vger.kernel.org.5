@@ -1,138 +1,145 @@
-Return-Path: <linux-kernel+bounces-60519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D83448505FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 19:37:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 958A7850600
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 19:42:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16AC01C23E70
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:37:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 327B31F23B37
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993845F48D;
-	Sat, 10 Feb 2024 18:37:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mrhZ/cAQ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA2D5F544;
+	Sat, 10 Feb 2024 18:42:44 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEFB55C8FB
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 18:37:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DF861E484;
+	Sat, 10 Feb 2024 18:42:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707590259; cv=none; b=f2nGhDOg477cJgRzZB+KcqBI6KU1DiqRPk3KY4VQPf7rwvi9Tv+0zNsCf2l7GnnBjt8tlpMsW0b74y6Sx3cmrgPwhu/xWNmpqFoOW2TG3RoF8cTSsLFJQeoCFJ8/7RJB0B9/bFDGze9vc0m0gKSDcwNxSl7ZlQW0iiMMZSjtBzc=
+	t=1707590563; cv=none; b=GHmKOmuAKa2bU6SjxKZi5BOZuJcdrzdzAtuqAunfgSzslkmi8kKFcWvywQ5lwBz2iGFBDw0vVwKahYG+gUu1jVeQVKJj+0TgH8hb2vVeuwg4llok6DKcz2CwaF0Vb9azkEUSiarFk/ekTmM4m/W4gmy375EGmyxlq+nNsTCrPoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707590259; c=relaxed/simple;
-	bh=TyCBIa00afGI1o/LIPkFLksms0eOVo25rxY0WLRZmnQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=J/dM/22jkbhEAe7edjHRmjZsaIY7mPbpJowcsdbEFwuxDkKgeOWIq4Lav3iwABdyrUNb3N+UnFS2YYjp9m7l54YbQZ0+s5gitGDhELSrLqFFZHgH2au4k0SkGBOCTEoMYlPMZRJ0xCBmWKT1na7CS2mk7vdouXHuF6OZgqTXPeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mrhZ/cAQ; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707590258; x=1739126258;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=TyCBIa00afGI1o/LIPkFLksms0eOVo25rxY0WLRZmnQ=;
-  b=mrhZ/cAQAOSzT/qKZIKU1u8kafZ0RFd0PBFeonwUog79El+f+ku2v3fm
-   Dm/JaxCuLE/nnZTVtFKOWmbXXNJRgZgn4HiLWvdCHuePdn0M1VWmeYS6n
-   UrhxkXE+neH/0ytdQlb0LpUydqAbhHXB1zdDD6OurIMP2xWkYKMbQ/W+s
-   7v8nBA8/4rVUe637dbIQEK9DTX4U6AETDBOd0yjMs761FC3UdZGGXEWQb
-   vspyHdpm6KKLypBufo1+3vOn0aCp9095WJzrJmPdl1tY7teZnneoT8UHm
-   RW7PVoXfzY5iG3oLJ8k2/XZPrNJqVfoyQv4CZKBhuIQmzq672/Q5atjY+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10980"; a="1721562"
-X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
-   d="scan'208";a="1721562"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2024 10:37:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
-   d="scan'208";a="33290544"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 10 Feb 2024 10:37:36 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rYsEH-0005yw-08;
-	Sat, 10 Feb 2024 18:37:33 +0000
-Date: Sun, 11 Feb 2024 02:36:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Palmer Dabbelt <palmer@rivosinc.com>
-Subject: arch/riscv/include/asm/hugetlb.h:15:42: error: static declaration of
- 'arch_hugetlb_migration_supported' follows non-static declaration
-Message-ID: <202402110258.CV51JlEI-lkp@intel.com>
+	s=arc-20240116; t=1707590563; c=relaxed/simple;
+	bh=X9SV1tC7rjZhp8FTyywbWyvX4t8GzqLyBGr/yf6plqU=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=FJFHslUvne8cab4X5bsRFccVPobpaOITHsnOCeO79Ak29t12vonfPUFXQshQSId7sbrE13Hr0Bfvr4vvDRHwvN+2rslXG1WPKJw4YcJ4oggwCxaO8Yk+2uL0jddejyqcRvpE4Fc5nOBcAp5Kq4zqm9vLN5TjCo2tlQQRqFIboic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.86.126) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 10 Feb
+ 2024 21:42:28 +0300
+Subject: Re: [RFC PATCH net-next v2 6/7] net: ravb: Enable SW IRQ Coalescing
+ for GbEth
+To: Paul Barker <paul.barker.ct@bp.renesas.com>, "David S . Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+CC: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Wolfram Sang
+	<wsa+renesas@sang-engineering.com>, <netdev@vger.kernel.org>,
+	<linux-renesas-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240206091909.3191-1-paul.barker.ct@bp.renesas.com>
+ <20240206091909.3191-7-paul.barker.ct@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <2251fe66-11b7-2f30-c905-7bc1b9a57dab@omp.ru>
+Date: Sat, 10 Feb 2024 21:42:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20240206091909.3191-7-paul.barker.ct@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch02.omp.ru (10.188.4.13) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/10/2024 18:29:50
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 183344 [Feb 10 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.126 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.126 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.86.126
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/10/2024 18:35:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 2/10/2024 2:13:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   a5b6244cf87c50358f5562b8f07f7ac35fc7f6b0
-commit: ce68c035457bdd025a9961e0ba2157323090c581 riscv: Fix arch_hugetlb_migration_supported() for NAPOT
-date:   3 days ago
-config: riscv-buildonly-randconfig-r005-20220804 (https://download.01.org/0day-ci/archive/20240211/202402110258.CV51JlEI-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240211/202402110258.CV51JlEI-lkp@intel.com/reproduce)
+On 2/6/24 12:19 PM, Paul Barker wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402110258.CV51JlEI-lkp@intel.com/
+> Software IRQ Coalescing is required to improve network stack performance
+> in the RZ/G2L SoC family and the RZ/G3S SoC, i.e. the SoCs which use the
+> GbEth IP.
+> 
+> For the RZ/G2L, network throughput is comparable before and after this
+> change. CPU usage during TCP RX testing dropped by 6.5% and during UDP
+> RX testing dropped by 10%.
+> 
+> For the RZ/G2UL, network throughput is greatly increased by this change
+> (results obtained with iperf3):
+>   * TCP TX: 2.9% more throughput
+>   * TCP RX: 1.1% more throughput
+>   * UDP TX: similar throughput
+>   * UDP RX: 41500% more throughput
 
-All errors (new ones prefixed by >>):
+   Wow! 8-)
 
-   In file included from include/linux/hugetlb.h:851,
-                    from kernel/fork.c:52:
->> arch/riscv/include/asm/hugetlb.h:15:42: error: static declaration of 'arch_hugetlb_migration_supported' follows non-static declaration
-      15 | #define arch_hugetlb_migration_supported arch_hugetlb_migration_supported
-         |                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/hugetlb.h:916:20: note: in expansion of macro 'arch_hugetlb_migration_supported'
-     916 | static inline bool arch_hugetlb_migration_supported(struct hstate *h)
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/hugetlb.h:14:6: note: previous declaration of 'arch_hugetlb_migration_supported' with type 'bool(struct hstate *)' {aka '_Bool(struct hstate *)'}
-      14 | bool arch_hugetlb_migration_supported(struct hstate *h);
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
-   In file included from include/linux/hugetlb.h:851,
-                    from arch/riscv/mm/hugetlbpage.c:2:
->> arch/riscv/include/asm/hugetlb.h:15:42: error: static declaration of 'arch_hugetlb_migration_supported' follows non-static declaration
-      15 | #define arch_hugetlb_migration_supported arch_hugetlb_migration_supported
-         |                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/hugetlb.h:916:20: note: in expansion of macro 'arch_hugetlb_migration_supported'
-     916 | static inline bool arch_hugetlb_migration_supported(struct hstate *h)
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/hugetlb.h:14:6: note: previous declaration of 'arch_hugetlb_migration_supported' with type 'bool(struct hstate *)' {aka '_Bool(struct hstate *)'}
-      14 | bool arch_hugetlb_migration_supported(struct hstate *h);
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> arch/riscv/include/asm/hugetlb.h:15:42: error: redefinition of 'arch_hugetlb_migration_supported'
-      15 | #define arch_hugetlb_migration_supported arch_hugetlb_migration_supported
-         |                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/mm/hugetlbpage.c:429:6: note: in expansion of macro 'arch_hugetlb_migration_supported'
-     429 | bool arch_hugetlb_migration_supported(struct hstate *h)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/hugetlb.h:15:42: note: previous definition of 'arch_hugetlb_migration_supported' with type 'bool(struct hstate *)' {aka '_Bool(struct hstate *)'}
-      15 | #define arch_hugetlb_migration_supported arch_hugetlb_migration_supported
-         |                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/hugetlb.h:916:20: note: in expansion of macro 'arch_hugetlb_migration_supported'
-     916 | static inline bool arch_hugetlb_migration_supported(struct hstate *h)
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> For the RZ/G3S we see improvements in network throughput similar to the
+> RZ/G2UL.
+> 
+> The improvement of UDP RX bandwidth for the single core SoCs (RZ/G2UL &
+> RZ/G3S) is particularly critical.
+> 
+> Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
+[...]
 
+> diff --git a/drivers/net/ethernet/renesas/ravb.h b/drivers/net/ethernet/renesas/ravb.h
+> index 55a7a08aabef..ca7a66759e35 100644
+> --- a/drivers/net/ethernet/renesas/ravb.h
+> +++ b/drivers/net/ethernet/renesas/ravb.h
+> @@ -1078,6 +1078,7 @@ struct ravb_hw_info {
+>  	unsigned nc_queues:1;		/* AVB-DMAC has RX and TX NC queues */
+>  	unsigned magic_pkt:1;		/* E-MAC supports magic packet detection */
+>  	unsigned half_duplex:1;		/* E-MAC supports half duplex mode */
+> +	unsigned needs_irq_coalesce:1;	/* Requires SW IRQ Coalescing to achieve best performance */
 
-vim +/arch_hugetlb_migration_supported +15 arch/riscv/include/asm/hugetlb.h
+   Is this really a hardware feature?
+   Also, s/Requires SW/Needs software/ and s/to achieve best performance//,
+please...
 
-    13	
-    14	bool arch_hugetlb_migration_supported(struct hstate *h);
-  > 15	#define arch_hugetlb_migration_supported arch_hugetlb_migration_supported
-    16	
+[...]
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+MBR, Sergey
 
