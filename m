@@ -1,126 +1,125 @@
-Return-Path: <linux-kernel+bounces-60495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 141508505B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:22:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C2308505B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:23:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E97CB242C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:22:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17D281F2165B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C149D5CDEA;
-	Sat, 10 Feb 2024 17:22:12 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3C85CDFF;
+	Sat, 10 Feb 2024 17:23:12 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 674045BAF7
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 17:22:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407CD5CDEE
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 17:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707585732; cv=none; b=lx2TSGJ5EcGrZi8MFQC4JSHhybgRpZl5cHZj2KdRZJOZ7zr6q7JeZ4LXjMkZbFEdjI1ZbS7vaYtlGhkFZ6g/GvNXu18jwv6jBOW1GhVDNCogWNBYzI1UW85SIcDEQenXk2TUGpNb8nhDt+0dK21bDKz4i+ZjnjmqFDmt7lT81yI=
+	t=1707585791; cv=none; b=LUlq3h+dWvsYgt3r2CuVURrbrF1H4r6X02rcPSrW+9o1nkELBwMNLlAK94KEFn9zYY85HhRSocTOtrEdGJgQeNqZ3UdXkXGQszPFyMnRj1Ybnydn1L4PI35f6WzMRqj+yiV6PfSDZw3pCQIXa3WxATmx2ZbqonRZfL+lsZkS6u8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707585732; c=relaxed/simple;
-	bh=rbqMNhAMKFifaFYV+ZaFMyKtvq2I6Yd+9RUVEQM8R/E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=XCTpmBi5+/5lvJnsJIujXC0+AhXj2XckuHYsSbspo0YToGtuLDaMy+9g1+9mMgYI1WtYNrZCSRu7Q6kAdQpZdj1VOo5SlbArBmjqKxr4BC6dXQZA92uSTDGc3Se2Je7fsTEy7dmXgW/47dio/dSZZD52IhyqWvuZ18d87ocIw6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-232-dhyRpcqeMt6KzxuBy0ecIw-1; Sat, 10 Feb 2024 17:22:06 +0000
-X-MC-Unique: dhyRpcqeMt6KzxuBy0ecIw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 10 Feb
- 2024 17:21:45 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sat, 10 Feb 2024 17:21:45 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Sean Christopherson' <seanjc@google.com>, Linus Torvalds
-	<torvalds@linux-foundation.org>
-CC: Nick Desaulniers <ndesaulniers@google.com>, Uros Bizjak
-	<ubizjak@gmail.com>, Jakub Jelinek <jakub@redhat.com>, "Andrew Pinski (QUIC)"
-	<quic_apinski@quicinc.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
-	"Peter Zijlstra" <peterz@infradead.org>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>
-Subject: RE: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on gcc-11
- (and earlier)
-Thread-Topic: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on
- gcc-11 (and earlier)
-Thread-Index: AQHaW6GAqckjYnd4VEGhBeXgBOKGT7ED0v0Q
-Date: Sat, 10 Feb 2024 17:21:45 +0000
-Message-ID: <9ba89b70e48143a69f76f6e0f276f149@AcuMS.aculab.com>
-References: <20240208220604.140859-1-seanjc@google.com>
- <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
- <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
- <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
- <ZcZyWrawr1NUCiQZ@google.com>
- <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
- <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
- <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com>
- <ZcadTKwaSvvywNA9@google.com>
-In-Reply-To: <ZcadTKwaSvvywNA9@google.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1707585791; c=relaxed/simple;
+	bh=3HOTMAvrmTBnH4wx3urQWmGfStLlmr/dw+Sp1ocasV0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WFI6sAA0Mm4eLi5byVPNDhAIN45obbMiUh2cteD0eo1Sez4YDCFLL6RkDjyaN0D90QEqvYFSPm9M3at1dh7jxy5x+DIZ/F4SafalkplrdIMC77gupUfwv4KZRZEI2E1qsuAE17RYlSp54N7T+0ir+q1cLJHliu0dHqROWAB5lT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rYr3s-0003V7-AK; Sat, 10 Feb 2024 18:22:44 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rYr3n-005icH-Po; Sat, 10 Feb 2024 18:22:39 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rYr3n-002FSV-2F;
+	Sat, 10 Feb 2024 18:22:39 +0100
+Date: Sat, 10 Feb 2024 18:22:39 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Erick Archer <erick.archer@gmx.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
+	Heiko Stuebner <heiko@sntech.de>, Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Li Zetao <lizetao1@huawei.com>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Kees Cook <keescook@chromium.org>, linux-mtd@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: Prefer struct_size over open coded
+ arithmetic
+Message-ID: <vm3fk7wbqxjl3i6kmd3dv2ofeszjxrvi2n7cd3ohasgjpi4j4g@d3f6estk2xol>
+References: <20240210161619.12656-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="346zxj37n4z5j2px"
+Content-Disposition: inline
+In-Reply-To: <20240210161619.12656-1-erick.archer@gmx.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+
+
+--346zxj37n4z5j2px
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-From: Sean Christopherson
-> Sent: 09 February 2024 21:47
+On Sat, Feb 10, 2024 at 05:16:19PM +0100, Erick Archer wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1].
 >=20
-> On Fri, Feb 09, 2024, Linus Torvalds wrote:
-> > Sean? Does this work for the case you noticed?
+> As the "chip" variable is a pointer to "struct mtk_nfc_nand_chip" and
+> this structure ends in a flexible array:
 >=20
-> Yep.  You can quite literally see the effect of the asm("").  A "good" se=
-quence
-> directly propagates the result from the VMREAD's destination register to =
-its
-> final destination
+> struct mtk_nfc_nand_chip {
+> 	[...]
+> 	u8 sels[] __counted_by(nsels);
+> };
 >=20
->   <+1756>:  mov    $0x280e,%r13d
->   <+1762>:  vmread %r13,%r13
->   <+1766>:  jbe    0x209fa <sync_vmcs02_to_vmcs12+1834>
->   <+1768>:  mov    %r13,0xe8(%rbx)
+> the preferred way in the kernel is to use the struct_size() helper to
+> do the arithmetic instead of the argument "size + count * size" in the
+> devm_kzalloc() function.
 >=20
-> whereas the "bad" sequence bounces through a different register.
->=20
->   <+1780>:  mov    $0x2810,%eax
->   <+1785>:  vmread %rax,%rax
->   <+1788>:  jbe    0x209e4 <sync_vmcs02_to_vmcs12+1812>
->   <+1790>:  mov    %rax,%r12
->   <+1793>:  mov    %r12,0xf0(%rbx)
-..
+> This way, the code is more readable and more safer.
 
-Annoying, but I doubt it is measurable in this case.
-Firstly it could easily be a 'free' register rename.
-Secondly isn't vmread horribly slow anyway, so an extra
-clock or two won't matter?
+Unless you intend this non-English comparative: s/more safer/safer/
 
-The double register move that OPTIMER_HIDE_VAR() often
-generates is another matter entirely :-)
-In the old days the peephole optimiser would (should?)
-have removed most of these.
+Best regards
+Uwe
 
-=09David
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+--346zxj37n4z5j2px
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXHsN4ACgkQj4D7WH0S
+/k7uhggAkjErCNtMO9Tgeku9UEu3BBrTsCG6cirem2RU9oGOT4pbrCjRb2KCGYfU
+q+/lrPRkB6Tp8aLA3ljD5QZbmSN4UY7IFFRjTPhs2QeCfLX4USL2es+P4oCbd32u
+gZqw7aoZgZ1Gb05G5gboHeun8K3eEQE8eWfj1hq4BetoLNdq53tlW/csK98ayxPA
+JmPsBOXq5MHiGDSNqb1gp85oNS2F3D+F5YortaxkPr4F3L17MG9XDezixApG/nTw
+Uz2+EdFzM6BJN1Zac6t3Z2/6IaYa+aHE+ugdYp5aQIZ2NqiFaTHL7c9UfO85Zsi7
+1fYuhJr1sBGrZoWF8QnOgiJmoDAtPA==
+=Sihr
+-----END PGP SIGNATURE-----
+
+--346zxj37n4z5j2px--
 
