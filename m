@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-60221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE09085019D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 02:23:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10FBF8501A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 02:23:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 958FC28AFD7
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 01:23:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10FBF1C2488B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 01:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9215837168;
-	Sat, 10 Feb 2024 01:21:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5291938F94;
+	Sat, 10 Feb 2024 01:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qMgxRLFx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BIA1TsYX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D62F16435;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F1B1DFE3;
 	Sat, 10 Feb 2024 01:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707528081; cv=none; b=p7q7XkSWoH+YcP4xlyva9e85EFxzupy83SW0I3KswfJDNEbtCThYXs2BKvXiWhOXtGds70Ud3w9fhLrfkQxhdtdLxNDSqw5MCjxiqW+kVFsfYLUJAA4l2oorhSgRTpEfqt4vd9ntjVfUxzDIv/+YSfpQBmydp/H9J1tcxZpKb28=
+	t=1707528082; cv=none; b=SyKB5HZO7MLkpxPwBOyaftjWrbgjahz2kU7c/tgTjUPC/UcE1FJ1exU0SvUEsy0mBhj5T3pLsD3mCFycmR+Js4D5vAsrpC6dVawDrjWH3VywxUtfPlTqjoSbIKSPqHI6oiTaYCii2L7GGs5G2DBmeBYopGMs880G31FpJxaSVMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707528081; c=relaxed/simple;
-	bh=u/ecgRYQOkLBlRn/VtTePYv4M68IaY7mn8if9/vLcSk=;
+	s=arc-20240116; t=1707528082; c=relaxed/simple;
+	bh=DxzhpBvZC4XIJ/zrK/9Rp7rDX+xEn6PPcc37xAyAdsU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t+TzsCbW11miyiVuzGDo1DchLCx8UXK3R61rH6LMXPkfl3HCIe9IhIO9Q1rxHWWTiKaFcGhbvdAKYi5BW5bQzQ/gVYUFZjwsQ22GTKrjfRMUWZqtt/uycrvT42JoM0SX23Bbkx/bgmMXznmeZfX3NHQjRLpEHQKTJcMhU+weUVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qMgxRLFx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 449B5C41612;
+	 MIME-Version; b=oQtFoWN8XK8lLMkC3z1JAGFitzufHHEqcprRF0dI/iuBuEgjG2+FEZw16IuGG5lIklaqreOzo/rPmerDA+n1xO22SGCAc8IhTeLre36HI5omqXMrDznQ0t84iGcQYah0rtJKBochX9aSck+JsKaFeRzmLgFlNL5MmHYLWN+Nepc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BIA1TsYX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54F4EC32780;
 	Sat, 10 Feb 2024 01:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1707528081;
-	bh=u/ecgRYQOkLBlRn/VtTePYv4M68IaY7mn8if9/vLcSk=;
+	bh=DxzhpBvZC4XIJ/zrK/9Rp7rDX+xEn6PPcc37xAyAdsU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qMgxRLFxy5zos/lUwR/xfKurLYOThw4OYp6s30K6hvrXdvFBnaciLFLlLgTimPCZV
-	 65L+5ZuIagx44mEMi+hknKH9W6SZlUo5m536Ik+Nwvck0kzDxjlzXa2dK4EQiF0+9L
-	 ePoai+L09Sijd9nWoQFffLGaaSLtc0VgJCi8id1iMNzETy3yIgVnERHbQR1qwgVnid
-	 TG7/7eiYC19DFwcXyhTWxPP1SkIWI2Xp0AwGoqBo/Q4j201IXshRoq2or+APMeM5nv
-	 l8r/zQPdaprEUo1SksEOhgGhAvqDKU15UEnplN7JKjsY8Sug+99GOHLhhrfE87aA+e
-	 dTHc83OZtXGBw==
+	b=BIA1TsYXietJ6HpV3P6+Bz9kn2iMrxAdV2m82pI4ZcTKUxqcYlZsV+WW1N3I4b76n
+	 JBUY+5ZJF4QpegxrWmCTfh6uJ1WapKSPEH1KznXOPptdVqTgBRn7Ls1n6fjAlnt1CH
+	 tCtDqGr9zOhn//aPVk4zDefXkg+//EOCDW99cAt2hXQsmtSUIKASjxvLWDZVGgrn2J
+	 TNjMDqUjpLEBtThHd5tk+RShbD3uRK1Mylf+Ma7ILE6HGObL90WGbSCgCHJ/aQdWQz
+	 Z/qLeOb3Z/nQ95lU/jV2dSEl2+Vi/8ZBYNomrddPFcqG3Ub4c6kLpuMeJMj84IURII
+	 cBhvTYerlCdQg==
 Received: by mercury (Postfix, from userid 1000)
-	id E61751068F4B; Sat, 10 Feb 2024 02:21:15 +0100 (CET)
+	id E97B6106910A; Sat, 10 Feb 2024 02:21:15 +0100 (CET)
 From: Sebastian Reichel <sre@kernel.org>
 To: Sebastian Reichel <sre@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -58,10 +58,11 @@ Cc: Dong Aisheng <aisheng.dong@nxp.com>,
 	Mark Brown <broonie@kernel.org>,
 	linux-arm-kernel@lists.infradead.org,
 	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 07/14] dt-bindings: lcdif: Do not require power-domains for i.MX6ULL
-Date: Sat, 10 Feb 2024 02:18:11 +0100
-Message-ID: <20240210012114.489102-8-sre@kernel.org>
+	linux-kernel@vger.kernel.org,
+	Michael Yackavage <michaely@ips-yes.com>
+Subject: [PATCH v1 08/14] dt-bindings: fsl-imx-sdma: fix HDMI audio index
+Date: Sat, 10 Feb 2024 02:18:12 +0100
+Message-ID: <20240210012114.489102-9-sre@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240210012114.489102-1-sre@kernel.org>
 References: <20240210012114.489102-1-sre@kernel.org>
@@ -73,44 +74,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-i.MX6UL(L) uses "fsl,imx6sx-lcdif" as fallback compatible string,
-but has only very lightweight DISPLAY power domain. Its DISPLAY
-power domain is not supported by the binding / Linux kernel at
-the moment. Since the current setup is working, let's remove the
-power-domain from being required for that platform to fix the warning
-printed by CHECK_DTBS=y.
+HDMI Audio has been added to the DT binding documentation with an
+incorrect index. DT and the driver use index 26. This happened,
+because the binding is missing MULTI_SAI type, which is using
+index 25.
 
-Fixes: f62678a77d58 ("dt-bindings: mxsfb: Document i.MX8M/i.MX6SX/i.MX6SL power-domains property")
+Reported-by: Michael Yackavage <michaely@ips-yes.com>
+Fixes: 7bdbd87d4008 ("dt-bindings: fsl-imx-sdma: Convert imx sdma to DT schema")
 Signed-off-by: Sebastian Reichel <sre@kernel.org>
 ---
- Documentation/devicetree/bindings/display/fsl,lcdif.yaml | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/dma/fsl,imx-sdma.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/display/fsl,lcdif.yaml b/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
-index 1c2be8d6f633..0681fc49aa1b 100644
---- a/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
-+++ b/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
-@@ -120,13 +120,19 @@ allOf:
-           maxItems: 1
-         clock-names:
-           maxItems: 1
-+  - if:
-+      properties:
-+        compatible:
-+          const: fsl,imx6sx-lcdif
-+    then:
-+      required:
-+        - power-domains
-   - if:
-       properties:
-         compatible:
-           contains:
-             enum:
-               - fsl,imx6sl-lcdif
--              - fsl,imx6sx-lcdif
-               - fsl,imx8mm-lcdif
-               - fsl,imx8mn-lcdif
-               - fsl,imx8mp-lcdif
+diff --git a/Documentation/devicetree/bindings/dma/fsl,imx-sdma.yaml b/Documentation/devicetree/bindings/dma/fsl,imx-sdma.yaml
+index b95dd8db5a30..37135fa024f9 100644
+--- a/Documentation/devicetree/bindings/dma/fsl,imx-sdma.yaml
++++ b/Documentation/devicetree/bindings/dma/fsl,imx-sdma.yaml
+@@ -92,7 +92,8 @@ properties:
+               description: needs firmware more than ver 2
+           - Shared ASRC: 23
+           - SAI: 24
+-          - HDMI Audio: 25
++          - Multi SAI: 25
++          - HDMI Audio: 26
+ 
+        The third cell: transfer priority ID
+          enum:
 -- 
 2.43.0
 
