@@ -1,142 +1,112 @@
-Return-Path: <linux-kernel+bounces-60373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEBD1850427
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:28:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16E4F850429
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:29:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A40A31F2240B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:28:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCA7B286BB9
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83EC03D0C5;
-	Sat, 10 Feb 2024 11:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 615F63D0CB;
+	Sat, 10 Feb 2024 11:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SsEQCbYx"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jynf7gOi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688243A1CD;
-	Sat, 10 Feb 2024 11:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9A23CF61;
+	Sat, 10 Feb 2024 11:29:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707564479; cv=none; b=IC+k2Q83F6i67adBX1Zj/Lzz83LKZ2FXHIZlOPnb15UoiKH8CG7Cn1AqankaQZDKlPpJeaydmDo/u2EoFNODHJu9r9TIneX6PrABN2DaC0UpUVetFszpvA+jLSbevFbfR68YF7tVYoW31//x1KO12qyW8YsR/lh6wVZQpQAxIg0=
+	t=1707564590; cv=none; b=IiRG1qiKdnD34qEjwIRa4bEgEYSIbnYl2aZV+FOHbLvOYP7hkHQ7J8vXOByLMI6ScEWyfWdMlCOhnX8h3aFnBBR84BJPEfGubU9XCdBoqKpQh56ZQhnzFBkH0bozuWgxl4PuambYcPZl/JhAESY674+To+sMzW4+lN6xbTD/o7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707564479; c=relaxed/simple;
-	bh=4OyKZnmqJQZAOOTD2TG4WTVzLLJt8ZHseBX/iLb32yo=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZX27Hqivv8S8qIWEr5+oEf2XNZZc3TbiWtyw+X8mE9iuIPAbUAFehIqHIwcbtrU2XeeuAZnHOgSI5D/7xLepjtLClM33nxcFdpP7RkpInUJ2v8PfhlEmQzgmYOrVJ4Q4XeOc6VZyMDnPf8NMRToNvMulwIH+/dQuEQ1JRjkcHDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SsEQCbYx; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707564477; x=1739100477;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=4OyKZnmqJQZAOOTD2TG4WTVzLLJt8ZHseBX/iLb32yo=;
-  b=SsEQCbYx8LOOHOst4N5PRqVZ8yG0HM30QNABpNWdtKb5D3TlOUXyJcAi
-   kSCnLi95cVE5u/78Wl+sl5QrtbGD7ZiyEqHxzP7Mk2ov8IvQDqM/AKOHW
-   S1rqX8oIj0pmxMrZAOomt3ELxXc7uUhMiLUgQ5euO6bMWBsq+YBN7DNYg
-   YBQjObw2J+mdiJEevlF1CBAdy1ZuidM4znJgtTGjZaoq45qWqUzesSy9n
-   D7l9oLKnBKlbNpWEAQayyEiOnG8vpKp8Omsp8+Ayj0XN2qGj5IDlZmHK8
-   VXjovVI/A/RnqxPkHkZAmGvWdXvpXooQxZs31Rki+WxXcQKk1kCjHNemv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="19063354"
-X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
-   d="scan'208";a="19063354"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2024 03:27:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,259,1701158400"; 
-   d="scan'208";a="6907193"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.152]) ([10.254.214.152])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2024 03:27:48 -0800
-Message-ID: <2a86f3d0-4aa7-4c32-afb9-e5a908a65d10@linux.intel.com>
-Date: Sat, 10 Feb 2024 19:27:46 +0800
+	s=arc-20240116; t=1707564590; c=relaxed/simple;
+	bh=pEAynjP/rqnp+cKzSLkgoR88rIpr8nPGJhWX5svjZLM=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=dX73X1iTcgRKqvI+fEApeqYP09jDRZXs4e5wWj4lb+BKZiaDBppNkXbrHIWTo0wbVGe2n0Sku2cGKYYMFyHAd207RFClLI2tUPK+vhgmn4QKyz8cTTfpU3zGb+wbrVaOSWYbL6XCuKx4gsQeI5rE7GO1XDDhQMXJD4S71rSKo2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jynf7gOi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1D24C433C7;
+	Sat, 10 Feb 2024 11:29:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707564590;
+	bh=pEAynjP/rqnp+cKzSLkgoR88rIpr8nPGJhWX5svjZLM=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=jynf7gOivBJauturrRk/6LUfG+vYsN79lb1d51N7lDVczNUm45ucqtsfWNpZw6+uR
+	 VJBy2oQe3zQKVp30qXsY4q+uivbLEsOobmLhYyjEDjcazsHGVx1nmG6DTYGAb4+tPb
+	 Q8A3baQiEmq2chVKxqa9o+CeIOrYt+ujavEpM/nm0oiM+1aNoz8MS1/DH2U9B+bOt7
+	 NIgRoMini5LQGnuJOGJgrCESOL4b5uIKDXhtJF8KOSNlUXJjXpRjrD0ytX+Eqi1fUF
+	 t3fNjJVO+9WGihYiYcoPOmxG2iQ7f2qSQPTEJn6T+UKHrdtMlUmgTWzHGYVMyzhP1L
+	 ffgcf7pPFg+vw==
+Date: Sat, 10 Feb 2024 11:29:48 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Vineet Gupta <vgupta@kernel.org>,
- Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>, Hanjun Guo
- <guohanjun@huawei.com>, Sudeep Holla <sudeep.holla@arm.com>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>,
- Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Niklas Schnelle <schnelle@linux.ibm.com>,
- Matthew Rosato <mjrosato@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-acpi@vger.kernel.org, iommu@lists.linux.dev, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 6/7] iommu/dma: Centralise iommu_setup_dma_ops()
-To: Robin Murphy <robin.murphy@arm.com>
-References: <cover.1707493264.git.robin.murphy@arm.com>
- <202fcca3269201bc9c4a8198253f195433d0c4ff.1707493264.git.robin.murphy@arm.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <202fcca3269201bc9c4a8198253f195433d0c4ff.1707493264.git.robin.murphy@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Rob Herring <robh@kernel.org>
+To: Sebastian Reichel <sre@kernel.org>
+Cc: Fabio Estevam <festevam@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+ Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ NXP Linux Team <linux-imx@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
+ linux-arm-kernel@lists.infradead.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Dong Aisheng <aisheng.dong@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+In-Reply-To: <20240210012114.489102-3-sre@kernel.org>
+References: <20240210012114.489102-1-sre@kernel.org>
+ <20240210012114.489102-3-sre@kernel.org>
+Message-Id: <170756458525.4188736.15197760675687420146.robh@kernel.org>
+Subject: Re: [PATCH v1 02/14] dt-bindings: bus: imx-weim: convert to YAML
 
-On 2024/2/10 0:50, Robin Murphy wrote:
-> It's somewhat hard to see, but arm64's arch_setup_dma_ops() should only
-> ever call iommu_setup_dma_ops() after a successful iommu_probe_device(),
-> which means there should be no harm in achieving the same order of
-> operations by running it off the back of iommu_probe_device() itself.
-> This then puts it in line with the x86 and s390 .probe_finalize bodges,
-> letting us pull it all into the main flow properly. As a bonus this lets
-> us fold in and de-scope the PCI workaround setup as well.
+
+On Sat, 10 Feb 2024 02:18:06 +0100, Sebastian Reichel wrote:
+> Convert the i.MX  Wireless External Interface Module binding to YAML.
 > 
-> At this point we can also then pull the call up inside the group mutex,
-> and avoid having to think about whether iommu_group_store_type() could
-> theoretically race and free the domain if iommu_setup_dma_ops() ran just
-> *before*  iommu_device_use_default_domain() claims it... Furthermore we
-> replace one .probe_finalize call completely, since the only remaining
-> implementations are now one which only needs to run once for the initial
-> boot-time probe, and two which themselves render that path unreachable.
-> 
-> This leaves us a big step closer to realistically being able to unpick
-> the variety of different things that iommu_setup_dma_ops() has been
-> muddling together, and further streamline iommu-dma into core API flows
-> in future.
-> 
-> Signed-off-by: Robin Murphy<robin.murphy@arm.com>
+> Signed-off-by: Sebastian Reichel <sre@kernel.org>
 > ---
-> v2: Shuffle around to make sure the iommu_group_do_probe_finalize() case
->      is covered as well, with bonus side-effects as above.
-> v3:*Really*  do that, remembering the other two probe_finalize sites too.
-> ---
->   arch/arm64/mm/dma-mapping.c  |  2 --
->   drivers/iommu/amd/iommu.c    |  8 --------
->   drivers/iommu/dma-iommu.c    | 18 ++++++------------
->   drivers/iommu/dma-iommu.h    | 14 ++++++--------
->   drivers/iommu/intel/iommu.c  |  7 -------
->   drivers/iommu/iommu.c        | 20 +++++++-------------
->   drivers/iommu/s390-iommu.c   |  6 ------
->   drivers/iommu/virtio-iommu.c | 10 ----------
->   include/linux/iommu.h        |  7 -------
->   9 files changed, 19 insertions(+), 73 deletions(-)
+>  .../devicetree/bindings/bus/fsl,imx-weim.yaml | 225 ++++++++++++++++++
+>  .../devicetree/bindings/bus/imx-weim.txt      | 117 ---------
+>  2 files changed, 225 insertions(+), 117 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/bus/fsl,imx-weim.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/bus/imx-weim.txt
+> 
 
-For changes in Intel IOMMU driver,
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+yamllint warnings/errors:
 
-Best regards,
-baolu
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/bus/fsl,imx-weim.example.dtb: nor@0,0: $nodename:0: 'nor@0,0' does not match '^(flash|.*sram|nand)(@.*)?$'
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
+Documentation/devicetree/bindings/bus/fsl,imx-weim.example.dtb: /example-1/weim@21b8000/acme@0,0: failed to match any schema with compatible: ['acme,whatever']
+
+doc reference errors (make refcheckdocs):
+Warning: drivers/staging/fieldbus/Documentation/devicetree/bindings/fieldbus/arcx,anybus-controller.txt references a file that doesn't exist: Documentation/devicetree/bindings/bus/imx-weim.txt
+drivers/staging/fieldbus/Documentation/devicetree/bindings/fieldbus/arcx,anybus-controller.txt: Documentation/devicetree/bindings/bus/imx-weim.txt
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240210012114.489102-3-sre@kernel.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
