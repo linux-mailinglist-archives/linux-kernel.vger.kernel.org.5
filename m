@@ -1,137 +1,116 @@
-Return-Path: <linux-kernel+bounces-60454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36AEA850526
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:27:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF636850529
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:30:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E92DF2830C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:27:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60FD92835B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830245C5F3;
-	Sat, 10 Feb 2024 16:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D98D55C5FF;
+	Sat, 10 Feb 2024 16:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S/rN2fyL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="2QQ17jfR"
+Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF24D20B29;
-	Sat, 10 Feb 2024 16:27:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DC0364BF;
+	Sat, 10 Feb 2024 16:29:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707582438; cv=none; b=h1HJ5Rz+uInJ0opYOe4oO3tJUURUnVvNDAj6ij3TK+64e5rWnuLvsjKxv3c+qXgJEG9D/t5OOCUQj84X2GuD+369+FXKABGiRAzLVDKPsfQP9JStFBCd/KKeHSud+cerf8bh06lv9cRr5DMqYAdpWP4kgM9bX+zzaBfCVQ9UZYA=
+	t=1707582597; cv=none; b=NSg69TkyuiawWTaMj9Uu8VfNMGn4/+krh8ZW+puER5LmzEgi0mZIrFuOW28S8ukcyrxu5C/7AIMs5qsrPv18kYjNH5ndXvMJReFfxfOyl7+cSrFKh3oj/5RAniTpsZXK8wz3AzRd+ii520fUhtgDUsm9rXzPo8aiaZhQYQhBQSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707582438; c=relaxed/simple;
-	bh=xotlrdExwR7OpAxvjEFBl3sZucXG39CERAthiIFDFcE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DPf+3VRLFpm90q2JP+p2t8J7XDas/rBnCilsbZG6OPqJNTwSEEyaEiQtaE3Am6JWA9XoGUXZQq+hGJh8ojUtRLNTeMsfskNkZzq4mlkH6UP/gGhNBC35yKWIc0fAUcDep20l3TGmQqLd4YqkZLuBrYmzj17xG37Fw0GjAzJLi/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S/rN2fyL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7C72C433C7;
-	Sat, 10 Feb 2024 16:27:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707582438;
-	bh=xotlrdExwR7OpAxvjEFBl3sZucXG39CERAthiIFDFcE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=S/rN2fyLwU5QpDNprUT+IDybmAKToxm1A/CNVp/XCDATcu/o0xpaXspSFEHkgd1dY
-	 hwuOJj6wnMbSD70niQYUCUPuPqRs90aa/vGC+FKBjsQrQunNWBhnZqKQyf7nmloStS
-	 /w/szrodzfhA9o9a67xMYiLOMrVOybGa0d3JPFB64buZnSIdEB/63OPaggTRNmMIcT
-	 uaKQgFrj5ANA0OrlPyRXtbHIJQFxGWZJocUE76U3t2gnEESbBcC/Ws5mOZ9WUDhpkF
-	 lpIKXufTWkUr25Pa9V6qqSUrIDeLnSqdA3cYSd85Ofy2FYCv8l/QTAcnrUHMv/NBEO
-	 YhZTfHnoa92tw==
-Date: Sat, 10 Feb 2024 16:27:04 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- devicetree@vger.kernel.org, linux-iio@vger.kernel.org, Lars-Peter Clausen
- <lars@metafoo.de>, Liam Beguin <liambeguin@gmail.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Maksim Kiselev <bigunclemax@gmail.com>, Marcus
- Folkesson <marcus.folkesson@gmail.com>, Marius Cristea
- <marius.cristea@microchip.com>, Mark Brown <broonie@kernel.org>, Niklas
- Schnelle <schnelle@linux.ibm.com>, Okan Sahin <okan.sahin@analog.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] iio: adc: ti-ads1298: Add driver
-Message-ID: <20240210162704.5126478c@jic23-huawei>
-In-Reply-To: <11613ba7-fc14-46bd-84ba-a0b5d966cbfc@topic.nl>
-References: <20240206065818.2016910-1-mike.looijmans@topic.nl>
-	<1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.fd628a1a-a926-426e-a239-bfd8c9858b94@emailsignatures365.codetwo.com>
-	<20240206065818.2016910-2-mike.looijmans@topic.nl>
-	<ZcIsuiuisQjTIxJv@smile.fi.intel.com>
-	<4c6654f5-2d9e-4c1b-a5de-7bdeacf5e99f@topic.nl>
-	<ZcI5PoWojKRrdpVl@smile.fi.intel.com>
-	<67387cf4-1065-4313-b4c6-054128ba8f3a@topic.nl>
-	<40a3a47b-1388-4ed0-a24b-2c0bcef3be3d@topic.nl>
-	<ZcJLnOiFoaABami1@smile.fi.intel.com>
-	<e04ca010-289c-4216-95ea-2f2418613378@topic.nl>
-	<ZcJfOgDMmLBpEho2@smile.fi.intel.com>
-	<11613ba7-fc14-46bd-84ba-a0b5d966cbfc@topic.nl>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707582597; c=relaxed/simple;
+	bh=IAULVgXcV4yTsqI0dDqXRkB38uG90/GIQjySUkSdNXE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QeDYcnX3/3Pyd4kZf6f1BiZ9n85zYEhatldZOiaUiglDb6hDDfUR5LySXiTp431LWeBILYvswoiAqxXQoJ5U+MVli0+PbG+WL19d4ullakE8sgsqmvrdsKpK1L+PK2d6g47HIbAOZossF7s9CHmylgzsUvEMfytUFnu2BrqlEh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=2QQ17jfR; arc=none smtp.client-ip=128.199.32.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
+	t=1707582593; bh=IAULVgXcV4yTsqI0dDqXRkB38uG90/GIQjySUkSdNXE=;
+	h=From:Subject:Date:To:Cc;
+	b=2QQ17jfRjSQ0Iz642llM+UfhJ8aEGsfQra26tPgH1kckvweFW1qdMhWwPJTSxH6Ly
+	 45Cc4EaIsbAqQKl+cbJ6TbBWVzL/kvcbfDt7eIIdt78dKPGkqcig5aFOUxHG5O41vE
+	 ckot9xTKCmyEi0Sh+2/+9hy5u9KV/vhyxJnEkKBA=
+From: Luca Weiss <luca@z3ntu.xyz>
+Subject: [PATCH v2 0/3] Bring up more CPU cores on MSM8226
+Date: Sat, 10 Feb 2024 17:28:51 +0100
+Message-Id: <20240210-msm8226-cpu-v2-0-5d9cb4c35204@z3ntu.xyz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAEOkx2UC/23MOw7CMBBF0a1EUzPIHqPIomIfKAWOBzJFPrITK
+ x9575jUlPdJ7xwQOQhHuFcHBE4SZRxK0KWCtnsNH0bxpYEUGU3KYB97S1RjOy1olXbsHHtrayi
+ PKfBb1lN7NqU7ifMYthNP+rf+d5JGhV5btsbclDP02M0wL9d126HJOX8BoVrXw6YAAAA=
+To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>, 
+ =?utf-8?q?Matti_Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>, 
+ Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1163; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=IAULVgXcV4yTsqI0dDqXRkB38uG90/GIQjySUkSdNXE=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlx6R5r8qe5fRNeseT6VBwQWvB6o/YvJKhNCeDV
+ ZhKYmDF2XCJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZcekeQAKCRBy2EO4nU3X
+ VsINEADLvZDpcJ4FCpORafNmljwjN4fhw5Dl7ASHPW/XDozABDtZrfyVFLpDQwAjCDg9fmQ0mzJ
+ GPJd5ZJxyUhl9gjKo3JC705jYUEYbhGaBrMpm+nyHbTE+eU14fBG9NaraXdtchYrCv/4N4ntVWO
+ Dl8FixbJ5KjxlchD2pB+7KyvOqKpf6rlTKiYOA1nR062xP7D/3dATG+VeeBWZ0Ey+h6ZJ40BoT2
+ b1FWRWhm0f0AxPSerz+yg9ZhCQyxvkjPdx06pSuLlPDOs4QI4Blx0usIXp01QEMyWKr5L2EJ4o1
+ FO+PUvuZpLyIcV6IyHQIdsls10CAQnguTKk9J13TAz3U2T7ThVKyUNwUV6+lD8Kx4ecgLmbO74e
+ LVwGUg2bHWgwFaMaFjDOgnFfjdrBNG15XgVCdwSY2ELbA6eCcuBtXpf+CWtq/eYIPyu+9o7b0+G
+ pN4BOQA0pFLa3YG+1hE7b5ojeWrqTw0fUo5hZJcajdJ24AYjwbSbzmlNeuKpAo4e2BVQq0CupEe
+ yT+xL5xULGRfgLROjjw4WNdj2nMkL/ysXeJHeqjftQw/SSgQEsD1E8XO9p0rTxYbuegF4+bw0BY
+ yq0uRXuwKxxGCPpBLB1Tcel0KOx9VdRFJLrTYrY+zx1uQf2lyweoy7JK+LUX57nGJ96S73FRVUg
+ DG3+3idf67XeegQ==
+X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
+ fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
-On Tue, 6 Feb 2024 18:38:29 +0100
-Mike Looijmans <mike.looijmans@topic.nl> wrote:
+Add some nodes to bring up SMP on msm8226 SoC. Another commit to fix the
+sorting of the nodes is also included since the ordering is currently a
+bit all over the place.
 
-> On 06-02-2024 17:32, Andy Shevchenko wrote:
-> > On Tue, Feb 06, 2024 at 04:44:03PM +0100, Mike Looijmans wrote:  
-> >> On 06-02-2024 16:09, Andy Shevchenko wrote:  
-> >>> On Tue, Feb 06, 2024 at 03:47:45PM +0100, Mike Looijmans wrote:  
-> > ...
-> >  
-> >>> But it's up to you what to do with that.
-> >>> Maybe Jonathan can advice something different.
-> >>>  
-> >> The spinlock also protects the call to spi_async().  
-> > I don't get this. Locks usually protect the data and not the code.
-> > Can you elaborate?
-> >  
-> Either the DRDY or SPI completion handler will call spi_async(), the 
-> lock assures that it's only called by one.
+The bindings patch depends on the following series:
+https://lore.kernel.org/linux-arm-msm/20240102-saw2-spm-regulator-v7-0-0472ec237f49@linaro.org/
 
-Arguably it's protecting the destination buffer of the spi_async()
-call.  We don't really care if we issue two reads (it's a waste
-of time and we would store two sets of readings but meh), but we do
-care about being sure that don't issue a second read into a buffer
-that we are potentially simultaneously getting data back from.
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+Changes in v2:
+- Add saw_l2 node with bindings
+- Rebase on linux-next
+- Pick up tags
+- Link to v1: https://lore.kernel.org/r/20231203-msm8226-cpu-v1-0-d18e83340b32@z3ntu.xyz
 
-There are comments where the release is to describe when it can 
-be safely unlocked.
+---
+Ivaylo Ivanov (1):
+      ARM: dts: qcom: msm8226: Add CPU and SAW/ACC nodes
 
-I'm not super keen on this whole structure but I don't really have a better
-idea.  Who builds a device where you have no latched way of seeing
-if there is new data? (some) Hardware folk love to assume they have a RTOS only
-talking to their device and that no pulse signals will ever be missed.
+Luca Weiss (1):
+      dt-bindings: soc: qcom: qcom,saw2: add msm8226 l2 compatible
 
-We get to educate them when ever the opportunity arises :)
+Matti Lehtimäki (1):
+      ARM: dts: qcom: msm8226: Sort and clean up nodes
 
-Jonathan
+ .../devicetree/bindings/soc/qcom/qcom,saw2.yaml    |   1 +
+ arch/arm/boot/dts/qcom/qcom-msm8226.dtsi           | 756 ++++++++++++---------
+ 2 files changed, 427 insertions(+), 330 deletions(-)
+---
+base-commit: b9fed7419cce45b97bc3217f07920751a6ff9a18
+change-id: 20231203-msm8226-cpu-801bebbed886
 
-> 
-> Usually the DRDY handler will call spi_async(). If the next DRDY arrives 
-> before the spi_async transfer finishes, the SPI completion handler must 
-> call spi_async() a.s.a.p. to also read the newly arrived sample. There's 
-> no way to ask the chip whether there's data to read, so all the driver 
-> can do is use the ISR to remember that DRDY did trigger.
-> 
-> The lock protects that the "busy" counter matches the actual pending 
-> calls to spi_async, and also protects that only one handler will call 
-> spi_async (and update the counter).
-> 
-> Maybe this picture helps:
-> 
-> DRDY ---+-----+-----+-----+-
-> 
-> SPI ------+------------+-+--
-> 
-> busy 00001100011111112211101
-> 
-> 
+Best regards,
+-- 
+Luca Weiss <luca@z3ntu.xyz>
 
 
