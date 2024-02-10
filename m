@@ -1,153 +1,87 @@
-Return-Path: <linux-kernel+bounces-60273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 566C585027D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:49:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BE3E85027F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:08:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D15A4B25B74
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:49:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 153161C237BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 04:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15E553B8;
-	Sat, 10 Feb 2024 03:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="n+xFz7Nr"
-Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF2C566B;
+	Sat, 10 Feb 2024 04:08:06 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD45A5226
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 03:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7325620E4
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 04:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707536937; cv=none; b=FiIAMY5SZKHf2cri51jH+P3jMy1fcIoQaATE06JYPQDeZmpaxN9nUi+R5zHhbs6+z6Ce2dzvDeFNJWmKQ8iV8uVPKCgp5DQgF/nQD/njgxtoK4I0spCX0V7gKCsJEdHjCmKXK/yT3J/kOrpiDGsA93C9qwRKNTdb9HWY+OlGHWo=
+	t=1707538085; cv=none; b=VBujo03ji14A9cBJR7FN6KrFA4kKDpx0xIo5Q1ICoPJpsLUdvzFVaZOICubvOCzikEzFdOLSv3Z7c7ZUR1x141Ct3/3NXuTJg+s8d2iSru96viLv0YcnKZ77yqza40hR6W/5CXmNQfaXGqgkGGB/60yKmZhji+dM+Sg4NnjNbZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707536937; c=relaxed/simple;
-	bh=N5lIWGJSxWQYVGgLG22Dg9ozki3dEHmzpJWQ5H3czUs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Uo2134UAUnPmnF/LUOSazEzeJIBrryNRUt3NSYall/rFwLBaViOZ2z0CZXR7QBT1YPhBnDEl3PscptAj32QK5pE5MKmFwEvZRCOcq3wM4Zj3+G/Wd+LDRxqzi7xxfZt16yRaDC8yz+vOc4AeDck1jxjb6xFAyNk8D5A8VJFB/Qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=n+xFz7Nr; arc=none smtp.client-ip=35.89.44.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
-	by cmsmtp with ESMTPS
-	id YdGgrilt6rh9zYeMIr7VxR; Sat, 10 Feb 2024 03:48:54 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id YeMHrPXtNGqq0YeMHrelFO; Sat, 10 Feb 2024 03:48:54 +0000
-X-Authority-Analysis: v=2.4 cv=RrpmLzmK c=1 sm=1 tr=0 ts=65c6f226
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=J1Y8HTJGAAAA:8
- a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8 a=20KFwNOVAAAA:8 a=cm27Pg_UAAAA:8
- a=YSKGN3ub9cUXa_79IdMA:9 a=QEXdDO2ut3YA:10 a=y1Q9-5lHfBjTkpIzbSAN:22
- a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=W64qZAI3h8NJ4txSVPm6MF/X+ayduigBYWPV+cPrB00=; b=n+xFz7NrN34AhWBnk8Veb7KwtU
-	3dDtW8x91tz7n+rUUge8REcm8x8TLDk3WKJjVTtaYpa04THv2tVnEwPFegbM+Ew1OGAJwVwthc9BX
-	rwhpwGVK0QKRYjkHH8gEQB6/S4/7GfU4At1uyvA5cXAY3uA4LBj4GB7ZHB2yIrrXh4xbqTrxBycvO
-	uNyDB5/dSW+tARJ3Ajyv+7wg/NVPr/foDXFLqcYw1i1o8FB/R2tcCy/QgIXw+Ly4QPQhc8Z0sO0n4
-	neKQ9F7W5MSIRynA/L+d2UReES9QZ5YX13E58VsamyYfBDNMDHkgAii7ygd1Lu3Pgir/QB/MMNxHa
-	Gz8M/QlA==;
-Received: from [201.172.172.225] (port=48392 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rYeMF-0031L3-2h;
-	Fri, 09 Feb 2024 21:48:51 -0600
-Message-ID: <d6ff85ad-978a-40cb-aeb8-7b12c2dd1425@embeddedor.com>
-Date: Fri, 9 Feb 2024 21:48:50 -0600
+	s=arc-20240116; t=1707538085; c=relaxed/simple;
+	bh=ybnP3ZhiWDoYTWu5V/Xspe9zKXj8IbIPsZvC04akN34=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ePagIecTayme9mnqOMWr+mhUj0sx3THffDLD6klW7lu8ez/JJYEhX1iGQHjO0lS0a1Q6jMqfvRglz9iwHjt+56xh+iChp8qaqhO+PedX7YWt+A9rdb9EYB28MRqrpp0OXqMvoHcxJk+LG/5DQXCYp5czjBua+ElYeSrrHWxdOm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363befae30fso13463025ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 20:08:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707538083; x=1708142883;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iLBJ1ysf/erCCObYNp8PsSlQqrZqwP8kcEaBiq+UZyE=;
+        b=XtcHrsuoprBbhJpuMavdCBOmB/5kU+o1l96yaX1p/E+Nfv7W/+lbR7TYk31eB2Ha4K
+         mZAndY+RZXZWwljhTGgNDEEdY7Fl+yAO63FXbCNbTLJoqNx+3BA/tYjWm/0LEZkhyxh8
+         29Zh2uYagqcj2PsdxxDSjYDkO/dhTV63JN0kAJWPnk1AKH0SVHKWzF1bsY1ErxiTfKg+
+         rcgyimgwUIuhMA0nwesEUvYuOpFak2ONRSwcgCPn/tBmlrdZ5LP7zGt/isEHy8pJYCwC
+         k/XpVcMa8L0nKi7T1sgyltuxfHGT9m2IwhfHyhJOARNywnudHedL3uVHv3KlXBIIMV/b
+         u+gg==
+X-Forwarded-Encrypted: i=1; AJvYcCVuGkiarxwHV4YBHV5Ic4/MrEbRbSj9VohzDEuMNAxCyHdvuYB+VkEb0EWbNuJXS2icVLbMjqjlj5l5oTV3CJp6m6eORxyAFyo9CcnO
+X-Gm-Message-State: AOJu0Yw6GvqcFMM+Mu5SV1QvhypjRPiP+XqeY6bxr/VyQwkkqEnYi8Bq
+	MdtAm8oQfmQflsk1u0FnfV+oVNDws77AncCLkBB1G4TWtLvgcdxHt+Z2cT2Mh4zquRWhFViJ5Bt
+	3iNbq6o8iWzS/kszDJ0mhe/R8aa8d0Wtc46EDAeT2dpqgM05uTHQlQ/A=
+X-Google-Smtp-Source: AGHT+IE8lR2YGgsRe1nB/6OT4L3CsM+WP6btBAKMg8HefhyRQLJovH3cjssFAeboeduVgEvsX9sjYtZIMbKCpACQ2TADmPQ0XUWb
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] net/ipv4: Annotate imsf_slist_flex with
- __counted_by(imsf_numsrc)
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, netdev@vger.kernel.org,
- linux-hardening@vger.kernel.org, Rasmus Villemoes
- <linux@rasmusvillemoes.dk>, Dan Williams <dan.j.williams@intel.com>,
- Keith Packard <keithp@keithp.com>, Miguel Ojeda <ojeda@kernel.org>,
- Alexey Dobriyan <adobriyan@gmail.com>, Dmitry Antipov <dmantipov@yandex.ru>,
- Nathan Chancellor <nathan@kernel.org>, kernel test robot <lkp@intel.com>,
- linux-kernel@vger.kernel.org
-References: <20240210011452.work.985-kees@kernel.org>
- <20240210011643.1706285-2-keescook@chromium.org>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240210011643.1706285-2-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.172.225
-X-Source-L: No
-X-Exim-ID: 1rYeMF-0031L3-2h
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:48392
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 18
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfJpmLu+ZStihoYf7BcNht3BafH2ujlyL3/yYmDDws/mgRRIvIAMAVMr/jEybtKIjksxnisKM/sXWKNXEueP5yJQP3fFDIHF00jhvU5THvoBkSXzMRyjB
- GYeC7Wz+5T7NESUea6DotaOMUlaMP2B4xjC5uU/QvF/OZt41Cc9z/qp9EcLa+e25n/YSq7pJZ/iAusUcL4rMjcugf34U9fN/r+oaKZZL7Z5NCsj3E4AOTAjz
+X-Received: by 2002:a05:6e02:20e2:b0:363:ab40:78c7 with SMTP id
+ q2-20020a056e0220e200b00363ab4078c7mr84923ilv.6.1707538083553; Fri, 09 Feb
+ 2024 20:08:03 -0800 (PST)
+Date: Fri, 09 Feb 2024 20:08:03 -0800
+In-Reply-To: <20240210022453.773-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e929570610ff30ef@google.com>
+Subject: Re: [syzbot] [kernel?] KASAN: slab-use-after-free Read in __unix_gc
+From: syzbot <syzbot+5a630f8ca0120ab43f55@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot tried to test the proposed patch but the build/boot failed:
+
+failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git on commit e7689879d14e: failed to run ["git" "fetch" "--force" "--tags" "ee231638377c5338d84cc90b6c821555f8e3813f" "e7689879d14e"]: exit status 128
+fatal: couldn't find remote ref e7689879d14e
 
 
 
-On 2/9/24 19:16, Kees Cook wrote:
-> The size of the imsf_slist_flex member is determined by imsf_numsrc, so
-> annotate it as such.
-> 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Tested on:
 
-LGTM:
+commit:         [unknown 
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git e7689879d14e
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ac1116e4986e7570
+dashboard link: https://syzkaller.appspot.com/bug?extid=5a630f8ca0120ab43f55
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16f3d320180000
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks!
--- 
-Gustavo
-
-> ---
->   include/uapi/linux/in.h | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
-> index e682ab628dfa..445f6ae76f1e 100644
-> --- a/include/uapi/linux/in.h
-> +++ b/include/uapi/linux/in.h
-> @@ -199,7 +199,8 @@ struct ip_msfilter {
->   	__u32		imsf_numsrc;
->   	union {
->   		__be32		imsf_slist[1];
-> -		__DECLARE_FLEX_ARRAY(__be32, imsf_slist_flex);
-> +		__DECLARE_FLEX_ARRAY_ATTR(__be32, imsf_slist_flex,
-> +					  __counted_by(imsf_numsrc));
->   	};
->   };
->   
 
