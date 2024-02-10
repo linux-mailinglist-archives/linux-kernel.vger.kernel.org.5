@@ -1,102 +1,112 @@
-Return-Path: <linux-kernel+bounces-60461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D722D85053E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:34:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DBC285053F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:36:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 163E31C22E1A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:34:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9098D1F216D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA485BAF4;
-	Sat, 10 Feb 2024 16:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E38F5C5E9;
+	Sat, 10 Feb 2024 16:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GyPED/fA"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RRSMuhGA"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64322B9C2;
-	Sat, 10 Feb 2024 16:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769D85C61B
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 16:36:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707582863; cv=none; b=dHVZ39w2wtvG1PJlQv/ZdK9W36ENF5aCjpxQ+GlygG1Vhg534Dcx8M+vvbdNElCbo9xTazaBM4bZjn8pS7slta8cGfW0WF4FU2ultThlP6GvBoPS+gfjpG4gf9jDFDx+UnkI7hA728SzKqKHexW3wvAkkwnTarHtk8VJxx2u0Uc=
+	t=1707582974; cv=none; b=nUuP9u0roRViwzVMnrdAkyG9+FNlAWyEl71e24IAhoSh22m0BNej7/mp5vgMFkUy0bzlBou0c5m88mCKWSP35InqdE/WrNHIpf6FQk53g6yyqq0H2gQ+xZBBO9yVn0Gy/SXcJ649qsg+YS3iaGmDno7RAqAHQJ3e1q7XjeD5aWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707582863; c=relaxed/simple;
-	bh=Ktc49ggsnwEr1xhQzDFAayYH39FRXOX1ED7Hxw0AhIE=;
+	s=arc-20240116; t=1707582974; c=relaxed/simple;
+	bh=xVg2rsySaUHLNxBRJA4noG/ZLifuDOmrz2i8pgGGNSE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bgQdwgIMb/jFPK0YVVazaVGPL2Tawj9ywECyLGHxBz7KV0bDlUd4+BxxS4B2l2S8cEQGoMPzgFFgmP1b4C6LGkmE/O3V4zHQHUoNJExE/Ph+e5z9cM0lXzZHT8r9kuceM4Z58MdsUYK2DWDJDigaOT79gNJNQ1UMoQ3YbScfg4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GyPED/fA; arc=none smtp.client-ip=209.85.216.50
+	 To:Cc:Content-Type; b=VJyRQHSdYcsZVRUNqFnCqF6Tonq1VPf0W8EABNqmM6Xv5Jh0IxVUKYiTdlrq8uWGR05Z22SpBZLoa1TVdNeEHQqpPwEcfuWLO6V1dnvmkSuc9II9dVs23Fiqn6dEuOH52lSD9ZfVTM+NOuZG+AK12mSCmO8QDik5alvy0K8rJfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RRSMuhGA; arc=none smtp.client-ip=209.85.219.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-290b37bb7deso1431770a91.0;
-        Sat, 10 Feb 2024 08:34:21 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc74aac68a1so1980382276.2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 08:36:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707582861; x=1708187661; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707582972; x=1708187772; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7lyJHFrg7zCWGym+YlMTg2RbWRQjPifpNEF3JissgL8=;
-        b=GyPED/fAKotky+pjwYKRtNKvjHVhVqzre0aKEBXxIW0zSXjLAGtFMkXdbjGC3SYrDP
-         ub4vnKzaM7F8AYtNd9VvE2LRvt1c+gMSeR0DdGXa0VXpYX9f9i2ZWlsFVunwpr2VpuKa
-         W/6hZmaSlmQHlC4xPgpS8UJrpGmLYXY8eU/6BnmzRbajNsjImeFqxDwbdHmoSGoi348m
-         WOs3cJLA1gKMdcNtSgXslAVsCExbwy93YfoM/w/MOro9X8ek+djkwNL68kx3oPURJ0fE
-         TfuUk96aNgIKDs7/nb4e9uW+pCS/hWiU84FGOreRj+N1HocwZ9kZ3NCpgh09cZBlyfhs
-         ecCg==
+        bh=xVg2rsySaUHLNxBRJA4noG/ZLifuDOmrz2i8pgGGNSE=;
+        b=RRSMuhGAZmcQe0hEXu8DH1PdWCpMHJg0+wZDWFNBsc0rww+SEwi26aJJOJGTwekZgf
+         Fu9wC4oA3c5WaI8G29pxObipeMmuUXGVOo1RXKDm9ioFhuAb6KaTONQOHEXOPl0XMdk2
+         9Xs/zMjd3mTMLOQM5YnZ8oAgPY3EpsBfi/vUW4CBGYG5IOOBqRuVXEStU9oQjno2oNA4
+         O/obDG5wUgHkzOJ8CwvGq23BCVnOA8OvoaXO7XDoV5GQHO912izxESVyMGNvqM9Wtj54
+         MoRrL9AwniTjksLga6LedjBICs3mAguIJL9tS9bmItHWruPE6IEVh//f7WpYHgWDMAPA
+         6+cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707582861; x=1708187661;
+        d=1e100.net; s=20230601; t=1707582972; x=1708187772;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7lyJHFrg7zCWGym+YlMTg2RbWRQjPifpNEF3JissgL8=;
-        b=R7kEmn4FX+/pGklwk0pHtg/JxDfGPtxeNdxU6iH7wL/7cVyXPbj2rtJLdTqhSjpeyj
-         vLAKt74PkofwG6oXubQIRESlrzVzHf4V5O6Uu8LEjA8A8vUUr/8qKZwZ0SG9K9QYjArn
-         X3XTuLZHz6Gd8ZoPwuVrpYrYQb2CblggoJ1gMI6A1OtpHbwpaTOsPPAgaQJkgz9yz60A
-         43XRIq1O5qPiDzUKI3Iy8sEzmIP22INL4UYXzvFr8fB9rcYBcOJVqCSUKQPYo3aJU7N1
-         3xz+DiT+07q30/XvHMRCB0lXp84xcmBHZv4Y2/HmMI9//yPs0FsuX93i72iWBOARY9va
-         TqXg==
-X-Gm-Message-State: AOJu0YyvlGEUQoQY7BgwClsHtDhv/IcInE8Elw9VYxgwjs/TPQxNa4AE
-	4Hi365zKolklBqTb/XA1oXyGcc4uj20pkJXnMOUOTDVr986FZPcRqhBx2qZIcNdFp0Qahlc6IOR
-	wijVPu49IRxVfUS8xNe1/H/mZc0o=
-X-Google-Smtp-Source: AGHT+IFMWvYx8cuFwf+pqnbaAaxSl9M0MGFbQn+PShgZe3O3V43mko1Wr7UDySU/27keBm3fxQlixHx2rAJTKBh/OEw=
-X-Received: by 2002:a17:90a:7408:b0:296:bf9:dc69 with SMTP id
- a8-20020a17090a740800b002960bf9dc69mr1848401pjg.20.1707582861060; Sat, 10 Feb
- 2024 08:34:21 -0800 (PST)
+        bh=xVg2rsySaUHLNxBRJA4noG/ZLifuDOmrz2i8pgGGNSE=;
+        b=oJbTLt77THz5pSc/bAzH3qbFJvl3ZAAZDzR8QfhTECeaTQDuc/EZHDwo/uAOgjM7ni
+         JPIYVgFq7BcjsduRV75dG+QHSd5kRaDCrQIygyjN48uxB/2jglgvP+c7MrFXERVwQBS5
+         uB3yeppv7squh9vjL/woL2fg+EgC02HFwJs5E9lCPkvBKtbSI+TLKTRYX8/KGgfDahxn
+         D+ii7lhuu5eZ5sMfc/8ty5CcotWaYRsl4cXW1LsziWTsdBN9ed/1myb+KwAZ1WuUIXOt
+         JCdNyjOSlnw4gU8wsk4FG05rlhFdoT4CTWaCKTxR5ZAmxO0jl81YrHrgb08DgDSK8USd
+         SPng==
+X-Forwarded-Encrypted: i=1; AJvYcCXTSbzNohYZDYE5ku/jdczXFh/6OjuZ979YhN4gqa8oTOovsRCQoTtNzSUsfxerJkr6L62Yn2Y/yYeV5+R2mWLfvC1dOEcaX4MQHWjm
+X-Gm-Message-State: AOJu0YygEe94q1Hq1IBI5a5d4c/WiGweufB0QXZZmAOZr8qLnYY8tP8c
+	8LsFRBtyp1hmiwtsx22AjITnBAjkzDIctDroI8I81as5VrDr2lQLHMJoNRPqNDZsivHq6IrxydN
+	5WNRifx/OEUgVHHpMC7MLwKTYaXU=
+X-Google-Smtp-Source: AGHT+IE+fvBFa8QWEnDUJIBbyfVmQzGPZ+d8gzHA8Ie7SibJhobr4pIOwYgIwXacPtIPXu0U6U4DMlRpkiRsS00J/No=
+X-Received: by 2002:a25:6809:0:b0:dc7:44d8:14c2 with SMTP id
+ d9-20020a256809000000b00dc744d814c2mr2032273ybc.39.1707582972424; Sat, 10 Feb
+ 2024 08:36:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240203162524.343936-1-singh.amitesh@gmail.com> <170739214246.950581.13917324551294999476.b4-ty@kernel.org>
-In-Reply-To: <170739214246.950581.13917324551294999476.b4-ty@kernel.org>
-From: Amitesh Singh <singh.amitesh@gmail.com>
-Date: Sat, 10 Feb 2024 22:03:44 +0530
-Message-ID: <CABKcAmVsssKR8zCPwgODxcEuodCi_+m8GEdxzOVSJ5Gth095zQ@mail.gmail.com>
-Subject: Re: (subset) [PATCH v3] leds: pca963x: Add power management support
-To: Lee Jones <lee@kernel.org>
-Cc: pavel@ucw.cz, linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240208002841.GA2601476@dev-arch.thelio-3990X>
+In-Reply-To: <20240208002841.GA2601476@dev-arch.thelio-3990X>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sat, 10 Feb 2024 17:36:01 +0100
+Message-ID: <CANiq72=G--5LW-9sg2PscTL863mFVNdnX7LUQX2Xj02qZs4crA@mail.gmail.com>
+Subject: Re: Prebuilt LLVM 18.1.0-rc2 uploaded
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: llvm@lists.linux.dev, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 8, 2024 at 5:05=E2=80=AFPM Lee Jones <lee@kernel.org> wrote:
+On Thu, Feb 8, 2024 at 1:28=E2=80=AFAM Nathan Chancellor <nathan@kernel.org=
+> wrote:
 >
-> On Sat, 03 Feb 2024 21:55:24 +0530, Amitesh Singh wrote:
-> > This implements power management for pca9633 which enables
-> > device sleep and resume on system-wide sleep/hibernation
-> >
-> >
+> I have built and uploaded a prebuilt version of LLVM 18.1.0-rc2 to
+> https://mirrors.edge.kernel.org/pub/tools/llvm/.
 >
-> Applied, thanks!
->
+> As with Linux -rc releases, this is not the final version that will
+> ship. If you run across any issues, especially ones that were not
+> present in earlier LLVM releases, please consider reporting them to us
+> so that we have a chance to investigate and fix them before the final
+> release.
 
-Thanks for reviewing.
+I took a look at the LLVM 18 prerelease to see if these would work
+with Rust for e.g. CI and other users (instead of using the
+LLVM-provided apt ones, for instance), and noticed it does not bundle
+`libclang.so`.
 
-> [1/1] leds: pca963x: Add power management support
->       commit: e684dcca3659a3f88945a2a5c6fe5a156d4b0178
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
->
+Would it be possible to include it so that we can use `bindgen` and
+thus enable Rust with them?
+
+I understand they are intended to be minimal toolchains, but if you
+think it would not be an unreasonable overhead, then it would be great
+to have it.
+
+Either way, thanks for these toolchains, Nathan!
+
+Cheers,
+Miguel
 
