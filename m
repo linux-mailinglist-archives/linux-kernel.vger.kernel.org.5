@@ -1,106 +1,113 @@
-Return-Path: <linux-kernel+bounces-60356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 420338503A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 10:32:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BE688503A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 10:32:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6D3B1F24767
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 09:32:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CFFC1F23D82
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 09:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A42E364AC;
-	Sat, 10 Feb 2024 09:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D1436AF2;
+	Sat, 10 Feb 2024 09:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="k7mAoGW9"
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HvSGhUUy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DF6364B3;
-	Sat, 10 Feb 2024 09:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E45ED36AE9;
+	Sat, 10 Feb 2024 09:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707557522; cv=none; b=dnmmxnaDPSh6+mwajhb1sd1Ez55xoJNOuDnMAzXehPUCpXG6hc7uumeUmdnqJ9eT1K7Up/7brjVh5R8TCxCysyKaIpMlrL6elDUupS0cdYuY2n5dwcxrUq5XxzSDYVD53XdZnDkos0qb0mV9v5+6bNyBXs56Oas/RZBsiBoFNFk=
+	t=1707557545; cv=none; b=g2VQ/NUfgBzeQcvxABXCeF4BRE6vGQIv6wnNAVmA4pLAyzBnTszar4AE+etyNZ9gq9H4bSdzLJ1HSAVLMPUTEiPYeV2h2ZfTzMeJgudyirAIoE89K/5jtU59XmMcV9rxKoqFf5mdQlryDfhkXkexz5NTodfKgkQNzL5Id/j5NGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707557522; c=relaxed/simple;
-	bh=TP9W4qCq8hgSVWD+ohqGLyVeD4l5sBB7DBV8tYBFOBA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=aKoQSpcyjdMwIZTu9JS4dnDDSG2zpgu19iB1YYNtj8mFgDBu1w/HrN1nNQ4jYM7VES7j+6F3dN2SqY81ohd803A5NOB6ftYOt7T5fTrnwKDaWri9gtpuZAJRCZoJsTC6NVThGCcUv0EOLcCHxKQo80nZqgWRHs3hGK9LtPZQmMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=k7mAoGW9; arc=none smtp.client-ip=66.111.4.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.nyi.internal (Postfix) with ESMTP id B1F445C0077;
-	Sat, 10 Feb 2024 04:31:58 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sat, 10 Feb 2024 04:31:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707557518; x=1707643918; bh=we3+CNIp/sCmExVts2CpdGbhGFMZ
-	ZEqrf8Zzk61UqYw=; b=k7mAoGW9Pzm6fLDCrX/8udswlMtlLI8f16Z0dsWLV1aw
-	6UEH6kq3mLRz/9T93kjud2ONbUAAQ6U1fsd0PM00d+YuVfF6IiN+RHi/yS7MfGnQ
-	d1iT2kRdK7jnvjXNckVx4Wgs/c0VTo2pLRYnNlupWwtm1ZJaoPK3kqquTaqn88Di
-	CcgdwidBw7lZ9uhAyRHlw5gvX2HtZcj0hGBTIoSew8zMEY7nD/3zJ6XJfROQ9Yiv
-	0tMEU3QRnqAf699kzuAZryF3fhBSafwrzqH9ifbjtPUr15zZiA1Jsg2xTv4soSoR
-	IQ7w45GG9gkyY1q5PlhpQ+xj5ihstfFfmUGCi/7SSw==
-X-ME-Sender: <xms:jULHZQyfUifbzIt4LZvH6rY4CqmoZsdGDyzHgfKw4dEkpLKqtNyRcQ>
-    <xme:jULHZUScGEiDsXxsJyx8I38K8F31t32CBfMDWgiwGvYI8YN3HPxMHY0t5IfhcAnHw
-    566Ddfd__Df7DCnXPs>
-X-ME-Received: <xmr:jULHZSX578yw010Lg8RVAMN9gayfDBtMKo16DyqyvdrXuWlhZfgSeJQaARScsSwu1ND0FD2bN3SHU4PDwWHp-3n1R9cgjzJX6pA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtdekgddtgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
-    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
-    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:jULHZei-A-VewmnbNE_NrtBkSvzwRkLiOl-2pMjazrDO2EnrQE-l-w>
-    <xmx:jULHZSB9QEoMCcHSE1PvprqZvDi4_lu11w368Kb5WxyFSWH64OeUYA>
-    <xmx:jULHZfKiRijmbauWA9RIS5CnlPYW1KA487OfpSXGhMjx0CB34JBffg>
-    <xmx:jkLHZe10U-Wb1gXUvZUpvxpOAuzcEaJVaiQiaurh3Yjsi-dO3aRuCA>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 10 Feb 2024 04:31:55 -0500 (EST)
-Date: Sat, 10 Feb 2024 20:32:18 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Lee Jones <lee@kernel.org>
-cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, 
-    linux-hardening@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>, 
-    "James E.J. Bottomley" <jejb@linux.ibm.com>, 
-    "Martin K. Petersen" <martin.petersen@oracle.com>, drew@colorado.edu, 
-    Thomas_Roesch@m2.maus.de, linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 03/10] scsi: NCR5380: Replace snprintf() with the safer
- scnprintf() variant
-In-Reply-To: <20240208102939.GF689448@google.com>
-Message-ID: <0f9c95f9-2c14-eee6-7faf-635880edcea4@linux-m68k.org>
-References: <20240208084512.3803250-1-lee@kernel.org> <20240208084512.3803250-4-lee@kernel.org> <CAMuHMdX72mpGgb3Wp0WRX3V78nn+bWUqiYz25CjeMNPpWaPmxg@mail.gmail.com> <20240208102939.GF689448@google.com>
+	s=arc-20240116; t=1707557545; c=relaxed/simple;
+	bh=zmgXIy+KvUSnQwp4jEHGf3DonxJlpcSWYSJAEKZmDWI=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Oe3UKsR7iQSceWlUbB0Wb/+16fdvgvx0FdDLt30fGZ01h4+mmkiDwanHkq45KXGlHBRJsunLm+KhQQ95lQriSM12yuIHajws2mG3iozBayKrAns0N/FBeI8BvCFZNXobil/7XRO23Uh886+OJJxVC92Rs/3wut40HyPOP6OdBF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HvSGhUUy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41DCBC433C7;
+	Sat, 10 Feb 2024 09:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707557544;
+	bh=zmgXIy+KvUSnQwp4jEHGf3DonxJlpcSWYSJAEKZmDWI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=HvSGhUUyyOuBRuCXxIoQiRxNoGp+6rDitXgJrQG81NV4mn7ggzBfJLY2TPj4JWiVz
+	 nvSqSJD2FqqRMgzNSLs14Xo7ylk0x6MC/TGgnSMzs23XqzFJQZfsBBQDaIyUsWMcJ3
+	 4iEFQRh6wddLUtKVY3uul1yS10B3pmLa/A1p439r390qSdN4235FEhIT4S0wPluzYk
+	 FtbAjyMef07KwZi5fNe9n3H3LzXdysuH2O7pIZ1V35MbnnWEsENrXozdmF8CGdXykr
+	 SZRLk6dmfkfT5itX4jJCoRRbJAifTRRh04ffoRR0Xg/ntr3UjkzcbRGGY+Oe2CnWWa
+	 BNrfMfLT2rwrQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rYjif-001yPz-Gb;
+	Sat, 10 Feb 2024 09:32:21 +0000
+Date: Sat, 10 Feb 2024 09:32:21 +0000
+Message-ID: <87jzncwtp6.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: linux-kernel@vger.kernel.org,
+	Doug Berger <opendmb@gmail.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Brian Norris <computersforpeace@gmail.com>,
+	Jason Cooper <jason@lakedaemon.net>,
+	linux-mips@vger.kernel.org (open list:BROADCOM BMIPS MIPS ARCHITECTURE),
+	linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE)
+Subject: Re: [PATCH v2] irqchip/irq-brcmstb-l2: add write memory barrier before exit
+In-Reply-To: <20240210012449.3009125-1-florian.fainelli@broadcom.com>
+References: <20240210012449.3009125-1-florian.fainelli@broadcom.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: florian.fainelli@broadcom.com, linux-kernel@vger.kernel.org, opendmb@gmail.com, bcm-kernel-feedback-list@broadcom.com, tglx@linutronix.de, computersforpeace@gmail.com, jason@lakedaemon.net, linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-
-On Thu, 8 Feb 2024, Lee Jones wrote:
-
-> On Thu, 08 Feb 2024, Geert Uytterhoeven wrote:
+On Sat, 10 Feb 2024 01:24:49 +0000,
+Florian Fainelli <florian.fainelli@broadcom.com> wrote:
 > 
-> > 
-> > Confused... The return value is not used at all?
+> From: Doug Berger <opendmb@gmail.com>
 > 
-> Future proofing. 
+> It was observed on Broadcom devices that use GIC v3 architecture
+> L1 interrupt controllers as the parent of brcmstb-l2 interrupt
+> controllers that the deactivation of the parent irq could happen
+> before the brcmstb-l2 deasserted its output. This would lead the
+> GIC to reactivate the irq only to find that no L2 interrupt was
+> pending. The result was a spurious interrupt invoking the
+> handle_bad_irq() with its associated messaging. While this did
+> not create a functional problem it is a waste of cycles.
 > 
+> The hazard exists because the memory mapped bus writes to the
+> brcmstb-l2 registers are buffered and the GIC v3 architecture
+> uses a very efficient system register write to deactivate the
+> interrupt. This commit adds a write memory barrier prior to
+> invoking chained_irq_exit() to introduce a dsb(st) on those
+> systems to ensure the system register write cannot be executed
+> until the memory mapped writes are visible to the system.
+> 
+> Signed-off-by: Doug Berger <opendmb@gmail.com>
+> Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> Fixes: 7f646e92766e ("irqchip: brcmstb-l2: Add Broadcom Set Top Box  Level-2 interrupt controller")
+> [florian: Added Fixes tag]
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-Surely a better way to prevent potential future API abuse is by adding 
-checkpatch.pl rules. That way does not generate churn.
+Acked-by: Marc Zyngier <maz@kernel.org>
 
-James or Martin, if you can find some value in this patch, go ahead and 
-apply it. I'm afraid I can't see it.
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
