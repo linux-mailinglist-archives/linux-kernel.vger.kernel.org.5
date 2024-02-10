@@ -1,85 +1,80 @@
-Return-Path: <linux-kernel+bounces-60506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBD0D8505D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5D408505D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 18:59:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BB891F2258B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:56:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5479A1F2149A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:59:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FAA5D725;
-	Sat, 10 Feb 2024 17:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF63A5D485;
+	Sat, 10 Feb 2024 17:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iXL/xbjE"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WguAaLdT"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7FA45D46D;
-	Sat, 10 Feb 2024 17:55:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4E45C5E4;
+	Sat, 10 Feb 2024 17:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707587761; cv=none; b=hjzzCiGtD53/S6qGj0CdE/70sCwHrMZ/SB0G4H8OU4KOD4jsOuYyRfwFXZsoJIaHVnn/BP0Yxa1cQlXHn8xWbCRnGd4HyMUo/mwvM0torMKy0G8dJ44+ST+mj5GIYM1NGGLBMDtFd3CVZTFuHBKevA3Xe1Dp3x7t9ILGT49emEs=
+	t=1707587976; cv=none; b=dHZFQS1Uy+t8GUPFKHuow2OGto8CAxBxAuXtz74/woD2DNowrjyqPG7yYw/7c4K33fWI1dI/GC375LFBU5sQPzptI08/YtzF61lGrSbYTWr33SzqaIFb/TSAH1kX/RhZWZ6C95ubSW6kRjvdlLn2qByERzep5W4KYwAGSnQPG+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707587761; c=relaxed/simple;
-	bh=2kekeIV6CVCl/5dOex1gd4NoQsB/CSJ4YIqtUFj9eeg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QmZSleZkUZIo6oPjee/jnDr5A2GIkleQBmNSWvo0ggvdthhcIORn1C3V9LgFvp+oZEHqWlvwgn4UMGGDMomk9GjMGZi5V1mhOZ1ekYrU7cKUKXOExsCRf1ZGT2BPRPhmP1cans0uP8i7Un7YQ9mKxwSAgHbSkf3P0MLZ/bdqqnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iXL/xbjE; arc=none smtp.client-ip=209.85.218.44
+	s=arc-20240116; t=1707587976; c=relaxed/simple;
+	bh=b7UI/H5haSYY1vo/GUoMk7Utc7xc6MpgPatIr62cEcM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sARe1l+lUPHz89ZkuWt43wETIeSnrxldbrDsMfQRCEaDDkZ4fh2in2HfNBuv6HhN1sbzdakzEjmtRrCV3d2xWoRWjeMdOnr2/RaW9Ld5X/LwVxeUP44cVaTDbbQIXktVwdA7ZDXJ3OMC6AGUNwH6ibLr/6uAdkKKvzl/PJEnWWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WguAaLdT; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a30e445602cso588664666b.0;
-        Sat, 10 Feb 2024 09:55:59 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33b2fba3176so1123596f8f.0;
+        Sat, 10 Feb 2024 09:59:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707587758; x=1708192558; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UXNiY/nOpUxXERDJEI/Sg1XpGwLPYihXCQijrmxJnI0=;
-        b=iXL/xbjEfv8TRlPeN6VyJDTE9g67G9HmpccZ7ecXdTXkRykiU2zkC50rwjwJM7He1w
-         UOH2mLHg57Eb541wGgSIR6z1vIwxTvGfb5w5D5YOR6x5kgz7fWWYYXi7vzkkQokmwmMD
-         gSwuTdHxDrFmIbbhKpUAtKxuc+d7uJJExve5bIIpUH/YHgr7TcNVy7UOO78dQFSGT1j9
-         3vsUobpP/DENUP72T9AHBHYddf9rk9RRbBVMV8qH3UU+6zbgz4CfucEkX4jhkForAF04
-         Aav742saOWaO2QNK6ElEPGPO5DQm6wSbCYz+/uQITG1WiwlKxC6kg/lOI5Ik2kxlB4uL
-         nNsw==
+        d=gmail.com; s=20230601; t=1707587973; x=1708192773; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=osp7CCpj7xgHrHOQxTuGeNk/XLl6ck22QWyA4VLv4zc=;
+        b=WguAaLdTOrLqsUKNljomO/L5TPQPAMxhD1Qn4dIiF+fo43KFd0RWakU08XMur+GTPB
+         S+3tg64RN9PiKa7SfRGREPoypk0+BX6yWsGpl1XeO2WJ0bIyV+h4suFG7Vs/IOq5IVEL
+         +t5ez8vaIhgHbWd+l3taNozZghgZ5DCmk9MDgmutVboJVp3fVIn22VZJHN4MeGdN8c/Z
+         3DMEjD4x7Y+ud9MxFpyQJqr249FU+2UTx/f3/+pRzYAQFGg2o9RkDpqB4vueB7+KK1EE
+         74wmLGT50RZqSFbXh4D7tX9GmEr68HiUL6dkOCp+S8ndqfMVSKjYx7oW3hu0EVWlCWQB
+         srRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707587758; x=1708192558;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UXNiY/nOpUxXERDJEI/Sg1XpGwLPYihXCQijrmxJnI0=;
-        b=GHZlk4uWpjkWUoO1ZsKNcvGVa4hKU4Q4AUDVSmghK3Y49L5bTC3WVU3MMIn0P02AA7
-         /+EP8cuCQGco5K3ZPL+Q0q+qfh+AQFU/SjH0+VSDaoIhiAppqkfKTVowObJz1ZgTGx4U
-         f6XWIEo/N660/7uiQUA31VBH3TnfscER33XiTj08T2OGe8lAVhuxnEztcjY4SikVyUWv
-         90gzmBS4rCj2IjfzC4ycYvnYXimnB46dsT2bH3UIcKzeCnOZEQpQ6f9nC2ljUfWMRfv/
-         pOjfQuuJmelk9cqk1Aeta3eFVSLpkPlc8f4I1wbaxskpdrh6fo53nXxyzNwE6KRVQn4s
-         Xl4A==
-X-Forwarded-Encrypted: i=1; AJvYcCVRmqw0HtzAcIR1AHnB8QFNWxtY/P9orRcZs4e4kkcH8LN54Z00VLGoOSUY0F+0iSgbcs690ZxB6/1bkvjphp5JQ4AiT4NLlF8BcPWq
-X-Gm-Message-State: AOJu0YwSILJsA6gJYmrP88q/jgLErrXY/i8s2Xotn3XFep58VHJwFLvY
-	eKxD4HkbaMisNyHvNyJCTHdVI54kFm+mJ+EcgvxLdFr/kFBWoELeNG49AyQZ
-X-Google-Smtp-Source: AGHT+IEPd2o0bs2HtuJlE0VqQ2TflOQIGDVIEhfxFiqe4tUnBCPXlr29IjNU9BpshKgmH4WwxpU6Nw==
-X-Received: by 2002:a17:906:a857:b0:a3c:4d7a:3c48 with SMTP id dx23-20020a170906a85700b00a3c4d7a3c48mr851982ejb.3.1707587757762;
-        Sat, 10 Feb 2024 09:55:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV7h5fDQ+CYi5W+FM7mGI82XutYHJvKXCkEhzF3ONL/J/5w04EfPMsLir13QftPtLeqHSre/h+D18eU9XHm5KyFDlC7DmHs9kgsD00mjJ1xG8HOulrDo+Uq11d6QebcqCwLP91gba55nzQtprTu6wxM71c0cpPCmZfUUk9q0d5ufvpzc+ldpMWrPMCJa88Xp/rfFz4/yNGY6Dzs5jHqmNvzx/0=
+        d=1e100.net; s=20230601; t=1707587973; x=1708192773;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=osp7CCpj7xgHrHOQxTuGeNk/XLl6ck22QWyA4VLv4zc=;
+        b=WJwN17bSv25u++gVT6qD9W9ojXIZLrua6/e0huzYNsyuXruyDbO88BQfLECLSJ/PEc
+         yEl85J+60m69Ikm18JgyzMoV23HOdf23ujIMUr2eB3P+vIvkVEBLcLId8YuJpC2lAURK
+         rgz24YJxr6s68SImqPW/j0dy52khDLc1v6Ye3zYAeEWjfxTFGk+gcJcX5oyzwHH0iYnN
+         SmJ8hWz7P+e9OjBVTDK5HqwLFU4MnVOO963bncMl92fIlsKGESOEtmk2SX+Au3chXF/q
+         ZAhZ95BfzFml0zQpW7xgiIg0Qpche0C9Ja9FOhi/OpRIdpoAxHfHHKOQ/eFLJANk3cp6
+         ICsA==
+X-Gm-Message-State: AOJu0Yz7n6ASlbiN1sSvw2XOP3tzLyrIoHB5C2SKIQteRfNXH2E6wPXg
+	SuPxW/5351H16zbyia4p7JFVYLY5v4PasDHgwyifCXf1pH4SQoUfMaCAO/0j
+X-Google-Smtp-Source: AGHT+IEdkdta0chUIAUDRqSlkSJYm/DXkfJPA8v3QcSfH3jyQfdUdEg4lMfDi7Wuix67XAHqUTPRLQ==
+X-Received: by 2002:adf:d1e6:0:b0:33b:48ee:8a35 with SMTP id g6-20020adfd1e6000000b0033b48ee8a35mr2678618wrd.3.1707587972392;
+        Sat, 10 Feb 2024 09:59:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVgu95Gn/n8kkt3GoVsgFbuSIh4J+bkSjnCqbNoE51DN7PD+XasngHdQF/bmPfkgJM/P03tEslVdFii3kuqvi865El7LljteQALZowQ5BlS40I8tees5Iw1APEbazoxFUuXYgdzjHbzCXaJO7Q/FiGxukgtUNHbjSFJ1BOu2xXFSuA79XklPRbFAQxzH650lyfI
 Received: from xeon.. ([188.163.112.73])
-        by smtp.gmail.com with ESMTPSA id go43-20020a1709070dab00b00a385535a02asm2001053ejc.171.2024.02.10.09.55.57
+        by smtp.gmail.com with ESMTPSA id y1-20020adffa41000000b0033b67f6ec80sm2379920wrr.80.2024.02.10.09.59.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Feb 2024 09:55:57 -0800 (PST)
+        Sat, 10 Feb 2024 09:59:32 -0800 (PST)
 From: Svyatoslav Ryhel <clamor95@gmail.com>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Benjamin Bara <benjamin.bara@skidata.com>,
-	Richard Leitner <richard.leitner@linux.dev>
-Cc: linux-input@vger.kernel.org,
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-pm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/1] input: touchcreen: tsc2007: make interrupt optional
-Date: Sat, 10 Feb 2024 19:55:30 +0200
-Message-Id: <20240210175530.137361-2-clamor95@gmail.com>
+Subject: [PATCH v1 0/1] thermal: thermal-generic-adc: add temp sensor function
+Date: Sat, 10 Feb 2024 19:59:21 +0200
+Message-Id: <20240210175922.137704-1-clamor95@gmail.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240210175530.137361-1-clamor95@gmail.com>
-References: <20240210175530.137361-1-clamor95@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,78 +83,18 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In case tsc2007 is used as an ADC sensor there will be no interrupt
-provided at all, so set up an interrupt only if one is present and
-remove associated warning.
+Existing thermal-generic-adc states to be an adc-based thermal
+sensor, which is not entirely true. It provides a thermal sensor
+cell, but it does not provide an IIO sensor cell, which would
+benefit devices that use adc sensors to detect temperature and
+need a custom calibration table.
 
-Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
----
- drivers/input/touchscreen/tsc2007_core.c | 30 +++++++++++++-----------
- 1 file changed, 16 insertions(+), 14 deletions(-)
+Svyatoslav Ryhel (1):
+  thermal: thermal-generic-adc: add temperature sensor function
 
-diff --git a/drivers/input/touchscreen/tsc2007_core.c b/drivers/input/touchscreen/tsc2007_core.c
-index b3655250d4a7..f6bb12ebf97f 100644
---- a/drivers/input/touchscreen/tsc2007_core.c
-+++ b/drivers/input/touchscreen/tsc2007_core.c
-@@ -178,7 +178,8 @@ static void tsc2007_stop(struct tsc2007 *ts)
- 	mb();
- 	wake_up(&ts->wait);
- 
--	disable_irq(ts->irq);
-+	if (ts->irq)
-+		disable_irq(ts->irq);
- }
- 
- static int tsc2007_open(struct input_dev *input_dev)
-@@ -189,7 +190,8 @@ static int tsc2007_open(struct input_dev *input_dev)
- 	ts->stopped = false;
- 	mb();
- 
--	enable_irq(ts->irq);
-+	if (ts->irq)
-+		enable_irq(ts->irq);
- 
- 	/* Prepare for touch readings - power down ADC and enable PENIRQ */
- 	err = tsc2007_xfer(ts, PWRDOWN);
-@@ -253,8 +255,6 @@ static int tsc2007_probe_properties(struct device *dev, struct tsc2007 *ts)
- 
- 	if (ts->gpiod)
- 		ts->get_pendown_state = tsc2007_get_pendown_state_gpio;
--	else
--		dev_warn(dev, "Pen down GPIO is not specified in properties\n");
- 
- 	return 0;
- }
-@@ -362,17 +362,19 @@ static int tsc2007_probe(struct i2c_client *client)
- 			pdata->init_platform_hw();
- 	}
- 
--	err = devm_request_threaded_irq(&client->dev, ts->irq,
--					NULL, tsc2007_soft_irq,
--					IRQF_ONESHOT,
--					client->dev.driver->name, ts);
--	if (err) {
--		dev_err(&client->dev, "Failed to request irq %d: %d\n",
--			ts->irq, err);
--		return err;
--	}
-+	if (ts->irq) {
-+		err = devm_request_threaded_irq(&client->dev, ts->irq,
-+						NULL, tsc2007_soft_irq,
-+						IRQF_ONESHOT,
-+						client->dev.driver->name, ts);
-+		if (err) {
-+			dev_err(&client->dev, "Failed to request irq %d: %d\n",
-+				ts->irq, err);
-+			return err;
-+		}
- 
--	tsc2007_stop(ts);
-+		tsc2007_stop(ts);
-+	}
- 
- 	/* power down the chip (TSC2007_SETUP does not ACK on I2C) */
- 	err = tsc2007_xfer(ts, PWRDOWN);
+ drivers/thermal/thermal-generic-adc.c | 57 ++++++++++++++++++++++++++-
+ 1 file changed, 56 insertions(+), 1 deletion(-)
+
 -- 
 2.40.1
 
