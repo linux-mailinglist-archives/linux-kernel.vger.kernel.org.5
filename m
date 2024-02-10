@@ -1,124 +1,126 @@
-Return-Path: <linux-kernel+bounces-60568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 922ED8506CC
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 22:59:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5A3085068F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 22:52:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1B65B2236A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 21:59:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61B611F22BF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 21:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B755FDCB;
-	Sat, 10 Feb 2024 21:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09EB5FDC2;
+	Sat, 10 Feb 2024 21:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="ID/GQKVs"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sf3LnEpL"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC8436B01;
-	Sat, 10 Feb 2024 21:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398575C022;
+	Sat, 10 Feb 2024 21:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707602142; cv=none; b=gcID0NnYBYxcrJ30+Y+J5NZoDeXLCohMdbjhmtacaKaFXtlRckhiJ7bcIn3N+wFngLddj/IhguyMuv+fmideKkdMyr5vP0BuV4wn19nuLcAaiau3eF0RcSQlRPN2vhhbYrsLN58F1eREGSPNeNAf3AoD7sz/ZaISf6GjUjtQrt4=
+	t=1707601957; cv=none; b=rhiqgo07sVk359A5hETrilPtbUGzSx+MeOCWo10/jVZS4mzXPxJapNN/DXRKLB6wdo/m04XBGvf/85RysF30O1Gghk8pXtdhX+3POSt/zw12c9k8L0vwO+wq+uwyoO3paOt9q+AY7ULYStocEx8Doc2ChFHVtqd/reUPDfGM+k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707602142; c=relaxed/simple;
-	bh=z7rtINVttpPeGX3Q2hKXdZ2D1BRaxoQHZOCRV0NBzFM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gRaMSwN80JYgLmCGNnOu+J92j7+FbYOjY0BIpnV7q6o76f9SEa/45gvr9LtoKp2I4ANUz9nibz7YoaOYzsuBhcr9cOyyvAjamKukgM1mZfemZA/NdRrBKNty1/IwxYj5aAM+pfcvP571lHfWgywP2j80D93Qii+e2N/KCek1f40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=ID/GQKVs; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id BF461100003;
-	Sun, 11 Feb 2024 00:55:28 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru BF461100003
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1707602128;
-	bh=xi31YeeyyS/qFrw1DkmjVjOshSdKKbDhOyJw6MvaMJY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=ID/GQKVsNci/VPuG6OlDS1TawQiIkMl2MhlcFJi3FsFUkAHzQjapxSzWvBdqeKYNk
-	 x9/nxqvI+m3gqaIluUH6YneQ4B07/QPZoDnziWMCoZ5N2X4cOFvoalvgxFmEB3QymO
-	 znjpXcQprfDMJHpOTQhpzosa6FEE1NqT7F4b/BlqyKI/WxnF0VDkqDhkGcXc5yc/uC
-	 66aNtPE4FvEr+IgCUUOaK+VIOFd7DhDM4+BsSV/Okrr+gWsMG85xiRNDK7AW9LDMrz
-	 XtgrsqEY+Dn/I3bPQvbCtIf3TesjzvWrTV5iBZZBT7vhnfvY0Uhk1psFgVJJLLOPro
-	 jEXeP9hdf1EHA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Sun, 11 Feb 2024 00:55:28 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sun, 11 Feb 2024 00:55:28 +0300
-From: Arseniy Krasnov <avkrasnov@salutedevices.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Neil Armstrong
-	<neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, Jerome
- Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>, Yixun Lan <yixun.lan@amlogic.com>,
-	Jianxin Pan <jianxin.pan@amlogic.com>
-CC: <oxffffaa@gmail.com>, <linux-mtd@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <kernel@sberdevices.ru>, Arseniy Krasnov
-	<avkrasnov@salutedevices.com>, <Stable@vger.kernel.org>
-Subject: [PATCH v1] mtd: rawnand: meson: fix scrambling mode value in command macro
-Date: Sun, 11 Feb 2024 00:45:51 +0300
-Message-ID: <20240210214551.441610-1-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
+	s=arc-20240116; t=1707601957; c=relaxed/simple;
+	bh=Ys1+3odTiU5YLEkSLRubYMf/IEMzPTkwTdS/Nel+O8k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=HMiMRZPqAYbEYBm0cyYqMXgXypxrhxTCmy6SUHeR8fTGo2oUDsEERzS8UXvZKbdrZp2gs/FErpaDQin/B+CQZNErtbFQSi+quNCrvnXVCS3h3RYdqGAkZmWbfisx85woK3z2YtJgXoLDoLdbDQyBAZTr+8lWzrQ87CNj3Nhg1N0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sf3LnEpL; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5116b540163so3043573e87.1;
+        Sat, 10 Feb 2024 13:52:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707601954; x=1708206754; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LmCihYrQQrWYTreHIvikjN3i8HFfYK6bdj8vueCUR0A=;
+        b=Sf3LnEpLaSDbBhnXEAsf0s/64g7xc6Fe1eH+iwVw4r3EjJMjFocMlWCv8zLgd3G0Uc
+         JXXKkM3S1lubrRHDyC+T6KUeMaway3CFZNieIpv3UCS71SpIiZky4Ww7kYv7Uxfpm8Sk
+         HxYo3TtaR48ktyIIlL/0n0xx2+PfHAvgH1wmkNuJjQVO3Ub+N+CB4a8Qd50/pS/0Wpv0
+         8gfijPqh4LTA2g1m5ijq+Igcf2dpzLGGEa4mSc+yuUc3E0FRE+JYI189x6mrvfePUSh+
+         4GAuJW2VWTX/zI58+SHZ2Wjb2mNiuby3l7f4LWqlH0C+5LaU1l10JpHCqWkqbNX46GvP
+         ikQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707601954; x=1708206754;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LmCihYrQQrWYTreHIvikjN3i8HFfYK6bdj8vueCUR0A=;
+        b=jQ4uWMdrXrgSsYcIkkNqS1eQjWQhD3WpLluoVA3Kd8zZ1n9lsbJWxqFVRVOFGOe+lQ
+         B0ph0PPMUMl/0PoFt9/NTmVVOlPW4dSxICpUdhSnfILBHovIts8scy32lA3iXIYh2SXC
+         6DZPeAsC8sAxD5/KQCc4E/n03r59Vq+uX1xpow+xEgioQNppPmDkXMKpRrJq0JOmoAFu
+         lw1XdLow40wQeMHumwA4GTmLcPZ9UZllAoYBiGT2e/4hgKsmFzpY/60FGMJ62w6KBcst
+         iXGHYcfwqyCyKRkSs8ci9QxU3HYd2wS6PBKlVbWrtW9zO+t7Q2/pOTgWX6bKqBiQYc5K
+         +SSw==
+X-Forwarded-Encrypted: i=1; AJvYcCXZpCIEvwDGtHc40xkYf4NEql6V6qtEdPxHMk7pWzW7zDk8VjzB9Lwldtpl5ULDifGHv9nSsGYAaV1VYqfTBTJJ1mG6+gXyv3+epiriyskSIOyr9f83z49FcvZcA8JqmGtCm4S90AZV6EM=
+X-Gm-Message-State: AOJu0YwW46Fnz1U4UeMuAedmJ6vpUE5j0qdCPn62ryZYnBQnmqc97PHz
+	jXTlws3+D3aLcJyvNGfy+5Tj29h/1wjy/JUUxz4I2wha/QWWGOtK
+X-Google-Smtp-Source: AGHT+IH2CP4Zj6CN+HgjYeEwvcCUyz1iGzkVAiHL9+6dGzOAf38xvhQTZCs/zh/jUGHoxfWZEFCr1g==
+X-Received: by 2002:a19:691c:0:b0:511:720b:6c93 with SMTP id e28-20020a19691c000000b00511720b6c93mr1361638lfc.27.1707601953906;
+        Sat, 10 Feb 2024 13:52:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUAc9M5DbfswW3g4ma45Q6szTF106PQ8Qs0T3p2yYo3Ss8KED7kJzMkicqo5YfovZ+3UadZUweVNzeI5fUHXR6z+bdkp84do/YV+UnPDx2MCXxEUkOUqaG5SPRmCTZG8o39Y7b/bx4aHv0oCnjckzDwF7TWI65VhUSEJUKAe+QoEsYVdBZFWbLf9/tZZiHnHe6/Fw9J9LQXyMCW5ES7EVKCHX2XigRoj2oPyfOOv6t+7Cx3kOJ4W8OpQVMyfN7y09Rjg5O/I5uvUSAWe80PkGBrkMRTOATOZO7oRotqUtUphIQf59r1/V3uh6SUpuOygFQdqoJ6KLqai/ThmTXDmN0iKx+xg5xbNRuOhL9+WGIxtoU7PIDSjg==
+Received: from m2.. (89-139-223-180.bb.netvision.net.il. [89.139.223.180])
+        by smtp.googlemail.com with ESMTPSA id a7-20020a19ca07000000b0051189b53f93sm24005lfg.302.2024.02.10.13.52.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Feb 2024 13:52:33 -0800 (PST)
+From: Michael Zaidman <michael.zaidman@gmail.com>
+To: chrysh@christina-quast.de,
+	daniel.beer@igorinstitute.com,
+	jikos@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	ilpo.jarvinen@linux.intel.com,
+	johan@kernel.org,
+	gregkh@linuxfoundation.org,
+	equinox@diac24.net,
+	michael.zaidman@gmail.com
+Subject: [PATCH v1 00/19] hid-ft260: Fixes for serial driver patch v4
+Date: Sat, 10 Feb 2024 23:51:28 +0200
+Message-Id: <20240210215147.77629-1-michael.zaidman@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183344 [Feb 10 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/10 18:28:00 #23491490
-X-KSMG-AntiVirus-Status: Clean, skipped
 
-Scrambling mode is enabled by value (1 << 19). NFC_CMD_SCRAMBLER_ENABLE
-is already (1 << 19), so there is no need to shift it again in CMDRWGEN
-macro.
+Modifications on top of "[PATCH v4 RESEND] hid-ft260: Add serial driver"
+https://lore.kernel.org/all/20231218093153.192268-1-contact@christina-quast.de/
 
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc: <Stable@vger.kernel.org>
-Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
----
- drivers/mtd/nand/raw/meson_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+They are mostly the fixes to the original v4 patch and should be melded into
+the v5 patch rather than upstreamed as separate patches.
 
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index cdb58aca59c0..2a96a87cf79c 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -63,7 +63,7 @@
- #define CMDRWGEN(cmd_dir, ran, bch, short_mode, page_size, pages)	\
- 	(								\
- 		(cmd_dir)			|			\
--		((ran) << 19)			|			\
-+		(ran)				|			\
- 		((bch) << 14)			|			\
- 		((short_mode) << 13)		|			\
- 		(((page_size) & 0x7f) << 6)	|			\
+Michael Zaidman (19):
+  hid-ft260: fix incompatible-pointer-types error
+  hid-ft260: fix Wformat warning
+  hid-ft260: fix i2c driver regression in ft260_raw_event
+  hid-ft260: remove dead code in ft260_uart_receive_chars
+  hid-ft260: fix unprotected write_buf concurrent access
+  hid-ft260: uart: enable wakeup workaround
+  hid-ft260: depend wakeup workaround activation on uart baud rate
+  hid-ft260: depend wakeup workaround activation on eeprom config
+  hid-ft260: uart: wakeup device early to not lose rx data
+  hid-ft260: uart: do not configure baud rate twice
+  hid-ft260: uart: do not disable wakeup workaround twice
+  hid-ft260: uart: use kfifo_avail for fifo write room check
+  hid-ft260: improve usb interface type detection logic
+  hid-ft260: uart: cleanup and refactoring
+  hid-ft260: uart: remove FIXME for wake-up workaround
+  hid-ft260: uart: suppress unhandled report 0xb1 dmesg
+  hid-ft260: uart: arm wake-up timer unconditionally on tty session start
+  hid-ft260: uart: fix rx data loss after device reopening
+  hid-ft260: uart: improve write performance
+
+ drivers/hid/hid-ft260.c | 330 ++++++++++++++++++++++------------------
+ 1 file changed, 185 insertions(+), 145 deletions(-)
+
 -- 
-2.35.0
+2.40.1
 
 
