@@ -1,128 +1,212 @@
-Return-Path: <linux-kernel+bounces-60376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EF84850431
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:30:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F44C850434
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 12:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F31C0B24A5C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:30:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A47BB1C22943
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 11:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06BD3D971;
-	Sat, 10 Feb 2024 11:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170F33D551;
+	Sat, 10 Feb 2024 11:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VAGAOVfz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eEiymRx3"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF963D963;
-	Sat, 10 Feb 2024 11:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1C731A8F
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 11:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707564598; cv=none; b=H0IXH9Q2dY1pbuCnxMWuobwpqgXiV9FybmxygokZvN7XakJOgLk0KtckdV6UKb2g4IWIOa4F3bWzi4mxBcpKEArYOxw+D77XWOhiiczSgJo4Nuh4ONcLmWroR8nfbXcneimdORWcEy0gOuqzN8oLTDb/hWuJma0Ii9zPuuOw0No=
+	t=1707564617; cv=none; b=RTxo+U9KlCHp9lePOuWooyN+C/5EyPoyefhOYyLJ4K53lmXM1YWJefeze5bM4/uTduHwzHQ/ZAx/neXBQ5PF94qxjX6LWNkN7LeRer2kIbneSzalzCshnyTCEjPXGWCW7wjottemnZ2hlBgJMmujbXllzDFa+O4Vn4/O3gyqGnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707564598; c=relaxed/simple;
-	bh=QPq+DDQenD7wYGR+UAIMms7gSHhkD+KoiV31Ufw3Nzw=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=LYxPf88Av/cvFwCMO+i7xqZ1RieBeBRABt8g0AlVORlwo2rRW7V6j6Xk0H4uzQIeMBNw2Sv86AJBsHCWyYgbkiS77NUrVdkuUezb6rjt5B/yWblU5ZNsq3T3rCJx+M0YB1LiILfghTvhVwwcBskEdRf16dBhz0la3VvMH5Fu9Ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VAGAOVfz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3509C433F1;
-	Sat, 10 Feb 2024 11:29:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707564597;
-	bh=QPq+DDQenD7wYGR+UAIMms7gSHhkD+KoiV31Ufw3Nzw=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=VAGAOVfzZpGMK/xx4ddU9AAJ8yuv1ld6pdNVt0gVjJs2aM9+Bcy30RtMdH3g0NbsT
-	 of2bg3qiOpCTIXzKvA05KOm8JGwVluv4XaTHwgcehsvJHeWsdBbq+UG7jQfXlS5/HZ
-	 quhN4IRKW7nBloCPA5DMnsjFP3x//HIy0F75phrJiG7wqBKfGF2oX3R53rzbhgAtO8
-	 yYuVsHlGtOTqVbLq5Dk0Rrh6oT4z+7q3SvTvTYBsLEAF+DeYncHRztYBM8zdpU6NaT
-	 U2QJFc0zuarCYwSVJf7JZPtcy8ONggqqsLI8gFPKNKLFcjVlryq29KL2QezhaGUH9t
-	 rGbi98jJX8JHw==
-Date: Sat, 10 Feb 2024 11:29:55 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1707564617; c=relaxed/simple;
+	bh=r6mXK5irgXYNwUXBuVJYyBaJOtQdkAx2B8SbD35wMVo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n90bsGLpLV4hZrttpND2nW3v5dfDKLoHimX1aYvbcE+2tfmPDlH1eP/19GEzJXGfjJN/J5rznyDmmVsWxO9PW6fUu9yehEHUdX0Mm2x3nRxjSTXKrhDhrSy/lSk3x/CvMDqLX9dodBGkQ/wSKGnDvnPeNN8VG3rQNpws7YN7QaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eEiymRx3; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc742fc3b68so2039333276.2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 03:30:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707564614; x=1708169414; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yfrY9Su7sNaNkmujlfv39yppTC8UzE/IjGvqkySYy7M=;
+        b=eEiymRx3LFgJU9ddDSIWhSKFdLLpenAEx7hnova7BFXM+UTm4lGDxCbpTxUR1xIRUr
+         HWEvk/QWw81c7n2tXQlihY7om5KWFGUqUlT+XfAyqVcx8ZouuUVzTqP0paA5XMAecWHp
+         ZV33xFHMXXdOwooTEMaRYT+FLAsQHVIw5RyiDfMptJZff0BG5S1vdNkK7exPR7BqNp1S
+         bVQ6yWHe5BQo3tFY/i6PKd76WlTKSew1lJpXjGmF+uXn3dT7RAf83FoadTIkixnfhQNq
+         nLGtet1A/Ip2U5/FvukxQidbmDe5z+SyzcSrQuz+BcuZzWJ1tgicATsyeE38lUFlycab
+         Wj4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707564614; x=1708169414;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yfrY9Su7sNaNkmujlfv39yppTC8UzE/IjGvqkySYy7M=;
+        b=hmkiQWiz2Gzd/CuvJgV70IxsT+hdULCqHLTZ9VMzLlpqWstnbw/YVqLnKoJ7ruusVl
+         JRroP3us5AonJqEOzYKI97Lv0zktoxI2u987UF19uuxnGVJT/LTd31jZar3eGR/oUCaO
+         fm1aPVZAI7xfC3ABPuMZC18UajTJ5EZHl2XPLj4ZsuF5dxuNkX+khmKJOLkN+JY1f2/L
+         +yu/9DVv1CH/AOgawIDwpbqw/6X0SbnpnpjY8WPGK75MQTxIJD1hmCJaE9SGUIRD4lhb
+         ej3M9BwllA92meFxi+L5GAx3yxSjP+aMshGQkRxGiniE/Y2dM1h6zXtCHfk3Oa2gQU17
+         8/7w==
+X-Forwarded-Encrypted: i=1; AJvYcCVGahqrxTslA88RMmsdQLMtG7fcedWbahwhlZxwvyTdE4KbyRHugHPfdlWo2YAtXlQoCBPaP1vtUlraeynaSad2rhRXI9SQfIXWTdNM
+X-Gm-Message-State: AOJu0Yy78/BGYA/mtrC3B2KILooMJ9dr30Ueaa9Zq92LnMR4OZdaU9ut
+	shijuGFkGkov6Qy1tah90BQaZZ8AOK7qxuD3cr5yB2kLM8i/HcBYeRCa4uWtS++I9YFuwJ5hQHW
+	eQlD68MeH+bfaPdmwD7kQVsFKO9WCVX10xP957w==
+X-Google-Smtp-Source: AGHT+IEt7Kj+/hZ+wzmZoPbmULWhhsnEm62dhB8EKpEyKJk/XCww+qHhpHGoDPo0BmN3s0+4ysCzQ+Am+6SRT3YGSYI=
+X-Received: by 2002:a25:850e:0:b0:dc6:9c4f:9e79 with SMTP id
+ w14-20020a25850e000000b00dc69c4f9e79mr1345468ybk.38.1707564614467; Sat, 10
+ Feb 2024 03:30:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Stephen Boyd <swboyd@chromium.org>
-Cc: linux-usb@vger.kernel.org, Pin-yen Lin <treapking@chromium.org>, 
- Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
- chrome-platform@lists.linux.dev, devicetree@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Douglas Anderson <dianders@chromium.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Matthias Kaehlcke <mka@chromium.org>, patches@lists.linux.dev, 
- maciek swiech <drmasquatch@google.com>
-In-Reply-To: <20240210070934.2549994-4-swboyd@chromium.org>
-References: <20240210070934.2549994-1-swboyd@chromium.org>
- <20240210070934.2549994-4-swboyd@chromium.org>
-Message-Id: <170756458668.4188811.2636543966305409757.robh@kernel.org>
-Subject: Re: [PATCH 03/22] dt-bindings: usb: Add downstream facing ports to
- realtek binding
+References: <20240206114745.1388491-1-quic_kriskura@quicinc.com>
+ <20240206114745.1388491-4-quic_kriskura@quicinc.com> <23824242-1b37-4544-ae9a-0a5a0582580e@linaro.org>
+ <CAA8EJpqbXvKMQktGsxMFJnR+fXoOz8hFmm+E3ROPTjjiD0QLvg@mail.gmail.com>
+ <6q2ocvrujbli42rjddflyol74xianr7j47jwcgdnnmwjanv25d@uw2da7zulqqd>
+ <CAA8EJpr6k8c5C54S9xxQgZvd9NYFoxi5qQrOTz2AMrp0xeZZpw@mail.gmail.com>
+ <baw3wxbdvzpkqqb6a7iut2wpt6jgzyqii5uyfkzptzt4ryjvao@4tpee6nqup5w> <b5c25274-9af0-4b3e-ade7-9a55d3cecd29@quicinc.com>
+In-Reply-To: <b5c25274-9af0-4b3e-ade7-9a55d3cecd29@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 10 Feb 2024 13:30:03 +0200
+Message-ID: <CAA8EJpqYBQnQRhRLqpOv5Ebdg_8gx0iTG=jWxkU7jy2pz5y8PA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sa8540-ride: Enable first port of
+ tertiary usb controller
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc: Andrew Halaney <ahalaney@redhat.com>, neil.armstrong@linaro.org, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+
+On Sat, 10 Feb 2024 at 12:44, Krishna Kurapati PSSNV
+<quic_kriskura@quicinc.com> wrote:
+>
+> > Krishna, when you make v2 can you update the wording about the USB 2.0
+> > mux? Maybe something like "which by default on boot is selected to mux
+> > to the external port on the board (with the other option being a test
+> > point)." instead of the wording I originally had? That way the
+> > information Dmitry requested here is easily accessible in the future.
+> >
+> >>
+> >>>
+>
+> [...]
+>
+> >>>>>>    };
+> >>>>>
+> >>>>> Isn't gpio-hog the preferred way to describe that ?
+> >>>>
+> >>>> That depends. As this pinctrl describes board configuration, I'd agree
+> >>>> with Neil.
+> >>>
+> >>> I unfortunately don't have the experience with gpio-hog to weigh in
+> >>> here, but wouldn't be opposed to Krishna switching it if that's what's
+> >>> recommended for this type of thing.
+> >>
+> >> Quoting gpio.txt:
+> >>
+> >> The GPIO chip may contain GPIO hog definitions. GPIO hogging is a mechanism
+> >> providing automatic GPIO request and configuration as part of the
+> >> gpio-controller's driver probe function.
+> >>
+> >> See sdm845-pinctrl.yaml for an example of the gpio-hog node.
+> >
+> > Thanks, that seems like the way to go. Krishna please take note of this
+> > for v2!
+> >
+>
+> Hi Andrew,
+>
+>   Can you help test the following patch. It is just an add-on to your
+> original one. I don't have a SA8540P Ride at the moment and getting one
+> might take time. Incase you can confirm this patch is working. I can
+> push v2 of this series.
+>
+>
+> diff --git
+> a/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
+> b/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
+> index ed344deaf8b9..aa42ac5a3197 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
+> @@ -36,6 +36,10 @@ patternProperties:
+>               $ref: "#/$defs/qcom-sc8280xp-tlmm-state"
+>           additionalProperties: false
+>
+> +  "-hog(-[0-9]+)?$":
+> +    required:
+> +      - gpio-hog
+> +
+>   $defs:
+>     qcom-sc8280xp-tlmm-state:
+>       type: object
+> diff --git a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> index b04f72ec097c..aa0cec0b4cc2 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> +++ b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> @@ -503,6 +503,18 @@ &usb_2_qmpphy0 {
+>          status = "okay";
+>   };
+>
+> +&usb_2 {
+> +       pinctrl-0 = <&usb2_en_state>;
+> +       pinctrl-names = "default";
+> +
+> +       status = "okay";
+> +};
+> +
+> +&usb_2_dwc3 {
+> +       phy-names = "usb2-port0", "usb3-port0";
+> +       phys = <&usb_2_hsphy0>, <&usb_2_qmpphy0>;
+> +};
+> +
+>   &xo_board_clk {
+>          clock-frequency = <38400000>;
+>   };
+> @@ -655,4 +667,19 @@ wake-pins {
+>                          bias-pull-up;
+>                  };
+>          };
+> +
+> +       usb2-en-hog {
+> +               gpio-hog;
+> +               gpios = <24 GPIO_ACTIVE_LOW>;
+> +               output-low;
+> +       };
+> +
+> +       usb2_en_state: usb2-en-state {
+
+If you are using gpio-hog, you don't need this state. The pinctrl /
+gpio core will use the hog instead.
+
+> +               /* TS3USB221A USB2.0 mux select */
+> +               pins = "gpio24";
+> +               function = "gpio";
+> +               drive-strength = <2>;
+> +               bias-disable;
+> +               output-low;
+> +       };
+>
+>
+> Regards,
+> Krishna,
 
 
-On Fri, 09 Feb 2024 23:09:14 -0800, Stephen Boyd wrote:
-> Add a graph with 4 output endpoints to this hub binding to support the
-> scenario where a downstream facing port is connected to a device that
-> isn't a connector or a USB device with a VID:PID. This will be used to
-> connect downstream facing ports to USB type-c switches so the USB
-> superspeed and high speed lanes can be put onto USB connectors.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> Cc: Conor Dooley <conor+dt@kernel.org>
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Cc: <linux-usb@vger.kernel.org>
-> Cc: <devicetree@vger.kernel.org>
-> Cc: Pin-yen Lin <treapking@chromium.org>
-> Cc: maciek swiech <drmasquatch@google.com>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  .../bindings/usb/realtek,rts5411.yaml         | 50 +++++++++++++++++++
->  1 file changed, 50 insertions(+)
-> 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dts:32.21-31: Warning (reg_format): /example-0/usb/hub@1/device@2:reg: property has invalid length (4 bytes) (#address-cells == 2, #size-cells == 1)
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dtb: Warning (pci_device_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dtb: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dtb: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dtb: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dtb: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dts:30.26-33.19: Warning (avoid_default_addr_size): /example-0/usb/hub@1/device@2: Relying on default #address-cells value
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dts:30.26-33.19: Warning (avoid_default_addr_size): /example-0/usb/hub@1/device@2: Relying on default #size-cells value
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dtb: Warning (unique_unit_address_if_enabled): Failed prerequisite 'avoid_default_addr_size'
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dts:43.23-50.19: Warning (graph_port): /example-0/usb/hub@2/ports: graph port node name should be 'port'
-Documentation/devicetree/bindings/usb/realtek,rts5411.example.dts:46.28-49.23: Warning (graph_endpoint): /example-0/usb/hub@2/ports/port@0: graph endpoint node name should be 'endpoint'
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240210070934.2549994-4-swboyd@chromium.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- 
+With best wishes
+Dmitry
 
