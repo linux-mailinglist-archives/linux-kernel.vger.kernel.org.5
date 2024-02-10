@@ -1,138 +1,118 @@
-Return-Path: <linux-kernel+bounces-60473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA27C850567
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:47:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1623585056A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 17:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCA541C2402E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:47:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB17E285BBD
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 16:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E7F5C909;
-	Sat, 10 Feb 2024 16:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I3zLzifv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FB35CDE8;
+	Sat, 10 Feb 2024 16:46:57 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3F95C8E2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C9A53815;
 	Sat, 10 Feb 2024 16:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707583614; cv=none; b=OxzdQVyHKRxYPvsKK2wNj2reR89B1fxJdcgJIGzMeeJ5Te2a5+vtJOtTB1NdTCi9JBXqMHXO8PUMTTOg9PC42OpolrJYRwPFnZOHA3q1fi2g3fvjMVrHxZ9cxUg/a4eWijkevVrAecjTEgojOhSrF6ia9aiMIFrdDuy8X+wusdI=
+	t=1707583617; cv=none; b=l/WoGhSvajoaTPh1G/tg+ARMwI2x35Jf9T7+coTFq5OXTfEeSDKnIzqJRVOgox5k68flzRhSw3NuLNt+FXI+C1W/jPy6mMEaOkRSguxkdN2YkZ9zNN34hHpltGGC1WPXUHhaCFccHSFhAUPUB1HCJCu+3Dx3D/QGFNa5BHhlfYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707583614; c=relaxed/simple;
-	bh=3XLFL1ro5i0dI0fsCV0D+QJ/wvNwCKeAITScA7QxGRo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BHc4Ry5vgqRKrMa9aFYYmIYNoWdrtJRkTufQuh9m7JlQYMHF5FgN+3xOMOBrVxlQhOpCrPK/1scJEBn5JiIlcsp3AiPIe33jDWT13ujoJHlihbLk+zEcgQLpdr5Ae4AnhYI+3HMkKJHC5QmsbLKGLob/bYqdTn7pUfzdZsRENSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I3zLzifv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16861C433C7;
-	Sat, 10 Feb 2024 16:46:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707583613;
-	bh=3XLFL1ro5i0dI0fsCV0D+QJ/wvNwCKeAITScA7QxGRo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=I3zLzifvvXbdRWEhANCGAmbhDCJUTtnTroSEO+mveCKSTifkr1iWNNMkxB3fCPEcJ
-	 +A28YxSdeZXYqFBOqMla3/KlT70zceA8dd8DYPqdGdPlkZSuLAlBdlcP2/mdUx9F1Q
-	 BNWeP+WKQKWL9oHig2vo5grFKS+vy577NmGzKu/sQYLydMBjcnSVg9aCXk9138JlaQ
-	 H9RdyESooTeE/ICtorve0n/nJMsI0UtAV90fsShKLGkx7zFsUOwH4s8ChR08pS1oMu
-	 ctF/8isL7rc6xEQgr1jrfJ/I/JtslsWnbrETvXm+u8ZjK9qVy95x380BnnKZYj489/
-	 pIzanpGLPmVTQ==
-Date: Sat, 10 Feb 2024 16:46:41 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Naresh Solanki <naresh.solanki@9elements.com>, Peter Rosin
- <peda@axentia.se>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- mazziesaccount@gmail.com, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] dt-bindings: iio: afe: voltage-divider: Add
- io-channel-cells
-Message-ID: <20240210164641.52631ce6@jic23-huawei>
-In-Reply-To: <20240206-washboard-sustained-990e97d86d78@spud>
-References: <20240206105502.648255-1-naresh.solanki@9elements.com>
-	<20240206-washboard-sustained-990e97d86d78@spud>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707583617; c=relaxed/simple;
+	bh=LAPzHF/wrID+WV98xjGsBm9F4FPvNWo66tnWoA0LJTk=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=OyH8YtZO9iAVQN8Fwgqo7fxn8NBB0YcAQbv1z0gUhTnwZzzso2HmTARI7MdluaC5ziPf3qiZ1X1VussvSYcgnXIhkXyyYqWtoSi57tAD0nJGKv8/wuOrr3cpaTh+73BEzFmoqBvrlFmpSuX8vidNKT0tPy02GWAmxYEJnzQvtw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.86.126) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 10 Feb
+ 2024 19:46:45 +0300
+Subject: Re: [RFC PATCH net-next v2 4/7] net: ravb: Always update error
+ counters
+To: Paul Barker <paul.barker.ct@bp.renesas.com>, "David S . Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+CC: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Wolfram Sang
+	<wsa+renesas@sang-engineering.com>, <netdev@vger.kernel.org>,
+	<linux-renesas-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240206091909.3191-1-paul.barker.ct@bp.renesas.com>
+ <20240206091909.3191-5-paul.barker.ct@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <c58ab319-222b-5ab0-0924-7774a473e276@omp.ru>
+Date: Sat, 10 Feb 2024 19:46:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20240206091909.3191-5-paul.barker.ct@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch02.omp.ru (10.188.4.13) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/10/2024 16:34:25
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 183344 [Feb 10 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.126 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.126 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.86.126
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/10/2024 16:39:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 2/10/2024 2:13:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On Tue, 6 Feb 2024 15:22:29 +0000
-Conor Dooley <conor@kernel.org> wrote:
+On 2/6/24 12:19 PM, Paul Barker wrote:
 
-> On Tue, Feb 06, 2024 at 04:25:01PM +0530, Naresh Solanki wrote:
-> > Enable the voltage divider to both receive and provide measurement
-> > services by adding #io-channel-cells.
-> > 
-> > This is especially valuable in scenarios where an ADC has an analog
-> > frontend, like a voltage divider, and obtaining its raw value isn't
-> > interesting. It is desired to get the real voltage before the voltage
-> > divider.
-> > 
-> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>  
+> The error statistics should be updated each time the poll function is
+> called, even if the full RX work budget has been consumed. This prevents
+> the counts from becoming stuck when RX bandwidth usage is high.
 > 
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> This also ensures that error counters are not updated after we've
+> re-enabled interrupts as that could result in a race condition.
 > 
-> Thanks for adding the example. I have one comment about the wording, cos
-> the last sentence doesn't really make sense without something referring
-> back to the scenario you describe.
+> Also drop an unnecessary space.
 > 
-> > ---
-> >  .../devicetree/bindings/iio/afe/voltage-divider.yaml  | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-> > index dddf97b50549..fd3c511e1beb 100644
-> > --- a/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
-> > @@ -39,6 +39,17 @@ properties:
-> >      description: |
-> >        Channel node of a voltage io-channel.
-> >  
-> > +  '#io-channel-cells':
-> > +    description:
-> > +      In addition to consuming the measurement services of a voltage
-> > +      output channel, the voltage divider can act as a provider of
-> > +      measurement services to other devices. This is particularly
-> > +      useful in scenarios wherein an ADC has an analog frontend,
-> > +      such as a voltage divider, and then consuming its raw value
-> > +      isn't interesting.  
-> 
-> > It is desired to get the real voltage
-> > +      before the voltage divider.  
-> 
-> "In this case, the voltage before the divider is desired".
-> 
-> Perhaps Jonathan can make that change, provided you are okay with it.
-I've made the change and applied this patch. Given it will only initially
-be pushed out for 0-day to take a look at it, feel free to shout if you'd
-prefer different wording from Conor's suggestion.
+> Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
 
-Thanks,
+   Definitely looks like a bug fix...
 
-Jonathan
+[...]
 
-> 
-> Cheers,
-> Conor.
-> 
-> > +    const: 1
-> > +
-> >    output-ohms:
-> >      description:
-> >        Resistance Rout over which the output voltage is measured. See full-ohms.
-> > 
-> > base-commit: 99bd3cb0d12e85d5114425353552121ec8f93adc
-> > -- 
-> > 2.42.0
-> >   
-
+MBR, Sergey
 
