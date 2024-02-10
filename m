@@ -1,106 +1,347 @@
-Return-Path: <linux-kernel+bounces-60575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B9B3850742
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:15:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56247850745
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:25:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8B52B21C2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:15:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C48B11F24491
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 23:25:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00EDB5FEF7;
-	Sat, 10 Feb 2024 23:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6014B5FEF3;
+	Sat, 10 Feb 2024 23:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SxDJ+Uav"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l3HS4gjj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46AF5FDD7
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 23:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0B447F4B;
+	Sat, 10 Feb 2024 23:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707606921; cv=none; b=mQA/LdvAnr+x4I1ECPCUlVIupoGyEBXifzqgKkL8b+blQKs5Jdx501WtrAaWH7VVxETm1onwtmpMPudXJF+DVc/w3gOV2RjQj2NCPp/LhWtNU3Mi88qRBx5dZ7ud98X4g12EDBkTfemx2Psz7VcJLROmSZu7t/zlHKcoJ/xL6pA=
+	t=1707607529; cv=none; b=eZs0KfvTPCUa68+VGQgi92SahBJHhE2nRzlD6I7kM5c1qAHc5JF6uf6SBRekjQuFAx60kFedsOdSTCJu1IhRt5EHADB4TO71p0OfBDJEF1vCHExB2+/nANwYRSj9KLKs7HSGmrkJ/gd6GLK5XNUVET5iHiR3LQaDEcc1OfdTeVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707606921; c=relaxed/simple;
-	bh=/3YzkBLodMNUrjnwjELpDTo92n8iOXA1+uqd9b5AE1c=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=dw9iGBeblLBqeURhYeF+FjygXAEch3CZyWf7uzZnLjsmL4llRkOK3gxEcxB/lr08LZ5d1NjuTy4TZYP7Nbft38zwnZff8K6s4zk7J8uY6VQYhNxbhYd9Rtaq3ksJenSBbp3ZevoRIxL6gr6B3dLCKw8+JEbArJ7KlzBGMTzheRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SxDJ+Uav; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b267bf11so2580777276.2
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 15:15:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707606919; x=1708211719; darn=vger.kernel.org;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=X74cf6T8C4bXDHMgSvTgHCjENEzriqu7nAo5Mgz+MM4=;
-        b=SxDJ+Uav1JT1xkr11P8EWEEH4aiXtqA/CIPkKFuknE8oeTqX2JHCgSUINDuODtOmpq
-         pObCE5xGnFRkDYuBH9S0dR8GJtn58SBdpwz711//joxiINoHdiESNXrSXHHNQPmmPSGr
-         noebh6eRIBWeXMnrPEIJCsjCYa/MewornumtwWDCwKZvuTacIdfkiYrs+GFLv/uxpTjM
-         /sRHtp6Pv0BKDFoXrWNVgASVNLj5AA53fwHqWqSSjb2J5v7vwjO6Cn2swRXggb5tuaFt
-         J7yxGEWnqt0IBWXbzpnP4uG0J9DZ0Yi1mzweIxc6PXf2Y1RUcfwXFymIyTyG4oqiRxuA
-         MDjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707606919; x=1708211719;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=X74cf6T8C4bXDHMgSvTgHCjENEzriqu7nAo5Mgz+MM4=;
-        b=b5NTK1lXE/Q4KAPi/KHS7wBGiUuqhuwZx/nDwniXnO0wLvbvpBg9d3jW31r8R3JtIn
-         ttYLme2xERZ5coGhJAxKWWZmH8vT/OjwgSI5LCXaR547zeI41mLLPRNQphmbrfq2NGhS
-         ZSrjf8nVyC8VxR/Dsi65GGuF0bacIpWx/h5iLyo/syVmbb87DmmzThxt4RWeBuTULRNs
-         UqSX1VZ3s5eHOPlFgnCXF6wVHWc4VfSLBR3AsRKiqi1AFCtxyfkDd+gZEna9qEFqB8tJ
-         136RJO8v9DIymIlRPWAwJCx+0kfeIcD3FLqvMHcS3IenwLkHpepfAUe5UXxPS7LxH8XV
-         0jRQ==
-X-Gm-Message-State: AOJu0YwDDjL+vT6JOhNMh5G4OH8qGBmEdY0YUJElCBv5HC4p/m9/Rg47
-	766jalRyZjEHkYW3NTH59aPlKvg3j6pcB1FNPrDCqckGjYfhGbbrJRkQVTD5cORUNDWXerRYUSf
-	e0f8HKNsk2jhNaA==
-X-Google-Smtp-Source: AGHT+IH2Adref4+yil6FrbE6d/7iC18rjqbq852WHMSpdwSZBvXZFSyEt1R4atXsHCbl3PmMo9FKTKBDAQtPReQ=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:80ad:1a11:8cc3:735])
- (user=saravanak job=sendgmr) by 2002:a05:6902:2213:b0:dc6:ebd4:cca2 with SMTP
- id dm19-20020a056902221300b00dc6ebd4cca2mr118406ybb.11.1707606918832; Sat, 10
- Feb 2024 15:15:18 -0800 (PST)
-Date: Sat, 10 Feb 2024 15:15:12 -0800
-Message-Id: <20240210231513.111117-1-saravanak@google.com>
+	s=arc-20240116; t=1707607529; c=relaxed/simple;
+	bh=hHrH7ONm5hLvZSf99CN4UEHSezRXejAosEIyaVObVRA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u3sF6W/PJywq9PIKcGmxJrgB/E0USUOyNuO4tr4tjxrAGyeL/MlU4vsiE2zTek+z39SlRGnpIc8fRkIS8w4hjrb4ob05H+2LidhNgdCHgaD3OmrBcFw+FoxXIlGgnAHp8Wn8ulH79S+VVGrOs/5lw11Y2OExKkuLILMpOcMnngc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l3HS4gjj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D09E5C433C7;
+	Sat, 10 Feb 2024 23:25:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707607528;
+	bh=hHrH7ONm5hLvZSf99CN4UEHSezRXejAosEIyaVObVRA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=l3HS4gjjvmKBDFICblYdf/mCDKd2B6n23QNBS31VJ4psrlIcyluRH9pJs6YZpFr7Q
+	 Cb8FSTkBaDfhE7VkHeozOC7Zt2lvRBzzx4VP0q/V3UYBlQ44N53Ta8rYKnQiHJKc9A
+	 bfsnEi01Sxdyyp21hQVr30ObR6xqQrXMJL2f5MlZBKGtMSEFafKvOQAiYV7LMNhxkk
+	 VetD8ogNI5y2jttNnpj9oCjPg33z4A6Zpu2nGJx1JGrb/SoAsmDXY/p7DT4vbAbRF/
+	 PE+IKsyyyIUFFFAdU05S6C+sEzTPDH9jEG0SwxFUJ6I0yVQNrSNR9chOvGAu13/Tjm
+	 sqJybCZMHcD0w==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51178bbb5d9so1835786e87.2;
+        Sat, 10 Feb 2024 15:25:28 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVC1D7TV19A3kUt7RdMZT13NHnO71taTxSF4e1Jr7CwPT5Eenn0Q74SCMADRDPsJ7pnMVGb7bJp5BCPNol68k6KE1ewgA6Ovpy6HM0f
+X-Gm-Message-State: AOJu0YxeC1W6YhAcDcTOZ2ZsCFCYKQpzqrOd+88RR7rFuhWw+KgvSmic
+	kC8vPK1VmyjrC44pV13Z7jh9BvaBWQSfJNcXzYNYRyNi84x4J3FJ6b/m7DnwnO0Xh/187EjRJ56
+	1P87oCPiWRsK12Mndgk8/aH+zFC0=
+X-Google-Smtp-Source: AGHT+IGtWFeHRbAlIEu+cmwmEGyo32x4JVI+cDeJ2RCzheduLrA1ihhqotv5lI0I2KZScdx9q7GJ07d/0IY5jOXiYEA=
+X-Received: by 2002:a05:6512:308d:b0:50e:a789:dd3b with SMTP id
+ z13-20020a056512308d00b0050ea789dd3bmr2628377lfd.1.1707607527331; Sat, 10 Feb
+ 2024 15:25:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Subject: [PATCH] MAINTAINERS: of: Add Saravana Kannan
-From: Saravana Kannan <saravanak@google.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Saravana Kannan <saravanak@google.com>, devicetree@vger.kernel.org, 
-	kernel-team@android.com, linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+References: <20240102020405.32701-1-sunying@isrc.iscas.ac.cn>
+In-Reply-To: <20240102020405.32701-1-sunying@isrc.iscas.ac.cn>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sun, 11 Feb 2024 08:24:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATCtoCEs4-S6kgGCH8XRkX+sKT3zuP-awdFJr+E1bkZww@mail.gmail.com>
+Message-ID: <CAK7LNATCtoCEs4-S6kgGCH8XRkX+sKT3zuP-awdFJr+E1bkZww@mail.gmail.com>
+Subject: Re: [PATCHv3 next] kconfig: add dependency warning print about
+ invalid values in verbose mode
+To: sunying@isrc.iscas.ac.cn
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	pengpeng@iscas.ac.cn, Siyuan Guo <zy21df106@buaa.edu.cn>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Adding myself as a second maintainer for Open Firmware and Device Tree
-to help Rob out with reviews and other maintainer work.
+"in verbose mode" is stale.
 
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
-Discussed this with Rob.
+Please rephrase the subject.
 
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b01f890ec789..45c6c13b4edf 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16359,6 +16359,7 @@ F:	drivers/infiniband/ulp/opa_vnic
- 
- OPEN FIRMWARE AND FLATTENED DEVICE TREE
- M:	Rob Herring <robh@kernel.org>
-+M:	Saravana Kannan <saravanak@google.com>
- L:	devicetree@vger.kernel.org
- S:	Maintained
- W:	http://www.devicetree.org/
--- 
-2.43.0.687.g38aa6559b0-goog
 
+
+On Tue, Jan 2, 2024 at 11:11=E2=80=AFAM <sunying@isrc.iscas.ac.cn> wrote:
+>
+> From: Ying Sun <sunying@isrc.iscas.ac.cn>
+>
+> Warning in verbose mode about incorrect causes and
+>  mismatch dependency of invalid values to help users correct them.
+
+Same here, "verbose mode" does not exist in this patch.
+
+
+
+
+>
+> Detailed warning messages are printed only when the environment variable
+>  is set like "KCONFIG_WARN_CHANGED_INPUT=3D1".
+> By default, the current behavior is not changed.
+>
+> Signed-off-by: Siyuan Guo <zy21df106@buaa.edu.cn>
+> Signed-off-by: Ying Sun <sunying@isrc.iscas.ac.cn>
+> ---
+> v2 -> v3:
+> * Fixed warning message that mess up the ncurses display.
+> * Fixed memory leak where str_new() was called but str_free() was not use=
+d.
+> * Integrated the code to avoid excessive dispersion.
+> * Use the environment variable KCONFIG_WARN_CHANGED_INPUT as the switch
+
+
+
+
+This checker prints wrong reports.
+
+
+I just attached one test case.
+
+
+
+[test Kconfig]
+
+config MODULES
+       def_bool y
+       modules
+
+config FOO
+       tristate "foo"
+       depends on BAR
+
+config BAR
+       tristate "bar"
+
+config BAZ
+       tristate "baz"
+       select FOO
+
+
+[test .config]
+
+CONFIG_FOO=3Dm
+# CONFIG_BAR is not set
+CONFIG_BAZ=3Dy
+
+
+
+[test command]
+
+
+$ KCONFIG_WARN_CHANGED_INPUT=3D1 make  olddefconfig
+
+
+
+[result]
+
+
+Kconfig:8:warning: 'MODULES' set to y due to option constraints
+
+
+WARNING: unmet direct dependencies detected for FOO
+  Depends on [n]: BAR [=3Dn]
+  Selected by [y]:
+  - BAZ [=3Dy]
+Kconfig:12:warning: 'FOO' set to n for it unmet direct dependencies
+ Depends on [n]: BAR [=3Dn]
+
+
+
+$ cat .config
+#
+# Automatically generated file; DO NOT EDIT.
+# Linux/x86 6.8.0-rc3 Kernel Configuration
+#
+CONFIG_MODULES=3Dy
+CONFIG_FOO=3Dy
+# CONFIG_BAR is not set
+CONFIG_BAZ=3Dy
+
+
+
+
+
+
+
+The first report
+
+  Kconfig:8:warning: 'MODULES' set to y due to option constraints
+
+should not be printed.
+
+CONFIG options without prompt can be omitted.
+
+
+
+
+The second report
+
+  Kconfig:12:warning: 'FOO' set to n for it unmet direct dependencies
+
+is completely wrong.
+
+
+
+CONFIG_FOO was changed to 'y' due to the select.
+
+
+
+
+
+One more thing,
+
+Add
+export KCONFIG_WARN_CHANGED_INPUT=3D1
+
+to scripts/kconfig/Makefile
+
+
+
+
+> v1 -> v2:
+> * Reduced the number of code lines by refactoring and simplifying the log=
+ic.
+> * Changed the print "ERROR" to "WARNING".
+> * Focused on handling dependency errors: dir_dep and rev_dep, and range e=
+rror.
+>   - A downgrade from 'y' to 'm' has be warned.
+>   - A new CONFIG option should not be warned.
+>   - Overwriting caused by default value is not an error and is no longer =
+printed.
+> * Fixed style issues.
+> ---
+> ---
+>  scripts/kconfig/confdata.c | 76 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+>
+> diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+> index f1197e672431..352774928558 100644
+> --- a/scripts/kconfig/confdata.c
+> +++ b/scripts/kconfig/confdata.c
+> @@ -195,6 +195,52 @@ static void conf_message(const char *fmt, ...)
+>         va_end(ap);
+>  }
+>
+> +static void conf_warn_unmet_rev_dep(struct symbol *sym)
+> +{
+> +       struct gstr gs =3D str_new();
+> +       char value =3D 'n';
+> +
+> +       switch (sym->curr.tri) {
+> +       case no:
+> +               value =3D 'n';
+> +               break;
+> +       case mod:
+> +               sym_calc_value(modules_sym);
+> +               value =3D (modules_sym->curr.tri =3D=3D no) ? 'n' : 'm';
+> +               break;
+> +       case yes:
+> +               value =3D 'y';
+> +       }
+> +
+> +       str_printf(&gs,
+> +               "'%s' set to %c for it is selected\n",
+> +               sym->name, value);
+> +       expr_gstr_print_revdep(sym->rev_dep.expr, &gs, yes,
+> +                               " Selected by [y]:\n");
+> +       expr_gstr_print_revdep(sym->rev_dep.expr, &gs, mod,
+> +                               " Selected by [m]:\n");
+> +
+> +       conf_warning("%s", str_get(&gs));
+> +       str_free(&gs);
+> +}
+> +
+> +static void conf_warn_dep_error(struct symbol *sym)
+> +{
+> +       struct gstr gs =3D str_new();
+> +
+> +       str_printf(&gs,
+> +               "'%s' set to n for it unmet direct dependencies\n",
+> +               sym->name);
+> +
+> +       str_printf(&gs,
+> +               " Depends on [%c]: ",
+> +               sym->dir_dep.tri =3D=3D mod ? 'm' : 'n');
+> +       expr_gstr_print(sym->dir_dep.expr, &gs);
+> +
+> +       conf_warning("%s\n", str_get(&gs));
+> +       str_free(&gs);
+> +}
+> +
+>  const char *conf_get_configname(void)
+>  {
+>         char *name =3D getenv("KCONFIG_CONFIG");
+> @@ -568,6 +614,36 @@ int conf_read(const char *name)
+>                         continue;
+>                 conf_unsaved++;
+>                 /* maybe print value in verbose mode... */
+> +               if (getenv("KCONFIG_WARN_CHANGED_INPUT") && (sym->prop)) =
+{
+> +                       conf_filename =3D sym->prop->file->name;
+> +                       conf_lineno =3D sym->prop->menu->lineno;
+> +
+> +                       switch (sym->type) {
+> +                       case S_BOOLEAN:
+> +                       case S_TRISTATE:
+> +                               if (sym->def[S_DEF_USER].tri !=3D sym_get=
+_tristate_value(sym)) {
+> +                                       if (sym->dir_dep.tri < sym->def[S=
+_DEF_USER].tri)
+> +                                               conf_warn_dep_error(sym);
+> +                                       else if (sym->rev_dep.tri > sym->=
+def[S_DEF_USER].tri)
+> +                                               conf_warn_unmet_rev_dep(s=
+ym);
+> +                                       else
+> +                                               conf_warning("'%s' set to=
+ %s due to option constraints\n",
+> +                                                       sym->name, sym_ge=
+t_string_value(sym));
+> +                               }
+> +                               break;
+> +                       case S_INT:
+> +                       case S_HEX:
+> +                       case S_STRING:
+> +                               if (sym->dir_dep.tri =3D=3D no && sym_has=
+_value(sym))
+> +                                       conf_warn_dep_error(sym);
+> +                               else
+> +                                       conf_warning("'%s' set to %s due =
+to option constraints\n",
+> +                                                       sym->name, sym_ge=
+t_string_value(sym));
+> +                               break;
+> +                       default:
+> +                               break;
+> +                       }
+> +               }
+>         }
+>
+>         for_all_symbols(i, sym) {
+> --
+> 2.43.0
+>
+>
+
+
+--
+Best Regards
+
+
+Masahiro Yamada
 
