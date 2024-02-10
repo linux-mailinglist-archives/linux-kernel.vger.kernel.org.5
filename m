@@ -1,38 +1,39 @@
-Return-Path: <linux-kernel+bounces-60334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4CE985034C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:39:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90FCC85034E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 08:40:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2409F1C2244A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:39:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52C3E28329F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 07:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA6E2B9CA;
-	Sat, 10 Feb 2024 07:39:07 +0000 (UTC)
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1401B7472;
-	Sat, 10 Feb 2024 07:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695022E632;
+	Sat, 10 Feb 2024 07:40:25 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4678E2B9D0;
+	Sat, 10 Feb 2024 07:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707550747; cv=none; b=aQ0hpwVXtF/iGx11X27tclNpndkeyjz5UFInpg4KiVjZzEWedT+2cbKBrdS7OC/5xK59d+yF3V2uqaltYn8RwLc0D1C4ptsWygef/2YxSvWdA002ofuDbhRWXYcz8arY1UenOiGBcsmgLStWFfb+fCqXBgaqd+9Xh8JI0aMLIMI=
+	t=1707550825; cv=none; b=RfzZ0mjWxVwhLBhIxqcn9Gl1Q9F/IthGiADwuStyRFhcLYGubQiXXZ9u20+5UK8n7sgQIfD6nLQpxr7cIewaexmbFA7R7Fldz1FnVOX9+sgVsXmtJ4U7327yZt7SLvLxHOP4/u6H4PLZ4weBTfGcf0t4PLQTDeILWoebxtd+Udg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707550747; c=relaxed/simple;
-	bh=46eoq7MhMARovYT7U9qx122WZ4h+fYnnHqT6CRXyX8M=;
+	s=arc-20240116; t=1707550825; c=relaxed/simple;
+	bh=+KkQP8rPRxFALZmaH1W8EE1iXXA0ldVNrbhffLjpYBo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oksI0OHQ9kC1DnH38h0uRyc1pWsIDPfQj0/5vZduM5AxZED+MYpeDz9LuF2bgDW2VFBgk6UAW61HIC2mzMumJHRTbTKiX3NOJ0bL2G0MgBdhRSXB3P1cWc7nLhKcg53irKXZMjHq3+sfXTqhgGjbydIf3/V0XvmSchKpvjIDdEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rYhwu-0000EU-UZ; Sat, 10 Feb 2024 08:38:56 +0100
-Message-ID: <04fc959a-4a50-4c84-88a5-fa0d79c008b3@leemhuis.info>
-Date: Sat, 10 Feb 2024 08:38:56 +0100
+	 In-Reply-To:Content-Type; b=Ez1gi0AhamDn3nmb89UhjrGJmjcmlElPz52N2UYZ4IMpAIUfi/EZYI/GHdHOiB2rMuJBRF0jb2kG6Rorvms1/j43JrHav+qF36vracRl43M8PkaoZOAcwBRawlKR48e+XePPT7xE9OfsH38Y0GmmyKkzxgTUe2WXmg0BqOrbakU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E250DA7;
+	Fri,  9 Feb 2024 23:41:02 -0800 (PST)
+Received: from [10.57.65.183] (unknown [10.57.65.183])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 027533F762;
+	Fri,  9 Feb 2024 23:40:18 -0800 (PST)
+Message-ID: <17c0b7a1-6ec2-4504-8287-f0fa111b9748@arm.com>
+Date: Sat, 10 Feb 2024 07:40:16 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -40,45 +41,89 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Revert "usb: typec: tcpm: fix cc role at port reset"
-Content-Language: en-US, de-DE
-To: Linux kernel regressions list <regressions@lists.linux.dev>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240117114742.2587779-1-badhri@google.com>
- <ZcVPHtPt2Dppe_9q@finisterre.sirena.org.uk>
-From: "Linux regression tracking #adding (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <ZcVPHtPt2Dppe_9q@finisterre.sirena.org.uk>
+Subject: Re: [PATCH] selftests/mm: Don't needlessly use sudo to obtain root in
+ run_vmtests.sh
+Content-Language: en-GB
+To: Mark Brown <broonie@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
+Cc: linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240209-kselftest-mm-check-deps-v1-1-19b09b151522@kernel.org>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240209-kselftest-mm-check-deps-v1-1-19b09b151522@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1707550745;17f83627;
-X-HE-SMSGID: 1rYhwu-0000EU-UZ
 
-On 08.02.24 23:01, Mark Brown wrote:
-> On Wed, Jan 17, 2024 at 11:47:42AM +0000, Badhri Jagan Sridharan wrote:
->> This reverts commit 1e35f074399dece73d5df11847d4a0d7a6f49434.
->>
->> Given that ERROR_RECOVERY calls into PORT_RESET for Hi-Zing
->> the CC pins, setting CC pins to default state during PORT_RESET
->> breaks error recovery.
+On 09/02/2024 20:21, Mark Brown wrote:
+> When opening yama/ptrace_scope we unconditionally use sudo to ensure we
+> are running as root, resulting in failures if running in a minimal root
+> filesystem where sudo is not installed. Since automated test systems will
+> typically just run all of kselftest as root (and many kselftests rely on
+> this for full functionality) add a check to see if we're already root and
+> only invoke sudo if not.
+
+I don't really see the point of this. run_vmtests.sh needs to be run as root;
+there are lots of operations that depend on it and most tests will fail if not
+root. So I think it would be much cleaner just to remove this instance sudo.
+
+The problem that I was referring to yesterday, about needing sudo was for this case:
+
+CATEGORY="mlock" run_test sudo -u nobody ./on-fault-limit
+
+Here, we are using sudo to deprivilege ourselves from root and run
+on-fault-limit as nobody. This is required because the test is checking an
+rlimit that is only enforced for normal users.
+
+Somebody on list was talking about skipping this test if sudo wasn't present a
+couple of weeks back. Not sure if that happened.
+
 > 
-> Between -rc2 and -rc3 I started seeing boot issues in mainline on
-> rk3399-roc-pc running arm64 defconfig, a bisection identified this patch
-> as having broken things.  The issues manifest as a hang while loading
-> modules from the initd, you can see a full boot log at:
+> Since I am unclear what the intended effect of the command being run is I
+> have not added any error handling for the case where we fail to obtain
+> root.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  tools/testing/selftests/mm/run_vmtests.sh | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+> index fe140a9f4f9d..c8ca830dba93 100755
+> --- a/tools/testing/selftests/mm/run_vmtests.sh
+> +++ b/tools/testing/selftests/mm/run_vmtests.sh
+> @@ -248,6 +248,17 @@ run_test() {
+>  
+>  echo "TAP version 13" | tap_output
+>  
+> +HAVE_ROOT=0
+> +if [ "$(id -u)" = "0" ]; then
+> +	AS_ROOT=
+> +	HAVE_ROOT=1
+> +elif [ "$(command -v sudo)" != "" ]; then
+> +	AS_ROOT=sudo
+> +	HAVE_ROOT=1
+> +else
+> +	echo # WARNING: Unable to run as root
+> +fi
+> +
+>  CATEGORY="hugetlb" run_test ./hugepage-mmap
+>  
+>  shmmax=$(cat /proc/sys/kernel/shmmax)
+> @@ -363,7 +374,8 @@ CATEGORY="hmm" run_test bash ./test_hmm.sh smoke
+>  # MADV_POPULATE_READ and MADV_POPULATE_WRITE tests
+>  CATEGORY="madv_populate" run_test ./madv_populate
+>  
+> -(echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope 2>&1) | tap_prefix
+> +# FIXME: What if we can't get root?
+> +(echo 0 | ${AS_ROOT} tee /proc/sys/kernel/yama/ptrace_scope 2>&1) | tap_prefix
+>  CATEGORY="memfd_secret" run_test ./memfd_secret
+>  
+>  # KSM KSM_MERGE_TIME_HUGE_PAGES test with size of 100
+> 
+> ---
+> base-commit: 445a555e0623387fa9b94e68e61681717e70200a
+> change-id: 20240209-kselftest-mm-check-deps-01a825e5fed4
+> 
+> Best regards,
 
-Thanks for the report. To be sure the issue doesn't fall through the
-cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-tracking bot:
-
-#regzbot ^introduced b717dfbf73e842d15174699fe2c6ee4fdde8a
-#regzbot title usb: typec: boot issues on rk3399-roc-pc due to revert
-#regzbot ignore-activity
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
 
