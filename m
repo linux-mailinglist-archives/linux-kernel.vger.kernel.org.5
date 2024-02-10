@@ -1,102 +1,127 @@
-Return-Path: <linux-kernel+bounces-60287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE0BA8502AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 06:39:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70F818502AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 06:46:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FB281F2504D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:39:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30E3E1F25F51
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 05:46:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED951173C;
-	Sat, 10 Feb 2024 05:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AD801173C;
+	Sat, 10 Feb 2024 05:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RzTE3mmK"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j9+M5HFU"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D79538B;
-	Sat, 10 Feb 2024 05:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC18149E18;
+	Sat, 10 Feb 2024 05:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707543584; cv=none; b=CzCs5JQGLYAb7uieGJO7zw4S8A2wZ156bTrK6fJrArlBjCmSaPzApnhW7b+jwgIaUYT1viX/h1akUFFfNYvtSK0IBZFr2CgLQhUNOdIwTis8hJNmQlnpec5piFUhAtKQDOBNeCRmt123D9RD+lHk8pgkV/lkBDklCQxfclisDNg=
+	t=1707543977; cv=none; b=JVaxQu4G3b+ETMRiZNpNYdOCZ35k7GByQsAAJvSJqWQR6CGPtPtJ1Z3ReWUf7/R4+gEhIjYIW+5zNwxleqEXnqFiCD3fgYwrztbKTn8UpbMT0h+ao+fJgM8HkDd3NZ6OAyYHff9R/WuHmyxqdrhJne8pbHiueBhBaJuam6Mc9hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707543584; c=relaxed/simple;
-	bh=ymS3THZPo/dGfmpHzhuCPt9BRs7X7mcRRvh0DplpSuQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aLC1HxC1bWjuOgrZISdULSa0rYmxPjW+QjV+zJzbF9CVDz0nVNkezL7gH5x2Ei2QaWndkpwK/ZStspV6VrDEb8BKn9HBCgTk3AYFI6vjwdoVYvZsK8cyqRrfn+u35wpntEpm5htFlEeKDqFa6PyuQ+O4cmkEmiTT6OhGr2zDU4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=RzTE3mmK; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=E+99tlygCzTff7/Lep6ynyrCUPd965OcPCGgKVbHlJI=; b=RzTE3mmKu17bVfIXNvYCTuq4CM
-	r/AZx+vIkZXY6ETgwEYbvgUYlmtv/Z25NkvtzyJY+HC0dJJLk7bsJPfNzbrt2ZqfBotLgBDzcCZAW
-	yhvXX5uo4a8lXsEfsaq8IJ15b9N0XdOF8M3BOnfU9VjL97DolXZvp6ngjbmoF7OvK6X3UWu6l2Z3z
-	t0DsWsRKwZ8leaZXaZbpz7j5GTeOsf6ktz4D2dl5FVcCRDv9jpiMYHcaZHm0oto/wBB0Fafk2rVkj
-	mJEOJmDOukQIJgHSScTODhlQugZ+DxjlzmPzg0W+Bpy6BhcPDjskjOtfNlpFpXv27SUg7lymVCo2H
-	BiB1CZyQ==;
-Received: from [50.53.50.0] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rYg5T-00000001Fdo-1cm8;
-	Sat, 10 Feb 2024 05:39:39 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Helge Deller <deller@gmx.de>,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH] fbdev/sh7760fb: allow modular build
-Date: Fri,  9 Feb 2024 21:39:38 -0800
-Message-ID: <20240210053938.30558-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707543977; c=relaxed/simple;
+	bh=MBf5Zzij0GH4HLOFPObi1GK+7rUimCuiRJZFiQNYFaQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Kvz1au9EZQ96d1YldyoRx4cn5uUX0aPz+NrJhYpPPhuxakmq5z5hYq2YBLdSsHr31D1SlYZ6gCBQumG7CaauPqwEf9pbPOtVOjw8gMSlLvlu1RhmZFX5jQrRTc6y5wwpAM/O1SwWyrvvDSOz3WQbHugCkqsio5K9YFDvxdOWjcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j9+M5HFU; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d0b750518bso22721581fa.0;
+        Fri, 09 Feb 2024 21:46:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707543974; x=1708148774; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nr/YtxF3BFNZRWNv3aGcSVFM6dTYAIJfY7M0G8cUw9Y=;
+        b=j9+M5HFU/7S4eYEH+AudB2+Ly2ZekQ3yZKqxsttKwUaUu4iWjkQhEU0XlhLbG7wv+g
+         UwSS19FPKTkEYsW38sM4JZ3n83eMQbe8lvqd6al9EeIJvHSGH4R3R9cjLDFkjRq15YuS
+         RMEEw8933iA+b8J4dku9MM9B6cuFgPvypGDw195EJnDtHLSn7kNTGA4plJmfX/QzYRlV
+         iYVVsva7zt3viryHCGrmbaUu/cqbXjZ3xRu8koZyCRa9GLX9lqjZ0g7yARu+/zf5Pewq
+         DsBCIx4ecgfHeDkGDZA4P1rBipgposniufjpg6xzw4amPuFu3h4O8Qsd4Shz1TajOLFX
+         39Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707543974; x=1708148774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Nr/YtxF3BFNZRWNv3aGcSVFM6dTYAIJfY7M0G8cUw9Y=;
+        b=q1VKOqi1myS8WQIX/spsX4EiB+KsSU8i4cJ3nuNV/MYlL/AtjN7dJd/hNm90UHfTd3
+         5eOXZAbkLFv1pkwJup4MU8vGogKLo8SiVagpQcu4rhmKxkppZb2FDSV8nGKQvAKRdtrf
+         dJNDh9txJ3LLhRDQLKuS+JcC4QHHUWX+UgFUfY+xAOAUXMIyGydGELODd4N7Qadt4+dr
+         jkBE9o5G4bpraWvO6w+MyZpijj9vxoTKWeGfz3W/1nc0pUaH0DjxbrtB8noxMc47s+hL
+         prYsYYqR7KeWehTndJ6XPHJ5cnwiGGNZT7PlMFjL+Hi0VVT0Tq0r0aKhnrmDB2jyF17p
+         suNQ==
+X-Gm-Message-State: AOJu0YzgG6LoBcioe93TMicTKCkLh6HSiU+0jKfOsnGjhVJMAdE8L5KS
+	J01CRXQyikr2rlSFuzZFyAGI3R/jxb0l2KSo5o9lGfOXw6P19IZTKmcRqo9kWMnySkkzHtTqZb8
+	aRVNdY0xQIZ0U6Yn5K5tZbdQ5STE=
+X-Google-Smtp-Source: AGHT+IERbHbSI2rDdP2RflyeCzz64n8ng6lhVYaUb7+Xq/lX3aXFdWdJpW24+zNjUi9SxE5r++8y5rHRrj8a3fGFDpU=
+X-Received: by 2002:a2e:9ad3:0:b0:2d0:e2d3:37a2 with SMTP id
+ p19-20020a2e9ad3000000b002d0e2d337a2mr570350ljj.2.1707543973804; Fri, 09 Feb
+ 2024 21:46:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <PH7PR20MB592590F74C734584DCF88D6CBF712@PH7PR20MB5925.namprd20.prod.outlook.com>
+In-Reply-To: <PH7PR20MB592590F74C734584DCF88D6CBF712@PH7PR20MB5925.namprd20.prod.outlook.com>
+From: Steve French <smfrench@gmail.com>
+Date: Fri, 9 Feb 2024 23:46:00 -0600
+Message-ID: <CAH2r5mue1Xgx+rotMta_Em03-E=wij-w_-i3eoj9rQsA-R9DPg@mail.gmail.com>
+Subject: Re: [PATCH] fs: smb: client: Reset password pointer to NULL
+To: Fullway Wang <fullwaywang@outlook.com>
+Cc: sfrench@samba.org, pc@manguebit.com, lsahlber@redhat.com, 
+	sprasad@microsoft.com, linux-cifs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, fullwaywang@tencent.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There is no reason to prohibit sh7760fb from being built as a
-loadable module as suggested by Geert, so change the config symbol
-from bool to tristate to allow that and change the FB dependency as
-needed.
+On Thu, Jan 18, 2024 at 1:44=E2=80=AFAM Fullway Wang <fullwaywang@outlook.c=
+om> wrote:
+>
+> ctx->password was freed but not reset to NULL, which may lead to double
+> free and secrets leak issues.
 
-Fixes: f75f71b2c418 ("fbdev/sh7760fb: Depend on FB=y")
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Javier Martinez Canillas <javierm@redhat.com>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
----
- drivers/video/fbdev/Kconfig |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+But no one else could use this pointer to double free this since it is
+allocated in this function, and exits a few lines after it is freed
+(and its parent is freed on the next line so the pointer could not be
+accessed either)
 
-diff -- a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
---- a/drivers/video/fbdev/Kconfig
-+++ b/drivers/video/fbdev/Kconfig
-@@ -1645,8 +1645,8 @@ config FB_COBALT
- 	select FB_IOMEM_HELPERS
- 
- config FB_SH7760
--	bool "SH7760/SH7763/SH7720/SH7721 LCDC support"
--	depends on FB=y && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
-+	tristate "SH7760/SH7763/SH7720/SH7721 LCDC support"
-+	depends on FB && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
- 		|| CPU_SUBTYPE_SH7720 || CPU_SUBTYPE_SH7721)
- 	select FB_IOMEM_HELPERS
- 	help
+
+> This is similar to CVE-2023-5345, which was fixed in commit e6e43b8.
+>
+> Signed-off-by: Fullway Wang <fullwaywang@outlook.com>
+> ---
+>  fs/smb/client/connect.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/smb/client/connect.c b/fs/smb/client/connect.c
+> index 3052a208c6ca..fb96a234b9b1 100644
+> --- a/fs/smb/client/connect.c
+> +++ b/fs/smb/client/connect.c
+> @@ -4028,6 +4028,7 @@ cifs_construct_tcon(struct cifs_sb_info *cifs_sb, k=
+uid_t fsuid)
+>  out:
+>         kfree(ctx->username);
+>         kfree_sensitive(ctx->password);
+> +       ctx->password =3D NULL;
+>         kfree(ctx);
+>
+>         return tcon;
+> --
+> 2.39.3 (Apple Git-145)
+>
+>
+
+
+--=20
+Thanks,
+
+Steve
 
