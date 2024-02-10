@@ -1,92 +1,94 @@
-Return-Path: <linux-kernel+bounces-60249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D83A850238
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1020A850239
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 03:39:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30BB1283D83
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 02:39:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1A7C28B02E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 02:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41C75692;
-	Sat, 10 Feb 2024 02:39:05 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803B7442D;
+	Sat, 10 Feb 2024 02:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j3eae/Ut"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055A85234
-	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 02:39:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BEAB63C
+	for <linux-kernel@vger.kernel.org>; Sat, 10 Feb 2024 02:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707532745; cv=none; b=SntGoeQOrPId9T5f5rcQOspsD4od4lWZ18pNdNo3dOBmBENAheSmmG5rpdSnBZBG3OJ8qoyydMsPQkuCWOENi4dBNQYG5NJOwsp55eWfFMhtceM3zC+9HsULV8HBBemSdrUu3Gqo1UOkBiplc5TyeDBV22k6Bj9d9/WqmrNaxTE=
+	t=1707532791; cv=none; b=otw0QXOM6aZKuZIsxQXHTESRNKhp890k9OFhwOsBGAJo5EVHkViHEuIR2KL82MWy0Rhxb12KFQKTn2KXaNzoOi/jsqwMhstaL4p2SpHZlV21BEnCcXSZ09ObuH84aiv6mw15bQ0O9v4dMJZZtP2Oxo9ZlM/YcAuiEaeeWwRyk50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707532745; c=relaxed/simple;
-	bh=D+fB0DQYR4+Y7FRjY7YzjMHNrRi8NOpqPaTpD5wwxsk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=LApXVgYaKgppEmdZIU7AGhV/oOaazqJqWK7Q2beqJY72eGprJ47+CDUjWYUVJYSGb0ZzzTdpJZrxqR5BRfu0cbrUBd8Chx2eFmyD3qJncPFHZrsGsRxb9AjU3wJnfmwbuFkvhFtV/pMcSQVJf66dhiSsrL2KpbH4sNAXHIU+RJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363b685b342so12182635ab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 18:39:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707532743; x=1708137543;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OWM21qHV5orMzk1Nz67T3FN5h2j8+31W1VLKBA0wUOU=;
-        b=k6dwluR2M5pDViIHDXcPmofXbx2iqCe8TmeV4aEqpdZYK9QI4XT01JfndNds7UdhA0
-         2V0h/J8HiyDvKXk3fBZDtlLyqbLeIGoiuPWTp5Fes+OGXcL8p2VXPpkRw09UOgUB1TDP
-         BVJN7WG/8w0tYFj1ycDuksMtsAjEw9gvuBkawsZaj2QXR/gkbXd1GsJQDtZMa/CWyix7
-         PpTe1lOJ2gufU7C1Y6JIB1vqZXhX4q2vEN04fystH9vwE+Tjw3Y9nFge898o9QPciWZ5
-         46vkjx8YAgx7SYiMQ+uOwZbMjEujDTfIA1bmZXN6y9Sb1v029n2KvkP7Ocwytg55986V
-         x+vQ==
-X-Gm-Message-State: AOJu0YxTz9O+gCwB6td0PmYMQy0MLlqdSMu0MprQX3dcdinJVZbr4dPI
-	P04rNbw/FKBJ1O0i+McCPPsYWWVCx6GTPzZuTfcftRloHAOHIgmZGZLdOK/SezioCUj4kQ0GCrz
-	pxvCQsdAFUMZs+57wUbVP5VQWJc8itbWuXnxDWd19hM6A6opDlkCmgwE=
-X-Google-Smtp-Source: AGHT+IEXNqjkF5J14OtuOm01hnu2WZuAmeaDPUiI1iw7xGbxruT0g9LnpKGbRkyb8TbF1nJqgjH5tZ3phJa+S+kiRLjwpM1PBYES
+	s=arc-20240116; t=1707532791; c=relaxed/simple;
+	bh=KvmExit0TrANeclOjX4bPITu2Wj408sKc/29bhsRktE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fbxqn/5y4jwEXbpKwSomqV+x/epB6vCkIGhX4jEh4y1jBBNZGEo/PVj+/hnQIWkPfTqnmA9zpsiIZU4Pv2Fvllo4IoqCsNCGlqEFvA2k/tNWtJEXSCK6iHY3n02Mw8ru16dZwZToVNAuAX+NpCRgpM3/MmIuwb3cX4UPviinxg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j3eae/Ut; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707532790; x=1739068790;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KvmExit0TrANeclOjX4bPITu2Wj408sKc/29bhsRktE=;
+  b=j3eae/UtTXziLRpflI9ktThe53IM+tacfzsGcuxfjZVsekDJWb6Akjlh
+   okvBPpoKefLpgw/OzoJAswx5edaQIpdcc7aidbxhvqjHsOIovbtbpvUlw
+   VH0IlmEP3ZOxFlVJpDix/KAoBiOERR3njvFoUplwm+33ZM+SVEGTrLspn
+   R1d3kMj+XR+NlPd5GFKBiFnNl9jP4xuCOQ18XUPtaEVtrO/lYlJ2bWkbM
+   4JJJJ8JDXcISkNa9ebwyRjETppZEFYrHXD6eydaA0iNa7wHZE5S/1jOU3
+   uEwRF6OWv7ZSeC+eSo4gDdcyLAs3Gwkd8QL/+BKJuVfRGWwN4WhJHGGCg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="5384172"
+X-IronPort-AV: E=Sophos;i="6.05,258,1701158400"; 
+   d="scan'208";a="5384172"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 18:39:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,258,1701158400"; 
+   d="scan'208";a="2077333"
+Received: from karenaba-mobl1.amr.corp.intel.com (HELO desk) ([10.209.64.107])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 18:39:49 -0800
+Date: Fri, 9 Feb 2024 18:39:47 -0800
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	antonio.gomez.iglesias@linux.intel.com,
+	alyssa.milburn@linux.intel.com, andrew.cooper3@citrix.com,
+	linux-kernel@vger.kernel.org,
+	Alyssa Milburn <alyssa.milburn@intel.com>
+Subject: Re: [PATCH] x86/bugs: Default retbleed to =stuff when retpoline is
+ auto enabled
+Message-ID: <20240210023947.pefmjmogsxhissem@desk>
+References: <20240208-retbleed-auto-stuff-v1-1-6f12e513868f@linux.intel.com>
+ <20240210004328.n7uxevxfiqr3gsot@treble>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b8c:b0:363:d88a:4640 with SMTP id
- h12-20020a056e021b8c00b00363d88a4640mr68972ili.5.1707532743138; Fri, 09 Feb
- 2024 18:39:03 -0800 (PST)
-Date: Fri, 09 Feb 2024 18:39:03 -0800
-In-Reply-To: <000000000000cc796105ec1e4c7b@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000098e3db0610fdf2a5@google.com>
-Subject: Re: [syzbot] [reiserfs?] KASAN: vmalloc-out-of-bounds Read in cleanup_bitmap_list
-From: syzbot <syzbot+174ea873dedcd7fb6de3@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, bvanassche@acm.org, 
-	damien.lemoal@opensource.wdc.com, jack@suse.cz, jlayton@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, neilb@suse.de, 
-	reiserfs-devel@vger.kernel.org, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, willy@infradead.org, yi.zhang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240210004328.n7uxevxfiqr3gsot@treble>
 
-syzbot suspects this issue was fixed by commit:
+On Fri, Feb 09, 2024 at 04:43:28PM -0800, Josh Poimboeuf wrote:
+> On Thu, Feb 08, 2024 at 05:12:15PM -0800, Pawan Gupta wrote:
+> > -		 * The Intel mitigation (IBRS or eIBRS) was already selected in
+> > +		 * If Intel mitigation (IBRS or eIBRS) was already selected in
+> >  		 * spectre_v2_select_mitigation().  'retbleed_mitigation' will
+> 
+> 						 ^
+> 						 should be a comma
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
-
-    fs: Block writes to mounted block devices
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1257a6ec180000
-start commit:   f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8e72bae38c079e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=174ea873dedcd7fb6de3
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14db6ca1e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12159e5ee80000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Ok, will fix. Thanks for the review.
 
