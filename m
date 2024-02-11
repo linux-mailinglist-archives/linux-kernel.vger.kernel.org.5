@@ -1,125 +1,153 @@
-Return-Path: <linux-kernel+bounces-60943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37F48850B6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 21:19:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDBAE850B6B
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 21:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E65C1282C24
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:19:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B12FD1C21783
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33F15EE96;
-	Sun, 11 Feb 2024 20:18:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067445EE6B;
+	Sun, 11 Feb 2024 20:18:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="daMsuEFD"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K3IBfip7"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8A55D485
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 20:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822FA5E22B;
+	Sun, 11 Feb 2024 20:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707682730; cv=none; b=gYev51zJ/QIEKeHqLKfGlTJp0Yj1O488JYSXjO31IK8qxKzCFNv4MgFtaBKM1TNnq7PwtsqY9DWCv4Rf/bQ7CU8q7zYHJZ9Bzr1Y8pL28SWx98Aaj7VWqou+XvbSBQ5swUWxdkeE202fCewWxWE0vonRiVcWpOb0I0gMrgqvmuM=
+	t=1707682729; cv=none; b=tB9yvFyJX07WwcPk3ih7UZeYDPxhEVQJyJfNcF/p2K+ds56cgYExlAmab/tIaoDKlB5k07tH1JOrPspYqpe+7fkS57keSqfz0CtIE2cLjJTxh4B3q7VkojowOaqwrT0adNAwsgAn0Lf0woqwCCvuifSPcheg/a0W6MQp/sGQ1+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707682730; c=relaxed/simple;
-	bh=I2G8lgubEspsN9N7NyufAQUMTBlL8rTZjbtU4LbtuR0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FdYXFbrXuHEOtlE5uXsPAr6x7fd9g46FK88Q3c5N/ixt6t7s9UfrfSJ/3ywIV/VqQFu+k3m4jURJ4kuQyy3A9cXUngkxStSlN2x/vzaj8SYiF2bbx3gnO/zDbmpOI2gNQX9KvxGNq+HmqJL5858N9zSPAnlbprlpT/0RBVumuR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=daMsuEFD; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9407440E01BB;
-	Sun, 11 Feb 2024 20:18:44 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id xH10vrJzwQ_9; Sun, 11 Feb 2024 20:18:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707682722; bh=kZ2MQOdF7SF61XpuHJajoXSOsW/qod1LGTZCg746/Uc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=daMsuEFDjKgkhh32czeQDmisXC7xafDzk94NxsBpv/Jx0RdOckP226o3bKy6B333w
-	 6kX6y8nZsfgzkfZYU84bA7CUUb2ZMhoP24eEBl7gmDxLvsobViKLCobqt1hPOdWKxw
-	 kXfUTDaBAWh2diUD8JAPJJQYaldyDdEE+H5TYUEFXHRDHMaRy9DtPPJp0NmJSNGWLL
-	 BcS+nXssAOFo0R4ucw3znaxoLbweVOaAv5ukwIynPfbq3l39TMOfedoMnncTkdxe6S
-	 7fBHduCrTEFFjpM3MwjgTZ7P5UHVWFlEpx5oRje3zGJNoqXcvMTFHHvPM8uDh17Mon
-	 tWAmVrXR8phrjciNQsFLv19BQQYIh0hL6eP0phNG1N9QjRTV7BJm/zb1o7kgdtiGdJ
-	 TLrwNdB98ZPIMoFhxO3JJtEubMzrCN8vHruk+oZ+GyLgWLE0pcFzxvHgfHiH5L0Ma8
-	 /wtXb+juWAnRPRJo1a0jDAM+DAU1umIrsOJTJC9uys1qLhfb6a7PCC6jNr/DWHky+k
-	 YkP7AwTUT4apqJiJ73wqw2/zrn2mPY9fgPRj/eUICHKBqU0u5TH5NctWXc0y/Fnj8A
-	 6GEPsaNaYPeU6GWyMRcXfKUcZQjISnnksm42JLr39HxhuqQm4M1tL6pFKLdbPSRTKD
-	 spHqxvZWqHPmNWhEkjZRkku0=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 217C340E01B5;
-	Sun, 11 Feb 2024 20:18:38 +0000 (UTC)
-Date: Sun, 11 Feb 2024 21:18:31 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Ashish Kalra <ashish.kalra@amd.com>,
-	Michael Roth <michael.roth@amd.com>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: ccp - Have it depend on AMD_IOMMU
-Message-ID: <20240211201831.GBZckrl84xVo-ILnOJ@fat_crate.local>
-References: <20240207204721.6189-1-bp@alien8.de>
- <5e4670e5-acc8-adf3-2a3d-eb02db7ed990@amd.com>
+	s=arc-20240116; t=1707682729; c=relaxed/simple;
+	bh=dKCtnqQrdPiAcB5tU3OAGqv2wvew/q0hoFczpMUZQuo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pyPufK+Sey/jVIOC7D23fKcRFjckf0UCgSD0XY6YRTNXS1pqCIiwN3/fTN8WHIcDirQ95XiaiWGat/CxpBDj5je5604OcNjY2vgxdzPuBdQ/6ezMwLOMkJjZjxRpL8e0cR8KqhZ5GgXSUSlFtzUZ55Z9vdU2MbgPhibSrO7M+zc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K3IBfip7; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41090edfeb3so9253925e9.2;
+        Sun, 11 Feb 2024 12:18:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707682726; x=1708287526; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5+YiYsQBrTTOvviGUFRUVFiil2HbbY6cTsvycoefVBE=;
+        b=K3IBfip7ku6ZOSi0tHqmsJUMFh2LF90W/lYGLFF4IKN73TFQEnBahcocldTLZLZjVo
+         IqPyAcn1T8ERQzEcFbvWI6VwJ7v5R2BpepUy2mP+K6PJKzT7QI4dQtdJLKCheWF2t57m
+         4wDnlwdiVDtG5ssMExdM0RDk6Us9pNBlokCpjz1L7CGNwtDNHAubYxRWHIWFnhV47SUM
+         +MjGR4o+N5jdLddlmeDFs95NwyovZn5NzKZfh/pHLLl7W8f6vzpzpYRbLoVijjsyO1P2
+         JS1ydS4PrVqKVFcGRSLfOaa8z2Pr6Td21TBd/t3FW8fVagZLmctf0Kg6x7DQlvpwftQ+
+         7k8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707682726; x=1708287526;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5+YiYsQBrTTOvviGUFRUVFiil2HbbY6cTsvycoefVBE=;
+        b=JMZDuC3pvqo+WF9XXBCNYm9Ikw9Pxe0aabreAu1Pmzaed+jI/V/srUULmXGf0w8ZNp
+         4z1gVIsgLvg0wplbS2/cB/rbfOHo0fwhbj9bpPIbGbxqwyKM3JkpwOfde84Eyw8CzE2D
+         E/XpC+Zk5uS2HBOigrTbEabayEfHMGJ3+ES+d6Cn6GIUEVjrsr6g/xh9RLNCWxyDHVxQ
+         916kuGbU2QX5lZG8GbFfMS+CNK1f3j+xpgPMXXG33ZTLHHir8SnF0jabsA5MK/5uFJ0U
+         /RmAr6+dazc7Y81hmGwKw9+jJxH0oQADNvw7ikTiMcwEBSe+oUQOj6uU1JAsrVTspSYl
+         DZNA==
+X-Forwarded-Encrypted: i=1; AJvYcCWhQ9R+lk5o984HjT8I7tc3Cel75Lao28UW/ifBda3ub+qtpfsxATMyYAd1eg3TRHxsBxuwcHBkHzb+uBmWbbRwstEXHzzUuNKNYzH+Aaxn49Xnq/c0MunBhCXrTWqHWbjsNnQNtDfiKg==
+X-Gm-Message-State: AOJu0YyNW3oNLbOioSaS75Tdl/vD2+oBSKxoNB2qr52XKBmqL5WI+H1+
+	l/GqmEl+DRqCPVYLPFeIWpdJe7KU0hb5fmSdMYBuAa4HaSOet9q8
+X-Google-Smtp-Source: AGHT+IG/07bMwCShxjkLi2N6MPnqgrqRM4NBXbflM3tKfwK+14p/k/CnwbsQvu10AaXMiynZX0TXZw==
+X-Received: by 2002:a05:600c:46c9:b0:40f:ddb6:a63b with SMTP id q9-20020a05600c46c900b0040fddb6a63bmr4345296wmo.24.1707682725574;
+        Sun, 11 Feb 2024 12:18:45 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVkm7WeMzZocmE3nk64qrBJmiwW4HTrGgXGwgNE+N6FdmH5kVUsxznMLAMhXaGcAomSUOhkQtxc9ePhJNTHhbjiejXoj8Eg3jyA354G5YjBLKJ67+MKso/KEdyn/BMnvEOei5ZD9BQjJuRCoGbC2ySYRSZa2LfTr/JKKk2TG3TAtSYDn0+Ag6pZyFpoJ/rUeWIhzGJ7RHZOOIhqgkAr/glEWqpheiTntE3bm6/GWXn5mdAX5XABoLASYUViB0lFoAUW4IRrhIJ/lfImnh/qd8M0uYiOr8vbRTKZ0FyuHCFOodpQv94=
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id o19-20020a05600c511300b0040fd2f3dc0esm6609776wms.45.2024.02.11.12.18.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Feb 2024 12:18:45 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Samuel Holland <samuel@sholland.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject:
+ Re: [PATCH 1/2] arm64: dts: allwinner: use capital "OR" for multiple licenses
+ in SPDX
+Date: Sun, 11 Feb 2024 21:18:44 +0100
+Message-ID: <1959194.PYKUYFuaPT@jernej-laptop>
+In-Reply-To: <20240208105301.129005-1-krzysztof.kozlowski@linaro.org>
+References: <20240208105301.129005-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5e4670e5-acc8-adf3-2a3d-eb02db7ed990@amd.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 09, 2024 at 11:51:37AM -0600, Tom Lendacky wrote:
-> Or should the ifdef around amd_iommu_snp_disable() in
-> include/linux/amd-iommu.h instead be:
-> 
-> #if defined(CONFIG_AMD_IOMMU) && defined(CONFIG_KVM_AMD_SEV)
+Dne =C4=8Detrtek, 08. februar 2024 ob 11:53:00 CET je Krzysztof Kozlowski n=
+apisal(a):
+> Documentation/process/license-rules.rst and checkpatch expect the SPDX
+> identifier syntax for multiple licenses to use capital "OR".  Correct it
+> to keep consistent format and avoid copy-paste issues.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Pretty much, except the thunk should say that it is the thunk that gets
-called:
+Applied both, thanks!
 
-#if defined(CONFIG_AMD_IOMMU) && defined(CONFIG_KVM_AMD_SEV)
-int amd_iommu_snp_disable(void);
-#else
-static inline int amd_iommu_snp_disable(void) { return -ENODEV; }
-#endif
+Best regards,
+Jernej
 
-and return -ENODEV to denote that so that the caller doesn't wonder
-what's going on.
+> ---
+>  .../boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts    | 2 +-
+>  arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi  | 2 +-
+>  arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts    | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-ma=
+nta.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.d=
+ts
+> index dbce61b355d6..4bfb52609c94 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>  /*
+>   * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
+>   */
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dt=
+si b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> index 1fed2b46cfe8..b2988f500231 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>  /*
+>   * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
+>   */
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts=
+ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> index 832f08b2b260..ff84a3794470 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>  /*
+>   * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
+>   */
+>=20
 
-> I think this would be better in case these should be referenced
-> elsewhere in the future.
 
-However, looking at all that code, its design still looks iffy to me.
 
-iommu_page_make_shared() and amd_iommu_snp_disable() is functionality
-which the *IOMMU* provides in order to deal with SEV* guests. So that
-functionality should be behind
 
-CONFIG_AMD_IOMMU_SEV
-
-or so, on which all its users depend or select. I'd prefer depend tho.
-
-Putting IOMMU facilities around a KVM Kconfig symbol CONFIG_KVM_AMD_SEV
-is simply bad design. There are providers of functionality which is
-behind Kconfig symbols and users which depend on those. The current
-thing is a hack IMNSVHO.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
