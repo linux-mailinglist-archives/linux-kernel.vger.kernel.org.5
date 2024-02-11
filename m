@@ -1,122 +1,115 @@
-Return-Path: <linux-kernel+bounces-60623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B6B850781
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 01:08:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32CD9850787
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 01:40:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C236AB229C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:08:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C45681F21C53
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F011415A5;
-	Sun, 11 Feb 2024 00:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF7315D2;
+	Sun, 11 Feb 2024 00:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lihGKL/Q"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b="rYQG8Zxx"
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BB5A35;
-	Sun, 11 Feb 2024 00:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458F415B1;
+	Sun, 11 Feb 2024 00:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.75
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707610092; cv=none; b=Q58Piy6A/eClVHeb26qz9yoWIhCMFhUOlR2iSWgKFP22lVMyngH8ubnKNfHDUplgS8LPYnWIhPiKeQG5vbPkx4gXw2894qQz7Za2S0xeBqbjNeKq6RWhj/CEwKiPCo+PTILAzrn4zMJYwqzdQV1JTT1jKZVI1OwjGickoEgzRPw=
+	t=1707612027; cv=none; b=ZN29qOYL4uA7yiOBBfaKN2HTClpuiiiIO9PYmTv0Dvx05guur3UOXZ0ps6wzc+tzPgOoERSbmmzeqYq13O+qgCSGAvQEb47+aECKpBFKzz077zUBYZpp7/6xDSW0Cb4huewRbuWNeF1WFD/RohgOTUpg/KK6ebUNrd71GOHgqZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707610092; c=relaxed/simple;
-	bh=8SdHgzrqilgeg1RSLc8cDRbXG8jWn8PWpVMDFHwvVww=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=NFzhwYUrOSwQfUc1Zm661z1fFgEF70dR+/M6f5N7/gqYhJiIEgnDv9bIhsqPZCzxGPU/jssfbdoPwlklNKFNaFME7hwmG0y8BPcOaO2QZ9jKBvbZDd91U2rAxatFMIUxrQ08GWab8g0XJdeYEFDBpRLG+hmvD8yL1UMbJoRz4zg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lihGKL/Q; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40fb3b5893eso16904145e9.0;
-        Sat, 10 Feb 2024 16:08:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707610089; x=1708214889; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HQk/Q4bki9VZhdmN8MGfnCe9kNGVsl6d50686N0rqPc=;
-        b=lihGKL/QpO/u9xwElopSi7/cxuyJMfW4SUGrk+J6JLzFgPG6a0Jma2AiyXrj+jVQmi
-         mHzsqiVjkU7p19Op3WK0u1yXh80tYUYi4dH5zN3Gvm1sxedNs1AEk09WK7nOmu7cNcrK
-         tYhE8euQodZtg5RBnA6BDAPtbqg7NEVWt1kcowE0bE0AKyCWiPU2KBJ3+QHcdOEbNduq
-         InSf8QALGWw990md/AknWuHi87bRDM7cvoiaWKRS8p7dJOw5fX9xE/lmcBlHRrAZ+PeH
-         ZYzoGoDGvyvx+hwNOJ5bHBorxPDrla1/e2DfcjPGxV5I0q6M+RBEoBKS/QU5n0Hx7mAw
-         eD7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707610089; x=1708214889;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HQk/Q4bki9VZhdmN8MGfnCe9kNGVsl6d50686N0rqPc=;
-        b=HToZp4vZ21yDkEzbxTD5Q2h9M+3O7t7Camg5VzExziUd24trWHBsBgaNAVh2gQqMIU
-         h2pMSRtt5zyzHf74kFb9FRAKBja7YAPwzwpKYy9r9UWareCc09upe4eCcC4MrI8heSjX
-         eU3A3xu9Fh2+vS2sFKVGldhgjnU2UjzMAYSmb0uxbJvZqPPErYSxRiQ0LF76jY+UnhNt
-         ksOkUOyEC+Ncg9NBVW/SG6mXnME258e01QjnwjgDMtbrkku8kYcozLRx7smG1wVIC+aW
-         ZZPFbBSGtiMhUg8z2EXVAhcRiX/5wC85glZoadrjHwcOreR8BKLFsPSW79oQB1Zd+EmU
-         awrA==
-X-Forwarded-Encrypted: i=1; AJvYcCVdvGLIBe4U0lpN7OEllsmHlLYqjFFsn2WqtlJwcW6s8OTAJSGvWUKxUMwK2CjdlXRWbAb0wg5dFF7hfoXMazbH393XVYIjYUaz6O51
-X-Gm-Message-State: AOJu0YzKzueNvufSvk1/fwGu7+EFhKF7nZN5IwPUKlAf5EtNTnGTH7MG
-	cRaca1Sh8iOgzonCMOWKBDHB2N313uyXh4u1obo9u6oHu411KEyk
-X-Google-Smtp-Source: AGHT+IG5e6gY8Cxswk936R0eoC/RvnqHMggOaNqs5Vu4e6g1jz6NI/tBI/fbwpVbxkey1uUiSP0ldg==
-X-Received: by 2002:a05:600c:1552:b0:410:7da8:53d5 with SMTP id f18-20020a05600c155200b004107da853d5mr2367538wmg.12.1707610088610;
-        Sat, 10 Feb 2024 16:08:08 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWnyGIEvAbdpHsAOqbuCZDREnm0705/fJ0KjCSHXVYADmqSCAKRJ5QhjRfwcXneFKtbKBB3F+Md/FqOcRIZeMTE9rfN7YqVIlM3BE5vWidZN2O4gRPqDfnZgOU87ZLtKQbhI7heswKlKq8eTlW7CffXF32CZPL1fBLLZWr1NJrR
-Received: from ?IPV6:2a02:a03f:eb0f:3701:bc2b:7162:179e:ded8? ([2a02:a03f:eb0f:3701:bc2b:7162:179e:ded8])
-        by smtp.gmail.com with ESMTPSA id t18-20020a05600c199200b0040fc26183e8sm4600010wmq.8.2024.02.10.16.08.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Feb 2024 16:08:08 -0800 (PST)
-Message-ID: <52cf0eab-dbbd-4f12-b100-c7db1daea442@gmail.com>
-Date: Sun, 11 Feb 2024 01:08:07 +0100
+	s=arc-20240116; t=1707612027; c=relaxed/simple;
+	bh=wmHERYYN058/RFLczrPeOcXAoo/yUFyAt/tHzV8DLHc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XSQ0IaZUG0O+rh5h0jppz+c1y9xbrXH30xKJxgb59G2/X5auds8wTR3jtU6f+xyvlRyLdsrlvNLWvAnWV1ETHvH2guuqO9rtfnTCdLDm+CSZpKa2/RVoobr2Qul8FX+aHE2EBaram3i513A72oNrrsEzuQfSfan1WTDqIlQQdP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu; spf=pass smtp.mailfrom=heusel.eu; dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b=rYQG8Zxx; arc=none smtp.client-ip=217.72.192.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=heusel.eu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=heusel.eu;
+	s=s1-ionos; t=1707611992; x=1708216792; i=christian@heusel.eu;
+	bh=wmHERYYN058/RFLczrPeOcXAoo/yUFyAt/tHzV8DLHc=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=rYQG8Zxxn37LNmPQ2IrloJg4YF0tYXfeMdJeWAw2NuoTtT2imBfGnmnEhmzNbE9Y
+	 mkRJXIqpeEmFTpvCJrpaSZ8chuKyjZZZ6d6S93U/f7NBlWEe/2/aMyJkj2tcRfBag
+	 BkyJRCe/3YjPRUXsgFN+un6LnYVO5AMeQFobAxNsIjFMXqfVcmV/TxsbPqDUDqk/1
+	 34IJ5X4PDBHhMvS5ZRlCn4Iz2pOrjYl02s7+dpjCcvvRZHKCJSVGtQiYL/9uwBvHU
+	 X6eaje5bta3ocxoMOHu2w2/UujYtcbmOEYJcQThH4XK6dyfFd78d/+GXwFA5pEjU5
+	 J0FIojCnhYRGHIB3tA==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from meterpeter.INF524.stwhd ([141.70.80.5]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis)
+ id 1Msqpq-1qgBRA1HIm-00tGhj; Sun, 11 Feb 2024 01:39:52 +0100
+From: Christian Heusel <christian@heusel.eu>
+To: David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Christian Heusel <christian@heusel.eu>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org
+Subject: [PATCH] jffs2: print symbolic error name instead of error code
+Date: Sun, 11 Feb 2024 01:39:04 +0100
+Message-ID: <20240211003907.167891-1-christian@heusel.eu>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: rafael@kernel.org, lenb@kernel.org
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
- sviatoslav.harasymchuk@gmail.com
-From: Sviatoslav Harasymchuk <sviatoslav.harasymchuk@gmail.com>
-Subject: [PATCH] Fix keyboard on ASUS EXPERTBOOK B2502FBA, see bug:217323
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mdD+cC108pnAZXbGv+PQh7kUVRHEsQ7+KfabFD+Q5ylCBajXVwQ
+ +3RET9o94ZZ71QCJpskyjPJvAMRbY4jidCoz5a7lci+4ts8IwctXPBczn4wJZkX+HmNb7zt
+ 3JHIDZQ9nyKxYuZXIJ7kW1x0Vr8w/6+Bg70MFNvB+DRKWEUoy7avmZh4BcX8tmLEDUn/T6n
+ mZ/tfamT+oPSSc1NIMIEQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:pinJemaaIv0=;vsBcASSi2Z1p+Lp65An5yLWwkcy
+ LRfNErQyBdSATIHLfrW3qEeDiDDHmHXrWLlmImFBeQkI3sL4ELNSAnEk8CYvFI2Lk33eZRiYG
+ kctBAHBn+Lya0INz4uM/PslB7hJvO0t07zpP/71hEFBDoltvW8OV8Zo11mPqtBc9HQyel358c
+ TlVPrsRPqYL+HF5QztoF4+41vDnoZAre54DALKhm47TUOq2ALeMUEPFxCl7mUogno+OSleMx+
+ fb6m5DNAu17khHcfffpd8qDN2qaXolV8EEIrAz6Y473MvPE7EE3xV9RZhThxqWUpIdnGYsskR
+ TlaiVINg5612ED4saHJGXSvaMiSLDdLe4W/aQRvkwZujHLJWIx/TwrTsUixTLAavF7D+wSf56
+ vskI54DQxEbsdI7tmpjaX1mDzs9D3T2i7fi2h47pYKSCemRzhWFAQfLJcGwjDBfni7wMHCsf6
+ knzfEffgVGX8EhwvxcT+Yq4SQgVF+2EYbw9BuWBWop66ZS8Q43QabA2OlY8I+YokEV6yvZlnS
+ bCvPwdc4IiYBE5+BwoQ94TNf7Jje9vprKuJko/C4qyUozIMYrPcVCMOPCRa51rn9swkVCiQLb
+ LQdKpaavG7qM5tPuXJgDHqxuy58OpuyccOxEgjMqt7Jg/4+aLMA7g9sQdMt0h/obSY7jnsXXl
+ JiYdMtNCtM21tQ2IGya08B8PAyrYCYyhL8guevNpgXRSL+I44McjTH9qUjtk5tFAooZIzEsN3
+ DFX9Eju0oOsUZFtIPNX+rlaSAoRbYs6QSW4V22JRvXc5xhBUiN6Lr8=
 
-For: ASUS ExpertBook B2502FBA
-Similar to patch:
-https://lore.kernel.org/linux-acpi/20230411183144.6932-1-pmenzel@molgen.mpg.de/
-For the bug:
-https://bugzilla.kernel.org/show_bug.cgi?id=217323
+Utilize the %pe print specifier to get the symbolic error name as a
+string (i.e "-ENOMEM") in the log message instead of the error code to
+increase its readablility.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217323
-Signed-off-by: Sviatoslav Harasymchuk <sviatoslav.harasymchuk@gmail.com>
-Tested-by: Sviatoslav Harasymchuk <sviatoslav.harasymchuk@gmail.com>
----
-  drivers/acpi/resource.c | 7 +++++++
-  1 file changed, 7 insertions(+)
+This change was suggested in
+https://lore.kernel.org/all/92972476-0b1f-4d0a-9951-af3fc8bc6e65@suswa.mou=
+ntain/
 
-diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
-index dacad1d846c0..41fe6f2d4fa8 100644
---- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -489,6 +489,13 @@ static const struct dmi_system_id 
-irq1_level_low_skip_override[] = {
-              DMI_MATCH(DMI_BOARD_NAME, "B2502CBA"),
-          },
-      },
-+    {
-+        /* Asus ExpertBook B2502FBA */
-+        .matches = {
-+            DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+            DMI_MATCH(DMI_BOARD_NAME, "B2502FBA"),
-+        },
-+    },
-      {
-          /* Asus Vivobook E1504GA */
-          .matches = {
---
-2.34.1
+Signed-off-by: Christian Heusel <christian@heusel.eu>
+=2D--
+ fs/jffs2/background.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
+index 6da92ecaf66d..bb0ee1a59e71 100644
+=2D-- a/fs/jffs2/background.c
++++ b/fs/jffs2/background.c
+@@ -44,8 +44,8 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb_i=
+nfo *c)
+
+ 	tsk =3D kthread_run(jffs2_garbage_collect_thread, c, "jffs2_gcd_mtd%d", =
+c->mtd->index);
+ 	if (IS_ERR(tsk)) {
+-		pr_warn("fork failed for JFFS2 garbage collect thread: %ld\n",
+-			-PTR_ERR(tsk));
++		pr_warn("fork failed for JFFS2 garbage collect thread: %pe\n",
++			tsk);
+ 		complete(&c->gc_thread_exit);
+ 		ret =3D PTR_ERR(tsk);
+ 	} else {
+=2D-
+2.43.1
 
 
