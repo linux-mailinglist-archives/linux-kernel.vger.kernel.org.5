@@ -1,151 +1,159 @@
-Return-Path: <linux-kernel+bounces-60847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C787E850A1F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:45:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 867B8850A22
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:50:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDBA1B21C20
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:45:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8C6D1C20B8B
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 389215C604;
-	Sun, 11 Feb 2024 15:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7465BAE8;
+	Sun, 11 Feb 2024 15:50:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="l5UFN1JD"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m0nFFH5C"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C8AE5C5EE
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 15:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967FB2AE74;
+	Sun, 11 Feb 2024 15:50:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707666318; cv=none; b=nFxxV3YcYW5xR7ycaJC8HDAwbWMwJFW1ezrKA2H9jTM83CQ86vvFBSNW2jQ6vTwaO2lI8C49PGTYZR8zWcWDQwQnZzXSpSFxjDjDtzZ1T7tqx4LZ+yI2n/FpNMfPWkqAXy4WClMcUp1nWRwMRNaZRhqr5ZfMdoIEJA4yxGJo2tA=
+	t=1707666621; cv=none; b=Id/lU9PlIh/ETXXZ9mSsFXoTiKlzN9PjbX3JHfzTzVRAUP2tAxJRb1du1enjEZrrzMCQ7DyEwC5B+Fosu/D9ay6ciC34+2tYVOgmk0NzshsPBXhNHiMGvllp1fkq7tWsWJcLS2w3OekOD8ap1ldT2ZTx2IeO46cAnCN+ZboSAzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707666318; c=relaxed/simple;
-	bh=J3VHrNI6yvu9s7wb/lbUu2fKIA6CGAMVkWF7BQi7R+Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BQU7RqCjBAOQCmc7N4JQ69HwCqQ8nhOtxdshVix2wvxUI6ES4W72pvT/xkjvUzbnusM0GDKVdR5crY0vJ3u9EmMEgLSUnpAy7E02AFzn4mdrauKFAnNYmdzlP8efv40dcj5Sgqem0JiCaOZWeAZXhkjcGGgHLPhv2lxkloKERQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=l5UFN1JD; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33b0e5d1e89so1671843f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 07:45:16 -0800 (PST)
+	s=arc-20240116; t=1707666621; c=relaxed/simple;
+	bh=1AeHJtrdMgjm8OhokFhnF96FWl3RsoojhDf2i8SMJ0U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bqxE6b9LiXbGBozzPY6g71vVUWcEHH3BEndplH7H9C2UksTcmmzuGDVYu5nVvScz18Z0wpxHcgFFTUOkgdzv2sxhMSEMIfJtk0AOiHOsWWji2+BP2DhqgHwy4wR+f65yi30dZoYka9Kl2KfY8rDbbPQ84YhnddLAnjKwzY0UMbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m0nFFH5C; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-410cd2c7f27so1494055e9.0;
+        Sun, 11 Feb 2024 07:50:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707666315; x=1708271115; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J3VHrNI6yvu9s7wb/lbUu2fKIA6CGAMVkWF7BQi7R+Q=;
-        b=l5UFN1JDTPbYOI9hhfeartI6hauIXKhADKzimQSxjwec91L9a84Y/LbpKxVAIKz2QL
-         1uLsa6QRrfjHAj4xB+Y43PubzKQPaWMS0VYCuiqBZlSuhrkvhxOJZ/UDkJfd9kE2AT7K
-         DsEVWgwrYlF59gUeOm8HbSHasjt7n9mfEoPnU4AzaHFgZYME13D5Yl6bAZwo45VmBui6
-         552GimqE9mMj5YxmDkF9cXxEzMcMoOuAYNdWQCMdLftfDFBfOPsHM+2DtKoDM8HO0UB1
-         0a8u/Re2uw2DgTnoMKJEq3B4E7F6mlC2yz2fbZU8/7QhwEa/QFiBMgCRuyrdNeWEWvYx
-         a9gQ==
+        d=gmail.com; s=20230601; t=1707666618; x=1708271418; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C6yl3f+TEf2QrklR8BNS/51tQjJKHqU6ha2GsC+d38E=;
+        b=m0nFFH5C7Y0yOpqOLiN4rL917TWCu2KYzHtGUDzkZGPcwuzNOImnNjYF3p7NN8GQMW
+         8qOKRFv2EojqkMCqIdhKBt/SjFh58Du/oRUApIUjMRSUmi6aT5D+XqX9BFwGAt1J/ZPu
+         MleGcAbk3cs23gCM3d1KyDb5IStex1vAAaGCM8dvZWve0N6ZujPcC+0DyvrZb6KdaJQq
+         VFw8JjaP0k0XXcU+5alDPvgdOLuqUJBmjDn3ueDkLlCOqrEwK31Qa7QGGqaKnvP7er9X
+         kNYfH5zlv/hLcvJh6rlqDJl1PsTj4jLWFARNVN+eVYcjDS4JXxYEgJ6M0pkbvI6fiMJq
+         2MKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707666315; x=1708271115;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J3VHrNI6yvu9s7wb/lbUu2fKIA6CGAMVkWF7BQi7R+Q=;
-        b=CyyZ/u/QwYkQ+zJMU0kPjkpQmY0NWM0ZBJj+TJKj+WSKNaLgkBwM5021bNC3IGsGa0
-         7sFY084LD5J8fjDnfYD7XRUq8+2Pk8zKIufg34bzmOeKjbuu3ZfOH+kH+cSpQJJ0wGSt
-         eoK7U6Eb8WFNFdLJb2HNdNM6oGKXgXVo69OT0tQ5dABUesG9BSRcxZ1ytuRCBH3CBsc1
-         4vwpyheUhZuCcnPRaTzM2KkSn8pcvBabi832aRaXw8bAffmN0XAXJj8pg+Imlx2g2INP
-         LWfFN5TfarTFvak8EweJF8rMS86IUkT9Y9OZaFZo165m89jOTFTGWYQWAcdXIlTqIxuH
-         /iFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVOA6i/c7FzHbW/wfDXbTbqhoSWgr2I7FSejf7XeEDgQ4Y5nDSBOqczyXdkLsheDHs0KPV1n9Kkd8jXk8/mQ6g0VnyBEkbvVZu2qFQS
-X-Gm-Message-State: AOJu0YySnq+cGenLEI44czPcj/HngWLjWc+Ei2dsS4ckB6NdaqE6ZJCV
-	pBWudCT8SsWSqnxo8oNAO9PoYgTTMMb1oNkcKN8PQMkWrM/z7FtQfwl0qrdcxlc=
-X-Google-Smtp-Source: AGHT+IG//CCGZTbsIR11qv4QGayQqc0b2KUMqCR6hUlo+b0LKlb0pQ49mwH1/hUkfjoeTeFRp+nm1Q==
-X-Received: by 2002:a05:6000:118b:b0:33b:38ce:9e13 with SMTP id g11-20020a056000118b00b0033b38ce9e13mr3301728wrx.41.1707666314813;
-        Sun, 11 Feb 2024 07:45:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVPoKgtPgEo7+SEt9sJHMThg8iRPkRDg7CqKpiQghWZuIatjPqizZCxrbveHGN/L/S4InV5ufoi1fVHm+oISUDCr5ehSjPNoThu28K/bI9PAjJtT+NpV6DoWcR8eS8OBgAo0rKOwRrLe9n3kz01zxve7+3R0mu6cS116FfWWsqUlxRGJiUZB3yh3c4FI7C4hxpYGqKO2dZvl1UTCyRF6dhzbtWFzaUMiHu7RzPY38Hv8Bd77uCVBNlUxdEJ
-Received: from [192.168.1.20] ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id l21-20020adfa395000000b0033b3ceda5dbsm4544166wrb.44.2024.02.11.07.45.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 07:45:14 -0800 (PST)
-Message-ID: <a51701ca-1b64-4716-b51d-59dafaec62de@linaro.org>
-Date: Sun, 11 Feb 2024 16:45:12 +0100
+        d=1e100.net; s=20230601; t=1707666618; x=1708271418;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C6yl3f+TEf2QrklR8BNS/51tQjJKHqU6ha2GsC+d38E=;
+        b=I/6CwhD9Lx9speyXqPTBph86HBIXuk2jFVI20jAZSP807GFta1XOIP4yIP568XGOB6
+         eoX46lRko2lF+wTYmoNqS1ZScJ1nuXbYTJSJfOG3RpbXMSiX0FH7r47kkcyF9T5y8qoD
+         UkmFgmQ8S1BfH6JhsZUsau8PXA6ANtoXL3SMdUKvTg1H89M0ZSeoZe6M7vU2MKjoxzbp
+         +KSj0Q2d9c9QTFR+pf9cPh92rqAC35BTQKmUcxSAZw+PwNlhdsQH5IqhM6k+ZUxal6jt
+         vhjnr4QPDLqwteXWtDcJCRtzBK/tENrEv7PA9OgbLZXbcFPpR3agJ33bT3zK/PgsDLww
+         IRSA==
+X-Forwarded-Encrypted: i=1; AJvYcCWcy4R6dzbEpgI99gIvPrPHByCCO0Os1lDLz/YK4NusQjzZ0R+AiZ5RI9NOog3PvL4z/hSVjX0nEDDfqFXZsqnhiCiTtlM/giu6d1SWX3hl/ClsZWaXzO/SDGYV4yQHAQ00RaYLiL0zUVbvPmajA5goZvTdTL59e3yLfr8VoGcT
+X-Gm-Message-State: AOJu0YzwHTgzjY1AmIny3dY3sjs9/2jezFILPuSgbatDS99gPnkdD/nL
+	TXZzud9n6hSEjX/uaiWl5z7anNnSx1Rbh+b0vwzKSUCrKqbBZZ4v5LSnBsQa6rNR5bR5Hgf94St
+	wS+tHAlKm8J43MGTzF5EJ0Jrm8/O4XsR1
+X-Google-Smtp-Source: AGHT+IEDuC8Y6MShKtfyIVwfeyPOlr88Fy7/UO6jB0atzdVY8bM1sR6qCNBEEnbJk7goT4IAttwPF9w63WmgJuVvaUY=
+X-Received: by 2002:a5d:64c6:0:b0:33b:734f:3a8d with SMTP id
+ f6-20020a5d64c6000000b0033b734f3a8dmr3355234wri.4.1707666617436; Sun, 11 Feb
+ 2024 07:50:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: s3c64xx: make s3c6410_subsys const
-Content-Language: en-US
-To: "Ricardo B. Marliere" <ricardo@marliere.net>,
- Alim Akhtar <alim.akhtar@samsung.com>, Russell King <linux@armlinux.org.uk>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240211-bus_cleanup-arm-v1-1-5c0102bda0bd@marliere.net>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240211-bus_cleanup-arm-v1-1-5c0102bda0bd@marliere.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240117114742.2587779-1-badhri@google.com> <ZcVPHtPt2Dppe_9q@finisterre.sirena.org.uk>
+In-Reply-To: <ZcVPHtPt2Dppe_9q@finisterre.sirena.org.uk>
+From: =?UTF-8?Q?G=C3=A1bor_Stefanik?= <netrolller.3d@gmail.com>
+Date: Sun, 11 Feb 2024 16:50:09 +0100
+Message-ID: <CA+XFjirAZ8y9SyddEdwt_CfDpP0TFqAYJ0vG4bhWWsrNewJPFQ@mail.gmail.com>
+Subject: Re: [PATCH v2] Revert "usb: typec: tcpm: fix cc role at port reset"
+To: Mark Brown <broonie@kernel.org>
+Cc: Badhri Jagan Sridharan <badhri@google.com>, gregkh@linuxfoundation.org, linux@roeck-us.net, 
+	heikki.krogerus@linux.intel.com, kyletso@google.com, 
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, rdbabiera@google.com, 
+	amitsd@google.com, stable@vger.kernel.org, frank.wang@rock-chips.com, 
+	regressions@leemhuis.info
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/02/2024 16:41, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
+That's exactly what I predicted would happen.
 
-This "Now" was confusing last time and is still... There is often no
-"Now" in multi-tree-repo-approach. If the patch allows it went through
-different tree, this is still false. If this was already merged into
-mainline, just say since which commit or which release.
-
-I raised my concerns last time, so please fix all your future patches
-after receiving such feedback.
-
-
-
-Best regards,
-Krzysztof
-
+Mark Brown <broonie@kernel.org> ezt =C3=ADrta (id=C5=91pont: 2024. febr. 8.=
+, Cs, 23:03):
+>
+> On Wed, Jan 17, 2024 at 11:47:42AM +0000, Badhri Jagan Sridharan wrote:
+> > This reverts commit 1e35f074399dece73d5df11847d4a0d7a6f49434.
+> >
+> > Given that ERROR_RECOVERY calls into PORT_RESET for Hi-Zing
+> > the CC pins, setting CC pins to default state during PORT_RESET
+> > breaks error recovery.
+>
+> Between -rc2 and -rc3 I started seeing boot issues in mainline on
+> rk3399-roc-pc running arm64 defconfig, a bisection identified this patch
+> as having broken things.  The issues manifest as a hang while loading
+> modules from the initd, you can see a full boot log at:
+>
+>    https://lava.sirena.org.uk/scheduler/job/558789
+>
+> which shows a bunch of video drivers loading at the end of the log but I
+> suspect that's not related the actual failure.  A successful boot can be
+> seen here:
+>
+>    https://lava.sirena.org.uk/scheduler/job/559222
+>
+> I do note that the board is powered by USB PD, I've got it connected to
+> a PD power supply which seems potentially relevant to the commit.  The
+> board had been working for a long time, at least as far as boot to
+> initrd goes.
+>
+> Full bisect log:
+>
+> git bisect start
+> # status: waiting for both good and bad commits
+> # bad: [54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478] Linux 6.8-rc3
+> git bisect bad 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+> # status: waiting for good commit(s), bad commit known
+> # good: [41bccc98fb7931d63d03f326a746ac4d429c1dd3] Linux 6.8-rc2
+> git bisect good 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+> # good: [4f18d3fd2975c943be91522d86257806374881b9] Merge tag 'iommu-fixes=
+-v6.8-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu
+> git bisect good 4f18d3fd2975c943be91522d86257806374881b9
+> # good: [6b89b6af459fdd6f2741d0c2e33c67af8193697e] Merge tag 'gfs2-v6.8-r=
+c2-revert' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2
+> git bisect good 6b89b6af459fdd6f2741d0c2e33c67af8193697e
+> # good: [bdda52cc664caaf030fdaf51dd715ef5d1f14a26] Merge tag 'i2c-for-6.8=
+-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux
+> git bisect good bdda52cc664caaf030fdaf51dd715ef5d1f14a26
+> # bad: [0214960971939697f1499239398874cfc3a52d69] Merge tag 'tty-6.8-rc3'=
+ of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty
+> git bisect bad 0214960971939697f1499239398874cfc3a52d69
+> # bad: [3caf2b2ad7334ef35f55b95f3e1b138c6f77b368] usb: ulpi: Fix debugfs =
+directory leak
+> git bisect bad 3caf2b2ad7334ef35f55b95f3e1b138c6f77b368
+> # good: [7c4650ded49e5b88929ecbbb631efb8b0838e811] xhci: handle isoc Babb=
+le and Buffer Overrun events properly
+> git bisect good 7c4650ded49e5b88929ecbbb631efb8b0838e811
+> # good: [cc509b6a47e7c8998d9e41c273191299d5d9d631] usb: chipidea: core: h=
+andle power lost in workqueue
+> git bisect good cc509b6a47e7c8998d9e41c273191299d5d9d631
+> # good: [b2d2d7ea0dd09802cf5a0545bf54d8ad8987d20c] usb: f_mass_storage: f=
+orbid async queue when shutdown happen
+> git bisect good b2d2d7ea0dd09802cf5a0545bf54d8ad8987d20c
+> # bad: [b717dfbf73e842d15174699fe2c6ee4fdde8aa1f] Revert "usb: typec: tcp=
+m: fix cc role at port reset"
+> git bisect bad b717dfbf73e842d15174699fe2c6ee4fdde8aa1f
+> # good: [032178972f8e992b90f9794a13265fec8c8314b0] usb: gadget: pch_udc: =
+fix an Excess kernel-doc warning
+> git bisect good 032178972f8e992b90f9794a13265fec8c8314b0
+> # first bad commit: [b717dfbf73e842d15174699fe2c6ee4fdde8aa1f] Revert "us=
+b: typec: tcpm: fix cc role at port reset"
 
