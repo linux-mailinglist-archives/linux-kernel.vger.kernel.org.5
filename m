@@ -1,116 +1,118 @@
-Return-Path: <linux-kernel+bounces-60712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A37008508C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C0658508CC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:18:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2DF01C21390
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:17:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F73B1C213C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA945A4DE;
-	Sun, 11 Feb 2024 11:17:47 +0000 (UTC)
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB0F2AF08;
-	Sun, 11 Feb 2024 11:17:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC095A4E3;
+	Sun, 11 Feb 2024 11:18:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B7KA3tth"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82373A8FA;
+	Sun, 11 Feb 2024 11:18:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707650267; cv=none; b=nuhVO9AlNjCvu8CLoZjLpWdxENNYHvRtKmti2lFbH9RTvWC6vfYn59VtIxaZ9gwUSa+jns5YTAhafaQdmwvwPerju6102MLk/ZbIyAW4L9766i1Zz8AdU+BDF5kLwQBhRqyeTNjZ8m7BvUx2Xjiktepn26yjvLbJNfd1vrMPJko=
+	t=1707650305; cv=none; b=UZDnv3NyXgl0y7TWyiM9uWGmlDu/Pkq1CJqGgSsbuDoHa8qPL3+Z1IeWL/z0xVUlIwMXNShGQqmqRE9VmTdJG6KX4kJ6ZLM/AHtTLXz/97FxJ3L9CZ+86rRGvojWSDV/ilH18gRKQPuOEFa8P/8L6+oq+Z1KZjPl5yHcEOwU4oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707650267; c=relaxed/simple;
-	bh=Xz4zRgjnX5q9xaB3mTWEuD8RUIvC0uEA2UD64kmLUwU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xo/7mZ95HDoCPzckObj6HrSURtYk9qbc/sPjkJOXjNenEwuUQFSc5Zq5HuzW92XbBgo6TBdvlgyqkqDrIajzL1jEVrC4sSGYkZ5zRcDKf6zWp6TjyF6bspAhlJpBTYcEz4VT8Bi18L/wZg6kUoAFLnOpYC77GoeI5Nl4xYIhXAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
-Received: (from willy@localhost)
-	by pcw.home.local (8.15.2/8.15.2/Submit) id 41BBHeOX022583;
-	Sun, 11 Feb 2024 12:17:40 +0100
-Date: Sun, 11 Feb 2024 12:17:40 +0100
-From: Willy Tarreau <w@1wt.eu>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH/RFC] lib: add CPU MHz benchmark test
-Message-ID: <20240211111740.GA22575@1wt.eu>
-References: <a2396ae072d6f9e009b5de558efe166b844a1397.1706718625.git.geert+renesas@glider.be>
- <ZbqFsroYDjSoYEps@1wt.eu>
- <CAMuHMdWrjag3icVi2mJbtEftwz_jH51Ov4-FAV67Mdz7UvxQXw@mail.gmail.com>
+	s=arc-20240116; t=1707650305; c=relaxed/simple;
+	bh=I4YQN3Grp2nt6qoaBZpOBZCecQE6bzdWSYgDBqwEBF4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ET1K89BTd0VENwJjeC1607ypnY8VM0eEF+cHpG0DSMHyfi6WYsxXDd5N+v4m3U1xwJiclQL1qh9D3PriNhtTHmjx1Q3lXn3NkMm19ccEcUsLGBCIB3KK3C+toZZwR/wrj2dhe7civt5S+Mu74tzJn/4ImRP+h4s7vOToS3nm3Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B7KA3tth; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5112bd13a4fso3642636e87.0;
+        Sun, 11 Feb 2024 03:18:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707650302; x=1708255102; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+djsQtzzdGeSs25oMrMSG1dNLrpW7giJEKVLMJxID1c=;
+        b=B7KA3tthsXA7cVTLbqanjRo9FlRdLUvbqe6VvJ27q3Gj8wHRon0gQcU0fPaKH0UNs8
+         dLrDTS5SWyejAkAwDsHG7Ur/oaCy9QSDxRYf12PdOPl2M65LFZkFGIEJnV0pmSXwgmJy
+         D5iry/OW824CICxBrMesyHg5mhBuhdMNiQtxpZn2lSWbLBh6fYJtEY7o3zB7AU38WBou
+         DZvgXsiCFmc4mC5srY9GqcOUbwKxLIFeeRjsfaKItOq8bZL/HNpdoTih1EsmBjOzJpNM
+         e/31aCEUjb3t4NEbaEBIXKNXIyNn2mA9Iex8v+m0nw3KVrmOq/XSULqU7kAhTJp/6AXE
+         9hMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707650302; x=1708255102;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+djsQtzzdGeSs25oMrMSG1dNLrpW7giJEKVLMJxID1c=;
+        b=ljY5O1hsp1oZ5XnREpfXpmI+RVWdLsuODNRHNerv/5BTatXj9iV/opzbb128cW4Hj3
+         Lp71JOH+Rd+30L65ruh4EQM5ivO6lj95wOxCtODzJNgG7wHt52ShteOPRBvyQHyAK11C
+         8WNBIGBolyIp2VO0lLuzQbXuOqwENteAtex/dRSOL/hUaWX7DfUiTJZW6vON5IHsKT9H
+         2Vv37bkRVffKZ+tAb+aInVhGmsZqTJ5sBISACAijrWVMRjYnP6pZ/3y/2ps5xCbi/QN7
+         RP06DBtqvNgsD1p0HzAlkddKIBCvM1NcmgzwmlLMt7SinJAXorY69kx8H/vKJiv6/NUS
+         rmRw==
+X-Forwarded-Encrypted: i=1; AJvYcCVj4PxqhbrZFxB6cjFHKNv0lsPgDenX31Unux60O1qN5ANeSi+5rPM3NaQSUqWenXDzXidc7355PLrD1TFVX21NcauYXKPwPZBw546Mf45MNpjBFOB6IXL2laq1wEi3uBBhhaJ6NBMsqKYEd9rtBgVhv/XE
+X-Gm-Message-State: AOJu0Yy6gGgeGSXgRMdi4TPywwK2PioIk9h9St54CYnBiU12k1pmnhln
+	wYjK2b86XRAUO+a4W6kkvMfaS3P0NXP1cpZ463nl5j6egOjTDF2LpbF43DO7ii9Qyg==
+X-Google-Smtp-Source: AGHT+IHYlopmYEg/R6JSagluRGm76W1anUOluAWlyM0nH3AbZ+ZbdPlYqHRf06P76ihQatCu0M8e2A==
+X-Received: by 2002:a05:6512:2011:b0:511:8be0:c38d with SMTP id a17-20020a056512201100b005118be0c38dmr302362lfb.9.1707650301553;
+        Sun, 11 Feb 2024 03:18:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVQpxrd9b5isma80UEvsWb8bwsX/jL02T6A0Z4W4fgbjer3OGvWBCzL8LO+8fhWbajfvrL5/Nj/gU/S6ohMLTwICpW7je1dJ4qf4TuEsZ8dsL7GD/aA6x8gvGzWe/ydvtiJ8vop/8L2rdW5G3tCS2zM7Enzk9ZIZFDNi+cF9D9pkdFgEORbOdDZiViUkE9UgPIQhZtHul4K66qYWkxM2pgLg9co7TfvIbY6TCE3ASgKDQe5v0KqKaSZCa/E5aWX5dmIZLtpnKfjqamRm0SeMaAoO17+PMsX
+Received: from sacco-Inspiron-5559.. (88-160-103-158.subs.proxad.net. [88.160.103.158])
+        by smtp.gmail.com with ESMTPSA id w23-20020ac24437000000b005118c5595f3sm99017lfl.11.2024.02.11.03.18.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Feb 2024 03:18:21 -0800 (PST)
+From: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+To: rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	shuah@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+Subject: [PATCH] selftest: ftrace: fix minor typo in log
+Date: Sun, 11 Feb 2024 12:18:18 +0100
+Message-Id: <20240211111818.610211-1-vincenzo.mezzela@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWrjag3icVi2mJbtEftwz_jH51Ov4-FAV67Mdz7UvxQXw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 
-Hi Geert!
+Resolves a spelling error in the test log, preventing potential
+confusion.
 
-On Thu, Feb 01, 2024 at 09:49:33AM +0100, Geert Uytterhoeven wrote:
-> > > Parallel runs (run on multiple CPU cores) are supported, just kick the
-> > > "run" file multiple times.
-> >
-> > Hmmm does it mean it will run on the CPU that writes this "run" ?
-> > Because this could allow one to start tests using e.g.:
-> >
-> >     taskset -c $CPU tee /sys/.../run <<< y
-> 
-> That does indeed work.
+Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+---
 
-OK!
+It is submitted as part of my application to the "Linux Kernel
+Bug Fixing Spring Unpaid 2024" mentorship program of the Linux
+Foundation.
 
-> > But we could also wonder if it wouldn't be easier to either send "y"
-> > to /sys/.../cpu0/run or may just send the CPU number to "run" instead
-> > of "y".
-> 
-> That would complicate the code a lot.
+ .../testing/selftests/ftrace/test.d/trigger/trigger-hist-mod.tc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-OK I trust you, I was merely asking just in case.
+diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-mod.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-mod.tc
+index 4562e13cb26b..717898894ef7 100644
+--- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-mod.tc
++++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-mod.tc
+@@ -40,7 +40,7 @@ grep "id: \(unknown_\|sys_\)" events/raw_syscalls/sys_exit/hist > /dev/null || \
+ 
+ reset_trigger
+ 
+-echo "Test histgram with log2 modifier"
++echo "Test histogram with log2 modifier"
+ 
+ echo 'hist:keys=bytes_req.log2' > events/kmem/kmalloc/trigger
+ for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
+-- 
+2.34.1
 
-> > In my experience with this tool, you most always want to easily
-> > control the CPU number because SoCs these days are not symmetrical at
-> > all.
-> 
-> That's why it prints the CPU number ;-)
-> 
-> On multi-core systems, you can also do e.g.
-> 
->     for i in $(seq $(nproc)); do echo yes >
-> /sys/module/test_mhz/parameters/run & done
-> 
-> and collect the results for all CPU cores.
-
-OK!
-
-> BTW, this is the same for test_dhry.
-
-I didn't know, that's an even better reason for not changing any of this!
-
-> > Another point is that it would be nice if there was a way to present
-> > the result in a form that a script can retrieve from the directory,
-> > maybe the last measurement or something like this. I know that scripts
-> > are commonly used to check for a machine's correct behavior, and I try
-> > to encourage users to verify that it's working well, so anything we can
-> > do that makes it easier to use would be welcome.
-> 
-> I'll give that a try...
-
-Thanks.
-
-> > Hmmm I don't know if this is intended, the SPDX tag says MIT but the
-> > MODULE_LICENSE at the top says MIT/GPL. I can't say I care that much but
-> > I preferred to report it in case it's an accident ;-)
-> 
-> That must be an oversight.  I'll change the SPDX-License-Identifier to
-> "GPL-2.0 OR MIT".
-
-OK no problem!
-
-Thanks,
-Willy
 
