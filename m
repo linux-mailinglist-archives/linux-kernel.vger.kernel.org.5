@@ -1,199 +1,120 @@
-Return-Path: <linux-kernel+bounces-60974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98A75850BCD
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:38:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A88A4850BCF
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:43:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD8BB282AC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 22:38:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44EEA282CEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 22:43:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3471F11182;
-	Sun, 11 Feb 2024 22:38:20 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8291614010;
+	Sun, 11 Feb 2024 22:43:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="XzwGrRYB"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2EAF23C5;
-	Sun, 11 Feb 2024 22:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48B7D5684
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 22:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707691099; cv=none; b=VSuvgY+kMRZJRSPfBgWHHWhalFWyeZX8MbsaXax4fzL8/TajGGu1EvcNabxAyNWGyxlWJrU0Ott/4braiD29d3Niz6Z02F2ejPtcHCC6VhqmcFDiZc07R5GmBAD7TB2eT3FvhWf99U3Rd9qL+WIv6Upv2qnu5MDA7d3Fz3XfKV8=
+	t=1707691405; cv=none; b=dvO9UqunajS/Ecj2cA5gbslsQe4xdxRZAe32GG+Q5ply5nscJ3cDDnTrIRhAVPVXwF9sMCSb15qZXp8urq0PTIv6pDmaZjopQXYwtDUAhjEYzSBfQ61SjX2ON2UHkHKeGYjwFab2yIYQqppMKGfPkOPnh1c72e76eePaHLPNjls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707691099; c=relaxed/simple;
-	bh=2jaB1u24d4zX6XbultG3tdTc6pKJNerRrYF3/9nyfLw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OF8QNZXARowK8p1kjlT2x++K0ss15d5K6jfn2yyLPMxi8nlKxASzFsq5/TaKoQtjcNq2Yk2OeTE6uCeEGWCoNFTFrdr6IoCljRkz7V1buuY3xKaS0jshYQzVpExVrvU60wQXGdZ5tc1FbsbKnSHSgJSXDBHJ+518BOxmXF8rFYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 080C6C433C7;
-	Sun, 11 Feb 2024 22:38:18 +0000 (UTC)
-Date: Sun, 11 Feb 2024 17:38:12 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- kernel-team@android.com
-Subject: Re: [PATCH v16 5/6] Documentation: tracing: Add ring-buffer mapping
-Message-ID: <20240211173812.70c37edd@rorschach.local.home>
-In-Reply-To: <20240209163448.944970-6-vdonnefort@google.com>
-References: <20240209163448.944970-1-vdonnefort@google.com>
-	<20240209163448.944970-6-vdonnefort@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707691405; c=relaxed/simple;
+	bh=vH5zUWq2bx6dQW4vfZYSuRe8aVXk2pfKniPKqPuO358=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nvtYlkBSKTOxyzX2h3Fay2/QjXS/X2t0plCkmJzMeoROSD8qqMCSsD068ARY3cWyLk6fM3rnIw6qYBk2QoI56nYsoNR5erNgaGhcpyMs/3R2z9H2+Kga7w+cSr7oGMb+IO5a7Vt5zcQtf/Z5Ih+F968SS/lMoZlrc+v87OgspAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=XzwGrRYB; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a38271c0bd5so318245166b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 14:43:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1707691400; x=1708296200; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bjFoTus7aHlrnOcOuTAWCgZWdvA6SJu+L7BLRl44mJ4=;
+        b=XzwGrRYB4wgrdtQVHY5xX1gmGzqgxYdBbYfbzqQhvXkCm0J/eiDscC0FQdiLMEcoyN
+         xf3f7ffeMf42ZBRCIzQGhFrIqNFJriSP8DTRjRKvgS+j8N0qblrGp6360bNHCpeo8Gmc
+         MSqV7wvSAVwNGBQBlS/Y1ipmz9/E/o+l7gA4ozerlUh4mTNE1dGKh28pnGeaIog3ngyu
+         2fTAI5Oo1pGDmW5jecWj3oi+r1uvzKjEoB8C+mz6+CRQmFWm1ITT7NWPey7nBKM//TgF
+         n8l3ckrZfMqa3L8lWOch0M++KM0cYDLo+QFXj7TSvchlQRMvZxNoCf592pG0KnBaHVoV
+         nFLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707691400; x=1708296200;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bjFoTus7aHlrnOcOuTAWCgZWdvA6SJu+L7BLRl44mJ4=;
+        b=cRrIC0oKexMnxrGwarLbZcL4nQnWe+17vuspcTYA7eVNFAADyl86cMDdemxU9AaY/6
+         ZnzVF2fsXyCb+cYxusEZ2k5ZDYu3aRDVgKE6gESqnEwVWREJOnvYG4xwMzkYmGz9iyIY
+         Akv8x3giMyv7iJOEhq4mjJbqR2ov3649jXIo65Hz5b/CWTE1qhY/LX8w7DBjmKV8EiYF
+         R1Kph1fxb4zEfbaUW78s6RBqDfLvzLulpfvlzK8nKHafJ4sBm4ry8fcCT1lFn9uWZWaJ
+         Mp00fTfdCdB3Dz9CTGPLcrCv1Q8eJN090i5q+WJ9dSsG9BPSQYerKXEhRmIkQYdYuJTJ
+         YFig==
+X-Gm-Message-State: AOJu0YzG7+oiRBMe6s8mOZU3BX4nur7Cgx6LPjaefRV9ZyD7l8iD+rqo
+	OEp/r9F59PrRWD1ItgRlQMTzN26U61D5h8fuNQTkacrqHTzdzzY1uH9brPQRIGs=
+X-Google-Smtp-Source: AGHT+IF/LQAiygCy1X2jwyJTPhn1e+uYExYY761RJQwyXq1F0mNIQlwA82dukr6G4OSCdbXkY491HQ==
+X-Received: by 2002:a17:906:7f8a:b0:a38:4879:72f9 with SMTP id f10-20020a1709067f8a00b00a38487972f9mr3948919ejr.24.1707691400547;
+        Sun, 11 Feb 2024 14:43:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVtkTht4pynUiAjFuubCUmY6w2q1SDAomrzS74tMB+us6WxH+jvbhOHWUNcrWMoEl5L6T55EfIgeLoXTWNKIlhYxr9Azsf4uiaYvVR0jG2UYSJFwNC53+sU4Mb9JCe/fX5SgZ0iM9y9BJX3hSLh6HTvEqrXDhnZY6lExzdV7s8jIHcuvCCKuG67bCDx3nmBH3OuRXj8OUpxJzEKKWMdgfkfHIGL+kY6VJS2t6LOasRut1XGmG8ZWm/H9pdGeBNsH2C0ZWGQZm8dOABjP7/+vv/lSJAW2MSWurvNReMFQoeTJ1fUgn9eVo4ou7kQKvt8tQ==
+Received: from raven.intern.cm-ag (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
+        by smtp.gmail.com with ESMTPSA id g25-20020a1709061c9900b00a3bb2156f7asm3252608ejh.185.2024.02.11.14.43.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Feb 2024 14:43:20 -0800 (PST)
+From: Max Kellermann <max.kellermann@ionos.com>
+To: rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mark.rutland@arm.com,
+	James.Bottomley@HansenPartnership.com,
+	deller@gmx.de,
+	linux-trace-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Max Kellermann <max.kellermann@ionos.com>
+Subject: [PATCH] parisc/ftrace: add missing CONFIG_DYNAMIC_FTRACE check
+Date: Sun, 11 Feb 2024 23:43:14 +0100
+Message-Id: <20240211224314.169314-1-max.kellermann@ionos.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Fri,  9 Feb 2024 16:34:47 +0000
-Vincent Donnefort <vdonnefort@google.com> wrote:
+Fixes a bug revealed by -Wmissing-prototypes when
+CONFIG_FUNCTION_GRAPH_TRACER is enabled but not CONFIG_DYNAMIC_FTRACE:
 
-> It is now possible to mmap() a ring-buffer to stream its content. Add
-> some documentation and a code example.
-> 
-> Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
-> 
-> diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
-> index 5092d6c13af5..0b300901fd75 100644
-> --- a/Documentation/trace/index.rst
-> +++ b/Documentation/trace/index.rst
-> @@ -29,6 +29,7 @@ Linux Tracing Technologies
->     timerlat-tracer
->     intel_th
->     ring-buffer-design
-> +   ring-buffer-map
->     stm
->     sys-t
->     coresight/index
-> diff --git a/Documentation/trace/ring-buffer-map.rst b/Documentation/trace/ring-buffer-map.rst
-> new file mode 100644
-> index 000000000000..628254e63830
-> --- /dev/null
-> +++ b/Documentation/trace/ring-buffer-map.rst
-> @@ -0,0 +1,104 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==================================
-> +Tracefs ring-buffer memory mapping
-> +==================================
-> +
-> +:Author: Vincent Donnefort <vdonnefort@google.com>
-> +
-> +Overview
-> +========
-> +Tracefs ring-buffer memory map provides an efficient method to stream data
-> +as no memory copy is necessary. The application mapping the ring-buffer becomes
-> +then a consumer for that ring-buffer, in a similar fashion to trace_pipe.
-> +
-> +Memory mapping setup
-> +====================
-> +The mapping works with a mmap() of the trace_pipe_raw interface.
-> +
-> +The first system page of the mapping contains ring-buffer statistics and
-> +description. It is referred as the meta-page. One of the most important field of
-> +the meta-page is the reader. It contains the sub-buffer ID which can be safely
-> +read by the mapper (see ring-buffer-design.rst).
-> +
-> +The meta-page is followed by all the sub-buffers, ordered by ascendant ID. It is
-> +therefore effortless to know where the reader starts in the mapping:
-> +
-> +.. code-block:: c
-> +
-> +        reader_id = meta->reader->id;
-> +        reader_offset = meta->meta_page_size + reader_id * meta->subbuf_size;
-> +
-> +When the application is done with the current reader, it can get a new one using
-> +the trace_pipe_raw ioctl() TRACE_MMAP_IOCTL_GET_READER. This ioctl also updates
-> +the meta-page fields.
-> +
-> +Limitations
-> +===========
-> +When a mapping is in place on a Tracefs ring-buffer, it is not possible to
-> +either resize it (either by increasing the entire size of the ring-buffer or
-> +each subbuf). It is also not possible to use snapshot or splice.
+ arch/parisc/kernel/ftrace.c:82:5: error: no previous prototype for 'ftrace_enable_ftrace_graph_caller' [-Werror=missing-prototypes]
+    82 | int ftrace_enable_ftrace_graph_caller(void)
+       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ arch/parisc/kernel/ftrace.c:88:5: error: no previous prototype for 'ftrace_disable_ftrace_graph_caller' [-Werror=missing-prototypes]
+    88 | int ftrace_disable_ftrace_graph_caller(void)
+       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Actually, it doesn't stop splice. splice still works, it's just that it
-makes splice copy the data. The above should say:
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+---
+ arch/parisc/kernel/ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	"It is also not possible to use snapshot and causes splice to
-	copy the ring buffer data instead of using the copyless swap
-	from the ring buffer".
-
-Or something like that.
-
-> +
-> +Concurrent readers (either another application mapping that ring-buffer or the
-> +kernel with trace_pipe) are allowed but not recommended. They will compete for
-> +the ring-buffer and the output is unpredictable.
-
-  "and the output is unpredictable just like concurrent readers on
-  trace_pipe would be." ;-)
-
--- Steve
-
-> +
-> +Example
-> +=======
-> +
-> +.. code-block:: c
-> +
-> +        #include <fcntl.h>
-> +        #include <stdio.h>
-> +        #include <stdlib.h>
-> +        #include <unistd.h>
-> +
-> +        #include <linux/trace_mmap.h>
-> +
-> +        #include <sys/mman.h>
-> +        #include <sys/ioctl.h>
-> +
-> +        #define TRACE_PIPE_RAW "/sys/kernel/tracing/per_cpu/cpu0/trace_pipe_raw"
-> +
-> +        int main(void)
-> +        {
-> +                int page_size = getpagesize(), fd, reader_id;
-> +                unsigned long meta_len, data_len;
-> +                struct trace_buffer_meta *meta;
-> +                void *map, *reader, *data;
-> +
-> +                fd = open(TRACE_PIPE_RAW, O_RDONLY | O_NONBLOCK);
-> +                if (fd < 0)
-> +                        exit(EXIT_FAILURE);
-> +
-> +                map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
-> +                if (map == MAP_FAILED)
-> +                        exit(EXIT_FAILURE);
-> +
-> +                meta = (struct trace_buffer_meta *)map;
-> +                meta_len = meta->meta_page_size;
-> +
-> +                printf("entries:        %llu\n", meta->entries);
-> +                printf("overrun:        %llu\n", meta->overrun);
-> +                printf("read:           %llu\n", meta->read);
-> +                printf("nr_subbufs:     %u\n", meta->nr_subbufs);
-> +
-> +                data_len = meta->subbuf_size * meta->nr_subbufs;
-> +                data = mmap(NULL, data_len, PROT_READ, MAP_SHARED, fd, meta_len);
-> +                if (data == MAP_FAILED)
-> +                        exit(EXIT_FAILURE);
-> +
-> +                if (ioctl(fd, TRACE_MMAP_IOCTL_GET_READER) < 0)
-> +                        exit(EXIT_FAILURE);
-> +
-> +                reader_id = meta->reader.id;
-> +                reader = data + meta->subbuf_size * reader_id;
-> +
-> +                printf("Current reader address: %p\n", reader);
-> +
-> +                munmap(data, data_len);
-> +                munmap(meta, meta_len);
-> +                close (fd);
-> +
-> +                return 0;
-> +        }
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index d1defb9ede70..621a4b386ae4 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -78,7 +78,7 @@ asmlinkage void notrace __hot ftrace_function_trampoline(unsigned long parent,
+ #endif
+ }
+ 
+-#ifdef CONFIG_FUNCTION_GRAPH_TRACER
++#if defined(CONFIG_DYNAMIC_FTRACE) && defined(CONFIG_FUNCTION_GRAPH_TRACER)
+ int ftrace_enable_ftrace_graph_caller(void)
+ {
+ 	static_key_enable(&ftrace_graph_enable.key);
+-- 
+2.39.2
 
 
