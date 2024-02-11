@@ -1,169 +1,206 @@
-Return-Path: <linux-kernel+bounces-60679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10F91850858
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:40:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9A1085085A
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:41:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FDBD1F227A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:40:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AF3FB218A3
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:41:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD4C5917B;
-	Sun, 11 Feb 2024 09:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3746E5917F;
+	Sun, 11 Feb 2024 09:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CSJr//90"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="14B3Knon"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D992E3E1;
-	Sun, 11 Feb 2024 09:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93CFD58AD5
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 09:40:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707644408; cv=none; b=UTTMoc7n4N7ro4lhJH53iyhtgGFnu71recwO7AwP26xRXd372ciAbIQ50vTEIBdpvBTatFBiwIBZCzBO1GV1LWpVCzRmkhe59hTHlJIe7wNNYaLBclgqD5xgAPjpYuywgvKsD1jg+q4K62BbFks3wgmUQrGsEHHb1ZCKFKTkYR8=
+	t=1707644460; cv=none; b=X4M3PuWDNDTLOlW9HuyH+3vRHf1JkolSmZ9VaynHdEEA0+WGt/SuipEk22iEbjwHAaCiHYeAwKLuVDldwwxlcG9UcxJlvkF6mByhOW/spBiAlkxlY2WO61W0mhmS4Lwds2cTuMAuMqE+GVfLepH2dixtcrA78v3IigOslL6CsYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707644408; c=relaxed/simple;
-	bh=m+MynlBCqiTW/nW56xpevjEGzyTh2lJGO9XlKJBXUj8=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=VO0hAeIrTgyQD6mCeXvhBMQx7r8N/3PRMablfi2JytRQxqp5YrYHdDdp4apOpwruJ/9EmtpuvnUIGme0IvUbH8Uac9Y9LyIgfgRNs0lxvXFUTE49XHAsZnzv4UUo1P66wSZhQG03yYRR4SSyPmTxHqt67VSUrBNxN7ECBNu0qu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CSJr//90; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d0dc3fdd1bso21666131fa.0;
-        Sun, 11 Feb 2024 01:40:05 -0800 (PST)
+	s=arc-20240116; t=1707644460; c=relaxed/simple;
+	bh=/wP9wzwffZbLxrBM8ksZnD/6CWd0SVUf0oUyW7qxhkE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cbVOLzmOfo3U4+a62TwBR5IWtm6v2ROSWgw76edyUAog6rpIx/osN8L7qshYuU60muTQ7gc6XAYPJ/xO/j8pOA68WqlG52E6qwYqqCse7ydIua9AtgoqTsPFsMMJSLqvJfAO+W3WI/3EyTIVmaiMncxk4CBq9dPjyT2RwzoCzkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=14B3Knon; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56101dee221so5880a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 01:40:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707644404; x=1708249204; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hxAeYgheoBLj+Edm6NVrMBtYDbJT2BZs/m5VJ4rUUQw=;
-        b=CSJr//90IQqI+pyyOsk+4UvVYgEnN3sWKPNEIIVsGvxZqRF7tCA9i6RDYw0muwg28F
-         b+GVm7259D2Qlu4UnX7PUxiZ17BEQBQ8kkF6GdtVgGytkgjTi8XolXNkCTznL8pOqahJ
-         vh41i0zP5Bd/pqmc0pLSFKt5p51LcIb1UhBAC9IGd+9z0sGb7sr9/7Fs8EehaSvyHwQJ
-         sWeJ9RggKcHIb4kd9DdbGrzKr1WBqJ7yEhJxAoMxj4rFDg1e0xHvXBeHCp6py4BfV0gX
-         FGa8XtGRLGYn6/Km2o2cTIPx7DZXLCyl6TGZHcvb4FwHbqAH38/R45/GL4535lxR4utz
-         lMvw==
+        d=google.com; s=20230601; t=1707644457; x=1708249257; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2e/NnACijgdjz/+JmX+cslMM8xhvoVXLCKquNzJcRzM=;
+        b=14B3KnonrgagIKm6/aM7vm4zEQf2SvpUbRLnkEike6sWJXyVqTNcV/wrUjC19dl7ED
+         fY69uaUb8Lnedi6Eau1rSxYcw/6c43G+tae34EYFdi+RL31fGXOJubU2+XzZpgBCaMS8
+         kECDs2n3m4xr0PxIyjHTlPpgoQMtvPQLW26F7lWHUKR5SMi564U9EyH/vScfmr/OSYjc
+         6VfRorCHzseJO97C3NwtwARQtBhtnlttcppPLlyez7Rz3ODBikJHIh0YUig+cfhmJvxI
+         id1JnRnoEOIY4suzYxzYmVFZVna+n7T/s/0sp9Ec8RtjrfBG0+WI/65lLLX5OrTu7fp5
+         ZWEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707644404; x=1708249204;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hxAeYgheoBLj+Edm6NVrMBtYDbJT2BZs/m5VJ4rUUQw=;
-        b=RDAVhX40NLjxD/iNJZvnvaSCAPUkYZ+EeieoW8YH1NyhVsf7ikISI3INTzHgGfDqXn
-         QQxKWBcKHORVq5R+VQqfvXzXqJb4xo/MrDpaITC0y1hYce28E3lYo2AYOROb/tW5vSJb
-         VVsMZJppQiklfsLvb5INp9ht3bTFvpUY8Oojs+pO86uLjvBqlHatluozj4uK/3M9fUaG
-         TcGM5rixnbhfraj4tOuCF9e/E9jiwcLocBVtrRX3UWSX3xtmclIV+bC8mHGc/dJti4Bt
-         SM+FFOFqF/MQYXh9KYZHZnc1aIugCm6uf7GNTIUfmD9yA3wMHxIyN+mRXkZNP2CEHXh7
-         6isA==
-X-Forwarded-Encrypted: i=1; AJvYcCUmylMKYlwDuywS1hHIv/DgkLRRCTwTF+4rjjoRC00d8TAE+yEoYdM/Jo2okQPGBUMH/29JF/5Vh9e4VsSOzTpUQy4ZgVZ3FxMV0QBQAJsFriOKxWcznjPb12kQEpe1rA34lEkvcvDaFS/fJ6Iht9RgBBLx+TrAEYwVEsvgjMLA/TbdlVfmJ4w=
-X-Gm-Message-State: AOJu0YyqtxTTTH4L2KYmZgFdLsSt4zV9XiCqqyx+dnEtWEjQXFDMRpBS
-	rJuTSU17IP3AuUeYvygyKFn7Jvp0VyFVu2rZRqZmDtH76S/luwdl
-X-Google-Smtp-Source: AGHT+IHgHMXcm6Lu4lcuYGzuQWfKtCRvTjkEiAIsX+ofRSGKGLh+iM4VFDBnvXF5ZTHsCWCz56qhiQ==
-X-Received: by 2002:a05:651c:507:b0:2d0:d336:d144 with SMTP id o7-20020a05651c050700b002d0d336d144mr2983808ljp.14.1707644403904;
-        Sun, 11 Feb 2024 01:40:03 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVNbVc6nIIj7NjqkDPBg5terxOSgaQfNkajtoQQrtFWhNxIYj+vrBES6GSJSHLukRUcMFtLGqC32+pNKwLB890KrA3SeSzHT2rAkj81S9b/JD9DvoRP3rE9T6xzmjwo0C+U1rD725MIp/16mXXpN80RCcCPWxCkUb0WpPYUd7CqRt3rBXl5PagSo2dis+uD3Y6NqBUV+vIsHhvsdU3qCRavSa4bGS4LStIGj94HY48GzKj/7h2iU5x3WNCaAPGqKjJ4rJHP/dmLWlApNa83+bgX5JU/3KWHitUaWrD0ndFbUUdEHK8OFuMONYH58+mRvoKiuz+4cQYtK6nOt3SID4122Y9C53QjhRkKg7F8sEc934z8knvVOkjNu+y2Shtq3EqIDxIx
-Received: from [192.168.1.105] ([31.173.83.113])
-        by smtp.gmail.com with ESMTPSA id n15-20020a05651c000f00b002d06c31cf6esm887333lja.124.2024.02.11.01.40.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 01:40:03 -0800 (PST)
-Subject: Re: [PATCH net-next v2 4/5] net: ravb: Do not apply RX checksum
- settings to hardware if the interface is down
-To: Biju Das <biju.das.au@gmail.com>, Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc: Biju Das <biju.das.jz@bp.renesas.com>,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, claudiu.beznea@tuxon.dev,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
- Paolo Abeni <pabeni@redhat.com>
-References: <CADT+UeAfCTd8c+dHn3mgT=g6Boip=oRPdkODMN_j2KaROcT0AQ@mail.gmail.com>
-From: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <5600b643-0d07-5583-4858-a521676476a5@gmail.com>
-Date: Sun, 11 Feb 2024 12:40:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        d=1e100.net; s=20230601; t=1707644457; x=1708249257;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2e/NnACijgdjz/+JmX+cslMM8xhvoVXLCKquNzJcRzM=;
+        b=Vf1dp53bbIVfi+XKWdCzXD38I+FHgY194SxOTJ04KR+9mQIsyi/QSR+XaSiKDxxJR6
+         LMvL3oYdI+h5WEKKmGmMPuRirpxB/dmIIy8nDX/4pqnBWm44ixpd0pnLY04Fd00tGMvR
+         i7w31gPdkTIJLL5SjhgCspD3hGTequxMxr7lIBbmOcUSbcRodqegQIOO9F0tv2IZQ+Wq
+         YYTaUQcMRj8hAY4KjhMO4fCq5UBbNw1wnvkojZMGfpoQ8tj7whB0AFBOjA+Tcf43SYym
+         KgVwAJQvLNehag1mp0BF0TKtV19hdtL6yTLPh/bN9PE21P+Zt+3qbUx4204GhKdCbFlP
+         YLJw==
+X-Gm-Message-State: AOJu0Yyt4ApgWTbQul2yTFKDcu7nZX4zTu2CO50jlmB7zQpQ9eDqcCVF
+	NN19t9xacEaEyaI4PKbeTXKqyHL64PWycT6YJ3KKDc28wiQ00lveIla+2DAQuJ6QQ5D6CcxJqXO
+	uKKBS3mm85rwPiP4/2T/X4p7DJykarRcHNB9v
+X-Google-Smtp-Source: AGHT+IEDbNDMt9jpuDF0Ep+hJamsdvVE1EBokWa007g0Xi3TxSBxglksRrLcmFQAF8K/0r1VVm9zxQzezPVKUME2T2o=
+X-Received: by 2002:a50:c345:0:b0:561:3d1d:e5a0 with SMTP id
+ q5-20020a50c345000000b005613d1de5a0mr123434edb.0.1707644456561; Sun, 11 Feb
+ 2024 01:40:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CADT+UeAfCTd8c+dHn3mgT=g6Boip=oRPdkODMN_j2KaROcT0AQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20240209211528.51234-1-jdamato@fastly.com> <20240209211528.51234-5-jdamato@fastly.com>
+In-Reply-To: <20240209211528.51234-5-jdamato@fastly.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Sun, 11 Feb 2024 10:40:45 +0100
+Message-ID: <CANn89iKB=_C4kZ1SFF18DXXaOdL4hXcLAZLWMT3w=-nHyWPaoA@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 4/4] eventpoll: Add epoll ioctl for epoll_params
+To: Joe Damato <jdamato@fastly.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	chuck.lever@oracle.com, jlayton@kernel.org, linux-api@vger.kernel.org, 
+	brauner@kernel.org, davem@davemloft.net, alexander.duyck@gmail.com, 
+	sridhar.samudrala@intel.com, kuba@kernel.org, willemdebruijn.kernel@gmail.com, 
+	weiwan@google.com, David.Laight@aculab.com, arnd@arndb.de, sdf@google.com, 
+	amritha.nambiar@intel.com, Jiri Slaby <jirislaby@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nathan Lynch <nathanl@linux.ibm.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Maik Broemme <mbroemme@libmpq.org>, 
+	Steve French <stfrench@microsoft.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Julien Panis <jpanis@baylibre.com>, Thomas Huth <thuth@redhat.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
+	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/11/24 11:56 AM, Biju Das wrote:
+On Fri, Feb 9, 2024 at 10:15=E2=80=AFPM Joe Damato <jdamato@fastly.com> wro=
+te:
+>
+> Add an ioctl for getting and setting epoll_params. User programs can use
+> this ioctl to get and set the busy poll usec time, packet budget, and
+> prefer busy poll params for a specific epoll context.
+>
+> Parameters are limited:
+>   - busy_poll_usecs is limited to <=3D s32_max
+>   - busy_poll_budget is limited to <=3D NAPI_POLL_WEIGHT by unprivileged
+>     users (!capable(CAP_NET_ADMIN))
+>   - prefer_busy_poll must be 0 or 1
+>   - __pad must be 0
+>
+> Signed-off-by: Joe Damato <jdamato@fastly.com>
+> Acked-by: Stanislav Fomichev <sdf@google.com>
+> Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+> ---
+>  .../userspace-api/ioctl/ioctl-number.rst      |  1 +
+>  fs/eventpoll.c                                | 72 +++++++++++++++++++
+>  include/uapi/linux/eventpoll.h                | 13 ++++
+>  3 files changed, 86 insertions(+)
+>
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documen=
+tation/userspace-api/ioctl/ioctl-number.rst
+> index 457e16f06e04..b33918232f78 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -309,6 +309,7 @@ Code  Seq#    Include File                           =
+                Comments
+>  0x89  0B-DF  linux/sockios.h
+>  0x89  E0-EF  linux/sockios.h                                         SIO=
+CPROTOPRIVATE range
+>  0x89  F0-FF  linux/sockios.h                                         SIO=
+CDEVPRIVATE range
+> +0x8A  00-1F  linux/eventpoll.h
+>  0x8B  all    linux/wireless.h
+>  0x8C  00-3F                                                          WiN=
+RADiO driver
+>                                                                       <ht=
+tp://www.winradio.com.au/>
+> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+> index 1b8d01af0c2c..aa58d42737e6 100644
+> --- a/fs/eventpoll.c
+> +++ b/fs/eventpoll.c
+> @@ -37,6 +37,7 @@
+>  #include <linux/seq_file.h>
+>  #include <linux/compat.h>
+>  #include <linux/rculist.h>
+> +#include <linux/capability.h>
+>  #include <net/busy_poll.h>
+>
+>  /*
+> @@ -494,6 +495,49 @@ static inline void ep_set_busy_poll_napi_id(struct e=
+pitem *epi)
+>         ep->napi_id =3D napi_id;
+>  }
+>
+> +static long ep_eventpoll_bp_ioctl(struct file *file, unsigned int cmd,
+> +                                 unsigned long arg)
+> +{
+> +       struct eventpoll *ep =3D file->private_data;
+> +       void __user *uarg =3D (void __user *)arg;
+> +       struct epoll_params epoll_params;
+> +
+> +       switch (cmd) {
+> +       case EPIOCSPARAMS:
+> +               if (copy_from_user(&epoll_params, uarg, sizeof(epoll_para=
+ms)))
+> +                       return -EFAULT;
+> +
+> +               /* pad byte must be zero */
+> +               if (epoll_params.__pad)
+> +                       return -EINVAL;
+> +
+> +               if (epoll_params.busy_poll_usecs > S32_MAX)
+> +                       return -EINVAL;
+> +
+> +               if (epoll_params.prefer_busy_poll > 1)
+> +                       return -EINVAL;
+> +
+> +               if (epoll_params.busy_poll_budget > NAPI_POLL_WEIGHT &&
+> +                   !capable(CAP_NET_ADMIN))
+> +                       return -EPERM;
+> +
+> +               ep->busy_poll_usecs =3D epoll_params.busy_poll_usecs;
 
->>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>
->>>> Do not apply the RX checksum settings to hardware if the interface is
->>>> down.
->>>> In case runtime PM is enabled, and while the interface is down, the IP
->>>> will be in reset mode (as for some platforms disabling the clocks will
->>>> switch the IP to reset mode, which will lead to losing register
->>>> contents) and applying settings in reset mode is not an option.
->>>> Instead, cache the RX checksum settings and apply them in ravb_open()
->>>> through ravb_emac_init().
->>>> This has been solved by introducing pm_runtime_active() check. The
->>>> device runtime PM usage counter has been incremented to avoid
->>>> disabling the device clocks while the check is in progress (if any).
->>>>
->>>> Commit prepares for the addition of runtime PM.
->>>>
->>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>
->>> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
->>
->> This will do the same job, without code duplication right?
->>
->>> static int ravb_set_features(struct net_device *ndev,
->>>     netdev_features_t features)
->>> {
->>> struct ravb_private *priv = netdev_priv(ndev);
->>> struct device *dev = &priv->pdev->dev;
->>> const struct ravb_hw_info *info = priv->info;
->>>
->>> pm_runtime_get_noresume(dev);
->>> if (!pm_runtime_active(dev)) {
->>> pm_runtime_put_noidle(dev);
->>> ndev->features = features;
->>> return 0;
->>> }
->>>
->>> return info->set_feature(ndev, features);
-> 
->> We now leak the device reference by not calling pm_runtime_put_noidle()
->> after this statement...
-> 
-> Oops. So this leak  can be fixed like [1]
-> 
->>  The approach seems sane though -- Claudiu, please consider following it.
-> 
-> [1]
-> static int ravb_set_features(struct net_device *ndev,
->     netdev_features_t features)
-> {
-> struct ravb_private *priv = netdev_priv(ndev);
-> const struct ravb_hw_info *info = priv->info;
-> struct device *dev = &priv->pdev->dev;
-> bool pm_active;
-> 
-> pm_runtime_get_noresume(dev);
-> pm_active = pm_runtime_active(dev);
-> pm_runtime_put_noidle(dev);
+You need WRITE_ONCE(ep->XXX, val); for all these settings.
 
-   There is no point dropping the RPM reference before we access
-the regs...
+> +               ep->busy_poll_budget =3D epoll_params.busy_poll_budget;
+> +               ep->prefer_busy_poll =3D epoll_params.prefer_busy_poll;
+> +               return 0;
+> +       case EPIOCGPARAMS:
+> +               memset(&epoll_params, 0, sizeof(epoll_params));
+> +               epoll_params.busy_poll_usecs =3D ep->busy_poll_usecs;
 
-> if (pm_active )
->      return info->set_feature(ndev, features);
+You need to use READ_ONCE(ep->XXXXX) for the three reads.
 
-   As I said, we should call pm_runtime_put_noidle() here...
- 
-> ndev->features = features;
-> return 0;
-> }
 
-MBR, Sergey
+> +               epoll_params.busy_poll_budget =3D ep->busy_poll_budget;
+> +               epoll_params.prefer_busy_poll =3D ep->prefer_busy_poll;
+> +               if (copy_to_user(uarg, &epoll_params, sizeof(epoll_params=
+)))
+> +                       return -EFAULT;
+> +               return 0;
+> +       default:
+> +               return -ENOIOCTLCMD;
+> +       }
+> +}
+>
 
