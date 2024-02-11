@@ -1,117 +1,130 @@
-Return-Path: <linux-kernel+bounces-60698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B8618508AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 006AD8508AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AC871F226B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:40:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 946C61F21D75
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 901995A4C1;
-	Sun, 11 Feb 2024 10:40:02 +0000 (UTC)
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B885A119;
+	Sun, 11 Feb 2024 10:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Vu8yU5dA"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3F1E5A785;
-	Sun, 11 Feb 2024 10:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0532958231
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 10:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707648002; cv=none; b=mofnqjhShjQXaVyV/mLEUIH5fN+bRc2qO+1nVX3wmCJIRGKAVTsxtQ94Sp2TraPnbox7WkkxuB16+5yl1Tq3PiWFNmlSSPvbpnxeGJsGcrn7FNIP80znhFHJS7vzkU/AHXZr3xerPXP1fAg/qUCrD2EqF7Nc1FwiBjb3qe4ytBY=
+	t=1707648129; cv=none; b=O1uMdixnHHBEpYYCTFJNquZMaiU1qyJPORR1bKJuC5ENYko6oaUQ8P0Aedd2BKTgRN4NBfxB6+dldTH99Lnj3YFX21kshueKcUwGA5mYtM2/xVTa8gzm3MVa0sNVRQLHgds0LLfgAYaC9ReexX4h4GA2p708D7DJBeM2W11UC5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707648002; c=relaxed/simple;
-	bh=7wXV45yaeMU9Lx3AYZF5L9CqLCL35Zw98/+vU2kj8xU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=bHzIbuIvmfxTGR2BHWoHyWeoDxDD/fNkwtbM6C/3xqt4OOspymSYwB96i0SZDmzkHShmraE6ScLMQ5MM39YX8KpOJcBT14tynwEZuviboGy7w6jAD8MvK7UJ1cR2lvDuEaLmH/QEL3f+wrA3p6XXqvEHEXN2RLiVkwmwoDzO9jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.97)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1rZ7FW-00000003XEc-40rB; Sun, 11 Feb 2024 11:39:50 +0100
-Received: from dynamic-089-014-110-122.89.14.pool.telefonica.de ([89.14.110.122] helo=[192.168.178.20])
-          by inpost2.zedat.fu-berlin.de (Exim 4.97)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1rZ7FW-00000000Q2U-32WB; Sun, 11 Feb 2024 11:39:50 +0100
-Message-ID: <cd1a36a234c8fc61c5febe646ae0f05ed20ae32a.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] sh: Fix build with CONFIG_UBSAN=y
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Kees Cook <keescook@chromium.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, kernel test robot
-	 <lkp@intel.com>, Rich Felker <dalias@libc.org>, Masahiro Yamada
-	 <masahiroy@kernel.org>, Nicolas Schier <n.schier@avm.de>, 
-	linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org
-Date: Sun, 11 Feb 2024 11:39:49 +0100
-In-Reply-To: <9fda57fc1b1ba6ad9bd6f7df3fb12674d0f4f940.camel@physik.fu-berlin.de>
-References: <20240130232717.work.088-kees@kernel.org>
-	 <494586ed5a0871cf7cfd005f513577952306a0bc.camel@physik.fu-berlin.de>
-	 <fe057f57aba0f8a9040d4700d27f5bd478032925.camel@physik.fu-berlin.de>
-	 <202402020228.BBEF7DAC@keescook>
-	 <9fda57fc1b1ba6ad9bd6f7df3fb12674d0f4f940.camel@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1707648129; c=relaxed/simple;
+	bh=yqJTFHQKRuf3McMWjJjCtVjJDMny2ZXReTr5EeuBmk8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=EjzzBAvfOVH7pKN2ILLwN02fXR1jpg9lT6e4GCoSSaOuolO0eXbz22Oxp+aydWi2G8CYbW/7m1YYTEiCPGW6VGZDohp9HiewxgzYNsI20zGrn9c3rMRwWKoRGqHETH0Zs9jWNI3nGZ56tkNiKhHW+KZZB48IQtfOCi1XlaBBDbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Vu8yU5dA; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 90F4240E01BB;
+	Sun, 11 Feb 2024 10:41:57 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id q3NjUKypKKOW; Sun, 11 Feb 2024 10:41:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707648115; bh=INX6uI+1dONLEWgYgztCUTuh9r0lrQ79ihh95+KUsSM=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Vu8yU5dA57ikBNs/uF3IU5JPO0pqAmUIYJdZkZEP8EQcTGQvxw9TzSQ7528Mw5uA1
+	 bYYunxr6c86W2nNrGiqcoBHWD1Fsc65+u5ahtd6/QPTqej+Lilsym1AY/qwg1pQwo3
+	 2vcFPoNsMVE0Hr1g1LI3lzSrOFWJXPrsHeq1c+evzZveqg8lbA9Ti+jA7++YAOyOiq
+	 rIhv4YzVaZdY4JtVcsRYaC2utrMZ0qEDgVcTkk1q6TqWBy9ZmD54MKKb1m3vdF2swJ
+	 QsjCOj4VfX/5kT0WJCJKVewJPLOZPyFM06CQY0zVLtjyv/Lj5cJfz5DnYZliuReQWq
+	 asIiM3Ks2vA3JeLgeq426xXfJ3slgt44tP4Lwxn5aXkP9RcMS4LC9jt1eKI7UlpQ8e
+	 MhXm9nH3D5I0+Obt/yYdxidWhHuBY1QUlXaihaCKuFTGRfQRHNYgCJIE9u6UzmYDNY
+	 sxAv0hmA2ehx7NooL0qU1nWtr7u3SfKiqXUj9lcwYMJNzhx5JPzi4ankMBxlmostTQ
+	 lZegO6ukOVHd3545RAJmidADtpW/qdLfswMKEp5OE/zR8f6hVPjlW/YTLHsBy9dXku
+	 jEAw62urQ0U7oSyzGr/sMlpop4qww8fL5rr8sFj01n4tqe4YKV97kcVLkhVp3kzXm9
+	 F1VvR3VlJvMOrO8v6jfg1YvE=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7C37240E01B5;
+	Sun, 11 Feb 2024 10:41:52 +0000 (UTC)
+Date: Sun, 11 Feb 2024 11:41:44 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/urgent for v6.8-rc4
+Message-ID: <20240211104144.GAZcikaNw7Luaj4XZy@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-Hi Kees,
+Hi Linus,
 
-On Fri, 2024-02-02 at 12:06 +0100, John Paul Adrian Glaubitz wrote:
-> > When I use GCC 13.2 (I'm specifically on Ubuntu 23.10) and the randconf=
-ig
-> > linked from the report:
-> > https://download.01.org/0day-ci/archive/20240131/202401310416.s8HLiLnC-=
-lkp@intel.com/config
-> > (which is notably enabling CONFIG_UBSAN=3Dy and CONFIG_UBSAN_SHIFT=3Dy)=
- then I
-> > see at the final link stage:
-> >=20
-> > /usr/bin/sh4-linux-gnu-ld: arch/sh/boot/compressed/misc.o: in function =
-`zlib_inflate_table':
-> > misc.c:(.text+0x650): undefined reference to `__ubsan_handle_shift_out_=
-of_bounds'
-> > ...
-> >=20
-> > After the patch, it's solved.
->=20
-> OK, let me test with gcc 13.x. My build host is currently running openSUS=
-E Leap 15.5.
+please pull a couple of urgent x86 fixes for v6.8-rc4.
 
-I just wanted to try reproduce the problem again with the reproducer in [1]=
- as well
-as with gcc-13.2.0, but your branch devel/overflow/ubsan-only no longer exi=
-sts.
+Thx.
 
-Can you tell me where to find the patches now?
+---
 
-Adrian
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
-> [1] https://download.01.org/0day-ci/archive/20240131/202401310416.s8HLiLn=
-C-lkp@intel.com/reproduce
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.8_rc4
+
+for you to fetch changes up to f6a1892585cd19e63c4ef2334e26cd536d5b678d:
+
+  x86/Kconfig: Transmeta Crusoe is CPU family 5, not 6 (2024-02-09 16:28:19 +0100)
+
+----------------------------------------------------------------
+- Correct the minimum CPU family for Transmeta Crusoe in Kconfig so that
+  such hw can boot again
+
+- Do not take into accout XSTATE buffer size info supplied by userspace
+  when constructing a sigreturn frame
+
+- Switch get_/put_user* to EX_TYPE_UACCESS exception handling when an
+  MCE is encountered so that it can be properly recovered from instead
+  of simply panicking
+
+----------------------------------------------------------------
+Aleksander Mazur (1):
+      x86/Kconfig: Transmeta Crusoe is CPU family 5, not 6
+
+Andrei Vagin (1):
+      x86/fpu: Stop relying on userspace for info to fault in xsave buffer
+
+Qiuxu Zhuo (1):
+      x86/lib: Revert to _ASM_EXTABLE_UA() for {get,put}_user() fixups
+
+ arch/x86/Kconfig.cpu         |  2 +-
+ arch/x86/kernel/fpu/signal.c | 13 +++++--------
+ arch/x86/lib/getuser.S       | 24 ++++++++++++------------
+ arch/x86/lib/putuser.S       | 20 ++++++++++----------
+ 4 files changed, 28 insertions(+), 31 deletions(-)
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
