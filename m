@@ -1,104 +1,131 @@
-Return-Path: <linux-kernel+bounces-60717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 705D88508D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:27:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C83F8508E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:52:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10D81B22816
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:27:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 227411C228FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7EC5A783;
-	Sun, 11 Feb 2024 11:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hIrvIQOF"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E7735A792;
+	Sun, 11 Feb 2024 11:51:56 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F305A4E9
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 11:26:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A5C042A94
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 11:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707650821; cv=none; b=jylJQhlMCMZsUb7zD8kPdE39i0h5bZ2XVzLrzh3bJHirwTZ7BpxPbNy9sb25Sx+cMTMbjiwIRnt1HxKkIY6vxxeqGw9xJhW3ZvZBhWDoZlpRRANYYcveFQfbc6uN8F2k3mggm0ljypD1kCNrGpvnREVU+z4blejtRJpFLEFYj14=
+	t=1707652315; cv=none; b=sGt70fCmTDtcWkilgi486EOHdsnMN3UooIGO03uW7oVAReCqUxXhBBZ+mj1naa/qN03aXpkGyo7fU53TJG3RVvobkuruet2i/c6hy7Ht3SltwQGi6zq1Kc5cZ6o4sqJweRzpTMi5454hCXM5mORKjb3LJEh49x0d01WxWqfc5qI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707650821; c=relaxed/simple;
-	bh=Xa7DicIBQgWfNBg/mewkVAjHuzg7xZ8Uso9Lm4M+6gY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=G4vgnVvB2p2fqQz7HB4Vf8gcbrNlgU5JophyXt649nkq9flZ9zl7aUD1iEpjHK7hCh9NhmJdUvcoqG3/Gg1kEk0/eeOQRoUEHRJoe3gfldCJ3N91RDEtf5z4FJzYFHkNJBK3tL4J+Fr1JU3AYrnGL7DoLJ0/gnuOdRBCq4rsj4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hIrvIQOF; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707650818; x=1739186818;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Xa7DicIBQgWfNBg/mewkVAjHuzg7xZ8Uso9Lm4M+6gY=;
-  b=hIrvIQOF38bKf0Nl9Wsyrfe6qhAnRXZnJw6puCBZCXqIIh+I85kJyhUU
-   3adADfF2kbH39XdSt1jRVEwfmUxXS9Sjp/E1l8MdX4b9YLhxdyE1IJLQx
-   lINVkK/wFVZ2Yr33caPsKNm5zDfMXWPf21HRx6MqT6WzWevQS694ZL1PI
-   iLPstbrCOLwrhj/IDnAjtI4bJ5VHEKFXaKwatsaXo3/Y9VI+cN9YYWrxX
-   xfmJ38q+zjWPQ9aJ1wDyjXRFhvb0EQqv4mS0cxOaxovn8CRS776Db9BAT
-   Nw3Qw8YyVQYglxkM32J+TFy6V5tzIhIbiinhvA5WqI+v6eqFUOUCfCUei
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10980"; a="1503485"
-X-IronPort-AV: E=Sophos;i="6.05,261,1701158400"; 
-   d="scan'208";a="1503485"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2024 03:26:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,261,1701158400"; 
-   d="scan'208";a="33419878"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 11 Feb 2024 03:26:56 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rZ7z3-0006X3-2v;
-	Sun, 11 Feb 2024 11:26:53 +0000
-Date: Sun, 11 Feb 2024 19:26:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Nicholas Piggin <npiggin@gmail.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: <instantiation>:18:15: error: invalid operand for instruction
-Message-ID: <202402111924.EpGyikCn-lkp@intel.com>
+	s=arc-20240116; t=1707652315; c=relaxed/simple;
+	bh=XOk8Kr8T8eOC+VVzgQLqdZmZkP4QeC0s2lWogs+CjA4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z6zocXV9JlPpX/MNdwdVswQPvhlSRp3Y86T49YPg51YronzMpqmYPtZtIBvhrQc+87kbRG/Nk/e9aI0W5FaMWfXThK3142nFTHJxctCd9Z6B8pX0pX2+f3BazlprPO0FydMYrO2TqqAYXSstOJ3pvqOM5goXNzoq1BpnVMxNWsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rZ8Mp-0000La-H1; Sun, 11 Feb 2024 12:51:27 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rZ8Mj-0005Ea-EX; Sun, 11 Feb 2024 12:51:21 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rZ8Mj-002Utq-17;
+	Sun, 11 Feb 2024 12:51:21 +0100
+Date: Sun, 11 Feb 2024 12:51:21 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Erick Archer <erick.archer@gmx.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
+	Heiko Stuebner <heiko@sntech.de>, Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Li Zetao <lizetao1@huawei.com>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Kees Cook <keescook@chromium.org>, linux-mtd@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: Prefer struct_size over open coded
+ arithmetic
+Message-ID: <rep3323evfhxh5ctmyd2biqrpg2ifej2jei5rsqpei7vuvnmsc@krh3gihuyoox>
+References: <20240211091633.4545-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="sfcqdcis3bm2zuuf"
 Content-Disposition: inline
+In-Reply-To: <20240211091633.4545-1-erick.archer@gmx.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hi Nicholas,
 
-FYI, the error/warning still remains.
+--sfcqdcis3bm2zuuf
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   7521f258ea303c827434c101884b62a2b137a942
-commit: afc6386815a88d067d9f567dcc6266800286f626 powerpc: merge 32-bit and 64-bit _switch implementation
-date:   8 months ago
-config: powerpc64-randconfig-001-20240211 (https://download.01.org/0day-ci/archive/20240211/202402111924.EpGyikCn-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project c08b90c50bcac9f3f563c79491c8dbcbe7c3b574)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240211/202402111924.EpGyikCn-lkp@intel.com/reproduce)
+On Sun, Feb 11, 2024 at 10:16:33AM +0100, Erick Archer wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1].
+>=20
+> As the "chip" variable is a pointer to "struct mtk_nfc_nand_chip" and
+> this structure ends in a flexible array:
+>=20
+> struct mtk_nfc_nand_chip {
+> 	[...]
+> 	u8 sels[] __counted_by(nsels);
+> };
+>=20
+> the preferred way in the kernel is to use the struct_size() helper to
+> do the arithmetic instead of the argument "size + count * size" in the
+> devm_kzalloc() function.
+>=20
+> This way, the code is more readable and safer.
+>=20
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open=
+-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/160 [2]
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402111924.EpGyikCn-lkp@intel.com/
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-All errors (new ones prefixed by >>):
+Best regards
+Uwe
 
->> <instantiation>:18:15: error: invalid operand for instruction
-    addi %r7,%r7,(1 << (15 + 1))-432
-                 ^
-   arch/powerpc/kernel/switch.S:249:2: note: while in macro instantiation
-    do_switch_64
-    ^
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--sfcqdcis3bm2zuuf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXItLgACgkQj4D7WH0S
+/k5ikgf9F4/qTgtnox96aTKRccDzsaTgOw9Qi3pN71OjgluyHYlBZZuLkP5oxvMH
+1xtEtrRoArhwg8s5AISfkCSKbJG6D3uSXUf9HsjiHx2K2tK+RkQy1vFalheaw7V5
+E4xeT2nxo6jpRzzqeqs75p8KbDE1FdrEZZuarr3wqtfb+oapvNF8Fy9a82Yg1BZC
+DMVilJ/dMLxb6nLJ6V0fGGOzzio9S8AIFx0alMWvEzVu8i+yDDLBWbQDlQZTqzIn
+lfNs4OCNwrzqhNhlWD6V8lzYV8SaUtFW+1A6ZKJb19MwobAnXElAgIQJOWX0PSY1
+vASWpbUmeY9zm+JPlBvqvX/3KIcWew==
+=DQCU
+-----END PGP SIGNATURE-----
+
+--sfcqdcis3bm2zuuf--
 
