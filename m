@@ -1,78 +1,138 @@
-Return-Path: <linux-kernel+bounces-60936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0AA8850B57
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 21:00:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E57DF850B5D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 21:12:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2722B1C22114
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:00:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D5441F23348
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 157765F480;
-	Sun, 11 Feb 2024 20:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B3B5E3BA;
+	Sun, 11 Feb 2024 20:12:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TreQmj7t"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bBexHuTI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F2D25DF21
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 20:00:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C48A5D487
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 20:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707681618; cv=none; b=CxDaA6xesKpzodoaRZsPlc+xZtajTpUEO2MBJm+hS/T0N+rDJxUjkR7VMxpiwXcNXW2z+hbQO5W2wAbPuHGvGKyIMTpkMSSDEpz6YHQmIwocuu94JLK7qYetUEpYlPX76TNT0c3Aylvm5xSx3evpoDN6QfYeTA1u2Q9ks7YeSEo=
+	t=1707682354; cv=none; b=EGuBXaKj7c0NNJ6TQw9E4choRmE7/nCoe1pZo3q+G81ZRDvMdrk/pSaeAnTOP5Js0MXOMTf5jSSdc6Hbbgujryh4mToiiTu0GgTmeirLDLfim074IIhOdAxd73CrPEjP9XJ7vxfxjI85q+z12UI9FkskvPc30cASh2y8xyTMC60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707681618; c=relaxed/simple;
-	bh=2so5A9ZfUQP3hyZ2izGD+3p5TA0tHXiAIV/l08tVFuo=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=ZAXoPF/okc37FmsxHoIjI2MkeyqOEUpvdvN8vg2iqa8IhgYuYuWBtbN9oBVLpxKn2d3da9SLK2ULhib600Ckje3XqfoJPkgvvNfyJUY8gOI4uEdu3nHxPQS7H1EBH5/hga5AXEo1wqOl4oPxM1yn9z5t94IW69N6x8lGxAs2G1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TreQmj7t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D5B76C433F1;
-	Sun, 11 Feb 2024 20:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707681617;
-	bh=2so5A9ZfUQP3hyZ2izGD+3p5TA0tHXiAIV/l08tVFuo=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=TreQmj7tzgDe9i/r2BWfa0B5msd0a/UrKitim9+JbFfIh2NDDdkcxVmIzxzr8rY3U
-	 /N2Z/D4Ivls3vRSVKTWrbwtWjQlK7e7zujS40gNajqeQ/6UC1MyFqoNuZhl3YIUw/c
-	 Rnn6wTpjsTk9pD76EuDznsx6Xd5zm76vcjGjQTrpOY9Q57jgWD3FXYxyfVSgquTsZW
-	 lGIJIVnv7DNB4WcDFQH4tlwDUGyYAaZv4E/caUQqo8Te+cBP7JszfND4oQN1+nqdDh
-	 9tG8+TsB46nPrKLNleVEEmM7YJ25uWqbERFkqidwfaSOoWMZ/pfFUguumZzlPnVMAw
-	 RUmcR7HA9L3RQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B8EA0C04E32;
-	Sun, 11 Feb 2024 20:00:17 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/urgent for v6.8-rc4
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240211104144.GAZcikaNw7Luaj4XZy@fat_crate.local>
-References: <20240211104144.GAZcikaNw7Luaj4XZy@fat_crate.local>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240211104144.GAZcikaNw7Luaj4XZy@fat_crate.local>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.8_rc4
-X-PR-Tracked-Commit-Id: f6a1892585cd19e63c4ef2334e26cd536d5b678d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c021e191cf3da2fea766d784546f4c5acbfcd137
-Message-Id: <170768161774.6576.11765993551613751114.pr-tracker-bot@kernel.org>
-Date: Sun, 11 Feb 2024 20:00:17 +0000
-To: Borislav Petkov <bp@alien8.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+	s=arc-20240116; t=1707682354; c=relaxed/simple;
+	bh=YYwPh8j53W7qUnrBVOP5NKtGe7v63JZ0Yw4CbC2lklk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tz2437+PJoxF/reTrp0ze0xSwr6RnMDh+ONyYS+2ArV7ygvYgiXYQOhOsIqjxHXV07O4h+qzhUJI2mXt4lIiJ+eYuYsiOWpuYX6Enuiuk+ddSa1GOZe9Hw1ZRL0rWofPpMEstazjHB0JreVfjEt7Sdwlj9/cxBc2jViKXypBbP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bBexHuTI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707682351;
+	h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:in-reply-to:in-reply-to:  references:references;
+	bh=tVk8cPuhz061cwPkhFCtcFN9DX+JLnuTuyQ18930v7c=;
+	b=bBexHuTIoAaPEcjwulWcgC9g9Z4g9w2CMB8yqcFGgGLZYo/vqFE1MRV7Em6HbLyWDyhHEV
+	hhGOjVcvbQUZz5N7n2wk6k2Qg3s4otal6p+Nr222lzN+HDpIQX8FMFsZoKXLaIm28T9nSs
+	R7uebEUJFDuTRTC0JXI8lSLYbqV4sw4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-551-ysM-Lo5kOC66J4IFroP-MQ-1; Sun, 11 Feb 2024 15:12:27 -0500
+X-MC-Unique: ysM-Lo5kOC66J4IFroP-MQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1FB4E83B826;
+	Sun, 11 Feb 2024 20:12:27 +0000 (UTC)
+Received: from tucnak.zalov.cz (unknown [10.39.192.8])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id CB8E440C9444;
+	Sun, 11 Feb 2024 20:12:26 +0000 (UTC)
+Received: from tucnak.zalov.cz (localhost [127.0.0.1])
+	by tucnak.zalov.cz (8.17.1/8.17.1) with ESMTPS id 41BKCN1r4049961
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Sun, 11 Feb 2024 21:12:23 +0100
+Received: (from jakub@localhost)
+	by tucnak.zalov.cz (8.17.1/8.17.1/Submit) id 41BKCKpr4049960;
+	Sun, 11 Feb 2024 21:12:20 +0100
+Date: Sun, 11 Feb 2024 21:12:20 +0100
+From: Jakub Jelinek <jakub@redhat.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on
+ gcc-11 (and earlier)
+Message-ID: <ZckqI3Sg5pKXLzE7@tucnak>
+Reply-To: Jakub Jelinek <jakub@redhat.com>
+References: <20240208220604.140859-1-seanjc@google.com>
+ <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
+ <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
+ <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
+ <ZcZyWrawr1NUCiQZ@google.com>
+ <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
+ <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
+ <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com>
+ <CAFULd4ZUa56KDLXSoYjoQkX0BcJwaipy3ZrEW+0tbi_Lz3FYAw@mail.gmail.com>
+ <CAHk-=wiKq0bNqGDsh2dmYOeKub9dm8HaMHEJj-0XDvG-9m4JQQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiKq0bNqGDsh2dmYOeKub9dm8HaMHEJj-0XDvG-9m4JQQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-The pull request you sent on Sun, 11 Feb 2024 11:41:44 +0100:
+On Sun, Feb 11, 2024 at 11:59:49AM -0800, Linus Torvalds wrote:
+> On Sun, 11 Feb 2024 at 03:12, Uros Bizjak <ubizjak@gmail.com> wrote:
+> >
+> > I'd suggest the original poster to file a bug report in the GCC
+> > bugzilla. This way, the bug can be properly analysed and eventually
+> > fixed. The detailed instructions are available at
+> > https://gcc.gnu.org/bugs/
+> 
+> Yes, please. Sean?
+> 
+> In order to *not* confuse it with the "asm goto with output doesn't
+> imply volatile" bugs, could you make a bug report that talks purely
+> about the code generation issue that happens even with a manually
+> added volatile (your third code sequence in your original email)?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.8_rc4
+Preferably for all the different cases where you suspect a compiler bug.
+At minimum preprocessed source + compiler options + detailed description
+where do you think the bug is (or small runtime testcase but that is
+harder for issues derived from the kernel obviously).
+GCC 11 is still supported upstream, so bugs reproduceable even with just
+that should be filed in gcc.gnu.org/bugzilla/, if something is only
+reproduceable with older compilers, guess it belongs in some distribution's
+bugtrackers if those still support those compilers.
+Once filed we can bisect, analyze them, fix.
+ICE bugs are even easier to file, all we need is preprocessed source,
+command line options and gcc version/architecture.  gcc -freport-bug
+in most cases should be able to create everything in one file for the
+bugreport.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c021e191cf3da2fea766d784546f4c5acbfcd137
+As for the workarounds in the kernel, I'd also like to see only workarounds
+for specific compiler versions (once filed, bisected and analyzed,
+workaround could be either based on affected compiler versions, or
+kernel could try to check for the compiler bug in question and only add
+workaround if that bug reproduces on a short testcase.  Sure, this would
+be easier in autoconf style checks, but could be done even in kernel's
+makefiles.
 
-Thank you!
+	Jakub
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
 
