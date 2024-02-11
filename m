@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-60978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC3E8850C1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:09:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE1D6850C1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F173E1C20D26
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:09:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7EE3B21A83
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8FB171BF;
-	Sun, 11 Feb 2024 23:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4F717557;
+	Sun, 11 Feb 2024 23:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GLcOWOXP"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DjLp+tEn"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA0A14010
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 23:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A18B1426A
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 23:09:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707692982; cv=none; b=Tj/0Eyth5qBu92h5Ye7lyUUTzxiyXCTgCqEKe9hR939TmqqYq9Pk5Sao6zv0CZ8VdURlIl+C+RucwSv6zbpvQyzql+bp4Bzxv4gE7HUQm40+XZf0jl20x134ZDwvHDFc6oBA7GAOmXJ3udel2rLUX5M7hcr4jt6CP5Sj0eeUJGY=
+	t=1707692984; cv=none; b=lLBWe9HLAI7obCwT25f3yqLaPtsh6QeqsbCUK0stPKuKtXYQ8Xqa6t/gWmIBeYKXd0B3YHH27lFNORJcmKH2Z6M7tW7hmmxK5zKQhkxUSOIJA4dgCF1YOhV75F3TjgQmNjXeAhd5+hjYs23G0W7mDMTO31B3MGGj5g92HZD9uYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707692982; c=relaxed/simple;
-	bh=PBwTc0snBpC6w//kV2waa0nNNhztL61+Bau0t5MMRpE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mCtCasBRQTHsH+piaLNlEvTPgLBzGcOJpKwxR16/A4lQ62cLrA8LDL6K0TGVg83loO+7hYD4Ebbq2CBelE97Vo+VmKa0VMJIyqq+HKtoxiQtzt/iwWNHHmiwQW07JpRnX66Iq5HTVptMjfgNn5YncuZfcJRNt6NosJaBnnuKmRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GLcOWOXP; arc=none smtp.client-ip=209.85.222.173
+	s=arc-20240116; t=1707692984; c=relaxed/simple;
+	bh=ZV5g1y0cPA00H5tFqxrqlogbsErWJkzNuROVhuAMx1w=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=P9giWSsU7H4JKqilfcOD2aMNXni3EsCR3+00F+HYzu6B7CW0dxLI41mqCpoWWTdyQVKM1VTt94ZxAWlpp+5UwvCEjw7MJmo6EcTd2gRDyaNhVNeE2QIkaWWzcmt1xLXDCYlPcYIRm0ob9/RjHVOMJEOWWtbG/UFolJf4WxKPsg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DjLp+tEn; arc=none smtp.client-ip=209.85.222.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-78406c22dc7so162909485a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 15:09:40 -0800 (PST)
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78406c22dc7so162911185a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 15:09:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707692979; x=1708297779; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fDZSdShs6vj/lWP/S7/E1GOAK4CmrS93rbjOgt/s+9E=;
-        b=GLcOWOXP7WjnbhVFtjdnoNvgoN6YGu7dmusK9LB+JuHJ5/jwFlj6SDNfNmmjuTIYOZ
-         JDd7ecEWYs568Xv1014rt75qe9ubkeGhInrJxcxlQS5oWDrue+r0sph2VkpWUNH72NnJ
-         goDFd3/Jqz+3OnRrcLHjOxVGQHpwIwyupFnnMQ//MDVZDI3GFYLiuwykcnNtgulY39iG
-         WpAWkszSjivUdG7Z1uPRShRj95ClsJ9ZZufXqSqn0czjp3ZTIarNd+650r/SJKqq3w0V
-         Cgl+e2ZeCsZKacmPc3Wd07D6mC0WMxyVFOE+aVXRARZmGSgkz8/NjqIvxxWY0xLPP+l0
-         HZ6g==
+        d=gmail.com; s=20230601; t=1707692981; x=1708297781; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EhCKXGEt9TZ3Ak7K2jgNcJJQ6zAqQoIKdg3XOoh2cBc=;
+        b=DjLp+tEn+7T8bbRx4nllb8bPBZ5HKO6HbGMEdi03ZMsWE7jz0/5z9KYzWY2CpL5lzo
+         xlPvXjW6bKDiNAqBE4wKUwbm7TxXlT85qpl95visgWWCHLeUapf21a0WDUF/Am7hNzA/
+         Yp7NfKiwzY5GYFjZbDwTXdQiZ100qN8I5ukFzi9+CDWUdzcPzh6VBvFB9NdJSTmgu1bV
+         60j8WEbw1qJCZWPxRgIBiG00427r24HJErhH8C66dgzmcwDr70XxivGBfqScqDWnQoel
+         EzmHsKoC07jD3Rfx8Qn81KeLu2XYSXLBpkH96kpxzwGuZFrOSevrcjWDApyjXO7XCeA1
+         JD0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707692979; x=1708297779;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fDZSdShs6vj/lWP/S7/E1GOAK4CmrS93rbjOgt/s+9E=;
-        b=qQx0M/tc86pi+xW9jbtBAWQttlEF1aO+XZyhXfhH8jyHPkHARqe8an/WFShjuoq+Ah
-         AKzNRX8V3XO/5L2zsSe8puGfVRi9b0NsGx/KZBxIQDLMwoim7JwXBTQjdx0P/9wLv0fa
-         JuZaHyva2hMPNJAbdJ+ZAx8HVQ2PDi9o0nsiq/Bys8PWfLmU8SoFtCNO/UicWCN4B70Z
-         IuwZXPA28FQ1GRjiX2U24kfEYc4vFMv5cHLeGHgcEuHcfQJd7ftIICNIDYUDP+KtkX8B
-         +m3Z+ylX6PrsYxCCjgKBMFImRPnSKH1o6m2oTz1jY6gUr/QLHJlJ0gNyBCQqp1oJvfiW
-         2KMA==
-X-Forwarded-Encrypted: i=1; AJvYcCXDZAbHI9qCsBlQC8kPZI5JegmfZvNu/T4Jhu+Z9BzEV5OXckN+DfmIoNKfe8gdSPex2EOX+zIQegvuFDodLvLzO7/emBL56YI41KCW
-X-Gm-Message-State: AOJu0Yy7q8kIwDFgBQIpz7KR6NEpGhXmW3n8oN9VOZ1hxE/Py9W5+lmv
-	wwEeJywsL1jE4axmo8BuBJXhjI9CU4rKVgiRmg5O9erYcWNRyi0Q
-X-Google-Smtp-Source: AGHT+IEB/0itn55YYOtAkQi6ez+VIx6nfzo099ZocfgyOQH11IHH5G9m1PD1LiZCZIz3bQBU1RY8wA==
-X-Received: by 2002:a05:620a:530e:b0:785:bfc9:d293 with SMTP id oo14-20020a05620a530e00b00785bfc9d293mr5507721qkn.38.1707692979388;
-        Sun, 11 Feb 2024 15:09:39 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWGqurWOl57x9bgNJRz6cyWvOTe4crDyX9WLpj2s+URspqY2130GspQbY0lgSSrNKecEX+267I+s4HcJQp/nSjzhOzT/zHFKirIb1lx4UmYZ23pSoSGJFXlN3W4/Aq7TA8EPSaZGQOIGI4yqwXuvvuTEuwXyPN6xkbfl/0J7ens2FgoKo3Ru4B1kECV6KrS2j5Vg+b0jkDlWX7hP4nc7je7tseF4NcVZr1CMgoiRkZYqiAx4dAeWCN03DKN9rw2m19ge3ukDif6x/DjywyC2SuFA4zNVdXlNglwWQFoRE/md3SNgUWfU2AKMR8dpSTvP9NKpRA1Wxd/7EKJK1mbfG/ekUsbTCQ3eIJwZX8e0Ojwuk8KMjRuAK8wpkgkf43Pa+m+X8LXiODAs+ivI3uM47gmgFK2YqZOwcy0SoL0gc92BUfel/EfO+LejKf3ghNcxKR15GDJbg+IwjuhjAt1q1flwqbX/Gego+wfo/KZKvFJ8d5GuruyUB/uJJMkgc7qNboz/4vxIIXgXas0aeO33hdSkMPZY4fldYiSd5YLxKjS3WjZR3t8EjESL8q1sficyJraCEl+FqmdvER4kY7KyKMzpws0EH5S1of+E/Y910xz09OQX774Qv/5G58NxIncZNPc7jw1V5Su0eCf6V0IRxgM3X+0HkzPOqsNlvQFDe2g622ojM3Qctbs1MzzvCM5W1l2atGkeVk1YuXQ
+        d=1e100.net; s=20230601; t=1707692981; x=1708297781;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EhCKXGEt9TZ3Ak7K2jgNcJJQ6zAqQoIKdg3XOoh2cBc=;
+        b=v5hSoOZtFYYLQBMBaW35ejusla/dEyapSn1a47+G2tVE406l3j6gwKdLxHAT3clDZR
+         xsewJHfy0tCAX+5YZ2hSzksqn+n/gpSqLQXdZryuOIx7lK6Nxbmz9r92E+M7yHADZFpf
+         WUpIMQH3eB21iqqkGj7U2Eum4bVpaH77XWSeQdgyzaW4Eze/ODobbIsnoKUcWr0nINr9
+         0umBQmGhdCOXLu2GglL4LH6FDmq9VLZPvDsQMvlbt3s6KBDI9c5lXGTaOJl3+uF0fR2k
+         ETL1maEcPi/oyKXnWfKM+DfJgSS0C2U8uNdGBq0kyJtlddohs/edXsFs5YUfQxNkVQvG
+         AusA==
+X-Gm-Message-State: AOJu0Yx2PT0QY/FdP4PaLkI8BC9Swh1RNLjjmpzlwIe2ZpEihXNCjM0k
+	EEpndhGb5QDVG5eXgQbV6kqimuUKqQEDmcNowkglDJSwSirR0HxD
+X-Google-Smtp-Source: AGHT+IEVrTUKOVe7UOOJKP7QkP0pLNPWsCwxp6nzYTXnFQfMy0sRkqzLhG714QWKyRz1NPs5pVPzOA==
+X-Received: by 2002:a05:620a:60df:b0:785:b9cf:c757 with SMTP id dy31-20020a05620a60df00b00785b9cfc757mr5621083qkb.36.1707692981261;
+        Sun, 11 Feb 2024 15:09:41 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUOPHbzpPEM50aXzk4BjXx2OhfGWzMbZgGMfTA2eUWLV88KXgQHIguJzG+uN7yZN+jCSjQV0Os96HxfC6C55G5AvfPXNejM4GNCJFbZ1nnph8TXwF8tT0xdbouII7qkgUvdNc+1nj6UD9DeiEnMY50FBb3yV+FfaDRdliF8coDO2R7P7Ulont//43wj2mSOAk/Hlo9W1//n6lYPXQMYx81aM1QNn1X2OZR+dOa2RQsufXUxhdawyYlz/s7GbjMR6BnZZbv/CqHNAn1Tvp3uHmlh4gcKHz1hogLPJ2oT6983e8hxxEpOl1k93qhKK4UM4xQixLky8Afmt3C6/lO1SXsfYyFmP44nNdjHFpCtohyzoAvJOKhnaONxezjWmdsZmYv7XowxRYwzdcask/leYbTjT3enstMSMzTWFSPz+KiVp3bM7Eh/TakyyDNfxGIeRy43/2kC6L2HVAY6D05P5prTPhe3NvnkAc/ktlAh0sErOfwlYk8r2zx0noS2aWufyRpDpcjSjWIrQQV9S5DPS30HuM3GKg1AOKY3z5poS5tJZ5lcY/eGXdVFMnYth4oHWT3KTQSh6vNfStZxG+WwC4vAMAJrYdHIn8IarA+yltc+A6g6TPsTtxRIAfT6sJs+Oz4bcYEOMxznphGeW5dpDZYqoX1rbVF8l+n7p796s5NLnHxJxKWScV7dD5cHRI9t8jRe4YP4MSNRQ1DJ
 Received: from aford-System-Version.lan ([2601:447:d002:5be:c8c4:8542:9142:2184])
-        by smtp.gmail.com with ESMTPSA id a25-20020a05620a103900b007855bec5da8sm1589773qkk.16.2024.02.11.15.09.37
+        by smtp.gmail.com with ESMTPSA id a25-20020a05620a103900b007855bec5da8sm1589773qkk.16.2024.02.11.15.09.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 15:09:38 -0800 (PST)
+        Sun, 11 Feb 2024 15:09:40 -0800 (PST)
 From: Adam Ford <aford173@gmail.com>
 To: dri-devel@lists.freedesktop.org
 Cc: marex@denx.de,
@@ -88,10 +89,12 @@ Cc: marex@denx.de,
 	Marco Felsch <m.felsch@pengutronix.de>,
 	Michael Tretter <m.tretter@pengutronix.de>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH V2 1/2] drm/bridge: samsung-dsim: Set P divider based on min/max of fin pll
-Date: Sun, 11 Feb 2024 17:09:29 -0600
-Message-ID: <20240211230931.188194-1-aford173@gmail.com>
+Subject: [PATCH V2 2/2] drm/bridge: samsung-dsim: Fix porch calcalcuation rounding
+Date: Sun, 11 Feb 2024 17:09:30 -0600
+Message-ID: <20240211230931.188194-2-aford173@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240211230931.188194-1-aford173@gmail.com>
+References: <20240211230931.188194-1-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -100,49 +103,50 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The P divider should be set based on the min and max values of
-the fin pll which may vary between different platforms.
-These ranges are defined per platform, but hard-coded values
-were used instead which resulted in a smaller range available
-on the i.MX8M[MNP] than what was possible.
+When using video sync pulses, the HFP, HBP, and HSA are divided between
+the available lanes if there is more than one lane.  For certain
+timings and lane configurations, the HFP may not be evenly divisible.
+If the HFP is rounded down, it ends up being too small which can cause
+some monitors to not sync properly. In these instances, adjust htotal
+and hsync to round the HFP up, and recalculate the htotal.
 
-As noted by Frieder, there are descripencies between the reference
-manuals of the Mini, Nano and Plus, so I reached out to my NXP
-rep and got the following response regarding the varing notes
-in the documentation.
-
-"Yes it is definitely wrong, the one that is part of the NOTE in
-MIPI_DPHY_M_PLLPMS register table against PMS_P, PMS_M and PMS_S is
-not correct. I will report this to Doc team, the one customer should
-be take into account is the Table 13-40 DPHY PLL Parameters and the
-Note above."
-
-With this patch, the clock rates now match the values used in NXP's
-downstream kernel.
-
-Fixes: 846307185f0f ("drm/bridge: samsung-dsim: update PLL reference clock")
+Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL i.MX8MM with HDMI monitor
 Signed-off-by: Adam Ford <aford173@gmail.com>
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
-V2:  Only update the commit message to reflect why these values
-     were chosen.  No code change present
+V2:  No changes
 
 diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-index 95fedc68b0ae..8476650c477c 100644
+index 8476650c477c..52939211fe93 100644
 --- a/drivers/gpu/drm/bridge/samsung-dsim.c
 +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@ -574,8 +574,8 @@ static unsigned long samsung_dsim_pll_find_pms(struct samsung_dsim *dsi,
- 	u16 _m, best_m;
- 	u8 _s, best_s;
+@@ -1606,6 +1606,27 @@ static int samsung_dsim_atomic_check(struct drm_bridge *bridge,
+ 		adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
+ 	}
  
--	p_min = DIV_ROUND_UP(fin, (12 * MHZ));
--	p_max = fin / (6 * MHZ);
-+	p_min = DIV_ROUND_UP(fin, (driver_data->pll_fin_max * MHZ));
-+	p_max = fin / (driver_data->pll_fin_min * MHZ);
++	/*
++	 * When using video sync pulses, the HFP, HBP, and HSA are divided between
++	 * the available lanes if there is more than one lane.  For certain
++	 * timings and lane configurations, the HFP may not be evenly divisible.
++	 * If the HFP is rounded down, it ends up being too small which can cause
++	 * some monitors to not sync properly. In these instances, adjust htotal
++	 * and hsync to round the HFP up, and recalculate the htotal. Through trial
++	 * and error, it appears that the HBP and HSA do not appearto need the same
++	 * correction that HFP does.
++	 */
++	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE && dsi->lanes > 1) {
++		int hfp = adjusted_mode->hsync_start - adjusted_mode->hdisplay;
++		int remainder = hfp % dsi->lanes;
++
++		if (remainder) {
++			adjusted_mode->hsync_start += remainder;
++			adjusted_mode->hsync_end   += remainder;
++			adjusted_mode->htotal      += remainder;
++		}
++	}
++
+ 	return 0;
+ }
  
- 	for (_p = p_min; _p <= p_max; ++_p) {
- 		for (_s = 0; _s <= 5; ++_s) {
 -- 
 2.43.0
 
