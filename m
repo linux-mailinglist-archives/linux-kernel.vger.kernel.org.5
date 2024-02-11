@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-60760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A545885092E
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:37:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7394E85092F
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:37:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B1EF1F259F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:37:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97B971C209F0
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F8760889;
-	Sun, 11 Feb 2024 12:30:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5530E608FD;
+	Sun, 11 Feb 2024 12:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="ceaZ4YG4"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="iUo95rqh"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5285C60249
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92DEA60273
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:30:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707654651; cv=none; b=OFzFgaUXeqWKOS6szxyLwKVHvOfZlryMpuWvDwbaLuxMjjcbdqKQ28L8/iJINc85d/l9fdtA2g3wIW1B/FFTO5HX9hVP8F5gWVHaN0GYrhDO5WFBC50/c6peDbZiEN8DWNCAoaFVvsCAwy384lHgD3rmGlfpEyiyY74iES4/Orw=
+	t=1707654651; cv=none; b=UXK+RHTBhgtusANmIjL22NUW1P2bPhAIONkvqDffWwEXVXVUZNWG+veVeaLpQeA7rBZUhiKeIJn+RSyiw6wRohm4hPkIXw+BpXRBNmfr8LoMCU1IdJKM72XyhFPwjNWBvKJvgCGcfWSmtbgxROAHOMeImv+tBY4jJ6EW5+hDJAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707654651; c=relaxed/simple;
-	bh=vVaFOilpxLPhAvgW98K39yGa6ovKunon69GOcqaDBNE=;
+	bh=5WoLQ+20FuNzDTgx6dlWdeAOXVkYHDqU6RsL5tdTmfc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gbU4p/MHhVJIJ7I1jSrZvbgbHPW7uytsiH56b8l7l3zT2yvYhjTNGHVykiB9CbkSDi+EZ7zbzxnZSsAxIvVqCmoDPyy/5L1rZLVnkwfb2z2PI9jRD5SkLA3Wm6hhTy9Zf+SbD7GGhzt/OU1JtNSgmGwrrorevCeMwZ+ZbAt4U9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=ceaZ4YG4; arc=none smtp.client-ip=209.85.208.49
+	 MIME-Version; b=Zl5Gk0u8edhNJyAkvBd7ZGYzog7CXFHBlheEesy3VwmyblofQ0uJYc3NMck8iDQAHf/aSXNnQ2qkkDq3Q/Dt4MK/9bTtx2lJcAmtuieZP502q3pIS/wDeggMVSNbx1AQsvUy5RzP3ewDmvw3IBH6zPaDWPqVUilH8jK3lbWdF2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=iUo95rqh; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56001b47285so3090158a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:30:46 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-556c3f0d6c5so3114520a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:30:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707654645; x=1708259445; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1707654646; x=1708259446; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6RzTfSVvaxCQds+vfCIgTWL90cMKMfve56yUjlfe8no=;
-        b=ceaZ4YG4UoZBYIsgw+j8smZXzx/mtuHpjAMDqTGp8+K5mCB57m86PyGa/hm4u1+7p8
-         JfY8TaQe5iwa1/sfCHeuiiNBBV1FzTb73qpx3faFWWpt81aEUZ1hJtPQHPiYmUCjkxLM
-         QH4xp9ubds0IFV+J29xZPyR1LJ9zepY9XX1Y0TahYX9hg72x+rLgnzpvK5+zbadlarXx
-         RJeLRzVZDJ8AljqsOOCRR3yCh5Vffp6J8Ef6R2eJvWltuuz6ZDUkax1sY3oZIHsu8xjY
-         g4yeLN6JGqFvPsvUyRLKFPN31kNA5g/P6bnk9X81R1OuY1Fs5EsMCIU7Odw52cl4gN+/
-         9qag==
+        bh=fKk+aGvc2YUoK3OFau8iqg4ZDHFtN8sLbkkpKq6ClNw=;
+        b=iUo95rqhmDIs3bDNuL+jP2SWYPBOky/7fbQ9BS37psz11e9Q5aLbpEscjpYqvcukPl
+         VVfN8ljTyzkh39OfRixwfF58c8x4D7ju1WGDzX3J/8mOOFX8ZgYY6ZTeAoLYr0GvCgzU
+         irGVfrHGLWWB0vjD2VGFyQPSI2bNtIwQ1Apw3/QVBXuUwUAlZoHvkc5zZnAuMSKBjsc2
+         bjWbZxEiT3RNDmG9m9SBD+UIeZ7ebvYO7lSlV/OPKdHtMz9bi9+lx+eF77CkvmDOs87+
+         mtef6cOCPrDE0H8i6WYHOhRqpUrITW74xGg3uDnK4G9fwXEA85+DTW9+8b+IF3bAOB9A
+         0FBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707654645; x=1708259445;
+        d=1e100.net; s=20230601; t=1707654646; x=1708259446;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6RzTfSVvaxCQds+vfCIgTWL90cMKMfve56yUjlfe8no=;
-        b=rYm0GFUeZDjhzuOgIUKzLzmy4r38T/zeZstKl3powC0OZ7LoJFHEmwn26V6Ecb6YEV
-         HF5Qk16N0oN95FW3+hveM7rFNtEtt9GXFUYrzds8qWuh4il0Q9aEckpuDcy0tHcCjYTl
-         JXqonTH5FxB4RaynGt09FkV9m6P8TolrOzYqwDuoigzOBrg/jZssNzUJF46EiG/M6IAf
-         J0ZPMqakSIJkop6gdsC2buAEBlfnA/0mOLBh/jYZ71UOrN4Y+3l2ZyB2J/A8nRgBbQsY
-         wHUK+Upr4LRuTAnSiS9sn4f9k8jhBC6f8JiZTYY9ZVqT7mkTPGjHxt3z1Yg0tzS/FpZp
-         vtLg==
-X-Gm-Message-State: AOJu0Yx8bb1NmVJBzHlUMhQszV7zsjY4YHt+cYQEJHi11tnAACNzo1oN
-	zakfYYSFA4asv3S77Gf1MB25AtGAXf7+hfT5Ep8m6w8MN0cRjncuEwbwtQscYN1HWN7fkD7q9WY
-	6
-X-Google-Smtp-Source: AGHT+IHandP0049CfMYBvHiLGSFYKsEK0XLqIVtHHpQvv/OkpyzgwwkHXzeI/iRkFQCtldAfgS6FYQ==
-X-Received: by 2002:aa7:dad0:0:b0:55f:e35e:137c with SMTP id x16-20020aa7dad0000000b0055fe35e137cmr2602352eds.25.1707654645060;
-        Sun, 11 Feb 2024 04:30:45 -0800 (PST)
+        bh=fKk+aGvc2YUoK3OFau8iqg4ZDHFtN8sLbkkpKq6ClNw=;
+        b=wtzNJvsZttBjQtjJC3vVBFT/WjGQj/3JbP7/tPlJiYdJQUMiF29gtVatyty6epl0b6
+         9+nVWVAtqYrXqGrQbzFZAKIbyB3ZUJKRZUw0KtdWtbhWHcHHynsBoTIKXAwTGwI1SWOg
+         pH9xfaJI4R9vR72xwqieW4SCeCcwUZv6CcO7HFWBQ5vXCB9mRkNPWr/1KNOfxWwBnoah
+         RtwqrcGSNJuW6Om1qUdeoJG9AUbSGd7FQJP7eSW5JZDJ7VopjgaN9FB/++HT2chNzA+V
+         64jcf0/6348OjnWPo0kcXzo9vOsdxlx5VJtlnPEv7o5UiXXNHyuIsp6xFup7H96ajLSU
+         bAzQ==
+X-Gm-Message-State: AOJu0YzH3baLX428kqQZC7pxqnKF0m12181Ahrt8cpcHl3g4gTTs7fH+
+	3Qy6ecvAIPJx4SMkOeo/9TVtD5PtVDXI0zluBYWvhOf5649EB/E8m0hDJnLOm84XkDad9aZRBin
+	D
+X-Google-Smtp-Source: AGHT+IGZ+5R/3d4QKJq+dDeWTvA6qltpY0UNOBTVJwuOiYzYcuzMt1HQVUUzjFavdEZemkrS8p4S9g==
+X-Received: by 2002:a05:6402:1295:b0:55f:f2ae:20ed with SMTP id w21-20020a056402129500b0055ff2ae20edmr2455830edv.16.1707654646588;
+        Sun, 11 Feb 2024 04:30:46 -0800 (PST)
 Received: from raven.intern.cm-ag (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id fj18-20020a0564022b9200b0056187ca4120sm1024611edb.10.2024.02.11.04.30.44
+        by smtp.gmail.com with ESMTPSA id fj18-20020a0564022b9200b0056187ca4120sm1024611edb.10.2024.02.11.04.30.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 04:30:44 -0800 (PST)
+        Sun, 11 Feb 2024 04:30:45 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v3 31/35] linux/kernel.h: move READ and WRITE to direction.h
-Date: Sun, 11 Feb 2024 13:29:56 +0100
-Message-Id: <20240211123000.3359365-32-max.kellermann@ionos.com>
+Subject: [PATCH v3 32/35] linux/kernel.h: move VERIFY_OCTAL_PERMISSIONS() to octal_permissions.h
+Date: Sun, 11 Feb 2024 13:29:57 +0100
+Message-Id: <20240211123000.3359365-33-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240211123000.3359365-1-max.kellermann@ionos.com>
 References: <20240211123000.3359365-1-max.kellermann@ionos.com>
@@ -87,159 +87,175 @@ Reducing dependencies on the header linux/kernel.h.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- drivers/memstick/core/memstick.c    | 1 +
- drivers/memstick/host/jmb38x_ms.c   | 1 +
- drivers/memstick/host/r592.c        | 1 +
- drivers/memstick/host/rtsx_pci_ms.c | 1 +
- drivers/memstick/host/rtsx_usb_ms.c | 1 +
- drivers/memstick/host/tifm_ms.c     | 1 +
- fs/overlayfs/copy_up.c              | 1 +
- include/linux/direction.h           | 9 +++++++++
- include/linux/kernel.h              | 4 ----
- include/linux/nd.h                  | 1 +
- include/linux/uio.h                 | 2 +-
- 11 files changed, 18 insertions(+), 5 deletions(-)
- create mode 100644 include/linux/direction.h
+ arch/arc/kernel/perf_event.c             |  1 +
+ drivers/edac/thunderx_edac.c             |  1 +
+ drivers/hwmon/occ/common.c               |  1 +
+ drivers/media/platform/amphion/vpu_dbg.c |  1 +
+ drivers/soc/aspeed/aspeed-uart-routing.c |  1 +
+ fs/xfs/xfs_error.c                       |  1 +
+ include/linux/kernel.h                   | 13 -------------
+ include/linux/moduleparam.h              |  2 +-
+ include/linux/octal_permissions.h        | 20 ++++++++++++++++++++
+ include/linux/sysfs.h                    |  2 +-
+ 10 files changed, 28 insertions(+), 15 deletions(-)
+ create mode 100644 include/linux/octal_permissions.h
 
-diff --git a/drivers/memstick/core/memstick.c b/drivers/memstick/core/memstick.c
-index 7afc0132f512..e48ca1bdea66 100644
---- a/drivers/memstick/core/memstick.c
-+++ b/drivers/memstick/core/memstick.c
-@@ -12,6 +12,7 @@
- #include <linux/idr.h>
- #include <linux/fs.h>
- #include <linux/delay.h>
-+#include <linux/direction.h>
- #include <linux/slab.h>
- #include <linux/kobject.h>
- #include <linux/module.h>
-diff --git a/drivers/memstick/host/jmb38x_ms.c b/drivers/memstick/host/jmb38x_ms.c
-index 594f55b8cd11..0621121edb95 100644
---- a/drivers/memstick/host/jmb38x_ms.c
-+++ b/drivers/memstick/host/jmb38x_ms.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/spinlock.h>
-+#include <linux/direction.h>
+diff --git a/arch/arc/kernel/perf_event.c b/arch/arc/kernel/perf_event.c
+index 9d43a9988812..dbc24c9351d1 100644
+--- a/arch/arc/kernel/perf_event.c
++++ b/arch/arc/kernel/perf_event.c
+@@ -9,6 +9,7 @@
  #include <linux/interrupt.h>
- #include <linux/pci.h>
- #include <linux/dma-mapping.h>
-diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
-index b941c8d02f7c..76a480de78d2 100644
---- a/drivers/memstick/host/r592.c
-+++ b/drivers/memstick/host/r592.c
-@@ -12,6 +12,7 @@
- #include <linux/pci.h>
- #include <linux/pci_ids.h>
- #include <linux/delay.h>
-+#include <linux/direction.h>
- #include <linux/slab.h>
- #include <linux/kthread.h>
- #include <linux/sched.h>
-diff --git a/drivers/memstick/host/rtsx_pci_ms.c b/drivers/memstick/host/rtsx_pci_ms.c
-index 15720a4afac2..4bd00d69a9b6 100644
---- a/drivers/memstick/host/rtsx_pci_ms.c
-+++ b/drivers/memstick/host/rtsx_pci_ms.c
-@@ -10,6 +10,7 @@
+ #include <linux/kernel.h> // for upper_32_bits(), lower_32_bits()
  #include <linux/module.h>
- #include <linux/highmem.h>
- #include <linux/delay.h>
-+#include <linux/direction.h>
++#include <linux/octal_permissions.h>
+ #include <linux/of.h>
+ #include <linux/perf_event.h>
  #include <linux/platform_device.h>
- #include <linux/memstick.h>
- #include <linux/rtsx_pci.h>
-diff --git a/drivers/memstick/host/rtsx_usb_ms.c b/drivers/memstick/host/rtsx_usb_ms.c
-index 29271ad4728a..eeebdde571e6 100644
---- a/drivers/memstick/host/rtsx_usb_ms.c
-+++ b/drivers/memstick/host/rtsx_usb_ms.c
-@@ -10,6 +10,7 @@
- #include <linux/module.h>
- #include <linux/highmem.h>
- #include <linux/delay.h>
-+#include <linux/direction.h>
- #include <linux/platform_device.h>
- #include <linux/workqueue.h>
- #include <linux/memstick.h>
-diff --git a/drivers/memstick/host/tifm_ms.c b/drivers/memstick/host/tifm_ms.c
-index c272453670be..c46b6157aa25 100644
---- a/drivers/memstick/host/tifm_ms.c
-+++ b/drivers/memstick/host/tifm_ms.c
-@@ -10,6 +10,7 @@
+diff --git a/drivers/edac/thunderx_edac.c b/drivers/edac/thunderx_edac.c
+index e99ce19e6574..c610d99dceda 100644
+--- a/drivers/edac/thunderx_edac.c
++++ b/drivers/edac/thunderx_edac.c
+@@ -21,6 +21,7 @@
+ #include <linux/atomic.h>
+ #include <linux/bitfield.h>
+ #include <linux/circ_buf.h>
++#include <linux/octal_permissions.h>
  
- #include <linux/tifm.h>
- #include <linux/memstick.h>
-+#include <linux/direction.h>
- #include <linux/highmem.h>
- #include <linux/scatterlist.h>
- #include <linux/log2.h>
-diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
-index 6a861535ed38..7431a4b20081 100644
---- a/fs/overlayfs/copy_up.c
-+++ b/fs/overlayfs/copy_up.c
-@@ -16,6 +16,7 @@
- #include <linux/uaccess.h>
- #include <linux/sched/signal.h>
- #include <linux/cred.h>
-+#include <linux/direction.h>
- #include <linux/namei.h>
- #include <linux/fdtable.h>
- #include <linux/ratelimit.h>
-diff --git a/include/linux/direction.h b/include/linux/direction.h
-new file mode 100644
-index 000000000000..78d70701579d
---- /dev/null
-+++ b/include/linux/direction.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_DIRECTION_H
-+#define _LINUX_DIRECTION_H
-+
-+/* generic data direction definitions */
-+#define READ			0
-+#define WRITE			1
-+
-+#endif
+ #include <asm/page.h>
+ 
+diff --git a/drivers/hwmon/occ/common.c b/drivers/hwmon/occ/common.c
+index f7b89b880339..1a4f1a90c2c5 100644
+--- a/drivers/hwmon/occ/common.c
++++ b/drivers/hwmon/occ/common.c
+@@ -11,6 +11,7 @@
+ #include <linux/math64.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
++#include <linux/octal_permissions.h>
+ #include <linux/property.h>
+ #include <linux/sprintf.h>
+ #include <linux/sysfs.h>
+diff --git a/drivers/media/platform/amphion/vpu_dbg.c b/drivers/media/platform/amphion/vpu_dbg.c
+index bed0ed4fb8a0..ef5658b492cf 100644
+--- a/drivers/media/platform/amphion/vpu_dbg.c
++++ b/drivers/media/platform/amphion/vpu_dbg.c
+@@ -9,6 +9,7 @@
+ #include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/kernel.h>
++#include <linux/octal_permissions.h>
+ #include <linux/sprintf.h>
+ #include <linux/types.h>
+ #include <linux/pm_runtime.h>
+diff --git a/drivers/soc/aspeed/aspeed-uart-routing.c b/drivers/soc/aspeed/aspeed-uart-routing.c
+index a2195f062e01..6b091df7775a 100644
+--- a/drivers/soc/aspeed/aspeed-uart-routing.c
++++ b/drivers/soc/aspeed/aspeed-uart-routing.c
+@@ -5,6 +5,7 @@
+  */
+ #include <linux/device.h>
+ #include <linux/module.h>
++#include <linux/octal_permissions.h>
+ #include <linux/of.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/regmap.h>
+diff --git a/fs/xfs/xfs_error.c b/fs/xfs/xfs_error.c
+index 8d558f0f1b3b..a225860d272a 100644
+--- a/fs/xfs/xfs_error.c
++++ b/fs/xfs/xfs_error.c
+@@ -14,6 +14,7 @@
+ #include "xfs_error.h"
+ #include "xfs_sysfs.h"
+ #include "xfs_inode.h"
++#include <linux/octal_permissions.h>
+ #include <linux/kstrtox.h>
+ #include <linux/sprintf.h>
+ #include <linux/sysfs.h>
 diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 67662bdb17d0..5d088ce30045 100644
+index 5d088ce30045..ac332f4deed9 100644
 --- a/include/linux/kernel.h
 +++ b/include/linux/kernel.h
-@@ -39,10 +39,6 @@
+@@ -29,7 +29,6 @@
+ #include <linux/typecheck.h>
+ #include <linux/panic.h>
+ #include <linux/printk.h>
+-#include <linux/build_bug.h>
+ #include <linux/sprintf.h>
+ #include <linux/static_call_types.h>
+ #include <linux/instruction_pointer.h>
+@@ -308,16 +307,4 @@ static inline void ftrace_dump(enum ftrace_dump_mode oops_dump_mode) { }
+ # define REBUILD_DUE_TO_FTRACE_MCOUNT_RECORD
+ #endif
  
- #define STACK_MAGIC	0xdeadbeef
+-/* Permissions on a sysfs file: you didn't miss the 0 prefix did you? */
+-#define VERIFY_OCTAL_PERMISSIONS(perms)						\
+-	(BUILD_BUG_ON_ZERO((perms) < 0) +					\
+-	 BUILD_BUG_ON_ZERO((perms) > 0777) +					\
+-	 /* USER_READABLE >= GROUP_READABLE >= OTHER_READABLE */		\
+-	 BUILD_BUG_ON_ZERO((((perms) >> 6) & 4) < (((perms) >> 3) & 4)) +	\
+-	 BUILD_BUG_ON_ZERO((((perms) >> 3) & 4) < ((perms) & 4)) +		\
+-	 /* USER_WRITABLE >= GROUP_WRITABLE */					\
+-	 BUILD_BUG_ON_ZERO((((perms) >> 6) & 2) < (((perms) >> 3) & 2)) +	\
+-	 /* OTHER_WRITABLE?  Generally considered a bad idea. */		\
+-	 BUILD_BUG_ON_ZERO((perms) & 2) +					\
+-	 (perms))
+ #endif
+diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
+index a285e74ec028..860b0ea1f3b3 100644
+--- a/include/linux/moduleparam.h
++++ b/include/linux/moduleparam.h
+@@ -4,7 +4,7 @@
+ /* (C) Copyright 2001, 2002 Rusty Russell IBM Corporation */
+ #include <linux/init.h>
+ #include <linux/stringify.h>
+-#include <linux/kernel.h> // for VERIFY_OCTAL_PERMISSIONS()
++#include <linux/octal_permissions.h>
  
--/* generic data direction definitions */
--#define READ			0
--#define WRITE			1
--
- #define PTR_IF(cond, ptr)	((cond) ? (ptr) : NULL)
+ /* You can override this manually, but generally this should match the
+    module name. */
+diff --git a/include/linux/octal_permissions.h b/include/linux/octal_permissions.h
+new file mode 100644
+index 000000000000..57d4d6a5b66d
+--- /dev/null
++++ b/include/linux/octal_permissions.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_OCTAL_PERMISSIONS_H
++#define _LINUX_OCTAL_PERMISSIONS_H
++
++#include <linux/build_bug.h>
++
++/* Permissions on a sysfs file: you didn't miss the 0 prefix did you? */
++#define VERIFY_OCTAL_PERMISSIONS(perms)						\
++	(BUILD_BUG_ON_ZERO((perms) < 0) +					\
++	 BUILD_BUG_ON_ZERO((perms) > 0777) +					\
++	 /* USER_READABLE >= GROUP_READABLE >= OTHER_READABLE */		\
++	 BUILD_BUG_ON_ZERO((((perms) >> 6) & 4) < (((perms) >> 3) & 4)) +	\
++	 BUILD_BUG_ON_ZERO((((perms) >> 3) & 4) < ((perms) & 4)) +		\
++	 /* USER_WRITABLE >= GROUP_WRITABLE */					\
++	 BUILD_BUG_ON_ZERO((((perms) >> 6) & 2) < (((perms) >> 3) & 2)) +	\
++	 /* OTHER_WRITABLE?  Generally considered a bad idea. */		\
++	 BUILD_BUG_ON_ZERO((perms) & 2) +					\
++	 (perms))
++
++#endif
+diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
+index 0500b023b5cc..a4b752b24329 100644
+--- a/include/linux/sysfs.h
++++ b/include/linux/sysfs.h
+@@ -15,10 +15,10 @@
  
- #define u64_to_user_ptr(x) (		\
-diff --git a/include/linux/nd.h b/include/linux/nd.h
-index b9771ba1ef87..eb8e037d92c8 100644
---- a/include/linux/nd.h
-+++ b/include/linux/nd.h
-@@ -7,6 +7,7 @@
- #include <linux/fs.h>
- #include <linux/ndctl.h>
- #include <linux/device.h>
-+#include <linux/direction.h> // for READ, WRITE
- #include <linux/badblocks.h>
- #include <linux/perf_event.h>
+ #include <linux/sysfs_types.h>
+ #include <linux/kernfs.h>
+-#include <linux/kernel.h> // for VERIFY_OCTAL_PERMISSIONS()
+ #include <linux/compiler.h>
+ #include <linux/list.h>
+ #include <linux/lockdep_types.h>
++#include <linux/octal_permissions.h>
  
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index bea9c89922d9..306b0fffe2a4 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -5,7 +5,7 @@
- #ifndef __LINUX_UIO_H
- #define __LINUX_UIO_H
- 
--#include <linux/kernel.h>
-+#include <linux/direction.h> // for READ, WRITE
- #include <linux/thread_info.h>
- #include <linux/mm_types.h>
- #include <uapi/linux/uio.h>
+ struct kobject;
+ struct module;
 -- 
 2.39.2
 
