@@ -1,120 +1,120 @@
-Return-Path: <linux-kernel+bounces-61020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ACED850C52
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B5F850C56
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:28:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9F7D1F25E06
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:24:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEADD1F21D5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996CE17BBF;
-	Sun, 11 Feb 2024 23:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C332D171D8;
+	Sun, 11 Feb 2024 23:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F8Jnfb+O"
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="eNhH+tzi"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF42182CC;
-	Sun, 11 Feb 2024 23:18:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6D9154B1
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 23:28:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707693493; cv=none; b=pLnK/t1UjFbN7/HY60H8ruKJv741AlS+Slw0vxbRZSZphmioOH6IS5/NYi+yTQe3Ww1xzFDiLNLzkAQFImZ8w1yoe2zygpGvI+WCAe/YzxpHwKGKK+vEtpML544s0Tk1EeAxiX8Rqa7eqbMw5NDoqcefRD/nx8t0iO9mx+LaHS8=
+	t=1707694120; cv=none; b=cJRhYz4ud9c1w0ow9MAdhVyBl1HzOS/xAih6vd7uWVV0B+3VkOVVLHwafxHtHACVQmU9+unULPRMG4/2bkckyH1io+iWikPhg7iVNSm/WfRG/CzfxZWQpugal/T5lMUnMcWkfl3o4hy2xmL8BWplYZbS4sKIlww1WptlbipsUGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707693493; c=relaxed/simple;
-	bh=5LJw9tbUFFx//Doz3YDQi3OWMiWP/7Qg8Dk2LX8C2lw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oly1ZjOq2QEh0O+sa4Tz1fFHXDxMy5L5vyAdi/7LjVkIoFBbMpS2Ol8rhsTKaiv5P/uk+N6BZckwmnuu5JwS437kQTTLx/QKF8/Ltn65Xo+7ukkSI3wlb/CV6X1Lgwg2zxqqJ4cGO0Vz5Q/dnCVKOHx+tDaYY2vyWKtSudS/pSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F8Jnfb+O; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-68ca560ecb1so12453136d6.1;
-        Sun, 11 Feb 2024 15:18:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707693491; x=1708298291; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EKPHC7eRAxe4TJwvAVqqhtu+JWvDyGiDsI/tK7iWepo=;
-        b=F8Jnfb+Of7d/Ectqbiy5IEZmv0kpiOzG+nEP0hwwWPs21qWkBGvvgYx8ETyRElBZOV
-         /y3rp7fT8hqJursqk7t2EFE+aBOjs/xrJ0ifaHeVsS3XbalvFTVHxbjjVQHTlpesuoMe
-         sCRBVaT4AM8rpLHPfaYBu+2G+/q3JlvGspbc+sLuGzid/6Qz3PdEE2UkV8VWFkXLlvOd
-         OxoIhc5AzhUHrvurAW4fiF+D5qvfQNfX44NzS/jbEzMHBiEcwLRCPP0M2DpYxlgikQll
-         Ug6l00/0tUlDob1MfHSejG1ydz3KMN3d+WGCNz0ZAdXICMtCONOezm4ji9pcbE34dmOo
-         lGtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707693491; x=1708298291;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EKPHC7eRAxe4TJwvAVqqhtu+JWvDyGiDsI/tK7iWepo=;
-        b=tNUW/skdAv0rwiJ9RnZ1GfdS9mv6pO5sW2II11AEmS4iLHH3IPio9mK0n2H6t+i+Sf
-         LZdTTdDRc0s+obh2o7zCmahbjOSK8EmgBPAd90s72q2SWH8yePKE+wpht7AFM2SL/c3b
-         5S7eY8IsdLELJS4FB9XFv/499WZSm1p3/8QrzefkW/MwwrfMwiyy5gCSScGfynuW6G8U
-         lKQXs05dI4aPQBLPwOviD1BJUxsO6mPt4CuCUFzk2t18wiq2FSbbO9XbHlc5lM//E5hx
-         TQ0liGZ9skb/Uvld0fFHK1SoeU1Sra3bce8zE7wXW7eoKrJtiTcHVdoRxhBRtixlTDi3
-         N5sg==
-X-Forwarded-Encrypted: i=1; AJvYcCUTQ797G7trNM4u3LaKkt0NIwwOhjbZIearmU9JESIeNpIt11sMZ/DNiw1e6W3I/98XIuOuuZ1YwYarzgt9qQ8KeeVQG7RtIvCnynN/IBowp0RP2Ksz7I983jNselk686fkHZ18l0NTTg==
-X-Gm-Message-State: AOJu0Yyqpt1pq5U9IjmaUyxgqIWHc+IOzEuInjfgu2Pfqk0QPcN7sK2K
-	V95+eYcAoF2rRML6THfb2Ivu5Ia+llOMDNRSnOVlXDWB52K3vn8o
-X-Google-Smtp-Source: AGHT+IG5GkWmFyApwglImpGkODWzlv/SxnRxN3T+I678W5JF6ed8Cti3KLJJ3FBFM9NpHbVvQQoU0Q==
-X-Received: by 2002:a0c:f0cc:0:b0:68c:50a8:9 with SMTP id d12-20020a0cf0cc000000b0068c50a80009mr5547570qvl.44.1707693490972;
-        Sun, 11 Feb 2024 15:18:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXJUtfM0FPkALPHeEaWJm+uECTsiu5AvBA9rS/JiyTmwVj3e7wzHIldKEriLtWbEH2HDPBtravzjdzczaNIVAIRMUfETkX/1Py7auAvj8FgaYM200IuLi6W8OtAd5VUTHvzRVzUHeUNNlXqbDuOSn/TQ6b8AwCokRtA+aIbE8brSysRD9XJEnP/7onlO6JvSJynWCDZIV1R+bP4z3SWCI2WNhfj2iDGA65OyDMaGUtYUFMha/1GsGBKasgzzPP8kcdDfzsbYm490Z1SiJmoy0fImNjMV0Jr4sbTtMuKh0jwAprZ9p6FE++WMie74NUjLoBsosqOPuldIchmiNBVTYb+GAw6Blpb91ScGAPqhq53o1dEvoJYD8KWFGfCoAwgCZEX9+GlYKvBxV7hvomc8au5CNkOP7QhxaBxCwhpg0qdTdDPKyRU6qTP/Qo=
-Received: from aford-System-Version.lan ([2601:447:d002:5be:c8c4:8542:9142:2184])
-        by smtp.gmail.com with ESMTPSA id j4-20020a0cf504000000b0068c80f69ce8sm3106982qvm.142.2024.02.11.15.18.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 15:18:10 -0800 (PST)
-From: Adam Ford <aford173@gmail.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: marex@denx.de,
-	aford@beaconembedded.com,
-	Adam Ford <aford173@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mn-beacon: Remove unnecessary clock configuration
-Date: Sun, 11 Feb 2024 17:18:02 -0600
-Message-ID: <20240211231802.188843-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707694120; c=relaxed/simple;
+	bh=6wkJ90hJRyjyxzzwamo4+aLabRjK05mqebLXsqkM2Fc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Km3czQBnKabjQghRjHv1oFyxzHpcfC5pPudVOc6LM+DNI0gUr6vbYAfJdLrUn2XdaPOxnG32v+jzvo7sFPYm7PmN1XwAFjRJ4FWtpFkvBEooUpYcJB/nQkcd9JJ3Rik+otb0t9K7ojLoyOsW+o1yPfwTbIemXzi6C3WSWKGflU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=eNhH+tzi; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 50737100008;
+	Mon, 12 Feb 2024 02:28:28 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 50737100008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1707694108;
+	bh=q0jymPh9QJK+AI28qCcKpMknnpoU1qk2qsIpp8W1RlU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=eNhH+tzi7iExPI8unRR0Pnj1iar/WVWzu6a9/f6AwEy3HSCO4LNni4/iDN7USiHos
+	 MwGUXBbLbuQ2rhLTZumP2wR0dw3BEVX3hjsj7tPajp42TVuQw5zowFY6VGb3bCFLYQ
+	 FTtPGpjLjWSJxyVdaVgq3qxmxj5qJ+hgXmYiupSK5bjMhDlw2Sj2cmz/XcekQeJCDO
+	 fV23q6JXPrsjuUndGcAWmJXMTGn5McedElt68lluNX6+P/0utt2sqlFZ2tun25HCCw
+	 pEfO1xgm9aOkqgyj6wpj+KHGYM1fxX6o8T8wrALShbQmbakGP3zGI/eYa3qSwA102n
+	 qvsSLwSW7K9Yg==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Mon, 12 Feb 2024 02:28:28 +0300 (MSK)
+Received: from [172.28.160.241] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 12 Feb 2024 02:28:27 +0300
+Message-ID: <22c625f9-1750-4ade-b9c7-27b608c7f653@salutedevices.com>
+Date: Mon, 12 Feb 2024 02:28:13 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] locking/mutex: Clean up mutex.h
+To: Waiman Long <longman@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>, Will Deacon <will@kernel.org>, Ingo Molnar
+	<mingo@redhat.com>, Andrew Morton <akpm@linux-foundation.org>
+CC: <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "kernel@salutedevices.com"
+	<kernel@salutedevices.com>
+References: <20231216013656.1382213-1-longman@redhat.com>
+ <8be5bc9d-9505-41c6-b2ca-654bfe1d809f@salutedevices.com>
+Content-Language: en-US
+From: George Stark <gnstark@salutedevices.com>
+In-Reply-To: <8be5bc9d-9505-41c6-b2ca-654bfe1d809f@salutedevices.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183351 [Feb 11 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;lore.kernel.org:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/02/11 22:26:00
+X-KSMG-LinksScanning: Clean, bases: 2024/02/11 22:26:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/11 20:38:00 #23539253
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-Since commit 8208181fe536 ("clk: imx: composite-8m:
-Add imx8m_divider_determine_rate") the lcdif controller has
-had the ability to set the disp_pixel_clk rate which propagates
-up the tree and sets the video_pll rate automatically.
+Hello
 
-As such, there is no need to define it in the board file.
+Excuse me, this is my 4th letter here since December 2023 and there's no 
+response unfortunately.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dts
-index 35b8d2060cd9..bbd80896db96 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dts
-@@ -99,8 +99,6 @@ adv7535_out: endpoint {
- };
- 
- &lcdif {
--	assigned-clocks = <&clk IMX8MN_VIDEO_PLL1>;
--	assigned-clock-rates = <594000000>;
- 	status = "okay";
- };
- 
+Just to recall that we had the discussion in December 2023 about 
+implementing devm_mutex_init. We came to conclusion that the only 
+effective way to do it in include/linux/mutex.h but mutex.h requires
+some cleanups to simplify the devm_mutex_init patch.
+mutex.h owners proposed such a cleanup patch themselves and there's no 
+progress since that. How can we move forward on those patches?
+
+Cleanup patch:
+https://lore.kernel.org/lkml/20231216013656.1382213-1-longman@redhat.com/
+
+Original problem that requires devm_mutex_init and discussion:
+https://lore.kernel.org/lkml/ZcZeRmVjEPhVPW9-@smile.fi.intel.com/T/#m0f514f8f96e18db9568f84b2df37aaf648874a4a
+
 -- 
-2.43.0
-
+Best regards
+George
 
