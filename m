@@ -1,106 +1,155 @@
-Return-Path: <linux-kernel+bounces-60911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28EA5850AE6
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 19:55:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECA4B850AF5
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:01:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B99981F22570
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:55:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C89551C2145D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 19:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB56D5C5EB;
-	Sun, 11 Feb 2024 18:55:11 +0000 (UTC)
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A218A5D487;
+	Sun, 11 Feb 2024 19:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="BkD+fH+r"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9126F5C5E8
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 18:55:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3824FC19;
+	Sun, 11 Feb 2024 19:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707677711; cv=none; b=NetJszaLXuVhiatWxprDDS8t4ndW2srUOEskB8coqiFRlLewVbu+6MOboCYrNkL6J+BDQFKqHXpmLxdOtPeoWl0h3wV+JVvCwAeSVYD0muPNltN0c9TRUftH1kLtLTu8Ka1z/XbATbnftXFBjaoVtkhsZmwuC8oneehc0q9Fx/M=
+	t=1707678073; cv=none; b=lXvQodI1VC6BdQvUvpwuK2BpO5Eik4BB02cjt4CL00NfpzK304RW85/lMzDiP1d/ivh4Ws/lzaYlBtY4YIkugJKSvZoW+bandY32ogqyE9JGiGqUva9T/O7rBS8OoJwWu+6hk9lhVA+5i20Avp20eZSH5oGw58Yp/EGoXefMCvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707677711; c=relaxed/simple;
-	bh=zOMiltPoLSaPVXQpX+AyhP1tWAB8q+YFG5onf3ColLs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d/hgoxH0ZSzahOYmWTc4yvjSle9bvjywMLrQxccNQyQ7iZvqZYf3YjU+KMm53Y5nQTNiM0ESnz1R90o+y2rZx+L1kz/ewxMDRuB406zpWGzJYgajrug1KLSTKTQiNf0CayNAOV4rqh9WLa+ZzeMNt/FkDKvlP5qOQpOYELJLLqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-78552105081so178067185a.3
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 10:55:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707677708; x=1708282508;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZYaFnPH4T57xbODxsrD1uA/JRSAy3nBPFfHDTo1ipmE=;
-        b=dRJWiOSLXrK5+kGrFFgTid8u383bBfuwNfZMmc5+2ej45yVv1rkJFK+6zkElEDZVZx
-         bCNha4u9q49ODxbdieWevOGY6w6myDB2AMY0g7t8gXf9PgoBVvpuPRKrIZFNOWcT+lbh
-         SN8cHmVwS11XmrTG6byisMu3MTNt2hGYqFbOGDFdtOS2I64kgOP0RLCRweCTSoJFs7xG
-         8yf6QLP/m7u4VeIuaIFAbVTIbJLCExTeb5x0o0xxoZ9e+hW6rV7LI6s/KA2rf/g5wRKl
-         pliGhKgL0V9LewbLoRmtoubxrkHEWgVmmdPIMzX/8FURXpAIkvCJ3/fiLaAyfScFu0sa
-         oZGA==
-X-Gm-Message-State: AOJu0Yyo9OAPuQ6UNRALdofuVcV2PPuPE7bZeRH6eUDZ/90vHCVxCQrV
-	Ctx76+C35ZloX8/q2tUeD1+otZgUUn64sb5Tv0y9GP5Ee0I3HQqaW3OuHsxbRQ==
-X-Google-Smtp-Source: AGHT+IEpVYQgDizFElfNgxxrxcQYJwrK2TguA2ymoGhXLUMM6BM6g4VnY8a5QEGnidAYziFgxvHqig==
-X-Received: by 2002:a0c:dd08:0:b0:68c:48fd:4441 with SMTP id u8-20020a0cdd08000000b0068c48fd4441mr5088279qvk.64.1707677708614;
-        Sun, 11 Feb 2024 10:55:08 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUN17KHbxG10s+yxCtcs3OdW+Xkyi+j12gZmyMIv8GAHSnYGoSY4HE9hwNcdGiorsU8NTu+jVS/XyFjRSfwsSAoH1fHgR3wyBbxKRyqKN35MPBaBUG6gQVbISVPBRikukhUy1XefK4QGMevRepkn0rmKH+phaIL7Sg9NxV67STQkMKJyC0Cckw=
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id nh6-20020a056214390600b0068c6dd9af10sm2685704qvb.64.2024.02.11.10.55.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 10:55:08 -0800 (PST)
-Date: Sun, 11 Feb 2024 13:55:07 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Matthew Sakai <msakai@redhat.com>, dm-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: dm vdo slab-depot: delete unnecessary check
-Message-ID: <ZckYC4wyzbX2870P@redhat.com>
-References: <16ffd614-48a9-42b8-961d-2dc8a69c48d6@moroto.mountain>
+	s=arc-20240116; t=1707678073; c=relaxed/simple;
+	bh=iXqgltiNWMeREVG2IgdwnDtKL7c9qYrYyK47aZwyx/A=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kj0h2WmDdPkvQB4aLGZLcuI0cTtp8PnDfYdg8bZoXzT3KgnWtsh5OUd0wsOtqTgZNK3/2jyarqmGMvIp1Gz9lsg9VL337fm5abzczCuK74kSVSTcHGi/zim9xT3CBdZLZ1ydSo8HOxQbubjg66jRT5SeJmJOhMR/gw7plZrKWN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=BkD+fH+r; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41BHHFW8001164;
+	Sun, 11 Feb 2024 11:00:51 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	pfpt0220; bh=VvbYldxYnXsS96SYiXwHOhAk8nowSqwq/5cF6ZdNFVE=; b=BkD
+	+fH+riPTEveS5/MIPUfCTGyoLaQVqanKSqongD6EK2RcyCvUHNh4G0Gt5prabwvG
+	5WfpvZY9hFyMaeQ5B0N5FDKFFWx6DagLvg0BZJ1x3+QH5CJj/Y6rmzxXN1Y7Bgx8
+	33g+A3KyNYUqIC5xLQNgCQbTGnjHq8jMO2isks36jLY0Ekta2PPo1wSYcbxQNy6L
+	unE8hfGx6rv9wPCdwQT6yQ7SGH9w4T9IE9tatb1L2vwwWZ/MQONGk8vld1RN2eZl
+	Xqr/GcIxIhXnfywetPECmg7Ra8CfiHebMHqAYqj1n3qHd5fkAhT9eelMP7x7s2v8
+	8ABQiTG4cq2tj3kD/Lw==
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3w69hkaf5s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Sun, 11 Feb 2024 11:00:50 -0800 (PST)
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 11 Feb
+ 2024 11:00:44 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Sun, 11 Feb 2024 11:00:44 -0800
+Received: from hyd1358.marvell.com (unknown [10.29.37.11])
+	by maili.marvell.com (Postfix) with ESMTP id 27F9B3F7040;
+	Sun, 11 Feb 2024 11:00:40 -0800 (PST)
+From: Subbaraya Sundeep <sbhatta@marvell.com>
+To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <hkelam@marvell.com>, <naveenm@marvell.com>,
+        <horms@kernel.org>, Subbaraya Sundeep <sbhatta@marvell.com>
+Subject: [PATCH net] octeontx2-af: Remove the PF_FUNC validation for NPC transmit rules
+Date: Mon, 12 Feb 2024 00:30:38 +0530
+Message-ID: <1707678038-13062-1-git-send-email-sbhatta@marvell.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16ffd614-48a9-42b8-961d-2dc8a69c48d6@moroto.mountain>
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: lOadyMm9hJ2FjQXRiqGWZMf2HnLd85ui
+X-Proofpoint-GUID: lOadyMm9hJ2FjQXRiqGWZMf2HnLd85ui
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-11_17,2024-02-08_01,2023-05-22_02
 
-On Fri, Feb 09 2024 at  8:06P -0500,
-Dan Carpenter <dan.carpenter@linaro.org> wrote:
+NPC transmit side mcam rules can use the pcifunc (in packet metadata
+added by hardware) of transmitting device for mcam lookup similar to
+the channel of receiving device at receive side.
+The commit 18603683d766 ("octeontx2-af: Remove channel verification
+while installing MCAM rules") removed the receive side channel
+verification to save hardware MCAM filters while switching packets
+across interfaces but missed removing transmit side checks.
+This patch removes transmit side rules validation.
 
-> This is a duplicate check so it can't be true.  Delete it.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
->  drivers/md/dm-vdo/slab-depot.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/md/dm-vdo/slab-depot.c b/drivers/md/dm-vdo/slab-depot.c
-> index 42126bd60242..2f4a2ae5e082 100644
-> --- a/drivers/md/dm-vdo/slab-depot.c
-> +++ b/drivers/md/dm-vdo/slab-depot.c
-> @@ -4100,9 +4100,6 @@ static int allocate_components(struct slab_depot *depot,
->  		};
->  	}
->  
-> -	if (result != VDO_SUCCESS)
-> -		return result;
-> -
->  	slab_count = vdo_compute_slab_count(depot->first_block, depot->last_block,
->  					    depot->slab_size_shift);
->  	if (thread_config->physical_zone_count > slab_count) {
-> -- 
-> 2.43.0
-> 
-> 
+Fixes: 18603683d766 ("octeontx2-af: Remove channel verification while installing MCAM rules")
+Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+---
+ .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    | 32 ----------------------
+ 1 file changed, 32 deletions(-)
 
-Looks good, I've picked this up.
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+index 8cfd74a..e5d6156 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+@@ -61,28 +61,6 @@ int rvu_npc_get_tx_nibble_cfg(struct rvu *rvu, u64 nibble_ena)
+ 	return 0;
+ }
+ 
+-static int npc_mcam_verify_pf_func(struct rvu *rvu,
+-				   struct mcam_entry *entry_data, u8 intf,
+-				   u16 pcifunc)
+-{
+-	u16 pf_func, pf_func_mask;
+-
+-	if (is_npc_intf_rx(intf))
+-		return 0;
+-
+-	pf_func_mask = (entry_data->kw_mask[0] >> 32) &
+-		NPC_KEX_PF_FUNC_MASK;
+-	pf_func = (entry_data->kw[0] >> 32) & NPC_KEX_PF_FUNC_MASK;
+-
+-	pf_func = be16_to_cpu((__force __be16)pf_func);
+-	if (pf_func_mask != NPC_KEX_PF_FUNC_MASK ||
+-	    ((pf_func & ~RVU_PFVF_FUNC_MASK) !=
+-	     (pcifunc & ~RVU_PFVF_FUNC_MASK)))
+-		return -EINVAL;
+-
+-	return 0;
+-}
+-
+ void rvu_npc_set_pkind(struct rvu *rvu, int pkind, struct rvu_pfvf *pfvf)
+ {
+ 	int blkaddr;
+@@ -2851,12 +2829,6 @@ int rvu_mbox_handler_npc_mcam_write_entry(struct rvu *rvu,
+ 	else
+ 		nix_intf = pfvf->nix_rx_intf;
+ 
+-	if (!is_pffunc_af(pcifunc) &&
+-	    npc_mcam_verify_pf_func(rvu, &req->entry_data, req->intf, pcifunc)) {
+-		rc = NPC_MCAM_INVALID_REQ;
+-		goto exit;
+-	}
+-
+ 	/* For AF installed rules, the nix_intf should be set to target NIX */
+ 	if (is_pffunc_af(req->hdr.pcifunc))
+ 		nix_intf = req->intf;
+@@ -3208,10 +3180,6 @@ int rvu_mbox_handler_npc_mcam_alloc_and_write_entry(struct rvu *rvu,
+ 	if (!is_npc_interface_valid(rvu, req->intf))
+ 		return NPC_MCAM_INVALID_REQ;
+ 
+-	if (npc_mcam_verify_pf_func(rvu, &req->entry_data, req->intf,
+-				    req->hdr.pcifunc))
+-		return NPC_MCAM_INVALID_REQ;
+-
+ 	/* Try to allocate a MCAM entry */
+ 	entry_req.hdr.pcifunc = req->hdr.pcifunc;
+ 	entry_req.contig = true;
+-- 
+2.7.4
 
-Thanks,
-Mike
 
