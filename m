@@ -1,130 +1,182 @@
-Return-Path: <linux-kernel+bounces-60902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30413850AC9
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 19:17:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8606F850ACB
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 19:20:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31A901C21712
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:17:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB7241F219E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30435D478;
-	Sun, 11 Feb 2024 18:17:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2125D470;
+	Sun, 11 Feb 2024 18:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P6dZTeFz"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OEgTWRUh"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4041E488;
-	Sun, 11 Feb 2024 18:17:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E24C5D460;
+	Sun, 11 Feb 2024 18:20:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707675459; cv=none; b=tqC8BfgXArqCuPhmCF2Kpga5DWszAIPasCIelqsLDFvoNdaGGnAtIc1ie6zPg/gxeQ9JKy1oxhGQfgqNhEBRAxOyhUwa6e7k+z2QnTbO4wDLMM2EuZ3AHqsnbNz8yGqL9A/4bFgUExJ547Q9BxJpuA6t6E4wb6cV/Fsm+Y2HqX8=
+	t=1707675611; cv=none; b=u4BnWhpGd2O13GlPzROSgE6yEUcMW1jOv0kWQh2JZs/h7Ht3snig4rnXZSa9RESWWVxGtlO8GLq0vFLWd/8Lh1hpEy5nKAaR3ipC2ranFb7HqcqxsCe3cxU5fTU/iIk+jZEof6baPX79U/NAOGfWGL7Q536LT/SdWWbM1oY5HUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707675459; c=relaxed/simple;
-	bh=io3+Hed8JnnC4i7HX4lVCBexNVH3DyfS4NoC4XK9xpM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MTb5F7Y/1tTg3ocZlTAwrbtk4wPAnqQ3IC8eRDuEgBvuraXWAZkkchTNGjs8EgFepwj9iiHt+jp8iCUYnxY3tQwwQUjKddYm309IP7/8WoB87R3GDhgsubkMao6bSOaymmhacHQz/qHs4fXAKAieSxRNT8rmzb6/qi+CiTr1gd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P6dZTeFz; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a383016f428so269976766b.2;
-        Sun, 11 Feb 2024 10:17:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707675455; x=1708280255; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wRlkryYzMpYNr8EiU9J50+QP+nynNhNlhOvQquw1dL0=;
-        b=P6dZTeFzGt+sMI9p+O6q7d8ZrAZ3q3tFbaFTynO7jkrHi8sTIPCRhFhCPkrh+CEom0
-         +jiq2u7+wzOJ9iUkJaQqd8WHFCBIzsoKm5iqafEzJpGB3A8qth5Emp2p1bZibT1TJcbD
-         /YJDeuk6pn4J79QlpapPjz2VBFzcqBmnaTrSk8ELojq/8pgZFoviaYOgPkg+oaJlp9Yb
-         lInPg/rDzsA/vZ0KcKm8ypFpFj9x6rjes3nQLUs6270bsMsnFTFlU6KZc3+t0ETh1WYP
-         79n3ZFRzUffKbSeecxAeJNgqqSMR5eTGTft4shWk4HQ2j6fPbNdnkj5OUPWshKjoKOlT
-         x1lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707675455; x=1708280255;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wRlkryYzMpYNr8EiU9J50+QP+nynNhNlhOvQquw1dL0=;
-        b=rpMQL+UeT7oZusaQvzaHOB5HRB0wyOycFKnn5V2dkchlaKipIANhZCbD9Q9bySmlrZ
-         3F6Hc9hDEJccl9QyHc1Bm3YXBA/kBCaeWrvU1LPQA2DVmHxkQdB7+d7h7gM5f9yWDgTZ
-         90ZclY78zkA4ypyeIlfkkviqMdG279f0WXvkSt4P21V0Bp57dcgCqHeHz8WKSPucnp1V
-         W5BmgZdneZ1hI2oLkAxgiauR9UTsT5/q6CHOVrMPaPqCjbVjQMBhfVXuicukPwlbz0jH
-         1zI98fmKv+H/CA5COswIAHBLGm78710ASj21uaQYUpc4DrP3v2dX2rbnyMV9tykDvvHg
-         hCLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU5bMuFfCYi/j+yS3+aIEL5z5sOFT4f/sII7jmQ9K0U/q/V1Xlq6pNDE3dub0qhA1+ZG6ebzNMhgsA3smAqV+ag2Iqc8LiqozR6t0+iCos7Nh1Pnf2E6Q0Av8kwiop6awn5wFW7
-X-Gm-Message-State: AOJu0Ywrzwh6EVnb3fhQuaPIlzRtxUDidvMfcCNCaxRSZ5aZsoY9jSuY
-	Jnq0907gei9p1xcQJKoTrOd/Uap3qrXLkqN5UFlm0nSNxIkA4lSaqcw39Vjo7a4=
-X-Google-Smtp-Source: AGHT+IFhvzIdDIU9NI22aPCKrR1T8TqA4e5Qm7JyUEIBkXaoV6ec/doDEFG0EufEn8PQqlUXOl0syg==
-X-Received: by 2002:a17:906:af10:b0:a37:b91c:8a4e with SMTP id lx16-20020a170906af1000b00a37b91c8a4emr3968636ejb.60.1707675455330;
-        Sun, 11 Feb 2024 10:17:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV4poW54j57mNFwT+6WKg8BUMcfLGB9lydg99gKlKbj3k4C0FvA920rzecg8k2+dW3+h+ESmVRRkEd2jR/r/B/fddQdOVzke/DUr7/gP7juDcF4gq83AoSe0r3pSWpQZ20P7K1sYXNaGIssN1cK5l1j0DwitlsBK8OcqueRegZxfyIc04ucqyWxmH1IMvm2xZm/5RVh3EzDmYdddNecafwRSMULeVaL2TxE8MVW6F2wwe4nAC6kbzLS432guBmWRXReDmcQy/SYM2G9xeV8lE2qrlalBYKam6HLIKzdO07rXcp0hh0Gx/t5JQsxzhzMQYGIz+jd0ImJrx3QtI5MwWnmjY0KgZyoAW029rQocLWjLxM=
-Received: from fedora.. (cpe-109-60-82-27.zg3.cable.xnet.hr. [109.60.82.27])
-        by smtp.googlemail.com with ESMTPSA id cx3-20020a170907168300b00a3c488d79b1sm1571670ejd.223.2024.02.11.10.17.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 10:17:34 -0800 (PST)
-From: Robert Marko <robimarko@gmail.com>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ansuelsmth@gmail.com,
-	rmk+kernel@armlinux.org.uk,
-	netdev@vger.kernel.org,
+	s=arc-20240116; t=1707675611; c=relaxed/simple;
+	bh=oU3+pTwOlDgbtW1/NcvyIj7JX7BmSedhjcnRgv/xZEk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=elkjQ072uqROXwdBwZIUd3Z9CXleMiR7OWwkxPgL7VbJ6/ONwk6CLONG64dru4tNt/fU/PIeLB/G7Rub7Aq2iBFqRL7kXsVHRrjVzl2pEHbZiTmy+qPQG51nwPqxnBYm07ioq9KYVGU73PyAVktpYIA1nBZNWdxeo81/DhtfRrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OEgTWRUh; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707675609; x=1739211609;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=oU3+pTwOlDgbtW1/NcvyIj7JX7BmSedhjcnRgv/xZEk=;
+  b=OEgTWRUhm1wtyCSYhYeom2MAimpf3eEWzZRSr2GPaIZe/TPri+IZSwV9
+   IfLfK80zBC4xa/r3cwxXa4lt3WyesG45Ks066wm9SjsnNgIEVYWYoxu+Y
+   k+ZhUUU9fxM0O5ezFeF3QlH6QVUTuyUrwXSlELXzkdlc8uo15Tjodv+4c
+   Zq5+V4ZiuG7TB6vYJlf7954rfWCbvjSC4eAqrHe2Ny1oaUyw38PlryBlh
+   kEp8HRhoEH/mqrgVvNXyjodYcWxtZ+7Cf0pfwGLXubMpj8/r0jpkmy3TU
+   3Gb3Hs7prooyjszQr2YrqwDyydmw7P3gsJ2I1kJh7RK2NdOZG0oyyDF9F
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="1501625"
+X-IronPort-AV: E=Sophos;i="6.05,261,1701158400"; 
+   d="scan'208";a="1501625"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2024 10:20:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,261,1701158400"; 
+   d="scan'208";a="39856770"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 11 Feb 2024 10:20:05 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rZEQs-0006ig-1b;
+	Sun, 11 Feb 2024 18:20:02 +0000
+Date: Mon, 12 Feb 2024 02:19:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Perry Yuan <perry.yuan@amd.com>, rafael.j.wysocki@intel.com,
+	Mario.Limonciello@amd.com, viresh.kumar@linaro.org,
+	Ray.Huang@amd.com, gautham.shenoy@amd.com, Borislav.Petkov@amd.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Alexander.Deucher@amd.com, Xinmei.Huang@amd.com,
+	Xiaojian.Du@amd.com, Li.Meng@amd.com, linux-pm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: Robert Marko <robimarko@gmail.com>
-Subject: [PATCH net-next] net: phy: aquantia: clear PMD Global Transmit Disable bit during init
-Date: Sun, 11 Feb 2024 19:16:41 +0100
-Message-ID: <20240211181732.646311-1-robimarko@gmail.com>
-X-Mailer: git-send-email 2.43.0
+Subject: Re: [PATCH 2/7] cpufreq: amd-pstate: initialize new core precision
+ boost state
+Message-ID: <202402120216.mjdQyGCs-lkp@intel.com>
+References: <0409d40c500eeb8d4d84ecb028b73f2eee147822.1706255676.git.perry.yuan@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0409d40c500eeb8d4d84ecb028b73f2eee147822.1706255676.git.perry.yuan@amd.com>
 
-PMD Global Transmit Disable bit should be cleared for normal operation.
-This should be HW default, however I found that on Asus RT-AX89X that uses
-AQR113C PHY and firmware 5.4 this bit is set by default.
+Hi Perry,
 
-With this bit set the AQR cannot achieve a link with its link-partner and
-it took me multiple hours of digging through the vendor GPL source to find
-this out, so lets always clear this bit during .config_init() to avoid a
-situation like this in the future.
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- drivers/net/phy/aquantia/aquantia_main.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+[auto build test ERROR on rafael-pm/acpi-bus]
+[also build test ERROR on v6.8-rc3]
+[cannot apply to rafael-pm/linux-next linus/master rafael-pm/devprop next-20240209]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/net/phy/aquantia/aquantia_main.c b/drivers/net/phy/aquantia/aquantia_main.c
-index 97a2fafa15ca..e1f092cbfdce 100644
---- a/drivers/net/phy/aquantia/aquantia_main.c
-+++ b/drivers/net/phy/aquantia/aquantia_main.c
-@@ -727,6 +727,15 @@ static int aqr113c_config_init(struct phy_device *phydev)
- 	if (ret < 0)
- 		return ret;
- 
-+	ret = phy_clear_bits_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_TXDIS,
-+				 MDIO_PMD_TXDIS_GLOBAL);
-+	if (ret)
-+		return ret;
-+
-+	ret = aqr107_wait_processor_intensive_op(phydev);
-+	if (ret)
-+		return ret;
-+
- 	return aqr107_fill_interface_modes(phydev);
- }
- 
+url:    https://github.com/intel-lab-lkp/linux/commits/Perry-Yuan/cpufreq-amd-pstate-remove-set_boost-callback-for-passive-mode/20240126-171412
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-bus
+patch link:    https://lore.kernel.org/r/0409d40c500eeb8d4d84ecb028b73f2eee147822.1706255676.git.perry.yuan%40amd.com
+patch subject: [PATCH 2/7] cpufreq: amd-pstate: initialize new core precision boost state
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20240212/202402120216.mjdQyGCs-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240212/202402120216.mjdQyGCs-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402120216.mjdQyGCs-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/cpufreq/amd-pstate-ut.c:229:16: error: no member named 'boost_supported' in 'struct amd_cpudata'
+     229 |                 if (cpudata->boost_supported) {
+         |                     ~~~~~~~  ^
+   1 error generated.
+
+
+vim +229 drivers/cpufreq/amd-pstate-ut.c
+
+14eb1c96e3a3fd Meng Li        2022-08-17  193  
+14eb1c96e3a3fd Meng Li        2022-08-17  194  /*
+14eb1c96e3a3fd Meng Li        2022-08-17  195   * Check if frequency values are reasonable.
+14eb1c96e3a3fd Meng Li        2022-08-17  196   * max_freq >= nominal_freq > lowest_nonlinear_freq > min_freq > 0
+14eb1c96e3a3fd Meng Li        2022-08-17  197   * check max freq when set support boost mode.
+14eb1c96e3a3fd Meng Li        2022-08-17  198   */
+14eb1c96e3a3fd Meng Li        2022-08-17  199  static void amd_pstate_ut_check_freq(u32 index)
+14eb1c96e3a3fd Meng Li        2022-08-17  200  {
+14eb1c96e3a3fd Meng Li        2022-08-17  201  	int cpu = 0;
+14eb1c96e3a3fd Meng Li        2022-08-17  202  	struct cpufreq_policy *policy = NULL;
+14eb1c96e3a3fd Meng Li        2022-08-17  203  	struct amd_cpudata *cpudata = NULL;
+14eb1c96e3a3fd Meng Li        2022-08-17  204  
+14eb1c96e3a3fd Meng Li        2022-08-17  205  	for_each_possible_cpu(cpu) {
+14eb1c96e3a3fd Meng Li        2022-08-17  206  		policy = cpufreq_cpu_get(cpu);
+14eb1c96e3a3fd Meng Li        2022-08-17  207  		if (!policy)
+14eb1c96e3a3fd Meng Li        2022-08-17  208  			break;
+14eb1c96e3a3fd Meng Li        2022-08-17  209  		cpudata = policy->driver_data;
+14eb1c96e3a3fd Meng Li        2022-08-17  210  
+14eb1c96e3a3fd Meng Li        2022-08-17  211  		if (!((cpudata->max_freq >= cpudata->nominal_freq) &&
+14eb1c96e3a3fd Meng Li        2022-08-17  212  			(cpudata->nominal_freq > cpudata->lowest_nonlinear_freq) &&
+14eb1c96e3a3fd Meng Li        2022-08-17  213  			(cpudata->lowest_nonlinear_freq > cpudata->min_freq) &&
+14eb1c96e3a3fd Meng Li        2022-08-17  214  			(cpudata->min_freq > 0))) {
+14eb1c96e3a3fd Meng Li        2022-08-17  215  			amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_FAIL;
+14eb1c96e3a3fd Meng Li        2022-08-17  216  			pr_err("%s cpu%d max=%d >= nominal=%d > lowest_nonlinear=%d > min=%d > 0, the formula is incorrect!\n",
+14eb1c96e3a3fd Meng Li        2022-08-17  217  				__func__, cpu, cpudata->max_freq, cpudata->nominal_freq,
+14eb1c96e3a3fd Meng Li        2022-08-17  218  				cpudata->lowest_nonlinear_freq, cpudata->min_freq);
+60dd283804479c Swapnil Sapkal 2023-08-18  219  			goto skip_test;
+14eb1c96e3a3fd Meng Li        2022-08-17  220  		}
+14eb1c96e3a3fd Meng Li        2022-08-17  221  
+14eb1c96e3a3fd Meng Li        2022-08-17  222  		if (cpudata->min_freq != policy->min) {
+14eb1c96e3a3fd Meng Li        2022-08-17  223  			amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_FAIL;
+14eb1c96e3a3fd Meng Li        2022-08-17  224  			pr_err("%s cpu%d cpudata_min_freq=%d policy_min=%d, they should be equal!\n",
+14eb1c96e3a3fd Meng Li        2022-08-17  225  				__func__, cpu, cpudata->min_freq, policy->min);
+60dd283804479c Swapnil Sapkal 2023-08-18  226  			goto skip_test;
+14eb1c96e3a3fd Meng Li        2022-08-17  227  		}
+14eb1c96e3a3fd Meng Li        2022-08-17  228  
+14eb1c96e3a3fd Meng Li        2022-08-17 @229  		if (cpudata->boost_supported) {
+14eb1c96e3a3fd Meng Li        2022-08-17  230  			if ((policy->max == cpudata->max_freq) ||
+14eb1c96e3a3fd Meng Li        2022-08-17  231  					(policy->max == cpudata->nominal_freq))
+14eb1c96e3a3fd Meng Li        2022-08-17  232  				amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_PASS;
+14eb1c96e3a3fd Meng Li        2022-08-17  233  			else {
+14eb1c96e3a3fd Meng Li        2022-08-17  234  				amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_FAIL;
+14eb1c96e3a3fd Meng Li        2022-08-17  235  				pr_err("%s cpu%d policy_max=%d should be equal cpu_max=%d or cpu_nominal=%d !\n",
+14eb1c96e3a3fd Meng Li        2022-08-17  236  					__func__, cpu, policy->max, cpudata->max_freq,
+14eb1c96e3a3fd Meng Li        2022-08-17  237  					cpudata->nominal_freq);
+60dd283804479c Swapnil Sapkal 2023-08-18  238  				goto skip_test;
+14eb1c96e3a3fd Meng Li        2022-08-17  239  			}
+14eb1c96e3a3fd Meng Li        2022-08-17  240  		} else {
+14eb1c96e3a3fd Meng Li        2022-08-17  241  			amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_FAIL;
+14eb1c96e3a3fd Meng Li        2022-08-17  242  			pr_err("%s cpu%d must support boost!\n", __func__, cpu);
+60dd283804479c Swapnil Sapkal 2023-08-18  243  			goto skip_test;
+14eb1c96e3a3fd Meng Li        2022-08-17  244  		}
+60dd283804479c Swapnil Sapkal 2023-08-18  245  		cpufreq_cpu_put(policy);
+14eb1c96e3a3fd Meng Li        2022-08-17  246  	}
+14eb1c96e3a3fd Meng Li        2022-08-17  247  
+14eb1c96e3a3fd Meng Li        2022-08-17  248  	amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_PASS;
+60dd283804479c Swapnil Sapkal 2023-08-18  249  	return;
+60dd283804479c Swapnil Sapkal 2023-08-18  250  skip_test:
+60dd283804479c Swapnil Sapkal 2023-08-18  251  	cpufreq_cpu_put(policy);
+14eb1c96e3a3fd Meng Li        2022-08-17  252  }
+14eb1c96e3a3fd Meng Li        2022-08-17  253  
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
