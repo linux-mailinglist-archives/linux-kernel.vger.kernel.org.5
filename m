@@ -1,155 +1,167 @@
-Return-Path: <linux-kernel+bounces-60916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECA4B850AF5
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:01:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CE85850AF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:02:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C89551C2145D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 19:01:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37F051C211DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 19:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A218A5D487;
-	Sun, 11 Feb 2024 19:01:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C5F5D470;
+	Sun, 11 Feb 2024 19:02:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="BkD+fH+r"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HPF5UWo6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3824FC19;
-	Sun, 11 Feb 2024 19:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEE7FC19
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 19:02:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707678073; cv=none; b=lXvQodI1VC6BdQvUvpwuK2BpO5Eik4BB02cjt4CL00NfpzK304RW85/lMzDiP1d/ivh4Ws/lzaYlBtY4YIkugJKSvZoW+bandY32ogqyE9JGiGqUva9T/O7rBS8OoJwWu+6hk9lhVA+5i20Avp20eZSH5oGw58Yp/EGoXefMCvo=
+	t=1707678130; cv=none; b=FcvgYft4jV8bwSOqmvYbyM8lngNHy3htw9j4gTJeeLk91tkjhvsa3lSXll0MYNRTUi5nDqLcy6pmaJUN9XXpnV/+idWy1oDhFcClqG8ls416hpyLXpRSMLJvAmQed4z6A8HHopbglxngHQG10re7YenckdORhCM97KmqMo3HySg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707678073; c=relaxed/simple;
-	bh=iXqgltiNWMeREVG2IgdwnDtKL7c9qYrYyK47aZwyx/A=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kj0h2WmDdPkvQB4aLGZLcuI0cTtp8PnDfYdg8bZoXzT3KgnWtsh5OUd0wsOtqTgZNK3/2jyarqmGMvIp1Gz9lsg9VL337fm5abzczCuK74kSVSTcHGi/zim9xT3CBdZLZ1ydSo8HOxQbubjg66jRT5SeJmJOhMR/gw7plZrKWN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=BkD+fH+r; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41BHHFW8001164;
-	Sun, 11 Feb 2024 11:00:51 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	pfpt0220; bh=VvbYldxYnXsS96SYiXwHOhAk8nowSqwq/5cF6ZdNFVE=; b=BkD
-	+fH+riPTEveS5/MIPUfCTGyoLaQVqanKSqongD6EK2RcyCvUHNh4G0Gt5prabwvG
-	5WfpvZY9hFyMaeQ5B0N5FDKFFWx6DagLvg0BZJ1x3+QH5CJj/Y6rmzxXN1Y7Bgx8
-	33g+A3KyNYUqIC5xLQNgCQbTGnjHq8jMO2isks36jLY0Ekta2PPo1wSYcbxQNy6L
-	unE8hfGx6rv9wPCdwQT6yQ7SGH9w4T9IE9tatb1L2vwwWZ/MQONGk8vld1RN2eZl
-	Xqr/GcIxIhXnfywetPECmg7Ra8CfiHebMHqAYqj1n3qHd5fkAhT9eelMP7x7s2v8
-	8ABQiTG4cq2tj3kD/Lw==
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3w69hkaf5s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Sun, 11 Feb 2024 11:00:50 -0800 (PST)
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 11 Feb
- 2024 11:00:44 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Sun, 11 Feb 2024 11:00:44 -0800
-Received: from hyd1358.marvell.com (unknown [10.29.37.11])
-	by maili.marvell.com (Postfix) with ESMTP id 27F9B3F7040;
-	Sun, 11 Feb 2024 11:00:40 -0800 (PST)
-From: Subbaraya Sundeep <sbhatta@marvell.com>
-To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <gakula@marvell.com>, <hkelam@marvell.com>, <naveenm@marvell.com>,
-        <horms@kernel.org>, Subbaraya Sundeep <sbhatta@marvell.com>
-Subject: [PATCH net] octeontx2-af: Remove the PF_FUNC validation for NPC transmit rules
-Date: Mon, 12 Feb 2024 00:30:38 +0530
-Message-ID: <1707678038-13062-1-git-send-email-sbhatta@marvell.com>
-X-Mailer: git-send-email 2.7.4
+	s=arc-20240116; t=1707678130; c=relaxed/simple;
+	bh=ne+I1lVvIggr9Ct6CO9zOzMdMZ2Eb6zOcxpa0xPq5/Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D3B0HMNItcXZrD3EVyuThGfb45H9yvS8cUwVLV13ggpza4+mVAEn391UTUzJJSnaJ+3obp2/RljGTSFkNPdgPTaVjWN3bsR/zyYyHDTMt7JwI3Iweh9OvSJp4gEv86j6xupvCSpVADMZkeImMWUoaOAjZt91JKaLrYb2MLuD1Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HPF5UWo6; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707678128; x=1739214128;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ne+I1lVvIggr9Ct6CO9zOzMdMZ2Eb6zOcxpa0xPq5/Q=;
+  b=HPF5UWo6BqDvzLra6alWKatkQCzidq77Ct31nxVEzyyHyuzltR8lfI45
+   v3Af61LxKSfB6R/dTdqwaFoP4sYi3yfBFVlN+rOXt3iQSUlDPSf7vq5Bw
+   XI/eoEvjNuMRQ+/Phpf0Il0uxgsDXg5SBNuUUty12tj97RZG0k0CDVu1b
+   CvA4SNnlBaNFFDfBPPa6W+DxSBlHDEbqyebECWxDronfJuHGuhWBga8Lz
+   i/dqoBbTIckKw88DbLlCT0DUTrGasQlZwbtlCF24BVazhoCEAIAi3F/uz
+   dPmVZSJ/HaNZJBaM3tfD3Oj7l3InpWZgK0uFGkZB3DPU3Uh0x+XJ/SGJm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="4618795"
+X-IronPort-AV: E=Sophos;i="6.05,261,1701158400"; 
+   d="scan'208";a="4618795"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2024 11:02:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,261,1701158400"; 
+   d="scan'208";a="2811533"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 11 Feb 2024 11:02:06 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rZF5X-0006ja-0D;
+	Sun, 11 Feb 2024 19:02:03 +0000
+Date: Mon, 12 Feb 2024 03:01:46 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chengming Zhou <zhouchengming@bytedance.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	linux-kernel@vger.kernel.org,
+	Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH 1/2] mm/zswap: global lru and shrinker shared by all
+ zswap_pools
+Message-ID: <202402120226.TK7G37U9-lkp@intel.com>
+References: <20240210-zswap-global-lru-v1-1-853473d7b0da@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: lOadyMm9hJ2FjQXRiqGWZMf2HnLd85ui
-X-Proofpoint-GUID: lOadyMm9hJ2FjQXRiqGWZMf2HnLd85ui
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-11_17,2024-02-08_01,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240210-zswap-global-lru-v1-1-853473d7b0da@bytedance.com>
 
-NPC transmit side mcam rules can use the pcifunc (in packet metadata
-added by hardware) of transmitting device for mcam lookup similar to
-the channel of receiving device at receive side.
-The commit 18603683d766 ("octeontx2-af: Remove channel verification
-while installing MCAM rules") removed the receive side channel
-verification to save hardware MCAM filters while switching packets
-across interfaces but missed removing transmit side checks.
-This patch removes transmit side rules validation.
+Hi Chengming,
 
-Fixes: 18603683d766 ("octeontx2-af: Remove channel verification while installing MCAM rules")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
----
- .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    | 32 ----------------------
- 1 file changed, 32 deletions(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 8cfd74a..e5d6156 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -61,28 +61,6 @@ int rvu_npc_get_tx_nibble_cfg(struct rvu *rvu, u64 nibble_ena)
- 	return 0;
- }
- 
--static int npc_mcam_verify_pf_func(struct rvu *rvu,
--				   struct mcam_entry *entry_data, u8 intf,
--				   u16 pcifunc)
--{
--	u16 pf_func, pf_func_mask;
--
--	if (is_npc_intf_rx(intf))
--		return 0;
--
--	pf_func_mask = (entry_data->kw_mask[0] >> 32) &
--		NPC_KEX_PF_FUNC_MASK;
--	pf_func = (entry_data->kw[0] >> 32) & NPC_KEX_PF_FUNC_MASK;
--
--	pf_func = be16_to_cpu((__force __be16)pf_func);
--	if (pf_func_mask != NPC_KEX_PF_FUNC_MASK ||
--	    ((pf_func & ~RVU_PFVF_FUNC_MASK) !=
--	     (pcifunc & ~RVU_PFVF_FUNC_MASK)))
--		return -EINVAL;
--
--	return 0;
--}
--
- void rvu_npc_set_pkind(struct rvu *rvu, int pkind, struct rvu_pfvf *pfvf)
- {
- 	int blkaddr;
-@@ -2851,12 +2829,6 @@ int rvu_mbox_handler_npc_mcam_write_entry(struct rvu *rvu,
- 	else
- 		nix_intf = pfvf->nix_rx_intf;
- 
--	if (!is_pffunc_af(pcifunc) &&
--	    npc_mcam_verify_pf_func(rvu, &req->entry_data, req->intf, pcifunc)) {
--		rc = NPC_MCAM_INVALID_REQ;
--		goto exit;
--	}
--
- 	/* For AF installed rules, the nix_intf should be set to target NIX */
- 	if (is_pffunc_af(req->hdr.pcifunc))
- 		nix_intf = req->intf;
-@@ -3208,10 +3180,6 @@ int rvu_mbox_handler_npc_mcam_alloc_and_write_entry(struct rvu *rvu,
- 	if (!is_npc_interface_valid(rvu, req->intf))
- 		return NPC_MCAM_INVALID_REQ;
- 
--	if (npc_mcam_verify_pf_func(rvu, &req->entry_data, req->intf,
--				    req->hdr.pcifunc))
--		return NPC_MCAM_INVALID_REQ;
--
- 	/* Try to allocate a MCAM entry */
- 	entry_req.hdr.pcifunc = req->hdr.pcifunc;
- 	entry_req.contig = true;
+[auto build test ERROR on 191d97734e41a5c9f90a2f6636fdd335ae1d435d]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Chengming-Zhou/mm-zswap-global-lru-and-shrinker-shared-by-all-zswap_pools/20240211-220028
+base:   191d97734e41a5c9f90a2f6636fdd335ae1d435d
+patch link:    https://lore.kernel.org/r/20240210-zswap-global-lru-v1-1-853473d7b0da%40bytedance.com
+patch subject: [PATCH 1/2] mm/zswap: global lru and shrinker shared by all zswap_pools
+config: x86_64-randconfig-013-20240211 (https://download.01.org/0day-ci/archive/20240212/202402120226.TK7G37U9-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240212/202402120226.TK7G37U9-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402120226.TK7G37U9-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   mm/zswap.c: In function 'zswap_shrinker_count':
+>> mm/zswap.c:1300:42: error: 'pool' undeclared (first use in this function); did you mean 'zpool'?
+    1300 |         nr_backing = get_zswap_pool_size(pool) >> PAGE_SHIFT;
+         |                                          ^~~~
+         |                                          zpool
+   mm/zswap.c:1300:42: note: each undeclared identifier is reported only once for each function it appears in
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for DRM_I915_DEBUG_GEM
+   Depends on [n]: HAS_IOMEM [=y] && DRM_I915 [=y] && EXPERT [=y] && DRM_I915_WERROR [=n]
+   Selected by [y]:
+   - DRM_I915_DEBUG [=y] && HAS_IOMEM [=y] && DRM_I915 [=y] && EXPERT [=y] && !COMPILE_TEST [=n]
+
+
+vim +1300 mm/zswap.c
+
+b5ba474f3f5187 Nhat Pham      2023-11-30  1283  
+b5ba474f3f5187 Nhat Pham      2023-11-30  1284  static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+b5ba474f3f5187 Nhat Pham      2023-11-30  1285  		struct shrink_control *sc)
+b5ba474f3f5187 Nhat Pham      2023-11-30  1286  {
+b5ba474f3f5187 Nhat Pham      2023-11-30  1287  	struct mem_cgroup *memcg = sc->memcg;
+b5ba474f3f5187 Nhat Pham      2023-11-30  1288  	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
+b5ba474f3f5187 Nhat Pham      2023-11-30  1289  	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
+b5ba474f3f5187 Nhat Pham      2023-11-30  1290  
+501a06fe8e4c18 Nhat Pham      2023-12-07  1291  	if (!zswap_shrinker_enabled || !mem_cgroup_zswap_writeback_enabled(memcg))
+b5ba474f3f5187 Nhat Pham      2023-11-30  1292  		return 0;
+b5ba474f3f5187 Nhat Pham      2023-11-30  1293  
+b5ba474f3f5187 Nhat Pham      2023-11-30  1294  #ifdef CONFIG_MEMCG_KMEM
+7d7ef0a4686abe Yosry Ahmed    2023-11-29  1295  	mem_cgroup_flush_stats(memcg);
+b5ba474f3f5187 Nhat Pham      2023-11-30  1296  	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
+b5ba474f3f5187 Nhat Pham      2023-11-30  1297  	nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
+b5ba474f3f5187 Nhat Pham      2023-11-30  1298  #else
+b5ba474f3f5187 Nhat Pham      2023-11-30  1299  	/* use pool stats instead of memcg stats */
+b5ba474f3f5187 Nhat Pham      2023-11-30 @1300  	nr_backing = get_zswap_pool_size(pool) >> PAGE_SHIFT;
+bf414d6ae81ba2 Chengming Zhou 2024-02-11  1301  	nr_stored = atomic_read(&zswap.nr_stored);
+b5ba474f3f5187 Nhat Pham      2023-11-30  1302  #endif
+b5ba474f3f5187 Nhat Pham      2023-11-30  1303  
+b5ba474f3f5187 Nhat Pham      2023-11-30  1304  	if (!nr_stored)
+b5ba474f3f5187 Nhat Pham      2023-11-30  1305  		return 0;
+b5ba474f3f5187 Nhat Pham      2023-11-30  1306  
+b5ba474f3f5187 Nhat Pham      2023-11-30  1307  	nr_protected =
+b5ba474f3f5187 Nhat Pham      2023-11-30  1308  		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
+bf414d6ae81ba2 Chengming Zhou 2024-02-11  1309  	nr_freeable = list_lru_shrink_count(&zswap.list_lru, sc);
+b5ba474f3f5187 Nhat Pham      2023-11-30  1310  	/*
+b5ba474f3f5187 Nhat Pham      2023-11-30  1311  	 * Subtract the lru size by an estimate of the number of pages
+b5ba474f3f5187 Nhat Pham      2023-11-30  1312  	 * that should be protected.
+b5ba474f3f5187 Nhat Pham      2023-11-30  1313  	 */
+b5ba474f3f5187 Nhat Pham      2023-11-30  1314  	nr_freeable = nr_freeable > nr_protected ? nr_freeable - nr_protected : 0;
+b5ba474f3f5187 Nhat Pham      2023-11-30  1315  
+b5ba474f3f5187 Nhat Pham      2023-11-30  1316  	/*
+b5ba474f3f5187 Nhat Pham      2023-11-30  1317  	 * Scale the number of freeable pages by the memory saving factor.
+b5ba474f3f5187 Nhat Pham      2023-11-30  1318  	 * This ensures that the better zswap compresses memory, the fewer
+b5ba474f3f5187 Nhat Pham      2023-11-30  1319  	 * pages we will evict to swap (as it will otherwise incur IO for
+b5ba474f3f5187 Nhat Pham      2023-11-30  1320  	 * relatively small memory saving).
+b5ba474f3f5187 Nhat Pham      2023-11-30  1321  	 */
+b5ba474f3f5187 Nhat Pham      2023-11-30  1322  	return mult_frac(nr_freeable, nr_backing, nr_stored);
+b5ba474f3f5187 Nhat Pham      2023-11-30  1323  }
+b5ba474f3f5187 Nhat Pham      2023-11-30  1324  
+
 -- 
-2.7.4
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
