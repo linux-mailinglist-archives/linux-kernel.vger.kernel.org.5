@@ -1,41 +1,40 @@
-Return-Path: <linux-kernel+bounces-60813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA6238509D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:07:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71EB08509D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:07:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 187F91C20DDF
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:07:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02A3A282439
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:07:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642305B668;
-	Sun, 11 Feb 2024 15:07:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5152D5B669;
+	Sun, 11 Feb 2024 15:07:38 +0000 (UTC)
 Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E8738DCC;
-	Sun, 11 Feb 2024 15:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB295A4C2;
+	Sun, 11 Feb 2024 15:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707664037; cv=none; b=XBFBqI8xbEL3uKsg+pqey7zHk2sfin4RnW9szz7HvgtzHtIyvaT8Cxs08Whozi7YPT/K41T4Lo5YYK9gzM/EPMFNRmLFcfVSbgHanlElqjtL8z5AsTZGElfLovTRn+E9HPV/6lCRCCoiybxtcPFKdMT3TYqbsU67LqxE0MfxEgA=
+	t=1707664057; cv=none; b=GSAjdmn7Vhjn72hGixJ/G4i/ofE7F4giw38UhF9cQZfn1nMA+III3jkZqYpjzvBC9axC1B2Wc1h7FOZ4amBn4YhvCUtC0jShA/XQKaio3zVMZBngj6FkFN2VkvNbpNzo3igclJZGha+6V4/PofVORFB/xlt4WRb+yRTUndLFa3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707664037; c=relaxed/simple;
-	bh=tYjF23hS3kCuiZrPyeo90mjXDnz1Ql+YsvWXtiBdYuI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jTBWRgY0iue9BFb+LUSpbUgRVYvBrPIa9QO9d2wgNFaEUDv4KdJ9GJ8ANxdF0fPyYoMCGJDGZi8fh9CARTAU085MD0xow0XRN6tjya919n1kqTW/UuB1T/EweFL/uDBRm9HXt/bN6vfkspJTlZCW4aOfV1TB3OxK4M16OLFCnmE=
+	s=arc-20240116; t=1707664057; c=relaxed/simple;
+	bh=S+ZcsTEYVGxi18jHqo41yCn7PEXa3hnMJnf6e88HqS0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KlkLFSXgRkq5GMqdMA0qhslThIiLtZB9d51Cv3xA/O5L7ylP8GPDMfl3Nm1hD4xFZMeDcGgS6RQwaGuuMwRj0BJF/jyNAlIL6U8QsyW5ZB+y0E53aRJTU056dPuY391yw0imic33qX29Fx5e9dwlm+U4p/ImE6ud8H637jlJjjE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
 From: Daniil Dulov <d.dulov@aladdin.ru>
-To: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To: Mike Isely <isely@pobox.com>
 CC: Daniil Dulov <d.dulov@aladdin.ru>, Mauro Carvalho Chehab
-	<mchehab@kernel.org>, Greg Kroah-Hartman <gregkh@suse.de>,
-	<linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>
-Subject: [PATCH] media: go7007: add check of return value of go7007_read_addr()
-Date: Sun, 11 Feb 2024 07:07:05 -0800
-Message-ID: <20240211150705.3703-1-d.dulov@aladdin.ru>
+	<mchehab@kernel.org>, <linux-media@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH] media: pvrusb2: remove redundant NULL check
+Date: Sun, 11 Feb 2024 07:07:25 -0800
+Message-ID: <20240211150725.3769-1-d.dulov@aladdin.ru>
 X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -45,35 +44,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: EXCH-2016-02.aladdin.ru (192.168.1.102) To
+X-ClientProxiedBy: EXCH-2016-01.aladdin.ru (192.168.1.101) To
  EXCH-2016-01.aladdin.ru (192.168.1.101)
 
-If go7007_read_addr() returns error channel is not assigned a value.
-In this case go to allocfail.
+Pointer dip->stream cannot be NULL due to a shift, thus remove redundant NULL check.
 
 Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Fixes: 866b8695d67e ("Staging: add the go7007 video driver")
+Fixes: c74e0062684b ("V4L/DVB (5059): Pvrusb2: Be smarter about mode restoration")
 Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
 ---
- drivers/media/usb/go7007/go7007-usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/usb/pvrusb2/pvrusb2-v4l2.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
-index eeb85981e02b..762c13e49bfa 100644
---- a/drivers/media/usb/go7007/go7007-usb.c
-+++ b/drivers/media/usb/go7007/go7007-usb.c
-@@ -1201,7 +1201,9 @@ static int go7007_usb_probe(struct usb_interface *intf,
- 				u16 channel;
- 
- 				/* read channel number from GPIO[1:0] */
--				go7007_read_addr(go, 0x3c81, &channel);
-+				if (go7007_read_addr(go, 0x3c81, &channel))
-+					goto allocfail;
-+
- 				channel &= 0x3;
- 				go->board_id = GO7007_BOARDID_ADLINK_MPG24;
- 				usb->board = board = &board_adlink_mpg24;
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
+index 9657c1883311..c872868becbd 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
+@@ -1202,11 +1202,6 @@ static void pvr2_v4l2_dev_init(struct pvr2_v4l2_dev *dip,
+ 		dip->minor_type = pvr2_v4l_type_video;
+ 		nr_ptr = video_nr;
+ 		caps |= V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_AUDIO;
+-		if (!dip->stream) {
+-			pr_err(KBUILD_MODNAME
+-				": Failed to set up pvrusb2 v4l video dev due to missing stream instance\n");
+-			return;
+-		}
+ 		break;
+ 	case VFL_TYPE_VBI:
+ 		dip->config = pvr2_config_vbi;
 -- 
 2.25.1
 
