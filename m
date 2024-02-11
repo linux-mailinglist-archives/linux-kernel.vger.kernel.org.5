@@ -1,187 +1,137 @@
-Return-Path: <linux-kernel+bounces-60668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0063850837
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:49:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CD0585083C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:52:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E0ABB21FAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 08:49:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F19CB1F219BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 08:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBA359154;
-	Sun, 11 Feb 2024 08:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE895915F;
+	Sun, 11 Feb 2024 08:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LerMc7i5"
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2064.outbound.protection.outlook.com [40.107.100.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dATkH9CM"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6366C59140;
-	Sun, 11 Feb 2024 08:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707641337; cv=fail; b=U7p78TUGufehfamDbEIORVlbGeFexk35VMbNX7r4Z87uZcyL2Qi9bc/s+rnbw3brjNxCE3LgJnWva7F+6ijpQxQjlMqVYDmLVi/zL0pG9blfzjPBZay7Ombkw8UZBpZ2jvnZkfAAdEPwtHwh91DlU2jyfz7wFIxjr7ketVyJUmQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707641337; c=relaxed/simple;
-	bh=X4sic8qAOw70RautjOZ+W2Z7iwWMIM4utAfVEldPb0k=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cqIV4xKydyqxq9Wx7IPeNKjMhJZfhtOkEf0QDZhuph3om/l9sCYjHz5djagYUeFFdxbACwG8bCFVl2WyfLiSbEh7vyVn8NMfjmyZPjQ/axnA1eHnaaDsjZh9gAkwZZwyiV6tQAHNY5vE3+C2kCi+UXiKGCwo0iexwRW6n/RHMqM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LerMc7i5; arc=fail smtp.client-ip=40.107.100.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LoSt8RDxElcbw2s8zBvkaEiNtozpVY3yUWxSV2Z9Vk/6f0Hjt87AXzWabvUN4CR/2ezK/zEfsbeivx9kYAJJeJWIpN4aEcV0kZI4k9Jz7cqKexjZFkLrydQMPnUwgzw1HtC//GFjl9z3gvlQuMe+jqT/HL9VrN0rjmfXwRJaetb9fnuBrc+KjCCMaYMoCOxgjBF3Kizh9Py9W/k8szXTedmDIX+i6QGfP0U9wP+5Kp37XdYj6p47enl8gexylRu9RR0X/I/bfEvSmxQH4Hx/g9dMHPl+qEMkTm+OWRg9QMbIblC13LKySt2luftJKjlUEBBKhaBgWjt+k+PoshFYkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7e4npBLGVA3lwCcxSXKsA1owcidzo39ZnbGGEBvFoqg=;
- b=SfccOz/8vE2alT/VjcfYDJh5sPTWb2KOr6iOZxo4+RlyqnKxTHvAr1BdBBGqmk7dnZaJ5qJjo1Bc8v69CF/r8Qwt+8rEnPWLx89ZmuuyQg9ICnSa4gszvImMiagrr0Ln0BIHaJb9oQ1z9XQjNHTrv8vFKt6ys+MIByMOzlSPKkL1GzTJ2lvvMNFJL42/GQqLIJimOEPIEzi5TW3EsYyvFHIxM8hCBqmfJbVWGcvbgzFgyoXw0/saSQnxfotsxzu9Fvsfh2s/4HHbX4blCWCV7LObcVjJAp8H8q/bm7GhMMsjDAP6eZ7CITl0lCm2kfMDd/MYEGHWHCuZnD46WtCCPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7e4npBLGVA3lwCcxSXKsA1owcidzo39ZnbGGEBvFoqg=;
- b=LerMc7i5ZlkN2dM6X+T8g2oT7tpimoziaeKWnfH7/UXNwTpTZUdMwc3z3baoATRSKuBM9/MBb2E8H1Uo79i6/DAEzdLi6KkAoRa73vZOUDxX99Qe0S01tFq+5clWITyR9hbIA3IwS617SUhVqRayKzLSz8HChzco53M3PwYR5HvoWogcs4xvOTHXXhGXBYVsYDwvu02gsW+/vc/k3Q3rPqbtf8roPY2IczvN2bf7HH5MbUyaeocux05XMPE8R0w1EhbEEVfO3PHZJ9Gmyr+KyCt2R7CWTgmpoHWWJEXKDVsBxE/uvKGI4wLjNM0bOcDQTzV/VzD/7Tr7CXvOan8WzA==
-Received: from DS7PR03CA0014.namprd03.prod.outlook.com (2603:10b6:5:3b8::19)
- by DS7PR12MB8419.namprd12.prod.outlook.com (2603:10b6:8:e9::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.13; Sun, 11 Feb
- 2024 08:48:51 +0000
-Received: from CY4PEPF0000E9DC.namprd05.prod.outlook.com
- (2603:10b6:5:3b8:cafe::3e) by DS7PR03CA0014.outlook.office365.com
- (2603:10b6:5:3b8::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.35 via Frontend
- Transport; Sun, 11 Feb 2024 08:48:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000E9DC.mail.protection.outlook.com (10.167.241.82) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7249.19 via Frontend Transport; Sun, 11 Feb 2024 08:48:51 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sun, 11 Feb
- 2024 00:48:48 -0800
-Received: from localhost (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Sun, 11 Feb
- 2024 00:48:47 -0800
-Date: Sun, 11 Feb 2024 10:48:44 +0200
-From: Leon Romanovsky <leonro@nvidia.com>
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-CC: Jim Harris <jim.harris@samsung.com>, Bjorn Helgaas <bhelgaas@google.com>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Jason
- Gunthorpe" <jgg@nvidia.com>, Alex Williamson <alex.williamson@redhat.com>,
-	"pierre.cregut@orange.com" <pierre.cregut@orange.com>
-Subject: Re: [PATCH v2 1/2] PCI/IOV: Revert "PCI/IOV: Serialize sysfs
- sriov_numvfs reads vs writes"
-Message-ID: <20240211084844.GA805332@unreal>
-References: <170752254154.1693615.9176696143128338408.stgit@bgt-140510-bm01.eng.stellus.in>
- <CGME20240209235213uscas1p2e8de2bdf05e6e7cba51bd41ddb42a8e4@uscas1p2.samsung.com>
- <170752273224.1693615.11371097645648272257.stgit@bgt-140510-bm01.eng.stellus.in>
- <10d63412-583b-4647-bb5c-4113a466324e@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F9636102
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 08:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707641554; cv=none; b=isDuZYTro7/KwbuKRDOQkMjKgGsAqz/FBak6aDOQnGGXW6ndM0vwO9m36U1sjNk3lsn1b/XMJc1KHVadxPR3l4eZ2tKQ829a1FdhFGLdhyK/yPY3yB01m4deTcwPJBuThVUIRGnXSNCSztONLtbEzPyxEMgj3d99mQa+ri7+3c0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707641554; c=relaxed/simple;
+	bh=8artP/TApEldtwBPGtbWZ5bG6juyp+Nno5U5w89q+Bw=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NXmhWXycgcXF/ZfbYqZv/OmmIJc3yKVW5xH4V8O4TbaER5gEjQV/gB9h7A50x9btXkESRr4kre2U/HyU8MKYVNGWA1TyBOVlDQ6E6Mld/51n3KrU8Ac+830trco47nxOtuEOPcVBetXyyEr1UxhJflOkUkjrgbrCM2a+ZnYWtnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dATkH9CM; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d0512f6e32so31700241fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 00:52:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707641550; x=1708246350; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CLizHpyv/f+DbolOV42ApsVVXm0Dg0xdAa06w8qDvks=;
+        b=dATkH9CMfh1+IqH8rXZkSRL4Zi2we1WcG69zvAmuUtlHPw1bQgT8pboXvg2dewDwxp
+         bujEh2C5aIKpLkaZixEmw9Nud9ZHfp6NjV/BfOOBN2dCQlm717g7ebS9Xx1oOzoEEXRs
+         4yDi4IBAIfyXJt0/cGbMD/tHPggOAg0yPybEw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707641550; x=1708246350;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CLizHpyv/f+DbolOV42ApsVVXm0Dg0xdAa06w8qDvks=;
+        b=dwDxlDDzVIF5SqNL25kFoBucehcjjxbFsyYHsXOGdMMYjCT0yahJBz7yQxAtmzS+17
+         pcB8sGmFw6M+ca2/pnaq43jyql6srl3hnt6Y9vokFOWUytLpYrj6kE4ch9hZq6nKKPBg
+         wQbI6DvY3ilS339nMkK1KU5iEaKNaRfX00+7sTK6XHNCZc8fw8peJaUntN29tnH3tphH
+         Uqb+5cYlA2Jy7/wWV4UNUGZBOSXlVh2Rse31mvVvp1dkZh5IQrs4K1O1XB4yT1uTaiNX
+         YLjjGvYcAK6YFVwOGddd7kJFaB8M3SVOqP4TVMhTOeU/oK+LzC72NoOzqeGlrgFgsJpF
+         gNPw==
+X-Gm-Message-State: AOJu0YzH5lH3Jb0gipVYkfjX0sTyDOyogcFxA2EOu+MTgJS/dEVL8YSW
+	EZJprXcPdqCCXXj7HfxaPpu+J3F943DZULtA76lAnEdL0Ujt+mXP1+qRdDKQd4Ch+FlNQytTdfF
+	Mk/qMcvANwIb9/BjfCC2nVqr5huaRNQM7mhxA
+X-Google-Smtp-Source: AGHT+IHu/AGsCNFvoS5rSkn2rcab3CL0eH8KJbrh21hRNc1eAtuTTEdGTiVu8+aUJynphjEZq0QVTIz4VjEp3nNrSpQ=
+X-Received: by 2002:a05:6512:21c7:b0:511:8cb2:2f80 with SMTP id
+ d7-20020a05651221c700b005118cb22f80mr267458lft.43.1707641549800; Sun, 11 Feb
+ 2024 00:52:29 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Sun, 11 Feb 2024 03:52:28 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <10d63412-583b-4647-bb5c-4113a466324e@linux.intel.com>
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9DC:EE_|DS7PR12MB8419:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9e37bd36-723c-4dae-62d9-08dc2ade4561
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	NNBCgLUVYJq/Qo57H2a3Fkd+coZgOmc2Bjd9RPkVq/8MEhAjvwhqBVq6IW1N6zsCTd82BLVzcp2AN2efsGXyEPDCyty0sYISdmveRDmqxkuk9RWgKs/SXFUslwaHwtEE8uclJuT3nWZCLEESaoYOxijgufqg10cGGfO9p1DRbUQQ2H0ul+L4pwh5IFGN3C45b/sezc1qmvBklRQo2kn5cZGbS2IIsgFEbOdr4/hyulfuagY2qj/zBHVyJUQKAwoCTOuSVPOOyT63edyBCzULGDa7V9poCjnpXga8YoFl48Kc1YEKfbSXkULWYpWRUDsNy5cNQEyZArfStO2obJYS/uWirqrCorYmAIKaRK2Xz5aG8DcZSbpqg4EBxWjuwfg5ps8EZSVjJ7aJonrE232n5Za1ePUK2h/xPeJMcMKP7UJ/mXGAW62/Y3wI4XIfDAj0Qhy+h1cwR8fL1NVSn+SaXDGrT9NHDP/PRxyf1y5nct/H59rEvXHmWQlsSPTwhJ6LBkWvG5c6iNR5N9cLgcd+R6jpk9APYjMDY2o37x+5lCUehMMKke/Vu5kr3jVefgjZYLxuai9Ln2998ZbyyNNbhCW5prD6NH2aMPAtya893uSBezfpp5cxPqNdJdgTuXX3TWmEmEGRHf9XcX+AIvyFSA==
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(7916004)(4636009)(346002)(39860400002)(136003)(396003)(376002)(230922051799003)(1800799012)(82310400011)(186009)(64100799003)(451199024)(40470700004)(46966006)(36840700001)(2906002)(33716001)(8676002)(4326008)(8936002)(5660300002)(336012)(16526019)(426003)(83380400001)(6916009)(26005)(82740400003)(33656002)(1076003)(356005)(7636003)(86362001)(70586007)(54906003)(70206006)(53546011)(316002)(6666004)(478600001)(966005)(9686003)(41300700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2024 08:48:51.3478
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e37bd36-723c-4dae-62d9-08dc2ade4561
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9DC.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8419
+In-Reply-To: <CAA8EJpo1g9QKq1skibqSj9yc3mNSfkcts9oVf_vGjVjDzVZwiA@mail.gmail.com>
+References: <20240210070934.2549994-1-swboyd@chromium.org> <20240210070934.2549994-15-swboyd@chromium.org>
+ <CAA8EJpo1g9QKq1skibqSj9yc3mNSfkcts9oVf_vGjVjDzVZwiA@mail.gmail.com>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date: Sun, 11 Feb 2024 03:52:28 -0500
+Message-ID: <CAE-0n50xu83yYoXoFYEDrkuMw_exS=UGqsU+EwtTOGZyNW+k=Q@mail.gmail.com>
+Subject: Re: [PATCH 14/22] platform/chrome: cros_typec_switch: Add support for
+ signaling HPD to drm_bridge
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	patches@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	Douglas Anderson <dianders@chromium.org>, Pin-yen Lin <treapking@chromium.org>, 
+	Prashant Malani <pmalani@chromium.org>, Benson Leung <bleung@chromium.org>, 
+	Tzung-Bi Shih <tzungbi@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 09, 2024 at 07:20:28PM -0800, Kuppuswamy Sathyanarayanan wrote:
-> 
-> On 2/9/24 3:52 PM, Jim Harris wrote:
-> > If an SR-IOV enabled device is held by vfio, and the device is removed,
-> > vfio will hold device lock and notify userspace of the removal. If
-> > userspace reads the sriov_numvfs sysfs entry, that thread will be blocked
-> > since sriov_numvfs_show() also tries to acquire the device lock. If that
-> > same thread is responsible for releasing the device to vfio, it results in
-> > a deadlock.
+Quoting Dmitry Baryshkov (2024-02-10 06:10:31)
+> On Sat, 10 Feb 2024 at 09:14, Stephen Boyd <swboyd@chromium.org> wrote:
+> > diff --git a/drivers/platform/chrome/cros_typec_switch.c b/drivers/platform/chrome/cros_typec_switch.c
+> > index 769de2889f2f..d8fb6662cf8d 100644
+> > --- a/drivers/platform/chrome/cros_typec_switch.c
+> > +++ b/drivers/platform/chrome/cros_typec_switch.c
+> > @@ -18,6 +19,15 @@
+> >  #include <linux/usb/typec_mux.h>
+> >  #include <linux/usb/typec_retimer.h>
 > >
-> > The proper way to detect a change to the num_VFs value is to listen for a
-> > sysfs event, not to add a device_lock() on the attribute _show() in the
-> > kernel.
-> 
-> Since you are reverting a commit that synchronizes SysFS read
-> /write, please add some comments about why it is not an
-> issue anymore.
+> > +#include <drm/drm_bridge.h>
+> > +#include <drm/drm_print.h>
+> > +
+> > +struct cros_typec_dp_bridge {
+> > +       struct cros_typec_switch_data *sdata;
+> > +       bool hpd_enabled;
+> > +       struct drm_bridge bridge;
+> > +};
+>
+> Is there any chance that you can use drm_dp_hpd_bridge_register() /
+> drm_aux_hpd_bridge_notify() instead of implementing another
+> drm_bridge?
+> If something is missing from the existing implementation we can
+> probably work that out.
 
-It was never an issue, the idea that sysfs read and write should be serialized by kernel
-is not correct by definition. 
+Yeah I think that can work. I had put the drm_bridge in this driver
+because I needed a 'struct device' per DP phy, but I think that problem
+goes away with an auxiliary device, so that is nicely solved.
 
-Thanks
+I'll have to add logic about typec ports to that auxiliary driver
+though, like mapping data-lanes and handling lane assignments. And then
+I'll move this code from the cros_typec_switch driver to the
+cros_ec_typec driver so it can be called outside of the typec mux set
+path. That's probably better because it's sort of bolted on to the
+cros_typec_switch driver. We'll need to know if the DP phy needs to
+handle orientation or if the EC is doing that somehow, so probably I'll
+need to add a DT property to the google,cros-ec-typec binding to
+indicate that orientation control is needed.
 
-> 
-> >
-> > This reverts commit 35ff867b76576e32f34c698ccd11343f7d616204.
-> > Revert had a small conflict, the sprintf() is now changed to sysfs_emit().
-> >
-> > Link: https://lore.kernel.org/linux-pci/ZXJI5+f8bUelVXqu@ubuntu/
-> > Suggested-by: Leon Romanovsky <leonro@nvidia.com>
-> > Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> > Signed-off-by: Jim Harris <jim.harris@samsung.com>
-> > ---
-> >  drivers/pci/iov.c |    8 +-------
-> >  1 file changed, 1 insertion(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
-> > index aaa33e8dc4c9..0ca20cd518d5 100644
-> > --- a/drivers/pci/iov.c
-> > +++ b/drivers/pci/iov.c
-> > @@ -395,14 +395,8 @@ static ssize_t sriov_numvfs_show(struct device *dev,
-> >  				 char *buf)
-> >  {
-> >  	struct pci_dev *pdev = to_pci_dev(dev);
-> > -	u16 num_vfs;
-> > -
-> > -	/* Serialize vs sriov_numvfs_store() so readers see valid num_VFs */
-> > -	device_lock(&pdev->dev);
-> > -	num_vfs = pdev->sriov->num_VFs;
-> > -	device_unlock(&pdev->dev);
-> >  
-> > -	return sysfs_emit(buf, "%u\n", num_vfs);
-> > +	return sysfs_emit(buf, "%u\n", pdev->sriov->num_VFs);
-> >  }
-> >  
-> >  /*
-> >
-> -- 
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
-> 
+It looks like I should add a new auxiliary device, like
+'dp_typec_bridge', and have some other function like
+drm_dp_typec_bridge_register() for that. I can wrap the 'struct
+drm_aux_hpd_bridge_data' with a 'struct drm_aux_typec_bridge_data' and
+then the typec port information can live there. HPD can still be
+signaled with drm_aux_hpd_bridge_notify() but other functions can be
+used to set the active typec port, e.g.
+drm_aux_typec_bridge_set_active_port(), and then get orientation with
+typec_get_orientation() in the atomic_check().
 
