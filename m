@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-60762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2663850930
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1007D850931
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:38:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 182EE1F21275
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:38:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95C221F20FC0
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6A460BBC;
-	Sun, 11 Feb 2024 12:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FC9D60DEB;
+	Sun, 11 Feb 2024 12:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="hcBvZNp2"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="NBS/tyTq"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138B7604C5
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B84605A0
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707654653; cv=none; b=Mf1JrRTPVpjLZVs71kTh8hjefofwsRKXEgQQHvFaTALATQVjk9v4ku0dPQ2yT/dTbHfshGZgnaJ97zzONlEQCDXxJWuaR2HlHRXwZ6C95EhGo0rF9kapudCQTkSz4Zxx2mIcOU1KSxHF5LBo/dlkVPCO6ymVlHNf4xE+SF1+/08=
+	t=1707654655; cv=none; b=diR9HVONqLq83BaS+vo99PcfTaw41mMomFFJhbURM2aqwW3G9KjSr/sDrg456TQ8ROqYRXedwcmAOKQLUMr6XbUd23Lkggz7dplCdUSVpFaAZuPoCXqouwfxGF5/ttpGRCUrMtESODeYWJdBwamFw4oEXkvv36TnvM8XyZVYZQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707654653; c=relaxed/simple;
-	bh=iW4ba7UHKk0KDThAeTMx8C2vBPEV860cssjhylXWogA=;
+	s=arc-20240116; t=1707654655; c=relaxed/simple;
+	bh=HgB9s5w0AlPuLVyJkL0iJmSauVG9XEFFZWYHG9S9I54=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AWJhMpmtoiFevyXzKROWKrbFuAcKHwEiMbHoIPObXsRdCCf4klno9YdcgeEqO3hItcOp/IXuNyIo9sPEzs8T80+fgsMP9GYbaW5m2OFpuusG+RgSrN897dnr3/nfCzR+0K9+ZvosSbM2o0uQa8fpQMX/mZKxMNENzhlV3FtjHXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=hcBvZNp2; arc=none smtp.client-ip=209.85.208.44
+	 MIME-Version; b=dMpT2iVUa2+8SuSta3l/4mUauApm1fRjwpo+fbZ5LaK7MWvVo9NcKqrdXpNH7j/GN0ScSpuEcAIss0w8HBJ1DbYUgt9Gr5rFBNICW6OvK3fG/ClRW49crjb3JA4UY2ekUsYKNXCtvbtcQOO044s164Kl1LjFgyfm5T0LmuEeX7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=NBS/tyTq; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55790581457so3638578a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:30:49 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so2947615a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:30:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707654647; x=1708259447; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1707654649; x=1708259449; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z2wHzIJ+1gKKynMpcxVEtR1yMxxOWj0+XBOjO/6pnQI=;
-        b=hcBvZNp2i/pE7f8NQ5LNJeB8sijXeM+e4zkNA2i2XRX0Ml3VHCr7gwThitU/jwUA3I
-         3vY6gMcp5/XI5kYAIvuy3vL/y6D6D20co7KhweNZrq9pRzSEZjicMqbsAIU3Vd8/XIDh
-         vP2i/4bbTXcBNirguKQsGxWvSLIJn0LHmU1N7mNqqD/9gu8EvAK5Tko36TX63+GXbrLd
-         s9jeF6Rd257KfdpYVV9lroJYXGKQkiNQbThwuOgly0RFjFdKbI0AljHy4cJNrJRpfw74
-         /ozekFHoTcBSCituYRl5wTAgL363OpKZ4Sw4/+wPKdu5vyi2sGlwZ/DaflCAyi0RUUCE
-         njgw==
+        bh=fwHtii56Sk9j6aWasrwO47WYwdkHuwukNe9vK4w9g6U=;
+        b=NBS/tyTq1Hk5fPR6h4ru1s2xgIKbQS9a8yXjjT3KsF8imj8g+JEqivWvLnn4cC/tVK
+         uQjlcFmQMn5FAb8sMdu9TGryYB2AAq9mxGxmtWQ0uGE5jcT5EQ7s6kcQxQ7YmyX63bgB
+         9RU/0IHYb+eEsSBDhLq75OTsWDCtng11R9upluSAMoEk56VOe8J44TD7AdhyNc8phAAD
+         q6Z4UGnbRkQ8ZyAd5D8pHAG+ieSoy3tfJfQfq6hO4UlBA/AFbjD+YJDC9AGpYh3QREma
+         Bgpd/MJJxOpyMDXgaNonN0bkc43I3+4d1cp124Jc1eW3tpnQDsIeOE+HznThh2MD4I0v
+         D1Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707654647; x=1708259447;
+        d=1e100.net; s=20230601; t=1707654649; x=1708259449;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z2wHzIJ+1gKKynMpcxVEtR1yMxxOWj0+XBOjO/6pnQI=;
-        b=UL/QYjC604ukvYwPu6mQdr+jp2yvTybS7yziMFWa4c7qdW9miROBRucCy+rAPcOjsd
-         oERedKsaUwEq1B6mj5A//GcIdLHB+kGy/IFJe109LcGBJjzr7DfcsL7rRDSgrMa+lnle
-         IWFlF5Lnc8UreuBzh/vO/1Httva3ULgicw0eQ1lRZ5+PIhuyYkeCgVw6Ci/yzl/aJv7s
-         ETOKJ94CpQkxqZ+biz8R9d9WSCdUnBY3bBGkY0AE88o39LuwchmS7/r6cEItfWfXQMx0
-         ktQIoLc/fzI4jAsKRNtYQpuhjVqFRVsInSeu5M/3Pboesz6jXE6xhVAhSEwVrWCQxwPD
-         DvYw==
-X-Gm-Message-State: AOJu0YxFdojvfOxFxCTjd+CTnaEKOJXplQfUc9Ark2/+odhASFSBaXlJ
-	5I2Gb4PuaC/LCZGudSXGSrYAQR+tLBnhP2LCW+7/+xoda9461tuepxoUaMV1g0/VlV2tiUBjv1Y
-	A
-X-Google-Smtp-Source: AGHT+IFVk9PXVBhZwk0VNXYszMcxChvBJMJB2Y1fLWlIgs8QUZYv+mjJKqFvAS0GVbrwojH9va+9UA==
-X-Received: by 2002:a05:6402:1211:b0:55f:e584:221e with SMTP id c17-20020a056402121100b0055fe584221emr2739044edw.29.1707654647529;
-        Sun, 11 Feb 2024 04:30:47 -0800 (PST)
+        bh=fwHtii56Sk9j6aWasrwO47WYwdkHuwukNe9vK4w9g6U=;
+        b=vDvExR2teMZXR0GC8wNV9ZFGr6PzoIg+C26MkJ927tP86lgsEsxXSEGV2fFWR9trWi
+         +QHalcDJltUzH21iINu3KMg4tqa1bvVztdlwijCwHFr30gWmlbIIFaqsXQrPpI8dvrGn
+         FuTSNzgC4acUACkZwEupoCJJJkdUt7S7HrSbagbwMh2nYprYODKtMCY8jTMR6oBYs19B
+         LL5FhfiqG9GnrkfD9dztIVr3erIq9KuN0LinI76mQmuwvZfxSAD4J/cuHwPRzk2/nT9S
+         Og9oxD2GPOrw14ls572BnI5Iiu/kyb1/nictI7js487UyJh0ReGRHO4JmiPAjlPWvqsw
+         DHrA==
+X-Gm-Message-State: AOJu0Yxa/54hNk6aY0Dc0NoXMpBwBTZBJMHxEycb6N82mioCLQVCdmxc
+	HNGYqJsmoGDMd3hhIhj6ScB5eZKQnHfms98hUTc+q6EEyYzzYusubiSM+prTv6pdYKTbZ7MfJBu
+	N
+X-Google-Smtp-Source: AGHT+IHx4SN7HjAhHkNHy+i6tltC6d+Th5AiWnh+JLFUkgiUT1UvDBm0FMVlqPCur9ki3zysSfd6zg==
+X-Received: by 2002:aa7:df04:0:b0:560:64f4:cbd3 with SMTP id c4-20020aa7df04000000b0056064f4cbd3mr2267489edy.20.1707654648967;
+        Sun, 11 Feb 2024 04:30:48 -0800 (PST)
 Received: from raven.intern.cm-ag (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id fj18-20020a0564022b9200b0056187ca4120sm1024611edb.10.2024.02.11.04.30.46
+        by smtp.gmail.com with ESMTPSA id fj18-20020a0564022b9200b0056187ca4120sm1024611edb.10.2024.02.11.04.30.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 04:30:46 -0800 (PST)
+        Sun, 11 Feb 2024 04:30:47 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v3 33/35] linux/kernel.h: move upper/lower_*_bits macros to wordpart.h
-Date: Sun, 11 Feb 2024 13:29:58 +0100
-Message-Id: <20240211123000.3359365-34-max.kellermann@ionos.com>
+Subject: [PATCH v3 34/35] linux/kernel.h: move PTR_IF() to ptr_util.h
+Date: Sun, 11 Feb 2024 13:29:59 +0100
+Message-Id: <20240211123000.3359365-35-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240211123000.3359365-1-max.kellermann@ionos.com>
 References: <20240211123000.3359365-1-max.kellermann@ionos.com>
@@ -87,286 +87,59 @@ Reducing dependencies on the header linux/kernel.h.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- arch/arm64/include/asm/syscall.h  |  2 +-
- arch/arm64/kvm/handle_exit.c      |  2 +-
- drivers/bus/uniphier-system-bus.c |  2 +-
- drivers/irqchip/irq-gic-v3-its.c  |  1 +
- drivers/spi/spi-pci1xxxx.c        |  1 +
- fs/hfs/hfs_fs.h                   |  2 +-
- fs/hfsplus/hfsplus_fs.h           |  2 +-
- include/drm/drm_fixed.h           |  2 +-
- include/linux/dma-fence.h         |  2 +-
- include/linux/goldfish.h          |  2 +-
- include/linux/kernel.h            | 29 +----------------------------
- include/linux/qed/common_hsi.h    |  1 +
- include/linux/wordpart.h          | 28 ++++++++++++++++++++++++++++
- include/rdma/uverbs_ioctl.h       |  2 +-
- include/soc/fsl/bman.h            |  2 ++
- include/soc/fsl/qman.h            |  1 +
- 16 files changed, 44 insertions(+), 37 deletions(-)
+ include/linux/kernel.h   | 3 +--
+ include/linux/pm.h       | 2 +-
+ include/linux/ptr_util.h | 7 +++++++
+ 3 files changed, 9 insertions(+), 3 deletions(-)
+ create mode 100644 include/linux/ptr_util.h
 
-diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
-index 107ada608694..e5f462cc1a54 100644
---- a/arch/arm64/include/asm/syscall.h
-+++ b/arch/arm64/include/asm/syscall.h
-@@ -8,7 +8,7 @@
- #include <uapi/linux/audit.h>
- #include <linux/compat.h>
- #include <linux/err.h>
--#include <linux/kernel.h> // for lower_32_bits()
-+#include <linux/wordpart.h> // for lower_32_bits()
- 
- typedef long (*syscall_fn_t)(const struct pt_regs *regs);
- 
-diff --git a/arch/arm64/kvm/handle_exit.c b/arch/arm64/kvm/handle_exit.c
-index a82b4b31bb36..91bd5b701acf 100644
---- a/arch/arm64/kvm/handle_exit.c
-+++ b/arch/arm64/kvm/handle_exit.c
-@@ -10,7 +10,7 @@
- 
- #include <linux/kvm.h>
- #include <linux/kvm_host.h>
--#include <linux/kernel.h> // for upper_32_bits(), lower_32_bits()
-+#include <linux/wordpart.h> // for lower_32_bits(), upper_32_bits()
- 
- #include <asm/esr.h>
- #include <asm/exception.h>
-diff --git a/drivers/bus/uniphier-system-bus.c b/drivers/bus/uniphier-system-bus.c
-index 8cffdb089a6b..8949a7a5c170 100644
---- a/drivers/bus/uniphier-system-bus.c
-+++ b/drivers/bus/uniphier-system-bus.c
-@@ -6,7 +6,7 @@
- #include <linux/io.h>
- #include <linux/kernel.h> // for upper_32_bits(), lower_32_bits()
- #include <linux/log2.h>
--#include <linux/kernel.h> // for upper_32_bits()
-+#include <linux/wordpart.h> // for upper_32_bits()
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 1be09abac7cc..2b33edb78c26 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -30,6 +30,7 @@
- #include <linux/percpu.h>
- #include <linux/slab.h>
- #include <linux/syscore_ops.h>
-+#include <linux/wordpart.h> // for lower_32_bits(), upper_32_bits()
- 
- #include <linux/irqchip.h>
- #include <linux/irqchip/arm-gic-v3.h>
-diff --git a/drivers/spi/spi-pci1xxxx.c b/drivers/spi/spi-pci1xxxx.c
-index ab99aac85eb9..1ff89d726927 100644
---- a/drivers/spi/spi-pci1xxxx.c
-+++ b/drivers/spi/spi-pci1xxxx.c
-@@ -9,6 +9,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/iopoll.h>
- #include <linux/irq.h>
-+#include <linux/kernel.h> // for upper_32_bits(), lower_32_bits()
- #include <linux/module.h>
- #include <linux/msi.h>
- #include <linux/pci_regs.h>
-diff --git a/fs/hfs/hfs_fs.h b/fs/hfs/hfs_fs.h
-index 71ebbed52f5f..99e54ff4df83 100644
---- a/fs/hfs/hfs_fs.h
-+++ b/fs/hfs/hfs_fs.h
-@@ -17,7 +17,7 @@
- 
- #include <linux/slab.h>
- #include <linux/types.h>
--#include <linux/kernel.h> // for lower_32_bits()
-+#include <linux/wordpart.h> // for lower_32_bits()
- #include <linux/mutex.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
-diff --git a/fs/hfsplus/hfsplus_fs.h b/fs/hfsplus/hfsplus_fs.h
-index 157dad01495f..79cac82d050e 100644
---- a/fs/hfsplus/hfsplus_fs.h
-+++ b/fs/hfsplus/hfsplus_fs.h
-@@ -21,7 +21,7 @@
- #include <linux/mutex.h>
- #include <linux/buffer_head.h>
- #include <linux/blkdev.h>
--#include <linux/kernel.h> // for lower_32_bits()
-+#include <linux/wordpart.h> // for lower_32_bits()
- #include "hfsplus_raw.h"
- 
- #define DBG_BNODE_REFS	0x00000001
-diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
-index 0c9f917a4d4b..ff9a91fa40b6 100644
---- a/include/drm/drm_fixed.h
-+++ b/include/drm/drm_fixed.h
-@@ -25,7 +25,7 @@
- #ifndef DRM_FIXED_H
- #define DRM_FIXED_H
- 
--#include <linux/kernel.h>
-+#include <linux/wordpart.h> // for lower_32_bits()
- #include <linux/math64.h>
- 
- typedef union dfixed {
-diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index 3081ff146d41..308d77098e21 100644
---- a/include/linux/dma-fence.h
-+++ b/include/linux/dma-fence.h
-@@ -16,7 +16,7 @@
- #include <linux/err.h>
- #include <linux/list.h>
- #include <linux/bitops.h>
--#include <linux/kernel.h> // for lower_32_bits()
-+#include <linux/wordpart.h> // for lower_32_bits()
- #include <linux/kref.h>
- #include <linux/sched.h>
- #include <linux/printk.h>
-diff --git a/include/linux/goldfish.h b/include/linux/goldfish.h
-index bcc17f95b906..8b2b3046f779 100644
---- a/include/linux/goldfish.h
-+++ b/include/linux/goldfish.h
-@@ -2,7 +2,7 @@
- #ifndef __LINUX_GOLDFISH_H
- #define __LINUX_GOLDFISH_H
- 
--#include <linux/kernel.h>
-+#include <linux/wordpart.h> // for lower_32_bits(), upper_32_bits()
- #include <linux/types.h>
- #include <linux/io.h>
- 
 diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index ac332f4deed9..6f436367dd16 100644
+index 6f436367dd16..e323fe139cc8 100644
 --- a/include/linux/kernel.h
 +++ b/include/linux/kernel.h
 @@ -32,6 +32,7 @@
  #include <linux/sprintf.h>
  #include <linux/static_call_types.h>
  #include <linux/instruction_pointer.h>
-+#include <linux/wordpart.h>
++#include <linux/ptr_util.h>
+ #include <linux/wordpart.h>
  #include <asm/byteorder.h>
  
- #include <uapi/linux/kernel.h>
-@@ -47,34 +48,6 @@
- }					\
- )
+@@ -39,8 +40,6 @@
  
--/**
-- * upper_32_bits - return bits 32-63 of a number
-- * @n: the number we're accessing
-- *
-- * A basic shift-right of a 64- or 32-bit quantity.  Use this to suppress
-- * the "right shift count >= width of type" warning when that quantity is
-- * 32-bits.
-- */
--#define upper_32_bits(n) ((u32)(((n) >> 16) >> 16))
+ #define STACK_MAGIC	0xdeadbeef
+ 
+-#define PTR_IF(cond, ptr)	((cond) ? (ptr) : NULL)
 -
--/**
-- * lower_32_bits - return bits 0-31 of a number
-- * @n: the number we're accessing
-- */
--#define lower_32_bits(n) ((u32)((n) & 0xffffffff))
--
--/**
-- * upper_16_bits - return bits 16-31 of a number
-- * @n: the number we're accessing
-- */
--#define upper_16_bits(n) ((u16)((n) >> 16))
--
--/**
-- * lower_16_bits - return bits 0-15 of a number
-- * @n: the number we're accessing
-- */
--#define lower_16_bits(n) ((u16)((n) & 0xffff))
--
- void do_exit(long error_code) __noreturn;
+ #define u64_to_user_ptr(x) (		\
+ {					\
+ 	typecheck(u64, (x));		\
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index 34cf20dd1ad1..cccf320b67f6 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -9,7 +9,7 @@
+ #define _LINUX_PM_H
  
- extern int get_option(char **str, int *pint);
-diff --git a/include/linux/qed/common_hsi.h b/include/linux/qed/common_hsi.h
-index 827624840ee2..11482394d7f3 100644
---- a/include/linux/qed/common_hsi.h
-+++ b/include/linux/qed/common_hsi.h
-@@ -11,6 +11,7 @@
- #include <asm/byteorder.h>
- #include <linux/bitops.h>
- #include <linux/slab.h>
-+#include <linux/wordpart.h> // for upper_32_bits()
- 
- /* dma_addr_t manip */
- #define PTR_LO(x)		((u32)(((uintptr_t)(x)) & 0xffffffff))
-diff --git a/include/linux/wordpart.h b/include/linux/wordpart.h
-index c9e6bd773ebd..a73f0c84a03a 100644
---- a/include/linux/wordpart.h
-+++ b/include/linux/wordpart.h
-@@ -10,4 +10,32 @@
-  */
- #define REPEAT_BYTE(x)	((~0ul / 0xff) * (x))
- 
-+/**
-+ * upper_32_bits - return bits 32-63 of a number
-+ * @n: the number we're accessing
-+ *
-+ * A basic shift-right of a 64- or 32-bit quantity.  Use this to suppress
-+ * the "right shift count >= width of type" warning when that quantity is
-+ * 32-bits.
-+ */
-+#define upper_32_bits(n) ((u32)(((n) >> 16) >> 16))
+ #include <linux/export.h>
+-#include <linux/kernel.h> // for PTR_IF()
++#include <linux/ptr_util.h> // for PTR_IF()
+ #include <linux/list.h>
+ #include <linux/workqueue_types.h>
+ #include <linux/spinlock_types.h>
+diff --git a/include/linux/ptr_util.h b/include/linux/ptr_util.h
+new file mode 100644
+index 000000000000..7469aff978a9
+--- /dev/null
++++ b/include/linux/ptr_util.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_PTR_UTIL_H
++#define _LINUX_PTR_UTIL_H
 +
-+/**
-+ * lower_32_bits - return bits 0-31 of a number
-+ * @n: the number we're accessing
-+ */
-+#define lower_32_bits(n) ((u32)((n) & 0xffffffff))
++#define PTR_IF(cond, ptr)	((cond) ? (ptr) : NULL)
 +
-+/**
-+ * upper_16_bits - return bits 16-31 of a number
-+ * @n: the number we're accessing
-+ */
-+#define upper_16_bits(n) ((u16)((n) >> 16))
-+
-+/**
-+ * lower_16_bits - return bits 0-15 of a number
-+ * @n: the number we're accessing
-+ */
-+#define lower_16_bits(n) ((u16)((n) & 0xffff))
-+
- #endif // _LINUX_WORDPART_H
-diff --git a/include/rdma/uverbs_ioctl.h b/include/rdma/uverbs_ioctl.h
-index 47a6be467004..05002792b078 100644
---- a/include/rdma/uverbs_ioctl.h
-+++ b/include/rdma/uverbs_ioctl.h
-@@ -7,7 +7,7 @@
- #define _UVERBS_IOCTL_
- 
- #include <rdma/uverbs_types.h>
--#include <linux/kernel.h> // for upper_32_bits(), lower_32_bits()
-+#include <linux/wordpart.h>
- #include <linux/uaccess.h>
- #include <rdma/rdma_user_ioctl.h>
- #include <rdma/ib_user_ioctl_verbs.h>
-diff --git a/include/soc/fsl/bman.h b/include/soc/fsl/bman.h
-index 173e4049d963..b01d8c0ac204 100644
---- a/include/soc/fsl/bman.h
-+++ b/include/soc/fsl/bman.h
-@@ -31,6 +31,8 @@
- #ifndef __FSL_BMAN_H
- #define __FSL_BMAN_H
- 
-+#include <linux/wordpart.h> // for upper_32_bits()
-+
- /* wrapper for 48-bit buffers */
- struct bm_buffer {
- 	union {
-diff --git a/include/soc/fsl/qman.h b/include/soc/fsl/qman.h
-index 0d3d6beb7fdb..c5230a844114 100644
---- a/include/soc/fsl/qman.h
-+++ b/include/soc/fsl/qman.h
-@@ -33,6 +33,7 @@
- 
- #include <linux/bitops.h>
- #include <linux/device.h>
-+#include <linux/wordpart.h> // for upper_32_bits()
- 
- /* Hardware constants */
- #define QM_CHANNEL_SWPORTAL0 0
++#endif /* _LINUX_PTR_UTIL_H  */
 -- 
 2.39.2
 
