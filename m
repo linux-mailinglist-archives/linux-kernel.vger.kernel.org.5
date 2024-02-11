@@ -1,132 +1,109 @@
-Return-Path: <linux-kernel+bounces-60973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C09F0850BCC
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:37:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 130A4850BCB
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3CA31C21EAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 22:37:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 455D21C219DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 22:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A321756E;
-	Sun, 11 Feb 2024 22:37:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44132171DD;
+	Sun, 11 Feb 2024 22:37:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h8hgUpH4"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TIFMKM/c"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74E2F17562
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 22:37:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83ED71426A;
+	Sun, 11 Feb 2024 22:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707691034; cv=none; b=ct9kPZGfZcP2TexYIniFRDS11Yd4osUTlXaCIHcWf/JDF2HjAtAE049ninE13hjYHefyJqsCMnzavJ+8G72333bQSj6LZ6E21ad/15XCV8LJ2tO5ypki+Eh/gaMBmlAdUMoOs6HjkRuD/0OOYtWX7PGxm7RWUylFbwX0IPX6iNE=
+	t=1707691025; cv=none; b=iyq9b5JgEHQ8evO4YjzIbWG4+U51h7Nnz+/np+Cqwz5zvJ0CaP+ICMwOAeymjFYSGlIRnykscyBnwrybRPilY+ohT3ae+qPIUShwoQxI0bI30wkWy3jxSNKpd3fhcYRu4ysN2G4c6WUjpEheDqCkRKoTchcRjlrTkIyUQR7NLP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707691034; c=relaxed/simple;
-	bh=6t9CwVYmdoKt02P//MW11oTFv8CYB0bod9mA2PMjpII=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pwebKRH9sR9Jg8cmgg5P5wuadmIJnBq3Azw7MejeK+rmNVI8Ktjll2qWiz6S7L79VJjmSEtR++QuSOLpr1jemACZbUyPT+MNV26OEQMmqbIXR1dNcORWl1KgYUcpdLunYW5vCjopTkyfckg9VUdKQL4gYWRpgFk85xQ8twt7L2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h8hgUpH4; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bff4553fa7so1565391b6e.1
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 14:37:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707691031; x=1708295831; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LwL2cPgCgo73JKWjoqj3p87QSfksLIJBW6ce7uIk2Us=;
-        b=h8hgUpH4Jy2rXyNflbL6i2dcwSSFm2FEErtJlFra/ZM09Ff6EuURWTp1HyclYds0Xu
-         EMOaMrBoDo4NMnHxmJHX5jPHio0Hd+GjHR/9tJXoGNJaFDtBpwkqoOrdLvwu8F64plBM
-         Wdg99yV+0fXSM9iGWzqONkFsnuL+Rr2rjes8SGON6fekIqttkkbHUGUiAXjRuah2hgzp
-         N2tJm9HDM4yt9B2WTdf0u+cIjkyhchWHhKDuAWJ0Lbf242cU9hz4RTr886oUe39fsVwh
-         DD0NIwApNO8ctDZXeq6mtQFNehYbshnwns1QVvyEC2NTznrq9OTlerhKd8Odb5T6SC8n
-         ej7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707691031; x=1708295831;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LwL2cPgCgo73JKWjoqj3p87QSfksLIJBW6ce7uIk2Us=;
-        b=lutRESQayiLJXbvq7qvqHX54sbF1wwIoDFQ5ABKsTDZeZ6QDTY8d8jBGUpFkjLDR8Q
-         T9L3SzCDBHE3rYOUgNivEOoxaZmlhb3ShiToU7hRa6M+Bu4DDT+3y4SNSU6JfV49VyXG
-         Tlpoq6OUMsw5ItMkuHaZdM/VoYBnMxybd81mpxzFMvFu3QlQoWQbWLLI1Ao0AfKDBzrZ
-         aTfZm+u1HkuAlTkBzpqLos2pgu9UVnCdvzQkq+hRg3nOMwYzfIi+vsrCaktAJdXekeA2
-         1eiuMZ52HI/Xz2UBmNeTXYtQAysQ2677AyZPSVXYoo3CouiWeU9ZH0qJodqerJmCZLhg
-         PmLg==
-X-Gm-Message-State: AOJu0YxzQu0V608ZzG/HJ1Ynj8MYre7H2MphZEVV4jf4qwTWKl/PnEi+
-	X3PRVTMK6dtr2c4vZ4eToPWD6+WHoQk5ZV9FbIJuNQF8I2QVZISF
-X-Google-Smtp-Source: AGHT+IHRwOGpTWwJt9l7nBsfJ197kU9hkIhD8SWg5fFGEiqKoovXHd/UVr6i0qcVw6+Stb2d+VCp2w==
-X-Received: by 2002:aca:130c:0:b0:3c0:3b3b:1745 with SMTP id e12-20020aca130c000000b003c03b3b1745mr157037oii.54.1707691031182;
-        Sun, 11 Feb 2024 14:37:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWSSTGYOye8W97pmZkft5mGS2lUrPc6vfsm12c3jsP9weo9admjDQH7e+U7TZmfQf/IeXu4xpIzWfZBlEgp7Kk51g==
-Received: from opengear-rohan.test.bne.opengear.com (brisbane.opengear.com. [60.241.24.90])
-        by smtp.googlemail.com with ESMTPSA id k70-20020a633d49000000b005cf450e91d2sm5558724pga.52.2024.02.11.14.37.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 14:37:10 -0800 (PST)
-From: Rohan Kollambalath <rohankollambalath@gmail.com>
-To: gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org,
-	Rohan Kollambalath <rkollamb@digi.com>
-Subject: [PATCH] sysfs:Addresses documentation in sysfs_merge_group and sysfs_unmerge_group.
-Date: Mon, 12 Feb 2024 08:36:34 +1000
-Message-Id: <20240211223634.2103665-1-rohankollambalath@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1707691025; c=relaxed/simple;
+	bh=v4G6ehhPG/T4ElMEaTqhlNoQjbCZltvlaQ9iSgQ/jqs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CjWu3huFL3kI3GqJrKWyf7q2ID5d19xJ0lrgUmdcnjFrZ9xxOP7IHsWuXd29YAXjZ6Woga4rtbWdrCHyunEWY7gEr4w2f7sG65OM8JPdG5i4Egp3AENc7l+zzc26wjqT+Jkmn8xwzQ+wCR1y8dqlj6WwBC7Akc2r1LtnpRVigQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TIFMKM/c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D3D6C43390;
+	Sun, 11 Feb 2024 22:37:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707691025;
+	bh=v4G6ehhPG/T4ElMEaTqhlNoQjbCZltvlaQ9iSgQ/jqs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=TIFMKM/caEh5dJ+bulkCR0q0gdp8pENZGkgU9CkmDCd5Oq1bSaUzntyguvgsJOvv4
+	 gjTjnGKCNzWlTToma07fms9Vcw2c+AZ0gxd1qaIR1L+7WNH8f+CnvuF/kDaPJJMAgG
+	 OeXcjmQI/c3V4bHwvSaaqgOu2o7bzLd42KFmhOPW3zZSd25LDzQ1deBLdDJyQTCzkK
+	 ikJMXpN0zJjpVanMBA070l+UVbhVC9+PLB5jUZdeLdtYULy1GMvyS17nC0QHaYBTIc
+	 wJ2pxMbg199kFs/b3OTVOd+tYLkfoSzSiUWVWn3jKHzcu/N7DK8DUYZWSXVavA0Mo/
+	 /2qdpBvaOXosg==
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d0dc3fdd1bso26130321fa.0;
+        Sun, 11 Feb 2024 14:37:04 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVQ/g7EfLcg1gzoWUj9jQYcaXoZ2VERuquZ5TNFhkfE1K6LS1xULNTKgO/R3EPf8zM4mOFDPGye7x//F+qyXxobDwsVfXxPJL+/suJ44zlRDHftPQiflJ1gFvTZIyQnZPrfg7jWpgOJTA==
+X-Gm-Message-State: AOJu0YwZEsIYefjsmgn+EReJXTSbAd8m3aC83NO/nsK/dYlUH4KnLoa/
+	p+/5oHjTcRbuzvCLnXfgu6/ASh5jGzOf9rRi8l0vl9q/R8874FXQ58hG2br0nyI+NLBaRKjoQJv
+	4C+zFU4FfdT2rci3v4sWpYl/WWBg=
+X-Google-Smtp-Source: AGHT+IFl4zc+Ad1i+CBjqwi2XTTno9sUz3Cm/iJnlLj5Ldx7zEG3AwZJXSsOHOLHudvXqss07zu7p/FqLBwWJmYbkNc=
+X-Received: by 2002:ac2:4579:0:b0:511:87b7:6d88 with SMTP id
+ k25-20020ac24579000000b0051187b76d88mr1609035lfm.32.1707691023239; Sun, 11
+ Feb 2024 14:37:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240129180502.4069817-21-ardb+git@google.com>
+ <20240129180502.4069817-27-ardb+git@google.com> <20240207132922.GSZcOFspSGaVluJo92@fat_crate.local>
+ <CAMj1kXF+mHCYs08q58QFGuzZ4nzGd2sDr1gp2ydkOHHQ2LK5tQ@mail.gmail.com> <20240210104039.GAZcdSp7dRbgqBy3fg@fat_crate.local>
+In-Reply-To: <20240210104039.GAZcdSp7dRbgqBy3fg@fat_crate.local>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Sun, 11 Feb 2024 23:36:51 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG5+KEAE5F0EFkZCkt1244M3UBJXH_O3ULg0oRHV2YnmQ@mail.gmail.com>
+Message-ID: <CAMj1kXG5+KEAE5F0EFkZCkt1244M3UBJXH_O3ULg0oRHV2YnmQ@mail.gmail.com>
+Subject: Re: [PATCH v3 06/19] x86/startup_64: Drop global variables keeping
+ track of LA57 state
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-From: Rohan Kollambalath <rkollamb@digi.com>
+On Sat, 10 Feb 2024 at 11:41, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Fri, Feb 09, 2024 at 01:55:02PM +0000, Ard Biesheuvel wrote:
+> > I was trying to get rid of global variable assignments and accesses
+> > from the 1:1 mapping, but since we cannot get rid of those entirely,
+> > we might just keep __pgtable_l5_enabled but use RIP_REL_REF() in the
+> > accessors, and move the assignment to the asm startup code.
+>
+> Yeah.
+>
+> >    asm(ALTERNATIVE_TERNARY(
+> >        "movq %%cr4, %[reg] \n\t btl %[la57], %k[reg]" CC_SET(c),
+> >        %P[feat], "stc", "clc")
+> >        : [reg] "=r" (r), CC_OUT(c) (ret)
+> >        : [feat] "i" (X86_FEATURE_LA57),
+> >          [la57] "i" (X86_CR4_LA57_BIT)
+> >        : "cc");
+>
+> Creative :)
+>
+> > but we'd still have two versions in that case.
+>
+> Yap. RIP_REL_REF() ain't too bad ...
+>
 
-These functions take a struct attribute_group as an input which has an
-optional .name field. These functions rely on the .name field being
-populated and do not check if its null. They pass this name into other
-functions, eventually leading to a null pointer dereference.
-
-This change simply updates the documentation of the function to make
-this requirement clear.
-
-Signed-off-by: Rohan Kollambalath <rkollamb@digi.com>
----
- fs/sysfs/group.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
-index 138676463336..8a22444dd46a 100644
---- a/fs/sysfs/group.c
-+++ b/fs/sysfs/group.c
-@@ -318,13 +318,13 @@ void sysfs_remove_groups(struct kobject *kobj,
- EXPORT_SYMBOL_GPL(sysfs_remove_groups);
- 
- /**
-- * sysfs_merge_group - merge files into a pre-existing attribute group.
-+ * sysfs_merge_group - merge files into a pre-existing named attribute group.
-  * @kobj:	The kobject containing the group.
-  * @grp:	The files to create and the attribute group they belong to.
-  *
-- * This function returns an error if the group doesn't exist or any of the
-- * files already exist in that group, in which case none of the new files
-- * are created.
-+ * This function returns an error if the group doesn't exist, the .name field is
-+ * NULL or any of the files already exist in that group, in which case none of
-+ * the new files are created.
-  */
- int sysfs_merge_group(struct kobject *kobj,
- 		       const struct attribute_group *grp)
-@@ -356,7 +356,7 @@ int sysfs_merge_group(struct kobject *kobj,
- EXPORT_SYMBOL_GPL(sysfs_merge_group);
- 
- /**
-- * sysfs_unmerge_group - remove files from a pre-existing attribute group.
-+ * sysfs_unmerge_group - remove files from a pre-existing named attribute group.
-  * @kobj:	The kobject containing the group.
-  * @grp:	The files to remove and the attribute group they belong to.
-  */
--- 
-2.25.1
-
+We can actually rip all of that stuff out, and have only a single
+implementation of pgtable_l5_enabled() that is not based on a variable
+at all. It results in a nice cleanup, but I'll keep it as a separate
+patch in the next revision so we can easily drop it if preferred.
 
