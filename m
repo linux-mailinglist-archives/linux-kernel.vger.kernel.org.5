@@ -1,96 +1,142 @@
-Return-Path: <linux-kernel+bounces-60780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC92850954
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:54:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC8928509B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD7961C20F43
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:54:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71D9E1F21A4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 14:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC5445A7A4;
-	Sun, 11 Feb 2024 12:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435B75B5C1;
+	Sun, 11 Feb 2024 14:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j63qDuSn"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="WRorG8xv"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2042.outbound.protection.outlook.com [40.107.94.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91301E506;
-	Sun, 11 Feb 2024 12:54:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707656073; cv=none; b=VYSFKHg9tReL+v8tl1/gL3uXLFmL9BJHWvYOSvZaBHU9MofkIjjuu3LewOhpih5vrHgvd4Mv6xdAn8tM29AfzGQWsP8exDihTipKCs+nJemvXBJ13mPhc3nZEPuXpB20cM8T0G5fKN9ybfdOH/cxc4EpmmueEBIi2/McZXAfTKE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707656073; c=relaxed/simple;
-	bh=C+XQXwDD9N8THlo39OomPFlzmvWu4gIgQwLvf2U+jCc=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:Subject:MIME-Version:
-	 Content-Type; b=W3k7iCJdcqY509MuG08oD1m9m95pN3fr0BXFe+BH7Va4pr91C9D3PHFgAc3FPd0JurHOqPNOf9xdjSbgb951TnzxTo2++5ZREDYBJpQ1yduv5ToMBvrL2+rvTTw4Xpw/g9lMXLnNiiuja/Xp7Jr+4Ib2+rHTI75KYHVsbFXE+Ro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j63qDuSn; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5cddc5455aeso1672066a12.1;
-        Sun, 11 Feb 2024 04:54:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707656071; x=1708260871; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:in-reply-to
-         :message-id:cc:to:from:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C+XQXwDD9N8THlo39OomPFlzmvWu4gIgQwLvf2U+jCc=;
-        b=j63qDuSnVUCw6eQMZLFHni/B0vwSKfJLfXTFb3Q46iffr1O1wrKX1ayueeHMQBvRJt
-         Kn+4qjgft1k2MITt2+ncRn07w4fKhmw/q9GbNN2b8cwXBiirWTLld7vCQscamRpAhewM
-         rv8Yk+vjbjVSMyAZOmgsCmwyG82XwRkTyPAJ6qoViRIIC89xgb5udPNIp9+544c8A2tW
-         25O8UZD1TdkYsnafHANRySyM3OrPLs+DXgScXUesTAL1lVv3zoeNJJjg7zbYCY14r5t+
-         k27JM65R0ToflLcxKpQAHA8S1+7/t6TiYMeuLAMwHhCREXuUawRtEtSi4YWTdMDCMtd3
-         H+qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707656071; x=1708260871;
-        h=content-transfer-encoding:mime-version:subject:in-reply-to
-         :message-id:cc:to:from:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=C+XQXwDD9N8THlo39OomPFlzmvWu4gIgQwLvf2U+jCc=;
-        b=VFs5Ap/WpiBFGo0tUFtpkpFX1taXu5dOXJrwMmVcVRTNO9FMAGE/jiFjJvaU0gfMiL
-         Lll1DuxljCi3PHACw0237mmaPVg9woeCBuCE4AUnyE12idQfwyrSqvuYIDZnMWDJeMqg
-         KkYZMQ1iAbMqOpBoEe+Li0l3ICKKmAxZHcCy8wxht0IP8LZHZniKlG701QED7rTge9Zm
-         rlclBc0IAxKp7Et/c2n6OSCRHqKXmomRm272tlPKe1P63OfMst+xjEFv1XuKc0SwMiOV
-         2UKYarWRaKZ3irfNhtFuycz4NwIKBC2OY4Gccq4XESaJGJWQwQT2ftYTbuZQsAQ4IP7H
-         4v3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXDGvlCRfVofStDUasRip1vI7Bsi97lnMd1WdIAvrldPNPkxWS3850FyTky+kPU3Lf3tfWeyR9ZLaxLmRoRlh8oAe6O4WuKFlQiSZ0pVmJidjzngoOZtyD3e0D/zClACTWQyouLAPcOjIvUJ9xTEwLwYRnKpTqVov8qWPKXERA2wTW2
-X-Gm-Message-State: AOJu0YxPi2d/ENrAQrr3LwSXF/TGyJR35ORovpIA6LZqKLvO6cI3StPy
-	7DWCtPa51Q2o1nvyX3aXt5/9156T7lXAXe4wYcMO2qetYcPF2s3O
-X-Google-Smtp-Source: AGHT+IEx1P+gJ/HEVuA6gr921gTOXVlkSkMwk8B77f7YKCvdF4xrlA6DRHKgxZEuCTaD0dpvKYOlsg==
-X-Received: by 2002:a05:6a20:d707:b0:19e:3c4e:d0f8 with SMTP id iz7-20020a056a20d70700b0019e3c4ed0f8mr3281418pzb.32.1707656071274;
-        Sun, 11 Feb 2024 04:54:31 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWY5o7/De9dzWdddJ0uWaxsYvSfYmI93GrIZshPkMOg98hR2Ewgh+N8tlMIWon2t5WKBja2k6RzOgapRhA67+YmgWLNIYMgdSz3l7Aq43EMQnQvgQN9LWrcsMXZehIMOZLpxSc+75AFa/3IyfQGVrsNLSDLS3mBZzDO/yz/rNj/DnyrxEFSBI/cuA4S+gV61zQ9HVVbyZN1mPK1uxw02WUyfab1OzprjNy39YS5oH4alMyq9+Hms1eLApdyraw68L1Ex3dgr5ACAreM3mNLo5KRlp/08l0sWATZV+UT3zkW4t/3HTFu4fo=
-Received: from [127.0.0.1] ([106.221.237.147])
-        by smtp.gmail.com with ESMTPSA id ja15-20020a170902efcf00b001d9fc6cb5f2sm4280038plb.203.2024.02.11.04.54.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 04:54:30 -0800 (PST)
-Date: Sun, 11 Feb 2024 18:24:24 +0530 (GMT+05:30)
-From: Shresth Prasad <shresthprasad7@gmail.com>
-To: gregkh@linuxfoundation.org
-Cc: corbet@lwn.net, linux-doc@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	shresthprasad7@gmail.com, skhan@linuxfoundation.org
-Message-ID: <74d67b62-6fa4-4218-b51f-f0d33f19c422@gmail.com>
-In-Reply-To: <2024021159-banner-dramatic-af88@gregkh>
-Subject: Re: [PATCH] Fix malformed table error in gadget-testing.rst
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8B241AAC;
+	Sun, 11 Feb 2024 14:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707663301; cv=fail; b=X4L6VG8owM6VHHur2w+p+rmzB2Nn21jWbPe5Nc0SKMEXwueknMypquYYeWwuQrZ/BkrUSkKYzIA5N4sPojUebdkKnMFDSEyjSYbRxoqPg8CROP5E9QW8wyN1HJMvR7Jql8L4+xM0Ac0o3AzCPLFTmMCmj8/QjifM5GDXLCMaTHo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707663301; c=relaxed/simple;
+	bh=iUR6SALwWk2aG4BnGXb1Kmfr8MXqvZKHUkJgjTHbITc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UYyvrw4jafYIs3pGsfPooMIKB/2bsOFOzzyGLYF8290vbq8RdRCzEOJYYm9B1joZqJT6HJWI1Josu4/AO5WAeB7oyoJ+0tyWdbHuD2WZ+pt/i4+uX21qfsqm5LBKCR0V1wnWXVTh/RinvzVEGPQmnoPNXf/30sz4ci2CzKCQwh0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=WRorG8xv; arc=fail smtp.client-ip=40.107.94.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b/mVyjsiy0W8opZhzpDutzvIUTq5Q20hDGAZSonveSixAGsdVPtBIk703ZsgqMvMKpgH0uE8CucHNppTcmOyJ0XEEKAkN2PGJsPUdbasfXa4V2jhHF4SokLKhR6GQxmrQ6fRnVVet4VUsCDkXKrLkThu8Pve/YmYzMBBYNhzU0IOxO7IrEgJYd9S583zy6kyOHUQIMVLuGxq2qcWHgRvVqCgwQImK3fY8SuTyxypIu03XPGG6hCxhV6LtfyPdZp2dhyoIyRenijHYNTiD8BPSCZjKBELg3/ysnKgAEtb2SlbEHhAY2POb1pinhIk/ktAUpsy8gn7xoa55ygqMtQ2CA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KYCgkMIdCjW/msvM1ArOUBr59ZQ7J7LpM9CsGxAJhFY=;
+ b=KeB8Xri9vrw4LW01j8/u7iSk8XZRYSzTOJeR/MeIXRsz7bpHIQ8GX9WvKARxVM4joxLwn/341vJKF3lxT/t1uT8+KIwSMRMIr51rmkcT9ZyJGFzrxQuAAcAAfdDIiZnanebuwYUZ4F8JuRxj7Vpm193O8AT7JR8i3K0czpGhqgjil13elYAX8kG7gMRBctKVX2+tXAk45QbfazAtmLbiU6IKygQnhkUCGak1RwqmLwZ62gr53GWgij3ki3hXaD/Tl22z8FK6WzAz/D3QWkxqlBoo9O5vb1cU4jHywARAB5J5oOZ69EqlVpOFB/EThSMVm8UpcnI2uuKuAn7uJbR4xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KYCgkMIdCjW/msvM1ArOUBr59ZQ7J7LpM9CsGxAJhFY=;
+ b=WRorG8xvrstjU10mCKdBNPjDe9oMFbKBY6p5mpLv6dOzdjyPdJtKA8fxsqlVrv6c2CZnlTFKtBSTLqM0pT/kIA3jtKjxWvTwIbw+gBHobc5DIT2D+ZU2nG+VdmLmCZmrhMS/xeBjnA5rEg9h6b2HKAzvRFfwN35FKE3JS74vVMM=
+Received: from BL1PR13CA0252.namprd13.prod.outlook.com (2603:10b6:208:2ba::17)
+ by LV3PR12MB9354.namprd12.prod.outlook.com (2603:10b6:408:211::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.11; Sun, 11 Feb
+ 2024 14:54:57 +0000
+Received: from BL02EPF0001A0FB.namprd03.prod.outlook.com
+ (2603:10b6:208:2ba:cafe::39) by BL1PR13CA0252.outlook.office365.com
+ (2603:10b6:208:2ba::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.32 via Frontend
+ Transport; Sun, 11 Feb 2024 14:54:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL02EPF0001A0FB.mail.protection.outlook.com (10.167.242.102) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7249.19 via Frontend Transport; Sun, 11 Feb 2024 14:54:57 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 11 Feb
+ 2024 08:54:56 -0600
+From: Mario Limonciello <mario.limonciello@amd.com>
+To: <amd-gfx@lists.freedesktop.org>, "open list:DRM DRIVERS"
+	<dri-devel@lists.freedesktop.org>
+CC: "open list:ACPI" <linux-acpi@vger.kernel.org>, open list
+	<linux-kernel@vger.kernel.org>, Melissa Wen <mwen@igalia.com>, Mark Pearson
+	<mpearson-lenovo@squebb.ca>, Mario Limonciello <mario.limonciello@amd.com>
+Subject: [PATCH v5 0/3] Add support for getting EDID over ACPI to DRM
+Date: Sat, 10 Feb 2024 23:50:08 -0600
+Message-ID: <20240211055011.3583-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Correlation-ID: <74d67b62-6fa4-4218-b51f-f0d33f19c422@gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FB:EE_|LV3PR12MB9354:EE_
+X-MS-Office365-Filtering-Correlation-Id: abd9fdcb-b39f-4d18-b06b-08dc2b1169fd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ZawKwSG0y8Ql/P9KP4raWMuRhHV4ssrOvV/FsfYeR93+hWMip8PUNhfEQmfIo3LKHCtYqnunQs/wWSM+8itjCNFCJycAoiQcE3ciG1JAIw3OVObdhhKuhElS+Yn+YGAMUrdWKVd3UyYSiJ0rrkKoQhhyXogj/hLdphXWQBe9CQua6DOkzsCeWV0QobxCLSHy+Etcvc1eZtg5oEFQJqd+PgLpmezp2pGSQQ9PUcXidEXij+SSjBr1RRP2SXeEM1isS73VTvo/AQi07uKFKcAdwo2sG+AJp/zrUqO4ln/nAYrd7wTARoGj/tv0b3mOaWiyGKphmG52S6eaV4dp8baF8UFxyXZgLDYSmV+W+JCnUnUM6qjllNETYgMherQJVCuKNyKnOapN/r4kjn01SQ0DvXsZnqowa3Z5JCqNxWD1VhLP/AFvXmQ+321vdZjjFHpXAEnQwSCkn2W61P/dAMe/CI83pQC9k9iMZeiDJbHhG6zF9GFDpyZz4OH4lRohoTtgWTAN1clAVSRoU0PN93FT+bYgGHen0HNdp1O5PsOtjTERFkKk/wnWp1/ZXXNC8IMTRIDjAyWmk1/sbT2fFw/i1juYcLugDqKXwzeCpkSyCUs=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(396003)(39860400002)(230922051799003)(64100799003)(451199024)(1800799012)(82310400011)(186009)(36840700001)(46966006)(40470700004)(41300700001)(356005)(86362001)(82740400003)(5660300002)(4744005)(2906002)(81166007)(44832011)(70206006)(336012)(26005)(36756003)(16526019)(70586007)(426003)(8676002)(478600001)(1076003)(54906003)(110136005)(316002)(4326008)(2616005)(6666004)(8936002)(7696005)(83380400001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2024 14:54:57.1970
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: abd9fdcb-b39f-4d18-b06b-08dc2b1169fd
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL02EPF0001A0FB.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9354
 
-I see, sorry about that. I will try some other way to fix the error.
+This series adds the ability to fetch the EDID through ACPI for laptop
+panels. Drivers need to opt into the behavior.
 
-Also, as mentioned in this thread: https://lore.kernel.org/all/877cjqa5le.fsf@meer.lwn.net/ has the patch already been applied, fixing the issue?
+In this series it's enabled by default for all eDP or LVDS panels with
+AMDGPU and certain panels for Nouveau.
 
-Regards,
-Shresth
+Mario Limonciello (3):
+  drm: Add support to get EDID from ACPI
+  drm/amd: Fetch the EDID from _DDC if available for eDP
+  drm/nouveau: Use drm_edid_read_acpi() helper
+
+ drivers/gpu/drm/Kconfig                       |   7 ++
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   1 +
+ .../gpu/drm/amd/amdgpu/amdgpu_connectors.c    |   3 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |   8 ++
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   2 +
+ .../amd/display/amdgpu_dm/amdgpu_dm_helpers.c |   2 +
+ drivers/gpu/drm/drm_edid.c                    | 113 ++++++++++++++++--
+ drivers/gpu/drm/nouveau/nouveau_acpi.c        |  27 -----
+ drivers/gpu/drm/nouveau/nouveau_acpi.h        |   2 -
+ drivers/gpu/drm/nouveau/nouveau_connector.c   |  35 +++---
+ include/drm/drm_connector.h                   |   6 +
+ include/drm/drm_edid.h                        |   1 +
+ 12 files changed, 149 insertions(+), 58 deletions(-)
+
+-- 
+2.34.1
+
 
