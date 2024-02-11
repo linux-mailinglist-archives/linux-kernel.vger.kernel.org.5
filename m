@@ -1,190 +1,169 @@
-Return-Path: <linux-kernel+bounces-60879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7809F850A84
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:18:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10D7B850A8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:19:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33E1728339B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 17:18:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 433651C21B10
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 17:19:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 836A85CDCD;
-	Sun, 11 Feb 2024 17:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="q8GVHTWg"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2084.outbound.protection.outlook.com [40.107.223.84])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9524D5C8E5;
+	Sun, 11 Feb 2024 17:19:31 +0000 (UTC)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198335C5FE;
-	Sun, 11 Feb 2024 17:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.84
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707671920; cv=fail; b=KbrsCERFhnNrfkhJ2/uMwpSB+VsdmYPqf9OQdToOYk4XVCGLxqDelwGVeQoKsVGKuort+X/p67vSKfiz7pNjgM8jpV/nN4L+qXswC/zNzHhrAQHFTkS6wfcLUCK8eQyzlFyc56XAT83YznOlgdGUkvT6LgqSNBFh2avhzBqZI/0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707671920; c=relaxed/simple;
-	bh=30YSgSNNoNq+yMHs0WYAIXa5CLC43HFXJJ3q/ku6Icc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rIDg01Cwtj3dCnML5UiI6kd89jyvfmXyj8xNAHd+mhAvwk411cl4K0Lhqc1je0n8CtqrsNhXmmRttRaf0kDamloBTa29InRlmbRijtaMr7iqQ4N9tdXBDKELYQrKF71CBBBmbuGNVmNKxpEuABXaTh7tHGUb3wFws8yyiPCDNH8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=q8GVHTWg; arc=fail smtp.client-ip=40.107.223.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lqV2iQfHSZv2IrtJA5Zxy2VqSokctm+xWmmL7Y6cW95NiffaE4wLbzc5EjBbLFhE27DyLnAZLGdTllvSi2G5lzwiGU9Z8/dz5tfhQ5Ax3Tjpp4HaIARXBuS56Sn7mDYT5HNtLoM4KneFgK3j5ByM+PdAxuce6GlAtwWp6MxnQPstHyt1kirOdWYyHyyEj9q8ZJsKCXPFExECfTuWl9gNn1SHi00l/fobb/N0oEyxr3kKpmT+kEdMbCTkc/rIhm+o7xJHqT3TUw8a4A5YtB3lDDfDdROClvAfBbo08fJxbGZLpA+sFoGmr/KC5Oc3npczHEO5YrlvGUeJWwt/JDF8/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=T25CKw4yoNxJRPj4qH1FP6xAkXLE8KmGIjCHeZ1zeNw=;
- b=S1TgwLrdSb2JTIqzKTETLL5ocMfbLtH3YuXZcUxI5uzHknIQ1eQmZHqrgW9JnZ4Kb9diI3Xd8p3hae7OxbCIm2ss8ClmMA+S4NiLt7vJp72MspZTNV3dUy+i71cpseI25lKKNqlLtxQRLKcF2CeHHJ6wZjpLLz8hLJQ199bfKSkMwmgKmToO8tZfCXHxbu9eWupq8Owj4asnwiYPt1R+59ZXOoefkLlDdw9GW3lt8p/YHcVxD++dWYPwo93hz6NavJg95bmBkShcXJUDGCTx9b1uLEBI+tbo+vRUIV3kkX1RfgU3bcLNZMRvWx3roEjJeijxDY/3uJhrsj+Dh1cyeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T25CKw4yoNxJRPj4qH1FP6xAkXLE8KmGIjCHeZ1zeNw=;
- b=q8GVHTWga28WPg7WdYej/C/m13xlSFtOx7r1hZPfAMDPrIWGY3I2kUxn8ltCehbFvvbHVPqiP3zXrpoqYSzOffOc9mWwBlxWRL5NscR1nE82pvTIX7y8bcd10iN6ON6XCQZL2bdqDPvl41dR2ZZ2F4qkWMjj+0t8+DtEq8w0EH5Iq1/1Tqm+yI8nOSz+rtXis2oK2O8Oodb+JwPecplu3gjTi4pvFEtZJdXiL5IBO9Rf9z2AYn0BE223+rEeflVFXbQpSLK2Bmlq2gwtASK3ZckmZNIltAsKGM8QVODpQbcBGXU5iNhUpE6dwOKNPd8TvyLnTa97Jz88csdTYjwmSA==
-Received: from CH0PR04CA0100.namprd04.prod.outlook.com (2603:10b6:610:75::15)
- by SJ2PR12MB8649.namprd12.prod.outlook.com (2603:10b6:a03:53c::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.23; Sun, 11 Feb
- 2024 17:18:32 +0000
-Received: from CH2PEPF0000009F.namprd02.prod.outlook.com
- (2603:10b6:610:75:cafe::ef) by CH0PR04CA0100.outlook.office365.com
- (2603:10b6:610:75::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.37 via Frontend
- Transport; Sun, 11 Feb 2024 17:18:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CH2PEPF0000009F.mail.protection.outlook.com (10.167.244.21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7249.19 via Frontend Transport; Sun, 11 Feb 2024 17:18:32 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sun, 11 Feb
- 2024 09:18:22 -0800
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Sun, 11 Feb 2024 09:18:22 -0800
-Received: from build-petlozup-20240117T042503953.internal (10.127.8.12) by
- mail.nvidia.com (10.126.190.180) with Microsoft SMTP Server id 15.2.1258.12
- via Frontend Transport; Sun, 11 Feb 2024 09:18:22 -0800
-From: Petlozu Pravareshwar <petlozup@nvidia.com>
-To: <thierry.reding@gmail.com>, <jonathanh@nvidia.com>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<p.zabel@pengutronix.de>, <dmitry.osipenko@collabora.com>,
-	<ulf.hansson@linaro.org>, <kkartik@nvidia.com>, <cai.huoqing@linux.dev>,
-	<spatra@nvidia.com>, <linux-tegra@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC: <petlozup@nvidia.com>
-Subject: [PATCH V3 3/3] soc/tegra: pmc: Update scratch as an optional aperture
-Date: Sun, 11 Feb 2024 17:17:27 +0000
-Message-ID: <20240211171727.914595-3-petlozup@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240211171727.914595-1-petlozup@nvidia.com>
-References: <20240211171727.914595-1-petlozup@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE86C5C8FB;
+	Sun, 11 Feb 2024 17:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707671971; cv=none; b=htfVwN5PBX4smesG5hldRlwBUjQufG6REdsnjmj1IpECHJauguspJ4dNxUUbuDjpCbpfbMqiGqBUdLJS9I/IJjJdnbf2gVYsRs/yFGbbsf3pB9oU+66D5s3kqzWL8LJE7Pkukk91MeDh0U1fx5Ls0ZMJBcLGEi1yiJ37s3LY43I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707671971; c=relaxed/simple;
+	bh=tmRILceoo1jZqIaugfbYrGkCcLlq2wsdDRgfARcE6Vg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=d/a10RBH0XoW16WVhL+3LA7vtfoiy3NZueWeCGfE5YpvncrB7b6uP5tZCIK+j2kIQSwxm/7B7Hk27LL6AzZm3p43MNCEzl9StfZpZIc+CEqYClZvyyOn8/L0njpft8XbHEqOriCkQYUkBrNLjw8XIUxnRnjX0JqTMJ57IWj1qm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rZDUE-0006km-Df; Sun, 11 Feb 2024 18:19:26 +0100
+Message-ID: <7a0cd63f-8a83-4dc5-8763-63dcdae8d68a@leemhuis.info>
+Date: Sun, 11 Feb 2024 18:19:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] Acp5x probing regression introduced between kernel
+ 6.7.2 -> 6.7.4
+Content-Language: en-US, de-DE
+To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+Cc: regressions@lists.linux.dev, stable@vger.kernel.org,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ broonie@kernel.org, linux-sound@vger.kernel.org,
+ alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+References: <CAD_nV8BG0t7US=+C28kQOR==712MPfZ9m-fuKksgoZCgrEByCw@mail.gmail.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <CAD_nV8BG0t7US=+C28kQOR==712MPfZ9m-fuKksgoZCgrEByCw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF0000009F:EE_|SJ2PR12MB8649:EE_
-X-MS-Office365-Filtering-Correlation-Id: 371d86cc-3484-4a6e-9e42-08dc2b257913
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	2bKquhvJala/6kyPuMSla65bd6v4A9sR27NC+m5C6uJMJp26IhlZ4MK0Nhm03qtaow+tJMer+bpF4gABfgSU0yyjX4xQ7QCNsfj/giP7AItmUuTlrfXLYy4xJMX+ee+MeuHIwbqReHsu7QBafO3bX2xMhzEHnTPgNI6pWLAPSXigcElK9e4edl3NVgNMlDSwJpsCAoaCOtWBSD+2tYRRZtSimCwUjnG4BfoxSb64la45YtplkPMFspYl+aDL0HBFhF04KSVa3OtvEhfUC/eYAimxvQIqvpBL19JWNotKt9whRhISQGLW6uAgRjDHE9JKluIJFqM4mIoo2WCX8boX8xP1udJTT1RIMfsGfJO77HMjrDsbbEqVnmuBLwgousZidYa0zcfQZaFYK+RdcOJ/6WZqu89MnQDMb0ho4uDq2jUYoj7uX4CatWcODIorhPS/TQoEIzUXpHLCYWuhA6iFR+lnTBP1aYz2+EQCq3084v9FuXAKGSBxIfpi3IN0EGd1cl5deQVT3y0fL9xG6I6HsK1z9sefSmeeNjH6T+gyVYhMn6i8UhUnQ4QZZtzfJ0ar9xYyQXTwCgslRM/KuX4G3ITUDgSIZJ+3ihwOX44WzSzjj9fib/VVGbzKnwFbeFHH753QOcxI5GJHOCwKAcIXxg==
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(39860400002)(396003)(346002)(230922051799003)(64100799003)(451199024)(186009)(82310400011)(1800799012)(40470700004)(36840700001)(46966006)(2906002)(426003)(336012)(2616005)(41300700001)(1076003)(107886003)(478600001)(26005)(7416002)(4326008)(5660300002)(8936002)(8676002)(70586007)(70206006)(83380400001)(921011)(36756003)(110136005)(86362001)(316002)(7636003)(356005)(82740400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2024 17:18:32.3474
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 371d86cc-3484-4a6e-9e42-08dc2b257913
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF0000009F.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8649
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1707671969;4e117639;
+X-HE-SMSGID: 1rZDUE-0006km-Df
 
-Scratch address space register is used to store reboot reason. For
-some Tegra234 systems, the scratch space is not available to store
-the reboot reason. This is because scratch region on these systems
-is not accessible by the kernel as restricted by the Hypervisor.
-Such systems would delist scratch aperture from PMC DT node.
+[CCing a few people]
 
-Hence this change makes scratch as optional aperture and also avoids
-registering reboot notifier if scratch address space isn't mapped.
+On 11.02.24 15:34, Ted Chang wrote:
+> 
+> I noticed 6.7.4  has introduced a regression for the steam deck. The LCD
+> steam deck can no longer probe the acp5x audio chipset anymore. This
+> regression does not affect the 6.8.x series.  I did not test kernel
+> 6.7.3 because Opensuse tumbleweed skipped the update on my machine.
 
-Signed-off-by: Petlozu Pravareshwar <petlozup@nvidia.com>
----
- drivers/soc/tegra/pmc.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+Thx for your report. FWIW, problems like this can be caused by all
+sorts of changes, but obviously those in the area of audio support
+are most likely to cause this. There are just a few in the 
+v6.7.2..v6.7.4 range[1]. Among them a commit that is related to
+acp5x, that's why I CCed its author as well (Venkata Prasad Potturu). 
 
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index 0bc983f6b088..6948f78c7a4a 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -2903,11 +2903,16 @@ static int tegra_pmc_probe(struct platform_device *pdev)
- 		if (IS_ERR(pmc->aotag))
- 			return PTR_ERR(pmc->aotag);
+Maybe one of the new recipients will have an idea. If not, you most
+likely will have to bisect this and check if mainline is affected
+as well.[2]
+
+Ciao, Thorsten
+
+[1]
+$ git log --oneline  v6.7.2..v6.7.4 sound/ 
+f3570675bf09af ASoC: codecs: wsa883x: fix PA volume control
+2f8e9b77ca2fea ASoC: codecs: lpass-wsa-macro: fix compander volume hack
+5b465d6384e4eb ASoC: codecs: wcd938x: fix headphones volume controls
+1673211a38012e ASoC: qcom: sc8280xp: limit speaker volumes
+242b5bffa23a9c ASoC: codecs: rtq9128: Fix TDM enable and DAI format control flow
+2c272ff9859601 ASoC: codecs: rtq9128: Fix PM_RUNTIME usage
+4a28302b2c681e ALSA: hda/conexant: Fix headset auto detect fail in cx8070 and SN6140
+e37a96941fdd53 ALSA: hda: intel-dspcfg: add filters for ARL-S and ARL
+ffa3eea886c6fe ALSA: hda: Intel: add HDA_ARL PCI ID support
+4b6986b170f2f2 ASoC: amd: Add new dmi entries for acp5x platform
+e38ad4ace20b4d ALSA: hda: Refer to correct stream index at loops
+a434c75e0671f9 soundwire: fix initializing sysfs for same devices on different buses
  
-+		/* "scratch" is an optional aperture */
- 		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
- 						"scratch");
--		pmc->scratch = devm_ioremap_resource(&pdev->dev, res);
--		if (IS_ERR(pmc->scratch))
--			return PTR_ERR(pmc->scratch);
-+		if (res) {
-+			pmc->scratch = devm_ioremap_resource(&pdev->dev, res);
-+			if (IS_ERR(pmc->scratch))
-+				return PTR_ERR(pmc->scratch);
-+		} else {
-+			pmc->scratch = NULL;
-+		}
- 	}
- 
- 	pmc->clk = devm_clk_get_optional(&pdev->dev, "pclk");
-@@ -2919,12 +2924,15 @@ static int tegra_pmc_probe(struct platform_device *pdev)
- 	 * PMC should be last resort for restarting since it soft-resets
- 	 * CPU without resetting everything else.
- 	 */
--	err = devm_register_reboot_notifier(&pdev->dev,
--					    &tegra_pmc_reboot_notifier);
--	if (err) {
--		dev_err(&pdev->dev, "unable to register reboot notifier, %d\n",
--			err);
--		return err;
-+	if (pmc->scratch) {
-+		err = devm_register_reboot_notifier(&pdev->dev,
-+						    &tegra_pmc_reboot_notifier);
-+		if (err) {
-+			dev_err(&pdev->dev,
-+				"unable to register reboot notifier, %d\n",
-+				err);
-+			return err;
-+		}
- 	}
- 
- 	err = devm_register_sys_off_handler(&pdev->dev,
--- 
-2.34.1
+[2] I'm working on a guide that describes what's needed:
+https://www.leemhuis.info/files/misc/How%20to%20bisect%20a%20Linux%20kernel%20regression%20%e2%80%94%20The%20Linux%20Kernel%20documentation.html
 
+> Steps to reproduce the problem
+> 1. Obtain a steam deck
+> 2. Install kernel 6.7.4
+> 3. Boot the device and you will see dummy output in gnome shell
+> 
+> Observed kernel logs.
+> 
+> [    8.755614] cs35l41 spi-VLV1776:00: supply VA not found, using dummy regulator
+> [    8.760506] cs35l41 spi-VLV1776:00: supply VP not found, using dummy regulator
+> [    8.777148] cs35l41 spi-VLV1776:00: Cirrus Logic CS35L41 (35a40), Revision: B2
+> [    8.777471] cs35l41 spi-VLV1776:01: supply VA not found, using dummy regulator
+> [    8.777532] cs35l41 spi-VLV1776:01: supply VP not found, using dummy regulator
+> [    8.777709] cs35l41 spi-VLV1776:01: Reset line busy, assuming shared reset
+> [    8.788465] cs35l41 spi-VLV1776:01: Cirrus Logic CS35L41 (35a40), Revision: B2
+> [    8.877280] snd_hda_intel 0000:04:00.1: enabling device (0000 -> 0002)
+> [    8.877595] snd_hda_intel 0000:04:00.1: Handle vga_switcheroo audio client
+> [    8.889913] snd_acp_pci 0000:04:00.5: enabling device (0000 -> 0002)
+> [    8.890063] snd_acp_pci 0000:04:00.5: Unsupported device revision:0x50
+> [    8.890129] snd_acp_pci: probe of 0000:04:00.5 failed with error -22
+> [    8.906136] snd_hda_intel 0000:04:00.1: bound 0000:04:00.0 (ops amdgpu_dm_audio_component_bind_ops [amdgpu]
+> 
+> 
+> No kernel module in use shown.
+> 
+> 04:00.5 Multimedia controller [0480]: Advanced Micro Devices, Inc. [AMD]
+> ACP/ACP3X/ACP6x Audio Coprocessor [1022:15e2] (rev 50)
+> Subsystem: Valve Software Device [1e44:1776]
+> Flags: fast devsel, IRQ 70, IOMMU group 4
+> Memory at 80380000 (32-bit, non-prefetchable) [size=256K]
+> Capabilities: <access denied>
+> Kernel modules: snd_pci_acp3x, snd_rn_pci_acp3x, snd_pci_acp5x,
+> snd_pci_acp6x, snd_acp_pci, snd_rpl_pci_acp6x, snd_pci_ps,
+> snd_sof_amd_renoir, snd_sof_amd_rembrandt, snd_sof_amd_vangogh,
+> snd_sof_amd_acp63
+> 
+> 
+> Information for package kernel-default:
+> ---------------------------------------
+> Repository     : openSUSE-Tumbleweed-Oss
+> Name           : kernel-default
+> Version        : 6.7.4-1.1
+> Arch           : x86_64
+> Vendor         : openSUSE
+> Installed Size : 240.3 MiB
+> Installed      : Yes
+> Status         : up-to-date
+> Source package : kernel-default-6.7.4-1.1.nosrc
+> Upstream URL   : https://www.kernel.org/ <https://www.kernel.org/>
+> Summary        : The Standard Kernel
+> Description    : 
+>     The standard kernel for both uniprocessor and multiprocessor systems.
+> 
+> 
+>     Source Timestamp: 2024-02-06 05:32:37 +0000
+>     GIT Revision: 01735a3e65287585dd830a6a3d33d909a4f9ae7f
+>     GIT Branch: stable
+> 
+> Handle 0x0000, DMI type 0, 26 bytes
+> BIOS Information
+> 	Vendor: Valve
+> 	Version: F7A0120
+> 	Release Date: 12/01/2023
+> 	Address: 0xE0000
+> 	Runtime Size: 128 kB
+> 	BIOS Revision: 1.20
+> 	Firmware Revision: 1.16
+> 
+> #regzbot introduced: v6.7.2..v6.7.4
+> 
 
