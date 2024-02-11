@@ -1,159 +1,134 @@
-Return-Path: <linux-kernel+bounces-60848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 867B8850A22
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:50:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 235AE850A23
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8C6D1C20B8B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:50:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB561281C99
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7465BAE8;
-	Sun, 11 Feb 2024 15:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FCD55B699;
+	Sun, 11 Feb 2024 15:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m0nFFH5C"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="hF+dYNiT"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967FB2AE74;
-	Sun, 11 Feb 2024 15:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525F25B688
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 15:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707666621; cv=none; b=Id/lU9PlIh/ETXXZ9mSsFXoTiKlzN9PjbX3JHfzTzVRAUP2tAxJRb1du1enjEZrrzMCQ7DyEwC5B+Fosu/D9ay6ciC34+2tYVOgmk0NzshsPBXhNHiMGvllp1fkq7tWsWJcLS2w3OekOD8ap1ldT2ZTx2IeO46cAnCN+ZboSAzA=
+	t=1707666656; cv=none; b=SvCQC0X9i28f2YIpbRvieuiHzo8a35TeEjWC+/6K5koPA4dJw6f/Q1nS3VUDgv9jEJKnUfXTdHjQdqlW1UeQ92lIrKYnh7WeNxf68QDUQHBVUtPuxZT6SbcrgT+e6p8wIkjRMjZl44XbtWp2y1uHr8MybhfVIbkvxRjOzExW/bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707666621; c=relaxed/simple;
-	bh=1AeHJtrdMgjm8OhokFhnF96FWl3RsoojhDf2i8SMJ0U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bqxE6b9LiXbGBozzPY6g71vVUWcEHH3BEndplH7H9C2UksTcmmzuGDVYu5nVvScz18Z0wpxHcgFFTUOkgdzv2sxhMSEMIfJtk0AOiHOsWWji2+BP2DhqgHwy4wR+f65yi30dZoYka9Kl2KfY8rDbbPQ84YhnddLAnjKwzY0UMbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m0nFFH5C; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1707666656; c=relaxed/simple;
+	bh=MoZzZriDEbnW/RpPSEFwGgmj9ZQbVTEDvtAHOpfxyak=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=p1hLa3AfCRDNqHv9Mke08WD25RuJqile7vV08kfiEBwskK35M+jJt4p4gn+5BU3N60S8zAg3yfAu0h6XbjV9psWurxXGKIPiqabBGEs/uGeq0cx9qsqJ97QA70BZrDBXzK8Z/75zR5CN1UrFiBJmVAu6h9qGqyysoy5iGXIuVc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=hF+dYNiT; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-410cd2c7f27so1494055e9.0;
-        Sun, 11 Feb 2024 07:50:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707666618; x=1708271418; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C6yl3f+TEf2QrklR8BNS/51tQjJKHqU6ha2GsC+d38E=;
-        b=m0nFFH5C7Y0yOpqOLiN4rL917TWCu2KYzHtGUDzkZGPcwuzNOImnNjYF3p7NN8GQMW
-         8qOKRFv2EojqkMCqIdhKBt/SjFh58Du/oRUApIUjMRSUmi6aT5D+XqX9BFwGAt1J/ZPu
-         MleGcAbk3cs23gCM3d1KyDb5IStex1vAAaGCM8dvZWve0N6ZujPcC+0DyvrZb6KdaJQq
-         VFw8JjaP0k0XXcU+5alDPvgdOLuqUJBmjDn3ueDkLlCOqrEwK31Qa7QGGqaKnvP7er9X
-         kNYfH5zlv/hLcvJh6rlqDJl1PsTj4jLWFARNVN+eVYcjDS4JXxYEgJ6M0pkbvI6fiMJq
-         2MKg==
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d73066880eso23025295ad.3
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 07:50:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707666618; x=1708271418;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C6yl3f+TEf2QrklR8BNS/51tQjJKHqU6ha2GsC+d38E=;
-        b=I/6CwhD9Lx9speyXqPTBph86HBIXuk2jFVI20jAZSP807GFta1XOIP4yIP568XGOB6
-         eoX46lRko2lF+wTYmoNqS1ZScJ1nuXbYTJSJfOG3RpbXMSiX0FH7r47kkcyF9T5y8qoD
-         UkmFgmQ8S1BfH6JhsZUsau8PXA6ANtoXL3SMdUKvTg1H89M0ZSeoZe6M7vU2MKjoxzbp
-         +KSj0Q2d9c9QTFR+pf9cPh92rqAC35BTQKmUcxSAZw+PwNlhdsQH5IqhM6k+ZUxal6jt
-         vhjnr4QPDLqwteXWtDcJCRtzBK/tENrEv7PA9OgbLZXbcFPpR3agJ33bT3zK/PgsDLww
-         IRSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWcy4R6dzbEpgI99gIvPrPHByCCO0Os1lDLz/YK4NusQjzZ0R+AiZ5RI9NOog3PvL4z/hSVjX0nEDDfqFXZsqnhiCiTtlM/giu6d1SWX3hl/ClsZWaXzO/SDGYV4yQHAQ00RaYLiL0zUVbvPmajA5goZvTdTL59e3yLfr8VoGcT
-X-Gm-Message-State: AOJu0YzwHTgzjY1AmIny3dY3sjs9/2jezFILPuSgbatDS99gPnkdD/nL
-	TXZzud9n6hSEjX/uaiWl5z7anNnSx1Rbh+b0vwzKSUCrKqbBZZ4v5LSnBsQa6rNR5bR5Hgf94St
-	wS+tHAlKm8J43MGTzF5EJ0Jrm8/O4XsR1
-X-Google-Smtp-Source: AGHT+IEDuC8Y6MShKtfyIVwfeyPOlr88Fy7/UO6jB0atzdVY8bM1sR6qCNBEEnbJk7goT4IAttwPF9w63WmgJuVvaUY=
-X-Received: by 2002:a5d:64c6:0:b0:33b:734f:3a8d with SMTP id
- f6-20020a5d64c6000000b0033b734f3a8dmr3355234wri.4.1707666617436; Sun, 11 Feb
- 2024 07:50:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707666654; x=1708271454;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zFvZCWLL5rcVPLPKQFGuY+LumUsEsYdkGzJ+Zdb4OX0=;
+        b=wKYjU2LMB2Rebx6rUPXjDVGG7tTtICaRnQ3s/PFjsa65PR8V7jZ1Xd4OF21rjJfhoU
+         8NF8J+E6JJgApfE4VJvm9qLIPuAdVH8v2G3krUzC97uT++BVbjwMZ+CMhg9bcwpEQ9L4
+         F3AJcu0/gbvigCHEQMlFCBdIq7SYCFXEQESCH133MBWIZ6LU3wUroX5/+tOsq9ceNhEq
+         GUzrLvb8gZJgmEVVLNewfwjjlU2EqqmHsxwEWZYRujg+Zg6IL1R8lBnMQ3hK0fZS21rX
+         Zlr3x5pOlSiM6jXBvapzmHPtl7EWe/u3ibcOYyEYUobvMKxhOoULLLUrAOWjZg46rYox
+         AuzA==
+X-Gm-Message-State: AOJu0Yy9zpS6E+kWbVkKhd/gaQNNSnOjDm9Wos2kEUzRhGq9EYapmNQ8
+	WrHmH+DlZxPVTsJTgQkHoukCiRKzahe76jA5xO+HbyLvGlLwC/Os
+X-Google-Smtp-Source: AGHT+IGadDMIzw49zyegAsA5UuD1mQG8rrqXQRQ43R+FYjSGCFdUoCKw69wY7Oifx7FDuw2N3O9Rrg==
+X-Received: by 2002:a17:902:be14:b0:1d9:a609:dd7e with SMTP id r20-20020a170902be1400b001d9a609dd7emr5443798pls.55.1707666654656;
+        Sun, 11 Feb 2024 07:50:54 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUp+9ZLo3ycl/4J0opzfBsoTMPfmzyynAlSMAIFhHtaMcbcVvf1NwL3ogbeNbH0V+Q3ZjMwnjGu8OeecTvkmZspg7vjMXNCv2OUjoLetLustXGfGe6/zXypAfpOt4/0VO7fQeWG3EhvCftJyczQm1CUGMuH7UmdSs4t/sE89GM9cxQ/
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id o14-20020a17090323ce00b001da27cbcf60sm1288606plh.236.2024.02.11.07.50.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Feb 2024 07:50:54 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707666652;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=zFvZCWLL5rcVPLPKQFGuY+LumUsEsYdkGzJ+Zdb4OX0=;
+	b=hF+dYNiTFKmk0qGwwKEaqANMaej0cgG2qeQWk70cya0f73SuDYMj45GXVPWLAkkfHdwdAh
+	AfNVMaJzaegG7qSDas0qF/BO4Jhpf1ZzKhJS4P871TEozNJqsku4j3lTYBQUhxUV9YJDyO
+	PTUq3jmv+K4QwBM3qbxXAADwFTkVduObodzOsWziNmtVnOH9LdNPt01mm05807qM4TyuCj
+	VR+4n1e9nHNRkXIJXY3V9D+aM8b67/f/OtoEbxCvUTlgFxUOYzw9EcXazucQRzuTeY2MAH
+	PuOtfJWl/coe9Mw9qvP+Ii4fm7S8/mbny+JKXsiC/k/ejinLPkHG4wptxM2UuA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Subject: [PATCH 0/2] firmware: struct bus_type cleanup
+Date: Sun, 11 Feb 2024 12:51:28 -0300
+Message-Id: <20240211-bus_cleanup-firmware2-v1-0-1851c92c7be7@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117114742.2587779-1-badhri@google.com> <ZcVPHtPt2Dppe_9q@finisterre.sirena.org.uk>
-In-Reply-To: <ZcVPHtPt2Dppe_9q@finisterre.sirena.org.uk>
-From: =?UTF-8?Q?G=C3=A1bor_Stefanik?= <netrolller.3d@gmail.com>
-Date: Sun, 11 Feb 2024 16:50:09 +0100
-Message-ID: <CA+XFjirAZ8y9SyddEdwt_CfDpP0TFqAYJ0vG4bhWWsrNewJPFQ@mail.gmail.com>
-Subject: Re: [PATCH v2] Revert "usb: typec: tcpm: fix cc role at port reset"
-To: Mark Brown <broonie@kernel.org>
-Cc: Badhri Jagan Sridharan <badhri@google.com>, gregkh@linuxfoundation.org, linux@roeck-us.net, 
-	heikki.krogerus@linux.intel.com, kyletso@google.com, 
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, rdbabiera@google.com, 
-	amitsd@google.com, stable@vger.kernel.org, frank.wang@rock-chips.com, 
-	regressions@leemhuis.info
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAHtyGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDI0ND3aTS4vjknNTEvNIC3bTMotzyxKJUI90000QzY2NDA3NLI0MloN6
+ CotS0zAqwudGxtbUAqDKgXmcAAAA=
+To: Sudeep Holla <sudeep.holla@arm.com>, 
+ Cristian Marussi <cristian.marussi@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=933; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=MoZzZriDEbnW/RpPSEFwGgmj9ZQbVTEDvtAHOpfxyak=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlyO0BoVrNPODCeNbi07QsvrVI93defvBvNSamX
+ PCuBxN0aWKJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcjtAQAKCRDJC4p8Y4ZY
+ pvAYD/0ZkkFJaIyizyPjpb1zb5LdVpvsR0cqDifWbUvLWk//6zzYK94B3db8RdlXHomT6Q3VNTw
+ bLkipsEY5dRrLrs4/Oz4VgoNZn59zPcPW/Wd0hjnuoHxL7qj2EvS9LLx2qAUW7J8jE6u6Yrfmkn
+ l5E/PgtcTMv3l2uwFjgYUvccuwCKtvBZTVFEVZfoZrwHucLiSgACRnAcrdKL6SrI2N9mNtx5mLz
+ SJD0AA0qZESFZlTPZRasFgNesE2tOK7DctRV+5qLLYXi2VnViTffO52A8uFyiIF6/h7gth0nLlL
+ IOfX8kv0kOjZvLbyU3h2j8GpMigy4EEGorXTAery29hbkgaB9BSG3kBFCqvtRZ7FgpiSyHTS5hf
+ BcYEiVKnD2DpBWjAk9wFIA5/6yS7ZlNt+8JKgoH6gR2vYjCq130cIhVCniZ4+iRYNvfZU4GYDZs
+ 31qHQQ8C8A7sAIdbhj7wSOnsYK5lErBN8ujjd4Bh79l/v9Y6XCchK/c2Wnw081tvujPDokWGoqR
+ 4KWrE9j32ZOCVfK74rr/BYiVhebR39l+vTErdUctjxDqV+LJwakra0BQQHjWTf9TNLOPaG8fPgD
+ aT7fMy4pbjSoJNlCzJ2+ptHiopORw+htSArPPdZBLAJPoAjhiV51mH0dC1w0P6p//q4PzfqCxGn
+ 1qzo/U+JmN6zk8w==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-That's exactly what I predicted would happen.
+This series is part of an effort to cleanup the users of the driver
+core, as can be seen in many recent patches authored by Greg across the
+tree (e.g. [1]).
 
-Mark Brown <broonie@kernel.org> ezt =C3=ADrta (id=C5=91pont: 2024. febr. 8.=
-, Cs, 23:03):
->
-> On Wed, Jan 17, 2024 at 11:47:42AM +0000, Badhri Jagan Sridharan wrote:
-> > This reverts commit 1e35f074399dece73d5df11847d4a0d7a6f49434.
-> >
-> > Given that ERROR_RECOVERY calls into PORT_RESET for Hi-Zing
-> > the CC pins, setting CC pins to default state during PORT_RESET
-> > breaks error recovery.
->
-> Between -rc2 and -rc3 I started seeing boot issues in mainline on
-> rk3399-roc-pc running arm64 defconfig, a bisection identified this patch
-> as having broken things.  The issues manifest as a hang while loading
-> modules from the initd, you can see a full boot log at:
->
->    https://lava.sirena.org.uk/scheduler/job/558789
->
-> which shows a bunch of video drivers loading at the end of the log but I
-> suspect that's not related the actual failure.  A successful boot can be
-> seen here:
->
->    https://lava.sirena.org.uk/scheduler/job/559222
->
-> I do note that the board is powered by USB PD, I've got it connected to
-> a PD power supply which seems potentially relevant to the commit.  The
-> board had been working for a long time, at least as far as boot to
-> initrd goes.
->
-> Full bisect log:
->
-> git bisect start
-> # status: waiting for both good and bad commits
-> # bad: [54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478] Linux 6.8-rc3
-> git bisect bad 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
-> # status: waiting for good commit(s), bad commit known
-> # good: [41bccc98fb7931d63d03f326a746ac4d429c1dd3] Linux 6.8-rc2
-> git bisect good 41bccc98fb7931d63d03f326a746ac4d429c1dd3
-> # good: [4f18d3fd2975c943be91522d86257806374881b9] Merge tag 'iommu-fixes=
--v6.8-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu
-> git bisect good 4f18d3fd2975c943be91522d86257806374881b9
-> # good: [6b89b6af459fdd6f2741d0c2e33c67af8193697e] Merge tag 'gfs2-v6.8-r=
-c2-revert' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2
-> git bisect good 6b89b6af459fdd6f2741d0c2e33c67af8193697e
-> # good: [bdda52cc664caaf030fdaf51dd715ef5d1f14a26] Merge tag 'i2c-for-6.8=
--rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux
-> git bisect good bdda52cc664caaf030fdaf51dd715ef5d1f14a26
-> # bad: [0214960971939697f1499239398874cfc3a52d69] Merge tag 'tty-6.8-rc3'=
- of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty
-> git bisect bad 0214960971939697f1499239398874cfc3a52d69
-> # bad: [3caf2b2ad7334ef35f55b95f3e1b138c6f77b368] usb: ulpi: Fix debugfs =
-directory leak
-> git bisect bad 3caf2b2ad7334ef35f55b95f3e1b138c6f77b368
-> # good: [7c4650ded49e5b88929ecbbb631efb8b0838e811] xhci: handle isoc Babb=
-le and Buffer Overrun events properly
-> git bisect good 7c4650ded49e5b88929ecbbb631efb8b0838e811
-> # good: [cc509b6a47e7c8998d9e41c273191299d5d9d631] usb: chipidea: core: h=
-andle power lost in workqueue
-> git bisect good cc509b6a47e7c8998d9e41c273191299d5d9d631
-> # good: [b2d2d7ea0dd09802cf5a0545bf54d8ad8987d20c] usb: f_mass_storage: f=
-orbid async queue when shutdown happen
-> git bisect good b2d2d7ea0dd09802cf5a0545bf54d8ad8987d20c
-> # bad: [b717dfbf73e842d15174699fe2c6ee4fdde8aa1f] Revert "usb: typec: tcp=
-m: fix cc role at port reset"
-> git bisect bad b717dfbf73e842d15174699fe2c6ee4fdde8aa1f
-> # good: [032178972f8e992b90f9794a13265fec8c8314b0] usb: gadget: pch_udc: =
-fix an Excess kernel-doc warning
-> git bisect good 032178972f8e992b90f9794a13265fec8c8314b0
-> # first bad commit: [b717dfbf73e842d15174699fe2c6ee4fdde8aa1f] Revert "us=
-b: typec: tcpm: fix cc role at port reset"
+---
+[1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
+
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+
+---
+Ricardo B. Marliere (2):
+      firmware: arm_ffa: Make ffa_bus_type const
+      firmware: arm_scmi: make scmi_bus_type const
+
+ drivers/firmware/arm_ffa/bus.c     | 2 +-
+ drivers/firmware/arm_scmi/bus.c    | 2 +-
+ drivers/firmware/arm_scmi/common.h | 2 +-
+ include/linux/arm_ffa.h            | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+---
+base-commit: 047371968ffc470769f541d6933e262dc7085456
+change-id: 20240211-bus_cleanup-firmware2-f5a633107921
+
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
+
 
