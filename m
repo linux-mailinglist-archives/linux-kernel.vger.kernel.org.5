@@ -1,139 +1,133 @@
-Return-Path: <linux-kernel+bounces-60693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A83A7850899
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:15:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 767368508A0
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:24:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62F8B2820B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:15:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CEC31F2262F
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:24:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AD759B77;
-	Sun, 11 Feb 2024 10:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7995A102;
+	Sun, 11 Feb 2024 10:24:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QV1O5a4E"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JF3i2AmN"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D56459B40;
-	Sun, 11 Feb 2024 10:14:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6F258231;
+	Sun, 11 Feb 2024 10:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707646493; cv=none; b=a/+48eJ7OSdmvf8iYKadASmv6jzftN8n4n+LieMJF3y8trUh0gwWrfuqEUWblqqR1OT2lSdHCCWiq0xk00mppp/ZHqz9leJle9DPYLMWXk5JF6YooBZQlP1sgtB2rFmgDKvG6vp/Ah+UAFIjkFarJS+IKxVjgWPN6S2itBrl5iQ=
+	t=1707647057; cv=none; b=jMNTJrO+54T4a0MMzy0uRw5/U5pjSBH8m2iZ/nJo+AsXp5mBx2l5tXk0ZM4p78+kfrQ6fBGdOhHa138fnOmM+7lEdXMB8iOTL4LQ04+OKCiGiuqijRkZcpRFnReWZK5u6JbQOk/tPD57Go1l080yJvFmCxQwiI2/9gXq7okaVDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707646493; c=relaxed/simple;
-	bh=5HxlEksVyEjp5vwu1YWeFpsI9Pu5L4mnVbXPjNxQXSI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QHu89p+9oFFO8J4BdK6Wpcte9RwrithoxbHlJ0lXQYR9UexI05iFWAqIyTuMY/FSNENCuLeNoZx0RBjWHmmTq3qXMIajr2FLtpbgwi5qlpYB30UPUX0Xzh63ozmnHg9JlhkwmfzSOksB2EFTnH0WdvntvMjzx89NDsz4YqVwN6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QV1O5a4E; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1707647057; c=relaxed/simple;
+	bh=G9HaVw97O+LYW4l6xGCSfqbxt1JQDfTA/uIljpKPgyI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ouSpWCZIrRDsd6T7CP9by5/hUYzh+OgVt5F8tbBjUpuV4rEh5UVihfJ1M8QlAriG7EiyLAm5OMrGC2kjBfCZkI42t7bhrtl/A+sMUKAzEACCdBGugNZsg77bd1DdO16u08K6pw7bfBD5lpLdJXrr39kdkpwIwsPxgFbQ1lG+JUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JF3i2AmN; arc=none smtp.client-ip=209.85.208.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso1766550a12.3;
-        Sun, 11 Feb 2024 02:14:52 -0800 (PST)
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cf3ed3b917so28505481fa.1;
+        Sun, 11 Feb 2024 02:24:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707646491; x=1708251291; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Blc6hLuk1jJGYRb9CW+5BR8z1UC6d8gl1Uq+cUruLp8=;
-        b=QV1O5a4Ee4SIW2+j2kVK5kliRGFZgJj7b8IG8qqsqp+zPZlaleGSqk2++vlsDcNbpF
-         qVyYC4LE5kABA69JU0mxbBw+YPlVNOI7A3ufNq0E4m2SSAZlq4yU28YGkEKcSa0ktrR3
-         3qq8ZKX9XW2Mqpwp9ssHPGVlNMGxb86gnbwlGyPaCuSZtsr9OsQRgEtCqB2uJ9I0+JAO
-         WRysEhP44/KCYop8K8eDH/le4GQuFSDf8J3Oe2dyLa8baFHxUE0MyaeVJK3VE8fTvms5
-         zvsZ1+XKiXv6LleeOgEjCJPDqsBCB+9L9u8zYk6d3+cubGB5OYgQ1fpyE/kjrMzrO3lm
-         w9AA==
+        d=gmail.com; s=20230601; t=1707647053; x=1708251853; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zckA8DZFW8+bg9rPpoe1KSTinRRqZY6mOlpa6NbcucI=;
+        b=JF3i2AmNbnihlDmFz9Egd4nneX12KxIPNtcZPa2Z/bI0Ozp0qJ4HYGTePzsvPIEuXN
+         uMQWnUQaulmq68U//5OgRHTsP2dzRPfxNfWtlUB9hYGarcKVRgJDSVguxFygP/avDiXS
+         fprplNlE4gGfKttbaT4akG91+1N4ayyomdn420MIO0fsM6f950cm7ANtn76CpETiYjVb
+         vtvt+ZKmzWwgSUMRLHuIPgQ2a21GZxt9yIG7+HTMHJGw3mqETkalCEIlVtMx5OXROwXF
+         TprorQzsTS+Cq5Ba8GSqrIDQaSpWPEifovgbTDFiw9I1HAWV4ZETrQBIGIxIVoBUFNSR
+         4K8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707646491; x=1708251291;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Blc6hLuk1jJGYRb9CW+5BR8z1UC6d8gl1Uq+cUruLp8=;
-        b=nMGSNgLdzo0O5Iu8ZJl/3NDeq7y1STWDcA92qJgbM4oXnbC1mjuiuUcilYQ3zsYIiS
-         lV4TbYAVFlTMHN1IHeM34g5whYhKFrpX8J3GZZ9x1CWVDLX61w5BDq4/3E0gRlDwTvhF
-         l0mrH74wFOsvGbAp8klYb20PlzbzJ+vCjTLpH1NYvpI/OVe3IVN0gPzuYSKqBY1U/RHJ
-         vxq52Pr4oi4dWsdBzpDCJNR7WZXVcI1Esa2GRN+BrQGWTBMcdiPYM1RXp68/+HNwYB9S
-         DTjh5eYVFXGUst1s6+B2C3At3lP01iEgLmS93LY/po5qsHiJlzJghibhtPeUW+/aY2zw
-         Hp9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUlmE55MLUyYLnd+Bb335Qbsuqga9wrnEejHwEMKfhAifRGLs8uiTrTyN2BQN3hH9rPjFY0zaH+5ADmJfZuCBAKfW8gHRJdM0USLg==
-X-Gm-Message-State: AOJu0YwQrVPHI9Z16UcJwbnHg1OImC8F8Id+6IZAJARZUFvZ+MRNcIZf
-	xJy7kHO/GlKy35M6snwfi1ANX8vGpVgBT4s6aIIPVl4o15uOD+OioYWlw1VE
-X-Google-Smtp-Source: AGHT+IEKbH4BiX5HkwywENkildjj28TRbPnYV/wqK6VmGDwBHihdVYOJ5Ixai7bSDMkeiwIy7a6Ofw==
-X-Received: by 2002:a05:6a21:9188:b0:19e:8b31:f1ae with SMTP id tp8-20020a056a21918800b0019e8b31f1aemr6804727pzb.29.1707646491257;
-        Sun, 11 Feb 2024 02:14:51 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWCx+RIFOebjwfywA0OkLnpAhcJ1BFPAb+3VGchp0s+0NSim3fyKZKJFc1Lu7pxbyc87ffxWxRHPw+utCuqmQh41uKn1/o/siHifU9XMiAvmnEYVd6XsBhyiel4yjYMpyLXMA4V3i2t/xYMYOWmIIkj9Wqi/7KC5TljkqcF8+pmVOWzA0g=
-Received: from rigel.home.arpa ([220.235.35.85])
-        by smtp.gmail.com with ESMTPSA id y23-20020aa78557000000b006e09ec69d7dsm3184009pfn.98.2024.02.11.02.14.48
+        d=1e100.net; s=20230601; t=1707647053; x=1708251853;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zckA8DZFW8+bg9rPpoe1KSTinRRqZY6mOlpa6NbcucI=;
+        b=YcWKa2+EA4exxtDRUR2gtvY6rQJZCZWJBPHTVqdLXoEpKwyPpTn0KCAZ7QjgzZT5qL
+         QrRfzZnS9weuoh3mLvQnLGRScHeieg73C5JTnzPXbi1Cia6132JXKl7Lf2R7Gh7lsF1J
+         Jdog/7xhT3tFwbOGywvedTLEUjOSasTKC9/Dz049AWdh0hJM9FBjXytXOP39vWvxmjPZ
+         66ElXWn+6phKD+OtxGzsTZqmCW7c9qwM2D+BzCKDvd9yja+pWbdSxyW7a//G3PJ0hXWt
+         dVpdnWfpZVqO+hRuXrdnme9ZTHXNJqPcklwISLow5IzRCXNxiYec4aqRPsuPI8e0XnCJ
+         K1lA==
+X-Gm-Message-State: AOJu0Yx26Vog5gK4ArgfwOK1Tg7hTkCfdJxe/UNKDuubRuOzDC4bJfAC
+	fsl0/EqGP2ZbJ4G3RyWK2napwRRE7azRrvoYLXYtxxORuiV8OQx1
+X-Google-Smtp-Source: AGHT+IG/Y+vymfS1k32/vI0JC93GeK6g/gBGreL7xJWAvtaCUCYhRfqQxaQr0neJDl0OsLUybZhCPA==
+X-Received: by 2002:a2e:b0f4:0:b0:2d0:be75:5fcb with SMTP id h20-20020a2eb0f4000000b002d0be755fcbmr2920815ljl.6.1707647053004;
+        Sun, 11 Feb 2024 02:24:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVLLewjw1xDZZbPa1Ls7XWMl049vg34MboYDrwod/8Q6ET3Wi9yFgYI5oW7Vkj4DHW9ilA4KZfiFszIzchMUIkCGqth/6i+K5ZpWgXIuOZkCruZvVk2eO6RJMwe0ydWmWlnuIyZj7fh7u+esBR0e6w9ntI9RKV2SET/Vbyn/bBGlp5mPh6H9ZnVi6hGyY8etr6wZtvLq//VMGR0pRY4pBBxkZT7HCaQdtPWnilNp7HLEmrttmo5w+o7lAUxd2wkIkyD3xmJm18LwGMOn+sHJaCM3AEGAzHEVRNSSOPkF2PP3a/kY5Vz6zyxvEnbv0c+lLTh5hAwjm7Si3N42l8hZXdCQWrm5OrsPgCSZYZHYPI=
+Received: from mobilestation ([85.249.21.200])
+        by smtp.gmail.com with ESMTPSA id h23-20020a2e3a17000000b002d0d0d06fcfsm856271lja.103.2024.02.11.02.24.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 02:14:50 -0800 (PST)
-From: Kent Gibson <warthog618@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	brgl@bgdev.pl,
-	linus.walleij@linaro.org,
-	andy@kernel.org
-Cc: Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH] gpio: uapi: clarify default_values being logical
-Date: Sun, 11 Feb 2024 18:14:21 +0800
-Message-Id: <20240211101421.166779-1-warthog618@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Sun, 11 Feb 2024 02:24:12 -0800 (PST)
+Date: Sun, 11 Feb 2024 13:24:08 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Serge Semin <Sergey.Semin@baikalelectronics.ru>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>, Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org, 
+	linux-pci@vger.kernel.org, linux-hwmon@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] MAINTAINERS: Add maintainer for MIPS Baikal-T1
+ platform code
+Message-ID: <ytmxjd7qeaj32qtenodhzir3qlfjxcfs44n7s32bflhwbw6psj@nbm4gsvvfmkk>
+References: <20231122170506.27267-1-Sergey.Semin@baikalelectronics.ru>
+ <20231122170506.27267-4-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122170506.27267-4-Sergey.Semin@baikalelectronics.ru>
 
-The documentation for default_values mentions high/low which can be
-confusing, particularly when the ACTIVE_LOW flag is set.
+On Wed, Nov 22, 2023 at 08:04:52PM +0300, Serge Semin wrote:
+> Add myself as a maintainer of the MIPS Baikal-T1 platform-specific
+> drivers. The arch-code hasn't been submitted yet, but will be soon enough.
+> Until then it's better to have the already available drivers marked as
+> maintained.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-Replace high/low with active/inactive to clarify that the values are
-logical not physical.
+Thomas, kind ping to merge this in. Thanks.
 
-Similarly, clarify the interpretation of values in struct gpiohandle_data.
+-Serge(y)
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- include/uapi/linux/gpio.h | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/include/uapi/linux/gpio.h b/include/uapi/linux/gpio.h
-index 103cd3c6c81e..f7cb8ae87df7 100644
---- a/include/uapi/linux/gpio.h
-+++ b/include/uapi/linux/gpio.h
-@@ -399,8 +399,8 @@ struct gpioline_info_changed {
-  * a batch of input or output lines, but they must all have the same
-  * characteristics, i.e. all inputs or all outputs, all active low etc
-  * @default_values: if the %GPIOHANDLE_REQUEST_OUTPUT is set for a requested
-- * line, this specifies the default output value, should be 0 (low) or
-- * 1 (high), anything else than 0 or 1 will be interpreted as 1 (high)
-+ * line, this specifies the default output value, should be 0 (inactive) or
-+ * 1 (active).  Anything other than 0 or 1 will be interpreted as active.
-  * @consumer_label: a desired consumer label for the selected GPIO line(s)
-  * such as "my-bitbanged-relay"
-  * @lines: number of lines requested in this request, i.e. the number of
-@@ -426,8 +426,8 @@ struct gpiohandle_request {
-  * %GPIOHANDLE_REQUEST_OUTPUT, %GPIOHANDLE_REQUEST_ACTIVE_LOW etc, added
-  * together
-  * @default_values: if the %GPIOHANDLE_REQUEST_OUTPUT is set in flags,
-- * this specifies the default output value, should be 0 (low) or
-- * 1 (high), anything else than 0 or 1 will be interpreted as 1 (high)
-+ * this specifies the default output value, should be 0 (inactive) or
-+ * 1 (active).  Anything other than 0 or 1 will be interpreted as active.
-  * @padding: reserved for future use and should be zero filled
-  *
-  * Note: This struct is part of ABI v1 and is deprecated.
-@@ -443,7 +443,8 @@ struct gpiohandle_config {
-  * struct gpiohandle_data - Information of values on a GPIO handle
-  * @values: when getting the state of lines this contains the current
-  * state of a line, when setting the state of lines these should contain
-- * the desired target state
-+ * the desired target state.  States are 0 (inactive) or 1 (active).
-+ * When setting, anything other than 0 or 1 will be interpreted as active.
-  *
-  * Note: This struct is part of ABI v1 and is deprecated.
-  * Use ABI v2 and &struct gpio_v2_line_values instead.
--- 
-2.39.2
-
+> ---
+>  MAINTAINERS | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 52ee905c50f4..a56e241608ae 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14491,6 +14491,17 @@ F:	arch/mips/
+>  F:	drivers/platform/mips/
+>  F:	include/dt-bindings/mips/
+>  
+> +MIPS BAIKAL-T1 PLATFORM
+> +M:	Serge Semin <fancer.lancer@gmail.com>
+> +L:	linux-mips@vger.kernel.org
+> +S:	Supported
+> +F:	Documentation/devicetree/bindings/bus/baikal,bt1-*.yaml
+> +F:	Documentation/devicetree/bindings/clock/baikal,bt1-*.yaml
+> +F:	drivers/bus/bt1-*.c
+> +F:	drivers/clk/baikal-t1/
+> +F:	drivers/memory/bt1-l2-ctl.c
+> +F:	drivers/mtd/maps/physmap-bt1-rom.[ch]
+> +
+>  MIPS BOSTON DEVELOPMENT BOARD
+>  M:	Paul Burton <paulburton@kernel.org>
+>  L:	linux-mips@vger.kernel.org
+> -- 
+> 2.42.1
+> 
+> 
 
