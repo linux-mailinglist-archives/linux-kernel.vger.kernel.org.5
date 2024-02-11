@@ -1,321 +1,274 @@
-Return-Path: <linux-kernel+bounces-60722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68DA88508E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:59:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 093AE8508E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:00:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2C34B2219F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:59:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 871EB1F24382
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6C75A7A9;
-	Sun, 11 Feb 2024 11:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707A35A79C;
+	Sun, 11 Feb 2024 12:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="M5fpwnBf"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WEWkgLzT"
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4A51F16B;
-	Sun, 11 Feb 2024 11:59:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BAB59B45
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707652763; cv=none; b=GMBXSVerEwoHJKGYGDdEe7PreD6t1ZqWl5xgzlJpGW8C17DdCWWPOP8PU8Ikyy85yvH52zM5o02KTUcMkd3yW6mzmoqs658POrR0CXa1bgu9taTg8pz56DYqB1CcdN8peWBwWf7SJGj9tbvmv6lLPjJnnC2qbqW/YNc+l1MHb9E=
+	t=1707652825; cv=none; b=VZEbJykH8/YLVxQE1YQvurCJC+tpFKU9mTIXRLv8lEIsYDq2kl2OM65oDpoS1Qh2+MUkMwl5FPkfb5ZfPKH0nAEvsz+WNWIG5R+7xKKU2rYylFox27KAiJWZwrJDXZgD8e5VBy5V8Jio3oVxzTc5tizrx0TPYxz1cNOLhUQN5o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707652763; c=relaxed/simple;
-	bh=F/PLXTMkyVwJbChPRdvu+2gvdsQ3yhXw4Bv2uHCzTtw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gN0mG0RWGZQKM1BZIb1qv1CUPQf1SQyQ+rWo2txAQJ9tQWSRTnkWIIdGQcezLkOqDKeTl6BcWCSn/x00PzG0KLu5CQzKP0+TL/LfzCPbH06yg5M1yn+s/eHFkPRLGZ1YoVlRh66kVrhUuCkI8jLy7eQ//nWHKwhiSNr01Z2kUWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=M5fpwnBf; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1707652750; x=1708257550; i=erick.archer@gmx.com;
-	bh=F/PLXTMkyVwJbChPRdvu+2gvdsQ3yhXw4Bv2uHCzTtw=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=M5fpwnBfY9wIq2Eict+kpD4yuEFHT/8k3wNq5IgBWW188bW12+B/QCI7n/kzgr81
-	 Hm231NYpqkldblbUaWbPJAapkzoLJFP/9ydE2+R3ualHQ3nmi2TX16+OERezacQIU
-	 ev3vsyupXjOba0tNIrUf5oD+QnhbUDyLWDXdeLvNHaVuKjp6m8YaS0ydnHXcQvBMa
-	 XiSg3VxPalI1QBzumivZB2pn+7vr+qSc4DyWiGtxvfStS+UO1D0Eo8V7Wy4AabtEX
-	 7Zu2v5x/yhjKO3rGMhsf/FLov93ttw0TyKA8rS5Ysue9NY9wsOoCE3AFBgas98maC
-	 U/cHDo9+X4MTIpOF8w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MyKHc-1qlYbh3FVs-00ykWz; Sun, 11 Feb 2024 12:59:09 +0100
-From: Erick Archer <erick.archer@gmx.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Edward Srouji <edwards@nvidia.com>,
-	Patrisious Haddad <phaddad@nvidia.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Kees Cook <keescook@chromium.org>
-Cc: Erick Archer <erick.archer@gmx.com>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] RDMA/uverbs: Remove flexible arrays from struct *_filter
-Date: Sun, 11 Feb 2024 12:58:56 +0100
-Message-Id: <20240211115856.9788-1-erick.archer@gmx.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1707652825; c=relaxed/simple;
+	bh=00844YnDiDUCr6GR7O4vuTISUvZJowhON94w/T3cxQY=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=rrN6vb68/l9EdkND1mbGWxZTvmD/iLzvmWa9GEp+WWL2u4dWImWV7cd5WPFFcxbrxZlPr1fRliUf2ZZz81SP5ymAefoQhyDiIHNFwXCOvClCQrohgcZpP3DoktwKY6cpN0QrBeJz8pDTOnootF68flE8OofvFFuuFAIyE1Yayl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WEWkgLzT; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707652819;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s8wXdzn32T3TYnA69lV6dr84btEZMVbKEiNErXespLU=;
+	b=WEWkgLzTXvJvXP2mYx5pe/8gHS7LDBx+IjJ6E3RVnvtP8I3sOWhuiho9/ARN3Wg5FW2PZo
+	XWwIZb+618Sh1bBdk0LUrQr9o8lzVLEBch8Qa75fca6+Du4ZuH19OnqXF2NfrOJ3UoMbUa
+	vLVDbEHhWQZSdp38s+f4CMDcjJwamTs=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:v4KYnvSntkV7LAPS/Z4jE6jq7w2r9NC95ab9cbw5l25bk4Ynh/d
- dfxTKZSNw2Ghtt5WWL6BPIRBpNuWz7LZ1e8rd+WQjmWolSkptfXVWecvkE7ImNYL+ZZ/wfb
- 1aJGloC93dSJVRfLub9Y+JlAHjMf7VYhrQttto2Y7Q4jk8kScxVu48Jid77fo4/4yktZvuf
- Ut3d69Wt106PV8aDx/VsA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:hxC/Z1PMUwM=;Ra6n+mlC+ErZ8rxsHfTQsZcsFCv
- 1J6MyqNe+rKPWGtWQGhX2Ml0c39PyUsYyFYxXVWEDEoy7AgrlJQ1Yb7ayh/G5YIV3bqnCeSEU
- NCj9svlWG8picVtpZ1+YLPyEWTrpgaD3JEMzxyuuzvngn3eR10PaRFcA4wKc9GRs9chJEhdVf
- XcTr9zclM46WQ5OeCM3rtuLcFHMWQa7E/5S1PB+j0tGp8zEMgd14HOglfiuqD+ebj2wT+GyR3
- Pa7GaD3aYofbjx/p8fMDiB4xeGTxT/XqmRLMqBMmyvuWU6iQR2kT89Mp360kw2ecXZAbs51g2
- aRvAGz115Wc7oDlTM6/Q+jvnlc+YOcyAPWz5O7x83fr7Q+C8TtnICXXe17keYcaMaJqPUQbvR
- dThgMcoDHez4oOk6J5R8blf8ydIy3N3NTEcnLa7aV2iThyb08Kitq/pMp/e7CaekN3q8fhqzd
- oz9oOcwiWkv9XEgzY4tPUzxsU++NNbIgSu1+m5ZashgFw1bEpmyWrZTyISeQQl5bITu/xO2aU
- wkwtbS3lhqdjW/IQMrqYFL3pydJ4qdUPEmnmJdwDY9ZYs73yaFwMCgjvwj3IoJXFHL7fJMrJN
- 3wy+XquX2NT9QbuDY1nKRGvFL4fr6zB8vbVMesYZeu8j51buj89VxLwfuViDZdrGWDKTBM1ri
- CnN70mAh9ab83yB5Zc13Idbg72CNistPhXdPLoNcAxA9tBbwvsBOabZxDc6tSHHmfoKEOLecI
- AoZjJR85dOop/5v0ckQToRqgl1aD5m9gj12g+VVz+wJJWQKtJVu4RAKFFctbH125GV/0viFgJ
- ak/pScHguLisa5pmwz0bQezeApOlXVXnwmh5XDOdlsF4U=
+Mime-Version: 1.0
+Subject: Re: [PATCH v3 0/3] A Solution to Re-enable hugetlb vmemmap optimize
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <ZcT4DH7VE1XLBvVc@casper.infradead.org>
+Date: Sun, 11 Feb 2024 19:59:40 +0800
+Cc: Jane Chu <jane.chu@oracle.com>,
+ Will Deacon <will@kernel.org>,
+ Nanyong Sun <sunnanyong@huawei.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ akpm@linux-foundation.org,
+ anshuman.khandual@arm.com,
+ wangkefeng.wang@huawei.com,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <917FFC7F-0615-44DD-90EE-9F85F8EA9974@linux.dev>
+References: <20240113094436.2506396-1-sunnanyong@huawei.com>
+ <ZbKjHHeEdFYY1xR5@arm.com> <d1671959-74a4-8ea5-81f0-539df8d9c0f0@huawei.com>
+ <20240207111252.GA22167@willie-the-truck>
+ <ZcNnrdlb3fe0kGHK@casper.infradead.org>
+ <20240207121125.GA22234@willie-the-truck>
+ <ZcOQ-0pzA16AEbct@casper.infradead.org>
+ <908066c7-b749-4f95-b006-ce9b5bd1a909@oracle.com>
+ <ZcT4DH7VE1XLBvVc@casper.infradead.org>
+To: Matthew Wilcox <willy@infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
-When a struct containing a flexible array is included in another struct,
-and there is a member after the struct-with-flex-array, there is a
-possibility of memory overlap. These cases must be audited [1]. See:
 
-struct inner {
-	...
-	int flex[];
-};
 
-struct outer {
-	...
-	struct inner header;
-	int overlap;
-	...
-};
+> On Feb 8, 2024, at 23:49, Matthew Wilcox <willy@infradead.org> wrote:
+> 
+> On Wed, Feb 07, 2024 at 06:24:52PM -0800, Jane Chu wrote:
+>> On 2/7/2024 6:17 AM, Matthew Wilcox wrote:
+>>> While this array of ~512 pages have been allocated to hugetlbfs, and one
+>>> would think that there would be no way that there could still be
+>>> references to them, another CPU can have a pointer to this struct page
+>>> (eg attempting a speculative page cache reference or
+>>> get_user_pages_fast()).  That means it will try to call
+>>> atomic_add_unless(&page->_refcount, 1, 0);
+>>> 
+>>> Actually, I wonder if this isn't a problem on x86 too?  Do we need to
+>>> explicitly go through an RCU grace period before freeing the pages
+>>> for use by somebody else?
+>>> 
+>> Sorry, not sure what I'm missing, please help.
+> 
+> Having written out the analysis, I now think it can't happen on x86,
+> but let's walk through it because it's non-obvious (and I think it
+> illustrates what people are afraid of on Arm).
+> 
+> CPU A calls either get_user_pages_fast() or __filemap_get_folio().
+> Let's do the latter this time.
+> 
+>        folio = filemap_get_entry(mapping, index);
+> filemap_get_entry:
+>        rcu_read_lock();
+>        folio = xas_load(&xas);
+>        if (!folio_try_get_rcu(folio))
+>                goto repeat;
+>        if (unlikely(folio != xas_reload(&xas))) {
+>                folio_put(folio);
+>                goto repeat;
+>        }
+> folio_try_get_rcu:
+>        folio_ref_try_add_rcu(folio, 1);
+> folio_ref_try_add_rcu:
+>        if (unlikely(!folio_ref_add_unless(folio, count, 0))) {
+>                /* Either the folio has been freed, or will be freed. */
+>                return false;
+> folio_ref_add_unless:
+>        return page_ref_add_unless(&folio->page, nr, u);
+> page_ref_add_unless:
+>        atomic_add_unless(&page->_refcount, nr, u);
+> 
+> A rather deep callchain there, but for our purposes the important part
+> is: we take the RCU read lock, we look up a folio, we increment its
+> refcount if it's not zero, then check that looking up this index gets
+> the same folio; if it doesn't, we decrement the refcount again and retry
+> the lookup.
+> 
+> For this analysis, we can be preempted at any point after we've got the
+> folio pointer from xa_load().
+> 
+>> From hugetlb allocation perspective,  one of the scenarios is run time
+>> hugetlb page allocation (say 2M pages), starting from the buddy allocator
+>> returns compound pages, then the head page is set to frozen, then the
+>> folio(compound pages) is put thru the HVO process, one of which is
+>> vmemmap_split_pmd() in case a vmemmap page is a PMD page.
+>> 
+>> Until the HVO process completes, none of the vmemmap represented pages are
+>> available to any threads, so what are the causes for IRQ threads to access
+>> their vmemmap pages?
+> 
+> Yup, this sounds like enough, but it's not.  The problem is the person
+> who's looking up the folio in the pagecache under RCU.  They've got
+> the folio pointer and have been preempted.  So now what happens to our
+> victim folio?
+> 
+> Something happens to remove it from the page cache.  Maybe the file is
+> truncated, perhaps vmscan comes along and kicks it out.  Either way, it's
+> removed from the xarray and gets its refcount set to 0.  If the lookup
+> were to continue at this time, everything would be fine because it would
+> see a refcount of 0 and not increment it (in page_ref_add_unless()).
+> And this is where my analysis of RCU tends to go wrong, because I only
+> think of interleaving event A and B.  I don't think about B and then C
+> happening before A resumes.  But it can!  Let's follow the journey of
+> this struct page.
+> 
+> Now that it's been removed from the page cache, it's allocated by hugetlb,
+> as you describe.  And it's one of the tail pages towards the end of
+> the 512 contiguous struct pages.  That means that we alter vmemmap so
+> that the pointer to struct page now points to a different struct page
+> (one of the earlier ones).  Then the original page of vmemmap containing
+> our lucky struct page is returned to the page allocator.  At this point,
+> it no longer contains struct pages; it can contain literally anything.
+> 
+> Where my analysis went wrong was that CPU A _no longer has a pointer
+> to it_.  CPU A has a pointer into vmemmap.  So it will access the
+> replacement struct page (which definitely has a refcount 0) instead of
+> the one which has been freed.  I had thought that CPU A would access the
+> original memory which has now been allocated to someone else.  But no,
+> it can't because its pointer is virtual, not physical.
+> 
+> 
+> ---
+> 
+> Now I'm thinking more about this and there's another scenario which I
+> thought might go wrong, and doesn't.  For 7 of the 512 pages which are
+> freed, the struct page pointer gathered by CPU A will not point to a
+> page with a refcount of 0.  Instead it will point to an alias of the
+> head page with a positive refcount.  For those pages, CPU A will see
+> folio_try_get_rcu() succeed.  Then it will call xas_reload() and see
+> the folio isn't there any more, so it will call folio_put() on something
+> which used to be a folio, and isn't any more.
+> 
+> But folio_put() calls folio_put_testzero() which calls put_page_testzero()
+> without asserting that the pointer is actually to a folio.
+> So everything's fine, but really only by coincidence; I don't think
+> anybody's thought about this scenario before (maybe Muchun has, but I
+> don't remember it being discussed).
 
-This is the scenario for all the "struct *_filter" structures that are
-included in the following "struct ib_flow_spec_*" structures:
+I have to say it is a really great analysis, I haven't thought about the
+case of get_page_unless_zero() so deeply.
 
-struct ib_flow_spec_eth
-struct ib_flow_spec_ib
-struct ib_flow_spec_ipv4
-struct ib_flow_spec_ipv6
-struct ib_flow_spec_tcp_udp
-struct ib_flow_spec_tunnel
-struct ib_flow_spec_esp
-struct ib_flow_spec_gre
-struct ib_flow_spec_mpls
+To avoid increasing a refcount to a tail page struct, I have made
+all the 7 tail pages read-only when I first write those code. But it
+is a really problem, because it will panic (due to RO permission)
+when encountering the above scenario to increase its refcount.
 
-The pattern is like the one shown below:
+In order to fix the race with __filemap_get_folio(), my first
+thought of fixing this issue is to add a rcu_synchronize() after
+the processing of HVO optimization and before being allocated to
+users. Note that HugePage pages are frozen before going through
+the precessing of HVO optimization meaning all the refcount of all
+the struct pages are 0. Therefore, folio_try_get_rcu() in
+__filemap_get_folio() will fail unless the HugeTLB page has been
+allocated to the user.
 
-struct *_filter {
-	...
-	u8 real_sz[];
-};
+But I realized there are some users who may pass a arbitrary
+page struct (which may be those 7 special tail page structs,
+alias of the head page struct, of a HugeTLB page) to the following
+helpers, which also could get a refcount of a tail page struct.
+Those helpers also need to be fixed.
 
-struct ib_flow_spec_mpls {
-	...
-	struct *_filter val;
-	struct *_filter mask;
-};
+  1) get_page_unless_zero
+  2) folio_try_get
+  3) folio_try_get_rcu
 
-In this case, the trailing flexible array "real_sz" is never allocated
-and is only used to calculate the size of the structures. Here the use
-of the "offsetof" helper can be changed by the "sizeof" operator because
-the goal is to get the size of these structures. Therefore, the trailing
-flexible arrays can also be removed.
+I have checked all the users of 1), If I am not wrong, all the users
+already handle the HugeTLB pages before calling to get_page_unless_zero().
+Although there is no problem with 1) now, it will be fragile to let users
+guarantee that it will not pass any tail pages of a HugeTLB page to
+1). So I want to change 1) to the following to fix this.
 
-Link: https://github.com/KSPP/linux/issues/202 [1]
-Signed-off-by: Erick Archer <erick.archer@gmx.com>
-=2D--
-Hi everyone,
+	static inline bool get_page_unless_zero(struct page *page)
+	{
+		if (page_ref_add_unless(page, 1, 0)) {
+			/* @page must be a genuine head or alias head page here. */
+			struct page *head = page_fixed_fake_head(page);
 
-This patch has not been tested. This has only been built-tested.
-Regards,
+			if (likely(head == page))
+				return true;
+			put_page(head);
+		}
 
-Erick
-=2D--
- drivers/infiniband/core/uverbs_cmd.c | 16 ++++++++--------
- include/rdma/ib_verbs.h              | 17 -----------------
- 2 files changed, 8 insertions(+), 25 deletions(-)
+		return false;
+	}
 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/cor=
-e/uverbs_cmd.c
-index 6de05ade2ba9..3d3ee3eca983 100644
-=2D-- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -2737,7 +2737,7 @@ int ib_uverbs_kern_spec_to_ib_spec_filter(enum ib_fl=
-ow_spec_type type,
+2) and 3) should adopt the similar approach to make sure we cannot increase
+tail pages' refcount. 2) and 3) will be like the following (only demonstrate
+the key logic):
 
- 	switch (ib_spec->type & ~IB_FLOW_SPEC_INNER) {
- 	case IB_FLOW_SPEC_ETH:
--		ib_filter_sz =3D offsetof(struct ib_flow_eth_filter, real_sz);
-+		ib_filter_sz =3D sizeof(struct ib_flow_eth_filter);
- 		actual_filter_sz =3D spec_filter_size(kern_spec_mask,
- 						    kern_filter_sz,
- 						    ib_filter_sz);
-@@ -2748,7 +2748,7 @@ int ib_uverbs_kern_spec_to_ib_spec_filter(enum ib_fl=
-ow_spec_type type,
- 		memcpy(&ib_spec->eth.mask, kern_spec_mask, actual_filter_sz);
- 		break;
- 	case IB_FLOW_SPEC_IPV4:
--		ib_filter_sz =3D offsetof(struct ib_flow_ipv4_filter, real_sz);
-+		ib_filter_sz =3D sizeof(struct ib_flow_ipv4_filter);
- 		actual_filter_sz =3D spec_filter_size(kern_spec_mask,
- 						    kern_filter_sz,
- 						    ib_filter_sz);
-@@ -2759,7 +2759,7 @@ int ib_uverbs_kern_spec_to_ib_spec_filter(enum ib_fl=
-ow_spec_type type,
- 		memcpy(&ib_spec->ipv4.mask, kern_spec_mask, actual_filter_sz);
- 		break;
- 	case IB_FLOW_SPEC_IPV6:
--		ib_filter_sz =3D offsetof(struct ib_flow_ipv6_filter, real_sz);
-+		ib_filter_sz =3D sizeof(struct ib_flow_ipv6_filter);
- 		actual_filter_sz =3D spec_filter_size(kern_spec_mask,
- 						    kern_filter_sz,
- 						    ib_filter_sz);
-@@ -2775,7 +2775,7 @@ int ib_uverbs_kern_spec_to_ib_spec_filter(enum ib_fl=
-ow_spec_type type,
- 		break;
- 	case IB_FLOW_SPEC_TCP:
- 	case IB_FLOW_SPEC_UDP:
--		ib_filter_sz =3D offsetof(struct ib_flow_tcp_udp_filter, real_sz);
-+		ib_filter_sz =3D sizeof(struct ib_flow_tcp_udp_filter);
- 		actual_filter_sz =3D spec_filter_size(kern_spec_mask,
- 						    kern_filter_sz,
- 						    ib_filter_sz);
-@@ -2786,7 +2786,7 @@ int ib_uverbs_kern_spec_to_ib_spec_filter(enum ib_fl=
-ow_spec_type type,
- 		memcpy(&ib_spec->tcp_udp.mask, kern_spec_mask, actual_filter_sz);
- 		break;
- 	case IB_FLOW_SPEC_VXLAN_TUNNEL:
--		ib_filter_sz =3D offsetof(struct ib_flow_tunnel_filter, real_sz);
-+		ib_filter_sz =3D sizeof(struct ib_flow_tunnel_filter);
- 		actual_filter_sz =3D spec_filter_size(kern_spec_mask,
- 						    kern_filter_sz,
- 						    ib_filter_sz);
-@@ -2801,7 +2801,7 @@ int ib_uverbs_kern_spec_to_ib_spec_filter(enum ib_fl=
-ow_spec_type type,
- 			return -EINVAL;
- 		break;
- 	case IB_FLOW_SPEC_ESP:
--		ib_filter_sz =3D offsetof(struct ib_flow_esp_filter, real_sz);
-+		ib_filter_sz =3D sizeof(struct ib_flow_esp_filter);
- 		actual_filter_sz =3D spec_filter_size(kern_spec_mask,
- 						    kern_filter_sz,
- 						    ib_filter_sz);
-@@ -2812,7 +2812,7 @@ int ib_uverbs_kern_spec_to_ib_spec_filter(enum ib_fl=
-ow_spec_type type,
- 		memcpy(&ib_spec->esp.mask, kern_spec_mask, actual_filter_sz);
- 		break;
- 	case IB_FLOW_SPEC_GRE:
--		ib_filter_sz =3D offsetof(struct ib_flow_gre_filter, real_sz);
-+		ib_filter_sz =3D sizeof(struct ib_flow_gre_filter);
- 		actual_filter_sz =3D spec_filter_size(kern_spec_mask,
- 						    kern_filter_sz,
- 						    ib_filter_sz);
-@@ -2823,7 +2823,7 @@ int ib_uverbs_kern_spec_to_ib_spec_filter(enum ib_fl=
-ow_spec_type type,
- 		memcpy(&ib_spec->gre.mask, kern_spec_mask, actual_filter_sz);
- 		break;
- 	case IB_FLOW_SPEC_MPLS:
--		ib_filter_sz =3D offsetof(struct ib_flow_mpls_filter, real_sz);
-+		ib_filter_sz =3D sizeof(struct ib_flow_mpls_filter);
- 		actual_filter_sz =3D spec_filter_size(kern_spec_mask,
- 						    kern_filter_sz,
- 						    ib_filter_sz);
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index b7b6b58dd348..80e814a57034 100644
-=2D-- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1910,8 +1910,6 @@ struct ib_flow_eth_filter {
- 	u8	src_mac[6];
- 	__be16	ether_type;
- 	__be16	vlan_tag;
--	/* Must be last */
--	u8	real_sz[];
- };
+	static inline bool folio_try_get(struct folio *folio)/folio_ref_try_add_rcu
+	{
+		if (folio_ref_add_unless(folio, 1, 0)) {
+			struct folio *genuine = page_folio(&folio->page);
 
- struct ib_flow_spec_eth {
-@@ -1924,8 +1922,6 @@ struct ib_flow_spec_eth {
- struct ib_flow_ib_filter {
- 	__be16 dlid;
- 	__u8   sl;
--	/* Must be last */
--	u8	real_sz[];
- };
+			if (likely(genuine == folio))
+				return true;
+			folio_put(genuine);
+		}
 
- struct ib_flow_spec_ib {
-@@ -1949,8 +1945,6 @@ struct ib_flow_ipv4_filter {
- 	u8	tos;
- 	u8	ttl;
- 	u8	flags;
--	/* Must be last */
--	u8	real_sz[];
- };
+		return false;
+	}
 
- struct ib_flow_spec_ipv4 {
-@@ -1967,8 +1961,6 @@ struct ib_flow_ipv6_filter {
- 	u8	next_hdr;
- 	u8	traffic_class;
- 	u8	hop_limit;
--	/* Must be last */
--	u8	real_sz[];
- };
+Additionally, we also should alter RO permission of those 7 tail pages
+to RW to avoid panic().
 
- struct ib_flow_spec_ipv6 {
-@@ -1981,8 +1973,6 @@ struct ib_flow_spec_ipv6 {
- struct ib_flow_tcp_udp_filter {
- 	__be16	dst_port;
- 	__be16	src_port;
--	/* Must be last */
--	u8	real_sz[];
- };
+There is no problem in the following helpers since all of them already
+handle HVO case through _compound_head(), they will get the __genuine__
+head page struct and increase its refcount.
 
- struct ib_flow_spec_tcp_udp {
-@@ -1994,7 +1984,6 @@ struct ib_flow_spec_tcp_udp {
+  1) try_get_page
+  2) folio_get
+  3) get_page
 
- struct ib_flow_tunnel_filter {
- 	__be32	tunnel_id;
--	u8	real_sz[];
- };
+Just some thoughts from mine, maybe you guys have more simple and graceful
+approaches. Comments are welcome.
 
- /* ib_flow_spec_tunnel describes the Vxlan tunnel
-@@ -2010,8 +1999,6 @@ struct ib_flow_spec_tunnel {
- struct ib_flow_esp_filter {
- 	__be32	spi;
- 	__be32  seq;
--	/* Must be last */
--	u8	real_sz[];
- };
-
- struct ib_flow_spec_esp {
-@@ -2025,8 +2012,6 @@ struct ib_flow_gre_filter {
- 	__be16 c_ks_res0_ver;
- 	__be16 protocol;
- 	__be32 key;
--	/* Must be last */
--	u8	real_sz[];
- };
-
- struct ib_flow_spec_gre {
-@@ -2038,8 +2023,6 @@ struct ib_flow_spec_gre {
-
- struct ib_flow_mpls_filter {
- 	__be32 tag;
--	/* Must be last */
--	u8	real_sz[];
- };
-
- struct ib_flow_spec_mpls {
-=2D-
-2.25.1
+Muchun,
+Thanks.
 
 
