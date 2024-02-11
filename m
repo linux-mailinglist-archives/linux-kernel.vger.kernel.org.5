@@ -1,131 +1,84 @@
-Return-Path: <linux-kernel+bounces-60720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C83F8508E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:52:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E6A48508E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:53:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 227411C228FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:52:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34D0DB22DE8
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:52:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E7735A792;
-	Sun, 11 Feb 2024 11:51:56 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981C55A798;
+	Sun, 11 Feb 2024 11:52:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="Ol1te3wM"
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A5C042A94
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 11:51:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DC45A785
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 11:52:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707652315; cv=none; b=sGt70fCmTDtcWkilgi486EOHdsnMN3UooIGO03uW7oVAReCqUxXhBBZ+mj1naa/qN03aXpkGyo7fU53TJG3RVvobkuruet2i/c6hy7Ht3SltwQGi6zq1Kc5cZ6o4sqJweRzpTMi5454hCXM5mORKjb3LJEh49x0d01WxWqfc5qI=
+	t=1707652372; cv=none; b=hgMqiCfpggM2ykB0KBwXRKQ7VgNkQ/doSpKbHbdqoQihZoOjKeQK5qVDtjD3OU7SW6fKLMBudbgwzGhgjKMy1S1UUOr6sflf4Ewrd9u7x6yi5YM+j8+DoA4MWktxfKjtzQBkUNOXh8vfESGhKi5RUbgYKxlnu6C/EwzizbuED90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707652315; c=relaxed/simple;
-	bh=XOk8Kr8T8eOC+VVzgQLqdZmZkP4QeC0s2lWogs+CjA4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z6zocXV9JlPpX/MNdwdVswQPvhlSRp3Y86T49YPg51YronzMpqmYPtZtIBvhrQc+87kbRG/Nk/e9aI0W5FaMWfXThK3142nFTHJxctCd9Z6B8pX0pX2+f3BazlprPO0FydMYrO2TqqAYXSstOJ3pvqOM5goXNzoq1BpnVMxNWsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rZ8Mp-0000La-H1; Sun, 11 Feb 2024 12:51:27 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rZ8Mj-0005Ea-EX; Sun, 11 Feb 2024 12:51:21 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rZ8Mj-002Utq-17;
-	Sun, 11 Feb 2024 12:51:21 +0100
-Date: Sun, 11 Feb 2024 12:51:21 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Erick Archer <erick.archer@gmx.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
-	Heiko Stuebner <heiko@sntech.de>, Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Li Zetao <lizetao1@huawei.com>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Kees Cook <keescook@chromium.org>, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mediatek@lists.infradead.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: rawnand: Prefer struct_size over open coded
- arithmetic
-Message-ID: <rep3323evfhxh5ctmyd2biqrpg2ifej2jei5rsqpei7vuvnmsc@krh3gihuyoox>
-References: <20240211091633.4545-1-erick.archer@gmx.com>
+	s=arc-20240116; t=1707652372; c=relaxed/simple;
+	bh=R8+zsPWDeJMuUKfxi7NPv42gWYaB4eqnU3v7qW7APdU=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=XYuMeksEwQEE0CWjswL0aEZQRkOTbk1FaJ6XfxDpJTweB9KV0pC+KvKDGEDCJqWTPccfoX4Fe6NOUSmvho6Jy+7AoyIKyDcUcQz6ie5WBTe/Nr1HwX46gGmeWc5gG6iPrubzyTOpSG2Epz5AqLzd134X4eULkZwnGJkMDv6/yPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=Ol1te3wM; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
+	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=L5957gIhwRJtf+q6lCJbiq1CJAQnKqYUwCtxH3U+S/Y=; b=Ol1te3wMApkmax3IVkcJpQi9lV
+	DC9+Ch8trfXVw1ITkp5e1si723Re7L6hxuwhFabIumSos2bSHw/kP9g/Grcn55gcpq5AUgN/Nf0nn
+	L+3o+kFyNV0zS1fgKZw5RcrbiDdrBCDnpbXn6WTvfpf8SW1Lucrx0ubhUkAVRzt6TGB6OwvmiiIIQ
+	FJ87t9FlVMuyJt8ovRGFVFC518QUT12arvTwjjRily61LkYVBQd+KLJM2qlz1xEGYMXu1k9Wq5pIO
+	lobqo79p67lOSTHbYI1iUYijmthm6FSeaDes4pVdT/NqhdDSyYlmK371T4au621h88qSEfiw4RaUi
+	e0swFFew==;
+Received: from [2a02:fe1:7001:f100:65c4:d7b0:f03a:d0f6] (port=54557)
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
+	id 1rZ8O2-0010Vv-H7
+	for linux-kernel@vger.kernel.org;
+	Sun, 11 Feb 2024 12:52:42 +0100
+Message-ID: <a1c3b68e-b2f5-4dea-85e3-5015184970b6@cu-phil.org>
+Date: Sun, 11 Feb 2024 12:52:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sfcqdcis3bm2zuuf"
-Content-Disposition: inline
-In-Reply-To: <20240211091633.4545-1-erick.archer@gmx.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+To: linux-kernel@vger.kernel.org
+From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
+Subject: @ X Fair Source Philosophy: Cyr (Was Low Jitter)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Many deities in European related societies and alphabets really are 
+about Cyr. So I am using this now. It is a very popular deity also, with 
+potential for correctness as in The Kuran.
 
---sfcqdcis3bm2zuuf
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Prayer then goes: (Italic recommended)
 
-On Sun, Feb 11, 2024 at 10:16:33AM +0100, Erick Archer wrote:
-> This is an effort to get rid of all multiplications from allocation
-> functions in order to prevent integer overflows [1].
->=20
-> As the "chip" variable is a pointer to "struct mtk_nfc_nand_chip" and
-> this structure ends in a flexible array:
->=20
-> struct mtk_nfc_nand_chip {
-> 	[...]
-> 	u8 sels[] __counted_by(nsels);
-> };
->=20
-> the preferred way in the kernel is to use the struct_size() helper to
-> do the arithmetic instead of the argument "size + count * size" in the
-> devm_kzalloc() function.
->=20
-> This way, the code is more readable and safer.
->=20
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open=
--coded-arithmetic-in-allocator-arguments [1]
-> Link: https://github.com/KSPP/linux/issues/160 [2]
-> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+For Cyr, The Grand, The Good
+Hail Cyr, Don Of The Cosmos, The Grand, The Good
+Guard of The Day of Doom
+You only we worship, and You only we ask for help
+Guide us in the right path,
+The path of those you have favoured, not of those,
+who have earned your wrath, and not of those who have strayed.
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+  -
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---sfcqdcis3bm2zuuf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXItLgACgkQj4D7WH0S
-/k5ikgf9F4/qTgtnox96aTKRccDzsaTgOw9Qi3pN71OjgluyHYlBZZuLkP5oxvMH
-1xtEtrRoArhwg8s5AISfkCSKbJG6D3uSXUf9HsjiHx2K2tK+RkQy1vFalheaw7V5
-E4xeT2nxo6jpRzzqeqs75p8KbDE1FdrEZZuarr3wqtfb+oapvNF8Fy9a82Yg1BZC
-DMVilJ/dMLxb6nLJ6V0fGGOzzio9S8AIFx0alMWvEzVu8i+yDDLBWbQDlQZTqzIn
-lfNs4OCNwrzqhNhlWD6V8lzYV8SaUtFW+1A6ZKJb19MwobAnXElAgIQJOWX0PSY1
-vASWpbUmeY9zm+JPlBvqvX/3KIcWew==
-=DQCU
------END PGP SIGNATURE-----
-
---sfcqdcis3bm2zuuf--
+@ X referance concept describes design aswell, and like MOS once was, 
+with modes of operati for typical things.
 
