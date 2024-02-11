@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-60788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B117850972
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 14:43:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2AA7850977
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 14:50:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76975B2178C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:43:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C38EB21F55
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E46D738DCC;
-	Sun, 11 Feb 2024 13:42:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63A685B5C3;
+	Sun, 11 Feb 2024 13:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vGcM6h7P"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nUOVKLfe"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B7D5A796
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 13:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44285B5AC
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 13:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707658975; cv=none; b=nyC6rkNXfoh5JfJ2GebzwViyUoGli16qIOB4czd5Glmayc7HjxEP+VI2e5j4JbEoViQsLQ+WrEv4iRVvDEp11JeVntHm9q2IFqixd2q28np6E0+zF9ZorqH/4PcOkzaXpGV/EKyFK/5FAWDUglrWRlZz3Z27vdZxihzOxg0GTP8=
+	t=1707659400; cv=none; b=qNXsKprdWljXE2Wbogt+6hY0M8hGg/pARK/wrlQtaY1qUSFMeanPbAbOIGaslThYC/S0rb0fzsr2q1oylt2mB2aJXjGYQg1Z863cAVnDzT1ZSEVM5+dEZteMCgeyanNxcL935ONN02a/L7Deprw5ihZBxMz3NLbjU3UhskcGoyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707658975; c=relaxed/simple;
-	bh=4HICgIwcA4E03AfeL5kgkyGrXmMH3I2/2JdFXSNqDhI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=oEpXkPO3GpssB7QCO0sdl9VbPKOOTQ0HwhndndIWRGMhH91ZZDcA2Dw8Iz1dPSHb4B8HX9y1EVPrGx4eoYKTs3ttpfqCRLUzrT0OnBLXGQx0KSMfnEHTFwx0r3Ko62O7cHny7Ts3iFoeGVS4+QMGPmFn68Oyg16RG3dd4P63byk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vGcM6h7P; arc=none smtp.client-ip=209.85.221.54
+	s=arc-20240116; t=1707659400; c=relaxed/simple;
+	bh=XglN44Cj2ooZyrdTI5DyBdaZNjc7OZcxKklN1/CsZMA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jcFyDbqx6DyhvCiVnpbMpThInKusoba22ldQepzGlLkvFDdTYrNzZJlUTCfiE7QimF3tBVgZD3JiH193xzIBtEEyIzG9KO6sAZqOdEthw9Gh5LED3w2kTLxfzaZ6HtGM+47OdSE0iStrOI4ptGygHZ5AsXp235zzqe1UrBx/Mzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nUOVKLfe; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33b13332ca7so1335509f8f.2
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 05:42:52 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-410c1ebf5e4so2186805e9.2
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 05:49:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707658971; x=1708263771; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1707659396; x=1708264196; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vNl2TNJJT9F/ECiKzGFxOoeb4VRRB8d6Ro6PERp/HBw=;
-        b=vGcM6h7Pvy5WetFXJ54u/CoUEihh2Kh2d4HP3XNdNqXqwDKESNoyeMvezGVg8U5tiN
-         PuhILZsobyMuun/HcH9nLf6aDWeETUGqm26IF0H1W7KITJ4xfOW9zEeEu9/67QaWeOdD
-         hSI7u4XiL2+V1vrxGDhSYXZ410pRHYx3KqLZzYgMsnmWK9SGC5BNQEjhvrWnWp6ygB1F
-         SlgOH6R6WL30ZiiNVpGSJj3+gurj8y6HwzcvgwOe5C+Lt8r+A3JM9YE7TC8rYakHDZB5
-         X6WUI+7CoCTPksCMYIPLWk1kbv2l8Z+nnLOP7KwO0ixM3B69F6ZUJT7a0b8YP3WUNH8S
-         K/8w==
+        bh=0imYPIS38kKZEnWaPAclZV8nXR/Nfa1Ot0nhLSCtPdA=;
+        b=nUOVKLfeiFM/TaXCepvedZkeheJv/tdwkXqZKPADc/coFDlpVQhIrXeXUKlZuzmev7
+         T1QHlBqjZQXKUpp3yKvM5JxoBJk8M1YVGf9wIDVBiJ4tB10FLPi0/Zb9XUFM1t2RugFW
+         XbudAuq5Oyd2bZAzmyoksHTTNeEk7enxI/iQ5X60MyNy3P+ynbqkVwauKAzx6vOQw5Rc
+         406RBod64H6ierPKf3/RroAhjZhdHGajd4kgAO5hf5FPaqSJgTb8jl5UaxKii/fJR0gR
+         BdwK9CTKXeYI+Pp9az+5sT6FLObM5EPbCbmziRa3MTeTzTS3txt2JKV7K8lrjQrOvF09
+         X/KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707658971; x=1708263771;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1707659396; x=1708264196;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vNl2TNJJT9F/ECiKzGFxOoeb4VRRB8d6Ro6PERp/HBw=;
-        b=k13B3zjZQOsH0pvlbdP9b+l5rQIOzSb2MNXI44I2qgCvzvRhbDh0RfpiJUCpu7HlpP
-         9pN9nMjvZRFpig9FQdUH71/GYypWilFca8711JEZpSvQmS5Jcu1c8eobLRWbqn2E8yHm
-         imU1ZsyKmZ9PC06XvFe8egG6flsoJaY1gL7XhL6kLgmVV6gW91CQqC7FuJSzlL4tH9xv
-         99EkbODMcR3wti1+1YsLZyVe4PLN51btPSOthgHDO7bMukPXdI0MoUUjoKPOpMy5ka2s
-         xfd7AHO/ApcdI/z6LSWDu0MzubZX5X5jMECLtH9NKo7Gawq44pOUHirYHpkyIj2BKt4H
-         tR/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWWWhLsoJMqyMP4+1rRtaeOUC/i0dKsS/JKI894mUr5pT5afWFzVbAOJJKeDMfSHiUqoQTxFnBbbarpeWlO88LSx3wEoHyedSeFQtO5
-X-Gm-Message-State: AOJu0YwXeCJfDxBzCe7JiZ6YYV2ellQ88rkYJsLxGleSBjAl8NsAk2GT
-	YclyJp13Z9+rM+7FLa/BjpR0jVYn8AnPIiTcBavmThAfRq/i2f8xa7rhQRD0ASo=
-X-Google-Smtp-Source: AGHT+IHZ/a5U6it5nOITDX6BVKRmPbh7X1afwcLmxuPyfMAqtYz3gHLXPT8ZIBqIsDnKSqR/+VJpqw==
-X-Received: by 2002:adf:d1ee:0:b0:33b:649a:1a12 with SMTP id g14-20020adfd1ee000000b0033b649a1a12mr4062726wrd.55.1707658970873;
-        Sun, 11 Feb 2024 05:42:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXp7r9BIoB/cXoY9YZQSb5jOs+5TxAm1QbngscDcGXCd3VYAoUurb6YMWRyhbxrbC+veqwNRiX3IEg0teXQRmJ9O5IrqtjGpLUvMe8I+cUuorrKAZkkqnlg13ImHzbjuHOohFgNigDuO9fkZk8EvWtoo3P1N11DjI+1rYdZ4Gj9ZUBW9LPKbrTJr79MY6smBKmfbE6SZk6oyB90L0uI2Ktv1nidF67JEpbi8TlWPUqGlr7G7GptZ/QUbFATm8orhvg3XIoLlPTaV/w6aJsrQgVLTqBUKIpaKb//h0htOhNGPC7L2r0mSe/s2HLum4ocKd6XaX+J0cf0Bb2MdRBsOD+QkOyJMBZKywmTPP9uN1iKQfDhJfanR38FYnS8Px0YktK5Ylrv2Bg6nSFmtgz3kbUDLzEYWtIGgMfoq+nFwKj3DmiQF1x861bpAN2YrrwOeTUH+cABU5AvZQa3K5jrZ3SjNKISVDW2yboZQoENTvBi+nX+3Llv5C1Pq8zgzqAB6ZY1uXAf1+creAgbla8QmK6ZrGZsDfgjMm93zET2WO9qPOEKrvUa99tf72xRllcPS/nVnrqatXmwvu1hNrSp+bEWxTDWHs16gSQ0+XdN/Qv5qaiJPkF4hCJVR50VfKfIVKsHD1wEIMAb5ikmsFl5L40iBwovmB97fTpnfW5L8xz5HwPe+6fDbHTTT25c4ntM6VjOO++CcvDxHYsiiIb3rgh9aawVU0qSA00iyHTu9mcIfsniZ8zMNdbtcOc+4jR8HVU=
+        bh=0imYPIS38kKZEnWaPAclZV8nXR/Nfa1Ot0nhLSCtPdA=;
+        b=ctFhLbtez1ox3wvX1QCjKQoiKkrEwYo0404udoR2+RDIpb4FiAcyWxhomZ+jDUSDF4
+         8xl73XERhRRjwOfn4IAsq34GqZjVJMYuJUWezwNRY4Tu+RbKpuOGO3jlyRwq5t5O5jmz
+         FhyHgjRFzgTsjS8jT/vKuPayA9RsTt21BMECVfhfFFzcfFnaZ/rac2N0ZABnLPKHWAZb
+         9UkcpRI90gf7IpxEAdHhxFnRHA8pLNBslfOoX8jpL1nMf11Mz/Ool47b2qohCJjbo3ql
+         cAX8UZ9O2q6zZN2LMyKhBBkuc5nuaQYczOmjsoUsuourTgkbsZ9LCtDHbRFYsrac7nmn
+         f7Eg==
+X-Forwarded-Encrypted: i=1; AJvYcCU5y6RRJw+38pGxm3Pr980IgQMr0zVHZ9An8wmBXc88SPlDfPX4cKXC7pKU9l8gZEwXfstNoaKywkOIZFyZXIJYQ0yUX3L3iCmog9eT
+X-Gm-Message-State: AOJu0YzTYH3gFOisDfig/AZpl+Wskbegv9u/CEYOBj1oHAWkeutEMLnj
+	Ga+tIW2NAP651MditbYzeii8d5qS/UVPMQu3kZAp3n8RjkoKk+JGuRcajoonOpQ=
+X-Google-Smtp-Source: AGHT+IGgNjixJ7a6Dq+Uti7cy/aISaLp/DXGksERORSKXN5It7AmTARvmRuHh4IFg3mXA+PV5C6eBw==
+X-Received: by 2002:a05:600c:3591:b0:40f:de25:f9b4 with SMTP id p17-20020a05600c359100b0040fde25f9b4mr3645319wmq.26.1707659396538;
+        Sun, 11 Feb 2024 05:49:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV1bIxMUI3Offr6cvI9+Zhw+m6iDDHdggy9CUAeFU/6yR3uXAm1kmUvscZQj8nqx2gxUJRN2/oljKm04feaTGJb+mk1k+MrIykVodeJLGuyI8jMG71pIFq7uJ1fnrZygNAAxuu6fJAcw1fW93TiO87MRIBQFBLsTmJkr8xk5WflVHZGpiWww96lwZuUrJb8Zav2q7BVtXNWOllcTmN+JEJP20InDMbf4TAfq/m046d1e3pk1TC+WaFbaowI1to2Rn9VuG+1j4xqnOlvBZAhoVw5Eonfrmju8QLeYcH6XijtPu4s1QXdP+dc8ejJpMmW1CA5p+yyvEC+ZBQeytR7CZHXMo0R3YaBOVAAR49idiZfqonHhjRF95kawV5SJ/8geY8KsJaDyJD8nOk45Xvx82ghInsDAphvHudcXtv+tb2HzVhKH3JCv8XUBNewrcrFkQ42Ndt8aubEUv7mOjE+grF306lZ75fOMJY1nCc+npslc/hFQWT2KS7Qgt1qpeiknmzAaKN3hzIah0hFVnPia6+WFRSYoBNevaJWMBPHDm/T3Ult7TC9nsb2c1wo3TzT/ACUH2SiB549apwC9EbP/OYT2GRueqIWtquQuJZWcNnO3SJuIBEzti5rkLKxHMF++sUZgRPAcdbQ6jR5Cr8i70cExFy9k0xztE0A0RaK2Nih/5RGJr7VzxS5XFcD05HfDmdGDQ==
 Received: from [192.168.1.20] ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id dv5-20020a0560000d8500b0033b483d1abcsm4273462wrb.53.2024.02.11.05.42.49
+        by smtp.gmail.com with ESMTPSA id q18-20020a7bce92000000b00410c04e5455sm1315753wmj.20.2024.02.11.05.49.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 05:42:50 -0800 (PST)
-Message-ID: <b6c28118-a20c-46a5-b070-2306d4c0b2a1@linaro.org>
-Date: Sun, 11 Feb 2024 14:42:48 +0100
+        Sun, 11 Feb 2024 05:49:55 -0800 (PST)
+Message-ID: <be84e32e-e11d-47fe-ad56-da8b0dec5007@linaro.org>
+Date: Sun, 11 Feb 2024 14:49:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,24 +76,22 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: phy: mediatek,mt7988-xfi-tphy: add
- new bindings
+Subject: Re: [PATCH 01/12] spi: dt-bindings: introduce the ``fifo-depth``
+ property
 Content-Language: en-US
-To: Daniel Golle <daniel@makrotopia.org>,
- Bc-bocun Chen <bc-bocun.chen@mediatek.com>,
- Steven Liu <steven.liu@mediatek.com>, John Crispin <john@phrozen.org>,
- Chunfeng Yun <chunfeng.yun@mediatek.com>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Qingfang Deng <dqfext@gmail.com>, SkyLake Huang
- <SkyLake.Huang@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <745f8b46f676e94c1a396df8c46aefe0e8b4771c.1707530671.git.daniel@makrotopia.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, robh@kernel.org, andi.shyti@kernel.org,
+ semen.protsenko@linaro.org, alim.akhtar@samsung.com,
+ linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ andre.draszik@linaro.org, peter.griffin@linaro.org, kernel-team@android.com,
+ willmcvicker@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
+ arnd@arndb.de, Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>
+References: <20240208135045.3728927-1-tudor.ambarus@linaro.org>
+ <20240208135045.3728927-2-tudor.ambarus@linaro.org>
+ <CAMuHMdU_Hx9PLmHf2Xm1KKTy_OF-TeCv7SzmA5CZWz+PLkbAGA@mail.gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -139,33 +137,68 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <745f8b46f676e94c1a396df8c46aefe0e8b4771c.1707530671.git.daniel@makrotopia.org>
+In-Reply-To: <CAMuHMdU_Hx9PLmHf2Xm1KKTy_OF-TeCv7SzmA5CZWz+PLkbAGA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 10/02/2024 03:10, Daniel Golle wrote:
-> Add bindings for the MediaTek XFI Ethernet SerDes T-PHY found in the
-> MediaTek MT7988 SoC which can operate at various interfaces modes:
+On 09/02/2024 18:13, Geert Uytterhoeven wrote:
+> Hi Tudor,
 > 
-> via USXGMII PCS:
->  * USXGMII
->  * 10GBase-R
->  * 5GBase-R
+> On Thu, Feb 8, 2024 at 2:51 PM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>> There are instances of the same IP that are configured by the integrator
+>> with different FIFO depths. Introduce the fifo-depth property to allow
+>> such nodes to specify their FIFO depth.
+>>
+>> We haven't seen SPI IPs with different FIFO depths for RX and TX, thus
+>> introduce a single property.
 > 
-> via LynxI SGMII PCS:
->  * 2500Base-X
->  * 1000Base-X
->  * Cisco SGMII (MAC side)
+> Ha...
 > 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
-> v3: Add reference to MediaTek-internal "pextp" name, better explain reset as
->     well as 10GBase-R tuning work-around.
-> v2: unify filename and compatible as requested
+> Current documentation for the Clock-Synchronized Serial Interface with
+> FIFO (MSIOF) on e.g. R-Car Gen2 and later states:
 > 
+>     FIFO capacity: 32 bits × 64 stages for transmission and 32 bits ×
+> 256 stages for reception
+> 
+> Initially (many years ago), there was some doubt about the validity
+> of these values (older variants on SH supported 64/64), hence
+> drivers/spi/spi-sh-msiof.c still has
+> 
+>     .tx_fifo_size = 64,
+>     .rx_fifo_size = 64,
+> 
+> Probably we should test and revisit this...
+> 
+>> --- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
+>> +++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+>> @@ -69,6 +69,11 @@ properties:
+>>           Should be generally avoided and be replaced by
+>>           spi-cs-high + ACTIVE_HIGH.
+>>
+>> +  fifo-depth:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    description:
+>> +      Size of the data FIFO in bytes.
+> 
+> I think it is prudent to consider the asymmetric case, too.
+> Whether that should be just two properties ("rx-fifo-depth" and
+> "tx-fifo-depth"), or also a third "fifo-depth", I defer to the DT
+> maintainers...
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Since most of the cases FIFO depth tx=rx, we could go with three
+properties and:
+
+allOf:
+ - not:
+     required:
+       - fifo-depth
+       - tx-fifo-depth
+ - not:
+     required:
+       - fifo-depth
+       - rx-fifo-depth
+
+and probably dependencies between rx and tx (see example-schema).
 
 Best regards,
 Krzysztof
