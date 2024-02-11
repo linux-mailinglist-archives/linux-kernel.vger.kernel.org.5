@@ -1,133 +1,112 @@
-Return-Path: <linux-kernel+bounces-60694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 767368508A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:24:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12B818508A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:32:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CEC31F2262F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:24:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A01341F21796
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:32:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7995A102;
-	Sun, 11 Feb 2024 10:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132705A11D;
+	Sun, 11 Feb 2024 10:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JF3i2AmN"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b="Jd9A54zX"
+Received: from mail.envs.net (mail.envs.net [5.199.136.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6F258231;
-	Sun, 11 Feb 2024 10:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19AE37149;
+	Sun, 11 Feb 2024 10:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.199.136.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707647057; cv=none; b=jMNTJrO+54T4a0MMzy0uRw5/U5pjSBH8m2iZ/nJo+AsXp5mBx2l5tXk0ZM4p78+kfrQ6fBGdOhHa138fnOmM+7lEdXMB8iOTL4LQ04+OKCiGiuqijRkZcpRFnReWZK5u6JbQOk/tPD57Go1l080yJvFmCxQwiI2/9gXq7okaVDw=
+	t=1707647554; cv=none; b=EfDOLZYBCA9Wzw8sLXShc4eX4+w+4b/DTWUlFjAOl4VpW/32uKCVPvAV+6SK02ZxtgNt84TVfWq0ejxTCtfKRr8anrGuAjQr8WI8zN5IEp6LzPZnmIOmVq4qSqQugRYQ+l1hNmbCTuLmq9swcuTr/MZeakDrd3ymjg9I7B+Thd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707647057; c=relaxed/simple;
-	bh=G9HaVw97O+LYW4l6xGCSfqbxt1JQDfTA/uIljpKPgyI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ouSpWCZIrRDsd6T7CP9by5/hUYzh+OgVt5F8tbBjUpuV4rEh5UVihfJ1M8QlAriG7EiyLAm5OMrGC2kjBfCZkI42t7bhrtl/A+sMUKAzEACCdBGugNZsg77bd1DdO16u08K6pw7bfBD5lpLdJXrr39kdkpwIwsPxgFbQ1lG+JUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JF3i2AmN; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cf3ed3b917so28505481fa.1;
-        Sun, 11 Feb 2024 02:24:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707647053; x=1708251853; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zckA8DZFW8+bg9rPpoe1KSTinRRqZY6mOlpa6NbcucI=;
-        b=JF3i2AmNbnihlDmFz9Egd4nneX12KxIPNtcZPa2Z/bI0Ozp0qJ4HYGTePzsvPIEuXN
-         uMQWnUQaulmq68U//5OgRHTsP2dzRPfxNfWtlUB9hYGarcKVRgJDSVguxFygP/avDiXS
-         fprplNlE4gGfKttbaT4akG91+1N4ayyomdn420MIO0fsM6f950cm7ANtn76CpETiYjVb
-         vtvt+ZKmzWwgSUMRLHuIPgQ2a21GZxt9yIG7+HTMHJGw3mqETkalCEIlVtMx5OXROwXF
-         TprorQzsTS+Cq5Ba8GSqrIDQaSpWPEifovgbTDFiw9I1HAWV4ZETrQBIGIxIVoBUFNSR
-         4K8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707647053; x=1708251853;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zckA8DZFW8+bg9rPpoe1KSTinRRqZY6mOlpa6NbcucI=;
-        b=YcWKa2+EA4exxtDRUR2gtvY6rQJZCZWJBPHTVqdLXoEpKwyPpTn0KCAZ7QjgzZT5qL
-         QrRfzZnS9weuoh3mLvQnLGRScHeieg73C5JTnzPXbi1Cia6132JXKl7Lf2R7Gh7lsF1J
-         Jdog/7xhT3tFwbOGywvedTLEUjOSasTKC9/Dz049AWdh0hJM9FBjXytXOP39vWvxmjPZ
-         66ElXWn+6phKD+OtxGzsTZqmCW7c9qwM2D+BzCKDvd9yja+pWbdSxyW7a//G3PJ0hXWt
-         dVpdnWfpZVqO+hRuXrdnme9ZTHXNJqPcklwISLow5IzRCXNxiYec4aqRPsuPI8e0XnCJ
-         K1lA==
-X-Gm-Message-State: AOJu0Yx26Vog5gK4ArgfwOK1Tg7hTkCfdJxe/UNKDuubRuOzDC4bJfAC
-	fsl0/EqGP2ZbJ4G3RyWK2napwRRE7azRrvoYLXYtxxORuiV8OQx1
-X-Google-Smtp-Source: AGHT+IG/Y+vymfS1k32/vI0JC93GeK6g/gBGreL7xJWAvtaCUCYhRfqQxaQr0neJDl0OsLUybZhCPA==
-X-Received: by 2002:a2e:b0f4:0:b0:2d0:be75:5fcb with SMTP id h20-20020a2eb0f4000000b002d0be755fcbmr2920815ljl.6.1707647053004;
-        Sun, 11 Feb 2024 02:24:13 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVLLewjw1xDZZbPa1Ls7XWMl049vg34MboYDrwod/8Q6ET3Wi9yFgYI5oW7Vkj4DHW9ilA4KZfiFszIzchMUIkCGqth/6i+K5ZpWgXIuOZkCruZvVk2eO6RJMwe0ydWmWlnuIyZj7fh7u+esBR0e6w9ntI9RKV2SET/Vbyn/bBGlp5mPh6H9ZnVi6hGyY8etr6wZtvLq//VMGR0pRY4pBBxkZT7HCaQdtPWnilNp7HLEmrttmo5w+o7lAUxd2wkIkyD3xmJm18LwGMOn+sHJaCM3AEGAzHEVRNSSOPkF2PP3a/kY5Vz6zyxvEnbv0c+lLTh5hAwjm7Si3N42l8hZXdCQWrm5OrsPgCSZYZHYPI=
-Received: from mobilestation ([85.249.21.200])
-        by smtp.gmail.com with ESMTPSA id h23-20020a2e3a17000000b002d0d0d06fcfsm856271lja.103.2024.02.11.02.24.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 02:24:12 -0800 (PST)
-Date: Sun, 11 Feb 2024 13:24:08 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Serge Semin <Sergey.Semin@baikalelectronics.ru>, 
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>, Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org, 
-	linux-pci@vger.kernel.org, linux-hwmon@vger.kernel.org, kernel-janitors@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] MAINTAINERS: Add maintainer for MIPS Baikal-T1
- platform code
-Message-ID: <ytmxjd7qeaj32qtenodhzir3qlfjxcfs44n7s32bflhwbw6psj@nbm4gsvvfmkk>
-References: <20231122170506.27267-1-Sergey.Semin@baikalelectronics.ru>
- <20231122170506.27267-4-Sergey.Semin@baikalelectronics.ru>
+	s=arc-20240116; t=1707647554; c=relaxed/simple;
+	bh=etRjsipeELaWCrmPD0sbIzv/CUhY77/idogMRUDkIGA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tR4dL7veUBBMnIf8SLlnhntLNTCVRaWj5lG0S4lJ+Bkbtm8d1Xy+FTQIgQ6x4y65k21RDdW3ORrSnd+cfkbLpwXTPtti39FbohoXxm0bZkI4JyNA4QUILCSRgKUefXrajFGUFLpe15DZ3AaaCcgPTRInORpClMGcZ+7nxHX6BFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net; spf=pass smtp.mailfrom=envs.net; dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b=Jd9A54zX; arc=none smtp.client-ip=5.199.136.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=envs.net
+Received: from localhost (mail.envs.net [127.0.0.1])
+	by mail.envs.net (Postfix) with ESMTP id 2EB1F38A0673;
+	Sun, 11 Feb 2024 10:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=envs.net; s=modoboa;
+	t=1707647542; bh=dLh7MlVuk355kto4z+2BT9WqRjzdR9Gl3cXp8/KeMec=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Jd9A54zXfJ1xQmZ6O4wlZ1OPR2ame5KhRLXD1s0iYIb4wB6Xn0HQgUWPgiBldl00Y
+	 hCSRTlbzcMI60Kmn4XoYF2kxpck/0hCE7rZYYKrPwt/X+3cYZHsrncO9qnVfGUlAF+
+	 D/hnz1QnoLFIbv2ONMvYSU0VAH+9MGB/unrU6CL9Q+sxRqS0n2pSvBaGJN8zwltopJ
+	 FUqzFc+cNF9ovSkVbcnuLIgE6csHcCsRZy0xAODusFEpvhhyemV+WBWytlFmHK0O/d
+	 mPEgZez+T/e6dItllz5fgVA+SOTZoAzOIPkZjTz4xU6nNkf55z5VjK1c+DLNg4uIXy
+	 9+uy6gZKghfV6Cj/eLEQUWf3+BES12+z51bgbzdNVOlsJocPL1bsByECK80WcpCRAs
+	 9CnruCSy6Y95CXJtbD34tYfIm6EakRvlIom6YzZDW+tDRdc1mgIz302UNgNrcv/m8x
+	 NFnS34NbU5AUDgjDcPWrFhj8X+eUUdltEADHTXaxLWmSMjwjy8+NNAzY+DHurungbs
+	 CH8eQc4ufGNqSmF28IUn6/pQ2oJ1zqI05MBrWFF49OQPLjf6F3Iv6XVX9GR0dgCRng
+	 pY00VZciZ75yI1PtwTeDloj/tBy57e3g7zK6it+g/tDci0UbYey5vHApQLQcheT2Ha
+	 rdf0UH3FDXjINE85+27U8oWI=
+X-Virus-Scanned: Debian amavisd-new at mail.envs.net
+Received: from mail.envs.net ([127.0.0.1])
+	by localhost (mail.envs.net [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id M1aevNjCSz4D; Sun, 11 Feb 2024 10:31:41 +0000 (UTC)
+Received: from xtex.localnet (unknown [103.84.217.246])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.envs.net (Postfix) with ESMTPSA;
+	Sun, 11 Feb 2024 10:31:41 +0000 (UTC)
+From: xtex <xtex@envs.net>
+To: Nicolas Schier <nicolas@fjasle.eu>, Masahiro Yamada <masahiroy@kernel.org>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Nathan Chancellor <nathan@kernel.org>, x86@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org
+Subject: Re: [PATCH 1/2] kbuild: Abort make on install failures
+Date: Sun, 11 Feb 2024 18:31:36 +0800
+Message-ID: <2646117.S0smAIiGLA@xtex>
+In-Reply-To:
+ <CAK7LNAQPm7PXoKM+id25wX9AtVmmXvE7i8GrGB9etU__EMUwdg@mail.gmail.com>
+References:
+ <20240210074601.5363-1-xtex@envs.net> <ZcfoZKJHkdEh5JmV@fjasle.eu>
+ <CAK7LNAQPm7PXoKM+id25wX9AtVmmXvE7i8GrGB9etU__EMUwdg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122170506.27267-4-Sergey.Semin@baikalelectronics.ru>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Nov 22, 2023 at 08:04:52PM +0300, Serge Semin wrote:
-> Add myself as a maintainer of the MIPS Baikal-T1 platform-specific
-> drivers. The arch-code hasn't been submitted yet, but will be soon enough.
-> Until then it's better to have the already available drivers marked as
-> maintained.
+On Sunday, February 11, 2024 7:35:35 AM CST Masahiro Yamada wrote:
 > 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> The separate 'set -e' statement works for both cases,
+> so I think this is safer, though it is kind of bike-shedding.
 
-Thomas, kind ping to merge this in. Thanks.
+Thanks!
+I also think it is safer to use 'set -e' in the case of 'sh install.sh',
+ so I support not to use 'sh -e' in the shebang line. The planned V2 patch for 
+this disappeared.
 
--Serge(y)
+-- 
+Zhang Bingwu @ Sun Feb 11 10:27:48 AM UTC 2024
 
-> ---
->  MAINTAINERS | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 52ee905c50f4..a56e241608ae 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14491,6 +14491,17 @@ F:	arch/mips/
->  F:	drivers/platform/mips/
->  F:	include/dt-bindings/mips/
->  
-> +MIPS BAIKAL-T1 PLATFORM
-> +M:	Serge Semin <fancer.lancer@gmail.com>
-> +L:	linux-mips@vger.kernel.org
-> +S:	Supported
-> +F:	Documentation/devicetree/bindings/bus/baikal,bt1-*.yaml
-> +F:	Documentation/devicetree/bindings/clock/baikal,bt1-*.yaml
-> +F:	drivers/bus/bt1-*.c
-> +F:	drivers/clk/baikal-t1/
-> +F:	drivers/memory/bt1-l2-ctl.c
-> +F:	drivers/mtd/maps/physmap-bt1-rom.[ch]
-> +
->  MIPS BOSTON DEVELOPMENT BOARD
->  M:	Paul Burton <paulburton@kernel.org>
->  L:	linux-mips@vger.kernel.org
-> -- 
-> 2.42.1
-> 
-> 
+
+
 
