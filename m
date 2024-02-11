@@ -1,114 +1,113 @@
-Return-Path: <linux-kernel+bounces-61027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09DDB850C6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:54:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1345B850C6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 594D9B217F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:54:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC89128226E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E312C17567;
-	Sun, 11 Feb 2024 23:54:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC941756D;
+	Sun, 11 Feb 2024 23:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="H+aK+zcL"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Vx26p7eX"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAAE3AD2D;
-	Sun, 11 Feb 2024 23:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B5531755B;
+	Sun, 11 Feb 2024 23:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707695672; cv=none; b=Ct3rw+o05e+zqq/CqZidXlUjGDtkNCkqI23XJj03aSvXziqzu+BWYDz1K7waPO65Hoy2s5vL/fhoU1jU9GKVchK+jdkLJj1NS/AKZd40L9wVAuTDX2wl/N3xcSLdaZK7QkqHV1cBSEGlXpyQPJ6VudoNBvcgA1fF80ul466IlfA=
+	t=1707695701; cv=none; b=ZY0w4JMx4RZFTRpYRu+poW2tyugx8w/ybUvDY51Ac28VfsEGTDVavf8LlobMyN2vtTvqcwGDvdc3fp426u+QNON/dRJlUoSKenCbge6WjmqmmGYWJLURPry59ds6jOJv1brLzQZ/gbuDioMnO5gs62hlgzcWtMlxxdlL7UeNSMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707695672; c=relaxed/simple;
-	bh=ovBI+uozlzSNIPcQOV2IPQFi3mWSCogjgpUAT5X2LTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QD0QcYdQyDPlO6CmEMJRchGoujp+a+0erfb1fgaMNaPHIZMuoQmnzaA/8rT6lPwPdphjiyn2zDw9RETt30tajnsvfgYZb3d/1altt+t91QMz7KKNWTXUv9EWR04Z9hLvtdAyI2driafRfGUHVUCb9hZxvqHVvYW1mioG8IRSjkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=H+aK+zcL; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707695668;
-	bh=ovBI+uozlzSNIPcQOV2IPQFi3mWSCogjgpUAT5X2LTg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H+aK+zcLH30LUeJMhwmJsA0Psgi+FXPI4q+bHJ7MFBdJs8ZO3E1z0CPnGjMQb8sgE
-	 7CHm+OZrCOQBfvElIJc8gUU5g+8oaBQx1QLUq0kaMZeFgcSkTnjZUkhifKrj7+SvUM
-	 GyBZKh6Q24TXpJX6vUJ6eGWO7zUEtQ3k+65zWOipU/sbO2tBa9Our5TJ2BPxd/ngi3
-	 M16lKM2Sgl6+enOKCEWDOVtZYhsa22vJnGEKBTvZUI5iFwAkfsPx/vp+KpX2iI9s0M
-	 EqUFBLiqysTjsNawf1tpjmkjrFFGM11QPV1gXpb12yUlQHrsRuSY4ZH335xLEjZZ12
-	 UDyfbKrlNdpVw==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
+	s=arc-20240116; t=1707695701; c=relaxed/simple;
+	bh=TGKmZ6VjU4vjoCEKe4rT9rXGa5QRictjL84CwzDtqMY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=jqMiqWhLPcSV/uR1dG6T30TCGSrhyR6H1fAQdPXPxPrc/3ovEloymSGg33nS2UO7+sDuTeXE7gnXVy3yj58RvbH7Ku6MYNwaaWKLb1eZsiyZL13yNsOJw4bX6Y13RwcJrOkbTbaXBc9MK7YGEIFxtQKsqCp+rEPHVIZ5QTNDMbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Vx26p7eX; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707695697;
+	bh=xz+WlTQ3sspcuVyVHB+D9lW4mLZVRoNLwGnolwIAwZk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Vx26p7eXsNdDJgPGvLRQcRE9qtg0mUaqJUDQzNFZOnpWjS5fAvYSDya3joAueuD3V
+	 ZCSpsohSQZJHRS394DTun08brVOf7ZgNUW5YfM3ryJzo3Xi3oZLYZkgnA9a7tPRO+r
+	 95W8mgu8FzLpC6gCG68qrGfJCX6YFVQqZhr2IOckDHAA1FN3FchjyH8LVi9i+jDEX/
+	 oyzajjdsW5V5Y3ebnVAkCMiteDm5SL/KDebtNz5Sc2GirjxwO3tG8FxFDL/nmy8ukR
+	 ADtPi+5yewGkvLB5U8oYwSVWuT46jzPvFhF99D68n3UGNuOw6a+wa9NMSKTgmJddE3
+	 Qdvf9h30TtUCw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BEC6437810EF;
-	Sun, 11 Feb 2024 23:54:28 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id 370D4106043F; Mon, 12 Feb 2024 00:54:28 +0100 (CET)
-Date: Mon, 12 Feb 2024 00:54:27 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Andrew Davis <afd@ti.com>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
-	Cristian Ciocaltea <cristian.ciocaltea@gmail.com>, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Sean Wang <sean.wang@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-actions@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v3 00/19] Remove pm_power_off use in drivers/power/reset
-Message-ID: <iinovq4p3dn5pic6ipptqzi3minqz5dznfdzhzl2onttxb325k@l7bhoiibsxkz>
-References: <20240208170410.67975-1-afd@ti.com>
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TY4Fr6l8Tz4wcM;
+	Mon, 12 Feb 2024 10:54:56 +1100 (AEDT)
+Date: Mon, 12 Feb 2024 10:54:56 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the bcachefs tree
+Message-ID: <20240212105456.65194f29@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vsdi4o5bg7tjzwfb"
-Content-Disposition: inline
-In-Reply-To: <20240208170410.67975-1-afd@ti.com>
+Content-Type: multipart/signed; boundary="Sig_/xkRiBedOAwkrQi6CLDTZGW/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/xkRiBedOAwkrQi6CLDTZGW/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
---vsdi4o5bg7tjzwfb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi all,
 
-Hi,
+After merging the bcachefs tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-On Thu, Feb 08, 2024 at 11:03:51AM -0600, Andrew Davis wrote:
-> Use of pm_power_off is considered legacy and should be replaced
-> with register_sys_off*(). Same for register_restart_handler(). Do
-> this for the drivers/power/reset subsystem for all trivial cases.
+ERROR: modpost: missing MODULE_LICENSE() in lib/thread_with_file.o
+ERROR: modpost: "stdio_redirect_vprintf" [fs/bcachefs/bcachefs.ko] undefine=
+d!
+ERROR: modpost: "thread_with_file_exit" [fs/bcachefs/bcachefs.ko] undefined!
+ERROR: modpost: "run_thread_with_stdio" [fs/bcachefs/bcachefs.ko] undefined!
+ERROR: modpost: "__darray_resize_slowpath" [fs/bcachefs/bcachefs.ko] undefi=
+ned!
+ERROR: modpost: "stdio_redirect_readline" [fs/bcachefs/bcachefs.ko] undefin=
+ed!
+ERROR: modpost: "run_thread_with_file" [fs/bcachefs/bcachefs.ko] undefined!
+ERROR: modpost: "__darray_resize_slowpath" [lib/thread_with_file.ko] undefi=
+ned!
 
-Apart from the issue in patch 18 the series LGTM.
+Caused by commit
 
--- Sebastian
+  f894f9e5f0ad ("thread_with_file: Lift from bcachefs")
 
---vsdi4o5bg7tjzwfb
-Content-Type: application/pgp-signature; name="signature.asc"
+I have used the version of bcachefs from next-20240206 again.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/xkRiBedOAwkrQi6CLDTZGW/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmXJXjMACgkQ2O7X88g7
-+po+tRAAgCDIMC15ePLlQVTIKQd+OyONaoHDs6t6lhLgu8eFavGhqI0XqMvogDuP
-hHbpzhPxUZP2+P+Sl7h8o/mKhujuR5YZymX3F+gP6aM7Wj8AWaTqSet4hvFxR/Sx
-4xYY9gYnWAdPHuR+g9qwVZk5qPeNTwh5bEqGSPDl6hzyUAAG+DIa4652XAgF7xc4
-QCcj82KH9g/+DNq9e1NDmIWY6bcrdSVH9UeQHzZbjlcmykiiKdtE35//hVS4nA7Z
-dMNgh4xxz86RLEId4mqPbacv9jaNJmAAr/DEiEIwCsv51rIHPNEfHejR8C1Yowlh
-9+u5AOJD/Dj1UlACIWBgoz/LYr3rxEX6vQxJkQq0L9QaqpeUwCYLGpxgF9DunAPx
-86juxqF4keF/bxpiuDVsMh2hGPxbzf14MysCDF8cTuzR2rBUdUNUxZL3XVXKtmug
-QIswLHjRiert6xEvEThVe/V0wd+Ts8Vd9NTPIP2+zWaagdGryLsQbmOxXJdpjzgT
-IpdagnQaw8zOUqPLnI2WA1gLy0fTDttMoVtp63iE53JXSE6EPhp3njJiCCKg32js
-URuI9Wr1hBs08KtLRZOj2EtREz+McEWKLJdBG0jsTS26zv1UHH2NB353nC2K9v82
-fzHvACBM4kCbVyg5anS0GDmz5x8eddiJOcntikHGtYaVlKIF614=
-=UK2f
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXJXlAACgkQAVBC80lX
+0GyrcAgAgBEn7qZjc8zhqubPjYcuX5SmOacwtzJGFE1nHoqZKrvxbmaDhTtxmhHN
+MaWdEbFyzzUJo8hPEpoGpu8MOVNiT2NOHqjN3xMjFxgRijMbgj3SHwOa5j55rkBy
+bXnFkFWKB/P9H3ZT+N1py1JvXvUEEr5q0cJaK/38XprJCyAUztwNpx4JZvL3/7RP
+vGxmQi9h0nm0GMMrCqD+Bmm7l0qQfAImjN9jMOM81L3VgzCt5Wg1ZRvDVISPb2fY
+fjMvODzUSIB53Zd7nzYI3T8df5L+ZQV/JAKAWk1VvHRQ7Xeant1+xe8Tm3+Tiido
+juDsyctbALi/edvT/R4v6KQHJv2Nkw==
+=AIUo
 -----END PGP SIGNATURE-----
 
---vsdi4o5bg7tjzwfb--
+--Sig_/xkRiBedOAwkrQi6CLDTZGW/--
 
