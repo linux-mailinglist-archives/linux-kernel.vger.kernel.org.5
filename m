@@ -1,175 +1,369 @@
-Return-Path: <linux-kernel+bounces-60898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D646850ABA
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:49:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A16EA850ABC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:49:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7819283B97
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 17:49:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5CEA1C21973
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 17:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0345D472;
-	Sun, 11 Feb 2024 17:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A036A5CDF5;
+	Sun, 11 Feb 2024 17:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="CQbruZeQ"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2085.outbound.protection.outlook.com [40.107.93.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="JqHHIl9I"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3BE5B685;
-	Sun, 11 Feb 2024 17:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707673693; cv=fail; b=TNKvk5ZZx53+71P9/hjmbtS4OTiGpTwEqOj7psYsjWGYGfF2gXWf5D1ZWfY4r6V3i8Pk7Rn7RO2Fd7qCxUqoL0aLy1JmT7iq3mmxdShvEs0JJVmIRAHsdN+Oy9jN4ILRXsDBzzLkkRfCuYaoFCVRyw5XM4McU5VjWo65IneVrKA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707673693; c=relaxed/simple;
-	bh=kNi0reNB01DofnLcUiiuclfoxarZoKtmniePTqy56u0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MY0DuD6NvV5a9TeDl3l7h/nG+HfD6Lbil7qrGXtxiBbl6Iw7EZSTFTH1kK9AUcD/BKqzSB6N9VzAiPEzBSyqdct+KuA/yPSlsQOO4zhGCwKpGFiio0by9tbQgOwF3gv/5aOtofVhu9P3jOv4N83OWqqcu4uhTvJevNAAi1PvGGM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=CQbruZeQ; arc=fail smtp.client-ip=40.107.93.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EYRphY9UwgFTedg7L2G7QVasqDihPQvqPRVUskY1s5nWREut41+RGOdHb+PvriW5wwp0g4Me5S4FjBuNxpZGA43ZzkZynazkSQ83Lcl6i9uu5UtB0/VPXuRjTaS9+T2zqfqL45B5fW4y/PwlN2rIqeLMSwJ4sVRfdtjAsHqh7gNkHPfOsEUTkDWwteuZZ3ylk1kcO8hHN6hA1sFh97NtG9w3/CsiJgbEMEE7MV+SfS1bGynDJW4HgLvTSBQzd7dFHI4R5kvb+hsRXu/3bPjO6pu9eeqlaYJQIsXRofJe7os81BhpP37d7zLWYHKDjehedNYk9DBv7qzfgLIAxoLJeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wh4MZCC2T9D1grz8V/GzArHYhJ98qxcO/FoJgoYQOSY=;
- b=WBlq66OfMJRlCFiTMnw6Y1yXwNvVHsZCnb/HplOeZn60X6uKdppg5Nb8dXjhTSZL7s5WOWpbRKImzJEI1x9gLEYZAmABWDDfB5L/03aUvrpokBLTkOywU7xh8lqYnZYWuDIbM0sScEKjluBr35NcoRE+7LWDXNUV4jbSafRZIxn02hS9uunT8KEniqGuTDJg9xi1yGYgvYj2BduTZfLecSCNJJZ+sJW+FQxQF8jqymgCQ12kLL+igilNil3VU8hQQTnCqcGUr0l+BifaTFf0uUNzZNxF1DtouiVcdvgzjHt58XIfH+7M7Ymvl8NLQw4dJKSoRhtKaQXt5boS6KhkiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wh4MZCC2T9D1grz8V/GzArHYhJ98qxcO/FoJgoYQOSY=;
- b=CQbruZeQXqtaHiq2B62VBbuJgjMLgk2Uy56v3ziIDkkIdqUMRtzV9+rJCFwUlE1zpMX3+c5lpBim39cMS0BLIAqAR1IzOw2oZh2Qvvxd/QQqp8UScwDQhnjT0KfOghV6YHa4qdQvsKuGXv9PYnw2ts7cXw01L79GE8dD7BY9Tt9PJJM3GMGYKVtIVvtDvAC/mcLWzkTl5NxVXUsLkeKZvkjAqXMGgonQFvldEnicnQ6DSnyowJQ5G+k20B3tiyYOZMnZJPGJfc+IRutFitJl7KKqIgZoOIAp/bUHcglqMC9Gee1aUa1OLjp07LWev6LWQu+Vln9T2A3ZeQUsXXahUA==
-Received: from DS7PR03CA0056.namprd03.prod.outlook.com (2603:10b6:5:3b5::31)
- by MW6PR12MB7087.namprd12.prod.outlook.com (2603:10b6:303:238::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.23; Sun, 11 Feb
- 2024 17:48:08 +0000
-Received: from DS3PEPF000099D3.namprd04.prod.outlook.com
- (2603:10b6:5:3b5:cafe::d9) by DS7PR03CA0056.outlook.office365.com
- (2603:10b6:5:3b5::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.35 via Frontend
- Transport; Sun, 11 Feb 2024 17:48:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- DS3PEPF000099D3.mail.protection.outlook.com (10.167.17.4) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7249.19 via Frontend Transport; Sun, 11 Feb 2024 17:48:08 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sun, 11 Feb
- 2024 09:48:04 -0800
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Sun, 11 Feb 2024 09:48:03 -0800
-Received: from sgarnayak-dt.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.182) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12 via Frontend
- Transport; Sun, 11 Feb 2024 09:47:53 -0800
-From: <ankita@nvidia.com>
-To: <ankita@nvidia.com>, <jgg@nvidia.com>, <maz@kernel.org>,
-	<oliver.upton@linux.dev>, <james.morse@arm.com>, <suzuki.poulose@arm.com>,
-	<yuzenghui@huawei.com>, <reinette.chatre@intel.com>, <surenb@google.com>,
-	<stefanha@redhat.com>, <brauner@kernel.org>, <catalin.marinas@arm.com>,
-	<will@kernel.org>, <mark.rutland@arm.com>, <alex.williamson@redhat.com>,
-	<kevin.tian@intel.com>, <yi.l.liu@intel.com>, <ardb@kernel.org>,
-	<akpm@linux-foundation.org>, <andreyknvl@gmail.com>,
-	<wangjinchao@xfusion.com>, <gshan@redhat.com>, <shahuang@redhat.com>,
-	<ricarkol@google.com>, <linux-mm@kvack.org>, <lpieralisi@kernel.org>,
-	<rananta@google.com>, <ryan.roberts@arm.com>, <david@redhat.com>,
-	<linus.walleij@linaro.org>, <bhe@redhat.com>
-CC: <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
-	<targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
-	<apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
-	<kvmarm@lists.linux.dev>, <mochs@nvidia.com>, <zhiw@nvidia.com>,
-	<kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v7 4/4] vfio: convey kvm that the vfio-pci device is wc safe
-Date: Sun, 11 Feb 2024 23:17:05 +0530
-Message-ID: <20240211174705.31992-5-ankita@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240211174705.31992-1-ankita@nvidia.com>
-References: <20240211174705.31992-1-ankita@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695D75D734
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 17:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707673767; cv=none; b=hUpwgkG47bd4WLTvHyL7rmDMunmHwyBtk3TG9wtgq5XoLSAu1PTzH9WxSSBINVwsCaN3ZCyZtuql/SkNR8Ym/HK+bEV4n6MYIxe9I8LBqfKzNOv1VvKZJtWMWdlrx6/KoEk8P46rNMC9VD9Rn8pRrc3VfLI3pgswQ9ktdRDJFBo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707673767; c=relaxed/simple;
+	bh=n2RypmfkBzHm1hzDTUlWFYls2tL1WUll15nu55Wa7nU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=frjL/B7k4NLK0KDnsCQkx4+Xwn1CqitYl3RiUvkK5m5ZJvcQgm3gsYVwIZwhpJ2nbJQgNsKqWc2Gm5pjHTaR/J6yhZ/jX78J3qEXwSeSB3a4AZr21jIWfrPmXod/7ud9vjTD+Z919UKJf9xtWTvPEeXhJ5AKL/udEPW6Qh9Op98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=JqHHIl9I; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d090c83d45so34263101fa.3
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 09:49:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707673762; x=1708278562; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xw1vm0oVbmVwNfJD/NfbPWHQU7X7qDC7wpaDYKqUL90=;
+        b=JqHHIl9IV1vMgNnNGig6vMePptfsBnwI+SBVzGFYhjIsFSWOZd/L07FY4N+n/cF5sJ
+         KXyESmekGzntCoiKhsVQTIN96g6z+go3wxaugUClowRz62TzF/hRAvkppqV/nEJXe6ua
+         z/PRAlWuKTI48ZdbUi7MbiujqEl7YEpnEO9b3jD2AiT28FHHlYrVbAX2vq8KzWHukHPc
+         nhD/wlH0e0lrZ3D4gGLVDbBTgMUT3xeEFdy/TbAUKQRYxVuQoaaEG7g+v9AaO9Ih8ttF
+         mzC/cmzLhmT2cllq6ewKRMS+1lvVBwnrgL07cFvKhEKpzENOvrm/uIi6U/8rXi4ShpVE
+         q7nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707673762; x=1708278562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xw1vm0oVbmVwNfJD/NfbPWHQU7X7qDC7wpaDYKqUL90=;
+        b=EzKHm3YJ9LmGUgLJOFqKZoZ3p4ObjUZdNzLBI2W9WheJlkKxuJ7Jlwol1U+YFnAfja
+         q/mBg4kL39kFn3bUDJBJA7LELyy5uCIKGyntE1/Pqd/EMQyogzO9tG1lwhUE/M9ivY9n
+         30vXGypeYJQxMlaL67tT6CazTqvumyPdp5b0jNVWVFxGjUQr3qNJPXtXXI5JZanRGdlL
+         8d1noBZTm7oaRk3RcY43xasEKVcT8GldXAcyP7ChzAFtIH72Dxt4HS0KTpc8iQc1OOY5
+         vizVKM8oLWpT2vtRAvWGLydQdJXgODf6WliWrPVbfS+zBV0NVjcDxmZDiKMGmR00UroB
+         u39g==
+X-Forwarded-Encrypted: i=1; AJvYcCWwlZQal31paF2PiFB3L3OLZlJ4B0Swy+ZA43dB55P6l2+bqvzQ6mi61Nnaq7Y3SLkspmOZpQyg2qFgIrRgpsBL2dl/lOiM9y0GFLjc
+X-Gm-Message-State: AOJu0Yw9t5nv7PpyCfhIvFL/LlBtZUYrKbzWlRIbv+uuRNoiXWqy9b/t
+	8K/e2a8XytWnJmG2lOQlPgIRQHxnRehwPxLTlj4pcQGiDs9neN0/c1VpLZ8rXdBwBqOXKLDr2u5
+	r4tkMNJ0aavXzZVFzucW8c0dT8S9wVcqc5xWlP1pLcabjxbvg
+X-Google-Smtp-Source: AGHT+IEx1MkQPU2eiaCw9V6F+rYdaBk2+c7To3GyTMS2zz43+mO9LfsndzHKDkoSGKIyNZeh33ErvlZCp0tfNTIG9sk=
+X-Received: by 2002:a2e:860a:0:b0:2d0:adde:cb6c with SMTP id
+ a10-20020a2e860a000000b002d0addecb6cmr2939340lji.22.1707673761690; Sun, 11
+ Feb 2024 09:49:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D3:EE_|MW6PR12MB7087:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d7fcd35-0deb-4edd-9f6a-08dc2b299b7f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	6sTQt6Nmm7FkBbUtT2MaOXv9VsAcZ/rB9MlRAC2Ld+MijCgoE6SP6t7XLtTIdSYsSkKWO2TFCzzOlITjfkO4L/IOnXrILncFq5BVDvYq3CVZQ/ptiKVZHvv9b1j6GBnJivwPGmA8RbkY+QTGYIznCpf9J+pOXNpyteiVWNOkHZ7UGZBSj+Hspg+vEJ3GLStd9zk4j8Mir8C0CMfZqxvcVjzBAyvUiL5EC83N3MrJN745Wh3LQaoN2IBirde92a3SVmFfF+iJVJ16j3RKwZUBMEoQ3ULitjpQ01WgBOpJmm9fewPZYz6iMO5/GlKBo8wpPO0qvvWvQV/YgxELRcejlCn7JJfyPiX4jzSrFIkV47p65hGeL+XubX0akTMMofs/ifsjUOVhpC7OAIQedG3x4VhK6QohFT1/4UbTScf9QmzIhKnT2c6Lvrz2cTu5/IPiIKLggRTkc7IgmkICg1RuvkTerKajNkJur1RYxIK40rZtbWf7iVXep3fpPfyHojJ5n9xxihavTyu10IIlPZWenXIUegziQfJ2D+yn4sX1hgOqCB2tsLUoccc4RrygijRZ7dTWHwBQ5rdpSiJ9k0gGSj4/sY6yb3n4oZsQJuSFIt1cO3mQ15ZIuPPcNeeo2tWJUhEP2xJqD2dSBXs08Z6tRA==
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(136003)(396003)(39860400002)(230922051799003)(64100799003)(451199024)(82310400011)(186009)(1800799012)(40470700004)(36840700001)(46966006)(2906002)(2876002)(426003)(41300700001)(2616005)(336012)(1076003)(478600001)(26005)(7416002)(4326008)(7406005)(5660300002)(54906003)(8936002)(70586007)(8676002)(70206006)(83380400001)(36756003)(921011)(110136005)(86362001)(7696005)(6666004)(316002)(7636003)(356005)(82740400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2024 17:48:08.1003
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d7fcd35-0deb-4edd-9f6a-08dc2b299b7f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D3.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB7087
+References: <20240206-ad7944-mainline-v1-0-bf115fa9474f@baylibre.com>
+ <20240206-ad7944-mainline-v1-1-bf115fa9474f@baylibre.com> <20240210174022.7a0c7cdc@jic23-huawei>
+In-Reply-To: <20240210174022.7a0c7cdc@jic23-huawei>
+From: David Lechner <dlechner@baylibre.com>
+Date: Sun, 11 Feb 2024 11:49:10 -0600
+Message-ID: <CAMknhBF8HKDftjBuwuA4GWUmn4j36Zut84d7xLKgZPDaiY87kA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: add ad7944 ADCs
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: linux-iio@vger.kernel.org, 
+	Michael Hennerich <Michael.Hennerich@analog.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Ankit Agrawal <ankita@nvidia.com>
+On Sat, Feb 10, 2024 at 11:40=E2=80=AFAM Jonathan Cameron <jic23@kernel.org=
+> wrote:
+>
+> On Tue,  6 Feb 2024 11:25:59 -0600
+> David Lechner <dlechner@baylibre.com> wrote:
+>
+> > This adds a new binding for the Analog Devices, Inc. AD7944, AD7985, an=
+d
+> > AD7986 ADCs.
+> >
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+>
+> Hi David,
+>
+> Some tricky corners...
+> 3-wire here for example doesn't mean what I at least expected it to.
+>
+> > ---
+> >  .../devicetree/bindings/iio/adc/adi,ad7944.yaml    | 231 +++++++++++++=
+++++++++
+> >  MAINTAINERS                                        |   8 +
+> >  2 files changed, 239 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml =
+b/Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml
+> > new file mode 100644
+> > index 000000000000..a023adbeba42
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml
+> > @@ -0,0 +1,231 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/adc/adi,ad7944.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Analog Devices PulSAR LFCSP Analog to Digital Converters
+> > +
+> > +maintainers:
+> > +  - Michael Hennerich <Michael.Hennerich@analog.com>
+> > +  - Nuno S=C3=A1 <nuno.sa@analog.com
+>
+> I hope Nuno + Michael will ack this. Bit mean to drop them in it otherwis=
+e
+> (funny though :)
 
-The code to map the MMIO in S2 as NormalNC is enabled when conveyed
-that the device is WC safe using a new flag VM_ALLOW_ANY_UNCACHED.
+Nothing mean here. This is according to a prior (off-list) agreement.
 
-Make vfio-pci set the VM_ALLOW_ANY_UNCACHED flag.
+>
+> > +
+> > +description: |
+> > +  A family of pin-compatible single channel differential analog to dig=
+ital
+> > +  converters with SPI support in a LFCSP package.
+> > +
+> > +  * https://www.analog.com/en/products/ad7944.html
+> > +  * https://www.analog.com/en/products/ad7985.html
+> > +  * https://www.analog.com/en/products/ad7986.html
+> > +
+> > +$ref: /schemas/spi/spi-peripheral-props.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - adi,ad7944
+> > +      - adi,ad7985
+> > +      - adi,ad7986
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  spi-max-frequency:
+> > +    maximum: 111111111
+>
+> So 9ns for 3-write and 4-wire, but I think it's 11ns for chained.
+> Maybe it's not worth constraining that.
 
-This could be extended to other devices in the future once that
-is deemed safe.
+I didn't think it was worth it either, so left it out. Easy enough to
+add though.
 
-Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
----
- drivers/vfio/pci/vfio_pci_core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> > +
+> > +  spi-cpha: true
+> > +
+> > +  adi,spi-mode:
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    enum: [ 3-wire, 4-wire, chain ]
+> > +    default: 4-wire
+> > +    description:
+> > +      This chip can operate in a 3-wire mode where SDI is tied to VIO,=
+ a 4-wire
+> > +      mode where SDI acts as the CS line, or a chain mode where SDI of=
+ one chip
+> > +      is tied to the SDO of the next chip in the chain and the SDI of =
+the last
+> > +      chip in the chain is tied to GND.
+>
+> there is a standard property in spi-controller.yaml for 3-wire. Does that=
+ cover
+> the selection between 3-wire and 4-wire here?  Seems like this might beha=
+ve
+> differently from that (and so perhaps we shouldn't use 3-wire as the desc=
+ription
+> to avoid confusion, normally 3-wire is a half duplex link I think).
 
-diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-index 1cbc990d42e0..eba2146202f9 100644
---- a/drivers/vfio/pci/vfio_pci_core.c
-+++ b/drivers/vfio/pci/vfio_pci_core.c
-@@ -1862,8 +1862,12 @@ int vfio_pci_core_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma
- 	/*
- 	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
- 	 * change vm_flags within the fault handler.  Set them now.
-+	 *
-+	 * Set an additional flag VM_ALLOW_ANY_UNCACHED to convey kvm that
-+	 * the device is wc safe.
- 	 */
--	vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
-+	vm_flags_set(vma, VM_ALLOW_ANY_UNCACHED | VM_IO | VM_PFNMAP |
-+			VM_DONTEXPAND | VM_DONTDUMP);
- 	vma->vm_ops = &vfio_pci_mmap_ops;
- 
- 	return 0;
--- 
-2.34.1
+I used "3-wire" because that is what the datasheet calls it. But yes,
+I see the potential for confusion here since this "3-wire" is
+completely unrelated to the standard "spi-3wire" property.
 
+>
+> Chain mode is more fun.  We've had that before and I'm trying to remember=
+ what
+> the bindings look like. Devices like ad7280a do a different form of chain=
+ing.
+
+If there isn't a clear precedent for how to write bindings for chained
+devices, this may be something better left for when there is an actual
+use case to be sure we get it right.
+
+>
+> Anyhow, main thing here is we need to be careful that the terms don't ove=
+rlap
+> with other possible interpretations.
+>
+> I think what this really means is:
+>
+> 3-wire - no chip select, exclusive use of the SPI bus (yuk)
+
+This can actually be done two ways. One where there is no CS and we
+use cnv-gpios to control the conversion. The other is where CS of the
+SPI controller is connected to the CNV pin on the ADC and cnv-gpios is
+omitted. This requires very creative use of spi xfers to get the right
+signal but does work.
+
+In any case to achieve max sample rate these chips need to use this
+"3-wire" mode and have exclusive use of the bus whether is is using
+proper CS or not.
+
+So maybe it would be more clear to split this one into two modes?
+3-wire with CS and 3-wire without CS?
+
+> 4-write - conventional SPI with CS
+
+Yes.
+
+> chained - the 3 wire mode really but with some timing effects?
+
+Correct. With the exception that the SPI CS line can't be used in
+chain mode (unless maybe if you had an inverted CS signal since the
+CNV pin has to be high during the data transfer).
+
+>
+> Can we figure out if chained is going on at runtime?
+
+No. We would always need the devicetree to at least say how many chips
+are in the chain. Also, in theory, each chip could have independent
+supplies and therefore different reference voltages.
+
+>
+> > +
+> > +  avdd-supply:
+> > +    description: A 2.5V supply that powers the analog circuitry.
+> > +
+> > +  dvdd-supply:
+> > +    description: A 2.5V supply that powers the digital circuitry.
+> > +
+> > +  vio-supply:
+> > +    description:
+> > +      A 1.8V to 2.7V supply for the digital inputs and outputs.
+> > +
+> > +  bvdd-supply:
+> > +    description:
+> > +      A voltage supply for the buffered power. When using an external =
+reference
+> > +      without an internal buffer (PDREF high, REFIN low), this should =
+be
+> > +      connected to the same supply as ref-supply. Otherwise, when usin=
+g an
+> > +      internal reference or an external reference with an internal buf=
+fer, this
+> > +      is connected to a 5V supply.
+> > +
+> > +  ref-supply:
+> > +    description:
+> > +      Voltage regulator for the reference voltage (REF). This property=
+ is
+> > +      omitted when using an internal reference.
+> > +
+> > +  refin-supply:
+> > +    description:
+> > +      Voltage regulator for the reference buffer input (REFIN). When u=
+sing an
+> > +      external buffer with internal reference, this should be connecte=
+d to a
+> > +      1.2V external reference voltage supply.
+> > +
+> > +  adi,reference:
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    enum: [ internal, internal-buffer, external ]
+>
+> I'm a bit lost on this one - but think we can get rid of it in favour of =
+using
+> the fact someone wired up the supplies to indicate their intent?
+
+Yes, we can do as you suggest. I added this property since I thought
+it made things a bit clearer, but apparently not.
+
+>
+> > +    default: internal
+> > +    description: |
+> > +      This property is used to specify the reference voltage source.
+> > +
+> > +      * internal: PDREF is wired low. The internal 4.096V reference vo=
+ltage is
+> > +        used. The REF pin outputs 4.096V and REFIN outputs 1.2V.
+>
+> So if neither refin-supply or ref-supply is present then this is the one =
+to use.
+
+Correct.
+
+>
+> > +      * internal-buffer: PDREF is wired high. REFIN is supplied with 1=
+2V. The
+> > +        buffered internal 4.096V reference voltage is used. The REF pi=
+n outputs
+> > +        4.096V.
+>
+> So if refin-supply is supplied this is the expected choice?
+
+Correct.
+
+>
+> > +      * external: PDREF is wired high and REFIN is wired low. The supp=
+ly
+> > +        connnected the REF pin is used as the reference voltage.
+>
+> So if a ref-supply is provided this is expected choice?
+
+Correct.
+
+>
+> If we are going to rule you supplying refin and ref supplies.
+
+Not sure what you mean here, but we can get rid of the adi,reference
+property and just add a check to not allow both ref-supply and
+refin-supply at the same time.
+
+>
+> > +
+> > +  cnv-gpios:
+> > +    description:
+> > +      The Convert Input (CNV). This input has multiple functions. It i=
+nitiates
+> > +      the conversions and selects the SPI mode of the device (chain or=
+ CS). In
+> > +      3-wire mode, this property is omitted if the CNV pin is connecte=
+d to the
+> > +      CS line of the SPI controller.
+> > +    maxItems: 1
+>
+> ah, that's exciting - so in 3-wire mode, we basically put the CS on a dif=
+ferent pin...
+
+I explained this above already, but just to have it in context here as
+well... In what the datasheet calls "3-wire" mode, we can either have
+CS connected and no cnv-gpios or we can have no CS and have cnv-gpios
+connected.
+
+So the intention here was to make cnv-gpios required all other modes
+but in 3-wire mode, make it optional.
+
+
+>
+> Mark, perhaps you can suggest how to handle this complex family of spi va=
+riants?
+>
+> Jonathan
+>
 
