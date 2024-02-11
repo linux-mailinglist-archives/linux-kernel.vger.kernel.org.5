@@ -1,80 +1,88 @@
-Return-Path: <linux-kernel+bounces-61007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C415850C42
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:20:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A457A850C24
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 226CC282306
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:20:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35063B214B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC9739AF6;
-	Sun, 11 Feb 2024 23:16:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E4BF171DC;
+	Sun, 11 Feb 2024 23:15:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="P9kTQrsy"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mFEiaSVB"
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BC920310
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 23:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5594171A0;
+	Sun, 11 Feb 2024 23:15:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707693362; cv=none; b=f0mdV29JHhAoii7RDBUPwZcg4fMuEYNyjsLp7rv1spo0k2l57gubhUtqh+KGjkJ8tCZ3yBWUuysKmsTkB8+Z4Ii/bjAqS3FRC/nQo+BLTXtP3RJ4Lbbtjl8dMEb8oPvCfJk9i1JsXU8GKBet+mJb4xIe42G86UK5mIvzZvWy+lo=
+	t=1707693318; cv=none; b=DYOvUXIVBrDQlR/ahsmRpzYfiklWN7zIhAw0bBKa8cr13wGkdjY8YNq36rd4JfT8NZrruhgj4GitoRLfEbmmhrRzkZKA3eo2eSE2uq2KFnDaz76oETNxly25zyPL3YnDlAlKJXs6JajBmVSO47MzOvONLKlTtPIgcScywQttYf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707693362; c=relaxed/simple;
-	bh=VSrPFDVdzLC5KglvVyGoKnESxlS/kGrz7MitlkFgb3M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=em9HBAGHvqIaSige5I8aQbSWn4iptn+KdlqyJTDXerSGqydGvDweKqxZjRiGFR0WZqt2DfY+RI0GL9gHuKcUhcliHPAR0FN9ySRRjNUnINTAVv2txfjvcTiF1hS5aMXxXM7gTmNQfLc25cxJ/kqV2xAljEWiwQuuKz10w7ddIQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=P9kTQrsy; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56003c97d98so3187442a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 15:15:58 -0800 (PST)
+	s=arc-20240116; t=1707693318; c=relaxed/simple;
+	bh=AxRTjbv0OiO193wbDxtjkOJsdNgPSP7xlc+8H+NZH8E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XWsaRM0baEDOiKQXmBLZXLJJHBVyBSmIxjLMtNUM0LqrG/xhjcFi7EhyUOk5PZsnPVo+nndRhvon5QEeeuZSBbAQmoQkGSbWf2aAhrdsgITcW+MLpA/23A6zeA3J0LMk9pD9BFh798YYvWJm2PIq5RMD7bzbXuFkIJI/jA6V/8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mFEiaSVB; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-42c754ddbdbso4547361cf.0;
+        Sun, 11 Feb 2024 15:15:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707693357; x=1708298157; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XATNuKhlyKBqSR95XEzaIUlSWNysrBVPmJ96j3W9lpU=;
-        b=P9kTQrsyxSPKz6bKFX4cb7GeAdMXMozHyJuS920EZJr6qPjADrXEzmE6slnslYO0IQ
-         1nFjWXl3Z0wZcpZSsVlQjhSA9EA6zQRyUrfpbnzxcNA08SSrVi5nsUPDwkdA+TfhBeQd
-         JUz54xqjaPX2EyIyPngHO/nTr61JqRZ0z8Fl5eAgoSNe9IyXiIXCTrQOEn99I11TCp/Q
-         ZpF535dicfSt+C9mbeRsJaeO7J0HY3SaJdrm4pYO9cLraxWhBauXowIuaR9Gd2HMyeYE
-         lzo9mjA9tKCJAkPKIaJInCs4Y0ET1ZWcRezxuFeX4p5kJGwkMN1bi7Li6XA98HcobP2H
-         sVHg==
+        d=gmail.com; s=20230601; t=1707693316; x=1708298116; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/9rb7Vuo0EUaJNM3OE4lE/4ti+cCsniXbuXa8cVO3Qo=;
+        b=mFEiaSVBUUqhudesJWNEDHgT/4VQRHc5c6PaPXshMEoW3tWqL/LfYgvY1onzeoVwj4
+         t+kacta0vUR9w3PsqNhWn5Zd6rrTYTX/pdN8Xjb1JZjDFtFcnT9N4A7cUc8EbhG0c+jB
+         XKqLOemg2Pn1zdC4pS+6a1ephPMTSRP36iUVWvYT9Az2lPZz8lw4iA1ITRoO2n0Y9lLw
+         C2GhACAK2eTRqfumo33HCDWkM+mozcQlfqpu+y6kVWa530eZIb4hRCBxBEoSLXSz06uQ
+         WiiBpgjn46SdZyy39lgZbTGt8Ozlk2p4w0SLqhyWJHawSUr/Tje+scjUG0zrZEBELd9D
+         KfdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707693357; x=1708298157;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XATNuKhlyKBqSR95XEzaIUlSWNysrBVPmJ96j3W9lpU=;
-        b=fTB3S/061jG6geKUdOrvrtkr2qNJYz7hKqoXOpSoBMpSCVUON9+abISJSgM5FxD+Mm
-         S1OfF5Bmv+G+QQrAjawwhuZ7GXztvWguyIZ73szG69tJUIszCiyC+va31sBTFXfxJTqB
-         wUk7UXt9L2jsdS1Vnt32fsr/8C9UuB122kCkToFHxwSuCd2ZDzTIrsZmdS5gZvpKCu0k
-         j+JA6om5y0KyrcSxKk9r9UK9ExY888/9cEE/XVvsalUWCvXU0T8i0A6Ec3fyKb4a4zNp
-         Pw8yDTdafnimC9TbkNe67ashrgAYKKfsE8qljIOX9TxIV+q78HN/qIaDPFXOBbXDj71f
-         msxQ==
-X-Gm-Message-State: AOJu0YyPYKAsuMjSQChmuTn+v671P2l5k3N4kxbnOhiVB2qcw5wiMU64
-	CxwLcInLLnxjYVMoeQCPz1BZwKYy7QM5uDP2aaWt/hWROjDPbma94ZHAvCj/I0ADbJo9aLVoEjV
-	R
-X-Google-Smtp-Source: AGHT+IGOZmXkH9XPJSaWUuomcmTQVXethFIo20uhVb91PcVj2dke32pbs1C4BhYos9A3Z/Yk0eYTVw==
-X-Received: by 2002:aa7:d5c6:0:b0:55f:e493:33b4 with SMTP id d6-20020aa7d5c6000000b0055fe49333b4mr4250303eds.15.1707693357206;
-        Sun, 11 Feb 2024 15:15:57 -0800 (PST)
-Received: from raven.blarg.de (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id et13-20020a056402378d00b0055d19c9daf2sm2170180edb.15.2024.02.11.15.15.56
+        d=1e100.net; s=20230601; t=1707693316; x=1708298116;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/9rb7Vuo0EUaJNM3OE4lE/4ti+cCsniXbuXa8cVO3Qo=;
+        b=og3MMeerTRX20NrBR3fDJDtEkPtrJ44hQF63/6+NEkoaLu5kYdVK+9V4k3TlRAusDq
+         21dg6lINQXjlDDKPo52zrJAwQh2vkeXR/zl6B78vzdk5Pg93iP1UHvGUniH4HjgSBmVl
+         m2giormNPzR68kwEDaU9ocqrsFhEF+bjdSoY6KlMaEf2cUvrc7J/U3sB1NJP7UvFnqAm
+         YAawNGbd9BIK1Du8d+XqpNSTNQKBkpMNqBUFr4tAYEXhnJybLvl0DAtQO4n09wCD1PJ0
+         uYQsROGuihYQhB7DO/LxRtz+9m1b9s2jgSztelEVtK6tgwTJEYQmCjYq19dsC59dPHGu
+         rOQA==
+X-Gm-Message-State: AOJu0YzH532LsO0jCMHTSF4ATKPmvijvsJdwEXDo5uGLpvOm7OdRCxzb
+	6LGj7x+FKChul2aYp8E0Qx+asuLaNiOWOBCcYxzTC0XE7IgTZmVF
+X-Google-Smtp-Source: AGHT+IGJ4ZMbGiT5clUunfuBZrUJFNzVdTnqLXFnL/ALXUNFc4DpnjczVSH8tzkNkUEtE9ZwVZAnnA==
+X-Received: by 2002:a05:622a:1341:b0:42c:f24:1893 with SMTP id w1-20020a05622a134100b0042c0f241893mr7896892qtk.52.1707693315631;
+        Sun, 11 Feb 2024 15:15:15 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVadT3SJadJYIB5Auk8+YrOhtUifoFH0HG9icPCnV8HbUCiA2Qb+3xxDXIwmI3Ng1c3oU1E9G2Ny3dIeZKk7rVScGnaHOEF24jcmRqg5G2WSeE9dhfr3rNxSuXiBELIvUS3Iz+B1aOIN/A2qqelaGBo0P1tnzz0m6CqQqGEaodhuyA+IFjFSRoV6aHqGnl3P468Jh+kVm6POWcYKDbNvpjr1nJS8SST7bNcfa9jgqBEBmeLlLMCPETO23OafWgjY58sIjblMBLoblqRKpaSxiYlMCnig9jXO6+NBAzDD0RciSfWEr+h2YVr6EuY6T8CIjZ26wK0uoUVTpfeDcjLpNc9rrabbO4ZEDKk6oeI6cqsml8zicqFjpvf4zFMQhbsSJr9Zazr0dfaW4N7sNRnEozSpaW/vDH7AtGh75nxYjd9Rq0zz+dIcTgxdus=
+Received: from aford-System-Version.lan ([2601:447:d002:5be:c8c4:8542:9142:2184])
+        by smtp.gmail.com with ESMTPSA id e9-20020ac81309000000b0042c7b74e767sm280955qtj.22.2024.02.11.15.15.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 15:15:56 -0800 (PST)
-From: Max Kellermann <max.kellermann@ionos.com>
-To: linux-kernel@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v4 25/35] list_bl.h: move declarations to list_bl_types.h
-Date: Mon, 12 Feb 2024 00:15:08 +0100
-Message-Id: <20240211231518.349442-26-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240211231518.349442-1-max.kellermann@ionos.com>
-References: <20240211231518.349442-1-max.kellermann@ionos.com>
+        Sun, 11 Feb 2024 15:15:15 -0800 (PST)
+From: Adam Ford <aford173@gmail.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: marex@denx.de,
+	aford@beaconembedded.com,
+	Adam Ford <aford173@gmail.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mn: Slow default video_pll clock rate
+Date: Sun, 11 Feb 2024 17:15:08 -0600
+Message-ID: <20240211231508.188567-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,110 +91,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-By providing declarations in a lean header, we can reduce header
-dependencies.
+Since commit 8208181fe536 ("clk: imx: composite-8m:
+Add imx8m_divider_determine_rate") the lcdif controller has
+had the ability to set the disp_pixel_clk rate which propagates
+up the tree and sets the video_pll rate automatically.
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
- include/linux/list_bl.h       | 19 +-----------------
- include/linux/list_bl_types.h | 36 +++++++++++++++++++++++++++++++++++
- include/linux/mbcache.h       |  2 +-
- 3 files changed, 38 insertions(+), 19 deletions(-)
- create mode 100644 include/linux/list_bl_types.h
+By setting this value low, it will force the recalculation of
+video_pll to the lowest rate needed by lcdif instead of
+dividing a larger clock down to the desired clock speed. This
+has the  advantage of being able to lower the video_pll rate
+from 594MHz to 148.5MHz when operating at 1080p. It can go even
+lower when operating at lower resolutions and refresh rates.
 
-diff --git a/include/linux/list_bl.h b/include/linux/list_bl.h
-index ae1b541446c9..39c14b6bad71 100644
---- a/include/linux/list_bl.h
-+++ b/include/linux/list_bl.h
-@@ -2,7 +2,7 @@
- #ifndef _LINUX_LIST_BL_H
- #define _LINUX_LIST_BL_H
- 
--#include <linux/list.h>
-+#include <linux/list_bl_types.h>
- #include <linux/bit_spinlock.h>
- 
- /*
-@@ -30,23 +30,6 @@
- #define LIST_BL_BUG_ON(x)
- #endif
- 
--
--struct hlist_bl_head {
--	struct hlist_bl_node *first;
--};
--
--struct hlist_bl_node {
--	struct hlist_bl_node *next, **pprev;
--};
--#define INIT_HLIST_BL_HEAD(ptr) \
--	((ptr)->first = NULL)
--
--static inline void INIT_HLIST_BL_NODE(struct hlist_bl_node *h)
--{
--	h->next = NULL;
--	h->pprev = NULL;
--}
--
- #define hlist_bl_entry(ptr, type, member) container_of(ptr,type,member)
- 
- static inline bool  hlist_bl_unhashed(const struct hlist_bl_node *h)
-diff --git a/include/linux/list_bl_types.h b/include/linux/list_bl_types.h
-new file mode 100644
-index 000000000000..84229bb7bd02
---- /dev/null
-+++ b/include/linux/list_bl_types.h
-@@ -0,0 +1,36 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_LIST_BL_TYPES_H
-+#define _LINUX_LIST_BL_TYPES_H
-+
-+#include <linux/list.h>
-+
-+/*
-+ * Special version of lists, where head of the list has a lock in the lowest
-+ * bit. This is useful for scalable hash tables without increasing memory
-+ * footprint overhead.
-+ *
-+ * For modification operations, the 0 bit of hlist_bl_head->first
-+ * pointer must be set.
-+ *
-+ * With some small modifications, this can easily be adapted to store several
-+ * arbitrary bits (not just a single lock bit), if the need arises to store
-+ * some fast and compact auxiliary data.
-+ */
-+
-+struct hlist_bl_head {
-+	struct hlist_bl_node *first;
-+};
-+
-+struct hlist_bl_node {
-+	struct hlist_bl_node *next, **pprev;
-+};
-+#define INIT_HLIST_BL_HEAD(ptr) \
-+	((ptr)->first = NULL)
-+
-+static inline void INIT_HLIST_BL_NODE(struct hlist_bl_node *h)
-+{
-+	h->next = NULL;
-+	h->pprev = NULL;
-+}
-+
-+#endif
-diff --git a/include/linux/mbcache.h b/include/linux/mbcache.h
-index 97e64184767d..32ebbb428053 100644
---- a/include/linux/mbcache.h
-+++ b/include/linux/mbcache.h
-@@ -3,7 +3,7 @@
- #define _LINUX_MBCACHE_H
- 
- #include <linux/hash.h>
--#include <linux/list_bl.h>
-+#include <linux/list_bl_types.h>
- #include <linux/list.h>
- #include <linux/atomic.h>
- #include <linux/fs.h>
+Signed-off-by: Adam Ford <aford173@gmail.com>
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index 136e75c51251..932c8b05c75f 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -1168,7 +1168,7 @@ disp_blk_ctrl: blk-ctrl@32e28000 {
+ 							 <&clk IMX8MN_SYS_PLL1_800M>;
+ 				assigned-clock-rates = <266000000>,
+ 						       <24000000>,
+-						       <594000000>,
++						       <24000000>,
+ 						       <500000000>,
+ 						       <200000000>;
+ 				#power-domain-cells = <1>;
 -- 
-2.39.2
+2.43.0
 
 
