@@ -1,120 +1,170 @@
-Return-Path: <linux-kernel+bounces-60975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A88A4850BCF
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:43:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34942850C18
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:04:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44EEA282CEB
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 22:43:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BDA6280FE8
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8291614010;
-	Sun, 11 Feb 2024 22:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A09B171BF;
+	Sun, 11 Feb 2024 23:04:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="XzwGrRYB"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="LBheBiLl"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48B7D5684
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 22:43:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C914015C3;
+	Sun, 11 Feb 2024 23:04:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707691405; cv=none; b=dvO9UqunajS/Ecj2cA5gbslsQe4xdxRZAe32GG+Q5ply5nscJ3cDDnTrIRhAVPVXwF9sMCSb15qZXp8urq0PTIv6pDmaZjopQXYwtDUAhjEYzSBfQ61SjX2ON2UHkHKeGYjwFab2yIYQqppMKGfPkOPnh1c72e76eePaHLPNjls=
+	t=1707692653; cv=none; b=kw3qXSjL7d05nniYmoCSTd4P2M1+59NCS/dXP701sJusTvt3TSKtGDnnz9A7iubBha2OQ/WcEFKtFfmEE/NLDxAh10FODttYrT9f/hlnsuPci4FWYJ1ocMLzo5XXNB2QjM+Z+yADIo6gweBkiT/gA2ApauajW94wwK5zHbg2QGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707691405; c=relaxed/simple;
-	bh=vH5zUWq2bx6dQW4vfZYSuRe8aVXk2pfKniPKqPuO358=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nvtYlkBSKTOxyzX2h3Fay2/QjXS/X2t0plCkmJzMeoROSD8qqMCSsD068ARY3cWyLk6fM3rnIw6qYBk2QoI56nYsoNR5erNgaGhcpyMs/3R2z9H2+Kga7w+cSr7oGMb+IO5a7Vt5zcQtf/Z5Ih+F968SS/lMoZlrc+v87OgspAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=XzwGrRYB; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a38271c0bd5so318245166b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 14:43:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707691400; x=1708296200; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bjFoTus7aHlrnOcOuTAWCgZWdvA6SJu+L7BLRl44mJ4=;
-        b=XzwGrRYB4wgrdtQVHY5xX1gmGzqgxYdBbYfbzqQhvXkCm0J/eiDscC0FQdiLMEcoyN
-         xf3f7ffeMf42ZBRCIzQGhFrIqNFJriSP8DTRjRKvgS+j8N0qblrGp6360bNHCpeo8Gmc
-         MSqV7wvSAVwNGBQBlS/Y1ipmz9/E/o+l7gA4ozerlUh4mTNE1dGKh28pnGeaIog3ngyu
-         2fTAI5Oo1pGDmW5jecWj3oi+r1uvzKjEoB8C+mz6+CRQmFWm1ITT7NWPey7nBKM//TgF
-         n8l3ckrZfMqa3L8lWOch0M++KM0cYDLo+QFXj7TSvchlQRMvZxNoCf592pG0KnBaHVoV
-         nFLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707691400; x=1708296200;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bjFoTus7aHlrnOcOuTAWCgZWdvA6SJu+L7BLRl44mJ4=;
-        b=cRrIC0oKexMnxrGwarLbZcL4nQnWe+17vuspcTYA7eVNFAADyl86cMDdemxU9AaY/6
-         ZnzVF2fsXyCb+cYxusEZ2k5ZDYu3aRDVgKE6gESqnEwVWREJOnvYG4xwMzkYmGz9iyIY
-         Akv8x3giMyv7iJOEhq4mjJbqR2ov3649jXIo65Hz5b/CWTE1qhY/LX8w7DBjmKV8EiYF
-         R1Kph1fxb4zEfbaUW78s6RBqDfLvzLulpfvlzK8nKHafJ4sBm4ry8fcCT1lFn9uWZWaJ
-         Mp00fTfdCdB3Dz9CTGPLcrCv1Q8eJN090i5q+WJ9dSsG9BPSQYerKXEhRmIkQYdYuJTJ
-         YFig==
-X-Gm-Message-State: AOJu0YzG7+oiRBMe6s8mOZU3BX4nur7Cgx6LPjaefRV9ZyD7l8iD+rqo
-	OEp/r9F59PrRWD1ItgRlQMTzN26U61D5h8fuNQTkacrqHTzdzzY1uH9brPQRIGs=
-X-Google-Smtp-Source: AGHT+IF/LQAiygCy1X2jwyJTPhn1e+uYExYY761RJQwyXq1F0mNIQlwA82dukr6G4OSCdbXkY491HQ==
-X-Received: by 2002:a17:906:7f8a:b0:a38:4879:72f9 with SMTP id f10-20020a1709067f8a00b00a38487972f9mr3948919ejr.24.1707691400547;
-        Sun, 11 Feb 2024 14:43:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVtkTht4pynUiAjFuubCUmY6w2q1SDAomrzS74tMB+us6WxH+jvbhOHWUNcrWMoEl5L6T55EfIgeLoXTWNKIlhYxr9Azsf4uiaYvVR0jG2UYSJFwNC53+sU4Mb9JCe/fX5SgZ0iM9y9BJX3hSLh6HTvEqrXDhnZY6lExzdV7s8jIHcuvCCKuG67bCDx3nmBH3OuRXj8OUpxJzEKKWMdgfkfHIGL+kY6VJS2t6LOasRut1XGmG8ZWm/H9pdGeBNsH2C0ZWGQZm8dOABjP7/+vv/lSJAW2MSWurvNReMFQoeTJ1fUgn9eVo4ou7kQKvt8tQ==
-Received: from raven.intern.cm-ag (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id g25-20020a1709061c9900b00a3bb2156f7asm3252608ejh.185.2024.02.11.14.43.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 14:43:20 -0800 (PST)
-From: Max Kellermann <max.kellermann@ionos.com>
-To: rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mark.rutland@arm.com,
-	James.Bottomley@HansenPartnership.com,
-	deller@gmx.de,
-	linux-trace-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH] parisc/ftrace: add missing CONFIG_DYNAMIC_FTRACE check
-Date: Sun, 11 Feb 2024 23:43:14 +0100
-Message-Id: <20240211224314.169314-1-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707692653; c=relaxed/simple;
+	bh=kMRLFb0103x5yMVxBy6sPonpF2CtIuDQztGmbWLySJI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=rZmntkzFAAiB0ItYg4uC4TsWyspKLdy+y9K6FdOMfqzOajWvLhRcmlzfEd9oOoJ7PluAYlJIzEVyOWpfoCzoqE2P069dh4qwBleXDvlFIuVIsmzotE6dT6v56qFTrET5RWc17dcXvksWlGCCRzg0pEiaqI52nQsUzcQ6jLSgRAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=LBheBiLl; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707692127;
+	bh=09zokI+nVMpltLJOhPeuRiCSxk2FWPngUU/BG+OkZJw=;
+	h=Date:From:To:Cc:Subject:From;
+	b=LBheBiLlxfXowln9CLZvr+G9/aMuQv4QymQ0VlYazz9f+KpudaLm2Vc5pYkPEe5Ci
+	 wwbVCqw+hoiYMwBVt8+A9Ix8xHkZomxpKtCqqWgtSTk8RWmu6EcQgeB+Gdrv6eAw3A
+	 lFM0o4CdLexv4MSJs6LiBIAzjXzxqLA0GU20vIzlflZzyRuhz0WUFb9ZBatEquDnKw
+	 ULAlG2wg2xM7ocHv5ZXWqY+rcqV31Z2TFnilBc8UGl3Gwun5JG7/YeSC8eHut+Yh0T
+	 m6uBIlqiu2gbI4EsMepjEVH0TH6DQf4oZNJMSmziFtnwHTUvYyJG7s7ZQ3sdJ6MQjE
+	 DF5TSrHeROyrw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TY2x95GPlz4wcK;
+	Mon, 12 Feb 2024 09:55:25 +1100 (AEDT)
+Date: Mon, 12 Feb 2024 09:55:23 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Palmer Dabbelt <palmer@rivosinc.com>, Xiao
+ Wang <xiao.w.wang@intel.com>
+Subject: linux-next: manual merge of the risc-v tree with Linus' tree
+Message-ID: <20240212095523.21f0579b@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/c16UwBLhyXrpFWjYjtE6z2o";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Fixes a bug revealed by -Wmissing-prototypes when
-CONFIG_FUNCTION_GRAPH_TRACER is enabled but not CONFIG_DYNAMIC_FTRACE:
+--Sig_/c16UwBLhyXrpFWjYjtE6z2o
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
- arch/parisc/kernel/ftrace.c:82:5: error: no previous prototype for 'ftrace_enable_ftrace_graph_caller' [-Werror=missing-prototypes]
-    82 | int ftrace_enable_ftrace_graph_caller(void)
-       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- arch/parisc/kernel/ftrace.c:88:5: error: no previous prototype for 'ftrace_disable_ftrace_graph_caller' [-Werror=missing-prototypes]
-    88 | int ftrace_disable_ftrace_graph_caller(void)
-       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hi all,
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
- arch/parisc/kernel/ftrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Today's linux-next merge of the risc-v tree got a conflict in:
 
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index d1defb9ede70..621a4b386ae4 100644
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -78,7 +78,7 @@ asmlinkage void notrace __hot ftrace_function_trampoline(unsigned long parent,
- #endif
- }
- 
--#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-+#if defined(CONFIG_DYNAMIC_FTRACE) && defined(CONFIG_FUNCTION_GRAPH_TRACER)
- int ftrace_enable_ftrace_graph_caller(void)
- {
- 	static_key_enable(&ftrace_graph_enable.key);
--- 
-2.39.2
+  arch/riscv/include/asm/bitops.h
 
+between commit:
+
+  4356e9f841f7 ("work around gcc bugs with 'asm goto' with outputs")
+
+from Linus' tree and commit:
+
+  cb4ede926134 ("riscv: Avoid code duplication with generic bitops implemen=
+tation")
+
+from the risc-v tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/riscv/include/asm/bitops.h
+index 329d8244a9b3,c4c2173dfe99..000000000000
+--- a/arch/riscv/include/asm/bitops.h
++++ b/arch/riscv/include/asm/bitops.h
+@@@ -37,9 -47,7 +47,7 @@@
+ =20
+  static __always_inline unsigned long variable__ffs(unsigned long word)
+  {
+- 	int num;
+-=20
+ -	asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
+ +	asm goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
+  				      RISCV_ISA_EXT_ZBB, 1)
+  			  : : : : legacy);
+ =20
+@@@ -93,9 -76,7 +76,7 @@@ legacy
+ =20
+  static __always_inline unsigned long variable__fls(unsigned long word)
+  {
+- 	int num;
+-=20
+ -	asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
+ +	asm goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
+  				      RISCV_ISA_EXT_ZBB, 1)
+  			  : : : : legacy);
+ =20
+@@@ -149,12 -105,7 +105,7 @@@ legacy
+ =20
+  static __always_inline int variable_ffs(int x)
+  {
+- 	int r;
+-=20
+- 	if (!x)
+- 		return 0;
+-=20
+ -	asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
+ +	asm goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
+  				      RISCV_ISA_EXT_ZBB, 1)
+  			  : : : : legacy);
+ =20
+@@@ -204,12 -137,7 +137,7 @@@ legacy
+ =20
+  static __always_inline int variable_fls(unsigned int x)
+  {
+- 	int r;
+-=20
+- 	if (!x)
+- 		return 0;
+-=20
+ -	asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
+ +	asm goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
+  				      RISCV_ISA_EXT_ZBB, 1)
+  			  : : : : legacy);
+ =20
+
+--Sig_/c16UwBLhyXrpFWjYjtE6z2o
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXJUFsACgkQAVBC80lX
+0GyZpQf/Yfg7Yx830HhqCBnPuJAHLCaTOH8r+WQe4Hpo0e79ifm+WlPAyilTTJAV
+yAXw432SMICT5lrQSQHe/rghgeDtzi6dm+ywQI3niz7n6lwRs6AhUI1c8370HBg4
+8R9kMCd/Ee3kkE5cqrBPhpA4lqqC6E874j2AeYfsmIBmePbbRLVj93NrEDtEqFWW
+BeQbb0n94V+1MV4EhCQK6shoVLfNLfOKbHU1u4uuSJPxVPkWRtsocXwWa/9kL7L2
+0FVPW0NYGWSG5GIwVxyX+QEWvSAYa9X9omMX5vqr2ffuOX9D7CB6WPKyquIfGCZP
+8bGR0rHyn5pZmYQsh6TAvd93hwjN2g==
+=YZtF
+-----END PGP SIGNATURE-----
+
+--Sig_/c16UwBLhyXrpFWjYjtE6z2o--
 
