@@ -1,146 +1,134 @@
-Return-Path: <linux-kernel+bounces-60626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7E29850797
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 02:47:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A65E8850796
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 02:46:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7821AB227DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 01:47:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A43C31C22818
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 01:46:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721CB441B;
-	Sun, 11 Feb 2024 01:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F501FAE;
+	Sun, 11 Feb 2024 01:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=delyan.me header.i=@delyan.me header.b="ai5Eo1rC"
-Received: from chi120.greengeeks.net (chi120.greengeeks.net [173.236.97.50])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ciFknbf2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F634401
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 01:47:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.236.97.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA9317F3
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 01:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707616068; cv=none; b=srwHtCC1Mrc7S5yybzH1pOnUhHhrY2ey+8X+z1qEXS48kvpFnSpe/UiWaMU89+AsJJNs3TYj4hhM/93ON/0ODC7j/pQ4lozgRoOKuxKOoqEG3CaJk9bXd5qV4aYTP7B7ajLybZUyfyYkld6hW0lpQMUTZGoff2kT7eHU3Mz5AJo=
+	t=1707616011; cv=none; b=tUKSJm3P81MFi7Fl3LaUnuNDv89VwQhm8eZWopFfKHcD3RXjPcnJriGyIPGoGcoMO5kx1Dg5Qs/vlmvlG1S8GEGBcCMSV6Rjuw+PLuEzv97IBRwmmWNNBLuv6omVn8TxzuXVZFt2al5YG3eOE8E1Y7pgL54w+rogqm9pyL7WH+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707616068; c=relaxed/simple;
-	bh=mZ4VNATanHjYlWLMAajusqRRHhOZiCvO+SF+xW0XM0c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DNfE/NHIx7d1CXiOe1+zYxrlMRZE9NR8RfcCxPxts2g8yHav5v43hxC66MJW3pOQV2vQjcmsWv0b1vXGMSZoP7d13Rflt5XXH9jYjuy8IVEjIfwn8dl9THKic9DgcLosVIit37LFoeQwdaegAS55UjO01ooXkgxjiMI8+uTCpNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=delyan.me; spf=pass smtp.mailfrom=delyan.me; dkim=pass (2048-bit key) header.d=delyan.me header.i=@delyan.me header.b=ai5Eo1rC; arc=none smtp.client-ip=173.236.97.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=delyan.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=delyan.me
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=delyan.me;
-	s=default; h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
-	Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=Yd59A0zE/B79AlkL3rIg03ugfqRUV8fXYUq26F5oDtk=; b=ai5Eo1rCdzTT3DzcBF5XKEybJY
-	vOqhjvC6/xes+hxyl+tnPJqsJSQEpHAnAq7uClVeZFIX++KqF/R6G8lHhze25SVOnkRiLgjGVbFXL
-	qFM2eE79s0RVe2X8Z+PkSmruKl8gNp+y3Ocs9eWI7XIjhUtKkyD2WPoAgNr/nyWSzD4tT/B+BjriT
-	ZPpIJYfUDko+srG4Kdyne9O6150qIqDdlResRyh+zG6YrceJGyDngg4/mLuw7HFMhJmEJz+VpKteL
-	s9SiuWFKnVB0V7ovY6qUwHa6jr5mtZq+lAeT/mvTlgSrX/4PGbSviplyqL3dOsknkY2Sz3z/5lhj7
-	jyIko5Aw==;
-Received: from c-98-47-236-196.hsd1.ca.comcast.net ([98.47.236.196]:46232 helo=discovery.localnet)
-	by chi120.greengeeks.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <delyan@delyan.me>)
-	id 1rYygz-0001CS-34;
-	Sat, 10 Feb 2024 19:31:35 -0600
-From: Delyan Kratunov <delyan@delyan.me>
-To: linux-kernel@vger.kernel.org
-Cc: tglx@linutronix.de
-Subject: Posix process cpu timer inaccuracies
-Date: Sat, 10 Feb 2024 17:30:46 -0800
-Message-ID: <2635838.Lt9SDvczpP@discovery>
+	s=arc-20240116; t=1707616011; c=relaxed/simple;
+	bh=BQmjpW0I5tJ8/1nqzqWJxFSuGQt107l1mhgaSnsMkJI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=omIGNmfg7N1BhgleounH5GztULKmytQVa+9qvczEFyqBdc85CCfMzh2kKYCv+PZhCIDvNimHLgtbgq6mOVXaBElngSqks9VzEUVOjO9b0mISnT+YNN9VsPkN9/1GEaEw7pjJ00voCAgpen1OZQA85Z7ECQ1GUanKuAaN2XZo67Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ciFknbf2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707616008;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fGLK4dJX5e1tF4UUiUtCFTTT+Sp7JjuwMt77i6yrPM0=;
+	b=ciFknbf2BfnlbQwUj2lLBUE2XdKWf5byzI6IoV1/NyG9QAAswjN07FrvDaJT6lxO83XJKr
+	GmlXviues/3AGc8C6EK3eAchE8YnOoND0J44vupKy4fTpdR+2IxROXLnl2kWengN2r8KN9
+	07pskrdgQgmBcbn7mOAQbFQPHKE9SJc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-571-yiTLxjd_N9GMU2JQXIMtGQ-1; Sat,
+ 10 Feb 2024 20:46:41 -0500
+X-MC-Unique: yiTLxjd_N9GMU2JQXIMtGQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B7C7E38212CD;
+	Sun, 11 Feb 2024 01:46:40 +0000 (UTC)
+Received: from [10.22.16.18] (unknown [10.22.16.18])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 99E84111CD4C;
+	Sun, 11 Feb 2024 01:46:34 +0000 (UTC)
+Message-ID: <099a0310-6805-4ad5-aa99-2589e768acd6@redhat.com>
+Date: Sat, 10 Feb 2024 20:46:34 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - chi120.greengeeks.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - delyan.me
-X-Get-Message-Sender-Via: chi120.greengeeks.net: authenticated_id: delyan@delyan.me
-X-Authenticated-Sender: chi120.greengeeks.net: delyan@delyan.me
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
+ partitions
+Content-Language: en-US
+To: paulmck@kernel.org
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Frederic Weisbecker <frederic@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
+ Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>,
+ Peter Hunt <pehunt@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
+ Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ Alex Gladkov <agladkov@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
+ Phil Auld <pauld@redhat.com>, Paul Gortmaker <paul.gortmaker@windriver.com>,
+ Daniel Bristot de Oliveira <bristot@kernel.org>,
+ Juri Lelli <juri.lelli@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Costa Shulyupin <cshulyup@redhat.com>
+References: <20240117163511.88173-1-longman@redhat.com>
+ <ad806d7c-91ec-4659-9348-1b0bb42dd417@paulmck-laptop>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ad806d7c-91ec-4659-9348-1b0bb42dd417@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-Hi folks,
+On 1/19/24 05:24, Paul E. McKenney wrote:
+> On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
+>> This patch series is based on the RFC patch from Frederic [1]. Instead
+>> of offering RCU_NOCB as a separate option, it is now lumped into a
+>> root-only cpuset.cpus.isolation_full flag that will enable all the
+>> additional CPU isolation capabilities available for isolated partitions
+>> if set. RCU_NOCB is just the first one to this party. Additional dynamic
+>> CPU isolation capabilities will be added in the future.
+>>
+>> The first 2 patches are adopted from Federic with minor twists to fix
+>> merge conflicts and compilation issue. The rests are for implementing
+>> the new cpuset.cpus.isolation_full interface which is essentially a flag
+>> to globally enable or disable full CPU isolation on isolated partitions.
+>> On read, it also shows the CPU isolation capabilities that are currently
+>> enabled. RCU_NOCB requires that the rcu_nocbs option be present in
+>> the kernel boot command line. Without that, the rcu_nocb functionality
+>> cannot be enabled even if the isolation_full flag is set. So we allow
+>> users to check the isolation_full file to verify that if the desired
+>> CPU isolation capability is enabled or not.
+>>
+>> Only sanity checking has been done so far. More testing, especially on
+>> the RCU side, will be needed.
+> There has been some discussion of simplifying the (de-)offloading code
+> to handle only offline CPUs.  Along with some discussion of eliminating
+> the (de-)offloading capability altogehter.
+>
+> We clearly should converge on the capability to be provided before
+> exposing this to userspace.  ;-)
 
-I've heard about issues with process cpu timers for a while (~years) but only 
-recently found the time to look into them. I'm starting this thread in an 
-attempt to get directional opinions on how to resolve them (I'm happy to do 
-the work itself).
+Would you mind giving me a pointer to the discussion of simplifying the 
+de-offloading code to  handle only offline CPUs?
 
-Let's take setitimer(2). The man page says that "Under very heavy loading, an 
-ITIMER_REAL timer may expire before the signal from a previous expiration has 
-been delivered." This is true but incomplete - the same issue plagues 
-ITIMER_PROF and ITIMER_VIRTUAL as well. I'll call this property "completeness" 
-i.e. that all accrued process CPU time should be accounted by the signals 
-delivered to the process.
-
-A second issue is proportionality. Specifically for setitimer, there appears to 
-be an expectation in userspace that the number of signals received per thread 
-is proportional to that thread's CPU time. I'm not sure where this belief is 
-coming from but my guess is that people assumed multi-threadedness preserved 
-the "sample a stack trace on every SIGPROF" methodology from single-threaded 
-setitimer usage. I don't know if it was ever possible but you cannot currently 
-implement this strategy and get good data out of it. Yet, there's software 
-like gperftools that assumes you can. (Did this ever work well?)
-
-1. Completeness
-
-The crux of the completeness issue is that process CPU time can easily be 
-accrued faster than signals on a shared queue can be dequeued. Relatively 
-large time intervals like 10ms can trivially drop signals on 12-core 24-thread 
-system but in my tests, 2-core 4-thread systems behave just as poorly under 
-enough load.
-
-There's a few possible improvements to alleviate or fix this.
-
-a. Instead of delivering the signal to the shared queue, we can deliver it to 
-the task that won the "process cpu timers" race. This improves the situation 
-by effectively sharding the collision space by the number of runnable threads. 
-
-b. An alternative solution would be to search through the threads for one that 
-doesn't have the signal queued and deliver to it. This leads to more overhead 
-but better signal delivery guarantees. However, it also has worse behavior 
-w.r.t. waking up idle threads.
-
-c. A third solution may be to treat SIGPROF and SIGVTALRM as rt-signals when 
-delivered due to an itimer expiring. I'm not convinced this is necessary but 
-it's the most complete solution.
-
-2. Proportionally
-
-The issue of proportionality is really the issue of "can you use signals for 
-multi-threaded profiling at all." As it stands, there's no mechanism that's 
-ensuring proportionality, so the distribution across threads is meaningless. 
-
-The only way I can think of to actually enforce this property is to keep 
-snapshots of per-thread cpu time and diff them from one SIGPROF to the next to 
-determine the target thread (by doing a weighted random choice). It's not _a 
-lot_ of work but it's certainly a little more overhead and a fair bit of 
-complexity. With POSIX_CPU_TIMERS_TASK_WORK=y, this extra overhead shouldn't 
-impact things too much.
-
-Note that proportionality is orthogonal to completeness - while you can 
-configure posix timers to use rt-signals with timer_create (which fixes 
-completeness), they still have the same distribution issues.
-
-Overall, I'd love to hear opinions on 1) whether either or both of these 
-concerns are worth fixing (I can expand on why I think they are) and 2) the 
-direction the work should take.
-
-Thanks for reading all this,
--- Delyan
-
+Thanks,
+Longman
 
 
