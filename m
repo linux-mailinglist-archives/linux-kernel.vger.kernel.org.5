@@ -1,112 +1,94 @@
-Return-Path: <linux-kernel+bounces-60688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65CDE850877
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:54:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB80B85087E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:55:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 972531C2153D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:54:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76D002828F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:55:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D76125917C;
-	Sun, 11 Feb 2024 09:53:56 +0000 (UTC)
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA0D59B75;
+	Sun, 11 Feb 2024 09:55:08 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1196C59141;
-	Sun, 11 Feb 2024 09:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C2FC59173
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 09:55:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707645236; cv=none; b=P5cq4U1l17xFVATWHRf9MM+5kvLq9FWeF0p3mbxkAQkWyRI/M6dp4YLi1ajZh3oEvWk1rt6rius5By8W6JtKRVuPORp6y+sZhG1JphMbSlAM099eecDV2nSRIfA2L8svuFZ8OsdWLl6dAl6WYCpB7lJVWMcmALRgvgqcll5MmNw=
+	t=1707645307; cv=none; b=lrA7dajpLLYxPmLBSH8i1kPgMuvVtW6elpbjBAmhzverlCPEhNi85JLwmgcXggbGtocFKueOstMRmK2PXcia2H6Nr2HVHWVEXaKN5UsfwvnYm7oF6+DskvfOtMQNSrIWQaquCXtZAYPRbjApkkfG3LfDydlv+QmDJ8iXmzv8MVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707645236; c=relaxed/simple;
-	bh=I7YZwRT/usHmRZRp/Ua6UZNQvDq03jokdgJSQkJx8ZM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NryFFYUpvQlNP3FL8216/xOnfE6J4jQ/+5Ci47/wL9PfYsDYXj/VKxPtzjbXdsRsuMS5MCKN9Y86GVsBvCLLr+qtFzO/nIvRJEEJ44PpGjmD/eSexs5WX6ud1th1Ru5EQeE/7cVOI1aSK7UuCmDTn3I48oAufybzlGfgi0+5L28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7857964f57aso95575185a.1;
-        Sun, 11 Feb 2024 01:53:53 -0800 (PST)
+	s=arc-20240116; t=1707645307; c=relaxed/simple;
+	bh=FamyLudsSv714I4GPKAWQ7S6nKsf1K3Kuh25o0PUvSI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=MZPjNBsvOa+3qibDoYqMhhZYIpTJEx7zJOlaUGAdwp32x8Fix78ZGgkxmTt4WenNzSMYtV8S1cOkAjv7k9EZ/TsmVd6mZrI+2QdEb7U8g5bBAUxGaPMF2S0q6Kmar06QEI7L+bhNkIBz3y34ZZGosjjpmxinDcZLj88Nt8OLA/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363e7f0c9daso15249625ab.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 01:55:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707645233; x=1708250033;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0RvRmHt+r/0Yyk/VeH3rIf5h0w1G4j3Mo4jl/7Uv/FU=;
-        b=vP6xso8WxFI1fhh3mhv5Ucr2PGx5O1ikiqLM4kTc0OYH/tmW2feRAXwRqPyRhYDnow
-         jzy8Rm4+aJk41thc3z1F1VS1IA78INerx8wVHj2NktGTcSYHWaUyTQ9Xcsn+Genw57uu
-         Kv1TGmJHBqWCO1xteyr0UW+W/vjUA9FG3LGT9DabzBDnX6f7zoAwtc8dFyte1pclIVQP
-         ai4ra08uDz/jGDCW5AMBcMjCq1975JKgBv3CSEVH39v44Hlynrdd7FIoqtdckRuNPBGh
-         y3AohsSv+XabUz4JKpspOm5rY1YLG/ZcTnEroJEg3bWQxQNl3M0SbDLxTN89b7VQUcJK
-         VeJQ==
-X-Gm-Message-State: AOJu0YzvRG5ojb3m+28Yzg/pb2Wp8BqYCzpaIsnanDF25wKAOxvMhZFl
-	nUiIsoOTlslpjnDvGhD+laABIWPu8P3Nh3usJ/BlQ5gSWIq0h1dE9O8s14bjTmQ=
-X-Google-Smtp-Source: AGHT+IFvOwg1zd0A4PC3nUVjxgaRSJa+7ErW7hQCfQXkbFz1cvwGS51Lf9w3PSjYhGsX6A4a5Cr3NA==
-X-Received: by 2002:a05:620a:4153:b0:783:e9ba:7d4b with SMTP id k19-20020a05620a415300b00783e9ba7d4bmr5115622qko.49.1707645232544;
-        Sun, 11 Feb 2024 01:53:52 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWzBikxsSKV31rzOvWhNSuFsi7eqUndeY/GLXxXsXsnrGD4DaWMJrP5PiP8YmVAnc7zZqUH3ni4dzdMCnvVrtCXlsj1ebiD0cWMXO103Ggrnf5iYtfQ4Sba3yZNWnJAUZYPwi5c+iM=
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id v19-20020a81a553000000b005fff0d150adsm670175ywg.122.2024.02.11.01.53.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 01:53:51 -0800 (PST)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc74435c428so2194685276.2;
-        Sun, 11 Feb 2024 01:53:51 -0800 (PST)
-X-Received: by 2002:a25:9347:0:b0:dc7:32b1:b7ea with SMTP id
- g7-20020a259347000000b00dc732b1b7eamr2843172ybo.46.1707645231510; Sun, 11 Feb
- 2024 01:53:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707645305; x=1708250105;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0XuWyRbY4wXt2Mt6STUVYn8j1a+Yq6fdJoZ0a9NfJrs=;
+        b=tpmbz/8bCUv0tPCyH+ljY29l8byvA5Ejyb8HGyRBYJXvLvLZWnKFVWfw3HfRXDTpmD
+         81TSqVbJce6AKSBtCsN+SMZ5Uuh2i5ro6A25Veq6FvhIKsyjtm0fAV7hprO1RJZIdFyY
+         UrK0lbIDvl3VFQKHIzYHaclhZJW/GzfovXGCsFD9CDBXalwgZmDpntCo9LNQunDMnvBs
+         kuYW2mOl84QWDIj78Ck71Y6Td9oJnfetrWnvGe5I+KJvDtzYdg3JYzHRv5l1TEuIYXI1
+         LW1Zlu3WH2BK2LLfeIQHJtTh/3HpFDj5mbBlzgrLCOoT3SS4qtz2z+cQK2BsyJLU4K/B
+         MTuA==
+X-Gm-Message-State: AOJu0YzaY3eEpCthlHo3V/LDXHs977o2L5/AUSxsYjugd10U0lTGyb4b
+	d72XxjArrH4brfdLGJ58tuNMKQi2aOAFxckCku2ZwvkD23rt1P6XhaVOa9XdjBEJF8hFs4h6qNM
+	NoW6r5MfB5oXMS56hCnXPaXEjUxxb5djswNxrIgR/1RsvDbm7DGuamzw=
+X-Google-Smtp-Source: AGHT+IG3YZniosI/CpDU94Ng7pPafv+1B9bQ4XnJzYI/F435oR3FLGTsEkP6RQryGxVbCbrAEGkfujP1a2FR0BA29P31HNaNZa0p
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <65ed7c95-712c-410b-84f3-58496b0c9649@roeck-us.net>
- <aedf7b7f39f820de555f1c41b6a8d663738eb3a2.camel@physik.fu-berlin.de> <0a0fbbd8-17dd-4f4c-9513-f3ac9749890b@roeck-us.net>
-In-Reply-To: <0a0fbbd8-17dd-4f4c-9513-f3ac9749890b@roeck-us.net>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 11 Feb 2024 10:53:39 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVt1Ebjf0X6X=rvFsr4aOcGc2c=RBViWP3cbAodNQJ4tg@mail.gmail.com>
-Message-ID: <CAMuHMdVt1Ebjf0X6X=rvFsr4aOcGc2c=RBViWP3cbAodNQJ4tg@mail.gmail.com>
-Subject: Re: Problems with csum_partial with misaligned buffers on sh4 platform
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6e02:20ee:b0:363:8b04:6df7 with SMTP id
+ q14-20020a056e0220ee00b003638b046df7mr338025ilv.0.1707645305395; Sun, 11 Feb
+ 2024 01:55:05 -0800 (PST)
+Date: Sun, 11 Feb 2024 01:55:05 -0800
+In-Reply-To: <000000000000a135c0060a2260b3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d4a29506111827e7@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: null-ptr-deref Read in ida_free (4)
+From: syzbot <syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, davem@davemloft.net, dvyukov@google.com, 
+	edumazet@google.com, johan.hedberg@gmail.com, kuba@kernel.org, 
+	linux-bluetooth@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, luiz.von.dentz@intel.com, 
+	marcel@holtmann.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org, 
+	william.xuanziyang@huawei.com, willy@infradead.org, wzhmmmmm@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi G=C3=BCnter,
+syzbot suspects this issue was fixed by commit:
 
-On Sat, Feb 10, 2024 at 10:59=E2=80=AFPM Guenter Roeck <linux@roeck-us.net>=
- wrote:
-> On 2/10/24 12:12, John Paul Adrian Glaubitz wrote:
-> > I have not run these tests before. Can you tell me how these are run,
-> > so I can verify these reproduce on real hardware?
->
-> Enabling CONFIG_KUNIT and CONFIG_CHECKSUM_KUNIT on top of a working
-> configuration should do the trick. Both can be built as module,
-> so presumably one can build and load them separately. I have not tried
-> that, though - I always build them into the kernel and boot the resulting
-> image.
+commit af73483f4e8b6f5c68c9aa63257bdd929a9c194a
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Thu Dec 21 16:53:57 2023 +0000
 
-Yes, you can build and load them as modules separately; that's what
-I do on m68k (and yes, the checksum test fails on m68k, as it is
-big endian).
+    ida: Fix crash in ida_free when the bitmap is empty
 
-Gr{oetje,eeting}s,
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12fc6ba2180000
+start commit:   b46ae77f6787 Merge tag 'xfs-6.7-fixes-3' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
+dashboard link: https://syzkaller.appspot.com/bug?extid=51baee846ddab52d5230
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=127837cce80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12779dc8e80000
 
-                        Geert
+If the result looks correct, please mark the issue as fixed by replying with:
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+#syz fix: ida: Fix crash in ida_free when the bitmap is empty
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
