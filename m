@@ -1,119 +1,114 @@
-Return-Path: <linux-kernel+bounces-61026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE277850C67
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:52:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09DDB850C6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:54:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E121B1C20A13
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:52:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 594D9B217F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421D1179B0;
-	Sun, 11 Feb 2024 23:52:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E312C17567;
+	Sun, 11 Feb 2024 23:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="oVHgtheW"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="H+aK+zcL"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41721799D;
-	Sun, 11 Feb 2024 23:52:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAAE3AD2D;
+	Sun, 11 Feb 2024 23:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707695564; cv=none; b=CRfhjkBMrl7sar/QSqxz9HxcsNe6Mj0jNOwtoWFcyNaC8p4EFQBggwLvPD7Qnx18ftTxzObKpsKJYhmxFh1gVYxCAFE4su2lx3KlB64KXc3ckxXNn0c3IX6AfjNQogEXSPQ06yUhLnYdL3r29Hq5H5KkCxGnZoGfA/3WEfY1n/g=
+	t=1707695672; cv=none; b=Ct3rw+o05e+zqq/CqZidXlUjGDtkNCkqI23XJj03aSvXziqzu+BWYDz1K7waPO65Hoy2s5vL/fhoU1jU9GKVchK+jdkLJj1NS/AKZd40L9wVAuTDX2wl/N3xcSLdaZK7QkqHV1cBSEGlXpyQPJ6VudoNBvcgA1fF80ul466IlfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707695564; c=relaxed/simple;
-	bh=JQXFAnoO4YA2Ogt6hiOhYeOgJwanEtxRjZrzG3hDdas=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=nTEcuMIkzjNf53xyduVnnvHk+8gXnTBLFa4sSlZLFFRNfVwWlMG8zyqrgHtBI2Hspslj8nBjeyKrWPmF5kYrDTLplkrf47bCiVXK+E1MS+pTDabdp+rzkE8Tmp3oH4qEAH6vTZmkewdAoMrnpSHpEGtnFHh3aWrItp4bPUacPhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=oVHgtheW; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707695559;
-	bh=vxJzZFESSgxmpG0isEn0cmRDeJHyk97FZp1YJrOe3Qk=;
-	h=Date:From:To:Cc:Subject:From;
-	b=oVHgtheWMNglRc5Gq0Gi3RWxk+FXlnKbG7QbwBT5YF3I19zvK1skTFs+NFyqUuYxK
-	 ERu8qAaSW7idLZISazKfQ+dHN08j5Z+zmAOcQX+qOuZtBaakxj1tE1o6qZpwSWMa1Y
-	 YqoWKh4wAt8gN/JpOEC0CPk8SGPjq6jpn0ucNWx6SCf2Oxk8vwIL0dxg8k9HccC0M2
-	 T4v6JwILooPgClK2qnbpFJFYHliZ8Gjg56Fs7zj2+EqNGXRdnEjlYsUf4pDxvPvf+i
-	 i0F0lkHHYRtcdU9Rzgz5LY+yXmi6tG/t7q6aeSBEUcOwiB8O63k+mda8wkSchJfeER
-	 MaLDwfyGL1kyg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	s=arc-20240116; t=1707695672; c=relaxed/simple;
+	bh=ovBI+uozlzSNIPcQOV2IPQFi3mWSCogjgpUAT5X2LTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QD0QcYdQyDPlO6CmEMJRchGoujp+a+0erfb1fgaMNaPHIZMuoQmnzaA/8rT6lPwPdphjiyn2zDw9RETt30tajnsvfgYZb3d/1altt+t91QMz7KKNWTXUv9EWR04Z9hLvtdAyI2driafRfGUHVUCb9hZxvqHVvYW1mioG8IRSjkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=H+aK+zcL; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707695668;
+	bh=ovBI+uozlzSNIPcQOV2IPQFi3mWSCogjgpUAT5X2LTg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H+aK+zcLH30LUeJMhwmJsA0Psgi+FXPI4q+bHJ7MFBdJs8ZO3E1z0CPnGjMQb8sgE
+	 7CHm+OZrCOQBfvElIJc8gUU5g+8oaBQx1QLUq0kaMZeFgcSkTnjZUkhifKrj7+SvUM
+	 GyBZKh6Q24TXpJX6vUJ6eGWO7zUEtQ3k+65zWOipU/sbO2tBa9Our5TJ2BPxd/ngi3
+	 M16lKM2Sgl6+enOKCEWDOVtZYhsa22vJnGEKBTvZUI5iFwAkfsPx/vp+KpX2iI9s0M
+	 EqUFBLiqysTjsNawf1tpjmkjrFFGM11QPV1gXpb12yUlQHrsRuSY4ZH335xLEjZZ12
+	 UDyfbKrlNdpVw==
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TY4CC17fkz4wcM;
-	Mon, 12 Feb 2024 10:52:39 +1100 (AEDT)
-Date: Mon, 12 Feb 2024 10:52:37 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the vfs-brauner tree
-Message-ID: <20240212105237.674e6fcb@canb.auug.org.au>
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BEC6437810EF;
+	Sun, 11 Feb 2024 23:54:28 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id 370D4106043F; Mon, 12 Feb 2024 00:54:28 +0100 (CET)
+Date: Mon, 12 Feb 2024 00:54:27 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Andrew Davis <afd@ti.com>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	Cristian Ciocaltea <cristian.ciocaltea@gmail.com>, Florian Fainelli <florian.fainelli@broadcom.com>, 
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Sean Wang <sean.wang@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-actions@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v3 00/19] Remove pm_power_off use in drivers/power/reset
+Message-ID: <iinovq4p3dn5pic6ipptqzi3minqz5dznfdzhzl2onttxb325k@l7bhoiibsxkz>
+References: <20240208170410.67975-1-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/e7Wj8RxO4hgSjuzIgwMC=U=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vsdi4o5bg7tjzwfb"
+Content-Disposition: inline
+In-Reply-To: <20240208170410.67975-1-afd@ti.com>
 
---Sig_/e7Wj8RxO4hgSjuzIgwMC=U=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+--vsdi4o5bg7tjzwfb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-After merging the vfs-brauner tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Hi,
 
-In file included from include/linux/highmem.h:5,
-                 from include/linux/bvec.h:10,
-                 from include/linux/blk_types.h:10,
-                 from include/linux/blkdev.h:9,
-                 from fs/btrfs/super.c:6:
-include/linux/fs.h: In function 'super_set_sysfs_name_generic':
-include/linux/fs.h:2597:9: error: function 'super_set_sysfs_name_generic' m=
-ight be a candidate for 'gnu_printf' format attribute [-Werror=3Dsuggest-at=
-tribute=3Dformat]
- 2597 |         vsnprintf(sb->s_sysfs_name, sizeof(sb->s_sysfs_name), fmt, =
-args);
-      |         ^~~~~~~~~
-cc1: all warnings being treated as errors
+On Thu, Feb 08, 2024 at 11:03:51AM -0600, Andrew Davis wrote:
+> Use of pm_power_off is considered legacy and should be replaced
+> with register_sys_off*(). Same for register_restart_handler(). Do
+> this for the drivers/power/reset subsystem for all trivial cases.
 
-and many more similar.
+Apart from the issue in patch 18 the series LGTM.
 
-Caused by commit
+-- Sebastian
 
-  eeea5d25d4a7 ("fs: add FS_IOC_GETFSSYSFSPATH")
-
-This new finction is not used anywhere, so just remove it for now?
-
-I have used the vfs-brauner tree from next-20240209 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/e7Wj8RxO4hgSjuzIgwMC=U=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--vsdi4o5bg7tjzwfb
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXJXcUACgkQAVBC80lX
-0Gxe0wgAo5b6n5uWR8n7W7Tz/W9QganNVeeQnF2frZJR8ufXYnDceIgCJ9Ea9AJI
-uvuS/hlOjJ1UGS3u7pHt09qsOHr5+jtIYvslUtWAHtqU3MRD4b7E4eecOQ+5vTd6
-+EzlYPeZp5ZR9Rya7fKduC0EJAhhP033dkMFeZvULmIwox43IJbWbIhLaA3AumMX
-+/QiiRXEmSqgv1hXbl5tsepihFH4iJ2SVqLTmaua5lnEnN1FvsKy9oYp0njHULNJ
-MwkWm/fBy7aF+xM8uJfMUzyFe/rzbX8ruJWzfAN0vRKSKINv3OCBAsNIBiwNsV96
-Wja8xn+G1aB/Y0VxxW450nWeoj3XBg==
-=WTax
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmXJXjMACgkQ2O7X88g7
++po+tRAAgCDIMC15ePLlQVTIKQd+OyONaoHDs6t6lhLgu8eFavGhqI0XqMvogDuP
+hHbpzhPxUZP2+P+Sl7h8o/mKhujuR5YZymX3F+gP6aM7Wj8AWaTqSet4hvFxR/Sx
+4xYY9gYnWAdPHuR+g9qwVZk5qPeNTwh5bEqGSPDl6hzyUAAG+DIa4652XAgF7xc4
+QCcj82KH9g/+DNq9e1NDmIWY6bcrdSVH9UeQHzZbjlcmykiiKdtE35//hVS4nA7Z
+dMNgh4xxz86RLEId4mqPbacv9jaNJmAAr/DEiEIwCsv51rIHPNEfHejR8C1Yowlh
+9+u5AOJD/Dj1UlACIWBgoz/LYr3rxEX6vQxJkQq0L9QaqpeUwCYLGpxgF9DunAPx
+86juxqF4keF/bxpiuDVsMh2hGPxbzf14MysCDF8cTuzR2rBUdUNUxZL3XVXKtmug
+QIswLHjRiert6xEvEThVe/V0wd+Ts8Vd9NTPIP2+zWaagdGryLsQbmOxXJdpjzgT
+IpdagnQaw8zOUqPLnI2WA1gLy0fTDttMoVtp63iE53JXSE6EPhp3njJiCCKg32js
+URuI9Wr1hBs08KtLRZOj2EtREz+McEWKLJdBG0jsTS26zv1UHH2NB353nC2K9v82
+fzHvACBM4kCbVyg5anS0GDmz5x8eddiJOcntikHGtYaVlKIF614=
+=UK2f
 -----END PGP SIGNATURE-----
 
---Sig_/e7Wj8RxO4hgSjuzIgwMC=U=--
+--vsdi4o5bg7tjzwfb--
 
