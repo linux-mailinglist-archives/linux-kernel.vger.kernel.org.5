@@ -1,155 +1,171 @@
-Return-Path: <linux-kernel+bounces-60834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1D63850A04
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:36:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8DD3850A0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11ED41C20DE2
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:36:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32082281CBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB48C5B67B;
-	Sun, 11 Feb 2024 15:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0970A5B685;
+	Sun, 11 Feb 2024 15:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="mhGl0oRL"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J/N7OR0n"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ABB25BAF4;
-	Sun, 11 Feb 2024 15:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E4F1E507
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 15:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707665806; cv=none; b=DDuf46z8GWs3L8q3v5h6o5YUSQ+QK/Ewgslcco/R1VOdm5YIo3WjlSFIITzh8k5Fb2BkmIq23JaD23XDUX6Tv0IJAJL9tRthe3QaIviPwm8WVd2h8vmb8TPdJqKE5DaPOGdOdmANatgg5qdEIDzDgm/1clVLWo6AIijElZ2UAV0=
+	t=1707665975; cv=none; b=oOtuPxqROJlXSMdxstcWLuJQ1qztnXR5ipuanWcshYWKh3AS5AoEZ7Pv2+s2tzK8sY5ysOYAVMPoMTeVmLcp0qO6tN53DH8lTmOKDNSHHJXJ5/pzqzayXzotemx9SozeRrFZVMS87rBB5dhtd43NKfv4msdjS4DrN3DLVyHAh3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707665806; c=relaxed/simple;
-	bh=jjSF6lq4krDwmprCM2e1i+Kdrar4fmP5e0LW+RJ2wmo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Tyt6R/ASI6lMloWXYnbblo82FIoIt/egVuRoCysNQ+QZMyiHXlNebsl7RVdnHoyLSpxFBFN3l9XeMLwFHsxSdytzD0WVi7R7Ew17h/AB7QPTh23aXZMG0zOGfPGDgEUvKvy912SS6B6eFa1QF9nxXCvVpwsphOvj0cSGxPpOZqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=mhGl0oRL; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e09493eb8eso1276180b3a.1;
-        Sun, 11 Feb 2024 07:36:44 -0800 (PST)
+	s=arc-20240116; t=1707665975; c=relaxed/simple;
+	bh=p2OrY5Sntk1BJ2038kpst2b2dqLgitfCh8kdLSqPOSQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jLLLhDp6afkUjhW6hcFeavG9KqisHphhIoPIDrcVy7RoEdN9AUQr1rdEv/HgDxMu3Vy0p61d216OPNEg3BQD3+SvB3JkI1P3dlNWurEuHmoTNhXayg9nG3qiZ8ffe5CvoI/oEHmsw8uSypdnJdfhcCdVBsjZb0+MQSbra6q1Sxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J/N7OR0n; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40fd72f7125so20389395e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 07:39:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707665970; x=1708270770; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=LSjWqhkf6+v8Y6bhbWzIso8PIeD6RApLquHv7FdvFeA=;
+        b=J/N7OR0nOJDIK4fuTzeCakw0ysQm2/L/+d2R5m9hWWg4b63vMHUIxMHNYtrylCS4Vi
+         mxD+gltRbqVWhEOOIXN3w0yWZYT9u7XHOMVcyXojS6FKr9wYh0p2/picjahL1SZ+zz5x
+         vlahLRYM4AjcQ4y59qp9sxR2SnZ1qpTM3DtbL6QJJxDPzXJ1+APuy9IIqYE5xujlblQy
+         MrZAYDhxEG8lvSt0l8TO82yalBpQa6KVJXjn5cNPAguxA+Yfe63AIB0y1rY0V+eeyKru
+         FcI7+No4vH5tdf+ydjDGViAta1JZgU+60pILqocs6QFOk21LrmtVtPKkImJ2E62OSM9z
+         5S0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707665804; x=1708270604;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1707665970; x=1708270770;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QsC71mnuXWG0q9Nl+o1OGuAQFLxgfL9XuHk4wUGOUJw=;
-        b=Ma1KcXlljvMhYB8DdmkGCFn7E14Nr+n/+1uONSdzczfiTaDaTquGlnA0EgRMyT67gB
-         adaTqGS7BksH+PWxVOCulC+hTnI5OZfsFGqzO204Dc5SlFsRwb16gf/Tqvk6uoe+QUmH
-         tLb0D2Et8nuFM3EfDyim1eph/ZcQY+36+vk5VuR7Tk9UC3eWk7SIoPwF466NErXZtBD6
-         deVOIp4hOqCGa5jXbV/GrlS1VaaEVBzXoe3XT5un8THEuXn6FgqM7LQe0b/YUDli92IO
-         iIKlnp00UcV9PIUwzHbM0hs8EczuRArJbDiMvaMMBobPagNgq8rZl422yc0TvsqjC2iY
-         veVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXSd5mJVMpq2+WdR5hdejenI0I5u2cd8sXIRCZOS3cYT+6vKEj5HuW/9x6jnFYseo4NoB7CZCfXQrnYDuwkwfIlFnKGe95uVkN/Ak27
-X-Gm-Message-State: AOJu0YxLkVwqNwbNv4xXZwwOtlemDXCeywLmRzc8ZoW/lHyeaCu8Tnho
-	uWV0SPIawmaXT8eKqWDz0W0pKeuLGgQo6r0RnZOdGIwb9gYDiiZGhJRMHC8sHTNQ5w==
-X-Google-Smtp-Source: AGHT+IF9T4IOjEmQvR4mlXkGYzVOri3d75tfp7kA4LF5NAeUZhtq71G2fXkvcG/DMNcCbiz326ixXg==
-X-Received: by 2002:a05:6a20:9f04:b0:19e:a873:9252 with SMTP id mk4-20020a056a209f0400b0019ea8739252mr6281323pzb.6.1707665803725;
-        Sun, 11 Feb 2024 07:36:43 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXbJklSaG0wLyxzy1wPY+FEUG5FIddlrEZ/6cqJ+FzwZJIOamHpPXWZm4iU3OK1TfRHdp1L0M+nvn6I9rw0xs/Ie71Oqe2pXbk8TKRMOLp7lDjsjEZ0F72+1Ew4LaKmz1Iw9fZVACLCgxwmEthy71HWsPQHOBKLK5V/aLO/4olMuR2bypWl9KRD3SnWup34+hz/PoyxZtVaIwwkZwyAqgoBA2oFw0xHIx+XOxw6e+du
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id u39-20020a056a0009a700b006e04a3a3df6sm3910899pfg.185.2024.02.11.07.36.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 07:36:43 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707665802;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=QsC71mnuXWG0q9Nl+o1OGuAQFLxgfL9XuHk4wUGOUJw=;
-	b=mhGl0oRLqvgO3Km6MTeJsSLOqKrGO0Jfo7WGUSc4pzTkB91j+d+5UGnYXm5bogbwgLqtED
-	n5a8x4kZhbfdxOI7WdlCTQjytrAMYJ1ulUe89WKcXfSAQMH7kFyF1KOYqY8jbPBxi1OdMc
-	lqUC8ugu0Tig3Dg7nOZy7vmoce8Xl7bo2ufl+eFD+Y0z31eG2tS4sF7wHZsft6PKI6uOe6
-	wxEmwT/W/TLtaM4+5ltGUE8j57emxcuncTwOGN57yRIkKatCevw1Gjb6XRTESJ+fYuGFOh
-	2czDn93pA2VcmmEHgMN4fIm1Z1H1UPI8btNbrsg/lIow5txdTJcWNrptFqJArA==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sun, 11 Feb 2024 12:37:11 -0300
-Subject: [PATCH] ACPI: bus: make acpi_bus_type const
+        bh=LSjWqhkf6+v8Y6bhbWzIso8PIeD6RApLquHv7FdvFeA=;
+        b=f6MomO+qCiSFPr2VTiP7WLv/LUVnAMpdhkrsHIDAND8zRIFauoUxA0+TvicmJ3xJzq
+         H1e+smq9SDBUdlfqehpG1W1D1d/QsUIFNTKzxjdZqIaNJORf9dv/F6ckyEJgjZ9+/mLi
+         kCb+yIeL2SDOo3+bD2FjgUNMMZvaFcRw1RRYiVfzChUrrEmDa5SHHgGCxHLXLKa8PWZT
+         4ZTaTdH5/ZJe/Kjy7BdmkbeiQgRikUvJn8dQ6qy39oeGb6KIEsN+/h9nyNtSFcFXktfo
+         WHkbwpdKs5G5QGRks2LIq6lgE9tZs5x8eVT5cJkIC8mAAW8LSM51rWXO94iOEVEpxv6U
+         zxSA==
+X-Forwarded-Encrypted: i=1; AJvYcCWA6iY7S2Cat6AfQHuzryvcbPQq5HGkYe0MQeqmpKzkoKd1jL453jEb8Fn3LQoOVJlpVhLAWA6WyU7/Cbghpg5WuWIkbXC7pYFF9NST
+X-Gm-Message-State: AOJu0Yxxd7C4pYdgUUDD1XJeMdonMpZ0oX9+ypwzL99qsaEdI53iwXJU
+	vMgLf0ZwPPvM7GoDOYa278NEbKtQY6jiaMgWTGqa9aVlpLPJs3+kjpBjA6TNpw0=
+X-Google-Smtp-Source: AGHT+IE0YvrJ0dkHWV5/x42Grnb0S2MrQ1HrVcFZVtPCnQpfmV+fyVtfU8EhEvpV3gyZpQFNGt7PCQ==
+X-Received: by 2002:a05:600c:46c9:b0:40f:ddb6:a63b with SMTP id q9-20020a05600c46c900b0040fddb6a63bmr3994127wmo.24.1707665970669;
+        Sun, 11 Feb 2024 07:39:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVsiyEI2Z9Pp+hRaOVLqjtrReTL/kAEY0qZqvMv8xMFoSkdvOgA5uPakOMQdkI838j5lgF+VOkJDWJs6RDTAYCIRA0hxCDsp718P47Jh5FNGbDkQ9+fJognD/8I8Hu+IDr/iuL17WpICceMD3dGsFcIACos/LyPehOOIao9Ljw9lP3yGwZvJnjZHky3yzQiBb03MBMR0DBwNSG36OC/aJTLEh8bYNYEDWzDcONyI9Ip07hB48an9N39G7ns1TXK2m6WZu+3IpeuHnyZWJm3OdKfTPbYqxAdFcDAwIO3wCRISbSkupCOKCV1wDTxa1+NB5m/j5ZvJcBAThFfFwromzvjuOtU0D/TaJqpCOFMZ7hkSz154MnqZJ2yZjl6+RcjszsfXsII34E3ktIcj9k3vGcXD9tqHUgOQ7tI++H+Dfq8p1qZC706Nv7Ejvlu/+QRoGe/O9yihtK02dCmnFbW0b1Ry2twEuQ1ohTfTeSm9O9RXfdcoEVTwGObo+cQ2Y2H80+pbIqg6a1a
+Received: from [192.168.1.20] ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id n12-20020a05600c500c00b004109a5ccd7fsm3885151wmr.47.2024.02.11.07.39.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Feb 2024 07:39:30 -0800 (PST)
+Message-ID: <69679d9a-02e9-498f-8f5a-7c029059a8c1@linaro.org>
+Date: Sun, 11 Feb 2024 16:39:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/5] dt-bindings: fpga: xlnx,fpga-slave-serial: rename
+ gpios
+To: Charles Perry <charles.perry@savoirfairelinux.com>, mdf@kernel.org
+Cc: avandiver@markem-imaje.com, bcody@markem-imaje.com,
+ Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
+ Tom Rix <trix@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Michal Simek <michal.simek@amd.com>,
+ kishore Manne <nava.kishore.manne@amd.com>, linux-fpga@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240207180142.79625-1-charles.perry@savoirfairelinux.com>
+ <20240207180142.79625-3-charles.perry@savoirfairelinux.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240207180142.79625-3-charles.perry@savoirfairelinux.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240211-bus_cleanup-acpi-v1-1-08540c6e9458@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAKbpyGUC/x3MTQqAIBBA4avErBNUin6uEhE2TTUQJooRiHdPW
- n6L9xIE8kwBxiqBp4cD37ZA1RXgaexBgrdi0FI3Uisl1hgWvMjY6IRBx6IzW4soG9kPCCVznnZ
- +/+U05/wBp2rTfWIAAAA=
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
- Robert Moore <robert.moore@intel.com>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- acpica-devel@lists.linux.dev, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1667; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=jjSF6lq4krDwmprCM2e1i+Kdrar4fmP5e0LW+RJ2wmo=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlyOmvpeM1qgXf1S8oUZUteHpAa7F8/a4xwyTMs
- T90cMh+DgGJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcjprwAKCRDJC4p8Y4ZY
- pi+/EACJDPSrtQQCZRcys2FN3LBfpgESKnhCHF/kSH+u6ZAyO6LG5doimpOofZNFe92tIb+UiSW
- U/+SQOpd2WBzD1ayOceap+3NAXLDmunZFFKlXFtWipHz83B/Xb4Q4NHRUrTOFs+aOiWs3Ha8UoK
- zOK44P52z49nRwhds1BuUfADr6lQ7wRqKHFk1SflwlwIntFaRa6WEInjlRFYUp06HZNI7wGvWWS
- Rd2ndoMBwhTlOKtHEe6FKHRApBAYrE9v9zyTqQu/SGFwCr///OemlL1D9pv9wKbHL/KYrGYIR1l
- Ohcb/IzY1xUUrpDn0Qd7tOUrP3vWGgiHV0yhZMDWFQGPXzA7q3Fe5rsj3ZJDIpe5+yPn8S7OqEV
- d5UdBifwGyYie/FGrZAXP+zshScdvcRGcCxwSLhOZfNXD7LWGSy3cdMP0Tx4zp4QeBYwa31wL/5
- 02A89hCSrp/Aog9beeIglI2gNGubfDQuzCtFUh9KGqCygpB/+g6r0Jfv99H5BlgkQZ1Zbynfbh7
- 0q+o1RKApLxecOsdRHqErlMCF0c7/w87wbsZsQaCRmRP8TVI2kDsaqEXYPP0Lv/rZdhTkqJtfHt
- KV2nRy9mDYN7LstncXMxNt3Bh2WH/Vwy/0h/gj1MR0OZogG8XYTooLGZDWoVEnDdM5H74A/BUmj
- p7dU99AfmpjVYgg==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-Now that the driver core can properly handle constant struct bus_type,
-move the acpi_bus_type variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+On 07/02/2024 19:01, Charles Perry wrote:
+> By convention, gpio consumer names should not contain underscores
+> (prog_b here) and shouldn't contain active low suffixes (-b here).
+> 
+> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
+> ---
+>  .../bindings/fpga/xlnx,fpga-slave-serial.yaml        | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-serial.yaml b/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-serial.yaml
+> index 614d86ad825f3..650a4d8792b64 100644
+> --- a/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-serial.yaml
+> +++ b/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-serial.yaml
+> @@ -36,7 +36,7 @@ properties:
+>    reg:
+>      maxItems: 1
+>  
+> -  prog_b-gpios:
+> +  prog-gpios:
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/acpi/bus.c      | 2 +-
- include/acpi/acpi_bus.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Please deprecate old property and add allOf excluding the usage of both.
+Driver still parses old property, so we should have it documented.
 
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index 569bd15f211b..d9fa730416f1 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -1097,7 +1097,7 @@ static void acpi_device_remove(struct device *dev)
- 	put_device(dev);
- }
- 
--struct bus_type acpi_bus_type = {
-+const struct bus_type acpi_bus_type = {
- 	.name		= "acpi",
- 	.match		= acpi_bus_match,
- 	.probe		= acpi_device_probe,
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index e4d24d3f9abb..f67aa93ba53e 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -582,7 +582,7 @@ void acpi_initialize_hp_context(struct acpi_device *adev,
- 				void (*uevent)(struct acpi_device *, u32));
- 
- /* acpi_device.dev.bus == &acpi_bus_type */
--extern struct bus_type acpi_bus_type;
-+extern const struct bus_type acpi_bus_type;
- 
- int acpi_bus_for_each_dev(int (*fn)(struct device *, void *), void *data);
- int acpi_dev_for_each_child(struct acpi_device *adev,
-
----
-base-commit: c3c4923f2082353762e8f46dec6e3b0f165a1606
-change-id: 20240211-bus_cleanup-acpi-7ad5cc04089c
+https://lore.kernel.org/all/20230118163208.GA117919-robh@kernel.org/
 
 Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
+Krzysztof
 
 
