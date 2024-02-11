@@ -1,109 +1,199 @@
-Return-Path: <linux-kernel+bounces-60972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 130A4850BCB
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:37:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98A75850BCD
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:38:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 455D21C219DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 22:37:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD8BB282AC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 22:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44132171DD;
-	Sun, 11 Feb 2024 22:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TIFMKM/c"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3471F11182;
+	Sun, 11 Feb 2024 22:38:20 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83ED71426A;
-	Sun, 11 Feb 2024 22:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2EAF23C5;
+	Sun, 11 Feb 2024 22:38:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707691025; cv=none; b=iyq9b5JgEHQ8evO4YjzIbWG4+U51h7Nnz+/np+Cqwz5zvJ0CaP+ICMwOAeymjFYSGlIRnykscyBnwrybRPilY+ohT3ae+qPIUShwoQxI0bI30wkWy3jxSNKpd3fhcYRu4ysN2G4c6WUjpEheDqCkRKoTchcRjlrTkIyUQR7NLP4=
+	t=1707691099; cv=none; b=VSuvgY+kMRZJRSPfBgWHHWhalFWyeZX8MbsaXax4fzL8/TajGGu1EvcNabxAyNWGyxlWJrU0Ott/4braiD29d3Niz6Z02F2ejPtcHCC6VhqmcFDiZc07R5GmBAD7TB2eT3FvhWf99U3Rd9qL+WIv6Upv2qnu5MDA7d3Fz3XfKV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707691025; c=relaxed/simple;
-	bh=v4G6ehhPG/T4ElMEaTqhlNoQjbCZltvlaQ9iSgQ/jqs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CjWu3huFL3kI3GqJrKWyf7q2ID5d19xJ0lrgUmdcnjFrZ9xxOP7IHsWuXd29YAXjZ6Woga4rtbWdrCHyunEWY7gEr4w2f7sG65OM8JPdG5i4Egp3AENc7l+zzc26wjqT+Jkmn8xwzQ+wCR1y8dqlj6WwBC7Akc2r1LtnpRVigQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TIFMKM/c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D3D6C43390;
-	Sun, 11 Feb 2024 22:37:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707691025;
-	bh=v4G6ehhPG/T4ElMEaTqhlNoQjbCZltvlaQ9iSgQ/jqs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TIFMKM/caEh5dJ+bulkCR0q0gdp8pENZGkgU9CkmDCd5Oq1bSaUzntyguvgsJOvv4
-	 gjTjnGKCNzWlTToma07fms9Vcw2c+AZ0gxd1qaIR1L+7WNH8f+CnvuF/kDaPJJMAgG
-	 OeXcjmQI/c3V4bHwvSaaqgOu2o7bzLd42KFmhOPW3zZSd25LDzQ1deBLdDJyQTCzkK
-	 ikJMXpN0zJjpVanMBA070l+UVbhVC9+PLB5jUZdeLdtYULy1GMvyS17nC0QHaYBTIc
-	 wJ2pxMbg199kFs/b3OTVOd+tYLkfoSzSiUWVWn3jKHzcu/N7DK8DUYZWSXVavA0Mo/
-	 /2qdpBvaOXosg==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d0dc3fdd1bso26130321fa.0;
-        Sun, 11 Feb 2024 14:37:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVQ/g7EfLcg1gzoWUj9jQYcaXoZ2VERuquZ5TNFhkfE1K6LS1xULNTKgO/R3EPf8zM4mOFDPGye7x//F+qyXxobDwsVfXxPJL+/suJ44zlRDHftPQiflJ1gFvTZIyQnZPrfg7jWpgOJTA==
-X-Gm-Message-State: AOJu0YwZEsIYefjsmgn+EReJXTSbAd8m3aC83NO/nsK/dYlUH4KnLoa/
-	p+/5oHjTcRbuzvCLnXfgu6/ASh5jGzOf9rRi8l0vl9q/R8874FXQ58hG2br0nyI+NLBaRKjoQJv
-	4C+zFU4FfdT2rci3v4sWpYl/WWBg=
-X-Google-Smtp-Source: AGHT+IFl4zc+Ad1i+CBjqwi2XTTno9sUz3Cm/iJnlLj5Ldx7zEG3AwZJXSsOHOLHudvXqss07zu7p/FqLBwWJmYbkNc=
-X-Received: by 2002:ac2:4579:0:b0:511:87b7:6d88 with SMTP id
- k25-20020ac24579000000b0051187b76d88mr1609035lfm.32.1707691023239; Sun, 11
- Feb 2024 14:37:03 -0800 (PST)
+	s=arc-20240116; t=1707691099; c=relaxed/simple;
+	bh=2jaB1u24d4zX6XbultG3tdTc6pKJNerRrYF3/9nyfLw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OF8QNZXARowK8p1kjlT2x++K0ss15d5K6jfn2yyLPMxi8nlKxASzFsq5/TaKoQtjcNq2Yk2OeTE6uCeEGWCoNFTFrdr6IoCljRkz7V1buuY3xKaS0jshYQzVpExVrvU60wQXGdZ5tc1FbsbKnSHSgJSXDBHJ+518BOxmXF8rFYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 080C6C433C7;
+	Sun, 11 Feb 2024 22:38:18 +0000 (UTC)
+Date: Sun, 11 Feb 2024 17:38:12 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Vincent Donnefort <vdonnefort@google.com>
+Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+ kernel-team@android.com
+Subject: Re: [PATCH v16 5/6] Documentation: tracing: Add ring-buffer mapping
+Message-ID: <20240211173812.70c37edd@rorschach.local.home>
+In-Reply-To: <20240209163448.944970-6-vdonnefort@google.com>
+References: <20240209163448.944970-1-vdonnefort@google.com>
+	<20240209163448.944970-6-vdonnefort@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129180502.4069817-21-ardb+git@google.com>
- <20240129180502.4069817-27-ardb+git@google.com> <20240207132922.GSZcOFspSGaVluJo92@fat_crate.local>
- <CAMj1kXF+mHCYs08q58QFGuzZ4nzGd2sDr1gp2ydkOHHQ2LK5tQ@mail.gmail.com> <20240210104039.GAZcdSp7dRbgqBy3fg@fat_crate.local>
-In-Reply-To: <20240210104039.GAZcdSp7dRbgqBy3fg@fat_crate.local>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Sun, 11 Feb 2024 23:36:51 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXG5+KEAE5F0EFkZCkt1244M3UBJXH_O3ULg0oRHV2YnmQ@mail.gmail.com>
-Message-ID: <CAMj1kXG5+KEAE5F0EFkZCkt1244M3UBJXH_O3ULg0oRHV2YnmQ@mail.gmail.com>
-Subject: Re: [PATCH v3 06/19] x86/startup_64: Drop global variables keeping
- track of LA57 state
-To: Borislav Petkov <bp@alien8.de>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
-	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sat, 10 Feb 2024 at 11:41, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Fri, Feb 09, 2024 at 01:55:02PM +0000, Ard Biesheuvel wrote:
-> > I was trying to get rid of global variable assignments and accesses
-> > from the 1:1 mapping, but since we cannot get rid of those entirely,
-> > we might just keep __pgtable_l5_enabled but use RIP_REL_REF() in the
-> > accessors, and move the assignment to the asm startup code.
->
-> Yeah.
->
-> >    asm(ALTERNATIVE_TERNARY(
-> >        "movq %%cr4, %[reg] \n\t btl %[la57], %k[reg]" CC_SET(c),
-> >        %P[feat], "stc", "clc")
-> >        : [reg] "=r" (r), CC_OUT(c) (ret)
-> >        : [feat] "i" (X86_FEATURE_LA57),
-> >          [la57] "i" (X86_CR4_LA57_BIT)
-> >        : "cc");
->
-> Creative :)
->
-> > but we'd still have two versions in that case.
->
-> Yap. RIP_REL_REF() ain't too bad ...
->
+On Fri,  9 Feb 2024 16:34:47 +0000
+Vincent Donnefort <vdonnefort@google.com> wrote:
 
-We can actually rip all of that stuff out, and have only a single
-implementation of pgtable_l5_enabled() that is not based on a variable
-at all. It results in a nice cleanup, but I'll keep it as a separate
-patch in the next revision so we can easily drop it if preferred.
+> It is now possible to mmap() a ring-buffer to stream its content. Add
+> some documentation and a code example.
+> 
+> Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
+> 
+> diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
+> index 5092d6c13af5..0b300901fd75 100644
+> --- a/Documentation/trace/index.rst
+> +++ b/Documentation/trace/index.rst
+> @@ -29,6 +29,7 @@ Linux Tracing Technologies
+>     timerlat-tracer
+>     intel_th
+>     ring-buffer-design
+> +   ring-buffer-map
+>     stm
+>     sys-t
+>     coresight/index
+> diff --git a/Documentation/trace/ring-buffer-map.rst b/Documentation/trace/ring-buffer-map.rst
+> new file mode 100644
+> index 000000000000..628254e63830
+> --- /dev/null
+> +++ b/Documentation/trace/ring-buffer-map.rst
+> @@ -0,0 +1,104 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +==================================
+> +Tracefs ring-buffer memory mapping
+> +==================================
+> +
+> +:Author: Vincent Donnefort <vdonnefort@google.com>
+> +
+> +Overview
+> +========
+> +Tracefs ring-buffer memory map provides an efficient method to stream data
+> +as no memory copy is necessary. The application mapping the ring-buffer becomes
+> +then a consumer for that ring-buffer, in a similar fashion to trace_pipe.
+> +
+> +Memory mapping setup
+> +====================
+> +The mapping works with a mmap() of the trace_pipe_raw interface.
+> +
+> +The first system page of the mapping contains ring-buffer statistics and
+> +description. It is referred as the meta-page. One of the most important field of
+> +the meta-page is the reader. It contains the sub-buffer ID which can be safely
+> +read by the mapper (see ring-buffer-design.rst).
+> +
+> +The meta-page is followed by all the sub-buffers, ordered by ascendant ID. It is
+> +therefore effortless to know where the reader starts in the mapping:
+> +
+> +.. code-block:: c
+> +
+> +        reader_id = meta->reader->id;
+> +        reader_offset = meta->meta_page_size + reader_id * meta->subbuf_size;
+> +
+> +When the application is done with the current reader, it can get a new one using
+> +the trace_pipe_raw ioctl() TRACE_MMAP_IOCTL_GET_READER. This ioctl also updates
+> +the meta-page fields.
+> +
+> +Limitations
+> +===========
+> +When a mapping is in place on a Tracefs ring-buffer, it is not possible to
+> +either resize it (either by increasing the entire size of the ring-buffer or
+> +each subbuf). It is also not possible to use snapshot or splice.
+
+Actually, it doesn't stop splice. splice still works, it's just that it
+makes splice copy the data. The above should say:
+
+	"It is also not possible to use snapshot and causes splice to
+	copy the ring buffer data instead of using the copyless swap
+	from the ring buffer".
+
+Or something like that.
+
+> +
+> +Concurrent readers (either another application mapping that ring-buffer or the
+> +kernel with trace_pipe) are allowed but not recommended. They will compete for
+> +the ring-buffer and the output is unpredictable.
+
+  "and the output is unpredictable just like concurrent readers on
+  trace_pipe would be." ;-)
+
+-- Steve
+
+> +
+> +Example
+> +=======
+> +
+> +.. code-block:: c
+> +
+> +        #include <fcntl.h>
+> +        #include <stdio.h>
+> +        #include <stdlib.h>
+> +        #include <unistd.h>
+> +
+> +        #include <linux/trace_mmap.h>
+> +
+> +        #include <sys/mman.h>
+> +        #include <sys/ioctl.h>
+> +
+> +        #define TRACE_PIPE_RAW "/sys/kernel/tracing/per_cpu/cpu0/trace_pipe_raw"
+> +
+> +        int main(void)
+> +        {
+> +                int page_size = getpagesize(), fd, reader_id;
+> +                unsigned long meta_len, data_len;
+> +                struct trace_buffer_meta *meta;
+> +                void *map, *reader, *data;
+> +
+> +                fd = open(TRACE_PIPE_RAW, O_RDONLY | O_NONBLOCK);
+> +                if (fd < 0)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
+> +                if (map == MAP_FAILED)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                meta = (struct trace_buffer_meta *)map;
+> +                meta_len = meta->meta_page_size;
+> +
+> +                printf("entries:        %llu\n", meta->entries);
+> +                printf("overrun:        %llu\n", meta->overrun);
+> +                printf("read:           %llu\n", meta->read);
+> +                printf("nr_subbufs:     %u\n", meta->nr_subbufs);
+> +
+> +                data_len = meta->subbuf_size * meta->nr_subbufs;
+> +                data = mmap(NULL, data_len, PROT_READ, MAP_SHARED, fd, meta_len);
+> +                if (data == MAP_FAILED)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                if (ioctl(fd, TRACE_MMAP_IOCTL_GET_READER) < 0)
+> +                        exit(EXIT_FAILURE);
+> +
+> +                reader_id = meta->reader.id;
+> +                reader = data + meta->subbuf_size * reader_id;
+> +
+> +                printf("Current reader address: %p\n", reader);
+> +
+> +                munmap(data, data_len);
+> +                munmap(meta, meta_len);
+> +                close (fd);
+> +
+> +                return 0;
+> +        }
+
 
