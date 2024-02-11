@@ -1,438 +1,236 @@
-Return-Path: <linux-kernel+bounces-60772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09A66850942
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:42:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCCD5850944
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:46:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B44982873AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:42:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47D221F21B1A
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CA505B5AF;
-	Sun, 11 Feb 2024 12:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CCD559B45;
+	Sun, 11 Feb 2024 12:46:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HDpFEovS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PT2WVs5l"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFFC5B053;
-	Sun, 11 Feb 2024 12:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD82A23761
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:46:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707655273; cv=none; b=CQyvPEhvaDNVJp2gjGyA3RLBX2NiZVozRLLXX5UE3rUcv4AXHgjnaIQJOJmWIo9lLUNG8qkaRv2lztKKDW9JDiS9KUKPULTPNPjxAwUbjARx8NNaEJPiJCEs15NIET7awgdT5o/gnyNhA4nKyYAn4FVP8bIW0/fTFrysoBcYxCY=
+	t=1707655592; cv=none; b=ODxKQ/Avvn+vke1sTfBc9lYV+oMKAwbbbpXdwwNrmadpyrG4Yk5HQZjd/IOxU6ZgNPHBR1RYAW46rwRxtoSo11B0GPbVYmbtmtNy657oxkLdvZcHQ3flnA+7s07zF7fCUXFNkHm6Bj1/x0gmyhwtqh4F8KZaHVlO3kTupP3RnAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707655273; c=relaxed/simple;
-	bh=DHTaw0A/DHD3RfxzoqZvFzVkcc+o/cvMO+JI8Q6ldCM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KC89okY7ev4xWb3HkYaIYF3O2QpZqnbr9H5QxyROx2sT7k3/r+R2bqooTb9+PX/oDeYlTSFrctrQ/WjBjiuLJRzp9yVZHMpDdu4abg9HTOlXRNosGmz3oUwQI54ei+lh/zEFFsJZrRdUPK1tHPRBvPZYB7z6f3A6zv3pYjGmqAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HDpFEovS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23DD9C433F1;
-	Sun, 11 Feb 2024 12:41:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707655273;
-	bh=DHTaw0A/DHD3RfxzoqZvFzVkcc+o/cvMO+JI8Q6ldCM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HDpFEovSdYevpA3QzRG0WpGp5bFehtaLfRwtRTAvoqDNO3q8Q+QySR5/s74Ajq+Ty
-	 YYnhmNr28wB7W2i2+ajNwevudM5yPDUVTCXkez0h/psSdNkB/y1heN/a2G6ixUUeJ5
-	 y2ECvXke1oj6rv2QbCqiTF4vJq5vbnT7ZcSOjJ7o0IJtG0vqMMoqrALaDTJlEz3qpb
-	 Nw6cE0q7J2KwLi8w4OcRiiuJO1Xt9/MoYBr+kPo9peJxfVzGsVnL7zOYqhD0EyYpXR
-	 n8VfTXboxyCSYJNojdEIpD5dNJuZ53+M6dzGtEmdzT9biuH80teGLWcFCoyNiSf6lT
-	 dNilGDm4DUCLg==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] kconfig: use generic macros to implement symbol hashtable
-Date: Sun, 11 Feb 2024 21:41:05 +0900
-Message-Id: <20240211124105.29363-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240211124105.29363-1-masahiroy@kernel.org>
-References: <20240211124105.29363-1-masahiroy@kernel.org>
+	s=arc-20240116; t=1707655592; c=relaxed/simple;
+	bh=VI+0SRVypq2HyI1O5SnaEoWk6lfEy8PO1nyerHcdjUk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JvvcQot8+aKIki1rBss+4RK6JD9ubS0zn3IwaN5FelnQC1FUV3uPWnxeE4Bceg6paiaPVOxg7V6oIhLDLD4qOnnbJRUfPnTDDmnCHx5gh/xB6Ba7pk2BQOIw4v5KsmhD/e7VwNrzsE39J+DxgAZS6ykUiIMPS8h0bj5WrcUYkGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PT2WVs5l; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3394b892691so1500303f8f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:46:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707655589; x=1708260389; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z0nuXyLnGkRM+aE42c9HMhwu3xQ7zs2sqRHsDfqObl8=;
+        b=PT2WVs5lGuPayPb0ee0sFBQZZAQR/PS8aj+d1lJPgYXp6ca3paz3QFqEqiTZuqwF8/
+         PScagKCP6WiCaGQnF59t0aUIhyLIEpSvmxexU7yKzmaa7q47DqDrgL03PaMeChYAdLzG
+         xITqmrPRuT/dsJO3oAj2Bwc9vr+Unt5etsaGO4O5aRumLlpE7qHF0qzIUlYAhBv2hyCO
+         nValELiTyRwkE6fGxp9tChd+oYz+4Py7OPTLcQVDOjKduk4+6PaUWyLPOOhbSJPORnfF
+         tyX6yKk8pfBBJOapsmFGCEm0v1dLY4Ea3+vQ8zFKmn4iyI8W3gvK7jP5mckqvKsFzOS5
+         NnQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707655589; x=1708260389;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z0nuXyLnGkRM+aE42c9HMhwu3xQ7zs2sqRHsDfqObl8=;
+        b=oEiQ9jDE3pxdQgJ38+I9mIh1A0FSPJKm7Odruufu64RuKBUqbvtV5BFmnUAAIxuG/N
+         VyzkYlFKdD6a8uHvYV2EOBhjudjAKax6Mhhk6WH2YfgjOy27r/Q07ULIwLmKPmf3hZvt
+         NF+KhaYzunsob/VxExw3AHBWxrdTQbq7inPydoA5hwefU9J6fAH+MglGAMT2J++4uuNP
+         Oa5vtZPt4WIMTlVwbCSEJFjIoaIGOCXjI2tGPncPEj7AY3iY5ldUyDgrFyZD4HQ2qdYg
+         6QzP3W4HBV5LRoVpkq+CkU++fGrcJ/84a6dnQwd5hYiK6TGlWWC1pzRYrp7kZ8BQkhgy
+         LxfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWsYco9g1QyQjnTsqMwD05Q/O++M9jJoLh0Rb0iAMieZojAUhrvYc47KivZvSpUE+TMUDGPsdCaFS5VCCzUcT7z2XKxWPsaNqa8eUIG
+X-Gm-Message-State: AOJu0Yy0OhyEnbY2PNEV6RwGR0eQaaxv3xct8al4z43w3xreckcNjRUk
+	U4/yPuOK/fwI/B7vhBgVpDzppaXjURG28zIJ/cq7dUAXVGoVR4ayaLeCKq5Wk1Y=
+X-Google-Smtp-Source: AGHT+IHc30rIQzrJeRx1I1zG/F6xmVeTCNa5yGXUDdCcyUBME0PByW8GR29oUQCgOqKDRr2yO/RVQQ==
+X-Received: by 2002:adf:a39d:0:b0:33b:1b10:7ea3 with SMTP id l29-20020adfa39d000000b0033b1b107ea3mr3394857wrb.9.1707655589014;
+        Sun, 11 Feb 2024 04:46:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUJehZhZ2OoRyGPn9yMYdawia/a5igtcb4HzsTDEVn8pkj5Y+j9fNk0pzD0j/H/WifrnZNdwu00/yLUPJaJFjarLM7ttvwea3iTXCZG5hXPMI+XTFhUFksiDs56pFrfBllub5iZX1w8dpWnDdrAe2vSUwvDzZeqy4XFPcxncnG51WRcAQsK/D/u7dbRZx+FPhAh6mykdKB4aL698l4Prw+iMx6nQaxkcM12uPN+Q4HNZIn1fWjiDMjw2dMHqhfB/VX499YLq76zGb1s+Wu374RBm6RC8oZF+dVeetVANUUPxcAdYQfStmzQ/qFsE2zQEJBYEl3lk1q34n5jsRU46S2OdmPa4NHDoJ+LuarmETjnErYloIM9sTv13GpZbRXxKPbtzFIo47XEMEYS9cq4uXTXWsWUvC7xByK31yPT2hQovhWhhn9gblvFkkw7/1Uqm0RtJf3DWolrdYDrqEDBvSUW7EcviicEjBKarDexzsTz56hrUrrdieQWcyvSOxzo2fzkV1Rt+hBaPaBRG949/Q==
+Received: from [192.168.1.20] ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id a14-20020adff7ce000000b0033b2276e71csm4192345wrq.62.2024.02.11.04.46.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Feb 2024 04:46:28 -0800 (PST)
+Message-ID: <2c2d8bee-e9c6-45db-a166-d344f7890e06@linaro.org>
+Date: Sun, 11 Feb 2024 13:46:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 04/14] dt-bindings: input: touchscreen: fsl,imx6ul-tsc
+ convert to YAML
+Content-Language: en-US
+To: Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ NXP Linux Team <linux-imx@nxp.com>
+Cc: Dong Aisheng <aisheng.dong@nxp.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, Mark Brown
+ <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240210012114.489102-1-sre@kernel.org>
+ <20240210012114.489102-5-sre@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240210012114.489102-5-sre@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Use helper macros in hashtable.h for generic hashtable implementation.
+On 10/02/2024 02:18, Sebastian Reichel wrote:
+> Convert the i.MX6UL touchscreen DT binding to YAML.
+> 
+> Signed-off-by: Sebastian Reichel <sre@kernel.org>
+> ---
 
-We can git rid of the hash head index of for_all_symbols().
+..
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+> +
+> +  interrupts:
+> +    items:
+> +      - description: touch controller address
+> +      - description: ADC2 address
+> +
+> +  clocks:
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    items:
+> +      - const: tsc
+> +      - const: adc
+> +
+> +  xnur-gpio:
 
- scripts/kconfig/conf.c      | 12 ++++++------
- scripts/kconfig/confdata.c  | 25 ++++++++++++-------------
- scripts/kconfig/expr.h      |  9 ++++-----
- scripts/kconfig/internal.h  |  9 +++++++++
- scripts/kconfig/lkc_proto.h |  2 --
- scripts/kconfig/parser.y    |  2 --
- scripts/kconfig/symbol.c    | 22 +++++++++++-----------
- 7 files changed, 42 insertions(+), 39 deletions(-)
+xnur-gpios:
 
-diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
-index 662a5e7c37c2..b5730061872b 100644
---- a/scripts/kconfig/conf.c
-+++ b/scripts/kconfig/conf.c
-@@ -14,6 +14,7 @@
- #include <sys/time.h>
- #include <errno.h>
- 
-+#include "internal.h"
- #include "lkc.h"
- 
- static void conf(struct menu *menu);
-@@ -171,7 +172,7 @@ enum conf_def_mode {
- static bool conf_set_all_new_symbols(enum conf_def_mode mode)
- {
- 	struct symbol *sym, *csym;
--	int i, cnt;
-+	int cnt;
- 	/*
- 	 * can't go as the default in switch-case below, otherwise gcc whines
- 	 * about -Wmaybe-uninitialized
-@@ -226,7 +227,7 @@ static bool conf_set_all_new_symbols(enum conf_def_mode mode)
- 		}
- 	}
- 
--	for_all_symbols(i, sym) {
-+	for_all_symbols(sym) {
- 		if (sym_has_value(sym) || sym->flags & SYMBOL_VALID)
- 			continue;
- 		switch (sym_get_type(sym)) {
-@@ -278,14 +279,14 @@ static bool conf_set_all_new_symbols(enum conf_def_mode mode)
- 	 * and the rest to no.
- 	 */
- 	if (mode != def_random) {
--		for_all_symbols(i, csym) {
-+		for_all_symbols(csym) {
- 			if ((sym_is_choice(csym) && !sym_has_value(csym)) ||
- 			    sym_is_choice_value(csym))
- 				csym->flags |= SYMBOL_NEED_SET_CHOICE_VALUES;
- 		}
- 	}
- 
--	for_all_symbols(i, csym) {
-+	for_all_symbols(csym) {
- 		if (sym_has_value(csym) || !sym_is_choice(csym))
- 			continue;
- 
-@@ -304,9 +305,8 @@ static bool conf_set_all_new_symbols(enum conf_def_mode mode)
- static void conf_rewrite_tristates(tristate old_val, tristate new_val)
- {
- 	struct symbol *sym;
--	int i;
- 
--	for_all_symbols(i, sym) {
-+	for_all_symbols(sym) {
- 		if (sym_get_type(sym) == S_TRISTATE &&
- 		    sym->def[S_DEF_USER].tri == old_val)
- 			sym->def[S_DEF_USER].tri = new_val;
-diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
-index dafc572e7b7e..c5b6487d68ac 100644
---- a/scripts/kconfig/confdata.c
-+++ b/scripts/kconfig/confdata.c
-@@ -18,6 +18,7 @@
- #include <time.h>
- #include <unistd.h>
- 
-+#include "internal.h"
- #include "lkc.h"
- 
- struct gstr autoconf_cmd;
-@@ -322,7 +323,7 @@ int conf_read_simple(const char *name, int def)
- 	size_t  line_asize = 0;
- 	char *p, *val;
- 	struct symbol *sym;
--	int i, def_flags;
-+	int def_flags;
- 	const char *warn_unknown, *sym_name;
- 
- 	warn_unknown = getenv("KCONFIG_WARN_UNKNOWN_SYMBOLS");
-@@ -380,7 +381,7 @@ int conf_read_simple(const char *name, int def)
- 	conf_warnings = 0;
- 
- 	def_flags = SYMBOL_DEF << def;
--	for_all_symbols(i, sym) {
-+	for_all_symbols(sym) {
- 		sym->flags |= SYMBOL_CHANGED;
- 		sym->flags &= ~(def_flags|SYMBOL_VALID);
- 		if (sym_is_choice(sym))
-@@ -489,7 +490,6 @@ int conf_read(const char *name)
- {
- 	struct symbol *sym;
- 	int conf_unsaved = 0;
--	int i;
- 
- 	conf_set_changed(false);
- 
-@@ -500,7 +500,7 @@ int conf_read(const char *name)
- 
- 	sym_calc_value(modules_sym);
- 
--	for_all_symbols(i, sym) {
-+	for_all_symbols(sym) {
- 		sym_calc_value(sym);
- 		if (sym_is_choice(sym) || (sym->flags & SYMBOL_NO_WRITE))
- 			continue;
-@@ -524,7 +524,7 @@ int conf_read(const char *name)
- 		/* maybe print value in verbose mode... */
- 	}
- 
--	for_all_symbols(i, sym) {
-+	for_all_symbols(sym) {
- 		if (sym_has_value(sym) && !sym_is_choice_value(sym)) {
- 			/* Reset values of generates values, so they'll appear
- 			 * as new, if they should become visible, but that
-@@ -862,7 +862,6 @@ int conf_write(const char *name)
- 	const char *str;
- 	char tmpname[PATH_MAX + 1], oldname[PATH_MAX + 1];
- 	char *env;
--	int i;
- 	bool need_newline = false;
- 
- 	if (!name)
-@@ -946,7 +945,7 @@ int conf_write(const char *name)
- 	}
- 	fclose(out);
- 
--	for_all_symbols(i, sym)
-+	for_all_symbols(sym)
- 		sym->flags &= ~SYMBOL_WRITTEN;
- 
- 	if (*tmpname) {
-@@ -1016,7 +1015,7 @@ static int conf_touch_deps(void)
- {
- 	const char *name, *tmp;
- 	struct symbol *sym;
--	int res, i;
-+	int res;
- 
- 	name = conf_get_autoconfig_name();
- 	tmp = strrchr(name, '/');
-@@ -1030,7 +1029,7 @@ static int conf_touch_deps(void)
- 	conf_read_simple(name, S_DEF_AUTO);
- 	sym_calc_value(modules_sym);
- 
--	for_all_symbols(i, sym) {
-+	for_all_symbols(sym) {
- 		sym_calc_value(sym);
- 		if ((sym->flags & SYMBOL_NO_WRITE) || !sym->name)
- 			continue;
-@@ -1096,7 +1095,7 @@ static int __conf_write_autoconf(const char *filename,
- 	char tmp[PATH_MAX];
- 	FILE *file;
- 	struct symbol *sym;
--	int ret, i;
-+	int ret;
- 
- 	if (make_parent_dir(filename))
- 		return -1;
-@@ -1113,7 +1112,7 @@ static int __conf_write_autoconf(const char *filename,
- 
- 	conf_write_heading(file, comment_style);
- 
--	for_all_symbols(i, sym)
-+	for_all_symbols(sym)
- 		if ((sym->flags & SYMBOL_WRITE) && sym->name)
- 			print_symbol(file, sym);
- 
-@@ -1136,7 +1135,7 @@ int conf_write_autoconf(int overwrite)
- {
- 	struct symbol *sym;
- 	const char *autoconf_name = conf_get_autoconfig_name();
--	int ret, i;
-+	int ret;
- 
- 	if (!overwrite && is_present(autoconf_name))
- 		return 0;
-@@ -1148,7 +1147,7 @@ int conf_write_autoconf(int overwrite)
- 	if (conf_touch_deps())
- 		return 1;
- 
--	for_all_symbols(i, sym)
-+	for_all_symbols(sym)
- 		sym_calc_value(sym);
- 
- 	ret = __conf_write_autoconf(conf_get_autoheader_name(),
-diff --git a/scripts/kconfig/expr.h b/scripts/kconfig/expr.h
-index dd3350aed302..3bc375f1a1cd 100644
---- a/scripts/kconfig/expr.h
-+++ b/scripts/kconfig/expr.h
-@@ -17,6 +17,8 @@ extern "C" {
- #include <stdbool.h>
- #endif
- 
-+#include "list_types.h"
-+
- typedef enum tristate {
- 	no, mod, yes
- } tristate;
-@@ -74,8 +76,8 @@ enum {
-  * SYMBOL_CHOICE bit set in 'flags'.
-  */
- struct symbol {
--	/* The next symbol in the same bucket in the symbol hash table */
--	struct symbol *next;
-+	/* link node for the hash table */
-+	struct hlist_node node;
- 
- 	/* The name of the symbol, e.g. "FOO" for 'config FOO' */
- 	char *name;
-@@ -124,8 +126,6 @@ struct symbol {
- 	struct expr_value implied;
- };
- 
--#define for_all_symbols(i, sym) for (i = 0; i < SYMBOL_HASHSIZE; i++) for (sym = symbol_hash[i]; sym; sym = sym->next)
--
- #define SYMBOL_CONST      0x0001  /* symbol is const */
- #define SYMBOL_CHECK      0x0008  /* used during dependency checking */
- #define SYMBOL_CHOICE     0x0010  /* start of a choice block (null name) */
-@@ -150,7 +150,6 @@ struct symbol {
- #define SYMBOL_NEED_SET_CHOICE_VALUES  0x100000
- 
- #define SYMBOL_MAXLENGTH	256
--#define SYMBOL_HASHSIZE		9973
- 
- /* A property represent the config options that can be associated
-  * with a config "symbol".
-diff --git a/scripts/kconfig/internal.h b/scripts/kconfig/internal.h
-index 788401cd5d6f..6c721c4cfd72 100644
---- a/scripts/kconfig/internal.h
-+++ b/scripts/kconfig/internal.h
-@@ -2,6 +2,15 @@
- #ifndef INTERNAL_H
- #define INTERNAL_H
- 
-+#include "hashtable.h"
-+
-+#define SYMBOL_HASHSIZE		(1U << 14)
-+
-+extern HASHTABLE_DECLARE(sym_hashtable, SYMBOL_HASHSIZE);
-+
-+#define for_all_symbols(sym) \
-+	hash_for_each(sym_hashtable, sym, node)
-+
- struct menu;
- 
- extern struct menu *current_menu, *current_entry;
-diff --git a/scripts/kconfig/lkc_proto.h b/scripts/kconfig/lkc_proto.h
-index 94299e42402f..2807fa584c2b 100644
---- a/scripts/kconfig/lkc_proto.h
-+++ b/scripts/kconfig/lkc_proto.h
-@@ -18,8 +18,6 @@ void conf_set_message_callback(void (*fn)(const char *s));
- bool conf_errors(void);
- 
- /* symbol.c */
--extern struct symbol * symbol_hash[SYMBOL_HASHSIZE];
--
- struct symbol * sym_lookup(const char *name, int flags);
- struct symbol * sym_find(const char *name);
- void print_symbol_for_listconfig(struct symbol *sym);
-diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
-index efd0e234e0d2..b505e43e0d02 100644
---- a/scripts/kconfig/parser.y
-+++ b/scripts/kconfig/parser.y
-@@ -28,8 +28,6 @@ static void zconf_error(const char *err, ...);
- static bool zconf_endtoken(const char *tokenname,
- 			   const char *expected_tokenname);
- 
--struct symbol *symbol_hash[SYMBOL_HASHSIZE];
--
- struct menu *current_menu, *current_entry;
- 
- %}
-diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
-index 518977c525de..1290c6d2f8c2 100644
---- a/scripts/kconfig/symbol.c
-+++ b/scripts/kconfig/symbol.c
-@@ -9,6 +9,7 @@
- #include <string.h>
- #include <regex.h>
- 
-+#include "internal.h"
- #include "lkc.h"
- #include "util.h"
- 
-@@ -161,9 +162,8 @@ static void sym_set_changed(struct symbol *sym)
- static void sym_set_all_changed(void)
- {
- 	struct symbol *sym;
--	int i;
- 
--	for_all_symbols(i, sym)
-+	for_all_symbols(sym)
- 		sym_set_changed(sym);
- }
- 
-@@ -476,9 +476,8 @@ void sym_calc_value(struct symbol *sym)
- void sym_clear_all_valid(void)
- {
- 	struct symbol *sym;
--	int i;
- 
--	for_all_symbols(i, sym)
-+	for_all_symbols(sym)
- 		sym->flags &= ~SYMBOL_VALID;
- 	conf_set_changed(true);
- 	sym_calc_value(modules_sym);
-@@ -804,6 +803,8 @@ bool sym_is_changeable(struct symbol *sym)
- 	return sym->visible > sym->rev_dep.tri;
- }
- 
-+HASHTABLE_DEFINE(sym_hashtable, SYMBOL_HASHSIZE);
-+
- struct symbol *sym_lookup(const char *name, int flags)
- {
- 	struct symbol *symbol;
-@@ -818,9 +819,9 @@ struct symbol *sym_lookup(const char *name, int flags)
- 			case 'n': return &symbol_no;
- 			}
- 		}
--		hash = strhash(name) % SYMBOL_HASHSIZE;
-+		hash = strhash(name);
- 
--		for (symbol = symbol_hash[hash]; symbol; symbol = symbol->next) {
-+		hash_for_each_possible(sym_hashtable, symbol, node, hash) {
- 			if (symbol->name &&
- 			    !strcmp(symbol->name, name) &&
- 			    (flags ? symbol->flags & flags
-@@ -839,8 +840,7 @@ struct symbol *sym_lookup(const char *name, int flags)
- 	symbol->type = S_UNKNOWN;
- 	symbol->flags = flags;
- 
--	symbol->next = symbol_hash[hash];
--	symbol_hash[hash] = symbol;
-+	hash_add(sym_hashtable, &symbol->node, hash);
- 
- 	return symbol;
- }
-@@ -860,9 +860,9 @@ struct symbol *sym_find(const char *name)
- 		case 'n': return &symbol_no;
- 		}
- 	}
--	hash = strhash(name) % SYMBOL_HASHSIZE;
-+	hash = strhash(name);
- 
--	for (symbol = symbol_hash[hash]; symbol; symbol = symbol->next) {
-+	hash_for_each_possible(sym_hashtable, symbol, node, hash) {
- 		if (symbol->name &&
- 		    !strcmp(symbol->name, name) &&
- 		    !(symbol->flags & SYMBOL_CONST))
-@@ -922,7 +922,7 @@ struct symbol **sym_re_search(const char *pattern)
- 	if (regcomp(&re, pattern, REG_EXTENDED|REG_ICASE))
- 		return NULL;
- 
--	for_all_symbols(i, sym) {
-+	for_all_symbols(sym) {
- 		if (sym->flags & SYMBOL_CONST || !sym->name)
- 			continue;
- 		if (regexec(&re, sym->name, 1, match, 0))
--- 
-2.40.1
+Also you need:
+maxItems: 1
+
+> +    description:
+> +      The X- gpio this controller connect to. This xnur-gpio returns to
+> +      low once the finger leave the touch screen (The last touch event
+> +      the touch controller capture).
+> +
+> +  measure-delay-time:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      The value of measure delay time. Before X-axis or Y-axis measurement,
+> +      the screen need some time before even potential distribution ready.
+> +    default: 0xffff
+> +    minimum: 0
+> +    maximum: 0xffffff
+
+Time seems like something humans can grasp, so why using hexadecimal
+numbers? Same question for pre-charge-time.
+
+
+> +
+> +  pre-charge-time:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      The touch screen need some time to precharge.
+> +    default: 0xfff
+> +    minimum: 0
+> +    maximum: 0xffffffff
+> +
+> +  touchscreen-average-samples:
+> +    description: Number of data samples which are averaged for each read.
+
+This should fail the testing - judging by Rob's reports, you did not
+test it. You don't have type for this property. Missing allOf: to
+touchscreen.
+
+> +    enum: [ 1, 4, 8, 16, 32 ]
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - xnur-gpio
+> +
+
+
+allOf: with $ref to touchscreen.
+
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/imx6ul-clock.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    tsc: tsc@2040000 {
+
+Drop label and just "touchscreen@2040000"
+
+
+Best regards,
+Krzysztof
 
 
