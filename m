@@ -1,139 +1,153 @@
-Return-Path: <linux-kernel+bounces-60921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B779850B02
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:04:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 551DC850B05
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:05:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB70D1F22381
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 19:04:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FE392812FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 19:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5E65EE86;
-	Sun, 11 Feb 2024 19:03:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761CF5D475;
+	Sun, 11 Feb 2024 19:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIRojGTl"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="aB2YFCzL"
+Received: from GBR01-CWX-obe.outbound.protection.outlook.com (mail-cwxgbr01olkn2078.outbound.protection.outlook.com [40.92.112.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06875E3A0;
-	Sun, 11 Feb 2024 19:03:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707678228; cv=none; b=N3eFln3mRdXWj+iw2yn3qKIn7UnRPYSFeTCfaFRgYR4ULcgj8NDQY6k7GZV+QPUzHVZy4gL+T9cmHWxLwNULxi0KcTiLx4ZIC23UUUATa10dnAgNmZ5pooKISyqbDcHgXEno0+4WHbRTnKG3hVRTWZceJ0Dt2a7QTkEWvn28Lg8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707678228; c=relaxed/simple;
-	bh=R8nbQPilcuK/zTa/Qd5mtxOQqvhrM5GRqlCnYSJHc+A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uT2Z288QwttQquDb8jt5Y8qarFGNdREWhCcx6vJA+vUwyd4Zhnh6Dgqao+HaLClKBClHAUzJr3kL3v6ywCNF82AIqrKEiARZyXFSMYvCaiTF20ThyYYZfelIqYWe8GXGMMWEVCv5hllEWQ0jDoRlQB3gGCK/qAnCYZZfR58eVK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIRojGTl; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a293f2280c7so352520966b.1;
-        Sun, 11 Feb 2024 11:03:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707678225; x=1708283025; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4X9gXtJ2jH9YgV610FJCPLMZwxMN7PK1ETxRA0Am1hs=;
-        b=cIRojGTlU6To90/T0kqNYQjmXXNXtjL8a+nZB4UHzfYKgEF3duf0ydJbfv0Nu2sNqc
-         X3R19QEq6EKHpWxiF8gAY2jQSeqGREQTLWWBiWVz0HyYMFb3MCDzkYvheNBhc1+EUZMA
-         ESP25u97V/1/NQhI3Ea4B4WeLf71uF6xz+yngJS8byhY9Nh5i9o4D0k07fV2o6MQBRrf
-         1m4xoqRIiU/iQk1W+EyajKeZHY6SxWZ9KUWQS83M+ESGCBczN4em9mJtrNK8F1aAYc+4
-         L/i1Yz5Q1X+lpmRJMRoNPaUjcWVGq0KJDtyOsKhrEaEXuzeEefsDJtfSrFEKWHNRbeZZ
-         MQTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707678225; x=1708283025;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4X9gXtJ2jH9YgV610FJCPLMZwxMN7PK1ETxRA0Am1hs=;
-        b=aBYgRU4pW/aiy2lGRrs3EVXrriqZofrEiEJt7DCYfVSoCoXGeCypg875cD5XrH/u1F
-         Woh0tOpYaSIpqu304otKVYR8Q3hHQo+m9ml0fLtWSENIaAQ+S91IiZx22JxWGp5gTz10
-         itJFcqiasXiTUgx+TlWjeiLoBvil7wXF7Wk4jz45mdO4s+K7xwpfqSF9fRb6af2CI03O
-         SoSGhEP5f0IhcBoBUmJfmypeKJzEDThEFeRfgEs9cUzRlulYH0kQtZ09H4QDDezcN2uU
-         wk50NnJLK3b3oS7MsaocOXYs7mgobXgRZ/QKuxRjy4Vd7ea/AQKAgXTtHs3X2kyYbQaU
-         J12A==
-X-Gm-Message-State: AOJu0Yw/3p57dCc/0GGnyPb2Kmz4BvR5HcTp6G9mRZHWplddudsjFd8+
-	7NGSVjWi69kxvlxFx25LXla9Oxfg2IW4xCdnbf1Qc4Myy9VbSUrU
-X-Google-Smtp-Source: AGHT+IEPGO27Q2F8ELCDw/h+m7Siyc4BpmpJdA/nJa7DZ7pmsIXSCHxT4i7w6iNqHAhI6ZTIOPkhQg==
-X-Received: by 2002:a17:906:3596:b0:a3b:acdb:4922 with SMTP id o22-20020a170906359600b00a3bacdb4922mr3451279ejb.8.1707678224766;
-        Sun, 11 Feb 2024 11:03:44 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVqqngmGLbiOIGazXprKf+BgTCIh2Ak/6mUEwc2g7kDFfShRBGwlquhYhyBpik6jjhNUJJPBAxke8mnNmTg+PlaArkAShRxOqARChCITho8kM3r8Aml8yq+uAwqIwAwsbiz9mN7nIVQXf5xtwA1XmKcBCHtXWlsK0kvbcvyA0x8/jj+CUPMOC1AZJNHwDMty8FHdqJ+x7U12yY/TIsToOI3C2z+nRR9MZO1Wt36yrPZtrwYPpQwp7ndXkRQqHRSmUCu1dty6KXXBVg5KKTrL7k64x02mFW9xp5DvM9mAnOaJzYGx9f7dgMOAf3Ux8OIeeCArBpLnpH7103xJCeCU+kOlk34qA9BFOjdpk+ywmvU0Pl9WTkBqexSkKhKPxtAREJRDRRx+HNXe9aApt2GpSl+Vekz1rLYG3b60Jx+SKRIHFpqoMC7Au+YnaGPiBh/nT8vwFsoDSElGcBdDm7F+8qkcW59tZeSmVAukj4P3odlQ6whspxLQCDU1a6+X2gfl3BwoX8rG+SZyjufSFRBjylnzHxmDw76Ylz/epwfCtqXQwEFjIOrx48wNTbFvRi61HwjAXftjrOlgwzZNyoKdSd6p5Ho/yZb6GGwC0qyGzY=
-Received: from localhost.localdomain ([2a02:8109:aa27:2d00::2d2b])
-        by smtp.gmail.com with ESMTPSA id ps7-20020a170906bf4700b00a3c5fa1052csm1207400ejb.138.2024.02.11.11.03.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 11:03:44 -0800 (PST)
-From: Mehdi Djait <mehdi.djait.k@gmail.com>
-To: mchehab@kernel.org,
-	heiko@sntech.de,
-	hverkuil-cisco@xs4all.nl,
-	krzysztof.kozlowski+dt@linaro.org,
-	robh+dt@kernel.org,
-	conor+dt@kernel.org
-Cc: linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com,
-	alexandre.belloni@bootlin.com,
-	maxime.chevallier@bootlin.com,
-	paul.kocialkowski@bootlin.com,
-	michael.riesch@wolfvision.net,
-	laurent.pinchart@ideasonboard.com,
-	Mehdi Djait <mehdi.djait.k@gmail.com>,
-	Mehdi Djait <mehdi.djait@bootlin.com>
-Subject: [RESEND Patch v13 3/3] arm64: dts: rockchip: Add the px30 camera interface
-Date: Sun, 11 Feb 2024 20:03:32 +0100
-Message-ID: <d404cf1fe7055b6fad43cbb1df4c679057d76828.1707677804.git.mehdi.djait.k@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455401E860;
+	Sun, 11 Feb 2024 19:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.112.78
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707678315; cv=fail; b=nVSisIoL7oEeB31OiVvqXtGbnSN+vpd0aODlsJz4U1xPNDDgaAJIHzfYuJMe99Bci2L2oXJMWNpoV2niTTwkQRvuJVESJpnnH7XaHsFX0ipXIfHzThz/FqWXa2fQ8/KsPOCEFo42xB2FDNofBkcRjkvcGQItw9M46H7f13/4xL8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707678315; c=relaxed/simple;
+	bh=tDV0hh1doTpKcZKeNL1IcJmfz89148qyoYZ7l3QGgbg=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=gSE7L4zPADRMAsBB3/E9Jdo+weezG7T4u5znCgT2ndKb0RZC67hq/ufqecN01KF1BKXhCny19rBVNxx65HlOBf8mQCMLH8b0WVnFc44ZhFSpWzZ7hP9ot2EVY+2ver7AU+ZHfZHT/ztVzmRTXGFxWi+/uMe4h4EXXH14X/UzC7s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=aB2YFCzL; arc=fail smtp.client-ip=40.92.112.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dz9i3leV09ToIoVdwuqaSwvAU6WMpPtGo7OsRaHcFyIG1GQLCFWyBTkfAjo8TlW6inCXQ9LV8wnIZHDnAYM1cYt1RmN+b/MkBOPes79CzT3acpraG+xAZU1wpekjkU7Nkj53/ajNHZ0TqT/b9j5tx8Nv2kiyf9bIwr0lN74I1I80birMSQODvrFtNoD3Dok/lD0BjLxF7rL6ervvY2qd1tj1pigtUBXVO7qcC41gIHzy1TdoxEjoFxE9YTFfg3tbEkarnmuFomyJ2WFZp9R9dVuRUQgbLeRReVANx1voh01zKODJEeuZ6BMOWHwtm8EDhIuqFzathlBs0IQIVE1plQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=P1J33dguXjjEfP8faYflNUYJmQ0+hIDlKLlS7EJTOJ4=;
+ b=OTsEdD1ukEBrSEck01erfebMbn/NMuJiBzg3pqDm6VgGtRwUKT4W7j+FpUdrgDDO2tdJUIjohVIwC/HRYTBsa2ceji+loAB0urPeb1F3FsvNkIKDI3AY9JM5Lse7iiVXKzh+peJ0TJx4qDBJw7pQhCjajrxsGeA9immXy8W3K/YLTPIDLrrIRQ9AD7OArIlWZMzkYvs0dNSyPymdflzuOEMwf9fEue+EVkMvDuMp2gOUqj+B8+OY00QRVq33ntBJ2lF0f45Q7y8RdDqesrIiD/Sk8Zqd/8SfbIWCuCS23F7yAoIR7veUbFlv/WamZhVdOMPLLNXLnjqJ1IWz0+aSEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P1J33dguXjjEfP8faYflNUYJmQ0+hIDlKLlS7EJTOJ4=;
+ b=aB2YFCzLZD4dTBx2T2l21QyONwJ0e10imrunrXhcvx6Bx4HqC2p3TndG4/zuRbnV+m0k2KCpXv0t64dc8Dpn9B9NkOAErwciK7s9AaSYaXGcLbp55cLhiTy6Kf77YNRj9rv/PrNgHiw62fVw9XceyTJiW668fKe5VfR5KYchRdVyuRUX8Dz24x63BLOg3KmG71ttLFTJ2QyZlZDzw9blQ/xDqktNpXg6oPa0xgbHWbI7Eb598aMaWJWCCw7r24Z3viUW5vhCgeyNl4kHqqNVJW7gg1VFqsNNh+Ra3Dj7ECyZlt+UzkCCqw2oHtp9c7NvjVqL0CEAd7hhhAcs7oEGPA==
+Received: from CWLP123MB5473.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:160::13)
+ by LO3P123MB2970.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:fc::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.33; Sun, 11 Feb
+ 2024 19:05:09 +0000
+Received: from CWLP123MB5473.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::7c41:db74:a67f:86ff]) by CWLP123MB5473.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::7c41:db74:a67f:86ff%4]) with mapi id 15.20.7270.036; Sun, 11 Feb 2024
+ 19:05:09 +0000
+From: Manuel Fombuena <fombuena@outlook.com>
+To: Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Manuel Fombuena <fombuena@outlook.com>
+Subject: [PATCH] HID: multitouch: Add required quirk for Synaptics 0xcddc device
+Date: Sun, 11 Feb 2024 19:04:29 +0000
+Message-ID:
+ <CWLP123MB547355BA62AD835719F60865C5492@CWLP123MB5473.GBRP123.PROD.OUTLOOK.COM>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1707677804.git.mehdi.djait.k@gmail.com>
-References: <cover.1707677804.git.mehdi.djait.k@gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [ldbW6JTgmcR5tyVfHtBjg9lwVJNPrjjWH6PQR4hkJfYCuYCm1Sxv0InKONi7se2d]
+X-ClientProxiedBy: LO4P123CA0039.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:152::8) To CWLP123MB5473.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:400:160::13)
+X-Microsoft-Original-Message-ID: <20240211190429.84457-1-fombuena@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP123MB5473:EE_|LO3P123MB2970:EE_
+X-MS-Office365-Filtering-Correlation-Id: f25e253d-7115-4a14-f73a-08dc2b345d3d
+X-MS-Exchange-SLBlob-MailProps:
+	qdrM8TqeFBueY0MSiJltW/Lq6/+Wl4JHBXF+FgvlD1WIQayWEjFM00O92anCUUDkRVkZ4wyzhgsmJHHHjzmH1jvAoHIUUPtWo1PZ4psZN6BQrGRWye9DDhm/NdKcxVRpMKkvNS5cdgCOc6fqUDec1Pxv3TPQApP2nOr8YRN7PKNJzdADlaiwfVegu+QfvaymPoGAxCrf8gcqWXC+UQozThSx9kJ7NdmpcccFTMep+YieW5j8e/A3ZcK2CMgtS4hogGUIpmSnhrijqX6ZQeUN4dcVo1TnY+VhfD+28ln5z8rXbeJjDeTUmK8ffOW+tdFkoQ8XMr8h5AFp7kLEfLJzz1dk512v9aS4HpL+2GRAWSraIgEv34xElMS8dxGUZXdk8RRsNyUzWjpLbFV9BC4euCI+TRs7OWznJtjyy4zAkHTusWoPzddHQc8VbUf0+fB52K3EqZsKErk6SsZGrFM+PeWfbwpI5M8eYOElW428rYHEXRvKP4mgp9KFKOOD5JjuH9Ni8sEOn0jzMbIgwKUlMS3fqKuP+2TGLlvODhF50HD6i2e22G/lNvZNO3wNF14af5nw2zppIYCNG1ggDI0rrn+iyxjxgxqwhKvfvwO03yrRH4qK+cdqT+dW9FVMYODX5HWvHKznjgkzC59gfA/qtreNSoHmunQLfhQM/uNTdMbanq7HvWryn3LynN/X1USV9FDAVasNQj42sNmHv/6MWkiPhkrVqqu4IN66Ru6dIkzbPX5PZVXgwMyzaE5FswqvNQzkM8CnJdG/ejSrCsT3IGEwAqHW2MLs
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	/qg0lgB33Ji6dZBpXUHTkDsSxK9xKKfCIlnGh6iFv4o4e8QGPUAW8bezubM9e221KxzyXGajJ9VUOkugH31X8bxWGCyu037WW/tIP1//Bq4EM3z/7dn2ltx+t/I83ImQRd3tNy7XeQxO0OpZ47bTekdipvP5r2ZsLRYZC+JUume2QY78mBwfu7V9xvTkkoxorv1etX4n5DP073+XjfNWb7ALIBHZ4aeCnGMZnSBVwnTWYPMQBiRWxl7lrI7gJYs2Ccilpf6dW2vJPpCXFLadAW/FWgc26iQ6oMU+F6WDhzNPl6nJR0uM9Qi2O6kMD/KmvPUeVj2XJQF8UI46CdpJISpxVBSwKd72ZsnKGhdVfGK63DQ+djESxjhsFSVyMqZVePX5VN+wYYu1uT0WIUkCJ6OVw6IKg23nBtrGd60Rf9IFcF3kY0y6M/exJ80UrGRSxEtvOz0XjHv+op0D56E+qCR3vgEk9BFbKuH1BzjFiIuZpy2zDe8iGocJ2TTTdpRHwdXTIPBoqwT9QqQrB3ZI5jJkHAnDNOwr2aP6nPH5/E8gfCiUAk8xHO2p0KiBnuNbC3eKPmNp+i8GBe2fE7sRXQ89hl9fq9zq5GOzcQ8zMBlmHDVpmj7PfKK3EjOcACYf046okctUyHxCBMPz/p3gYqHdKCPlll4hBBxFu50xaWA=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?gyfRLnlVGHXW6KReuz4+aAODjPgw9sPviy12qiR/X+84x9fVgG5j1RHL2ywG?=
+ =?us-ascii?Q?OEkS3qUfJ9Bm0VjSchT+t8+8c1mNr/nGADR15DnALJ0QklhNuRfCdPux7Vh3?=
+ =?us-ascii?Q?4R7ZL1z712cqUGvpKSckh5RgrvxCGuwy85yD4K7J5wDQJomu5gtQG8bDw9nc?=
+ =?us-ascii?Q?Ul0PNSBS/Vh/4LmpM6gxAiVcs7/fCZb9xd6ZQc7pbGzPNlSr5gBbNgaeLVFu?=
+ =?us-ascii?Q?vTRLTq29apOIJA5TbUMfJvNWC8JXLW98s+SQYCyQnmjXiSko6hBx2ViiN+Rf?=
+ =?us-ascii?Q?+9KZ4YXFEkiCDkM3ppOylOo2ac1C/sOCeeYmyn6h+TtVvvVZXFQdxRT8Wr+W?=
+ =?us-ascii?Q?hM9ecLpZm06CV8AjKSylbdrVKZpu4dGYzB2e3M/eMtQJXCgVw8RSMUIYpTKx?=
+ =?us-ascii?Q?Ga5tP2qCnu8iMui72wHqSKMO0YJZwIiNyPxzQ7zSQBJeU4IY5/agAZ12w/av?=
+ =?us-ascii?Q?vTRQ5la+jgTEcVQtYmH6jaIdMiXlfZ9U/xrrvW1iOo1H5Djk7TwXWS9Q/Lcd?=
+ =?us-ascii?Q?xfxbGr4XJQKysv/EQmR0W97Ffv9udqBdrLFsgaOz4LQ3N6tBle+fAxSJFCy+?=
+ =?us-ascii?Q?KHuiDhvDWsBdUuxD8QWVXMdlTQunoSWJd5VL+wYqn6nu9OEIu74khq8PLHas?=
+ =?us-ascii?Q?4LXJNTPaEPeA860ZcfrIrpO6RE3RGmj3W+3beGhPYiaLATogo4U2HTWpmxqM?=
+ =?us-ascii?Q?jR5Eje34nX2dGJ5xoc+CZCpRx1I1TwmC/6j4Hc3sCqnxkfor8jkp06R7w+tr?=
+ =?us-ascii?Q?TsX5t0FM/GREtd5EGzDFyu+DN0Gdt+dMWiAaJ8OFJvaF9tpluJtPserhMML4?=
+ =?us-ascii?Q?ZLnPcIKTG+gzOAc5PwhDlFc2ZP7lj5DMpCT4HBGTpzpDndk4vsl2L16j6irk?=
+ =?us-ascii?Q?Qp1qRdkO3o8m+Elz+79StdfARO2zHWjzoW1H6UiY77NjulAcs0lSVLQd3BLB?=
+ =?us-ascii?Q?Dnui5+GlewKXqrqaBHz21RiEEHqRZ/ivddGB8BDgEk2lL4t3G5gEfXDVf/bt?=
+ =?us-ascii?Q?p/9E0J1UswVQHsEsN1kF2mx7MiGhCjxUCrB9bCILPfM4rsQ1YqRyhRTiml8R?=
+ =?us-ascii?Q?rWFsrvLIZ8vVkn6Un9j3gioBgXO2nz1z5fwdUALUwHautrbCPq5EWe8n5Dno?=
+ =?us-ascii?Q?MUUjo69N+L529p58Wyq99jsS05HNLcWT7XXJVfHcaW3bxj0Ne9xPxDNqKt49?=
+ =?us-ascii?Q?/zxMGrVVvswxbmIc8vDICFFkeoMst5GMAyDCIWK9x5Mie0sCwGy09AFx6ct/?=
+ =?us-ascii?Q?KSNBPlxkcsEIEdfGgJdV89PnmjAY3btymtxj3LnVXgsSArQO7jvHN/lvDoK1?=
+ =?us-ascii?Q?2SU=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f25e253d-7115-4a14-f73a-08dc2b345d3d
+X-MS-Exchange-CrossTenant-AuthSource: CWLP123MB5473.GBRP123.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2024 19:05:09.3188
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO3P123MB2970
 
-From: Mehdi Djait <mehdi.djait@bootlin.com>
+Add support for the pointing stick (Accupoint) and 2 mouse buttons.
 
-The px30 has a video capture component, supporting the BT.656
-parallel interface. Add a DT description for it.
+Present on some Toshiba/dynabook Portege X30 and X40 laptops.
 
-Reviewed-by: Michael Riesch <michael.riesch@wolfvision.net>
-Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
-Signed-off-by: Mehdi Djait <mehdi.djait.k@gmail.com>
+It should close https://bugzilla.kernel.org/show_bug.cgi?id=205817
+
+Signed-off-by: Manuel Fombuena <fombuena@outlook.com>
 ---
- arch/arm64/boot/dts/rockchip/px30.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/hid/hid-multitouch.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index d0905515399b..a8eb5371235b 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -1280,6 +1280,18 @@ isp_mmu: iommu@ff4a8000 {
- 		#iommu-cells = <0>;
- 	};
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index fd5b0637dad6..3e91e4d6ba6f 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -2151,6 +2151,10 @@ static const struct hid_device_id mt_devices[] = {
+ 		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
+ 			USB_VENDOR_ID_SYNAPTICS, 0xcd7e) },
  
-+	cif: video-capture@ff490000 {
-+		compatible = "rockchip,px30-vip";
-+		reg = <0x0 0xff490000 0x0 0x200>;
-+		interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru ACLK_CIF>, <&cru HCLK_CIF>, <&cru PCLK_CIF>;
-+		clock-names = "aclk", "hclk", "pclk";
-+		power-domains = <&power PX30_PD_VI>;
-+		resets = <&cru SRST_CIF_A>, <&cru SRST_CIF_H>, <&cru SRST_CIF_PCLKIN>;
-+		reset-names = "axi", "ahb", "pclkin";
-+		status = "disabled";
-+	};
++	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
++		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
++			USB_VENDOR_ID_SYNAPTICS, 0xcddc) },
 +
- 	qos_gmac: qos@ff518000 {
- 		compatible = "rockchip,px30-qos", "syscon";
- 		reg = <0x0 0xff518000 0x0 0x20>;
+ 	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
+ 		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
+ 			USB_VENDOR_ID_SYNAPTICS, 0xce08) },
 -- 
 2.43.0
 
