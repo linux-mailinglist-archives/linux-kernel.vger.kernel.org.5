@@ -1,146 +1,148 @@
-Return-Path: <linux-kernel+bounces-60671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF81D850840
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:56:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6250850842
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:00:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D7E81C20E26
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 08:56:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D0BC2834FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0465915E;
-	Sun, 11 Feb 2024 08:56:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132935915D;
+	Sun, 11 Feb 2024 09:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GV9MdKRd"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Slwnpc/Y"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076A259150;
-	Sun, 11 Feb 2024 08:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0A258ABE
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 09:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707641795; cv=none; b=WYulM+oIny2nsM7VbT2j8x5xn8g6XaB974lpS5+FVNev2VpvNPLUoItyhNi1e4YWC9cTYZ3v9hcdfLXhYRguGrYjy6rko6HigjzAB4XBRF94PyxE+fFQ7SzqPPz+i3MOsGK8Qf7USxDrAGmmxh2V2zIR7P4RBxpzu8bRwTPX0mE=
+	t=1707642043; cv=none; b=q8+ORyrzeyCwCe7HxN4gLvE6U9DXSho7E0dnhr7CUW7gsIhb0p+IK/iiJHosq6qaPQV1D/pLr2kX8kIiqY3VHujGJtNGHfNHvg3859Wcaul90aPwVgog2zI2ULXOHyqUKRzkxO68GR9I+QMWj9S9rsgEKdjWj/ts7EX28O84L/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707641795; c=relaxed/simple;
-	bh=C5cwjj5OUPe+LMG1Ksz0so7LB9nLFK+4LEY2R17TIwM=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=Ucjc5Kt8Xowbxtm2wIQSfbqjppJJ6xohiku2Xes4l1zeDEmWYAVIqlj2ba2hNBalHFYFfXY4aXhGqVTw0TTVXjsMK0LdNUKShtr8sxPAfFKW1LroNN0ELG0OnV3Vx06wc8l7Be3MQHPVQ9hLIGhMfeqFAk8enr42+OToUfjbyIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GV9MdKRd; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-561519f8698so1972877a12.0;
-        Sun, 11 Feb 2024 00:56:33 -0800 (PST)
+	s=arc-20240116; t=1707642043; c=relaxed/simple;
+	bh=XrHwrzxKGSdwsco+wfaSYcU3QfPkEgggvtskzGwRyCk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QE/h6DbiSNkOuwSyHyEfy71/R6tIH8trVWwZgxFtUaz3ksaxYEuzGKlO8erQ5UxRkYZkxHCAMyMeAVikXoz6hygFuJr6P2hK/d5IQ3SznWLpumWX3rlfMX+q5EzpSrJMmQLT2kmK2pctepVWt4jKUKMvlULje5VQ/dm/oaZGvi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Slwnpc/Y; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc6e080c1f0so2043428276.2
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 01:00:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707641792; x=1708246592; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4rrqZM2NRH92oN2Wcrr2Xkr2NlpWpuW2V/bIVMwXzFQ=;
-        b=GV9MdKRdPNBlz6zFtJSCVlHIFQKi9vaVKyHrhf5hgJ/kJL8AJ8DOzv3gmQ9cliHT+L
-         YpOm1+hKXMgBvf/qZduOrVQneQIfoSoY46F4+tF80gW9I053CV8rq6ynmVo3wnFLglF+
-         xsYhZ3ijwYEsGYdiKBMhZiN1N2iGosyDeyaMqiM4WUBiqsNLDXJasc2jme8khHrEjkj1
-         tk3YodljhpQRjqfTGL9ajxtV+QKWFEAQO7jwXjmeQ+gj9Hbv/PwKzF7p3McT+fab2quP
-         YogFMLx4PNaKwe9CqEMrRMu7PAhtmmJMvRGR4q/SX09v57T/ZZ+a8qrCW09bCNOY2DNT
-         wwDg==
+        d=linaro.org; s=google; t=1707642040; x=1708246840; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mi/SpXz7LSnm9nqKcH5GMvmtd5xZKu9gLFg7P9Q1mlg=;
+        b=Slwnpc/YvZBiIlJwcFHulIRXDBGqKUOajk7oVTCQjFzK4In1umhzfiy28KtmKcvfB4
+         DtRinA84JO9CK/8QMcfSmH+fCwnFHxbKv5gLlzzhGCX+lLcFCHB/eI4XKy/7VJgOKhWL
+         rZXhvXdzefU/jmMyVP94F2Vkpz387r4bPZG7nDjbBwc3db9ieBRgKm8ZdXLyeygaIWrh
+         efUP/Vcv2zSQAPFKci6ZlSrGASDCoJzbXIYVj2UZ9hwfA7OEofePCvFnRm2pMmZJJKD+
+         SwIOF56f4Dphiz4QRiybWBAgoKo2zBINXlLzFWxJMeHGD3U6EeLJnBo8ERlwgLDA0wpz
+         WTDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707641792; x=1708246592;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4rrqZM2NRH92oN2Wcrr2Xkr2NlpWpuW2V/bIVMwXzFQ=;
-        b=ejiVKa4i8W6tQWCfawC3ZweQd02Ls0Mv+ABAxAxMIF/3PlHs9A6iBoNcZGZljIVqzh
-         kdPSvjpeCvyh05cHNSTZTiN+s7yzPOm+RE+eKbObJ92hrh4i/jVhoFxdCqWgu7hATdtA
-         5DHu/pw+sW6dco7g+IKixeVXSQ+2XEcsMJI/q5hgYg5JFyhcKDVfx/0gHRgM946I03wX
-         gRmfqy/WRaERK0rs+mRMg48qO78cLDuZpCjAsozh/n04EIRDM1dMyYZgL6iclTxIVDr5
-         9cSzXVe+2wT7neW2OQ6vuHAOcqi7qUAHco2pVii6/X4spUjUUZ6B2aC4RwxFWJ1om9bQ
-         bYUw==
-X-Gm-Message-State: AOJu0YwfIFckD+aw5trvexSTka1UFxm2uYtu9hS2X694xRtqWwQFkLc3
-	pWYCqm5RZyYJhw720Q+GjWRqS+0Thx8K8LKJ9dWvEVHt4v1dCVl5QldYVBtj99ja5lAv2W1vmY2
-	IcFCMM+gRvoshdHw8w3o9gBYHtcc=
-X-Google-Smtp-Source: AGHT+IHFLXwCdh+7ms8i3jH5bZF+recXJ3JXnbhk+7rGnwfbaDFqQwc/HKBtNfPimX3VKzfzYI/CruasgSUdUJ0VP58=
-X-Received: by 2002:a05:6402:7c7:b0:561:a902:6bd7 with SMTP id
- u7-20020a05640207c700b00561a9026bd7mr128011edy.20.1707641791979; Sun, 11 Feb
- 2024 00:56:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707642040; x=1708246840;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mi/SpXz7LSnm9nqKcH5GMvmtd5xZKu9gLFg7P9Q1mlg=;
+        b=OIPVlADlGVqvUtzLBgizAi4tWvzo6Q1DUbtdAI9M3gvMGTtBtFIQppkDim1OlSXN0q
+         qmpmmEkBPbnsvU/yZgXoZx9uTAl7n1qfwJDfDU/mL2jsq0A66ezmuMsNAfmuHvC9vY0o
+         lDn7efMdEYn94GHxf4DxM5GaTXPFNTYFZe4zNZ8k7lS4vLI1V2oFBTNjCoTAnLxYFEnm
+         q+xv3ZaKpYgIAvEb6aY3kSavklnKRaa5BWv7xl+E9ToAxNLkDTEcP1r2F2UWRSEsYwHQ
+         ArvJSZD02JXPpyDh5Dcw0NZ81wer2vabN/Bons0SnGvhdf32pKgsUHrQqmHp0tY51ltJ
+         mF2g==
+X-Gm-Message-State: AOJu0YxMxtX3rpQ71cMpoxm59WUmxSUwP+/lBu1tqBj6nBGQutluII5t
+	mIVeTnUn0U/H+smGayWWCZ7Ud77V24f2Kfibrg9cGB4PNZRvYFSRaGvHKn0ZMm+T1Ftr+USAFQ7
+	1sDLxqHK+BgqjGYvtrmtLIugUICrzZP7agPpUMw==
+X-Google-Smtp-Source: AGHT+IGnqXQT+rt8SOauyM3KPLwqHogauXwMjge393R11SwTd2z8GYYPmJjOl9GRzbCoKIahL5xtbQ4ROEMUeKHCI2Q=
+X-Received: by 2002:a25:2fc2:0:b0:dc7:4c52:38f7 with SMTP id
+ v185-20020a252fc2000000b00dc74c5238f7mr3396239ybv.40.1707642040036; Sun, 11
+ Feb 2024 01:00:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Biju Das <biju.das.au@gmail.com>
-Date: Sun, 11 Feb 2024 08:56:20 +0000
-Message-ID: <CADT+UeAfCTd8c+dHn3mgT=g6Boip=oRPdkODMN_j2KaROcT0AQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 4/5] net: ravb: Do not apply RX checksum
- settings to hardware if the interface is down
-To: Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc: Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, claudiu.beznea@tuxon.dev, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org, 
-	Paolo Abeni <pabeni@redhat.com>
+References: <20240210070934.2549994-1-swboyd@chromium.org> <20240210070934.2549994-15-swboyd@chromium.org>
+ <CAA8EJpo1g9QKq1skibqSj9yc3mNSfkcts9oVf_vGjVjDzVZwiA@mail.gmail.com> <CAE-0n50xu83yYoXoFYEDrkuMw_exS=UGqsU+EwtTOGZyNW+k=Q@mail.gmail.com>
+In-Reply-To: <CAE-0n50xu83yYoXoFYEDrkuMw_exS=UGqsU+EwtTOGZyNW+k=Q@mail.gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sun, 11 Feb 2024 11:00:28 +0200
+Message-ID: <CAA8EJpp7NW0nT5vWdZcQ+A9GjreO9b20wfFBBnOZe6E6GcTNYg@mail.gmail.com>
+Subject: Re: [PATCH 14/22] platform/chrome: cros_typec_switch: Add support for
+ signaling HPD to drm_bridge
+To: Stephen Boyd <swboyd@chromium.org>
+Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	patches@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	Douglas Anderson <dianders@chromium.org>, Pin-yen Lin <treapking@chromium.org>, 
+	Prashant Malani <pmalani@chromium.org>, Benson Leung <bleung@chromium.org>, 
+	Tzung-Bi Shih <tzungbi@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
->>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>
->>> Do not apply the RX checksum settings to hardware if the interface is
->>> down.
->>> In case runtime PM is enabled, and while the interface is down, the IP
->>> will be in reset mode (as for some platforms disabling the clocks will
->>> switch the IP to reset mode, which will lead to losing register
->>> contents) and applying settings in reset mode is not an option.
->>> Instead, cache the RX checksum settings and apply them in ravb_open()
->>> through ravb_emac_init().
->>> This has been solved by introducing pm_runtime_active() check. The
->>> device runtime PM usage counter has been incremented to avoid
->>> disabling the device clocks while the check is in progress (if any).
->>>
->>> Commit prepares for the addition of runtime PM.
->>>
->>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+On Sun, 11 Feb 2024 at 10:52, Stephen Boyd <swboyd@chromium.org> wrote:
 >
-> This will do the same job, without code duplication right?
+> Quoting Dmitry Baryshkov (2024-02-10 06:10:31)
+> > On Sat, 10 Feb 2024 at 09:14, Stephen Boyd <swboyd@chromium.org> wrote:
+> > > diff --git a/drivers/platform/chrome/cros_typec_switch.c b/drivers/platform/chrome/cros_typec_switch.c
+> > > index 769de2889f2f..d8fb6662cf8d 100644
+> > > --- a/drivers/platform/chrome/cros_typec_switch.c
+> > > +++ b/drivers/platform/chrome/cros_typec_switch.c
+> > > @@ -18,6 +19,15 @@
+> > >  #include <linux/usb/typec_mux.h>
+> > >  #include <linux/usb/typec_retimer.h>
+> > >
+> > > +#include <drm/drm_bridge.h>
+> > > +#include <drm/drm_print.h>
+> > > +
+> > > +struct cros_typec_dp_bridge {
+> > > +       struct cros_typec_switch_data *sdata;
+> > > +       bool hpd_enabled;
+> > > +       struct drm_bridge bridge;
+> > > +};
+> >
+> > Is there any chance that you can use drm_dp_hpd_bridge_register() /
+> > drm_aux_hpd_bridge_notify() instead of implementing another
+> > drm_bridge?
+> > If something is missing from the existing implementation we can
+> > probably work that out.
 >
->> static int ravb_set_features(struct net_device *ndev,
->>     netdev_features_t features)
->> {
->> struct ravb_private *priv = netdev_priv(ndev);
->> struct device *dev = &priv->pdev->dev;
->> const struct ravb_hw_info *info = priv->info;
->>
->> pm_runtime_get_noresume(dev);
->> if (!pm_runtime_active(dev)) {
->> pm_runtime_put_noidle(dev);
->> ndev->features = features;
->> return 0;
->> }
->>
->> return info->set_feature(ndev, features);
+> Yeah I think that can work. I had put the drm_bridge in this driver
+> because I needed a 'struct device' per DP phy, but I think that problem
+> goes away with an auxiliary device, so that is nicely solved.
+>
+> I'll have to add logic about typec ports to that auxiliary driver
+> though, like mapping data-lanes and handling lane assignments. And then
+> I'll move this code from the cros_typec_switch driver to the
+> cros_ec_typec driver so it can be called outside of the typec mux set
+> path. That's probably better because it's sort of bolted on to the
+> cros_typec_switch driver. We'll need to know if the DP phy needs to
+> handle orientation or if the EC is doing that somehow, so probably I'll
+> need to add a DT property to the google,cros-ec-typec binding to
+> indicate that orientation control is needed.
 
-> We now leak the device reference by not calling pm_runtime_put_noidle()
->after this statement...
+I still haven't fully got into your usage of data-lanes. I hope to be
+able to comment on that part and on the ports / endpoints tomorrow.
 
-Oops. So this leak  can be fixed like [1]
+>
+> It looks like I should add a new auxiliary device, like
+> 'dp_typec_bridge', and have some other function like
+> drm_dp_typec_bridge_register() for that. I can wrap the 'struct
+> drm_aux_hpd_bridge_data' with a 'struct drm_aux_typec_bridge_data' and
+> then the typec port information can live there. HPD can still be
+> signaled with drm_aux_hpd_bridge_notify() but other functions can be
+> used to set the active typec port, e.g.
+> drm_aux_typec_bridge_set_active_port(), and then get orientation with
+> typec_get_orientation() in the atomic_check().
 
->  The approach seems sane though -- Claudiu, please consider following it.
 
-[1]
-static int ravb_set_features(struct net_device *ndev,
-    netdev_features_t features)
-{
-struct ravb_private *priv = netdev_priv(ndev);
-const struct ravb_hw_info *info = priv->info;
-struct device *dev = &priv->pdev->dev;
-bool pm_active;
 
-pm_runtime_get_noresume(dev);
-pm_active = pm_runtime_active(dev);
-pm_runtime_put_noidle(dev);
-if (pm_active )
-     return info->set_feature(ndev, features);
-
-ndev->features = features;
-return 0;
-}
+-- 
+With best wishes
+Dmitry
 
