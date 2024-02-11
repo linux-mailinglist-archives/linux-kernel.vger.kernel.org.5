@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-60888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01461850AA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:44:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F86850AA4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:44:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA3CD1F228C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 17:44:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 208FF28129E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 17:44:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86B175D8FD;
-	Sun, 11 Feb 2024 17:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3432F5DF2E;
+	Sun, 11 Feb 2024 17:43:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FD5NkYJL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dVMFXNzn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39EB5D758;
-	Sun, 11 Feb 2024 17:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7242F5D46A;
+	Sun, 11 Feb 2024 17:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707673400; cv=none; b=hurKDcSI22D0231wS5HSK+5kDAjoZ40TRigMr8+KtsODHP+dDaSTpprQuhGA/jpCC1+jk9cVHaovW48BEZrbBTTuA4ooCWh+ih1HOZwWW0GsziZzwDs1RjpcbxsYAt4ThTBLxuDH5dcRslGgDdBNsjRP2bKhZTHBf50BORH7wdI=
+	t=1707673405; cv=none; b=KDg2Z//QDY9/TO/8MfFjPSNCG53TkVw2wQbmk9SSyp+sR0MoA5+NlZ49gRPl+9zziHjDhbZEJCyYkbZHIM8oWgYpVlQI+NQSVUTQQs+C52r1/SgHZyq3RXjYYloEyHYVBO6zjt1ODzWLR9OKRj0QakuEg0b8d4G1lgHJy49u6Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707673400; c=relaxed/simple;
-	bh=ipeQZ+LZe5XilwqeMPmR4IQ68fkOcifsuM6YVshivis=;
+	s=arc-20240116; t=1707673405; c=relaxed/simple;
+	bh=pMJBOa3z0fl/XMAEMYjuMhiH5HgtDAMqKqBYE15+9TQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c2cRYyCxZsyZmfqXCOWPoJdBk78cIFaZ5jxnqELW+s94utl2j2RmacSYzqS5mVRvmZ2fziNOTzfYvLS6gAVp2uuNRUKbyfb5ExJ5rDIQa/VarkENwcH0CGR18Vz5kek0J2ggfR6ZzgDzZv0//VTQK4qKJtXEc6LuVO1bTt11Rdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FD5NkYJL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8237C43390;
-	Sun, 11 Feb 2024 17:43:16 +0000 (UTC)
+	 MIME-Version; b=Pr7xTiG4sskfa2pVOdr5vshDbUlGNstzw3AT4WQVk1YAlnoGbyiR8PTR6TDpNW3WiGfcaKI1Vy/WLmQ/zxKD8oIQg5DVkRWEfhRmA2Y1gfnK90E1bTPhejdj3aHsFZWVdf4HoCD2yFEjQXimsEbek0pLfRI9LK0bCSZMno2NJ6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dVMFXNzn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE471C43394;
+	Sun, 11 Feb 2024 17:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707673400;
-	bh=ipeQZ+LZe5XilwqeMPmR4IQ68fkOcifsuM6YVshivis=;
+	s=k20201202; t=1707673404;
+	bh=pMJBOa3z0fl/XMAEMYjuMhiH5HgtDAMqKqBYE15+9TQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FD5NkYJLGeomQEeIp1Xv63ealhPiBYhblKKG2irQbuUnY5MqOtb+XQ6EDfMV+QoCq
-	 +5gMoE+NXCpbH3s4hJZIS05gGzXh4KNxFjbEKvNzU/dk1RAvTzB4bNipOSwarkKuxx
-	 1qrTBV2mtkcwzPKWjp/6TwLzWQbYYlreZ9905gHqcwvAPkDZj/+RDzDHOrvG42MS2Y
-	 qrzSrIuBCuKFpjiVl7r9PJWHRo/+fnDGjXih+y18F0cBu1MIqAlUwgqKpwwrqRgs5O
-	 DajTQzngXbAS4u8OT93WT67f7bx0IVK7ki8ixn3md3KFKsaxmwgR9FToBZce1bj+7d
-	 aiRH7jjfLlPPw==
+	b=dVMFXNznnTMFwhRkqT2qf1PAHTM0xymZuhBNMzxG50a6LSNU/8qZMwh0uKttmsAej
+	 ulkNw5NStu0yHp6UD8qfDxR0TF2pDiMeeq150NRPiCebFtoZFsvwf8y3SDVbmp8OFE
+	 sxvV/Ey5nkJWgDwyUq5h+gAtCUQPt18CNQwCLNKFYeE2Pxku8IF3XHYW50Catv3wId
+	 W0DeF8+yQ4eC6/a02Pi9HZGSe4eVZKrpmTjr5/P7tAwTe5YemVUm6xbYreb8JHWAUK
+	 xmbclT2ZETYfk5vFKZ8cC9hzofKN6FI1BrR0ghAW9nG3Ig8aYxsIilKrA9AqvBT6nW
+	 lnmvi8Cw5QsAg==
 From: Jonathan Cameron <jic23@kernel.org>
 To: linux-iio@vger.kernel.org,
 	Rob Herring <robh@kernel.org>,
@@ -56,9 +56,9 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	=?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 3/8] of: unittest: Use for_each_child_of_node_scoped()
-Date: Sun, 11 Feb 2024 17:42:31 +0000
-Message-ID: <20240211174237.182947-4-jic23@kernel.org>
+Subject: [PATCH 4/8] iio: adc: fsl-imx25-gcq: Use for_each_available_child_node_scoped()
+Date: Sun, 11 Feb 2024 17:42:32 +0000
+Message-ID: <20240211174237.182947-5-jic23@kernel.org>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240211174237.182947-1-jic23@kernel.org>
 References: <20240211174237.182947-1-jic23@kernel.org>
@@ -72,53 +72,87 @@ Content-Transfer-Encoding: 8bit
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-A simple example of the utility of this autocleanup approach to
-handling of_node_put().
+Using automated cleanup reduces chance of an reference count leak
+and simplfies the code.
 
-In this particular case some of the nodes needed for the test are
-not available and the _available_ version would cause them to be
-skipped resulting in a test failure.
+Child nodes should only ever have been considered if they were available
+(either status is okay, or it is not defined).
 
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- drivers/of/unittest.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ drivers/iio/adc/fsl-imx25-gcq.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index cfd60e35a899..d353327767b3 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -233,27 +233,22 @@ static void __init of_unittest_dynamic(void)
- 
- static int __init of_unittest_check_node_linkage(struct device_node *np)
+diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
+index 68c813de0605..1b0003230306 100644
+--- a/drivers/iio/adc/fsl-imx25-gcq.c
++++ b/drivers/iio/adc/fsl-imx25-gcq.c
+@@ -199,7 +199,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 			       struct mx25_gcq_priv *priv)
  {
+ 	struct device_node *np = pdev->dev.of_node;
 -	struct device_node *child;
- 	int count = 0, rc;
+ 	struct device *dev = &pdev->dev;
+ 	int ret, i;
+ 
+@@ -216,7 +215,7 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 			     MX25_ADCQ_CFG_IN(i) |
+ 			     MX25_ADCQ_CFG_REFN_NGND2);
  
 -	for_each_child_of_node(np, child) {
-+	for_each_child_of_node_scoped(np, child) {
- 		if (child->parent != np) {
- 			pr_err("Child node %pOFn links to wrong parent %pOFn\n",
- 				 child, np);
--			rc = -EINVAL;
--			goto put_child;
-+			return -EINVAL;
++	for_each_available_child_of_node_scoped(np, child) {
+ 		u32 reg;
+ 		u32 refp = MX25_ADCQ_CFG_REFP_INT;
+ 		u32 refn = MX25_ADCQ_CFG_REFN_NGND2;
+@@ -224,14 +223,12 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 		ret = of_property_read_u32(child, "reg", &reg);
+ 		if (ret) {
+ 			dev_err(dev, "Failed to get reg property\n");
+-			of_node_put(child);
+ 			return ret;
  		}
  
- 		rc = of_unittest_check_node_linkage(child);
- 		if (rc < 0)
--			goto put_child;
-+			return rc;
- 		count += rc;
- 	}
+ 		if (reg >= MX25_NUM_CFGS) {
+ 			dev_err(dev,
+ 				"reg value is greater than the number of available configuration registers\n");
+-			of_node_put(child);
+ 			return -EINVAL;
+ 		}
  
- 	return count + 1;
--put_child:
--	of_node_put(child);
--	return rc;
- }
+@@ -243,10 +240,9 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 		case MX25_ADC_REFP_XP:
+ 		case MX25_ADC_REFP_YP:
+ 			ret = mx25_gcq_ext_regulator_setup(&pdev->dev, priv, refp);
+-			if (ret) {
+-				of_node_put(child);
++			if (ret)
+ 				return ret;
+-			}
++
+ 			priv->channel_vref_mv[reg] =
+ 				regulator_get_voltage(priv->vref[refp]);
+ 			/* Conversion from uV to mV */
+@@ -257,7 +253,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 			break;
+ 		default:
+ 			dev_err(dev, "Invalid positive reference %d\n", refp);
+-			of_node_put(child);
+ 			return -EINVAL;
+ 		}
  
- static void __init of_unittest_check_tree_linkage(void)
+@@ -270,12 +265,10 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 
+ 		if ((refp & MX25_ADCQ_CFG_REFP_MASK) != refp) {
+ 			dev_err(dev, "Invalid fsl,adc-refp property value\n");
+-			of_node_put(child);
+ 			return -EINVAL;
+ 		}
+ 		if ((refn & MX25_ADCQ_CFG_REFN_MASK) != refn) {
+ 			dev_err(dev, "Invalid fsl,adc-refn property value\n");
+-			of_node_put(child);
+ 			return -EINVAL;
+ 		}
+ 
 -- 
 2.43.1
 
