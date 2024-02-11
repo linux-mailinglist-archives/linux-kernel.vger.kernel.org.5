@@ -1,160 +1,141 @@
-Return-Path: <linux-kernel+bounces-60854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E016850A2C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:56:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF5BF850A2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:58:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 776621F23767
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:56:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83C13283A64
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1D85B697;
-	Sun, 11 Feb 2024 15:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BEA25BAE8;
+	Sun, 11 Feb 2024 15:57:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="WGr4kqiA"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BpVcS5gG"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E4A5B5D3;
-	Sun, 11 Feb 2024 15:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484611E506;
+	Sun, 11 Feb 2024 15:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707666998; cv=none; b=aXqWR0eHzuT85tkoHQgxazMRQDg5seElezOvx1c/G5ej8nV/vAWqoJA7EGeS8fGrDlBuHhrM94fKbofb6N3bMJCCGCzqCED32321N3l4CwLeMyagJMVOu6g3/KEoPwe5a6lm2T43dOh24nXXe+11JcI0WsYHTUPN+NAk11k3jKg=
+	t=1707667071; cv=none; b=UDSHj8fVdX2/AoYwvv9d7efOwbJxhJ9YwEaoVNrxKmh6xYqo3s2STWtq5EGTS4VMtG/3lecH69sN67vtV+bwpn+7AYifQqWqJIa9qCcEvg52BssM5rUCh5kZJwQezT0or6tZYWGWEi8vGVxfpPvZrs0TfNJ4cm0ecp1F2FFI8uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707666998; c=relaxed/simple;
-	bh=JL7wM1V7zi48q2tm3KhTIyENAubtfNi2N8isyzcuzH8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=bvxWNIFK5unVzHA/YWgZaALZK88G9ZdXJUTB98bBGOwelgwEfqTHvgshVi0VkrzlkwSs4qyKefiU1iN9mHSaKeTSBRTF5ypjFlg3SDIcLl9TRlWuK+vZjpHD11nbHBk+nC01P+s7cTLjnWIeMMxOrwivIOZXoLDmgcLjF2qG6QQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=WGr4kqiA; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+	s=arc-20240116; t=1707667071; c=relaxed/simple;
+	bh=stmkEqJ1qXcSaTqWdTlvLqtEOfj+D0MgCx9mbqK/hAE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CARe4KZ1I3670Z8RAw0z5zALb3gMkzZicz7Ylgec42dd0Emk6yRMFDrSAvtBbaNqPVweJVPxwfj80iSw/+DRO+9OGrhSFC1fasle7rLmdwrpGBj3I75NTx2JQIjv21kyZpAosonXYtBCh6bH0QwaGNzAvqgDPOFCH2IVAqBXO0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BpVcS5gG; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d958e0d73dso16689785ad.1;
-        Sun, 11 Feb 2024 07:56:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707666996; x=1708271796;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d0aabed735so32488101fa.0;
+        Sun, 11 Feb 2024 07:57:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707667067; x=1708271867; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=911kXH4ufHtqEqUf7Y7+h9ODYaLzmiao4LnKiF6mOcg=;
-        b=XgrAeHON5A8bsYqYXEcgnQTr4uekmtsOzHzmUwKJJQRFDRUOfr5U9A67EDpKiLIvJ2
-         5hCtHZtB58Tyjp9upbjiO5sucLYf1RimHrIgeKCvC5Sr+wGABgHK9dmwNutrHxUOVkD1
-         Hr8h+cTSHHe8sPmTrDgm1weGy+uvelrob0vdOMuTk9bvhYzcXdz2Lt8piCkAb/TZm8qa
-         DMBarIwbusfmwP2US+j/yGDT3a7QimV9YtES1IB6dsZuozo0/IPf8iwJEM6t+Xj0N/gn
-         yGr+nSB8npD+erXKeZYak/sDX2oPwiBtSWIk/9UIQUL+R29WZNZzxlTpfScpE1eTPo+V
-         ph4g==
-X-Forwarded-Encrypted: i=1; AJvYcCUAuQ4IGo7mu2oldx2hNATD1hk6e0bH4yVR4E3Y5VXh9lT+8O1QVjJqaxwVl5h9DzVJBT0Y+s+T/DCIJnLz2bdqxeOnSoWCbJtJhFUUNMRzL/7DuX48pAQqmDRRzOLv5/tJ8dGtLNpcpqqR3xVMqok=
-X-Gm-Message-State: AOJu0YyTGk6VwuxD2jAd99+RbvYvskiewBXyBxdJO8X8BIG58rFYOVdY
-	Ga8Yyn2l2Wv8HcTMYzMISaGnoP8pfTVv9F3X/+yR9PJ3gCBD+xiO
-X-Google-Smtp-Source: AGHT+IHbbOE2f+MVZKuK8zEihQ0jBBEHixQhYe2gxKyR16KoP235HaoQgl/akaWRUv5Fi7mLSUTzRQ==
-X-Received: by 2002:a17:902:d3cd:b0:1d9:65e6:4af7 with SMTP id w13-20020a170902d3cd00b001d965e64af7mr5077571plb.30.1707666995850;
-        Sun, 11 Feb 2024 07:56:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXvZ0cfdSs7HN0afcmxNPCzh8FFNpAkX0vG5Pa9ByrNyckv/49cDVCA3E3/2E76Jrk4FRYfox8ASYMQXIXuPR2AlGwiPLQVZK1xgfyl2rxjnocsIaIuLV1/W6Rv+s9sq0iBBW8xAJaauJZwz8gh9XbbJzgb0EesA2amSS8ufht7tpi+G6BXCm/p7b7aE2xDk0hojFbrEUYfIxLf+2X64lkxEWG0b+mY99J2/7Ixwjb1cHAlCJxhaLRfsmjl
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id q11-20020a17090311cb00b001da2fdd4cdesm382064plh.36.2024.02.11.07.56.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 07:56:35 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707666993;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=911kXH4ufHtqEqUf7Y7+h9ODYaLzmiao4LnKiF6mOcg=;
-	b=WGr4kqiAxicDTFPSP4TLYKFD6G5W+om/ZVQ9Aim8XUK4x2gZf0y9EpMGGdTykvKvLg2Dqc
-	tR+V/WAXzMsaKnHdqmD4GsKeSWTrHExhXDCSQOqu7LPctlcyPAXkqVJv5MbHS1Sefgsqzq
-	YBbip/C9JBqbfSxHb3qrV0vUaGdwj1cn0U//o25gUQrVZkkLH+3c9hHlgtP8G7DGYwfycY
-	fah+8PS24SUjBvUaIj6wFyTKLf/pw39M3pxDiYLSgUQGg1c8JYP0zthfgMnQ3mimsVuczn
-	zzOEbtAk2V96GhW3moNxIYKCzNak/vmcBZ5/xdVhmgkPEAKmXLOz2A+FXF6+Jg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sun, 11 Feb 2024 12:57:09 -0300
-Subject: [PATCH v2] ARM: s3c64xx: make s3c6410_subsys const
+        bh=1hHa5kUPlIxFb3OXyDNX1LwLohhu/1WXPO430OUtUMM=;
+        b=BpVcS5gGzy29AbdSXIEGkJlPB2hKZnX7ErM5olltH8KsH7lbNXupQyvArg1Sudbf2G
+         9U2rAAER0jfdYLDBerTLlKnt16zA1p7o1hM30hmMGJhbpP7Oe7LT2tBGKJKSYmu/1znA
+         INXAMt5x354fAxLmdJqZsDk5OFxqWROJCLO+QOp8tdWs0Ynh+46ntxZivxCkOYiIRcxz
+         Gta+g2m/jSrnNMJzkglUMfeZYpi0DfDEjHCZGPhe4r4sQdOQSFKHvgg8ETtBCvR+be8G
+         cCyENBU3ZW2nPAg8rYXz28Q/D1IsolQf9Su6RXphPC6CTP69Jf6armEC1mEQuEYJ1qsf
+         jQrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707667067; x=1708271867;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1hHa5kUPlIxFb3OXyDNX1LwLohhu/1WXPO430OUtUMM=;
+        b=oIQdN/MQP6hgjCz7+H2b4+ZMkDNV4GoVCOFnNxwPW5J1J3tnPJ9xECIUBNoHiihvhc
+         43GLRjcqZXWb1wPB8cKumWiwOppxIUtqjLejUjI+YHB+c/zxFoWfk7SzW2Q8L8akmt0C
+         2liKnKe5z+uKe+wYo1VlZfFbe76VwWA7/VYN5DIrDxIrBaHfH0CzwF5GNRYMxOvdxA+M
+         5d6oGpiDLyMogdLwzGZMqhdnImS0QTBP6YmhZeVwDXio1ri9jff3oVdW8Bk/cANWEZDo
+         f6tqpbbgOvYPLujPl40e1oNWzf7Y2oed2LCCOg7Z18B5MspSdp/tOV7PFEtXu7ji6d+o
+         fVGg==
+X-Gm-Message-State: AOJu0YwnLxzc66+Gw550v5n1yFN+X/gkZdsE4PUrh9T6SGO8eZml9kh+
+	I89tk7vv3IDV7dYFtdgYDsgiopcvZkOLuLzT3a2IbmuqAvAWKSPJinSfnJ+K1HkqQDwj3l8W6nM
+	LRj8cgERCZSqNPMi7Y6/eVBMuu93bjzDk
+X-Google-Smtp-Source: AGHT+IFhqINxZv3yWOWEeiA1OlbuMFnXjwFNxOQeInzW5VoWqiv0Bxq19H5xDF6jLhd9+hi91q0aWl3V+wZyMjqARdI=
+X-Received: by 2002:a2e:8519:0:b0:2cd:5cfd:b19 with SMTP id
+ j25-20020a2e8519000000b002cd5cfd0b19mr3062812lji.19.1707667066875; Sun, 11
+ Feb 2024 07:57:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240211-bus_cleanup-arm-v2-1-3de9e8af7cbd@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAFTuyGUC/3WNywqDMBBFf0Vm3ZQkGChd9T+KSB5jHdAoEw0tk
- n9v6r7Lc+Cee0BCJkxwbw5gzJRoiRX0pQE/2vhCQaEyaKlbqZUSbk+9n9DGfRWWZxGsHLQx0tv
- 2BnW1Mg70PovPrvJIaVv4cx5k9bP/W1kJJYyXSmpXuy48ZssTIeM14gZdKeULNyN8urEAAAA=
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Alim Akhtar <alim.akhtar@samsung.com>, Russell King <linux@armlinux.org.uk>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1816; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=JL7wM1V7zi48q2tm3KhTIyENAubtfNi2N8isyzcuzH8=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlyO5XnZHv5b2f8/C1CrZ/CQ/xR5XfxSFsC6ctQ
- DRLdfRIhjCJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcjuVwAKCRDJC4p8Y4ZY
- psC5EACIcACY8NFjRlUc+Ac83fBdxJGOdlb4wcheBAf+p6myyYifsA1cK/sh6PDznQaB5tYB8Od
- T+SiTn7VSWTxIehbTArgxR+C1CrQWqZbyPe4IsMBX9g7jlkJS97dw78CWVlUz2JqCVP6C9j6MkM
- hPFvLs5GIPlYlbOyjNvHsX3iLC3QRr+dODlJKoWIIz5Z30cOOzRItASOrbq5ZyCrTI6bTlPlEin
- OKWy3pCk+5eArCBvti6IpVR4W4IDCWhHTkJ/qRlbZZnj0mFv1Cip0maAiSp57dFk7JQjy3NWJG9
- eyqWLc+OXg5DW3qq9S6k/gGfzq0SNk9l4YHKvx+q3vz4cUZcG/QGiHx5stvjgWA6ZRgzer2bEdb
- 9zC4oTxLBBkBpEGea7oB0M2mIm/xbP+7QGJCJu/5sVFdt35Mzrbf1a6sOft8QzRwIUty5eS2moo
- stY7GHNHpqzHmQMpxM8JK8lm0P4LSm671h7dzutQ5Myn6QiXrBEEB7pubn/aCyZyggiMc02aZ1J
- 9wrX7jQtkGO1fcPPMrA9W8ZS4AXi6Ln8ygdEewchcXc5fh6vn6PgXoemj3A6abgNs2xE75WIwhb
- EcqAEwAk1eCdlXmzuAChU1bHHeEANUA/MVIMmnryTmJGK+XfMgAnMj2Gz0AHOlEzsxo37ceWdpQ
- 2AnV+/HcYNaxZug==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+References: <20240210222226.890031-1-vibhavp@gmail.com>
+In-Reply-To: <20240210222226.890031-1-vibhavp@gmail.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Sun, 11 Feb 2024 10:57:34 -0500
+Message-ID: <CABBYNZJx68KUkiHXeZmSnzwpkK2CAB_ASrD5dK+WMocDuwuomQ@mail.gmail.com>
+Subject: Re: [PATCH 0/1] Bluetooth: mgmt: Add command for getting device IO capabilities.
+To: Vibhav Pant <vibhavp@gmail.com>
+Cc: linux-bluetooth@vger.kernel.org, marcel@holtmann.org, 
+	johan.hedberg@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Since commit d492cc2573a0 ("driver core: device.h: make struct bus_type
-a const *"), the driver core can properly handle constant struct
-bus_type, move the s3c6410_subsys variable to be a constant structure as
-well, placing it into read-only memory which can not be modified at
-runtime.
+Hi Vibhav,
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
-Changes in v2:
-- Instead of "Now", defined a specific commit in the changelog.
-- Link to v1: https://lore.kernel.org/r/20240211-bus_cleanup-arm-v1-1-5c0102bda0bd@marliere.net
----
- arch/arm/mach-s3c/cpu.h     | 2 +-
- arch/arm/mach-s3c/s3c6410.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On Sat, Feb 10, 2024 at 5:22=E2=80=AFPM Vibhav Pant <vibhavp@gmail.com> wro=
+te:
+>
+> The following patch adds a new command to the bluetooth management interf=
+ace,
+> GET_DEVICE_IO_CAPABILITY. The command allows userspace to get the IO capa=
+bility,
+> and the authentication methods supported by a connected device. The comma=
+nd is
+> necessary in order to implement parts of the Win32 Bluetooth API in the W=
+ine,
+> specifically the following two structs:
+>
+> * BLUETOOTH_AUTHENTICATION_CALLBACK_PARAMS, which provides IO and auth ca=
+pabilities
+> info for an incoming authentication request from a device.
+>
+> * BTH_DEVICE_INFO, which contains flags indicating whether the device sup=
+ports
+> Simple Secure Pairing and MITM protection. The former is supported throug=
+h BlueZ's
+> "LegacyPairing" property.
+>
+> Because the Wine API are implemented on top of BlueZ, I'll also be provid=
+ing a
+> corresponding patch that uses the newly added management command to expos=
+e the
+> capabilities through new properties in the org.bluez.Device1 interface.
 
-diff --git a/arch/arm/mach-s3c/cpu.h b/arch/arm/mach-s3c/cpu.h
-index d0adc9b40e25..a0187606b999 100644
---- a/arch/arm/mach-s3c/cpu.h
-+++ b/arch/arm/mach-s3c/cpu.h
-@@ -76,6 +76,6 @@ extern void s3c24xx_init_uartdevs(char *name,
- 				  struct s3c24xx_uart_resources *res,
- 				  struct s3c2410_uartcfg *cfg, int no);
- 
--extern struct bus_type s3c6410_subsys;
-+extern const struct bus_type s3c6410_subsys;
- 
- #endif
-diff --git a/arch/arm/mach-s3c/s3c6410.c b/arch/arm/mach-s3c/s3c6410.c
-index e79f18d0ca81..a29276a4fde5 100644
---- a/arch/arm/mach-s3c/s3c6410.c
-+++ b/arch/arm/mach-s3c/s3c6410.c
-@@ -57,7 +57,7 @@ void __init s3c6410_init_irq(void)
- 	s3c64xx_init_irq(~0 & ~(1 << 7), ~0);
- }
- 
--struct bus_type s3c6410_subsys = {
-+const struct bus_type s3c6410_subsys = {
- 	.name		= "s3c6410-core",
- 	.dev_name	= "s3c6410-core",
- };
+Interesting, but the IO capability matching logic lives under the
+kernel so I wonder how useful this information is if you can't really
+do much about the authentication method used? And in case you are
+thinking of changing the pairing procedure to just leave it up to the
+upper layer to figure it out, I don't think that is a good idea
+because that is subject to qualification that would effectively be a
+new implementation.
 
----
-base-commit: fee3a71dc8d26629e5d87e20cff08763f522633f
-change-id: 20240211-bus_cleanup-arm-da0f2550ca48
+> Thanks,
+> Vibhav
+>
+> Vibhav Pant (1):
+>   Bluetooth: mgmt: Add command for getting device IO capabilities.
+>
+>  include/net/bluetooth/mgmt.h | 19 ++++++++
+>  net/bluetooth/mgmt.c         | 89 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 108 insertions(+)
+>
+> --
+> 2.43.0
+>
+>
 
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
 
+--=20
+Luiz Augusto von Dentz
 
