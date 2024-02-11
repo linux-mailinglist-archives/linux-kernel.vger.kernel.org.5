@@ -1,161 +1,97 @@
-Return-Path: <linux-kernel+bounces-60670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F46285083D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:52:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B4E9850845
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:03:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAB7F283CA8
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 08:52:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B91A1C20F1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DC859148;
-	Sun, 11 Feb 2024 08:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CC759155;
+	Sun, 11 Feb 2024 09:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4RnXUVT8";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sXCME+G+"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=420blaze.it header.i=@420blaze.it header.b="hMsJV+cd"
+Received: from mail.cock.li (mail.cock.li [37.120.193.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3976A36102
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 08:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20F758ABE
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 09:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.193.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707641559; cv=none; b=vBtDT35ZHDJOIjwBw1JxDQrmmXup1IIO4C7nnNDsnryRFUhHirNqPWLmEs3LOdjwHBEaN2Dd9CfD/1xfEqNH17xboH53OjXdix1Q13fewTeP6lNtImTtaGwmH966gESxi4dZh+CUgP2veEVkRHp2YDwn+Vruu4fRYAIOtyuWl7s=
+	t=1707642190; cv=none; b=OsP6DffcISeJzYPqBmmNW2ZNsJySWcYoV5jIBy+94M7nXgotoUa0FNqTsm61e5XCu1G2T62TLx3YhqrZWA7JuywNG+OI4Dk+LuTT0U+V+6xctz3WgAK6nDC2XoOZKVQNbRbXpKx+OwcE1o2xMSqasPPG+P/wYv77TK9wwH8xiMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707641559; c=relaxed/simple;
-	bh=5/KJ8UmaTHfcxQ/VvEhJSEbawz0UTFGTW0QdGobkaJY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TN2GwCvhtepnMI89ghtXnU28UDwgyfmYnalFdoI484zKv/JTJdG4IS6h+cC9H8Nv+BLF7yy26b0SLDAQB8vIF+eMLkK+mXO3avvTx41/WIX9tQCJiYKPrwFHw99LCQV7H+edlPRp4YDmNXJGrN7Up9FRkvvAcMQIKTvqZDzmorY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4RnXUVT8; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sXCME+G+; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707641556;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4KzbqLIbkjVoM79cJzW6n/jxJ6bg7hc4WdupSvPxOpc=;
-	b=4RnXUVT8Emnznx0ytc+B8ktt+yIwp0gr1mg0OJLAlsyjQG7c82YakL1MLDXT0mJVV8Kr/f
-	zvBKIdi5eZdUSEwknlvVgNdcHCiwanIO22O2RCSJhaO+CcvQfnuoR/qXFVwOlgOcnq2hjg
-	h/XK1GpuvqC7Udm14TngaCM1JmQbYvpxUPldQVEsGFAhfFuLwrur4wgcnBmtKHjsmZS3bD
-	BAr7zB4qrK8uruI0YiCcv4r/d1cfeBWkeev6SfpXAw0b0vKP6eyOWx5db49rKMdLR7EO6q
-	xvy7QVkOS7QxnuktduSf+BfmpVpi6txhN30UkTaaRFsVrEgjK/PEGtgqb1guCw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707641556;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4KzbqLIbkjVoM79cJzW6n/jxJ6bg7hc4WdupSvPxOpc=;
-	b=sXCME+G+YzFfbZvm/QEgHoX9qdst184QXoCEx8zjK8w5ScUiYPU5ZMwkpGuFSvX2UyzGrB
-	OwBfQ74paZQMzfCw==
-To: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Daniel Bristot de Oliveira
- <bristot@kernel.org>, Juri Lelli <juri.lelli@redhat.com>, Valentin
- Schneider <vschneid@redhat.com>, Frederic Weisbecker
- <frederic@kernel.org>, Leonardo Bras <leobras@redhat.com>, Peter Zijlstra
- <peterz@infradead.org>
-Subject: Re: [patch 04/12] clockevent unbind: use smp_call_func_single_fail
-In-Reply-To: <ZcN8zA4WaLx7c3qy@tpad>
-References: <20240206184911.248214633@redhat.com>
- <20240206185709.928420669@redhat.com> <87jzngmqsw.ffs@tglx>
- <ZcN8zA4WaLx7c3qy@tpad>
-Date: Sun, 11 Feb 2024 09:52:35 +0100
-Message-ID: <87plx3l6wc.ffs@tglx>
+	s=arc-20240116; t=1707642190; c=relaxed/simple;
+	bh=4JP92RE3t9VQw+D1FzK47Dplx1G0LHGUu6RQVFkBwfw=;
+	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:Message-ID; b=fvXgpa7Eu3qC1TC3XA601JqoeUFWF6Fcz7OZhnwn1AuFSZjDh1c0ywlz2EFjgJBZcURtPiWVvEPYB94zhrASCDp63yZsuOEhAavOSBK5DtcXZZTCRXutrq+BcAPMWFau/4TEE9YzDfQTB37B5YeDPDHI7lkEF2zM2tj3JKxbq/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=420blaze.it; spf=pass smtp.mailfrom=420blaze.it; dkim=pass (2048-bit key) header.d=420blaze.it header.i=@420blaze.it header.b=hMsJV+cd; arc=none smtp.client-ip=37.120.193.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=420blaze.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=420blaze.it
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=420blaze.it; s=mail;
+	t=1707641567; bh=4JP92RE3t9VQw+D1FzK47Dplx1G0LHGUu6RQVFkBwfw=;
+	h=Date:From:To:Cc:Subject:From;
+	b=hMsJV+cdlLbcDaSujjO4cqMmMsvrJUoNqsQfRjSojzLMZ46qZ3ObQjTy+e0r3IBXJ
+	 DSguVHCkZN5YzxuSs3x3J459wXTVaDMH/xOaN1X60XLT0pB2i6zMCrGDtNrrv27Kc0
+	 qyoFNtKvZtIPkEfPog7ks9YgSRRJJtIkF7nZry1yHCOQN7whBk3UCK9uC69QvBVHkU
+	 nOPJ7+df7ewpWczoT7/JuOlEI0Qc8SQuKSKuTVq5nuh5ZrObF7ISIURt8rv1g0m6k7
+	 UKtO96BWU4Sz4IQVvtPieRJHHt95ulyJuTsHpk8+Xd1ipaB1zZdBeu2dzQvd5V4jXI
+	 O71BllM9aJfkQ==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Sun, 11 Feb 2024 08:52:45 +0000
+From: hapter@420blaze.it
+To: mingo@redhat.com
+Cc: tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
+ x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org
+Subject: arch/x86/kernel/sys_x86_64.c: rationale for 0x40000000 for
+ MAP_32BIT's start address?
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <a5c2f06ba401cdf13bc87749341b1605@420blaze.it>
+X-Sender: hapter@420blaze.it
+Return-Receipt-To: hapter@420blaze.it
+Disposition-Notification-To: hapter@420blaze.it
 
-On Wed, Feb 07 2024 at 09:51, Marcelo Tosatti wrote:
-> On Wed, Feb 07, 2024 at 12:55:59PM +0100, Thomas Gleixner wrote:
->
-> OK, so the problem is the following: due to software complexity, one is
-> often not aware of all operations that might take place.
+I've found that passing in MAP_32BIT for mmap() will always return an 
+address above 0x40000000. The problem seems to lie in 
+arch/x86/kernek/sys_x86_64.c, where the following comment is the only 
+thing close to a hint(Line 100):
 
-The problem is that people throw random crap on their systems and avoid
-proper system engineering and then complain that their realtime
-constraints are violated. So you are proliferating bad engineering
-practices and encourage people not to care.
+/* This is usually used needed to map code in small
+    model, so it needs to be in the first 31bit. Limit
+    it to that.  This means we need to move the
+    unmapped base down for this case. This can give
+    conflicts with the heap, but we assume that glibc
+    malloc knows how to fall back to mmap. Give it 1GB
+    of playground for now. -AK */
 
-> Now think of all possible paths, from userspace, that lead to kernel
-> code that ends up in smp_call_function_* variants (or other functions
-> that cause IPIs to isolated CPUs).
+Unfortunately this does not supply a rationale for starting from 
+0x40000000, which seems very arbitrary, and the git commit has been 
+there since the beginning of time (i.e. as far the the git history 
+goes), so the git blame has not helped much to clarify it. I was also 
+not able to find who "AK" was.
 
-So you need to analyze every possible code path and interface and add
-your magic functions there after figuring out whether that's valid or
-not.
+I have found another operating system that provides MAP_32BIT, FreeBSD, 
+to not exhibit the same behavior and not cause any execution problems 
+for RWX pages allocated below 0x40000000, so it does not seem a 
+technical rationale exists either.
 
-> The alternative, from blocking this in the kernel, would be to validate all 
-> userspace software involved in your application, to ensure it won't end
-> up in the kernel sending IPIs. Which is impractical, isnt it ?
+mmap will happily return 0x10000 (which seems like the lowest address 
+the kernel will map when you supply it as a hint, so I do not see any 
+reason not to start the find from 0x10000, or something that isn't as 
+big as 0x40000000, which is big enough to impose a significant handicap 
+for applications using MAP_32BIT (e.g. JITs that want to use CALL rel32 
+at all times).
 
-It's absolutely not impractical. It's part of proper system
-engineering. The wet dream that you can run random docker containers and
-everything works magically is just a wet dream.
+I will happily await for any clarifications on this matter.
 
-> (or rather, with such option in the kernel, it would be possible to run 
-> applications which have not been validated, since the kernel would fail
-> the operation that results in IPI to isolated CPU).
-
-That's a fallacy because you _cannot_ define with a single CPU mask
-which interface is valid in a particular configuration to end up with an
-IPI and which one is not. There are legitimate reasons in realtime or
-latency constraint systems to invoke selective functionality which
-interferes with the overall system constraints.
-
-How do you cover that with your magic CPU mask? You can't.
-
-Aside of that there is a decent chance that you are subtly breaking user
-space that way. Just look at that hwmon/coretemp commit you pointed to:
-
-  "Temperature information from the housekeeping cores should be
-   sufficient to infer die temperature."
-
-That's just wishful thinking for various reasons:
-
-  - The die temperature on larger packages is not evenly distributed and
-    you can run into situations where the housekeeping cores are sitting
-    "far" enough away from the worker core which creates the heat spot
-
-  - Some monitoring applications just stop to work when they can't read
-    the full data set, which means that they break subtly and you can
-    infer exactly nothing.
-
-> So the idea would be an additional "isolation mode", which when enabled, 
-> would disallow the IPIs. Its still possible for root user to disable
-> this mode, and retry the operation.
->
-> So lets say i want to read MSRs on a given CPU, as root.
->
-> You'd have to: 
->
-> 1) readmsr on given CPU (returns -EPERM or whatever), since the
-> "block interference" mode is enabled for that CPU.
->
-> 2) Disable that CPU in the block interference cpumask.
->
-> 3) readmsr on the given CPU (success).
->
-> 4) Re-enable CPU in block interference cpumask, if desired.
-
-That's just wrong. Why?
-
-Once you enable it just to read the MSR you enable the operation for
-_ALL_ other non-validated crap too. So while the single MSR read might
-be OK under certain circumstances the fact that you open up a window for
-all other interfaces to do far more interfering operations is a red
-flag.
-
-This whole thing is a really badly defined policy mechanism of very
-dubious value.
-
-Thanks,
-
-        tglx
+- hapter
 
