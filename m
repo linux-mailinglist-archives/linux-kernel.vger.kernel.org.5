@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-60769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CD9D85093A
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 763FD85093E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:41:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38EB328673E
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:41:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D710286CC7
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D56A5C5E8;
-	Sun, 11 Feb 2024 12:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F4725C61A;
+	Sun, 11 Feb 2024 12:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YX7IhvdU"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GtTD4Oud"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749035C05F
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:34:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 906955C61B
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707654895; cv=none; b=LJRKjlpMw14muUo7UBku56ZuJIpOL1HPcdl7I6x7/sKXexYzIEzqZlJNjBIJW3KO0vpwI+CdQJgzLW/xR0pePN3/daE+cQeT0xxhw8ToUVMwuSPsxMkBTwufBbTUnxlTZYakY5bUxpky8jhzD2LY2kGPJFfCyOXetYA559uBHoI=
+	t=1707655175; cv=none; b=Sh1ReOfjUJggdWIzAOxKQxX1afxsf40PJpFeHHqZhCRU9cprOUJj+FHe1DeBMZGRCHBikXQnT35anlnrV8AiE8gSaXDNY90RBcrBfRZ1lbm1eq+hvpwDeIenSmQsHrfnBGy2K1KnjNl/J5vCy2VgKB0khQMt8bQ9mriwtdC0srE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707654895; c=relaxed/simple;
-	bh=QGSB9vQFBzaOSZ1Q1KgAdhwcktg+EZUqfnt1pIw+ZOU=;
+	s=arc-20240116; t=1707655175; c=relaxed/simple;
+	bh=2V2yDYxoItFhXUCgtvJq5rQNVrqpcDr4wZ0AGQqNdxk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bp1mFF2TJiWP9tpxr+AQGSB8ZRlsVDQ+bOt9yNdcg4nr7Ag7K4j2UjtchUZGcHZlJOf18yPMA2FKyKuvP/7lcEXrfCv+ZeSOmmtdYV99Uni3wz7nB/Sb0/pXsflOmRT8YpRw4CmVkXm4eq3gvy22AZBgjQu/nxx2Odt0X4015uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YX7IhvdU; arc=none smtp.client-ip=209.85.128.54
+	 In-Reply-To:Content-Type; b=g5wcG+oGs5Gi1DuNsYzqH2P+atbbrsN8iJpxv9PNrY+8xnszG68ivhwDnOS5ZqtXXVe1reN5eUL6JB/HGIZ+H76N9IdqcGTJvB21DEotNMH5ObHqFa5V4qXXqepaqUt4DPY75TKEP+glOhnc3XbeycOekpOCuz1NFU2nkImgczw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GtTD4Oud; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-410c1ebf5e4so1903335e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:34:53 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-410d087c528so378095e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:39:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707654892; x=1708259692; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707655172; x=1708259972; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bPK0EfMN0yxK9w97IP5JX0KkHv5GGy9XxGZVuxjRPoM=;
-        b=YX7IhvdUrcyX8sZsrmO3Kez4FWKAV6BbLNgiXkMn6uq1PO/5N5HKglnc1g5goRzJVp
-         eQopPiN/yi1VnNupx28zjc0ffDBJSJkKv00VUHiAqTSMw/VE5+5sa6Fmivs1X9AcC0+C
-         VD3AYZFFH4oqzYldVLrVjewbP+O1oLN34p10Fbe0rOTv0gUl//7cxd9jy3+jVOut5gZd
-         BHe8x8d4M3J9iJkjYfaYHLNew06awYS25mFGAxp0Litf6QKqfk+1ZrvyTVRbWBbPIg2S
-         tZ2SWQhBmiLouM/NrSicyVaPpyYpwfOIP72ujTJDzfwAE8DsAQdjyy4KYjJJr0B0NhEh
-         KplA==
+        bh=1BAd8bQbs7lW+hpkF4LWcpfhLI7MuGzzyc9i8yKpXHQ=;
+        b=GtTD4Oud2jKW2ptTIzUmakhnuZDKh8Tduqu/+Wk+9oeRSU7WI77/nUwnQ0kEs4oEnv
+         tUZTi86or9W/flp6W88xVdPJaF9rxQX6KAlV6o2GDIEMlXBFNPW5e/ZuHAAtGEmQqBDf
+         0n/FkneWLX0yTaUz3XDagfm1g5Sr2BqVXw5a/Uui8Foj4K7XvrwR3mwJSavNb+HEj414
+         210B3psjf8H47q7rGHeYFfXIVNNjy5UM68Wz4k01lYCIX0o/RoB8TcD+U1YWvsgxKzM1
+         rXVrRX0ITfTSgsX2Sp07bDUDkdenGmYC1wlMcDzU5vRDWK/mnXpeWpdPO1zIOYo8V1Jo
+         kL0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707654892; x=1708259692;
+        d=1e100.net; s=20230601; t=1707655172; x=1708259972;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bPK0EfMN0yxK9w97IP5JX0KkHv5GGy9XxGZVuxjRPoM=;
-        b=g2rD5o0n6vpifMhW4InQrRtK289JOXd9msrSdh97amFtmuPIVjL1mXmc0IrvG/Tk3z
-         bagzQOLY6zxQXXrPG7wDwBMjO3K5quFxejDRC0L8Nbp+I5xHfGfsstHtTAnVDYYn7fxu
-         krMJw6+VZVOcroSfNA/70Bo9nqD2vG/uG9iwXmtyhBbG3LRliyNQ5I6+MHbBh/iij+9y
-         mG80L60fv3h/DMpZgIxKklzz8DaGd5NlMp7MShWjEnrYtdrURVlC8t61xqXpeGH4aZ6+
-         MAfIlMPG4ZePyWHt/TDAjQRynb09/GODFUUyApkhmGc0eI+y5Rbg+7Q9nvjIkOrLL40v
-         /5xw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQqsB0PPtk2vDfT3Tdc0+1MceqYleq6xQsRwek7lKVE+/Dg4PFUsff9RC+IxLoN4G8AES/9SwznO3wKD6OjNj+48T03nD0R0M3bkV7
-X-Gm-Message-State: AOJu0YzR5UjxgbrW0AR+e7sxSmh+aaaMTDsjELXRUR4aKMOxARmdMBza
-	EgprX6owqH9mZb1AWfWRzplF2dyqOBAPrOz5QRxkADic7DSY+yjsiaWMLmfqao4=
-X-Google-Smtp-Source: AGHT+IEGWuRE0MWUGYz/HvyE9OS+KwABNnqHf/LaqT2dBQUSYXrCVtLl67P9PvMXyprkP0UcBgh3PA==
-X-Received: by 2002:a05:600c:4f43:b0:410:6d90:8f19 with SMTP id m3-20020a05600c4f4300b004106d908f19mr4075672wmq.3.1707654891817;
-        Sun, 11 Feb 2024 04:34:51 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXdjekMBubdXrpZNV5ZNf4MrE7ImeT1/sXpNy9mI40MRGSVAlgw4+znygCusuMrmPQ3fKZFfCU3kndKEQ6+tzEgPnKT5XXSUvIorsr5T4DaO3GFhBYtMpQAuc+ZZeXdvYGSHcFfjWj1VxxIGjDELmlLO1otxLSeqiMJYqBKolZafAC6O2tOkMOLWrxWgUELcJs/E9IoevdyVgQklDrFQbZ8d37sykNB5fadKbGC58COPdTo28VrKL2/IsSNI4PYyQYF0KecA3aHFyYK6v8w/3kTs0AXZkthKLDk4c7dd37VyTPq4Jbm+LAXeLT8zGC7Zm0eYsDcL0T5OMOnUTK83bfTwvbXEIYA2uRAJ1casi9YhI8FxGsOqDJMtk2Z3MNCCiTahQeHj5UfxzxjcKaMXIf/yB1wT4lv44iSkCMiEHt1JLW+FFsgPKaijk1Md6Gc20P5P9Op9SjFaMH94ayd0//5BO+9XkvK5Ezzptvk5Ybhh773wRlhoagmEYoeDDWtEU6JRvr1EyNY1lZSnwe23w==
+        bh=1BAd8bQbs7lW+hpkF4LWcpfhLI7MuGzzyc9i8yKpXHQ=;
+        b=Odotf9w1zC/E7aNau03XizCuCu1egGWXjqDoBs+LcIAGszJv0dC7f2+MLIBehLFWbk
+         3oMNoaiuV9pMlT2B0X70ZWp230MFLE6UzC6BsmDW/F6tieb7Zwrp2VcwBHPxwba5zjrK
+         OfIGWF9ukj1tSbAG5gTvUgY1FmdTx2jovUUvplKSgLbmBKqOgUIfvw74LW/RCHnPt4pS
+         WYikdOSZ80MgNfb1G4MnaOGESAGnbDP/CHXzgSv+XL76IAWEyQEqh9uB/CPAGMhNJvSx
+         Hr+pd3tLDghLJ8dyceLxmMnjVResYd/7Sk2AKRdeBhepDxZ6G6KiDBQVLXkhAWvWXwWF
+         AaRA==
+X-Forwarded-Encrypted: i=1; AJvYcCWDx6h36n6pXZ3eM11z9sEdpCvwHqs9ebzoNXUsAaICoSofUVCnPVO33NA7lKdQAR1hWV0mlm8fEoJFzUrBhFUC6JJb/T1tnHIq/j0h
+X-Gm-Message-State: AOJu0YwTTC76oSsCHJ1rot/1hWr0ucw/BtzG8Ca8CxCNZymAaNbFSjY9
+	xPv2M3AfxVrxDULAFrw1AyHlVtaLLKb+gQoLJETllkrWc8+VN3fGJQwmYvp8q3w=
+X-Google-Smtp-Source: AGHT+IEwhANyeu9YJWIz0cH62qpG7jJB5CW5p4OeQZ5+pTL2vhXmrQvVHa8/Vus+Voudd1GDJn1Omw==
+X-Received: by 2002:a05:600c:3591:b0:410:8ab6:8c7d with SMTP id p17-20020a05600c359100b004108ab68c7dmr3308232wmq.0.1707655171807;
+        Sun, 11 Feb 2024 04:39:31 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWNq0JdqO8YR6VYQ5z5T14JjOBBnJ3gUhdIk9azS5RTw6JLGcTCn08VU0FwLA2tKQVo+krhJ7ALx95LBxOUBJogAtreQ2kpWTVszCm8Gu73XloPKx7n7N0UoaxN6GjuNPHeo9MLSd4ibXQsRjES18eALGSA7dfinpKXKsWxSrw/8LwSv1Cjh8G0UcdWd6wasNhlXQMO7BePblYO0cEL8Dhvjt8M4xduafv58sERzn30ZEmDAOFoQvcc8d/v0i/GsccsS3BzhHbkCw9Dgju/SfAexwNtkPWwXHo96QWoHv3H5sObJskrlbbFmuC7qf7dVDcTlC+TNj2wbxHHmFh/dGp72JDXs9yqWdLM9mG9lUCFdyjYmWdwplzPlQGO73w9uYevHStJtgXLqZeoZtRPbmkQQHjmiqho7zShGp6841GbnyU3G6LJtyM7QGJURo/Afn961G72jIptqjWZHXgh7WGaur3WgGdU+SLLK3iyJ8fNCIDet5Qb+q+4b4vXZsvRgx+BXhnFPqxcVuu+bLFjiQ==
 Received: from [192.168.1.20] ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id n38-20020a05600c3ba600b0040fdb17e66csm5833625wms.4.2024.02.11.04.34.50
+        by smtp.gmail.com with ESMTPSA id jh3-20020a05600ca08300b0040fc2f07ed5sm5828554wmb.27.2024.02.11.04.39.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 04:34:51 -0800 (PST)
-Message-ID: <f479f1c1-cf84-4738-8c6e-832869951b82@linaro.org>
-Date: Sun, 11 Feb 2024 13:34:50 +0100
+        Sun, 11 Feb 2024 04:39:31 -0800 (PST)
+Message-ID: <7e127492-f0ff-43d1-87f4-ad562604a836@linaro.org>
+Date: Sun, 11 Feb 2024 13:39:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,7 +76,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 13/14] dt-bindings: arm: add UNI-T UTi260b
+Subject: Re: [PATCH v1 05/14] dt-bindings: soc: imx: fsl,imx-anatop: add
+ binding
 Content-Language: en-US
 To: Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -90,7 +91,7 @@ Cc: Dong Aisheng <aisheng.dong@nxp.com>,
  <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20240210012114.489102-1-sre@kernel.org>
- <20240210012114.489102-14-sre@kernel.org>
+ <20240210012114.489102-6-sre@kernel.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -136,32 +137,105 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240210012114.489102-14-sre@kernel.org>
+In-Reply-To: <20240210012114.489102-6-sre@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 10/02/2024 02:18, Sebastian Reichel wrote:
-> Add compatible value for i.MX6ULL based UNI-T
-> UTi260b thermal camera.
+> Add missing binding for i.MX anatop syscon.
 > 
 > Signed-off-by: Sebastian Reichel <sre@kernel.org>
 > ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  .../bindings/soc/imx/fsl,imx-anatop.yaml      | 125 ++++++++++++++++++
+>  1 file changed, 125 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index 228dcc5c7d6f..fa20c2699530 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -708,6 +708,7 @@ properties:
->                - toradex,colibri-imx6ull      # Colibri iMX6ULL Modules
->                - toradex,colibri-imx6ull-emmc # Colibri iMX6ULL 1GB (eMMC) Module
->                - toradex,colibri-imx6ull-wifi # Colibri iMX6ULL Wi-Fi / BT Modules
-> +              - uni-t,imx6ull-uti260b   # UNI-T UTi260b
+> diff --git a/Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml b/Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml
+> new file mode 100644
+> index 000000000000..436fdae1879e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml
+> @@ -0,0 +1,125 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/imx/fsl,imx-anatop.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ANATOP register
+> +
+> +maintainers:
+> +  - Shawn Guo <shawnguo@kernel.org>
+> +  - Sascha Hauer <s.hauer@pengutronix.de>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - fsl,imx6sl-anatop
+> +              - fsl,imx6sll-anatop
+> +              - fsl,imx6sx-anatop
+> +              - fsl,imx6ul-anatop
+> +              - fsl,imx7d-anatop
+> +          - const: fsl,imx6q-anatop
+> +          - const: syscon
+> +          - const: simple-mfd
+> +      - items:
+> +          - const: fsl,imx6q-anatop
+> +          - const: syscon
+> +          - const: simple-mfd
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 3
 
-If the product name is "uti260b", then it is enough "uni-t,uti260b". If
-you added the imx part because there is a SoM, then it is anyway not
-correct representation of the SoM.
+You need to describe items instead (items: - description: ...)
+
+> +
+> +  tempmon:
+> +    type: object
+> +    unevaluatedProperties: false
+> +    $ref: /schemas/thermal/imx-thermal.yaml
+
+That's confusing. The imx-thermal has phandle to anatop and is a child
+of it. Please sort it out, e.g. deprecate one way.
+
+> +
+> +patternProperties:
+> +  "regulator-((3p0)|(vddcore)|(vddsoc))$":
+> +    type: object
+> +    unevaluatedProperties: false
+> +    $ref: /schemas/regulator/anatop-regulator.yaml
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/imx6ul-clock.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    anatop: anatop@20c8000 {
+> +        compatible = "fsl,imx6ul-anatop", "fsl,imx6q-anatop",
+> +                     "syscon", "simple-mfd";
+> +        reg = <0x020c8000 0x1000>;
+> +        interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +        reg_3p0: regulator-3p0 {
+> +            compatible = "fsl,anatop-regulator";
+> +                regulator-name = "vdd3p0";
+
+Messed indentation.
+
+
 
 Best regards,
 Krzysztof
