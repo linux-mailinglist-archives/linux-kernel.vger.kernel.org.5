@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-60891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8059850AAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:44:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D45AD850AAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:45:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37FEB281A70
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 17:44:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83D6E1F22840
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 17:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5479A5F467;
-	Sun, 11 Feb 2024 17:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF905D495;
+	Sun, 11 Feb 2024 17:43:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ej3YfNCT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r0aMipmi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB745D488;
-	Sun, 11 Feb 2024 17:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99AD45F484;
+	Sun, 11 Feb 2024 17:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707673414; cv=none; b=SIj5UzeUr7bkHNpmAaDTQGzA+tUdislDUjslGTlUo8y/nrNS40tFFLI7F+oXviWthNLGhpOFY1VlH9wy0af9YiTU5TroNGWv4F/44nyuuz+SUBZh1ynjN3YSIHe1Fb9tWC/bNcZM8y6+1fIKDDcZuFNWm/Af4uwT9wEbQHNOo70=
+	t=1707673418; cv=none; b=dXeS5u/Lb738PKQRNwWBa3Gdo0+V0ywfLf65XikKWcSFGpvMukgNIaUtJdRnibFLx/d632QKX8Nq9l3z0lcs4RGmAg+ml6C1ssLT7ZrPK+L36JjqqhvYw23xdVsXF7Nb0bMzKxfOyWKhjzZ31NO6Ft7kh7dWmsEk3jh0zKfA/kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707673414; c=relaxed/simple;
-	bh=7bhniuqSD2L2Qes7Q2zW21qyQGYtas6Yezol52kECBU=;
+	s=arc-20240116; t=1707673418; c=relaxed/simple;
+	bh=+y95bK88fWChXwFe8dJiZk61N/FAhsRBrO4KSZJeTWs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S9VNiNKu6zG+XmalyDu5ryBwx/ex6WzdAeKC9q0U6I/G6h20IiKTF2Z+Vj5NxOueX2RsFG8yImOeUfv6hU3QpWvxNHUDSM5ZviGfw/KIBEgnml2rIM/ueCn7U1srejEtEXk6ROxPgST9lZIrQ8ZXI+EoZQbIZ+RyvkVwBHcJds8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ej3YfNCT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFA7FC433C7;
-	Sun, 11 Feb 2024 17:43:29 +0000 (UTC)
+	 MIME-Version; b=nZxDug7nyiKIvoYUqPROAyd7GVB8LMI76PgAcP9HkLu9nP+IKDt1ZburtclPMtU4ITIMxi8Ht1VLsNjbmg97y+cUQ1kmiV6KpPH7/tnJZvQAKemk09qAigdn4lMLl+oQY05kPmmS+eUXoYXTw96HwnHdX6+bmeVsE9OI8B9DvPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r0aMipmi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCDEDC43399;
+	Sun, 11 Feb 2024 17:43:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707673414;
-	bh=7bhniuqSD2L2Qes7Q2zW21qyQGYtas6Yezol52kECBU=;
+	s=k20201202; t=1707673418;
+	bh=+y95bK88fWChXwFe8dJiZk61N/FAhsRBrO4KSZJeTWs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ej3YfNCTsrNyhgyrJSjWQfqpVOb/sXA8AliwEeRJTObFTGZIAdWK9nKPRZQmXOJa3
-	 DcxZAKQY9ko4IgGCn2UFYDhXFGFvtobi05jy1z6QkrNV9bnQxphA/ZGJIraBQiq2wH
-	 1AwHxdFnY21L3kJe2z5KTRf/zRlUfqLt8kdOqV6W5E+WuQCTfmBfxgIJrZ1jKRK63f
-	 c+mrIOjOYxrUM54NqkSBgLil+IbqaVKKXlggGGLzYx9UVP8iEW0mfz5euTGRk9Ld/l
-	 moxJVf1KPZ2k4GQCsuxgTt56fvfiJahSpwsu3BSvQn+FNMCMLbKGQqi+W0Y4NO+78u
-	 Cst08PfMKSOHQ==
+	b=r0aMipmisV6duMkJCRpkqpdiPLxLixTLkM5cdohBgSPZ/vPLi8d6FZf3X6qPvMpAA
+	 fouKTUqKFfVdvPxi+r9AIQuHW1o3LgPtJvxK6/fbMqMe4SrEmy+IFrL5mYKSCUvAMs
+	 jm9iT2GreDxVejZblrC07OV+QihDMEFH3qz56ukAkFcgCyz29e/yKtVnXlx4nmsMEJ
+	 3/uwd5hTaV5JCI/pt92fIzGjJeIv4otRNES5Gevdr5g2lyKfdmn2iHOjZmKpAhIZSw
+	 qIwsBzz6I4G7c2uOowuCkhv3fDNYK2nTWVkewZPEhu/GmnAoPfkTj0DJFLFhNNNQF+
+	 lQU34WT1KbA+w==
 From: Jonathan Cameron <jic23@kernel.org>
 To: linux-iio@vger.kernel.org,
 	Rob Herring <robh@kernel.org>,
@@ -56,9 +56,9 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	=?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 6/8] iio: adc: ad7124: Use for_each_available_child_of_node_scoped()
-Date: Sun, 11 Feb 2024 17:42:34 +0000
-Message-ID: <20240211174237.182947-7-jic23@kernel.org>
+Subject: [PATCH 7/8] iio: adc: ad7292: Use for_each_available_child_of_node_scoped()
+Date: Sun, 11 Feb 2024 17:42:35 +0000
+Message-ID: <20240211174237.182947-8-jic23@kernel.org>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240211174237.182947-1-jic23@kernel.org>
 References: <20240211174237.182947-1-jic23@kernel.org>
@@ -72,68 +72,41 @@ Content-Transfer-Encoding: 8bit
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Avoids the need for manual cleanup of_node_put() in early exits
-from the loop.
+Avoids the need for manual cleanup of_node_put() in early exits from
+the loop.
 
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- drivers/iio/adc/ad7124.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+ drivers/iio/adc/ad7292.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iio/adc/ad7124.c b/drivers/iio/adc/ad7124.c
-index b9b206fcd748..67ccdad752c5 100644
---- a/drivers/iio/adc/ad7124.c
-+++ b/drivers/iio/adc/ad7124.c
-@@ -813,7 +813,6 @@ static int ad7124_of_parse_channel_config(struct iio_dev *indio_dev,
- 	struct ad7124_state *st = iio_priv(indio_dev);
- 	struct ad7124_channel_config *cfg;
- 	struct ad7124_channel *channels;
+diff --git a/drivers/iio/adc/ad7292.c b/drivers/iio/adc/ad7292.c
+index cccacec5db6d..a9354bd1ce54 100644
+--- a/drivers/iio/adc/ad7292.c
++++ b/drivers/iio/adc/ad7292.c
+@@ -260,7 +260,6 @@ static int ad7292_probe(struct spi_device *spi)
+ {
+ 	struct ad7292_state *st;
+ 	struct iio_dev *indio_dev;
 -	struct device_node *child;
- 	struct iio_chan_spec *chan;
- 	unsigned int ain[2], channel = 0, tmp;
+ 	bool diff_channels = false;
  	int ret;
-@@ -838,24 +837,21 @@ static int ad7124_of_parse_channel_config(struct iio_dev *indio_dev,
- 	indio_dev->num_channels = st->num_channels;
- 	st->channels = channels;
  
--	for_each_available_child_of_node(np, child) {
-+	for_each_available_child_of_node_scoped(np, child) {
- 		cfg = &st->channels[channel].cfg;
+@@ -305,12 +304,10 @@ static int ad7292_probe(struct spi_device *spi)
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 	indio_dev->info = &ad7292_info;
  
- 		ret = of_property_read_u32(child, "reg", &channel);
- 		if (ret)
--			goto err;
-+			return ret;
- 
--		if (channel >= indio_dev->num_channels) {
--			dev_err(indio_dev->dev.parent,
--				"Channel index >= number of channels\n");
--			ret = -EINVAL;
--			goto err;
+-	for_each_available_child_of_node(spi->dev.of_node, child) {
++	for_each_available_child_of_node_scoped(spi->dev.of_node, child) {
+ 		diff_channels = of_property_read_bool(child, "diff-channels");
+-		if (diff_channels) {
+-			of_node_put(child);
++		if (diff_channels)
+ 			break;
 -		}
-+		if (channel >= indio_dev->num_channels)
-+			return dev_err_probe(indio_dev->dev.parent, -EINVAL,
-+					     "Channel index >= number of channels\n");
- 
- 		ret = of_property_read_u32_array(child, "diff-channels",
- 						 ain, 2);
- 		if (ret)
--			goto err;
-+			return ret;
- 
- 		st->channels[channel].nr = channel;
- 		st->channels[channel].ain = AD7124_CHANNEL_AINP(ain[0]) |
-@@ -880,10 +876,6 @@ static int ad7124_of_parse_channel_config(struct iio_dev *indio_dev,
  	}
  
- 	return 0;
--err:
--	of_node_put(child);
--
--	return ret;
- }
- 
- static int ad7124_setup(struct ad7124_state *st)
+ 	if (diff_channels) {
 -- 
 2.43.1
 
