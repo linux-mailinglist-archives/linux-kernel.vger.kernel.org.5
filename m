@@ -1,77 +1,69 @@
-Return-Path: <linux-kernel+bounces-60628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A86F285079A
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 02:53:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC79A85079C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 03:03:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BAE02852B4
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 01:53:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BAEB1F23CED
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 02:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03CE185B;
-	Sun, 11 Feb 2024 01:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2096617CF;
+	Sun, 11 Feb 2024 02:03:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VCy/MYyQ"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TUHxBqSp"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D350915BE;
-	Sun, 11 Feb 2024 01:53:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99BE1185A
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 02:03:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707616398; cv=none; b=QeB+7K8BSwogl2lW3JVQY/5nb9rxNdGMv6hUX5DTLkwvfWwTx8kg463/HDPee2/dZaiImczabTneXS61YMRYYSpMK7ZEAF4YDaitDkPzCOGMu4BOW3iUW6JB4noNFJO16zYUXJQcsNZluWZmqaDt7xbMl+zh/XeXjPesNhmEBYA=
+	t=1707617028; cv=none; b=YC40GkKYwFGv18A96W3zlb8r68rDQHBePxRUQatCCP/rDwseQbceo+xc0nCRzRFnqsfC/+Czdz2v1uM7vKy/+MnxPQ3c/9Ywz6SfMaSVe3xmQeeL57GGjuiYTvjLA+UNX0roSP2SLjP2E9k1QoVbI5ex/iF6GDDsqZLcOM9SF80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707616398; c=relaxed/simple;
-	bh=nuSzSl9gWOU7ThKVhsz/gLgGzU40+yE07LZq1v68Oyc=;
+	s=arc-20240116; t=1707617028; c=relaxed/simple;
+	bh=0KHNYYwZuWk92VhOm7k0q95ijj5D9AyzjBI7oeZefxQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=sIb5I4ZYv2IEq9/NK9jdu5D3ffJIWMFRuF2mW7dJZyLNBz3d2mxG0VGY7ZxaFvDQWPjBnWcKJoTje87ossUkKjhP333eFJn9ghEovv9xNcVVOTcDfaYgRNijlh7K9Mz9P6cUfe9r7Po7/i3PIuJUrKfMCsJZEwvtBP+cLyuY23o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VCy/MYyQ; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-686b389b5d6so9487246d6.0;
-        Sat, 10 Feb 2024 17:53:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707616395; x=1708221195; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P1jV67d8m24PXZq1850zcH4U3UHNFlaMaq/fIupQAUA=;
-        b=VCy/MYyQU+vcRyP6KfaJDM4e4frRffsi4M89h5jxeKJyE/idS/8UH2toVweA3Ew3dv
-         tvcEToMmJfE2Kf61Bds1w2/v+KqwslUprDQFn5kobKKu/2H5+kkCa+nAILdI3nhMLcWk
-         pVqPolRFuTi+zHLBJyUHSw7VamUcXC4IKMRBVYz/21ZGBgDc7+hIi4fkFcMk1KmMVvAW
-         eFrl5fr8CjuoTA5Osp6RX823oDoB6DdcQ8T+EPQ8ePJV0J10MLiAstqIwsWp7Nkw/V3O
-         Gvcl8uvvemjoZNseXCi3EiaQIOvVk/fxRdf5gMJ8HxB2LWQCBqeqYNRN7AzDDXqCJeM4
-         EwEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707616395; x=1708221195;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P1jV67d8m24PXZq1850zcH4U3UHNFlaMaq/fIupQAUA=;
-        b=uZ2eeKLkJ8Z9SMLxftBGw41cQc/3SZtyNvowPyU6jvBSm8AC9JZ6ZM6VbVI6rb6e4G
-         +nQCnZS6voIfbVJv7QbLDDwcyYmsa5tRHr2QjeiMgMHKvB3w5wiitrUsLF1nCkQU2hn6
-         tI2W9FM/uIiHHlnVRShGcoUfqaTWPWusFuJX+Bvmq+cyRmVWFDZ7zRnnHWeLJ4Cavj++
-         Q31SCU+uXkVYnvOIktI+STai++mt5ibo7DwRjMaANSPil3v98AAERYhd+pOUBu8vYD2s
-         57X4bJY9HZh12WzUV++K0mpi7yntEwE13Kvy2h5BXZKqSfzygWIMtvGUQfcnN4Dky/Gd
-         nQ2w==
-X-Gm-Message-State: AOJu0YwTIovF2PLFrqFEi06CrrRqJADCivtd8HcFEE3EcEw1ReWJn4g2
-	6+ORYP9p+T4BDxgzK7qELNeIcHxAI1jz761OweRF/D3mlwFzxxrI5ur9+P/UeA==
-X-Google-Smtp-Source: AGHT+IF3qzQja2kR2RYxGLqTqgS4IjK8n9nvUEg00vvn7W9qbbH4rgzdjr+GRq5k2l0JAplN2mPzRQ==
-X-Received: by 2002:a0c:dd14:0:b0:68c:627f:ed53 with SMTP id u20-20020a0cdd14000000b0068c627fed53mr3608896qvk.59.1707616395646;
-        Sat, 10 Feb 2024 17:53:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV6O9Ebb21G/lrlgwem4+12w8w/ssoqnMBcmAlTA9/i7CKwYyO3yj/QoX0Faoum6H5Nkw2vH94Wf3fg5FDvLQEJZEqqle0mPfhEFd1PPREyOP8JHzxHt3gz62i7mRAJ+cE8u9Fzx/sHjNWoBqj9C3AmG7KUsfkMLKRnyqLoXBOXrCZYUMM=
-Received: from localhost ([207.181.197.26])
-        by smtp.gmail.com with ESMTPSA id mu19-20020a056214329300b0068ca3ed8cb1sm2285785qvb.73.2024.02.10.17.53.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Feb 2024 17:53:15 -0800 (PST)
-Date: Sat, 10 Feb 2024 19:53:14 -0600
-From: Lenko Donchev <lenko.donchev@gmail.com>
-To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] fs/ntfs3: use kcalloc() instead of kzalloc()
-Message-ID: <Zcgoighe07IahAV8@nixos>
+	 Content-Disposition; b=I0LsqjtEZbr9DUDRDhI3JOizeTb3plANjLehC6Yf9BGIQ68L5skThD6Fsxu30FtSxtX5r79yuiHrX8jFSamKQEGVaxzbu7SIevIs48tgZRaLCjwnU4sbZTOny5nzJ6jQ19c1GNDp/dyLZ/obBMhlZYQ3QO4etvmhsW53YgEpBU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TUHxBqSp; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707617027; x=1739153027;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=0KHNYYwZuWk92VhOm7k0q95ijj5D9AyzjBI7oeZefxQ=;
+  b=TUHxBqSpqydFtAqY+IbsmOa76vz468BARGe3Op0Zs2ewpRrhLW/w7hWv
+   XU4Taaiw4Zr/p0nMB5ht3h/bxTp9HDV5F6cY9EJZNKnBZBt8BHcKbwlEH
+   lYlszdgs9grZ+PbYsFCllwU18et7OmqcsPq82W+qHfjKcrqsbMnPcY1tg
+   SUGj14pPHb55UYSieLzPosBm0itJ79U7OaXMForthUNSozq7FdsAc7q8W
+   XRh2aTJTPN8vkUgQIu1LgcBOy5guk73Peu4Nv996oY81T1gtxjdfIO1b1
+   9UgN3nZl/uZYvJeFLIfjnPeEvuNB1nu4WXJLfCprAQvymHhSl+SN6V6Ly
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10980"; a="1490725"
+X-IronPort-AV: E=Sophos;i="6.05,260,1701158400"; 
+   d="scan'208";a="1490725"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2024 18:03:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,260,1701158400"; 
+   d="scan'208";a="39713940"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 10 Feb 2024 18:03:44 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rYzC2-0006Fs-0L;
+	Sun, 11 Feb 2024 02:03:42 +0000
+Date: Sun, 11 Feb 2024 10:03:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: drivers/uio/uio.c:520:21: sparse: sparse: incorrect type in
+ assignment (different base types)
+Message-ID: <202402111048.4XHz0rkp-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,33 +73,51 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-We are trying to get rid of all multiplications from allocation
-functions to prevent integer overflows[1]. Here the multiplication is
-obviously safe, but using kcalloc() is more appropriate and improves
-readability. This patch has no effect on runtime behavior.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a5b6244cf87c50358f5562b8f07f7ac35fc7f6b0
+commit: a93e7b331568227500186a465fee3c2cb5dffd1f uio: Prevent device destruction while fds are open
+date:   6 years ago
+config: x86_64-randconfig-x051-20230705 (https://download.01.org/0day-ci/archive/20240211/202402111048.4XHz0rkp-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240211/202402111048.4XHz0rkp-lkp@intel.com/reproduce)
 
-Link: https://github.com/KSPP/linux/issues/162 [1]
-Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402111048.4XHz0rkp-lkp@intel.com/
 
-Signed-off-by: Lenko Donchev <lenko.donchev@gmail.com>
----
- fs/ntfs3/frecord.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+sparse warnings: (new ones prefixed by >>)
+>> drivers/uio/uio.c:520:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __poll_t [usertype] ret @@     got int @@
+   drivers/uio/uio.c:520:21: sparse:     expected restricted __poll_t [usertype] ret
+   drivers/uio/uio.c:520:21: sparse:     got int
+   drivers/uio/uio.c:852: warning: expecting prototype for uio_register_device(). Prototype was for __uio_register_device() instead
 
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index 3b42938a9d3b..d435446537ca 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -2636,7 +2636,7 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
- 		goto out1;
- 	}
- 
--	pages_disk = kzalloc(npages_disk * sizeof(struct page *), GFP_NOFS);
-+	pages_disk = kcalloc(npages_disk, sizeof(struct page *), GFP_NOFS);
- 	if (!pages_disk) {
- 		err = -ENOMEM;
- 		goto out2;
+vim +520 drivers/uio/uio.c
+
+   510	
+   511	static __poll_t uio_poll(struct file *filep, poll_table *wait)
+   512	{
+   513		struct uio_listener *listener = filep->private_data;
+   514		struct uio_device *idev = listener->dev;
+   515		__poll_t ret = 0;
+   516		unsigned long flags;
+   517	
+   518		spin_lock_irqsave(&idev->info_lock, flags);
+   519		if (!idev->info || !idev->info->irq)
+ > 520			ret = -EIO;
+   521		spin_unlock_irqrestore(&idev->info_lock, flags);
+   522	
+   523		if (ret)
+   524			return ret;
+   525	
+   526		poll_wait(filep, &idev->wait, wait);
+   527		if (listener->event_count != atomic_read(&idev->event))
+   528			return EPOLLIN | EPOLLRDNORM;
+   529		return 0;
+   530	}
+   531	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
