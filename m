@@ -1,144 +1,92 @@
-Return-Path: <linux-kernel+bounces-60842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C34D850A17
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8723850A1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5163A1C20F36
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:43:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3EF71C20F4D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0935B691;
-	Sun, 11 Feb 2024 15:42:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C6E5B689;
+	Sun, 11 Feb 2024 15:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b="dtbevJw2"
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="bwD08rAe"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 812945B668;
-	Sun, 11 Feb 2024 15:42:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822815D460;
+	Sun, 11 Feb 2024 15:44:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707666176; cv=none; b=e4e3eIpLIENHWH1hsRoCn8WHWV1RD6+ydshnGNKS72i4Uo46bAnMMlpVkpIKsujf9dCJnEDe2Q173sSI4lwOI/4+hUXfdEPKSISSVUUtQz9n0Yw/qvRj5UEa4EVXCNqClTQECOA+MTvFh6ORQSAY26bjID2VgSc28Ymebbo1KZg=
+	t=1707666297; cv=none; b=uKHX5S1xTHtlcQ7zt44bGL62KNiAqmZAcsN/NZOcPg6dUFCq3/+D96/Tmmw2xM+BzbdZ3U6rMCN59s6Cqd82dkGLT21z7qNVISvt8xzXi7wyjLFA+5gIt9oKN8p1CGvUv9lpj9l23qbB9w5eo77+l/EFSkJQ4+YSw2xzU63dWq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707666176; c=relaxed/simple;
-	bh=lhbXjww9UyAKMdiEKIwf186NCMys5erRb0M4pfLaPfM=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 MIME-Version:Content-Type; b=fZGH1rP0r/IlK71rhCgqycn+G/Fpxf4gtpJEDA2iJbitT4wUD3vl0XFNZl8S/5MKedoK+RZotq9jW9mcLdSxCjKcKePl2x/iO5YY6zu3zKETRGIOuMJe1UuysDkIvobvRuxYvxWMkkzMtKcr8KP9Cw7Gjwpoq5v8KNz6knETQ1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev; spf=pass smtp.mailfrom=oltmanns.dev; dkim=pass (2048-bit key) header.d=oltmanns.dev header.i=@oltmanns.dev header.b=dtbevJw2; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oltmanns.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oltmanns.dev
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4TXsL23Rdhz9scZ;
-	Sun, 11 Feb 2024 16:42:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-	s=MBO0001; t=1707666170;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=98aDbHgBbGqJamJlcPsF9M6fGfi3Twm9F/GrRpw8fzI=;
-	b=dtbevJw2RvdVTy1+oh5ExI/QO4OF403FR6JiNYzrqWdLydcjnRivDO15lGVH9EtidDlKzl
-	oyXvxHTUS2c4XApjWIuMjMOgBxMKmmmDtrkPpSXmfDot5xPTE1TtEO9iGJfByr0YJa8sT0
-	FTifdEFNutdUrivRSWb3OFHI/17FqDhzk8iAgTgM/Kq6cQZWiECx2tOPlxJq0xauL8o6/f
-	in9z6b7cL4yVjxXoSxoumh0x9U8qViyV1w2GC0AukoHC0EtFBYyXrGKje/BEMpqVxg6wo2
-	FoCa5h/xYhFO2TyLCITT9NvnUlOQIuuEBgy3nnNQvBoFXkqUm0Wmo8t4NOo4XQ==
-References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
- <20240205-pinephone-pll-fixes-v2-5-96a46a2d8c9b@oltmanns.dev>
- <poua4bzyciiwt65sqjf2whqfdumvoe4h3bkjpf64px2vwgumrf@sai73byg2iju>
-From: Frank Oltmanns <frank@oltmanns.dev>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
- <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Guido
- =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team
- <kernel@puri.sm>, Ondrej
- Jirman <megi@xff.cz>, Neil Armstrong <neil.armstrong@linaro.org>, Jessica
- Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter
- <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] drm/panel: st7703: Drive XBD599 panel at higher
- clock rate
-In-reply-to: <poua4bzyciiwt65sqjf2whqfdumvoe4h3bkjpf64px2vwgumrf@sai73byg2iju>
-Date: Sun, 11 Feb 2024 16:42:43 +0100
-Message-ID: <87sf1zxb0s.fsf@oltmanns.dev>
+	s=arc-20240116; t=1707666297; c=relaxed/simple;
+	bh=02hlsE3fIeUkpdG/W45CI6vNfgQ7OGsQBobYHKiWcTI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OFjcXm/67CB8p6zH9kYJLxa56LX6N2qyvr9XEG3MiM9Vui20ga0r31Ei1AX1HbnOkJgqatB0Fu94WVvhWPKfayhAvB/TNPHJ5uqPU6y/VPCVqQctyFNgDiZMt3eXSsWZzs5anIZLkWngwe1NwSNJi+uOKYx/3/53upO5hAX+owo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=bwD08rAe; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 5426E20751;
+	Sun, 11 Feb 2024 16:44:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1707666283;
+	bh=tAZNyiysoPkFJigXlxkqXvpyemn+vj6wg0E7daVSflM=; h=From:To:Subject;
+	b=bwD08rAeNi+64JMXiP3XA2VtDpTi7cmj50ioN6lj1Rfj2rLJzf61w/veV2+pAwoBr
+	 TCAK3OFqIfeiCT4k7nP2UcdPvyPV/jaRn7ZDVtsnKU2R6uOGce28y9lX+Oa0o58E0q
+	 a2ubtFvKk8VJu5N02m2N3SonJxEp8+mP+WeK/A9Yn0A6LjmjhsTaOMVl88sKlNfFKP
+	 gzHiCU0AIvWZZF5w5ha7+qeHXFJGs9y8aCQcd3p88QhJ4OQo9BzVi3813VzloR6a58
+	 TJCoFyOYa2txRZgQXdnPPgTi5V284r+2rG1eFUwhO3KvKjNEIaTpoGRfzSSJjnzsu+
+	 jqh+YM2QxzuEQ==
+Date: Sun, 11 Feb 2024 16:44:11 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Judith Mendez <jm@ti.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/9] Fix MMC properties on Sitara devices
+Message-ID: <20240211154411.GA3360@francesco-nb>
+References: <20240207225526.3953230-1-jm@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Rspamd-Queue-Id: 4TXsL23Rdhz9scZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207225526.3953230-1-jm@ti.com>
 
+Hello Judith and TI folks,
 
-On 2024-02-08 at 20:05:08 +0100, Maxime Ripard <mripard@kernel.org> wrote:
-> [[PGP Signed Part:Undecided]]
-> Hi Frank,
->
-> On Mon, Feb 05, 2024 at 04:22:28PM +0100, Frank Oltmanns wrote:
->> This panel is used in the pinephone that runs on a Allwinner A64 SOC.
->> The SOC requires pll-mipi to run at more than 500 MHz.
->>
->> This is the relevant clock tree:
->>  pll-mipi
->>     tcon0
->>        tcon-data-clock
->>
->> tcon-data-clock has to run at 1/4 the DSI per-lane bit rate. The XBD599
->> has 24 bpp and 4 lanes. Therefore, the resulting requested
->> tcon-data-clock rate is:
->>     crtc_clock * 1000 * (24 / 4) / 4
->>
->> tcon-data-clock runs at tcon0 / 4 (fixed divisor), so it requests a
->> parent rate of
->>     4 * (crtc_clock * 1000 * (24 / 4) / 4)
->>
->> Since tcon0 is a ccu_mux, the rate of tcon0 equals the rate of pll-mipi.
->>
->> pll-mipi's constraint to run at 500MHz or higher forces us to have a
->> crtc_clock >= 83333 kHz if we want a 60 Hz vertical refresh rate.
->>
->> Change [hv]sync_(start|end) so that we reach a clock rate of 83502 kHz
->> so that it is high enough to align with pll-pipi limits.
->>
->> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
->
-> That commit log is great, but it's kind of off-topic. It's a panel
-> driver, it can be used on any MIPI-DSI controller, the only relevant
-> information there should be the panel timings required in the datasheet.
->
-> The PLL setup is something for the MIPI-DSI driver to adjust, not for
-> the panel to care for.
->
+On Wed, Feb 07, 2024 at 04:55:17PM -0600, Judith Mendez wrote:
+> This patch series aims to add or fix MMC properties:
+> OTAPDLY/ITAPDLY.
+> 
+> The DLL properties ti,trm-icp and ti,driver-strength-ohm
+> should also be updated since only AM64x and AM62p devices
+> have a DLL to enable, so remove these properties when not
+> applicable.
 
-I absolutely agree. It even was the reason for my submission of a
-sunxi-ng patch series last year that was accepted, to make pll-mipi more
-flexible. :)
+Do you have any reference regarding this change? TI reference manual or
+anything like that?
 
-The only remaining option I currently see for adjusting the sunxi-ng
-driver to further accomodate the panel, is trying to use a higher
-divisor than 4 for calculating tcon-data-clock from tcon0. I remember
-reading a discussion about this, but as far as I remember that proposal
-was rejected (by you, IIRC).
+No change needed in sdhci_am654.c? It seems that `drv_strength` is written
+to some register unconditionally, is it ok to do so?
 
-While I appreciate other suggestion as well, I'll look into options for
-using a different divisor than 4.
+Do this change implies that there is no way to configure the drive
+strength on such SoCs and MMC/SD trace impedance must be the nominal
+50ohm?
 
-Best regards,
-  Frank
+Thanks,
+Francesco
 
->
-> Maxime
->
-> [[End of PGP Signed Part]]
 
