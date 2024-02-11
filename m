@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-60649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B90785080C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 08:57:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A22D850810
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 08:57:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADCFC1C2133A
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 07:57:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 328FA1F2291E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 07:57:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DBDE45BFC;
-	Sun, 11 Feb 2024 07:56:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BF946558;
+	Sun, 11 Feb 2024 07:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="ZLcX3PHD"
+	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="vO9wcHof"
 Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F0D45016;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574FE45018;
 	Sun, 11 Feb 2024 07:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.132.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707638218; cv=none; b=cOrQIHzH9GQfK2jRPFaKNg2DW/3kSdt0jKzrBcWghISj8yoM/+C/aYxJVuXHtCejLyHZ15jFMoyR05NOw60h4M+O649d2cbWF7rdkDqq6kwIM29OZepKKgwhrgOm9fPBTIu8W8NRXS+1XDHDH3aXMx9V/FAZ86WaDoBmSxDk4Wk=
+	t=1707638220; cv=none; b=tCFWJ3NtISMfcuSIxcBOGa6/La+LmQ+x5uA88ovI767eYR6gks3cJrg0Na2dAyXxQ2YTU+83Lcrp/n61rinGE6vZcK3EAleu7ks6uJghpqlne3yGfLQE94+Zsflj7BZSeKOhsyJofT4os81V+d3dNCtPz59iQ9b5G094AuiKP2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707638218; c=relaxed/simple;
-	bh=KPGBnj0ZTjzETULRrhkS68q97OwTkGoJ0Kz/Oy+38+E=;
+	s=arc-20240116; t=1707638220; c=relaxed/simple;
+	bh=wNBkdVLyeOQ8x7+iyTGkd18QjqQbam0wLSd/ELJIWfw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=foVdIkG+EOxfj+7+uC0YbB1NnnulK97tIhYLeY7Ef9hOSX6rS/hvOaECghBCiYbjydlIsi40e4IusfrrAln8c1WelZF4+Hg4+8a8vpkvoE9ujbBLw2G7iO71P5FpqF2sLnueElr39nK70/Ijx+q4bLtXRJ/RMCi1jWEFrVXhSsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro; spf=pass smtp.mailfrom=subdimension.ro; dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b=ZLcX3PHD; arc=none smtp.client-ip=172.104.132.142
+	 MIME-Version; b=ars/S6BrA7lHJfNTGUi6TAt5cvVFznTRPfCtbaQDJ+onk5C9Rv6X2719PlXB6fwT1n22PTaCUtvl83baCW299XKztoz5DqYyFe4nOJrs4yor4euXAeeKNu9+BG8mR4ZodmMeeDmf5PcfV4uOeL+6d8HklRbbi2oiiyRubzN7FAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro; spf=pass smtp.mailfrom=subdimension.ro; dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b=vO9wcHof; arc=none smtp.client-ip=172.104.132.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
 Received: from localhost.localdomain (unknown [188.24.101.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by mail.subdimension.ro (Postfix) with ESMTPSA id 6886F33BBBB;
+	by mail.subdimension.ro (Postfix) with ESMTPSA id AADA933BBBD;
 	Sun, 11 Feb 2024 07:56:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
 	s=skycaves; t=1707638209;
-	bh=KPGBnj0ZTjzETULRrhkS68q97OwTkGoJ0Kz/Oy+38+E=;
+	bh=wNBkdVLyeOQ8x7+iyTGkd18QjqQbam0wLSd/ELJIWfw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ZLcX3PHDP2ihgdgBQp+gV53OxjvjcJNKraYw8PjjLjK3riO4MGcENlyOxABjamQBg
-	 dwsZcBUx4BqlB6bNZ638yKNlOs0lcQ4dWS0xj5TDzVWMdtzLioCjO30m4NbBoLc9NE
-	 6NCZ1kub/wuOQPlcC4uelvTZ+F2lvU5VHOIDiMz0=
+	b=vO9wcHof7POCfjrX+pzF2SLjiQgOVQsuiZS05FFn9iSfJpzFGBhCcrTkplkRzihmK
+	 lINysF0o6MXs7W9ZlD8dZZ3f1dVYDFQkb7vux+XfakUwtXgAXuOKa6XVrPPxdSTuas
+	 dBaI18aZDvWfr7xb1kKI0RypmuRTQWQtpIz2u2rA=
 From: Petre Rodan <petre.rodan@subdimension.ro>
 To: linux-iio@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Petre Rodan <petre.rodan@subdimension.ro>,
 	Jonathan Cameron <jic23@kernel.org>,
 	Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v3 3/6] iio: pressure: hsc030pa: include cleanup
-Date: Sun, 11 Feb 2024 09:56:34 +0200
-Message-ID: <20240211075645.28777-4-petre.rodan@subdimension.ro>
+Subject: [PATCH v3 4/6] iio: pressure: hsc030pa: update datasheet URLs
+Date: Sun, 11 Feb 2024 09:56:35 +0200
+Message-ID: <20240211075645.28777-5-petre.rodan@subdimension.ro>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240211075645.28777-1-petre.rodan@subdimension.ro>
 References: <20240211075645.28777-1-petre.rodan@subdimension.ro>
@@ -63,64 +63,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add includes based on prior reviews from Andy.
+Provide bus-specific technical datasheet in the _i2c.c _spi.c headers
+instead of the generic one.
 
 Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
 ---
 v1 -> v2 no changes
 v2 -> v3 split cleanup patch into 3 parts, no code changes
- drivers/iio/pressure/hsc030pa.h     | 2 ++
- drivers/iio/pressure/hsc030pa_i2c.c | 2 ++
- drivers/iio/pressure/hsc030pa_spi.c | 2 ++
- 3 files changed, 6 insertions(+)
+ drivers/iio/pressure/hsc030pa_i2c.c | 4 ++--
+ drivers/iio/pressure/hsc030pa_spi.c | 3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/pressure/hsc030pa.h b/drivers/iio/pressure/hsc030pa.h
-index d20420dba4f6..f1079a70799f 100644
---- a/drivers/iio/pressure/hsc030pa.h
-+++ b/drivers/iio/pressure/hsc030pa.h
-@@ -10,6 +10,8 @@
- 
- #include <linux/types.h>
- 
-+#include <linux/iio/iio.h>
-+
- #define HSC_REG_MEASUREMENT_RD_SIZE 4
- 
- struct device;
 diff --git a/drivers/iio/pressure/hsc030pa_i2c.c b/drivers/iio/pressure/hsc030pa_i2c.c
-index e2b524b36417..b0c47f863afb 100644
+index b0c47f863afb..b5810bafef40 100644
 --- a/drivers/iio/pressure/hsc030pa_i2c.c
 +++ b/drivers/iio/pressure/hsc030pa_i2c.c
-@@ -8,10 +8,12 @@
-  * Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/common/documents/sps-siot-i2c-comms-digital-output-pressure-sensors-tn-008201-3-en-ciid-45841.pdf [i2c related]
+@@ -4,8 +4,8 @@
+  *
+  * Copyright (c) 2023 Petre Rodan <petre.rodan@subdimension.ro>
+  *
+- * Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf [hsc]
+- * Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/common/documents/sps-siot-i2c-comms-digital-output-pressure-sensors-tn-008201-3-en-ciid-45841.pdf [i2c related]
++ * Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/common/documents/sps-siot-i2c-comms-digital-output-pressure-sensors-tn-008201-3-en-ciid-45841.pdf
++ * Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/common/documents/sps-siot-sleep-mode-technical-note-008286-1-en-ciid-155793.pdf
   */
  
-+#include <linux/device.h>
- #include <linux/errno.h>
- #include <linux/i2c.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
-+#include <linux/types.h>
- 
- #include <linux/iio/iio.h>
- 
+ #include <linux/device.h>
 diff --git a/drivers/iio/pressure/hsc030pa_spi.c b/drivers/iio/pressure/hsc030pa_spi.c
-index a719bade8326..f6da49cdb5e5 100644
+index f6da49cdb5e5..8d3441f1dcf9 100644
 --- a/drivers/iio/pressure/hsc030pa_spi.c
 +++ b/drivers/iio/pressure/hsc030pa_spi.c
-@@ -7,10 +7,12 @@
-  * Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
+@@ -4,7 +4,8 @@
+  *
+  * Copyright (c) 2023 Petre Rodan <petre.rodan@subdimension.ro>
+  *
+- * Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
++ * Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/common/documents/sps-siot-spi-comms-digital-ouptu-pressure-sensors-tn-008202-3-en-ciid-45843.pdf
++ * Datasheet: https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/common/documents/sps-siot-sleep-mode-technical-note-008286-1-en-ciid-155793.pdf
   */
  
-+#include <linux/device.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/spi/spi.h>
- #include <linux/stddef.h>
-+#include <linux/types.h>
- 
- #include <linux/iio/iio.h>
- 
+ #include <linux/device.h>
 -- 
 2.43.0
 
