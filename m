@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-60758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 052E985092C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:36:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B1CD85092D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE1381F23C49
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:36:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B46CBB22B98
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:37:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A334605BC;
-	Sun, 11 Feb 2024 12:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF2560885;
+	Sun, 11 Feb 2024 12:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="ZhnjJBq9"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="h/15C0Ej"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633695FF06
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E2A55FF1C
 	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:30:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707654649; cv=none; b=qv/iaY53b7TW+QRoeH8LEkv+kcjRB+vfueJ9ZrCZvPjxzy+pqO94d7N4Kx+rnrJCgmJkz9SUovMPi6CpDfo6VgGsJZycfid9zVAterc7hZjWLfKmhOUQKyHt2RIZxTPYZxjZIyivZoyF17Q59bfxN4IGRQxnAgQT/4Cpkq0KVik=
+	t=1707654650; cv=none; b=K8SLM4My3DXFKjjYIIYLxbsJvRLlRlFx+XjoEcTbJYlvkFUOrM1hdy4Lqm1EVh7hBBk0WkYlejG0i/VpUUfyaFNZhM6hbwurIJpKvKsKqOQMVTR+oIeRMqWFT5eFO8z1QQe4SQ/DMUGG5po5kTHmrr3kEYDi73UExVpk/IBzVzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707654649; c=relaxed/simple;
-	bh=FaWrvDRhCn6qo66e2LFY1/am/fRiqeQ00xmmtBjY9fQ=;
+	s=arc-20240116; t=1707654650; c=relaxed/simple;
+	bh=syQAlmBByqaoLkzoL1THQRHvq9XL0JSQf34V/193qmc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oxSWNAUuU64xdltxN18pV/EbERjF2gOc8IgFg7ZwucVVUXpWYWwlpvFZJHPvE+h5XJGoTrKXbGp/OWietGq0VYarH8wrXLmMBSSjgQdtFF96R/t/vUXXQP6NHC1PPnhgdLAqYGxIKV2jesMFz51up3N74GB5u2BaD5NqE56IG2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=ZhnjJBq9; arc=none smtp.client-ip=209.85.208.174
+	 MIME-Version; b=Tx4t/Ok+HEant1XSPfkSFGPWTD54mTkq1lFoMfIvo4Oe9VlHFwUQKHA2+CvNrsF2Wb9GdRzft7bivDITwkH/0BCYNII6CGGivZznj2wuUTgelVTQyZhdqe99dFKjZywRy+LGBI5iXQ8v9ZTi9RyFgsmnUZcLumkO7RCwRPiz/aI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=h/15C0Ej; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d0e2adfeefso18219681fa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:30:45 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so3084959a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:30:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google; t=1707654644; x=1708259444; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dhd0Wyk/ZgeZM/EU3KZ6LbkcM94I0OFOZkDaLa9LsZQ=;
-        b=ZhnjJBq9UlbZIahyq8LYfJIU3IheyD12vYU0g98Givle61VZQr3I0hefCz5Y16Nm9V
-         3q78+kZPHIPxA873Qmfe9JNhZH/hv/3zmcnfPvy0V5Ac61oXNAH/tH5oQoJsfvJ5p3hz
-         ydHcDuitgUhtzxTrTrq8OJUBSo8EmU27uE7hxDcN8iXtDk4IOe/mdc5EdCZkmjmLn6qW
-         tSYJziQR9ybARHH9XdOWJVqR6hNmgWzWXcK/1znP2ehlBUIW5bC30aWGfLDxO2cdvXgG
-         57bp1fFaJxoq7LXx6UTZVHXrjmRzAKZIqZYKSBvsmzSoF0QSBNYqhTfHIUeEcr3bQHdH
-         Bvsg==
+        bh=cjsenR1I+hBMNdlhl6pWpCICsCc70DR6NnhT7oUmxSY=;
+        b=h/15C0Ej9/ntiQjGvwY8xeUMH18RgZWaPyktOBegoHVb73faocqKH1BSD2AXFxZIP6
+         UfHIumUr+1AprajKt+JtDiDRx/TVRDUKWch03PiTmUr/i1ei3TS6BUsIzeqIq7WT/lpq
+         76LjBnBwfqNBW2jq9L0vjYiL7ZjlcNd9HTKorcbL+f9869x9qz+ljTAnEaFvi10xw3MB
+         Kc1QKP9fcWNceHGWHMkNieqtiSZBlrarUhNKeqIYPue6DNqjpmxjm4ZrszyZKAMqxFkT
+         A773LwOcNHsxv8cnPVq6xNPE3aDz4MGUjq7Wd6o5tLOQBBTVFsEGEDbw/5pKonO6EPm4
+         gvYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1707654644; x=1708259444;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dhd0Wyk/ZgeZM/EU3KZ6LbkcM94I0OFOZkDaLa9LsZQ=;
-        b=AEbZwQ6cdh1mQC1ElTyJ1+HrUxK7PI+kK787hsw90v446C8TZ32/HJS+lbGyTtzIvT
-         BjfPT7talud71KgqHuPgiXDYktjJ42dN3u/rWSb+5rZh0tmf9z7SuuKqzz4inx8Lw4nL
-         BdsPH+Kp8HYyV3TBZm+VNkxexyqhLWzn8bpy5q/yXkiqXOZ8oKhKS+t5ORQet5vuTrYl
-         8F2kOOuj/r80hHqLc/KL/wvYjURiuBip7JpXc6D+YVTitBBB5x9dsluIFaK/ev0ToT9z
-         7yjUV5SptEFXsbQKDlcpOEvDZ4RInFYAIaEzIJExeRuQV+3FtYL8y3DSO116vQ0e7vZS
-         TFLQ==
-X-Gm-Message-State: AOJu0YyD2SuJWKCME7mH+q0pUnrHZkgHORiQgjhKybUgMPEgZk6A2JjM
-	jHDpQUw+jJMOhsRkayNBh7HvjJIWt9+3O3uyWpQYKqY+VhWa75+M1t0znOFgJSLM941wyrgVk20
-	y
-X-Google-Smtp-Source: AGHT+IGe2JCDcv2zmH51jFGl38SlUOBmvxv1RcSyvmLnDS+lCsrshqS+1OGZ+4Y8ODu01VNPs4AB1A==
-X-Received: by 2002:a2e:a498:0:b0:2d0:c322:7638 with SMTP id h24-20020a2ea498000000b002d0c3227638mr2437312lji.39.1707654643909;
-        Sun, 11 Feb 2024 04:30:43 -0800 (PST)
+        bh=cjsenR1I+hBMNdlhl6pWpCICsCc70DR6NnhT7oUmxSY=;
+        b=ZWjAer/iKH+hOaeSqGPkn5eEqqCBXclhCzjk2tNwxFpd97DGgOMFWlgNn7OgSzm8lh
+         a4TAMVbJPoIpsoF7hvPzGt7tneGlTlgZqihZbtHqkCcw6S/cfVaaasOTKLwaxVz6419T
+         ZVa+73iawe4KyGT92xnxu5IQGg9jEXQqBjGXinQOfwQbRLi8FxGtAOYRo+fEDXwL541N
+         E+oXbAR5wp9aUTZ4YKj5IV8QuA5Pk12mYEE17yLzaMDdCcgpNEhV2if+hRO0YtqXWb2y
+         UFRgBWNRLkCm8tQfDphnukJUNp7XbWzg8y6JOvmsN+yddEsmjZcLMt+joo6R6e8CysKz
+         idww==
+X-Gm-Message-State: AOJu0YwprS7F4xkxHglTE0692xUf0xK5KfOjIEXAYVRT9Tlc3ewvXuZe
+	V31H67rCj+kSCfiiPjXboXPUNUuITqoTpZ5q6KjPmHmZe0fGCRvHWuN3q2YFWdy234wG8wj3TmR
+	z
+X-Google-Smtp-Source: AGHT+IFlBmHWWKfDSNN7frlVlSRcC7qvs4b6RL24VpjnAyMSNVkRdc7Dejs3k2t+4OnGT3QgPlTi6w==
+X-Received: by 2002:a05:6402:2345:b0:561:8ff7:5e83 with SMTP id r5-20020a056402234500b005618ff75e83mr1360342eda.6.1707654644546;
+        Sun, 11 Feb 2024 04:30:44 -0800 (PST)
 Received: from raven.intern.cm-ag (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id fj18-20020a0564022b9200b0056187ca4120sm1024611edb.10.2024.02.11.04.30.42
+        by smtp.gmail.com with ESMTPSA id fj18-20020a0564022b9200b0056187ca4120sm1024611edb.10.2024.02.11.04.30.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 04:30:42 -0800 (PST)
+        Sun, 11 Feb 2024 04:30:44 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v3 29/35] linux/random.h: reduce dependencies on linux/kernel.h
-Date: Sun, 11 Feb 2024 13:29:54 +0100
-Message-Id: <20240211123000.3359365-30-max.kellermann@ionos.com>
+Subject: [PATCH v3 30/35] linux/kernel.h: move might_sleep(), ... to sched/debug_atomic_sleep.h
+Date: Sun, 11 Feb 2024 13:29:55 +0100
+Message-Id: <20240211123000.3359365-31-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240211123000.3359365-1-max.kellermann@ionos.com>
 References: <20240211123000.3359365-1-max.kellermann@ionos.com>
@@ -83,25 +83,403 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
+Reducing dependencies on the header linux/kernel.h.
+
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- include/linux/random.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/clk.h                      |   1 +
+ include/linux/kernel.h                   | 109 ----------------------
+ include/linux/mmu_notifier.h             |   1 +
+ include/linux/pwm.h                      |   2 +
+ include/linux/rcutiny.h                  |   1 +
+ include/linux/sched.h                    |   1 +
+ include/linux/sched/debug_atomic_sleep.h | 114 +++++++++++++++++++++++
+ include/linux/sched/mm.h                 |   2 +-
+ include/linux/uaccess.h                  |   1 +
+ include/linux/wait.h                     |   1 +
+ include/linux/wait_bit.h                 |   2 +-
+ security/landlock/object.c               |   1 +
+ security/landlock/ruleset.c              |   1 +
+ 13 files changed, 126 insertions(+), 111 deletions(-)
+ create mode 100644 include/linux/sched/debug_atomic_sleep.h
 
-diff --git a/include/linux/random.h b/include/linux/random.h
-index 70e5250f3bc4..3183025ddda9 100644
---- a/include/linux/random.h
-+++ b/include/linux/random.h
-@@ -4,7 +4,8 @@
- #define _LINUX_RANDOM_H
+diff --git a/include/linux/clk.h b/include/linux/clk.h
+index 06f1b292f8a0..2fcae620703b 100644
+--- a/include/linux/clk.h
++++ b/include/linux/clk.h
+@@ -12,6 +12,7 @@
+ #include <linux/err.h>
+ #include <linux/kernel.h>
+ #include <linux/notifier.h>
++#include <linux/sched/debug_atomic_sleep.h> // for might_sleep()
  
- #include <linux/bug.h>
+ struct device;
+ struct clk;
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index f4a1d582b79d..67662bdb17d0 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -80,115 +80,6 @@
+  */
+ #define lower_16_bits(n) ((u16)((n) & 0xffff))
+ 
+-struct completion;
+-struct user;
+-
+-#ifdef CONFIG_PREEMPT_VOLUNTARY_BUILD
+-
+-extern int __cond_resched(void);
+-# define might_resched() __cond_resched()
+-
+-#elif defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+-
+-extern int __cond_resched(void);
+-
+-DECLARE_STATIC_CALL(might_resched, __cond_resched);
+-
+-static __always_inline void might_resched(void)
+-{
+-	static_call_mod(might_resched)();
+-}
+-
+-#elif defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+-
+-extern int dynamic_might_resched(void);
+-# define might_resched() dynamic_might_resched()
+-
+-#else
+-
+-# define might_resched() do { } while (0)
+-
+-#endif /* CONFIG_PREEMPT_* */
+-
+-#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+-extern void __might_resched(const char *file, int line, unsigned int offsets);
+-extern void __might_sleep(const char *file, int line);
+-extern void __cant_sleep(const char *file, int line, int preempt_offset);
+-extern void __cant_migrate(const char *file, int line);
+-
+-/**
+- * might_sleep - annotation for functions that can sleep
+- *
+- * this macro will print a stack trace if it is executed in an atomic
+- * context (spinlock, irq-handler, ...). Additional sections where blocking is
+- * not allowed can be annotated with non_block_start() and non_block_end()
+- * pairs.
+- *
+- * This is a useful debugging help to be able to catch problems early and not
+- * be bitten later when the calling function happens to sleep when it is not
+- * supposed to.
+- */
+-# define might_sleep() \
+-	do { __might_sleep(__FILE__, __LINE__); might_resched(); } while (0)
+-/**
+- * cant_sleep - annotation for functions that cannot sleep
+- *
+- * this macro will print a stack trace if it is executed with preemption enabled
+- */
+-# define cant_sleep() \
+-	do { __cant_sleep(__FILE__, __LINE__, 0); } while (0)
+-# define sched_annotate_sleep()	(current->task_state_change = 0)
+-
+-/**
+- * cant_migrate - annotation for functions that cannot migrate
+- *
+- * Will print a stack trace if executed in code which is migratable
+- */
+-# define cant_migrate()							\
+-	do {								\
+-		if (IS_ENABLED(CONFIG_SMP))				\
+-			__cant_migrate(__FILE__, __LINE__);		\
+-	} while (0)
+-
+-/**
+- * non_block_start - annotate the start of section where sleeping is prohibited
+- *
+- * This is on behalf of the oom reaper, specifically when it is calling the mmu
+- * notifiers. The problem is that if the notifier were to block on, for example,
+- * mutex_lock() and if the process which holds that mutex were to perform a
+- * sleeping memory allocation, the oom reaper is now blocked on completion of
+- * that memory allocation. Other blocking calls like wait_event() pose similar
+- * issues.
+- */
+-# define non_block_start() (current->non_block_count++)
+-/**
+- * non_block_end - annotate the end of section where sleeping is prohibited
+- *
+- * Closes a section opened by non_block_start().
+- */
+-# define non_block_end() WARN_ON(current->non_block_count-- == 0)
+-#else
+-  static inline void __might_resched(const char *file, int line,
+-				     unsigned int offsets) { }
+-static inline void __might_sleep(const char *file, int line) { }
+-# define might_sleep() do { might_resched(); } while (0)
+-# define cant_sleep() do { } while (0)
+-# define cant_migrate()		do { } while (0)
+-# define sched_annotate_sleep() do { } while (0)
+-# define non_block_start() do { } while (0)
+-# define non_block_end() do { } while (0)
+-#endif
+-
+-#define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
+-
+-#if defined(CONFIG_MMU) && \
+-	(defined(CONFIG_PROVE_LOCKING) || defined(CONFIG_DEBUG_ATOMIC_SLEEP))
+-#define might_fault() __might_fault(__FILE__, __LINE__)
+-void __might_fault(const char *file, int line);
+-#else
+-static inline void might_fault(void) { }
+-#endif
+-
+ void do_exit(long error_code) __noreturn;
+ 
+ extern int get_option(char **str, int *pint);
+diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+index 6aa17677254b..d13d1210e7a0 100644
+--- a/include/linux/mmu_notifier.h
++++ b/include/linux/mmu_notifier.h
+@@ -5,6 +5,7 @@
+ #include <linux/list.h>
+ #include <linux/mm_types.h>
+ #include <linux/mmap_lock.h>
++#include <linux/sched/debug_atomic_sleep.h> // for might_sleep()
+ #include <linux/srcu.h>
+ #include <linux/interval_tree.h>
+ 
+diff --git a/include/linux/pwm.h b/include/linux/pwm.h
+index 4eef97d74366..8c3165ebec5e 100644
+--- a/include/linux/pwm.h
++++ b/include/linux/pwm.h
+@@ -403,6 +403,8 @@ struct pwm_device *devm_fwnode_pwm_get(struct device *dev,
+ 				       struct fwnode_handle *fwnode,
+ 				       const char *con_id);
+ #else
++#include <linux/sched/debug_atomic_sleep.h> // for might_sleep()
++
+ static inline bool pwm_might_sleep(struct pwm_device *pwm)
+ {
+ 	return true;
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index d9ac7b136aea..e7b6acfbf054 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -12,6 +12,7 @@
+ #ifndef __LINUX_TINY_H
+ #define __LINUX_TINY_H
+ 
++#include <linux/sched/debug_atomic_sleep.h> // for might_sleep()
+ #include <asm/param.h> /* for HZ */
+ 
+ struct rcu_gp_oldstate {
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 42555e8e5aa7..796c32c124c5 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -32,6 +32,7 @@
+ #include <linux/resource.h>
+ #include <linux/latencytop.h>
+ #include <linux/log2.h>
++#include <linux/sched/debug_atomic_sleep.h> // for __might_resched()
+ #include <linux/sched/prio.h>
+ #include <linux/sched/types.h>
+ #include <linux/signal_types.h>
+diff --git a/include/linux/sched/debug_atomic_sleep.h b/include/linux/sched/debug_atomic_sleep.h
+new file mode 100644
+index 000000000000..018d4a421a80
+--- /dev/null
++++ b/include/linux/sched/debug_atomic_sleep.h
+@@ -0,0 +1,114 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_SCHED_DEBUG_ATOMIC_SLEEP_H
++#define _LINUX_SCHED_DEBUG_ATOMIC_SLEEP_H
++
++#ifdef CONFIG_PREEMPT_VOLUNTARY_BUILD
++
++extern int __cond_resched(void);
++# define might_resched() __cond_resched()
++
++#elif defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
++
++#include <linux/static_call_types.h>
++
++extern int __cond_resched(void);
++
++DECLARE_STATIC_CALL(might_resched, __cond_resched);
++
++static __always_inline void might_resched(void)
++{
++	static_call_mod(might_resched)();
++}
++
++#elif defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
++
++extern int dynamic_might_resched(void);
++# define might_resched() dynamic_might_resched()
++
++#else
++
++# define might_resched() do { } while (0)
++
++#endif /* CONFIG_PREEMPT_* */
++
++#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
++extern void __might_resched(const char *file, int line, unsigned int offsets);
++extern void __might_sleep(const char *file, int line);
++extern void __cant_sleep(const char *file, int line, int preempt_offset);
++extern void __cant_migrate(const char *file, int line);
++
++/**
++ * might_sleep - annotation for functions that can sleep
++ *
++ * this macro will print a stack trace if it is executed in an atomic
++ * context (spinlock, irq-handler, ...). Additional sections where blocking is
++ * not allowed can be annotated with non_block_start() and non_block_end()
++ * pairs.
++ *
++ * This is a useful debugging help to be able to catch problems early and not
++ * be bitten later when the calling function happens to sleep when it is not
++ * supposed to.
++ */
++# define might_sleep() \
++	do { __might_sleep(__FILE__, __LINE__); might_resched(); } while (0)
++/**
++ * cant_sleep - annotation for functions that cannot sleep
++ *
++ * this macro will print a stack trace if it is executed with preemption enabled
++ */
++# define cant_sleep() \
++	do { __cant_sleep(__FILE__, __LINE__, 0); } while (0)
++# define sched_annotate_sleep()	(current->task_state_change = 0)
++
++/**
++ * cant_migrate - annotation for functions that cannot migrate
++ *
++ * Will print a stack trace if executed in code which is migratable
++ */
++# define cant_migrate()							\
++	do {								\
++		if (IS_ENABLED(CONFIG_SMP))				\
++			__cant_migrate(__FILE__, __LINE__);		\
++	} while (0)
++
++/**
++ * non_block_start - annotate the start of section where sleeping is prohibited
++ *
++ * This is on behalf of the oom reaper, specifically when it is calling the mmu
++ * notifiers. The problem is that if the notifier were to block on, for example,
++ * mutex_lock() and if the process which holds that mutex were to perform a
++ * sleeping memory allocation, the oom reaper is now blocked on completion of
++ * that memory allocation. Other blocking calls like wait_event() pose similar
++ * issues.
++ */
++# define non_block_start() (current->non_block_count++)
++/**
++ * non_block_end - annotate the end of section where sleeping is prohibited
++ *
++ * Closes a section opened by non_block_start().
++ */
++# define non_block_end() WARN_ON(current->non_block_count-- == 0)
++#else
++  static inline void __might_resched(const char *file, int line,
++				     unsigned int offsets) { }
++static inline void __might_sleep(const char *file, int line) { }
++# define might_sleep() do { might_resched(); } while (0)
++# define cant_sleep() do { } while (0)
++# define cant_migrate()		do { } while (0)
++# define sched_annotate_sleep() do { } while (0)
++# define non_block_start() do { } while (0)
++# define non_block_end() do { } while (0)
++#endif
++
++#define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
++
++#if defined(CONFIG_MMU) && \
++	(defined(CONFIG_PROVE_LOCKING) || defined(CONFIG_DEBUG_ATOMIC_SLEEP))
++#define might_fault() __might_fault(__FILE__, __LINE__)
++void __might_fault(const char *file, int line);
++#else
++static inline void might_fault(void) { }
++#endif
++
++
++#endif
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index c29059a76052..1a6286496495 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -2,9 +2,9 @@
+ #ifndef _LINUX_SCHED_MM_H
+ #define _LINUX_SCHED_MM_H
+ 
 -#include <linux/kernel.h>
-+#include <linux/limits.h> // for U32_MAX
-+#include <linux/log2.h> // for is_power_of_2()
+ #include <linux/atomic.h>
+ #include <linux/sched.h>
++#include <linux/sched/debug_atomic_sleep.h> // for might_sleep_if()
+ #include <linux/mm_types.h>
+ #include <linux/gfp.h>
+ #include <linux/sync_core.h>
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index 3064314f4832..8ea27d05f17e 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -6,6 +6,7 @@
+ #include <linux/instrumented.h>
+ #include <linux/minmax.h>
+ #include <linux/sched.h>
++#include <linux/sched/debug_atomic_sleep.h> // for might_faul()
+ #include <linux/thread_info.h>
  
- #include <uapi/linux/random.h>
+ #include <asm/uaccess.h>
+diff --git a/include/linux/wait.h b/include/linux/wait.h
+index b36000bb012c..deb1204ed222 100644
+--- a/include/linux/wait.h
++++ b/include/linux/wait.h
+@@ -5,6 +5,7 @@
+  * Linux wait queue related types and methods
+  */
+ #include <linux/wait_types.h>
++#include <linux/sched/debug_atomic_sleep.h> // for might_sleep()
+ #include <linux/stddef.h>
+ #include <linux/spinlock.h>
  
+diff --git a/include/linux/wait_bit.h b/include/linux/wait_bit.h
+index 514f68eff79d..9cc8fcba24c5 100644
+--- a/include/linux/wait_bit.h
++++ b/include/linux/wait_bit.h
+@@ -7,7 +7,7 @@
+  */
+ #include <linux/bitops.h>
+ #include <linux/init.h> // for __init
+-#include <linux/kernel.h> // for might_sleep()
++#include <linux/sched/debug_atomic_sleep.h> // for might_sleep()
+ #include <linux/wait_types.h>
+ 
+ struct wait_bit_key {
+diff --git a/security/landlock/object.c b/security/landlock/object.c
+index 1f50612f0185..feb2dec3d89a 100644
+--- a/security/landlock/object.c
++++ b/security/landlock/object.c
+@@ -12,6 +12,7 @@
+ #include <linux/kernel.h>
+ #include <linux/rcupdate.h>
+ #include <linux/refcount.h>
++#include <linux/sched/debug_atomic_sleep.h> // for might_sleep()
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+ 
+diff --git a/security/landlock/ruleset.c b/security/landlock/ruleset.c
+index e0a5fbf9201a..36396959a0e9 100644
+--- a/security/landlock/ruleset.c
++++ b/security/landlock/ruleset.c
+@@ -16,6 +16,7 @@
+ #include <linux/overflow.h>
+ #include <linux/rbtree.h>
+ #include <linux/refcount.h>
++#include <linux/sched/debug_atomic_sleep.h> // for might_sleep_if()
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+ #include <linux/workqueue.h>
 -- 
 2.39.2
 
