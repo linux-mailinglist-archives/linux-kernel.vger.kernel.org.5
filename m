@@ -1,115 +1,146 @@
-Return-Path: <linux-kernel+bounces-60624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32CD9850787
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 01:40:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7E29850797
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 02:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C45681F21C53
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 00:40:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7821AB227DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 01:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF7315D2;
-	Sun, 11 Feb 2024 00:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721CB441B;
+	Sun, 11 Feb 2024 01:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b="rYQG8Zxx"
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=delyan.me header.i=@delyan.me header.b="ai5Eo1rC"
+Received: from chi120.greengeeks.net (chi120.greengeeks.net [173.236.97.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458F415B1;
-	Sun, 11 Feb 2024 00:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.75
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F634401
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 01:47:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.236.97.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707612027; cv=none; b=ZN29qOYL4uA7yiOBBfaKN2HTClpuiiiIO9PYmTv0Dvx05guur3UOXZ0ps6wzc+tzPgOoERSbmmzeqYq13O+qgCSGAvQEb47+aECKpBFKzz077zUBYZpp7/6xDSW0Cb4huewRbuWNeF1WFD/RohgOTUpg/KK6ebUNrd71GOHgqZM=
+	t=1707616068; cv=none; b=srwHtCC1Mrc7S5yybzH1pOnUhHhrY2ey+8X+z1qEXS48kvpFnSpe/UiWaMU89+AsJJNs3TYj4hhM/93ON/0ODC7j/pQ4lozgRoOKuxKOoqEG3CaJk9bXd5qV4aYTP7B7ajLybZUyfyYkld6hW0lpQMUTZGoff2kT7eHU3Mz5AJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707612027; c=relaxed/simple;
-	bh=wmHERYYN058/RFLczrPeOcXAoo/yUFyAt/tHzV8DLHc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XSQ0IaZUG0O+rh5h0jppz+c1y9xbrXH30xKJxgb59G2/X5auds8wTR3jtU6f+xyvlRyLdsrlvNLWvAnWV1ETHvH2guuqO9rtfnTCdLDm+CSZpKa2/RVoobr2Qul8FX+aHE2EBaram3i513A72oNrrsEzuQfSfan1WTDqIlQQdP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu; spf=pass smtp.mailfrom=heusel.eu; dkim=pass (2048-bit key) header.d=heusel.eu header.i=christian@heusel.eu header.b=rYQG8Zxx; arc=none smtp.client-ip=217.72.192.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=heusel.eu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=heusel.eu;
-	s=s1-ionos; t=1707611992; x=1708216792; i=christian@heusel.eu;
-	bh=wmHERYYN058/RFLczrPeOcXAoo/yUFyAt/tHzV8DLHc=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=rYQG8Zxxn37LNmPQ2IrloJg4YF0tYXfeMdJeWAw2NuoTtT2imBfGnmnEhmzNbE9Y
-	 mkRJXIqpeEmFTpvCJrpaSZ8chuKyjZZZ6d6S93U/f7NBlWEe/2/aMyJkj2tcRfBag
-	 BkyJRCe/3YjPRUXsgFN+un6LnYVO5AMeQFobAxNsIjFMXqfVcmV/TxsbPqDUDqk/1
-	 34IJ5X4PDBHhMvS5ZRlCn4Iz2pOrjYl02s7+dpjCcvvRZHKCJSVGtQiYL/9uwBvHU
-	 X6eaje5bta3ocxoMOHu2w2/UujYtcbmOEYJcQThH4XK6dyfFd78d/+GXwFA5pEjU5
-	 J0FIojCnhYRGHIB3tA==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from meterpeter.INF524.stwhd ([141.70.80.5]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1Msqpq-1qgBRA1HIm-00tGhj; Sun, 11 Feb 2024 01:39:52 +0100
-From: Christian Heusel <christian@heusel.eu>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Christian Heusel <christian@heusel.eu>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org
-Subject: [PATCH] jffs2: print symbolic error name instead of error code
-Date: Sun, 11 Feb 2024 01:39:04 +0100
-Message-ID: <20240211003907.167891-1-christian@heusel.eu>
-X-Mailer: git-send-email 2.43.1
+	s=arc-20240116; t=1707616068; c=relaxed/simple;
+	bh=mZ4VNATanHjYlWLMAajusqRRHhOZiCvO+SF+xW0XM0c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DNfE/NHIx7d1CXiOe1+zYxrlMRZE9NR8RfcCxPxts2g8yHav5v43hxC66MJW3pOQV2vQjcmsWv0b1vXGMSZoP7d13Rflt5XXH9jYjuy8IVEjIfwn8dl9THKic9DgcLosVIit37LFoeQwdaegAS55UjO01ooXkgxjiMI8+uTCpNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=delyan.me; spf=pass smtp.mailfrom=delyan.me; dkim=pass (2048-bit key) header.d=delyan.me header.i=@delyan.me header.b=ai5Eo1rC; arc=none smtp.client-ip=173.236.97.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=delyan.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=delyan.me
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=delyan.me;
+	s=default; h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
+	Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=Yd59A0zE/B79AlkL3rIg03ugfqRUV8fXYUq26F5oDtk=; b=ai5Eo1rCdzTT3DzcBF5XKEybJY
+	vOqhjvC6/xes+hxyl+tnPJqsJSQEpHAnAq7uClVeZFIX++KqF/R6G8lHhze25SVOnkRiLgjGVbFXL
+	qFM2eE79s0RVe2X8Z+PkSmruKl8gNp+y3Ocs9eWI7XIjhUtKkyD2WPoAgNr/nyWSzD4tT/B+BjriT
+	ZPpIJYfUDko+srG4Kdyne9O6150qIqDdlResRyh+zG6YrceJGyDngg4/mLuw7HFMhJmEJz+VpKteL
+	s9SiuWFKnVB0V7ovY6qUwHa6jr5mtZq+lAeT/mvTlgSrX/4PGbSviplyqL3dOsknkY2Sz3z/5lhj7
+	jyIko5Aw==;
+Received: from c-98-47-236-196.hsd1.ca.comcast.net ([98.47.236.196]:46232 helo=discovery.localnet)
+	by chi120.greengeeks.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <delyan@delyan.me>)
+	id 1rYygz-0001CS-34;
+	Sat, 10 Feb 2024 19:31:35 -0600
+From: Delyan Kratunov <delyan@delyan.me>
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de
+Subject: Posix process cpu timer inaccuracies
+Date: Sat, 10 Feb 2024 17:30:46 -0800
+Message-ID: <2635838.Lt9SDvczpP@discovery>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mdD+cC108pnAZXbGv+PQh7kUVRHEsQ7+KfabFD+Q5ylCBajXVwQ
- +3RET9o94ZZ71QCJpskyjPJvAMRbY4jidCoz5a7lci+4ts8IwctXPBczn4wJZkX+HmNb7zt
- 3JHIDZQ9nyKxYuZXIJ7kW1x0Vr8w/6+Bg70MFNvB+DRKWEUoy7avmZh4BcX8tmLEDUn/T6n
- mZ/tfamT+oPSSc1NIMIEQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:pinJemaaIv0=;vsBcASSi2Z1p+Lp65An5yLWwkcy
- LRfNErQyBdSATIHLfrW3qEeDiDDHmHXrWLlmImFBeQkI3sL4ELNSAnEk8CYvFI2Lk33eZRiYG
- kctBAHBn+Lya0INz4uM/PslB7hJvO0t07zpP/71hEFBDoltvW8OV8Zo11mPqtBc9HQyel358c
- TlVPrsRPqYL+HF5QztoF4+41vDnoZAre54DALKhm47TUOq2ALeMUEPFxCl7mUogno+OSleMx+
- fb6m5DNAu17khHcfffpd8qDN2qaXolV8EEIrAz6Y473MvPE7EE3xV9RZhThxqWUpIdnGYsskR
- TlaiVINg5612ED4saHJGXSvaMiSLDdLe4W/aQRvkwZujHLJWIx/TwrTsUixTLAavF7D+wSf56
- vskI54DQxEbsdI7tmpjaX1mDzs9D3T2i7fi2h47pYKSCemRzhWFAQfLJcGwjDBfni7wMHCsf6
- knzfEffgVGX8EhwvxcT+Yq4SQgVF+2EYbw9BuWBWop66ZS8Q43QabA2OlY8I+YokEV6yvZlnS
- bCvPwdc4IiYBE5+BwoQ94TNf7Jje9vprKuJko/C4qyUozIMYrPcVCMOPCRa51rn9swkVCiQLb
- LQdKpaavG7qM5tPuXJgDHqxuy58OpuyccOxEgjMqt7Jg/4+aLMA7g9sQdMt0h/obSY7jnsXXl
- JiYdMtNCtM21tQ2IGya08B8PAyrYCYyhL8guevNpgXRSL+I44McjTH9qUjtk5tFAooZIzEsN3
- DFX9Eju0oOsUZFtIPNX+rlaSAoRbYs6QSW4V22JRvXc5xhBUiN6Lr8=
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - chi120.greengeeks.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - delyan.me
+X-Get-Message-Sender-Via: chi120.greengeeks.net: authenticated_id: delyan@delyan.me
+X-Authenticated-Sender: chi120.greengeeks.net: delyan@delyan.me
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-Utilize the %pe print specifier to get the symbolic error name as a
-string (i.e "-ENOMEM") in the log message instead of the error code to
-increase its readablility.
+Hi folks,
 
-This change was suggested in
-https://lore.kernel.org/all/92972476-0b1f-4d0a-9951-af3fc8bc6e65@suswa.mou=
-ntain/
+I've heard about issues with process cpu timers for a while (~years) but only 
+recently found the time to look into them. I'm starting this thread in an 
+attempt to get directional opinions on how to resolve them (I'm happy to do 
+the work itself).
 
-Signed-off-by: Christian Heusel <christian@heusel.eu>
-=2D--
- fs/jffs2/background.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Let's take setitimer(2). The man page says that "Under very heavy loading, an 
+ITIMER_REAL timer may expire before the signal from a previous expiration has 
+been delivered." This is true but incomplete - the same issue plagues 
+ITIMER_PROF and ITIMER_VIRTUAL as well. I'll call this property "completeness" 
+i.e. that all accrued process CPU time should be accounted by the signals 
+delivered to the process.
 
-diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
-index 6da92ecaf66d..bb0ee1a59e71 100644
-=2D-- a/fs/jffs2/background.c
-+++ b/fs/jffs2/background.c
-@@ -44,8 +44,8 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb_i=
-nfo *c)
+A second issue is proportionality. Specifically for setitimer, there appears to 
+be an expectation in userspace that the number of signals received per thread 
+is proportional to that thread's CPU time. I'm not sure where this belief is 
+coming from but my guess is that people assumed multi-threadedness preserved 
+the "sample a stack trace on every SIGPROF" methodology from single-threaded 
+setitimer usage. I don't know if it was ever possible but you cannot currently 
+implement this strategy and get good data out of it. Yet, there's software 
+like gperftools that assumes you can. (Did this ever work well?)
 
- 	tsk =3D kthread_run(jffs2_garbage_collect_thread, c, "jffs2_gcd_mtd%d", =
-c->mtd->index);
- 	if (IS_ERR(tsk)) {
--		pr_warn("fork failed for JFFS2 garbage collect thread: %ld\n",
--			-PTR_ERR(tsk));
-+		pr_warn("fork failed for JFFS2 garbage collect thread: %pe\n",
-+			tsk);
- 		complete(&c->gc_thread_exit);
- 		ret =3D PTR_ERR(tsk);
- 	} else {
-=2D-
-2.43.1
+1. Completeness
+
+The crux of the completeness issue is that process CPU time can easily be 
+accrued faster than signals on a shared queue can be dequeued. Relatively 
+large time intervals like 10ms can trivially drop signals on 12-core 24-thread 
+system but in my tests, 2-core 4-thread systems behave just as poorly under 
+enough load.
+
+There's a few possible improvements to alleviate or fix this.
+
+a. Instead of delivering the signal to the shared queue, we can deliver it to 
+the task that won the "process cpu timers" race. This improves the situation 
+by effectively sharding the collision space by the number of runnable threads. 
+
+b. An alternative solution would be to search through the threads for one that 
+doesn't have the signal queued and deliver to it. This leads to more overhead 
+but better signal delivery guarantees. However, it also has worse behavior 
+w.r.t. waking up idle threads.
+
+c. A third solution may be to treat SIGPROF and SIGVTALRM as rt-signals when 
+delivered due to an itimer expiring. I'm not convinced this is necessary but 
+it's the most complete solution.
+
+2. Proportionally
+
+The issue of proportionality is really the issue of "can you use signals for 
+multi-threaded profiling at all." As it stands, there's no mechanism that's 
+ensuring proportionality, so the distribution across threads is meaningless. 
+
+The only way I can think of to actually enforce this property is to keep 
+snapshots of per-thread cpu time and diff them from one SIGPROF to the next to 
+determine the target thread (by doing a weighted random choice). It's not _a 
+lot_ of work but it's certainly a little more overhead and a fair bit of 
+complexity. With POSIX_CPU_TIMERS_TASK_WORK=y, this extra overhead shouldn't 
+impact things too much.
+
+Note that proportionality is orthogonal to completeness - while you can 
+configure posix timers to use rt-signals with timer_create (which fixes 
+completeness), they still have the same distribution issues.
+
+Overall, I'd love to hear opinions on 1) whether either or both of these 
+concerns are worth fixing (I can expand on why I think they are) and 2) the 
+direction the work should take.
+
+Thanks for reading all this,
+-- Delyan
+
 
 
