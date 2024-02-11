@@ -1,171 +1,136 @@
-Return-Path: <linux-kernel+bounces-60837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8DD3850A0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:39:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4448850A0C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:39:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32082281CBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:39:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AFA71F2116C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0970A5B685;
-	Sun, 11 Feb 2024 15:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451C85B67C;
+	Sun, 11 Feb 2024 15:39:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J/N7OR0n"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="dUOfPkvY"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E4F1E507
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 15:39:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29AD71E507
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 15:39:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707665975; cv=none; b=oOtuPxqROJlXSMdxstcWLuJQ1qztnXR5ipuanWcshYWKh3AS5AoEZ7Pv2+s2tzK8sY5ysOYAVMPoMTeVmLcp0qO6tN53DH8lTmOKDNSHHJXJ5/pzqzayXzotemx9SozeRrFZVMS87rBB5dhtd43NKfv4msdjS4DrN3DLVyHAh3I=
+	t=1707665987; cv=none; b=p9fWaFhil8Ua5ggdr86gNj67y3ilY9+BLD7oCy6SqvUOTUFqAEYnX7lSXDFIWdAgWPjx7EFvENQm5Q2LIFIqVrY8yro6/ttrKG4i2Bn2oXR1A5u03y+BC5HSnrOM9uQGHr7Nb5/b+LYOa5rFa0QwytIofzLPZd+OexynjEZDARg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707665975; c=relaxed/simple;
-	bh=p2OrY5Sntk1BJ2038kpst2b2dqLgitfCh8kdLSqPOSQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jLLLhDp6afkUjhW6hcFeavG9KqisHphhIoPIDrcVy7RoEdN9AUQr1rdEv/HgDxMu3Vy0p61d216OPNEg3BQD3+SvB3JkI1P3dlNWurEuHmoTNhXayg9nG3qiZ8ffe5CvoI/oEHmsw8uSypdnJdfhcCdVBsjZb0+MQSbra6q1Sxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J/N7OR0n; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40fd72f7125so20389395e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 07:39:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707665970; x=1708270770; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=LSjWqhkf6+v8Y6bhbWzIso8PIeD6RApLquHv7FdvFeA=;
-        b=J/N7OR0nOJDIK4fuTzeCakw0ysQm2/L/+d2R5m9hWWg4b63vMHUIxMHNYtrylCS4Vi
-         mxD+gltRbqVWhEOOIXN3w0yWZYT9u7XHOMVcyXojS6FKr9wYh0p2/picjahL1SZ+zz5x
-         vlahLRYM4AjcQ4y59qp9sxR2SnZ1qpTM3DtbL6QJJxDPzXJ1+APuy9IIqYE5xujlblQy
-         MrZAYDhxEG8lvSt0l8TO82yalBpQa6KVJXjn5cNPAguxA+Yfe63AIB0y1rY0V+eeyKru
-         FcI7+No4vH5tdf+ydjDGViAta1JZgU+60pILqocs6QFOk21LrmtVtPKkImJ2E62OSM9z
-         5S0Q==
+	s=arc-20240116; t=1707665987; c=relaxed/simple;
+	bh=bljRfPaQVjigyFVceR2XV3xV7K1YChBBcPSiObHEMyg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ORqpIZXUviTtgrVvNEEWPo21oK7wQcbyTJHQCsXd8t9LSHuZxwfgk1sU1IEoWhEs/67S1Fyjc9iTIEAq4SvKlGmeWTu86od9GW5eECSmjMWoxI6AxXduB1FFGW9okxdxut+CWPQDB5HvX8w6FsFQV1W6tvToVYNQa4pwGwLjjMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=dUOfPkvY; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d91397bd22so18564355ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 07:39:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707665970; x=1708270770;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1707665985; x=1708270785;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LSjWqhkf6+v8Y6bhbWzIso8PIeD6RApLquHv7FdvFeA=;
-        b=f6MomO+qCiSFPr2VTiP7WLv/LUVnAMpdhkrsHIDAND8zRIFauoUxA0+TvicmJ3xJzq
-         H1e+smq9SDBUdlfqehpG1W1D1d/QsUIFNTKzxjdZqIaNJORf9dv/F6ckyEJgjZ9+/mLi
-         kCb+yIeL2SDOo3+bD2FjgUNMMZvaFcRw1RRYiVfzChUrrEmDa5SHHgGCxHLXLKa8PWZT
-         4ZTaTdH5/ZJe/Kjy7BdmkbeiQgRikUvJn8dQ6qy39oeGb6KIEsN+/h9nyNtSFcFXktfo
-         WHkbwpdKs5G5QGRks2LIq6lgE9tZs5x8eVT5cJkIC8mAAW8LSM51rWXO94iOEVEpxv6U
-         zxSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWA6iY7S2Cat6AfQHuzryvcbPQq5HGkYe0MQeqmpKzkoKd1jL453jEb8Fn3LQoOVJlpVhLAWA6WyU7/Cbghpg5WuWIkbXC7pYFF9NST
-X-Gm-Message-State: AOJu0Yxxd7C4pYdgUUDD1XJeMdonMpZ0oX9+ypwzL99qsaEdI53iwXJU
-	vMgLf0ZwPPvM7GoDOYa278NEbKtQY6jiaMgWTGqa9aVlpLPJs3+kjpBjA6TNpw0=
-X-Google-Smtp-Source: AGHT+IE0YvrJ0dkHWV5/x42Grnb0S2MrQ1HrVcFZVtPCnQpfmV+fyVtfU8EhEvpV3gyZpQFNGt7PCQ==
-X-Received: by 2002:a05:600c:46c9:b0:40f:ddb6:a63b with SMTP id q9-20020a05600c46c900b0040fddb6a63bmr3994127wmo.24.1707665970669;
-        Sun, 11 Feb 2024 07:39:30 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVsiyEI2Z9Pp+hRaOVLqjtrReTL/kAEY0qZqvMv8xMFoSkdvOgA5uPakOMQdkI838j5lgF+VOkJDWJs6RDTAYCIRA0hxCDsp718P47Jh5FNGbDkQ9+fJognD/8I8Hu+IDr/iuL17WpICceMD3dGsFcIACos/LyPehOOIao9Ljw9lP3yGwZvJnjZHky3yzQiBb03MBMR0DBwNSG36OC/aJTLEh8bYNYEDWzDcONyI9Ip07hB48an9N39G7ns1TXK2m6WZu+3IpeuHnyZWJm3OdKfTPbYqxAdFcDAwIO3wCRISbSkupCOKCV1wDTxa1+NB5m/j5ZvJcBAThFfFwromzvjuOtU0D/TaJqpCOFMZ7hkSz154MnqZJ2yZjl6+RcjszsfXsII34E3ktIcj9k3vGcXD9tqHUgOQ7tI++H+Dfq8p1qZC706Nv7Ejvlu/+QRoGe/O9yihtK02dCmnFbW0b1Ry2twEuQ1ohTfTeSm9O9RXfdcoEVTwGObo+cQ2Y2H80+pbIqg6a1a
-Received: from [192.168.1.20] ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id n12-20020a05600c500c00b004109a5ccd7fsm3885151wmr.47.2024.02.11.07.39.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 07:39:30 -0800 (PST)
-Message-ID: <69679d9a-02e9-498f-8f5a-7c029059a8c1@linaro.org>
-Date: Sun, 11 Feb 2024 16:39:28 +0100
+        bh=WeOhRENjM5da5ZxD2TIHWuN96wbbN5rtaFilt5Cnj9A=;
+        b=HqH9vtAQDFWDUYhPIm5q+5LI4dKbIlc6U/TLeszaKRIA3dIKK1HJOrN2e6U81U1izf
+         8zUEq89dyy72HbOP2JjkB5oyLs1ABkB0ECm9QBkR27vxioihU5y9Bw7Vk+58GOhCAj/5
+         aqAda9ojvR6nmr9VvKecteFZjZKmnBL/upKQ6DIqFsCfXzT4UJbM3vxOiyzeVt0yHwOz
+         7blQqpINFPJKkXr231j8FPAPXIDBZRsAKIR+Q1+BnC6DZjES8POLvAo6rzE1yWhcYr+N
+         ew//9Rq1zR40zuyIwJCuL9gZAB97IWlmaB/3foEyEncgPewTa+H/t2nyhlIQj0Ie39eF
+         kkcw==
+X-Gm-Message-State: AOJu0YyWAD9fPxE72uCtwKVcy9TL3HradA1ywaH1RSr+JVPleO9h3XS/
+	ACEfAT2MySfU2WWPL7qzdJxsG+bxlO81nW6uc0vNcS5EbSwCiN4zKg2xXApeSm7XNw==
+X-Google-Smtp-Source: AGHT+IETtXFPF2KNwF7w9pNmFQDbWLAVZXnE3TIUWNkvjq1i5uDjjWNIGUvizbNkbaamdl896qwvSw==
+X-Received: by 2002:a17:902:e54a:b0:1d9:63fd:88c0 with SMTP id n10-20020a170902e54a00b001d963fd88c0mr4956053plf.38.1707665985349;
+        Sun, 11 Feb 2024 07:39:45 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id o11-20020a170903008b00b001d9df9589e5sm4510272pld.10.2024.02.11.07.39.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Feb 2024 07:39:44 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707665982;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=WeOhRENjM5da5ZxD2TIHWuN96wbbN5rtaFilt5Cnj9A=;
+	b=dUOfPkvY6AKJxNYvbOUD27cRUlbhhY4lNwi5xZzw22z1u7vHFcc3cwChKJm1eGC9vJEQQP
+	L8WJFH8sluYgXlf04eGyp+3D/k9QbtqFxoGLX7XUM/V1ugFN+KyEuqh9thFCU05gowmpeL
+	ZWKvSq2D2MxGg0e1FgeZfPdRm0ojwmUgPp4heSmntXrv61DIdjYTrvLX+sMvw7BQciNWW6
+	8HqRsFwd1rQ9jvv6B0v1XzEaFd1TSgeqc3BzPObAgZLimSuYbBQHgfPZkLBrj39PQrYIrY
+	S423qE6w0QNDklcAYywT9YpJ8ryj+QMxPQF/BvQfE9I8ZZWkBa76FEFMZuOTKw==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Sun, 11 Feb 2024 12:40:16 -0300
+Subject: [PATCH] dio: make dio_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/5] dt-bindings: fpga: xlnx,fpga-slave-serial: rename
- gpios
-To: Charles Perry <charles.perry@savoirfairelinux.com>, mdf@kernel.org
-Cc: avandiver@markem-imaje.com, bcody@markem-imaje.com,
- Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
- Tom Rix <trix@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Michal Simek <michal.simek@amd.com>,
- kishore Manne <nava.kishore.manne@amd.com>, linux-fpga@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240207180142.79625-1-charles.perry@savoirfairelinux.com>
- <20240207180142.79625-3-charles.perry@savoirfairelinux.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240207180142.79625-3-charles.perry@savoirfairelinux.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240211-bus_cleanup-dio-v1-1-02140fbc5289@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAF/qyGUC/x3MTQqAIBBA4avIrBNU+r9KRJhNNRAqihFId09af
+ ov3MkQMhBFGliHgTZGcLZAVA3NqeyCnrRiUULVQUvI1xcVcqG3yfCPHW6N33QvsmmGFUvmAOz3
+ /cZrf9wPVb/9EYQAAAA==
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1081; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=bljRfPaQVjigyFVceR2XV3xV7K1YChBBcPSiObHEMyg=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlyOpkWeOWzVMtOtU3AxajU7I+Fs4zXSIqiwace
+ Gchbmz9VvSJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcjqZAAKCRDJC4p8Y4ZY
+ prg4D/9iXMb1RbDRJiwntskkCNRk8VE+7xGsLGQ5w8jIvBLYZjNVhkFqxcYLGYZUn0Hj2+9q/9i
+ mZZNZ/+1Y5ri7Oqf3QYyrcrOyq8tpUgK3Xy+qklxAY/zxjxJ/WhA0kEiKj6EEw+zKXQs2Cd5ZFQ
+ hj/tcEP30JWKYPvjds8j4Yl/fcnhTZaIoRjXxZtkPZ93CC6D3OahVbCjmpnkIF9wSMItMZ+4qHT
+ MVazoRqvEEktfH/xMBbp2MQjLwyzuqFMaTK9qTHo10QWEmbU6qRisVZaWrt6mw+OkowxwX/2duQ
+ fBQL3ZcygAxbiOMxCqQoUTsyZQ5GCBsE5KjU/Ef/4vYRy/T81SaIcPyixlmSyezwBrKeKf8lk1u
+ qTK+GIo6VKH0bg6ovVJ0Yuj5Chz5TijXn+FXMkWktmY8VMYmb94VNTB/KYSWQFl0C420fs9RuBa
+ r71k+CDjWR22FoiU5ZivC2/6yS45Y7DgkYhXtkMdCxkUCyALeCOnblMrq87/zYDU38Uvsq8exoh
+ NgACJRSFhT8XcsaBwFIv+vartE4tl5z8j3O+14aiiw2VldWYfhrn4y8pSMeKFfFa9XXeyZ9559D
+ Il7mC0IduIP7i0WRbpt1MoFoZBwX0oxlg1VdGqwS350SwOfWuIcY+stcIsxCdYl3AwArHqpi5jL
+ 7eEBAgpeQ6wzucw==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On 07/02/2024 19:01, Charles Perry wrote:
-> By convention, gpio consumer names should not contain underscores
-> (prog_b here) and shouldn't contain active low suffixes (-b here).
-> 
-> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
-> ---
->  .../bindings/fpga/xlnx,fpga-slave-serial.yaml        | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-serial.yaml b/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-serial.yaml
-> index 614d86ad825f3..650a4d8792b64 100644
-> --- a/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-serial.yaml
-> +++ b/Documentation/devicetree/bindings/fpga/xlnx,fpga-slave-serial.yaml
-> @@ -36,7 +36,7 @@ properties:
->    reg:
->      maxItems: 1
->  
-> -  prog_b-gpios:
-> +  prog-gpios:
+Now that the driver core can properly handle constant struct bus_type,
+move the dio_bus_type variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
-Please deprecate old property and add allOf excluding the usage of both.
-Driver still parses old property, so we should have it documented.
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/dio/dio-driver.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-https://lore.kernel.org/all/20230118163208.GA117919-robh@kernel.org/
+diff --git a/drivers/dio/dio-driver.c b/drivers/dio/dio-driver.c
+index 69c46935ffc7..2d9fa6011945 100644
+--- a/drivers/dio/dio-driver.c
++++ b/drivers/dio/dio-driver.c
+@@ -123,7 +123,7 @@ static int dio_bus_match(struct device *dev, struct device_driver *drv)
+ }
+ 
+ 
+-struct bus_type dio_bus_type = {
++const struct bus_type dio_bus_type = {
+ 	.name	= "dio",
+ 	.match	= dio_bus_match,
+ 	.probe	= dio_device_probe,
+
+---
+base-commit: 047371968ffc470769f541d6933e262dc7085456
+change-id: 20240211-bus_cleanup-dio-6cafa80e759b
 
 Best regards,
-Krzysztof
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
