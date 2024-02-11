@@ -1,127 +1,169 @@
-Return-Path: <linux-kernel+bounces-60687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8F41850872
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:49:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F91850858
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 10:40:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85A79283962
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:49:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FDBD1F227A3
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 09:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 164F459B44;
-	Sun, 11 Feb 2024 09:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD4C5917B;
+	Sun, 11 Feb 2024 09:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gimli.ms.mff.cuni.cz header.i=@gimli.ms.mff.cuni.cz header.b="nHxuFXWL"
-Received: from nikam.ms.mff.cuni.cz (nikam.ms.mff.cuni.cz [195.113.20.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CSJr//90"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A1C5917B;
-	Sun, 11 Feb 2024 09:47:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D992E3E1;
+	Sun, 11 Feb 2024 09:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707644840; cv=none; b=LRxc+YGdTgl06/91BTkqUXqTUfdssMvZT5FPsKX3ycwYLldO9AQke/juoP62+r2bdv0WCKFWwqVO1v97wUSbj9G4AaZ9vT8ew02ulP21LB8LLo0MX7aBkQsCMbLH11eXrzUmf5NYeQ0zVJfpU8LDaiAzs8MKAF780jWh/nr4foo=
+	t=1707644408; cv=none; b=UTTMoc7n4N7ro4lhJH53iyhtgGFnu71recwO7AwP26xRXd372ciAbIQ50vTEIBdpvBTatFBiwIBZCzBO1GV1LWpVCzRmkhe59hTHlJIe7wNNYaLBclgqD5xgAPjpYuywgvKsD1jg+q4K62BbFks3wgmUQrGsEHHb1ZCKFKTkYR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707644840; c=relaxed/simple;
-	bh=Rz3Cekc8usFcSJQcfJZUmbTcQMIdJQWkXz/P4jnh4Q0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LrChYgU2AwxxlG0lmTCKU2X4P3LSb8xpjsGe6TCnBtZFl1jgmlI34eYvWzAbWhOnNwRnYenVgKO6brCDazj8JADe2JhkDaeXg/nHWV1MFX7jD/LfhWFJAorAm2dZHhYhIhsR3Pi9mTu7/x2t0lSQ5KjuTPeZ75EXeC5X0O6GoxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gimli.ms.mff.cuni.cz; spf=pass smtp.mailfrom=gimli.ms.mff.cuni.cz; dkim=pass (1024-bit key) header.d=gimli.ms.mff.cuni.cz header.i=@gimli.ms.mff.cuni.cz header.b=nHxuFXWL; arc=none smtp.client-ip=195.113.20.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gimli.ms.mff.cuni.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gimli.ms.mff.cuni.cz
-Received: from gimli.ms.mff.cuni.cz (gimli.ms.mff.cuni.cz [195.113.20.176])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by nikam.ms.mff.cuni.cz (Postfix) with ESMTPS id BBD692811B8;
-	Sun, 11 Feb 2024 10:47:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gimli.ms.mff.cuni.cz;
-	s=gen1; t=1707644836;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wPl76FU0AHEFD99SA7WWEeqLbLOJwpClmk6J8pBft1M=;
-	b=nHxuFXWLAj4dJVRr7cv3jjBbs3XxnhuHB0/cG6Ov1lkSy5uFLYHv6i6Yz3ly11NnFd8Dri
-	K665JqvNU5UFUW4FFVcwW9pU4gd2/k9lRXG18UllfegYkDk5qDHGwrD3diws4gL6w097JL
-	eqQv3BHFT67yRUf+pLW3Q7hTiyMdmTY=
-Received: from localhost (internet5.mraknet.com [185.200.108.250])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: karelb)
-	by gimli.ms.mff.cuni.cz (Postfix) with ESMTPSA id 97E76457E76;
-	Sun, 11 Feb 2024 10:47:16 +0100 (CET)
-From: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
-To: Karel Balej <balejk@matfyz.cz>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Lee Jones <lee@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	~postmarketos/upstreaming@lists.sr.ht,
-	phone-devel@vger.kernel.org
-Subject: [RFC PATCH v2 6/6] MAINTAINERS: add myself for Marvell 88PM886 PMIC
-Date: Sun, 11 Feb 2024 10:35:56 +0100
-Message-ID: <20240211094609.2223-7-karelb@gimli.ms.mff.cuni.cz>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240211094609.2223-1-karelb@gimli.ms.mff.cuni.cz>
-References: <20240211094609.2223-1-karelb@gimli.ms.mff.cuni.cz>
+	s=arc-20240116; t=1707644408; c=relaxed/simple;
+	bh=m+MynlBCqiTW/nW56xpevjEGzyTh2lJGO9XlKJBXUj8=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=VO0hAeIrTgyQD6mCeXvhBMQx7r8N/3PRMablfi2JytRQxqp5YrYHdDdp4apOpwruJ/9EmtpuvnUIGme0IvUbH8Uac9Y9LyIgfgRNs0lxvXFUTE49XHAsZnzv4UUo1P66wSZhQG03yYRR4SSyPmTxHqt67VSUrBNxN7ECBNu0qu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CSJr//90; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d0dc3fdd1bso21666131fa.0;
+        Sun, 11 Feb 2024 01:40:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707644404; x=1708249204; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hxAeYgheoBLj+Edm6NVrMBtYDbJT2BZs/m5VJ4rUUQw=;
+        b=CSJr//90IQqI+pyyOsk+4UvVYgEnN3sWKPNEIIVsGvxZqRF7tCA9i6RDYw0muwg28F
+         b+GVm7259D2Qlu4UnX7PUxiZ17BEQBQ8kkF6GdtVgGytkgjTi8XolXNkCTznL8pOqahJ
+         vh41i0zP5Bd/pqmc0pLSFKt5p51LcIb1UhBAC9IGd+9z0sGb7sr9/7Fs8EehaSvyHwQJ
+         sWeJ9RggKcHIb4kd9DdbGrzKr1WBqJ7yEhJxAoMxj4rFDg1e0xHvXBeHCp6py4BfV0gX
+         FGa8XtGRLGYn6/Km2o2cTIPx7DZXLCyl6TGZHcvb4FwHbqAH38/R45/GL4535lxR4utz
+         lMvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707644404; x=1708249204;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hxAeYgheoBLj+Edm6NVrMBtYDbJT2BZs/m5VJ4rUUQw=;
+        b=RDAVhX40NLjxD/iNJZvnvaSCAPUkYZ+EeieoW8YH1NyhVsf7ikISI3INTzHgGfDqXn
+         QQxKWBcKHORVq5R+VQqfvXzXqJb4xo/MrDpaITC0y1hYce28E3lYo2AYOROb/tW5vSJb
+         VVsMZJppQiklfsLvb5INp9ht3bTFvpUY8Oojs+pO86uLjvBqlHatluozj4uK/3M9fUaG
+         TcGM5rixnbhfraj4tOuCF9e/E9jiwcLocBVtrRX3UWSX3xtmclIV+bC8mHGc/dJti4Bt
+         SM+FFOFqF/MQYXh9KYZHZnc1aIugCm6uf7GNTIUfmD9yA3wMHxIyN+mRXkZNP2CEHXh7
+         6isA==
+X-Forwarded-Encrypted: i=1; AJvYcCUmylMKYlwDuywS1hHIv/DgkLRRCTwTF+4rjjoRC00d8TAE+yEoYdM/Jo2okQPGBUMH/29JF/5Vh9e4VsSOzTpUQy4ZgVZ3FxMV0QBQAJsFriOKxWcznjPb12kQEpe1rA34lEkvcvDaFS/fJ6Iht9RgBBLx+TrAEYwVEsvgjMLA/TbdlVfmJ4w=
+X-Gm-Message-State: AOJu0YyqtxTTTH4L2KYmZgFdLsSt4zV9XiCqqyx+dnEtWEjQXFDMRpBS
+	rJuTSU17IP3AuUeYvygyKFn7Jvp0VyFVu2rZRqZmDtH76S/luwdl
+X-Google-Smtp-Source: AGHT+IHgHMXcm6Lu4lcuYGzuQWfKtCRvTjkEiAIsX+ofRSGKGLh+iM4VFDBnvXF5ZTHsCWCz56qhiQ==
+X-Received: by 2002:a05:651c:507:b0:2d0:d336:d144 with SMTP id o7-20020a05651c050700b002d0d336d144mr2983808ljp.14.1707644403904;
+        Sun, 11 Feb 2024 01:40:03 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVNbVc6nIIj7NjqkDPBg5terxOSgaQfNkajtoQQrtFWhNxIYj+vrBES6GSJSHLukRUcMFtLGqC32+pNKwLB890KrA3SeSzHT2rAkj81S9b/JD9DvoRP3rE9T6xzmjwo0C+U1rD725MIp/16mXXpN80RCcCPWxCkUb0WpPYUd7CqRt3rBXl5PagSo2dis+uD3Y6NqBUV+vIsHhvsdU3qCRavSa4bGS4LStIGj94HY48GzKj/7h2iU5x3WNCaAPGqKjJ4rJHP/dmLWlApNa83+bgX5JU/3KWHitUaWrD0ndFbUUdEHK8OFuMONYH58+mRvoKiuz+4cQYtK6nOt3SID4122Y9C53QjhRkKg7F8sEc934z8knvVOkjNu+y2Shtq3EqIDxIx
+Received: from [192.168.1.105] ([31.173.83.113])
+        by smtp.gmail.com with ESMTPSA id n15-20020a05651c000f00b002d06c31cf6esm887333lja.124.2024.02.11.01.40.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Feb 2024 01:40:03 -0800 (PST)
+Subject: Re: [PATCH net-next v2 4/5] net: ravb: Do not apply RX checksum
+ settings to hardware if the interface is down
+To: Biju Das <biju.das.au@gmail.com>, Sergey Shtylyov <s.shtylyov@omp.ru>
+Cc: Biju Das <biju.das.jz@bp.renesas.com>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, claudiu.beznea@tuxon.dev,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
+ Paolo Abeni <pabeni@redhat.com>
+References: <CADT+UeAfCTd8c+dHn3mgT=g6Boip=oRPdkODMN_j2KaROcT0AQ@mail.gmail.com>
+From: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <5600b643-0d07-5583-4858-a521676476a5@gmail.com>
+Date: Sun, 11 Feb 2024 12:40:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADT+UeAfCTd8c+dHn3mgT=g6Boip=oRPdkODMN_j2KaROcT0AQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-From: Karel Balej <balejk@matfyz.cz>
+On 2/11/24 11:56 AM, Biju Das wrote:
 
-Add an entry to MAINTAINERS for the Marvell 88PM886 PMIC MFD, onkey and
-regulator drivers.
+>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>
+>>>> Do not apply the RX checksum settings to hardware if the interface is
+>>>> down.
+>>>> In case runtime PM is enabled, and while the interface is down, the IP
+>>>> will be in reset mode (as for some platforms disabling the clocks will
+>>>> switch the IP to reset mode, which will lead to losing register
+>>>> contents) and applying settings in reset mode is not an option.
+>>>> Instead, cache the RX checksum settings and apply them in ravb_open()
+>>>> through ravb_emac_init().
+>>>> This has been solved by introducing pm_runtime_active() check. The
+>>>> device runtime PM usage counter has been incremented to avoid
+>>>> disabling the device clocks while the check is in progress (if any).
+>>>>
+>>>> Commit prepares for the addition of runtime PM.
+>>>>
+>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>
+>>> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+>>
+>> This will do the same job, without code duplication right?
+>>
+>>> static int ravb_set_features(struct net_device *ndev,
+>>>     netdev_features_t features)
+>>> {
+>>> struct ravb_private *priv = netdev_priv(ndev);
+>>> struct device *dev = &priv->pdev->dev;
+>>> const struct ravb_hw_info *info = priv->info;
+>>>
+>>> pm_runtime_get_noresume(dev);
+>>> if (!pm_runtime_active(dev)) {
+>>> pm_runtime_put_noidle(dev);
+>>> ndev->features = features;
+>>> return 0;
+>>> }
+>>>
+>>> return info->set_feature(ndev, features);
+> 
+>> We now leak the device reference by not calling pm_runtime_put_noidle()
+>> after this statement...
+> 
+> Oops. So this leak  can be fixed like [1]
+> 
+>>  The approach seems sane though -- Claudiu, please consider following it.
+> 
+> [1]
+> static int ravb_set_features(struct net_device *ndev,
+>     netdev_features_t features)
+> {
+> struct ravb_private *priv = netdev_priv(ndev);
+> const struct ravb_hw_info *info = priv->info;
+> struct device *dev = &priv->pdev->dev;
+> bool pm_active;
+> 
+> pm_runtime_get_noresume(dev);
+> pm_active = pm_runtime_active(dev);
+> pm_runtime_put_noidle(dev);
 
-Signed-off-by: Karel Balej <balejk@matfyz.cz>
----
+   There is no point dropping the RPM reference before we access
+the regs...
 
-Notes:
-    RFC v2:
-    - Only mention 88PM886 in the commit message.
-    - Add regulator driver.
-    - Rename the entry.
+> if (pm_active )
+>      return info->set_feature(ndev, features);
 
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 960512bec428..c8628b9c633d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12949,6 +12949,17 @@ F:	drivers/net/dsa/mv88e6xxx/
- F:	include/linux/dsa/mv88e6xxx.h
- F:	include/linux/platform_data/mv88e6xxx.h
+   As I said, we should call pm_runtime_put_noidle() here...
  
-+MARVELL 88PM886 PMIC DRIVER
-+M:	Karel Balej <balejk@matfyz.cz>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/input/marvell,88pm88x-onkey.yaml
-+F:	Documentation/devicetree/bindings/mfd/marvell,88pm88x.yaml
-+F:	Documentation/devicetree/bindings/regulator/marvell,88pm88x-regulator.yaml
-+F:	drivers/input/misc/88pm88x-onkey.c
-+F:	drivers/mfd/88pm88x.c
-+F:	drivers/regulators/88pm88x-regulator.c
-+F:	include/linux/mfd/88pm88x.h
-+
- MARVELL ARMADA 3700 PHY DRIVERS
- M:	Miquel Raynal <miquel.raynal@bootlin.com>
- S:	Maintained
--- 
-2.43.0
+> ndev->features = features;
+> return 0;
+> }
 
+MBR, Sergey
 
