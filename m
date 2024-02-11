@@ -1,146 +1,106 @@
-Return-Path: <linux-kernel+bounces-60945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 902D1850B70
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 21:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2A1850B72
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 21:25:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DB0D1F21CE5
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:20:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E667E1F216A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 20:25:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A865EE6B;
-	Sun, 11 Feb 2024 20:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228FA5EE67;
+	Sun, 11 Feb 2024 20:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q/xQ3d+8"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RGde9uU+"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB10149E12;
-	Sun, 11 Feb 2024 20:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9901B5E22B
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 20:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707682827; cv=none; b=KcUxgxN79UEbbJxllfhgE56irIkcgSdmkYIUhL4a5KOwxiIYmbbW2e4agYG/BHbIoiKgntuu7QquA6oZrQu8fQiloFOHj5WhG9qyQRZ9bktf2v6nS7urfRJcC7ZJX56uKHmxne21yr/qeR95Zgj6SYizBCF4HYpOMo0drS8rAxg=
+	t=1707683135; cv=none; b=pHKGhaLnge8ghVyGMumD15fkEMJtgWezdEdBMBoRPF1NsowCA+eevgGVRwL0zLRwX2MZmRTM8rXrMbFZEbDApZqZYnmtqY/DBCkr6bMplJczSb2QuQHYEhgm4/uAppHhetEbeWcEiCotFh3c6cLvvl/N5Fgf1g+F0lUfG0209Mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707682827; c=relaxed/simple;
-	bh=bzOg8Vyf1KgrI24EqX1HmE/A9hdeNubSy72njvMixRI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lpjS417fJtLmRs3VjCcIFjlXHdKIYKa5cThh407eD0G2payQmkvW9ArzFZkX06IDvlEgsEEAP1bOjkeoqRgrVWqwj1sXSlFsPfXOi8AS4dzlbPDNr0Mn6jQcD+ublITZa93DJFWCxGO3xhL30HUjDwNt+I0N5UiWEnTdn1hNKro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q/xQ3d+8; arc=none smtp.client-ip=209.85.167.44
+	s=arc-20240116; t=1707683135; c=relaxed/simple;
+	bh=cKsT+yo9bDIWuQHdZCWubZ0yLxA1O8F71YQR2vqtekY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QmjxiB5BLlUH5vO9/nu2OXG1MZ5z9eaTFVpLWV3KB3fRgyKC/+jzU+w2lEJQfwPRcwrlRc+jtOcJT3qGAulnJzTezEg8vE41MSWamH5w5YOvvxmiIQEoPQ0GDpRABh2XyUcPutwDFp4gE2te5tW3rntJysnrrRCIrkL7a2eOBlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RGde9uU+; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50eac018059so3284508e87.0;
-        Sun, 11 Feb 2024 12:20:24 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4101d4c5772so14417725e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:25:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707682823; x=1708287623; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1707683131; x=1708287931; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ghy+50tCdn+Q71lUqzEnDQMJYH/opBg7prwVaaY4Heo=;
-        b=Q/xQ3d+8p2DNCCXLpz++2GSMQz68rdNAmlDEEpa6sbd7/GthxFQ/FThp7SGG0PeWgI
-         w8qCPmB70yRLtagLufI0ZmKPrkMkDbh+E8ws5Lr7nHHdSAIO0F42zLiWkJn0ZhMoT2LY
-         eF0+RZ2Agj6J0bGQAxQRTXPnAXi0lFV3H0iVM9EiQu/lenFdL8YEQYHGnf420LBEFuYM
-         BgKRKzoauZWgtfoTM60NNApCdYxJC3m5HWlJ3abr22OneLYRtZqJDvGdoGo3aqJq0/0i
-         QU+84ZJzjHIXycnoBA0kL/ODgLO2vIIpAfDQ37SfAv1xR+Yc4wQ31Gy97rutwZfmnhhV
-         eArA==
+        bh=wzUk6QWHUEzr9XBpn7ygytCnVDBjeS7SWKBm+yuB2yQ=;
+        b=RGde9uU+cdmbIcPIe/JiPc3yCKAC3mDL2QWW5oRcJ188CgTrF/b3TAEqTVnVGMnt9C
+         2L+6xA1VZY1+qr5I8Z38lRobZ3e4SfOEX6H4HXkYszbwDzlMJ2Jexa6ClZPUQnZfxn0e
+         Alga4OiMXbpJ2f593cnyz2LMzliP4dtfWenhEXof0m5DNnXOjRN7BjVUkbZs3XO2gPJ0
+         6Wfiz6G9m7XrCOB+hk2nBKfKS2kSVmmPhnF8pM5WqKAZegqQjUiaAMPG0D7Axn98c/pn
+         IBbhrJeBfe1w/ttu/l1SsUAB3KhHNKshaw2A+yx09sAElyV4GfUNHJhKEmReIGk3pOdP
+         cJxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707682823; x=1708287623;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707683131; x=1708287931;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ghy+50tCdn+Q71lUqzEnDQMJYH/opBg7prwVaaY4Heo=;
-        b=Wjo9sXA7WjBWkHwTAeNMzy/9atTCSe/mAmPyPYgCp0iQxHGO8GobF0GOA/T93Deb4f
-         FomP+PeFSauxAIYuvAZ3J/nVtSNT63iah60vo0AEOMDTPXWmH0BUyCEn5BCBCbmHyM6g
-         jMMZR4Ja/rD9OJpWGNEJe0WNhsWVynrAaTtX64oa+dRSNs537MFw+p5d9AB+9EEVTIG0
-         fgMnUBR9YAtb1Y6CMfXBWGS/Vm+edLQy88b+A7eBGudyWma+dvQNXG9fsjcq1bybTOth
-         agho/y3z2LJQDqv5YfPrPtVQrR5XIROjkOSLUFGJBMr0d/tabMSmRBrqMldum+aq2vOu
-         3YBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVeZ2ADL8WBphwbdYwqJcYPZ/llo0FPGGebu067RYoh76JGd/+kx5dX/8fNB/ptcNrPZn8vj6rrJX6v7iHQhUlY9tRrEqkmgdpyUqh7dY3venEK92Hir2M2AZxYBImvppAM3c7mlM20
-X-Gm-Message-State: AOJu0Yxco8BQyyAk4GwRtFa6z9X0eX/d6o00ivWU0DbQLSsHZ9qmUz3Y
-	rQSOig6YqZsSbTOz+g+O/BUyJHN8Go8RZ+g9smvadKWmymlCY73IXBmmo3sRYk0kdwPRD3WweoV
-	bQJyM4XxvJ8XasR1j2QTmL7OCu2leNtX1dGI=
-X-Google-Smtp-Source: AGHT+IGvMI321riUERBvC4pbau1JUIcDEnIaKRgVlbb5SqUFZzTnaPHWCY0g3YW3LT18QZjb8VXsymHxr6x5Pb+zHcU=
-X-Received: by 2002:ac2:5bd2:0:b0:511:5b4e:1063 with SMTP id
- u18-20020ac25bd2000000b005115b4e1063mr3243010lfn.24.1707682822979; Sun, 11
- Feb 2024 12:20:22 -0800 (PST)
+        bh=wzUk6QWHUEzr9XBpn7ygytCnVDBjeS7SWKBm+yuB2yQ=;
+        b=t65TtO1k9+f4zgpZk2DzXeSk7B88QHEbqLTYVVOvpNhNgBIin7nkNINdqlVNvJCTdQ
+         8REAs1IThFeqEXgUHWokSHLsnw2yloyU+uBX7UveWM9KyrXAAXjJBuVzwItq/+5+cbIM
+         LUG5YoauDPKJASLp0LkUnOArb/1UsIkSi31N3zrKBOLxSNO947wRmVz1gPtJdq3dAZJb
+         fqcZ7afWWJvNh4u260hr9akrBBbyiwKgkplKbpuGveM2DuoQCgJG5P9sOwHFgVZJSkYp
+         IAsiwe85UTrioQ7hl5HoK+4jIIbfri+iMimADeizxKLQ0OAtAHWw+UomiC1RABqKuPYz
+         zFPA==
+X-Forwarded-Encrypted: i=1; AJvYcCWClNThTzHbh2Nmu9Ezfu54LECbNvsPvdIBr4vVELjCG7LOfzJpMgfDCZbfKes8MIzw5UYkm7IOFYDo7VFxb5YjG0tNae9tJoJP8mW2
+X-Gm-Message-State: AOJu0YzU4PKoFxN6DqCjl7UT1n/i0Hd7VjLd96agzXGG/g7mgluip4ns
+	+klHamqBvNPSwqJ3SxCGI3yGpW5sTGE6lwmVYS7zRFB8sUDzf1de
+X-Google-Smtp-Source: AGHT+IEaVY5znKfVD9XsjVN7CS3SzQpOfjYumpoKGVzWl2vafk0TCZAz6Aaob8H5VxlKW41qHi6dsg==
+X-Received: by 2002:a05:600c:470e:b0:410:78fb:bed2 with SMTP id v14-20020a05600c470e00b0041078fbbed2mr3903287wmo.19.1707683130727;
+        Sun, 11 Feb 2024 12:25:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW9JeN7YH2YmPav6AR+rfZAFuoB4MkJCOUsK1ExYPdg6dJ7JTHnFzbklfWa5rySkjhgSGHutvSccaXACHWTMYPTVY/p7anscul9ZRUHWkYqW6CWNGKpyJq3EUC1/hFy3ZgN0TOUxz36gO7Vi/gREGUHB7zJthRRYkCLotxmuryenthSW16nZFjgWGilTughQ6jQ0n/whIEgCJnDvClKgwgHrq1CDbu9iGfH/4Q4WoZgMA==
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id c24-20020a05600c0ad800b004107dfa6aebsm6457721wmr.28.2024.02.11.12.25.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Feb 2024 12:25:30 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+Subject: Re: [PATCH] bus: sunxi-rsb: make sunxi_rsb_bus const
+Date: Sun, 11 Feb 2024 21:25:29 +0100
+Message-ID: <9236043.CDJkKcVGEf@jernej-laptop>
+In-Reply-To: <20240204-bus_cleanup-bus-v1-1-bda309c4b829@marliere.net>
+References: <20240204-bus_cleanup-bus-v1-1-bda309c4b829@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231208073119.29283-1-dinghao.liu@zju.edu.cn>
- <20231210133228.5fd425ea@jic23-huawei> <20231217132800.27e83a01@jic23-huawei>
- <ZckdEDbAqin1Fsgt@surfacebook.localdomain> <20240211193711.518b76d7@jic23-huawei>
-In-Reply-To: <20240211193711.518b76d7@jic23-huawei>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Sun, 11 Feb 2024 22:19:46 +0200
-Message-ID: <CAHp75VdEwxVG3qnZJgx_VKZPOkRcqHUiLcvJj3cBAnJh90Wt0g@mail.gmail.com>
-Subject: Re: [PATCH] iio: core: fix memleak in iio_device_register_sysfs
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Dinghao Liu <dinghao.liu@zju.edu.cn>, Lars-Peter Clausen <lars@metafoo.de>, 
-	Alexandru Ardelean <alexandru.ardelean@analog.com>, linux-iio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Sun, Feb 11, 2024 at 9:37=E2=80=AFPM Jonathan Cameron <jic23@kernel.org>=
- wrote:
-> On Sun, 11 Feb 2024 21:16:32 +0200
-> andy.shevchenko@gmail.com wrote:
->
-> > Sun, Dec 17, 2023 at 01:28:00PM +0000, Jonathan Cameron kirjoitti:
-> > > On Sun, 10 Dec 2023 13:32:28 +0000
-> > > Jonathan Cameron <jic23@kernel.org> wrote:
-> > >
-> > > > On Fri,  8 Dec 2023 15:31:19 +0800
-> > > > Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
-> > > >
-> > > > > When iio_device_register_sysfs_group() fails, we should
-> > > > > free iio_dev_opaque->chan_attr_group.attrs to prevent
-> > > > > potential memleak.
-> > > > >
-> > > > > Fixes: 32f171724e5c ("iio: core: rework iio device group creation=
-")
-> > > > > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> > > > Hi.
-> > > >
-> > > > Looks good to me, but I'd like to leave this one on the list a litt=
-le
-> > > > longer to see if anyone else has comments.
-> > > >
-> > > Guess no comments!
-> >
-> > This patch does not fix anything.
-> >
-> > Yet, it might be considered as one that increases robustness, but with =
-this applied the
-> > goto
-> > https://elixir.bootlin.com/linux/v6.8-rc3/source/drivers/iio/industrial=
-io-core.c#L2007
-> > can be amended, right?
-> >
->
-> I'm lost.  That goto results in a call to
-> iio_buffers_free_sysfs_and_mask(indio_dev);
-> which continues to undo stuff from before that call.
-> Now if it did
-> iio_device_unregister_sysfs(indio_dev);
-> (as per the label above it in the cleanup) then I'd agree.
+Dne nedelja, 04. februar 2024 ob 16:56:44 CET je Ricardo B. Marliere napisal(a):
+> Now that the driver core can properly handle constant struct bus_type,
+> move the sunxi_rsb_bus variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-Ah, it's me who hasn't noticed the word "buffer" in the goto label.
-Yes, you are right!
+Applied, thanks!
 
-> Perhaps I'm misreading the code flow here?
->
-> All this code is supposed to be side effect free on error so I'm
-> keen on the change even if there is another path where it gets cleaned
-> up that I'm missing.
+Best regards,
+Jernej
 
-Everything is fine, sorry for the noise.
 
---=20
-With Best Regards,
-Andy Shevchenko
 
