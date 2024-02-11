@@ -1,152 +1,140 @@
-Return-Path: <linux-kernel+bounces-60631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D76E8507B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 05:20:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 915538507BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 05:32:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4E351F2382C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 04:20:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A10941C2217F
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 04:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF7012B76;
-	Sun, 11 Feb 2024 04:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0359107B2;
+	Sun, 11 Feb 2024 04:32:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WhuREhkN"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="WfIGol9O"
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F936FBF5;
-	Sun, 11 Feb 2024 04:19:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0693A17D5
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707625193; cv=none; b=mLFvrHnQd3S3OKmh/Fz9qsGkds1gqeeN/7Z6l8NeDR0EbFJ8DSNltCQnJG25t3Oe5SKEp06RXo0vLy26u1kJdSHUW+NOqEh8zFvA4zS96Vb+UayExAax+/P6OCS29bCtJmm7Hoo5TAVwjfkPJqpft31h79uQAz8b9tdJoclX45M=
+	t=1707625920; cv=none; b=nAdYpLgEhqPvGkLHhUZUHw9XuNJ4F2/Ra0xtaSVZkOFbWCdFPvmRdP2GX92EeY+X/YI+31VPTNPxn5ik4MFjXRHgjc+rRrlB9J3KCT3lzQaPHXqXZd66XPqG02srccRc2Rg2CSvuWWALQHO3gAw2vwhZuP6OoOEoFfr2GGojTfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707625193; c=relaxed/simple;
-	bh=HuE/qn9uO4Mak3wb7u3vZhiBv+6UYRAGaV1V4lIuL0U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BGEipj57WH0Bmh8zF4sndzAHjvIi6XRvYW06sFyOFEi7cMtlOcUeqajel3JZ9PVl7n80qPOX109CH1/02F1I4en5zaL2tXMsPd08/dZmHknZNa7rVQyp9dz/e1XikFlguJXWyIsmrplwHFt+UpZC7E+wOGyJD/ZCGMv5xPKAnFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WhuREhkN; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707625190; x=1739161190;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HuE/qn9uO4Mak3wb7u3vZhiBv+6UYRAGaV1V4lIuL0U=;
-  b=WhuREhkNtB2O6qHGVR+E46PamqHHfzu3HOwyCJXxlgtf0XuvF+pAWrk1
-   4nglJiL8u9bkE2uE40rsYrKwR+FoiBpGULVneQw3rZcKjmMgWlDTDesxp
-   dLyhmAVdWIM/9c9ngf1TE27wA761FUH7JbJbdDup20oqM4tOQzPjees5e
-   mbBcD3zw50HN6v6ooo6T42SAExyma8IboSUovy6oXC3eON6Y8RsiPRP/o
-   BQy0c4kOnNkz+KPQJsa3VBokZYHKq1XF6YXiwk1Kusi1hMnWljG+43TUL
-   te03d5tW5Ypzy9sk7RoLZBY4GdWpO4cvz08mqy5NjP4IuRYHabOq+OGoA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10980"; a="436747867"
-X-IronPort-AV: E=Sophos;i="6.05,260,1701158400"; 
-   d="scan'208";a="436747867"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2024 20:19:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,260,1701158400"; 
-   d="scan'208";a="2588419"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 10 Feb 2024 20:19:46 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rZ1Jg-0006Jc-0q;
-	Sun, 11 Feb 2024 04:19:44 +0000
-Date: Sun, 11 Feb 2024 12:19:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jacky Huang <ychuang570808@gmail.com>, linus.walleij@linaro.org,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, p.zabel@pengutronix.de, j.neuschaefer@gmx.net
-Cc: oe-kbuild-all@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, ychuang3@nuvoton.com,
-	schung@nuvoton.com
-Subject: Re: [PATCH v4 4/4] pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO
- driver
-Message-ID: <202402111204.to88Twuu-lkp@intel.com>
-References: <20240206025223.35147-5-ychuang570808@gmail.com>
+	s=arc-20240116; t=1707625920; c=relaxed/simple;
+	bh=5ZwnpT8mcXjBFkyjqPTZeh5s0VMPzldNDT4ybxfhyqQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i2o7YkHzwQTyBMe2qxL0v6iEQd5BghnnJuQXyr6UZCJdZwkEPKnsLUWl1koT9qd/MPkaiBnP/Qp1+B75gOLif+S8NZ09uJPeBH1SMYi5dkRwaDJyIxhZce/DSmRmoXAlEha5r4og5zzD5vfD35uhR8QkCII8bA7LM4OwQgCUrpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=WfIGol9O; arc=none smtp.client-ip=44.202.169.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
+	by cmsmtp with ESMTPS
+	id Ys4ArXrg6THHuZ1VQrhV1b; Sun, 11 Feb 2024 04:31:52 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id Z1VPrQTkytAtNZ1VPr81Xe; Sun, 11 Feb 2024 04:31:51 +0000
+X-Authority-Analysis: v=2.4 cv=N8OKFH9B c=1 sm=1 tr=0 ts=65c84db7
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=SFFPblQYn7CYJzprxtIA:9 a=QEXdDO2ut3YA:10
+ a=9cHFzqQdt-sA:10 a=PUnBvhIW4WwA:10 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=JB/WeyEbAV7OyjD3c1GyCrBYmyVdRfm89lgXESEF2VM=; b=WfIGol9OItIddg2zBSp23EqrT5
+	zc0dF5un58Jy92Zs0udxqIhcXZaG7iF2qgqWS0poWnNLgXM4AI3BkvYc8jX+qbxvsDkR+zJchzJbh
+	SuCe4RlhcRtxUeYQnPDRpBdb6x9IuTTDReiGwUY5mTJcvVJPGgtp6cZcfoeIhdjUpx7MWHAUAk3dK
+	6kKWA3VcdP6ZFwSfKMjO/n9UrFxUnGa/nihgYD1MfMDmpz6lE8bTTLEa3ztHlFd1+cEoCEYbm1IX6
+	r582PhANx4MiQ809bUjVy+QDOFmffrLhT+iz+1i3IC6yv4qF0wHI6hxQGQL1W0P+14IOL+LDohMWm
+	Y3p3kuwg==;
+Received: from [201.172.172.225] (port=59896 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rZ1VP-001GeW-00;
+	Sat, 10 Feb 2024 22:31:51 -0600
+Message-ID: <bb7a8d29-d80d-41b0-8dde-2aba44c3fd90@embeddedor.com>
+Date: Sat, 10 Feb 2024 22:31:49 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206025223.35147-5-ychuang570808@gmail.com>
-
-Hi Jacky,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on linusw-pinctrl/devel]
-[also build test ERROR on linusw-pinctrl/for-next robh/for-next linus/master v6.8-rc3 next-20240209]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Jacky-Huang/dt-bindings-reset-Add-syscon-to-nuvoton-ma35d1-system-management-node/20240206-105502
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git devel
-patch link:    https://lore.kernel.org/r/20240206025223.35147-5-ychuang570808%40gmail.com
-patch subject: [PATCH v4 4/4] pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO driver
-config: powerpc-randconfig-r122-20240208 (https://download.01.org/0day-ci/archive/20240211/202402111204.to88Twuu-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce: (https://download.01.org/0day-ci/archive/20240211/202402111204.to88Twuu-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402111204.to88Twuu-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/pinctrl/nuvoton/pinctrl-ma35d1.c:14:
-   drivers/pinctrl/nuvoton/pinctrl-ma35.h:46:31: warning: declaration of 'struct platform_device' will not be visible outside of this function [-Wvisibility]
-   int ma35_pinctrl_probe(struct platform_device *pdev, const struct ma35_pinctrl_soc_info *info);
-                                 ^
-   drivers/pinctrl/nuvoton/pinctrl-ma35d1.c:1770:40: warning: declaration of 'struct platform_device' will not be visible outside of this function [-Wvisibility]
-   static int ma35d1_pinctrl_probe(struct platform_device *pdev)
-                                          ^
-   drivers/pinctrl/nuvoton/pinctrl-ma35d1.c:1772:28: error: incompatible pointer types passing 'struct platform_device *' to parameter of type 'struct platform_device *' [-Werror,-Wincompatible-pointer-types]
-           return ma35_pinctrl_probe(pdev, &ma35d1_pinctrl_info);
-                                     ^~~~
-   drivers/pinctrl/nuvoton/pinctrl-ma35.h:46:48: note: passing argument to parameter 'pdev' here
-   int ma35_pinctrl_probe(struct platform_device *pdev, const struct ma35_pinctrl_soc_info *info);
-                                                  ^
-   drivers/pinctrl/nuvoton/pinctrl-ma35d1.c:1780:31: error: variable has incomplete type 'struct platform_driver'
-   static struct platform_driver ma35d1_pinctrl_driver = {
-                                 ^
-   drivers/pinctrl/nuvoton/pinctrl-ma35d1.c:1780:15: note: forward declaration of 'struct platform_driver'
-   static struct platform_driver ma35d1_pinctrl_driver = {
-                 ^
->> drivers/pinctrl/nuvoton/pinctrl-ma35d1.c:1791:9: error: implicit declaration of function 'platform_driver_register' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           return platform_driver_register(&ma35d1_pinctrl_driver);
-                  ^
-   2 warnings and 3 errors generated.
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for ADB_CUDA
-   Depends on [n]: MACINTOSH_DRIVERS [=n] && (ADB [=n] || PPC_PMAC [=y]) && !PPC_PMAC64 [=n]
-   Selected by [y]:
-   - PPC_PMAC [=y] && PPC_BOOK3S [=y] && CPU_BIG_ENDIAN [=y] && POWER_RESET [=y] && PPC32 [=y]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fs/ntfs3: use kcalloc() instead of kzalloc()
+Content-Language: en-US
+To: Lenko Donchev <lenko.donchev@gmail.com>,
+ Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <Zcgoighe07IahAV8@nixos>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <Zcgoighe07IahAV8@nixos>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.172.225
+X-Source-L: No
+X-Exim-ID: 1rZ1VP-001GeW-00
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:59896
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfF+j2tUpx6RbzLvKRzDoEQDTCsMe87E1RBfJrs61uiZrdQycENHNXxpxfVLwr4Rp0r+znu4g6cwvS1WxP+N0KV+baNrY8OC/azch+SV39v0ZarcvX1lr
+ 4H81BfKdEKEEnASIakUj1Mz+4DH2+Fna8U1NOfb5QFxvFy/6Av9iXCES9/RuCymiCp2skcqKiDGmojPWnEBgArbWdPFQuTppn26aV4su63ADzJ+yPCYnqDfJ
 
 
-vim +/platform_driver_register +1791 drivers/pinctrl/nuvoton/pinctrl-ma35d1.c
 
-  1788	
-  1789	static int __init ma35d1_pinctrl_init(void)
-  1790	{
-> 1791		return platform_driver_register(&ma35d1_pinctrl_driver);
-  1792	}
-  1793	arch_initcall(ma35d1_pinctrl_init);
-  1794	
+On 2/10/24 19:53, Lenko Donchev wrote:
+> We are trying to get rid of all multiplications from allocation
+> functions to prevent integer overflows[1]. Here the multiplication is
+> obviously safe, but using kcalloc() is more appropriate and improves
+> readability. This patch has no effect on runtime behavior.
+> 
+> Link: https://github.com/KSPP/linux/issues/162 [1]
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+> 
+> Signed-off-by: Lenko Donchev <lenko.donchev@gmail.com>
+> ---
+>   fs/ntfs3/frecord.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+> index 3b42938a9d3b..d435446537ca 100644
+> --- a/fs/ntfs3/frecord.c
+> +++ b/fs/ntfs3/frecord.c
+> @@ -2636,7 +2636,7 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
+>   		goto out1;
+>   	}
+>   
+> -	pages_disk = kzalloc(npages_disk * sizeof(struct page *), GFP_NOFS);
+> +	pages_disk = kcalloc(npages_disk, sizeof(struct page *), GFP_NOFS);
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+`sizeof(*pages_disk)` is preferable over `sizeof(struct page *)`
+
+Thanks
+--
+Gustavo
+
+>   	if (!pages_disk) {
+>   		err = -ENOMEM;
+>   		goto out2;
 
