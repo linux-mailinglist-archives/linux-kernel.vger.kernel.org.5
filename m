@@ -1,85 +1,88 @@
-Return-Path: <linux-kernel+bounces-60718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A88278508DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:29:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8421B8508E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:29:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56E911F2371D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:29:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDD3B1F241B6
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:29:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A235A787;
-	Sun, 11 Feb 2024 11:29:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5675A7A9;
+	Sun, 11 Feb 2024 11:29:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="lk/Skea2";
-	dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="xCkYaHVc"
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.80])
+	dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="ZlutzGl0";
+	dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="0PFuMinM"
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B058159178;
-	Sun, 11 Feb 2024 11:29:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFCF65A4E3;
+	Sun, 11 Feb 2024 11:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.82
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707650961; cv=pass; b=vA6rFr7f8A6/5ishpturveudw0b/IJEU4WfkhwlU9I/NLsNeFDhhmf6+ghkWxm83aOybLIS/tS1YXI9fK1JtQrbR1QPP29zmzVXaLB+2AHjwUYRvBAKAzS+eywyJgka17ZGuPe7xSqoS1bmyB0Bb5g7I2wfzywCt5uNVA6RIQVA=
+	t=1707650962; cv=pass; b=S5iaXq+waMUoNeI6tC+bFdOzuQmrotdIYysHVygVz4X40GQIeq1N7BLDAEJsMJejFBSYdFSkpo9FySEJezn+GwEvXNFnmj2uvwiNRh81pqAFotchm5vYdsRl+bPaeL3yDJMfrzlpMB8M1IcYDtb1p9IEuyXlryBgaBnIvRccpK8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707650961; c=relaxed/simple;
-	bh=a46TbE/hynpL7eBBgQ6hVp16oGlGrY98nmFueVCtp5Q=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=DiHgpUB5Hldh+R/F6p9ZeeB1xFVw+tV1li2ZUNM+uwQ1ByNKbOofviftcqfqLKbzt4djDJpHg6R7UI9I3iVv14axoJYwfWLkJ7W9/382UAIex1ojxnFXbAOQS2uwzMJ8FEUy7orlVzbByQ2NwHFqFP87Tvh/LVdy9CElaX0QNnE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net; spf=none smtp.mailfrom=gerhold.net; dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=lk/Skea2; dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=xCkYaHVc; arc=pass smtp.client-ip=85.215.255.80
+	s=arc-20240116; t=1707650962; c=relaxed/simple;
+	bh=tYMdb2LLTRJ2YPUNIoiWFiSTohAhAU9eoI1ncEhCMyk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=PefYX6sQeIoAthVOOlPw9uz8OIsLGJ2wevsjTzxUItX0PG+wFqoI0A4gqy1QKy8wfyVxCPl6DFMlf21Hm4pHh/tF45vUuh/d3od+jPZl3jtB9e8sq1CeDrtCW2NjGGyoyGwyZDNivpWUQ/wLHCkMwzLNQFN+iK5hfY5zE1Ub354=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net; spf=none smtp.mailfrom=gerhold.net; dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=ZlutzGl0; dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=0PFuMinM; arc=pass smtp.client-ip=85.215.255.82
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=gerhold.net
 ARC-Seal: i=1; a=rsa-sha256; t=1707650776; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=CMVOGEIk50drHDsacifP9+ilY09W6SVtoclY+psFfsXC9VmRMZU5alq0xUAw4TYQrJ
-    eRlX1SMmlsVB0zOY/EECH7MjZB+9JL3GR0hqcZMJ8aeYqpC4NlsD75CssoGutFGWnz+r
-    MznWHUwIoVwBk3sNh9gVBOFWn4GygTdKA7wLF3OfC1F3QIM8n8vFpeGX+o6ufNof1N0f
-    RVtovWLuUiFhWwpY8YwM96GZV8R+6g2W08n31iEya+xHk9iHGDtgxw3t6bVZyrRas1ya
-    uFQSmHJ/3Eryhj9PEji97aIlNitJpulaH4R//CiUj0n1hhw5iVGoeESKoLfs+Ab10ZgU
-    HIGw==
+    b=kOiiCJEmE0TSIOagG9z/d0f5JYdQN04K3eg1VS9ynNnL7bY2vdUOAXQJcLOu1qJhV2
+    9CFJS/6LzSBQD/x9rDxLNnve/QUO2RntTVRwNlPLlVFJb8mZmSIanzmOZVI9EkVIdWc2
+    3gZLSZ0tdnOVJCAaAmY4Y8gp3bv3p8FgFq/kRbSXe5CDIqHatMjKv8Z1ZeiBp5L5eaLY
+    QPafPU4GuzM0r3ozSM0DD8Sngxp0R0KaiseMXCkThZpaM5I4ZVsmeWxUVmooUKi39z3V
+    f/DMI1LFeH443J4AmQi9ge+11kChtdRIM02dfYKxiIzZHf//4EG/0wFHmVuGy1yDTnVj
+    VD2w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1707650776;
     s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
-    bh=YYORJiZMbtCUrplYD7CEsHGckfDhLB55zmu0nOiwreE=;
-    b=AHvShyhzNKbR5pJ73kp+o8YuY100VBfCq2/TGlVUnMrnN6CEbFItzmkw958FsYpuwD
-    k2ftLWCHQuqJvDdWsgCpQSUBJOAaXRe/ES4jb8bfhPv44XsYuZ+0DS1vcCEj0Ti681yo
-    owrUh1Itc8mnUbC2GQ8kslkOk4nBssWJ4Ht8n+i5rgLZaYrOy6eFzu1jvyPODHRxhw86
-    yiK99VcQWnkl5IPEiYGBQV54u1G7rMboBe5EssBFvwM5Xan03Dp/ro57hTSRatbksnYq
-    Qgu9SQBLoeA3zTUQitvP/65INuScgDlSE+QHhkPQge3NoHwoyLuuvpX15PPjbv17FLay
-    h9PA==
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=dFelX5EHlu+pZ8B6gF/nAN2jUERUrCFzhnmIS9NBoP0=;
+    b=HHcyf3yuic6Bp62uBV/XIndriKVnXJoLynHDy+rVw4H9nOHgRL/LUY1qQnfR44uxSx
+    1KHieXBohSXCNNnPH3WR3bXA0hwjFxC7Og+ywD5WTUU7M/ophkeMqpqGt7wcfTgdgbpE
+    Glh7T1ct7hTrdC2skMu6GpprCs4hoFKXNa5BgMZASEYelhBFNlfTuKkrlAk8IdWhTN/X
+    G1sAucY7TuhBW0UK67toqnT0hlwBP9gwHjBY9zCRoA8V45nHt8t9gZTzAmaQl9y8JOTL
+    miXZ+LfPnn49HLX3Dn81gMVak0JXDX7iasxIni2TyAAkth81nl+2wmoh2IcvQBG876n5
+    QpfQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1707650776;
     s=strato-dkim-0002; d=gerhold.net;
-    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
-    bh=YYORJiZMbtCUrplYD7CEsHGckfDhLB55zmu0nOiwreE=;
-    b=lk/Skea2Fe88PpmmBQZ6jvEae16Juof0984NA0WgzPBbYXxhxzqYM4EJwJISixx+cl
-    GNp0VKQ49PwKjAFClIj9HYTJvfkHpwLVnzf/Eq8DAPERE+35U5+7uzRwKCJ2/LFfgawm
-    0ve/nf3vGSnbpvWbiAhxJWUDXLb4tM21SJXl+Ca9HOa1XdqTQhRB81tFXKtaYH8TC6ZI
-    D9yQD/1mHejOUapahC/IyelU43wHort70EJ6EnJPKWXORcYOYvNfa7edQIjTyM23h/Ne
-    03NIj6b73XF8C1EU+G86ugdFwTiKFywVFxnauR5izCv1BZMfx2KjVPbgBPUgIyZ0ABbH
-    roqQ==
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=dFelX5EHlu+pZ8B6gF/nAN2jUERUrCFzhnmIS9NBoP0=;
+    b=ZlutzGl0zwneklmSSeL28p0KFjVLApBaTFcfzEK4U4AqYy7bcxui3q7RFSiO6zDn1B
+    ixzBG2Ho77wXuYQ9yYujDzZI4wx11sjjX4x7tzjc4Qe9Gb03LxkFxBKReWPEqbM7TYai
+    95qZv4DLAGjKNSgfnNRL3dZt3Ck+xzHJdLXikuQrItrjIPfHFb7DrTVait9XgRTflsk1
+    P+GJ/Pi3RN+AFDeogoHarAICX8gYRzaXIu/WOiffb/+pD1Hnwcymar0/Q8A1uz9Xaa3/
+    nDwS2RYr1YR6iNOFqrl+hxdvHbwOqU2cQZjvyQ8YuuohL2JSt1bUL+DPw8GtwvH2MPOn
+    U7Kw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1707650776;
     s=strato-dkim-0003; d=gerhold.net;
-    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
-    bh=YYORJiZMbtCUrplYD7CEsHGckfDhLB55zmu0nOiwreE=;
-    b=xCkYaHVc0ji4XJK8kqEv6SnD4NG0rP7ri4JiohgM07RvVV8JHuSMJzay3BYSRQWRW1
-    hT/hCBDiSyxrOi0QCdCw==
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=dFelX5EHlu+pZ8B6gF/nAN2jUERUrCFzhnmIS9NBoP0=;
+    b=0PFuMinM4KxoD7PNY7+WdUDXFmdccYlMQlnJlsoyyj5sPO946cByF0AkSReXLqTjcV
+    RFn3ACkKh81lOt5OPaAQ==
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u4p3mw=="
 Received: from [192.168.244.3]
     by smtp.strato.de (RZmta 49.11.2 DYNA|AUTH)
-    with ESMTPSA id ze34f101BBQFwzs
+    with ESMTPSA id ze34f101BBQGwzt
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Sun, 11 Feb 2024 12:26:15 +0100 (CET)
+    Sun, 11 Feb 2024 12:26:16 +0100 (CET)
 From: Stephan Gerhold <stephan@gerhold.net>
-Subject: [PATCH RESEND v3 0/2] Input: add Himax HX852x(ES) touchscreen
- driver
-Date: Sun, 11 Feb 2024 12:25:49 +0100
-Message-Id: <20240211-hx852x-v3-0-f682e2fcf11d@gerhold.net>
+Date: Sun, 11 Feb 2024 12:25:50 +0100
+Subject: [PATCH RESEND v3 1/2] dt-bindings: input: touchscreen: document
+ Himax HX852x(ES)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,10 +91,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAL2uyGUC/2XPPQvCMBCA4b9SMhvJ3fUjcXLQ1UFHcejHtQ1IK
- 6mUSul/NwQsiuPl8rxwsxjYWR7ELpqF49EOtu/8QJtIlG3eNSxt5WeBCklpSGU76QQnSbFRFWY
- ZEaLwnx+OazuF0FWcj5fj6SBu/r21w7N3r9AfIWxDygB9UiNIJU0JXNR1QikX+4Zd29+rbcfPE
- BnxC5JaIXpYJhrBxFmBmPxDWiEojFdIHuag/QmUa2DzC5dleQM7Zn8nGAEAAA==
+Message-Id: <20240211-hx852x-v3-1-f682e2fcf11d@gerhold.net>
+References: <20240211-hx852x-v3-0-f682e2fcf11d@gerhold.net>
+In-Reply-To: <20240211-hx852x-v3-0-f682e2fcf11d@gerhold.net>
 To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc: Rob Herring <robh+dt@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
@@ -104,51 +106,115 @@ Cc: Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.12.4
 
-Add DT schema and driver for the Himax HX852x(ES) touch panel 
-controller, with support for multi-touch and capacitive touch keys.
+Himax HX852x(ES) is a touch panel controller with optional support
+for capacitive touch keys.
 
+Unfortunately, the model naming is quite unclear and confusing. There
+seems to be a distinction between models (e.g. HX8526) and the "series"
+suffix (e.g. -A, -B, -C, -D, -E, -ES). But this doesn't seem to be
+applied very consistently because e.g. HX8527-E(44) actually seems to
+belong to the -ES series.
+
+The compatible consists of the actual part number followed by the
+"series" as fallback compatible. Typically only the latter will be
+interesting for drivers as there is no relevant difference on the
+driver side.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
-Unchanged resend of v3 from Tue, 24 Oct 2023:
-https://lore.kernel.org/r/20231024-hx852x-v3-0-a1890d3a81e9@gerhold.net
+ .../bindings/input/touchscreen/himax,hx852es.yaml  | 81 ++++++++++++++++++++++
+ 1 file changed, 81 insertions(+)
 
-Changes in v3:
-- Fix device_property_count_u32() error handling (Jeff)
-- Properly handle errors in hx852x_suspend (Jeff)
-- Simplify error handling in hx852x_read_config() (Jeff)
-- Close i2c_msg array with trailing comma (Jeff)
-- Clean up error handling in hx852x_power_off()
-- Link to v2: https://lore.kernel.org/r/20230930-hx852x-v2-0-c5821947b225@gerhold.net
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/himax,hx852es.yaml b/Documentation/devicetree/bindings/input/touchscreen/himax,hx852es.yaml
+new file mode 100644
+index 000000000000..40a60880111d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/touchscreen/himax,hx852es.yaml
+@@ -0,0 +1,81 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/touchscreen/himax,hx852es.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Himax HX852x(ES) touch panel controller
++
++maintainers:
++  - Stephan Gerhold <stephan@gerhold.net>
++
++allOf:
++  - $ref: touchscreen.yaml#
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - himax,hx8525e
++          - himax,hx8526e
++          - himax,hx8527e
++      - const: himax,hx852es
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++    description: Touch Screen Interrupt (TSIX), active low
++
++  reset-gpios:
++    maxItems: 1
++    description: External Reset (XRES), active low
++
++  vcca-supply:
++    description: Analog power supply (VCCA)
++
++  vccd-supply:
++    description: Digital power supply (VCCD)
++
++  touchscreen-inverted-x: true
++  touchscreen-inverted-y: true
++  touchscreen-size-x: true
++  touchscreen-size-y: true
++  touchscreen-swapped-x-y: true
++
++  linux,keycodes:
++    minItems: 1
++    maxItems: 4
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - reset-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/input/input.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      touchscreen@48 {
++        compatible = "himax,hx8527e", "himax,hx852es";
++        reg = <0x48>;
++        interrupt-parent = <&tlmm>;
++        interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
++        reset-gpios = <&tlmm 12 GPIO_ACTIVE_LOW>;
++        vcca-supply = <&reg_ts_vcca>;
++        vccd-supply = <&pm8916_l6>;
++        linux,keycodes = <KEY_BACK KEY_HOMEPAGE KEY_APPSELECT>;
++      };
++    };
++
++...
 
-Changes in v2:
-- dt-bindings: Swap required:/additionalProperties: (Krzysztof)
-- Use dev_err_ratelimited() for error in IRQ thread (Christophe)
-- Use dev_err_probe() consistently (Christophe)
-- Improve error handling of hx852x_power_off()/hx852x_stop() (Jeff)
-- Add linux/of.h and linux/mod_devicetable.h include (Jeff)
-- Fix %d -> %u in some format strings (Jeff)
-- Fix other small comments from Jeff
-- Link to v1: https://lore.kernel.org/r/20230913-hx852x-v1-0-9c1ebff536eb@gerhold.net
-
----
-Jonathan Albrieux (1):
-      Input: add Himax HX852x(ES) touchscreen driver
-
-Stephan Gerhold (1):
-      dt-bindings: input: touchscreen: document Himax HX852x(ES)
-
- .../bindings/input/touchscreen/himax,hx852es.yaml  |  81 ++++
- MAINTAINERS                                        |   7 +
- drivers/input/touchscreen/Kconfig                  |  10 +
- drivers/input/touchscreen/Makefile                 |   1 +
- drivers/input/touchscreen/himax_hx852x.c           | 500 +++++++++++++++++++++
- 5 files changed, 599 insertions(+)
----
-base-commit: d03f030115fe930de1222fef294730ba21b93045
-change-id: 20230816-hx852x-3490d2773322
-
-Best regards,
 -- 
-Stephan Gerhold <stephan@gerhold.net>
+2.43.1
 
 
