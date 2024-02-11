@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-60740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B51F85090A
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:31:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88EB085090D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:31:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E9BAB235B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:31:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE11D1C222B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D44B59B45;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43E75C91E;
 	Sun, 11 Feb 2024 12:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="ccs2UrMP"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="GvRlx9M3"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AB6C23761
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 424445B1F8
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707654630; cv=none; b=H6Ae1sujboqNYN6/z3951smwpV5Vwcuj/MNoj1dTFA0FphpkSXq7r16Tmzn7KnpnU3xPdEus1tOO1HIg3mOslnsxKHhFlelXKTDkOEAJwWYQJGxMIAdchND96YPV0CJIgOfiVJ2lGXn6NJuJddnsZ4tEljPbHBzJ0QUixO5FAMQ=
+	t=1707654631; cv=none; b=SDK02wEczilFuGBjDzBwvPZtuS4aIb199OSvngKkDnElT6ROwTdX1cfPWzFe8vvyxzqbbxhy4tIdZqrnERC7iwxuKVEcASCpHrYBngmUIfj87KNE2bH4T5nZR46S55wOkvlfYUViIhrRhPt4auENHRZ21n91V/do/qflS+dx4CU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707654630; c=relaxed/simple;
-	bh=sm5m4u4t8eFbR2gjJprfwSpii3UwlxNYAW+qpTdBofY=;
+	s=arc-20240116; t=1707654631; c=relaxed/simple;
+	bh=HTmS7KgIHpTSgp6cqH/ynIQyNkUm0EieqPOuHqM5KOY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZXTrDUYo/h5OYixZj+WA5mjRCwPGzDa6WcrV2Qoh5M0SMCCf5fj6Z8sRTbk6Z0dyQNhJJWY/QSSko1tn3+oALlJpOT77rrhFkZLed8nBi/te0awMQtuq8Fvd3QWfcp7AmYFh0Tc5wZrVE8BCI7G7bmJDWqroMTxFCRxAkkLKWrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=ccs2UrMP; arc=none smtp.client-ip=209.85.208.173
+	 MIME-Version; b=Fu0lPVGnleqCFJEm3pKckOto4hidHeGPRBNZlt7XwxOl46EeBHrrAiOodPKs4H1dcbiX/gMfIu1DTwdJm2LvFn1bLJG/QXj2KeRA73oO2tgAQbbLYt5Kvgs6TeH3kXN0M1+y01SJ6zcDUrq+dgHgczwSIvGp6s4ggrSQQ5cSH10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=GvRlx9M3; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d09faadba5so30560191fa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:30:26 -0800 (PST)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5605c7b1f32so3136862a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:30:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707654625; x=1708259425; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1707654626; x=1708259426; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6Sd3F7Cnejo0YUOQY1FFsProakPDnxze1sPdzTvGqZE=;
-        b=ccs2UrMPg2hZMWxxZoYWR1hW8I0L86+3pa1yp7tnWuAVc9eH/C7ww5mQoBQpgFfiAD
-         IRvTfMsXril+j58HVkHHoSirqAz/aQQXZ5Jrc6OK1sx+bnHqJF0k0REQ7TGXFOhgrlyf
-         lJbinfSpvcxSPV00isFEI+lB1GSrp8Cajj445E0+4oCThUqMY4vbBPAOSSGkti/xLiSK
-         yGuJQ2XmJvcWwgEvYvVnJzI5oqHeLhNFF+rRu0fVLmFNHPSnRDA+E60AeG3VbsbEjuVg
-         n8jrl/AzPQEXif2bhEOSbgvhrg5hsXl/UJ/iEH3qYjk5iEKvxvaRMGGKgCPeWhoEUNQ/
-         QrtQ==
+        bh=mCAe8mO/KUlyg+BnRuX+JoIprh3UWXF6vcGK++EkmGw=;
+        b=GvRlx9M3CPd3W7hWoZnTTg12P+dCAptA+9LABJV767k09hXL9fLZcBIlnW3C8m8TH7
+         IgIHSYwi2Aw8E598mA1b2rXI5HYB2JefKrE4YwCCm+tKvTxh5OCGN19amn1KgZJ/Z6m1
+         3qPxFMHekkfeD8tRcvOtmGY8IlSjmeStY3OCTVfMstnZxGEcqPNpYHTPxDjG+PIjUMzs
+         hM30a3UON5IqDHfddOFTY7MwcmZ8IjD7NxPLK1vBXNymWBEEzwnW2a7krnRQUkK+9jqZ
+         fBFhF7fUAuf1h132rT1syh3uRVwsEWwiqajZR02RG0p3PE68dj0llYjvzvKZ2Id1XBn0
+         Vd/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707654625; x=1708259425;
+        d=1e100.net; s=20230601; t=1707654626; x=1708259426;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6Sd3F7Cnejo0YUOQY1FFsProakPDnxze1sPdzTvGqZE=;
-        b=c8IWL1JMUdkxNwRmJWtVmHnBYZScwO52rNd5CcrAvgTWWVHhQ5rv3wARQMU14IYETV
-         P5Nt58fnS3x0/25Jh1iU+WTJ+eW2PieBqITjTitZQWfaH4H5vyu9CthiHi/2HW++0UXq
-         WIoPZstpmIc1WS+AmKp1cEiUnfXhfX4bP7/rViCZYhQENrl9G/husPMUJ6Rs0yf7oiqM
-         +iPKmXZjfkBuqB82MEwcf43waoFnX1cYLGLBJW2FHKUb2NtNszovSXQJphTQ0LGa8mU7
-         uo1PPQfocV9QhEVyzwTu+H6Y5SnJD7NNpQrGi8PrgBrTr8+XWjzq9yE6egOKQjsuT5Ts
-         Nxqw==
-X-Gm-Message-State: AOJu0YxjTbp7YBgjc4FWbcOLgLcuTLgHgetCqjnMlvbtiCgdu9pctwhK
-	vKv0hgZZkdQD+kx2nuNxw0AStntpKTcogPzWiBJ5HN21wzId1hxFYd0PBNB82dicLQlsb22OPAc
-	7
-X-Google-Smtp-Source: AGHT+IFZbRX3qVoU0jivHjl/qZiaQjmYyKH2fSFwaSLRh0ajj1UIVEo5OWEzqt4s4QXwIX82tNc6KQ==
-X-Received: by 2002:a05:651c:1054:b0:2d0:e45c:5650 with SMTP id x20-20020a05651c105400b002d0e45c5650mr2452747ljm.11.1707654624989;
-        Sun, 11 Feb 2024 04:30:24 -0800 (PST)
+        bh=mCAe8mO/KUlyg+BnRuX+JoIprh3UWXF6vcGK++EkmGw=;
+        b=vkoFajBnZFooXWxJ3hZJogAzRJjsT3KzIFqV4IO2nVv4j9x1CjInryct7RnZbHFrZ6
+         L9bHj1vOYFmeliCfbEOL+qq4mVgER6qJCz+K21CmlARe5nrI3V3eJU1yQTamsbTld9D6
+         v50cH7GRSkMGW7uuZx1U0h3oL5kf3QE0nOY8G2SS8Kt5tJO85h0W9bnY/yXuWCjGhGKa
+         yXFuME+j6V7Zeq1r1jV8o/hp70fT4BCZKZXTF6f/W3pTawL2p6g3/fKcFaxEueK17Hd1
+         gAL//Rg7VxV/pLq29AbGhtvTVxwfrkZE3vPcWVpNbB8djA3AjmsLqLxje+S2w7Veijed
+         dAow==
+X-Gm-Message-State: AOJu0Yxztw2flL2O9B72TK4kOUQSoYrAzwKxqEpuDyTYxMukSpn0BM3A
+	SzZ6v1sbMsUdoAeuLM+x2i6p8GM0sjGWsAwtj7hPRHMGY/w/VypVnwMe6uzkoBIhAHITTb4paeF
+	v
+X-Google-Smtp-Source: AGHT+IE/MXKB1+acU9beMkNmzzSaiyvEyQw9OWNiBb2qUKFZHpJwup2o3mUgK4EOQTe+BxaYe/6G/A==
+X-Received: by 2002:aa7:c3cd:0:b0:560:d73b:aff4 with SMTP id l13-20020aa7c3cd000000b00560d73baff4mr2473856edr.3.1707654626039;
+        Sun, 11 Feb 2024 04:30:26 -0800 (PST)
 Received: from raven.intern.cm-ag (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id fj18-20020a0564022b9200b0056187ca4120sm1024611edb.10.2024.02.11.04.30.23
+        by smtp.gmail.com with ESMTPSA id fj18-20020a0564022b9200b0056187ca4120sm1024611edb.10.2024.02.11.04.30.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 04:30:23 -0800 (PST)
+        Sun, 11 Feb 2024 04:30:25 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v3 11/35] percpu_counter.h: move declarations to percpu_counter_types.h
-Date: Sun, 11 Feb 2024 13:29:36 +0100
-Message-Id: <20240211123000.3359365-12-max.kellermann@ionos.com>
+Subject: [PATCH v3 12/35] bvec.h: move declarations to bvec_types.h
+Date: Sun, 11 Feb 2024 13:29:37 +0100
+Message-Id: <20240211123000.3359365-13-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240211123000.3359365-1-max.kellermann@ionos.com>
 References: <20240211123000.3359365-1-max.kellermann@ionos.com>
@@ -88,208 +88,263 @@ dependencies.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- include/linux/backing-dev-defs.h     |  2 +-
- include/linux/flex_proportions.h     |  2 +-
- include/linux/ipc_namespace.h        |  2 +-
- include/linux/mm_types.h             |  3 ++-
- include/linux/percpu_counter.h       | 17 +------------
- include/linux/percpu_counter_types.h | 37 ++++++++++++++++++++++++++++
- include/linux/sched/user.h           |  2 +-
- include/linux/shmem_fs.h             |  2 +-
- kernel/user.c                        |  1 +
- lib/flex_proportions.c               |  1 +
- 10 files changed, 47 insertions(+), 22 deletions(-)
- create mode 100644 include/linux/percpu_counter_types.h
+ include/linux/blk_types.h  |  2 +-
+ include/linux/bvec.h       | 84 +--------------------------------
+ include/linux/bvec_types.h | 95 ++++++++++++++++++++++++++++++++++++++
+ include/linux/iov_iter.h   |  2 +-
+ include/linux/skbuff.h     |  2 +-
+ 5 files changed, 99 insertions(+), 86 deletions(-)
+ create mode 100644 include/linux/bvec_types.h
 
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-index 68fdec049456..720a88bb3513 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -6,7 +6,7 @@
- #include <linux/radix-tree.h>
- #include <linux/rbtree_types.h>
- #include <linux/spinlock_types.h>
--#include <linux/percpu_counter.h>
-+#include <linux/percpu_counter_types.h>
- #include <linux/percpu-refcount.h>
- #include <linux/flex_proportions.h>
- #include <linux/timer_types.h>
-diff --git a/include/linux/flex_proportions.h b/include/linux/flex_proportions.h
-index 35204b64addf..df9017a61046 100644
---- a/include/linux/flex_proportions.h
-+++ b/include/linux/flex_proportions.h
-@@ -8,7 +8,7 @@
- #ifndef _LINUX_FLEX_PROPORTIONS_H
- #define _LINUX_FLEX_PROPORTIONS_H
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index 1c07848dea7e..9d2d8a8328a6 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -7,7 +7,7 @@
+ #define __LINUX_BLK_TYPES_H
  
--#include <linux/percpu_counter.h>
-+#include <linux/percpu_counter_types.h>
- #include <linux/spinlock_types.h>
- #include <linux/seqlock_types.h>
- #include <linux/gfp_types.h>
-diff --git a/include/linux/ipc_namespace.h b/include/linux/ipc_namespace.h
-index a0011b6cd5d1..7c758ab565fe 100644
---- a/include/linux/ipc_namespace.h
-+++ b/include/linux/ipc_namespace.h
-@@ -11,7 +11,7 @@
- #include <linux/refcount.h>
- #include <linux/rhashtable-types.h>
- #include <linux/sysctl.h>
--#include <linux/percpu_counter.h>
-+#include <linux/percpu_counter_types.h>
+ #include <linux/types.h>
+-#include <linux/bvec.h>
++#include <linux/bvec_types.h>
+ #include <linux/device.h>
+ #include <linux/ktime.h>
  
- struct user_namespace;
+diff --git a/include/linux/bvec.h b/include/linux/bvec.h
+index 555aae5448ae..fbb79e6ba953 100644
+--- a/include/linux/bvec.h
++++ b/include/linux/bvec.h
+@@ -7,6 +7,7 @@
+ #ifndef __LINUX_BVEC_H
+ #define __LINUX_BVEC_H
  
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 54caee378e77..a88219770c82 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -19,7 +19,8 @@
- #include <linux/page-flags-layout.h>
- #include <linux/workqueue_types.h>
- #include <linux/seqlock_types.h>
--#include <linux/percpu_counter.h>
-+#include <linux/percpu_counter_types.h>
-+#include <linux/percpu.h>
++#include <linux/bvec_types.h>
+ #include <linux/highmem.h>
+ #include <linux/bug.h>
+ #include <linux/errno.h>
+@@ -14,26 +15,6 @@
+ #include <linux/minmax.h>
+ #include <linux/types.h>
  
- #include <asm/mmu.h>
- 
-diff --git a/include/linux/percpu_counter.h b/include/linux/percpu_counter.h
-index 8d45785b3448..bec5e7cdd476 100644
---- a/include/linux/percpu_counter.h
-+++ b/include/linux/percpu_counter.h
-@@ -7,26 +7,15 @@
-  * WARNING: these things are HUGE.  4 kbytes per counter on 32-way P4.
-  */
- 
--#include <linux/spinlock_types.h>
--#include <linux/list.h>
-+#include <linux/percpu_counter_types.h>
- #include <linux/threads.h>
- #include <linux/percpu.h>
--#include <linux/types.h>
- 
- /* percpu_counter batch for local add or sub */
- #define PERCPU_COUNTER_LOCAL_BATCH	INT_MAX
- 
- #ifdef CONFIG_SMP
- 
--struct percpu_counter {
--	raw_spinlock_t lock;
--	s64 count;
--#ifdef CONFIG_HOTPLUG_CPU
--	struct list_head list;	/* All percpu_counters are on a list */
--#endif
--	s32 __percpu *counters;
+-struct page;
+-
+-/**
+- * struct bio_vec - a contiguous range of physical memory addresses
+- * @bv_page:   First page associated with the address range.
+- * @bv_len:    Number of bytes in the address range.
+- * @bv_offset: Start of the address range relative to the start of @bv_page.
+- *
+- * The following holds for a bvec if n * PAGE_SIZE < bv_offset + bv_len:
+- *
+- *   nth_page(@bv_page, n) == @bv_page + n
+- *
+- * This holds because page_is_mergeable() checks the above property.
+- */
+-struct bio_vec {
+-	struct page	*bv_page;
+-	unsigned int	bv_len;
+-	unsigned int	bv_offset;
 -};
 -
- extern int percpu_counter_batch;
+ /**
+  * bvec_set_page - initialize a bvec based off a struct page
+  * @bv:		bvec to initialize
+@@ -74,69 +55,6 @@ static inline void bvec_set_virt(struct bio_vec *bv, void *vaddr,
+ 	bvec_set_page(bv, virt_to_page(vaddr), len, offset_in_page(vaddr));
+ }
  
- int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
-@@ -131,10 +120,6 @@ static inline bool percpu_counter_initialized(struct percpu_counter *fbc)
- 
- #else /* !CONFIG_SMP */
- 
--struct percpu_counter {
--	s64 count;
+-struct bvec_iter {
+-	sector_t		bi_sector;	/* device address in 512 byte
+-						   sectors */
+-	unsigned int		bi_size;	/* residual I/O count */
+-
+-	unsigned int		bi_idx;		/* current index into bvl_vec */
+-
+-	unsigned int            bi_bvec_done;	/* number of bytes completed in
+-						   current bvec */
+-} __packed;
+-
+-struct bvec_iter_all {
+-	struct bio_vec	bv;
+-	int		idx;
+-	unsigned	done;
 -};
 -
- static inline int percpu_counter_init_many(struct percpu_counter *fbc,
- 					   s64 amount, gfp_t gfp,
- 					   u32 nr_counters)
-diff --git a/include/linux/percpu_counter_types.h b/include/linux/percpu_counter_types.h
+-/*
+- * various member access, note that bio_data should of course not be used
+- * on highmem page vectors
+- */
+-#define __bvec_iter_bvec(bvec, iter)	(&(bvec)[(iter).bi_idx])
+-
+-/* multi-page (mp_bvec) helpers */
+-#define mp_bvec_iter_page(bvec, iter)				\
+-	(__bvec_iter_bvec((bvec), (iter))->bv_page)
+-
+-#define mp_bvec_iter_len(bvec, iter)				\
+-	min((iter).bi_size,					\
+-	    __bvec_iter_bvec((bvec), (iter))->bv_len - (iter).bi_bvec_done)
+-
+-#define mp_bvec_iter_offset(bvec, iter)				\
+-	(__bvec_iter_bvec((bvec), (iter))->bv_offset + (iter).bi_bvec_done)
+-
+-#define mp_bvec_iter_page_idx(bvec, iter)			\
+-	(mp_bvec_iter_offset((bvec), (iter)) / PAGE_SIZE)
+-
+-#define mp_bvec_iter_bvec(bvec, iter)				\
+-((struct bio_vec) {						\
+-	.bv_page	= mp_bvec_iter_page((bvec), (iter)),	\
+-	.bv_len		= mp_bvec_iter_len((bvec), (iter)),	\
+-	.bv_offset	= mp_bvec_iter_offset((bvec), (iter)),	\
+-})
+-
+-/* For building single-page bvec in flight */
+- #define bvec_iter_offset(bvec, iter)				\
+-	(mp_bvec_iter_offset((bvec), (iter)) % PAGE_SIZE)
+-
+-#define bvec_iter_len(bvec, iter)				\
+-	min_t(unsigned, mp_bvec_iter_len((bvec), (iter)),		\
+-	      PAGE_SIZE - bvec_iter_offset((bvec), (iter)))
+-
+-#define bvec_iter_page(bvec, iter)				\
+-	(mp_bvec_iter_page((bvec), (iter)) +			\
+-	 mp_bvec_iter_page_idx((bvec), (iter)))
+-
+-#define bvec_iter_bvec(bvec, iter)				\
+-((struct bio_vec) {						\
+-	.bv_page	= bvec_iter_page((bvec), (iter)),	\
+-	.bv_len		= bvec_iter_len((bvec), (iter)),	\
+-	.bv_offset	= bvec_iter_offset((bvec), (iter)),	\
+-})
+-
+ static inline bool bvec_iter_advance(const struct bio_vec *bv,
+ 		struct bvec_iter *iter, unsigned bytes)
+ {
+diff --git a/include/linux/bvec_types.h b/include/linux/bvec_types.h
 new file mode 100644
-index 000000000000..faccd9869a5a
+index 000000000000..23453c988154
 --- /dev/null
-+++ b/include/linux/percpu_counter_types.h
-@@ -0,0 +1,37 @@
++++ b/include/linux/bvec_types.h
+@@ -0,0 +1,95 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_PERCPU_COUNTER_TYPES_H
-+#define _LINUX_PERCPU_COUNTER_TYPES_H
 +/*
-+ * A simple "approximate counter" for use in ext2 and ext3 superblocks.
++ * bvec iterator
 + *
-+ * WARNING: these things are HUGE.  4 kbytes per counter on 32-way P4.
++ * Copyright (C) 2001 Ming Lei <ming.lei@canonical.com>
 + */
++#ifndef __LINUX_BVEC_TYPES_H
++#define __LINUX_BVEC_TYPES_H
 +
 +#include <linux/types.h>
 +
-+#ifdef CONFIG_SMP
++struct page;
 +
-+#include <linux/spinlock_types.h>
-+
-+#ifdef CONFIG_HOTPLUG_CPU
-+#include <linux/list.h>
-+#endif
-+
-+struct percpu_counter {
-+	raw_spinlock_t lock;
-+	s64 count;
-+#ifdef CONFIG_HOTPLUG_CPU
-+	struct list_head list;	/* All percpu_counters are on a list */
-+#endif
-+	s32 __percpu *counters;
++/**
++ * struct bio_vec - a contiguous range of physical memory addresses
++ * @bv_page:   First page associated with the address range.
++ * @bv_len:    Number of bytes in the address range.
++ * @bv_offset: Start of the address range relative to the start of @bv_page.
++ *
++ * The following holds for a bvec if n * PAGE_SIZE < bv_offset + bv_len:
++ *
++ *   nth_page(@bv_page, n) == @bv_page + n
++ *
++ * This holds because page_is_mergeable() checks the above property.
++ */
++struct bio_vec {
++	struct page	*bv_page;
++	unsigned int	bv_len;
++	unsigned int	bv_offset;
 +};
 +
-+#else /* !CONFIG_SMP */
++struct bvec_iter {
++	sector_t		bi_sector;	/* device address in 512 byte
++						   sectors */
++	unsigned int		bi_size;	/* residual I/O count */
 +
-+struct percpu_counter {
-+	s64 count;
++	unsigned int		bi_idx;		/* current index into bvl_vec */
++
++	unsigned int            bi_bvec_done;	/* number of bytes completed in
++						   current bvec */
++} __packed;
++
++struct bvec_iter_all {
++	struct bio_vec	bv;
++	int		idx;
++	unsigned	done;
 +};
 +
-+#endif	/* CONFIG_SMP */
++/*
++ * various member access, note that bio_data should of course not be used
++ * on highmem page vectors
++ */
++#define __bvec_iter_bvec(bvec, iter)	(&(bvec)[(iter).bi_idx])
 +
-+#endif /* _LINUX_PERCPU_COUNTER_TYPES_H */
-diff --git a/include/linux/sched/user.h b/include/linux/sched/user.h
-index 671ecee08d23..913da0aba05c 100644
---- a/include/linux/sched/user.h
-+++ b/include/linux/sched/user.h
-@@ -4,7 +4,7 @@
++/* multi-page (mp_bvec) helpers */
++#define mp_bvec_iter_page(bvec, iter)				\
++	(__bvec_iter_bvec((bvec), (iter))->bv_page)
++
++#define mp_bvec_iter_len(bvec, iter)				\
++	min((iter).bi_size,					\
++	    __bvec_iter_bvec((bvec), (iter))->bv_len - (iter).bi_bvec_done)
++
++#define mp_bvec_iter_offset(bvec, iter)				\
++	(__bvec_iter_bvec((bvec), (iter))->bv_offset + (iter).bi_bvec_done)
++
++#define mp_bvec_iter_page_idx(bvec, iter)			\
++	(mp_bvec_iter_offset((bvec), (iter)) / PAGE_SIZE)
++
++#define mp_bvec_iter_bvec(bvec, iter)				\
++((struct bio_vec) {						\
++	.bv_page	= mp_bvec_iter_page((bvec), (iter)),	\
++	.bv_len		= mp_bvec_iter_len((bvec), (iter)),	\
++	.bv_offset	= mp_bvec_iter_offset((bvec), (iter)),	\
++})
++
++/* For building single-page bvec in flight */
++ #define bvec_iter_offset(bvec, iter)				\
++	(mp_bvec_iter_offset((bvec), (iter)) % PAGE_SIZE)
++
++#define bvec_iter_len(bvec, iter)				\
++	min_t(unsigned, mp_bvec_iter_len((bvec), (iter)),		\
++	      PAGE_SIZE - bvec_iter_offset((bvec), (iter)))
++
++#define bvec_iter_page(bvec, iter)				\
++	(mp_bvec_iter_page((bvec), (iter)) +			\
++	 mp_bvec_iter_page_idx((bvec), (iter)))
++
++#define bvec_iter_bvec(bvec, iter)				\
++((struct bio_vec) {						\
++	.bv_page	= bvec_iter_page((bvec), (iter)),	\
++	.bv_len		= bvec_iter_len((bvec), (iter)),	\
++	.bv_offset	= bvec_iter_offset((bvec), (iter)),	\
++})
++
++#endif /* __LINUX_BVEC_TYPES_H */
+diff --git a/include/linux/iov_iter.h b/include/linux/iov_iter.h
+index c3adba9ff389..060626682481 100644
+--- a/include/linux/iov_iter.h
++++ b/include/linux/iov_iter.h
+@@ -9,7 +9,7 @@
+ #define _LINUX_IOV_ITER_H
  
- #include <linux/uidgid_types.h>
- #include <linux/atomic.h>
--#include <linux/percpu_counter.h>
-+#include <linux/percpu_counter_types.h>
- #include <linux/refcount.h>
- #include <linux/ratelimit_types.h>
+ #include <linux/uio.h>
+-#include <linux/bvec.h>
++#include <linux/bvec_types.h>
+ #include <linux/highmem.h> // for kmap_local_page()
  
-diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
-index 2caa6b86106a..1d7e56eab60f 100644
---- a/include/linux/shmem_fs.h
-+++ b/include/linux/shmem_fs.h
-@@ -6,7 +6,7 @@
- #include <linux/swap.h>
- #include <linux/mempolicy.h>
- #include <linux/pagemap.h>
--#include <linux/percpu_counter.h>
-+#include <linux/percpu_counter_types.h>
- #include <linux/xattr.h>
- #include <linux/fs_parser.h>
- #include <linux/userfaultfd_k.h>
-diff --git a/kernel/user.c b/kernel/user.c
-index 28da71ea1e74..6c8b818419f8 100644
---- a/kernel/user.c
-+++ b/kernel/user.c
-@@ -22,6 +22,7 @@
- #include <linux/proc_ns.h>
- #include <linux/ratelimit.h>
- #include <linux/uidgid.h>
-+#include <linux/percpu_counter.h>
- 
- #if IS_ENABLED(CONFIG_BINFMT_MISC)
- struct binfmt_misc init_binfmt_misc = {
-diff --git a/lib/flex_proportions.c b/lib/flex_proportions.c
-index 7749a48428e5..1d5e1e0bdbbe 100644
---- a/lib/flex_proportions.c
-+++ b/lib/flex_proportions.c
-@@ -36,6 +36,7 @@
- #include <linux/flex_proportions.h>
- #include <linux/log2.h>
- #include <linux/math64.h>
-+#include <linux/percpu_counter.h>
- #include <linux/seqlock.h>
- 
- int fprop_global_init(struct fprop_global *p, gfp_t gfp)
+ typedef size_t (*iov_step_f)(void *iter_base, size_t progress, size_t len,
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 2dde34c29203..8ee67e49699b 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -14,7 +14,7 @@
+ #include <linux/compiler.h>
+ #include <linux/time.h>
+ #include <linux/bug.h>
+-#include <linux/bvec.h>
++#include <linux/bvec_types.h>
+ #include <linux/cache.h>
+ #include <linux/rbtree.h>
+ #include <linux/socket.h>
 -- 
 2.39.2
 
