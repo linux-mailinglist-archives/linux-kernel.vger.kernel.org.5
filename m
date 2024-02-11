@@ -1,191 +1,213 @@
-Return-Path: <linux-kernel+bounces-60831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A84C5850A00
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:33:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86306850A01
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 16:36:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6A16B21220
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:33:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1F8A281CD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 15:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CA05B684;
-	Sun, 11 Feb 2024 15:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A80B5B670;
+	Sun, 11 Feb 2024 15:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="gOLYHkM3"
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="amriTfH/"
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1D92AE74;
-	Sun, 11 Feb 2024 15:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7DA5B5A6
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 15:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707665601; cv=none; b=dI0P8ob+ls8yLgb17uqOSZti1CnzmqWWLUOwEL+gksulXePNrEqfPfihDbBA0Q5cDZ/Jyp8k+NAYLLYqbvkJ3q5mZytWLXJsSqQXc0a0B/lAfKbbaSaW1x137uslmxfO+e1x+T2/Re18b1cnehGHyFvSA1HicD2p0x6vfJItAXE=
+	t=1707665757; cv=none; b=IMSlz/JEXTgsmyLLr4yhylbq/mlVLp8GcY2/JwjRzr+vIo+VbV/W58ZfNykePkSnJ6DVY8DI+GMwuyehJRDVTOsymCsTgJ5PrrZdBWWWMMzTMAhj38ceMs0jVmKDGAk4MzqSg0GY+cd+kVnGcofa5kUGieOf6e4E9nIiBe95l/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707665601; c=relaxed/simple;
-	bh=KvxrA8HLA+5Te2kk8N9iNiNctxBs5xVzeJBiZZr1CIY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=rz33cKGg1mC23UOJg6YUUMoANNo4CKUvTYi9IDBA+SZBjNICV6Yx4QfCWOlPKWTgSodPnI78UngeNUh9lmunSTLP5MjDgce1vfz/bvkWeVxxlJGV9nI1ZIk+oxdhzDiZJBYmsxiJtUCfRAzdCsuWu1YNE2IYpKy6dhpuyL6ZNPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=gOLYHkM3; arc=none smtp.client-ip=209.85.166.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-363a76d0c71so13490275ab.1;
-        Sun, 11 Feb 2024 07:33:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707665599; x=1708270399;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VuHOlvWESTbD0pP+Ok8CQCa3586fwbCX3IMl1v1eng8=;
-        b=uwptsQza39T8ALrZzESwaFWGC3iZk2H+OOWsBM5tEoZ+CsMvU17gVIVmmz2AaRKojE
-         m4GRa4ZLXIE9tRdFdDJSV+2T2xb0XrV2QRZPM5M0pbA7oq4/0eN4stkGm5+nbJEYpgPq
-         yA6xhdIxqoLKbRf6xqaxEuklcLurDm3iAcvtqw93lVQUpDPq2ONel6bMsTH45KauztYG
-         fjSaLNZc7now46Bnzg+8Ce9rbTv1Qpq8cRLYC9nN8W6M9m5ZHeFd5WNNVex8C7fCHABy
-         VIvARYmDqg94b7mpMFsIPBaIu/HSGw97pMzhaCaxXx0j/BpVwjiNIlPapqSi5a3mkpEF
-         TN9A==
-X-Gm-Message-State: AOJu0YxC6HD6vcnzS6QinXF5WjEvoph7OREJ8L/bL+LwE9ArDz9TfNlr
-	Xpzw8oB2rUh/WzzMD5g2OBWRdo5YXTu/HIqKRyXlc7HHZSS+cmJZ
-X-Google-Smtp-Source: AGHT+IGC0FHQGK4yybfJt684xZE+YxS2A8dkndraXw/D15fNRYB89f5zm3oxVgnfniWR9zb5Slgf4A==
-X-Received: by 2002:a92:d3d1:0:b0:363:b33e:c8f2 with SMTP id c17-20020a92d3d1000000b00363b33ec8f2mr5353872ilh.11.1707665598707;
-        Sun, 11 Feb 2024 07:33:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWKkRej9xN/v32H1uMhpj9K+QD8Gj6clUcOcBRNWnK5HqhyHy9XMZmy305JQAS8gcpts+4lOdk9sghcWJkS/Rk8nkKejjfg/8o+pxTReZCR3B6p5M7EYfPTYayjQ8mPiFRJ/vqqbmIUqsx8u+LKw1bTBa99BWCNqs9fHPVcDFHP/edg6to=
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id dq16-20020a056a020f9000b005cfb6e7b0c7sm4584921pgb.39.2024.02.11.07.33.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 07:33:17 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707665596;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=VuHOlvWESTbD0pP+Ok8CQCa3586fwbCX3IMl1v1eng8=;
-	b=gOLYHkM3G7pr1zv9f1ih6dmQ4w1kSRIwgnUCqqL4u6nyXhAIcEo6NseVqU+fUS5qA9RZNG
-	FVcl77V6SAHP7u3bWQJ9OpEbbSGArlW0CE1BB8KkTIQKdPWfD7TMsbZYR/YGTT2PpxrhA2
-	1HmibY9G5HGkcTX2whZAR1c8jrzFi+psTf2/a2MUhFcRSVKNbGYuF864XOARuzlOgGlxzk
-	Q/xo7JJ0BYVrRHk+0YQ9hlBZDsFrr0VHxUSt2OzR1FZ6TJ+FjQt3fWsyVXVUZGpJ0H2ahh
-	wlGgRHzNtGm+WeRzKbfrSC3s9VtoxrWfIoW3E3kDBRO/jbvtnL/JiIA+B5vcwQ==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sun, 11 Feb 2024 12:33:50 -0300
-Subject: [PATCH] scsi: Make scsi_bus_type const
+	s=arc-20240116; t=1707665757; c=relaxed/simple;
+	bh=O05siLkq2RwyTTjYcyonNpTva1vWq8ICugGqol5VSQE=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ZH2/J2w3trHB4umwYCw4jej/o058sUNfdflGk4Ec524ZhpY9HpJvJEPBDZZIKD/94aVtmdKSwxcXai3oO1t9Q9BKp6gwpAinXRAj5wRdSydFRNzGdrTBSB6wVyrT1NCkgZquDRX25p1AsSfCYwKK3b9M4K+FoNygCGSJ7roPEOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=amriTfH/; arc=none smtp.client-ip=115.124.30.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1707665745; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
+	bh=5lRWlAjmQVJnMZwnFRfHRt6A+J4fRJyqRFoeNDqlkVA=;
+	b=amriTfH/EePZGiyn+qX5te7qtB3IPsxnZdoOC3bqTUiBEDIakAvYsGpDsCNdHoXp4lmOUONgRjtAtdQz9FWq1YaoGvVZyzQyH19ZTjABRfpc2/eVQAxUn/ErdG6iqdWRQ/IoXJd/ISjOUMFhzfpaTsv0UHa5sjFMrJQKZ4dRhbs=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W0QQ5Nj_1707665743;
+Received: from 192.168.0.104(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W0QQ5Nj_1707665743)
+          by smtp.aliyun-inc.com;
+          Sun, 11 Feb 2024 23:35:44 +0800
+Message-ID: <2a615ecf-c26f-4710-87df-c02f1e489d19@linux.alibaba.com>
+Date: Sun, 11 Feb 2024 23:35:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240211-bus_cleanup-scsi2-v1-1-dd04ee82e6b0@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAN3oyGUC/x3M0QpAQBBA0V/RPNsyS4pfkbQ7ZpnS0k6k5N9tH
- s/DvQ8oJ2GFvngg8SUqe8zAsgBaXVzYyJwNtrJNZRGNP3WijV08D6OkYg22VFPwrkMXIHdH4iD
- 3/xzG9/0AtFXKx2MAAAA=
-To: "James E.J. Bottomley" <jejb@linux.ibm.com>, 
- "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2933; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=KvxrA8HLA+5Te2kk8N9iNiNctxBs5xVzeJBiZZr1CIY=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlyOjeDETcFp6Nwe9OCSDwLeUvf1IbdCP6wRf9v
- 6p+MTtnOICJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcjo3gAKCRDJC4p8Y4ZY
- pg7hEACOFzhma3WS68vSY7kljVwRHpwqfXr+sGA1SyljXObGrn6i/7s5oMr2OcGhCBivVUzPITI
- mJ53hfo2fCx3lp8nTI4ChHzbGjVN4d7yk2jmifTqaU3Ax23gMtTl7520pAYJjhfL11a5Z19Xfhz
- qh+fyGeB21TPeQsZmN0i42hU/76slT/zbFk99ysFLTw1yTPgK9rNBC8vAd8FKupV2ZP/TvEvkRm
- JVWCaEffvaRAdBowbDrr13u//2Os+5/MDMgJD8bj2DWIRqzq1DK7WrCv3moUoOJ6Kix7S4KymRD
- 9yPQIKJjKZ149wMJVSg+Rtn9C0lgPGo+4BqXeolTUP/1oS286Uc8lL/gJEaRa8Us3k+tkczWDnl
- HM0Pcj1wLx2tj9uPAKQoxH9IGTyTiQK0jNqT5nADlp1vbUX7g2eBnsdhNpZ3Cuoa5bGDL/dlu/Z
- zQa4F2BuOWmS6wBVeqrK7d/nc5S4LWLXsue9+DthptIPIha+INPuQzPCiGjZYB6bpVujJVXAy8l
- B/NBrj6DPv3TQRkeVkdwuT+9gNjZ5fHN0NqflyrapfmtG3XhPyBJcoGkoNQfNMhS3hNDp5NUecL
- NktruQqSB9Cl7JvUcgmnTmQOl+MBJj0CiTyIs6OAbFccoSyGAuO9NDJ446EVW1Vxt1wnUW9brOs
- Q51cjnc7qjcGtGQ==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+User-Agent: Mozilla Thunderbird
+From: Bitao Hu <yaoma@linux.alibaba.com>
+Subject: Re: [PATCHv6 1/2] watchdog/softlockup: low-overhead detection of
+ interrupt
+To: Petr Mladek <pmladek@suse.com>
+Cc: dianders@chromium.org, akpm@linux-foundation.org, kernelfans@gmail.com,
+ liusong@linux.alibaba.com, linux-kernel@vger.kernel.org,
+ yaoma@linux.alibaba.com
+References: <20240208125426.70511-1-yaoma@linux.alibaba.com>
+ <20240208125426.70511-2-yaoma@linux.alibaba.com> <ZcYqIOR17BHJyHbx@alley>
+Content-Language: en-US
+In-Reply-To: <ZcYqIOR17BHJyHbx@alley>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Now that the driver core can properly handle constant struct bus_type,
-move the scsi_bus_type variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+Hi,
 
-Remove some extraneous whitespace.
+On 2024/2/9 21:35, Petr Mladek wrote:
+> Hi,
+> 
+> I am sorry for jouning this game so late. But honestly, it went
+> forward too quickly. A good practice is to wait a week before
+> sending new version so that you give a chance more people
+> to provide some feedback.
+> 
+> The only exception might be when you know exactly who could
+> review it because the area in not interesting for anyone else.
+> But this is typicall not the case for kernel core code.
+Thanks for your reminder, I will be mindful of the pace.
+> 
+> 
+> On Thu 2024-02-08 20:54:25, Bitao Hu wrote:
+>> The following softlockup is caused by interrupt storm, but it cannot be
+>> identified from the call tree. Because the call tree is just a snapshot
+>> and doesn't fully capture the behavior of the CPU during the soft lockup.
+>>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+>>    ...
+>>    Call trace:
+>>      __do_softirq+0xa0/0x37c
+>>      __irq_exit_rcu+0x108/0x140
+>>      irq_exit+0x14/0x20
+>>      __handle_domain_irq+0x84/0xe0
+>>      gic_handle_irq+0x80/0x108
+>>      el0_irq_naked+0x50/0x58
+>>
+>> Therefore，I think it is necessary to report CPU utilization during the
+>> softlockup_thresh period (report once every sample_period, for a total
+>> of 5 reportings), like this:
+>>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+>>    CPU#28 Utilization every 4s during lockup:
+>>      #1: 0% system, 0% softirq, 100% hardirq, 0% idle
+>>      #2: 0% system, 0% softirq, 100% hardirq, 0% idle
+>>      #3: 0% system, 0% softirq, 100% hardirq, 0% idle
+>>      #4: 0% system, 0% softirq, 100% hardirq, 0% idle
+>>      #5: 0% system, 0% softirq, 100% hardirq, 0% idle
+> 
+> I like this. IMHO, it might be really useful.
+> 
+>> --- a/kernel/watchdog.c
+>> +++ b/kernel/watchdog.c
+>> @@ -333,6 +335,92 @@ __setup("watchdog_thresh=", watchdog_thresh_setup);
+>>   
+>>   static void __lockup_detector_cleanup(void);
+>>   
+>> +#ifdef CONFIG_SOFTLOCKUP_DETECTOR_INTR_STORM
+>> +#define NUM_STATS_GROUPS	5
+> 
+> It would be nice to synchronize this with the hardcoded 5 in:
+> 
+> static void set_sample_period(void)
+> {
+> 	/*
+> 	 * convert watchdog_thresh from seconds to ns
+> 	 * the divide by 5 is to give hrtimer several chances (two
+> 	 * or three with the current relation between the soft
+> 	 * and hard thresholds) to increment before the
+> 	 * hardlockup detector generates a warning
+> 	 */
+> 	sample_period = get_softlockup_thresh() * ((u64)NSEC_PER_SEC / 5);
+OK, I've had the same thought.
+> 
+> For exmaple, define and use the following in both situations:
+> 
+> #define NUM_SAMPLE_PERIODS	5
+>
+>> +enum stats_per_group {
+>> +	STATS_SYSTEM,
+>> +	STATS_SOFTIRQ,
+>> +	STATS_HARDIRQ,
+>> +	STATS_IDLE,
+>> +	NUM_STATS_PER_GROUP,
+>> +};
+>> +
+>> +static const enum cpu_usage_stat tracked_stats[NUM_STATS_PER_GROUP] = {
+>> +	CPUTIME_SYSTEM,
+>> +	CPUTIME_SOFTIRQ,
+>> +	CPUTIME_IRQ,
+>> +	CPUTIME_IDLE,
+>> +};
+>> +
+>> +static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
+>> +static DEFINE_PER_CPU(u8, cpustat_util[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
+>> +static DEFINE_PER_CPU(u8, cpustat_tail);
+>> +
+>> +/*
+>> + * We don't need nanosecond resolution. A granularity of 16ms is
+>> + * sufficient for our precision, allowing us to use u16 to store
+>> + * cpustats, which will roll over roughly every ~1000 seconds.
+>> + * 2^24 ~= 16 * 10^6
+>> + */
+>> +static u16 get_16bit_precision(u64 data_ns)
+>> +{
+>> +	return data_ns >> 24LL; /* 2^24ns ~= 16.8ms */
+> 
+> I would personally use
+> 
+>      delta_ns >> 20  /* 2^20ns ~= 1ms */
+> 
+> to make it easier for debugging by a human. It would support
+> the sample period up to 65s which might be enough.
+> 
+> But I do not resirt on it. ">> 24" provides less granularity
+> but it supports longer sample periods.
+I considered using ">>20" as it provides more intuitive granularity,
+but I wanted to support longer sample periods. After weighing the
+options, I chose ">>24".
+> 
+>> +static void print_cpustat(void)
+>> +{
+>> +	int i, group;
+>> +	u8 tail = __this_cpu_read(cpustat_tail);
+>> +	u64 sample_period_second = sample_period;
+>> +
+>> +	do_div(sample_period_second, NSEC_PER_SEC);
+>> +	/*
+>> +	 * We do not want the "watchdog: " prefix on every line,
+>> +	 * hence we use "printk" instead of "pr_crit".
+>> +	 */
+>> +	printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n",
+>> +	       smp_processor_id(), sample_period_second);
+>> +	for (i = 0; i < NUM_STATS_GROUPS; i++) {
+> 
+> This starts with the 1st group in the array. Is it the oldest one?
+> It should take into account cpustat_tail.
+Yes, It starts with the oldest one. After "update_cpustat" is completed,
+"cpustat_tail" points to the oldest one. Here, I start accessing the 
+data pointed to by the "cpustat_tail".
+> 
+> 
+>> +		group = (tail + i) % NUM_STATS_GROUPS;
+>> +		printk(KERN_CRIT "\t#%d: %3u%% system,\t%3u%% softirq,\t"
+>> +			"%3u%% hardirq,\t%3u%% idle\n", i + 1,
+>> +			__this_cpu_read(cpustat_util[group][STATS_SYSTEM]),
+>> +			__this_cpu_read(cpustat_util[group][STATS_SOFTIRQ]),
+>> +			__this_cpu_read(cpustat_util[group][STATS_HARDIRQ]),
+>> +			__this_cpu_read(cpustat_util[group][STATS_IDLE]));
+>> +	}
+>> +}
+>> +
+> 
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/scsi/scsi_priv.h  | 6 +++---
- drivers/scsi/scsi_sysfs.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/scsi/scsi_priv.h b/drivers/scsi/scsi_priv.h
-index 1fbfe1b52c9f..6a02114776b3 100644
---- a/drivers/scsi/scsi_priv.h
-+++ b/drivers/scsi/scsi_priv.h
-@@ -54,7 +54,7 @@ void scsi_init_command(struct scsi_device *dev, struct scsi_cmnd *cmd);
- void scsi_log_send(struct scsi_cmnd *cmd);
- void scsi_log_completion(struct scsi_cmnd *cmd, int disposition);
- #else
--static inline void scsi_log_send(struct scsi_cmnd *cmd) 
-+static inline void scsi_log_send(struct scsi_cmnd *cmd)
- 	{ };
- static inline void scsi_log_completion(struct scsi_cmnd *cmd, int disposition)
- 	{ };
-@@ -156,7 +156,7 @@ extern void scsi_sysfs_device_initialize(struct scsi_device *);
- extern struct scsi_transport_template blank_transport_template;
- extern void __scsi_remove_device(struct scsi_device *);
- 
--extern struct bus_type scsi_bus_type;
-+extern const struct bus_type scsi_bus_type;
- extern const struct attribute_group *scsi_shost_groups[];
- 
- /* scsi_netlink.c */
-@@ -197,7 +197,7 @@ struct bsg_device *scsi_bsg_register_queue(struct scsi_device *sdev);
- 
- extern int scsi_device_max_queue_depth(struct scsi_device *sdev);
- 
--/* 
-+/*
-  * internal scsi timeout functions: for use by mid-layer and transport
-  * classes.
-  */
-diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-index 24f6eefb6803..7f1fede8ef5d 100644
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -549,7 +549,7 @@ static int scsi_bus_uevent(const struct device *dev, struct kobj_uevent_env *env
- 	return 0;
- }
- 
--struct bus_type scsi_bus_type = {
-+const struct bus_type scsi_bus_type = {
-         .name		= "scsi",
-         .match		= scsi_bus_match,
- 	.uevent		= scsi_bus_uevent,
-@@ -656,7 +656,7 @@ static int scsi_sdev_check_buf_bit(const char *buf)
- 			return 1;
- 		else if (buf[0] == '0')
- 			return 0;
--		else 
-+		else
- 			return -EINVAL;
- 	} else
- 		return -EINVAL;
-@@ -881,7 +881,7 @@ store_queue_type_field(struct device *dev, struct device_attribute *attr,
- 
- 	if (!sdev->tagged_supported)
- 		return -EINVAL;
--		
-+
- 	sdev_printk(KERN_INFO, sdev,
- 		    "ignoring write to deprecated queue_type attribute");
- 	return count;
-
----
-base-commit: 59828c7b5975f442ad5bb74a031fe388341f323e
-change-id: 20240211-bus_cleanup-scsi2-16c3cfba91af
-
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
-
+Best Regards,
+Bitao
 
