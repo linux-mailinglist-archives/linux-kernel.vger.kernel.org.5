@@ -1,118 +1,132 @@
-Return-Path: <linux-kernel+bounces-60713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C0658508CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:18:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C671F8508D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:19:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F73B1C213C3
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:18:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00A691C216B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 11:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC095A4E3;
-	Sun, 11 Feb 2024 11:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882845A784;
+	Sun, 11 Feb 2024 11:19:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B7KA3tth"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="izEB8l+5"
+Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82373A8FA;
-	Sun, 11 Feb 2024 11:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B965A4C7;
+	Sun, 11 Feb 2024 11:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707650305; cv=none; b=UZDnv3NyXgl0y7TWyiM9uWGmlDu/Pkq1CJqGgSsbuDoHa8qPL3+Z1IeWL/z0xVUlIwMXNShGQqmqRE9VmTdJG6KX4kJ6ZLM/AHtTLXz/97FxJ3L9CZ+86rRGvojWSDV/ilH18gRKQPuOEFa8P/8L6+oq+Z1KZjPl5yHcEOwU4oE=
+	t=1707650360; cv=none; b=DamDw2HoJnRxfFouXvgLqNn5TrOR0rrms1je28zXbAT+T9YfClUYTquhG5lwJDRVM/jmMWvttOS6Jig2KR1W4nIyc+6gj7hrp1ks1fnMRa0y0A8uMapv2Z6Fz8EiXA35VS+9u2/KZ2l1hfEfg3GecxgRxyAQYbjzWFD016Io+wM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707650305; c=relaxed/simple;
-	bh=I4YQN3Grp2nt6qoaBZpOBZCecQE6bzdWSYgDBqwEBF4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ET1K89BTd0VENwJjeC1607ypnY8VM0eEF+cHpG0DSMHyfi6WYsxXDd5N+v4m3U1xwJiclQL1qh9D3PriNhtTHmjx1Q3lXn3NkMm19ccEcUsLGBCIB3KK3C+toZZwR/wrj2dhe7civt5S+Mu74tzJn/4ImRP+h4s7vOToS3nm3Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B7KA3tth; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5112bd13a4fso3642636e87.0;
-        Sun, 11 Feb 2024 03:18:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707650302; x=1708255102; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+djsQtzzdGeSs25oMrMSG1dNLrpW7giJEKVLMJxID1c=;
-        b=B7KA3tthsXA7cVTLbqanjRo9FlRdLUvbqe6VvJ27q3Gj8wHRon0gQcU0fPaKH0UNs8
-         dLrDTS5SWyejAkAwDsHG7Ur/oaCy9QSDxRYf12PdOPl2M65LFZkFGIEJnV0pmSXwgmJy
-         D5iry/OW824CICxBrMesyHg5mhBuhdMNiQtxpZn2lSWbLBh6fYJtEY7o3zB7AU38WBou
-         DZvgXsiCFmc4mC5srY9GqcOUbwKxLIFeeRjsfaKItOq8bZL/HNpdoTih1EsmBjOzJpNM
-         e/31aCEUjb3t4NEbaEBIXKNXIyNn2mA9Iex8v+m0nw3KVrmOq/XSULqU7kAhTJp/6AXE
-         9hMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707650302; x=1708255102;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+djsQtzzdGeSs25oMrMSG1dNLrpW7giJEKVLMJxID1c=;
-        b=ljY5O1hsp1oZ5XnREpfXpmI+RVWdLsuODNRHNerv/5BTatXj9iV/opzbb128cW4Hj3
-         Lp71JOH+Rd+30L65ruh4EQM5ivO6lj95wOxCtODzJNgG7wHt52ShteOPRBvyQHyAK11C
-         8WNBIGBolyIp2VO0lLuzQbXuOqwENteAtex/dRSOL/hUaWX7DfUiTJZW6vON5IHsKT9H
-         2Vv37bkRVffKZ+tAb+aInVhGmsZqTJ5sBISACAijrWVMRjYnP6pZ/3y/2ps5xCbi/QN7
-         RP06DBtqvNgsD1p0HzAlkddKIBCvM1NcmgzwmlLMt7SinJAXorY69kx8H/vKJiv6/NUS
-         rmRw==
-X-Forwarded-Encrypted: i=1; AJvYcCVj4PxqhbrZFxB6cjFHKNv0lsPgDenX31Unux60O1qN5ANeSi+5rPM3NaQSUqWenXDzXidc7355PLrD1TFVX21NcauYXKPwPZBw546Mf45MNpjBFOB6IXL2laq1wEi3uBBhhaJ6NBMsqKYEd9rtBgVhv/XE
-X-Gm-Message-State: AOJu0Yy6gGgeGSXgRMdi4TPywwK2PioIk9h9St54CYnBiU12k1pmnhln
-	wYjK2b86XRAUO+a4W6kkvMfaS3P0NXP1cpZ463nl5j6egOjTDF2LpbF43DO7ii9Qyg==
-X-Google-Smtp-Source: AGHT+IHYlopmYEg/R6JSagluRGm76W1anUOluAWlyM0nH3AbZ+ZbdPlYqHRf06P76ihQatCu0M8e2A==
-X-Received: by 2002:a05:6512:2011:b0:511:8be0:c38d with SMTP id a17-20020a056512201100b005118be0c38dmr302362lfb.9.1707650301553;
-        Sun, 11 Feb 2024 03:18:21 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVQpxrd9b5isma80UEvsWb8bwsX/jL02T6A0Z4W4fgbjer3OGvWBCzL8LO+8fhWbajfvrL5/Nj/gU/S6ohMLTwICpW7je1dJ4qf4TuEsZ8dsL7GD/aA6x8gvGzWe/ydvtiJ8vop/8L2rdW5G3tCS2zM7Enzk9ZIZFDNi+cF9D9pkdFgEORbOdDZiViUkE9UgPIQhZtHul4K66qYWkxM2pgLg9co7TfvIbY6TCE3ASgKDQe5v0KqKaSZCa/E5aWX5dmIZLtpnKfjqamRm0SeMaAoO17+PMsX
-Received: from sacco-Inspiron-5559.. (88-160-103-158.subs.proxad.net. [88.160.103.158])
-        by smtp.gmail.com with ESMTPSA id w23-20020ac24437000000b005118c5595f3sm99017lfl.11.2024.02.11.03.18.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 03:18:21 -0800 (PST)
-From: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
-To: rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	shuah@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
-Subject: [PATCH] selftest: ftrace: fix minor typo in log
-Date: Sun, 11 Feb 2024 12:18:18 +0100
-Message-Id: <20240211111818.610211-1-vincenzo.mezzela@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707650360; c=relaxed/simple;
+	bh=yA/biYvRr9hf2HQDPmoGQm+4JVMxSnfysgiTJ9nNW/c=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=klB3Cgh3oDVutwa2VtaxHfTzIXNjxyF6rQiiJMy/QstsxbT18hwcDkQnaF2txL5a9ih+lXYE19Yr1vNccrIcXz6nwuOP9IgcDldH5i44WWC3J54mhlNXQIW574oH9cQvmJyqrHVQxBJxzVwItNwsvQIU6vUtA1zKW+ZBF1b+wNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=izEB8l+5; arc=none smtp.client-ip=128.199.32.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
+	t=1707650356; bh=yA/biYvRr9hf2HQDPmoGQm+4JVMxSnfysgiTJ9nNW/c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=izEB8l+5fyMBafcahj7RxjD8caa3o5xLsoG7sDDf37Zu/xKZZR0jihu0LFMaOPwOa
+	 cc0+40R3Sy0T93Zthk+X7jCJjKdR6opIDYLK4V8W7tNr6tgshExAAObmfhk/IimQj1
+	 r1v32OhZe6ZKEii3Pjp9zlT5xQQ0zkGlhETbSxLM=
+From: Luca Weiss <luca@z3ntu.xyz>
+To: Stephan Gerhold <stephan@gerhold.net>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Matti =?ISO-8859-1?Q?Lehtim=E4ki?= <matti.lehtimaki@gmail.com>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject:
+ Re: [PATCH v2 1/3] dt-bindings: power: rpmpd: Add MSM8974 power domains
+Date: Sun, 11 Feb 2024 12:19:14 +0100
+Message-ID: <12625470.O9o76ZdvQC@z3ntu.xyz>
+In-Reply-To: <Zcipcz70vEPWLAFg@gerhold.net>
+References:
+ <20240210-msm8974-rpmpd-v2-0-595e2ff80ea1@z3ntu.xyz>
+ <20240210-msm8974-rpmpd-v2-1-595e2ff80ea1@z3ntu.xyz>
+ <Zcipcz70vEPWLAFg@gerhold.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Resolves a spelling error in the test log, preventing potential
-confusion.
+On Sonntag, 11. Februar 2024 12:03:15 CET Stephan Gerhold wrote:
+> On Sat, Feb 10, 2024 at 05:38:56PM +0100, Luca Weiss wrote:
+> > Add the compatibles and indexes for the rpmpd in MSM8974, both with the
+> > standard PM8841+PM8941 PMICs but also devices found with PMA8084.
+> > 
+> > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> > ---
+> > 
+> >  Documentation/devicetree/bindings/power/qcom,rpmpd.yaml | 2 ++
+> >  include/dt-bindings/power/qcom-rpmpd.h                  | 7 +++++++
+> >  2 files changed, 9 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
+> > b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml index
+> > 2ff246cf8b81..929b7ef9c1bc 100644
+> > --- a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
+> > +++ b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
+> > 
+> > @@ -24,6 +24,8 @@ properties:
+> >            - qcom,msm8917-rpmpd
+> >            - qcom,msm8939-rpmpd
+> >            - qcom,msm8953-rpmpd
+> > 
+> > +          - qcom,msm8974-rpmpd
+> > +          - qcom,msm8974pro-pma8084-rpmpd
+> > 
+> >            - qcom,msm8976-rpmpd
+> >            - qcom,msm8994-rpmpd
+> >            - qcom,msm8996-rpmpd
+> 
+> This is maybe more something for the DT reviewers to decide but I wonder
+> if it is a bit confusing/misleading to describe one particular PMIC with
+> a generic compatible, and the other with a more specific one. Perhaps it
+> would be clearer to include the PMIC name in both compatibles, i.e.
+> "qcom,msm8974-pm8941-rpmpd" instead of "qcom,msm8974-rpmpd".
 
-Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
----
+FWIW if we'd do that it should be qcom,msm8974-pm8841-rpmpd (so pm8841 instead 
+of pm8941)
 
-It is submitted as part of my application to the "Linux Kernel
-Bug Fixing Spring Unpaid 2024" mentorship program of the Linux
-Foundation.
+But also in the same vain, it was maybe a bit of a bad decision originally to 
+make the compatibles SoC-specific and not SoC+PMIC-specific - though in nearly 
+all cases this combo is fixed for a given SoC?
 
- .../testing/selftests/ftrace/test.d/trigger/trigger-hist-mod.tc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Anyways, I'll wait for more comments about this, I'm open to changing it 
+either way.
 
-diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-mod.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-mod.tc
-index 4562e13cb26b..717898894ef7 100644
---- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-mod.tc
-+++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-mod.tc
-@@ -40,7 +40,7 @@ grep "id: \(unknown_\|sys_\)" events/raw_syscalls/sys_exit/hist > /dev/null || \
- 
- reset_trigger
- 
--echo "Test histgram with log2 modifier"
-+echo "Test histogram with log2 modifier"
- 
- echo 'hist:keys=bytes_req.log2' > events/kmem/kmalloc/trigger
- for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
--- 
-2.34.1
+Regards
+Luca
+
+> 
+> The "qcom,msm8974-rpmpd" compatible could be maybe added as fallback.
+> While it wouldn't be used for matching in the (Linux) driver the DT
+> binding itself *is* "compatible" between the two PMICs because they both
+> have the same power domain indexes.
+> 
+> i.e.
+> 	compatible = "qcom,msm8974-pm8941-rpmpd", "qcom,msm8974-rpmpd";
+> 	compatible = "qcom,msm8974pro-pma8084-rpmpd", "qcom,msm8974-rpmpd";
+> 
+> Thanks,
+> Stephan
+
+
+
 
 
