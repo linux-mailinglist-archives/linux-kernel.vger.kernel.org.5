@@ -1,115 +1,101 @@
-Return-Path: <linux-kernel+bounces-60882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E573850A90
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:30:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45945850A8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 18:28:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BA9F282AEB
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 17:30:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 780071C211F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 17:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA3305CDEC;
-	Sun, 11 Feb 2024 17:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C825E5CDF5;
+	Sun, 11 Feb 2024 17:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=auristor.com header.i=jaltman@auristor.com header.b="TDjYzCt4"
-Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [208.125.0.235])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CTdfnmJv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4985B681
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 17:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.125.0.235
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103875A102;
+	Sun, 11 Feb 2024 17:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707672627; cv=none; b=pAtLFUpvCOKvmco9XCnCpLWMck1iMQ2M7NP1qf3eA8DzyprChZ7eb3l9CyyZgPKj6qFAQKeAi1eapIckY8k6Sj+hhwQVlmJi/TK/yU52Jt7g9wm1q2kVRBiOxfh81HvGN8mj1OrqPOlwVebYwv3OIoNrgc8gceVVTGHk83+A2lQ=
+	t=1707672481; cv=none; b=Lir6B3ZiaYeQq7y+SNAbSdvpzms2UyMdpTK7lY0ro2xBGUa97L+LpDW5nCp2Ht0bZpMV0vTJqHC+DaE2A1ITw20ds7HotbEAcZem0VM3mgMqkLjNQT4VHpQ9aaextefho8hZXtosKJIAqxjMGFOGceXOaW6jHAt+oTdJGHeuaXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707672627; c=relaxed/simple;
-	bh=r55Ri0PF4R8/e36BiD2ImyC+X6kPvh5lUYq/2k9xvoo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Eble1qdfnQfz4mJs5fCANqslGYZlMWEmQLt1r5qxlHJ/1qjoPYAbQzjw+MQdR0gy2Ete/pFawjcCDAQGtkvPaig01dYQP4AV+WNr1LyAwdI4yJxI0Zpo7B6RT4E3PRkAJOEPKVHGOprFePwswjKR6Fv1NQzlpjTob0ggb4YdoEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com; spf=pass smtp.mailfrom=auristor.com; dkim=pass (1024-bit key) header.d=auristor.com header.i=jaltman@auristor.com header.b=TDjYzCt4; arc=none smtp.client-ip=208.125.0.235
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=auristor.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
-	d=auristor.com; s=MDaemon; r=y; t=1707672278; x=1708277078;
-	i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
-	MIME-Version:User-Agent:Subject:To:Cc:References:
-	Content-Language:From:Organization:In-Reply-To:Content-Type:
-	Content-Transfer-Encoding; bh=hpRo1l53+3UJrUmq4UdLNyJbdET60xEc63
-	/mQjUiDP4=; b=TDjYzCt4PyRpNS6io4wOVgHTnBsp9ur4snAGfGsotJjqGdHjXb
-	ivzTtE5yLJT+twnfnPwgvM8F5b86ytUiK4UNBmDoMZde3FVjQlIOnWFMOoA7dlD0
-	qFMavb9aoBJkDvlCFcJXTu4dl2riAPIT/xUsSW6fK2bT2hIjqAa11rr8E=
-X-MDAV-Result: clean
-X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Sun, 11 Feb 2024 12:24:38 -0500
-Received: from [IPV6:2603:7000:73c:bb00:a536:e7f4:fea8:4638] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.2) 
-	with ESMTPSA id md5001003800186.msg; Sun, 11 Feb 2024 12:24:37 -0500
-X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Sun, 11 Feb 2024 12:24:37 -0500
-	(not processed: message from trusted or authenticated source)
-X-MDRemoteIP: 2603:7000:73c:bb00:a536:e7f4:fea8:4638
-X-MDHelo: [IPV6:2603:7000:73c:bb00:a536:e7f4:fea8:4638]
-X-MDArrival-Date: Sun, 11 Feb 2024 12:24:37 -0500
-X-MDOrigin-Country: US, NA
-X-Authenticated-Sender: jaltman@auristor.com
-X-Return-Path: prvs=1771484435=jaltman@auristor.com
-X-Envelope-From: jaltman@auristor.com
-X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
-Message-ID: <735172b1-1267-43e7-a2af-8596d849760a@auristor.com>
-Date: Sun, 11 Feb 2024 12:24:09 -0500
+	s=arc-20240116; t=1707672481; c=relaxed/simple;
+	bh=y3Ubh8Tiy/3GXFRMEO7G2rV3CZjY88WuRV3Wp5PzzDI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bclQq24yziix2rVBGHXLqznvLAG4PS+9GsTxbPSniWCPNqsurtoqhrtwCJYXj3QkbPwLACn6GWyFZ6l8GevRYxDjq0vZt4zXUBqNti7xPk2P/bSeQRpxj1BmtKqnOtlTNKr6yOPnINoy8nqOHDJqZBavQYiKkb++o4Eux4eGVn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CTdfnmJv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE375C433C7;
+	Sun, 11 Feb 2024 17:27:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707672480;
+	bh=y3Ubh8Tiy/3GXFRMEO7G2rV3CZjY88WuRV3Wp5PzzDI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CTdfnmJvnCiNQvdHkps0Ks2HdAvbzApLljwwnm3gbxYR0ZQLXhKCZCPTZVLUrhUYh
+	 nvju9BcIbLtpUJ7TBD3vWey6DaXZUjJUEDIHOXmNKqk808gsS60eEFx4FCw1JK2nCB
+	 WjVN4P9M92Y4PJwIR/JTE/rOTQkKACMYaSsUFo1lhmoRdwnS+BfYNzuoKElXV8kUJA
+	 8QplHqD42dU54ydjPQXGSR27zsae7cKdwf2f8lBLmCK1G437M3zfV1RgLUahLlrxGM
+	 UiFoKpIVhSg4xdGBV5Iy09ifOuHirbL8swqGIulfaYLL959DhzujemjWkrIQdvDQ3F
+	 soNAy+Ov+GkiA==
+Date: Sun, 11 Feb 2024 17:27:55 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Heiko Stuebner <heiko@sntech.de>, Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-rockchip@lists.infradead.org, linux-phy@lists.infradead.org,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Frank Wang <frank.wang@rock-chips.com>,
+	Kever Yang <kever.yang@rock-chips.com>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v1 01/10] dt-bindings: soc: rockchip: add clock to RK3588
+ VO grf
+Message-ID: <20240211-overexert-balcony-4b4f723f379b@spud>
+References: <20240209181831.104687-1-sebastian.reichel@collabora.com>
+ <20240209181831.104687-2-sebastian.reichel@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] afs: Increase buffer size in afs_update_volume_status()
-To: Daniil Dulov <d.dulov@aladdin.ru>, linux-afs@lists.infradead.org
-Cc: Marc Dionne <marc.dionne@auristor.com>,
- David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org
-References: <20240211150442.3416-1-d.dulov@aladdin.ru>
-Content-Language: en-US
-From: Jeffrey E Altman <jaltman@auristor.com>
-Organization: AuriStor, Inc.
-In-Reply-To: <20240211150442.3416-1-d.dulov@aladdin.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MDCFSigsAdded: auristor.com
-
-On 2/11/2024 10:04 AM, Daniil Dulov wrote:
-> The max length of volume->vid value is 20 characters.
-> So increase idbuf[] size up to 20 to avoid overflow.
->
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->
-> Fixes: d2ddc776a458 ("afs: Overhaul volume and server record caching and fileserver rotation")
-> Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
-> ---
->   fs/afs/volume.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/afs/volume.c b/fs/afs/volume.c
-> index f84194b791d3..9d0da38bbcf6 100644
-> --- a/fs/afs/volume.c
-> +++ b/fs/afs/volume.c
-> @@ -302,7 +302,7 @@ static int afs_update_volume_status(struct afs_volume *volume, struct key *key)
->   {
->   	struct afs_server_list *new, *old, *discard;
->   	struct afs_vldb_entry *vldb;
-> -	char idbuf[16];
-> +	char idbuf[19];
->   	int ret, idsz;
->   
->   	_enter("");
-
-Thanks for the patch.
-
-The commit message says idbuf[] is being increased to 20 chars but the 
-patch only increases it to 19.
-
-Should idbuf[] be 20 or should the commit message be altered?
-
-Jeffrey Altman
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5y37wf+p5Z3zLdFR"
+Content-Disposition: inline
+In-Reply-To: <20240209181831.104687-2-sebastian.reichel@collabora.com>
 
 
+--5y37wf+p5Z3zLdFR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Feb 09, 2024 at 07:17:17PM +0100, Sebastian Reichel wrote:
+> The RK3588 VO GRF needs a clock. This adds the clock to the allowed
+> properties, makes it mandatory for the RK3588 VO grf and disallows it
+> for any other Rockchip grf.
+>=20
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+--5y37wf+p5Z3zLdFR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZckDmwAKCRB4tDGHoIJi
+0tewAQDkk7fL2nq9A6z8MR0y3mv1cBi3+NjU+Pdb7KteJlol+wEAo6K+1cPFIeat
+2QXq/2f/kFWrRLjib7eqeWWVp8cs8A0=
+=w+EU
+-----END PGP SIGNATURE-----
+
+--5y37wf+p5Z3zLdFR--
 
