@@ -1,132 +1,116 @@
-Return-Path: <linux-kernel+bounces-60980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D647E850C1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:10:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A521850C21
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:13:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 761CCB227B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:10:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDCA22819FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 23:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F149C17545;
-	Sun, 11 Feb 2024 23:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF1A17545;
+	Sun, 11 Feb 2024 23:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="M5JSqYeC"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JgxC2R3h"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917011427B
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 23:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20642171A0;
+	Sun, 11 Feb 2024 23:13:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707692998; cv=none; b=PqeUNWYhLjIU8CNj4JgJ7QnnIAPDTNC3J+o0pTBJthDauyCkvDBSTt5+8ZByHXFPOy/DFnjOHpl8jSroU9eEH0G1bnwIcX+fMg38XNI1p61ZhaxM+7aLhBeDuO6MMVj/txdFhHQ2BUgF2KRx6EYXj24H60jCUoLnU+KPjAW1/qQ=
+	t=1707693208; cv=none; b=WBAuQLXis32Gmx7tRHg6VS2I3WzSzZHzL7WH0+tW1ZcJO+ftXEKpMjZupj85o9VRRHFYjqyO9aG00aWFC3CrtEpFJ3soBjYvya/SyhK6LFae3viwDlrpvtp2/v0ApYwjFlMcHvEX4jr15gLt3kd26zr1Qw4heMWVqBNsndBbiQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707692998; c=relaxed/simple;
-	bh=0UHBFd8KsfNzuUb6VByQxElPhKzrj40UEzATEtX2vCE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JLnXq7SUhQkvINH3IJIybR1zQ2VAqe5TKke2jjEXVUhMFSg4WEFMfymk9bXaju1zb9kIMoS86Jva6Ma09A5V6X01XFW1YDCgr+XAQzTuc2YnBeqERRaAzXYjYSntJ0UWbxalyEAof0aOezf3uAwYXgCXCTzSGEmzMRQ/Ks1yTS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=M5JSqYeC; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5601eb97b29so4806704a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 15:09:55 -0800 (PST)
+	s=arc-20240116; t=1707693208; c=relaxed/simple;
+	bh=xo36J8fOakG6knpNeZV8/mzbGVFedPF8ijEDpOEf72s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XTB9unHKY9EvXyL+R6vf9k8TcDSJ39m9Vnq2sbENtg+oW9eNuVk/ckCG3x7SDH8VBRiM6nEKYqQL2juk/01v6jfdsbZDcRtd4t+NS029A8YvLxzfbn2OCUFr36b2w6It3VgGElblVCcEJj1pEt5B/40Ch0+q9BXBIjeZKto76Fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JgxC2R3h; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2055156a12.3;
+        Sun, 11 Feb 2024 15:13:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707692994; x=1708297794; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XH/aCjJt/DiB7MsEbqzKT+olkUUu+T5Xb1GlIEopZ2s=;
-        b=M5JSqYeCSp8QZJ0B2mc5PfXQd8UPl+0ebY+0u3Y8K2A0g/yx5mmKb5TiyY96kReG60
-         rdBafxGQe9jaEMLth/9RIT43xfVjJ3VUAfpxec6sEX7XaN+r+HJv/hodKAmEScigPQmb
-         b5HIFSqr9NsYSACyYYq0ZPq3/sDHQSxyW87siIYAIv65M3EnrxP0zVbjtRhiJUmlISWK
-         PW9LIMxa4nyxbONBqWD9F6jSJ/spDArZ7X3oJ9txipFILbKmt6sS3dQ7HaZvv6aVRU1J
-         N/M4IlywRgLrZEMoxTgcxCNQDardrOj//vbYNC7Qv1EYRsu5dnB+UA1191K5D/ZvI4lL
-         zL9Q==
+        d=gmail.com; s=20230601; t=1707693206; x=1708298006; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xo36J8fOakG6knpNeZV8/mzbGVFedPF8ijEDpOEf72s=;
+        b=JgxC2R3hueZDHJbOxoEuuASfd5pe5iirvkuCXACdjKDNEPIum37YiG1io+l9fH+Mvz
+         J77L2XdHHFVTHeC5DVWSuWx4jsL4DJ+HtEqCynqKdF/6NRcpCVZFaN2rUtTnr0RhVX32
+         yD9iNU2dvMrVrfcBUaCYTSuUgHw+AMtmj9E9FjUpDRcYe5Jh+kxEWYP9PNgAnYXop1Jl
+         F9ikaawaQmhfRUpFs2VyZUTDn4Z+EtIWFc2qqSqKGqXM8D05O1bA9IxzB1gKMiXMUdZI
+         +kqBMHoyagiv+aeEhn9heJ9qAWiL4j5M3bTIj5IoeKbwzxiaJBDlNnw2yNKluLSMpdet
+         ndlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707692994; x=1708297794;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XH/aCjJt/DiB7MsEbqzKT+olkUUu+T5Xb1GlIEopZ2s=;
-        b=wt6xzGADKcr42NOhhJRzLYiWrLuWyQ+XZRFeB2lw8XoRJyca6wJfjYOFmPgym3ft/R
-         MEIfT6k2FSKTvOBM8BgQbk5Q/AyyjzxRRF7szFbZOqrSeETPMZnOOBfG/ufNEJNQlc1l
-         5Myb1b8KYukB2Mz+ZBUoitLTlvzAZUrEAIqF2BURSFIlD6ll+JtWrAzi1eofUzqK+p42
-         lHTT5YcHKV9g73JeKAezOf9mwytUXLZPXILUaw7ocXkQ/K5PNsiHOf+zvQhsC1OC7Uhj
-         c9zwjGBWioNSW0bl5ePaaou5nBq7cHggf4lmf8eUxZDKfJzRgoMNi6yjP+Takt2Leexl
-         rVWg==
-X-Gm-Message-State: AOJu0Yy64UIE16YJogLP6IEEaNwB51PMevE/qNG0hriqmXquK3aVCzyE
-	gD0qeIP6/VwErfguvzL3jpopURYn397FQ0eBfufy8E5mWYCgXzCGa/iFrKE2VAY=
-X-Google-Smtp-Source: AGHT+IE/NlI/6DThlF/g6NgjuI7e0164D2rPvpOssgTLNrvG5ONjv7e8Jh03RQj+ex2PdOM1dF87kQ==
-X-Received: by 2002:a05:6402:35d2:b0:561:841f:ed03 with SMTP id z18-20020a05640235d200b00561841fed03mr4116845edc.14.1707692993755;
-        Sun, 11 Feb 2024 15:09:53 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU8klcKZ40EjoIvJcSdkTkkctgF4aLklrTh0LA3GCGFlxsHvhu2iaJDoXh8SbFR2ykdO1OHYPmnwHRIRne8/iFWv3Xnx0P+iJDrLWI3UsTxy6mYBkjPS80zr+xF81W5Ft2FoFZePwaIKyF9/s3hpXjyma4TfGT/DY7z4np6u7S1JBY+bE4BqXDohnuaPizfwn/i7uNKjGn/8uPde2l6nDNATh26taFPA6bdDegmDFNeIFxVY2t1k16RyJRZ69GTdUGujLgEM1HxzKEx2YkKBGRrta4cmsvtaw==
-Received: from raven.blarg.de (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id e8-20020a056402148800b0055ff9299f71sm2183566edv.46.2024.02.11.15.09.53
+        d=1e100.net; s=20230601; t=1707693206; x=1708298006;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xo36J8fOakG6knpNeZV8/mzbGVFedPF8ijEDpOEf72s=;
+        b=pCP4qBMjkkVJ3h0koEEnm50CYGOOxA+h7XG0kpcv+SMr7LRDMUK0d3dNPsJWKo8zYQ
+         nEpOylFdFyFSbIEUzgFoQq1DWjPeeF6IzTtl7vcXoWcm4GtLbr4RyD6g+fv4AYj3nhjx
+         PoOljuWYlTL3muvIXwmfPXm1xOu6GjHcldo9GAbe54vTrfngSofJyxlN1C5fY4i9Hd1F
+         J0IN+RGUitCSk4oAsbX//ixzIUeMIW9HPMjtpS+fZSAuK5G5UaAM1yPnEOcvtVu10XkK
+         73SbxuSjK9WbQMTBND3+/1MCqUHW8nGKsc6R06o0GUoTkGWVlNPCCGC6Tc4rwca7HXaj
+         pM2Q==
+X-Gm-Message-State: AOJu0YyqI9H2vYLW7Mcz00sf0ds1FVLNZIX0bOueNUMPoSCP3dmRhrg6
+	Etdq9WCNejocpVzFt8YJFnE21iDNFzquGfEMMwktAfMkdLFgHlCQ0vtpUAzt
+X-Google-Smtp-Source: AGHT+IFJB7u7GBig2yjHLhYLgy0Et2ZOVa+6freH6tpfiY3NWud7Q9tkbVEXq4I9V542ozOQtnp5ag==
+X-Received: by 2002:a05:6a21:150c:b0:19c:9418:c396 with SMTP id nq12-20020a056a21150c00b0019c9418c396mr9012529pzb.31.1707693206175;
+        Sun, 11 Feb 2024 15:13:26 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWRMLniCuV7IK/HC741OJMM6skLyxVJ7uAatLpihFlwBF5sM1zz+OttMQNeQVApPTIJjVpns0xBthygEBShkOuPv1040TJxPNNuEi0KzuBiAdD8EoHWWVyRfT7FHxm/Lq6mrPIVj5SggS7tCFKrMRicaTEsYPuQ/KQ11MiCGe/daojbNCE=
+Received: from rigel ([220.235.35.85])
+        by smtp.gmail.com with ESMTPSA id a21-20020a056a000c9500b006e03927d123sm4227082pfv.202.2024.02.11.15.13.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 15:09:53 -0800 (PST)
-From: Max Kellermann <max.kellermann@ionos.com>
-To: svens@stackframe.org,
-	James.Bottomley@HansenPartnership.com,
-	deller@gmx.de,
-	mcgrof@kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH] parisc/kprobes: always include asm-generic/kprobes.h
-Date: Mon, 12 Feb 2024 00:09:45 +0100
-Message-Id: <20240211230945.297104-1-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
+        Sun, 11 Feb 2024 15:13:25 -0800 (PST)
+Date: Mon, 12 Feb 2024 07:13:21 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, brgl@bgdev.pl,
+	linus.walleij@linaro.org, andy@kernel.org
+Subject: Re: [PATCH] gpio: uapi: clarify default_values being logical
+Message-ID: <20240211231321.GA4748@rigel>
+References: <20240211101421.166779-1-warthog618@gmail.com>
+ <CAHp75VeSLvrxMOARDBHBJ5VGVR-Jv-7saxjJiN-NOPMyTwit3Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VeSLvrxMOARDBHBJ5VGVR-Jv-7saxjJiN-NOPMyTwit3Q@mail.gmail.com>
 
-The NOKPROBE_SYMBOL macro (and others) were moved to
-asm-generic/kprobes.h in 2017 by commit 7d134b2ce639 ("kprobes: move
-kprobe declarations to asm-generic/kprobes.h"), and this new header
-was included by asm/kprobes.h unconditionally on all architectures.
+On Sun, Feb 11, 2024 at 06:58:14PM +0200, Andy Shevchenko wrote:
+> On Sun, Feb 11, 2024 at 12:14 PM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > The documentation for default_values mentions high/low which can be
+> > confusing, particularly when the ACTIVE_LOW flag is set.
+> >
+> > Replace high/low with active/inactive to clarify that the values are
+> > logical not physical.
+> >
+> > Similarly, clarify the interpretation of values in struct gpiohandle_data.
+>
+> I'm not against this particular change, but I want the entire GPIO
+> documentation to be aligned in the terminology aspect. Is this the
+> case after this patch? I.o.w. have we replaced all leftovers?
+>
 
-When kprobe support was added to parisc in 2017 by commit
-8858ac8e9e9b1 ("parisc: Implement kprobes"), that header was only
-included when CONFIG_KPROBES was enabled.
+Agreed. Those are the last remnants of the low/high terminolgy that I am
+aware of, certainly the last in gpio.h.
 
-This can lead to build failures when NOKPROBE_SYMBOL is used, but
-CONFIG_KPROBES is disabled.  This mistake however was never actually
-noticed because linux/kprobes.h also includes asm-generic/kprobes.h
-(though I do not understand why that is, because it also includes
-asm/kprobes.h).
+Having a closer look to double check...
 
-To prevent eventual build failures, I suggest to always include
-asm-generic/kprobes.h on parisc, just like all the other architectures
-do.  This way, including asm/kprobes.h suffices, and nobody (outside
-of arch/) ever needs to explicitly include asm-generic/kprobes.h.
+Ah - it is still used in Documentation/userspace-api/gpio/sysfs.rst -
+not somewhere I go very often.
+Would you like that updated in a separate patch?
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
- arch/parisc/include/asm/kprobes.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/parisc/include/asm/kprobes.h b/arch/parisc/include/asm/kprobes.h
-index 0a175ac87698..0f42f5c8e3b6 100644
---- a/arch/parisc/include/asm/kprobes.h
-+++ b/arch/parisc/include/asm/kprobes.h
-@@ -10,9 +10,10 @@
- #ifndef _PARISC_KPROBES_H
- #define _PARISC_KPROBES_H
- 
-+#include <asm-generic/kprobes.h>
-+
- #ifdef CONFIG_KPROBES
- 
--#include <asm-generic/kprobes.h>
- #include <linux/types.h>
- #include <linux/ptrace.h>
- #include <linux/notifier.h>
--- 
-2.39.2
-
+Cheers,
+Kent.
 
