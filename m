@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-60751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C489850924
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:35:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59136850923
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 13:35:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC1D5B239BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:35:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F778281942
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Feb 2024 12:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD305FEF6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA485FEEE;
 	Sun, 11 Feb 2024 12:30:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="O3jWqn6T"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="UUrRu1eJ"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB5D5EE62
-	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEFE65F46B
+	for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 12:30:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707654643; cv=none; b=MbzhuS4iCrPXAZlbMCYpwm6U/I3ikocQaybuKvzq0APLEa+mXZPFvLhAaGOk79cfNpmXg78u+KCB9o2L82ijYSZE3MJvaR8gTgsp8i5VU+L9GG9ibnLs7F2U7ma9tk0vQLbIvAFm22Z9IY/JIkAp58FHo2tTinEjcf5Znqz9bIY=
+	t=1707654643; cv=none; b=nfjCRzlly6na55vw+FAddoUdPgfsKKOjqNWVfxLiXUhQpEHkVSP48FjqAQuEzh4jPnHrDdDDxgArfyxtGRt+5DEsFl+WIO/GvfEliYdG5K3S06ZnlT6TxfDQZjx14qK+flivoK3P0OC9I5bLC3OecMs0Nb55eP7OV6mU36lq03w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707654643; c=relaxed/simple;
-	bh=vnpHwrQqTGh83jGF/mOVjN3+jGO3XbGrHiR+lyiDEhI=;
+	bh=M+TCf4sn0Vj4ZvvDThMshhJMhSj/72BJZc8cZVfWfZY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=h7Pl52OdDSBxvw+PUS+DFi3iF/2m6i9a2xlCQk9+uyaChP0PK1T5c/wCalwYgs1/WLjNdvwrKikQMoWwEHrdQYUW/JAO9UcPOpGDMQjiz8BYJiGzTn0f2PHkYQZBeP12R5E4b8DFnzirxRqhT3X0TAJS/pe8g3BgBZwX2ryJ4mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=O3jWqn6T; arc=none smtp.client-ip=209.85.208.175
+	 MIME-Version; b=PeczU1LP+WanoZSEcJ+v/x4KNcqr/d2OqqqhJ05Koau15/ykOEd7nBTSOVzHIYWIgBvegsMzg49Sg88r3yelgRHE8Mj+j9go6+Tn/gTPj7o6gOzy5UDEeYPUmpI3bH+2YhUp1jWarOyKlIZMkuhCMGUGFUMJr17ZO0YIP4L4xP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=UUrRu1eJ; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d0e2adfeefso18218851fa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:30:39 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56001b47285so3090104a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 04:30:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707654637; x=1708259437; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1707654638; x=1708259438; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1wz2gqR1nPObBws/2+IzSMmJxUoIVsWcR8/Agl6zU7c=;
-        b=O3jWqn6TBhdn58vJ6+ZghSCVF9ibZf591mH/oMdH57WRG0oKMVgyVz1yr9iMtmSbkb
-         58AxokZQXoZvKjJ9bWQwLCMxG/7krfdu4JJ3AyLMTo/ghvHxRmKEp/ckmTjp06M0bpIl
-         bpFh02Vfv/dtXxSzRzQt5WjU9kkWRZOJHeFOT4oHrHATmmKIzikHlnlVBWdSPECTPObH
-         NB/9hTAodY4DYfFWN+rdfDpZ6rog72ptLwWq3SXMJSArtfrwt/C4jTG/c2o6WuXsy6tB
-         57eEqQyhZaJWaSME6I+LL4nXdw1HhfrGrYGr5dBIOly9ybKMu0H/NKViv5cRPqacJsKV
-         i1eA==
+        bh=33wlCo9DUXvbQxRFpboMlES43uYj+ZzSbFUQMwIDJfY=;
+        b=UUrRu1eJcrf6c60uR2/5LPXvE7QQTN0E7utX5olfoM9ZvNOIxusRa6yCufNX2XTvOT
+         cJ7VJD9080wo8fIuec/x5qxQuYmVX/De9KFstCg09+XEA3GNDOftd3FNUNljRaeI/GVf
+         Yez3g6L28a3oGcwhrfhFSdX2bd1nfZf96hc8TVQ9HUlOZZ81CBXb/FcP5RjnHorVW0FD
+         mdFnJoUWGPLoXbUxI2fKHMhkoA8u8++hXbGrPz93IKq/orfa625hHZc92OZQS80XmA32
+         /eorzccEJEslXA1sdEHIJgfkU/bKStkG47Mezqd+mElwlR5qIkwalWv1vSZjnLDTzTLT
+         v0ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707654637; x=1708259437;
+        d=1e100.net; s=20230601; t=1707654638; x=1708259438;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1wz2gqR1nPObBws/2+IzSMmJxUoIVsWcR8/Agl6zU7c=;
-        b=VmIcIjEsleyNC+td/ci98InNaJzMW9d3AD3c0nmOBiE4bLF9RVcDRZdC/TPo03B4R2
-         COtVVmaX/miV/3Ss3r/4DT59/4K/v8QFD7di8Ymz+InbDurjlLP2fZos89bxAUfW1ZyT
-         o4rGKoyxKqgQHIc9x1XvM5ltFg4gxFKOV86wI3tiWcfSQJHVgVMDI63nDd5RRSyMHVUo
-         MHqPzS9F8nImywa0dRQhzoNyMzH2K0c4qBAbHc1n+tJQhROKVo7QKiwdDY6T4IOpuwar
-         BKL2phcxTAqlbge8GjFMxrWBmBHAcqTYAnTTAmiK6o60o5esaLyfrKYvK7oB+04ILHQ6
-         jpCg==
-X-Gm-Message-State: AOJu0YwbbkStSR5zGxCwljM40Yfv+tcaxi7uRWdgugQeAzqXbyl1qeZQ
-	8gYOXtlKqyaif4Qh6FBymzU+YkPr5N6RM9+ZtSMTtKhjUOueNDsAGmbfGyPvJ0dsYWb08ZdLSGB
-	Y
-X-Google-Smtp-Source: AGHT+IG9uzCo0aiPOsRi6BuL7DUS2Nx1Xx4LX9lWEhcROTiKcMBjDmncHYTw9qB33rXtIT4Bhhxxlw==
-X-Received: by 2002:a2e:8755:0:b0:2d0:a6ef:651d with SMTP id q21-20020a2e8755000000b002d0a6ef651dmr2389120ljj.47.1707654636837;
-        Sun, 11 Feb 2024 04:30:36 -0800 (PST)
+        bh=33wlCo9DUXvbQxRFpboMlES43uYj+ZzSbFUQMwIDJfY=;
+        b=AxN/FvrUltN7yKeP9SkE7PhIfihh1lguh/2bZIro4XMLE5zUOzHJ0YUUmVZCcol86n
+         C7cuqo9lSRezP0iZtdqxvkNW0+PZtQUHBt+cDrC1uZaQo7iQZjYjABGFYpg1eXlO+4iW
+         g4TVyaAC7Ibwzalqq/M/UPRJXPvc3zNn1IL6OdY9e6dtVEHYhqrJbv3EvKMX4HyVcvS6
+         kPoXIyIHgi2vUBoK/D+qkhSJ4W5zwO2dk0nUIseSYecmuAVwRGEh5Y+stgGwSPP/mj1H
+         8hPbRBi5U1BBapp9z+rND26GEwtdBUxSlYw6f5xUliUpAgH70VK5RIgxWbQUjHpOo9jd
+         Y8OQ==
+X-Gm-Message-State: AOJu0YzJmQAMJAlOX6gECDtzr+4I95H93DF2IvskakNR4OHEFx5vBYhl
+	LtTe3+2t+Lp8IQk2SGSCbddrZCcXXVNvnPNhR+2cRnOCAgXqTzWE7AZeZXg6lTiZq06cxLgCZYZ
+	g
+X-Google-Smtp-Source: AGHT+IHFiXS59oWoO2QrM4VVY0M3eBYN7I22GPtIiCYHHzGdmhpShROaCr2XBpheKtm0a3KYKIYxxA==
+X-Received: by 2002:a05:6402:30b1:b0:561:9968:a1ec with SMTP id df17-20020a05640230b100b005619968a1ecmr841785edb.9.1707654638397;
+        Sun, 11 Feb 2024 04:30:38 -0800 (PST)
 Received: from raven.intern.cm-ag (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
         by smtp.gmail.com with ESMTPSA id fj18-20020a0564022b9200b0056187ca4120sm1024611edb.10.2024.02.11.04.30.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 04:30:36 -0800 (PST)
+        Sun, 11 Feb 2024 04:30:37 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v3 23/35] sbitmap.h: move declarations to sbitmap_types.h
-Date: Sun, 11 Feb 2024 13:29:48 +0100
-Message-Id: <20240211123000.3359365-24-max.kellermann@ionos.com>
+Subject: [PATCH v3 24/35] list_lru.h: move declarations to list_lru_types.h
+Date: Sun, 11 Feb 2024 13:29:49 +0100
+Message-Id: <20240211123000.3359365-25-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240211123000.3359365-1-max.kellermann@ionos.com>
 References: <20240211123000.3359365-1-max.kellermann@ionos.com>
@@ -88,321 +88,143 @@ dependencies.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- block/blk-mq.h                |   1 +
- include/linux/blk-mq.h        |   2 +-
- include/linux/sbitmap.h       | 124 +-------------------------------
- include/linux/sbitmap_types.h | 129 ++++++++++++++++++++++++++++++++++
- 4 files changed, 132 insertions(+), 124 deletions(-)
- create mode 100644 include/linux/sbitmap_types.h
+ fs/super.c                     |  1 +
+ include/linux/fs.h             |  2 +-
+ include/linux/list_lru.h       | 36 +----------------------------
+ include/linux/list_lru_types.h | 42 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 45 insertions(+), 36 deletions(-)
+ create mode 100644 include/linux/list_lru_types.h
 
-diff --git a/block/blk-mq.h b/block/blk-mq.h
-index f75a9ecfebde..cc8e690171db 100644
---- a/block/blk-mq.h
-+++ b/block/blk-mq.h
-@@ -3,6 +3,7 @@
- #define INT_BLK_MQ_H
- 
- #include <linux/blk-mq.h>
-+#include <linux/sbitmap.h>
- #include "blk-stat.h"
- 
- struct blk_mq_tag_set;
-diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index ed3760b04baa..201ee354a3d5 100644
---- a/include/linux/blk-mq.h
-+++ b/include/linux/blk-mq.h
-@@ -4,7 +4,7 @@
- 
- #include <linux/bio.h>
- #include <linux/blkdev.h>
--#include <linux/sbitmap.h>
-+#include <linux/sbitmap_types.h>
- #include <linux/lockdep_types.h>
- #include <linux/scatterlist.h>
- #include <linux/prefetch.h>
-diff --git a/include/linux/sbitmap.h b/include/linux/sbitmap.h
-index f7279f7632fe..c43d1c0eafbb 100644
---- a/include/linux/sbitmap.h
-+++ b/include/linux/sbitmap.h
-@@ -9,142 +9,20 @@
- #ifndef __LINUX_SCALE_BITMAP_H
- #define __LINUX_SCALE_BITMAP_H
- 
-+#include <linux/sbitmap_types.h>
- #include <linux/atomic.h>
- #include <linux/bitops.h>
--#include <linux/cache.h>
+diff --git a/fs/super.c b/fs/super.c
+index 2ab97cc49374..6a8cc1c49940 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -34,6 +34,7 @@
+ #include <linux/rculist_bl.h>
+ #include <linux/fscrypt.h>
+ #include <linux/fsnotify.h>
++#include <linux/list_lru.h>
+ #include <linux/lockdep.h>
+ #include <linux/user_namespace.h>
+ #include <linux/fs_context.h>
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 5862fe2c82d5..1cfe76f7544e 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -10,7 +10,7 @@
+ #include <linux/stat.h>
+ #include <linux/cache.h>
  #include <linux/list.h>
- #include <linux/log2.h>
- #include <linux/minmax.h>
- #include <linux/percpu.h>
- #include <linux/slab.h>
--#include <linux/types.h>
--#include <linux/wait_types.h>
+-#include <linux/list_lru.h>
++#include <linux/list_lru_types.h>
+ #include <linux/llist.h>
+ #include <linux/xarray.h>
+ #include <linux/rbtree.h>
+diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
+index 5e8cd106dae4..bb348492037f 100644
+--- a/include/linux/list_lru.h
++++ b/include/linux/list_lru.h
+@@ -8,14 +8,10 @@
+ #ifndef _LRU_LIST_H
+ #define _LRU_LIST_H
  
- struct seq_file;
+-#include <linux/list.h>
++#include <linux/list_lru_types.h>
+ #include <linux/nodemask.h>
+ #include <linux/shrinker.h>
  
--/**
-- * struct sbitmap_word - Word in a &struct sbitmap.
-- */
--struct sbitmap_word {
--	/**
--	 * @word: word holding free bits
--	 */
--	unsigned long word;
+-#ifdef CONFIG_MEMCG_KMEM
+-#include <linux/xarray_types.h>
+-#endif
 -
--	/**
--	 * @cleared: word holding cleared bits
--	 */
--	unsigned long cleared ____cacheline_aligned_in_smp;
--} ____cacheline_aligned_in_smp;
--
--/**
-- * struct sbitmap - Scalable bitmap.
-- *
-- * A &struct sbitmap is spread over multiple cachelines to avoid ping-pong. This
-- * trades off higher memory usage for better scalability.
-- */
--struct sbitmap {
--	/**
--	 * @depth: Number of bits used in the whole bitmap.
--	 */
--	unsigned int depth;
--
--	/**
--	 * @shift: log2(number of bits used per word)
--	 */
--	unsigned int shift;
--
--	/**
--	 * @map_nr: Number of words (cachelines) being used for the bitmap.
--	 */
--	unsigned int map_nr;
--
--	/**
--	 * @round_robin: Allocate bits in strict round-robin order.
--	 */
--	bool round_robin;
--
--	/**
--	 * @map: Allocated bitmap.
--	 */
--	struct sbitmap_word *map;
--
--	/*
--	 * @alloc_hint: Cache of last successfully allocated or freed bit.
--	 *
--	 * This is per-cpu, which allows multiple users to stick to different
--	 * cachelines until the map is exhausted.
--	 */
--	unsigned int __percpu *alloc_hint;
+ struct mem_cgroup;
+ 
+ /* list_lru_walk_cb has to always return one of those */
+@@ -31,36 +27,6 @@ enum lru_status {
+ 				   internally, but has to return locked. */
+ };
+ 
+-struct list_lru_one {
+-	struct list_head	list;
+-	/* may become negative during memcg reparenting */
+-	long			nr_items;
 -};
 -
- #define SBQ_WAIT_QUEUES 8
- #define SBQ_WAKE_BATCH 8
- 
--/**
-- * struct sbq_wait_state - Wait queue in a &struct sbitmap_queue.
-- */
--struct sbq_wait_state {
--	/**
--	 * @wait: Wait queue.
--	 */
--	wait_queue_head_t wait;
--} ____cacheline_aligned_in_smp;
--
--/**
-- * struct sbitmap_queue - Scalable bitmap with the added ability to wait on free
-- * bits.
-- *
-- * A &struct sbitmap_queue uses multiple wait queues and rolling wakeups to
-- * avoid contention on the wait queue spinlock. This ensures that we don't hit a
-- * scalability wall when we run out of free bits and have to start putting tasks
-- * to sleep.
-- */
--struct sbitmap_queue {
--	/**
--	 * @sb: Scalable bitmap.
--	 */
--	struct sbitmap sb;
--
--	/**
--	 * @wake_batch: Number of bits which must be freed before we wake up any
--	 * waiters.
--	 */
--	unsigned int wake_batch;
--
--	/**
--	 * @wake_index: Next wait queue in @ws to wake up.
--	 */
--	atomic_t wake_index;
--
--	/**
--	 * @ws: Wait queues.
--	 */
--	struct sbq_wait_state *ws;
--
--	/*
--	 * @ws_active: count of currently active ws waitqueues
--	 */
--	atomic_t ws_active;
--
--	/**
--	 * @min_shallow_depth: The minimum shallow depth which may be passed to
--	 * sbitmap_queue_get_shallow()
--	 */
--	unsigned int min_shallow_depth;
--
--	/**
--	 * @completion_cnt: Number of bits cleared passed to the
--	 * wakeup function.
--	 */
--	atomic_t completion_cnt;
--
--	/**
--	 * @wakeup_cnt: Number of thread wake ups issued.
--	 */
--	atomic_t wakeup_cnt;
+-struct list_lru_memcg {
+-	struct rcu_head		rcu;
+-	/* array of per cgroup per node lists, indexed by node id */
+-	struct list_lru_one	node[];
 -};
 -
- /**
-  * sbitmap_init_node() - Initialize a &struct sbitmap on a specific memory node.
-  * @sb: Bitmap to initialize.
-diff --git a/include/linux/sbitmap_types.h b/include/linux/sbitmap_types.h
+-struct list_lru_node {
+-	/* protects all lists on the node, including per cgroup */
+-	spinlock_t		lock;
+-	/* global list, used for the root cgroup in cgroup aware lrus */
+-	struct list_lru_one	lru;
+-	long			nr_items;
+-} ____cacheline_aligned_in_smp;
+-
+-struct list_lru {
+-	struct list_lru_node	*node;
+-#ifdef CONFIG_MEMCG_KMEM
+-	struct list_head	list;
+-	int			shrinker_id;
+-	bool			memcg_aware;
+-	struct xarray		xa;
+-#endif
+-};
+-
+ void list_lru_destroy(struct list_lru *lru);
+ int __list_lru_init(struct list_lru *lru, bool memcg_aware,
+ 		    struct lock_class_key *key, struct shrinker *shrinker);
+diff --git a/include/linux/list_lru_types.h b/include/linux/list_lru_types.h
 new file mode 100644
-index 000000000000..078c7859905c
+index 000000000000..51ccef0d6994
 --- /dev/null
-+++ b/include/linux/sbitmap_types.h
-@@ -0,0 +1,129 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __LINUX_SCALE_BITMAP_TYPES_H
-+#define __LINUX_SCALE_BITMAP_TYPES_H
++++ b/include/linux/list_lru_types.h
+@@ -0,0 +1,42 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LRU_LIST_TYPES_H
++#define _LRU_LIST_TYPES_H
 +
-+#include <linux/cache.h>
-+#include <linux/types.h>
-+#include <linux/wait_types.h>
++#include <linux/list.h>
 +
-+/**
-+ * struct sbitmap_word - Word in a &struct sbitmap.
-+ */
-+struct sbitmap_word {
-+	/**
-+	 * @word: word holding free bits
-+	 */
-+	unsigned long word;
++#ifdef CONFIG_MEMCG_KMEM
++#include <linux/types.h> // for bool
++#include <linux/xarray_types.h>
++#endif
 +
-+	/**
-+	 * @cleared: word holding cleared bits
-+	 */
-+	unsigned long cleared ____cacheline_aligned_in_smp;
-+} ____cacheline_aligned_in_smp;
-+
-+/**
-+ * struct sbitmap - Scalable bitmap.
-+ *
-+ * A &struct sbitmap is spread over multiple cachelines to avoid ping-pong. This
-+ * trades off higher memory usage for better scalability.
-+ */
-+struct sbitmap {
-+	/**
-+	 * @depth: Number of bits used in the whole bitmap.
-+	 */
-+	unsigned int depth;
-+
-+	/**
-+	 * @shift: log2(number of bits used per word)
-+	 */
-+	unsigned int shift;
-+
-+	/**
-+	 * @map_nr: Number of words (cachelines) being used for the bitmap.
-+	 */
-+	unsigned int map_nr;
-+
-+	/**
-+	 * @round_robin: Allocate bits in strict round-robin order.
-+	 */
-+	bool round_robin;
-+
-+	/**
-+	 * @map: Allocated bitmap.
-+	 */
-+	struct sbitmap_word *map;
-+
-+	/*
-+	 * @alloc_hint: Cache of last successfully allocated or freed bit.
-+	 *
-+	 * This is per-cpu, which allows multiple users to stick to different
-+	 * cachelines until the map is exhausted.
-+	 */
-+	unsigned int __percpu *alloc_hint;
++struct list_lru_one {
++	struct list_head	list;
++	/* may become negative during memcg reparenting */
++	long			nr_items;
 +};
 +
-+/**
-+ * struct sbq_wait_state - Wait queue in a &struct sbitmap_queue.
-+ */
-+struct sbq_wait_state {
-+	/**
-+	 * @wait: Wait queue.
-+	 */
-+	wait_queue_head_t wait;
-+} ____cacheline_aligned_in_smp;
-+
-+/**
-+ * struct sbitmap_queue - Scalable bitmap with the added ability to wait on free
-+ * bits.
-+ *
-+ * A &struct sbitmap_queue uses multiple wait queues and rolling wakeups to
-+ * avoid contention on the wait queue spinlock. This ensures that we don't hit a
-+ * scalability wall when we run out of free bits and have to start putting tasks
-+ * to sleep.
-+ */
-+struct sbitmap_queue {
-+	/**
-+	 * @sb: Scalable bitmap.
-+	 */
-+	struct sbitmap sb;
-+
-+	/**
-+	 * @wake_batch: Number of bits which must be freed before we wake up any
-+	 * waiters.
-+	 */
-+	unsigned int wake_batch;
-+
-+	/**
-+	 * @wake_index: Next wait queue in @ws to wake up.
-+	 */
-+	atomic_t wake_index;
-+
-+	/**
-+	 * @ws: Wait queues.
-+	 */
-+	struct sbq_wait_state *ws;
-+
-+	/*
-+	 * @ws_active: count of currently active ws waitqueues
-+	 */
-+	atomic_t ws_active;
-+
-+	/**
-+	 * @min_shallow_depth: The minimum shallow depth which may be passed to
-+	 * sbitmap_queue_get_shallow()
-+	 */
-+	unsigned int min_shallow_depth;
-+
-+	/**
-+	 * @completion_cnt: Number of bits cleared passed to the
-+	 * wakeup function.
-+	 */
-+	atomic_t completion_cnt;
-+
-+	/**
-+	 * @wakeup_cnt: Number of thread wake ups issued.
-+	 */
-+	atomic_t wakeup_cnt;
++struct list_lru_memcg {
++	struct rcu_head		rcu;
++	/* array of per cgroup per node lists, indexed by node id */
++	struct list_lru_one	node[];
 +};
 +
-+#endif /* __LINUX_SCALE_BITMAP_TYPES_H */
++struct list_lru_node {
++	/* protects all lists on the node, including per cgroup */
++	spinlock_t		lock;
++	/* global list, used for the root cgroup in cgroup aware lrus */
++	struct list_lru_one	lru;
++	long			nr_items;
++} ____cacheline_aligned_in_smp;
++
++struct list_lru {
++	struct list_lru_node	*node;
++#ifdef CONFIG_MEMCG_KMEM
++	struct list_head	list;
++	int			shrinker_id;
++	bool			memcg_aware;
++	struct xarray		xa;
++#endif
++};
++
++#endif /* _LRU_LIST_TYPES_H */
 -- 
 2.39.2
 
