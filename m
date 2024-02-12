@@ -1,194 +1,271 @@
-Return-Path: <linux-kernel+bounces-61411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7298D85120A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:20:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB749851212
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4A4CB234BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:20:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0FC0B25995
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45E938FA0;
-	Mon, 12 Feb 2024 11:20:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1EA139AC9;
+	Mon, 12 Feb 2024 11:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="llpvAF1n"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ewpBMyjL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="zcYiCl7t"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F52D2BAE7;
-	Mon, 12 Feb 2024 11:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707736824; cv=none; b=LKcIpPo0jnHb+wW/e/Pz+a9x9BDJGpDpCq1LgaDRBezQEwN4AEJdUhEC/rqpuTw2dSzTfcxoIO5tonFCFqIiwvD6D4X0Uglfv9rP2rR9ykY+TZLZLRVq7YjMGfxS+tTEBH5Xo5QIj0TurE/17jXbgoLN3PUgEJsQ96taxhC5wLY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707736824; c=relaxed/simple;
-	bh=NIf3m0p41QvLOoLpJZww8fr5lUh/7naMs+DwQJ35TCQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=civdbu5gKpLbm5uxFKkt8wC7iVNvngyxBMp+ndGytLji98KLtzajk+I8AYMOmZExMCSZnoO+q6TaVWhcurMJ1tS6rH2USmGHpueOcRCfwVQ4GMnOXDwrCWaECXc6AsQaGYtrQnhbNNUAOSajijkSek5t9d78ZHMcfYDogIGg3TI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=llpvAF1n; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cf3ed3b917so38614591fa.1;
-        Mon, 12 Feb 2024 03:20:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BCA438DDB;
+	Mon, 12 Feb 2024 11:21:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707736897; cv=fail; b=km5aX27eAn8TpufRFtBIi7szL5jwPDeaaFX+m6aiAFV/VcKcedImRvw70I2hKW1OeQdqQUZXLQbGdWVzkbSGgMHQ92kMQpTb0orT4MXzZTIYZDk96g5V8SMbsD9tUmCbmxq4pAfmznra++oaDfA0sZAsrrNqNGsgJ5w4TEa6G4k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707736897; c=relaxed/simple;
+	bh=wFqlk9iT9SrRhypRExpDDi1z96FC0d4cpWu39HVFWwc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=nKtdGKmOVH3WOJlYLNKzbsyOx6Kdm+7eG4NLOx0Vg4zGgAQ8k+IBbAkuVPdYNdVSG1xylfJV5qtQXI6HXq5/ZFnp569hfdPn3k7e5PMeXIO8jOEjz1NoGrzW7oc7Oze+rR30fmcqyDsAhLkUBp12sbJU/R6xj7oevAp5XJBkmxA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ewpBMyjL; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=zcYiCl7t; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CAqvCe012041;
+	Mon, 12 Feb 2024 11:20:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=SRNO2OJ//TGEa7nSKSiYL59Nx3AzPcG8JX3Ki7Y1Qmc=;
+ b=ewpBMyjLVdl6B+nnPXKHJ9c1+DJqGmaK7vDSmz6Vr7b1RXiOe6suRkUynVqxj7YfaMwu
+ YFSTS0fJFi5eb7YSHN5YLW15N8vPVprqav0dGeHrUxRuRqfNzTUEBaMqA3er280OV+Ef
+ jxFYi2atpZX8pRQvnX58UT4okfH0ZVUt1tdYiXHqN7mxC3DzsNqZ2XHfPiWFVPKG2S5I
+ Npmcfbae+YRpiLweXsWpZN+BfAmD/Xgqh0VYnboQCLKQokWVM5y5LN0CxXvysoNt0pAJ
+ A9oqRsuJ7aZNyPKlYFJFuXGUyRnL4b4Gqr/BmxyrBtCXa4FRgjcm8/fklmTw9n4ZuPXg OQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w7hy8g1ek-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 11:20:57 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41C9d3jk013875;
+	Mon, 12 Feb 2024 11:20:56 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w6ap88ak2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 11:20:56 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T3kdIhicV+PpWv4QHbvNRLEtwmXOSNJRnAjr8V//tlP6v0EUvzyjlZ4vTdFI14EavQAKf9tqSj6TZ/1BVmQtIt/T5W/E/12QJoqUxvAMfXPb+C6Q7Eml32mcHEkjYEbgd3p7jovwHbG5eOQG5qviyybpB6aBds1PgghSWcpNT3hdXwL3fHhQ6gjS2+g9Dc6SHykCUB/+M/S1rsKHsfksg83CaIG5znkNifPJ3QysSPlU1PbUtP28QFC7b+Q6GJM3Wro1EP208P//9lh42NiGNtGqTOLUMDjK4hGgAfmmcowlEJWI2+DL988gJRv/ZouakJq9CjET2+k9fqUgYb8jVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SRNO2OJ//TGEa7nSKSiYL59Nx3AzPcG8JX3Ki7Y1Qmc=;
+ b=Y4fTe7I8Dlr6/PEe71bucrkgYdlHc1shvyKIitxR5wn44sDOxQ6WFA8c/2g+aBbH81Y5loLCD7R0Uv0O/ShApowncHFUA5eP0gLG6JtOmQaK/M+pXq5ofIlWeAei52IXrpiG7+5E63DfqaceQvKpx78+i8y2vYjKhdS7czmSAmDclC8RWy9+QiuLEmOMOKIqhKMFhqd/KzvSYwNQ1IZWyg3pJmHcfzAc45QZUmh115bNV7KjzGGGonuS0i+VrXYDwIViZXPu3wVQO+qIRMz48RmEvewFTJTPZAGogyUZWyC50/4kVUh09Y2lEBR45Sb9vknuwJMAGQ2h0Z55e/dt/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707736820; x=1708341620; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=350dwjN8QQutWLlYzcXvkSs1h7jhGOVddH+hl5UJwAY=;
-        b=llpvAF1ng31phyOQzD7fl+FdTAnXnU4Yyjr6b0NF6QRd80NZN50fBidbmG8dMA+0TG
-         bSGpjL4AMTvnPg0fmYeb+u7r60a+AsgsBsIwPC7qGoGuKzk7T0kJQS7aQOLpFZEVEDj7
-         aWOSfIzNGl4PHXnk7Ly+zgCKrLvs7GfJam//ZY6ATTlww88ZLm+bdIAeYpYIHElD/tuU
-         xsvpSy5tst0JMrqhJVx7bOlzrztDdvXkPFs+wbu1seQ11JfTKd1wmm+8QNyNtUr9XzVA
-         DLyrEjKOfC1dF025GUznm7svN2WLix/+SV+BDDM1SPnuBxTLljjiuwuQG7NB3dof+b0M
-         JoMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707736820; x=1708341620;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=350dwjN8QQutWLlYzcXvkSs1h7jhGOVddH+hl5UJwAY=;
-        b=YCO+6HhLyKlKJ98GYohvSI/20oS6jTbU1HJS4O25G4QOmCedt+F/0D5LcllC6TNBn3
-         OJm5nhhPTvUAlHbxPuUpTlPApyzBgSnDU3esev0IEWX1dxmd2N9uG7PMS+ltSDOreVM8
-         dTsHASR9eeO7iJd1IZ5y7yHnXYTZBanNXKQvDUvtrJK6jqmvHGu0UOhcKHLy/rVYY5i/
-         lJc0O4rjd57TGh8AAwJ1+T4KGhsqosbT61EEbLjSGXqVdaLDvZp7s+RGrtszg/UwWgNu
-         7HBz3By5MKkPtw+o9UgGSllTFC7wzcW2n2I+H1xEFMOVpN6/tOV+O+d1YJt0qlzkfntD
-         yXFg==
-X-Forwarded-Encrypted: i=1; AJvYcCUd65KSB7TI+kalHxFND8PAyDbCpHNpVHUo+7i0+uExG8dafllKmG6vXRQYZA4R4CS1XdDqGSL/M8z3/O117NET5M73+tAOATmApPlRyDZj9nJhY/XXzUtXfi+NKHPOuRNPJJBPP1n4
-X-Gm-Message-State: AOJu0YzgJ7ogV6dZbLdBUMQ+S60jToLKZwZ3atGg31S1swT/01mTrUsK
-	t8jgpmJa2sBYHrRlFFdozFSerSgWy4KfNm4mai1oWlWc7pZaETi8
-X-Google-Smtp-Source: AGHT+IHIev8+kzV0uX0jUUXCyYCQrx7fd1e5XtbnSjmBEFkq2JGk2UPMDIAdfPJuYz+10r0ouZPU1Q==
-X-Received: by 2002:a05:6512:138a:b0:511:8cb1:7c9d with SMTP id fc10-20020a056512138a00b005118cb17c9dmr2607187lfb.24.1707736820241;
-        Mon, 12 Feb 2024 03:20:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUhu0kIEcrqnMooWZvnav8sYvNIRGqSw2J29k0CoLGP8C48lwyUELDMV/YA8XZhjckkhXC+zUpOnkPwvcGOdlYsrihJbwle4RA/j86jo7/gBOe20hW36i5OoZvu4htDoGF1hJnUGiof67pa/2d7PO81thT5gNY0dqt1/BacOBW7BtPH6siiVVxX+9jNzqiUk8NpOxfaB3x2H+mlEFnjWwsE2TeY5vL3qEybeu59pFPMtasR3YXLNZzHdprnOyHoTxNOH1YPSDgoMNG2
-Received: from drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi (drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:7426:df00::2])
-        by smtp.gmail.com with ESMTPSA id bi31-20020a0565120e9f00b005117fc3d553sm824462lfb.70.2024.02.12.03.20.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 03:20:19 -0800 (PST)
-Date: Mon, 12 Feb 2024 13:20:09 +0200
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-To: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-	Matti Vaittinen <mazziesaccount@gmail.com>
-Cc: Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Matti Vaittinen <mazziesaccount@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	David Laight <David.Laight@aculab.com>,
-	Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-	linux-iio@vger.kernel.org
-Subject: [RESEND PATCH v2] iio: gts-helper: Fix division loop
-Message-ID: <Zcn-6e-0-nh2WcfU@drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SRNO2OJ//TGEa7nSKSiYL59Nx3AzPcG8JX3Ki7Y1Qmc=;
+ b=zcYiCl7tS0Jsg2xjEk4csDhvk/qOBVUpbAqDgSNNtLq+3JYZmFM49vweispWUCxAJxw3fA+92ZM6/ncjpZ0Ckq9FWT2fOAD3ktKZ6RP8vIbbQvgI+a0n6G1v2f5Q187sajN0bcQbEV7YyjnCL45wevVxt+R6tsJo/hBh2St9u64=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by DM4PR10MB7507.namprd10.prod.outlook.com (2603:10b6:8:187::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Mon, 12 Feb
+ 2024 11:20:54 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::56f9:2210:db18:61c4]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::56f9:2210:db18:61c4%4]) with mapi id 15.20.7270.033; Mon, 12 Feb 2024
+ 11:20:54 +0000
+Message-ID: <484a449b-5c7e-4766-97d3-36b01c78687c@oracle.com>
+Date: Mon, 12 Feb 2024 11:20:48 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 09/15] block: Add checks to merging of atomic writes
+To: Nilay Shroff <nilay@linux.ibm.com>
+Cc: axboe@kernel.dk, brauner@kernel.org, bvanassche@acm.org,
+        dchinner@redhat.com, djwong@kernel.org, hch@lst.de, jack@suse.cz,
+        jbongio@google.com, jejb@linux.ibm.com, kbusch@kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
+        martin.petersen@oracle.com, ming.lei@redhat.com, ojaswin@linux.ibm.com,
+        sagi@grimberg.me, tytso@mit.edu, viro@zeniv.linux.org.uk
+References: <20240124113841.31824-10-john.g.garry@oracle.com>
+ <20240212105444.43262-1-nilay@linux.ibm.com>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <20240212105444.43262-1-nilay@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0P190CA0003.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:208:190::13) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="r7jqDadsvKX59wc/"
-Content-Disposition: inline
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DM4PR10MB7507:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f748fbf-3078-4161-a909-08dc2bbcad30
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	jaN9zA0yCAJMVzDqM8uT+4KyVLc4IPlTnWg43ukNHS1AfFNtBOKHA5x8xPq2gEfCkwX9BVb8sHkNICGdY/eeJofafZ6Z5tagnMeDA1GLNxO4km25s2yf+S+s7TCPNCYuFnQbw91zYrRy/mA5z/XrelrNywKzC2c92YPw8ViKXy3vvxM9f0/iXg//PqPzuBUwwA1REZAN/PL2pT/z2HAuFqtN7pIGviUCIq3lTQEX7Bje+Yv8Y7GzT3QqC1woqDZt4707z7GVa/k8M15G6RlSm1G67K1oihuD0C2/l4v2HeSZSHYAVSOahWmCtruVXCOUp9rZBKW+v7/e/Ym1CzcF0xpCaiWTxKAoTmpRyLKT23m/1ONQjbo5mgEX8W8JAX9w9TX6s+Wl4Fhuhs7rIZao8qCC5zlxmjHmymF0jFAOPG1izh4IBtkM3ok7a05ELDfls9WXDOr+NE9X2JDDG9JxPC28RAZgaJkiSjcG4l+Ta9t3wX29c/cFLIvLpzzuHBJaWFUvKqTBlHTjXb7kgtUURl30hUV3zpltoA0gve7EEVb+PUv3KRZgxLineJhFp5oQ
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(376002)(396003)(366004)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(31686004)(36916002)(2616005)(41300700001)(6486002)(6506007)(6512007)(478600001)(2906002)(7416002)(5660300002)(66476007)(66556008)(8676002)(8936002)(4326008)(6916009)(66946007)(6666004)(316002)(26005)(83380400001)(36756003)(31696002)(86362001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?UDRGa0Q3UmRGY216dUNyYVkzTG1LSUhxeEdhUDEyM2FWbnAxeUUrRWRmUUFo?=
+ =?utf-8?B?ZTltUUJTT09taG14djlpaUxvTUVvU3hZWUo0V2swelpVNGRUL3ViZVFyU2Qr?=
+ =?utf-8?B?MDQ2azR6ZGNON3ZWZ2EzcmxEU0xESE1KZ0FEUGRWUzJ4NUsvOGg3WFg5UDRy?=
+ =?utf-8?B?ajJkR28xaVpOd244Zkc3SUNReEUvVGh4SUZCQ0d0NGhjRnVDNExlNnpBdlNn?=
+ =?utf-8?B?MENsb3ByTmRTZXdRVzdnd1VjVW9VN0w0UEoyeUlMeVFmWW5xQldTaC96aFU2?=
+ =?utf-8?B?SmtCNzdrQU5OeVBQR2hhR1BwQUpvaWlGMThWTSttYkgwNE5iQVVpR2Jsd0c3?=
+ =?utf-8?B?ZWJWU2E5VnJsb3pYdEJwYzlaMzM0V3ZtSmdqZm1BYnppT05wcEU0czhMWGZE?=
+ =?utf-8?B?T29SMmJISnNVQWRaOXA1ZnE2SXNuNnRnc016bG1QTTRlRWFVNlJ6V3E5RzBr?=
+ =?utf-8?B?cUxZdVFGZzBDMGZHbTJIMmFTS1NmanhHZUxUSVRTZUR1TnFhM2VzNnhhLzVS?=
+ =?utf-8?B?VTRlZjBKUFNWT3VzdGtzZnpvelF6V1JmbDR0NGJsRDhBck41VkM0Z0ZvaUVq?=
+ =?utf-8?B?S1R5M0hpTmc1M3FTVjZKMXRKOVhVT1k1cVdMNnJUY21mV1kxbzZ2MjFDcHIr?=
+ =?utf-8?B?Y2QraUlUa0M0RDF6dUJBdXgxSk1reGk5SktKb1V4MFhwbkJyWVV5QkVGb3dZ?=
+ =?utf-8?B?NzlObnpwY01BVzRFbkRZR0FCRmNMKzNDN0NFTURtSEJXcmFvRnBadFY4YmdM?=
+ =?utf-8?B?Y1pseWFYclQyWDBBbVVSaWc3K3NTTE9KVVRXUkJTU0YzMWhYbHZBRkVNcmRR?=
+ =?utf-8?B?NEF0U3p3ek9yU3ZHbTFLUy85Umd0Vm1wZklBT2lvbUVyT1FoeUZPOGcydlAv?=
+ =?utf-8?B?NWV0YWZycFNwMzFjeXRnelorTS9rcTJUZVhNR0MvT1lyZkNHSVdDZWNVTXA0?=
+ =?utf-8?B?Y2p0V0pkZXpvaVdrY01ReCtBdUgzbzIvWnJzeVlwbnJSTC9VZmZndW1IY2Z4?=
+ =?utf-8?B?N3RwZEpVMnd6NTdSOUJrQkV2Q2dXOExJSmNIazk3aEZkeWNhYTVERzh2NnJa?=
+ =?utf-8?B?L3JsZGZwQ2dXenhuajM0NE1yN0h0YVdvRzUva2FNNU0zVktmNm0rSllSN2Zn?=
+ =?utf-8?B?VmtrOXQ0NXB2M0tIV3RmMUZHVlU1eG5hdy9pSHlCVzE3N3ZSUCtXYk16cTVp?=
+ =?utf-8?B?cWhrQVdKL1phUzY1M25WUFlVL2lXMldTVnl5ZDlQSFRub0RmQ1laRHk4UVdZ?=
+ =?utf-8?B?Smh5VjdRdEF4MW1hVmZUejRyYmNQNk5oZGFZUE03UTFZRllQYzM5ZnZUWXBZ?=
+ =?utf-8?B?YzVvejJONjBBMEJIMytOR2U4ZVBXcnNNanY0SW9yaUEzVjZMZEtZUldSU0FY?=
+ =?utf-8?B?bGlLWDZPRHJsRXB4UktTOTNOZ1FjUUNUNk9TRk1mY0Y5c3NxNVQza1J5ZFFa?=
+ =?utf-8?B?cHQ0OXpVeGk4dFZyTXBGM3p5dS9CRDZmQiswYXZISmZOQWVtQUZVSkdvbnJk?=
+ =?utf-8?B?K084ZlF6TWFJNVlBKzkxT21nN1ZwalcxRi8vZVVScWVoUE9maUdDdjBpVVhh?=
+ =?utf-8?B?SHpQcSsvemJaOGhhRC9WZFQrKzRJMXZZZFB2dzFPOVZrRmpCVFlwSzhIRVZC?=
+ =?utf-8?B?M3BYKzE0WDFwY0FSTnM3VTNDeUJhWnovYmpFOXlwLzI2ejEvSm1qM29yUUJl?=
+ =?utf-8?B?bUxrb09lYzRxUzczZFc0bFNyTFMrMGdubjkweldGaStsVnA3dHNCUzdJeXVY?=
+ =?utf-8?B?S2Jwd1NoWS9PbEVUR2ZoWjR0N1B2M2diSFNUYktVditlbGh3QTFjYnFSZVpo?=
+ =?utf-8?B?aitNQWFxb1RDU3dWQUxiK2RWcktMMjg1RVlBUkpodE5zcW5PclRGRldXTUJt?=
+ =?utf-8?B?N1ROTmphejN5R2VIeDZtdDh6MEQveHdna1Mzak1lWWtvSXhoejQ0cTRVNFB3?=
+ =?utf-8?B?OGR0ZUJITjEvbEJZQklDYitudjhZRW1nbmxOcHRuQW52ZkM2dTVjbWo4OUli?=
+ =?utf-8?B?TnpkUVlQYk5TL2F6N3FDZzRzdVNUR0t6bHhOTGpTdFlmNzZneVJMZ1paV3ln?=
+ =?utf-8?B?UDdyT3dqMmZjTitpbEtpbmFrazlwaVlGd1JvZ2taMDdQQlN1QkY3VEloUUxG?=
+ =?utf-8?Q?Ul0b920AFLvIOp9lqPGstDkT2?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	pxNIdxz+4e0G2UyKMEQmCRL5rCffvEtCONfzxS/5kf5LFVuPYLB+99KbMV20tmh/3gA0Z8Z+KBGW/sro2eySPjA9xUaPJ3mI5KN2t4ZWK/wtGSIa4uKQL2k/u+tiH3HTq284JqfQ3CDHFhWD7cXAUYVK7ufYnImf6FcSCwclnq4IJS+Mlne99EEN5H9lPc4M8dRB0PgZWLasHmZGrntRUv7jwpIAaVsg3a+bveOPMuhIzWitZYUZc8SnWGFX1SexZnbYJBGuj++tQXE8lN4y48cOGlCEAJcaNuRANB8dPYVljFGFhcGuKYplVAxz1Q/zJMz0rdwAyOytPfa9YgG7Kn7rAx/chppmJkmloLxAr0wE9lq6TCw3hqsiqG3mQhCKST/84CymMdExrP2gL1xuJlHmSb0vFJhLztM9RcRr0CtUWb1bvDFF2+2z6GfVo4JhdBv2Fvyr+08R9MZqyx4jPneUyYvLznLlF97wYZio8GdgCewVCO70oRtLd32vzRGQ87i3MFB/yhpTW5GvCO+c40QfC05oJL4Cc7WkjWrcCc3zCPIKFx5p73Ul8OBHYR2tpIBhPU+nIv6fSeX05AlcrujGMmAPNRO01S50SfAGBIU=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f748fbf-3078-4161-a909-08dc2bbcad30
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 11:20:54.1978
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oCphpynEgvbfd63LQDlMtwHsPF7sFaq9AkTKH1xa9btMv7WRFWssl8sY1OiFRlzZlojnYlLlvJFpM6cB6gBiog==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB7507
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_08,2024-02-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402120085
+X-Proofpoint-ORIG-GUID: 0H9Hyh20uUmUz3lWzU-QixGs8nnEe87i
+X-Proofpoint-GUID: 0H9Hyh20uUmUz3lWzU-QixGs8nnEe87i
 
 
---r7jqDadsvKX59wc/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>> +
+> 
+>> +	imask = ~mask;
+> 
+>> +
+> 
+>> +	/* Top bits are different, so crossed a boundary */
+> 
+>> +	if ((start & imask) != (end & imask))
+> 
+>> +		return true;
+> 
+>> +
+> 
+>> +	return false;
+> 
+>> +}
+> 
+>> +
+> 
 
-The loop based 64bit division may run for a long time when dividend is a
-lot bigger than the divider. Replace the division loop by the
-div64_u64() which implementation may be significantly faster.
+I'm not sure what is going on with your mail client here.
 
-Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
-Fixes: 38416c28e168 ("iio: light: Add gain-time-scale helpers")
+> 
+> 
+> Shall we ensure here that we don't cross max limit of atomic write supported by
+> 
+> device? It seems that if the boundary size is not advertized by the device
+> 
+> (in fact, I have one NVMe drive which has boundary size zero i.e. nabo/nabspf/
+> 
+> nawupf are all zero but awupf is non-zero) then we (unconditionally) allow
+> 
+> merging. However it may be possible that post merging the total size of the
+> 
+> request may exceed the atomic-write-unit-max-size supported by the device and
+> 
+> if that happens then most probably we would be able to catch it very late in
+> 
+> the driver code (if the device is NVMe).
+> 
+> 
+> 
+> So is it a good idea to validate here whether we could potentially exceed
+> 
+> the atomic-write-max-unit-size supported by device before we allow merging?
 
----
-This is a resend. Only change is the base which is now the v6.8-rc4 and
-not the v6.8-rc1
+Note that we have atomic_write_max_bytes and atomic_write_max_unit_size, 
+and they are not always the same thing.
 
-This change was earlier applied and reverted as it confusingly lacked of
-the removal of the overflow check (which is only needed when we do
-looping "while (full > scale * (u64)tmp)". As this loop got removed, the
-check got also obsolete and leaving it to the code caused some
-confusion.
+> 
+> In case we exceed the atomic-write-max-unit-size post merge then don't allow
+> 
+> merging?
 
-So, I marked this as a v2, where v1 is the reverted change discussed
-here:
-https://lore.kernel.org/linux-iio/ZZZ7pJBGkTdFFqiY@dc78bmyyyyyyyyyyyyydt-3.=
-rev.dnainternet.fi/
+We check this elsewhere. I just expanded the normal check for max 
+request size to cover atomic writes.
 
-Revision history:
-v1 =3D> v2:
- - Drop the obsolete overflow check
- - Rebased on top of the v6.8-rc4
+Normally we check that a merged request would not exceed max_sectors 
+value, and this max_sectors value can be got from 
+blk_queue_get_max_sectors().
 
-iio: gts: loop fix fix
----
- drivers/iio/industrialio-gts-helper.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+So if you check a function like ll_back_merge_fn(), we have a merging 
+size check:
 
-diff --git a/drivers/iio/industrialio-gts-helper.c b/drivers/iio/industrial=
-io-gts-helper.c
-index 7653261d2dc2..b51eb6cb766f 100644
---- a/drivers/iio/industrialio-gts-helper.c
-+++ b/drivers/iio/industrialio-gts-helper.c
-@@ -34,24 +34,11 @@
- static int iio_gts_get_gain(const u64 max, const u64 scale)
- {
- 	u64 full =3D max;
--	int tmp =3D 1;
-=20
- 	if (scale > full || !scale)
- 		return -EINVAL;
-=20
--	if (U64_MAX - full < scale) {
--		/* Risk of overflow */
--		if (full - scale < scale)
--			return 1;
--
--		full -=3D scale;
--		tmp++;
--	}
--
--	while (full > scale * (u64)tmp)
--		tmp++;
--
--	return tmp;
-+	return div64_u64(full, scale);
- }
-=20
- /**
+	if (blk_rq_sectors(req) + bio_sectors(bio) >
+	    blk_rq_get_max_sectors(req, blk_rq_pos(req))) {
+		req_set_nomerge(req->q, req);
+		return 0;
+	}
 
-base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
---=20
-2.43.0
+And here the blk_rq_get_max_sectors() -> blk_queue_get_max_sectors() 
+call now also supports atomic writes (see patch #7):
 
+@@ -167,7 +167,16 @@ static inline unsigned get_max_io_size(struct bio *bio,
+  {
+..
 
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
++	if (bio->bi_opf & REQ_ATOMIC)
++		max_sectors = lim->atomic_write_max_sectors;
++	else
++		max_sectors = lim->max_sectors;
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
+Note that we do not allow merging of atomic and non-atomic writes.
 
---r7jqDadsvKX59wc/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmXJ/uUACgkQeFA3/03a
-ocXMgggAw8+wylWjHi1iUXo2RCilsgP8kakiQ9FcMGaJauAoM2zU7m0Ci1Qynb2Z
-0s+2qxVTuOKGiWj983f0SSPxS3UEDK/7U7+W/wXmjUVVPWOcc/xZE60foFFSTFEF
-PgOdxVFRjLFp6fZtmhw8QsAsdGMcdhyAIeDChz755bqTWdj5IDISWC1aalVcL08W
-pzTJZujcILWO3wVHICnIpgdyJ8P/JwfsRMGgLcZqE7lqzKF81YIqjmAXOk1G2r8N
-jvjUD6G3H6xtogh0zfN/Rm0Pr+JTsOpDLragt9RkIs7/3DFVYPpfh19NaQ5Ghw1F
-4eGtkWCugDC7KpaL2HFET/It6VFEMw==
-=oX2V
------END PGP SIGNATURE-----
-
---r7jqDadsvKX59wc/--
+Thanks,
+John
 
