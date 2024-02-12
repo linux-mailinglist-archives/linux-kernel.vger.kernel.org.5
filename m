@@ -1,102 +1,112 @@
-Return-Path: <linux-kernel+bounces-61064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AE80850CDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 03:07:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E329850CE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 03:10:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A35571C20C5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 02:07:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE9F6B251E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 02:10:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA6394C7E;
-	Mon, 12 Feb 2024 02:07:05 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 411A0468D
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 901DF3D65;
+	Mon, 12 Feb 2024 02:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DI+JAULM"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CB9A1841;
+	Mon, 12 Feb 2024 02:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707703625; cv=none; b=Awvs+m3yXhvgEiShi1vPrp8ys5+SlbWt+z++gLlu+U6T5ul6D3sEA1MSwBhH/mcPt3b3WL/MmqDb5jt4eYwDMbYa38Xuqe8J3fmdDbxWXuxuew+aO+yW2q+aW/2YxWldp1m5wpUpDIo+oVrs+TUUixonDvfnttQdKrOkmVChgz4=
+	t=1707703840; cv=none; b=X2DvSgAxYqFfhkSmLE3WCYY5kdvtlz6LE9DrWTvhNb/+DTUj0czh/rkJXZSrZ6WILWjF0euy5UUhFgE77BKRyDQ8Q7PzNqnI8OF8RczlIGCLSRi8yLJ79vO02c1xe8CLsFr9PCI2yfWXF6lWtSkG6t01HJAl+pBQyqVnrV6brQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707703625; c=relaxed/simple;
-	bh=74BKNfXB75ckP4L/HFKnSrg26cu46GQbna7/Kj1r80U=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=lxVzxnmXpMrIRhvI3SCLIOmFtxr5I/aa2TZpe2eNwshCTCMXTWtWFko5A+6XKOtaJuERQ0w3t3FoUl2K3k61yfl6QqYWH65/Lv9RH7t43kwm+DJJ6trMTnXLFSBbvop/8OBpSElDvymxEhHhpTMJURKVTXytthlt6eS8W81/kBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6CB6DDA7;
-	Sun, 11 Feb 2024 18:07:42 -0800 (PST)
-Received: from [10.162.40.23] (unknown [10.162.40.23])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B76123F762;
-	Sun, 11 Feb 2024 18:06:59 -0800 (PST)
-Message-ID: <559e213a-bd39-4799-8899-c8689e09a01b@arm.com>
-Date: Mon, 12 Feb 2024 07:36:56 +0530
+	s=arc-20240116; t=1707703840; c=relaxed/simple;
+	bh=6XqNeV8HICRTclL6GDae/YFFVPmhHEsvis2v55t51iI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Dq+Lvd3HdA2Syt8XlBYsiN+ym9C+ypbKOBYJua5+VtM3PaSVE7RWFtqP2y6sYEC/NW3wXAdVHraPq30DKYgpJSILW286ehMkEjl3bAdSC30U3FqK+gk4Vy2lPQbrAefuxTGLLu2BLU+MPrv5p6AFnrBaf33+AWBiy+UvyzNcl0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DI+JAULM; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60493e299b6so25884897b3.1;
+        Sun, 11 Feb 2024 18:10:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707703838; x=1708308638; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6XqNeV8HICRTclL6GDae/YFFVPmhHEsvis2v55t51iI=;
+        b=DI+JAULMZ9PwJ4YJoXUsaD4dZjQtftF9t0XTIax6HtEjqMSQEtPSZC0fXbKnIHFa9R
+         LXLbW2R8JurkGROwSg3ccNYouRQeUlb2cLsPeSlLuZcHzw5YmcEPfxe3f8n8mM6Uqcgf
+         JKzQ8RSy191kC4XZd1NH1M1A31nOgDec+Jcd9g5r5uZ9xdFB/uCI+kDA29+KsnKw3c92
+         Ws5U7Vr4DhULRmF/0Trovcl9Q+gVWW25x8LhDqqcGV2WW3YR3TX2UYy5iRqc38HGoYf1
+         o2uZDPL0neKgVfATAIZl1tITJM7yv3v4psziv9P56vcHXd2vdOLZxMztwxLcBAZL1Y0v
+         7fKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707703838; x=1708308638;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6XqNeV8HICRTclL6GDae/YFFVPmhHEsvis2v55t51iI=;
+        b=mVlWWJm5TxFTi8KFd8xnBx/79ELHjGCkHz4cKRsVIP+80wFuILgplDsQSdJ1+U5OVO
+         pxLUA40fYTf9WBSWTr3pRmfCVWjDFkraQHqT9c6G7W0hyw4ZKavMHIfw1N22R5RpXEih
+         IlXv7BYd0LsEK/rNkIUYTafoceprBwqvxfy4DMTJA0YAa8Ngy/0xki2cW5i1YdJ9MH3T
+         47McgHoL7QuKHYPUI+HxRkOQ2GBylXPJnOgv8wN+HDo8X1wslVeVsqUDalnZyYRfg+6d
+         0iZFu3hxsLq8c6fId2B6M6t0ecyFxEPjafjp+VyW/mUPvVR/UKBEf0XWeBx8YHzBD6UE
+         gP/w==
+X-Gm-Message-State: AOJu0Yymz9U4OBaZYw6s5K4UQHmC6M4sop5PSP2sHB1h7isU9mbmv192
+	iNQXqbyzg6+zDr7zBRKt6ZA7ODMpRgxeFhVB8nXeI59oCZQoy/KRuw3Tlb5HvWEQGJKPCXW91wi
+	lsWeoQIVu/p5UFok7JeKgC+NOoBo=
+X-Google-Smtp-Source: AGHT+IHZVH2z4XzjxzYa7ZY/aj3j/96lF0YHhg6eswXwPgd8cDrQWDvUvHENdPBsxgVmuErpURN2XDu9u5q+rMSUgn0=
+X-Received: by 2002:a0d:e242:0:b0:5ee:a910:107 with SMTP id
+ l63-20020a0de242000000b005eea9100107mr5487218ywe.21.1707703838313; Sun, 11
+ Feb 2024 18:10:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH] mm/hugetlb: Ensure adequate CMA areas available for
- hugetlb_cma[]
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, Muchun Song <muchun.song@linux.dev>,
- linux-kernel@vger.kernel.org
-References: <20240209065036.1412670-1-anshuman.khandual@arm.com>
- <20240209141637.129e417747ef130255db620d@linux-foundation.org>
-Content-Language: en-US
-In-Reply-To: <20240209141637.129e417747ef130255db620d@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240131134621.1017530-1-hayatake396@gmail.com>
+ <20240131131258.47c05b7e@kernel.org> <CADFiAc+y_SXGtVqZkLoiWw-YBArMovMkuWw3X596QDwEtdBJ2g@mail.gmail.com>
+ <CADFiAcK_XjLNjzZuF+OZDWjZA4tFB8VgeYXVJHR8+N3XryGxwA@mail.gmail.com>
+ <20240208072351.3a806dda@kernel.org> <CADFiAc+i9i29SL0PM8gzmDG6o=ARS6fSrTPKNyqh9RLmWWB78A@mail.gmail.com>
+ <20240209173838.GH1533412@kernel.org>
+In-Reply-To: <20240209173838.GH1533412@kernel.org>
+From: Takeru Hayasaka <hayatake396@gmail.com>
+Date: Mon, 12 Feb 2024 11:10:27 +0900
+Message-ID: <CADFiAcLCv=r8pyEYR_46LfTWdmmb+ssN99nKxB2EdNXf3guE_w@mail.gmail.com>
+Subject: Re: [PATCH net-next v6] ethtool: ice: Support for RSS settings to GTP
+ from ethtool
+To: Simon Horman <horms@kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>, Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mailhol.vincent@wanadoo.fr, vladimir.oltean@nxp.com, laforge@gnumonks.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Simon-san.
 
+Thank you for your reply!
 
-On 2/10/24 03:46, Andrew Morton wrote:
-> On Fri,  9 Feb 2024 12:20:36 +0530 Anshuman Khandual <anshuman.khandual@arm.com> wrote:
-> 
->> HugeTLB CMA area array is being created for possible MAX_NUMNODES without
->> ensuring corresponding MAX_CMA_AREAS support in CMA. Let's just warn for
->> such scenarios indicating need for CONFIG_CMA_AREAS adjustment.
->>
->> ...
->>
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -7750,6 +7750,13 @@ void __init hugetlb_cma_reserve(int order)
->>  	}
->>  
->>  	reserved = 0;
->> +
->> +	/*
->> +	 * There needs to be enough MAX_CMA_AREAS to accommodate
->> +	 * MAX_NUMNODES heap areas being created here. Otherwise
->> +	 * adjust CONFIG_CMA_AREAS as required.
->> +	 */
->> +	VM_WARN_ON(MAX_CMA_AREAS < MAX_NUMNODES);
-> 
-> Could this simply be fixed up in Kconfig logic?
+> It appears that the series at the link above has been marked as
+> "Changes Requested" in patchwork. Although I am unsure why.
+>
+> I would suggest reposting it, say with the tags supplied by Marcin Szycik
+> as [PATCH net-next v8].
 
-CMA_AREAS should default as (1 << NODES_SHIFT) ? But the system admin might want
-to create more heap areas for other purposes as well. The idea here is to ensure
-MAX_CMA_AREAS is at least MAX_NUMNODES if HugeTLB support is enabled. Do we have
-some other methods ?
+I have resent it earlier with version 8, including Marcin-san's Reviewed-by tag.
 
-> 
-> And I think this could be detected at compile-time?  BUILD_BUG_ON()?
+> Also, please don't top-post on the Kernel MLs [1]
 
-Right, was thinking about this at first. Makes sense, will change here, seems to
-be the right location for a build check as well.
+My apologies. I wasn't aware of the proper etiquette. I appreciate
+your guidance.
 
-> 
->>  	for_each_online_node(nid) {
->>  		int res;
->>  		char name[CMA_MAX_NAME];
->> -- 
->> 2.25.1
-> 
+I was not aware of many things, so please do let me know if there is
+anything else. Thank you for your advice!
+
+Takeru
 
