@@ -1,149 +1,157 @@
-Return-Path: <linux-kernel+bounces-62403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EDFE851FB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:35:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA8C4851FBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4977E285436
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:35:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 097731C2256E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6454D5B5;
-	Mon, 12 Feb 2024 21:35:02 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D106C4CE0F
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 21:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C754CE06;
+	Mon, 12 Feb 2024 21:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fdU4dDrF"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A697546453;
+	Mon, 12 Feb 2024 21:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707773702; cv=none; b=SS4S9tE8YaMoht59FtNQ725uKCa/mw+y9vMPI7d5izvEnEkIIDuX6x5d9gQ4Uww/735Z/Pt53vQ0m2W9j94idUzbKJ2W5EbH8wfSGPUuZ3iTlLIppq5SOfEwRTktRUHYpLUKFQNjL+VV6vTJj6F8oUPDjGXIeDc6iqMhjqgx7KA=
+	t=1707773833; cv=none; b=FH0JNM82O9PTiKLE0I1mU0aKhABXegKrv6irHpfFx5Mnno9h8yAanv5B8fE2+0/OIK/fmzpHOy5Y/8omtqfYpPwBfNqIYlJg/ugfIOuKJxTkKmNeC+lCT/hr9nzkyAYOV2nH0vR7+FXizgKG91yKlTDx1R0anvTTGHafDQlt9+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707773702; c=relaxed/simple;
-	bh=E1kWsqFDQhM/T3jJEBZxpbYuGRyEfIFfPycZCQEx3vs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YYgQn2W4uSq4QX7bKdIjKS2e5bARXHPRprIt/HuTON2Fj7K8mOo0Si3FooMU9pcyp6MHtMT8wBp0jeR/h+5pSSK9x6DpL5Sr30IrQ8uosibX5Z2kceLb23MbvWi+49YB+GxVmm/dzezFAXodXZE1Z/h6LXZaHf0/8SARRVglfrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EE8BEDA7;
-	Mon, 12 Feb 2024 13:35:39 -0800 (PST)
-Received: from [10.57.78.115] (unknown [10.57.78.115])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF5003F766;
-	Mon, 12 Feb 2024 13:34:54 -0800 (PST)
-Message-ID: <3bc05163-2671-4239-ae5a-b9207fdca459@arm.com>
-Date: Mon, 12 Feb 2024 21:34:53 +0000
+	s=arc-20240116; t=1707773833; c=relaxed/simple;
+	bh=nbPBW+LVdPgWVpFKe00QQCTZhOf+yrh6eERXbHsxeCQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d3464Y2NiMMjrlIMDSF/raklcOkNPEPjXOVf1ynxY0n/bxavqcGbOn8Cp7v2nrWdyNEmuFW2ley5dnwQ8bzIB3XN0MW/a7yvEzB9c0N80z6xz+6XOZ4l/lNr+80RUX9767h3ViUWwNPwzBphD8LqPIaQVlbuSaeIiQ6j6fop3ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fdU4dDrF; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707773832; x=1739309832;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nbPBW+LVdPgWVpFKe00QQCTZhOf+yrh6eERXbHsxeCQ=;
+  b=fdU4dDrF9CWnKt0wsyhsO1bDZAg2NyntRL2Yu0kcIAU0a5MCz6jIbovZ
+   Q/9qq9hNerarnQ2FYe3ZII6ryf6/tDdSYmx7Na+St9aJKeUDrZdAxAnUf
+   eYN4SmzMXckQyAmQKdCbJnm+YXnJEpyY37Eh41lt/YOG+OERXMomXvJtw
+   pThQghwDK81Xv5vRpPMza9gIpayQGHCb5NEy58upfvsDG69qH/4eEMIXn
+   aul89eHAIQgJHk7WU4Bc0l/I7v/AsAP620KM//YbzpKhbyRCHGToI3Heb
+   dhvBctsvlUTmVidNE8AzYYvFdinCDlFQnn2+mdIaHcNPTHmxdlyV95kf4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1895537"
+X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
+   d="scan'208";a="1895537"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 13:37:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
+   d="scan'208";a="7329489"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 13:37:10 -0800
+Date: Mon, 12 Feb 2024 13:37:09 -0800
+From: Tony Luck <tony.luck@intel.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: "Naik, Avadhut" <avadnaik@amd.com>,
+	"Mehta, Sohil" <sohil.mehta@intel.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+	Avadhut Naik <avadhut.naik@amd.com>
+Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
+ Records pool
+Message-ID: <ZcqPhVO_DtD2x5N7@agluck-desk3>
+References: <75ddf61d-8dda-47fa-9da0-24221feb22a2@amd.com>
+ <20240211111455.GAZcisL09LeFPWa2EI@fat_crate.local>
+ <774e7ca5-154d-4ca4-bc4c-2f945c20b938@amd.com>
+ <20240212085801.GAZcndma4UTPtKm33e@fat_crate.local>
+ <20240212093246.GBZcnlvkPKDC8C7rv5@fat_crate.local>
+ <SJ1PR11MB6083B3511D18787BE823AB2CFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240212175408.GIZcpbQHVjEtwRKLS-@fat_crate.local>
+ <SJ1PR11MB60830AF35FA89C7869B8C11EFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240212191401.GLZcpt-XHFqPg3cDw-@fat_crate.local>
+ <SJ1PR11MB6083C60D7584B02E9CAF19D5FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 03/25] mm: Make pte_next_pfn() a wrapper around
- pte_advance_pfn()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
- James Morse <james.morse@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
- <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
- Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
- Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240202080756.1453939-1-ryan.roberts@arm.com>
- <20240202080756.1453939-4-ryan.roberts@arm.com>
- <c269c2e0-afca-4ff0-8ffd-9049fb52c905@redhat.com>
- <cdf4e537-5b0d-45ba-8094-527127c791a6@arm.com>
- <828d2573-b5fe-43b3-b955-944c05bcdb60@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <828d2573-b5fe-43b3-b955-944c05bcdb60@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SJ1PR11MB6083C60D7584B02E9CAF19D5FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
 
-On 12/02/2024 14:29, David Hildenbrand wrote:
-> On 12.02.24 15:10, Ryan Roberts wrote:
->> On 12/02/2024 12:14, David Hildenbrand wrote:
->>> On 02.02.24 09:07, Ryan Roberts wrote:
->>>> The goal is to be able to advance a PTE by an arbitrary number of PFNs.
->>>> So introduce a new API that takes a nr param.
->>>>
->>>> We are going to remove pte_next_pfn() and replace it with
->>>> pte_advance_pfn(). As a first step, implement pte_next_pfn() as a
->>>> wrapper around pte_advance_pfn() so that we can incrementally switch the
->>>> architectures over. Once all arches are moved over, we will change all
->>>> the core-mm callers to call pte_advance_pfn() directly and remove the
->>>> wrapper.
->>>>
->>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>> ---
->>>>    include/linux/pgtable.h | 8 +++++++-
->>>>    1 file changed, 7 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->>>> index 5e7eaf8f2b97..815d92dcb96b 100644
->>>> --- a/include/linux/pgtable.h
->>>> +++ b/include/linux/pgtable.h
->>>> @@ -214,9 +214,15 @@ static inline int pmd_dirty(pmd_t pmd)
->>>>        #ifndef pte_next_pfn
->>>> +#ifndef pte_advance_pfn
->>>> +static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
->>>> +{
->>>> +    return __pte(pte_val(pte) + (nr << PFN_PTE_SHIFT));
->>>> +}
->>>> +#endif
->>>>    static inline pte_t pte_next_pfn(pte_t pte)
->>>>    {
->>>> -    return __pte(pte_val(pte) + (1UL << PFN_PTE_SHIFT));
->>>> +    return pte_advance_pfn(pte, 1);
->>>>    }
->>>>    #endif
->>>>    
->>>
->>> I do wonder if we simply want to leave pte_next_pfn() around? Especially patch
->>> #4, #6 don't really benefit from the change? So are the other set_ptes()
->>> implementations.
->>>
->>> That is, only convert all pte_next_pfn()->pte_advance_pfn(), and leave a
->>> pte_next_pfn() macro in place.
->>>
->>> Any downsides to that?
->>
->> The downside is just having multiple functions that effectively do the same
->> thing. Personally I think its cleaner and easier to understand the code with
->> just one generic function which we pass 1 to it where we only want to advance by
->> 1. In the end, there are only a couple of places where pte_advance_pfn(1) is
->> used, so doesn't really seem valuable to me to maintain a specialization.
+On Mon, Feb 12, 2024 at 07:41:03PM +0000, Luck, Tony wrote:
+> > It needs a proper explanation why that's ok rather than an empirical
+> > test only.
 > 
-> Well, not really functions, just a macro. Like we have set_pte_at() translating
-> to set_ptes().
+> start_kernel()
+>    ... setup_arch()
+>        .... acpi stuff parses MADT and sets bits in possible map
 > 
-> Arguably, we have more callers of set_pte_at().
-> 
-> "Easier to understand", I don't know. :)
-> 
->>
->> Unless you feel strongly that we need to keep pte_next_pfn() then I'd prefer to
->> leave it as I've done in this series.
-> 
-> Well, it makes you patch set shorter and there is less code churn.
-> 
-> So personally, I'd just leave pte_next_pfn() in there. But whatever you prefer,
-> not the end of the world.
+>    ... arch_cpu_finalize_init()
+>        ... calls mce_gen_pool_init()
 
-I thought about this a bit more and remembered that I'm the apprentice so I've
-changed it as you suggested.
+This made me question the "we don't have an allocator in
+mce_gen_pool_init()". Because if we got through all the
+ACPI stuff, we surely have an allocator.
+
+Below patch doesn't explode at runtime.
+
+-Tony
+
+diff --git a/arch/x86/kernel/cpu/mce/genpool.c b/arch/x86/kernel/cpu/mce/genpool.c
+index fbe8b61c3413..81de877f2a51 100644
+--- a/arch/x86/kernel/cpu/mce/genpool.c
++++ b/arch/x86/kernel/cpu/mce/genpool.c
+@@ -16,14 +16,12 @@
+  * used to save error information organized in a lock-less list.
+  *
+  * This memory pool is only to be used to save MCE records in MCE context.
+- * MCE events are rare, so a fixed size memory pool should be enough. Use
+- * 2 pages to save MCE events for now (~80 MCE records at most).
++ * MCE events are rare, so a fixed size memory pool should be enough.
++ * Allocate on a sliding scale based on number of CPUs.
+  */
+-#define MCE_POOLSZ	(2 * PAGE_SIZE)
+ 
+ static struct gen_pool *mce_evt_pool;
+ static LLIST_HEAD(mce_event_llist);
+-static char gen_pool_buf[MCE_POOLSZ];
+ 
+ /*
+  * Compare the record "t" with each of the records on list "l" to see if
+@@ -118,14 +116,23 @@ int mce_gen_pool_add(struct mce *mce)
+ 
+ static int mce_gen_pool_create(void)
+ {
++	int mce_numrecords, mce_poolsz;
+ 	struct gen_pool *tmpp;
+ 	int ret = -ENOMEM;
++	void *mce_pool;
+ 
+ 	tmpp = gen_pool_create(ilog2(sizeof(struct mce_evt_llist)), -1);
+ 	if (!tmpp)
+ 		goto out;
+ 
+-	ret = gen_pool_add(tmpp, (unsigned long)gen_pool_buf, MCE_POOLSZ, -1);
++	mce_numrecords = max(80, num_possible_cpus() * 8);
++	mce_poolsz = mce_numrecords * ilog2(sizeof(struct mce_evt_llist));
++	mce_pool = kmalloc(mce_poolsz, GFP_KERNEL);
++	if (!mce_pool) {
++		gen_pool_destroy(tmpp);
++		goto out;
++	}
++	ret = gen_pool_add(tmpp, (unsigned long)mce_pool, mce_poolsz, -1);
+ 	if (ret) {
+ 		gen_pool_destroy(tmpp);
+ 		goto out;
+-- 
+2.43.0
 
 
