@@ -1,113 +1,177 @@
-Return-Path: <linux-kernel+bounces-61976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E87F851962
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:34:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C80851964
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:35:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DED31F2291D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:34:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6E94B2286E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563AC3D55F;
-	Mon, 12 Feb 2024 16:29:35 +0000 (UTC)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3FCD182C5;
+	Mon, 12 Feb 2024 16:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="Zs25J2r0"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BF923D0A0;
-	Mon, 12 Feb 2024 16:29:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EEDE3D98A
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707755374; cv=none; b=tbK5yJ0cTRPqxaT8wmV2IdeY1FGlnhvdAdRxR2BG/YnFCxUTHYp5yT32lFLUHXJym24VyHkaINARuEWnqsEoDargyV2XxNopEjL3K69Pbvzg6v7YW6t29dDLfl/G1uKdzRJVuGbrNs7PIFW1x5MwAW2v67XoDguvI9nOttj4QSg=
+	t=1707755409; cv=none; b=emP1fLE/SVG6x9G42g4XxxClEBWVqf/6OYQK7uWJ8Q6E9PBKN0O1pS6/87OJfyHjz+KR2XmjdOnDc1oQrqALh715TwC2y57iojaXZEBPs7vYqha6z0p0JAZ1Raejmj3atfA9KaeijPHgBbTGfCPDB08LIb+LN00Lle8ZG4240zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707755374; c=relaxed/simple;
-	bh=kjdYXtW0dzh6kTs3nxWBA75lsnQ4hvAZA7R0V3EAhzM=;
+	s=arc-20240116; t=1707755409; c=relaxed/simple;
+	bh=x7Wh7XTCkC+HIYtlIWvgYoPEMwJ1MLo8vCxPc9BeGE4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dgT2A8CWdQvT2z+jSYFU+EJjsAk9tO+78yWqR6MjUtOqaBQytu+BBGCL4J4LHS/uHirDyhLTAqma74PWfZVeX5Wu+lV+oUkAqX8ep9J1EgWEixWUirzSQMsyE6i12SrKCcKcdy3Z/g2447nchHcbehNPv6IPt07j6fxTn2LVJws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6077a99bbf1so2085377b3.1;
-        Mon, 12 Feb 2024 08:29:33 -0800 (PST)
+	 To:Cc:Content-Type; b=bbQlbRnvctEqFyh8slkmfcNZ2TVLF4EfE6ysoUtSO09FTTnV7qB6Ro1xXbS1xCQ/RB0MD1xI92KwhOYEeq0adWlqBy2Be2xV4BgJpg7ch4uDZqaqHSrFbGsVtezeSgpEzV3ZUeAqlZQlDb5nNUUYKEbqGjbDOpC4iZN12LKNSXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=Zs25J2r0; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55790581457so5249336a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:30:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google; t=1707755405; x=1708360205; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x7Wh7XTCkC+HIYtlIWvgYoPEMwJ1MLo8vCxPc9BeGE4=;
+        b=Zs25J2r0KSMuW1eAEehlrNBnjlygWgKfWQxBkA6+CdTsj2fPiEFobYHVyKnOTwpUJR
+         VFFN+7SQoOkEOfsvZdKarCmerDUMUPTmjlqteyOpQT6a0oxMnMjEasR/lHCT8KmQm64i
+         8XozkJvxCQibKKzBQYNDeJo6PSbai4H5IyCoJKY7DuI8ivBvrc1zCMPJDAYlDZmA9dkp
+         JwI4DPR3kgGzxpfgNxvZW5DtH0rlA0K/rxSB2cpj9N2D7W0jC1qVSNYXAEQdOLey/jfx
+         dONjoi/Z+bQgri0I4AYY067dIcyhCe30/+F2SQdVPA13+DeGFOdh28eF6wlaput3F0Ns
+         k6/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707755372; x=1708360172;
+        d=1e100.net; s=20230601; t=1707755405; x=1708360205;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sMMgeYKVED6CfJxdYuAOnKZRGq8dCY2fP6QlD7Y2V8w=;
-        b=WnKNZgOWu+ZAsyh7WwBewsMRP+Z7Ww70c8pzJdPKoatHwBhVgDoCHDbvVIiUHcBAqX
-         6mHzS6niGQbQ++pqWcUYEfELQ5cCfa7ljXwZvr2kyF3aeB8z/IDejDJyeYwrAIubmUZ+
-         yzFdOGBMcy8hn60+Gpre0SaDBTYfa5dbPBYv9hAHec313RbyZVpm4xQnkBnm82c+gfYV
-         vjdnMcHZ8Y0+Xcmjc7nbnJ1yeAQhrv5+DqyvZtSHB0aMGrzgyFsmbMYJkq4jqkaWFaRn
-         OE3o37fdr8v8iPRdGHvKRp287GvMezAQfCOxAwSavyeYL+1F7ykVrTa/uDHs8aq48Z6p
-         OyvQ==
-X-Gm-Message-State: AOJu0YzZypynNYmWVpKhIkhF6gvfjqm2it3z+IQBOEnG1oLH+BnBWmsb
-	BT4AQfkleKZizCK+HIUhRe1CiZLsgApdyShWl2sA853vxopywVHVGO7BghjJqrc=
-X-Google-Smtp-Source: AGHT+IHsCTOPigxmrLnHkTh/5Ei/TmYTJR75lDJ1kLoJFjZBTe5Tl6zFSmDP60WZvNNR5CYpmsfBNQ==
-X-Received: by 2002:a81:a0c1:0:b0:604:1f23:284b with SMTP id x184-20020a81a0c1000000b006041f23284bmr6880ywg.11.1707755371963;
-        Mon, 12 Feb 2024 08:29:31 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXo/3aaRhyjsbei87Q8i2t9ZTisTVWPHgOBJlmwk5kRN+6LrH7N88UtbLxdC1dSPfmY1GXNN/fmdGp6mgdRIXeLQbZm6S3N3O2lvRuSUmlkvJL/qtTE/u+ovacD8A5stMZoCSfIAs+SfNuk9deTh52/L+nLe3LzdcTZGbs2EsT4G00ReMt/y48nPMYQ
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id ee4-20020a05690c288400b0060778320f39sm101511ywb.1.2024.02.12.08.29.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 08:29:31 -0800 (PST)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so3607432276.0;
-        Mon, 12 Feb 2024 08:29:31 -0800 (PST)
-X-Received: by 2002:a05:6902:cc3:b0:dc2:5512:b6d9 with SMTP id
- cq3-20020a0569020cc300b00dc25512b6d9mr6182ybb.12.1707755371673; Mon, 12 Feb
- 2024 08:29:31 -0800 (PST)
+        bh=x7Wh7XTCkC+HIYtlIWvgYoPEMwJ1MLo8vCxPc9BeGE4=;
+        b=ZN8so0cOKM8094driEIU1XnMShGzuB4U86fParFyRTi9q8GGnQ9XYpv91V88OqGqDW
+         YCchLqMS96oo5nlviYEGXVZLOsZHA6GX1/PI5tYEIwud/9SDyOOrghP6HJRP8YNr+uSf
+         3c+LjzjIiBomGCE5B+nzonvlt8+d6GU4zNoiuQ4wy2JY01oMjvCy2WpqPAPExwWeX/pt
+         IjvYouHT5sf0CK+NoOldIKgoT06xUfSEin1Sypc1TTmWoczBfqqsQMxEx5rYPO39w7qY
+         gI5qBI+65mR5baI8AW3neroPbMyEa7r/HtzfmWRUnlES8Ov7nospEX3rQ4eWEWypRSq+
+         Fyig==
+X-Forwarded-Encrypted: i=1; AJvYcCVEKi/6w8tvgTLIHMZKN+5CVNSLMGwtQlw1YNbyFUe39dmx3ibqiAuFyb44oKkY+DTw5qO5I1mslorknjIP9c5+3HfQHmif2m+MNlvQ
+X-Gm-Message-State: AOJu0YyF5VXUTo/BtmPnyuytovbRXk/z3cEAmd9uqUB/f1RI51Szffay
+	/U7oKuKs5Nvrva2AWcIkfnEUJOmTiAXGiYX3gZ/yz2RaCJ/MFm7E/MaANZUkUwfhkbadEuShrgB
+	TcOLbfyClKjxsI0r1qHK+7kVoLvu9jKG8pjq0ND0DPi0D4jo=
+X-Google-Smtp-Source: AGHT+IHPhjGekzFaAxOSY3AMoXRTFxX3dpE7iDUR78El8uM/U7K4LFQWafnE7Y9AmTxxssX1hIBGdqnq/CfbOXChbDk=
+X-Received: by 2002:aa7:db54:0:b0:561:e8c:793a with SMTP id
+ n20-20020aa7db54000000b005610e8c793amr5269696edt.33.1707755405177; Mon, 12
+ Feb 2024 08:30:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205144421.51195-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240205144421.51195-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240205144421.51195-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 12 Feb 2024 17:29:20 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWvOH7W_h9uvC1fdRjpneJapNsOFb8k96Et2iCgBGabAw@mail.gmail.com>
-Message-ID: <CAMuHMdWvOH7W_h9uvC1fdRjpneJapNsOFb8k96Et2iCgBGabAw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: renesas: r9a08g045: Add missing
- interrupts of IRQC node
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240122062535.8265-1-khuey@kylehuey.com>
+In-Reply-To: <20240122062535.8265-1-khuey@kylehuey.com>
+From: Kyle Huey <me@kylehuey.com>
+Date: Mon, 12 Feb 2024 08:29:53 -0800
+Message-ID: <CAP045Apecy=G_Wmcw6TMjSDfa3TbkMfFVkzGDJ9xTVksCLkZ0w@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] Combine perf and bpf for fast eval of hw
+ breakpoint conditions
+To: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>
+Cc: "Robert O'Callahan" <robert@ocallahan.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 5, 2024 at 3:44=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.co=
-m> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Sun, Jan 21, 2024 at 10:25=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
 >
-> The IRQC block on RZ/G3S ("R9A08G045") SoC supports ECCRAM error
-> interrupts too, add those missing interrupts in the IRQC node.
+> rr, a userspace record and replay debugger[0], replays asynchronous event=
+s
+> such as signals and context switches by essentially[1] setting a breakpoi=
+nt
+> at the address where the asynchronous event was delivered during recordin=
+g
+> with a condition that the program state matches the state when the event
+> was delivered.
 >
-> Fixes: 837918aa3fdd ("arm64: dts: renesas: r9a08g045: Add IA55 interrupt =
-controller node")
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Currently, rr uses software breakpoints that trap (via ptrace) to the
+> supervisor, and evaluates the condition from the supervisor. If the
+> asynchronous event is delivered in a tight loop (thus requiring the
+> breakpoint condition to be repeatedly evaluated) the overhead can be
+> immense. A patch to rr that uses hardware breakpoints via perf events wit=
+h
+> an attached BPF program to reject breakpoint hits where the condition is
+> not satisfied reduces rr's replay overhead by 94% on a pathological (but =
+a
+> real customer-provided, not contrived) rr trace.
+>
+> The only obstacle to this approach is that while the kernel allows a BPF
+> program to suppress sample output when a perf event overflows it does not
+> suppress signalling the perf event fd or sending the perf event's SIGTRAP=
+.
+> This patch set redesigns __perf_overflow_handler() and
+> bpf_overflow_handler() so that the former invokes the latter directly whe=
+n
+> appropriate rather than through the generic overflow handler machinery,
+> passes the return code of the BPF program back to __perf_overflow_handler=
+()
+> to allow it to decide whether to execute the regular overflow handler,
+> reorders bpf_overflow_handler() and the side effects of perf event
+> overflow, changes __perf_overflow_handler() to suppress those side effect=
+s
+> if the BPF program returns zero, and adds a selftest.
+>
+> The previous version of this patchset can be found at
+> https://lore.kernel.org/linux-kernel/20240119001352.9396-1-khuey@kylehuey=
+com/
+>
+> Changes since v4:
+>
+> Patches 1, 2, 3, 4 added various Acked-by.
+>
+> Patch 4 addresses additional nits from Song.
+>
+> v3 of this patchset can be found at
+> https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kylehue=
+y.com/
+>
+> Changes since v3:
+>
+> Patches 1, 2, 3 added various Acked-by.
+>
+> Patch 4 addresses Song's review comments by dropping signals_expected and=
+ the
+> corresponding ASSERT_OKs, handling errors from signal(), and fixing multi=
+line
+> comment formatting.
+>
+> v2 of this patchset can be found at
+> https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehuey=
+com/
+>
+> Changes since v2:
+>
+> Patches 1 and 2 were added from a suggestion by Namhyung Kim to refactor
+> this code to implement this feature in a cleaner way. Patch 2 is separate=
+d
+> for the benefit of the ARM arch maintainers.
+>
+> Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleaner
+> implementation thanks to the earlier refactoring.
+>
+> Patch 4 is v2's patch 3, and addresses review comments about C++ style
+> comments, getting a TRAP_PERF definition into the test, and unnecessary
+> NULL checks.
+>
+> [0] https://rr-project.org/
+> [1] Various optimizations exist to skip as much as execution as possible
+> before setting a breakpoint, and to determine a set of program state that
+> is practical to check and verify.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.9, once the DT bindings have
-been accepted.
+Since everyone seems to be satisfied with this now, can we get it into
+bpf-next (or wherever) for 6.9?
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+- Kyle
 
