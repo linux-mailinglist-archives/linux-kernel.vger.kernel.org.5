@@ -1,152 +1,207 @@
-Return-Path: <linux-kernel+bounces-61526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1837C851342
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:14:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC9FA851346
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:14:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B590028121E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:14:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397661F22CF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A9939FEF;
-	Mon, 12 Feb 2024 12:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4973A1AC;
+	Mon, 12 Feb 2024 12:11:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SIWaC6hk"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EdMESjWk"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 830A93CF46;
-	Mon, 12 Feb 2024 12:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9213A1A0;
+	Mon, 12 Feb 2024 12:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707739833; cv=none; b=EVb5a/gVtTkJZOVkgnZXQeGwIUh9oTo/YywbzF2tQu9pFEATnG0QZZ9E8zvC848iCwMjoGut1a9UmZY4SbhNQjpp6HW5WSVN5p2kEoLTPmAmQVd4iMvkJqIhLTZ0hhO7hU2gwczw1qeo8tPXQW4sxssna6pLQfDgtL153kd6jWI=
+	t=1707739902; cv=none; b=OGKRcSwLCQnBtq+/Mg6/TiebGYqx5ApPCcieq213985GH7YWYuSkAQRvVNL0Uf7aJG5f9l0DFQfcdiIIaR8CFEp2xSZqjpmK8aXbZ7Gf1JnLFqTLVG/A9mSHW/7XYAWnekVfgjiKIYP2/Ss4IVbAbfc+JnCp8EDuslM6AjwnzrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707739833; c=relaxed/simple;
-	bh=GnFWVmemu8BYOERdtyu9t5OJb87P5SyNHTwrEQ06Lag=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=RyxFDudod86AFfcj0xp3nnZPlP6D0gxHxdKGSgDegf1hmbEGWnLpFvQoUeVuEb2YqcG3SlzOLodU0hMsNhgr887My/lkhk+fY6FoJHFgL5cf1BQHnl4jbKO2f8ige6T9KHp+vkfwMPnUTfZ/c6GLeD2OfOw87ExeMfR7Xct8Xx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SIWaC6hk; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-410ed9f8621so3217335e9.1;
-        Mon, 12 Feb 2024 04:10:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707739829; x=1708344629; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WeckcWDXsxVoLYVhObU8PR+O3C3HC/cGcTfcIbOzKU4=;
-        b=SIWaC6hkuI3DOMX9cG3AIPy0eppa/aOJ1KIcTfjM7yaATRu/OXmEdwDM0fqw5RsP34
-         1Wqj+9X6C5mqgNOzmiAP/Je66N03OpwQLXNc9sAmtjjyhShILKGKPWekF8fW50ZrevXR
-         9JNTOpdHQMYzNMxtTTV6HlPv2Ne7XOVM9zpsU5Vxrx31kXPtqTtdKJixMNbd4oYehono
-         DHsuXC3jWP5m3Z4B6XWLU+FXB9lt4O+Jf+mceU7jS8N151QlFns4eOHRBbFf6DxC17RF
-         gN0AzqTuUzRTeiyXMo3M+dNOC+swqJgIO0cxPYDAlRhXbaNwCx1SDLIEa7eewrNP8iAp
-         HbkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707739829; x=1708344629;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WeckcWDXsxVoLYVhObU8PR+O3C3HC/cGcTfcIbOzKU4=;
-        b=O0NP/CNugCeRVs/Qq6O8ywEeRbuz5iXWvGjkSncd1AIDUU5/2Ip6v+QyYaCVvSBcY8
-         lGxoM4n9Ux4iLKYeEXbaVGdDP2w9j+i6u1UbB3nj2YkPAbNq9fcjccTP4+XZsH+JqhJm
-         qblxJzqgQWNso4x1+bpKP1n4UxVFfDrtrqKSStqsxkA74zDMJ9zu2JvR5jeYRopq8QJz
-         1uhQjhlA6Ul50yqPHdPT1oqEMAfJ4dIDMWxgvQimt0j1dovnrwDuLBLJ2ElPlYsNPuO+
-         v9Qhu1yEtEpuJ6yMAe4bK3kR/vRsIJNzOlpmW/J4I9IVIAabQGUpLyIhDgKmOa+v+qYp
-         DCZw==
-X-Gm-Message-State: AOJu0Yyigv5t0M4qTbU7u2giIZMxboh1MabTzOblWlQgmncLFyxFjkXn
-	ehPiLlbBwh7uMIcugzmQg+sGS1kKgugJZ+YcFi6Bg/GGQL0Llf6Z
-X-Google-Smtp-Source: AGHT+IGvQg/g6I11lMMUumpri0F9ohGfTFja0F7niRerM9cRNs8Z1IFkDAlbxyXQsM834xhCbprjoA==
-X-Received: by 2002:adf:cf01:0:b0:33b:7134:7ec4 with SMTP id o1-20020adfcf01000000b0033b71347ec4mr4951109wrj.14.1707739829158;
-        Mon, 12 Feb 2024 04:10:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVzJR8YqEfUQzbusCbrs8gl5tQ4i/j/FaGviqmtKb6z+PIaGf9yjKkxlrSve1bDq5u0w/3fBRG8mjgNXeJaMUGNbItlSNvLWCX0WjAyKIK5TRyhBhBvcGDGJsN+p2soDhKp68SmJjLM20mJh/AT7fOA1Y4sbuHgDbmpdV8HmpUevOWHpjemwa1hp5gXjgrLv8UxT5Uw8JMMsy+BchiuymnPsS3IIRiQLq7FWvo1OyK90WS53fXMir9wWsZrNv8RUvxgY/PW0Z2dtH48RxNxzbcWm9r9iM3mI0AFzmgmspocJMPpjYeekwlJA3/mb3SGwB4ApiwVBB3bNUxZnjZz4Qr91ug+4S0hBlGQCGWVxHLaLVMOis6qgKR9uYpNw9UFOprzOLIb32qi4BeYqhvFQ3Ssp5qNYCrHGcrWy8slTzhKlQf+mU4KP8zAcYLJ
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id s8-20020adfecc8000000b0033b671f079dsm6586921wro.115.2024.02.12.04.10.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 04:10:28 -0800 (PST)
-Message-ID: <aed988a09cb4347ec7ac1b682c4ee53b7d2a840b.camel@gmail.com>
-Subject: Re: [PATCH v2 2/2] of: dynamic: flush devlinks workqueue before
- destroying the changeset
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Nuno Sa <nuno.sa@analog.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally
- <djrscally@gmail.com>,  Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>
-Cc: linux-acpi@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Mon, 12 Feb 2024 13:10:27 +0100
-In-Reply-To: <20240205-fix-device-links-overlays-v2-2-5344f8c79d57@analog.com>
-References: 
-	<20240205-fix-device-links-overlays-v2-0-5344f8c79d57@analog.com>
-	 <20240205-fix-device-links-overlays-v2-2-5344f8c79d57@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1707739902; c=relaxed/simple;
+	bh=PfZZMPWmdWb5VMkivTxDsN/s28aAecflD0CMc9I8gc4=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ofRZxtWp6pvcqlMYRg0Ag377x8I6ouGdahifBxiqwMolIdvySnIoQ3TMbKH7MzzoGiqnYZEtYLuSnX3mSMUROFOLQ1wTB4ic4GCOuPhEgjdlwiTRPHJZdLeYRe6B0vPe+0VtMxkZp48OTN9hmUImlRCSQwa2zUmiOrnYMnnCX98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EdMESjWk; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707739900; x=1739275900;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=PfZZMPWmdWb5VMkivTxDsN/s28aAecflD0CMc9I8gc4=;
+  b=EdMESjWkv4nHDMuUpvLoMo7H0Eap7v7vOU+MNnkdaKpWX8cOpXBIfPJv
+   1KvqCb9hMCnllR4WhVw3CSdcsHkvrIIm0T+dZuHIChi76axR1H4DEddU/
+   /YtXMT4mxVVBFSnRBCqac+AtkgEu8cHoZ9zt/afH/rJGsaG6QQrSQ8np0
+   Q1imd1xdS4dzkmgURK53cbPWFXlpPVyvp/4WS3NpHqygexbQZSsDyERfn
+   Xw6se+f3Q8QJZ02SGZXRwLyq2jn9xvLkkU76Ws1PhcCZ6Y/nCZE3SJvJ8
+   T2atqbLa6oZZ6QkYzOFniFZ/s05dRIP8iPZIg3q1tKOxj0grCtu2EtzDw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="2057607"
+X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
+   d="scan'208";a="2057607"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:11:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
+   d="scan'208";a="2541515"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.49.160])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:11:37 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 12 Feb 2024 14:11:32 +0200 (EET)
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+cc: Bjorn Helgaas <bhelgaas@google.com>, 
+    Mika Westerberg <mika.westerberg@linux.intel.com>, 
+    linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] PCI: Use an error code with PCIe failed link
+ retraining
+In-Reply-To: <alpine.DEB.2.21.2402100048440.2376@angie.orcam.me.uk>
+Message-ID: <855a5a56-75f2-2ce5-7f35-b761b62784e7@linux.intel.com>
+References: <alpine.DEB.2.21.2402092125070.2376@angie.orcam.me.uk> <alpine.DEB.2.21.2402100048440.2376@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="8323328-1549470714-1707739892=:1013"
 
-On Mon, 2024-02-05 at 13:09 +0100, Nuno Sa wrote:
-> Device links will drop their supplier + consumer refcounts
-> asynchronously. That means that the refcount of the of_node attached to
-> these devices will also be dropped asynchronously and so we cannot
-> guarantee the DT overlay assumption that the of_node refcount must be 1 i=
-n
-> __of_changeset_entry_destroy().
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323328-1549470714-1707739892=:1013
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Sat, 10 Feb 2024, Maciej W. Rozycki wrote:
+
+> Given how the call place in `pcie_wait_for_link_delay' got structured=20
+> now, and that `pcie_retrain_link' returns a potentially useful error=20
+> code, convert `pcie_failed_link_retrain' to return an error code rather=
+=20
+> than a boolean status, fixing handling at the call site mentioned. =20
+> Update the other call site accordingly.
 >=20
-> Given the above, call the new fwnode_links_flush_queue() helper to flush
-> the devlink workqueue so we can be sure that all links are dropped before
-> doing the proper checks.
->=20
-> Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> Fixes: 1abb47390350 ("Merge branch 'pci/enumeration'")
+> Reported-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> Link: https://lore.kernel.org/r/aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linu=
+x.intel.com/
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Cc: stable@vger.kernel.org # v6.5+
 > ---
-> =C2=A0drivers/of/dynamic.c | 8 ++++++++
-> =C2=A01 file changed, 8 insertions(+)
+>  drivers/pci/pci.c    |    2 +-
+>  drivers/pci/pci.h    |    6 +++---
+>  drivers/pci/quirks.c |   14 +++++++-------
+>  3 files changed, 11 insertions(+), 11 deletions(-)
 >=20
-> diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
-> index 3bf27052832f..b7153c72c9c9 100644
-> --- a/drivers/of/dynamic.c
-> +++ b/drivers/of/dynamic.c
-> @@ -14,6 +14,7 @@
-> =C2=A0#include <linux/slab.h>
-> =C2=A0#include <linux/string.h>
-> =C2=A0#include <linux/proc_fs.h>
-> +#include <linux/fwnode.h>
-> =C2=A0
-> =C2=A0#include "of_private.h"
-> =C2=A0
-> @@ -518,6 +519,13 @@ EXPORT_SYMBOL(of_changeset_create_node);
-> =C2=A0
-> =C2=A0static void __of_changeset_entry_destroy(struct of_changeset_entry =
-*ce)
-> =C2=A0{
-> +	/*
-> +	 * device links drop their device references (and hence their of_node
-> +	 * references) asynchronously on a dedicated workqueue. Hence we need
-> +	 * to flush it to make sure everything is done before doing the below
-> +	 * checks.
-> +	 */
-> +	fwnode_links_flush_queue();
-> =C2=A0	if (ce->action =3D=3D OF_RECONFIG_ATTACH_NODE &&
-> =C2=A0	=C2=A0=C2=A0=C2=A0 of_node_check_flag(ce->np, OF_OVERLAY)) {
-> =C2=A0		if (kref_read(&ce->np->kobj.kref) > 1) {
->=20
+> linux-pcie-failed-link-retrain-status-int.diff
+> Index: linux-macro/drivers/pci/pci.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-macro.orig/drivers/pci/pci.c
+> +++ linux-macro/drivers/pci/pci.c
+> @@ -1263,7 +1263,7 @@ static int pci_dev_wait(struct pci_dev *
+>  =09=09if (delay > PCI_RESET_WAIT) {
+>  =09=09=09if (retrain) {
+>  =09=09=09=09retrain =3D false;
+> -=09=09=09=09if (pcie_failed_link_retrain(bridge)) {
+> +=09=09=09=09if (pcie_failed_link_retrain(bridge) =3D=3D 0) {
+>  =09=09=09=09=09delay =3D 1;
+>  =09=09=09=09=09continue;
+>  =09=09=09=09}
+> Index: linux-macro/drivers/pci/pci.h
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-macro.orig/drivers/pci/pci.h
+> +++ linux-macro/drivers/pci/pci.h
+> @@ -540,7 +540,7 @@ void pci_acs_init(struct pci_dev *dev);
+>  int pci_dev_specific_acs_enabled(struct pci_dev *dev, u16 acs_flags);
+>  int pci_dev_specific_enable_acs(struct pci_dev *dev);
+>  int pci_dev_specific_disable_acs_redir(struct pci_dev *dev);
+> -bool pcie_failed_link_retrain(struct pci_dev *dev);
+> +int pcie_failed_link_retrain(struct pci_dev *dev);
+>  #else
+>  static inline int pci_dev_specific_acs_enabled(struct pci_dev *dev,
+>  =09=09=09=09=09       u16 acs_flags)
+> @@ -555,9 +555,9 @@ static inline int pci_dev_specific_disab
+>  {
+>  =09return -ENOTTY;
+>  }
+> -static inline bool pcie_failed_link_retrain(struct pci_dev *dev)
+> +static inline int pcie_failed_link_retrain(struct pci_dev *dev)
+>  {
+> -=09return false;
+> +=09return -ENOTTY;
+>  }
+>  #endif
+> =20
+> Index: linux-macro/drivers/pci/quirks.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-macro.orig/drivers/pci/quirks.c
+> +++ linux-macro/drivers/pci/quirks.c
+> @@ -74,17 +74,17 @@
+>   * firmware may have already arranged and lift it with ports that alread=
+y
+>   * report their data link being up.
+>   *
+> - * Return TRUE if the link has been successfully retrained, otherwise FA=
+LSE,
+> + * Return 0 if the link has been successfully retrained, otherwise an er=
+ror,
+>   * also when retraining was not needed in the first place.
+>   */
+> -bool pcie_failed_link_retrain(struct pci_dev *dev)
+> +int pcie_failed_link_retrain(struct pci_dev *dev)
+>  {
+>  =09static const struct pci_device_id ids[] =3D {
+>  =09=09{ PCI_VDEVICE(ASMEDIA, 0x2824) }, /* ASMedia ASM2824 */
+>  =09=09{}
+>  =09};
+>  =09u16 lnksta, lnkctl2;
+> -=09bool ret =3D false;
+> +=09int ret =3D -ENOTTY;
+> =20
+>  =09if (!pci_is_pcie(dev) || !pcie_downstream_port(dev) ||
+>  =09    !pcie_cap_has_lnkctl2(dev) || !dev->link_active_reporting)
+> @@ -100,8 +100,8 @@ bool pcie_failed_link_retrain(struct pci
+>  =09=09lnkctl2 |=3D PCI_EXP_LNKCTL2_TLS_2_5GT;
+>  =09=09pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
+> =20
+> -=09=09ret =3D pcie_retrain_link(dev, false) =3D=3D 0;
+> -=09=09if (!ret) {
+> +=09=09ret =3D pcie_retrain_link(dev, false);
+> +=09=09if (ret) {
+>  =09=09=09pci_info(dev, "retraining failed\n");
+>  =09=09=09return ret;
+>  =09=09}
+> @@ -120,8 +120,8 @@ bool pcie_failed_link_retrain(struct pci
+>  =09=09lnkctl2 |=3D lnkcap & PCI_EXP_LNKCAP_SLS;
+>  =09=09pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
+> =20
+> -=09=09ret =3D pcie_retrain_link(dev, false) =3D=3D 0;
+> -=09=09if (!ret) {
+> +=09=09ret =3D pcie_retrain_link(dev, false);
+> +=09=09if (ret) {
+>  =09=09=09pci_info(dev, "retraining failed\n");
+>  =09=09=09return ret;
+>  =09=09}
 
-Hi Rob and Frank,
+Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
 
-Any way you could take a look at this and see if you're ok with the change =
-in the
-overlay code?=20
+I closed my patch from patchwork that is not need after this change.
 
-On the devlink side , we already got the ok from Rafael.
+--=20
+ i.
 
-Thanks!
-- Nuno S=C3=A1
+--8323328-1549470714-1707739892=:1013--
 
