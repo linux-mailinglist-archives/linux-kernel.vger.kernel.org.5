@@ -1,117 +1,92 @@
-Return-Path: <linux-kernel+bounces-62063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FAAA851AEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:12:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07664851AF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:13:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BD27285A9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:12:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A3A41C22774
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:13:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00E83FB3B;
-	Mon, 12 Feb 2024 17:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="napJrBdt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D51D40BFA;
+	Mon, 12 Feb 2024 17:10:05 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1165B3D96E
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 17:09:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FBC405E5
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 17:10:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707757770; cv=none; b=GbzvxHNhg/sFPE0mYsYRcw4N1FeNJXaydS8+YbnMeOLN2aMSs+dUtlwYKh2UPBUW3YYUdhMgTIPUO6UHXA7AlLLZ8rEX6D8wKv1gM/IySIF1YRPrZLSOtd5Q/n8Lihshtmz3WotwuwsG1vhulOxRj7hn/RD91U4Y1wUVnTPmKlo=
+	t=1707757805; cv=none; b=S6gSPpwgcXylS9mObnFVVKUI9WQT8xvC/rLE52/i7T1B0MRoBVzc+zInQdxppMYlwX6OlgStXzOmzBsCna4Xyob6vuTh39WSHOjpXyRZlQa3UusIlVm1Ooqo5bu4fhU2Ed45atwJF7pKA9vE9HGoeOXhdmWOGBeez6phGWFJXMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707757770; c=relaxed/simple;
-	bh=kNelyaMpoff2eV/oUmYi0oI4uhiVe9RfO18nRr4j+UU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DbDilWnETzZrBhx6SQWfCmz6y9+L4Y77m8h3MR/KcU4EnuYHUftnTYgFB9UuX+DtZYT6b2huu1w+yJXRsc+yLXKYXbyJy3tAeGs9TgUMvGq4RmWmLSxfir8MOjg3DO2FtdjthOYkfpLljmXEW4WiB34o/J7aRhmSs9rCzkDWIhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=napJrBdt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC16EC433F1;
-	Mon, 12 Feb 2024 17:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707757769;
-	bh=kNelyaMpoff2eV/oUmYi0oI4uhiVe9RfO18nRr4j+UU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=napJrBdtY2MVfYL4mRAfcwfHDDTRSCeJO0fOSpuUOEAIgnbzes7Yygc2P6p5UfxIe
-	 sUrzFa/Hx6C4lW1kpzmfxGgf/3raK59IV2yIUJ0dNBTOiVz0y+Y6bpekk7KL3ZdiNS
-	 rpJOpcGZMdydpRk4i4Vy653sLK4cvdcpyMVQP96TOmRYcjWbrjmgQcclFULL659s8D
-	 zERzkEWDfiT6PfFNHOCoPdg8BtTmw9+wP75spDQuIBF8so2RLQtC6FASj0AOwcwA+X
-	 KpT2YQije7M7DsgjZl5EbpvIZa1yOr7c1pYXQVUEPKQXaDb8YPtIomy5Jb7a3zSacS
-	 jSIL8ytR+uXGw==
-Date: Mon, 12 Feb 2024 17:09:24 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dave Martin <Dave.Martin@arm.com>
-Cc: Will Deacon <will@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Oleg Nesterov <oleg@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Doug Anderson <dianders@chromium.org>
-Subject: Re: [PATCH] arm64/sve: Lower the maximum allocation for the SVE
- ptrace regset
-Message-ID: <b0858303-8289-4371-be62-27da98d57020@sirena.org.uk>
-References: <20240203-arm64-sve-ptrace-regset-size-v1-1-2c3ba1386b9e@kernel.org>
- <ZcpMabqH+VZv6RCZ@e133344.arm.com>
+	s=arc-20240116; t=1707757805; c=relaxed/simple;
+	bh=dhs5X453QuebkxZokUrCXDu80prHk7y1bR8rbGRUZR0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=JNASUyyUuRrSy1VqqP/rL0A771dtkkDt9+7hnShgIX+l9w4pk/EG4vE2DzrhoBNdUR1gHda1hIfg+4uNzju/qCovga0p99sLCfS69jhhuZl0+U0lFvueDZ+xC0ML81bTKLU1D+1VgLwnawyXwonr+7nYBjxhCiColOkmM1ThNlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bedddd00d5so355649939f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:10:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707757802; x=1708362602;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=syTmq/2+cHOps7ocoSA0QeSIKj9tzYgPgaLcLXmYLsE=;
+        b=idOEh64SFJ8F+lfICAce1O7wfP0SJTfkY7YVPL5M3NhrTWumGt4RfUjikCVQ0/4Kum
+         w20ru6lziNA66xcu99GKVE6U+DPcPgMluOzS7cBx4KZO+c9HibSZ0p06EI4djiJPK5kt
+         XMw28L7dS5gYD5g3nm+rYUJt/PXDEMzr/NsOjzRD7vBgOH5IAdR4iLb/NXaapQILWZyN
+         pWpc72PIQJNgbqm7zFHL9b2N+CGvEU5Kc0RJc9rfeQprJB2c5DtSql4zJc15MgiwQZci
+         QAG99D9XYQ+9z5p/HaJqNk+VDwPm62DxT8LX4+WQzvzfnNwrkFpQ7Zu+riaQAz55IPB4
+         CHxg==
+X-Gm-Message-State: AOJu0YyomoE+2Ajapw1VTuEa1hNuO8+OOxSyBS7hZolCBJnk4tWfz2hn
+	2jJ3TccLAFxpjFBvykVRXWPePQF6Zc2nkPi64gA+bW5x4u1BfogMvTNFtu/WNEVx9sS3Xl30nX1
+	uoQ3SmGR4viZmR9vnd9CyrB1QofMs1ZqAxdIyHMZ7yKibY9IO7Xtvt2o=
+X-Google-Smtp-Source: AGHT+IFh4xAKDFcF47AC6TVZkIoj6iiFG392km/BapfaiHws2vqiNSlClhwZVgg+/uCSguLJAtaKS6ls2o03UbZ7vB36MylGOvZS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jbFy/Os4nITzwxhJ"
-Content-Disposition: inline
-In-Reply-To: <ZcpMabqH+VZv6RCZ@e133344.arm.com>
-X-Cookie: I'm not available for comment..
+X-Received: by 2002:a6b:7108:0:b0:7c4:6e52:ec1 with SMTP id
+ q8-20020a6b7108000000b007c46e520ec1mr7560iog.2.1707757802567; Mon, 12 Feb
+ 2024 09:10:02 -0800 (PST)
+Date: Mon, 12 Feb 2024 09:10:02 -0800
+In-Reply-To: <0000000000006bf22a060e117a8d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002f3fba0611325902@google.com>
+Subject: Re: [syzbot] [fs?] [trace?] BUG: unable to handle kernel paging
+ request in tracefs_apply_options
+From: syzbot <syzbot+f8a023e0c6beabe2371a@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	mathieu.desnoyers@efficios.com, mhiramat@kernel.org, rostedt@goodmis.org, 
+	syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 
+syzbot suspects this issue was fixed by commit:
 
---jbFy/Os4nITzwxhJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+commit ad579864637af46447208254719943179b69d41a
+Author: Steven Rostedt (Google) <rostedt@goodmis.org>
+Date:   Tue Jan 2 20:12:49 2024 +0000
 
-On Mon, Feb 12, 2024 at 04:50:49PM +0000, Dave Martin wrote:
-> On Sat, Feb 03, 2024 at 12:16:49PM +0000, Mark Brown wrote:
+    tracefs: Check for dentry->d_inode exists in set_gid()
 
-> > -		.n = DIV_ROUND_UP(SVE_PT_SIZE(SVE_VQ_MAX, SVE_PT_REGS_SVE),
-> > +		.n = DIV_ROUND_UP(SVE_PT_SIZE(ARCH_SVE_VQ_MAX,
-> > +					      SVE_PT_REGS_SVE),
-> >  				  SVE_VQ_BYTES),
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17659d24180000
+start commit:   453f5db0619e Merge tag 'trace-v6.7-rc7' of git://git.kerne..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f8e72bae38c079e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=f8a023e0c6beabe2371a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1414af31e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15e52409e80000
 
-> Do we need an actual check somewhere that we don't bust this limit?
+If the result looks correct, please mark the issue as fixed by replying with:
 
-..
+#syz fix: tracefs: Check for dentry->d_inode exists in set_gid()
 
-> Userspace could specify vl > sve_vl_from_vq(ARCH_SVE_VQ_MAX) in
-> PTRACE_SETREGSET; I'm not sure exactly what happens there.
-
-We already have validation against the actual enumerated limits for the
-system by virtue of setting the vector length to whatever is specified
-so we'll limit any overly large vector length down to something we can
-actually support and then reject an attempt to supply register data if
-we changed the VL from what the user specified.
-
-> Since ZCR_ELx_LEN_MASK was changed from 0x1ff to 0xf, it looks like the
-> kernel itself will not generate an overlarge VL, although it feels a bit
-> like this guarantee arrives by accident.
-> Could ARCH_SVE_VQ_MAX be based on ZCR_ELx_LEN_MASK instead?
-
-I guess.
-
---jbFy/Os4nITzwxhJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXKUMMACgkQJNaLcl1U
-h9AQ4Af8DfUN/JUR9xzcRi0ChS2rH/IdTTT/8uHAChzJ4PnIInlgEj1ZaxsM9s4y
-oyqCjwEekMQlsQ3BE9cZRyn38fDS5r6KToTkfZnjMAWDU6YtXvVdPBIwZ8RWospt
-+TtQu4NOV6ts8cUd7wNXQeFjn7aPTLuPfHnYUFM4XdAkF0501XcVWm/UT02FV1q/
-Dpyoa2LlMpNtiDw4zrbZ3G+7BlOK/l5qqLYFw4Xb0IDPMxv8QvsI0U6zikhWj0y8
-0eI9xyFJVU1StQVo1AI2NGWcGGDld4RwCPLtBuUoacf+T6Y43crcZc7/Qmx3YC+V
-EeHbf/txRxdjT4EVbvxaQrAcE9O+AQ==
-=vwAN
------END PGP SIGNATURE-----
-
---jbFy/Os4nITzwxhJ--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
