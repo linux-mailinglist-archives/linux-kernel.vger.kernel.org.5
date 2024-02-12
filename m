@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-61841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E046851750
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:51:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08421851753
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:52:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDD3328270C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:51:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA7E5282AF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:52:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4B33C473;
-	Mon, 12 Feb 2024 14:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE22C3B794;
+	Mon, 12 Feb 2024 14:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="u3EpcVKE"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="GX8DLeUc"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723983BB34;
-	Mon, 12 Feb 2024 14:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9204D3C488;
+	Mon, 12 Feb 2024 14:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707749486; cv=none; b=iyiPFVLAfm4i/vTJYhgYNx7srWLvNnr8nMVFPIbsKzjhgkD3ML8BimqHFtdOpulPr7nR2VO+Cye1ZdYU0FsaZfSnDUBL4ss5v3xkq7iq/NtebhhcUsPo7MIJfdR7cuAIpibOSqbMKCjUIpevpJSknBrRGD/cVRFYWW7JqzRQePc=
+	t=1707749489; cv=none; b=OFr6EgkS0m48zTTWHaYVLHJLmeFa6Xr0jthd230hhpfGLPURKLJq5XJgnMCFy25V+Tf+wD6RQBTTHS/h/A/oKwosNWo5SEINJpXzhL0pWB2vPBilmQw/auZuLRvHbDJfdTHcHhIjt0UHvvOvj3eicJ26KPqv4luP7TydZMAqhc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707749486; c=relaxed/simple;
-	bh=OiujR5lhNKhEimBkSB+EFRf6rM0jXBiQhXbfsxIV9UE=;
+	s=arc-20240116; t=1707749489; c=relaxed/simple;
+	bh=1TCvFrGXA9WRNIGq5qiS6fBnB/8Sfm3xS2xnBDJoK28=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Axr3lIZZoUARrUmDPsZ8DoiUMmMIir94rlfbJJeziPBMLOZiUFQn7kyO+r8HOFWqjS+qlEuLXWaavOIG4T9K4O37UOhW5ZZR19A3HqItArnSa2/foANO+mgeK3hqBkEwelvsVouMyI5etZ6uwOhAUpxKW2MDCA0NPG8Mh7cYgHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=u3EpcVKE; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:To:Cc; b=VEyZlOqY6LnfiEAxFKIIw2IAXltlCuQ6x/66nqIfk0TuM0HVe588Z1V6TdY8Qbses8cLaoYr/ChJ+OTnYRukPBYqYIXVZ5XtF1NLoEJc7UCKNdhMOw0Y12jBc/NmcSxVOtyhnIc5RPsIWJ7N69bUnELVGyKQUBq0N+EZZiZMmEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=GX8DLeUc; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707749482;
-	bh=OiujR5lhNKhEimBkSB+EFRf6rM0jXBiQhXbfsxIV9UE=;
+	s=mail; t=1707749486;
+	bh=1TCvFrGXA9WRNIGq5qiS6fBnB/8Sfm3xS2xnBDJoK28=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=u3EpcVKEmcqpDIx/5waMjmUKIUIl0Boy2XqZqUi01fAXxocc0wSx+sXm6HN4uQy5/
-	 sXZITsUKLcGkbFg5ity4LvFazzYGWMSogdiQdLFlO7+Bb0DhGbHZxNgyh/1fRQD/kZ
-	 rGjpPm8YYdNYAFPXd7seJX1G1YCVx4UYgjZuwDjVDwqsStncmt+/yMI3+DdnJA/3e2
-	 Q13eGoqmTLdyHKgjLRdqJ+0ariP7aibUNHU2ZqdNJcEOzJwWwY54atV0+wFfmLsiHW
-	 XjRjl6RnKlhtRCTpQsQ5CV4J+t+8nGG/Nr/qZRkauyG1rdZ5OkN1PJNwR4O2sp4nJ0
-	 6suxZhvZcRxvQ==
+	b=GX8DLeUcsHn718WGmcEX+K25/QWmMhkgZHgz5FKPw2HfaP9wTwEFGpGbXFQZsSJ4E
+	 dY2G11h816hu9Bo86/VdQWeFvWL7C9l4uk4sHfobftI68YLgqph1qUwOhCEVdw837w
+	 7ugfshFFKYdaRfe/1P6yEwDcMe577HoMELj9FLcsy4kjI4yFHkuwRCjpEU/BhRRpEA
+	 Sdm0AAnmsSKjKmU7UaFydCBPm990kV70cA8irr2WS2BaIJMAVrIxIGV+sHwMSeZRmO
+	 Tqp7anmsAXg6MRzc3wkFwJ5NwQsq4WF21o9mCgcBSRM5kdStPaIpGNPn7+NtIkPvXd
+	 IDtAo4++BWVhA==
 Received: from [192.168.1.30] (zone.collabora.co.uk [167.235.23.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9C5FD37810EF;
-	Mon, 12 Feb 2024 14:51:19 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2FE39378203F;
+	Mon, 12 Feb 2024 14:51:23 +0000 (UTC)
 From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Mon, 12 Feb 2024 09:50:05 -0500
-Subject: [PATCH v4 1/4] firmware: coreboot: Generate modalias uevent for
- devices
+Date: Mon, 12 Feb 2024 09:50:06 -0500
+Subject: [PATCH v4 2/4] firmware: coreboot: Generate aliases for coreboot
+ modules
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,7 +59,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240212-coreboot-mod-defconfig-v4-1-d14172676f6d@collabora.com>
+Message-Id: <20240212-coreboot-mod-defconfig-v4-2-d14172676f6d@collabora.com>
 References: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
 In-Reply-To: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
 To: Tzung-Bi Shih <tzungbi@kernel.org>
@@ -76,42 +76,77 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Brian Norris <briannorris@chromium.org>,
  =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
 X-Mailer: b4 0.12.4
 
-Generate a modalias uevent for devices in the coreboot bus to allow
-userspace to automatically load the corresponding modules.
+Generate aliases for coreboot modules to allow automatic module probing.
 
-Acked-by: Brian Norris <briannorris@chromium.org>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Reviewed-by: Brian Norris <briannorris@chromium.org>
 Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 ---
- drivers/firmware/google/coreboot_table.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ include/linux/mod_devicetable.h   | 10 ++++++++++
+ scripts/mod/devicetable-offsets.c |  3 +++
+ scripts/mod/file2alias.c          | 10 ++++++++++
+ 3 files changed, 23 insertions(+)
 
-diff --git a/drivers/firmware/google/coreboot_table.c b/drivers/firmware/google/coreboot_table.c
-index 2a4469bf1b81..c1b9a9e8e8ed 100644
---- a/drivers/firmware/google/coreboot_table.c
-+++ b/drivers/firmware/google/coreboot_table.c
-@@ -53,11 +53,20 @@ static void coreboot_bus_remove(struct device *dev)
- 		driver->remove(device);
- }
- 
-+static int coreboot_bus_uevent(const struct device *dev, struct kobj_uevent_env *env)
-+{
-+	struct coreboot_device *device = CB_DEV(dev);
-+	u32 tag = device->entry.tag;
-+
-+	return add_uevent_var(env, "MODALIAS=coreboot:t%08X", tag);
-+}
-+
- static struct bus_type coreboot_bus_type = {
- 	.name		= "coreboot",
- 	.match		= coreboot_bus_match,
- 	.probe		= coreboot_bus_probe,
- 	.remove		= coreboot_bus_remove,
-+	.uevent		= coreboot_bus_uevent,
+diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+index f458469c5ce5..7a9a07ea451b 100644
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -960,4 +960,14 @@ struct vchiq_device_id {
+ 	char name[32];
  };
  
- static void coreboot_device_release(struct device *dev)
++/**
++ * struct coreboot_device_id - Identifies a coreboot table entry
++ * @tag: tag ID
++ * @driver_data: driver specific data
++ */
++struct coreboot_device_id {
++	__u32 tag;
++	kernel_ulong_t driver_data;
++};
++
+ #endif /* LINUX_MOD_DEVICETABLE_H */
+diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-offsets.c
+index e91a3c38143b..518200813d4e 100644
+--- a/scripts/mod/devicetable-offsets.c
++++ b/scripts/mod/devicetable-offsets.c
+@@ -274,5 +274,8 @@ int main(void)
+ 	DEVID(vchiq_device_id);
+ 	DEVID_FIELD(vchiq_device_id, name);
+ 
++	DEVID(coreboot_device_id);
++	DEVID_FIELD(coreboot_device_id, tag);
++
+ 	return 0;
+ }
+diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
+index 4829680a0a6d..5d1c61fa5a55 100644
+--- a/scripts/mod/file2alias.c
++++ b/scripts/mod/file2alias.c
+@@ -1494,6 +1494,15 @@ static int do_vchiq_entry(const char *filename, void *symval, char *alias)
+ 	return 1;
+ }
+ 
++/* Looks like: coreboot:tN */
++static int do_coreboot_entry(const char *filename, void *symval, char *alias)
++{
++	DEF_FIELD(symval, coreboot_device_id, tag);
++	sprintf(alias, "coreboot:t%08X", tag);
++
++	return 1;
++}
++
+ /* Does namelen bytes of name exactly match the symbol? */
+ static bool sym_is(const char *name, unsigned namelen, const char *symbol)
+ {
+@@ -1575,6 +1584,7 @@ static const struct devtable devtable[] = {
+ 	{"ishtp", SIZE_ishtp_device_id, do_ishtp_entry},
+ 	{"cdx", SIZE_cdx_device_id, do_cdx_entry},
+ 	{"vchiq", SIZE_vchiq_device_id, do_vchiq_entry},
++	{"coreboot", SIZE_coreboot_device_id, do_coreboot_entry},
+ };
+ 
+ /* Create MODULE_ALIAS() statements.
 
 -- 
 2.43.0
