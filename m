@@ -1,131 +1,182 @@
-Return-Path: <linux-kernel+bounces-62192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F11CF851CDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:34:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A6CA851CDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:34:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99DC91F22057
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:34:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6142EB25E6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9ECB3FE36;
-	Mon, 12 Feb 2024 18:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF66941776;
+	Mon, 12 Feb 2024 18:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WWcM4sGb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NkjsHmxc"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E9C3DB91;
-	Mon, 12 Feb 2024 18:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732F6405FD
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707762795; cv=none; b=YX7xkJYmwXVAtk7R3rzoBJgsBZrVMomEX93pf/UKeuBilpuWjLiqz4G364jTza7YOifJOleps2yBOELNVH096nYyM1tgGwRGpBW3KRwJhJZY2ZHtMR1ohJsI2TB7ULng28+BruE3XAkbiNPzJvTG+eb55Qd3UMfmoKUAELueguY=
+	t=1707762854; cv=none; b=J2SBsKF1qOJ0QtdXqSSl1c1o70etFtm9vwnbr3ROtHGl9gE3Y/ahvfTxfDCNgmmIZ3wsXJfw6YzW+EgGGgf1T5qBvk02Y4u/zYIdWVOiVJOGpBE8EPZ4BzcuY72R1ZS7mc0zVBTPAmTnRrNA4fV+Z3dgMHBEqBGPE4YZb8coT9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707762795; c=relaxed/simple;
-	bh=DTRybV3KMIhH9nFsPr7JEPKWMu1YNivRlPVO0kxFIiU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lhLGF37G8GmRrsIYEVqc7Ys9nafNJDW63d6/wx3Pjbtj1IUGJNF3cNn+Lq8PgP6PFzqqsCAnNHPk9J3wMSdon+7dZ4g8lZLMaaf/Wau167D34sVYC7/5w1jXEAElF2vo5jddK+JAhk1wyyAfpY+s2zbBLz0GncT9M5Xu30htCCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WWcM4sGb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 052C8C433C7;
-	Mon, 12 Feb 2024 18:33:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707762794;
-	bh=DTRybV3KMIhH9nFsPr7JEPKWMu1YNivRlPVO0kxFIiU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WWcM4sGbpiBnCAUBh2PddGbGin4HS+JBNofityp2fupukmpyHsOs7EiAa+B8FaxoX
-	 umxolyJDbeqDhf0mToD38sZ/Pof6zsgMByK1YBv5MxdJznwH8T5wGKTbb5ln5TMjgo
-	 D0octNIsY6GRkNtS7TFkPdY6NZhiV+nwR+WAtBPmVwOZgm8J5XaNnqE9sxh4JLWgUS
-	 m+gNn47PiYAgVwl/gYwF5CIq4OrjuYrgmgtdeqed3+Rm/9aDDrzgNj9tIDj9alXKIJ
-	 o35hE/mqajrE7UxjmxYgZ7dPgskafzSutk1vYx7F+sM1QaLRuAp0irh2bA2bSYnH/0
-	 StDyTiQv8O6OA==
-Date: Mon, 12 Feb 2024 18:33:09 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Christophe Kerello <christophe.kerello@foss.st.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	krzysztof.kozlowski@linaro.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	devicetree@vger.kernel.org,
-	Patrick Delaunay <patrick.delaunay@foss.st.com>
-Subject: Re: [PATCH 02/12] dt-bindings: memory-controller: st,stm32: add
- 'power-domains' property
-Message-ID: <20240212-chemicals-skinny-18eda1cfe781@spud>
-References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
- <20240212174822.77734-3-christophe.kerello@foss.st.com>
+	s=arc-20240116; t=1707762854; c=relaxed/simple;
+	bh=rLdlJk7YMDLMzy9CS/8OoqlIhyb+H0Bw/6gJglvDQ/0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XkQXBMgzZRqF0lSyCctaUleXg3sWUqxcbScu2EAPM6AaL7oc92350HrdNdwNjjyFgYvZPJy5iSrc5HKh0yd+CYR7Y87kJimiM18tmFQLF53nzc27C3hQrlBx+CjGiBODkev4r9sQKaGE6mC09NMC2LDml2MZDXORBlAj4ENL1sM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NkjsHmxc; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1da0cd9c0e5so25006875ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:34:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707762852; x=1708367652; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=8xZH+LJYr2ytTKnIB9iZBFvkzmm+Pih3Yq/pScGROjM=;
+        b=NkjsHmxcxwY5KDsMTb5LF9A/eKo5H3m61zJA8P92Qw3MD88oW2yyOrI/oof1K/HxwJ
+         rKCTjWETzJqCjV7lcSRhP10DQYhHpfM8Y/3q3zEd47jcZrK9vZocHhId4Lsjr3g2FeAd
+         vN04oDFDeB4tzLW4esUV0mjmdV05yeTl96LW7WIOhjp7Q6rPJHNYevB4VN0XBwXA0A6y
+         qSfVt7xAEKlkNVGRrT7xxdl0eDKSbtiQH3EnxugmjfBvrfLRfaKm451enrY/df8fF2vy
+         0v0Fyq4S+I2MZluOY66B0tWatnMmzSvsY2OoypssbjAUfdK9ZQ3J0409LVNN7t2wJwFn
+         S/Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707762852; x=1708367652;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8xZH+LJYr2ytTKnIB9iZBFvkzmm+Pih3Yq/pScGROjM=;
+        b=MKOYeCFm4brxNEu1uxtQAvBBs+NtrGUv3gToURAa6ptKm8wbzdSV/JqtTAk7d57UzW
+         Mal27t0UBnM5dGNv9yLEe5BDOLqzkq34YoJDcB+iBR2AA+ZBc5ajO7Yz2IZ6jVApD+PY
+         XrwjpXV/UF4u2Et++HLmz1v2fCEmdoZyKhijBeftxCLUU8AwPtP7M6VLxyODVB5wD6QP
+         bGSoNs95LZ/ZB5PBTkRW+aa+LOKzjWIoadpzxb2l5DAhLuyeszM+QAI3TyUsSyFmrUuu
+         CAEDjJFgBP7BZ0ub/AdY1+7SNDpuVDdnwwLkD0L/0RK+Ct5GV6hdiwbcYqvStIsOYLLt
+         +g0w==
+X-Forwarded-Encrypted: i=1; AJvYcCValvILMyeY/3Bs1VHjSaKrhYN7chaVsNGA8EAvF+IJsz/EfeoJuEy0k/LpmGmFqBjc6uH99jMR7G5P5ETwAjTAvExTP24jwyJWlTo/
+X-Gm-Message-State: AOJu0Yw0xOpDvnjZiKjLy9RlzJ2eliPnlH5ivqgD7bUOwIT79WA4PD0o
+	3NcliA2w5uO+uRS9gk9hfh2Ax+R8slWAlDO7bS+plmYrD9bOF46dYaAwu63A
+X-Google-Smtp-Source: AGHT+IF9qWp2tvcoUQZZslN+wkVhSxCc9OrI7jwdPqwNrS/fC0pl+enR/wZMBiggGGsN3bhrrjbhkg==
+X-Received: by 2002:a17:903:32c3:b0:1d9:7587:8298 with SMTP id i3-20020a17090332c300b001d975878298mr371566plr.23.1707762851651;
+        Mon, 12 Feb 2024 10:34:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUQU8W767PmlSwLi9hHXQE6YkfKKIqjtr3nPZAFxfqS9iKxlNwTsW1fuNwsFnWIIvJRh6iPpkXWrgHl+Ql6F/HIZar14eynHFYYh7+loi7a+9+nPi5cLRxUZHdxx+2MiswwEdTvBzh0TO2ctSktuBQUwFgbLMFK3Db0SJvOP3iplsMJCxUffhkXNPG2dgR8WQi/J2PA
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id iw11-20020a170903044b00b001d986ce6893sm649405plb.198.2024.02.12.10.34.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 10:34:11 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <c5d8a333-aff5-49e1-a7ee-29a023266d2d@roeck-us.net>
+Date: Mon, 12 Feb 2024 10:34:10 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="j0T5UxTZF6zrutiv"
-Content-Disposition: inline
-In-Reply-To: <20240212174822.77734-3-christophe.kerello@foss.st.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Content-Language: en-US
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Charlie Jenkins <charlie@rivosinc.com>,
+ David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
+References: <20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com>
+ <20240207-fix_sparse_errors_checksum_tests-v6-2-4caa9629705b@rivosinc.com>
+ <20240212062614.GI608142@ZenIV>
+ <52393411-8313-4e94-9618-916b57f7d52e@roeck-us.net>
+ <20240212181217.GK608142@ZenIV>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240212181217.GK608142@ZenIV>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 2/12/24 10:12, Al Viro wrote:
+> On Mon, Feb 12, 2024 at 09:18:14AM -0800, Guenter Roeck wrote:
+> 
+>> Almost. Turns out the csum parameter of csum_ipv6_magic() needs to be in
+>> network byte order, and the length parameter needs to be in host byte order.
+>> So instead of
+>> 	data.len = data_ptr->len;
+>> 	data.csum = (__force __wsum)htonl((__force u32)data_ptr->csum);
+>> it needs to be something like
+>> 	data.len = ntohl(data_ptr->len);
+>> 	data.csum = data_ptr->csum;
+>>
+>> Also, as you mentioned, either the returned checksum or the expected
+>> checksum needs to be converted for the comparison because one is in
+>> network byte order and the other in host byte order.
+> 
+>          for (int i = 0; i < NUM_IPv6_TESTS; i++) {
+> 		struct args {
+> 			struct in6_addr saddr;
+> 			struct in6_addr daddr;
+> 			__be32 len;
+> 			__wsum csum;
+> 			unsigned char proto;
+> 		} __packed data = (struct args *)(random_buf + i);
+>                  CHECK_EQ(cpu_to_le16(expected_csum_ipv6_magic[i]),
+>                           csum_ipv6_magic(data.saddr, data.daddr, ntohl(data.len),
+> 					 data.proto, data.sum));
+>          }
+> and to hell with field-by-field copying.  __packed here will tell the compiler
+> that alignment of the entire thing is 1 - the total size of fields is 41 bytes,
+> so "no padding" translates into "can't even assume that address is even".
+> 
 
---j0T5UxTZF6zrutiv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Except that the data pointer needs to be aligned because otherwise architectures
+not supporting unaligned accesses will bail out (as observed on mps2-an385).
+But then I am no longer sure if that is correct - maybe csum_ipv6_magic()
+is supposed to be able to handle unaligned accesses. If so, maybe it would be
+more appropriate to skip this test on the affected architectures.
 
-On Mon, Feb 12, 2024 at 06:48:12PM +0100, Christophe Kerello wrote:
-> From: Patrick Delaunay <patrick.delaunay@foss.st.com>
->=20
-> On STM32MP25 SOC, STM32 FMC2 memory controller is in a power domain.
-> Allow a single 'power-domains' entry for STM32 FMC2.
+Guenter
 
-This should be squashed with patch 1, since they both modify the same
-file and this power-domain is part of the addition of mp25 support.
-
-If the mp1 doesn't have power domains, shouldn't you constrain the
-property to mp25 only?
-
-Cheers,
-Conor.
-
->=20
-> Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> ---
->  .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml         | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm3=
-2-fmc2-ebi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,s=
-tm32-fmc2-ebi.yaml
-> index 12e6afeceffd..84ac6f50a6fc 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-=
-ebi.yaml
-> +++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-=
-ebi.yaml
-> @@ -36,6 +36,9 @@ properties:
->    resets:
->      maxItems: 1
-> =20
-> +  power-domains:
-> +    maxItems: 1
-> +
->    "#address-cells":
->      const: 2
-> =20
-> --=20
-> 2.25.1
->=20
-
---j0T5UxTZF6zrutiv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcpkZQAKCRB4tDGHoIJi
-0tdKAQDHXMMk62WtYxljI4EYVK5zcDC6VAMJ9PBRjLb5XKG6fAD9FkStE7CE4iEM
-IAf7Cd+5U9DpPVQ7o7X7sfH21yTKLAk=
-=tk2s
------END PGP SIGNATURE-----
-
---j0T5UxTZF6zrutiv--
 
