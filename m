@@ -1,169 +1,147 @@
-Return-Path: <linux-kernel+bounces-61393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A87AB8511CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:07:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E34518511D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:08:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41DDD1F275BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:07:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A98C283215
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:08:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB9D838FAA;
-	Mon, 12 Feb 2024 11:07:31 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B46B82BAF0;
+	Mon, 12 Feb 2024 11:08:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hwh6mnEA"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B7A38FA1
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FDA3984D
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707736051; cv=none; b=jx0UNIW7cZbVwQKJBdhpJWgd65eke7IxSrk7U8Wv1/WHXOnzc0jEvZGGuJrsm9X45BguUNchhJGQb3L2uEr2EWuyvPXL1ziYSy1r8zvdpak3mJrSqJWsnOhbqnORkknyEOnzTiAYQW8RSZUP7w5RnICfm9zy7DTK2e+hiqRV5S0=
+	t=1707736093; cv=none; b=PJsDDimReIdY9Mj6WVHm/wwvD5EjTXjGNm6swHns/2UoKvmJeKuzKUNfF1vjQjk8BIBvzWMVQxzljpR+aXabnhxYcfuei/bzpDcfZ/R4Rp8g9MkLjrHFkga94ByBDy8wUSrBaU+3kGHOhU1pFU0hhA4c4bSUJnkLiuf7qzrtlSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707736051; c=relaxed/simple;
-	bh=CJYpcUz/mDIle68G32xKDYs2BkutrIVbb99+jmtLCqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A0/Go8x9iLx3rQdQqffMV6k5IhJrQelpTtUu+Y7JluAwnZAKH4uUYgzp1YWC6ZLjdmXWW37WASwQQvw3XBe6BzvA6vKVhrs5VYJgkDGXwHxhxuahGu8qNUNWXSeNRn+gz09CNvCoLkdJQsyRpksz2OeEl6WHc68fkcxyDS3YitQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <rhi@pengutronix.de>)
-	id 1rZU9T-0001Ye-Gl; Mon, 12 Feb 2024 12:07:07 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <rhi@pengutronix.de>)
-	id 1rZU9T-000Gmu-1w; Mon, 12 Feb 2024 12:07:07 +0100
-Received: from rhi by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <rhi@pengutronix.de>)
-	id 1rZU9S-005YSa-36;
-	Mon, 12 Feb 2024 12:07:06 +0100
-Date: Mon, 12 Feb 2024 12:07:06 +0100
-From: Roland Hieber <rhi@pengutronix.de>
-To: Hiago De Franco <hiagofranco@gmail.com>
-Cc: Marco Felsch <m.felsch@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Philipp Zabel <p.zabel@pengutronix.de>, kernel@pengutronix.de,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: MXSFB error: -ENODEV: Cannot connect bridge
-Message-ID: <20240212110706.ibrreoj2wgzhltyw@pengutronix.de>
-References: <34yzygh3mbwpqr2re7nxmhyxy3s7qmqy4vhxvoyxnoguktriur@z66m7gvpqlia>
+	s=arc-20240116; t=1707736093; c=relaxed/simple;
+	bh=wmJNTFUDAyhFvNq/Se9rQfDDeAAa3Yq+I6hfGkYdBG8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=pnP915U5lHGLmUIyh21i8gMMXgtWUuIhK2QUyxHnJLgcqYwWKzl6eUrgEAFDwkb0GaYRfgNUlYeBfxwPvbc6lfC5J1sG7zImKsXBvfmA8264+d3M24FV8vapCqVxyY8TLDLkbKPnKDjKSJqi8nT6HjCqGJ58lnerS1geqSnMJNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hwh6mnEA; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33b28aadb28so1916820f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707736090; x=1708340890; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gQU+9nMxtg490o2RfgUmMjlOUq5SlI61L9475wanmog=;
+        b=hwh6mnEAhGrn7LcEyzqzjzQao8E6G9rKWxzRIN6Xe8/gB2+wAENNKEyySg9fZID8mo
+         UM15O1RFirLqNF1OaskOo7+7JfPyQmh4AFRXLFXA/9kVx89e+XlY0P1LJA3G1/ClKqIJ
+         Jkf+ufOS0SNWPQSc5MYvEwOIGJbxa0FP6z62PQ7jPaT8sbVGPBZfdKz6uoG7J/qC2x6i
+         uAIV9nNyvm0Ii79qfCiux7jByXR8GsqqQX7+cNDHg+UzfeWrH3Bv3bWrEbS3B2xuNRJ5
+         HiZB5ucQYJUaxhW/Xiv3pHZtSml/ZJnw6/Mme01Fe3NRz+AiIKAGxASCworDmzElDtmz
+         Aucw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707736090; x=1708340890;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gQU+9nMxtg490o2RfgUmMjlOUq5SlI61L9475wanmog=;
+        b=MJ0ZZQzili+uMt2PfpB4FhzVGEymP91MCu+MLiWaoTXam3qiRnnX0WDJwoAtGHjmci
+         iH5kEMVKD+rdrCR4t0uXA1v2Hz4eHcqYGA8sbEltnPMXOpQwt5bu7J5+BP8urub9hQp0
+         FynXuXxWpdL6zFwmzhFbj+8MIWtiOX02YoM4djcxrkKldNf2M0qz1HlixituSRRIgwqQ
+         T/oK7wENPWifznyX5eMVAHdIbrqnJa8ZDC0kNWNnOKISFfyQLojRhbD8m0ycKvaSHei9
+         5LJrvcN6bNLarvQMkCIyXzeQBS+aGoDcmlekI8dICfeh4vykPy93TH4Sd99pqLG578Cq
+         kIwQ==
+X-Gm-Message-State: AOJu0YwEV3lPt7dIa7gnWkBRTZ8O3oQexcM3bGAxO9sm7tX7Eusa3/gD
+	ik4lvLDojI1b30PZ9+JchGbTR2L4vpQyh70VOpTZ2zhdLPpl6GFXg8aSXoEf6r4=
+X-Google-Smtp-Source: AGHT+IGDgqjEia9SZUq6NoUGI2e5RtQlvMgCL08pbrSmBlkBQrp08qNa6/eTJWLeE/5qnqUfqtdT+g==
+X-Received: by 2002:a5d:59ab:0:b0:33b:5f1d:5ef4 with SMTP id p11-20020a5d59ab000000b0033b5f1d5ef4mr6372739wrr.1.1707736090609;
+        Mon, 12 Feb 2024 03:08:10 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVzrMnDofJlRlNjgm2KNa50GSkyC9LSZkMKgIzQG08oK+y2bQVfAz1lWTjbihOAbrZz/TlaawYBcuyWFP556gnF3G1xj29t3PgWA6og3QAzxFSXfeNoPPfBUh+h1CU/vKAoMAzSVmscRa93dFXjnEdNrUdtN3Rg9IlsI7QZIQ34XfLTsPoJuG1NdTgdq/uVBgs0nZU661upSX1F4rJG/GgkhEmYc2RCT5KwXMPqy5QBhsw8gpFmaqP2z+VUXkCuDaYDP9QlivHdCd0SDExEZwN+jrgkPB8GlACO5pxjh4licktwwU7BEx6R19aDDfSk+wttVSnAmhaZhvKD6y7x4Q2rsfduE9rECyalTYOisdc8p+WHn8O7KT/Ptf8=
+Received: from [192.168.1.20] ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id by16-20020a056000099000b0033b75e5bc13sm5083353wrb.1.2024.02.12.03.08.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 03:08:10 -0800 (PST)
+Message-ID: <f44ea2d1-7381-487e-bd5f-33ffa6437a64@linaro.org>
+Date: Mon, 12 Feb 2024 12:08:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <34yzygh3mbwpqr2re7nxmhyxy3s7qmqy4vhxvoyxnoguktriur@z66m7gvpqlia>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: rhi@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] misc: qcom,fastrpc: Compute callbacks can be DMA coherent
+Content-Language: en-US
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Amol Maheshwari <amahesh@qti.qualcomm.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240212110636.57945-1-krzysztof.kozlowski@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240212110636.57945-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 08, 2024 at 12:58:02PM -0300, Hiago De Franco wrote:
-> Hello all,
+On 12/02/2024 12:06, Krzysztof Kozlowski wrote:
+> Apparently on Qualcomm SM8550 and SM8650 the FastRPC compute callbacks
+> are DMA coherent:
 > 
-> while doing some tests with kernel v6.8-rc3 and Colibri iMX7D, we
-> noticed the following error:
-> 
-> [    0.432547] mxsfb 30730000.lcdif: error -ENODEV: Cannot connect bridge
-> 
-> This was introduced by commit edbbae7fba495284f72f05768696572691231558
-> ("ARM: dts: imx7: add MIPI-DSI support"). This patch is routing the
-> lcdif to the mipi_dsi_in_lcdif endpoint, however we do not have the DSI
-> pins available in our edge connector. Instead, we use the parallel RGB
-> LCD interface directly with, as example, an external LVDS transmitter:
-> 
-> &lcdif {
-> ...
-> 	status = "disabled";
-> 
-> 	port {
-> 		lcdif_out: endpoint {
-> 			remote-endpoint = <&lcd_panel_in>;
-> 		};
-> 	};
-> };
-> 
-> By applying the following patch, the issue is gone and the LVDS works
-> again:
-> 
-> diff --git a/arch/arm/boot/dts/nxp/imx/imx7s.dtsi b/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
-> index ebf7befcc11e..9c81c6baa2d3 100644
-> --- a/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
-> +++ b/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
-> @@ -834,16 +834,6 @@ lcdif: lcdif@30730000 {
->  					<&clks IMX7D_LCDIF_PIXEL_ROOT_CLK>;
->  				clock-names = "pix", "axi";
->  				status = "disabled";
-> -
-> -				port {
-> -					#address-cells = <1>;
-> -					#size-cells = <0>;
-> -
-> -					lcdif_out_mipi_dsi: endpoint@0 {
-> -						reg = <0>;
-> -						remote-endpoint = <&mipi_dsi_in_lcdif>;
-> -					};
-> -				};
->  			};
->  
->  			mipi_csi: mipi-csi@30750000 {
-> @@ -895,22 +885,6 @@ mipi_dsi: dsi@30760000 {
->  				samsung,esc-clock-frequency = <20000000>;
->  				samsung,pll-clock-frequency = <24000000>;
->  				status = "disabled";
-> -
-> -				ports {
-> -					#address-cells = <1>;
-> -					#size-cells = <0>;
-> -
-> -					port@0 {
-> -						reg = <0>;
-> -						#address-cells = <1>;
-> -						#size-cells = <0>;
-> -
-> -						mipi_dsi_in_lcdif: endpoint@0 {
-> -							reg = <0>;
-> -							remote-endpoint = <&lcdif_out_mipi_dsi>;
-> -						};
-> -					};
-> -				};
->  			};
->  		};
-> 
-> I would like to know your opinion about this patch before sending it,
-> does it makes sense for you? I understand that routing to endpoint
-> should be done in the SoM device tree, so we are free to rout other
-> endpoint without issues.
 
-As far as I understood, the LCDIF -> DSI connection is always present in
-the SoC. Can you overwrite the routing in your dts like this:?
+Incomplete subject prefix, eh.
 
-    &lcdif_out_mipi_dsi {
-        remote-endpoint = <&lcd_panel_in>;
-    };
+Best regards,
+Krzysztof
 
-I'm not sure what is the best default solution here for imx7s.dtsi. Also
-the labels don't work out in that case, this could be improved.
-
-Regards,
- 
- - Roland
-
--- 
-Roland Hieber, Pengutronix e.K.          | r.hieber@pengutronix.de     |
-Steuerwalder Str. 21                     | https://www.pengutronix.de/ |
-31137 Hildesheim, Germany                | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686         | Fax:   +49-5121-206917-5555 |
 
