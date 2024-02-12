@@ -1,99 +1,117 @@
-Return-Path: <linux-kernel+bounces-62007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A5078519FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8578519FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:50:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3B231F23C3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:49:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FB261F23B54
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:50:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9493D3BF;
-	Mon, 12 Feb 2024 16:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC5F3D3A5;
+	Mon, 12 Feb 2024 16:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GNmqJokx"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OE69wcFO"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EEEA3D0D0
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:49:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68AF3B2A4;
+	Mon, 12 Feb 2024 16:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707756558; cv=none; b=EoeuWLcbc0DkxRjCK3oafKOXjCzvp2Fn5+pzi6bcb54O1S/5+lPIK3lvCZBYoMTQh1NO5UCUOPXcop9eEvgAV3BpHB8eLnnvUipFVIOg8EexNXLsEOSw2n1Ep3Pz/RUyDVj069YyrE0+4Ewt3utV+yOoz/a+pCZqG0fdxrf15so=
+	t=1707756604; cv=none; b=B4wJG5vayR6ttssx4MPF/qbTMK2/Ev0ygztdGZwi4ko0k8dbrF80quEttarf2xqo+EuV+DmMbsjLoACsJFQaynUzAycSNpDeyUvGoFbLOrMRi/g1gRdkXHTu/u+wD9Le3cjnm36cN4mN5BxVDcBommsXEq5b9eQ54XMUIGAbBio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707756558; c=relaxed/simple;
-	bh=hXu9sHdM7IJbBPOMIED59R9v4IKiIdSqswjDn3ekmdM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=uwwb6MZzHwyX453aLnci/rkpTxvBXSxpc//q2b6QdVKsFqY3cZzH5HnfOLquApizMMvtcLq+wxt09QS7+ybjuFjL7kLdQgE2O3xEpKgTWcZnYljRbxmBhDmzoLgzZKmugWMywKWhAVssXJAWmvWK2m9IzKf0n0y3S8SI+Mv+SDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GNmqJokx; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-604acd1d164so63692307b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:49:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707756556; x=1708361356; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GPlRou6Cx1Kdm8J9ZJTFkbCu7oULoCtJIpW6s3E0mRs=;
-        b=GNmqJokxsI8aKjS2krCmc0qdSe6NyftOx5gCWtz7HB4VXuoWG+0zGjn41YwKFaRbPf
-         fqeek6CXgXEbzNOQFmMgc+/4ezs/lHy3E+GDhk/DmtxIAbsbBScRqJ7aT/W5xu2IKJpo
-         9KYnh7ivuK+kYg6tjhpcnST+5HYmzAY3jQpdUwlHI3yo4LFsEN5+PUieQhxgKN9wd7Oq
-         SzrWmYdq6e7Qvbq2SAeU/7GhbWyDNOAZV6Lx3TQ9TiVvGmMNlx9IKqqXv68qPKv7ubEF
-         wC9c8UrIgJZtfqYNw+zQnCfiGA13nuPgXISVZv79TD6DOTDd8DW74cNN4+tfI75teUMI
-         s2gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707756556; x=1708361356;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GPlRou6Cx1Kdm8J9ZJTFkbCu7oULoCtJIpW6s3E0mRs=;
-        b=nG78IodzyyC9nzUsktxlN8iJH++MpXm4H/bny6QxgekfpxDftfkaX8iN6HgBhjsoLM
-         srH26IwNZ9EOISADrBh5sLW8Vg18Q8YmfXEYNagpxTKMihyZIV/lnutkpgCarBVJQKQM
-         eRWaOWCximUMqtMLM6IM5v1mXEQlGeGUnKkTwZPE348oi1l5NGvx03HizVfoF9Y96KBt
-         XAV6w++CLGK07CS9ltLf+bPSbjRawx/a5cSsczFgVVJaOP63XV5fCPj4p3J5vUpR/+OO
-         qDccpr1TaLAF3LAmEqg171WH/oVcmBurjTntgKCA4R4fqOQwESiH9xqqt0nLnNYs7hIJ
-         2GNg==
-X-Gm-Message-State: AOJu0Yx1d3n6HnkmnMSlwcSdxGvUetmBwqG3dfsSRZMRuD9i6OkWM1Yi
-	B/bvxsoZBDCGW6OXrNfWG3K1zW+jO7Sa9Eem0TuRufE0N/6azuM9dp7DOVYdU6g9mg==
-X-Google-Smtp-Source: AGHT+IHEfCmAmT/rBYK+wi7o54NKRrx/37fqsl6J959zqBb9V8tYzhdFiVREtU9nIAEW9Q7UkGAkihk=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:690c:3388:b0:5fc:6edc:448e with SMTP id
- fl8-20020a05690c338800b005fc6edc448emr2177007ywb.0.1707756556445; Mon, 12 Feb
- 2024 08:49:16 -0800 (PST)
-Date: Mon, 12 Feb 2024 08:49:14 -0800
-In-Reply-To: <7lv62yiyvmj5a7eozv2iznglpkydkdfancgmbhiptrgvgan5sy@3fl3onchgdz3>
+	s=arc-20240116; t=1707756604; c=relaxed/simple;
+	bh=qRmyrxFlXjewttj2hOMa7Rcn2XH4DDnyFrEFrynkY/s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ydaf5E2P3Gwxql1hIUcWtmpTaEPWFZOzk+GNu+vFbKXRzwpTZeXYkk7Xfoe4DBcB9GPPAw1AtkIqwbO2NfhrKQyGA3gYEPuW3fB3KDTiAb74foGXNKH45tvNBLT/Ixddt9ibLc09xAn0ekIQkrAjYYBoYFNa3T+3UlV7OAU48vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OE69wcFO; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707756603; x=1739292603;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qRmyrxFlXjewttj2hOMa7Rcn2XH4DDnyFrEFrynkY/s=;
+  b=OE69wcFOJBo6XTd5ibxtHwakQzHUgC4SFSASkMk5cW3RYIUIlce+2jBp
+   MacGD0KLsR/ETy7LkIhwNgGNkTn6lBmxW7lz+3H3dGnXikXN633LvNzwH
+   v/pYRrBmEEQrdnbrsKv7hH2EYq9QapipWS4tVcq4GDhr8PQyd9yIb2S4a
+   3q7KcdQ/tQu0rF6izGrrdhcG+RCwcgJLCl7gCzg4yL9R66onb1YMhSKhq
+   iYVx6EQrM5ZBs+uOX6tgOY/0BeQXUtuyeZcffVp0h3fj041rL1xVNMDoq
+   SqOuIGwj9Qu6P67aCTzRd0RR4bppAGu12iXKSGCSKFTh5tCHf8F6EQRDk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="19247654"
+X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
+   d="scan'208";a="19247654"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 08:49:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="911540822"
+X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
+   d="scan'208";a="911540822"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 08:49:50 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rZZV7-00000003x6Q-1DTH;
+	Mon, 12 Feb 2024 18:49:49 +0200
+Date: Mon, 12 Feb 2024 18:49:49 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Robin van der Gracht <robin@protonic.nl>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Burton <paulburton@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH v1 10/15] auxdisplay: linedisp: Provide a small buffer in
+ the struct linedisp
+Message-ID: <ZcpMLXTfc95fGTae@smile.fi.intel.com>
+References: <20240208184919.2224986-1-andriy.shevchenko@linux.intel.com>
+ <20240208184919.2224986-11-andriy.shevchenko@linux.intel.com>
+ <20240212092500.62f006cc@ERD993>
+ <ZcoF9ZxPBkVS_6Da@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <7lv62yiyvmj5a7eozv2iznglpkydkdfancgmbhiptrgvgan5sy@3fl3onchgdz3>
-Message-ID: <ZcpMCnJMwbgiUMmE@google.com>
-Subject: Re: [PATCH v4 bpf-next] net: remove check in __cgroup_bpf_run_filter_skb
-From: Stanislav Fomichev <sdf@google.com>
-To: Oliver Crumrine <ozlinuxc@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcoF9ZxPBkVS_6Da@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 02/09, Oliver Crumrine wrote:
-> Originally, this patch removed a redundant check in
-> BPF_CGROUP_RUN_PROG_INET_EGRESS, as the check was already being done in
-> the function it called, __cgroup_bpf_run_filter_skb. For v2, it was
-> reccomended that I remove the check from __cgroup_bpf_run_filter_skb,
-> and add the checks to the other macro that calls that function,
-> BPF_CGROUP_RUN_PROG_INET_INGRESS.
+On Mon, Feb 12, 2024 at 01:50:13PM +0200, Andy Shevchenko wrote:
+> On Mon, Feb 12, 2024 at 09:25:00AM +0100, Robin van der Gracht wrote:
+> > On Thu,  8 Feb 2024 20:48:08 +0200
+> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 > 
-> To sum it up, checking that the socket exists and that it is a full
-> socket is now part of both macros BPF_CGROUP_RUN_PROG_INET_EGRESS and
-> BPF_CGROUP_RUN_PROG_INET_INGRESS, and it is no longer part of the
-> function they call, __cgroup_bpf_run_filter_skb.
+> > > +	linedisp->num_chars = buf ? num_chars : min(num_chars, LINEDISP_DEFAULT_BUF_SZ);
+> > 
+> > It's not a big buffer, but now it's always there even if it's not used.
+> > And even if it's used, it might be only partially used.
+> > Why not used a malloc instead?
 > 
-> Signed-off-by: Oliver Crumrine <ozlinuxc@gmail.com>
+> malloc() infra takes more than this IIRC (something like up to 32 bytes on
+> 64-bit platforms) or comparable sizes. Yes, the malloc() along with the
+> linedisp structure might make sense, but will require more invasive change.
+> 
+> Do you want me to drop this one from the set?
+> (I have no hard feelings about it, as I see better way and just having no
+>  time for taking care about, as it's not the main point of the series.)
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
+Looking again into it, the allocation separately with linedisp structure
+is indeed too much invasive. I prefer (as we save lines of code and deduplicate
+the buffer at least for two drivers, including a new one) to leave this patch
+for now. We may rework it later on. Do you agree?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
