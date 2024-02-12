@@ -1,160 +1,163 @@
-Return-Path: <linux-kernel+bounces-62336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57EE1851EAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:29:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C366C851EA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E10FB215CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:29:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4158C1F2171D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 206964C61B;
-	Mon, 12 Feb 2024 20:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E92482D4;
+	Mon, 12 Feb 2024 20:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tAv1716J"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FPVamoda"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E17046551;
-	Mon, 12 Feb 2024 20:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11A846435
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707769753; cv=none; b=CeIxJJcLrojDctgP7PHIAfmX95nNIrtwgsqxsjL3IBg3swecZdAtUQPXqFlLrrczWHH9TRw4Fto7QM+lG12mmSunFRR6OVW2LS5hjoBIFmBAUvHTXiJstrYunMihdYyvLgbBM5ASifSv7K9HkLSwFtTwNwld7xnklLoqqXAm2ds=
+	t=1707769752; cv=none; b=nc5Q+k6/dTY85P+nNd8Rzl/qcUA24ex6i5w+HhjijMX6UIoK+yt8aCiybtAZ3lmcpShUFFLzikO9HIJKq71UkiKLEKu5yIQt+TsUXLY3S2utZcku3Fw+qY9iZ1fDoa87O8JjeXAYiYjQ9j9hyGF+8arPzWvMxY34MAIcIPCMsqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707769753; c=relaxed/simple;
-	bh=eSMPcnqleewvsCZOjcxX6j+WVDKLH3kGFH0udq8XuOQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Wttk7MdccOB4IXmfEC5SAImVoD+rarb0N+X/IWR6ADizPsaOiM8Wu//sa9BBtMuKPtDvXaZFkJRNld5jxrl/1ph1n+lqrr+YHeqVOaSUD0hrK/VwPS+5GzD2u7gSMq7emi0YsWEJ76K3loYsSjgBHvbuECM+373Mj+HfOJO3Zp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tAv1716J; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CKN0SZ003408;
-	Mon, 12 Feb 2024 20:28:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=JhR4CnsbNNlV55xXkJZROwtBvgr65QVEvejYyFSklRU=;
- b=tAv1716JGfXUJ56oTLAfdJEAD2xUh5bWfDi9/epslC9qI0QdHGhMP/isop8LFXZYitAa
- X5/DINpovaNb3ALNwWh0aQicSxSlX3WzOwvXd3m9k02/VXzF/4GKcMhiTOmgiyW+dOXr
- lwoTKH3TjlQWp9nDIbr6sM9Q9zGbt2g9THl4Zxm4b32c9xkVgn0QCLEPjsCf/n9T9XhT
- tgfV7J7oxNDKtRSUSArXMorP4r5rMg0LzL0C7ErqQlUsn9GZiHTasnhq2ToHLX53pHpd
- O31Ey5sgcha96GI93Q+qCuG+6760LshZH1SRDukLhKwsbjemnWFUeLvqXosjvZNfu8iA 3w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7taf8470-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 20:28:45 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CKQ2sa011682;
-	Mon, 12 Feb 2024 20:28:44 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7taf845d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 20:28:44 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CJ3q0B004297;
-	Mon, 12 Feb 2024 20:28:43 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6kv036ey-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 20:28:43 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CKSeM546268780
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 Feb 2024 20:28:42 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7FD7C5805D;
-	Mon, 12 Feb 2024 20:28:38 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9BE8E58055;
-	Mon, 12 Feb 2024 20:28:34 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 12 Feb 2024 20:28:34 +0000 (GMT)
-Message-ID: <7940b9d0-3133-4b08-b397-ad9ee34e3b34@linux.ibm.com>
-Date: Mon, 12 Feb 2024 15:28:33 -0500
+	s=arc-20240116; t=1707769752; c=relaxed/simple;
+	bh=4DG/2AulWdm1bfaag4echIs9kSH2jj0kQ6qcGW9ZFNI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JxYrQegrqgUGgf/RWNe8NReFq7hODOkCnONShMXVZg8xP5jDzddkgOtFMjsbMNTev2I/rBDKheIZIEdpfJyqRuAYQYv4pubY6EEWWtx8VuCvPxheqWAu7xr61/s4YYCgsdmKd5N1TS46c0wbaryi947n79eL7jWegNQae0HVMds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FPVamoda; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-560530f4e21so2815a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:29:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707769749; x=1708374549; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OGH4gStnAh2cVluN25q7Y7nHy88Q9ENXq3FqeNVOM/s=;
+        b=FPVamodaZe9hN1dQI9wgE0+u2VWM4vC4Wopi+kKYErkIx/NvB0F+QYpwik5FcC+U6t
+         itwG93iP7mXIw5M3gvtcH5y9UK/Y7i9TuN5O20bOAlomWW38GMjeBP2l6Fq69D0Zk3+Z
+         IiINFOOYYP2/9D1hTrrsmgGRjHGs6QW17dFURb/iqCZAdSakBZQ/XhkGF2fwXAsMqNK9
+         I1vBVkquMRUkJiyf/9DkqptglzPRmp2TXcTt9P7kUS80oq7+85JONT2GpWjPblRw2U7R
+         8Kp4ndITC/euRF2dUI6OJTM3QFtG8S9MXIE9E4oSqNjIYix4omFIGHzzTY9m4tmmsD+D
+         6RiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707769749; x=1708374549;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OGH4gStnAh2cVluN25q7Y7nHy88Q9ENXq3FqeNVOM/s=;
+        b=EO2kipIBNmmxbpUPcNk48TJIaHFA76CtQ9gq4mEwWMWFeZcSaO/aKIwVQjpONBaJBO
+         ZSrhZB6IoF9UMtBJHdHj3uICrDOdT90c0De+Ft35QFokjMM88NVVEv78rx8NWSd5G+pn
+         IvZXmbzfHkooNdSvlEuEyZZOM4QAfYOF78N+MrAK9UM1VOhukjm7tHdGKSAB3bqb1uaU
+         +rPEe10w1vphxC6bqcMYIhSmCm34Yju7SjcEZWmOXfIP7i/zENbSOzu14w/EtgJWzYTG
+         3IpaXqrTeTH3S5TBUSH+1vrBcRzQJWxZJd2wJm6TuwoK1iT4xqaJrZGfUSb41XVccFic
+         ihjA==
+X-Forwarded-Encrypted: i=1; AJvYcCWi6m/zljE7iHkKUSelJrtqgwkoOglhAx/Ibi2y/0p1xq509sf7k/uSqv/CeBkTcUAfjSLVGYCYmke9r0cpX98EToc1VscgK3tmy2Vr
+X-Gm-Message-State: AOJu0YxxowGtWVKPtLZ0VyjTRLefZrT8h0fXHVnLlRTb4b8yWgjdLjDN
+	IIPY7w+3r1a/HK1QPfGuijTkQIJ+2cYRFcQljcefqnaSUhIl1BQ8QO5/T15tBU8Lh8YpSPjVKvi
+	R2hcZG8PSyFQD94siybXrnhv9YllFwhD5eXpg
+X-Google-Smtp-Source: AGHT+IGuYchSscpq9fWAFb5Vzs8WMDTwNcFt6X4bssqA5EbwrkI48Fp8X67xME2pYpEP1CvrnyG7xZmyeKfe2FxC1Ig=
+X-Received: by 2002:a50:8a9e:0:b0:560:f37e:2d5d with SMTP id
+ j30-20020a508a9e000000b00560f37e2d5dmr295831edj.5.1707769748536; Mon, 12 Feb
+ 2024 12:29:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 19/25] integrity: Move
- integrity_kernel_module_request() to IMA
-Content-Language: en-US
-To: Paul Moore <paul@paul-moore.com>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com,
-        dhowells@redhat.com, jarkko@kernel.org, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, casey@schaufler-ca.com, shuah@kernel.org,
-        mic@digikod.net, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org,
-        keyrings@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
- <20240115181809.885385-20-roberto.sassu@huaweicloud.com>
- <fd6ddc3d-e5d3-4b9c-b00b-ac2b1f22d653@linux.ibm.com>
- <CAHC9VhTY=X7z5SRQZzFe25FGB2E3FBBkuZ_YYA1+ETyr7pv=tA@mail.gmail.com>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <CAHC9VhTY=X7z5SRQZzFe25FGB2E3FBBkuZ_YYA1+ETyr7pv=tA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: IG8gA7VCiIuoNiLherBpxii_bnuMc-F5
-X-Proofpoint-ORIG-GUID: n2O60wZIGE2TuBwcELMLALmk7ji0iQ_T
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-12_16,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- malwarescore=0 phishscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
- adultscore=0 clxscore=1015 spamscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402120158
+References: <20220825122726.20819-1-vincent.guittot@linaro.org> <20220825122726.20819-2-vincent.guittot@linaro.org>
+In-Reply-To: <20220825122726.20819-2-vincent.guittot@linaro.org>
+From: Josh Don <joshdon@google.com>
+Date: Mon, 12 Feb 2024 12:28:55 -0800
+Message-ID: <CABk29NsQf_xStzWg8bB_hpNpPC_LduMs-M058LjdhnDG16wN_A@mail.gmail.com>
+Subject: Re: [PATCH 1/4] sched/fair: make sure to try to detach at least one
+ movable task
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	linux-kernel@vger.kernel.org, zhangqiao22@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Vincent,
 
+On Thu, Aug 25, 2022 at 5:27=E2=80=AFAM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> During load balance, we try at most env->loop_max time to move a task.
+> But it can happen that the loop_max LRU tasks (ie tail of
+> the cfs_tasks list) can't be moved to dst_cpu because of affinity.
+> In this case, loop in the list until we found at least one.
 
-On 2/12/24 12:56, Paul Moore wrote:
-> On Mon, Feb 12, 2024 at 12:48 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
->> On 1/15/24 13:18, Roberto Sassu wrote:
-> 
-> ...
-> 
->>> +/**
->>> + * ima_kernel_module_request - Prevent crypto-pkcs1pad(rsa,*) requests
->>> + * @kmod_name: kernel module name
->>> + *
->>> + * We have situation, when public_key_verify_signature() in case of RSA > + * algorithm use alg_name to store internal information in order to
->>> + * construct an algorithm on the fly, but crypto_larval_lookup() will try
->>> + * to use alg_name in order to load kernel module with same name.
->>> + * Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel modules,
->>> + * we are safe to fail such module request from crypto_larval_lookup().
->>> + *
->>> + * In this way we prevent modprobe execution during digsig verification
->>> + * and avoid possible deadlock if modprobe and/or it's dependencies
->>> + * also signed with digsig.
->>
->> This text needs to some reformulation at some point..
-> 
-> There is no time like the present.  If you have a suggestion I would
-> love to hear it and I'm sure Roberto would too.
-> 
+We had a user recently trigger a hard lockup which we believe is due
+to this patch. The user in question had O(10k) threads affinitized to
+a cpu; seems like the process had an out of control thread spawning
+issue, and was in the middle of getting killed. However, that was
+being slowed down due to the fact that load balance was iterating all
+these threads and bouncing the rq lock (and making no progress due to
+ALL_PINNED). Before this patch, load balance would quit after hitting
+loop_max.
 
-My interpretation of the issue after possibly lossy decoding of the 
-above sentences:
+Even ignoring that specific instance, it seems pretty easy for this
+patch to cause a softlockup due to a buggy or malicious process.
 
-Avoid a deadlock by rejecting a virtual kernel module with the name 
-"crypto-pkcs1pad(rsa,*)". This module may be requested by 
-crypto_larval_lookup() while trying to verify an RSA signature in 
-public_key_verify_signature(). Since the loading of the RSA module may 
-itself cause the request for an RSA signature verification it will 
-otherwise lead to a deadlock.
+For the tradeoff you were trying to make in this patch (spend more
+time searching in the hopes that there's something migratable further
+in the list), perhaps it would be better to adjust
+sysctl.sched_nr_migrate instead of baking this into the kernel?
 
+Best,
+Josh
+
+>
+> The maximum of detached tasks remained the same as before.
+>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> ---
+>  kernel/sched/fair.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index da388657d5ac..02b7b808e186 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8052,8 +8052,12 @@ static int detach_tasks(struct lb_env *env)
+>                 p =3D list_last_entry(tasks, struct task_struct, se.group=
+_node);
+>
+>                 env->loop++;
+> -               /* We've more or less seen every task there is, call it q=
+uits */
+> -               if (env->loop > env->loop_max)
+> +               /*
+> +                * We've more or less seen every task there is, call it q=
+uits
+> +                * unless we haven't found any movable task yet.
+> +                */
+> +               if (env->loop > env->loop_max &&
+> +                   !(env->flags & LBF_ALL_PINNED))
+>                         break;
+>
+>                 /* take a breather every nr_migrate tasks */
+> @@ -10182,7 +10186,9 @@ static int load_balance(int this_cpu, struct rq *=
+this_rq,
+>
+>                 if (env.flags & LBF_NEED_BREAK) {
+>                         env.flags &=3D ~LBF_NEED_BREAK;
+> -                       goto more_balance;
+> +                       /* Stop if we tried all running tasks */
+> +                       if (env.loop < busiest->nr_running)
+> +                               goto more_balance;
+>                 }
+>
+>                 /*
+> --
+> 2.17.1
+>
 
