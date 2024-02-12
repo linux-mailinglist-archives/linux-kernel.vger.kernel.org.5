@@ -1,51 +1,50 @@
-Return-Path: <linux-kernel+bounces-61367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D89B851176
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 60FB4851177
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:51:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 510EC1C2354C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:51:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9205F1C22E5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:51:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B703A3DB92;
-	Mon, 12 Feb 2024 10:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4028939AD8;
+	Mon, 12 Feb 2024 10:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="iBtSIAV5"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="GKzShdse"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 072BF3D982;
-	Mon, 12 Feb 2024 10:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7658138FA1
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:45:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707734735; cv=none; b=QG+aznbSodIDf2rLeFNxpOYNHYO8BrZFpfHLmCa9sT/C4aMeK5uGWRygGcjLx24g/qcD/F36gMMCHZrrEZZm/+8CZxXgo5xqvZVBjKkzqNeWbLBeSbbV7hMqzplrFidk9rhjLnbd3rK+qoo0IIALdT84fFLBI63DQHGgxnttCb8=
+	t=1707734749; cv=none; b=aufQ2bM/jQjLVRJyzEDeeQOvH4goEzB7NC9T8aJ0RqTsM9gEd5FXDT5vrhMEYlfcpmn/a56nhclJKa0AwWer5KBOGAPBtV4zStn792Wa4BkBVkRwGF8pQS2dcbSMuxgxIaBqzrEfg1OtZTdy+5P4JQDm5t1uY+QTzd2jz5oBVeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707734735; c=relaxed/simple;
-	bh=HUQxRkObB8KLWprInhiPsP+17A+Mx8/GE9g+cdXpzvg=;
+	s=arc-20240116; t=1707734749; c=relaxed/simple;
+	bh=BRFpUnq4148MioG1AC1d4qj1hPHEOF+Rac7kCKLRavo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ppwYIL0m/PjI/EO80SROiO315RwzeQvUQWOryC1x5qvFBenrUpxXk+ZsgyudH7dioUVJbpcweWfc/StqV4F9PI4u3oL2dX2iq9mtn3KCcI7k0/3as9jbFCOyUVhxnc2UzY1emsR0HwqbWgFYpcyx1HBRO60NSZbxJx2trD0W7hE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=iBtSIAV5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0352FC433C7;
-	Mon, 12 Feb 2024 10:45:33 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=B8BvdknrzGaJMJfBKomut7b758WuuWhH8EBle3e8xYQU7+B4g8Od6kGWoZbjLhnZZyQXl93HvV5FA2OcPBQHTqP3/3TIAWJl3dqFF7jcwe7l3clkQT0iTjCNEJCViwRfyZo5gsuasV87FsE8pGzwODR5c1zo7QrN5Mrv/Alc/Kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=GKzShdse; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FD98C433C7;
+	Mon, 12 Feb 2024 10:45:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707734734;
-	bh=HUQxRkObB8KLWprInhiPsP+17A+Mx8/GE9g+cdXpzvg=;
+	s=korg; t=1707734748;
+	bh=BRFpUnq4148MioG1AC1d4qj1hPHEOF+Rac7kCKLRavo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iBtSIAV5aWhVrqbG6Oy91hGLsTz70IXHub4zo5xDQwHvnU3fqS2SE2E52IFqTh1sg
-	 gb4dM/X/viM1vZ533KdpZWj7S6wqImX0ErXMOJcnKCCv/4S7KVS+g0G9vdttJkPDTb
-	 OPclPgonJvPdYpAfje0VVNXdu58Fl8r3rXDh95gg=
-Date: Mon, 12 Feb 2024 11:45:31 +0100
+	b=GKzShdse5//Phd4LZjWVRbH7tPOZLTkMuEQVEVhfq1gJUyIZ7j7XgytOeMf6dJ/PH
+	 kaM5qZP1Dkk1C+BgjwCoI0VlMkLCOntOP+9w4A0kytNHRGbZIkRNRbx6qdZdfYgHnH
+	 wNTLQ+VgbDdk+lZs/GFekLXsCWz7n79lAMlWHT50=
+Date: Mon, 12 Feb 2024 11:45:45 +0100
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: Make scsi_bus_type const
-Message-ID: <2024021246-canon-planner-2bf6@gregkh>
-References: <20240211-bus_cleanup-scsi2-v1-1-dd04ee82e6b0@marliere.net>
+Cc: Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] ARM: struct bus_type cleanup
+Message-ID: <2024021241-cussed-suds-ffff@gregkh>
+References: <20240211-bus_cleanup-rmk-v1-0-65668e578d55@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,86 +53,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240211-bus_cleanup-scsi2-v1-1-dd04ee82e6b0@marliere.net>
+In-Reply-To: <20240211-bus_cleanup-rmk-v1-0-65668e578d55@marliere.net>
 
-On Sun, Feb 11, 2024 at 12:33:50PM -0300, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the scsi_bus_type variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
+On Sun, Feb 11, 2024 at 12:45:06PM -0300, Ricardo B. Marliere wrote:
+> This series is part of an effort to cleanup the users of the driver
+> core, as can be seen in many recent patches authored by Greg across the
+> tree (e.g. [1]).
 > 
-> Remove some extraneous whitespace.
+> ---
+> [1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
 > 
 > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
->  drivers/scsi/scsi_priv.h  | 6 +++---
->  drivers/scsi/scsi_sysfs.c | 6 +++---
->  2 files changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/scsi/scsi_priv.h b/drivers/scsi/scsi_priv.h
-> index 1fbfe1b52c9f..6a02114776b3 100644
-> --- a/drivers/scsi/scsi_priv.h
-> +++ b/drivers/scsi/scsi_priv.h
-> @@ -54,7 +54,7 @@ void scsi_init_command(struct scsi_device *dev, struct scsi_cmnd *cmd);
->  void scsi_log_send(struct scsi_cmnd *cmd);
->  void scsi_log_completion(struct scsi_cmnd *cmd, int disposition);
->  #else
-> -static inline void scsi_log_send(struct scsi_cmnd *cmd) 
-> +static inline void scsi_log_send(struct scsi_cmnd *cmd)
 
-Why is this line changed?
-
->  	{ };
->  static inline void scsi_log_completion(struct scsi_cmnd *cmd, int disposition)
->  	{ };
-> @@ -156,7 +156,7 @@ extern void scsi_sysfs_device_initialize(struct scsi_device *);
->  extern struct scsi_transport_template blank_transport_template;
->  extern void __scsi_remove_device(struct scsi_device *);
->  
-> -extern struct bus_type scsi_bus_type;
-> +extern const struct bus_type scsi_bus_type;
->  extern const struct attribute_group *scsi_shost_groups[];
->  
->  /* scsi_netlink.c */
-> @@ -197,7 +197,7 @@ struct bsg_device *scsi_bsg_register_queue(struct scsi_device *sdev);
->  
->  extern int scsi_device_max_queue_depth(struct scsi_device *sdev);
->  
-> -/* 
-> +/*
-
-And this?
-
-
->   * internal scsi timeout functions: for use by mid-layer and transport
->   * classes.
->   */
-> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-> index 24f6eefb6803..7f1fede8ef5d 100644
-> --- a/drivers/scsi/scsi_sysfs.c
-> +++ b/drivers/scsi/scsi_sysfs.c
-> @@ -549,7 +549,7 @@ static int scsi_bus_uevent(const struct device *dev, struct kobj_uevent_env *env
->  	return 0;
->  }
->  
-> -struct bus_type scsi_bus_type = {
-> +const struct bus_type scsi_bus_type = {
->          .name		= "scsi",
->          .match		= scsi_bus_match,
->  	.uevent		= scsi_bus_uevent,
-> @@ -656,7 +656,7 @@ static int scsi_sdev_check_buf_bit(const char *buf)
->  			return 1;
->  		else if (buf[0] == '0')
->  			return 0;
-> -		else 
-> +		else
-
-And this, please be more careful, it looks like your editor stripped out
-all trailing whitespace, which is fine for new files, but not for
-existing ones.
-
-thanks,
-
-greg k-h
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
