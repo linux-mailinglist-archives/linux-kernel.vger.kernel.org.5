@@ -1,137 +1,107 @@
-Return-Path: <linux-kernel+bounces-61543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D415D851380
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:24:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2063851388
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:27:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12E721C2161D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:24:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71C6DB232DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1691539FE4;
-	Mon, 12 Feb 2024 12:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E30B39FDC;
+	Mon, 12 Feb 2024 12:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IgyE58kj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IxIAX19Q"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB1F39FCD
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C513984D;
+	Mon, 12 Feb 2024 12:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707740652; cv=none; b=QVmw9Q6g0TrpolHnBvL/MY4cZ34nnut10UG7V9KhK7SES2k8ynB6qRhHnooEoT8shTuEcmtZ+lPRfk+9BSbeyZw7Poq/4y84/7kSdZqwFvtOs1GE83CIgqoeAZ0wmLdWTVVaTCVxmwmY3ffF2DJgENNR7b4NhCYNYqqlUq8c8HM=
+	t=1707740846; cv=none; b=cqfOB9mbzmK1D9U6/9K48JOj5ZIikhBolfzr+6NS5YKbqpL/++EnT+xKr0EMtGlQiRC5d0VWF02DragAJYnYNWvEEnEjImoCYcWGWE9nEJgYFFzoegHtGrtg7azrkrujZIeFYfmSmp1TMUn2w71fiYMKrweq9yk/qSRfRRZVrCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707740652; c=relaxed/simple;
-	bh=acPHK8IdUjxMeyxurQI2Gi+2UqoYkNniJUXwfOJMhd8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=qf7cmdOSPxx7kOjebYoJwT2KkncMrpFWYbtM7Yjao4o7aoRWVzHTFYGUZ3vTl5Ul58R+uxt44ioDfxw06o0kh9tLnlj6CxE23K9vAyF/GgaXWMUQIPsua+tOI7BBu+9jnBEPaUQ65IpaJecrwUl6uL0hhvQZgH8N9Urs00QhsMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IgyE58kj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15478C433A6;
-	Mon, 12 Feb 2024 12:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707740651;
-	bh=acPHK8IdUjxMeyxurQI2Gi+2UqoYkNniJUXwfOJMhd8=;
-	h=From:Date:Subject:To:Cc:From;
-	b=IgyE58kjHyqRgbKyCXjeRHnMDbvo00vpzVs+go4RgPN2drqnZDZTvwqbBmNSAO6pd
-	 t6S2DHw0GavNjiQpDdI3BlbRNh/1jTfsn64kw1hHlSImrkgxfr9wUo2+Dh/+xOEzVN
-	 CbeZacQH1j9KFkvUcfgILtR76N7yIq9AO2+RuA4E61rYOncywLj9Ey42xdgRtOmFeO
-	 Ftaghxbo4vAQCk2/qNQT+7uZf/NOTQ4ibYgb5tXuVv7ED2pzN/rbK3vF6R2lrAu3Q0
-	 kIU0MsCdNGuvFDScgiFBA7IYUIyyhhgz+CGKPmQOChEa9Nf3Adrz5dgDRlnIJgr4zx
-	 sPyjAhQbUx4Mg==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Mon, 12 Feb 2024 07:24:05 -0500
-Subject: [PATCH] filelock: always define for_each_file_lock()
+	s=arc-20240116; t=1707740846; c=relaxed/simple;
+	bh=hbdJFCCuPFgmNxY6Pc6OeFv4Zasw/ff5zsB4psb92tU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CW9s6NlCdE8eByEwMxFXSOHxbvjY8tkvdvkOnN39KXIz0tVwKLFArdU2ojE/hepaZbnARyKblEoB7V2K5QEMAhc1t95hl+Uj82lYQ5MQQ6gbcc2vVWAmbmQNfw/TN094qklpczo3dPMLki+8M1M5I5sBfZf63wZq6I52H/6tC5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IxIAX19Q; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707740845; x=1739276845;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hbdJFCCuPFgmNxY6Pc6OeFv4Zasw/ff5zsB4psb92tU=;
+  b=IxIAX19Qq89sk8rqxYTiZbpKoIs5WACFrOfY0pfmBAyvTV6mNFOOdxCW
+   ZKMCtBw0V90K8Mzgt9ejsRK7YTbLOLrM/4gGdmZ1khvCfrdvbzZuNNeKS
+   x02VY6Fwp/AFNvNA7JmyYr/a5iw/aLo2Uw8fIpDusB0BWno33Xp8xeVNc
+   OGW8W9cuYUBGFNeZ7ZC3JlKrxLAanmlspbCiHS/kW4VG9WQerYRd1+eXl
+   sFeFZ99iluaNOkFAO6cyV8rES5jS8HPfgJeYH7LmFxCAIQuC1zYgOuSVs
+   ILFoCC/SaXMoW0OD5W9SWxsDlHRkin/LHzNZ7l2AN3d4IUnzm7F84EHLj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="1592171"
+X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
+   d="scan'208";a="1592171"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:27:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="911468813"
+X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
+   d="scan'208";a="911468813"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:27:19 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rZVP2-00000003tMs-1ItT;
+	Mon, 12 Feb 2024 14:27:16 +0200
+Date: Mon, 12 Feb 2024 14:27:16 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
+	Mark Brown <broonie@kernel.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v3 RESEND 3/6] bitmap: Make bitmap_onto() available to
+ users
+Message-ID: <ZcoOpPb9HfXOYmAr@smile.fi.intel.com>
+References: <20240212075646.19114-1-herve.codina@bootlin.com>
+ <20240212075646.19114-4-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240212-flsplit3-v1-1-019f0ad6bf69@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAOUNymUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDI0Mj3bSc4oKczBJjXUNzk9S0tFRjM3PTRCWg8oKi1LTMCrBR0bG1tQC
- yf5H8WgAAAA==
-To: Christian Brauner <brauner@kernel.org>
-Cc: Arnd Bergmann <arnd@kernel.org>, Tom Talpey <tom@talpey.com>, 
- Luca Vizzarro <Luca.Vizzarro@arm.com>, Chuck Lever <chuck.lever@oracle.com>, 
- Alexander Aring <aahringo@redhat.com>, linux-kernel@vger.kernel.org, 
- kernel test robot <lkp@intel.com>, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1974; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=acPHK8IdUjxMeyxurQI2Gi+2UqoYkNniJUXwfOJMhd8=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlyg3qKC8hijrzL59SUXn70Z3kvQgeGygYYL/o1
- 0g+D6CdJsiJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZcoN6gAKCRAADmhBGVaC
- FYvfEACzWCk6XfVxuJvUphAIdSoatT5AZE1OSok/HefL2FbjdPdOKd7TQOGiGbyAVHTvx9EOqnA
- /BmVRcNqbP2ZLXS9G1XPEPUepUD+DS131wXVymvIqQtBE6dyb3/1MlNrtjAJrneMLkG4JF6HCwl
- B7bGh3e0SKf8JHD8dIpQu6DofKeC20xthbTv2/oh7x7IS7WN+jQdIvULEBbYPu5VtsR9m1dQhU5
- 8SsZvpxaBpTQcWxHKOdLpZe6mX0G3reIP66YNYx5DmVsvootDZ7wkWQn1xyNrty4Pntc3iFxfL2
- NrhEDwcNSLFt0WH1NHeQtHpzQYItF0YQbwrSzq3FswUrfRp22jlSqfF0CNQFsV85CBeI286W7iB
- NB904cEQLtj4XzgF3Ij61FYrhC7skQ5+rLDumSBxQJIh6OuZXNQVUF6z1RgGXaPE1ij+U/9Hvdf
- c69xh+Fu5lQ0tfxLGi1mEKmPt0SxV8UW0sIXapNjMFxryZDSRBY+HzHi+VMtP3KBR6akcE4PfoL
- 9cS0BdIutsxQHEqd9i7yLraRfTa6FwwPTrJ3WR3rjsnKKjkYIq6nh4tXYjdr/U1dqD4vUYFju46
- DcG9yQj0zGVcPmqn522fpKwNpGQz/3K0tGB01m4RBxnA8HaLd0eNExsI1UoRQNrOWIN8StRIPl6
- Lnc4BR8L/oFvAgA==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212075646.19114-4-herve.codina@bootlin.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-..and eliminate the stub version when CONFIG_FILE_LOCKING is disabled.
-This silences the following warning that crept in recently:
+On Mon, Feb 12, 2024 at 08:56:31AM +0100, Herve Codina wrote:
+> Currently the bitmap_onto() is available only for CONFIG_NUMA=y case,
+> while some users may benefit out of it and being independent to NUMA
+> code.
+> 
+> Make it available to users by moving out of ifdeffery and exporting for
+> modules.
 
-fs/ceph/locks.c: In function 'ceph_count_locks':
-fs/ceph/locks.c:380:27: error: unused variable 'lock' [-Werror=unused-variable]
-  380 |         struct file_lock *lock;
+Wondering if you are trying to have something like
+https://lore.kernel.org/lkml/20230926052007.3917389-1-andriy.shevchenko@linux.intel.com/
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402062210.3YyBVGF1-lkp@intel.com/
-Fixes: 75cabec0111b ("filelock: add some new helper functions")
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- include/linux/filelock.h | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/filelock.h b/include/linux/filelock.h
-index aabd4bdf7eba..daee999d05f3 100644
---- a/include/linux/filelock.h
-+++ b/include/linux/filelock.h
-@@ -180,9 +180,6 @@ static inline void locks_wake_up(struct file_lock *fl)
- 	wake_up(&fl->c.flc_wait);
- }
- 
--/* for walking lists of file_locks linked by fl_list */
--#define for_each_file_lock(_fl, _head)	list_for_each_entry(_fl, _head, c.flc_list)
--
- /* fs/locks.c */
- void locks_free_lock_context(struct inode *inode);
- void locks_free_lock(struct file_lock *fl);
-@@ -283,8 +280,6 @@ static inline void locks_wake_up(struct file_lock *fl)
- {
- }
- 
--#define for_each_file_lock(_fl, _head)	while(false)
--
- static inline void
- locks_free_lock_context(struct inode *inode)
- {
-@@ -414,6 +409,9 @@ locks_inode_context(const struct inode *inode)
- 
- #endif /* !CONFIG_FILE_LOCKING */
- 
-+/* for walking lists of file_locks linked by fl_list */
-+#define for_each_file_lock(_fl, _head)	list_for_each_entry(_fl, _head, c.flc_list)
-+
- static inline int locks_lock_file_wait(struct file *filp, struct file_lock *fl)
- {
- 	return locks_lock_inode_wait(file_inode(filp), fl);
-
----
-base-commit: 292fcaa1f937345cb65f3af82a1ee6692c8df9eb
-change-id: 20240212-flsplit3-174effe3675a
-
-Best regards,
 -- 
-Jeff Layton <jlayton@kernel.org>
+With Best Regards,
+Andy Shevchenko
+
 
 
