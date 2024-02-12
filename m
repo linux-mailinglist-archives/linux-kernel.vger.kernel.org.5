@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-61421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 887C9851225
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:25:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 460E485122A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:26:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F1C71C21C29
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:25:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03EA0285543
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4094C38FAA;
-	Mon, 12 Feb 2024 11:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3365639AC3;
+	Mon, 12 Feb 2024 11:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b+8jQASs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s5jm+8v/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 859E32BAE7;
-	Mon, 12 Feb 2024 11:24:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5FD39877
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707737099; cv=none; b=nH95QBeIRFivMuI8ug1GJkl4Le5NokCRmkiMzjnhJ+p2GWzfsfwz5+VuYPRv3vb4hHENGw76lT7yRmXKaFukkprPgWfqg/OrjisK1nUTf6UPX5V6XHcPG97KE1L3tKF/b9Y+JmI1Misy52AmVVmhjCXhRdB3rXM2E4tSGZwkvxI=
+	t=1707737150; cv=none; b=D33gxQVtCJ09sOZn9EmzpNERudr2l3i0bahokCLUBdhIpyfza/k6ebeKu/eN9JwJ+CVPHBzP5gUdu2+6W0KvDqqH3wDaVDXlt7jHisPfQwnoQKshaD9FtzjCQ72Bfo9RAYjl8oldsmAx+TL0ZQMq9+WmV5QdVJq/OTLz2OSh4MU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707737099; c=relaxed/simple;
-	bh=ATEIqE2FYDHx4amPoL6rW+Wx6eEq3KOSbQzs0WhLrGI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gzaF6tvxFFmWURRr0Dzz+1fH0sFgKu7H5Ca4DsoEo1VkOjmBZoysl4W+n3uBxKBClVVUL3QnJoKtcgC8IYLcsFqcsDkvjKjSarokpi5RrvHFv04Gs9dmUoz1crS4Qwq8QqNdul1Yd30Hvm2WGXHLOWLTWT8pHIJ0hPxvGdxoVjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b+8jQASs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD9C1C433F1;
-	Mon, 12 Feb 2024 11:24:57 +0000 (UTC)
+	s=arc-20240116; t=1707737150; c=relaxed/simple;
+	bh=4g4oiPC3x8fy5FEvIMXnSo4ptsk7ZrRn6IXmztKqK+M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UpQ0hzWU09QY4t3PHDhAorDa/xFSO+Cgf3QUqI9WCEU0puztR60PbCszXFVmvQfKbbtLtkzHDp9otrbEWRUpyK4IQ0Z7ZAo7WK+UwVXkQihH08E0T/YSHSvX+/ygwSG4XJ5i5hAXw0P+EYgnK/n2udIzetoHEYjNYM9euoLFE+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s5jm+8v/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F9C6C43390;
+	Mon, 12 Feb 2024 11:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707737099;
-	bh=ATEIqE2FYDHx4amPoL6rW+Wx6eEq3KOSbQzs0WhLrGI=;
+	s=k20201202; t=1707737150;
+	bh=4g4oiPC3x8fy5FEvIMXnSo4ptsk7ZrRn6IXmztKqK+M=;
 	h=From:To:Cc:Subject:Date:From;
-	b=b+8jQASs+XYTJoe4+xr9ps5KrmUppJwkCnsn6wlXL9dO6QVpkYGfTy4FUWd/YP7yd
-	 71GrPNwFyPFLNcOi+YROhjDmLEDDVqVlExpcKHvrVh4hr3K0KFE/YXKI9279Fx8m5T
-	 6sCC+J4CkXU4mjQsHu8Pd7SieDj0ZIhzvEMQqb+81KbDpZiHKCkOO5rsxCgqeCfh8d
-	 SHCoudX46no3TtnbSGegMkUUeie7jyL+P+uY6JblDEVagI20foItOySJ4ZuG7+0U2i
-	 LdCYNruvQkQ6MuWBJisg+i+sEXkkJemP338eAQFxNrCaLgwu8dylayqqqpO3Rdc5ck
-	 0+56xcKH8VVmA==
+	b=s5jm+8v/vxlalLNU1FTKvXIXGnrN6mDsipv8Fy7iwa6mpjlK2hr9GV+kOZq7cVuMO
+	 6Tx3EdMCDju2jOOMkegn2lu3LqOI5VUfWGkwJFWrbYygEnzK4bRD/aWSL9SBr2Epnw
+	 XRk+7gw3fY5zpVwaCAcz+8KHdIC96XKzvJnkq5Lxe4WdfGn+JCIKk8HR3ww/YGgv9T
+	 NaBhbPcAnvdEwbw8NuwMWWEoHUl9xe7fGV55r17DsYVWWVgBHWB3I8csIdMAYLVSjk
+	 MvRgYLg1ox+8NZKRjHFfjQAbnu7Q0c894kTvW3RaMDhdRFwIBNI7bUn175UQQ2uwhK
+	 sTvhtXX0O1rAA==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Ard Biesheuvel <ardb@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] efi/capsule-loader: fix incorrect allocation size
-Date: Mon, 12 Feb 2024 12:24:40 +0100
-Message-Id: <20240212112454.1213449-1-arnd@kernel.org>
+To: Roy Pledge <Roy.Pledge@nxp.com>,
+	Li Yang <leoyang.li@nxp.com>,
+	Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] soc: fsl: dpio: fix kcalloc() argument order
+Date: Mon, 12 Feb 2024 12:25:27 +0100
+Message-Id: <20240212112545.1244685-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,35 +60,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-gcc-14 notices that the allocation with sizeof(void) on 32-bit architectures
-is not enough for a 64-bit phys_addr_t:
+A previous bugfix added a call to kcalloc(), which starting in gcc-14
+causes a harmless warning about the argument order:
 
-drivers/firmware/efi/capsule-loader.c: In function 'efi_capsule_open':
-drivers/firmware/efi/capsule-loader.c:295:24: error: allocation of insufficient size '4' for type 'phys_addr_t' {aka 'long long unsigned int'} with size '8' [-Werror=alloc-size]
-  295 |         cap_info->phys = kzalloc(sizeof(void *), GFP_KERNEL);
-      |                        ^
+drivers/soc/fsl/dpio/dpio-service.c: In function 'dpaa2_io_service_enqueue_multiple_desc_fq':
+drivers/soc/fsl/dpio/dpio-service.c:526:29: error: 'kcalloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Werror=calloc-transposed-args]
+  526 |         ed = kcalloc(sizeof(struct qbman_eq_desc), 32, GFP_KERNEL);
+      |                             ^~~~~~
+drivers/soc/fsl/dpio/dpio-service.c:526:29: note: earlier argument should specify number of elements, later size of each element
 
-Use the correct type instead here.
+Since the two are only multiplied, the order does not change the
+behavior, so just fix it now to shut up the compiler warning.
 
-Fixes: f24c4d478013 ("efi/capsule-loader: Reinstate virtual capsule mapping")
+Fixes: 5c4a5999b245 ("soc: fsl: dpio: avoid stack usage warning")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/firmware/efi/capsule-loader.c | 2 +-
+ drivers/soc/fsl/dpio/dpio-service.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/efi/capsule-loader.c b/drivers/firmware/efi/capsule-loader.c
-index 3e8d4b51a814..97bafb5f7038 100644
---- a/drivers/firmware/efi/capsule-loader.c
-+++ b/drivers/firmware/efi/capsule-loader.c
-@@ -292,7 +292,7 @@ static int efi_capsule_open(struct inode *inode, struct file *file)
- 		return -ENOMEM;
- 	}
+diff --git a/drivers/soc/fsl/dpio/dpio-service.c b/drivers/soc/fsl/dpio/dpio-service.c
+index 1d2b27e3ea63..b811446e0fa5 100644
+--- a/drivers/soc/fsl/dpio/dpio-service.c
++++ b/drivers/soc/fsl/dpio/dpio-service.c
+@@ -523,7 +523,7 @@ int dpaa2_io_service_enqueue_multiple_desc_fq(struct dpaa2_io *d,
+ 	struct qbman_eq_desc *ed;
+ 	int i, ret;
  
--	cap_info->phys = kzalloc(sizeof(void *), GFP_KERNEL);
-+	cap_info->phys = kzalloc(sizeof(phys_addr_t), GFP_KERNEL);
- 	if (!cap_info->phys) {
- 		kfree(cap_info->pages);
- 		kfree(cap_info);
+-	ed = kcalloc(sizeof(struct qbman_eq_desc), 32, GFP_KERNEL);
++	ed = kcalloc(32, sizeof(struct qbman_eq_desc), GFP_KERNEL);
+ 	if (!ed)
+ 		return -ENOMEM;
+ 
 -- 
 2.39.2
 
