@@ -1,183 +1,146 @@
-Return-Path: <linux-kernel+bounces-62526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8948A852259
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:17:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3742F85225E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DA9C1C230E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:17:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E874328437D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9BB64F5FE;
-	Mon, 12 Feb 2024 23:17:39 +0000 (UTC)
-Received: from alerce.blitiri.com.ar (alerce.blitiri.com.ar [49.12.208.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C234F88C;
+	Mon, 12 Feb 2024 23:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B5thEsZG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38B94DA06
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.208.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E39D4F611
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:21:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707779859; cv=none; b=NF26LHg/FhVRCgyWG/oPh6FcxOuiIASo/NEJ8+LRYeT8hlUsbfAZcxN7so+lhzpDsKhAoXQkAwdA/v8EnB3PF0EEjzvu/Pg0oRnayLmvObXEBtFnyVKZ/OaC0bR+lVZMRkvShMumH7PURiBys92E6jn5LkLuWPRPLKsR75DO5/8=
+	t=1707780069; cv=none; b=hbMYNjPygMtTKc7wnCG7oRbQnJBeB/CHefEIc+SR0UBFy6laBGotq3P700CuFXLjk/sjUThgQgLw8i5DfC9j5Y8WZ756LVtESuyjZv3hfuc+9QCKJEk9e58h8EFbYddGKjrNy+lB9z17HM5hhTfMZ9DcTFSJJTRitY+0RxDizC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707779859; c=relaxed/simple;
-	bh=UIwSPn7oqBOap6PMVYgh93csn3P5c0tGwe6B0A6oExc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CrEhtyq755SFzchZLl8g4YlmayxwS65jNRM6MQWIJ730uT6Ho3Znk9buZJN6Ro1YiHSlI6hyYCS2M+Z9DLgiBkfW5zYHs48CgNoh5R/5Ij6JSRRs/TP/hkjYhIPBzSbaRmMmBV/RdlE+XMFWnYTdfExIBkphY6zFGWThyF1Bz90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar; spf=pass smtp.mailfrom=sdfg.com.ar; arc=none smtp.client-ip=49.12.208.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sdfg.com.ar
-Received: from [192.168.0.26]
-	by sdfg.com.ar (chasquid) with ESMTPSA
-	tls TLS_AES_128_GCM_SHA256
-	(over submission+TLS, TLS-1.3, envelope from "rodrigo@sdfg.com.ar")
-	; Mon, 12 Feb 2024 23:16:10 +0000
-Message-ID: <52c52665-35f5-4111-a9d4-f8669c79bf70@sdfg.com.ar>
-Date: Tue, 13 Feb 2024 00:16:06 +0100
+	s=arc-20240116; t=1707780069; c=relaxed/simple;
+	bh=sEnlAnPtx/b3N5OPsMnT5S5yhEA8bixB/wz+9/zOvWk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s8KPrIVfrORAURahFEo7IDaLd1E4oe1yIZpA3ao8DI8Vx7k8a8niF/UUHD4Fw24NyW29WiOExzwpQQi+jU9lY+pKb9S7HmJGdYQL7Vlp0hiu9+dCgfRm4jfir5YtQqPRv5GkcRjkG61OxWfzpTM0sJWNuMYwXxBCxBMOM46eh6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B5thEsZG; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707780068; x=1739316068;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sEnlAnPtx/b3N5OPsMnT5S5yhEA8bixB/wz+9/zOvWk=;
+  b=B5thEsZGbsgCc5ON0y698xu1nwrAs4QTKBCsV8JIWfYTNFjtDVdJ2iRJ
+   5SjPK2byxJ7wEUKd/j4gZ91y5ejfFhe8fnEDF9hRF0+u3EDjvkiwiv0i5
+   SAFg+Iu/Pyn19BOs6cA1CZlZSeQe+/Ctn5/BNG0Ift7gk0+3HlpeneB9U
+   c6G5+ryxjsiU7IJ2y3Q5/46ewfWJ2GaG0LttVSE0xeNwPPfUvfVOelQvK
+   aA4fIOltB5ltUqtMJGvCEvrl0KXcXL+y3S2C+/CAduiUD2a78UAdXcQME
+   nwrZY4V+QJePxuOg0yUbgrNbephzcHiuAblE+vJmmycaqLgLjTSBN7eYS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="12867752"
+X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
+   d="scan'208";a="12867752"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 15:21:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
+   d="scan'208";a="2678247"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 12 Feb 2024 15:21:03 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rZfbh-0007PW-1A;
+	Mon, 12 Feb 2024 23:21:01 +0000
+Date: Tue, 13 Feb 2024 07:20:24 +0800
+From: kernel test robot <lkp@intel.com>
+To: Cristian Marussi <cristian.marussi@arm.com>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	sudeep.holla@arm.com, vincent.guittot@linaro.org,
+	peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com,
+	quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
+	Cristian Marussi <cristian.marussi@arm.com>
+Subject: Re: [PATCH 06/11] firmware: arm_scmi: Implement Clock
+ .is_notify_supported callback
+Message-ID: <202402130758.vkfAqrx0-lkp@intel.com>
+References: <20240212123233.1230090-7-cristian.marussi@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] tools/nolibc: Fix strlcat() return code and size
- usage
-To: Willy Tarreau <w@1wt.eu>
-Cc: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
- linux-kernel@vger.kernel.org
-References: <20240129141516.198636-1-rodrigo@sdfg.com.ar>
- <20240129141516.198636-3-rodrigo@sdfg.com.ar> <20240211104817.GA19364@1wt.eu>
-Content-Language: en-US
-From: Rodrigo Campos <rodrigo@sdfg.com.ar>
-In-Reply-To: <20240211104817.GA19364@1wt.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212123233.1230090-7-cristian.marussi@arm.com>
 
-On 2/11/24 11:48, Willy Tarreau wrote:
-> Hi Rodrigo,
-> 
-> first, thanks for the series!
+Hi Cristian,
 
-Thank you, for your time and review! :)
+kernel test robot noticed the following build warnings:
 
-> On Mon, Jan 29, 2024 at 03:15:14PM +0100, Rodrigo Campos wrote:
->> The return code should always be strlen(src) + strlen(dst), but dst is
->> considered shorter if size is less than strlen(dst).
->>
->> While we are there, make sure to copy at most size-1 bytes and
->> null-terminate the dst buffer.
->>
->> Signed-off-by: Rodrigo Campos <rodrigo@sdfg.com.ar>
->> ---
->>   tools/include/nolibc/string.h | 14 +++++++-------
->>   1 file changed, 7 insertions(+), 7 deletions(-)
->>
->> diff --git a/tools/include/nolibc/string.h b/tools/include/nolibc/string.h
->> index ed15c22b1b2a..b2149e1342a8 100644
->> --- a/tools/include/nolibc/string.h
->> +++ b/tools/include/nolibc/string.h
->> @@ -187,23 +187,23 @@ char *strndup(const char *str, size_t maxlen)
->>   static __attribute__((unused))
->>   size_t strlcat(char *dst, const char *src, size_t size)
->>   {
->> -	size_t len;
->>   	char c;
->> +	size_t len = strlen(dst);
->> +	size_t ret = strlen(src) + (size < len? size: len);
-> 
->  From what I'm reading in the man page, ret should *always* be the sum
-> of the two string lengths. I guess it helps for reallocation. It's even
-> explicitly mentioned:
-> 
->    "While this may seem somewhat confusing, it was done to make truncation
->     detection simple."
+[auto build test WARNING on soc/for-next]
+[also build test WARNING on linus/master v6.8-rc4 next-20240212]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Yes, that was my *first* understanding of the manpage too. But it 
-doesn't seem to be the correct interpretation.
+url:    https://github.com/intel-lab-lkp/linux/commits/Cristian-Marussi/firmware-arm_scmi-Check-for-notification-support/20240212-203727
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
+patch link:    https://lore.kernel.org/r/20240212123233.1230090-7-cristian.marussi%40arm.com
+patch subject: [PATCH 06/11] firmware: arm_scmi: Implement Clock .is_notify_supported callback
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20240213/202402130758.vkfAqrx0-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240213/202402130758.vkfAqrx0-lkp@intel.com/reproduce)
 
-Also, this is exactly what I tried to say in the cover letter, with:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402130758.vkfAqrx0-lkp@intel.com/
 
-	I thought the manpage was clear, but when checking against that,
-	I noted a few twists (like the manpage says the return code of
-	strlcat is strlen(src) + strlen(dst), but it was not clear it is
-	not that if size < strlen(dst). When looking at the libbsd
-	implementation and re-reading the manpage, I understood what it
-	really meant).
+All warnings (new ones prefixed by >>):
+
+   drivers/firmware/arm_scmi/clock.c:853:8: error: implicit declaration of function 'scmi_clock_domain_lookup' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+           clk = scmi_clock_domain_lookup(ci, src_id);
+                 ^
+>> drivers/firmware/arm_scmi/clock.c:853:6: warning: incompatible integer to pointer conversion assigning to 'struct scmi_clock_info *' from 'int' [-Wint-conversion]
+           clk = scmi_clock_domain_lookup(ci, src_id);
+               ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 warning and 1 error generated.
 
 
-Sorry if I wasn't clear. Let me try again.
+vim +853 drivers/firmware/arm_scmi/clock.c
 
-My first interpretation of the manpage was also that, and I think it 
-would make sense to be that one. However, it is wrong, they also say 
-this, that is what made me add the ternary operator:
+   842	
+   843	static bool scmi_clk_notify_supported(const struct scmi_protocol_handle *ph,
+   844					      u8 evt_id, u32 src_id)
+   845	{
+   846		bool supported;
+   847		struct scmi_clock_info *clk;
+   848		struct clock_info *ci = ph->get_priv(ph);
+   849	
+   850		if (evt_id >= ARRAY_SIZE(evt_2_cmd))
+   851			return false;
+   852	
+ > 853		clk = scmi_clock_domain_lookup(ci, src_id);
+   854		if (IS_ERR(clk))
+   855			return false;
+   856	
+   857		if (evt_id == SCMI_EVENT_CLOCK_RATE_CHANGED)
+   858			supported = clk->rate_changed_notifications;
+   859		else
+   860			supported = clk->rate_change_requested_notifications;
+   861	
+   862		return supported;
+   863	}
+   864	
 
-	Note, however, that if strlcat() traverses size characters
-	without finding a NUL, the length of the string is considered
-	to be  size and the destination string will not be NUL
-	terminated (since there was no space for the NUL)
-
-So, my interpretation is that it is the sum of both, except when we 
-can't find the NUL in that size, in which case we conside "size" to be 
-the len of dst.
-
-If you compare it with the output of libbsd, the return code seems to be 
-exactly that. I was surprised too, as the manpage seem so clear... :-/
-
-> Above ret will be bound to the existing size so a realloc wouldn't work.
-> Thus I think the correct solution is:
-
-Note that this implementation fails the tests added on patch 4. I've 
-tested them (output and return code) to match the libbsd implementation.
-
-
-> The test inside the loop is going to make this not very efficient. Same
-> for the fact that we're measuring the length of src twice (once via
-> strlen, a second time through the loop). I've just had a look and it
-> compiles to 77 bytes at -Os. A simpler variant would consist in trying
-
-How are you measuring the size?
-
-I've added noinline to strlcat to the version I sent, so now it is shown 
-in nm, but I have this as output:
-
-$ nm --size -t x test.o
-	0000000000000004 V errno
-	0000000000000006 t strlcat.constprop.0
-	0000000000000008 V _auxv
-	0000000000000008 V environ
-	000000000000000e W strlen
-	000000000000000f W _start
-	0000000000000018 W raise
-	000000000000001b W abort
-	000000000000004c T main
-	000000000000005a t u64toa_r.isra.0
-	0000000000000095 W _start_c
-	00000000000002a8 t printf
-
-How are you measuring it there?
-
-Sorry, I'm not familiar with this :)
-
-
-> to copy what fits in <size> and once reached, go on just for trailing
-> zero and the size measurement:
-> 
-> size_t strlcat(char *dst, const char *src, size_t size)
-> {
->          size_t len = strlen(dst);
-
-The thing is, we need to return always at least strlen(src). Maybe plus 
-something else. Even if size==0 and we don't copy anything.
-
-Maybe we can special case that, so we simplify the loop, and it's smaller?
-
-I've been playing, but as I can't measure the size, I'm not sure what is 
-really better. I'd like to play a little once I know how to measure it :)
-
-
-
-Best,
-Rodrigo
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
