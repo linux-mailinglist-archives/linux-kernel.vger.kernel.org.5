@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-62020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD716851A3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:56:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFC3D851A3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:56:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A4602841F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:56:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B89B2844CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6586945BFD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6579445BF9;
 	Mon, 12 Feb 2024 16:53:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FtHnJJuT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kfDDJcXj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 962643D994;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 962923D995;
 	Mon, 12 Feb 2024 16:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707756819; cv=none; b=s0QQyxJZBMdrKe/6oHrcAE44P1PtvQGvrjI9JXLRohjJ8luZcVQHWPLyAd4dz2OH6XEdIvgg62NRSk3/tH6qGqlUzoX1Gp3Dc8Ckr9Ocm0paxnb6A4GpE4KupFV1xC7/2pJ5nl+2xl9R2EFP3kydGuVkydOAH9B7M2G6T3wjs5I=
+	t=1707756819; cv=none; b=ETnWtbnvXWydbMfBcePVQpIfXxjYE3RNj/lW7k2y5EwjfdvcLrVILiEawGMOTEhw/pvlEhYoiO5FFhR3sFK3snzqe84k8+MYNL84m5i/Bqk6m5v9i+4Cffw0aJeJeYcz2eVZgCb07e7Pcl0Eoa9Jn0c5vWoHQKNQpNFY80Aw68E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707756819; c=relaxed/simple;
-	bh=4qs5BSHr83bqWVSdSZwruslTHmTwWZz3mLyV0R3YqS4=;
+	bh=b9sQBFDZU3VO1UBig2yVSwe4gu61tiUJKbyEVJ58Ty4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ci9Zw5mN4h6B7Cj7CfxJbXqFgQhsnVspYY/dTyF3x4Ojf745PIVv73pa8/R7mPeun48QredL1Ea3xDxA5mQ6lKZ4IzS3taRUb7SM2DjDfvtC/JuJQoHtwf6I/60P1PnD/QqZYLtRv6Fa6szBAjIbYUBfXfarMOuggY94okhEnnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FtHnJJuT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4E4AC43330;
+	 MIME-Version; b=iat/uY6ci7hO9LXPxhWZ4JY/sVYjnUnogYtEUWWjZ+GtfK8tcpgq1PvHaKry/vea8WKusy3W0vAAFFAjKvwPcyzX8Cst2v/SpmbgIyfxR8ncZ1JHrcHiACBCkvCDhNXxtV/kB0y0TiGppW3HzqVhlOLrfkwLffA5nCYKNLEeCWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kfDDJcXj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B72C2C43601;
 	Mon, 12 Feb 2024 16:53:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1707756818;
-	bh=4qs5BSHr83bqWVSdSZwruslTHmTwWZz3mLyV0R3YqS4=;
+	bh=b9sQBFDZU3VO1UBig2yVSwe4gu61tiUJKbyEVJ58Ty4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FtHnJJuTAEBUQdcH64Rcdc2knJufwOvhkGG4rT7AC3Ei9LhDfY7uf35++xo5GuKrR
-	 aPPdEhziCF/OeeVakVxvmCY2xgg3PKckELu+98kDGlpVbCV2WyzeDpvDBnZ5Gf65Wo
-	 AAhqQU/ABmeN2Lk95pRS2JvVks7kvEmIQW9I8XFOAOjeMOTJkGGIFWoF3Mijxcmiei
-	 eWMyjHpQiEJOvdf2hzw2gEhbvswEGGYBKRGNpvXaQmJJV7eFtq8WiL3EGHit1hGwt3
-	 Wzsh2jDC01dd6u0TpvF/PowRDBD9t0y4J/Fku8nG8kCTmeYyyuRXu6MFdEPmeCEdkQ
-	 44f29ol0P1W7Q==
+	b=kfDDJcXjc5rf9yM9juPLHJ15hJN5VnNveC0WNajBfuKrI7feA2TRUaNz5XDEwiaEi
+	 tXwZ87lDx9N4tHJWeEsy6HVRs9cJRkVz51BTFPS7IFeOt+rS0LZADGwHUSMgnkqHzx
+	 AIMc3MuvLGG2/fM6da9rri9R2G3y9yfoho2pxwlrwtJLJpeGs6KtaQs8P0r0KAnCVY
+	 3vq/bT6r36QKxz10qDkHqcPQZEefqDbmY9nERSu0d6F+ZanBOQsBzpl8tbW4qWsVu3
+	 lvlZH3dCBLwHVt5P0Bkz+p+v+1UAM1etCW9v7a/Du8hAQF7G6JAZDTLlO/Wc0WBnmE
+	 cUPH5vTax9gjA==
 Received: from johan by xi.lan with local (Exim 4.97.1)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1rZZZ2-000000007Mz-1MLQ;
+	id 1rZZZ2-000000007N1-1kg7;
 	Mon, 12 Feb 2024 17:53:52 +0100
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Bjorn Andersson <andersson@kernel.org>,
@@ -59,9 +59,9 @@ Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH 01/10] dt-bindings: PCI: qcom: Allow 'required-opps'
-Date: Mon, 12 Feb 2024 17:50:34 +0100
-Message-ID: <20240212165043.26961-2-johan+linaro@kernel.org>
+Subject: [PATCH 02/10] dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
+Date: Mon, 12 Feb 2024 17:50:35 +0100
+Message-ID: <20240212165043.26961-3-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240212165043.26961-1-johan+linaro@kernel.org>
 References: <20240212165043.26961-1-johan+linaro@kernel.org>
@@ -73,28 +73,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some Qualcomm SoCs require a minimum performance level for the power
-domain so add 'required-opps' to the binding.
+Whether the 'msi-map-mask' property is needed or not depends on how the
+MSI interrupts are mapped and it should therefore not be described as
+required.
+
+Note that the current schema fails to detect omissions of the mask
+property if the internal MSI controller properties are also present.
 
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- Documentation/devicetree/bindings/pci/qcom,pcie.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/devicetree/bindings/pci/qcom,pcie.yaml | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-index a93ab3b54066..5eda4e72f681 100644
+index 5eda4e72f681..b28517047db2 100644
 --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
 +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-@@ -123,6 +123,9 @@ properties:
-     description: GPIO controlled connection to PERST# signal
-     maxItems: 1
+@@ -146,7 +146,6 @@ anyOf:
+       - "#interrupt-cells"
+   - required:
+       - msi-map
+-      - msi-map-mask
  
-+  required-opps:
-+    maxItems: 1
-+
-   wake-gpios:
-     description: GPIO controlled connection to WAKE# signal
-     maxItems: 1
+ allOf:
+   - $ref: /schemas/pci/pci-bus.yaml#
 -- 
 2.43.0
 
