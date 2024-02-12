@@ -1,195 +1,246 @@
-Return-Path: <linux-kernel+bounces-61834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59075851738
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:42:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D061B85173A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:44:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B87851F2260B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:42:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CA74283466
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85EDC3BB28;
-	Mon, 12 Feb 2024 14:42:44 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3556C3B781;
+	Mon, 12 Feb 2024 14:44:43 +0000 (UTC)
+Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1489A39FD7;
-	Mon, 12 Feb 2024 14:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5997E28389;
+	Mon, 12 Feb 2024 14:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707748964; cv=none; b=lEfcbOXg9/4Um6ghff96z77ZipEjpwuGtckfKXlT4nXBeiDdqDmtIaNRi4gR/yE05x8r/CtoE6lzxAwk1zCToo0gUeYcpY7KruZxe33zD0tiake1LhmisOi6WbpOJdREu3ARPQosBWgQr7K4gcLz2OlvWlBAdnzPheoOUEudZmI=
+	t=1707749082; cv=none; b=Uak7I5M2dpIzM14CYXLHJ3CzjeoNOnPM9Wkd3PTsXKooB9P8OP+z6yYNzFhotkboh7V4YZ1IRGvLOvHJRNw5rRAT0nnXislAkp3zSXqH1sHym1KGTPDKOMTdJuq3FPnBp8fjynI6Q6vtWV1/tpHWlP3ATTgtU3XiOT5ZYbIClsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707748964; c=relaxed/simple;
-	bh=/Hf+DbrJyyiXo/DYirJXw3aIfv42g2EBeTeWIWBCGCE=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=EaJcDgKc0s7rcubhfyHGtWQ4YRvsFxdzDKkMiJ2SfWX5ZN6INJb1a5WG1PhPoJPDRnvOYe30VyIkFn4lnh0yvnDx3an4BXx6qGPU3Q3n5rq5B0O3LOtHKb7CYKZ4QeW5jFLbxK+me0gyG0bQv/LkcwD9wyVJIbXUG6IBVoV5Ka4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFF32C433F1;
-	Mon, 12 Feb 2024 14:42:41 +0000 (UTC)
-Message-ID: <2e5f1e92-7fad-4a74-b375-1e194ff08ce6@xs4all.nl>
-Date: Mon, 12 Feb 2024 15:42:39 +0100
+	s=arc-20240116; t=1707749082; c=relaxed/simple;
+	bh=WaeIv7+ItDIkBtIePy0VDoxQcmIyIXt+XWTOFfl0jWw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tL1itjgRAvLBNmlAeunY3tBMqMOGEGPWuRBIUyfmxjWhSTDTyUsEyflTp+LkTuRae65R6nSvah9HSiP6thdVOMqUVFGDbg5Va5/vqqrweR1Gqt8sApzSCSA3T5g306MSJ+PYCc4A//0tmLrtBhho1tMqwkprHyHyyK/H07VHlLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail2.sysu.edu.cn; spf=pass smtp.mailfrom=mail2.sysu.edu.cn; arc=none smtp.client-ip=54.254.200.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail2.sysu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail2.sysu.edu.cn
+X-QQ-mid: bizesmtp75t1707748998tos1jfhl
+X-QQ-Originating-IP: XCxMfl4zxjZgVvN+Wm6q5OKrDL4vr/ck+nFLjccppeQ=
+Received: from VM-16-2-ubuntu.. ( [122.51.61.190])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 12 Feb 2024 22:43:16 +0800 (CST)
+X-QQ-SSF: 01400000000000B0R000000A0000000
+X-QQ-FEAT: +ynUkgUhZJlWkuX9oFjGafb11b8pHgwFDTjbDZpXFPQ0hz636G6iKTeRs6sWY
+	We1Bue9Kefq8A23K+Iquc9xKYw0YWy66JmbAFeeArZc8obFs5RsvdEzHRcCWU6p2bseX3HJ
+	eXynXHlbJ0gpPtXzBZA83/clTSRXhbTPC0rqbCxlEAHKmKEmm+BGKQ0VqVpwNrmx61+pAtn
+	LQHCsuCa+r1u4S4RYM0hrqaI5aA21FEHUMnoRj/dnuwg/hW5mDbSjgybu9o8nql2jgH/6Lx
+	8KO0k0nTu12Kmgo3wnVVM/t9Vx0hMUxCU0FrQ+rg5z9TD3JfqwHrMGK9ienYuvSuB6EX+18
+	TkZRIXBXR/F0ps7hq0MRxCd6RGwrdTABXby4eKfKkvQCaXq99MY3ECep9dxKiCKZGgUtkex
+	WSNVJkeBxeo=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 9194800066344149808
+From: Yinchuan Guo <guoych37@mail2.sysu.edu.cn>
+To: Oder Chiou <oder_chiou@realtek.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Yinchuan Guo <guoych37@mail2.sysu.edu.cn>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: codecs: fix TYPO 'reguest' to 'request' in error log
+Date: Mon, 12 Feb 2024 22:42:45 +0800
+Message-Id: <20240212144247.43744-1-guoych37@mail2.sysu.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in
- cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
-Content-Language: en-US, nl
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-To: "Yang, Chenyuan" <cy54@illinois.edu>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "jani.nikula@intel.com" <jani.nikula@intel.com>,
- "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
- "mchehab@kernel.org" <mchehab@kernel.org>, "Zhao, Zijie"
- <zijie4@illinois.edu>, "Zhang, Lingming" <lingming@illinois.edu>
-References: <PH7PR11MB57688E64ADE4FE82E658D86DA09EA@PH7PR11MB5768.namprd11.prod.outlook.com>
- <f985d664-d907-48ed-9b3d-dc956c178b88@xs4all.nl>
- <526380BE-57AC-493D-A7B0-B8F0ECC0FE0A@illinois.edu>
- <f1855145-9562-4bef-800f-43bcacff6fc8@xs4all.nl>
-In-Reply-To: <f1855145-9562-4bef-800f-43bcacff6fc8@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:mail2.sysu.edu.cn:qybglogicsvrsz:qybglogicsvrsz3a-1
 
-Hi Chenyuan,
+This patch corrects a common misspelling of "request" as "reguest" found
+in error log across multiple files within sound/soc/codecs.
 
-On 30/01/2024 15:35, Hans Verkuil wrote:
-> On 29/01/2024 04:03, Yang, Chenyuan wrote:
->> Hi Hans,
->>
->> Thanks a lot for this new patch!
->>
->> After applying this new patch in the latest kernel (hash: ecb1b8288dc7ccbdcb3b9df005fa1c0e0c0388a7) and fuzzing with Syzkaller, it seems that the hang still exists.
->> To help you better debug it, I attached the covered lines for the fuzz testing and the output of `git diff`. Hope this could help you.
->>
->> By the way, the syscall descriptions for CEC have been merged into the Syzkaller mainstream: https://github.com/google/syzkaller/blob/master/sys/linux/dev_cec.txt.
->>
->> Let me know if you need further information.
->>
->> Best,
->> Chenyuan
-> 
-> Here is another patch. This now time outs on all wait_for_completion calls
-> and reports a WARN_ON and shows additional info. Hopefully this will give me
-> better insight into what is going on.
-> 
-> Unfortunately I was unable to reproduce this issue on my VM, so I have to
-> rely on you to run the test.
+Signed-off-by: Yinchuan Guo <guoych37@mail2.sysu.edu.cn>
+---
+ sound/soc/codecs/rt274.c      | 2 +-
+ sound/soc/codecs/rt286.c      | 2 +-
+ sound/soc/codecs/rt298.c      | 2 +-
+ sound/soc/codecs/rt5514-spi.c | 2 +-
+ sound/soc/codecs/rt5645.c     | 2 +-
+ sound/soc/codecs/rt5651.c     | 2 +-
+ sound/soc/codecs/rt5659.c     | 2 +-
+ sound/soc/codecs/rt5663.c     | 2 +-
+ sound/soc/codecs/rt5665.c     | 2 +-
+ sound/soc/codecs/rt5668.c     | 2 +-
+ sound/soc/codecs/rt5682-i2c.c | 2 +-
+ sound/soc/codecs/rt5682s.c    | 2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
 
-Did you have time to run the test with this patch? It would be very useful to
-see the results.
-
-Regards,
-
-	Hans
-
-> 
-> Regards,
-> 
-> 	Hans
-> 
-> [PATCH] Test
-> 
-> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> ---
-> diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
-> index 5741adf09a2e..b1951eb7f5bd 100644
-> --- a/drivers/media/cec/core/cec-adap.c
-> +++ b/drivers/media/cec/core/cec-adap.c
-> @@ -935,9 +935,12 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
->  	 * Release the lock and wait, retake the lock afterwards.
->  	 */
->  	mutex_unlock(&adap->lock);
-> -	wait_for_completion_killable(&data->c);
-> -	if (!data->completed)
-> -		cancel_delayed_work_sync(&data->work);
-> +	if (WARN_ON(wait_for_completion_killable_timeout(&data->c, msecs_to_jiffies(adap->xfer_timeout_ms + 1000)) <= 0)) {
-> +		dprintk(0, "wfc1: %px %d%d%d%d %x\n", adap->kthread_config,
-> +			adap->is_configuring, adap->is_configured,
-> +			adap->is_enabled, adap->must_reconfigure, adap->phys_addr);
-> +	}
-> +	cancel_delayed_work_sync(&data->work);
->  	mutex_lock(&adap->lock);
-> 
->  	/* Cancel the transmit if it was interrupted */
-> @@ -1563,10 +1566,12 @@ static int cec_config_thread_func(void *arg)
->  			cec_transmit_msg_fh(adap, &msg, NULL, false);
->  		}
->  	}
-> +	mutex_unlock(&adap->lock);
-> +    call_void_op(adap, configured);
-> +    mutex_lock(&adap->lock);
->  	adap->kthread_config = NULL;
->  	complete(&adap->config_completion);
->  	mutex_unlock(&adap->lock);
-> -	call_void_op(adap, configured);
->  	return 0;
-> 
->  unconfigure:
-> @@ -1592,6 +1597,17 @@ static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
->  	if (WARN_ON(adap->is_configuring || adap->is_configured))
->  		return;
-> 
-> +	if (adap->kthread_config) {
-> +		mutex_unlock(&adap->lock);
-> +//		wait_for_completion(&adap->config_completion);
-> +		if (WARN_ON(wait_for_completion_killable_timeout(&adap->config_completion, msecs_to_jiffies(10000)) <= 0)) {
-> +			dprintk(0, "wfc2: %px %d%d%d%d %x\n", adap->kthread_config,
-> +				adap->is_configuring, adap->is_configured,
-> +				adap->is_enabled, adap->must_reconfigure, adap->phys_addr);
-> +		}
-> +		mutex_lock(&adap->lock);
-> +	}
-> +
->  	init_completion(&adap->config_completion);
-> 
->  	/* Ready to kick off the thread */
-> @@ -1599,11 +1615,17 @@ static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
->  	adap->kthread_config = kthread_run(cec_config_thread_func, adap,
->  					   "ceccfg-%s", adap->name);
->  	if (IS_ERR(adap->kthread_config)) {
-> -		adap->kthread_config = NULL;
->  		adap->is_configuring = false;
-> +		adap->kthread_config = NULL;
->  	} else if (block) {
->  		mutex_unlock(&adap->lock);
-> -		wait_for_completion(&adap->config_completion);
-> +		//wait_for_completion(&adap->config_completion);
-> +		if (WARN_ON(wait_for_completion_killable_timeout(&adap->config_completion, msecs_to_jiffies(10000)) <= 0)) {
-> +			dprintk(0, "wfc3: %px %d%d%d%d %x\n", adap->kthread_config,
-> +				adap->is_configuring, adap->is_configured,
-> +				adap->is_enabled, adap->must_reconfigure, adap->phys_addr);
-> +
-> +		}
->  		mutex_lock(&adap->lock);
->  	}
->  }
-> diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
-> index 67dc79ef1705..d64bb716f9c6 100644
-> --- a/drivers/media/cec/core/cec-api.c
-> +++ b/drivers/media/cec/core/cec-api.c
-> @@ -664,6 +664,8 @@ static int cec_release(struct inode *inode, struct file *filp)
->  		list_del_init(&data->xfer_list);
->  	}
->  	mutex_unlock(&adap->lock);
-> +
-> +	mutex_lock(&fh->lock);
->  	while (!list_empty(&fh->msgs)) {
->  		struct cec_msg_entry *entry =
->  			list_first_entry(&fh->msgs, struct cec_msg_entry, list);
-> @@ -681,6 +683,7 @@ static int cec_release(struct inode *inode, struct file *filp)
->  			kfree(entry);
->  		}
->  	}
-> +	mutex_unlock(&fh->lock);
->  	kfree(fh);
-> 
->  	cec_put_device(devnode);
-> 
+diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
+index 9a33e3776b55..6e7843484250 100644
+--- a/sound/soc/codecs/rt274.c
++++ b/sound/soc/codecs/rt274.c
+@@ -1192,7 +1192,7 @@ static int rt274_i2c_probe(struct i2c_client *i2c)
+ 			IRQF_TRIGGER_HIGH | IRQF_ONESHOT, "rt274", rt274);
+ 		if (ret != 0) {
+ 			dev_err(&i2c->dev,
+-				"Failed to reguest IRQ: %d\n", ret);
++				"Failed to request IRQ: %d\n", ret);
+ 			return ret;
+ 		}
+ 	}
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 981155b046fd..f8994f4968c5 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1237,7 +1237,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c)
+ 			IRQF_TRIGGER_HIGH | IRQF_ONESHOT, "rt286", rt286);
+ 		if (ret != 0) {
+ 			dev_err(&i2c->dev,
+-				"Failed to reguest IRQ: %d\n", ret);
++				"Failed to request IRQ: %d\n", ret);
+ 			return ret;
+ 		}
+ 	}
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index ad3783ade1b5..03d9839a5de3 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -1284,7 +1284,7 @@ static int rt298_i2c_probe(struct i2c_client *i2c)
+ 			IRQF_TRIGGER_HIGH | IRQF_ONESHOT, "rt298", rt298);
+ 		if (ret != 0) {
+ 			dev_err(&i2c->dev,
+-				"Failed to reguest IRQ: %d\n", ret);
++				"Failed to request IRQ: %d\n", ret);
+ 			return ret;
+ 		}
+ 	}
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 3ee6d85268ba..f475c8cfadae 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -279,7 +279,7 @@ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
+ 			rt5514_dsp);
+ 		if (ret)
+ 			dev_err(&rt5514_spi->dev,
+-				"%s Failed to reguest IRQ: %d\n", __func__,
++				"%s Failed to request IRQ: %d\n", __func__,
+ 				ret);
+ 		else
+ 			device_init_wakeup(rt5514_dsp->dev, true);
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 5150d6ee3748..61624c502261 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -4197,7 +4197,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c)
+ 			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5645", rt5645);
+ 		if (ret) {
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 			goto err_enable;
+ 		}
+ 	}
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index 0cee4fd1c84b..33a34bd0b405 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -2261,7 +2261,7 @@ static int rt5651_i2c_probe(struct i2c_client *i2c)
+ 			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			       | IRQF_ONESHOT | IRQF_NO_AUTOEN, "rt5651", rt5651);
+ 	if (ret) {
+-		dev_warn(&i2c->dev, "Failed to reguest IRQ %d: %d\n",
++		dev_warn(&i2c->dev, "Failed to request IRQ %d: %d\n",
+ 			 rt5651->irq, ret);
+ 		rt5651->irq = -ENXIO;
+ 	}
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index a061028a16d8..fb094c0fe740 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -4292,7 +4292,7 @@ static int rt5659_i2c_probe(struct i2c_client *i2c)
+ 			rt5659_irq, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5659", rt5659);
+ 		if (ret)
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 
+ 		/* Enable IRQ output for GPIO1 pin any way */
+ 		regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index 9550492605ac..161dcb3915f9 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -3692,7 +3692,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c)
+ 			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5663", rt5663);
+ 		if (ret) {
+-			dev_err(&i2c->dev, "%s Failed to reguest IRQ: %d\n",
++			dev_err(&i2c->dev, "%s Failed to request IRQ: %d\n",
+ 				__func__, ret);
+ 			goto err_enable;
+ 		}
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index a39de4a7df00..6f778c8f0832 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4929,7 +4929,7 @@ static int rt5665_i2c_probe(struct i2c_client *i2c)
+ 			rt5665_irq, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5665", rt5665);
+ 		if (ret)
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5668.c b/sound/soc/codecs/rt5668.c
+index 4623b3e62487..6d8e228ccb57 100644
+--- a/sound/soc/codecs/rt5668.c
++++ b/sound/soc/codecs/rt5668.c
+@@ -2580,7 +2580,7 @@ static int rt5668_i2c_probe(struct i2c_client *i2c)
+ 			rt5668_irq, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5668", rt5668);
+ 		if (ret)
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
+index fbad1ed06626..62f26ce9d476 100644
+--- a/sound/soc/codecs/rt5682-i2c.c
++++ b/sound/soc/codecs/rt5682-i2c.c
+@@ -266,7 +266,7 @@ static int rt5682_i2c_probe(struct i2c_client *i2c)
+ 		if (!ret)
+ 			rt5682->irq = i2c->irq;
+ 		else
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 	}
+ 
+ #ifdef CONFIG_COMMON_CLK
+diff --git a/sound/soc/codecs/rt5682s.c b/sound/soc/codecs/rt5682s.c
+index 3322056bbb3b..12741668fdb3 100644
+--- a/sound/soc/codecs/rt5682s.c
++++ b/sound/soc/codecs/rt5682s.c
+@@ -3283,7 +3283,7 @@ static int rt5682s_i2c_probe(struct i2c_client *i2c)
+ 		if (!ret)
+ 			rt5682s->irq = i2c->irq;
+ 		else
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 	}
+ 
+ 	return devm_snd_soc_register_component(&i2c->dev, &rt5682s_soc_component_dev,
+-- 
+2.34.1
 
 
