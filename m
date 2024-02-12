@@ -1,85 +1,123 @@
-Return-Path: <linux-kernel+bounces-61881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18CC58517CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 367848517CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:19:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B8041C21A24
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:18:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 684F01C2171F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43B23C485;
-	Mon, 12 Feb 2024 15:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE1303C486;
+	Mon, 12 Feb 2024 15:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oPlz6UWx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="V6p6bOXR";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1Ep3TZrj"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338E63BB55;
-	Mon, 12 Feb 2024 15:18:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E02936B08
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707751082; cv=none; b=sybPjuQUhTJKiaW36NWtvxHsb56N0xjqe/AcAZwa05Zyl2FDQjyPFO0tf9Ew/6VVPoTFbbLdcRpks7vr59GctATc2qEOPKQW4kXuUOKLJ2vLS/pAtpsaCYCJuSkTf64VfxBDD0aSWZ0hMcwUOEhdV7617ZibCdn+c2tPy4q3Hl0=
+	t=1707751163; cv=none; b=qerOXb8uzqeTASa8+s/PpUj/BBFndULEwsrOQA7AqnwD44tPx55Bg+ehUbxlzeKGhU+o6qsde5dHtS2KQgl5P4qm4jakVIoV4iYOAwer52L3kCvMt9UItV0Z3mynd9HHX7sQ95GqUrvgq+hBFIzUQu9ms7Jg3VGfQ7UhPnhavkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707751082; c=relaxed/simple;
-	bh=BnrZ9C/Bz7X3B9Yi4bgBJOnu5VZLUMUOMzuMSBtlbnM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OTpq+jvMBY2ju5raMrxoAVfwtvYMSzRQXC5Vi8oWj2AUq0iPcVaLgw1ZpJAmFUYQzmC0rn+ZBFDFHxoI4wp1HGJuAJv105jo7Dx+/TaN8v9JHT0R8sQywAogV9y4qC1TodsnaBc+jtRRwpBBn+gL2qULRbxFdQ512+3hzNA83yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oPlz6UWx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D59BC433C7;
-	Mon, 12 Feb 2024 15:18:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707751081;
-	bh=BnrZ9C/Bz7X3B9Yi4bgBJOnu5VZLUMUOMzuMSBtlbnM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oPlz6UWxUe1nOoduQZ4F4RiW8KQVZHi78f31ao3a+oiglfPu4nC8xR7kSwoqi7uMr
-	 xIkdeZPFwiiUdEFbh1i9uwmKyEJXKk1gt++c3OGowESDC6OXEiYhSDM1W/sL0nX2Ia
-	 RW3xmNp1+GPx/7+VAhW4I3VjT4z8g0719N105OmJf1tPJVJOOeh5QEAgWTUB6Ayu0m
-	 DeOb5buNIe6M8gf1EzdukQS79FJAj7TcIUdCYbBeHUWTnthAxWyL599ynaBE2sauUW
-	 wgjfDIvhnw8hEnRTv1ouppO2PfAFbIrE0n8cDnL70REuxS4qT6deV5GwTnlZ6gClW0
-	 q06nXa8K/l0TQ==
-Date: Mon, 12 Feb 2024 08:17:58 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: Jim Harris <jim.harris@samsung.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	"pierre.cregut@orange.com" <pierre.cregut@orange.com>
-Subject: Re: [PATCH v2 2/2] pci/iov: fix kobject_uevent() ordering in
- sriov_enable()
-Message-ID: <Zco2pmQWR49V9Imw@kbusch-mbp.mynextlight.net>
-References: <170752254154.1693615.9176696143128338408.stgit@bgt-140510-bm01.eng.stellus.in>
- <CGME20240209235218uscas1p2d0978af6623037fa1b9358a2ad2320c5@uscas1p2.samsung.com>
- <170752273749.1693615.1293677023514112939.stgit@bgt-140510-bm01.eng.stellus.in>
- <d9c89ad1-990d-4a4c-a16d-27d978673e57@linux.intel.com>
+	s=arc-20240116; t=1707751163; c=relaxed/simple;
+	bh=+6mEziMxrgwQlUT5m/369TQaV/jXSqr2KuRfkgVOLr4=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:MIME-Version:
+	 Content-Type; b=b7SuSFAkPprNosf9gfHwEM9wpg1bvnG2KNtOppNbt/NoxBOg2hA4AxMt1crmSkOaYXatGsF0R7ukCoc+niWbLqdJigtQ2JOguOLdhcnR8ZP4kor/oC8ik1El0DOAlRFSSPlGpcdfP3VsSJknpYqOJJDfAPNdC+MGYHEdDHe2cqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=V6p6bOXR; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1Ep3TZrj; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707751159;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to; bh=UyXyo1etyHMz/yg/tu7sBloltjY/h+rwAvfUJRR+na8=;
+	b=V6p6bOXRiHiANMPQzZhVdmc/USqLcsQ9MGJk7DFfTQFodbmU8z+sgWFwHfsuBEvWitwNeX
+	3hzQN9GT9qKUznVXT73BFbbtIPTWLbSoYyatPheti/cOeJgLBLUQskdgMgOjOzogDSUxux
+	0yqomKqwH9VP++cdBQd609Uo9nsNPSSs6EkJTOucdeC7xHhzbxEHjEgRTH6HiGLlXj32C5
+	4hMXDO8vxggNMJ2PQJgV+85QlZYJU7DotLALYp6hiF3+H8nu+oYnS3OcET4ARKd2yE15+s
+	NJxo01b/9dW+OFs+O5sjpSzSZzjnrXTk9msGpsQae0AsBJDEVky3Ibd6He/mhg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707751159;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to; bh=UyXyo1etyHMz/yg/tu7sBloltjY/h+rwAvfUJRR+na8=;
+	b=1Ep3TZrj7qzddX3YeYp1AVBoK6lOW0kT0Sn8NNOWpaVg4S8pVTJWKMSrljl4Fg9eG3eg6+
+	CG2BKl+sBDLWhxBg==
+To: Marcelo Tosatti <mtosatti@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>, Juri Lelli
+ <juri.lelli@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ Frederic Weisbecker <frederic@kernel.org>, Leonardo Bras
+ <leobras@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Marcelo
+ Tosatti <mtosatti@redhat.com>
+Subject: Re: [patch 11/12] x86/resctrl: use smp_call_function_single_fail
+In-Reply-To: <20240206185710.116221062@redhat.com>
+Date: Mon, 12 Feb 2024 16:19:19 +0100
+Message-ID: <87zfw5k8w8.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d9c89ad1-990d-4a4c-a16d-27d978673e57@linux.intel.com>
+Content-Type: text/plain
 
-On Fri, Feb 09, 2024 at 07:22:17PM -0800, Kuppuswamy Sathyanarayanan wrote:
-> On 2/9/24 3:52 PM, Jim Harris wrote:
-> > @@ -677,8 +677,8 @@ static int sriov_enable(struct pci_dev *dev, int nr_virtfn)
-> >  	if (rc)
-> >  		goto err_pcibios;
-> >  
-> > -	kobject_uevent(&dev->dev.kobj, KOBJ_CHANGE);
-> >  	iov->num_VFs = nr_virtfn;
-> > +	kobject_uevent(&dev->dev.kobj, KOBJ_CHANGE);
+On Tue, Feb 06 2024 at 15:49, Marcelo Tosatti wrote:
+> Convert update_task_closid_rmid from smp_call_function_single
+> to smp_call_func_single_fail, which will fail in case
+> the target CPU is tagged as block interference CPU.
 
-Since it's accessed unlocked now, I *think* this wants appropriate
-barriers to ensure the order is observed the same on all CPUs. Something
-like 'smp_store_release(&iov->num_VFs, nr_virtfn)' for writing it, and
-use 'smp_load_acquire()' on the read-side.
+You fail again to provide a rationale for this change.
+
+What's worse is that you fail to explain why you think that creating
+inconistent state is a valid approach.
+
+> Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+>
+> Index: linux-isolation/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> ===================================================================
+> --- linux-isolation.orig/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ linux-isolation/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/task_work.h>
+>  #include <linux/user_namespace.h>
+> +#include <linux/sched/isolation.h>
+>  
+>  #include <uapi/linux/magic.h>
+>  
+> @@ -551,12 +552,20 @@ static void _update_task_closid_rmid(voi
+>  		resctrl_sched_in(task);
+>  }
+>  
+> -static void update_task_closid_rmid(struct task_struct *t)
+> +static int update_task_closid_rmid(struct task_struct *t)
+>  {
+> -	if (IS_ENABLED(CONFIG_SMP) && task_curr(t))
+> -		smp_call_function_single(task_cpu(t), _update_task_closid_rmid, t, 1);
+> -	else
+> +	int idx, ret = 0;
+> +
+> +	if (IS_ENABLED(CONFIG_SMP) && task_curr(t)) {
+> +		idx = block_interf_srcu_read_lock();
+> +		ret = smp_call_function_single_fail(task_cpu(t),
+> +						    _update_task_closid_rmid,
+> +						    t, 1);
+> +		block_interf_srcu_read_unlock(idx);
+> +	} else
+>  		_update_task_closid_rmid(t);
+> +
+> +	return ret;
+
+This is invoked _after_ the change has been committed to the in-memory
+state so how is failing here correct?
+
+Thanks,
+
+        tglx
 
