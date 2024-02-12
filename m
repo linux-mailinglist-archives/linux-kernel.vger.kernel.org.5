@@ -1,188 +1,117 @@
-Return-Path: <linux-kernel+bounces-61429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1B8F85123F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:30:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39FA685124A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:32:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 898482829C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:30:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CB641C20B3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D883B38FBC;
-	Mon, 12 Feb 2024 11:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A417D39AE1;
+	Mon, 12 Feb 2024 11:31:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="KKOY9uud"
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RRNl1P51"
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A3738DE2;
-	Mon, 12 Feb 2024 11:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6083739852;
+	Mon, 12 Feb 2024 11:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707737403; cv=none; b=AEUphoaQoKAUoxPAfN3/itRPrQ3kMXo+kcPyNqMoKOqafucaqBRE65TujBCXDL/hGDN6FuwNe200vkdDlKYmckIFga48p/M+acQDuCBxuETnSFe0OayRRmX0+9Yqha0403fmWWoGeQ6Z8ET6u5Al/mwllQh83e0HzT87aiX8WWg=
+	t=1707737512; cv=none; b=a58vUPIov5g7oD1lOSl5KFk1JENzmHZF3lMjZg1Lph4EQtmqM1kv1ff5RFW/qWyenEH8sM6sokUCZ+h0gw2EKPUZu0nc5pHSnkhTjIH/C12pgtXSdqewVlXwLoqZcvSTUxHyrhgS9Vy2R5MPkGEIucE9HDnMDF3WYw+Imugrg2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707737403; c=relaxed/simple;
-	bh=wHNMVNWK/w9GJUGqEQBEQnxp1z9OF3ab6ZUMoNLudvA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N/4lNm4eG+GfGrW/b7xNfWc2/mvEwaa9WU4vzTC5CHmqCY/7gTrzCX6ax+ap4oYS/HizFjFtkXSgzBJfjLLD8vU6CiGdUOkmCbknjp3/RKkOaCs/xKHS8ht6G8dhBqggaXoBf/7jEosI2KCFa3Yc1q9VlXCOswwAXi1FJnIKPSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=KKOY9uud; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+	s=arc-20240116; t=1707737512; c=relaxed/simple;
+	bh=Na/rHa5dAP3l50X//9FCmhKqVB813/sR9Yz3qZ8PB4Y=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=rW2Vj/PLVFE8L51JRiGhQR+bN87hmKifhNJ/lJ2KNoBh2M7jFpa7z4CukzuPrSdxYYG3klOTuUDbMrZ4xs/3goZYWULrwVd8W9TJIAlVQjoAhJh039WvhlfVq3hua8yWLE0Svb/30DJmr4RC9nvVz9cdldgh7SSU7zM2VC1rOQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RRNl1P51; arc=none smtp.client-ip=209.85.128.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e2e507b942so484330a34.1;
-        Mon, 12 Feb 2024 03:30:00 -0800 (PST)
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-410c1ebf5e4so7973435e9.2;
+        Mon, 12 Feb 2024 03:31:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707737508; x=1708342308; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:to:from
+         :content-language:subject:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OUC5+LMrNmxS7ctyeH5pl2x/dqcP46pJUlAebEkKzMY=;
+        b=RRNl1P51mIuVsN83b/YxTNo/fsRO5Erx1wZQ/fvGCy/V+XWsTYQ8gTuVqIJ3/xTE+c
+         9s/vVQ44yM0kXQDti5EWnSur5LFxpPcG/H9HDtiXU9xJuvRLlgCcMLCesS1jk2mcyDMo
+         gcLuGRGeds2X+P01XDd70ssMDAy6xURynnEkXhoHotSmq8n3Z9GD2VZW7FigKl5dLBpF
+         mR2WW3eErrVa65wLekvvv1QIBmlTOOEI6CaTHntiuPSr2BCUQYVUX/iG/bv2MEyUO5mq
+         xT3o04yCQq4uLevuKHhr6rGV+EppgosAeRwHX0rasqtYg5XKU8kSJ4RJjnS9R4FiVbLt
+         wmcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707737400; x=1708342200;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Z4h2DO1YDh7Cbrp5C2cI3eDKxNVoHo7pCybkKBnqfOE=;
-        b=n+rBeoUEhzP1IWWVJFyb10qUa9ZY2emxz02EeZGtnJEuSTHbJlYK2e03CBEPoyjOlE
-         EsgCASeftlTDL3YOpyLisvYRf3I27KVXcy++2NZa77izh+4OoN/S/eVi4DJB0rsWQ9yE
-         zO1hnOwHfzmwF3rqBtobPnLn33XshH2J9AwIsnqT4CG6qixjnQWz/gOqQdDoG3CgoT7g
-         F7UCE/VWpSZ/ehty5mjbdxSh5w90j6cHwK6sqNzbFgLvSflQxA0y1OhNm10aMj9icPdN
-         Zq1htFFBwhZhSev5ssklE1g5ASCE0sLkWDn083bzEe2RO8vocv8NLmv0Cksh4SrlNGzE
-         HEAw==
-X-Forwarded-Encrypted: i=1; AJvYcCVcJ+Z7xQ1xFQqr7DiCvyV9YbJDNC0T+EBqOcMkvV/QdOvuK2oXQYFVCwrDHzYkYD8OW3rT9alSqLL97iw+uIHlBAvsBGalZjN1FJKdR6xlAtbZRdU8+D/7ljZ9LDPEtc1HIwdNzOjRJA==
-X-Gm-Message-State: AOJu0YyzLAFxQQg3kyCZ0pEUkraPxFSDWj8bDUrNhPnnQU4kJFMDHzlp
-	GlkoLWvXLc8oaR3Xv2zXf37HqLnJRvw0uTuGbnLq1dcy+gsZ+DCj
-X-Google-Smtp-Source: AGHT+IGEL/O4Tj2MNd6er8WCrenKgU9sj4RH/c1ZcLON895KqnhVVbuz1FDTq1CXmCPR3YwAeL7JmQ==
-X-Received: by 2002:a05:6358:618c:b0:176:470f:9275 with SMTP id w12-20020a056358618c00b00176470f9275mr7382118rww.21.1707737399967;
-        Mon, 12 Feb 2024 03:29:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWDSgDpFpTsFY9w9wMzTQQZk2XXhuEqol7vq1FWj+gmYE6KX00Ck6BRIbFWfMzpvli2PqbrT8fuEZ3LObFOc6dS24Y9Qw/zeXC4J2xKF4rdhpSiZl1v+BYqC9shuKBJusBJBk6X/LqxfYNNVRlKQDN/r9zyjhYFhnD6Oxu1wkYeyjVL5yA=
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id k29-20020a63ba1d000000b0059b2316be86sm174708pgf.46.2024.02.12.03.29.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 03:29:59 -0800 (PST)
-Date: Mon, 12 Feb 2024 08:30:35 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707737397;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z4h2DO1YDh7Cbrp5C2cI3eDKxNVoHo7pCybkKBnqfOE=;
-	b=KKOY9uudcbHzK2Ha73rWAiI9iPhfdDnG6fAf1Rkyasw87QRT/q6C84/6BLdtbJc8UTrM6G
-	D4MSiqrABqVP94gZOzKH/zfxploASKdrOX588URL8/T/WvjJEr4UbFRzMHgrzxXyRYB4/b
-	/pudh2ubR/0PFdf2/NiVDjVofRI9s/7sioOa/uTL/uyD6Ye0EzQjm4me5kTXrEZGSl6JaO
-	ggehdbDIFcW2q9d/G7t2/9ZDeEUvJZydcNRPVh22H4isi9Y4BqG2eaOnExLGF0xKAOLPvg
-	YDHOGQieOzHqwZPAF19k83gje98gBEi76nHfUvSTdnYSNmdK3hEoeR5cfHPzsQ==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>, 
-	"Martin K. Petersen" <martin.petersen@oracle.com>, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: Make scsi_bus_type const
-Message-ID: <zcv7kteidcnqj3kpiwwmpdytuirhxbdnzri2rfmumujftthyft@xvcqzmyr2clb>
-References: <20240211-bus_cleanup-scsi2-v1-1-dd04ee82e6b0@marliere.net>
- <2024021246-canon-planner-2bf6@gregkh>
+        d=1e100.net; s=20230601; t=1707737508; x=1708342308;
+        h=content-transfer-encoding:in-reply-to:references:to:from
+         :content-language:subject:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OUC5+LMrNmxS7ctyeH5pl2x/dqcP46pJUlAebEkKzMY=;
+        b=vj4UF0FRH46dREWHCSWWMKwV9hK2PI29Gkg+ABUPhN0yVFRWLMy/HKpCkpBJXtMeUj
+         krOTXmRGNVXjmctv90lfpUyilFHFTMQcF6DYg5SN+Wgawsmzed4sVNlZQ2m2F4b/KoeM
+         KXx5xUyY9c8EnwzWdgvISoYNUzPSH1CT24lUd5fy6her7GtTHa3fK7ntLpjGCMRNNsQg
+         EsJGHMgIBEhiipGni0BcThGJNyza5XhB/5MC6zbaN1+jpvV/FZ5AtiD0WPKxF4ICrcuW
+         XANhxA0+DEz+HcGb67FPOt5XJAwc75e0TG8crDYINCYDeWSTEr5HSrYyqu+D6KYC3eRb
+         WKvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWyKr+AhTi1SEFcwSP0D0p25T9bDMi5BdpFo7sdlHqXzCbu4Pt2s3Gav4d8eC237AB0OI+/CdPvML3v7942h8ioPCJKDqDfgrrXTurxb/1mvKFtNSNMzbpizQI2PQW3gjdywEfh
+X-Gm-Message-State: AOJu0YyxaGbjh0srqJNNxdAS8gQZWV6gMkVWXrF3N0fzlXRIUjpQez4R
+	zOOIYiFspmuEE2iYO6nKur+JGh/5PmIi+ODIzeVYfllr7H3Odzi6
+X-Google-Smtp-Source: AGHT+IE+5zuwW7yrsOv31+vWiPAyUrhpzypF4FkaT/NCs+F+uYeC4DCmPmFSiu9j2c5OOLOnoljCDw==
+X-Received: by 2002:a05:600c:1994:b0:40f:c404:e2d1 with SMTP id t20-20020a05600c199400b0040fc404e2d1mr6185259wmq.19.1707737508435;
+        Mon, 12 Feb 2024 03:31:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWR2iTtX1e3lWMsiZIItzqZolsT1+SrO+IYPvd4Mnk9qfVk5oqtuTGayfq8h/PdBph1icPKjf5BisiimUASF9I+sJMbX/rkjdA7ww2+/IR14cubejkg/D0c4Ce+O2pqTcY6RSq4xXejeAtRVH8xabBlYSA1374UMSY33rbWPqM8Z/s5rO6XolyLKqdqxDTHi5OCZhx7LD+cb6Xh0IiSJRpNJSAq2wqtmbl68pZEGoadsGk=
+Received: from localhost ([45.130.85.2])
+        by smtp.gmail.com with ESMTPSA id r17-20020a05600c35d100b004106c2278eesm8459064wmq.0.2024.02.12.03.31.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 03:31:48 -0800 (PST)
+Message-ID: <152dec8c-176c-4012-bef8-25ccc5785241@gmail.com>
+Date: Mon, 12 Feb 2024 12:30:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024021246-canon-planner-2bf6@gregkh>
+Subject: [RFC PATCH net-next v2 1/3] net: route: expire rt if the dst it holds
+ is expired
+Content-Language: en-US
+From: Leone Fernando <leone4fernando@gmail.com>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <3a17c86d-08a5-46d2-8622-abc13d4a411e@gmail.com>
+In-Reply-To: <3a17c86d-08a5-46d2-8622-abc13d4a411e@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Greg,
+The function rt_is_expired is used to verify that a cached dst is valid.
+Currently, this function ignores the rt.dst->expires value.
 
-On 12 Feb 11:45, Greg Kroah-Hartman wrote:
-> On Sun, Feb 11, 2024 at 12:33:50PM -0300, Ricardo B. Marliere wrote:
-> > Now that the driver core can properly handle constant struct bus_type,
-> > move the scsi_bus_type variable to be a constant structure as well,
-> > placing it into read-only memory which can not be modified at runtime.
-> > 
-> > Remove some extraneous whitespace.
+Add a check to rt_is_expired that validates that the dst is not expired.
 
-I saw some patches did this, thought it would ok to add.
+Signed-off-by: Leone Fernando <leone4fernando@gmail.com>
+---
+ net/ipv4/route.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> > 
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > ---
-> >  drivers/scsi/scsi_priv.h  | 6 +++---
-> >  drivers/scsi/scsi_sysfs.c | 6 +++---
-> >  2 files changed, 6 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/scsi_priv.h b/drivers/scsi/scsi_priv.h
-> > index 1fbfe1b52c9f..6a02114776b3 100644
-> > --- a/drivers/scsi/scsi_priv.h
-> > +++ b/drivers/scsi/scsi_priv.h
-> > @@ -54,7 +54,7 @@ void scsi_init_command(struct scsi_device *dev, struct scsi_cmnd *cmd);
-> >  void scsi_log_send(struct scsi_cmnd *cmd);
-> >  void scsi_log_completion(struct scsi_cmnd *cmd, int disposition);
-> >  #else
-> > -static inline void scsi_log_send(struct scsi_cmnd *cmd) 
-> > +static inline void scsi_log_send(struct scsi_cmnd *cmd)
-> 
-> Why is this line changed?
-> 
-> >  	{ };
-> >  static inline void scsi_log_completion(struct scsi_cmnd *cmd, int disposition)
-> >  	{ };
-> > @@ -156,7 +156,7 @@ extern void scsi_sysfs_device_initialize(struct scsi_device *);
-> >  extern struct scsi_transport_template blank_transport_template;
-> >  extern void __scsi_remove_device(struct scsi_device *);
-> >  
-> > -extern struct bus_type scsi_bus_type;
-> > +extern const struct bus_type scsi_bus_type;
-> >  extern const struct attribute_group *scsi_shost_groups[];
-> >  
-> >  /* scsi_netlink.c */
-> > @@ -197,7 +197,7 @@ struct bsg_device *scsi_bsg_register_queue(struct scsi_device *sdev);
-> >  
-> >  extern int scsi_device_max_queue_depth(struct scsi_device *sdev);
-> >  
-> > -/* 
-> > +/*
-> 
-> And this?
-> 
-> 
-> >   * internal scsi timeout functions: for use by mid-layer and transport
-> >   * classes.
-> >   */
-> > diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-> > index 24f6eefb6803..7f1fede8ef5d 100644
-> > --- a/drivers/scsi/scsi_sysfs.c
-> > +++ b/drivers/scsi/scsi_sysfs.c
-> > @@ -549,7 +549,7 @@ static int scsi_bus_uevent(const struct device *dev, struct kobj_uevent_env *env
-> >  	return 0;
-> >  }
-> >  
-> > -struct bus_type scsi_bus_type = {
-> > +const struct bus_type scsi_bus_type = {
-> >          .name		= "scsi",
-> >          .match		= scsi_bus_match,
-> >  	.uevent		= scsi_bus_uevent,
-> > @@ -656,7 +656,7 @@ static int scsi_sdev_check_buf_bit(const char *buf)
-> >  			return 1;
-> >  		else if (buf[0] == '0')
-> >  			return 0;
-> > -		else 
-> > +		else
-> 
-> And this, please be more careful, it looks like your editor stripped out
-> all trailing whitespace, which is fine for new files, but not for
-> existing ones.
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 16615d107cf0..7c5e68117ee2 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -392,7 +392,8 @@ static inline int ip_rt_proc_init(void)
+ 
+ static inline bool rt_is_expired(const struct rtable *rth)
+ {
+-	return rth->rt_genid != rt_genid_ipv4(dev_net(rth->dst.dev));
++	return rth->rt_genid != rt_genid_ipv4(dev_net(rth->dst.dev)) ||
++	       (rth->dst.expires && time_after(jiffies, rth->dst.expires));
+ }
+ 
+ void rt_cache_flush(struct net *net)
+-- 
+2.34.1
 
-In fact it took me a while to figure this out, as I don't have
-format-on-save enabled. It's actually due to the recently added
-editorconfig file to the tree. I can send it without the whitespace
-changes if that's better, but it's there in the changelog. Please let me
-know.
-
-Thanks for reviewing,
--	Ricardo.
-
-
-
-> 
-> thanks,
-> 
-> greg k-h
 
