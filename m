@@ -1,148 +1,202 @@
-Return-Path: <linux-kernel+bounces-62332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD0C851E9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:26:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20ABE851EA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:26:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD0C31C20C15
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:26:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29BA01C21CFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:26:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD77482ED;
-	Mon, 12 Feb 2024 20:26:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA40B41208;
-	Mon, 12 Feb 2024 20:25:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC57E482EF;
+	Mon, 12 Feb 2024 20:26:27 +0000 (UTC)
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997E44C606;
+	Mon, 12 Feb 2024 20:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707769561; cv=none; b=WpwykS3czgGQweqTuytdFVsz2mxR4/ZXdWlZUoaF5923gt6jpRKdV8DYGfkEgI4ruWbeqWa07q7ohrfbUKppVXXoto8DSIwLjiDoEvNZSV4P62/lziwyDc2OrP46GOPiNInsB6nKudnKD4kqiD8fQx72I7X/m0lKYY+pCtLvhiI=
+	t=1707769587; cv=none; b=IU1DMNcNR0yATZmMY96x7ZsvmOBnaAXYiOkgfrudaufNheyHGVZBbJU9NOtpoa6WOTfPpSv23dABllBvKJ/bPzBPVN8ZmcqTxrk2posOC7AxmZDXb4gZYgrce36/CjluXMNusJqI6jBmEJciH1Rv7pgthas9ciR44sOqZloZ/pc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707769561; c=relaxed/simple;
-	bh=4LzQNYnhDLWF7CpRALP+fSk7Y3GuFx5cvns2xtzlsOw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jP8FjXZeudN/8K8XNRsZdgZqtFLzUZF+/Y9odJ4TK4Czqhl6gJzEMfeNhrtwZzC5FOWjNEv4pyW3aRqzvUY4zScCfdOk4oAOs9ZbGVz540zvYA8a0iI4WUMwSv4x268DcUTEEjG85f3Q0vQz988m7gyCqOtFs8joWFjekWgkCSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 37B6BDA7;
-	Mon, 12 Feb 2024 12:26:39 -0800 (PST)
-Received: from [10.57.48.89] (unknown [10.57.48.89])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26C4E3F766;
-	Mon, 12 Feb 2024 12:25:55 -0800 (PST)
-Message-ID: <cfc87678-0445-42e6-9fc1-b22ef25566ff@arm.com>
-Date: Mon, 12 Feb 2024 20:25:53 +0000
+	s=arc-20240116; t=1707769587; c=relaxed/simple;
+	bh=Rfk8H0cufu6L5HVsNaYbQMr4zRjqv98K50DDSUxp2/U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DUu7OtOORWTPy9mZ0LwNnNlv7W8Kz9/UtVSxEjieYQsS+WrHuaDNKRlYjAQqFYml8os+SoM/US3Nkb/+TcSBSTerCyXU+Gt0hQwp5QoTPc8CNDCEfwSymEShmnkib/m157T4XP8Yz1FUDu6cPI/DBiz6LXSkqjCeiBaiRRtILzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7d5bfdd2366so1182633241.3;
+        Mon, 12 Feb 2024 12:26:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707769584; x=1708374384;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8oDdobSWjhMuhpl2SjOENndcMi2LuqYBF4JWDKsUtvU=;
+        b=GcxnjTHQ2TfG697bYL5EMUi+J+eiqKq2ekHLKhSMIVaVeJLp/L0crq1GBkFVRVQ8SZ
+         RxYH9z1Z/lZsK0+pjdN6UFYIKtMTvazP/zq+C9FKLSEDrG3veJb0Mmh5MfLlkgW3lkD9
+         M+VfcWTWMNUn7icB39aaOB+xZd293+j8BYHuCmYDIjfZDMEQPSYd9z9Hlt+Mz1KdSZ9p
+         ykZMKza1dhI/lVTcrlwyeoL8ybtRb0lLvda2lrflPhFQEURLyUrOfGeXlIimJGRooX8s
+         ILO1VAkMi/lmiwm6X+VIr2gV7Dbs5p4JQ9+Vq3790daofbDU1WUbLCIQveqNuWQedWGG
+         93EQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWKQ8vdfflPfKjTF2fGxj1h7UZOJhKc+UnSWH1838/OUDm5M0yu6plUTZ8KvYG/pnPIZqXVOxqG4l0qVhfyygFQz9LH0JPZS+UWuSc81HDQyzgowt7FNyW1JovRryFPVxHZeeDo/lOe8f4vEFrqiCnAJej3UZNXt1QNUedavtMUjVoVzw==
+X-Gm-Message-State: AOJu0YwcFt7jyyIdq1oEbcTWEz3Z7Em56ZWOhyCiBz+4ICYyr0OOxHws
+	zHLJuV1yWXNYIuWdGL68f3eHgLTof+EHxEVlch4KWmQzntG0N+SJ0QgdacgZrVGhaF/8qLS+f8B
+	HbUGWHEHR7hsOohPBa/uFa4VyeBM=
+X-Google-Smtp-Source: AGHT+IE8RQym1+HJzAQZXtINY2YnsP3MTnUZBRGmjYXjV3sRME09ZXH76BYYetHSlYnshiazXY7PDUwHH6xkRx/HWnw=
+X-Received: by 2002:a1f:cb41:0:b0:4c0:6406:ee62 with SMTP id
+ b62-20020a1fcb41000000b004c06406ee62mr3992472vkg.13.1707769584308; Mon, 12
+ Feb 2024 12:26:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 01/10] dt-bindings: iommu: Add Translation Buffer Unit
- bindings
-Content-Language: en-GB
-To: Georgi Djakov <quic_c_gdjako@quicinc.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, will@kernel.org,
- joro@8bytes.org, iommu@lists.linux.dev
-Cc: devicetree@vger.kernel.org, andersson@kernel.org,
- konrad.dybcio@linaro.org, robdclark@gmail.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, quic_cgoldswo@quicinc.com,
- quic_sukadev@quicinc.com, quic_pdaly@quicinc.com, quic_sudaraja@quicinc.com,
- djakov@kernel.org
-References: <20240201210529.7728-1-quic_c_gdjako@quicinc.com>
- <20240201210529.7728-2-quic_c_gdjako@quicinc.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240201210529.7728-2-quic_c_gdjako@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240210031746.4057262-1-irogers@google.com> <20240210031746.4057262-2-irogers@google.com>
+ <CAM9d7chEKepmHY_Mgvq27CEcKB1e8bENwn2=pMe-yin30nfGLA@mail.gmail.com> <CAP-5=fX7h9ku-XgjYe+3B5NWOJnapLnuJ_JqxywPaTu76VxazA@mail.gmail.com>
+In-Reply-To: <CAP-5=fX7h9ku-XgjYe+3B5NWOJnapLnuJ_JqxywPaTu76VxazA@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 12 Feb 2024 12:26:12 -0800
+Message-ID: <CAM9d7cgGAd7xEzwRxQFXoxpY9_gWduqYpy5jpp1zDTFjJqSxbw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] perf maps: Switch from rbtree to lazily sorted
+ array for addresses
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
+	Colin Ian King <colin.i.king@gmail.com>, Liam Howlett <liam.howlett@oracle.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Artem Savkov <asavkov@redhat.com>, 
+	Changbin Du <changbin.du@huawei.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>, 
+	James Clark <james.clark@arm.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, leo.yan@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-02-01 9:05 pm, Georgi Djakov wrote:
-> Add common bindings for the TBUs to describe their properties. The
-> TBUs are modelled as child devices of the IOMMU and each of them is
-> described with their compatible, reg and stream-id-range properties.
-> There could be other implementation specific properties to describe
-> any resources like clocks, regulators, power-domains, interconnects
-> that would be needed for TBU operation. Such properties will be
-> documented in a separate vendor-specific TBU schema.
-> 
-> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
-> ---
->   .../devicetree/bindings/iommu/arm,smmu.yaml   | 14 ++++++++++
->   .../devicetree/bindings/iommu/tbu-common.yaml | 28 +++++++++++++++++++
->   2 files changed, 42 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/iommu/tbu-common.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> index a4042ae24770..ba3237023b39 100644
-> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> @@ -235,6 +235,20 @@ properties:
->         enabled for any given device.
->       $ref: /schemas/types.yaml#/definitions/phandle
->   
-> +  '#address-cells':
-> +    enum: [ 1, 2 ]
-> +
-> +  '#size-cells':
-> +    enum: [ 1, 2 ]
-> +
-> +  ranges: true
-> +
-> +patternProperties:
-> +  "^tbu@[0-9a-f]+$":
-> +    description: TBU child nodes
-> +    type: object
-> +    $ref: tbu-common.yaml#
-> +
->   required:
->     - compatible
->     - reg
-> diff --git a/Documentation/devicetree/bindings/iommu/tbu-common.yaml b/Documentation/devicetree/bindings/iommu/tbu-common.yaml
-> new file mode 100644
-> index 000000000000..3e95b356e572
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iommu/tbu-common.yaml
-> @@ -0,0 +1,28 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iommu/tbu-common.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Translation Buffer Unit (TBU) common properties
-> +
-> +maintainers:
-> +  - Georgi Djakov <quic_c_gdjako@quicinc.com>
-> +
-> +description:
-> +  The SMMU implements a TBU for system masters. It consists if a
-> +  Translation Lookaside Buffer (TLB) that caches page tables.
-> +
-> +properties:
-> +  reg:
-> +    maxItems: 1
-> +
-> +  stream-id-range:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description: Stream ID range (address and size) that is assigned by the TBU
-> +    items:
-> +      minItems: 2
-> +      maxItems: 2
+On Mon, Feb 12, 2024 at 12:19=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> On Mon, Feb 12, 2024 at 12:15=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
+g> wrote:
+> >
+> > On Fri, Feb 9, 2024 at 7:18=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> > >
+> > > Maps is a collection of maps primarily sorted by the starting address
+> > > of the map. Prior to this change the maps were held in an rbtree
+> > > requiring 4 pointers per node. Prior to reference count checking, the
+> > > rbnode was embedded in the map so 3 pointers per node were
+> > > necessary. This change switches the rbtree to an array lazily sorted
+> > > by address, much as the array sorting nodes by name. 1 pointer is
+> > > needed per node, but to avoid excessive resizing the backing array ma=
+y
+> > > be twice the number of used elements. Meaning the memory overhead is
+> > > roughly half that of the rbtree. For a perf record with
+> > > "--no-bpf-event -g -a" of true, the memory overhead of perf inject is
+> > > reduce fom 3.3MB to 3MB, so 10% or 300KB is saved.
+> > >
+> > > Map inserts always happen at the end of the array. The code tracks
+> > > whether the insertion violates the sorting property. O(log n) rb-tree
+> > > complexity is switched to O(1).
+> > >
+> > > Remove slides the array, so O(log n) rb-tree complexity is degraded t=
+o
+> > > O(n).
+> > >
+> > > A find may need to sort the array using qsort which is O(n*log n), bu=
+t
+> > > in general the maps should be sorted and so average performance shoul=
+d
+> > > be O(log n) as with the rbtree.
+> > >
+> > > An rbtree node consumes a cache line, but with the array 4 nodes fit
+> > > on a cache line. Iteration is simplified to scanning an array rather
+> > > than pointer chasing.
+> > >
+> > > Overall it is expected the performance after the change should be
+> > > comparable to before, but with half of the memory consumed.
+> > >
+> > > To avoid a list and repeated logic around splitting maps,
+> > > maps__merge_in is rewritten in terms of
+> > > maps__fixup_overlap_and_insert. maps_merge_in splits the given mappin=
+g
+> > > inserting remaining gaps. maps__fixup_overlap_and_insert splits the
+> > > existing mappings, then adds the incoming mapping. By adding the new
+> > > mapping first, then re-inserting the existing mappings the splitting
+> > > behavior matches.
+> > >
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > Acked-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > [SNIP]
+> > >  int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map,=
+ void *data), void *data)
+> > >  {
+> > > -       struct map_rb_node *pos;
+> > > +       bool done =3D false;
+> > >         int ret =3D 0;
+> > >
+> > > -       down_read(maps__lock(maps));
+> > > -       maps__for_each_entry(maps, pos) {
+> > > -               ret =3D cb(pos->map, data);
+> > > -               if (ret)
+> > > -                       break;
+> > > +       /* See locking/sorting note. */
+> > > +       while (!done) {
+> > > +               down_read(maps__lock(maps));
+> > > +               if (maps__maps_by_address_sorted(maps)) {
+> > > +                       /*
+> > > +                        * maps__for_each_map callbacks may buggily/u=
+nsafely
+> > > +                        * insert into maps_by_address. Deliberately =
+reload
+> > > +                        * maps__nr_maps and maps_by_address on each =
+iteration
+> > > +                        * to avoid using memory freed by maps__inser=
+t growing
+> > > +                        * the array - this may cause maps to be skip=
+ped or
+> > > +                        * repeated.
+> > > +                        */
+> > > +                       for (unsigned int i =3D 0; i < maps__nr_maps(=
+maps); i++) {
+> > > +                               struct map **maps_by_address =3D maps=
+__maps_by_address(maps);
+> >
+> > Any chance they can move out of the loop?  I guess not as they are
+> > not marked to const/pure functions..
+>
+> It's not because the cb(...) call below will potentially modify
+> maps_by_address by inserting maps and reallocating the array. Having
+> it outside the loop was what caused the original bug.
 
-Actually, even this doesn't work - for the 15-bit StreamID config, 
-there's no guarantee that the devices behind each TBU will use a single 
-contiguous StreamID range. Conversely, for any other config the 
-StreamIDs are already uniquely associated with a TBU by their top 5 
-bits, so the "size" doesn't matter.
+Oh, I meant if compiler can move them automatically.
 
 Thanks,
-Robin.
+Namhyung
 
-> +
-> +additionalProperties: true
-> +...
+> >
+> >
+> > > +                               struct map *map =3D maps_by_address[i=
+];
+> > > +
+> > > +                               ret =3D cb(map, data);
+> > > +                               if (ret)
+> > > +                                       break;
+> > > +                       }
+> > > +                       done =3D true;
+> > > +               }
+> > > +               up_read(maps__lock(maps));
+> > > +               if (!done)
+> > > +                       maps__sort_by_address(maps);
+> > >         }
+> > > -       up_read(maps__lock(maps));
+> > >         return ret;
+> > >  }
 
