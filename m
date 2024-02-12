@@ -1,100 +1,141 @@
-Return-Path: <linux-kernel+bounces-61250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5440D850FD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:35:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4C1850FD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:37:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F7B91C21CBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:35:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE4E51C21AB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:37:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4474E179AA;
-	Mon, 12 Feb 2024 09:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180E617BA8;
+	Mon, 12 Feb 2024 09:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZnbSGPxK"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u1XttLTI"
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F287D17BA1
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:35:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A5312B7E
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707730514; cv=none; b=bWULRRamc9f72awVvwISFUMCORdAVgF8gn9xKRApKjYWBLhKy21fGiKwY4O1MfrOljaWC/CNmdK3R/LmwDHxrapXAX6+e1XUWgst8bz797h3Po3FO6Uty0wEC6TyhzKQ7/Avqm4ni38pR8lzsJRtVsLHr/Efi2TQAE1VyD+Js4U=
+	t=1707730622; cv=none; b=CsAmwJTbXuXpovw15Z210rnd80JuOdU4xZFH+Ke3rrNfQKsdfKxpgXLz1l5W0X7G/THmJ8L4t/t6NdaEjUvCBPPCZn/sDir7lKVgCya5HDpD7CaqvJGKJ9vPmeLg56CsWdSUhNw/6Voy6MOSZcU8SCLaZmI9aSOkM+a4jSaQe5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707730514; c=relaxed/simple;
-	bh=zMsYBJdefRbRS1oJBVQytEShuramaVpb8rAhJF8Xwa4=;
+	s=arc-20240116; t=1707730622; c=relaxed/simple;
+	bh=hNoYuhS9gQug/OX6MY7ORS8ZrUYMnh2ZQxIi4q+85ds=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F/TG2KqQ0OoC1anKOvYdAcV7qv7QL9zYVMcTte7oq4+obXXjtgUjgH8YdtU4qeuvz21WmwUN6JiX6z2heH/vO+ucm3FCy1BSzDhadbbkCdafhDD8Osk7U9rLlnY7QhDapjmLZyn50HsJ2avWqdlSMdVZSzxCkb9Qe5TWhkHDlC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZnbSGPxK; arc=none smtp.client-ip=209.85.208.42
+	 To:Cc:Content-Type; b=MHr7Yo9FQBSN5tqG3grcIPhQJFUKGXwAprErCTN2v3og/lWtR1fPfDnSkGEKvySA1sIyHJMAOHyM8MD7Lp31L9uf3x3+O38kLk98ZESQgNOS/yVCNlvesZA6LxUoXhVvEaRjJFrodj4JyGHlvr2CVK7JrT4//P4gHNu7QrTXQsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u1XttLTI; arc=none smtp.client-ip=209.85.222.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56154f4c9c8so17068a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 01:35:12 -0800 (PST)
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7d2a78c49d1so1527021241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 01:37:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707730511; x=1708335311; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707730620; x=1708335420; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=49Pfy019p7jCH4WHQFV/itn58Ta0gVCaehKec6pDwNU=;
-        b=ZnbSGPxKRvRLNGToMwx03CMepsQz3Q7jGIh3nGp8iwIkJNV1XF2BulSFRzpqjsiBTx
-         /jxmSVwmZUEcCE9zH6xW9FLc5nerWIEs04lXg5FK+1sfMJf/5RTxEO8e4ukWyQFeEa/P
-         YDWZ5l242S3BoygDjTvkw2WIH3F8WKU6sxg6nzU6GJdaFlQPpHAOjeZ2Fq7FEgANvPvA
-         AXqOYJ/x176Gyj6iPWnOMimIW9wOj6xTJa+NAMt6t8ZGovdyvhH5f3pwHeuqzepaSNM9
-         m7Gb9hlQ4/GuiumbIiA1CacCeZI1XKcRCe2IDZfDOvAKP4cxDbIXSF/bzDHLczuW/IrN
-         SsgA==
+        bh=H/E+m/HmOf8NYGXW5jPmBKlZJMmDwZLc9BuYGu83i6s=;
+        b=u1XttLTIEHxldQlNaA6c7dcUkf2Fg9YWwYMqQJoG9jOFvYyt7DsbwgzAWdGBIhRY6M
+         LgPdaIg69WxumnBcSYJgaYHhMftnrJr6YlNq0MARyoT/7JohlOBnBk+p5niWYBhOJcrq
+         9W2e3FoQqqWGOHfdvpf4ASZssQb8z4XmS8lztVv6FRUNNWQT4uTvOWOfC/JPBMtVnba0
+         XKTNUWGtWACUBPQITgd/VhOUK2YMwuisXNK6QAmjmkZPEHtqMW3zKsXCYst1BAqXa5VB
+         cpQiFmr3tiCNReIYGBNBc5o7mHjv+8FTyPgGvXNlbD0YGiO5AwvtwDsD+iOFiY4oMwKC
+         Ik/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707730511; x=1708335311;
+        d=1e100.net; s=20230601; t=1707730620; x=1708335420;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=49Pfy019p7jCH4WHQFV/itn58Ta0gVCaehKec6pDwNU=;
-        b=IT8fGgg3bKGuHChiTv5kft8+kHhCcV5UN1ahJVN+Aeot6mEYmqnP6r6Lxpr8n/HRGJ
-         pxJ7KmtvVUo44jb0h204WxNX0IrNanlE8WLdtZ91ZI61teckPwvMkGObiVsjjxqYVa9t
-         b3O+YcXFKjB1fmh5Cm1U1X+w/5f58feiFqP1FUN2ApCUv6iL7FCVK4tbrVG65vxQEvtk
-         yXF9rVxi9yTAHEPorV8Do9NGmd6hZ6eatj0ZRfjNkCsve07d9KzKyt8eGsvfyz1FUykD
-         x9hhjsuBm4K4lHAfAooGxtCiWtvwtceuOBhkhblT2ql2Q8ei8kE721NOr1YWwp/TF+2v
-         zsvQ==
-X-Gm-Message-State: AOJu0YzRSFIAp/bsy08V8XVgE+Pc/0MVi/ZbduV4aN5ZZgyJ32XPdnY4
-	xUkiYGleHiDlfbaCS+HUH1KzWZPL2ZAj5KAXHjVisY8+wXSKUR6YBmcMZZAsXH4tmG/oON1vLiT
-	zM5DBcCZFWpagN0SoI7MFoVDLSYXVmXghq2Ut
-X-Google-Smtp-Source: AGHT+IE90DP2qYdtoREl/pW8hB5dGkqsSq19HY3bQagXr/qZHS6Eb8/aPBg38eBJHnzPK77uufxVPlon7RmZfubM88I=
-X-Received: by 2002:a50:8a93:0:b0:55f:8851:d03b with SMTP id
- j19-20020a508a93000000b0055f8851d03bmr183753edj.5.1707730510754; Mon, 12 Feb
- 2024 01:35:10 -0800 (PST)
+        bh=H/E+m/HmOf8NYGXW5jPmBKlZJMmDwZLc9BuYGu83i6s=;
+        b=NI8mEb4+I0D2vHYzrgfl7RND01qU8kysFdd7nsM/t08RfBf55UFk5VQ4cRBN8MziIc
+         Ic0TXElfD8JtTZVJIwDZ7gmxe16vGdKw7FALxuCTV5g5Ot+rrcqtWx1h06NiPCNdXpCt
+         Yj9iFeP3GTtMrIzNXubWsaHzeZdGx5AZgM3nqixWLVvKowU+/3j3rep3WwLmQCUq3IA9
+         UjrkLNm/dGx7GVwX14oDjFwtnWyIZFoTz3eo5Ye7qU+fM7hKagdr3F8y3hWq4qYb41EG
+         no7RTZZhrt7YtYhNYA4KjGcp9eZwqxnTrka/9S8L+fNpNY893v3FNXmIm7G7fEcbvwY2
+         /eaQ==
+X-Gm-Message-State: AOJu0YxKHYEh5NMzEgbLspH2qhjmXaMn1tXswxSZZ4++U3DCVGJ014ra
+	SDViRgwcDZat8XwjIrtWj06Jl+Ajsa+uUc7e1veJI/cmQ8+pmoP57i0MLk3vf4K8GTvdGVHwwcC
+	vPw/pD4jpFtKPEZ/y0heW+HEaBStwPTYD9NMI
+X-Google-Smtp-Source: AGHT+IF1JLiuSnoWvFlNH0ZFTmSJCw5Jh8SHStPr6vvDaY5nSqylus66nyMrF0w34j2u/nWXwzWcgMEwLYwAKIEhUw4=
+X-Received: by 2002:a05:6102:3709:b0:46d:2b14:db7 with SMTP id
+ s9-20020a056102370900b0046d2b140db7mr4717432vst.4.1707730619799; Mon, 12 Feb
+ 2024 01:36:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240210125054.71391-1-remi@remlab.net>
-In-Reply-To: <20240210125054.71391-1-remi@remlab.net>
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 12 Feb 2024 10:34:57 +0100
-Message-ID: <CANn89i+4SHqf7NCX4uyr0gCJZKSzcmxAGTCwqwrfRPBnMvd1Pw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] phonet: take correct lock to peek at the RX queue
-To: =?UTF-8?Q?R=C3=A9mi_Denis=2DCourmont?= <remi@remlab.net>
-Cc: courmisch@gmail.com, davem@davemloft.net, kuba@kernel.org, 
-	pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240208-alice-mm-v2-0-d821250204a6@google.com>
+ <20240208-alice-mm-v2-4-d821250204a6@google.com> <d35a656b-b802-4f1e-90d6-7320d61ed818@gmail.com>
+In-Reply-To: <d35a656b-b802-4f1e-90d6-7320d61ed818@gmail.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Mon, 12 Feb 2024 10:36:48 +0100
+Message-ID: <CAH5fLghM2thHeQifehUDT1b64okVn3sh6Eg_oPxqoK2zU-EJGw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] rust: add abstraction for `struct page`
+To: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Kees Cook <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 10, 2024 at 1:50=E2=80=AFPM R=C3=A9mi Denis-Courmont <remi@reml=
-ab.net> wrote:
+On Sat, Feb 10, 2024 at 5:23=E2=80=AFAM Martin Rodriguez Reboredo
+<yakoyoku@gmail.com> wrote:
 >
-> From: R=C3=A9mi Denis-Courmont <courmisch@gmail.com>
+> On 2/8/24 12:47, Alice Ryhl wrote:
+> > [...]
+> > +    /// Maps the page and reads from it into the given buffer.
+> > +    ///
+> > +    /// This method will perform bounds checks on the page offset. If =
+`offset ..
+> > +    /// offset+len` goes outside ot the page, then this call returns `=
+EINVAL`.
+> > +    ///
+> > +    /// # Safety
+> > +    ///
+> > +    /// * Callers must ensure that `dst` is valid for writing `len` by=
+tes.
+> > +    /// * Callers must ensure that this call does not race with a writ=
+e to the
+> > +    ///   same page that overlaps with this read.
 >
-> Reported-by: Luosili <rootlab@huawei.com>
-> Signed-off-by: R=C3=A9mi Denis-Courmont <courmisch@gmail.com>
-> ---
->  net/phonet/datagram.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
+> This safety section says that a call mustn't race with a page that
+> overlaps this read, hmmmmm.
 
-Fixes: 107d0d9b8d9a ("Phonet: Phonet datagram transport protocol")
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Is there a question here?
 
-Thanks.
+> > +    pub unsafe fn read_raw(&self, dst: *mut u8, offset: usize, len: us=
+ize) -> Result {
+> > +        self.with_pointer_into_page(offset, len, move |src| {
+> > +            // SAFETY: If `with_pointer_into_page` calls into this clo=
+sure, then
+> > +            // it has performed a bounds check and guarantees that `sr=
+c` is
+> > +            // valid for `len` bytes.
+> > +            //
+> > +            // There caller guarantees that there is no data race.
+> > +            unsafe { ptr::copy(src, dst, len) };
+>
+> If `src` and `dst` overlap then wouldn't that be a bad idea? If so then
+> how about mentioning that callers have to ensure that `dst` does not
+> overlap with the page that's being read and use
+> `core::ptr::copy_nonoverlapping` instead, otherwise the doc comment
+> could mention that `dst` can overlap.
+
+I'll use copy_nonoverlapping. Thanks for the suggestion.
+
+Alice
 
