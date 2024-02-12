@@ -1,167 +1,259 @@
-Return-Path: <linux-kernel+bounces-61401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C95AD8511E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:10:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F7B38511F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:14:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25471B2524A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:10:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7B9A1F22570
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02CA738DF7;
-	Mon, 12 Feb 2024 11:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C6B38DDD;
+	Mon, 12 Feb 2024 11:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QLAS7pHH"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NEVlBGhv"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F48F2BAE7
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADFE117752;
+	Mon, 12 Feb 2024 11:14:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707736231; cv=none; b=DEUZBS97s9OGU04ryDKHgd3Z5mPNUqx5WGayIRvO09QlZqEoCIMQoGO8/pfOOON8CmJNOl0x1VVPP2P3LYqjbZKEU45+o5xWVVaEE82PmJ8hzKWLPVP8UB2dTpbcee9X8YpxfIlB6mDh4TTUM/8PTDifc0eURpLN8+EiCTMKxYY=
+	t=1707736447; cv=none; b=pHRWdFEIHJvDG9oPAHM0L++jPEWAGpS32aa1kPffyljEjvTnSW5l02/qkBxzlqmTa4P0avIit64MbTthLHMrSxHpJIYoVIBRKpBRMauQtn5T9Z3GjDDLl92tA6akawfIzwlrdBbh2XgWXyTLjdNKjgHP5ftRLJQJlHkt2LHUzzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707736231; c=relaxed/simple;
-	bh=56X0pseBQ6WVIu10r0CRACR7xBuAvbGd9xsxlu7zq8Y=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=SRmn7EdQDVz6XkoDgAdiu2x802VQ0rRXgVJ36fTQuXlNmSRD6xJmuObjQJRoR4BpRFFzmf31wF5lK9jaDrAvlSBSluqsab/2J1DRVeQ2Iy++6q8xrpje4txkn8Vy5zJla1qBM5lA92Xg7uAkYQnT+dgE+hd5UVcRO6eH69sFH/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QLAS7pHH; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51182f8590bso1838784e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:10:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707736227; x=1708341027; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=PJUMoQkcVAa90I58l3DTM/q4GMcwM3UZhA1RVbNTEOQ=;
-        b=QLAS7pHHzGPiJUahWN2R/+SeWtZ097Eq1RZ4Vhy1yEvK2K0zfffDbvJTZjj8xHzjXH
-         rjy0ghkdntb+8+VuoP2PTZD+G9dgY1tOVbMaYOv4JyxUbmwdQzer7phRVDCX2iNA+Xtn
-         aNDP9et9v90DZBRixmHS13mbaIe9arkb/nfWGITb+/bwUz5171ZPuIt/Y35oomIT80c+
-         UUW+RQmaWOmQSERyL9s8MFFCdwFXKeOhQ5qSYPcAmJ/bzNbzU75N5c821Tw1q7hgvAdX
-         r5ISWoLlV2vRd2CUe00YjIt9ixJARVqsgWTiBXteLR4r8BdI0manhBMvTtDtGLmHQSOk
-         c6wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707736227; x=1708341027;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PJUMoQkcVAa90I58l3DTM/q4GMcwM3UZhA1RVbNTEOQ=;
-        b=GkXtzYTtv9sZWYMqsY8TShymtDR4+ZHzhA0PfZYc0ul95c9U7X5UIyQxyFHpT/f99d
-         g1x+W8DaQ8OlWvCi7RdkP2QMhnn1YUyXK9GfvyFhJ5e2Vmr2HH0lRcnNmhVf/UtzJXE1
-         sZKOshckmIPrIxOLjiOKkYwsEGWMClKxnV2iFBt5yVYwAOyGAip2tKeSryzLIVueREtJ
-         SmIh6L07o556rarNaLWpL76H2Fr5q+bzZmwrPjhIQn2yeyCbWOGjN+LQyaLaUUM21H76
-         7GnBtJzId2+SNNCM9SGZPpqhgvZji7qEUgxI9wOtyQqdinotCKzjshKnme5lmJfgwqw8
-         PKvQ==
-X-Gm-Message-State: AOJu0YxoqPdEcq0mC6nvSMv6YrOanBZBkR9mzS0xwjWL8BwlgUHK7zGA
-	Nl5jrhww/T3NVqHvpVHxXyPNHUUoxB1mZgmPR8CkBRcIX1SI2jMgevblL/kR50A=
-X-Google-Smtp-Source: AGHT+IE8vAlvQn1bG1sV7ss/mRxlHNknxgQrle/b0f0yFD2xQgKGsAhyN8vXKAaPbChCJSwSG9vwKQ==
-X-Received: by 2002:ac2:5f5c:0:b0:511:6952:70c0 with SMTP id 28-20020ac25f5c000000b00511695270c0mr3190186lfz.5.1707736227411;
-        Mon, 12 Feb 2024 03:10:27 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWVNoDeEVHe7SijgMjpeXARSjACBKjhUjq4Djfgb7vWa0AIYt7rCqKFVX4KdVMQmmXgpq+QggRJWPI/8ZdMw1mC3Ki5ftGR4fvTt5BIMlFycoSCY/l1wYzSUmFZyPzW5tLhmjXlDpuPHm/Ouvn2RhA9F76LJdYK86sKxm3cSWXoxLEupBx1WN+z1rSBE2fuOTYXajmhvmwE5pNt3NfZ3e70hTGxnPlb20sckAwg+7D6bp0h1udi/v7OZZsLA2KAxSEQEg6UQQD1gVBc+XybzdsZ8cJ0z+leaAFI5vZZR2o3fRr0DMqeMu734KSmxh8yVDqYeeJn/9Qs5N13A/3YuB5lsE7/MLkXywD5/0chmkB2isZsHmCwVQ3K4dYIAfT/iSGJH08ItD4w6C499oS1dIyaOiQ6o/subIKAN9Eg3LO2TggqgpxWP+vG3RO2Si9H4HTjb1ZLMumJR1YPAUvTqj0589KkZZo0
-Received: from [192.168.1.20] ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id s8-20020adfecc8000000b0033b671f079dsm6444636wro.115.2024.02.12.03.10.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 03:10:27 -0800 (PST)
-Message-ID: <690e64d6-8888-4f99-9ee0-c731aeea7762@linaro.org>
-Date: Mon, 12 Feb 2024 12:10:25 +0100
+	s=arc-20240116; t=1707736447; c=relaxed/simple;
+	bh=0qGgD5wUtgbmEZRsjglxHIOFxTJDqoMjE6LDIsfo7Jo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GlomXJc+s10JNM/Uy9vqgzMcMm8io2/5zO6C1UQFbH/Mq40LO1knorpM6ndU3Y2xpx4jGPmhXKFFWwOjHgyXrRKSq+N8DiUvKjJQ+OW7lhXBseL09sR5qYQivaHeM0B5gGGga4+E7VpHUZFWxl+7AdqGNxm8vWtLEpZKs1U60/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NEVlBGhv; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41CBDvpr124157;
+	Mon, 12 Feb 2024 05:13:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707736437;
+	bh=s6lFq/uowt+nG6fepdWGDjcg9JXRvJJDeWCLV3I0lK0=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=NEVlBGhvWUHIXR/grk3OfjE8uQZv+AlWGFm89FmMKiNMegU9kFJarOwo3PA4PS9Dc
+	 RaGb7sD1+MZuGO43ho8RKQIOdxW4Df2RkFQ4FQnE0D1+AV0j0X+fjrSyDqoOCwlF+P
+	 FL0Pw+aPh4LEW9n1DGpgyxJv6SytS1Sox8ML+LWo=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41CBDuHO015855
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 12 Feb 2024 05:13:56 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
+ Feb 2024 05:13:57 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 12 Feb 2024 05:13:56 -0600
+Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41CBDueZ022315;
+	Mon, 12 Feb 2024 05:13:56 -0600
+Date: Mon, 12 Feb 2024 16:43:55 +0530
+From: Dhruva Gole <d-gole@ti.com>
+To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
+CC: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Gregory CLEMENT
+	<gregory.clement@bootlin.com>,
+        Vladimir Kondratiev
+	<vladimir.kondratiev@mobileye.com>,
+        Thomas Petazzoni
+	<thomas.petazzoni@bootlin.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH] spi: spi-mem: add statistics support to ->exec_op() calls
+Message-ID: <20240212111355.gle4titwolqtzwpi@dhruva>
+References: <20240209-spi-mem-stats-v1-1-dd1a422fc015@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8650: Add dma-coherent property
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Ling Xu <quic_lxu5@quicinc.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: quic_kuiw@quicinc.com, quic_ekangupt@quicinc.com, kernel@quicinc.com,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>,
- Neil Armstrong <neil.armstrong@linaro.org>
-References: <20240125102413.3016-1-quic_lxu5@quicinc.com>
- <20240125102413.3016-3-quic_lxu5@quicinc.com>
- <069b82ac-b59c-4665-8a77-6c11a2463faa@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <069b82ac-b59c-4665-8a77-6c11a2463faa@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240209-spi-mem-stats-v1-1-dd1a422fc015@bootlin.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 12/02/2024 12:00, Krzysztof Kozlowski wrote:
-> On 25/01/2024 11:24, Ling Xu wrote:
->> Add dma-coherent property to fastRPC context bank nodes to pass dma
->> sequence test in fastrpc sanity test, ensure that data integrity is
->> maintained during DMA operations.
->>
->> Signed-off-by: Ling Xu <quic_lxu5@quicinc.com>
->> ---
->>  arch/arm64/boot/dts/qcom/sm8650.dtsi | 13 +++++++++++++
+Hi!
+
+On Feb 09, 2024 at 14:51:23 +0100, Théo Lebrun wrote:
+> Current behavior is that spi-mem operations do not increment statistics,
+> neither per-controller nor per-device, if ->exec_op() is used. For
+> operations that do NOT use ->exec_op(), stats are increased as the
+> usual spi_sync() is called.
 > 
-> This wasn't ever tested:
+> The newly implemented spi_mem_add_op_stats() function is strongly
+> inspired by spi_statistics_add_transfer_stats(); locking logic and
+> l2len computation comes from there.
 > 
-> sm8650-qrd.dtb: remoteproc@32300000: glink-edge:fastrpc:compute-cb@1:
-> 'dma-coherent' does not match any of the regexes: 'pinctrl-[0-9]+'
+> Statistics that are being filled: bytes{,_rx,_tx}, messages, transfers,
+> errors, timedout, transfer_bytes_histo_*.
 > 
-> Ling,
-> How is this testing-patches-before-sending work in different teams? Do
-> you have such requirement?
+> Note about messages & transfers counters: in the fallback to spi_sync()
+> case, there are from 1 to 4 transfers per message. We only register one
+> big transfer in the ->exec_op() case as that is closer to reality.
 
-No clue if the original DTS change should be reverted or these are in
-fact DMA coherent, but let's choose one path...
+Can you please elaborate on this point a bit? To me it feels then that
+the reported stats in this case will be less than the true value then?
 
-https://lore.kernel.org/linux-devicetree/254c1d14-25e3-4f4c-9e79-4ef7cec4d22f@linaro.org/T/#t
+> 
+> This patch is NOT touching:
+>  - spi_async, spi_sync, spi_sync_immediate: those counters describe
+>    precise function calls, incrementing them would be lying. I believe
+>    comparing the messages counter to spi_async+spi_sync is a good way
+>    to detect ->exec_op() calls, but I might be missing edge cases
+>    knowledge.
+>  - transfers_split_maxsize: splitting cannot happen if ->exec_op() is
+>    provided.
 
+Credit where it's due - This is a very well written and verbose commit
+message.
+
+Just my personal opinion maybe but all this data about testing can go
+below the tear line in the description?
+
+Or somewhere in the kernel docs would also be just fine. (I know we
+kernel developers consider git log as the best source of documentation
+:) ) but still.. if you feel like adding ;)
+
+No strong opinions there though.
+
+> 
+> Testing this patch:
+> 
+>    $ cd /sys/devices/platform/soc
+>    $ find . -type d -path "*spi*" -name statistics
+>    ./2100000.spi/spi_master/spi0/statistics
+>    ./2100000.spi/spi_master/spi0/spi0.0/statistics
+>    $ cd ./2100000.spi/spi_master/spi0/statistics
+> 
+>    $ for f in *; do printf "%s\t" $f; cat $f; done | \
+>          grep -v transfer_bytes_histo | column -t
+>    bytes                    240745444
+>    bytes_rx                 240170907
+>    bytes_tx                 126320
+>    errors                   0
+>    messages                 97354
+>    spi_async                0
+>    spi_sync                 0
+>    spi_sync_immediate       0
+>    timedout                 0
+>    transfers                97354
+>    transfers_split_maxsize  0
+> 
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  drivers/spi/spi-mem.c | 50 +++++++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 49 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index 2dc8ceb85374..171fe6b1c247 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -297,6 +297,50 @@ static void spi_mem_access_end(struct spi_mem *mem)
+>  		pm_runtime_put(ctlr->dev.parent);
+>  }
+>  
+> +static void spi_mem_add_op_stats(struct spi_statistics __percpu *pcpu_stats,
+> +				 const struct spi_mem_op *op, int exec_op_ret)
+> +{
+> +	struct spi_statistics *stats;
+> +	int len, l2len;
+> +
+> +	get_cpu();
+> +	stats = this_cpu_ptr(pcpu_stats);
+> +	u64_stats_update_begin(&stats->syncp);
+> +
+> +	/*
+> +	 * We do not have the concept of messages or transfers. Let's consider
+> +	 * that one operation is equivalent to one message and one transfer.
+
+Why 1 message _and_ 1 xfer and not simply 1 xfer?
+Even in the example of testing that you showed above the values for
+message and xfer are anyway going to be same, then why have these 2
+members in the first place? Can we not do away with one of these?
+
+Sorry but I am not too familiar with u64_stats_inc so my q. may sound
+silly.
+
+Seems to be more of a concept widely used in networking side of the
+kernel.
+
+> +	 */
+> +	u64_stats_inc(&stats->messages);
+> +	u64_stats_inc(&stats->transfers);
+> +
+> +	/* Use the sum of all lengths as bytes count and histogram value. */
+> +	len = (int)op->cmd.nbytes + (int)op->addr.nbytes;
+> +	len += (int)op->dummy.nbytes + (int)op->data.nbytes;
+> +	u64_stats_add(&stats->bytes, len);
+> +	l2len = min(fls(len), SPI_STATISTICS_HISTO_SIZE) - 1;
+> +	l2len = max(l2len, 0);
+> +	u64_stats_inc(&stats->transfer_bytes_histo[l2len]);
+> +
+> +	/* Only account for data bytes as xferred bytes. */
+> +	if (op->data.nbytes && op->data.dir == SPI_MEM_DATA_OUT)
+> +		u64_stats_add(&stats->bytes_tx, op->data.nbytes);
+> +	if (op->data.nbytes && op->data.dir == SPI_MEM_DATA_IN)
+> +		u64_stats_add(&stats->bytes_rx, op->data.nbytes);
+> +
+> +	/*
+> +	 * A timeout is not an error, following the same behavior as
+> +	 * spi_transfer_one_message().
+> +	 */
+> +	if (exec_op_ret == -ETIMEDOUT)
+> +		u64_stats_inc(&stats->timedout);
+> +	else if (exec_op_ret)
+> +		u64_stats_inc(&stats->errors);
+> +
+> +	u64_stats_update_end(&stats->syncp);
+> +	put_cpu();
+> +}
+> +
+>  /**
+>   * spi_mem_exec_op() - Execute a memory operation
+>   * @mem: the SPI memory
+> @@ -339,8 +383,12 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+>  		 * read path) and expect the core to use the regular SPI
+>  		 * interface in other cases.
+>  		 */
+> -		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP)
+> +		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP) {
+> +			spi_mem_add_op_stats(ctlr->pcpu_statistics, op, ret);
+> +			spi_mem_add_op_stats(mem->spi->pcpu_statistics, op, ret);
+> +
+
+Just curious, how much does this impact performance? Have you been able
+to do some before / after profiling with/out this patch?
+
+For eg. for every single spimem op I'm constantly going to incur the
+penalty of these calls right?
+
+Just wondering if we can / should make this optional to have the
+op_stats. If there is a perf penalty, like if my ospi operations start
+being impacted by these calls then I may not be okay with this patch.
+
+But if you have tested and not found it to be the case I am okay with
+these changes.
+
+If I find some time later, I'll try to test but I'm caught up with some
+other work. For now I'll leave my R-by with the above conditions
+addressed / answered.
+
+Mostly LGTM,
+
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+
+
+-- 
 Best regards,
-Krzysztof
-
+Dhruva Gole <d-gole@ti.com>
 
