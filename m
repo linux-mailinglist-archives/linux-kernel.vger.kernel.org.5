@@ -1,227 +1,199 @@
-Return-Path: <linux-kernel+bounces-62026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59002851A4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:58:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8338851A52
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:59:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D5A31C22348
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:58:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3603D1F24455
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119733D0B8;
-	Mon, 12 Feb 2024 16:57:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37BDB3D578;
+	Mon, 12 Feb 2024 16:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A3gzOx/a"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="OoobwbyB"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C89B3D3BD;
-	Mon, 12 Feb 2024 16:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707757051; cv=fail; b=dsHHSh73gBDhEsz5kwe3XTavlyt3vvK49CyKUHUwpM3oGd5Xur/euyc+so6FlmkhZr+P+rLP4egD3AE5DIrRTBkWX6tOhyLcx2fl0aP6fBoh5KKHNAHJ4CkEVkVdor7B2DcMXKOedVX6tH6tuIK6h0m6QQjvLOBNMESm9AABiFM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707757051; c=relaxed/simple;
-	bh=QpDstx1OtFcYa5dRLnPVruak7tZOIaGRgjTv+KTdQ+I=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=LrS5Uyof3mXkz5Z11F5HWvYQhzzy5Qrw6fEqRtXgGuo3Vzcmz93y5Fe5cIpwMUzZI4UxM2/5E1TPCccb/hPli9Dc5jXROA/NE5IoRkwolf5+i342LvAcCoRwGv0ulKOZn0yQJPVDxHAkFLXeI+Gut6zT0pwPNdhT3qFJ2w+5sZ4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A3gzOx/a; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707757049; x=1739293049;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=QpDstx1OtFcYa5dRLnPVruak7tZOIaGRgjTv+KTdQ+I=;
-  b=A3gzOx/aT4IAeIZ7IvqnV+AQs8EM6PzAEubWq45nzfP4hs00CtDhfOIs
-   Un6MAcwK1Sj4uc5Pnum7fN0B0e9tFdswcVHmdaj9Xqxx7eTU6JwI9bkIV
-   vMfULChrDe5LH733wyatA11Dl891fkZwpwaCl9sJAFa8ga2eRdwVl/GjR
-   alnkw0pNYxMkNPhAtFjwlfSZStgXK/ux1dpupFnMmGB5CQafgV5tSQyDo
-   u3TqVtea+c+h+dzogiPvsTtXPIerMCdKHOOOUyY7rxGTGMpiyD/obxT9N
-   syrXcoib1ZpFZV1CaKrnDepxtGjW6P3+OD094K5cmBKwViS5isH0Twvr2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="12470260"
-X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
-   d="scan'208";a="12470260"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 08:57:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
-   d="scan'208";a="2676418"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa010.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Feb 2024 08:57:28 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 12 Feb 2024 08:57:26 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 12 Feb 2024 08:57:26 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 12 Feb 2024 08:57:26 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lfZpBk1svIyqVbHbH6XUSAL3jtJFH95cz7Ukv0ykjuaUSOJQB/CS3/q1tbHaSw7L4XCyvlTuXuzKocKtyvIEYfYG925hiYlYklDiNkhAIq0esyTGDYkwiLfTSFUIYqVdw5cujdIuh+/ULK8LiP5wNwrr6Bwi3GcWB41PstWhk02f7k7qgI1sVLBVOd6GlUe6TsuyQQh112XvdBTa8S0MywvJo4NvF1IfEGWgpBaig2nX3FxjlxkLr5WKhH82y2uun0jSN0RN/gAUrJj5G6a6IiCeID6krClzhFmyHnHS89t6+jE0dDwI5BeCeQWpjijKAqmoEbfosoXTf49DVxqlNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UnuldxldNpBMNC0BliwxPA/aEIon4tgFVbU6sNWZTUg=;
- b=oOBtp9Sy45WI2ww2oqsULkcBzs2QOvXceRJsncaSZ9Wkc9qA9kFQQX98SzeWSwdMccbZkzY98O6Ebf+supsLDRrvVvdWRh1o+ukDs3MP9dmWnE1HeF3nWhNC9gVFFbQejBCszRM4E/loM2r5O95hCH+qBMCk8u1shhN1xjoE7XQjBMdrI7+Zg0aUEZwhOwCE//gFCVD47U/8aTrVcu0W/EpORDXJQjq6zozQJwHXubmb2Ln0gjEuz0y9ODcAJbf4dsWQI8/CQeZtDyJLL4tVvSGYWLi01i/e/0zxO/DkDWRtPW3dYxERBND7t/o+tUsVjaW7KQX0aR4b2adrf6A9yQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
- by DM6PR11MB4724.namprd11.prod.outlook.com (2603:10b6:5:2ad::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Mon, 12 Feb
- 2024 16:57:18 +0000
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::54ee:7125:d8a8:b915]) by IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::54ee:7125:d8a8:b915%6]) with mapi id 15.20.7270.033; Mon, 12 Feb 2024
- 16:57:18 +0000
-Message-ID: <f1b96616-296d-85ec-3e59-54b6035fa954@intel.com>
-Date: Mon, 12 Feb 2024 08:56:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH] dmaengine: idxd: Clear Event Log head in idxd upon
- completion of the Enable Device command
-Content-Language: en-US
-To: Dave Jiang <dave.jiang@intel.com>, Vinod Koul <vkoul@kernel.org>
-CC: <dmaengine@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>,
-	Lingyan Guo <lingyan.guo@intel.com>
-References: <20240209191851.1050501-1-fenghua.yu@intel.com>
- <36895817-8f71-461a-93e0-5db1a39cd3c4@intel.com>
- <18761e12-822a-16b4-fdc5-0ac889b1693c@intel.com>
- <c643b6a3-0f41-416f-9268-3072f76939e3@intel.com>
-From: Fenghua Yu <fenghua.yu@intel.com>
-In-Reply-To: <c643b6a3-0f41-416f-9268-3072f76939e3@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR05CA0031.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::6) To IA1PR11MB6097.namprd11.prod.outlook.com
- (2603:10b6:208:3d7::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C983D555;
+	Mon, 12 Feb 2024 16:59:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707757157; cv=none; b=fp6D5VPlxiQdmj4QDHK2qIr9E89IWMGMvnc2CPXtGIeNwNlD12qFZunOzd1jke1XVwajKej3v6LrNm/X/xSc8YLD9yJ5iUCVveKuypSnSr95XmnRP/DBT+zE9a6ncksCEh9E4hySF4kdnXA8l/5nkCPoHBeOqgnKZjotB37ygg0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707757157; c=relaxed/simple;
+	bh=5p6lcAM5uCVDCqa9PLQwQdZns2EPPvsUH0B6n9Zpzhs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lpITNMwLMwPCZOBOx7nBtGXJf3Q76XmgCCiln6P7ZmrgCQDbPUnbheh1b1+W/LkRSmyJea6dTMdRrmyAOoCyAvx/1ugUbeT+okMXRMKrwWd4Dtgu3EqNptMbdM8O9xMIzX/DdXI7zVMnCCFDopi64VTV0mgHHBpZZcSMrVneNSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=OoobwbyB; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41CGwxlJ085838;
+	Mon, 12 Feb 2024 10:58:59 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707757139;
+	bh=PISZoT3QXJstu+Olwl27x4IhcTlCvY6q/N4khZGRgaU=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=OoobwbyBw83TL4qnAyLqbWqAkB79JzykGKzAVeyITEGsZJJEkTscqAdb0FuaIEPF1
+	 +xFZherLRqELBDgB78yGxPFFzBjT23t1V2PBibaxOpj1siODEds8oZSvqROq/99DuN
+	 ugOSJZLN08XYSYHSXSe+n+TObtIxDJnOGiO1gnv8=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41CGwxFU074266
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 12 Feb 2024 10:58:59 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
+ Feb 2024 10:58:59 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 12 Feb 2024 10:58:59 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41CGwwHK001151;
+	Mon, 12 Feb 2024 10:58:58 -0600
+Message-ID: <faaca11f-508e-450c-83f2-1aa03734b7cd@ti.com>
+Date: Mon, 12 Feb 2024 10:58:58 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|DM6PR11MB4724:EE_
-X-MS-Office365-Filtering-Correlation-Id: 50178d03-e1c3-4a01-7088-08dc2bebac19
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fsJ5gmk4kLwqof2VKwc3aGFOnJdFtGrqE1AnaQPIzUCN6vSvd5Ps6iblnaRmoAvJXmtOb9iGcZ1RpXhSzFOhcNwP3LnPGmJKzK68cU1PZivDwPUgDYJ58d8JH5I6bSspxi31RqNazL3qWSsaYnSp3G1f/dAyqQ3KzFYiyNbsRuaGxLJ5jhzT5QGLPfbfmnCAfYNhdrovtIsCtoyyVszqNHukplwmKQUI9wrNUrLg0fG6lJfEeyeco/Yl0w0VsIzL2F17Yjd4XfbhzjnX/HVJbL7ezD6rGvLKP67gJOJeVGKj5gdb5Cwal8cXLUodFfFRmRcLboeVhQMUrY7JFs099BlJlCpkQgsSwHCiyXwBslg9gr8AxNc5lwTR0Y20pcOgQT1Qwe8bkghR9KyK2yYrEO0d10tC0oPf1KXf1PAk6JrfqoDyUDxekrf3zuAuxEgPuht8hQScgU5FaP+GfT34hMhNZkXIevOl0ny5zsDnOQGJCwLECTv3nefqaAi6Zur4SJMyPSEHX91HPdcXYrqBoDAcx6tr/q4A0po937feZ6Ycjg2UwkQOGivdgHzqJqTl
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(39860400002)(396003)(376002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(4326008)(8936002)(8676002)(110136005)(316002)(54906003)(66946007)(66476007)(66556008)(36756003)(5660300002)(2906002)(44832011)(6666004)(38100700002)(2616005)(26005)(6512007)(53546011)(6506007)(83380400001)(31696002)(86362001)(82960400001)(6486002)(478600001)(107886003)(41300700001)(31686004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VmUwRy9RdC9XWm9uVWdSYkdVL1JEbkpJd2NWVENRM0JIUHJqUGxqMnpSR0I2?=
- =?utf-8?B?TG93WlhERllWOWFrQmlXWmR0bzBCbE5qKzcvenFPMTlNTmVxYjc5Qlh4NWNX?=
- =?utf-8?B?ZldVdEVqakNRbGYyZTIzOUtOeTlsUHBjUFBOTnBaelBVVk00Q0tzZXk5QjJR?=
- =?utf-8?B?cExTZXFURHhKVWRRSkN4Rjd6UGpKQk9YdXdpRFcxcFdQYUw4WktiUXdjVm5h?=
- =?utf-8?B?TWdwVUdObkJxM2lJYUJFYWxzWldxRmR3YWt5aTZYbFFSTHl0R09kK0RhdHBm?=
- =?utf-8?B?OEVSYU9KdTRPcnIwUGpVRXVIYkJnRWNiVFE5MVI3Q1VQZG16N0VjZEJMQnNo?=
- =?utf-8?B?UVQ0eHlzdzZOUTVxa09VTEU2bksyN2svQURIVHBxeUNoOG1HejNmRU9uYm55?=
- =?utf-8?B?NTlmblZvQTJxeDFCQXhpd0NPdktpdUp6WWtnWjF1V0xtZms0V3VoZVlkd3o3?=
- =?utf-8?B?ZzV4dUF3SlpxbVErWk5iaTQ1OXdiM21KeXJWUTBuZTROaTVLZWhMNXBzekFW?=
- =?utf-8?B?WjlDdFdDVHpUSUJDT21hMnJmQy8zKzNtanhUV0xFRDhWbmdRLzZ2UEpzcWhG?=
- =?utf-8?B?VTBTWVZIdThQcG9wQ1g2SUR0Q0FKbEhyYk4rVi95MFBzLy9lR3ltSDRGRVI2?=
- =?utf-8?B?MitpdzQrTGFDQlpEVXNSWUFvWUlIQ0NMV05UNDRXUE8wTGlDV1VOYlIvZ0tB?=
- =?utf-8?B?OGFXcStzOWxJbVlsMmUvQnh2TmhCTWpVTHBEUWdMNWcwbm10YU5aM0hDRENs?=
- =?utf-8?B?WFZySkxXdDdDbTF4N2tkelVVSm9SSnZib3pXanpiWFJ2bFlrVkZ0SnoyMzMy?=
- =?utf-8?B?b1d1ZTBBUjNCeHFiTmRCcEZ2bS9wdGhETHJUbzAzOXh4dUJJM2liNDUwNmhS?=
- =?utf-8?B?UDdjSER1blVrSjkvVVRyOEtOcVczYkRTQVpHK2JGQjNJdStPR2haUTlLRjh6?=
- =?utf-8?B?Ym5la1J4K0dqd0RYNWp5cnJMQ0oyc2Jtdzkvam9BbGtGbEQyNFFEYitXdUJP?=
- =?utf-8?B?S1JYc3phbjg3M21tUWY4Tis1Q1d4TG4vUmJSN2owTWpVb1JCNU9NbGh2TjI1?=
- =?utf-8?B?ZHY0eVRVUWhuVmFsaXFGYXlpZkxRQXgyVXkwdTJLL2Nub3B4bUt0akdHd05S?=
- =?utf-8?B?ajQ3ZVZ2Y0tiVSt1eFBqTExiUjVndFh5RS9RRWlYUzJkZXRSK09xVERDcU9h?=
- =?utf-8?B?U3YwSm5yNEtFY3lidmRiL05RdE5FdWg3R2l4OHZPYnBRYXV1NTdhQ0wvcVBk?=
- =?utf-8?B?Y2VoU1ZFTnpMbjl2OUFIVXdvd1ZrajcxZkVYdmptbTdUNnBiVVNWU0VJK1Fi?=
- =?utf-8?B?WlpaTWNUMDBMalJVMzg0a28va1N1bnMwWUZFMHVsM0F1UmtlV09vNFIwLy9Q?=
- =?utf-8?B?OWIrVVNPZHc1cXF6NW1xUnN6MXJzS05rOHBCOVh2TXpRdnFISmFNZFZaSWVR?=
- =?utf-8?B?MVA3K2xpREhmbjhocVpiSGV5dTBlUjBTcjBCSEp5eUdsWDhmanc1S1VHTWpJ?=
- =?utf-8?B?Q2E1a202T3N0NGxaMkEwM0VqSUlkVkZmQ2Q2aHZEcEVCQXRCYkxKMkNyY3Mx?=
- =?utf-8?B?NWk3UkFKMyt4VTRnd3ZDbnk5aDBuRG9tc0doaUVqM2VGUW1uSUpWU083ZUZv?=
- =?utf-8?B?a2UydlNVRjIzMXU4MzE3RGZ2N1RGQXUxQTZUbjVJTktuNWJSOFNlVlFiWTZO?=
- =?utf-8?B?bXVTTnUyZWJpcEs2eUlXT1hwdTZ5VDZ3YmlEcWhXZXQ0cWpUK0dJaUxuYzVZ?=
- =?utf-8?B?NElUaFUwTDF5MjRpeXZYVGRTanFwZlNiSFREeFp1a0ZkUHBZOTZsQnBMZFQz?=
- =?utf-8?B?ZkVITWFEczBkWnVDZVc0bG85YUk5VXNpRVl1Ni9nS2pKcmpmS3dJZHppcWJu?=
- =?utf-8?B?MWxNcEJrNEpmNE9JRFFWYmlMK1h2NXAxL1h1RVRXSWdKNHo5d1A4dS9UZS96?=
- =?utf-8?B?eGlZWTJHVUh4MWpXRDVIWFlvcVpyVjkrRkNMeXYyOGZHUDE4VEhqeU5zZW1t?=
- =?utf-8?B?eWNjUmNBZWZuVHQyOUdiMnJDRGNkMTFCZnpIazY0OGQxZ1MrbXhYaHlkaTB3?=
- =?utf-8?B?RWlIYWxWQjdUNzNONE1XQ3AxMUo5U2I5ZWkweTJLejgvSWhVbkR2YTBjZWFE?=
- =?utf-8?Q?QU2NLFyhGUEgstqpWrgqrm9gi?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50178d03-e1c3-4a01-7088-08dc2bebac19
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 16:57:18.6699
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Y3pPB5oZNEJaq8jLYoDebvRiH+j0ztKJUkyacDUzbc092HM6AJSPk6z/yTqyjft5wczbw3vEtNXWbMCHIcdq8Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4724
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/5] arm64: dts: add description for solidrun am642 som
+ and hummingboard evb
+Content-Language: en-US
+To: Josua Mayer <josua@solid-run.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni
+	<alexandre.belloni@bootlin.com>
+CC: Yazan Shhady <yazan.shhady@solid-run.com>,
+        "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "linux-rtc@vger.kernel.org"
+	<linux-rtc@vger.kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>,
+        Suman Anna <s-anna@ti.com>,
+        "Grygorii
+ Strashko" <grygorii.strashko@ti.com>,
+        MD Danish Anwar <danishanwar@ti.com>
+References: <20240211-add-am64-som-v5-0-790ed7121249@solid-run.com>
+ <359993c5-3387-443c-8cef-30ee7ad1f521@ti.com>
+ <b918364e-cfca-4342-acc2-2b51bad75596@solid-run.com>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <b918364e-cfca-4342-acc2-2b51bad75596@solid-run.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi, Dave,
-
-On 2/12/24 08:39, Dave Jiang wrote:
+On 2/12/24 10:39 AM, Josua Mayer wrote:
+> Hi Vignesh,
 > 
+> Am 12.02.24 um 05:10 schrieb Vignesh Raghavendra:
+>> Hi Josua,
+>>
+>> On 11/02/24 20:37, Josua Mayer wrote:
+>>> This series adds DT bindings and dts descriptions for SolidRun AM642
+>>> based SoM and Hummingboard EVB.
+>>>
+>>> Additionally a commit from downstream vendor kernel are included,
+>>> enhancing support for pru based ethernet.
+>>> I wasn't sure how to properly annotate it in commit description /
+>>> signed-off area ...:
+>>>
+>>> 1. add description for "Industrial Ethernet Peripherals" (IEP) to am64
+>>>     https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/commit/arch/arm64/boot/dts/ti/k3-am64-main.dtsi?h=ti-linux-6.1.y-cicd&id=5afb73d82a014b59462162d960b350b8c58e5ae6
+>>>     IEP is already supported in-tree by a driver, and used in
+>>>     k3-am65-main.dtsi.
+>>>
+>>> Unfortunately dtbs_check reported many problems, I put some remarks:
+>>>
+>>> - 'mux-controller' does not match any of the regexes
+>>>    The expectation seems to be that a mux-controller at minimum has an
+>>>    address, something to put behind an @. However this is a gpio mux, not
+>>>    sure how to name it better.
+>>>
+>> I don't see this warning locally. Are you using updated dt-schema?
+> pip3 install dtschema --upgrade
+> Defaulting to user installation because normal site-packages is not writeable
+> Requirement already satisfied: dtschema in ~/.local/lib/python3.11/site-packages (2023.11)
 > 
-> On 2/10/24 6:49 PM, Fenghua Yu wrote:
->> Hi, Dave,
->>
->> On 2/9/24 12:17, Dave Jiang wrote:
->>>
->>>
->>> On 2/9/24 12:18 PM, Fenghua Yu wrote:
->>>> If Event Log is supported, upon completion of the Enable Device command,
->>>> the Event Log head in the variable idxd->evl->head should be cleared to
->>>> match the state of the EVLSTATUS register. But the variable is not reset
->>>> currently, leading mismatch of the variable and the register state.
->>>> The mismatch causes incorrect processing of Event Log entries.
->>>>
->>>> Fix the issue by clearing the variable after completion of the command.
->>>
->>> Should this be done in idxd_device_clear_state() instead?
->>
->> If clear evl->head in idxd_device_clear_state(), evl->head still mismatches head in EVLSTATUS in some cases.
->>
->> For exmample, when a few event log entries are logged and then device is disabled, head in EVLSTATUS is still a valid non-zero value. Clearing evl->head in idxd_device_clear_state() when disabling device makes evl->head and head in EVLSTATUS mismatched.
->>
->> I haven't thought a failure test case when they mismatch in these cases though.
->>
->> But while thinking evl->head more, I wonder why is it even needed?
->>
->> head of event log can always be read from EVLSTATUS instead of from its shadow evl->head. And reading head from EVLSTATUS won't degrade performance because tail is always read from EVLSTATUS whenever head is read (no matter from evl->head or from EVLSATUS).
->>
->> To avoid any mismatch issue/trouble, I think the right fix is to remove head definition in struct idxd_evl and always read head from EVLSTATUS.
->>
->> Do you think this is the right fix?
+> Re-Tested on 6.8-rc1
 > 
-> I was to avoid register reads during event processing. But if you think there's no performance impact then feel free to read directly from the register.
-This code reads head and tail in event processing:
-         h = evl->head;
-         evl_status.bits = ioread64(idxd->reg_base + IDXD_EVLSTATUS_OFFSET);
-         t = evl_status.tail;
+>> reg
+>> is not necessary gpio-mux as per gpio-mux.yaml
+> The error is not about reg property, it is about the node name:
+> 
+> mux-controller {
+>      compatible = "gpio-mux";
+>      ...
+> };
+> 
+>    DTC_CHK arch/arm64/boot/dts/ti/k3-am642-hummingboard-t.dtb
+> .../arch/arm64/boot/dts/ti/k3-am642-hummingboard-t.dtb: syscon@43000000: 'mux-controller' does not match any of the regexes: '^chipid@[0-9a-f]+$', '^clock-controller@[0-9a-f]+$', '^mux-controller@[0-9a-f]+$', 'phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
+>         from schema $id: http://devicetree.org/schemas/mfd/ti,j721e-system-controller.yaml#
 
-As you can see EVLSTATUS is always read to get tail. Reading the 
-register to get tail cannot be avoid because that's required by hw. 
-Reading head from the register won't add additional cost.
+This is an existing issue that we are working to fix. Nothing you
+can do about it, all boards that include k3-am64-main.dtsi
+will have this warning currently.
 
-That's why I would say no impact on performance without the shadow head 
-in idxd.
+Andrew
 
-I will cook the v2 patch by removing the shadow head.
-
-Thanks.
-
--Fenghua
+>>
+>>> - unevaluated properties: interrupts, interrupt-parent
+>>>    sensors and flash yaml are missing interrupt descriptions, but these
+>>>    parts definitely have an interrupt signal in this solidrun board.
+>>>
+>> Please add them to appropriate schema as necessary
+> Okay.
+> Looks like it is only two:
+> .../arch/arm64/boot/dts/ti/k3-am642-hummingboard-t.dtb: humidity-sensor@41: 'interrupt-parent', 'interrupts' do not match any of the regexes: 'pinctrl-[0-9]+'
+>         from schema $id: http://devicetree.org/schemas/iio/humidity/ti,hdc2010.yaml#
+> .../arch/arm64/boot/dts/ti/k3-am642-hummingboard-t.dtb: flash@0: Unevaluated properties are not allowed ('interrupt-parent', 'interrupts' were unexpected)
+>         from schema $id: http://devicetree.org/schemas/mtd/jedec,spi-nor.yaml#
+>>
+>>> - wrong names for pinctrl nodes
+>>>    Other TI DTSs consistently end with *-pins-default. Should a different
+>>>    naming convention be used?
+>>>
+>> No, pinctrl nodes need to end in -pins. All TI boards have been updated
+>> to new schema [0] and sysconfig tool on dev.ti.com/sysconfig generates
+>> appropriately. Please fix
+> Okay, will do ...
+>>
+>>
+>>> - cdns,phy-type required property
+>>>    inherited from k3-am64-main.dtsi
+>>>    there is a PHY_NONE value in dt-bindings/phy/phy.h,
+>>>    but not allowed in phy-cadence-torrent.yaml
+>>>
+>> Sorry, I didnt get what's the issue wrt cdns,phy-type ?
+> There were two issues, but they both disappeared as per 6.8-rc1 :)
+>>
+>>
+>> Note, I really don't want to accept patches that add new dtbs_check
+>> issues especially for nodes that already have YAML bindings. Please
+>> update the .yaml files as necessary.
+> I have succeeded locally getting rid of all but one, the node name of mux-controller mentioned above.
+> Will include yaml patches in next version.
+>>
+>> [0]
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a49568115143435390f20965902809471b6f830c
+>>
+>>
 
