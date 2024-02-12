@@ -1,114 +1,122 @@
-Return-Path: <linux-kernel+bounces-61097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29004850D3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:36:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 360D3850D3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:36:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE8ACB22B78
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 04:36:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4D311F2576F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 04:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9CA36FC9;
-	Mon, 12 Feb 2024 04:36:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8032B46A4;
+	Mon, 12 Feb 2024 04:36:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="f/k/2sUs"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RkROSJQn"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D326FA7;
-	Mon, 12 Feb 2024 04:36:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CE979C0;
+	Mon, 12 Feb 2024 04:36:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707712567; cv=none; b=Dk+5axoIym9yZRF20SqlcbWe9ygiCWssKhuNvlWpYQt6w8KDbHNXb3v4ZYeWnJvGqXBA8WU/R5HZUTZmDLg8iRlMXkiyQ7qHk+8PzMt0ag9CA4/K/CWRl3TW6622tA3TQ77Rl9ew4RbpsySMZL++o6MmR4vy2NywcHycvlEqt7M=
+	t=1707712608; cv=none; b=W+xM60acnlzD0wEyzyO4LbDPpJkXhyWn/Az4RTBIqqNxGbqosJvmzMZIz1nVwvdEhfiCp05kBE/lU9ZizHjsPf5N3vJXw9F3VIoHlIpKikStpxgdgcxT9Womn6GAH8g5kZGIZNV99XEcoWoYKxXz2RKG2KnKKiRATQkTy9AvpTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707712567; c=relaxed/simple;
-	bh=K5Z6Gd9GtIN8kQlUzbKNaoqN7pc1r6LIUiX9Dr2PYKI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=meq8kwxlEow56L0NhIA9qfE5cealSPq5W4h+eW71b2iWSereArC0q+QxXoyAKnRRDG4zp+6XlD5MhQ2wd4zkVf+UjP/rFXDxBuWeaykyOsQTGdMf9NTaCVu3QXDvn4a01PIsGJtFoHsKo9ZuPqtNi2MdNjeyLBUv0PIOJHfAflw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=f/k/2sUs; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=08O4r7EagOfxJamjR1JKheKTGIaVmmAOoLfXmfVv1kI=; b=f/k/2sUsAIzaH8vGPH09e4pXeX
-	MN0WvhHHiGcaCRdCiQecXqWyrKa3SyCLepVsSA5Bp7eRpH4+5YaOTAdqudPSZo7G3iKWOcSA+tIeF
-	gzZIRWa8sEJ+OGrWgPki5nhgpZW7CJdwNyRt7047z5eaoQmYFQl7lkVzLgvq9m6Kh9HO1mNgKEbQX
-	XLuwoNZ/X0KFUeq7oe7AsSzv88ONG2VjdGkBTIcCnDDF4hlvFILzC3vTp0owL2AprWHj32s8Wrp4X
-	FBnhQ+sjqK9X99BU0uvn48aU5ehU61vqBAPx1NWddYSbbaIdogwV1Ij8E6sQHgVqDaysMOm4HM+Pm
-	L8FTWaGg==;
-Received: from [50.53.50.0] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZO32-00000004Jfb-2zA2;
-	Mon, 12 Feb 2024 04:36:04 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Jon Mason <jdmason@kudzu.us>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Allen Hubbe <allenbh@gmail.com>,
-	ntb@lists.linux.dev
-Subject: [PATCH v2] NTB: ntb_transport: fix all kernel-doc warnings
-Date: Sun, 11 Feb 2024 20:36:04 -0800
-Message-ID: <20240212043604.12907-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707712608; c=relaxed/simple;
+	bh=0LdfwuXEgvUuy96j1v+0E60cIj1z0yxVc1lMVvSOjng=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SRRMRY7mo9ird8gACHKQAOgjlxtRawHkiVvncSUXJG+8BuqzJFt2K9SqTfg5bFxpeaGNIN7eFz8crfBVLK+jOTbo6sAn1VT9oFKO20L/9pPjrMZWy5ZxxHTH9hPJ1kW69f2Zgy+/jgdIYEyh0wzA/h1R8oX+qC5ZvU4VSrvnbdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RkROSJQn; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41C4aZph042290;
+	Sun, 11 Feb 2024 22:36:35 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707712595;
+	bh=dDe2x2/sNsxxovWiqiXQgtSK6CZ2bkfH7mRKphacIVw=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=RkROSJQnh61KCNT0f5C5CL8FiFvbIU5XYMyiXUtxqmgenmaHyb4p8OoBkikUwmSNP
+	 KKePU1FCmTSgSozuOBINuIV/x7BOCXnlIiJRbdBbLq8FeQ8lQvjJ7YYJbox+coP6LO
+	 9QEe551QcM5EO9nwSYfiro5NQm4m6RNDuS1LUia0=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41C4aZ44083637
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 11 Feb 2024 22:36:35 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 11
+ Feb 2024 22:36:35 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 11 Feb 2024 22:36:35 -0600
+Received: from [172.24.20.156] (lt5cd2489kgj.dhcp.ti.com [172.24.20.156])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41C4aVAh000720;
+	Sun, 11 Feb 2024 22:36:31 -0600
+Message-ID: <b27ea51f-ad29-4c8a-8f33-f51640f0c013@ti.com>
+Date: Mon, 12 Feb 2024 10:06:30 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] clk: keystone: sci-clk: Adding support for non
+ contiguous clocks
+Content-Language: en-US
+To: Francesco Dolcini <francesco@dolcini.it>
+CC: <nm@ti.com>, <kristo@kernel.org>, <ssantosh@kernel.org>, <chandru@ti.com>,
+        <rishabh@ti.com>, <kamlesh@ti.com>, <vigneshr@ti.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>
+References: <20240207091100.4001428-1-u-kumar1@ti.com>
+ <20240211155459.GA4443@francesco-nb>
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20240211155459.GA4443@francesco-nb>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Fix all kernel-doc warnings in ntb_transport.c.
 
-The function parameters for ntb_transport_create_queue() changed, so
-update them in the kernel-doc comments.
-Add a Returns: comment for ntb_transport_register_client_dev().
+On 2/11/2024 9:24 PM, Francesco Dolcini wrote:
+> On Wed, Feb 07, 2024 at 02:41:00PM +0530, Udit Kumar wrote:
+>> Most of clocks and their parents are defined in contiguous range,
+>> But in few cases, there is gap in clock numbers[0].
+>> Driver assumes clocks to be in contiguous range, and add their clock
+>> ids incrementally.
+>>
+>> New firmware started returning error while calling get_freq and is_on
+>> API for non-available clock ids.
+>>
+>> In this fix, driver checks and adds only valid clock ids.
+>>
+>> Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically probing clocks")
+>>
+>> [0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
+>> Section Clocks for NAVSS0_CPTS_0 Device,
+>> clock id 12-15 not present.
+>>
+>> Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+> no empty lines in between tags and only tags at the end of the commit
+> message, this [0] reference needs to be before or moved to a `Link:` tag,
+> whatever works best for you.
 
-ntb_transport.c:382: warning: No description found for return value of 'ntb_transport_register_client_dev'
-ntb_transport.c:1984: warning: Excess function parameter 'rx_handler' description in 'ntb_transport_create_queue'
-ntb_transport.c:1984: warning: Excess function parameter 'tx_handler' description in 'ntb_transport_create_queue'
-ntb_transport.c:1984: warning: Excess function parameter 'event_handler' description in 'ntb_transport_create_queue'
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jon Mason <jdmason@kudzu.us>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Allen Hubbe <allenbh@gmail.com>
-Cc: ntb@lists.linux.dev
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
----
-v2: ad Dave's Reviewed-by;
-    rebase & resend;
+Thanks
 
- drivers/ntb/ntb_transport.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+will below works ?
 
-diff -- a/drivers/ntb/ntb_transport.c b/drivers/ntb/ntb_transport.c
---- a/drivers/ntb/ntb_transport.c
-+++ b/drivers/ntb/ntb_transport.c
-@@ -377,6 +377,8 @@ EXPORT_SYMBOL_GPL(ntb_transport_unregist
-  * @device_name: Name of NTB client device
-  *
-  * Register an NTB client device with the NTB transport layer
-+ *
-+ * Returns: %0 on success or -errno code on error
-  */
- int ntb_transport_register_client_dev(char *device_name)
- {
-@@ -1966,9 +1968,9 @@ static bool ntb_dma_filter_fn(struct dma
- 
- /**
-  * ntb_transport_create_queue - Create a new NTB transport layer queue
-- * @rx_handler: receive callback function
-- * @tx_handler: transmit callback function
-- * @event_handler: event callback function
-+ * @data: pointer for callback data
-+ * @client_dev: &struct device pointer
-+ * @handlers: pointer to various ntb queue (callback) handlers
-  *
-  * Create a new NTB transport layer queue and provide the queue with a callback
-  * routine for both transmit and receive.  The receive callback routine will be
+[0]https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
+Section Clocks for NAVSS0_CPTS_0 Device,
+clock id 12-15 not present
+Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for 
+dynamically probing clocks")
+
+
+Udit
+
 
