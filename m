@@ -1,212 +1,144 @@
-Return-Path: <linux-kernel+bounces-62249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB68E851D83
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F8B4851D89
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40D1E1F2563C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:01:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07C291F25DA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6B546444;
-	Mon, 12 Feb 2024 19:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A247F45C14;
+	Mon, 12 Feb 2024 19:04:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="H6xDxukL"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FJGUzsqs"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B49A64177B
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 19:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4AF405D4
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 19:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707764487; cv=none; b=aImPo8n0uzV7aRRL1Wd5Q3xir/K8lmeBPXDdPddLZdnDHO3D/P3XuQcogD+NVDhbGQc5279nQijNRcsUAlTl+pZ5lzL7XZ0v4gC5dFluMzW3OdEC4LOvKiZddiyQJmRSLq2uOzr8XliM8xfUm6xd6DU8h987lV4Y6LN6enuv7YM=
+	t=1707764651; cv=none; b=UDUi3K3yqruhQspSU9KnkRg7fCAkz0IMCPACO4cbYqVYLmUyh6WeoHlEgYnh7DE6Y8kF5GSO70hCNZh+eAP+i2SoPyXeilfhsuaLHocfKDCPjEliUMTwnHTVNth526MDip0yHh6JFVXQ7EyXpNpK+OPJCDUItErPr7uFxl4iQyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707764487; c=relaxed/simple;
-	bh=fcnOy+w9ogefgfFNDH/dzHcMlY+8Q6Sf6kVS+I216TQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FmEFbxj36H3+w3/xScsBcKfKpz3suxApsqeKv3InFESNniBcLqcVzHkQP2X6HI1sKmo4J17eR1igEgu6+N9GFhtWGjOzHWK7wP4L289ip8M2lxHJmF/6zpkEuZxwmDTWZTG/MosyLBcR/H8V05ivsFeLbYcOf37X69mOBmw6YZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=H6xDxukL; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33aea66a31cso2031536f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:01:24 -0800 (PST)
+	s=arc-20240116; t=1707764651; c=relaxed/simple;
+	bh=XzCqnLw1+99Zw8U3ViYnydrnyF7SQJQlIabSysNhMG4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZY6ISshZIzrfa0Y+AC1fNs0EPo/ipcNuYBeZdWPh/m88qF7U1YHcMdvE0PyjNy+6bdNBSmWGLREWcEeNQXCdGIjpOQyfia1pUbTxL2oZcUdrU4fPASbj5AmtZ6Wh5C8rlfonz/U5vXOAdrcRxLIl6lPsHi3Z5Owpk3L7WptmtAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FJGUzsqs; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a36126ee41eso467978166b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:04:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1707764483; x=1708369283; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=nTN7g1IyMMydmi8H/FiAGDnVrKDKkYuRfKBBFCRX2Pg=;
-        b=H6xDxukLzAIwPOlTOcIkiYzo5iYY7WfNnHrmR/yr3AKr+u4l5WuhacWJ52ubl5pyfk
-         CkBluJIoZw2FMsBkevs8UEAVGOwv3zdbj80tDQYfMWPLRgBjxXteVjcIVplUaIWNeiad
-         WDwV6pKRqWl9rrreZokhc1YlsrQ7cSBPbO82KJE+TBNLFZNnaJAHUGPOWva3veccHz9L
-         IL3NHANGQEQoEz6sNlJ7dKThkYIA6rZyZ1OlT7rE3nW6ewD0V2147mw5WE2iFS4sLzoi
-         497xqTNAz6gnLNMzmbZWRX06/HwShkQ7RHYzDb6Y1iuIVa95kbnWT7cWSN5i29AVZKH3
-         KtUw==
+        d=google.com; s=20230601; t=1707764648; x=1708369448; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XzCqnLw1+99Zw8U3ViYnydrnyF7SQJQlIabSysNhMG4=;
+        b=FJGUzsqs0oEXIEXG1O02mZWoh9PNX3G4tnTbB8/nJZ9Fjpi6y5UD3bLNJubc1zHB7U
+         3DxdA/TfREU1MRxReA1fDE9jWqdouXmPpdwWUNNXHp+9oMvWb/mCE57cGOD7DzEetjH1
+         Rp4TVwoEM1Sdt4V2ua+fV1Xf2qmQRW9lTtiTwLvB5p/kKsjm6ZIaYv/YvAcE2cRZQrp8
+         /28TyfgW9rNe7Ilm08pbMZdVrRgK1e+2l101h44QRrTA1BvRStcOwCKW74jUaWs7De+q
+         U9Vxs2OQi1k2tsh+wXf2gWZYUOL7/FP6SmHafupc84Dup1RMe6wpTm3h1P9K9SAktKgl
+         R5/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707764483; x=1708369283;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nTN7g1IyMMydmi8H/FiAGDnVrKDKkYuRfKBBFCRX2Pg=;
-        b=Fo29hEMP4bWm7qXZgnoDprzqhuO4uGoPNvTWeF0Tw1fqoV3AUkn2/h1xkdzWm52SUN
-         vE5COa7VeqLSW0v54m8ldoIh3lScMGLU2SxsjShgmITNzmfB3Tm8fzpKmhxb4gZuCqVD
-         gRw3jD7I+IFUamHy0q5fjQv2NVDFcu0i3a/gQmsh7nJLlwAywe8F8XBMVSgrkpr0/MyG
-         oeyw6Eax9wF9BvWI4z8LkQNf5YGp+AmjY2FffnSp9JELWuj4onHZaaGDrPaa0n1CFAKf
-         klWI1hNnK6DT3hxSiWzdqxJDCZqXSYWoG91IteMD3cA2FtKxQUIWQbXWfJSmOe14iE3s
-         uLZQ==
-X-Gm-Message-State: AOJu0Yx39IjZsDGM7iGK0ow/Zhs++gYwmfDRh34Pm5Q47SLV2ettOMqM
-	Cv3tVu89OlZa+H4nSMUXArnn4NmeAceg8FqKXGIptMteeKRjjZljpuIOpECiUcE=
-X-Google-Smtp-Source: AGHT+IEjW5b4V0QP1rJZrnHcGh5KlnNPXzKQZcBMXJM/Gvqhhq/fYiwEaumg25sMF7DF6tkCGbyLaw==
-X-Received: by 2002:a5d:6150:0:b0:33b:8678:aac with SMTP id y16-20020a5d6150000000b0033b86780aacmr1654581wrt.0.1707764482762;
-        Mon, 12 Feb 2024 11:01:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUeZ+7BVRcbP5p2DXANZc825w5QGn23J2RI8Q1sBzceuN+l+JOIjgxysBA+O7jE0tdlt3wG/+YfIXGPFKIvpGyL/LQMbzo8GG5VfFwJpuJiTd8zpyF4jlVbw++Kt1wupyUmD8vqQLdz/j4V+IuRnYFevrTzJIRxrMChSvRTzYrLTZKag8Qq2Da1C5CCdCEuUXOsRcJNf4ND1gzeB2wBTbRtUk+vbTjf7+PWQTj0diX11BPqwxx7xFSfMSPkUqEDikDTVlVuaopYsRxm2HB0yiBU6tTEd/FLw6zkiijzbcvo/yr15IP4AOoKLe/3Nk4wY41jhI1QDohtNL8dlnsdpe/pRkVvkuuwRhfZCQ7cLMs8MAlb1YxioofSDosmrNJqnSz27Q1djUqCO1EHPAAXG7xnMcs8apTMHM3PCvi7UcCQHPK8V46iePw1tCqtZ6Z7vzNM0oZ9f6NuQ+ATlXLDWpNrRagh77RlS9ioJ5+rzR7XLpAwnNqgReoMeWpxBZDyDCE+I2mZ6VLz66+X4lrEqj4PlOCt26MVB3FYze49wxP/iLNPh+QFMSZCxaspQtHs4tzmLxjziw6b1nouQGIQNNhhl+lq+cKo74+IwRL/x30i5ENfy6qg2JGAk1jZLXQ/Koel1bT3WhD2r1ooqS3i4rZ9he7ADvfCucJeMLcc8LqsdXKMmSYnt6usE5cbDsWxRO6BXa2tctlS+Y91eKMsMxk+baJ5ennsIRVMIA9IFwX1gJiwt3EzVHWNmCCqzAkp3JOo/UTBoeyFzr3d2J6CVe65c4T7vEOEF9k3ow==
-Received: from [192.168.0.20] ([89.159.1.53])
-        by smtp.gmail.com with ESMTPSA id ay20-20020a5d6f14000000b0033b495b1d10sm7719037wrb.8.2024.02.12.11.01.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 11:01:22 -0800 (PST)
-Message-ID: <d845be0d-d0e4-4494-9572-753102f3fa24@smile.fr>
-Date: Mon, 12 Feb 2024 20:01:21 +0100
+        d=1e100.net; s=20230601; t=1707764648; x=1708369448;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XzCqnLw1+99Zw8U3ViYnydrnyF7SQJQlIabSysNhMG4=;
+        b=jFuePkewuqiiCwzn+11vFC2vxdBz7ZzJrkqNgXbwHU6uNtXahME6k2HEMO1X3SFOv1
+         ak2aRusR5Qhb2O2y5XwZR7BkrNyqvCmOSkIDJ2JI+PkNc+GahuT7SfZNmp1pCKRb24Zv
+         bjaCLZ/KJufOE6he1jCezhi+Rl3EM4q1HfTvFgOrQVUIMKVRKg2vSJAnKBEqXGhD9Pxu
+         HGf3QKKq1u2zHN1tMeO+atWXKeinQUlxNxd0UECoYVDgyP5aSaTUtONoo+JWPdHHqUkT
+         0F8QzMj9jE1qd6z0iShgvNep5ZLxwnzCVeX3VKsE9u9XrYt2fCTOxTz7bZFUPw6vYEQu
+         Y5sQ==
+X-Gm-Message-State: AOJu0Yz4DieJm7bL6m3WXHN8t/hSIbBXFDF22K0MtwHqZdwGy0VwJUcS
+	4vClUhg4v7VsLlhyr6HTf5bDJlv6yhuvGZn3jvxQjIRTV5QJHnb/KUZ6SwfDPBiIODeuR0cMfh2
+	vr4edgncW6otNaiEQxos5x/8eShaFWFUNtD8yhyJZGSKAWMpgyJCtIKmKHA==
+X-Google-Smtp-Source: AGHT+IHnLHXZNcbMXm4/pyV9sKf1lkpL3ZT5WagZ+5/aVIbKJQcmollNZSQjHxCY6hY/l4tsQS155BB4J/oVAOoGvcU=
+X-Received: by 2002:a17:906:4ad8:b0:a38:576a:f070 with SMTP id
+ u24-20020a1709064ad800b00a38576af070mr6189593ejt.32.1707764648413; Mon, 12
+ Feb 2024 11:04:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/3] printk: Fix LOG_CPU_MAX_BUF_SHIFT when BASE_SMALL
- is enabled
-Content-Language: en-US
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, x86@kernel.org,
- =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
- Borislav Petkov <bp@alien8.de>, Darren Hart <dvhart@infradead.org>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- Davidlohr Bueso <dave@stgolabs.net>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
- Jiri Slaby <jirislaby@kernel.org>, John Ogness <john.ogness@linutronix.de>,
- Josh Triplett <josh@joshtriplett.org>, Matthew Wilcox <willy@infradead.org>,
- Peter Zijlstra <peterz@infradead.org>, Petr Mladek <pmladek@suse.com>,
- Sergey Senozhatsky <senozhatsky@chromium.org>,
- Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Vegard Nossum <vegard.nossum@oracle.com>
-References: <20240207171020.41036-1-yoann.congal@smile.fr>
- <20240207171020.41036-2-yoann.congal@smile.fr>
- <CAK7LNAQb=n1dWdEAJy_aJWnkW2M3bR768WKpxnUv=CtBEi28Xw@mail.gmail.com>
-From: Yoann Congal <yoann.congal@smile.fr>
-Organization: Smile ECS
-In-Reply-To: <CAK7LNAQb=n1dWdEAJy_aJWnkW2M3bR768WKpxnUv=CtBEi28Xw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240117-swiftly-parasail-618d62972d6e@spud> <CANiq72mVKCOAuK4Qe+8AHmpkFwyJsVfx8AqB7ccGi3DYpSSWcw@mail.gmail.com>
+ <20240118-implode-delirium-eefdd86e170e@spud> <CANiq72nx1s_nyvPW86jL7eiOxROr18LfOJqNtw8L42CP+gkhRg@mail.gmail.com>
+ <20240125-bucked-payroll-47f82077b262@wendy> <CANiq72k7n0aZrifRRU08N8qLkNe+2EZwijZy5sM7M56n2xYHgQ@mail.gmail.com>
+ <20240125-lazy-thrower-744aacc6632a@wendy> <CANiq72kb+_utZrYHtoKZQtQazikmkjpVUHpTBcaANizduMF5QQ@mail.gmail.com>
+ <20240126-eccentric-jaywalker-3560e2151a92@spud> <CANiq72nu2NXUWYanHZd5EXgX4P_v673EWn6SCRW60Es9naraQQ@mail.gmail.com>
+ <20240209-rage-keg-1b2982cd17d9@spud> <CALNs47sRqAbE=u3=_ciO2oge7Afz-6GBBhW+BwcLRET-TsuxTg@mail.gmail.com>
+In-Reply-To: <CALNs47sRqAbE=u3=_ciO2oge7Afz-6GBBhW+BwcLRET-TsuxTg@mail.gmail.com>
+From: Ramon de C Valle <rcvalle@google.com>
+Date: Mon, 12 Feb 2024 11:03:57 -0800
+Message-ID: <CAOcBZOSfN8Yefez_Gy_T3_QTAd4HcLzmMCOoR37K2agWD_U_PQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] RISC-V: enable rust
+To: Trevor Gross <tmgross@umich.edu>
+Cc: Conor Dooley <conor@kernel.org>, Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, 
+	Conor Dooley <conor.dooley@microchip.com>, linux-riscv@lists.infradead.org, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
+	rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+	Matthew Maurer <mmaurer@google.com>, Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Sorry for the late reply. Sami might be the best person to answer
+this, but KCFI (not CFI) tests are lowered by passes that are
+architecture specific (see https://reviews.llvm.org/D119296), so we'd
+need to add support for RISC-V. There is no additional work required
+in the Rust compiler besides enabling it for the new target.
 
 
-
-Le 11/02/2024 à 00:41, Masahiro Yamada a écrit :
-> On Thu, Feb 8, 2024 at 2:10 AM Yoann Congal <yoann.congal@smile.fr> wrote:
->>
->> LOG_CPU_MAX_BUF_SHIFT default value depends on BASE_SMALL:
->>   config LOG_CPU_MAX_BUF_SHIFT
->>         default 12 if !BASE_SMALL
->>         default 0 if BASE_SMALL
->> But, BASE_SMALL is a config of type int and "!BASE_SMALL" is always
->> evaluated to true whatever is the value of BASE_SMALL.
->>
->> This patch fixes this by using the correct conditional operator for int
->> type : BASE_SMALL != 0.
->>
->> Note: This changes CONFIG_LOG_CPU_MAX_BUF_SHIFT=12 to
->> CONFIG_LOG_CPU_MAX_BUF_SHIFT=0 for BASE_SMALL defconfigs, but that will
->> not be a big impact due to this code in kernel/printk/printk.c:
->>   /* by default this will only continue through for large > 64 CPUs */
->>   if (cpu_extra <= __LOG_BUF_LEN / 2)
->>           return;
->> Systems using CONFIG_BASE_SMALL and having 64+ CPUs should be quite
->> rare.
->>
->> John Ogness <john.ogness@linutronix.de> (printk reviewer) wrote:
->>> For printk this will mean that BASE_SMALL systems were probably
->>> previously allocating/using the dynamic ringbuffer and now they will
->>> just continue to use the static ringbuffer. Which is fine and saves
->>> memory (as it should).
->>
->> Petr Mladek <pmladek@suse.com> (printk maintainer) wrote:
->>> More precisely, it allocated the buffer dynamically when the sum
->>> of per-CPU-extra space exceeded half of the default static ring
->>> buffer. This happened for systems with more than 64 CPUs with
->>> the default config values.
->>
->> Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
->> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> Closes: https://lore.kernel.org/all/CAMuHMdWm6u1wX7efZQf=2XUAHascps76YQac6rdnQGhc8nop_Q@mail.gmail.com/
->> Reported-by: Vegard Nossum <vegard.nossum@oracle.com>
->> Closes: https://lore.kernel.org/all/f6856be8-54b7-0fa0-1d17-39632bf29ada@oracle.com/
->> Fixes: 4e244c10eab3 ("kconfig: remove unneeded symbol_empty variable")
->>
-> 
-> 
-> 
-> All the Reviewed-by tags are dropped every time, annoyingly.
-
-Hi!
-
-Was I supposed to gather these tags from patch version N to patch version N+1?
-In that case, I'm sorry, I did not know that :-/
-Patch 1/3 is exactly the same but patch 2/3 is equivalent but different. Is there a rule written somewhere about when carrying the tags across revision and when not? (I could not find it)
-
-
-> This is equivalent to v4, which had these tags:
-> 
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
-> Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
-
-Thanks a lot!
-
-
-
-
-
-
-> 
->> ---
->> v3->v4:
->> * Fix BASE_SMALL usage instead of switching to BASE_FULL because
->>   BASE_FULL will be removed in the next patches of this series.
->> ---
->>  init/Kconfig | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/init/Kconfig b/init/Kconfig
->> index deda3d14135bb..d50ebd2a2ce42 100644
->> --- a/init/Kconfig
->> +++ b/init/Kconfig
->> @@ -734,8 +734,8 @@ config LOG_CPU_MAX_BUF_SHIFT
->>         int "CPU kernel log buffer size contribution (13 => 8 KB, 17 => 128KB)"
->>         depends on SMP
->>         range 0 21
->> -       default 12 if !BASE_SMALL
->> -       default 0 if BASE_SMALL
->> +       default 0 if BASE_SMALL != 0
->> +       default 12
->>         depends on PRINTK
->>         help
->>           This option allows to increase the default ring buffer size
->> --
->> 2.39.2
->>
->>
-> 
-> 
-> --
-> Best Regards
-> Masahiro Yamada
-
--- 
-Yoann Congal
-Smile ECS - Tech Expert
+On Sat, Feb 10, 2024 at 12:13=E2=80=AFAM Trevor Gross <tmgross@umich.edu> w=
+rote:
+>
+> On Fri, Feb 9, 2024 at 9:18=E2=80=AFAM Conor Dooley <conor@kernel.org> wr=
+ote:
+> >
+> > On Sat, Jan 27, 2024 at 02:46:38PM +0100, Miguel Ojeda wrote:
+> > > On Fri, Jan 26, 2024 at 11:01=E2=80=AFPM Conor Dooley <conor@kernel.o=
+rg> wrote:
+> > > >
+> > > > Is that even needed? We already have ARCH_SUPPORTS_CFI_CLANG and AF=
+AIU
+> > > > rust supports it if clang does, so a second option is superfluous?
+> > >
+> > > From a quick look, I don't see it enabled in any RISC-V built-in
+> > > target in `rustc` yet.
+> > >
+> > > It may also still be the case that KCFI needs some tweaks for, say,
+> > > RISC-V, before the flag actually works, i.e. we couldn't just test th=
+e
+> > > flag in that case -- Ramon: how likely is it that RISC-V would work i=
+f
+> > > KCFI works for aarch64 and x86_64?
+> >
+> > Well, there's been no reply here. I'll do sa you suggested and add a
+> > depends on !CFI_CLANG to RUST.
+> >
+> > Cheers,
+> > Conor.
+> >
+>
+> I asked on Zulip and it sounds like Ramon may be out [1]. It
+> _probably_ works, but going with a dependency to not be blocked on
+> KCFI is probably reasonable for now.
+>
+> - Trevor
+>
+> [1]: https://rust-lang.zulipchat.com/#narrow/stream/343119-project-exploi=
+t-mitigations/topic/KCFI.20on.20RISC-V.20questions
 
