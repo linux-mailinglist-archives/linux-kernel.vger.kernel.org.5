@@ -1,50 +1,51 @@
-Return-Path: <linux-kernel+bounces-61059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3DFF850CC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 02:50:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E73D850CC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 02:50:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB8CA2890D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 01:50:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B6211C23CFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 01:50:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545B25C9A;
-	Mon, 12 Feb 2024 01:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3BB749F;
+	Mon, 12 Feb 2024 01:50:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="EHE+okVh"
-Received: from relay.smtp-ext.broadcom.com (unknown [192.19.166.231])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="aic1is5C"
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E494C5396;
-	Mon, 12 Feb 2024 01:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E609053A1;
+	Mon, 12 Feb 2024 01:50:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707702604; cv=none; b=oNb8ipIopPOBeqeR3V3BcBBbP68wfsjXPeXhHCdxUTlJJZ3+DGnK3ZE3KBMATaaNQP2MVJU5MKjzYzUNFvRL7EjAOuNZ0rY1n8Q2OZnEuDo/Rg0cncn/jihD2RDu4YQ01p5eFwM5G9qK82HkF8t6/jChql8P48w6VY+PRPlGSvo=
+	t=1707702606; cv=none; b=tvRZxtE3KQeMUsKVO1EbMIk35SwBsPp2RuNQ1vwCMmCXjjwZ5pIMWW06QHuC7gX42jxa866wDxUbejhMfyP75a6/HIVONLuv2QMI2X98NN2GplgweU/vs5ELRcupKGQ93MAEFtq7Vpf2tFsxPBCd7AxOv94GxAbGYR7AExiRFE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707702604; c=relaxed/simple;
-	bh=nQMrCX2Nlpz0PywRuI79FOgJ46w8SfapQjiAlTEBxF0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dlSMsvbHl0tYBMF3uoSnrgZzk2SdOK3YD+IH7aexaK6+51jZv4++nKRnAwxa5rTeoZs1sTNGncNdcKs6HjjYt6C/sjn9okj55UlYMbkU65CS/L6nxM0SpaIThg+OVLARFMUH9mYIgq5vb9drrzJtvYUpiVehw2+u4WT5ipiAHsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=EHE+okVh; arc=none smtp.client-ip=192.19.166.231
+	s=arc-20240116; t=1707702606; c=relaxed/simple;
+	bh=4H4FN5p/dLRBc4UInIB5xEnrfCp5/nfaFL6RntBbI4E=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=jIB6RtcZ6boft/D89Da8SZ8Sil31BROZnxWTkDx/VrCLM3PGkZGVZ1513+DYxsWTRoeUcJYx1QpyAeCWagWmlh/2mW3Lqz9yuhPay+d6mp1+skF6BjI5LHccNqIlZjHZjyyjuGLyeyabj41b1ENaa0rIHH+eBn7S1j4oVVzfjtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=aic1is5C; arc=none smtp.client-ip=192.19.144.205
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id CAABFC003C2E;
-	Sun, 11 Feb 2024 17:49:55 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com CAABFC003C2E
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 71018C0000D8;
+	Sun, 11 Feb 2024 17:49:58 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 71018C0000D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1707702595;
-	bh=nQMrCX2Nlpz0PywRuI79FOgJ46w8SfapQjiAlTEBxF0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=EHE+okVh4xvSGKWjUqg2ziKCj2Yu1t0JZectVSsIkVuas46O23atr8K7jgfKZrw05
-	 UJUk7KPgyfQShk/V3mUKNlMrHicEtMAqAqKwFnYLhMsJxZSKp7+uaV0MRaejndGRof
-	 ZZ75eAvIzCngm7kxkMe/LhXJdgK/MwdLXctanj/s=
+	s=dkimrelay; t=1707702598;
+	bh=4H4FN5p/dLRBc4UInIB5xEnrfCp5/nfaFL6RntBbI4E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=aic1is5CI6YlvWP+lfvNuE64DAajWXAw/jyVZic6AqDZjSFpGMtUFirzZ6RR6jS9m
+	 HzxqD7P65xYTetD5zSV4uak2/sktvjziVMDWCuyOXZBWdq6YFtADWj6EolKP1JyEBI
+	 gD0Z5nYgDzKx30eNDRFm5yfaljBE+kGZpCTsr0rk=
 Received: from stbirv-lnx-1.igp.broadcom.net (stbirv-lnx-1.igp.broadcom.net [10.67.48.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 3F51C18041CAC4;
-	Sun, 11 Feb 2024 17:49:54 -0800 (PST)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id B6BD918041CAC4;
+	Sun, 11 Feb 2024 17:49:56 -0800 (PST)
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 To: stable@vger.kernel.org
 Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -56,10 +57,12 @@ Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
 	bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM GENET ETHERNET DRIVER),
 	netdev@vger.kernel.org (open list:BROADCOM GENET ETHERNET DRIVER),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH stable 5.4 v3] net: bcmgenet: Fix EEE implementation
-Date: Sun, 11 Feb 2024 17:48:57 -0800
-Message-Id: <20240212014859.3860032-1-florian.fainelli@broadcom.com>
+Subject: [PATCH stable 5.15 v3] net: bcmgenet: Fix EEE implementation
+Date: Sun, 11 Feb 2024 17:48:58 -0800
+Message-Id: <20240212014859.3860032-2-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240212014859.3860032-1-florian.fainelli@broadcom.com>
+References: <20240212014859.3860032-1-florian.fainelli@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,9 +91,9 @@ Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Link: https://lore.kernel.org/r/20230606214348.2408018-1-florian.fainelli@broadcom.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
-Changes in v2:
+Changes in v3:
 
-- removed Changed-id
+- correctly apply to the 5.15 queue
 
  .../net/ethernet/broadcom/genet/bcmgenet.c    | 22 +++++++------------
  .../net/ethernet/broadcom/genet/bcmgenet.h    |  3 +++
