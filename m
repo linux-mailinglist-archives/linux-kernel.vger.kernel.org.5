@@ -1,138 +1,111 @@
-Return-Path: <linux-kernel+bounces-61836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CDFA85173B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:45:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C400F85173E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:45:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C99D1C21386
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:45:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E91141C2123C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A207B3B782;
-	Mon, 12 Feb 2024 14:45:10 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05EE83B293
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D193B780;
+	Mon, 12 Feb 2024 14:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RoOMYfZK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E9D3BB46;
+	Mon, 12 Feb 2024 14:45:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707749110; cv=none; b=jruRg/m+h2jMquP9r687+OCU+KE2TbMIlegBSG+QEd2TbRBJmOCFuIY5YkBp0nZw2DmFF/pPrMV57lSV5JQRoFqzu2uZ1zlQwTjLoOKM3xIXMeL6vL7Wu/o7Utm0/HUDTwUamm8eFqimHQDvppNYqUgcWUQ+P/ZqaU8b3r0bexs=
+	t=1707749119; cv=none; b=tWlnML4GW82QPGFnZx9JORbOorFEFL/Fa+hOE4lCWi//ONGiBIHjeKglhF4iQQ6mOwb9pdRgQtL9/ZNxp4wuGI85FV/jvAhLVVcAqMAEJ2ZLpJdVCsMKNjF9l9+QTnqIG4TrwVEKvnMrbQ19E3QBdFuyVYHRC0ETJBaLqX/Ugc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707749110; c=relaxed/simple;
-	bh=PYDl2gYJnlvnlLeOVBQz6a0LXuUbhrJgTgIJlDrAo3Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SWqO+MNLGJdVMOB8hhySLts6XAbVrLzRULStyLRGucu3oeXWPRPSwkUtMbFvcCB5UzbRcQ4LWZ5LXLfCLjVzXugFeER2z7C0o2MN8iR2oufpHph5C8tjOBuLzNwJCnO5vwKi5FsS10LlIYmyiYPYcp3CeEasknqFbGWlrlVZ8uY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39022DA7;
-	Mon, 12 Feb 2024 06:45:48 -0800 (PST)
-Received: from [10.57.78.115] (unknown [10.57.78.115])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F7543F766;
-	Mon, 12 Feb 2024 06:45:02 -0800 (PST)
-Message-ID: <502a3ea7-fd86-4314-8292-c7999eda92eb@arm.com>
-Date: Mon, 12 Feb 2024 14:45:00 +0000
+	s=arc-20240116; t=1707749119; c=relaxed/simple;
+	bh=Uy1Hm9Mf3DmrZrxeQWTmF971xd/SzhqApTD6KqZ4D6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zcd88ur30g7+W/KKTwKak/VnpOn7cwqlAHTi+cOTOLDEKvh2eRwfODpOr3dfxWTiSlRzj+NmOGyBTmmXgmkPiM95orrV0v49IT9K6+aKl/si8o2B101UN8nfdwteu9ah0jT1zTa5McBa7Dy5dBltQjTDrMawru0fZT+de//DrSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RoOMYfZK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B27AC433F1;
+	Mon, 12 Feb 2024 14:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707749118;
+	bh=Uy1Hm9Mf3DmrZrxeQWTmF971xd/SzhqApTD6KqZ4D6g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RoOMYfZKgD8COEAhzGgUFwSARdrtr2Vc5dPquEXPszpOgD/5ee88wy6GdU4Sd0BQb
+	 +8x1GyckSVT3oJUYR5azNO9cLuStG8b1Jb1SgfQnT3fJXbfnTfmsm7oOKQ1BHJ1XoI
+	 v/wP6LARAixstuhtEmq2PHwvN+NUSEEGxAy4pqK59xpwz5YWy2pX9YEU4es5USbDxa
+	 AnyTbH6MBUHlBhIDvTY4+9suY42Rj5MQRI72UQYexuB9r1/a42PzfQ0eguEXKienvo
+	 scdFV71Hpi8/GRTzpW2pPoJCkwnKzwordFgFVGTYeR1kExWjOIlE5Iozp1ekkRjN1E
+	 Pu+OL9u1uiiww==
+Date: Mon, 12 Feb 2024 08:45:16 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH V3 0/3] dt-bindings: arm: mediatek: convert
+ MT7622-related bindings to the json-schema
+Message-ID: <20240212144516.GA301127-robh@kernel.org>
+References: <20240211213925.18348-1-zajec5@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 19/25] arm64/mm: Wire up PTE_CONT for user mappings
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
- James Morse <james.morse@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
- <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
- Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
- Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, linux-arm-kernel@lists.infradead.org,
- x86@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240202080756.1453939-1-ryan.roberts@arm.com>
- <20240202080756.1453939-20-ryan.roberts@arm.com>
- <ZcoIVypNwOPIX30w@FVFF77S0Q05N>
- <c899f252-dbf3-4e7b-8342-b5a5180486cd@arm.com>
- <a91cfe1c-289e-4828-8cfc-be34eb69a71b@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <a91cfe1c-289e-4828-8cfc-be34eb69a71b@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240211213925.18348-1-zajec5@gmail.com>
 
-On 12/02/2024 13:54, David Hildenbrand wrote:
->>> If so, I wonder if we could instead do that comparison modulo the access/dirty
->>> bits,
->>
->> I think that would work - but will need to think a bit more on it.
->>
->>> and leave ptep_get_lockless() only reading a single entry?
->>
->> I think we will need to do something a bit less fragile. ptep_get() does collect
->> the access/dirty bits so its confusing if ptep_get_lockless() doesn't IMHO. So
->> we will likely want to rename the function and make its documentation explicit
->> that it does not return those bits.
->>
->> ptep_get_lockless_noyoungdirty()? yuk... Any ideas?
->>
->> Of course if I could convince you the current implementation is safe, I might be
->> able to sidestep this optimization until a later date?
+On Sun, Feb 11, 2024 at 10:39:22PM +0100, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> As discussed (and pointed out abive), there might be quite some callsites where
-> we don't really care about uptodate accessed/dirty bits -- where ptep_get() is
-> used nowadays.
+> There are more MediaTek bindings to convert but for now I focused on
+> those used by MT7622.
 > 
-> One way to approach that I had in mind was having an explicit interface:
+> V2: Move bindings to /clock/
+>     Use clock-controller@ nodenames
+>     Drop incorrectly specified "syscon"
 > 
-> ptep_get()
-> ptep_get_uptodate()
-> ptep_get_lockless()
-> ptep_get_lockless_uptodate()
-
-Yes, I like the direction of this. I guess we anticipate that call sites
-requiring the "_uptodate" variant will be the minority so it makes sense to use
-the current names for the "_not_uptodate" variants? But to do a slow migration,
-it might be better/safer to have the weaker variant use the new name - that
-would allow us to downgrade one at a time?
-
+> V3: Update titles of all 3 bindings
+>     Simplify HIFSYS compatbile (drop "items:")
 > 
-> Especially the last one might not be needed.
-I've done a scan through the code and agree with Mark's original conclusions.
-Additionally, huge_pte_alloc() (which isn't used for arm64) doesn't rely on
-access/dirty info. So I think I could migrate everything to the weaker variant
-fairly easily.
+> Rafał Miłecki (3):
+>   dt-bindings: arm: mediatek: convert hifsys to the json-schema clock
+>   dt-bindings: arm: mediatek: convert PCIESYS to the json-schema clock
+>   dt-bindings: arm: mediatek: convert SSUSBSYS to the json-schema clock
 
-> 
-> Futher, "uptodate" might not be the best choice because of PageUptodate() and
-> friends. But it's better than "youngdirty"/"noyoungdirty" IMHO.
+dt-bindings: clock: mediatek: ...
 
-Certainly agree with "noyoungdirty" being a horrible name. How about "_sync" /
-"_nosync"?
+>  .../bindings/arm/mediatek/mediatek,hifsys.txt | 26 ----------
+>  .../arm/mediatek/mediatek,pciesys.txt         | 25 ----------
+>  .../arm/mediatek/mediatek,ssusbsys.txt        | 25 ----------
+>  .../clock/mediatek,mt2701-hifsys.yaml         | 50 +++++++++++++++++++
+>  .../clock/mediatek,mt7622-pciesys.yaml        | 45 +++++++++++++++++
+>  .../clock/mediatek,mt7622-ssusbsys.yaml       | 45 +++++++++++++++++
+>  6 files changed, 140 insertions(+), 76 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
+>  delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,pciesys.txt
+>  delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,ssusbsys.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
+>  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7622-pciesys.yaml
+>  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7622-ssusbsys.yaml
 
-> 
-> Of course, any such changes require care and are better done one step at at time
-> separately.
-> 
+Presumably Stephen should take these, but you Cc'ed the timekeeping 
+maintainers rather than the clock maintainers. Please use 
+get_maintainer.pl.
 
-So I propose to introduce ptep_get_lockless_nosync() (name up for discussion)
-and migrate all users to it, as part of this series. This will side-step Mark's
-correctness concerns. We can add ptep_get_nosync() later and migrate slowly.
-
-Shout if you think this is a bad plan.
-
-Thanks,
-Ryan
-
-
+Rob
 
