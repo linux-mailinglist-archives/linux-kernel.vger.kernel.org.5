@@ -1,322 +1,466 @@
-Return-Path: <linux-kernel+bounces-62474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E1C085215E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:24:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFF17852164
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D6B41F21F5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:24:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 658F3281C22
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD8763C493;
-	Mon, 12 Feb 2024 22:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781E64EB23;
+	Mon, 12 Feb 2024 22:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="mA58dxvi"
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2041.outbound.protection.outlook.com [40.107.247.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ObVJOQpG"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F315E4D9F8;
-	Mon, 12 Feb 2024 22:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.247.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707776656; cv=fail; b=c8EDhO8JqZ18Nywcz8ZPUU4ojvDfgQrXt2ch6DlHmQ/Hkuo7tQB2lfx0tq1aPSDdkhwbIMqt1XMlr5f4kMHjkOv8OcA0TrKNj+4v5IEpuvjBHf3fqdmF0tpp5sfZOPhHAC7dJzPGjaF8iq/AItAa3ZmhyHCBhkdS15VpMsYn474=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707776656; c=relaxed/simple;
-	bh=R9xVhoPTKU33DSK/oUtGdsFjUhtbG6vt/0cVRwYCMAc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=TytS7ftmJoGaG37X3Lo4qEwXSvw04MYzVdHo3V5is3Za0qKXF1uH1A43JOjouq56rZofMkDocIWXguLcFZ7QG6mnxL+r91SOExRCPZl2/6mpgKZWdBTcv0pEwExRljP+9JRfany5wdc4LBi/ezg1QRdhV6KTdPlGZO6dIQ1TgtY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=mA58dxvi; arc=fail smtp.client-ip=40.107.247.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hJsmLUPpRxvi5mderBajXdL5Dlf1ZZdBjWYImPmYF4ab4+e48Ff0CmNHeYUqda0FDSDl4RVskz/+dCXT6++GnJBqzNZZmFSvL9YHuL7UIGtcDGumNjB0BQxxFznLd0v2CVJhlhWbZ9m8BNKWgr8tcCJU/ZJx36LS8RttsSvgMBHNWDhV6QRt6/amRlTdlJzL7KLmB5BkJ8aEE8odYxjGCvRZUl+eX6eD8CXpFh3ifp7LrBPb9a4FA6l2k/us/Bfabzn3eT/Bb1b4Ag3qAFwpwWa8xufc0hD5mLweflBOzAe0Y+Auv3lFQUaecZlP/2/vT+NDKeJwZvicPWP9wWSPuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Snrz/qtrp9Tc6g33xVn6aeiRgd3kdSjFXdTjlZP43G0=;
- b=enthLFMa0DgPu6wuLlTx4uNG4OWdw7SEFooepHucQzMTqZtLfAkzWz8bYumVwwEk6by4MY4ngrsEQNOKHoZc7Lm4mA3e6x2oyc4pQbYEvHQ6aKoLSaR2ls9wwepJJhlFd4wu+oc3TFhX7rm3lRtuTffzCrIf3UqIxOedPSzHDJsORVnpsVnnDoa9fHgPlfXpaPWMLpdG3H6TxUJ8eazkuW1jzF8C/dQpc20D+5t/o7RwaNO8rfC6c2eEW0//pqj37JG2aUYPBH7hk6KC3k/ItnSx3OzeUTT3hD+Z3raD/ay7VDCN7nNx0mFfcGW+ipKjULUZK+jk+8MGNoj4Kd89Bw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Snrz/qtrp9Tc6g33xVn6aeiRgd3kdSjFXdTjlZP43G0=;
- b=mA58dxvidTMh1WukPoIp+iU1lBYkWPtljNcmPAC/obTNoZW6RgtaT3vci42xoiAe9f3zmDoyTtk2wbqdPPi1RTURm3C3EeBlWZ6WHum+26iUiJZ0/HbdYYkq1qSVDlNAcEzHo2oWU0+YcRbbmS9whOMQ6jnUcnv5qL618GqFK5M=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PA4PR04MB9246.eurprd04.prod.outlook.com (2603:10a6:102:2a1::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.28; Mon, 12 Feb
- 2024 22:24:10 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7270.025; Mon, 12 Feb 2024
- 22:24:10 +0000
-Date: Mon, 12 Feb 2024 17:24:01 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] dt-bindings: PCI: dwc: Add 'msg' register region
-Message-ID: <ZcqagbUnSfRgv5Hd@lizhi-Precision-Tower-5810>
-References: <20240202-pme_msg-v3-0-ff2af57a02ad@nxp.com>
- <20240202-pme_msg-v3-5-ff2af57a02ad@nxp.com>
- <eg7wrjp5ebz43g37fvebr44nwkoh4rptbtyu76nalbmgbbnqke@4zugpgwesyqd>
- <20240205183048.GA3818249-robh@kernel.org>
- <ZcEzYdZKotBJlR5i@lizhi-Precision-Tower-5810>
- <ZcK2/tmLG9O7CBEH@lizhi-Precision-Tower-5810>
- <luk5hswq4wnk5p7axml73qih35hio3y3pfnklctbn6rwres62s@mumnvygjh5ch>
- <ZcOpehO3rzCfAwXf@lizhi-Precision-Tower-5810>
- <gl7zmzkezr6k4txrrgqyikspfah3vmgwwz2e3j5kwb2iarpkxv@3ofwrhtxl2sz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <gl7zmzkezr6k4txrrgqyikspfah3vmgwwz2e3j5kwb2iarpkxv@3ofwrhtxl2sz>
-X-ClientProxiedBy: SJ0P220CA0029.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:a03:41b::13) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B42FB4DA0E
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 22:27:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707776837; cv=none; b=k7fKQ9P9xEDKV6H8w2pXKm3VZWHifVuFJq0woi0yPw50LApBuiZzBqH9X+9i1yDuCcbkRi2dMxqEuymp78IF1EZtFA6jXRk/AWB34Puws9Sy8Et8CFpmXjo4gXFDq/sVF8e+sW+EVBN4N62j7N2SF0Pl5H0YlmOHnUVHnDVjfwk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707776837; c=relaxed/simple;
+	bh=G3NGZcbluaJ/zAp2XWm2vhP9ph35dO6yUDGWwypzovI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZfO0fFuS0Xf3BX49wLUHw2omnNSNyX9M0qmAlYnwnkmEM1Gd6SbGphvdZhOD8t+L8V/fBQRet5Y4B/ebcuY0L2eUS96yrtYpp5BXiBiVu1y3s1Bxcpu60rjzBWh3T5HJD0JoNm/Ur47xoZu+0QR6dhz+3dixVrADqm2vnqkSjF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ObVJOQpG; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-59d11e0b9e1so2323877eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:27:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707776834; x=1708381634; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2fCTTjLWubBPUVqrfEz/Ix5Fohf77+LrHQ9JGOiJ25Y=;
+        b=ObVJOQpGh9NMka9zzCdNe2mHZ+aFO40JshAW8P2kwkUu/bC935JpXtwhnZpqXhmdbj
+         BU0nJmTmLBH6SV+p/zjyfyC3nk0Jo1ghoU6IVZrbHTRgbN27mE2BYMqTJjCKhWVA5TDI
+         8Qs7ajm5YYCBul/TgywOf1ziLE4owVDEPuqgo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707776834; x=1708381634;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2fCTTjLWubBPUVqrfEz/Ix5Fohf77+LrHQ9JGOiJ25Y=;
+        b=gtKcesc29Zr70Dy9znIyaljAuvLA+8SCw/lJkjemVnL3DBX1BJHWpbbbAdl17ulLfk
+         n/05dMM5y4h/igvrlV0cjCJ3gPrWBSSggVvHwrBcj00oK9GqhfgfqKXogERT5yfmejh1
+         EAYL4it5SR/r1XmOVfqohGmVai2fmJ999X+NiIVQRvrE4b/zZdFsDGD3exb2+T6I9PkP
+         sbIjyEY7HU6CJhVcCzPIzTHhUHUYnO7HAklUSAKPxWvGpT7UO9ObrzmeZPTkBfnWX+Fg
+         jR39z+QCc9XimnJRKKvCheiQiZcNJaJC7lbchgRm75a98N+BX/h/K2Dog0x/dgWa3bWA
+         tqyA==
+X-Forwarded-Encrypted: i=1; AJvYcCUm2LDrOqkMLpf9QKxlPELXeItWhFpX42hGqEMCXm8/LoGkZA7Yyj675cFCU08VpSWoxGyWCculDEc0+sEO1doJZX0/KgmERFSmcJKR
+X-Gm-Message-State: AOJu0YwT11IqoRfopIB1qUfZFpxm7a+gCypVe4DRfmjfpxLZ4BCgkSvs
+	NynqPE1Aq6GkljH+hUMk2Dyd/brSTryNTnCkxBSP+PkQfhv0cCTYb9hMHsw0tA==
+X-Google-Smtp-Source: AGHT+IE2JeK55iDlCCRN4E+J9NV7GNNHSEyjISvBh8H7OiyLFRqV2gY8nqKBQvUaJYNrAoodRdyGWQ==
+X-Received: by 2002:a05:6358:5985:b0:179:22c:4a4d with SMTP id c5-20020a056358598500b00179022c4a4dmr12595595rwf.22.1707776834330;
+        Mon, 12 Feb 2024 14:27:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWf2we3jJkyiL56yASgBeHbGuOPK/zAKFZZJqJsFjwqJCu7lSz2PkRbHqn61vy1afoTkzzmAmn2yoi4YKuYIcIlZ1tS2t5UJ6zENqQASS+g2+mdWdW87ki2qSINoYwcVnpXk9Jxt008JlKwx9H7miKUNgmktF7k+j/mqb4DUQ+3viinslH9mdFi4cWGEkRHGMnvUtguQPPOOGlm46mxoOAI3k5cB94KXG1BkZ5pt0SQDz04QK7lRZEVw/oUneJArriEPMyRm0OcJBVcxStvhzNr9gXI4uzEQdTP35qDUgahLn0bDRMyvALPl+vfA2kTZVxk3veP07es+5NNZEaxRVRGig+V1lXrRRZZL4qvlUnZjXtgc0JnBQRy0BEmnHFcDygfqN0z7dmVerwT0rtJ6At86QpSp5vrFeOO7+fSKtRHl1ADHTAqxOJesx8cIdyGa3xeQ6S67rN4ggiVRBnZkMiJUPeGTfhjJ65NI8ZbR2qaBv8+5+kd5tYCnRkUloTmtEKa8XygArH6nbnHeLpBNOBimdnHtR16l++xYDGZU18G4x0EAt+npqPt5VPb8L8D+ACAPVHEQDg4OyEpXUhnsoRw5x5AHgVvt7ALejVHGHjzBqeqR+kCNSnuC1+sUvb14cXMnLcilob5okdWqGBM5ppqCKEnks/vxYap7l1G7YIQoP24SD66xTzz40zMfX9D4istIhPUaIvFZQ/DH7lu1RJCNm/SYRrZa83KjrL3g9ZyyZy2nINGuw==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t31-20020a056a00139f00b006e0a895d2e9sm4861958pfg.211.2024.02.12.14.27.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 14:27:14 -0800 (PST)
+Date: Mon, 12 Feb 2024 14:27:13 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 10/35] lib: code tagging framework
+Message-ID: <202402121419.7C4AAF27ED@keescook>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-11-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA4PR04MB9246:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0518ec84-c522-4d06-e378-08dc2c195594
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	myG61Fy32jykr13E1PTnop1pz0A8mVHBiF6/abFRsfrGfK19gryI6MLciz+Dw/x/XGGTEJDqs4/R0YUHVkB6H1WGAxvCPlixmjkdl123dVaLIgucqNZoybyWQcH+YSTmwbaK24/CX5XHq0n4egxXsLx1okwRuWGXBSRaEENhIaqArms3PQxzsPv04Qel3hiMcqUKjEPQo6CoxXm/qWJc7ZimaL3kXnq4/qPgmecSY/LEVXAW0azww1P+yCROkqF7V+BUKEizmejEGCab/PyIHeam5k03XjrHAySgK66DOaMQ7dFeFMvwG6zqV2vr3Nbrfm/joJBr7upRQ/FCAZj83pNkl+vXPYxt8uT3UurHQBfHhlvns+2oQq7QO/F7O0IqR/fShnMw3BiYU+WZdJ6uBhxLKsWmYpsRZnEY4rvI4HETCq3zD5opmiwpG+1usULwKkyRKbT4sx33H8VHmvSkh/9y5DeqQDO+btwY6BGobhqz0y/f29WTPnOyFd//RXk/ovMxKPOQf645ofAqHL+mgmVss+0OR8LDlPeRB0EaiwDJjETnkszBl5KN2l//Cg+aYnmByLUk4HBVAQ9HmkRoD77BuW2BFnOblwk3n/VTfyk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(136003)(366004)(376002)(346002)(396003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(6916009)(8936002)(2906002)(7416002)(5660300002)(66556008)(66476007)(66946007)(4326008)(66899024)(86362001)(38100700002)(478600001)(6486002)(966005)(54906003)(83380400001)(38350700005)(6666004)(52116002)(6512007)(6506007)(9686003)(316002)(41300700001)(26005)(8676002)(33716001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ZqA3UGDUddHgHTUk82y12gOpN6RlwbpcKjrDNOF8GyEe1xeGT+N2slkMDNgu?=
- =?us-ascii?Q?EJ0TYPVgy8c9izPFrzfzE01kp+kUauom9qN3wyVsX+SVaOcxWHnbsaPS+I5d?=
- =?us-ascii?Q?k09BTWUN/v5JxgRQQF2kYfnY5h7zk/coZ5s+knuoHXAyDJHjYFekQ3/FqDUr?=
- =?us-ascii?Q?m0cyDwS2yCc5IphGcKbNi2RWCGrYMcj058DO1iI6jEQJ29NWQM94kVStlX/3?=
- =?us-ascii?Q?GgwejSfIxg+BKw5sq/XdbUEIAq6Oehh56BsxIytZQOB+6VBw5J3AOUBwKiX1?=
- =?us-ascii?Q?2LccTHkCC5zYgu+fwGzgRTkA4AuSR2cjl7YY2fJkpWDucBvZDQRr0z2lAcsA?=
- =?us-ascii?Q?xd8w5tC1kyGdAo0pf3aUGG6QM02DZfk52OKjrAMYaCVsp0A6NIHX4QGBO01X?=
- =?us-ascii?Q?1RBbA/Xz9MKbnOZZi/EE6hZF9igRLv/vFRM4VmZSEy64TY6CEa3sOX2lXygL?=
- =?us-ascii?Q?8SeDKr7tuTG77KSkbm74q2ssuj6QmAOyV8VRFAck/fSwF5dBHAdztkGLk9zh?=
- =?us-ascii?Q?IJS+g2j5DFE+f72yZapubWLvDTtuTSgkdNa5JVg23ikyzfGisVRVHfFQYwAu?=
- =?us-ascii?Q?e30+xDfQGS1Bv5FkKQ2f5v1Y43LK50RpriMK5L2VMPNXLhzUVzCY1tWFNCZj?=
- =?us-ascii?Q?Qjh/lGzU6tscGsBZFSbd8aqH2GbEnZpfbzyrEaTaWdCLVrDOV51G0CcaOpej?=
- =?us-ascii?Q?bJaWyrl12EUrR/OZgfkDD7uaSBSNLEJ3alicpeqniU/8i1VV4zXrGNrMECXP?=
- =?us-ascii?Q?5AfTS4dGqqgsT8NIDEj6t0IWObpMLz06t6HDzNJYlxqKfZS779fUEGQueZK7?=
- =?us-ascii?Q?E5STzv1lNNi2iiByRhUUT5FWrf0XxelgV1WvEz6u1NLjBOvM0gp3DZGbFx7E?=
- =?us-ascii?Q?fEGyafkRChVPdkA6Hxmpg+D0D6sjbFfDIzOy8ttFpbC4ETS3WWJ9Gp7s7HYQ?=
- =?us-ascii?Q?/8LWLzHyOnMuRzaG0HG73MMPpw4tDskpz7EyQDNpp47IZBAmYDKYNUEm/6Tb?=
- =?us-ascii?Q?CTcwlcs5XMeVjPJSnx/nI2LLr7azr5fNIA3lbeGYbKqYlHI5wQTL5sAlEzdo?=
- =?us-ascii?Q?sanSyHo1WcgIwf8an2llJ/UsbaQZ/dFpeE7sHcPqjZWQOVd9PWLilT1bAP4x?=
- =?us-ascii?Q?nrBPYlgT6Vpp/RPx9S7lILBfriagW9uoF6+rorgnc6WQo6bhEI26LhDhZhNe?=
- =?us-ascii?Q?K7iZ9q5rWtKOLL8ieYTAzN6xps5drsTEwnQkQ0uxq8CV+h/MS/4HwZj+mTBB?=
- =?us-ascii?Q?YbG5+y5suyxSo5B3LeIHYmjnmCtjloQ7aBOkxP1F6HSnbCFfllFzR+1v276A?=
- =?us-ascii?Q?yitqohbz1gcZde+Ig05wyTDpz9QMc0AT6o56Q2AJ4Rzrf+g2+Hw3iL5vowTK?=
- =?us-ascii?Q?GA2N7DQBXY7MLpdJWmIYztDcLZH0nHaiJzYMetr6C1wP3XCXNKOFAXnKJT+J?=
- =?us-ascii?Q?ri8LYn0Nsp1b+jNMnjZPJ8hpsde/6Qn5i43QZ0RYLJw7wDNHJTYHy5tsPy8a?=
- =?us-ascii?Q?b3b3aUIrLFeqqwivs7/EHN3m6zR2gqxYy7DvTvJa8uoOnR4yGpDTgsfLBrZy?=
- =?us-ascii?Q?tNkggwx49/7UOOwjL7Hd0pZ39O8TJWkbBxVXpG+w?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0518ec84-c522-4d06-e378-08dc2c195594
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 22:24:10.2253
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IgTN/GbT0xONc2VC8ReoIhSbFldEBRgxuY5qXQRxFgkQLmZa0hj/ioKKZlqMWnRGyrj18UbWWns8ffc51I9/kQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9246
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212213922.783301-11-surenb@google.com>
 
-On Fri, Feb 09, 2024 at 12:52:52PM +0300, Serge Semin wrote:
-> On Wed, Feb 07, 2024 at 11:02:02AM -0500, Frank Li wrote:
-> > On Wed, Feb 07, 2024 at 03:37:30PM +0300, Serge Semin wrote:
-> > > On Tue, Feb 06, 2024 at 05:47:26PM -0500, Frank Li wrote:
-> > > > On Mon, Feb 05, 2024 at 02:13:37PM -0500, Frank Li wrote:
-> > > > > On Mon, Feb 05, 2024 at 06:30:48PM +0000, Rob Herring wrote:
-> > > > > > On Sat, Feb 03, 2024 at 01:44:31AM +0300, Serge Semin wrote:
-> > > > > > > On Fri, Feb 02, 2024 at 10:11:27AM -0500, Frank Li wrote:
-> > > > > > > > Add an outbound iATU-capable memory-region which will be used to send PCIe
-> > > > > > > > message (such as PME_Turn_Off) to peripheral. So all platforms can use
-> > > > > > > > common method to send out PME_Turn_Off message by using one outbound iATU.
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > > > > > > ---
-> > > > > > > >  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml | 4 ++++
-> > > > > > > >  1 file changed, 4 insertions(+)
-> > > > > > > > 
-> > > > > > > > diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-> > > > > > > > index 022055edbf9e6..25a5420a9ce1e 100644
-> > > > > > > > --- a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-> > > > > > > > +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-> > > > > > > > @@ -101,6 +101,10 @@ properties:
-> > > > > > > 
-> > > > > > > >              Outbound iATU-capable memory-region which will be used to access
-> > > > > > > >              the peripheral PCIe devices configuration space.
-> > > > > > > >            const: config
-> > > > > > > > +        - description:
-> > > > > > > > +            Outbound iATU-capable memory-region which will be used to send
-> > > > > > > > +            PCIe message (such as PME_Turn_Off) to peripheral.
-> > > > > > > > +          const: msg
-> > > > > > > 
-> > > > > > > Note there is a good chance Rob won't like this change. AFAIR he
-> > > > > > > already expressed a concern regarding having the "config" reg-name
-> > > > > > > describing a memory space within the outbound iATU memory which is
-> > > > > > > normally defined by the "ranges" property. Adding a new reg-entry with
-> > > > > > > similar semantics I guess won't receive warm welcome.
-> > > > > > 
-> > > > > > I do think it is a bit questionable. Ideally, the driver could 
-> > > > > > just configure this on its own. However, since we don't describe all of 
-> > > > > > the CPU address space (that's input to the iATU) already, that's not 
-> > > > > > going to be possible. I suppose we could fix that, but then config space 
-> > > > > > would have to be handled differently too.
-> > > > > 
-> > > > > Sorry, I have not understand what your means. Do you means, you want
-> > > > > a "cpu-space", for example, 0x8000000 - 0x9000000 for all ATU. 
-> > > > > 
-> > > > > Then allocated some space to 'config', 'io', 'memory' and this 'msg'.
-> > > > 
-> > > > @rob:
-> > > > 
-> > > >     So far, I think "msg" is feasilbe solution. Or give me some little
-> > > > detail direction?
-> > > 
-> > > Found the Rob' note about the iATU-space chunks utilized in the reg
-> > > property:
-> > > https://lore.kernel.org/linux-pci/CAL_JsqLp7QVgxrAZkW=z38iB7SV5VeWH1O6s+DVCm9p338Czdw@mail.gmail.com/
-> > > 
-> > > So basically Rob meant back then that
-> > > either originally we should have defined a new reg-name like "atu-out"
-> > > with the entire outbound iATU CPU-space specified and unpin the
-> > > regions like "config"/"ecam"/"msg"/etc from there in the driver
-> > > or, well, stick to the chunking further. The later path was chosen
-> > > after the patch with the "ecam" reg-name was accepted (see the link
-> > > above).
-> > > 
-> > > Really ECAM/config space access, custom TLP messages, legacy interrupt
-> > > TLPs, etc are all application-specific features. Each of them is
-> > > implemented based on a bit specific but basically the same outbound
-> > > iATU engine setup. Thus from the "DT is a hardware description" point
-> > > of view it would have been enough to describe the entire outbound iATU
-> > > CPU address space and then let the software do the space
-> > > reconfiguration in runtime based on it' application needs.
-> > 
-> > There are "addr_space" in EP mode, which useful map out outbound iatu
-> > region. We can reuse this name.
-> > 
-> > To keep compatiblity, cut hole from 'config' and 'ranges'. If there are
-> > not 'config', we can alloc a 1M(default) from top for 'config', then, 4K
-> > (default) for msg, 64K( for IO if not IO region in 'ranges'), left is
-> > mem region. We can config each region size by module parameter or drvdata.
-> > 
-> > So we can deprecate 'config', even 'ranges'
+On Mon, Feb 12, 2024 at 01:38:56PM -0800, Suren Baghdasaryan wrote:
+> Add basic infrastructure to support code tagging which stores tag common
+> information consisting of the module name, function, file name and line
+> number. Provide functions to register a new code tag type and navigate
+> between code tags.
 > 
-> Not sure I fully understand what you mean. In anyway the "config" reg
-> name is highly utilized by the DW PCIe IP-core instances. We can't
-> deprecate it that easily. At least the backwards compatibility must be
-> preserved. Moreover "addr_space" is also just a single value reg which
-> won't solve a problem with the disjoint DW PCIe outbound iATU memory
-> regions.
+> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+>  include/linux/codetag.h |  71 ++++++++++++++
+>  lib/Kconfig.debug       |   4 +
+>  lib/Makefile            |   1 +
+>  lib/codetag.c           | 199 ++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 275 insertions(+)
+>  create mode 100644 include/linux/codetag.h
+>  create mode 100644 lib/codetag.c
 > 
-> The "ranges" property is a part of the DT specification.  The
-> PCI-specific way of the property-based mapping is de-facto a standard
-> too. So this can't be deprecated.
-> 
-> > 
-> > > 
-> > > * Rob, correct me if am wrong.
-> > > 
-> > > On the other hand it's possible to have more than one disjoint CPU
-> > > address region handled by the outbound iATU (especially if there is no
-> > > AXI-bridge enabled, see XALI - application transmit client interfaces
-> > > in HW manual). Thus having a single reg-property might get to be
-> > > inapplicable in some cases. Thinking about that got me to an idea.
-> > > What about just extending the PCIe "ranges" property flags
-> > > (IORESOURCE_TYPE_BITS) with the new ones in this case indicating the
-> > > TLP Msg mapping? Thus we can avoid creating app-specific reg-names and
-> > > use the flag to define a custom memory range for the TLP messages
-> > > generation. At some point it can be also utilized for the config-space
-> > > mapping. What do you think?
-> > 
-> 
-> > IORESOURCE_TYPE_BITS is 1f, Only 5bit. If extend IORESOURCE_TYPE_BITS, 
-> > all IORESOURCE_* bit need move. And it is actual MEMORY regain. 
-> 
-> No. The lowest four bits aren't flags but the actual value. They are
-> retrieved from the PCI-specific memory ranges mapping:
-> https://elinux.org/Device_Tree_Usage#PCI_Address_Translation
-> https://elixir.bootlin.com/linux/latest/source/arch/sparc/kernel/of_device_64.c#L141
-> https://elixir.bootlin.com/linux/latest/source/arch/sparc/kernel/of_device_32.c#L78
+> diff --git a/include/linux/codetag.h b/include/linux/codetag.h
+> new file mode 100644
+> index 000000000000..a9d7adecc2a5
+> --- /dev/null
+> +++ b/include/linux/codetag.h
+> @@ -0,0 +1,71 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * code tagging framework
+> + */
+> +#ifndef _LINUX_CODETAG_H
+> +#define _LINUX_CODETAG_H
+> +
+> +#include <linux/types.h>
+> +
+> +struct codetag_iterator;
+> +struct codetag_type;
+> +struct seq_buf;
+> +struct module;
+> +
+> +/*
+> + * An instance of this structure is created in a special ELF section at every
+> + * code location being tagged.  At runtime, the special section is treated as
+> + * an array of these.
+> + */
+> +struct codetag {
+> +	unsigned int flags; /* used in later patches */
+> +	unsigned int lineno;
+> +	const char *modname;
+> +	const char *function;
+> +	const char *filename;
+> +} __aligned(8);
+> +
+> +union codetag_ref {
+> +	struct codetag *ct;
+> +};
+> +
+> +struct codetag_range {
+> +	struct codetag *start;
+> +	struct codetag *stop;
+> +};
+> +
+> +struct codetag_module {
+> +	struct module *mod;
+> +	struct codetag_range range;
+> +};
+> +
+> +struct codetag_type_desc {
+> +	const char *section;
+> +	size_t tag_size;
+> +};
+> +
+> +struct codetag_iterator {
+> +	struct codetag_type *cttype;
+> +	struct codetag_module *cmod;
+> +	unsigned long mod_id;
+> +	struct codetag *ct;
+> +};
+> +
+> +#define CODE_TAG_INIT {					\
+> +	.modname	= KBUILD_MODNAME,		\
+> +	.function	= __func__,			\
+> +	.filename	= __FILE__,			\
+> +	.lineno		= __LINE__,			\
+> +	.flags		= 0,				\
+> +}
+> +
+> +void codetag_lock_module_list(struct codetag_type *cttype, bool lock);
+> +struct codetag_iterator codetag_get_ct_iter(struct codetag_type *cttype);
+> +struct codetag *codetag_next_ct(struct codetag_iterator *iter);
+> +
+> +void codetag_to_text(struct seq_buf *out, struct codetag *ct);
+> +
+> +struct codetag_type *
+> +codetag_register_type(const struct codetag_type_desc *desc);
+> +
+> +#endif /* _LINUX_CODETAG_H */
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 975a07f9f1cc..0be2d00c3696 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -968,6 +968,10 @@ config DEBUG_STACKOVERFLOW
+>  
+>  	  If in doubt, say "N".
+>  
+> +config CODE_TAGGING
+> +	bool
+> +	select KALLSYMS
+> +
+>  source "lib/Kconfig.kasan"
+>  source "lib/Kconfig.kfence"
+>  source "lib/Kconfig.kmsan"
+> diff --git a/lib/Makefile b/lib/Makefile
+> index 6b09731d8e61..6b48b22fdfac 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -235,6 +235,7 @@ obj-$(CONFIG_OF_RECONFIG_NOTIFIER_ERROR_INJECT) += \
+>  	of-reconfig-notifier-error-inject.o
+>  obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+>  
+> +obj-$(CONFIG_CODE_TAGGING) += codetag.o
+>  lib-$(CONFIG_GENERIC_BUG) += bug.o
+>  
+>  obj-$(CONFIG_HAVE_ARCH_TRACEHOOK) += syscall.o
+> diff --git a/lib/codetag.c b/lib/codetag.c
+> new file mode 100644
+> index 000000000000..7708f8388e55
+> --- /dev/null
+> +++ b/lib/codetag.c
+> @@ -0,0 +1,199 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +#include <linux/codetag.h>
+> +#include <linux/idr.h>
+> +#include <linux/kallsyms.h>
+> +#include <linux/module.h>
+> +#include <linux/seq_buf.h>
+> +#include <linux/slab.h>
+> +
+> +struct codetag_type {
+> +	struct list_head link;
+> +	unsigned int count;
+> +	struct idr mod_idr;
+> +	struct rw_semaphore mod_lock; /* protects mod_idr */
+> +	struct codetag_type_desc desc;
+> +};
+> +
+> +static DEFINE_MUTEX(codetag_lock);
+> +static LIST_HEAD(codetag_types);
+> +
+> +void codetag_lock_module_list(struct codetag_type *cttype, bool lock)
+> +{
+> +	if (lock)
+> +		down_read(&cttype->mod_lock);
+> +	else
+> +		up_read(&cttype->mod_lock);
+> +}
+> +
+> +struct codetag_iterator codetag_get_ct_iter(struct codetag_type *cttype)
+> +{
+> +	struct codetag_iterator iter = {
+> +		.cttype = cttype,
+> +		.cmod = NULL,
+> +		.mod_id = 0,
+> +		.ct = NULL,
+> +	};
+> +
+> +	return iter;
+> +}
+> +
+> +static inline struct codetag *get_first_module_ct(struct codetag_module *cmod)
+> +{
+> +	return cmod->range.start < cmod->range.stop ? cmod->range.start : NULL;
+> +}
+> +
+> +static inline
+> +struct codetag *get_next_module_ct(struct codetag_iterator *iter)
+> +{
+> +	struct codetag *res = (struct codetag *)
+> +			((char *)iter->ct + iter->cttype->desc.tag_size);
+> +
+> +	return res < iter->cmod->range.stop ? res : NULL;
+> +}
+> +
+> +struct codetag *codetag_next_ct(struct codetag_iterator *iter)
+> +{
+> +	struct codetag_type *cttype = iter->cttype;
+> +	struct codetag_module *cmod;
+> +	struct codetag *ct;
+> +
+> +	lockdep_assert_held(&cttype->mod_lock);
+> +
+> +	if (unlikely(idr_is_empty(&cttype->mod_idr)))
+> +		return NULL;
+> +
+> +	ct = NULL;
+> +	while (true) {
+> +		cmod = idr_find(&cttype->mod_idr, iter->mod_id);
+> +
+> +		/* If module was removed move to the next one */
+> +		if (!cmod)
+> +			cmod = idr_get_next_ul(&cttype->mod_idr,
+> +					       &iter->mod_id);
+> +
+> +		/* Exit if no more modules */
+> +		if (!cmod)
+> +			break;
+> +
+> +		if (cmod != iter->cmod) {
+> +			iter->cmod = cmod;
+> +			ct = get_first_module_ct(cmod);
+> +		} else
+> +			ct = get_next_module_ct(iter);
+> +
+> +		if (ct)
+> +			break;
+> +
+> +		iter->mod_id++;
+> +	}
+> +
+> +	iter->ct = ct;
+> +	return ct;
+> +}
+> +
+> +void codetag_to_text(struct seq_buf *out, struct codetag *ct)
+> +{
+> +	seq_buf_printf(out, "%s:%u module:%s func:%s",
+> +		       ct->filename, ct->lineno,
+> +		       ct->modname, ct->function);
+> +}
 
-In dt: phys.hi cell: npt000ss bbbbbbbb dddddfff rrrrrrrr
+Thank you for using seq_buf here!
 
-of_bus_pci_get_flags() will parser (phys.hi) to resource flags. Even there
-are "000" in dt, we can use, but it need convert IORESOURCE_*, which have
-not reserve bit can be used for TLP.
+Also, will this need an EXPORT_SYMBOL_GPL()?
 
-we may call reserve_region_with_split() to split 4k region in mmio windows
-in dw_pcie_host_init(). 
+> +
+> +static inline size_t range_size(const struct codetag_type *cttype,
+> +				const struct codetag_range *range)
+> +{
+> +	return ((char *)range->stop - (char *)range->start) /
+> +			cttype->desc.tag_size;
+> +}
+> +
+> +static void *get_symbol(struct module *mod, const char *prefix, const char *name)
+> +{
+> +	char buf[64];
 
-So needn't change any dts file. 
+Why is 64 enough? I was expecting KSYM_NAME_LEN here, but perhaps this
+is specialized enough to section names that it will not be a problem?
+If so, please document it clearly with a comment.
 
-Frank
+> +	int res;
+> +
+> +	res = snprintf(buf, sizeof(buf), "%s%s", prefix, name);
+> +	if (WARN_ON(res < 1 || res > sizeof(buf)))
+> +		return NULL;
 
-> Currently only first four out of _sixteen_ values have been defined so
-> far. So we can freely use some of the free values for custom TLPs,
-> etc. Note the config-space is already defined by the ranges property
-> having the 0x0 space code (see the first link above), but it isn't
-> currently supported by the PCI subsystem. So at least that option can
-> be considered as a ready-to-implement replacement for the "config"
-> reg-name.
+Please use a seq_buf here instead of snprintf, which we're trying to get
+rid of.
+
+	DECLARE_SEQ_BUF(sb, KSYM_NAME_LEN);
+	char *buf;
+
+	seq_buf_printf(sb, "%s%s", prefix, name);
+	if (seq_buf_has_overflowed(sb))
+		return NULL;
+
+	buf = seq_buf_str(sb);
+
+> +
+> +	return mod ?
+> +		(void *)find_kallsyms_symbol_value(mod, buf) :
+> +		(void *)kallsyms_lookup_name(buf);
+> +}
+> +
+> +static struct codetag_range get_section_range(struct module *mod,
+> +					      const char *section)
+> +{
+> +	return (struct codetag_range) {
+> +		get_symbol(mod, "__start_", section),
+> +		get_symbol(mod, "__stop_", section),
+> +	};
+> +}
+> +
+> +static int codetag_module_init(struct codetag_type *cttype, struct module *mod)
+> +{
+> +	struct codetag_range range;
+> +	struct codetag_module *cmod;
+> +	int err;
+> +
+> +	range = get_section_range(mod, cttype->desc.section);
+> +	if (!range.start || !range.stop) {
+> +		pr_warn("Failed to load code tags of type %s from the module %s\n",
+> +			cttype->desc.section,
+> +			mod ? mod->name : "(built-in)");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Ignore empty ranges */
+> +	if (range.start == range.stop)
+> +		return 0;
+> +
+> +	BUG_ON(range.start > range.stop);
+> +
+> +	cmod = kmalloc(sizeof(*cmod), GFP_KERNEL);
+> +	if (unlikely(!cmod))
+> +		return -ENOMEM;
+> +
+> +	cmod->mod = mod;
+> +	cmod->range = range;
+> +
+> +	down_write(&cttype->mod_lock);
+> +	err = idr_alloc(&cttype->mod_idr, cmod, 0, 0, GFP_KERNEL);
+> +	if (err >= 0)
+> +		cttype->count += range_size(cttype, &range);
+> +	up_write(&cttype->mod_lock);
+> +
+> +	if (err < 0) {
+> +		kfree(cmod);
+> +		return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +struct codetag_type *
+> +codetag_register_type(const struct codetag_type_desc *desc)
+> +{
+> +	struct codetag_type *cttype;
+> +	int err;
+> +
+> +	BUG_ON(desc->tag_size <= 0);
+> +
+> +	cttype = kzalloc(sizeof(*cttype), GFP_KERNEL);
+> +	if (unlikely(!cttype))
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	cttype->desc = *desc;
+> +	idr_init(&cttype->mod_idr);
+> +	init_rwsem(&cttype->mod_lock);
+> +
+> +	err = codetag_module_init(cttype, NULL);
+> +	if (unlikely(err)) {
+> +		kfree(cttype);
+> +		return ERR_PTR(err);
+> +	}
+> +
+> +	mutex_lock(&codetag_lock);
+> +	list_add_tail(&cttype->link, &codetag_types);
+> +	mutex_unlock(&codetag_lock);
+> +
+> +	return cttype;
+> +}
+> -- 
+> 2.43.0.687.g38aa6559b0-goog
 > 
-> > 
-> > Or we can use IORESOURCE_BITS (0xff)
-> > 
-> > /* PCI ROM control bits (IORESOURCE_BITS) */
-> > #define IORESOURCE_ROM_ENABLE		(1<<0)	/* ROM is enabled, same as PCI_ROM_ADDRESS_ENABLE */
-> > #define IORESOURCE_ROM_SHADOW		(1<<1)	/* Use RAM image, not ROM BAR */
-> > 
-> > /* PCI control bits.  Shares IORESOURCE_BITS with above PCI ROM.  */
-> > #define IORESOURCE_PCI_FIXED		(1<<4)	/* Do not move resource */
-> > #define IORESOURCE_PCI_EA_BEI		(1<<5)	/* BAR Equivalent Indicator */
-> > 
-> > we can add
-> > 
-> > IORESOURCE_PRIV_WINDOWS			(1<<6)
-> > 
-> > I think previous method was more extendable. How do you think?
-> 
-> IMO extending the PCIe "ranges" property semantics looks more
-> promising, more flexible and more portable across various PCIe
-> controllers. But the most importantly is what Rob and Bjorn think
-> about that, not me.
-> 
-> -Serge(y)
-> 
-> > 
-> > > 
-> > > -Serge(y)
-> > > 
-> > > > 
-> > > > Frank
-> > > > 
-> > > > > 
-> > > > > Frank
-> > > > > 
-> > > > > > 
-> > > > > > Rob
+
+-- 
+Kees Cook
 
