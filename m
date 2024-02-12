@@ -1,442 +1,180 @@
-Return-Path: <linux-kernel+bounces-61175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB59850E5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 855C1850E36
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:57:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35BD4284F6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:01:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13994284EA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA6D322099;
-	Mon, 12 Feb 2024 07:57:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9638D79FD;
+	Mon, 12 Feb 2024 07:56:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RNE1rJyW"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="JFKnocQQ"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3E6125CB;
-	Mon, 12 Feb 2024 07:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9C279C3
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 07:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707724638; cv=none; b=N5z5RXdQ2gO5mqg3tz8TBL9PrPlTxMdW6DbVYjgzAgSFJT0ZeMaLNJC7q6HV3r+f9ZlWegJOMN7jodaHYdw8W8wMUzlGNkVs8JBPuEcEGR3oo+O0WFeqXsj/ztk7Va34KwfjJF+mC/2d9e+sNEhi7nSybqjf1l+IuQP+ysrMRFk=
+	t=1707724609; cv=none; b=qjGY/h8CP7fQCVYdQ/ftTfXJIL9AAXyzG7JN1EghCzIDYlrY8MRAEJPIJZ0/d+S7/oCNAD0rvCGJRQMoLXFG87NbN7SEeQRJ5YqktlQG8ZDFO5DBBOAF7SkV4SLQ1bga8ZZDEJ9m4nKKOwQpsxcmUUgTYUMuIq0oH30iJ3blKIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707724638; c=relaxed/simple;
-	bh=hU4776sYBDi68msbbKmdhIQkHDVJX9tyYRGpSrCg92A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aENA17VQZOVVaU2tOJsdoMZfUn6OWOXR3lB5RP9JA8NttTb2TpT3dHFx7EYbZaI38NMmW+1NXbrI5zDsHZdlN1Pgpl3Az035HocQhzNED7vGxepR0ACsDUvUv1it4kM4Aizf1BRz14dfIkctuTzWsfAD60dxPLf4dqxccaHFHj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RNE1rJyW; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 21E0940018;
-	Mon, 12 Feb 2024 07:57:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707724632;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BiEtrlkAacMQ7ZsOH+miZS1Nj46VD4t7KhVmkzLQVRU=;
-	b=RNE1rJyWwQDpyiaWdycpjM2jgoow5Mv6A4kE9OaIDmjA3+zZGPGvumbjwgPWty+eoRYk+C
-	J2vIjSgwud4uYffaEnKbLx1yXjQvdp221f1npLRBbDKHyCuyjJpbotjECNfJ8457aowLGP
-	dyg33RwB3GC3j80EP6jHxKh+s9kcOi2W90HBPaKgHhC5J4zOlv+CCmlv+auUMB7DAvQzZw
-	xFbP6dd5vQkprWOp1W0+6cRu1AwERSyQv3bPvLmTvxk8rC/kOozU2wqPl6I72aO8ov9VIl
-	WJ+3vR3vgfszSLidCFR5N8qldNp+HtSDLgGi+4S/dRap8sE3w7Tn+GQylrr5qQ==
-From: Herve Codina <herve.codina@bootlin.com>
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Andrew Lunn <andrew@lunn.ch>,
-	Mark Brown <broonie@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [RESEND PATCH v3 6/6] net: wan: fsl_qmc_hdlc: Add framer support
-Date: Mon, 12 Feb 2024 08:56:41 +0100
-Message-ID: <20240212075646.19114-14-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240212075646.19114-1-herve.codina@bootlin.com>
-References: <20240212075646.19114-1-herve.codina@bootlin.com>
+	s=arc-20240116; t=1707724609; c=relaxed/simple;
+	bh=vF3ZMNbgbWn6zoLtbs5zwCVb+flfkmdV+uWUse2yxew=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OGoHrWY0RywpIkzdEwgeP04NM5jVrmTXnsNqVcaB0EFov4/HiKiFvC/Yu99mHRR/y1boiG+N3q8vRWrbePAj9DWAFrXhMTJs3ViW4SlKjVaXjzJ/8Jyj1cyAxoBV1cPnpRhbIOw7EhNN1G0vOpFCCCqtxwEMOkoBz1wYe9obOoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=JFKnocQQ; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33b2fba3176so1728383f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 23:56:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1707724605; x=1708329405; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IbiB9TdZhTbH/caE8LqMkXLHViwXHf+uAIAh1n4o0eY=;
+        b=JFKnocQQpZg/Ktsw70CzeprbS8vd7F/a1mGw116RRUp2u2gXpXM7DsGT6qT56F5P3T
+         3vFinKJufj9UBCiYXCdcJyMt0JzIDhASWFGHAgNTpwKnGhERhO5fqYEs8SEN2xYVLX8v
+         8OtW9Vs0v5tNHVV4N22jtu4nbJLIH1Cf1Ld3nIGp0k9pjJdAmPwf8XcXXBe3BTBmrWPK
+         KMw6tqhYeyX8j6aAQP3voLDU6ayKtoNzi8ab8NxXfHTADlAXKaGkmYSFc/or87KP0Yj3
+         Zo8vdN74QcT/O/AbiyY9w5laOJkQYTpvGgd6H2qQ9fxXf9JdHNWxCAuLJCPD4s4H8xE0
+         DtCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707724605; x=1708329405;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IbiB9TdZhTbH/caE8LqMkXLHViwXHf+uAIAh1n4o0eY=;
+        b=Cq6wNbp9jfZknjJFhPGciAlWRxFoUfXlqDX1VIYZx1zDZ3Rd4EkaAxddB2AjUi617P
+         yVheLVnvJqqhXad/SHsxvNgoC1oGmSD74FiZiU0YzR7azzIu5c40EJVEliEaRDcjEXfS
+         l5zNpQ/Om8kkisLQbbGrqHzhLHnt9IhjT3Qkna+j5Y0B8JsDEbUrby9zVBnr7p3cOLDu
+         OUGiF+tvre8VsBvDwB4TG6bLIo1bGyVIjRKE7JRQ1oa4Z7CmSL2puYTcNfGNaqn9HXmi
+         tUGS8xkzEQ1d+qUw09lbzW/CRQspGu3L7UCS0YzbSDgAnJngoVPw41w1ew9Y76ttDgun
+         VHYw==
+X-Gm-Message-State: AOJu0YzFlBg4siePlfisMt6TrPywEgA/PC+7/nwZDL3jsW7z4mvSkdQC
+	HM8zQ71+J8TMWJM78qTLWr3trLK5E0TNccBZkSoSoOH8qmMNvtmvvvGkRR8qXOQ=
+X-Google-Smtp-Source: AGHT+IGQlOsXCCeGTX2vr90Sut/bNRRJF3w43WIdCDzlGuvQAdWt5wb1NmGBFX5ZT2+Bf//jzI6Lgw==
+X-Received: by 2002:adf:cd8a:0:b0:33b:810c:7868 with SMTP id q10-20020adfcd8a000000b0033b810c7868mr1569572wrj.57.1707724605383;
+        Sun, 11 Feb 2024 23:56:45 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUAwB++3eta271PwmThU1J/ZAL4ipZIhzcOYDMcw3keg2ipPXCHZVLOspdB8cLyF3NTaMGDjVK07kt1ZYaYuGV1+293HjkVFwsdU3cc4HiI/IustiALVqi06/z8Z1EDJcFxlsVVk3A5gfssl9SlRwNBlOt05q4ostuwTsVWjL+YlK5nlozwVWTQWYpuX2A9yk5dhPFCi660y0eYiLgrsvrcBShoLiDap9oB/+Iz4BaJ0Rf4ffFmSyktPSsuRzYEIwQ1HO6EnBK/mbviw29V7NXgcohDsx56ngYWMfoMEte2yGQUKsFTMIlyrULGcVDEtLrVU+S10lubCM4=
+Received: from [192.168.50.4] ([82.78.167.20])
+        by smtp.gmail.com with ESMTPSA id bq26-20020a5d5a1a000000b0033b4335dce5sm6087448wrb.85.2024.02.11.23.56.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Feb 2024 23:56:45 -0800 (PST)
+Message-ID: <7d0ae75d-2fdb-47cb-b57b-20ee477d6081@tuxon.dev>
+Date: Mon, 12 Feb 2024 09:56:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 5/5] net: ravb: Add runtime PM support
+Content-Language: en-US
+To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240209170459.4143861-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240209170459.4143861-6-claudiu.beznea.uj@bp.renesas.com>
+ <3808dee0-b623-b870-7d96-94cc5fc12350@omp.ru>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <3808dee0-b623-b870-7d96-94cc5fc12350@omp.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add framer support in the fsl_qmc_hdlc driver in order to be able to
-signal carrier changes to the network stack based on the framer status
-Also use this framer to provide information related to the E1/T1 line
-interface on IF_GET_IFACE and configure the line interface according to
-IF_IFACE_{E1,T1} information.
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- drivers/net/wan/fsl_qmc_hdlc.c | 239 ++++++++++++++++++++++++++++++++-
- 1 file changed, 235 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
-index b25d918d5e4e..432b5111b106 100644
---- a/drivers/net/wan/fsl_qmc_hdlc.c
-+++ b/drivers/net/wan/fsl_qmc_hdlc.c
-@@ -9,6 +9,7 @@
- 
- #include <linux/bitmap.h>
- #include <linux/dma-mapping.h>
-+#include <linux/framer/framer.h>
- #include <linux/hdlc.h>
- #include <linux/module.h>
- #include <linux/of.h>
-@@ -28,6 +29,9 @@ struct qmc_hdlc {
- 	struct device *dev;
- 	struct qmc_chan *qmc_chan;
- 	struct net_device *netdev;
-+	struct framer *framer;
-+	spinlock_t carrier_lock; /* Protect carrier detection */
-+	struct notifier_block nb;
- 	bool is_crc32;
- 	spinlock_t tx_lock; /* Protect tx descriptors */
- 	struct qmc_hdlc_desc tx_descs[8];
-@@ -41,6 +45,195 @@ static struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
- 	return dev_to_hdlc(netdev)->priv;
- }
- 
-+static int qmc_hdlc_framer_set_carrier(struct qmc_hdlc *qmc_hdlc)
-+{
-+	struct framer_status framer_status;
-+	unsigned long flags;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	spin_lock_irqsave(&qmc_hdlc->carrier_lock, flags);
-+
-+	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-+		goto end;
-+	}
-+	if (framer_status.link_is_on)
-+		netif_carrier_on(qmc_hdlc->netdev);
-+	else
-+		netif_carrier_off(qmc_hdlc->netdev);
-+
-+end:
-+	spin_unlock_irqrestore(&qmc_hdlc->carrier_lock, flags);
-+	return ret;
-+}
-+
-+static int qmc_hdlc_framer_notifier(struct notifier_block *nb, unsigned long action,
-+				    void *data)
-+{
-+	struct qmc_hdlc *qmc_hdlc = container_of(nb, struct qmc_hdlc, nb);
-+	int ret;
-+
-+	if (action != FRAMER_EVENT_STATUS)
-+		return NOTIFY_DONE;
-+
-+	ret = qmc_hdlc_framer_set_carrier(qmc_hdlc);
-+	return ret ? NOTIFY_DONE : NOTIFY_OK;
-+}
-+
-+static int qmc_hdlc_framer_start(struct qmc_hdlc *qmc_hdlc)
-+{
-+	struct framer_status framer_status;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_power_on(qmc_hdlc->framer);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer power-on failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	/* Be sure that get_status is supported */
-+	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-+		goto framer_power_off;
-+	}
-+
-+	qmc_hdlc->nb.notifier_call = qmc_hdlc_framer_notifier;
-+	ret = framer_notifier_register(qmc_hdlc->framer, &qmc_hdlc->nb);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer notifier register failed (%d)\n", ret);
-+		goto framer_power_off;
-+	}
-+
-+	return 0;
-+
-+framer_power_off:
-+	framer_power_off(qmc_hdlc->framer);
-+	return ret;
-+}
-+
-+static void qmc_hdlc_framer_stop(struct qmc_hdlc *qmc_hdlc)
-+{
-+	if (!qmc_hdlc->framer)
-+		return;
-+
-+	framer_notifier_unregister(qmc_hdlc->framer, &qmc_hdlc->nb);
-+	framer_power_off(qmc_hdlc->framer);
-+}
-+
-+static int qmc_hdlc_framer_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface,
-+				     const te1_settings *te1)
-+{
-+	struct framer_config config;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_get_config(qmc_hdlc->framer, &config);
-+	if (ret)
-+		return ret;
-+
-+	switch (if_iface) {
-+	case IF_IFACE_E1:
-+		config.iface = FRAMER_IFACE_E1;
-+		break;
-+	case IF_IFACE_T1:
-+		config.iface = FRAMER_IFACE_T1;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (te1->clock_type) {
-+	case CLOCK_DEFAULT:
-+		/* Keep current value */
-+		break;
-+	case CLOCK_EXT:
-+		config.clock_type = FRAMER_CLOCK_EXT;
-+		break;
-+	case CLOCK_INT:
-+		config.clock_type = FRAMER_CLOCK_INT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	config.line_clock_rate = te1->clock_rate;
-+
-+	return framer_set_config(qmc_hdlc->framer, &config);
-+}
-+
-+static int qmc_hdlc_framer_get_iface(struct qmc_hdlc *qmc_hdlc, int *if_iface, te1_settings *te1)
-+{
-+	struct framer_config config;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer) {
-+		*if_iface = IF_IFACE_E1;
-+		return 0;
-+	}
-+
-+	ret = framer_get_config(qmc_hdlc->framer, &config);
-+	if (ret)
-+		return ret;
-+
-+	switch (config.iface) {
-+	case FRAMER_IFACE_E1:
-+		*if_iface = IF_IFACE_E1;
-+		break;
-+	case FRAMER_IFACE_T1:
-+		*if_iface = IF_IFACE_T1;
-+		break;
-+	}
-+
-+	if (!te1)
-+		return 0; /* Only iface type requested */
-+
-+	switch (config.clock_type) {
-+	case FRAMER_CLOCK_EXT:
-+		te1->clock_type = CLOCK_EXT;
-+		break;
-+	case FRAMER_CLOCK_INT:
-+		te1->clock_type = CLOCK_INT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	te1->clock_rate = config.line_clock_rate;
-+	return 0;
-+}
-+
-+static int qmc_hdlc_framer_init(struct qmc_hdlc *qmc_hdlc)
-+{
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_init(qmc_hdlc->framer);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer init failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void qmc_hdlc_framer_exit(struct qmc_hdlc *qmc_hdlc)
-+{
-+	if (!qmc_hdlc->framer)
-+		return;
-+
-+	framer_exit(qmc_hdlc->framer);
-+}
-+
- static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
- 
- #define QMC_HDLC_RX_ERROR_FLAGS (QMC_RX_FLAG_HDLC_OVF | \
-@@ -300,6 +493,12 @@ static int qmc_hdlc_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface, const te1
- 
- 	qmc_hdlc->slot_map = te1->slot_map;
- 
-+	ret = qmc_hdlc_framer_set_iface(qmc_hdlc, if_iface, te1);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer set iface failed %d\n", ret);
-+		return ret;
-+	}
-+
- 	return 0;
- }
- 
-@@ -307,11 +506,16 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
- {
- 	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
- 	te1_settings te1;
-+	int ret;
- 
- 	switch (ifs->type) {
- 	case IF_GET_IFACE:
--		ifs->type = IF_IFACE_E1;
- 		if (ifs->size < sizeof(te1)) {
-+			/* Retrieve type only */
-+			ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, NULL);
-+			if (ret)
-+				return ret;
-+
- 			if (!ifs->size)
- 				return 0; /* only type requested */
- 
-@@ -321,6 +525,11 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
- 
- 		memset(&te1, 0, sizeof(te1));
- 
-+		/* Retrieve info from framer */
-+		ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, &te1);
-+		if (ret)
-+			return ret;
-+
- 		/* Update slot_map */
- 		te1.slot_map = qmc_hdlc->slot_map;
- 
-@@ -354,10 +563,17 @@ static int qmc_hdlc_open(struct net_device *netdev)
- 	int ret;
- 	int i;
- 
--	ret = hdlc_open(netdev);
-+	ret = qmc_hdlc_framer_start(qmc_hdlc);
- 	if (ret)
- 		return ret;
- 
-+	ret = hdlc_open(netdev);
-+	if (ret)
-+		goto framer_stop;
-+
-+	/* Update carrier */
-+	qmc_hdlc_framer_set_carrier(qmc_hdlc);
-+
- 	chan_param.mode = QMC_HDLC;
- 	/* HDLC_MAX_MRU + 4 for the CRC
- 	 * HDLC_MAX_MRU + 4 + 8 for the CRC and some extraspace needed by the QMC
-@@ -407,6 +623,8 @@ static int qmc_hdlc_open(struct net_device *netdev)
- 	}
- hdlc_close:
- 	hdlc_close(netdev);
-+framer_stop:
-+	qmc_hdlc_framer_stop(qmc_hdlc);
- 	return ret;
- }
- 
-@@ -442,6 +660,7 @@ static int qmc_hdlc_close(struct net_device *netdev)
- 	}
- 
- 	hdlc_close(netdev);
-+	qmc_hdlc_framer_stop(qmc_hdlc);
- 	return 0;
- }
- 
-@@ -490,6 +709,7 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 
- 	qmc_hdlc->dev = &pdev->dev;
- 	spin_lock_init(&qmc_hdlc->tx_lock);
-+	spin_lock_init(&qmc_hdlc->carrier_lock);
- 
- 	qmc_hdlc->qmc_chan = devm_qmc_chan_get_bychild(qmc_hdlc->dev, np);
- 	if (IS_ERR(qmc_hdlc->qmc_chan)) {
-@@ -518,10 +738,19 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	qmc_hdlc->framer = devm_framer_optional_get(qmc_hdlc->dev, "fsl,framer");
-+	if (IS_ERR(qmc_hdlc->framer))
-+		return PTR_ERR(qmc_hdlc->framer);
-+
-+	ret = qmc_hdlc_framer_init(qmc_hdlc);
-+	if (ret)
-+		return ret;
-+
- 	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
- 	if (!qmc_hdlc->netdev) {
- 		dev_err(qmc_hdlc->dev, "failed to alloc hdlc dev\n");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto framer_exit;
- 	}
- 
- 	hdlc = dev_to_hdlc(qmc_hdlc->netdev);
-@@ -537,11 +766,12 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 	}
- 
- 	platform_set_drvdata(pdev, qmc_hdlc);
--
- 	return 0;
- 
- free_netdev:
- 	free_netdev(qmc_hdlc->netdev);
-+framer_exit:
-+	qmc_hdlc_framer_exit(qmc_hdlc);
- 	return ret;
- }
- 
-@@ -551,6 +781,7 @@ static int qmc_hdlc_remove(struct platform_device *pdev)
- 
- 	unregister_hdlc_device(qmc_hdlc->netdev);
- 	free_netdev(qmc_hdlc->netdev);
-+	qmc_hdlc_framer_exit(qmc_hdlc);
- 
- 	return 0;
- }
--- 
-2.43.0
+On 09.02.2024 23:00, Sergey Shtylyov wrote:
+> On 2/9/24 8:04 PM, Claudiu wrote:
+> 
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Add runtime PM support for the ravb driver. As the driver is used by
+>> different IP variants, with different behaviors, to be able to have the
+>> runtime PM support available for all devices, the preparatory commits
+>> moved all the resources parsing and allocations in the driver's probe
+>> function and kept the settings for ravb_open(). This is due to the fact
+>> that on some IP variants-platforms tuples disabling/enabling the clocks
+>> will switch the IP to the reset operation mode where registers' content is
+> 
+>    This pesky "registers' content" somehow evaded me -- should be "register
+> contents" as well...
+> 
+>> lost and reconfiguration needs to be done. For this the rabv_open()
+>> function enables the clocks, switches the IP to configuration mode, applies
+>> all the registers settings and switches the IP to the operational mode. At
+>> the end of ravb_open() IP is ready to send/receive data.
+>>
+>> In ravb_close() necessary reverts are done (compared with ravb_open()), the
+>> IP is switched to reset mode and clocks are disabled.
+>>
+>> The ethtool APIs or IOCTLs that might execute while the interface is down
+>> are either cached (and applied in ravb_open()) or rejected (as at that time
+>> the IP is in reset mode). Keeping the IP in the reset mode also increases
+>> the power saved (according to the hardware manual).
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+> [...]
+> 
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>> index f4be08f0198d..5bbfdfeef8a9 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>> @@ -1939,16 +1939,21 @@ static int ravb_open(struct net_device *ndev)
+>>  {
+>>  	struct ravb_private *priv = netdev_priv(ndev);
+>>  	const struct ravb_hw_info *info = priv->info;
+>> +	struct device *dev = &priv->pdev->dev;
+>>  	int error;
+>>  
+>>  	napi_enable(&priv->napi[RAVB_BE]);
+>>  	if (info->nc_queues)
+>>  		napi_enable(&priv->napi[RAVB_NC]);
+>>  
+>> +	error = pm_runtime_resume_and_get(dev);
+>> +	if (error < 0)
+>> +		goto out_napi_off;
+> 
+>    Well, s/error/ret/ -- it would fit better here...
 
+Using error is the "trademark" of this driver, it is used all around the
+driver. I haven't introduced it here, I don't like it. The variable error
+in this particular function is here from the beginning of the driver.
+
+So, I don't consider changing error to ret is the scope of this series.
+
+> 
+> [...]
+>> @@ -3066,6 +3089,12 @@ static void ravb_remove(struct platform_device *pdev)
+>>  	struct net_device *ndev = platform_get_drvdata(pdev);
+>>  	struct ravb_private *priv = netdev_priv(ndev);
+>>  	const struct ravb_hw_info *info = priv->info;
+>> +	struct device *dev = &priv->pdev->dev;
+>> +	int error;
+>> +
+>> +	error = pm_runtime_resume_and_get(dev);
+>> +	if (error < 0)
+>> +		return;
+> 
+>    Again, s/erorr/ret/ in this case.
+
+error was used here to comply with the rest of the driver. So, if you still
+want me to change it here and in ravb_remove() please confirm.
+
+Thank you,
+Claudiu Beznea
+
+> 
+> [...]
+> 
+> MBR, Sergey
 
