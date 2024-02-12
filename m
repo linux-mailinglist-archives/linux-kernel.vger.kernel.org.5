@@ -1,201 +1,161 @@
-Return-Path: <linux-kernel+bounces-62224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D02851D39
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:49:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 978DC851D3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2072BB288C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:49:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCF6F1C21869
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4BC482EF;
-	Mon, 12 Feb 2024 18:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68C941232;
+	Mon, 12 Feb 2024 18:47:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="dgLmmAST"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AKeXn7s2"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F47E405FE;
-	Mon, 12 Feb 2024 18:47:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707763643; cv=fail; b=CMbGtcFksdnQSDf50pQwTV7sZBBGURMuYqUyhorBxPkwps6NBHJ2BQ+CRHPrL4USA9XCbCqkxg1bvLAh/9Uww7uVelNusPT7zWZXbCLN/uGL8Z2xavGUMaS3LUhSHySn0Iu4gFa/+aPDx4gyBNiZqiG8CjqCT1i4IrpvOdSL0w0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707763643; c=relaxed/simple;
-	bh=AhWXSFYmpL3E/in6vc6hqJYNG2OxtW0VsgW7y0og6kI=;
-	h=Message-ID:Date:Cc:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=p7kVSg2prmgMRfdLE1LCkn9ypAwU1C6wPocNY+oRBr9wHOMd5b1ySbiKBTFFP8qFJkmncbddM+xR+ITjKxfdCbjQe1MDrp0mKdDp3CpxlAdUvug2hePHakUqiXYFyxQ/QBAGSIe5+w/feOZ7eKiSh2PYk8EytS0W5O2D2hAP42Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=dgLmmAST; arc=fail smtp.client-ip=40.107.236.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FbNOSl6NUKN+UEiUkF2vZtTqcm3rV7EN/Qeo3MvYAgMWjI+i/sjVfRno+QryN1B7syjP4fSmZMb4ACrLVPqInUZ5l67epvQhEC2t3ZGyvkiHg94Fl1BV7w0nwFRzQGwNog5utYnRB0ZewZtD5crW8n/qc9Ch4gJlKIuzMLDHGA20fmfNLcOCdi4OAoRvVZ+xfJYJ5CNWi3XOyFXs9cuc3CgsArGX5m3UkRR/bScKgG5F2c3SYz6XsDrWwaWCIyFNerWD2YyckQJ8mDor8eDivS+pipEeKRnQes9NL6q2PbNLaNaPH4Ao7NkdXTANHl4KQTdSLthEsVv+pRt4LiR8Rg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7Er14n2zdgULPDZh7R0TAnY1f6qxucWJZSoCym3rVJg=;
- b=Iwf37sIhLj5FccLP70DfA88COcskE+3AHBqdVh+gAWEv1CtbuGxquE9RqI3+2S+KX65kVIwNIkFGUXFhwvBVRZwqC7d8fAcujBS3JwFIQf6wl/PQpg7LI8MZ7cBeKUSJLfGGm24zYsWW5sLAwFz5CM71ZTIGBdXMlLCbuoMkMGat9FNzQ/qQbmG+2tEhrA3Kd8HzSKHPDqC1lKh/cSrAw1LCQ1luoZie0J6uHQgPEJeKWBPRoi31xeZkqre8WNUqsz0DXUU78dh70vrojlYtnRiDVYZEs/1Jl+tmdexCbIovSgnisiT5dzC64YKOVsL9DSAkR+b6LTLo+j5fVKfW4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7Er14n2zdgULPDZh7R0TAnY1f6qxucWJZSoCym3rVJg=;
- b=dgLmmASTmwbSt+Hti6T1zdNUiFf5bmDZTk26jDvSbsZ4uR8icA36q/EDflFeTHpFliN6eQrlOcFm/SqiCLs2V79B65FYQPKHguEw63Vao6jvrK1RN5Sxrh/ZABZnnSoaCR4Snz7fRnnDACucYcC8LlYR4aJRj5hiayiobDrxKRE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by SA1PR12MB8920.namprd12.prod.outlook.com (2603:10b6:806:38e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.18; Mon, 12 Feb
- 2024 18:47:17 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::3a46:cf50:1239:510c]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::3a46:cf50:1239:510c%7]) with mapi id 15.20.7270.016; Mon, 12 Feb 2024
- 18:47:17 +0000
-Message-ID: <b5904910-ed58-405f-9425-566383b48068@amd.com>
-Date: Mon, 12 Feb 2024 13:47:14 -0500
-User-Agent: Mozilla Thunderbird
-Cc: yazen.ghannam@amd.com, Sohil Mehta <sohil.mehta@intel.com>,
- x86@kernel.org, linux-edac@vger.kernel.org, tony.luck@intel.com,
- linux-kernel@vger.kernel.org, Avadhut Naik <avadhut.naik@amd.com>
-Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
- Records pool
-To: Borislav Petkov <bp@alien8.de>, "Naik, Avadhut" <avadnaik@amd.com>
-References: <20240207225632.159276-1-avadhut.naik@amd.com>
- <20240207225632.159276-3-avadhut.naik@amd.com>
- <8b4f8ec2-7534-4f77-b44f-6728c699ff64@intel.com>
- <51255499-0b5d-45c6-9c72-f353bae83c0d@amd.com>
- <20240209200920.GFZcaGcOr757W9O3IG@fat_crate.local>
- <7a4945b0-322a-444e-a0ca-860a062a49c3@amd.com>
- <20240209205111.GGZcaQP1gb6C9m0WZB@fat_crate.local>
- <5DB0FF8D-C6DA-45DC-B287-201A9BF48BDA@alien8.de>
- <75ddf61d-8dda-47fa-9da0-24221feb22a2@amd.com>
- <20240211111455.GAZcisL09LeFPWa2EI@fat_crate.local>
-Content-Language: en-US
-From: Yazen Ghannam <yazen.ghannam@amd.com>
-In-Reply-To: <20240211111455.GAZcisL09LeFPWa2EI@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BN9PR03CA0342.namprd03.prod.outlook.com
- (2603:10b6:408:f6::17) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498D83F9FC
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707763676; cv=none; b=KWFwup1IsEmOvmLuFtlBM9OXhsPJ/bLyWFiQ/mO87ZPwF7bLtn2hJ2ahxXU0IggTcwAYfxfpUN+Bs23Yq6JBqlWQwDd5QYrdjbc+JsjesFtcoFWnKzdz/CwEfB3JRU8tspxCiAGuivpJ9NzhcHf/Eo6ffPtvDw8xbeOAYtB8JBM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707763676; c=relaxed/simple;
+	bh=BFJjN8ONCgkmsa4PW9qUxSQnQuER8UwLgYKkgYkqKj4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=BpxjpzjjQn1VdvBc1p0a+FDemo470y4YGgx3u2wmpqgVFgKvQUCtbdeLtmKrrxnQEROU476OIhR+ksKBKTJOuiDWafk3nmmGyzGzoKewjK0t3TqVt6LkdQqeWG22rWX+nNsTjMjENaeXyVcqJp1gn6OPjz+48rob6KzIz5qbkTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AKeXn7s2; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40fd72f7125so28692405e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:47:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707763672; x=1708368472; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SYWSvZSGyZd1GI0l4m1/e99sDhaFp9G5rCeC7L8H0xo=;
+        b=AKeXn7s2XHzMfdkaUYQUPeaQlu9K/JC2qHQi0hdhB3TNxeuO45Nkp2q1HDqO4JVguk
+         7on6H5EKe1ZWYmGhhTIaz7wny799slBwadw4ugsiTX+pxs5WFwjs+l22F6LuH3GOPnf8
+         90DemL9+wKU3WldQGj/4qw5NXBb8ukM8Mlquz/Ond3mKBC20k6O0+sYfhAZpRUenJnA4
+         1y3KA8aO2sOvh8Yu4IHnOzrbGhPKfcPpDbMihK0rtu1h2PQp1qwS3qG374HbUWB8Ip+G
+         PZHUpgZIR/lIlLgqNU1wgtCDe0TCVTyxiUfaYBTcBGQEjppnX7EwjRInqx22UbLqvjMX
+         Hdyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707763672; x=1708368472;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SYWSvZSGyZd1GI0l4m1/e99sDhaFp9G5rCeC7L8H0xo=;
+        b=mPdPiu5RvjqyZazZr5nOYH/LSUivKXBWkLiOvXNbVn1+P5Jivmz58IiZz8rtK3Z1tT
+         b/uH/GJE8rWQJx1XFuATPbR513beCJ1+2HW1dfWvEb/79RBoLdnOIqkUXJWfDbD8j95Y
+         Vjti5fjnqawfQK0nj51YBlLKbLbAVLrbpP++R3zzB6FHtVOA9iei1JdJfbJhAIbcN7aL
+         HJOzQknJtUBFcYgWHry9G5UqpeROXolCjitXQR1NieGwfUglpw4WMEy21iQTimBx4DJH
+         YAK4ZnGmWjtrsRe100t8886PuipJrTBlpD1dnv3FjuDHfwqPsU7ww5PqZ0OGnt2DjT09
+         V+IQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWPpmy+DFhseVwfM/Cs0jdj/MIjIbEF5zEsNZZ5y95UM5bytJfb8sIxLBOZt3przvRSq+rSaVFujfD8SLDJis2E8v49gDcBiMHW9p4l
+X-Gm-Message-State: AOJu0YyMCktCnNnrRd8Fiyw5dLioeMjUgckIIbSIcY4UVaNx7LagdPJm
+	0/qxIR7zHGdq8jHey7ugvtoZpf39/JFSldikF/9Ez7d9IqhuHJlE2RX9z9DPIhk=
+X-Google-Smtp-Source: AGHT+IE0ArX+pv8YDqS8Zzy/USZGC+ffgmfFlW3LkewjS26gDJQVwoHo+wq4KsMfWrkLlPw3YuDanA==
+X-Received: by 2002:a05:600c:45c6:b0:410:4a3:1ae7 with SMTP id s6-20020a05600c45c600b0041004a31ae7mr6383316wmo.17.1707763672400;
+        Mon, 12 Feb 2024 10:47:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUESZbskZAkeimcJbyMJK1tBzW6vO3rcPrK/aTQVfNFkN1ZmZep48UQlLeihUE7Xu8uzyZrUVOlu9hDWPmhIk4E1/kVmCnBpfaNV90oJJn2zFQY5tVKKy3D9JrlIAx4FcCIpykS31AL3qt9Vd60eGdfkP/E662yXmh9eafM9Vw6OXdZFtAl4WvAA9cbdUIDz46IdyjtKim/babwPjqnhfmxOA2JgOmJVH2TJqy/Xe6rYLWSrxVreLBz5HeOx6vtZv/OSb2ndzgXtzSDKEegoV1QnyKR5WN5LLfcRzDXEp1t3SKuG7IuENIbH8WV784Ap+oKtOH16Y0EAanL98cIFyj6MoA1oqgYW5WFh+VHfr+4oJdQn/UIUELiyPmDi8pofxALewo1d8ygmkee/3xFjdN7xR+4KHqWhShPYtPzu5eVhxothTvHn8oGx907nocOlNg616jqhFh29L+QknsCfGZ/zJ10ksH5s+ksNujQioSNO1WGGaWzWhU1WaHeC+Iz04oYY7E=
+Received: from [192.168.1.20] ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id v8-20020a5d43c8000000b0033b512b2031sm7466475wrr.114.2024.02.12.10.47.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 10:47:51 -0800 (PST)
+Message-ID: <44eec61f-5294-4f2f-b80e-56b8a9f220fa@linaro.org>
+Date: Mon, 12 Feb 2024 19:47:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|SA1PR12MB8920:EE_
-X-MS-Office365-Filtering-Correlation-Id: 64c8159e-9e0b-418e-9169-08dc2bfb0918
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	txYQHMqKON6VFmuDQE6e8zP0GtUl3G4xY0uHVasHpl+rNbpC35Wpz52xTzQ/G0a7D1XK8XFg42A+lnLC3wE7S5/rJc2LpIxq5gnVxmFEyzMwYqhfZQz0jecVrls2cNb4QxsNJAo/8LO4N5eAwIa0IDDIZDf8/jn5GxNgZ7d1/v8Z6U+lmdoBS45jMeeLTkNt7GglPhmQQRQUyJcjue9ipelHvXoyjZld4Pcn0nJvrlAZcFgZUAgXLRbD+5oDP91cA1tU9jbT9TSgG2qW/43izYdWYXLDyUBOBtE/9OgInzfZs/DuPNbe9qcpKr6zoB0KT1NW103h/KsnQwg5YhLTKfALJ4mJEygX+46/sgXBhjXEo5xocp1KWI2T6VSfzlzOw0gkC9f6M8PxQojv2n+bWV0D5XMV1koZzGS75KdvjGFOdldO1/iGuLXm+oeFbs9UMm4qwjlJ6eKRUimAsft2W96Iuf7zJYCXsEl+7HxAMu62rd8zFyM62nuI1ZOtYQ2gOwYdrx6w2YGd5XN3wZAkSgSIabj8jglCWNrkoNGiE8E=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(396003)(136003)(376002)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(31686004)(966005)(6506007)(6486002)(6512007)(36756003)(2906002)(44832011)(5660300002)(31696002)(86362001)(66946007)(38100700002)(66556008)(83380400001)(54906003)(478600001)(6636002)(316002)(110136005)(6666004)(53546011)(4326008)(45080400002)(66476007)(8676002)(8936002)(26005)(2616005)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?S1VMSnF0RXlhOXRlKzZRNWJrSGZ6R1FHZEdrMTBBeUpDSVBjdVRuRCtkeTdV?=
- =?utf-8?B?QndpSHhVaVdHNmVTVTRmdVpmWkEyR2U5U0hVVEFFWnZ0K2h4ZDZ1VzkxY1k2?=
- =?utf-8?B?S0hTM1pFUGZPZDRRcXVSeFFCODhZVUx2alEzdkhSd2tmRW9yamZHU0hhd0xz?=
- =?utf-8?B?V21KZmJ0M1RYOVpBUFJrUjZsUkVVZGxYNWF3dmJkdzUxNUhodk5UbWZQVkNN?=
- =?utf-8?B?N3VwMUZHd29qR1A4RjN2d1NDeEt0bXltZjUyVy9Bbzl2emZpZlVBNW5Rc1JX?=
- =?utf-8?B?WlRDNitPVHpEcmZ0YzR0VDFWdEsxaXgzdE4rRnF4OVlDdG8zemgreCtWYWRI?=
- =?utf-8?B?NjJXdkc3Ry96Z2syN014U01hUDhtbWl3U3p2VUt0aTFVeHFYUm1sWW5tQkdw?=
- =?utf-8?B?aW9GTUtVUVI2Q2Q3UVVYeWRGVlVla2YwVURjMnI0WTZyL21hZmF2MUU3U2lU?=
- =?utf-8?B?eGt5andxeHRROFRPZHdKN1E4YVlBRnp1eXd1NXA1cTFIUlErY21PaEFvcVJI?=
- =?utf-8?B?c2hvbTZwOXoxbkRFSXFwUGl6eGlSdlpuTk5pSGcyWDJjL1EyWnh5SitOS0RE?=
- =?utf-8?B?WnhIeThRSXFNSGxNT1UzUzl4eUFvQ2RNRzVEdGgwVzA1SEs2ZkNoZkRYNTh2?=
- =?utf-8?B?akp3bFlDL1RhVFR0cEpNUllMTWlDUWRraFpBQ0xFME44QkE4NFVScXdzUVZC?=
- =?utf-8?B?SG5hM0J0YzdNRUt0Q211UjZRM0R6cmxaOHdzWk95NHFkOE1WOGhqV2hBbTVi?=
- =?utf-8?B?MUx0dzZPK1lQQ1BMQjZmR3dwVjdrYzYyTnZwdnB3cU1CSHk1NnpaVDRHMjBU?=
- =?utf-8?B?LzNaOFFtVEJNK2RIRW5hcXVWY09xczErUnRhaWVteGZsSFM2UUlidXhHZUZx?=
- =?utf-8?B?dDNoR1NmZ0ZhUHo0dTBYRllhWElqQzRORi9MelpmQlAwREJSNVdzRktmR1Nr?=
- =?utf-8?B?VEVzNWxMUTZ4N3UxMmhTVFZ4Y1l4RjVFL3pXajdGTE1Tb1NoK25EaWJOOWVr?=
- =?utf-8?B?WTdWaU5QTTE5TlkveGNnTUlOR2lQQmJPbGd5UmhBNjJxMmJIL0RDVmtFY3pJ?=
- =?utf-8?B?NkRGMktOYlp0Q3h4U0VwM0hxVjNRZWRReHZwZEhoTWhPUkhMZ0t0dFExSVIw?=
- =?utf-8?B?UDRHTFdIZ1JUOUlGMit4RVhCcllRVTB2UUQwZkQ2UGVKRjJMeDUra3I3WFlX?=
- =?utf-8?B?RkRJTHJtMjdoamc4Q2oxclpLek1TditMYmJLNG1neXIrZGlnUnJaNFp6U01D?=
- =?utf-8?B?M0lTc2UwQzZRRDJXelNaRXphSTRvdVdLRTVrVU5PZVdzclpoZ1lpTGk0OGRZ?=
- =?utf-8?B?dGhZbjBXT0RNK3FKRzRYay9zclJxR0krV2Y0bnNXeU9PU2RDQUNOUWpyeGdK?=
- =?utf-8?B?di9EVmtBREhkU2RabTM2OWdlOFpGSDVjRXZIbGFydjRSWHJMMk9MUmM5WURF?=
- =?utf-8?B?NjVLY1dzTGNoN0pPMzdoT3M5RzJBM2MrRFFjeW04L3FWQ3dTdUdGUnJndWkr?=
- =?utf-8?B?eWYrWkkwczlTbUJKa0ZuYVhzc0lVN0xwRUlJM0I3VWNqOHMzWkNDL0RVOHFu?=
- =?utf-8?B?L0pDcXZvazFqaXp6MHY0aFR4VklyMmVpL2lIMkpkd1huVFM1RkVxaUZqWm1R?=
- =?utf-8?B?aUFwU0EvRnBGb05ZQW1zeldhNTFCR2U2Q0M4Q203YklQQ1EyRzQxSUF3Sjlm?=
- =?utf-8?B?cHQrT0ErWTdWVXlFZXlMUjhLeWMxdElnMDVUSjd1ZXZiYlJrV3NIazkvSWVF?=
- =?utf-8?B?ZGEwbUE1bHg4VUtaU2tidSt3M3ViUjZQOG5MVnhIMmZmL0p1R1NodFFwNGJk?=
- =?utf-8?B?OVFhMkZwWFdNTUFDQ0ZnQm1FMS9CT3h2VjJLWHlXdGo0OTFoa3ZvY0ZLWUhi?=
- =?utf-8?B?ZURvb1lOV25KUUoya0k1U0hxUzZWKzAyRFNVMXhDODR1WFBqTUZWQ2RMdDhW?=
- =?utf-8?B?cjM1YWcwWlk2YWU1WkgxZGc1cXZsaFFRL1c3Tjdmb3hmQzVoRDhiU08zTnIw?=
- =?utf-8?B?aDltdmtYY2tYZTJlYlhEUU5POExNRnM1WXkzNHRjR0o3NytrSGwvc0F4MHdq?=
- =?utf-8?B?MldxRkRpd0xRYTExQnZvSDRMS2F3VWxIZG02LzdsS0tvcjRiS1UydkVDK1Fw?=
- =?utf-8?Q?K2oakPy4RyIS08BwS0uVLNDI1?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64c8159e-9e0b-418e-9169-08dc2bfb0918
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 18:47:17.0642
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B5KORadjW0EiEcVNh8LltNxp+Bxi3wG+d0pswnKl41CTkIpiJBjvT8thvHWGUxGJP14q4g6u9QXDp0mrbYWG8g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8920
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: dt-bindings: qcom,sm8250: Allow up to 8 codec DAIs
+Content-Language: en-US
+To: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240212183800.243017-1-krzysztof.kozlowski@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240212183800.243017-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 2/11/2024 6:14 AM, Borislav Petkov wrote:
-> On Sat, Feb 10, 2024 at 03:15:26PM -0600, Naik, Avadhut wrote:
->> IIUC, you wouldn't want to extend the pool through late_initcall().
->> Instead, you would want for memory to be allocated (on the heap) and
->> size of the pool to be set at the very beginning i.e. when the pool
->> is created (~2 seconds, according to dmesg timestamps).
->>
->> Please correct me if I have understood wrong.
+On 12/02/2024 19:38, Krzysztof Kozlowski wrote:
+> Sound card on Qualcomm X1E80100 CRD board has eight DAIs in one DAI
+> link (for WSA speakers).  Boards with older SoCs could technically have
+> similar setup, even if it was not observed on mainlined devices.
 > 
-> Nah, you got it right. I went, looked and realized that we have to do
-> this early dance because we have no allocator yet. And we can't move
-> this gen_pool allocation to later, when we *do* have an allocator
-> because MCA is up and logging already.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
-> But your extending approach doesn't fly in all cases either:
+> ---
 > 
-> gen_pool_add->gen_pool_add_virt->gen_pool_add_owner
-> 
-> it grabs the pool->lock spinlock and adds to &pool->chunks while, at the
-> exact same time, gen_pool_alloc(), in *NMI* context iterates over that
-> same &pool->chunks in the case we're logging an MCE at exact that same
-> time when you're extending the buffer.
-> 
-> And Tony already said that in the thread you're quoting:
-> 
-> https://lore.kernel.org/linux-edac/SJ1PR11MB60832922E4D036138FF390FAFCD7A@SJ1PR11MB6083.namprd11.prod.outlook.com/
-> 
-> So no, that doesn't work either.
-> 
+> DTS with X1E80100 sound card using this:
+> https://lore.kernel.org/linux-devicetree/20240212172335.124845-5-krzysztof.kozlowski@linaro.org/T/#u
 
-I'm confused why it won't work.
+Apologies, wrong link:
 
-X86 has ARCH_HAVE_NMI_SAFE_CMPXCHG. I expect atomics/caches will still
-work in interrupt or #MC context. If not, then we'd have a fatal error
-that causes a hardware reset or a kernel panic before we get to logging,
-I think.
+https://lore.kernel.org/linux-devicetree/20240212184403.246299-1-krzysztof.kozlowski@linaro.org/
 
-Or is the issue when running on the same CPU? In this case, either
-&pool->chunks was updated before taking the #MC, so the extra memory
-is there and can be used. Or it wasn't updated, so the extra memory is
-not available during the #MC which is the same behavior as now.
+This is not a dependency, just providing relevant work for reference.
 
-I need to look more at the genpool code, but I thought I'd ask too.
-
-Thanks,
-Yazen
-
-
-
+Best regards,
+Krzysztof
 
 
