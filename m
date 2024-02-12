@@ -1,75 +1,63 @@
-Return-Path: <linux-kernel+bounces-62513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 299A9852232
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:01:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DFF185222D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:00:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58EA91C2256E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:01:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BAC81F2377E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81E44F8A1;
-	Mon, 12 Feb 2024 23:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B712F4F891;
+	Mon, 12 Feb 2024 23:00:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UbMoyjx5"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G4J0/cuQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194A14EB3D
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0198D51C21;
+	Mon, 12 Feb 2024 23:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707778870; cv=none; b=tqNAoUxsiaIr/6e15klX8JLeo+WMKpheHAlM506EFMx2fSWVa+NerG2M8xpzXPFj+RHoI0GoJzEqp6eo0Q/INGz1OGU7fFhYstC6ZU8EBP73pymSV5GYHoQJlgtpDW9tG1mJKnKuTlBmDa13vokVMc7OyKeJ6dpt1dXpF35+NTc=
+	t=1707778819; cv=none; b=jiVMl+djj/hZ7FTS6koEcIQhnCeZ76X8QnXEaUC0Q7weS3UvB8igXUFJybRsHbmXtponDvHbblG12/i6X+2vRcsPtABuX1FP8m7/sWuDApeAOW5vbvOqrGBLr8xTvHIKZkpFXq1qQFguGf4/AqKEszZNgWaCp6cooQxpnLf693c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707778870; c=relaxed/simple;
-	bh=8LHnGgzWPky93CofKSFQtD84mMH96b/653GC9OgJAE0=;
+	s=arc-20240116; t=1707778819; c=relaxed/simple;
+	bh=jZpc+jpwI8JbN6GWK7eGKpI9q/rxuDmvkjAcn+AKPCo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Oo0/T9kzZsfnND+30FCNQWgIVMfkMDQqDr7Fox5vJzEw8ukfRHF/hmZdw0zbfc5GF2uSAqyzeP1qOXqel+FXHumyyUSCEMmlFvCvWgqFTNBCEb/kI8CIhlo6wl/RL5zlUZTBUyTwmOvboOwHn/yUQuLZVUDd6K8UDXFOygZXI8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UbMoyjx5; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707778867; x=1739314867;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8LHnGgzWPky93CofKSFQtD84mMH96b/653GC9OgJAE0=;
-  b=UbMoyjx5b8aZQ2IWiFTpOdnsRHAsmK18zq6NRGn88EWUsT528xdFWALP
-   HDfZHiPAPergUJNjHBaSCSmGtIN1vFUaYWFhft53FRyeZzgDzISbQbDlP
-   T/GqPEOLax5ELQT6bhGOrGbHydns0G60PKgSTZBeZsldX7KAZMQoAw508
-   CCF3h4R2CdDmFmjPmXKz/9PnR+WA+l9qzv1fUN99n6SXvGFNgJ1y8mPr3
-   hgnj5Zmcw7EBtKW3V5tT0MbFlslVbgG7CboYdfNJ9q2TaSlqN3DYKn98/
-   eoocP6KLCiOxP04r6nj/vMIM64PqsP35RD7zL3SbiTKo82fWckdikSKTl
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="19286825"
-X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
-   d="scan'208";a="19286825"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 15:01:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
-   d="scan'208";a="3093271"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by orviesa008.jf.intel.com with ESMTP; 12 Feb 2024 15:01:04 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rZfIK-0007PK-2x;
-	Mon, 12 Feb 2024 23:01:00 +0000
-Date: Tue, 13 Feb 2024 07:00:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Cristian Marussi <cristian.marussi@arm.com>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev, sudeep.holla@arm.com,
-	vincent.guittot@linaro.org, peng.fan@oss.nxp.com,
-	michal.simek@amd.com, quic_sibis@quicinc.com,
-	quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
-	Cristian Marussi <cristian.marussi@arm.com>
-Subject: Re: [PATCH 06/11] firmware: arm_scmi: Implement Clock
- .is_notify_supported callback
-Message-ID: <202402130607.H0A5KJ1C-lkp@intel.com>
-References: <20240212123233.1230090-7-cristian.marussi@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hk/zMKNGhqKY9+3msuwNa9Wyf2ctv7uoqnHZR39aGwakxK7Lf+rHB+EwoBQcSRzybTECyVjsojNRkBBlrHy1iwSrO4tQ+kvEdeug+VD+0+q90JFiOKWVONh7m9TjeJ7Bs/sPJKH4wTaWDB93tT1Bis6oJ2LoP5xCn6NsH66wU1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G4J0/cuQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34407C433F1;
+	Mon, 12 Feb 2024 23:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707778818;
+	bh=jZpc+jpwI8JbN6GWK7eGKpI9q/rxuDmvkjAcn+AKPCo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G4J0/cuQRWgYA/y0VLvLAzsILeQ1usA/v5oj4022qQx8yWjum0KNB9rVZ5REDVOMX
+	 iuqDuYYpYgQnkC57kvWptf3XrhHrFfBGHec/ZvYNIJBtsBZOsJiqAitaaV+tE3pgsr
+	 HFq8tNq0ylJWRjJS2VFi/MvWIjNhm8cGQ6velKKxZHIAAE9BQoGEHFJm5aSCWAguU0
+	 ou++v/rX99EAPALjKePLNsts5FznbZO4/bhnaRX3uH0dIN/2efzSJN/4d6W0qUq3rp
+	 C1xC4HTP0zmd09RdiFW2a1rGvpH5h3wEae5knGn+j2VsDbOQ0hjRSamzZ5W3PGt7Hy
+	 uxeUrBWMVH72g==
+Received: by mercury (Postfix, from userid 1000)
+	id 73990106A041; Tue, 13 Feb 2024 00:00:15 +0100 (CET)
+Date: Tue, 13 Feb 2024 00:00:15 +0100
+From: Sebastian Reichel <sre@kernel.org>
+To: Stefan Wahren <wahrenst@gmx.net>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	NXP Linux Team <linux-imx@nxp.com>, Dong Aisheng <aisheng.dong@nxp.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 14/14] ARM: dts: imx6ull-uti260b: Add board
+Message-ID: <56eb2fnpmaya5rwfk5jvluvsidokzpoujeatihgrbxlytbzx5x@ozco7pbgkugp>
+References: <20240210012114.489102-1-sre@kernel.org>
+ <20240210012114.489102-15-sre@kernel.org>
+ <c38e7c68-e725-4174-aa0a-0594a55c8d56@gmx.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,70 +66,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240212123233.1230090-7-cristian.marussi@arm.com>
+In-Reply-To: <c38e7c68-e725-4174-aa0a-0594a55c8d56@gmx.net>
 
-Hi Cristian,
+Hi Stefan,
 
-kernel test robot noticed the following build errors:
+On Mon, Feb 12, 2024 at 07:28:36PM +0100, Stefan Wahren wrote:
+> > +	reg_vsd: regulator-vsd {
+> i think the node name should be just "regulator"
+> > +		compatible = "regulator-fixed";
+> > +		regulator-name = "VSD_3V3";
+> > +		regulator-min-microvolt = <3300000>;
+> > +		regulator-max-microvolt = <3300000>;
+> > +	};
+> > +
+> > +	reg_vref: regulator-vref-4v2 {
+> dito
 
-[auto build test ERROR on soc/for-next]
-[also build test ERROR on linus/master v6.8-rc4 next-20240212]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The nodename must be unique. So just "regulator" does not work. In
+the past this was sometimes solved by adding something like @0,
+which is part of the nodename. But that is not ok, since there is no
+reg property.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Cristian-Marussi/firmware-arm_scmi-Check-for-notification-support/20240212-203727
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-patch link:    https://lore.kernel.org/r/20240212123233.1230090-7-cristian.marussi%40arm.com
-patch subject: [PATCH 06/11] firmware: arm_scmi: Implement Clock .is_notify_supported callback
-config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240213/202402130607.H0A5KJ1C-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240213/202402130607.H0A5KJ1C-lkp@intel.com/reproduce)
+> > +&ecspi3 {
+> > +	cs-gpios = <&gpio1 20 GPIO_ACTIVE_LOW>;
+> > +	pinctrl-names = "default";
+> > +	pinctrl-0 = <&mux_spi3>, <&mux_spi3_cs>;
+> > +	status = "okay";
+> > +
+> > +	panel@0 {
+> > +		compatible = "inanbo,t28cp45tn89-v17";
+> > +		reg = <0>;
+> > +		backlight = <&panel_backlight>;
+> > +		power-supply = <&reg_vsd>;
+> > +		spi-cpha;
+> > +		spi-cpol;
+> > +		spi-max-frequency = <100000>;
+>
+> This seems slow to me. Is this a limitation of the display?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402130607.H0A5KJ1C-lkp@intel.com/
+I just used something slow, which should definitely work. I will try
+to increase to 1MHz. Note, that the display is not driven via SPI.
+SPI is just used for the configuration.
 
-All error/warnings (new ones prefixed by >>):
+Thanks for the review,
 
-   drivers/firmware/arm_scmi/clock.c: In function 'scmi_clk_notify_supported':
->> drivers/firmware/arm_scmi/clock.c:853:15: error: implicit declaration of function 'scmi_clock_domain_lookup' [-Werror=implicit-function-declaration]
-     853 |         clk = scmi_clock_domain_lookup(ci, src_id);
-         |               ^~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/firmware/arm_scmi/clock.c:853:13: warning: assignment to 'struct scmi_clock_info *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     853 |         clk = scmi_clock_domain_lookup(ci, src_id);
-         |             ^
-   cc1: some warnings being treated as errors
-
-
-vim +/scmi_clock_domain_lookup +853 drivers/firmware/arm_scmi/clock.c
-
-   842	
-   843	static bool scmi_clk_notify_supported(const struct scmi_protocol_handle *ph,
-   844					      u8 evt_id, u32 src_id)
-   845	{
-   846		bool supported;
-   847		struct scmi_clock_info *clk;
-   848		struct clock_info *ci = ph->get_priv(ph);
-   849	
-   850		if (evt_id >= ARRAY_SIZE(evt_2_cmd))
-   851			return false;
-   852	
- > 853		clk = scmi_clock_domain_lookup(ci, src_id);
-   854		if (IS_ERR(clk))
-   855			return false;
-   856	
-   857		if (evt_id == SCMI_EVENT_CLOCK_RATE_CHANGED)
-   858			supported = clk->rate_changed_notifications;
-   859		else
-   860			supported = clk->rate_change_requested_notifications;
-   861	
-   862		return supported;
-   863	}
-   864	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+-- Sebastian
 
