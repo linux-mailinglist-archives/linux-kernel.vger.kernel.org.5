@@ -1,118 +1,110 @@
-Return-Path: <linux-kernel+bounces-61510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8045A85130E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:09:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6813A851311
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10561B24B39
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:09:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0792A1F2240A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:09:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B06D39FE2;
-	Mon, 12 Feb 2024 12:03:23 +0000 (UTC)
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D34E38DF7;
+	Mon, 12 Feb 2024 12:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aPQv5pn2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D053D964;
-	Mon, 12 Feb 2024 12:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D79839FDD;
+	Mon, 12 Feb 2024 12:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707739402; cv=none; b=cCR1OW/rJs0JBmc8wzVUIOHKQH14P1xyGp0LurSweP4lmj0Hj85idnXMrg63klJAOasvPJRSmI4gZRDrWlyGSrbGj1LPOrNE0vxIYD4e0H6IvaD61puHaVti8TiSVqeBtSEsVt6P03eC6gGwQ0m6xSA9kgPN9uIIeqm+NtaQCA8=
+	t=1707739419; cv=none; b=TiFFd6msVUdiju9V6bvdA580wsY2o4YHDdWP9ai3ZspW4UDcjjKgw+dNOnO7mpRTQ1N+B0b3pWTjMyS6K7HShtt2IEAwwlr39dkd+M4T+p+EznfGkLjAYDZ9Kr+qbd2PXxAUffDjCeKDNPRlvS9AWzEmYPaSPyKEkRPrwQ4qwT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707739402; c=relaxed/simple;
-	bh=rfED2IXGqOBD+K1HnRdLQdhtHs14ZMAFcdInDfpTlXw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gEmRuP4jJlvPE7P4cAM3fNZa+Jf6j+QNFL3nA0BM4h/VHA77MRZcw0+XQlzQaoLOKBidx10aXiIoLu8D89OBNFBO/Ky56O1HuEva7v0qq60nApgiK+jEHTQTl5awQ9Y0D6SwtVAWBs0D/TXAcSAJDRf+oOq873KIo8aBLvq8ZVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-218e7bb0034so752005fac.0;
-        Mon, 12 Feb 2024 04:03:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707739400; x=1708344200;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UOYodCfh0GuqCNxZvnHyKyee8GZYuYBo58cLH6hYt/c=;
-        b=j8dsYKWC5SmOnPXgIteRWMuXUiK3Oa69EZdy3xxr+CaRv7HrsuU/+P2GL3a8Oq/4Pi
-         a1xxvCs0HceZQE9mENQPwOFLRC6YnVJ1lo8GbjZ8BukPzna5kN0Ms+SLBSNZ+5JXsLc8
-         O1TwyA3rEvSUFzfgmf7nBzxK6RFquIOZNra/0DREkdZRzm4j7STjUfNguxU+SMvEhls6
-         jwgt+Nal+8E1vazXC7Nosm8YSDbGNzO2OdnkrMQmgpfghcTdrPleSaoXGDNXQ3VXk2OK
-         SMW0rOdNeifn72DwxLxWFqacA6ptVy4uLW7LOzGaAj44yGAtnRN1IJhXR41Bbi8XU3sB
-         yzfw==
-X-Forwarded-Encrypted: i=1; AJvYcCXd9I5Wzwk+78IewwEkzmnfmWdoV9VEpUlH6FYMllkeI26FsVR+2qExolBhZ4WcX+sjQg2jvUro7QfcOWi2XfkOEnvoBNOuKnrmHACspPgLPWQbns+v1kN5GcTKbu0BtkFD46ABQXdRPShhukW+PPMAV33jGJptkcIh/G+XtxUZnaR57M+CH7eVEdvQbOBGEFPDxhFSSK58WK4M5OtiOw==
-X-Gm-Message-State: AOJu0YzKY1mQHkZwqDppSficfX9XqaCNdfHVh4KqMsb1n2ggp4b/L0EP
-	BGMAMZQ4pW0frPXlwMktMcVzw/Rade+u+IrGFbxp3k4jsMpBrgR3GTWx1CNVdov+pXSACxDf0Ie
-	O2Kj5v2k4bO8OgSkIUwpkGt4//xI=
-X-Google-Smtp-Source: AGHT+IFwlMsnEvSMtcwsucXokcWRI/75RN6SqVnxJGnEBRUDfA73uBY+jzDu02IY306Xvo9uMMkaNiqNntOeaLxWXAg=
-X-Received: by 2002:a4a:a6cd:0:b0:59c:d8cd:ecee with SMTP id
- i13-20020a4aa6cd000000b0059cd8cdeceemr5262334oom.1.1707739399881; Mon, 12 Feb
- 2024 04:03:19 -0800 (PST)
+	s=arc-20240116; t=1707739419; c=relaxed/simple;
+	bh=/ArukyQ43nbAu5tdlP70gnYEQF8hurIKFzga3ib3UqQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UNkg/aHTRvAUJ1aJoqRzvZb8olKCA026ouUcNq9AgEK22exbokTOMl0mGN/OPxQVQ/evZf//S3N7Fif8p6GehYaADyyl4oPSKehV9/OP87FmY7GjSSWqym86fwa+m87igAaeDbkmrGipj/GiNELvkYchm9aU5iOuWBCXolPQSUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aPQv5pn2; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707739417; x=1739275417;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/ArukyQ43nbAu5tdlP70gnYEQF8hurIKFzga3ib3UqQ=;
+  b=aPQv5pn2u8HLUD0iKexhf2GWPbWo0a2xOtaqSK3oWQ3iMzNqahCJJgzM
+   TRDim3oCa5X7+eMNy/qmn16UfmjFyyYEFnLenD5spppU3wYH2GxWZrWIR
+   ryjiO0oaThurPeTAYs6kUEJSZ8JqLpam6bWcnAoRr7zMCHWRR0KvMboUw
+   fJpwuPUXID4605yyz31YxUzxb2Hn9WkoJYUMrF+pZSTrhH38mz83cfLSF
+   wxdizPDmzDWZd4Uw0GH8XeTGbHEohCG0NZAwUUd494SNv61h2WMvjXpwM
+   n8O3t5hv2Khl3e7BLIUiqTOko+bK+8dmH4O5gIBA/dzAee8dNzx9UeIyZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="2056423"
+X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
+   d="scan'208";a="2056423"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:03:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="911463159"
+X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
+   d="scan'208";a="911463159"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:03:32 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rZV21-00000003t3w-3FM1;
+	Mon, 12 Feb 2024 14:03:29 +0200
+Date: Mon, 12 Feb 2024 14:03:29 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: linux-iio@vger.kernel.org, Rob Herring <robh@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>, linux-kernel@vger.kernel.org,
+	Julia Lawall <Julia.Lawall@inria.fr>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Nicolas Palix <nicolas.palix@imag.fr>,
+	Sumera Priyadarsini <sylphrenadin@gmail.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH 0/8] of: automate of_node_put() - new approach to loops.
+Message-ID: <ZcoJEUTdMAKdMHd1@smile.fi.intel.com>
+References: <20240211174237.182947-1-jic23@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3232442.5fSG56mABF@kreacher> <3757041.MHq7AAxBmi@kreacher>
- <ZcY7jyyFJq1yfOCj@linux.intel.com> <CAJZ5v0gZ1tpNmdkvRLA6-ydnhKPKgsM_FCwrW+q1=5ZiD=vbWA@mail.gmail.com>
- <35d4ae8f4c5157e3d0da39295a5b15eced367ab6.camel@sipsolutions.net>
-In-Reply-To: <35d4ae8f4c5157e3d0da39295a5b15eced367ab6.camel@sipsolutions.net>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 12 Feb 2024 13:03:08 +0100
-Message-ID: <CAJZ5v0jJzGR1LSDaXDCAeysCerT7A_OOyMKqJpLbxEBR4_HyqQ@mail.gmail.com>
-Subject: Re: [PATCH v1 6/9] iwlwifi: mvm: Set THERMAL_TRIP_WRITABLE_TEMP directly
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
-	Linux PM <linux-pm@vger.kernel.org>, 
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
-	LKML <linux-kernel@vger.kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>, 
-	netdev@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>, 
-	linux-wireless@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240211174237.182947-1-jic23@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Feb 12, 2024 at 11:31=E2=80=AFAM Johannes Berg
-<johannes@sipsolutions.net> wrote:
->
-> On Fri, 2024-02-09 at 17:15 +0100, Rafael J. Wysocki wrote:
-> > > >       for (i =3D 0 ; i < IWL_MAX_DTS_TRIPS; i++) {
-> > > >               mvm->tz_device.trips[i].temperature =3D THERMAL_TEMP_=
-INVALID;
-> > > >               mvm->tz_device.trips[i].type =3D THERMAL_TRIP_PASSIVE=
-;
-> > > > +             mvm->tz_device.trips[i].type =3D THERMAL_TRIP_WRITABL=
-E_TEMP;
-> > >
-> > >                 mvm->tz_device.trips[i].flags =3D THERMAL_TRIP_WRITAB=
-LE_TEMP;
-> > >
-> > > Consider using diffrent prefix for constants to diffrenciate flags an=
-d types.
-> >
-> > Well, I can use THERMAL_TRIP_FLAG_RW_TEMP or similar, but is it really
-> > so confusing?
-> >
-> > I'm wondering what others think.
-> >
->
-> I'd tend to agree with Stanislaw. I did (eventually) notice the double
-> assignment to .type above, but had that not been visible in the context,
-> or you'd have removed the first one by accident, I'd really not have
-> thought about it twice.
->
-> The bug also makes it look like you even confused yourself ;-)
+On Sun, Feb 11, 2024 at 05:42:28PM +0000, Jonathan Cameron wrote:
+> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> 
+> Since RFC:
+> - Provide a for_each_available_child_of_node_scoped() variant and
+>   use that whenever we aren't specifically trying to include disabled
+>   nodes.
+> - Fix the for_each_child_of_node_scoped() to not use a mix of
+>   _available_ and other calls.
+> - Include a few more examples.  The last one is there to show that
+>   not all uses of the __free(device_node) call are due to the loops.
 
-No, that's just a mistake.
+I'm a bit skeptical about need of this work. What I would prefer to see
+is getting rid of OF-centric drivers in IIO. With that, we would need
+only fwnode part to be properly implemented.
 
-> So having a clearer indication that it's a flag would make sense, I'd say=
-.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Sure, thanks!
+
 
