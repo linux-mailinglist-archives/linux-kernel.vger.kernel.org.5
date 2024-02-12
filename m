@@ -1,147 +1,121 @@
-Return-Path: <linux-kernel+bounces-62502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AADD8521C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C29A98521AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:45:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F41F1C229A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:51:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F17691C2240A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E7FB4EB28;
-	Mon, 12 Feb 2024 22:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E974EB2D;
+	Mon, 12 Feb 2024 22:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=yandex.com header.i=@yandex.com header.b="ItaX6CF4"
-Received: from forward500c.mail.yandex.net (forward500c.mail.yandex.net [178.154.239.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PtdQpm+C"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946A14F881;
-	Mon, 12 Feb 2024 22:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CE14DA1D
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 22:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707778276; cv=none; b=R74oVdXlBKeQAvgQCMjIZ28jS+9h6LgjCdxMvjEc6HiB5Kdzotxc7f4tNkJF987oa0s4Lf7AG+yahuFB1N2D1kkQhkzymk0CdQOEv7VnylH0fT5JNVa9iOlHLUOMM/0E9mqxI8Ork2emWTCIwIlpnLLCUHQiG+wD/n/pxbYJ+NQ=
+	t=1707777943; cv=none; b=obSJvMDxp/SoezZ90dj2ZG2zebWywMDTqioOJJ5wnizTauiUexQXCaqMkgUSVwSjy3XRGtdOJUE9mpnd5if5wd3IFM7XYGVEV7mNVJYaQv2dZsjfOs5y3PlxLgd0boaDrg8UDcH4udAsiIk6Lij3jeyN1o2IWPKFi7l2GKiQAvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707778276; c=relaxed/simple;
-	bh=Rp0F2p2xa4tMIVuAskKB9+PZDyi3+DpKiaCAZIuQVJ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I9lmn0U0Lc1hIC0FzymYPlsrwoPtzJveB3jVJSGuVVm+/ZgXiImwDJgXadMVSehDIWYsFM7YVqMH2fkzydqgUGtQFlEK/SdxXkwlrkaomsE0lDw2rDrhHNAYkfXd4Wf3FZWAZgnp18B2HVQ8SthzsZcocYCosjB3L4HCc3NVFrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.com; spf=pass smtp.mailfrom=yandex.com; dkim=pass (1024-bit key) header.d=yandex.com header.i=@yandex.com header.b=ItaX6CF4; arc=none smtp.client-ip=178.154.239.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.com
-Received: from mail-nwsmtp-smtp-production-main-19.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-19.sas.yp-c.yandex.net [IPv6:2a02:6b8:c24:5a6:0:640:ee22:0])
-	by forward500c.mail.yandex.net (Yandex) with ESMTPS id CC6E460F42;
-	Tue, 13 Feb 2024 01:44:42 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-19.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id civpIX0pHCg0-aviaNSvO;
-	Tue, 13 Feb 2024 01:44:41 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.com; s=mail;
-	t=1707777881; bh=l8YSD2byZe121ynq36axzQobriPKExDpwph35JKavO8=;
-	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
-	b=ItaX6CF4USzkVKNlQQCdzilewN5z2Q7DBFIvnEZuIxlmcJs8onDIXydbmfYoYRpg+
-	 tHqvqS52aa+lhAHGn064WwlFWUku1+2lHNGxi4OuotcDy55wgflA6pak2SgMR0MkQA
-	 lZuvjnIRIiCGvY0L5gkQTcYYJS/Srfu5XwLvfyrc=
-Authentication-Results: mail-nwsmtp-smtp-production-main-19.sas.yp-c.yandex.net; dkim=pass header.i=@yandex.com
-Message-ID: <9f8d39c1-66ca-4bb7-994e-de15cb516473@yandex.com>
-Date: Mon, 12 Feb 2024 23:44:37 +0100
+	s=arc-20240116; t=1707777943; c=relaxed/simple;
+	bh=Lqi+dtaPDt0Cdp8tkYw4ZeZ7cvsn7QQVayGZiang7cg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TGhM+fbRpcRixGvd2bdICVOgDrg6jC97Fxa28rwGIzAlmBNWzsmh3fCPPiZBLHBx+7KF9SdOpm4UOx6nQCtmRiuMCQUxvC0o5dMWeCiSgr02djz75jj8KX5jsYhWm97mjakwSjxYhFFSEvdmumgtUR5V35+yh83by8EnH4HHDhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PtdQpm+C; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e2e58feaefso198636a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:45:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707777941; x=1708382741; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M9x0GXj1drWEZHiTvKM8aFvDBLB5BYp9bLGNurXOzwk=;
+        b=PtdQpm+C24YhPzBvsh4VLhtbz8qSZM4nDhdlXlO50cL5rfoNWIYqmLDMQUi8bh3gJI
+         vZU3wGoBksl9jBMgito711zFJUdjiHzzWt2DDz5m5suZxamdPBHvpa+T8tsZhOnFB63Y
+         SKAl+YwD51kRDmRfiRrR6Vb+Ic02/lX/R0LOo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707777941; x=1708382741;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M9x0GXj1drWEZHiTvKM8aFvDBLB5BYp9bLGNurXOzwk=;
+        b=KxJej9K8zqgToE4F14nK9jPESPWclErnT7cH8wCQ1INk8skzpWeN904lhoR4Z/hmDd
+         d/iwgxWoAukB988vyIqmurXzRjl17HYvDi+D7McivEjL0XltAQV9CiYktk21cFFetvQr
+         /2SYrPnhXT/oWNHl/JWD78pD/5MeXINk5UT1X4q6EdmTaUa0GRpgEGq0jtwDVsmIs6Gc
+         GjwAhkgAl5DBsEe/1FnwqZ5XZktwErtvl2LVDjDP5FWKQ/25AC+CHx1DB3aEC7gKQ59p
+         gAWP/U69rFv+P1UBXbJUbORO4ttDLX9spf3V1CV9BlaiOkMVj22K5aOmoKV7idntTBCb
+         cTZg==
+X-Gm-Message-State: AOJu0YzgKDe9cRw65yDLG9h9Nq6qs3f2I8HcZFpZsrqD0jGsOT2+xNAz
+	WZeqS6DP4jbL1Bs453VRos/vc1SsbhtNeAaZidvWmtw2mjwzLhiSjwzUCrsx/Q==
+X-Google-Smtp-Source: AGHT+IGuY9FmZ07bxpDu9dvbVIeyQS0ooYEchWwZGi6xaPkWpNmcABhEn8slFi/ITrVyu8oP/VENLw==
+X-Received: by 2002:a05:6871:521f:b0:21a:43e6:9479 with SMTP id ht31-20020a056871521f00b0021a43e69479mr6494394oac.25.1707777941191;
+        Mon, 12 Feb 2024 14:45:41 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU5F04iljKWgIhFX67fz6I0jBA29fs1KValNbI20GQ721akFaZZswko9rHZyanWImombY2MRxlAp7+1vnmOqFP7q3t71cIchW8bu03KW0mwMJ09EDhrMyT10XPJaH9Bzb53bFzuM4BfNnrmZpnY5B+/fkfb74fuUtg23PbdKoYURrf6KUG8I3oX19u7Tt+W5BZUjko7u4hrdj9G7NJMAZUxEfnlfmwQybY2KYzaip7/GPxsca5fxpskYZOzkyWm7W5EXnVeqie8w9GlyWjw+1HLCFKyvdODwZ1IAzj8OJmSifxvqrB+SJgeRE6+2anrYiQ5CQ3OjrlZ9MbV4U+AsezFTvbF6SHAGsCB9zkYD6wuU10oKJx6qhY3nZcIWpFrTI0zoVY91oEChX9Ilp0TaOpzYN6r/7qCg0nZllRlWzOLnsd/YEQdhMMJ6gLqwfDgNp2YRYlwnaQXK0Pw/BArGG70FUDSnkDDzFfQyOMSqoQNMuO+6IPIGk7ltANLWIORmwbgcT2nIrOcqp01sEzZA0WJvdCTUITvforW3LWpoZE0x07bDes7lpFpCZanVON8HwRF9g5REXHwY5BM3xpjm9HkhaLKOuRcm0MVmwEXk+H3VpM0Mv5NVf91BClEFo+/4ig+2QwEfLffPJ1oQuLBUNtltszsmR2I850mAt2Cr1muh7xK43zUA2hQPHmJRY2OSYWwRbDxjUCzVMOxgXPe2IHMYsDVzu6vfog4TBGWlcB6TbpX8ZqcbQ==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t16-20020a63b250000000b005cfbf96c733sm987037pgo.30.2024.02.12.14.45.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 14:45:40 -0800 (PST)
+Date: Mon, 12 Feb 2024 14:45:40 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 33/35] codetag: debug: mark codetags for reserved
+ pages as empty
+Message-ID: <202402121445.B6EDB95@keescook>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-34-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 06/10] arm64: dts: rockchip: add USBDP phys on rk3588
-Content-Language: en-US
-To: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: Heiko Stuebner <heiko@sntech.de>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- linux-rockchip@lists.infradead.org, linux-phy@lists.infradead.org,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Frank Wang <frank.wang@rock-chips.com>,
- Kever Yang <kever.yang@rock-chips.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20240209181831.104687-1-sebastian.reichel@collabora.com>
- <20240209181831.104687-7-sebastian.reichel@collabora.com>
- <6bc2f825-7e50-488d-a373-a211ac2cc8e1@yandex.com>
- <dsfne22iebd7mvyyskhpw3rkkfhlxpv32afht456vq3u52axyr@kgkxfzm5vn4c>
-From: Johan Jonker <jbx6244@yandex.com>
-In-Reply-To: <dsfne22iebd7mvyyskhpw3rkkfhlxpv32afht456vq3u52axyr@kgkxfzm5vn4c>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212213922.783301-34-surenb@google.com>
 
+On Mon, Feb 12, 2024 at 01:39:19PM -0800, Suren Baghdasaryan wrote:
+> To avoid debug warnings while freeing reserved pages which were not
+> allocated with usual allocators, mark their codetags as empty before
+> freeing.
 
+How do these get their codetags to begin with? Regardless:
 
-On 2/12/24 19:48, Sebastian Reichel wrote:
-> Hi Johan,
-> 
-> On Sun, Feb 11, 2024 at 08:24:36PM +0100, Johan Jonker wrote:
->>> +		u2phy1: usb2-phy@4000 {
->>
->>         "usb2phy@[0-9a-f]+$":
-> 
-> Interesting. I would have expected that to pop up in dtbs_check, but
-> it does not for some reason. I will fix it for all usb2phy instances
-> in rk3588.
-> 
->>> +			compatible = "rockchip,rk3588-usb2phy";
->>> +			reg = <0x4000 0x10>;
->>> +			interrupts = <GIC_SPI 394 IRQ_TYPE_LEVEL_HIGH 0>;
->>
->>> +			resets = <&cru SRST_OTGPHY_U3_1>, <&cru SRST_P_USB2PHY_U3_1_GRF0>;
->>> +			reset-names = "phy", "apb";
->>> +			clocks = <&cru CLK_USB2PHY_HDPTXRXPHY_REF>;
->>> +			clock-names = "phyclk";
->>> +			clock-output-names = "usb480m_phy1";
->>> +			#clock-cells = <0>;
->>
->> Align with the (new) documentation
->> about property ordering.
->>
->>> +			status = "disabled";
->>> +
->>> +			u2phy1_otg: otg-port {
->>> +				#phy-cells = <0>;
->>> +				status = "disabled";
->>> +			};
->>> +		};
->>> +	};
-> 
-> The above follows everything from [0], which does not specify an
-> order for the "standard/common  properties". For those this follows
-> the order of existing usb2phy nodes. Did I miss any other new
-> Documentation?
-> 
-> [0] https://www.kernel.org/doc/html/next/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-While reading the text below I think it's in need for a clarification that the property order for common and vendor category is alpha-numerical as is for nodes.
-For Rockchip DT in this case "reset*" below "clock*", so that the person after you can add properties in a sort list.
-
-Johan
-
-===
-
-The following order of properties in device nodes is preferred:
-
-    "compatible"
-
-    "reg"
-
-    "ranges"
-
-    Standard/common properties (defined by common bindings, e.g. without vendor-prefixes)
-
-    Vendor-specific properties
-
-    "status" (if applicable)
-
-    Child nodes, where each node is preceded with a blank line
-
-The "status" property is by default "okay", thus it can be omitted.
-
-
-> 
-> -- Sebastian
+-- 
+Kees Cook
 
