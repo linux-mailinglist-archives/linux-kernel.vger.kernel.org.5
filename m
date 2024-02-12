@@ -1,127 +1,142 @@
-Return-Path: <linux-kernel+bounces-61267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E87E851021
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:57:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86494851022
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:57:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A959B24522
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:57:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B93BA1C21E24
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:57:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573AB17BD8;
-	Mon, 12 Feb 2024 09:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B72E17BC7;
+	Mon, 12 Feb 2024 09:57:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2rbKER83"
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M48HCUmx"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F5117BB6
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A3A18032;
+	Mon, 12 Feb 2024 09:57:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707731816; cv=none; b=YF+iWPUc95zu9KF5OGiV2HsP+jZvd4pFTva5W0vk+CQkYhPYqmRQRtaJdAkwrSYzg+6iUF/4IObK2izechtqCKJM9JUoe8Jjr15Sf89+OUA0fruglq/dLThol4gK3Cw+/FnIFoLD6OYbEqUlh0QN0SSxrdfC3DIgaYVQ9+TbUpY=
+	t=1707731850; cv=none; b=r8kFkkv6eNUqJe1p4W8AvcBzLJmpRK0Tkii7RdI8VRh54rBHtDjLJSQIzSQs9STM3NnMIFi375osVpbXcS4+hRu9KAcumMito+f6d/s0+/eYehCu7umeY2ejcFLqOSuEbG8k68MaAS6JFDK2Kv2luh0QtaJKddar7TQ1UNXdOiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707731816; c=relaxed/simple;
-	bh=SC/Bvc3Wfc7h52TGzU5tpw8Q+pcsuz6wa67xmHV3x0c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OUyAsXIiKKKC4QeaGDBT3SvnA4us4XN7XmOGZIMSkt4ku39DuAQkxXXVmgjPGhWMbIDBq4rIarIe7sgLI3daMbTRMCsL+l9/bQQquanMuXyztUjPUVdrxZCHonIOOTCfHysZ9ZQ41C1FLCcF6etg8lm4336L7tgtQAJ1rIMQHLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2rbKER83; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7d2e1a0337bso1446493241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 01:56:54 -0800 (PST)
+	s=arc-20240116; t=1707731850; c=relaxed/simple;
+	bh=eCqmbyMfVAA3HHq0HEwZ9UD08bLCGHfxEbdDbk7eRwg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aQe4Xg/DQ6jNbP/8xJNKJaxWOexw49nr5JTduUsiXzXG8Row+SReWPqz29tGxQ0ezx016YAEZk1vuuwSyrdcH0g0o+1e5dwX1OEhBv5rjZ+SNY6ma8UI5IkQ4qNCF5jbdJvjzUMJmB2rEk9vfcdGkwlivr7+kEIzSkCtYoINR/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M48HCUmx; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29041136f73so1651018a91.0;
+        Mon, 12 Feb 2024 01:57:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707731814; x=1708336614; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hj/cyHB0z1e1XClr1rbLHnWGhhAbJzVqElu75k2EOnM=;
-        b=2rbKER8385ymguatyLRtYsLk5LxiBVCijck8iduZK70Yy8QYobkPTrzJa1+MDp43cG
-         f3WsbGrMeutFtzFZxlPW33ohLCNStzrwVa1N6CCYzIzWGL04ktycPMaToARiOUywP7ov
-         e97xmP+rTi36/XFyDgooWicteKfxfaOQECUY0MlFUePesqxGuysOKwQr24GtdLNz1XcR
-         nkl8kVgO54nmTqR93NroHE8vEC2KgF9B0VZ3AOI9wvL+ruVSVY6q9oSOakKxM25jn40O
-         fi73XKShS8NgskzG0aBg1bTVxj5GohR0m5tbaAzNHCNUCjvesb5+Cnp3+OQHZupT3u8G
-         5S4w==
+        d=gmail.com; s=20230601; t=1707731848; x=1708336648; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oyhOHugUVAx4B66zNESjQuh6m2gkAlYGfoBW+8fBdik=;
+        b=M48HCUmx4jH7JA8oEdMpCBUqJIHCTXYR/jRL2yRq5IQ+oClIuCSyiASL94YNSKyHjW
+         kZAkMqtslKkdmRWtd2v9P6VEMhqdS/RjnYu5o9cxHqYK5Ji0GbclyV7p25++NHbitBJY
+         kDbR7NvvguQId6v1niCHa0/hgH16wFSUYFNzK9rkpsb08FNq17ovqaR7PTl82+qglR0k
+         3h80o6W5uPe0aAGC1g8q8Ivwo6Mc0u3Ss2lIdAfzqq1eHEYI9Ij0kxWOpcwwSLE0YpwF
+         rIjeYy3dVRVJysHOlioFaWaNKPsZ2U1rejJoDDdNBy/b5JRZbmyl9QJ4Vqm0phMwls48
+         G9Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707731814; x=1708336614;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hj/cyHB0z1e1XClr1rbLHnWGhhAbJzVqElu75k2EOnM=;
-        b=pVu2V4hkghQi+T9hkwraWUj8yMfE963UZBd5tK6fGyRLYjXs0e3wMzdigaDxzfvEwE
-         C529q57xTbSRDxElyRAvoS9fC3apG8sMjAYdk8rlH4fGCUcVBBAXauhYtq+/nncDJlbl
-         C9j/c1IPc6bT6KtOfIo/dB9gVuc1FKoIR/jlxvCottnDPtyL/WQE5EcXjZJAP3Fs3M5s
-         58vJUYH69nZpPOO/fzsbOwNtSGYznV1xR69wsUTtupcLH/6R/hWybGqOPEDSXqY90Hb1
-         ioPDDw+U1cAw3aTajmmNArRInAK5MxkkNqx4dspT30ffCRPSt1BSVKBsQ97D0Iq4foEW
-         nO6w==
-X-Forwarded-Encrypted: i=1; AJvYcCUdaAn5yjAcFn25cJG3olC257dpJW+xSYH16VQkH94HPZ1i7gciZxNlU+YMPanXhAg7940cZiDeBhB8nOiMBTTEvPDJ2kZhU5lulcrN
-X-Gm-Message-State: AOJu0Yxp8Hz7EpNWQIvS+HFF5ksC6r1OtwTcRT/qYhgjpoeQUgNh5uQg
-	d4R8L+L+aaCF+zFh7YbNWOyXegw69seorZcPGjfmCU8Fl7E/k8wGg1kqffGKStlWpIJkZGLgdR/
-	p1QoOSqLyx8Qm5EP0FgWsOC2E4dZ5JslkLzB3
-X-Google-Smtp-Source: AGHT+IHJQ0Fvz7BW4S5y9aj9tYnAjzKiDvJgsFF+HNC4++k9uj8mZsR9yI7DhIqz8n4KChbYUMFYm5PltcVxLbEdcF8=
-X-Received: by 2002:a05:6102:394a:b0:46d:370f:9813 with SMTP id
- f10-20020a056102394a00b0046d370f9813mr3841120vsu.18.1707731813990; Mon, 12
- Feb 2024 01:56:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707731848; x=1708336648;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oyhOHugUVAx4B66zNESjQuh6m2gkAlYGfoBW+8fBdik=;
+        b=WHhetCrayu75wQOd3KavARSUNnJnITCyisF/v8HzZ2Q6sVvwdthx4RRFTJaqRl9ycq
+         j093i3NRoOIl19Um2j7IQgIZZUEgFOQVKDjH9yL3yKV+I3vTnVDTCZH6f7g2dyxYgkrU
+         GMToUxEiV+EoHNu3nHgyySlVTXbkjsYOxb+Emyb2n6V0Wybc9DU5ibxHHQTniIzI2FJi
+         /an+eAX8p7v24hz/1Kc3ukVW5+CIwOWZXaYZbtqa3XmQsfVGbi6iNuUqOqS2agAQNjlE
+         +WisPolaXt4IG5rXCNxktVGu6CpRiIrFLoC+PsIQ/hl3GFU1Xmg0eDJUns+DNiAkAG/1
+         rj+g==
+X-Gm-Message-State: AOJu0YyADs6hiFLXBpESd8VlEUSk42lC/0onZwIaCDASC9Lohqc4020X
+	FmaEqeZFqVUocWEnKjqWzwa2LU7SS8zA2sMzvPKW1PELhMFgD58r
+X-Google-Smtp-Source: AGHT+IEgnRvYJL1OfbeRML3L344/GxTTB1Q8Pkgg6QOkelFQtjr8RKhStioejs5S2m67u5dtr6o6JA==
+X-Received: by 2002:a17:90b:4009:b0:295:ade7:cdf2 with SMTP id ie9-20020a17090b400900b00295ade7cdf2mr3070418pjb.13.1707731848509;
+        Mon, 12 Feb 2024 01:57:28 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU1SmWRDClNQ9LXUj4w/Ehvs7aJrWFeaQRiJab+GrNE0rr0sdisXVFN2DPl5LG4KL0d6QFUSyPxVpuc2emQCo1Y6L6XXwxHfjxJHsU3vuxLPjOeW1u7B/DsYvUBgIRGlZ1elRUrkFohETMrhKASYwL0sRPUMZv5i3lUaLRjl1ZNsbiDOYakeD4k9mkKmaiA7hk3IyJ1WcqcR0n9Ode7Nn1zLZwT0/zIJl+njiZgjYnnFjI2cuQoJjVVujHt0qxfxB/ufvjia+gwSJFurl0ANtmNFBUfRQRDr6xaMcKqIbAquxSMnSEzeLWpX+2gi31rCg++m4b+oZc8rJNve05L
+Received: from rigel ([220.235.35.85])
+        by smtp.gmail.com with ESMTPSA id d5-20020a17090ac24500b002971390d19csm97492pjx.1.2024.02.12.01.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 01:57:28 -0800 (PST)
+Date: Mon, 12 Feb 2024 17:57:22 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Alex Elder <elder@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 23/24] gpio: remove the RW semaphore from the GPIO
+ device
+Message-ID: <20240212095722.GB388487@rigel>
+References: <20240208095920.8035-1-brgl@bgdev.pl>
+ <20240208095920.8035-24-brgl@bgdev.pl>
+ <20240210053730.GA187163@rigel>
+ <CAMRc=Mcq2Obf58=iLHpm5B2_KkHCqRevFWupbBuKmNs_BV6i2g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205-b4-rbtree-v1-0-995e3eee38c0@google.com>
- <20240205-b4-rbtree-v1-1-995e3eee38c0@google.com> <CALNs47vgryKctpsP9EV_SsVF8TX8kfwzQ4KCLy9vr5FS_vBq6A@mail.gmail.com>
-In-Reply-To: <CALNs47vgryKctpsP9EV_SsVF8TX8kfwzQ4KCLy9vr5FS_vBq6A@mail.gmail.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Mon, 12 Feb 2024 10:56:43 +0100
-Message-ID: <CAH5fLgjP98pS1wsP=YXP5Yr79Y62VF7XPKjbj+G75B3SOFt80g@mail.gmail.com>
-Subject: Re: [PATCH 1/6] rust: add `container_of!` macro
-To: Trevor Gross <tmgross@umich.edu>
-Cc: mattgilbride@google.com, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Christian Brauner <brauner@kernel.org>, Rob Landley <rob@landley.net>, 
-	Davidlohr Bueso <dave@stgolabs.net>, Michel Lespinasse <michel@lespinasse.org>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Mcq2Obf58=iLHpm5B2_KkHCqRevFWupbBuKmNs_BV6i2g@mail.gmail.com>
 
-On Sat, Feb 10, 2024 at 9:05=E2=80=AFAM Trevor Gross <tmgross@umich.edu> wr=
-ote:
+On Mon, Feb 12, 2024 at 10:53:07AM +0100, Bartosz Golaszewski wrote:
+> On Sat, Feb 10, 2024 at 6:37 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > On Thu, Feb 08, 2024 at 10:59:19AM +0100, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > With all accesses to gdev->chip being protected with SRCU, we can now
+> > > remove the RW-semaphore specific to the character device which
+> > > fullfilled the same role up to this point.
+> > >
+> >
+> > fulfilled
+> >
+> > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > > ---
+> > >  drivers/gpio/gpiolib-cdev.c | 1 -
+> > >  drivers/gpio/gpiolib.c      | 4 ----
+> > >  drivers/gpio/gpiolib.h      | 5 -----
+> > >  3 files changed, 10 deletions(-)
+> > >
+> > > diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+> > > index ccdeed013f6b..9323b357df43 100644
+> > > --- a/drivers/gpio/gpiolib-cdev.c
+> > > +++ b/drivers/gpio/gpiolib-cdev.c
+> > > @@ -24,7 +24,6 @@
+> > >  #include <linux/pinctrl/consumer.h>
+> > >  #include <linux/poll.h>
+> > >  #include <linux/rbtree.h>
+> > > -#include <linux/rwsem.h>
+> > >  #include <linux/seq_file.h>
+> > >  #include <linux/spinlock.h>
+> > >  #include <linux/timekeeping.h>
+> >
+> > Shouldn't this be part of the rwsem -> srcu switch in the previous
+> > patch?
+> >
 >
-> On Mon, Feb 5, 2024 at 9:50=E2=80=AFAM <mattgilbride@google.com> wrote:
-> > +macro_rules! container_of {
-> > +    ($ptr:expr, $type:ty, $($f:tt)*) =3D> {{
-> > +        let ptr =3D $ptr as *const _ as *const u8;
-> > +        let offset: usize =3D ::core::mem::offset_of!($type, $($f)*);
+> That other patch was already huge. I figured this should be separate.
 >
-> `offset_of` will be stable in 1.77 BUT only for a single field [1]. I
-> don't know if there are other blockers in the kernel already, but if
-> this could be changed to call `offset_of!` recursively then  it will
-> work with the stable version.
->
-> We might want an `offset_of_many!(a, b, c)` macro somewhere if there
-> are other places that need this nesting.
->
-> [1]: https://github.com/rust-lang/rust/pull/118799
 
-Rust Binder *does* need that in one place. Creating a nested
-offset_of! is kind of tricky, because you have to fail to compile when
-you're following a pointer with the Deref trait. I haven't figured out
-how to do that yet.
+To be clear, I mean just this header removal, not the whole patch.
 
-> > +        ptr.sub(offset) as *const $type
->
-> Instead of casting to and from `u8`, you should be able to use `byte_sub`
-
-Casting to and from u8 also has the side-effect of making it not work
-when the target type is !Sized. Not allowing this might be desirable.
-
-Alice
+Cheers,
+Kent.
 
