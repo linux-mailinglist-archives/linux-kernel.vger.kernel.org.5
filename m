@@ -1,154 +1,125 @@
-Return-Path: <linux-kernel+bounces-61669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C692B851529
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:31:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2376E85152D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:32:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CE811F20407
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:31:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A38711F2166C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:32:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5E03D3BC;
-	Mon, 12 Feb 2024 13:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6223A8DD;
+	Mon, 12 Feb 2024 13:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qZXPEUyv"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="AI58PqFl"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F51C3D0BF
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:17:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222B93A8EC
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707743829; cv=none; b=oCLMgMzt/C075dW4iYJzfKBxUE43FetGt4gmEQivsYfGPTNpi78yWYYHlPntjRZPXpnzebivMVw/RvWWK9EHv/Sg2YqUIL+641BhWHZAsAx6ww38d/6A36Yx3Gf+3ASMNouHnTNnlclYlT+oFcImiAn70q78oAj4acj2KDGk3II=
+	t=1707743875; cv=none; b=uBbpi69hl8Df8QqcvWaSbddn+/Eh4oqrKSE/e9O0Y9YN+lLmYwjlciyrEKc13r+UOiOaUWvF4hHWrGfbKmWZQshWzogrv6P00QRGh4xJ6/h/Kecgv3IePtxnNRjQZANTV7T8V3h59slt4zlcP8jlLlYNak3lHekRVcYKP0MTo3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707743829; c=relaxed/simple;
-	bh=EFPEqd46s5I3E5DiBGISav+OKrKybFE1x7xvB+oOzus=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k8hDxJ2TipnCkmtSavOT5Q+8zwP1C/y9pFItowpTlxuv8N5ITIGhDAtpPyymDXE58f/6rpSIkwgdzZgyPAvTQ7FgeTNa42Ed8GWlgRkzf1EusTT0XBKzcN4TQXjSLDdqTvfqqkVzlkCzU3ezMHOEYFtcWeQkGFoZQ5Z1yH2bkmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qZXPEUyv; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso2827619276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:17:07 -0800 (PST)
+	s=arc-20240116; t=1707743875; c=relaxed/simple;
+	bh=q4qP82FOXPBJyfTKqkI7kEs7ZoU8FcrMrDnPTekYs18=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lFtdJ/S9Npj63TMZ5vW0wLNbVaf8Klpo74ew/Qjk/871Cu66Pj8YfW0YODG3VeEVscDAerrFgHiTOY+Qk0d2pcUxkXtCledq6Yf2soTqjMIYN5Jt5UthE5mDslyORPm6v3nGX8hx7BOIng9uPCNnXNHIOiPEIpWddwk2D4GGIQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=AI58PqFl; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d93ddd76adso22080445ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:17:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707743826; x=1708348626; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/+XEKHxpbfeHopZyLoPZwvUQi1sJb8QAohlEN697rP8=;
-        b=qZXPEUyvRsWhEPAPJqiBITzGzJk+QE0USleiyN+YaJFpv9g6CViWKPGzp0Ok8N1rJK
-         46wz1C+bfHvjjwPYt8mlgwy96IghTfD/QyyjgyZXiLepzfIJhM9Q+EOKvKbWM7Ed/gw8
-         6zhT4C/OjPqcUVi90evrgyEbMAFsfA1AF+VrmJjTbcFxm93zUA1oEaPz3hPXlOsjxgC1
-         0TkTvEeU0q1Mh0ihUwp5kn96YPHX2EvDA3cC0XpcYxawYUuX/In5+HL9ShHPlLUfduAe
-         G3GcRq2ztozgQchrqPmateUUvOObn3QKz8+Sy4uhyG4KkT9f8iYh3pHVUQUgGjIdNKiO
-         LZFQ==
+        d=bytedance.com; s=google; t=1707743872; x=1708348672; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qm/YqX9uEOdb2kQB3M409FAVZ5tf5xIwSXUTJ0MefI4=;
+        b=AI58PqFlXdaTUiYY0MBu8L0vxOlF1wx5K3YJH3m2xtxIZK7k9jdTHCMP80UKODjZZI
+         AGtcn4H6WhbMr6H5DDQ23Byj7HQNbRTSCkJ2xTW2p5ttvHlBftyctrLmEivNQBZ6Rm5n
+         USHMAOMpikqIe2PfYAmNECGjvnaoUoYtdcpGT9Md2IH9Prx7XeHpT4NuhfUR9n2oUz+o
+         hpkBlPQ43NkswpLl2NmH0kzEuVJscZb146CezURTivK08I4d1/sR1aYUkjilOGPG56Pp
+         HOpgQ/ryipWUxi9vcF/y2hfet1WPXPvHZ9KnSuCFLKYWu63f2qTwnZJSM1U9C5rUjpgP
+         1xQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707743826; x=1708348626;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/+XEKHxpbfeHopZyLoPZwvUQi1sJb8QAohlEN697rP8=;
-        b=DfhKnBwucShSAeB3FLThBWAwI3VN7zx0uxSdoBi7Xmo1/3qiNxqkx/t0kwCVSq5nkn
-         lhZ/qjkmyBRWoAuegwC+sFq4zY7cQrZzWARZw0a9iZu4WGg0Pfa7cu5gNzPleWY/jCzZ
-         JvXD9woo2+nGIPb2aMr+HtLp2Q1OWIU30D3t845VmxKb6zkYZiCuDN0307jnqROXNFuI
-         vuZu46QNknzZTl+s8KwMATZkKluS261pdAd4lDMW05WXWcTQ8rdkDOLIIPgq8hC/QaRJ
-         5q7WqfeAn8JPPU813H+hYLTFq9kuv6Rber4CKTJ/WQmHqRGk2fuSQHxpxxFkTM8ptCLP
-         wlSw==
-X-Gm-Message-State: AOJu0YypXo5sKtX6xEkEnSQ9z4N2rLepG294/zoKUfA767u6Xo5TDZCQ
-	i7wOD/TQqV/9Bkzvd2FVWJNEI5fY+F9rku9QUlFxMbgjD9yVnNZEKYxG3KPlBPGIiVstcBMF+HC
-	gwvqPq/kiSu39T30SDTSKiXkjlyTLA6/UDqMZcA==
-X-Google-Smtp-Source: AGHT+IGYHJiazxsOUSDJtVowkMIrtZPyFcKSzyUn9nL+Lb6N5qCPSjjhXoJXWVqdlecBvt0jLzmlRqrGB00PokESqw0=
-X-Received: by 2002:a25:ae9c:0:b0:dc7:43aa:5c0b with SMTP id
- b28-20020a25ae9c000000b00dc743aa5c0bmr6076081ybj.21.1707743826518; Mon, 12
- Feb 2024 05:17:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707743872; x=1708348672;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qm/YqX9uEOdb2kQB3M409FAVZ5tf5xIwSXUTJ0MefI4=;
+        b=Y6l6quAWF5o5oREW+s62Z/fFXhYa36jnPnyt95v5apDx+lzcc++R0nibOVTXUhSHwk
+         dyJC9c+2okcT+A6r5JAGmAC1lNjglBKT8dzEkxu1lel23je/Xj1L/nwv8aoQVdtHs0UC
+         2Seov7deFNEK+wL2VUemOWEjajOicB6/ESz4iXpYUQIgtJD5PW+WXEA+odwC/svxakiv
+         W4MnhmW278yzrTR9syfDS51MeDNsEdMq/M87+pI94k7ue7i8xTYUO6BV2Zy3c76aA/Jl
+         tS2iVHhiJ/gQjwm4uui1ArrHfXnmM9E3vBFkWKw328pZl3OclL/WLP/GZv7j3Qew0HHe
+         xLkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXSswrNNUKdND/LKUlP/gYn0a5eW+m9oFcfbyjRUaQKBIOJonJ0bO7TSKOuJzJLQwIhSxEA2FU1I1Ud0Aah1nlY5bCjPnSw+VWsYd+K
+X-Gm-Message-State: AOJu0Yy/Bx1RN3xTLGvUdRdJEmr5zPlHOQfRHifqGZZkBj/IIsl7wivY
+	I/nmEvJfe1gnsgj3FcBXUyBp8b4PXcSqLIziWuQh5KBGEeanU3iEFv5Yg209g/Q=
+X-Google-Smtp-Source: AGHT+IG4i2F8jes8SWyhPU9KzSPg92BHLobuOB60eNJ5XoqdtqSJy2pk8QJ2bS+RXJDsRCu4HUKbeg==
+X-Received: by 2002:a17:902:d2d2:b0:1d8:f071:5067 with SMTP id n18-20020a170902d2d200b001d8f0715067mr7055492plc.35.1707743872372;
+        Mon, 12 Feb 2024 05:17:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWx1ihhn9KToX8YItEUX78cWAXU6fzVhUpXmF9/mp/4ogkpwNeWJ0edTGMaQ49NRdbv/u7fJmam54FIUEF9MaKPo0HZj174f2iFwvoAHTiUKQmu28RQEVHt06PGaAFhYYss1cA9fhM7z/VCyOEn38AZyQwQaChYyr2ECUm0zjU5c6c2fwdKlI6kWMH0OEfCqszPbQA/1tLAqJ7YWhiuLLWM7HKOJT6GlS5dmU5qxU84KLM7w0ZzMfwChA==
+Received: from [10.255.183.165] ([139.177.225.230])
+        by smtp.gmail.com with ESMTPSA id q13-20020a170902c74d00b001d963d963aasm323858plq.308.2024.02.12.05.17.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 05:17:51 -0800 (PST)
+Message-ID: <f4143532-ece4-413a-ab59-45f91cfe66d9@bytedance.com>
+Date: Mon, 12 Feb 2024 21:17:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206113145.31096-1-quic_jkona@quicinc.com>
- <20240206113145.31096-5-quic_jkona@quicinc.com> <edc9fa59-5f39-4f47-8647-242a9b0a8cb4@linaro.org>
- <e5c484cc-7624-40fd-a527-8cfcbf7784fe@quicinc.com>
-In-Reply-To: <e5c484cc-7624-40fd-a527-8cfcbf7784fe@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 12 Feb 2024 15:16:55 +0200
-Message-ID: <CAA8EJpqjU-RDwPH6xGLa7xzcyxmU+86mX0X+DL09SJ0uVB5_CQ@mail.gmail.com>
-Subject: Re: [PATCH 4/5] clk: qcom: camcc-sm8650: Add camera clock controller
- driver for SM8650
-To: Jagadeesh Kona <quic_jkona@quicinc.com>
-Cc: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, Taniya Das <quic_tdas@quicinc.com>, 
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Imran Shaik <quic_imrashai@quicinc.com>, Ajit Pandey <quic_ajipan@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] mm/zswap: global lru and shrinker shared by all
+ zswap_pools
+Content-Language: en-US
+To: kernel test robot <lkp@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosryahmed@google.com>,
+ Nhat Pham <nphamcs@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ linux-kernel@vger.kernel.org
+References: <20240210-zswap-global-lru-v1-1-853473d7b0da@bytedance.com>
+ <202402120226.TK7G37U9-lkp@intel.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <202402120226.TK7G37U9-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 12 Feb 2024 at 15:09, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->
->
->
-> On 2/7/2024 6:41 PM, Bryan O'Donoghue wrote:
-> > On 06/02/2024 11:31, Jagadeesh Kona wrote:
-> >> Add support for the camera clock controller for camera clients to be
-> >> able to request for camcc clocks on SM8650 platform.
-> >>
-> >> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
-> >
-> >> +static struct clk_rcg2 cam_cc_mclk1_clk_src = {
-> >> +    .cmd_rcgr = 0x1501c,
-> >> +    .mnd_width = 8,
-> >> +    .hid_width = 5,
-> >> +    .parent_map = cam_cc_parent_map_1,
-> >> +    .freq_tbl = ftbl_cam_cc_mclk0_clk_src,
-> >> +    .clkr.hw.init = &(const struct clk_init_data) {
-> >> +        .name = "cam_cc_mclk1_clk_src",
-> >> +        .parent_data = cam_cc_parent_data_1,
-> >> +        .num_parents = ARRAY_SIZE(cam_cc_parent_data_1),
-> >> +        .flags = CLK_SET_RATE_PARENT,
-> >> +        .ops = &clk_rcg2_shared_ops,
-> >
-> > Nice.
-> >
-> > I compared this to WIP for x1e80100 which looks nearly register
-> > compatible. Use of the shared_ops indicates to me you've thought about
-> > which clocks should not be switched all the way off.
-> >
->
-> Thanks Bryan for your review, We want all RCG's to be parked at safe
-> config(XO) when they are disabled, hence using shared ops for all the
-> RCG's.
+On 2024/2/12 03:01, kernel test robot wrote:
+> Hi Chengming,
+> 
+> kernel test robot noticed the following build errors:
+> 
+> [auto build test ERROR on 191d97734e41a5c9f90a2f6636fdd335ae1d435d]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Chengming-Zhou/mm-zswap-global-lru-and-shrinker-shared-by-all-zswap_pools/20240211-220028
+> base:   191d97734e41a5c9f90a2f6636fdd335ae1d435d
+> patch link:    https://lore.kernel.org/r/20240210-zswap-global-lru-v1-1-853473d7b0da%40bytedance.com
+> patch subject: [PATCH 1/2] mm/zswap: global lru and shrinker shared by all zswap_pools
+> config: x86_64-randconfig-013-20240211 (https://download.01.org/0day-ci/archive/20240212/202402120226.TK7G37U9-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240212/202402120226.TK7G37U9-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202402120226.TK7G37U9-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    mm/zswap.c: In function 'zswap_shrinker_count':
+>>> mm/zswap.c:1300:42: error: 'pool' undeclared (first use in this function); did you mean 'zpool'?
+>     1300 |         nr_backing = get_zswap_pool_size(pool) >> PAGE_SHIFT;
 
-What is the reason for parking it instead of fully disabling the clock?
+Forgot to test with !CONFIG_MEMCG_KMEM, need to change to zswap_pool_total_size here.
 
->
->
-> >> +static struct platform_driver cam_cc_sm8650_driver = {
-> >> +    .probe = cam_cc_sm8650_probe,
-> >> +    .driver = {
-> >> +        .name = "cam_cc-sm8650",
-> >
-> > That said .. please fix the name here "cam_cc-sm8650". The title of your
-> > series is "camcc-sm8650" which IMO is a much more appropriate name.
-> >
-> > The admixture of hyphen "-" and underscore "_" is some kind of
-> > tokenisation sin.
-> >
->
-> Sure, will fix this in next series.
->
-> Thanks,
-> Jagadeesh
->
-> > Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->
-
-
--- 
-With best wishes
-Dmitry
+Thanks.
 
