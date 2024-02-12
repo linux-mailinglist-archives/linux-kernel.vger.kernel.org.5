@@ -1,135 +1,104 @@
-Return-Path: <linux-kernel+bounces-61846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EACD885175D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:54:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16A2985174B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:50:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 295F31C2114E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:54:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9B1C1F21B93
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BE8B3B791;
-	Mon, 12 Feb 2024 14:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC2B3B794;
+	Mon, 12 Feb 2024 14:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U+/QJb0K"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Y06efXCx";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jZa/qDW/"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD993B297
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D67763B2A2
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707749643; cv=none; b=GYseEp11QpVIVeJnO3VuKEYjvS9/q6PFLM9xsVKTpW3GjDCpcXuINm15eqoL06Ae7PBpn2+yyDZ1hu0n5hx2kMyHCgz7CBLiJlgEJYtN7BiHfmxr31o1JAq/HK3r0WK+C+PzNB9kXOurgenfjg9n4AxaMcmzK0FsY5puV+1pRk8=
+	t=1707749410; cv=none; b=dJBa8wPp7MjMTtW2YAltW/FIBEEmO6OZ66PcMlFffuaeFo3HtK0+TTjxzxPJy0AzOAeIFV1KJfL6HYPO4YmFNnu2Yu6jAqKsB6Y8ImyW5T/nFurpw4mPSMUBxi/RstajBc41R4calg5vkwiRBiCA3bU1CxKj//GwqzT/VB5Px0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707749643; c=relaxed/simple;
-	bh=NkwRjZxa0/AtcMo1/jowb91fxYW5bjzaFfRIJf9CD1c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L4RY/+sN1CwuS/0jB2kmMr+MEEHXTSFDEZlvCFY/7yDJFHEiofj0M/vXxNNs3xb+axczrR4tqDt04QhScwb+sN/1IATBMKid4boWIB2NnoZpf09CWmAp5v1UNpIrEwSOECVovNG2d95CuGlzSM0/Kkwn26hct1T8LQ0RZ4XSgZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U+/QJb0K; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707749641; x=1739285641;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=NkwRjZxa0/AtcMo1/jowb91fxYW5bjzaFfRIJf9CD1c=;
-  b=U+/QJb0KTe/PKY4JBQTcVN96WLE+oPyKeCpAgtEF5XuwlT1XH0Ollcyn
-   Z3Wo0q5pcuIiUethJytxqC1Yiz9GYx5eeEDZ+8PxETtN4qZKfXrVXBFey
-   +3UKak5HjbQdVrzuAfYJzBMysJoK8UHgyPecrrcWo2ST3xYjz8FXH6dja
-   tTa8n8bg5UrIPVQy/+k3lupqg8+8ps0u/ILR3HOOlu1V6ihmnaEA5mkGb
-   TTrmEKwSb+i5F8w4i3tWqdfGKuHbzrr1mbK04UXPUYyO3LgDPcw6H20A7
-   5/vaNlpNW3Kkdygczef1PM4z752TnB0Hj6txRJ7cZcXR+AG0luFMduLG7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1850455"
-X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
-   d="scan'208";a="1850455"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 06:54:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
-   d="scan'208";a="2582267"
-Received: from rvarada-mobl.amr.corp.intel.com (HELO [10.212.76.202]) ([10.212.76.202])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 06:54:00 -0800
-Message-ID: <83c8bfa3-4377-4198-b48e-351f9a9f63ed@linux.intel.com>
-Date: Mon, 12 Feb 2024 08:49:11 -0600
+	s=arc-20240116; t=1707749410; c=relaxed/simple;
+	bh=FB4YzGxesZ1Hb/39/+XOurT2KV2CbVkG19sH0Wio5+U=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GdRXrdW/jgzvAEdYey5QQej+yx2LY7EbyAQ7yF//nIdRDBsFOeG1W6S3Hoa11dJoN6X87VkZmodx+TQJl7EiYcdKjsHfkhB+gPJJUgiM1vRQTRFwku3v7z00Sczq+DwAyO0yMvFYbMRaNJ71Gxeo7oHydrG9/y0Zobi7TGc9VM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Y06efXCx; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jZa/qDW/; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707749404;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1+6KCrT2mSKGO1AMbFuzh4cWwf6OZ2ECUnZnbKsA5UM=;
+	b=Y06efXCxqXb2P1dOZfB76pIs3h121vxoCKRENhcwh1ZnfuZXj3Qe9Xv9XNTJ2Lh5aKjWak
+	MgpGQRaaECIDXhDriSqYjdpXYneWphcQ0/xKE0Pgt1EyPrU4JoBmB3i23wAgY1OeOCathN
+	2vST+3SkRPLK/51EvMb51amcy+k/rFag88mrtsXOMB+xH0bNzGld5gGs/VSdqlnStg8JNc
+	6JN/IOnl0mc7rl8VymGifutt8bTC//Zx+W0LIpSBaZO4D4CI48VRRfkovXUbutvP7jkLND
+	mf8VXexz7SmTBBmRW9jyvpfHbnoEV8radgt+RiiyEg+oBpkCDSjni1FyVA4eIA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707749404;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1+6KCrT2mSKGO1AMbFuzh4cWwf6OZ2ECUnZnbKsA5UM=;
+	b=jZa/qDW/Gp70I9S/6DOp8u7ZzDl+mdgo7P0ji6RJHACgvUSUMV1gK37GVEurjRv683tnIh
+	ZnMMfBwaWXn0MzDw==
+To: Borislav Petkov <bp@alien8.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org, Tom Lendacky
+ <thomas.lendacky@amd.com>, Andrew Cooper <andrew.cooper3@citrix.com>,
+ Arjan van de Ven <arjan@linux.intel.com>, Huang Rui <ray.huang@amd.com>,
+ Juergen Gross <jgross@suse.com>, Dimitri Sivanich
+ <dimitri.sivanich@hpe.com>, Sohil Mehta <sohil.mehta@intel.com>, K Prateek
+ Nayak <kprateek.nayak@amd.com>, Kan Liang <kan.liang@linux.intel.com>,
+ Zhang Rui <rui.zhang@intel.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Feng Tang <feng.tang@intel.com>, Andy Shevchenko <andy@infradead.org>,
+ Michael Kelley <mhklinux@outlook.com>, "Peter Zijlstra (Intel)"
+ <peterz@infradead.org>
+Subject: Re: [patch v5 11/19] x86/cpu: Use common topology code for AMD
+In-Reply-To: <20240206155830.GPZcJXJkOv8NOtIfHi@fat_crate.local>
+References: <20240117115752.863482697@linutronix.de>
+ <20240117115909.011311608@linutronix.de>
+ <20240206155830.GPZcJXJkOv8NOtIfHi@fat_crate.local>
+Date: Mon, 12 Feb 2024 15:50:04 +0100
+Message-ID: <87cyt1lotf.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soundwire: fix double free of pointer
-Content-Language: en-US
-To: Daniil Dulov <d.dulov@aladdin.ru>, Vinod Koul <vkoul@kernel.org>
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-References: <20240211150937.4058-1-d.dulov@aladdin.ru>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240211150937.4058-1-d.dulov@aladdin.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
+On Tue, Feb 06 2024 at 16:58, Borislav Petkov wrote:
+> On Tue, Jan 23, 2024 at 01:53:47PM +0100, Thomas Gleixner wrote:
+>> --- a/arch/x86/kernel/cpu/mce/inject.c
+>> +++ b/arch/x86/kernel/cpu/mce/inject.c
+>> @@ -433,8 +433,7 @@ static u32 get_nbc_for_node(int node_id)
+>>  	struct cpuinfo_x86 *c = &boot_cpu_data;
+>>  	u32 cores_per_node;
+>>  
+>> -	cores_per_node = (c->x86_max_cores * smp_num_siblings) / amd_get_nodes_per_socket();
+>> -
+>> +	cores_per_node = (c->x86_max_cores * smp_num_siblings) / topology_amd_nodes_per_pkg();
+>>  	return cores_per_node * node_id;
+>>  }
+>
+> One more hunk depending on what goes in when and in what order, to fix
+> a build issue from the RAS tree:
+>
+> ERROR: modpost: "amd_get_nodes_per_socket" [drivers/ras/amd/atl/amd_atl.ko] undefined!
+> make[2]: *** [scripts/Makefile.modpost:145: Module.symvers] Error 1
+> make[1]: *** [/mnt/kernel/kernel/2nd/linux/Makefile:1873: modpost] Error 2
+> make: *** [Makefile:240: __sub-make] Error 2
 
-
-On 2/11/24 09:09, Daniil Dulov wrote:
-> If sdw_ml_sync_bank_switch() returns error not on the first iteration,
-> it leads to freeing prevously freed memory. So, set the pointer to NULL
-> after each successful bank switch.
-> 
-> Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
-> ---
->  drivers/soundwire/stream.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-> index 304ff2ee7d75..d650e6f0f8e7 100644
-> --- a/drivers/soundwire/stream.c
-> +++ b/drivers/soundwire/stream.c
-> @@ -833,6 +833,7 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
->  				"multi link bank switch failed: %d\n", ret);
->  			goto error;
->  		}
-> +		bus->defer_msg.msg = NULL;
->  
->  		if (multi_link)
->  			mutex_unlock(&bus->msg_lock);
-
-Not following what the issue is...
-
-On success, sdw_ml_sync_bank_switch() frees the buffers with
-
-	if (bus->defer_msg.msg) {
-		kfree(bus->defer_msg.msg->buf);
-		kfree(bus->defer_msg.msg);
-		bus->defer_msg.msg = NULL;
-	}
-
-So if there is an issue on the second iteration, then the loop will
-detect already freed memory in the previous iteration and skip it:
-
-                /* Check if bank switch was successful */
-		ret = sdw_ml_sync_bank_switch(bus);
-		if (ret < 0) {
-			dev_err(bus->dev,
-				"multi link bank switch failed: %d\n", ret);
-			goto error;
-		}
-
-error:
-	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
-		bus = m_rt->bus;
-		if (bus->defer_msg.msg) { <<<< TEST FOR FREED MEMORY
-			kfree(bus->defer_msg.msg->buf);
-			kfree(bus->defer_msg.msg);
-			bus->defer_msg.msg = NULL;
-		}
-	}
-
-It could very well be that I need more coffee on this post-SuperBowl
-Monday morning, but I just don't see the problem.
+Hrm. That is unfortunate, but we really don't want to mix the RAS
+tree. So this needs a fixup in next and in the pull requests.
 
