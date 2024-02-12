@@ -1,184 +1,113 @@
-Return-Path: <linux-kernel+bounces-61974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E7DD85195E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:34:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E87F851962
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:34:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FB121F22A19
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:34:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DED31F2291D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B6E4D5B7;
-	Mon, 12 Feb 2024 16:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TviMBq6w"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563AC3D55F;
+	Mon, 12 Feb 2024 16:29:35 +0000 (UTC)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFCEC482D4;
-	Mon, 12 Feb 2024 16:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BF923D0A0;
+	Mon, 12 Feb 2024 16:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707755338; cv=none; b=WytZ14pykWY5ZSE5343BMZKF6VopuUb/Xmr4brQhxbjcvpzYPFBGS8jHGE5eTJ+Ko1iHszijEJV6h5M3pc07IuLVZCAgJSrzzaY1IKTLpkjXc10gntxin+NSUiCw5gRNUZvMwCsFaiUud/KqesxF6IUpJytrVyzFXQ8T9EWCI2M=
+	t=1707755374; cv=none; b=tbK5yJ0cTRPqxaT8wmV2IdeY1FGlnhvdAdRxR2BG/YnFCxUTHYp5yT32lFLUHXJym24VyHkaINARuEWnqsEoDargyV2XxNopEjL3K69Pbvzg6v7YW6t29dDLfl/G1uKdzRJVuGbrNs7PIFW1x5MwAW2v67XoDguvI9nOttj4QSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707755338; c=relaxed/simple;
-	bh=IuAlQRQxIKplKocYo89p9ZMqFmjlfm9M52X+Y3/F7BM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z6hEbTi3ZvngevECihA62K2fxFdxN5TI0S1ySHDYRT0dif3Jdg96c9yP3vRNFkJtjrHEGTuvRTtVbdOd/W6Q/3QEyDFYjm6OjO7X12ANUaKqtH1wy/O05/7U4QMYDvK1q1ZwgsqzCj90pDe61YKMVreDgPtJrqby/SlMj2PUSvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=TviMBq6w; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41CGSjVK004185;
-	Mon, 12 Feb 2024 10:28:45 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707755325;
-	bh=PD7pULEBclq1+qdU6GR6A9JMygAqQNWEIr/SChGU3tQ=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=TviMBq6wzruyjKrS8U9onTXbRWeFf+NpX35hobiHda4CVQ/ilYOxEhBCfjAxrFxBb
-	 6+pYImHIomSti4oBmX5Eoxs31S6tI1+KIx7dNNZwlW0JGFcQ+uNvKDENQVbTD7EVZH
-	 RJ+sg1wreUuxCG9M3GP4mty93csDJQKzoUykiLpA=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41CGSjMv024963
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 12 Feb 2024 10:28:45 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
- Feb 2024 10:28:44 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 12 Feb 2024 10:28:44 -0600
-Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41CGSWRF090688;
-	Mon, 12 Feb 2024 10:28:44 -0600
-From: Andrew Davis <afd@ti.com>
-To: Sebastian Reichel <sre@kernel.org>,
-        Manivannan Sadhasivam
-	<manivannan.sadhasivam@linaro.org>,
-        Cristian Ciocaltea
-	<cristian.ciocaltea@gmail.com>,
-        Florian Fainelli
-	<florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>, Scott Branden
-	<sbranden@broadcom.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad
- Dybcio <konrad.dybcio@linaro.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-actions@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v4 19/19] power: reset: syscon-poweroff: Use devm_register_sys_off_handler(POWER_OFF)
-Date: Mon, 12 Feb 2024 10:28:31 -0600
-Message-ID: <20240212162831.67838-20-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240212162831.67838-1-afd@ti.com>
-References: <20240212162831.67838-1-afd@ti.com>
+	s=arc-20240116; t=1707755374; c=relaxed/simple;
+	bh=kjdYXtW0dzh6kTs3nxWBA75lsnQ4hvAZA7R0V3EAhzM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dgT2A8CWdQvT2z+jSYFU+EJjsAk9tO+78yWqR6MjUtOqaBQytu+BBGCL4J4LHS/uHirDyhLTAqma74PWfZVeX5Wu+lV+oUkAqX8ep9J1EgWEixWUirzSQMsyE6i12SrKCcKcdy3Z/g2447nchHcbehNPv6IPt07j6fxTn2LVJws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6077a99bbf1so2085377b3.1;
+        Mon, 12 Feb 2024 08:29:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707755372; x=1708360172;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sMMgeYKVED6CfJxdYuAOnKZRGq8dCY2fP6QlD7Y2V8w=;
+        b=WnKNZgOWu+ZAsyh7WwBewsMRP+Z7Ww70c8pzJdPKoatHwBhVgDoCHDbvVIiUHcBAqX
+         6mHzS6niGQbQ++pqWcUYEfELQ5cCfa7ljXwZvr2kyF3aeB8z/IDejDJyeYwrAIubmUZ+
+         yzFdOGBMcy8hn60+Gpre0SaDBTYfa5dbPBYv9hAHec313RbyZVpm4xQnkBnm82c+gfYV
+         vjdnMcHZ8Y0+Xcmjc7nbnJ1yeAQhrv5+DqyvZtSHB0aMGrzgyFsmbMYJkq4jqkaWFaRn
+         OE3o37fdr8v8iPRdGHvKRp287GvMezAQfCOxAwSavyeYL+1F7ykVrTa/uDHs8aq48Z6p
+         OyvQ==
+X-Gm-Message-State: AOJu0YzZypynNYmWVpKhIkhF6gvfjqm2it3z+IQBOEnG1oLH+BnBWmsb
+	BT4AQfkleKZizCK+HIUhRe1CiZLsgApdyShWl2sA853vxopywVHVGO7BghjJqrc=
+X-Google-Smtp-Source: AGHT+IHsCTOPigxmrLnHkTh/5Ei/TmYTJR75lDJ1kLoJFjZBTe5Tl6zFSmDP60WZvNNR5CYpmsfBNQ==
+X-Received: by 2002:a81:a0c1:0:b0:604:1f23:284b with SMTP id x184-20020a81a0c1000000b006041f23284bmr6880ywg.11.1707755371963;
+        Mon, 12 Feb 2024 08:29:31 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXo/3aaRhyjsbei87Q8i2t9ZTisTVWPHgOBJlmwk5kRN+6LrH7N88UtbLxdC1dSPfmY1GXNN/fmdGp6mgdRIXeLQbZm6S3N3O2lvRuSUmlkvJL/qtTE/u+ovacD8A5stMZoCSfIAs+SfNuk9deTh52/L+nLe3LzdcTZGbs2EsT4G00ReMt/y48nPMYQ
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id ee4-20020a05690c288400b0060778320f39sm101511ywb.1.2024.02.12.08.29.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 08:29:31 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so3607432276.0;
+        Mon, 12 Feb 2024 08:29:31 -0800 (PST)
+X-Received: by 2002:a05:6902:cc3:b0:dc2:5512:b6d9 with SMTP id
+ cq3-20020a0569020cc300b00dc25512b6d9mr6182ybb.12.1707755371673; Mon, 12 Feb
+ 2024 08:29:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240205144421.51195-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240205144421.51195-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240205144421.51195-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 12 Feb 2024 17:29:20 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWvOH7W_h9uvC1fdRjpneJapNsOFb8k96Et2iCgBGabAw@mail.gmail.com>
+Message-ID: <CAMuHMdWvOH7W_h9uvC1fdRjpneJapNsOFb8k96Et2iCgBGabAw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: renesas: r9a08g045: Add missing
+ interrupts of IRQC node
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Biju Das <biju.das.jz@bp.renesas.com>, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Use device life-cycle managed register function to simplify probe and
-exit paths.
+On Mon, Feb 5, 2024 at 3:44=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.co=
+m> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> The IRQC block on RZ/G3S ("R9A08G045") SoC supports ECCRAM error
+> interrupts too, add those missing interrupts in the IRQC node.
+>
+> Fixes: 837918aa3fdd ("arm64: dts: renesas: r9a08g045: Add IA55 interrupt =
+controller node")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-This also makes our data struct per-device and not global, which allows
-for more than one instance of this device.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v6.9, once the DT bindings have
+been accepted.
 
-Signed-off-by: Andrew Davis <afd@ti.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/power/reset/syscon-poweroff.c | 30 ++++++++++-----------------
- 1 file changed, 11 insertions(+), 19 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/drivers/power/reset/syscon-poweroff.c b/drivers/power/reset/syscon-poweroff.c
-index 19c8da997b4c8..203936f4c544f 100644
---- a/drivers/power/reset/syscon-poweroff.c
-+++ b/drivers/power/reset/syscon-poweroff.c
-@@ -13,6 +13,7 @@
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
-+#include <linux/reboot.h>
- #include <linux/regmap.h>
- 
- struct syscon_poweroff_data {
-@@ -22,21 +23,24 @@ struct syscon_poweroff_data {
- 	u32 mask;
- };
- 
--static struct syscon_poweroff_data *data;
--
--static void syscon_poweroff(void)
-+static int syscon_poweroff(struct sys_off_data *off_data)
- {
-+	struct syscon_poweroff_data *data = off_data->cb_data;
-+
- 	/* Issue the poweroff */
- 	regmap_update_bits(data->map, data->offset, data->mask, data->value);
- 
- 	mdelay(1000);
- 
- 	pr_emerg("Unable to poweroff system\n");
-+
-+	return NOTIFY_DONE;
- }
- 
- static int syscon_poweroff_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-+	struct syscon_poweroff_data *data;
- 	int mask_err, value_err;
- 
- 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-@@ -73,21 +77,10 @@ static int syscon_poweroff_probe(struct platform_device *pdev)
- 		data->mask = 0xFFFFFFFF;
- 	}
- 
--	if (pm_power_off) {
--		dev_err(dev, "pm_power_off already claimed for %ps",
--			pm_power_off);
--		return -EBUSY;
--	}
--
--	pm_power_off = syscon_poweroff;
--
--	return 0;
--}
--
--static void syscon_poweroff_remove(struct platform_device *pdev)
--{
--	if (pm_power_off == syscon_poweroff)
--		pm_power_off = NULL;
-+	return devm_register_sys_off_handler(&pdev->dev,
-+					     SYS_OFF_MODE_POWER_OFF,
-+					     SYS_OFF_PRIO_DEFAULT,
-+					     syscon_poweroff, data);
- }
- 
- static const struct of_device_id syscon_poweroff_of_match[] = {
-@@ -97,7 +90,6 @@ static const struct of_device_id syscon_poweroff_of_match[] = {
- 
- static struct platform_driver syscon_poweroff_driver = {
- 	.probe = syscon_poweroff_probe,
--	.remove_new = syscon_poweroff_remove,
- 	.driver = {
- 		.name = "syscon-poweroff",
- 		.of_match_table = syscon_poweroff_of_match,
--- 
-2.39.2
+                        Geert
 
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
