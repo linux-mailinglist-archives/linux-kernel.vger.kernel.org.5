@@ -1,152 +1,169 @@
-Return-Path: <linux-kernel+bounces-62054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B933F851AD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:09:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C5FC851ADF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:11:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE04A1C226CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:09:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AF271F26420
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:11:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9064D9FB;
-	Mon, 12 Feb 2024 17:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212114F8A2;
+	Mon, 12 Feb 2024 17:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rv2JMEVp"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BJwkiqz+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 957FD481DE
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 17:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030B14F5F9
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 17:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707757497; cv=none; b=j7Lj0ktH8tcOnYRj3IRB0tk9BZPbYfaITG0HjNv4Hp2fJA33/EAu6yZhk8li74wy/PRlZoSZp402zMjmme8guJ0hKYnhiYgVAN2va3XO5u89oDHePZJVWWT+WqEuRIMO+ChGimbCIbG/dAUsNAkmBl6AjBY5WkF0o/iT+y6iDYE=
+	t=1707757511; cv=none; b=fkw65MF6gyPzqF1e1uUPPj11URPHpDcOQ3uhzGtpQNQKNZ7kq3HvVE3v7HqlrEaiaCu12v4NPhY0sx8Mhak8rJB5zWok4i1mx4UYrm9XHYpCtocXqVWwCBwnxiHCJrEEqmLfBuN2NJAVBJJEhVgVrwA6h6x3ibS0uhhLt51gGZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707757497; c=relaxed/simple;
-	bh=NGOQEuPyRJgDWg76Dul8KF5cVzOQ1HMWLMT4O4ylqH4=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=shl4ULocIVA8iNyeeB2cQfbgTF59Q3xK1CkilXXNwk4U6JJddKJJE5gSS7jiHT8SbDRQ3v7On5CYlM4jnuVwObBLr7PtZb3bLwT35pxRD7UpFJdm9w4nzPCSObPjztcSR7oe1rEiOy0TQ2u4bdWzGbZzBUny+Cwh9ym8TCN+ydc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rv2JMEVp; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-410c804e933so10205235e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:04:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707757494; x=1708362294; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tnlFcYYxV+8xVptqetGlSMvuarTqWvNDzjxOKjAUqOg=;
-        b=rv2JMEVpeX+0qGVPyd3gvIW/tNEI+iB3akjFAJmD1n5hbfnlxKlR5+A2jS75NZcJ7A
-         HjkvaX4igTvefrDsz2w+/E3//y+SQZsSXs3b7UhR3qMNJ54nxuGEL83FFJcHgQzYycAC
-         zBloGuzLswcOly3LVebm6hlAuRPxPmHBl5ikcwiep4XZ0SoGf+gOXKHeOlvzMpyvPH8N
-         gCOloq7+P/gO7DCOI6tcNcRC1kHkPLUCo0HUAnNIzKRrsYSx36WFJ3lq0TgzHmRdAMb0
-         ftJkGV5rg5NB5tfyrMMHn4zKtAbRsYQ+90beUjFLo4WEtMlf2GIsisxAKVdfkuYhqcSA
-         ePaA==
+	s=arc-20240116; t=1707757511; c=relaxed/simple;
+	bh=/ppasOObi1vl2zoLkHHxsigE/xVlK8tLer+NXGAx/2E=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jKSjZIPU1Lwvm3EWkIB0+/4IPqpf7pJLYm8cbVCxKpxW7+zu3f9WdUraqqMebM/fPIasdCo8qw+2ekYOB41Xml480wl8DIZE/Npdl1MzEfvAAsIr9sTvrOWfPVf5EWg/VUwL0jSt8cRHv5vZ9kI/G31LiB6zOFutPm20+00q21s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BJwkiqz+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707757508;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AOauPAOUW8xmwdezNoz+IWSD863XpUK91dsGE3R14Gg=;
+	b=BJwkiqz+FdLvAn0xYXWPsEFTnhsviBjAS3z7y4R4w3R7cdO6/PNuYYHkMh/lktjzm5Xac8
+	/SQa7DzRweIK50F50R7LYqHlIpB5tCYrEegr86EUR0GNl6vY+c4coMKUW+Zax1uv96hSQZ
+	uVva3i+5auzqM9sTSHzQTa9neqUK8jo=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-572-O-3ZtJoWNTKcuMHarU0CkA-1; Mon, 12 Feb 2024 12:05:06 -0500
+X-MC-Unique: O-3ZtJoWNTKcuMHarU0CkA-1
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-363ec32bca3so27778445ab.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:05:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707757494; x=1708362294;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tnlFcYYxV+8xVptqetGlSMvuarTqWvNDzjxOKjAUqOg=;
-        b=vVn23pgtOz8pB07BlDWkiyxcHyrGYfs/44kQL/5UruZARbBRpWQzickhs7p6UpqesE
-         8drVhgfEZWTW416C9Zdc8ZB2hIHyTojlb3V42h6O8i30gcmmhljV7A3Ai4QUgM8k2KqL
-         WfgvmIKpfgRjusv93YG8TWEvS9CdkFq++WLWwC7jOt4eBqUR+vucVCR6XwX8KNdbSZfx
-         zUF6VEJT9p5OUWgTq59qcIF0PNKCjkpqcWtzQHCzKw2ULATXKBQpVySnys3aJXy+81mC
-         DvDUsB0uv0/cidqMbmdUf9sdllyh1wRTzvJ6o6gg8HcBq08909nbTdQYYVF6yz6pt/zI
-         SGuQ==
-X-Gm-Message-State: AOJu0YyKRqvQyUvS3D2NXOMlFY7EDnbdygwredWTPqzQL1buFbTAQSFS
-	eAdEI6Te7bwUhl/xyiFHr+GW42+cYS3Vk6x0It08r6D4GgBp4ZAiw74vqN3JRJM=
-X-Google-Smtp-Source: AGHT+IH9qGmw9nwphxghFf7cRSEenHYCVSiFyoQOsKn8U3/wxIxpBARqwzxrILU0T+G/X8nzi8kAcA==
-X-Received: by 2002:a05:600c:a386:b0:410:c148:2a4b with SMTP id hn6-20020a05600ca38600b00410c1482a4bmr3682640wmb.37.1707757493845;
-        Mon, 12 Feb 2024 09:04:53 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUbhtiBWLx71foFqG/Mrmg/AENgTBrjlVZ+U5sFZ7wJ7UWRYzAVg+dLvpvbtXgr2kTvNVY9NWwSKWheJjknZ0joEq0Syyr+s0NKjU4ZGFzscd7wgIjMLzzVo8TSarRChYloisONs/iAnOYYi8IwMqoqRg1HmesUfJy57mr62lqEGaMXXdmqm4SEkNBbVBP3KHF2qPEWvPnpDwZLfXkVvjFci4rAgCUC0/jWNIQt518bNJ9eVxKOwJD5aBvZ5DyAHP36ClLFak1a9lpNWDsrpFBnhJsO66PgohmT58dW2S+lE8LGmqQ4BcbTPuWKJOoONZH+jRCHdEqJv9MGGLk9cBKrZPFgntPZO1JZZudgkVuh5vkBfttYgGbnWIHCTnHhba1WqXFKyaVFwfyj3++DcLzgEiPDS47Rg8A0tDAovOURSg74/WAI7ZNmmKKcN4SMTmmaGP5ulJLAH/sOVfWUXtWvAU78GqvV1zb45mjwzvjg87l9gG8QZI46Ih7THA/zO4UQFjKXk6aZR4BYDzEkb+xxZDIcg5+wQDmeDOGYnIZfp0jeHRYCIgwL8Y8JU1K4GjkeX5rsEtCcR8LlXNrlzHAGtViJiLz3XdNj
-Received: from ?IPV6:2a01:e0a:982:cbb0:fcee:f026:296d:135f? ([2a01:e0a:982:cbb0:fcee:f026:296d:135f])
-        by smtp.gmail.com with ESMTPSA id h16-20020a05600c351000b00410e6a6403esm2462229wmq.34.2024.02.12.09.04.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 09:04:53 -0800 (PST)
-Message-ID: <ecf86b35-a53a-4570-8ef1-377759422dcf@linaro.org>
-Date: Mon, 12 Feb 2024 18:04:51 +0100
+        d=1e100.net; s=20230601; t=1707757506; x=1708362306;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AOauPAOUW8xmwdezNoz+IWSD863XpUK91dsGE3R14Gg=;
+        b=RRUvDDFJpvGz75nBzQfEk8UrvpKzy1dw3Fs9KhjTOq3ct5xQ12O3rVmMG9MGJlRevh
+         DQlGbGxiKrjGCS0WfQorw0B2UtA1YKzAPy2YLfDCGrM8JWOaK8kPU8YQtErFzJbLyExW
+         m5I8Co3THeIq+DNKf7MO+6wTtMj/85ZhAKYSmUZt0RdCAqXp/xSJPHpj3Jnf1Fb/6pAc
+         lhIxDvEjRDRCyeXQxMlnz9ptPt9grM86QiigIRoIymPoKh8pS0Uyl2CeiEJkOE5DbIWb
+         V2SspiqZHvroK3KcwWm0gGkFwk/V63fwb/rKPm3IBVGXZQ6vGOFbJ9fCTNWYdhT3kQEP
+         Ot7A==
+X-Forwarded-Encrypted: i=1; AJvYcCVIJ4ZrnMp78kzkpnLkhxNjrp/a7MnDQ8f2FslMseWHV83FQ66Uh/MSh4036gfRNbJgwuB0V77fyn7UW1O21Wi5Lil26of9F7U5Vyp7
+X-Gm-Message-State: AOJu0YwAyKUabTOYy7r8jKR2KR6VJLnl6aaAuXLaR87GPOZZiKnrhY7Z
+	Hluy7DzdbuBGgyaHGT+B48PptC9bvUgbA5ZLJw+rfq+ZpyTlUCf4KALUETrIi1Otlt3UpcM7HCb
+	kTbTmUwkhGEQDEog+m0vxlPNwm0j4pdg5hRgK3Sl0bq6UHtyqZ49r+HJITWo+uQ==
+X-Received: by 2002:a05:6e02:1c0f:b0:363:bf4f:9242 with SMTP id l15-20020a056e021c0f00b00363bf4f9242mr12359138ilh.0.1707757505977;
+        Mon, 12 Feb 2024 09:05:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFTr7BKAunXGu61vRYhJINkTJcmaRk0uei4AcQbQ44MkhVmZ5mwHzO7IldqcHZ1n+fHrehwBg==
+X-Received: by 2002:a05:6e02:1c0f:b0:363:bf4f:9242 with SMTP id l15-20020a056e021c0f00b00363bf4f9242mr12359090ilh.0.1707757505683;
+        Mon, 12 Feb 2024 09:05:05 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWTKjfqO4rkuhd2GHVkqqBNv4+4iVoZcGlDpy3HDG1uMMhT2d1jmDXMdgoX5DAWSe6wNqaoupDoOAQYGfaqx0u2YxoUAD4jOURcBV59dRJ0I84dPyAqjUa503odT/ihzOsHVyPnNOPJoHdYRT0Rkp1ITk30Z0jK0uQhOT8ZxCTTsDwHyplbhVXKzzWJ+5KLI0CW6tCa0uQX8eZY5XNRWRGf+QNcHvIm3yhzArCWF1+twWZ8ZnjPN50CfZ2MfWdE75xZdbBSioYKg/nzKmtiQE3HF/9lKHwRBYl6QkNkUBjfurx86zdYaK+ehhpNI3KCup/fqQW91N+qdWpE6M/4gD15NJDcY+cT9NbrcP/cidh0BMgG50wNuXrmnkXpm4oifG69lW1OlbPuCF3FwTEvBEMdMJNhwGJUq73Fb0yEEC3moByn74AQRxFN2+lKgvS7f3ETe1xbUchqRjQJYKyPvAv5d54L1Slq5ySDW0gE8KXZDMWQOLPNjP8lfWTWVQz2cegkBDFZnvSicLwrm7kx6Uyn4iQRg2Q2+2S092z+9EVssL4dTBcBiSfvzP4WR8BM9x2Cnj61ySifZP2b3sit2kXjDiHOKSpVT3XvUxV2NbiqyqaykRhfqoQWedicpEy2bUk4+6LGqp11TmwKitHZJVqrpjqEY5C20DTsYEiFK61AzM8/cBavnY1uHrFpyCAogoztCVgiLv6dR1pGSea50FebaaEoxsF0FdNhpT2In60GDbjrIIPJw9Yq3LE+A7pRuI8M2Pv2xba1cBmYG5BrQ/9vAC0AeyPnL/EjsEcqAD861Ut39qWpRqvM0jpvnlygSo13H7bWAWmrMWzOqUYutqVrxS1vCjbuNPAk4KPe0BHXnX+ou2Ou1LDGvKclXyNuba+zNe/6NIkiQ9tFgwZQWrO6cdbtM29KCOYYYy6I1yQguArOSxd54yZMFBXbHqlvq68ZD7
+ s5Ogdlm3vmILJeBjg6GR7Gfseo5SInXkPEJuISfamgJq1cKmYEkWiLHdpEXsU2z2bxLv6UizINdscavVhxNtO+f3YWyq67/6mkIHGegdJtwSQkFTQE38Qc6rY4wjyj3IoWWIw3JoTW1arS4PnomVhrCPLrZRuUcqKd4YW697swDORpqc5pjtaQmDUFd3HjddzZ2ykwrVpXhQU0MTWWohfdS3VaXxvAHWG/+cPs5+gvAChdu1Syik831EdMmJCOOtGu+BcmXFq/EhhR6d91D/vA9vXazLvjYergDYBNbDpREevkFO/zUNlr5Hb5RaVHWWDvXX9c
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id bf12-20020a056e02308c00b0036275404ab3sm2025858ilb.85.2024.02.12.09.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 09:05:04 -0800 (PST)
+Date: Mon, 12 Feb 2024 10:05:02 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: <ankita@nvidia.com>
+Cc: <jgg@nvidia.com>, <maz@kernel.org>, <oliver.upton@linux.dev>,
+ <james.morse@arm.com>, <suzuki.poulose@arm.com>, <yuzenghui@huawei.com>,
+ <reinette.chatre@intel.com>, <surenb@google.com>, <stefanha@redhat.com>,
+ <brauner@kernel.org>, <catalin.marinas@arm.com>, <will@kernel.org>,
+ <mark.rutland@arm.com>, <kevin.tian@intel.com>, <yi.l.liu@intel.com>,
+ <ardb@kernel.org>, <akpm@linux-foundation.org>, <andreyknvl@gmail.com>,
+ <wangjinchao@xfusion.com>, <gshan@redhat.com>, <shahuang@redhat.com>,
+ <ricarkol@google.com>, <linux-mm@kvack.org>, <lpieralisi@kernel.org>,
+ <rananta@google.com>, <ryan.roberts@arm.com>, <david@redhat.com>,
+ <linus.walleij@linaro.org>, <bhe@redhat.com>, <aniketa@nvidia.com>,
+ <cjia@nvidia.com>, <kwankhede@nvidia.com>, <targupta@nvidia.com>,
+ <vsethi@nvidia.com>, <acurrid@nvidia.com>, <apopple@nvidia.com>,
+ <jhubbard@nvidia.com>, <danw@nvidia.com>, <kvmarm@lists.linux.dev>,
+ <mochs@nvidia.com>, <zhiw@nvidia.com>, <kvm@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v7 4/4] vfio: convey kvm that the vfio-pci device is wc
+ safe
+Message-ID: <20240212100502.2b5009e4.alex.williamson@redhat.com>
+In-Reply-To: <20240211174705.31992-5-ankita@nvidia.com>
+References: <20240211174705.31992-1-ankita@nvidia.com>
+	<20240211174705.31992-5-ankita@nvidia.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v4 20/20] arch: arm64: dts: meson: axg: add crypto node
-Content-Language: en-US, fr
-To: Alexey Romanov <avromanov@salutedevices.com>, clabbe@baylibre.com,
- herbert@gondor.apana.org.au, davem@davemloft.net, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- khilman@baylibre.com, jbrunet@baylibre.com,
- martin.blumenstingl@googlemail.com, vadim.fedorenko@linux.dev
-Cc: linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel@salutedevices.com
-References: <20240212135108.549755-1-avromanov@salutedevices.com>
- <20240212135108.549755-21-avromanov@salutedevices.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240212135108.549755-21-avromanov@salutedevices.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 12/02/2024 14:51, Alexey Romanov wrote:
-> This patch adds a crypto node declaration. With the
-> Amlogic crypto driver we can use HW implementation
-> of SHA1/224/256 and AES algo.
-> 
-> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
-> ---
->   arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-> index 6d12b760b90f..b19be72abdd6 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-> @@ -294,6 +294,12 @@ ethmac: ethernet@ff3f0000 {
->   			status = "disabled";
->   		};
->   
-> +		crypto: crypto@ff63e000 {
-> +			compatible = "amlogic,axg-crypto";
-> +			reg = <0x0 0xff63e000 0x0 0x48>;
-> +			interrupts = <GIC_SPI 180 IRQ_TYPE_EDGE_RISING>;
-> +		};
-> +
->   		pcie_phy: phy@ff644000 {
->   			compatible = "amlogic,axg-pcie-phy";
->   			reg = <0x0 0xff644000 0x0 0x1c>;
+On Sun, 11 Feb 2024 23:17:05 +0530
+<ankita@nvidia.com> wrote:
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+> From: Ankit Agrawal <ankita@nvidia.com>
+> 
+> The code to map the MMIO in S2 as NormalNC is enabled when conveyed
+> that the device is WC safe using a new flag VM_ALLOW_ANY_UNCACHED.
+> 
+> Make vfio-pci set the VM_ALLOW_ANY_UNCACHED flag.
+> 
+> This could be extended to other devices in the future once that
+> is deemed safe.
+> 
+> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+> Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+> ---
+>  drivers/vfio/pci/vfio_pci_core.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+> index 1cbc990d42e0..eba2146202f9 100644
+> --- a/drivers/vfio/pci/vfio_pci_core.c
+> +++ b/drivers/vfio/pci/vfio_pci_core.c
+> @@ -1862,8 +1862,12 @@ int vfio_pci_core_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma
+>  	/*
+>  	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
+>  	 * change vm_flags within the fault handler.  Set them now.
+> +	 *
+> +	 * Set an additional flag VM_ALLOW_ANY_UNCACHED to convey kvm that
+> +	 * the device is wc safe.
+>  	 */
+
+That's a pretty superficial comment.  Check that this is accurate, but
+maybe something like:
+
+	The VM_ALLOW_ANY_UNCACHED flag is implemented for ARM64,
+	allowing stage 2 device mapping attributes to use Normal-NC
+	rather than DEVICE_nGnRE, which allows guest mappings
+	supporting combining attributes (WC).  This attribute has
+	potential risks with the GICv2 VCPU interface, but is expected
+	to be safe for vfio-pci use cases.
+
+And specifically, I think these other devices that may be problematic
+as described in the cover letter is a warning against use for
+vfio-platform, is that correct?
+
+Thanks,
+Alex
+
+> -	vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
+> +	vm_flags_set(vma, VM_ALLOW_ANY_UNCACHED | VM_IO | VM_PFNMAP |
+> +			VM_DONTEXPAND | VM_DONTDUMP);
+>  	vma->vm_ops = &vfio_pci_mmap_ops;
+>  
+>  	return 0;
+
 
