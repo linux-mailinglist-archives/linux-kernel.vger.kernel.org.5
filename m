@@ -1,148 +1,133 @@
-Return-Path: <linux-kernel+bounces-61697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CC59851577
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:40:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57FFF85157F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:41:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C03871C22BBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:40:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C53FB21AF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C81103C48D;
-	Mon, 12 Feb 2024 13:31:23 +0000 (UTC)
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD35D3A8CD;
+	Mon, 12 Feb 2024 13:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T4l71HbN"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65C83A29F;
-	Mon, 12 Feb 2024 13:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9993A8CF
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707744683; cv=none; b=EKPoJ9IypEbalNHXNfVPc1Bs5Pb4UliJ44Wfq+miyuDIae5G7wPetGDgA+B5N8DFvi1DWQDJVCUDdNs9ZbYy2wPKegKVU9fw0YhCnj/aYeoq20eVsq12hakVzUs5SSiK1vabWTt6cX4TFRP5jqhA/Pj2pz+KdVEU7rrZZsaZQ/s=
+	t=1707744746; cv=none; b=pUch26yja3siwcZPQKcfpv9BZg/3iqetp2mWbR5Y7jI+N1ryQG3ENRoIWrxVt9bqCsE3GJUd69Y27fN1CT9J4rkwG1Oq9E09k13IAjrNcql968Li5VenvkhaZ0hUyVrlSQcLciGiep8U+WYdHKLNhlLJVk88bqsqJE5KQVZkdU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707744683; c=relaxed/simple;
-	bh=hmHWArXdSRm8lzxAU2DSg7y55ObF8/5Uyi8EajxtD5g=;
+	s=arc-20240116; t=1707744746; c=relaxed/simple;
+	bh=mgxzYa/YHbjlNLGRFv1voK9063RzidnEcbp86ft+y0k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=olZxGK79dWSxPq3+N1UWa2xceyQIYMD8TZ1b+RE7Ljy1Y5bhV5OLxpZtVsCb9URA4a5l4JWNiKOtW8rWhJigt54ytUei/1q0RrAX4QMymIHKGIieYytEf8GXj6WQY6d2ZU4LMiaM4JXfu4GO5s0Je4CSG2+em7go9Be7+RrnNOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-59ceb5a0593so231761eaf.0;
-        Mon, 12 Feb 2024 05:31:21 -0800 (PST)
+	 To:Cc:Content-Type; b=IsQ4+CvgRU3r+FYE0mH2fNEK5VYihXpa2AAboliEIzVox2wF8xzDWXmYFjLtykdFhOfoKf1xCXC8P+6I9YEx4eGCuV2kYjsqmTvtNpuwWlax2R8s26HrH3BsFK03MgW2Mv0/2nX0eYhoPPDo/A7u8m3xep1znHNOQ//zfAKHr/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T4l71HbN; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc745927098so2621608276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:32:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707744743; x=1708349543; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cc0i1kM3GFsjytyQWwKzSBYGY5dJXRRO6XelaSiPAvw=;
+        b=T4l71HbNmFjDN2/4WvdZxq4kgbZwo4w+Cuc3IKTCeO3YLIyWUuu06kxJ5NiliG3OyW
+         LV8tiJ3bSDBOd9OI/nOSvtHQ8X/ONBjzjK0EC2LCykC7PJ+3MFb95eHnAOVZNXqK9CIK
+         24kz7M//GshXB+z8HP3djVlvcZRdkBZe9jGhyfeB+beZs5g51cCB9La4tYErhkYiV24E
+         6JJfO/ZB2MbJ4jGc84Ak5TX01za5vSOl7oSBcONS7JayNooxi+QhlM+Pp4WW6gU1597f
+         dyRsOScOfKmcaSPhl2tIlO+DMuJnBH9xpj1iZdB3X3CgpTVt4hJBUzUvYVe2MCDtxbSF
+         r/3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707744681; x=1708349481;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VSLFuMbhZo80/vA+2tLJsi3KFlBp1PmoUoosHnk2JEU=;
-        b=k2OxwSsBA65q3frQ19p/JEL34hZJkNfWf/I4pB2LjpT+zyvRnIeuGST09E43IlOszk
-         y0wb4PLOpRQG136zmrL1V2dB+gxarzzsCTMaqjetxMFPSpHiOVCYgz2yE6QHzdGoJudP
-         YunXS5+UxwSRdeK6a0DAXJ2eb6AAZ+uxMU37JYgko8tqjfq/WysBLkoFBj792OWH0TvG
-         /EbMwqZ8ElJdRu2/7YV0J+m2JlqvrjG3x3etrzACN87K+J7hZs1Hn0a8UNQVBl9eGY5O
-         MU1ttieLf7qoa6fi4maDjjug2+AUEcv0ErqPF+44V2cjQ0Ktuj3ZvEiBMAqNL9tq6LTJ
-         ewpg==
-X-Gm-Message-State: AOJu0YwrS1XT/NcimRIDsm+Bpp57rX0WWT7UepnAL1b/dJJJg5y+AZ0D
-	RnWcFsoj/Cnt+P6vbSVI58wj9/49lECWFmRhEWIYYGwPi2csL/DQKL1SPBsbuSijiv6eCmQRtzd
-	LDUROwk4r2cCvzOiqLhOG3+dccUY=
-X-Google-Smtp-Source: AGHT+IHHpZHr/EW3Ix32BZGoEiN9Cir64v4CICrnzC68lWclc4B701GZMfD08kwttgpi43EZD+xjbebNgNWXp66eI8c=
-X-Received: by 2002:a4a:a6cd:0:b0:59c:d8cd:ecee with SMTP id
- i13-20020a4aa6cd000000b0059cd8cdeceemr5502224oom.1.1707744680881; Mon, 12 Feb
- 2024 05:31:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707744743; x=1708349543;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Cc0i1kM3GFsjytyQWwKzSBYGY5dJXRRO6XelaSiPAvw=;
+        b=LskMqe7zwfawr/GKMY5fl61dOn6lXb2JdWqLDKFw03WnXp+DPBfhcILJF1rBg0Umwh
+         kFrfwVnOFGPf7G+qM8EjE2gOg6jS8xd3zbAq4I1ZyqYvnZk1NeqximuxaeJOQHxOS+It
+         Ok/WFs3a08ZAK/oQaXx2vMiN5lK0Y/B07BaAvcrnR64V50PT6kajLFspqpDMs7hKM7R/
+         ifu/0NxnAWNml880C7rzZRt9L56yjNbTjp4Yttv+9liggn3UtFMNH/LTcVnb3hRBFmNP
+         JCwttWBWWEvMfPZJ/6dKCO1ILb66ueseMQ2CPaMTvQmDl5ntvaKzl5fWJinG0zNbUuCt
+         eFTA==
+X-Forwarded-Encrypted: i=1; AJvYcCVuC9zbkD/j3r1ONkMRybhbeJotYceG+1IOonqeXdAwiX8PD6pXDa4pyITwVEEyKxgb8H3tu7h9haKpuqHeHXf1Zfm7BsXfxbt8x9Z0
+X-Gm-Message-State: AOJu0YysOl7RIG15rQ0KPpgkvR9H62zt71qae2ybcxb0UxChmsWE4VIX
+	YxETxCcB/vIxFHRqO4viWZW2Og4AQijLymEXVQ1Ya9CAq5eOUMQhhBsLxzXGwxPSIP2DQhNc2mY
+	A/Ry+f9tlje/R/g0lH8kcfyqVBY7zWroj6hvs0g==
+X-Google-Smtp-Source: AGHT+IHrimlujObx0gy/3DfQFabszO/ewn4clRRIqfcAPZot0WCgYdNU8XudKJCEXiqOZqbCse/xPRfzJJEpg6oz5Yc=
+X-Received: by 2002:a25:b117:0:b0:dc7:4439:d14d with SMTP id
+ g23-20020a25b117000000b00dc74439d14dmr5093350ybj.54.1707744743273; Mon, 12
+ Feb 2024 05:32:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1706603678.git.haibo1.xu@intel.com> <6473e0bb42524e4f29112290a92539d1a800eb69.1706603678.git.haibo1.xu@intel.com>
-In-Reply-To: <6473e0bb42524e4f29112290a92539d1a800eb69.1706603678.git.haibo1.xu@intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 12 Feb 2024 14:31:09 +0100
-Message-ID: <CAJZ5v0hC7gxoJK0kszw9GgRjxjrKgh7q0sC1L1FdVfOb-TCSRw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] ACPICA: SRAT: Add RISC-V RINTC affinity structure
-To: Haibo Xu <haibo1.xu@intel.com>
-Cc: xiaobo55x@gmail.com, ajones@ventanamicro.com, sunilvl@ventanamicro.com, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Guo Ren <guoren@kernel.org>, Anup Patel <apatel@ventanamicro.com>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Greentime Hu <greentime.hu@sifive.com>, 
-	Jisheng Zhang <jszhang@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
-	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Baoquan He <bhe@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Chen Jiahao <chenjiahao16@huawei.com>, Arnd Bergmann <arnd@arndb.de>, 
-	James Morse <james.morse@arm.com>, Evan Green <evan@rivosinc.com>, 
-	Samuel Holland <samuel.holland@sifive.com>, Marc Zyngier <maz@kernel.org>, 
-	Tony Luck <tony.luck@intel.com>, Ard Biesheuvel <ardb@kernel.org>, Yuntao Wang <ytcoode@gmail.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Alison Schofield <alison.schofield@intel.com>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
+References: <20240212-topic-sm8650-gpu-v1-0-708a40b747b5@linaro.org> <20240212-topic-sm8650-gpu-v1-5-708a40b747b5@linaro.org>
+In-Reply-To: <20240212-topic-sm8650-gpu-v1-5-708a40b747b5@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 12 Feb 2024 15:32:12 +0200
+Message-ID: <CAA8EJpryCXUxs69ockt0TN4LOuBB-4dZkLYHUZyN1Uq0isMjYg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] arm64: dts: qcom: sm8650-qrd: enable GPU
+To: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	iommu@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 3:18=E2=80=AFAM Haibo Xu <haibo1.xu@intel.com> wrot=
-e:
+On Mon, 12 Feb 2024 at 12:37, Neil Armstrong <neil.armstrong@linaro.org> wrote:
 >
-> ACPICA commit 93caddbf2f620769052c59ec471f018281dc3a24
-
-Not really.
-
-> Add definition of RISC-V Interrupt Controller(RINTC)
-> affinity structure which was approved by UEFI forum
-> and will be part of next ACPI spec version(6.6).
+> Add path of the GPU firmware for the SM8650-QRD board
 >
-> Link: https://github.com/acpica/acpica/commit/93caddbf
-
-And this doesn't point to an upstream ACPICA PR.
-
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 > ---
->  include/acpi/actbl3.h | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
+>  arch/arm64/boot/dts/qcom/sm8650-qrd.dts | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >
-> diff --git a/include/acpi/actbl3.h b/include/acpi/actbl3.h
-> index c080d579a546..5202e3fc9b41 100644
-> --- a/include/acpi/actbl3.h
-> +++ b/include/acpi/actbl3.h
-> @@ -192,7 +192,8 @@ enum acpi_srat_type {
->         ACPI_SRAT_TYPE_GIC_ITS_AFFINITY =3D 4,    /* ACPI 6.2 */
->         ACPI_SRAT_TYPE_GENERIC_AFFINITY =3D 5,    /* ACPI 6.3 */
->         ACPI_SRAT_TYPE_GENERIC_PORT_AFFINITY =3D 6,       /* ACPI 6.4 */
-> -       ACPI_SRAT_TYPE_RESERVED =3D 7     /* 7 and greater are reserved *=
-/
-> +       ACPI_SRAT_TYPE_RINTC_AFFINITY =3D 7,      /* ACPI 6.6 */
-> +       ACPI_SRAT_TYPE_RESERVED =3D 8     /* 8 and greater are reserved *=
-/
+> diff --git a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
+> index 8515498553bf..7151f3dc67c4 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
+> +++ b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
+> @@ -525,6 +525,14 @@ &ipa {
+>         status = "okay";
 >  };
 >
->  /*
-> @@ -296,6 +297,21 @@ struct acpi_srat_generic_affinity {
->  #define ACPI_SRAT_GENERIC_AFFINITY_ENABLED     (1)     /* 00: Use affini=
-ty structure */
->  #define ACPI_SRAT_ARCHITECTURAL_TRANSACTIONS   (1<<1)  /* ACPI 6.4 */
->
-> +/* 7: RINTC Affinity (ACPI 6.6) */
+> +&gpu {
+> +       status = "okay";
 > +
-> +struct acpi_srat_rintc_affinity {
-> +       struct acpi_subtable_header header;
-> +       u16 reserved;           /* Reserved, must be zero */
-> +       u32 proximity_domain;
-> +       u32 acpi_processor_uid;
-> +       u32 flags;
-> +       u32 clock_domain;
+> +       zap-shader {
+> +               firmware-name = "qcom/sm8650/gen70900_zap.mbn";
+
+But why? For sm8450 / sm8550 we had "a730_zap.mbn" and "a740_zap.mbn"
+
+> +       };
 > +};
 > +
-> +/* Flags for struct acpi_srat_rintc_affinity */
-> +
-> +#define ACPI_SRAT_RINTC_ENABLED     (1)        /* 00: Use affinity struc=
-ture */
-> +
->  /***********************************************************************=
-********
->   *
->   * STAO - Status Override Table (_STA override) - ACPI 6.0
+>  &mdss {
+>         status = "okay";
+>  };
+>
 > --
 > 2.34.1
 >
+
+
+-- 
+With best wishes
+Dmitry
 
