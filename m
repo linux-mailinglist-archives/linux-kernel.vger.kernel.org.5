@@ -1,147 +1,143 @@
-Return-Path: <linux-kernel+bounces-61213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B16850EFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:40:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4993F850F02
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:42:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE1681F21115
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:40:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C5031C21048
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929CAF51B;
-	Mon, 12 Feb 2024 08:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MeiM934w"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9885AF9D8;
+	Mon, 12 Feb 2024 08:42:06 +0000 (UTC)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2818E522C
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:40:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 703777464;
+	Mon, 12 Feb 2024 08:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707727217; cv=none; b=aKyljf4/Vl4A1TKd5PzjXE0l6rmiMJ17kIPapcMp0ieFXGkoyaAFY46es0DKFBc4qRv7LfWSjnufG6vRM4MFeeXhCSg2XZZjpcpU+7N2xP6DOhpJs+leSX6JozDe9iIj8zqFFKc6FhD+TuuMJEK+3wy4mOQSeCeJps0XvNA3rPY=
+	t=1707727326; cv=none; b=IKFX7sPknLHKFzQeJS/l8ihj37ex7tqoQniwU659L2hKc8qZKU3MI37z/GjGihLbDaeKRTSsZmL8obIGnd7iJ4UoWAdg2N5G13tfkXtCU5Udd9VGBvPmZHVcyxxKizIbERxPNuGDwjSkZfSNFTVQnHHbW40Ci6R38esmk1IJQs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707727217; c=relaxed/simple;
-	bh=H7HdBiAs04p56cZBJJLxvIhXRaVYbVE0YSOPadORfso=;
+	s=arc-20240116; t=1707727326; c=relaxed/simple;
+	bh=3s7+euHTIOhSaH5VjIi6VQcGKcAIeqQ/AxNAUR7MPoE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=amXol6FLInqwtSLnT8gZTiVOhUqBUxFtxaKlYmWMkGh3o6gEj2slPAjBkYWYHDZCIG9qFxwtIIv6FnNDAXKdwXgFf/KRA69fR67xDrmBs5G1HCYHcCkaZ4yGNxmYi1wFyXPiOqVtQ3RDJxVNsttXTqoPa/x+MmQjSdyDFTFKmjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MeiM934w; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 To:Cc:Content-Type; b=CqLsWu9GG5lpa+gG+jkQRLvwle+f/jPbhZ0r9YVftvH7nUzYCjlUsru+92NoUEfuzVSOYovlItZxffSkw4WjyewcwpInbvZjyD3CAXRvfPY4oV0d5JtQPg/lMjtRNgye3DUWpIy8mZdQTpNGsV1c+mbf3MbcNmTUUYHrXhCJTEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3ccea0d75fso21732566b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 00:40:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707727214; x=1708332014; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k2xx3qmM5DQGb345GrWzFVJ1pSbmuD2ER1Bx8oiyhcA=;
-        b=MeiM934wwKvoH/F9pXp6+1mEHhL+Xp4XHCQgpNypoif5pZIt4UoXnQo6q8fekXFkny
-         WHbL50wSqfIVi9Bk5emOnsJvDCsFwSbrJcyJ9nCsITiLuxVuSgCf+NKCXqmZNNJLkEfP
-         D5wZWPPsZs6Tm+Y4yWpcVWaF+Lz1pWP+3fth1f2Rv3RVqPUxnsOGoj7IwluDBi9oiFs/
-         B6w7kPZyudka+0DChkPKzelkDMYxQ6CZmW7UTFszHuPUwRuILBT5fQ68ZS10yUbe/63G
-         OplXXopU3yGOm9El86Uz0NrDiLkBVopSIB/NFwSisnPm43WlGFTcVy2MHKAKhuzF+BFq
-         jgHA==
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-604aaf2d047so29738727b3.0;
+        Mon, 12 Feb 2024 00:42:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707727214; x=1708332014;
+        d=1e100.net; s=20230601; t=1707727323; x=1708332123;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=k2xx3qmM5DQGb345GrWzFVJ1pSbmuD2ER1Bx8oiyhcA=;
-        b=JeIvCWtHE6QpxSJbdTFzfxxaXu/JR5TRlvI8IZcDTT2/ubso0PaJEJikDNxUXLEC7x
-         ZbiW5SWXD9xPgeEuTqYDHTLMZthXWgoS/tPVF+XTv+zPR+YPc4Ij6FtFk3IxFwo5509H
-         Fzx8UScTPzNbmByi+HBkHpxSOkHiGMflLpc+mtXLZRgQI/DaxcxBmuccb0Rbx1RzFepE
-         PodytLGPU1mHZWAhQU8SxuCMlTfhvIravkPoqBm1dIw3XNFPDPPwmadjVkVihgJjWhof
-         8WTcJqutPhUzOctESviN27nkRNV1TyklK40HmdjZeOp3cnqANsYGvv81qT+bdkcMBi//
-         a89A==
-X-Gm-Message-State: AOJu0YwHxdV2e9QZc/1wFVUs5Uf4gTmu5p8i5pQptSn58n/TOs0MAZOH
-	bC5glOIjnQE5dCS8vGKKZ9LqhdmK2jrJ/APxXG9l1nGKJ/l4LPS20Mpxjvq09Rmlg87EnKaryOm
-	E+EQZj72sXGPC9+5lpXv6YAavRYk=
-X-Google-Smtp-Source: AGHT+IGHu8Gu6lx/Z58M3WTUbZ2FP4tKJEXJaK+dLgiGcDi7Ai/qCtNWUA3mugM69D/IODos2t/68TUhBhZndZsFhU4=
-X-Received: by 2002:a17:906:195b:b0:a3c:aace:1649 with SMTP id
- b27-20020a170906195b00b00a3caace1649mr937573eje.26.1707727214079; Mon, 12 Feb
- 2024 00:40:14 -0800 (PST)
+        bh=3sDJfR8Jo81p7fQ0i3luHWg1ByshF+eCyOvnmxC+Z6Y=;
+        b=Sr1BSsAYBs5tHn91SLPPopmiAr8AiGZMg1ejynZ5GB5tuPIIi+b+4QtRtvuID6ztCp
+         hD/jZfzgiwdZ1bBRrpiQC1cEDap5FBjFNhMle5LI4W3G4FaW56UtpSIGK9zc6VZ1HYdp
+         T4KGaI72MNNqwUp8ZEz2+X79n4NIK3MRUbkb+aLbhXLu11HT/Ratxl2Ap2JazNr3Sfrs
+         bMM3y+Y4cU9AK3pwEz/fjWaFsbRgd2r1jS6Zea5t1XIW7IDTEkdDC9mvl3N+RmzDu0UZ
+         LMnniCuifK2Ijy3NuWwaNh7Zopqj1vFPpclWTxEGfgWtVnzuXhAYnVQWfcKeqxCOZGuG
+         Zerg==
+X-Gm-Message-State: AOJu0YxxmepiqJ3SxREoSF5o3JL5vkglR1B/AKE7+vJuYOAmhZezJAYR
+	AYKsEpkoRQeucCnpi825bPPGcSyNdhcFQbvKsqcw7tWTj6FjR7zTw/nV+pfC26M=
+X-Google-Smtp-Source: AGHT+IEA9vzHwX/8frJqfQfqUM8/dN96NAedlWxLgP/nvTSIEv3NVJaViSiCNPnlbq75FUrIzVhqIA==
+X-Received: by 2002:a0d:e851:0:b0:5ff:6552:8f57 with SMTP id r78-20020a0de851000000b005ff65528f57mr4965108ywe.39.1707727322750;
+        Mon, 12 Feb 2024 00:42:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWJH/weaQZvaXU/0WWOhp20x4tSOjQfPNtGwcqIjMFw+ohFLN9Lgcws43boZXWXhpVRLduZaNTTtjPQfP4UfJwcIT2rz8dEtvMIqUvEaT6QdKKpFhXAi4YFK+L2eXOBH96OoDN8VfQgTA==
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id y77-20020a81a150000000b005ff9d3ca38fsm1101664ywg.1.2024.02.12.00.42.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 00:42:02 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbed0710c74so2345374276.1;
+        Mon, 12 Feb 2024 00:42:02 -0800 (PST)
+X-Received: by 2002:a25:9205:0:b0:dc2:3b5f:b80 with SMTP id
+ b5-20020a259205000000b00dc23b5f0b80mr4967597ybo.44.1707727322147; Mon, 12 Feb
+ 2024 00:42:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124025947.2110659-1-nunes.erico@gmail.com> <CAKGbVbtAe5jnAwb7O8epq3g4FqLC-ggof3D=5gO9hJf5OuH0OQ@mail.gmail.com>
-In-Reply-To: <CAKGbVbtAe5jnAwb7O8epq3g4FqLC-ggof3D=5gO9hJf5OuH0OQ@mail.gmail.com>
-From: Qiang Yu <yuq825@gmail.com>
-Date: Mon, 12 Feb 2024 16:40:02 +0800
-Message-ID: <CAKGbVbvOcAmiUPUQak3VA_2=KeAQZryG=vTTn7pydjmSSLwBPA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/8] drm/lima: fixes and improvements to error recovery
-To: Erico Nunes <nunes.erico@gmail.com>
-Cc: anarsoul@gmail.com, christian.koenig@amd.com, 
-	dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, linux-kernel@vger.kernel.org
+References: <20240212083426.26757-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240212083426.26757-1-krzysztof.kozlowski@linaro.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 12 Feb 2024 09:41:50 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU-c5_Z2AMNtNH4Cc4JUrn+oKU-1CumEOAP6=5Zomcj_A@mail.gmail.com>
+Message-ID: <CAMuHMdU-c5_Z2AMNtNH4Cc4JUrn+oKU-1CumEOAP6=5Zomcj_A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: auxdisplay: hit,hd44780: drop redundant
+ GPIO node
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Miguel Ojeda <ojeda@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Ralf Schlatterbeck <rsc@runtux.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-applied to drm-misc-next
+Hi Krzysztof,
 
-On Tue, Jan 30, 2024 at 9:07=E2=80=AFAM Qiang Yu <yuq825@gmail.com> wrote:
+CC Ralf
+
+On Mon, Feb 12, 2024 at 9:34=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> Examples of other nodes, like GPIO controller, are redundant and not
+> really needed in device bindings.
 >
-> Serial is Reviewed-by: QIang Yu <yuq825@gmail.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Thanks for your patch!
+
+> --- a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
+> +++ b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
+> @@ -99,17 +99,7 @@ examples:
+>      };
+>    - |
+>      #include <dt-bindings/gpio/gpio.h>
+> -    i2c {
+> -            #address-cells =3D <1>;
+> -            #size-cells =3D <0>;
 >
-> On Wed, Jan 24, 2024 at 11:00=E2=80=AFAM Erico Nunes <nunes.erico@gmail.c=
-om> wrote:
-> >
-> > v1 reference:
-> > https://patchwork.kernel.org/project/dri-devel/cover/20240117031212.110=
-4034-1-nunes.erico@gmail.com/
-> >
-> > Changes v1 -> v2:
-> > - Dropped patch 1 which aimed to fix
-> > https://gitlab.freedesktop.org/mesa/mesa/-/issues/8415 .
-> > That will require more testing and an actual fix to the irq/timeout
-> > handler race. It can be solved separately so I am deferring it to a
-> > followup patch and keeping that issue open.
-> >
-> > - Added patches 2 and 4 to cover "reset time out" and bus stop bit to
-> > hard reset in gp as well.
-> >
-> > - Added handling of all processors in synchronize_irq in patch 5 to
-> > cover multiple pp. Dropped unnecessary duplicate fence in patch 5.
-> >
-> > - Added patch 7 in v2. After some discussion in patch 4 (v1), it seems
-> > to be reasonable to bump our timeout value so that we further decrease
-> > the chance of users actually hitting any of these timeouts by default.
-> >
-> > - Reworked patch 8 in v2. Since I broadened the work to not only focus
-> > in pp anymore, I also included the change to the other blocks as well.
-> >
-> > - Collected some reviews and acks in unmodified patches.
-> >
-> >
-> > Erico Nunes (8):
-> >   drm/lima: reset async_reset on pp hard reset
-> >   drm/lima: reset async_reset on gp hard reset
-> >   drm/lima: set pp bus_stop bit before hard reset
-> >   drm/lima: set gp bus_stop bit before hard reset
-> >   drm/lima: handle spurious timeouts due to high irq latency
-> >   drm/lima: remove guilty drm_sched context handling
-> >   drm/lima: increase default job timeout to 10s
-> >   drm/lima: standardize debug messages by ip name
-> >
-> >  drivers/gpu/drm/lima/lima_ctx.c      |  2 +-
-> >  drivers/gpu/drm/lima/lima_ctx.h      |  1 -
-> >  drivers/gpu/drm/lima/lima_gp.c       | 39 +++++++++++++++++++++-------
-> >  drivers/gpu/drm/lima/lima_l2_cache.c |  6 +++--
-> >  drivers/gpu/drm/lima/lima_mmu.c      | 18 ++++++-------
-> >  drivers/gpu/drm/lima/lima_pmu.c      |  3 ++-
-> >  drivers/gpu/drm/lima/lima_pp.c       | 37 ++++++++++++++++++++------
-> >  drivers/gpu/drm/lima/lima_sched.c    | 38 ++++++++++++++++++++++-----
-> >  drivers/gpu/drm/lima/lima_sched.h    |  3 +--
-> >  9 files changed, 107 insertions(+), 40 deletions(-)
-> >
-> > --
-> > 2.43.0
-> >
+> -            pcf8574: pcf8574@27 {
+> -                    compatible =3D "nxp,pcf8574";
+> -                    reg =3D <0x27>;
+> -                    gpio-controller;
+> -                    #gpio-cells =3D <2>;
+> -            };
+> -    };
+
+This part was added delberately in commit c784e46c8445635a ("auxdisplay:
+Add I2C gpio expander example"), to aid makers who are not DT experts.
+Note that there are no other examples of this popular wiring scheme
+in upstream DTS.
+
+>      hd44780 {
+>              compatible =3D "hit,hd44780";
+>              display-height-chars =3D <2>;
+
+If you do want to insist on removing the i2c GPIO expander part,
+I think this node should be removed too, as it is almost identical
+to the first example.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
