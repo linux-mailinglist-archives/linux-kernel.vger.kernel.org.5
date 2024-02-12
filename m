@@ -1,204 +1,287 @@
-Return-Path: <linux-kernel+bounces-62379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DACD851F70
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:19:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20AB5851F73
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:20:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 046FFB2198F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:19:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA6CC284D4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283434C63F;
-	Mon, 12 Feb 2024 21:18:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A134C635;
+	Mon, 12 Feb 2024 21:19:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="brieuVgn"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Oo+NH91d"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528444C634;
-	Mon, 12 Feb 2024 21:18:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=134.134.136.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707772737; cv=fail; b=F9vGtVKxUX5UMED3XVn1b/LSvrfCfklqYHHYhno69Ux80LWJSgIZCceFV7ziF1mCTi+xbF3AqPCLdoTS9/iMhvopHxFNpYO6X9Am6P/yMzYfwVwPh915CLyHRC83cc9G2saqp74iRX/zZmNK0WYRMcA8QQDPcO4QdaFc63nSVTg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707772737; c=relaxed/simple;
-	bh=xrUMt4MTwxLPae/t09XHrZDmTZqp8uCOKVR3iG+PC5A=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=k+WA4C7s5uXju/zQVL+pCXa9v7KFlHvlksVbp7izNlnm7UbwB0/Ks59r4fbl0CxXjonHSP+vW+Phj3YJIf+CiR/bBoJJm7YsXryzriKcJnY3AomdGewvzhlP5dFs2g3qIApwAGuj8I6JYjCbaNRhBp3Iqo4bRdMCR2OXUqrvr9s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=brieuVgn; arc=fail smtp.client-ip=134.134.136.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707772735; x=1739308735;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=xrUMt4MTwxLPae/t09XHrZDmTZqp8uCOKVR3iG+PC5A=;
-  b=brieuVgnImu+25mMOm8qzkeLe/xmFRA2fm/BdGRfwtXe5ODBC+jHXrwA
-   +BU4leGu4zw0pfiTkJ126vMKcFTNq2yNTCcQ4rXzbOzNaDGL+gGU54G0J
-   MkROKIkezyv0eOywQQjQeSKQ/WW44SeoaxwDeej2y//SfOYlYN6oRI7f/
-   BDj2ZkSE+Xqmz9qKwiMhnqT7yN420IFLGfw4w6PKSq1AemlAfKSleEkys
-   isI8NFKBR/VTZrkMQTRQz801JtKvCS3qfRP3848Tjbda4K8FQ74ChjkTA
-   IoJwhp+s46aRTuQUN4xC1r25aVoMyy0lg4hEqkGHMgwl8KkDeyXAbzPsZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="396201111"
-X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
-   d="scan'208";a="396201111"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 13:18:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
-   d="scan'208";a="3040791"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Feb 2024 13:18:54 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 12 Feb 2024 13:18:54 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 12 Feb 2024 13:18:53 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 12 Feb 2024 13:18:53 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 12 Feb 2024 13:18:53 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k9k7sMdXgC3TGL73O1fd09IYpgGASt4RAgA0nlI6EC06t5uRoRuK8juue1A90JbWvFmvXslbX8GjKr8bqQEk7YpnYrCZmPzbUVrZIqf7jtYvJlfZUEkET56q6zfw9DPsC9KshaL9qyF71hy4QUDVQvXrD7e/p/BMhXHXnG5nAr/c0zuKicoLSY/Bf7KjSc60JeJdV/2qVwRboEXrBPrJoPWMk1eusAF6rVUCz9PECVx/Lg5KSSVLo/s8KF+YGCzv1Z2gMGRChTPno3kxfv10hwlfUEirII66+/BphiHZQfqoAdhpgNj5d2JEyUJRyH2eEH+n+IZNBV96oLtcf6nUKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xrUMt4MTwxLPae/t09XHrZDmTZqp8uCOKVR3iG+PC5A=;
- b=a1NXZldrTqnX0nSmdIUgxPnGSFOIBuih+R5rlpEJcv00WDbOtxkKpf3qmx134Jcx6gTNEix1oYi0fuPyVhrT6T1rUXghk+WP8cqVkFDmgRCIfbB3qjMJLxxFgYJOVd3m+ZMsTnHEt5nGH1T4bp9Y9Uffy8DJHC8Og4kXdJq4B8ma8JVXxWa2blEwXteDReDzjRJgEGuW1GEi4jFYJ3+qzWM/7HSoRSeRE1eeZHw7oXpq6t2wih+zMjirzu9SrZ5TSI7Qxekm9GavEzhX+JNx55yRDdebuRJqOkKXFHC6CviXWuKJuYmJyBn8TaOs11fbZoaoZmLUsWlLpoBCteC0yQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by CO6PR11MB5633.namprd11.prod.outlook.com (2603:10b6:303:13c::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.38; Mon, 12 Feb
- 2024 21:18:52 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::7103:9cf7:fcc0:e802]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::7103:9cf7:fcc0:e802%3]) with mapi id 15.20.7270.033; Mon, 12 Feb 2024
- 21:18:52 +0000
-From: "Luck, Tony" <tony.luck@intel.com>
-To: "paulmck@kernel.org" <paulmck@kernel.org>, Borislav Petkov <bp@alien8.de>
-CC: Yazen Ghannam <yazen.ghannam@amd.com>, "Naik, Avadhut" <avadnaik@amd.com>,
-	"Mehta, Sohil" <sohil.mehta@intel.com>, "x86@kernel.org" <x86@kernel.org>,
-	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Avadhut Naik
-	<avadhut.naik@amd.com>
-Subject: RE: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
- Records pool
-Thread-Topic: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
- Records pool
-Thread-Index: AQHaWhj+DLVtkWOA50OiEqZPMnN2ZbEBPHkAgAE1PoCAAAHSAIAABzoAgAAEd4CAALjhgIAA4DsAgADqjICAAhC1AIAAAfPggAANwwCAAACQYIAABwgAgAAJWQCAAAj40A==
-Date: Mon, 12 Feb 2024 21:18:51 +0000
-Message-ID: <SJ1PR11MB608319A906F5DB0AB18C1913FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <7a4945b0-322a-444e-a0ca-860a062a49c3@amd.com>
- <20240209205111.GGZcaQP1gb6C9m0WZB@fat_crate.local>
- <5DB0FF8D-C6DA-45DC-B287-201A9BF48BDA@alien8.de>
- <75ddf61d-8dda-47fa-9da0-24221feb22a2@amd.com>
- <20240211111455.GAZcisL09LeFPWa2EI@fat_crate.local>
- <b5904910-ed58-405f-9425-566383b48068@amd.com>
- <SJ1PR11MB6083CF3400AD2F2047D65E17FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <34b19db5-bd72-457c-9b6a-c2089f6be83c@amd.com>
- <SJ1PR11MB6083E7E11F6C7BCC8C6C7F21FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240212201038.GNZcp7PuIqIJndpDM9@fat_crate.local>
- <47901422-ac07-47db-bf44-3f4353e92b1d@paulmck-laptop>
-In-Reply-To: <47901422-ac07-47db-bf44-3f4353e92b1d@paulmck-laptop>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|CO6PR11MB5633:EE_
-x-ms-office365-filtering-correlation-id: a3beb5c2-c007-4282-9b9c-08dc2c10362a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: d3OWVN1il9hAjz85rk8AiXMCrxl71bhQAN8jB/SldSx9dMMhcA668kzgCehpaa9mXgnlWU6H/vc58m1GCxg1LaQGDWY+TNlqVpnHPjc4HMANBlC4/fRtGHbvvLm60hvu8Tk7an/j1LW6hfn2KB9yzMrR8cVXTY+7x+BsKKAhg+cSTVrY3hd/nr8g6LBEWnVDjMeTWmhJzthJSOX1CeIOEyBiPdd2Kq/CoX7t+mbKRYmdU60LvqsJhJDMF9eBalxKubIIPznYMAD8RTWUlDw8ZlJ40cMW41USqcCtMewHhoMQf8Gc/xk8/Uq4VP8X1BJEZwx2vsh9yy9V2MmVAumiOFPMC0P2a0tADXoaWCFpsuusaj5iGMd5uH/QDo8mcmY67EX48pAJwKHD84oj0A8dtkbCQBU6Zt47DaJ90VieoXzoed3wQBt4h9ni0q/DpN8u2sJsh/YydbweAG0mJQRDFHI4ZSdR9f99tDiSv5gBqSXe3QFrcCKFswUZ+dEcdxjyyO4WYhyA/XQtnsgZvkOw8lCpLeC1JUgsPwFT2OHvy/Pl0nR7OcLp0AOCzSW4xMwKRrN+uxn2yfHH1v1+Bwb/jkAO6955rKToWBT/hx9YW0Bc8uzk5qZsq8r0P6qe2u2a
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(346002)(136003)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(4744005)(2906002)(55016003)(41300700001)(26005)(478600001)(38070700009)(4326008)(71200400001)(54906003)(5660300002)(9686003)(110136005)(7696005)(64756008)(8676002)(8936002)(52536014)(66556008)(66946007)(66446008)(66476007)(76116006)(83380400001)(33656002)(86362001)(316002)(6506007)(82960400001)(38100700002)(122000001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?X5bK74WbQETFpRZoHyCDBMJKBBDRlfMNOOjbAqodQK+C/ylnOd92ngmFt7sU?=
- =?us-ascii?Q?LRPka5XYPqfvzyTytO6hEM1ipHjTn7hBRiAlQ/8U20VDFoYTNTR3pdjWBtMn?=
- =?us-ascii?Q?MPymNRdgB8ZH3c1UaxRFjL/tVKxn0WR9H8CO5ThAaXW5FKYbpQCfyCADK/Dk?=
- =?us-ascii?Q?kn8bhRVeegwQhwIJAY3+sY7DM18nfNwxvbMWvlTpJG5zAMfc9uPXQryU7be3?=
- =?us-ascii?Q?lP+Ud5/knj2FLpxMGYO5pZ7st1NjhLIqi9/VYX0M1mVG+G70OoXFKHVWj7dL?=
- =?us-ascii?Q?TMf3ddxT9okjWz7IcSXIa2aN4FD1qCdTJ1TshL4TUyNI0dMv3DX7wtn9UUsZ?=
- =?us-ascii?Q?Da/2OBemlz7UDgQaEUGMhfkTx7/CQjR481DIhOtMOJSNH7XV89EVdjDuLFsq?=
- =?us-ascii?Q?s1q02c7fyj7DBPMawiLNsuEolUgE7atdysLLWwVUKttAaTRuDUnkzNdaiCk1?=
- =?us-ascii?Q?PbvCGZ5HA0Q8AWg7krZkzet/mK0aU6ffISPzzi4nPWMXce1X7kJGplNcdvh3?=
- =?us-ascii?Q?86Zbr/Ms0XFaDd9vL0/pWitX9WK8VR2lIDNG5LAebxu7/trprZbkXMaUU2Yj?=
- =?us-ascii?Q?GhMRQ96peego3IcAhwyKhnROfNMXLUdI89nGem6ffy90ChcyE1LTJwQ+VbZM?=
- =?us-ascii?Q?PZAj8DKVW+6e8WV0SvWSyWLkgWxpLDvUPOKKZS7H00oYco9QX4R+OPGuJGsO?=
- =?us-ascii?Q?DTSWBXAYhE5rn4NV5rb1hzTzghLlDVZIwZTGTvOACBrL7Qqt5CRA66Saz+wF?=
- =?us-ascii?Q?Cd6jxRuId5DQ21np0ISUqY+nMAxHbxnUdQ+gnScaGJhVfkSEUpF0JFAeDo+a?=
- =?us-ascii?Q?v4enFJMSiihEnwKn9ZjCc6egwO7BeS50FFtaurTPOfy0MmPffmmS3TZtk4TB?=
- =?us-ascii?Q?Dtz5v1gZLfKTDXpTDBtEgmjQLPtzM4U0U/0R1cZywGGQ1jwg5orxIoxh41gG?=
- =?us-ascii?Q?IfUbdmIxbK1MQGqCgnKHz2pEQCHM2bxBWnXnePPmBAdbPjrYO+ZQgVqbIK78?=
- =?us-ascii?Q?xqmkdfYvaYGLv5SZ8L+GS8xIAVhdNgYgcU1ulTxoEqeBHJ8Iz9gZQ1QCV5sd?=
- =?us-ascii?Q?WNGEbnpYwYHzvMG04jfEl65GX4v/XrL+dHQDy5oKwlFmJgKpC3cYnmXCSYRq?=
- =?us-ascii?Q?mccFvZ8WY9Zbz5eDeX8/ZxkBdf3R7pEfvcJ4hPTVPCg53bLyv5KSsayFZTc5?=
- =?us-ascii?Q?/jJUApMSRc+begNS1j1Q5vaTZ1MEhNPMUVCXn+lui+ERTFiQ6R/M3TPLzJ0V?=
- =?us-ascii?Q?byhOuoHABc1mRlqSXUhYSE5W9F12RpPZvRNGFd8a5NZ/IHyNQlGg29cFFjPy?=
- =?us-ascii?Q?i8BNcRucbjDF0K3xN/swMJzfqRMicRt3F5bfvaOMRfGOXrcecXJezt/CT0HP?=
- =?us-ascii?Q?Czk0yDLItVESHFdsSTlx660Dt9L0r4mrhf/ywuaAHypSwPz16LPBppo8loTh?=
- =?us-ascii?Q?LB/jMnDkoAFBwp4i+cM9QF18hiGOlJA0b0XUeIfUECkw+2wEYviq4AudZnPo?=
- =?us-ascii?Q?P5FzBQKzjSN4J2GTaC7/Mc870Uaz+ELjF/D8qdrSAnAf+1QzUT0BbyQGGGyC?=
- =?us-ascii?Q?sUdBm8ZQDuSYSpwSDYsLk1+V/Qz5bziV/QgSkvOQ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164BC8832
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 21:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707772796; cv=none; b=j5j/Rbe5cIsQ9ZLbik3kD1ljvup+MOj0byg+tsVBpnNVW03VF3FtnsRQvATPl8PvU4ZsOq0Evk9E0Jt21u2oqNtijXykv/+ZJePRT4gPkaShiHQPdUEH5iGhGWYeZlJ06vImb94BoUP3qI3AQ5NEjJXfUDpcD9V0hSsm7N2DuG0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707772796; c=relaxed/simple;
+	bh=rYsfzNffWLW01EY7MGQrWhKqam8qwQaEofXUk3u4V5Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ng6QLrWLVr4LrR7MlLrEOmpA0+2sAIqE8cd/vCzoKFdMe1fU25uM+Sz+vP2ri/rQNab+mepZmdTACzgmSPRf4Ngc9G3VzKkN6whaZnLGbmeZFhEZG9rXHabrCYzHQyZK7TQKjN3H2TaCI14khwcZOxjb3rAk/ILPVy3Vu9lza0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Oo+NH91d; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so3347046276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:19:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707772793; x=1708377593; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=s+yo91KC9lZLq+Z5GCcZqguGz6BSCI7TGH/G2qxr2oA=;
+        b=Oo+NH91d2EVv5zcXZAC8XrKOA9K4XAn/CHIuANe+A5tY08y+ttpBLx96ckYQMv2F63
+         q9cWWCeJUo6DyQaQJrz1YAH5AHKHXlStGY1+jQaEPsRySP4XHfamsyO7R0jDRfZcZ21W
+         +Bwz0fq8+IWlaz/v4qMb1r0NVM9hVjKeV5O1QmRbzdf6xZKEWEtRlEkkczKOGcGMyvcD
+         ZfuQBEUleY9bKzs5OtTlva3++j9knSq33jgoYS+VbCaWPkseozOtYDx0tKaR2A+7bJdg
+         GJILSpdws9O46EssOsC5HX6qt+X7obZblNGNkFKV9qhzl4ClgMVqhYejuXF1++iOyo4m
+         tHXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707772793; x=1708377593;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s+yo91KC9lZLq+Z5GCcZqguGz6BSCI7TGH/G2qxr2oA=;
+        b=jCk+6wdbJ+MjIK78o4PXPhcqLjDDfVuq4hsz+OP2BxL2IY51gLAGf2EpyWW6Yn/Ovs
+         vi1Dfi6I7qIlL51iPfV7nQoi9kTjVaz/0HbdcgDT6pItQR+wSar+T0ZyMa3ftEGFWBf9
+         ullrAUSF3mduU3EUQs+lKlEqDnlmUtVD4olEdA5fWmFNUPg+hxxmMQ7Bho8HU0tGNDFu
+         Wo2+L9ec4zmDN2trWbO7CKjJqifyNy/NWLSwfdoRBRK59zHTtpwtPIe7Qxwd8GCUqS/0
+         ajbBeuqwy/zMF6lBv+5pMXzDvgLGSXOdbeF9dVWueGslcUX6Q+U4tN1wvS81T6mYFYnR
+         aIbw==
+X-Forwarded-Encrypted: i=1; AJvYcCVodq473DZHkczPdU0G//xJRErCrZdxiZJkI7Cx9nWZVtd6XoK6qGLEWbvubqX/R5c3FWiBi5BOOZMQ55DLRUrpkdVCmu0LM44AmFL/
+X-Gm-Message-State: AOJu0Yx9BzhnjfMjqEFpsMua+i/IxlaBHQaWVed0Ch3oL5TYnAsMTf26
+	BbiaVc8FdDI7xReI6ha8E0P24B5L1+OA1FYTbRPqudzddQ1NVXw32CyEXQZT6rCxTXfL9QNZlcD
+	yd40eWwxSohOJNCbOB+5hGVjnuM4lBAsDZFAe8A==
+X-Google-Smtp-Source: AGHT+IGwm8pe4MDgVQAlL+pAAjsmuB8Vmf6/8xdDR9vTdvZ1WSoansH5OsLECcjcw7mpfMBcfPn6TQuPKeq7UPMEiT0=
+X-Received: by 2002:a25:adc7:0:b0:dcb:fe58:a08b with SMTP id
+ d7-20020a25adc7000000b00dcbfe58a08bmr1251061ybe.15.1707772792830; Mon, 12 Feb
+ 2024 13:19:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3beb5c2-c007-4282-9b9c-08dc2c10362a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2024 21:18:51.9359
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /0pmq4EoT/Vs9GQ1Zr+LhpWhT1mfdhTiAtFF88Sb/5q6ERgnoRaHgnulUKTWk5sWNKsMbpW7pUejfxkCT1h6Nw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR11MB5633
-X-OriginatorOrg: intel.com
+References: <20240212-topic-j606f_periphs-v1-1-5dcacd483e28@linaro.org>
+In-Reply-To: <20240212-topic-j606f_periphs-v1-1-5dcacd483e28@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 12 Feb 2024 23:19:40 +0200
+Message-ID: <CAA8EJppHv9g4HnEFaEaCH=FnvJdnFfnr+rt=Onyqh-er8UA6TQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sm6115p-j606f: Add some peripherals
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
->> and this is exactly what we're doing - adding new memory.
+On Mon, 12 Feb 2024 at 15:44, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
 >
-> Is the #MC adding new memory, or is the interrupted context adding new
-> memory?
-
-The interrupted context is adding the memory.
-
->> So, until we're absolutely sure that it is ok to interrupt a context
->> holding a spinlock with a #MC which is non-maskable, I don't think we
->> wanna do this.
+> This tablet features quite a bunch of I2C-connected devices, such as
+> a Richtek RT1715 USB-C controller, a MM8013 fuel gauge, FSA4480 Type-C
+> audio mux, TPS65132 regulator and some more.
 >
-> If it is the #MC adding new memory, agreed.
-
-Not what is happening.
-
-> If the #MC is simply traversing the list, and the interrupted context
-> was in the midst of adding a new element, this should be no worse than
-> some other CPU traversing the list while this CPU is in the midst of
-> adding a new element.
+> Add the aforementioned ones and document others.
 >
-> Or am I missing a turn in here somewhere?
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sm6115.dtsi              |   7 ++
+>  arch/arm64/boot/dts/qcom/sm6115p-lenovo-j606f.dts | 103 +++++++++++++++++++++-
+>  2 files changed, 109 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
+> index ee65ab073ba6..7df7b2045b71 100644
+> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
+> @@ -1676,6 +1676,13 @@ usb_dwc3_ss: endpoint {
+>                                                         remote-endpoint = <&usb_qmpphy_usb_ss_in>;
+>                                                 };
+>                                         };
+> +
+> +                                       port@2 {
+> +                                               reg = <2>;
+> +
+> +                                               usb_dwc3_sbu: endpoint {
+> +                                               };
 
-Not missing anything. I believe you've answered the question.
+The SBU lines are not connected to the DWC3 port
 
--Tony
+> +                                       };
+>                                 };
+>                         };
+>                 };
+> diff --git a/arch/arm64/boot/dts/qcom/sm6115p-lenovo-j606f.dts b/arch/arm64/boot/dts/qcom/sm6115p-lenovo-j606f.dts
+> index 54da053a8042..eb65c2806345 100644
+> --- a/arch/arm64/boot/dts/qcom/sm6115p-lenovo-j606f.dts
+> +++ b/arch/arm64/boot/dts/qcom/sm6115p-lenovo-j606f.dts
+> @@ -73,6 +73,81 @@ zap-shader {
+>         };
+>  };
+>
+> +&gpi_dma0 {
+> +       status = "okay";
+> +};
+> +
+> +&i2c0 {
+> +       clock-frequency = <400000>;
+> +       status = "okay";
+> +
+> +       /* Some devices use FUSB302(@22) instead of the RT1715. */
+> +
+> +       rt1715: typec-portc@4e {
+> +               compatible = "richtek,rt1715";
+> +               reg = <0x4e>;
+> +               interrupts-extended = <&tlmm 97 IRQ_TYPE_LEVEL_LOW>;
+> +               pinctrl-0 = <&typec_int>;
+> +               pinctrl-names = "default";
+> +
+> +               usb_con: connector {
+> +                       compatible = "usb-c-connector";
+> +                       label = "USB-C";
+> +                       data-role = "dual";
+> +
+> +                       /* TODO: Add a proper PD setup */
+> +                       typec-power-opmode = "default";
+> +                       try-power-role = "sink";
+> +                       power-role = "dual";
+> +                       pd-disable;
+> +
+> +                       port {
+> +                               rt1715_hs_ep: endpoint {
+> +                                       remote-endpoint = <&usb_dwc3_hs>;
+
+Most likely this port should have the SBU endpoint connected to
+fsa4480. Also, if SS lines are connected, there should be a link
+between this connector and the QMP PHY.
+
+> +                               };
+> +                       };
+> +               };
+> +       };
+> +
+> +       fuel-gauge@55 {
+> +               compatible = "mitsumi,mm8013";
+> +               reg = <0x55>;
+> +       };
+> +
+> +       /* AW882xx speaker amp @ 34, 35, 36, 37 (CHIP_ID = 0x1852) */
+> +       /* HID-over-I2C for the touchpad on keyboard folio @ 60 */
+> +};
+> +
+> +&i2c1 {
+> +       clock-frequency = <400000>;
+> +       status = "okay";
+> +
+> +       tps65132@3e {
+> +               compatible = "ti,tps65132";
+> +               reg = <0x3e>;
+> +       };
+> +
+> +       fsa4480: typec-mux@42 {
+> +               compatible = "fcs,fsa4480";
+> +               reg = <0x42>;
+> +               interrupts-extended = <&tlmm 89 IRQ_TYPE_LEVEL_LOW>;
+> +               orientation-switch;
+> +               mode-switch;
+> +
+> +               port {
+> +                       fsa4480_sbu_mux: endpoint {
+> +                               remote-endpoint = <&usb_dwc3_sbu>;
+> +                       };
+> +               };
+> +       };
+> +
+> +       /* PM8008 @ 8, 9 */
+> +       /* SMB1355 @ c */
+> +       /* SGM37604A WLED driver @ 36 */
+> +       /* ES7210 audio ADC @ 40 */
+> +       /* HID-over-I2C for the keyboard on keyboard folio @ 61 */
+> +};
+> +
+>  &mdss {
+>         status = "okay";
+>  };
+> @@ -129,6 +204,10 @@ &pon_resin {
+>         status = "okay";
+>  };
+>
+> +&qupv3_id_0 {
+> +       status = "okay";
+> +};
+> +
+>  &remoteproc_adsp {
+>         firmware-name = "qcom/sm6115/LENOVO/J606F/adsp.mbn";
+>         status = "okay";
+> @@ -309,6 +388,12 @@ &sleep_clk {
+>         clock-frequency = <32764>;
+>  };
+>
+> +&spi2 {
+> +       status = "okay";
+> +
+> +       /* HIMAX83102P or NT36523W touchscreen */
+> +};
+> +
+>  &tlmm {
+>         gpio-reserved-ranges = <14 4>;
+>
+> @@ -337,6 +422,14 @@ mdss_dsi_active: dsi-active-state {
+>                 drive-strength = <8>;
+>                 bias-disable;
+>         };
+> +
+> +       typec_int: typec-int-state {
+> +               pins = "gpio97";
+> +               function = "gpio";
+> +               drive-strength = <2>;
+> +               bias-pull-up;
+> +               input-enable;
+> +       };
+>  };
+>
+>  &ufs_mem_hc {
+> @@ -360,12 +453,20 @@ &usb {
+>
+>  &usb_dwc3 {
+>         maximum-speed = "high-speed";
+> -       dr_mode = "peripheral";
+> +       dr_mode = "otg";
+>
+>         phys = <&usb_hsphy>;
+>         phy-names = "usb2-phy";
+>  };
+>
+> +&usb_dwc3_hs {
+> +       remote-endpoint = <&rt1715_hs_ep>;
+> +};
+> +
+> +&usb_dwc3_sbu {
+> +       remote-endpoint = <&fsa4480_sbu_mux>;
+> +};
+> +
+>  &usb_hsphy {
+>         vdd-supply = <&pm6125_l4>;
+>         vdda-pll-supply = <&pm6125_l12>;
+>
+> ---
+> base-commit: ae00c445390b349e070a64dc62f08aa878db7248
+> change-id: 20240212-topic-j606f_periphs-87dd893e105c
+>
+> Best regards,
+> --
+> Konrad Dybcio <konrad.dybcio@linaro.org>
+>
+>
+
+
+-- 
+With best wishes
+Dmitry
 
