@@ -1,518 +1,227 @@
-Return-Path: <linux-kernel+bounces-61636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D9F88514C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:21:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8547985144C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53B542886B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:21:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E69321F21BF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213FB45977;
-	Mon, 12 Feb 2024 13:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD5D03A28B;
+	Mon, 12 Feb 2024 13:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hbh+F4mU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NtvMES3J"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB9B4437D;
-	Mon, 12 Feb 2024 13:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DA63A1C4
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:13:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707743665; cv=none; b=dhcweBxP8T9Q5VViIiZ4yNh0EODgHhQFuY96hMuqW5zcpiJzTi+CpjTpqp2uES2yLdUuK6X3I8H7hEccMFcbCkY65TeXsgUBRjr9ftO1iDj/ct6+mZrfzznbgxM0xuT7ea60T2xdMKD6Af7k4ZuQ0ZHUgxMkormQQW/nGQnTjiQ=
+	t=1707743592; cv=none; b=mhvgnB4ogQy9yZmXZf322oXdikyn8p3tFzMsfPD/Hoiirm9uGYuRiPmhsBONTjiWjmyZXEBoAUfjCFGxlMR5x5uS8nzFSdQ/6V1EpvEEnwkVpVCFHW5Glt91co0bkZxchonX2IwVEpjI5lEn4iEWmcF0qvbrFNWnJ3IqcJQvEfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707743665; c=relaxed/simple;
-	bh=dcBrjJ5D1thLAwNTtA7Dp5db/HhUz1nGHoah5XIr6nA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mJwMR15jnwfWGt7r0l/psRu6S9Wggpej0LXv//bkvov7AtpXl7/8Qs4vfoMXMoFhjaA/+Ubf6zYeduOh2vwGvSuHp1E6005kot/qYZIXllIRD5I2A9eg41Qg3ggytxazt7i9GXzYqXmg8vYVwCPW12tlEh9AYBJodCSDIjPLefM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hbh+F4mU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E29C433C7;
-	Mon, 12 Feb 2024 13:14:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707743664;
-	bh=dcBrjJ5D1thLAwNTtA7Dp5db/HhUz1nGHoah5XIr6nA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=hbh+F4mUdg8EgGAhhuQWjiZqvJDwvX6DXl43HH9sGvAwwtvkHQgAc0bH2MhpgYs5y
-	 tLh5ebw1fuqsMlDnvKIW+Nbbrztaz32ulhUFIi2Kcrp5viaDZggA5iSwlc76/It8cW
-	 8aqfd4WZr5QKYwsamVEKILKd7D7Z/c6dzeuABcND8sh4KxFVysu4W9ntvppLfLlaOK
-	 X+fDorBuZRkxxN/6Wagllj6twJvRIJ+zafe/brK/Oss6+ZiOqGMXtjB9t9gdR3H+er
-	 QciPQUGf8DrHrGaCP+mkruGyplbsl8wpEfn/X/uEoo8Y8Rj3u/BmB2uC1/lQo4ASfC
-	 ji5trKsOVInRQ==
-From: Maxime Ripard <mripard@kernel.org>
-Date: Mon, 12 Feb 2024 14:13:03 +0100
-Subject: [PATCH v6 20/36] drm/tests: Add TDMS character rate connector
- state tests
+	s=arc-20240116; t=1707743592; c=relaxed/simple;
+	bh=VGqK2EXbpd35gsVz1xmG61zXP49yz5ANJzMkWNNw1mQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j/WP8ZINL7TPsk3NHb2dXsZid60AyvdQgfArT9VAreF8IeSIQRNh3k307wbF22czMKnNotGnfZ1SVEaVIwi1iktMAM5VQFaYTV9E6VjLl4TOo00vkPRkSK4+BoIL3Yk+gKCBUJHuQ0cQwk3kzJ/tdN9QcEUioQLaaoG3scZt3vM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NtvMES3J; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707743590;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Hww63RycILkhWmUV7kV9IBG+ru1x1IcPxqyllH9PLOo=;
+	b=NtvMES3JDRz+gOZrytBvubZ/ImWAIzdiNH4fUMRP702TYpgmvrexrdC22dVZ4EePkpEnII
+	B5zYrhAqES7qIW9HOow66bXolaXz9xEjBlUXlM23LDYDtp13Wp3Roo0o6qmvqB2r4eq3BD
+	u4KjjQ6K22BwgmcGrT/1gR5JCdT3rSw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-495-cn3LjGIWNOur0P8gVGcukw-1; Mon, 12 Feb 2024 08:13:08 -0500
+X-MC-Unique: cn3LjGIWNOur0P8gVGcukw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33b26d4294dso1392171f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:13:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707743587; x=1708348387;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hww63RycILkhWmUV7kV9IBG+ru1x1IcPxqyllH9PLOo=;
+        b=ZI1wVAu19pJZ7nomD6QE8qi/uqXNEtA2VPmzRwBOJA0yslt5aTFWUC7N+5cVWMoaFS
+         s8lK4SnyNvSjI53Ts/sAtxcYU/IA6raUY3sExDQgByrqdZCe3GK4KmOzAAikPabVImFm
+         Hf+yX3AJPXfIw9elMfw7dmynVBhABCvmLdHc4dhgcBUero1W3Ei5CvxJMJAmql6+RYf4
+         XURjh27YTlAGDXpVcHyuG5GJ7+nDMSKbE9eix7xAY7jhkZu26zB43owTPWbdI2AyfIDt
+         BlG184nluprDt8G8HmduwGjTFHqYMA2RH4cN/WxjiPk5FmPF2bl6cx9/imThGuAw9vcK
+         wGbA==
+X-Gm-Message-State: AOJu0YypyP8exfqE3ZrwJe25E7yVhcTNedaPkqWmtU8LI39wDr+mHmEU
+	kIRTOGHR7dEjKmQLZznoF45kRCEYMgVgCVK2+/9gegeISMX0mq0RHpFZ8XVGSfRXiYNLTD/IfwO
+	zuZV8agK5KCOngOpzEG6BtgTv7RXNt4NwosER3KM0ykvPAwXze8bD9MtRcM/5Xw==
+X-Received: by 2002:a5d:6486:0:b0:33b:2300:9cdc with SMTP id o6-20020a5d6486000000b0033b23009cdcmr7236138wri.46.1707743587353;
+        Mon, 12 Feb 2024 05:13:07 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEReINvzzr3H3VeDrYjZvaBxMo8PW95UvCVHUhmv21+hC5vvpCm8WTG48/ufAWGbGiAoJPPvA==
+X-Received: by 2002:a5d:6486:0:b0:33b:2300:9cdc with SMTP id o6-20020a5d6486000000b0033b23009cdcmr7236087wri.46.1707743586951;
+        Mon, 12 Feb 2024 05:13:06 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWWeeld+7JwdNTQDsO0jkryY+u3yAmckhW5SgRfY+5fV0ldQLhXXhSGIBvW6yxuM6zRKiccyP3VhYlPNRkp6gCsN4NupAgVtdA53/cZN1jEJvW9vV3mSCetbGX6LwDzEn3zJpuZsXFm6CNGtibvKcTPpb233CZ22JVAPXIXTCmZntQaFS3fMBEcrgnI0PEOEWpVW+Hm9hvrwz+t82XpzsFwC4KNE0TV5Sh19Rlmv0ziwCGeLv6DOUDBWNPVIegCMaIRSoF4C3Zxw2EcsDgQ7Lsdfdsf3B2iFGeDqjN3AUxGZ3OemCE3PMbXHE4Kp5lsdGr55YiNMKbg4GK7AyLyDeK+rhAstxl4MJn+9OumR2Hd4/9tgDhqDsHHZPr+k3UjsfQ4wSTI70zR71/k4RmpH5RXijU020/DjCK8qfsVVvuSrUVtfZ0QIqYeSYIwFksKpKipoURwJ7twbuLZXn5D30oieiRwXmKp4Vm3nm52Us+3cpnJcEJGqkrLeRn+mC+Wpwy1TthMiFKfJWwVJhcO/71VNGpHQTx+sFFbVl4PY/KqwO2U5snvWjBxpmXohzrw4PpUdu2a1f2iNR/J/GF5GwRBGzq8bNS/l3v0a3YGxtjyArrx3aA4MGFJ9kP3F8rxmUWSgmKN7EJwEDrBsbB/u6RofAe3tv4CwuGCyN/ggyOiX71r0C4FH6E/7DDH0RKkQrZl49ObylJ4I4dJjA6xWeWiM6Itpno30Zt1AfZU0jmMkv+JbKTuIG0MgjquGpaZV03XvGtbNbGcevA3XfoWU3l5KhPrsaAN5JyXobw0snxKWjQ7zZ0TIBqmYoAT5taJ1TGPlKfxQ3LXb3tCAcj8iT6R2XUgjIQCZWqsUa5jHxw8h0Q0R0Iq2MNqI2CYyC1zlXUc2Q0iF/lNw6SowtcdKTAUH8MyBD9YN2zO7Dp3Ml1iS1l08wSULWfQqgWMlRbGQBPpq2
+ 4FEEQifKZjTIU02Tf7cbrbE3std9+7VYMZtSN8ow3ZMho9DSfMsFshcXi7IrBQjs3eaE6roSK1Ci0cvCQ6ZsaY50LI19L30xDdDEsJN60TWYUfLupgPQTHWE7JOryQy4zkCgzfF1srp0GLCDtV3PBfnctsJ5+KPMRBg+dlHvtAfRzm7TXFDOfiJd+Luhuksi21pxTg2vINRJheJIiGsbdMMYI9/ACXKt7i4+gB8H8st97ckVnIGfalVW/sWoJWe88CbAu5yy0wkW3eyV1EAf4W+IBe4Y6m83uKzJWFOhK4vYhveT/wkym+/0Eelze0DHYINSgRdvq8jojh
+Received: from ?IPV6:2003:cb:c730:2200:7229:83b1:524e:283a? (p200300cbc7302200722983b1524e283a.dip0.t-ipconnect.de. [2003:cb:c730:2200:7229:83b1:524e:283a])
+        by smtp.gmail.com with ESMTPSA id x8-20020a5d6508000000b0033b1b01e4fcsm6805291wru.96.2024.02.12.05.13.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 05:13:06 -0800 (PST)
+Message-ID: <165363ba-d6cc-47a7-ab2a-d3a27a42f739@redhat.com>
+Date: Mon, 12 Feb 2024 14:13:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 2/4] mm: introduce new flag to indicate wc safe
+Content-Language: en-US
+To: ankita@nvidia.com, jgg@nvidia.com, maz@kernel.org,
+ oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com,
+ yuzenghui@huawei.com, reinette.chatre@intel.com, surenb@google.com,
+ stefanha@redhat.com, brauner@kernel.org, catalin.marinas@arm.com,
+ will@kernel.org, mark.rutland@arm.com, alex.williamson@redhat.com,
+ kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org,
+ akpm@linux-foundation.org, andreyknvl@gmail.com, wangjinchao@xfusion.com,
+ gshan@redhat.com, shahuang@redhat.com, ricarkol@google.com,
+ linux-mm@kvack.org, lpieralisi@kernel.org, rananta@google.com,
+ ryan.roberts@arm.com, linus.walleij@linaro.org, bhe@redhat.com
+Cc: aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+ targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+ apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+ kvmarm@lists.linux.dev, mochs@nvidia.com, zhiw@nvidia.com,
+ kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240211174705.31992-1-ankita@nvidia.com>
+ <20240211174705.31992-3-ankita@nvidia.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240211174705.31992-3-ankita@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240212-kms-hdmi-connector-state-v6-20-f4bcdc979e6f@kernel.org>
-References: <20240212-kms-hdmi-connector-state-v6-0-f4bcdc979e6f@kernel.org>
-In-Reply-To: <20240212-kms-hdmi-connector-state-v6-0-f4bcdc979e6f@kernel.org>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
- Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, 
- Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>, 
- =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org, 
- linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
- linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
- Maxime Ripard <mripard@kernel.org>, 
- Dave Stevenson <dave.stevenson@raspberrypi.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=17784; i=mripard@kernel.org;
- h=from:subject:message-id; bh=dcBrjJ5D1thLAwNTtA7Dp5db/HhUz1nGHoah5XIr6nA=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmnJLMrrW12dvke/epSV6Zs/bR6ZdCX068eFs3U0HvyP
- 3TmvtDVHaUsDGJcDLJiiiwxwuZL4k7Net3JxjcPZg4rE8gQBi5OAZjIgkKGP9yiNcqXxRbWh3Wf
- F99kYFzMmHJKbY9G1vHvKuoJBecDQxj+cEmtTWjTrDZ5GW26KcbdJ15OZvWvOcn/bif+qO/rMOh
- gBgA=
-X-Developer-Key: i=mripard@kernel.org; a=openpgp;
- fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 
-The previous patch stores in the connector state the expected TMDS
-character rate matching the configuration of the HDMI connector. Let's
-add a few tests to make sure it works as expected.
+On 11.02.24 18:47, ankita@nvidia.com wrote:
+> From: Ankit Agrawal <ankita@nvidia.com>
+> 
+> Generalizing S2 setting from DEVICE_nGnRE to NormalNc for non PCI
+> devices may be problematic. E.g. GICv2 vCPU interface, which is
+> effectively a shared peripheral, can allow a guest to affect another
+> guest's interrupt distribution. The issue may be solved by limiting
+> the relaxation to mappings that have a user VMA. Still there is
+> insufficient information and uncertainity in the behavior of
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
----
- .../gpu/drm/tests/drm_atomic_state_helper_test.c   | 166 ++++++++++++++++
- drivers/gpu/drm/tests/drm_kunit_edid.h             | 216 +++++++++++++++++++++
- 2 files changed, 382 insertions(+)
+s/uncertainity/uncertainty/
 
-diff --git a/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c b/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
-index d3f35600a9f9..d76fafb91025 100644
---- a/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
-+++ b/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
-@@ -816,6 +816,146 @@ static void drm_test_check_output_bpc_crtc_mode_not_changed(struct kunit *test)
- 	KUNIT_EXPECT_FALSE(test, crtc_state->mode_changed);
- }
- 
-+/*
-+ * Test that when doing a commit which would use RGB 8bpc, the TMDS
-+ * clock rate stored in the connector state is equal to the mode clock
-+ */
-+static void drm_test_check_tmds_char_rate_rgb_8bpc(struct kunit *test)
-+{
-+	struct drm_atomic_helper_connector_hdmi_priv *priv;
-+	struct drm_modeset_acquire_ctx *ctx;
-+	struct drm_connector_state *conn_state;
-+	struct drm_display_mode *preferred;
-+	struct drm_connector *conn;
-+	struct drm_device *drm;
-+	struct drm_crtc *crtc;
-+	int ret;
-+
-+	priv = drm_atomic_helper_connector_hdmi_init(test,
-+						     BIT(HDMI_COLORSPACE_RGB),
-+						     8);
-+	KUNIT_ASSERT_NOT_NULL(test, priv);
-+
-+	conn = &priv->connector;
-+	ret = set_connector_edid(test, conn,
-+				 test_edid_hdmi_1080p_rgb_max_200mhz,
-+				 ARRAY_SIZE(test_edid_hdmi_1080p_rgb_max_200mhz));
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
-+
-+	preferred = find_preferred_mode(conn);
-+	KUNIT_ASSERT_NOT_NULL(test, preferred);
-+	KUNIT_ASSERT_FALSE(test, preferred->flags & DRM_MODE_FLAG_DBLCLK);
-+
-+	drm = &priv->drm;
-+	crtc = priv->crtc;
-+	ret = light_up_connector(test, drm, crtc, conn, preferred, ctx);
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	conn_state = conn->state;
-+	KUNIT_ASSERT_NOT_NULL(test, conn_state);
-+
-+	KUNIT_ASSERT_EQ(test, conn_state->hdmi.output_bpc, 8);
-+	KUNIT_ASSERT_EQ(test, conn_state->hdmi.output_format, HDMI_COLORSPACE_RGB);
-+	KUNIT_EXPECT_EQ(test, conn_state->hdmi.tmds_char_rate, preferred->clock * 1000);
-+}
-+
-+/*
-+ * Test that when doing a commit which would use RGB 10bpc, the TMDS
-+ * clock rate stored in the connector state is equal to 1.25 times the
-+ * mode pixel clock
-+ */
-+static void drm_test_check_tmds_char_rate_rgb_10bpc(struct kunit *test)
-+{
-+	struct drm_atomic_helper_connector_hdmi_priv *priv;
-+	struct drm_modeset_acquire_ctx *ctx;
-+	struct drm_connector_state *conn_state;
-+	struct drm_display_mode *preferred;
-+	struct drm_connector *conn;
-+	struct drm_device *drm;
-+	struct drm_crtc *crtc;
-+	int ret;
-+
-+	priv = drm_atomic_helper_connector_hdmi_init(test,
-+						     BIT(HDMI_COLORSPACE_RGB),
-+						     10);
-+	KUNIT_ASSERT_NOT_NULL(test, priv);
-+
-+	conn = &priv->connector;
-+	ret = set_connector_edid(test, conn,
-+				 test_edid_hdmi_1080p_rgb_yuv_dc_max_340mhz,
-+				 ARRAY_SIZE(test_edid_hdmi_1080p_rgb_yuv_dc_max_340mhz));
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
-+
-+	preferred = find_preferred_mode(conn);
-+	KUNIT_ASSERT_NOT_NULL(test, preferred);
-+	KUNIT_ASSERT_FALSE(test, preferred->flags & DRM_MODE_FLAG_DBLCLK);
-+
-+	drm = &priv->drm;
-+	crtc = priv->crtc;
-+	ret = light_up_connector(test, drm, crtc, conn, preferred, ctx);
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	conn_state = conn->state;
-+	KUNIT_ASSERT_NOT_NULL(test, conn_state);
-+
-+	KUNIT_ASSERT_EQ(test, conn_state->hdmi.output_bpc, 10);
-+	KUNIT_ASSERT_EQ(test, conn_state->hdmi.output_format, HDMI_COLORSPACE_RGB);
-+	KUNIT_EXPECT_EQ(test, conn_state->hdmi.tmds_char_rate, preferred->clock * 1250);
-+}
-+
-+/*
-+ * Test that when doing a commit which would use RGB 12bpc, the TMDS
-+ * clock rate stored in the connector state is equal to 1.5 times the
-+ * mode pixel clock
-+ */
-+static void drm_test_check_tmds_char_rate_rgb_12bpc(struct kunit *test)
-+{
-+	struct drm_atomic_helper_connector_hdmi_priv *priv;
-+	struct drm_modeset_acquire_ctx *ctx;
-+	struct drm_connector_state *conn_state;
-+	struct drm_display_mode *preferred;
-+	struct drm_connector *conn;
-+	struct drm_device *drm;
-+	struct drm_crtc *crtc;
-+	int ret;
-+
-+	priv = drm_atomic_helper_connector_hdmi_init(test,
-+						     BIT(HDMI_COLORSPACE_RGB),
-+						     12);
-+	KUNIT_ASSERT_NOT_NULL(test, priv);
-+
-+	conn = &priv->connector;
-+	ret = set_connector_edid(test, conn,
-+				 test_edid_hdmi_1080p_rgb_yuv_dc_max_340mhz,
-+				 ARRAY_SIZE(test_edid_hdmi_1080p_rgb_yuv_dc_max_340mhz));
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
-+
-+	preferred = find_preferred_mode(conn);
-+	KUNIT_ASSERT_NOT_NULL(test, preferred);
-+	KUNIT_ASSERT_FALSE(test, preferred->flags & DRM_MODE_FLAG_DBLCLK);
-+
-+	drm = &priv->drm;
-+	crtc = priv->crtc;
-+	ret = light_up_connector(test, drm, crtc, conn, preferred, ctx);
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	conn_state = conn->state;
-+	KUNIT_ASSERT_NOT_NULL(test, conn_state);
-+
-+	KUNIT_ASSERT_EQ(test, conn_state->hdmi.output_bpc, 12);
-+	KUNIT_ASSERT_EQ(test, conn_state->hdmi.output_format, HDMI_COLORSPACE_RGB);
-+	KUNIT_EXPECT_EQ(test, conn_state->hdmi.tmds_char_rate, preferred->clock * 1500);
-+}
-+
- static struct kunit_case drm_atomic_helper_connector_hdmi_check_tests[] = {
- 	KUNIT_CASE(drm_test_check_broadcast_rgb_auto_cea_mode),
- 	KUNIT_CASE(drm_test_check_broadcast_rgb_auto_cea_mode_vic_1),
-@@ -827,6 +967,9 @@ static struct kunit_case drm_atomic_helper_connector_hdmi_check_tests[] = {
- 	KUNIT_CASE(drm_test_check_broadcast_rgb_crtc_mode_not_changed),
- 	KUNIT_CASE(drm_test_check_output_bpc_crtc_mode_changed),
- 	KUNIT_CASE(drm_test_check_output_bpc_crtc_mode_not_changed),
-+	KUNIT_CASE(drm_test_check_tmds_char_rate_rgb_8bpc),
-+	KUNIT_CASE(drm_test_check_tmds_char_rate_rgb_10bpc),
-+	KUNIT_CASE(drm_test_check_tmds_char_rate_rgb_12bpc),
- 	/*
- 	 * TODO: We should have tests to check that a change in the
- 	 * format triggers a CRTC mode change just like we do for the
-@@ -958,12 +1101,35 @@ static void drm_test_check_format_value(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, conn_state->hdmi.output_format, HDMI_COLORSPACE_RGB);
- }
- 
-+/*
-+ * Test that the value of the output format property out of reset is set
-+ * to 0, and will be computed at atomic_check time.
-+ */
-+static void drm_test_check_tmds_char_value(struct kunit *test)
-+{
-+	struct drm_atomic_helper_connector_hdmi_priv *priv;
-+	struct drm_connector_state *conn_state;
-+	struct drm_connector *conn;
-+
-+	priv = drm_atomic_helper_connector_hdmi_init(test,
-+						     BIT(HDMI_COLORSPACE_RGB) |
-+						     BIT(HDMI_COLORSPACE_YUV422) |
-+						     BIT(HDMI_COLORSPACE_YUV444),
-+						     12);
-+	KUNIT_ASSERT_NOT_NULL(test, priv);
-+
-+	conn = &priv->connector;
-+	conn_state = conn->state;
-+	KUNIT_EXPECT_EQ(test, conn_state->hdmi.tmds_char_rate, 0);
-+}
-+
- static struct kunit_case drm_atomic_helper_connector_hdmi_reset_tests[] = {
- 	KUNIT_CASE(drm_test_check_broadcast_rgb_value),
- 	KUNIT_CASE(drm_test_check_bpc_8_value),
- 	KUNIT_CASE(drm_test_check_bpc_10_value),
- 	KUNIT_CASE(drm_test_check_bpc_12_value),
- 	KUNIT_CASE(drm_test_check_format_value),
-+	KUNIT_CASE(drm_test_check_tmds_char_value),
- 	{ }
- };
- 
-diff --git a/drivers/gpu/drm/tests/drm_kunit_edid.h b/drivers/gpu/drm/tests/drm_kunit_edid.h
-index 2bba316de064..24f3377ef0f0 100644
---- a/drivers/gpu/drm/tests/drm_kunit_edid.h
-+++ b/drivers/gpu/drm/tests/drm_kunit_edid.h
-@@ -103,4 +103,220 @@ const unsigned char test_edid_hdmi_1080p_rgb_max_200mhz[] = {
-   0x00, 0x00, 0x00, 0xd0
- };
- 
-+/*
-+ * edid-decode (hex):
-+ *
-+ * 00 ff ff ff ff ff ff 00 31 d8 2a 00 00 00 00 00
-+ * 00 21 01 03 81 a0 5a 78 1a 00 00 00 00 00 00 00
-+ * 00 00 00 20 00 00 01 01 01 01 01 01 01 01 01 01
-+ * 01 01 01 01 01 01 02 3a 80 18 71 38 2d 40 58 2c
-+ * 45 00 40 84 63 00 00 1e 00 00 00 fc 00 54 65 73
-+ * 74 20 45 44 49 44 0a 20 20 20 00 00 00 fd 00 32
-+ * 46 1e 46 0f 00 0a 20 20 20 20 20 20 00 00 00 10
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 7a
-+ *
-+ * 02 03 1b b1 e3 05 00 20 41 10 e2 00 ca 6d 03 0c
-+ * 00 12 34 78 28 20 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 a8
-+ *
-+ * ----------------
-+ *
-+ * Block 0, Base EDID:
-+ *   EDID Structure Version & Revision: 1.3
-+ *   Vendor & Product Identification:
-+ *     Manufacturer: LNX
-+ *     Model: 42
-+ *     Made in: 2023
-+ *   Basic Display Parameters & Features:
-+ *     Digital display
-+ *     DFP 1.x compatible TMDS
-+ *     Maximum image size: 160 cm x 90 cm
-+ *     Gamma: 2.20
-+ *     Undefined display color type
-+ *     First detailed timing is the preferred timing
-+ *   Color Characteristics:
-+ *     Red  : 0.0000, 0.0000
-+ *     Green: 0.0000, 0.0000
-+ *     Blue : 0.0000, 0.0000
-+ *     White: 0.0000, 0.0000
-+ *   Established Timings I & II:
-+ *     DMT 0x04:   640x480    59.940476 Hz   4:3     31.469 kHz     25.175000 MHz
-+ *   Standard Timings: none
-+ *   Detailed Timing Descriptors:
-+ *     DTD 1:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (1600 mm x 900 mm)
-+ *                  Hfront   88 Hsync  44 Hback  148 Hpol P
-+ *                  Vfront    4 Vsync   5 Vback   36 Vpol P
-+ *     Display Product Name: 'Test EDID'
-+ *     Display Range Limits:
-+ *       Monitor ranges (GTF): 50-70 Hz V, 30-70 kHz H, max dotclock 150 MHz
-+ *     Dummy Descriptor:
-+ *   Extension blocks: 1
-+ * Checksum: 0x7a
-+ *
-+ * ----------------
-+ *
-+ * Block 1, CTA-861 Extension Block:
-+ *   Revision: 3
-+ *   Underscans IT Video Formats by default
-+ *   Supports YCbCr 4:4:4
-+ *   Supports YCbCr 4:2:2
-+ *   Native detailed modes: 1
-+ *   Colorimetry Data Block:
-+ *     sRGB
-+ *   Video Data Block:
-+ *     VIC  16:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz
-+ *   Video Capability Data Block:
-+ *     YCbCr quantization: Selectable (via AVI YQ)
-+ *     RGB quantization: Selectable (via AVI Q)
-+ *     PT scan behavior: No Data
-+ *     IT scan behavior: Always Underscanned
-+ *     CE scan behavior: Always Underscanned
-+ *   Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
-+ *     Source physical address: 1.2.3.4
-+ *     DC_48bit
-+ *     DC_36bit
-+ *     DC_30bit
-+ *     DC_Y444
-+ *     Maximum TMDS clock: 200 MHz
-+ *     Extended HDMI video details:
-+ * Checksum: 0xa8  Unused space in Extension Block: 100 bytes
-+ */
-+const unsigned char test_edid_hdmi_1080p_rgb_yuv_dc_max_200mhz[] = {
-+  0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x31, 0xd8, 0x2a, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x01, 0x03, 0x81, 0xa0, 0x5a, 0x78,
-+  0x1a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20,
-+  0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-+  0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02, 0x3a, 0x80, 0x18, 0x71, 0x38,
-+  0x2d, 0x40, 0x58, 0x2c, 0x45, 0x00, 0x40, 0x84, 0x63, 0x00, 0x00, 0x1e,
-+  0x00, 0x00, 0x00, 0xfc, 0x00, 0x54, 0x65, 0x73, 0x74, 0x20, 0x45, 0x44,
-+  0x49, 0x44, 0x0a, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0xfd, 0x00, 0x32,
-+  0x46, 0x1e, 0x46, 0x0f, 0x00, 0x0a, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-+  0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x7a, 0x02, 0x03, 0x1b, 0xb1,
-+  0xe3, 0x05, 0x00, 0x20, 0x41, 0x10, 0xe2, 0x00, 0xca, 0x6d, 0x03, 0x0c,
-+  0x00, 0x12, 0x34, 0x78, 0x28, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0xa8
-+};
-+
-+/*
-+ * edid-decode (hex):
-+ *
-+ * 00 ff ff ff ff ff ff 00 31 d8 2a 00 00 00 00 00
-+ * 00 21 01 03 81 a0 5a 78 0a 00 00 00 00 00 00 00
-+ * 00 00 00 20 00 00 01 01 01 01 01 01 01 01 01 01
-+ * 01 01 01 01 01 01 02 3a 80 18 71 38 2d 40 58 2c
-+ * 45 00 40 84 63 00 00 1e 00 00 00 fc 00 54 65 73
-+ * 74 20 45 44 49 44 0a 20 20 20 00 00 00 fd 00 32
-+ * 46 1e 46 0f 00 0a 20 20 20 20 20 20 00 00 00 10
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 8a
-+ *
-+ * 02 03 1b b1 e3 05 00 20 41 10 e2 00 ca 6d 03 0c
-+ * 00 12 34 78 44 20 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+ * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 8c
-+ *
-+ * ----------------
-+ *
-+ * Block 0, Base EDID:
-+ *   EDID Structure Version & Revision: 1.3
-+ *   Vendor & Product Identification:
-+ *     Manufacturer: LNX
-+ *     Model: 42
-+ *     Made in: 2023
-+ *   Basic Display Parameters & Features:
-+ *     Digital display
-+ *     DFP 1.x compatible TMDS
-+ *     Maximum image size: 160 cm x 90 cm
-+ *     Gamma: 2.20
-+ *     RGB color display
-+ *     First detailed timing is the preferred timing
-+ *   Color Characteristics:
-+ *     Red  : 0.0000, 0.0000
-+ *     Green: 0.0000, 0.0000
-+ *     Blue : 0.0000, 0.0000
-+ *     White: 0.0000, 0.0000
-+ *   Established Timings I & II:
-+ *     DMT 0x04:   640x480    59.940476 Hz   4:3     31.469 kHz     25.175000 MHz
-+ *   Standard Timings: none
-+ *   Detailed Timing Descriptors:
-+ *     DTD 1:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (1600 mm x 900 mm)
-+ *                  Hfront   88 Hsync  44 Hback  148 Hpol P
-+ *                  Vfront    4 Vsync   5 Vback   36 Vpol P
-+ *     Display Product Name: 'Test EDID'
-+ *     Display Range Limits:
-+ *       Monitor ranges (GTF): 50-70 Hz V, 30-70 kHz H, max dotclock 150 MHz
-+ *     Dummy Descriptor:
-+ *   Extension blocks: 1
-+ * Checksum: 0x8a
-+ *
-+ * ----------------
-+ *
-+ * Block 1, CTA-861 Extension Block:
-+ *   Revision: 3
-+ *   Underscans IT Video Formats by default
-+ *   Supports YCbCr 4:4:4
-+ *   Supports YCbCr 4:2:2
-+ *   Native detailed modes: 1
-+ *   Colorimetry Data Block:
-+ *     sRGB
-+ *   Video Data Block:
-+ *     VIC  16:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz
-+ *   Video Capability Data Block:
-+ *     YCbCr quantization: Selectable (via AVI YQ)
-+ *     RGB quantization: Selectable (via AVI Q)
-+ *     PT scan behavior: No Data
-+ *     IT scan behavior: Always Underscanned
-+ *     CE scan behavior: Always Underscanned
-+ *   Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
-+ *     Source physical address: 1.2.3.4
-+ *     DC_48bit
-+ *     DC_36bit
-+ *     DC_30bit
-+ *     DC_Y444
-+ *     Maximum TMDS clock: 340 MHz
-+ *     Extended HDMI video details:
-+ * Checksum: 0x8c  Unused space in Extension Block: 100 bytes
-+ */
-+const unsigned char test_edid_hdmi_1080p_rgb_yuv_dc_max_340mhz[] = {
-+  0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x31, 0xd8, 0x2a, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x21, 0x01, 0x03, 0x81, 0xa0, 0x5a, 0x78,
-+  0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20,
-+  0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
-+  0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02, 0x3a, 0x80, 0x18, 0x71, 0x38,
-+  0x2d, 0x40, 0x58, 0x2c, 0x45, 0x00, 0x40, 0x84, 0x63, 0x00, 0x00, 0x1e,
-+  0x00, 0x00, 0x00, 0xfc, 0x00, 0x54, 0x65, 0x73, 0x74, 0x20, 0x45, 0x44,
-+  0x49, 0x44, 0x0a, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0xfd, 0x00, 0x32,
-+  0x46, 0x1e, 0x46, 0x0f, 0x00, 0x0a, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-+  0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x8a, 0x02, 0x03, 0x1b, 0xb1,
-+  0xe3, 0x05, 0x00, 0x20, 0x41, 0x10, 0xe2, 0x00, 0xca, 0x6d, 0x03, 0x0c,
-+  0x00, 0x12, 0x34, 0x78, 0x44, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+  0x00, 0x00, 0x00, 0x8c
-+};
-+
- #endif // DRM_KUNIT_EDID_H_
+> non PCI drivers.
+> 
+> Add a new flag VM_ALLOW_ANY_UNCACHED to indicate KVM that the device
+> is WC capable and these S2 changes can be extended to it. KVM can use
+> this flag to activate the code.
+> 
+
+MM people will stumble only over this commit at some point, looking for 
+details. It might make sense to add a bit more details on the underlying 
+problem (user space tables vs. stage-1 vs. stage-2) and why we want to 
+have a different mapping in user space compared to stage-1.
+
+Then, describe that the VMA flag was found to be the simplest and 
+cleanest way to communicate this information from VFIO to KVM.
+
+> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+> ---
+>   include/linux/mm.h | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index f5a97dec5169..59576e56c58b 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -391,6 +391,20 @@ extern unsigned int kobjsize(const void *objp);
+>   # define VM_UFFD_MINOR		VM_NONE
+>   #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
+>   
+> +/*
+> + * This flag is used to connect VFIO to arch specific KVM code. It
+> + * indicates that the memory under this VMA is safe for use with any
+> + * non-cachable memory type inside KVM. Some VFIO devices, on some
+> + * platforms, are thought to be unsafe and can cause machine crashes
+> + * if KVM does not lock down the memory type.
+> + */
+> +#ifdef CONFIG_64BIT
+> +#define VM_ALLOW_ANY_UNCACHED_BIT	39
+> +#define VM_ALLOW_ANY_UNCACHED		BIT(VM_ALLOW_ANY_UNCACHED_BIT)
+> +#else
+> +#define VM_ALLOW_ANY_UNCACHED		VM_NONE
+> +#endif
+> +
+>   /* Bits set in the VMA until the stack is in its final location */
+>   #define VM_STACK_INCOMPLETE_SETUP (VM_RAND_READ | VM_SEQ_READ | VM_STACK_EARLY)
+>   
+
+It's not perfect (very VFIO <-> KVM specific right now, VMA flags feel a 
+bit wrong), but it certainly easier and cleaner than any alternatives I 
+could think of.
+
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
-2.43.0
+Cheers,
+
+David / dhildenb
 
 
