@@ -1,75 +1,74 @@
-Return-Path: <linux-kernel+bounces-61329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9771851122
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:38:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58473851126
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:38:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27921B22E90
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:38:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4BBE1F21479
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D32938F86;
-	Mon, 12 Feb 2024 10:37:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9139839859;
+	Mon, 12 Feb 2024 10:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HFlZe2Wn"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x1FCjYT2"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C323A22067
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2CB28387
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707734261; cv=none; b=NUPtMr5D2OxclEMeA+Vctbst8LlemI/l1Ed3Q/IB9tmaPipuDwSGfJENViPAfAD+bT2BMH6NKFV1mNdT5ZES/VMzNj8cK/bF3S9WtY6kMGDxZ/lzyAMfZY1dA/jADS/jaNkEkEE42Kq3Xw2SUs9imacye/MhkTINJV5WWKXEojw=
+	t=1707734262; cv=none; b=VuLDqaY/Qg0xMrb/QQDhTs5dJ1HiKBy0+Ge6IWTk20Ft9qmN5V1LyZhshPAaB3Za4R2WK+h5lXA2bOWOYWK8QYWtaauugQFCLb3qwpWUC4lMq9D3trSzStWoMj3O46Bxd/oHMv111fbrSngF+V1CsE1uyKYBf0kJ379hEXmYlgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707734261; c=relaxed/simple;
-	bh=yo2bcPgq0Ry4Dz1DgWE+noJk1QUbw0wPoiksjLdYOBo=;
+	s=arc-20240116; t=1707734262; c=relaxed/simple;
+	bh=RNniP+qswI5RqcE3Ubm/zb68mwKOg5y2zMVsmk5nLVc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=EUBY0xiToFIe0I92aAeqOtvFpZkIqVq4rt6jIg49H1HiSou/8wQpu0PqIPkUfugdL/y/+/QajboBhXmPVcE9pAk2J20U/d/m/R527++YfuBjvh2mkxYk3a6819R9TYfkUfPGN9fpfyonqlbf7F4CvZtEA0xwAdNthMCw3Xf20VA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HFlZe2Wn; arc=none smtp.client-ip=209.85.221.53
+	 In-Reply-To:To:Cc; b=d+FSjcq5b0+lpTYl/nXXscifwSg7hTJi9VEUCVmun4LMG56EOYg9A0Gf/vjclapB3B3jowXvOBkr00NXZGt1wXGwSUxRn4xzEMlasCtYAOw5SquX1GFfxbiO92GZqZ/WPiHtzIpaLePZmdp9Uk0S4qualxoWkmZ9h9I01I2aFNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=x1FCjYT2; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3394b892691so1938007f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:37:38 -0800 (PST)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33aeb088324so1968210f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:37:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707734257; x=1708339057; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707734258; x=1708339058; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rJagULZ78/2FNiklIv2V0yaJYekfWzVBl7+5o+wg9ug=;
-        b=HFlZe2WnqEhpCZyy0dpNnrFduF+lx95yjlnmfpiSVGvhNpq4YDxBV2ypbTViBv9cXt
-         UMbzZ1cpPhXMy0trrF6U00AaTq+9Bk5UOb2TYUkUFYDXEGLSIW4Wu5m98rUGivT99qYo
-         GbWBmjgrweoCkgOxNjCPBkAY7ZQctUsIDAHAsnlz6GdtcTU09NPJAIM1LBt2fkABQIWp
-         b5etGOa6bKF17REaw726E7/ybgwMdmr0UUDugd2ifaW7UMsgLzo3C8neXiFupGpyaKuP
-         7DMOwOZMViNW1w5//kwWYSmLAU2F9SM1yK45i0zxwjj0LyGDyP4fPcqOR7UieO+56WLi
-         SqVg==
+        bh=qwfVS+Td8YMY3ebZOXzlWppW1EsDh7tKAqBML4ltt8s=;
+        b=x1FCjYT2pnjoSvDlDORp0S9CuWpAWmVVphnTRbU9mvuE6jgfpVXxtn8osPj6xlk386
+         cckY5wgRMpoUezQgYYHB5H8SIwe7d6l8Q3fRgtnMxrnyAiccFXbZgHHJ7LBd0y05xo/X
+         5vhydC/xnRTwD+U6zfO4cUFIf3m0DgIgc4TsXzhVtW7C7WzHaoOP3oE+nKS/BlNgfH7Y
+         s8JqiTJ9mPcE/OQ7723FoHx4toOmKIWYjjy7Uv9gyaDS29QuCz998wZorTBzukWuES9l
+         WJbvZDu8mBl724AklQPW80eqOdWMssC/SeyOziOcfYxvu70032WpBhIScZwQX8TKQkWi
+         /3uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707734257; x=1708339057;
+        d=1e100.net; s=20230601; t=1707734258; x=1708339058;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rJagULZ78/2FNiklIv2V0yaJYekfWzVBl7+5o+wg9ug=;
-        b=NO/HvfmocoO1TlHFUuXwks08qIPVF6Ot1ghnAcqMuRxGQd2y8BAnOXIIdoYQWjJMl+
-         5La3XGlVpyj5DztdbjL120SdRzdFWkEL6xnEVnbz3D0uPzRr+cp/ukcxC6h01m+CkOuv
-         lQVggEovhQCFEIAo/WcODs1DwmRiYs9XZIhbLDcqQn68cCzVPM44nVTzab1iZ2nS/fj9
-         NCNO+VpL9+fu/ec1Qy445a/9KWyjAq1Gedj8M4tT97fKEnxVn/M9I49TRL8LaTKryN9R
-         QBoGjSeYh73dC3o5boMO7sMeVnZzP6VRL0AtggK4+wopw9TeeGnMbce7JODdncwK0qEQ
-         0yBg==
-X-Forwarded-Encrypted: i=1; AJvYcCX3WB4mnfZIKjHNzQ2Ps1PtuE3mZzPa4bgRmPStKo/IqgYIeRKp993S2Fj1lrvNb/lti76C6woKQY31C5DjVdOA2P5fLP2ION3JzvMK
-X-Gm-Message-State: AOJu0YxHUDigPCMf9u5up3A0r8IBkWCWR7h3PArJYdjev4LPUieLxuLP
-	y6DY9GqL/+UcEkDQG0XKgbmLP+ZZGdc1LqJigBS2a88uuHawJdPA4A5LBc6xiIs=
-X-Google-Smtp-Source: AGHT+IEUTbD3P+8HYLm57Gj62Yy+XJcAscPYSfTzC9X3BDnYz7nuTYa8g6lCJZ1yRVTHo8ErNwEWyg==
-X-Received: by 2002:adf:f74a:0:b0:33b:4ec0:8158 with SMTP id z10-20020adff74a000000b0033b4ec08158mr5438324wrp.1.1707734257037;
-        Mon, 12 Feb 2024 02:37:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVm9cvpkw+EPcMp5Ggu8Tz2Y5oioUY4blXzFfVQW5qFjRs5H0RAX0DHyJi30eK+Lod5cYp5YA6+9GBNKqNW2bQXkMU8GMclCsjITnIo1V46svI+vJ2ukeX3ussrwAM/3CvumJVo8UnfKyuWkWo28wo65WvC11krDI5uibD/uSZP2OVrPLD5N807nKQ7Dmk6eLBPDBodJf/YQdfcTdW96TraHAYArr4uDBXTLrbTs2z5FrooxXsxnYJ2hjrsLQiYpPbGreqBuxyiz5a6jhPQt0o/HGSVLpY1r0oNPmOb7wZKfrpSrnNcLyGbYyOoXtvlxudhG0y1T/Zp+32EEasqUvfIkvX0vuI063kfsyq+0jxnvTwVH3iOJQiQU6EOYlUD7mUaoT6psH6gEfqDZD6cIdc6VP4M2Z+Jbnau1L8az9uuR235WsvZGsIzpvYnB2ehwARHZZwFned9/L5Nv31K3Z8PJNhpryUgGGElz/+d3DoUMoLzNUTRBQWymIGhsovLF1lYPVCq6Yx0OLvpI1YPNVsyX5gK0pLi6W5ZyyAzlHlVYrK95gpx0YP7DvYkdyqu7xjkd8ngU/H/U1s0bmLUdVkTfKYBs5y3zFgizDKzIdTERjpHzyDI+ojWfo2IUOkiX2NCGXqfYhZ1sertf0XgNc/XyI1sKc8P1vsmcEfb4pcEamKXAhCj9QEVoG20Z4qC2BPzQCMH2Kptneo9mRd64q0jtVTWFtohEeYZd8j3jsiP7y401aKsk0nL3Auv0esaiHmSE8TpfsG8+OnSeU+TdY+jX02FlbfRcAWcXJEb7Dp/nNJFPr6W5rCauU7ZFYATfSULEEo67McGDe8a6CxO2TIMz2+iSLxxdXwQnYY=
+        bh=qwfVS+Td8YMY3ebZOXzlWppW1EsDh7tKAqBML4ltt8s=;
+        b=nQdk4Ie8ICkrOwst70P+p+d56XNOHudnVqFl/g5PV9WHRkgvThGN/A8RTThH+bdXU9
+         AIrg6uLK779VtztBwFhl9+XWNXAmEOJXZOyTGSXsLQP4qSzOgxfIf0aQglSpxxxiRNPx
+         sc5OI+WVUS6WkikTiy+bNPwHFJpxL1FcfCH9Wkj1QdMfKyE19jR+3LkrSTZCK6BGTgAf
+         z93BOGl4vIl3LLkdvWXpWFXblE7YDhhADnSFjKZgS3FUWrwMlOFuXNscdkiEDI87cPTk
+         zcEEwxqoRUONaamFQPdEE3sIXlnIgOUUT88oQQDFaahdilLgsNWNeudztePBcY+NfNM3
+         LMvg==
+X-Gm-Message-State: AOJu0Yz77O+9kkOsmfUzYS9fyq+pMoYgZkRIWCGqNngQ6YAV1C38zMxW
+	DGWbwIfAwP6xJeXDQsVrtgSoBQD/Yt8L2cl9aFBmbf1A7gVm0UGDdkV3s7e0eDA=
+X-Google-Smtp-Source: AGHT+IEQtq2AHm4t9HcgSlYTWQXT0RGCuNdj6soxDlrJUvyimvD1jZUMhQaLHejrTv+rWCw34YghDQ==
+X-Received: by 2002:adf:f686:0:b0:33b:28c1:e06c with SMTP id v6-20020adff686000000b0033b28c1e06cmr5092634wrp.15.1707734258245;
+        Mon, 12 Feb 2024 02:37:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXUIk1JNz8mk2hoGGhDXh/2srQQ9PK2tPz398CDMBZ/y7jFw8TZy7KjbDIwmeh3Q6h6vjMpCVm54t4/0HJf/K18Nad7wbJhaGc/S2ld0CSkCDJfkLt8604oBoc8hzYsKfR3DeseSfJK9MF4qfvFxYHRgj8vyjhrwL0YqpWptYo3vpYsAUOAFGKZnSVroM7YCcamRWJYuhHu3vKmsVQHI2t0ca6LeDiwrjwqhD0UH94UekC4xwS9OxshOb+997v2KV7t1rkwesCtjskdMWP7qmqbGcfY4qjpmiQRXWDLZKzdWdGq/RpQWeByzDo2ZQLZWiVYUL/cg0zrIkhR908yE+XoJ+0wFU7flyZwS/I+8zaGg/CZcV7sQ2wmZRVhPviB1zMFDDdwBK8iEvAmPzSvN5DUnGkEFjiHZtTrEWjughjrsK92mAOLEn2gKWP+np9pUL/UspE1ohRhrE2KOojHAAp4XYd8sFIS8gIunzheilDO1xAofpQlQeLCDIG/Q8SID8/g8TmwAjplzr94leaduoiIb6Nk3oX2aKfeTYjXDvJ/qxv2Qlp2ZDLa8WbVaVlONRzRP6Dcnj+F3QqfJYzeKHwqd7jKnnimRaev4cfUvEhtXN/r5q3ClEKNU9z3Uuy0BkTs209Us5f/yNLOBAyUbsc4RihEoNNzjIwSUVul0s/g2hTPQLfpIJ3BswRLXOPXYBnWdb7RR2xzORMh46P73WSe9RF1el6V3qtwY1pkqMMKRzgS1Q7pUnxr8+630RPccjSWyeq12TpQ0IKMskkOqqySfF0KnRq5vDX7IjzJ20peDkDYVSW9FWJpQ5YUTJgsKf7DEuZ+RKpEikNJdTleP8ogrRA22PuiFmJHkeQ=
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id f14-20020a056000128e00b0033b50e0d493sm6404188wrx.59.2024.02.12.02.37.35
+        by smtp.gmail.com with ESMTPSA id f14-20020a056000128e00b0033b50e0d493sm6404188wrx.59.2024.02.12.02.37.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 02:37:36 -0800 (PST)
+        Mon, 12 Feb 2024 02:37:37 -0800 (PST)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Mon, 12 Feb 2024 11:37:31 +0100
-Subject: [PATCH 2/5] dt-bindings: arm-smmu: Document SM8650 GPU SMMU
+Date: Mon, 12 Feb 2024 11:37:32 +0100
+Subject: [PATCH 3/5] drm: msm: add support for A750 GPU
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240212-topic-sm8650-gpu-v1-2-708a40b747b5@linaro.org>
+Message-Id: <20240212-topic-sm8650-gpu-v1-3-708a40b747b5@linaro.org>
 References: <20240212-topic-sm8650-gpu-v1-0-708a40b747b5@linaro.org>
 In-Reply-To: <20240212-topic-sm8650-gpu-v1-0-708a40b747b5@linaro.org>
 To: Rob Clark <robdclark@gmail.com>, 
@@ -99,62 +98,210 @@ Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
  iommu@lists.linux.dev, Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1386;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6851;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=yo2bcPgq0Ry4Dz1DgWE+noJk1QUbw0wPoiksjLdYOBo=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlyfTrO4WrHwPJVS0uZ7/4DoP2WAPQu+/ImfcHnWJp
- o7pJCXeJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZcn06wAKCRB33NvayMhJ0cczD/
- 9SSPuVVbNk2q2830ed1PUUQYXwi+AD2p6G5oVvutmoaFeglNqyo1u9Cqae9qnvbX/AFn62VQIq6oLz
- 3WBiwX83XucvLBmMqNQ4pFhyrIokyKfY92Eq1poWCZtaaZOp6AUvj1EDqzDoeVu29q8IWF8rORmFVT
- j1043yD0KI8GLrGLovOcu1eGEmunBajlBRIxEYA0fN4GZdaYBc//DUyxctPNp9tvmSbtbvT+MtaYXm
- IFasBy2TJKqwzhEN6PIsCcK4/KJQnJ9HKBOQ0RTkFmVIrmf1bWZ3n91u4dUgbVY838jjJ5909OToAf
- ogFSnCHtEA5z20G0wPPxzJQPZkiUAlo5wpguLe1aukvgHJExieK1Kfeht3G6b4TV24c825ucyAPFhT
- OhU9bA8/3uy0wuUMWomIgaAddEDt1OUnpljsxkNHIDux9f3EtBevuXABRVYZZJvybdeV+XahEQKi2Q
- bsRQ5d2mQPvMacnsTMqx67B2+EoZ+w8p1zc211SqjNxiWnSp9txjjMPqKHlCLYBOIUeL76A0bGOxJK
- t+GgvzgFy1MtSA6jSHKEWy85htZ3855+fWTLmSXN30hM/mtd3FMXwyfpUEz8I65daLOILXrXi9lZTx
- 2W5G/1h6Z5gsY7WqI32ZqONFi2PaVsgoB2liBDzcP6bYGE6+BOuWJjEVHWPA==
+ bh=RNniP+qswI5RqcE3Ubm/zb68mwKOg5y2zMVsmk5nLVc=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlyfTse4tXxKdK0Ywk9dyZ5FE187+1tsRdMdBdtBKV
+ +FU+rgqJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZcn07AAKCRB33NvayMhJ0VSiD/
+ 9yQKgsdOzLVqOdaLDryQN50v7Vu/kchj8l/EzwMdgEPssFZIdywNz6fNnhb/8WJ87LzarAE22TJNOr
+ GdNa0WHnNZc0yqQupGbpNKiBiRyjCO5J0kiUwOVG3zPenppu3saPIHKIDj1tPSiITWZzjjpc7CG4Vt
+ 9V7Q4YMZr59FkFGjUX7sjuu3JhWlE+/tREe2KJ7LhzsWAJxmQeoD/vP9TuCgJHx2MUI81UX5gm8Emy
+ mO7C0IezPwiBApxDaWmFk7IwLStq/QkLxApd2WZbGCmr0yPrCaPeheOJx+TYGLBXgxPQ9t49GY0ixc
+ U8fFJ227wxB/4I5Hn+H/Q9Kk+kWAsZjq8mvR5H5v0z3asYEQukvHhrZVa0o7hlAbhaE/TNNq+uJmaf
+ cgWAWoOVExxcSdIt31aPLNtD+HfOuaNLkDeyccfo75JZ9GKiA0nEBxTDLdZ3WszGEo4k3hV8vyH95b
+ ygOLD5D77VXcShl+y+jA/3v4xdlbbcuBPlElNnRPcvFOPVj65UbGxMDgZpS3FGTOwhlW1ppAEe+Fuo
+ 5//f1G1otr0lFJN1L4hPPxAzdZn6kseINvZvtgFCujSC+ouv4Qdql19v4lsBc+TG8n3wt5hiIbYj+8
+ oAplH9eR+t9YB1jNTMWqkJNuX+l9+r3Za1otXOTScLyqst68ORJS5BRrjDwg==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-Document the GPU SMMU found on the SM8650 platform.
+Add support for the A750 GPU found on the SM8650 platform
+
+Unlike the the very close A740 GPU on the SM8550 SoC, the A750 GPU
+doesn't have an HWCFG block but a separate register set.
+
+The missing registers are added in the a6xx.xml.h file that would
+require a subsequent sync and the non-existent hwcfg is handled
+in a6xx_set_hwcg().
+
+The A750 GPU info are added under the adreno_is_a750() macro and
+the ADRENO_7XX_GEN3 family id.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/adreno/a6xx.xml.h      |  8 ++++++++
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c      |  2 ++
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 29 ++++++++++++++++++++++++++---
+ drivers/gpu/drm/msm/adreno/adreno_device.c | 14 ++++++++++++++
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  9 ++++++++-
+ 5 files changed, 58 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-index a4042ae24770..3ad5c850f3bf 100644
---- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-+++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-@@ -93,6 +93,7 @@ properties:
-               - qcom,sm8350-smmu-500
-               - qcom,sm8450-smmu-500
-               - qcom,sm8550-smmu-500
-+              - qcom,sm8650-smmu-500
-           - const: qcom,adreno-smmu
-           - const: qcom,smmu-500
-           - const: arm,mmu-500
-@@ -508,7 +509,10 @@ allOf:
-   - if:
-       properties:
-         compatible:
--          const: qcom,sm8550-smmu-500
-+          contains:
-+            enum:
-+              - qcom,sm8550-smmu-500
-+              - qcom,sm8650-smmu-500
-     then:
-       properties:
-         clock-names:
-@@ -544,7 +548,6 @@ allOf:
-               - qcom,sdx65-smmu-500
-               - qcom,sm6350-smmu-500
-               - qcom,sm6375-smmu-500
--              - qcom,sm8650-smmu-500
-               - qcom,x1e80100-smmu-500
-     then:
-       properties:
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx.xml.h b/drivers/gpu/drm/msm/adreno/a6xx.xml.h
+index 863b5e3b0e67..c4db4e0c0819 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx.xml.h
++++ b/drivers/gpu/drm/msm/adreno/a6xx.xml.h
+@@ -1725,6 +1725,8 @@ static inline uint32_t REG_A6XX_RBBM_PERFCTR_RBBM_SEL(uint32_t i0) { return 0x00
+ 
+ #define REG_A6XX_RBBM_BLOCK_SW_RESET_CMD2			0x00000046
+ 
++#define REG_A7XX_RBBM_CLOCK_CNTL_GLOBAL				0x000000ad
++
+ #define REG_A6XX_RBBM_CLOCK_CNTL				0x000000ae
+ 
+ #define REG_A6XX_RBBM_CLOCK_CNTL_SP0				0x000000b0
+@@ -1939,12 +1941,18 @@ static inline uint32_t REG_A6XX_RBBM_PERFCTR_RBBM_SEL(uint32_t i0) { return 0x00
+ 
+ #define REG_A6XX_RBBM_CLOCK_HYST_HLSQ				0x0000011d
+ 
++#define REG_A7XX_RBBM_CGC_GLOBAL_LOAD_CMD			0x0000011e
++
++#define REG_A7XX_RBBM_CGC_P2S_TRIG_CMD				0x0000011f
++
+ #define REG_A6XX_RBBM_CLOCK_CNTL_TEX_FCHE			0x00000120
+ 
+ #define REG_A6XX_RBBM_CLOCK_DELAY_TEX_FCHE			0x00000121
+ 
+ #define REG_A6XX_RBBM_CLOCK_HYST_TEX_FCHE			0x00000122
+ 
++#define REG_A7XX_RBBM_CGC_P2S_STATUS				0x00000122
++
+ #define REG_A7XX_RBBM_CLOCK_HYST2_VFD				0x0000012f
+ 
+ #define REG_A6XX_RBBM_LPAC_GBIF_CLIENT_QOS_CNTL			0x000005ff
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+index 8c4900444b2c..325881d8ff08 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+@@ -842,6 +842,8 @@ static int a6xx_gmu_fw_start(struct a6xx_gmu *gmu, unsigned int state)
+ 		 */
+ 		if (adreno_is_a740(adreno_gpu))
+ 			chipid_min = 2;
++		else if (adreno_is_a750(adreno_gpu))
++			chipid_min = 9;
+ 		else
+ 			return -EINVAL;
+ 
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index c0bc924cd302..472991584053 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -958,10 +958,11 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+ 	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+ 	struct a6xx_gmu *gmu = &a6xx_gpu->gmu;
+ 	const struct adreno_reglist *reg;
++	bool skip_programming = !(adreno_gpu->info->hwcg || adreno_is_a7xx(adreno_gpu));
+ 	unsigned int i;
+ 	u32 val, clock_cntl_on, cgc_mode;
+ 
+-	if (!adreno_gpu->info->hwcg)
++	if (skip_programming)
+ 		return;
+ 
+ 	if (adreno_is_a630(adreno_gpu))
+@@ -982,6 +983,25 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+ 			  state ? 0x5555 : 0);
+ 	}
+ 
++	if (!adreno_gpu->info->hwcg) {
++		gpu_write(gpu, REG_A7XX_RBBM_CLOCK_CNTL_GLOBAL, 1);
++		gpu_write(gpu, REG_A7XX_RBBM_CGC_GLOBAL_LOAD_CMD, state ? 1 : 0);
++
++		if (state) {
++			gpu_write(gpu, REG_A7XX_RBBM_CGC_P2S_TRIG_CMD, 1);
++
++			if (gpu_poll_timeout(gpu, REG_A7XX_RBBM_CGC_P2S_STATUS, val,
++					     val & BIT(0), 1, 10)) {
++				dev_err(&gpu->pdev->dev, "RBBM_CGC_P2S_STATUS TXDONE Poll failed\n");
++				return;
++			}
++
++			gpu_write(gpu, REG_A7XX_RBBM_CLOCK_CNTL_GLOBAL, 0);
++		}
++
++		return;
++	}
++
+ 	val = gpu_read(gpu, REG_A6XX_RBBM_CLOCK_CNTL);
+ 
+ 	/* Don't re-program the registers if they are already correct */
+@@ -1239,7 +1259,9 @@ static void a6xx_set_cp_protect(struct msm_gpu *gpu)
+ 		count = ARRAY_SIZE(a660_protect);
+ 		count_max = 48;
+ 		BUILD_BUG_ON(ARRAY_SIZE(a660_protect) > 48);
+-	} else if (adreno_is_a730(adreno_gpu) || adreno_is_a740(adreno_gpu)) {
++	} else if (adreno_is_a730(adreno_gpu) ||
++		   adreno_is_a740(adreno_gpu) ||
++		   adreno_is_a750(adreno_gpu)) {
+ 		regs = a730_protect;
+ 		count = ARRAY_SIZE(a730_protect);
+ 		count_max = 48;
+@@ -2880,7 +2902,8 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+ 
+ 	/* gpu->info only gets assigned in adreno_gpu_init() */
+ 	is_a7xx = config->info->family == ADRENO_7XX_GEN1 ||
+-		  config->info->family == ADRENO_7XX_GEN2;
++		  config->info->family == ADRENO_7XX_GEN2 ||
++		  config->info->family == ADRENO_7XX_GEN3;
+ 
+ 	a6xx_llc_slices_init(pdev, a6xx_gpu, is_a7xx);
+ 
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+index 2ce7d7b1690d..e2582c91d7e7 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_device.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+@@ -522,6 +522,20 @@ static const struct adreno_info gpulist[] = {
+ 		.zapfw = "a740_zap.mdt",
+ 		.hwcg = a740_hwcg,
+ 		.address_space_size = SZ_16G,
++	}, {
++		.chip_ids = ADRENO_CHIP_IDS(0x43051401), /* "C520v2" */
++		.family = ADRENO_7XX_GEN3,
++		.fw = {
++			[ADRENO_FW_SQE] = "gen70900_sqe.fw",
++			[ADRENO_FW_GMU] = "gmu_gen70900.bin",
++		},
++		.gmem = 3 * SZ_1M,
++		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
++		.quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT |
++			  ADRENO_QUIRK_HAS_HW_APRIV,
++		.init = a6xx_gpu_init,
++		.zapfw = "gen70900_zap.mbn",
++		.address_space_size = SZ_16G,
+ 	},
+ };
+ 
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+index bc14df96feb0..744fa18067f8 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
++++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+@@ -48,6 +48,7 @@ enum adreno_family {
+ 	ADRENO_6XX_GEN4,  /* a660 family */
+ 	ADRENO_7XX_GEN1,  /* a730 family */
+ 	ADRENO_7XX_GEN2,  /* a740 family */
++	ADRENO_7XX_GEN3,  /* a750 family */
+ };
+ 
+ #define ADRENO_QUIRK_TWO_PASS_USE_WFI		BIT(0)
+@@ -423,12 +424,18 @@ static inline int adreno_is_a740(struct adreno_gpu *gpu)
+ 	return gpu->info->chip_ids[0] == 0x43050a01;
+ }
+ 
++static inline int adreno_is_a750(struct adreno_gpu *gpu)
++{
++	return gpu->info->chip_ids[0] == 0x43051401;
++}
++
+ /* Placeholder to make future diffs smaller */
+ static inline int adreno_is_a740_family(struct adreno_gpu *gpu)
+ {
+ 	if (WARN_ON_ONCE(!gpu->info))
+ 		return false;
+-	return gpu->info->family == ADRENO_7XX_GEN2;
++	return gpu->info->family == ADRENO_7XX_GEN2 ||
++	       gpu->info->family == ADRENO_7XX_GEN3;
+ }
+ 
+ static inline int adreno_is_a7xx(struct adreno_gpu *gpu)
 
 -- 
 2.34.1
