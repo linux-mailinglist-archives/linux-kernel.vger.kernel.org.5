@@ -1,107 +1,135 @@
-Return-Path: <linux-kernel+bounces-61909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07BAD85183F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:38:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EF56851843
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:38:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B84F32868C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:38:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE674286D8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812663C6AB;
-	Mon, 12 Feb 2024 15:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5130C3CF7D;
+	Mon, 12 Feb 2024 15:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bNSCUkXo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rtg7rot/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD91A3C088;
-	Mon, 12 Feb 2024 15:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF6B3C495;
+	Mon, 12 Feb 2024 15:38:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707752292; cv=none; b=iMBgRq4Zkfr+3XxYvMvjj0jDkqfYlOHWmq9jOXX+fWiJDGzMakgJvHDgdF2rs51VXS6tVUXc56VSL4t/UeBkxdM17/9wUwMfXSd3Cl+vltIatOAk4ivirEYZl+QgLAW8AZi3D0o6zPvcU3MTmIgf4SvNkOKsBR6+NnNc75kgku8=
+	t=1707752301; cv=none; b=nIq77NoTzF+sapVRo5NG2T5HlLUrirRZpxPvwU9rzuTsxPUAnPVwOzVpMkq6gL+g4CfXgMLowOyf9Wyna/FboxLFr8M3bGeyyOMoACVAbZh7a01CBEP8Ylc7jrvWMRisUeabS4TuMU/WMRvE4ffAzF4iBW3JAr6sqth5M9J1Iyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707752292; c=relaxed/simple;
-	bh=AKNvaHsgQo+M8zEEgaqhqkD3MZ727WnLytCZB7yGkVQ=;
-	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
-	 Cc:Message-ID:Date; b=Ig86C40GDyjAvqd2eon8FmsSz0R8gz4G24lyVwKos6xGEh5wKFmyCFcXOUEDA3/CR8v1M/ol+APBw4ylb9v3iZt9y1ZQEI5Do2lcgLzVT9WM/I/r3s5YAJO6xaP7SuXZmxIm/Zhh93wB2JViB23dYSjTz/r6IU0UpHHGQdt6nL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bNSCUkXo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF16DC433C7;
-	Mon, 12 Feb 2024 15:38:08 +0000 (UTC)
+	s=arc-20240116; t=1707752301; c=relaxed/simple;
+	bh=Cd/iw/5vcxyyYrBP24MEFOKZ+DHyFw+KqFdbcnovNVU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jmaGr67RGkBU5ECC+SWtemwzH0l6oBBLEGMWsYA3r2LYUiaLOsqZ/fiPGm8HKZL5vgWvp1z5mlFZdnf11mF2tTD+xOdAlGhMAPVoNAhOapysb2xg4yetwb+eGCoSW4UHZFwSN3uPqTf4czMfDgJ/EKchLCxJdZsfbMYHsjMlwI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rtg7rot/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DC73C43390;
+	Mon, 12 Feb 2024 15:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707752292;
-	bh=AKNvaHsgQo+M8zEEgaqhqkD3MZ727WnLytCZB7yGkVQ=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=bNSCUkXodN4XgX1J8GbQcTLI7YMVUSQpLbE1+hebO5I/ARJX1bL0dZd8B504gyt2s
-	 k/zQ6KS9V176qtdXBd/B4hG1yz8REsROm16E+2IMxtEOqcLy/SSOjzSS4eeTTkA/F1
-	 l5CVw244A/3qoNPBxexMi5/chQqj6Xx8U97VM0hUctN2dybt8ZA/eXJ5qZ6524URyl
-	 anNkudA46LDlGiR1TJDHvns1Qtb5M93a2wuN1bXEMPBo37smf+fe7l2Q2GKHELmPEf
-	 T4/ZrjIMrovEBg/SFwvEJB3FnPWSVPzzDmxy6XsQ2rta0EvBEWdFeomlX+uv7Caq0/
-	 Nb0kC5/Z2i/Eg==
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1707752301;
+	bh=Cd/iw/5vcxyyYrBP24MEFOKZ+DHyFw+KqFdbcnovNVU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rtg7rot/f5QgzB4hgk/dy1zl482VuvbYzeiubONaxgc/E+2TLSHhzmiPn2bmw8y3d
+	 oMTEwaSUCrG5M4GUmQ73zy04SBE1mzTNDVgLTps/Ff7d7TXI1cGV77ZmqCGMyU+jvS
+	 XLlS2zoOYNHuTaqe/YjL5OVYbH4ynMz8bH6L6sCdR6XzZ68bW1pY8rzSQseKsG+hIf
+	 30bdfCOuFqWcgBejHMzjUmEnDCHyu8iwMQ709w+PlKZPjTl3y1Fpj5ekQPSUCJJVBJ
+	 WwR7WTCXMi04V2PROGhOKxE7bXGpyd3EOFNRS71TB7wEKO+22WOtAk3zEytYzPvCwX
+	 Q+NwrOtJN8xDA==
+Date: Mon, 12 Feb 2024 15:38:12 +0000
+From: Mark Brown <broonie@kernel.org>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"mgorman@suse.de" <mgorman@suse.de>,
+	"vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+	"fweimer@redhat.com" <fweimer@redhat.com>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"vschneid@redhat.com" <vschneid@redhat.com>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"bristot@redhat.com" <bristot@redhat.com>,
+	"hpa@zytor.com" <hpa@zytor.com>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"bsegall@google.com" <bsegall@google.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"jannh@google.com" <jannh@google.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+	"will@kernel.org" <will@kernel.org>
+Subject: Re: [PATCH RFT v5 4/7] fork: Add shadow stack support to clone3()
+Message-ID: <cc43d304-e24b-40fd-9205-fd27889e6a24@sirena.org.uk>
+References: <20240203-clone3-shadow-stack-v5-0-322c69598e4b@kernel.org>
+ <20240203-clone3-shadow-stack-v5-4-322c69598e4b@kernel.org>
+ <565ca9697cf26be5509ef4b3c1cc95fa4f692b9f.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v3] wifi: mwifiex: Refactor 1-element array into flexible
- array in struct mwifiex_ie_types_chan_list_param_set
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240207103024.make.423-kees@kernel.org>
-References: <20240207103024.make.423-kees@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Brian Norris <briannorris@chromium.org>,
- Kees Cook <keescook@chromium.org>, Dmitry Antipov <dmantipov@yandex.ru>,
- Johannes Berg <johannes.berg@intel.com>, zuoqilin <zuoqilin@yulong.com>,
- Ruan Jinjie <ruanjinjie@huawei.com>, Thomas Gleixner <tglx@linutronix.de>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- "Gustavo A . R . Silva" <gustavoars@kernel.org>,
- linux-wireless@vger.kernel.org, Dan Carpenter <error27@gmail.com>,
- Francesco Dolcini <francesco.dolcini@toradex.com>,
- David Lin <yu-hao.lin@nxp.com>, Lukas Wunner <lukas@wunner.de>,
- Simon Horman <horms@kernel.org>, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170775228681.2851594.6070070242483330161.kvalo@kernel.org>
-Date: Mon, 12 Feb 2024 15:38:08 +0000 (UTC)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XnIAPc9INoBAbmh3"
+Content-Disposition: inline
+In-Reply-To: <565ca9697cf26be5509ef4b3c1cc95fa4f692b9f.camel@intel.com>
+X-Cookie: Will stain.
 
-Kees Cook <keescook@chromium.org> wrote:
 
-> struct mwifiex_ie_types_chan_list_param_set::chan_scan_param is treated
-> as a flexible array, so convert it into one so that it doesn't trip
-> the array bounds sanitizer[1]. Only a few places were using sizeof()
-> on the whole struct, so adjust those to follow the calculation pattern
-> to avoid including the trailing single element.
-> 
-> Examining binary output differences doesn't appear to show any literal
-> size values changing, though it is obfuscated a bit by the compiler
-> adjusting register usage and stack spill slots, etc.
-> 
-> Link: https://github.com/KSPP/linux/issues/51 [1]
-> Cc: Brian Norris <briannorris@chromium.org>
-> Cc: Kalle Valo <kvalo@kernel.org>
-> Cc: Dmitry Antipov <dmantipov@yandex.ru>
-> Cc: Johannes Berg <johannes.berg@intel.com>
-> Cc: zuoqilin <zuoqilin@yulong.com>
-> Cc: Ruan Jinjie <ruanjinjie@huawei.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Cc: linux-wireless@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+--XnIAPc9INoBAbmh3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Patch applied to wireless-next.git, thanks.
+On Fri, Feb 09, 2024 at 08:18:11PM +0000, Edgecombe, Rick P wrote:
+> On Sat, 2024-02-03 at 00:05 +0000, Mark Brown wrote:
 
-14ddc470ba22 wifi: mwifiex: Refactor 1-element array into flexible array in struct mwifiex_ie_types_chan_list_param_set
+> > +=A0=A0=A0=A0=A0=A0=A0if (write_user_shstk_64((u64 __user *)addr, 0))
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0return false;
+> > +
+> > +=A0=A0=A0=A0=A0=A0=A0return true;
+> > +}
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240207103024.make.423-kees@kernel.org/
+> So, don't we want to consume the token on the *new* task's MM, which
+> was already duplicated but still unmapped? In which case I think the
+> other arch's would need to GUP regardless of the existence of shadow
+> stack atomic ops.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Yes, that would be better - if nothing else it allows reuse of the same
+shadow stack for multiple !CLONE_VM clone3()s. =20
 
+> I wonder about adding a shstk_post_fork() to make it easier to think
+> about and maintain, even if there are no issues today.
+
+I agree.
+
+--XnIAPc9INoBAbmh3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXKO2MACgkQJNaLcl1U
+h9BqSAf+JmlarRUTbUjNy7XErOY1+sGJ7QrnXHdQSEcNoGjYbcTudWKT2BQBtPU4
+25OZCFe6MnCp1WbVvkSJjlDsRZSWI0fgc/o04ZjWeCSg2vNekeC8PabqKBqGB6eJ
+kPruQ3h37qAloHiol4sFqqRZKSingsICPpOD6K5SIpf5wtOHlBI6rh9kdMPxCAYm
+EiD5bZJCR0WGUAqV7ntWMdT9KDo5W/qbH0RYCeEJlnKBcku1QhfDXu3ixhfjm5cH
+uSQCQnE3fEUu78UJPfbFmnhLW333PHKcZPNRDp4sL4ImxIR/YQyuXrkX05UscKvv
+nWPnxHSYJ9Rv3JB2RMXeeQCfd3cEZw==
+=ZDZz
+-----END PGP SIGNATURE-----
+
+--XnIAPc9INoBAbmh3--
 
