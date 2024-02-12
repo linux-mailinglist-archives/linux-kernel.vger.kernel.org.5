@@ -1,106 +1,118 @@
-Return-Path: <linux-kernel+bounces-62519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02796852247
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE41A85224E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69EB61F2320A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:06:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A60D1F233A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:09:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A0384F1E0;
-	Mon, 12 Feb 2024 23:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L2YqIc6C"
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39374F1F6;
+	Mon, 12 Feb 2024 23:09:00 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7B148795
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:06:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46FB74EB28;
+	Mon, 12 Feb 2024 23:08:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707779186; cv=none; b=Xi7y4PCxLnkMb9c21ITPxFB2REc685ah+msFH5wNXW3wiBqipSkQ98lHiT1kSzSpKodYOc9l/IdhPeRnHYPMDoS4oOGIjl0HT4ZZN3B6CtHVeBSKwdrreXuavjg9TG3u8hDKnyzES54kPRKaF1WDj3Ui9aLOZCx6Dyk47XAv7gg=
+	t=1707779340; cv=none; b=XAFKARQNbqpQyK+pc5uRvh8MeRlsDwNfgEIUUg+tz+ueJK0Jx9t1DOWWHN01TL3gzSu6WVXiOaIMmgxrcIyt/WCcY+xUcBqBszAC4G8Q9pzL1gy3Xgw0KvL+Y5AQwxWPgkb2u/cYdrFnUVVO5F9KL/nwU3drQP3ea9c1/Kd9C3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707779186; c=relaxed/simple;
-	bh=xyJS4yDPKZrA2HdoXcsXz6GNBDwVIVv4GWpRJK3vmJ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k6g3+1z7gZlajbFsUliHIu0bIuEPJFo1hFJIuyOvHmy4yOmOUaM1bL8xjwG/9O8zb63U21bSkKpQNA18lgsnRlqOjDNwYnFVAmXR5up5YEB+1TdE1+C1Hf0p7a996Syu/xXu+XfnFXW2vUrUNl9cvjRKED+xuKR0PkOAO5FFFik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=L2YqIc6C; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-428405a0205so48701cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:06:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707779183; x=1708383983; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X8bSh9OQLoWAq/ajMiSXj5T+yruvi0AGogBnnOcqqrA=;
-        b=L2YqIc6C/WIr3CLYw6RHdVTKxFWpAdgxNyvGqylmjugvhGeqv+z7T9HvcBNa7g+SMu
-         2UQK4w7WDejjXhNYihqC4sX0RPCYPihkGS9NWTB2xomwZUYZkM5K04TOU9tKn0EofKcv
-         qYo/hU9U6hZlElgiowc6hJTfajvWfQ0bVRR8FEN907frjuaL+b95mOg1KOy2Cz/Q/5ft
-         f1CMKJ59Vf/MDOjypsUu4m9L7wO0+XopbAgTptKeS5S+2pTnOdnNqZggFIOJdyB+JUve
-         PiLNzSR4CCYDT6lFJ67X9jZKbqFkx7CnX2vgeuLdBvbHqAUCguvyHTg04bLl26nj2PRU
-         RaLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707779183; x=1708383983;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X8bSh9OQLoWAq/ajMiSXj5T+yruvi0AGogBnnOcqqrA=;
-        b=HeO9VpBUhqnmZpK3+xYh8ycf3XNyY2eQAM4dYOKFfK8D3/tTdHqM2iyv0q95EIcUWM
-         Inossvj26/qTI29su78GDC6f1oaO/TbXfhXnpftVNM+6a2soQ48zFH+9BsTAxA4NaP+5
-         re6E4MyddO71qb+JRqaL/oIo4lM+IJhp3xqVtt7Ts5j4siqGzKTbkGmNnaU2ZwW1Ejjw
-         B77Zm2LgR/JFIKtTbdPh80NasE3Jy34g9U7TjwDxeuEo9/tB8hbgU3Ucdeavt9wSTL9A
-         15sBa4z/rZBObSx2GcFft+vuyBrpiwh+ZZ53+7VCS5Db7L4ILkzo0qiUnE/95w3VjM5G
-         6kdg==
-X-Gm-Message-State: AOJu0YxzDzYNqxMzZrtnjNn97ycwPLda7EGJuabPS/U5qm0HXHa1idLp
-	cMNgemaQgYiLP/kVBnWb8/tWJF37iehPen7X2uSZQHYftiaW7pj2XjSNdahL0hErnF2Dacwhm05
-	lA85XtdmcsnL+B8IwLa5xnSjQDVygJHubt3x0yF2gWAtfC34StQ==
-X-Google-Smtp-Source: AGHT+IGLwPGjPlcidiwBmZE3kuLoR8uVLPyIRXUTeScX5Zmv0+siKRJVA8fBuiJgIKgOYS2Z5jzRoW/X6p9fOVKX7Zo=
-X-Received: by 2002:ac8:1386:0:b0:42c:7de1:c96b with SMTP id
- h6-20020ac81386000000b0042c7de1c96bmr46715qtj.24.1707779182851; Mon, 12 Feb
- 2024 15:06:22 -0800 (PST)
+	s=arc-20240116; t=1707779340; c=relaxed/simple;
+	bh=hhDd4Zg33Gyyd3pXps6UXldwu1puK288MZOmI4zYWyY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=RQLZUpnbZzj7xFZCjhXbW/fL8rcnwhqZRNMO5xwu1h2H7fNKd2avfylGoQ4njVwRYCoNOm9CUOPdqE9HO4ykv3DM13o9DGFADQBZMMVGw4WgD+4z7co/7mv6kQX40BLdWIdzwOnAQtDMeHwyGkCHX/k2W2imV/wkYYpQdomRL5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC65EC433C7;
+	Mon, 12 Feb 2024 23:08:58 +0000 (UTC)
+Date: Mon, 12 Feb 2024 18:09:41 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Mark Rutland <mark.rutland@arm.com>, Tim
+ Chen <tim.c.chen@linux.intel.com>, Vincent Donnefort
+ <vdonnefort@google.com>, Sven Schnelle  <svens@linux.ibm.com>, Mete Durlu
+ <meted@linux.ibm.com>
+Subject: [PATCH] tracing: Have saved_cmdlines arrays all in one allocation
+Message-ID: <20240212180941.379c419b@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240210231513.111117-1-saravanak@google.com> <170777778090.2688977.14804637560473102697.robh@kernel.org>
-In-Reply-To: <170777778090.2688977.14804637560473102697.robh@kernel.org>
-From: Saravana Kannan <saravanak@google.com>
-Date: Mon, 12 Feb 2024 15:05:45 -0800
-Message-ID: <CAGETcx9Aw8-Phc0MpNkRz6rGmvCzwBSxJgBahNQCUg-BBdNHzQ@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: of: Add Saravana Kannan
-To: Rob Herring <robh@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 12, 2024 at 2:43=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
->
->
-> On Sat, 10 Feb 2024 15:15:12 -0800, Saravana Kannan wrote:
-> > Adding myself as a second maintainer for Open Firmware and Device Tree
-> > to help Rob out with reviews and other maintainer work.
-> >
-> > Cc: devicetree@vger.kernel.org
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > ---
-> > Discussed this with Rob.
-> >
-> >  MAINTAINERS | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
->
-> Applied, thanks!
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Thanks!
+The saved_cmdlines have three arrays for mapping PIDs to COMMs:
 
--Saravana
+ - map_pid_to_cmdline[]
+ - map_cmdline_to_pid[]
+ - saved_cmdlines
+
+The map_pid_to_cmdline[] is PID_MAX_DEFAULT in size and holds the index
+into the other arrays. The map_cmdline_to_pid[] is a mapping back to the
+full pid as it can be larger than PID_MAX_DEFAULT. And the
+saved_cmdlines[] just holds the COMMs associated to the pids.
+
+Currently the map_pid_to_cmdline[] and saved_cmdlines[] are allocated
+together (in reality the saved_cmdlines is just in the memory of the
+rounding of the allocation of the structure as it is always allocated in
+powers of two). The map_cmdline_to_pid[] array is allocated separately.
+
+Since the rounding to a power of two is rather large (it allows for 8000
+elements in saved_cmdlines), also include the map_cmdline_to_pid[] array.
+(This drops it to 6000 by default, which is still plenty for most use
+cases). This saves even more memory as the map_cmdline_to_pid[] array
+doesn't need to be allocated.
+
+Link: https://lore.kernel.org/linux-trace-kernel/20240212174011.068211d9@gandalf.local.home/
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_sched_switch.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/trace/trace_sched_switch.c b/kernel/trace/trace_sched_switch.c
+index e4fbcc3bede5..210c74dcd016 100644
+--- a/kernel/trace/trace_sched_switch.c
++++ b/kernel/trace/trace_sched_switch.c
+@@ -201,7 +201,7 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
+ 	int order;
+ 
+ 	/* Figure out how much is needed to hold the given number of cmdlines */
+-	orig_size = sizeof(*s) + val * TASK_COMM_LEN;
++	orig_size = sizeof(*s) + val * (TASK_COMM_LEN + sizeof(int));
+ 	order = get_order(orig_size);
+ 	size = 1 << (order + PAGE_SHIFT);
+ 	page = alloc_pages(GFP_KERNEL, order);
+@@ -212,16 +212,11 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
+ 	memset(s, 0, sizeof(*s));
+ 
+ 	/* Round up to actual allocation */
+-	val = (size - sizeof(*s)) / TASK_COMM_LEN;
++	val = (size - sizeof(*s)) / (TASK_COMM_LEN + sizeof(int));
+ 	s->cmdline_num = val;
+ 
+-	s->map_cmdline_to_pid = kmalloc_array(val,
+-					      sizeof(*s->map_cmdline_to_pid),
+-					      GFP_KERNEL);
+-	if (!s->map_cmdline_to_pid) {
+-		free_saved_cmdlines_buffer(s);
+-		return NULL;
+-	}
++	/* Place map_cmdline_to_pid array right after saved_cmdlines */
++	s->map_cmdline_to_pid = (unsigned *)&s->saved_cmdlines[val * TASK_COMM_LEN];
+ 
+ 	s->cmdline_idx = 0;
+ 	memset(&s->map_pid_to_cmdline, NO_CMDLINE_MAP,
+-- 
+2.43.0
+
 
