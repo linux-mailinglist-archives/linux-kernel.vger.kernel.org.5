@@ -1,124 +1,174 @@
-Return-Path: <linux-kernel+bounces-61456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 067DD8512A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:51:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21F8C8512A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 387D11C220ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:51:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9228A1F2604F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C3B39ADD;
-	Mon, 12 Feb 2024 11:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2439339FD5;
+	Mon, 12 Feb 2024 11:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNRa8rWT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ph08Ib4t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E0D39860;
-	Mon, 12 Feb 2024 11:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD8939FC4;
+	Mon, 12 Feb 2024 11:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707738706; cv=none; b=Ny+JWZE2B5usAFeBeowN/9u7quLE4upACQU7CRyKNiFu9PtD1t3HfzmxZIzsh00uCuxTw7lI+0c0uJSte/pMCWArOMfpjS4vlZRVcdjzI0TXvhcVviMraGKad3k3DZWJCuwfuvw4lguvawNvvwF6Sr2mf7/12vuwyPY7pLEIpn4=
+	t=1707738735; cv=none; b=PScrCIgJsxyJ+x8uxK2w1gHxLr3lDsIhFmeNQKDD3MphxCDGOwvGOWRXyc0QTTo7P0Sh0SZSXD+JIL0TQnINiCKw5NgUeJExSgaVuNJqir4qD9w06rCsIfTzlHDuK9QO7qWBpByC9s/Em5l5f/Yva15OBgAh7rkuLp15C63fXF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707738706; c=relaxed/simple;
-	bh=bTVJvlBr8xA7AJ8ry9czvvHc5Z9HCrBIlnOGVk+k5kc=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Lm58nMLKjhXFzJizaa8lswWYHELFv5y73ulS1hbqUC0CdMqhkb/gvcxb0lhW3ylO3jCB/I0cXHfL2YgErUyln1UaeDUJgJcUxywHCX7ONoK7f/e6RBBIEqNTOgnk7SKBRe+bToprrOr1aBnTpU4BNLaPHpxiL8BIA0Q7HyApTmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNRa8rWT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF1D3C433C7;
-	Mon, 12 Feb 2024 11:51:45 +0000 (UTC)
+	s=arc-20240116; t=1707738735; c=relaxed/simple;
+	bh=IIJ7UpRpiR1RBF6szjseHmqF1nSqMFZ/aVFQ4VSgasw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X4J58Sw2Pz+iZDFpa7lDKTdgH7J6+9aY0QHCMKuiexnC4lUsAii984xZXyqjb4YZ8JotlKZ2+TV8ioepC4305FHTZ1Uju+nP/kLLWzJrq6cnsArxahb4sSOMxVzAINmsaiOzZq4ivjp2CDX6auRtp1tuSlMfEzZmzXHZ6j22YoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ph08Ib4t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0736CC43141;
+	Mon, 12 Feb 2024 11:52:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707738706;
-	bh=bTVJvlBr8xA7AJ8ry9czvvHc5Z9HCrBIlnOGVk+k5kc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jNRa8rWTI8Tc3Pr4lUPjevvzTe7pAKhaadCCx0fkI019EIQ18Zdr6dJy3WPzLYCbD
-	 uCOjznDFiOybYCIq/C8Z4opYCEcxkGGWHuSOcDqLSsM4SwNstzL/qc54RqeV45IdxE
-	 rDWg9wmVSYMIeP+WQgrYSZmzHIHFVANpFtVGOtve2Y57b4a2IRAsZRkIcUOFjzunE1
-	 w5XReuwsR865lfiQmt6n9ninpXl24MCqdW1mjY4znTQbot3W2I9YzG83YR7p65dIQJ
-	 R8iKRkp6A4VaQNLEsot+ptjtRg45bfkP2VW1MJIcRaZB9sEYFnCFYX4YvF3DI4PX1w
-	 nZiyVOBKgHBVg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rZUqd-002OGl-Ck;
-	Mon, 12 Feb 2024 11:51:43 +0000
-Date: Mon, 12 Feb 2024 11:51:42 +0000
-Message-ID: <86frxx6gtt.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>,
-	David Matlack <dmatlack@google.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Sean Christopherson <seanjc@google.com>,
-	Fuad Tabba <tabba@google.com>,
-	Shaoqin Huang <shahuang@redhat.com>,
-	Chao Peng <chao.p.peng@linux.intel.com>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: fix kvm_mmu_memory_cache allocation warning
-In-Reply-To: <20240212112419.1186065-1-arnd@kernel.org>
-References: <20240212112419.1186065-1-arnd@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1707738735;
+	bh=IIJ7UpRpiR1RBF6szjseHmqF1nSqMFZ/aVFQ4VSgasw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ph08Ib4tPhjF9EVhTqiNqzvW+zuB8MKz+XkCEHArV41h19NHHUeB6lTz+dtbxYhJo
+	 zx4H73c0Q4SGtpr8tougDWEAgYDRxeX82TXaYy7CEjWptHrI2rXii62/CSuavRi3IM
+	 u3P4uVR0VUE3nxT+taLWmqt7f1NrPmlkC1YlcIOkdqpm7o6qvA5zNEDu8IJaZZsu7R
+	 uU9hpxlcTUWlBfiFD5g74W61I2tdPWFt2U4tsU9M+NmaoKkF3AuBwYSU6pEqHf4XF6
+	 JuCzLQJK13vDOTdz3D6DxHeJOoxIGT2b+cb9mK8HiF87N0GCN8xr3hz65MVYI+l510
+	 JC2krlyT54j1w==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-511821e60c2so1924764e87.2;
+        Mon, 12 Feb 2024 03:52:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW58M/vIlDU+2rSHK/Vf/OIsnzfXRHE2kdZxA4J3gw/AACBFoX0yMKb/s20TAvdn0xz4Sh+n/NplHlcICEegZk1dnf//j2U5D/ltQ+2alxRjgrrxT1zkExgJEl9Jco/FerbZotlbD4DUg==
+X-Gm-Message-State: AOJu0YyKEFGmBailDgf+WHfrpe2XpvCCi1+mcB6tIaU/apqfx0s2VlV+
+	2gy/ah7u3fuvdO1R0GvRLZb7X/lzb+IxMXrjBIHy8IcBJDEhwzVkQsQvG25TZO6qUlvau7xlLZa
+	ZsDYXGbN79tVzO5JQ989OsRDEPxo=
+X-Google-Smtp-Source: AGHT+IEU3p/a6dR89ftZiMJ/2uAey8PZzo/ZBrpk8p+hlzOP+4Q+BDJs4qS3F4Z4AygUj+xfJErPICriWOikHjKTGL0=
+X-Received: by 2002:a05:6512:2824:b0:511:4683:d537 with SMTP id
+ cf36-20020a056512282400b005114683d537mr4364819lfb.55.1707738733104; Mon, 12
+ Feb 2024 03:52:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: arnd@kernel.org, pbonzini@redhat.com, dmatlack@google.com, arnd@arndb.de, seanjc@google.com, tabba@google.com, shahuang@redhat.com, chao.p.peng@linux.intel.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+References: <20240129180502.4069817-21-ardb+git@google.com>
+ <20240129180502.4069817-29-ardb+git@google.com> <20240212102901.GVZcny7WeK_ZWt0HEP@fat_crate.local>
+In-Reply-To: <20240212102901.GVZcny7WeK_ZWt0HEP@fat_crate.local>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Mon, 12 Feb 2024 12:52:01 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXH2uwLT-EgqYFRcC0OH524W=sYtDoFC-x+isifzsia17w@mail.gmail.com>
+Message-ID: <CAMj1kXH2uwLT-EgqYFRcC0OH524W=sYtDoFC-x+isifzsia17w@mail.gmail.com>
+Subject: Re: [PATCH v3 08/19] x86/head64: Replace pointer fixups with PIE codegen
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 12 Feb 2024 11:24:10 +0000,
-Arnd Bergmann <arnd@kernel.org> wrote:
-> 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc-14 notices that the arguments to kvmalloc_array() are mixed up:
-> 
-> arch/x86/kvm/../../../virt/kvm/kvm_main.c: In function '__kvm_mmu_topup_memory_cache':
-> arch/x86/kvm/../../../virt/kvm/kvm_main.c:424:53: error: 'kvmalloc_array' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Werror=calloc-transposed-args]
->   424 |                 mc->objects = kvmalloc_array(sizeof(void *), capacity, gfp);
->       |                                                     ^~~~
-> arch/x86/kvm/../../../virt/kvm/kvm_main.c:424:53: note: earlier argument should specify number of elements, later size of each element
-> 
-> The code still works correctly, but the incorrect order prevents the compiler
-> from properly tracking the object sizes.
-> 
-> Fixes: 837f66c71207 ("KVM: Allow for different capacities in kvm_mmu_memory_cache structs")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  virt/kvm/kvm_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 8f03b56dafbd..4c48f61cae35 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -421,7 +421,7 @@ int __kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int capacity,
->  		if (WARN_ON_ONCE(!capacity))
->  			return -EIO;
->  
-> -		mc->objects = kvmalloc_array(sizeof(void *), capacity, gfp);
-> +		mc->objects = kvmalloc_array(capacity, sizeof(void *), gfp);
->  		if (!mc->objects)
->  			return -ENOMEM;
->  
+On Mon, 12 Feb 2024 at 11:29, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Mon, Jan 29, 2024 at 07:05:11PM +0100, Ard Biesheuvel wrote:
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> >
+> > Some of the C code in head64.c may be called from a different virtual
+> > address than it was linked at. Currently, we deal with this by using
+>
+> Yeah, make passive pls: "Currently, this is done by using... "
+>
+> > ordinary, position dependent codegen, and fixing up all symbol
+> > references on the fly. This is fragile and tricky to maintain. It is
+> > also unnecessary: we can use position independent codegen (with hidden
+>                    ^^^
+> Ditto: "use ..."
+>
+> In the comments below too, pls, where it says "we".
+>
 
-Huh, well spotted GCC. And thanks Arnd for the fix.
+Ack.
 
-Reviewed-by: Marc Zyngier <maz@kernel.org>
+> > visibility) to ensure that all compiler generated symbol references are
+> > RIP-relative, removing the need for fixups entirely.
+> >
+> > It does mean we need explicit references to kernel virtual addresses to
+> > be generated by hand, so generate those using a movabs instruction in
+> > inline asm in the handful places where we actually need this.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  arch/x86/Makefile                 |  8 ++
+> >  arch/x86/boot/compressed/Makefile |  2 +-
+> >  arch/x86/include/asm/desc.h       |  3 +-
+> >  arch/x86/include/asm/setup.h      |  4 +-
+> >  arch/x86/kernel/Makefile          |  5 ++
+> >  arch/x86/kernel/head64.c          | 88 +++++++-------------
+> >  arch/x86/kernel/head_64.S         |  5 +-
+> >  7 files changed, 51 insertions(+), 64 deletions(-)
+> >
+> > diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+> > index 1a068de12a56..2b5954e75318 100644
+> > --- a/arch/x86/Makefile
+> > +++ b/arch/x86/Makefile
+> > @@ -168,6 +168,14 @@ else
+> >          KBUILD_CFLAGS += -mcmodel=kernel
+> >          KBUILD_RUSTFLAGS += -Cno-redzone=y
+> >          KBUILD_RUSTFLAGS += -Ccode-model=kernel
+> > +
+> > +     PIE_CFLAGS-$(CONFIG_STACKPROTECTOR)     += -fno-stack-protector
+>
+> Main Makefile has
+>
+> KBUILD_CFLAGS += -fno-PIE
+>
+> and this ends up being:
+>
+> gcc -Wp,-MMD,arch/x86/kernel/.head64.s.d -nostdinc ... -fno-PIE ... -fpie ... -fverbose-asm -S -o arch/x86/kernel/head64.s arch/x86/kernel/head64.c
+>
+> Can you pls remove -fno-PIE from those TUs which use PIE_CFLAGS so that
+> there's no confusion when staring at V=1 output?
+>
 
-	M.
+Yeah. That would means adding PIE_CFLAGS_REMOVE alongside PIE_CFLAGS
+and applying both in every place it is used, but we are only dealing
+with a handful of object files here.
 
--- 
-Without deviation from the norm, progress is not possible.
+
+> > +     PIE_CFLAGS-$(CONFIG_LTO)                += -fno-lto
+> > +
+> > +     PIE_CFLAGS := -fpie -mcmodel=small $(PIE_CFLAGS-y) \
+> > +                   -include $(srctree)/include/linux/hidden.h
+> > +
+> > +     export PIE_CFLAGS
+> >  endif
+> >
+> >  #
+>
+> Other than that, that code becomes much more readable, cool!
+>
+
+Thanks. But now that we have RIP_REL_REF(), I might split the cleanup
+from the actual switch to -fpie, which I am still a bit on the fence
+about, given different compiler versions, LTO, etc.
+
+RIP_REL_REF(foo) just turns into 'foo' when compiling with -fpie and
+we could drop those piecemeal once we are confident that -fpie does
+not cause any regressions.
+
+Note that I have some reservations now about .pi.text as well: it is a
+bit intrusive, and on x86, we might just as well move everything that
+executes from the 1:1 mapping into .head.text, and teach objtool that
+those sections should not contain any ELF relocations involving
+absolute addresses. But this is another thing that I want to spend a
+bit more time on before I respin it, so I will just do the cleanup in
+the next revision, and add the rigid correctness checks the next
+cycle.
 
