@@ -1,141 +1,155 @@
-Return-Path: <linux-kernel+bounces-61102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21964850D4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 06:01:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FD91850D54
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 06:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54729B2430D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:01:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC4AE1C2176C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B23E566A;
-	Mon, 12 Feb 2024 05:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F40386AB9;
+	Mon, 12 Feb 2024 05:12:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="y22d1QJo"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bPH8JGEm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA221848;
-	Mon, 12 Feb 2024 05:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2068B2F55;
+	Mon, 12 Feb 2024 05:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707714058; cv=none; b=T6rOYBxDcW/mExVJ0LyifQcUOZmcvYgfbdF+vg/umyU+bXFkYUlEgHSAQ6uU+lKe+39lJKJyWU+Rf0995JeeKXpSowI9f1VS0adiI8ob6E0OLI7Teh3ZSHwXy5ER5qTly6PB9EhAQmvbxaWUZ4b23/GrE4RpoblfN7TvCmU5udg=
+	t=1707714725; cv=none; b=LsouEeBWJhTZv+CAnC2SWXLa1mLTYsyK5pzR5kExViNZhmfQN3Fmnu1DFBigtZiZFoQwv/M7dzzl4tyfF6JdjVwRBsGNpFXXjgfUAxA2P6LA37jZuk9tY2LrVVc1oqdrBmxMrgLCLZr4RqM/mMHhwDKrU6VcLjua0u27+2M+3BM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707714058; c=relaxed/simple;
-	bh=UqWMj9uDHukL4DBYWfxcwU/fLexZUxvDVJJvOajLm9g=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BN8c77KIXcnnpqCNgFDqhuDe2WqEKu9Y0qoKZcspB++aFtkmavuQIdq1JZ0vNAQOAEm3wyMrXPfKyoKAMUQKC1meTglsS9deE1jB4QxzKq1ngBk/HrJGh0O3Wf6OgrRVOyxBtt8feAp1o4PrCG0qdctYa14mXASTP5FKb5q16Ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=y22d1QJo; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41C50aYJ017183;
-	Sun, 11 Feb 2024 23:00:36 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707714036;
-	bh=67vX1QhNKpfwzOCQ+Q1QAwvyUV1I31hXYBJPEruQMAE=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=y22d1QJoryw9QG669wBa8gxDoxyXcgThBWuiPq6hQ9izqvVDZCv8b3RAT5XJCXW0t
-	 JD7rqOhHSE4H3O/2d0UNNkNfELy0tWktAAyxMgl/C5YcS/ZfIDc7ogG+DUrSoP0J3k
-	 cnaXvxM6JK8sJn36JjSMd6GR6O86fPC/2P2PQyO8=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41C50aWm085042
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sun, 11 Feb 2024 23:00:36 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 11
- Feb 2024 23:00:35 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 11 Feb 2024 23:00:35 -0600
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41C50ZYf030254;
-	Sun, 11 Feb 2024 23:00:35 -0600
-Date: Mon, 12 Feb 2024 10:30:34 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-CC: Mark Brown <broonie@kernel.org>, Apurva Nandan <a-nandan@ti.com>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Gregory CLEMENT
-	<gregory.clement@bootlin.com>,
-        Vladimir Kondratiev
-	<vladimir.kondratiev@mobileye.com>,
-        Thomas Petazzoni
-	<thomas.petazzoni@bootlin.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v3 1/4] spi: cadence-qspi: fix pointer reference in
- runtime PM hooks
-Message-ID: <20240212050034.ks7zdectyotcuh6t@dhruva>
-References: <20240209-cdns-qspi-pm-fix-v3-0-540ac222f26b@bootlin.com>
- <20240209-cdns-qspi-pm-fix-v3-1-540ac222f26b@bootlin.com>
+	s=arc-20240116; t=1707714725; c=relaxed/simple;
+	bh=Inesfow/+o5xS1pMzhZ/lezVf1fXzsERlilchZkTN6E=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=StrILRXzTLXh4fkTSyv3S35Cx+f9SBK+TSq5Hph4ZT8ijt1WD5A0dwp9M+DIxrAN+vCXnwj+V8p7pHZgxXX9IkPvILyDisHY2uCgss6yNiug5l+RMhgXAM+DZWQ7wXIxkisjO/6RboBpVrWC1YYC+6bivmbOuOX0Rv49GOZX/ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bPH8JGEm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 232E2C433C7;
+	Mon, 12 Feb 2024 05:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707714724;
+	bh=Inesfow/+o5xS1pMzhZ/lezVf1fXzsERlilchZkTN6E=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=bPH8JGEmOQUUJH8kCoM0AXr8VrwJ1nDOlPP3I3GF0e1ANYesf6SzSYI2AgIQLnkaF
+	 KNrv5iI560dWFuyoTiLoeVVlYma+fgFfYY6QHCYej3KUzFPP8UCQe34xeslf2V6DIK
+	 hWmYMfXjsassBvEaZN4Tv0129KMtyRvqanlHpy/tkS7xeNA2JJQIcMiXQ07wBb66W0
+	 g/BnedkJyc40AAog97Wokaqhw+jfw7ukGZmlS6Dqi/EJ2Q8QP01nMHhGEAQiFfMFzd
+	 XFhWDaXNf+ySOK1PEsAivM0Ce6eM84MgzGLNbPM5dROAb7VHNuU7MnJgotURudWXFO
+	 vGo6Jit3yWYKg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240209-cdns-qspi-pm-fix-v3-1-540ac222f26b@bootlin.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 12 Feb 2024 05:11:57 +0000
+Message-Id: <CZ2UCEZ1VT96.2QZE7X8CS8EJ2@seitikki>
+Cc: "Jiang, Dave" <dave.jiang@intel.com>, "linux-integrity@vger.kernel.org"
+ <linux-integrity@vger.kernel.org>, "linux-cxl@vger.kernel.org"
+ <linux-cxl@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "keyrings@vger.kernel.org"
+ <keyrings@vger.kernel.org>, "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>, "nvdimm@lists.linux.dev"
+ <nvdimm@lists.linux.dev>
+Subject: Re: [PATCH] KEYS: encrypted: Add check for strsep
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Mimi Zohar" <zohar@linux.ibm.com>, "Dan Williams"
+ <dan.j.williams@intel.com>, "Verma, Vishal L" <vishal.l.verma@intel.com>,
+ "paul@paul-moore.com" <paul@paul-moore.com>, "dhowells@redhat.com"
+ <dhowells@redhat.com>, "yaelt@google.com" <yaelt@google.com>,
+ "serge@hallyn.com" <serge@hallyn.com>, "nichen@iscas.ac.cn"
+ <nichen@iscas.ac.cn>, "sumit.garg@linaro.org" <sumit.garg@linaro.org>,
+ "jmorris@namei.org" <jmorris@namei.org>
+X-Mailer: aerc 0.15.2
+References: <20231108073627.1063464-1-nichen@iscas.ac.cn>
+ <4d3465b48b9c5a87deb385b15bf5125fc1704019.camel@intel.com>
+ <e3275c0cfe21d75e0d71ea3fc24a31252efc9ad6.camel@linux.ibm.com>
+ <e3b1a5e532ed86e674385abc4812c5a774f851d4.camel@intel.com>
+ <49c48e3e96bf0f5ebef14e7328cc8a6ca6380e08.camel@linux.ibm.com>
+ <50c2fa781e3266ee8151afdef5a8659d63ca952e.camel@intel.com>
+ <CYS7QMYS8XAJ.2QPI3MS5KXK8E@suppilovahvero>
+ <CYS7WMFLXNE1.35OBTKTONKNX3@suppilovahvero>
+ <65b93f2b3099b_5cc6f29453@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <CYU2JV57VXA9.3C5QTG4LX50TD@suppilovahvero>
+ <d0ccd2f19ed1adccc8f3dfe677c30bc44feb3d36.camel@linux.ibm.com>
+In-Reply-To: <d0ccd2f19ed1adccc8f3dfe677c30bc44feb3d36.camel@linux.ibm.com>
 
-Hi Theo!
+On Fri Feb 2, 2024 at 12:05 AM UTC, Mimi Zohar wrote:
+> On Thu, 2024-02-01 at 23:43 +0200, Jarkko Sakkinen wrote:
+> > On Tue Jan 30, 2024 at 8:25 PM EET, Dan Williams wrote:
+> > > Jarkko Sakkinen wrote:
+> > > > On Tue Jan 30, 2024 at 7:22 PM EET, Jarkko Sakkinen wrote:
+> > > > > On Wed Jan 24, 2024 at 11:10 PM EET, Verma, Vishal L wrote:
+> > > > > > On Wed, 2024-01-24 at 15:40 -0500, Mimi Zohar wrote:
+> > > > > > > On Wed, 2024-01-24 at 20:10 +0000, Verma, Vishal L wrote:
+> > > > > > > > Ah, thanks for confirming! Would you like me to send a
+> > > > > > > > revert patch or
+> > > > > > > > will you do it?
+> > > > > > >=20
+> > > > > > > Revert "KEYS: encrypted: Add check for strsep"
+> > > > > > >    =20
+> > > > > > > This reverts commit
+> > > > > > > b4af096b5df5dd131ab796c79cedc7069d8f4882.
+> > > > > > >    =20
+> > > > > > > New encrypted keys are created either from kernel-generated=
+=20
+> > > > > > > random
+> > > > > > > numbers or user-provided decrypted data.  Revert the change
+> > > > > > > requiring
+> > > > > > > user-provided decrypted data.
+> > > > > > >=20
+> > > > > > >=20
+> > > > > > > Can I add your Reported-by?
+> > > > > >=20
+> > > > > > Yes that works, Thank you.
+> > > > >=20
+> > > > > This went totally wrong IMHO.
+> > > > >=20
+> > > > > Priority should be to locate and fix the bug not revert useful
+> > > > > stuff
+> > > > > when a bug is found that has limited scope.
+> > > >=20
+> > > > By guidelines here the commit is also a bug fix and reverting
+> > > > such commit means seeding a bug to the mainline. Also the klog
+> > > > message alone is a bug fix here. So also by book it really has
+> > > > to come back as it was already commit because we cannot
+> > > > knowingly mount bugs to the mainline, right?
+> > >=20
+> > > No, the commit broke userspace. The rule is do not cause
+> > > regressions
+> > > even if userspace is abusing the ABI in an undesirable way. Even
+> > > the
+> > > new pr_info() is a log spamming behavior change, a pr_debug() might
+> > > be
+> > > suitable, but otherwise a logic change here needs a clear
+> > > description
+> > > about what is broken about the old userspace behavior and why the
+> > > kernel
+> > > can not possibly safely handle it.
+> >=20
+> > The rationale literally gives empirical proof that the log message
+> > is useful by measure. It would be useless if log level is decreased
+> > to debug, as then sysadmin's won't take notice. I don't really know
+> > what is the definition of "spam" here but at least for me actually
+> > useful log message are not in that category.
+> >=20
+> > Issue was legit but git revert is objectively an incorrect way to
+> > address the bug.
+>
+> No, I made a mistake in upstreaming the patch in the first place.  It
+> broke the original "encrypted" keys usage.  Reverting it was the
+> correct solution.
+>
+> Mimi
 
-On Feb 09, 2024 at 14:55:50 +0100, Théo Lebrun wrote:
-> dev_get_drvdata() gets used to acquire the pointer to cqspi and the SPI
-> controller. Neither embed the other; this lead to memory corruption.
-> 
-> On a given platform (Mobileye EyeQ5) the memory corruption is hidden
-> inside cqspi->f_pdata. Also, this uninitialised memory is used as a
-> mutex (ctlr->bus_lock_mutex) by spi_controller_suspend().
-> 
-> Fixes: 2087e85bb66e ("spi: cadence-quadspi: fix suspend-resume implementations")
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-> ---
->  drivers/spi/spi-cadence-quadspi.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-> index 74647dfcb86c..d19ba024c80b 100644
-> --- a/drivers/spi/spi-cadence-quadspi.c
-> +++ b/drivers/spi/spi-cadence-quadspi.c
-> @@ -1930,10 +1930,9 @@ static void cqspi_remove(struct platform_device *pdev)
->  static int cqspi_suspend(struct device *dev)
->  {
->  	struct cqspi_st *cqspi = dev_get_drvdata(dev);
-> -	struct spi_controller *host = dev_get_drvdata(dev);
->  	int ret;
->  
-> -	ret = spi_controller_suspend(host);
-> +	ret = spi_controller_suspend(cqspi->host);
->  	cqspi_controller_enable(cqspi, 0);
->  
->  	clk_disable_unprepare(cqspi->clk);
-> @@ -1944,7 +1943,6 @@ static int cqspi_suspend(struct device *dev)
->  static int cqspi_resume(struct device *dev)
->  {
->  	struct cqspi_st *cqspi = dev_get_drvdata(dev);
-> -	struct spi_controller *host = dev_get_drvdata(dev);
->  
->  	clk_prepare_enable(cqspi->clk);
->  	cqspi_wait_idle(cqspi);
-> @@ -1953,7 +1951,7 @@ static int cqspi_resume(struct device *dev)
->  	cqspi->current_cs = -1;
->  	cqspi->sclk = 0;
->  
-> -	return spi_controller_resume(host);
-> +	return spi_controller_resume(cqspi->host);
+The way I see it the semantic change caused the bug because it was not
+backwards compatible. That does not make the log message less useful.
 
-Looks good,
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
-
---
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+BR, Jarkko
 
