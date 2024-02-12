@@ -1,117 +1,92 @@
-Return-Path: <linux-kernel+bounces-62476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F0DE852168
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:27:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13A70852157
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:22:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FA341C22141
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:27:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3ADE2841EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:22:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1884E1CC;
-	Mon, 12 Feb 2024 22:27:48 +0000 (UTC)
-Received: from sonata.ens-lyon.org (domu-toccata.ens-lyon.fr [140.77.166.138])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4C04E1CE;
+	Mon, 12 Feb 2024 22:22:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hmgv4A+B"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09A64D9F8;
-	Mon, 12 Feb 2024 22:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.77.166.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A2F4C627;
+	Mon, 12 Feb 2024 22:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707776867; cv=none; b=lLg2CVhWYM+F9T0hyywaHe/YEZwQvCc4c5BAoEPs3I3gAGlE7aZhXeOv9VT4y7o1tQq0tOMxCbRCL/rJrUp+MsWEbb/MWLyGu6lK3oI2j0xDDFS98ZpBGAB7ozEb1Kkwy0Qn58EWTrp34Fmpk9fMMwYh7jXNV8J/El3ybztS8ew=
+	t=1707776555; cv=none; b=ETwMEaG3ikpT17amhe2Pk5t/C7VUAFfrDxEy9WzazjJP/4KQXxl5/zXUeW0nMDQPJuQOEW2m3z1SsATCK2T99NZRGEkrELLYs0UqCxx25OYyEqAEVCTvUP2VXX1BZxaeK2SUYnfW2W2vqSKjpYfmb3mPhNmYOZZw5PBH/asXaUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707776867; c=relaxed/simple;
-	bh=ZSuzM33K2Ivy+oNT+1PaHP0aBqjsDFTre27xJJRrBTg=;
+	s=arc-20240116; t=1707776555; c=relaxed/simple;
+	bh=0IusXPQHXi66v5j+nmnkJrxK8Pdqo4Ksu739OrYknrQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JXUHhlTKXfYtnM6GwABQacUJcmPtHEB7PeGMDtD4rGEqQZX2vU4o1iAWQvusgjQuYQspxUYsb5+1mPdYydYdG8qMVWwhMZ3kONTX7setstX7GqgyFpuVbBngsmlsAi51IDOItksWbyIb17gmvgStt1ndVfX9UwMZqDIhSSUvFwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org; arc=none smtp.client-ip=140.77.166.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org
-Received: from localhost (localhost [127.0.0.1])
-	by sonata.ens-lyon.org (Postfix) with ESMTP id B7642A02C7;
-	Mon, 12 Feb 2024 23:21:56 +0100 (CET)
-Received: from sonata.ens-lyon.org ([127.0.0.1])
-	by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id IdHNfV2igPni; Mon, 12 Feb 2024 23:21:56 +0100 (CET)
-Received: from begin (aamiens-653-1-111-57.w83-192.abo.wanadoo.fr [83.192.234.57])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by sonata.ens-lyon.org (Postfix) with ESMTPSA id 1554AA02B1;
-	Mon, 12 Feb 2024 23:21:56 +0100 (CET)
-Received: from samy by begin with local (Exim 4.97)
-	(envelope-from <samuel.thibault@ens-lyon.org>)
-	id 1rZegV-0000000GUH9-1rnO;
-	Mon, 12 Feb 2024 23:21:55 +0100
-Date: Mon, 12 Feb 2024 23:21:55 +0100
-From: Samuel Thibault <samuel.thibault@ens-lyon.org>
-To: Tom Parkin <tparkin@katalix.com>
-Cc: James Chapman <jchapman@katalix.com>, edumazet@google.com,
-	gnault@redhat.com, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, corbet@lwn.net, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv3] PPPoL2TP: Add more code snippets
-Message-ID: <20240212222155.shiacjlqupqoliym@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-	Tom Parkin <tparkin@katalix.com>,
-	James Chapman <jchapman@katalix.com>, edumazet@google.com,
-	gnault@redhat.com, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, corbet@lwn.net, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240203223513.f2nfgaamgffz6dno@begin>
- <ZcqMzP1RQye9o4eB@katalix.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IS5kin9jbzH0BtJN0po1WDA3YKHclY7wMwNhSEd5yFVJG7T74AXHjB0pkG4cgZH+dPkWYrmFMfuOh8AjBcjVZPrJJhZQPSo7cVyTMtloQZxkMzqfrjSslEoRup/jvLsOTw81ahA7hSd+Nv/S+2ge6qhPoaevX2ZwzudKxKnULbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hmgv4A+B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39D63C433C7;
+	Mon, 12 Feb 2024 22:22:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707776554;
+	bh=0IusXPQHXi66v5j+nmnkJrxK8Pdqo4Ksu739OrYknrQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Hmgv4A+BeRMvlSjxes5DlqJTRfGXFLA4EQJFae22u5pAp8YsBpncoyUnMRysNiogZ
+	 lsX/d5Whk/aBo4JZqiVapBKNf6OuyE3DBHR5NWX1hyAhZZojukhq3f4Lhl6EVPqhFp
+	 BbvIqBZ9a3zoU75koZjO8f+ALB8hU4tr2vjFa6uUYNv+A77uLjEfUWdX4qXX63aMZZ
+	 xtHMBUsAu8woT1hbyp4mh62luHt6uq+CZVP8NpZkgRayGj+O1KVkBRdwUU5J0SB5yb
+	 WutQATu4qOrMHZ9vnIItqGyRbEujU+WBGNHwDBADHex9zQBS67PwiXBxg1FsxYKDuE
+	 J22waLRABKb1w==
+Date: Mon, 12 Feb 2024 16:22:32 -0600
+From: Rob Herring <robh@kernel.org>
+To: David Wronek <davidwronek@gmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Avri Altman <avri.altman@wdc.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	~postmarketos/upstreaming@lists.sr.ht,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v4 2/8] dt-bindings: ufs: qcom: Add SC7180 compatible
+ string
+Message-ID: <20240212222232.GB2655166-robh@kernel.org>
+References: <20240121-sm7125-upstream-v4-0-f7d1212c8ebb@gmail.com>
+ <20240121-sm7125-upstream-v4-2-f7d1212c8ebb@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZcqMzP1RQye9o4eB@katalix.com>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
+In-Reply-To: <20240121-sm7125-upstream-v4-2-f7d1212c8ebb@gmail.com>
 
-Hello,
-
-Thanks for reviewing, I'll send a v4.
-
-Tom Parkin, le lun. 12 févr. 2024 21:25:32 +0000, a ecrit:
-> > +        ret = ioctl(session_fd1, PPPIOCGCHAN, &chindx1);
-> > +        if (ret < 0)
-> > +                return -errno;
-> > +
-> > +        ret = ioctl(session_fd2, PPPIOCGCHAN, &chind2x);
+On Sun, Jan 21, 2024 at 05:57:42PM +0100, David Wronek wrote:
+> Document the compatible for the UFS found on SC7180.
 > 
-> I think we need to be clear here in this example what session_fd1 and
-> session_fd2 are, and how they have come to be, since they haven't been
-> mentioned in the examples so far.
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: David Wronek <davidwronek@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/ufs/qcom,ufs.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 
-Right (though it's called session_fd above), I have added explicit input
-descriptions.
+Should have been picked up by SCSI/UFS maintainers, but it 
+hasn't, so I applied it.
 
-> I'm not sure whether it helps or not, but when we were working on l2tp-ktest
-> initially we had tests for the bridge ioctl.  The tests bridged a PPPoE
-> channel with a PPPoL2TP one (which was the original motivation for
-> PPPIOCBRIDGECHAN).  The code is here:
-> 
-> https://github.com/katalix/l2tp-ktest/blob/master/src/util.c#L592
-> 
-> So in that codebase we have a pppoe fd and a pppol2tp fd, both of
-> which have had been attached using PPPIOCATTCHAN.
-> 
-> We then bridge those two channels using PPPIOCBRIDGECHAN.
-> 
-> I think the bridging is a complex use-case for what is already quite
-> an involved API (lots of file descriptors and indices to keep track
-> of!).  So I think the code snippet needs to be as clear as we can make
-> it.
-
-Yes, I kept the simple l2tp-to-l2tp example, but mentioned that other
-types of ppp channels can also be bridged.  The important part is that
-the code snippets show exactly what kind of fd is expected where :)
-
-Samuel
+Rob
 
