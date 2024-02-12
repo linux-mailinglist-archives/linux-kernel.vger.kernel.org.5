@@ -1,161 +1,240 @@
-Return-Path: <linux-kernel+bounces-61682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1E38851555
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD3E5851560
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:37:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57C471F213D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:35:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C6761F26448
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E7941757;
-	Mon, 12 Feb 2024 13:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C6847A40;
+	Mon, 12 Feb 2024 13:27:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gvU5vVcm"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nGoFUZMZ"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F366F41211
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342B245BE8
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707744351; cv=none; b=EPaAIKA4Zk7KkHShPkMn1pLXlHy/KrGM1/SZTWTxuxwkvg2qLUeblx3lQ0gKv/qUQoikb9VYjplf7y7kPdbbu6FP8EnoiRkxcYYcoVuzX6RmIAMJM8CKimnfw4qrzVC6biWprrNo58oe89JdjDOhVhfaj2Anb/QuoA2ouTI9yEQ=
+	t=1707744433; cv=none; b=E0fSgCQIqd2TDhi/1EonwB08XJmzr/tkVyhy7HBfiUn5UMC9EKvZ5BNIheuVnGqs/Xo5sR2w7ZqAswpJBfj9buskJ7dBCYROfHnNMjKY8yDvwE6QC5xHMGYa1i3fe6k6246r7tvBuEafqsRSvwdrE0BjtBsS/i6gq6rVTZezCn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707744351; c=relaxed/simple;
-	bh=c23oWq/2BjYXZdDPAYaHpYUvz+ufaYa6Lw6VQvyocRk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UyQQgKAZNkTIRgFgCvok/o1eKx0CXQnbM55iPDSpMx0PZ9Zp2avjs9a6ag2c7EezGKNfCGyxC/l5tI5gQiDTi68Qxk4rUOQMB+wUrJzakpKS6u3Wea5RnDoPfbu2WghOSdz+yWAdSUIbhKfag4sCtsgIiH1+xESu8umVBx+Gqrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gvU5vVcm; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1707744433; c=relaxed/simple;
+	bh=UgJE8QN26wTVcYTwslTRxKcPKfKIluHtkCRbsH9i8HU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ICwOzGhzF6v9wsgSCSqRU3vsZX2b/1b1MxWAqooR8e0eorsN4d5Vl/eA53EFiaSuWyG6C0+97m4g1ejHQtlutNPyl8hehIr56dfrQgXlmia88oe13TK0MwN62if7Bsbeu2LTc3Foy88y+J2D2rK67JFPy/yLqZ8/hv1DI84vs4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nGoFUZMZ; arc=none smtp.client-ip=209.85.219.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41089cc9ae4so14569065e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:25:48 -0800 (PST)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc745927098so2616568276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:27:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707744347; x=1708349147; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AB3gLwmIbX0H9anm0y7lLvFsRUFdenHS4G27CmRvfbE=;
-        b=gvU5vVcm6LfjZmNg2eP2SqSWaojWlmKfEoD7Debjwe6rCsxB5WxREcVTCWXOJbkDA8
-         kOk51CK/mSAK5oyTBl6/FSdB0Iuti4v8hYrwcS5AuTk0BcvoOAdcsDFNnmCNPUdO9xHr
-         Qta4EmVWnGlKsTmtnb9uocaDMM23lf6b2lu1pDXDGnkbttTVgtXA/C7h9MDmnuedvPrE
-         w6serz+acM8H9FYkwFZoG/OhFW7JHG5SGjHYEe23+tAsM35g7yTU3IvrRvfze2XTCc5+
-         oCLfasJ2cupMeHTAo5OqldTdR9QwmJ7XkoajQcM3pJaVRKQ1rpm7FEV4K79kd1EFRM1X
-         qeVg==
+        d=linaro.org; s=google; t=1707744430; x=1708349230; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=voyZqJo/cIne41l5d+IDZJTmO0BrPsamqEotiqg3SZ4=;
+        b=nGoFUZMZjXBY1U0CR9u5EV/I7+w50xRnP2TGdlY8u+rN+EW1dn41R6dVDZwwKFFe2w
+         bcrSTwDuMhhOZm6MqEf6Pn4Ze+iggGnGTlBW7eJTK/U7XegVi9xt5/H/EgdzAYEeBKv5
+         2TUNrf+CJoAnfNLZbE0x1hKE5DYF4W95sbJwBeCezzKcAAbMx03mt6d7YpTnhp6o2QOT
+         B+eO6uqvL2imvfm5mOZ27Jwr6b4bBsfl6Opl2RPEcsq7VzQoLo8WtKek/EOXZsxPOkVH
+         zUdfguGe088cj2rYTpEmvb/ON1NqMoPNXSMyjZoVYLRv9vMnFEztQlcm8aZ5Ou/AcTlB
+         XKYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707744347; x=1708349147;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AB3gLwmIbX0H9anm0y7lLvFsRUFdenHS4G27CmRvfbE=;
-        b=L+E+xuUK0i1wDgxbzmYWu3t6ciLONkH5gZwksJzmdfBv+Zr/C28sN1eupPHqkqdRpv
-         5V5q8AMFKcEEU3inf7OdvytsanLKi/UTfYEtUqq/5Ug9uBBpc69xedW/Qnf/Ao+kL6UB
-         KCO2HCTh+qnjVFHbxbt5weAqDx8l5jR/ynH62cxRNsDP2tzYQzPMfutNjkZu6920QUyP
-         FGKPvgwistDfTRr7ZHdgP1m8uVEQ2elnzH8+eSGqddqIid6bGg2ZMvgggTzWJsx5M2bO
-         7SEUljJHEoZDxTWOLOc9LLSHGO1+XAtIo6UizPl+mmlMQqyf5qLuohPn9V4QzipvKMP4
-         WnDw==
-X-Forwarded-Encrypted: i=1; AJvYcCXpX96Xuf1YrvVhZVAgTa+bzS7CP0l5RBLPnk7zmkj2I6H0TPdOhbcRmksfab/rCR9GkxmKMNNwV/ERDYndgHO5e1hUy7jD2mrY21bB
-X-Gm-Message-State: AOJu0Yz/tx8P+SVL+bg4F0TEBDJOZ4eI/n5H6FYASrkAssKQ2ZpdL+Cy
-	OYOGxX5ShuqxanJRVBDaWdiHjvniLgvKOV0U7dszA+RJAvQQLdY0Olmr+x5giOg=
-X-Google-Smtp-Source: AGHT+IGe8WC2ta8hPlWxdY0HZ3hWAQaVFB+AWQOhc4NzzkzIg4+zZ9tBlugAPx5N7eDjhB+Fdog/iw==
-X-Received: by 2002:adf:ea42:0:b0:33b:6410:4634 with SMTP id j2-20020adfea42000000b0033b64104634mr4058984wrn.23.1707744347365;
-        Mon, 12 Feb 2024 05:25:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUgJMpFHLH93Cpoan/nxYVctpRvA+u3Du42qTJYuVxI1XiD/OsGcf9O5w8kzSEDLfXpJ9DZ5BT7qV1Ycbt6ff3JpqDYPkn15MGxZdoW23EBxXq3+QZKMGJ9hc9w7n9xUMBMVFf3DjEW3GJna5VnvVGbEPxpTGdfxFUQjZv2r/ipxoZBPImENzl05EPPh+iJtavaeYvONc9epOs3Yo7FrlQCbXTDnIano7zfM9aUqjHBa2ai0vNKUS+xzgrXpJG5SkTbCsoDE1DMQR/nYFYyTDHRA90Ob9tXEtORkJLlOKveBGzAL3K4wFruQG2WnDRDgv2v/4fIM7FBi3g3ZnAJ3Ir741kbOG3n9YhaSRlG1ke7fQaR095pObyjZZJoJLPUPFY0kZ6VsaovcmoVmo0qIkYlKWg2bDdO6mqqcREotkfDcWL3vHmtWWaFidZjvc0YEerxIVOj+sNH5WGM+8+7mQ2ZqkJtc7U7pIBvB/hYra4rBswDuAazCgowZk9cHZDU+VHQbNuPPz3JbyUK//a+BhyorJxcFB9kWdpoyDZJ14EO12mplU3vw4bndLcuR5hmXWVf6E09qUVJ1/0hp/wEixy7Dwj8x0IBPXJeqZn4h9dY9CzWAJFpBxsfClXf+PiqdOwTay9V0LM5whf7XpsnONCcfajeZDgihUO4NjECLEFvgI5OfyKlTqY34PMLJKRTOWDo+KhGuFLcRkJzyJr3Z6jDrI7/kbtCjgRQ40JgPD32Flf/BhzsoUPJnWjDzAcDlDG6a29nQLbRYt3ljo3EOW/hEjEhRriyeN06tmC/+YQQCd2xzOW3VagbhLT4vwVdkGPFuCxl25VEIlYv6eImOx/6UcxzaA==
-Received: from [192.168.1.20] ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id n4-20020a5d67c4000000b0033b888a0a63sm645201wrw.0.2024.02.12.05.25.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 05:25:46 -0800 (PST)
-Message-ID: <c02af97c-7801-4d17-a83f-a72de33c7a81@linaro.org>
-Date: Mon, 12 Feb 2024 14:25:44 +0100
+        d=1e100.net; s=20230601; t=1707744430; x=1708349230;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=voyZqJo/cIne41l5d+IDZJTmO0BrPsamqEotiqg3SZ4=;
+        b=dIGf+YBXKOlamslNi643O0GZPDcxHekg901BIlxa7rAzr25DBMnVI7Um1aOODFjPcV
+         /wKq9+4LyMRlEOJrgOyhiWiiZ6Lt2ph3H70k3D56oZvBKewZNlPsqpqN7oguLcLGebet
+         yVdUEuMSaKDWRsZhD+wtiVU+MfVmZ4pfVMav1IkJxol3Uo2zLpq4egFCit25OEJFuclQ
+         Cm4GbFesQzPb9WoWNe2Ca0zepmL9HuHjUvlUf0YxXYZHXmYCcxXVVYGkmdPimPr3WVVT
+         YrZmlX7I2v8I1sBCyFLwOnyZt0/Gxd0QhhT6MdOY5DEQdY294Cl3PrYlYvOlCtoXhUEG
+         2fIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWRKINwHjWyuEmBk0NDSZKCVDorMoVX0IjhMTAXOS5QmXT5MW+MhHH1DKRLt/f3toKzZ1dYfzmN8PX8BFeJqP82xdPK7f5fBprwukUF
+X-Gm-Message-State: AOJu0YxxmLE4ydpzcY9xP0YmQ9eiIgfioU8W4JC2hG89GMbUUVhOVqwx
+	NWwpjg54Rqzge5+PJS7DPsamvqyxOYuBkK1wwI3NmsQR6Ny9AieEqDJwrunNV0YMY5be3QWg9h2
+	O+TP7+Voq1/tw9XJxAy1Tx89hrASrWBBdwZjCwQ==
+X-Google-Smtp-Source: AGHT+IH2FeH9b90zOdUSsLyLSaIqH2hxHl8fPGS0QQV4ey1Z5w/YkWI71/Atkzgl/Hq1bPQgBvQtf2TUNVTPAW1kDUc=
+X-Received: by 2002:a05:6902:2604:b0:dc7:4fbd:2b55 with SMTP id
+ dw4-20020a056902260400b00dc74fbd2b55mr6374378ybb.45.1707744430126; Mon, 12
+ Feb 2024 05:27:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/7] dt-bindings: arm: qcom: Add Xperia 1 V
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>,
- Bjorn Andersson <andersson@kernel.org>, Abel Vesa <abel.vesa@linaro.org>,
- Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Kees Cook
- <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20240210-topic-1v-v1-0-fda0db38e29b@linaro.org>
- <20240210-topic-1v-v1-2-fda0db38e29b@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240210-topic-1v-v1-2-fda0db38e29b@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240207-enable_pcie-v1-1-b684afa6371c@quicinc.com>
+ <CAA8EJpqjm_2aE+7BtMkFUdet11q7v_jyHbUEpiDHSBSnzhndYA@mail.gmail.com>
+ <dec2976e-6e1e-6121-e175-210377ff6925@quicinc.com> <CAA8EJprsm5Tw=vFpmfEKL8fxS-S+aW+YR0byfyL=v78k75TGEw@mail.gmail.com>
+ <3ad77846-b4a8-80ee-e9e1-d5cbf4add6d8@quicinc.com> <CAA8EJprRF0tVFZK9c=MT8bSRcBdRvcugBaeEzpX5-wfRyNgc3Q@mail.gmail.com>
+ <c8be2bbf-a51c-a38f-6e6f-a88801f953d5@quicinc.com> <20240209075716.GA12035@thinkpad>
+ <CAA8EJppfzc_dM9c9mHPVWheVxi-1gJxCmaWPvreELijEQDDSyA@mail.gmail.com> <20240212131551.GA74465@thinkpad>
+In-Reply-To: <20240212131551.GA74465@thinkpad>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 12 Feb 2024 15:26:59 +0200
+Message-ID: <CAA8EJpo2bbWokvRs0=RhTYKYyAEd-axyQnFZxzLkqFQ-NyPEzQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Add PCIe nodes
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com, 
+	quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com, quic_skananth@quicinc.com, 
+	quic_parass@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 12/02/2024 14:10, Konrad Dybcio wrote:
-> Document the SM8550 SONY Xperia 1 V (PDX234) board.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Mon, 12 Feb 2024 at 15:16, Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
+>
+> On Fri, Feb 09, 2024 at 12:56:18PM +0200, Dmitry Baryshkov wrote:
+> > On Fri, 9 Feb 2024 at 09:57, Manivannan Sadhasivam
+> > <manivannan.sadhasivam@linaro.org> wrote:
+> > >
+> > > On Fri, Feb 09, 2024 at 12:58:15PM +0530, Krishna Chaitanya Chundru wrote:
+> > > >
+> > > >
+> > > > On 2/8/2024 8:49 PM, Dmitry Baryshkov wrote:
+> > > > > On Thu, 8 Feb 2024 at 16:58, Krishna Chaitanya Chundru
+> > > > > <quic_krichai@quicinc.com> wrote:
+> > > > > > On 2/8/2024 12:21 PM, Dmitry Baryshkov wrote:
+> > > > > > > On Thu, 8 Feb 2024 at 08:14, Krishna Chaitanya Chundru
+> > > > > > > <quic_krichai@quicinc.com> wrote:
+> > > > > > > >
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > On 2/7/2024 5:17 PM, Dmitry Baryshkov wrote:
+> > > > > > > > > On Wed, 7 Feb 2024 at 12:42, Krishna chaitanya chundru
+> > > > > > > > > <quic_krichai@quicinc.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > Enable PCIe1 controller and its corresponding PHY nodes on
+> > > > > > > > > > qcs6490-rb3g2 platform.
+> > > > > > > > > >
+> > > > > > > > > > PCIe switch is connected to PCIe1, PCIe switch has multiple endpoints
+> > > > > > > > > > connected. For each endpoint a unique BDF will be assigned and should
+> > > > > > > > > > assign unique smmu id. So for each BDF add smmu id.
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> > > > > > > > > > ---
+> > > > > > > > > >     arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 42 ++++++++++++++++++++++++++++
+> > > > > > > > > >     1 file changed, 42 insertions(+)
+> > > > > > > > > >
+> > > > > > > > > > diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> > > > > > > > > > index 8bb7d13d85f6..0082a3399453 100644
+> > > > > > > > > > --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> > > > > > > > > > +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> > > > > > > > > > @@ -413,6 +413,32 @@ vreg_bob_3p296: bob {
+> > > > > > > > > >            };
+> > > > > > > > > >     };
+> > > > > > > > > >
+> > > > > > > > > > +&pcie1 {
+> > > > > > > > > > +       perst-gpios = <&tlmm 2 GPIO_ACTIVE_LOW>;
+> > > > > > > > > > +
+> > > > > > > > > > +       pinctrl-0 = <&pcie1_reset_n>, <&pcie1_wake_n>;
+> > > > > > > > > > +       pinctrl-names = "default";
+> > > > > > > > > > +
+> > > > > > > > > > +       iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
+> > > > > > > > > > +                   <0x100 &apps_smmu 0x1c81 0x1>,
+> > > > > > > > > > +                   <0x208 &apps_smmu 0x1c84 0x1>,
+> > > > > > > > > > +                   <0x210 &apps_smmu 0x1c85 0x1>,
+> > > > > > > > > > +                   <0x218 &apps_smmu 0x1c86 0x1>,
+> > > > > > > > > > +                   <0x300 &apps_smmu 0x1c87 0x1>,
+> > > > > > > > > > +                   <0x400 &apps_smmu 0x1c88 0x1>,
+> > > > > > > > > > +                   <0x500 &apps_smmu 0x1c89 0x1>,
+> > > > > > > > > > +                   <0x501 &apps_smmu 0x1c90 0x1>;
+> > > > > > > > >
+> > > > > > > > > Is the iommu-map really board specific?
+> > > > > > > > >
+> > > > > > > > The iommu-map for PCIe varies if PCIe switch is connected.
+> > > > > > > > For this platform a PCIe switch is connected and for that reason
+> > > > > > > > we need to define additional smmu ID's for each BDF.
+> > > > > > > >
+> > > > > > > > For that reason we defined here as these ID's are applicable only
+> > > > > > > > for this board.
+> > > > > > >
+> > > > > > > So, these IDs are the same for all boards, just being unused on
+> > > > > > > devices which have no bridges / switches connected to this PCIe host.
+> > > > > > > If this is correct, please move them to sc7280.dtsi.
+> > > > > > >
+> > > > > > Yes ID's will be same for all boards. we can move them sc7280.dtsi
+> > > > > > but the BDF to smmu mapping will be specific to this board only.
+> > > > > > if there is some other PCIe switch with different configuration is
+> > > > > > connected to different board of same variant in future again these
+> > > > > > mapping needs to updated.
+> > > > >
+> > > > > Could you possibly clarify this? Are they assigned one at a time
+> > > > > manually? Or is it somehow handled by the board's TZ code, which
+> > > > > assigns them sequentially to the known endpoints? And is it done via
+> > > > > probing the link or via some static configuration?
+> > > >
+> > > > There is no assignment of SID's in TZ for PCIe.
+> > > > PCIe controller has BDF to SID mapping table which we need to
+> > > > program with the iommu map table.
+> > > >
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/dwc/pcie-qcom.c?h=v6.8-rc3#n997
+> > > >
+> > > > Based upon switch the BDF to SID table will change for example I had two
+> > > > switches with one switch has 2 PCIe ports and other has 3 ports one
+> > > > embedded port which supports multiple functions.
+> > > >
+> > > > For the first switch the BDF's are
+> > > >       - 0x000(root complex),
+> > > >       - 0x100(USP),
+> > > >       - 0x208(DSP 0),
+> > > >       - 0x210(DSP 1),
+> > > >       - 0x300(endpoint connected to DSP 0),
+> > > >       - 0x400( endpoint connected to DSP 1).
+> > > >
+> > > > For 2nd switch the BDF's are
+> > > >       - 0x000(root complex),
+> > > >       - 0x100(USP),
+> > > >       - 0x208(embeeded DSP 0),
+> > > >       - 0x210(DSP 1),
+> > > >       - 0x218 (DSP 2),
+> > > >       - 0x300(embedded endpoint function 0),
+> > > >       - 0x301 (embedded endpoint function 1)
+> > > >       - 0x400( endpoint connected to DSP 1)
+> > > >       - 0x500(endpoint connected to DSP2).
+> > > >
+> > > > For these two switches we need different BDF to SID table so for that
+> > > > reason we are keeping iommu map here as this is specific to this board.
+> > > >
+> > >
+> > > I don't understand why the SID table has to change between PCIe devices. The SID
+> > > mapping should be part of the SoC dtsi, where a single SID would be defined for
+> > > the devices under a bus. And all the devices under the bus have to use the same
+> > > SID.
+> >
+> > This sounds like a sane default, indeed. Nevertheless, I see a point
+> > in having per-device-SID assignment. This increases isolation and can
+> > potentially prevent security issues. However in such case SID
+> > assignment should be handled in some automagic way. In other words,
+> > there must be no need to duplicate the topology of the PCIe bus in the
+> > iommu-maps property.
+> >
+>
+> Yes, address space isolation is the primary motive behind this patch. But as
+> you said, we should not do it by hardcoding the SIDs in the board DTS. It won't
+> scale and is not a proper solution.
+>
+> Instead, the issue should be addressed in the IOMMU layer by working with the
+> IOMMU folks.
+>
+> It should be noted that we _cannot_ use any arbitrary SID for PCIe bus. HYP/TZ
+> will fault the transactions coming with different SIDs than the ones assigned
+> to them. So we still need to pass that info from DT to IOMMU layer.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Yes, passing a range or a masked value sounds logical. Passing 1:1
+mapping for a dynamic bus doesn't.
 
-Best regards,
-Krzysztof
 
+-- 
+With best wishes
+Dmitry
 
