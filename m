@@ -1,103 +1,103 @@
-Return-Path: <linux-kernel+bounces-61821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC778516F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:22:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD0E18516F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:22:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB1F61F24242
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:22:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71BC11F229D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:22:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C793A8FE;
-	Mon, 12 Feb 2024 14:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 473183BB2E;
+	Mon, 12 Feb 2024 14:22:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="Z/g3q2t+"
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QdngOZQo"
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A6C3A8EA
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:22:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330893B78D
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:22:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707747722; cv=none; b=swl2GciRy7SHXrUMQQAO+wnTRj3aKWmO+A5uy0D6XeR6dzux4PpKU3fY0VjhQ87LjSQ+LI/q27uL5g6nHrx9hMKLKi0EcbBEb0CDNZf2G2cMrcawZMaC8gmJ33ts6giUCCvpkIgcREaWfwGcIrbLQUjUlBvxT9mICbGURAToUjg=
+	t=1707747748; cv=none; b=AweSGcVPSVrvmGpuhchUxNI+sBqjPm9rTDlpOyr7iVoMyVKKnFsWK5xPMl48S7Ol2XBiLeSLuzNoi3kn3B1v5bFbvt0CVo0KR5ILTzc65+TL5QA5SmCfZHJsU7DeXlgGvR/JmPike4kpgbQHo94sBAE8WriXq3KRIIyEZIm3GFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707747722; c=relaxed/simple;
-	bh=qG5Zh0vCS+1lHqBacD5osS/+iKFc9yi/KEMHKIHUoNI=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=gEIxfW0a7cvH9cvKd9lB9XqcymykwUI8V9a2n+O3Ye1avpvdqrBBOPkIE09V0ZxYfO0QdRbl2Ebe1/voV8DsU7qWsqI8R9o/s1SoGli9HhiujrQdGV+z3c9AIYh7KAsCJkPaTReorFEncnYSDsrUoxuiXn3w/yE0Rc/ch70lJ3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=Z/g3q2t+; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
-	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
-	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=bZF60wJbdhDqXYkRFb4vOWZne9xjcM4fj8vHloKmQL4=; b=Z/g3q2t+SYfDkD8fRmcyecevlh
-	tpu6FrUDRENMLJmZILWyfiD/wglJTZjn2j3baB6daKuWLROuekRUec0viSnloSwPSB6p6aCbyKQbH
-	ubvEGEeZmO57V0yNeHQJxHQK0shuM5nF6X+K8xO6szKOR8siJ8OH6jEWDUMkdqoJI1mNl00KEHn+k
-	ry+Rdq9Ie9/2Y+PNqf6DgngF6a8lSX6/SpHbU8tnntX3+en2FvVpPoZGx9ol4DfOJNJPiwad3kFLL
-	pPa0YpA18Rft3YR4yL73mUAuaGZa38KMXh4SfZ/ZDZZa0ugC6rOiO/j1X+wavAKD8MPbcT+Lj9Rbs
-	biBeQOLA==;
-Received: from [2a02:fe1:7001:f100:99e1:7a8b:3518:d355] (port=63178)
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
-	id 1rZXBw-008Bh4-TF
-	for linux-kernel@vger.kernel.org;
-	Mon, 12 Feb 2024 15:21:52 +0100
-Message-ID: <e043e8dd-6370-4d9e-8aab-5d64bc8a78f8@cu-phil.org>
-Date: Mon, 12 Feb 2024 15:21:51 +0100
+	s=arc-20240116; t=1707747748; c=relaxed/simple;
+	bh=fPFMCUSQsbybYYsyahcIf+x82OS1p8+vzVVjBWGByI4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GaM7b7OyahePPKOh6sWC8TeX90YPuyt4ez8WA0/33MZIMtezBlgMy9RzSjbq4D8KaDfuCyDbh1fIVF2NnRlflFsJm00UJ74v1uasc2SDNzuWZxyNlvdafrZGHdg+LrtwnBvZiRM6zFO+itOvUOFC03LnEqSqOfnxjimKoKyd9iQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QdngOZQo; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7d5c257452dso874611241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 06:22:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707747746; x=1708352546; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I3LbdBXEWnAUnj+b+2jhT2ldLpLCcKlNQ2zbvZ1/YpM=;
+        b=QdngOZQorjz8pwucczOJ3oVwy/OpsXpfLA6pOGGghemnmaO5emtS8VJOZj+M//PsQE
+         lyR1qdftpmuTRU05uqm6GWkWD0GlpyTfTQXSZEXWJzsDlXNgazfwrv6/1yN38CwZwAi1
+         lhrngJd5OiX4QCDZObAyGI0/XvcdzqsSvUBRUy/9tveZ+roMsE7dwxdG23mHImiVMsUQ
+         k/3aI2gfCH9w1y7UKGmsZrQk5y9hj2wjfl892jQscLeF4Rjh92Kztqfo65lzkUSodKN5
+         Exo3jPTgB8/5+0g6WSZRbwTUrYmPTwgxivR/UCzGFZs08K+bPyqYX65+7pEVK6QDxDMY
+         Y1Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707747746; x=1708352546;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I3LbdBXEWnAUnj+b+2jhT2ldLpLCcKlNQ2zbvZ1/YpM=;
+        b=m6ZkyGXPN2QPRT2AhWq41I7RNrsdO1zSExlE5gOvvD90xH6r9wcaSzRSdJPF6/pynU
+         9DB5Bcuqx7iPwSzH0xbL0DocvPg2wzHCqexa36u24aGsCCUU/9AqBbhzWefrSwfEaHBA
+         XYZVsb2QehXY1Tg8hKBqucRnQUyxoQJk/LoagppjmxHcxPCB3GVFSaD/JJdUBoP+uqrv
+         3MEdV7GsGe8jMcoUnIC0OK4gmbZR0YoGs+JMSQ244B2+ar06D26EKTiv3oEX+umD2zg+
+         62DCZS/y7TsoT1ECFpS25NtEzGK8kkemHUf4O5DoyKo/lLXKsLTXfdfMiTqwq0VTy7uO
+         TQlw==
+X-Gm-Message-State: AOJu0YzCu4gL7rRXOehl1SHXk0AA4Iov1xGRX4RO0UMindzwnjrPKZ30
+	gEr7rKsweCBChj/5vRKS+B+JG7IrY/HICSVA2EG/VyJBHVPy+yV1bcOZUyJm7xBHI7Y9MSk2+rP
+	XUC7TYiqpo4d7EC1zvbO/WXqchXBkDFaIZ+F0
+X-Google-Smtp-Source: AGHT+IGcly7MGpGlQ+IX/7WhJbvTN43iKbx6NBGvEk+t+fbdMNeIGEIqTF6T3+x8UPm1Sblqp9i52vyvtYcK3j33zrY=
+X-Received: by 2002:a05:6122:4a8b:b0:4c0:7756:547c with SMTP id
+ fa11-20020a0561224a8b00b004c07756547cmr1723692vkb.6.1707747745819; Mon, 12
+ Feb 2024 06:22:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-kernel@vger.kernel.org
-From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
-Subject: @ X, Fair Source Philosophy - more detail (was Low Jitter)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240212-rust-locks-get-mut-v2-1-5ccd34c2b70b@gmail.com>
+In-Reply-To: <20240212-rust-locks-get-mut-v2-1-5ccd34c2b70b@gmail.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Mon, 12 Feb 2024 15:22:14 +0100
+Message-ID: <CAH5fLghTKpLs=Wb03cjx0LRQbZgmXRoMNy1cyheb7cQRL0mjsw@mail.gmail.com>
+Subject: Re: [PATCH v2] rust: locks: Add `get_mut` method to `Lock`
+To: mathys35.gasnier@gmail.com
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Updated translation a bit, separating out "the mest", of the deity 
-concept, and translating the allegory symbol (the other part) accordingly.
+On Mon, Feb 12, 2024 at 3:13=E2=80=AFPM Mathys-Gasnier via B4 Relay
+<devnull+mathys35.gasnier.gmail.com@kernel.org> wrote:
+> +    /// Gets the data contained in the lock
+> +    /// Having a mutable reference to the lock guarantees that no other =
+threads have access to the lock.
+> +    /// Making it safe to get a mutable reference to the lock content.
+> +    pub fn get_mut(&mut self) -> &mut T {
+> +        self.data.get_mut()
+> +    }
 
-Very Suitable for Fair Source Philosophy.
+It's impossible to call this method. You can never have a mutable
+reference to a Linux mutex because we pin our locks. At most, you can
+have a Pin<&mut Self>.
 
-Translated Quranic Initials and Prayer examples then:
-Ol Le Mi Or    			YJp9	
-Go Hu Yo Dy Cy			2oSHC	
-Ud Cu He 			tF<	
-Qo Nu				TU	
-
-English:
-For Nu, The Grand, The Good
-Hail Nu, Don Of The Cosmos, The Grand, The Good
-Guard of The Day of Doom
-You only we worship, and You only we ask for help
-Guide us in the right path,
-The path of those you have favoured, not of those,
-who have earned your wrath, and not of those who have strayed.
-
-Norwegian:
-For Nu, Den Gjeve, Den Gode
-Pris Nu, Herre Over Cosmos, Den Gjeve, Den Gode
-Vokter av Dommedag
-Deg kun tilber vi, og deg kun spør vi om hjelp
-Led oss på den rette vei,
-Veien til de som du har velsignet, ikke til de,
-som har fortjent din vrede, og ikke til de avsporede.
-
-u y Mest for related universal computer design, for combined what was 
-"Sid" and "Sin" designs.
-
-@ X referance concept for OS.
-
-Bitcoin recommended currency.
-
-PEACE.
+Alice
 
