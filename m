@@ -1,139 +1,90 @@
-Return-Path: <linux-kernel+bounces-61090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0963850D22
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:16:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD55F850D25
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:27:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 565CB1F22E83
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 04:16:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35362B22DD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 04:27:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1623D538D;
-	Mon, 12 Feb 2024 04:16:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C0D612B;
+	Mon, 12 Feb 2024 04:27:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lv6hoCUm"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VVAl/WKS"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8999A4694
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 04:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A47C538D;
+	Mon, 12 Feb 2024 04:27:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707711391; cv=none; b=Tn5h9txg+z9uTJHNwg6581R6u/XW5rvNOcm+N6/UYYh6IFeor5za4fbIWqt+b/iM7V/cvbT+/h0AuZmRvOCiB10gxFBKyhYHJ1z99thWOXxhJJCel0DQkAX67+imuy21omHslW5LRWpRqYyTSw4IlhP8rA484b2xFmjWNR4ZzOM=
+	t=1707712031; cv=none; b=Vravpx/74InXmAN2s+RSl7UmIixekB4DtIYVyaoLGDkufI2KUNqNurVXxGk9GjOrKJEsWA+ViuaI4Ni3w2/zJhx9Q3nhE1w9Ip8IHLUjPiQjEPMs7ZaiWXjgoRbrVwN9HV8KyNZdoNhovXoYJBziCEoNBpul0Uahih3EEENHNJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707711391; c=relaxed/simple;
-	bh=cNv6wmO4uE87B+19zl8R1jip/GvDeTUusFtUmHEueRw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DkyU++KnMgKC4vJdJlkufy+VsrStax5Wec4XgpW1LsGn2zLXhRAhE+MNpOfV+ox69YRR1wQ7JEgdmbP0x9bKeyo/7dENKwoVWRBNl4PQSc5AWHYyaNzdVAHl8WPjqWJYPAyUAl1kxSOwjT7Kxz7FdkVq8e5Wq3QqdtKEkZ8l8i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lv6hoCUm; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707711390; x=1739247390;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cNv6wmO4uE87B+19zl8R1jip/GvDeTUusFtUmHEueRw=;
-  b=lv6hoCUmhqoVp6j6ToSu4C2lNusfgnuKZu6ICn5sHducVJhPAhsXwaz4
-   excqV5B0Hyiu7jyGh7AnUbCMD2ONzp0FEqGONv01ws0N1sxrzsZOpZ4S5
-   jj3Sq2VaskJWplYaUlzyIoe5GiG9leifGBoChU4v3YhMa1njH49AcZbTS
-   vrpK0JCoy7kcvGcucY+rGKFvecH7xmCaE0qCZ4ofEla08af2TCcrVfRxT
-   bVyKKzzINHg35HkGsmYcrlWlURoPYgRmhFKJfXTrBvrZ+yN7b0hwABh7M
-   kqfU11Rti0E1IzBFUxBLme09JIuC3U5yh36xPoPhcE73E5rc+aGQzin+q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="1529015"
-X-IronPort-AV: E=Sophos;i="6.05,262,1701158400"; 
-   d="scan'208";a="1529015"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2024 20:16:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,262,1701158400"; 
-   d="scan'208";a="2790849"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by orviesa007.jf.intel.com with ESMTP; 11 Feb 2024 20:16:28 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rZNk1-0006ug-2A;
-	Mon, 12 Feb 2024 04:16:25 +0000
-Date: Mon, 12 Feb 2024 12:15:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Max Kellermann <max.kellermann@ionos.com>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Max Kellermann <max.kellermann@ionos.com>
-Subject: Re: [PATCH v4 03/35] include: reduce header dependencies by using
- "*_types.h"
-Message-ID: <202402121235.LLT92dIZ-lkp@intel.com>
-References: <20240211231518.349442-4-max.kellermann@ionos.com>
+	s=arc-20240116; t=1707712031; c=relaxed/simple;
+	bh=PI7OsLMBcGqvxQAELryVmcH2/hBuWkPphtMfo+aLq18=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f4bMwhxU88x2h/zZS4jphMJFmA3QFznbIaMOT1P4G98zzuQX8tV/AfWEuig4Nn7eT2/KFuSDOlipAizgcFc9n3mmOOkaK9mfLhtBI0yTOELHgsg6oRMMFxTOOvN0bPioOCGtqeOpvpX7A5EL6YMIovnL50btKppxTHmkEtd78Io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VVAl/WKS; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=3zU9qWCg0noGR4z5kjUevqgcV3l4ea81bsNQeNCgnKI=; b=VVAl/WKSlhOou0KvishC96wmu9
+	w5jzd/YP2sYMX9CznDgnfww9H5rQqaEi7pymo197s3GlgZbVky0PO3NN0iJKmssZZRZL8kSHCx3h/
+	f8dhN8ZBRCvro6M1v0FejJ9zzL933bXhQ+gH7ac7d1+1KxkAsD7SS3/LF8SZh+1VH0Hq/pDpa21le
+	SyyS5o9elVYGoPBUh9993iWKAdaTwIOY/juFIEqYH8RraGKJAOFa0z0pR6v7terSSTLj4xF91UxKI
+	gnTD81xt8KhSgbMAFCwYxcKJK83kBP0qh9eZQ+IJKrpMSywn/5oNt/tITQVmq1/zXgMJELrlbJo73
+	CzZSYIoA==;
+Received: from [50.53.50.0] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rZNuO-00000004IVh-3WIv;
+	Mon, 12 Feb 2024 04:27:08 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org
+Subject: [PATCH RESEND] asm-generic/io.h: fix grammar typos
+Date: Sun, 11 Feb 2024 20:27:07 -0800
+Message-ID: <20240212042707.13006-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240211231518.349442-4-max.kellermann@ionos.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Max,
+Correct grammar mistakes.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arch@vger.kernel.org
+---
+ include/asm-generic/io.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-[auto build test WARNING on next-20240209]
-[cannot apply to drm-misc/drm-misc-next media-tree/master mkp-scsi/for-next linus/master v6.8-rc4 v6.8-rc3 v6.8-rc2 v6.8-rc4]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Max-Kellermann/include-add-missing-includes/20240212-072756
-base:   next-20240209
-patch link:    https://lore.kernel.org/r/20240211231518.349442-4-max.kellermann%40ionos.com
-patch subject: [PATCH v4 03/35] include: reduce header dependencies by using "*_types.h"
-config: alpha-allnoconfig (https://download.01.org/0day-ci/archive/20240212/202402121235.LLT92dIZ-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240212/202402121235.LLT92dIZ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402121235.LLT92dIZ-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/flex_proportions.h:11,
-                    from lib/flex_proportions.c:36:
-   include/linux/percpu_counter.h: In function 'percpu_counter_add':
-   include/linux/percpu_counter.h:191:9: error: implicit declaration of function 'local_irq_save' [-Werror=implicit-function-declaration]
-     191 |         local_irq_save(flags);
-         |         ^~~~~~~~~~~~~~
-   include/linux/percpu_counter.h:193:9: error: implicit declaration of function 'local_irq_restore' [-Werror=implicit-function-declaration]
-     193 |         local_irq_restore(flags);
-         |         ^~~~~~~~~~~~~~~~~
->> include/linux/percpu_counter.h:191:9: warning: 'flags' is used uninitialized [-Wuninitialized]
-     191 |         local_irq_save(flags);
-         |         ^~~~~~~~~~~~~~~~~~~~~
-   include/linux/percpu_counter.h:189:23: note: 'flags' was declared here
-     189 |         unsigned long flags;
-         |                       ^~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/flags +191 include/linux/percpu_counter.h
-
-80188b0d77d742 Dave Chinner   2015-05-29  185  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  186  static inline void
-20e89767096392 Peter Zijlstra 2007-10-16  187  percpu_counter_add(struct percpu_counter *fbc, s64 amount)
-^1da177e4c3f41 Linus Torvalds 2005-04-16  188  {
-88ad32a799ddc9 Manfred Spraul 2022-12-16  189  	unsigned long flags;
-88ad32a799ddc9 Manfred Spraul 2022-12-16  190  
-88ad32a799ddc9 Manfred Spraul 2022-12-16 @191  	local_irq_save(flags);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  192  	fbc->count += amount;
-88ad32a799ddc9 Manfred Spraul 2022-12-16  193  	local_irq_restore(flags);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  194  }
-^1da177e4c3f41 Linus Torvalds 2005-04-16  195  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff -- a/include/asm-generic/io.h b/include/asm-generic/io.h
+--- a/include/asm-generic/io.h
++++ b/include/asm-generic/io.h
+@@ -1019,12 +1019,12 @@ static inline void *phys_to_virt(unsigne
+  *
+  * Architectures with an MMU are expected to provide ioremap() and iounmap()
+  * themselves or rely on GENERIC_IOREMAP.  For NOMMU architectures we provide
+- * a default nop-op implementation that expect that the physical address used
++ * a default nop-op implementation that expects that the physical addresses used
+  * for MMIO are already marked as uncached, and can be used as kernel virtual
+  * addresses.
+  *
+  * ioremap_wc() and ioremap_wt() can provide more relaxed caching attributes
+- * for specific drivers if the architecture choses to implement them.  If they
++ * for specific drivers if the architecture chooses to implement them.  If they
+  * are not implemented we fall back to plain ioremap. Conversely, ioremap_np()
+  * can provide stricter non-posted write semantics if the architecture
+  * implements them.
 
