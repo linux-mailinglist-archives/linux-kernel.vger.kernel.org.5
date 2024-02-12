@@ -1,111 +1,120 @@
-Return-Path: <linux-kernel+bounces-62203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F448851CF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:39:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96467851D0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:43:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A9B1284A2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:39:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C8B22814B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2B14595D;
-	Mon, 12 Feb 2024 18:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rZnwopuP"
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C270C46425;
+	Mon, 12 Feb 2024 18:42:34 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82A0445018
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D238A3FE31;
+	Mon, 12 Feb 2024 18:42:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707763169; cv=none; b=OJMYDTpoBAjJa1TdJRcfBUTPhEDx2pi/uEJ7HpZgw7wFIMwmjiP/MexBfG0Lg9yak+4YenWGISJfbrNGqZwcOjSnccsE4i8YLdwOie0S0OKYZwRcI/1jHyNazF4rlNOVHN0jci7MiCeLOrkAJISe+zeUQauLYHhtM1SdMe2EjFM=
+	t=1707763354; cv=none; b=qYj7bscUMx7srOzWD/tgrLIz5UPFnSSIyKl7Ab1YtVj3ZiGzk+6utbFVZ7kiV9S6Y2YNRd2DR+K8ruiSPw0z9NgBMmpe+NaGGx3iQ7OYHlOjmDFzm2NdtWyYeeNkFw7/Mw907QJMVVk+PHE4kH/05MjbUHPat+2132xshNkGBtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707763169; c=relaxed/simple;
-	bh=HCgT/lIF6+pVrFxFVEXRsHMO2HmD8QWBakVqzWoiQ9M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y66afeTJzZ0zf03l0/oXlH6STCYi1DPkJ8Ag6TrNdshNuzAepI0yRXfh+QTgumIyGJ8hvVYlovqQSVahuklIHMwJcC3Z355wAqeceILE5Ak/+jlAzPkVqI+LgI+BHsBjUVwXIFJ3F6UYu+OW5dVXkGI8nVfmlCPUm0hnCqS1Cjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rZnwopuP; arc=none smtp.client-ip=209.85.221.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4c0819d4890so16877e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:39:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707763166; x=1708367966; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HCgT/lIF6+pVrFxFVEXRsHMO2HmD8QWBakVqzWoiQ9M=;
-        b=rZnwopuPxaz1NRwgOxXRb3HEErW5l+aank023/5PqrsvlWHjSX4ZRpLumO2bX0B7oj
-         AW0BOWxrVJA345klwhGAXEHlyk1JgXLHzfUP16XPhmcDurDzoAxKOjO8eo7S+rc5hJss
-         4HsN97plRqzuJXsSBFeFkMADoZuLBfx1Yu090fYV2nRwI1o5Zi6JATngWobKLFK0bBpr
-         fXeQT9rUoqn70y0PlgiG91/gK1GbEmtOQqcE1tQaBkHI+iS6q6aycbF+STS/Pzh52Aku
-         OFQsvKJjscQxoddZI+HAb2W6u2Fd1KuvLKv+feRIl6C1NPMj8XUzQ9FdWy+H+Ubo9YGA
-         6Qdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707763166; x=1708367966;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HCgT/lIF6+pVrFxFVEXRsHMO2HmD8QWBakVqzWoiQ9M=;
-        b=Dwi4M3Y2+uwbFOtdt5T2npW5Pzj9D91XyNfBzuMKWMJ5s9KV06sGc3uylyJXMC67Uy
-         k7ahsn0Uje9N3KBc4yzvOIWYnjFChE8qvWttsSzb9IgudRwHqXZD6wQIuj/zLuIkT5UV
-         EJxuTYdFe9NWI6WRor2DKvsAjVmUWhtK86/iNjIetoxg+rfCBRDPO5A8JodVvHmRGgJ6
-         A8f4sgdj17Ldoj0AfOkQ9lN++jTIkJvvTpH/N9Isbk5Gcb1QGK/hKYU7Mfu/5/LzsOd8
-         MxYlwcs1hSHdf264lGJuqhI3rBV5BmL3YQIFhQXis9XXrqfEPB5IbJg/6HZR7SnV8YvI
-         GR7w==
-X-Forwarded-Encrypted: i=1; AJvYcCXo1A8EiV1Xx7OgMvj9xTJ1TsFmZBx96f4odp73wZeNFr7VccZscJs+SOU+pmQHMq+za9BSiCTL7kl+q9asDvw/DS5j4OunEtQjeXao
-X-Gm-Message-State: AOJu0YycSPouwowuBaxheN3Q1qSJRYWlswqFyg2rAlGAYiPIkbLq6iqI
-	SFuwphUgDfveV5lGWU3HoaBHzCWzsevhmyvJUkz6D0LdoOovg66bELSsy/tc26DrDn3vWdRztUz
-	RqkzRl2vkP8hzfWYn0FKt1Za/frtqnK4sjp7lJQ==
-X-Google-Smtp-Source: AGHT+IH0eDVCHbyPL9X/VNVKVFp1oXkZRJlvE5Y3OB8AuOpgh8MtouPlypW8yAb8NtGduUZwTTMV+D64YPCooPEabaU=
-X-Received: by 2002:a1f:4c46:0:b0:4c0:3b31:34d3 with SMTP id
- z67-20020a1f4c46000000b004c03b3134d3mr3533056vka.12.1707763166289; Mon, 12
- Feb 2024 10:39:26 -0800 (PST)
+	s=arc-20240116; t=1707763354; c=relaxed/simple;
+	bh=zDdOBevHdsttYnr9NEysVoXU8Nd7W/xppLzV0OLgkD8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JNyPXQR7dpkMhPceZZIlpZLnr0ytDuv0+6Agq1YXnJxwaBQlJ5xs2AdBkbSA6dmiRhu4Z+qVZunQF+qqBjfxKmoqIJJe21sm5Qb0AzzgqrROJOmqTO3QgNCbP/VJMYEnP6Pa2KJXucN1rPyoNIMRhU3aFu96FoXsf3wX0emKsUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 3c1eefc7ffa6d519; Mon, 12 Feb 2024 19:42:30 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 5E279669CF2;
+	Mon, 12 Feb 2024 19:42:29 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: Lukasz Luba <lukasz.luba@arm.com>, LKML <linux-kernel@vger.kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Zhang Rui <rui.zhang@intel.com>, netdev@vger.kernel.org,
+ Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+ Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+ linux-wireless@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+Subject: [PATCH v2 7/9] thermal: imx: Set THERMAL_TRIP_FLAG_RW_TEMP directly
+Date: Mon, 12 Feb 2024 19:39:20 +0100
+Message-ID: <3790563.kQq0lBPeGt@kreacher>
+In-Reply-To: <6017196.lOV4Wx5bFT@kreacher>
+References: <6017196.lOV4Wx5bFT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209132512.254520-1-max@internet.ru> <68d61c24-b6d3-450a-8976-e87beb9b54e3@kernel.org>
-In-Reply-To: <68d61c24-b6d3-450a-8976-e87beb9b54e3@kernel.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 13 Feb 2024 00:09:15 +0530
-Message-ID: <CA+G9fYsBakUkg11TFrKZtsqZH3K=6_C2YvEmx6NoHVTkUNNf1A@mail.gmail.com>
-Subject: Re: [PATCH net] selftests: net: ip_local_port_range: define IPPROTO_MPTCP
-To: Matthieu Baerts <matttbe@kernel.org>
-Cc: Maxim Galaganov <max@internet.ru>, Linux Kernel Functional Testing <lkft@linaro.org>, netdev@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>, 
-	Mat Martineau <martineau@kernel.org>
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudefgdduudegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepudeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshht
+ rghnihhslhgrfidrghhruhhsiihkrgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=16 Fuz1=16 Fuz2=16
 
-On Fri, 9 Feb 2024 at 19:27, Matthieu Baerts <matttbe@kernel.org> wrote:
->
-> Hi Maxim, Naresh,
->
-> On 09/02/2024 14:25, Maxim Galaganov wrote:
-> > Older glibc's netinet/in.h may leave IPPROTO_MPTCP undefined when
-> > building ip_local_port_range.c, that leads to "error: use of undeclared
-> > identifier 'IPPROTO_MPTCP'".
-> >
-> > Define IPPROTO_MPTCP in such cases, just like in other MPTCP selftests.
-> >
-> > Fixes: 122db5e3634b ("selftests/net: add MPTCP coverage for IP_LOCAL_PORT_RANGE")
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > Closes: https://lore.kernel.org/netdev/CA+G9fYvGO5q4o_Td_kyQgYieXWKw6ktMa-Q0sBu6S-0y3w2aEQ@mail.gmail.com/
-> > Signed-off-by: Maxim Galaganov <max@internet.ru>
->
-> Thank you both for the fix and the bug report!
->
-> Acked-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+It is now possible to flag trip points with THERMAL_TRIP_FLAG_RW_TEMP
+to allow their temperature to be set from user space via sysfs instead
+of using a nonzero writable trips mask during thermal zone registration,
+so make the imx thermal code do that.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+No intentional functional impact.
+
+Note that this change is requisite for dropping the mask argument from
+thermal_zone_device_register_with_trips() going forward.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v1 -> v2: Rename trip flag (Stanislaw).
+
+---
+ drivers/thermal/imx_thermal.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+Index: linux-pm/drivers/thermal/imx_thermal.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/imx_thermal.c
++++ linux-pm/drivers/thermal/imx_thermal.c
+@@ -115,7 +115,8 @@ struct thermal_soc_data {
+ };
+ 
+ static struct thermal_trip trips[] = {
+-	[IMX_TRIP_PASSIVE]  = { .type = THERMAL_TRIP_PASSIVE  },
++	[IMX_TRIP_PASSIVE]  = { .type = THERMAL_TRIP_PASSIVE,
++				.flags = THERMAL_TRIP_FLAG_RW_TEMP },
+ 	[IMX_TRIP_CRITICAL] = { .type = THERMAL_TRIP_CRITICAL },
+ };
+ 
+@@ -699,7 +700,7 @@ static int imx_thermal_probe(struct plat
+ 	data->tz = thermal_zone_device_register_with_trips("imx_thermal_zone",
+ 							   trips,
+ 							   ARRAY_SIZE(trips),
+-							   BIT(IMX_TRIP_PASSIVE), data,
++							   0, data,
+ 							   &imx_tz_ops, NULL,
+ 							   IMX_PASSIVE_DELAY,
+ 							   IMX_POLLING_DELAY);
+
+
+
 
