@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-61216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 473E2850F0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:45:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E87F850F0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:46:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F26EF2820B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:45:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 506BD1F22732
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11EABF9E4;
-	Mon, 12 Feb 2024 08:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5F9F9E5;
+	Mon, 12 Feb 2024 08:46:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="fJryANDE"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="4QO9jfl5"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB8CF50D;
-	Mon, 12 Feb 2024 08:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DB8F9CC;
+	Mon, 12 Feb 2024 08:46:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707727537; cv=none; b=jM8iO5HmIhQrxARcZ97hWGtCFyiILN6BNAV5vk0TT7UaoRTBGPgGN7gbHlytcg0MyqorXMbIMcWcV21H82no+hWzhcDIOA2IXkPMOWHD6bMsn/U6ensOM3yk96eebwpwTYzLy+mVoq9ZeyxoaRY8Vusk9ypHNawEom0vt/02AE0=
+	t=1707727607; cv=none; b=a9NPrtE+9CtjmW7pZA1TFEoVwhUYC8c+SL89aJvC/sHbFeiOiL8FZbgRbqCoMGqU4+WkAa2C/r6sED/rQZKuSOvWLN/RHPthSZKmUc/psX33mJu3ojeNBAA+ajGQfFPEezC2GFF6hBDkRQGej0QsJbfYRcGF5RmhJ/2btNE/4QA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707727537; c=relaxed/simple;
-	bh=37r0uDvHoWoAoOBklJ4SqXVIYvqKxmwZ/Tk0SnZaf+U=;
+	s=arc-20240116; t=1707727607; c=relaxed/simple;
+	bh=MrwKiPYRPkaUYKLWtoU0XksSmS1raWmw/40HvRZXI+g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YGHv07Y9seel8BmJPrgE822RJF7IIf3lGGXgm1G/3VFacdw65gQZ3jw5ZT0QL/KVdekRHV8rd6WbxQi0T+pspcTKxnaIIAwsR9058KirvHLyf0JnG1CSgqFA44fekwRVTTUNz9GbOBkWJytqTOIKlglFcGNen+uX3iBLMs5/umU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=fJryANDE; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:Content-Type; b=keIFaQT4b/Cv9ApjVjxNVOauGN/HfOGZQF3u7r5fFgJYN5Wclt2lP4FcJD8wxAYpC79RnYcFCag+HjQpoViUHBAoesIfLgwhjS3JVtCmM9YThha5QL/TajGM+3yuamjMr07WQEIQJojoxSHitHxbvJZYCQ+5sRxbVftsgpoNCIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=4QO9jfl5; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707727533;
-	bh=37r0uDvHoWoAoOBklJ4SqXVIYvqKxmwZ/Tk0SnZaf+U=;
+	s=mail; t=1707727604;
+	bh=MrwKiPYRPkaUYKLWtoU0XksSmS1raWmw/40HvRZXI+g=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fJryANDEDkxFcOEd3TUe/SVHBoEa5dLt4yiSEQeu9fSuLMqXZx/6Z9AjuSgr0sb0w
-	 94y230CFIf0xaLG3dnGvej3PBfhS9NflyU/kD0wV1qHYnJlfYfkO0GogZ5VLMxeZem
-	 g6FAGJch+wn9KMso8OvF9ENAObto1qxsi4WbPxjFP31pNeXZEKTUyS1oYD7rtUrmae
-	 afznMbX52hgVfgCaJY1qjZO83Q9pEP+S6SwrTpYHHIo8hocnoX8QkmzmZBUyz+MgUx
-	 AsYpfxfSkwKKjMCMgpab6htGn5oNB6f3QdaUq3GFXX6G/4NcvmIJMFIshQ26BWe+g9
-	 v83F7VlTTi9WA==
+	b=4QO9jfl5nZOSzTHkdnuCtf1s6Pj06nhsiAXE7a2JwM6wG6yLJvyI4oiQb8s5tzzEt
+	 uYf54+YYSy52QWb1hrPnh5qw5xnmE8+e5eWchvMXhmjmFnwV+x/E+IhyomZYAUy8Vy
+	 r2tlkwNhYhbCeX0WwgTvuyUprxjymuHjEYMSKyI1mxUPvjfxGxeAl+0paFHqi4W4fQ
+	 7tx7FkBwzuG+BeJN10J6q5ngB+Y4YKzCckp9BokyqDYhJJvq+FXakWYx10NNAgzHj8
+	 P93H/C06gnZz8bzZcZtiok2AXW1gxaDJWZ05tkBOu+4wRw5duVpM8UgdYQMKC5kWw5
+	 2qwmFvE/2Uuaw==
 Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7ABC2378203F;
-	Mon, 12 Feb 2024 08:45:32 +0000 (UTC)
-Message-ID: <5cd419e6-2585-4f9e-b814-b928ebdb18f2@collabora.com>
-Date: Mon, 12 Feb 2024 09:45:31 +0100
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 78C703782051;
+	Mon, 12 Feb 2024 08:46:43 +0000 (UTC)
+Message-ID: <d7bbca9f-466a-4595-b02d-703dd22c3386@collabora.com>
+Date: Mon, 12 Feb 2024 09:46:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,8 +56,9 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: rawnand: Prefer struct_size over open coded
+Subject: Re: [PATCH v2] mtd: rawnand: Prefer struct_size over open coded
  arithmetic
+Content-Language: en-US
 To: Erick Archer <erick.archer@gmx.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -72,14 +73,13 @@ To: Erick Archer <erick.archer@gmx.com>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
  linux-hardening@vger.kernel.org
-References: <20240210161619.12656-1-erick.archer@gmx.com>
+References: <20240211091633.4545-1-erick.archer@gmx.com>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240210161619.12656-1-erick.archer@gmx.com>
+In-Reply-To: <20240211091633.4545-1-erick.archer@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Il 10/02/24 17:16, Erick Archer ha scritto:
+Il 11/02/24 10:16, Erick Archer ha scritto:
 > This is an effort to get rid of all multiplications from allocation
 > functions in order to prevent integer overflows [1].
 > 
@@ -95,37 +95,16 @@ Il 10/02/24 17:16, Erick Archer ha scritto:
 > do the arithmetic instead of the argument "size + count * size" in the
 > devm_kzalloc() function.
 > 
-> This way, the code is more readable and more safer.
-
-This way, the code is more readable and safer.
-
-Apart from that,
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
+> This way, the code is more readable and safer.
 > 
 > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
 > Link: https://github.com/KSPP/linux/issues/160 [2]
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > Signed-off-by: Erick Archer <erick.archer@gmx.com>
-> ---
->   drivers/mtd/nand/raw/mtk_nand.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-> index 60198e33d2d5..17477bb2d48f 100644
-> --- a/drivers/mtd/nand/raw/mtk_nand.c
-> +++ b/drivers/mtd/nand/raw/mtk_nand.c
-> @@ -1356,7 +1356,7 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
->   		return -EINVAL;
->   	}
-> 
-> -	chip = devm_kzalloc(dev, sizeof(*chip) + nsels * sizeof(u8),
-> +	chip = devm_kzalloc(dev, struct_size(chip, sels, nsels),
->   			    GFP_KERNEL);
->   	if (!chip)
->   		return -ENOMEM;
-> --
-> 2.25.1
-> 
+
+Just noticed that there was a v2 already addressing the commit description issue.
+
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 
 
