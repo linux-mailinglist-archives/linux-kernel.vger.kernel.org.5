@@ -1,116 +1,206 @@
-Return-Path: <linux-kernel+bounces-61744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96DA7851607
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:54:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D24ED8515DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:51:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C98D31C22824
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:54:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 432411F21650
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A683F9F4;
-	Mon, 12 Feb 2024 13:44:53 +0000 (UTC)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CB6047A6B;
+	Mon, 12 Feb 2024 13:44:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RXfCyjeR"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484B84DA01;
-	Mon, 12 Feb 2024 13:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524003D99C;
+	Mon, 12 Feb 2024 13:44:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707745492; cv=none; b=ZV5UZohz2v785vt/SKl1Fzi89b71kvIBHEImRtPp0pYadQOHdMtkrKsdqnykshPVU7+g1Mfc+cIoI+prMeTDSJOoRWQXQABOjhzueNirvTwu/1IlwJ+oxt0QMSKJA6opQGZ5reRhGuAu3dKGqYD6ypg436WqRo59Qbh26octUT0=
+	t=1707745484; cv=none; b=kwOOUYCguVylWFPQ3yuMrBh7Y465RpAeie3d/yZBnETMyLzIcbMya7zsmtOzNmVsqKpWn/D38z2KZWySiAulwN2qQqEPoEPm02Uv+PK7OCPiHclGi12yR1yh2VFtdWcUnXhfw0zVJIHR/M7mpM+zmIRuWbm6p2+tUiiFZV0xPEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707745492; c=relaxed/simple;
-	bh=nZPTXrHA+LiHsIqTB7cqFMevHhP2LgtPPFZtTgHvFeo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qm8QKGrSa8DoGkVk8UREZu948HbglOxsRGFtEyHHwZd0ivK7uvAx/NNltv9VvOn4p4cjHKJNLQbpF5Vqt8onpcXruQazdGWYJYfjAtyPGqrKjt7J1AvRKY995oRb0hoY4mfVhDFzDxFpyOXAeexFiB9rHLe9zxN9nd2gsPAd1pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-604ac794c01so21359517b3.2;
-        Mon, 12 Feb 2024 05:44:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707745490; x=1708350290;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IxNfdSF8cpbhVpSppcYCPitW0TR0qg+YicV9toMfXd0=;
-        b=BIa7A79rCBp7AVdUvbG1JX1+A5h3o13CTB8Spnowuz4wHU4LUdpTHXqFL+E2d1YuuH
-         d/8D04uMo3LCCJV6S4ICEYd1LQml1K2R0WBaOoVS33VcrsCXKP3/TSYj/YXStUj5I6Y2
-         32kXoSTXIbgYpOvwMywrP8u09HPTYZr09V98TaYFRCiOqt8j+hmTP0MJqoq6MYSCwzI7
-         AAy1iP7EjcBGZEthAv2xiTqaH13ZuxkBt0Y21s2gDuwezfGBWjSLEr619EICUflTIcMx
-         8eybqIKUZOsqN7z2MhRN41M1NdQsU4+qlMeqKUTUorOFxf2nYuj3HbX5YW+Zy1IQpdSo
-         bL2g==
-X-Forwarded-Encrypted: i=1; AJvYcCUsbWdhUBHNAOkMygB7xdlWyhP57WK0mbU/8m9EKIl3c4NbZT3yFfll4Pi3vo+gzWNszd1gubsZO51TGZmKKrP5XE3EUxLTIo7IAW80VZjFydoE5Tsr1qy3OIJlIeU9/NwX5CTBLEJsgQ==
-X-Gm-Message-State: AOJu0YzKNLdXm8nLgXlA8s2LgAk4LLbJgQxM9atPrnPo+6FhyeHSwocf
-	sx0Ozowdp7GnKN84AF4GphyqKAJ0Mwt4ZFEIx0eXaE2QAG+CVCaDRlagnmMriWg=
-X-Google-Smtp-Source: AGHT+IGZ1SkhWtU0gb41eZu5IEQqbYguh+NOgE5PoWUUpwyGLYdBx5eJfbWLzGdFP86SyyFoRtOo6A==
-X-Received: by 2002:a0d:e543:0:b0:602:ce22:7079 with SMTP id o64-20020a0de543000000b00602ce227079mr5017973ywe.41.1707745489730;
-        Mon, 12 Feb 2024 05:44:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXOLR+1zvsVgHS+WoSJiKbjFiuQ3Gx2h/YlCCxaJkN2YxbJbClx3n6yU+o7z5IkR4J2Eiw91jgYzY8l9B8XAj4CoLHrQ9mYVmYCNmohqSV1tdLfXA+a51T3is9MH18l+73Gpu7D71iHCw==
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id c128-20020a814e86000000b006047d63bc78sm1178465ywb.72.2024.02.12.05.44.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 05:44:49 -0800 (PST)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc742fc3b68so3590012276.2;
-        Mon, 12 Feb 2024 05:44:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW133KchhwDlpEkynmey4riEIiqfHd7Tfp3nlZQKl3UtfxKMJkS743YoH2kOyIrQ6JnaJ60PKdrx/6Gngi9VXlbXa30JH5nQQbFuzUk1sG8KNwmLeOkwEesRclJmUVGf7wOl047wSgxug==
-X-Received: by 2002:a25:b128:0:b0:dc2:4397:6ad3 with SMTP id
- g40-20020a25b128000000b00dc243976ad3mr5620552ybj.44.1707745489315; Mon, 12
- Feb 2024 05:44:49 -0800 (PST)
+	s=arc-20240116; t=1707745484; c=relaxed/simple;
+	bh=7JrUaxGN67JBOxn88XZTkMUXo+y2WGJJHOhTeZBykO0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=HvNuGyUhgJrRhQN48CMIemmKcWSIxAXGusFSdD5DM4R+Lil1T20VvMWLPVXRZ/hGU8Z7y3Q3VQ3oaCSEkyvutfuPhqgrA4och5fLwHmWG4NiZhl5V87NnGKC1+gMnUVP6qSIayFVrb6qoap6aonYJnRpHZL8HrcLyL5mXXvNid4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RXfCyjeR; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D394CFF804;
+	Mon, 12 Feb 2024 13:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707745479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5Gf1u42EHHfffvDbyP9y58zXZhDYkOBkG79TmsvC6H0=;
+	b=RXfCyjeRydY2wMt+zGRmTJixZVTHUe2RA7JSfkhPFMw0swyoAD7d9A5JoHmO1zjjO3tBTZ
+	+2yrAlQowuTrQMGsShOP3wESoqSZjZLsJlFGpcsKGCoJJch+khXooKo5SVD6H7G5HiDrFB
+	fMk7sqBGZ86aHoZ525d47IMOj1rO8g7SSYgYG3Uin8wQC9PjU5paO/Drc1XA/cDrpGzdO/
+	JNuWY348uJo/cbRqNKkOEvnQL4HRWs7XjxBaXcwQlY22KvaoIpbLNJMIj36mmunOyLyFZ4
+	cF45C+uLBUn9Vf+bDF496eRLrWrrqCTE7D0prffpz7gOZ0v1ubKZZhP1dK0sFw==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Mon, 12 Feb 2024 14:44:37 +0100
+Subject: [PATCH v6 06/13] dt-bindings: soc: mobileye: add EyeQ5 OLB system
+ controller
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129212350.33370-1-wsa+renesas@sang-engineering.com>
- <20240129212350.33370-2-wsa+renesas@sang-engineering.com> <CAMuHMdXuWHCLa8HFXBZK4M4fqivudxjHcqqUyZ2=a3=OfFLPYQ@mail.gmail.com>
- <ZcogWgtQ7hZ-5aj0@shikoro>
-In-Reply-To: <ZcogWgtQ7hZ-5aj0@shikoro>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 12 Feb 2024 14:44:37 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXAPN=DML7BOwRgLX1Z9NZmtCZY9ARZupKV9JELmb0rdg@mail.gmail.com>
-Message-ID: <CAMuHMdXAPN=DML7BOwRgLX1Z9NZmtCZY9ARZupKV9JELmb0rdg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] arm64: dts: renesas: ulcb-kf: adapt 1.8V HDMI
- regulator to schematics
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240212-mbly-clk-v6-6-c46fa1f93839@bootlin.com>
+References: <20240212-mbly-clk-v6-0-c46fa1f93839@bootlin.com>
+In-Reply-To: <20240212-mbly-clk-v6-0-c46fa1f93839@bootlin.com>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hi Wolfram,
+Add documentation to describe the "Other Logic Block" syscon.
 
-On Mon, Feb 12, 2024 at 2:42=E2=80=AFPM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> > > -       hdmi_1v8: regulator-hdmi-1v8 {
-> > > +       t1v8: regulator-t1v8 {
-> >
-> > "t1p8v"?
-> > Or "reg_t1p8v", as the former is a rather short name, causing conflicts=
-?
->
-> Agreed, I'll take the latter and resend.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+ .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 94 ++++++++++++++++++++++
+ MAINTAINERS                                        |  1 +
+ 2 files changed, 95 insertions(+)
 
-No need for that, I can fix it while applying...
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.9.
+diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
+new file mode 100644
+index 000000000000..bcded7fb86dc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
+@@ -0,0 +1,94 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mobileye EyeQ5 SoC system controller
++
++maintainers:
++  - Grégory Clement <gregory.clement@bootlin.com>
++  - Théo Lebrun <theo.lebrun@bootlin.com>
++  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
++
++description:
++  OLB ("Other Logic Block") is a hardware block grouping smaller blocks. Clocks,
++  resets, pinctrl are being handled from here.
++
++properties:
++  compatible:
++    items:
++      - const: mobileye,eyeq5-olb
++      - const: syscon
++      - const: simple-mfd
++
++  reg:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 1
++
++  ranges: true
++
++patternProperties:
++  '^clock-controller@[0-9a-f]+$':
++    $ref: /schemas/clock/mobileye,eyeq5-clk.yaml#
++
++  '^reset-controller@[0-9a-f]+$':
++    $ref: /schemas/reset/mobileye,eyeq5-reset.yaml#
++
++  '^pinctrl@[0-9a-f]+$':
++    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
++
++required:
++  - compatible
++  - reg
++  - '#address-cells'
++  - '#size-cells'
++  - ranges
++
++additionalProperties: false
++
++examples:
++  - |
++    soc {
++      #address-cells = <2>;
++      #size-cells = <2>;
++
++      system-controller@e00000 {
++        compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
++        reg = <0x0 0xe00000 0x0 0x400>;
++        ranges = <0x0 0x0 0xe00000 0x400>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++
++        reset: reset-controller@0 {
++          compatible = "mobileye,eyeq5-reset";
++          reg = <0x000 0x0c>, <0x200 0x34>, <0x120 0x04>;
++          reg-names = "d0", "d1", "d2";
++          #reset-cells = <2>;
++        };
++
++        clocks: clock-controller@2c {
++          compatible = "mobileye,eyeq5-clk";
++          reg = <0x02c 0x50>, <0x11c 0x04>;
++          reg-names = "plls", "ospi";
++          #clock-cells = <1>;
++          clocks = <&xtal>;
++          clock-names = "ref";
++        };
++
++        pinctrl: pinctrl@b0 {
++          compatible = "mobileye,eyeq5-pinctrl";
++          reg = <0x0b0 0x30>;
++
++          uart2_pins: uart2-pins {
++            function = "uart2";
++            pins = "PB8", "PB9";
++          };
++        };
++      };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f397dd1b32d8..51445b919ebf 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14792,6 +14792,7 @@ F:	Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+ F:	Documentation/devicetree/bindings/mips/mobileye.yaml
+ F:	Documentation/devicetree/bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml
+ F:	Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml
++F:	Documentation/devicetree/bindings/soc/mobileye/
+ F:	arch/mips/boot/dts/mobileye/
+ F:	arch/mips/configs/eyeq5_defconfig
+ F:	arch/mips/mobileye/board-epm5.its.S
 
-Gr{oetje,eeting}s,
+-- 
+2.43.0
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
