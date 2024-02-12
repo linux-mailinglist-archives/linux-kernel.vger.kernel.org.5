@@ -1,132 +1,227 @@
-Return-Path: <linux-kernel+bounces-62003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A86298519E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 01F768519EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:47:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63B84283AF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:46:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 808212837C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:47:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F5D8494;
-	Mon, 12 Feb 2024 16:45:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED5C3D0BC;
+	Mon, 12 Feb 2024 16:47:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jhxfrIEK"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LY8u65Fl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 327B3154B1;
-	Mon, 12 Feb 2024 16:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CB91E89B
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:47:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707756299; cv=none; b=kGXm84tcWKZJIpN6KvfyDOOkEaQ9QVVdkGto4iZXq4Jdelp5foi642IolzP1rnTRekhjY+yseMdS+9Htj1lhbbFwJHgAdCsrTmWbpIuLEY9OuL7FJzU9ALDFOUMyAaTdujCbqFLQa7mxEE52Zb8VfPny3jRMSuMUc3PZPqXlp3U=
+	t=1707756441; cv=none; b=eKXn1HQ3gG9NHIzj2PeQO4wEGuPkZK20pQZf7jSLJnlSw5Tn2z2dM+76sCRJfQdi0dr8MV14ykWFVViTJipw/s00ahQn5k8nuIVxUSx3W+HSITp7uJdYu6XCRgvk6LeJIHBDWxMkBmImUaHF9RyRK3e6MvE8LRJZXQYMqG8LpKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707756299; c=relaxed/simple;
-	bh=4UAvf6tMeDjUjgIt85ujGhNvNkUKpw+Bw4u6o4GJWr4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kyKns+qIeDyv8mqGVHywz96DwRW2CYI2712qRu96CrXWMo35/QgLMY8SRoQbGgUfqms7MH8Y/Uudzx1maslK+mjGxODQWVv2JvfCtB6wD+tJs4860E3Nx8yFT1do25EMehtd+i02RCvUaxnOgy1nRgeI2eFzmb1QI0BSE2EUl14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jhxfrIEK; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33b86bc8974so500188f8f.2;
-        Mon, 12 Feb 2024 08:44:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707756296; x=1708361096; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aogiPWx9iamxsGoJiTEZzs3mhZ4z87cPE84LPd+suNs=;
-        b=jhxfrIEKhY30tE8jI6DMmdYrERAXe9jXyF4kni7RGrUu3rDiT/9T/BZQ8RlNDwioqR
-         QgINlRiOW2tDXT80FZetJhSlxw8OER3wGeZsd9IR+W2pcMDaJ9AiJT6Gh+nlIZKQITGg
-         xieAtNVs1NFbh7ziydT0ollvDCPXegdKEL6bMjeuEAwlr5ebpfjzTIzOCp7ZZuD1bBPi
-         OftSKZQEjLJ2pQTw+vghXUhVbm+kkTVK8lTsMRrt3GOc8swRZXNwGhg9RMxqxk+H6XXs
-         kryOC8ToPqLbh8Fu6KbfxVO56Ko73QS9y7bcBWSFNp13O3z/J+19JzVq8xFuvZdSFpGw
-         7hZA==
+	s=arc-20240116; t=1707756441; c=relaxed/simple;
+	bh=MY228vr+39uuu/xQY9iIz40rY8941W7snNOmZuW3dRk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q1E6mhLpBzXuB7hYjdW8pTZH5+s698VNjWOI6O6DPmBTorNp9M1vIwgTZtIjtP/ujkAceaUpiBwDH6Rl3q/+7+u+Efpm8WOTjAmspi+pyD6TaRubp1cqtOeeGVsWVYrFknD3IZZvtwZxvM9QON9dPrlFVd0h7UxMCd/zxDE1cDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LY8u65Fl; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707756438;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MY228vr+39uuu/xQY9iIz40rY8941W7snNOmZuW3dRk=;
+	b=LY8u65FlYQSSxdoig1oL2iBWgNMmnY6UnBav6C3rL+gEFbmCyD0sahm0ydcn3p06dwS90R
+	MfZIg0z8knLYV+qPhJdCG/bqP6SE0jOHXAV9j+oniWrrOJahIWnHEzwwOqX9EALAgpTXY/
+	nKIra0GLWtrEa/iEkyVIzmA78DAZWpw=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-684-_GxFuP09Ohi-K7vwvkEvVQ-1; Mon, 12 Feb 2024 11:47:16 -0500
+X-MC-Unique: _GxFuP09Ohi-K7vwvkEvVQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a30f9374db7so440459766b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:47:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707756296; x=1708361096;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aogiPWx9iamxsGoJiTEZzs3mhZ4z87cPE84LPd+suNs=;
-        b=T50p6+tj46gKHSshiOHgrJwk3LmDsep7try7pYHfwQ7BOolLrDfDfbjlM5WgtVAfvP
-         /CW17drYb9pPBhWhl+ez4s9MGLRl9WtC2+LBnYBUvxj4ARajG3fbHZivMbY00qt6r/LG
-         32ASRxX6WDmVT4dpI2z6guKX8BnawS2tDV6pf/V6ZTwVQiFhL1XFMfCW7OvXtPrxdXwB
-         ZM2NVfP1RnWt0gZuzCIIRkIbOesvsQTotY2xS6MzP6StakrYeI5LU8PRh/DKQu++976o
-         U7XqhoIp+Qxsr/cF/293v9/OeOV2OLjdZG2d5n02TK2qV5aXVHHl6UC/alaIob5XXgqy
-         alfw==
-X-Gm-Message-State: AOJu0YwrhptCPYgK4dGMquTCUiSJpQNxPFzUU84AVktu/qKHHfXu8sue
-	fyDMWhw8XsRlBccWxx6mPTp9/U6kR/WwiAF9bu6OoS3eXYcA92zg
-X-Google-Smtp-Source: AGHT+IE2bXWI0Cjr/ufrLe9ZMhXhO3vMwdu8pOdp7/5tmJ3s20byT+ET+47/262D86z59Rglhlix8A==
-X-Received: by 2002:adf:f050:0:b0:33b:4967:4d2 with SMTP id t16-20020adff050000000b0033b496704d2mr5545729wro.41.1707756296237;
-        Mon, 12 Feb 2024 08:44:56 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVCCznL4B0+Zm2htBLr3PiX2fwM06xhFy47awuh1W5sFjX6kE/NdvRa1VsW8o2EiNOyLJPpqDqnpRDm0A0virs6YAXAs1h+y5dAxKaWtTGGJmnWWeCrWifXynTD5NoZ5IWAwPWi9OFwgd3Kty8cGZk9M6DK1wjfo5HdKHtZO8AAepEqJjcpKF1Sztvp/dEMQn+D2P6JSrcGGsFoleyWTEPiWg4wsYu0Ly8YwjU17jLKHi6YkDIqNmc+2G7d6kLXRtJjxmxKPSUtiQC01KhIrnCnDdl0feWeSQTiADdogpq7NhOVI2TuznpdolRtXcL0NDPmpO0ol8BnWjCn185qaHb2QMyp4pCxci5B+P34vUhOUkEwKo3099qqeotcA3DG7cCc7nHWrFdlIe6ZHsQog5wKhzoGwOAzxHhTCLDeFCOQ5SJvFbvi5pa73e7FbnzSrh6XmaRBRKJEe0FlCjjqFNF1yWZWEIpPUP7OMWVEQJGhAme+ZI27yBklbw8w8HiVZtU3GEmL3hVkbhmomWScym9ZG7RVKPSx+x1wtjsFUz1jYSSDSaraXx73+oNLd0vYPlEvA49ICyZM84zKLm/gc/vqQ5hfr5H8JxZTl1M66F8PyrAnBCoNupbTquNGMFJvl5jpVKBh
-Received: from [192.168.0.9] (cm-83-97-153-254.telecable.es. [83.97.153.254])
-        by smtp.gmail.com with ESMTPSA id v7-20020a5d6787000000b0033b541e987csm7206803wru.33.2024.02.12.08.44.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 08:44:55 -0800 (PST)
-Message-ID: <61af7b121b23fe8ed06df5348692f862b9b125bf.camel@gmail.com>
-Subject: Re: [PATCH v2 2/2] phy: rockchip: Add Samsung HDMI/eDP Combo PHY
- driver
-From: Luis de Arquer <ldearquer@gmail.com>
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, Johan Jonker <jbx6244@gmail.com>, 
- Sebastian Reichel <sebastian.reichel@collabora.com>, Sascha Hauer
- <s.hauer@pengutronix.de>, Andy Yan <andy.yan@rock-chips.com>, Vinod Koul
- <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Philipp
- Zabel <p.zabel@pengutronix.de>, Algea Cao <algea.cao@rock-chips.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-phy@lists.infradead.org, kernel@collabora.com
-Date: Mon, 12 Feb 2024 17:44:43 +0100
-In-Reply-To: <20240205-phy-hdptx-v2-2-a7150814c047@collabora.com>
-References: <20240205-phy-hdptx-v2-0-a7150814c047@collabora.com>
-	 <20240205-phy-hdptx-v2-2-a7150814c047@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1707756435; x=1708361235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MY228vr+39uuu/xQY9iIz40rY8941W7snNOmZuW3dRk=;
+        b=hutYud5TxbzBaMxD+vOj+MECVMmPsik1v63qhRzkMYLXiVpOAqDxeS8gNw6Y27r0D2
+         hOnFmnhN0Ky+qnWdhdeZRhYJhbJiu8cNJWHm8c/AYg8XnCnz3nEf5/zYWuRq4S2/iObo
+         cVnc26T+lVLJYGHyljq8bgHRjU+Qcv8/uI9/kqS/tpWATYDCu3V4Q5Fm2roOmqbAdQuN
+         BIXLvdBVAQ3Lz3TTNjs1tbmeKwOqhzzjf/vCVx7Uwklfdk1DFHzc2wsQNWli1BYpha0D
+         ZuMDIfklNs1kePbxFZvwSC3jQusbo3QuctUm2q67eDIMwhWNskzL+NHJu2J7yxJ4mv1N
+         KFig==
+X-Forwarded-Encrypted: i=1; AJvYcCWhIpchbTJu1WW5o8p9V3yGE7Ge35S/Jfp8MG1gcjphIKFiFTIT+Cczgi/dtDss/apm4e1/T6bv7iuuvdBh9XwOYDqs+a0HQG6a2JZL
+X-Gm-Message-State: AOJu0YzfpixiLbTgLQ1wo+k7LqxzldFGJC23mApTQiZaljnbF77EhXDF
+	bPrPiu+klXdyhK9H33iKPYNTI2RW0/Nn2jkU7SgE0144cTSWjZp88bdvLg9B3FL7EYtqGJZN6Sm
+	/MPaWispb7rbB/lI+7MkmkNyAY6ALaWw2XyZeIIZP/GhX0gnEx/mjYnCbSucB0S8Cwe1pRHKydi
+	5Y+HPDA6/A3rSyCrEzC+53KsCjJPwgLFrnsGdt
+X-Received: by 2002:a17:906:a45:b0:a35:3eb8:2f6e with SMTP id x5-20020a1709060a4500b00a353eb82f6emr27092ejf.33.1707756435667;
+        Mon, 12 Feb 2024 08:47:15 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHAZerKch+MuCFwX1ZjjMTjm+95QqbUxaqQ0n/1DezRMjWdQ5qMyJNxcCuhpAYnDXw1l/GiYvxqNwRwneyLjyU=
+X-Received: by 2002:a17:906:a45:b0:a35:3eb8:2f6e with SMTP id
+ x5-20020a1709060a4500b00a353eb82f6emr27061ejf.33.1707756435301; Mon, 12 Feb
+ 2024 08:47:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
+ <87bk8pve2z.fsf@toke.dk> <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+ <875xyxva9u.fsf@toke.dk>
+In-Reply-To: <875xyxva9u.fsf@toke.dk>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Mon, 12 Feb 2024 17:47:03 +0100
+Message-ID: <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Cristian,
+On Fri, Feb 9, 2024 at 6:05=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen <to=
+ke@redhat.com> wrote:
+>
+> Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+>
+> > On Fri, Feb 9, 2024 at 4:42=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen=
+ <toke@redhat.com> wrote:
+> >>
+> >> Benjamin Tissoires <bentiss@kernel.org> writes:
+> >>
+> >> > [Putting this as a RFC because I'm pretty sure I'm not doing the thi=
+ngs
+> >> > correctly at the BPF level.]
+> >> > [Also using bpf-next as the base tree as there will be conflicting
+> >> > changes otherwise]
+> >> >
+> >> > Ideally I'd like to have something similar to bpf_timers, but not
+> >> > in soft IRQ context. So I'm emulating this with a sleepable
+> >> > bpf_tail_call() (see "HID: bpf: allow to defer work in a delayed
+> >> > workqueue").
+> >>
+> >> Why implement a new mechanism? Sounds like what you need is essentiall=
+y
+> >> the bpf_timer functionality, just running in a different context, righ=
+t?
+> >
+> > Heh, that's exactly why I put in a RFC :)
+> >
+> > So yes, the bpf_timer approach is cleaner, but I need it in a
+> > workqueue, as a hrtimer in a softIRQ would prevent me to kzalloc and
+> > wait for the device.
+>
+> Right, makes sense.
+>
+> >> So why not just add a flag to the timer setup that controls the callba=
+ck
+> >> context? I've been toying with something similar for restarting XDP TX
+> >> for my queueing patch series (though I'm not sure if this will actuall=
+y
+> >> end up being needed in the end):
+> >>
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/commit/=
+?h=3Dxdp-queueing-08&id=3D54bc201a358d1ac6ebfe900099315bbd0a76e862
+> >>
+> >
+> > Oh, nice. Good idea. But would it be OK to have a "timer-like" where
+> > it actually defers the job in a workqueue instead of using an hrtimer?
+>
+> That's conceptually still a timer, though, isn't it? I.e., it's a
+> mechanism whereby you specify a callback and a delay, and bpf_timer
+> ensures that your callback is called after that delay. IMO it's totally
+> congruent with that API to be able to specify a different execution
+> context as part of the timer setup.
 
-On Mon, 2024-02-05 at 13:24 +0200, Cristian Ciocaltea wrote:
-> +
-> +static bool hdptx_phy_clk_pll_calc(unsigned int data_rate,
-> +				   struct ropll_config *cfg)
-> +{
-> +	const unsigned int fout =3D data_rate / 2, fref =3D 24000;
-> +	unsigned long k =3D 0, lc, k_sub, lc_sub;
-> +	unsigned int fvco, sdc;
-> +	u32 mdiv, sdiv, n =3D 8;
-> +
-> +	for (sdiv =3D 16; sdiv >=3D 1; sdiv--) {
-> +		if (sdiv % 2 && sdiv !=3D 1)
-> +			continue;
-> +
-> +		fvco =3D fout * sdiv;
-> +
-> +		if (fvco < 2000000 || fvco > 4000000)
-> +			continue;
-> +
+Yep :)
 
-What about adding a check to data_rate, maybe like
+There is still a problem I wasn't able to fix over the week end and
+today. How can I tell the verifier that the callback is sleepable,
+when the tracing function that called the timer_start() function is
+not?
+(more on that below).
 
-if (fout > 0x0FFFFFFF)
-	return false;
+>
+> As for how to implement it, I suspect the easiest may be something
+> similar to what the patch I linked above does: keep the hrtimer, and
+> just have a different (kernel) callback function when the timer fires
+> which does an immediate schedule_work() (without the _delayed) and then
+> runs the BPF callback in that workqueue. I.e., keep the delay handling
+> the way the existing bpf_timer implementation does it, and just add an
+> indirection to start the workqueue in the kernel dispatch code.
 
-or similar, before the for loop, to keep the multiplication safe?
+Sounds good, especially given that's roughly how the delayed_timers
+are implemented.
 
-Right now it would be redundant, given that data_rate was, at some
-point, encoded in 28 bits within bus_width. But can prevent future pain,
-especially after changing to phy_configure_opts_hdmi.
+>
+> > I thought I would have to rewrite the entire bpf_timer approach
+> > without the softIRQ, but if I can just add a new flag, that will make
+> > things way simpler for me.
+>
+> IMO that would be fine. You may want to wait for the maintainers to
+> chime in before going down this route, though :)
+>
+> > This however raises another issue if I were to use the bpf_timers: now
+> > the HID-BPF kfuncs will not be available as they are only available to
+> > tracing prog types. And when I tried to call them from a bpf_timer (in
+> > softIRQ) they were not available.
+>
+> IIUC, the bpf_timer callback is just a function (subprog) from the
+> verifier PoV, so it is verified as whatever program type is creating the
+> timer. So in other words, as long as you setup the timer from inside a
+> tracing prog type, you should have access to all the same kfuncs, I
+> think?
 
-Luis
+Yep, you are correct. But as mentioned above, I am now in trouble with
+the sleepable state:
+- I need to call timer_start() from a non sleepable tracing function
+(I'm in hard IRQ when dealing with a physical device)
+- but then, ideally, the callback function needs to be tagged as a
+sleepable one, so I can export my kfuncs which are doing kzalloc and
+device IO as such.
+
+However, I can not really teach the BPF verifier to do so:
+- it seems to check for the callback first when it is loaded, and
+there is no SEC() equivalent for static functions
+- libbpf doesn't have access to the callback as a prog as it has to be
+a static function, and thus isn't exported as a full-blown prog.
+- the verifier only checks for the callback when dealing with
+BPF_FUNC_timer_set_callback, which doesn't have a "flag" argument
+(though the validation of the callback has already been done while
+checking it first, so we are already too late to change the sleppable
+state of the callback)
+
+Right now, the only OK-ish version I have is declaring the kfunc as
+non-sleepable, but checking that we are in a different context than
+the IRQ of the initial event. This way, I am not crashing if this
+function is called from the initial IRQ, but will still crash if used
+outside of the hid context.
+
+This is not satisfactory, but I feel like it's going to be hard to
+teach the verifier that the callback function is sleepable in that
+case (maybe we could suffix the callback name, like we do for
+arguments, but this is not very clean either).
+
+Cheers,
+Benjamin
+
 
