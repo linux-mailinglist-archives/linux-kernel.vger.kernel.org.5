@@ -1,127 +1,257 @@
-Return-Path: <linux-kernel+bounces-61292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B920585108C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:18:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 006A385108E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:20:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49CE02880CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:18:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B6D3B20CF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D672818032;
-	Mon, 12 Feb 2024 10:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y6QFCcFb"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B261804A;
+	Mon, 12 Feb 2024 10:19:49 +0000 (UTC)
+Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7342917C62
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153D85244
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.243.244.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707733074; cv=none; b=HiP0c/a3yr8Qk9OPqq0+u9itsIgOftIrMTZBCcTDj7gnlHcllHNz/R58uv1wP0GZwzhYBWdr2F4EpOF0gRC356BplAbUdz0B/MxNR/z7BjdHHTIQAbNcG+skAHYYJzlglwa8XHYWeZ12ZQH5ufpKMTqQFNd569sx2ZdXcNKd1Ro=
+	t=1707733189; cv=none; b=KMbgfj588uoXKOoFiNfzGybJF2asppDP75hDcAv5oBdbozx0ZzxMlGkr+0wjFf00AnAoWekphWOoe2ZxqS+4GFoHJALJ15yatRaKQRTUqDHN56xD3ctG/nrBlZkU7SB3SPkXCju3WWhch+A+mj5sSjAR44J7w02rEBs4sUVrMMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707733074; c=relaxed/simple;
-	bh=8tSF0jlKqaYoudnTGmjGNrNMBoIoz9p0dEXgVzrpIhQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=m72+CXW+wwA81LnVKgwW7mXtfFaKhFiVQ8BhtQ/+QD2tMFi8txlCu+V0GZNF7kIKqHITQNIYo57gGUH4RhHU2qhrbi9WwuN+3UCsYeZlEt/UTnEHDitAxeofq+K/PZ5c1DtMCpLNe4SMUKYFJ3K4FZAxAT+R4yTJ1L1NdH9b0U8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Y6QFCcFb; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33b28aadb28so1882659f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:17:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707733071; x=1708337871; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8tSF0jlKqaYoudnTGmjGNrNMBoIoz9p0dEXgVzrpIhQ=;
-        b=Y6QFCcFb6aIC1V4CAChXY9MKXionRmZAhL+8H7v+61GquWmWm0JzYmLExg1MMrz159
-         A8IKg/4dNjgA2fYMWtI/F3yq+J+6acvMAPSnhWz4zxPAD6VzCibzcg1vig0DZBdc/ip9
-         bgK8vjQolVjIzU3GuT2YEnO5Bvgqv8po1v/mBXeici5zHKQ4/6pjyz9ZeznHCgh4nrT3
-         4Rx0tHoA2ZrpU9t6ZmMdpYjEIz22jwyFHQ+DM/ZtinFaSxzZF6Ma64Jamo7PTY4cfS1L
-         1zOPQL2ANHmxgvnw+sbIV+6geGmWu7KVTHZwP2wYpmatp7spQxAlOdQZYssHJthVzVku
-         9aOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707733071; x=1708337871;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8tSF0jlKqaYoudnTGmjGNrNMBoIoz9p0dEXgVzrpIhQ=;
-        b=m5a6KYJYRGKqj3e84ythdmioNnxEXXV2xDm3QwsYf4LoyFBH3rbrI9n78C+cdbs3jY
-         6PCRhIyX+aiEPjMRMAXcN+7a8ViAHGtOP4IlicCZvay2tVTAKPDLCy4T/oMVv9OLcD1J
-         Xq009aZmCzq8pu6uhN62f7MpCmyOfeiTHdXivaxdkQGxAQh9/SBVUkbgHaUU5G31NGrg
-         68A8Y2NYLtXeVOdI53ssFbShSoj4lwWe0Oh6DwdqanZJQG1s0ILutUTjyttcKtugKbbR
-         UKVaOs/QvkP5ApkvV8H5A9IjmpoOYWvxhzUC2/ImBKAezhUkq45YemfAXwTbevKBQK2T
-         BBHw==
-X-Gm-Message-State: AOJu0YxCpiDaHBsZNAwcWecaSrXsmQNtqQnXUpuHDI3kPZGyg+nJZhgT
-	Z+WKSXhHtqUIroBVLn8lt3pZL2r0+jFdmyLbUs9Y4n5bh9YGlgfvLG9yjdQ3YrQ=
-X-Google-Smtp-Source: AGHT+IFcf82HXcacp3V+HVrWbXaP9rjPPjK8qFH+9DGIcSX8OpZbtxgBhGvuHv7p+wPMLEO+M4T7xA==
-X-Received: by 2002:a5d:4a04:0:b0:33b:615a:19b7 with SMTP id m4-20020a5d4a04000000b0033b615a19b7mr4595435wrq.22.1707733069963;
-        Mon, 12 Feb 2024 02:17:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW+mm3KiRPo1HXNV7b+yhiuRyD7lE2xoiezMnzudmmH7NuHMH6anZGcme3J8GlP3/ouVSGng246HS1MWVzwnlSPN9z8+WLvnCG7VjyyY6Zwugr6TlTpFTB+tBo0PTp4BLpl66F2mA+iJk8M14/s/IxLhh0/VfLi+Qz6YS9NQuU/+N0TtoOkY5jLmgf1ySssHf2NHr+V0KcALj1951KvYnBQpE/VkvNfGQZWdmIZQK9EUU5coOL8lQcgFFyd8mehZACtSi1P1SiTHCNMJnq7Ce3deP5K3sWjiAc/V7g7vwVvDossPGPEuQNW7F1QmkcZsHYbdzw7SYyTEDi4kPbjP3kRGH20vIqa6OylHF1TOqnVc92I3OSQjX38inx4Q8VIjLyMNwjUTIus0OFdLTdzEKXA8nd7WIUD7Z+iLV/mDY/oIbHHG/xGuaFs5anUjIF5brT5B9ViFzWj
-Received: from draszik.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id u7-20020a056000038700b0033b72aa93b5sm5744635wrf.89.2024.02.12.02.17.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 02:17:49 -0800 (PST)
-Message-ID: <5972b6a4ae8669e2a9e872278b740b182217906b.camel@linaro.org>
-Subject: Re: [PATCH] arm64: dts: exynos: gs101: add stable i2c aliases for
- gs101-oriole
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- peter.griffin@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org,  conor+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com, 
- tudor.ambarus@linaro.org, willmcvicker@google.com,
- semen.protsenko@linaro.org,  alim.akhtar@samsung.com,
- linux-arm-kernel@lists.infradead.org,  linux-samsung-soc@vger.kernel.org,
- devicetree@vger.kernel.org
-Date: Mon, 12 Feb 2024 10:17:48 +0000
-In-Reply-To: <170737972037.52344.9107022607101399076.b4-ty@linaro.org>
-References: <20240130233700.2287442-1-andre.draszik@linaro.org>
-	 <170737972037.52344.9107022607101399076.b4-ty@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1-1 
+	s=arc-20240116; t=1707733189; c=relaxed/simple;
+	bh=SEcJ4zTcyCcF6woV9v43oZ2vKZFHbHbrPgvKRxKiCtM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ZKT1ec6qW1IYaSnRH/WyyRzBBFcUf5MzCG+Z/tkgP5CAkofuJQALTPdpToCsQlCVoSRrwb+TzX5zTAHjiBl4NGMmEPsK/Ntfj9JoXeAeBT9IedeiqQSW0ow6/0kzfOMMjxu2G8kdOFdAMZrep53gQZanMOZqHFymXGF9mVeUqZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail2.sysu.edu.cn; spf=pass smtp.mailfrom=mail2.sysu.edu.cn; arc=none smtp.client-ip=54.243.244.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail2.sysu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail2.sysu.edu.cn
+X-QQ-mid: bizesmtp68t1707733107tfv96pxg
+X-QQ-Originating-IP: cpku7vEil/v+ZkoFq3hmnqaMeplPEm28H2nYMy/Xvfg=
+Received: from VM-16-2-ubuntu.. ( [122.51.61.190])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 12 Feb 2024 18:18:25 +0800 (CST)
+X-QQ-SSF: 01400000000000B0R000000A0000000
+X-QQ-FEAT: 9YL+uTTQpf9mZ4m+Z1FW/tBxcHhqJzE6G/zvE1+onLhO1Z0c3vzfz+viAyeWa
+	jrEBI1P71/fyihJyrouLAT0S/UemUpEqNM73mmLqP781Rv/UsJHGjgWbgBL3Meq373rK51T
+	Ax1ZDTVAw+83V68UvU46AFMpTTKazSCFYApVGnAMdu8tMyDyGNjxVNp20QOVVT9OwdSBrMN
+	zAJQkHZGBD+uM16+sVlTIGplOJFG8slXAGXwPji0dohJVLRiIylWxNB5dwCsK5cbGvv2Trg
+	vWY5c8T7Ooa9GiRmsLDKJlX7fsP/y0MNaeViH0V0md6uX73mzcm0bOXzT159t84pvyIioi5
+	nVDLCO9FrCvO2d3IvpW7T4IHzir07s9xuJYbKaM3Xi3bReDhOCcH9i+KLoCNnkDNv0OhhZu
+	Ki08s1xhSWc=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 12912666476556176843
+From: Yinchuan Guo <guoych37@mail2.sysu.edu.cn>
+To: linux-kernel@vger.kernel.org
+Cc: lee.jones@linaro.org,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	Yinchuan Guo <guoych37@mail2.sysu.edu.cn>
+Subject: [PATCH] sound: codecs: fix typo 'reguest' to 'request'
+Date: Mon, 12 Feb 2024 18:18:20 +0800
+Message-Id: <20240212101820.18437-1-guoych37@mail2.sysu.edu.cn>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240212065014.3696356-1-guoych37@mail2.sysu.edu.cn>
+References: <20240212065014.3696356-1-guoych37@mail2.sysu.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:mail2.sysu.edu.cn:qybglogicsvrsz:qybglogicsvrsz3a-1
 
-Hi Krzysztof,
+This patch corrects a common misspelling of "request" as "reguest" found
+in the log messages across various files within sound/soc/codecs.
 
-On Thu, 2024-02-08 at 09:08 +0100, Krzysztof Kozlowski wrote:
->=20
-> On Tue, 30 Jan 2024 23:37:00 +0000, Andr=C3=A9 Draszik wrote:
-> > Now that we have more than i2c interface, add aliases to ensure
-> > deterministic bus number assignment.
-> >=20
-> > So as to keep compatibility with existing Pixel userspace builds, use
-> > the same bus numbers for hsi2c_8 and hsi2c_12 as the downstream
-> > drivers with the intention to eventually add all the earlier busses as
-> > well.
-> >=20
-> > [...]
->=20
-> Applied, thanks!
->=20
-> [1/1] arm64: dts: exynos: gs101: add stable i2c aliases for gs101-oriole
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 https://git.kernel.org/krzk/linux/c/72ccd9=
-25dcbd2ad6935a4874679b6cf5b3de7156
+Signed-off-by: Yinchuan Guo <guoych37@mail2.sysu.edu.cn>
+---
+Hi,
 
-Is it too late to ask for this patch to be dropped please? It appears
-downstream has just changed all their aliases on Friday, whereas the
-point of this patch was to keep things aligned.
-
-I won't post anything similar until we start integrating with Android/AOSP
-at some point in the future.
-
+  I modified the incorrect subsystem identifier in the subject of my 
+previous patch, and only submitted the fixes under the sound subsystem.
 
 Thanks,
-Andre'
+Yinchuan Guo
+---
+ sound/soc/codecs/rt274.c      | 2 +-
+ sound/soc/codecs/rt286.c      | 2 +-
+ sound/soc/codecs/rt298.c      | 2 +-
+ sound/soc/codecs/rt5514-spi.c | 2 +-
+ sound/soc/codecs/rt5640.c     | 2 +-
+ sound/soc/codecs/rt5645.c     | 2 +-
+ sound/soc/codecs/rt5651.c     | 2 +-
+ sound/soc/codecs/rt5659.c     | 2 +-
+ sound/soc/codecs/rt5663.c     | 2 +-
+ sound/soc/codecs/rt5665.c     | 2 +-
+ sound/soc/codecs/rt5668.c     | 2 +-
+ sound/soc/codecs/rt5682-i2c.c | 2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
+index 0d3773c576f8..b385b859373b 100644
+--- a/sound/soc/codecs/rt274.c
++++ b/sound/soc/codecs/rt274.c
+@@ -1196,7 +1196,7 @@ static int rt274_i2c_probe(struct i2c_client *i2c,
+ 			IRQF_TRIGGER_HIGH | IRQF_ONESHOT, "rt274", rt274);
+ 		if (ret != 0) {
+ 			dev_err(&i2c->dev,
+-				"Failed to reguest IRQ: %d\n", ret);
++				"Failed to request IRQ: %d\n", ret);
+ 			return ret;
+ 		}
+ 	}
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 802f4851c3df..061211f0fd65 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1244,7 +1244,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 			IRQF_TRIGGER_HIGH | IRQF_ONESHOT, "rt286", rt286);
+ 		if (ret != 0) {
+ 			dev_err(&i2c->dev,
+-				"Failed to reguest IRQ: %d\n", ret);
++				"Failed to request IRQ: %d\n", ret);
+ 			return ret;
+ 		}
+ 	}
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index c592c40a7ab3..ac81edfd2320 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -1286,7 +1286,7 @@ static int rt298_i2c_probe(struct i2c_client *i2c,
+ 			IRQF_TRIGGER_HIGH | IRQF_ONESHOT, "rt298", rt298);
+ 		if (ret != 0) {
+ 			dev_err(&i2c->dev,
+-				"Failed to reguest IRQ: %d\n", ret);
++				"Failed to request IRQ: %d\n", ret);
+ 			return ret;
+ 		}
+ 	}
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 1a25a3787935..98e12f8113bc 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -280,7 +280,7 @@ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
+ 			rt5514_dsp);
+ 		if (ret)
+ 			dev_err(&rt5514_spi->dev,
+-				"%s Failed to reguest IRQ: %d\n", __func__,
++				"%s Failed to request IRQ: %d\n", __func__,
+ 				ret);
+ 		else
+ 			device_init_wakeup(rt5514_dsp->dev, true);
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 9523f4b5c800..5b7ae70be1be 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2843,7 +2843,7 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 		/* Gets re-enabled by rt5640_set_jack() */
+ 		disable_irq(rt5640->irq);
+ 	} else {
+-		dev_warn(&i2c->dev, "Failed to reguest IRQ %d: %d\n",
++		dev_warn(&i2c->dev, "Failed to request IRQ %d: %d\n",
+ 			 rt5640->irq, ret);
+ 		rt5640->irq = -ENXIO;
+ 	}
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9408ee63cb26..cc868a9742bc 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -4127,7 +4127,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5645", rt5645);
+ 		if (ret) {
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 			goto err_enable;
+ 		}
+ 	}
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index fc0c83b73f09..e603886627e4 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -2266,7 +2266,7 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 		/* Gets re-enabled by rt5651_set_jack() */
+ 		disable_irq(rt5651->irq);
+ 	} else {
+-		dev_warn(&i2c->dev, "Failed to reguest IRQ %d: %d\n",
++		dev_warn(&i2c->dev, "Failed to request IRQ %d: %d\n",
+ 			 rt5651->irq, ret);
+ 		rt5651->irq = -ENXIO;
+ 	}
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index 4a50b169fe03..acfbdcf2fbd9 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -4299,7 +4299,7 @@ static int rt5659_i2c_probe(struct i2c_client *i2c,
+ 			rt5659_irq, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5659", rt5659);
+ 		if (ret)
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 
+ 		/* Enable IRQ output for GPIO1 pin any way */
+ 		regmap_update_bits(rt5659->regmap, RT5659_GPIO_CTRL_1,
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index be9fc58ff681..8f7db0703ea2 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -3676,7 +3676,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
+ 			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5663", rt5663);
+ 		if (ret) {
+-			dev_err(&i2c->dev, "%s Failed to reguest IRQ: %d\n",
++			dev_err(&i2c->dev, "%s Failed to request IRQ: %d\n",
+ 				__func__, ret);
+ 			goto err_enable;
+ 		}
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index e59323fd5bf2..d82ead0e5caf 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4930,7 +4930,7 @@ static int rt5665_i2c_probe(struct i2c_client *i2c,
+ 			rt5665_irq, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5665", rt5665);
+ 		if (ret)
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5668.c b/sound/soc/codecs/rt5668.c
+index 6ab1a8bc3735..f1abfbc62a78 100644
+--- a/sound/soc/codecs/rt5668.c
++++ b/sound/soc/codecs/rt5668.c
+@@ -2581,7 +2581,7 @@ static int rt5668_i2c_probe(struct i2c_client *i2c,
+ 			rt5668_irq, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5668", rt5668);
+ 		if (ret)
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
+index 8ea9f1d9fec0..d03307585806 100644
+--- a/sound/soc/codecs/rt5682-i2c.c
++++ b/sound/soc/codecs/rt5682-i2c.c
+@@ -261,7 +261,7 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
+ 			rt5682_irq, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
+ 			| IRQF_ONESHOT, "rt5682", rt5682);
+ 		if (ret)
+-			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
++			dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
+ 	}
+ 
+ 	return devm_snd_soc_register_component(&i2c->dev,
+-- 
+2.34.1
 
 
