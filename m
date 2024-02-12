@@ -1,61 +1,56 @@
-Return-Path: <linux-kernel+bounces-62382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85277851F7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:22:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 464EA851F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:22:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 217D01F214A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:22:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02580284EEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D152C4CB3D;
-	Mon, 12 Feb 2024 21:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7824CE19;
+	Mon, 12 Feb 2024 21:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i0yKSdNZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZZpjHlmt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DC51DDC5;
-	Mon, 12 Feb 2024 21:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB3F14CB58;
+	Mon, 12 Feb 2024 21:22:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707772931; cv=none; b=JdQuHyMIwSZ6VSSCF4J2POOqSuMSdGE6tacqFkWw/TuNZY0wRLIWTCDi+uvaOaAsbNcL62+yUQurqQyJPQFVFr1tq+yu2Iqrg2DDA+W5sTFUNiJl40sYcHPRDdmnuR8DG4Z/gcZXCN5peC3bI15nyYrXb3AOiY4f/AsqWBpI2pg=
+	t=1707772932; cv=none; b=Fa+e4cfaVaFG+mBtqapmBenVIXTZhsw2tqP/a6PmdsUcVdHvNfIndv6O+y+kRdJHPsbFZtuHBmk+fjb9tdMfoqlkpHS7cgGvTxjkXdhiwIQN6I+zFNdNw3CY6qW1PF0YHLv4HjpOdZx8Kp1No1FXZ+JHLEkvznToJa2lu2Uxjyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707772931; c=relaxed/simple;
-	bh=1rx7kpjCPmL65LQFQpMRRKlfF+9sl509SCwN0u+4WzQ=;
+	s=arc-20240116; t=1707772932; c=relaxed/simple;
+	bh=bBnJAcjrD/zSSzGjcXde9b4BDGpdw4QEuQZ05XJYLc4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=atczVQZfzzS1AtBNcBHP7f6otMQGxpS+mlGbBIjx0F8YPZvVXGPT3ZeyO5m2QNLIZ3rhvyZZ1mjRmsdsRUF0n98pNUq2rcXEuFuoDo3dyGXCw1630/GbpUKaafY+rvtfDOkB+2FMtecK4GMreyiSVPb+FONKIEg3Rv9SroPUCAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i0yKSdNZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F736C43390;
-	Mon, 12 Feb 2024 21:22:08 +0000 (UTC)
+	 MIME-Version:Content-Type; b=t2/8Q4gtZglZQjpwV+a8E0R2t0mfmbdYHohwaRlcrgDIQwo93Xd2RfeYnBjinueB/95oayaPcrTVYoTI0wMCgpBeqsCGQcVwA5F/9wq02FNGvRj37X5qqmuEZJgKBiQBMBQJQnoh2IAdWnbP0Te0NfMAt0Dk1tgjPfoa4tkjv9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZZpjHlmt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ADC9C433F1;
+	Mon, 12 Feb 2024 21:22:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707772930;
-	bh=1rx7kpjCPmL65LQFQpMRRKlfF+9sl509SCwN0u+4WzQ=;
+	s=k20201202; t=1707772932;
+	bh=bBnJAcjrD/zSSzGjcXde9b4BDGpdw4QEuQZ05XJYLc4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=i0yKSdNZAerspb+UsXpVYXVlPFqWmp0l+FG742f8AoBqcnMNuf/ALaKfDJ8kdgHo+
-	 WoFa5dUMyHB/DY74o80FC9mfvgcvADXs0OnbXgu6dsNhFA4IBoHzFPcrF4bARfRGt+
-	 treekkUGIdZY2CrFZBJKGoxRoWl0T7+DzUByd4mLuO22KsmoAEXcuREKPKNbxRGvB7
-	 SUJ13qacE8eGYwm+t+pvkeBuPGXiii2eBKnckJGQaK64jYZu5TWFTbt6m3Y5LZrVj8
-	 6W9IsFec1lPuxKoEsfI1606mYfWNq1PrvNTU9yEtgx3iEYn6LTiqovSTPehATfaIKG
-	 Hc8mGKzgTWw7g==
+	b=ZZpjHlmtMQMwhQeJ6x9EVau0ju6bxdzmJF947wPD1x3cZqpZoUbYPtmlc/HYfnKUF
+	 GscWqHJrCc1EH2yaxFIMRjZp7USG7lBPdXl13AYyhvC6TbcSHJhmH6GOI1Nl4RDrum
+	 HLsTh24s9AxoNUx1bXszr0edutVWfQMBBQqVuJc90DRMKBQ495eVA4ltY6zcXulL1r
+	 K9hzi5Eyd6ZTOFUQnA0mpLCBh5fwPUpwgXgC3Sf6Bwpwm5f3fIBlU3Ce3XP1GwObIT
+	 KMd5tpkxoNtvIXYwN8SNdgmjmFYsU0gSuSF7bJ/rS0mBuDwBmV5ZLZUWsxgpXzH/nl
+	 KxlBw5gEwErGw==
 From: Mark Brown <broonie@kernel.org>
-To: linux-sound@vger.kernel.org, 
- "Daniel Baluta (OSS)" <daniel.baluta@oss.nxp.com>
-Cc: lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-imx@nxp.com, 
- kai.vehmanen@linux.intel.com, peter.ujfalusi@linux.intel.com, 
- Daniel Baluta <daniel.baluta@nxp.com>, 
- Iuliana Prodan <iuliana.prodan@nxp.com>, 
- Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>, 
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20240212125258.420265-1-daniel.baluta@oss.nxp.com>
-References: <20240212125258.420265-1-daniel.baluta@oss.nxp.com>
-Subject: Re: [PATCH] ASoC: SOF: imx: Add devicetree support to select
- topologies
-Message-Id: <170777292803.73793.8628785100114235741.b4-ty@kernel.org>
-Date: Mon, 12 Feb 2024 21:22:08 +0000
+To: Oder Chiou <oder_chiou@realtek.com>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Yinchuan Guo <guoych37@mail2.sysu.edu.cn>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240212144247.43744-1-guoych37@mail2.sysu.edu.cn>
+References: <20240212144247.43744-1-guoych37@mail2.sysu.edu.cn>
+Subject: Re: [PATCH] ASoC: codecs: fix TYPO 'reguest' to 'request' in error
+ log
+Message-Id: <170777293077.73793.4917696227318704930.b4-ty@kernel.org>
+Date: Mon, 12 Feb 2024 21:22:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,10 +61,9 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-a684c
 
-On Mon, 12 Feb 2024 14:52:58 +0200, Daniel Baluta (OSS) wrote:
-> We describe tplg_file_name and drv_name using snd_sof_of_mach
-> array and select correct machine description based on dts compatible
-> string.
+On Mon, 12 Feb 2024 22:42:45 +0800, Yinchuan Guo wrote:
+> This patch corrects a common misspelling of "request" as "reguest" found
+> in error log across multiple files within sound/soc/codecs.
 > 
 > 
 
@@ -79,8 +73,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: imx: Add devicetree support to select topologies
-      commit: 2b9cdef13648bebf79f029deb622e02099146c18
+[1/1] ASoC: codecs: fix TYPO 'reguest' to 'request' in error log
+      commit: 00933c4993f132a53d31f995a011945b3835826c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
