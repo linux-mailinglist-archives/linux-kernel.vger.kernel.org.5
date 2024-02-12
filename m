@@ -1,120 +1,133 @@
-Return-Path: <linux-kernel+bounces-62397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CC24851FA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:33:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7747851FA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:33:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0AE01F22C10
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:33:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06B621C225F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:33:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B8964D599;
-	Mon, 12 Feb 2024 21:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18C084CE02;
+	Mon, 12 Feb 2024 21:33:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XhJpNc53"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="eFEm9K9Q"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3174EB35;
-	Mon, 12 Feb 2024 21:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5474EB43;
+	Mon, 12 Feb 2024 21:33:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707773539; cv=none; b=B8c5UsOj9T9qoRjj7EU49Fqq+hs/5jDsv+bgPTRuekCQKTp7OPF8iPze51xjxvr/QYctT2Sidzu9WgphQ0XAW11qGh1ZKgY7z7YaGQXJgbL+bTkKpYsgNacxuD+0cJWQeCDitLh9Gfy1tS5F+6apvjk2eIEvJbCentcIKBfw5so=
+	t=1707773589; cv=none; b=VaPtDwbx6rP5mj7HYz1Ed3bFQu8iTPlWP0KRo6fldS3wtGxbggeo89Mh03ClcfNQP4Mce95zZVa8i+AqOjwd3K0aQwoZkJE1JdMNQfzGwy/mFXcNuPZAfEnOOfr1NmTdct6/xIEbEW0CSNT59ZBIMuTVdWpNqznr7g6K6Q++o14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707773539; c=relaxed/simple;
-	bh=FYSTPAl8BA0rERUjwLoiIkMN4CipOjAn7ze5V8Zg8Zk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=qsnBjdpz8Js+WuvAfLDcV9tGgtLtJcbELTHPW1YWZZdCRsueOB70y5rPZXrdp4/gOOkllMWmSWa8/8aTDDs3fap++TX/PWV/U9pDDAYb6FZ8bKc1AGsiT1T1QymLeYu5uBhUja/M5zbZtTRrGjLY7L8Rk2z2C0q0dn05whxAY20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XhJpNc53; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 966DBC433F1;
-	Mon, 12 Feb 2024 21:32:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707773538;
-	bh=FYSTPAl8BA0rERUjwLoiIkMN4CipOjAn7ze5V8Zg8Zk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=XhJpNc53Ub0QKZ+KSDZUPOW9DERkY3dq+UG+uP3dmNmEwJTwZnIRdDEAyhkizfJjW
-	 amJIRrp9pUr/gYbkmd6OXhMCLwWJd4487kkhuxdK8v31GhPSxPG5K908ll8tihz9VJ
-	 qIACpvrkjhyKHTAkfGeIyWZrHowHqdlYWGKvRsavHp/5GUZvSe7d6AWu19HlzQnBf1
-	 aySA6khM7R9Rc3M3RWaW+OR8cTo1ypEygBCBZDDLAqGlt9YOhVBKsp2QC34rEHxqAL
-	 KWV8yELZwiH44tiAp/iVYqkP1OXOqvqYOI7q78Kf2ITeKAAY5UXAXlVyRpmYXtM7N1
-	 Ko2/3srkpBjxw==
-Date: Mon, 12 Feb 2024 15:32:16 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>
-Subject: Re: [PATCH v2 3/3] PCI: qcom: properly implement RC shutdown/power up
-Message-ID: <20240212213216.GA1145794@bhelgaas>
+	s=arc-20240116; t=1707773589; c=relaxed/simple;
+	bh=uL2VF2cuPmkBo5+K9BYWgnyBPmjt/fB97ck51Phazr0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=D8mIM9d8RxT/0yRcm1MyxM3HnN0nnYmhUWIRFqQWkw7gWQlguIky7gbZC0dxz7+C8X0QCgRt8fC7bu6iIkPsJczwRA8V6qJbdkASeB4qA8Aw6TUO+4e2ztXhXv1UjbWxeOpWs6O4axWzNf+1qu2o/y5ysr9a+iCX53+ffCPB6Jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=eFEm9K9Q; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707773584;
+	bh=uL2VF2cuPmkBo5+K9BYWgnyBPmjt/fB97ck51Phazr0=;
+	h=From:Date:Subject:To:Cc:From;
+	b=eFEm9K9QpelSO+d7WVm/xhJd8+qlJVpl+tnlGZsb8vckGa1tyIHVKBBxNBVdg5h3g
+	 3xn2YJbATiyjnp+W1pamAs+m/yX7gjozx61rrNayDWpJYrw3Mm+FAxyt0f8gSibUTl
+	 qiGnQfhI+E8SQMHzYAK+vBlQHnYB7bbVTYnW9KGqXIytwVtQnB045arzq3sWOmOPKf
+	 +CP8ZGVO7vSS1mcVCImsZCKPeOTOOYrmVnN74ekEC0A65d7GaICBVkMBcLCKWe5rb4
+	 F3i/YS4CiM3Sm0Ddj0/LX3jrrkpA3LtymZwNI9RTJ2/HmANT99dOlTnnyrZmWQzK8R
+	 a1cANRtoq1K7Q==
+Received: from [192.168.1.38] (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9619237813D5;
+	Mon, 12 Feb 2024 21:33:01 +0000 (UTC)
+From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+Date: Mon, 12 Feb 2024 16:32:44 -0500
+Subject: [PATCH] arm64: dts: mediatek: mt8186: Add missing clocks to ssusb
+ power domains
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240210-topic-8280_pcie-v2-3-1cef4b606883@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240212-mt8186-ssusb-domain-clk-fix-v1-1-26cb98746aa3@collabora.com>
+X-B4-Tracking: v=1; b=H4sIAHuOymUC/x3MQQqDMBBA0avIrDuQRJHUq5QuYjLRoRpLRkUQ7
+ 25w+f7inyCUmQS66oRMOwsvqUC/KvCjSwMhh2IwyjTKaIPzarVtUWSTHsMyO07opx9GPtC1b03
+ kbd3EAOXwz1Tyc/98r+sGwYRV3W0AAAA=
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Chen-Yu Tsai <wenst@chromium.org>, 
+ Eugen Hristev <eugen.hristev@collabora.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Allen-KH Cheng <allen-kh.cheng@mediatek.com>, kernel@collabora.com, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+ =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+X-Mailer: b4 0.12.4
 
-"Properly" is a noise word that suggests "we're doing it right this
-time" but doesn't hint at what actually makes this better.
+The ssusb power domains currently don't list any clocks, despite
+depending on some, and thus rely on the bootloader leaving the required
+clocks on in order to work.
 
-On Sat, Feb 10, 2024 at 06:10:07PM +0100, Konrad Dybcio wrote:
-> Currently, we've only been minimizing the power draw while keeping the
-> RC up at all times. This is suboptimal, as it draws a whole lot of power
-> and prevents the SoC from power collapsing.
+When booting with the upstream arm64 defconfig, the power domain
+controller will defer probe until modules have loaded since it has an
+indirect dependency on CONFIG_MTK_CMDQ, which is configured as a module.
+However at the point where modules are loaded, unused clocks are also
+disabled, causing the ssusb domains to fail to be enabled and
+consequently the controller to fail probe:
 
-Is "power collapse" a technical term specific to this device, or is
-there some more common term that could be used?  I assume the fact
-that the RC remains powered precludes some lower power state of the
-entire SoC?
+mtk-power-controller 10006000.syscon:power-controller: /soc/syscon@10006000/power-controller/power-domain@4: failed to power on domain: -110
+mtk-power-controller: probe of 10006000.syscon:power-controller failed with error -110
 
-> Implement full shutdown and re-initialization to allow for powering off
-> the controller.
-> 
-> This is mainly indended for SC8280XP with a broken power rail setup,
-> which requires a full RC shutdown/reinit in order to reach SoC-wide
-> power collapse, but sleeping is generally better than not sleeping and
-> less destructive suspend can be implemented later for platforms that
-> support it.
+Add the missing clocks to the ssusb power domains so the power
+controller can boot without relying on bootloader state.
 
-s/indended/intended/
+Fixes: d9e43c1e7a38 ("arm64: dts: mt8186: Add power domains controller")
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8186.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
->  config PCIE_QCOM
->  	bool "Qualcomm PCIe controller (host mode)"
->  	depends on OF && (ARCH_QCOM || COMPILE_TEST)
-> +	depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
+diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+index adaf5e57fac5..02f33ec3cbd3 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+@@ -931,11 +931,19 @@ power-domain@MT8186_POWER_DOMAIN_CSIRX_TOP {
+ 
+ 				power-domain@MT8186_POWER_DOMAIN_SSUSB {
+ 					reg = <MT8186_POWER_DOMAIN_SSUSB>;
++					clocks = <&topckgen CLK_TOP_USB_TOP>,
++						 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_REF>,
++						 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_XHCI>;
++					clock-names = "sys_ck", "ref_ck", "xhci_ck";
+ 					#power-domain-cells = <0>;
+ 				};
+ 
+ 				power-domain@MT8186_POWER_DOMAIN_SSUSB_P1 {
+ 					reg = <MT8186_POWER_DOMAIN_SSUSB_P1>;
++					clocks = <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_P1_SYS>,
++						 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_P1_REF>,
++						 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_P1_XHCI>;
++					clock-names = "sys_ck", "ref_ck", "xhci_ck";
+ 					#power-domain-cells = <0>;
+ 				};
+ 
 
-Just out of curiosity since I'm not a Kconfig expert, what does
-"depends on X || X=n" mean?  
+---
+base-commit: 2ae0a045e6814c8c1d676d6153c605a65746aa29
+change-id: 20240212-mt8186-ssusb-domain-clk-fix-a691eec834fd
 
-I guess it's different from
-"depends on (QCOM_COMMAND_DB || !QCOM_COMMAND_DB)", which I also see
-used for QCOM_RPMH?
+Best regards,
+-- 
+Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-Does this reduce compile testing?  I see COMPILE_TEST mentioned in a
-few other QCOM_COMMAND_DB dependencies.
-
-> +	ret_l23 = readl_poll_timeout(pcie->parf + PARF_PM_STTS, val,
-> +				     val & PM_ENTER_L23, 10000, 100000);
-
-Are these timeout values rooted in some PCIe or Qcom spec?  Would be
-nice to have a spec citation or other reason for choosing these
-values.
-
-> +	reset_control_assert(res->rst);
-> +	usleep_range(2000, 2500);
-
-Ditto, some kind of citation would be nice.
-
-Bjorn
 
