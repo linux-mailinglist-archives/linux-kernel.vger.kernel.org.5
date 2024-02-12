@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-62140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B846851C37
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:56:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F259851C24
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:54:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9817B29BA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:53:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 844151F2316A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F75D46420;
-	Mon, 12 Feb 2024 17:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD43745943;
+	Mon, 12 Feb 2024 17:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="dfJ186Zk"
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="eluW8pGd"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9AAA40C09;
-	Mon, 12 Feb 2024 17:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421F647A5C;
+	Mon, 12 Feb 2024 17:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707760312; cv=none; b=u9b6f1rzKRtK31cTuoVUXFmELJgoZXrNfnAj+qE2z3dl77pHuc460EH04OiFlqALJAkcpXVZJURiQ5DzMM+XtCDj6whRUUbIhF1l2RAQ+parNqDUasKlPYkKcAIgvb5QO+TSzg+Kq+DNJbLSmu/C74xZGagS5r7o/EWvZVJfI4U=
+	t=1707760329; cv=none; b=SR622Q0dSLR5ACRxs1moAfESgChORbm4A34WSwOq53ltIwzo7+ENN12lYIQmj5O2CJCanLa3RWfXdOvwxqYCikuV3ahqqfaYhj7/RPv44aiqu7DgbXDWRYaWwDTQ658YAteS8EpISfc7/eim1rD5JE9K7UZQozOB9SPoEhTDrZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707760312; c=relaxed/simple;
-	bh=FxpiC9oLFHKvYMkoKKpXU246PDSXAZQkVh+bWJnRQFk=;
+	s=arc-20240116; t=1707760329; c=relaxed/simple;
+	bh=MufxIPI+sfhGlYDGH/yYw/RZ9xHX0C9eXHu9vHVABb8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=V8e/647vZSwpAr3S0Niyq8hyMSrAl+5G6QX7VibgCCcnE4NLfJduZbTZdhc4KslUiY4Gj658i+vBoQC6hqup2x0e8Z1DtTvHC7e+fWpKq3PFHcYkdiECwH7uN9hAWQLK1noqq6rDTtfjULTk9oSkBd8fXKix5eVxDzSKgi8e6XE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=dfJ186Zk; arc=none smtp.client-ip=91.207.212.93
+	 MIME-Version:Content-Type; b=O5Vx4nY35wAkpM7iME4Gk1C0qemG99j1n1GSAYSeH+M/caDTRn5VeYyvp18ybflJAGKwpFuWESKVpwCCbiGL/OYx1/v20N3ik8gN4gmnrSb0bf4xKi21WV+0DoOZykCCKxVpvyUngfdWADalz7Rv1LOx1GWJpdYHX1p6kHl7HWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=eluW8pGd; arc=none smtp.client-ip=185.132.182.106
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41CHPxGr027428;
-	Mon, 12 Feb 2024 18:51:38 +0100
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41CEfn0A026396;
+	Mon, 12 Feb 2024 18:51:54 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=7EgcsVO6falgJZLPBOMxl9PtlOXDfK5LsUZXJt7kC2w=; b=df
-	J186ZkfxPnp6+AaHR4CZsMPB2hNYQkaF9c3ANzqr+l36qlxZGrcYI/pG75iAj53D
-	4bStrMflP9gYRzTrbcfQJ3rsFxJJgA3+v+zUpMppGxo9NpiErlcokRERlxnjvFpf
-	3F5m96sMZZhpqHjsglG92FCC2Ka66kMv8yGx4ese4eiTcwLdk76aRzZQxszBPtDE
-	S93W5zWXaqP92yksyjFmp5/8GcPikfv319clDVDUzA49+MtNvWoWZgaHFVsElKxM
-	w6hsEthYhAfmt9Ju6QjjKU+vz2yL7CgHpGrpcoLMsBrIiicE/LnPmQbgieuIPn/k
-	UuCmy6ghnrWYP9W5LXDQ==
+	selector1; bh=3EOXGoTP+R1HW7bP4qKKmfrikdGwpwacU3HR0veKSg4=; b=el
+	uW8pGdUiMv+RW2wNLCdHpR7DTNIH2WyS8myye/rSOzYCqvGCu+3WU6lGCM0YP5Xa
+	DBGIDi3NFHC1sBd79xQJGtYMBjVao80MqLEn8MxPzjlvQ9x2T3SffP0UA+aiM6tf
+	ZoAIVyO9+zVpnnfVbkuVIMDGvsctQ4ffr60whzJkG9itTwfx7mmgeFlEZiLWBejh
+	bHTui8qLZ4nDuDhiGwwmie1Myv8idxzW4IqUNQa6NTlGKTlB/CC56MIYMalmW8lq
+	y065hj6fXsOiLcIlW+xaUT25M9VJz4V8YXQbkZ8qmL8d0jLhB/D2iACr+AOyL9tE
+	xkkQtX4vjOsjY35AcIyw==
 Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3w6mynd48m-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3w6kk4nb2f-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 18:51:37 +0100 (CET)
+	Mon, 12 Feb 2024 18:51:54 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 927234002D;
-	Mon, 12 Feb 2024 18:51:34 +0100 (CET)
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id AE0CB40044;
+	Mon, 12 Feb 2024 18:51:50 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D898C257A8E;
-	Mon, 12 Feb 2024 18:50:51 +0100 (CET)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 15EAF231529;
+	Mon, 12 Feb 2024 18:51:07 +0100 (CET)
 Received: from localhost (10.201.22.200) by SHFDAG1NODE3.st.com (10.75.129.71)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 12 Feb
- 2024 18:50:51 +0100
+ 2024 18:51:06 +0100
 From: Christophe Kerello <christophe.kerello@foss.st.com>
 To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
         <krzysztof.kozlowski@linaro.org>, <robh+dt@kernel.org>,
@@ -65,9 +65,9 @@ CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <devicetree@vger.kernel.org>,
         Christophe Kerello <christophe.kerello@foss.st.com>
-Subject: [PATCH 09/12] mtd: rawnand: stm32_fmc2: use dma_get_slave_caps to get DMA max burst
-Date: Mon, 12 Feb 2024 18:48:19 +0100
-Message-ID: <20240212174822.77734-10-christophe.kerello@foss.st.com>
+Subject: [PATCH 10/12] mtd: rawnand: stm32_fmc2: add a platform data structure
+Date: Mon, 12 Feb 2024 18:48:20 +0100
+Message-ID: <20240212174822.77734-11-christophe.kerello@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240212174822.77734-1-christophe.kerello@foss.st.com>
 References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
@@ -85,93 +85,117 @@ X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-12_15,2024-02-12_03,2023-05-22_02
 
-use dma_get_slave_caps API to get the max burst size of a DMA channel.
+Before the introduction of MP25 SOC, let's use a platform data
+structure for parameters that will differ (number of chip select).
 
-For MP1 SOCs, MDMA is used and the max burst size is 128.
-For MP25 SOC, DMA3 is used and the max burst size is 64.
+The FMC2 NAND can support up to 4 chips select. On MP1 SOCs, only 2
+chip select are available.
 
 Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
 ---
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 29 +++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c | 32 +++++++++++++++++++++-----
+ 1 file changed, 26 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index 88811139aaf5..a7db7b675514 100644
+index a7db7b675514..c5bdb43f7221 100644
 --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
 +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -264,6 +264,8 @@ struct stm32_fmc2_nfc {
- 	struct sg_table dma_ecc_sg;
- 	u8 *ecc_buf;
- 	int dma_ecc_len;
-+	u32 tx_dma_max_burst;
-+	u32 rx_dma_max_burst;
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/of_address.h>
++#include <linux/of_device.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+@@ -37,7 +38,7 @@
+ #define FMC2_MAX_SG			16
  
- 	struct completion complete;
- 	struct completion dma_data_complete;
-@@ -347,20 +349,26 @@ static int stm32_fmc2_nfc_select_chip(struct nand_chip *chip, int chipnr)
- 	stm32_fmc2_nfc_setup(chip);
- 	stm32_fmc2_nfc_timings_init(chip);
+ /* Max chip enable */
+-#define FMC2_MAX_CE			2
++#define FMC2_MAX_CE			4
  
--	if (nfc->dma_tx_ch && nfc->dma_rx_ch) {
-+	if (nfc->dma_tx_ch) {
- 		memset(&dma_cfg, 0, sizeof(dma_cfg));
--		dma_cfg.src_addr = nfc->data_phys_addr[nfc->cs_sel];
- 		dma_cfg.dst_addr = nfc->data_phys_addr[nfc->cs_sel];
--		dma_cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 		dma_cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
--		dma_cfg.src_maxburst = 32;
--		dma_cfg.dst_maxburst = 32;
-+		dma_cfg.dst_maxburst = nfc->tx_dma_max_burst /
-+				       dma_cfg.dst_addr_width;
+ /* Max ECC buffer length */
+ #define FMC2_MAX_ECC_BUF_LEN		(FMC2_BCHDSRS_LEN * FMC2_MAX_SG)
+@@ -243,6 +244,10 @@ static inline struct stm32_fmc2_nand *to_fmc2_nand(struct nand_chip *chip)
+ 	return container_of(chip, struct stm32_fmc2_nand, chip);
+ }
  
- 		ret = dmaengine_slave_config(nfc->dma_tx_ch, &dma_cfg);
- 		if (ret) {
- 			dev_err(nfc->dev, "tx DMA engine slave config failed\n");
++struct stm32_fmc2_nfc_data {
++	int max_ncs;
++};
++
+ struct stm32_fmc2_nfc {
+ 	struct nand_controller base;
+ 	struct stm32_fmc2_nand nand;
+@@ -256,6 +261,7 @@ struct stm32_fmc2_nfc {
+ 	phys_addr_t data_phys_addr[FMC2_MAX_CE];
+ 	struct clk *clk;
+ 	u8 irq_state;
++	const struct stm32_fmc2_nfc_data *data;
+ 
+ 	struct dma_chan *dma_tx_ch;
+ 	struct dma_chan *dma_rx_ch;
+@@ -1809,7 +1815,7 @@ static int stm32_fmc2_nfc_parse_child(struct stm32_fmc2_nfc *nfc,
  			return ret;
  		}
-+	}
+ 
+-		if (cs >= FMC2_MAX_CE) {
++		if (cs >= nfc->data->max_ncs) {
+ 			dev_err(nfc->dev, "invalid reg value: %d\n", cs);
+ 			return -EINVAL;
+ 		}
+@@ -1915,6 +1921,10 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
+ 	nand_controller_init(&nfc->base);
+ 	nfc->base.ops = &stm32_fmc2_nfc_controller_ops;
+ 
++	nfc->data = of_device_get_match_data(dev);
++	if (!nfc->data)
++		return -EINVAL;
 +
-+	if (nfc->dma_rx_ch) {
-+		memset(&dma_cfg, 0, sizeof(dma_cfg));
-+		dma_cfg.src_addr = nfc->data_phys_addr[nfc->cs_sel];
-+		dma_cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		dma_cfg.src_maxburst = nfc->rx_dma_max_burst /
-+				       dma_cfg.src_addr_width;
+ 	ret = stm32_fmc2_nfc_set_cdev(nfc);
+ 	if (ret)
+ 		return ret;
+@@ -1936,7 +1946,7 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
+ 	if (nfc->dev == nfc->cdev)
+ 		start_region = 1;
  
- 		ret = dmaengine_slave_config(nfc->dma_rx_ch, &dma_cfg);
- 		if (ret) {
-@@ -1545,6 +1553,7 @@ static int stm32_fmc2_nfc_setup_interface(struct nand_chip *chip, int chipnr,
+-	for (chip_cs = 0, mem_region = start_region; chip_cs < FMC2_MAX_CE;
++	for (chip_cs = 0, mem_region = start_region; chip_cs < nfc->data->max_ncs;
+ 	     chip_cs++, mem_region += 3) {
+ 		if (!(nfc->cs_assigned & BIT(chip_cs)))
+ 			continue;
+@@ -2092,7 +2102,7 @@ static int __maybe_unused stm32_fmc2_nfc_resume(struct device *dev)
  
- static int stm32_fmc2_nfc_dma_setup(struct stm32_fmc2_nfc *nfc)
- {
-+	struct dma_slave_caps caps;
- 	int ret = 0;
+ 	stm32_fmc2_nfc_wp_disable(nand);
  
- 	nfc->dma_tx_ch = dma_request_chan(nfc->dev, "tx");
-@@ -1557,6 +1566,11 @@ static int stm32_fmc2_nfc_dma_setup(struct stm32_fmc2_nfc *nfc)
- 		goto err_dma;
- 	}
+-	for (chip_cs = 0; chip_cs < FMC2_MAX_CE; chip_cs++) {
++	for (chip_cs = 0; chip_cs < nfc->data->max_ncs; chip_cs++) {
+ 		if (!(nfc->cs_assigned & BIT(chip_cs)))
+ 			continue;
  
-+	ret = dma_get_slave_caps(nfc->dma_tx_ch, &caps);
-+	if (ret)
-+		return ret;
-+	nfc->tx_dma_max_burst = caps.max_burst;
+@@ -2105,9 +2115,19 @@ static int __maybe_unused stm32_fmc2_nfc_resume(struct device *dev)
+ static SIMPLE_DEV_PM_OPS(stm32_fmc2_nfc_pm_ops, stm32_fmc2_nfc_suspend,
+ 			 stm32_fmc2_nfc_resume);
+ 
++static const struct stm32_fmc2_nfc_data stm32_fmc2_nfc_mp1_data = {
++	.max_ncs = 2,
++};
 +
- 	nfc->dma_rx_ch = dma_request_chan(nfc->dev, "rx");
- 	if (IS_ERR(nfc->dma_rx_ch)) {
- 		ret = PTR_ERR(nfc->dma_rx_ch);
-@@ -1567,6 +1581,11 @@ static int stm32_fmc2_nfc_dma_setup(struct stm32_fmc2_nfc *nfc)
- 		goto err_dma;
- 	}
- 
-+	ret = dma_get_slave_caps(nfc->dma_rx_ch, &caps);
-+	if (ret)
-+		return ret;
-+	nfc->rx_dma_max_burst = caps.max_burst;
-+
- 	nfc->dma_ecc_ch = dma_request_chan(nfc->dev, "ecc");
- 	if (IS_ERR(nfc->dma_ecc_ch)) {
- 		ret = PTR_ERR(nfc->dma_ecc_ch);
+ static const struct of_device_id stm32_fmc2_nfc_match[] = {
+-	{.compatible = "st,stm32mp15-fmc2"},
+-	{.compatible = "st,stm32mp1-fmc2-nfc"},
++	{
++		.compatible = "st,stm32mp15-fmc2",
++		.data = &stm32_fmc2_nfc_mp1_data,
++	},
++	{
++		.compatible = "st,stm32mp1-fmc2-nfc",
++		.data = &stm32_fmc2_nfc_mp1_data,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, stm32_fmc2_nfc_match);
 -- 
 2.25.1
 
