@@ -1,154 +1,180 @@
-Return-Path: <linux-kernel+bounces-61445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50440851277
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:40:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91BDC85127C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:41:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 837AA1C215B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:40:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4776A2823EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1396939852;
-	Mon, 12 Feb 2024 11:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 198E339870;
+	Mon, 12 Feb 2024 11:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="q+9/3kHs"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HiQ81yYz"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E737339AC5
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A3A3984F
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707738026; cv=none; b=gbsakVbzmhkwNpfznqRptdK9G4E7p9y561dAiqwahZwsd9Gx5JdmZ0ManyHe2dOkGghsq/BoU8KAPrrxo3DJCmEd5Nc4cFLot6hGXN06ZDLJSSq8irSreGtSfvYgK79/LZqzSLTLFsgTtg3OjRs540H5qDPHmFrtMCQE5Nm+8Mg=
+	t=1707738081; cv=none; b=MYgs47VI1bcgHpqPWfntCIF0ttfzL2iHX8YpeDIJ1HKMTyic1Ult//0pvdmMBLe6d2AQp1sAlkSUfL3P/jTk475+1M6RW6qvZsS/7T2BrhCuiHLFylaHRd8wjxp8W6s0TvhYN5lq3HCCKPQ98NeXZg0pMMvV6a8NpXr/fg5duyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707738026; c=relaxed/simple;
-	bh=ISwS6xN2Yw/M8chV4wQKb1/qoz9l6s3iwaLCZOfBdBk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=XQOUB9Xh+oBA6MFzfhty7pdHifwvEYe8Eu2MIbrpmcimzC7dVIv/xY4pI2YFE9wQs1JGs6xuEZEbb1CVhLB+aX+NxswyIXSTmeYPZ0QQ13GO+yXHl+06juoVixsyPSXT+WSMw0fuuvLssqHF0NTfWWyfQwf1V+7Am3IWEgSeHhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=q+9/3kHs; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6da4a923b1bso2304183b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:40:24 -0800 (PST)
+	s=arc-20240116; t=1707738081; c=relaxed/simple;
+	bh=KuXlmSfpNmX4fpfoouPCQWNnqbnzHqGvhmWdl9ZEb7c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cMiF6KEcfn5YICWhVFdCUxEHFrek0q0sDxXhKb419vyq6/qyxOFv04m0KYLzR7s7tNQbjrNuIFZEsTGelhje4hLWyiw42he7igq/2vOzeNJSZSSOntVQfcJLgkcHn8njXcSJJD1fjZdq9mlBDDzh3vjSZdVwtvbsugzKmDHkNTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HiQ81yYz; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5114cd44f6aso4131913e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:41:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707738077; x=1708342877; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1FzBBu2xEcTRGExM7mOli/YMO72agTbUU8XKmUNtMeg=;
+        b=HiQ81yYzsokXKjSDn9k3Zwu6aWU/asKnRjOdAJ3BIVx1QU5fg/5+7xR1r0QpGuQ59W
+         C0MOj6wvY+fyn/2oFF2Anka2tHjK4xYk2H7Y9Q2wGDOgCRy8vVqAArIJprDvoBXHI2KY
+         pYITVrRa6VEgW7xt3Au1OpeGye8K+/OTRCRlAfvv0fvU+idb2SNr+xhxTAObXtFDAuF5
+         gBMwEpzXV8o2nRlBd9KklqGhtdOFD/1GnreoE17RetHkhSrKTHSQA+0ORNFgZzj/uOFG
+         vPBRCyfDDTckmrUV0oXcTRtoB5yidpB4cMGUvLlgvJKr2Dh6AFT9FRcgdY/c0Xk/oIpd
+         sQnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707738024; x=1708342824;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dj3PGJRjmBSX9qjz7f5Yv+1J0ANJIG2OZjDihmWfICk=;
-        b=chSdtQE0NvJGng5PMpIaFV6errHzC+RN89uGbFUEds0HfYRdm50tR7UKG46JrjAxOn
-         jfoSUhkMiIUQJWy1IBDDD+x7fnNeX+Gay7qyQVa8wF5FzW9anXjZ68QtdNAwz2kCZ+TQ
-         SOHnpkjhpdTGS/RgTxj7o8fu97RRjCuE0X92wh+Va9CTOC5rZZVoRdmIxSOe48TC3Q22
-         cR6hI4FDEB4EyKIsJMyDfUCiEs783yhcsc/I+ZIFCMwWnjf122mk2jvG5qmoHGD/pN8k
-         UbxdfZnKgl1uzCFpjg5jly4x38PaxA9fb753pGnpbcNZ83KhSezOtNrpQjmUrBqhhne/
-         4a+A==
-X-Gm-Message-State: AOJu0YzcsEuyNdM08g34uIWtmx24LYvNTnFS3FdypG8QHfdExcEiuy/0
-	T78h4OJ51qz9iOIWlhJVcJudYueemVh3w3ouSTOYpNCvwtVhC6X6tjT3TjkN/Q/jPQ==
-X-Google-Smtp-Source: AGHT+IFeh/3oYKQ0vo4DUX9JQLQzwfvtj8mRoFzoqboKglldZiEwHloguS9Rs9luIWXEf2I/k2sb3A==
-X-Received: by 2002:a05:6a21:1585:b0:19e:c777:5c6c with SMTP id nr5-20020a056a21158500b0019ec7775c6cmr3808879pzb.19.1707738024142;
-        Mon, 12 Feb 2024 03:40:24 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id u11-20020a170903308b00b001d9fa58f5a4sm204577plc.48.2024.02.12.03.40.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 03:40:23 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707738022;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Dj3PGJRjmBSX9qjz7f5Yv+1J0ANJIG2OZjDihmWfICk=;
-	b=q+9/3kHsSlukWcy0nFc5x2+KOd4gtXPFxv/rhZ93R4URxP67MyhnW+ece9HkU1a6xkLFSD
-	9slRnv1kjEUn2yrYDbd0LOitBSAyaM2SVb/TEztyPpYuPtNj+ZIGirtSnWesALp2dIVcC6
-	7uUKtpNwA1hzFyTWlHBgnuCD2VUFXIkFYBt6U3M4zqkbb7LVnK7uMySvHJBm1JZsVQgmnC
-	Gr3vvAzrsdl4LsQJeGSNMVxL4T6Es7u/Z1qyDh0QO8SSfDOt1TnjxlIqiYAPLsi+hFspN0
-	ZBQVYEiQNxGR4a2T+tPR5qEJP3dEqDkORrSThTQh/zh47D0eUJ6ktPOSjkBJoA==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Mon, 12 Feb 2024 08:41:01 -0300
-Subject: [PATCH v2] dio: make dio_bus_type const
+        d=1e100.net; s=20230601; t=1707738077; x=1708342877;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1FzBBu2xEcTRGExM7mOli/YMO72agTbUU8XKmUNtMeg=;
+        b=QfREZlvwi9ag2HCfv0LbpIQnlhCxVEN5ClpMEeKmdJz0zAbPYLD1I3pHwcbAtEKDrf
+         bSNcqVHwcNFRCbYSQ5nEWEaVf4i+rQjqnp2WBO5/w+d7yejgi5nQPa+AeSJlMrOEPVHt
+         rTFSAnkU2NqrySFj/KYT6D82VrYKNuKC5nFMN7SJKniHrpD8sD1KHllHPZSxxes2yoTS
+         MdKQQrqbYEts3mUbpT8jyBPPQXI/AL/jyFCH2USIReTLj+/wCvYN1xiyndHifMHBWUNc
+         tRCOn1JXkfC0Ndt1DJBaE7nGj//g026JIgPPjcBEh4coarD7dxBBQyUJDvav72GgEyfJ
+         Mbjg==
+X-Gm-Message-State: AOJu0YyMCL+t6EqSlVucwMpUL2G5hQX1jNKOcnwmERLejBz8/DdGcCyR
+	nfTf1X+0xlZJ/6nzxY61QUV+MyR9ffsYv120mSw4nqnJInK2BZZ+MH2qoXu99wQ=
+X-Google-Smtp-Source: AGHT+IFzcAyQ8LhcstbeQTzbFP1rwTXKXSr/dloUyzSyigmRDllCADW5hqxjVZoTcJjK5VWSx2jPgg==
+X-Received: by 2002:a05:6512:2821:b0:511:80b2:ed55 with SMTP id cf33-20020a056512282100b0051180b2ed55mr4253792lfb.59.1707738077464;
+        Mon, 12 Feb 2024 03:41:17 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW4xlfP8hZAShA1QDDbp0XeiNl0CuyaCOIpmbYusQG6U4McIZ3T0RoL3RhhACQ2oTUXcr6Zlj1y0MbQXit6gtB3oxZbQRSmI68Oe06p92fwNgNLN4QC27G00jPuWSYBcnQbwHGqZ2d1BhLW/BwN79ThScdTC8seinXBaXjG+YJMi4oJDm/lstpP0iVtT1DHGLMrG+8dJfZswM8QIiYI7Fn/j2yHR7tExzuRsUszb7hyNDAKbEOfq1mmR5rr1Ybz7o0DvH8fG4LDvBKdJZ1hIIfj4LtZ+X1YCuuWD3hVBKmHjTTHpGeOKVnyRoDtjhya4e5fxwA85FZJYW0oP02eFWNQ7OQ70zxk4gVL26K5/MZFqpp5hPOWERX+7IjQeZvUOLje0Bod5GDx865Y+nK9phKaHWdgYHgCG0lo0pALorbDq+KAMCcJP1nyIRmC0MorTa7w37CiZjnuSa4nTmu+16/Tc7NVU5eo
+Received: from [192.168.1.20] ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id az10-20020adfe18a000000b0033b4f82b301sm6664027wrb.3.2024.02.12.03.41.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 03:41:17 -0800 (PST)
+Message-ID: <ed9bf914-8b3e-401e-93c0-77eae97e2ab8@linaro.org>
+Date: Mon, 12 Feb 2024 12:41:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240212-bus_cleanup-dio-v2-1-3b1ba4c0547d@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAMwDymUC/3WNQQ6DIBREr2L+ujRAtNWuvEdjGsBP/YkFA0raG
- O5e6r7LN5N5s0PEQBjhVu0QMFEk7wrIUwVmUu6JjMbCILmsuRSC6S0+zIzKbQsbybOLUVa1HK9
- Np6GsloCW3ofxPhSeKK4+fI6DJH7pf1cSTLDS1Nxq08i2618qzIQBzw5XGHLOX5vov1KxAAAA
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1645; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=ISwS6xN2Yw/M8chV4wQKb1/qoz9l6s3iwaLCZOfBdBk=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlygPNFOQNdBSHJYaPpe8zkPGA5YIC6LAohIaF5
- orLzMmm6d2JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcoDzQAKCRDJC4p8Y4ZY
- pjdiD/40coLbzQKwif1wW/9BkbDQDLZxbpdcvKzvO5xbhyrdcP0ertwfumF3w59qu+GrcO/KZdY
- Oy89V1E7/Tmdi4ykGDtgDelgCBBzHPED5fwOJamLXGdxF1+PfeV/Ns2wI0ShagJKGR3g9/FP7KX
- f3Fa4Cwg/RbRB2k07Su23sXJXFq16CMrF/FQUXPKB3Lr3KWbdz+pcfpdrBCRapfjaQsr1BVrlnK
- yezoCS8Wlw9KNXMYKg2I4Y9qYcRCF/0mPRZiw/9+ntZIdqhAmlJJRs5zDEJdyD/B+o0z7c4q8BI
- oyhs9MUlis4WgQR8xkHdYQaG6t25PbzLjvc1g0BZ6jvejkoWhEsNVcQgkS2Q3tG/F7RB9JhStFi
- TqD/qtbCi9DNt4hSZY69/C/qWp3JtTw9A7OJxN/pPY8QQqvYyMCQrlHDYvt6HEsLZcKKY389aJx
- 5niN+oag2DCzxCGjHbLoTVrBPZCMkFOV/QYuxmWWt0LRDDDP9mi2Kzfwzxt46XEvYD5UVWUvYgX
- 9edvT29jtkRifpvCEQUtHe0Db0z8y91o+stGMFUBZUYbZJT+cWZIUmVsvmpNNux15UranISdSZ8
- Vo4DG4Z2egtLEnLytqH+2W5/QZAn736Qw+JVwYujWPJRzBWqwlPV8exOgGWIEYL0p5vbY7FJ5Rr
- b4Xsa8m4WtIikCA==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8650: Add dma-coherent property
+Content-Language: en-US
+To: Ling Xu <quic_lxu5@quicinc.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: quic_kuiw@quicinc.com, quic_ekangupt@quicinc.com, kernel@quicinc.com,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>
+References: <20240125102413.3016-1-quic_lxu5@quicinc.com>
+ <20240125102413.3016-3-quic_lxu5@quicinc.com>
+ <069b82ac-b59c-4665-8a77-6c11a2463faa@linaro.org>
+ <690e64d6-8888-4f99-9ee0-c731aeea7762@linaro.org>
+ <7edfed88-d84f-41e1-8c10-4af6efe53c4c@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <7edfed88-d84f-41e1-8c10-4af6efe53c4c@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Now that the driver core can properly handle constant struct bus_type,
-move the dio_bus_type variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+On 12/02/2024 12:31, Ling Xu wrote:
+> 在 2024/2/12 19:10, Krzysztof Kozlowski 写道:
+>> On 12/02/2024 12:00, Krzysztof Kozlowski wrote:
+>>> On 25/01/2024 11:24, Ling Xu wrote:
+>>>> Add dma-coherent property to fastRPC context bank nodes to pass dma
+>>>> sequence test in fastrpc sanity test, ensure that data integrity is
+>>>> maintained during DMA operations.
+>>>>
+>>>> Signed-off-by: Ling Xu <quic_lxu5@quicinc.com>
+>>>> ---
+>>>>  arch/arm64/boot/dts/qcom/sm8650.dtsi | 13 +++++++++++++
+>>>
+>>> This wasn't ever tested:
+>>>
+>>> sm8650-qrd.dtb: remoteproc@32300000: glink-edge:fastrpc:compute-cb@1:
+>>> 'dma-coherent' does not match any of the regexes: 'pinctrl-[0-9]+'
+>>>
+>>> Ling,
+>>> How is this testing-patches-before-sending work in different teams? Do
+>>> you have such requirement?
+>>
+>> No clue if the original DTS change should be reverted or these are in
+>> fact DMA coherent, but let's choose one path...
+>>
+>> https://lore.kernel.org/linux-devicetree/254c1d14-25e3-4f4c-9e79-4ef7cec4d22f@linaro.org/T/#t
+>>
+>> Best regards,
+>> Krzysztof
+>>
+> Hi Krzysztof,
+> Add dma-coherent: true in this file: Documentation/devicetree/bindings/misc/qcom,fastrpc.yaml at line number 89 can pass the DTcheck.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
-Changes in v2:
-- Added missing 'const' to dio.h
-- Link to v1: https://lore.kernel.org/r/20240211-bus_cleanup-dio-v1-1-02140fbc5289@marliere.net
----
- drivers/dio/dio-driver.c | 2 +-
- include/linux/dio.h      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+I don't understand your comment. Did you read the link above?
 
-diff --git a/drivers/dio/dio-driver.c b/drivers/dio/dio-driver.c
-index 69c46935ffc7..2d9fa6011945 100644
---- a/drivers/dio/dio-driver.c
-+++ b/drivers/dio/dio-driver.c
-@@ -123,7 +123,7 @@ static int dio_bus_match(struct device *dev, struct device_driver *drv)
- }
- 
- 
--struct bus_type dio_bus_type = {
-+const struct bus_type dio_bus_type = {
- 	.name	= "dio",
- 	.match	= dio_bus_match,
- 	.probe	= dio_device_probe,
-diff --git a/include/linux/dio.h b/include/linux/dio.h
-index 5abd07361eb5..2b5923909f96 100644
---- a/include/linux/dio.h
-+++ b/include/linux/dio.h
-@@ -68,7 +68,7 @@ struct dio_bus {
- };
- 
- extern struct dio_bus dio_bus;      /* Single DIO bus */
--extern struct bus_type dio_bus_type;
-+extern const struct bus_type dio_bus_type;
- 
-     /*
-      *  DIO device IDs
-
----
-base-commit: 047371968ffc470769f541d6933e262dc7085456
-change-id: 20240211-bus_cleanup-dio-6cafa80e759b
+Anyway, I was asking: are you testing the patches before sending?
 
 Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
+Krzysztof
 
 
