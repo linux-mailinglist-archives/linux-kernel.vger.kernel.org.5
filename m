@@ -1,247 +1,131 @@
-Return-Path: <linux-kernel+bounces-61326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D66285110B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:36:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD69D85110E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:37:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E849E2829EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:36:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6369F282D1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:37:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D146E38DF7;
-	Mon, 12 Feb 2024 10:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB6F0208A2;
+	Mon, 12 Feb 2024 10:37:17 +0000 (UTC)
 Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F70B2575B
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E240F39843
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707734187; cv=none; b=D45e+/2FbnUserj+CgNwyM0rARbn0inwWZRS2RuumseN8CyiJAWIWvrSGry1Pnc992tYQlnhuf11e74iuvLzSlI4OIXAhqaAo70bV3J52esRnkypnRpwm8xrrwJwO7m+gKHr/NNfQKAlNv9MXsqBrZ2XBclIgpGDCvdG9CWpQ/E=
+	t=1707734237; cv=none; b=dpk/EcYWWyg6Kxd/73mYDBHSm8quROHlxtCQHj1CW+Dlngee3dJgSKI0EqJOAv83H1DgCgCkOIVyX3HEIMtX31L6Fb5WG61791/DpIGBXl7y6jAZmOzL/JGR/clwghzjV0sFyjXXP0UpRGjACBomoe2gFiwzd4GDyKq0pVuiHb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707734187; c=relaxed/simple;
-	bh=bGgfISBDMkB7RfIPAIo4N9MV9kPs4SZprIBoxAtvTjk=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Ers4k+KLVrE/8bsecobzThnQ2GoCB7kp4/iXhUnqlrVpXO8xhKNORKS+ZQ5mSqbxJcT//gtp1/E5+dwRs3ZT9DwSRJNLzWqBRPD2tP5LcEIgBkMP614YB1QoiQgLIXON/t/pTt5MqZB1b2HPPBSrawgt3qp+cHiSmVTjErMxv5A=
+	s=arc-20240116; t=1707734237; c=relaxed/simple;
+	bh=SgHeV8Nf/cgzT4GIeKjL6yhteJJUdUSlnzvMHkYxeT0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=sVZbZhwTcjcR/s0+GTSf7h/I6wCsYRnVyk2BOzc9eWOzkXvRX94acsSaUw+euf+c6TxMHH4sgho3hWJvIK9O+p17upxh73xKMI6INIpWU2H5vY4aN8syXxAfQSSSS0UTe1dwgEPVhGiDtOdWurKetGUDM2GMf9DdezcHXrwPcjc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363c3eb46e3so28909235ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:36:25 -0800 (PST)
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363ec32bca3so23666835ab.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:37:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707734184; x=1708338984;
+        d=1e100.net; s=20230601; t=1707734235; x=1708339035;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7df/SlpqDzQic5RtpFAcO6oxKObz8z0kDMLpzn+uvhU=;
-        b=Q7zC0p1NBqkwWSBLUSxl2T5YuKPHhKs28KtrtwzyVoYnGq1r/Ds1Eu2qQtDntVsFXL
-         Ni4bns2r5WFXh+/LCnl8HtXEDi7r4fFWp/bGoFcSiX461s5lt+RoNeTAQsNweBosMZEu
-         uzvDIzCRlBEoU7Ec/IrCkOsJqQ8vMIJ5TaNPnZqaXgsoX4ausmmfnzPtUkQS/0xkAisi
-         VN1kAb7y+mVy48USN9rvLHqBw4w6s6kbcfk/5fLiCM89qUQYsuB6xvK7tbAas9BcLUl4
-         FNf1/EOVz3dOLztdjIWeJdDTtznHtKj7QqzMz3Xz9vog53ad8ou7TGiwFAm5F1bn318n
-         GxRA==
-X-Gm-Message-State: AOJu0Yz3rdXRzc4EN37Bx7/lDcP1P9s3zn13VpkwYFL77pbAwroJxUN3
-	RfyUd7TC4eUhkvKAuda+v51nwaQGLaaIt2+01QSUW6Obd8lGH8yQ8bMjQh2U+sLWQqI8IquanIC
-	cZToYvgv6EGBT2mDiaxC3QUQJ3KgYOlKO9EgIIP1Nes0qq0RliK7NcT0=
-X-Google-Smtp-Source: AGHT+IEgXK3aXRiwIDJPdUpt08UURUxqA1nXO/6bNmcVkawPtO4Kpu2tCrBEAsndOiOxHZroDViXQso2rsThqxSLKZkgQFrRvNRD
+        bh=NIBwNVPo8yY6K+mo7Hy1fv0t+Zyvtu0xD/6C5qU5YRo=;
+        b=E3PRo9MJYaYdkWcb8MkvsxZKN2p7xUPqOXlxxhf+W1n8UbdhHWtPLc8uUlaQI3CszI
+         F7Eaie6b+od8A9jWoTAaLA3H/1NyuSoVEqmYuinHsQjbpp8roi6JvlK7tT69FLKizAL2
+         xZU/PxAoLMlSyM51+TebMg7Cy3aEC/X1DAvXu62tyh2fNf95omkjTZIqr59Eu69TCl8C
+         D7v04BHum0y4JKvb/YQFGatx79k/8onFsAvaKpmJE0vSGGbhSZDPR7ieLtgiFfMUbDoS
+         IChp6CXBzjgVVFvfiC+MYpXSREt99GHpOddzumLZH6kCq/4B/ZMbcZ9PIXogpRS1couS
+         YkGw==
+X-Gm-Message-State: AOJu0YxIw8sNXa2wvkZ9TqrDvqQX8NGOACVoZBgp8fLxjaTKoeaTVAYV
+	YF6SKA9izCQo+ZIlJfCQmup+3i9lHZ0UI+ZY7jBZW+onb7lPZnh9ya8jzOaK6gvuXSbFnqtY2Jc
+	DSwQqQwBw3DTkpaW2f2yad+vBuFR1lfb1UA84ymIGJxVFIcQ20663Am4=
+X-Google-Smtp-Source: AGHT+IE+9GOmm5vmGx5EguCXnwG6okIwR+rq0ZHGtpDvnO8j4TjkMbG5WEnVSbzjoqosKuej6oq1WcYA1RHpP+eW74emGNCQCpJ1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1ba9:b0:363:83ec:3663 with SMTP id
- n9-20020a056e021ba900b0036383ec3663mr489672ili.2.1707734184803; Mon, 12 Feb
- 2024 02:36:24 -0800 (PST)
-Date: Mon, 12 Feb 2024 02:36:24 -0800
+X-Received: by 2002:a05:6e02:1c22:b0:363:dd02:1512 with SMTP id
+ m2-20020a056e021c2200b00363dd021512mr432341ilh.3.1707734235095; Mon, 12 Feb
+ 2024 02:37:15 -0800 (PST)
+Date: Mon, 12 Feb 2024 02:37:15 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000074c6de06112cd910@google.com>
-Subject: [syzbot] [overlayfs?] possible deadlock in seq_read_iter (3)
-From: syzbot <syzbot+af9aa785e14a67796a87@syzkaller.appspotmail.com>
-To: amir73il@gmail.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000742ab106112cdcbe@google.com>
+Subject: [syzbot] [bluetooth?] WARNING in hci_send_cmd
+From: syzbot <syzbot+c39f6e731d27b028df97@syzkaller.appspotmail.com>
+To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    841c35169323 Linux 6.8-rc4
+HEAD commit:    e6f39a90de92 Merge tag 'efi-fixes-for-v6.8-1' of git://git..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1215e120180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fbd950b5071b7ea3
-dashboard link: https://syzkaller.appspot.com/bug?extid=af9aa785e14a67796a87
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+console output: https://syzkaller.appspot.com/x/log.txt?x=157751e0180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=31f74f10f14dec54
+dashboard link: https://syzkaller.appspot.com/bug?extid=c39f6e731d27b028df97
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ef821afd15d3/disk-841c3516.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e41102f18e6e/vmlinux-841c3516.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a17352b259d8/bzImage-841c3516.xz
+disk image: https://storage.googleapis.com/syzbot-assets/663081ccfa7b/disk-e6f39a90.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/47bbf72bfafe/vmlinux-e6f39a90.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/982bd4f4331d/bzImage-e6f39a90.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+af9aa785e14a67796a87@syzkaller.appspotmail.com
+Reported-by: syzbot+c39f6e731d27b028df97@syzkaller.appspotmail.com
 
-F2FS-fs (loop1): Found nat_bits in checkpoint
-F2FS-fs (loop1): Mounted with checkpoint version = 48b305e5
-======================================================
-WARNING: possible circular locking dependency detected
-6.8.0-rc4-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.1/640 is trying to acquire lock:
-ffff888072750310 (&p->lock){+.+.}-{3:3}, at: seq_read_iter+0xb7/0xd60 fs/seq_file.c:182
-
-but task is already holding lock:
-ffff888023f61c68 (&pipe->mutex/1){+.+.}-{3:3}, at: splice_file_to_pipe+0x2e/0x500 fs/splice.c:1292
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #4 (&pipe->mutex/1){+.+.}-{3:3}:
-       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
-       iter_file_splice_write+0x335/0x14e0 fs/splice.c:687
-       do_splice_from fs/splice.c:941 [inline]
-       do_splice+0xd77/0x1880 fs/splice.c:1354
-       __do_splice fs/splice.c:1436 [inline]
-       __do_sys_splice fs/splice.c:1652 [inline]
-       __se_sys_splice+0x331/0x4a0 fs/splice.c:1634
-       do_syscall_64+0xf9/0x240
-       entry_SYSCALL_64_after_hwframe+0x6f/0x77
-
--> #3 (sb_writers#4){.+.+}-{0:0}:
-       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1639 [inline]
-       sb_start_write+0x4d/0x1c0 include/linux/fs.h:1775
-       mnt_want_write+0x3f/0x90 fs/namespace.c:409
-       ovl_fix_origin fs/overlayfs/namei.c:908 [inline]
-       ovl_lookup+0x1394/0x2a60 fs/overlayfs/namei.c:1143
-       __lookup_slow+0x28c/0x3f0 fs/namei.c:1693
-       lookup_slow+0x53/0x70 fs/namei.c:1710
-       walk_component fs/namei.c:2001 [inline]
-       link_path_walk+0x9cd/0xe80 fs/namei.c:2328
-       path_lookupat+0xa9/0x450 fs/namei.c:2481
-       filename_lookup+0x255/0x610 fs/namei.c:2511
-       user_path_at_empty+0x42/0x60 fs/namei.c:2920
-       user_path_at include/linux/namei.h:57 [inline]
-       __do_sys_chdir fs/open.c:556 [inline]
-       __se_sys_chdir+0xbf/0x220 fs/open.c:550
-       do_syscall_64+0xf9/0x240
-       entry_SYSCALL_64_after_hwframe+0x6f/0x77
-
--> #2 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}:
-       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1526
-       inode_lock_shared include/linux/fs.h:812 [inline]
-       lookup_slow+0x45/0x70 fs/namei.c:1709
-       walk_component+0x2e1/0x410 fs/namei.c:2001
-       lookup_last fs/namei.c:2458 [inline]
-       path_lookupat+0x16f/0x450 fs/namei.c:2482
-       filename_lookup+0x255/0x610 fs/namei.c:2511
-       kern_path+0x35/0x50 fs/namei.c:2619
-       lookup_bdev+0xc5/0x290 block/bdev.c:1014
-       resume_store+0x1a0/0x710 kernel/power/hibernate.c:1183
-       kernfs_fop_write_iter+0x3a4/0x500 fs/kernfs/file.c:334
-       call_write_iter include/linux/fs.h:2085 [inline]
-       new_sync_write fs/read_write.c:497 [inline]
-       vfs_write+0xa81/0xcb0 fs/read_write.c:590
-       ksys_write+0x1a0/0x2c0 fs/read_write.c:643
-       do_syscall_64+0xf9/0x240
-       entry_SYSCALL_64_after_hwframe+0x6f/0x77
-
--> #1 (&of->mutex){+.+.}-{3:3}:
-       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
-       kernfs_seq_start+0x53/0x3b0 fs/kernfs/file.c:154
-       seq_read_iter+0x3d0/0xd60 fs/seq_file.c:225
-       call_read_iter include/linux/fs.h:2079 [inline]
-       new_sync_read fs/read_write.c:395 [inline]
-       vfs_read+0x978/0xb70 fs/read_write.c:476
-       ksys_read+0x1a0/0x2c0 fs/read_write.c:619
-       do_syscall_64+0xf9/0x240
-       entry_SYSCALL_64_after_hwframe+0x6f/0x77
-
--> #0 (&p->lock){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18ca/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
-       seq_read_iter+0xb7/0xd60 fs/seq_file.c:182
-       proc_reg_read_iter+0x1c3/0x290 fs/proc/inode.c:302
-       call_read_iter include/linux/fs.h:2079 [inline]
-       copy_splice_read+0x661/0xb60 fs/splice.c:365
-       do_splice_read fs/splice.c:985 [inline]
-       splice_file_to_pipe+0x299/0x500 fs/splice.c:1295
-       do_sendfile+0x515/0xdc0 fs/read_write.c:1301
-       __do_sys_sendfile64 fs/read_write.c:1356 [inline]
-       __se_sys_sendfile64+0x100/0x1e0 fs/read_write.c:1348
-       do_syscall_64+0xf9/0x240
-       entry_SYSCALL_64_after_hwframe+0x6f/0x77
-
-other info that might help us debug this:
-
-Chain exists of:
-  &p->lock --> sb_writers#4 --> &pipe->mutex/1
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&pipe->mutex/1);
-                               lock(sb_writers#4);
-                               lock(&pipe->mutex/1);
-  lock(&p->lock);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.1/640:
- #0: ffff888023f61c68 (&pipe->mutex/1){+.+.}-{3:3}, at: splice_file_to_pipe+0x2e/0x500 fs/splice.c:1292
-
-stack backtrace:
-CPU: 1 PID: 640 Comm: syz-executor.1 Not tainted 6.8.0-rc4-syzkaller #0
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 11256 at kernel/workqueue.c:1728 __queue_work+0xdc6/0x11d0 kernel/workqueue.c:1727
+Modules linked in:
+CPU: 0 PID: 11256 Comm: syz-executor.2 Not tainted 6.8.0-rc3-syzkaller-00215-ge6f39a90de92 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+RIP: 0010:__queue_work+0xdc6/0x11d0 kernel/workqueue.c:1727
+Code: 07 83 c0 03 38 d0 7c 09 84 d2 74 05 e8 d3 31 8d 00 8b 5b 2c 31 ff 83 e3 20 89 de e8 84 7c 33 00 85 db 75 56 e8 9b 81 33 00 90 <0f> 0b 90 e9 ac f8 ff ff e8 8d 81 33 00 90 0f 0b 90 e9 5b f8 ff ff
+RSP: 0018:ffffc9000bec7a20 EFLAGS: 00010087
+RAX: 000000000000282e RBX: 0000000000000000 RCX: ffffc90009c6e000
+RDX: 0000000000040000 RSI: ffffffff8158e825 RDI: 0000000000000005
+RBP: 0000000000000200 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880418bcda8
+R13: 0000000000000000 R14: ffff88807f8b9c00 R15: ffff88807f8b9c00
+FS:  00007f1069ea96c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000040 CR3: 00000000776c8000 CR4: 0000000000350ef0
 Call Trace:
  <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x18ca/0x58e0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
- __mutex_lock_common kernel/locking/mutex.c:608 [inline]
- __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
- seq_read_iter+0xb7/0xd60 fs/seq_file.c:182
- proc_reg_read_iter+0x1c3/0x290 fs/proc/inode.c:302
- call_read_iter include/linux/fs.h:2079 [inline]
- copy_splice_read+0x661/0xb60 fs/splice.c:365
- do_splice_read fs/splice.c:985 [inline]
- splice_file_to_pipe+0x299/0x500 fs/splice.c:1295
- do_sendfile+0x515/0xdc0 fs/read_write.c:1301
- __do_sys_sendfile64 fs/read_write.c:1356 [inline]
- __se_sys_sendfile64+0x100/0x1e0 fs/read_write.c:1348
- do_syscall_64+0xf9/0x240
+ queue_work_on+0xf4/0x120 kernel/workqueue.c:1837
+ queue_work include/linux/workqueue.h:548 [inline]
+ hci_send_cmd+0xcb/0x1b0 net/bluetooth/hci_core.c:3072
+ hci_acl_create_connection+0x426/0x5d0 net/bluetooth/hci_conn.c:237
+ hci_connect_acl+0x3e3/0x700 net/bluetooth/hci_conn.c:1706
+ l2cap_chan_connect+0x724/0x2180 net/bluetooth/l2cap_core.c:8054
+ l2cap_sock_connect+0x33f/0x720 net/bluetooth/l2cap_sock.c:256
+ __sys_connect_file+0x162/0x1a0 net/socket.c:2048
+ __sys_connect+0x149/0x170 net/socket.c:2065
+ __do_sys_connect net/socket.c:2075 [inline]
+ __se_sys_connect net/socket.c:2072 [inline]
+ __x64_sys_connect+0x72/0xb0 net/socket.c:2072
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd8/0x270 arch/x86/entry/common.c:83
  entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f3acde7dda9
+RIP: 0033:0x7f106907dda9
 Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3acec5e0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00007f3acdfac050 RCX: 00007f3acde7dda9
-RDX: 0000000020000000 RSI: 0000000000000004 RDI: 0000000000000000
-RBP: 00007f3acdeca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000007 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f3acdfac050 R15: 00007fff9463d788
+RSP: 002b:00007f1069ea90c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: ffffffffffffffda RBX: 00007f10691abf80 RCX: 00007f106907dda9
+RDX: 000000000000000e RSI: 0000000020000040 RDI: 0000000000000004
+RBP: 00007f10690ca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f10691abf80 R15: 00007ffcf75228b8
  </TASK>
 
 
