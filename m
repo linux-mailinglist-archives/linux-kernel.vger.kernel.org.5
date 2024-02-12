@@ -1,120 +1,160 @@
-Return-Path: <linux-kernel+bounces-62173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3B3B851CA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:26:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5A10851CB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:27:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22BDB1C21ADC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:26:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 366DCB24A84
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15BA3FE58;
-	Mon, 12 Feb 2024 18:26:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2B845010;
+	Mon, 12 Feb 2024 18:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EddX1/Gg"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="K8JRXJ4P"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A6A13FE31
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:26:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A45405C6;
+	Mon, 12 Feb 2024 18:26:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707762367; cv=none; b=iB3y/cxeft0NzwDHvsTZ7VoA52iSZARyWGpIXfOuqiboodjpDhbHAKyysxv0ciTZJM0RJy4b7kGKftiVekuvhw6TbWL/uPEeLh2sA44TptMxdAEy+6I4l1LjKrxO54/gsIcZ1qdPFYhcKWxVOCOqQzUSRZNS9ElgPr1MBxWNoWU=
+	t=1707762413; cv=none; b=Zg0a4MWqaJhQ62NAPRLXa4Rw3AnA4UNZm1g+nIPx/x0fG9L1micB/UlC3Dp5jKGCUGyWj48wJH69ZnYg5ofvRzzXY550mPoYZk0gZQOvy0nNRMldt/vtT4XbEHXk9Et58Y8quOS82thxEPv2o7436Jqbj1zNwFwq5NEh5LsqNhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707762367; c=relaxed/simple;
-	bh=yAUHypRlpeoME/JqFNQ6+yrqIWhow/SYsyub6kJOuL8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ig1ccow7FI+pPUj6wdJLuqN0HrIUFUfajQxM8hYlBtaUrTlrnJh1m04MlWNDi7yKpxMCP1ZtPVLYpTqwXJzvr8AcOq+quVrPiQo8el43WRRMGZkpjC8q8dcv2WlPqOge9jCM0J05Z3Cu/BYvuJGCn4esw+aNczLy3a5Gn53XjaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EddX1/Gg; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e08dd0fa0bso2361143b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:26:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707762365; x=1708367165; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kelddDkBCW+g7SFvND6ka4Ang08zpm8PxHIejMLmNTs=;
-        b=EddX1/GgAbEeDtEik8j732OAX1GG6mqLZtclhFqcdrWHYPFo8uRuaTgLmC6EN8s1Xm
-         yjaS0Qr0GnJvXBOvtBsaWomiMvHmKolRP6NZJQdMi12UfCRcUYQ8yQvpJd7zAYf6nKC0
-         8ZlTTuEq3m8rJaWpUwYs6m352PJQjeMUZKanM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707762365; x=1708367165;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kelddDkBCW+g7SFvND6ka4Ang08zpm8PxHIejMLmNTs=;
-        b=Wt/2DTdf4CDLIUtLghY/szahv+tYamiVrib1u9Sq0Fx6ZduPHcwLM28k1ghSl7hnKB
-         PbNWsQwYD4qULIlUnqYzmFJBDCVWQMPrCWE9EYZatjNg2LtzZ1DuNW0VwsfOkaKO5OhW
-         XGVbKz9GlwFdX1i3T1tYAc26PH8q3l74/F0CDRtTA2rSJ0dMIyKmbFKTbNi53bCU7Q2y
-         ckYw1evN+gcPxSho4ETsR5hShV9dRy9pcwxUqLw/iHVW5hS5O9AOMX+0cyQXKCCjDk90
-         S9eiMZ6mehRiA4tBJuRXAdO+0tqabhH4FCHRiYDw5aAdXRMmg0I5NYGIvWCUEyJP824X
-         pZIA==
-X-Forwarded-Encrypted: i=1; AJvYcCXqOrjvsj2Zd/Z35S6hJ0DegRzdlAt8AiyBM2yX8AZppY8QE9HKVwFs68Zn+dZhRYVDyio73/FSnNiuPQvuau/EJM+ExOFyu81fHYvd
-X-Gm-Message-State: AOJu0YxVPJdQuCKKR5aq9NlWQrK+GdEj0OK9FlQiUx8qqyFusHg2Qn3Y
-	aYnSz5vrSi6QzFuxmDj+HcHFLR283X068NsYEU5cmdcM/1bl1ZMejI+h4ZC+3w==
-X-Google-Smtp-Source: AGHT+IHm5PSmStcCD2PbOKmO9HvYx5jctVUpwg+mA5CidbOqS112sDrGysxA8yytheZf5F/8il7XBA==
-X-Received: by 2002:a05:6a21:1788:b0:19d:e644:7c9 with SMTP id nx8-20020a056a21178800b0019de64407c9mr294312pzb.22.1707762364941;
-        Mon, 12 Feb 2024 10:26:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWtL7E/Ga3300LiXSPhQpKnlGv08BNISJBi/jBmB7YmHJiNT6YrIQwiAH9I8vBkaTBnDjziwBfcfr/PRvJMQEI8SyNDGq1QbgjzYxA4X2r9uBkF/UY/uZQ3V5lh4HO3EpicV3EyoRKeTXLxIIbov/L8ZEWORYZO7ID1Et7cPita3g01WnaoCTcRtV6KzD1U8GLFhX2Ha8muf8PRlXkVwUWaCzIxmISUdN05pQZSnlU2BQJq7yf2C0SNBCfe+oknwnOhWh64uJgcdqSJ36FShA==
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u189-20020a6385c6000000b005d8c1ce4443sm743664pgd.88.2024.02.12.10.26.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 10:26:04 -0800 (PST)
-Date: Mon, 12 Feb 2024 10:26:03 -0800
-From: Kees Cook <keescook@chromium.org>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
-	kernel test robot <lkp@intel.com>, Rich Felker <dalias@libc.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <n.schier@avm.de>, linux-sh@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] sh: Fix build with CONFIG_UBSAN=y
-Message-ID: <202402121025.B0B6E47@keescook>
-References: <20240130232717.work.088-kees@kernel.org>
- <494586ed5a0871cf7cfd005f513577952306a0bc.camel@physik.fu-berlin.de>
- <fe057f57aba0f8a9040d4700d27f5bd478032925.camel@physik.fu-berlin.de>
- <202402020228.BBEF7DAC@keescook>
- <9fda57fc1b1ba6ad9bd6f7df3fb12674d0f4f940.camel@physik.fu-berlin.de>
- <cd1a36a234c8fc61c5febe646ae0f05ed20ae32a.camel@physik.fu-berlin.de>
+	s=arc-20240116; t=1707762413; c=relaxed/simple;
+	bh=zPCAl5W84MBNOsC7L5RhtuIjML3Qo3/ZiF/pSR55Tw4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DZzvsjyAZdnPVs/eTLajqh8zEjneN/Ilu9rZzcMfZn6TYTQoz//iXTrEV+bqGSWYVOoFzN/6WkRLTLp5CnDh4V/SNmS0B1F9/rt/QkgPaGg2l54qQGgE5XwMgWU7W3eEYPeCcQylqAcUIaBs3cmC1Mc/RtOvNB1xxbnvpNU47kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=K8JRXJ4P; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CI7Cpo010517;
+	Mon, 12 Feb 2024 18:26:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Orzq42MMO1ZEvKZjaWq3C1tqDEzzTaEwvYhlVNC563w=;
+ b=K8JRXJ4PqLVKZ0WMD9nrgP1IEz3u4RKWc619cNgQ9yK16WPJyqQChwh0pZWP+YrBu/Ng
+ Hd+Tiibuch3pwMxs62A2ybloGjiMw+Tv0fkKflFiNohOcesTjpewb5+8WYKeaJXhc1YK
+ SHei8YaI/TClrRSYWEJMBg9aiP6rdy5Ekw7qZd8oWpkA7jQ6GcgiS3IBecNeqQPmk69W
+ MALZnxHex4n8dnMOkyMzZTpV4RosSize1Rp6RUWtlCNIHam/bW8EP5FQvMpDTxWQsREb
+ DIlGj7Z0bttGNMGgx7CKU2Sk0XfvcTBE5AXgWgQGEfFr6mVeICDExbT1zrCDEyEhPFTd /Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7raq0f34-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 18:26:21 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CI7mtC012593;
+	Mon, 12 Feb 2024 18:26:21 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7raq0f22-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 18:26:21 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CGx4f0024877;
+	Mon, 12 Feb 2024 18:26:20 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mfp27hd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 18:26:19 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CIQH4n17629696
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 18:26:19 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2AAB858059;
+	Mon, 12 Feb 2024 18:26:17 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8480B58067;
+	Mon, 12 Feb 2024 18:26:10 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 12 Feb 2024 18:26:10 +0000 (GMT)
+Message-ID: <5d10e7d8-9d3e-43f9-95d8-67247ffa091c@linux.ibm.com>
+Date: Mon, 12 Feb 2024 13:26:09 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cd1a36a234c8fc61c5febe646ae0f05ed20ae32a.camel@physik.fu-berlin.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 22/25] evm: Move to LSM infrastructure
+Content-Language: en-US
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-23-roberto.sassu@huaweicloud.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20240115181809.885385-23-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sHIteHYy_ZuTq_ohDZCWtRB_3ocR2sgr
+X-Proofpoint-ORIG-GUID: 90lN_cbqjmQZCAMAtg7OuVMDbdTvBlWj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_15,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402120139
 
-On Sun, Feb 11, 2024 at 11:39:49AM +0100, John Paul Adrian Glaubitz wrote:
-> Hi Kees,
-> 
-> On Fri, 2024-02-02 at 12:06 +0100, John Paul Adrian Glaubitz wrote:
-> > > When I use GCC 13.2 (I'm specifically on Ubuntu 23.10) and the randconfig
-> > > linked from the report:
-> > > https://download.01.org/0day-ci/archive/20240131/202401310416.s8HLiLnC-lkp@intel.com/config
-> > > (which is notably enabling CONFIG_UBSAN=y and CONFIG_UBSAN_SHIFT=y) then I
-> > > see at the final link stage:
-> > > 
-> > > /usr/bin/sh4-linux-gnu-ld: arch/sh/boot/compressed/misc.o: in function `zlib_inflate_table':
-> > > misc.c:(.text+0x650): undefined reference to `__ubsan_handle_shift_out_of_bounds'
-> > > ...
-> > > 
-> > > After the patch, it's solved.
-> > 
-> > OK, let me test with gcc 13.x. My build host is currently running openSUSE Leap 15.5.
-> 
-> I just wanted to try reproduce the problem again with the reproducer in [1] as well
-> as with gcc-13.2.0, but your branch devel/overflow/ubsan-only no longer exists.
-> 
-> Can you tell me where to find the patches now?
 
-Sure, they're in -next, but for an -rc2 based tree, see:
-https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=for-next/kspp
 
--- 
-Kees Cook
+On 1/15/24 13:18, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> As for IMA, move hardcoded EVM function calls from various places in the
+> kernel to the LSM infrastructure, by introducing a new LSM named 'evm'
+> (last and always enabled like 'ima'). The order in the Makefile ensures
+> that 'evm' hooks are executed after 'ima' ones.
+> 
+> Make EVM functions as static (except for evm_inode_init_security(), which
+> is exported), and register them as hook implementations in init_evm_lsm().
+> Also move the inline functions evm_inode_remove_acl(),
+> evm_inode_post_remove_acl(), and evm_inode_post_set_acl() from the public
+> evm.h header to evm_main.c.
+> 
+> Unlike before (see commit to move IMA to the LSM infrastructure),
+> evm_inode_post_setattr(), evm_inode_post_set_acl(),
+> evm_inode_post_remove_acl(), and evm_inode_post_removexattr() are not
+> executed for private inodes.
+> 
+> Finally, add the LSM_ID_EVM case in lsm_list_modules_test.c
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+
+>   }
+>   
+> +static struct security_hook_list evm_hooks[] __ro_after_init = {
+> +	LSM_HOOK_INIT(inode_setattr, evm_inode_setattr),
+> +	LSM_HOOK_INIT(inode_post_setattr, evm_inode_post_setattr),
+> +	LSM_HOOK_INIT(inode_copy_up_xattr, evm_inode_copy_up_xattr),
+> +	LSM_HOOK_INIT(inode_setxattr, evm_inode_setxattr),
+> +	LSM_HOOK_INIT(inode_set_acl, evm_inode_set_acl),
+> +	LSM_HOOK_INIT(inode_post_set_acl, evm_inode_post_set_acl),
+> +	LSM_HOOK_INIT(inode_remove_acl, evm_inode_remove_acl),
+> +	LSM_HOOK_INIT(inode_post_remove_acl, evm_inode_post_remove_acl),
+> +	LSM_HOOK_INIT(inode_post_setxattr, evm_inode_post_setxattr),
+
+nit: move this one up after inode_setxattr.
+
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
