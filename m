@@ -1,305 +1,165 @@
-Return-Path: <linux-kernel+bounces-61500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F02468512F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:05:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8332A851307
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C532839AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:05:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5412AB27231
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B063A8DC;
-	Mon, 12 Feb 2024 12:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B2E3D0DA;
+	Mon, 12 Feb 2024 12:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TCqu/fIn"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="LEhPO0Y2"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3762C3A8D0;
-	Mon, 12 Feb 2024 12:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2D13D0A8;
+	Mon, 12 Feb 2024 12:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707739259; cv=none; b=INSAPP9tGy5n4EgL3zUzKSxbvS7zDxln3hOUba5JlI4UOZ5vemoQQxXS94j8JUNt00gAd37mEDI3896VKZ80PJ+/VSf/ffgGPPk1mj5rsxNhddQO9DlqCrvOWY9hhDD+LibuUGyC5ymneAcXQNkkrZsZ7R5fEtBx8Frc5Z2o/D0=
+	t=1707739374; cv=none; b=LXrx1MDm6WZfVyzEYIlyEqAVDrppI4z7aEZDvE9HXY7T27eHeoSdEeV+xwYVvdZE0Bk1AWLKizB4AclNuTvIQQch4bWH9aL11CyM5+LYcm0SaZBFfwKEHh0uGnUF5Lei5rLA0FkLxj/BxUnOlHQSy9mUBNbIZf0o/nyOSQxSXzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707739259; c=relaxed/simple;
-	bh=fBPh4u4tVAxhauhC0Yb1yVeuyaYm5kQBQbtRTvlFcHY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DvBvTQ8efGS1j4qEDo5Lj7djAJ25bjbTbLAQExC1t8DYBnbGmI672iengDhpGQRjXMlpmL+yFitWvJGkMFaeTap1JXGJXmMInr5gEkFRNRWN5McyO7vW534whphazldVnpoYNkeiVriyjwrvQoe1dDbfgQYVQZYeZGk6mVPSePk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=TCqu/fIn; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41CC0qJ0001008;
-	Mon, 12 Feb 2024 06:00:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707739252;
-	bh=LqDoE8mxdm+tXcZyOrm6S/Dp6GDW7NfOGTIPDKoBP1g=;
-	h=From:To:CC:Subject:Date;
-	b=TCqu/fInad3ktQ/jbpPrex28hra+apckaU7CThjbxeap5hNMZDMzkEj2ycUNG1PSi
-	 GF+/aHAukY4ao5i4gci4rOXqrJF7PLTOcPGPc7GQKgjS+3G4A2qMk94MuuksUsfGj/
-	 BgqKDnxY0XOupvKsJbGHcprNyaItzwE5PNkjCbNo=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41CC0qKU016119
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 12 Feb 2024 06:00:52 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
- Feb 2024 06:00:52 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 12 Feb 2024 06:00:52 -0600
-Received: from uda0490681.. ([10.24.69.142])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41CC0nw1082905;
-	Mon, 12 Feb 2024 06:00:50 -0600
-From: Vaishnav Achath <vaishnav.a@ti.com>
-To: <broonie@kernel.org>
-CC: <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <vigneshr@ti.com>, <u-kumar1@ti.com>, <vaishnav.a@ti.com>
-Subject: [PATCH] spi: omap2-mcspi: Revert FIFO support without DMA
-Date: Mon, 12 Feb 2024 17:30:49 +0530
-Message-ID: <20240212120049.438495-1-vaishnav.a@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707739374; c=relaxed/simple;
+	bh=qTs4pmRhkWrU86rLUbk4gL5rcAV4yNZx6VSPad5e3vs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DMteucOGZtgFF4dtPBp8HUR7+TNbXsvPE6q9R0S7wxlwiIG8VEIisa1dR1x3QbQES2eFxEMljZ3Me/NwCMEwpSMLuTn9fWROpYc4zTj9wkThujVMa7jEJw6DhG8/p+dYBpbTjNasXUUXjn3rup6smy0Rl3RRvdmCQIKTWA+WRco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=LEhPO0Y2; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CBxpc8019223;
+	Mon, 12 Feb 2024 12:02:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YJwOyB26zpENJsbMFuKna5WNVCpfnRlTrcC0jJUIE6I=;
+ b=LEhPO0Y2LgHEhBSc2hT2MvSoUOspss/4W+42H4wTvZXpxNugAPXQkLnDhDx4dS5ERovW
+ evtrC6nWeJLLUk7t7GCXJzCbLMIVDMscaDm2hMW+WkhpZCGtZoJr4Ol2BHH/w/jjfOff
+ WYWweAfSyLGUV7VWuu+GmmyypPJ1FxTllSHZN/Z6HEHkCKaKGENks2ONa6qd7khN0LAq
+ HZ3qyPdnCw1LflWEeUVEkeVL5+Ls4vclGPC6QAFpi8LdWA4Bo12RPIWuI66KC7iOAjzG
+ W8Lwnr2GSRZaAYzSd32hAJ4+GX2xsZ/bBJWCB0a/l5WMIZthLIDaOHv+YOKJ69KUsVtj UA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7jxt8517-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 12:02:28 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CC07Lu020727;
+	Mon, 12 Feb 2024 12:02:12 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7jxt84fk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 12:02:12 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41C9KOSa032596;
+	Mon, 12 Feb 2024 12:01:32 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6kft8nfn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 12:01:32 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CC1TE710617556
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 12:01:31 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4AE2658064;
+	Mon, 12 Feb 2024 12:01:29 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CAA1158066;
+	Mon, 12 Feb 2024 12:01:21 +0000 (GMT)
+Received: from [9.109.198.187] (unknown [9.109.198.187])
+	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 12 Feb 2024 12:01:21 +0000 (GMT)
+Message-ID: <76b6067f-109f-464c-97fb-fa519f3d1c56@linux.ibm.com>
+Date: Mon, 12 Feb 2024 17:31:20 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 09/15] block: Add checks to merging of atomic writes
+Content-Language: en-US
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, brauner@kernel.org, bvanassche@acm.org,
+        dchinner@redhat.com, djwong@kernel.org, hch@lst.de, jack@suse.cz,
+        jbongio@google.com, jejb@linux.ibm.com, kbusch@kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
+        martin.petersen@oracle.com, ming.lei@redhat.com, ojaswin@linux.ibm.com,
+        sagi@grimberg.me, tytso@mit.edu, viro@zeniv.linux.org.uk
+References: <20240124113841.31824-10-john.g.garry@oracle.com>
+ <20240212105444.43262-1-nilay@linux.ibm.com>
+ <484a449b-5c7e-4766-97d3-36b01c78687c@oracle.com>
+From: Nilay Shroff <nilay@linux.ibm.com>
+In-Reply-To: <484a449b-5c7e-4766-97d3-36b01c78687c@oracle.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: B2dfMfSJRgps0Gdgt4dUb_kj3eYMZmpg
+X-Proofpoint-GUID: HOcnTpxZ3fhpvWkDTSso8nxFZzTevVO8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_09,2024-02-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ clxscore=1015 mlxlogscore=979 spamscore=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 phishscore=0 mlxscore=0 impostorscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402120091
 
-MCSPI controller have few limitations regarding the transaction
-size when the FIFO buffer is enabled and the WCNT feature is used
-to find the end of word, in this case if WCNT is not a multiple of
-the FIFO Almost Empty Level (AEL), then the FIFO empty event is not
-generated correctly. In addition to this limitation, few other unknown
-sequence of events that causes the FIFO empty status to not reflect the
-exact status were found when FIFO is being used without DMA enabled
-during extended testing in AM65x platform. Till the exact root cause
-is found and fixed, revert the FIFO support without DMA.
 
-See J721E Technical Reference Manual (SPRUI1C), section 12.1.5
-for further details: http://www.ti.com/lit/pdf/spruil1
 
-This reverts commit 75223bbea840e125359fc63942b5f93462b474c6.
+On 2/12/24 16:50, John Garry wrote:
+> I'm not sure what is going on with your mail client here.
 
-Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
----
- drivers/spi/spi-omap2-mcspi.c | 137 ++--------------------------------
- 1 file changed, 8 insertions(+), 129 deletions(-)
+Sorry for the inconvenience, I will check the settings.
 
-diff --git a/drivers/spi/spi-omap2-mcspi.c b/drivers/spi/spi-omap2-mcspi.c
-index a0c9fea908f5..ddf1c684bcc7 100644
---- a/drivers/spi/spi-omap2-mcspi.c
-+++ b/drivers/spi/spi-omap2-mcspi.c
-@@ -53,8 +53,6 @@
- 
- /* per-register bitmasks: */
- #define OMAP2_MCSPI_IRQSTATUS_EOW	BIT(17)
--#define OMAP2_MCSPI_IRQSTATUS_TX0_EMPTY    BIT(0)
--#define OMAP2_MCSPI_IRQSTATUS_RX0_FULL    BIT(2)
- 
- #define OMAP2_MCSPI_MODULCTRL_SINGLE	BIT(0)
- #define OMAP2_MCSPI_MODULCTRL_MS	BIT(2)
-@@ -293,7 +291,7 @@ static void omap2_mcspi_set_mode(struct spi_controller *ctlr)
- }
- 
- static void omap2_mcspi_set_fifo(const struct spi_device *spi,
--				struct spi_transfer *t, int enable, int dma_enabled)
-+				struct spi_transfer *t, int enable)
- {
- 	struct spi_controller *ctlr = spi->controller;
- 	struct omap2_mcspi_cs *cs = spi->controller_state;
-@@ -314,28 +312,20 @@ static void omap2_mcspi_set_fifo(const struct spi_device *spi,
- 			max_fifo_depth = OMAP2_MCSPI_MAX_FIFODEPTH / 2;
- 		else
- 			max_fifo_depth = OMAP2_MCSPI_MAX_FIFODEPTH;
--		if (dma_enabled)
--			wcnt = t->len / bytes_per_word;
--		else
--			wcnt = 0;
-+
-+		wcnt = t->len / bytes_per_word;
- 		if (wcnt > OMAP2_MCSPI_MAX_FIFOWCNT)
- 			goto disable_fifo;
- 
- 		xferlevel = wcnt << 16;
- 		if (t->rx_buf != NULL) {
- 			chconf |= OMAP2_MCSPI_CHCONF_FFER;
--			if (dma_enabled)
--				xferlevel |= (bytes_per_word - 1) << 8;
--			else
--				xferlevel |= (max_fifo_depth - 1) << 8;
-+			xferlevel |= (bytes_per_word - 1) << 8;
- 		}
- 
- 		if (t->tx_buf != NULL) {
- 			chconf |= OMAP2_MCSPI_CHCONF_FFET;
--			if (dma_enabled)
--				xferlevel |= bytes_per_word - 1;
--			else
--				xferlevel |= (max_fifo_depth - 1);
-+			xferlevel |= bytes_per_word - 1;
- 		}
- 
- 		mcspi_write_reg(ctlr, OMAP2_MCSPI_XFERLEVEL, xferlevel);
-@@ -892,113 +882,6 @@ omap2_mcspi_txrx_pio(struct spi_device *spi, struct spi_transfer *xfer)
- 	return count - c;
- }
- 
--static unsigned
--omap2_mcspi_txrx_piofifo(struct spi_device *spi, struct spi_transfer *xfer)
--{
--	struct omap2_mcspi_cs	*cs = spi->controller_state;
--	struct omap2_mcspi    *mcspi;
--	unsigned int		count, c;
--	unsigned int		iter, cwc;
--	int last_request;
--	void __iomem		*base = cs->base;
--	void __iomem		*tx_reg;
--	void __iomem		*rx_reg;
--	void __iomem		*chstat_reg;
--	void __iomem        *irqstat_reg;
--	int			word_len, bytes_per_word;
--	u8		*rx;
--	const u8	*tx;
--
--	mcspi = spi_controller_get_devdata(spi->controller);
--	count = xfer->len;
--	c = count;
--	word_len = cs->word_len;
--	bytes_per_word = mcspi_bytes_per_word(word_len);
--
--	/*
--	 * We store the pre-calculated register addresses on stack to speed
--	 * up the transfer loop.
--	 */
--	tx_reg		= base + OMAP2_MCSPI_TX0;
--	rx_reg		= base + OMAP2_MCSPI_RX0;
--	chstat_reg	= base + OMAP2_MCSPI_CHSTAT0;
--	irqstat_reg    = base + OMAP2_MCSPI_IRQSTATUS;
--
--	if (c < (word_len >> 3))
--		return 0;
--
--	rx = xfer->rx_buf;
--	tx = xfer->tx_buf;
--
--	do {
--		/* calculate number of words in current iteration */
--		cwc = min((unsigned int)mcspi->fifo_depth / bytes_per_word,
--			  c / bytes_per_word);
--		last_request = cwc != (mcspi->fifo_depth / bytes_per_word);
--		if (tx) {
--			if (mcspi_wait_for_reg_bit(irqstat_reg,
--						   OMAP2_MCSPI_IRQSTATUS_TX0_EMPTY) < 0) {
--				dev_err(&spi->dev, "TX Empty timed out\n");
--				goto out;
--			}
--			writel_relaxed(OMAP2_MCSPI_IRQSTATUS_TX0_EMPTY, irqstat_reg);
--
--			for (iter = 0; iter < cwc; iter++, tx += bytes_per_word) {
--				if (bytes_per_word == 1)
--					writel_relaxed(*tx, tx_reg);
--				else if (bytes_per_word == 2)
--					writel_relaxed(*((u16 *)tx), tx_reg);
--				else if (bytes_per_word == 4)
--					writel_relaxed(*((u32 *)tx), tx_reg);
--			}
--		}
--
--		if (rx) {
--			if (!last_request &&
--			    mcspi_wait_for_reg_bit(irqstat_reg,
--						   OMAP2_MCSPI_IRQSTATUS_RX0_FULL) < 0) {
--				dev_err(&spi->dev, "RX_FULL timed out\n");
--				goto out;
--			}
--			writel_relaxed(OMAP2_MCSPI_IRQSTATUS_RX0_FULL, irqstat_reg);
--
--			for (iter = 0; iter < cwc; iter++, rx += bytes_per_word) {
--				if (last_request &&
--				    mcspi_wait_for_reg_bit(chstat_reg,
--							   OMAP2_MCSPI_CHSTAT_RXS) < 0) {
--					dev_err(&spi->dev, "RXS timed out\n");
--					goto out;
--				}
--				if (bytes_per_word == 1)
--					*rx = readl_relaxed(rx_reg);
--				else if (bytes_per_word == 2)
--					*((u16 *)rx) = readl_relaxed(rx_reg);
--				else if (bytes_per_word == 4)
--					*((u32 *)rx) = readl_relaxed(rx_reg);
--			}
--		}
--
--		if (last_request) {
--			if (mcspi_wait_for_reg_bit(chstat_reg,
--						   OMAP2_MCSPI_CHSTAT_EOT) < 0) {
--				dev_err(&spi->dev, "EOT timed out\n");
--				goto out;
--			}
--			if (mcspi_wait_for_reg_bit(chstat_reg,
--						   OMAP2_MCSPI_CHSTAT_TXFFE) < 0) {
--				dev_err(&spi->dev, "TXFFE timed out\n");
--				goto out;
--			}
--			omap2_mcspi_set_enable(spi, 0);
--		}
--		c -= cwc * bytes_per_word;
--	} while (c >= bytes_per_word);
--
--out:
--	omap2_mcspi_set_enable(spi, 1);
--	return count - c;
--}
--
- static u32 omap2_mcspi_calc_divisor(u32 speed_hz, u32 ref_clk_hz)
- {
- 	u32 div;
-@@ -1323,9 +1206,7 @@ static int omap2_mcspi_transfer_one(struct spi_controller *ctlr,
- 		if ((mcspi_dma->dma_rx && mcspi_dma->dma_tx) &&
- 		    ctlr->cur_msg_mapped &&
- 		    ctlr->can_dma(ctlr, spi, t))
--			omap2_mcspi_set_fifo(spi, t, 1, 1);
--		else if (t->len > OMAP2_MCSPI_MAX_FIFODEPTH)
--			omap2_mcspi_set_fifo(spi, t, 1, 0);
-+			omap2_mcspi_set_fifo(spi, t, 1);
- 
- 		omap2_mcspi_set_enable(spi, 1);
- 
-@@ -1338,8 +1219,6 @@ static int omap2_mcspi_transfer_one(struct spi_controller *ctlr,
- 		    ctlr->cur_msg_mapped &&
- 		    ctlr->can_dma(ctlr, spi, t))
- 			count = omap2_mcspi_txrx_dma(spi, t);
--		else if (mcspi->fifo_depth > 0)
--			count = omap2_mcspi_txrx_piofifo(spi, t);
- 		else
- 			count = omap2_mcspi_txrx_pio(spi, t);
- 
-@@ -1352,7 +1231,7 @@ static int omap2_mcspi_transfer_one(struct spi_controller *ctlr,
- 	omap2_mcspi_set_enable(spi, 0);
- 
- 	if (mcspi->fifo_depth > 0)
--		omap2_mcspi_set_fifo(spi, t, 0, 0);
-+		omap2_mcspi_set_fifo(spi, t, 0);
- 
- out:
- 	/* Restore defaults if they were overriden */
-@@ -1375,7 +1254,7 @@ static int omap2_mcspi_transfer_one(struct spi_controller *ctlr,
- 		omap2_mcspi_set_cs(spi, !(spi->mode & SPI_CS_HIGH));
- 
- 	if (mcspi->fifo_depth > 0 && t)
--		omap2_mcspi_set_fifo(spi, t, 0, 0);
-+		omap2_mcspi_set_fifo(spi, t, 0);
- 
- 	return status;
- }
--- 
-2.34.1
+>>
+>> So is it a good idea to validate here whether we could potentially exceed
+>>
+>> the atomic-write-max-unit-size supported by device before we allow merging?
+> 
+> Note that we have atomic_write_max_bytes and atomic_write_max_unit_size, and they are not always the same thing.
+> 
+>>
+>> In case we exceed the atomic-write-max-unit-size post merge then don't allow
+>>
+>> merging?
+> 
+> We check this elsewhere. I just expanded the normal check for max request size to cover atomic writes.
+> 
+> Normally we check that a merged request would not exceed max_sectors value, and this max_sectors value can be got from blk_queue_get_max_sectors().
+> 
+> So if you check a function like ll_back_merge_fn(), we have a merging size check:
+> 
+>     if (blk_rq_sectors(req) + bio_sectors(bio) >
+>         blk_rq_get_max_sectors(req, blk_rq_pos(req))) {
+>         req_set_nomerge(req->q, req);
+>         return 0;
+>     }
+> 
+> And here the blk_rq_get_max_sectors() -> blk_queue_get_max_sectors() call now also supports atomic writes (see patch #7):
+OK got it. I think I have missed this part.
 
+> 
+> @@ -167,7 +167,16 @@ static inline unsigned get_max_io_size(struct bio *bio,
+>  {
+> ...
+> 
+> +    if (bio->bi_opf & REQ_ATOMIC)
+> +        max_sectors = lim->atomic_write_max_sectors;
+> +    else
+> +        max_sectors = lim->max_sectors;
+> 
+> Note that we do not allow merging of atomic and non-atomic writes.
+> 
+Yeah 
+
+Thanks,
+--Nilay
 
