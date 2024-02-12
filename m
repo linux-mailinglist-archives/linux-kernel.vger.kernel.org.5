@@ -1,182 +1,129 @@
-Return-Path: <linux-kernel+bounces-62322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2594E851E83
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2BA851E87
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DACF6286A8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:16:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7B022858F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:17:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2E5481D7;
-	Mon, 12 Feb 2024 20:15:56 +0000 (UTC)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D778C481D0;
+	Mon, 12 Feb 2024 20:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X+i4Kcy8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D4246549;
-	Mon, 12 Feb 2024 20:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17ABA46549;
+	Mon, 12 Feb 2024 20:17:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707768955; cv=none; b=qNpSDimDQmVzBxJhqkpbHDKs9aqAZ2o3HUnmZqUjAVUUMhqDdT+Oww8ezRLGAycf2tl/kE3kqG6ncx4pbpCjmYmdr27ez7vbV6HY02uU06sz5icqmLFB8+Y8W+k7pgcs9u650Y6Q2ZDe07gYeMFQbCHf6cwCOcbutxs7gvsBffA=
+	t=1707769059; cv=none; b=IgRyXjrQoFsgKzSLPpTq+oRLWHS6HVSvEJZ/TS+2t/vui8XRRkG4RUrnDeU77T9d2HX2dW6bmjMFjY4EAtxC12NzzWomwLQF6zfO+Z2wv/WN+njkUaOwUAfu/nZIdy/L09QNTJvRrbycfWoTBvuTm6CbGtRnnuBqlJVi/w7DtSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707768955; c=relaxed/simple;
-	bh=6DeBBGjtML8X8YuhkGNNMtZfq39v4Tjs06avkaT38kQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AbFC49kJAUpl9EWyrAjBoh0ilriDpO11WdVlj865OgHlrm1WtMj7aqwUiFOjBYTSkUEMopQtRdo5P5aW1cRxwrFhmOC8ENDETTdCYs+69Yvsd7Z+uGysaV/HHfw7IzW3/8zpl5YD1ADfSek9ICKB94u06p0XIvsDou19IDWFJJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7d6a772e08dso1013856241.2;
-        Mon, 12 Feb 2024 12:15:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707768953; x=1708373753;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BLRvRTEoJFPB+mnvlsBs6KwuSM3ocAbsQPXOvw4Twl8=;
-        b=wi2RPv1cpfwDoUyrVw+D+A2uEwKNcR4+w60kPrnLPc56zvLaeO2GVk9EsPmGvfW+kd
-         u6OJtDycuSEuUYlALjioeJjYekPl4vgNL4C+aGdcShayo8j9eVHhr7lpl7HAxwNvLzub
-         pm8hian5hVFzTMXnJszp3IF+kLmNwoJSuOlT1t6+PvUVnK4yWoUSKXcQBoJ4NGYMMrGX
-         eZPUP0QraAeakwPJTnkKw5I7DsQsXMiRIZz+tkuij9X8+I0ao+e6aOvvzA8Feh6NUUUW
-         QPC8/pkPG4PctIZlOf4z5u9/51w3pINmFjSYAzYECwb0vMHCerGZb/Vpm0OzWQaqNBEh
-         ocdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVZwitFb8VQYuuss5XC025492sVlw17WZBVofkJWpJ2uVkGk3tXck65TiOcGRXImZ6OHOV86V5UbZcbGRdvBwArvGtyUgkERieWXVf+e567UobMdf0ZQiWwoyC+18dw6vyOhb3i+ObNSI98s/i3X2JG5Y+iHvJRV/IngbRE2nbIYzGwYA==
-X-Gm-Message-State: AOJu0YyK8Kq2Pp8piRLRnfeGfCNbGQIMuFkD5k32nviaYCJ+U8m/PunD
-	ide8Q1aViu1Ufnjvh7ooHKJgTfB6xwScuYYpvtfrOKge4tji7HfR+GyabW5Z8aI9VdoYS2cSoiU
-	jvfgDbwktdMWQ102hAKIGu4sNQlE=
-X-Google-Smtp-Source: AGHT+IGBiP7NMzFQIwEfL8eMn322qCQQ1psPygyhoKuY5Hgm4/zaOflDwoxkLzUrfowFj+KOpgsq/zXJYMwNK0OZaFw=
-X-Received: by 2002:a67:cf8c:0:b0:46e:c4d1:25b5 with SMTP id
- g12-20020a67cf8c000000b0046ec4d125b5mr1838684vsm.22.1707768952762; Mon, 12
- Feb 2024 12:15:52 -0800 (PST)
+	s=arc-20240116; t=1707769059; c=relaxed/simple;
+	bh=Rj06hafTCiyYS44RXdDjgCx/QrBaExSSWLkRezkp1WA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QDbGwyJIymzEfE02VKUc4zTuqlclShyg9JqEEZ2JdbCAOK9dpSv0xk8xGAhRcLP+FG8ADhtSbQHgbPFOnJa93tSBfEEE4e9fSdmdeUzpkd/fJtKGJw8SmgY409dwBJvay7bNhUSqrBMiFS7RRRiMwLiReGf+ZG2kpS6AZUxWThk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X+i4Kcy8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35F75C433F1;
+	Mon, 12 Feb 2024 20:17:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707769058;
+	bh=Rj06hafTCiyYS44RXdDjgCx/QrBaExSSWLkRezkp1WA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X+i4Kcy8KwTYZaA9DRB9gp/BAdGBVRfD7bKOCgPjeydbfp0mblshUNNi+P5qU3Ntt
+	 9lSQdgC9J4E0ZScwHXsFpzj7dBZccyZve+F4ps1bMyLKQ12t2tW1LNjEpB3sgxXsbD
+	 tbzqtA+3ken2t/Xtbvn3/2Te6Hr0zJvzXRS2L7fK+nOm8Tey9Q6RN1v42u5lKhQds2
+	 /wOuE+NL7eLCzORsTsJK2K9N3BwYIl0lYBmdSgKDtRV5kixXlRSrNM74oKh67oB4zv
+	 Io2hsp7zoaX2X1V52Hq6eYNDnecdK/TD3sjwSFVCzThrovySIIQlbv8kfJGJHZDUy4
+	 Uvseb6GNI3UbQ==
+Date: Mon, 12 Feb 2024 20:17:31 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Ramon de C Valle <rcvalle@google.com>, Trevor Gross <tmgross@umich.edu>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	linux-riscv@lists.infradead.org, Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Tom Rix <trix@redhat.com>, rust-for-linux@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, Matthew Maurer <mmaurer@google.com>,
+	Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH v1 0/2] RISC-V: enable rust
+Message-ID: <20240212-demotion-blitz-1c9ab85dbc73@spud>
+References: <20240125-bucked-payroll-47f82077b262@wendy>
+ <CANiq72k7n0aZrifRRU08N8qLkNe+2EZwijZy5sM7M56n2xYHgQ@mail.gmail.com>
+ <20240125-lazy-thrower-744aacc6632a@wendy>
+ <CANiq72kb+_utZrYHtoKZQtQazikmkjpVUHpTBcaANizduMF5QQ@mail.gmail.com>
+ <20240126-eccentric-jaywalker-3560e2151a92@spud>
+ <CANiq72nu2NXUWYanHZd5EXgX4P_v673EWn6SCRW60Es9naraQQ@mail.gmail.com>
+ <20240209-rage-keg-1b2982cd17d9@spud>
+ <CALNs47sRqAbE=u3=_ciO2oge7Afz-6GBBhW+BwcLRET-TsuxTg@mail.gmail.com>
+ <CAOcBZORDaHHH3jTL3GO7OsDubhhyQE0Uy2uAjJpiRzrKBgqaOw@mail.gmail.com>
+ <CANiq72=VBFvB9O9c84YxpBBftpfNnnXx-+Xes0h8h6rN3EN5pA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240210031746.4057262-1-irogers@google.com> <20240210031746.4057262-2-irogers@google.com>
-In-Reply-To: <20240210031746.4057262-2-irogers@google.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 12 Feb 2024 12:15:41 -0800
-Message-ID: <CAM9d7chEKepmHY_Mgvq27CEcKB1e8bENwn2=pMe-yin30nfGLA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/6] perf maps: Switch from rbtree to lazily sorted
- array for addresses
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Colin Ian King <colin.i.king@gmail.com>, Liam Howlett <liam.howlett@oracle.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Artem Savkov <asavkov@redhat.com>, 
-	Changbin Du <changbin.du@huawei.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	James Clark <james.clark@arm.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, leo.yan@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Fnsa84sXGmOTaKtZ"
+Content-Disposition: inline
+In-Reply-To: <CANiq72=VBFvB9O9c84YxpBBftpfNnnXx-+Xes0h8h6rN3EN5pA@mail.gmail.com>
+
+
+--Fnsa84sXGmOTaKtZ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 9, 2024 at 7:18=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> Maps is a collection of maps primarily sorted by the starting address
-> of the map. Prior to this change the maps were held in an rbtree
-> requiring 4 pointers per node. Prior to reference count checking, the
-> rbnode was embedded in the map so 3 pointers per node were
-> necessary. This change switches the rbtree to an array lazily sorted
-> by address, much as the array sorting nodes by name. 1 pointer is
-> needed per node, but to avoid excessive resizing the backing array may
-> be twice the number of used elements. Meaning the memory overhead is
-> roughly half that of the rbtree. For a perf record with
-> "--no-bpf-event -g -a" of true, the memory overhead of perf inject is
-> reduce fom 3.3MB to 3MB, so 10% or 300KB is saved.
->
-> Map inserts always happen at the end of the array. The code tracks
-> whether the insertion violates the sorting property. O(log n) rb-tree
-> complexity is switched to O(1).
->
-> Remove slides the array, so O(log n) rb-tree complexity is degraded to
-> O(n).
->
-> A find may need to sort the array using qsort which is O(n*log n), but
-> in general the maps should be sorted and so average performance should
-> be O(log n) as with the rbtree.
->
-> An rbtree node consumes a cache line, but with the array 4 nodes fit
-> on a cache line. Iteration is simplified to scanning an array rather
-> than pointer chasing.
->
-> Overall it is expected the performance after the change should be
-> comparable to before, but with half of the memory consumed.
->
-> To avoid a list and repeated logic around splitting maps,
-> maps__merge_in is rewritten in terms of
-> maps__fixup_overlap_and_insert. maps_merge_in splits the given mapping
-> inserting remaining gaps. maps__fixup_overlap_and_insert splits the
-> existing mappings, then adds the incoming mapping. By adding the new
-> mapping first, then re-inserting the existing mappings the splitting
-> behavior matches.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
-> ---
-[SNIP]
->  int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map, voi=
-d *data), void *data)
->  {
-> -       struct map_rb_node *pos;
-> +       bool done =3D false;
->         int ret =3D 0;
->
-> -       down_read(maps__lock(maps));
-> -       maps__for_each_entry(maps, pos) {
-> -               ret =3D cb(pos->map, data);
-> -               if (ret)
-> -                       break;
-> +       /* See locking/sorting note. */
-> +       while (!done) {
-> +               down_read(maps__lock(maps));
-> +               if (maps__maps_by_address_sorted(maps)) {
-> +                       /*
-> +                        * maps__for_each_map callbacks may buggily/unsaf=
-ely
-> +                        * insert into maps_by_address. Deliberately relo=
-ad
-> +                        * maps__nr_maps and maps_by_address on each iter=
-ation
-> +                        * to avoid using memory freed by maps__insert gr=
-owing
-> +                        * the array - this may cause maps to be skipped =
-or
-> +                        * repeated.
-> +                        */
-> +                       for (unsigned int i =3D 0; i < maps__nr_maps(maps=
-); i++) {
-> +                               struct map **maps_by_address =3D maps__ma=
-ps_by_address(maps);
+On Mon, Feb 12, 2024 at 08:11:21PM +0100, Miguel Ojeda wrote:
+> On Mon, Feb 12, 2024 at 8:02=E2=80=AFPM Ramon de C Valle <rcvalle@google.=
+com> wrote:
+> >
+> > Sorry for the late reply. Sami might be the best person to answer this,=
+ but KCFI (not CFI) tests are lowered by passes that are architecture speci=
+fic (see https://reviews.llvm.org/D119296), so we'd need to add support for=
+ RISC-V. There is no additional work required in the Rust compiler besides =
+enabling it for the new target.
+>=20
+> Thanks a lot Ramon!
+>=20
+> Then for RISC-V let's go for the `depends on` for the moment, and we
+> can remove when the support lands for RISC-V (ideally when someone has
+> managed to boot it at least under some configuration).
 
-Any chance they can move out of the loop?  I guess not as they are
-not marked to const/pure functions..
+If all you want is a boot under some configuration, that's not
+difficult. After all, I found the original issue by booting a kernel
+with CFI_CLANG enabled on the C side...
 
-Thanks,
-Namhyung
+> There is no additional work required in the Rust compiler besides enablin=
+g it for the new target.
 
+This is not super clear though, it says "in the Rust compiler", not "in
+the kernel's buildsystem".
 
-> +                               struct map *map =3D maps_by_address[i];
-> +
-> +                               ret =3D cb(map, data);
-> +                               if (ret)
-> +                                       break;
-> +                       }
-> +                       done =3D true;
-> +               }
-> +               up_read(maps__lock(maps));
-> +               if (!done)
-> +                       maps__sort_by_address(maps);
->         }
-> -       up_read(maps__lock(maps));
->         return ret;
->  }
+--Fnsa84sXGmOTaKtZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcp82wAKCRB4tDGHoIJi
+0l0+AQDwAn/aq+Fts6yHPXow2miyTAWD/hM47HfQMPIODOb5ZQD/dkB5CAfEyKfu
+rkbwjea4usmgQD4BLThgzp4mlabBVwM=
+=ORjx
+-----END PGP SIGNATURE-----
+
+--Fnsa84sXGmOTaKtZ--
 
