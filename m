@@ -1,118 +1,116 @@
-Return-Path: <linux-kernel+bounces-62520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE41A85224E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:09:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A24D7852250
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:10:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A60D1F233A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:09:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4B091C21F1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39374F1F6;
-	Mon, 12 Feb 2024 23:09:00 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50CEF4F20D;
+	Mon, 12 Feb 2024 23:10:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="cSSROMVO"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46FB74EB28;
-	Mon, 12 Feb 2024 23:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FEE4EB28;
+	Mon, 12 Feb 2024 23:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707779340; cv=none; b=XAFKARQNbqpQyK+pc5uRvh8MeRlsDwNfgEIUUg+tz+ueJK0Jx9t1DOWWHN01TL3gzSu6WVXiOaIMmgxrcIyt/WCcY+xUcBqBszAC4G8Q9pzL1gy3Xgw0KvL+Y5AQwxWPgkb2u/cYdrFnUVVO5F9KL/nwU3drQP3ea9c1/Kd9C3E=
+	t=1707779431; cv=none; b=jqqA6L2WdR4FGZLWpm5Ht5OnoLQQOvFhLcVEROmWrIsZoIY5HtVpq7ONXxEJm6FNb71Q78wjFQdIbB8EHhe6mGpefgfFBJ5bUf9JINzKLgVno8sUEecA94YjIBxjiZMLJ9oT2eXUYnaEHIt02W4+4+Y7dYlQGbGxBLnhSKGulaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707779340; c=relaxed/simple;
-	bh=hhDd4Zg33Gyyd3pXps6UXldwu1puK288MZOmI4zYWyY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=RQLZUpnbZzj7xFZCjhXbW/fL8rcnwhqZRNMO5xwu1h2H7fNKd2avfylGoQ4njVwRYCoNOm9CUOPdqE9HO4ykv3DM13o9DGFADQBZMMVGw4WgD+4z7co/7mv6kQX40BLdWIdzwOnAQtDMeHwyGkCHX/k2W2imV/wkYYpQdomRL5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC65EC433C7;
-	Mon, 12 Feb 2024 23:08:58 +0000 (UTC)
-Date: Mon, 12 Feb 2024 18:09:41 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Mark Rutland <mark.rutland@arm.com>, Tim
- Chen <tim.c.chen@linux.intel.com>, Vincent Donnefort
- <vdonnefort@google.com>, Sven Schnelle  <svens@linux.ibm.com>, Mete Durlu
- <meted@linux.ibm.com>
-Subject: [PATCH] tracing: Have saved_cmdlines arrays all in one allocation
-Message-ID: <20240212180941.379c419b@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707779431; c=relaxed/simple;
+	bh=kLS8+liRFc8Av1JsFpqI5qboWvNUiRYE+DF0OAk9EV8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C22OFOBMfjE2FvsNbOCNxs/yQgLKhVuebamseVwTS3nHpjL4DNoiNj0C1QmWzA3UXMX/udzqvCj1lNrkjFKRSCJxppD2gCa71ydBc21Q/jAHmstCBvB/1xE/TFEK4UfJNMuhSlZg2zaGK0Vt4G1Ewgx2l+oJaQgCmadc96L0Zeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=cSSROMVO; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 65D3940E01BB;
+	Mon, 12 Feb 2024 23:10:26 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id huSHbf6mq5Ex; Mon, 12 Feb 2024 23:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707779424; bh=39mF2a31e7R6BCJbA5oz2VBjGFXWjXh1FN58lK1do2k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cSSROMVOHM37bF6Uuy6/leFNyPTSzpVCAlkmcxBxuWjXZqcAiVLgb0ZxPTc3CIiuU
+	 QXZBTH5zC6EvL6QJ2EIxw2rVeUwU6pEqU0KzWmVp87bdfg4ShQ9b3IPM1N/gKUjJd3
+	 Y+nFX5wd+YTy8nAWG2JZFmIL114Xq/P1CJFNjR2ga3R2o5bRuC7TRuqpxdTnasPDtA
+	 yQMjTw+/c+cRIVScm/Hl+Fos4dI4w4pIveT9kZJusq4Nf2s5Z+mj6vDwHWM+cHss8N
+	 4ukye/4uvWCA2MFaPdtYWNYHFCvmFO4CHBqXklUru2WmsZGTfguHPBWcTYjknYplNi
+	 vcK9Pq5oxnqBlYLZHmU5IRIoh0ioTzwGxgpcnHkiro77aCWie32m/Or6ZPV1nKSTyy
+	 WcPsKYU9BA89d96CGdAzpOTydG4pv9vFuLouk34DPXlzIcJA9T6V7Aj6YkNz1YyYoE
+	 07julTZAnK8GLHvseQgs0G9SnoNYRyjkPyqRmekXMhbusfvds1ot67bWcnXydBjqdj
+	 Afimybr/u8U2KlYeieDhcnI1mRSdQAycHSShcUEkCHBYKUYh5vRWzjmv/OU6nOV9eF
+	 CYPJRqDtP8waGbnBzmgxMJRIUzaOsPNCZnVVvHNo+tvaVK19MdaFdNgAUgs4uxMOy8
+	 o5nzqIn2ffMuMYl9Pd1Wlq/U=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1167640E01A9;
+	Mon, 12 Feb 2024 23:10:15 +0000 (UTC)
+Date: Tue, 13 Feb 2024 00:10:09 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: "Luck, Tony" <tony.luck@intel.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>,
+	"Naik, Avadhut" <avadnaik@amd.com>,
+	"Mehta, Sohil" <sohil.mehta@intel.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Avadhut Naik <avadhut.naik@amd.com>
+Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
+ Records pool
+Message-ID: <20240212231009.GAZcqlUVY8U2hzOaF4@fat_crate.local>
+References: <75ddf61d-8dda-47fa-9da0-24221feb22a2@amd.com>
+ <20240211111455.GAZcisL09LeFPWa2EI@fat_crate.local>
+ <b5904910-ed58-405f-9425-566383b48068@amd.com>
+ <SJ1PR11MB6083CF3400AD2F2047D65E17FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <34b19db5-bd72-457c-9b6a-c2089f6be83c@amd.com>
+ <SJ1PR11MB6083E7E11F6C7BCC8C6C7F21FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240212201038.GNZcp7PuIqIJndpDM9@fat_crate.local>
+ <47901422-ac07-47db-bf44-3f4353e92b1d@paulmck-laptop>
+ <20240212212741.GPZcqNTXfU2OX7uRtx@fat_crate.local>
+ <2d8b17f2-c22f-478f-b407-9d2dfd2064f7@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2d8b17f2-c22f-478f-b407-9d2dfd2064f7@paulmck-laptop>
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Mon, Feb 12, 2024 at 02:46:57PM -0800, Paul E. McKenney wrote:
+> The usual reason is to exclude other CPUs also doing list_add_rcu()
+> on the same list. 
 
-The saved_cmdlines have three arrays for mapping PIDs to COMMs:
+Doh, it even says so in the comment above list_add_rcu().
 
- - map_pid_to_cmdline[]
- - map_cmdline_to_pid[]
- - saved_cmdlines
+And the traversal which is happening in NMI-like context is fine.
 
-The map_pid_to_cmdline[] is PID_MAX_DEFAULT in size and holds the index
-into the other arrays. The map_cmdline_to_pid[] is a mapping back to the
-full pid as it can be larger than PID_MAX_DEFAULT. And the
-saved_cmdlines[] just holds the COMMs associated to the pids.
+So phew, I think we should be fine here. Thanks!
 
-Currently the map_pid_to_cmdline[] and saved_cmdlines[] are allocated
-together (in reality the saved_cmdlines is just in the memory of the
-rounding of the allocation of the structure as it is always allocated in
-powers of two). The map_cmdline_to_pid[] array is allocated separately.
+And as it turns out, we're not going to need any of that after all as
+it looks like we can allocate the proper size from the very beginning...
 
-Since the rounding to a power of two is rather large (it allows for 8000
-elements in saved_cmdlines), also include the map_cmdline_to_pid[] array.
-(This drops it to 6000 by default, which is still plenty for most use
-cases). This saves even more memory as the map_cmdline_to_pid[] array
-doesn't need to be allocated.
+Lovely.
 
-Link: https://lore.kernel.org/linux-trace-kernel/20240212174011.068211d9@gandalf.local.home/
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/trace_sched_switch.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/trace/trace_sched_switch.c b/kernel/trace/trace_sched_switch.c
-index e4fbcc3bede5..210c74dcd016 100644
---- a/kernel/trace/trace_sched_switch.c
-+++ b/kernel/trace/trace_sched_switch.c
-@@ -201,7 +201,7 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
- 	int order;
- 
- 	/* Figure out how much is needed to hold the given number of cmdlines */
--	orig_size = sizeof(*s) + val * TASK_COMM_LEN;
-+	orig_size = sizeof(*s) + val * (TASK_COMM_LEN + sizeof(int));
- 	order = get_order(orig_size);
- 	size = 1 << (order + PAGE_SHIFT);
- 	page = alloc_pages(GFP_KERNEL, order);
-@@ -212,16 +212,11 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
- 	memset(s, 0, sizeof(*s));
- 
- 	/* Round up to actual allocation */
--	val = (size - sizeof(*s)) / TASK_COMM_LEN;
-+	val = (size - sizeof(*s)) / (TASK_COMM_LEN + sizeof(int));
- 	s->cmdline_num = val;
- 
--	s->map_cmdline_to_pid = kmalloc_array(val,
--					      sizeof(*s->map_cmdline_to_pid),
--					      GFP_KERNEL);
--	if (!s->map_cmdline_to_pid) {
--		free_saved_cmdlines_buffer(s);
--		return NULL;
--	}
-+	/* Place map_cmdline_to_pid array right after saved_cmdlines */
-+	s->map_cmdline_to_pid = (unsigned *)&s->saved_cmdlines[val * TASK_COMM_LEN];
- 
- 	s->cmdline_idx = 0;
- 	memset(&s->map_pid_to_cmdline, NO_CMDLINE_MAP,
 -- 
-2.43.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
