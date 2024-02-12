@@ -1,434 +1,357 @@
-Return-Path: <linux-kernel+bounces-61381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C3E885119D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:56:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCD4C8511A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:56:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85CF3B261D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:55:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D4811C2377E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D4EB3987C;
-	Mon, 12 Feb 2024 10:54:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D208C38DE0;
+	Mon, 12 Feb 2024 10:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BTWytZL9"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V9ztVVXj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569E53984B
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A623B2BAEA
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:56:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707735293; cv=none; b=bbPkHFBI+S+neCfnnIjUbfF/27SUF5Zvx/onCkkM5u2dDHGO6ZlFnyXEnOje855G4swDaohPtkR3X6IWxDQ79AR9cFUfrSbjapFhzvV4Gueg63XtZosUH8kJ4DeMFNyVnKlovuJhyRC5kx0ORGxopYF3RNtPVUd6GKVS9PKytas=
+	t=1707735384; cv=none; b=YWb0GvZ7baGxqPUWT0bHw7yDNKWN9l/gdzTym8XrsdLgOGB7FaKYrFN2oQvAgd2QqtGc1OOdpjUyiUmjOEs3e5+kMPZPD15uCYfe2I6MvNpM0RgnchK7p2uA4yXZV0/0vTCzfhDCyacV9an3qe+5ZgKwBBeHygcIeqOYGjcbDH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707735293; c=relaxed/simple;
-	bh=JkGNB6EACZs7G0wca90SjCDRR1MMVvxtGzQZVSSTfnA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IGgszcXGxRC59ovSQqfnSlflXw7ZH0e3ANCl63K7ZCVH3ZpGF7fLFaAlgpq13fTnz5TA9Go1aE4zSOOBe8+QJD5nBpUJef8DHyRIfmB0oSFmGzui33S2P0zkUQHrLJ3HMZlfnasAftTObNVxwYO+s+J5qEnEIuUKoCW9sTllpTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BTWytZL9; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5116bf4dcf4so3606075e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:54:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707735289; x=1708340089; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ku8IgqKXgZ1aGnd9uYNvU88mrbVJaBGhSivSTqvjkG4=;
-        b=BTWytZL9jm6F2+TS5DPFO/AbXTPbtMr2r5f1PKSYwA8QBJR3gK9lezWit4QJ3ATDIe
-         4Z+Rzur0CP4VghfftkIUN06Gxk1YMoyg9+kdvxA9/5C1EW6GuRma9FrJKAvFhmdN49pJ
-         4WdsV6zfqZhyX2zQck9zAmCS/ZBfYHEfRSs4QEvBL++iYKWvHtGg8RR1efdArgLFQpYH
-         wn017ZnPMqsnPD+zkGplR90ptl8WgdXZIc3p8j3wxof3EScNlLXmtkAhun607O8SEGCE
-         0Lok48hZepxFl8PNW5RUp57E50ajH/ho95UwKsfT+XVKMfMexck7kvTF+dF98Hfnm+qJ
-         /UYA==
+	s=arc-20240116; t=1707735384; c=relaxed/simple;
+	bh=iN0ZQbM9DZxALFUgS9Q08kQ+Ol82GM4tETLHfgNCsNk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f/rD9LjKrdEzQk3kcQ6B9xYB24Kkunw7OnHWQUTy+xqwb+Zn1Bb0HVA75Wc5VgHLDDoHzTfE9rlyYWPirLBljwzkekwENvLvP1/ODe8TJutb6tY3lDGBkYariDuJ2dPABeG6AeVuFde5OHPjYMni1qronC1UgixS8riGJJSm9m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V9ztVVXj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707735381;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=UV8bdgpmsnr14qmRHmP9LgSt0o7Rd0LaIu3KD5rWrF0=;
+	b=V9ztVVXjg28sJ7KYahdWaz86ngf19x0D5VaRqLGp5Cz0lXYcVpP0MTCJBDGWSRhxT19uD6
+	SOboJ51Du85+WeBLaAi+EFhEUEb8gq9IJVUTq1GrueIWosgzhSg8N782CUztr6Td5acjTJ
+	zbhI4IQcew/GUktz9OQvXEte7/C2T+8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-576-SxygerGdPNWK3Q7MOuGv4A-1; Mon, 12 Feb 2024 05:56:14 -0500
+X-MC-Unique: SxygerGdPNWK3Q7MOuGv4A-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33b880a620bso98642f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:56:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707735289; x=1708340089;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ku8IgqKXgZ1aGnd9uYNvU88mrbVJaBGhSivSTqvjkG4=;
-        b=FiB1BYIJz2LPzBboHt8+Zb6lUgfRNRI3J8g9J/ZlmvLMCEgNULtEjtOTwWXgPF9GNn
-         9g1wjFe1b/iLlr+RLRl8/y79Kma6/FNtlQ1h/BjfuNkBHgRNH1XUtanNqvG9x3weGp1E
-         vKQ9dGvwTQjQTyfU6axUeuqW8hLN2Ic2KbxiMK3Jfdzbt9r2QFwm6u1BZjgEfgCSwj2w
-         Nm6zGjFNO1BlLciahPbgPMS9m17s8UHCbVkdaOFkFz4ZkXJ8OAhP+3EIEb/DJG6KMdq7
-         JNFTnT7Tqu9hGj9scwQi4UtOWcMeFy6fwBXCrKAiI0AIgYyZimSA0DnZaTV2bcH7+BD0
-         4W5w==
-X-Forwarded-Encrypted: i=1; AJvYcCUiULfOvG58lEzCv4uGKigqI1cHB+GMYyiWBwjcpUk4cj91srxY0QaTswAZYAPQSsOQwrivqJtXKQLxV3m/5BUaxO4xbnMXMqPO9v4U
-X-Gm-Message-State: AOJu0Yzjz1y2qSDxVeQI9Y3v29Uc6Zr/Ug60bhJqMsLtfTGyUmMkVCBw
-	0j1EQKTpOto9NngTxDjrhkWpMd31XG3gu/kMtPCb+ZpoxeeQ/UdSwHi+O0GHhgw=
-X-Google-Smtp-Source: AGHT+IHsBDotn/x5BD/p+sM1GZBMREIr2F7mHACW9xeTtzvtTArG/x3WnIz7chqZs8i/kxyttofBBQ==
-X-Received: by 2002:ac2:48ae:0:b0:511:4e6a:12e7 with SMTP id u14-20020ac248ae000000b005114e6a12e7mr4069980lfg.58.1707735289337;
-        Mon, 12 Feb 2024 02:54:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXUuuWtapF0T9cozNGQIW32rnMy0ZE0ChapQXoo6k9hEeUmQFrGZtzDoVmADFxRBSSv7TKPzCfJ+KWfhX3gUX/B1U59ToS1llc6o6EfieZ+6YU1SspBUAhquTrJARdDo0qlcbKX8dJdRAF6565A1DbA6QB8vjdQ0z+kbXgdpbgOlVoyDpcdzHcq3bsnCwIP9zf0JbCorKy+3QM5Bvur0hegGkHnZI5UYhD6BNrrSjvprPvI9Yz5XaETCR2+oCrs518A3ROWDqehNSZuNa9Kvodvut9mmnsG8RX6o7nkaLINYEMBfie2PIqWsBS1nBhvyFHb8OJh2u32cOYUuB9gk+rhopDWrPNPxmNgLLRA+VxCDaJ6D9tMYFvmgmSSSZdCS5r+a3giOYgrPCtcFfa0nV14VJMObggr
-Received: from krzk-bin.. ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b00410794ddfc6sm8349380wms.35.2024.02.12.02.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 02:54:48 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH net-next] dt-bindings: net: qca,ar9331: convert to DT schema
-Date: Mon, 12 Feb 2024 11:54:45 +0100
-Message-Id: <20240212105445.45341-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1707735373; x=1708340173;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UV8bdgpmsnr14qmRHmP9LgSt0o7Rd0LaIu3KD5rWrF0=;
+        b=QLNTsuWYRADI26HNDGTMFQz2ndfcazBkXA0UPqPbZFMVtn5YLQo92elh9p01LQhBTx
+         M4UBFDXNt4Q4a0VORwaCbcU4bDGc1liIl4EZ98gsWfMnUOu5Kf/4KiIHTmkDUc3PQmQc
+         3W6SkhEU+IDvqXoDcMW2LCksfeODdEjhQGDGfdp6qIXLiUeZj14E9RAlJqsjiLPI70zS
+         txHn+RhX2CSMc8/pHR2LjOHf8pkIfehSNwaGP2ekenMOAapW8RdkmZV5DYGkRUZRVmaf
+         B8uOheR+B29UMr1H50/J8kHgTtXki7QmtLBkZ6UewIKh66I6aLt0IBNU03z7eRWsrkZg
+         4N9A==
+X-Gm-Message-State: AOJu0YxSvB5bSo5PJV+dYvA1UVnYS0JumqEFd0n/lKtb/BbYx+4ynEU3
+	o13M1l9Ul+VkwLt3mBbha5CB8iSu7Kkqz9m8WIzfb1HmuxDsDXzpnXhawHDLTpfg8wB/w4DIDJE
+	fAgIFkzl35zLsjlvzrnu+lJtqtjIUUwAzmbPMpgFHj2gwOCg2RlH0Bqt/5x1Egg==
+X-Received: by 2002:adf:f783:0:b0:33b:6d36:de48 with SMTP id q3-20020adff783000000b0033b6d36de48mr4787399wrp.26.1707735373489;
+        Mon, 12 Feb 2024 02:56:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG/IczVnpqG7OkL74qqeEO8Efr3rPNiI2sLLGfEI45Sntu72wIYKx9fA7rHUuSCnjIuJqb7rg==
+X-Received: by 2002:adf:f783:0:b0:33b:6d36:de48 with SMTP id q3-20020adff783000000b0033b6d36de48mr4787383wrp.26.1707735373053;
+        Mon, 12 Feb 2024 02:56:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXjROoncsMS9ff/iccqKfqz0fi4PCC42VOc6vvwHBjhJXjzTpJlaTL/AcE4wlksfudxTI8Nufs1TaBw9FXcJAvIGseizwGfpxHdXA91AMi85HfqCVcWrZmAhA3vZkmt2Apb8EUGV7dsVepCozjNuALNAFILi4S1lEWPFA2EpYHWGbnq+al1ucIyDhLO6GYlvPt6CH52fPmJ6WZpvf6zSbVQ5BKD2Kux+GliB5ikYPH4IeWitD+J94+wHP/34NkYzOoGAVf5cDaKG2D+z8Tcj90Jllx2pQr/4FEJcvOX/r0uaPpwRIphvNTZrwlCMR/ofGFaNaFBcrakwcc6oCnzK4UH1GTnXGyqA3ct2TtXIGbXz5SgvPmcheBpCfmU3JBbtYjYJVOq/Cu9kPFBq+iV7BynOkk+LoYeavXAsKrJUEoxNqk7gJl1hVxmdbaHNRJ8GH/Xrep1FcL7ndv35Ff16lr+2y+KVyZcjp3vcFmekmjm1fP3DsAUD1AaCsrZ8ui/QWYnR8UJrHN1i4j0VP2kvQx3aAjFGQAhbf0rpwA914ul/9WCChdJIzh0+GSYZiRdVIOwT3amXD4KZNjOzHEfzMFG927T7BqZceLrfF6cUarIizPaeuFRSVL84WFcql7Rw3wC+P9g9pTa3pJGcQ+4RTKA649h0MJBUEeEzta0LzDdHl4QDvtp6+86jFU39Hh8luio0tRTYoC9rHDbADrYT6bGtiodX2nkZeYloJipmlKST9qoRl8=
+Received: from ?IPV6:2003:cb:c730:2200:7229:83b1:524e:283a? (p200300cbc7302200722983b1524e283a.dip0.t-ipconnect.de. [2003:cb:c730:2200:7229:83b1:524e:283a])
+        by smtp.gmail.com with ESMTPSA id bq26-20020a5d5a1a000000b0033b4335dce5sm6603003wrb.85.2024.02.12.02.56.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 02:56:12 -0800 (PST)
+Message-ID: <e6774e16-90c0-4fba-9b9c-98de803fc920@redhat.com>
+Date: Mon, 12 Feb 2024 11:56:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 09/10] mm/mmu_gather: improve cond_resched() handling
+ with large folios and expensive page freeing
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Yin Fengwei <fengwei.yin@intel.com>, Michal Hocko <mhocko@suse.com>,
+ Will Deacon <will@kernel.org>, "Aneesh Kumar K.V"
+ <aneesh.kumar@linux.ibm.com>, Nick Piggin <npiggin@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>, Michael Ellerman
+ <mpe@ellerman.id.au>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org
+References: <20240209221509.585251-1-david@redhat.com>
+ <20240209221509.585251-10-david@redhat.com>
+ <f1578e92-4de0-4718-bf79-ec29e9a19fe0@arm.com>
+ <6c66f7ca-4b14-4bbb-bf06-e81b3481b03f@redhat.com>
+ <590946ad-a538-4c99-947f-93455c2d96c6@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <590946ad-a538-4c99-947f-93455c2d96c6@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Convert the Qualcomm Atheros AR9331 built-in switch bindings to DT
-schema.
+On 12.02.24 11:32, Ryan Roberts wrote:
+> On 12/02/2024 10:11, David Hildenbrand wrote:
+>> Hi Ryan,
+>>
+>>>> -static void tlb_batch_pages_flush(struct mmu_gather *tlb)
+>>>> +static void __tlb_batch_free_encoded_pages(struct mmu_gather_batch *batch)
+>>>>    {
+>>>> -    struct mmu_gather_batch *batch;
+>>>> -
+>>>> -    for (batch = &tlb->local; batch && batch->nr; batch = batch->next) {
+>>>> -        struct encoded_page **pages = batch->encoded_pages;
+>>>> +    struct encoded_page **pages = batch->encoded_pages;
+>>>> +    unsigned int nr, nr_pages;
+>>>>    +    /*
+>>>> +     * We might end up freeing a lot of pages. Reschedule on a regular
+>>>> +     * basis to avoid soft lockups in configurations without full
+>>>> +     * preemption enabled. The magic number of 512 folios seems to work.
+>>>> +     */
+>>>> +    if (!page_poisoning_enabled_static() && !want_init_on_free()) {
+>>>
+>>> Is the performance win really worth 2 separate implementations keyed off this?
+>>> It seems a bit fragile, in case any other operations get added to free which are
+>>> proportional to size in future. Why not just always do the conservative version?
+>>
+>> I really don't want to iterate over all entries on the "sane" common case. We
+>> already do that two times:
+>>
+>> a) free_pages_and_swap_cache()
+>>
+>> b) release_pages()
+>>
+>> Only the latter really is required, and I'm planning on removing the one in (a)
+>> to move it into (b) as well.
+>>
+>> So I keep it separate to keep any unnecessary overhead to the setups that are
+>> already terribly slow.
+>>
+>> No need to iterate a page full of entries if it can be easily avoided.
+>> Especially, no need to degrade the common order-0 case.
+> 
+> Yeah, I understand all that. But given this is all coming from an array, (so
+> easy to prefetch?) and will presumably all fit in the cache for the common case,
+> at least, so its hot for (a) and (b), does separating this out really make a
+> measurable performance difference? If yes then absolutely this optimizaiton
+> makes sense. But if not, I think its a bit questionable.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+I primarily added it because
 
----
+(a) we learned that each cycle counts during mmap() just like it does 
+during fork().
 
-DSA switch bindings still bring me headache...
----
- .../devicetree/bindings/net/dsa/ar9331.txt    | 147 ----------------
- .../bindings/net/dsa/qca,ar9331.yaml          | 161 ++++++++++++++++++
- 2 files changed, 161 insertions(+), 147 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/dsa/ar9331.txt
- create mode 100644 Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
+(b) Linus was similarly concerned about optimizing out another batching 
+walk in c47454823bd4 ("mm: mmu_gather: allow more than one batch of 
+delayed rmaps"):
 
-diff --git a/Documentation/devicetree/bindings/net/dsa/ar9331.txt b/Documentation/devicetree/bindings/net/dsa/ar9331.txt
-deleted file mode 100644
-index f824fdae0da2..000000000000
---- a/Documentation/devicetree/bindings/net/dsa/ar9331.txt
-+++ /dev/null
-@@ -1,147 +0,0 @@
--Atheros AR9331 built-in switch
--=============================
--
--It is a switch built-in to Atheros AR9331 WiSoC and addressable over internal
--MDIO bus. All PHYs are built-in as well.
--
--Required properties:
--
-- - compatible: should be: "qca,ar9331-switch"
-- - reg: Address on the MII bus for the switch.
-- - resets : Must contain an entry for each entry in reset-names.
-- - reset-names : Must include the following entries: "switch"
-- - interrupt-parent: Phandle to the parent interrupt controller
-- - interrupts: IRQ line for the switch
-- - interrupt-controller: Indicates the switch is itself an interrupt
--   controller. This is used for the PHY interrupts.
-- - #interrupt-cells: must be 1
-- - mdio: Container of PHY and devices on the switches MDIO bus.
--
--See Documentation/devicetree/bindings/net/dsa/dsa.txt for a list of additional
--required and optional properties.
--Examples:
--
--eth0: ethernet@19000000 {
--	compatible = "qca,ar9330-eth";
--	reg = <0x19000000 0x200>;
--	interrupts = <4>;
--
--	resets = <&rst 9>, <&rst 22>;
--	reset-names = "mac", "mdio";
--	clocks = <&pll ATH79_CLK_AHB>, <&pll ATH79_CLK_AHB>;
--	clock-names = "eth", "mdio";
--
--	phy-mode = "mii";
--	phy-handle = <&phy_port4>;
--};
--
--eth1: ethernet@1a000000 {
--	compatible = "qca,ar9330-eth";
--	reg = <0x1a000000 0x200>;
--	interrupts = <5>;
--	resets = <&rst 13>, <&rst 23>;
--	reset-names = "mac", "mdio";
--	clocks = <&pll ATH79_CLK_AHB>, <&pll ATH79_CLK_AHB>;
--	clock-names = "eth", "mdio";
--
--	phy-mode = "gmii";
--
--	fixed-link {
--		speed = <1000>;
--		full-duplex;
--	};
--
--	mdio {
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		switch10: switch@10 {
--			#address-cells = <1>;
--			#size-cells = <0>;
--
--			compatible = "qca,ar9331-switch";
--			reg = <0x10>;
--			resets = <&rst 8>;
--			reset-names = "switch";
--
--			interrupt-parent = <&miscintc>;
--			interrupts = <12>;
--
--			interrupt-controller;
--			#interrupt-cells = <1>;
--
--			ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
--
--				switch_port0: port@0 {
--					reg = <0x0>;
--					ethernet = <&eth1>;
--
--					phy-mode = "gmii";
--
--					fixed-link {
--						speed = <1000>;
--						full-duplex;
--					};
--				};
--
--				switch_port1: port@1 {
--					reg = <0x1>;
--					phy-handle = <&phy_port0>;
--					phy-mode = "internal";
--				};
--
--				switch_port2: port@2 {
--					reg = <0x2>;
--					phy-handle = <&phy_port1>;
--					phy-mode = "internal";
--				};
--
--				switch_port3: port@3 {
--					reg = <0x3>;
--					phy-handle = <&phy_port2>;
--					phy-mode = "internal";
--				};
--
--				switch_port4: port@4 {
--					reg = <0x4>;
--					phy-handle = <&phy_port3>;
--					phy-mode = "internal";
--				};
--			};
--
--			mdio {
--				#address-cells = <1>;
--				#size-cells = <0>;
--
--				interrupt-parent = <&switch10>;
--
--				phy_port0: phy@0 {
--					reg = <0x0>;
--					interrupts = <0>;
--				};
--
--				phy_port1: phy@1 {
--					reg = <0x1>;
--					interrupts = <0>;
--				};
--
--				phy_port2: phy@2 {
--					reg = <0x2>;
--					interrupts = <0>;
--				};
--
--				phy_port3: phy@3 {
--					reg = <0x3>;
--					interrupts = <0>;
--				};
--
--				phy_port4: phy@4 {
--					reg = <0x4>;
--					interrupts = <0>;
--				};
--			};
--		};
--	};
--};
-diff --git a/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml b/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
-new file mode 100644
-index 000000000000..5c4f789a75fb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
-@@ -0,0 +1,161 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/dsa/qca,ar9331.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Atheros AR9331 built-in switch
-+
-+maintainers:
-+  - Oleksij Rempel <o.rempel@pengutronix.de>
-+
-+description:
-+  Qualcomm Atheros AR9331 is a switch built-in to Atheros AR9331 WiSoC and
-+  addressable over internal MDIO bus. All PHYs are built-in as well.
-+
-+properties:
-+  compatible:
-+    const: qca,ar9331-switch
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  '#interrupt-cells':
-+    const: 1
-+
-+  mdio:
-+    $ref: /schemas/net/mdio.yaml#
-+    unevaluatedProperties: false
-+    properties:
-+      interrupt-parent: true
-+
-+    patternProperties:
-+      '@[0-9a-f]+$':
-+        type: object
-+        unevaluatedProperties: false
-+
-+        properties:
-+          reg: true
-+          interrupts:
-+            maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    items:
-+      - const: switch
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - interrupt-controller
-+  - '#interrupt-cells'
-+  - mdio
-+  - ports
-+  - resets
-+  - reset-names
-+
-+allOf:
-+  - $ref: dsa.yaml#/$defs/ethernet-ports
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mdio {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        switch10: switch@10 {
-+            compatible = "qca,ar9331-switch";
-+            reg = <0x10>;
-+
-+            interrupt-parent = <&miscintc>;
-+            interrupts = <12>;
-+            interrupt-controller;
-+            #interrupt-cells = <1>;
-+
-+            resets = <&rst 8>;
-+            reset-names = "switch";
-+
-+            ports {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+
-+                port@0 {
-+                    reg = <0x0>;
-+                    ethernet = <&eth1>;
-+
-+                    phy-mode = "gmii";
-+
-+                    fixed-link {
-+                        speed = <1000>;
-+                        full-duplex;
-+                    };
-+                };
-+
-+                port@1 {
-+                    reg = <0x1>;
-+                    phy-handle = <&phy_port0>;
-+                    phy-mode = "internal";
-+                };
-+
-+                port@2 {
-+                    reg = <0x2>;
-+                    phy-handle = <&phy_port1>;
-+                    phy-mode = "internal";
-+                };
-+
-+                port@3 {
-+                    reg = <0x3>;
-+                    phy-handle = <&phy_port2>;
-+                    phy-mode = "internal";
-+                };
-+
-+                port@4 {
-+                    reg = <0x4>;
-+                    phy-handle = <&phy_port3>;
-+                    phy-mode = "internal";
-+                };
-+            };
-+
-+            mdio {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+
-+                interrupt-parent = <&switch10>;
-+
-+                phy_port0: ethernet-phy@0 {
-+                    reg = <0x0>;
-+                    interrupts = <0>;
-+                };
-+
-+                phy_port1: ethernet-phy@1 {
-+                    reg = <0x1>;
-+                    interrupts = <0>;
-+                };
-+
-+                phy_port2: ethernet-phy@2 {
-+                    reg = <0x2>;
-+                    interrupts = <0>;
-+                };
-+
-+                phy_port3: ethernet-phy@3 {
-+                    reg = <0x3>;
-+                    interrupts = <0>;
-+                };
-+
-+                phy_port4: ethernet-phy@4 {
-+                    reg = <0x4>;
-+                    interrupts = <0>;
-+                };
-+            };
-+        };
-+    };
+"it needs to walk that array of pages while still holding the page table 
+lock, and our mmu_gather infrastructure allows for batching quite a lot 
+of pages.  We may have thousands on pages queued up for freeing, and we 
+wanted to walk only the last batch if we then added a dirty page to the 
+queue."
+
+So if it matters enough for reducing the time we hold the page table 
+lock, it surely adds "some" overhead in general.
+
+
+> 
+> You're the boss though, so if your experience tells you this is neccessary, then
+> I'm ok with that.
+
+I did not do any measurements myself, I just did that intuitively as 
+above. After all, it's all pretty straight forward (keeping the existing 
+logic, we need a new one either way) and not that much code.
+
+So unless there are strong opinions, I'd just leave the common case as 
+it was, and the odd case be special.
+
+> 
+> By the way, Matthew had an RFC a while back that was doing some clever things
+> with batches further down the call chain (I think; be memory). Might be worth
+> taking a look at that if you are planning a follow up change to (a).
+> 
+
+Do you have a pointer?
+
+>>
+>>>
+>>>>            while (batch->nr) {
+>>>> -            /*
+>>>> -             * limit free batch count when PAGE_SIZE > 4K
+>>>> -             */
+>>>> -            unsigned int nr = min(512U, batch->nr);
+>>>> +            nr = min(512, batch->nr);
+>>>
+>>> If any entries are for more than 1 page, nr_pages will also be encoded in the
+>>> batch, so effectively this could be limiting to 256 actual folios (half of 512).
+>>
+>> Right, in the patch description I state "256 folio fragments". It's up to 512
+>> folios (order-0).
+>>
+>>> Is it worth checking for ENCODED_PAGE_BIT_NR_PAGES_NEXT and limiting accordingly?
+>>
+>> At least with 4k page size, we never have more than 510 (IIRC) entries per batch
+>> page. So any such optimization would only matter for large page sizes, which I
+>> don't think is worth it.
+> 
+> Yep; agreed.
+> 
+>>
+>> Which exact optimization do you have in mind and would it really make a difference?
+> 
+> No I don't think it would make any difference, performance-wise. I'm just
+> pointing out that in pathalogical cases you could end up with half the number of
+> pages being freed at a time.
+
+Yes, I'll extend the patch description!
+
+> 
+>>
+>>>
+>>> nit: You're using 512 magic number in 2 places now; perhaps make a macro?
+>>
+>> I played 3 times with macro names (including just using something "intuitive"
+>> like MAX_ORDER_NR_PAGES) but returned to just using 512.
+>>
+>> That cond_resched() handling is just absolutely disgusting, one way or the other.
+>>
+>> Do you have a good idea for a macro name?
+> 
+> MAX_NR_FOLIOS_PER_BATCH?
+> MAX_NR_FOLIOS_PER_FREE?
+> 
+> I don't think the name has to be perfect, because its private to the c file; but
+> it ensures the 2 usages remain in sync if someone wants to change it in future.
+
+Makes sense, I'll use something along those lines.
+
+> 
+>>
+>>>
+>>>>                  /*
+>>>>                 * Make sure we cover page + nr_pages, and don't leave
+>>>> @@ -119,6 +120,37 @@ static void tlb_batch_pages_flush(struct mmu_gather *tlb)
+>>>>                cond_resched();
+>>>>            }
+>>>>        }
+>>>> +
+>>>> +    /*
+>>>> +     * With page poisoning and init_on_free, the time it takes to free
+>>>> +     * memory grows proportionally with the actual memory size. Therefore,
+>>>> +     * limit based on the actual memory size and not the number of involved
+>>>> +     * folios.
+>>>> +     */
+>>>> +    while (batch->nr) {
+>>>> +        for (nr = 0, nr_pages = 0;
+>>>> +             nr < batch->nr && nr_pages < 512; nr++) {
+>>>> +            if (unlikely(encoded_page_flags(pages[nr]) &
+>>>> +                     ENCODED_PAGE_BIT_NR_PAGES_NEXT))
+>>>> +                nr_pages += encoded_nr_pages(pages[++nr]);
+>>>> +            else
+>>>> +                nr_pages++;
+>>>> +        }
+>>>
+>>> I guess worst case here is freeing (511 + 8192) * 64K pages = ~544M. That's up
+>>> from the old limit of 512 * 64K = 32M, and 511 pages bigger than your statement
+>>> in the commit log. Are you comfortable with this? I guess the only alternative
+>>> is to start splitting a batch which would be really messy. I agree your approach
+>>> is preferable if 544M is acceptable.
+>>
+>> Right, I have in the description:
+>>
+>> "if we cannot even free a single MAX_ORDER page on a system without running into
+>> soft lockups, something else is already completely bogus.".
+>>
+>> That would be 8192 pages on arm64. Anybody freeing a PMD-mapped THP would be in
+>> trouble already and should just reconsider life choices running such a machine.
+>>
+>> We could have 511 more pages, yes. If 8192 don't trigger a soft-lockup, I am
+>> confident that 511 more pages won't make a difference.
+>>
+>> But, if that ever is a problem, we can butcher this code as much as we want,
+>> because performance with poisoning/zeroing is already down the drain.
+>>
+>> As you say, splitting even further is messy, so I rather avoid that unless
+>> really required.
+>>
+> 
+> Yep ok, I understand the argument better now - thanks.
+> 
+
+I'll further extend the patch description.
+
+Thanks!
+
 -- 
-2.34.1
+Cheers,
+
+David / dhildenb
 
 
