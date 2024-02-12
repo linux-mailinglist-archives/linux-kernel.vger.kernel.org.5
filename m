@@ -1,165 +1,175 @@
-Return-Path: <linux-kernel+bounces-61502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 090068512F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:06:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 061C18512F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E1361C224E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:06:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A3AA1F23F0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62183B296;
-	Mon, 12 Feb 2024 12:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F843B797;
+	Mon, 12 Feb 2024 12:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C9MT3fud"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bJjVrxZr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAAAC3AC01
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:01:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242C63BB23;
+	Mon, 12 Feb 2024 12:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707739298; cv=none; b=nIF5crDK5CQwqMHPv8D+3cCjijEspb32G7PAaDVo+bR5Wq6jRQ83XxoORW5JbXXMqBoZNEN0fKE1cUe+6LvkFT/L5Rj0wfJqKguAt8MQ9Gzzo1MnUdyLuVy1DFUK5Fvo/Aj7QGr3lyEOCXwq6N4ckv5GW018H1X0IDcbKthj1Ls=
+	t=1707739310; cv=none; b=rjZk/RTc95aFmRg6DLwcss6DjDEJeWYfMhp1gPDrj54uLQ17c1NxmNL4hcZ2u709PLjIYPlD94YpfLfkZM62KmMbYQYj6j83/C48vby0EcWVe/qmgQOmay+BOnmDA09X9EOr5FAUeZ7JRrIEYyvwSNX1UVlQqhh1a8jS50HCvBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707739298; c=relaxed/simple;
-	bh=w3rORuWTMKgPaBFzu1c48yBjhOeuhNYDjtGcd5hqMtY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=lzJOWmkAkgD7qw6eeZoa7mcXz8FnW3aRDjXxIE77bKPMvtmK0At0Xuxzna6dMBCzgpASt+V7Z+NoFsPiWtnKhy8mEOpGKKk5skfritt5LV4KKF6fluPhausUMD36iSq5xzADAmL6j9Mju4kRD5bvxwbAYKhHfpy7iC8zES7bawk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=C9MT3fud; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56001b47285so4106345a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 04:01:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707739294; x=1708344094; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/SJbIRpwzF2ctEEKD5A8Zx9RKqrUsd1zHiNl04248IY=;
-        b=C9MT3fuduffWAS73UjZiSp+su1O/DyfxAna8hqjGgY0AABCJHmGqnVAcprxJAforE9
-         9HZZ8A3v2erSUTo2QAyFDK/GaqKSbcvCYVkyB6F0A+DxcSqUPnYFRa7K5pr3f4iHMxfl
-         kOH90W9eI2k9V6DSePw31Hy9aC9YJ30rrjawlDUzTz0zoFK7VLqGChmHQwyUJahIQA24
-         Zh/0Mz3JlWEIOOcg20fAB6BnsbdyzORt5tlk8/IeAvSps0D4UPIXCjhYbpEmK2W5QI13
-         K4Fx3HfrISLJQ/DWMLo3KIgamp/hSUN/An6maSNE2wjhVIsvX2SHUCXuVG/TCHBIjZGI
-         QG3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707739294; x=1708344094;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/SJbIRpwzF2ctEEKD5A8Zx9RKqrUsd1zHiNl04248IY=;
-        b=lF3rAiHgKxAQkW8LdST07SRR+hWrLUtV7nCxK7Hgpj9ST4FcV3EPHKZ0lAszS60/CX
-         J3m4F+VrluXnEmMa6c5PZpZK+BVss2DREwldEKDWuKBZQT+iYWRdR8ugeUsfiLJu5lOj
-         rvqX9RsQ9juXYMqjaEcMSLXcDf0wMZ+uw7eqFaHtwnsPrFBzSitEadSWShItAqsmPyE1
-         FbXWflgo0FN2I8emEU3zQTM+Ltb8n1Q172V5uC7vNyuEbuQoFn85tt0RWSO1G89dJ6lH
-         IPguila3xqu1B8x4oc5bu3crMQ3m/j2n0vO/R9eYgXzzxsaP9/fNNuIxU86o1iP5iu2w
-         J35g==
-X-Gm-Message-State: AOJu0YzvF9ZN20k/Z9mWQZuNsNLCrIr43sLLnU/eCVaQ72C7GtR+GPDl
-	MF4pLibgaisK0jNDj5Iivym7iqVo4pJHjwc7FViLQaYZCKpbpFH6t1/BW8j2TGvb+tM5nTLxxYk
-	j
-X-Google-Smtp-Source: AGHT+IF2464+drFBZhUca4wqgE5z9c1DNZxpEJo1kOm0tk1J4kagCGZLwUCHOkmr10gvf1PgGISnIA==
-X-Received: by 2002:a17:906:5648:b0:a3b:d35a:8d4 with SMTP id v8-20020a170906564800b00a3bd35a08d4mr4426207ejr.59.1707739294087;
-        Mon, 12 Feb 2024 04:01:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUB58XJ1bEZipxO3mDOpCDQz34W0vlyLcN4FOBYt7YK9G4zEX4SGYBVfnydByUrTXvjDR1hWGsuE6bebKBitS4Mk/84ktWLpZlpG2kbzqfYj3omvmSpoCwNz1T/SKapF+yfG0uJ0HPw2JwJsfMvFWBQnT67Qm5TSC5FsYhMebZ30BPvMhjkzAOMWITpIOpHJyH+Uc9HkSGpBmvklGWm6w624f0Uybm51pFdw1AKF+G1VncwNQ==
-Received: from [10.167.154.1] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id h3-20020a1709063c0300b00a3895de6d53sm140177ejg.140.2024.02.12.04.01.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 04:01:33 -0800 (PST)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Mon, 12 Feb 2024 13:01:30 +0100
-Subject: [PATCH] usb: typec: fsa4480: Check if the chip is really there
+	s=arc-20240116; t=1707739310; c=relaxed/simple;
+	bh=Zbm7OvR5CTMJxI3KIhd7PWN3VnpiSouivKvRc06eL7M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CRG0sQ6T6wlGNNWtBmDS9YGK0yfCDArC8YxGFjeSgzaeXtwqHY28yJNa0Tf74DSKVWPlzXuZxiuWSOD2oOO5WhjSZFWhVeiHIjIirIbkl5HwODn2hVHt+yzxVX4SQyyKlGEDIkwdvmbeJwsc/D3kUDTgcLlpGYW+Wdz9WRVRFqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bJjVrxZr; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707739310; x=1739275310;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Zbm7OvR5CTMJxI3KIhd7PWN3VnpiSouivKvRc06eL7M=;
+  b=bJjVrxZrcKuayAKBR646Bg8JiIDtlBpd4fZtrdlCXvSWOd1prGMjZrQk
+   Ja8XOWBaxXnJD7BWP6Q8aJTPnUgPD2OF3LiqpxOutMS4czGF0wi91LKdG
+   Wfb550+q7to5uoQbTIgYZZK2D05frWkBqIHr7AfCU/eqpUahbZt+FcA0t
+   rXiQaxB46i/obSGSRhscBGejyRpxKu3s/wkVT/QdMnYtsz4GTCU/Ux/pR
+   Vlw1RjQPgdYlGWK8Tt+UbVwEUV6BRAzK/oiYBrOirxO3u85yJ0AhdzQEH
+   QlqTRr54f58L740DmfkqImCzIKwgJ7wbXoiZ/V8+sUAdtr8papmymTHgZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="19124904"
+X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
+   d="scan'208";a="19124904"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:01:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
+   d="scan'208";a="7228547"
+Received: from hadjchai-mobl.ger.corp.intel.com (HELO [10.213.230.110]) ([10.213.230.110])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:01:46 -0800
+Message-ID: <c470ce0e-f52c-4240-9d5f-c1dfd9b46675@linux.intel.com>
+Date: Mon, 12 Feb 2024 12:01:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/i915: Add flex arrays to struct i915_syncmap
+Content-Language: en-US
+To: Erick Archer <erick.archer@gmx.com>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>
+Cc: intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240208181318.4259-1-erick.archer@gmx.com>
+From: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <20240208181318.4259-1-erick.archer@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240212-topic-fs4480_check-v1-1-d9969e4d6f9a@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAJkIymUC/x2N0QrCMAwAf2Xk2UJSioi/IiJpTG1wdKNVEcb+3
- eDjHRy3wdBuOuA8bdD1Y8OW5kCHCaRye2iwuzNEjAkjxfBaVpNQRkonvElVeQZhRjpiyYQEHmY
- eGnLnJtXT9p5nl2vXYt//6XLd9x+GGoPqeQAAAA==
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Bjorn Andersson <andersson@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
- linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707739293; l=2388;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=w3rORuWTMKgPaBFzu1c48yBjhOeuhNYDjtGcd5hqMtY=;
- b=FIXvcvvrvrYhdu80jCG+hBtqar2dn/CYKJvH1olJwfZBbgmXatgGgudjug5rDPDGzzSA5mQhN
- PuA9NGzWGeMBhHf4puLX5p4rPWD5znEY7jOz/5z+BOervwKS/iP5t5F
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-Currently, the driver will happily register the switch/mux devices, and
-so long as the i2c master doesn't complain, the user would never know
-there's something wrong.
 
-Add a device id check (based on [1]) and return -ENODEV if the read
-fails or returns nonsense.
+On 08/02/2024 18:13, Erick Archer wrote:
+> The "struct i915_syncmap" uses a dynamically sized set of trailing
+> elements. It can use an "u32" array or a "struct i915_syncmap *"
+> array.
+> 
+> So, use the preferred way in the kernel declaring flexible arrays [1].
+> Because there are two possibilities for the trailing arrays, it is
+> necessary to declare a union and use the DECLARE_FLEX_ARRAY macro.
+> 
+> The comment can be removed as the union is now clear enough.
+> 
+> Also, avoid the open-coded arithmetic in the memory allocator functions
+> [2] using the "struct_size" macro.
+> 
+> Moreover, refactor the "__sync_seqno" and "__sync_child" functions due
+> to now it is possible to use the union members added to the structure.
+> This way, it is also possible to avoid the open-coded arithmetic in
+> pointers.
+> 
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-length-and-one-element-arrays [1]
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 
-Checking the value on a Qualcomm SM6115P-based Lenovo Tab P11 tablet,
-the ID mentioned in the datasheet does indeed show up:
- fsa4480 1-0042: Found FSA4480 v1.1 (Vendor ID = 0)
+Looks good to me too so I've pushed it to drm-intel-gt-next, thanks!
 
-[1] https://www.onsemi.com/pdf/datasheet/fsa4480-d.pdf
+Regards,
 
-Fixes: 1dc246320c6b ("usb: typec: mux: Add On Semi fsa4480 driver")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/usb/typec/mux/fsa4480.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Tvrtko
 
-diff --git a/drivers/usb/typec/mux/fsa4480.c b/drivers/usb/typec/mux/fsa4480.c
-index cb7cdf90cb0a..d622f4f3bd54 100644
---- a/drivers/usb/typec/mux/fsa4480.c
-+++ b/drivers/usb/typec/mux/fsa4480.c
-@@ -13,6 +13,10 @@
- #include <linux/usb/typec_dp.h>
- #include <linux/usb/typec_mux.h>
- 
-+#define FSA4480_DEVICE_ID	0x00
-+ #define DEVICE_ID_VENDOR_ID	GENMASK(7, 6)
-+ #define DEVICE_ID_VERSION_ID	GENMASK(5, 3)
-+ #define DEVICE_ID_REV_ID	GENMASK(2, 0)
- #define FSA4480_SWITCH_ENABLE	0x04
- #define FSA4480_SWITCH_SELECT	0x05
- #define FSA4480_SWITCH_STATUS1	0x07
-@@ -251,6 +255,7 @@ static int fsa4480_probe(struct i2c_client *client)
- 	struct typec_switch_desc sw_desc = { };
- 	struct typec_mux_desc mux_desc = { };
- 	struct fsa4480 *fsa;
-+	int val = 0;
- 	int ret;
- 
- 	fsa = devm_kzalloc(dev, sizeof(*fsa), GFP_KERNEL);
-@@ -268,6 +273,15 @@ static int fsa4480_probe(struct i2c_client *client)
- 	if (IS_ERR(fsa->regmap))
- 		return dev_err_probe(dev, PTR_ERR(fsa->regmap), "failed to initialize regmap\n");
- 
-+	ret = regmap_read(fsa->regmap, FSA4480_DEVICE_ID, &val);
-+	if (ret || !val)
-+		return dev_err_probe(dev, -ENODEV, "FSA4480 not found\n");
-+
-+	dev_dbg(dev, "Found FSA4480 v%lu.%lu (Vendor ID = %lu)\n",
-+		FIELD_GET(DEVICE_ID_VERSION_ID, val),
-+		FIELD_GET(DEVICE_ID_REV_ID, val),
-+		FIELD_GET(DEVICE_ID_VENDOR_ID, val));
-+
- 	/* Safe mode */
- 	fsa->cur_enable = FSA4480_ENABLE_DEVICE | FSA4480_ENABLE_USB;
- 	fsa->mode = TYPEC_STATE_SAFE;
-
----
-base-commit: ae00c445390b349e070a64dc62f08aa878db7248
-change-id: 20240212-topic-fs4480_check-caa0160fb101
-
-Best regards,
--- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
-
+> ---
+>   drivers/gpu/drm/i915/i915_syncmap.c | 19 ++++++++-----------
+>   1 file changed, 8 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/i915_syncmap.c b/drivers/gpu/drm/i915/i915_syncmap.c
+> index 60404dbb2e9f..df6437c37373 100644
+> --- a/drivers/gpu/drm/i915/i915_syncmap.c
+> +++ b/drivers/gpu/drm/i915/i915_syncmap.c
+> @@ -75,13 +75,10 @@ struct i915_syncmap {
+>   	unsigned int height;
+>   	unsigned int bitmap;
+>   	struct i915_syncmap *parent;
+> -	/*
+> -	 * Following this header is an array of either seqno or child pointers:
+> -	 * union {
+> -	 *	u32 seqno[KSYNCMAP];
+> -	 *	struct i915_syncmap *child[KSYNCMAP];
+> -	 * };
+> -	 */
+> +	union {
+> +		DECLARE_FLEX_ARRAY(u32, seqno);
+> +		DECLARE_FLEX_ARRAY(struct i915_syncmap *, child);
+> +	};
+>   };
+> 
+>   /**
+> @@ -99,13 +96,13 @@ void i915_syncmap_init(struct i915_syncmap **root)
+>   static inline u32 *__sync_seqno(struct i915_syncmap *p)
+>   {
+>   	GEM_BUG_ON(p->height);
+> -	return (u32 *)(p + 1);
+> +	return p->seqno;
+>   }
+> 
+>   static inline struct i915_syncmap **__sync_child(struct i915_syncmap *p)
+>   {
+>   	GEM_BUG_ON(!p->height);
+> -	return (struct i915_syncmap **)(p + 1);
+> +	return p->child;
+>   }
+> 
+>   static inline unsigned int
+> @@ -200,7 +197,7 @@ __sync_alloc_leaf(struct i915_syncmap *parent, u64 id)
+>   {
+>   	struct i915_syncmap *p;
+> 
+> -	p = kmalloc(sizeof(*p) + KSYNCMAP * sizeof(u32), GFP_KERNEL);
+> +	p = kmalloc(struct_size(p, seqno, KSYNCMAP), GFP_KERNEL);
+>   	if (unlikely(!p))
+>   		return NULL;
+> 
+> @@ -282,7 +279,7 @@ static noinline int __sync_set(struct i915_syncmap **root, u64 id, u32 seqno)
+>   			unsigned int above;
+> 
+>   			/* Insert a join above the current layer */
+> -			next = kzalloc(sizeof(*next) + KSYNCMAP * sizeof(next),
+> +			next = kzalloc(struct_size(next, child, KSYNCMAP),
+>   				       GFP_KERNEL);
+>   			if (unlikely(!next))
+>   				return -ENOMEM;
+> --
+> 2.25.1
+> 
 
