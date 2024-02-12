@@ -1,165 +1,165 @@
-Return-Path: <linux-kernel+bounces-61263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3CA7851017
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:55:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4883085101C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:56:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59F0A1F23BD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:55:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B4851C21F26
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:56:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D880E17C66;
-	Mon, 12 Feb 2024 09:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38CC18643;
+	Mon, 12 Feb 2024 09:55:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="UtTjwY9y";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="M2CnSysU";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RI2oHVs3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="eNEsrdT2"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pFNq4/4I"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12405680;
-	Mon, 12 Feb 2024 09:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 376C0182A3;
+	Mon, 12 Feb 2024 09:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707731722; cv=none; b=AbnyYQYW9sWjKp7/LNeLtEnWbMKMQcHX5ab4dmV4WjV8I1fy/mNAnAuB9crODQd/L7wPs4J0IWU8y+BT5d9XakMOfJ0xS4xwQeUR0IoAqKFSRGVS1B7lQvhOwCaqEnJeLorZDmtFGoXh+xy9gVDRu1g6Hyqi8RhT9ac20RI3J+Y=
+	t=1707731735; cv=none; b=uWMjiPMuzDksesfVFsiz2Gjmm9BjbGqsa9aC4VngeNh/1LLE6nhsZC75Vge+szBWGU/Cx/W/nY/64kDtvmjJFcvCo7Um0UFqvWxA/6caMa9w81LWU0WRW+kaZzuITgTAVnNR5JKOjlRjXIYbfZN49IfHW26EW3dPVHPFCqi4Cww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707731722; c=relaxed/simple;
-	bh=t4WvYxU51ydBpw383RUz2vrJCztI+BCrun0XRdgVmKQ=;
+	s=arc-20240116; t=1707731735; c=relaxed/simple;
+	bh=HK3iN31Pdycw3MOndavpvQN/41z5gCD2Ck3qqfmyiTg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UYS4KcGpX/JFvkuKJ0RH/u8PXvioY3/4t9h2SZ6qduEsyNoErR1tBA03MCEZaPxNrtGAX6xPjjpG+e+BKrHHAIRnb2pzVFoYH/OdnxProc26+cOs656qRCZDJ+kh+JppBlDaP10Op841T22+92uCDiTDd23x0AqoGpDv4LBRY2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=UtTjwY9y; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=M2CnSysU; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=RI2oHVs3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=eNEsrdT2; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5D98021C55;
-	Mon, 12 Feb 2024 09:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707731716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcOt8F/vPFobphbJxqs2m3ZJ2DqTEZsfenrec8cS0dc=;
-	b=UtTjwY9yyodJDceWP/WkqF2y+A1kALxjOIl57ksBltuIiw/wnTU4YH0sll5WHp13+K2NtU
-	K+gZeMkVhS9ade2ALrbpaqJWQA25mcPFZG2GKgKO3NEWjrAV4D+fzLqCuQ8Fvo4LK7j+d8
-	dqFh1MRucIebxZVX77SOlZRUtMragRc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707731716;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcOt8F/vPFobphbJxqs2m3ZJ2DqTEZsfenrec8cS0dc=;
-	b=M2CnSysUHtdXn9kwBLsqBR5gUyHtkBsnJtQ+ag46LwN1eGfcOPN/P6IeBfnrfWHlp2t2fH
-	UZDbTySVVF8BV9Cw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707731714; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcOt8F/vPFobphbJxqs2m3ZJ2DqTEZsfenrec8cS0dc=;
-	b=RI2oHVs3KSB3UJrXCyqeWJLdVfkA30EgSO/rXf+AioGez8Xz5xCuaMK8Fwf6uuKFO9JXVx
-	qZwkz/+HIn17FhAMVQAuB3CaJWzkjqedJnv+ujQrE90xil7ynPSNdZTovI0dX3EO9QVSrO
-	gWHWr8TJb43rLuMPeJY3xL02mI5iVDM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707731714;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcOt8F/vPFobphbJxqs2m3ZJ2DqTEZsfenrec8cS0dc=;
-	b=eNEsrdT2dKXIw/yRW0fLu018iWrhcqMvCjURM6YjrMi6mRX8tEAbQ31ngiwG5aNOLeweF0
-	Ql22q2eJIUGroICw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 44C2313A0E;
-	Mon, 12 Feb 2024 09:55:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id hmFQDwLryWUwAQAAn2gu4w
-	(envelope-from <dwagner@suse.de>); Mon, 12 Feb 2024 09:55:14 +0000
-Date: Mon, 12 Feb 2024 10:55:13 +0100
-From: Daniel Wagner <dwagner@suse.de>
-To: Fedor Pchelkin <pchelkin@ispras.ru>
-Cc: James Smart <james.smart@broadcom.com>, 
-	Ram Vegesna <ram.vegesna@broadcom.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, 
-	"Martin K. Petersen" <martin.petersen@oracle.com>, Hannes Reinecke <hare@suse.de>, linux-scsi@vger.kernel.org, 
-	target-devel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Alexey Khoroshilov <khoroshilov@ispras.ru>, lvc-project@linuxtesting.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: elx: efct: adjust error handling inside
- efct_hw_setup_io
-Message-ID: <fbz7l6ekiqqhi47cv6r2ots7siztdydfcspwr2jt56ldsyxjep@rwd5zx2oezl4>
-References: <2ik7x74hq6exam5ab4v2moauy4lfvqe3r626bxxettseat2nmv@q4gykxnezkff>
- <20240210110833.27723-1-pchelkin@ispras.ru>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AIwi9eBe3FNvTrWyNI7vYN2+7rVAFbZJ9iSXQjy76yOmXxfuzShgnWyN0thWqI93BZ86ICWc2B3d/Xsa74UmTX17aO8UvxNzh8hWnEdhdImEuvrao8UfCMnQA9viq+WTuDsyDzCV2zli97A5J2rn7v5JVlZzS2ewz9vPZJPlnK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pFNq4/4I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 596F5C43390;
+	Mon, 12 Feb 2024 09:55:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707731734;
+	bh=HK3iN31Pdycw3MOndavpvQN/41z5gCD2Ck3qqfmyiTg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pFNq4/4IdY9eJyoHNAwY5F9Id/Ux8i6kjVF+JRKTg6rQknYC8wuz2aFCFY+hK4ZZ6
+	 njuc8tqL2aDz3mWhZzl1w65nMHCnez1weC5BUMOmNmU88ZDqQoek6wNSTwGAWFsqKF
+	 QwDyl3+WfEAOPKih8vspHwOsxGX873v/QJWwqoSH2FRgARQa4/D3vMmmiK423muhQl
+	 7Uyas/g7GVxrnyEVbKKS8cpGKbqlSooxsjmop/L0AbjHqQ0PSnFn/mclIUKw8eA+xL
+	 OZ3oSB4BbVMzmbpapZljzKSU18kT6Rk7iHRc20M4BpNfRQOON1gQLiQICaRK2PsxIP
+	 I3XJ1K8595Lfw==
+Date: Mon, 12 Feb 2024 10:55:32 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Sebastian Wick <sebastian.wick@redhat.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>, 
+	Sandy Huang <hjc@rock-chips.com>, Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, 
+	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>, 
+	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: Re: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB
+ property
+Message-ID: <uplclresnokchsgutsd27ihv4422sob77reobw6ygx3c3cqnti@hjmrhut7l5r5>
+References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
+ <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
+ <20240115143308.GA159345@toolbox>
+ <niqn7eql5neyfp5ficdfisdpmlwrprovqn5g7lgcfwoe74ds23@7fr4yv2miqe7>
+ <20240209203046.GA996172@toolbox>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="la6nsuu6qrx5qt32"
+Content-Disposition: inline
+In-Reply-To: <20240209203046.GA996172@toolbox>
+
+
+--la6nsuu6qrx5qt32
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240210110833.27723-1-pchelkin@ispras.ru>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=RI2oHVs3;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=eNEsrdT2
-X-Spamd-Result: default: False [-1.81 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email,linuxtesting.org:url,ispras.ru:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[38.62%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 5D98021C55
-X-Spam-Level: 
-X-Spam-Score: -1.81
-X-Spam-Flag: NO
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 10, 2024 at 02:08:33PM +0300, Fedor Pchelkin wrote:
-> IO and WQE buffers are allocated once per HW and can be reused later. If
-> WQE buffers allocation fails then the whole allocation is marked as failed
-> but already created IO array internal objects are not freed. hw->io is
-> freed but not nullified in that specific case - it may become a problem
-> later as efct_hw_setup_io() is supposed to be reusable for the same HW.
-> 
-> Also rollback if HW IO objects initialization loop fails due to memory
-> allocation error.
-> 
-> While at it, use kcalloc instead of kmalloc_array/memset-zero combination
-> and get rid of some needless NULL assignments: nullifying hw->io[i]
-> elements just before freeing hw->io is not really useful.
-> 
-> Found by Linux Verification Center (linuxtesting.org).
-> 
-> Fixes: 4df84e846624 ("scsi: elx: efct: Driver initialization routines")
-> Cc: stable@vger.kernel.org
-> Suggested-by: Daniel Wagner <dwagner@suse.de>
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-> ---
-> v2: per Daniel Wagner's notice, handle the other possible memory
->     allocation errors inside the function.
+On Fri, Feb 09, 2024 at 09:30:46PM +0100, Sebastian Wick wrote:
+> On Fri, Feb 02, 2024 at 04:49:04PM +0100, Maxime Ripard wrote:
+> > Hi Sebastian,
+> >=20
+> > On Mon, Jan 15, 2024 at 03:33:08PM +0100, Sebastian Wick wrote:
+> > > >  /**
+> > > >   * DOC: HDMI connector properties
+> > > >   *
+> > > > + * Broadcast RGB
+> > > > + *      Indicates the RGB Quantization Range (Full vs Limited) use=
+d.
+> > > > + *      Infoframes will be generated according to that value.
+> > > > + *
+> > > > + *      The value of this property can be one of the following:
+> > > > + *
+> > > > + *      Automatic:
+> > > > + *              RGB Range is selected automatically based on the m=
+ode
+> > > > + *              according to the HDMI specifications.
+> > > > + *
+> > > > + *      Full:
+> > > > + *              Full RGB Range is forced.
+> > > > + *
+> > > > + *      Limited 16:235:
+> > > > + *              Limited RGB Range is forced. Unlike the name sugge=
+sts,
+> > > > + *              this works for any number of bits-per-component.
+> > > > + *
+> > > > + *      Drivers can set up this property by calling
+> > > > + *      drm_connector_attach_broadcast_rgb_property().
+> > > > + *
+> > >=20
+> > > This is a good time to document this in more detail. There might be t=
+wo
+> > > different things being affected:
+> > >=20
+> > > 1. The signalling (InfoFrame/SDP/...)
+> > > 2. The color pipeline processing
+> > >=20
+> > > All values of Broadcast RGB always affect the color pipeline processi=
+ng
+> > > such that a full-range input to the CRTC is converted to either full-=
+ or
+> > > limited-range, depending on what the monitor is supposed to accept.
+> > >=20
+> > > When automatic is selected, does that mean that there is no signallin=
+g,
+> > > or that the signalling matches what the monitor is supposed to accept
+> > > according to the spec? Also, is this really HDMI specific?
+> > >=20
+> > > When full or limited is selected and the monitor doesn't support the
+> > > signalling, what happens?
+> >=20
+> > Leaving the YCbCr vs RGB discussion aside, would this be better ?
+>=20
+> Yes, it is. Thanks.
 
-Looks good to me! Thanks!
+Great, it'll be in the next version.
 
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
+> We do have to resolve the YCbCr vs RGB issue though.
+>=20
+> >  * Broadcast RGB (HDMI specific)
+> >  *      Indicates the Quantization Range (Full vs Limited) used. The co=
+lor
+> >  *      processing pipeline will be adjusted to match the value of the
+>=20
+> Ah, another thing no note here is that the CRTC as configured by user
+> space must always produce full range pixels.
+
+Added too
+
+Thanks
+
+--la6nsuu6qrx5qt32
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZcnrEwAKCRDj7w1vZxhR
+xdDpAQCDVmx87SVGeVycmXmU4sk+7XyYR3FCEEqCdeOHZuh2qQD/YieE0hT/nf54
+5ulv0+EGxYyUNUob/q6HmPUhR3V7pQ8=
+=P7ka
+-----END PGP SIGNATURE-----
+
+--la6nsuu6qrx5qt32--
 
