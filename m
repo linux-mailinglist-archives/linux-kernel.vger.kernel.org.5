@@ -1,193 +1,119 @@
-Return-Path: <linux-kernel+bounces-61243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ED6F850FB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:26:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09125850FBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:29:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 746001F22C89
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:26:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C02E1C21A67
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7A212B97;
-	Mon, 12 Feb 2024 09:26:44 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32ACB15A8;
-	Mon, 12 Feb 2024 09:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E612134B9;
+	Mon, 12 Feb 2024 09:29:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mwcceRaS"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49F6512B7D;
+	Mon, 12 Feb 2024 09:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707730004; cv=none; b=iPRmxQd0coQQ9h58fnxU+DymoEjUiZBXzlXOr03NXT6doocY5RHs9a41fWNcJec3x+ShjnG1HSkptTjAxFmlXPbi2p2cVJ03wuDwylf7rO9wzsWVywWFxMxKWf6mBZQpCgjdDFNqYwSSadh9MaVs9LqGwXC8KNOlIP8O3gpYWHw=
+	t=1707730174; cv=none; b=Gcn3JmvYaj1bpS4QtPGdUXmXIMI0gmnDcLQctpK5Opbqpia04ojkc1BQN6zsnn5gGS/xN6sWeJnWu7SVzEio9XNr/rwIWvfHTKLYCFDBKObsgWUPmn22EHtRQ9Ck5Ubj9+lERmr2172vFRCTyjIuaIr4cOCD0SaRfFqATuPLjGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707730004; c=relaxed/simple;
-	bh=3/gZFmIeC4omGnu9pY52APIUSPKCBfWi/3XjhMqMlZg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=COFLVUT3XvfpwnS9B7miOHyRa+XDHvUTQInA8mwt+6lYU/ZQtkzv5EjrSVvL3sb6jokySTOFNyJbdVGGQfo+/sYXuRnJkPyLUEqSO7X9OBr4IU8vZmqauVWhpsyo5vY36gAP2h7/V1FlFfrzfXQnkQzk8sTi81JdIvDfDhrmKtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8ECCDA7;
-	Mon, 12 Feb 2024 01:27:22 -0800 (PST)
-Received: from [10.57.78.115] (unknown [10.57.78.115])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 164533F762;
-	Mon, 12 Feb 2024 01:26:37 -0800 (PST)
-Message-ID: <f1578e92-4de0-4718-bf79-ec29e9a19fe0@arm.com>
-Date: Mon, 12 Feb 2024 09:26:36 +0000
+	s=arc-20240116; t=1707730174; c=relaxed/simple;
+	bh=EJ5BTPRVj13kfwymPH+wIPG9mOFx9DxZcpXeSgKSC7w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dqKlOLJ0DYu9VsIAtcW8IE+APOGLjSlDKqRwLjXsT2cRtL/BScJIOzTHdn3XCRljydKRkuETBcp1m/eulFucg1NlxbkLT7047Lk3cG/SBL+lmwZIfREJCC12enOMHJ0jAP+HWb/L0wH5zlHm9m7C6t1aa56EAoAS+GGwdG9NAx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mwcceRaS; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5610cc8cc1aso2998749a12.1;
+        Mon, 12 Feb 2024 01:29:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707730171; x=1708334971; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EJ5BTPRVj13kfwymPH+wIPG9mOFx9DxZcpXeSgKSC7w=;
+        b=mwcceRaSMK2KRT1cMp7c7nJRk6QikkzrXQBWDaOGi9Y98SMeYUzGVqzvl3U+/+DsB/
+         /9IJyAqXpiAAdfPgYEvUtPoRFDEv+1YjFPKKrHCbHWALsOz1WPNclL429YAIvxyCugbO
+         OIFPK1NZu9disaZzhqoWmJf5apQtmGG9gts3E2XD7oAUMsVZQf3EfCDeMu31t317rLWD
+         oG5jOyWxLxoy4wr2QOTu36KiiWES1DxQ08lM2pCL9HfQ4atBA/thl+82OEbThRPy6RRn
+         cNePS0X1CYPw6Jq20LnX6XsLHuP2Z3KOiux1C0KQseAimU+mkFk6qFX8kgcIoauoCuR7
+         tA3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707730171; x=1708334971;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EJ5BTPRVj13kfwymPH+wIPG9mOFx9DxZcpXeSgKSC7w=;
+        b=jGFhu3q/0If3y6lKtDRPGbSUFOTphF5UlPfauW9mlEpYX2FjeuaTVEXGGxcf8trEdx
+         ytO/YdK5ddgQ3IcSC9PVav1jbg/2c6zl1XdD6svFlUisXKEp47Rkdjr9gnc4Mld50Cs4
+         MT2khIVRUi3lTT4dpdfs3A9QbIUqCj9sYUxpmZa32OgjWxvkQIph6gvcPBBzQmuyPXhu
+         63G/PLX0uxSGjvxil+sz8vcwARVMDNf5yVEjx0khpErviAgbrYvDb9KADU7wIPNeoTi/
+         nYqjO39DChXmvRcxl8KFttDDxr4FHRnPX5Ccjot2hafaXfhxFnC5RuKvDmB6gEaIc6T4
+         rqrA==
+X-Gm-Message-State: AOJu0YxiBbAS3cxPhbvBHpTNL5MfE+4gudNIKBIYOzwL55sd8vx6e6El
+	9uOfI7xHOYh8hE0dxrbDQCH+Tm1s3BPV697QQUS1n/gKyzVvWBoMMitwZOsYSpwrX1EAcQamWWe
+	UCkhOFrW0nNqWkIwGLOik3sCqxHs=
+X-Google-Smtp-Source: AGHT+IGhoK3hwkx7RRINlSWGp87qr2pxc9KZEXT4C+i4t0vWMfhkS6eIwosQ/d4wMgNYAogOQ7ZaucnMVGTvw7ZnqwE=
+X-Received: by 2002:a17:906:dd0:b0:a3c:2c1:5fea with SMTP id
+ p16-20020a1709060dd000b00a3c02c15feamr4088132eji.75.1707730171202; Mon, 12
+ Feb 2024 01:29:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 09/10] mm/mmu_gather: improve cond_resched() handling
- with large folios and expensive page freeing
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Yin Fengwei <fengwei.yin@intel.com>, Michal Hocko <mhocko@suse.com>,
- Will Deacon <will@kernel.org>, "Aneesh Kumar K.V"
- <aneesh.kumar@linux.ibm.com>, Nick Piggin <npiggin@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, Michael Ellerman
- <mpe@ellerman.id.au>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
- linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org
-References: <20240209221509.585251-1-david@redhat.com>
- <20240209221509.585251-10-david@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240209221509.585251-10-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240211101421.166779-1-warthog618@gmail.com> <CAHp75VeSLvrxMOARDBHBJ5VGVR-Jv-7saxjJiN-NOPMyTwit3Q@mail.gmail.com>
+ <20240211231321.GA4748@rigel>
+In-Reply-To: <20240211231321.GA4748@rigel>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 12 Feb 2024 11:28:54 +0200
+Message-ID: <CAHp75VddjcLaRqugKuk+eejYx_0AHVL4SjYcdh7zUKDj8SpcQw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: uapi: clarify default_values being logical
+To: Kent Gibson <warthog618@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, brgl@bgdev.pl, 
+	linus.walleij@linaro.org, andy@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 09/02/2024 22:15, David Hildenbrand wrote:
-> It's a pain that we have to handle cond_resched() in
-> tlb_batch_pages_flush() manually and cannot simply handle it in
-> release_pages() -- release_pages() can be called from atomic context.
-> Well, in a perfect world we wouldn't have to make our code more at all.
-> 
-> With page poisoning and init_on_free, we might now run into soft lockups
-> when we free a lot of rather large folio fragments, because page freeing
-> time then depends on the actual memory size we are freeing instead of on
-> the number of folios that are involved.
-> 
-> In the absolute (unlikely) worst case, on arm64 with 64k we will be able
-> to free up to 256 folio fragments that each span 512 MiB: zeroing out 128
-> GiB does sound like it might take a while. But instead of ignoring this
-> unlikely case, let's just handle it.
-> 
-> So, let's teach tlb_batch_pages_flush() that there are some
-> configurations where page freeing is horribly slow, and let's reschedule
-> more frequently -- similarly like we did for now before we had large folio
-> fragments in there. Note that we might end up freeing only a single folio
-> fragment at a time that might exceed the old 512 pages limit: but if we
-> cannot even free a single MAX_ORDER page on a system without running into
-> soft lockups, something else is already completely bogus.
-> 
-> In the future, we might want to detect if handling cond_resched() is
-> required at all, and just not do any of that with full preemption enabled.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/mmu_gather.c | 50 ++++++++++++++++++++++++++++++++++++++++---------
->  1 file changed, 41 insertions(+), 9 deletions(-)
-> 
-> diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
-> index d175c0f1e2c8..2774044b5790 100644
-> --- a/mm/mmu_gather.c
-> +++ b/mm/mmu_gather.c
-> @@ -91,18 +91,19 @@ void tlb_flush_rmaps(struct mmu_gather *tlb, struct vm_area_struct *vma)
->  }
->  #endif
->  
-> -static void tlb_batch_pages_flush(struct mmu_gather *tlb)
-> +static void __tlb_batch_free_encoded_pages(struct mmu_gather_batch *batch)
->  {
-> -	struct mmu_gather_batch *batch;
-> -
-> -	for (batch = &tlb->local; batch && batch->nr; batch = batch->next) {
-> -		struct encoded_page **pages = batch->encoded_pages;
-> +	struct encoded_page **pages = batch->encoded_pages;
-> +	unsigned int nr, nr_pages;
->  
-> +	/*
-> +	 * We might end up freeing a lot of pages. Reschedule on a regular
-> +	 * basis to avoid soft lockups in configurations without full
-> +	 * preemption enabled. The magic number of 512 folios seems to work.
-> +	 */
-> +	if (!page_poisoning_enabled_static() && !want_init_on_free()) {
+On Mon, Feb 12, 2024 at 1:13=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
+wrote:
+> On Sun, Feb 11, 2024 at 06:58:14PM +0200, Andy Shevchenko wrote:
+> > On Sun, Feb 11, 2024 at 12:14=E2=80=AFPM Kent Gibson <warthog618@gmail.=
+com> wrote:
+> > >
+> > > The documentation for default_values mentions high/low which can be
+> > > confusing, particularly when the ACTIVE_LOW flag is set.
+> > >
+> > > Replace high/low with active/inactive to clarify that the values are
+> > > logical not physical.
+> > >
+> > > Similarly, clarify the interpretation of values in struct gpiohandle_=
+data.
+> >
+> > I'm not against this particular change, but I want the entire GPIO
+> > documentation to be aligned in the terminology aspect. Is this the
+> > case after this patch? I.o.w. have we replaced all leftovers?
+>
+> Agreed. Those are the last remnants of the low/high terminolgy that I am
+> aware of, certainly the last in gpio.h.
+>
+> Having a closer look to double check...
+>
+> Ah - it is still used in Documentation/userspace-api/gpio/sysfs.rst -
+> not somewhere I go very often.
+> Would you like that updated in a separate patch?
 
-Is the performance win really worth 2 separate implementations keyed off this?
-It seems a bit fragile, in case any other operations get added to free which are
-proportional to size in future. Why not just always do the conservative version?
+Yes, please. For this one
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
->  		while (batch->nr) {
-> -			/*
-> -			 * limit free batch count when PAGE_SIZE > 4K
-> -			 */
-> -			unsigned int nr = min(512U, batch->nr);
-> +			nr = min(512, batch->nr);
-
-If any entries are for more than 1 page, nr_pages will also be encoded in the
-batch, so effectively this could be limiting to 256 actual folios (half of 512).
-Is it worth checking for ENCODED_PAGE_BIT_NR_PAGES_NEXT and limiting accordingly?
-
-nit: You're using 512 magic number in 2 places now; perhaps make a macro?
-
->  
->  			/*
->  			 * Make sure we cover page + nr_pages, and don't leave
-> @@ -119,6 +120,37 @@ static void tlb_batch_pages_flush(struct mmu_gather *tlb)
->  			cond_resched();
->  		}
->  	}
-> +
-> +	/*
-> +	 * With page poisoning and init_on_free, the time it takes to free
-> +	 * memory grows proportionally with the actual memory size. Therefore,
-> +	 * limit based on the actual memory size and not the number of involved
-> +	 * folios.
-> +	 */
-> +	while (batch->nr) {
-> +		for (nr = 0, nr_pages = 0;
-> +		     nr < batch->nr && nr_pages < 512; nr++) {
-> +			if (unlikely(encoded_page_flags(pages[nr]) &
-> +				     ENCODED_PAGE_BIT_NR_PAGES_NEXT))
-> +				nr_pages += encoded_nr_pages(pages[++nr]);
-> +			else
-> +				nr_pages++;
-> +		}
-
-I guess worst case here is freeing (511 + 8192) * 64K pages = ~544M. That's up
-from the old limit of 512 * 64K = 32M, and 511 pages bigger than your statement
-in the commit log. Are you comfortable with this? I guess the only alternative
-is to start splitting a batch which would be really messy. I agree your approach
-is preferable if 544M is acceptable.
-
-> +
-> +		free_pages_and_swap_cache(pages, nr);
-> +		pages += nr;
-> +		batch->nr -= nr;
-> +
-> +		cond_resched();
-> +	}
-> +}
-> +
-> +static void tlb_batch_pages_flush(struct mmu_gather *tlb)
-> +{
-> +	struct mmu_gather_batch *batch;
-> +
-> +	for (batch = &tlb->local; batch && batch->nr; batch = batch->next)
-> +		__tlb_batch_free_encoded_pages(batch);
->  	tlb->active = &tlb->local;
->  }
->  
-
+--=20
+With Best Regards,
+Andy Shevchenko
 
