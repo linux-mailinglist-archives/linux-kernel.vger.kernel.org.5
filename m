@@ -1,140 +1,170 @@
-Return-Path: <linux-kernel+bounces-61244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E52FC850FBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:29:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7688850FC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0CB82840DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:29:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 022DCB2306F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D28F12E49;
-	Mon, 12 Feb 2024 09:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037ED12E59;
+	Mon, 12 Feb 2024 09:30:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kb72wJJv"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="o8Y11mry"
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018F715A8;
-	Mon, 12 Feb 2024 09:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4952F51F
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:30:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707730152; cv=none; b=POMwj03s9+iUj3iGsH7uA/HfYL0lUnRtQxyYK3LCtoSf+dtOVcH7UChehJuT3DDOaTnNOUDSDotHY0RreucKYy8Y0pzTYMkxKlwN599WYr/dpFwQm6zw5lTtLoMj0BupTOei7/MAPruXXSoftyoXtAmPpYi0Bk9D5UiY/isFkj4=
+	t=1707730238; cv=none; b=BazYoFdxJ8xr0Ao8Q3UnQV0CW23qkrkmzAVaSy8d2hI17rq0vKd9viSQGAsB3gyIdvKJXgOLL3alWJZS0RFuj+e48e648YX7BrxYm28GYRrhl5uQ/EsQHokPxICYm29m6temTY4iuVAsg7+h7lN1Mg7UYq6sH80Zuoo4ddLICIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707730152; c=relaxed/simple;
-	bh=+2rAaj0BpxZq0QhkiYUH/at7Shh4pzMJ1CpET3YKsOI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=tyFz/8ISpg9zEuRztf016z0RAR7Q56+OIfRuCy9sk5B1IuMeSNHB9dYdglLLBYaQ2xzeW1vMsQD3db6KsAM4TKdNwndbRpxNg3W+qvYmBZxUjwinbvkoUlwDU/2M5N+37/c+FH2kAoFenlI8LwKTOPQM673VpM8ka4vRmfSglxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kb72wJJv; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41C8ILFI008232;
-	Mon, 12 Feb 2024 09:29:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=wZb4DeeDCD3DDnyQB8zRGSDNedk50m0/Skjj7EMyFhY=; b=kb
-	72wJJvt5tqzXJdX5qObCPUpPcLSXZ/QRfAbhmeSFkr+yszZAbbFD7ldvrtDufddp
-	T2obGenTE5JEs4agkvm7S24RPPquIFjPKeUMRV3eMEhaK+gAj/vG8ko8lCcsUhHP
-	r5kZD7yZkXcm13HDofUC4eHouVL9ma5rttHHQxfO22n5OEXbMdMh+bWZq4HeE5Px
-	QkdxOXXMWVxVzeELSORx0AzSOlegTkBu2FO8kOIwOhweApenVOnCfVgfO5IxN7RS
-	ZYpBIT5rAqENCksISpHHMeghbt+9htYMO8XXnfXX5X5MMm038tcY3Ugndnch7jMw
-	OppAgkBuYKcqEWJGR4rg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w62ps2vkm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 09:29:04 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41C9T3Xh022779
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 09:29:03 GMT
-Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 12 Feb
- 2024 01:28:59 -0800
-Message-ID: <211aee74-30d3-3316-030d-2a4379259eb3@quicinc.com>
-Date: Mon, 12 Feb 2024 14:58:56 +0530
+	s=arc-20240116; t=1707730238; c=relaxed/simple;
+	bh=fJCVsH6s+Zxu49DLLCaFI4lLD0w0UXKMyNeLa/ZMEC4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pIqt+/75FdB7gOT1vu4bsK551jJSdcoyi2+SA3/v/DtsVNQyX+PS+tglE0PZ0gTZEi4u+jp0T2FEUY8eD2z7QKon+xlh9zknsSTLLu6FIUs/RdAqnSIczmfcfEs2hF2ExvVfVFGoCGZDmF9A4d9RQ8/6rYVzUqvuppaDtvidWIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=o8Y11mry; arc=none smtp.client-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4c0819d4890so20092e0c.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 01:30:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707730235; x=1708335035; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aVJXg04dDq3HdGdQbSODm4X+NrUwFF5O5k1QDLQ/4FQ=;
+        b=o8Y11mryL+1tO7qvJhQ7fZJX4WaBM581uvW7l1spOOQ0EuC7IDP2pPEI+8ZkRxVYa+
+         Mp2F0UZE6XjEkgwhTJgeBeo+K1fyo3QXd3829M3DDWRas3ydR+zINRpOkwJwWcZRqSKn
+         Rvp9pBhZUuk9GlD2ZPH8bg/WtRdluyrlKHnVfaJPmYxeFctNxYA9B8Pitno5xHdZCwJD
+         fzWPl4gGMu/hNYbwvIoEWTgDkExs++xsihc3joXAOWL3iYWf5ZATvItUBe2v2anHJWQP
+         0EqBdPKjICQgb6wIiFpoQo/6Jf88hS0XINgKnU4ALcICC6loObx1fOSAGq1cANPeoCc7
+         PXdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707730235; x=1708335035;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aVJXg04dDq3HdGdQbSODm4X+NrUwFF5O5k1QDLQ/4FQ=;
+        b=c8N5JggLtvMELp8IPcfehRat8n5DBHtf+DDCJSLrFKiDAEnANb/NjwXrNh8MUmRzT2
+         evUOGNEgjP3IBdnaG0HKb1SU+aK1j6q/qa6TdHaRA63GZ7Z2lpm6xjA7MzWLYT9bxYdo
+         cX4rRq7o6zYnMLIvsR6Y4QEm7QLrtmMBqZ4JEA9HsrQ4VX39/jV0J4e+1fHABdjjxO3j
+         o5tt74qqPbO50lh0PiUAIXlqjn+Anv46oRbmNUOb5r8aiUdyT6w92IOhiGcucyGSk5Sj
+         O8UjMfrWPmNX2fDB1n2R1zHPAbgFizvUpN9OaWMZLXIeVx4X54VU3fzFiLF0F2QKuqBT
+         VTLA==
+X-Forwarded-Encrypted: i=1; AJvYcCXpvrKdfQTAY9FYqLW+VvvgT4x2MoGE/A767hlcel/pf+SBomJtRVxW2QOmOc8LwvCrKhsuCI5u8vK8171Tj1xZmhz4yL5dQ8YXaBGo
+X-Gm-Message-State: AOJu0YyE9hixMtyhGylUGIbg9zydw6sabYDnRFdN/vF6NySTd08D/Nz2
+	vPEI2XlwKYiJKz0DT97maLnQg1KAII7mTHyX0pgHhaPSKuwJZFJtBPn+nCROUGMLF73zddR86/F
+	s5IAEXem6aauggvX8+V/MMHxez+1Yiojo0wSr
+X-Google-Smtp-Source: AGHT+IHjV73mgJjltlbGotOak1PzxKLwy9aSO2nJ7D7f32xXmGKQCv9rUvPaFsRmWhNsUhe7k0oa8HywUsDXuUQEtS8=
+X-Received: by 2002:a1f:e403:0:b0:4c0:3552:bd07 with SMTP id
+ b3-20020a1fe403000000b004c03552bd07mr2504043vkh.9.1707730235423; Mon, 12 Feb
+ 2024 01:30:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [RFC 6/7] arm64: dts: qcom: x1e80100: Enable cpufreq
-Content-Language: en-US
-To: Sudeep Holla <sudeep.holla@arm.com>
-CC: <cristian.marussi@arm.com>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_rgottimu@quicinc.com>,
-        <quic_kshivnan@quicinc.com>, <conor+dt@kernel.org>
-References: <20240117173458.2312669-1-quic_sibis@quicinc.com>
- <20240117173458.2312669-7-quic_sibis@quicinc.com> <ZalDBWwOhD3Gy1Mb@bogus>
-From: Sibi Sankar <quic_sibis@quicinc.com>
-In-Reply-To: <ZalDBWwOhD3Gy1Mb@bogus>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 1ZgwgdvRjkp6L1nzn0nvf3O54HkNm0T2
-X-Proofpoint-GUID: 1ZgwgdvRjkp6L1nzn0nvf3O54HkNm0T2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-12_06,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 spamscore=0 phishscore=0 suspectscore=0
- mlxscore=0 priorityscore=1501 adultscore=0 clxscore=1015 mlxlogscore=749
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402120071
+References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
+ <20240124-alice-mm-v1-1-d1abcec83c44@google.com> <CALNs47uDaD05oD8TtZoSqUBc4SaRig80u2_1P0qMCXtE3H9_Vw@mail.gmail.com>
+ <CAH5fLggdwWoq4wKv7VxZ-_VbWMV_Ui03rGOCMPbWn8=ewznmvA@mail.gmail.com> <405e8b56cd0c48d0ba640e8d9c60179e@AcuMS.aculab.com>
+In-Reply-To: <405e8b56cd0c48d0ba640e8d9c60179e@AcuMS.aculab.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Mon, 12 Feb 2024 10:30:24 +0100
+Message-ID: <CAH5fLgiRgg2zD3tJ9Xrvk+bvH3srDGw9ud_gjRa97cd7a+jROA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] rust: add userspace pointers
+To: David Laight <David.Laight@aculab.com>
+Cc: Trevor Gross <tmgross@umich.edu>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Kees Cook <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>, Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Feb 10, 2024 at 3:15=E2=80=AFPM David Laight <David.Laight@aculab.c=
+om> wrote:
+>
+> ...
+> > > Maybe something like
+> > >
+> > >     Every time a memory location is read, the reader's position is ad=
+vanced by
+> > >     the read length and the next read will start from there. This hel=
+ps prevent
+> > >     accidentally reading the same location twice and causing a TOCTOU=
+ bug.
+>
+> WTF TOCTOU? I'm guessing it is reading things twice and getting
+> different answers.
 
+Yes. In v2 of this patchset [1], I expanded TOCTOU to "time-of-check
+to time-of-use" at the first use to reduce this confusion.
 
-On 1/18/24 20:55, Sudeep Holla wrote:
-> (Generic note: It is middle of merge window and I have seen multiple
-> series posted by you. Since I am mainly looking for bug fixes only ATM,
-> I may miss to look at few. You may have to ping or repost after the merge
-> window, just responding to this for now as it caught my attention)
+> That really doesn't match how copying from userspace is used is many plac=
+es.
+> Sometimes you really do want to be using offsets and lengths.
+> For instance the user buffer might contain offsets of items further
+> down the buffer.
 
-ack
+For this use-case, you can call UserSlice::new multiple times, or use
+clone_reader. This use-case does appear sometimes in Rust Binder and
+is supported, but I didn't find it to be the most common use-case.
 
-> 
-> On Wed, Jan 17, 2024 at 11:04:57PM +0530, Sibi Sankar wrote:
->> Enable cpufreq on X1E80100 SoCs through the SCMI perf protocol node.
->>
->> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/x1e80100.dtsi | 27 ++++++++++++++++++++++++++
->>   1 file changed, 27 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
->> index afdbd27f8346..6856a206f7fc 100644
->> --- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
->> @@ -62,6 +62,7 @@ CPU0: cpu@0 {
->>   			compatible = "qcom,oryon";
->>   			reg = <0x0 0x0>;
->>   			enable-method = "psci";
->> +			clocks = <&scmi_dvfs 0>;
-> 
-> I would use genpd bindings Ulf added recently. The reason I ask is I remember
-> one of the Qcom platform had both clocks and qcom,freq-domain and each one
-> served different purpose with latter one being used for cpufreq. So will
-> that be an issue here ?
+> There is also the code (eg ioctl) that does a read-modify-write
+> on a buffer.
 
-The cpufreq-hw node that Qualcomm used had a opp-table associated with
-it to vote for various buses which in turn required both clock and freq-
-domain. However the memory buses voting is done by the vendor protocol 
-0x80 on X1E and hence won't be an issue here.
+The read-modify-write use-case is quite common in Rust Binder and is
+supported by the API provided by this patchset. When you call
+reader_writer, you get a separate reader and writer. Then, you first
+use the reader to read the data. Then you modify it. Then you use the
+writer to write it back.
 
--Sibi
+> > > +    /// Reads the entirety of the user slice.
+> > > +    ///
+> > > +    /// Returns `EFAULT` if the address does not currently point to
+> > > +    /// mapped, readable memory.
+> > > +    pub fn read_all(self) -> Result<Vec<u8>> {
+> > > +        self.reader().read_all()
+> > > +    }
+> >
+> > If I understand it correctly, the function will return `EFAULT` if _any=
+_
+> > address in the interval `[self.0, self.0 + self.1)` does not point to
+> > mapped, readable memory. Maybe the docs could be more explicit.
+>
+> That isn't (and can't be) how it works.
+> access_ok() checks that the buffer isn't in kernel space.
+> The copy is then done until it actually faults on an invalid address.
+> In that case the destination buffer has been updated to the point
+> of failure.
+>
+> You can't do a check before the copy because another thread can
+> change the mapping (it would also be horribly expensive).
 
-> 
+This was reworded in v2 [1]:
+
+/// Fails with `EFAULT` if the read encounters a page fault.
+
+But ultimately, the real condition here is just that it returns EFAULT
+if copy_from_user fails. I'm happy to reword further.
+
+Alice
+
+[1]: https://lore.kernel.org/all/20240208-alice-mm-v2-1-d821250204a6@google=
+com/
 
