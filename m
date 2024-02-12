@@ -1,188 +1,120 @@
-Return-Path: <linux-kernel+bounces-62146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9F9D851C32
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:56:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2749A851C63
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:02:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEF171C2164E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:56:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49723B2840A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD38405DF;
-	Mon, 12 Feb 2024 17:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F80A4645B;
+	Mon, 12 Feb 2024 17:54:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V4obhhep"
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="NJoErLLP"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F6D3FE52;
-	Mon, 12 Feb 2024 17:53:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009D145BEA;
+	Mon, 12 Feb 2024 17:54:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707760439; cv=none; b=tbMEe75R7AsG0hQon6nNQxuDcSCOHGOnkMXIvfolTLhwQQADVjJw5llCXRYQimIs11pANjkIemB9V1igxWEkZtxz6R9IBvjjxd3ka32H7khULpLQEZ3wGwUt71tLaA+/niBxokYaI4GMOuNBS2nYS56nVUnJ4rS+IL4RZqeWHMc=
+	t=1707760458; cv=none; b=BAtXBsdzQ88bTg4tq68HIeMkHqXER4pKInBnPA+zmoXUDyiwRqQ86Wa01vr8xJc3gNbBqdNIScFdD0fSWUbUTy5f41wSa5imZxt5Pe+tBGyWZO7Lyp6MnU+0Q+ztwr/Zf2hOMiWuNWcn5uuOhM6iXWh05ckTSEDbBrr6sZm3OY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707760439; c=relaxed/simple;
-	bh=F6SsN4ngSTP5carvI6Q6KddAfM3OoB7+2wTWiu+HrVw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E1ztV79RrejTbP8lvGEHOauUyvRFHUHy7LxZKaUJX4Mpek4oIawDi1nfs+yxsYcWpWX03WyMcy1w5CKW5IJCiNIGxaT9S4abOXa5SOM0NoS7eCmu+tSRCZcgmTC/9zPwjmcE3NuQ40o1PabVg6pBuGmbjlCWoZFi/vQm4c/y0Lw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V4obhhep; arc=none smtp.client-ip=209.85.222.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7d5a6b1dd60so1476358241.3;
-        Mon, 12 Feb 2024 09:53:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707760436; x=1708365236; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lNx4A3iHZp5oxyNcXN+og4JNdWFeIzGNClAgiRIvrec=;
-        b=V4obhhepuuZE7V8nJsKyGD5mmEEbpFjksc5xcYB+/Ds1ulzJZ3tA1t0t4YrfP7n19L
-         izepzRSZmZ0424nWGhTa+efmzt4CxihUmN11jUPYqjco9fF4W59Is0Z0CYsLkbixC8Pc
-         NtqVEt8pTRgBuR8ZPmZk22RU75bsVjuIznDr4qOWr0KzXAcOblMiznZZsu+uzL7LX5hQ
-         XxcNI71BYKmogIHkJVZ85PrLVHaVv3Z5vwyEQu0fp/8h5IR/nJuLL6LDwnVq1mwy72et
-         K2gmYVQYKL1od4/dDVeUfFsTWZiSdRsV8OcqTEcPh4/R9uo+ZN1jXfHjO8u6dmb6JbQx
-         /kEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707760436; x=1708365236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lNx4A3iHZp5oxyNcXN+og4JNdWFeIzGNClAgiRIvrec=;
-        b=Ou/Q4ivcc7w/+Qk54C7aM7DbJ4RSkOgjlKkARRnqdJB3hsuWDuD2deC/f4ff/psOr1
-         iG15y+Cwqr8RO+KSbr18lXWasuwG8FgYhaW/QLwIjCKVkUlCsTyTrPD5MAxOSEjx5fzt
-         o17eEKuheDb0ESh5/Oov+4/OXOkdlKPmdoTi9SZCtxRW5JQOfkG1PhPZchauNFAw2SMp
-         QBGPrZbuQ3jLpmgtNZMPVkpTgGGKA4iqogcdXsXhKq8zlGdpluiqQCD0bLmMNPTSnogr
-         mG6tLxNyfsh9tLt0H/x4qyfc0pgewNjPGEm4xehqIS11qkbX6hdqb81vBbgn9D9ftKIc
-         0tpw==
-X-Forwarded-Encrypted: i=1; AJvYcCUwm9H1VN4FToiRkzMXv9sBSfBx17FPLjgsdB4l5RqmpqmZBO89LBejLRuwmMtkI0S6HJZZ6lrPL4C2bqUs32QR41E94oXdSmFtpudsNBOXXrRNoVkazmNgWnoqGGIt8S6rE957COImVPzybqXSUMokG8KHTlVT05Jj/wS55TuQfpWI2iPMu5W7PnUV
-X-Gm-Message-State: AOJu0Yymqc4SJ4FScxD5A71d6UByt7zUrf0/Vg+WmB2+FhURDOvCVnWj
-	QAeicyC4Vv+3qGnSriPcrUKFv7R7GcHUh8K8GmGcQ6jIcJpAAiGZVWqUvDKSXNZU6J3K1uz9lYw
-	lj09OB+jptGUEnObB9/ShBG5Q+8g=
-X-Google-Smtp-Source: AGHT+IGa+SWVFDlNa61GPWR/EEMj0AtnZiRgMFDtCjXrUmtsngHq0jI8TRLNTwoBRezWlo1H819EZqhtEe6J7M7PCCU=
-X-Received: by 2002:a1f:6642:0:b0:4c0:2b39:dc86 with SMTP id
- a63-20020a1f6642000000b004c02b39dc86mr4582286vkc.5.1707760435327; Mon, 12 Feb
- 2024 09:53:55 -0800 (PST)
+	s=arc-20240116; t=1707760458; c=relaxed/simple;
+	bh=0y+fzBytQrC7l3lSui9qg6RO2qKYmzTR6TqLVAK8yGM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=P3XEQrF2BLxZo3+mucEzxzByYx5wcgFiAPsXFAVlg7zCdMX7Y35H9/+M/ZczqDjWhdJuRDh/LOVi7q1sP7KIfy2s0tbngYsBRqaoG+4zTtsZmhe98On5QRbDs21jUa4Om46rgKk7wu3lNh0pKx5GF13nC8j1x4NzvsmIYb6j8FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=NJoErLLP; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1707760453; bh=0y+fzBytQrC7l3lSui9qg6RO2qKYmzTR6TqLVAK8yGM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=NJoErLLPR1sloP1pv+h8rZzmIOfSiuojTgJJk49DKwFfkxNnEkmn8r5F0wIWVaWPV
+	 5GOcrYi6WyYnPCQVaaYasrGu/2Q2JjFnJqlMXvqqTHgsYbbZ61O3OPWzCkZbG6KWCa
+	 sZGw7aDK7HCR+dsL/iYJhnLQVGwzPhgcVQFEAi90=
+From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
+To: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andrey Skvortsov <andrej.skvortzov@gmail.com>
+Cc: Ondrej Jirman <megi@xff.cz>,
+	Icenowy Zheng <icenowy@aosc.io>,
+	Dalton Durst <dalton@ubports.com>,
+	Shoji Keita <awaittrot@shjk.jp>,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] Add support for AF8133J magnetometer
+Date: Mon, 12 Feb 2024 18:53:52 +0100
+Message-ID: <20240212175410.3101973-1-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205144421.51195-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240205144421.51195-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdW0xWgA+9rtDcRUgoS1HYvd+mukvK25MHbzHpo=1uGq0g@mail.gmail.com>
-In-Reply-To: <CAMuHMdW0xWgA+9rtDcRUgoS1HYvd+mukvK25MHbzHpo=1uGq0g@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Mon, 12 Feb 2024 17:53:28 +0000
-Message-ID: <CA+V-a8t2c30g8vDeACagqPTiNPq4oVUT2nFXaSD=AoDCyKXK7Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: interrupt-controller:
- renesas,rzg2l-irqc: Update interrupts
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Geert,
+From: Ondrej Jirman <megi@xff.cz>
 
-Thank you for the review.
+This series adds support for AF8133J magnetometer sensor. It's a simple
+3-axis sensor with two sensitivity options and not much else to it.
 
-On Mon, Feb 12, 2024 at 4:25=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Mon, Feb 5, 2024 at 3:44=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
-com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > All the RZ/G2L and alike SoC's (listed below) have ECCRAM0/1 interrupts
-> > supported by the IRQC block, reflect the same in DT binding doc.
-> >
-> > - R9A07G043U              - RZ/G2UL
-> > - R9A07G044L/R9A07G044LC  - RZ/{G2L,G2LC}
-> > - R9A07G054               - RZ/V2L
-> > - R9A08G045               - RZ/G3S
-> >
-> > For the RZ/G3S SoC ("R9A08G045") ECCRAM0/1 interrupts combined into sin=
-gle
-> > interrupt so we just use the below to represent them:
-> > - ec7tie1-0
-> > - ec7tie2-0
-> > - ec7tiovf-0
-> >
-> > Previously, it was assumed that BUS-error and ECCRAM0/1 error interrupt=
-s
-> > were only supported by RZ/G2UL ("R9A07G043U") and RZ/G3S ("R9A08G045")
-> > SoCs. However, in reality, all RZ/G2L and similar SoCs (listed above)
-> > support these interrupts. Therefore, mark the 'interrupt-names' propert=
-y
-> > as required for all the SoCs and update the example node in the binding
-> > document.
-> >
-> > Fixes: 96fed779d3d4 ("dt-bindings: interrupt-controller: Add Renesas RZ=
-/G2L Interrupt Controller")
-> > Fixes: 1cf0697a24ef ("dt-bindings: interrupt-controller: renesas,rzg2l-=
-irqc: Document RZ/G3S")
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Thanks for your patch!
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> > --- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rz=
-g2l-irqc.yaml
-> > +++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rz=
-g2l-irqc.yaml
-> > @@ -88,9 +88,15 @@ properties:
-> >        - description: GPIO interrupt, TINT30
-> >        - description: GPIO interrupt, TINT31
-> >        - description: Bus error interrupt
-> > +      - description: ECCRAM0 1bit error interrupt
-> > +      - description: ECCRAM0 2bit error interrupt
-> > +      - description: ECCRAM0 error overflow interrupt
-> > +      - description: ECCRAM1 1bit error interrupt
-> > +      - description: ECCRAM1 2bit error interrupt
-> > +      - description: ECCRAM1 error overflow interrupt
-> >
-> >    interrupt-names:
-> > -    minItems: 41
-> > +    minItems: 45
-> >      items:
-> >        - const: nmi
-> >        - const: irq0
-> > @@ -134,6 +140,12 @@ properties:
-> >        - const: tint30
-> >        - const: tint31
-> >        - const: bus-err
-> > +      - const: ec7tie1-0   # For RZ/G3S SoC ("R9A08G045") ECCRAM0/1 in=
-terrupts are combined into single interrupt.
-> > +      - const: ec7tie2-0   # For RZ/G3S SoC ("R9A08G045") ECCRAM0/1 in=
-terrupts are combined into single interrupt.
-> > +      - const: ec7tiovf-0  # For RZ/G3S SoC ("R9A08G045") ECCRAM0/1 in=
-terrupts are combined into single interrupt.
->
-> These lines are indeed a bit long, and might become longer when newer
-> SoCs are introduced.
->
-Agreed.
+This sensor is used on both Pinephone and Pinephone Pro. DT patches
+adding it will come later, once this driver is merged.
 
-> What about changing the descriptions instead, like
->
->     -      - description: ECCRAM0 1bit error interrupt
->     +      - description: ECCRAM0 or combined ECCRAM0/1 1bit error interr=
-upt
->
-> ?
->
-Agreed, sounds good. I'll just resend this patch fixing this.
+Please take a look. :)
 
-Cheers,
-Prabhakar
+Thank you very much,
+	Ondřej Jirman
+
+v2:
+- move maintainers patch to the end of series
+- bindings:
+  - fix compatible definition in bindings file
+  - require power supplies
+  - fix descriptions
+- driver:
+  - sort includes
+  - rework RPM, the driver should now work with RPM disabled
+    among other improvements
+    - I've tested RPM left and right doing device bind/unbind under
+      various conditions, system suspend under various conditions,
+      etc.
+  - use scoped_guard for mutexes
+  - use devm for power down and handle power down correctly with both
+    RPM enabled/disabled without tracking power state in data->powered
+  - fix issue with changing scale while RPM suspended
+  - various code formatting issues resolved
+- as for sign-offs, I've added co-developed-by for people I know for
+  sure worked on the driver, and left other tags as they were when
+  I picked up the patch 2 years ago to my Linux branch
+
+Icenowy Zheng (3):
+  dt-bindings: vendor-prefix: Add prefix for Voltafield
+  dt-bindings: iio: magnetometer: Add Voltafield AF8133J
+  iio: magnetometer: add a driver for Voltafield AF8133J magnetometer
+
+Ondrej Jirman (1):
+  MAINTAINERS: Add an entry for AF8133J driver
+
+ .../iio/magnetometer/voltafield,af8133j.yaml  |  60 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   6 +
+ drivers/iio/magnetometer/Kconfig              |  12 +
+ drivers/iio/magnetometer/Makefile             |   1 +
+ drivers/iio/magnetometer/af8133j.c            | 528 ++++++++++++++++++
+ 6 files changed, 609 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/magnetometer/voltafield,af8133j.yaml
+ create mode 100644 drivers/iio/magnetometer/af8133j.c
+
+-- 
+2.43.0
+
 
