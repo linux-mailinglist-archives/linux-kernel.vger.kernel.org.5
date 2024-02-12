@@ -1,155 +1,136 @@
-Return-Path: <linux-kernel+bounces-62517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93392852243
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:04:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DB86852245
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE118B21964
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:03:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D271B1F23766
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759104EB5C;
-	Mon, 12 Feb 2024 23:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854CF4F897;
+	Mon, 12 Feb 2024 23:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CcL0TO5D";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="44lnw3ED"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="thg/0U7R"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93BDE50268;
-	Mon, 12 Feb 2024 23:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2A34F885;
+	Mon, 12 Feb 2024 23:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707779022; cv=none; b=ZkA+8F2eI+WVR6JeqmjG4TRTzpi2YwQdxXXQX4dDg6C/88mge9daJRK6vKxOfPvDLi3odDdP96n4/23nwtLQIbt8Lix4YPRG9MAwmMVBlIF/3l8PxuAA0oZAG1rN9Cy9npsFC5KZ9nIoeQVHJs9nAFLjx7z/r52RpQNQpJT+NEc=
+	t=1707779107; cv=none; b=O/lvKzpnI56Pc7A/Ls9REU45tJ7TTYGxYlsE05W+SuwvJqCJwtFKMeD5iJsN6UF4T5YuEBBiyHUd5+e0Ez3fTabcZbjO4H/RKloScrCq1NlaQMDWkDzX+OmhE9qXKFoZsDWP9I8gXs7qbemANJLuucrT3B9pVlpifxTYzyyOnQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707779022; c=relaxed/simple;
-	bh=o00fLGDQ5IUs5ESmZiFEk2pxwiuRloTFln7XGgCfXQY=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=Ru321GwyJVerNkn9Ho8h/HDcs4nO7WMIS34kvqoyou88yARQ1utO3A4GZg+m7IXRMeOt9pmjabrF500q1NFiFwvLBxmVtS6dI++orHNZCuvleJ2MKf9rhs/lpuVB5yi0wvlE61EPRvYvjGhuP4hvwALXvliOdfL2dBinejp9hAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CcL0TO5D; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=44lnw3ED; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 12 Feb 2024 23:03:37 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707779018;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=eWzBm5Plzn16axCsOV4GgMj1z/Hv3hBUjuZkX+T6jRM=;
-	b=CcL0TO5DKvFDGMZMY9FPFafGngcx1eQCjGDhkzO7RskwtStDfH4f06giCUY6JZ5wb7r+Ll
-	LvlvUInlCA9taR1f06991qaBJZ2i1b4zTM4FD+xEYac1CoRE6n6HttsiAurYRut8Wd0AmE
-	f4jI/1EgHJbVLqitLLVv1eLmD0si/a2mLaxjEBlnYJwcQmG8cYDhgoujsu55t8U5yvizHy
-	fZBYXnDhESm06sBTHseqAunyPkTRmhKINEEMH4NZL1ZJmJXxrn2vmWDTeiUrD4uPUdT0c+
-	HDQcDppTZ3gqiifCMUp4T0mr4qp+dJImbIo7apKfPx6rTUGa0hWG7BakjcN8/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707779018;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=eWzBm5Plzn16axCsOV4GgMj1z/Hv3hBUjuZkX+T6jRM=;
-	b=44lnw3EDMSz+f8YcRsAs8lpng3pQTbCCDPIm7hEuYn4r8xzA00iOaIxk9OivepBIjtdRpC
-	i8u0JVDXCMcGrSCw==
-From: "tip-bot2 for Steve Wahl" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/mm/ident_map: Use gbpages only where full GB
- page should be mapped.
-Cc: Steve Wahl <steve.wahl@hpe.com>, Dave Hansen <dave.hansen@linux.intel.com>,
- stable@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1707779107; c=relaxed/simple;
+	bh=ktd9h9qlvN0UnUZCeYB3SASIwovngcWwR2R8apaMxQ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=HDUVDe4s3C4wYNq8eA7Vvi+oEbBgJi/6WG6nwJ09ByJVUFJkzlYs1EUkZxkD0o6R+NtMonyB5djFq6mTb5A36Maa9XSfrcBORkOXkA6/FGkAiNkRyERFtkXChFLJodyyvF9hiDzGXulY+rw2ki3T3DOsd+GBgu+H9fJnWF2Uiew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=thg/0U7R; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707779097;
+	bh=Eq4c4CTqsb904CNVrto0W+3RppC+ap2MIeph085cVZI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=thg/0U7RaOeHsJnGHVczSuCbmZ7WGVRJVHbL3ftNvsahjXyn6W6UbGHHEuIaJ1LLG
+	 MCqyzJCJlj2VWgcLCTvHn/PMu2sHKociAgWLp9H6Lb8el8vxap3xkZAMQpKW+CrA6N
+	 6fgpj6CwwwDSaev0AG3DB4ojzcbm+1DRxLAj7hHEKimJDiltYlPFkz92XEmc68z5rr
+	 981wdJHJbGPkANSOrWOuqojGyQwjPM49ObRidxJOrl2xLDRBS1u7EJ9GXcsDDGDRr5
+	 N0QErv0yiGd4FFJUX768xruEdc/X9v2QrP7ikqpVms91BW+Naw+YQC/m99IGn6n36E
+	 mjQMsJGB1aZhw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TYg5j22y7z4wcM;
+	Tue, 13 Feb 2024 10:04:57 +1100 (AEDT)
+Date: Tue, 13 Feb 2024 10:04:55 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Christian Brauner <brauner@kernel.org>, Kent Overstreet
+ <kent.overstreet@linux.dev>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, Su Yue <glass.su@suse.com>
+Subject: linux-next: manual merge of the vfs-brauner tree with the bcachefs
+ tree
+Message-ID: <20240213100455.07e181c8@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170777901796.398.6658653813355920802.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/H0EfUVqgf5.7zwqJumzUvD/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-The following commit has been merged into the x86/urgent branch of tip:
+--Sig_/H0EfUVqgf5.7zwqJumzUvD/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Commit-ID:     d794734c9bbfe22f86686dc2909c25f5ffe1a572
-Gitweb:        https://git.kernel.org/tip/d794734c9bbfe22f86686dc2909c25f5ffe1a572
-Author:        Steve Wahl <steve.wahl@hpe.com>
-AuthorDate:    Fri, 26 Jan 2024 10:48:41 -06:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Mon, 12 Feb 2024 14:53:42 -08:00
+Hi all,
 
-x86/mm/ident_map: Use gbpages only where full GB page should be mapped.
+Today's linux-next merge of the vfs-brauner tree got a conflict in:
 
-When ident_pud_init() uses only gbpages to create identity maps, large
-ranges of addresses not actually requested can be included in the
-resulting table; a 4K request will map a full GB.  On UV systems, this
-ends up including regions that will cause hardware to halt the system
-if accessed (these are marked "reserved" by BIOS).  Even processor
-speculation into these regions is enough to trigger the system halt.
+  fs/bcachefs/super-io.c
 
-Only use gbpages when map creation requests include the full GB page
-of space.  Fall back to using smaller 2M pages when only portions of a
-GB page are included in the request.
+between commit:
 
-No attempt is made to coalesce mapping requests. If a request requires
-a map entry at the 2M (pmd) level, subsequent mapping requests within
-the same 1G region will also be at the pmd level, even if adjacent or
-overlapping such requests could have been combined to map a full
-gbpage.  Existing usage starts with larger regions and then adds
-smaller regions, so this should not have any great consequence.
+  7dcfb87af973 ("bcachefs: fix kmemleak in __bch2_read_super error handling=
+ path")
 
-[ dhansen: fix up comment formatting, simplifty changelog ]
+from the bcachefs tree and commit:
 
-Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/all/20240126164841.170866-1-steve.wahl%40hpe.com
----
- arch/x86/mm/ident_map.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+  1df39a40e912 ("bcachefs: port block device access to file")
 
-diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
-index 968d700..f50cc21 100644
---- a/arch/x86/mm/ident_map.c
-+++ b/arch/x86/mm/ident_map.c
-@@ -26,18 +26,31 @@ static int ident_pud_init(struct x86_mapping_info *info, pud_t *pud_page,
- 	for (; addr < end; addr = next) {
- 		pud_t *pud = pud_page + pud_index(addr);
- 		pmd_t *pmd;
-+		bool use_gbpage;
- 
- 		next = (addr & PUD_MASK) + PUD_SIZE;
- 		if (next > end)
- 			next = end;
- 
--		if (info->direct_gbpages) {
--			pud_t pudval;
-+		/* if this is already a gbpage, this portion is already mapped */
-+		if (pud_large(*pud))
-+			continue;
-+
-+		/* Is using a gbpage allowed? */
-+		use_gbpage = info->direct_gbpages;
- 
--			if (pud_present(*pud))
--				continue;
-+		/* Don't use gbpage if it maps more than the requested region. */
-+		/* at the begining: */
-+		use_gbpage &= ((addr & ~PUD_MASK) == 0);
-+		/* ... or at the end: */
-+		use_gbpage &= ((next & ~PUD_MASK) == 0);
-+
-+		/* Never overwrite existing mappings */
-+		use_gbpage &= !pud_present(*pud);
-+
-+		if (use_gbpage) {
-+			pud_t pudval;
- 
--			addr &= PUD_MASK;
- 			pudval = __pud((addr - info->offset) | info->page_flag);
- 			set_pud(pud, pudval);
- 			continue;
+from the vfs-brauner tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/bcachefs/super-io.c
+index 36988add581f,ce8cf2d91f84..000000000000
+--- a/fs/bcachefs/super-io.c
++++ b/fs/bcachefs/super-io.c
+@@@ -715,11 -715,11 +715,11 @@@ retry
+  			opt_set(*opts, nochanges, true);
+  	}
+ =20
+- 	if (IS_ERR(sb->bdev_handle)) {
+- 		ret =3D PTR_ERR(sb->bdev_handle);
++ 	if (IS_ERR(sb->s_bdev_file)) {
++ 		ret =3D PTR_ERR(sb->s_bdev_file);
+ -		goto out;
+ +		goto err;
+  	}
+- 	sb->bdev =3D sb->bdev_handle->bdev;
++ 	sb->bdev =3D file_bdev(sb->s_bdev_file);
+ =20
+  	ret =3D bch2_sb_realloc(sb, 0);
+  	if (ret) {
+
+--Sig_/H0EfUVqgf5.7zwqJumzUvD/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXKpBcACgkQAVBC80lX
+0Gzx+wf6An58J97tEuatYeYEIt8pk1bEdS9bSUaYQ8Snn3y9gsGi2ipO7w+sjS5s
+h57DFCILTvyM0IkpPMUzxkjeZMkoudQyGR0Xib5tvHb9FmYN8jSGln/5XLdOoATK
+aPJ3UP/la8W+I1IVsZVjiE13p+6xTw1XxT7uIJocoowuWMfB7CqZ5j2DF9/W/Non
+mgr5ADxt8e0tn9060ad6bpgBo1usE0iYezXOiGFleipDEPNnrqNyow8/2UjrbS8r
+XtxXR2z96LbotYx1aVwmzwxwu6mrb/pEaXtk1+ZualT5XiSHgFuo3V8W+T+p73Qb
+EQo98cOpiaioRVD5dSkdI+UrFezMcQ==
+=DFQ6
+-----END PGP SIGNATURE-----
+
+--Sig_/H0EfUVqgf5.7zwqJumzUvD/--
 
