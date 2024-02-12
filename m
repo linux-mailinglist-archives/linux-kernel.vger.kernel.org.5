@@ -1,103 +1,119 @@
-Return-Path: <linux-kernel+bounces-61298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93D138510AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:24:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A52A38510B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:24:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3111C1F224C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:24:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45D89B22963
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D48C1804A;
-	Mon, 12 Feb 2024 10:24:22 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A85A18AEA;
+	Mon, 12 Feb 2024 10:24:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cU4TXmjb"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4D818624
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDE221B273;
+	Mon, 12 Feb 2024 10:24:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707733461; cv=none; b=hQua/rWToy7XLjwEdi0BlePXwlNlAxzRV62nZu99lBbrtsRd93XqXoeLMCpGxOWnCYHehCj3CRBc3OErn7M0j+bxkwgf0U9jnc04jUzvdZW1WQ9ekuKlygAKmTTHFKd9yM36Oye5dA6NwiHI5QPnLsHUoFqlXmg6qvj7u/nm4aA=
+	t=1707733469; cv=none; b=gNzRYnBl/3XMjT/hcywxLONmnxEfBUYS5eVMDS1QYZq/XJz3HtQnZVGZ2v2SFs07Nq2pDAXSJ75g8QtwOnmvKSBW8m+X2ssr+Nk8F5y7iAneDY5AEx18U2ct9JvIx+fnVwQtUF25OTJBAEbBE8+YNv/HRCoTENHVfCUP+GXDUPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707733461; c=relaxed/simple;
-	bh=BXo6EaA/HxDCl11YRQdW0f2qZos9jkOR0O7aqPAqQak=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=J1YA0SE1yEipPgY8tOftAFcgmmpkPwyPA1lifm4WE1ug6TFCY6kipvN1rUbUSwU8AaxB/04ZMZsg26Gos4JVOxxXWyh0DafyLE7sYpAWpCNFeSgJtZJcCmUJlMrXQYVk8kNjvCqa4Xa8UpV0HlJfb70DQ3cxxAinjAPtD2GOgwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363c3eb46e3so28835975ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:24:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707733459; x=1708338259;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qmU/SGWkogq9oK1nP7heae05OFn/vB1cTpUNhNmJ5Ck=;
-        b=PT5sPu41W0Uhubuqcfl8A1nOE3uziGzgHl6jmpYPh9wDQIBLQ8bL06Bbo1mRY7pgcA
-         uk0LGHO3Mm33Vjn9pOCQo2/iPKEnPiPyUng1tgRljXb22PZfsBVIkWcHiNqM6R+O/1PI
-         xFJaabngddaxhCPxq38sh1Emv7h6w+0GMJZKnQG38qGKy9VqShIWZP3F1RrmkhdaAJNM
-         cXzO5pvflzZvx7lD8XGoKBrarP1NjlbDdEBy68u97zXTF2vdv6I157IaiqkAl1I+1Boz
-         GIDIf8CtG3749lb/+3UAuhxmMDcr7lbNhXKcOkcR+9r7FpLRHO55ZikLg1wUxB4pYFke
-         obgQ==
-X-Gm-Message-State: AOJu0Yw+eEemnvCsx7KY6kj6EknYkgsSj3K7cdatjq0/ddJ4W6wiNq80
-	Z4oMbNhWlh79uU53bNb/tA/jGLH2FBZoczuuDX7zumlAjBXkcj8jmj7pdAIO+JwidYKGZrKYz66
-	syfwhOxLpglfZoqV/LYMf/PfVKrvA+NlVuREEjP884JFUcXOSsdPmBf8rZg==
-X-Google-Smtp-Source: AGHT+IGGNVeNpkQF2hAM4NlGHWWGNCkJjSw3YI4prsACWuGliVzlwLYQLCe7eqv9nPZruDQqjKJIWTPdnG/vV1GCm62zPm+naUCp
+	s=arc-20240116; t=1707733469; c=relaxed/simple;
+	bh=/IkSyB87unJUMSt0t7EdxVIcPTv7ssGTsQqsknTFmlY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d+uEu6+DM3xkIITz60myBUYuZD+f0Ze0hkMfRlFG5XkbiOVTc51JDLuFLYwAj4gYq5hDN0dBax+nwcaX3QYsPMTSQSvRURwpTZZNSpIH2jjOVhLm0GhZVy/HUYAdEG1rXkq+hSIGapItyF0lUU3SfehxDVtssxceLD/6w/ypsI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=cU4TXmjb; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=rjQFj2Y3qw5mwmHLRiMU4jGR0CXRoHG5WfGG9b74Q3A=; b=cU4TXmjbQ8YvfC7Gfc1RedGceJ
+	Nj46EdFUx5xoSvev+Uh4BQgqZ9PYjSYA8R+mWQItKpbzvniRq5InhuKK62Z+U/1jKU0tqDl3g278M
+	fuPxpYzV934A1mAgdh6elHtOrQCPkkd0WuvYIFGyWupR4VzF5bGOuYhJvWrB1dUCgcjCEkOGFdY2k
+	mDsG0ROIYyWy/9lD43cV2s4vO9UAldXJvp3WeXE1oTwki+pqrdahMa5w5QLzSZcUROEhiLjl14anp
+	RWz39xL4+AD/11nI7O0Ni8kvXrWei6D76bGYnVBQQQQ/RmAHUEGWYu3GffRIfh85bD3WJ7t5sz7UE
+	TsLNwc6g==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rZTU6-0000000Adzq-18Cf;
+	Mon, 12 Feb 2024 10:24:22 +0000
+Date: Mon, 12 Feb 2024 10:24:22 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Ritesh Harjani <ritesh.list@gmail.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>,
+	Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, hch@infradead.org,
+	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+	yukuai3@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: [RFC PATCH v3 00/26] ext4: use iomap for regular file's buffered
+ IO path and enable large foilo
+Message-ID: <Zcnx1pP_iZBf6Y-t@casper.infradead.org>
+References: <20240212061842.GB6180@frogsfrogsfrogs>
+ <87ttmef3fp.fsf@doe.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c24a:0:b0:363:c25b:75e7 with SMTP id
- k10-20020a92c24a000000b00363c25b75e7mr478883ilo.3.1707733459680; Mon, 12 Feb
- 2024 02:24:19 -0800 (PST)
-Date: Mon, 12 Feb 2024 02:24:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003c49c206112cae25@google.com>
-Subject: [syzbot] Monthly media report (Feb 2024)
-From: syzbot <syzbot+list4854992ca3cdf939a1f3@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ttmef3fp.fsf@doe.com>
 
-Hello media maintainers/developers,
+On Mon, Feb 12, 2024 at 02:46:10PM +0530, Ritesh Harjani wrote:
+> "Darrick J. Wong" <djwong@kernel.org> writes:
+> > though iirc willy never got the performance to match because iomap
+> 
+> Ohh, can you help me provide details on what performance benchmark was
+> run? I can try and run them when I rebase.
 
-This is a 31-day syzbot report for the media subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/media
+I didn't run a benchmark, we just knew what would happen (on rotating
+storage anyway).
 
-During the period, 3 new issues were detected and 0 were fixed.
-In total, 16 issues are still open and 85 have been fixed so far.
+> > didn't have a mechanism for the caller to tell it "run the IO now even
+> > though you don't have a complete page, because the indirect block is the
+> > next block after the 11th block".
+> 
+> Do you mean this for a large folio? I still didn't get the problem you
+> are referring here. Can you please help me explain why could that be a
+> problem?
 
-Some of the still happening issues:
+A classic ext2 filesystem lays out a 16kB file like this (with 512
+byte blocks):
 
-Ref Crashes Repro Title
-<1> 864     Yes   general protection fault in ir_raw_event_store_with_filter
-                  https://syzkaller.appspot.com/bug?extid=34008406ee9a31b13c73
-<2> 132     Yes   inconsistent lock state in sync_timeline_debug_remove
-                  https://syzkaller.appspot.com/bug?extid=7dcd254b8987a29f6450
-<3> 100     Yes   WARNING in media_create_pad_link
-                  https://syzkaller.appspot.com/bug?extid=dd320d114deb3f5bb79b
-<4> 87      Yes   WARNING in smsusb_start_streaming/usb_submit_urb
-                  https://syzkaller.appspot.com/bug?extid=12002a39b8c60510f8fb
-<5> 24      No    inconsistent lock state in valid_state (2)
-                  https://syzkaller.appspot.com/bug?extid=a225ee3df7e7f9372dbe
-<6> 3       Yes   KASAN: use-after-free Read in em28xx_init_extension (2)
-                  https://syzkaller.appspot.com/bug?extid=99d6c66dbbc484f50e1c
+file offset	disk block
+0-6KiB		1000-1011
+6KiB-16KiB	1013-1032
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+What's in block 1012?  The indirect block!  The block which tells ext2
+that blocks 12-31 of the file are in disk blocks 1013-1032.  So we can't
+issue the read for them until we've finished the read for block 1012.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+Buffer heads have a solution for this, BH_Boundary.  ext2 sets it for
+block 11 which prompts mpage.c to submit the read immediately (see
+the various calls to buffer_boundary()).  Then ext2 will submit the read
+for block 1012 and the two reads will be coalesced by the IO scheduler.
+So we still end up doing two reads instead of one, but that's
+unavoidable because fragmentation might have meant that 6KiB-16KiB were
+not stored at 1013-1032.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+There's no equivalent iomap solution.  What needs to happen is:
 
-You may send multiple commands in a single email message.
+ - iomap_folio_state->read_bytes_pending needs to be initialised to
+   folio_size(), not 0.
+ - Remove "ifs->read_bytes_pending += plen" from iomap_readpage_iter()
+ - Subtract plen in the iomap_block_needs_zeroing() case
+ - Submit a bio at the end of each iomap_readpage_iter() call
+
+Now iomap will behave the same way as mpage, only without needing a
+flag to do it (instead it will assume that the filesystem coalesces
+adjacent ranges, which it should do anyway for good performance).
 
