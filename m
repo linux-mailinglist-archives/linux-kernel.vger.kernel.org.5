@@ -1,293 +1,202 @@
-Return-Path: <linux-kernel+bounces-62401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A3E2851FB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:34:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 390DB851F88
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EFF71C2245D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:34:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E7311F2292D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C7B4CE1F;
-	Mon, 12 Feb 2024 21:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=katalix.com header.i=@katalix.com header.b="0OYZVpUe"
-Received: from mail.katalix.com (mail.katalix.com [3.9.82.81])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882504CE02;
-	Mon, 12 Feb 2024 21:34:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.9.82.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E704CDEB;
+	Mon, 12 Feb 2024 21:26:19 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024854C63F
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 21:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707773671; cv=none; b=Kn7OWWxQ98cmRElhUWwzpnURkYfCZOUhVfJ0OraL3gl+9jM2wWUxbvaxp4Wn/qH2h64QEjv6T+EfQ78PpAw+/kQlvqBven/2OG/15VQQeqwp4MdwT82hzkYYwlkc4m0JGDyA7o2Jy6QCvr+QHvhlXhUPUDFF7nzXv5W7X8tmcv0=
+	t=1707773178; cv=none; b=HwU77Khf9N3JtMah85/6Nt5V5GcxYmJ8nb5DrLejnUB6xqMX5AFm/wfyjV+kgFQyZKqJSRHuwQJNPffrjkKcEdtZt0v0pYOIBIzMCGimDEeVX41QI5JKIeabiDHpck9eoJbjhrxst4V0FM9e91rbJQ3j/pSDeeF54ad2eSID39Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707773671; c=relaxed/simple;
-	bh=+qcu0DYPNoQipBt7EpDCR2pS5408YGljc/2HyDR4pFU=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jS2flfCEZD14g3trC0Xq/m5kssMXMno9BYNKfRb5K0t46D1KuFVj7nk95GEj0ID++zqKPQqq8u8JB5TXf8AXzPZLcHAHuvnTz47pf2QR+MDsS9pojAVJ5vVuDvvjG2livUgloN6aZt0K4xIE2Bwqa8W5wSWzMzIT/5YngSG7PK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=katalix.com; spf=pass smtp.mailfrom=katalix.com; dkim=pass (2048-bit key) header.d=katalix.com header.i=@katalix.com header.b=0OYZVpUe; arc=none smtp.client-ip=3.9.82.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=katalix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=katalix.com
-Received: from localhost (unknown [IPv6:2a02:8012:909b:0:a903:359f:8aea:3bdc])
-	(Authenticated sender: tom)
-	by mail.katalix.com (Postfix) with ESMTPSA id 4C7B67D118;
-	Mon, 12 Feb 2024 21:25:33 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=katalix.com; s=mail;
-	t=1707773133; bh=+qcu0DYPNoQipBt7EpDCR2pS5408YGljc/2HyDR4pFU=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Disposition:In-Reply-To:From;
-	z=Date:=20Mon,=2012=20Feb=202024=2021:25:32=20+0000|From:=20Tom=20P
-	 arkin=20<tparkin@katalix.com>|To:=20Samuel=20Thibault=20<samuel.th
-	 ibault@ens-lyon.org>,=0D=0A=09James=20Chapman=20<jchapman@katalix.
-	 com>,=20edumazet@google.com,=0D=0A=09gnault@redhat.com,=20davem@da
-	 vemloft.net,=20kuba@kernel.org,=0D=0A=09pabeni@redhat.com,=20corbe
-	 t@lwn.net,=20netdev@vger.kernel.org,=0D=0A=09linux-doc@vger.kernel
-	 .org,=20linux-kernel@vger.kernel.org|Subject:=20Re:=20[PATCHv3]=20
-	 PPPoL2TP:=20Add=20more=20code=20snippets|Message-ID:=20<ZcqMzP1RQy
-	 e9o4eB@katalix.com>|References:=20<20240203223513.f2nfgaamgffz6dno
-	 @begin>|MIME-Version:=201.0|Content-Disposition:=20inline|In-Reply
-	 -To:=20<20240203223513.f2nfgaamgffz6dno@begin>;
-	b=0OYZVpUe9YP/RBA64d2L6QacwiRppeqvdukjETNhog6SriqbA1jeDj9rV48kT/wdt
-	 YeLNm/ijC9vkTkLxNW3FlhWevP7FTdkOs6USVYeR32pslQCrEGUBciUctrR5fkDqQy
-	 iNOb+161qhJsBqMnBayut8Pxjr1X7WQHqi7y1axCot7u3kD0h7fu+9vDKfcLH0WUsV
-	 lxVrMmn1GYEj93OyD9l7Q6dOUy78P9dhCN0LToDKrdEn0FLS5WWpqLGJsOGD8fVQCl
-	 lbuiipIR5v+9A1bVbWevCt5+WJqHFxDwj0aEcVqRmjd5tYZLX+h/ybXkXLt5PC6t/S
-	 d0ugTHrWtN1fg==
-Date: Mon, 12 Feb 2024 21:25:32 +0000
-From: Tom Parkin <tparkin@katalix.com>
-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-	James Chapman <jchapman@katalix.com>, edumazet@google.com,
-	gnault@redhat.com, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, corbet@lwn.net, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv3] PPPoL2TP: Add more code snippets
-Message-ID: <ZcqMzP1RQye9o4eB@katalix.com>
-References: <20240203223513.f2nfgaamgffz6dno@begin>
+	s=arc-20240116; t=1707773178; c=relaxed/simple;
+	bh=gdBrqYwMAIQdRKLaqdduNKTUrHZMgfta/ChCSoiv/JI=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OLm2P3MmObrY58PZKTDrPjFVD7ly81WqE+sH3bKD9QPkMKGrLCej0utCF2W6/u+DU+gVmMbwkirMmtu0lIh6qTod+SYHoNMME2+6Rjn5JftTC5M9NQuembJbqkx90zbT5O0gUlopJ7il9mWol8mIfaEYZbwOdSgPoi1tKBvMpyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363dfc1a546so37156805ab.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:26:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707773176; x=1708377976;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wagcq9COHb24z/xuskXRn8d6kbGmFHER+wSRaPPVz+w=;
+        b=oXa1vhyzC1Fdb7rfGoVHV90OtjL4zcbbENvQAAlMGcAyyipjWY2xkD7wSozGfyrMnh
+         Uq8xR9ifXGepbZfnLofJlolpsgX5sTIJZUzLQnO8UQxlF1KXxU/5ErDlWDT8IqsER/bx
+         zVjhPI4/WUablc4afXD0Mh92+hDDvIgLxZpMi6McRkGUOciH6WaOMi15hBrNEMp77bXK
+         epunI6w67o18fA6W9T6PIDHjPm+N4h8EVYKTGp6Hff6yOaQeKx6o3LZVFXVCQNndAayX
+         itui6SGC7c9o0INrwOCaG2WDqjkLar4kuhC5a9Rt22r1jVhfGA/mlghArWEub+22bcTF
+         xu9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV8dge+MmghNstciDfLjrulzY7uTTON6DEG+0OeF89pwfYbYeVBWNdLZRtH0fmd7cBC2qaESQv7unJby4/kqmVYZqq7gAb0acFwYDm+
+X-Gm-Message-State: AOJu0YwGIeIPiaJczi+dsh9kptPoSqFTOBq8bk2uLhLgzb2zisS3fm/p
+	kj7j4nTwhjcavBkygqhAEO6pd2/T7iNgNO6YEYSknQMlIzcfJCpv+bGkvz4uS5QYSb9gTKANRTY
+	oZ3B3sNHOMs7+oZ4jBCjmMyNNTZ/W9N35GVvn0976e06u+FFMk4FtWo8=
+X-Google-Smtp-Source: AGHT+IEQ6Yr7NUwr1aO5sIMrfITNumwjXzV8MO5Y/AwbsS6q1SAgcgqkhs5f5Cb/5wsoXRVEZPgBYlQuasVbw4LiOOqFFgIk1CeV
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="TYbjNzr0z0MM3ovf"
-Content-Disposition: inline
-In-Reply-To: <20240203223513.f2nfgaamgffz6dno@begin>
+X-Received: by 2002:a05:6638:4904:b0:471:fe5:c48b with SMTP id
+ cx4-20020a056638490400b004710fe5c48bmr88097jab.3.1707773176154; Mon, 12 Feb
+ 2024 13:26:16 -0800 (PST)
+Date: Mon, 12 Feb 2024 13:26:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000085930e061135ed45@google.com>
+Subject: [syzbot] [wireguard?] KCSAN: data-race in wg_packet_receive /
+ wg_packet_receive (7)
+From: syzbot <syzbot+fd07f3da9110f5f18b4f@syzkaller.appspotmail.com>
+To: Jason@zx2c4.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com, wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    a5b6244cf87c Merge tag 'block-6.8-2024-02-10' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=126f51e0180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3cd0dc1b46a5bc5c
+dashboard link: https://syzkaller.appspot.com/bug?extid=fd07f3da9110f5f18b4f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c1a21353ecf6/disk-a5b6244c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/675fe8a43c32/vmlinux-a5b6244c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1848dc711f3f/bzImage-a5b6244c.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fd07f3da9110f5f18b4f@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KCSAN: data-race in wg_packet_receive / wg_packet_receive
+
+read to 0xffff88812bad5c08 of 4 bytes by interrupt on cpu 0:
+ wg_cpumask_next_online drivers/net/wireguard/queueing.h:127 [inline]
+ wg_queue_enqueue_per_device_and_peer drivers/net/wireguard/queueing.h:173 [inline]
+ wg_packet_consume_data drivers/net/wireguard/receive.c:526 [inline]
+ wg_packet_receive+0xc51/0x12c0 drivers/net/wireguard/receive.c:576
+ wg_receive+0x4e/0x70 drivers/net/wireguard/socket.c:326
+ udp_queue_rcv_one_skb+0xad0/0xb60 net/ipv4/udp.c:2113
+ udp_queue_rcv_skb+0x20a/0x220 net/ipv4/udp.c:2191
+ udp_unicast_rcv_skb+0x1c2/0x1f0 net/ipv4/udp.c:2351
+ __udp4_lib_rcv+0xb93/0x1110 net/ipv4/udp.c:2427
+ udp_rcv+0x4f/0x60 net/ipv4/udp.c:2609
+ ip_protocol_deliver_rcu+0x356/0x6d0 net/ipv4/ip_input.c:205
+ ip_local_deliver_finish+0x13c/0x1b0 net/ipv4/ip_input.c:233
+ NF_HOOK include/linux/netfilter.h:314 [inline]
+ ip_local_deliver+0xec/0x1c0 net/ipv4/ip_input.c:254
+ dst_input include/net/dst.h:461 [inline]
+ ip_rcv_finish net/ipv4/ip_input.c:449 [inline]
+ NF_HOOK include/linux/netfilter.h:314 [inline]
+ ip_rcv+0x18a/0x260 net/ipv4/ip_input.c:569
+ __netif_receive_skb_one_core net/core/dev.c:5534 [inline]
+ __netif_receive_skb+0x90/0x1b0 net/core/dev.c:5648
+ process_backlog+0x21f/0x380 net/core/dev.c:5976
+ __napi_poll+0x60/0x3c0 net/core/dev.c:6576
+ napi_poll net/core/dev.c:6645 [inline]
+ net_rx_action+0x32b/0x750 net/core/dev.c:6778
+ __do_softirq+0xc4/0x27b kernel/softirq.c:553
+ do_softirq+0x5e/0x90 kernel/softirq.c:454
+ __local_bh_enable_ip+0x66/0x70 kernel/softirq.c:381
+ __raw_read_unlock_bh include/linux/rwlock_api_smp.h:257 [inline]
+ _raw_read_unlock_bh+0x1b/0x20 kernel/locking/spinlock.c:284
+ wg_socket_send_skb_to_peer+0x109/0x130 drivers/net/wireguard/socket.c:184
+ wg_packet_create_data_done drivers/net/wireguard/send.c:251 [inline]
+ wg_packet_tx_worker+0x127/0x360 drivers/net/wireguard/send.c:276
+ process_one_work kernel/workqueue.c:2633 [inline]
+ process_scheduled_works+0x5b8/0xa40 kernel/workqueue.c:2706
+ worker_thread+0x525/0x730 kernel/workqueue.c:2787
+ kthread+0x1d7/0x210 kernel/kthread.c:388
+ ret_from_fork+0x48/0x60 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+write to 0xffff88812bad5c08 of 4 bytes by interrupt on cpu 1:
+ wg_cpumask_next_online drivers/net/wireguard/queueing.h:130 [inline]
+ wg_queue_enqueue_per_device_and_peer drivers/net/wireguard/queueing.h:173 [inline]
+ wg_packet_consume_data drivers/net/wireguard/receive.c:526 [inline]
+ wg_packet_receive+0xd3a/0x12c0 drivers/net/wireguard/receive.c:576
+ wg_receive+0x4e/0x70 drivers/net/wireguard/socket.c:326
+ udpv6_queue_rcv_one_skb+0xb37/0xbc0 net/ipv6/udp.c:716
+ udpv6_queue_rcv_skb+0x20f/0x230 net/ipv6/udp.c:778
+ udp6_unicast_rcv_skb+0x195/0x1b0 net/ipv6/udp.c:921
+ __udp6_lib_rcv+0xa24/0xc80 net/ipv6/udp.c:1010
+ udpv6_rcv+0x4f/0x60 net/ipv6/udp.c:1124
+ ip6_protocol_deliver_rcu+0x92f/0xf30 net/ipv6/ip6_input.c:438
+ ip6_input_finish net/ipv6/ip6_input.c:483 [inline]
+ NF_HOOK include/linux/netfilter.h:314 [inline]
+ ip6_input+0xbd/0x1b0 net/ipv6/ip6_input.c:492
+ dst_input include/net/dst.h:461 [inline]
+ ip6_rcv_finish+0x1d9/0x2d0 net/ipv6/ip6_input.c:79
+ NF_HOOK include/linux/netfilter.h:314 [inline]
+ ipv6_rcv+0x74/0x150 net/ipv6/ip6_input.c:310
+ __netif_receive_skb_one_core net/core/dev.c:5534 [inline]
+ __netif_receive_skb+0x90/0x1b0 net/core/dev.c:5648
+ process_backlog+0x21f/0x380 net/core/dev.c:5976
+ __napi_poll+0x60/0x3c0 net/core/dev.c:6576
+ napi_poll net/core/dev.c:6645 [inline]
+ net_rx_action+0x32b/0x750 net/core/dev.c:6778
+ __do_softirq+0xc4/0x27b kernel/softirq.c:553
+ do_softirq+0x5e/0x90 kernel/softirq.c:454
+ __local_bh_enable_ip+0x66/0x70 kernel/softirq.c:381
+ __raw_read_unlock_bh include/linux/rwlock_api_smp.h:257 [inline]
+ _raw_read_unlock_bh+0x1b/0x20 kernel/locking/spinlock.c:284
+ wg_socket_send_skb_to_peer+0x109/0x130 drivers/net/wireguard/socket.c:184
+ wg_packet_create_data_done drivers/net/wireguard/send.c:251 [inline]
+ wg_packet_tx_worker+0x127/0x360 drivers/net/wireguard/send.c:276
+ process_one_work kernel/workqueue.c:2633 [inline]
+ process_scheduled_works+0x5b8/0xa40 kernel/workqueue.c:2706
+ worker_thread+0x525/0x730 kernel/workqueue.c:2787
+ kthread+0x1d7/0x210 kernel/kthread.c:388
+ ret_from_fork+0x48/0x60 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+value changed: 0x00000000 -> 0x00000001
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 5475 Comm: kworker/1:6 Not tainted 6.8.0-rc3-syzkaller-00293-ga5b6244cf87c #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+Workqueue: wg-crypt-wg0 wg_packet_tx_worker
+==================================================================
 
 
---TYbjNzr0z0MM3ovf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks Samuel, comments inline below.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-On  Sat, Feb 03, 2024 at 23:35:13 +0100, Samuel Thibault wrote:
-> The existing documentation was not telling that one has to create a PPP
-> channel and a PPP interface to get PPPoL2TP data offloading working.
->=20
-> Also, tunnel switching was not mentioned, so that people were thinking
-> it was not supported, while it actually is.
->=20
-> Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
->=20
-> ---
-> Difference from v1:
-> - follow kernel coding style
-> - check for failures
-> - also mention netlink and ip for configuring the link
-> - fix bridging channels
->=20
-> Difference from v2:
-> - fix text alignment
->=20
->  Documentation/networking/l2tp.rst |   99 +++++++++++++++++++++++++++++++=
-+++++--
->  1 file changed, 95 insertions(+), 4 deletions(-)
->=20
-> --- a/Documentation/networking/l2tp.rst
-> +++ b/Documentation/networking/l2tp.rst
-> @@ -387,11 +387,16 @@ Sample userspace code:
->    - Create session PPPoX data socket::
-> =20
->          struct sockaddr_pppol2tp sax;
-> -        int fd;
-> +        int session_fd;
-> +        int ret;
-> =20
->          /* Note, the tunnel socket must be bound already, else it
->           * will not be ready
->           */
-> +        session_fd =3D socket(AF_PPPOX, SOCK_DGRAM, PX_PROTO_OL2TP);
-> +        if (session_fd < 0)
-> +                return -errno;
-> +
->          sax.sa_family =3D AF_PPPOX;
->          sax.sa_protocol =3D PX_PROTO_OL2TP;
->          sax.pppol2tp.fd =3D tunnel_fd;
-> @@ -406,11 +411,97 @@ Sample userspace code:
->          /* session_fd is the fd of the session's PPPoL2TP socket.
->           * tunnel_fd is the fd of the tunnel UDP / L2TPIP socket.
->           */
-> -        fd =3D connect(session_fd, (struct sockaddr *)&sax, sizeof(sax));
-> -        if (fd < 0 ) {
-> +        ret =3D connect(session_fd, (struct sockaddr *)&sax, sizeof(sax)=
-);
-> +        if (ret < 0 ) {
-> +                close(session_fd);
-> +                return -errno;
-> +        }
-> +
-> +        return session_fd;
-> +
-> +L2TP control packets will still be available for read on `tunnel_fd`.
-> +
-> +  - Create PPP channel::
-> +
-> +        int chindx;
-> +        int ppp_chan_fd;
-> +
-> +        ret =3D ioctl(session_fd, PPPIOCGCHAN, &chindx);
-> +        if (ret < 0)
-> +                return -errno;
-> +
-> +        ppp_chan_fd =3D open("/dev/ppp", O_RDWR);
-> +        if (ppp_chan_fd < 0)
-> +                return -errno;
-> +
-> +        ret =3D ioctl(ppp_chan_fd, PPPIOCATTCHAN, &chindx);
-> +        if (ret < 0) {
-> +                close(ppp_chan_fd);
-> +                return -errno;
-> +        }
-> +
-> +        return ppp_chan_fd;
-> +
-> +LCP PPP frames will be available for read on `ppp_chan_fd`.
-> +
-> +  - Create PPP interface::
-> +
-> +        int ppp_if_fd;
-> +        int ifunit =3D -1;
-> +
-> +        ppp_if_fd =3D open("/dev/ppp", O_RDWR);
-> +        if (ppp_chan_fd < 0)
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-I think this should be 'if (ppp_if_fd < 0)' ..?
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-> +                return -errno;
-> +
-> +        ret =3D ioctl(ppp_if_fd, PPPIOCNEWUNIT, &ifunit);
-> +        if (ret < 0) {
-> +                close(ppp_if_fd);
-> +                return -errno;
-> +        }
-> +
-> +        ret =3D ioctl(ppp_chan_fd, PPPIOCCONNECT, ifunit);
-> +        if (ret < 0) {
-> +                close(ppp_if_fd);
-> +                return -errno;
-> +        }
-> +
-> +        return ppp_chan_fd;
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-=2E..and this should be 'return ppp_if_fd'.
-
-> +
-> +IPCP/IPv6CP PPP frames will be available for read on `ppp_if_fd`.
-> +
-> +The ppp<ifunit> interface can then be configured as usual with netlink's
-> +RTM_NEWLINK, RTM_NEWADDR, RTM_NEWROUTE, or ioctl's SIOCSIFMTU, SIOCSIFAD=
-DR,
-> +SIOCSIFDSTADDR, SIOCSIFNETMASK, SIOCSIFFLAGS, or with the `ip` command.
-> +
-> +  - L2TP session bridging (also called L2TP tunnel switching or L2TP mul=
-tihop)
-> +    is supported by bridging the ppp channels of the two L2TP sessions t=
-o be
-> +    bridged::
-
-Since we're in L2TP-world here it is probably worth making it clear
-that this only applies to PPP pseudowire types.
-
-> +
-> +        int chindx1;
-> +        int chindx2;
-> +        int ppp_chan_fd;
-> +
-> +        ret =3D ioctl(session_fd1, PPPIOCGCHAN, &chindx1);
-> +        if (ret < 0)
-> +                return -errno;
-> +
-> +        ret =3D ioctl(session_fd2, PPPIOCGCHAN, &chind2x);
-
-Typo here I think: s/chind2x/chindx2/ ?
-
-> +        if (ret < 0)
-> +                return -errno;
-> +
-> +        ppp_chan_fd =3D open("/dev/ppp", O_RDWR);
-
-Missing a check on ppp_chan_fd -- we might as well check it since
-we're checking returns everywhere else.
-
-> +        ret =3D ioctl(ppp_chan_fd, PPPIOCATTCHAN, &chindx1);
-> +        if (ret < 0) {
-> +                close(ppp_chan_fd);
->                  return -errno;
->          }
-> -        return 0;
-> +
-> +        ret =3D ioctl(ppp_chan_fd, PPPIOCBRIDGECHAN, &chindx2);
-> +        close(ppp_chan_fd);
-> +        if (ret < 0)
-> +                return -errno;
-> +
-> +See more details for the PPP side in ppp_generic.rst.
-
-I think we need to be clear here in this example what session_fd1 and
-session_fd2 are, and how they have come to be, since they haven't been
-mentioned in the examples so far.
-
-I'm not sure whether it helps or not, but when we were working on l2tp-ktest
-initially we had tests for the bridge ioctl.  The tests bridged a PPPoE
-channel with a PPPoL2TP one (which was the original motivation for
-PPPIOCBRIDGECHAN).  The code is here:
-
-https://github.com/katalix/l2tp-ktest/blob/master/src/util.c#L592
-
-So in that codebase we have a pppoe fd and a pppol2tp fd, both of
-which have had been attached using PPPIOCATTCHAN.
-
-We then bridge those two channels using PPPIOCBRIDGECHAN.
-
-I think the bridging is a complex use-case for what is already quite
-an involved API (lots of file descriptors and indices to keep track
-of!).  So I think the code snippet needs to be as clear as we can make
-it.
-
-Thanks again for your work on the documentation.
-
---=20
-Tom Parkin
-Katalix Systems Ltd
-https://katalix.com
-Catalysts for your Embedded Linux software development
-
---TYbjNzr0z0MM3ovf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEsUkgyDzMwrj81nq0lIwGZQq6i9AFAmXKjMkACgkQlIwGZQq6
-i9BXwQgAoHqydyEGowgf3EVzDNRudUQUPc1Sk7KFUzOy21wjqyINwlRuoVVVd/W4
-L0W2k6uCVv+BusU/A4Erubug2kVtGx/xf+DoK2uHYw6Qlrqwy3qtSa48eyvCZBhc
-YPQhGqT4h9q7ijvW4ivndSpzzT2NHt3v56dWubs4UZd0PmW5gXjsqI73cOK/NjAs
-dod8Ia25mgMuf+Eop/EvwKJQIDTkwJ/vJ8+r1oQ/EZh/gCXolxv8InaDoFyW3B7m
-FPMZCqhF9e+MX7E9U8jrFerl5QMXsmAwz+lJGlmsD/HTABI+5PnwiiKNNGE5+jBN
-ISeAuB0igrd7Pg4q7J4dh3ghr8zW5Q==
-=udhW
------END PGP SIGNATURE-----
-
---TYbjNzr0z0MM3ovf--
+If you want to undo deduplication, reply with:
+#syz undup
 
