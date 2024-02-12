@@ -1,215 +1,204 @@
-Return-Path: <linux-kernel+bounces-62316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9476A851E74
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:09:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D84B5851E77
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:11:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C376B266FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:09:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 084B91C2290D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFAF4495E5;
-	Mon, 12 Feb 2024 20:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=renesas.com header.i=@renesas.com header.b="Yf6lvyVy"
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2052.outbound.protection.outlook.com [40.107.114.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DEA481BA;
+	Mon, 12 Feb 2024 20:10:55 +0000 (UTC)
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F7648781;
-	Mon, 12 Feb 2024 20:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.114.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707768549; cv=fail; b=XQV2IGrOj1KpZLUjPrsyk08FdIDHSiwGBbQyriWESEQgWxyRqakJcOzi8x41PqQI3in4l2Bd2po/btQlpjxJ1iV+A+Vmk1/nytbAlWyemBhD1o1Jxd8XKiCcR2un+IN6Az3eWl8Eb2/Ts5zeFUunYmR7Qv9zF6aFooqlvV/ImD8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707768549; c=relaxed/simple;
-	bh=+kBsPFZGPIzBzk6351SgiFIwIbzcbQpMKnZDwBSnp/8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=VB14Q//Ozkb/7J9Czf5GEMipQvbJSqqEFLnOcDomlTwPXFOh+1Jj/Bw/RPwAUVvG6oXegDAdEK1yWXCsujnhOx+ZjRSinYRfdHsXhit1UlJTVrj6qUc/mWAvJ/w29L+VAeuNATN/x+tFkg/rXFzjUxg6VxLNHMc/jtFTKM+oyd4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=renesas.com; spf=pass smtp.mailfrom=renesas.com; dkim=pass (1024-bit key) header.d=renesas.com header.i=@renesas.com header.b=Yf6lvyVy; arc=fail smtp.client-ip=40.107.114.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M1yLWAI+IwF45Dtp/zub8iBwEBkZwRAv64UnQNZV2AWhE0gjTrJ9Wd0wX/oXH9WISWZOKd+Cdeb0I/nYDjBMaZAotX9AjOxIHPCk4B5dWTtd5FK0Kw4KTECKUMZEMADzGDLKwQZa62ajicZAQrX1wCyNf8HnUOpjuLdxp4337ZA6F6MsSMyWyJJNS44AEnSKDo7bDVp/rM1ReY4NQqx/+8vpNjZypHBTbRUjwk0PjbZGr/GMJdUyigt73ZnlF2FjS3gPzcuuFJ7BLYPMG+Gn9F+FVLyH/PSzlabLQ80XXlH3yKpg66dDwF/CPTX5e2vD5qSpgJeCR4JucL9UcnSD4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w5n9Jldo+t6z7HIeJbRpnreWGyxxGDEhffmNMfR9w6s=;
- b=c+7F1+gA2FRZx4G83RCwPfyv06HZaz9Dn9TR9gduzMLpVKsI/A5uiTVoU2+eMFGu3JKZlL0IRSvEsItsUXrzq5vvzgLtv+Zdr7lcUa599v5fmIUB+SnZNGJLRp7Flubu0TWhznGn5FAPn9Qy1/K08aPnPqjukNTvTfS0MomGO1+OfjsEnIwH+bWhAeJq2d2KHQ5w7/ZwBU4D86o08RkEEz4rzP8+F23CuKaaRsiTztqchx2Mqu3TYDZiBSKkBBy6NoViYFG3vWZusypwhGcLAaJqRzP6g3xh0UGFWrCzJFgHOFR0XA0otyJJgO/0g3FtFaCRLPETkZkQQJwLD8sbmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w5n9Jldo+t6z7HIeJbRpnreWGyxxGDEhffmNMfR9w6s=;
- b=Yf6lvyVyaD942Va2AZdhq9IiOIQEoTOydSorDBGmSk+oAQTqpDFrpGcL5z9Lw9mKIQNMcbuPKgqDHYH5gif46g0HHoQ35gZYUvdPGyLgtu5Ujq/3g/dENsA8pG2y85P2syQRKZGI7jbcfwgKShNRqS7QrBdnAUSSusZ5lVAkqcM=
-Received: from TYCPR01MB12093.jpnprd01.prod.outlook.com (2603:1096:400:448::7)
- by OS7PR01MB11452.jpnprd01.prod.outlook.com (2603:1096:604:243::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Mon, 12 Feb
- 2024 20:09:02 +0000
-Received: from TYCPR01MB12093.jpnprd01.prod.outlook.com
- ([fe80::fb0a:e289:43e:1c17]) by TYCPR01MB12093.jpnprd01.prod.outlook.com
- ([fe80::fb0a:e289:43e:1c17%6]) with mapi id 15.20.7270.036; Mon, 12 Feb 2024
- 20:09:02 +0000
-From: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-To: =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-CC: Philipp Zabel <p.zabel@pengutronix.de>, Geert Uytterhoeven
-	<geert+renesas@glider.be>, Biju Das <biju.das.jz@bp.renesas.com>, Magnus Damm
-	<magnus.damm@gmail.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-pwm@vger.kernel.org"
-	<linux-pwm@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org"
-	<linux-renesas-soc@vger.kernel.org>
-Subject: RE: [PATCH v6 2/4] pwm: Add support for RZ/V2M PWM driver
-Thread-Topic: [PATCH v6 2/4] pwm: Add support for RZ/V2M PWM driver
-Thread-Index: AQHaWuYI/v4KlwHV40Gk2x8URHJzn7ED1uOAgAMC8wA=
-Date: Mon, 12 Feb 2024 20:09:02 +0000
-Message-ID:
- <TYCPR01MB120934E8A094DD3185573B9C9C2482@TYCPR01MB12093.jpnprd01.prod.outlook.com>
-References: <20240208232411.316936-1-fabrizio.castro.jz@renesas.com>
- <20240208232411.316936-3-fabrizio.castro.jz@renesas.com>
- <vovrjoymovpjzz2myx73ns4zvbqyfw6twzvjhuyruogmcqvj4y@g2at4kznmqxh>
-In-Reply-To: <vovrjoymovpjzz2myx73ns4zvbqyfw6twzvjhuyruogmcqvj4y@g2at4kznmqxh>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYCPR01MB12093:EE_|OS7PR01MB11452:EE_
-x-ms-office365-filtering-correlation-id: 60a040a3-bcc8-408d-8871-08dc2c0674f3
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- kEtlk8bOpVzXpmn05NpcIunc+FO0xJxedI8BXitVhMpK6WaJWuIxYCrW67y0M2R3dl6/IJAVwzDt2dehpywfwMmUNiCsVledC/LxHcaAF5UdpE2EJZgxe+/3VbXt4yrV6nrfNEx5c8wtPkh6PJq/tdVH4Rha7Lsjm+hBwmlyC7sTOWPZc8EEhWjSCbXsKq8AYRSfCUVXrjazxsRFTk0iCSFRE8VmudGHEWZXVTrb+A0rP8bK5bVGkwrAzCFEIGNa9FVjV5oLI9S10ys1A6pYdMx8JYx4ZbwWQdaIuTiq+Vj25QIn4sQ3C1NMpCYQ3fYMfJbOG6xajzck3SdjTvyfhM9Im6MGDT2JQ1f+JGY2l9VX93t04nqQVKurZHfk2NsrJLRDOdE/8LSSReckz8KfEXzWeUvwAOlSaVc3MDSJorrgE8M/NG0aKz1eyY7jGmF/iwnhf1kPtDNbTOWI7Klx4wk1rTbBp2wAxfPCTO4sSmS2QmpPYxdvHjU4BVh+p//JnDTC8S1qwDNB8KhV08O8fxKrdo16+gQVjCs2UR0CZK/pUlfGNUyYl3ZA927uAm/XwDlVRx4duzO+xv4YkI//k8IeQk/9zoQt9Kd3lZdU8bM=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB12093.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(39860400002)(376002)(346002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(86362001)(33656002)(122000001)(38100700002)(6506007)(966005)(9686003)(7696005)(53546011)(316002)(478600001)(54906003)(71200400001)(66574015)(26005)(83380400001)(41300700001)(38070700009)(4326008)(55016003)(2906002)(8936002)(6916009)(8676002)(66946007)(52536014)(64756008)(66446008)(66476007)(66556008)(5660300002)(76116006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?Q6MQfjyEDPrAnkquwU7GJJCBvz+MEWvlnRacNu5KKcQhNIOrMfAu3VQ2Qf?=
- =?iso-8859-1?Q?AjVxoPO0zdmIrejl5y4Ww3zTUBK00s4P9ACDXN97X0Mtv8406Aa1czJnlC?=
- =?iso-8859-1?Q?ajzBfS3hFmr7sfMyhB89+lpm3rXiL7te9TU/JNEqrH4XIc6eJkTJMOfck8?=
- =?iso-8859-1?Q?iEikDkZR1vV+NibIQMtwFeH/fmuvAj/7bNDXSQ3IzIIKN8Dg+UccNcYFqC?=
- =?iso-8859-1?Q?x2phKAYLKYKu5ww8C0PyoXQx+PNvFVG30ehWKZ8bDgcMBciX/Vpg5ImnKo?=
- =?iso-8859-1?Q?fV6HJysYI8WXLZRWv9qaIaZ1Ijrutv6y823/IjpiwAPxclY8yHdpis6+47?=
- =?iso-8859-1?Q?YJ11AW3Vn5w4/762P81/VgghIP1FRnE5f0xIwFLM3MCiZX77Oiguf1wL8E?=
- =?iso-8859-1?Q?EcRpGvAOxn7Qco4q0ioXGAnCFx9lh2TfhMANMUPGxXg58SIXPdHAy75e0i?=
- =?iso-8859-1?Q?FKLRn9C7Qf18XTsnU4yOwyXoFBZMl7GcxrZyZQg0tWtEthjwX6I5bFCUia?=
- =?iso-8859-1?Q?dmdyWKV4sZdH7L4pcLqG8NinDI10uBTEVX7LTezo0DWavT1wgcp3nuMzl0?=
- =?iso-8859-1?Q?vAjaZtR4ieVunu2R5+pwTE11xmMiTlFIOLx0T37riHfwWVtR3DiCRqOBIp?=
- =?iso-8859-1?Q?D5VLgbBZpTFyCe2x4ov6tiiGdSl2o7NsgSkJO/jREYktXey3j9m0h54EDU?=
- =?iso-8859-1?Q?W9gLdm25tu7y+2/xRvL4kenTOcLjoFuEuMMYnfZ4itQ4S0FjIWlLf4qm1R?=
- =?iso-8859-1?Q?IQ+0qXkztel26qKTMqPYumFi5YzG389H0WKtq4U/yR9Vd47ICE9Tm2+TrM?=
- =?iso-8859-1?Q?wjEVHtY/R+C4Ioc+CqZfFKWWHhHlcBdzcMYT6CpiGHRnSbNNw4MUPW9P7t?=
- =?iso-8859-1?Q?zEKeR6d3FFaJ/4ndZ5m1VTCfHQn42a0ds5pLKbbEISLoGucpDkPgEbBo7w?=
- =?iso-8859-1?Q?ok6u6XFT6hP0a3Cz3BO2p+LKZIzPr6Antc0trxi4u1AVQsF8jo0PnIlkj/?=
- =?iso-8859-1?Q?4hlgzCYJUrIp9Ygtm8NCUZkMTh2UbdeaqH1MIK3g/Nkg1XgvZMy8n/pPAn?=
- =?iso-8859-1?Q?qC3VJ/jGcnXXw8uVqT4URlSMWuA1IATFSKh3U62uvDuOa70ZABE75CBbeH?=
- =?iso-8859-1?Q?KOyNMG787JrGeSTQmXK0QwOo56oeBsxrSqvO7JCmEVAS2ApHZZ0vqKNDP0?=
- =?iso-8859-1?Q?7plH2xhhSA3w/dVOOfK2prX9ReNZmcw/Ivvi7Y/5VvbpovWo54F/U3hvcJ?=
- =?iso-8859-1?Q?wLw+LbSnV/b/lH7+mXdSf5X1mNLrwCnpZ1xiTYd+oSc4dI41xA3ndSpPqT?=
- =?iso-8859-1?Q?RT/pDPGve/LoNbYqq1Y8U0W51ck3HDEkSYOknq1i2hZcL2I7lWvw3Xs6KO?=
- =?iso-8859-1?Q?buB5pygU+a3dnJXmVi3/Ri+RNvS6Qx++beaU2nfEUwUGe6lx//5AEpvosQ?=
- =?iso-8859-1?Q?wSymn5ksCjd6QU94dZMoW0VuORja84r1k2hxo/UoDexYvd+9fgF/1XFYSJ?=
- =?iso-8859-1?Q?h9alwrGx7I1uLBOGceWKhQwBoajawZBnq4BrLC8y9UhqqJ5DNHV5QMmBaa?=
- =?iso-8859-1?Q?L2fhjLZqHTTrP399pujZa6E0ZmExxj2dSqTSpwRfaCa7e3wmndO8DqqCSf?=
- =?iso-8859-1?Q?NRyJScNPt7vguElGeIfiuidJe0rK0bPKmgJSDcqqiBa8VZL7vpUAYSRA?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B4345C12;
+	Mon, 12 Feb 2024 20:10:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707768655; cv=none; b=iqdAmT3OtkHLlXl3hfW/uZkfArOVWELlsPBByYxGMjQ3s8ORAK/6u6SUIifkjwYHIipHAzzsDJstT3EQEc4tRDZ4Z7jd4D+C7lv/En7GA43LiAkeuZzx+OB9u5Ybuz72ej2Yaj91VlPUNefmEQLhw6bS9jGMdRNee5OkiBYkvq0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707768655; c=relaxed/simple;
+	bh=ErAi3yiO2NiNGUJ00p6OoRPUZbYyjNagusL7Wg6tQAU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JtL2SkQQPYxg7phNSMhO+IPyM4cAXze2eyEPr0Me9BxbKMQTrJ5W5wRwKVaUZ+h8M0KhH1o2lyp3eRDIitNK0erZcP4vS1e06Kylt6iS3cXpTEOa4W3grn3pYzXCNUO2IGp5qfkF58jc+8un7eEiY/Y5NSNaro/7QSgGlLdM57k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4c022adaa88so509882e0c.0;
+        Mon, 12 Feb 2024 12:10:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707768652; x=1708373452;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ilCu2b5Ljq7Q+kjgZF6WcxqcCWOVeMmlalciWaHgshQ=;
+        b=CDcBhTgkjmNhJTTSQS+pzDLnlZQjIpk32jYSxGQp48wMHzFGBT2Y22McQV+7TMTSv6
+         9B7OvmTitN2y3zSh0K+an5Jzvzo3/dSRohw1yA+nwJhjTfGVlVVHORsyHYvdBVLCMyPb
+         rcqJeUdaX78idHBGy6DVkgTTRv8exr/gmh8rrB1WCE/SZnWEauw1KTyTAoPesnkS0GYW
+         OPDdhH+tMdNgyTH8aZj2BX6+bGuzyIou75pS9qNmtdH1cVZQQxUom3dX5dKnjvz0sHEc
+         POXMlkLR7E3+AYd8gxogqjqclYejxB6UHLs7DuwfsjY9f47l2qeeNRX7FvUIKWj1WEq6
+         N2kA==
+X-Forwarded-Encrypted: i=1; AJvYcCWNu7wTh9v+1/GvcyC0TZVHxwCIPWOTJjHny9uMNvSRQ2RAp9bx1L0GNNxru8dw++IrUj8dmSqcr93qWMyvVFYFXFsrxpiRNDC1OIu3eU6gdm72xcE5xEqWgXt62n9UnWjpUIdZ/HrqsHJRcVao95SGQYHktI68giqb+1C02BjZh2Xh7w==
+X-Gm-Message-State: AOJu0YzjoZOtIHG4hjTiJX3j0UpB6uLJ+gOwXHZxQeoCQjVOJZKWTn48
+	uaSWsyESKyJ/qNmrzJUOlNxkBfnO7Z3Viu0HNNccj479bDmutH1HzFQ2mqUrgqHHegPOqt8zeTJ
+	o2MPsqVJMREMT0GCQ9Z73TFVHhEM=
+X-Google-Smtp-Source: AGHT+IFdyK0b9LfmjD9apJkvOySy+8nJKDC3MgcssCbxCJV9YnLVV/y/qPM9egRkqXJCi4GvIepCsdReO/Tl0iragvQ=
+X-Received: by 2002:a05:6122:4a02:b0:4c0:774b:e7b0 with SMTP id
+ ez2-20020a0561224a0200b004c0774be7b0mr3110373vkb.13.1707768652111; Mon, 12
+ Feb 2024 12:10:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB12093.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60a040a3-bcc8-408d-8871-08dc2c0674f3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2024 20:09:02.3296
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gK+w4dXBTejgI66J1AhZZbEJE/QxYSl0Xca7kk2/GumWJrdnfy/8D3QqOy8lBdj3FgXIdaC9woIr3beIaNCu00o3xHrqOIKXhPVvVeo9s74=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS7PR01MB11452
+References: <20240207223639.3139601-1-irogers@google.com> <CAM9d7chBixXozCQztM2WKGbfs_8C70vy6ROzKpwLSqq-upz5iQ@mail.gmail.com>
+ <CAP-5=fUVkaq3dDoeMYYEN1N-ghnL-GiP8PV3N3pWpjQKpDTCHw@mail.gmail.com> <CAP-5=fXs8=HvjGpkLwuZBi0Hh8jtmz7=0Tp7HRgU8FOFN0GZvg@mail.gmail.com>
+In-Reply-To: <CAP-5=fXs8=HvjGpkLwuZBi0Hh8jtmz7=0Tp7HRgU8FOFN0GZvg@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 12 Feb 2024 12:10:16 -0800
+Message-ID: <CAM9d7choe-CruqcdkLMPC1Eu4Oca0CBaaq-uiCd=csiLY60NBw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] maps memory improvements and fixes
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
+	Miguel Ojeda <ojeda@kernel.org>, Liam Howlett <liam.howlett@oracle.com>, 
+	Colin Ian King <colin.i.king@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Artem Savkov <asavkov@redhat.com>, Changbin Du <changbin.du@huawei.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello Uwe,
+On Sat, Feb 10, 2024 at 10:08=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> On Fri, Feb 9, 2024 at 6:46=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > On Thu, Feb 8, 2024 at 9:44=E2=80=AFAM Namhyung Kim <namhyung@kernel.or=
+g> wrote:
+> > >
+> > > Hi Ian,
+> > >
+> > > On Wed, Feb 7, 2024 at 2:37=E2=80=AFPM Ian Rogers <irogers@google.com=
+> wrote:
+> > > >
+> > > > First 6 patches from:
+> > > > https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@googl=
+e.com/
+> > > >
+> > > > v2. Fix NO_LIBUNWIND=3D1 build issue.
+> > > >
+> > > > Ian Rogers (6):
+> > > >   perf maps: Switch from rbtree to lazily sorted array for addresse=
+s
+> > > >   perf maps: Get map before returning in maps__find
+> > > >   perf maps: Get map before returning in maps__find_by_name
+> > > >   perf maps: Get map before returning in maps__find_next_entry
+> > > >   perf maps: Hide maps internals
+> > > >   perf maps: Locking tidy up of nr_maps
+> > >
+> > > Now I see a perf test failure on the vmlinux test:
+> > >
+> > > $ sudo ./perf test -v vmlinux
+> > >   1: vmlinux symtab matches kallsyms                                 =
+:
+> > > --- start ---
+> > > test child forked, pid 4164115
+> > > /proc/{kallsyms,modules} inconsistency while looking for
+> > > "[__builtin__kprobes]" module!
+> > > /proc/{kallsyms,modules} inconsistency while looking for
+> > > "[__builtin__kprobes]" module!
+> > > /proc/{kallsyms,modules} inconsistency while looking for
+> > > "[__builtin__ftrace]" module!
+> > > Looking at the vmlinux_path (8 entries long)
+> > > Using /usr/lib/debug/boot/vmlinux-6.5.13-1rodete2-amd64 for symbols
+> > > perf: Segmentation fault
+> > > Obtained 16 stack frames.
+> > > ./perf(+0x1b7dcd) [0x55c40be97dcd]
+> > > ./perf(+0x1b7eb7) [0x55c40be97eb7]
+> > > /lib/x86_64-linux-gnu/libc.so.6(+0x3c510) [0x7f33d7a5a510]
+> > > ./perf(+0x1c2e9c) [0x55c40bea2e9c]
+> > > ./perf(+0x1c43f6) [0x55c40bea43f6]
+> > > ./perf(+0x1c4649) [0x55c40bea4649]
+> > > ./perf(+0x1c46d3) [0x55c40bea46d3]
+> > > ./perf(+0x1c7303) [0x55c40bea7303]
+> > > ./perf(+0x1c70b5) [0x55c40bea70b5]
+> > > ./perf(+0x1c73e6) [0x55c40bea73e6]
+> > > ./perf(+0x11833e) [0x55c40bdf833e]
+> > > ./perf(+0x118f78) [0x55c40bdf8f78]
+> > > ./perf(+0x103d49) [0x55c40bde3d49]
+> > > ./perf(+0x103e75) [0x55c40bde3e75]
+> > > ./perf(+0x1044c0) [0x55c40bde44c0]
+> > > ./perf(+0x104de0) [0x55c40bde4de0]
+> > > test child interrupted
+> > > ---- end ----
+> > > vmlinux symtab matches kallsyms: FAILED!
+> >
+> > Ah, tripped over a latent bug summarized in this part of an asan stack =
+trace:
+> > ```
+> > freed by thread T0 here:
+> >    #0 0x7fa13bcd74b5 in __interceptor_realloc
+> > ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:85
+> >    #1 0x561d66377713 in __maps__insert util/maps.c:353
+> >    #2 0x561d66377b89 in maps__insert util/maps.c:413
+> >    #3 0x561d6652911d in dso__process_kernel_symbol util/symbol-elf.c:14=
+60
+> >    #4 0x561d6652aaae in dso__load_sym_internal util/symbol-elf.c:1675
+> >    #5 0x561d6652b6dc in dso__load_sym util/symbol-elf.c:1771
+> >    #6 0x561d66321a4e in dso__load util/symbol.c:1914
+> >    #7 0x561d66372cd9 in map__load util/map.c:353
+> >    #8 0x561d663730e7 in map__find_symbol_by_name_idx util/map.c:397
+> >    #9 0x561d663731e7 in map__find_symbol_by_name util/map.c:410
+> >    #10 0x561d66378208 in maps__find_symbol_by_name_cb util/maps.c:524
+> >    #11 0x561d66377f49 in maps__for_each_map util/maps.c:471
+> >    #12 0x561d663784a0 in maps__find_symbol_by_name util/maps.c:546
+> >    #13 0x561d662093e8 in machine__find_kernel_symbol_by_name util/machi=
+ne.h:243
+> >    #14 0x561d6620abbd in test__vmlinux_matches_kallsyms
+> > tests/vmlinux-kallsyms.c:330
+> > ...
+> > ```
+> > dso__process_kernel_symbol rewrites the kernel maps here:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
+t/tree/tools/perf/util/symbol-elf.c#n1378
+> > which resizes the maps_by_address array causing the maps__for_each_map
+> > iteration in frame 11 to be iterating over a stale/freed value.
+> >
+> > The most correct solutions would be to clone the maps_by_address array
+> > prior to iteration, or reference count maps_by_address and its size.
+> > Neither of these solutions particularly appeal, so just reloading the
+> > maps_by_address and size on each iteration also fixes the problem, but
+> > possibly causes some maps to be skipped/repeated. I think this is
+> > acceptable correctness for the performance.
 
-Thanks for your reply!
+Can we move map__load() out of maps__for_each_map() ?
+I think the callback should just return the map and break the loop.
+And it can call the map__load() out of the read lock.
 
-> From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Sent: Saturday, February 10, 2024 5:27 PM
-> To: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-> Subject: Re: [PATCH v6 2/4] pwm: Add support for RZ/V2M PWM driver
->=20
-> Hello Fabrizio,
->=20
-> On Thu, Feb 08, 2024 at 11:24:09PM +0000, Fabrizio Castro wrote:
-> > +static inline u64 rzv2m_pwm_mul_u64_u64_div_u64_roundup(u64 a, u64 b,
-> u64 c)
-> > +{
-> > +	u64 ab =3D a * b;
->=20
-> This might overflow.
+>
+> An aside, shouldn't taking a write lock to modify the maps deadlock
+> with holding the read lock for iteration? Well no because
+> perf_singlethreaded is true for the test:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/=
+tree/tools/perf/util/rwsem.c#n17
+> Another perf_singlethreaded considered evil :-) Note, just getting rid
+> of perf_singlethreaded means latent bugs like this will pop up and
+> will need resolution.
 
-In the context of this driver, this cannot overflow.
-The 2 formulas the above is needed for are:
-1) period =3D (cyc + 1)*(NSEC_PER_SEC * frequency_divisor)/rate
-2) duty_cycle =3D (cyc + 1 - low)*(NSEC_PER_SEC * frequency_divisor)/rate
+Yeah, maybe.  How about turning it on in the test code?
 
-With respect to 1), the dividend overflows when period * rate also
-overflows (its product is calculated in rzv2m_pwm_config).
-However, limiting the period to a maximum value of U64_MAX / rate
-prevents the calculations from overflowing (in both directions, from period=
- to cyc, and from cyc to period). v6 uses max_period for this.
-The situation for 2) is very similar to 1), with duty_cycle<=3Dperiod,
-therefore limiting period to a max value (and clamping the duty cycle
-accordingly) will ensure that the calculation for duty_cycle won't
-overflow, either.
-
->=20
-> > +	return ab / c + (ab % c ? 1 : 0);
->=20
-> This division triggered the kernel build bot error. If you want to
-> divide a u64, you must not use /.
-
-Right!
-I have replicated the problem locally, and confirmed that also other divisi=
-ons from the same patch are problematic.
-Clearly, % can't work either.
-
-I am going to replace / with div64_u64.
-For rounding up, I think I'll go with something like:
-
-u64 ab =3D a * b;
-u64 d =3D div64_u64(ab, c);
-u64 e =3D d * c;
-return d + ((ab - e) ? 1 : 0);
-
-I am aware that I could use DIV64_U64_ROUND_UP instead of the above,
-however, the above allows for larger dividends than when using DIV64_U64_RO=
-UND_UP.
-If I were to use DIV64_U64_ROUND_UP instead, I would have to limit
-max_period further to (U64_MAX + 1 - rate)/rate, which I rather avoid.
-
-I'll send v7 to address this build issue for 32 bit platforms.
-
-Cheers,
-Fab
-
->=20
-> Best regards
-> Uwe
->=20
-> --
-> Pengutronix e.K.                           | Uwe Kleine-K=F6nig          =
-  |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ =
-|
+Thanks,
+Namhyung
 
