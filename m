@@ -1,148 +1,108 @@
-Return-Path: <linux-kernel+bounces-61799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D801E8516B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:12:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17BD585169B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 169011C21CF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:12:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB4401F24A4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF054D9FD;
-	Mon, 12 Feb 2024 14:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A8vYvTgz"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AB83F9D7;
+	Mon, 12 Feb 2024 14:04:00 +0000 (UTC)
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3894CE13
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657473EA8B;
+	Mon, 12 Feb 2024 14:03:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707746648; cv=none; b=B1E8myiFZblfRHRB+C9rUWV2fBYlEPTnJz90GD1Tb1tXgE0ei7iwYe1+WwAn4rcL0QVmgr7WtIggwzC7gHUBNCcQmS2jjoAHOss4glXLDmcsMy5B1iGPS6Vhio9+A+o5QiIHbOWdOI1/x2z9X3jq1OEXQL/b2laq3pHyqhj6Hgg=
+	t=1707746640; cv=none; b=UnzThGyqwdpHP8+RsZXb3Ga2Bc2Eqpd0bCgoJwBbDh3iwNMiKCpZ0qqA1czslw034lcXwZLwiThIFs0Mc+1x4tEYSo8oaRLKMVp86C3kwk2lSMtp21rcamlop05n8AsGdr2OoRayeOPkduRnRdW6uvCLr/EKSkx08jWvn77HJKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707746648; c=relaxed/simple;
-	bh=QDMQ1KkcYtiV6MjOl7LHm4vYVsmfWSXZLbn40VwBYc8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ApJMGJg069imRzlxq3ilNA318sRkgMZKlj3QZ7xAyyezfi+L8rvVVbsHDB1/7kBy0uBlnVzwClYPAET8zpypcVJ1U+NornYfWSAMgy0d+a6Qi13ZlYHCzbtg3WqtNf0i2oxdXT+t4vhyhbiKW5Iv/NLAcveHU4LWNLudB+fLQJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=A8vYvTgz; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33b0ecb1965so1756201f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 06:04:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707746645; x=1708351445; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dzqxKaIV5lycuIt7a1okhuIIh6nU9oeZCJpLQ+HKFAg=;
-        b=A8vYvTgzQnYDCOacYkD8QoBCFrIExkw5mJYZKKo5Y61ZCuX9yD2upsqKDyqYEEUTMO
-         fyIkhNAH3tclSs/A/Lctckf2dRnyyR8gtkz7zOoYr7qVUjWRKdX86/bhJNvbt7sq++AM
-         aEcBOVsYiVKUhP6tctB864/ak1wvIc4LkgwJcNaUZnA8Qrc/M8Xhzr2ZzHT9Ww/+YC1O
-         k4nrYg9KnrNsOg3KLEuBilrAZ+6AVPCO1AC4/hemsUzhDhUCVvRvNN5LWZKRol99wZqK
-         juyIpnfq4J9kq2Fa4ay/7IHKw95lSzS5U+EE1RSNW0UQnIMwNxXQixjfD1jONJc4sHvf
-         jFYA==
+	s=arc-20240116; t=1707746640; c=relaxed/simple;
+	bh=H/JiaCmNWv0EjZSg6nEGx1vCnFpm+C1tngX5CVtRbpY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Lmxhc1DzuzXKlBTCSFnGQel3CdgIeH/5RTGMJhyQKdlOFIxrFO5oiYtTQp2akbirTXoo35M6U0jZm6eGA1mnCI1pG/3qHCFzWVcKTyJbc4uSt12xAk5GERNj0k8meIj7019R3jvFetSfWOui/MMKuW6SyqGMDS61ULcZ3x9MU/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59a99ef8c7fso903841eaf.0;
+        Mon, 12 Feb 2024 06:03:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707746645; x=1708351445;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707746636; x=1708351436;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dzqxKaIV5lycuIt7a1okhuIIh6nU9oeZCJpLQ+HKFAg=;
-        b=o63Blt7w4MAd7hPBoRi3O1o02if5hIKoH+kFc6n5tcsThKhBm6LzBbep4zPCLEy0G4
-         P4tNumUrrPb6KbKZY5yHxnXN0GB9jqGuIUiajYLV+xGVjOzpYa18uCqcOTHjEylb77Rb
-         ZikPgemJirPq5+vWfESH7L+NwNlCWiO/Hp/L4vEY4KZzIXzntpyhNdf6VcQjvyitXqcF
-         2Y+neiGKbyzPbQjy5KpvpAR3vngn4n4HebCcyV2HuKhRmYAZBrZH2VQv9z8AdJmofxC/
-         icsJOHSoxBV67vWXLrRZMfxh7zyiLsDgu9TnA4wu7pQ/9Qygo1+JSSw0DjCvnAyPOY8s
-         r/GA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQF3JuZIJ1Vs3rxZPorzmzoecQk0FYxr5F9PhdGqIbDb070rSBHspxShxzVOgNle3MEL4g/miQlM4aee2x4eETpRs02vGoxm0M+a94
-X-Gm-Message-State: AOJu0Yz5e2SiH905CC9TUjI/I3Q4brRocCgPfcXHq5qXVGsRkEFFtS2u
-	P8CLXtN6ascQ5oE9nLEWA0OzWPG4sVcb7OhCMR+ExMxfUpthODVYMR/PRZddtgE=
-X-Google-Smtp-Source: AGHT+IFy6aDhjr2oJ130HcAfkLOXkvU+O+ob16/LkBpNY5N4HcWxyaK6sZ3E8EGV969nAunN59KVVg==
-X-Received: by 2002:adf:eac9:0:b0:33b:7947:d22 with SMTP id o9-20020adfeac9000000b0033b79470d22mr2896136wrn.57.1707746645615;
-        Mon, 12 Feb 2024 06:04:05 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVoAQdPDjEx05yUQKNJ5YW19Z+nEZfGE5BKVBETz8rQvifVDgKkiVcO2vhxCGv7I3abloAAQMUTrSt3HZUu1hnKRQmjgYWEdx3Fx417AKeLfYRrdURrCKf4u8fvJAe9X7N3swQHP6jLMIjBj+8WOHIMkkdBzWRKTvKoZbcKRxdNLc0ZI2Rw5uIUmtM+GGw8bid4nqe5Fh37dNlKfvZ/nlCDHIS8xr/6X1Z01RvFMZShuEoyxy0MGsUTpCHdLqJIFywsuWJTRiRWWhdFfATqmkIxEdofDlg5oqd9yJXDCAWhTEXahk9yFIK9T45xAWj1hcYX/WhdX4IMO2Gxl4F+VTObdCr+2qnUSjaxjCZxAZAj4ZxpNrteSsVEX/ErAfECV2CzTZWl2fzgQuIF245xuPavSmSrbyjpYlgFquvUeFtcRHqloQftpPqSxgbNGv20faz67RIPgKmiUoL+tT++3P/zr7X1KxetLFSF3QG7H2oPKBtk66Da+ISCcfq1f1171mbUEcMyJqwWdSAx2seFVEBe8+SV2QmKn5X1Zxs3VGwTkol4yU0hzrw7XppoOsX2GyE/kKwEIcEswoxvkqdETEZzv7Djj3EyuUGEaZLE9B/7v2ILTvA=
-Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id v9-20020a5d4b09000000b0033b843786e1sm2135356wrq.51.2024.02.12.06.04.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 06:04:04 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: broonie@kernel.org,
-	robh@kernel.org,
-	andi.shyti@kernel.org,
-	krzysztof.kozlowski@linaro.org,
-	semen.protsenko@linaro.org,
-	conor+dt@kernel.org
-Cc: alim.akhtar@samsung.com,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	devicetree@vger.kernel.org,
-	arnd@arndb.de,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v2 12/12] spi: s3c64xx: switch exynos850 to new port config data
-Date: Mon, 12 Feb 2024 14:03:31 +0000
-Message-ID: <20240212140331.915498-13-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-In-Reply-To: <20240212140331.915498-1-tudor.ambarus@linaro.org>
-References: <20240212140331.915498-1-tudor.ambarus@linaro.org>
+        bh=SH48FpNzIrh1irMaMafbrbeG1GqtnZpMpdefiQFlYzo=;
+        b=oWN6pnp4r4czomoKMVaS3ugHELDOqI5N8OX3JNVKLIjztQJCqPEuq3Jook3FbSz+uf
+         vcMgNV5RpguC+ObIShLCMoOzSyxlppAENkIC7MUDJyb/zGWj716aJcvglfTE57J/sgpw
+         G6sa5I+WiH/GOUR9+bGGIuaqT76jwMLRDDVvQ5UDNbn5ZJmnXB2zSIWZpVDCfEQQOgYz
+         mPcCqakn2NRVXKaqesnZMg0dUJueYEeOaQR/i+HvqOP8fpncMZ9LkPNZAPUw0DsJjrcc
+         4x7daRXAee2VqnJoKHaLEJTkELNZ1exTE/u62e1Mcgp6VMfJXMcLGJRMUlK0ySC5ZMzb
+         oO4w==
+X-Forwarded-Encrypted: i=1; AJvYcCWV7WH+Fk9o2Uttn1XECEo7Vil2ZPkfGfbhTyIMe/9WUYNTgi8E2DpA6W+TQgbVgWhpcPh+RVCAtBaa1LI41BtAEb6PmNecQlRqTx77uZHevWtGbZFcAdIBe7djajqXS/Pg9bf9tly90KicmPHO4E2rXl1jmSsBwFp1bEGnbz3adjJ6Tp8AjhOsyYkAuHRNiX9GI75PdowisIvAUZ76VGf/aCaIbBqBEg==
+X-Gm-Message-State: AOJu0Yy0KFKVcKeZGT9jNgWEh7aNRdJymVGWRJRD1jA9Rknq1sGFcpjS
+	Oi0ne8xVZQA4ITG//LhFFzSgA0Pb0Tqcg67bt/sKXkbk/zd4V6j5YW0arugFBM8=
+X-Google-Smtp-Source: AGHT+IFnP9k38r05lhUVn+K41SOG2mMb7rBFSoguX5NIklTY8am5/XpsYjU62F2UIWFQ91VR9G7yuQ==
+X-Received: by 2002:a05:6358:7f08:b0:17a:cfb0:828a with SMTP id p8-20020a0563587f0800b0017acfb0828amr7130490rwn.19.1707746635943;
+        Mon, 12 Feb 2024 06:03:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXZpxbIUv5LN0Ik/lc+aGjQkWt/AchNS838pMBO5RU36u36p/Pa5MW9AcSf9j9I8gPCmo3E7v411L9vytczJxrTI7anXxo6bZtJyfWahWQIwNj2tuPjHQApPc1XoQ1ZU0L6QtK9tarT6DHvQxBTFuk7UZDCJkrOp4OB/tX3lngVKGHoW53m5ko7l97Is/27x3aM1JlxEWdfqHu3N1ogTEla6uha7rAR/g==
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id n12-20020a81af0c000000b006077a4ff35csm18424ywh.93.2024.02.12.06.03.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 06:03:55 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso2886473276.1;
+        Mon, 12 Feb 2024 06:03:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUsaT3nOo7ZdUY+uo8rLPdXw2B15YV+GThlfM7/wTxmXvvsPzZqnimR+8JaHLt7GUdFeQfyQVt1S6EH3guDVFMsOeWAnS0hYIDdyyL6NBh9CQHefOY+R06KYiCr1r6chz4SVKjSa1ruJSLTvIYK8Uh5JaEMgF3VkJxN8t1dEtFvaWv35Pgs4eYLf9yO4eOLs2wRHPpzEdaDldBoepVnFAfKKJNS79q4pg==
+X-Received: by 2002:a25:2fcc:0:b0:dbd:7491:368f with SMTP id
+ v195-20020a252fcc000000b00dbd7491368fmr5193777ybv.7.1707746635632; Mon, 12
+ Feb 2024 06:03:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240208135629.2840932-1-claudiu.beznea.uj@bp.renesas.com> <20240208135629.2840932-3-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240208135629.2840932-3-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 12 Feb 2024 15:03:44 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWVz8ybzA+WAfc88-8jeQ3oO=VL9QBuQdqLDSQW1SN44Q@mail.gmail.com>
+Message-ID: <CAMuHMdWVz8ybzA+WAfc88-8jeQ3oO=VL9QBuQdqLDSQW1SN44Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: renesas: r9a08g045: add PSCI support
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: magnus.damm@gmail.com, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, linus.walleij@linaro.org, 
+	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Exynos850 has the same version of USI SPI (v2.1) as GS101.
-Drop the fifo_lvl_mask and rx_lvl_offset and switch to the new port
-config data.
+On Fri, Feb 9, 2024 at 1:16=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
+rote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Add PSCI support to enable the suspend/resume with the help of TF-A.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Backward compatibility with DT is not broken because when alises are
-set:
-- the SPI core will set the bus number according to the alias ID
-- the FIFO depth is always the same size for exynos850 (64 bytes) no
-  matter the alias ID number.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v6.9.
 
-Advantages of the change:
-- drop dependency on the OF alias ID.
-- FIFO depth is inferred from the compatible. Exynos850 integrates 3 SPI
-  IPs, all with 64 bytes FIFO depths.
-- use full mask for SPI_STATUS.{RX, TX}_FIFO_LVL fields. Using partial
-  masks is misleading and can hide problems of the driver logic.
+Gr{oetje,eeting}s,
 
-Just compiled tested.
+                        Geert
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/spi/spi-s3c64xx.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index 784786407d2e..9fcbe040cb2f 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -1576,10 +1576,9 @@ static const struct s3c64xx_spi_port_config exynos5433_spi_port_config = {
- };
- 
- static const struct s3c64xx_spi_port_config exynos850_spi_port_config = {
--	/* fifo_lvl_mask is deprecated. Use {rx, tx}_fifomask instead. */
--	.fifo_lvl_mask	= { 0x7f, 0x7f, 0x7f },
--	/* rx_lvl_offset is deprecated. Use {rx, tx}_fifomask instead. */
--	.rx_lvl_offset	= 15,
-+	.fifo_depth	= 64,
-+	.rx_fifomask	= S3C64XX_SPI_ST_RX_FIFO_RDY_V2,
-+	.tx_fifomask	= S3C64XX_SPI_ST_TX_FIFO_RDY_V2,
- 	.tx_st_done	= 25,
- 	.clk_div	= 4,
- 	.high_speed	= true,
--- 
-2.43.0.687.g38aa6559b0-goog
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
