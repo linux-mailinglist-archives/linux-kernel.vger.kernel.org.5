@@ -1,207 +1,194 @@
-Return-Path: <linux-kernel+bounces-62326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A1F851E8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:19:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4BA0851E8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:20:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E84811C225FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:19:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F044282806
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:20:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13295482D4;
-	Mon, 12 Feb 2024 20:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="11FMG5XN"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82038482D4;
+	Mon, 12 Feb 2024 20:20:02 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86F147A7A
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:19:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6245747F6C;
+	Mon, 12 Feb 2024 20:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707769184; cv=none; b=qe8fuP8XrE0DQkRpNbV4iqTfd459e4mLVgQd4HcLiumnxPabW+hcJHsyf1zZc2ccz8sPnSejjjcZ+ocUlGx2fDYEr17kleFiFQd5CMXfx062N9zNh7DVG20jy+FE9RScP0/ZW5/M1V+LZ8Ic5UFobIGrDZ+vsU7rzPxuiOOtPJk=
+	t=1707769202; cv=none; b=R3oMEvgGAVCpwXM6uQHx55LHTpCv6ag3IvV0Fau+4KM7XAUd0SMUFKlNpzMLr/VVL2F1+88qKFtEOJPb6gDXRtAf90VQ3IfmJtSppVXvgtmE+ZTC5bi0bHCUhOEusAU1z086MpIMZKre/AOLgW2YipjMd6CdLAIjrAmX8zODud0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707769184; c=relaxed/simple;
-	bh=uJODUvONYUlc20hpmSj0J1uA1bYdfMjYs2on9f3uMaU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dMOyMYcbEH5BFlWpomDO2WzwJbYFVfLhwaPPWmedbEyClAIJFFJuINeuKpJQIxaqSJ8+qvwD7t5aKrIVpPl5TNc75v4bE+G/FnXIzwHUmM++rWLYKA+xugS6JJB4GpU/L+eQ0S3hbGjtoIc7mOJLuoYNsoUwRHh5df6IWin/OG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=11FMG5XN; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d93b982761so49205ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:19:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707769182; x=1708373982; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Icnm5yBA0aCxHiFxkqBy8LL31RhB/IB62tLF3Y2+Rh4=;
-        b=11FMG5XNHfIstKlv1zF3fyvh+Of51VOIQ2onsVY8flJARraF4gjA5LIN+TFj2G1O5W
-         JWiTYiKZ+SEZLn/+eX1i9XDfHJE+fcfUbAclkhxjoN9r6sxui/mioNKfqwkLfYqQ+lHA
-         H77yyFuuYc9HakPkptohUGOu4QJ7/e3wzSYQXPcQm6A3o6wGW2MciPyiWFpIvEBBCqjj
-         TI/wYJ34DXgJ6R5fHY/mLEUAuhJXGEUn2yghX4Mj2RL82+ltrj89lcoxG57yLODw4jGD
-         0/dmZyZAP206IU2Bk/rFDz0iwPpsvL4FvZvmbQbPZDKX6ctgz3naW+Tl+PG6p3a/gQsg
-         cRVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707769182; x=1708373982;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Icnm5yBA0aCxHiFxkqBy8LL31RhB/IB62tLF3Y2+Rh4=;
-        b=NWZdR9xqVA3cbQYUjHN/t6yjfxVnWHDoBmcKyo8Ui36DGZoWOuv5AwDNQ1ieLa0N1f
-         RGMeuVdETtfMcr0TitekF1kCB0HLRpnZrvM/Oi1Q5JxiW0yBhXZknaao2erE15ipUvMF
-         BNI6UzR72zd8JH6vrUOcn/fgRyX2thr5K5gu5E1oih5OYC6mNIEt6JaZAIknz28Wnifp
-         YHhKgnV3/pjmmPrVdu4T9aNtHKToTFshdEgV0q5XfaIWb6/eQYTPU+hTiJw63x5cDNo/
-         6OHlNhf5h+bUy4SoJZHWwrqbKq9NAsWeaAQSBg8lXnK79tc4vchavd9HbzyDNXFrSOlc
-         yTMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVAa9Q//jHF6iVEWXHcXSxHk+QpjwaFi9yo/mBmNQoCACDa34tyI+Jn2YdtegI5/yEUjTtMyDnFy9tUeNSYxIcmt7brBtCVWvTDN5NP
-X-Gm-Message-State: AOJu0YxXHPnqTRha+5Vbc9MOyUFcPJUrE46oIQrfkcZq3kCDs68sda7I
-	CPJVMQYDM/NUI14/Li+UuCvT9sL/J9pD47uFTy48C1auuFQfcyFdJ1PfwrMcZlzZHzLOSuQPG/+
-	J/1aq6Yd7Hof5aA1ANBI+GgbPn2VW80k45IIh
-X-Google-Smtp-Source: AGHT+IFlMmc/VgL27uQvdpqBTW3rRUsQvhkAr01w85UMAaL7w4vejw2tDQTJNnyrG/NRrY5ESxZBez3SdEz5nMr0uSI=
-X-Received: by 2002:a17:902:c1d4:b0:1d8:e076:21f3 with SMTP id
- c20-20020a170902c1d400b001d8e07621f3mr550plc.2.1707769181746; Mon, 12 Feb
- 2024 12:19:41 -0800 (PST)
+	s=arc-20240116; t=1707769202; c=relaxed/simple;
+	bh=MjOR003u++teowK9Kt6ozRl7Pvro5xP5DskSAipOtcI=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=FXr91ufyuOpEbFTSC1LLoxOkNXoqE1It0hIZyCV3NK87jUSsrLZQZu1tpI9u3HPginhmbeTh7JiJyjIsMu/hvcYS5CjSvVYRx7f6Ib/BnTZzoN/KICsnzt+clWaMwPcStXqeVxIDTaUHkWoHcTL602vnvACG4EkWZilLWVK1FgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (178.176.73.92) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 12 Feb
+ 2024 23:19:43 +0300
+Subject: Re: [PATCH net-next v2 5/5] net: ravb: Add runtime PM support
+To: claudiu beznea <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240209170459.4143861-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240209170459.4143861-6-claudiu.beznea.uj@bp.renesas.com>
+ <3808dee0-b623-b870-7d96-94cc5fc12350@omp.ru>
+ <7d0ae75d-2fdb-47cb-b57b-20ee477d6081@tuxon.dev>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <1990e269-44fe-b45f-09b5-0c84f21778fc@omp.ru>
+Date: Mon, 12 Feb 2024 23:19:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240210031746.4057262-1-irogers@google.com> <20240210031746.4057262-2-irogers@google.com>
- <CAM9d7chEKepmHY_Mgvq27CEcKB1e8bENwn2=pMe-yin30nfGLA@mail.gmail.com>
-In-Reply-To: <CAM9d7chEKepmHY_Mgvq27CEcKB1e8bENwn2=pMe-yin30nfGLA@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 12 Feb 2024 12:19:26 -0800
-Message-ID: <CAP-5=fX7h9ku-XgjYe+3B5NWOJnapLnuJ_JqxywPaTu76VxazA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/6] perf maps: Switch from rbtree to lazily sorted
- array for addresses
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Colin Ian King <colin.i.king@gmail.com>, Liam Howlett <liam.howlett@oracle.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Artem Savkov <asavkov@redhat.com>, 
-	Changbin Du <changbin.du@huawei.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	James Clark <james.clark@arm.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, leo.yan@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <7d0ae75d-2fdb-47cb-b57b-20ee477d6081@tuxon.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/12/2024 20:04:08
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 183376 [Feb 12 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.73.92 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;178.176.73.92:7.4.1,7.7.3
+X-KSE-AntiSpam-Info: {cloud_iprep_silent}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.73.92
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/12/2024 20:10:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 2/12/2024 6:23:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On Mon, Feb 12, 2024 at 12:15=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
->
-> On Fri, Feb 9, 2024 at 7:18=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > Maps is a collection of maps primarily sorted by the starting address
-> > of the map. Prior to this change the maps were held in an rbtree
-> > requiring 4 pointers per node. Prior to reference count checking, the
-> > rbnode was embedded in the map so 3 pointers per node were
-> > necessary. This change switches the rbtree to an array lazily sorted
-> > by address, much as the array sorting nodes by name. 1 pointer is
-> > needed per node, but to avoid excessive resizing the backing array may
-> > be twice the number of used elements. Meaning the memory overhead is
-> > roughly half that of the rbtree. For a perf record with
-> > "--no-bpf-event -g -a" of true, the memory overhead of perf inject is
-> > reduce fom 3.3MB to 3MB, so 10% or 300KB is saved.
-> >
-> > Map inserts always happen at the end of the array. The code tracks
-> > whether the insertion violates the sorting property. O(log n) rb-tree
-> > complexity is switched to O(1).
-> >
-> > Remove slides the array, so O(log n) rb-tree complexity is degraded to
-> > O(n).
-> >
-> > A find may need to sort the array using qsort which is O(n*log n), but
-> > in general the maps should be sorted and so average performance should
-> > be O(log n) as with the rbtree.
-> >
-> > An rbtree node consumes a cache line, but with the array 4 nodes fit
-> > on a cache line. Iteration is simplified to scanning an array rather
-> > than pointer chasing.
-> >
-> > Overall it is expected the performance after the change should be
-> > comparable to before, but with half of the memory consumed.
-> >
-> > To avoid a list and repeated logic around splitting maps,
-> > maps__merge_in is rewritten in terms of
-> > maps__fixup_overlap_and_insert. maps_merge_in splits the given mapping
-> > inserting remaining gaps. maps__fixup_overlap_and_insert splits the
-> > existing mappings, then adds the incoming mapping. By adding the new
-> > mapping first, then re-inserting the existing mappings the splitting
-> > behavior matches.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> [SNIP]
-> >  int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map, v=
-oid *data), void *data)
-> >  {
-> > -       struct map_rb_node *pos;
-> > +       bool done =3D false;
-> >         int ret =3D 0;
-> >
-> > -       down_read(maps__lock(maps));
-> > -       maps__for_each_entry(maps, pos) {
-> > -               ret =3D cb(pos->map, data);
-> > -               if (ret)
-> > -                       break;
-> > +       /* See locking/sorting note. */
-> > +       while (!done) {
-> > +               down_read(maps__lock(maps));
-> > +               if (maps__maps_by_address_sorted(maps)) {
-> > +                       /*
-> > +                        * maps__for_each_map callbacks may buggily/uns=
-afely
-> > +                        * insert into maps_by_address. Deliberately re=
-load
-> > +                        * maps__nr_maps and maps_by_address on each it=
-eration
-> > +                        * to avoid using memory freed by maps__insert =
-growing
-> > +                        * the array - this may cause maps to be skippe=
-d or
-> > +                        * repeated.
-> > +                        */
-> > +                       for (unsigned int i =3D 0; i < maps__nr_maps(ma=
-ps); i++) {
-> > +                               struct map **maps_by_address =3D maps__=
-maps_by_address(maps);
->
-> Any chance they can move out of the loop?  I guess not as they are
-> not marked to const/pure functions..
+On 2/12/24 10:56 AM, claudiu beznea wrote:
 
-It's not because the cb(...) call below will potentially modify
-maps_by_address by inserting maps and reallocating the array. Having
-it outside the loop was what caused the original bug.
+[...]
 
-Thanks,
-Ian
+>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>
+>>> Add runtime PM support for the ravb driver. As the driver is used by
+>>> different IP variants, with different behaviors, to be able to have the
+>>> runtime PM support available for all devices, the preparatory commits
+>>> moved all the resources parsing and allocations in the driver's probe
+>>> function and kept the settings for ravb_open(). This is due to the fact
+>>> that on some IP variants-platforms tuples disabling/enabling the clocks
+>>> will switch the IP to the reset operation mode where registers' content is
+>>
+>>    This pesky "registers' content" somehow evaded me -- should be "register
+>> contents" as well...
+>>
+>>> lost and reconfiguration needs to be done. For this the rabv_open()
+>>> function enables the clocks, switches the IP to configuration mode, applies
+>>> all the registers settings and switches the IP to the operational mode. At
+>>> the end of ravb_open() IP is ready to send/receive data.
+>>>
+>>> In ravb_close() necessary reverts are done (compared with ravb_open()), the
+>>> IP is switched to reset mode and clocks are disabled.
+>>>
+>>> The ethtool APIs or IOCTLs that might execute while the interface is down
+>>> are either cached (and applied in ravb_open()) or rejected (as at that time
+>>> the IP is in reset mode). Keeping the IP in the reset mode also increases
+>>> the power saved (according to the hardware manual).
+>>>
+>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+>> [...]
+>>
+>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>>> index f4be08f0198d..5bbfdfeef8a9 100644
+>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>>> @@ -1939,16 +1939,21 @@ static int ravb_open(struct net_device *ndev)
+>>>  {
+>>>  	struct ravb_private *priv = netdev_priv(ndev);
+>>>  	const struct ravb_hw_info *info = priv->info;
+>>> +	struct device *dev = &priv->pdev->dev;
+>>>  	int error;
+>>>  
+>>>  	napi_enable(&priv->napi[RAVB_BE]);
+>>>  	if (info->nc_queues)
+>>>  		napi_enable(&priv->napi[RAVB_NC]);
+>>>  
+>>> +	error = pm_runtime_resume_and_get(dev);
+>>> +	if (error < 0)
+>>> +		goto out_napi_off;
+>>
+>>    Well, s/error/ret/ -- it would fit better here...
+> 
+> Using error is the "trademark" of this driver, it is used all around the
+> driver. I haven't introduced it here, I don't like it. The variable error
 
-> Thanks,
-> Namhyung
->
->
-> > +                               struct map *map =3D maps_by_address[i];
-> > +
-> > +                               ret =3D cb(map, data);
-> > +                               if (ret)
-> > +                                       break;
-> > +                       }
-> > +                       done =3D true;
-> > +               }
-> > +               up_read(maps__lock(maps));
-> > +               if (!done)
-> > +                       maps__sort_by_address(maps);
-> >         }
-> > -       up_read(maps__lock(maps));
-> >         return ret;
-> >  }
+   Heh, because it's my usual style. Too bad you don't like it... :-)
+
+> in this particular function is here from the beginning of the driver.
+
+   I think it's well suited for the functions returning either 0 or a
+(negative) error code. It's *if* (error < 0) that confuses me (as this
+API can return positive numbers in case of success...
+
+> So, I don't consider changing error to ret is the scope of this series.
+
+   OK, you're probably right... are you going to respin the series because
+of Biju's comments?
+
+[...]
+>>> @@ -3066,6 +3089,12 @@ static void ravb_remove(struct platform_device *pdev)
+>>>  	struct net_device *ndev = platform_get_drvdata(pdev);
+>>>  	struct ravb_private *priv = netdev_priv(ndev);
+>>>  	const struct ravb_hw_info *info = priv->info;
+>>> +	struct device *dev = &priv->pdev->dev;
+>>> +	int error;
+>>> +
+>>> +	error = pm_runtime_resume_and_get(dev);
+>>> +	if (error < 0)
+>>> +		return;
+>>
+>>    Again, s/erorr/ret/ in this case.
+> 
+> error was used here to comply with the rest of the driver. So, if you still
+> want me to change it here and in ravb_remove() please confirm.
+
+   No, we are good enough without that; I'll consider doing a cleanup
+when/if I have time. :-)
+
+> Thank you,
+> Claudiu Beznea
+
+MBR, Sergey
 
