@@ -1,118 +1,117 @@
-Return-Path: <linux-kernel+bounces-62330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2A74851E99
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:24:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE7B0851E9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:25:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 204262812AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:24:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 804E31F2565C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D5B482C0;
-	Mon, 12 Feb 2024 20:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08684879B;
+	Mon, 12 Feb 2024 20:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J2RLtG4g"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="huo7uteC"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546A94644F;
-	Mon, 12 Feb 2024 20:23:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B2B482C5
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:24:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707769438; cv=none; b=KouoJSz9g4c0yw33VRkc2EYM+nA2Tmd6J9PaXNQI9ajvQnNHnKYt2vWhRRSzLtphswhVJIXQmdCtWrZ6u4Osh4QvEKtHTI6heC50huHKnF95fB8JpwILDqDIpcagx3duj4aCUxGXPH21oN/njkY5OmV4AIIr2xypdwLydnsrPao=
+	t=1707769490; cv=none; b=q+O2zuwO9bNoqqziMH3Nvi5B9lUeehHEKfYlNXhJDzX8iDSIH1xNRlIv0OB589NqKEZf99mqz6aLVSJrafX/XriIkHlZ7DHlm7qlYAlYGIJGCci/q5RNySpQb9EMBwLypE0PBRV9FZwDcR9vJH9gGmsylyutjzq4194Xsa64qt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707769438; c=relaxed/simple;
-	bh=JQf2lj/HzjPCnEf/bSiPcFb7iymUO94Ot5ZsNI7BFTQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Htst9L72KrnAiv3U9nivqz232RrSiaaDBMkqb+2Z6+ZAjCPCugsbNRNUSQm4TbLfQtAh3WibUkIJSFMtlYhzinEq4d3wxKor34infTD2DOA8QRYg6lkEB5ClH5M0VmN7wMdDiP76GbptBOyUBQkm085XOfzm6jj0jXDOprK/LR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J2RLtG4g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6524FC433C7;
-	Mon, 12 Feb 2024 20:23:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707769438;
-	bh=JQf2lj/HzjPCnEf/bSiPcFb7iymUO94Ot5ZsNI7BFTQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=J2RLtG4g3Y8jRHRN96RqXggg8ZI07R9k9EXGIdTIJZZV5M4jwgikh+zBQwZPVDYn6
-	 mXQ07PE/UVuDnzO1WK7f99rY9D0K/eFRLsrUe2jnjU5CkYJBpWPlk7i9cW+WGZFf99
-	 y5ATK5fbpLwRtWxMBIHRLaG8Qoo8K/LyYkViIGI8liSuvywKbY1ySfMbWWXfXS+TlD
-	 ejHF+VsLi9rvdusRuU2SoqTgtB9Do7l7cHio8aDRKCIjKAxjiDDNdZWP1s53pVGC54
-	 5vCQTt1zcpXIISiVRGRakWQ2sjB8PksbyFmA/KYWc/WG4S4eDI4lExHRSTWP9vAaPu
-	 hcBqAZnTIhqTg==
-From: SeongJae Park <sj@kernel.org>
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Bernd Edlinger <bernd.edlinger@hotmail.de>,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 4/4] selftests: damon: add access_memory to .gitignore
-Date: Mon, 12 Feb 2024 12:23:56 -0800
-Message-Id: <20240212202356.73461-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <34986860-41e5-4d03-a0c5-72af12e7e97c@gmail.com>
-References: 
+	s=arc-20240116; t=1707769490; c=relaxed/simple;
+	bh=EW1iwgQRXKT66+pbcKRYd+o9vCcGD15QbpagYfyY78A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y8AwQ8IgEFRRR7tYcyYRWlPSYXDnBfHdfVgAvpVXBZ4ZzPGsbvBbXe6f5kFlqk1RAMJWeSfIWF3pBQBE8VT6A1/59Ncaj/JG6bzWBqZ5MOHSKE6HQku9eF3lCaYkCKiMKlegl93ERGsTqHw62RYJEQjZUuQwlI3xKYqtw7HvN5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=huo7uteC; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 12 Feb 2024 20:24:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707769486;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i4xg3mWKHsd+1fYsNi4Rtxp1tHHU5nJ+XHR6qN8at3A=;
+	b=huo7uteCfELHBo8TMxLabpBxYmnmzdwnN/sLcsP79jePf7Mc8c3/ILRzwhsJOrGHEPkbR0
+	Lfz4a2Uc0mYAV80Yt4bS38aTzrhDI9TTjC4BCAus3jHCiReJKZ0qQEjMGD5T2Uq1fuQlKc
+	MJLrzegOaL66bjag9WKDbaF9pWlQRPY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: ankita@nvidia.com
+Cc: jgg@nvidia.com, maz@kernel.org, james.morse@arm.com,
+	suzuki.poulose@arm.com, yuzenghui@huawei.com,
+	reinette.chatre@intel.com, surenb@google.com, stefanha@redhat.com,
+	brauner@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+	mark.rutland@arm.com, alex.williamson@redhat.com,
+	kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org,
+	akpm@linux-foundation.org, andreyknvl@gmail.com,
+	wangjinchao@xfusion.com, gshan@redhat.com, shahuang@redhat.com,
+	ricarkol@google.com, linux-mm@kvack.org, lpieralisi@kernel.org,
+	rananta@google.com, ryan.roberts@arm.com, david@redhat.com,
+	linus.walleij@linaro.org, bhe@redhat.com, aniketa@nvidia.com,
+	cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
+	vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
+	jhubbard@nvidia.com, danw@nvidia.com, kvmarm@lists.linux.dev,
+	mochs@nvidia.com, zhiw@nvidia.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v7 0/4] kvm: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <Zcp-hIlV-ZEu0Jou@linux.dev>
+References: <20240211174705.31992-1-ankita@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240211174705.31992-1-ankita@nvidia.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 12 Feb 2024 21:07:34 +0100 Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
-
+On Sun, Feb 11, 2024 at 11:17:01PM +0530, ankita@nvidia.com wrote:
+> From: Ankit Agrawal <ankita@nvidia.com>
 > 
+> Currently, KVM for ARM64 maps at stage 2 memory that is considered device
+> with DEVICE_nGnRE memory attributes; this setting overrides (per
+> ARM architecture [1]) any device MMIO mapping present at stage 1,
+> resulting in a set-up whereby a guest operating system cannot
+> determine device MMIO mapping memory attributes on its own but
+> it is always overridden by the KVM stage 2 default.
 > 
-> On 12.02.24 20:53, SeongJae Park wrote:
-> > Hello,
-> > 
-> > On Mon, 12 Feb 2024 20:43:39 +0100 Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
-> > 
-> >> This binary is missing in the .gitignore and stays as an untracked file.
-> >>
-> >> Reported-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
-> >> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> > 
-> > 'checkpatch.pl' complains as below:
-> > 
-> >     WARNING: Reported-by: should be immediately followed by Closes: with a URL to the report
-> >     #11:
-> >     Reported-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
-> >     Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> > 
-> > I guess the 'Closes:' could this link?
-> > https://lore.kernel.org/r/AS8P193MB1285C963658008F1B2702AF7E4792@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM
-> >
+> This set-up does not allow guest operating systems to select device
+> memory attributes independently from KVM stage-2 mappings
+> (refer to [1], "Combining stage 1 and stage 2 memory type attributes"),
+> which turns out to be an issue in that guest operating systems
+> (e.g. Linux) may request to map devices MMIO regions with memory
+> attributes that guarantee better performance (e.g. gathering
+> attribute - that for some devices can generate larger PCIe memory
+> writes TLPs) and specific operations (e.g. unaligned transactions)
+> such as the NormalNC memory type.
 > 
-> I will add the Closes tag with the right link, thank you.
-
-Thank you :)
-
+> The default device stage 2 mapping was chosen in KVM for ARM64 since
+> it was considered safer (i.e. it would not allow guests to trigger
+> uncontained failures ultimately crashing the machine) but this
+> turned out to be asynchronous (SError) defeating the purpose.
 > 
-> > Also, note that this conflicts on mm-unstable.
-> 
-> Should I use mm-unstable as basis to make sure no conflicts are introduced?
+> For these reasons, relax the KVM stage 2 device memory attributes
+> from DEVICE_nGnRE to Normal-NC.
 
-DAMON selftest patches could be merged in mm-unstable or linux-kselftest
-depending on cases.
+Hi Ankit,
 
-If you rebase this on mm-unstable, it might conflict on linux-kselftest.
-Letting Shuah merge this on linux-kselftest and asking Linus Torvalds to fix
-the conflict in next merge window could be one possible option.
+Thanks for being responsive in respinning the series according to the
+feedback. I think we're pretty close here, but it'd be good to address
+the comment / changelog feedback as well.
 
-Or, making this split out of this series, rebase on mm-unstable, and asking
-Andrew Morton to carry may be another option.
+Can you respin this once more? Hopefully we can get this stuff soaking
+in -next thereafter.
 
-Andrew and Shuah, may I ask your opinions?
-
-
+-- 
 Thanks,
-SJ
-
-[...]
+Oliver
 
