@@ -1,209 +1,107 @@
-Return-Path: <linux-kernel+bounces-61917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12DD5851861
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:48:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82D6A851866
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:48:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 369131C21C66
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:48:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EF9628166E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:48:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49493CF45;
-	Mon, 12 Feb 2024 15:47:55 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03092AF1C
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12613D0B4;
+	Mon, 12 Feb 2024 15:48:04 +0000 (UTC)
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DCD3C495;
+	Mon, 12 Feb 2024 15:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707752875; cv=none; b=h/ojHNMBL28bzoPBe/2+iRqzsah+49a1vD7sMjoD7mu/i0pV9pX2DR/431r5CeFBAQqQ1su5p63xx0AxCisHkYWEWxJSyT9/mwVknqHafBiyCxp3NcUZH2JPoDGwArtqCNbs5XnhOM57x3Pqjh3e9ed097jHlSiIdwWhAem+z8k=
+	t=1707752884; cv=none; b=h5Mrz1Da7R5SFYxJJbm1pPweRIEXxhpc7tHNrIKGxlP1ZsVO4hf5xq4A4rsiC+LZGDnq5F6ODH8g2WvYfSGbv0c1lO5yI/W6xt+GHhZH7yHL+Kp4MxqrgXBRDG7USQGDfHfzaCyWnNCcuWMKa1iEZDnnsAap3BrXl5gwW35f3h4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707752875; c=relaxed/simple;
-	bh=9MqK7E8FB3NGz7M56N0HaUnBr6KDzZ40kKRNBHw8PkM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MiXLiyHrP8jq2UH5tFb7lnmGuCxgyf1xKHNGZqiuxETUa9z9kvC4FdsRakl8EvSyeJOhte1bYKhRad5dZSDD5+vnJVWMIKUHkO6g+g3t3LBULZaQfJU3+l/lmyJ5v8K8qGOeQy8e68yPqv3etsv+uRxsiP6mvDheF1CLzxNEUXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 526FBDA7;
-	Mon, 12 Feb 2024 07:48:33 -0800 (PST)
-Received: from [10.57.78.115] (unknown [10.57.78.115])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BF323F766;
-	Mon, 12 Feb 2024 07:47:46 -0800 (PST)
-Message-ID: <82c59a7f-328e-4521-8855-ccacc3dc4ce5@arm.com>
-Date: Mon, 12 Feb 2024 15:47:44 +0000
+	s=arc-20240116; t=1707752884; c=relaxed/simple;
+	bh=Be7/SIwQMjRcU5oeA3ToxtFC/uZGDzasgtxIjw2fCjo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s9e9LDRXAaEGu8ZCEOT+01AxKNT5fmDSKR2R1a/eQRH4Ga7UecoMkfrSbgUfBDOesavKot5XEM9LQ2GC2n5K0rThmdZxYD91uTLevGvABPUDagyIaVEbsKNzy2DygDJOgKSObhg1dnLo4MUH9KJTog8Vq1jpy0R1RaazWNBn5SM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-59d249f8e57so184271eaf.1;
+        Mon, 12 Feb 2024 07:48:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707752882; x=1708357682;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+/L6O8C6yOX7T5tLvNgT8mfVyjq/NcCcZ+sJHriik+w=;
+        b=FPqXOMSaQNp1leCXv0YSicYaCZ9GzNIN6r1aaAWqjjXuP1J4Zszftg0UU37T1sRERE
+         yI1zp/NsTkidFfj+cIOh2nAhPdL8++E/EOU2rUeHXAaHGglXMNqyGi2OXl5p3ZvNPgX2
+         0YnVmQ7fu1vZlX1m5/eXytDKLda/pwMMjq1lvtI/EguxXJ4PsT2fi8fn9/RoScA9H6TJ
+         qkp8gZQ2B8JtBitTYc10RxHKXc4S1vcFMxeJbV/+K5m5wxgVWN9o4nkoI4qf1YOBIaCy
+         K5HoT7pcsR8XPpuXAiAusBTV8gqV/FqgYBdwUzDnuBChZh5ED/mg/eM9HKT4sW11rs7G
+         5ZIw==
+X-Forwarded-Encrypted: i=1; AJvYcCVCy93O90Tu/13s62sj+HG2oXJo8QpE4GIuQzawZoMKEtB58UAwZcIR8DaOBxFnYvY+UfbXgPOpEGXkwTUJtKNe+he2q2XJ+OmKTqOnmgIQImWGpswn684maY5QnAQTGHKEmT7mfs6Qw3rWiwUA/2XqpaXpYLMsa9/3RXBiiN+F2LyJIDGn966B1aTZXtuft+NpjuxZ5ba7AYbkZK11QVOr/+zz
+X-Gm-Message-State: AOJu0Yxso8FfzrdH8TdBfkiZG93HYvgSoIuty/g9IlMcR+iRGnfsZKsn
+	fjFZ7kdvMWc221G8DMky0lulp0/nifbHxThkZskA9jnl0JXlooIucLsp6HINmaR0UlPxwXliT15
+	vWcFUX8EOvxKUpIsDPPxrtU7C2kA=
+X-Google-Smtp-Source: AGHT+IGTL+ANY9Z1WiTUMovOS6ysIZX3Uxv342QYPLEI2dcV3vncrS0nHYmuzHom4rfnjZABfejkVl1IaHI99TFW70c=
+X-Received: by 2002:a4a:ca0d:0:b0:599:e8ff:66d9 with SMTP id
+ w13-20020a4aca0d000000b00599e8ff66d9mr5256840ooq.1.1707752881841; Mon, 12 Feb
+ 2024 07:48:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 22/25] mm: Add pte_batch_hint() to reduce scanning in
- folio_pte_batch()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
- James Morse <james.morse@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
- <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
- Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
- Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240202080756.1453939-1-ryan.roberts@arm.com>
- <20240202080756.1453939-23-ryan.roberts@arm.com>
- <6d452a1a-1edc-4e97-8b39-99dc48315bb8@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <6d452a1a-1edc-4e97-8b39-99dc48315bb8@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240205060305.3594942-1-li.meng@amd.com>
+In-Reply-To: <20240205060305.3594942-1-li.meng@amd.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 12 Feb 2024 16:47:49 +0100
+Message-ID: <CAJZ5v0iQqHET2-vqEkLH34_dryP7yLSfkxqfsU2F33yuWkO_jw@mail.gmail.com>
+Subject: Re: [PATCH] Fix the warning of amd-pstate.rst.
+To: Meng Li <li.meng@amd.com>
+Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Borislav Petkov <bpetkov@amd.com>, 
+	Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	x86@kernel.org, linux-acpi@vger.kernel.org, 
+	Shuah Khan <skhan@linuxfoundation.org>, linux-kselftest@vger.kernel.org, 
+	Nathan Fontenot <nathan.fontenot@amd.com>, Deepak Sharma <deepak.sharma@amd.com>, 
+	Alex Deucher <alexander.deucher@amd.com>, Mario Limonciello <mario.limonciello@amd.com>, 
+	Shimmer Huang <shimmer.huang@amd.com>, Perry Yuan <Perry.Yuan@amd.com>, 
+	Xiaojian Du <Xiaojian.Du@amd.com>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	Borislav Petkov <bp@alien8.de>, Oleksandr Natalenko <oleksandr@natalenko.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/02/2024 13:43, David Hildenbrand wrote:
-> On 02.02.24 09:07, Ryan Roberts wrote:
->> Some architectures (e.g. arm64) can tell from looking at a pte, if some
->> follow-on ptes also map contiguous physical memory with the same pgprot.
->> (for arm64, these are contpte mappings).
->>
->> Take advantage of this knowledge to optimize folio_pte_batch() so that
->> it can skip these ptes when scanning to create a batch. By default, if
->> an arch does not opt-in, folio_pte_batch() returns a compile-time 1, so
->> the changes are optimized out and the behaviour is as before.
->>
->> arm64 will opt-in to providing this hint in the next patch, which will
->> greatly reduce the cost of ptep_get() when scanning a range of contptes.
->>
->> Tested-by: John Hubbard <jhubbard@nvidia.com>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>   include/linux/pgtable.h | 18 ++++++++++++++++++
->>   mm/memory.c             | 20 +++++++++++++-------
->>   2 files changed, 31 insertions(+), 7 deletions(-)
->>
->> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->> index 50f32cccbd92..cba31f177d27 100644
->> --- a/include/linux/pgtable.h
->> +++ b/include/linux/pgtable.h
->> @@ -212,6 +212,24 @@ static inline int pmd_dirty(pmd_t pmd)
->>   #define arch_flush_lazy_mmu_mode()    do {} while (0)
->>   #endif
->>   +#ifndef pte_batch_hint
->> +/**
->> + * pte_batch_hint - Number of pages that can be added to batch without scanning.
->> + * @ptep: Page table pointer for the entry.
->> + * @pte: Page table entry.
->> + *
->> + * Some architectures know that a set of contiguous ptes all map the same
->> + * contiguous memory with the same permissions. In this case, it can provide a
->> + * hint to aid pte batching without the core code needing to scan every pte.
-> 
-> I think we might want to document here the expectation regarding
-> dirty/accessed bits. folio_pte_batch() will ignore dirty bits only with
-> FPB_IGNORE_DIRTY. But especially for arm64, it makes sense to ignore them
-> always when batching, because the dirty bit may target any pte part of the
-> cont-pte group either way.
-> 
-> Maybe something like:
-> 
-> "
-> An architecture implementation may only ignore the PTE accessed and dirty bits.
-> Further, it may only ignore the dirty bit if that bit is already not
-> maintained with precision per PTE inside the hinted batch, and ptep_get()
-> would already have to collect it from various PTEs.
-> "
+On Mon, Feb 5, 2024 at 7:04=E2=80=AFAM Meng Li <li.meng@amd.com> wrote:
+>
+> Title under line too short
+>
+> Signed-off-by: Meng Li <li.meng@amd.com>
+> ---
+>  Documentation/admin-guide/pm/amd-pstate.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/=
+admin-guide/pm/amd-pstate.rst
+> index 0a3aa6b8ffd5..1e0d101b020a 100644
+> --- a/Documentation/admin-guide/pm/amd-pstate.rst
+> +++ b/Documentation/admin-guide/pm/amd-pstate.rst
+> @@ -381,7 +381,7 @@ driver receives a message with the highest performanc=
+e change, it will
+>  update the core ranking and set the cpu's priority.
+>
+>  ``amd-pstate`` Preferred Core Switch
+> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>  Kernel Parameters
+>  -----------------
+>
+> --
 
-I'm proposing to simplify this to:
-
-"
-An architecture implementation may ignore the PTE accessed state. Further, the
-dirty state must apply atomically to all the PTEs described by the hint.
-"
-
-Which I think more accurately describes the requirement. Shout if you disagree.
-
-> 
-> I think there are some more details to it, but I'm hoping something along
-> the lines above is sufficient.
-> 
-> 
->> +
->>   #ifndef pte_advance_pfn
->>   static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
->>   {
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 65fbe4f886c1..902665b27702 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -988,16 +988,21 @@ static inline int folio_pte_batch(struct folio *folio,
->> unsigned long addr,
->>   {
->>       unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
->>       const pte_t *end_ptep = start_ptep + max_nr;
->> -    pte_t expected_pte = __pte_batch_clear_ignored(pte_advance_pfn(pte, 1),
->> flags);
->> -    pte_t *ptep = start_ptep + 1;
->> +    pte_t expected_pte = __pte_batch_clear_ignored(pte, flags);
->> +    pte_t *ptep = start_ptep;
->>       bool writable;
->> +    int nr;
->>         if (any_writable)
->>           *any_writable = false;
->>         VM_WARN_ON_FOLIO(!pte_present(pte), folio);
->>   -    while (ptep != end_ptep) {
->> +    nr = pte_batch_hint(ptep, pte);
->> +    expected_pte = pte_advance_pfn(expected_pte, nr);
->> +    ptep += nr;
->> +
-> 
-> *Maybe* it's easier to get when initializing expected_pte+ptep only once.
-> 
-> Like:
-> 
-> [...]
-> pte_t expected_pte, *ptep;
-> [...]
-> 
-> nr = pte_batch_hint(start_ptep, pte);
-> expected_pte = __pte_batch_clear_ignored(pte_advance_pfn(pte, nr), flags);
-> ptep = start_ptep + nr;
-> 
->> +    while (ptep < end_ptep) {
->>           pte = ptep_get(ptep);
->>           if (any_writable)
->>               writable = !!pte_write(pte);
->> @@ -1011,17 +1016,18 @@ static inline int folio_pte_batch(struct folio *folio,
->> unsigned long addr,
->>            * corner cases the next PFN might fall into a different
->>            * folio.
->>            */
->> -        if (pte_pfn(pte) == folio_end_pfn)
->> +        if (pte_pfn(pte) >= folio_end_pfn)
->>               break;
->>             if (any_writable)
->>               *any_writable |= writable;
->>   -        expected_pte = pte_advance_pfn(expected_pte, 1);
->> -        ptep++;
->> +        nr = pte_batch_hint(ptep, pte);
->> +        expected_pte = pte_advance_pfn(expected_pte, nr);
->> +        ptep += nr;
->>       }
->>   -    return ptep - start_ptep;
->> +    return min(ptep - start_ptep, max_nr);
->>   }
-> 
-> Acked-by: David Hildenbrand <david@redhat.com>
-> 
-
+Applied as 6.9 material under a revised subject, thanks!
 
