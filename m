@@ -1,410 +1,165 @@
-Return-Path: <linux-kernel+bounces-62288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5D50851E15
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:46:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F05E3851E1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBAEB1C21D38
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:46:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C3BCB23A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0270947A66;
-	Mon, 12 Feb 2024 19:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6AA47F5C;
+	Mon, 12 Feb 2024 19:47:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nMkGTztB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nxvjID8z"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA20A4655D;
-	Mon, 12 Feb 2024 19:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AB947F45;
+	Mon, 12 Feb 2024 19:47:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707767174; cv=none; b=Fi4gOFc1NX3qsGlCvY7Y3fBzBKMbqzcO1ikMz5zcEOiuMfAAoehBucE6VpkOE5sn+8ZBCBamdAro4MglV+FVGbDC0XufsuYaCXw5ctdXux1x+Q2AWH1AWOKks2ht9M6T+MQgFTBF0WxkhNfLNx+jynrfPePKINSMW+bUr8/2Hlc=
+	t=1707767278; cv=none; b=skfmIl3jOljPoV105VLmbu/KTLIXxEwY+Pp7bsSmf+1v6lcf5XLkUld8Nged3E4B5dg/Wz36Z3Wn8WSLi1yBuz2MfpeRqbJ9X+gmD6a4HUM6Ka4UKNCoeK9lKGmqrnikMFDtrQKGLddPKWbu6cf5xLFLPSONkVyPAnzkF444mX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707767174; c=relaxed/simple;
-	bh=wmrRIIWxu65O5N6AI7t+rUM+StBiZ94nY72lvTwW/mg=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=J4pJWkA5eIDTn0RSDs+8+eJ2nlO4DnLYzCtrxAeSakap54KTzRC0y4eCOv7EdGbrw2GLEyZ79sZ7ftfH3iz1WpX9oUgVPGCxFatRAv95zTmF80gCZd+OqbBxS+wv1CgKY5KvvXd8IzDX6goTgwsyaiUsPyhggB7J6Vu10bWPUn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nMkGTztB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4C1CC433C7;
-	Mon, 12 Feb 2024 19:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707767173;
-	bh=wmrRIIWxu65O5N6AI7t+rUM+StBiZ94nY72lvTwW/mg=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=nMkGTztBtlCouzJvZf4+2ptVWM/SQCVioG/p024lZ1nkvwgg8KzUDujxlKzjMtyYj
-	 5hD/9Jlm8qSuknr2XCfdyhhFX4Fnam4eCWkfSZX10hlJb9NJKfhat4TtFE0c6MIUuU
-	 siTQkFf+Z130A6UET+P4umXEJLwPyWCrU6DA8t67SzTiYN2MQj9w839/TsZ6+2Ejk9
-	 /XOO0EQBz6FKgYLJHctJOSsrKB76q28jAfmFML88Z72K0dpWB1QOm0AVEYE8kRwZpU
-	 lQDnwqizeTnZ2y1/BJo9uMhLl3ixjKvOyi+iOT8BTP/AmDfRawZslcNnj5LBtftcLr
-	 U5VvJS62Cxrhw==
+	s=arc-20240116; t=1707767278; c=relaxed/simple;
+	bh=zJTgtxIKXgoU9MG2O9BnZcboJP5eJ6Oewa5Hsjb/uRI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qX9mVrH9aWJq+vbGLmi8lutP9pdkEdzBjusnudixg2mTaavIQK5Jh2ekdfwRto5tH7DLM0Ok3mUguZFTDOE23LpKO0215b3oqszG6HRgAopvF79hd4JOqRVO9Sns7zUgqOPwjf7BUDvkoZ9SGIAsIPegVMaGHvV7HCg/yrA5mx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nxvjID8z; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CJffmB020322;
+	Mon, 12 Feb 2024 19:47:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=6L3jpxBwkyfcvRtH8S/uSaadMDWnvfPBo1NAJUDPJUk=;
+ b=nxvjID8zwQcQynlc6Me8SNDzFKVHc8Tsn/lvnutsNlnI/d9gjMH2sXwjaZThXhPYUNGu
+ FGGWWIe175KQBGtX0kooKCVaCbFmTHtmXnUNlb/9e4qyobKRbTUD8bPF34uOkfx90SGS
+ haBvaTiTuwR06O9QW6XgBg40EsRhuJTOAEGvGf8k0CfQhKdsQ+fNbSnlbiBQRidKBkA5
+ OoDK+m1xHRjDOO2ozZ2a8xZS1RjFWLxugwT06+e8cDacoXpoeAsv/uTYRQY+0ClBAEEO
+ HqCPROFBFc6ueNnO/inoxKuTX/7qF/otZsXk7ICyawfypqZPGrSlD5+vnd0bsTwb7aFF LA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7sgw0b2x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 19:47:27 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CJgDOR021802;
+	Mon, 12 Feb 2024 19:47:27 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7sgw0b2f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 19:47:26 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CIQVXR032605;
+	Mon, 12 Feb 2024 19:47:25 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6kftb2em-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 19:47:25 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CJlMxd21889752
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 19:47:25 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BD80758055;
+	Mon, 12 Feb 2024 19:47:22 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2019F58043;
+	Mon, 12 Feb 2024 19:47:21 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 12 Feb 2024 19:47:21 +0000 (GMT)
+Message-ID: <155295d9-6cf3-4e66-9bfa-27c1a8e62694@linux.ibm.com>
+Date: Mon, 12 Feb 2024 14:47:20 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 12 Feb 2024 21:46:06 +0200
-Message-Id: <CZ3CXPOLZEI8.C6AJ9W0W07A9@kernel.org>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
- reclamation
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>,
- <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
- <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
-X-Mailer: aerc 0.16.0
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-10-haitao.huang@linux.intel.com>
-In-Reply-To: <20240205210638.157741-10-haitao.huang@linux.intel.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 24/25] ima: Make it independent from 'integrity' LSM
+Content-Language: en-US
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-25-roberto.sassu@huaweicloud.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20240115181809.885385-25-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Dx0riDMbYA92UQJVBQpjCX7PeCl41sXr
+X-Proofpoint-ORIG-GUID: lBW5bSawebGnMLF6HBsmtLn_O5yit_IQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_16,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=561
+ bulkscore=0 priorityscore=1501 phishscore=0 malwarescore=0 spamscore=0
+ clxscore=1015 impostorscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402120152
 
-On Mon Feb 5, 2024 at 11:06 PM EET, Haitao Huang wrote:
-> Enclave Page Cache(EPC) memory can be swapped out to regular system
 
-"Enclave Page Cache (EPC)"
-                   ~
 
-> memory, and the consumed memory should be charged to a proper
-> mem_cgroup. Currently the selection of mem_cgroup to charge is done in
-> sgx_encl_get_mem_cgroup(). But it only considers two contexts in which
-> the swapping can be done: normal tasks and the ksgxd kthread.
-> With the new EPC cgroup implementation, the swapping can also happen in
-> EPC cgroup work-queue threads. In those cases, it improperly selects the
-> root mem_cgroup to charge for the RAM usage.
->
-> Change sgx_encl_get_mem_cgroup() to handle non-task contexts only and
-> return the mem_cgroup of an mm_struct associated with the enclave. The
-> return is used to charge for EPC backing pages in all kthread cases.
->
-> Pass a flag into the top level reclamation function,
-> sgx_reclaim_pages(), to explicitly indicate whether it is called from a
-> background kthread. Internally, if the flag is true, switch the active
-> mem_cgroup to the one returned from sgx_encl_get_mem_cgroup(), prior to
-> any backing page allocation, in order to ensure that shmem page
-> allocations are charged to the enclave's cgroup.
->
-> Removed current_is_ksgxd() as it is no longer needed.
->
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Reported-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
-> ---
-> V9:
-> - Reduce number of if statements. (Tim)
->
-> V8:
-> - Limit text paragraphs to 80 characters wide. (Jarkko)
-> ---
->  arch/x86/kernel/cpu/sgx/encl.c       | 38 +++++++++++++---------------
->  arch/x86/kernel/cpu/sgx/encl.h       |  3 +--
->  arch/x86/kernel/cpu/sgx/epc_cgroup.c |  7 ++---
->  arch/x86/kernel/cpu/sgx/main.c       | 27 +++++++++-----------
->  arch/x86/kernel/cpu/sgx/sgx.h        |  3 ++-
->  5 files changed, 36 insertions(+), 42 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/enc=
-l.c
-> index 279148e72459..4e5948362060 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.c
-> +++ b/arch/x86/kernel/cpu/sgx/encl.c
-> @@ -993,9 +993,7 @@ static int __sgx_encl_get_backing(struct sgx_encl *en=
-cl, unsigned long page_inde
->  }
-> =20
->  /*
-> - * When called from ksgxd, returns the mem_cgroup of a struct mm stored
-> - * in the enclave's mm_list. When not called from ksgxd, just returns
-> - * the mem_cgroup of the current task.
-> + * Returns the mem_cgroup of a struct mm stored in the enclave's mm_list=
-.
->   */
->  static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
->  {
-> @@ -1003,14 +1001,6 @@ static struct mem_cgroup *sgx_encl_get_mem_cgroup(=
-struct sgx_encl *encl)
->  	struct sgx_encl_mm *encl_mm;
->  	int idx;
-> =20
-> -	/*
-> -	 * If called from normal task context, return the mem_cgroup
-> -	 * of the current task's mm. The remainder of the handling is for
-> -	 * ksgxd.
-> -	 */
-> -	if (!current_is_ksgxd())
-> -		return get_mem_cgroup_from_mm(current->mm);
-> -
->  	/*
->  	 * Search the enclave's mm_list to find an mm associated with
->  	 * this enclave to charge the allocation to.
-> @@ -1047,27 +1037,33 @@ static struct mem_cgroup *sgx_encl_get_mem_cgroup=
-(struct sgx_encl *encl)
->   * @encl:	an enclave pointer
->   * @page_index:	enclave page index
->   * @backing:	data for accessing backing storage for the page
-> + * @indirect:	in ksgxd or EPC cgroup work queue context
-> + *
-> + * Create a backing page for loading data back into an EPC page with ELD=
-U. This
-> + * function takes a reference on a new backing page which must be droppe=
-d with a
-> + * corresponding call to sgx_encl_put_backing().
->   *
-> - * When called from ksgxd, sets the active memcg from one of the
-> - * mms in the enclave's mm_list prior to any backing page allocation,
-> - * in order to ensure that shmem page allocations are charged to the
-> - * enclave.  Create a backing page for loading data back into an EPC pag=
-e with
-> - * ELDU.  This function takes a reference on a new backing page which
-> - * must be dropped with a corresponding call to sgx_encl_put_backing().
-> + * When @indirect is true, sets the active memcg from one of the mms in =
-the
-> + * enclave's mm_list prior to any backing page allocation, in order to e=
-nsure
-> + * that shmem page allocations are charged to the enclave.
->   *
->   * Return:
->   *   0 on success,
->   *   -errno otherwise.
->   */
->  int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long page_ind=
-ex,
-> -			   struct sgx_backing *backing)
-> +			   struct sgx_backing *backing, bool indirect)
+On 1/15/24 13:18, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Make the 'ima' LSM independent from the 'integrity' LSM by introducing IMA
+> own integrity metadata (ima_iint_cache structure, with IMA-specific fields
+> from the integrity_iint_cache structure), and by managing it directly from
+> the 'ima' LSM.
+> 
+> Create ima_iint.c and introduce the same integrity metadata management
+> functions found in iint.c (renamed with ima_). However, instead of putting
+> metadata in an rbtree, reserve space from IMA in the inode security blob
+> for a pointer, and introduce the ima_inode_set_iint()/ima_inode_get_iint()
+> primitives to store/retrieve that pointer. This improves search time from
+> logarithm to constant.
 
-Boolean parameters should be avoided when possible because they confuse
-in the call sites.
+logarithmic
 
->  {
-> -	struct mem_cgroup *encl_memcg =3D sgx_encl_get_mem_cgroup(encl);
-> -	struct mem_cgroup *memcg =3D set_active_memcg(encl_memcg);
-> +	struct mem_cgroup *encl_memcg;
-> +	struct mem_cgroup *memcg;
->  	int ret;
-> =20
-> -	ret =3D __sgx_encl_get_backing(encl, page_index, backing);
-> +	if (!indirect)
-> +		return  __sgx_encl_get_backing(encl, page_index, backing);
+> 
+> Consequently, don't include the inode pointer as field in the
+> ima_iint_cache structure, since the association with the inode is clear.
+> Since the inode field is missing in ima_iint_cache, pass the extra inode
+> parameter to ima_get_verity_digest().
+> 
+> Prefer storing the pointer instead of the entire ima_iint_cache structure,
+> to avoid too much memory pressure. Use the same mechanism as before, a
+> cache named ima_iint_cache (renamed from iint_cache), to quickly allocate
+> a new ima_iint_cache structure when requested by the IMA policy.
+> 
+> Create the new ima_iint_cache in ima_iintcache_init(),
+> called by init_ima_lsm(), during the initialization of the 'ima' LSM. And,
+> register ima_inode_free_security() to free the ima_iint_cache structure, if
+> exists.
+> 
+> Replace integrity_iint_cache with ima_iint_cache in various places of the
+> IMA code. Also, replace integrity_inode_get() and integrity_iint_find(),
+> respectively with ima_inode_get() and ima_iint_find().
+> 
+> Finally, move the remaining IMA-specific flags
+> to security/integrity/ima/ima.h, since they are now unnecessary in the
+> common integrity layer.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-If a call is either in heead or tail of the code block, then
-obviously better option is to make __sgx_encl_get_backing()
-as non-static sgx_encl_get_backing() and call it in those
-call sites that would call this with "false".
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-I.e. you need a new patch where this preparation is done.
-
-> =20
-> +	encl_memcg =3D sgx_encl_get_mem_cgroup(encl);
-> +	memcg =3D set_active_memcg(encl_memcg);
-> +	ret =3D __sgx_encl_get_backing(encl, page_index, backing);
->  	set_active_memcg(memcg);
->  	mem_cgroup_put(encl_memcg);
-> =20
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/enc=
-l.h
-> index f94ff14c9486..549cd2e8d98b 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.h
-> +++ b/arch/x86/kernel/cpu/sgx/encl.h
-> @@ -103,12 +103,11 @@ static inline int sgx_encl_find(struct mm_struct *m=
-m, unsigned long addr,
->  int sgx_encl_may_map(struct sgx_encl *encl, unsigned long start,
->  		     unsigned long end, unsigned long vm_flags);
-> =20
-> -bool current_is_ksgxd(void);
->  void sgx_encl_release(struct kref *ref);
->  int sgx_encl_mm_add(struct sgx_encl *encl, struct mm_struct *mm);
->  const cpumask_t *sgx_encl_cpumask(struct sgx_encl *encl);
->  int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long page_ind=
-ex,
-> -			   struct sgx_backing *backing);
-> +			   struct sgx_backing *backing, bool indirect);
->  void sgx_encl_put_backing(struct sgx_backing *backing);
->  int sgx_encl_test_and_clear_young(struct mm_struct *mm,
->  				  struct sgx_encl_page *page);
-> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c b/arch/x86/kernel/cpu/s=
-gx/epc_cgroup.c
-> index 16b6d9f909eb..d399fda2b55e 100644
-> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> @@ -93,9 +93,10 @@ bool sgx_epc_cgroup_lru_empty(struct misc_cg *root)
->  /**
->   * sgx_epc_cgroup_reclaim_pages() - walk a cgroup tree and scan LRUs to =
-reclaim pages
->   * @root:	Root of the tree to start walking from.
-> + * @indirect:   In ksgxd or EPC cgroup work queue context.
->   * Return:	Number of pages reclaimed.
->   */
-> -unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *root)
-> +static unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *root, b=
-ool indirect)
->  {
->  	/*
->  	 * Attempting to reclaim only a few pages will often fail and is
-> @@ -119,7 +120,7 @@ unsigned int sgx_epc_cgroup_reclaim_pages(struct misc=
-_cg *root)
->  		rcu_read_unlock();
-> =20
->  		epc_cg =3D sgx_epc_cgroup_from_misc_cg(css_misc(pos));
-> -		cnt +=3D sgx_reclaim_pages(&epc_cg->lru, &nr_to_scan);
-> +		cnt +=3D sgx_reclaim_pages(&epc_cg->lru, &nr_to_scan, indirect);
-> =20
->  		rcu_read_lock();
->  		css_put(pos);
-> @@ -176,7 +177,7 @@ static void sgx_epc_cgroup_reclaim_work_func(struct w=
-ork_struct *work)
->  			break;
-> =20
->  		/* Keep reclaiming until above condition is met. */
-> -		sgx_epc_cgroup_reclaim_pages(epc_cg->cg);
-> +		sgx_epc_cgroup_reclaim_pages(epc_cg->cg, true);
->  	}
->  }
-> =20
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
-n.c
-> index 4f5824c4751d..51904f191b97 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -254,7 +254,7 @@ static void sgx_encl_ewb(struct sgx_epc_page *epc_pag=
-e,
->  }
-> =20
->  static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
-> -				struct sgx_backing *backing)
-> +				struct sgx_backing *backing, bool indirect)
->  {
->  	struct sgx_encl_page *encl_page =3D epc_page->owner;
->  	struct sgx_encl *encl =3D encl_page->encl;
-> @@ -270,7 +270,7 @@ static void sgx_reclaimer_write(struct sgx_epc_page *=
-epc_page,
-> =20
->  	if (!encl->secs_child_cnt && test_bit(SGX_ENCL_INITIALIZED, &encl->flag=
-s)) {
->  		ret =3D sgx_encl_alloc_backing(encl, PFN_DOWN(encl->size),
-> -					   &secs_backing);
-> +					   &secs_backing, indirect);
->  		if (ret)
->  			goto out;
-> =20
-> @@ -304,9 +304,11 @@ static void sgx_reclaimer_write(struct sgx_epc_page =
-*epc_page,
->   * @lru:	The LRU from which pages are reclaimed.
->   * @nr_to_scan: Pointer to the target number of pages to scan, must be l=
-ess than
->   *		SGX_NR_TO_SCAN.
-> + * @indirect:	In ksgxd or EPC cgroup work queue contexts.
->   * Return:	Number of pages reclaimed.
->   */
-> -unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned in=
-t *nr_to_scan)
-> +unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned in=
-t *nr_to_scan,
-> +			       bool indirect)
->  {
->  	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
->  	struct sgx_backing backing[SGX_NR_TO_SCAN];
-> @@ -348,7 +350,7 @@ unsigned int sgx_reclaim_pages(struct sgx_epc_lru_lis=
-t *lru, unsigned int *nr_to
->  		page_index =3D PFN_DOWN(encl_page->desc - encl_page->encl->base);
-> =20
->  		mutex_lock(&encl_page->encl->lock);
-> -		ret =3D sgx_encl_alloc_backing(encl_page->encl, page_index, &backing[i=
-]);
-> +		ret =3D sgx_encl_alloc_backing(encl_page->encl, page_index, &backing[i=
-], indirect);
->  		if (ret) {
->  			mutex_unlock(&encl_page->encl->lock);
->  			goto skip;
-> @@ -381,7 +383,7 @@ unsigned int sgx_reclaim_pages(struct sgx_epc_lru_lis=
-t *lru, unsigned int *nr_to
->  			continue;
-> =20
->  		encl_page =3D epc_page->owner;
-> -		sgx_reclaimer_write(epc_page, &backing[i]);
-> +		sgx_reclaimer_write(epc_page, &backing[i], indirect);
-> =20
->  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
->  		epc_page->flags &=3D ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-> @@ -399,11 +401,11 @@ static bool sgx_should_reclaim(unsigned long waterm=
-ark)
->  	       !list_empty(&sgx_global_lru.reclaimable);
->  }
-> =20
-> -static void sgx_reclaim_pages_global(void)
-> +static void sgx_reclaim_pages_global(bool indirect)
->  {
->  	unsigned int nr_to_scan =3D SGX_NR_TO_SCAN;
-> =20
-> -	sgx_reclaim_pages(&sgx_global_lru, &nr_to_scan);
-> +	sgx_reclaim_pages(&sgx_global_lru, &nr_to_scan, indirect);
->  }
-> =20
->  /*
-> @@ -414,7 +416,7 @@ static void sgx_reclaim_pages_global(void)
->  void sgx_reclaim_direct(void)
->  {
->  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
-> -		sgx_reclaim_pages_global();
-> +		sgx_reclaim_pages_global(false);
->  }
-> =20
->  static int ksgxd(void *p)
-> @@ -437,7 +439,7 @@ static int ksgxd(void *p)
->  				     sgx_should_reclaim(SGX_NR_HIGH_PAGES));
-> =20
->  		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES))
-> -			sgx_reclaim_pages_global();
-> +			sgx_reclaim_pages_global(true);
-> =20
->  		cond_resched();
->  	}
-> @@ -460,11 +462,6 @@ static bool __init sgx_page_reclaimer_init(void)
->  	return true;
->  }
-> =20
-> -bool current_is_ksgxd(void)
-> -{
-> -	return current =3D=3D ksgxd_tsk;
-> -}
-> -
->  static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
->  {
->  	struct sgx_numa_node *node =3D &sgx_numa_nodes[nid];
-> @@ -623,7 +620,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, =
-bool reclaim)
->  		 * Need to do a global reclamation if cgroup was not full but free
->  		 * physical pages run out, causing __sgx_alloc_epc_page() to fail.
->  		 */
-> -		sgx_reclaim_pages_global();
-> +		sgx_reclaim_pages_global(false);
->  		cond_resched();
->  	}
-> =20
-> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.=
-h
-> index 2593c013d091..cfe906054d85 100644
-> --- a/arch/x86/kernel/cpu/sgx/sgx.h
-> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
-> @@ -110,7 +110,8 @@ void sgx_reclaim_direct(void);
->  void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
->  int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
->  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
-> -unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned in=
-t *nr_to_scan);
-> +unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned in=
-t *nr_to_scan,
-> +			       bool indirect);
-> =20
->  void sgx_ipi_cb(void *info);
-> =20
-
-Br, Jarkko
 
