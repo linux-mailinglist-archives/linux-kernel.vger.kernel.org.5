@@ -1,160 +1,157 @@
-Return-Path: <linux-kernel+bounces-61237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCD80850F84
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:15:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D5E850F8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:16:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72CBE281B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:15:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 173431C20403
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E7210796;
-	Mon, 12 Feb 2024 09:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8E910A05;
+	Mon, 12 Feb 2024 09:16:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SZNB1GYn"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GZ/zY1lA"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCE45244
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:15:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF17101C2;
+	Mon, 12 Feb 2024 09:16:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707729343; cv=none; b=BBAswYZ4XJ1zkAM1tK6paWYHRC8e1RLc6uHZFqh/R5yvfr4ddcT5hQzdJPV7gb1Y31r9mP3nIUPDfuRYVpJ5EUWlZsOSFDSechAgfQ23/Nk9rfYYNoIYoayQD7rJKIdgCUsKAZSI+q0FLcfm3CKXCJ0IsUb9tzyXxQrbY/svTlo=
+	t=1707729384; cv=none; b=ZT0j3uWEi/gcy+TM098qW8WsPACM4bsLEm7Z1W5HnnwBXyfzOcgOXF2kYEK/hx3CUJnGwIOfR5BYMrAYEBO1XKKzT31h32pf1fEzUgJ49WRsJIdTnTfLGkV5x6eVIMfY7n9evnIGeFQ16DAaOPKXXzmR/I7h9VkyQ/HFQfosFhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707729343; c=relaxed/simple;
-	bh=9I+IIux1dmdOum7JKLr/HdkGzJKPDj/8SR5f+urjR98=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pQRD3YgxQwFl7Z6vkVM0+/z+B9U4ChDCLktw25LJWTAmfzCHErZDQJP9lRdtbwduSgBorniYrHN6g5/6W7T6g+uEVLQJ+ZSkbKC5/9Ek1ZnU3kvIrUttU7ycf7z2R4qpVHEma7pKx503WppCjvgTLuzyLnjgLod/bKZwcx4UAtE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SZNB1GYn; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707729341; x=1739265341;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9I+IIux1dmdOum7JKLr/HdkGzJKPDj/8SR5f+urjR98=;
-  b=SZNB1GYn7qT27ybgC1fJ5qY3bZKgc2vnRbnJRHPgYFLfgAysSDaXscLZ
-   rsPjwm3SBsOW7VApc7Fz4WxLXbdiB3Co3vkKQ799nRfG8aQHR/Qp2mk4h
-   b7Jwy0wJ/0P0KApxDvaDUj+g6phXNfhjmjBXQlOKVCENIlMvCki0hAA5p
-   oYzQCNov7ruQdu4Y3TC0JxUCkXPj4UPp8+dPKIb6O/dZOBf7yEO/antMa
-   VoaV2p1tBkGXu+5TAEkXAdl0S+O62SKpQw76qkB5bBjpJ9vEn8w4KlgCK
-   shaeFE0aM4y+ILt2xXU//4QIVxS/eOMa94TbOzKhfee0ZJgPp2J62D0Mm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="5511045"
-X-IronPort-AV: E=Sophos;i="6.05,262,1701158400"; 
-   d="scan'208";a="5511045"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 01:15:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,262,1701158400"; 
-   d="scan'208";a="7197027"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 12 Feb 2024 01:15:38 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rZSPX-000734-3A;
-	Mon, 12 Feb 2024 09:15:35 +0000
-Date: Mon, 12 Feb 2024 17:15:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: Max Kellermann <max.kellermann@ionos.com>, linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Max Kellermann <max.kellermann@ionos.com>
-Subject: Re: [PATCH v4 02/35] include: remove unnecessary #include directives
-Message-ID: <202402121640.L0Pwfx8v-lkp@intel.com>
-References: <20240211231518.349442-3-max.kellermann@ionos.com>
+	s=arc-20240116; t=1707729384; c=relaxed/simple;
+	bh=zUG1WqlA0YtwRVLcWHISLkv3a3WSW8qTED3nIesi2HQ=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=tcYuTgjQ2FkqEvPTRVIO2IDMqolCw3iVGktCVsgvuJCZKLqOtkF4aLxYGFgHBqruEFdCa/n8nTBEEl/GeAJoFpPZrxpKx955o4cJFapeVpbsVoEIW1TxXTWFWCPyux9W8m0mzGx4odV3ATCe1uRl0jhnsCBrkF2QnHSml8RViqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GZ/zY1lA; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so2493376b3a.0;
+        Mon, 12 Feb 2024 01:16:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707729382; x=1708334182; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=g6IO++R9WeYb4qAE84/3bcX8ZgMaoHDBddIgy6fgRYw=;
+        b=GZ/zY1lA9PvphYWqTnb/PXYkg8lxqjAN3HYNmhdFolsd0Dg1ZmUq4V73tJqlK5Xr9B
+         ePUUijM/RKGE0UTkdkLbDvp5QTnBycqoCEwL1UD71VbrQXgPeTiWTzDBZkM8kA8D3Zpo
+         mid4UHofVY60gBMWGqI5l9o31rJ2iqZSP9kzwnXNPTrSOKwC/tsLh8gKFD+ZNphCmZWH
+         0qXlW27AwWNdSLp4UhZDmuH0vMeTy71yrweQI8rhl5Hf4hxBjyBwvBC4/9UroEuoaNn9
+         lDe26Rp0f8m9VFgAKysRN/xrXJPnri1yp2poFDRnQCBKEn0asvd0j1a9X/77oJrWIPyh
+         OSYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707729382; x=1708334182;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g6IO++R9WeYb4qAE84/3bcX8ZgMaoHDBddIgy6fgRYw=;
+        b=Jw7yg0d1eUD0+c2rhAv8KKNFcS79tDk+R8MBbr6WLhGzpVinNzJBFPQXUtIyaSRPEj
+         EUiiLuKZD03I5zQjs3hHUJqAoWTRxVm892xnWb56YthQ0XCYf9enldciJbbM6LpFrYz0
+         U+oGDv7dE600cDrg0VcxNHlbIBYuzAfAoLN9sFxCrpWiXwDAhu/khuZ0H838PvhPsXRV
+         GAl7l7+rUSoI7DGrP5umTS40dsGp4MQCq8XGyzV/mvYlgyrs/miYX263JIdSYgSZTMVt
+         90mSQnZIHUbFmy84kDEzgY/r9OLQgmhST6CEQ0BB8F3K/EKOyNylT64LzdA07Z2HWV9n
+         bq0g==
+X-Forwarded-Encrypted: i=1; AJvYcCUVw12iOohC8DZETcInlSiBcWHCkPhO0HXjyHr7kX0+M2KFvJHT8cGGuzODmHmHgyCbrJvPhnEufV1BOasOYuKkFGWU/OY9zGdt12RBPV6/UoImZm4Gv+d4RhIHP5Igc1S0grCxNesLmhIxrA==
+X-Gm-Message-State: AOJu0YwLz6hlS3tOkqSrL0BH7OIYj0zmIwqJNj4qNTPNgQTfHX3DT9+u
+	NLCHwQvuBdoUsM7Q1pTVei2b/JJ1jQZiOTdsUJzrnKVIWCADCeDB1JrTiqT6
+X-Google-Smtp-Source: AGHT+IFvWWdoMQM6RNYDapxbsM4h4P3YcXw3SecLY3N7HCNZ2L6CMlzm0f7SFQlfUpgy0Dd9wL6DMg==
+X-Received: by 2002:a05:6a00:3d4e:b0:6e0:e5d2:5f01 with SMTP id lp14-20020a056a003d4e00b006e0e5d25f01mr1314349pfb.24.1707729382365;
+        Mon, 12 Feb 2024 01:16:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU/RlqtvHvacAp6YKw4f2dp/IVrLfxbfR0vs8PmplbdlO2NqWyb8hnHrUszD8mYwHgpJwpNulu2y3QYAxNPTnBoDeqw9dYOvukIOcrO+O/aCIbIFfJ7H2nIVK0WuRKEjlVSJH5W6RViZu+q6U7S/1uM67vFLzwRDKkTGwmI+8iMcSLHVyVqNmyXaA6w4VJfWZ9kQaAEW7kxBzaqLTW4OhJEco12e8DP/kLK9ZOXViV7yeysijtXfYuSMK/pffRJLgfgFdDuMb2BdysCiteM8/SSN4inr6BGDvYoJeTaLSZJo+6FDbr7GbCEuE8KkqmXBrbemdoUyY48QUP48tVUnjwzHaC9OJBhUi3xANSV8F68tZtYZHA8ZumjGOufjMBqIR/WRrR8uREEpAaOsv2J2yU89MG3moIK6UlnQntEmVA8O2joCfnlIrfDKjAO6Y/gEid2BQ3HcP8R/1NrUzH5iZyXkulsh1LQEd5lVg==
+Received: from dw-tp ([129.41.58.7])
+        by smtp.gmail.com with ESMTPSA id lo17-20020a056a003d1100b006dbda7bcf3csm5042750pfb.83.2024.02.12.01.16.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 01:16:21 -0800 (PST)
+Date: Mon, 12 Feb 2024 14:46:10 +0530
+Message-Id: <87ttmef3fp.fsf@doe.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: "Darrick J. Wong" <djwong@kernel.org>, Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, hch@infradead.org, willy@infradead.org, zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: [RFC PATCH v3 00/26] ext4: use iomap for regular file's buffered IO path and enable large foilo
+In-Reply-To: <20240212061842.GB6180@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240211231518.349442-3-max.kellermann@ionos.com>
 
-Hi Max,
+"Darrick J. Wong" <djwong@kernel.org> writes:
 
-kernel test robot noticed the following build warnings:
+> On Sat, Jan 27, 2024 at 09:57:59AM +0800, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>> 
+>> Hello,
+>> 
+>> This is the third version of RFC patch series that convert ext4 regular
+>> file's buffered IO path to iomap and enable large folio. It's rebased on
+>> 6.7 and Christoph's "map multiple blocks per ->map_blocks in iomap
+>> writeback" series [1]. I've fixed all issues found in the last about 3
+>> weeks of stress tests and fault injection tests in v2. I hope I've
+>> covered most of the corner cases, and any comments are welcome. :)
+>> 
+>> Changes since v2:
+>>  - Update patch 1-6 to v3 [2].
+>>  - iomap_zero and iomap_unshare don't need to update i_size and call
+>>    iomap_write_failed(), introduce a new helper iomap_write_end_simple()
+>>    to avoid doing that.
+>>  - Factor out ext4_[ext|ind]_map_blocks() parts from ext4_map_blocks(),
+>>    introduce a new helper ext4_iomap_map_one_extent() to allocate
+>>    delalloc blocks in writeback, which is always under i_data_sem in
+>>    write mode. This is done to prevent the writing back delalloc
+>>    extents become stale if it raced by truncate.
+>>  - Add a lock detection in mapping_clear_large_folios().
+>> Changes since v1:
+>>  - Introduce seq count for iomap buffered write and writeback to protect
+>>    races from extents changes, e.g. truncate, mwrite.
+>>  - Always allocate unwritten extents for new blocks, drop dioread_lock
+>>    mode, and make no distinctions between dioread_lock and
+>>    dioread_nolock.
+>>  - Don't add ditry data range to jinode, drop data=ordered mode, and
+>>    make no distinctions between data=ordered and data=writeback mode.
+>>  - Postpone updating i_disksize to endio.
+>>  - Allow splitting extents and use reserved space in endio.
+>>  - Instead of reimplement a new delayed mapping helper
+>>    ext4_iomap_da_map_blocks() for buffer write, try to reuse
+>>    ext4_da_map_blocks().
+>>  - Add support for disabling large folio on active inodes.
+>>  - Support online defragmentation, make file fall back to buffer_head
+>>    and disable large folio in ext4_move_extents().
+>>  - Move ext4_nonda_switch() in advance to prevent deadlock in mwrite.
+>>  - Add dirty_len and pos trace info to trace_iomap_writepage_map().
+>>  - Update patch 1-6 to v2.
+>> 
+>> This series only support ext4 with the default features and mount
+>> options, doesn't support inline_data, bigalloc, dax, fs_verity, fs_crypt
+>> and data=journal mode, ext4 would fall back to buffer_head path
+>
+> Do you plan to add bigalloc or !extents support as a part 2 patchset?
+>
 
-[auto build test WARNING on next-20240209]
-[cannot apply to drm-misc/drm-misc-next media-tree/master mkp-scsi/for-next linus/master v6.8-rc4 v6.8-rc3 v6.8-rc2 v6.8-rc4]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Hi Darrick,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Max-Kellermann/include-add-missing-includes/20240212-072756
-base:   next-20240209
-patch link:    https://lore.kernel.org/r/20240211231518.349442-3-max.kellermann%40ionos.com
-patch subject: [PATCH v4 02/35] include: remove unnecessary #include directives
-config: powerpc-mpc834x_itxgp_defconfig (https://download.01.org/0day-ci/archive/20240212/202402121640.L0Pwfx8v-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240212/202402121640.L0Pwfx8v-lkp@intel.com/reproduce)
+> An ext2 port to iomap has been (vaguely) in the works for a while,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402121640.L0Pwfx8v-lkp@intel.com/
+yes, we have [1][2]. I am in the process of rebasing that work on the latest
+upstream. It's been a while since my last post since I have been pulled
+into some other internal work, sorry about that.
 
-All warnings (new ones prefixed by >>):
+> though iirc willy never got the performance to match because iomap
 
-   arch/powerpc/platforms/83xx/misc.c:79:7: error: implicit declaration of function 'of_find_compatible_node' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           np = of_find_compatible_node(NULL, NULL, "fsl,ipic");
-                ^
->> arch/powerpc/platforms/83xx/misc.c:79:5: warning: incompatible integer to pointer conversion assigning to 'struct device_node *' from 'int' [-Wint-conversion]
-           np = of_find_compatible_node(NULL, NULL, "fsl,ipic");
-              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/powerpc/platforms/83xx/misc.c:81:8: error: implicit declaration of function 'of_find_node_by_type' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                   np = of_find_node_by_type(NULL, "ipic");
-                        ^
-   arch/powerpc/platforms/83xx/misc.c:81:6: warning: incompatible integer to pointer conversion assigning to 'struct device_node *' from 'int' [-Wint-conversion]
-                   np = of_find_node_by_type(NULL, "ipic");
-                      ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/powerpc/platforms/83xx/misc.c:87:2: error: implicit declaration of function 'of_node_put' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           of_node_put(np);
-           ^
-   arch/powerpc/platforms/83xx/misc.c:117:2: error: implicit declaration of function 'for_each_compatible_node' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           for_each_compatible_node(np, "pci", "fsl,mpc8349-pci")
-           ^
-   arch/powerpc/platforms/83xx/misc.c:117:56: error: expected ';' after expression
-           for_each_compatible_node(np, "pci", "fsl,mpc8349-pci")
-                                                                 ^
-                                                                 ;
-   arch/powerpc/platforms/83xx/misc.c:119:57: error: expected ';' after expression
-           for_each_compatible_node(np, "pci", "fsl,mpc8314-pcie")
-                                                                  ^
-                                                                  ;
-   2 warnings and 6 errors generated.
+Ohh, can you help me provide details on what performance benchmark was
+run? I can try and run them when I rebase.
 
+> didn't have a mechanism for the caller to tell it "run the IO now even
+> though you don't have a complete page, because the indirect block is the
+> next block after the 11th block".
 
-vim +79 arch/powerpc/platforms/83xx/misc.c
+Do you mean this for a large folio? I still didn't get the problem you
+are referring here. Can you please help me explain why could that be a
+problem?
 
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  73  
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  74  void __init mpc83xx_ipic_init_IRQ(void)
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  75  {
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  76  	struct device_node *np;
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  77  
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  78  	/* looking for fsl,pq2pro-pic which is asl compatible with fsl,ipic */
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22 @79  	np = of_find_compatible_node(NULL, NULL, "fsl,ipic");
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  80  	if (!np)
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  81  		np = of_find_node_by_type(NULL, "ipic");
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  82  	if (!np)
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  83  		return;
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  84  
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  85  	ipic_init(np, 0);
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  86  
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  87  	of_node_put(np);
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  88  
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  89  	/* Initialize the default interrupt mapping priorities,
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  90  	 * in case the boot rom changed something on us.
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  91  	 */
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  92  	ipic_set_default_priority();
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  93  }
-d4fb5ebd83c704 Dmitry Baryshkov 2011-07-22  94  
+[1]: https://lore.kernel.org/linux-ext4/9cdd449fc1d63cf2dba17cfa2fa7fb29b8f96a46.1700506526.git.ritesh.list@gmail.com/
+[2]: https://lore.kernel.org/linux-ext4/8734wnj53k.fsf@doe.com/
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+-ritesh
 
