@@ -1,684 +1,182 @@
-Return-Path: <linux-kernel+bounces-61862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86197851786
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:04:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB83D851789
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:04:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA7A11C218FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:04:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D01E1F228A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEB93BB53;
-	Mon, 12 Feb 2024 15:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4E13C07B;
+	Mon, 12 Feb 2024 15:04:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="ELH9GZ1T"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="GsgxOg4t"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2088.outbound.protection.outlook.com [40.107.7.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A0F29D06;
-	Mon, 12 Feb 2024 15:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707750250; cv=none; b=rJFFwcDjETiX8VDckXU229JuRzYwWbsdnWbOqQZm0JUTCwQhmJ53Pzrl+N5UmjBkAA56rldnZxQKYh0T1E3TNw6q3vSvhQtSHYk9Eta+nV7754+HOBJrwWTYgfo4Eik+hNFRbHu5OyFn8oD82XV4BS4zK6m56Jbuimh69r6+g+0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707750250; c=relaxed/simple;
-	bh=CT3RDs39YBngCVZM65WFoRsq26o6sV51/H6TjDvKWYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iEAdt4c6yRERhPzmv6EO5TH+QbyVJdpAU5oBQ69vI0oPVKFynXyEwVV9/HfStvPwGRv+R2EZuNHKJULqdsMpNiAuTC7lIRdqVY3vFGMS27I1kHHgQ4/qwqFuPv4ms0FHTO8E2DRRtjCE/iQxEXkg6+fmsKiuK8CZLOtYQO3A91o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=ELH9GZ1T; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1707750243; bh=CT3RDs39YBngCVZM65WFoRsq26o6sV51/H6TjDvKWYE=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=ELH9GZ1TWm+e5nesjePV4iuWFxYeZnz77rm2Gm0c+wivuvqNB2Rw3cLx+P+Nmr0ot
-	 dpS73/xxwqKXMQC0DSek/ULHuivlbvg0BwffIUarysSy3+YHQJAb3y9ihhwi0uHyDW
-	 7bbS9hh3+NflRRYuDVZ1Od1/cCrhnL1B1wG1gzbY=
-Date: Mon, 12 Feb 2024 16:04:02 +0100
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Jonathan Cameron <jic23@kernel.org>, 
-	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Andrey Skvortsov <andrej.skvortzov@gmail.com>, Icenowy Zheng <icenowy@aosc.io>, linux-iio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Dalton Durst <dalton@ubports.com>, 
-	Shoji Keita <awaittrot@shjk.jp>
-Subject: Re: [PATCH 4/4] iio: magnetometer: add a driver for Voltafield
- AF8133J magnetometer
-Message-ID: <skmvl3wxom6jnfh4fcvpkmswswwkfj3yopb6ahvymcwrxw5ou4@ljzmreuqiwme>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Jonathan Cameron <jic23@kernel.org>, 
-	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Andrey Skvortsov <andrej.skvortzov@gmail.com>, Icenowy Zheng <icenowy@aosc.io>, linux-iio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Dalton Durst <dalton@ubports.com>, 
-	Shoji Keita <awaittrot@shjk.jp>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20240211205211.2890931-1-megi@xff.cz>
- <20240211205211.2890931-5-megi@xff.cz>
- <20240212130232.00007ebd@Huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9443C470;
+	Mon, 12 Feb 2024 15:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.88
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707750270; cv=fail; b=jd6s3IiVD7iYekJe3pJnObFh8+m4bGwiL0qs8SxrttKf+IS9NEtzPa9T+Pg6wB9VFPiFqC9SSPd05FgOBfsRP8g74fBiQhA4IkxWj+ewU7+A7IAynXZ/1efu3OolGZOrIWQ0ccnvgZSkMV2sHzh87T/mHYk6QC85eTu9NEmHiIo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707750270; c=relaxed/simple;
+	bh=YOnSdJXICfh49FjUDS3n7g9p5jKqZcN0uGIDjLDERQ4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=o10pLJWYTyVS9cPBS57P+psz9WrFoWdFu3ocxtSMhIs7p2vjEz+MwryfWxhQqe61CQQI+IPgBYRLEopw+IAtwGD5HddVTupCGkHvk5CGY5/7E252Qqw1oWsB7Yfgc7YKeQzSt5WpdYA21og0mjqEKbCcOKeBSFE9j5Ccofa0Cgw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=GsgxOg4t; arc=fail smtp.client-ip=40.107.7.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lyJ4JKfrl4diSGQQ53DwXGOFvKat+l/tSZAx86OUibp8G+L0b12K3BmGvv/qf7z4Jlky8zcJe/zbGeq+vWpptzSaH1dLgUy3r21BzcaarAoqDzdgAeMRpeh7GF2A9umXZMj0s5UoM//h4lb06bvjqSvpvw+f1xPHuF8xSBTTDODxm1K+xj/AsDw0hq5bRPUzdOJ80ncTXXWvqdVfw6yHTic49yURMzZ3Bkvim8La9L62K9aqyApoGY9RMfC3swa35zpI0TRA3Frcusgf0OSpjqrbhczGF2r+Uo9Wb69vlv4G6RHtH5fT73iROdOQZZ15LkYW3zu5yVPEUr8I/IHrkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YOnSdJXICfh49FjUDS3n7g9p5jKqZcN0uGIDjLDERQ4=;
+ b=Y9a2eXHb/bj6jGTm+iLO2RfEc09H50oD+DKCwpSsDFFMLvXJphg9l4tv1lmGhLVMbrUrw4NBLyMdNxEy+7Eteufx2kP4a2cIUcD1QfdRvzREPSuIyACIEDTjEd4DGvTcqebqfp/1tVTXj0trimtGQAzT+NwHokHRuwAk4RY4siG3bs2Re9sOhTqFDPJ5sjkXbjsqsqffERKusWg+scsiOJF2hsN1lfMibWmmCcqX8qyv+6NrlTWdtWli9yChPeiyfXVqVvWGLsfZ1uwvJ9EuPDvsVNT7WHCdD3dYBuReii0bQ9HkBY4DezJK1tYTq4E6zhfJ1wO1iCQb8hj4TFQi9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
+ header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YOnSdJXICfh49FjUDS3n7g9p5jKqZcN0uGIDjLDERQ4=;
+ b=GsgxOg4tTtbcICRBijir9iLozsYzOaUulv6pSTQpo1t9m+p4gPrHKmv4tNseH2/nSl06ELbwhGsT0AuWU9X2edd3o4kSvrDm7xHQ/muYo0vIXuGFa2romiLLyreDV7w2pM/FwYw9BIc7oAJu7ZMnBvMPHcemNxGlkMEfkVLTm6c=
+Received: from VI1PR06MB4718.eurprd06.prod.outlook.com (2603:10a6:803:9d::17)
+ by DB9PR06MB8042.eurprd06.prod.outlook.com (2603:10a6:10:26b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.33; Mon, 12 Feb
+ 2024 15:04:25 +0000
+Received: from VI1PR06MB4718.eurprd06.prod.outlook.com
+ ([fe80::739a:c38:b3d9:44ae]) by VI1PR06MB4718.eurprd06.prod.outlook.com
+ ([fe80::739a:c38:b3d9:44ae%5]) with mapi id 15.20.7270.025; Mon, 12 Feb 2024
+ 15:04:24 +0000
+From: POPESCU Catalin <catalin.popescu@leica-geosystems.com>
+To: Andrew Lunn <andrew@lunn.ch>
+CC: "davem@davemloft.net" <davem@davemloft.net>, "kuba@kernel.org"
+	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "afd@ti.com" <afd@ti.com>,
+	"hkallweit1@gmail.com" <hkallweit1@gmail.com>, "linux@armlinux.org.uk"
+	<linux@armlinux.org.uk>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>,
+	"m.felsch@pengutronix.de" <m.felsch@pengutronix.de>
+Subject: Re: [PATCH v4 2/2] net: phy: dp83826: support TX data voltage tuning
+Thread-Topic: [PATCH v4 2/2] net: phy: dp83826: support TX data voltage tuning
+Thread-Index: AQHaXYemZiwmM1zt5EyvIyDjdhgdRLEGwOKAgAAF+4CAAAebAA==
+Date: Mon, 12 Feb 2024 15:04:24 +0000
+Message-ID: <ff630ce9-0da8-4ad7-ab30-11f337dfa1ff@leica-geosystems.com>
+References: <20240212074649.806812-1-catalin.popescu@leica-geosystems.com>
+ <20240212074649.806812-2-catalin.popescu@leica-geosystems.com>
+ <186cf83c-b7a7-4d28-a8b1-85dde032287b@leica-geosystems.com>
+ <10ed19e3-01a9-4fcb-819f-686c6d0bf772@lunn.ch>
+In-Reply-To: <10ed19e3-01a9-4fcb-819f-686c6d0bf772@lunn.ch>
+Accept-Language: en-CH, en-US
+Content-Language: aa
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=leica-geosystems.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: VI1PR06MB4718:EE_|DB9PR06MB8042:EE_
+x-ms-office365-filtering-correlation-id: 6588d284-0d37-469e-8158-08dc2bdbe6bf
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ zYWktHO18mKavCL8fZzqFFfgiWpXXMftXJl2tQI91ZfsFRqq/FPh2BQ7FFuWVyxTnpyvcYSVyRhgrnJcoXG2Rs/q6yDrv5cL4ChTsWQQ1tOl9BTVWZDss5HkO0NyXjdlClMur5rm98PSH/jLWXEb4omDKMSNE3Ubor3eeG6IhxlDikp4NTxZu5G8XXs86sz9C0OXGY8huk18cbAOL3DmCiBjYggtTeNqbblqSTAuut5QoqUYl9Z1jurCPPu9VwYl4qKSl9KlDiFYXzcj7hqoPSyWtOy0MLXiY2hL6WZCcuOmV5q2hloONlkV6EiwzkReVgzpCA3taDrHk6thRlHmSeR5nAQ6yuky7zc95DJbO6HFpHg/xZfwQiv7aH/jxEnwvnjqYB5CHF2fSEmF5STOkBlpSbQl1/l9TGfdIsz+ZwMNSDkimnIGvfD+Kqw0dyKfSEG7T/0Z+wcwbmaHuWK+ilmD8l2F/sLn+5ytNTTLUcnkXgDX428GbEYtz7x7XediqH4MRmfnNIAm64mzQ2m/4L8AVaYULO52Z8IIzlPzi880BlwR3NxTQzupRv2BZc2s34k6my7yo5n3fHx4/jMMJHWcpyj5MFHddv7CqttjTcVnf/K3KOU5uiNPvTR4jIbO
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR06MB4718.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(346002)(136003)(366004)(230273577357003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(8936002)(4326008)(8676002)(7416002)(5660300002)(2906002)(2616005)(83380400001)(26005)(38100700002)(36756003)(122000001)(31696002)(86362001)(38070700009)(91956017)(54906003)(66946007)(316002)(6916009)(64756008)(66476007)(76116006)(66446008)(6506007)(66556008)(71200400001)(53546011)(478600001)(966005)(6486002)(6512007)(45080400002)(31686004)(41300700001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?R3VnNGZPZU5uYmhXSEFnV1NtZXkrM2l0cGJnRlM3QitST09wdGVPVkFxTmkv?=
+ =?utf-8?B?dlNFdzlBVDhMN0J3aUFNWTFzc3BpNUJzeExkb0hKYVRlV0thZ2xKZ29qMUxK?=
+ =?utf-8?B?NUY4RHg0UERlSUM5K0M5TUJDNi9SUEl4TE5tQ0pBS01tZDk1RGk0R3UvdVlx?=
+ =?utf-8?B?RDc5bEJJcWlvMkFjelYvd1YzTTgyUnhyblJPS1hHeXpMUVdmclpWU0lLWXhI?=
+ =?utf-8?B?Z1BRRmxVM0dHUmtpS3ZXWGRNaFozWGJ6Y2NkK3dWUFV6MFZqM3B3TWViRlFU?=
+ =?utf-8?B?UExNc3BJWjhNL0RPbjc3KzdFQzY5S1VlWEV5R2dKOW9yeHdibCtVU1grWTMy?=
+ =?utf-8?B?MUZsYkpVK2IzMFhSSUQ2QmkrRzVJd3ZNODZlTHVhWUpjYnlDUHF0b2pNZ0xi?=
+ =?utf-8?B?TGJGWWszbFBqRmhNdlpQVU54TTdWS2NXOVVXMTN2b3o5NnAxUkdFVmJaa3dY?=
+ =?utf-8?B?TTVMdGppVmprUk1OdWRhK3loMGt5UEp3dkRhSWxFWTloM0RCNzBnczM2cExp?=
+ =?utf-8?B?a0orWHJoaG81UGx0dVBnckl0MUxxbWtVOHN4SEgxc1FNbnZWd0hWQnhEeWxY?=
+ =?utf-8?B?MTRaeXNhK29tU3B6eVJNbkROc3FuRXBSTDYyUkQrd2lGcnVad2U0ckpSMDJK?=
+ =?utf-8?B?V1lHU20yb1hsajJMMy9FdEpNK2dNaldXdVhoZmNjaXM2YzFjQmlxSk9zRkVR?=
+ =?utf-8?B?TXMremtBaEdpQk1oY2lTQkpiOWQrMmFaS2UwNzFZWER5RmgyaVFKUGdOeGZW?=
+ =?utf-8?B?UGpPUVFHa0pYSHgrZXI1TGZyb2hkVzBVdXdZNHJGQW4zV2xSb3c2ZmpkbmJW?=
+ =?utf-8?B?ZVVNNlBrNjBDc1pwUzM2Z0dqbEZGR1BOY1h6MEd0VCt1clptSnlMbEEvSkpi?=
+ =?utf-8?B?MFloOEIrTDlIVWI2UE5rOWRmUm1adjZVR2JtSjcvUk5JZnRrUWFOZDhVVmtQ?=
+ =?utf-8?B?emVWUkJiUlhXdWkrNjl6MW1EMzU3bmN3bXoxQU5oRXIwaERvdk1TcE9hRXpN?=
+ =?utf-8?B?Qyt0NTFpdHdPWFRmZE9kMU90SW5mNnJ6ZlFyTGRvZDB4cWZmNmprdDdXMnRR?=
+ =?utf-8?B?eGFhcXdLVDhlekF4cmwxbEdSVS9TYXAvQzRHMFVoSjZ0L2RXaTZ3djNhWk9D?=
+ =?utf-8?B?VHhxLzR6OVYwTEpVNFV4b2c4TmF2bWxMcC9DamhOTVRIMWdoWmQ5d2t0S2l1?=
+ =?utf-8?B?eFZCRFJnSm5pK1dxVE9HRXBvR3pPcy83Mk9sWlN5aWdhWksxaTUwcDN6VVBG?=
+ =?utf-8?B?T2E1cHRLZVBxclczOHp6TERoazZVdGFnU04xVWFuRWJKQUxZWGpLNkVUSElk?=
+ =?utf-8?B?WmpDUGx4QnJSZDA3K0lrTmUyZmt5OEpSdVZpSzlCaUlPMGg1TWZoanVaVy82?=
+ =?utf-8?B?UkpCb0txazFMTVlEaU1Xd0FCMmhHTjZ0cmhuOFdnSmcwVDVXTzVieWJEcHp4?=
+ =?utf-8?B?aElMWlhrUDNsM0dtMHN4UnZmdElEcjVwZ3hnNEZCaStKWEMvdE9rQ0xTUVJv?=
+ =?utf-8?B?K0JuWGl2bkc0LzZ1ei9Gdit1cjFZWUNBOFFTaHBJYlVuNnczTWR0N1h0bnpX?=
+ =?utf-8?B?dm15ZjgwQTJjVWlONCs2aEwveG5rSExaa0FZbGpZL0tybWVLbDFpaFJhNmlk?=
+ =?utf-8?B?eXdSRlFZQzBVRm5tOGhxcFdyWUhLa1JhTUp6UnVHV1Y3amJReGFWZm91N1Nh?=
+ =?utf-8?B?ckZhN0xRaWRSWEUwS1hsd3hpZ3RENlV4dnRsbWlwTThOWThMNUovd1pGUGJw?=
+ =?utf-8?B?Skx1cFBDWjhMOGJneWlUQ1RUczEzTzhMYVV5anQyUjV4SVF3cGNQNzVibDlF?=
+ =?utf-8?B?M2oyMWFpM1Jram9pVTlFaVg5YTdpLzJQaDc0ZWo5L0QrQTJhcGU0N0N2UUJT?=
+ =?utf-8?B?S1drcE9BNm5vYTFjNGN1Tm5PeDdlcXBLOGF5bHgxcURlSE55NUl3cWluRVZI?=
+ =?utf-8?B?dEtYNEw5Qi9reExIU1VqaTJ3MnVYMzZuUmhLUXdlWERUZTN0dHNoQVNkd0Jr?=
+ =?utf-8?B?cGNWUzZFQlRoMm1TWEdtYkhKRUhzdHRjbGhKa25FdDNHZmt4QzRIWS9pbWs3?=
+ =?utf-8?B?dWtjODgrQWkreE5STTVmS21QUkkxR0swdi9MNUduTVZrY2NUcDd2Ukkvdyt1?=
+ =?utf-8?B?WmRiZzQ2UVBRdC80RERuYmtSTm9SekRydXV5WEhhUDVIZDlIenJpT0JLd0dx?=
+ =?utf-8?B?c2c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0F25CE94129BEE419EE96844BDF2735A@eurprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240212130232.00007ebd@Huawei.com>
+X-OriginatorOrg: leica-geosystems.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR06MB4718.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6588d284-0d37-469e-8158-08dc2bdbe6bf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2024 15:04:24.8475
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tKYSscFux32t1BoVrjqK9pDJotRdVJ9Mvc9G2ICvsbk/McQaCPjKFIqWdzhKj82C5Ivpt270JpBTpks/INZSirdRNAwl9DSb8EamMY72kiEDe3+rf0zolD+MCGnB4fO2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR06MB8042
 
-Hi Jonathan,
-
-thank you for the patch review.
-
-On Mon, Feb 12, 2024 at 01:02:32PM +0000, Jonathan Cameron wrote:
-> On Sun, 11 Feb 2024 21:52:00 +0100
-> Ondřej Jirman <megi@xff.cz> wrote:
-> 
-> > From: Icenowy Zheng <icenowy@aosc.io>
-> > 
-> > AF8133J is a simple I2C-connected magnetometer, without interrupts.
-> > 
-> > Add a simple IIO driver for it.
-> > 
-> > Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> > Signed-off-by: Dalton Durst <dalton@ubports.com>
-> > Signed-off-by: Shoji Keita <awaittrot@shjk.jp>
-> > Signed-off-by: Ondrej Jirman <megi@xff.cz>
-> 
-> This is a lot of sign offs.  If accurate it menas.
-> 
-> Icenowy wrote teh driver,
-> Dalton then 'handled' it on the path to Shoji who
-> then 'handled' it on the path to Ondrej.
-> 
-> That's possible if it's been in various other trees for instance, but
-> I'd like some more explanation below the --- if that is the case.
-> Otherwise, maybe Co-developed-by: is appropriate for some of
-> the above list?
-
-Icenowy wrote basic driver, initially. Here's some older version with only Icenowy sign off:
-
-https://github.com/Icenowy/linux/commit/468ceb921dae9d75064c46d13c60cab2b42362b3
-
-I picked the patch into my linux tree a few years back from one of the Mobile
-Linux distributions, likely Mobian:
-
-https://megous.com/git/linux/commit/?h=af8133j-5.17&id=1afd43b002a02cade051acbe7851101258e60194
-
-So I guess Dalton and/or Shoji added the orientation matrix support, because
-that and addition of some error logging is the only difference between pure Icenowy
-version and the version with other sign offs.
-
-Then I rewrote large parts of the driver and added a few new features, like
-support for changing the scale/range, RPM, and buffered mode.
-
-So I don't know how to reflect this in the tags. :) It passed through all of
-these people, and all of them touched it in some way, I think.
-
-> Various comments inline, but looks pretty good in general.
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > diff --git a/drivers/iio/magnetometer/af8133j.c b/drivers/iio/magnetometer/af8133j.c
-> > new file mode 100644
-> > index 000000000000..0b03417ba134
-> > --- /dev/null
-> > +++ b/drivers/iio/magnetometer/af8133j.c
-> > @@ -0,0 +1,525 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * af8133j.c - Voltafield AF8133J magnetometer driver
-> > + *
-> > + * Copyright 2021 Icenowy Zheng <icenowy@aosc.io>
-> > + * Copyright 2024 Ondřej Jirman <megi@xff.cz>
-> > + */
-> > +
-> > +#include <linux/module.h>
-> 
-> Alphabetical order for these.
-> It's fine to separate out he IIO ones on their own as you have
-> done.
-> 
-> > +#include <linux/i2c.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/pm_runtime.h>
-> > +#include <linux/regulator/consumer.h>
-> > +
-> > +#include <linux/iio/iio.h>
-> > +#include <linux/iio/sysfs.h>
-> 
-> Don't think you are using this as no custom attrs.
-> 
-> 
-> > +#include <linux/iio/trigger_consumer.h>
-> > +#include <linux/iio/triggered_buffer.h>
-> > +
-> > +#define AF8133J_DRV_NAME "af8133j"
-> > +
-> > +#define AF8133J_REG_OUT		0x03
-> > +#define AF8133J_REG_PCODE	0x00
-> > +#define AF8133J_REG_PCODE_VAL	0x5e
-> > +#define AF8133J_REG_STATUS	0x02
-> > +#define AF8133J_REG_STATUS_ACQ	BIT(0)
-> > +#define AF8133J_REG_STATE	0x0a
-> > +#define AF8133J_REG_STATE_STBY	0x00
-> > +#define AF8133J_REG_STATE_WORK	0x01
-> > +#define AF8133J_REG_RANGE	0x0b
-> > +#define AF8133J_REG_RANGE_22G	0x12
-> > +#define AF8133J_REG_RANGE_12G	0x34
-> > +#define AF8133J_REG_SWR		0x11
-> > +#define AF8133J_REG_SWR_PERFORM	0x81
-> > +
-> > +static const char * const af8133j_supply_names[] = {
-> > +	"avdd",
-> > +	"dvdd",
-> > +};
-> > +
-> > +#define AF8133J_NUM_SUPPLIES ARRAY_SIZE(af8133j_supply_names)
-> 
-> Just use this inline, or the size of the array of regulators.
-> No need for this define.
-> 
-> 
-> > +static int af8133j_product_check(struct af8133j_data *data)
-> > +{
-> > +	struct device *dev = &data->client->dev;
-> > +	unsigned int val;
-> > +	int ret;
-> > +
-> > +	ret = regmap_read(data->regmap, AF8133J_REG_PCODE, &val);
-> > +	if (ret < 0) {
-> > +		dev_err(dev, "Error reading product code (%d)\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	if (val != AF8133J_REG_PCODE_VAL) {
-> > +		dev_err(dev, "Invalid product code (0x%02x)\n", val);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int af8133j_reset(struct af8133j_data *data)
-> > +{
-> > +	struct device *dev = &data->client->dev;
-> > +	int ret;
-> > +
-> > +	if (data->reset_gpiod) {
-> > +		/* If we have GPIO reset line, use it */
-> > +		gpiod_set_value_cansleep(data->reset_gpiod, 1);
-> > +		udelay(10);
-> > +		gpiod_set_value_cansleep(data->reset_gpiod, 0);
-> > +	} else {
-> > +		/* Otherwise use software reset */
-> > +		ret = regmap_write(data->regmap, AF8133J_REG_SWR,
-> > +				   AF8133J_REG_SWR_PERFORM);
-> > +		if (ret < 0) {
-> > +			dev_err(dev, "Failed to reset the chip\n");
-> > +			return ret;
-> > +		}
-> > +	}
-> > +
-> > +	/* Wait for reset to finish */
-> > +	usleep_range(1000, 1100);
-> > +
-> > +	/* Restore range setting */
-> > +	if (data->range == AF8133J_REG_RANGE_22G) {
-> > +		ret = regmap_write(data->regmap, AF8133J_REG_RANGE, data->range);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int af8133j_power_up(struct af8133j_data *data)
-> > +{
-> > +	struct device *dev = &data->client->dev;
-> > +	int ret;
-> > +
-> > +	if (data->powered)
-> > +		return 0;
-> > +
-> > +	ret = regulator_bulk_enable(AF8133J_NUM_SUPPLIES, data->supplies);
-> > +	if (ret) {
-> > +		dev_err(dev, "Could not enable regulators\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	gpiod_set_value_cansleep(data->reset_gpiod, 0);
-> > +
-> > +	/* Wait for power on reset */
-> > +	usleep_range(15000, 16000);
-> > +
-> > +	data->powered = true;
-> 
-> Why is this needed?  The RPM code is reference counted, so I don't think
-> we should need this.
-
-It's here because of code in af8133j_remove just disables RPM and then calls
-af8133j_power_down(). I guess it can be done via RPM, too, by disabling
-autosuspend and leaving it to RPM callbacks.
-
-> > +	return 0;
-> > +}
-> > +
-> > +static void af8133j_power_down(struct af8133j_data *data)
-> > +{
-> > +	if (!data->powered)
-> > +		return;
-> > +
-> > +	gpiod_set_value_cansleep(data->reset_gpiod, 1);
-> > +	regulator_bulk_disable(AF8133J_NUM_SUPPLIES, data->supplies);
-> > +	data->powered = false;
-> > +}
-> 
-> > +
-> > +static int af8133j_read_measurement(struct af8133j_data *data, __le16 buf[3])
-> > +{
-> > +	struct device *dev = &data->client->dev;
-> > +	int ret;
-> > +
-> > +	ret = pm_runtime_resume_and_get(dev);
-> > +	if (ret) {
-> > +		dev_err(dev, "failed to power on\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	mutex_lock(&data->mutex);
-> 	scoped_guard(mutex, &data->mutex) {
-> 		ret = af8133j_take_measurement(data);
-> 		if (ret)
-> 			goto error_ret;
-> 
-> 		ret = regmap_bulk_read(...)
-> 	}
-> 
-> error_ret:
-> 
-> 	pm_runtime_mark_last_busy(dev);
-> 
-> 
-> > +
-> > +	ret = af8133j_take_measurement(data);
-> > +	if (ret == 0)
-> > +		ret = regmap_bulk_read(data->regmap, AF8133J_REG_OUT,
-> > +				       buf, sizeof(__le16) * 3);
-> > +
-> > +	mutex_unlock(&data->mutex);
-> > +
-> > +	pm_runtime_mark_last_busy(dev);
-> > +	if (pm_runtime_put_autosuspend(dev))
-> > +		dev_err(dev, "failed to power off\n");
-> I think this will only happen if suspend returns non 0 and yours
-> doesn't.  What else might cause this?
-
-I don't know, there's quite a deep callflow under
-https://elixir.bootlin.com/linux/latest/source/include/linux/pm_runtime.h#L470
-with a lot of error paths. I'd say it's very unlikely to get na error here.
-
-I can drop it if you like.
-
-> > +
-> > +	return ret;
-> > +}
-> 
-> > +
-> > +static int af8133j_read_raw(struct iio_dev *indio_dev,
-> > +			    struct iio_chan_spec const *chan, int *val,
-> > +			    int *val2, long mask)
-> > +{
-> > +	struct af8133j_data *data = iio_priv(indio_dev);
-> > +	__le16 buf[3];
-> > +	int ret;
-> > +
-> > +	switch (mask) {
-> > +	case IIO_CHAN_INFO_RAW:
-> > +		ret = af8133j_read_measurement(data, buf);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +
-> > +		*val = sign_extend32(le16_to_cpu(buf[chan->address]),
-> > +				     chan->scan_type.realbits - 1);
-> > +		return IIO_VAL_INT;
-> > +	case IIO_CHAN_INFO_SCALE:
-> > +		*val = 0;
-> > +		*val2 = af8133j_scales[data->range == AF8133J_REG_RANGE_12G ? 0 : 1][1];
-> 
-> Line length is a bit long and the ternary makes it less easy to read than would be ideal.
-> I'd just use an if / else.
-> 		if (data->Range == AF8133J_REG_RANGE_12G)
-> 			*val2 = af8133j_scales[0][1];
-> 		else
-> 			*val2 = af8133j_scales[1][1];
-> > +		return IIO_VAL_INT_PLUS_NANO;
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +}
-> > +
-> > +static int af8133j_set_scale(struct af8133j_data *data,
-> > +			     unsigned int val, unsigned int val2)
-> > +{
-> > +	u8 range;
-> > +	int ret;
-> > +
-> > +	if (af8133j_scales[0][0] == val && af8133j_scales[0][1] == val2)
-> > +		range = AF8133J_REG_RANGE_12G;
-> > +	else if (af8133j_scales[1][0] == val && af8133j_scales[1][1] == val2)
-> > +		range = AF8133J_REG_RANGE_22G;
-> > +	else
-> > +		return -EINVAL;
-> > +
-> > +	ret = regmap_write(data->regmap, AF8133J_REG_RANGE, range);
-> > +	if (ret == 0)
-> 	if (ret)
-> 		return ret;
-> 
-> 	data->range = range;
-> 
-> 	return 0;
-> 
-> A little more code, but it is easier to review if we use the same pattern
-> everywhere.
-> 
-> > +		data->range = range;
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int af8133j_write_raw(struct iio_dev *indio_dev,
-> > +			     struct iio_chan_spec const *chan,
-> > +			     int val, int val2, long mask)
-> > +{
-> > +	struct af8133j_data *data = iio_priv(indio_dev);
-> > +	int ret;
-> > +
-> > +	switch (mask) {
-> > +	case IIO_CHAN_INFO_SCALE:
-> > +		mutex_lock(&data->mutex);
-> 
-> Consider using scoped_guard().
-> 
-> > +		ret = af8133j_set_scale(data, val, val2);
-> > +		mutex_unlock(&data->mutex);
-> > +		return ret;
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +}
-> > +
-> > +static int af8133j_write_raw_get_fmt(struct iio_dev *indio_dev,
-> > +				     struct iio_chan_spec const *chan,
-> > +				     long mask)
-> > +{
-> > +	return IIO_VAL_INT_PLUS_NANO;
-> > +}
-> > +
-> > +static const struct iio_info af8133j_info = {
-> > +	.read_raw = af8133j_read_raw,
-> > +	.read_avail = af8133j_read_avail,
-> > +	.write_raw = af8133j_write_raw,
-> > +	.write_raw_get_fmt = af8133j_write_raw_get_fmt,
-> > +};
-> > +
-> > +static irqreturn_t af8133j_trigger_handler(int irq, void *p)
-> > +{
-> > +	struct iio_poll_func *pf = p;
-> > +	struct iio_dev *indio_dev = pf->indio_dev;
-> > +	struct af8133j_data *data = iio_priv(indio_dev);
-> > +	s64 timestamp = iio_get_time_ns(indio_dev);
-> > +	struct {
-> > +		__le16 values[3];
-> > +		s64 timestamp __aligned(8);
-> > +	} sample;
-> > +	int ret;
-> > +
-> > +	memset(&sample, 0, sizeof(sample));
-> > +
-> > +	ret = af8133j_read_measurement(data, sample.values);
-> > +	if (ret == 0)
-> > +		iio_push_to_buffers_with_timestamp(indio_dev, &sample, timestamp);
-> Prefer to keep the error path out of line
-> 
-> 	if (ret)
-> 		goto err_ret;
-> 
-> 	iio_push_to_...
-> 
-> error_ret:
-> 	iio_trigger...
-> 
-> It's a little more code, but the consistency of code organization makes
-> for easier review etc.
-> 
-> > +
-> > +	iio_trigger_notify_done(indio_dev->trig);
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
-> > +static const struct regmap_config af8133j_regmap_config = {
-> > +	.name = "af8133j_regmap",
-> > +	.reg_bits = 8,
-> > +	.val_bits = 8,
-> > +	.max_register = AF8133J_REG_SWR,
-> > +	.cache_type = REGCACHE_NONE,
-> > +};
-> > +
-> > +static int af8133j_probe(struct i2c_client *client)
-> > +{
-> > +	struct device *dev = &client->dev;
-> > +	struct af8133j_data *data;
-> > +	struct iio_dev *indio_dev;
-> > +	struct regmap *regmap;
-> > +	int ret, i;
-> > +
-> > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
-> > +	if (!indio_dev)
-> > +		return -ENOMEM;
-> > +
-> > +	regmap = devm_regmap_init_i2c(client, &af8133j_regmap_config);
-> > +	if (IS_ERR(regmap))
-> > +		return dev_err_probe(dev, PTR_ERR(regmap),
-> > +				     "regmap initialization failed\n");
-> > +
-> > +	data = iio_priv(indio_dev);
-> > +	i2c_set_clientdata(client, indio_dev);
-> > +	data->client = client;
-> > +	data->regmap = regmap;
-> > +	data->range = AF8133J_REG_RANGE_12G;
-> > +	mutex_init(&data->mutex);
-> > +
-> > +	data->reset_gpiod = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-> > +	if (IS_ERR(data->reset_gpiod))
-> > +		return dev_err_probe(dev, PTR_ERR(data->reset_gpiod),
-> > +				     "Failed to get reset gpio\n");
-> > +
-> > +	for (i = 0; i < AF8133J_NUM_SUPPLIES; i++)
-> > +		data->supplies[i].supply = af8133j_supply_names[i];
-> > +	ret = devm_regulator_bulk_get(dev, AF8133J_NUM_SUPPLIES, data->supplies);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret = iio_read_mount_matrix(dev, &data->orientation);
-> > +	if (ret)
-> > +		return dev_err_probe(dev, ret, "Failed to read mount matrix\n");
-> > +
-> > +	ret = af8133j_power_up(data);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret = af8133j_reset(data);
-> > +	if (ret) {
-> > +		af8133j_power_down(data);
-> Moving over to this being handled by a devm callback would remove the need
-> for these manual calls.
-> 
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = af8133j_product_check(data);
-> > +	if (ret) {
-> > +		af8133j_power_down(data);
-> > +		return ret;
-> > +	}
-> > +
-> > +	af8133j_power_down(data);
-> 
-> Leave this to runtime_pm autosuspend.
-> Just make sure to set it as active with appropriate get and put to ensure
-> the autosuspend handling deals with this.
-> 
-> 
-> > +
-> > +	indio_dev->info = &af8133j_info;
-> > +	indio_dev->name = AF8133J_DRV_NAME;
-> 
-> As below. I'd rather see the string here.
-> 
-> > +	indio_dev->channels = af8133j_channels;
-> > +	indio_dev->num_channels = ARRAY_SIZE(af8133j_channels);
-> > +	indio_dev->modes = INDIO_DIRECT_MODE;
-> > +
-> > +	ret = devm_iio_triggered_buffer_setup(dev, indio_dev, NULL,
-> > +					      &af8133j_trigger_handler, NULL);
-> > +	if (ret < 0)
-> > +		return dev_err_probe(&client->dev, ret,
-> > +				     "failed to setup iio triggered buffer\n");
-> > +
-> > +	ret = devm_iio_device_register(dev, indio_dev);
-> > +	if (ret)
-> > +		return dev_err_probe(dev, ret, "Failed to register iio device");
-> > +
-> > +	pm_runtime_set_autosuspend_delay(dev, 500);
-> > +	pm_runtime_use_autosuspend(dev);
-> 
-> See the comment on this call in the header. You need to undo it manually - or
-> use devm_pm_runtime_enable()
-> 
-> > +	pm_runtime_enable(dev);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void af8133j_remove(struct i2c_client *client)
-> > +{
-> > +	struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> > +	struct af8133j_data *data = iio_priv(indio_dev);
-> > +	struct device *dev = &data->client->dev;
-> > +
-> > +	pm_runtime_disable(dev);
-> > +	pm_runtime_set_suspended(dev);
-> > +
-> > +	af8133j_power_down(data);
-> 
-> Can normally push these into callbacks using
-> devm_add_action_or_reset() 
-> That avoids need for either explicit error handling or a remove()
-> 
-> You power the device down here, but there isn't a matching call to
-> power it up in probe() (as it is powered down in there - which you
-> should leave to runtime_pm())
-
-Yes, that's the reason for powered tracking in the driver.
-
-> 
-> 
-> 
-> > +}
-> > +
-> > +static int __maybe_unused af8133j_runtime_suspend(struct device *dev)
-> > +{
-> > +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> > +	struct af8133j_data *data = iio_priv(indio_dev);
-> > +
-> > +	af8133j_power_down(data);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int __maybe_unused af8133j_runtime_resume(struct device *dev)
-> 
-> No need to do the __maybe_unused with the changes below.
-> The new way of handling this is to expose them all to the compiler and
-> let it do dead code removal.
-> 
-> That's what the pm_ptr() magic does for us.
-> 
-> 
-> 
-> > +{
-> > +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> > +	struct af8133j_data *data = iio_priv(indio_dev);
-> > +	int ret;
-> > +
-> > +	ret = af8133j_power_up(data);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret = af8133j_reset(data);
-> > +	if (ret) {
-> > +		af8133j_power_down(data);
-> > +		return ret;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +const struct dev_pm_ops af8133j_pm_ops = {
-> > +	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
-> 
-> This set of macros are deprecated.  
-> Use SYSTEM_SLEEP_PM_OPS etc in combination with pm_ptr()
-> 
-> > +	SET_RUNTIME_PM_OPS(af8133j_runtime_suspend, af8133j_runtime_resume, NULL)
-> > +};
-> 
-> > +
-> > +static struct i2c_driver af8133j_driver = {
-> > +	.driver = {
-> > +		.name = AF8133J_DRV_NAME,
-> 
-> I'd prefer to just see the string here and where it used above.
-> The define just makes the code harder to read.  There is no
-> particular reason the driver name should match the iio_dev->name
-> so little advantage in enforcing that via a define.
-> 
-> > +		.of_match_table = af8133j_of_match,
-> > +		.pm = &af8133j_pm_ops,
-> 
-> pm_ptr()
-> 
-> otherwise you are going to get unused warnings for the struct.
-
-thanks for all the suggestions. :)
-
-Kind regards,
-	o.
-
-> 
-> > +	},
-> > +	.probe = af8133j_probe,
-> > +	.remove = af8133j_remove,
-> > +	.id_table = af8133j_id,
-> > +};
-> > +
-> > +module_i2c_driver(af8133j_driver);
-> > +
-> > +MODULE_AUTHOR("Icenowy Zheng <icenowy@aosc.io>");
-> > +MODULE_AUTHOR("Ondřej Jirman <megi@xff.cz>");
-> > +MODULE_DESCRIPTION("Voltafield AF8133J magnetic sensor driver");
-> > +MODULE_LICENSE("GPL");
-> 
+T24gMTIuMDIuMjQgMTU6MzcsIEFuZHJldyBMdW5uIHdyb3RlOg0KPiBbU29tZSBwZW9wbGUgd2hv
+IHJlY2VpdmVkIHRoaXMgbWVzc2FnZSBkb24ndCBvZnRlbiBnZXQgZW1haWwgZnJvbSBhbmRyZXdA
+bHVubi5jaC4gTGVhcm4gd2h5IHRoaXMgaXMgaW1wb3J0YW50IGF0IGh0dHBzOi8vYWthLm1zL0xl
+YXJuQWJvdXRTZW5kZXJJZGVudGlmaWNhdGlvbiBdDQo+DQo+IFRoaXMgZW1haWwgaXMgbm90IGZy
+b20gSGV4YWdvbuKAmXMgT2ZmaWNlIDM2NSBpbnN0YW5jZS4gUGxlYXNlIGJlIGNhcmVmdWwgd2hp
+bGUgY2xpY2tpbmcgbGlua3MsIG9wZW5pbmcgYXR0YWNobWVudHMsIG9yIHJlcGx5aW5nIHRvIHRo
+aXMgZW1haWwuDQo+DQo+DQo+IE9uIE1vbiwgRmViIDEyLCAyMDI0IGF0IDAyOjE1OjQ3UE0gKzAw
+MDAsIFBPUEVTQ1UgQ2F0YWxpbiB3cm90ZToNCj4+IEkganVzdCBmaWd1cmVkIG91dCB0aGF0IEkg
+Zm9yZ290IHRvIGRpc2FibGUgV09MIGluIHRoZSBjYWxsYmFjayBjb25maWdfaW5pdC4NCj4+IEl0
+IGxvb2tzIHRoZSBQSFkgZHJpdmVyIHNob3VsZCBleHBsaWNpdGx5IGRpc2FibGUgV09MIGZlYXR1
+cmUgYXQgaW5pdCwNCj4+IGFuZCBsZWF2ZSBpdCB0byBldGh0b29sIHRvIGJlIGVuYWJsZWQuDQo+
+PiBJIHdpbGwgcHJvdmlkZSBhIHY1IEFTQVAgdG8gZml4IHRoYXQuDQo+IFdvTCBpcyBhIGJpdCBt
+dXJreS4gT24geDg2LCBpdCBjYW4gYmUgdGhlIEJJT1Mgd2hpY2ggY29uZmlndXJlcyBXb0wsDQo+
+IGJlaGluZCB0aGUgYmFjayBvZiBMaW51eC4gVGhhdCBpcyBub3Qgc29tZXRoaW5nIGkgd291bGQg
+YWN0dWFsbHkNCj4gcmVjb21tZW5kLCBzbyBkaXNhYmxpbmcgaXQgYXQgYm9vdCBkb2VzIG1ha2Ug
+c2Vuc2UuIEJ1dCBjb25zaWRlcg0KPiBzdXNwZW5kIGFuZCByZXN1bWUuIElmIHRoZSBQSFkgaXMg
+dXNlZCBmb3IgV29MLCB0aGUgV29MIHNldHRpbmdzDQo+IHNob3VsZCBiZSBrZXB0IHRocm91Z2gg
+c3VzcGVuZC9yZXN1bWUuIFNvIHlvdSBuZWVkIHRvIGJlIGNhcmVmdWwgd2hlcmUNCj4geW91IGRp
+c2FibGUgaXQsIHNvIGl0cyBvbmx5IGRpc2FibGVzIG9uIGJvb3QsIG5vdCByZXN1bWUuDQo+DQo+
+ICAgICAgQW5kcmV3DQoNCkkgc2VlLiBUaGVuLCBJIHNob3VsZCBub3QgZGlzYWJsZSBXT0wgaW4g
+Y29uZmlnX2luaXQsIHNpbmNlIHRoaXMgDQpjYWxsYmFjayBpcyBhbHNvIGNhbGxlZCBvbiB0aGUg
+cmVzdW1lIHBhdGggOiANCm1kaW9fYnVzX3BoeV9yZXN1bWUtPnBoeV9pbml0X2h3LT5jb25maWdf
+aW5pdC4NCkhvd2V2ZXIsIHRoaXMgY29udHJhc3RzIHdpdGggdGhlIHJlc3Qgb2YgdGhlIGRyaXZl
+ciBhbmQgbXkgcGF0Y2ggaXMgbm90IA0KYW55bW9yZSBhYm91dCBqdXN0IGFkZGluZyBzdXBwb3J0
+IGZvciB0dW5pbmcgb2YgVFggdm9sdGFnZSBsZXZlbHMgLi4uDQoNCg==
 
