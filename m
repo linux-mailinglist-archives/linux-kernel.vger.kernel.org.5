@@ -1,243 +1,173 @@
-Return-Path: <linux-kernel+bounces-61233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D891850F73
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:13:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 803D9850F74
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:14:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 231AB1F22899
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:13:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5C6D1C2145C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480CA107B4;
-	Mon, 12 Feb 2024 09:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3BF101E8;
+	Mon, 12 Feb 2024 09:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="KUk1B9LC"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NgfR+j9x";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FH/Sng6q";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NgfR+j9x";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FH/Sng6q"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472B6101DB
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:13:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 835BAF51F
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707729213; cv=none; b=Qk2Y7/O83n1CLlFU89BZnv14ADIUsOkKQp1HBd33X6ME4wzZLZOqxAmbr5G5HyTscT8LqdQuN0eRDEa8LDukpX2Flo1VQp60pgKTscSePJF00/QkIEXvTt/Za1kpn/aXGNy0ieUzqpEP29UVKpbf42GtSWVvbsmcPXyNoyvXUnM=
+	t=1707729240; cv=none; b=I7FgTJDlwz9h3d69gpQo9R47Ij65KI4CIQb5dhUng7U9lYlwmCsJK96KYJjWH5V7xym5apOdIa3MWLAm5T5uu+H6DZibwP2T+koByK5iQiD/eTdJh8ybNyKDJ5B/kB0macQZUy3QbXlopdrTsxEHJEwWQ78ayNhKfQ8GEjIKf84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707729213; c=relaxed/simple;
-	bh=pRmTM0GIeUxejacmixLo3IjDOCF46SUfWYYtouIXW8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wbp9ZHc0378KScKW49V3tKjslcHqZYWhX53S+ZsxPZDyhAWhcZvNc/7Q5NPHgCPuy2kd7+6JXbOop8jEjNER6RKo5HIp4TNL+VKDc2aSj66B9dDfUYIxvP4Lt/wRnt2Q7uG6AC4WdNPxmr+SdgS5KWW0QXzpH16kDO1169FTcr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=KUk1B9LC; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55ee686b5d5so3910234a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 01:13:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1707729209; x=1708334009; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kpndX5C2Mii0Flwlx+5AtvY+2C+NxX9epFi0dvTnTAk=;
-        b=KUk1B9LCeZNHUas+DF6ZAHAR1ZUeKJQzL+WKgNZAPviVbP1GM7puFOHF2drzubSpDA
-         v0Z2QrcTNPR9WNTHv8R9civLcwHlfjW/7l5pDJguK/vnQhdIKHrR7kNhH4EdcZesYbir
-         GK9uEaczCl19tRbg4TpacJOuzuEaXj7VzE4Jg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707729209; x=1708334009;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kpndX5C2Mii0Flwlx+5AtvY+2C+NxX9epFi0dvTnTAk=;
-        b=e1T7TP8RplIblz6jNygfnxr4PNy8207UquSroYiNDK2oMw7XgNCPqiZg7BQYgk9h/O
-         CzlsrbPxJ5InEjVwPkFSg1DntSGhRJeOI3lZrSQhi2iDUy7dvdKm+cmCP0vBkYvqE4Ur
-         SBFDVtLkvxiMKmhCgmK5KVNINiXBsSLX0kS5T3PJtcPekMUdwh7PMAiLDGxOmqoWu8t7
-         z1hfA5mRh3f7TlkyVz3lUYxJ38lev5vruAJQeYIA/2NL61KWNcyArENJhD2FBdfw2FHV
-         oN/NgGlzXBkKHCutbTv1jWP3PqngL97dN+M1yaztdwSqf3TChBJ9PDYy2PUILLP23IId
-         0ZNw==
-X-Gm-Message-State: AOJu0YzTfE+JbWAw3qiKHjVdxSbKDyqmvv14Pk4R48ciVjX5+5hihzuz
-	8Bd5l1pHgYq1W26OT4MkHm5MTrx13CkuUdH6tlOIGQhcPz+iQjYBm3E6S+9DcX0=
-X-Google-Smtp-Source: AGHT+IFGM2App413SIKcCc2Ur0ABS1uXMeYaU9EoPH8ldn/XY6VDUheFoubSE+uiG+infjMyonjofA==
-X-Received: by 2002:aa7:d3cb:0:b0:560:93b1:a351 with SMTP id o11-20020aa7d3cb000000b0056093b1a351mr4796353edr.37.1707729209255;
-        Mon, 12 Feb 2024 01:13:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUi3cSiwbKOwpf9FXAXb3ol8cK21LF8oKTT7zqFHCYqkgcXjwYmpCjbQMm3YKWVBH0wL86GTtfkE0i71Wno6hJgmt+n7jCwj2ThW0BisPIfQ9BSjJ3P/9EBUj8hO4d+sYwI+fl9m6GT0ua3Ox1pNPX7VAhJzufiSulJnviWa7/EOypfxKpbGGnncIAlMdGui2MMtGMDfqBpBLO8n3REJrswc3RQISy4K2jPKesDs7g2VZ3q0NEQLmNizGjzCA67Ju4VddytRfukHTZfMGKvlTY9RDFYR7GrkRHU1/hVzORPAOSWyG1y0gtq04IbVpZNMTko1Xmz0KZVrkmZCyPUjiONYOx3qrezQhpvHry9fw5wK5nTj0snXr1yUQ1iD4ss1Nf0x9YWGtsKGTQ9mR0L8z3HHiCTjSmC8+ol4A7mwG+oApaXZvTUGqk/+B1CF2OES/et67TnEkF84wM1h3O5GUBRMqd0yODERzxI+mqk8FUavSZFQnV9sWAW5/Ay76BMMWPFvRpYW9HQB3Y=
-Received: from localhost ([213.195.118.74])
-        by smtp.gmail.com with ESMTPSA id y3-20020aa7c243000000b005612ac47d85sm2539889edo.82.2024.02.12.01.13.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 01:13:28 -0800 (PST)
-Date: Mon, 12 Feb 2024 10:13:28 +0100
-From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: "Chen, Jiqian" <Jiqian.Chen@amd.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Juergen Gross <jgross@suse.com>,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
-	"Huang, Ray" <Ray.Huang@amd.com>,
-	"Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>
-Subject: Re: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
-Message-ID: <ZcnhOEjnTgbYFPVl@macbook>
-References: <ZbtY1R15pYZz3F3B@macbook>
- <20240209210549.GA884438@bhelgaas>
+	s=arc-20240116; t=1707729240; c=relaxed/simple;
+	bh=rTWYqHYDvRBI+DRk+/jbNPaRiHUGi114yRDzDzEcEGA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l99hE6E8PdPCw0VO3S9WMtlSOBzaWqySb4gmzTXyaduT61jcGbDULMv0dYyszcXuwCiG7y2jJIuR9PdqNVj3hQmLxAqD/b/9Hr3ZIYPhHDG/unz/NaEf5uxJYFupKHdnNDAYjDG5xVKKTx2y77kPo3YxVac+vSAtsYPiP2fEOlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NgfR+j9x; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FH/Sng6q; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NgfR+j9x; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FH/Sng6q; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AB3BE1F457;
+	Mon, 12 Feb 2024 09:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707729236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6k7i6PGa+VnvHSMu8tCjQ92uFfMIfah6CK1ZLbbSmS4=;
+	b=NgfR+j9xubFTcy1K7ELHQreF1nqp4lamsgMhZi1WzxrtIp4/I+alUp9zjnU1dY5xGqS3s2
+	8iw6Bh0D59zu762v4lLbaAEyTsSBaLw1kAgPwSQ2rRHG9SdZy8LmTZk2QpevzCw05e9mRs
+	qmX8WwgZfoJADBsK8ViP2awJyM7oguQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707729236;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6k7i6PGa+VnvHSMu8tCjQ92uFfMIfah6CK1ZLbbSmS4=;
+	b=FH/Sng6qg2TlRjvFOYv4avzy+EfNrg9Kqg7Bd3zVhiK45GyHfeAOBKkZtnnG2gFvMUWCtj
+	xR1IF2wGlR8QxSBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707729236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6k7i6PGa+VnvHSMu8tCjQ92uFfMIfah6CK1ZLbbSmS4=;
+	b=NgfR+j9xubFTcy1K7ELHQreF1nqp4lamsgMhZi1WzxrtIp4/I+alUp9zjnU1dY5xGqS3s2
+	8iw6Bh0D59zu762v4lLbaAEyTsSBaLw1kAgPwSQ2rRHG9SdZy8LmTZk2QpevzCw05e9mRs
+	qmX8WwgZfoJADBsK8ViP2awJyM7oguQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707729236;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6k7i6PGa+VnvHSMu8tCjQ92uFfMIfah6CK1ZLbbSmS4=;
+	b=FH/Sng6qg2TlRjvFOYv4avzy+EfNrg9Kqg7Bd3zVhiK45GyHfeAOBKkZtnnG2gFvMUWCtj
+	xR1IF2wGlR8QxSBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A84A13985;
+	Mon, 12 Feb 2024 09:13:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id arJhJVThyWWQfgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 12 Feb 2024 09:13:56 +0000
+Message-ID: <20c8fa7c-62ae-4e48-aaec-8b512519cee9@suse.cz>
+Date: Mon, 12 Feb 2024 10:13:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240209210549.GA884438@bhelgaas>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] mm: compaction: limit the suitable target page order
+ to be less than cc->order
+To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org,
+ Zi Yan <ziy@nvidia.com>
+Cc: mgorman@techsingularity.net, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <afcd9377351c259df7a25a388a4a0d5862b986f4.1705928395.git.baolin.wang@linux.alibaba.com>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <afcd9377351c259df7a25a388a4a0d5862b986f4.1705928395.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-0.09 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -0.09
 
-On Fri, Feb 09, 2024 at 03:05:49PM -0600, Bjorn Helgaas wrote:
-> On Thu, Feb 01, 2024 at 09:39:49AM +0100, Roger Pau Monné wrote:
-> > On Wed, Jan 31, 2024 at 01:00:14PM -0600, Bjorn Helgaas wrote:
-> > > On Wed, Jan 31, 2024 at 09:58:19AM +0100, Roger Pau Monné wrote:
-> > > > On Tue, Jan 30, 2024 at 02:44:03PM -0600, Bjorn Helgaas wrote:
-> > > > > On Tue, Jan 30, 2024 at 10:07:36AM +0100, Roger Pau Monné wrote:
-> > > > > > On Mon, Jan 29, 2024 at 04:01:13PM -0600, Bjorn Helgaas wrote:
-> > > > > > > On Thu, Jan 25, 2024 at 07:17:24AM +0000, Chen, Jiqian wrote:
-> > > > > > > > On 2024/1/24 00:02, Bjorn Helgaas wrote:
-> > > > > > > > > On Tue, Jan 23, 2024 at 10:13:52AM +0000, Chen, Jiqian wrote:
-> > > > > > > > >> On 2024/1/23 07:37, Bjorn Helgaas wrote:
-> > > > > > > > >>> On Fri, Jan 05, 2024 at 02:22:17PM +0800, Jiqian Chen wrote:
-> > > > > > > > >>>> There is a need for some scenarios to use gsi sysfs.
-> > > > > > > > >>>> For example, when xen passthrough a device to dumU, it will
-> > > > > > > > >>>> use gsi to map pirq, but currently userspace can't get gsi
-> > > > > > > > >>>> number.
-> > > > > > > > >>>> So, add gsi sysfs for that and for other potential scenarios.
-> > > > > > > > >> ...
-> > > > > > > > > 
-> > > > > > > > >>> I don't know enough about Xen to know why it needs the GSI in
-> > > > > > > > >>> userspace.  Is this passthrough brand new functionality that can't be
-> > > > > > > > >>> done today because we don't expose the GSI yet?
-> > > > > > > 
-> > > > > > > I assume this must be new functionality, i.e., this kind of
-> > > > > > > passthrough does not work today, right?
-> > > > > > > 
-> > > > > > > > >> has ACPI support and is responsible for detecting and controlling
-> > > > > > > > >> the hardware, also it performs privileged operations such as the
-> > > > > > > > >> creation of normal (unprivileged) domains DomUs. When we give to a
-> > > > > > > > >> DomU direct access to a device, we need also to route the physical
-> > > > > > > > >> interrupts to the DomU. In order to do so Xen needs to setup and map
-> > > > > > > > >> the interrupts appropriately.
-> > > > > > > > > 
-> > > > > > > > > What kernel interfaces are used for this setup and mapping?
-> > > > > > > >
-> > > > > > > > For passthrough devices, the setup and mapping of routing physical
-> > > > > > > > interrupts to DomU are done on Xen hypervisor side, hypervisor only
-> > > > > > > > need userspace to provide the GSI info, see Xen code:
-> > > > > > > > xc_physdev_map_pirq require GSI and then will call hypercall to pass
-> > > > > > > > GSI into hypervisor and then hypervisor will do the mapping and
-> > > > > > > > routing, kernel doesn't do the setup and mapping.
-> > > > > > > 
-> > > > > > > So we have to expose the GSI to userspace not because userspace itself
-> > > > > > > uses it, but so userspace can turn around and pass it back into the
-> > > > > > > kernel?
-> > > > > > 
-> > > > > > No, the point is to pass it back to Xen, which doesn't know the
-> > > > > > mapping between GSIs and PCI devices because it can't execute the ACPI
-> > > > > > AML resource methods that provide such information.
-> > > > > > 
-> > > > > > The (Linux) kernel is just a proxy that forwards the hypercalls from
-> > > > > > user-space tools into Xen.
-> > > > > 
-> > > > > But I guess Xen knows how to interpret a GSI even though it doesn't
-> > > > > have access to AML?
-> > > > 
-> > > > On x86 Xen does know how to map a GSI into an IO-APIC pin, in order
-> > > > configure the RTE as requested.
-> > > 
-> > > IIUC, mapping a GSI to an IO-APIC pin requires information from the
-> > > MADT.  So I guess Xen does use the static ACPI tables, but not the AML
-> > > _PRT methods that would connect a GSI with a PCI device?
-> > 
-> > Yes, Xen can parse the static tables, and knows the base GSI of
-> > IO-APICs from the MADT.
-> > 
-> > > I guess this means Xen would not be able to deal with _MAT methods,
-> > > which also contains MADT entries?  I don't know the implications of
-> > > this -- maybe it means Xen might not be able to use with hot-added
-> > > devices?
-> > 
-> > It's my understanding _MAT will only be present on some very specific
-> > devices (IO-APIC or CPU objects).  Xen doesn't support hotplug of
-> > IO-APICs, but hotplug of CPUs should in principle be supported with
-> > cooperation from the control domain OS (albeit it's not something that
-> > we tests on our CI).  I don't expect however that a CPU object _MAT
-> > method will return IO APIC entries.
-> > 
-> > > The tables (including DSDT and SSDTS that contain the AML) are exposed
-> > > to userspace via /sys/firmware/acpi/tables/, but of course that
-> > > doesn't mean Xen knows how to interpret the AML, and even if it did,
-> > > Xen probably wouldn't be able to *evaluate* it since that could
-> > > conflict with the host kernel's use of AML.
-> > 
-> > Indeed, there can only be a single OSPM, and that's the dom0 OS (Linux
-> > in our context).
-> > 
-> > Getting back to our context though, what would be a suitable place for
-> > exposing the GSI assigned to each device?
+On 1/22/24 14:01, Baolin Wang wrote:
+> It can not improve the fragmentation if we isolate the target free pages
+> exceeding cc->order, especially when the cc->order is less than pageblock_order.
+> For example, suppose the pageblock_order is MAX_ORDER (size is 4M) and cc->order
+> is 2M THP size, we should not isolate other 2M free pages to be the migration
+> target, which can not improve the fragmentation.
 > 
-> IIUC, the Xen hypervisor:
+> Moreover this is also applicable for large folio compaction.
+
+So why not Cc: Zi Yan? (done)
+
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+
+I doubt this will make much difference, because if such a larger order free
+page exists, we shouldn't have a reason to be compacting for a lower order
+in the first place?
+
+> ---
+>  mm/compaction.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
->   - Interprets /sys/firmware/acpi/tables/APIC (or gets this via
->     something running on the Dom0 kernel) to find the physical base
->     address and GSI base, e.g., from I/O APIC, I/O SAPIC.
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 27ada42924d5..066b72b3471a 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1346,12 +1346,14 @@ static bool suitable_migration_target(struct compact_control *cc,
+>  {
+>  	/* If the page is a large free page, then disallow migration */
+>  	if (PageBuddy(page)) {
+> +		int order = cc->order > 0 ? cc->order : pageblock_order;
+> +
+>  		/*
+>  		 * We are checking page_order without zone->lock taken. But
+>  		 * the only small danger is that we skip a potentially suitable
+>  		 * pageblock, so it's not worth to check order for valid range.
+>  		 */
+> -		if (buddy_order_unsafe(page) >= pageblock_order)
+> +		if (buddy_order_unsafe(page) >= order)
+>  			return false;
+>  	}
+>  
 
-No, Xen parses the MADT directly from memory, before stating dom0.
-That's a static table so it's fine for Xen to parse it and obtain the
-I/O APIC GSI base.
-
->   - Needs the GSI to locate the APIC and pin within the APIC.  The
->     Dom0 kernel is the OSPM, so only it can evaluate the AML _PRT to
->     learn the PCI device -> GSI mapping.
-
-Yes, Xen doesn't know the PCI device -> GSI mapping.  Dom0 needs to
-parse the ACPI methods and signal Xen to configure a GSI with a
-given trigger and polarity.
-
->   - Has direct access to the APIC physical base address to program the
->     Redirection Table.
-
-Yes, the hardware (native) I/O APIC is owned by Xen, and not directly
-accessible by dom0.
-
-> The patch seems a little messy to me because the PCI core has to keep
-> track of the GSI even though it doesn't need it itself.  And the
-> current patch exposes it on all arches, even non-ACPI ones or when
-> ACPI is disabled (easily fixable).
-> 
-> We only call acpi_pci_irq_enable() in the pci_enable_device() path, so
-> we don't know the GSI unless a Dom0 driver has claimed the device and
-> called pci_enable_device() for it, which seems like it might not be
-> desirable.
-
-I think that's always the case, as on dom0 devices to be passed
-through are handled by pciback which does enable them.
-
-I agree it might be best to not tie exposing the node to
-pci_enable_device() having been called.  Is _PRT only evaluated as
-part of acpi_pci_irq_enable()? (or pci_enable_device()).
-
-> I was hoping we could put it in /sys/firmware/acpi/interrupts, but
-> that looks like it's only for SCI statistics.  I guess we could moot a
-> new /sys/firmware/acpi/gsi/ directory, but then each file there would
-> have to identify a device, which might not be as convenient as the
-> /sys/devices/ directory that already exists.  I guess there may be
-> GSIs for things other than PCI devices; will you ever care about any
-> of those?
-
-We only support passthrough of PCI devices so far, but I guess if any
-of such non-PCI devices ever appear and those use a GSI, and Xen
-supports passthrough for them, then yes, we would need to fetch such
-GSI somehow.
-
-Thanks, Roger.
 
