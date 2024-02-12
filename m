@@ -1,39 +1,47 @@
-Return-Path: <linux-kernel+bounces-61529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0704385134F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:15:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E16C851352
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70F93B26453
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:15:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C18041F24192
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5654B3A8ED;
-	Mon, 12 Feb 2024 12:13:06 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C16EE3A8DD;
-	Mon, 12 Feb 2024 12:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7DB639FC3;
+	Mon, 12 Feb 2024 12:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m9USiGBC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2849D3B783;
+	Mon, 12 Feb 2024 12:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707739985; cv=none; b=K4uWSUuHowLcB4xpnVGpCxbaUrR8iH6837NcUG7BWPOvv5hEJ/8eK+orPbqVNXehky8zP99ho5ltkIYF27+UJNwomUPJG+jAqQ0glBQWIVHXaAit/Stx2+NoxkV99awaLJoQ7kXOGRyHd3GJw/Y7mRw/nKPC0RNPC54xHyh95xo=
+	t=1707740044; cv=none; b=shTuFlU/qyxgZj1eOBmAgiU6F4uYQcGjARw8p/7K8xzGMo2dfY0k2KRQNHvd/VCTvwWSQMcLGlD30VnFHH8NzExigCYUJ+gteYqbU5retLNe2egnIDYCSAzekTuciJAY0EFYtHP/8mP8Y3qeAd8MyrRPIq9/67VI1+2jrSIXcYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707739985; c=relaxed/simple;
-	bh=h0Qj55goct6MBaVRkw88CxVyaIdkbG/vw09bMzZ0028=;
+	s=arc-20240116; t=1707740044; c=relaxed/simple;
+	bh=95Tz2nLS8qGhsUQIbqsSqYKNRqEfqdnfgnY+bZCrxs8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=D0P2FXEA8Z4oCVrSv0wIH7ypAEKbsMoQfude9tMhe5IEa7sNtNOO7n9oAIS5SLz1MeUHzblhh9FsUWUSCVg2zverrzhKbNLJ2spextsJRjPX4Nn2AdKMlyzRkhT1mezqr+ZQVU3idRWpAapeX2DSNg2EnwFM63rK+pnaZA6Izes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A3EADA7;
-	Mon, 12 Feb 2024 04:13:44 -0800 (PST)
-Received: from [10.57.47.180] (unknown [10.57.47.180])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6ED6F3F7BD;
-	Mon, 12 Feb 2024 04:13:01 -0800 (PST)
-Message-ID: <44597c9a-79bd-40f8-87a7-b53582132583@arm.com>
-Date: Mon, 12 Feb 2024 12:13:00 +0000
+	 In-Reply-To:Content-Type; b=TsUdTv1mUXeqLYgeix15xRrU3d4J1DDMqn6O71iJNg14hWKWvZJ7I4n7noAq86WjeDAyvf22cak0ObEZzqTeelGFq3mKq0G7zbcZBufxAE/EQig7xM4CCten9FjNs976kL2uklky2pjQ5u4so7fFeUfJ82mR3ERfaOg/i8K/uGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m9USiGBC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07FE0C433C7;
+	Mon, 12 Feb 2024 12:13:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707740043;
+	bh=95Tz2nLS8qGhsUQIbqsSqYKNRqEfqdnfgnY+bZCrxs8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=m9USiGBCVZPxf3gJRTfe3AFevQ6PQp7alHf2Q8N/alAGW/eQ1EHbr8KPsk0D8uWCA
+	 a2sPmLvwQHuixvlZZG64saCMjqtDLlgZUJUJT+62TWJn73VOZ6xz7w52AXtAe0UxYW
+	 rdtLc0uYkGpWhdC5PV/PvOyP/HeIBppS4HaWgtvq7YakzsE901QBHXHnSVL0oPFX8g
+	 //DdhB3il4cedvMYlOPSvyy1oTcDgkZt1hUWnWKru6ZMGJ4buxaxg/MX2+7OWx6PQF
+	 mnS6Qh0zQhYqblpeNOxFjLORif8Hm+OOGOVYgvELt5YRZW13SEJGh8eH1pDZs9VX5u
+	 tqI4o+CWMYgNQ==
+Message-ID: <2629cd30-23aa-4f03-8452-ae13297fd6b6@kernel.org>
+Date: Mon, 12 Feb 2024 14:13:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,102 +49,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 03/11] coresight: tmc: Extract device properties from
- AMBA pid based table lookup
-Content-Language: en-GB
-To: Anshuman Khandual <anshuman.khandual@arm.com>,
- linux-arm-kernel@lists.infradead.org
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
- James Clark <james.clark@arm.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240123054608.1790189-1-anshuman.khandual@arm.com>
- <20240123054608.1790189-4-anshuman.khandual@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240123054608.1790189-4-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v1] arm64: dts: ti: k3-am62-main: disable usb lpm
+Content-Language: en-US
+To: Andrejs Cainikovs <andrejs.cainikovs@gmail.com>,
+ Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Aswath Govindraju <a-govindraju@ti.com>,
+ Sjoerd Simons <sjoerd@collabora.com>
+Cc: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "Bin Liu [EP]" <b-liu@ti.com>,
+ "Gunasekaran, Ravi" <r-gunasekaran@ti.com>
+References: <20240209130213.38908-1-andrejs.cainikovs@gmail.com>
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20240209130213.38908-1-andrejs.cainikovs@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 23/01/2024 05:46, Anshuman Khandual wrote:
-> This extracts device properties from AMBA pid based table lookup. This also
-> defers tmc_etr_setup_caps() after the coresight device has been initialized
-> so that PID value can be read.
+Hi Andrejs,
+
+On 09/02/2024 15:02, Andrejs Cainikovs wrote:
+> From: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
 > 
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> AM62 USB works with some devices, while failing to operate with others.
+
+Could you please share which devices failed to work for you?
+
+> 
+> [  560.189822] xhci-hcd xhci-hcd.4.auto: xHCI Host Controller
+> [  560.195631] xhci-hcd xhci-hcd.4.auto: new USB bus registered, assigned bus number 2
+> [  574.388509] xhci-hcd xhci-hcd.4.auto: can't setup: -110
+> [  574.393814] xhci-hcd xhci-hcd.4.auto: USB bus 2 deregistered
+> [  574.399544] xhci-hcd: probe of xhci-hcd.4.auto failed with error -110
+> 
+> This seems to be related to LPM (Link Power Management), and disabling it
+> turns USB into reliable working state.
+> 
+> As per AM62 reference manual:
+> 
+>> 4.8.2.1 USB2SS Unsupported Features
+>>
+>> The following features are not supported on this family of devices:
+>> ...
+>> - USB 2.0 ECN: Link Power Management (LPM)
+>> ...
+> 
+> Fixes: 2240f96cf3cd ("arm64: dts: ti: k3-am62-main: Add support for USB")
+> Signed-off-by: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
 > ---
->   .../hwtracing/coresight/coresight-tmc-core.c  | 19 +++++++++++++------
->   1 file changed, 13 insertions(+), 6 deletions(-)
+>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> index 7ec5365e2b64..e71db3099a29 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> @@ -370,16 +370,24 @@ static inline bool tmc_etr_has_non_secure_access(struct tmc_drvdata *drvdata)
->   	return (auth & TMC_AUTH_NSID_MASK) == 0x3;
->   }
->   
-> +#define TMC_AMBA_MASK 0xfffff
-> +
-> +static const struct amba_id tmc_ids[];
-> +
->   /* Detect and initialise the capabilities of a TMC ETR */
-> -static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
-> +static int tmc_etr_setup_caps(struct device *parent, u32 devid)
->   {
->   	int rc;
-> -	u32 dma_mask = 0;
-> +	u32 tmc_pid, dma_mask = 0;
->   	struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
-> +	void *dev_caps;
->   
->   	if (!tmc_etr_has_non_secure_access(drvdata))
->   		return -EACCES;
->   
-> +	tmc_pid = coresight_get_pid(&drvdata->csdev->access) & TMC_AMBA_MASK;
-> +	dev_caps = coresight_get_uci_data_from_amba(tmc_ids, tmc_pid);
-> +
->   	/* Set the unadvertised capabilities */
->   	tmc_etr_init_caps(drvdata, (u32)(unsigned long)dev_caps);
->   
-> @@ -497,10 +505,6 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
->   		desc.type = CORESIGHT_DEV_TYPE_SINK;
->   		desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM;
->   		desc.ops = &tmc_etr_cs_ops;
-> -		ret = tmc_etr_setup_caps(dev, devid,
-> -					 coresight_get_uci_data(id));
-> -		if (ret)
-> -			goto out;
->   		idr_init(&drvdata->idr);
->   		mutex_init(&drvdata->idr_mutex);
->   		dev_list = &etr_devs;
-> @@ -539,6 +543,9 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
->   		goto out;
->   	}
->   
-> +	if (drvdata->config_type == TMC_CONFIG_TYPE_ETR)
-> +		ret = tmc_etr_setup_caps(dev, devid);
-> +
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> index 464b7565d085..c49fbce5cb70 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+> @@ -640,6 +640,8 @@ usb0: usb@31000000 {
+>  			interrupt-names = "host", "peripheral";
+>  			maximum-speed = "high-speed";
+>  			dr_mode = "otg";
+> +			snps,usb2-gadget-lpm-disable;
+> +			snps,usb2-lpm-disable;
+>  		};
+>  	};
+>  
+> @@ -663,6 +665,8 @@ usb1: usb@31100000 {
+>  			interrupt-names = "host", "peripheral";
+>  			maximum-speed = "high-speed";
+>  			dr_mode = "otg";
+> +			snps,usb2-gadget-lpm-disable;
+> +			snps,usb2-lpm-disable;
+>  		};
+>  	};
+>  
 
-With this change, we silently accept an ETR that may only have "SECURE" 
-access only and crash later while we try to enable tracing. You could
-pass in the "access" (which is already in 'desc.access' in the original
-call site and deal with it ?
+Instead of this could you please check if this series fixes the issue for you?
+https://lore.kernel.org/all/20240205141221.56076-1-rogerq@kernel.org/
 
-Suzuki
-
-
-
->   	drvdata->miscdev.name = desc.name;
->   	drvdata->miscdev.minor = MISC_DYNAMIC_MINOR;
->   	drvdata->miscdev.fops = &tmc_fops;
-
+-- 
+cheers,
+-roger
 
