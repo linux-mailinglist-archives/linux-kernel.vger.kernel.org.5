@@ -1,130 +1,146 @@
-Return-Path: <linux-kernel+bounces-61875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41DCF8517A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:10:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 330CD8517BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:15:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 809C5B24029
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:10:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 616491C21A1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:14:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF1E3C088;
-	Mon, 12 Feb 2024 15:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58863C47E;
+	Mon, 12 Feb 2024 15:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IuE7mIgK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YQkfmy+V"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79EBA3BB50
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:09:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154611DFD9;
+	Mon, 12 Feb 2024 15:14:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707750595; cv=none; b=kIG94UnvJc1UHcJWlQVETTdMJyio0dlMzYNh/B7dD+odt48cLEvIDTVmSS4NwTZAHnzvBDZZV4+kN47sw1Mj1tOXAg4o+ubqpN+Hmwp7AUuMHvqM7+6RSP6tfG/C8QwdKDzHGYau5Wl4pJ/kJD6l01+3hvlUycYDJaUo/CY0VAI=
+	t=1707750892; cv=none; b=NDT9ivu9XMBNMZPO/R/Z3tSZhspyo4Qf/u9g6elUrpWaAixQAjMPWO4C27nSmSaHVNn6xJRYF95p6hEh0AjiehE2x6CVfaRjOWZEPR07eTBLx7VUbNS+KIDvcZFTPao1eXvU8km5AUM24r3kT7bWyAuyNy5rWlaUbb7AeWYW6fM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707750595; c=relaxed/simple;
-	bh=3CtlPnrAIc9kCdFZyaIZYzpbe4Ll+a/xbmqDNliycXI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iCIgibGIa2HFMfxba42OlY/JU11wAJtNSu17cD26wwKB0y6z/sE5xUHSZaE3nw3fEG9xvACOOsFxYFQl1BgfmGdBdSIaAM12vGOHMTum8YNJM49L0RLiBhD+lhhA2KDxdLrtrKsXo+7FnfbEeaKdLX24VdIBCw7LuRS2IQIWoSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IuE7mIgK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707750592;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=+ItIfDGsC0enS4BsvR9I/hhCmejBlGx8oVDqvTbRAes=;
-	b=IuE7mIgKtt3nAd16HQDwkPHhaoVQFGowoqtaUnwaKTMmBdwN565k7kLD2/YJp8aFgALo9i
-	PHQ2GnS6PfE7gIOE12rVg1Vllp8Fxxo7uto4rU7K9U5o0pStJv1qnm0kETawcB/QM0iD4G
-	y05Kev/Sc2la+T2+8TMyUqp7BRzPfaE=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-28-h-JPHpR9PqyFzO9A_liJqA-1; Mon, 12 Feb 2024 10:09:51 -0500
-X-MC-Unique: h-JPHpR9PqyFzO9A_liJqA-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-42c6f7d83abso1422571cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 07:09:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707750590; x=1708355390;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+ItIfDGsC0enS4BsvR9I/hhCmejBlGx8oVDqvTbRAes=;
-        b=iz6dpPPrXlyMMJJXQHQPJRu80mUQqrL3sumuNAoY9iSSs0HnC8hoS1Cpnf7S14kvzb
-         4V6mq464F+iAx1fLcAcGVBToXWTZCFnAnFZwoWiCVGNsnJ1Na/ox7cZKe52APzfD7Pp7
-         gQdIXrU5O/Hm9ausU04CsA7PaUTl3TsRz7QAkf+iFk/Af0Mo5LQnrLXbK62f5+g9ipNf
-         K4vAH/M6eJcR5Rv7Lc2rgUsmf2vnvD1oifdfFo+URv4MPsUQfS+Ze2Qpkqop6KpsvBHR
-         YY7VJEcmVislZMHXRmB+iVn8deSviW7OjEZBUW0nWrcBMmk+AoYhQV2OpJzqSwZdaRJK
-         QBsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW5ruXEAv3pJ+YbQBNGHlyTvg5UWgFQcYlQNhfTkh3ODC057AmZZAkL6R2i2UOgxCi49nUm8FLvIX/wy/fALVcn/xEe4SP6l+o3IaRk
-X-Gm-Message-State: AOJu0YzqqRFoRzZvKCVIhqiK8OhiBjSgogRhbAnykqfEaeZgdBc2/pnr
-	cOra+EOze1o8JRkRyLflzUhHVKyPexUR977uc8IF2TDh5lHTtDbjD5SIHCrQO0xBxwSm8HBmz+R
-	rK7FnFdzp6uk5XwwzTFE+pskmrbXGLGqi8LccJgyVumCajHtxGAgV2F9i1NjX4w==
-X-Received: by 2002:a05:622a:14:b0:42c:63fc:71df with SMTP id x20-20020a05622a001400b0042c63fc71dfmr8987677qtw.5.1707750590546;
-        Mon, 12 Feb 2024 07:09:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHPknBjAVJNsaadO9yq2Eb2MRewXppMl85PQadkewZwkHwihhWG4rtXP8ycJskvQs6n+nNfXg==
-X-Received: by 2002:a05:622a:14:b0:42c:63fc:71df with SMTP id x20-20020a05622a001400b0042c63fc71dfmr8987647qtw.5.1707750590230;
-        Mon, 12 Feb 2024 07:09:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX5fCpx3BSGnayIIm+tvauvJ6kQuHOzJBxveyv9t2/FNcd5Ma2SwCiMHWI224C/xym8kyzWJN59dpa91PUVJNnOD5DHJxAcSTovV7ynV455KCyGxnPPkMideWar4HPSoN+mBf7RnrdrsGubvSQ/r1Kcc2EMh0B5t9zNfvO8DmxhpojDXYa9zr4ibJEaDIsbBN9YZ2to3FpiTFE0DmE3lz/Sd0sRQXlRm/s1gUJ5EgVRcUa3sA8mmIq8r+YAPLqfsjq/SrmNo+x2SyrytVkyJaZvcDmUm1AJGBXh2WASCrKRLCpTV49F5fKuSHWaBI4TvJP0eaOqTiU+TXx5hcdtOXSiaX7+RD4/
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32db:5d00:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id x8-20020a05622a000800b0042c6c103f7bsm213874qtw.37.2024.02.12.07.09.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 07:09:50 -0800 (PST)
-From: Philipp Stanner <pstanner@redhat.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Helge Deller <deller@gmx.de>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Baoquan He <bhe@redhat.com>,
-	Bjorn Helgaas <helgaas@kernel.org>
-Cc: linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	Philipp Stanner <pstanner@redhat.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] Docu: fix build warnings for PCI
-Date: Mon, 12 Feb 2024 16:09:34 +0100
-Message-ID: <20240212150934.24559-1-pstanner@redhat.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707750892; c=relaxed/simple;
+	bh=5q6JZRqfcRM8joFrd/AFSLb1fQAqV7AVpQcJ1988pP4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IC+J3ePRB2YpIZ21S7JkEcgmTamurXQxGtSbfLZsmMoutGdRnQMWNidEpnIbbdK7NVpNY8V/r7kpORmAliPuNglmgE5Sn9zUwLrpQVhycHPVuq32FsuvvlwnPr62YSyWM2RK7CDvedb1jdyzHxvooFGxRo3uN8qvcstDh1kFWyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YQkfmy+V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34609C433C7;
+	Mon, 12 Feb 2024 15:14:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707750891;
+	bh=5q6JZRqfcRM8joFrd/AFSLb1fQAqV7AVpQcJ1988pP4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YQkfmy+VhabegvGXYGdHPXVnU/TNaW2q6GRYvxAKffYehQeYdPKGKik/HCuQ88VhG
+	 juJB0HrNy/KuEymDRS460fW8Q+3mLNnW6gzkQuEANAB1OHBqYfWuoYIAN+xutNTJxR
+	 oYJn6xUg+jaQNP1aO/1WQYbTQTORUYdE+cD9CAHnzywsuTvzBKFczSu58mlit3Fvfs
+	 mvil+84HteuRA1x5MDRfVZD5JVcg73qqK/DtMW8d+C0q1bAieBygA+IvCvGJV+uLEl
+	 WbK5BlpmL9TMKBjGsR6vqLz8rt1P43xbB85xA/ztcWebzfRXLd2kKs4ezbhpr4Ftua
+	 c66lzHktm0dpg==
+Date: Mon, 12 Feb 2024 09:14:49 -0600
+From: Rob Herring <robh@kernel.org>
+To: Chen Wang <unicorn_wang@outlook.com>
+Cc: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+	chao.wei@sophgo.com, conor@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+	palmer@dabbelt.com, paul.walmsley@sifive.com,
+	richardcochran@gmail.com, sboyd@kernel.org,
+	devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
+	guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
+	samuel.holland@sifive.com
+Subject: Re: [PATCH v9 2/5] dt-bindings: clock: sophgo: add RP gate clocks
+ for SG2042
+Message-ID: <20240212151449.GA379868-robh@kernel.org>
+References: <cover.1706854074.git.unicorn_wang@outlook.com>
+ <fcdd83addcd9af159a0bebf2a14543168bd59a07.1706854074.git.unicorn_wang@outlook.com>
+ <20240205172422.GA3643653-robh@kernel.org>
+ <MA0P287MB2822C8930916B90A9C1BAA49FE462@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <MA0P287MB2822C8930916B90A9C1BAA49FE462@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
 
-drivers/pci/iomap.c was accidentally added to the Documentation
-generation at two places.
+On Tue, Feb 06, 2024 at 08:57:27PM +0800, Chen Wang wrote:
+> 
+> On 2024/2/6 1:24, Rob Herring wrote:
+> > On Fri, Feb 02, 2024 at 02:42:02PM +0800, Chen Wang wrote:
+> > > From: Chen Wang <unicorn_wang@outlook.com>
+> > > 
+> > > Add bindings for the gate clocks of RP subsystem for Sophgo SG2042.
+> > > 
+> > > Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
+> > > ---
+> > >   .../bindings/clock/sophgo,sg2042-rpgate.yaml  | 37 ++++++++++++
+> > >   .../dt-bindings/clock/sophgo,sg2042-rpgate.h  | 58 +++++++++++++++++++
+> > >   2 files changed, 95 insertions(+)
+> > >   create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
+> > >   create mode 100644 include/dt-bindings/clock/sophgo,sg2042-rpgate.h
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml b/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
+> > > new file mode 100644
+> > > index 000000000000..69ce3a64f66c
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
+> > > @@ -0,0 +1,37 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/clock/sophgo,sg2042-rpgate.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Sophgo SG2042 Gate Clock Generator for RP(riscv processors) subsystem
+> > > +
+> > > +maintainers:
+> > > +  - Chen Wang <unicorn_wang@outlook.com>
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: sophgo,sg2042-rpgate
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  '#clock-cells':
+> > > +    const: 1
+> > > +    description:
+> > > +      See <dt-bindings/clock/sophgo,sg2042-rpgate.h> for valid indices.
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - '#clock-cells'
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    clock-controller@10000000 {
+> > > +      compatible = "sophgo,sg2042-rpgate";
+> > > +      reg = <0x10000000 0x10000>;
+> > > +      #clock-cells = <1>;
+> > No input clocks?
+> 
+> I think it should have some input, I will add it, thanks.
+> 
+> BTW,  can we ignore this property if driver doesn't use it？ In other words,
+> do we have to add this clocks property just to indicate that this node
+> requires some clocks as input from a hardware perspective?
 
-Remove it from Documentation/driver-api/device-io.rst to resolve the
-collision.
+Yes and no. The kernel will see the dependency and track that. But your 
+driver doesn't have to get the clock or anything. Though presumably the 
+source is a fixed-clock and you need its frequency to calculate child 
+clock rates.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Closes: https://lore.kernel.org/all/20240205160908.6df5e790@canb.auug.org.au/
-Fixes: 025bbeb5c880 ("lib: move pci_iomap.c to drivers/pci/")
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
-As discussed with Bjorn; this will be squashed into the series that
-caused the problem, in PCI.
----
- Documentation/driver-api/device-io.rst | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/Documentation/driver-api/device-io.rst b/Documentation/driver-api/device-io.rst
-index d9ba2dfd1239..5c7e8194bef9 100644
---- a/Documentation/driver-api/device-io.rst
-+++ b/Documentation/driver-api/device-io.rst
-@@ -517,6 +517,3 @@ Public Functions Provided
- 
- .. kernel-doc:: arch/x86/include/asm/io.h
-    :internal:
--
--.. kernel-doc:: drivers/pci/iomap.c
--   :export:
--- 
-2.43.0
-
+Rob
 
