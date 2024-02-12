@@ -1,273 +1,215 @@
-Return-Path: <linux-kernel+bounces-62197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFF35851CE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:36:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 716DE851CE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:37:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FE83282EFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:36:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB69D1F22446
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:37:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D3340BE0;
-	Mon, 12 Feb 2024 18:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A306040BEE;
+	Mon, 12 Feb 2024 18:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="sZ3kUerr"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eiSDRKBg"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DDAE45BE8
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282C33EA69;
+	Mon, 12 Feb 2024 18:37:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707763007; cv=none; b=i9+lt2F12bdeNKJRI6Co3CgCpkqL0zRLELIAo2vynZFX1kipehrao730KFjEFCBR/afNSzJNeOI9ESKO1JvV34DXhdKUFUsRmKnKAjO5mGeEht+e4iSWlCvAGR64nIgLaX6DiWxy5dgR80w9lWlQH8QOH1HDLiH/jKIQI8Xgp0A=
+	t=1707763040; cv=none; b=KmgE2TRccHnr7JWr1tYNLyaZYCqhKQHDeiC746j5AmTRyY1DK/xG7nTvSkI+4pUbQ73ebHWQgRrN603kStZ3pMajITM/CSQZZ7Q2w52gFgoVxksllaeJ3LL59oRW4xAAuCIZYDZWyf26uLaldnnM78m4MJbMLWuAaIqMAh4z9Yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707763007; c=relaxed/simple;
-	bh=m8jYFCrSiAHQCrclsFFugQkVkQ8mNvCBEUbX8VM2B3s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bew1t6/xZTptuwXjtNwgiBZmydmPR0kKA40xfuhsmsSaAwNyXQMfhgIB9/K6TmPxRTBn2vrLkxiryCkrdGLAtR23o+ZJHbhZKXVMcV7o5lEiruvKnNe8audFCBakmZubXDQ+E9cCsVe6b+83gJ7cyTTov5MvQPhKkqc/Mg+EMkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=sZ3kUerr; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-363edc74eabso1450425ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:36:45 -0800 (PST)
+	s=arc-20240116; t=1707763040; c=relaxed/simple;
+	bh=Z9CNOqRLKvoHOjRw43D/91gLXSu7vFhS0B+8n0+qvXI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eUoinq+TcDw3kBT7gjvSywXpswRITVZLcq6TrUGw2L+WoNc91y5rp/d5TdlUByFxlU1GPkx+z4UUnhMzsk9FCQh5MHjpO14EKEREIhc0PgSZJB3TAcAepL2lLT0Nyh8+qI8imc+bpCwnN3XXp0X7Q/zhjCuS10F/a5bAtn8AYX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eiSDRKBg; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6077444cb51so4665267b3.1;
+        Mon, 12 Feb 2024 10:37:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707763004; x=1708367804; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QamGh/bSN8B/QUCshCi8/HvCoWOBlZLPzsuAV9yhvF0=;
-        b=sZ3kUerrX1wuctlMN4KUvBiHcj8BOzmfmdwgZxoRXJh6A2NtrqvVX1yJdlK7BM7QT0
-         WvMVyY9BYOK8/1PxQ/fxVbNJsY8KkJZJ0dQXvCYtlKrZZREbfW+MOQRzsU2qNgMFlCpM
-         nRTbwryeBSjo9TNJFiv8D+Ijj+gy8d4oPweqMJtoWSB+EDAWxOye8sj89KkOUctgLEs1
-         AQRII2ABeB/TMdCN/1b5hDkprcN7GZM+tYNoTdm5isOkuph/tOlVZQmkcu5Xm0KS1JB1
-         eKbhmT44tMXgAMHuJPeMymZk8D12w5Jz3yA1/zDCRxSj/J0WNkHsUJmgxdYL8+DlkxYz
-         6PZA==
+        d=gmail.com; s=20230601; t=1707763038; x=1708367838; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Urk/xvX+UKbKGSqpVvdQe9PJXR++Pgpk6nNhD2JHitg=;
+        b=eiSDRKBg+uM1R5sCIDscGdlG6Flja1mpbIF9fVdzIw4tIWA1bqGxLKJkDUuqUgcMTx
+         8NH/JRU+pCONwiiEwfwb8gBuOEIEipdpuGPFcOgg4KjH4mBQ/kGCTiaDNiskIW+UXwBS
+         VQ7CpXpsoaHrx3w7HYotQlDe6tdX7QmKOI+mZ9KsJp0hwBMOkKyheGMx6GWgxdCRQk+J
+         33eMIavefXQhq2Gob7RRZZzGIPdfWVBDWzmfOZdjSKMp4D+RbJ7O1lN5oYijwY9VsR9B
+         F7V473m45SQXQEsy1QVirhT0g/9mumeOAHFTPxIj2j+zH3781b60fVhg1gQBGl8ycRJC
+         hj6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707763004; x=1708367804;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QamGh/bSN8B/QUCshCi8/HvCoWOBlZLPzsuAV9yhvF0=;
-        b=wxzhqfR1aFkhmHyCP4/kUifjqZmoFbfAjJNDEBhSe3oFejFKlCgqCcRoPtUKN+mL6K
-         6S7/pUIRIG7SfWYa+Xaekd4sNtdbiSGQaquQMil40iWf4wH6UPkXKRAXNQAK7ouCwvHT
-         1bKfCmDWtpsYzRBsjKLE4CVGPVmQ2S15SEoBYF7LK3yk8foicVP9W0fe1HefVdsG/63A
-         +GZhxIDCQH6bNRlidfTZya8w5y8nVi1Vlodah9StE5KZGgNwKzWDzT3AaX3kLQXodFyn
-         YNuEgadQOYSKyPt8sIIOQgN0ItDhJquoDAoNNwY+I0Msw0Y7uxFkczgL4rltm4xpWGyN
-         +dfA==
-X-Gm-Message-State: AOJu0Yx3Pgvp4kWXV9znq+SOooVmkNI0HlOUvYWv6ULlhqDs0eTAgR7y
-	uo6zpTGrV0oE/NuiR1Ug7PmBnIHc8hjPtexuwvy10Y7YTVKiIVRO4LZKYad4nxiUP90rbL3asXg
-	v
-X-Google-Smtp-Source: AGHT+IGx6UQ1RmewCkB263/NEIp8AIh9XRrVDN/CzTI5LD8F8RcBh7WZSovuc7AMI02CREDfWILuew==
-X-Received: by 2002:a05:6602:2c41:b0:7c4:5898:11d0 with SMTP id x1-20020a0566022c4100b007c4589811d0mr6176466iov.1.1707763004363;
-        Mon, 12 Feb 2024 10:36:44 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXVJNEWyA0uLfG1KCQYyFnbZS6dUF/q18fJLotyRTkoB71luThdqtt/fYhsZtKzXR4OefxNFpCAzmRDEZt84gpU+K4IU4WtGW1WE56CX9tQJvjVYnOQos6IsYVhvu3aPBggPWiOY7p5RjbWtAeEBmcCdpVCf5Qa/8lqdHDUwgEelbcyf4ooD9ZQgpZ0ZZxVMpNApdZEBynHueLOQFdoOAYL7lTeeU1sTpHeavUScHlMwSUrASo364ktR0RDz/1O2djdYmLOmzRlnLjRlFhDpn4cOmECIkNYeyhyrnrqZ5icYn3+gsWDyWy4NUPNTd9hP+e0QGfZyCcfu5IRMa9/gnmItBZxvKSQ9t0kVY//4fpobw+anEm465/cjdQFNJhTu4B70iScGwOjGVvmjZniXupW/jH037IEEsHjfIKBCfoK5wJ3k+xoavt4DCzeLwdaTYbAvm6VlGeZbvSRaKCxICuB48Tew97/Dhoni9XFxnALqulXXzFSR5Uy1Cc60SF6taTL4oVAIV0D2E7nySG9Jpmt1mlXjKSZ4fQaPw==
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id e22-20020a6b6916000000b007c422dfb2f0sm1738311ioc.35.2024.02.12.10.36.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 10:36:43 -0800 (PST)
-Message-ID: <2aa290eb-ec4b-43b1-87db-4df8ccbeaa37@kernel.dk>
-Date: Mon, 12 Feb 2024 11:36:42 -0700
+        d=1e100.net; s=20230601; t=1707763038; x=1708367838;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Urk/xvX+UKbKGSqpVvdQe9PJXR++Pgpk6nNhD2JHitg=;
+        b=QICTguyZHYUP1DKXGgYWM+wTpY3AX2bEyaNlN5eB8vO+w4EgDL5hhZV6ooM3xjjBhs
+         klPutTZxAffWi/L+nJ/9r90S1EkvVvFGcX0TxXJ/rFoiVWcyS+MPMzcInSxa1LBN8NVV
+         jO3c6msQFlwKHROxuOg+YllBM18vZwVB6UTF1nvzoXYPd13IoZha7on3M0JbmfGOpy2v
+         QIc0/GmcW3605D4ZQZFruQfk1dHxS4aJyvko8uptiGgwX1MKg4/r+jnSVl8Rcv3OrMBk
+         1150lmZcoUZ2ImCwa8ZUcv24wT3pn1TCUglE9qLvIPEVAfZN8zeVB8KGPd5vOIFobrge
+         Iq7w==
+X-Gm-Message-State: AOJu0YwZHdzEMoO30XpSdrDxj/9EylApuKK96oG8JbmWChnaN/Kon6R4
+	wsvuj5t+yuxwd43/iYb0PdkLQjCso0yUrZBHM2tOtKwhcRAz8jiy
+X-Google-Smtp-Source: AGHT+IEpd+QbpXDB2ycV1t5rD40xn6kwWMLP7zDSBdWBR9zSWASGH0Ugsa2ib4yux5Jw29DdKmxVfQ==
+X-Received: by 2002:a0d:e845:0:b0:604:7bab:dac1 with SMTP id r66-20020a0de845000000b006047babdac1mr280436ywe.15.1707763037858;
+        Mon, 12 Feb 2024 10:37:17 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX3NpMjINqr6ODt3JXMsBQ2F7ZuSuRpJICxX/qJB2m9t0QalgdEtK0ncdpG0yVeSPZ/yP3zUrMapSAKaZj9rpBe2GZNRkETsKAD5rS+mENVDa89pdt9a4n7q5aiKdA8qolC3e31vAcyVX+cuf8qFx4B15M9rwRVbFa5hxEXSqiCUoIrFiCHBnlTsobXFzfu5JZqOvpN8C/IOL4rfQQvyXw2sC9ehwfFsMfM16UF7E4q50Le0Cff2D1q0R9DCqAt5O9uG1NvIaijR34dj+/roSDDzr3rRkVM6ODiyZ4WRI2+VHGFBJ5y/6mQUfeO2lvlCZ3yAWWjPGXPFXngsUduXc6DFtsriqURsX64W2MlhIGwJuy1fN8J45LYDAOj+QWczUN4sskDZF6ZglcGuUXogIWlE8WHANXvkL2c3kfA9+do50Z2EksJwGCMvEy3Q1EsivNvnIIVTjLsHGND3764tAOf/861BfL4wn/iJrO6QQ==
+Received: from localhost ([2601:344:8301:57f0:85b5:dd54:cd99:b])
+        by smtp.gmail.com with ESMTPSA id n133-20020a81728b000000b006041221d0ccsm1275634ywc.68.2024.02.12.10.37.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 10:37:17 -0800 (PST)
+Date: Mon, 12 Feb 2024 10:37:15 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
+	Mark Brown <broonie@kernel.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v3 RESEND 4/6] bitmap: Introduce bitmap_off()
+Message-ID: <ZcplW2mXObOZUtR7@yury-ThinkPad>
+References: <20240212075646.19114-1-herve.codina@bootlin.com>
+ <20240212075646.19114-5-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/15] Coalesced Interrupt Delivery with posted MSI
-Content-Language: en-US
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev,
- Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
- kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
- Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>,
- Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
- Paul Luse <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>,
- Raj Ashok <ashok.raj@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
- maz@kernel.org, seanjc@google.com, Robin Murphy <robin.murphy@arm.com>
-References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
- <051cf099-9ecf-4f5a-a3ac-ee2d63a62fa6@kernel.dk>
- <20240209094307.4e7eacd0@jacob-builder>
- <9285b29c-6556-46db-b0bb-7a85ad40d725@kernel.dk>
- <20240212102742.34e1e2c2@jacob-builder>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240212102742.34e1e2c2@jacob-builder>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212075646.19114-5-herve.codina@bootlin.com>
 
-On 2/12/24 11:27 AM, Jacob Pan wrote:
-> Hi Jens,
+On Mon, Feb 12, 2024 at 08:56:32AM +0100, Herve Codina wrote:
+> The bitmap_onto() function translates one bitmap relative to another but
+> no function are present to perform the reverse translation.
 > 
-> On Fri, 9 Feb 2024 13:31:17 -0700, Jens Axboe <axboe@kernel.dk> wrote:
+> Introduce bitmap_off() to fill this hole.
 > 
->> On 2/9/24 10:43 AM, Jacob Pan wrote:
->>> Hi Jens,
->>>
->>> On Thu, 8 Feb 2024 08:34:55 -0700, Jens Axboe <axboe@kernel.dk> wrote:
->>>   
->>>> Hi Jacob,
->>>>
->>>> I gave this a quick spin, using 4 gen2 optane drives. Basic test, just
->>>> IOPS bound on the drive, and using 1 thread per drive for IO. Random
->>>> reads, using io_uring.
->>>>
->>>> For reference, using polled IO:
->>>>
->>>> IOPS=20.36M, BW=9.94GiB/s, IOS/call=31/31
->>>> IOPS=20.36M, BW=9.94GiB/s, IOS/call=31/31
->>>> IOPS=20.37M, BW=9.95GiB/s, IOS/call=31/31
->>>>
->>>> which is abount 5.1M/drive, which is what they can deliver.
->>>>
->>>> Before your patches, I see:
->>>>
->>>> IOPS=14.37M, BW=7.02GiB/s, IOS/call=32/32
->>>> IOPS=14.38M, BW=7.02GiB/s, IOS/call=32/31
->>>> IOPS=14.38M, BW=7.02GiB/s, IOS/call=32/31
->>>> IOPS=14.37M, BW=7.02GiB/s, IOS/call=32/32
->>>>
->>>> at 2.82M ints/sec. With the patches, I see:
->>>>
->>>> IOPS=14.73M, BW=7.19GiB/s, IOS/call=32/31
->>>> IOPS=14.90M, BW=7.27GiB/s, IOS/call=32/31
->>>> IOPS=14.90M, BW=7.27GiB/s, IOS/call=31/32
->>>>
->>>> at 2.34M ints/sec. So a nice reduction in interrupt rate, though not
->>>> quite at the extent I expected. Booted with 'posted_msi' and I do see
->>>> posted interrupts increasing in the PMN in /proc/interrupts, 
->>>>  
->>> The ints/sec reduction is not as high as I expected either, especially
->>> at this high rate. Which means not enough coalescing going on to get the
->>> performance benefits.  
->>
->> Right, it means that we're getting pretty decent commands-per-int
->> coalescing already. I added another drive and repeated, here's that one:
->>
->> IOPS w/polled: 25.7M IOPS
->>
->> Stock kernel:
->>
->> IOPS=21.41M, BW=10.45GiB/s, IOS/call=32/32
->> IOPS=21.44M, BW=10.47GiB/s, IOS/call=32/32
->> IOPS=21.41M, BW=10.45GiB/s, IOS/call=32/32
->>
->> at ~3.7M ints/sec, or about 5.8 IOPS / int on average.
->>
->> Patched kernel:
->>
->> IOPS=21.90M, BW=10.69GiB/s, IOS/call=31/32
->> IOPS=21.89M, BW=10.69GiB/s, IOS/call=32/31
->> IOPS=21.89M, BW=10.69GiB/s, IOS/call=32/32
->>
->> at the same interrupt rate. So not a reduction, but slighter higher
->> perf. Maybe we're reaping more commands on average per interrupt.
->>
->> Anyway, not a lot of interesting data there, just figured I'd re-run it
->> with the added drive.
->>
->>> The opportunity of IRQ coalescing is also dependent on how long the
->>> driver's hardirq handler executes. In the posted MSI demux loop, it does
->>> not wait for more MSIs to come before existing the pending IRQ polling
->>> loop. So if the hardirq handler finishes very quickly, it may not
->>> coalesce as much. Perhaps, we need to find more "useful" work to do to
->>> maximize the window for coalescing.
->>>
->>> I am not familiar with optane driver, need to look into how its hardirq
->>> handler work. I have only tested NVMe gen5 in terms of storage IO, i saw
->>> 30-50% ints/sec reduction at even lower IRQ rate (200k/sec).  
->>
->> It's just an nvme device, so it's the nvme driver. The IRQ side is very
->> cheap - for as long as there are CQEs in the completion ring, it'll reap
->> them and complete them. That does mean that if we get an IRQ and there's
->> more than one entry to complete, we will do all of them. No IRQ
->> coalescing is configured (nvme kind of sucks for that...), but optane
->> media is much faster than flash, so that may be a difference.
->>
-> Yeah, I also check the the driver code it seems just wake up the threaded
-> handler.
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> ---
+>  include/linux/bitmap.h |  3 +++
+>  lib/bitmap.c           | 42 ++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 45 insertions(+)
+> 
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index 99451431e4d6..5ecfcbbc91f4 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -65,6 +65,7 @@ struct device;
+>   *  bitmap_remap(dst, src, old, new, nbits)     *dst = map(old, new)(src)
+>   *  bitmap_bitremap(oldbit, old, new, nbits)    newbit = map(old, new)(oldbit)
+>   *  bitmap_onto(dst, orig, relmap, nbits)       *dst = orig relative to relmap
+> + *  bitmap_off(dst, orig, relmap, nbits)        *dst = bitmap_onto() reverse operation
+>   *  bitmap_fold(dst, orig, sz, nbits)           dst bits = orig bits mod sz
+>   *  bitmap_parse(buf, buflen, dst, nbits)       Parse bitmap dst from kernel buf
+>   *  bitmap_parse_user(ubuf, ulen, dst, nbits)   Parse bitmap dst from user buf
+> @@ -208,6 +209,8 @@ int bitmap_bitremap(int oldbit,
+>  		const unsigned long *old, const unsigned long *new, int bits);
+>  void bitmap_onto(unsigned long *dst, const unsigned long *orig,
+>  		const unsigned long *relmap, unsigned int bits);
+> +void bitmap_off(unsigned long *dst, const unsigned long *orig,
+> +		const unsigned long *relmap, unsigned int bits);
+>  void bitmap_fold(unsigned long *dst, const unsigned long *orig,
+>  		unsigned int sz, unsigned int nbits);
+>  
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 2feccb5047dc..71343967335e 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -682,6 +682,48 @@ void bitmap_onto(unsigned long *dst, const unsigned long *orig,
+>  }
+>  EXPORT_SYMBOL(bitmap_onto);
+>  
+> +/**
+> + * bitmap_off - revert operation done by bitmap_onto()
 
-That only happens if you're using threaded interrupts, which is not the
-default as it's much slower. What happens for the normal case is that we
-init a batch, and then poll the CQ ring for completions, and then add
-them to the completion batch. Once no more are found, we complete the
-batch.
+This is definitely a bad name. I've no a better idea, but even
+bitmap_onto_revert() would be better.
 
-You're not using threaded interrupts, are you?
+> + *     @dst: resulting translated bitmap
+> + *     @orig: original untranslated bitmap
+> + *     @relmap: bitmap relative to which translated
+> + *     @bits: number of bits in each of these bitmaps
+> + *
+> + * Suppose onto computed using bitmap_onto(onto, src, relmap, n)
+> + * The operation bitmap_off(result, onto, relmap, n) leads to a
+> + * result equal or equivalent to src.
 
-> For the record, here is my set up and performance data for 4 Samsung disks.
-> IOPS increased from 1.6M per disk to 2.1M. One difference I noticed is that
-> IRQ throughput is improved instead of reduction with this patch on my setup.
-> e.g. BEFORE: 185545/sec/vector 
->      AFTER:  220128
+Agree with Rasmus. This should be well tested.
 
-I'm surprised at the rates being that low, and if so, why the posted MSI
-makes a difference? Usually what I've seen for IRQ being slower than
-poll is if interrupt delivery is unreasonably slow on that architecture
-of machine. But ~200k/sec isn't that high at all.
+> + * The result can be 'equivalent' because bitmap_onto() and
+> + * bitmap_off() are not bijective.
+> + * The result and src values are equivalent in that sense that a
+> + * call to bitmap_onto(onto, src, relmap, n) and a call to
+> + * bitmap_onto(onto, result, relmap, n) will lead to the same onto
+> + * value.
 
-> [global]                      
-> bs=4k                         
-> direct=1                      
-> norandommap                   
-> ioengine=libaio               
-> randrepeat=0                  
-> readwrite=randread            
-> group_reporting               
-> time_based                    
-> iodepth=64                    
-> exitall                       
-> random_generator=tausworthe64 
-> runtime=30                    
-> ramp_time=3                   
-> numjobs=8                     
-> group_reporting=1             
->                               
-> #cpus_allowed_policy=shared   
-> cpus_allowed_policy=split     
-> [disk_nvme6n1_thread_1]       
-> filename=/dev/nvme6n1         
-> cpus_allowed=0-7       
-> [disk_nvme6n1_thread_1]
-> filename=/dev/nvme5n1  
-> cpus_allowed=8-15      
-> [disk_nvme5n1_thread_2]
-> filename=/dev/nvme4n1  
-> cpus_allowed=16-23     
-> [disk_nvme5n1_thread_3]
-> filename=/dev/nvme3n1  
-> cpus_allowed=24-31     
+Did you mean "a call to bitmap_onto(onto, src, relmap, n) and a
+call to bitmap_off(onto, result, relmap, n)"? 
 
-For better performance, I'd change that engine=libaio to:
+I think the whole paragraph adds more confusion than explanations.
+If a new function is supposed to revert the result of some other
+function, I'd better focus on testing that it actually reverts as
+advertised, and keep description as brief as possible.
 
-ioengine=io_uring
-fixedbufs=1
-registerfiles=1
+> + * If either of @orig or @relmap is empty (no set bits), then @dst
+> + * will be returned empty.
 
-Particularly fixedbufs makes a big difference, as a big cycle consumer
-is mapping/unmapping pages from the application space into the kernel
-for O_DIRECT. With fixedbufs=1, this is done once and we just reuse the
-buffers. At least for my runs, this is ~15% of the systime for doing IO.
-It also removes the page referencing, which isn't as big a consumer, but
-still noticeable.
+Is this an exception from the 'revert' policy? Doesn't look like that.
+So, what for mentioning this specific case?
 
-Anyway, side quest, but I think you'll find this considerably reduces
-overhead / improves performance. Also makes it so that you can compare
-with polled IO on nvme, which aio can't do. You'd just add hipri=1 as an
-option for that (with a side note that you need to configure nvme poll
-queues, see the poll_queues parameter).
+> + * All bits in @dst not set by the above rule are cleared.
 
-On my box, all the NVMe devices seem to be on node1, not node0 which
-looks like it's the CPUs you are using. Might be worth checking and
-adjusting your CPU domains for each drive? I also tend to get better
-performance by removing the CPU scheduler, eg just pin each job to a
-single CPU rather than many. It's just one process/thread anyway, so
-really no point in giving it options here. It'll help reduce variability
-too, which can be a pain in the butt to deal with.
+The above rule is about empty @orig and @relmap, not about setting
+bits. What did you mean here?
 
--- 
-Jens Axboe
+> + */
+> +void bitmap_off(unsigned long *dst, const unsigned long *orig,
+> +		const unsigned long *relmap, unsigned int bits)
+> +{
+> +	unsigned int n, m;      /* same meaning as in above comment */
 
+In the above comment, n means the size of bitmaps, and m is not
+mentioned at all.
+
+> +	if (dst == orig)        /* following doesn't handle inplace mappings */
+> +		return;
+> +	bitmap_zero(dst, bits);
+
+Can you add an empty line after 'return'.
+
+> +	m = 0;
+> +	for_each_set_bit(n, relmap, bits) {
+> +		/* m == bitmap_pos_to_ord(relmap, n, bits) */
+
+Don't think we need this comment here. If you want to underline that
+m tracks bit order, can you just give it a more explanatory name. For
+example, 'bit_order'.
+
+> +		if (test_bit(n, orig))
+> +			set_bit(m, dst);
+> +		m++;
+> +	}
+> +}
+> +EXPORT_SYMBOL(bitmap_off);
+> +
+>  #ifdef CONFIG_NUMA
+>  /**
+>   * bitmap_fold - fold larger bitmap into smaller, modulo specified size
+> -- 
+> 2.43.0
 
