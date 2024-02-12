@@ -1,71 +1,70 @@
-Return-Path: <linux-kernel+bounces-62246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D408A851D7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:00:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3825851D7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:01:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AC28286E81
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:00:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7AAA1C22070
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1324CB54;
-	Mon, 12 Feb 2024 18:59:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8F34D11B;
+	Mon, 12 Feb 2024 18:59:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ylR/MUEQ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pJhrHak2"
 Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2304C619
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBEE4CB46
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:59:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707764367; cv=none; b=XEG6HLgkx5r67ki7Tn/pgkezOWhByBDbRLQQvH4jTu4BpQD17RiPG+cVx3+uhTnPLdUOIb4vbFeFA4NMnV/GlAU0A070sQYWKyigqLq/MDDy/26oh9lGWLs649GvZjYd3kxg/w+DhOkOktPI4Ea17ZtjIy4kjr2Pe6oofIHCeSY=
+	t=1707764369; cv=none; b=r5Al95eV2ahiwgcZpjxQl5FLrPYBqNNTIjN0YSseec1BrMQ2nFHltLJc6MFjlUvLvuvWq76zBv2eDV2p5QDjpAHAj/F1mQVUSTB3l72SlsXpNnHARmZ20FzEcg3lSJHEQREf6OYskIDA2yYFCPJbyB3rRiDn3wr2EmWIS5JHdBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707764367; c=relaxed/simple;
-	bh=e3Zo3j0Y+lDByuniGWZetsyjr0YP2URaOB3bhuKdkPg=;
+	s=arc-20240116; t=1707764369; c=relaxed/simple;
+	bh=KfhEEpMCpHHqvGdrilXEBwK902jKxXX9KSQmwky6Gvk=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=l68pb11i03BhlyxbsyZxx+lCfAeAaJQlWKLS9/jqMaabKRVz1+8Q5Y1FzIWLhBZ0mCxhRWi5M9FcKwOC54OrjIPfyX61nC4KqyCN2qC8lw6ZfhMEtrnFT5bZA9l2wFXwcXAztpUJEiVmYsmAVBT52Zsrx6pioeScn/rDCxRCy4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ylR/MUEQ; arc=none smtp.client-ip=209.85.219.202
+	 To:Content-Type; b=b86adNCK3sVDhKKQmmzIuh9W2EjB5n266Ngv1iv765c9BFqSGx3fAuFHQxSGfMAUmsO3OCVU0FaaqVDeiR//spD8ud9Wo6ym5Ew8On3zaE+uohl0XCY5gHxMdJtyYmlScbJS9td4/QCcVvLCKpNhVcQmWxsf0MtAFpDmhBjURfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pJhrHak2; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc4563611cso91399276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:59:25 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc74ebfd282so6120720276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:59:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707764364; x=1708369164; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707764367; x=1708369167; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pKUjhtJivPO8JCDFJHJoi47s/FDcERs+KA6j2+NQ9Pw=;
-        b=ylR/MUEQRNmZgmOMFzBEmUWxXFXgr8EGMDjGS4KxyOYH6OrU1BWo1NNqz+tALsYPvc
-         cSGN7wk+G2B1nnGKufpp3NXCHIcxjyc+4Zfb1+rmXQya6N2L9/8xX9F4NpNlBKMnbb1W
-         sH0SD50PWxGdLkgU25wfbvbymsTw8qTgg6zZcJJE8R0zWz1JmlAChFQVgGjBrSQ4x863
-         SFTnEH1cDOSSP0sVFi3BHNiH0DA/3jMvF8qB6tuLy+ElIOAXJ84ohfOwUFl6oGm23KUX
-         qgV2OuQFdJKALpwBW89KrROimcb3vF8JOT7XD56CqkHxA9zdDsZ2Vw/RVbnswnvkIjBD
-         IVAA==
+        bh=6B/9ZrYGS/GvVU4GCl+WETb7MhjnAD4f86As1bzZZ1w=;
+        b=pJhrHak2y57vA6OoI0mm/XzrgkVOszPiR2R1gjHKxwB+JXkklNrNwprDmelIfEHEN2
+         dv5qWYLm5y+5ESaR1Kmx7TTczqrD7BVJfEmbu4PGukb7ZDOKJnONYh+My10g5lKWHcam
+         5GuX9uYGZcvP5PLpRniiWGLb2nssCEzepRpftUqTE3mqmOILMeFY9Vsc53OgSZGvLWp7
+         +YYPtikYn2eaaWqrARdR7WgrlxnU0Pr0ntIlDS6B/zi9L7YqIPi4jo1JxKRXvkUACrzC
+         kwRatrRhqq5jtHAeidV40SZdYjvk1p7Xa2NABKBAvA8lp/dPaTiUY2C3hfxzH+cE7fMT
+         DICA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707764364; x=1708369164;
+        d=1e100.net; s=20230601; t=1707764367; x=1708369167;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pKUjhtJivPO8JCDFJHJoi47s/FDcERs+KA6j2+NQ9Pw=;
-        b=DriOBD2fEqeizq+o5N5iWIIPeroJ7N9hvhN8OIvkG09zAcinrpXecU4GCPWQm3gD4P
-         7FmdlwlGz3tHRuOdmDuX4w/XzbLVlviqcCdpv2VSjv0MW6RqSJhlnY8MgLYVoRPSNCLn
-         P9C/MsNYTxFNs83GxVFo8yaAxjSrpjObmaA+3pxzFZrmJjoJq0A8b9wo+mES0afogk2j
-         +48oaQZOzGX7k6j7caX+KMlK/sQLdG58nCQawegfLfiJTAqFbTavH/twjrK+M5wY0OGv
-         lBDHd/vL+MtFbyvdVyloreMzUPx3W8STyFypHY9dLgn0UBQXcRAUva0jCLAgYsuSZGT6
-         YOig==
-X-Forwarded-Encrypted: i=1; AJvYcCUdIfjvZWul/L+dL/bcXL7Hn2W+ovjRsUN/HwK32ZW1EJIY+3ZFfCV7gRpnEaD9p2I9GM+cFQYEa9TkDJKFK+ebwwNX5Zdc+sfgyuyc
-X-Gm-Message-State: AOJu0Yzt1D1B0RBZpvA9GjhaPGj1TTNpF7PmEVtJ4kg8afFcGOAfvLat
-	V0tNSwnehkm2XFIvJ0d3ELF+VTiTGZL86AVwiss0teRsiHtCuCdIeDOBPwx/Nvmppn9ayt5FM/b
-	Enm3PIA==
-X-Google-Smtp-Source: AGHT+IGp0Tsh7Pkj0Vy343kMXSz7NO54KJv8lgbh53tJQw9m113ZOWAhaXvei7ITu3tfs9FrEXppNbX4CDUw
+        bh=6B/9ZrYGS/GvVU4GCl+WETb7MhjnAD4f86As1bzZZ1w=;
+        b=vk5RUnbi5u31d+5Mbch0STAsTvRUqsv964qM/uhS00eyQYRlG6cQkySWzQn4X3H6PE
+         Q3iu1L5k0u9kmYhtCzec8m1acZZLKn7UXh8dCfTnPK5XfdZe/ddIo/JbbF5bq7XmEaFi
+         blUvmEYPR1ySTKnKIoAzhUAnmKUUc4tjEgbPgd5XCf4npiM5APgMN3EKIWq78RK3+sco
+         nZLBaL1CpE8jUoXMsWK4r7ewwPd8wPYj6fU5m9OxAsPD98qD8jGgAmvch+3NLFPZ26RJ
+         +WmCRSyhjhWZ7dgubIjw1QFxb9z2ZrjLrfAhe+vS5xqIZRHMni7IZMnWO36epU4kebMu
+         xegQ==
+X-Gm-Message-State: AOJu0YzZ4HdAePaTqnVkLN7GxJPMcTvIbg0e5QPWFa4hVv6goPstlbZj
+	OtADMam3HkAGXBhaGPehDcz6XdLF0YDeCQ5uMhKclWpij46Cbmoyfk45V75rZDlxh6zTyX8y7nq
+	0rnQBcw==
+X-Google-Smtp-Source: AGHT+IHeJtr+J+UM1A953ZSh67WoMqrpAZorBHS86+PuKa3y82YBkZsQ3Sy+ahaObrCz9S/jk8xrV/sdLep/
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:125c:bcda:4fe2:b6e6])
- (user=irogers job=sendgmr) by 2002:a25:6910:0:b0:dc2:398d:a671 with SMTP id
- e16-20020a256910000000b00dc2398da671mr1960328ybc.10.1707764364421; Mon, 12
- Feb 2024 10:59:24 -0800 (PST)
-Date: Mon, 12 Feb 2024 10:58:57 -0800
+ (user=irogers job=sendgmr) by 2002:a25:aa6e:0:b0:dc6:e8a7:fdba with SMTP id
+ s101-20020a25aa6e000000b00dc6e8a7fdbamr2005453ybi.4.1707764366829; Mon, 12
+ Feb 2024 10:59:26 -0800 (PST)
+Date: Mon, 12 Feb 2024 10:58:58 -0800
 In-Reply-To: <20240212185858.68189-1-irogers@google.com>
-Message-Id: <20240212185858.68189-8-irogers@google.com>
+Message-Id: <20240212185858.68189-9-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +73,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240212185858.68189-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Subject: [PATCH v3 7/8] perf tests: Run time generate shell test suites
+Subject: [PATCH v3 8/8] perf tests: Add option to run tests in parallel
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -89,359 +88,432 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-Rather than special shell test logic, do a single pass to create an
-array of test suites. Hold the shell test file name in the test suite
-priv field. This makes the special shell test logic in builtin-test.c
-redundant so remove it.
+By default tests are forked, add an option (-p or --parallel) so that
+the forked tests are all started in parallel and then their output
+gathered serially. This is opt-in as running in parallel can cause
+test flakes.
+
+Rather than fork within the code, the start_command/finish_command
+from libsubcmd are used. This changes how stderr and stdout are
+handled. The child stderr and stdout are always read to avoid the
+child blocking. If verbose is 1 (-v) then if the test fails the child
+stdout and stderr are displayed. If the verbose is >1 (e.g. -vv) then
+the stdout and stderr from the child are immediately displayed.
+
+An unscientific test on my laptop shows the wall clock time for perf
+test without parallel being 5 minutes 21 seconds and with parallel
+(-p) being 1 minute 50 seconds.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/builtin-test.c  |  91 +---------------------
- tools/perf/tests/tests-scripts.c | 130 ++++++++++++++++++-------------
- tools/perf/tests/tests-scripts.h |  10 +--
- 3 files changed, 81 insertions(+), 150 deletions(-)
+v1 of this code had a bug where stdout/stderr weren't read fully. This
+and additional issues/improvements are dealt with in v2.
+---
+ tools/perf/tests/builtin-test.c | 305 ++++++++++++++++++++++----------
+ 1 file changed, 213 insertions(+), 92 deletions(-)
 
 diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 6d5001daaf63..c42cb40fc242 100644
+index c42cb40fc242..b815db8ebf79 100644
 --- a/tools/perf/tests/builtin-test.c
 +++ b/tools/perf/tests/builtin-test.c
-@@ -130,6 +130,7 @@ static struct test_suite *generic_tests[] = {
- static struct test_suite **tests[] = {
- 	generic_tests,
- 	arch_tests,
-+	NULL, /* shell tests created at runtime. */
- };
+@@ -6,6 +6,7 @@
+  */
+ #include <fcntl.h>
+ #include <errno.h>
++#include <poll.h>
+ #include <unistd.h>
+ #include <string.h>
+ #include <stdlib.h>
+@@ -21,9 +22,11 @@
+ #include "debug.h"
+ #include "color.h"
+ #include <subcmd/parse-options.h>
++#include <subcmd/run-command.h>
+ #include "string2.h"
+ #include "symbol.h"
+ #include "util/rlimit.h"
++#include "util/strbuf.h"
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+ #include <subcmd/exec-cmd.h>
+@@ -31,7 +34,13 @@
  
- static struct test_workload *workloads[] = {
-@@ -299,74 +300,12 @@ static int test_and_print(struct test_suite *t, int subtest)
- 	return err;
+ #include "tests-scripts.h"
+ 
++/*
++ * Command line option to not fork the test running in the same process and
++ * making them easier to debug.
++ */
+ static bool dont_fork;
++/* Fork the tests in parallel and then wait for their completion. */
++static bool parallel;
+ const char *dso_to_test;
+ const char *test_objdump_path = "objdump";
+ 
+@@ -209,76 +218,36 @@ static bool perf_test__matches(const char *desc, int curr, int argc, const char
+ 	return false;
  }
  
--struct shell_test {
--	const char *file;
--};
--
--static int shell_test__run(struct test_suite *test, int subdir __maybe_unused)
+-static int run_test(struct test_suite *test, int subtest)
 -{
--	int err;
--	struct shell_test *st = test->priv;
--	char *cmd;
+-	int status, err = -1, child = dont_fork ? 0 : fork();
+-	char sbuf[STRERR_BUFSIZE];
 -
--	asprintf(&cmd, "%s%s", st->file, verbose ? " -v" : "");
--	if (!cmd)
--		return TEST_FAIL;
--	err = system(cmd);
--	free(cmd);
--	if (!err)
--		return TEST_OK;
+-	if (child < 0) {
+-		pr_err("failed to fork test: %s\n",
+-			str_error_r(errno, sbuf, sizeof(sbuf)));
+-		return -1;
+-	}
 -
--	return WEXITSTATUS(err) == 2 ? TEST_SKIP : TEST_FAIL;
--}
+-	if (!child) {
+-		if (!dont_fork) {
+-			pr_debug("test child forked, pid %d\n", getpid());
 -
--static int run_shell_tests(int argc, const char *argv[], int i, int width,
--				struct intlist *skiplist)
--{
--	struct shell_test st;
--	const struct script_file *files, *file;
+-			if (verbose <= 0) {
+-				int nullfd = open("/dev/null", O_WRONLY);
 -
--	files = list_script_files();
--	if (!files)
--		return 0;
--	for (file = files; file->file; file++) {
--		int curr = i++;
--		struct test_case test_cases[] = {
--			{
--				.desc = file->desc,
--				.run_case = shell_test__run,
--			},
--			{ .name = NULL, }
--		};
--		struct test_suite test_suite = {
--			.desc = test_cases[0].desc,
--			.test_cases = test_cases,
--			.priv = &st,
--		};
--		st.file = file->file;
+-				if (nullfd >= 0) {
+-					close(STDERR_FILENO);
+-					close(STDOUT_FILENO);
 -
--		if (test_suite.desc == NULL ||
--		    !perf_test__matches(test_suite.desc, curr, argc, argv))
--			continue;
--
--		pr_info("%3d: %-*s:", i, width, test_suite.desc);
--
--		if (intlist__find(skiplist, i)) {
--			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (user override)\n");
--			continue;
+-					dup2(nullfd, STDOUT_FILENO);
+-					dup2(STDOUT_FILENO, STDERR_FILENO);
+-					close(nullfd);
+-				}
+-			} else {
+-				signal(SIGSEGV, sighandler_dump_stack);
+-				signal(SIGFPE, sighandler_dump_stack);
+-			}
 -		}
 -
--		test_and_print(&test_suite, 0);
+-		err = test_function(test, subtest)(test, subtest);
+-		if (!dont_fork)
+-			exit(err);
 -	}
--	return 0;
--}
 -
+-	if (!dont_fork) {
+-		wait(&status);
++struct child_test {
++	struct child_process process;
++	struct test_suite *test;
++	int test_num;
++	int subtest;
++};
+ 
+-		if (WIFEXITED(status)) {
+-			err = (signed char)WEXITSTATUS(status);
+-			pr_debug("test child finished with %d\n", err);
+-		} else if (WIFSIGNALED(status)) {
+-			err = -1;
+-			pr_debug("test child interrupted\n");
+-		}
+-	}
++static int run_test_child(struct child_process *process)
++{
++	struct child_test *child = container_of(process, struct child_test, process);
++	int err;
+ 
+-	return err;
++	pr_debug("--- start ---\n");
++	pr_debug("test child forked, pid %d\n", getpid());
++	err = test_function(child->test, child->subtest)(child->test, child->subtest);
++	pr_debug("---- end(%d) ----\n", err);
++	fflush(NULL);
++	return -err;
+ }
+ 
+-#define for_each_test(j, k, t)			\
+-	for (j = 0, k = 0; j < ARRAY_SIZE(tests); j++, k = 0)	\
+-		while ((t = tests[j][k++]) != NULL)
+-
+-static int test_and_print(struct test_suite *t, int subtest)
++static int print_test_result(struct test_suite *t, int i, int subtest, int result, int width)
+ {
+-	int err;
+-
+-	pr_debug("\n--- start ---\n");
+-	err = run_test(t, subtest);
+-	pr_debug("---- end ----\n");
++	if (has_subtests(t)) {
++		int subw = width > 2 ? width - 2 : width;
+ 
+-	if (!has_subtests(t))
+-		pr_debug("%s:", t->desc);
+-	else
+-		pr_debug("%s subtest %d:", t->desc, subtest + 1);
++		pr_info("%3d.%1d: %-*s:", i + 1, subtest + 1, subw, test_description(t, subtest));
++	} else
++		pr_info("%3d: %-*s:", i + 1, width, test_description(t, subtest));
+ 
+-	switch (err) {
++	switch (result) {
+ 	case TEST_OK:
+ 		pr_info(" Ok\n");
+ 		break;
+@@ -297,22 +266,177 @@ static int test_and_print(struct test_suite *t, int subtest)
+ 		break;
+ 	}
+ 
+-	return err;
++	return 0;
++}
++
++static int finish_test(struct child_test *child_test, int width)
++{
++	struct test_suite *t = child_test->test;
++	int i = child_test->test_num;
++	int subi = child_test->subtest;
++	int out = child_test->process.out;
++	int err = child_test->process.err;
++	bool out_done = out <= 0;
++	bool err_done = err <= 0;
++	struct strbuf out_output = STRBUF_INIT;
++	struct strbuf err_output = STRBUF_INIT;
++	int ret;
++
++	/*
++	 * For test suites with subtests, display the suite name ahead of the
++	 * sub test names.
++	 */
++	if (has_subtests(t) && subi == 0)
++		pr_info("%3d: %-*s:\n", i + 1, width, test_description(t, -1));
++
++	/*
++	 * Busy loop reading from the child's stdout and stderr that are set to
++	 * be non-blocking until EOF.
++	 */
++	if (!out_done)
++		fcntl(out, F_SETFL, O_NONBLOCK);
++	if (!err_done)
++		fcntl(err, F_SETFL, O_NONBLOCK);
++	if (verbose > 1) {
++		if (has_subtests(t))
++			pr_info("%3d.%1d: %s:\n", i + 1, subi + 1, test_description(t, subi));
++		else
++			pr_info("%3d: %s:\n", i + 1, test_description(t, -1));
++	}
++	while (!out_done || !err_done) {
++		struct pollfd pfds[2] = {
++			{ .fd = out,
++			  .events = POLLIN | POLLERR | POLLHUP | POLLNVAL,
++			},
++			{ .fd = err,
++			  .events = POLLIN | POLLERR | POLLHUP | POLLNVAL,
++			},
++		};
++		char buf[512];
++		ssize_t len;
++
++		/* Poll to avoid excessive spinning, timeout set for 1000ms. */
++		poll(pfds, ARRAY_SIZE(pfds), /*timeout=*/1000);
++		if (!out_done && pfds[0].revents) {
++			errno = 0;
++			len = read(out, buf, sizeof(buf) - 1);
++
++			if (len <= 0) {
++				out_done = errno != EAGAIN;
++			} else {
++				buf[len] = '\0';
++				if (verbose > 1)
++					fprintf(stdout, "%s", buf);
++				else
++					strbuf_addstr(&out_output, buf);
++			}
++		}
++		if (!err_done && pfds[1].revents) {
++			errno = 0;
++			len = read(err, buf, sizeof(buf) - 1);
++
++			if (len <= 0) {
++				err_done = errno != EAGAIN;
++			} else {
++				buf[len] = '\0';
++				if (verbose > 1)
++					fprintf(stdout, "%s", buf);
++				else
++					strbuf_addstr(&err_output, buf);
++			}
++		}
++	}
++	/* Clean up child process. */
++	ret = finish_command(&child_test->process);
++	if (verbose == 1 && ret == TEST_FAIL) {
++		/* Add header for test that was skipped above. */
++		if (has_subtests(t))
++			pr_info("%3d.%1d: %s:\n", i + 1, subi + 1, test_description(t, subi));
++		else
++			pr_info("%3d: %s:\n", i + 1, test_description(t, -1));
++		fprintf(stdout, "%s", out_output.buf);
++		fprintf(stderr, "%s", err_output.buf);
++	}
++	strbuf_release(&out_output);
++	strbuf_release(&err_output);
++	print_test_result(t, i, subi, ret, width);
++	if (out > 0)
++		close(out);
++	if (err > 0)
++		close(err);
++	return 0;
++}
++
++static int start_test(struct test_suite *test, int i, int subi, struct child_test **child,
++		      int width)
++{
++	int err;
++
++	*child = NULL;
++	if (dont_fork) {
++		pr_debug("--- start ---\n");
++		err = test_function(test, subi)(test, subi);
++		pr_debug("---- end ----\n");
++		print_test_result(test, i, subi, err, width);
++		return 0;
++	}
++
++	*child = zalloc(sizeof(**child));
++	if (!*child)
++		return -ENOMEM;
++
++	(*child)->test = test;
++	(*child)->test_num = i;
++	(*child)->subtest = subi;
++	(*child)->process.pid = -1;
++	(*child)->process.no_stdin = 1;
++	if (verbose <= 0) {
++		(*child)->process.no_stdout = 1;
++		(*child)->process.no_stderr = 1;
++	} else {
++		(*child)->process.out = -1;
++		(*child)->process.err = -1;
++	}
++	(*child)->process.no_exec_cmd = run_test_child;
++	err = start_command(&(*child)->process);
++	if (err || parallel)
++		return  err;
++	return finish_test(*child, width);
+ }
+ 
++#define for_each_test(j, k, t)					\
++	for (j = 0, k = 0; j < ARRAY_SIZE(tests); j++, k = 0)	\
++		while ((t = tests[j][k++]) != NULL)
++
  static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
  {
  	struct test_suite *t;
  	unsigned int j, k;
  	int i = 0;
--	int width = list_script_max_width();
-+	int width = 0;
+ 	int width = 0;
++	size_t num_tests = 0;
++	struct child_test **child_tests;
++	int child_test_num = 0;
  
  	for_each_test(j, k, t) {
  		int len = strlen(test_description(t, -1));
-@@ -441,28 +380,6 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+ 
+ 		if (width < len)
+ 			width = len;
++
++		if (has_subtests(t)) {
++			for (int l = 0, subn = num_subtests(t); l < subn; l++) {
++				len = strlen(test_description(t, -1));
++				if (width < len)
++					width = len;
++				num_tests++;
++			}
++		} else
++			num_tests++;
+ 	}
++	child_tests = calloc(num_tests, sizeof(*child_tests));
++	if (!child_tests)
++		return -ENOMEM;
+ 
+ 	for_each_test(j, k, t) {
+ 		int curr = i++;
+@@ -334,52 +458,47 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+ 				continue;
+ 		}
+ 
+-		pr_info("%3d: %-*s:", i, width, test_description(t, -1));
+-
+ 		if (intlist__find(skiplist, i)) {
++			pr_info("%3d: %-*s:", curr + 1, width, test_description(t, -1));
+ 			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (user override)\n");
+ 			continue;
+ 		}
+ 
+ 		if (!has_subtests(t)) {
+-			test_and_print(t, -1);
++			int err = start_test(t, curr, -1, &child_tests[child_test_num++], width);
++
++			if (err) {
++				/* TODO: if parallel waitpid the already forked children. */
++				free(child_tests);
++				return err;
++			}
+ 		} else {
+ 			int subn = num_subtests(t);
+-			/*
+-			 * minus 2 to align with normal testcases.
+-			 * For subtest we print additional '.x' in number.
+-			 * for example:
+-			 *
+-			 * 35: Test LLVM searching and compiling                        :
+-			 * 35.1: Basic BPF llvm compiling test                          : Ok
+-			 */
+-			int subw = width > 2 ? width - 2 : width;
+-
+-			if (subn <= 0) {
+-				color_fprintf(stderr, PERF_COLOR_YELLOW,
+-					      " Skip (not compiled in)\n");
+-				continue;
+-			}
+-			pr_info("\n");
+ 
+ 			for (subi = 0; subi < subn; subi++) {
+-				int len = strlen(test_description(t, subi));
++				int err;
+ 
+-				if (subw < len)
+-					subw = len;
+-			}
+-
+-			for (subi = 0; subi < subn; subi++) {
+ 				if (!perf_test__matches(test_description(t, subi),
+ 							curr, argc, argv))
+ 					continue;
+ 
+-				pr_info("%3d.%1d: %-*s:", i, subi + 1, subw,
+-					test_description(t, subi));
+-				test_and_print(t, subi);
++				err = start_test(t, curr, subi, &child_tests[child_test_num++],
++						 width);
++				if (err)
++					return err;
  			}
  		}
  	}
--
--	return run_shell_tests(argc, argv, i, width, skiplist);
--}
--
--static int perf_test__list_shell(int argc, const char **argv, int i)
--{
--	const struct script_file *files, *file;
--
--	files = list_script_files();
--	if (!files)
--		return 0;
--	for (file = files; file->file; file++) {
--		int curr = i++;
--		struct test_suite t = {
--			.desc = file->desc
--		};
--
--		if (!perf_test__matches(t.desc, curr, argc, argv))
--			continue;
--
--		pr_info("%3d: %s\n", i, t.desc);
--	}
++	for (i = 0; i < child_test_num; i++) {
++		if (parallel) {
++			int ret  = finish_test(child_tests[i], width);
++
++			if (ret)
++				return ret;
++		}
++		free(child_tests[i]);
++	}
++	free(child_tests);
  	return 0;
  }
  
-@@ -489,9 +406,6 @@ static int perf_test__list(int argc, const char **argv)
- 					test_description(t, subi));
- 		}
- 	}
--
--	perf_test__list_shell(argc, argv, i);
--
- 	return 0;
- }
- 
-@@ -551,6 +465,7 @@ int cmd_test(int argc, const char **argv)
- 	/* Unbuffered output */
- 	setvbuf(stdout, NULL, _IONBF, 0);
- 
-+	tests[2] = create_script_test_suites();
- 	argc = parse_options_subcommand(argc, argv, test_options, test_subcommands, test_usage, 0);
- 	if (argc >= 1 && !strcmp(argv[0], "list"))
- 		return perf_test__list(argc - 1, argv + 1);
-diff --git a/tools/perf/tests/tests-scripts.c b/tools/perf/tests/tests-scripts.c
-index 9b3b66dd5508..e60867b1e5ce 100644
---- a/tools/perf/tests/tests-scripts.c
-+++ b/tools/perf/tests/tests-scripts.c
-@@ -26,16 +26,6 @@
- #include "tests.h"
- #include "util/rlimit.h"
- 
--
--/*
-- * As this is a singleton built once for the run of the process, there is
-- * no value in trying to free it and just let it stay around until process
-- * exits when it's cleaned up.
-- */
--static size_t files_num = 0;
--static struct script_file *files = NULL;
--static int files_max_width = 0;
--
- static int shell_tests__dir_fd(void)
- {
- 	char path[PATH_MAX], *exec_path;
-@@ -131,12 +121,31 @@ static char *strdup_check(const char *str)
- 	return newstr;
- }
- 
--static void append_script(int dir_fd, const char *name, char *desc)
-+static int shell_test__run(struct test_suite *test, int subtest __maybe_unused)
-+{
-+	const char *file = test->priv;
-+	int err;
-+	char *cmd;
-+
-+	asprintf(&cmd, "%s%s", file, verbose ? " -v" : "");
-+	if (!cmd)
-+		return TEST_FAIL;
-+	err = system(cmd);
-+	free(cmd);
-+	if (!err)
-+		return TEST_OK;
-+
-+	return WEXITSTATUS(err) == 2 ? TEST_SKIP : TEST_FAIL;
-+}
-+
-+static void append_script(int dir_fd, const char *name, char *desc,
-+			  struct test_suite ***result,
-+			  size_t *result_sz)
- {
- 	char filename[PATH_MAX], link[128];
--	struct script_file *files_tmp;
--	size_t files_num_tmp, len;
--	int width;
-+	struct test_suite *test_suite, **result_tmp;
-+	struct test_case *tests;
-+	size_t len;
- 
- 	snprintf(link, sizeof(link), "/proc/%d/fd/%d", getpid(), dir_fd);
- 	len = readlink(link, filename, sizeof(filename));
-@@ -146,33 +155,43 @@ static void append_script(int dir_fd, const char *name, char *desc)
- 	}
- 	filename[len++] = '/';
- 	strcpy(&filename[len], name);
--	files_num_tmp = files_num + 1;
--	if (files_num_tmp >= SIZE_MAX) {
--		pr_err("Too many script files\n");
--		abort();
-+
-+	tests = calloc(2, sizeof(*tests));
-+	if (!tests) {
-+		pr_err("Out of memory while building script test suite list\n");
-+		return;
- 	}
-+	tests[0].name = strdup_check(name);
-+	tests[0].desc = strdup_check(desc);
-+	tests[0].run_case = shell_test__run;
-+
-+	test_suite = zalloc(sizeof(*test_suite));
-+	if (!test_suite) {
-+		pr_err("Out of memory while building script test suite list\n");
-+		free(tests);
-+		return;
-+	}
-+	test_suite->desc = desc;
-+	test_suite->test_cases = tests;
-+	test_suite->priv = strdup_check(filename);
- 	/* Realloc is good enough, though we could realloc by chunks, not that
- 	 * anyone will ever measure performance here */
--	files_tmp = realloc(files,
--			    (files_num_tmp + 1) * sizeof(struct script_file));
--	if (files_tmp == NULL) {
--		pr_err("Out of memory while building test list\n");
--		abort();
-+	result_tmp = realloc(*result, (*result_sz + 1) * sizeof(*result_tmp));
-+	if (result_tmp == NULL) {
-+		pr_err("Out of memory while building script test suite list\n");
-+		free(tests);
-+		free(test_suite);
-+		return;
- 	}
- 	/* Add file to end and NULL terminate the struct array */
--	files = files_tmp;
--	files_num = files_num_tmp;
--	files[files_num - 1].file = strdup_check(filename);
--	files[files_num - 1].desc = desc;
--	files[files_num].file = NULL;
--	files[files_num].desc = NULL;
--
--	width = strlen(desc); /* Track max width of desc */
--	if (width > files_max_width)
--		files_max_width = width;
-+	*result = result_tmp;
-+	(*result)[*result_sz] = test_suite;
-+	(*result_sz)++;
- }
- 
--static void append_scripts_in_dir(int dir_fd)
-+static void append_scripts_in_dir(int dir_fd,
-+				  struct test_suite ***result,
-+				  size_t *result_sz)
- {
- 	struct dirent **entlist;
- 	struct dirent *ent;
-@@ -191,7 +210,7 @@ static void append_scripts_in_dir(int dir_fd)
- 			char *desc = shell_test__description(dir_fd, ent->d_name);
- 
- 			if (desc) /* It has a desc line - valid script */
--				append_script(dir_fd, ent->d_name, desc);
-+				append_script(dir_fd, ent->d_name, desc, result, result_sz);
- 			continue;
- 		}
- 		if (ent->d_type != DT_DIR) {
-@@ -204,32 +223,35 @@ static void append_scripts_in_dir(int dir_fd)
- 				continue;
- 		}
- 		fd = openat(dir_fd, ent->d_name, O_PATH);
--		append_scripts_in_dir(fd);
-+		append_scripts_in_dir(fd, result, result_sz);
- 	}
- 	for (i = 0; i < n_dirs; i++) /* Clean up */
- 		zfree(&entlist[i]);
- 	free(entlist);
- }
- 
--const struct script_file *list_script_files(void)
-+struct test_suite **create_script_test_suites(void)
- {
--	int dir_fd;
--
--	if (files)
--		return files; /* Singleton - we already know our list */
--
--	dir_fd = shell_tests__dir_fd(); /* Walk  dir */
--	if (dir_fd < 0)
--		return NULL;
-+	struct test_suite **result = NULL, **result_tmp;
-+	size_t result_sz = 0;
-+	int dir_fd = shell_tests__dir_fd(); /* Walk  dir */
- 
--	append_scripts_in_dir(dir_fd);
--	close(dir_fd);
-+	/*
-+	 * Append scripts if fd is good, otherwise return a NULL terminated zero
-+	 * length array.
-+	 */
-+	if (dir_fd >= 0)
-+		append_scripts_in_dir(dir_fd, &result, &result_sz);
- 
--	return files;
--}
--
--int list_script_max_width(void)
--{
--	list_script_files(); /* Ensure we have scanned all scripts */
--	return files_max_width;
-+	result_tmp = realloc(result, (result_sz + 1) * sizeof(*result_tmp));
-+	if (result_tmp == NULL) {
-+		pr_err("Out of memory while building script test suite list\n");
-+		abort();
-+	}
-+	/* NULL terminate the test suite array. */
-+	result = result_tmp;
-+	result[result_sz] = NULL;
-+	if (dir_fd >= 0)
-+		close(dir_fd);
-+	return result;
- }
-diff --git a/tools/perf/tests/tests-scripts.h b/tools/perf/tests/tests-scripts.h
-index 3508a293aaf9..b553ad26ea17 100644
---- a/tools/perf/tests/tests-scripts.h
-+++ b/tools/perf/tests/tests-scripts.h
-@@ -2,14 +2,8 @@
- #ifndef TESTS_SCRIPTS_H
- #define TESTS_SCRIPTS_H
- 
--struct script_file {
--	char *file;
--	char *desc;
--};
-+#include "tests.h"
- 
--/* List available script tests to run - singleton - never freed */
--const struct script_file *list_script_files(void);
--/* Get maximum width of description string */
--int list_script_max_width(void);
-+struct test_suite **create_script_test_suites(void);
- 
- #endif /* TESTS_SCRIPTS_H */
+@@ -447,6 +566,8 @@ int cmd_test(int argc, const char **argv)
+ 		    "be more verbose (show symbol address, etc)"),
+ 	OPT_BOOLEAN('F', "dont-fork", &dont_fork,
+ 		    "Do not fork for testcase"),
++	OPT_BOOLEAN('p', "parallel", &parallel,
++		    "Run the tests altogether in parallel"),
+ 	OPT_STRING('w', "workload", &workload, "work", "workload to run for testing"),
+ 	OPT_STRING(0, "dso", &dso_to_test, "dso", "dso to test"),
+ 	OPT_STRING(0, "objdump", &test_objdump_path, "path",
 -- 
 2.43.0.687.g38aa6559b0-goog
 
