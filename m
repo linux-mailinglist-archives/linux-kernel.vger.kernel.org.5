@@ -1,136 +1,106 @@
-Return-Path: <linux-kernel+bounces-62518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DB86852245
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:05:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02796852247
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:06:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D271B1F23766
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:05:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69EB61F2320A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854CF4F897;
-	Mon, 12 Feb 2024 23:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A0384F1E0;
+	Mon, 12 Feb 2024 23:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="thg/0U7R"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L2YqIc6C"
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2A34F885;
-	Mon, 12 Feb 2024 23:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7B148795
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:06:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707779107; cv=none; b=O/lvKzpnI56Pc7A/Ls9REU45tJ7TTYGxYlsE05W+SuwvJqCJwtFKMeD5iJsN6UF4T5YuEBBiyHUd5+e0Ez3fTabcZbjO4H/RKloScrCq1NlaQMDWkDzX+OmhE9qXKFoZsDWP9I8gXs7qbemANJLuucrT3B9pVlpifxTYzyyOnQ0=
+	t=1707779186; cv=none; b=Xi7y4PCxLnkMb9c21ITPxFB2REc685ah+msFH5wNXW3wiBqipSkQ98lHiT1kSzSpKodYOc9l/IdhPeRnHYPMDoS4oOGIjl0HT4ZZN3B6CtHVeBSKwdrreXuavjg9TG3u8hDKnyzES54kPRKaF1WDj3Ui9aLOZCx6Dyk47XAv7gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707779107; c=relaxed/simple;
-	bh=ktd9h9qlvN0UnUZCeYB3SASIwovngcWwR2R8apaMxQ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=HDUVDe4s3C4wYNq8eA7Vvi+oEbBgJi/6WG6nwJ09ByJVUFJkzlYs1EUkZxkD0o6R+NtMonyB5djFq6mTb5A36Maa9XSfrcBORkOXkA6/FGkAiNkRyERFtkXChFLJodyyvF9hiDzGXulY+rw2ki3T3DOsd+GBgu+H9fJnWF2Uiew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=thg/0U7R; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707779097;
-	bh=Eq4c4CTqsb904CNVrto0W+3RppC+ap2MIeph085cVZI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=thg/0U7RaOeHsJnGHVczSuCbmZ7WGVRJVHbL3ftNvsahjXyn6W6UbGHHEuIaJ1LLG
-	 MCqyzJCJlj2VWgcLCTvHn/PMu2sHKociAgWLp9H6Lb8el8vxap3xkZAMQpKW+CrA6N
-	 6fgpj6CwwwDSaev0AG3DB4ojzcbm+1DRxLAj7hHEKimJDiltYlPFkz92XEmc68z5rr
-	 981wdJHJbGPkANSOrWOuqojGyQwjPM49ObRidxJOrl2xLDRBS1u7EJ9GXcsDDGDRr5
-	 N0QErv0yiGd4FFJUX768xruEdc/X9v2QrP7ikqpVms91BW+Naw+YQC/m99IGn6n36E
-	 mjQMsJGB1aZhw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TYg5j22y7z4wcM;
-	Tue, 13 Feb 2024 10:04:57 +1100 (AEDT)
-Date: Tue, 13 Feb 2024 10:04:55 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Christian Brauner <brauner@kernel.org>, Kent Overstreet
- <kent.overstreet@linux.dev>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Su Yue <glass.su@suse.com>
-Subject: linux-next: manual merge of the vfs-brauner tree with the bcachefs
- tree
-Message-ID: <20240213100455.07e181c8@canb.auug.org.au>
+	s=arc-20240116; t=1707779186; c=relaxed/simple;
+	bh=xyJS4yDPKZrA2HdoXcsXz6GNBDwVIVv4GWpRJK3vmJ8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=k6g3+1z7gZlajbFsUliHIu0bIuEPJFo1hFJIuyOvHmy4yOmOUaM1bL8xjwG/9O8zb63U21bSkKpQNA18lgsnRlqOjDNwYnFVAmXR5up5YEB+1TdE1+C1Hf0p7a996Syu/xXu+XfnFXW2vUrUNl9cvjRKED+xuKR0PkOAO5FFFik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=L2YqIc6C; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-428405a0205so48701cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:06:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707779183; x=1708383983; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X8bSh9OQLoWAq/ajMiSXj5T+yruvi0AGogBnnOcqqrA=;
+        b=L2YqIc6C/WIr3CLYw6RHdVTKxFWpAdgxNyvGqylmjugvhGeqv+z7T9HvcBNa7g+SMu
+         2UQK4w7WDejjXhNYihqC4sX0RPCYPihkGS9NWTB2xomwZUYZkM5K04TOU9tKn0EofKcv
+         qYo/hU9U6hZlElgiowc6hJTfajvWfQ0bVRR8FEN907frjuaL+b95mOg1KOy2Cz/Q/5ft
+         f1CMKJ59Vf/MDOjypsUu4m9L7wO0+XopbAgTptKeS5S+2pTnOdnNqZggFIOJdyB+JUve
+         PiLNzSR4CCYDT6lFJ67X9jZKbqFkx7CnX2vgeuLdBvbHqAUCguvyHTg04bLl26nj2PRU
+         RaLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707779183; x=1708383983;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X8bSh9OQLoWAq/ajMiSXj5T+yruvi0AGogBnnOcqqrA=;
+        b=HeO9VpBUhqnmZpK3+xYh8ycf3XNyY2eQAM4dYOKFfK8D3/tTdHqM2iyv0q95EIcUWM
+         Inossvj26/qTI29su78GDC6f1oaO/TbXfhXnpftVNM+6a2soQ48zFH+9BsTAxA4NaP+5
+         re6E4MyddO71qb+JRqaL/oIo4lM+IJhp3xqVtt7Ts5j4siqGzKTbkGmNnaU2ZwW1Ejjw
+         B77Zm2LgR/JFIKtTbdPh80NasE3Jy34g9U7TjwDxeuEo9/tB8hbgU3Ucdeavt9wSTL9A
+         15sBa4z/rZBObSx2GcFft+vuyBrpiwh+ZZ53+7VCS5Db7L4ILkzo0qiUnE/95w3VjM5G
+         6kdg==
+X-Gm-Message-State: AOJu0YxzDzYNqxMzZrtnjNn97ycwPLda7EGJuabPS/U5qm0HXHa1idLp
+	cMNgemaQgYiLP/kVBnWb8/tWJF37iehPen7X2uSZQHYftiaW7pj2XjSNdahL0hErnF2Dacwhm05
+	lA85XtdmcsnL+B8IwLa5xnSjQDVygJHubt3x0yF2gWAtfC34StQ==
+X-Google-Smtp-Source: AGHT+IGLwPGjPlcidiwBmZE3kuLoR8uVLPyIRXUTeScX5Zmv0+siKRJVA8fBuiJgIKgOYS2Z5jzRoW/X6p9fOVKX7Zo=
+X-Received: by 2002:ac8:1386:0:b0:42c:7de1:c96b with SMTP id
+ h6-20020ac81386000000b0042c7de1c96bmr46715qtj.24.1707779182851; Mon, 12 Feb
+ 2024 15:06:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/H0EfUVqgf5.7zwqJumzUvD/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/H0EfUVqgf5.7zwqJumzUvD/
-Content-Type: text/plain; charset=US-ASCII
+References: <20240210231513.111117-1-saravanak@google.com> <170777778090.2688977.14804637560473102697.robh@kernel.org>
+In-Reply-To: <170777778090.2688977.14804637560473102697.robh@kernel.org>
+From: Saravana Kannan <saravanak@google.com>
+Date: Mon, 12 Feb 2024 15:05:45 -0800
+Message-ID: <CAGETcx9Aw8-Phc0MpNkRz6rGmvCzwBSxJgBahNQCUg-BBdNHzQ@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: of: Add Saravana Kannan
+To: Rob Herring <robh@kernel.org>
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Mon, Feb 12, 2024 at 2:43=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
+:
+>
+>
+> On Sat, 10 Feb 2024 15:15:12 -0800, Saravana Kannan wrote:
+> > Adding myself as a second maintainer for Open Firmware and Device Tree
+> > to help Rob out with reviews and other maintainer work.
+> >
+> > Cc: devicetree@vger.kernel.org
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> > Discussed this with Rob.
+> >
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+>
+> Applied, thanks!
 
-Today's linux-next merge of the vfs-brauner tree got a conflict in:
+Thanks!
 
-  fs/bcachefs/super-io.c
-
-between commit:
-
-  7dcfb87af973 ("bcachefs: fix kmemleak in __bch2_read_super error handling=
- path")
-
-from the bcachefs tree and commit:
-
-  1df39a40e912 ("bcachefs: port block device access to file")
-
-from the vfs-brauner tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/bcachefs/super-io.c
-index 36988add581f,ce8cf2d91f84..000000000000
---- a/fs/bcachefs/super-io.c
-+++ b/fs/bcachefs/super-io.c
-@@@ -715,11 -715,11 +715,11 @@@ retry
-  			opt_set(*opts, nochanges, true);
-  	}
- =20
-- 	if (IS_ERR(sb->bdev_handle)) {
-- 		ret =3D PTR_ERR(sb->bdev_handle);
-+ 	if (IS_ERR(sb->s_bdev_file)) {
-+ 		ret =3D PTR_ERR(sb->s_bdev_file);
- -		goto out;
- +		goto err;
-  	}
-- 	sb->bdev =3D sb->bdev_handle->bdev;
-+ 	sb->bdev =3D file_bdev(sb->s_bdev_file);
- =20
-  	ret =3D bch2_sb_realloc(sb, 0);
-  	if (ret) {
-
---Sig_/H0EfUVqgf5.7zwqJumzUvD/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXKpBcACgkQAVBC80lX
-0Gzx+wf6An58J97tEuatYeYEIt8pk1bEdS9bSUaYQ8Snn3y9gsGi2ipO7w+sjS5s
-h57DFCILTvyM0IkpPMUzxkjeZMkoudQyGR0Xib5tvHb9FmYN8jSGln/5XLdOoATK
-aPJ3UP/la8W+I1IVsZVjiE13p+6xTw1XxT7uIJocoowuWMfB7CqZ5j2DF9/W/Non
-mgr5ADxt8e0tn9060ad6bpgBo1usE0iYezXOiGFleipDEPNnrqNyow8/2UjrbS8r
-XtxXR2z96LbotYx1aVwmzwxwu6mrb/pEaXtk1+ZualT5XiSHgFuo3V8W+T+p73Qb
-EQo98cOpiaioRVD5dSkdI+UrFezMcQ==
-=DFQ6
------END PGP SIGNATURE-----
-
---Sig_/H0EfUVqgf5.7zwqJumzUvD/--
+-Saravana
 
