@@ -1,140 +1,136 @@
-Return-Path: <linux-kernel+bounces-62228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED50851D56
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:51:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D94851D59
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:52:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73CDD1F223FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:51:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BCE2284071
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6443841775;
-	Mon, 12 Feb 2024 18:51:29 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B55045016;
+	Mon, 12 Feb 2024 18:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LZc6u6+M"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77138405F8
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4AAD3F9EF
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707763889; cv=none; b=rELxhl8NnzxzgX4m1l3HmesL1mS7FWegUFdjbLKNPTsFqWWpwOY4hqVnMCAcBa3DgpuR3PNbSFi+6SH5dPTom1j9ORjz+TMie207NliOhoMveCk5ZyEQbpOlHLiiYa7a/1olOyLZ4HibAzU478ccDU1bIYzk/+qB71QFWjZij8Q=
+	t=1707763913; cv=none; b=XkhdHxdhuRN4tQ+LV90bY3Od2wC9DZtgsUHXFAHE7Ul9C+UAfHLkxY5+JGbbFr9ps4XWPzMy5VQafnZo6HOzYS8D3JIY3bpzReGtVL/o/1ytiYBS0kQcznHJCFbxPD/h5xu9yqS86bdpfJVBQ45HTMW+dnZMWySjPKH4rQyF6A8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707763889; c=relaxed/simple;
-	bh=ziC0jdjSOn57oxkidJiFB3fh21tLRHD/tRm5IxXvmfc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=GoJ8a7lgkJyD5xrjT+72GxUCz81bSQR7Buyu53uil1YUeIQOPFWzTs9LGkTW1ONwMymeJR0XMaRD20/37BIxmIoduJLJdAY1+q1fgDaVIB0bhinMeSuVMk4nRX36fHQRkF3DkrU4x+pphjFLGhTv5aHwEEtI972icJ6ksR1Uu/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fc6976630so33269075ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:51:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707763886; x=1708368686;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+	s=arc-20240116; t=1707763913; c=relaxed/simple;
+	bh=GTS3knEn3U37SHf/wqemlrktyAqbrDzvlYNJt5L8bzg=;
+	h=From:Date:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=mPrpheDDQJRe/XqILp+tFTb4uNBTPKzcxqpdsurVEC4j2CtlpkLlEcpmAtClREqWDLfspK8fYG5rcfeHok8i524O6k4NH8K4W3SAcfXNGzHhSue9CoWBgCn4EzJismkWPWojkVUhJlH4w0vl7S2Hl7qc7Kxe7gbg19BfjK7f3rA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LZc6u6+M; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d746856d85so26186855ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:51:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707763911; x=1708368711; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ADqcTXDt3h4lpXEcZoVVs37L5+rC4WHYFhye8PBDplg=;
-        b=wWHwg+GVXJdsJs5nitMdWf2DGmX+66G6V7CCLBk3jdKCrOi8Hgc01lVjexIqbmhW+c
-         d43EZpik3XlMxdI9IBmvYkegBNN6hJwdi8LMU4a6/X7dWGf18pOmUpyqFCSP6/mOphJf
-         DI/q8k94WRyLYAlavIYO8CCKkWrA7vCsbNjMnFuYmUdHL/RwCbfehh/FtM/40YwbIBDX
-         ludVZHF4GAwNmzkrbHfi9ZdoxJOWVtcnBcDXhZ63gx2s2sl49YfInq2D32RbubhB2Sif
-         3LWLbvfMaFgN6I+oCxU/Ff9jm9PtBm/6LGwq3dfMQBOyW+kCv9ocUampMYbm0772/bGc
-         DlTA==
-X-Forwarded-Encrypted: i=1; AJvYcCW3vVk11ZxEt9TUwG+6wh+GYknOAng27IDGNIgib1qL8RuHJnBgb/YiZ8vbX30RRJKhGS7vIJo+p1HtCVcKp9+i5iJh3bsGp9KsPzsp
-X-Gm-Message-State: AOJu0YziKkRzUtZ+1LvFxFPHbXwinggYimYjB/43vEcApJ//K6h7IJNJ
-	NUuNsDo6zsa6M4yhfrt253UPEG/KvUKDuFtG+zEpaYF5DdYPZo1EIyJGQXQV7CmddNnKXsxUXNC
-	HNnoKOWhSV4uU9Dx8/QwykdEio9xJJp4oX87s5tBz9fpEzAsrXUGQlKU=
-X-Google-Smtp-Source: AGHT+IFbdKSQxCB0DJY/GiqaqjR8/NSQmFPFQKGctC/4muwMdSaqWUxXKBchKm9dgjbCe04xWlhcRsMAzbbYb5zbnYpfNiiA2OaT
+        bh=mPGSiRqCPFqmFEWSJFO1d43GTTlaRz0f+e2eVAoQklI=;
+        b=LZc6u6+M3QXmf+mklCLv4nvYl4cE4F8WthRQeV0lG699Fm3xSLuFBJiSy7JFa6zeI9
+         +L1GWeahScedXT5h+2MY86yMXaPRXfnlghV0+BeSputyWoF83Rhiqrg1RJjazZ4dmw3R
+         Pghs2IEr54xMsGevUqsjmPkccrysWHMzatiYU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707763911; x=1708368711;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mPGSiRqCPFqmFEWSJFO1d43GTTlaRz0f+e2eVAoQklI=;
+        b=H6YonFlaQAA5ovkRZc7poXqSGuR/wL5k3JmA/ndKiT9353V6XGJtcHj1g7IYGo7FC2
+         HNUcBpJFMaMJ2y3iJoLG7/BCuqIpeH5fOENqanzXQfIBP5Pmwfjuj2wSLbKs2oSP97RB
+         a1foPtsb8Zlfc+Qc1mIjnJdwfbvQALZX3ZqgspJcmFdTwtSULyjIPJSPkWXvhyx82TSQ
+         CLzEh6+Ry8eMtogGaeLBMAzxu6j/mtixKNltYYE4/hYslybtfFtRZlNTET8nlyP0WCEg
+         rc3cc67Ey7CMhVHCbbM61SO84r0eDuH3g7RJ/H82Rg8evNIMKGREt2j8BZiAr9lx9ui2
+         G9lQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUBgtFQMZ/8GIzzwciIqoIW9Biko8WUCowLbzSaDyNWGw03M5RY5G/AcKvbJKPPHpOF8bs5Px4neqPOh8dBLwZJBLXu2+lPn5JePoaf
+X-Gm-Message-State: AOJu0YzZ/D+DQHJmjjMNP3rw5DfAjXDUG95n5S1GyEp/dwj/vHWAUg2p
+	WWx42vhKMKz1QP/3q+S58R5Ke13uEAc6ES4KiYodo3DnkObfUZfOIgymaqd+pw==
+X-Google-Smtp-Source: AGHT+IFiP4XqEVFPUe0AQ5sfHfutAVORBuy6ctbchagD56aaWb7k8kuXps4xMsVwiJ9ZHG46ydaEYA==
+X-Received: by 2002:a17:902:e5c7:b0:1d9:a647:5579 with SMTP id u7-20020a170902e5c700b001d9a6475579mr5817557plf.1.1707763911196;
+        Mon, 12 Feb 2024 10:51:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWVMXpMNIhotAYcYiqvNVCkUE02lF5spebU9llp4fc83Uutkz2jejMC03XmEIikgbWSldV5H3FNfAtE/6Jgii8cDrbgJCUgH3FC06zl/KgIj9f0r9uzQf62jhBRN7BKOi1tZOnRyWmjtO7PY6+GSekpCARKo/B9UBpkn+azS/Cmmzi9TXICwENuOXYbDsVLW+aNl5BNyMY3j4f4tfwfGghjhJcNsUZ6UbcCDRZwnBmZD5vN27Xpt2chVq15/1Tj6eg7VCkbJz8orDtPaf0/GidfJtGvk+NZZPo9yUI35lJxR138j6xF646MPyb2DcV92qgf2IShUDlLrbaOWviiuXiOzIENe3ZZ1bXgGWRrVUEl1L12s9CLURo4SeY620eR/lcDl2m//IprO4DY6HkY9R14CW6xhIJkrV47ecHxKR84yndQsDXM3NJqMcpiu4M6Y+P8kbk2+ZWg8t1RBE4uXWXtDWTxFaVA9585IKWuec4srYj5WnES1gkpMYxVgbudrRnPzxYH+H7a4hODicJw9+ImmaeqZYgOPYsAmQk=
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id u11-20020a170903308b00b001d9fa58f5a4sm675012plc.48.2024.02.12.10.51.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 10:51:50 -0800 (PST)
+From: coverity-bot <keescook@chromium.org>
+X-Google-Original-From: coverity-bot <keescook+coverity-bot@chromium.org>
+Date: Mon, 12 Feb 2024 10:51:50 -0800
+To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Cc: Jason Wang <jasowang@redhat.com>, Takashi Iwai <tiwai@suse.de>,
+	Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev, Jaroslav Kysela <perex@perex.cz>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Coverity: virtsnd_kctl_tlv_op(): Uninitialized variables
+Message-ID: <202402121051.B091CCC4B@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d02:b0:363:d720:a9d0 with SMTP id
- i2-20020a056e021d0200b00363d720a9d0mr664869ila.3.1707763886601; Mon, 12 Feb
- 2024 10:51:26 -0800 (PST)
-Date: Mon, 12 Feb 2024 10:51:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d23cfc061133c3ae@google.com>
-Subject: [syzbot] [usb?] WARNING in wdm_rxwork/usb_submit_urb (2)
-From: syzbot <syzbot+c6a1953c27ace6cc34e5@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, 
-	linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello,
+Hello!
 
-syzbot found the following issue on:
+This is an experimental semi-automated report about issues detected by
+Coverity from a scan of next-20240212 as part of the linux-next scan project:
+https://scan.coverity.com/projects/linux-next-weekly-scan
 
-HEAD commit:    841c35169323 Linux 6.8-rc4
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=108afb04180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1d7c92dd8d5c7a1e
-dashboard link: https://syzkaller.appspot.com/bug?extid=c6a1953c27ace6cc34e5
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+You're getting this email because you were associated with the identified
+lines of code (noted below) that were touched by commits:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+  Fri Feb 9 14:01:15 2024 +0100
+    d6568e3de42d ("ALSA: virtio: add support for audio controls")
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/38e234de95d9/disk-841c3516.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b6bebb81917b/vmlinux-841c3516.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3b5bf5ac63c3/bzImage-841c3516.xz
+Coverity reported the following:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c6a1953c27ace6cc34e5@syzkaller.appspotmail.com
+*** CID 1583619:  Uninitialized variables  (UNINIT)
+sound/virtio/virtio_kctl.c:294 in virtsnd_kctl_tlv_op()
+288
+289     		break;
+290     	}
+291
+292     	kfree(tlv);
+293
+vvv     CID 1583619:  Uninitialized variables  (UNINIT)
+vvv     Using uninitialized value "rc".
+294     	return rc;
+295     }
+296
+297     /**
+298      * virtsnd_kctl_get_enum_items() - Query items for the ENUMERATED element type.
+299      * @snd: VirtIO sound device.
 
-------------[ cut here ]------------
-URB ffff88802d18b550 submitted while active
-WARNING: CPU: 1 PID: 16572 at drivers/usb/core/urb.c:379 usb_submit_urb+0x1039/0x18c0 drivers/usb/core/urb.c:379
-Modules linked in:
-CPU: 1 PID: 16572 Comm: kworker/1:0 Not tainted 6.8.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Workqueue: events wdm_rxwork
-RIP: 0010:usb_submit_urb+0x1039/0x18c0 drivers/usb/core/urb.c:379
-Code: 00 eb 66 e8 59 f7 8e fa e9 79 f0 ff ff e8 4f f7 8e fa c6 05 25 9f 6b 08 01 90 48 c7 c7 c0 ae 4a 8c 4c 89 ee e8 f8 01 53 fa 90 <0f> 0b 90 90 e9 40 f0 ff ff e8 29 f7 8e fa eb 12 e8 22 f7 8e fa 41
-RSP: 0018:ffffc90004b4fb20 EFLAGS: 00010246
-RAX: e7c54bd420f7c300 RBX: 0000000000000cc0 RCX: ffff888039421dc0
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff88802d18b558 R08: ffffffff81577992 R09: 1ffff92000969eb8
-R10: dffffc0000000000 R11: fffff52000969eb9 R12: 1ffff11005523912
-R13: ffff88802d18b550 R14: dffffc0000000000 R15: ffff88802a91c828
-FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555555d4f938 CR3: 000000000df32000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- wdm_rxwork+0x116/0x1f0 drivers/usb/class/cdc-wdm.c:989
- process_one_work kernel/workqueue.c:2633 [inline]
- process_scheduled_works+0x913/0x1420 kernel/workqueue.c:2706
- worker_thread+0xa5f/0x1000 kernel/workqueue.c:2787
- kthread+0x2ef/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
- </TASK>
+If this is a false positive, please let us know so we can mark it as
+such, or teach the Coverity rules to be smarter. If not, please make
+sure fixes get into linux-next. :) For patches fixing this, please
+include these lines (but double-check the "Fixes" first):
 
+Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+Addresses-Coverity-ID: 1583619 ("Uninitialized variables")
+Fixes: d6568e3de42d ("ALSA: virtio: add support for audio controls")
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thanks for your attention!
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+(Human comment: looks like there's no "default" case in the switch
+statement.)
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+Coverity-bot
 
