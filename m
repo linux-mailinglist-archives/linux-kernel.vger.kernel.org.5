@@ -1,97 +1,76 @@
-Return-Path: <linux-kernel+bounces-61110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F591850D6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 06:49:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09F98850D70
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:02:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34FDE282D49
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:49:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CD951C21BB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 06:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E3C6FD8;
-	Mon, 12 Feb 2024 05:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92583747F;
+	Mon, 12 Feb 2024 06:02:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NkbD3OZl"
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kePfteA4"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6293279C3;
-	Mon, 12 Feb 2024 05:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A82C6FAD;
+	Mon, 12 Feb 2024 06:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707716945; cv=none; b=IrUzrnzTMqfp9nH5DxO9U4IOUX7bTxiQfvopfydH+TsT9EVIY/5iodQXTdZtYhM0fP2uCFhTNKsW6zpyAu8bojIYnZgNvBAFK4nADMKmERWBgEq3YuRYHKrhQJKKRZls9Mj7lHTxZBBTKlId2AV6ERASj800lzwTj5ZsAAUpxAs=
+	t=1707717755; cv=none; b=WYfZkGDOM/lAl84M8v3fO6txltruFrFGq4fkRifNCKSCLhXajPztiR8kIKWkLzSbr/NNDCrxLPtR9vQ8MEnb29AzApBY9AkDVyTeNXgywNsfcsLmnNoEFzIVHTH4H8JchBN6hNSXbipu2p4+JLnVBPW33erp7sLl3MEmBiZd8+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707716945; c=relaxed/simple;
-	bh=Lc/w/cxoeZuQtJ8zSB57Yo7ACdM/KC7dv5cLvDWenbM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:Subject:MIME-Version:
-	 Content-Type; b=qEqwnzOGQNXq8gH/UsJ0cm4QOsLGwY3Zp4Zy2cPuq8jB7JlUjeEp4aqA+nKp9CSQNK4Npu9Qder+CxcBztW4PxM28vaHAyW+wh3sQYkI1NxtMDxmhH4Sa52nt1/6fSx0koGGSt3bWltB53DVSPooKOWnJVXax36lStgaq6jZSFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NkbD3OZl; arc=none smtp.client-ip=209.85.210.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e2b5f48763so1775580a34.0;
-        Sun, 11 Feb 2024 21:49:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707716943; x=1708321743; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:in-reply-to
-         :message-id:cc:to:from:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Lc/w/cxoeZuQtJ8zSB57Yo7ACdM/KC7dv5cLvDWenbM=;
-        b=NkbD3OZl0Q2lOjZvzrgPrBI5xvIRxNgg6fvfExye0YyP6NTkkyv1lVpYFwbBFdjZFZ
-         RdGaTNRsmrjrBNKRTA9RYYeGLpy+MaZX8X3epXXBNUJNi/S385b/haS5TfgueYKrk7N/
-         wmk0DHMQm7JQnvAhls1GUj9RFO53W8q6c5NRZpg3R83+vbINgctIUEbeRbV+KRgMFdnt
-         h54WS7++ZbX/i2dF3ea/lDNDz8FEZ6tJ2xBfFbgaH6e+F+ha9butxwAoOSkw6NWT+4bq
-         7xVGV+J506e42aDqjYcDt2vlR5ihAMN7nCLeyfiSHUkBcwG9O/VpdrgYE5VtpQMMzaIY
-         ShbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707716943; x=1708321743;
-        h=content-transfer-encoding:mime-version:subject:in-reply-to
-         :message-id:cc:to:from:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Lc/w/cxoeZuQtJ8zSB57Yo7ACdM/KC7dv5cLvDWenbM=;
-        b=r1NSIxiO0s028IzrNKKfBLdXfkm46wMSnvXzJ/K/BtugHKjRkwLlgwGdO+CSJRGyF6
-         1PcUcQ18A5TMPc8eTedexECwKbEsxszqGZhvp3bX3FsWX8CFss4XccDZBrnqmOppQhad
-         7LkqXHo8P+EXyH1NLlJhIjskRp8bz9EfXihH86aRgqtCOswr2D61W3BvAQrPIz4fPrpC
-         bQbjlZkCu2kyLpwRf78oLLt8gB+iT+47BN6BkGzFSVlKnJrXUkiXTBXx9uC+qtBqI9bD
-         fFpKWC/Y4cCgQc8PaUeHsf3TOAFazvBuD2soKl0Y8/Wm91mlsmJnl9Z1eQNd+9bTbctu
-         RVXA==
-X-Gm-Message-State: AOJu0Yx++u2xEopYffFAM+8Dt1qoV/O+cjE2072g9/u+NiZA2QqvOmyR
-	gIG7w1XbZGCOJwu0SQuH3ut3utoptT5UNlcUSIAtlNvARTSp3mPl
-X-Google-Smtp-Source: AGHT+IF93Q96PWuIbJC8nHjbJf1rXR5ozPu0Z4Vq8EzpC9lxn23x4aky2fSJBghovWEbSgIGEPfsag==
-X-Received: by 2002:a05:6808:14c3:b0:3bf:5e23:5082 with SMTP id f3-20020a05680814c300b003bf5e235082mr8086961oiw.10.1707716943476;
-        Sun, 11 Feb 2024 21:49:03 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWd9/jES2EFRMOpHbZK48EbPBYXh750lyuOW0p5wYHvHkuqHGvYltI31J3eEDTjlRX4ALfTrR7oBSQjXKfxcyzIVOWLjd4fcQKvLY8o6dzB6AOPr8e/qmGWoLWbJ4K4nn7cozmpC8NpqJTmVIp7bLAa5o2CzX9JQ7W9Y+yq5hbhnHJMJCPtnGO+S/qglFqz+RGz99iIyTidEueW20ysX2I/4PZ4yg7umvUo4YoRGmXcALvWSADxLyJ5N/x9owhN9IXLbnXBP98XKyMKObGeofxS8HtEXTtpxAmH4GLKnewa2Zt7N6uYlVY=
-Received: from [127.0.0.1] ([106.221.234.142])
-        by smtp.gmail.com with ESMTPSA id q19-20020a637513000000b005dc191a1599sm6083749pgc.1.2024.02.11.21.49.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 21:49:03 -0800 (PST)
-Date: Mon, 12 Feb 2024 11:18:57 +0530 (GMT+05:30)
-From: Shresth Prasad <shresthprasad7@gmail.com>
-To: gregkh@linuxfoundation.org
-Cc: corbet@lwn.net, linux-doc@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	shresthprasad7@gmail.com, skhan@linuxfoundation.org
-Message-ID: <39f63f54-89f9-4c9a-81e5-e6ccbd2c08e3@gmail.com>
-In-Reply-To: <2024021158-rewire-duplicity-c31c@gregkh>
-Subject: Re: [PATCH] Fix malformed table error in gadget-testing.rst
+	s=arc-20240116; t=1707717755; c=relaxed/simple;
+	bh=r3ujuO0COn4/CEoshVZMVfrelu9cvXTDs8XEyBmSehc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U3EeHKa+VVD3tDINz+cZEAuwdvJJBUM6RYCfqrUUJA3Py1rAelK4rTJHItP/qzqHqK673YmM2wtUyWWN+jthURMrUD80B/FOwVG4Fhy7Js8h53v5Qrrbhii3gknxtXrNaM2cIO5dLjdhmvZ+epAyj40ouLPO9RdiziRgs6r+A/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kePfteA4; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=r3ujuO0COn4/CEoshVZMVfrelu9cvXTDs8XEyBmSehc=; b=kePfteA4/7o2gcIXYog6poOr3S
+	0tmBFcKXTWgy4TVcMkJclzXQOn4QaOwg3CZw471H/pmqhJWuHjm0TslkfDBg8z2Nngn1Ueaj2cKwG
+	OBep0doQKEKjr/Ylus4Whg2547R6xFVEvss7s+qxGcijQcBgAd1JQ6g2JrYA99tduET/bbkEFkFNi
+	pJ7nM1AImpwhGN8me5OZ57BoIjStSGZCv9KFJXzFQSc7Nuc1LMYth6Y8fNFl2gFlQaxMWYxdUqkVu
+	kSwGJ3xlP65zYhoF3AoIL6596ty3N105npaBY78uVbxhnL4AHAdexHfox9AoaP1ViGipDnG2pO4dx
+	dzRMzbEA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rZPOd-00000004NKX-2W3E;
+	Mon, 12 Feb 2024 06:02:27 +0000
+Date: Sun, 11 Feb 2024 22:02:27 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+	hch@infradead.org, djwong@kernel.org, willy@infradead.org,
+	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+	yukuai3@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: [RFC PATCH v3 08/26] iomap: add pos and dirty_len into
+ trace_iomap_writepage_map
+Message-ID: <Zcm0c7aMoWp7mPST@infradead.org>
+References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
+ <20240127015825.1608160-9-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Correlation-ID: <39f63f54-89f9-4c9a-81e5-e6ccbd2c08e3@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240127015825.1608160-9-yi.zhang@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-> What error, sorry I see no context here (remember, > some of us get 1000+
-> emails a day to do something with, context is key... )
-I see, I'll keep that in mind. There was a warning being thrown out about a malformed table in gadget-testing.rst, which I foolishly thought I could fix by replacing all the tabs with spaces.
+Looks good:
 
-The thread mentioned previously attributed this warning to the table begin/end line segments being too short for the word "max_segment_size". I hadn't noticed that it had already been merged as I was only looking at the mainline kernel tree.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Regards,
-Shresth
+Can you submit this for inclusion in the vfs tree?
 
