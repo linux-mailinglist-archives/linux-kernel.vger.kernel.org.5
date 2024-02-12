@@ -1,260 +1,243 @@
-Return-Path: <linux-kernel+bounces-61231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F809850F6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:13:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D891850F73
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:13:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36F58283C18
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:13:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 231AB1F22899
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2112A101EB;
-	Mon, 12 Feb 2024 09:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480CA107B4;
+	Mon, 12 Feb 2024 09:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FxTIWu9c";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+1r/Ltv1";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FxTIWu9c";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+1r/Ltv1"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="KUk1B9LC"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D42D747F;
-	Mon, 12 Feb 2024 09:13:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472B6101DB
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707729184; cv=none; b=fpz4FzZY3NwZmR6oWC18keYnYJgZ5BzihZM6W7a1yNNpuhBut2GPKIvRtKCuVFnRQigwUGqbGGr8DW09OJInnV7Ark8QDcMJRUbaXIU5NzjDRzb/hYrpEuKo8Fd5Zn0+plNSfyAft317jK8xgpRRcqxjKRjPQwTtgdEXBhP5sj8=
+	t=1707729213; cv=none; b=Qk2Y7/O83n1CLlFU89BZnv14ADIUsOkKQp1HBd33X6ME4wzZLZOqxAmbr5G5HyTscT8LqdQuN0eRDEa8LDukpX2Flo1VQp60pgKTscSePJF00/QkIEXvTt/Za1kpn/aXGNy0ieUzqpEP29UVKpbf42GtSWVvbsmcPXyNoyvXUnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707729184; c=relaxed/simple;
-	bh=J+p1GwaCvY+8h/vkNpCYuf/LxfW1Gn3XeGsd9NnLHCs=;
-	h=Date:Message-ID:From:To:Cc:MIME-Version:Content-Type; b=HzcuIalA6IzWrE4uvEKluJRLteciZALmSE68DE9hYOY3Bo77Z0v06dRtXSuAicw+wxK6R9aXnzp8g8e1ZD8P/BTupUhnyuw2rARBGsYnO4jz0IGIAUNzvfd5nfCW5dbkvK+EePWuMftIya00Bzo+n+eAZ2RNOwqVd3o4S2VGNJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FxTIWu9c; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+1r/Ltv1; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FxTIWu9c; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+1r/Ltv1; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9587A1F457;
-	Mon, 12 Feb 2024 09:13:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707729180; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Tx3F+Y5MbulqZscCiIG9Ef6cQy6Re+bhU8RY1D7ZzMQ=;
-	b=FxTIWu9c1YnEvQXLe22t/3MREXOnX3QVabC+Nz7gO3Ncb7hD7BpAn5zTYGveLmaWJGdFj6
-	/gM7kZGIeepiotOYGoE8Eq7XLMkyxzcvyx8l4GyZpP2NGNKrT1SgNK30gXHmOFGp0eoO0j
-	WKC+i4PlfbQ4n6M92aQ86wMyZyMBzdw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707729180;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Tx3F+Y5MbulqZscCiIG9Ef6cQy6Re+bhU8RY1D7ZzMQ=;
-	b=+1r/Ltv1P6nsTnVKVCl7x7OYEHcmPCHYYSOfsPT6kLN0i3mGk66uIRbBRmwTQcNIFx307T
-	REjFGsI6X5NX5KBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707729180; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Tx3F+Y5MbulqZscCiIG9Ef6cQy6Re+bhU8RY1D7ZzMQ=;
-	b=FxTIWu9c1YnEvQXLe22t/3MREXOnX3QVabC+Nz7gO3Ncb7hD7BpAn5zTYGveLmaWJGdFj6
-	/gM7kZGIeepiotOYGoE8Eq7XLMkyxzcvyx8l4GyZpP2NGNKrT1SgNK30gXHmOFGp0eoO0j
-	WKC+i4PlfbQ4n6M92aQ86wMyZyMBzdw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707729180;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Tx3F+Y5MbulqZscCiIG9Ef6cQy6Re+bhU8RY1D7ZzMQ=;
-	b=+1r/Ltv1P6nsTnVKVCl7x7OYEHcmPCHYYSOfsPT6kLN0i3mGk66uIRbBRmwTQcNIFx307T
-	REjFGsI6X5NX5KBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5E62B13985;
-	Mon, 12 Feb 2024 09:13:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CKutFRzhyWVUfgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 12 Feb 2024 09:13:00 +0000
-Date: Mon, 12 Feb 2024 10:13:00 +0100
-Message-ID: <878r3qxcyr.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Cc: stable@vger.kernel.org, Jaroslav
- Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, broonie@kernel.org,
- linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- LKML <linux-kernel@vger.kernel.org>
+	s=arc-20240116; t=1707729213; c=relaxed/simple;
+	bh=pRmTM0GIeUxejacmixLo3IjDOCF46SUfWYYtouIXW8k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wbp9ZHc0378KScKW49V3tKjslcHqZYWhX53S+ZsxPZDyhAWhcZvNc/7Q5NPHgCPuy2kd7+6JXbOop8jEjNER6RKo5HIp4TNL+VKDc2aSj66B9dDfUYIxvP4Lt/wRnt2Q7uG6AC4WdNPxmr+SdgS5KWW0QXzpH16kDO1169FTcr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=KUk1B9LC; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55ee686b5d5so3910234a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 01:13:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1707729209; x=1708334009; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=kpndX5C2Mii0Flwlx+5AtvY+2C+NxX9epFi0dvTnTAk=;
+        b=KUk1B9LCeZNHUas+DF6ZAHAR1ZUeKJQzL+WKgNZAPviVbP1GM7puFOHF2drzubSpDA
+         v0Z2QrcTNPR9WNTHv8R9civLcwHlfjW/7l5pDJguK/vnQhdIKHrR7kNhH4EdcZesYbir
+         GK9uEaczCl19tRbg4TpacJOuzuEaXj7VzE4Jg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707729209; x=1708334009;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kpndX5C2Mii0Flwlx+5AtvY+2C+NxX9epFi0dvTnTAk=;
+        b=e1T7TP8RplIblz6jNygfnxr4PNy8207UquSroYiNDK2oMw7XgNCPqiZg7BQYgk9h/O
+         CzlsrbPxJ5InEjVwPkFSg1DntSGhRJeOI3lZrSQhi2iDUy7dvdKm+cmCP0vBkYvqE4Ur
+         SBFDVtLkvxiMKmhCgmK5KVNINiXBsSLX0kS5T3PJtcPekMUdwh7PMAiLDGxOmqoWu8t7
+         z1hfA5mRh3f7TlkyVz3lUYxJ38lev5vruAJQeYIA/2NL61KWNcyArENJhD2FBdfw2FHV
+         oN/NgGlzXBkKHCutbTv1jWP3PqngL97dN+M1yaztdwSqf3TChBJ9PDYy2PUILLP23IId
+         0ZNw==
+X-Gm-Message-State: AOJu0YzTfE+JbWAw3qiKHjVdxSbKDyqmvv14Pk4R48ciVjX5+5hihzuz
+	8Bd5l1pHgYq1W26OT4MkHm5MTrx13CkuUdH6tlOIGQhcPz+iQjYBm3E6S+9DcX0=
+X-Google-Smtp-Source: AGHT+IFGM2App413SIKcCc2Ur0ABS1uXMeYaU9EoPH8ldn/XY6VDUheFoubSE+uiG+infjMyonjofA==
+X-Received: by 2002:aa7:d3cb:0:b0:560:93b1:a351 with SMTP id o11-20020aa7d3cb000000b0056093b1a351mr4796353edr.37.1707729209255;
+        Mon, 12 Feb 2024 01:13:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUi3cSiwbKOwpf9FXAXb3ol8cK21LF8oKTT7zqFHCYqkgcXjwYmpCjbQMm3YKWVBH0wL86GTtfkE0i71Wno6hJgmt+n7jCwj2ThW0BisPIfQ9BSjJ3P/9EBUj8hO4d+sYwI+fl9m6GT0ua3Ox1pNPX7VAhJzufiSulJnviWa7/EOypfxKpbGGnncIAlMdGui2MMtGMDfqBpBLO8n3REJrswc3RQISy4K2jPKesDs7g2VZ3q0NEQLmNizGjzCA67Ju4VddytRfukHTZfMGKvlTY9RDFYR7GrkRHU1/hVzORPAOSWyG1y0gtq04IbVpZNMTko1Xmz0KZVrkmZCyPUjiONYOx3qrezQhpvHry9fw5wK5nTj0snXr1yUQ1iD4ss1Nf0x9YWGtsKGTQ9mR0L8z3HHiCTjSmC8+ol4A7mwG+oApaXZvTUGqk/+B1CF2OES/et67TnEkF84wM1h3O5GUBRMqd0yODERzxI+mqk8FUavSZFQnV9sWAW5/Ay76BMMWPFvRpYW9HQB3Y=
+Received: from localhost ([213.195.118.74])
+        by smtp.gmail.com with ESMTPSA id y3-20020aa7c243000000b005612ac47d85sm2539889edo.82.2024.02.12.01.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 01:13:28 -0800 (PST)
+Date: Mon, 12 Feb 2024 10:13:28 +0100
+From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: "Chen, Jiqian" <Jiqian.Chen@amd.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+	"Huang, Ray" <Ray.Huang@amd.com>,
+	"Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>
+Subject: Re: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
+Message-ID: <ZcnhOEjnTgbYFPVl@macbook>
+References: <ZbtY1R15pYZz3F3B@macbook>
+ <20240209210549.GA884438@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=FxTIWu9c;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="+1r/Ltv1"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 MISSING_SUBJECT(2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -1.51
-X-Rspamd-Queue-Id: 9587A1F457
-X-Spam-Flag: NO
+In-Reply-To: <20240209210549.GA884438@bhelgaas>
 
-Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: [REGRESSION] Acp5x probing regression introduced between kernel 6.7.2 -> 6.7.4
-In-Reply-To: <7a0cd63f-8a83-4dc5-8763-63dcdae8d68a@leemhuis.info>
-References: <CAD_nV8BG0t7US=+C28kQOR==712MPfZ9m-fuKksgoZCgrEByCw@mail.gmail.com>
-	<7a0cd63f-8a83-4dc5-8763-63dcdae8d68a@leemhuis.info>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+On Fri, Feb 09, 2024 at 03:05:49PM -0600, Bjorn Helgaas wrote:
+> On Thu, Feb 01, 2024 at 09:39:49AM +0100, Roger Pau MonnÃ© wrote:
+> > On Wed, Jan 31, 2024 at 01:00:14PM -0600, Bjorn Helgaas wrote:
+> > > On Wed, Jan 31, 2024 at 09:58:19AM +0100, Roger Pau MonnÃ© wrote:
+> > > > On Tue, Jan 30, 2024 at 02:44:03PM -0600, Bjorn Helgaas wrote:
+> > > > > On Tue, Jan 30, 2024 at 10:07:36AM +0100, Roger Pau MonnÃ© wrote:
+> > > > > > On Mon, Jan 29, 2024 at 04:01:13PM -0600, Bjorn Helgaas wrote:
+> > > > > > > On Thu, Jan 25, 2024 at 07:17:24AM +0000, Chen, Jiqian wrote:
+> > > > > > > > On 2024/1/24 00:02, Bjorn Helgaas wrote:
+> > > > > > > > > On Tue, Jan 23, 2024 at 10:13:52AM +0000, Chen, Jiqian wrote:
+> > > > > > > > >> On 2024/1/23 07:37, Bjorn Helgaas wrote:
+> > > > > > > > >>> On Fri, Jan 05, 2024 at 02:22:17PM +0800, Jiqian Chen wrote:
+> > > > > > > > >>>> There is a need for some scenarios to use gsi sysfs.
+> > > > > > > > >>>> For example, when xen passthrough a device to dumU, it will
+> > > > > > > > >>>> use gsi to map pirq, but currently userspace can't get gsi
+> > > > > > > > >>>> number.
+> > > > > > > > >>>> So, add gsi sysfs for that and for other potential scenarios.
+> > > > > > > > >> ...
+> > > > > > > > > 
+> > > > > > > > >>> I don't know enough about Xen to know why it needs the GSI in
+> > > > > > > > >>> userspace.  Is this passthrough brand new functionality that can't be
+> > > > > > > > >>> done today because we don't expose the GSI yet?
+> > > > > > > 
+> > > > > > > I assume this must be new functionality, i.e., this kind of
+> > > > > > > passthrough does not work today, right?
+> > > > > > > 
+> > > > > > > > >> has ACPI support and is responsible for detecting and controlling
+> > > > > > > > >> the hardware, also it performs privileged operations such as the
+> > > > > > > > >> creation of normal (unprivileged) domains DomUs. When we give to a
+> > > > > > > > >> DomU direct access to a device, we need also to route the physical
+> > > > > > > > >> interrupts to the DomU. In order to do so Xen needs to setup and map
+> > > > > > > > >> the interrupts appropriately.
+> > > > > > > > > 
+> > > > > > > > > What kernel interfaces are used for this setup and mapping?
+> > > > > > > >
+> > > > > > > > For passthrough devices, the setup and mapping of routing physical
+> > > > > > > > interrupts to DomU are done on Xen hypervisor side, hypervisor only
+> > > > > > > > need userspace to provide the GSI info, see Xen code:
+> > > > > > > > xc_physdev_map_pirq require GSI and then will call hypercall to pass
+> > > > > > > > GSI into hypervisor and then hypervisor will do the mapping and
+> > > > > > > > routing, kernel doesn't do the setup and mapping.
+> > > > > > > 
+> > > > > > > So we have to expose the GSI to userspace not because userspace itself
+> > > > > > > uses it, but so userspace can turn around and pass it back into the
+> > > > > > > kernel?
+> > > > > > 
+> > > > > > No, the point is to pass it back to Xen, which doesn't know the
+> > > > > > mapping between GSIs and PCI devices because it can't execute the ACPI
+> > > > > > AML resource methods that provide such information.
+> > > > > > 
+> > > > > > The (Linux) kernel is just a proxy that forwards the hypercalls from
+> > > > > > user-space tools into Xen.
+> > > > > 
+> > > > > But I guess Xen knows how to interpret a GSI even though it doesn't
+> > > > > have access to AML?
+> > > > 
+> > > > On x86 Xen does know how to map a GSI into an IO-APIC pin, in order
+> > > > configure the RTE as requested.
+> > > 
+> > > IIUC, mapping a GSI to an IO-APIC pin requires information from the
+> > > MADT.  So I guess Xen does use the static ACPI tables, but not the AML
+> > > _PRT methods that would connect a GSI with a PCI device?
+> > 
+> > Yes, Xen can parse the static tables, and knows the base GSI of
+> > IO-APICs from the MADT.
+> > 
+> > > I guess this means Xen would not be able to deal with _MAT methods,
+> > > which also contains MADT entries?  I don't know the implications of
+> > > this -- maybe it means Xen might not be able to use with hot-added
+> > > devices?
+> > 
+> > It's my understanding _MAT will only be present on some very specific
+> > devices (IO-APIC or CPU objects).  Xen doesn't support hotplug of
+> > IO-APICs, but hotplug of CPUs should in principle be supported with
+> > cooperation from the control domain OS (albeit it's not something that
+> > we tests on our CI).  I don't expect however that a CPU object _MAT
+> > method will return IO APIC entries.
+> > 
+> > > The tables (including DSDT and SSDTS that contain the AML) are exposed
+> > > to userspace via /sys/firmware/acpi/tables/, but of course that
+> > > doesn't mean Xen knows how to interpret the AML, and even if it did,
+> > > Xen probably wouldn't be able to *evaluate* it since that could
+> > > conflict with the host kernel's use of AML.
+> > 
+> > Indeed, there can only be a single OSPM, and that's the dom0 OS (Linux
+> > in our context).
+> > 
+> > Getting back to our context though, what would be a suitable place for
+> > exposing the GSI assigned to each device?
+> 
+> IIUC, the Xen hypervisor:
+> 
+>   - Interprets /sys/firmware/acpi/tables/APIC (or gets this via
+>     something running on the Dom0 kernel) to find the physical base
+>     address and GSI base, e.g., from I/O APIC, I/O SAPIC.
 
-On Sun, 11 Feb 2024 18:19:25 +0100,
-Linux regression tracking (Thorsten Leemhuis) wrote:
-> 
-> [CCing a few people]
-> 
-> On 11.02.24 15:34, Ted Chang wrote:
-> > 
-> > I noticed 6.7.4  has introduced a regression for the steam deck. The LCD
-> > steam deck can no longer probe the acp5x audio chipset anymore. This
-> > regression does not affect the 6.8.x series.  I did not test kernel
-> > 6.7.3 because Opensuse tumbleweed skipped the update on my machine.
-> 
-> Thx for your report. FWIW, problems like this can be caused by all
-> sorts of changes, but obviously those in the area of audio support
-> are most likely to cause this. There are just a few in the 
-> v6.7.2..v6.7.4 range[1]. Among them a commit that is related to
-> acp5x, that's why I CCed its author as well (Venkata Prasad Potturu). 
-> 
-> Maybe one of the new recipients will have an idea. If not, you most
-> likely will have to bisect this and check if mainline is affected
-> as well.[2]
-> 
-> Ciao, Thorsten
-> 
-> [1]
-> $ git log --oneline  v6.7.2..v6.7.4 sound/ 
-> f3570675bf09af ASoC: codecs: wsa883x: fix PA volume control
-> 2f8e9b77ca2fea ASoC: codecs: lpass-wsa-macro: fix compander volume hack
-> 5b465d6384e4eb ASoC: codecs: wcd938x: fix headphones volume controls
-> 1673211a38012e ASoC: qcom: sc8280xp: limit speaker volumes
-> 242b5bffa23a9c ASoC: codecs: rtq9128: Fix TDM enable and DAI format control flow
-> 2c272ff9859601 ASoC: codecs: rtq9128: Fix PM_RUNTIME usage
-> 4a28302b2c681e ALSA: hda/conexant: Fix headset auto detect fail in cx8070 and SN6140
-> e37a96941fdd53 ALSA: hda: intel-dspcfg: add filters for ARL-S and ARL
-> ffa3eea886c6fe ALSA: hda: Intel: add HDA_ARL PCI ID support
-> 4b6986b170f2f2 ASoC: amd: Add new dmi entries for acp5x platform
+No, Xen parses the MADT directly from memory, before stating dom0.
+That's a static table so it's fine for Xen to parse it and obtain the
+I/O APIC GSI base.
 
-This one is the only relevant change, I suppose.
-The machine matches with 'Valve Jupiter'.
+>   - Needs the GSI to locate the APIC and pin within the APIC.  The
+>     Dom0 kernel is the OSPM, so only it can evaluate the AML _PRT to
+>     learn the PCI device -> GSI mapping.
 
-Interestingly, the system seems working with 6.8-rc3, so some piece
-might be missing.  Or simply reverting this patch should fix.
+Yes, Xen doesn't know the PCI device -> GSI mapping.  Dom0 needs to
+parse the ACPI methods and signal Xen to configure a GSI with a
+given trigger and polarity.
 
+>   - Has direct access to the APIC physical base address to program the
+>     Redirection Table.
 
-Takashi
+Yes, the hardware (native) I/O APIC is owned by Xen, and not directly
+accessible by dom0.
 
-> e38ad4ace20b4d ALSA: hda: Refer to correct stream index at loops
-> a434c75e0671f9 soundwire: fix initializing sysfs for same devices on different buses
->  
-> [2] I'm working on a guide that describes what's needed:
-> https://www.leemhuis.info/files/misc/How%20to%20bisect%20a%20Linux%20kernel%20regression%20%e2%80%94%20The%20Linux%20Kernel%20documentation.html
+> The patch seems a little messy to me because the PCI core has to keep
+> track of the GSI even though it doesn't need it itself.  And the
+> current patch exposes it on all arches, even non-ACPI ones or when
+> ACPI is disabled (easily fixable).
 > 
-> > Steps to reproduce the problem
-> > 1. Obtain a steam deck
-> > 2. Install kernel 6.7.4
-> > 3. Boot the device and you will see dummy output in gnome shell
-> > 
-> > Observed kernel logs.
-> > 
-> > [    8.755614] cs35l41 spi-VLV1776:00: supply VA not found, using dummy regulator
-> > [    8.760506] cs35l41 spi-VLV1776:00: supply VP not found, using dummy regulator
-> > [    8.777148] cs35l41 spi-VLV1776:00: Cirrus Logic CS35L41 (35a40), Revision: B2
-> > [    8.777471] cs35l41 spi-VLV1776:01: supply VA not found, using dummy regulator
-> > [    8.777532] cs35l41 spi-VLV1776:01: supply VP not found, using dummy regulator
-> > [    8.777709] cs35l41 spi-VLV1776:01: Reset line busy, assuming shared reset
-> > [    8.788465] cs35l41 spi-VLV1776:01: Cirrus Logic CS35L41 (35a40), Revision: B2
-> > [    8.877280] snd_hda_intel 0000:04:00.1: enabling device (0000 -> 0002)
-> > [    8.877595] snd_hda_intel 0000:04:00.1: Handle vga_switcheroo audio client
-> > [    8.889913] snd_acp_pci 0000:04:00.5: enabling device (0000 -> 0002)
-> > [    8.890063] snd_acp_pci 0000:04:00.5: Unsupported device revision:0x50
-> > [    8.890129] snd_acp_pci: probe of 0000:04:00.5 failed with error -22
-> > [    8.906136] snd_hda_intel 0000:04:00.1: bound 0000:04:00.0 (ops amdgpu_dm_audio_component_bind_ops [amdgpu]
-> > 
-> > 
-> > No kernel module in use shown.
-> > 
-> > 04:00.5 Multimedia controller [0480]: Advanced Micro Devices, Inc. [AMD]
-> > ACP/ACP3X/ACP6x Audio Coprocessor [1022:15e2] (rev 50)
-> > Subsystem: Valve Software Device [1e44:1776]
-> > Flags: fast devsel, IRQ 70, IOMMU group 4
-> > Memory at 80380000 (32-bit, non-prefetchable) [size=256K]
-> > Capabilities: <access denied>
-> > Kernel modules: snd_pci_acp3x, snd_rn_pci_acp3x, snd_pci_acp5x,
-> > snd_pci_acp6x, snd_acp_pci, snd_rpl_pci_acp6x, snd_pci_ps,
-> > snd_sof_amd_renoir, snd_sof_amd_rembrandt, snd_sof_amd_vangogh,
-> > snd_sof_amd_acp63
-> > 
-> > 
-> > Information for package kernel-default:
-> > ---------------------------------------
-> > Repository     : openSUSE-Tumbleweed-Oss
-> > Name           : kernel-default
-> > Version        : 6.7.4-1.1
-> > Arch           : x86_64
-> > Vendor         : openSUSE
-> > Installed Size : 240.3 MiB
-> > Installed      : Yes
-> > Status         : up-to-date
-> > Source package : kernel-default-6.7.4-1.1.nosrc
-> > Upstream URL   : https://www.kernel.org/ <https://www.kernel.org/>
-> > Summary        : The Standard Kernel
-> > Description    : 
-> >     The standard kernel for both uniprocessor and multiprocessor systems.
-> > 
-> > 
-> >     Source Timestamp: 2024-02-06 05:32:37 +0000
-> >     GIT Revision: 01735a3e65287585dd830a6a3d33d909a4f9ae7f
-> >     GIT Branch: stable
-> > 
-> > Handle 0x0000, DMI type 0, 26 bytes
-> > BIOS Information
-> > 	Vendor: Valve
-> > 	Version: F7A0120
-> > 	Release Date: 12/01/2023
-> > 	Address: 0xE0000
-> > 	Runtime Size: 128 kB
-> > 	BIOS Revision: 1.20
-> > 	Firmware Revision: 1.16
-> > 
-> > #regzbot introduced: v6.7.2..v6.7.4
-> > 
+> We only call acpi_pci_irq_enable() in the pci_enable_device() path, so
+> we don't know the GSI unless a Dom0 driver has claimed the device and
+> called pci_enable_device() for it, which seems like it might not be
+> desirable.
+
+I think that's always the case, as on dom0 devices to be passed
+through are handled by pciback which does enable them.
+
+I agree it might be best to not tie exposing the node to
+pci_enable_device() having been called.  Is _PRT only evaluated as
+part of acpi_pci_irq_enable()? (or pci_enable_device()).
+
+> I was hoping we could put it in /sys/firmware/acpi/interrupts, but
+> that looks like it's only for SCI statistics.  I guess we could moot a
+> new /sys/firmware/acpi/gsi/ directory, but then each file there would
+> have to identify a device, which might not be as convenient as the
+> /sys/devices/ directory that already exists.  I guess there may be
+> GSIs for things other than PCI devices; will you ever care about any
+> of those?
+
+We only support passthrough of PCI devices so far, but I guess if any
+of such non-PCI devices ever appear and those use a GSI, and Xen
+supports passthrough for them, then yes, we would need to fetch such
+GSI somehow.
+
+Thanks, Roger.
 
