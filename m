@@ -1,301 +1,135 @@
-Return-Path: <linux-kernel+bounces-61183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C829F850E7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:04:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFFDE850E82
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F4942850C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:04:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EC451C217B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E9A8C11;
-	Mon, 12 Feb 2024 08:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="hHu/G79s"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFAEFBF5;
+	Mon, 12 Feb 2024 08:02:44 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FAF917BA5
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:02:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B60F9CA;
+	Mon, 12 Feb 2024 08:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707724943; cv=none; b=tHi1OTrJQwwcIXtpSOCUgsXKixnysZWwF/7AVxviYdSNyOpo8BkpSToFEbLuNZB+pSE24kfTKq+7bG+/KOP+Zg57xq7BaZSPSpeFeYAK8lvVp57M5O0G7PGFIQeruTVvGOQKqjZKvjhzBqTGBOsWJROyImzgXzkS609Nu4HMMnE=
+	t=1707724964; cv=none; b=nFgvfMWBD++EWQR2gIWnSNuskEBykKEyy8iytH1mqYJEpStvOeRp+htgDZBy4TLek4bGYE/RLercAdqEnuglk2i7trIuze6ynMxfhClK6FDN6Ph/8oeRRO0YywkYg6SG9hKmhh+Vwb4YoQFrdv66luFqrWdM6yiS9uJkNbgQPsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707724943; c=relaxed/simple;
-	bh=P9ZnJPjtJi/mUWmuzkgcqSd84rmJC3JW1jKqTYKe0c8=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Nf5nJBFJHsDZdt913pVdi418/Tb6AgFdUYiQr/D0x9wf8/WC6k7N6bLvlQDCsJgVittNUY15umXT3Zwoog8q8k7aiKjui6oDI8TbITX4OWGMScaC6wqPHODHFG7LQ4cUo/tKqdOfG1mojO7KpBsIdEbB59CXBF7yf1f+ztB1T3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=hHu/G79s; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5114cd44f6aso3883558e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 00:02:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1707724938; x=1708329738; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=N6kTSFvoJSCAb4IlPNruLyHFuh4E6JyGL/srfT6B6AA=;
-        b=hHu/G79sGcWdOu4syj9f5EcT/qWh5EAG5WLFdtF0uh2LB+GK0SJ3/SUAPfZr653Bec
-         tVxQIqPwaZahefiCzUzlbeeYZUhOwF3/8Nm4gTb1zJ1o6G+LNE8sj7fYwuH6MiWWu9dt
-         D+ujyZP73+NNwG0cNrPPSV54urypegRF7l3QPz/syBbjNJ0nlikV8MUTFO6AbDaK81I9
-         WaMEBmoUcn6dZAjl2OTj4UAsiu6QmLSzYwb+d//z76r1BH8BhWzVVldS59wkaQfLC3Do
-         SJSOvvB9kFK5CA74WEC/4Fw5acM4dx8RzAk719pAtKBxcWIBXUbhtQKyunpkCZuZ7Ikw
-         jCEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707724938; x=1708329738;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N6kTSFvoJSCAb4IlPNruLyHFuh4E6JyGL/srfT6B6AA=;
-        b=P07FVc+G+vlwOpVQbcA5jTS9NB5485NA3lHVmQrY2Xv06yGJuw4Ayd9OpR37h5nf01
-         PTbAkZutTwQJMXAK/PQq5o/lIrCUxGN1jdAtetSKO8kcKK/21aRPi/9ZjcCh2wORaaKh
-         0B85YQQorheCr5VOU/xgbi5PgA/Ul23To7yaI/FSwdNCZcI5o4XqNEYZxSV0Oq5lniAn
-         PK2rpfJKtKFrYAMHNm4QsZmgLPbNumBgDMDD45VIZbEbGvaqmKU/mbCD99C71b4cp2ke
-         KtiQvw9JtLtrNSFdu69RUNJBK3tQ6kiMox86VCzoF/wVXByTC1qJXRiZv7DlMcs8vZOk
-         QbuA==
-X-Gm-Message-State: AOJu0Yx497/JalmJwuTz0l06HLous477u7taKWOv2D0cvZ5n3UOZTxV3
-	1AcD6XIrw0tgQfCaIw70PX1DmTOo0eBrIqXCk/spN7L/HHvaN4ru+Iio+ppa/G4=
-X-Google-Smtp-Source: AGHT+IHG7OGpNSz9MlIuHcO4LBN+HJoInPI5M3S3vsLEw4kJHoBn2YhvjFBlChl80qBp5evbBnMI+A==
-X-Received: by 2002:a05:6512:3048:b0:511:676e:a491 with SMTP id b8-20020a056512304800b00511676ea491mr4147982lfb.18.1707724938071;
-        Mon, 12 Feb 2024 00:02:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWUIg9O3xUyXBEbp8LJcUWz3ubiINArcruNd79t1KPHWFs+g/LKuZCzvUtAXH3hEVkWyDXCkUwHkdnGLXp0DkYfnjwNrPVajP3shIvkwB9Si2MhbQIwjXV+J+6alE2zCSKUkT3iIZeO2C4U7UOWYKp96xX54xHAZ57qTSwkzY0PhzjotDCE5cF2f/YxiPBD/ob/FQUc3uT94vQ9+vHBmg0aK+RtQle0AxKtAbompXD/Yx9c3gTPZKt4QjWbcj6MtKf+lH3FM98D/cfpkDxHsiCxmt++mcU5MM8vIFhGSYnFXNX2Q25fgZFcLE2yQSNzFMH18QBpwDhkQSqSZFjDnNehyAYzbK88R1wO5aEwAbcdBzlo4nPJOHxmkPbp727Gg+50qzLq2HzJ9xOgtcDizf6Swin/Yh572ZiUNZArYue6PJTmTwD7O8AVQitaxunV3WIBqnlZlExKDFFzE50w21RiDDwb4E6v2gZoRvekjBjoxCbhN2gCc9rmbZWFuDVEUDe9d6tSqduFB1Ej09OY9iGzwaoQV7oYU6YmsWSQDNGrCEt7pjm1UlUHcJn4SHcybH0vcIdpqfcX4qwmJGzocoFL7Np9hurPsFsH
-Received: from [192.168.50.4] ([82.78.167.20])
-        by smtp.gmail.com with ESMTPSA id w17-20020a05600c475100b00411062c123esm390222wmo.26.2024.02.12.00.02.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 00:02:17 -0800 (PST)
-Message-ID: <786f90f4-ba47-46cb-b5e0-e3c42b1b741a@tuxon.dev>
-Date: Mon, 12 Feb 2024 10:02:15 +0200
+	s=arc-20240116; t=1707724964; c=relaxed/simple;
+	bh=4NIW/S+1SXSOSu4OX4XJKNnkiHbTJHa6LNjRdW7BjSY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=b/P1/ocQ6em7+eJbsjBPZUeqCQuGBMvD4+MMbKc2/JbsKL6w7Dzg2MJTpQm7dFeQpw5hmOGO9sWH/W//jho5e5lzu6hfDZRjug6WADg+tSpO0drpCoQeW/bvyTAiflAMkNmsynXNiuhHxVJfgzfT4MvBJhaK0IVupY+v4pTz0JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TYGl03kj1z9xrsF;
+	Mon, 12 Feb 2024 15:47:24 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 6FFAA140118;
+	Mon, 12 Feb 2024 16:02:38 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwDn3heO0MllesFaAg--.29115S2;
+	Mon, 12 Feb 2024 09:02:37 +0100 (CET)
+Message-ID: <0d4edea8f075311d3ecedf2471cd6ea3d3a282cf.camel@huaweicloud.com>
+Subject: Re: [PATCH v3 02/13] security: Introduce the digest_cache LSM
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Randy Dunlap <rdunlap@infradead.org>, corbet@lwn.net,
+ paul@paul-moore.com,  jmorris@namei.org, serge@hallyn.com,
+ shuah@kernel.org, mcoquelin.stm32@gmail.com,  alexandre.torgue@foss.st.com,
+ mic@digikod.net
+Cc: linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
+ linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
+ pbrobinson@gmail.com,  zbyszek@in.waw.pl, hch@lst.de, mjg59@srcf.ucam.org,
+ pmatilai@redhat.com,  jannh@google.com, dhowells@redhat.com,
+ jikos@kernel.org, mkoutny@suse.com,  ppavlu@suse.com, petr.vorel@gmail.com,
+ petrtesarik@huaweicloud.com, Roberto Sassu <roberto.sassu@huawei.com>
+Date: Mon, 12 Feb 2024 09:02:19 +0100
+In-Reply-To: <e8378ba2-ccd1-48fe-973d-38986fc0716d@infradead.org>
+References: <20240209140917.846878-1-roberto.sassu@huaweicloud.com>
+	 <20240209140917.846878-3-roberto.sassu@huaweicloud.com>
+	 <e8378ba2-ccd1-48fe-973d-38986fc0716d@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-Subject: Re: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add power domain
- IDs
-To: Biju Das <biju.das.jz@bp.renesas.com>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "mturquette@baylibre.com" <mturquette@baylibre.com>,
- "sboyd@kernel.org" <sboyd@kernel.org>, "robh@kernel.org" <robh@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
- "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
- "palmer@dabbelt.com" <palmer@dabbelt.com>,
- "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>
-Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
- "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com>
- <20240208124300.2740313-2-claudiu.beznea.uj@bp.renesas.com>
- <TYCPR01MB11269DEA9261CA594EECC949686442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <67ad8052-1406-4dcb-9e35-5c42ada28797@tuxon.dev>
- <TYCPR01MB112698AB206332D13105C064186442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <e170f5f8-f95c-4553-b088-1072345fae53@tuxon.dev>
- <TYCPR01MB11269015C92AA327DC6BFA76586442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-Content-Language: en-US
-In-Reply-To: <TYCPR01MB11269015C92AA327DC6BFA76586442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:LxC2BwDn3heO0MllesFaAg--.29115S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF47WF1fWryftr1rAryUGFg_yoWkAFgEvw
+	1xAw1kKFZ8ZFy2yFsFyF48AFWqg3Z7Zr18Gry8tryfZw1fX3sI9FZ7XFnxX3W8W34S9FnI
+	kr93Zr9xt3yq9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb4kFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+	Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+	1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY
+	04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
+	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+	W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUojjgUU
+	UUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQALBF1jj5pEHgAAs-
 
-Hi, Biju,
+On Fri, 2024-02-09 at 15:00 -0800, Randy Dunlap wrote:
+> Hi--
+>=20
+> On 2/9/24 06:09, Roberto Sassu wrote:
+> > diff --git a/security/digest_cache/Kconfig b/security/digest_cache/Kcon=
+fig
+> > new file mode 100644
+> > index 000000000000..0c47d5151f07
+> > --- /dev/null
+> > +++ b/security/digest_cache/Kconfig
+> > @@ -0,0 +1,17 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +config SECURITY_DIGEST_CACHE
+> > +	bool "Digest_cache LSM"
+> > +	default n
+> > +	help
+> > +	   This option enables an LSM maintaining a cache of digests
+> > +	   (e.g. of file content or metadata).
+> > +
+> > +	   This LSM can support other kernel components in making access
+> > +	   control decisions.
+> > +
+>=20
+> nit:  -ESTYLE.
+> coding-style.rst says:
+>=20
+> Lines under a ``config`` definition
+> are indented with one tab, while help text is indented an additional two
+> spaces.
+>=20
+> > +config DIGEST_LIST_DEFAULT_PATH
+> > +	string
+> > +	default "/etc/digest_lists"
+> > +	help
+> > +	   Default directory where digest_cache LSM expects to find digest
+> > +	   lists.
+>=20
+> Same comment for patch 03/13.
+> Same comment for patch 04/13.
 
-On 08.02.2024 21:20, Biju Das wrote:
-> 
-> 
->> -----Original Message-----
->> From: claudiu beznea <claudiu.beznea@tuxon.dev>
->> Sent: Thursday, February 8, 2024 4:53 PM
->> To: Biju Das <biju.das.jz@bp.renesas.com>; geert+renesas@glider.be;
->> mturquette@baylibre.com; sboyd@kernel.org; robh@kernel.org;
->> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
->> magnus.damm@gmail.com; paul.walmsley@sifive.com; palmer@dabbelt.com;
->> aou@eecs.berkeley.edu
->> Cc: linux-renesas-soc@vger.kernel.org; linux-clk@vger.kernel.org;
->> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
->> riscv@lists.infradead.org; Claudiu Beznea
->> <claudiu.beznea.uj@bp.renesas.com>
->> Subject: Re: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add power
->> domain IDs
->>
->>
->>
->> On 08.02.2024 18:28, Biju Das wrote:
->>>
->>>
->>>> -----Original Message-----
->>>> From: claudiu beznea <claudiu.beznea@tuxon.dev>
->>>> Sent: Thursday, February 8, 2024 3:46 PM
->>>> Subject: Re: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add
->>>> power domain IDs
->>>>
->>>> Hi, Biju,
->>>>
->>>> On 08.02.2024 16:30, Biju Das wrote:
->>>>> Hi Claudiu,
->>>>>
->>>>> Thanks for the patch.
->>>>>
->>>>>> -----Original Message-----
->>>>>> From: Claudiu <claudiu.beznea@tuxon.dev>
->>>>>> Sent: Thursday, February 8, 2024 12:43 PM
->>>>>> Subject: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add power
->>>>>> domain IDs
->>>>>>
->>>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>>>
->>>>>> Add power domain IDs for RZ/G2UL (R9A07G043) SoC.
->>>>>>
->>>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>>> ---
->>>>>>  include/dt-bindings/clock/r9a07g043-cpg.h | 48
->>>>>> +++++++++++++++++++++++
->>>>>>  1 file changed, 48 insertions(+)
->>>>>>
->>>>>> diff --git a/include/dt-bindings/clock/r9a07g043-cpg.h
->>>>>> b/include/dt- bindings/clock/r9a07g043-cpg.h index
->>>>>> 77cde8effdc7..eabfeec7ac37
->>>>>> 100644
->>>>>> --- a/include/dt-bindings/clock/r9a07g043-cpg.h
->>>>>> +++ b/include/dt-bindings/clock/r9a07g043-cpg.h
->>>>>> @@ -200,5 +200,53 @@
->>>>>>  #define R9A07G043_AX45MP_CORE0_RESETN	78	/* RZ/Five Only */
->>>>>>  #define R9A07G043_IAX45_RESETN		79	/* RZ/Five Only */
->>>>>>
->>>>>> +/* Power domain IDs. */
->>>>>> +#define R9A07G043_PD_ALWAYS_ON		0
->>>>>> +#define R9A07G043_PD_GIC		1
->>>>>> +#define R9A07G043_PD_IA55		2
->>>>>> +#define R9A07G043_PD_MHU		3
->>>>>> +#define R9A07G043_PD_CORESIGHT		4
->>>>>> +#define R9A07G043_PD_SYC		5
->>>>>> +#define R9A07G043_PD_DMAC		6
->>>>>> +#define R9A07G043_PD_GTM0		7
->>>>>> +#define R9A07G043_PD_GTM1		8
->>>>>> +#define R9A07G043_PD_GTM2		9
->>>>>> +#define R9A07G043_PD_MTU		10
->>>>>> +#define R9A07G043_PD_POE3		11
->>>>>> +#define R9A07G043_PD_WDT0		12
->>>>>> +#define R9A07G043_PD_SPI		13
->>>>>> +#define R9A07G043_PD_SDHI0		14
->>>>>> +#define R9A07G043_PD_SDHI1		15
->>>>>> +#define R9A07G043_PD_ISU		16
->>>>>> +#define R9A07G043_PD_CRU		17
->>>>>> +#define R9A07G043_PD_LCDC		18
->>>>>> +#define R9A07G043_PD_SSI0		19
->>>>>> +#define R9A07G043_PD_SSI1		20
->>>>>> +#define R9A07G043_PD_SSI2		21
->>>>>> +#define R9A07G043_PD_SSI3		22
->>>>>> +#define R9A07G043_PD_SRC		23
->>>>>> +#define R9A07G043_PD_USB0		24
->>>>>> +#define R9A07G043_PD_USB1		25
->>>>>> +#define R9A07G043_PD_USB_PHY		26
->>>>>> +#define R9A07G043_PD_ETHER0		27
->>>>>> +#define R9A07G043_PD_ETHER1		28
->>>>>> +#define R9A07G043_PD_I2C0		29
->>>>>> +#define R9A07G043_PD_I2C1		30
->>>>>> +#define R9A07G043_PD_I2C2		31
->>>>>> +#define R9A07G043_PD_I2C3		32
->>>>>> +#define R9A07G043_PD_SCIF0		33
->>>>>> +#define R9A07G043_PD_SCIF1		34
->>>>>> +#define R9A07G043_PD_SCIF2		35
->>>>>> +#define R9A07G043_PD_SCIF3		36
->>>>>> +#define R9A07G043_PD_SCIF4		37
->>>>>> +#define R9A07G043_PD_SCI0		38
->>>>>> +#define R9A07G043_PD_SCI1		39
->>>>>> +#define R9A07G043_PD_IRDA		40
->>>>>> +#define R9A07G043_PD_RSPI0		41
->>>>>> +#define R9A07G043_PD_RSPI1		42
->>>>>> +#define R9A07G043_PD_RSPI2		43
->>>>>> +#define R9A07G043_PD_CANFD		44
->>>>>> +#define R9A07G043_PD_ADC		45
->>>>>> +#define R9A07G043_PD_TSU		46
->>>>>
->>>>> Not sure from "Table 42.3 Registers for Module Standby Mode"
->>>>>
->>>>> Power domain ID has to be based on CPG_BUS_***_MSTOP or
->>>>> CPG_CLKON_*** As former reduces number of IDs??
->>>>
->>>> If I understand correctly your point here, you want me to describe PM
->>>> domain in DT with something like:
->>>>
->>>> power-domains = <&cpg CPG_BUS_X_MSTOP>;
->>>
->>> MSTOP bits are distinct for each IP.
->>>
->>> <&cpg CPG_BUS_MCPU1_MSTOP x>; x =1..9
->>>
->>> 2=MTU IP
->>>
->>> 4= GPT
->>>
->>> etc...
->>>
->>> Is it something work??
->>
->> It might work. But:
->>
->> - you have to consider that some IPs have more than one MSTOP bit, thus,
->> do
->>   we want to uniquely identify these with all MSTOP bits (thus the 2nd
->> cell
->>   being a bitmask) or only one is enough?
-> 
-> We can have an encoding in that case 8:16 24 bit entries
+Hi Randy
 
-I consider this complicates the bindings. I don't consider this is the way
-going forward. But I may be wrong. I'll let Geert to give his opinion on it
-and change it afterwards, if any.
+thanks, will apply your suggestions to the next version.
 
-> 
->> - some HW blocks (e.g. OTFDE_DDR) have no MSTOP bits associated (as of my
->>   current research), so, only PWRDN
-> 
-> Why do we want to add power domain support for DDR?
+Roberto
 
-To power it up (in case bootloader does any settings in this area) such
-that the system will not block while booting.
 
-It is explained in cover letter:
-
-The current DT
-bindings were updated with module IDs for the modules listed in tables
-with name "Registers for Module Standby Mode" (see HW manual) exception
-being RZ/G3S where, *due to the power down functionality*, the DDR,
-TZCDDR, OTFDE_DDR were also added, to avoid system being blocked due
-to the following lines of code from patch 7/17.
-
-+       /* Prepare for power down the BUSes in power down mode. */
-+       if (info->pm_domain_pwrdn_mstop)
-+               writel(CPG_PWRDN_MSTOP_ENABLE, priv->base + CPG_PWRDN_MSTOP);
-
-> 
->> - some HW blocks have both MSTOP and PWRDN
-> 
-> That will be an array right?
-
-I'm not sure what you want to say here.
-
-> 
->> - if future hardware implementation will spread the MSTOP bits for one IP
->>   to more than one register then this proposal will not work
-> 
-> That will be an array right?
-
-Same here.
-
-Thank you,
-Claudiu Beznea
-
-> 
-> Cheers,
-> Biju
 
