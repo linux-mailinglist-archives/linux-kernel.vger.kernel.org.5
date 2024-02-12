@@ -1,105 +1,137 @@
-Return-Path: <linux-kernel+bounces-61085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73814850D10
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 04:48:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F702850D12
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 04:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5FCD1C22C20
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 03:48:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2D751F24625
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 03:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFDEC5396;
-	Mon, 12 Feb 2024 03:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04A646A5;
+	Mon, 12 Feb 2024 03:53:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="TwpblbA8"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="FUpJaGEq"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81512F5B;
-	Mon, 12 Feb 2024 03:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB99B1876
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:53:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707709719; cv=none; b=kqUpvUwNf+sTFtbSg0rjtt4YSbymi7Q3h0tABYDHUSp/AwWulsCg+CNLKS0EtV7c0lzJQIuGFUoNTNmQ4cCEv/foGLIJpJvCdMVjxvde8SpNQ3KjymMQtkUen5zoQB+zxlPeyTWAtxAKBAenAhqIRkGWTYrNGri+R5xzYMrfBz0=
+	t=1707709992; cv=none; b=kszupXv+Uwew4kDfTq+3aBBr+GfYVV2cB4kyUas3tHk8I547Y8LepU2ZBACpuvi/w3wri3Gi0ebYnMUx1Vg9ic0QbKLoIMRi6jSAeZNSCNWx7ovE9jP6ABf2Yjd8V8yQ/Z6DbhjqwN8lFikpKV3i0Q6YUCVRUtrYEqDlXV+GlF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707709719; c=relaxed/simple;
-	bh=as8IecGkueqqTRd7u35i6+vqXMLbLExinEbk18NNGHA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=hl4GSVuhgR1UOjODUyJVNJPPE8bwmAtD/chWZ8yqEQ4LUeEJgYhQLPMxhnGvb1JQtT0MdKnxKF0uLECC0tcv/Sn6bxhBqogO7w8ZzR2CUWewM5ixApyfBtgyVl0/iJVFZcQFz7Dpxzzb7nWYBtzzvkYg0xIdijlQ+djy2if8q5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=TwpblbA8; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707709713;
-	bh=SuSpmcJvpGTOavncXMjxau9QdPgYU4bhbiLgzCMtzSE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=TwpblbA8VE3GRU5eoWlXxlMFWE7YxDFI0RFg9hovSJZ3h8AA611lJM+zife2NTALy
-	 Q9BX5htyPGumAcSB1S0LGxRMYtGOShJDSxr0/c53Bhei62Dkf0q5fP27wYLwn6LAMa
-	 6G/mM/5ZR7Mzsu9MKjFfHCiln0X9vhJwk07O1333yQBLvsANgaQsK4LNK2UCZTcf0u
-	 tQH3/WyqIEgXNQXatKHjTCGrAg06uwmdyqgVsHjUSlCDwTiK6UyQrlpH3+rXD9OnIv
-	 9runiG2EWcbhx33gfen2s1VxQa85bN07rykDMsaV0yHftDIvP/aQdmUpRtgxwASfxl
-	 qh+NeLnQxHQ8w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TY9RN3z2Gz4wyY;
-	Mon, 12 Feb 2024 14:48:32 +1100 (AEDT)
-Date: Mon, 12 Feb 2024 14:48:30 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Damian Muszynski <damian.muszynski@intel.com>, Mun Chun Yep
- <mun.chun.yep@intel.com>, Linux Crypto List <linux-crypto@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the crypto tree
-Message-ID: <20240212144830.70495d07@canb.auug.org.au>
+	s=arc-20240116; t=1707709992; c=relaxed/simple;
+	bh=HkMCBw0DGHALj+SwJeNyQL3YJIfK1uCy0Bfa6T+jdJM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SxaY0BYNs2HMFbfOWFhSCDdq+4IU4yK7sqhmfnWZfX1p8mg8LOWwSZmA2zA4oeNvwIlPkSngrMFzLd8dCwMoNPK65UDhIxfItFwmLzjqnO42y/KxFDt8XezgXcdPwd6JN0NzrUWlou6VsTsEqLwa40j0D/8OggS9rG6spg5Xlv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=FUpJaGEq; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc742fc3b68so3141314276.2
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 19:53:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707709988; x=1708314788; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=inoYkFy02Usw5aZpIo0v9tkTLH+MA6a15+xw5EX4KZg=;
+        b=FUpJaGEqWbPSkjcbaUW6SWnad7qOWndHNN/I8bBiodMsMY/j2eToFu0CSs9HohhDAO
+         JLt/Yd7ci1YhDalR7YHAKh/fEkbGsN/TDqYnQEtSAd5x9SowRfMzFZFYK5E5bVUuZd0w
+         2yPkpsdFC2xFQsQXHqpiAkuGO4S4uRf5uJRUOnBvuRQ9XnWGAAfT4mA49EVbCZaPjuAo
+         Nv8cixW4fbY5p7Mg4nB8tiOvuXL8hWrKqeiY8vD5iw3eSXXZdZZHcfx9OVujAFX7+JSj
+         bIldEr0DZeIEuCMmcKdC9uTAHOVKp/qTq1QQa7jjm1EAB0RYRz/4eckM9flzmPpmZL0L
+         xVeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707709988; x=1708314788;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=inoYkFy02Usw5aZpIo0v9tkTLH+MA6a15+xw5EX4KZg=;
+        b=ffsdMxYUYJZYtMf4VQzPGAJq7fA1nNZoPJeA2j3wWqMB0AcvkUWsS9hbyTywAik6so
+         tPp6jS96glx/qEoQI7UbFpjijlQ1j88mvYIwM8iO70qZRz//iqtuvRSQYhdQX/MDthfj
+         DFnQzco1sLqAiuBCNnIYviNkrA6M/IiHqO4vrCI6tiCMnqr1juOayZ8QOkxqxA94wfX6
+         85C/cnJG2fwGVZfbnznbMnrxf8dbwdHjv54NwNJXpxfdSBLiU2UeJL90beEjbR5t9Fii
+         zxM8+rkaERlfnioigFNfv1003CLFyNzry4ewx/ujwOEjLELpLEdLN83vX0oKfMUH5poR
+         6tSw==
+X-Gm-Message-State: AOJu0YwROVyyUM15Xxt/CHBebneMHGTsmhBYVHdRa5z3FAR231AQWwQw
+	DPWGmYGt/bYVgIXZE9wxl+uuqI3FJosSvmbHx8JtAfp914WcMLo+IdJfTXXEIbM=
+X-Google-Smtp-Source: AGHT+IHL5MMYEd6Tdu2zhzq3q3mUC0DiI3Id8m1CcO2LYxT5rJcWGiFEws38+qzB6pZwj2tc2hfMHw==
+X-Received: by 2002:a05:6902:1b90:b0:dc7:443d:d9da with SMTP id ei16-20020a0569021b9000b00dc7443dd9damr5276409ybb.4.1707709988724;
+        Sun, 11 Feb 2024 19:53:08 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWxRCBA6JSrWoNOmSBHvQf6ESrYKH1hwruGLxZRxzTpi22WVw8Zh02svYy6czO+Oebs6yEURoeqiGjs2EbvjVYTaJJ7SYXcjUatOekFnR3JBPHY2vrgP8nVOcY7R74nPTohxElbXP0sRsqSbCHso925i9S5LbST0C601VGvLw==
+Received: from ghost ([50.146.0.2])
+        by smtp.gmail.com with ESMTPSA id t5-20020a25aa85000000b00dc254858399sm1117808ybi.2.2024.02.11.19.53.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Feb 2024 19:53:07 -0800 (PST)
+Date: Sun, 11 Feb 2024 19:53:06 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Palmer Dabbelt <palmer@rivosinc.com>
+Subject: Re: [PATCH] MIPS: Add 'memory' clobber to csum_ipv6_magic() inline
+ assembler
+Message-ID: <ZcmWIhn8/G2QK+jP@ghost>
+References: <20240211160837.2436375-1-linux@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/MkTVF9wda+qi=PxrETxCpgB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240211160837.2436375-1-linux@roeck-us.net>
 
---Sig_/MkTVF9wda+qi=PxrETxCpgB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Feb 11, 2024 at 08:08:37AM -0800, Guenter Roeck wrote:
+> After 'lib: checksum: Use aligned accesses for ip_fast_csum and
+> csum_ipv6_magic tests' was applied, the test_csum_ipv6_magic unit test
+> started failing for all mips platforms, both little and bit endian.
+> Oddly enough, adding debug code into test_csum_ipv6_magic() made the
+> problem disappear.
+> 
+> The gcc manual says:
+> 
+> "The "memory" clobber tells the compiler that the assembly code performs
+>  memory reads or writes to items other than those listed in the input
+>  and output operands (for example, accessing the memory pointed to by one
+>  of the input parameters)
+> "
+> 
+> This is definitely the case for csum_ipv6_magic(). Indeed, adding the
+> 'memory' clobber fixes the problem.
+> 
+> Cc: Charlie Jenkins <charlie@rivosinc.com>
+> Cc: Palmer Dabbelt <palmer@rivosinc.com>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  arch/mips/include/asm/checksum.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
+> index 4044eaf989ac..0921ddda11a4 100644
+> --- a/arch/mips/include/asm/checksum.h
+> +++ b/arch/mips/include/asm/checksum.h
+> @@ -241,7 +241,8 @@ static __inline__ __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+>  	"	.set	pop"
+>  	: "=&r" (sum), "=&r" (tmp)
+>  	: "r" (saddr), "r" (daddr),
+> -	  "0" (htonl(len)), "r" (htonl(proto)), "r" (sum));
+> +	  "0" (htonl(len)), "r" (htonl(proto)), "r" (sum)
+> +	: "memory");
+>  
+>  	return csum_fold(sum);
+>  }
+> -- 
+> 2.39.2
+> 
 
-Hi all,
+Thank you for looking into this. It fixed the failure on my mips64el
+qemu setup.
 
-After merging the crypto tree, today's linux-next build (htmldocs)
-produced this warning:
+Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
 
-Documentation/ABI/testing/sysfs-driver-qat:146: ERROR: Unexpected indentati=
-on.
-Documentation/ABI/testing/sysfs-driver-qat:146: WARNING: Block quote ends w=
-ithout a blank line; unexpected unindent.
-
-Introduced by commit
-
-  f5419a4239af ("crypto: qat - add auto reset on error")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/MkTVF9wda+qi=PxrETxCpgB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXJlQ4ACgkQAVBC80lX
-0GyvHAf+OBvJS8F3CYDv2RV9u9FQJu8Ljd4D6mqJbXb6Uv0IhwYKhXqrdJRFRwYm
-QC4/7cZEC0H7nzGoo5LrEriwkTucIBECtH3Bzh8wtIin+4Zjoo1J/JyED6yyAtLB
-FS1cZ7khELxRZGhjMb/+hC7t7dZvbFQKYHdbvnAqHH5l5Lhpsm0IZMTH6ONK5Gjp
-IjrX1IAN+FblJPsqtUCDZ5cZulW0IC9nA7mH1duq6eCF8qMAD5ZMHvelGzfTqQ6D
-fbxtRIJDOpXY59u9nF98ajim5hTYCp0H7V1/0aGXRIhT+tcRJLf0IMrDEU7oRqID
-TInPVeP09O1GrFDvzaee5XvqmAZ17g==
-=Cc0H
------END PGP SIGNATURE-----
-
---Sig_/MkTVF9wda+qi=PxrETxCpgB--
 
