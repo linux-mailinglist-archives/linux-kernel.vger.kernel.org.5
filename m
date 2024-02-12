@@ -1,115 +1,150 @@
-Return-Path: <linux-kernel+bounces-61448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 875D2851280
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:43:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FC06851283
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:45:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DD431F225B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:43:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9221C214E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:45:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA19139867;
-	Mon, 12 Feb 2024 11:43:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3AC3987A;
+	Mon, 12 Feb 2024 11:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="ewpO4hV2"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="K6CKNWch"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CBD39857
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0EC39AC3;
+	Mon, 12 Feb 2024 11:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707738232; cv=none; b=Kl/ml0GxGHULBeN17JIg9Ibn+Nx+U4apto4PjB7hh5+wU7UhdXFXJs9tDewo2MGtQyMjodUs0xHiqjCXLZLgC+vkcCd8Q1FHNUAyPdVd85jX3PDDuijEC/QBydWkT7oOhZbrMkg0S58zahUrTJzw4n6V6BQuz6feY1FDJwj+gwU=
+	t=1707738317; cv=none; b=hGQBTOJ5kH1el/z1eksKw0jvn/xMRILtt1vp4AqYeIEMygFjskyrRIQYPcHRHbl4vFpT0zyDl26uxG+zffA2BCxCtB63kFtz45OWcSS1ddIl0fw4VEgG/k4WzmVs8WDCBGNRS0zI39XiD3F7XzyQu0oEU89GCn+Wgd4qe8ecEyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707738232; c=relaxed/simple;
-	bh=WWCY8TDoimv/wkmildyvrGmdlzFkM/c16PoBudXe0i0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Sch438ky/gPuq6Clo3C3/j/6upHziKlNxOdb89zD7zOESYSoSajfHIs0cl6myvwn8gIyNK77gdg24ESbBwVgsO9cjj9YSDLycE7WsPqqnYhujY4C1b2D0BQxsX6wQnuUYwfIbiUqXjMcDbfP2i1XDQnPJTZwh3UIEFDWTV+8uPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=ewpO4hV2; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a26f73732c5so418384866b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:43:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707738227; x=1708343027; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I0gAmGbUXjHOQ4ZEgMrhCaz+UWFqY0y+vvz1dd+QPBo=;
-        b=ewpO4hV2PRVMF9Dk+dDDmIvPJWLdTU2tms285XbOv+qQ6tmrM6O96REC77wfVkRG+U
-         IVXZdeP+FleK0HZl7UHkkJ/0w37Sg6EkzTrEOg7SMK70YXIzzbtUCHIxLkRJonpj/wgI
-         Ef8MNxrv9D30BCJsbgr131uT0mvDnNO/QeK142EGetAKCMpOqbwHg1kMZyJofJ7AEJ+F
-         o0fLY93fJTgvQBgDkgvMYxwzbBfPhZVUCfNTGs+GS3u1dZCHC6t84DzsV6aFySA8IE7Z
-         gzQ1qD7mBEztage7gulo++mYffaTqHPoPxFgUssmbNRV7/HbCOKFZ2G1x643s7lXdxGf
-         MXaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707738227; x=1708343027;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I0gAmGbUXjHOQ4ZEgMrhCaz+UWFqY0y+vvz1dd+QPBo=;
-        b=ZjU3vY3z+IqBctv3SusyQUhhiSZdvHYreNVlGVwxENRNjcDUu+sONTNVDpYMVTws9E
-         r8p5ikPPjlCWA5tDiXEj3FkL3fBKyOZ+Kd8K+x5fVKslB5SwZN8JTFEwYLtGppbcbMf2
-         fPWpxxe7PljxEj17FDcZihUkYofNsC5HzHzZDhdfWRU5y+0UlkUswBKBzFrSkHfUqMPn
-         PSWAoUmx89dMwuAi18kUk2LwpDZI4XicRXlvJfFkjtrU0ya/NHzcDekoHR+daqMlLW5S
-         jmrTK2pMij5pL/Wi1FGuS0WG4UOP/ID97plIK9LkGLCz87uaY5sda0e1+jWDDH1Hc/zu
-         QZ+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWqnPN4rpvWtafw20W5ctdl22b+QljrODPsQwEFWmnWUTf+dJjxaXPU3lSISXSxZoZLm/V/QubnF2djT8mfnrhHNX/p/MI3zD+GcY0C
-X-Gm-Message-State: AOJu0Yxov3zls4kITGO2iWf9RvIBtJ/d3GjacGex+v34b4M7tYOXZnEx
-	blSgyE0clxkrq3UjuXU5axufhAUnrh0PqmsxSWWj1sAGNNMDGpL1n9t3yIYGZJxqVQSHD52fPE6
-	O
-X-Google-Smtp-Source: AGHT+IFWN/ZOM7xCIbOxOrVUCMxIGoaKfGaNR5vMYb7mH8o/3KbZ1faElyK06++7UX9t1+PrSTIzFg==
-X-Received: by 2002:a17:906:4ed4:b0:a3c:881d:8a8e with SMTP id i20-20020a1709064ed400b00a3c881d8a8emr2365360ejv.64.1707738227019;
-        Mon, 12 Feb 2024 03:43:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUVUxD49mn9Ht8/gvF0UKj7Yi1UxX79cnV5cETqd6PEE+/Ww6q833Uw7pjWnIdyIKNO2nQqikshCl+cJWYLNYsQeookXvppAeok/uP92E0AxjBEsT400RhngsINtHoah0LJ418=
-Received: from raven.blarg.de (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id d13-20020a170906370d00b00a3c66ac5146sm122119ejc.120.2024.02.12.03.43.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 03:43:46 -0800 (PST)
-From: Max Kellermann <max.kellermann@ionos.com>
-To: almaz.alexandrovich@paragon-software.com,
-	ntfs3@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH] fs/ntfs3/frecord: don't define i_size if NTFS3_LZX_XPRESS is disabled
-Date: Mon, 12 Feb 2024 12:43:41 +0100
-Message-Id: <20240212114341.1736547-1-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707738317; c=relaxed/simple;
+	bh=sM9JdWac8EQctajM8GcYhhS6Gz2/rcvrg0+gVYZXE9w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=AIj3wLGdYwbGm9i+ZlhIBpgJUyMFB/ToWKaq1Griewqei4mzovJgxa9TBnawdEwL1SS5o3PxKqLV3o9Gnq2EopHeBn5AVjvinYsrOIncdfm9Yr/8uPjzZ+qIOpU7Kp86RMmiBgsUIqKb9FqkTD2HWZNYB08uGHNo1S669kND4jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=K6CKNWch; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41CB7nll030374;
+	Mon, 12 Feb 2024 11:45:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=bVXESDt5VUA7sbwEoMSiKvR75YpbBHREXJRI0oKkbP4=; b=K6
+	CKNWch/KMBtcObKafHH/Pz8ft06HWXhKQM9sBOu++/sSZ4qV9B8QBrHmsyzddYZr
+	7L2TfKQGrS/VKQLxo/Zkx7gTjwC2zzv/R2rRQ4sMp555AqOK8LBtZnvLtDWqRcwC
+	AWQTT9NweElSVjToGwntwqGNf9y2C5FI5iufLvfR9INwQmbgZJMJLZ92G8xi02FY
+	qOKslFewAg9eShOE6/LsEw9a24SeAY9s24xWSCQkwfzh0MRvAzoVGb0TEwz88GOq
+	H+CsEHM/bXHgidzJ7qFVaQcdamBsCItRjMHH9DGsjmWoh+K1S+VkvjsdJzR0hD5A
+	h+OhCeplpKI9gilAnQsg==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7gvjg83b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 11:45:10 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41CBj9YM021092
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 11:45:09 GMT
+Received: from [10.253.10.1] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 12 Feb
+ 2024 03:45:03 -0800
+Message-ID: <73cdc81b-f58f-4eb5-b6ad-3011768781bd@quicinc.com>
+Date: Mon, 12 Feb 2024 19:45:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8650: Add dma-coherent property
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <quic_kuiw@quicinc.com>, <quic_ekangupt@quicinc.com>, <kernel@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Aiqun Yu
+ (Maria)" <quic_aiquny@quicinc.com>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>
+References: <20240125102413.3016-1-quic_lxu5@quicinc.com>
+ <20240125102413.3016-3-quic_lxu5@quicinc.com>
+ <069b82ac-b59c-4665-8a77-6c11a2463faa@linaro.org>
+ <690e64d6-8888-4f99-9ee0-c731aeea7762@linaro.org>
+ <7edfed88-d84f-41e1-8c10-4af6efe53c4c@quicinc.com>
+ <ed9bf914-8b3e-401e-93c0-77eae97e2ab8@linaro.org>
+From: Ling Xu <quic_lxu5@quicinc.com>
+In-Reply-To: <ed9bf914-8b3e-401e-93c0-77eae97e2ab8@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 9ge81GHtuyasV-qE9JHWdynI3q_lkEDk
+X-Proofpoint-ORIG-GUID: 9ge81GHtuyasV-qE9JHWdynI3q_lkEDk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_08,2024-02-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ suspectscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=639 adultscore=0
+ bulkscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402120087
 
-Fixes compiler warning:
-
- fs/ntfs3/frecord.c: In function 'ni_read_frame':
- fs/ntfs3/frecord.c:2460:16: error: unused variable 'i_size' [-Werror=unused-variable]
-  2460 |         loff_t i_size = i_size_read(&ni->vfs_inode);
-       |                ^~~~~~
-
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
- fs/ntfs3/frecord.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index 3b42938a9d3b..5cac06d27bf1 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -2457,7 +2457,9 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
- 	struct ATTR_LIST_ENTRY *le = NULL;
- 	struct runs_tree *run = &ni->file.run;
- 	u64 valid_size = ni->i_valid;
-+#ifdef CONFIG_NTFS3_LZX_XPRESS
- 	loff_t i_size = i_size_read(&ni->vfs_inode);
-+#endif
- 	u64 vbo_disk;
- 	size_t unc_size;
- 	u32 frame_size, i, npages_disk, ondisk_size;
+在 2024/2/12 19:41, Krzysztof Kozlowski 写道:
+> On 12/02/2024 12:31, Ling Xu wrote:
+>> 在 2024/2/12 19:10, Krzysztof Kozlowski 写道:
+>>> On 12/02/2024 12:00, Krzysztof Kozlowski wrote:
+>>>> On 25/01/2024 11:24, Ling Xu wrote:
+>>>>> Add dma-coherent property to fastRPC context bank nodes to pass dma
+>>>>> sequence test in fastrpc sanity test, ensure that data integrity is
+>>>>> maintained during DMA operations.
+>>>>>
+>>>>> Signed-off-by: Ling Xu <quic_lxu5@quicinc.com>
+>>>>> ---
+>>>>>  arch/arm64/boot/dts/qcom/sm8650.dtsi | 13 +++++++++++++
+>>>>
+>>>> This wasn't ever tested:
+>>>>
+>>>> sm8650-qrd.dtb: remoteproc@32300000: glink-edge:fastrpc:compute-cb@1:
+>>>> 'dma-coherent' does not match any of the regexes: 'pinctrl-[0-9]+'
+>>>>
+>>>> Ling,
+>>>> How is this testing-patches-before-sending work in different teams? Do
+>>>> you have such requirement?
+>>>
+>>> No clue if the original DTS change should be reverted or these are in
+>>> fact DMA coherent, but let's choose one path...
+>>>
+>>> https://lore.kernel.org/linux-devicetree/254c1d14-25e3-4f4c-9e79-4ef7cec4d22f@linaro.org/T/#t
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>> Hi Krzysztof,
+>> Add dma-coherent: true in this file: Documentation/devicetree/bindings/misc/qcom,fastrpc.yaml at line number 89 can pass the DTcheck.
+> 
+> I don't understand your comment. Did you read the link above?
+> 
+> Anyway, I was asking: are you testing the patches before sending?
+> 
+> Best regards,
+> Krzysztof
+> 
+Yes, I tested before sending.
 -- 
-2.39.2
+Thx and BRs,
+Ling Xu
 
 
