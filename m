@@ -1,199 +1,183 @@
-Return-Path: <linux-kernel+bounces-62525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C5DB852256
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:16:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8948A852259
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:17:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D385428352A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:16:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DA9C1C230E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BBF4F613;
-	Mon, 12 Feb 2024 23:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M7LvsJfA"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9BB64F5FE;
+	Mon, 12 Feb 2024 23:17:39 +0000 (UTC)
+Received: from alerce.blitiri.com.ar (alerce.blitiri.com.ar [49.12.208.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25A64EB5C;
-	Mon, 12 Feb 2024 23:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38B94DA06
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.208.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707779752; cv=none; b=NSfzakD2PwpZh3GnrPmCZA2C0e6yN2NA1qTSJ+v5NyzJu3mvhkOsVnD1zXQmUvsJnRqnNKF/nYnHCTWKBR2Tobfm8MTvW+QPiv5vRkaF20sIvGan4LjlWjTnc8H4DSX0Ff4pp7i1ih9pWMRHQ2yEtoOPgvGxRebcTwWWH3VhVIk=
+	t=1707779859; cv=none; b=NF26LHg/FhVRCgyWG/oPh6FcxOuiIASo/NEJ8+LRYeT8hlUsbfAZcxN7so+lhzpDsKhAoXQkAwdA/v8EnB3PF0EEjzvu/Pg0oRnayLmvObXEBtFnyVKZ/OaC0bR+lVZMRkvShMumH7PURiBys92E6jn5LkLuWPRPLKsR75DO5/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707779752; c=relaxed/simple;
-	bh=2V5ih+rh+uJ8v7Og2vnvqzcZcn7X0cF6QU3gjcKFHDs=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=hIEM8fCqTLn83H87Y0NW8XhXqSrrgDKeNXUHEOSr6wHjW5sCS9YOQdyCfyzTcmF9W4SORZPhgTDmx1H4CUdgcIyQyiMWvwxqM+aGV3Vd2hts/xInxReaZTfkqwlRmE59wSsrOHdfA3Kh7j335cN5I32yJ++pTdVw/Z5vwNt47ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M7LvsJfA; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707779752; x=1739315752;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=2V5ih+rh+uJ8v7Og2vnvqzcZcn7X0cF6QU3gjcKFHDs=;
-  b=M7LvsJfARDw6F4p+ajzBS3HSK3zm/gYlXaKiXAgOXv2v6deiD7p12dHF
-   966KWYiG5eJtj+0t1Ue+VrfO0cyQrOGvgzfqYB9wxBLTNDKyZV9HH6wAe
-   KFDyPE3iIPZwg/WnAVEWgg4qitBTPgFKeFpc62EfIpUgN7aZRTByigDBQ
-   XevQYO3Ju5lVFw1VIlFbFBwLsSO6sdZ6wM/4SuPPXxk6siIxhAhaCayzh
-   4P2auVAQby5hjiC0fyzqifgxlJLBomn98C62RW3ihhgJA2pJ+wM9NLsln
-   99aZN793VZU4kk0Os97kDvhvGpna0yI6vCDkgmfJKFhz1+qNISjogAm+t
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="13173245"
-X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
-   d="scan'208";a="13173245"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 15:15:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
-   d="scan'208";a="7350882"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 12 Feb 2024 15:15:48 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
- linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
- cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com, "Jarkko
- Sakkinen" <jarkko@kernel.org>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
- try_charge()
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-11-haitao.huang@linux.intel.com>
- <CZ3D53XFVXAW.25EK0ZBFH3HV2@kernel.org>
-Date: Mon, 12 Feb 2024 17:15:42 -0600
+	s=arc-20240116; t=1707779859; c=relaxed/simple;
+	bh=UIwSPn7oqBOap6PMVYgh93csn3P5c0tGwe6B0A6oExc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CrEhtyq755SFzchZLl8g4YlmayxwS65jNRM6MQWIJ730uT6Ho3Znk9buZJN6Ro1YiHSlI6hyYCS2M+Z9DLgiBkfW5zYHs48CgNoh5R/5Ij6JSRRs/TP/hkjYhIPBzSbaRmMmBV/RdlE+XMFWnYTdfExIBkphY6zFGWThyF1Bz90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar; spf=pass smtp.mailfrom=sdfg.com.ar; arc=none smtp.client-ip=49.12.208.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sdfg.com.ar
+Received: from [192.168.0.26]
+	by sdfg.com.ar (chasquid) with ESMTPSA
+	tls TLS_AES_128_GCM_SHA256
+	(over submission+TLS, TLS-1.3, envelope from "rodrigo@sdfg.com.ar")
+	; Mon, 12 Feb 2024 23:16:10 +0000
+Message-ID: <52c52665-35f5-4111-a9d4-f8669c79bf70@sdfg.com.ar>
+Date: Tue, 13 Feb 2024 00:16:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] tools/nolibc: Fix strlcat() return code and size
+ usage
+To: Willy Tarreau <w@1wt.eu>
+Cc: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+ linux-kernel@vger.kernel.org
+References: <20240129141516.198636-1-rodrigo@sdfg.com.ar>
+ <20240129141516.198636-3-rodrigo@sdfg.com.ar> <20240211104817.GA19364@1wt.eu>
+Content-Language: en-US
+From: Rodrigo Campos <rodrigo@sdfg.com.ar>
+In-Reply-To: <20240211104817.GA19364@1wt.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2i1xkgedwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CZ3D53XFVXAW.25EK0ZBFH3HV2@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
 
-Hi Jarkko
+On 2/11/24 11:48, Willy Tarreau wrote:
+> Hi Rodrigo,
+> 
+> first, thanks for the series!
 
-On Mon, 12 Feb 2024 13:55:46 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+Thank you, for your time and review! :)
 
-> On Mon Feb 5, 2024 at 11:06 PM EET, Haitao Huang wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+> On Mon, Jan 29, 2024 at 03:15:14PM +0100, Rodrigo Campos wrote:
+>> The return code should always be strlen(src) + strlen(dst), but dst is
+>> considered shorter if size is less than strlen(dst).
 >>
->> When the EPC usage of a cgroup is near its limit, the cgroup needs to
->> reclaim pages used in the same cgroup to make room for new allocations.
->> This is analogous to the behavior that the global reclaimer is triggered
->> when the global usage is close to total available EPC.
+>> While we are there, make sure to copy at most size-1 bytes and
+>> null-terminate the dst buffer.
 >>
->> Add a Boolean parameter for sgx_epc_cgroup_try_charge() to indicate
->> whether synchronous reclaim is allowed or not. And trigger the
->> synchronous/asynchronous reclamation flow accordingly.
->>
->> Note at this point, all reclaimable EPC pages are still tracked in the
->> global LRU and per-cgroup LRUs are empty. So no per-cgroup reclamation
->> is activated yet.
->>
->> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Rodrigo Campos <rodrigo@sdfg.com.ar>
 >> ---
->> V7:
->> - Split this out from the big patch, #10 in V6. (Dave, Kai)
->> ---
->>  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 26 ++++++++++++++++++++++++--
->>  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  4 ++--
->>  arch/x86/kernel/cpu/sgx/main.c       |  2 +-
->>  3 files changed, 27 insertions(+), 5 deletions(-)
+>>   tools/include/nolibc/string.h | 14 +++++++-------
+>>   1 file changed, 7 insertions(+), 7 deletions(-)
 >>
->> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c  
->> b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
->> index d399fda2b55e..abf74fdb12b4 100644
->> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
->> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
->> @@ -184,13 +184,35 @@ static void  
->> sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
->>  /**
->>   * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single EPC  
->> page
->>   * @epc_cg:	The EPC cgroup to be charged for the page.
->> + * @reclaim:	Whether or not synchronous reclaim is allowed
->>   * Return:
->>   * * %0 - If successfully charged.
->>   * * -errno - for failures.
->>   */
->> -int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
->> +int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool  
->> reclaim)
->>  {
->> -	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE);
->> +	for (;;) {
->> +		if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
->> +					PAGE_SIZE))
->> +			break;
->> +
->> +		if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
->> +			return -ENOMEM;
->> + +		if (signal_pending(current))
->> +			return -ERESTARTSYS;
->> +
->> +		if (!reclaim) {
->> +			queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
->> +			return -EBUSY;
->> +		}
->> +
->> +		if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, false))
->> +			/* All pages were too young to reclaim, try again a little later */
->> +			schedule();
->
-> This will be total pain to backtrack after a while when something
-> needs to be changed so there definitely should be inline comments
-> addressing each branch condition.
->
-> I'd rethink this as:
->
-> 1. Create static __sgx_epc_cgroup_try_charge() for addressing single
->    iteration with the new "reclaim" parameter.
-> 2. Add a new sgx_epc_group_try_charge_reclaim() function.
->
-> There's a bit of redundancy with sgx_epc_cgroup_try_charge() and
-> sgx_epc_cgroup_try_charge_reclaim() because both have almost the
-> same loop calling internal __sgx_epc_cgroup_try_charge() with
-> different parameters. That is totally acceptable.
->
-> Please also add my suggested-by.
->
-> BR, Jarkko
->
-> BR, Jarkko
->
-For #2:
-The only caller of this function, sgx_alloc_epc_page(), has the same  
-boolean which is passed into this this function.
+>> diff --git a/tools/include/nolibc/string.h b/tools/include/nolibc/string.h
+>> index ed15c22b1b2a..b2149e1342a8 100644
+>> --- a/tools/include/nolibc/string.h
+>> +++ b/tools/include/nolibc/string.h
+>> @@ -187,23 +187,23 @@ char *strndup(const char *str, size_t maxlen)
+>>   static __attribute__((unused))
+>>   size_t strlcat(char *dst, const char *src, size_t size)
+>>   {
+>> -	size_t len;
+>>   	char c;
+>> +	size_t len = strlen(dst);
+>> +	size_t ret = strlen(src) + (size < len? size: len);
+> 
+>  From what I'm reading in the man page, ret should *always* be the sum
+> of the two string lengths. I guess it helps for reallocation. It's even
+> explicitly mentioned:
+> 
+>    "While this may seem somewhat confusing, it was done to make truncation
+>     detection simple."
 
-If we separate it into sgx_epc_cgroup_try_charge() and  
-sgx_epc_cgroup_try_charge_reclaim(), then the caller has to have the  
-if/else branches. So separation here seems not help?
+Yes, that was my *first* understanding of the manpage too. But it 
+doesn't seem to be the correct interpretation.
+
+Also, this is exactly what I tried to say in the cover letter, with:
+
+	I thought the manpage was clear, but when checking against that,
+	I noted a few twists (like the manpage says the return code of
+	strlcat is strlen(src) + strlen(dst), but it was not clear it is
+	not that if size < strlen(dst). When looking at the libbsd
+	implementation and re-reading the manpage, I understood what it
+	really meant).
 
 
-For #1:
-If we don't do #2, It seems overkill at the moment for such a short  
-function.
+Sorry if I wasn't clear. Let me try again.
 
-How about we add inline comments for each branch for now, and if later  
-there are more branches and the function become too long we add  
-__sgx_epc_cgroup_try_charge() as you suggested?
+My first interpretation of the manpage was also that, and I think it 
+would make sense to be that one. However, it is wrong, they also say 
+this, that is what made me add the ternary operator:
 
-Thanks
-Haitao
+	Note, however, that if strlcat() traverses size characters
+	without finding a NUL, the length of the string is considered
+	to be  size and the destination string will not be NUL
+	terminated (since there was no space for the NUL)
+
+So, my interpretation is that it is the sum of both, except when we 
+can't find the NUL in that size, in which case we conside "size" to be 
+the len of dst.
+
+If you compare it with the output of libbsd, the return code seems to be 
+exactly that. I was surprised too, as the manpage seem so clear... :-/
+
+> Above ret will be bound to the existing size so a realloc wouldn't work.
+> Thus I think the correct solution is:
+
+Note that this implementation fails the tests added on patch 4. I've 
+tested them (output and return code) to match the libbsd implementation.
+
+
+> The test inside the loop is going to make this not very efficient. Same
+> for the fact that we're measuring the length of src twice (once via
+> strlen, a second time through the loop). I've just had a look and it
+> compiles to 77 bytes at -Os. A simpler variant would consist in trying
+
+How are you measuring the size?
+
+I've added noinline to strlcat to the version I sent, so now it is shown 
+in nm, but I have this as output:
+
+$ nm --size -t x test.o
+	0000000000000004 V errno
+	0000000000000006 t strlcat.constprop.0
+	0000000000000008 V _auxv
+	0000000000000008 V environ
+	000000000000000e W strlen
+	000000000000000f W _start
+	0000000000000018 W raise
+	000000000000001b W abort
+	000000000000004c T main
+	000000000000005a t u64toa_r.isra.0
+	0000000000000095 W _start_c
+	00000000000002a8 t printf
+
+How are you measuring it there?
+
+Sorry, I'm not familiar with this :)
+
+
+> to copy what fits in <size> and once reached, go on just for trailing
+> zero and the size measurement:
+> 
+> size_t strlcat(char *dst, const char *src, size_t size)
+> {
+>          size_t len = strlen(dst);
+
+The thing is, we need to return always at least strlen(src). Maybe plus 
+something else. Even if size==0 and we don't copy anything.
+
+Maybe we can special case that, so we simplify the loop, and it's smaller?
+
+I've been playing, but as I can't measure the size, I'm not sure what is 
+really better. I'd like to play a little once I know how to measure it :)
+
+
+
+Best,
+Rodrigo
 
