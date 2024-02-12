@@ -1,212 +1,249 @@
-Return-Path: <linux-kernel+bounces-61558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA81385139F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:35:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C78B8513A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:36:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAAB71C21A77
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:35:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A87AB253D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:35:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910633CF5B;
-	Mon, 12 Feb 2024 12:33:22 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 793EA3C680
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2269039FE8;
+	Mon, 12 Feb 2024 12:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WhcNn8x7"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792983D0A1;
+	Mon, 12 Feb 2024 12:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707741202; cv=none; b=uah3FQ8G9TciA6DCmSjKNi85L2ZoF81cjUrBJrKhsoFthIrkZeo1yIlGpo019mAqg7d2TFV+sZZQcB+JRsbqK75/EWE2M3fFIkL5+Bae292YCWQQyjK4qF3P/Tc+fOrf/Lz27idRzAD+IqRtNtNnHbhUyX8IGur6A7I+PZkRTrg=
+	t=1707741238; cv=none; b=s/9XWN8MiUj6e/lQ/djvN2uOkADx/4b9YTRVlwTvKoWy4BjpYSJ44h1cSJnDdpmXTdLODwq8Trh9TYrGk5n+S1eCgHDjpumUvBqdDjNRUt4S3jJbjBW82ztLr5lZ8TmeahT9IZQkk+Feg2TW5THqCyiWWP7/SP70tPIFi/9eHfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707741202; c=relaxed/simple;
-	bh=Vq/13jyMTK0Hthb91RLpCC6/kQOlazmQH58gWq/rq14=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QbLPJ42jchclUbziFNQaNWMc+pz1IKQvO+Ln4RJR+LzttDx4ohY5dxjDOqQkbHLE/wpqIM5J+FUXbiXXQ74fpaUGIkABj2cCxbHUgHVrvOVRtfpYXx9gs3wJ5JMais2d4D7HZx2Ktgif3jdoUpOt328ccIKGZ870UKt9ewVpiog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4FF1B139F;
-	Mon, 12 Feb 2024 04:34:01 -0800 (PST)
-Received: from pluto.fritz.box (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 60AFF3F7BD;
-	Mon, 12 Feb 2024 04:33:18 -0800 (PST)
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: sudeep.holla@arm.com,
-	vincent.guittot@linaro.org,
-	peng.fan@oss.nxp.com,
-	michal.simek@amd.com,
-	quic_sibis@quicinc.com,
-	quic_nkela@quicinc.com,
-	souvik.chakravarty@arm.com,
-	Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH 11/11] firmware: arm_scmi: Report frequencies in Perf notifications
-Date: Mon, 12 Feb 2024 12:32:33 +0000
-Message-ID: <20240212123233.1230090-12-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240212123233.1230090-1-cristian.marussi@arm.com>
-References: <20240212123233.1230090-1-cristian.marussi@arm.com>
+	s=arc-20240116; t=1707741238; c=relaxed/simple;
+	bh=e+5d3r+72OzUrBV15pT8dyFu9f82Q577QS6w+GDobOU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mRdo1+DhhznjT+tNIKh5xiJ7iVChfx7pRatYcCGMXMYFQie4NzSqiO5SQcU/FHCEQ//FILApoc/M73+Zi03Gm90adYHV3jd2vNc5PXirKu9+jGVVV6llFolaOt8H89HdF0C6RRggzuGC6yb+VOiBjkwt1AaK1twB9f/skM7WPyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=WhcNn8x7; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41C9eLW0011091;
+	Mon, 12 Feb 2024 12:33:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=iqXI0pDDefgL55gPNiogNqi9XFBWNuwrsoOnFvG5Q3w=; b=Wh
+	cNn8x7s3wqwRXUA81Wa7y0f//cHx2eZWuokfgnA6U9EpnEXMp/+XNL7dHZQVbhIB
+	jA6iIMKCNLpUK3fvLNfxMCRglw+La4Z2IQm4Jn1HhqipU+aOfoJ3wj1v5l9+RJpe
+	kZ3w/N1fNUDwNpbnwmk/lpRl73Y2g7drTBHqbyU0khXfus+ukWlU/fUDAQKZE3c5
+	tKNor3G6hjS54G5K+QOWaf0Gc5Z9GYzBhKpisVLBlllQ9ujLANPQAvpEvI1TpqSx
+	HBFb/MpCsyqmc8CuGcI79w8k/3JFcVTzjFL9DSWK08z8Dq9L/NatmQ492ystqufa
+	IFMv7LzBJCXPas/zsTZA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7gvjgaxs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 12:33:27 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41CCXNdG030060
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 12:33:23 GMT
+Received: from hu-nprakash-blr.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 12 Feb 2024 04:33:17 -0800
+From: Nikhil V <quic_nprakash@quicinc.com>
+To: Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        "Jonathan
+ Corbet" <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+CC: Nikhil V <quic_nprakash@quicinc.com>,
+        "Paul E. McKenney"
+	<paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Yan-Jie Wang
+	<yanjiewtw@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Zijlstra
+	<peterz@infradead.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_kprasan@quicinc.com>,
+        <quic_mpilaniy@quicinc.com>, <quic_shrekk@quicinc.com>,
+        <mpleshivenkov@google.com>, <ericyin@google.com>
+Subject: [PATCH] PM: hibernate: Support to select compression algorithm
+Date: Mon, 12 Feb 2024 18:02:51 +0530
+Message-ID: <3776355f920c1af44490e076072f93bafdf128cc.1707740870.git.quic_nprakash@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: UNVmhcoZ85xvqJ-Q_fJq7bWC3qana92K
+X-Proofpoint-ORIG-GUID: UNVmhcoZ85xvqJ-Q_fJq7bWC3qana92K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_09,2024-02-12_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ suspectscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402120094
 
-Extend the Perf notification report to include pre-calculated frequencies
-corresponding to the reported limits/levels event; such frequencies are
-properly computed based on the stored known OPPs information taking into
-consideration if the current operating mode is level indexed or not.
+Currently the default compression algorithm is selected based on
+compile time options. Introduce a module parameter "hibernate.compressor"
+to override this behaviour.
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+Different compression algorithms have different characteristics and
+hibernation may benefit when it uses any of these algorithms, especially
+when a secondary algorithm(LZ4) offers better decompression speeds over a
+default algorithm(LZO), which in turn reduces hibernation image restore
+time.
+
+Users can override the default algorithm in two ways:
+ 1) Passing "hibernate.compressor" as kernel command line parameter.
+    Usage:
+    	LZO: hibernate.compressor=lzo
+    	LZ4: hibernate.compressor=lz4
+
+ 2) Specifying the algorithm at runtime.
+    Usage:
+	LZO: echo lzo > /sys/module/hibernate/parameters/compressor
+	LZ4: echo lz4 > /sys/module/hibernate/parameters/compressor
+
+Currently LZO and LZ4 are the supported algorithms. LZO is the default
+compression algorithm used with hibernation.
+
+Signed-off-by: Nikhil V <quic_nprakash@quicinc.com>
 ---
- drivers/firmware/arm_scmi/perf.c | 69 ++++++++++++++++++++++++++++++++
- include/linux/scmi_protocol.h    |  3 ++
- 2 files changed, 72 insertions(+)
+This patch is dependent on the patch series, [1] (patches 1/4 to 3/4).
+This is picked in linux-next, [2].
+ [1] https://lore.kernel.org/all/cover.1705927916.git.quic_nprakash@quicinc.com/
+ [2] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/kernel/power?h=next-20240212
 
-diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
-index e20d137a92f6..981e327e63e3 100644
---- a/drivers/firmware/arm_scmi/perf.c
-+++ b/drivers/firmware/arm_scmi/perf.c
-@@ -1055,18 +1055,47 @@ static int scmi_perf_set_notify_enabled(const struct scmi_protocol_handle *ph,
- 	return ret;
+ .../admin-guide/kernel-parameters.txt         | 10 ++++
+ kernel/power/hibernate.c                      | 57 ++++++++++++++++++-
+ 2 files changed, 64 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 31b3a25680d0..522155056645 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1748,6 +1748,16 @@
+ 				(that will set all pages holding image data
+ 				during restoration read-only).
+ 
++	hibernate.compressor= 	[HIBERNATION] Compression algorithm to be
++				used with hibernation.
++				Format: { lzo | lz4 }
++
++				lzo: Select LZO compression algorithm to
++				compress/decompress hibernation image.
++
++				lz4: Select LZ4 compression algorithm to
++				compress/decompress hibernation image.
++
+ 	highmem=nn[KMG]	[KNL,BOOT] forces the highmem zone to have an exact
+ 			size of <nn>. This works even on boxes that have no
+ 			highmem otherwise. This also works to reduce highmem
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index 219191d6d0e8..43b1a82e800c 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -47,7 +47,7 @@ dev_t swsusp_resume_device;
+ sector_t swsusp_resume_block;
+ __visible int in_suspend __nosavedata;
+ 
+-static const char *default_compressor = CONFIG_HIBERNATION_DEF_COMP;
++static char hibernate_compressor[CRYPTO_MAX_ALG_NAME] = CONFIG_HIBERNATION_DEF_COMP;
+ 
+ /*
+  * Compression/decompression algorithm to be used while saving/loading
+@@ -748,7 +748,7 @@ int hibernate(void)
+ 	 * Query for the compression algorithm support if compression is enabled.
+ 	 */
+ 	if (!nocompress) {
+-		strscpy(hib_comp_algo, default_compressor, sizeof(hib_comp_algo));
++		strscpy(hib_comp_algo, hibernate_compressor, sizeof(hib_comp_algo));
+ 		if (crypto_has_comp(hib_comp_algo, 0, 0) != 1) {
+ 			pr_err("%s compression is not available\n", hib_comp_algo);
+ 			return -EOPNOTSUPP;
+@@ -999,7 +999,7 @@ static int software_resume(void)
+ 		if (swsusp_header_flags & SF_COMPRESSION_ALG_LZ4)
+ 			strscpy(hib_comp_algo, COMPRESSION_ALGO_LZ4, sizeof(hib_comp_algo));
+ 		else
+-			strscpy(hib_comp_algo, default_compressor, sizeof(hib_comp_algo));
++			strscpy(hib_comp_algo, COMPRESSION_ALGO_LZO, sizeof(hib_comp_algo));
+ 		if (crypto_has_comp(hib_comp_algo, 0, 0) != 1) {
+ 			pr_err("%s compression is not available\n", hib_comp_algo);
+ 			error = -EOPNOTSUPP;
+@@ -1422,6 +1422,57 @@ static int __init nohibernate_setup(char *str)
+ 	return 1;
  }
  
-+static int
-+scmi_perf_xlate_opp_to_freq(struct perf_dom_info *dom,
-+			    unsigned int index, unsigned long *freq)
++static const char * const comp_alg_enabled[] = {
++#if IS_ENABLED(CONFIG_CRYPTO_LZO)
++	COMPRESSION_ALGO_LZO,
++#endif
++#if IS_ENABLED(CONFIG_CRYPTO_LZ4)
++	COMPRESSION_ALGO_LZ4,
++#endif
++};
++
++static int hibernate_compressor_param_set(const char *compressor,
++		const struct kernel_param *kp)
 +{
-+	struct scmi_opp *opp;
++	unsigned int sleep_flags;
++	int index, ret;
 +
-+	if (!dom || !freq)
-+		return -EINVAL;
++	sleep_flags = lock_system_sleep();
 +
-+	if (!dom->level_indexing_mode) {
-+		opp = xa_load(&dom->opps_by_lvl, index);
-+		if (!opp)
-+			return -ENODEV;
-+
-+		*freq = opp->perf * dom->mult_factor;
++	index = sysfs_match_string(comp_alg_enabled, compressor);
++	if (index >= 0) {
++		ret = param_set_copystring(comp_alg_enabled[index], kp);
++		if (!ret)
++			strscpy(hib_comp_algo, comp_alg_enabled[index],
++				sizeof(hib_comp_algo));
 +	} else {
-+		opp = xa_load(&dom->opps_by_idx, index);
-+		if (!opp)
-+			return -ENODEV;
-+
-+		*freq = opp->indicative_freq * dom->mult_factor;
++		ret = index;
 +	}
 +
-+	return 0;
++	unlock_system_sleep(sleep_flags);
++
++	if (ret)
++		pr_debug("Cannot set specified compressor %s\n",
++			 compressor);
++
++	return ret;
 +}
 +
- static void *scmi_perf_fill_custom_report(const struct scmi_protocol_handle *ph,
- 					  u8 evt_id, ktime_t timestamp,
- 					  const void *payld, size_t payld_sz,
- 					  void *report, u32 *src_id)
- {
-+	int ret;
- 	void *rep = NULL;
-+	struct perf_dom_info *dom;
- 
- 	switch (evt_id) {
- 	case SCMI_EVENT_PERFORMANCE_LIMITS_CHANGED:
- 	{
- 		const struct scmi_perf_limits_notify_payld *p = payld;
- 		struct scmi_perf_limits_report *r = report;
-+		unsigned long freq_min, freq_max;
- 
- 		if (sizeof(*p) != payld_sz)
- 			break;
-@@ -1076,14 +1105,36 @@ static void *scmi_perf_fill_custom_report(const struct scmi_protocol_handle *ph,
- 		r->domain_id = le32_to_cpu(p->domain_id);
- 		r->range_max = le32_to_cpu(p->range_max);
- 		r->range_min = le32_to_cpu(p->range_min);
-+		/* Check if the reported domain exist at all */
-+		dom = scmi_perf_domain_lookup(ph, r->domain_id);
-+		if (IS_ERR(dom))
-+			break;
-+		/*
-+		 * Event will be reported from this point on...
-+		 * ...even if, later, xlated frequencies were not retrieved.
-+		 */
- 		*src_id = r->domain_id;
- 		rep = r;
++static const struct kernel_param_ops hibernate_compressor_param_ops = {
++	.set    = hibernate_compressor_param_set,
++	.get    = param_get_string,
++};
 +
-+		ret = scmi_perf_xlate_opp_to_freq(dom, r->range_max, &freq_max);
-+		if (ret)
-+			break;
++static struct kparam_string hibernate_compressor_param_string = {
++	.maxlen = sizeof(hibernate_compressor),
++	.string = hibernate_compressor,
++};
 +
-+		ret = scmi_perf_xlate_opp_to_freq(dom, r->range_min, &freq_min);
-+		if (ret)
-+			break;
++module_param_cb(compressor, &hibernate_compressor_param_ops,
++		&hibernate_compressor_param_string, 0644);
++MODULE_PARM_DESC(compressor,
++		 "Compression algorithm to be used with hibernation");
 +
-+		/* Report translated freqs ONLY if both available */
-+		r->range_max_freq = freq_max;
-+		r->range_min_freq = freq_min;
-+
- 		break;
- 	}
- 	case SCMI_EVENT_PERFORMANCE_LEVEL_CHANGED:
- 	{
- 		const struct scmi_perf_level_notify_payld *p = payld;
- 		struct scmi_perf_level_report *r = report;
-+		unsigned long freq;
- 
- 		if (sizeof(*p) != payld_sz)
- 			break;
-@@ -1091,9 +1142,27 @@ static void *scmi_perf_fill_custom_report(const struct scmi_protocol_handle *ph,
- 		r->timestamp = timestamp;
- 		r->agent_id = le32_to_cpu(p->agent_id);
- 		r->domain_id = le32_to_cpu(p->domain_id);
-+		/* Report translated freqs ONLY if available */
- 		r->performance_level = le32_to_cpu(p->performance_level);
-+		/* Check if the reported domain exist at all */
-+		dom = scmi_perf_domain_lookup(ph, r->domain_id);
-+		if (IS_ERR(dom))
-+			break;
-+		/*
-+		 * Event will be reported from this point on...
-+		 * ...even if, later, xlated frequencies were not retrieved.
-+		 */
- 		*src_id = r->domain_id;
- 		rep = r;
-+
-+		/* Report translated freqs ONLY if available */
-+		ret = scmi_perf_xlate_opp_to_freq(dom, r->performance_level,
-+						  &freq);
-+		if (ret)
-+			break;
-+
-+		r->performance_level_freq = freq;
-+
- 		break;
- 	}
- 	default:
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 0cc40af5519a..9b9351e07a11 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -956,6 +956,8 @@ struct scmi_perf_limits_report {
- 	unsigned int	domain_id;
- 	unsigned int	range_max;
- 	unsigned int	range_min;
-+	unsigned long	range_max_freq;
-+	unsigned long	range_min_freq;
- };
- 
- struct scmi_perf_level_report {
-@@ -963,6 +965,7 @@ struct scmi_perf_level_report {
- 	unsigned int	agent_id;
- 	unsigned int	domain_id;
- 	unsigned int	performance_level;
-+	unsigned long	performance_level_freq;
- };
- 
- struct scmi_sensor_trip_point_report {
+ __setup("noresume", noresume_setup);
+ __setup("resume_offset=", resume_offset_setup);
+ __setup("resume=", resume_setup);
 -- 
-2.43.0
+2.17.1
 
 
