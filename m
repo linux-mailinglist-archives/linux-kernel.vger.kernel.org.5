@@ -1,112 +1,108 @@
-Return-Path: <linux-kernel+bounces-61230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDCA0850F62
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:10:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7326850F70
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:13:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD6351C21407
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:10:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74864283BF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:13:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23212101EC;
-	Mon, 12 Feb 2024 09:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5207311181;
+	Mon, 12 Feb 2024 09:13:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HarlmHtL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kF2ZAwxS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC12FBF2;
-	Mon, 12 Feb 2024 09:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ABDA1097B;
+	Mon, 12 Feb 2024 09:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707729028; cv=none; b=okfVlMnAYxEChBSZE4Ia6ocEAMWdyAXOdcfv3jcF0eZQkhLR6njp1tqyGMHCaTgBN3GErmXM3eTH1l7jFg0y0Dtt9+7kH1U7AHcotVj8rGlB7ORwgaZ8Wl7qN8tH3Z75D5lBxqJsM88im0/hymniJ+rAQvSR3iBT3dtjmxqGv4k=
+	t=1707729188; cv=none; b=tLB82YcjyPofxhLYdDbL9TsxUdB9pPO6q1oqgIlNJXSeRgb53u31EfRFTurOf0Vut+AgJlueQ7VTHoQ5ubQM3mKMApzgqlqGbawz5Z5U9d6onz2E+JwAqAzMnGGjgWIXbWsGmFdF6M4l4PPxT/4agXun/C9hAst548mXHO8ZIEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707729028; c=relaxed/simple;
-	bh=KfhIfI/6BlUL8MZo9WhQL2Av61+PXGBuJ5lGrQfs7Ms=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=OvUM0kLmN9O5RtPWB1I6Qkto4ydbaJUxE7nm/HWdy6UwmSgtrLJYnJ0UB2NeEBeQRLnIxSl88xR9m6lOOPH5Do6H63ACvXAFmD2aCPOtZOxPm71oAixaI0d7BhjQIOUHi1MFK4WM3hLV6rvRJCQTeotWTKKO45Tr70LwM48Nm0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HarlmHtL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E033AC43390;
-	Mon, 12 Feb 2024 09:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707729027;
-	bh=KfhIfI/6BlUL8MZo9WhQL2Av61+PXGBuJ5lGrQfs7Ms=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=HarlmHtLb8R+xRnv0SHksXb7K1QekZ4D/K7UJFItN7YFi0R9V1a8jF48xf15E1ukz
-	 afMgWkgdZhRqTKk1MAXOpRU0bjE5xfVR8IooTt2+Cv0TOlzDt4I1zEkvneM2uNLtuk
-	 bQ9CkfjU9dAObO8fzqlPlM95Y2HytYhS9Rl8XHoxzQsBL+ZUEzUdJ5SgKSJPc/D78t
-	 VRsj8xiUyvNPW/lTSlQ1ZO+qWXMrCmGGVw2+PlAbjaunSBvrWSHtyiuJAcaNuiV6Lw
-	 gLf+44s/oNCrQQwLT1bg+31I3zaV9aG3vJMuaYcs1MgT+MCk/hA0SElDiYZvM6waQb
-	 tZ7yxX4vdh3cw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B79A0D84BD0;
-	Mon, 12 Feb 2024 09:10:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1707729188; c=relaxed/simple;
+	bh=zQg70D7zlwaT01vgAiLlUs8t5uerkv7D7w9ZxCQ0BBg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=tQ567xljlxSXGBfeH5/8r8Y6scFraSKbZv7MAFhy8CqQbcqi8lBWNHOsxLCV9S31/57uUb5le6NtV6wayYoEyh9cM1CtUBYj03T/mDug2LLEVK6GgJjTJ0BaayQgHy9mrObQK/AHW1Uam7LiuGDRqONbvNuriOgwlkW5GKTwIMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kF2ZAwxS; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707729187; x=1739265187;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=zQg70D7zlwaT01vgAiLlUs8t5uerkv7D7w9ZxCQ0BBg=;
+  b=kF2ZAwxSrl7LoA/z/zf355vZng+6cN6zcTFyTxL2nZpRGCNjgW0nViUf
+   WEqnOoTa7uL41RWPEPzgM9n9wpBuX+jjIa3pb4y+rvWuVNYDW5yXHVQ2w
+   uIS2Xf77nbfJFbs6FGmm5YKgJ2d98jyeTIP+0s5COhwfleRWXkgYhiZcB
+   6sNWqHKhrEF8puRzp2Pllz4DZAUzNsG4uLYSQkb47qETJpl9wz3PTASeo
+   y0dN07Qajl8s6WptOfsE6PajpVO9bStMAxd4NuvQXntFUw+kC3xc1uwdi
+   f3yr7VC+UxHmi+nPGSruNE3IDNkSLUeVVE5St1Jgdg4ZiQ1afyqHUShKt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="1576663"
+X-IronPort-AV: E=Sophos;i="6.05,262,1701158400"; 
+   d="scan'208";a="1576663"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 01:13:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,262,1701158400"; 
+   d="scan'208";a="2541949"
+Received: from belyakov-mobl.ccr.corp.intel.com (HELO localhost) ([10.252.63.91])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 01:13:03 -0800
+From: Jani Nikula <jani.nikula@intel.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Vetter
+ <daniel.vetter@ffwll.ch>
+Cc: Dave Airlie <airlied@redhat.com>, Intel Graphics
+ <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+In-Reply-To: <20240212122652.0961dc7c@canb.auug.org.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240212122652.0961dc7c@canb.auug.org.au>
+Date: Mon, 12 Feb 2024 11:12:58 +0200
+Message-ID: <87le7q9hb9.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v7 0/8] add octeon_ep_vf driver
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170772902774.3287.11858895594477147419.git-patchwork-notify@kernel.org>
-Date: Mon, 12 Feb 2024 09:10:27 +0000
-References: <20240208101841.3108103-1-srasheed@marvell.com>
-In-Reply-To: <20240208101841.3108103-1-srasheed@marvell.com>
-To: Shinas Rasheed <srasheed@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, hgani@marvell.com, vimleshk@marvell.com,
- sedara@marvell.com, egallen@redhat.com, mschmidt@redhat.com,
- pabeni@redhat.com, kuba@kernel.org, horms@kernel.org, wizhao@redhat.com,
- kheib@redhat.com, konguyen@redhat.com
+Content-Type: text/plain
 
-Hello:
+On Mon, 12 Feb 2024, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> Hi all,
+>
+> After merging the drm-misc tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>
+> drivers/gpu/drm/tests/drm_mm_test.c: In function 'drm_test_mm_debug':
+> drivers/gpu/drm/tests/drm_mm_test.c:191:32: error: implicit declaration of function 'drm_debug_printer'; did you mean 'drm_dbg_printer'? [-Werror=implicit-function-declaration]
+>   191 |         struct drm_printer p = drm_debug_printer(test->name);
+>       |                                ^~~~~~~~~~~~~~~~~
+>       |                                drm_dbg_printer
+> drivers/gpu/drm/tests/drm_mm_test.c:191:32: error: invalid initializer
+> cc1: all warnings being treated as errors
+>
+> Caused by commit
+>
+>   e154c4fc7bf2 ("drm: remove drm_debug_printer in favor of drm_dbg_printer")
+>
+> I have used the drm-misc tree from next-20240209 for today.
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Fix at [1].
 
-On Thu, 8 Feb 2024 02:18:32 -0800 you wrote:
-> This driver implements networking functionality of Marvell's Octeon
-> PCI Endpoint NIC VF.
-> 
-> This driver support following devices:
->  * Network controller: Cavium, Inc. Device b203
->  * Network controller: Cavium, Inc. Device b403
->  * Network controller: Cavium, Inc. Device b103
->  * Network controller: Cavium, Inc. Device b903
->  * Network controller: Cavium, Inc. Device ba03
->  * Network controller: Cavium, Inc. Device bc03
->  * Network controller: Cavium, Inc. Device bd03
-> 
-> [...]
+BR,
+Jani.
 
-Here is the summary with links:
-  - [net-next,v7,1/8] octeon_ep_vf: Add driver framework and device initialization
-    https://git.kernel.org/netdev/net-next/c/cb7dd712189f
-  - [net-next,v7,2/8] octeon_ep_vf: add hardware configuration APIs
-    https://git.kernel.org/netdev/net-next/c/2c0c32c72be2
-  - [net-next,v7,3/8] octeon_ep_vf: add VF-PF mailbox communication.
-    https://git.kernel.org/netdev/net-next/c/c5cb944ded94
-  - [net-next,v7,4/8] octeon_ep_vf: add Tx/Rx ring resource setup and cleanup
-    https://git.kernel.org/netdev/net-next/c/ca6ecb0d3c3a
-  - [net-next,v7,5/8] octeon_ep_vf: add support for ndo ops
-    https://git.kernel.org/netdev/net-next/c/c3fad23cdc06
-  - [net-next,v7,6/8] octeon_ep_vf: add Tx/Rx processing and interrupt support
-    https://git.kernel.org/netdev/net-next/c/1cd3b407977c
-  - [net-next,v7,7/8] octeon_ep_vf: add ethtool support
-    https://git.kernel.org/netdev/net-next/c/c92881599efb
-  - [net-next,v7,8/8] octeon_ep_vf: update MAINTAINERS
-    https://git.kernel.org/netdev/net-next/c/90cabae2a234
 
-You are awesome, thank you!
+[1] https://lore.kernel.org/r/20240209140818.106685-1-michal.winiarski@intel.com
+
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Jani Nikula, Intel
 
