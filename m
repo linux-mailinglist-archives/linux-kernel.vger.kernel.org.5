@@ -1,153 +1,411 @@
-Return-Path: <linux-kernel+bounces-61986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE4E8519A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E4238519AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:39:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17B0AB22FF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:39:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D688B232F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:39:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E92E651C3F;
-	Mon, 12 Feb 2024 16:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1924A3F8F1;
+	Mon, 12 Feb 2024 16:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="LZvaBdNs"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="EvSbM/Aq"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2040.outbound.protection.outlook.com [40.107.243.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EBDD3F9C9;
-	Mon, 12 Feb 2024 16:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707755471; cv=none; b=g7tquhT59CUPHUh7oDcPS+ldt54r1bJoRCuB7olprBkwj1W1iQxnDkbP/IfkFh9anRJ0o6Id7acYuXuXo/9OQi+zB00aGBwyfJewznWn21nK0XdCa/gHzqDuDE+kHpOEkCrQy1pVCQPsnbZcB8UTdDscrsXwWQhHKwr/0h56ihI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707755471; c=relaxed/simple;
-	bh=5LHEXykJS2jSVE2sCzHC5a4cdCFsRj5a/HPr77qf3tA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=e1New0kvgnnhm16mTdeB4adEIZMwA1Jg75AgS/N1vmDz6CX0knehUo9s369VAKGKe591itKYdI3b71sSLhAyjZ9Y+wFlkW72agwVI3AjdaA4n944gQiPep0w5gg25yeDlA5k9h9oBTIUS4qRI2utzl7abdAVkElim1otzCvxB1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=LZvaBdNs; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1707755466;
-	bh=5LHEXykJS2jSVE2sCzHC5a4cdCFsRj5a/HPr77qf3tA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LZvaBdNsLGQIy+aXABay82sJ+rFu8g6aaxGiW9uZpN66wS+NuUa7/G4W8gITWGkpa
-	 c1867KsbQxo2upSD+YIPCfUlDoy+ZG15o0o8gSLcOMEAKGWPn4/raakjLJgZ3QmgQl
-	 dI/PQmPe4eKxi8t0eZ/GmWxeVm048ci7sExiS4Ecjb68SKCeD0b3y7maiMIye3wJ45
-	 DGGcrFkvDB/kNDA8WnFjK3mwIrvjK66KtDZL/O72RsTS0jcPJStuMuyH5yBjbq3tTG
-	 J7m2qben0XtmlSJAe4Yq0LSiYgiDICl058dbEz5NMMLhFPozAslNYp17M9pnVILYBE
-	 OPYVUdNaYbjGA==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TYVMG3My8zYFZ;
-	Mon, 12 Feb 2024 11:31:06 -0500 (EST)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Dan Williams <dan.j.williams@intel.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Dave Chinner <david@fromorbit.com>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arch@vger.kernel.org,
-	linux-cxl@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org,
-	dm-devel@lists.linux.dev,
-	nvdimm@lists.linux.dev,
-	linux-s390@vger.kernel.org
-Subject: [PATCH v5 8/8] dax: Fix incorrect list of data cache aliasing architectures
-Date: Mon, 12 Feb 2024 11:31:01 -0500
-Message-Id: <20240212163101.19614-9-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240212163101.19614-1-mathieu.desnoyers@efficios.com>
-References: <20240212163101.19614-1-mathieu.desnoyers@efficios.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8CA3F8FB;
+	Mon, 12 Feb 2024 16:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707755479; cv=fail; b=dDrmvuoNpLUatubdcytAtpNJyRpNK7rdMtIahZQ9XZ67gO74alSTLVlKd5+RUe8lgv9MxPzdJWybjeKESosfEDifaPfvvJgbDupJj87RxBG20dT3xXFEvbbFz3XtROELjI3SZitephuOGgBRzXSy0pD4C2GMy92/Z/igbdslvZo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707755479; c=relaxed/simple;
+	bh=p0IYul3kIAyIr4Z0VGvmmH2p4OeR6f4hZBeUvhyH5GA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=OChPmv9ffYMvpUBxGjZd+R7f0StRGCXPQv7RVWZTERxRKGyQKUSTEK3z37GIRTsFmyHz/hE9q3OAfgsNLkMPbjFxmT9WOX92nerU9jjNgdiB4XXHQWU6t41sOHSeOarEzxtXjm9ram5nkA5rL7nlhjPv2NkLegGtZTxfmOpTVf4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=EvSbM/Aq; arc=fail smtp.client-ip=40.107.243.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B2BLAY/bKMKQJd/MwXjr2iQwSEtSLD02wPgM/ZcuAxR14yzxnnYE1XfDRxKIdIBTNW0YUYVCozD+46cUH3yVG8me9egotcODKBNw5FP12o4ID1unX3iZMY9zLXN2G/63yVOYAALx11yVzNyhxfNoeUZDn1eSGyEC2qYha3gpCg+uS9zby8y9Bqh0IdYgrYxaYUsBtLd03WjCoXnpzY2eCgdiFS4DCfsLDUaJtyQQUzCWWZPJPB9NOiEdP3R4J+rNht44LGHrMbhUm4ag5QHxYQff+wjTf3A7DbZP7ZzE+rtXmwaLsSP7dm+6niiXls07uDWqsb0PTqK6YpI0Hv6B2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uWvisoDDPrjELF0J08m9VyVmtr8yMEDaJxd90x+PuQk=;
+ b=Gv2lS3/coyGhETNCrKyLpUj+7bpgq++IJ+TDDTT9YxUo7hRYkW+Qn/FcVnPAkl5k5hssg6/Rj9a+8JEwElscsII87lBDBvFvF7jzHHc+mvwvcT9CJlVbtMzXdEkrRSiI1KRBQUZGKCtLbDc//at0ZAQt2/EabzqnfSjyLOtlvkmOabE5rMkcy9hVETAqv1nHOF/KKBGx3UXXXiOdlOqzDgjp+ZvFdtUj7MWSbprMM+n5Ss1nieKBZbZOwKQhAMNK7dm0ovCQhHlq6xZrm0JP55vugzyGO7crpv252OpEBwLVGC9+qYmivf/pjfm7a2OnTAVdYI4bNdMs6BockH3EBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uWvisoDDPrjELF0J08m9VyVmtr8yMEDaJxd90x+PuQk=;
+ b=EvSbM/Aqd2Fb2qx13i4Z5JXwnVaq/1vrbF8mZZtFTGd1M4VmV4TZ1pUXuTgbewQv2PRv2TNkLnz8c7hqVznW2OcWDFCYFtPDjWhPpLefmN/kJ9bnmI0tNHfWTq8jGueyDiSNe/IVyWPFWJmO2EiAWYTh5E4wcQOp/kwYx6n6DtM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by DS7PR12MB6095.namprd12.prod.outlook.com (2603:10b6:8:9c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.24; Mon, 12 Feb
+ 2024 16:31:15 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::dd00:9ab5:4d11:2d1a]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::dd00:9ab5:4d11:2d1a%7]) with mapi id 15.20.7292.019; Mon, 12 Feb 2024
+ 16:31:15 +0000
+Message-ID: <08ced68d-99bc-4a5e-90e7-f6a4b4b20e93@amd.com>
+Date: Mon, 12 Feb 2024 10:31:12 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/3] drm: Add support to get EDID from ACPI
+To: amd-gfx@lists.freedesktop.org,
+ "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
+Cc: "open list:ACPI" <linux-acpi@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>, Melissa Wen <mwen@igalia.com>,
+ Mark Pearson <mpearson-lenovo@squebb.ca>
+References: <20240211055011.3583-1-mario.limonciello@amd.com>
+ <20240211055011.3583-2-mario.limonciello@amd.com>
+Content-Language: en-US
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <20240211055011.3583-2-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM6PR04CA0027.namprd04.prod.outlook.com
+ (2603:10b6:5:334::32) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS7PR12MB6095:EE_
+X-MS-Office365-Filtering-Correlation-Id: 322f7ccd-51b5-48b9-23a3-08dc2be8081f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	nzJTITkh27vVkHpzw46ShOEkrPZNcdOEeu4q1OUPXa30cTYrrhAI0AtL6gupCFGvEEsXltUORjXUuWNp3jOedemKyfGdQ/gvxXvFFvVk5Z5GSc3nxeJgpPjYeqGWtLKufH70X4lcBJe5NDt634iqMg9PUMgEp4W4/2hix8Aq9z5lasZCY2EfT+qp2y88nzMPlYNSphihzQ5DPKA632yMgJG1IDv04kKgvMMIPYNv653LptQBuUCrMuZtxzjtSGBHRAikloiWDwSe+JGKbAcfFqwyvB2bfFyYHJrflD61MCSPtpkPX4PBJphg5R1+t5w9LkBONRN/w/STe2uH/l9ljF7ijLYojinYLdhXEa8xNePFouRU8mOhnD5YBu9CyVc1eTMfKlDdBCKm/F+5uZVBeFB5x+6tdbtaA4x2HmxDrdnZ9nDK2GYSpAndUR6td54K4A9EOCL0O/KU3PN1jujq39Q1PY+sP9m8au6bkMM5f55GongfSGUBAWBp670DQ6NdadMhGfMppQIe8xod79ZYexmFiXfwJokARr324UHbfOGYfn6RQSDXzdYe2hSVUFCk
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(376002)(366004)(39860400002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(86362001)(31696002)(31686004)(6916009)(5660300002)(66476007)(66946007)(66556008)(8676002)(8936002)(4326008)(478600001)(6486002)(6506007)(6512007)(2906002)(44832011)(2616005)(41300700001)(83380400001)(38100700002)(66899024)(26005)(316002)(6666004)(53546011)(36756003)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?emdTemJYOUFIaDFYSFNNNjZzaDl2b0puMTRZbFRyRnovbk54ZGh0dnhjYlZn?=
+ =?utf-8?B?MWVkVS9wdjRQWExHSnlxNUhwSEUwZmFMcUdwVjlFY0txWXBxL3NJcWowejRG?=
+ =?utf-8?B?Yit0SHlWRWcyMGhpUUVZMjF0Q0dycEJYUW5wS2hEUnBUS3d0ZjArYnlLQjBl?=
+ =?utf-8?B?U0d4SU1HMzQzN3ZuelgybGlRUkFtYXY4RXdFckgySjA5V3pZMzlHZEVZVVdV?=
+ =?utf-8?B?UVpVUFRreWZIbnY3VHlGUXlrK3Q2QjFjVDRiQ2o5eTJYSDlvaUorbTVtQk96?=
+ =?utf-8?B?QXhucGtjeWg3UmgzZHZ6L0JDVGZDM1ROODFKTzFyL2dnbVFaVThmUSt4aUhV?=
+ =?utf-8?B?Qjk2VXFoY0tiYy9WcmZ5UDFhNW5nLzhtNGRBZ3NnTkVqclpUZHFwM29kQzZi?=
+ =?utf-8?B?dVdhUk5xSjJsWUxoV29HQ0RBdXJ1RlgwSXNZdFZjOVE4dFFURDdEZmJkRTlE?=
+ =?utf-8?B?SDUzKzU3K0lUVDMwalR1b2Y0NzhBc3hqeFNaUXRMOGhkU2FWa3FZR0NCSzUy?=
+ =?utf-8?B?dzBuWlpQcUI0c2tUTTllaUxXME1MNFNhQjZzbVlQODhJVFo1SERPVTdNVGhy?=
+ =?utf-8?B?bisyZGttTzZIVEprS3N6eHdoMVhseEs5eDZ5c2hTRjZ3WjRiTnpZZW1iMXN1?=
+ =?utf-8?B?ZGYwYUFRR2l4WjJFSnRVNWRRT2ExNFkzVkdmdXlxVTY2SStjajdDMEcvaHl4?=
+ =?utf-8?B?TDBpYlFyVTVaNkduNDg3MUtjNlJCckNxVUlObFJWY3czQWVzM1U4ZDA1cXNh?=
+ =?utf-8?B?b010YjZka2lQeEN4ZTZ2ZlQ4MVl5dDc4OURSMXF4bTJmOWMrb21VaSt4VGFr?=
+ =?utf-8?B?b29xRmVudzJjRmc3NENmR3hTdU5rZzZRRE91eXpHSzlNL1RhUUN4cTU2UDZS?=
+ =?utf-8?B?MWpXaThCSG8ralpMRHFHUDFrQ2h6OFhqS0ZxOEJ2TUdZOFZUb0lPT3hxekx1?=
+ =?utf-8?B?eUhLc3dtQ1pUVjNiS2FhcW05RHdUaG1jeVkxb3VMWGk4VUFhcTBvQU1CcWJ5?=
+ =?utf-8?B?TEw2Z2tyeUUxTUFsTWhyNXU2SitYSkFDaHJ4Rnk1UXVyL0ZtR1dwTnBVY1dB?=
+ =?utf-8?B?WXJiNlBKaXJnRlduTDI4L3lpaXg0TVNWWUE3S2tkb1Q4Uk5wSWlnS2tBRHNW?=
+ =?utf-8?B?c2FBeVcwMENlZyszN1ZjMXE2SkZidWp2V1BsQlRzWmlMMFV1U3prbk12K0pp?=
+ =?utf-8?B?L2dtcGlpVnZyY21yMjZrZTBMU2xPcUpBSnNZSFhsNUU4YnMya2UwOFBzN2lo?=
+ =?utf-8?B?aVNLY0xpcVREMkRDN0w5bldPYlpJMHhXWUJQOEp3UHVZT25IVWRsbkdUYy9x?=
+ =?utf-8?B?TDlYeGh2TjNpdkJrWFREZmE4RERRODlXMmVZbDkwTzR6akc5b09pNnQ4b1NY?=
+ =?utf-8?B?Q1BQcXl1OG5OVXJVYkR0TTk1ODhVc2N4cUZKZmhocXhUNndBaDExV1lkODNL?=
+ =?utf-8?B?dkd2V0pyd3NWbGU1K083eTNublFEbVoybUNyTWx4V0sxYkg4b21BSHFzV0Ir?=
+ =?utf-8?B?QjhDcmFMUVpIcmljbnlKbTZIZ0MrL21ib1k5RGthRVJScHh1cnpKdXpxeEdi?=
+ =?utf-8?B?UjkrNzlyc2NDNWR2TjR4REYxY3hrQUk2WWdEM0RTbDdjbnArcVN0elQ5Qnc4?=
+ =?utf-8?B?ZGJ3OFBmR3VNUEgwSVdWOUhWcnp2RkxIL2tUQ1ZDVmdvRStIZUNMYTlXYmc4?=
+ =?utf-8?B?Mk9UbHRTaXBEMnA3VTJ4OUNXR1Q5UG1Md1hqOWUzcmpoT0tMZ3I2SE05Z21B?=
+ =?utf-8?B?ZFl5OGtYa0ErQW0rUno0N3kwU2VCeHd4S3ZwKzl6UUN6TjJybmlkb2Z1YzE2?=
+ =?utf-8?B?ZnBwTEN2MEREeGNXU3htSzd3cnltMXdGeGhwZndoY0txQWErTW5SWHNDcVZN?=
+ =?utf-8?B?YWhtNFFPSEorUWl1bnVWbk40d01BZWdDSU11aEg5ajNPU1lFakZOaHY0Y01T?=
+ =?utf-8?B?R0lKdGEwYUVXdUtGSDRrMjJzVk9uVXlGQndQeFM4dWFNQ3QxcG5JWVcwQksr?=
+ =?utf-8?B?UGN6RDd2Y2w4MTlhbFZkQTZuWFNQa244YjVrbkJUOXRkWExpTTBYQ0NFU3NB?=
+ =?utf-8?B?NFZYbFFnek5Wdk1KVXYwVko2RWdPRGUxSitrWjdMQ3Zoczlvc3Brd2t2ZFpz?=
+ =?utf-8?Q?P6F6Ax5VuPQsqgtPCjaWYXR53?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 322f7ccd-51b5-48b9-23a3-08dc2be8081f
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 16:31:14.9593
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aRfHhnVW8wQ+lyERg+UPIHmUUg/BxGlAxkX1mUUgHLjnYQdhsyRoV2cS9p4fXcCg5P+R5uYP0C2YYEAMp8UH/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6095
 
-commit d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
-prevents DAX from building on architectures with virtually aliased
-dcache with:
+On 2/10/2024 23:50, Mario Limonciello wrote:
+> Some manufacturers have intentionally put an EDID that differs from
+> the EDID on the internal panel on laptops.  Drivers that prefer to
+> fetch this EDID can set a bit on the drm_connector to indicate that
+> the DRM EDID helpers should try to fetch it and it is preferred if
+> it's present.
+> 
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+> v1->v2:
+>   * Split code from previous amdgpu specific helper to generic drm helper.
+> v2->v3:
+>   * Add an extra select to fix a variety of randconfig errors found from
+>     LKP robot.
+> v3->v4:
+>   * Return struct drm_edid
+> v4->v5:
+>   * Rename to drm_edid_read_acpi
+>   * Drop selects
+> ---
+>   drivers/gpu/drm/Kconfig     |   7 +++
+>   drivers/gpu/drm/drm_edid.c  | 113 +++++++++++++++++++++++++++++++++---
+>   include/drm/drm_connector.h |   6 ++
+>   include/drm/drm_edid.h      |   1 +
+>   4 files changed, 119 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index 2520db0b776e..a49740c528b9 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -103,6 +103,13 @@ config DRM_KMS_HELPER
+>   	help
+>   	  CRTC helpers for KMS drivers.
+>   
+> +config DRM_ACPI_HELPER
+> +	tristate "ACPI support in DRM"
+> +	depends on DRM
+> +	depends on (ACPI_VIDEO || ACPI_VIDEO=n)
+> +	help
+> +	  ACPI helpers for DRM drivers.
+> +
 
-  depends on !(ARM || MIPS || SPARC)
+Unfortunately in my wider testing this still fails with a few combinations.
 
-This check is too broad (e.g. recent ARMv7 don't have virtually aliased
-dcaches), and also misses many other architectures with virtually
-aliased data cache.
+This combination fails to link:
 
-This is a regression introduced in the v4.0 Linux kernel where the
-dax mount option is removed for 32-bit ARMv7 boards which have no data
-cache aliasing, and therefore should work fine with FS_DAX.
+CONFIG_ACPI_VIDEO=m
+CONFIG_DRM_ACPI_HELPER=y
+CONFIG_DRM=y
 
-This was turned into the following check in alloc_dax() by a preparatory
-change:
+This combination links but doesn't work because the IS_REACHABLE() fails 
+(-EOPNOTSUPP):
 
-        if (ops && (IS_ENABLED(CONFIG_ARM) ||
-            IS_ENABLED(CONFIG_MIPS) ||
-            IS_ENABLED(CONFIG_SPARC)))
-                return NULL;
+CONFIG_ACPI_VIDEO=m
+CONFIG_DRM_ACPI_HELPER=M
+CONFIG_DRM=y
 
-Use cpu_dcache_is_aliasing() instead to figure out whether the environment
-has aliasing data caches.
+I'm tempted to split off all of drm_edid to it's own module instead  of 
+CONFIG_DRM_ACPI_HELPER which has a depends on (ACPI_VIDEO || ACPI_VIDEIO=n).
 
-Fixes: d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: linux-arch@vger.kernel.org
-Cc: linux-cxl@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-xfs@vger.kernel.org
-Cc: dm-devel@lists.linux.dev
-Cc: nvdimm@lists.linux.dev
----
- drivers/dax/super.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Or Daniel, any better ideas?
 
-diff --git a/drivers/dax/super.c b/drivers/dax/super.c
-index ce5bffa86bba..a21a7c262382 100644
---- a/drivers/dax/super.c
-+++ b/drivers/dax/super.c
-@@ -13,6 +13,7 @@
- #include <linux/uio.h>
- #include <linux/dax.h>
- #include <linux/fs.h>
-+#include <linux/cacheinfo.h>
- #include "dax-private.h"
- 
- /**
-@@ -455,9 +456,7 @@ struct dax_device *alloc_dax(void *private, const struct dax_operations *ops)
- 	 * except for device-dax (NULL operations pointer), which does
- 	 * not use aliased mappings from the kernel.
- 	 */
--	if (ops && (IS_ENABLED(CONFIG_ARM) ||
--	    IS_ENABLED(CONFIG_MIPS) ||
--	    IS_ENABLED(CONFIG_SPARC)))
-+	if (ops && cpu_dcache_is_aliasing())
- 		return ERR_PTR(-EOPNOTSUPP);
- 
- 	if (WARN_ON_ONCE(ops && !ops->zero_page_range))
--- 
-2.39.2
+>   config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
+>           bool "Enable refcount backtrace history in the DP MST helpers"
+>   	depends on STACKTRACE_SUPPORT
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index 69c68804023f..096c278b6f66 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -28,6 +28,7 @@
+>    * DEALINGS IN THE SOFTWARE.
+>    */
+>   
+> +#include <acpi/video.h>
+>   #include <linux/bitfield.h>
+>   #include <linux/cec.h>
+>   #include <linux/hdmi.h>
+> @@ -2188,6 +2189,62 @@ drm_do_probe_ddc_edid(void *data, u8 *buf, unsigned int block, size_t len)
+>   	return ret == xfers ? 0 : -1;
+>   }
+>   
+> +/**
+> + * drm_do_probe_acpi_edid() - get EDID information via ACPI _DDC
+> + * @data: struct drm_connector
+> + * @buf: EDID data buffer to be filled
+> + * @block: 128 byte EDID block to start fetching from
+> + * @len: EDID data buffer length to fetch
+> + *
+> + * Try to fetch EDID information by calling acpi_video_get_edid() function.
+> + *
+> + * Return: 0 on success or error code on failure.
+> + */
+> +static int
+> +drm_do_probe_acpi_edid(void *data, u8 *buf, unsigned int block, size_t len)
+> +{
+> +	struct drm_connector *connector = data;
+> +	struct drm_device *ddev = connector->dev;
+> +	struct acpi_device *acpidev = ACPI_COMPANION(ddev->dev);
+> +	unsigned char start = block * EDID_LENGTH;
+> +	void *edid;
+> +	int r;
+> +
+> +	if (!acpidev)
+> +		return -ENODEV;
+> +
+> +	switch (connector->connector_type) {
+> +	case DRM_MODE_CONNECTOR_LVDS:
+> +	case DRM_MODE_CONNECTOR_eDP:
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* fetch the entire edid from BIOS */
+> +	if (IS_REACHABLE(CONFIG_DRM_ACPI_HELPER)) {
+> +		r = acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
+> +		if (r < 0) {
+> +			DRM_DEBUG_KMS("Failed to get EDID from ACPI: %d\n", r);
+> +			return -EINVAL;
+> +		}
+> +	} else {
+> +		r = -EOPNOTSUPP;
+> +	}
+> +	if (len > r || start > r || start + len > r) {
+> +		r = -EINVAL;
+> +		goto cleanup;
+> +	}
+> +
+> +	memcpy(buf, edid + start, len);
+> +	r = 0;
+> +
+> +cleanup:
+> +	kfree(edid);
+> +
+> +	return r;
+> +}
+> +
+>   static void connector_bad_edid(struct drm_connector *connector,
+>   			       const struct edid *edid, int num_blocks)
+>   {
+> @@ -2621,7 +2678,8 @@ EXPORT_SYMBOL(drm_probe_ddc);
+>    * @connector: connector we're probing
+>    * @adapter: I2C adapter to use for DDC
+>    *
+> - * Poke the given I2C channel to grab EDID data if possible.  If found,
+> + * If the connector allows it, try to fetch EDID data using ACPI. If not found
+> + * poke the given I2C channel to grab EDID data if possible.  If found,
+>    * attach it to the connector.
+>    *
+>    * Return: Pointer to valid EDID or NULL if we couldn't find any.
+> @@ -2629,20 +2687,50 @@ EXPORT_SYMBOL(drm_probe_ddc);
+>   struct edid *drm_get_edid(struct drm_connector *connector,
+>   			  struct i2c_adapter *adapter)
+>   {
+> -	struct edid *edid;
+> +	struct edid *edid = NULL;
+>   
+>   	if (connector->force == DRM_FORCE_OFF)
+>   		return NULL;
+>   
+> -	if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
+> -		return NULL;
+> +	if (connector->acpi_edid_allowed)
+> +		edid = _drm_do_get_edid(connector, drm_do_probe_acpi_edid, connector, NULL);
+> +
+> +	if (!edid) {
+> +		if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
+> +			return NULL;
+> +		edid = _drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter, NULL);
+> +	}
+>   
+> -	edid = _drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter, NULL);
+>   	drm_connector_update_edid_property(connector, edid);
+>   	return edid;
+>   }
+>   EXPORT_SYMBOL(drm_get_edid);
+>   
+> +/**
+> + * drm_edid_read_acpi - get EDID data, if available
+> + * @connector: connector we're probing
+> + *
+> + * Use the BIOS to attempt to grab EDID data if possible.
+> + *
+> + * The returned pointer must be freed using drm_edid_free().
+> + *
+> + * Return: Pointer to valid EDID or NULL if we couldn't find any.
+> + */
+> +const struct drm_edid *drm_edid_read_acpi(struct drm_connector *connector)
+> +{
+> +	const struct drm_edid *drm_edid;
+> +
+> +	if (connector->force == DRM_FORCE_OFF)
+> +		return NULL;
+> +
+> +	drm_edid = drm_edid_read_custom(connector, drm_do_probe_acpi_edid, connector);
+> +
+> +	/* Note: Do *not* call connector updates here. */
+> +
+> +	return drm_edid;
+> +}
+> +EXPORT_SYMBOL(drm_edid_read_acpi);
+> +
+>   /**
+>    * drm_edid_read_custom - Read EDID data using given EDID block read function
+>    * @connector: Connector to use
+> @@ -2727,10 +2815,11 @@ const struct drm_edid *drm_edid_read_ddc(struct drm_connector *connector,
+>   EXPORT_SYMBOL(drm_edid_read_ddc);
+>   
+>   /**
+> - * drm_edid_read - Read EDID data using connector's I2C adapter
+> + * drm_edid_read - Read EDID data using BIOS or connector's I2C adapter
+>    * @connector: Connector to use
+>    *
+> - * Read EDID using the connector's I2C adapter.
+> + * Read EDID from BIOS if allowed by connector or by using the connector's
+> + * I2C adapter.
+>    *
+>    * The EDID may be overridden using debugfs override_edid or firmware EDID
+>    * (drm_edid_load_firmware() and drm.edid_firmware parameter), in this priority
+> @@ -2742,10 +2831,18 @@ EXPORT_SYMBOL(drm_edid_read_ddc);
+>    */
+>   const struct drm_edid *drm_edid_read(struct drm_connector *connector)
+>   {
+> +	const struct drm_edid *drm_edid = NULL;
+> +
+>   	if (drm_WARN_ON(connector->dev, !connector->ddc))
+>   		return NULL;
+>   
+> -	return drm_edid_read_ddc(connector, connector->ddc);
+> +	if (connector->acpi_edid_allowed)
+> +		drm_edid = drm_edid_read_acpi(connector);
+> +
+> +	if (!drm_edid)
+> +		drm_edid = drm_edid_read_ddc(connector, connector->ddc);
+> +
+> +	return drm_edid;
+>   }
+>   EXPORT_SYMBOL(drm_edid_read);
+>   
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index fe88d7fc6b8f..74ed47f37a69 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1886,6 +1886,12 @@ struct drm_connector {
+>   
+>   	/** @hdr_sink_metadata: HDR Metadata Information read from sink */
+>   	struct hdr_sink_metadata hdr_sink_metadata;
+> +
+> +	/**
+> +	 * @acpi_edid_allowed: Get the EDID from the BIOS, if available.
+> +	 * This is only applicable to eDP and LVDS displays.
+> +	 */
+> +	bool acpi_edid_allowed;
+>   };
+>   
+>   #define obj_to_connector(x) container_of(x, struct drm_connector, base)
+> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+> index 518d1b8106c7..38b5e1b5c773 100644
+> --- a/include/drm/drm_edid.h
+> +++ b/include/drm/drm_edid.h
+> @@ -463,5 +463,6 @@ bool drm_edid_is_digital(const struct drm_edid *drm_edid);
+>   
+>   const u8 *drm_find_edid_extension(const struct drm_edid *drm_edid,
+>   				  int ext_id, int *ext_index);
+> +const struct drm_edid *drm_edid_read_acpi(struct drm_connector *connector);
+>   
+>   #endif /* __DRM_EDID_H__ */
 
 
