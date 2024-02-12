@@ -1,98 +1,117 @@
-Return-Path: <linux-kernel+bounces-62522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 588DC852252
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D81852253
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:11:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CE781F229C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:11:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBFFB1F2395E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165BF4F605;
-	Mon, 12 Feb 2024 23:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K82rgZj6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77AB14F608;
+	Mon, 12 Feb 2024 23:11:21 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B804EB49;
-	Mon, 12 Feb 2024 23:11:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE1BF4F1E0;
+	Mon, 12 Feb 2024 23:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707779460; cv=none; b=lOFUwCQ2nnxBjnnHazKSUdYh6AbST4/aQtZ0kQ8XrkR4YsH351lEsi8zrv6Sp6XvVeyBWT+l4xn1ops0Lg0qEm32g96N0+G9GTdJa2x0SHTe55OVfnZNotYtu+KszTrgwV8nMnmEFIUulhEdVG82FK/ZcJYsGjVvkxYFnlbJhCc=
+	t=1707779481; cv=none; b=LpL/gXp6MNJ8MofNeIE4+7RFTlqso/RBwubn9fwIVGhAZu1dwkzDm+LlkXuP+SeHreNq5TZ8k112cmpE0JV8S2wtjvdXNhxnTbCXZcybNaTyqZJeqiFoKn+kX8E6dNhPPYa9oRJt6iEswnLlLJNM+T0+lJME+zqULtDpsErU0i4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707779460; c=relaxed/simple;
-	bh=pDDsqmdQFRiFzmJFubeCQnwDZA8NVX7LbcVD1ftUghQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B+cmhUieUDZHX0r9EB/kTj74qZ701BgFKOWU6a5VjED6aytEvQzGTtp0lfAgMQjUdCjjphwa8IIFh7l12hcoatnaOvRbuTGKXsAVA+H5PWNJaBBopCLlmCK5OSUiW0WqvmR/RMOcEDxPXxA9RpDJUyGLSP3rCbpnPgP2rv7qXyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K82rgZj6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 983BBC433F1;
-	Mon, 12 Feb 2024 23:10:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707779459;
-	bh=pDDsqmdQFRiFzmJFubeCQnwDZA8NVX7LbcVD1ftUghQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=K82rgZj6YmUtE3BC0zZBZsiXjcvfUmjeXkHAFvDN/Q/JiCsKfWtg8qB0BfnU2Q4bx
-	 fc7yCTPogLXyoaGtDmcF/9YzaqxCj4sef6pp4ZoqOUyrtA/dTX1mig5amErUARtvoV
-	 757gsAoi0pOGnj9jdutfM6goglMeJjXA2c7SxqrP9WlhOo3STLuYzpU6s1Ob6rn/Yv
-	 PfrTPTzZaM2qw5+nR+W9cRu1gHLTjmNTYudaHD9xiPmMm92kFsy8gw1EDk+ghzrbVX
-	 x3zuUlG8+uPQ3rudmLzS9242cDEBmapXI8uO8pCNauQv1RUb2jbVquj4sCEdT0oojA
-	 l10H6TFt8YzrA==
-Received: by mercury (Postfix, from userid 1000)
-	id ECE1F106A041; Tue, 13 Feb 2024 00:10:55 +0100 (CET)
-Date: Tue, 13 Feb 2024 00:10:55 +0100
-From: Sebastian Reichel <sre@kernel.org>
-To: Stefan Wahren <wahrenst@gmx.net>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	NXP Linux Team <linux-imx@nxp.com>, Dong Aisheng <aisheng.dong@nxp.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 07/14] dt-bindings: lcdif: Do not require
- power-domains for i.MX6ULL
-Message-ID: <khwsxrpj5fgxl7ukiur2tdyy7a6d6h6zryc5z2h7o6f7k3b32p@cjqsmdbocfpe>
-References: <20240210012114.489102-1-sre@kernel.org>
- <20240210012114.489102-8-sre@kernel.org>
- <a8b55331-a8c3-457e-83e0-2aa361ed23c6@gmx.net>
+	s=arc-20240116; t=1707779481; c=relaxed/simple;
+	bh=IeqVsqHBBxkRlvWKuRk+BM+q2fCSQTabzCOE3hEGlcc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QsbRWtgiD28n0YCwOarpTDvPQUz1SgZqSPHDqfmL7TLdMRGoqBaY9Zf54ED+mafGr1DcHrtSWRGzigJ/vV+vvlWch36u7buYCPx4O/TLE2s3psK4k0VzDVsICerCVGm6LSEqbAVjujM+CUTyySOci0pqMFMryq9hMVQ9VZxuBKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C22F4C43394;
+	Mon, 12 Feb 2024 23:11:19 +0000 (UTC)
+Date: Mon, 12 Feb 2024 18:12:02 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mete Durlu <meted@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
+ tracer_tracing_is_on()
+Message-ID: <20240212181202.70f47870@gandalf.local.home>
+In-Reply-To: <957e4c37-954f-4c35-98ba-df5edde4b5ce@linux.ibm.com>
+References: <20240205065340.2848065-1-svens@linux.ibm.com>
+	<20240205075504.1b55f29c@rorschach.local.home>
+	<yt9djznj3vbl.fsf@linux.ibm.com>
+	<20240205092353.523cc1ef@rorschach.local.home>
+	<yt9d34u63xxz.fsf@linux.ibm.com>
+	<yt9dsf262d2n.fsf@linux.ibm.com>
+	<20240206060113.39c0f5bc@rorschach.local.home>
+	<yt9deddovn3w.fsf@linux.ibm.com>
+	<20240207060923.182ecb55@rorschach.local.home>
+	<9a062196-ccbe-440e-a2f9-23eb8c5eb837@linux.ibm.com>
+	<20240207072812.4a29235f@rorschach.local.home>
+	<yt9dzfwch00u.fsf@linux.ibm.com>
+	<20240207104703.071ee985@rorschach.local.home>
+	<8c986cb3-61b3-4f65-81c9-ffcfa994390f@linux.ibm.com>
+	<20240212135320.26f90f28@gandalf.local.home>
+	<957e4c37-954f-4c35-98ba-df5edde4b5ce@linux.ibm.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a8b55331-a8c3-457e-83e0-2aa361ed23c6@gmx.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Stefan,
+On Mon, 12 Feb 2024 23:54:00 +0100
+Mete Durlu <meted@linux.ibm.com> wrote:
 
-On Mon, Feb 12, 2024 at 08:20:35PM +0100, Stefan Wahren wrote:
-> Am 10.02.24 um 02:18 schrieb Sebastian Reichel:
-> > i.MX6UL(L) uses "fsl,imx6sx-lcdif" as fallback compatible string,
-> > but has only very lightweight DISPLAY power domain. Its DISPLAY
-> > power domain is not supported by the binding / Linux kernel at
-> > the moment. Since the current setup is working, let's remove the
-> > power-domain from being required for that platform to fix the warning
-> > printed by CHECK_DTBS=y.
-> i'm not sure this is a good idea. In case i.MX6UL(L) is different from
-> i.MX6SX here, then it should have a different compatible.
+> On 2/12/24 19:53, Steven Rostedt wrote:
+> > 
+> > Right, it will definitely force the race window to go away.
+> > 
+> > Can you still trigger this issue with just Sven's patch and not this change?  
+> Sven's patch makes the test cases much more resilient. I needed to ramp
+> up the load up to 4 stressors on a 4 core system before the test starts
+> to fail again. At this point it is fair to say that the system is under
+> significant load.
+> 
+> The failing condition is now different, which tells me that
+> Sven's patch have already solved(or improved) the previous issue.
+> What is failing now:
+> 
+>    echo '** ENABLE TRACING'
+>    enable_tracing
+> 
+>    cnt=`cnt_trace`
+>    if [ $cnt -eq 0 ]; then
+>       fail "Nothing found in trace"
+>    fi
+> 
+> Adding a sleep between enable_tracing and cnt_trace seems to improve the
+> situation a lot. (my guess is that, the trace writer isn't getting any
+> runtime before the test checks the trace output)
+> 
+>    echo '** ENABLE TRACING'
+>    enable_tracing
+> 
+>   +sleep $SLEEP_TIME
+>    cnt=`cnt_trace`
+>    if [ $cnt -eq 0 ]; then
+>       fail "Nothing found in trace"
+>    fi
+> 
+> Didn't see any failure while increasing the system load until 8
+> stressors (this might have been luck). When system was under load with
+> 8 stressors, I have seen the test failing 2 out of 10 times. Definitely
+> an improvement over the current situation.
+> 
 
-It already has. The i.MX6UL(L) compatible looks like this:
 
-compatible = "fsl,imx6ul-lcdif", "fsl,imx6sx-lcdif"
+So, I plan on adding Sven's patch for my next pull request to Linus. I had
+forgotten it when I did my last one (largely due to traveling). I'll hold
+off a week to see if any other fixes come in.
 
-So the i.MX6SX one is just a fallback compatible. But the current
-requirement for power-domains affects i.MX6UL(L), since it says
-the compatible only needs to contain "fsl,imx6sx-lcdif" somewhere
-to make power-domains mandatory.
-
-Note, that the kernel driver does not use "fsl,imx6ul-lcdif", so
-the hardware itself is indeed compatible.
-
--- Sebastian
+-- Steve
 
