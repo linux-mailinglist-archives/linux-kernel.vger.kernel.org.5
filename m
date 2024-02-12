@@ -1,368 +1,165 @@
-Return-Path: <linux-kernel+bounces-61252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C8AC850FD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:37:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2E6D850FE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:44:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 282571F23830
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:37:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5A771C20F43
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D207517BA4;
-	Mon, 12 Feb 2024 09:37:26 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21FA5179B8;
-	Mon, 12 Feb 2024 09:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFB517BA8;
+	Mon, 12 Feb 2024 09:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j7B0Qg0A"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA8A12B89;
+	Mon, 12 Feb 2024 09:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707730646; cv=none; b=b/ofb3g9ZdYIlIZoNDqJxmWik8L8xgPqzxRy9d/858Tr9fUBQTAobKjHfcpCLlFsrdnscfpMLWa3TxCsgrJi5yUunvZCPHUYHisUnAL5xFxs5tRuW7RZjn+PLvtpuhKZEdQC4inZYc64c73VX90AmrhWUjft6xXY35r4Yu+oN6g=
+	t=1707731081; cv=none; b=Lt/Ci6ic4F5E7t/uh+nFp99FTTM5SoAVmlAexEngvAiFXLsm4RtzA9LpLFrOvgh7aiisLqJm223OOvkrG0tmSoCWkX26z6gSpd6SZ1kzphRwgbmM1r9acMrhDJb23eLvTM1BbxgLkxKS4Q2oXmNd/kxq/9u+HxVUBv9l+3cPE3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707730646; c=relaxed/simple;
-	bh=ajK6QyGrpQajRxEmFqtR2vm1BVw9Pv1lp7YY/3BQk98=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Kr4Ws8cxewcUTj/DmvrGGvo4J3OdqMHYsPCSCMCKo51bsPgftFqXaI2FC8/YVSfvkX195y8zDuNyGdM0qhmgGGn3nQmZcIrHpFv1FeqWLRPFSUssl4ATwqFEB0Sx8DqrejSyJcki+k60Uoe4+SvW5w/5QNDMtElClQM1aGPIwbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC9BBDA7;
-	Mon, 12 Feb 2024 01:38:02 -0800 (PST)
-Received: from [10.57.78.115] (unknown [10.57.78.115])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4B1643F762;
-	Mon, 12 Feb 2024 01:37:18 -0800 (PST)
-Message-ID: <04380249-3bf2-4702-a004-46465a9ae381@arm.com>
-Date: Mon, 12 Feb 2024 09:37:16 +0000
+	s=arc-20240116; t=1707731081; c=relaxed/simple;
+	bh=BDex9CHMPTrROryA/0/YTlMGIku/EOc2sBxwRrKcQQ8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SLTPynaUvm2o3avpTETZlOWfqTaq91gpXY4Q+9Yx8fQR9bP0k9X19+Atu1bfMOk+Ws+4yrTJMdvyfSDml0hHolCVLh/zoDfrswPWvkXJ5r0/xDbpUF/CeqXyqa/S4xJn+8xwd13ZNai5sFcamjr3gFEnSlN+PIgFFe8YyECBvno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j7B0Qg0A; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55ad2a47b7aso4136420a12.3;
+        Mon, 12 Feb 2024 01:44:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707731078; x=1708335878; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BDex9CHMPTrROryA/0/YTlMGIku/EOc2sBxwRrKcQQ8=;
+        b=j7B0Qg0ATPNfl1AK7PgZA6iNisCee36vR0Al9rpEPP4xWY2LJiopN+0j+2nVZdcXDr
+         KZmuktDzTVzDrggChwsLRe2xWljqc9tu0EwjqdOVXx1InMP2tF01XlpgZLvqBlJRYFWi
+         XOGxd8PRWxDUWFFafksA79gpgaX+8vjWyOIoumsdYJ8w0WJD2TGRXQ77v1Oz+3q0ChsO
+         pi8yeuhTS20BMcGRq6Z3ntBDA5QppZy7sIrzh57o6FBMv/bZ2eM9XrUVP4/LCSegy+KD
+         WYuxY+/AvzoXmf+QHdFqqH6SAViTY/rkfFErKudJTA3JMT4f4tXPPyb1jOGriNHYmPoI
+         DuVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707731078; x=1708335878;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BDex9CHMPTrROryA/0/YTlMGIku/EOc2sBxwRrKcQQ8=;
+        b=EQFitoFex4jZ4Aem50sB8tU8mjif6bpbbXLAArxcSwjr93W0Ow8IBXOwHm9TEghG9u
+         rEn6n5BREnZj7XYq/FMESfVFHShwjEUNTMWAn+oTWnWembthI24ji2h1jBlEoJXyuKgp
+         PjX+DLOWoq08n6pMp8C1EopLv5L4J0soeJk7oh6nDlMXYdJiyXRNWMKKmmsYjWxj45o1
+         8Bj7iEnUN5UCu2taEgBqXZRpmBwnxtXgQbXzNsvidVb4102NwXld69RRqBlCcS3BiP+w
+         JPbs2HgQ9nG27kGV/eBs2qWIO442Pr98lDG+/GSyw0tsMF+PQxbK6uM6vQRopHAr6YYM
+         GhKw==
+X-Gm-Message-State: AOJu0YwefR2NvlEnt5jSlLIJzu7hVnQZKXXlaA7WEsHgV99liI3sES44
+	MBvkGiVLZDL31artpa1jJNbaA7rQ3ddhlgbngjpSSbvKM1X9zQniQ6eamLmxL6LTUW0a5f+6qeu
+	Gel46ch4q+kXCO/L4mVJmzBQDlU4=
+X-Google-Smtp-Source: AGHT+IFd8T1a59U3HO0CTsk54hmzNyd6VOEVH0D0LsrL1/gTpXNqJD4z8Bmup7IJ6IUITT7nnM4hHMaKDEdakMUPcg0=
+X-Received: by 2002:a17:906:f190:b0:a38:4ff3:773 with SMTP id
+ gs16-20020a170906f19000b00a384ff30773mr4381198ejb.47.1707731078095; Mon, 12
+ Feb 2024 01:44:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 10/10] mm/memory: optimize unmap/zap with PTE-mapped
- THP
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Yin Fengwei <fengwei.yin@intel.com>, Michal Hocko <mhocko@suse.com>,
- Will Deacon <will@kernel.org>, "Aneesh Kumar K.V"
- <aneesh.kumar@linux.ibm.com>, Nick Piggin <npiggin@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, Michael Ellerman
- <mpe@ellerman.id.au>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
- linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org
-References: <20240209221509.585251-1-david@redhat.com>
- <20240209221509.585251-11-david@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240209221509.585251-11-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240211101421.166779-1-warthog618@gmail.com> <CAHp75VeSLvrxMOARDBHBJ5VGVR-Jv-7saxjJiN-NOPMyTwit3Q@mail.gmail.com>
+ <20240211231321.GA4748@rigel> <CAHp75VddjcLaRqugKuk+eejYx_0AHVL4SjYcdh7zUKDj8SpcQw@mail.gmail.com>
+In-Reply-To: <CAHp75VddjcLaRqugKuk+eejYx_0AHVL4SjYcdh7zUKDj8SpcQw@mail.gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 12 Feb 2024 11:44:02 +0200
+Message-ID: <CAHp75VcjsVasfaZe25fWzzV-5vv7m7O0-v4j=pcvtWQGKtY5BQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: uapi: clarify default_values being logical
+To: Kent Gibson <warthog618@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, brgl@bgdev.pl, 
+	linus.walleij@linaro.org, andy@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 09/02/2024 22:15, David Hildenbrand wrote:
-> Similar to how we optimized fork(), let's implement PTE batching when
-> consecutive (present) PTEs map consecutive pages of the same large
-> folio.
-> 
-> Most infrastructure we need for batching (mmu gather, rmap) is already
-> there. We only have to add get_and_clear_full_ptes() and
-> clear_full_ptes(). Similarly, extend zap_install_uffd_wp_if_needed() to
-> process a PTE range.
-> 
-> We won't bother sanity-checking the mapcount of all subpages, but only
-> check the mapcount of the first subpage we process. If there is a real
-> problem hiding somewhere, we can trigger it simply by using small
-> folios, or when we zap single pages of a large folio. Ideally, we had
-> that check in rmap code (including for delayed rmap), but then we cannot
-> print the PTE. Let's keep it simple for now. If we ever have a cheap
-> folio_mapcount(), we might just want to check for underflows there.
-> 
-> To keep small folios as fast as possible force inlining of a specialized
-> variant using __always_inline with nr=1.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+On Mon, Feb 12, 2024 at 11:28=E2=80=AFAM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Mon, Feb 12, 2024 at 1:13=E2=80=AFAM Kent Gibson <warthog618@gmail.com=
+> wrote:
+> > On Sun, Feb 11, 2024 at 06:58:14PM +0200, Andy Shevchenko wrote:
+> > > On Sun, Feb 11, 2024 at 12:14=E2=80=AFPM Kent Gibson <warthog618@gmai=
+l.com> wrote:
+> > > >
+> > > > The documentation for default_values mentions high/low which can be
+> > > > confusing, particularly when the ACTIVE_LOW flag is set.
+> > > >
+> > > > Replace high/low with active/inactive to clarify that the values ar=
+e
+> > > > logical not physical.
+> > > >
+> > > > Similarly, clarify the interpretation of values in struct gpiohandl=
+e_data.
+> > >
+> > > I'm not against this particular change, but I want the entire GPIO
+> > > documentation to be aligned in the terminology aspect. Is this the
+> > > case after this patch? I.o.w. have we replaced all leftovers?
+> >
+> > Agreed. Those are the last remnants of the low/high terminolgy that I a=
+m
+> > aware of, certainly the last in gpio.h.
+> >
+> > Having a closer look to double check...
+> >
+> > Ah - it is still used in Documentation/userspace-api/gpio/sysfs.rst -
+> > not somewhere I go very often.
+> > Would you like that updated in a separate patch?
+>
+> Yes, please. For this one
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+Also
+"The values are boolean, zero for low, nonzero for high."
+https://docs.kernel.org/driver-api/gpio/consumer.html
 
-> ---
->  include/linux/pgtable.h | 70 +++++++++++++++++++++++++++++++
->  mm/memory.c             | 92 +++++++++++++++++++++++++++++------------
->  2 files changed, 136 insertions(+), 26 deletions(-)
-> 
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index aab227e12493..49ab1f73b5c2 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -580,6 +580,76 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
->  }
->  #endif
->  
-> +#ifndef get_and_clear_full_ptes
-> +/**
-> + * get_and_clear_full_ptes - Clear present PTEs that map consecutive pages of
-> + *			     the same folio, collecting dirty/accessed bits.
-> + * @mm: Address space the pages are mapped into.
-> + * @addr: Address the first page is mapped at.
-> + * @ptep: Page table pointer for the first entry.
-> + * @nr: Number of entries to clear.
-> + * @full: Whether we are clearing a full mm.
-> + *
-> + * May be overridden by the architecture; otherwise, implemented as a simple
-> + * loop over ptep_get_and_clear_full(), merging dirty/accessed bits into the
-> + * returned PTE.
-> + *
-> + * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-> + * some PTEs might be write-protected.
-> + *
-> + * Context: The caller holds the page table lock.  The PTEs map consecutive
-> + * pages that belong to the same folio.  The PTEs are all in the same PMD.
-> + */
-> +static inline pte_t get_and_clear_full_ptes(struct mm_struct *mm,
-> +		unsigned long addr, pte_t *ptep, unsigned int nr, int full)
-> +{
-> +	pte_t pte, tmp_pte;
-> +
-> +	pte = ptep_get_and_clear_full(mm, addr, ptep, full);
-> +	while (--nr) {
-> +		ptep++;
-> +		addr += PAGE_SIZE;
-> +		tmp_pte = ptep_get_and_clear_full(mm, addr, ptep, full);
-> +		if (pte_dirty(tmp_pte))
-> +			pte = pte_mkdirty(pte);
-> +		if (pte_young(tmp_pte))
-> +			pte = pte_mkyoung(pte);
-> +	}
-> +	return pte;
-> +}
-> +#endif
-> +
-> +#ifndef clear_full_ptes
-> +/**
-> + * clear_full_ptes - Clear present PTEs that map consecutive pages of the same
-> + *		     folio.
-> + * @mm: Address space the pages are mapped into.
-> + * @addr: Address the first page is mapped at.
-> + * @ptep: Page table pointer for the first entry.
-> + * @nr: Number of entries to clear.
-> + * @full: Whether we are clearing a full mm.
-> + *
-> + * May be overridden by the architecture; otherwise, implemented as a simple
-> + * loop over ptep_get_and_clear_full().
-> + *
-> + * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-> + * some PTEs might be write-protected.
-> + *
-> + * Context: The caller holds the page table lock.  The PTEs map consecutive
-> + * pages that belong to the same folio.  The PTEs are all in the same PMD.
-> + */
-> +static inline void clear_full_ptes(struct mm_struct *mm, unsigned long addr,
-> +		pte_t *ptep, unsigned int nr, int full)
-> +{
-> +	for (;;) {
-> +		ptep_get_and_clear_full(mm, addr, ptep, full);
-> +		if (--nr == 0)
-> +			break;
-> +		ptep++;
-> +		addr += PAGE_SIZE;
-> +	}
-> +}
-> +#endif
->  
->  /*
->   * If two threads concurrently fault at the same page, the thread that
-> diff --git a/mm/memory.c b/mm/memory.c
-> index a3efc4da258a..3b8e56eb08a3 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -1515,7 +1515,7 @@ static inline bool zap_drop_file_uffd_wp(struct zap_details *details)
->   */
->  static inline void
->  zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
-> -			      unsigned long addr, pte_t *pte,
-> +			      unsigned long addr, pte_t *pte, int nr,
->  			      struct zap_details *details, pte_t pteval)
->  {
->  	/* Zap on anonymous always means dropping everything */
-> @@ -1525,20 +1525,27 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
->  	if (zap_drop_file_uffd_wp(details))
->  		return;
->  
-> -	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
-> +	for (;;) {
-> +		/* the PFN in the PTE is irrelevant. */
-> +		pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
-> +		if (--nr == 0)
-> +			break;
-> +		pte++;
-> +		addr += PAGE_SIZE;
-> +	}
->  }
->  
-> -static inline void zap_present_folio_pte(struct mmu_gather *tlb,
-> +static __always_inline void zap_present_folio_ptes(struct mmu_gather *tlb,
->  		struct vm_area_struct *vma, struct folio *folio,
-> -		struct page *page, pte_t *pte, pte_t ptent, unsigned long addr,
-> -		struct zap_details *details, int *rss, bool *force_flush,
-> -		bool *force_break)
-> +		struct page *page, pte_t *pte, pte_t ptent, unsigned int nr,
-> +		unsigned long addr, struct zap_details *details, int *rss,
-> +		bool *force_flush, bool *force_break)
->  {
->  	struct mm_struct *mm = tlb->mm;
->  	bool delay_rmap = false;
->  
->  	if (!folio_test_anon(folio)) {
-> -		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
-> +		ptent = get_and_clear_full_ptes(mm, addr, pte, nr, tlb->fullmm);
->  		if (pte_dirty(ptent)) {
->  			folio_mark_dirty(folio);
->  			if (tlb_delay_rmap(tlb)) {
-> @@ -1548,36 +1555,49 @@ static inline void zap_present_folio_pte(struct mmu_gather *tlb,
->  		}
->  		if (pte_young(ptent) && likely(vma_has_recency(vma)))
->  			folio_mark_accessed(folio);
-> -		rss[mm_counter(folio)]--;
-> +		rss[mm_counter(folio)] -= nr;
->  	} else {
->  		/* We don't need up-to-date accessed/dirty bits. */
-> -		ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
-> -		rss[MM_ANONPAGES]--;
-> +		clear_full_ptes(mm, addr, pte, nr, tlb->fullmm);
-> +		rss[MM_ANONPAGES] -= nr;
->  	}
-> +	/* Checking a single PTE in a batch is sufficient. */
->  	arch_check_zapped_pte(vma, ptent);
-> -	tlb_remove_tlb_entry(tlb, pte, addr);
-> +	tlb_remove_tlb_entries(tlb, pte, nr, addr);
->  	if (unlikely(userfaultfd_pte_wp(vma, ptent)))
-> -		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
-> +		zap_install_uffd_wp_if_needed(vma, addr, pte, nr, details,
-> +					      ptent);
->  
->  	if (!delay_rmap) {
-> -		folio_remove_rmap_pte(folio, page, vma);
-> +		folio_remove_rmap_ptes(folio, page, nr, vma);
-> +
-> +		/* Only sanity-check the first page in a batch. */
->  		if (unlikely(page_mapcount(page) < 0))
->  			print_bad_pte(vma, addr, ptent, page);
->  	}
-> -	if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
-> +	if (unlikely(__tlb_remove_folio_pages(tlb, page, nr, delay_rmap))) {
->  		*force_flush = true;
->  		*force_break = true;
->  	}
->  }
->  
-> -static inline void zap_present_pte(struct mmu_gather *tlb,
-> +/*
-> + * Zap or skip at least one present PTE, trying to batch-process subsequent
-> + * PTEs that map consecutive pages of the same folio.
-> + *
-> + * Returns the number of processed (skipped or zapped) PTEs (at least 1).
-> + */
-> +static inline int zap_present_ptes(struct mmu_gather *tlb,
->  		struct vm_area_struct *vma, pte_t *pte, pte_t ptent,
-> -		unsigned long addr, struct zap_details *details,
-> -		int *rss, bool *force_flush, bool *force_break)
-> +		unsigned int max_nr, unsigned long addr,
-> +		struct zap_details *details, int *rss, bool *force_flush,
-> +		bool *force_break)
->  {
-> +	const fpb_t fpb_flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
->  	struct mm_struct *mm = tlb->mm;
->  	struct folio *folio;
->  	struct page *page;
-> +	int nr;
->  
->  	page = vm_normal_page(vma, addr, ptent);
->  	if (!page) {
-> @@ -1587,14 +1607,29 @@ static inline void zap_present_pte(struct mmu_gather *tlb,
->  		tlb_remove_tlb_entry(tlb, pte, addr);
->  		VM_WARN_ON_ONCE(userfaultfd_wp(vma));
->  		ksm_might_unmap_zero_page(mm, ptent);
-> -		return;
-> +		return 1;
->  	}
->  
->  	folio = page_folio(page);
->  	if (unlikely(!should_zap_folio(details, folio)))
-> -		return;
-> -	zap_present_folio_pte(tlb, vma, folio, page, pte, ptent, addr, details,
-> -			      rss, force_flush, force_break);
-> +		return 1;
-> +
-> +	/*
-> +	 * Make sure that the common "small folio" case is as fast as possible
-> +	 * by keeping the batching logic separate.
-> +	 */
-> +	if (unlikely(folio_test_large(folio) && max_nr != 1)) {
-> +		nr = folio_pte_batch(folio, addr, pte, ptent, max_nr, fpb_flags,
-> +				     NULL);
-> +
-> +		zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent, nr,
-> +				       addr, details, rss, force_flush,
-> +				       force_break);
-> +		return nr;
-> +	}
-> +	zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent, 1, addr,
-> +			       details, rss, force_flush, force_break);
-> +	return 1;
->  }
->  
->  static unsigned long zap_pte_range(struct mmu_gather *tlb,
-> @@ -1609,6 +1644,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->  	pte_t *start_pte;
->  	pte_t *pte;
->  	swp_entry_t entry;
-> +	int nr;
->  
->  	tlb_change_page_size(tlb, PAGE_SIZE);
->  	init_rss_vec(rss);
-> @@ -1622,7 +1658,9 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->  		pte_t ptent = ptep_get(pte);
->  		struct folio *folio;
->  		struct page *page;
-> +		int max_nr;
->  
-> +		nr = 1;
->  		if (pte_none(ptent))
->  			continue;
->  
-> @@ -1630,10 +1668,12 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->  			break;
->  
->  		if (pte_present(ptent)) {
-> -			zap_present_pte(tlb, vma, pte, ptent, addr, details,
-> -					rss, &force_flush, &force_break);
-> +			max_nr = (end - addr) / PAGE_SIZE;
-> +			nr = zap_present_ptes(tlb, vma, pte, ptent, max_nr,
-> +					      addr, details, rss, &force_flush,
-> +					      &force_break);
->  			if (unlikely(force_break)) {
-> -				addr += PAGE_SIZE;
-> +				addr += nr * PAGE_SIZE;
->  				break;
->  			}
->  			continue;
-> @@ -1687,8 +1727,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->  			WARN_ON_ONCE(1);
->  		}
->  		pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
-> -		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
-> -	} while (pte++, addr += PAGE_SIZE, addr != end);
-> +		zap_install_uffd_wp_if_needed(vma, addr, pte, 1, details, ptent);
-> +	} while (pte += nr, addr += PAGE_SIZE * nr, addr != end);
->  
->  	add_mm_rss_vec(mm, rss);
->  	arch_leave_lazy_mmu_mode();
+And there as well
+"With this, all the gpiod_set_(array)_value_xxx() functions interpret
+the parameter "value" as "asserted" ("1") or "de-asserted" ("0")."
+So, should we use asserted-deasserted?
 
+
+On https://docs.kernel.org/driver-api/gpio/
+"get
+returns value for signal "offset", 0=3Dlow, 1=3Dhigh, or negative error
+
+..
+
+reg_set
+output set register (out=3Dhigh) for generic GPIO
+
+reg_clr
+output clear register (out=3Dlow) for generic GPIO"
+(Not sure about the last two, though)
+
+https://docs.kernel.org/driver-api/gpio/intro.html
+"Output values are writable (high=3D1, low=3D0)."
+
+
+A-ha, here is the section about this:
+https://docs.kernel.org/driver-api/gpio/intro.html#active-high-and-active-l=
+ow.
+
+
+On https://docs.kernel.org/driver-api/gpio/drivers-on-gpio.html
+"ledtrig-gpio: drivers/leds/trigger/ledtrig-gpio.c will provide a LED
+trigger, i.e. a LED will turn on/off in response to a GPIO line going
+high or low (and that LED may in turn use the leds-gpio as per
+above)."
+
+So, can you re-read all of it for high/low asserted/deasserted,
+active/inactive and amend accordingly?
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
