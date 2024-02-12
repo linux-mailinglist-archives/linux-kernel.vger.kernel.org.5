@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-62383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 464EA851F7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DA00851F7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:22:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02580284EEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:22:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29455284CD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7824CE19;
-	Mon, 12 Feb 2024 21:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C334D5B7;
+	Mon, 12 Feb 2024 21:22:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZZpjHlmt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m4RZVVPq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB3F14CB58;
-	Mon, 12 Feb 2024 21:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF3B4D584;
+	Mon, 12 Feb 2024 21:22:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707772932; cv=none; b=Fa+e4cfaVaFG+mBtqapmBenVIXTZhsw2tqP/a6PmdsUcVdHvNfIndv6O+y+kRdJHPsbFZtuHBmk+fjb9tdMfoqlkpHS7cgGvTxjkXdhiwIQN6I+zFNdNw3CY6qW1PF0YHLv4HjpOdZx8Kp1No1FXZ+JHLEkvznToJa2lu2Uxjyk=
+	t=1707772934; cv=none; b=XJduA8VkuFPixZPFJvQfeU8NedV2DjqwhVFhQQTrlILdSsiVzFvMEt0MWBYqOW3TedExprrbhlPvo5SSLRtLvmd2dGNETrZ/2PeOKmVEB5ciGmBJGEP5HzbX2nV+4Sq6v3EKaaCu79iTKwa4pK5Rk36uulWbza4IK4DfyA8wNQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707772932; c=relaxed/simple;
-	bh=bBnJAcjrD/zSSzGjcXde9b4BDGpdw4QEuQZ05XJYLc4=;
+	s=arc-20240116; t=1707772934; c=relaxed/simple;
+	bh=y2iLG0GQmpYJsdLmgkXsj9hiys9+uUHJH94V7RjpizA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=t2/8Q4gtZglZQjpwV+a8E0R2t0mfmbdYHohwaRlcrgDIQwo93Xd2RfeYnBjinueB/95oayaPcrTVYoTI0wMCgpBeqsCGQcVwA5F/9wq02FNGvRj37X5qqmuEZJgKBiQBMBQJQnoh2IAdWnbP0Te0NfMAt0Dk1tgjPfoa4tkjv9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZZpjHlmt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ADC9C433F1;
-	Mon, 12 Feb 2024 21:22:10 +0000 (UTC)
+	 MIME-Version:Content-Type; b=XZwLwc5X2gEFrEwzjtzEo/Ckge2v2DPaY0JaR7bz0x+o2rql78tY8ybIqe6dRYi8qjgXDtNWp//qViPjYgtqRW3s9j4Ut2U9znjxTsGJ+02ICyZCBkFhGIoesEHEC8YcTirKuLqqRWVjeiEFMy9H0CZU9SYCMoPhgxy3oWebv/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m4RZVVPq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3C76C43390;
+	Mon, 12 Feb 2024 21:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707772932;
-	bh=bBnJAcjrD/zSSzGjcXde9b4BDGpdw4QEuQZ05XJYLc4=;
+	s=k20201202; t=1707772934;
+	bh=y2iLG0GQmpYJsdLmgkXsj9hiys9+uUHJH94V7RjpizA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ZZpjHlmtMQMwhQeJ6x9EVau0ju6bxdzmJF947wPD1x3cZqpZoUbYPtmlc/HYfnKUF
-	 GscWqHJrCc1EH2yaxFIMRjZp7USG7lBPdXl13AYyhvC6TbcSHJhmH6GOI1Nl4RDrum
-	 HLsTh24s9AxoNUx1bXszr0edutVWfQMBBQqVuJc90DRMKBQ495eVA4ltY6zcXulL1r
-	 K9hzi5Eyd6ZTOFUQnA0mpLCBh5fwPUpwgXgC3Sf6Bwpwm5f3fIBlU3Ce3XP1GwObIT
-	 KMd5tpkxoNtvIXYwN8SNdgmjmFYsU0gSuSF7bJ/rS0mBuDwBmV5ZLZUWsxgpXzH/nl
-	 KxlBw5gEwErGw==
+	b=m4RZVVPq1QGp85ewCwpCVn7qNgnLPNRaTK8gROHssMUgf+NNIvNxrN4lC0IazDAGW
+	 WZHePeRKV9IXp6Ojy9/meY4tMTECtYpEdtUfQHK4hC233ettFrt5fwC88EUf4BaWDG
+	 TZ/DTrTp7sal7p6WAf5KOLDTtTLSl0NQvPlPRJriA1YUj/EjPlj2CFjALTMerzVHT+
+	 YyqYDW/fHD1Dz17FukZdrRuSkqhPsuszWdQzWtzkdxQwBH2V3v0NAyDtxh9FrIeDYt
+	 rjYLsroxAaULMZln5h8/zL0fX9ANyYzLlOpdJ4gwY1OHNf+Awslg9vglaKM0mqsMpm
+	 b9NXyixrygbDg==
 From: Mark Brown <broonie@kernel.org>
-To: Oder Chiou <oder_chiou@realtek.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, Yinchuan Guo <guoych37@mail2.sysu.edu.cn>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240212144247.43744-1-guoych37@mail2.sysu.edu.cn>
-References: <20240212144247.43744-1-guoych37@mail2.sysu.edu.cn>
-Subject: Re: [PATCH] ASoC: codecs: fix TYPO 'reguest' to 'request' in error
- log
-Message-Id: <170777293077.73793.4917696227318704930.b4-ty@kernel.org>
-Date: Mon, 12 Feb 2024 21:22:10 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Attila_T=C5=91k=C3=A9s?= <attitokes@gmail.com>
+Cc: stable@vger.kernel.org
+In-Reply-To: <20240210193638.144028-1-attitokes@gmail.com>
+References: <20240210193638.144028-1-attitokes@gmail.com>
+Subject: Re: [PATCH] ASoC: amd: yc: Fix non-functional mic on Lenovo 82UU
+Message-Id: <170777293259.73793.11135148439756356388.b4-ty@kernel.org>
+Date: Mon, 12 Feb 2024 21:22:12 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,12 +58,12 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.13-dev-a684c
 
-On Mon, 12 Feb 2024 22:42:45 +0800, Yinchuan Guo wrote:
-> This patch corrects a common misspelling of "request" as "reguest" found
-> in error log across multiple files within sound/soc/codecs.
+On Sat, 10 Feb 2024 21:36:38 +0200, Attila Tőkés wrote:
+> Like many other models, the Lenovo 82UU (Yoga Slim 7 Pro 14ARH7)
+> needs a quirk entry for the internal microphone to function.
 > 
 > 
 
@@ -73,8 +73,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: fix TYPO 'reguest' to 'request' in error log
-      commit: 00933c4993f132a53d31f995a011945b3835826c
+[1/1] ASoC: amd: yc: Fix non-functional mic on Lenovo 82UU
+      commit: f7fe85b229bc30cb5dc95b4e9015a601c9e3a8cd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
