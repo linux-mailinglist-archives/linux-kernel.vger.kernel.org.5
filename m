@@ -1,1043 +1,149 @@
-Return-Path: <linux-kernel+bounces-61942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3BB48518BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 156208518BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:13:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64A7C28160A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:11:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5E952819FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4563D0B5;
-	Mon, 12 Feb 2024 16:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E5D3D0C8;
+	Mon, 12 Feb 2024 16:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BLmLivUH"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="rZFpmCro"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC073D0CF
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:10:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8D63A1C4;
+	Mon, 12 Feb 2024 16:13:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707754261; cv=none; b=RDxoFjUr3r1xfDspty+b5Qtx5XX3I3CsJcgM/L0LluzDEea+qN7wh4DbJpWj2/w9jr/TAodY1ypjLJzZ4Yxl/gnoCd1IMNqfdxuN4MIRvd1+6zi4TY1HR2Qdv/d29Db87FjJzgEUo21PBxnOCV0+FcPNoLeoZly/Xpu1qARTmNY=
+	t=1707754416; cv=none; b=cO0RPzXv5/cbdYVzLjm/bDYPjR/VavcowSne1xYA1sEVAuA0aCSJuDKp2n77Vgv4lOMjytvZ9c2c0sNNosmYcX95nWJzC9VDpOHktLT3wv+MXXe0jz2OUOWr89fcDBGRbhn/BgpbQBhktkCwGUkEOMDrGbspgS1G9otgSqUowUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707754261; c=relaxed/simple;
-	bh=4ui7AkbHgO14e9xbE4SFMHw5PticzuoUsH5S8OVxhoA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tYrMOOjZ03WHkt71L9JQnCieSwtu2HdDoAM+Rg7kcg5GoeU1httzXIZDjAQZHNg/JBVL0P4hX/25IBujHxfCQ1pA18PZcPoJRiu3aCHKavUDeRFk//2xk4JqH+vuOCOkEGw1alGajsrB295eCwYY92oDrk3ipkOP49KtHph+3PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BLmLivUH; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3832ef7726so385833266b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:10:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707754255; x=1708359055; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q3R53fnXtW5nEzz7FpM0P3rJBnxQ7GfqJq0f4oWST/Q=;
-        b=BLmLivUHLD2FBcyf7130WwDR78NuAEEP/zd8a1z0kvAdwC6hq8l4LgDncZpT3gLQco
-         QUU82EVyBqOM8QuZAMmHNFTI/Uq9NF+IEsrNGsJguQko8XdKoXdAVE+BuUlD1E995vS0
-         APfVzdb3XI2sbP0ziO+/7bqwcEdawaXkZ/hFqXYOm9mzyFywJQT+3jmu00FpAQTvAMiR
-         QOvy7Sogyf2Zm5DSGoWatLJFjJ85NBb558Pl+ud6xujuBDw39DObvVWhcrX3PXSy55Ed
-         UfBLpyVEtpaVJLCX30rNHUUptnfIWh/CFYQViW9s0DK0ZtxiP6nHan9h0DNAtO+FsJ96
-         Puzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707754255; x=1708359055;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q3R53fnXtW5nEzz7FpM0P3rJBnxQ7GfqJq0f4oWST/Q=;
-        b=PzI4eN1Stz7RxNbrpXlwrNN9CehrJKUibTRFTg2JP2FHtO7utfTWYu3qZkF4iejM2e
-         FrcSshhXkxfbCHrs+3jCWoYGCAKLrk227bRirSZv+pGqgwktsxkkiTMboMf/U2xGI0jq
-         rtk8prqyCcZhEw9XzRjqJs7531L3SbxFPIifIAlQ66YPD5xTyB+qq/Cu+Kvrik2WNk0L
-         QAwiih47Yybvn4rR9eR+SrwArSkkwZvYbauzcVX66z5D7MRvc9pHZe01vs98b2+RNQ8r
-         6M6ewWMU+wgh8B9XEnl+9KYmzAh2aaLsYupKse8yCAt9rZnksyetSDusK3hBC8/f1qA/
-         hvTw==
-X-Gm-Message-State: AOJu0YxefBatygebuaTm0QeMozAUQSXpTMad29ja/LMzQi5xAqYJ0dQj
-	IkFUjxvLAPvbcuPYM9G2e8OwQBpwfMyrK82kJ9JjPiXieLCqJM1iz+8AJAhdTkA=
-X-Google-Smtp-Source: AGHT+IHf7A2DEoKgS82HUOLVA/BD+pbZC9D2RN4QKFfXidge3c4FeVOQWmAFHg3GbQSyP8dvygs9/Q==
-X-Received: by 2002:a17:906:c201:b0:a3b:f8e0:10ed with SMTP id d1-20020a170906c20100b00a3bf8e010edmr5061462ejz.44.1707754254994;
-        Mon, 12 Feb 2024 08:10:54 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUGnvDNdAdkGXRAgYOtesoDq1ef/adzMu4lnLwDZGmeb9m7VrLWExwVEnTI01yvaL7BHxxZTTedSIh34zOixrhY6kwArkKKjHEfuYU2qFiGvLxcPQa+3tjjsFS8biiu9zMxv9xYGnhfI0kAYqXCJNpQptUsxJN0U8wW5mZ0unDPZRpfjNjTXINwpgjEJyG3N2ic4b8DVWsjb34DmSh3jJbv8xLpK0ONzY4M5Yaw36k6DauU8XJYEVZgXXsDd4R93kfXA5JxzRl9d7vsR1fXWQa2zgqV5b+HU2Lh2th//44NZQXRP06hOd5ck7NN6IjT2l1nuDAiKmET9K/77YS4nYol
-Received: from [10.167.154.1] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id n7-20020a170906118700b00a3845a75eb7sm336246eja.189.2024.02.12.08.10.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 08:10:54 -0800 (PST)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Mon, 12 Feb 2024 17:10:47 +0100
-Subject: [PATCH v7 2/2] clk: qcom: Use qcom_branch_set_clk_en()
+	s=arc-20240116; t=1707754416; c=relaxed/simple;
+	bh=Us+gm13rBbIPyPGbnxPsm5KrPySAQQEKZ7En/wpqCGk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ATZKVxbpnm5bB+9hJcjpADVfO3/uKLM9zORFVntH8VR5mKKDn/qxMTA8dL354gMJ7d9RMa+k2FqCnB+twyV60Djgy8eG2VOLhxy7A+yNX0vzIKoDT5c05YA4MpKJdPUM91N6ox6Wb6tmSTNQBtA/dUV42/kCVgx0s4T8dHqkEFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=rZFpmCro; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41CGDGQl130327;
+	Mon, 12 Feb 2024 10:13:16 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707754396;
+	bh=TN1i4r7AT4NTHS/cqs4Lebur5DhSNWFg6+vsiT9DZoU=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=rZFpmCroVnlnwibRs0YS/V8/opPg+hp25gqg1uA8X+ZQHdncTK9t0CDHLEnCQppDu
+	 nDd7OyQ4Sp6DIizWgAcFu3Ugeui+/qeRQrHPraYnj/YniuBoI/kOPUwE4L5GGwclQK
+	 CHZmnd7pdSyiZ00RbnTe/+knicsQU03xtf3Ls/FA=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41CGDGRi023925
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 12 Feb 2024 10:13:16 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
+ Feb 2024 10:13:15 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 12 Feb 2024 10:13:16 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41CGDFF9065517;
+	Mon, 12 Feb 2024 10:13:15 -0600
+Message-ID: <961cb55f-1725-4e3e-9704-c0e7cb9e4e7c@ti.com>
+Date: Mon, 12 Feb 2024 10:13:14 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 18/19] power: reset: syscon-poweroff: Move device data
+ into a struct
+To: Sebastian Reichel <sebastian.reichel@collabora.com>
+CC: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Cristian
+ Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Florian Fainelli
+	<florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>, Scott Branden
+	<sbranden@broadcom.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad
+ Dybcio <konrad.dybcio@linaro.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-actions@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+References: <20240208170410.67975-1-afd@ti.com>
+ <20240208170410.67975-19-afd@ti.com>
+ <glaiaikudbtuahnwnqoduretcnmrpb7lg2gerlnntcltrjfcko@4vgjb4v66rad>
+Content-Language: en-US
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <glaiaikudbtuahnwnqoduretcnmrpb7lg2gerlnntcltrjfcko@4vgjb4v66rad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240212-topic-clk_branch_en-v7-2-5b79eb7278b2@linaro.org>
-References: <20240212-topic-clk_branch_en-v7-0-5b79eb7278b2@linaro.org>
-In-Reply-To: <20240212-topic-clk_branch_en-v7-0-5b79eb7278b2@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
- linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Johan Hovold <johan+linaro@kernel.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707754250; l=43980;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=4ui7AkbHgO14e9xbE4SFMHw5PticzuoUsH5S8OVxhoA=;
- b=R0729C/jRbMmpu097YtDSdyfALlxeTE/MBh8p0nlTMNmN/WKyOZAaRlLMsOaqzx4jJWXEGHSq
- QUTfL+ybhUXCdNyS7T9RMFVG5Aq2u38v5lw405lZBKH0E5Ksrj2hNYl
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Instead of magically poking at the bit0 of branch clocks' CBCR, use
-the newly introduced helper.
+On 2/11/24 5:52 PM, Sebastian Reichel wrote:
+> Hi Andrew,
+> 
+> On Thu, Feb 08, 2024 at 11:04:09AM -0600, Andrew Davis wrote:
+>> Currently all these device data elements are top level global variables.
+>> Move these into a struct. This will be used in the next patch when
+>> the global variable usage is removed. Doing this in two steps makes
+>> the patches easier to read.
+>>
+>> Signed-off-by: Andrew Davis <afd@ti.com>
+>> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>   drivers/power/reset/syscon-poweroff.c | 36 +++++++++++++++------------
+>>   1 file changed, 20 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/drivers/power/reset/syscon-poweroff.c b/drivers/power/reset/syscon-poweroff.c
+>> index 1b2ce7734260c..4899a019256e8 100644
+>> --- a/drivers/power/reset/syscon-poweroff.c
+>> +++ b/drivers/power/reset/syscon-poweroff.c
+>> @@ -15,15 +15,19 @@
+>>   #include <linux/pm.h>
+>>   #include <linux/regmap.h>
+>>   
+>> -static struct regmap *map;
+>> -static u32 offset;
+>> -static u32 value;
+>> -static u32 mask;
+>> +struct syscon_poweroff_data {
+>> +	struct regmap *map;
+>> +	u32 offset;
+>> +	u32 value;
+>> +	u32 mask;
+>> +};
+>> +
+>> +static struct syscon_poweroff_data *data;
+> 
+> This patch is broken without the follow-up patch, since data is
+> never allocated. You need to move the memory allocation from the
+> next patch to this one.
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/clk/qcom/camcc-sc8280xp.c     |  6 ++----
- drivers/clk/qcom/camcc-sm8550.c       | 10 +++-------
- drivers/clk/qcom/camcc-x1e80100.c     |  4 ++--
- drivers/clk/qcom/dispcc-qcm2290.c     |  4 ++--
- drivers/clk/qcom/dispcc-sc7280.c      |  7 ++-----
- drivers/clk/qcom/dispcc-sc8280xp.c    |  4 ++--
- drivers/clk/qcom/dispcc-sm6115.c      |  4 ++--
- drivers/clk/qcom/dispcc-sm8250.c      |  4 ++--
- drivers/clk/qcom/dispcc-sm8450.c      |  7 ++-----
- drivers/clk/qcom/dispcc-sm8550.c      |  7 ++-----
- drivers/clk/qcom/dispcc-sm8650.c      |  4 ++--
- drivers/clk/qcom/dispcc-x1e80100.c    |  4 ++--
- drivers/clk/qcom/gcc-sa8775p.c        | 25 ++++++++++---------------
- drivers/clk/qcom/gcc-sc7180.c         | 22 +++++++++-------------
- drivers/clk/qcom/gcc-sc7280.c         | 20 ++++++++------------
- drivers/clk/qcom/gcc-sc8180x.c        | 28 +++++++++++-----------------
- drivers/clk/qcom/gcc-sc8280xp.c       | 25 ++++++++++---------------
- drivers/clk/qcom/gcc-sdx55.c          | 12 ++++--------
- drivers/clk/qcom/gcc-sdx65.c          | 13 +++++--------
- drivers/clk/qcom/gcc-sdx75.c          | 10 +++-------
- drivers/clk/qcom/gcc-sm4450.c         | 28 +++++++++-------------------
- drivers/clk/qcom/gcc-sm6375.c         | 11 ++++-------
- drivers/clk/qcom/gcc-sm7150.c         | 23 +++++++++--------------
- drivers/clk/qcom/gcc-sm8250.c         | 19 +++++++------------
- drivers/clk/qcom/gcc-sm8350.c         | 20 ++++++++------------
- drivers/clk/qcom/gcc-sm8450.c         | 21 ++++++++-------------
- drivers/clk/qcom/gcc-sm8550.c         | 21 ++++++++-------------
- drivers/clk/qcom/gcc-sm8650.c         | 16 ++++++++--------
- drivers/clk/qcom/gcc-x1e80100.c       | 16 ++++++++--------
- drivers/clk/qcom/gpucc-sc7280.c       |  9 +++------
- drivers/clk/qcom/gpucc-sc8280xp.c     |  9 +++------
- drivers/clk/qcom/gpucc-sm8550.c       | 10 +++-------
- drivers/clk/qcom/gpucc-x1e80100.c     |  2 +-
- drivers/clk/qcom/lpasscorecc-sc7180.c |  7 ++-----
- drivers/clk/qcom/videocc-sm8250.c     |  6 +++---
- drivers/clk/qcom/videocc-sm8350.c     | 10 +++-------
- drivers/clk/qcom/videocc-sm8450.c     | 13 ++++---------
- drivers/clk/qcom/videocc-sm8550.c     | 13 ++++---------
- 38 files changed, 180 insertions(+), 294 deletions(-)
+Ah, yes, seems I meant to make this struct point to a definition
+not just a declaration. But just moving the allocation to this
+patch seems to make this easier too, will do that, v4 on the way.
 
-diff --git a/drivers/clk/qcom/camcc-sc8280xp.c b/drivers/clk/qcom/camcc-sc8280xp.c
-index 3dcd79b01515..84f9caf3ddbf 100644
---- a/drivers/clk/qcom/camcc-sc8280xp.c
-+++ b/drivers/clk/qcom/camcc-sc8280xp.c
-@@ -3010,10 +3010,8 @@ static int camcc_sc8280xp_probe(struct platform_device *pdev)
- 	clk_lucid_pll_configure(&camcc_pll6, regmap, &camcc_pll6_config);
- 	clk_lucid_pll_configure(&camcc_pll7, regmap, &camcc_pll7_config);
- 
--	/*
--	 * Keep camcc_gdsc_clk always enabled:
--	 */
--	regmap_update_bits(regmap, 0xc1e4, BIT(0), 1);
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0xc1e4); /* CAMCC_GDSC_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &camcc_sc8280xp_desc, regmap);
- 	if (ret)
-diff --git a/drivers/clk/qcom/camcc-sm8550.c b/drivers/clk/qcom/camcc-sm8550.c
-index dd51ba4ea757..1ef59a96f664 100644
---- a/drivers/clk/qcom/camcc-sm8550.c
-+++ b/drivers/clk/qcom/camcc-sm8550.c
-@@ -3536,13 +3536,9 @@ static int cam_cc_sm8550_probe(struct platform_device *pdev)
- 	clk_lucid_ole_pll_configure(&cam_cc_pll11, regmap, &cam_cc_pll11_config);
- 	clk_lucid_ole_pll_configure(&cam_cc_pll12, regmap, &cam_cc_pll12_config);
- 
--	/*
--	 * Keep clocks always enabled:
--	 *	cam_cc_gdsc_clk
--	 *	cam_cc_sleep_clk
--	 */
--	regmap_update_bits(regmap, 0x1419c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x142cc, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x1419c); /* CAM_CC_GDSC_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x142cc); /* CAM_CC_SLEEP_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &cam_cc_sm8550_desc, regmap);
- 
-diff --git a/drivers/clk/qcom/camcc-x1e80100.c b/drivers/clk/qcom/camcc-x1e80100.c
-index 01b3476fc26d..f7f3d92c263d 100644
---- a/drivers/clk/qcom/camcc-x1e80100.c
-+++ b/drivers/clk/qcom/camcc-x1e80100.c
-@@ -2462,8 +2462,8 @@ static int cam_cc_x1e80100_probe(struct platform_device *pdev)
- 	clk_lucid_ole_pll_configure(&cam_cc_pll8, regmap, &cam_cc_pll8_config);
- 
- 	/* Keep clocks always enabled */
--	regmap_update_bits(regmap, 0x13a9c, BIT(0), BIT(0)); /* cam_cc_gdsc_clk */
--	regmap_update_bits(regmap, 0x13ab8, BIT(0), BIT(0)); /* cam_cc_sleep_clk */
-+	qcom_branch_set_clk_en(regmap, 0x13a9c); /* CAM_CC_GDSC_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x13ab8); /* CAM_CC_SLEEP_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &cam_cc_x1e80100_desc, regmap);
- 
-diff --git a/drivers/clk/qcom/dispcc-qcm2290.c b/drivers/clk/qcom/dispcc-qcm2290.c
-index f3ac886d0226..654a10d53e5c 100644
---- a/drivers/clk/qcom/dispcc-qcm2290.c
-+++ b/drivers/clk/qcom/dispcc-qcm2290.c
-@@ -519,8 +519,8 @@ static int disp_cc_qcm2290_probe(struct platform_device *pdev)
- 
- 	clk_alpha_pll_configure(&disp_cc_pll0, regmap, &disp_cc_pll0_config);
- 
--	/* Keep DISP_CC_XO_CLK always-ON */
--	regmap_update_bits(regmap, 0x604c, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x604c); /* DISP_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &disp_cc_qcm2290_desc, regmap);
- 	if (ret) {
-diff --git a/drivers/clk/qcom/dispcc-sc7280.c b/drivers/clk/qcom/dispcc-sc7280.c
-index 95d56f49a1de..fbeb8fccb99a 100644
---- a/drivers/clk/qcom/dispcc-sc7280.c
-+++ b/drivers/clk/qcom/dispcc-sc7280.c
-@@ -878,11 +878,8 @@ static int disp_cc_sc7280_probe(struct platform_device *pdev)
- 
- 	clk_lucid_pll_configure(&disp_cc_pll0, regmap, &disp_cc_pll0_config);
- 
--	/*
--	 * Keep the clocks always-ON
--	 * DISP_CC_XO_CLK
--	 */
--	regmap_update_bits(regmap, 0x5008, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x5008); /* DISP_CC_XO_CLK */
- 
- 	return qcom_cc_really_probe(pdev, &disp_cc_sc7280_desc, regmap);
- }
-diff --git a/drivers/clk/qcom/dispcc-sc8280xp.c b/drivers/clk/qcom/dispcc-sc8280xp.c
-index 3ebf02d459f4..91172f5b2f15 100644
---- a/drivers/clk/qcom/dispcc-sc8280xp.c
-+++ b/drivers/clk/qcom/dispcc-sc8280xp.c
-@@ -3178,8 +3178,8 @@ static int disp_cc_sc8280xp_probe(struct platform_device *pdev)
- 		goto out_pm_runtime_put;
- 	}
- 
--	/* DISP_CC_XO_CLK always-on */
--	regmap_update_bits(regmap, 0x605c, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x605c); /* DISP_CC_XO_CLK */
- 
- out_pm_runtime_put:
- 	pm_runtime_put_sync(&pdev->dev);
-diff --git a/drivers/clk/qcom/dispcc-sm6115.c b/drivers/clk/qcom/dispcc-sm6115.c
-index 1fab43f08e73..bd07f26af35a 100644
---- a/drivers/clk/qcom/dispcc-sm6115.c
-+++ b/drivers/clk/qcom/dispcc-sm6115.c
-@@ -583,8 +583,8 @@ static int disp_cc_sm6115_probe(struct platform_device *pdev)
- 
- 	clk_alpha_pll_configure(&disp_cc_pll0, regmap, &disp_cc_pll0_config);
- 
--	/* Keep DISP_CC_XO_CLK always-ON */
--	regmap_update_bits(regmap, 0x604c, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x604c); /* DISP_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &disp_cc_sm6115_desc, regmap);
- 	if (ret) {
-diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
-index c139c1e481ef..43307c8a342c 100644
---- a/drivers/clk/qcom/dispcc-sm8250.c
-+++ b/drivers/clk/qcom/dispcc-sm8250.c
-@@ -1363,8 +1363,8 @@ static int disp_cc_sm8250_probe(struct platform_device *pdev)
- 	/* Enable clock gating for MDP clocks */
- 	regmap_update_bits(regmap, 0x8000, 0x10, 0x10);
- 
--	/* DISP_CC_XO_CLK always-on */
--	regmap_update_bits(regmap, 0x605c, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x605c); /* DISP_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &disp_cc_sm8250_desc, regmap);
- 
-diff --git a/drivers/clk/qcom/dispcc-sm8450.c b/drivers/clk/qcom/dispcc-sm8450.c
-index 2afa2c9d3c97..92e9c4e7b13d 100644
---- a/drivers/clk/qcom/dispcc-sm8450.c
-+++ b/drivers/clk/qcom/dispcc-sm8450.c
-@@ -1787,11 +1787,8 @@ static int disp_cc_sm8450_probe(struct platform_device *pdev)
- 	/* Enable clock gating for MDP clocks */
- 	regmap_update_bits(regmap, DISP_CC_MISC_CMD, 0x10, 0x10);
- 
--	/*
--	 * Keep clocks always enabled:
--	 *	disp_cc_xo_clk
--	 */
--	regmap_update_bits(regmap, 0xe05c, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0xe05c); /* DISP_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &disp_cc_sm8450_desc, regmap);
- 	if (ret)
-diff --git a/drivers/clk/qcom/dispcc-sm8550.c b/drivers/clk/qcom/dispcc-sm8550.c
-index 3a97f7897932..3672c73ac11c 100644
---- a/drivers/clk/qcom/dispcc-sm8550.c
-+++ b/drivers/clk/qcom/dispcc-sm8550.c
-@@ -1780,11 +1780,8 @@ static int disp_cc_sm8550_probe(struct platform_device *pdev)
- 	/* Enable clock gating for MDP clocks */
- 	regmap_update_bits(regmap, DISP_CC_MISC_CMD, 0x10, 0x10);
- 
--	/*
--	 * Keep clocks always enabled:
--	 *	disp_cc_xo_clk
--	 */
--	regmap_update_bits(regmap, 0xe054, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0xe054); /* DISP_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &disp_cc_sm8550_desc, regmap);
- 	if (ret)
-diff --git a/drivers/clk/qcom/dispcc-sm8650.c b/drivers/clk/qcom/dispcc-sm8650.c
-index 445831530871..9539db0d9114 100644
---- a/drivers/clk/qcom/dispcc-sm8650.c
-+++ b/drivers/clk/qcom/dispcc-sm8650.c
-@@ -1777,8 +1777,8 @@ static int disp_cc_sm8650_probe(struct platform_device *pdev)
- 	/* Enable clock gating for MDP clocks */
- 	regmap_update_bits(regmap, DISP_CC_MISC_CMD, 0x10, 0x10);
- 
--	/* Keep clocks always enabled */
--	regmap_update_bits(regmap, 0xe054, BIT(0), BIT(0)); /* disp_cc_xo_clk */
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0xe054); /* DISP_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &disp_cc_sm8650_desc, regmap);
- 	if (ret)
-diff --git a/drivers/clk/qcom/dispcc-x1e80100.c b/drivers/clk/qcom/dispcc-x1e80100.c
-index eeefc30b1c8b..0b2ee6456762 100644
---- a/drivers/clk/qcom/dispcc-x1e80100.c
-+++ b/drivers/clk/qcom/dispcc-x1e80100.c
-@@ -1677,8 +1677,8 @@ static int disp_cc_x1e80100_probe(struct platform_device *pdev)
- 	regmap_update_bits(regmap, DISP_CC_MISC_CMD, 0x10, 0x10);
- 
- 	/* Keep clocks always enabled */
--	regmap_update_bits(regmap, 0xe074, BIT(0), BIT(0)); /* disp_cc_sleep_clk */
--	regmap_update_bits(regmap, 0xe054, BIT(0), BIT(0)); /* disp_cc_xo_clk */
-+	qcom_branch_set_clk_en(regmap, 0xe074); /* DISP_CC_SLEEP_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xe054); /* DISP_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &disp_cc_x1e80100_desc, regmap);
- 	if (ret)
-diff --git a/drivers/clk/qcom/gcc-sa8775p.c b/drivers/clk/qcom/gcc-sa8775p.c
-index c2b403cb6301..5bcbfbf52cb9 100644
---- a/drivers/clk/qcom/gcc-sa8775p.c
-+++ b/drivers/clk/qcom/gcc-sa8775p.c
-@@ -4742,21 +4742,16 @@ static int gcc_sa8775p_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	/*
--	 * Keep the clocks always-ON
--	 * GCC_CAMERA_AHB_CLK, GCC_CAMERA_XO_CLK, GCC_DISP1_AHB_CLK,
--	 * GCC_DISP1_XO_CLK, GCC_DISP_AHB_CLK, GCC_DISP_XO_CLK,
--	 * GCC_GPU_CFG_AHB_CLK, GCC_VIDEO_AHB_CLK, GCC_VIDEO_XO_CLK.
--	 */
--	regmap_update_bits(regmap, 0x32004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x32020, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0xc7004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0xc7018, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x33004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x33018, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x7d004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x34004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x34024, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x32004); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x32020); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xc7004); /* GCC_DISP1_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xc7018); /* GCC_DISP1_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x33004); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x33018); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x7d004); /* GCC_GPU_CFG_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x34004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x34024); /* GCC_VIDEO_XO_CLK */
- 
- 	return qcom_cc_really_probe(pdev, &gcc_sa8775p_desc, regmap);
- }
-diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc7180.c
-index a3406aadbd17..6a5f785c0ced 100644
---- a/drivers/clk/qcom/gcc-sc7180.c
-+++ b/drivers/clk/qcom/gcc-sc7180.c
-@@ -2443,19 +2443,15 @@ static int gcc_sc7180_probe(struct platform_device *pdev)
- 	regmap_update_bits(regmap, 0x4d110, 0x3, 0x3);
- 	regmap_update_bits(regmap, 0x71028, 0x3, 0x3);
- 
--	/*
--	 * Keep the clocks always-ON
--	 * GCC_CPUSS_GNOC_CLK, GCC_VIDEO_AHB_CLK, GCC_CAMERA_AHB_CLK,
--	 * GCC_DISP_AHB_CLK, GCC_GPU_CFG_AHB_CLK
--	 */
--	regmap_update_bits(regmap, 0x48004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b008, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b00c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b02c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b028, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b030, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x48004); /* GCC_CPUSS_GNOC_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b008); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b00c); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b02c); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b028); /* GCC_VIDEO_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b030); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x71004); /* GCC_GPU_CFG_AHB_CLK */
- 
- 	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
- 					ARRAY_SIZE(gcc_dfs_clocks));
-diff --git a/drivers/clk/qcom/gcc-sc7280.c b/drivers/clk/qcom/gcc-sc7280.c
-index 2b661df5de26..f45a8318900c 100644
---- a/drivers/clk/qcom/gcc-sc7280.c
-+++ b/drivers/clk/qcom/gcc-sc7280.c
-@@ -3453,18 +3453,14 @@ static int gcc_sc7280_probe(struct platform_device *pdev)
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 
--	/*
--	 * Keep the clocks always-ON
--	 * GCC_CAMERA_AHB_CLK/XO_CLK, GCC_DISP_AHB_CLK/XO_CLK
--	 * GCC_VIDEO_AHB_CLK/XO_CLK, GCC_GPU_CFG_AHB_CLK
--	 */
--	regmap_update_bits(regmap, 0x26004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x26028, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x27004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x2701C, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x28004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x28014, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x26004);/* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x26028);/* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x27004);/* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x2701c);/* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x28004);/* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x28014);/* GCC_VIDEO_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x71004);/* GCC_GPU_CFG_AHB_CLK */
- 	regmap_update_bits(regmap, 0x7100C, BIT(13), BIT(13));
- 
- 	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
-diff --git a/drivers/clk/qcom/gcc-sc8180x.c b/drivers/clk/qcom/gcc-sc8180x.c
-index c72e3dbc6f88..5261bfc92b3d 100644
---- a/drivers/clk/qcom/gcc-sc8180x.c
-+++ b/drivers/clk/qcom/gcc-sc8180x.c
-@@ -4607,23 +4607,17 @@ static int gcc_sc8180x_probe(struct platform_device *pdev)
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 
--	/*
--	 * Enable the following always-on clocks:
--	 * GCC_VIDEO_AHB_CLK, GCC_CAMERA_AHB_CLK, GCC_DISP_AHB_CLK,
--	 * GCC_VIDEO_XO_CLK, GCC_CAMERA_XO_CLK, GCC_DISP_XO_CLK,
--	 * GCC_CPUSS_GNOC_CLK, GCC_CPUSS_DVM_BUS_CLK, GCC_NPU_CFG_AHB_CLK and
--	 * GCC_GPU_CFG_AHB_CLK
--	 */
--	regmap_update_bits(regmap, 0xb004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0xb008, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0xb00c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0xb040, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0xb044, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0xb048, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x48004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x48190, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x4d004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0xb004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xb008); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xb00c); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xb040); /* GCC_VIDEO_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xb044); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xb048); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x48004); /* GCC_CPUSS_GNOC_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x48190); /* GCC_CPUSS_DVM_BUS_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x4d004); /* GCC_NPU_CFG_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x71004); /* GCC_GPU_CFG_AHB_CLK */
- 
- 	/* Disable the GPLL0 active input to NPU and GPU via MISC registers */
- 	regmap_update_bits(regmap, 0x4d110, 0x3, 0x3);
-diff --git a/drivers/clk/qcom/gcc-sc8280xp.c b/drivers/clk/qcom/gcc-sc8280xp.c
-index 9f4db815688c..082d7b5504eb 100644
---- a/drivers/clk/qcom/gcc-sc8280xp.c
-+++ b/drivers/clk/qcom/gcc-sc8280xp.c
-@@ -7543,21 +7543,16 @@ static int gcc_sc8280xp_probe(struct platform_device *pdev)
- 		goto err_put_rpm;
- 	}
- 
--	/*
--	 * Keep the clocks always-ON
--	 * GCC_CAMERA_AHB_CLK, GCC_CAMERA_XO_CLK, GCC_DISP_AHB_CLK,
--	 * GCC_DISP_XO_CLK, GCC_GPU_CFG_AHB_CLK, GCC_VIDEO_AHB_CLK,
--	 * GCC_VIDEO_XO_CLK, GCC_DISP1_AHB_CLK, GCC_DISP1_XO_CLK
--	 */
--	regmap_update_bits(regmap, 0x26004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x26020, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x27004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x27028, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x28004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x28028, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0xbb004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0xbb028, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x26004); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x26020); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x27004); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x27028); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x71004); /* GCC_GPU_CFG_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x28004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x28028); /* GCC_VIDEO_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xbb004); /* GCC_DISP1_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xbb028); /* GCC_DISP1_XO_CLK */
- 
- 	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks, ARRAY_SIZE(gcc_dfs_clocks));
- 	if (ret)
-diff --git a/drivers/clk/qcom/gcc-sdx55.c b/drivers/clk/qcom/gcc-sdx55.c
-index d5e17122698c..26279b8d321a 100644
---- a/drivers/clk/qcom/gcc-sdx55.c
-+++ b/drivers/clk/qcom/gcc-sdx55.c
-@@ -1611,14 +1611,10 @@ static int gcc_sdx55_probe(struct platform_device *pdev)
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 
--	/*
--	 * Keep the clocks always-ON as they are critical to the functioning
--	 * of the system:
--	 * GCC_SYS_NOC_CPUSS_AHB_CLK, GCC_CPUSS_AHB_CLK, GCC_CPUSS_GNOC_CLK
--	 */
--	regmap_update_bits(regmap, 0x6d008, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x6d008, BIT(21), BIT(21));
--	regmap_update_bits(regmap, 0x6d008, BIT(22), BIT(22));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x6d008); /* GCC_SYS_NOC_CPUSS_AHB_CLK */
-+	regmap_update_bits(regmap, 0x6d008, BIT(21), BIT(21)); /* GCC_CPUSS_AHB_CLK */
-+	regmap_update_bits(regmap, 0x6d008, BIT(22), BIT(22)); /* GCC_CPUSS_GNOC_CLK */
- 
- 	return qcom_cc_really_probe(pdev, &gcc_sdx55_desc, regmap);
- }
-diff --git a/drivers/clk/qcom/gcc-sdx65.c b/drivers/clk/qcom/gcc-sdx65.c
-index ffddbed5a6db..8fde6463574b 100644
---- a/drivers/clk/qcom/gcc-sdx65.c
-+++ b/drivers/clk/qcom/gcc-sdx65.c
-@@ -1574,14 +1574,11 @@ static int gcc_sdx65_probe(struct platform_device *pdev)
- 	regmap = qcom_cc_map(pdev, &gcc_sdx65_desc);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
--	/*
--	 * Keep the clocks always-ON as they are critical to the functioning
--	 * of the system:
--	 * GCC_SYS_NOC_CPUSS_AHB_CLK, GCC_CPUSS_AHB_CLK, GCC_CPUSS_GNOC_CLK
--	 */
--	regmap_update_bits(regmap, 0x6d008, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x6d008, BIT(21), BIT(21));
--	regmap_update_bits(regmap, 0x6d008, BIT(22), BIT(22));
-+
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x6d008); /* GCC_SYS_NOC_CPUSS_AHB_CLK */
-+	regmap_update_bits(regmap, 0x6d008, BIT(21), BIT(21)); /* GCC_CPUSS_AHB_CLK */
-+	regmap_update_bits(regmap, 0x6d008, BIT(22), BIT(22)); /* GCC_CPUSS_GNOC_CLK */
- 
- 	return qcom_cc_really_probe(pdev, &gcc_sdx65_desc, regmap);
- }
-diff --git a/drivers/clk/qcom/gcc-sdx75.c b/drivers/clk/qcom/gcc-sdx75.c
-index 573af17bd24c..c51338f08ef1 100644
---- a/drivers/clk/qcom/gcc-sdx75.c
-+++ b/drivers/clk/qcom/gcc-sdx75.c
-@@ -2936,13 +2936,9 @@ static int gcc_sdx75_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	/*
--	 * Keep clocks always enabled:
--	 * gcc_ahb_pcie_link_clk
--	 * gcc_xo_pcie_link_clk
--	 */
--	regmap_update_bits(regmap, 0x3e004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x3e008, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x3e004); /* GCC_AHB_PCIE_LINK_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x3e008); /* GCC_XO_PCIE_LINK_CLK */
- 
- 	return qcom_cc_really_probe(pdev, &gcc_sdx75_desc, regmap);
- }
-diff --git a/drivers/clk/qcom/gcc-sm4450.c b/drivers/clk/qcom/gcc-sm4450.c
-index ab8fb77d15a2..062e55e98156 100644
---- a/drivers/clk/qcom/gcc-sm4450.c
-+++ b/drivers/clk/qcom/gcc-sm4450.c
-@@ -2849,25 +2849,15 @@ static int gcc_sm4450_probe(struct platform_device *pdev)
- 
- 	qcom_branch_set_force_mem_core(regmap, gcc_ufs_phy_ice_core_clk, true);
- 
--	/*
--	 * Keep clocks always enabled:
--	 * gcc_camera_ahb_clk
--	 * gcc_camera_sleep_clk
--	 * gcc_camera_xo_clk
--	 * gcc_disp_ahb_clk
--	 * gcc_disp_xo_clk
--	 * gcc_gpu_cfg_ahb_clk
--	 * gcc_video_ahb_clk
--	 * gcc_video_xo_clk
--	 */
--	regmap_update_bits(regmap, 0x36004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x36018, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x3601c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x37004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x37014, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x81004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x42004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x42018, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x36004); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x36018); /* GCC_CAMERA_SLEEP_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x3601c); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x37004); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x37014); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x81004); /* GCC_GPU_CFG_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x42004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x42018); /* GCC_VIDEO_XO_CLK */
- 
- 	regmap_update_bits(regmap, 0x4201c, BIT(21), BIT(21));
- 
-diff --git a/drivers/clk/qcom/gcc-sm6375.c b/drivers/clk/qcom/gcc-sm6375.c
-index 3dd15d765b22..84639d5b89bf 100644
---- a/drivers/clk/qcom/gcc-sm6375.c
-+++ b/drivers/clk/qcom/gcc-sm6375.c
-@@ -3882,13 +3882,10 @@ static int gcc_sm6375_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	/*
--	 * Keep the following clocks always on:
--	 * GCC_CAMERA_XO_CLK, GCC_CPUSS_GNOC_CLK, GCC_DISP_XO_CLK
--	 */
--	regmap_update_bits(regmap, 0x17028, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x2b004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x1702c, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x17028); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x2b004); /* GCC_CPUSS_GNOC_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x1702c); /* GCC_DISP_XO_CLK */
- 
- 	clk_lucid_pll_configure(&gpll10, regmap, &gpll10_config);
- 	clk_lucid_pll_configure(&gpll11, regmap, &gpll11_config);
-diff --git a/drivers/clk/qcom/gcc-sm7150.c b/drivers/clk/qcom/gcc-sm7150.c
-index 7c5596331c30..44b49f7cd178 100644
---- a/drivers/clk/qcom/gcc-sm7150.c
-+++ b/drivers/clk/qcom/gcc-sm7150.c
-@@ -3002,20 +3002,15 @@ static int gcc_sm7150_probe(struct platform_device *pdev)
- 	regmap_update_bits(regmap, 0x4d110, 0x3, 0x3);
- 	regmap_update_bits(regmap, 0x71028, 0x3, 0x3);
- 
--	/*
--	 * Keep the critical clocks always-ON
--	 * GCC_CPUSS_GNOC_CLK, GCC_VIDEO_AHB_CLK, GCC_CAMERA_AHB_CLK,
--	 * GCC_DISP_AHB_CLK, GCC_CAMERA_XO_CLK, GCC_VIDEO_XO_CLK,
--	 * GCC_DISP_XO_CLK, GCC_GPU_CFG_AHB_CLK
--	 */
--	regmap_update_bits(regmap, 0x48004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b008, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b00c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b02c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b028, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b030, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x48004); /* GCC_CPUSS_GNOC_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b008); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b00c); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b02c); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b028); /* GCC_VIDEO_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b030); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x71004); /* GCC_GPU_CFG_AHB_CLK */
- 
- 	ret = qcom_cc_register_rcg_dfs(regmap, gcc_sm7150_dfs_desc,
- 					ARRAY_SIZE(gcc_sm7150_dfs_desc));
-diff --git a/drivers/clk/qcom/gcc-sm8250.c b/drivers/clk/qcom/gcc-sm8250.c
-index 61d01d4c379b..e630bfa2d0c1 100644
---- a/drivers/clk/qcom/gcc-sm8250.c
-+++ b/drivers/clk/qcom/gcc-sm8250.c
-@@ -3643,18 +3643,13 @@ static int gcc_sm8250_probe(struct platform_device *pdev)
- 	regmap_update_bits(regmap, 0x4d110, 0x3, 0x3);
- 	regmap_update_bits(regmap, 0x71028, 0x3, 0x3);
- 
--	/*
--	 * Keep the clocks always-ON
--	 * GCC_VIDEO_AHB_CLK, GCC_CAMERA_AHB_CLK, GCC_DISP_AHB_CLK,
--	 * GCC_CPUSS_DVM_BUS_CLK, GCC_GPU_CFG_AHB_CLK,
--	 * GCC_SYS_NOC_CPUSS_AHB_CLK
--	 */
--	regmap_update_bits(regmap, 0x0b004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b008, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x0b00c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x4818c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x52000, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x0b004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b008); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x0b00c); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x4818c); /* GCC_CPUSS_DVM_BUS_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x71004); /* GCC_GPU_CFG_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x52000); /* GCC_SYS_NOC_CPUSS_AHB_CLK */
- 
- 	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
- 				       ARRAY_SIZE(gcc_dfs_clocks));
-diff --git a/drivers/clk/qcom/gcc-sm8350.c b/drivers/clk/qcom/gcc-sm8350.c
-index df4842588a24..fc0402e8a2a7 100644
---- a/drivers/clk/qcom/gcc-sm8350.c
-+++ b/drivers/clk/qcom/gcc-sm8350.c
-@@ -3806,18 +3806,14 @@ static int gcc_sm8350_probe(struct platform_device *pdev)
- 		return PTR_ERR(regmap);
- 	}
- 
--	/*
--	 * Keep the critical clock always-On
--	 * GCC_CAMERA_AHB_CLK, GCC_CAMERA_XO_CLK, GCC_DISP_AHB_CLK, GCC_DISP_XO_CLK,
--	 * GCC_GPU_CFG_AHB_CLK, GCC_VIDEO_AHB_CLK, GCC_VIDEO_XO_CLK
--	 */
--	regmap_update_bits(regmap, 0x26004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x26018, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x27004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x2701c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x28004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x28020, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x26004); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x26018); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x27004); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x2701c); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x71004); /* GCC_GPU_CFG_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x28004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x28020); /* GCC_VIDEO_XO_CLK */
- 
- 	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks, ARRAY_SIZE(gcc_dfs_clocks));
- 	if (ret)
-diff --git a/drivers/clk/qcom/gcc-sm8450.c b/drivers/clk/qcom/gcc-sm8450.c
-index 1825b3456dd0..e86c58bc5e48 100644
---- a/drivers/clk/qcom/gcc-sm8450.c
-+++ b/drivers/clk/qcom/gcc-sm8450.c
-@@ -3280,19 +3280,14 @@ static int gcc_sm8450_probe(struct platform_device *pdev)
- 	/* FORCE_MEM_CORE_ON for ufs phy ice core clocks */
- 	regmap_update_bits(regmap, gcc_ufs_phy_ice_core_clk.halt_reg, BIT(14), BIT(14));
- 
--	/*
--	 * Keep the critical clock always-On
--	 * gcc_camera_ahb_clk, gcc_camera_xo_clk, gcc_disp_ahb_clk,
--	 * gcc_disp_xo_clk, gcc_gpu_cfg_ahb_clk, gcc_video_ahb_clk,
--	 * gcc_video_xo_clk
--	 */
--	regmap_update_bits(regmap, 0x36004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x36020, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x37004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x3701c, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x81004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x42004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x42028, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x36004); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x36020); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x37004); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x3701c); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x81004); /* GCC_GPU_CFG_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x42004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x42028); /* GCC_VIDEO_XO_CLK */
- 
- 	return qcom_cc_really_probe(pdev, &gcc_sm8450_desc, regmap);
- }
-diff --git a/drivers/clk/qcom/gcc-sm8550.c b/drivers/clk/qcom/gcc-sm8550.c
-index 4cbc728f5c72..26d7349e7642 100644
---- a/drivers/clk/qcom/gcc-sm8550.c
-+++ b/drivers/clk/qcom/gcc-sm8550.c
-@@ -3352,19 +3352,14 @@ static int gcc_sm8550_probe(struct platform_device *pdev)
- 	/* FORCE_MEM_CORE_ON for ufs phy ice core clocks */
- 	regmap_update_bits(regmap, gcc_ufs_phy_ice_core_clk.halt_reg, BIT(14), BIT(14));
- 
--	/*
--	 * Keep the critical clock always-On
--	 * gcc_camera_ahb_clk, gcc_camera_xo_clk, gcc_disp_ahb_clk,
--	 * gcc_disp_xo_clk, gcc_gpu_cfg_ahb_clk, gcc_video_ahb_clk,
--	 * gcc_video_xo_clk
--	 */
--	regmap_update_bits(regmap, 0x26004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x26028, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x27004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x27018, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x32004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x32030, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x26004); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x26028); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x27004); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x27018); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x71004); /* GCC_GPU_CFG_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x32004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x32030); /* GCC_VIDEO_XO_CLK */
- 
- 	/* Clear GDSC_SLEEP_ENA_VOTE to stop votes being auto-removed in sleep. */
- 	regmap_write(regmap, 0x52024, 0x0);
-diff --git a/drivers/clk/qcom/gcc-sm8650.c b/drivers/clk/qcom/gcc-sm8650.c
-index 63becb03cd90..9d1cbdf860fb 100644
---- a/drivers/clk/qcom/gcc-sm8650.c
-+++ b/drivers/clk/qcom/gcc-sm8650.c
-@@ -3808,14 +3808,14 @@ static int gcc_sm8650_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	/* Keep the critical clock always-On */
--	regmap_update_bits(regmap, 0x26004, BIT(0), BIT(0)); /* gcc_camera_ahb_clk */
--	regmap_update_bits(regmap, 0x26028, BIT(0), BIT(0)); /* gcc_camera_xo_clk */
--	regmap_update_bits(regmap, 0x27004, BIT(0), BIT(0)); /* gcc_disp_ahb_clk */
--	regmap_update_bits(regmap, 0x27018, BIT(0), BIT(0)); /* gcc_disp_xo_clk */
--	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0)); /* gcc_gpu_cfg_ahb_clk */
--	regmap_update_bits(regmap, 0x32004, BIT(0), BIT(0)); /* gcc_video_ahb_clk */
--	regmap_update_bits(regmap, 0x32030, BIT(0), BIT(0)); /* gcc_video_xo_clk */
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x26004); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x26028); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x27004); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x27018); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x71004); /* GCC_GPU_CFG_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x32004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x32030); /* GCC_VIDEO_XO_CLK */
- 
- 	qcom_branch_set_force_mem_core(regmap, gcc_ufs_phy_ice_core_clk, true);
- 
-diff --git a/drivers/clk/qcom/gcc-x1e80100.c b/drivers/clk/qcom/gcc-x1e80100.c
-index d7182d6e9783..1404017be918 100644
---- a/drivers/clk/qcom/gcc-x1e80100.c
-+++ b/drivers/clk/qcom/gcc-x1e80100.c
-@@ -6769,14 +6769,14 @@ static int gcc_x1e80100_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	/* Keep the critical clock always-On */
--	regmap_update_bits(regmap, 0x26004, BIT(0), BIT(0)); /* gcc_camera_ahb_clk */
--	regmap_update_bits(regmap, 0x26028, BIT(0), BIT(0)); /* gcc_camera_xo_clk */
--	regmap_update_bits(regmap, 0x27004, BIT(0), BIT(0)); /* gcc_disp_ahb_clk */
--	regmap_update_bits(regmap, 0x27018, BIT(0), BIT(0)); /* gcc_disp_xo_clk */
--	regmap_update_bits(regmap, 0x32004, BIT(0), BIT(0)); /* gcc_video_ahb_clk */
--	regmap_update_bits(regmap, 0x32030, BIT(0), BIT(0)); /* gcc_video_xo_clk */
--	regmap_update_bits(regmap, 0x71004, BIT(0), BIT(0)); /* gcc_gpu_cfg_ahb_clk */
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x26004); /* GCC_CAMERA_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x26028); /* GCC_CAMERA_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x27004); /* GCC_DISP_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x27018); /* GCC_DISP_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x32004); /* GCC_VIDEO_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x32030); /* GCC_VIDEO_XO_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x71004); /* GCC_GPU_CFG_AHB_CLK */
- 
- 	/* Clear GDSC_SLEEP_ENA_VOTE to stop votes being auto-removed in sleep. */
- 	regmap_write(regmap, 0x52224, 0x0);
-diff --git a/drivers/clk/qcom/gpucc-sc7280.c b/drivers/clk/qcom/gpucc-sc7280.c
-index 68a3e007df1f..35b394feb68d 100644
---- a/drivers/clk/qcom/gpucc-sc7280.c
-+++ b/drivers/clk/qcom/gpucc-sc7280.c
-@@ -457,12 +457,9 @@ static int gpu_cc_sc7280_probe(struct platform_device *pdev)
- 
- 	clk_lucid_pll_configure(&gpu_cc_pll1, regmap, &gpu_cc_pll1_config);
- 
--	/*
--	 * Keep the clocks always-ON
--	 * GPU_CC_CB_CLK, GPUCC_CX_GMU_CLK
--	 */
--	regmap_update_bits(regmap, 0x1170, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x1098, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x1170); /* GPU_CC_CB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x1098); /* GPUCC_CX_GMU_CLK */
- 	regmap_update_bits(regmap, 0x1098, BIT(13), BIT(13));
- 
- 	return qcom_cc_really_probe(pdev, &gpu_cc_sc7280_desc, regmap);
-diff --git a/drivers/clk/qcom/gpucc-sc8280xp.c b/drivers/clk/qcom/gpucc-sc8280xp.c
-index e2b3bc000c71..3611d2d1823d 100644
---- a/drivers/clk/qcom/gpucc-sc8280xp.c
-+++ b/drivers/clk/qcom/gpucc-sc8280xp.c
-@@ -445,12 +445,9 @@ static int gpu_cc_sc8280xp_probe(struct platform_device *pdev)
- 	clk_lucid_pll_configure(&gpu_cc_pll0, regmap, &gpu_cc_pll0_config);
- 	clk_lucid_pll_configure(&gpu_cc_pll1, regmap, &gpu_cc_pll1_config);
- 
--	/*
--	 * Keep the clocks always-ON
--	 * GPU_CC_CB_CLK, GPU_CC_CXO_CLK
--	 */
--	regmap_update_bits(regmap, 0x1170, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x109c, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x1170); /* GPU_CC_CB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x109c); /* GPU_CC_CXO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &gpu_cc_sc8280xp_desc, regmap);
- 	pm_runtime_put(&pdev->dev);
-diff --git a/drivers/clk/qcom/gpucc-sm8550.c b/drivers/clk/qcom/gpucc-sm8550.c
-index 836cefa8896d..4fc69c6026e5 100644
---- a/drivers/clk/qcom/gpucc-sm8550.c
-+++ b/drivers/clk/qcom/gpucc-sm8550.c
-@@ -575,13 +575,9 @@ static int gpu_cc_sm8550_probe(struct platform_device *pdev)
- 	clk_lucid_ole_pll_configure(&gpu_cc_pll0, regmap, &gpu_cc_pll0_config);
- 	clk_lucid_ole_pll_configure(&gpu_cc_pll1, regmap, &gpu_cc_pll1_config);
- 
--	/*
--	 * Keep clocks always enabled:
--	 *	gpu_cc_cxo_aon_clk
--	 *	gpu_cc_demet_clk
--	 */
--	regmap_update_bits(regmap, 0x9004, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x900c, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x9004); /* GPU_CC_CXO_AON_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x900c); /* GPU_CC_DEMET_CLK */
- 
- 	return qcom_cc_really_probe(pdev, &gpu_cc_sm8550_desc, regmap);
- }
-diff --git a/drivers/clk/qcom/gpucc-x1e80100.c b/drivers/clk/qcom/gpucc-x1e80100.c
-index 3bfd37f10b9d..b7e79d118d6e 100644
---- a/drivers/clk/qcom/gpucc-x1e80100.c
-+++ b/drivers/clk/qcom/gpucc-x1e80100.c
-@@ -638,7 +638,7 @@ static int gpu_cc_x1e80100_probe(struct platform_device *pdev)
- 	clk_lucid_evo_pll_configure(&gpu_cc_pll1, regmap, &gpu_cc_pll1_config);
- 
- 	/* Keep clocks always enabled */
--	regmap_update_bits(regmap, 0x93a4, BIT(0), BIT(0)); /* gpu_cc_cb_clk */
-+	qcom_branch_set_clk_en(regmap, 0x93a4); /* GPU_CC_CB_CLK */
- 
- 	return qcom_cc_really_probe(pdev, &gpu_cc_x1e80100_desc, regmap);
- }
-diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
-index 9051fd567112..fd9cd2e3f956 100644
---- a/drivers/clk/qcom/lpasscorecc-sc7180.c
-+++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
-@@ -401,11 +401,8 @@ static int lpass_core_cc_sc7180_probe(struct platform_device *pdev)
- 		goto exit;
- 	}
- 
--	/*
--	 * Keep the CLK always-ON
--	 * LPASS_AUDIO_CORE_SYSNOC_SWAY_CORE_CLK
--	 */
--	regmap_update_bits(regmap, 0x24000, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x24000); /* LPASS_AUDIO_CORE_SYSNOC_SWAY_CORE_CLK */
- 
- 	/* PLL settings */
- 	regmap_write(regmap, 0x1008, 0x20);
-diff --git a/drivers/clk/qcom/videocc-sm8250.c b/drivers/clk/qcom/videocc-sm8250.c
-index c00692a5c15a..016b596e03b3 100644
---- a/drivers/clk/qcom/videocc-sm8250.c
-+++ b/drivers/clk/qcom/videocc-sm8250.c
-@@ -383,9 +383,9 @@ static int video_cc_sm8250_probe(struct platform_device *pdev)
- 	clk_lucid_pll_configure(&video_pll0, regmap, &video_pll0_config);
- 	clk_lucid_pll_configure(&video_pll1, regmap, &video_pll1_config);
- 
--	/* Keep VIDEO_CC_AHB_CLK and VIDEO_CC_XO_CLK ALWAYS-ON */
--	regmap_update_bits(regmap, 0xe58, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0xeec, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0xe58); /* VIDEO_CC_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0xeec); /* VIDEO_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &video_cc_sm8250_desc, regmap);
- 
-diff --git a/drivers/clk/qcom/videocc-sm8350.c b/drivers/clk/qcom/videocc-sm8350.c
-index 8db2bb995558..f7aec28d4c87 100644
---- a/drivers/clk/qcom/videocc-sm8350.c
-+++ b/drivers/clk/qcom/videocc-sm8350.c
-@@ -558,13 +558,9 @@ static int video_cc_sm8350_probe(struct platform_device *pdev)
- 	clk_lucid_pll_configure(&video_pll0, regmap, &video_pll0_config);
- 	clk_lucid_pll_configure(&video_pll1, regmap, &video_pll1_config);
- 
--	/*
--	 * Keep clocks always enabled:
--	 *      video_cc_ahb_clk
--	 *      video_cc_xo_clk
--	 */
--	regmap_update_bits(regmap, 0xe58, BIT(0), BIT(0));
--	regmap_update_bits(regmap, video_cc_xo_clk_cbcr, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0xe58); /* VIDEO_CC_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, video_cc_xo_clk_cbcr); /* VIDEO_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &video_cc_sm8350_desc, regmap);
- 	pm_runtime_put(&pdev->dev);
-diff --git a/drivers/clk/qcom/videocc-sm8450.c b/drivers/clk/qcom/videocc-sm8450.c
-index 833d9ecbd305..67df40f16423 100644
---- a/drivers/clk/qcom/videocc-sm8450.c
-+++ b/drivers/clk/qcom/videocc-sm8450.c
-@@ -423,15 +423,10 @@ static int video_cc_sm8450_probe(struct platform_device *pdev)
- 	clk_lucid_evo_pll_configure(&video_cc_pll0, regmap, &video_cc_pll0_config);
- 	clk_lucid_evo_pll_configure(&video_cc_pll1, regmap, &video_cc_pll1_config);
- 
--	/*
--	 * Keep clocks always enabled:
--	 *	video_cc_ahb_clk
--	 *	video_cc_sleep_clk
--	 *	video_cc_xo_clk
--	 */
--	regmap_update_bits(regmap, 0x80e4, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x8130, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x8114, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x80e4); /* VIDEO_CC_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x8130); /* VIDEO_CC_SLEEP_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x8114); /* VIDEO_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &video_cc_sm8450_desc, regmap);
- 
-diff --git a/drivers/clk/qcom/videocc-sm8550.c b/drivers/clk/qcom/videocc-sm8550.c
-index ab1ba8ae3d42..d73f747d2474 100644
---- a/drivers/clk/qcom/videocc-sm8550.c
-+++ b/drivers/clk/qcom/videocc-sm8550.c
-@@ -428,15 +428,10 @@ static int video_cc_sm8550_probe(struct platform_device *pdev)
- 	clk_lucid_ole_pll_configure(&video_cc_pll0, regmap, &video_cc_pll0_config);
- 	clk_lucid_ole_pll_configure(&video_cc_pll1, regmap, &video_cc_pll1_config);
- 
--	/*
--	 * Keep clocks always enabled:
--	 *	video_cc_ahb_clk
--	 *	video_cc_sleep_clk
--	 *	video_cc_xo_clk
--	 */
--	regmap_update_bits(regmap, 0x80f4, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x8140, BIT(0), BIT(0));
--	regmap_update_bits(regmap, 0x8124, BIT(0), BIT(0));
-+	/* Keep some clocks always-on */
-+	qcom_branch_set_clk_en(regmap, 0x80f4); /* VIDEO_CC_AHB_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x8140); /* VIDEO_CC_SLEEP_CLK */
-+	qcom_branch_set_clk_en(regmap, 0x8124); /* VIDEO_CC_XO_CLK */
- 
- 	ret = qcom_cc_really_probe(pdev, &video_cc_sm8550_desc, regmap);
- 
+Thanks,
+Andrew
 
--- 
-2.43.1
-
+> 
+> Greetings,
+> 
+> -- Sebastian
 
