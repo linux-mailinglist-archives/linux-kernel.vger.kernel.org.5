@@ -1,84 +1,125 @@
-Return-Path: <linux-kernel+bounces-62465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC378852132
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:15:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BC6F852139
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:15:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A9FEB25D11
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:15:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC10C28196A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B874DA1F;
-	Mon, 12 Feb 2024 22:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF604F219;
+	Mon, 12 Feb 2024 22:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="lg8wZKjp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IeSR7CE8"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3434D584;
-	Mon, 12 Feb 2024 22:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 789954F213
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 22:14:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707776091; cv=none; b=lzirXJ6kshoTXFdlLyoqxi6RmGSGel5nLCZmlhEMcbJ5acOX79ZbHhIpdn3EZ3Uzc7WskSFM+5vhmjYs6hS2cY+pxi7ZHBvoRJwYrA+LITEOFTgzJEhyXvBMS9Oqq15vvxJyMmHfu8p33e/AfJh4CWj29QJI4j2gFacwswyQwLI=
+	t=1707776100; cv=none; b=f/FOByRJWckqYiZuIp+zq3uULDAYx1Ng6JD4ecfxkcvj6TuToCIpjMrCzTFJqL27xLjle1GyqEoJsH5ouepbaSS+SqJcwVAb0K95XX8+5xTI9ult7ovLZ7fyzg3wGWwRJhRw7W+iiLpGOcKz+WNsGeMUVoqS8nSSjLSqBiWS0+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707776091; c=relaxed/simple;
-	bh=toXHHTbqeffryJhHki02NqbDsdW7aRSndGKlscFHQkU=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=tG9pJKCkMPu9RnDR5iX94WPOEaCdxeJc029JwYpSRyk+gcEbuMtlwnJAbnlTmNvl60zQjQEIMYyYRDOPct/gjbSv9DbjQ+axuoYzWupQlgu4Zxrh0vUTCGYcCma3vRCMq3+No1H5SZZzB9nvrZ+4cVa/zyB/vjxH5wHYGKd85PU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=lg8wZKjp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D184C433C7;
-	Mon, 12 Feb 2024 22:14:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1707776090;
-	bh=toXHHTbqeffryJhHki02NqbDsdW7aRSndGKlscFHQkU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lg8wZKjp289xTkn6gV3mdgQRoKqlXRvvQATwOA1IG2m/OTQpgOiYrm2yBj4G1KKd4
-	 FQlmTMd0pvfrJFq1i2sJEH09Z6I7u9n+Tduca9LcEiOqio1rjP0x5COybTadQ8Z1z+
-	 X8pbUtQI4nKViZmFpzSfobpvs1K8hwmigTdO7PlE=
-Date: Mon, 12 Feb 2024 14:14:49 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: SeongJae Park <sj@kernel.org>
-Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>, Shuah Khan
- <shuah@kernel.org>, Bernd Edlinger <bernd.edlinger@hotmail.de>,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- damon@lists.linux.dev, linux-mm@kvack.org
-Subject: Re: [PATCH v2 4/4] selftests: damon: add access_memory to
- .gitignore
-Message-Id: <20240212141449.a72329a7ea28fd9ff828d1eb@linux-foundation.org>
-In-Reply-To: <20240212202356.73461-1-sj@kernel.org>
-References: <34986860-41e5-4d03-a0c5-72af12e7e97c@gmail.com>
-	<20240212202356.73461-1-sj@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707776100; c=relaxed/simple;
+	bh=dyH1lfHbtvnYqMA2n7qN8NXnHWmrvDNZFQy38SC9y5U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uEiTgdLcvmC7Urfpezuzr4XxTdr72hP7KpUa0heouhAjwHsaCUFDPmbSPxf2G/6w4MRXGpM4SZ9IcPXbscJTnUffO4zVAOMkP4bjYtv2nrvW+FXoJdGEykeKbG0wVmbHtjQYH2j7oP5YRBOJ0RRDi+X8Cl+yX07Jis7XgSc4ELI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IeSR7CE8; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e08dd0c7eeso257589b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:14:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707776097; x=1708380897; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=njQYW+8QUhLVezZTq33SQ25bt0JrLVgtIWx4ItZ5PfU=;
+        b=IeSR7CE86+X05I2QmvdCXJzwE0kKk6hDmPajOHls6UUwBtJEZkj+cskUvkz8Q1qnV1
+         JaeAy0KELzfshPa2E3RoVQ6ybC99UUfVW642FenYbbtUDuLV8LwjnZycyc78D2+Zi6AZ
+         C/4eq4h00xoyJuO2t5cPVcqfycLu0FZYmNOqk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707776097; x=1708380897;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=njQYW+8QUhLVezZTq33SQ25bt0JrLVgtIWx4ItZ5PfU=;
+        b=Iqj4eqQWCDgKAOvSJWSiM/laLWljC2/2QSbgm8FB6Zc0L6sI/EG/yAIF3SqaIJK9xz
+         NsejdH8YGtKza+fmPcWZWiSYC83771TJgzYDFz40m0EsM26ie64By7LKQheMCxWORP/J
+         GXBkrBzReXUV43eIH/v9NHZxYYZ22Dq7X03vbe+b8dJv3hMnAtBPwOjYSiPttxKQukjI
+         ZAGHK3bnuMAwKHw64861GrA550KgGvQmKR1tsp5Mi0zwJbbj9QO9dgtxH0QojrK2/0Gp
+         HlGewO8pL3HUYQgQbmbCWOwul8t6gCdbMzBa/yH4HTT1mxnUKiUOX6gw52yKS7xw+g9r
+         mJqg==
+X-Forwarded-Encrypted: i=1; AJvYcCUYzdzy3wuyJ/6AH88yBiLQwtJqTu4Dfsom8mYBWj4eEJWLtI7M85qUNH6MHGVEgk0bUEh1N/N6AQfAgLZM2qVvFCn4b4rcryZle9td
+X-Gm-Message-State: AOJu0YzQT3tUno4IQnMVzT1P69KFq0GRcZx6Jo4ZO8p86k+22S34t5KD
+	wmiqF4GvvpaA9ktYXTCQtVqnMvlEr4qhRFtOneJ85LX09kqfGbBTxwr7yAWU3w==
+X-Google-Smtp-Source: AGHT+IGqHvQOXXe7pc2R8QyHByBXSm0DS/WGlqi3hZkqk8zeoT0i73r83gGpApQJ03KCZsZvt2qMeg==
+X-Received: by 2002:a05:6a00:124d:b0:6e0:4a04:cd1 with SMTP id u13-20020a056a00124d00b006e04a040cd1mr8211556pfi.17.1707776096755;
+        Mon, 12 Feb 2024 14:14:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUawBFhnV5kDrJizR8a00DS7yAvZ2jV8W5VE00vxBHng9Iux9BXaSmyGyDA+k/BmGKhRzKbWgCJlDApB9sU0S29Qs2ATeXIPgNbm4G9/M9kXh/5eYurHo9ba8q5k/E/MRaeOJ3yRafvYhsV53C3qCdd2RmIrydlsVryJ4CdulBga6TAqzPfk3A03BoqE+5noWnQQngO2dUiuB22FMz4yqYpERu2gKGnXcL3qQcPRx8QZK5QYBIuL3QlvVOx1EM1wtNT9Fv3Dirtaw2NsVkJ5Z3zsSNAEgQK6BfuKYvX/hccDt0wHJCJNRMNWj7MEiql8IFjfRIeYCzedAohtWgXbo3DkcfSe/fCdff7co71W0LbEfOUkxXQaXM2E81jCQbqIAvmJkIh1npJ8zhRmHuD8O9LjKD8vz7GT1RPiUu24gXbK16IB7uPEaiQzl3wT2WnbCXgUoNedjXsO9qGAlDAGaPCYADPuBr/7c/JDUry2XcXokowgT8A+Ki9kmQ0pzfUoO4weA6y38ykw/YlDDuGmgTB/CfzmHDMpLBdZBYCV2SJgg7D0dwPX4leQyuezXu7ZhUNW1lMsUUsbzm7q0bPBP+qNxPT4gLqwGcHlRdJIkHxVUG+Qlc1p1gIyYn46L/cukorHtdjTEdsUq+Mo4o66zaSxNyzfL6wuF8lepBEzoCdMzP/Pq9ocXXYi7a4GBGr9c5wXz89P/S/Wy05xXyXJ7vbiEHF7N0v8J5oyvy4CFwX7DrFteqamA==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id m4-20020a62f204000000b006e0472fd7d1sm5946630pfh.130.2024.02.12.14.14.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 14:14:56 -0800 (PST)
+Date: Mon, 12 Feb 2024 14:14:55 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 07/35] mm/slab: introduce SLAB_NO_OBJ_EXT to avoid
+ obj_ext creation
+Message-ID: <202402121414.57F185ACC3@keescook>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-8-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212213922.783301-8-surenb@google.com>
 
-On Mon, 12 Feb 2024 12:23:56 -0800 SeongJae Park <sj@kernel.org> wrote:
+On Mon, Feb 12, 2024 at 01:38:53PM -0800, Suren Baghdasaryan wrote:
+> Slab extension objects can't be allocated before slab infrastructure is
+> initialized. Some caches, like kmem_cache and kmem_cache_node, are created
+> before slab infrastructure is initialized. Objects from these caches can't
+> have extension objects. Introduce SLAB_NO_OBJ_EXT slab flag to mark these
+> caches and avoid creating extensions for objects allocated from these
+> slabs.
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-> > 
-> > > Also, note that this conflicts on mm-unstable.
-> > 
-> > Should I use mm-unstable as basis to make sure no conflicts are introduced?
-> 
-> DAMON selftest patches could be merged in mm-unstable or linux-kselftest
-> depending on cases.
-> 
-> If you rebase this on mm-unstable, it might conflict on linux-kselftest.
-> Letting Shuah merge this on linux-kselftest and asking Linus Torvalds to fix
-> the conflict in next merge window could be one possible option.
-> 
-> Or, making this split out of this series, rebase on mm-unstable, and asking
-> Andrew Morton to carry may be another option.
-> 
-> Andrew and Shuah, may I ask your opinions?
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-I'd say base it on mm-unstable so we don't have conflicts for people to
-deal with?
+-- 
+Kees Cook
 
