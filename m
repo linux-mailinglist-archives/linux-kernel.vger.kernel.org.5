@@ -1,146 +1,126 @@
-Return-Path: <linux-kernel+bounces-61878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330CD8517BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:15:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AF938517C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:16:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 616491C21A1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:14:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0757F283357
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:16:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58863C47E;
-	Mon, 12 Feb 2024 15:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D37E53C496;
+	Mon, 12 Feb 2024 15:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YQkfmy+V"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="X5naKi5g";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wvaAtq9g"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154611DFD9;
-	Mon, 12 Feb 2024 15:14:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833861DFD9;
+	Mon, 12 Feb 2024 15:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707750892; cv=none; b=NDT9ivu9XMBNMZPO/R/Z3tSZhspyo4Qf/u9g6elUrpWaAixQAjMPWO4C27nSmSaHVNn6xJRYF95p6hEh0AjiehE2x6CVfaRjOWZEPR07eTBLx7VUbNS+KIDvcZFTPao1eXvU8km5AUM24r3kT7bWyAuyNy5rWlaUbb7AeWYW6fM=
+	t=1707751005; cv=none; b=AzrgTtK71O9YRdcVUfPQFFnOpjcahObwyhW06TqlKb1ReCR75bxFiBgNLKK6mVe95Fy60KmBK/fFC9Ljdb0LNAe2uLkcmB4FhvhJSmL3D8iCySebt5cP2OQSIkL93jMtLNFG3tTgr30jD5fHPO1930EJsFy1GG4kb7j6RIr6i74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707750892; c=relaxed/simple;
-	bh=5q6JZRqfcRM8joFrd/AFSLb1fQAqV7AVpQcJ1988pP4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IC+J3ePRB2YpIZ21S7JkEcgmTamurXQxGtSbfLZsmMoutGdRnQMWNidEpnIbbdK7NVpNY8V/r7kpORmAliPuNglmgE5Sn9zUwLrpQVhycHPVuq32FsuvvlwnPr62YSyWM2RK7CDvedb1jdyzHxvooFGxRo3uN8qvcstDh1kFWyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YQkfmy+V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34609C433C7;
-	Mon, 12 Feb 2024 15:14:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707750891;
-	bh=5q6JZRqfcRM8joFrd/AFSLb1fQAqV7AVpQcJ1988pP4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YQkfmy+VhabegvGXYGdHPXVnU/TNaW2q6GRYvxAKffYehQeYdPKGKik/HCuQ88VhG
-	 juJB0HrNy/KuEymDRS460fW8Q+3mLNnW6gzkQuEANAB1OHBqYfWuoYIAN+xutNTJxR
-	 oYJn6xUg+jaQNP1aO/1WQYbTQTORUYdE+cD9CAHnzywsuTvzBKFczSu58mlit3Fvfs
-	 mvil+84HteuRA1x5MDRfVZD5JVcg73qqK/DtMW8d+C0q1bAieBygA+IvCvGJV+uLEl
-	 WbK5BlpmL9TMKBjGsR6vqLz8rt1P43xbB85xA/ztcWebzfRXLd2kKs4ezbhpr4Ftua
-	 c66lzHktm0dpg==
-Date: Mon, 12 Feb 2024 09:14:49 -0600
-From: Rob Herring <robh@kernel.org>
-To: Chen Wang <unicorn_wang@outlook.com>
-Cc: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
-	chao.wei@sophgo.com, conor@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-	palmer@dabbelt.com, paul.walmsley@sifive.com,
-	richardcochran@gmail.com, sboyd@kernel.org,
-	devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-	haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
-	guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
-	samuel.holland@sifive.com
-Subject: Re: [PATCH v9 2/5] dt-bindings: clock: sophgo: add RP gate clocks
- for SG2042
-Message-ID: <20240212151449.GA379868-robh@kernel.org>
-References: <cover.1706854074.git.unicorn_wang@outlook.com>
- <fcdd83addcd9af159a0bebf2a14543168bd59a07.1706854074.git.unicorn_wang@outlook.com>
- <20240205172422.GA3643653-robh@kernel.org>
- <MA0P287MB2822C8930916B90A9C1BAA49FE462@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1707751005; c=relaxed/simple;
+	bh=3chvmobw0WIhPXp502BMUquxmX0WkgFAgr4Y5a+BiK4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=E12dH9Twj5lcQMU9sGIbIdvXe/rO7jxaQ3uGY3fyrMxW2/8CM5aXvZ5/SVnW1pWcHc+a6vCuxJskKY2FxaoezZNSxJWbW76EOVvosdPFpF3Hiqtps8RGGJXP2y91mRMlV+o6kq/V157GS2ZC7SwzOoMio2SgjCzO2aBMFqQkQt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=X5naKi5g; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wvaAtq9g; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707751001;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C0+9xXf1xmlpe5oi4tOOoKsJ9pZFh5ERW9flQIZRs88=;
+	b=X5naKi5gLpvZkYPThLTAQgcrOgmy7YnG179d5g9Zp0omwvh7aQLVvP0+Rlpn18mGTFxMVS
+	jb2OZM69peAkDCL3yF1jhi9jdM6PGkhHzdqiyNkma8rajbUwpx+HZjDXUlKVpumyENxaZ2
+	LPo4BLCgiNACH4nQjgU9UuW+MEmyXZH1whNpAhisf6WmczXagVYIkUzTeheK86QtZWf9U6
+	3XJjiQDuJAWk7KCjGTytUpoi1cc/0Ph1Fc7WGqbAhlZSwzb/k+buVyjqd2knVFJJqEtp9Y
+	Fj381DdX3HHi1MwyJ1buO9ZUt/ECWBEkvtQedGK44DUkGfRizsz9fRj14/9l8Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707751001;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C0+9xXf1xmlpe5oi4tOOoKsJ9pZFh5ERW9flQIZRs88=;
+	b=wvaAtq9gXWu+gOMPiuUPNIHogxDOFBTHTovmSRErtvucLMRbKc+sW6mcVW7KPtOAn9Jr0c
+	FJrzz2lzCTOfMLBw==
+To: Byungchul Park <byungchul@sk.com>
+Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+ torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+ linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+ linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+ will@kernel.org, rostedt@goodmis.org, joel@joelfernandes.org,
+ sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
+ johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+ willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+ gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
+ akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
+ hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
+ jglisse@redhat.com, dennis@kernel.org, cl@linux.com, penberg@kernel.org,
+ rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
+ linux-block@vger.kernel.org, josef@toxicpanda.com,
+ linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
+ jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
+ djwong@kernel.org, dri-devel@lists.freedesktop.org,
+ rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+ hamohammed.sa@gmail.com, 42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
+ gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
+ boqun.feng@gmail.com, longman@redhat.com, hdanton@sina.com,
+ her0gyugyu@gmail.com
+Subject: Re: [PATCH v11 14/26] locking/lockdep, cpu/hotplus: Use a weaker
+ annotation in AP thread
+In-Reply-To: <20240130025836.GA49173@system.software.com>
+References: <20240124115938.80132-1-byungchul@sk.com>
+ <20240124115938.80132-15-byungchul@sk.com> <87il3ggfz9.ffs@tglx>
+ <20240130025836.GA49173@system.software.com>
+Date: Mon, 12 Feb 2024 16:16:41 +0100
+Message-ID: <871q9hlnl2.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <MA0P287MB2822C8930916B90A9C1BAA49FE462@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+Content-Type: text/plain
 
-On Tue, Feb 06, 2024 at 08:57:27PM +0800, Chen Wang wrote:
-> 
-> On 2024/2/6 1:24, Rob Herring wrote:
-> > On Fri, Feb 02, 2024 at 02:42:02PM +0800, Chen Wang wrote:
-> > > From: Chen Wang <unicorn_wang@outlook.com>
-> > > 
-> > > Add bindings for the gate clocks of RP subsystem for Sophgo SG2042.
-> > > 
-> > > Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
-> > > ---
-> > >   .../bindings/clock/sophgo,sg2042-rpgate.yaml  | 37 ++++++++++++
-> > >   .../dt-bindings/clock/sophgo,sg2042-rpgate.h  | 58 +++++++++++++++++++
-> > >   2 files changed, 95 insertions(+)
-> > >   create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
-> > >   create mode 100644 include/dt-bindings/clock/sophgo,sg2042-rpgate.h
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml b/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
-> > > new file mode 100644
-> > > index 000000000000..69ce3a64f66c
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/clock/sophgo,sg2042-rpgate.yaml
-> > > @@ -0,0 +1,37 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/clock/sophgo,sg2042-rpgate.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Sophgo SG2042 Gate Clock Generator for RP(riscv processors) subsystem
-> > > +
-> > > +maintainers:
-> > > +  - Chen Wang <unicorn_wang@outlook.com>
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: sophgo,sg2042-rpgate
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  '#clock-cells':
-> > > +    const: 1
-> > > +    description:
-> > > +      See <dt-bindings/clock/sophgo,sg2042-rpgate.h> for valid indices.
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - '#clock-cells'
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    clock-controller@10000000 {
-> > > +      compatible = "sophgo,sg2042-rpgate";
-> > > +      reg = <0x10000000 0x10000>;
-> > > +      #clock-cells = <1>;
-> > No input clocks?
-> 
-> I think it should have some input, I will add it, thanks.
-> 
-> BTW,  can we ignore this property if driver doesn't use it？ In other words,
-> do we have to add this clocks property just to indicate that this node
-> requires some clocks as input from a hardware perspective?
+On Tue, Jan 30 2024 at 11:58, Byungchul Park wrote:
+> On Fri, Jan 26, 2024 at 06:30:02PM +0100, Thomas Gleixner wrote:
+>> On Wed, Jan 24 2024 at 20:59, Byungchul Park wrote:
+>> 
+>> Why is lockdep in the subsystem prefix here? You are changing the CPU
+>> hotplug (not hotplus) code, right?
+>> 
+>> > cb92173d1f0 ("locking/lockdep, cpu/hotplug: Annotate AP thread") was
+>> > introduced to make lockdep_assert_cpus_held() work in AP thread.
+>> >
+>> > However, the annotation is too strong for that purpose. We don't have to
+>> > use more than try lock annotation for that.
+>> 
+>> This lacks a proper explanation why this is too strong.
+>> 
+>> > Furthermore, now that Dept was introduced, false positive alarms was
+>> > reported by that. Replaced it with try lock annotation.
+>> 
+>> I still have zero idea what this is about.
+>
+> 1. can track PG_locked that is a potential deadlock trigger.
+>
+>    https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-byungchul.park@lge.com/
 
-Yes and no. The kernel will see the dependency and track that. But your 
-driver doesn't have to get the clock or anything. Though presumably the 
-source is a fixed-clock and you need its frequency to calculate child 
-clock rates.
+Sure, but that wants to be explicitely explained in the changelog and
+not with a link. 'Now that Dept was introduced ...' is not an
+explanation.
 
-Rob
+Thanks,
+
+        tglx
+
+
 
