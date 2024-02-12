@@ -1,105 +1,110 @@
-Return-Path: <linux-kernel+bounces-61372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5358085117E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:52:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 764278510FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:35:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EECDB1F22D81
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:52:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16D34B25334
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:35:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA4438DE0;
-	Mon, 12 Feb 2024 10:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E348208CB;
+	Mon, 12 Feb 2024 10:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrMEgCCr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FGJOWhWS"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873FF2555B;
-	Mon, 12 Feb 2024 10:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21D21BC44;
+	Mon, 12 Feb 2024 10:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707734858; cv=none; b=p2vH39TrhMkD3E1Qb89z8QJcDJR3h0cGZivzk7erjBIMsbqYUgzgtu1H1s87p78nmUvTTDQfJ0VvBnOaw2nBHDBvBs9hnUiyBOmYq7vN7RVGseNb0Nm4RTAkjnIfRODXzQW9TkEJI0OdQ2fDJ97W1QLEIsrVTMpkOR2Fz47asgk=
+	t=1707734120; cv=none; b=nC7gjZy3Q6ZFKjB1mMJ5iu++ytp5OTQ5FtuUjdWVs6NJFkTXjC8jVMrNU3JNxAcbwhPhJMecgBlHaQeqpxH17Njg2HfJhn87lGaCEno7OA4pVG2d15ZS2HXquYdd9uFiZhHVa9XnsJMubBp81UvYo8lO7ynpXWYgjP91PlsvdgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707734858; c=relaxed/simple;
-	bh=t/ZTePsKdIVKC4gWLazaU/Eiquk8TE+7jyT9VDJ6mgI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QL1bxiJiOlvQ6Px/a4HNS9w9HAkebL4VdRyZIcZ23pqcI/THHlj2JfVxyL7gVU+9hSnmFMCLULxFBltteJXn06q3WE21ybWKz8G4l5WkSmp8WaMcGj8Ucl+UTia0UjSXjUFNk8z9xcPMx+uKw4mWs61IHSl38pHi/CRERkgX800=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IrMEgCCr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC055C433C7;
-	Mon, 12 Feb 2024 10:47:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707734858;
-	bh=t/ZTePsKdIVKC4gWLazaU/Eiquk8TE+7jyT9VDJ6mgI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IrMEgCCrpHvdMCfGdToN4BxinirdDqARNMPWtQr6H0NW0Ziy4uCKXTzVJNZzRMj58
-	 8i3nL8Wt1M8k7yHb5AwI1vfq5kMm4QUDOe/nCQYd/0eR4+tz/6YJUJ2z1i4TK6c3xS
-	 9KBE4sTFK1ZsfJ10qNJPzY/D3qLP7PxFqZYSUvRrEfYa+aTx50rO/VNZxKAe4z8Kkl
-	 mfdASZ/EL62Ke6TFpTVpNJkv+8jpbDdpRusebAwh4RhibDdD9sGrprQi63knxoFMY1
-	 uGmrIQ7LhSV7aHwT8OOWme+PuuvJSJBdE7FeIwnrJrjcSTzsdfq232wBvqEBPVpTsb
-	 bqE9m+5ee5GAg==
-Date: Mon, 12 Feb 2024 18:34:36 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Andre Przywara <andre.przywara@arm.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: sunxi: Add Sipeed Longan Module
- 3H and Longan Pi 3H
-Message-ID: <Zcn0POS-4BFGlRm9@xhacker>
-References: <20240211081739.395-1-jszhang@kernel.org>
- <20240211081739.395-2-jszhang@kernel.org>
- <7ee6df91-76fa-44e8-ab81-fd4b63b58ce9@linaro.org>
+	s=arc-20240116; t=1707734120; c=relaxed/simple;
+	bh=GtSA2uksSNi9NjNtGdRb198QphqBQo298wJEqml0ao0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ZkWMu3EwEzf3taPU2BnZ5jWxrHQeovhv0mpNbrDwqXQxc8oUXrG7PYQS9Xww+bJjt9nFQGbYzaBEZBCxR0YSlYFZUXB/7YyK7jzya2GfB3CvoBtgBWG8FahAXm4NiBp3ldOcRRpgJg9lqT6gHoqxHo/eMxA1PTkxqvKcKHHsc+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FGJOWhWS; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41CAZCcm047334;
+	Mon, 12 Feb 2024 04:35:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707734112;
+	bh=Xj9j2XfAcYdQJO4Bp6v+MxM9gh2G++BUQji8tP63c30=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=FGJOWhWSnry9bE2ph/1TDWzGLM8H38uGhmZ7HVtAqTE0A+vCurSNAXZSthuk2SLiq
+	 s1QJsKW5CILLO2CFSSOzgXvOLcnVRVDhqgEenL8WXaYaLMUHxpFfdFFZ7fTKt/NxJk
+	 OynRI4epJjjLXLCw5cgGWbnILEHpzWdp4fu6+1Wg=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41CAZC75067085
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 12 Feb 2024 04:35:12 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
+ Feb 2024 04:35:12 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 12 Feb 2024 04:35:12 -0600
+Received: from [10.24.68.216] (a0498981-hp-z2-tower-g5-workstation.dhcp.ti.com [10.24.68.216])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41CAZ8Xx102619;
+	Mon, 12 Feb 2024 04:35:09 -0600
+Message-ID: <ab894372-8212-4a29-8167-b872105db81c@ti.com>
+Date: Mon, 12 Feb 2024 16:05:08 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7ee6df91-76fa-44e8-ab81-fd4b63b58ce9@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/4] arm64: dts: ti: Modify pinmux for wkup_uart0 and
+ mcu_uart0
+Content-Language: en-US
+To: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20240212095905.1057298-1-b-kapoor@ti.com>
+From: Bhavya Kapoor <b-kapoor@ti.com>
+In-Reply-To: <20240212095905.1057298-1-b-kapoor@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Sun, Feb 11, 2024 at 05:29:32PM +0100, Krzysztof Kozlowski wrote:
-> On 11/02/2024 09:17, Jisheng Zhang wrote:
-> > Add name & compatible for the Sipeed Longan Module 3H and Longan PI 3H
-> > board.
-> > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-> > ---
-> 
-> This is a friendly reminder during the review process.
+This should have been a v2, please ignore this . I will resend.
 
-Oops, I forgot to add Conor's ack...
-> 
-> It looks like you received a tag and forgot to add it.
-> 
-> If you do not know the process, here is a short explanation:
-> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-> versions, under or above your Signed-off-by tag. Tag is "received", when
-> provided in a message replied to you on the mailing list. Tools like b4
-> can help here. However, there's no need to repost patches *only* to add
-> the tags. The upstream maintainer will do that for tags received on the
-> version they apply.
+Thanks
 
-IIRC, the b4 can only help on the latest version. If I missed the ack
-in v3, the ack tag will be lost. So how to handle this case? repost or
-Conor gave an ack to v3 again?
-
-Thanks for your information.
-> 
-> https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-> 
-> If a tag was not added on purpose, please state why and what changed.
-> Best regards,
-> Krzysztof
-> 
+On 12/02/24 3:29 pm, Bhavya Kapoor wrote:
+> WKUP_PADCONFIG registers for wkup_uart0 and mcu_uart0 lies under
+> wkup_pmx2 for J7200. Thus, modify pinmux for both of them. Also,
+> remove the redundant clock-frequency property from mcu_uart0 node.
+>
+> Only Tx and Rx Signal lines for wkup_uart0 are brought out on
+> J721S2 Common Proc Board and J784S4 EVM, but CTS and RTS signal lines
+> are not brought out. Thus, remove pinmux for CTS and RTS signal lines
+> for wkup_uart0 in J721S2 and J784S4.
+>
+> Bhavya Kapoor (4):
+>    arm64: dts: ti: k3-j7200-common-proc-board: Modify Pinmux for
+>      wkup_uart0 and mcu_uart0
+>    arm64: dts: ti: k3-j7200-common-proc-board: Remove clock-frequency
+>      from mcu_uart0
+>    arm64: dts: ti: k3-j721s2-common-proc-board: Remove Pinmux for CTS and
+>      RTS in wkup_uart0
+>    arm64: dts: ti: k3-j784s4-evm: Remove Pinmux for CTS and RTS in
+>      wkup_uart0
+>
+>   .../boot/dts/ti/k3-j7200-common-proc-board.dts | 18 +++++++++---------
+>   .../dts/ti/k3-j721s2-common-proc-board.dts     |  2 --
+>   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts       |  2 --
+>   3 files changed, 9 insertions(+), 13 deletions(-)
+>
 
