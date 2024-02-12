@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-61468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABA088512B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:55:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E305B8512BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:56:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFCC41C2315A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:55:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13FBA1C21878
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B086C39FEF;
-	Mon, 12 Feb 2024 11:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B573A8C0;
+	Mon, 12 Feb 2024 11:55:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="JxVqIPVY"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="ZVkb+Iiv"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E5A39FCC
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF5339FDA
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:55:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707738926; cv=none; b=Cl53nD5csR2hr0Sxt8P0xUXJw4yvod27aGW6eJXAhNRjz4WwoKOIf0dGieRcjIB7cb9FW7P7ta5dGdd+KFz6m3o+gJ2Svi/iIsl67vLSdo71JECzjiruvtvAftVf6oPMWZDRZMdGS/qFEPpdsP5aEBVN6dhlGzbejkwHOMkajEI=
+	t=1707738928; cv=none; b=boUVpDuoFoKJRtWEQIpVFwhxulxANmd2yEzZdt/8o/ocVbTCo/wxuq6jeETvZUI6wAkS0gHcLxgVxhCd9noqYWzpFjBUW9e4sy4SsYtJaxj71vCw+ywV77fiJJL4LpIaztjQ94cyjsEUK3NWN/H81s4KVMK0xxsqZwuFLzWR9bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707738926; c=relaxed/simple;
-	bh=dOlTuXKsYcsEMhZKV2ceENM9VxEjCmjj6RlMrSCfXDs=;
+	s=arc-20240116; t=1707738928; c=relaxed/simple;
+	bh=VakhuskCOEmdUKNKG6h481SR/1QpIv5oUGc9vY942tw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ggok+kcvGHN9Gxc19GmmmqrQ9/9tpr9TWECcMhg4MCuw2jBTfHMLa9dhuz1JpE2Z3Pbq2cvPUYNRexft1aBiAPsr1PU7Hza6+v0KsglSQITX4vuxoNM1v3HSeNC3C2/g7eAST/7zt3oFFFE9/BuG9SThbNVdWgZqtk6N1g/jAHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=JxVqIPVY; arc=none smtp.client-ip=209.85.208.42
+	 MIME-Version; b=DDvV6k/lgPhk3dKuBTWTQgreh+uNa0GcL1msBbSjJl6WlCX5prj2ofRFB5fRuQMYd7dAIjD1E1xeRFRdKUU9d5CYySM8LWikkFjT/q4hQs/w4PCvQ9SKPzp8lLdg2fRheY/6VaWuRHayZWMyHz+0yoLpfaXRmvFZGI2gQmmLYMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=ZVkb+Iiv; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so4016122a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:55:24 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so4016150a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:55:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707738922; x=1708343722; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1707738924; x=1708343724; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VVvOwBrSuMtITWpqoDUBeLSYkEYOwFFiivjQgOkA3M0=;
-        b=JxVqIPVYAqpg/J8kR/i67x4jI4LXhQo3QMRSeVI3WzMAbQdtn6MvjeBe4YD0p3yPNR
-         AqFkfVCLfQq190+YCJ5DsC725lp0DhP9Iqql/rKidplAe/mZ6eO2izD45svYUmUzjxDt
-         vQ4RC2/Kj971uVdnAjV3jUhyq3HtIrSOY4nfdeLG0SV+dZCO/h+1eBuOnYzQ6XsNg/xS
-         gX7JosUfGJsvAPeurcNYohJxoM4JxiTdDY1ZAr4DVSFrB1ndxk9WeZ5spxJzqv9JyyGe
-         cTZoGuNv3WRuBCMk2IQMvBQ0MmwkV5a0vvKerOlnbEhYi3DNkDwrHPiHm2Kf1qTlJ8iG
-         K1Kg==
+        bh=fpANRYXvs6zGbuIzmy6jouZw9SrrvoBI/ftf7n/DOy4=;
+        b=ZVkb+IivFda0raddP/sOm0aCNdDUxXzYARJGuyXKfwrxRDja2yMDAZz4jqPfhb/r/P
+         e7/orZTR/t4ta/uuujnZro54IdehPrjXFDE6AtsuEinxVsKsHp2JZaqvC0Ik65SNRxLh
+         DbVD+4Iro+qfNOiWr3h5Wv3EXJRBRsFJfEcj+MvGm7l/qktD66nGeCMyoCtIzueK7fcX
+         zwieQ6xvyKpwaOIRM0kw0QiIRrWdUVUjF5e+nsHqW4sn1qMIWQFmDXbHPXRNQ5Ew7Z08
+         UhccxxAX44nWDNMlYf/5tacfzc6LyuvJUC5NoHnlVbKz2DabWe4IsJhKQXniIX8wI1LL
+         JdDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707738922; x=1708343722;
+        d=1e100.net; s=20230601; t=1707738924; x=1708343724;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VVvOwBrSuMtITWpqoDUBeLSYkEYOwFFiivjQgOkA3M0=;
-        b=jho7Ke9/XeFn675Bf+uKilXgv8U8btmPuec3B5gYV+bAGXWH6ls1cDr5odVeWWoldN
-         FD4XCg/kiAUtLu93Cb+GDiDkboddJMf5UTusNyEOol3GajAIV8BHtbYW2f5bjOb6GakT
-         q9Svc9tvMrfO7GCw3GTmpfsZkXUH8SbDPBIa/H1Op0bSEOKQAMdVu+NjMDGXqwxztXyW
-         9aLStQOGuLkzkVu6c8qn275gR+wVh17su16LFnr5Q+jgmSKpKsvUZzud+Ez9BilEP8LS
-         Yf/yARWsg1J7YdPvPIE+7jjMlCDC36DbLxzIbKcXzjWvLpARnMR/v03AHuPG9SWJhdAC
-         Hr1w==
-X-Gm-Message-State: AOJu0Yzif71lYDgai48mQy39y9OJ0+Jh3VR7dLJwbW2Ov2pi5/PqY4cb
-	GneX5cQksg+xUOhVqoAK4AjXe4R02Nl3SnSNU1GEGvPGTFZYknNilEA7dQHkrLl7rUU/cJNr9uJ
-	Z
-X-Google-Smtp-Source: AGHT+IF2ixGq9KnH7zOquRoPKoSh5QSQYG+1VLcM/K56cdsMifWfUmgwq/xiRMTVq8xQ+lH1pSGmBg==
-X-Received: by 2002:a17:906:fc01:b0:a38:3693:aea1 with SMTP id ov1-20020a170906fc0100b00a383693aea1mr4118831ejb.52.1707738922297;
-        Mon, 12 Feb 2024 03:55:22 -0800 (PST)
+        bh=fpANRYXvs6zGbuIzmy6jouZw9SrrvoBI/ftf7n/DOy4=;
+        b=jh8ZU23Bbj6MrLXsmaJL6udgCCE17l8ncMgd11/Qu3BHVEDrRV7JBOhZ06aLlWXvoa
+         j/jS8Y39/eR5a5CLn5BWzotyMR8rr09TPdtrE5JbbEQnHglCANS3qGToXhSzR8UVv0JF
+         mrvYe9AOu3cehJmfMPF1aZEM9MF1iXSTf0Ri6fU87ugwiaom6a8Zy0WCcjTHQSHjYCvT
+         5GAI3Xqq0IKDhiuyjJdzJILhtfqZF3Vh5Pr55Vh9nl+yjiESAwlT/MMVpUhWpmdxtEM3
+         pdadqD6i9oaGJEb9ZhjbOcqRc1T6SyRZclftxq0Eo/KOBw9WHnTOJoEEO43+vxNLtSIT
+         dFlA==
+X-Gm-Message-State: AOJu0YzeAPvA3MUXF7JxIFAbqUbRwS8DAAUvQxf5fqauivKc1sI6q7bF
+	SwrtgJFkFuJ4RVn/c1xasSiVm8PhMJTiOaWjT14tfCuRKi7TwaLiQUdGkcTbOhMa0pHK3YFRYHz
+	K
+X-Google-Smtp-Source: AGHT+IHUevkNQF+wpA51jPCqkDjNJtB75E1X9WncLutB2feZCf5+5IrIaYq3XpZUfgMD3WNkCyrhpw==
+X-Received: by 2002:a17:906:84c:b0:a37:4c04:a472 with SMTP id f12-20020a170906084c00b00a374c04a472mr4236449ejd.18.1707738924077;
+        Mon, 12 Feb 2024 03:55:24 -0800 (PST)
 Received: from raven.blarg.de (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id m1-20020a17090607c100b00a36c3e2e52dsm139203ejc.61.2024.02.12.03.55.21
+        by smtp.gmail.com with ESMTPSA id m1-20020a17090607c100b00a36c3e2e52dsm139203ejc.61.2024.02.12.03.55.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 03:55:21 -0800 (PST)
+        Mon, 12 Feb 2024 03:55:22 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v5 10/35] uprobes.h: move declarations to uprobes_types.h
-Date: Mon, 12 Feb 2024 12:54:35 +0100
-Message-Id: <20240212115500.2078463-11-max.kellermann@ionos.com>
+Subject: [PATCH v5 11/35] percpu_counter.h: move declarations to percpu_counter_types.h
+Date: Mon, 12 Feb 2024 12:54:36 +0100
+Message-Id: <20240212115500.2078463-12-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240212115500.2078463-1-max.kellermann@ionos.com>
 References: <20240212115500.2078463-1-max.kellermann@ionos.com>
@@ -88,143 +88,208 @@ dependencies.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- arch/arm64/kernel/signal.c    |  1 +
- include/linux/mm_types.h      |  2 +-
- include/linux/uprobes.h       | 10 +---------
- include/linux/uprobes_types.h | 25 +++++++++++++++++++++++++
- kernel/entry/common.c         |  1 +
- kernel/trace/bpf_trace.c      |  1 +
- mm/memory.c                   |  1 +
- 7 files changed, 31 insertions(+), 10 deletions(-)
- create mode 100644 include/linux/uprobes_types.h
+ include/linux/backing-dev-defs.h     |  2 +-
+ include/linux/flex_proportions.h     |  2 +-
+ include/linux/ipc_namespace.h        |  2 +-
+ include/linux/mm_types.h             |  3 ++-
+ include/linux/percpu_counter.h       | 17 +------------
+ include/linux/percpu_counter_types.h | 37 ++++++++++++++++++++++++++++
+ include/linux/sched/user.h           |  2 +-
+ include/linux/shmem_fs.h             |  2 +-
+ kernel/user.c                        |  1 +
+ lib/flex_proportions.c               |  1 +
+ 10 files changed, 47 insertions(+), 22 deletions(-)
+ create mode 100644 include/linux/percpu_counter_types.h
 
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index 425b1bc17a3f..e54be587723d 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -14,6 +14,7 @@
- #include <linux/freezer.h>
- #include <linux/stddef.h>
- #include <linux/uaccess.h>
-+#include <linux/uprobes.h>
- #include <linux/sizes.h>
- #include <linux/string.h>
- #include <linux/resume_user_mode.h>
+diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
+index ce5bda191ec5..9f2ef799cff4 100644
+--- a/include/linux/backing-dev-defs.h
++++ b/include/linux/backing-dev-defs.h
+@@ -6,7 +6,7 @@
+ #include <linux/radix-tree.h>
+ #include <linux/rbtree_types.h>
+ #include <linux/spinlock_types.h>
+-#include <linux/percpu_counter.h>
++#include <linux/percpu_counter_types.h>
+ #include <linux/percpu-refcount.h>
+ #include <linux/flex_proportions.h>
+ #include <linux/timer_types.h>
+diff --git a/include/linux/flex_proportions.h b/include/linux/flex_proportions.h
+index 35204b64addf..df9017a61046 100644
+--- a/include/linux/flex_proportions.h
++++ b/include/linux/flex_proportions.h
+@@ -8,7 +8,7 @@
+ #ifndef _LINUX_FLEX_PROPORTIONS_H
+ #define _LINUX_FLEX_PROPORTIONS_H
+ 
+-#include <linux/percpu_counter.h>
++#include <linux/percpu_counter_types.h>
+ #include <linux/spinlock_types.h>
+ #include <linux/seqlock_types.h>
+ #include <linux/gfp_types.h>
+diff --git a/include/linux/ipc_namespace.h b/include/linux/ipc_namespace.h
+index a0011b6cd5d1..7c758ab565fe 100644
+--- a/include/linux/ipc_namespace.h
++++ b/include/linux/ipc_namespace.h
+@@ -11,7 +11,7 @@
+ #include <linux/refcount.h>
+ #include <linux/rhashtable-types.h>
+ #include <linux/sysctl.h>
+-#include <linux/percpu_counter.h>
++#include <linux/percpu_counter_types.h>
+ 
+ struct user_namespace;
+ 
 diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index ed764511bc23..54caee378e77 100644
+index 54caee378e77..a88219770c82 100644
 --- a/include/linux/mm_types.h
 +++ b/include/linux/mm_types.h
-@@ -14,7 +14,7 @@
- #include <linux/maple_tree_types.h>
- #include <linux/rwsem_types.h>
- #include <linux/cpumask.h>
--#include <linux/uprobes.h>
-+#include <linux/uprobes_types.h>
- #include <linux/rcupdate.h>
+@@ -19,7 +19,8 @@
  #include <linux/page-flags-layout.h>
  #include <linux/workqueue_types.h>
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index a76155cf8ceb..6ab950cce8a9 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -11,6 +11,7 @@
-  * Copyright (C) 2011-2012 Red Hat, Inc., Peter Zijlstra
+ #include <linux/seqlock_types.h>
+-#include <linux/percpu_counter.h>
++#include <linux/percpu_counter_types.h>
++#include <linux/percpu.h>
+ 
+ #include <asm/mmu.h>
+ 
+diff --git a/include/linux/percpu_counter.h b/include/linux/percpu_counter.h
+index 91e3a527ceef..84f58b8b7856 100644
+--- a/include/linux/percpu_counter.h
++++ b/include/linux/percpu_counter.h
+@@ -7,26 +7,15 @@
+  * WARNING: these things are HUGE.  4 kbytes per counter on 32-way P4.
   */
  
-+#include <linux/uprobes_types.h>
- #include <linux/errno.h>
- #include <linux/types.h>
+-#include <linux/spinlock_types.h>
+-#include <linux/list.h>
++#include <linux/percpu_counter_types.h>
+ #include <linux/threads.h>
+ #include <linux/percpu.h>
+-#include <linux/types.h>
  
-@@ -94,12 +95,6 @@ enum rp_check {
- 	RP_CHECK_RET,
- };
+ /* percpu_counter batch for local add or sub */
+ #define PERCPU_COUNTER_LOCAL_BATCH	INT_MAX
  
--struct xol_area;
--
--struct uprobes_state {
--	struct xol_area		*xol_area;
+ #ifdef CONFIG_SMP
+ 
+-struct percpu_counter {
+-	raw_spinlock_t lock;
+-	s64 count;
+-#ifdef CONFIG_HOTPLUG_CPU
+-	struct list_head list;	/* All percpu_counters are on a list */
+-#endif
+-	s32 __percpu *counters;
 -};
 -
- extern void __init uprobes_init(void);
- extern int set_swbp(struct arch_uprobe *aup, struct mm_struct *mm, unsigned long vaddr);
- extern int set_orig_insn(struct arch_uprobe *aup, struct mm_struct *mm, unsigned long vaddr);
-@@ -137,9 +132,6 @@ extern bool arch_uprobe_ignore(struct arch_uprobe *aup, struct pt_regs *regs);
- extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
- 					 void *src, unsigned long len);
- #else /* !CONFIG_UPROBES */
--struct uprobes_state {
+ extern int percpu_counter_batch;
+ 
+ int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
+@@ -133,10 +122,6 @@ static inline bool percpu_counter_initialized(struct percpu_counter *fbc)
+ 
+ #include <linux/irqflags.h> // for local_irq_save()
+ 
+-struct percpu_counter {
+-	s64 count;
 -};
 -
- static inline void uprobes_init(void)
- {
- }
-diff --git a/include/linux/uprobes_types.h b/include/linux/uprobes_types.h
+ static inline int percpu_counter_init_many(struct percpu_counter *fbc,
+ 					   s64 amount, gfp_t gfp,
+ 					   u32 nr_counters)
+diff --git a/include/linux/percpu_counter_types.h b/include/linux/percpu_counter_types.h
 new file mode 100644
-index 000000000000..0ce0fe3801ea
+index 000000000000..faccd9869a5a
 --- /dev/null
-+++ b/include/linux/uprobes_types.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _LINUX_UPROBES_TYPES_H
-+#define _LINUX_UPROBES_TYPES_H
++++ b/include/linux/percpu_counter_types.h
+@@ -0,0 +1,37 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_PERCPU_COUNTER_TYPES_H
++#define _LINUX_PERCPU_COUNTER_TYPES_H
 +/*
-+ * User-space Probes (UProbes)
++ * A simple "approximate counter" for use in ext2 and ext3 superblocks.
 + *
-+ * Copyright (C) IBM Corporation, 2008-2012
-+ * Authors:
-+ *	Srikar Dronamraju
-+ *	Jim Keniston
-+ * Copyright (C) 2011-2012 Red Hat, Inc., Peter Zijlstra
++ * WARNING: these things are HUGE.  4 kbytes per counter on 32-way P4.
 + */
 +
-+#ifdef CONFIG_UPROBES
++#include <linux/types.h>
 +
-+struct xol_area;
++#ifdef CONFIG_SMP
 +
-+struct uprobes_state {
-+	struct xol_area		*xol_area;
++#include <linux/spinlock_types.h>
++
++#ifdef CONFIG_HOTPLUG_CPU
++#include <linux/list.h>
++#endif
++
++struct percpu_counter {
++	raw_spinlock_t lock;
++	s64 count;
++#ifdef CONFIG_HOTPLUG_CPU
++	struct list_head list;	/* All percpu_counters are on a list */
++#endif
++	s32 __percpu *counters;
 +};
-+#else /* !CONFIG_UPROBES */
-+struct uprobes_state {
++
++#else /* !CONFIG_SMP */
++
++struct percpu_counter {
++	s64 count;
 +};
-+#endif /* !CONFIG_UPROBES */
-+#endif	/* _LINUX_UPROBES_TYPES_H */
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 88cb3c88aaa5..364ea38c868e 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -9,6 +9,7 @@
- #include <linux/livepatch.h>
- #include <linux/audit.h>
- #include <linux/tick.h>
-+#include <linux/uprobes.h>
++
++#endif	/* CONFIG_SMP */
++
++#endif /* _LINUX_PERCPU_COUNTER_TYPES_H */
+diff --git a/include/linux/sched/user.h b/include/linux/sched/user.h
+index 671ecee08d23..913da0aba05c 100644
+--- a/include/linux/sched/user.h
++++ b/include/linux/sched/user.h
+@@ -4,7 +4,7 @@
  
- #include "common.h"
+ #include <linux/uidgid_types.h>
+ #include <linux/atomic.h>
+-#include <linux/percpu_counter.h>
++#include <linux/percpu_counter_types.h>
+ #include <linux/refcount.h>
+ #include <linux/ratelimit_types.h>
  
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 241ddf5e3895..e74430389877 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -11,6 +11,7 @@
- #include <linux/btf.h>
- #include <linux/filter.h>
- #include <linux/uaccess.h>
-+#include <linux/uprobes.h>
- #include <linux/ctype.h>
- #include <linux/kprobes.h>
- #include <linux/spinlock.h>
-diff --git a/mm/memory.c b/mm/memory.c
-index 7c3ca41a7610..68abe5dccb5b 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -70,6 +70,7 @@
- #include <linux/string.h>
- #include <linux/memory-tiers.h>
- #include <linux/debugfs.h>
-+#include <linux/uprobes.h>
+diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
+index 66828dfc6e74..56b11f1f82c5 100644
+--- a/include/linux/shmem_fs.h
++++ b/include/linux/shmem_fs.h
+@@ -6,7 +6,7 @@
+ #include <linux/swap.h>
+ #include <linux/mempolicy.h>
+ #include <linux/pagemap.h>
+-#include <linux/percpu_counter.h>
++#include <linux/percpu_counter_types.h>
+ #include <linux/xattr.h>
+ #include <linux/fs_parser.h>
  #include <linux/userfaultfd_k.h>
- #include <linux/dax.h>
- #include <linux/oom.h>
+diff --git a/kernel/user.c b/kernel/user.c
+index 28da71ea1e74..6c8b818419f8 100644
+--- a/kernel/user.c
++++ b/kernel/user.c
+@@ -22,6 +22,7 @@
+ #include <linux/proc_ns.h>
+ #include <linux/ratelimit.h>
+ #include <linux/uidgid.h>
++#include <linux/percpu_counter.h>
+ 
+ #if IS_ENABLED(CONFIG_BINFMT_MISC)
+ struct binfmt_misc init_binfmt_misc = {
+diff --git a/lib/flex_proportions.c b/lib/flex_proportions.c
+index 7749a48428e5..1d5e1e0bdbbe 100644
+--- a/lib/flex_proportions.c
++++ b/lib/flex_proportions.c
+@@ -36,6 +36,7 @@
+ #include <linux/flex_proportions.h>
+ #include <linux/log2.h>
+ #include <linux/math64.h>
++#include <linux/percpu_counter.h>
+ #include <linux/seqlock.h>
+ 
+ int fprop_global_init(struct fprop_global *p, gfp_t gfp)
 -- 
 2.39.2
 
