@@ -1,232 +1,264 @@
-Return-Path: <linux-kernel+bounces-62059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C1E3851AE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:11:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAD48851AE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:12:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B10041C2234F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:11:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF3A81C22382
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:11:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3360B3D579;
-	Mon, 12 Feb 2024 17:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D933EA66;
+	Mon, 12 Feb 2024 17:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KHfpeo3G"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SN8JMEgE";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RCkSHHkV"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D4A3E487
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 17:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561273EA6C
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 17:07:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707757590; cv=none; b=Yq8rgg9ew2ZDiqiQLtEfn9kDAiYW+FbUcokeeVjYTE2xqlc/rZrvw5juANpe4z4lUiMhBwI+1Dmu1GAsGgg23pfONZFVaPpDfG9yDeXEC99zqZTRM9ijgxpo5yU3yHHdfA4iex93D7qZefLT8fEPGa6sjrYwzpVEWjiMwJcUxE4=
+	t=1707757667; cv=none; b=NdyI9/IWe+2vWbRq6wDLNsEr+44/06u24NKzui+Nm46JSks6WwVKkC03bhX2Q7ujTL4NzzhZTRGWF8adQ+Fuv9LdFlC5j8tTAROmh+Naw4vObBeIDonBmpB9smGNoReJpA8R8Vszx5mhkbyatt1CGritZebEkgCq+tHBpQwJr28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707757590; c=relaxed/simple;
-	bh=mQCO8I7JEXItbf8exQBvxqbuUUK6aca/XiahInLWxqQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R8BUSRvFjSP3SKcgASKZoTfl2ZQIcWFgBLBH1YyLKPFEma1iofSx7g2PrG17kas4IxCqXIZdAuzURP1z8M7ymYLGH2cIxPcnkWqQNMA4qAQ6yIYMMYxx4A6RfKzFVOovwZv/wOEzNGQ0A5oNdy6pKem41eUJd/lnzFGJuCvOpdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KHfpeo3G; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707757586;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3eymUcFdUhoCcBYFo7gSsZUmQAqnxgL1YlUX2Z2tkFY=;
-	b=KHfpeo3GY6JB0Zycm7Jqq3gN4JZQb9lRii/B7UwPwoHpUjPEGYQIIuamf/xW/rl5RuJREF
-	NRuj4CCP+GI0S1LEKG4LHSus5oAro7fO+OMUV6hgZaKSPQP2jy3gOQzpLKFKVxAxGWTmSE
-	XCncgRd/Wba/NR/qOngeWoY8bmz2UV4=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-261-OmtCwG5LOi2MrH7c03JZjQ-1; Mon, 12 Feb 2024 12:06:24 -0500
-X-MC-Unique: OmtCwG5LOi2MrH7c03JZjQ-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-51162d43c64so1845018e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:06:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707757582; x=1708362382;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3eymUcFdUhoCcBYFo7gSsZUmQAqnxgL1YlUX2Z2tkFY=;
-        b=No/G0qokYTndPHpMPIveq+uiY2F6ZJZnAW9cNZw+cuKWsAPe3kkeMr2ASvaccW4iTS
-         +5LS8zxPHqRuqmL15POaol3RIB7AljZHZSOwcMxo9zWvWZVct20C+0KODzJpJkKX7muW
-         v1C6OlEWz9nny0v9zVOUpMEkTZa6H50C5VbgAifqqSvinxtdLdpVv10F2qol+yYPvYU7
-         jbPArN4Uvl8cb/Ci4oc8VUq5cG8fFiL/+bNaYZGFO4VuSN1KPjoG6wB/hvi0wVU+/DA9
-         bgov5v0RbbW4A19UCRa63UBnj/06W6xOsqX5LeUoYmc2aeECYB9xixCQIXVw8DYP5c1/
-         wJxA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ6f4DI3QWHw1ZnWQW+YvzgPVIimgpwLqSX63ktJB2GlvMIEtoNGn9hS/svO83DDfuUMLZAFl8A6yd3cwYhsoAZZscD9QATqJaQTz+
-X-Gm-Message-State: AOJu0YxbqNSqGWlfzdS70vgVsdHehVvKntFGbGbEuAgWJvl2WQqV9CTd
-	dJIohzFqEDMQbI8UMc1vE5E4ziGRbRh9nqDVVRnDcXX6VDx1u573F5tdSkwLR+yyj+CVuRARk/W
-	SKXHBe+dy4r5hLkRZrQMbfaVXrzFHWpWeKRlJOQApSVRECSi/A91j6H0GVMR5VQ==
-X-Received: by 2002:a05:6512:124a:b0:511:6ec8:9b30 with SMTP id fb10-20020a056512124a00b005116ec89b30mr6055828lfb.50.1707757582605;
-        Mon, 12 Feb 2024 09:06:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGvDBjKALP1ZmqUpLt6l2lZIIDPssZ4zAUV94qq67shMDrA2wUIprRPNTJdwaMalC0xRGstzA==
-X-Received: by 2002:a05:6512:124a:b0:511:6ec8:9b30 with SMTP id fb10-20020a056512124a00b005116ec89b30mr6055757lfb.50.1707757580610;
-        Mon, 12 Feb 2024 09:06:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVDbpS/N9Btsj6liWrjb0yF4Ne0JTB7gb7oaub+EmpD+3bUF/+aHFfL3eeQSHDleOFtGcMAeedShtTblBVbTLi/Uzs8ehObiuNGcGbwIkqW6km3Ie29qRhA+zUURPsLIoGHoTWSg4hJRYbSVUsPFXzwjVp1B84hrtW4ZC9Jv8hudbAlqksOis3kEPid5AaB+nCE6Em/f/BtlmaI1D33wL7QtFNOoVSooPaFxOqD9+DrN1R72NrThYp7RPQPG9vgFaxmIC/rcynrvuJVZC0kQC5NTEPHKTi9Qn0l3RbIXl0/fCnCDdiXUJxw8nlUJro9mDFSCx+wDMVzsB+duddcMgdppppl5uL/DttHm7iUAuaz0qkvRK3C39vMGgFJ2pPhgKDTzg64xmT9+zSIIq2ZFkxpA9Tfc8HVn9B91LIk3ra8TNo071WjMAsu91/WNaR9L7sywPXJXIzF8A3y086BVmbaiXOCGhXyxY07obLAm8FZzfW0biMsLvV47IZuPgpNOPT85mDreg6UvKQaQZG4gDvu0Hnr4+BJRy84zQW6ds+BqUrNZ5bTTdRwNRvYi5uRnO/7nnB1NHvhtb2EgyO5oPjVjwmKjHzgKkXj7C6vqeNHozSUURoenVazPGqh87+vfENwn/kG40mogSAtYR9VZPedoT/rft62PYkLfTKNzRqyow==
-Received: from toolbox ([2001:9e8:89a4:db00:6e8f:bfe4:6e0:1fe8])
-        by smtp.gmail.com with ESMTPSA id w17-20020a05600c475100b00411062c123esm1846050wmo.26.2024.02.12.09.06.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 09:06:20 -0800 (PST)
-Date: Mon, 12 Feb 2024 18:06:18 +0100
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>,
-	Sandy Huang <hjc@rock-chips.com>,
-	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: Re: Re: Re: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add
- Broadcast RGB property
-Message-ID: <20240212170618.GA1372043@toolbox>
-References: <20240115143720.GA160656@toolbox>
- <73peztbeeikb3fg6coxu3punxllgtyrmgco34tnxkojtsjbr3s@26bud3sjbcez>
- <Zb0M_2093UwPXK8y@intel.com>
- <hez2m57ogqx3yyqk45tzdkvxvhrbdepgm244i4m2aty2xhf5b5@acqgvmxhmmvr>
- <Zb0aYAapkxQ2kopt@intel.com>
- <zml6j27skvjmbrfyz7agy5waxajv4p4asbemeexelm3wuv4o7j@xkd2wvnxhbuc>
- <20240209203435.GB996172@toolbox>
- <ahfl6f72lpgpsbnrbgvbsh4db4npr2hh36kua2c6krh544hv5r@dndw4hz2mu2g>
- <Zco-DQaXqae7B1jt@intel.com>
- <yx2t7xltxxgsngdsxamsfq6y7dze3wzegxcqwmsb5yrxen73x6@u3vilqhpci4w>
+	s=arc-20240116; t=1707757667; c=relaxed/simple;
+	bh=kk7122btO7pJ42ZiiE74pdI4cmybsYzCru/PHh986qs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sqGBAuWRPkrY97sxMzre1dv9ebgFwfNpVr7TCLuEHlOCDXrwtmfQDpJVCT02atGnGOjOD8jmuXKJO9sEmnrha6fSQRk9a8C9LYCI2N7FqkN8qT+8WudLzTrCDXLTVwLPOFnk8NSV3IGm+pY/+xhs0luaEo5v9DOTQbxS3KhK4Qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SN8JMEgE; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RCkSHHkV; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8F1A221D12;
+	Mon, 12 Feb 2024 17:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707757662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kk7122btO7pJ42ZiiE74pdI4cmybsYzCru/PHh986qs=;
+	b=SN8JMEgEOz30p+j1nMINkZg6dyfkpPb2CMhSDFGPu8oPYrNyizob7ZwC93s59ivC7K6xlz
+	7alhMTNwFHB/Fqse6gDZjtvnvcvY//uQYdSrtug2N0Cdt6G4YXefshmHIi3V0JUC1ti7Bg
+	P/XVcwjFgfFcWNmWbdSzfn/U0MtnECM=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707757660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kk7122btO7pJ42ZiiE74pdI4cmybsYzCru/PHh986qs=;
+	b=RCkSHHkV6z/61pPjeP0ht4CS53I20jbd1R9DfpOck0S/qEMdBrNHFf5/QIxYGK0P6SiJpT
+	fCzhw91HNnucBnZEXqxY/vk+nPFiLrXdrL4PkK70DmnKmezvgecLqPTS05u/uTQ9O1XGwu
+	kiB5ix7gIEbSbayA0JYxOAPiwRTInlo=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1B34813985;
+	Mon, 12 Feb 2024 17:07:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BiVBBFxQymUkfQAAD6G6ig
+	(envelope-from <jgross@suse.com>); Mon, 12 Feb 2024 17:07:40 +0000
+Message-ID: <0d65f145-e086-44e5-9ae7-8acb3c3b05e2@suse.com>
+Date: Mon, 12 Feb 2024 18:07:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <yx2t7xltxxgsngdsxamsfq6y7dze3wzegxcqwmsb5yrxen73x6@u3vilqhpci4w>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] x86/xen: Add some null pointer checking to smp.c
+Content-Language: en-US
+To: Kunwu Chan <chentao@kylinos.cn>, boris.ostrovsky@oracle.com,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com
+Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+ kernel test robot <lkp@intel.com>, Markus Elfring <Markus.Elfring@web.de>
+References: <20240119094948.275390-1-chentao@kylinos.cn>
+From: Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20240119094948.275390-1-chentao@kylinos.cn>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------oyqcERLWqXsESpaVe0Z0OcRJ"
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.55
+X-Spamd-Result: default: False [-3.55 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 TO_DN_SOME(0.00)[];
+	 HAS_ATTACHMENT(0.00)[];
+	 MIME_BASE64_TEXT_BOGUS(1.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 MIME_BASE64_TEXT(0.10)[];
+	 SIGNED_PGP(-2.00)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
+	 BAYES_HAM(-1.36)[90.57%];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 MIME_UNKNOWN(0.10)[application/pgp-keys];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[web.de];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,kylinos.cn:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[lists.xenproject.org,vger.kernel.org,intel.com,web.de];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
 
-On Mon, Feb 12, 2024 at 05:53:48PM +0100, Maxime Ripard wrote:
-> On Mon, Feb 12, 2024 at 05:49:33PM +0200, Ville Syrjälä wrote:
-> > On Mon, Feb 12, 2024 at 11:01:07AM +0100, Maxime Ripard wrote:
-> > > On Fri, Feb 09, 2024 at 09:34:35PM +0100, Sebastian Wick wrote:
-> > > > On Mon, Feb 05, 2024 at 10:39:38AM +0100, Maxime Ripard wrote:
-> > > > > On Fri, Feb 02, 2024 at 06:37:52PM +0200, Ville Syrjälä wrote:
-> > > > > > On Fri, Feb 02, 2024 at 04:59:30PM +0100, Maxime Ripard wrote:
-> > > > > > > On Fri, Feb 02, 2024 at 05:40:47PM +0200, Ville Syrjälä wrote:
-> > > > > > > > On Fri, Feb 02, 2024 at 02:01:39PM +0100, Maxime Ripard wrote:
-> > > > > > > > > Hi,
-> > > > > > > > > 
-> > > > > > > > > On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebastian Wick wrote:
-> > > > > > > > > > > >  /**
-> > > > > > > > > > > >   * DOC: HDMI connector properties
-> > > > > > > > > > > >   *
-> > > > > > > > > > > > + * Broadcast RGB
-> > > > > > > > > > > > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
-> > > > > > > > > > > > + *      Infoframes will be generated according to that value.
-> > > > > > > > > > > > + *
-> > > > > > > > > > > > + *      The value of this property can be one of the following:
-> > > > > > > > > > > > + *
-> > > > > > > > > > > > + *      Automatic:
-> > > > > > > > > > > > + *              RGB Range is selected automatically based on the mode
-> > > > > > > > > > > > + *              according to the HDMI specifications.
-> > > > > > > > > > > > + *
-> > > > > > > > > > > > + *      Full:
-> > > > > > > > > > > > + *              Full RGB Range is forced.
-> > > > > > > > > > > > + *
-> > > > > > > > > > > > + *      Limited 16:235:
-> > > > > > > > > > > > + *              Limited RGB Range is forced. Unlike the name suggests,
-> > > > > > > > > > > > + *              this works for any number of bits-per-component.
-> > > > > > > > > > > > + *
-> > > > > > > > > > > > + *      Drivers can set up this property by calling
-> > > > > > > > > > > > + *      drm_connector_attach_broadcast_rgb_property().
-> > > > > > > > > > > > + *
-> > > > > > > > > > > 
-> > > > > > > > > > > This is a good time to document this in more detail. There might be two
-> > > > > > > > > > > different things being affected:
-> > > > > > > > > > > 
-> > > > > > > > > > > 1. The signalling (InfoFrame/SDP/...)
-> > > > > > > > > > > 2. The color pipeline processing
-> > > > > > > > > > > 
-> > > > > > > > > > > All values of Broadcast RGB always affect the color pipeline processing
-> > > > > > > > > > > such that a full-range input to the CRTC is converted to either full- or
-> > > > > > > > > > > limited-range, depending on what the monitor is supposed to accept.
-> > > > > > > > > > > 
-> > > > > > > > > > > When automatic is selected, does that mean that there is no signalling,
-> > > > > > > > > > > or that the signalling matches what the monitor is supposed to accept
-> > > > > > > > > > > according to the spec? Also, is this really HDMI specific?
-> > > > > > > > > > > 
-> > > > > > > > > > > When full or limited is selected and the monitor doesn't support the
-> > > > > > > > > > > signalling, what happens?
-> > > > > > > > > > 
-> > > > > > > > > > Forgot to mention: user-space still has no control over RGB vs YCbCr on
-> > > > > > > > > > the cable, so is this only affecting RGB? If not, how does it affect
-> > > > > > > > > > YCbCr?
-> > > > > > > > > 
-> > > > > > > > > So I dug a bit into both the i915 and vc4 drivers, and it looks like if
-> > > > > > > > > we're using a YCbCr format, i915 will always use a limited range while
-> > > > > > > > > vc4 will follow the value of the property.
-> > > > > > > > 
-> > > > > > > > The property is literally called "Broadcast *RGB*".
-> > > > > > > > That should explain why it's only affecting RGB.
-> > > > > > > 
-> > > > > > > Right. And the limited range option is called "Limited 16:235" despite
-> > > > > > > being usable on bpc > 8 bits. Naming errors occurs, and history happens
-> > > > > > > to make names inconsistent too, that's fine and not an argument in
-> > > > > > > itself.
-> > > > > > > 
-> > > > > > > > Full range YCbCr is a much rarer beast so we've never bothered
-> > > > > > > > to enable it.
-> > > > > > > 
-> > > > > > > vc4 supports it.
-> > > > > > 
-> > > > > > Someone implemented it incorrectly then.
-> > > > > 
-> > > > > Incorrectly according to what documentation / specification? I'm sorry,
-> > > > > but I find it super ironic that i915 gets to do its own thing, not
-> > > > > document any of it, and when people try to clean things up they get told
-> > > > > that we got it all wrong.
-> > > > 
-> > > > FWIW, this was an i915 property and if another driver uses the same
-> > > > property name it must have the same behavior. Yes, it isn't standardized
-> > > > and yes, it's not documented (hence this effort here) but it's still on
-> > > > vc4 to make the property compatible.
-> > > 
-> > > How is it not compatible? It's a superset of what i915 provides, but
-> > > it's strictly compatible with it.
-> > 
-> > No it is not.
-> 
-> The property is compatible with i915 interpretation of it, whether you
-> like it or not. And that's what Sebastian was referring to.
-> 
-> > Eg. what happens if you set the thing to full range for RGB (which you
-> > must on many broken monitors), and then the kernel automagically
-> > switches to YCbCr (for whatever reason) but the monitor doesn't
-> > support full range YCbCr? Answer: you get crap output.
-> 
-> And that part is just moving goalposts.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------oyqcERLWqXsESpaVe0Z0OcRJ
+Content-Type: multipart/mixed; boundary="------------GJFwjHAkohOh3F0kON0n9v9D";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Kunwu Chan <chentao@kylinos.cn>, boris.ostrovsky@oracle.com,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com
+Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+ kernel test robot <lkp@intel.com>, Markus Elfring <Markus.Elfring@web.de>
+Message-ID: <0d65f145-e086-44e5-9ae7-8acb3c3b05e2@suse.com>
+Subject: Re: [PATCH v3] x86/xen: Add some null pointer checking to smp.c
+References: <20240119094948.275390-1-chentao@kylinos.cn>
+In-Reply-To: <20240119094948.275390-1-chentao@kylinos.cn>
 
-But it's really not. The Broadcast RGB property kind of works from a
-user space perspective because it's a workaround for broken sinks. If a
-sink expects limited range we can force full range. If this however
-affects YCbCr modes as well, then this isn't a workaround for broken RGB
-range anymore because it now breaks YCbCr.
+--------------GJFwjHAkohOh3F0kON0n9v9D
+Content-Type: multipart/mixed; boundary="------------zpA84tdYN08SBrQKGSgADu0z"
 
-Sorry, but vc4 just has to change.
+--------------zpA84tdYN08SBrQKGSgADu0z
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-And again: let's please stop trying to improve the property.
+T24gMTkuMDEuMjQgMTA6NDksIEt1bnd1IENoYW4gd3JvdGU6DQo+IGthc3ByaW50ZigpIHJl
+dHVybnMgYSBwb2ludGVyIHRvIGR5bmFtaWNhbGx5IGFsbG9jYXRlZCBtZW1vcnkNCj4gd2hp
+Y2ggY2FuIGJlIE5VTEwgdXBvbiBmYWlsdXJlLiBFbnN1cmUgdGhlIGFsbG9jYXRpb24gd2Fz
+IHN1Y2Nlc3NmdWwNCj4gYnkgY2hlY2tpbmcgdGhlIHBvaW50ZXIgdmFsaWRpdHkuDQo+IA0K
+PiBTaWduZWQtb2ZmLWJ5OiBLdW53dSBDaGFuIDxjaGVudGFvQGt5bGlub3MuY24+DQo+IFJl
+cG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4NCj4gQ2xvc2Vz
+OiBodHRwczovL2xvcmUua2VybmVsLm9yZy9vZS1rYnVpbGQtYWxsLzIwMjQwMTE2MTExOS5p
+b2Y2QlFzZi1sa3BAaW50ZWwuY29tLw0KPiBTdWdnZXN0ZWQtYnk6IE1hcmt1cyBFbGZyaW5n
+IDxNYXJrdXMuRWxmcmluZ0B3ZWIuZGU+DQoNClJldmlld2VkLWJ5OiBKdWVyZ2VuIEdyb3Nz
+IDxqZ3Jvc3NAc3VzZS5jb20+DQoNCg0KSnVlcmdlbg0KDQo=
+--------------zpA84tdYN08SBrQKGSgADu0z
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Maxime
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+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
+kt+z4drzFUyEjLM1vVvIMjkUoJs=3D
+=3DeeAB
+-----END PGP PUBLIC KEY BLOCK-----
 
+--------------zpA84tdYN08SBrQKGSgADu0z--
+
+--------------GJFwjHAkohOh3F0kON0n9v9D--
+
+--------------oyqcERLWqXsESpaVe0Z0OcRJ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmXKUFsFAwAAAAAACgkQsN6d1ii/Ey/F
+RAf+NgPRf6Dj0Cv4DXxeakG2Nvg7K+3I26Sc7zRy1Ut3kK62Ftla3hGKHGVUigMg359/MLtzZFG0
+3qv1WLip4xsendb+uBo/OGD8JGFsiEHasZeggaW/NRLM4iQFM3pNmMzoYb4P2xDHOeYmadeSHEXG
+5VXCZihtBjfdLpSW2r/bqQXgo7/bXAElorBcKBas6NfR6ANifMVuFeuvT2N95RvYDGKl4E53Sxdm
+g8okFfHNN1BbHdcJHLO6ja3//Ilo98LUu/DMCKOG9uroMBLFBd9btYzj2lnVJBxuroL0wFgIQLpL
+fT4aGaalVVa0ocHzelzBFAlWCFd8VasHRRa21NXgWQ==
+=ZddQ
+-----END PGP SIGNATURE-----
+
+--------------oyqcERLWqXsESpaVe0Z0OcRJ--
 
