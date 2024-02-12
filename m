@@ -1,126 +1,148 @@
-Return-Path: <linux-kernel+bounces-62353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43BEB851ED7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:47:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 636F4851EDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:48:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7706D1C21D44
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:47:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B2D1283550
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6887482EB;
-	Mon, 12 Feb 2024 20:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D5B481D7;
+	Mon, 12 Feb 2024 20:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mkk5glm7"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a+Yb7tEC"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BEB843AA8;
-	Mon, 12 Feb 2024 20:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E3E1EA78
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707770827; cv=none; b=mnrr6cT2A7gZsYenrbBHMk4A7Nl2jR2mrUwAljsNACZCyMlOcZuYgG2ZrPQcav3yCprnkjJpYoJZsjb5vUkVdxGvJ1HVzQHkhPUSzquJPbqS/hG7f+L/FePVm9D3eD/zYuAglMYc+t2Z1ZnoSnFaNzTAEuJETMjQYfGCoJjJ54A=
+	t=1707770884; cv=none; b=BTgWcNKiCmEktW0d4Vx18MANTwZm7ngbHeuyn1NU8GZOAvSpTQd2h1WPpsKMzfo8qO8PARN4ufCvFWgpIZik+8ySC4nvUnfMvk1kYv/4jr5F0naRbwsrXNY1fjTrw4gofzG5ajGVXWwMboVklWy0EKZ6l1X+zH0lKe3CpZt0ndg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707770827; c=relaxed/simple;
-	bh=fn/5FyBTMnahqzrbwfSbO2KeE7u5oVugq+iHM/NMsHE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CEKpRUvnNFhnFN1OzYBt8k5UnuNU+ao6M0kBXhnfPhvj4+PJ2AcFByawUCMXGbID2RaAQkmVHMOfLdZU21mlo9vkz2MnwqEzTLad0RD9ZNH+xk1Pncs4Ehn9ChU2YwFZV4jWcL24zuPtmJzJGgG1Hc8Z85vOh36OYhBn5sR2Sb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mkk5glm7; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4116650a345so6696205e9.1;
-        Mon, 12 Feb 2024 12:47:05 -0800 (PST)
+	s=arc-20240116; t=1707770884; c=relaxed/simple;
+	bh=sMYBJYjLm8YsiiGaWfwhHa/Xio+UaZ439FcuhwQ9JVg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NXFg4CVUrWMPww/CPgSGUpbvZsDfjlYWAa24Kg/SUOhlo0u5HGsKNzw9wiWkqIImWjy2YrU//tcjBI+n2/p9+QXhFkBBuJb0Sp9+mv0byoup3OAT8MD+1XH0K/Jsd4C45AQAf3gPh781jdFOAyvFip2QUvCJVUR0P8WmHGYDSSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=a+Yb7tEC; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so3318796276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:48:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707770824; x=1708375624; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1707770881; x=1708375681; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4Wilr3QrMZJFwg5LcPt9WBQXjwBqyBsWNwp0pkv/Cww=;
-        b=mkk5glm7kVWofrzoL9fZ80s4eSr90UqMj4FeQZeNoV4fMg8OeFSpZSadN3h9ZOYYEw
-         ExcA2Nu0JK/gfJY4S0U/7OErhyQiAXhJXtJKsE1UZk8PJStGOjIyEzdpisr3sIK49XcK
-         SZQK1ex7/UhdV/28lNSoEPVWz3ozfax8OweZ4ojlfyGoDHvf+md7NWKFlLNKqPST5i8J
-         jojcwh0wwHjNUcpDQvvGfvZm9zQdiycWFUk/3RcV0jfsKi42NqNyWnurKXMkgOTddjOt
-         2YOMxFrlC9Qr+Ijzy/2BOIGSIxFOkD+ZSnOSmKcncy9W/F805MHmlIni6QXkHV2GNPNk
-         6mmg==
+        bh=PY3cqSsBwNpTxKZXjc6hWsn0tIs/KUkTAVHRiL48yE4=;
+        b=a+Yb7tECEsxUlJG9pZBQ4yYsQJfwSb8/Dp7q9QQg/oUfwoRoVm7+sAHVAPASxRcUO4
+         jnfIjeb/hO2y3ZxtQZUcFVB7T9nv0p3SHMmAhI4++ZlDRp4Lf2/JBYBt1sn27BXWHRIH
+         //eg1gydfBzXBgUcScNBllJ9VXAceIq+IJG0miyzlR85sSSl7F9NtMmmRt3J2rfKTzvs
+         ErPJtzQLXWAWNN2di9UwfCUoudZO2FTHZ8g9RZjQfHRk0KGFcLRhOnX9Gpvc44YfZhAg
+         nAJ+CzzXA/N45fz67vDcWlUGXrHxlsL2xzsrtTHkQKMMtrm84syYBNZKJV4HiiPhyOtS
+         rUew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707770824; x=1708375624;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707770881; x=1708375681;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4Wilr3QrMZJFwg5LcPt9WBQXjwBqyBsWNwp0pkv/Cww=;
-        b=n902BWQKnI7aO/rfn79v77fs6D0eRQdwM9DMD4sdEGVtYuxmfl1J4amMUSZIGRuxfB
-         Lkwh1cFSvYjjuPm07G/x8sqmppKSS5SdtM8VQc1NPHAItb03zMxfle+x4AfHmyzqTVzX
-         2Pr8lXO8Hz3B4yDPQLRZxkYcdgj2cIy71nzcXgjDkR1hTOZWomI/TIb93+F0oE52V9z2
-         2hNlGv0RlNi1W+rqahNvQGtFhsDRS0ORr3Buuf3I18NDzE2RKi5R3HcHe1KoTHhCI6Oc
-         DM8CQnH6s7lZ7/jHdRIQLiFnEM9loRpJw3jO2IIDwDHrkH2Ni9cjOIgGw7PewvAkJeU7
-         UVhg==
-X-Gm-Message-State: AOJu0YzpcgUL06yAUkZijo9gYAiLjRoDmy/D7QmxaK2utCjVqvHmpEJc
-	GW7w6HpR7dQMHwOHMIrvC+trRgb0KVLXNX96ji7ZGbXKlR5RPui3
-X-Google-Smtp-Source: AGHT+IHQl8C8lV6IrF9Twikea11MfjHKeNl0A2ayoFaUaUSjFQctY/JUdfxlgWGuijlnjz/l7OG8KQ==
-X-Received: by 2002:adf:db4a:0:b0:33b:3bad:d3ee with SMTP id f10-20020adfdb4a000000b0033b3badd3eemr5329806wrj.43.1707770823491;
-        Mon, 12 Feb 2024 12:47:03 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUGijjUNoZKPS9rcc3LIBg6g+m0cUf2oDK2qWYWYsKjR9Uwl61nvvPEjrpEe288Kyrl6ndLcRoJagr7jkv9oJCmOkmMihcxAHmQ0g0HUsGlLSyPJT0G3mYCwMgl18CUvVeSQFDpTs9CeKbvG5QCXjBUnZbRMlReYQE8SblNakkPflYhHUUre/JRVTORIo9RmEwZdmRyP1aZRUHkUE5Kdi3trY36GZHoBn4X9YTwLxifE2D2gMWIXQLFATFB2zrvQHU434BpaBl0qv3jYMtwUFexVrlHDYJCTJi1KhMldp5NA9QXjmUcLbXcpbPpqwrVytsme8OOxv+Hv2crtoxmS1ftdyrKDl8l/yuupckBJNlAiW4SyOIoLdI=
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id bt25-20020a056000081900b0033b792ed609sm5526948wrb.91.2024.02.12.12.47.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 12:47:02 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>,
- Andre Przywara <andre.przywara@arm.com>, Jisheng Zhang <jszhang@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH v3 2/2] arm64: dts: allwinner: h616: Add Sipeed Longan SoM 3H and
- Pi 3H board support
-Date: Mon, 12 Feb 2024 21:47:01 +0100
-Message-ID: <2596781.Lt9SDvczpP@jernej-laptop>
-In-Reply-To: <20240211081739.395-3-jszhang@kernel.org>
-References:
- <20240211081739.395-1-jszhang@kernel.org>
- <20240211081739.395-3-jszhang@kernel.org>
+        bh=PY3cqSsBwNpTxKZXjc6hWsn0tIs/KUkTAVHRiL48yE4=;
+        b=ZPm1kZaIuBMzs1mstXe5LoB7i8uIcIiRonSJ+frnPyAgeHstanaduUxLjPmeuNOV8n
+         eZg8EKKO7y376LuMmieyg7C73e5MOfVp1Z7h1aCgm2coZ544srcJaR8zMP1GBGh+lmL3
+         CPXoNNCeQ3i59oRF8/optMIF7gr7OAoH6uWCXsfFDqn7Qi8b2LVt96bN5aPehQ7jBNmX
+         9r4koVZxpzZ3lNAjVntpNj8Uzec6AfDlS9oN4u2P1K9qkTUiq2OgpBd1aONS1v91Owhn
+         MMmBCOREHtPlsyNFuVJlP8ejEgTMe2KU7zCbqzmMP3MpHNtD1g+9g1h2THGHznyiTzhx
+         9sbA==
+X-Forwarded-Encrypted: i=1; AJvYcCVtoBolulmQGIIxY/lTBgP1VwPkF37uC+YNa0WbEIa0Fmg9GXPgUWKmGrzj9YYSeD+zqwfQvJE6ZhdbP69tKCm3H8H0HyPYqxWdkddG
+X-Gm-Message-State: AOJu0YxPBibAkFSPfKh8E8pDsDDbadkmmMDeS1Cdci69PR0ySAGm9p1k
+	SawAb1JMiJ2tdULDY8wn3Hxc71wzXRI5qA46C/8Vms12UHmoLnzVeDA9w5iLTIn13SuIa0PlLkD
+	bUOcpoigTGSXW5jtoTyTJZ0I0iDGVJW9hDOZh1A==
+X-Google-Smtp-Source: AGHT+IHpuGZC6SrLdNnZki7WawOfEUwxb557/rUhxkGHMzuDzurgn+uKQ9WrdUdXaiN7gnBNgrqdYeHN6a/77FI22dc=
+X-Received: by 2002:a25:ad82:0:b0:dc2:2f4f:757 with SMTP id
+ z2-20020a25ad82000000b00dc22f4f0757mr6478822ybi.7.1707770880839; Mon, 12 Feb
+ 2024 12:48:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20240129115216.96479-1-krzysztof.kozlowski@linaro.org> <20240129115216.96479-5-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240129115216.96479-5-krzysztof.kozlowski@linaro.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 12 Feb 2024 21:47:49 +0100
+Message-ID: <CACRpkdbMFHPK0SBSxiZ3FOqChQFCBdOny0yYG--6V+1S=CKgiw@mail.gmail.com>
+Subject: Re: [PATCH v6 4/6] reset: Instantiate reset GPIO controller for
+ shared reset-gpios
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami <bgoswami@quicinc.com>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Viresh Kumar <viresh.kumar@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, 
+	linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Chris Packham <chris.packham@alliedtelesis.co.nz>, Sean Anderson <sean.anderson@seco.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Dne nedelja, 11. februar 2024 ob 09:17:39 CET je Jisheng Zhang napisal(a):
-> The Sipeed Longan SoM 3H is a system on module based on the Allwinner
-> H618 SoC. The SoM features:
-> 
-> - Four ARM Cortex-A53 cores, Mali-G31 MP2 GPU
-> - 2/4 GiB LPDDR4 DRAM SoMs
-> - AXP313a PMIC
-> - eMMC
-> 
-> The Sipeed Longan PI 3H is a development board based on the above SoM.
-> The board features:
-> - Longan SoM 3H
-> - Raspberry-Pi-1 compatible GPIO header
-> - 2 USB 2.0 host port
-> - 1 USB 2.0 type C port (power supply + OTG)
-> - MicroSD slot
-> - 1Gbps Ethernet port (via RTL8211 PHY)
-> - HDMI port
-> - WiFi/BT chip
-> 
-> Add the devicetree file describing the currently supported features,
-> namely PMIC, LEDs, UART, SD card, eMMC, USB and Ethernet.
-> 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+On Mon, Jan 29, 2024 at 12:53=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> Devices sharing a reset GPIO could use the reset framework for
+> coordinated handling of that shared GPIO line.  We have several cases of
+> such needs, at least for Devicetree-based platforms.
+>
+> If Devicetree-based device requests a reset line, while "resets"
+> Devicetree property is missing but there is a "reset-gpios" one,
+> instantiate a new "reset-gpio" platform device which will handle such
+> reset line.  This allows seamless handling of such shared reset-gpios
+> without need of changing Devicetree binding [1].
+>
+> To avoid creating multiple "reset-gpio" platform devices, store the
+> Devicetree "reset-gpios" GPIO specifiers used for new devices on a
+> linked list.  Later such Devicetree GPIO specifier (phandle to GPIO
+> controller, GPIO number and GPIO flags) is used to check if reset
+> controller for given GPIO was already registered.
+>
+> If two devices have conflicting "reset-gpios" property, e.g. with
+> different ACTIVE_xxx flags, this would allow to spawn two separate
+> "reset-gpio" devices, where the second would fail probing on busy GPIO
+> request.
+>
+> Link: https://lore.kernel.org/all/YXi5CUCEi7YmNxXM@robh.at.kernel.org/ [1=
+]
+> Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+> Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Cc: Sean Anderson <sean.anderson@seco.com>
+> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Best regards,
-Jernej
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
+I can't think of anything better, that is reasonable to ask for.
 
+I feel slightly icky about the way the code reaches into gpiolib, and I thi=
+nk
+regulators should be able to reuse the code, but unfortunately only the day
+they have no board files left :/
+
+I do feel the core code handling "reset-gpios" could as well have been
+used to handle "enable-gpios" in regulators, just that the regulator code
+has more requirements, and would be really hard to rewrite, and deals
+with descriptors passed in from drivers instead of centralizing it.
+
+Like regulators, reset grows core support for handling GPIO for resets
+which is *long due*, given how common it must be. We really need
+something like this, and this is certainly elegant enough to do the job.
+
+Yours,
+Linus Walleij
 
