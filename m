@@ -1,102 +1,100 @@
-Return-Path: <linux-kernel+bounces-62300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12E27851E3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44A18851E5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:06:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96B76B2277E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:00:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C874FB24E7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17DCB47F6C;
-	Mon, 12 Feb 2024 20:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijI2R8Nl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E14A74D9FC;
+	Mon, 12 Feb 2024 20:04:47 +0000 (UTC)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59EE347A6F;
-	Mon, 12 Feb 2024 20:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFC347F57;
+	Mon, 12 Feb 2024 20:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707768021; cv=none; b=WsjDOFrG5g8OISS21/730vB28c/lcjQBV4RiXOpfJxYspQcdFQq2RTfOIWFK+o3VdOkEriBkQf+5zBsXn0FrDbY/IpBwrNEBf5TIhIpdUE8dAO1JQ83BurrZXfHAH0Fbldk3LbsGdO6vl72pU6QZRVDd1R6dHSQYMk2ip6F22vg=
+	t=1707768287; cv=none; b=LvdYBcFKfghwVQ9HaP27/kk47Ui6xB1qcg7iNHm/Bf1QNkFN1LMNqpQ4U8NKX/WDzlwgYLeh9pVsyDXKZQPx23iSlrLSfmfSVqd6wQtYxM7W/XQk7mjt3qf3pjEkRPEtZhN8Heeht9aqGg+nl5YB7YEIQs35emHrNOYYH19WMtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707768021; c=relaxed/simple;
-	bh=wyl9knvIggF/HM3rHnTsgcR+8vF6KjdZXU5A19UcB/o=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=O30ueeZeTpFU0MjAVVCVt3bmA6cERjaK0wOmzLPJ4uwc8dJ4974OaEhN7IfTciXCNB1B0QZgRFaBO5Qyd4UjB82gnrffje108VxowanNwBxQqRZwZoC5kFfwg4sJRjBFbRDzaA0NiX/j4RZ/gxA2jaJPPU/oUwyGCJU4WuxSbP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijI2R8Nl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C506C43390;
-	Mon, 12 Feb 2024 20:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707768020;
-	bh=wyl9knvIggF/HM3rHnTsgcR+8vF6KjdZXU5A19UcB/o=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=ijI2R8NliQiyAoV+aL+oTS+R9fytpZ6NTSIctPqirhj1N3sDZ8EmPwjNFJ7xOJB2W
-	 a8slDzuJcRRoqd5cKuLXyQIOy6r1geDT/KE1yuYP1/WlL9uERCbEs8QwfnWPcYTDJn
-	 29ZJaWjJ3r/5CdTZGsKmCCteJZF6gJWiZFFD7du4Y/EnCaZJR7aLRJIoS/8RiJRqNa
-	 gYchRXhge/hqSaOmxshAiej/ub8yhkuChVhWwhMD6cOAcWipQDrRGnuR3Pr6837z3G
-	 CAlTOO3xiiln2aVAnsAHVIhhhPd4IVfaeR1cR9y6gg2iHHnAryD6QG52eIgY4RMypp
-	 I9MQuV5NgNBYQ==
+	s=arc-20240116; t=1707768287; c=relaxed/simple;
+	bh=H5SASPixAqUHq3Nu5xj+/KLu5M1naq1Am/HTSAj4Qig=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=pBzFbEGdbC1e5zYEsONwjw5BJ53WFpHwNNR4BoqbmKGsKv8at5HUoVJvYKOX7YkLwJ6Upi5tLo+h87HKvOc1PAc42Ah+Ii3QidoVQifgTlUBHjb+fX6ekFR8Vt6nMpMFy0vKk6L18zh7+KkNPBXr4k+Z60G44ugg5NbX/BxaUwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id E072683BA7;
+	Mon, 12 Feb 2024 21:04:36 +0100 (CET)
+From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH 0/2] leds: expresswire: Fix dependencies
+Date: Mon, 12 Feb 2024 21:03:24 +0100
+Message-Id: <20240212-expresswire-deps-v1-0-685ad10cd693@skole.hr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 12 Feb 2024 22:00:17 +0200
-Message-Id: <CZ3D8KKRVFH4.Y7KBNMB4YXTS@kernel.org>
-To: "Randy Dunlap" <rdunlap@infradead.org>, <linux-kernel@vger.kernel.org>
-Cc: "Dave Hansen" <dave.hansen@linux.intel.com>,
- <linux-sgx@vger.kernel.org>, <x86@kernel.org>, "Kai Huang"
- <kai.huang@intel.com>
-Subject: Re: [PATCH v2] x86/sgx: fix kernel-doc comment misuse
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.16.0
-References: <20240211062434.16351-1-rdunlap@infradead.org>
-In-Reply-To: <20240211062434.16351-1-rdunlap@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAIx5ymUC/x2MQQqAIBQFrxJ/naBWYF0lWki+6m8q/FCCePek5
+ TDMZBJEhtDUZIp4WPg6K5i2ofXw5w7FoTJZbXttjVVId4TIyxEq4BYFNw5wwTv4jmpW9cbpX85
+ LKR8kQUMcYgAAAA==
+To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
+ Daniel Thompson <daniel.thompson@linaro.org>, 
+ Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: Flavio Suligoi <f.suligoi@asem.it>, Hans de Goede <hdegoede@redhat.com>, 
+ Jianhua Lu <lujianhua000@gmail.com>, 
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+ Helge Deller <deller@gmx.de>, Jingoo Han <jingoohan1@gmail.com>, 
+ Karel Balej <balejk@matfyz.cz>, dri-devel@lists.freedesktop.org, 
+ linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-leds@vger.kernel.org, 
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=675;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=H5SASPixAqUHq3Nu5xj+/KLu5M1naq1Am/HTSAj4Qig=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlynmgj96tx0yxiCk6LRKUNqTO/ibINXBCd6K5R
+ Kv13Nu7/QWJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZcp5oAAKCRCaEZ6wQi2W
+ 4UtOD/9CIR17mjfkoT3abEQNFhCVDJXwkykj/eV70cTOXmLHQYJqogh+3EJOfkyCEG8Xg5jDGx1
+ jRe5pKs4RXoKgOpZNN7dZ9PlGpJdTc+cW4IxpbBrAlVqKltFH5x1OBOiQgrObxnTOqe4q6u5rfB
+ cW2nW8fTnLL+pFOupFa+onY+wNLeRyDXXh0/dJPEdBsDIMVzxX8VZdXN4aKbTTViXvHWWiRFljP
+ cknU797dHb6Tf1K+/Dq4XgVMqCYPpQJxkgyDql9hiSuQSaYlQUc+nf0RjFOHL4NreWQX+jtipxG
+ 9pUAdh5AcoDVUp+PhT9giIZUSPKGaBlsnomNN2BcP4uCXh9OOleOgPzuk7yEGhnXb4/EgxrIMxx
+ TVUkyYUFqQpMvAN2OlsG1roXKQm1ow/yODTY7y0Cst46f41R8n/pZ2HJ6E9UjBLG/S5P21wc7k6
+ eD0ghlPYG5knL3dk9VD0npSPY9PmD13y0ixup6J1GfROEtWMdWmyUBnplvpSjdVOACrSGRSW/LO
+ lL+YEx2Ccc+KBme2eTZYjkdtggldwF9XpDGCHmaoTKO8YoxNCj2A4dMOWyFPBuEVek3gsq0l1qE
+ WxD0CWMpkokK8LnYySyUvjyLTrikpqRSUWiTTuQqrVZytxuihgUP+iiVQOee5y0AtWyexIron7X
+ kS/qxZVpmhMJHFw==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-On Sun Feb 11, 2024 at 8:24 AM EET, Randy Dunlap wrote:
-> Don't use "/**" for a non-kernel-doc comment. This prevents a warning
-> from scripts/kernel-doc:
->
-> main.c:740: warning: expecting prototype for A section metric is concaten=
-ated in a way that @low bits 12(). Prototype was for sgx_calc_section_metri=
-c() instead
->
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: linux-sgx@vger.kernel.org
-> Cc: x86@kernel.org
-> Reviewed-by: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> ---
-> v2: add Rev-by: Kai Huang
->
->  arch/x86/kernel/cpu/sgx/main.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff -- a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -731,7 +731,7 @@ out:
->  	return 0;
->  }
-> =20
-> -/**
-> +/*
->   * A section metric is concatenated in a way that @low bits 12-31 define=
- the
->   * bits 12-31 of the metric and @high bits 0-19 define the bits 32-51 of=
- the
->   * metric.
+LEDS_EXPRESSWIRE does not depend on NEW_LEDS in practice but still does
+in Kconfig. Fix up its Kconfig entry to reflect this and fix a Kconfig
+warning.
+
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Duje Mihanović (2):
+      Revert "leds: Only descend into leds directory when CONFIG_NEW_LEDS is set"
+      leds: expresswire: don't depend on NEW_LEDS
+
+ drivers/Makefile     |  2 +-
+ drivers/leds/Kconfig | 10 ++++++----
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+---
+base-commit: ae00c445390b349e070a64dc62f08aa878db7248
+change-id: 20240212-expresswire-deps-e895e8da8ea3
+
+Best regards,
+-- 
+Duje Mihanović <duje.mihanovic@skole.hr>
 
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-
-BR, Jarkko
 
