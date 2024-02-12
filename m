@@ -1,208 +1,267 @@
-Return-Path: <linux-kernel+bounces-61995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65BE48519B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:41:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFD66851A7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:01:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A781F23B06
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:41:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74B2C286EB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723243D986;
-	Mon, 12 Feb 2024 16:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9873FB3A;
+	Mon, 12 Feb 2024 17:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="HlmOQr9q";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="J2YOywBV"
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="KnCniSK1";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="TjtEd4Td"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8901B182C5
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707755720; cv=none; b=RlfhgeFm4mlLH1otL2UVwD9jEzLWs/G3EB5UHdD8K9LAEvUDDZXgHbG0ADJZMw+2FPxib6+36P4wplzlsN9C5t2AFgcp783Zjx2cSj4zKZhcqkHz/kh7ZCAFCTMP089XFKs1o9NmgtTPSQCKRD6zZyWBcs91/OMEv69xP31xphg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707755720; c=relaxed/simple;
-	bh=IDzhkY1a4910plU/Bf1p6UotGfhcV2qh2ZuJcavuoW4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kn0EfuQR50fBqOK/VLaq53O6NRfz8Lq1onJ3BId08Vgzbpuawm8XlkfkaDLMi+HDXpeL9+1HplMQqwms5ezg08HSzg24RwakwfPDW898764WbzZahU+SiviAKbeLVtLoFqFLaSTS6TrTNngCHfRdvliz8eh2S60qR/hxrdZQK7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=HlmOQr9q; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=J2YOywBV; arc=none smtp.client-ip=66.111.4.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 8F20A5C00CA;
-	Mon, 12 Feb 2024 11:35:17 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 12 Feb 2024 11:35:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to; s=fm3; t=
-	1707755717; x=1707842117; bh=/EqPdua3wUu7egs9hj3joQyCeB5KILvG5+1
-	7pYfAKJw=; b=HlmOQr9qvHE0N6b7r3vJLZNcb3UVrG8RUx4z6QwPWhLBya5sAT9
-	V/S8Zqpwle9MkAqKRpupK3V2y9nYsva6hSKmft+SWN0zTIoSACDHPIyodradZMjy
-	g+GChb5rZTZ44gfLzd7CUhTC0ssGdm7FJ4mYXHBBtjFA0hDoYMWCuOFobhFSSMaK
-	my8JWVzC16TrYyZO0HNWwVqcee9zpknq/X4JA2fQlF2BU5e2k/PCfbhgTnkzNt2i
-	2hZBq9/vVwdpRqc9Jw3Ba02aMdxcuP6xjPriauzPyPw+VO5OH8Q9t/KqKNte/okX
-	gxJiwWJoFaUX3BdyN2TVc42jIOZnVCM3oNg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1707755717; x=1707842117; bh=/EqPdua3wUu7egs9hj3joQyCeB5KILvG5+1
-	7pYfAKJw=; b=J2YOywBVYcHvZh7SL9Ztx6GaM3mrxWauzT0f5e3Y4/dspDxc67z
-	0VnElepBVZ/VU9ofd0CW9IdSk+E7tGKMbk72o8MDHt4nIP/V3BV1+7XRh8zkGLZi
-	Qwjkb6t/nNlSuJseIqlikcvWUbzFbWnXQJ+MheLqK7u1DlXuf28jrhHStz07sqFi
-	0GW/1LGHaNq5478fa5nBMOQpSzr6nmCKNpj7n/tRqAbB07H0Iwze+SKx5tyt2Blm
-	H0L4gRsQaUbjFFUNrwbG1TrzHq5cqxNGBkLFKaCIgBOOftaOWtNkzNsfxoiCkguE
-	JICNz/Blga59c1UaxavgBIMUYrtQMc6AtlA==
-X-ME-Sender: <xms:xUjKZW19TcXlYp1OWqkFk1aHf6XmhvY3ozWfISZLR3GFdWHkFFn0tg>
-    <xme:xUjKZZFxIA8lrTbUqCso1VyWk8GcYS4D39llvE_pgcinOXEUmog3HUNuHn_SQ2bGj
-    6l9sZ8mdGC7lwvGVQ>
-X-ME-Received: <xmr:xUjKZe745P32t8fSTQHQbkGkPADHwFvcv6_x2ChbvJ9z-hmQSncZkRYjiFMshBC34M5zPbsURgREvq_MV7PY7plXtpj6f2X1lqIiq-U-cS0AczBKY5FnL0_G>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefgdekkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvfevufffkffojghfrhggtgfgsehtkeertdertdejnecuhfhrohhmpegkihcu
-    jggrnhcuoeiiihdrhigrnhesshgvnhhtrdgtohhmqeenucggtffrrghtthgvrhhnpeejke
-    etkeffleelkeduffdtfedvtdejjeeutdeutdetgeejgfevtdefudejkeeiveenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeiiihdrhigrnhessh
-    gvnhhtrdgtohhm
-X-ME-Proxy: <xmx:xUjKZX09b_Z0b7LBqXtu-UsXl5mZ62eleEsmniGdmZz7gNAJ28_TlA>
-    <xmx:xUjKZZFAGzBJJmZD2dofOUdsIndBrXGwhqCuGYOlCvbqYDV5UoSEjQ>
-    <xmx:xUjKZQ9gL7y10Chg0dmi4lf-AdaoBVHlFBmxO9_3rUihPP7Ds1xjXg>
-    <xmx:xUjKZX9vRLw49H2efiaiekvsz-gEoMdvyUna-_VZZqqtyBIx9PBB1w>
-Feedback-ID: iccd040f4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 12 Feb 2024 11:35:16 -0500 (EST)
-From: Zi Yan <zi.yan@sent.com>
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: Zi Yan <ziy@nvidia.com>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	David Hildenbrand <david@redhat.com>,
-	"Yin, Fengwei" <fengwei.yin@intel.com>,
-	Yu Zhao <yuzhao@google.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Kemeng Shi <shikemeng@huaweicloud.com>,
-	Mel Gorman <mgorman@techsingularity.net>,
-	Rohan Puri <rohan.puri15@gmail.com>,
-	Mcgrof Chamberlain <mcgrof@kernel.org>,
-	Adam Manzanares <a.manzanares@samsung.com>,
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: [PATCH v4 3/3] mm/compaction: optimize >0 order folio compaction with free page split.
-Date: Mon, 12 Feb 2024 11:35:10 -0500
-Message-ID: <20240212163510.859822-4-zi.yan@sent.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240212163510.859822-1-zi.yan@sent.com>
-References: <20240212163510.859822-1-zi.yan@sent.com>
-Reply-To: Zi Yan <ziy@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911073FB0A
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 17:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707757220; cv=fail; b=XZwQKcBZO483U4jXVrwgXIplJgvk/K8AONxPzBuI70FDSg9bEal2jezoNdHUaCuLfSVkuPtEx3QI7yXT54XXdJsuetQJcfZwfalhRFmyff6elSIm1ut3t3T2bNYgHgoUu5vXWtWBdIpDK/noJ2XgwsCzzl/t7zJtsrytGVo15hs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707757220; c=relaxed/simple;
+	bh=7vXnTcTU2eUbtxnWaLyivcuOfStMLpnU1/y/xbEwDlo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=hjLgqL90SZTcAc+ubnPwtXGe893Cseux6bZikhNWGcmo9zHcjmHpiG/j1Mhxd3FpRFG3UPdgYZnaXmfXiPX0Nb1TqUY5ahH/sDJBMxEmBAtR580fzwSvzGY6SFAx0lep4D3pAEwYLNICwpSrgFSXY6Lxv6o8x4EgxnbhyG99CsE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=KnCniSK1; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=TjtEd4Td; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CGo9wV020953;
+	Mon, 12 Feb 2024 17:00:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=zLIQmPSoOuU9ysG0EMnq3spLfm0Hxu3zBSywaeVs2Co=;
+ b=KnCniSK1zfQuXQ4jVMMPjnvzbvvmsKZHV1aDNImmOuN1ASdPyKktJVx918cUHZgPfsgs
+ WE+DIZOG4bO15KfmSQ/OyZzZF66M779j7rdZk8bNiFadQN5HhcCtrHlRvq8JxqgQeoOv
+ H7XXQYFbv217QlYptIyEg2WZf51ynw6136sG0nU44uFA3obduX7fGXEKf/gVZuwBDlio
+ EYRHUX5/DoSr/5dxhfqQUVwgn5Zdpt0H8MdlGxdqSCZxQDLCMVzHKQBaXfXaM+bM1XUC
+ nr7kiGXqVQyb1an9PznfNrlOFToTDIslQo80r90F8jqTpTtXcd1SyWzVhd1/m1hBErLu dQ== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w7q6rr0jy-5
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 17:00:12 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41CFXSAN000755;
+	Mon, 12 Feb 2024 16:37:20 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w5yk60scm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 16:37:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W6PcFOm3MXe5tkSV9hsXlQAjiYqyctJKdfXyhkD1C/owIfmE7SOKqZ17feT7JuuBm90m651+ve+f1yT2lJj21521ezl0NIy2yR4pUZg2mgAKD90XtIhow8r95Ta8UAWLrWm4+EPnweq+Z/4zWOsBhntFxKRKv5+VfuC4TUdU0qns1f0hK8xAUccd6IsZLh4cOuVP9QShIUq+XI9aNk0MBCbXZ64WE6lElDVQljwODmpEMeExhEraKYOhysvT1UffBiNdTCj9Ctvf5pionxIea+NG2NN4J40SQxbXVSDm3M0Ic+xZTy0T1h8eim8sYKilx86EklISHVFsV5mlEELKBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zLIQmPSoOuU9ysG0EMnq3spLfm0Hxu3zBSywaeVs2Co=;
+ b=FZL8UNLPpSP9Xt7fGj4ZD2jG4kSatdN9ayO1xh81te3i4Wa14z/c49WsNdKnH2VlARqz0i8Y42oT3QbzoOtMKuhLlr/dX8YztDDXGsKmSOOREg16I6n2JWZ9KAkJE6+8+YMkbtxTWhEl+626crxBosvB0ERgYU8Ecft09Uk2l2YWMEirPGvj6K4mY/QBeSuqhCnHqShJks7cTSlI87oDszMAIxGacS4ipxi4tWvoK/ZBb9tJSEXYUNSAbuDg9Bu0A7IDGRLAT80nNS/yojcA6o33lIRoRvAlSGATwHd8c+3bA7ObS2f1MnjWizPrY5vtecBg9vQ6goBiN5fNnHtkbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zLIQmPSoOuU9ysG0EMnq3spLfm0Hxu3zBSywaeVs2Co=;
+ b=TjtEd4TdIUv+cFIHu7TCxFXmzZvMXPEKQKFIJugS4n1KWYPa2qOs4WjNsYEL0+vgpda5CGEKqmn8UY9OPR2DcsunCPwITmcmf6z5WXEfuPLTkDCKG5k/PR98Vipw+MuJNfRzOBZmWYPO5TOl8wC2N7TH9C+RNY7T0dx5trdNoLk=
+Received: from SA2PR10MB4684.namprd10.prod.outlook.com (2603:10b6:806:119::14)
+ by BN0PR10MB5222.namprd10.prod.outlook.com (2603:10b6:408:114::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Mon, 12 Feb
+ 2024 16:37:16 +0000
+Received: from SA2PR10MB4684.namprd10.prod.outlook.com
+ ([fe80::c3ce:7c28:7db1:656b]) by SA2PR10MB4684.namprd10.prod.outlook.com
+ ([fe80::c3ce:7c28:7db1:656b%6]) with mapi id 15.20.7270.036; Mon, 12 Feb 2024
+ 16:37:15 +0000
+Message-ID: <e3515937-7d36-4167-84dc-a9c1721249cc@oracle.com>
+Date: Mon, 12 Feb 2024 11:37:12 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V1] vdpa: suspend and resume require DRIVER_OK
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>, Si-Wei Liu <si-wei.liu@oracle.com>,
+        Eugenio Perez Martin <eperezma@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>
+References: <1707517799-137286-1-git-send-email-steven.sistare@oracle.com>
+ <20240212031722-mutt-send-email-mst@kernel.org>
+ <a4d2626d-7d74-4243-93a9-01d7adc8cda4@oracle.com>
+ <20240212105604-mutt-send-email-mst@kernel.org>
+Content-Language: en-US
+From: Steven Sistare <steven.sistare@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <20240212105604-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR03CA0110.namprd03.prod.outlook.com
+ (2603:10b6:5:3b7::25) To SA2PR10MB4684.namprd10.prod.outlook.com
+ (2603:10b6:806:119::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PR10MB4684:EE_|BN0PR10MB5222:EE_
+X-MS-Office365-Filtering-Correlation-Id: abb479f9-8a28-427d-d6d8-08dc2be8df45
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	2AUYLDWh2Ua/RyCaF+jR/0iU/rzAijisyH1mFNsNjIIAUBIShWaAjd2v+UuYHDH8J+opgoH9DdpWHygMFYXy5OpKE9xSx/PLkM5Yd/HBVvNWg0rfXmipGFk6H2RaIK52Z9JNor6UAN8lBDk2w99dVvvuYly+ou4IyBXbCeK6t6PdQVumV5ZttTOd2D9EOMRj3DRS8dF8I7WWIovJTiXNADWS2hytQzGRez8pBVgYFICKP+5ZENL/+BIZRA6ZuwPI0pQzzUORrsHw8Fdx719M+UZBsggKru3ZeFGBKckflAsFjS/W6jSEhCoXJV7AKm6ecA9mR3w3Pc4S4Ygtmlyc8Xm2XitIlxMhzgVcawlRMxB5FV7nrtUksC/fqUFFDAyMnFBJtimvTrKBPELMHpZSBU9MVCwXzhEYX3WwGRHeYu22q+uD4kW8pxKZCH15PsyP3CRIKKfOXB0RdKgk/S3RSTMhAyGokBcI9YXm0fkXGKvTTN/HHdq14JRBPzPL3w7PeJq7Wrt6o9jIrCZUB+MCkELmRSleI5oXa4ulg5W6Oq8QuqNHW4IFPbpQDSateKxT
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR10MB4684.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(39860400002)(396003)(346002)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(2906002)(44832011)(8936002)(8676002)(4326008)(5660300002)(15650500001)(83380400001)(2616005)(26005)(38100700002)(36756003)(31696002)(86362001)(316002)(66946007)(66476007)(54906003)(6916009)(66556008)(36916002)(6506007)(53546011)(6666004)(6512007)(6486002)(478600001)(31686004)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?aWN4Vmw0VzFyajlKZWtlQ3h1THU4S0RBSHVDbEY2YWh0Y1NiOStmYlo5SWJO?=
+ =?utf-8?B?akNJU0JLVDNQMTZXMmNVY295V0NtRWVYZFBPVnUwb05DTjFoK0c4WWNaTXNW?=
+ =?utf-8?B?TlZMaE1MSXdLZXBQQjJZOGdtdWtkb1ZncVM1d0RDREEwS1VLYUltVW96TS93?=
+ =?utf-8?B?WFJ3TnlxTjNwWXJmWTZVMlFveTFTV081T3VWQnQ0QWZ2dkYxOXVHOFUwYXBv?=
+ =?utf-8?B?QnBtTkZELzlQb0tjTkpjbzFyTkExSktjTS9CMkZ3bjk4RFJpSzdZelYyaitt?=
+ =?utf-8?B?aDVuc081MC9hZjBadUNNY1BneS8yVzVUTnhjN29LU3FYbVdtcHVYVWhzeDZJ?=
+ =?utf-8?B?V3RwMyt1NXd4Ylp6OWIyc1M1SjFzK3FhVkJnOGtuVFl6ZGx2Y2drOGdJcEhD?=
+ =?utf-8?B?aytBRDlnakJtRUFKLzZPTnlSb0FObWtvWkNUVEtKcXM5d1ZBMllGL0tOUmZH?=
+ =?utf-8?B?ZVRDZkE1aDRJYmJqR1RTMWk5VjZmdHdPOGxZQXN6WGNiemdEaVlBcWNmamxN?=
+ =?utf-8?B?anVWVlJkNUZmUGRUMmg4dkJEdnpySHpHRUdDVWFVNDN0cDd3VFh1SHpMaHdM?=
+ =?utf-8?B?M1VDeXk1Q3JRVVo2Zk5XZHFSQW80KzRUa0VXZEF5aTlJUTNIeFJGeDZjMmw0?=
+ =?utf-8?B?WUszdlpnaHNrRHQzaDZaUUdwV0FydmgwSzZBTDZaeXM1cGVVUWFndVhaRlJL?=
+ =?utf-8?B?MEs3UXYzZVcvMm9PUzAyVGpoV0xRQmVsQkhsR2NmWVVVeVczTjRUT3lSUzRI?=
+ =?utf-8?B?M1U2K0NHa0QwaWxxS05ISHU2OGdzNVdPcEVsYVpzM2NGZUxrZkVkUVFJeEU5?=
+ =?utf-8?B?WXM0Q0JkRGZURXBrQVgydXhTVDhxQnZRbkVYd3U2dGNuVmNKOWFnaGZQN3dP?=
+ =?utf-8?B?WVpBckpSakxqaXdRTk1UZWFjMWZRc2x0WmtDbHlIWTlNMndDVEZkMzFYQmxz?=
+ =?utf-8?B?ekpPTWYyMFBQNlB2dm9zbDZUYWJHbGxwZXJWdThuME5yTG8rZjBoeS84d1ZH?=
+ =?utf-8?B?Z01QQ1FyU3ZIZ2drV2E1ekRQODV0akF4RXFHRWV5RVZSd3lKYlZuWVl2czhs?=
+ =?utf-8?B?RXdBVExhQUsxTzB0d0x5THFsYnRUaVdkWHhHdWsxSzBoL0g4Y2o3azE3S205?=
+ =?utf-8?B?ZHg1aFViRDJ4UWNIU0JLV0p1bDFUZyszODNrbUVnQVNTWXFNcHpOeTV3anh5?=
+ =?utf-8?B?eDFQYURiamNSZlZCYjZhbkcxOXkzZ2ZHcWJuRHQ1eDF6THZadHZ5RXoxc0Uy?=
+ =?utf-8?B?bW95R2FHTDk3UTlqMTQ3OFBXL1VnbWd4ZWtaVTMydDl0Y1FmQTJNQmJEb2Rq?=
+ =?utf-8?B?SndrSHZmVVIwYlNmYmdEZytDYUdBQklXV1Q5Z01uVEswTnEvVC9QazVkYmhQ?=
+ =?utf-8?B?TkpvZGtuQmV5UWV5V0tmQUU4RCsvVG8vY1Y0TzdSbHNmQTRuZklybzNKLzZ3?=
+ =?utf-8?B?b3Zsd3ozblRMMGxBbGtLR29wKzVSTzhMWFNWOUNtTHEzUmRiNkZUL01Xb282?=
+ =?utf-8?B?L2JsN3hzQ0plSXdoZVZVL2JKSFpvZlNiSmNESnFhNGdxZklsQVlwVGJjN0d1?=
+ =?utf-8?B?WXdOMGRpTTBHNXFpVmdrVW10UEM2QW1DRHg4UVplNlB4Q1AwOS9DajNGOGNT?=
+ =?utf-8?B?dkNMTGtsSytQTVIvUHpwWmpndTY3WVNsSFRRdHM5ME9aZHRxQkxONW4xaE5n?=
+ =?utf-8?B?ZzRyYTcwM2pON25USWhUekduNWMyQnA3VUNKdHVUV1NJUm0vUVNha2NrdDQ3?=
+ =?utf-8?B?RHJDelN6MVdSNWNKbHlmOU8xWkdhcm5RV255ZGNxdklMNVR3eEZ3TC9Gb2lD?=
+ =?utf-8?B?eUZzSG9pMlY2MC9EYW5SZjVITkpQcUVhb01KMXBiZUV1WGZyN1I3cTA2ODZ3?=
+ =?utf-8?B?ZWVnRlhkbGdPWE1sODVmVnc4cVF2RFJsSmt6cUVhd2JXSmE0MDYybjZId1R4?=
+ =?utf-8?B?bFRWSzFoRlZjcFZBVVVPR0VWV292TGJGdmdFdjZhbnoxTTdteEUycnFObE9z?=
+ =?utf-8?B?S1dUZFVzRFBhaEdPMXp3NnAxa3pWeVZTTkd4SWd4ZmI4MTRCWjliRnpMVVc2?=
+ =?utf-8?B?dGsrRllsTUJsRXBZVW5SK1ZCdlJnT2ZJc2FOZmJqRFFTSFBLa3pucS91V2Zq?=
+ =?utf-8?B?K1FLd1NZZ0lGSm9UaG1yUy91SWcwVUZZQ1k5cUI5UTNublRXVUdSMnRrTzBp?=
+ =?utf-8?B?Z2c9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	+f5UqvWdsV1txnN/TDQL7rxn1aNVW51hfVL0WlnLrxDWEJqSf5DqwkCT2vJBMcz5D9231M0dCOa1v2TCsOeETPuH8HywP9Wm/bF2mAZhhG5J+ukDSdpnbJRMIe+llbTFSwoqWnX1KJqV27eEnwOYIjjEH+Pnjiyruivt9cFyZ0bE3JTeSP4B2sGfgVib1qVj+2hf94l5DKpev67B8QfkeSjfos5jcvZbRDr3dQ+nKqVQXjevGOK9RRf5+enOy6NaE6dpZdVTabeoI0lEOWCbixNakBhn80RbnCKkv+t2n3J6wZqXT7XSUevyLWuHSNRF1JfXOf+tpZ4Dzope67dTsXlZHsZSGEuRJlaH+fmK6wUkbqlkpkOO0fHd0C3absQzdwsp4draCLiKjWy2yoPZtqjd/g6JxfpTWqzQ7bBIzypNkIXv2xzwWLnDveGtagaF3IO3Ik0vEmGbNYnCcUxKZhARL1QZorE4gY6etc2JBwOvUN3Py+SR4BYKwGNg0tBTq5V9wwltQHo1HJtcPb7XE3HzKYAnA2C6nAnHpkZL763BmUtrlUJnvnpRPnVqcSixmiIYwh24SydTxOAtkckCLvJCWUXVUPLjmSHoRNDmA2g=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: abb479f9-8a28-427d-d6d8-08dc2be8df45
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR10MB4684.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 16:37:15.9478
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PI8dTsSgGCKaE+zSoNOIJtb7DfANTO0+CfJVcAn81AbgmRxtb+B4QUQCEwmlTtn0nvNj7pUuu/prK3vTY3tjDbnShYlQMXRI9ZgEmmyW+TM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5222
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_14,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0 mlxscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402120125
+X-Proofpoint-ORIG-GUID: PKCLQD6eemIfghxpV_2xkOGNz_OxChXG
+X-Proofpoint-GUID: PKCLQD6eemIfghxpV_2xkOGNz_OxChXG
 
-From: Zi Yan <ziy@nvidia.com>
+On 2/12/2024 10:56 AM, Michael S. Tsirkin wrote:
+> On Mon, Feb 12, 2024 at 09:56:31AM -0500, Steven Sistare wrote:
+>> On 2/12/2024 3:19 AM, Michael S. Tsirkin wrote:
+>>> On Fri, Feb 09, 2024 at 02:29:59PM -0800, Steve Sistare wrote:
+>>>> Calling suspend or resume requires VIRTIO_CONFIG_S_DRIVER_OK, for all
+>>>> vdpa devices.
+>>>>
+>>>> Suggested-by: Eugenio Perez Martin <eperezma@redhat.com>"
+>>>> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+>>>
+>>> I don't think failing suspend or resume makes sense though -
+>>> e.g. practically failing suspend will just prevent sleeping I think -
+>>> why should guest not having driver loaded prevent system suspend?
+>>
+>> Got it, my fix is too heavy handed.
+>>
+>>> there's also state such as features set which does need to be
+>>> preserved.
+>>>
+>>> I think the thing to do is to skip invoking suspend/resume callback
+>>
+>> OK.
+>>
+>>>  and in
+>>> fact checking suspend/resume altogether.
+>>
+>> Currently ops->suspend, vhost_vdpa_can_suspend(), and VHOST_BACKEND_F_SUSPEND
+>> are equivalent.  Hence if !ops->suspend, then then the driver does not support
+>> it, and indeed may break if suspend is used, so system suspend must be blocked,
+>> AFAICT.  Yielding:
+> 
+> If DRIVER_OK is not set then there's nothing to be done for migration.
+> So callback not needed.
 
-During migration in a memory compaction, free pages are placed in an array
-of page lists based on their order.  But the desired free page order
-(i.e., the order of a source page) might not be always present, thus
-leading to migration failures and premature compaction termination.  Split
-a high order free pages when source migration page has a lower order to
-increase migration successful rate.
+OK, I missed your point.  Next attempt:
 
-Note: merging free pages when a migration fails and a lower order free
-page is returned via compaction_free() is possible, but there is too much
-work.  Since the free pages are not buddy pages, it is hard to identify
-these free pages using existing PFN-based page merging algorithm.
+   vhost_vdpa_suspend()
+       if (!(ops->get_status(vdpa) & VIRTIO_CONFIG_S_DRIVER_OK))
+           return 0;
 
-Signed-off-by: Zi Yan <ziy@nvidia.com>
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Adam Manzanares <a.manzanares@samsung.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Huang Ying <ying.huang@intel.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Yin Fengwei <fengwei.yin@intel.com>
-Cc: Yu Zhao <yuzhao@google.com>
----
- mm/compaction.c | 36 +++++++++++++++++++++++++++++++-----
- 1 file changed, 31 insertions(+), 5 deletions(-)
+       if (!ops->suspend)
+           return -EOPNOTSUPP;
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index d0a05a621b67..25908e36b97c 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1832,15 +1832,41 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
- 	struct compact_control *cc = (struct compact_control *)data;
- 	struct folio *dst;
- 	int order = folio_order(src);
-+	bool has_isolated_pages = false;
-+	int start_order;
-+	struct page *freepage;
-+	unsigned long size;
-+
-+again:
-+	for (start_order = order; start_order < NR_PAGE_ORDERS; start_order++)
-+		if (!list_empty(&cc->freepages[start_order]))
-+			break;
- 
--	if (list_empty(&cc->freepages[order])) {
--		isolate_freepages(cc);
--		if (list_empty(&cc->freepages[order]))
-+	/* no free pages in the list */
-+	if (start_order == NR_PAGE_ORDERS) {
-+		if (!has_isolated_pages) {
-+			isolate_freepages(cc);
-+			has_isolated_pages = true;
-+			goto again;
-+		} else
- 			return NULL;
- 	}
- 
--	dst = list_first_entry(&cc->freepages[order], struct folio, lru);
--	list_del(&dst->lru);
-+	freepage = list_first_entry(&cc->freepages[start_order], struct page,
-+				lru);
-+	size = 1 << start_order;
-+
-+	list_del(&freepage->lru);
-+
-+	while (start_order > order) {
-+		start_order--;
-+		size >>= 1;
-+
-+		list_add(&freepage[size].lru, &cc->freepages[start_order]);
-+		set_page_private(&freepage[size], start_order);
-+	}
-+	dst = (struct folio *)freepage;
-+
- 	post_alloc_hook(&dst->page, order, __GFP_MOVABLE);
- 	if (order)
- 		prep_compound_page(&dst->page, order);
--- 
-2.43.0
-
+- Steve
+>>     vhost_vdpa_suspend()
+>>         if (!ops->suspend)
+>>             return -EOPNOTSUPP;
+>>
+>>         if (!(ops->get_status(vdpa) & VIRTIO_CONFIG_S_DRIVER_OK))
+>>             return 0;
+>>
+>> - Steve
+>>
+>>>> ---
+>>>>  drivers/vhost/vdpa.c | 6 ++++++
+>>>>  1 file changed, 6 insertions(+)
+>>>>
+>>>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+>>>> index bc4a51e4638b..ce1882acfc3b 100644
+>>>> --- a/drivers/vhost/vdpa.c
+>>>> +++ b/drivers/vhost/vdpa.c
+>>>> @@ -598,6 +598,9 @@ static long vhost_vdpa_suspend(struct vhost_vdpa *v)
+>>>>  	if (!ops->suspend)
+>>>>  		return -EOPNOTSUPP;
+>>>>  
+>>>> +	if (!(ops->get_status(vdpa) & VIRTIO_CONFIG_S_DRIVER_OK))
+>>>> +		return -EINVAL;
+>>>> +
+>>>>  	ret = ops->suspend(vdpa);
+>>>>  	if (!ret)
+>>>>  		v->suspended = true;
+>>>> @@ -618,6 +621,9 @@ static long vhost_vdpa_resume(struct vhost_vdpa *v)
+>>>>  	if (!ops->resume)
+>>>>  		return -EOPNOTSUPP;
+>>>>  
+>>>> +	if (!(ops->get_status(vdpa) & VIRTIO_CONFIG_S_DRIVER_OK))
+>>>> +		return -EINVAL;
+>>>> +
+>>>>  	ret = ops->resume(vdpa);
+>>>>  	if (!ret)
+>>>>  		v->suspended = false;
+>>>> -- 
+>>>> 2.39.3
+>>>
+> 
 
