@@ -1,116 +1,98 @@
-Return-Path: <linux-kernel+bounces-62555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A0488522B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:44:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39FEA8522C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:49:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07C71283DEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:44:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 332C1B249C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2FC450254;
-	Mon, 12 Feb 2024 23:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B74CB50254;
+	Mon, 12 Feb 2024 23:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rUiMa8Qs"
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="patan0HD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBEC04F897
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:44:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CA94F5FA;
+	Mon, 12 Feb 2024 23:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707781476; cv=none; b=bioS7LytyfxMtl/GCCyTFKS9rd5flWj26SjHrxIpvtfPw6I+uZuRYMx+KpE+m0flCFqBBfGmdAxt54RVvJlfSMVKGl9TSCTBr8xgkbNzjn1S9LMGqD0yp2NtiASuGyLawwqiVhdZV7NZXg/5e/hV9pNlUOOHoHlpezfMmrbFvJw=
+	t=1707781733; cv=none; b=lCGyLHOX4PxwBBkaIsYnmU3egcYxP99fyzigzgwNIu6vtylkwDK1ba72Da2YMkc0ZennZj1Lfbn9ZUEHGZT1bofJ6OQXWCR1L3S39kWW3eOtctL7JtftzKId7rUeCfwjcL1y4BhF1pmhAdInk2savTs+MQz1tPWM/bbTv0HehO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707781476; c=relaxed/simple;
-	bh=cw39m76UFq9tS5p8ZskWMb2lcc6vwhiwppLpIPjMO3Q=;
+	s=arc-20240116; t=1707781733; c=relaxed/simple;
+	bh=N0FaQE0vHSopm6AME+8az+/MTsHIzXcz1fDK/aRn3BQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mfmb2x4BHsJVkCHw+4uRxt9jUI+f2m/uCaUnGPaTGh5CGyhZUaeSJwVX5fWPMCE+7DxRNM2BvHKA3P6sDH10WgKvQ4RAujmhRl3VXWRStoBEqJIqmrNaR6Zy3lyzde1nZq4KjZidvKuMlkI47TdaasF9VSLGIsMzjCiChjsbGW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rUiMa8Qs; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 12 Feb 2024 15:44:19 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707781472;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZavUZpfe4iXVeRQFF+1YAOemYZZVmPWyKDi8FAoNTa0=;
-	b=rUiMa8QsnFQtpiR5C1+Uh/5PkvOSlnbxRtk2SQk/Z8VQaTr2nGOj+Kf6LQkivTtOFVviOx
-	GtgnjamJJ3OTOqokx2EVRawtG0F5T88rRMMmwZRO8BLNIPMXRuYGO00y68upFxf8CSktjH
-	smPhG3fjddzVZacfdEptan3ZSePE3uY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Marc Zyngier <maz@kernel.org>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Rob Herring <robh@kernel.org>, Zenghui Yu <yuzenghui@huawei.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" <linux-arm-kernel@lists.infradead.org>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] arm64: Subscribe Microsoft Azure Cobalt 100 to ARM
- Neoverse N2 errata
-Message-ID: <ZcqtUxhqUbYoRH-G@linux.dev>
-References: <20240212232909.2276378-1-eahariha@linux.microsoft.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tGF8ltCt7rlhqcSwkijniQJM+W39EOiZpOyG2qnhIDXmyOVknNsdJ3df1jckY1THt8VTJ/zJGhtuJjXrsTggl+P1ZsTj0nV0rYJz+XbaYBHDcs57XY3q7oeS7VVzveh4fsoalO9IvxVNz4Ohdzxe6m/VgHh/Zs81hGAyA94hOTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=patan0HD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68AD5C433F1;
+	Mon, 12 Feb 2024 23:48:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707781732;
+	bh=N0FaQE0vHSopm6AME+8az+/MTsHIzXcz1fDK/aRn3BQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=patan0HD5soE+gBudXrfudQL98WiQ/5vfwvnHXCboGYtCztc4VwPbnKE8WsW+Zrrf
+	 UrkMMFWAezzDX8xAIwF8/UY2p/MgyOO/luOk1an0afJ9R0LLcqNfXtiyFFpBYIXtcI
+	 hOPpUzZzfrlueXD/lDLBSB1gu+vE69gS2JLhPZUZLei1VvXHQNwW0p8YVEbbW2Q5PC
+	 VjroYDDKUmfUyeCbYQWgEsYX/3bwMhn3rpH3rtsVCZ5ELSC+oRj2QZ+06RQSuIo8Ru
+	 g98tACk1Em22+kSJk5booXP6OFlcAixlWiSzTu/aDFyOP8bMzwWRKRO8RUCgCH4eQG
+	 r+RIPW4Acq3SA==
+Date: Mon, 12 Feb 2024 16:48:50 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: llvm@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: Prebuilt LLVM 18.1.0-rc2 uploaded
+Message-ID: <20240212234850.GB3221859@dev-arch.thelio-3990X>
+References: <20240208002841.GA2601476@dev-arch.thelio-3990X>
+ <CANiq72=G--5LW-9sg2PscTL863mFVNdnX7LUQX2Xj02qZs4crA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240212232909.2276378-1-eahariha@linux.microsoft.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72=G--5LW-9sg2PscTL863mFVNdnX7LUQX2Xj02qZs4crA@mail.gmail.com>
 
-Hi Easwar,
+Hi Miguel,
 
-On Mon, Feb 12, 2024 at 11:29:06PM +0000, Easwar Hariharan wrote:
-> Add the MIDR value of Microsoft Azure Cobalt 100, which is a Microsoft
-> implemented CPU based on r0p0 of the ARM Neoverse N2 CPU, and therefore
-> suffers from all the same errata.
+On Sat, Feb 10, 2024 at 05:36:01PM +0100, Miguel Ojeda wrote:
+> On Thu, Feb 8, 2024 at 1:28 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > I have built and uploaded a prebuilt version of LLVM 18.1.0-rc2 to
+> > https://mirrors.edge.kernel.org/pub/tools/llvm/.
+> >
+> > As with Linux -rc releases, this is not the final version that will
+> > ship. If you run across any issues, especially ones that were not
+> > present in earlier LLVM releases, please consider reporting them to us
+> > so that we have a chance to investigate and fix them before the final
+> > release.
+> 
+> I took a look at the LLVM 18 prerelease to see if these would work
+> with Rust for e.g. CI and other users (instead of using the
+> LLVM-provided apt ones, for instance), and noticed it does not bundle
+> `libclang.so`.
+> 
+> Would it be possible to include it so that we can use `bindgen` and
+> thus enable Rust with them?
+> 
+> I understand they are intended to be minimal toolchains, but if you
+> think it would not be an unreasonable overhead, then it would be great
+> to have it.
 
-Can you comment at all on where one might find this MIDR? That is, does
-your hypervisor report the native MIDR of the implementation or does it
-repaint it as an Arm Neoverse N2 (0x410FD490)?
+Absolutely, I am more than happy to include libclang.so and anything
+else that would be useful for the kernel. Everything gets built but I
+only install what has felt needed for the kernel, so there is no real
+overhead aside from package size, which obviously should not increase
+much with this change. I've added the targets to my build scripts and
+kicked off a set of builds. If they finish successfully, I will upload
+them so that you can test them out and make sure they will work.
 
-> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
-> index 7c7493cb571f..a632a7514e55 100644
-> --- a/arch/arm64/include/asm/cputype.h
-> +++ b/arch/arm64/include/asm/cputype.h
-> @@ -61,6 +61,7 @@
->  #define ARM_CPU_IMP_HISI		0x48
->  #define ARM_CPU_IMP_APPLE		0x61
->  #define ARM_CPU_IMP_AMPERE		0xC0
-> +#define ARM_CPU_IMP_MICROSOFT		0x6D
->  
->  #define ARM_CPU_PART_AEM_V8		0xD0F
->  #define ARM_CPU_PART_FOUNDATION		0xD00
-> @@ -135,6 +136,8 @@
->  
->  #define AMPERE_CPU_PART_AMPERE1		0xAC3
->  
-> +#define MSFT_CPU_PART_AZURE_COBALT_100	0xD49 /* Based on r0p0 of ARM Neoverse N2 */
-> +
->  #define MIDR_CORTEX_A53 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A53)
->  #define MIDR_CORTEX_A57 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A57)
->  #define MIDR_CORTEX_A72 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A72)
-> @@ -193,6 +196,7 @@
->  #define MIDR_APPLE_M2_BLIZZARD_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_BLIZZARD_MAX)
->  #define MIDR_APPLE_M2_AVALANCHE_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_AVALANCHE_MAX)
->  #define MIDR_AMPERE1 MIDR_CPU_MODEL(ARM_CPU_IMP_AMPERE, AMPERE_CPU_PART_AMPERE1)
-> +#define MIDR_MICROSOFT_AZURE_COBALT_100 MIDR_CPU_MODEL(ARM_CPU_IMP_MICROSOFT, MSFT_CPU_PART_AZURE_COBALT_100)
-
-nitpick: consistently use the abbreviated 'MSFT' for all the definitions
-you're adding.
-
--- 
-Thanks,
-Oliver
+Thanks for bringing this up and giving them a go, cheers!
+Nathan
 
