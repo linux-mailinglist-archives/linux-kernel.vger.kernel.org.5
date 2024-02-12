@@ -1,207 +1,112 @@
-Return-Path: <linux-kernel+bounces-61527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC9FA851346
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:14:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFABB85134C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:15:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397661F22CF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:14:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DB24B261B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4973A1AC;
-	Mon, 12 Feb 2024 12:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F033A8C1;
+	Mon, 12 Feb 2024 12:13:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EdMESjWk"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="J4AgM9ro"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9213A1A0;
-	Mon, 12 Feb 2024 12:11:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F25C3A29A
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707739902; cv=none; b=OGKRcSwLCQnBtq+/Mg6/TiebGYqx5ApPCcieq213985GH7YWYuSkAQRvVNL0Uf7aJG5f9l0DFQfcdiIIaR8CFEp2xSZqjpmK8aXbZ7Gf1JnLFqTLVG/A9mSHW/7XYAWnekVfgjiKIYP2/Ss4IVbAbfc+JnCp8EDuslM6AjwnzrA=
+	t=1707739980; cv=none; b=H/bK27LTsXKA23JebKnU2l01EDUNmGUb8S+DSqzr1WQtZCgcx0oRDJnWuvtiqpVvvINvqoUhA4PhdgyDUmHMaKY4Jil3Iisw8YzZcYlTKxLNvlIfSwAj+8yxNVqqlY3uHFkpXtDWZFfaiAhK30sfOF3VVkswxP976JK03a2XB+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707739902; c=relaxed/simple;
-	bh=PfZZMPWmdWb5VMkivTxDsN/s28aAecflD0CMc9I8gc4=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ofRZxtWp6pvcqlMYRg0Ag377x8I6ouGdahifBxiqwMolIdvySnIoQ3TMbKH7MzzoGiqnYZEtYLuSnX3mSMUROFOLQ1wTB4ic4GCOuPhEgjdlwiTRPHJZdLeYRe6B0vPe+0VtMxkZp48OTN9hmUImlRCSQwa2zUmiOrnYMnnCX98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EdMESjWk; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707739900; x=1739275900;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=PfZZMPWmdWb5VMkivTxDsN/s28aAecflD0CMc9I8gc4=;
-  b=EdMESjWkv4nHDMuUpvLoMo7H0Eap7v7vOU+MNnkdaKpWX8cOpXBIfPJv
-   1KvqCb9hMCnllR4WhVw3CSdcsHkvrIIm0T+dZuHIChi76axR1H4DEddU/
-   /YtXMT4mxVVBFSnRBCqac+AtkgEu8cHoZ9zt/afH/rJGsaG6QQrSQ8np0
-   Q1imd1xdS4dzkmgURK53cbPWFXlpPVyvp/4WS3NpHqygexbQZSsDyERfn
-   Xw6se+f3Q8QJZ02SGZXRwLyq2jn9xvLkkU76Ws1PhcCZ6Y/nCZE3SJvJ8
-   T2atqbLa6oZZ6QkYzOFniFZ/s05dRIP8iPZIg3q1tKOxj0grCtu2EtzDw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="2057607"
-X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="2057607"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:11:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="2541515"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.49.160])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:11:37 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 12 Feb 2024 14:11:32 +0200 (EET)
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-cc: Bjorn Helgaas <bhelgaas@google.com>, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>, 
-    linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] PCI: Use an error code with PCIe failed link
- retraining
-In-Reply-To: <alpine.DEB.2.21.2402100048440.2376@angie.orcam.me.uk>
-Message-ID: <855a5a56-75f2-2ce5-7f35-b761b62784e7@linux.intel.com>
-References: <alpine.DEB.2.21.2402092125070.2376@angie.orcam.me.uk> <alpine.DEB.2.21.2402100048440.2376@angie.orcam.me.uk>
+	s=arc-20240116; t=1707739980; c=relaxed/simple;
+	bh=JJID6F7jqLHRWeoC4iyAEKo0jO08alUsrFdpbpIKcnw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dPor8Mb5fjgSoRz508FiwpSb87LeXCkG3v1lDzDQlca+Le2tVgk++e0eI+Ew/mPVmLDkCUht4ZDB0fmmkYxqmwl2pD2PUQ9bBe3tFrFEP4PDsUV/U6bKpwWvZhX0eCriztk6ngmhUbfmJH3Z4Mg32joeRAR6TB9kneJ+7cfggVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=J4AgM9ro; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=Av+Z
+	w72XMMFy5JIv8FNYIcdnZNiuXEaLFUQ4ZS3b3ps=; b=J4AgM9roICuQi7Jkud1m
+	0Vg1pK1jOtVGjtPgGxRRNr9ay9CUFHEFBshRvBtvKhrZ3M8926JgceBjAco0H5HH
+	rASATTrjjljdBXLUQf8j39d7LJk3Q1KyUYBiZdk91Ai+2VyILrPQ8IdXTr0QRQOL
+	W14hW8Vwa7hIZgPe7Jgwx0Ub8dgMsB5Gg7mRVt8rmgBNgZXWWOVyLphvBYM/+QRr
+	W/yHcE0P/J88T8mYybhmcjYm2I4N4clOhcNvh8/r8/GboostT2YLHlfzqP1OIULO
+	b7TxjKanC3ossl2DUPRGS96Hk+C+CoHQjp3aypAbmJSRBruQ8Ehq2sDRX+oAORJi
+	OA==
+Received: (qmail 472363 invoked from network); 12 Feb 2024 13:12:48 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 Feb 2024 13:12:48 +0100
+X-UD-Smtp-Session: l3s3148p1@BZkmMi4REL0ujnsZ
+Date: Mon, 12 Feb 2024 13:12:46 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Lee Jones <lee@kernel.org>, linux-renesas-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-sh@vger.kernel.org
+Subject: Re: [PATCH 0/6] mfd: tmio: simplify header and move to platform_data
+Message-ID: <ZcoLPnA8TEAgBk8O@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>, Lee Jones <lee@kernel.org>,
+	linux-renesas-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-sh@vger.kernel.org
+References: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
+ <CAPDyKFpmfgwJ5dJFmORhg1tBewzhB_jrWikpX=b23r-joN91SA@mail.gmail.com>
+ <20240209132837.GJ689448@google.com>
+ <CAPDyKFpho16DU7OorMgXDqiyfFfgM_tWu+DZZOHd0gbjtBw_Cg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1549470714-1707739892=:1013"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="WPOTux91JoqdkWnh"
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFpho16DU7OorMgXDqiyfFfgM_tWu+DZZOHd0gbjtBw_Cg@mail.gmail.com>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323328-1549470714-1707739892=:1013
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+--WPOTux91JoqdkWnh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sat, 10 Feb 2024, Maciej W. Rozycki wrote:
+Hi Lee, Ulf,
 
-> Given how the call place in `pcie_wait_for_link_delay' got structured=20
-> now, and that `pcie_retrain_link' returns a potentially useful error=20
-> code, convert `pcie_failed_link_retrain' to return an error code rather=
-=20
-> than a boolean status, fixing handling at the call site mentioned. =20
-> Update the other call site accordingly.
->=20
-> Fixes: 1abb47390350 ("Merge branch 'pci/enumeration'")
-> Reported-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> Link: https://lore.kernel.org/r/aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linu=
-x.intel.com/
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> Cc: stable@vger.kernel.org # v6.5+
-> ---
->  drivers/pci/pci.c    |    2 +-
->  drivers/pci/pci.h    |    6 +++---
->  drivers/pci/quirks.c |   14 +++++++-------
->  3 files changed, 11 insertions(+), 11 deletions(-)
->=20
-> linux-pcie-failed-link-retrain-status-int.diff
-> Index: linux-macro/drivers/pci/pci.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-macro.orig/drivers/pci/pci.c
-> +++ linux-macro/drivers/pci/pci.c
-> @@ -1263,7 +1263,7 @@ static int pci_dev_wait(struct pci_dev *
->  =09=09if (delay > PCI_RESET_WAIT) {
->  =09=09=09if (retrain) {
->  =09=09=09=09retrain =3D false;
-> -=09=09=09=09if (pcie_failed_link_retrain(bridge)) {
-> +=09=09=09=09if (pcie_failed_link_retrain(bridge) =3D=3D 0) {
->  =09=09=09=09=09delay =3D 1;
->  =09=09=09=09=09continue;
->  =09=09=09=09}
-> Index: linux-macro/drivers/pci/pci.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-macro.orig/drivers/pci/pci.h
-> +++ linux-macro/drivers/pci/pci.h
-> @@ -540,7 +540,7 @@ void pci_acs_init(struct pci_dev *dev);
->  int pci_dev_specific_acs_enabled(struct pci_dev *dev, u16 acs_flags);
->  int pci_dev_specific_enable_acs(struct pci_dev *dev);
->  int pci_dev_specific_disable_acs_redir(struct pci_dev *dev);
-> -bool pcie_failed_link_retrain(struct pci_dev *dev);
-> +int pcie_failed_link_retrain(struct pci_dev *dev);
->  #else
->  static inline int pci_dev_specific_acs_enabled(struct pci_dev *dev,
->  =09=09=09=09=09       u16 acs_flags)
-> @@ -555,9 +555,9 @@ static inline int pci_dev_specific_disab
->  {
->  =09return -ENOTTY;
->  }
-> -static inline bool pcie_failed_link_retrain(struct pci_dev *dev)
-> +static inline int pcie_failed_link_retrain(struct pci_dev *dev)
->  {
-> -=09return false;
-> +=09return -ENOTTY;
->  }
->  #endif
-> =20
-> Index: linux-macro/drivers/pci/quirks.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-macro.orig/drivers/pci/quirks.c
-> +++ linux-macro/drivers/pci/quirks.c
-> @@ -74,17 +74,17 @@
->   * firmware may have already arranged and lift it with ports that alread=
-y
->   * report their data link being up.
->   *
-> - * Return TRUE if the link has been successfully retrained, otherwise FA=
-LSE,
-> + * Return 0 if the link has been successfully retrained, otherwise an er=
-ror,
->   * also when retraining was not needed in the first place.
->   */
-> -bool pcie_failed_link_retrain(struct pci_dev *dev)
-> +int pcie_failed_link_retrain(struct pci_dev *dev)
->  {
->  =09static const struct pci_device_id ids[] =3D {
->  =09=09{ PCI_VDEVICE(ASMEDIA, 0x2824) }, /* ASMedia ASM2824 */
->  =09=09{}
->  =09};
->  =09u16 lnksta, lnkctl2;
-> -=09bool ret =3D false;
-> +=09int ret =3D -ENOTTY;
-> =20
->  =09if (!pci_is_pcie(dev) || !pcie_downstream_port(dev) ||
->  =09    !pcie_cap_has_lnkctl2(dev) || !dev->link_active_reporting)
-> @@ -100,8 +100,8 @@ bool pcie_failed_link_retrain(struct pci
->  =09=09lnkctl2 |=3D PCI_EXP_LNKCTL2_TLS_2_5GT;
->  =09=09pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
-> =20
-> -=09=09ret =3D pcie_retrain_link(dev, false) =3D=3D 0;
-> -=09=09if (!ret) {
-> +=09=09ret =3D pcie_retrain_link(dev, false);
-> +=09=09if (ret) {
->  =09=09=09pci_info(dev, "retraining failed\n");
->  =09=09=09return ret;
->  =09=09}
-> @@ -120,8 +120,8 @@ bool pcie_failed_link_retrain(struct pci
->  =09=09lnkctl2 |=3D lnkcap & PCI_EXP_LNKCAP_SLS;
->  =09=09pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
-> =20
-> -=09=09ret =3D pcie_retrain_link(dev, false) =3D=3D 0;
-> -=09=09if (!ret) {
-> +=09=09ret =3D pcie_retrain_link(dev, false);
-> +=09=09if (ret) {
->  =09=09=09pci_info(dev, "retraining failed\n");
->  =09=09=09return ret;
->  =09=09}
+> Please add my ack for the mmc related changes.
 
-Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+I prepared v2 of the series: rebased to rc4, acks added, capitalized
+first letter... waiting for buildbot now before resending.
 
-I closed my patch from patchwork that is not need after this change.
+Thanks,
 
---=20
- i.
+   Wolfram
 
---8323328-1549470714-1707739892=:1013--
+
+--WPOTux91JoqdkWnh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXKCzoACgkQFA3kzBSg
+KbbXFA/5Adwpk7uBvG4XZys/soyfhY5STCt46XOyDGvVtx3OOA7yyElFgTX5vLdG
+3gSN1ibYROPMSIxKzKIWzWld7qllopX2PXgSbMlZT4sefYSYy7/LrAHSu1yT8wwg
+RGMTqxTWG0JuihBlXjSWqaSmf80SROg/Z7FvQmjtTqC+9r4tnMSgU7YiBkrLh4+X
+1gkmvyfiejTG9vMCBy9JIUB+Ytgstga9bl34YZVtJcw8ibzXuFoZkipBJeNdSW9i
+xh5bD9jXLAI0fflgi40hTvACfPasmPGjaEQL8AmfK0O7J2BWQNBOkfrW8DcdnofC
+sqGZU5iZf/JwjtwjNInst1NqmEk+lbg/gkO9gnOsISTTbdX2B5M4A+2OETNHcQTn
+5BtssULqamCN/L4Br3+ezOY+WEBAiqKzKe6hAY+omjGmdgNS+ZjAnRHVnJYrl8M5
+X1BMDGzmam5d3L9ShLtW2wx4UbXBJtSlKJIIa9Se5G0rE7awSonTVyCwwdYYqKPA
+55abvqJw7jyWQWxoXgZLp/Ncax/9sy2UUek3j2QQ7VKLpBjf4KNBL8BjIfoD8/Ib
+HKQHNuNkRqw6ThByS0dRD+gSbYePx/H50TKMLnGJcA668vUeUF3EPDrzvC0AnVVw
+Ay4novGRFFNxzh+yjzRN499TGr+qipzt1fW6naQ/QbKfsTgXpvs=
+=aoMa
+-----END PGP SIGNATURE-----
+
+--WPOTux91JoqdkWnh--
 
