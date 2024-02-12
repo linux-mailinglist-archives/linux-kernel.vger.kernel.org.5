@@ -1,123 +1,167 @@
-Return-Path: <linux-kernel+bounces-62389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A788F851F8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:28:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37E64851F8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:30:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 654812815A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:28:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AF2D1C224CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 375524CB51;
-	Mon, 12 Feb 2024 21:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3186A4CB5C;
+	Mon, 12 Feb 2024 21:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Hf+6DOBZ"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tBh9GsN2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EEB41DDC5;
-	Mon, 12 Feb 2024 21:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D774CB4A;
+	Mon, 12 Feb 2024 21:30:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707773283; cv=none; b=RYK/dn7uGogRPwbMRSWjZTWH8hAP8avlZ762GQHXI/9G7Gqyw3KQtPKJLjhymVAt0Ur8zIl7MsmzkJHMGF0enOalzBY0ZcCzo8fZaeYYAyNHqBFByDv2PgPG09D2YAyJ2AQJOA4eez8Qk5mhtJU9wMRxagO6TaEsSlRVlJ8V8EU=
+	t=1707773434; cv=none; b=JElRMF5AL3iZVFN4W1O8gZqRybWwID2y9QMsILZOrrW0JoEhDymPQskXKOVXiLNO635QUNdcX9UBBK/F3oxyEYvLkebIWnbJT7hH0Qs/blfWtF+NpJ5px9X1b9DTL87rr4yQwQIfCE3juBZx12sU0tje8oWB7jXeQgWl8m3ZPzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707773283; c=relaxed/simple;
-	bh=YZ61mZF1bLjrVmSJ2CG1mBsGDRT77xZa5jGT7hzxP84=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OGfKO0MUMSqQEWn0H02iN+pjriU87m63OmNIvHnxCAVGAyBsOA1AjvtKAq+PhLncoavncre1dmJ9GSBOHZOW4j1mtRyW+x6X7Ph0d0diyOt7xH/biT0ZgqAETEPzZ+gYI3NSsU+ESW1XXobZF8NXHz2AcQzn0BaI1By4bs6AKf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Hf+6DOBZ; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D00CD40E01F7;
-	Mon, 12 Feb 2024 21:27:57 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id z0DJA0e8CGyn; Mon, 12 Feb 2024 21:27:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707773275; bh=tV41PkOi77BQFnFr1wJW0H9Ckl+9yDY0EbtAyYtf1Tk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Hf+6DOBZzTaQ3ZhX3SjZcByUdotf9YaR4x+7FZM9rfKzAqvoG7j9xbQBIsq6cswwu
-	 JuDRf0fRDEMICT1EMQC0Qx9ls11wUNDgCfP/BDkqtk+XRjKkX6OBnjtks7VlfnFZY6
-	 mXiIdL/GLOuZbJu+LZQb9jQMWnbXyVCdYuYvEm3T9TTcpAMWbk8TUy5QMt1BHJPWxL
-	 L3+1+T6UII6opfqSBmVzSXSV4wDFczrc7sERZvP6szkUEO1sMDH8RGgbRM7EY89vMX
-	 5beizSU2az/3T/pl1adQ+M7TqRh//ty+mP6dvyYsTPymJ8wyK6t16juRztsXUvRrXR
-	 XBRQkVILzv2S1jzhgUN1WBwxeRp7io+kxKQzwcIEj8jMDef4gn6e85mp5HHlxWA9k2
-	 4JU98g0+u99CQY2OQGEuOVrHWxhXLYmLMhOiyfdFIzsFe+7ug/vlc6/2fApMCclPdx
-	 BzqucckzhTXlfxAzyvzbnjefXVW9KeTKD0boG5RWYLmT+hcANFMdAYYS1z73eRBbQq
-	 6xXzB5Jz+X9iK087jMueZGRAhCSfAy6ZlhbY9bA6bKoEPSYbhKnhe052gR0nFxNIQt
-	 +1kPrb0VthQB8KJTR9sE69XbWDEXahwCfoesM1YvnSLclC/d4HWUJGRuwI94lfS1XA
-	 NATXatAKpbJZyb38RIrjds9I=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 54D3340E0192;
-	Mon, 12 Feb 2024 21:27:46 +0000 (UTC)
-Date: Mon, 12 Feb 2024 22:27:41 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: "Luck, Tony" <tony.luck@intel.com>,
-	Yazen Ghannam <yazen.ghannam@amd.com>,
-	"Naik, Avadhut" <avadnaik@amd.com>,
-	"Mehta, Sohil" <sohil.mehta@intel.com>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Avadhut Naik <avadhut.naik@amd.com>
-Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
- Records pool
-Message-ID: <20240212212741.GPZcqNTXfU2OX7uRtx@fat_crate.local>
-References: <20240209205111.GGZcaQP1gb6C9m0WZB@fat_crate.local>
- <5DB0FF8D-C6DA-45DC-B287-201A9BF48BDA@alien8.de>
- <75ddf61d-8dda-47fa-9da0-24221feb22a2@amd.com>
- <20240211111455.GAZcisL09LeFPWa2EI@fat_crate.local>
- <b5904910-ed58-405f-9425-566383b48068@amd.com>
- <SJ1PR11MB6083CF3400AD2F2047D65E17FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <34b19db5-bd72-457c-9b6a-c2089f6be83c@amd.com>
- <SJ1PR11MB6083E7E11F6C7BCC8C6C7F21FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240212201038.GNZcp7PuIqIJndpDM9@fat_crate.local>
- <47901422-ac07-47db-bf44-3f4353e92b1d@paulmck-laptop>
+	s=arc-20240116; t=1707773434; c=relaxed/simple;
+	bh=IDcEWsDLa+W/tADrSclCXIDqdaEJoRI6zAbAWffUmhE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=e262zVxrVTJ+ZUDoUBPwEIXtWsFdW07sUxQS4PTHcPs+aLG5f6rTn5AVxxmJRlMeIPm6RyeAwhAdQtjN0XqCml87CU6e9g0y7TiH6B4K2j9UqcyExD65hEL5tTCMANmmsEU78Vba8qzp8H8MQmZrbjNIQiBbTySwacqwUpx5ZkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tBh9GsN2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0995CC43394;
+	Mon, 12 Feb 2024 21:30:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707773434;
+	bh=IDcEWsDLa+W/tADrSclCXIDqdaEJoRI6zAbAWffUmhE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=tBh9GsN2YTr0uV1cMX3NEaVhUFAZ/7k1vl7DCHtpUOGDZvMduBCBLm1h1eHfuvRbg
+	 OHSmUiydH+Sw15gNRuGOLooI26oac2VgeeWdORWnLEmYcPLZ5Q6YWaPMoLOVWtJFty
+	 eVkmIgHz+wZ4E5iBcKFihe5/LFfV8Vfvlm6Ceg/jHurgPLexrxmIq8wLrk0HRXtf8+
+	 EXnDIOgg61fTydzJSmV2bVVvZJ78m3v67BN47mMbgglWJmI1NwI9ixXQJB5s+91mc2
+	 2yuPydGeqBRPLoK6ivhPacFPnkQvfiDdDAgD9U2Z3pMm+NmJeyWpSxbHJ4FrQrciBk
+	 i4QqOMdGiHBwA==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-511898b6c9eso1811229e87.3;
+        Mon, 12 Feb 2024 13:30:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU9hLkGFdHreaMr3S65hP+zqRXl5u9vTDF1J877Tx4XWEptM4SNHuBIxW/q8J2/cGmVLzGne9dPux2DtK2UOLxLylXrdn49WLoE6BM5X43ZYcrYpl0kRjuH0dF8Yu5nuoi6r20MGRau/ku6
+X-Gm-Message-State: AOJu0Ywr1Sr/MMqt1F1Ao2tBDvQhoFgETVO/icoe+RbFYIOdnixOAjgc
+	Qv/DnN2OkQjbOoxqKavf35bxDQRwZ0kSJLDFR5/FKgS3ipCAjkpEljlojQ08FhK8vBI/N7XZFpV
+	3JRpAeci8Sb0Utqx9194Cx8V4oFc=
+X-Google-Smtp-Source: AGHT+IFF7NM/Y8BmMMUYJCxgIz4JDYBoiGpG9Wkp7V3yEjm3Wk0ZoHbI8xHfixr5nQ0N/NXdCvdV1+LWDtCJYwzuutE=
+X-Received: by 2002:a05:6512:104b:b0:511:84f1:b895 with SMTP id
+ c11-20020a056512104b00b0051184f1b895mr5001222lfb.4.1707773432532; Mon, 12 Feb
+ 2024 13:30:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <47901422-ac07-47db-bf44-3f4353e92b1d@paulmck-laptop>
+References: <20240208012057.2754421-2-yshuiv7@gmail.com>
+In-Reply-To: <20240208012057.2754421-2-yshuiv7@gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 13 Feb 2024 06:29:55 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT0KT7sbZJZNXtq5waM-UjUm4zHyf9xHZc3uHLvZ_eAfA@mail.gmail.com>
+Message-ID: <CAK7LNAT0KT7sbZJZNXtq5waM-UjUm4zHyf9xHZc3uHLvZ_eAfA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Fix building with LLVM on NixOS
+To: Yuxuan Shui <yshuiv7@gmail.com>
+Cc: llvm@lists.linux.dev, nathan@kernel.org, nicolas@fjasle.eu, 
+	linux-kbuild@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, 
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	linux-kernel@vger.kernel.org, Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 12:44:06PM -0800, Paul E. McKenney wrote:
-> If it is the #MC adding new memory, agreed.
-> 
-> If the #MC is simply traversing the list, and the interrupted context
-> was in the midst of adding a new element, this should be no worse than
-> some other CPU traversing the list while this CPU is in the midst of
-> adding a new element.
++Cc: Fangrui Song <maskray@google.com>
 
-Right, Tony answered which context is doing what.
 
-What I'm still scratching my head over is, why grab a spinlock around
 
-	list_add_rcu(&chunk->next_chunk, &pool->chunks);
+On Thu, Feb 8, 2024 at 10:22=E2=80=AFAM Yuxuan Shui <yshuiv7@gmail.com> wro=
+te:
+>
+> NixOS is designed to have immutable packages, and explicit dependencies.
+> It allows multiple different versions of the same shared library to
+> co-exist in its file system.
+>
+> Each application built with Nix, the NixOS package manager, will have
+> paths to its dependency shared libraries hardcoded into its executable,
+> this includes the dynamic linker. To achieve this, Nix adds a
+> --dynamic-linker linker flag when building any application.
+>
+> This isn't a problem if the kernel is built with ld.bfd, because ld.bfd
+> ignores the --dynamic-linker flag when the resulting binary doesn't have
+> a DT_NEEDED entry. However, ld.lld respects --dynamic-linker
+> unconditionally, which breaks linking in several cases.
+>
+> This commit adds an explicit --no-dynamic-linker flag which overrides
+> the flag added by Nix.
 
-?
 
-That's the part that looks really weird.
 
-And that's the interrupted context, yap.
+I expect some Acks from LLVM folks (especially, from Frangrui)
+if this is the right thing to do.
 
-Thx.
 
--- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
+
+
+
+> Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
+> ---
+>  Makefile                      | 3 +++
+>  arch/x86/boot/Makefile        | 2 +-
+>  arch/x86/realmode/rm/Makefile | 2 +-
+>  3 files changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index a171eafce2a3b..10ed19caecb1b 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -531,6 +531,9 @@ RUSTFLAGS_KERNEL =3D
+>  AFLAGS_KERNEL  =3D
+>  LDFLAGS_vmlinux =3D
+>
+> +LDFLAGS_MODULE +=3D --no-dynamic-linker
+> +LDFLAGS_vmlinux +=3D --no-dynamic-linker
+> +
+>  # Use USERINCLUDE when you must reference the UAPI directories only.
+>  USERINCLUDE    :=3D \
+>                 -I$(srctree)/arch/$(SRCARCH)/include/uapi \
+> diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
+> index 3cece19b74732..390a4604166eb 100644
+> --- a/arch/x86/boot/Makefile
+> +++ b/arch/x86/boot/Makefile
+> @@ -102,7 +102,7 @@ $(obj)/zoffset.h: $(obj)/compressed/vmlinux FORCE
+>  AFLAGS_header.o +=3D -I$(objtree)/$(obj)
+>  $(obj)/header.o: $(obj)/zoffset.h
+>
+> -LDFLAGS_setup.elf      :=3D -m elf_i386 -z noexecstack -T
+> +LDFLAGS_setup.elf      :=3D --no-dynamic-linker -m elf_i386 -z noexecsta=
+ck -T
+>  $(obj)/setup.elf: $(src)/setup.ld $(SETUP_OBJS) FORCE
+>         $(call if_changed,ld)
+>
+> diff --git a/arch/x86/realmode/rm/Makefile b/arch/x86/realmode/rm/Makefil=
+e
+> index f614009d3e4e2..4b42006d9ce02 100644
+> --- a/arch/x86/realmode/rm/Makefile
+> +++ b/arch/x86/realmode/rm/Makefile
+> @@ -50,7 +50,7 @@ $(obj)/pasyms.h: $(REALMODE_OBJS) FORCE
+>  targets +=3D realmode.lds
+>  $(obj)/realmode.lds: $(obj)/pasyms.h
+>
+> -LDFLAGS_realmode.elf :=3D -m elf_i386 --emit-relocs -T
+> +LDFLAGS_realmode.elf :=3D --no-dynamic-linker -m elf_i386 --emit-relocs =
+-T
+>  CPPFLAGS_realmode.lds +=3D -P -C -I$(objtree)/$(obj)
+>
+>  targets +=3D realmode.elf
+> --
+> 2.43.0
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
