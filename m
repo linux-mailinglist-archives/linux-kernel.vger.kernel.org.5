@@ -1,152 +1,169 @@
-Return-Path: <linux-kernel+bounces-61327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD69D85110E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:37:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32B78851115
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:37:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6369F282D1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:37:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E37362830D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB6F0208A2;
-	Mon, 12 Feb 2024 10:37:17 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C460249FF;
+	Mon, 12 Feb 2024 10:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TKeJtP8y"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E240F39843
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 724A012B70
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707734237; cv=none; b=dpk/EcYWWyg6Kxd/73mYDBHSm8quROHlxtCQHj1CW+Dlngee3dJgSKI0EqJOAv83H1DgCgCkOIVyX3HEIMtX31L6Fb5WG61791/DpIGBXl7y6jAZmOzL/JGR/clwghzjV0sFyjXXP0UpRGjACBomoe2gFiwzd4GDyKq0pVuiHb4=
+	t=1707734258; cv=none; b=UVS5svTJn2iBkuxlGKjlYOSI5BbJe5ohc4bninFOpEtDaoL3o+jaR4eE0pNeqZsCsI7lrlY53EoAGZ/1gjexX4c9e92iSBJk8hUfiPv9JrSFUoUmHUKHzLxpwoGvSrBOoYXlWan7bsWszU+/L35QpyHSfXq/Ssnx2BqS6st9c6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707734237; c=relaxed/simple;
-	bh=SgHeV8Nf/cgzT4GIeKjL6yhteJJUdUSlnzvMHkYxeT0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=sVZbZhwTcjcR/s0+GTSf7h/I6wCsYRnVyk2BOzc9eWOzkXvRX94acsSaUw+euf+c6TxMHH4sgho3hWJvIK9O+p17upxh73xKMI6INIpWU2H5vY4aN8syXxAfQSSSS0UTe1dwgEPVhGiDtOdWurKetGUDM2GMf9DdezcHXrwPcjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363ec32bca3so23666835ab.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:37:15 -0800 (PST)
+	s=arc-20240116; t=1707734258; c=relaxed/simple;
+	bh=A28mYhUDB9oRP8F12OtBxkw1cw1ciKnKbEzOFwRp3DY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=D28FswfaCFPp7CxWQov6jGve35J15kxAW5Soq/aHyW1bVihea3yd/3/3F7PnzfsPYM5BW9V/EoXsdJpMNtPcPCsDbd67DuVzyP3Sam98zqFamkU3YSeOhb2PFGVG1XjTzWdCiZCL/ZaNIPWKT+1wxwYCe/lJvqCVcDRvc36y6R0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TKeJtP8y; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33adec41b55so1610875f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:37:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707734255; x=1708339055; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AGeqgEbmqsbfk3RnMJf9oWlOyzbWan5F35nXvDZlbY8=;
+        b=TKeJtP8ylizMnyYOkB4brU5BsIi26QEx/UY8XCUPWZ/Iq5S+o9nlOITlp9zJK7IJhD
+         Bt0HYTlFz/bBE6s8liftXgijlL+fJvQim2+6ZQx9Q7az9Le+9DyRtwsMdvwThVS25nkT
+         JtOkk1FqfqCabJ5Y/8pmSivsZNhdJTypKvnVEAin1Tx7CFULd6XEC9NjiaHkzSGE9GlE
+         hYEBj8W/UAzWTTCf2GIZmz7o1H0Ur++GnnIXb+mj7SsuMfWj7TLj/a6h+G9oMGFH9IQ6
+         ouhj4wU8AYUeiBdnbBvZAqh5IGBGyjh9LoCm4twNL8jR1IHwwffKXuKLmHJRY5Y/c8Nm
+         Gj3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707734235; x=1708339035;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NIBwNVPo8yY6K+mo7Hy1fv0t+Zyvtu0xD/6C5qU5YRo=;
-        b=E3PRo9MJYaYdkWcb8MkvsxZKN2p7xUPqOXlxxhf+W1n8UbdhHWtPLc8uUlaQI3CszI
-         F7Eaie6b+od8A9jWoTAaLA3H/1NyuSoVEqmYuinHsQjbpp8roi6JvlK7tT69FLKizAL2
-         xZU/PxAoLMlSyM51+TebMg7Cy3aEC/X1DAvXu62tyh2fNf95omkjTZIqr59Eu69TCl8C
-         D7v04BHum0y4JKvb/YQFGatx79k/8onFsAvaKpmJE0vSGGbhSZDPR7ieLtgiFfMUbDoS
-         IChp6CXBzjgVVFvfiC+MYpXSREt99GHpOddzumLZH6kCq/4B/ZMbcZ9PIXogpRS1couS
-         YkGw==
-X-Gm-Message-State: AOJu0YxIw8sNXa2wvkZ9TqrDvqQX8NGOACVoZBgp8fLxjaTKoeaTVAYV
-	YF6SKA9izCQo+ZIlJfCQmup+3i9lHZ0UI+ZY7jBZW+onb7lPZnh9ya8jzOaK6gvuXSbFnqtY2Jc
-	DSwQqQwBw3DTkpaW2f2yad+vBuFR1lfb1UA84ymIGJxVFIcQ20663Am4=
-X-Google-Smtp-Source: AGHT+IE+9GOmm5vmGx5EguCXnwG6okIwR+rq0ZHGtpDvnO8j4TjkMbG5WEnVSbzjoqosKuej6oq1WcYA1RHpP+eW74emGNCQCpJ1
+        d=1e100.net; s=20230601; t=1707734255; x=1708339055;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AGeqgEbmqsbfk3RnMJf9oWlOyzbWan5F35nXvDZlbY8=;
+        b=ewTd+0WQpKFyhzjR9YgzSoHdpmF8coCQ4HZNjtwuQkWWY7HztQVMObAFWS6oj2GO8A
+         unVEh/ZnKsKpOldwpcmo21oieaaWZg5lVRG6RBRXXkHC8wnqhknt4JvZCAD6ARhLRY+d
+         k63wvwijJMB0BhJ15mGmHCyRBaRUYlHr1YYHHw6n8pGCWy9e2PpyB6bRUe5SLhZWSb0m
+         HgC8AyFF1EiwVqZokV701PkfzNDqhGqn3q3mPQdnM20QXC/zuehQNQlVaHBY8iL4hkVa
+         15FbukocofQwPEqgqgkTSJxqUa3qAWeKhcLfgVRr7Lwd05BVLLXeOGSVZhUY22Fz+f4H
+         nXIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWyuZGLggyS2sborqn2Vhmh9Ql0Ej4yBPTWMzSUy73LbzrmAa38kvdUugBWp6WvPQd5VYloB/zI656uwoR7+saiiv9iyCARECwY7c+3
+X-Gm-Message-State: AOJu0YxetKdS6+5dkN04eKV5eGRN9r1tLfqPv+hiH1Iv4PPw6X0WukNx
+	HKP0myyZx757gQUsk3JBg6V8xObPZ8rfBrEejxQsWbPpt71ZDv3TeaqV+nx4qIeVHRHJ6LAn9Gw
+	9TLM4AQ==
+X-Google-Smtp-Source: AGHT+IEFdHM9DPpHcRwXMfc1akm3prQrLo2OqMS8tdCmINovJ9SVS1kKFcoqCiUNMY2LSNPYq5djpg==
+X-Received: by 2002:adf:e502:0:b0:33b:7944:c3c5 with SMTP id j2-20020adfe502000000b0033b7944c3c5mr2611341wrm.10.1707734254573;
+        Mon, 12 Feb 2024 02:37:34 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUmId5I/w5BR6DtxvrxeEAwWxlupzFvPdV+nzmpyvD3AQaB/XlIK/Mz7iKn8yyOttmwqQzO3jPBlUBMIdQG7VjIfDGAq9C9X/ZBU5SkqEqN0Fl/BkgPRiL9XGPm2NNyL1LkBtJNMeW0Nk4AUQZf2JbGi3Sl9QQQw9bXjpHHgaDOW2GR3CxFEgEXL5R6CN9c3yZjrO6wstHsNnlPq8+mIbAkkpmNVFgysoVtJlli59Pv55+xV1zA0bWWMYYxHWIH6h6/DL2aZ3YaHa4CEstSHaHzUaBG7q42Lt+HgBHfts8H//QhaR8+M0PGiyBRh35HKdQp2qASADW9mMWkiry9G8M4m7EToiY/pnyJFnSKLzbuOIcCjiHYnCGy5yBFXJUYO867qt0aiZOl53LFPvKzJPRqsHIFNj8yRAQ1zeuu1d+PYlcz0V6Y6ZX6ANGAO/M0F7x6UjZJJH6C45UIR8LVk0WHPrm89LPFefpGwYqE/4oiqOb1uP8dx/ONGKuMdy4MbH7k9k8iQdxocnAsii6fZyoXTOzeBIfJP2ZEP2hykYFEwzjmJ7qHEBSTHE5UWK7eMuOHKr8j/jb4rnEb+nqbSGKlXNVAxkJV/lgz4heBsjjyLRAjbl1zDyHOz52pbK55YIuQM/y/TltPJi6ugBm2VagyRzPhwIt1IKMRo03vFu9YFkM49LUBpwRqHTxuaVnERfj8PLIhZIXepI0iQza8KcXuRKS5JtUcbQSia9R1Tl7M/ralhpnyvFMZ6HVmSghlxygheWu8mhWSPL3mWndmJjvN3EOaxK6IwZdaeeh96vkOIlxarhYeATJ6YJcVxeZMvzCIDEdHiIloPxbCnXZaePLc4OmRl4+ksPm5hSk=
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id f14-20020a056000128e00b0033b50e0d493sm6404188wrx.59.2024.02.12.02.37.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 02:37:34 -0800 (PST)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH 0/5] drm/msm: Add support for the A750 GPU found on the
+ SM8650 platform
+Date: Mon, 12 Feb 2024 11:37:29 +0100
+Message-Id: <20240212-topic-sm8650-gpu-v1-0-708a40b747b5@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c22:b0:363:dd02:1512 with SMTP id
- m2-20020a056e021c2200b00363dd021512mr432341ilh.3.1707734235095; Mon, 12 Feb
- 2024 02:37:15 -0800 (PST)
-Date: Mon, 12 Feb 2024 02:37:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000742ab106112cdcbe@google.com>
-Subject: [syzbot] [bluetooth?] WARNING in hci_send_cmd
-From: syzbot <syzbot+c39f6e731d27b028df97@syzkaller.appspotmail.com>
-To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOn0yWUC/x3MQQ5AMBBA0avIrE1SE6VcRSyowSzQtIikcXeN5
+ Vv8HyGwFw7QZhE83xLk2BOKPAO7DvvCKFMykKJSkTJ4Hk4shs1UWuHiLixNM2kmS2NRQ8qc51m
+ ef9n17/sBgVxxc2IAAAA=
+To: Rob Clark <robdclark@gmail.com>, 
+ Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Will Deacon <will@kernel.org>, 
+ Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+ freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ iommu@lists.linux.dev, Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1816;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=A28mYhUDB9oRP8F12OtBxkw1cw1ciKnKbEzOFwRp3DY=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlyfTqaPw7Mg4iK72Rftn29yA4DDPKGhDoW9VhU50l
+ MHnYUPSJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZcn06gAKCRB33NvayMhJ0XffD/
+ 0dlM3LxjzviVCefCZEiEYUMeCmN1LifE0PAQaBfxfcOYHcLseB2thwisyqSRjLVy5I8Ewg1lny/ZgH
+ SfVb3jEnVkZU/2To5Dwoo3hZP/Rr3at4XjbMrJMK6wITMYsNtmu3/ujRmRVjfTpYJ59bHkM/lh81lD
+ OyjD16xrrD9JZvwouJBBHI8Svwu4HWrdlqb/vZg0mpl7TiCKi1m7GcwAC7SPOn7qtqepCudqHEeR5H
+ j2b+ClNmvQAbRO+JWI8W5d/AJY16Qgd+P+tFZd78X5tbSA6r8SGzpR71X2+i+VhFpqqSNAdWFJqCNl
+ BGynhTC2980c4Lqmb9m0zA+xaA6Qns2Y+lzXER4zX/PLRPje+4FB2rTM+ahhrO5nXw3crtTA5wBFff
+ j1fGxkZgwv2+pmgSr11ZRKad6t2i16xbpoyw/gVaUUNRb2fa4PLfJs5P1mF3TnmjpmOYUEeXMLqvfR
+ a4q3LwkrlLgKQdTUpmY9xvdyYIh1x7F5WpAbtD91ZWG+yFLJTxVY0tiPTwFcE6x006JxmKXrLpVckI
+ FTbTydU9xaVWLTgb0i+3o/BisgbkDEzyNADMEejXIWeQK44wsOT4jYjwRLFTePnysA5aUR70NKAm4b
+ RKXMTXm3CYLh6sS41bHqs/BmjUhJJgwIuFMWWnao/0HXTDYU6doBeX4tMcMw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-Hello,
+Unlike the the very close A740 GPU on the SM8550 SoC, the A750 GPU
+doesn't have an HWCFG block but a separate register set.
 
-syzbot found the following issue on:
+The missing registers are added in the a6xx.xml.h file that would
+require a subsequent sync and the non-existent hwcfg is handled
+in a6xx_set_hwcg().
 
-HEAD commit:    e6f39a90de92 Merge tag 'efi-fixes-for-v6.8-1' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=157751e0180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=31f74f10f14dec54
-dashboard link: https://syzkaller.appspot.com/bug?extid=c39f6e731d27b028df97
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+The A750 GPU info are added under the adreno_is_a750() macro and
+the ADRENO_7XX_GEN3 family id.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+This adds:
+- the GMU and SMMU bindings
+- DRM driver changes
+- DT nodes
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/663081ccfa7b/disk-e6f39a90.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/47bbf72bfafe/vmlinux-e6f39a90.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/982bd4f4331d/bzImage-e6f39a90.xz
+Dependencies: None
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c39f6e731d27b028df97@syzkaller.appspotmail.com
+Tested using Mesa's !26934 Merge Request [0] on the SM8650-QRD
+and with kmscube & vkcube to test basic rendering.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 11256 at kernel/workqueue.c:1728 __queue_work+0xdc6/0x11d0 kernel/workqueue.c:1727
-Modules linked in:
-CPU: 0 PID: 11256 Comm: syz-executor.2 Not tainted 6.8.0-rc3-syzkaller-00215-ge6f39a90de92 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-RIP: 0010:__queue_work+0xdc6/0x11d0 kernel/workqueue.c:1727
-Code: 07 83 c0 03 38 d0 7c 09 84 d2 74 05 e8 d3 31 8d 00 8b 5b 2c 31 ff 83 e3 20 89 de e8 84 7c 33 00 85 db 75 56 e8 9b 81 33 00 90 <0f> 0b 90 e9 ac f8 ff ff e8 8d 81 33 00 90 0f 0b 90 e9 5b f8 ff ff
-RSP: 0018:ffffc9000bec7a20 EFLAGS: 00010087
-RAX: 000000000000282e RBX: 0000000000000000 RCX: ffffc90009c6e000
-RDX: 0000000000040000 RSI: ffffffff8158e825 RDI: 0000000000000005
-RBP: 0000000000000200 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880418bcda8
-R13: 0000000000000000 R14: ffff88807f8b9c00 R15: ffff88807f8b9c00
-FS:  00007f1069ea96c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000040 CR3: 00000000776c8000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- queue_work_on+0xf4/0x120 kernel/workqueue.c:1837
- queue_work include/linux/workqueue.h:548 [inline]
- hci_send_cmd+0xcb/0x1b0 net/bluetooth/hci_core.c:3072
- hci_acl_create_connection+0x426/0x5d0 net/bluetooth/hci_conn.c:237
- hci_connect_acl+0x3e3/0x700 net/bluetooth/hci_conn.c:1706
- l2cap_chan_connect+0x724/0x2180 net/bluetooth/l2cap_core.c:8054
- l2cap_sock_connect+0x33f/0x720 net/bluetooth/l2cap_sock.c:256
- __sys_connect_file+0x162/0x1a0 net/socket.c:2048
- __sys_connect+0x149/0x170 net/socket.c:2065
- __do_sys_connect net/socket.c:2075 [inline]
- __se_sys_connect net/socket.c:2072 [inline]
- __x64_sys_connect+0x72/0xb0 net/socket.c:2072
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd8/0x270 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f106907dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f1069ea90c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-RAX: ffffffffffffffda RBX: 00007f10691abf80 RCX: 00007f106907dda9
-RDX: 000000000000000e RSI: 0000000020000040 RDI: 0000000000000004
-RBP: 00007f10690ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f10691abf80 R15: 00007ffcf75228b8
- </TASK>
+[0] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/26934
 
-
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Neil Armstrong (5):
+      dt-bindings: display/msm/gmu: Document Adreno 750 GMU
+      dt-bindings: arm-smmu: Document SM8650 GPU SMMU
+      drm: msm: add support for A750 GPU
+      arm64: dts: qcom: sm8650: add GPU nodes
+      arm64: dts: qcom: sm8650-qrd: enable GPU
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ .../devicetree/bindings/display/msm/gmu.yaml       |   1 +
+ .../devicetree/bindings/iommu/arm,smmu.yaml        |   7 +-
+ arch/arm64/boot/dts/qcom/sm8650-qrd.dts            |   8 +
+ arch/arm64/boot/dts/qcom/sm8650.dtsi               | 169 +++++++++++++++++++++
+ drivers/gpu/drm/msm/adreno/a6xx.xml.h              |   8 +
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c              |   2 +
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c              |  29 +++-
+ drivers/gpu/drm/msm/adreno/adreno_device.c         |  14 ++
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h            |   9 +-
+ 9 files changed, 241 insertions(+), 6 deletions(-)
+---
+base-commit: 84baf172e2fa30d6d6d0fb8ed076b47e836b74f1
+change-id: 20240208-topic-sm8650-gpu-489d5e2c2b17
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
