@@ -1,137 +1,94 @@
-Return-Path: <linux-kernel+bounces-61572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A4B58513C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:46:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 120068513C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D5D01C218DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:46:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBB321F21C4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58893A1AE;
-	Mon, 12 Feb 2024 12:46:18 +0000 (UTC)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A56FD3A29E;
+	Mon, 12 Feb 2024 12:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pMCnaUpl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0076A3A1AB
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:46:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E103A292
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:46:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707741978; cv=none; b=p4icHI9cs7plhS7J8cfN7XKoXT3iN8Wt1BO4WS40UOXvmkLpKTb8f8a82LAvHakp44ffHKJAuTaxOVF2V55YPfkaLvNme9m3mBSNlGGiWVIZ+7e5ScWDg5JxUdHToc82njRZlE4aq3bcDkPusalf6RG7lFfGlX/DEgzI6uLNpP8=
+	t=1707741983; cv=none; b=JS7R4iJXLYywLtXEnP2NAgAYQgwR4MI9YEGjht3Zk/j8LH34byIqoeRim4tjahIAZQgZ4/naNnX4GgVz29VMFmfDmpOQXGTs9EsvaAGmTS/xtCAyhb0QQBIgNk0ZOGGWfVSRYya4mnX9h9HbQ5NPz3wpCm4skdDT4CLra3T+VQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707741978; c=relaxed/simple;
-	bh=1kqPxjS3pzHssw+PplAlJEerUryoUaQZ2ngJLM8Y6Wo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sbpDxikkl9ev/MiQZIqdnLrZ/W7un3LYPzn17UDBf4d423Kn3B7yuYov6tfOFwyc6zDSqH6DVuzsaDA0IuxoLNCiLKxlBRg32rEYN+v7fWbvdw+jJ7xsOXJDjFHj/ieGlp9/P1BHs5Y0fiRDv8fmQsMEpkt+4eCXMKo5iyhxeq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc74e70508aso3007767276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 04:46:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707741974; x=1708346774;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NZES1iA9GlPteDI85FKkAksUubx4iv24005gWev4ZDU=;
-        b=plrpLXIkc2CHIvlMtbI8BweGF3X1XZMTFOV8po2w/3PxlIL0WkOmaYtrc1Unr24YQy
-         uyS6EtL0NygEDKIoZN62u7olt1P6pcf+MrI+OjnVu4iO6fndGuNSLAy3Al5hb27TP9Pm
-         kC5jy1fBURknc6zkg+WhPmugczL7wSX4HoaMtHuld8AnDHzilj055m4WDnvpwKJiwrD+
-         CUuPTqim/9fzsAmsRnHN0ViVf8L5zL6XttLL/Nek/ZXc3ye15Hx9b0b6V8i7us2Coo7B
-         /4YbyPReY8+VmDG8ZGuhS5W+p2pJ9WbQMnBKknOXVBoNVpKJY69CRHGtnKSulopiM/uT
-         HoLQ==
-X-Gm-Message-State: AOJu0Yy9UdtEScZ0c2F0T8S5abEB+kaP53wUllqZmaHJ1Wk+CL/hn5Yn
-	CutTMXj6bXlZRbpl0Oa5i8KSIlunuqmB8oIIJ35y9Ams88Ng67j2vIJHOuyxz6s=
-X-Google-Smtp-Source: AGHT+IEBikJ6bqv0GGdELxxgmAiv+tVe8tLQX8ckzk3Y5bgSLvb3gMV66JN5yizZW7/D5yvNjKqAcw==
-X-Received: by 2002:a5b:64b:0:b0:dc6:b121:d00c with SMTP id o11-20020a5b064b000000b00dc6b121d00cmr5152877ybq.16.1707741973992;
-        Mon, 12 Feb 2024 04:46:13 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV686443qryLBWMAajUr/hFEhx1+2OyiJPQ0B+q6U2KfU8DBKcmaQT/xnKCEyNgZ6yYG5HuekT9taHxnpsvGL0mUqRRYXLp3NeSP8SI
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id l12-20020a5b0b8c000000b00dc74ac54f5fsm1153431ybq.63.2024.02.12.04.46.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 04:46:13 -0800 (PST)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso2809031276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 04:46:13 -0800 (PST)
-X-Received: by 2002:a25:ce42:0:b0:dcb:de9b:175 with SMTP id
- x63-20020a25ce42000000b00dcbde9b0175mr145496ybe.6.1707741973607; Mon, 12 Feb
- 2024 04:46:13 -0800 (PST)
+	s=arc-20240116; t=1707741983; c=relaxed/simple;
+	bh=T04eMKlRmhh0N7XBjNQYZVDQetsg6SmMJw4HxdbXeus=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E7FWdxK2Es9C2NBPE6Fhrk3JnAHGWPzh9BwJtgjjWIYBL5LFoW1BkZvM5cO8ra9M+gA4jhFW7XoeU6wiyt8l4omNOFhKDjhDwYdXl4wKBAwhi9Z/0N1dw3mIslgz+QHE4YitF3kLLGTuWobDGP+An1gjL7HpCMzmYaeLypafcAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pMCnaUpl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E41C8C433F1;
+	Mon, 12 Feb 2024 12:46:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707741982;
+	bh=T04eMKlRmhh0N7XBjNQYZVDQetsg6SmMJw4HxdbXeus=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pMCnaUplbLxYvwaKJZlYICpgEO7jT+wkATFj5qV2jug7YnGu06+3bSUhvn3RGfkHa
+	 pbYhbMdl4GyXfXMpb+C/UuLJwUOStz4TD2/pgKWx639zW8ATGBTqPS0c0xsxxBbLdP
+	 z4yTlyOKLBKwpU0086yyX69ILC4+Ddeu21+gPj21Haz7tpMxLwR7Uo0Xsh7TqSPm+R
+	 Y6YQJ1WcV8YZ7J9Ec8Il9S02Jrn5RULF2Z7U3sQoPpjXWlln8YbgBncX2g2D7X8xn2
+	 LimC9mCc9rQOloighvlEfSFlPKvhXaHoqbGRD75umoSRzQ13dvbvhIZbiIYWCYcEUN
+	 2aNB4tLCz86HQ==
+Date: Mon, 12 Feb 2024 12:46:17 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Yinchuan Guo <guoych37@mail2.sysu.edu.cn>
+Cc: linux-kernel@vger.kernel.org, lee.jones@linaro.org, lgirdwood@gmail.com,
+	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] sound: codecs: fix typo 'reguest' to 'request'
+Message-ID: <8ac806cd-cbf3-426f-86b4-280b3b219dc1@sirena.org.uk>
+References: <20240212065014.3696356-1-guoych37@mail2.sysu.edu.cn>
+ <20240212101820.18437-1-guoych37@mail2.sysu.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com>
- <8dedf370-47e1-405d-85cf-53f3acfa16a0@roeck-us.net>
-In-Reply-To: <8dedf370-47e1-405d-85cf-53f3acfa16a0@roeck-us.net>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 12 Feb 2024 13:46:01 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVocStpwYKJ4OzgHBWRsDUhAT73JaQ7HgaQbJK_Zo+VvA@mail.gmail.com>
-Message-ID: <CAMuHMdVocStpwYKJ4OzgHBWRsDUhAT73JaQ7HgaQbJK_Zo+VvA@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] lib: checksum: Fix issues with checksum tests
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Charlie Jenkins <charlie@rivosinc.com>, David Laight <David.Laight@aculab.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ptXczeETsw1q7wE5"
+Content-Disposition: inline
+In-Reply-To: <20240212101820.18437-1-guoych37@mail2.sysu.edu.cn>
+X-Cookie: Will stain.
 
-Hi G=C3=BCnter,
 
-On Sun, Feb 11, 2024 at 8:18=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
-wrote:
-> On 2/7/24 16:22, Charlie Jenkins wrote:
-> > The ip_fast_csum and csum_ipv6_magic tests did not have the data
-> > types properly casted, and improperly misaligned data.
-> >
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
->
-> I sorted out most of the problems with this version, but I still get:
->
->      # test_csum_ipv6_magic: ASSERTION FAILED at lib/checksum_kunit.c:513
->      Expected ( u64)csum_result =3D=3D ( u64)expected, but
->          ( u64)csum_result =3D=3D 16630 (0x40f6)
->          ( u64)expected =3D=3D 65535 (0xffff)
->      not ok 5 test_csum_ipv6_magic
->
-> on m68k:q800. This is suspicious because there is no 0xffff in
-> expected_csum_ipv6_magic[]. With some debugging information:
->
-> ####### num_tests=3D86 i=3D84 expect array size=3D84
-> ####### MAX_LEN=3D512 WORD_ALIGNMENT=3D4 magic data size=3D42
->
-> That means the loop
->
->         for (int i =3D 0; i < num_tests; i++) {
->                 ...
->                 expected =3D (__force __sum16)expected_csum_ipv6_magic[i]=
-;
->                 ...
->         }
->
-> will access data beyond the end of the expected_csum_ipv6_magic[] array,
-> possibly because m68k doesn't pad struct csum_ipv6_magic_data to 44 bytes=
-.
+--ptXczeETsw1q7wE5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Exactly, sizeof(struct csum_ipv6_magic_data) =3D 42 on m68k.
-Hence struct csum_ipv6_magic_data needs an extra field "unsigned char pad[3=
-];"
-at the end.
+On Mon, Feb 12, 2024 at 06:18:20PM +0800, Yinchuan Guo wrote:
+> This patch corrects a common misspelling of "request" as "reguest" found
+> in the log messages across various files within sound/soc/codecs.
 
-Gr{oetje,eeting}s,
+Please don't send new patches in reply to old patches or serieses, this
+makes it harder for both people and tools to understand what is going
+on - it can bury things in mailboxes and make it difficult to keep track
+of what current patches are, both for the new patches and the old ones.
 
-                        Geert
+--ptXczeETsw1q7wE5
+Content-Type: application/pgp-signature; name="signature.asc"
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+-----BEGIN PGP SIGNATURE-----
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXKExkACgkQJNaLcl1U
+h9C3nQf9EUFXfoDws1b190kMBs/Z0ap9A88voC/e4V0SNN/CLwha5LBfTZGJOuKb
+rBAQ2hZziz/p4uFawh++cjKjDT621x+/RMibXRmF74AXU1Xz8JrN3gihhD6Qhlqh
+AIU/TU+jwASDEdvJat7kqvjgOsJo11tnOXj7MVVOlolXVYTzpOJzknhyjxEldvdF
+wMgx9h+pGoa+R/EnkkXSDWGBV3ASuesRIfMy/RQgBhyjDN8G6WqPwJDyW8Id5rGL
+1SbPXWfQVzlrLDHIU+ysdRgu0WeMED8uG9xM8QBoXDYscSIu5wcqFaCPfeDgcRR6
+HKF7TSMBmXxiR68Vz8u8qKr93OBK5g==
+=HAkn
+-----END PGP SIGNATURE-----
+
+--ptXczeETsw1q7wE5--
 
