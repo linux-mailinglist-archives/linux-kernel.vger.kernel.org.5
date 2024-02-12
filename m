@@ -1,206 +1,327 @@
-Return-Path: <linux-kernel+bounces-61668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4528851527
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:31:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96A20851526
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:31:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C2822879A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:31:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB4E81C20297
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:31:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3053D0CA;
-	Mon, 12 Feb 2024 13:16:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792083A1C1;
+	Mon, 12 Feb 2024 13:16:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NwIEI30M"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YBQqvgd8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831CC3D0AF
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:16:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA613C499;
+	Mon, 12 Feb 2024 13:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707743799; cv=none; b=rvLhWfBTS19t1D0uPUQVdGdNSG9WuwMkUQQ0dmuBOFNcR7j7/9uYrMVU/4tvDq4Jw4rAFqL0bbNznJ6eTM8K9fvnf6/8+ByN9bmcUCqTIIG7j4MAiHEFr4jk8z16t1ZJozKTYmK2BOYp7pt+AEs1HLsGytqGpbJYtXIC6OjR7gQ=
+	t=1707743794; cv=none; b=JxQFYiAeVrT2BsF8LBDwBUGH3MwK3lqp6m+/5rlGiB6KuZmQiHtrxq95iZY6gVgniZ1z1+3ks6HToIe88aykwj6fSooKpTR5ntdG8LCPzaRubrHf1ltIkXUZlj1q58AVfkOC1C/Ad4i7Zv4/AkeB1SjE98h0t6kLFcSxyrPlFLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707743799; c=relaxed/simple;
-	bh=mOmu6bKnnbQ/T3Bsy4O7zqo47TuFJtZ6E9Rx8rVgL9c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FddphBzE+8TaQGick7PtKanN9qOf5M59wvprDIpG1mmzwWTNizYxsjOhChhI5TMm9/ub5yjzu7gNC/DYoa2odHo7ECO/ZKn+/2uodjpKh2Q5mou/R/c53Vx6Q3MV2JDe9ruHY3UePeovDpY2C+Msbdu1M8eqsqUiZXtBH1WRMac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NwIEI30M; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707743796;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=VzDYwK2iuJ4LmgQXwNgJ7Lf6QDDAqXO/glvGyId4yYE=;
-	b=NwIEI30MQsMEltYFUqhGP9OPlNwXq5LXQd/9QO7I61i/NZ6gsEBrd9xRjvTqesVMw1Lk1o
-	ZEzW+uxmxNE9wD39uO82hs3wgIKDWbBrDxoiIYYwfzRkiuOwQuJqv26D9KEHTZYfXwzVDP
-	Yw+x57seNKEQetMGUc0FW2kLcYfBfaQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-617-Ma7Pzr4lPKu4yAyvaJL30A-1; Mon, 12 Feb 2024 08:16:35 -0500
-X-MC-Unique: Ma7Pzr4lPKu4yAyvaJL30A-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-337a9795c5cso2080385f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:16:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707743793; x=1708348593;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VzDYwK2iuJ4LmgQXwNgJ7Lf6QDDAqXO/glvGyId4yYE=;
-        b=hlRhBOgYE6elfZnX/M8Pl3sNlX2vHIHcP+GxuBcz/MJ2u73MaaGYEFY31YcA1urKwY
-         lkxFYmLlfYjGt+UvsELKrktk5QSG1jA5fsGnIBJjp1BuTr+/cYsf5ao7E+y0p6zI97XG
-         Et7kdBVnzILmE1YXAeugulLWWsQdeEHyI6Rn/qXmQxJiWeO2HJAF0+ZOTg94RYAodQZq
-         et1o/RZm4tAd3U5+kueZe53TfrYlmaf5n2IjjVrwXqQv7553m4YZJNa1LTks3Zz0aL4O
-         h60M7CeyISQ4GtJlirE0+n95LiQGne38Ao3RFs3OQnLga/4XyYm6Oc+sfA5HqGnP9bIj
-         iW8Q==
-X-Gm-Message-State: AOJu0Yx/U+swNw0AVJxiO0jnb+FjJO30fslPheHd4GLERVnmTjt2bTTt
-	x9gjVbv89yUbB9MO4pVBh5Tw2kbOXnBUVAI/+KCpcAODpgh17ENf/cZfUAFt4yekG2GjMySNexk
-	l+xN+VnFJVAyj/jInp+9MMs7ORMeaeabeVExn5Ll2JsM+eS3aM4JSXy7aQbL6og==
-X-Received: by 2002:adf:fe08:0:b0:33b:2fba:1ea8 with SMTP id n8-20020adffe08000000b0033b2fba1ea8mr4200533wrr.52.1707743793001;
-        Mon, 12 Feb 2024 05:16:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGxpBipBT3X0Dit4wAxSwyYUFXLETqTvvtgvVK9OQyhNeu7c1D+fK2Uy2PwFi2KixZcbrQThg==
-X-Received: by 2002:adf:fe08:0:b0:33b:2fba:1ea8 with SMTP id n8-20020adffe08000000b0033b2fba1ea8mr4200490wrr.52.1707743792624;
-        Mon, 12 Feb 2024 05:16:32 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWLYLeSLEG7e3LWjbCRQeUUwwjKwOp0UA0H5bXRyDYDGlbn5p9Uzq/h7qHON2mF8M/oLhRd6z2G0n/bh/DbNl4QHZ/TEV1YtjoDYtQloVAo0QXoy60jnrZa8ra4rQM4oruWjJfL4edsfAY8tYKQy192HX7aB+26OVmJ5I6wkDf3xiJBt0xQ4jnAgnXfOtqKwWbwYDs5JmiFiztMSeGa8XhRf3PQ2yByDazK81OLSw58jLsNr3/ixiE3v9Q4+t8sayNY7MHQYo9arpcYuji68swhVQ/+H2PIy+ZxcpILhiHiJD2eyCGToGaBydOhBXiwiw/1FpYMKW/VVNjZ3ee9mmUeOutHsce/p5xqucuPFeIib99cSjlhYGdCutX3NfOo9Hj/+mQ3lzivRBxKlkBkeGm2kBXuX4GkTd1aFBKgHXmFJADSmOm8mR+0E1UBAbYjlHZLNpySMPLeusSsJPWY45sAFpjNNd0qFJnDY46Gi1OT/6H+9PVuyB1gmnjaN8sJtXBmPzCNwxhKaa7e1CflLA46ZBUsYkv9PFsgyCnGqjSVbWFVHL2M8PFBl8SA708aufoKeJ4d0S4lr399pNrGCW69qgUIrbxER9VXU+ur+qXc+yvzSzOcGWxHdoLGk6o0Pqg4GnV3OwelOCZB1VLsAydUr1RVD1uYlLiv0R+F2w+fI6ZCwq9/eHRQHUxEdAxSKHiUcTUtZHALfa55bYUvnp8C6TAYOFNZ+JoNHiXDhs23K4sA48CV+hPGTRLdAGuVr6OxgxOdkOeN9/FkYdiRFBqDzs7FcnWyOvhRdJZAULWJ5tCNeltJqP02f6qNke+jDDyfV5J4v9aQSKzyKX1W7SH5cqLnMdW8d7+Ks1hEe5bUS6S29MFO61JQl0702IGBrVx4oZfbS4zb8iIjxhAQjLT0xj8NERSWMzUM02pVIyip0CcrGt8K1JgXSqkwpT1NviU0ts
- d7CotME1W6l8UzjPo6PRP0ag1qOZqO8+yu5qTI1Lq9KZNzVCvIWjmBHoy/rmIYjCrYdjoePY8WfthaU+r1YmmQKbWrQWEAJ8Rwn0FuPn/Iyj59quAE4HcNeXI/m52PP86nY4tfP9ZiBIuBgTrrC5I0IUd0qrTHMni5BZgN3GYBebK7jPMU/LevwcFebUWCC9Ojg3fDArD85Ac/nGAmwtMpGx3ZzbcBvKEiL4qtiU4aJA71DQjEc2lxKRZpU3b/MwNe9Y7BZbJ0HKUko4MJkQCYRhKUqm19tENATR8lFC+L3XvnaY9wKW+CrBf+D37PZhXUR/9TCyItDNLR
-Received: from ?IPV6:2003:cb:c730:2200:7229:83b1:524e:283a? (p200300cbc7302200722983b1524e283a.dip0.t-ipconnect.de. [2003:cb:c730:2200:7229:83b1:524e:283a])
-        by smtp.gmail.com with ESMTPSA id en8-20020a056000420800b0033b7d9c14desm3956966wrb.5.2024.02.12.05.16.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 05:16:32 -0800 (PST)
-Message-ID: <6ab142f0-bf66-4611-915d-938d58a277d3@redhat.com>
-Date: Mon, 12 Feb 2024 14:16:30 +0100
+	s=arc-20240116; t=1707743794; c=relaxed/simple;
+	bh=9sevq/yqb1NYFYOfIyOHJePYkgdalV/0E1nKUcbcKNc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sSzrwvI7QBitIOeStPnOUy993pXYlSUVcPOj1P8+7lmFV56KX1RiQs1ED954JGMlYDlhv2OedvVlk+4cCvVH3EL8kdUmJLELHCbPv4PGzNoizHO1XXuw7kYGsX4RIdR+hCtvjzPngSYpN1vHOYrdyLGcR5ZwurMKoDaLdGXvR6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YBQqvgd8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE4D6C433C7;
+	Mon, 12 Feb 2024 13:16:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707743794;
+	bh=9sevq/yqb1NYFYOfIyOHJePYkgdalV/0E1nKUcbcKNc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YBQqvgd8VpHznL+2fPx1BpJzFkdBIj+hfBKMURUlx4Z+sCT3dE9pI+lR3o8sdRVJG
+	 p+D5J1WaYWTFQDs2QJXQPx9aZnFO89wgHY/ouZlRqC5hUnR+PFwKNi292GrE6S97d3
+	 euxsGhWTecaAeQ5MK1A8v56g4a1VT8zgUJWWSTFeustlByzP4NcYIJCLZFATGU8g74
+	 lt2+P+kXZz+E7Ayk/tTCBiZt6M33n/ecVTYrVQHwwqLt/DqC5g/lIAVM58SHTTdVj3
+	 epfb/TKkslN0bqdi4JsxDSRCtQpo7npzpbcEKBZ0Bdg34yNqNweKkNq/O1S2ovqtBG
+	 LqJV0tJs8rUzg==
+Date: Mon, 12 Feb 2024 07:16:31 -0600
+From: Rob Herring <robh@kernel.org>
+To: Sebastian Reichel <sre@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 02/14] dt-bindings: bus: imx-weim: convert to YAML
+Message-ID: <20240212131631.GA13910-robh@kernel.org>
+References: <20240210012114.489102-1-sre@kernel.org>
+ <20240210012114.489102-3-sre@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 4/4] vfio: convey kvm that the vfio-pci device is wc
- safe
-Content-Language: en-US
-To: ankita@nvidia.com, jgg@nvidia.com, maz@kernel.org,
- oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com,
- yuzenghui@huawei.com, reinette.chatre@intel.com, surenb@google.com,
- stefanha@redhat.com, brauner@kernel.org, catalin.marinas@arm.com,
- will@kernel.org, mark.rutland@arm.com, alex.williamson@redhat.com,
- kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org,
- akpm@linux-foundation.org, andreyknvl@gmail.com, wangjinchao@xfusion.com,
- gshan@redhat.com, shahuang@redhat.com, ricarkol@google.com,
- linux-mm@kvack.org, lpieralisi@kernel.org, rananta@google.com,
- ryan.roberts@arm.com, linus.walleij@linaro.org, bhe@redhat.com
-Cc: aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
- targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
- apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
- kvmarm@lists.linux.dev, mochs@nvidia.com, zhiw@nvidia.com,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240211174705.31992-1-ankita@nvidia.com>
- <20240211174705.31992-5-ankita@nvidia.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240211174705.31992-5-ankita@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240210012114.489102-3-sre@kernel.org>
 
-On 11.02.24 18:47, ankita@nvidia.com wrote:
-> From: Ankit Agrawal <ankita@nvidia.com>
+On Sat, Feb 10, 2024 at 02:18:06AM +0100, Sebastian Reichel wrote:
+> Convert the i.MX  Wireless External Interface Module binding to YAML.
 > 
-> The code to map the MMIO in S2 as NormalNC is enabled when conveyed
-> that the device is WC safe using a new flag VM_ALLOW_ANY_UNCACHED.
-> 
-> Make vfio-pci set the VM_ALLOW_ANY_UNCACHED flag.
-> 
-> This could be extended to other devices in the future once that
-> is deemed safe.
-
-Maybe add some more details how one could make a decision whether it 
-would be safe (either here or in patch #2).
-
-> 
-> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-> Acked-by: Jason Gunthorpe <jgg@nvidia.com>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+> Signed-off-by: Sebastian Reichel <sre@kernel.org>
 > ---
->   drivers/vfio/pci/vfio_pci_core.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
+>  .../devicetree/bindings/bus/fsl,imx-weim.yaml | 225 ++++++++++++++++++
+>  .../devicetree/bindings/bus/imx-weim.txt      | 117 ---------
+>  2 files changed, 225 insertions(+), 117 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/bus/fsl,imx-weim.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/bus/imx-weim.txt
 > 
-> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> index 1cbc990d42e0..eba2146202f9 100644
-> --- a/drivers/vfio/pci/vfio_pci_core.c
-> +++ b/drivers/vfio/pci/vfio_pci_core.c
-> @@ -1862,8 +1862,12 @@ int vfio_pci_core_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma
->   	/*
->   	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
->   	 * change vm_flags within the fault handler.  Set them now.
-> +	 *
-> +	 * Set an additional flag VM_ALLOW_ANY_UNCACHED to convey kvm that
-> +	 * the device is wc safe.
->   	 */
-> -	vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
-> +	vm_flags_set(vma, VM_ALLOW_ANY_UNCACHED | VM_IO | VM_PFNMAP |
-> +			VM_DONTEXPAND | VM_DONTDUMP);
->   	vma->vm_ops = &vfio_pci_mmap_ops;
->   
->   	return 0;
+> diff --git a/Documentation/devicetree/bindings/bus/fsl,imx-weim.yaml b/Documentation/devicetree/bindings/bus/fsl,imx-weim.yaml
+> new file mode 100644
+> index 000000000000..3d27bdaef304
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/bus/fsl,imx-weim.yaml
+> @@ -0,0 +1,225 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/bus/fsl,imx-weim.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: i.MX Wireless External Interface Module (WEIM)
+> +
+> +maintainers:
+> +  - Shawn Guo <shawnguo@kernel.org>
+> +  - Sascha Hauer <s.hauer@pengutronix.de>
+> +
+> +description:
+> +  The term "wireless" does not imply that the WEIM is literally an interface
+> +  without wires. It simply means that this module was originally designed for
+> +  wireless and mobile applications that use low-power technology. The actual
+> +  devices are instantiated from the child nodes of a WEIM node.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - fsl,imx1-weim
+> +          - fsl,imx27-weim
+> +          - fsl,imx50-weim
+> +          - fsl,imx51-weim
+> +          - fsl,imx6q-weim
+> +      - items:
+> +          - enum:
+> +              - fsl,imx31-weim
+> +              - fsl,imx35-weim
+> +          - const: fsl,imx27-weim
+> +      - items:
+> +          - enum:
+> +              - fsl,imx6sx-weim
+> +              - fsl,imx6ul-weim
+> +          - const: fsl,imx6q-weim
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  '#address-cells':
+> +    const: 2
+> +
+> +  '#size-cells':
+> +    const: 1
+> +
+> +  ranges: true
+> +
+> +  fsl,weim-cs-gpr:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: |
+> +      Phandle to the system General Purpose Register controller that contains
+> +      WEIM CS GPR register, e.g. IOMUXC_GPR1 on i.MX6Q. IOMUXC_GPR1[11:0]
+> +      should be set up as one of the following 4 possible values depending on
+> +      the CS space configuration.
+> +
+> +      IOMUXC_GPR1[11:0]    CS0    CS1    CS2    CS3
+> +      ---------------------------------------------
+> +              05          128M     0M     0M     0M
+> +              033          64M    64M     0M     0M
+> +              0113         64M    32M    32M     0M
+> +              01111        32M    32M    32M    32M
+> +
+> +      In case that the property is absent, the reset value or what bootloader
+> +      sets up in IOMUXC_GPR1[11:0] will be used.
+> +
+> +  fsl,burst-clk-enable:
+> +    type: boolean
+> +    description:
+> +      The presence of this property indicates that the weim bus should operate
+> +      in Burst Clock Mode.
+> +
+> +  fsl,continuous-burst-clk:
+> +    type: boolean
+> +    description:
+> +      Make Burst Clock to output continuous clock. Without this option Burst
+> +      Clock will output clock only when necessary.
+> +
+> +patternProperties:
+> +  "^.*@[0-7],[0-9a-f]+$":
+> +    description: Devices attached to chip selects are represented as subnodes.
+> +    type: object
+> +    additionalProperties: true
+> +    properties:
+> +      fsl,weim-cs-timing:
+> +        $ref: /schemas/types.yaml#/definitions/uint32-array
+> +        description:
+> +          Timing values for the child node.
+> +    required:
+> +      - fsl,weim-cs-timing
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+This needs to go in its own schema doc and then added to 
+memory-controllers/mc-peripheral-props.yaml
 
--- 
-Cheers,
+We should probably also move this binding to memory-controllers/
 
-David / dhildenb
 
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          not:
+> +            contains:
+> +              enum:
+> +                - fsl,imx50-weim
+> +                - fsl,imx6q-weim
+> +    then:
+> +      properties:
+> +        fsl,weim-cs-gpr: false
+> +        fsl,burst-clk-enable: false
+> +  - if:
+> +      properties:
+> +        fsl,burst-clk-enable: false
+> +    then:
+> +      properties:
+> +        fsl,continuous-burst-clk: false
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: fsl,imx1-weim
+> +    then:
+> +      patternProperties:
+> +        "^.*@[0-7],[0-9a-f]+$":
+> +          properties:
+> +            fsl,weim-cs-timing:
+> +              items:
+> +                items:
+> +                  - description: CSxU
+> +                  - description: CSxL
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - fsl,imx27-weim
+> +              - fsl,imx31-weim
+> +              - fsl,imx35-weim
+> +    then:
+> +      patternProperties:
+> +        "^.*@[0-7],[0-9a-f]+$":
+> +          properties:
+> +            fsl,weim-cs-timing:
+> +              items:
+> +                items:
+> +                  - description: CSCRxU
+> +                  - description: CSCRxL
+> +                  - description: CSCRxA
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - fsl,imx50-weim
+> +              - fsl,imx51-weim
+> +              - fsl,imx6q-weim
+> +              - fsl,imx6sx-weim
+> +              - fsl,imx6ul-weim
+> +    then:
+> +      patternProperties:
+> +        "^.*@[0-7],[0-9a-f]+$":
+> +          properties:
+> +            fsl,weim-cs-timing:
+> +              items:
+> +                items:
+> +                  - description: CSxGCR1
+> +                  - description: CSxGCR2
+> +                  - description: CSxRCR1
+> +                  - description: CSxRCR2
+> +                  - description: CSxWCR1
+> +                  - description: CSxWCR2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - '#address-cells'
+> +  - '#size-cells'
+> +  - ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    weim@21b8000 {
+
+bus or external-bus
+
+> +        compatible = "fsl,imx6q-weim";
+> +        reg = <0x021b8000 0x4000>;
+> +        clocks = <&clks 196>;
+> +        #address-cells = <2>;
+> +        #size-cells = <1>;
+> +        ranges = <0 0 0x08000000 0x08000000>;
+> +        fsl,weim-cs-gpr = <&gpr>;
+> +
+> +        nor@0,0 {
+> +            compatible = "cfi-flash";
+> +            reg = <0 0 0x02000000>;
+> +            #address-cells = <1>;
+> +            #size-cells = <1>;
+> +            bank-width = <2>;
+> +            fsl,weim-cs-timing = <0x00620081 0x00000001 0x1c022000
+> +            0x0000c000 0x1404a38e 0x00000000>;
+> +        };
+> +    };
+> +  - |
+> +    weim@21b8000 {
+> +        compatible = "fsl,imx6q-weim";
+> +        reg = <0x021b8000 0x4000>;
+> +        clocks = <&clks 196>;
+> +        #address-cells = <2>;
+> +        #size-cells = <1>;
+> +        ranges = <0 0 0x08000000 0x02000000
+> +                  1 0 0x0a000000 0x02000000
+> +                  2 0 0x0c000000 0x02000000
+> +                  3 0 0x0e000000 0x02000000>;
+> +        fsl,weim-cs-gpr = <&gpr>;
+> +
+> +        acme@0,0 {
+> +            compatible = "acme,whatever";
+
+Real bindings only please.
+
+> +            reg = <0 0 0x100>, <0 0x400000 0x800>,
+> +                  <1 0x400000 0x800>;
+> +            fsl,weim-cs-timing = <0x024400b1 0x00001010 0x20081100
+> +                                  0x00000000 0xa0000240 0x00000000>;
+> +        };
+> +    };
 
