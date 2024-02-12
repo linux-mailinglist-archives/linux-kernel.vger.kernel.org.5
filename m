@@ -1,167 +1,105 @@
-Return-Path: <linux-kernel+bounces-61321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E9948510FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5358085117E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C45591F216B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:35:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EECDB1F22D81
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D962738F94;
-	Mon, 12 Feb 2024 10:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA4438DE0;
+	Mon, 12 Feb 2024 10:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NwLY2a0d"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrMEgCCr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D1D383BF
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873FF2555B;
+	Mon, 12 Feb 2024 10:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707734089; cv=none; b=pgON9+sWTXkEKhCYz60D4NdO94xd6dv1bHcut0l3/Ua05A4VacQ4sjxQdreOaT+7l8RH4lrfpyCRYwHhFPCs+43y6+hnux5Y+2hhv6Ro3EUehWOckPmeKWy5j40RywyyzlV5Yj+XkZGo7Be7DQZm+4Hu/9ZvSKrMTtRQg4yKZwE=
+	t=1707734858; cv=none; b=p2vH39TrhMkD3E1Qb89z8QJcDJR3h0cGZivzk7erjBIMsbqYUgzgtu1H1s87p78nmUvTTDQfJ0VvBnOaw2nBHDBvBs9hnUiyBOmYq7vN7RVGseNb0Nm4RTAkjnIfRODXzQW9TkEJI0OdQ2fDJ97W1QLEIsrVTMpkOR2Fz47asgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707734089; c=relaxed/simple;
-	bh=EoFkIvo0jVT7iACpJyA0SYfSyvqCf8/ZdX+R+C/HGAU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XBGtsF0dPSeTmT8K1BoM0D5f6c/Yh9nykuQiKjoFyLqY8aUUGMvWHhC+Zs47Ty47lKR+xr4IGGOKgfCJKr2jRm+/5KuvNDQAadYutq8rT1dUcPEVBhYUFoeX9jOJuFrTuRryIKwCznPPdLtJUzHbHtP96tfScOKtZCpiDbd8nc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NwLY2a0d; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707734086;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tgpAN4/fM2uvng00mD2oqsBNpUIMHVV2+w/F9N6+DNQ=;
-	b=NwLY2a0dbxPe24dtx9C+dRUCS+PbhIA9c5uUOUJkFLjNKFQgXpRwztyLLulFmGsQASW5Zx
-	tsvxK38iSaxtmcIc4QtqgTjcv5CoIEDGBX3OEb5dydKAhsPw401tx6ctCF/Q6CX7GyDOfd
-	gVusA3p6lGEYThIJUxWmDZ0W0Ki3EB8=
-Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
- [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-649-BU4U0hmZMRu1-TqgKjBO3Q-1; Mon, 12 Feb 2024 05:34:45 -0500
-X-MC-Unique: BU4U0hmZMRu1-TqgKjBO3Q-1
-Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7d326aa3f86so1725208241.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:34:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707734082; x=1708338882;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tgpAN4/fM2uvng00mD2oqsBNpUIMHVV2+w/F9N6+DNQ=;
-        b=Gu6ZeyMIPmdJ/W/bngaE6cSZzhiSEwQ+3d17zXnrY2vPNxprkGPNhNqgrD9Z/QKJfl
-         Kwm21jy+DowhtgzPUCjrhTIAjsU537FNTkjy+fdPlVbRD2NlbDgN/JuNgP8969nt/eb7
-         omqkxNzfXZh2Vt6DoHVn3Ng/bKtgtA5b46oK32qni9IF8T1JM2ZuGH6YuZlKKnMJeDsC
-         U1qgMw3N4OkdccJ+EgZW9JeDb4txTTD9E24/meKZ/lFUGaXl4kMlMavnOmM7vygJURNC
-         IWW6q66Qb4zCwrDcuI1C8jFRs0nZop+5eHeeLoDMkMdVWSlH90NZ8Dsvjo+e7BWOp7VU
-         d0lw==
-X-Forwarded-Encrypted: i=1; AJvYcCVAxQTRdJyLRAkaDd4QF67PrqREhgAmrHgvjvtBsm1s12u8MJF4JdGmNeRb5srebwntUP2WpHYhi6U1K0JfbBHHdTP8yPba9cWCYrQk
-X-Gm-Message-State: AOJu0YxS/gf+6xsNdDAIquMa9tM36Xi/cfsSySYJ486Jip6i4xN1PT/k
-	HkHpIlPdFoAwdzxWwY5RfF5X/xGmW/pXLmA6pGxTuGmG1tYBR3Y6ai7fByIJJYx2Ghc+Vullr6C
-	PLpGP4aZ0iwbY1rGilC9hBci2HXX9j6u5QVPoIJKn6Ib3lbLQer4HnhvOGFf68i4ySZ7uJaW92O
-	qqN3HXB5edCND+HxPeTLd7lqdq0jzt3wpnLkip
-X-Received: by 2002:a05:6102:116f:b0:46d:2d95:5c15 with SMTP id k15-20020a056102116f00b0046d2d955c15mr3800833vsg.13.1707734081984;
-        Mon, 12 Feb 2024 02:34:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGMKwEPA7aCJ3CTH/U8+IoQs6Vt+T3sXtGQG3F/44PHdppD0ZaTuixrHMSXjQ4m9T3C19OL3I7hoVosabGmzsI=
-X-Received: by 2002:a05:6102:116f:b0:46d:2d95:5c15 with SMTP id
- k15-20020a056102116f00b0046d2d955c15mr3800789vsg.13.1707734080219; Mon, 12
- Feb 2024 02:34:40 -0800 (PST)
+	s=arc-20240116; t=1707734858; c=relaxed/simple;
+	bh=t/ZTePsKdIVKC4gWLazaU/Eiquk8TE+7jyT9VDJ6mgI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QL1bxiJiOlvQ6Px/a4HNS9w9HAkebL4VdRyZIcZ23pqcI/THHlj2JfVxyL7gVU+9hSnmFMCLULxFBltteJXn06q3WE21ybWKz8G4l5WkSmp8WaMcGj8Ucl+UTia0UjSXjUFNk8z9xcPMx+uKw4mWs61IHSl38pHi/CRERkgX800=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IrMEgCCr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC055C433C7;
+	Mon, 12 Feb 2024 10:47:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707734858;
+	bh=t/ZTePsKdIVKC4gWLazaU/Eiquk8TE+7jyT9VDJ6mgI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IrMEgCCrpHvdMCfGdToN4BxinirdDqARNMPWtQr6H0NW0Ziy4uCKXTzVJNZzRMj58
+	 8i3nL8Wt1M8k7yHb5AwI1vfq5kMm4QUDOe/nCQYd/0eR4+tz/6YJUJ2z1i4TK6c3xS
+	 9KBE4sTFK1ZsfJ10qNJPzY/D3qLP7PxFqZYSUvRrEfYa+aTx50rO/VNZxKAe4z8Kkl
+	 mfdASZ/EL62Ke6TFpTVpNJkv+8jpbDdpRusebAwh4RhibDdD9sGrprQi63knxoFMY1
+	 uGmrIQ7LhSV7aHwT8OOWme+PuuvJSJBdE7FeIwnrJrjcSTzsdfq232wBvqEBPVpTsb
+	 bqE9m+5ee5GAg==
+Date: Mon, 12 Feb 2024 18:34:36 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Andre Przywara <andre.przywara@arm.com>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: arm: sunxi: Add Sipeed Longan Module
+ 3H and Longan Pi 3H
+Message-ID: <Zcn0POS-4BFGlRm9@xhacker>
+References: <20240211081739.395-1-jszhang@kernel.org>
+ <20240211081739.395-2-jszhang@kernel.org>
+ <7ee6df91-76fa-44e8-ab81-fd4b63b58ce9@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1705965634.git.isaku.yamahata@intel.com> <d99863c474b8a3d9e413fbf940bf6891d2ce319e.1705965635.git.isaku.yamahata@intel.com>
-In-Reply-To: <d99863c474b8a3d9e413fbf940bf6891d2ce319e.1705965635.git.isaku.yamahata@intel.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Mon, 12 Feb 2024 11:34:28 +0100
-Message-ID: <CABgObfbu1-Ok607uYdo4DzwZf8ZGVQnvHU+y9_M1Zae55K5xwQ@mail.gmail.com>
-Subject: Re: [PATCH v18 041/121] KVM: x86/mmu: Allow per-VM override of the
- TDP max page level
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	isaku.yamahata@gmail.com, erdemaktas@google.com, 
-	Sean Christopherson <seanjc@google.com>, Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>, 
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com, 
-	Sean Christopherson <sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7ee6df91-76fa-44e8-ab81-fd4b63b58ce9@linaro.org>
 
-On Tue, Jan 23, 2024 at 12:55=E2=80=AFAM <isaku.yamahata@intel.com> wrote:
->
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> TDX requires special handling to support large private page.  For
-> simplicity, only support 4K page for TD guest for now.  Add per-VM maximu=
-m
-> page level support to support different maximum page sizes for TD guest a=
-nd
-> conventional VMX guest.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Acked-by: Kai Huang <kai.huang@intel.com>
+On Sun, Feb 11, 2024 at 05:29:32PM +0100, Krzysztof Kozlowski wrote:
+> On 11/02/2024 09:17, Jisheng Zhang wrote:
+> > Add name & compatible for the Sipeed Longan Module 3H and Longan PI 3H
+> > board.
+> > 
+> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+> > ---
+> 
+> This is a friendly reminder during the review process.
 
-Please reimplement this on top of "KVM: x86: Add gmem hook for
-determining max NPT mapping level" from the SEV-SNP series.
+Oops, I forgot to add Conor's ack...
+> 
+> It looks like you received a tag and forgot to add it.
+> 
+> If you do not know the process, here is a short explanation:
+> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+> versions, under or above your Signed-off-by tag. Tag is "received", when
+> provided in a message replied to you on the mailing list. Tools like b4
+> can help here. However, there's no need to repost patches *only* to add
+> the tags. The upstream maintainer will do that for tags received on the
+> version they apply.
 
-Paolo
+IIRC, the b4 can only help on the latest version. If I missed the ack
+in v3, the ack tag will be lost. So how to handle this case? repost or
+Conor gave an ack to v3 again?
 
-
-> ---
->  arch/x86/include/asm/kvm_host.h | 1 +
->  arch/x86/kvm/mmu/mmu.c          | 2 ++
->  arch/x86/kvm/mmu/mmu_internal.h | 2 +-
->  3 files changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_h=
-ost.h
-> index 430d7bd7c37c..313519edd79e 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1283,6 +1283,7 @@ struct kvm_arch {
->         unsigned long n_requested_mmu_pages;
->         unsigned long n_max_mmu_pages;
->         unsigned int indirect_shadow_pages;
-> +       int tdp_max_page_level;
->         u8 mmu_valid_gen;
->         struct hlist_head mmu_page_hash[KVM_NUM_MMU_PAGES];
->         struct list_head active_mmu_pages;
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 54d4c8f1ba68..e93bc16a5e9b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -6307,6 +6307,8 @@ void kvm_mmu_init_vm(struct kvm *kvm)
->
->         kvm->arch.split_desc_cache.kmem_cache =3D pte_list_desc_cache;
->         kvm->arch.split_desc_cache.gfp_zero =3D __GFP_ZERO;
-> +
-> +       kvm->arch.tdp_max_page_level =3D KVM_MAX_HUGEPAGE_LEVEL;
->  }
->
->  static void mmu_free_vm_memory_caches(struct kvm *kvm)
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_inter=
-nal.h
-> index 0443bfcf5d9c..2b9377442927 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -296,7 +296,7 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vc=
-pu *vcpu, gpa_t cr2_or_gpa,
->                 .nx_huge_page_workaround_enabled =3D
->                         is_nx_huge_page_enabled(vcpu->kvm),
->
-> -               .max_level =3D KVM_MAX_HUGEPAGE_LEVEL,
-> +               .max_level =3D vcpu->kvm->arch.tdp_max_page_level,
->                 .req_level =3D PG_LEVEL_4K,
->                 .goal_level =3D PG_LEVEL_4K,
->         };
-> --
-> 2.25.1
->
-
+Thanks for your information.
+> 
+> https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+> 
+> If a tag was not added on purpose, please state why and what changed.
+> Best regards,
+> Krzysztof
+> 
 
