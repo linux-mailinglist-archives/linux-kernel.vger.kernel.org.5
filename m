@@ -1,205 +1,122 @@
-Return-Path: <linux-kernel+bounces-61224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 747E0850F2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:56:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3111E850F33
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:58:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFDFFB20A2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:56:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 606C01C21647
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519EA101C1;
-	Mon, 12 Feb 2024 08:56:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C122F101E8;
+	Mon, 12 Feb 2024 08:58:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Ue1t7wBa"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="DZv6WyXu"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E30F9F5;
-	Mon, 12 Feb 2024 08:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62BF5F9F6;
+	Mon, 12 Feb 2024 08:58:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707728182; cv=none; b=jHJFukAGgwFsMEnanNT5DxdA0uLGTFraNw5PveEyj2F44p3F5tfzZ3Bub/s2S26cVSvHUsjulrMLpY+Sl5PU4paTsVb9wETi+CAX2e+LeIQs3VjueN2zOlUmyVKuapxm3alCsfsgy6fHo+5N5i+12Aa9yN/jJmVz+XzeZVW8SyY=
+	t=1707728303; cv=none; b=JRBKgBHUGNE4tvvx0+d6aSSlV93iANjT4iNChxT8dzSRzuMtqoqSOxYc8UbAaSankJDMekJL5kelx0HAvvk3Bf1H+v3lPubW+N/TBKIYWHcTIcPrxwphjwC1yH0JKT3AZmazeRC5xF6EhP4xLUORDvqEzCh3m17mhvq1ZkRcHl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707728182; c=relaxed/simple;
-	bh=vANarlCVL7YQ/3338qTzKIhygSAtVwfBhAKCDdb2Qo8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=pJhIS9dDKbu6cqidwI2pFcLa3hAIqoQ+SV3FqI3tHNEHwiOWbBe8kfRF6xYfGcjzo2+ASgBN8NAtZzEN5j8YN0SLbEKF4Svk2ddvrWPNXsAxqMivKK3h907GwPCtfRcFFkwOWyNX2F0gOPICQJMlB5anyZpfjTpng8EwRlVtr0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Ue1t7wBa; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41C8JDsZ012823;
-	Mon, 12 Feb 2024 08:56:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=t446M35Bn/q1ZvKyKNo6fRXbfCqkKlbDZSbGpUSGrjg=; b=Ue
-	1t7wBa0yyl0ZqumMG/vjajnaH3TgNredLJnYC99aBwTPsXX5yC9uAVwjkbpmLGSt
-	1M04IeJs9G8PVZuBD/mwgcnwG2q+lvIO3qsuvGWGULj1y/H/zQeTiTlhWYFpFPdW
-	8Z6TdnwNuV6zNj1JVc+A3yEt6hLHs5htfe88pP0ek+l5OQU9jjYQzc2q5b7KXDqz
-	UxXNkagUJX5h4JdMdcuXQBJQp4hrSYzOxAqzvWnjpMXcOoBLiJLKF5fK4h5+xiWK
-	CKGOonsOSisxpj8IoaBXCZqKM5WccE+kiR+XuPpvljHOamkbZJjrYAny0jLmUdow
-	V1luQWWLy+2h9jntQizw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w62r12tw8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 08:56:13 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41C8uCiK012862
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 08:56:12 GMT
-Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 12 Feb
- 2024 00:56:08 -0800
-Message-ID: <de2b3cd3-95f9-4fc4-4d51-35be32a788e9@quicinc.com>
-Date: Mon, 12 Feb 2024 14:26:05 +0530
+	s=arc-20240116; t=1707728303; c=relaxed/simple;
+	bh=EFbAo5Rl95aibYF8oFEUt72wxVkfbyL6b/P7OhQU69M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XV2Hxj+TYtuMe3Yf2rHjhvrmEQ06R9Soj+IzNtYoqmeF7kDi1aMmlQuQsmLsAWXfkCUlaJp2S0bs3xK9FsLvhaj9jHNtkm7wRN3JhOrUnsu4vNaYih9fmNwpuV0+qnDFazKNp2c4FiUOBJvsB6PH0CPxE+RXRwZRoCGBwYttm6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=DZv6WyXu; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0A7C540E01BB;
+	Mon, 12 Feb 2024 08:58:18 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id FxmW8naFuC6X; Mon, 12 Feb 2024 08:58:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707728295; bh=ALQo+vhtcBSeaciFu9mi9BnzZHS69M+JAJQ5itizn1M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DZv6WyXuUps4/WYMeUUGXuVF8kT1YuzBhba3JkwV+7/FDAT/gH908g3MkniZNYlC8
+	 GTmM/aFmUSxLJi7PZp5dcKWe8FWxYmiKuu/1SMBaJER1ZswvBGNcX7RjDa8EEYJfS2
+	 UJgPgkTqmliPp02bFPXvIh7+HPyzi6EhJpxu/GAOo6HLLCEzkiN9ERJZ8ii6u+beRd
+	 ERv4L21DhSSAzFDUqsuKVt0nbrE0IZrmhFZ4FB9r1sNGdbS8EqkrILy7RCOt3sDXK1
+	 LSnd5hPHxZDxs3RfrddoCXqJiRqZlQ48sidJwGIQxUJoeHZB1IZ5A0WtTuz/u/XGV0
+	 RqRawwoxwKzme7tinRwmbk9a+1npsEoM97NxONb07TcbcfwEOz7HjnbyPFvwBOY7Yc
+	 /PW3WP8GEh6G3YOyqooSBE/qHbD0mpG23zb1pYxRzWKVxYKQjHtTi6CTSoQo/xSXyM
+	 i2o9u/O/st+1TotjhXL/19hjrZgGPT7299tPTBhpOGRkDbSg18WQwvODnTv36J5hWZ
+	 96S5GuhZrqbwQ77t5zXMs9CG/A7+ca9RPzb8W/nDqAeBE9yAZ07tztkBvDxidOsghL
+	 0W+ZquRdYCfjKhld4qKiTM15lBWvwyOU7OUNG589YsUZVxmRKMamjZmdpqEpEi5M0X
+	 oZvgV1JSdonrhkt3U5QfIkiw=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B9A2040E0196;
+	Mon, 12 Feb 2024 08:58:07 +0000 (UTC)
+Date: Mon, 12 Feb 2024 09:58:01 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Naik, Avadhut" <avadnaik@amd.com>
+Cc: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org,
+	linux-edac@vger.kernel.org, tony.luck@intel.com,
+	linux-kernel@vger.kernel.org, yazen.ghannam@amd.com,
+	Avadhut Naik <avadhut.naik@amd.com>
+Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
+ Records pool
+Message-ID: <20240212085801.GAZcndma4UTPtKm33e@fat_crate.local>
+References: <20240207225632.159276-3-avadhut.naik@amd.com>
+ <8b4f8ec2-7534-4f77-b44f-6728c699ff64@intel.com>
+ <51255499-0b5d-45c6-9c72-f353bae83c0d@amd.com>
+ <20240209200920.GFZcaGcOr757W9O3IG@fat_crate.local>
+ <7a4945b0-322a-444e-a0ca-860a062a49c3@amd.com>
+ <20240209205111.GGZcaQP1gb6C9m0WZB@fat_crate.local>
+ <5DB0FF8D-C6DA-45DC-B287-201A9BF48BDA@alien8.de>
+ <75ddf61d-8dda-47fa-9da0-24221feb22a2@amd.com>
+ <20240211111455.GAZcisL09LeFPWa2EI@fat_crate.local>
+ <774e7ca5-154d-4ca4-bc4c-2f945c20b938@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [RFC 3/7] firmware: arm_scmi: Add QCOM vendor protocol
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <sudeep.holla@arm.com>,
-        <cristian.marussi@arm.com>, <andersson@kernel.org>,
-        <jassisinghbrar@gmail.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_rgottimu@quicinc.com>,
-        <quic_kshivnan@quicinc.com>, <conor+dt@kernel.org>,
-        Amir Vajid
-	<avajid@quicinc.com>
-References: <20240117173458.2312669-1-quic_sibis@quicinc.com>
- <20240117173458.2312669-4-quic_sibis@quicinc.com>
- <3325c6ea-ca30-40ee-83ba-c489dc9964b1@linaro.org>
- <2b1d9578-39cc-7836-a51b-be698bb50c43@quicinc.com>
- <34af183c-638a-49f3-b0b3-784f757282b2@linaro.org>
-From: Sibi Sankar <quic_sibis@quicinc.com>
-In-Reply-To: <34af183c-638a-49f3-b0b3-784f757282b2@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: -ifNDEs3z0tVHXtsbq6Xp-kbAs1pMKFr
-X-Proofpoint-ORIG-GUID: -ifNDEs3z0tVHXtsbq6Xp-kbAs1pMKFr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-12_05,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0
- phishscore=0 malwarescore=0 impostorscore=0 mlxlogscore=948 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
- definitions=main-2402120067
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <774e7ca5-154d-4ca4-bc4c-2f945c20b938@amd.com>
 
+On Sun, Feb 11, 2024 at 08:54:29PM -0600, Naik, Avadhut wrote:
+> Okay. Will make changes to allocate memory and set size of the pool
+> when it is created. Also, will remove the command line parameter and
+> resubmit.
 
+Before you do, go read that original thread again but this time take
+your time to grok it.
 
-On 2/10/24 04:15, Konrad Dybcio wrote:
-> On 8.02.2024 12:44, Sibi Sankar wrote:
->>
->>
->> On 1/18/24 01:45, Konrad Dybcio wrote:
->>>
->>>
->>> On 1/17/24 18:34, Sibi Sankar wrote:
->>>> From: Shivnandan Kumar <quic_kshivnan@quicinc.com>
->>>>
->>>> SCMI QCOM vendor protocol provides interface to communicate with SCMI
->>>> controller and enable vendor specific features like bus scaling capable
->>>> of running on it.
->>>
->>
->> Hey Konrad,
->>
->>> "QCOM protocol" sounds overly generic, especially given how many
->>> different vendor protocols have historically been present in
->>> QC firmware..
->>
->> Here it is specifically mentioned that way to communicate that
->> this is the only vendor protocol exposed by Qualcomm. It handles
->> all the other protocols which were usually handled separately on
->> older SoCs.
-> 
-> I'm no SCMI specialist but that's a rather.. peculiar design decision,
-> I guess
-> 
-> 
->>
->>>
->>>>
->>>> Signed-off-by: Shivnandan Kumar <quic_kshivnan@quicinc.com>
->>>> Co-developed-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
->>>> Signed-off-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
->>>> Co-developed-by: Amir Vajid <avajid@quicinc.com>
->>>> Signed-off-by: Amir Vajid <avajid@quicinc.com>
->>>> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
->>>> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
->>>> ---
->>>
->>> So, this is another 0x80 protocol, different to the one that has
->>> been shipping on devices that got released with msm-5.4, msm-5.10
->>> and msm-5.15 [1][2]. They're totally incompatible (judging by the
->>> msg format), use the same protocol ID and they are (at a glance)
->>> providing access to the same HW/FW/tunables.
->>
->> Thanks for bringing this up but like I already explained the only
->> SoC that was actually shipped with ^^ protocol was SC7180 and we
->> already have an alternative arrangement for memory dvfs upstreamed
->> on it.
-> 
-> Ok, that makes sense.
-> 
-> I took my 8550 phone, enabled some debug prints and it looks like the
-> only SCMI protocol exposed is 0x19 (which doesn't seem to be defined).
-> 
-> Not sure what other devices would spit out, but I assume what you said
-> is true.
-> 
-> For completeness, the reported rev is:
-> 
-> arm-scmi firmware:scmi: SCMI Protocol v2.0 'Qualcomm:' Firmware version 0x10000
-> 
->> Further more it handles only L3 dvfs so it makes zero sense
->> to try to upstream the older protocol given that working dvfs solution
->> already exists upstream.
-> 
-> We don't have any sort of governor for it though, so I wouldn't go as
-> far as calling it working :P
+And then try answering those questions:
 
-It is a working solution (it is equivalent to the compute mon mapping in
-downstream implementation) but isn't feature complete ¯\_(ツ)_/¯.
+* Why are *you* fixing this? I know what the AWS reason is, what is
+yours?
 
-> 
->> All other SoCs don't have the 0x80 protocol
->> enabled for memory dvfs in production.
->>
->>>
->>> I'm not sure if this can be trusted not to change again.. Unless
->>> we get a strong commitment that all platforms (compute, mobile,
->>> auto, iot, whatever) stick to this one..
->>
->> This is exactly that consolidation effort from Qualcomm. Here they
->> expose just one vendor protocol and implement all the algorithms just
->> through it.
-> 
-> And I'm very glad you're taking such consolidation steps.. Just a little
-> worried that in case this protocol's extensibility is exhausted, the next
-> one would need to be called.. "Qualcomm2"?
+* Can you think of a slick deduplication scheme instead of blindly
+raising the buffer size?
 
-We don't see ^^ happening in the near future (meaning this doesn't apply
-to just X1E). The consolidation would still be better than spinning out
-n number of protocols per SoC.
+* What's wrong with not logging some early errors, can we live with that
+too? If it were firmware-first, it cannot simply extend its buffer size
+because it has limited space. So what does firmware do in such cases?
 
--Sibi
+Think long and hard about the big picture, analyze the problem properly
+and from all angles before you go and do patches.
 
-> 
-> Konrad
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
