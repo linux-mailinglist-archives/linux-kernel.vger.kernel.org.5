@@ -1,247 +1,161 @@
-Return-Path: <linux-kernel+bounces-62490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D1DA85219A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:42:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB9E85219C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:42:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3AA8B22C05
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:42:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1CFA1C220A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED8A54DA19;
-	Mon, 12 Feb 2024 22:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677DF4EB45;
+	Mon, 12 Feb 2024 22:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PheYA0as"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QCuOld+X"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61BA84E1BD;
-	Mon, 12 Feb 2024 22:41:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF69F4D599
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 22:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707777718; cv=none; b=Kn50BZxzSxZ1cSWq1obb4Y8YM60P8yKK1kIF5IlaburOAWE5nRyBOH3SET+d9CZJM+74C656BRpM1XEtrFi+TnBF1G4H7+YBnmZs/2V54vK+3nPXPZE4LWed3C29U1xtJyQpNaSz3dTM/2MFuoIoWuXQyDri2huCR7bk0J9NfK4=
+	t=1707777729; cv=none; b=V6WvZGVJjsdxXVk1h5A6xBDHkAd6eWLfksFBgbdv1R5sWmzYz44eKVf/jvjtsTPxVeVXdi8OS16W8K5QrkZPoLvpL+7G+Nz2zDD+8/nSFT3pcXAa/H3gNFKcwLrYU3EQBpIVeMBz38kg826f13eZbnvbOkV7wLsdag1WiQ+l2g8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707777718; c=relaxed/simple;
-	bh=cAUEs+amnVSeKIK8NpO4FC2BVKtrt76059q1ciUIwV8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fP+OHIPknk80BlxCcOxX8TaDwW4hEkf62Uei1CgzD/oUi1SxwnTdvh0p3kV3XH19eSgpD2f8dsXQGi7fIB4gXPoWhPLGbEvC26J+3dx9X/EzgBnQW5a2mcGK8B2e289xcdxkaDm4N0X2481Ede1rzfFYG/aZUExwZGg46geDJEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PheYA0as; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d09bdddfc9so49005401fa.2;
-        Mon, 12 Feb 2024 14:41:56 -0800 (PST)
+	s=arc-20240116; t=1707777729; c=relaxed/simple;
+	bh=3vgcjHLfq/00X/yUP8BO5uRZWk5ZVbqXQ+PqVJG2mXE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HhQYlZpf4Qbs2F/UhEAA3V2n1aOJrWEp0N6rUUdAA6NpWuemuDrUuQtoz5gDc/A1Gmtr+aztCq9GuurjL5BLTGzxPkHaCojfplXbzAjWBYcYWM3a37/d93mxPymwZKE0PBMy6I+c2iH5X+SGp2X8bFbXFyjknMYi+7nTbMN0kuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QCuOld+X; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so5010768a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:42:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707777714; x=1708382514; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZiHemHBfh4EaF7fWAPqUeUVvkic0kmQVtldtUj1mK2Q=;
-        b=PheYA0asI5hlM8wpj399a7+lw8KcRekZGFLI2pozfjb7isb7T6cf0lPi2E60nKyCcK
-         /JtPLeV1fOz602qDhJbBcuV7oxmd+/ROpdoHMO4kwnM+JbRFnVhBrYxWtfRIIscyum2g
-         XwkdAa/83Sm4nCshZJQJVFIWmvMZj60aoAWWMhFIlgo4aulboaEkmir0OfaBieoy2eR1
-         tZle1g7NYpV5YTR87BG6HdymfozSuE9yqQlfWoVLXG7ciH5IpPJp2SnwxuYP702lvBqR
-         yCN3XV4JC5NBJ/c5j5Eh2jO61ctPGPz8+z3L66SGMRfwlygM/JqmMbPzNQqg+YRRdRtL
-         yC7Q==
+        d=linaro.org; s=google; t=1707777726; x=1708382526; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+NC5nXZUhD7OgbbLjAWuedjAC2AnjYG2VXHEAtTQZ1k=;
+        b=QCuOld+XYO0cYJbfJKRJt1AzB96r8vn/zf2Hih01Id1oB1f1g8aUAM57keDxrLp6Ak
+         +wNyfAkwYpnfLKpYCkWmep2/lBPFqqUICdvx7jA+ygPthqoZ84Xnb5rvSnjbfzByutBH
+         PSMEmD44a0ODoc8Bimzl6Aq8Ks34WcC7vzNXgxGXV204/msdIk/484Xf3+ETqeVY87mo
+         hekQ9IsnkQBMQk8lAjYqrXUJA1hb1ZmEs8ghNOVVzaELYlyb/yrjOPMhgziWz3Rnj8P/
+         jYKhEbE/YhAe/6/gEsySNB0CC1KVWmi4WUUncYG5wr0I/StiOGFJpnu++MzJoLuVYWrG
+         6iYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707777714; x=1708382514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZiHemHBfh4EaF7fWAPqUeUVvkic0kmQVtldtUj1mK2Q=;
-        b=hE45yiRh2Zcv5CvV89aOJXOpugDaCNXYWHiVCQjxaZQOMBqrb5BUDs0YN68nB7mCo6
-         a3aE9W9/4C7glq7iiJNZeoWafPf6F+6DkJja08swFiFXHQxzu615YNk9Zz5qnslTMJOl
-         Dn/lyOhyOJN0gTgDdR1seSS0NcatfhjeRt12rQp5ULTQ6/osxuxad83i2/YOy2lQpICp
-         t9jPILnugeBtER8V6OlBki2r7n+SMW7G900w1+xpSrtnhg84sNAzWRT8PYkZELUhZPbv
-         kCRGVOHtyx0qGu5Fhe+39jY6i8JEH3PzsFFNj/6pRC8jf9kpG3iI5lbn1XG40CjXzVrj
-         98sQ==
-X-Gm-Message-State: AOJu0YwcJX09Sau+zLr7ygTSSaVMgi2H6Kyl5gUuBFEcJaxajr2zRmTT
-	841Y4ZnBsDzNNskHVMoaz9tZd3P2X1/SXCW+zCQ2ZZVLSVpkp3yVzY7mxYzVayLBT5EEf0dhj7h
-	UDFjQPrlS2M+/oIi04J/6wqpExZg=
-X-Google-Smtp-Source: AGHT+IERyjvfCjhn603iTivehWnyeXs3W/EcTiLPKkZ4jkU87YeiavRXuORh8ve9NLURqBkLybIhq4E0QvKF6/s6xIQ=
-X-Received: by 2002:a2e:2e11:0:b0:2d0:d3d8:a44d with SMTP id
- u17-20020a2e2e11000000b002d0d3d8a44dmr4995934lju.41.1707777713943; Mon, 12
- Feb 2024 14:41:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707777726; x=1708382526;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+NC5nXZUhD7OgbbLjAWuedjAC2AnjYG2VXHEAtTQZ1k=;
+        b=P+OA7pgsxFJmtGfZEyMdsugjLc4qdLlgOUXjYT9FzXpgZT49HpjXsOiVF6Rg4gyO9X
+         9SGo+Xg6ovx4AS8dIkOMHm/aTCOrE3TLFAIw9GbRy6eVYXOMjls9skmjSKmf5Izs3ps8
+         bHwuAxtGJp2HV/29fQKNhpbqsXPZXJnAn13pA9VI96WTn36+xB59fGJsh6+pyDUsA5Gl
+         d1tguRuvs9Rw7rt+LhxF4CPbh1GG54NDe3sUhL53UT9yqfl4V67whCIs2+Z9OFerzElq
+         tfGMqO8L2ehKbVI4ujTirxIYYDYWuSu0TMOa14/h/hNWt1RENhosvP4pWPe3dai+gG7Y
+         ccYQ==
+X-Gm-Message-State: AOJu0Yz9qA4mfiPnLWcEEdQkZbmAoFhAdg6BHlqbcL1ua40XjVBjIX6q
+	GCEIAB5nRzkkQPLEDOpPlSVM6stvnue8ZJLsW4BBZzwXXY52KSf0QuMr9uzL7EM=
+X-Google-Smtp-Source: AGHT+IFnrOmQoo6eJe1/RxznBdECXPfen0HdUphSAC9KrCi2m89MpvKcbiuhkfeA9VZKPwLLLd5Y1g==
+X-Received: by 2002:aa7:d614:0:b0:55f:2f0a:d959 with SMTP id c20-20020aa7d614000000b0055f2f0ad959mr5696422edr.37.1707777726065;
+        Mon, 12 Feb 2024 14:42:06 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWOI5WW/OVCweeWd3zCJ9WQtpFTgK5uz7v2v3QjvO2e+u2RQH6A+nRA3G+I/CbKdMoiHvD78DHdo2ZYR52UOJOANaw/f4hhreVUsTAtN03QsVSBBrFMK7Q5DcoRdaO7sGarH4YgMW2Bxs2+wtEftIz/0ivBsawQD+Cm6kLklCy1Y0Z9rRrjo933mti9HjNR6x026Ya5TGTqka+3yy2Ju2SE4BNkj6YOSR91+vTSIyzztz+ExVy7Y8DV7ANbJq0BUdoIJ8thM02wdrI/FBbjG8kcPgXj/vPKcNqPYn/EZcoHJAMigVG8ujKTn2x8VE1tjw==
+Received: from [192.168.192.135] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
+        by smtp.gmail.com with ESMTPSA id ig4-20020a056402458400b0056098a293cdsm3107887edb.69.2024.02.12.14.42.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 14:42:05 -0800 (PST)
+Message-ID: <f108d588-c6ba-4efd-9792-bd4dbd68fb7d@linaro.org>
+Date: Mon, 12 Feb 2024 23:42:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208012057.2754421-2-yshuiv7@gmail.com> <CAK7LNAT0KT7sbZJZNXtq5waM-UjUm4zHyf9xHZc3uHLvZ_eAfA@mail.gmail.com>
- <CAFP8O3Kqx-gdTBFn_hesWzd-6NCpGEz1=fMoJXuX+n4c7sp0Bw@mail.gmail.com>
-In-Reply-To: <CAFP8O3Kqx-gdTBFn_hesWzd-6NCpGEz1=fMoJXuX+n4c7sp0Bw@mail.gmail.com>
-From: Yuxuan Shui <yshuiv7@gmail.com>
-Date: Mon, 12 Feb 2024 22:41:42 +0000
-Message-ID: <CAGqt0zzq3yK6340d1OxGAByH+ZQLV3LWY+-WqxTu7MGU0cNbyQ@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Fix building with LLVM on NixOS
-To: Fangrui Song <maskray@google.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev, nathan@kernel.org, 
-	nicolas@fjasle.eu, linux-kbuild@vger.kernel.org, tglx@linutronix.de, 
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
-	hpa@zytor.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sm6115p-j606f: Add some peripherals
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240212-topic-j606f_periphs-v1-1-5dcacd483e28@linaro.org>
+ <CAA8EJppHv9g4HnEFaEaCH=FnvJdnFfnr+rt=Onyqh-er8UA6TQ@mail.gmail.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
+ BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
+ HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
+ TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
+ zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
+ MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
+ t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
+ UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
+ aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
+ kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
+ Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
+ R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
+ BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
+ yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
+ xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
+ 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
+ GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
+ mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
+ x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
+ BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
+ mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
+ Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
+ xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
+ AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
+ 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
+ jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
+ cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
+ jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
+ cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
+ bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
+ YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
+ bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
+ nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
+ izWDgYvmBE8=
+In-Reply-To: <CAA8EJppHv9g4HnEFaEaCH=FnvJdnFfnr+rt=Onyqh-er8UA6TQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 12.02.2024 22:19, Dmitry Baryshkov wrote:
+> On Mon, 12 Feb 2024 at 15:44, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>
+>> This tablet features quite a bunch of I2C-connected devices, such as
+>> a Richtek RT1715 USB-C controller, a MM8013 fuel gauge, FSA4480 Type-C
+>> audio mux, TPS65132 regulator and some more.
+>>
+>> Add the aforementioned ones and document others.
+>>
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> ---
 
-On Mon, Feb 12, 2024 at 9:59=E2=80=AFPM Fangrui Song <maskray@google.com> w=
-rote:
->
-> On Mon, Feb 12, 2024 at 1:30=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
-org> wrote:
-> >
-> > +Cc: Fangrui Song <maskray@google.com>
-> >
-> >
-> >
-> > On Thu, Feb 8, 2024 at 10:22=E2=80=AFAM Yuxuan Shui <yshuiv7@gmail.com>=
- wrote:
-> > >
-> > > NixOS is designed to have immutable packages, and explicit dependenci=
-es.
-> > > It allows multiple different versions of the same shared library to
-> > > co-exist in its file system.
-> > >
-> > > Each application built with Nix, the NixOS package manager, will have
-> > > paths to its dependency shared libraries hardcoded into its executabl=
-e,
-> > > this includes the dynamic linker. To achieve this, Nix adds a
-> > > --dynamic-linker linker flag when building any application.
-> > >
-> > > This isn't a problem if the kernel is built with ld.bfd, because ld.b=
-fd
-> > > ignores the --dynamic-linker flag when the resulting binary doesn't h=
-ave
-> > > a DT_NEEDED entry. However, ld.lld respects --dynamic-linker
-> > > unconditionally, which breaks linking in several cases.
-> > >
-> > > This commit adds an explicit --no-dynamic-linker flag which overrides
-> > > the flag added by Nix.
-> >
-> >
-> >
-> > I expect some Acks from LLVM folks (especially, from Frangrui)
-> > if this is the right thing to do.
->
-> GNU ld seems to ignore --dynamic-linker for a position-dependent
-> executable (ET_EXEC) when there is no DT_NEEDED entry.
-> ld.lld respects --dynamic-linker in this case. Before this kernel
-> report, I do not know any user inconvenienced by this difference.
-> (mold respects --dynamic-linker as well.)
-> This could be helpful to test an executable with PT_INTERP but no DT_NEED=
-ED.
->
-> I think this patch does not fix non-x86 builds.
+[...]
 
-This is true. I am not familiar with non-x86, and I don't have a test
-environment for them.
-That being said, if you or someone can point to me what other linker
-flag variables I need
-to change, I will try to fix them as well.
+>> +                       /* TODO: Add a proper PD setup */
+>> +                       typec-power-opmode = "default";
+>> +                       try-power-role = "sink";
+>> +                       power-role = "dual";
+>> +                       pd-disable;
+>> +
+>> +                       port {
+>> +                               rt1715_hs_ep: endpoint {
+>> +                                       remote-endpoint = <&usb_dwc3_hs>;
+> 
+> Most likely this port should have the SBU endpoint connected to
+> fsa4480. Also, if SS lines are connected, there should be a link
+> between this connector and the QMP PHY.
 
-> It feels to me that NixOS should provide a linker wrapper that does
-> not force --dynamic-linker=3D.
+I wish there was usb3. Unless lenovo did that in hw and didn't hook it up
+in software, but that's just wishful thinking. I'll give it a shot anyway :P
 
-I actually tried that. The problem is, NixOS tries to enforce the same
-build environment
-for downstream packages that depend on the kernel (think kernel
-modules, perf, etc.) This
-is reasonable in most cases. But if I use a linker wrapper that does
-_not_ have --dynamic-linker
-for the kernel, then all downstream packages will inherit the same
-linker wrapper too. This
-breaks, for example, zfs. Because its configure script tries to build
-some executable and
-run them, which fails because it's using a linker wrapper without
---dynamic-linker.
-
-> While it's extremely uncommon (and generally not recommended), certain
-> programs invoke the linker directly (instead of using a compiler
-> driver).
-> Such programs would run into a problem when they make a
-> position-dependent executable with no dependency as well.
-
-I don't think I quite get what you are trying to say here.
-
-> I don't feel that NixOS forcing --dynamic-linker=3D is enough
-> justification to change linkers.
-
-You already rejected the option of changing lld to match ld.bfd's behavior.
-If you reject this kernel patch also, then what's left can only be some hor=
-rible
-hacks on NixOS' side; or this means NixOS will never get a clang built kern=
-el.
-Which would be quite unfortunate.
-
->
-> > > Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
-> > > ---
-> > >  Makefile                      | 3 +++
-> > >  arch/x86/boot/Makefile        | 2 +-
-> > >  arch/x86/realmode/rm/Makefile | 2 +-
-> > >  3 files changed, 5 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/Makefile b/Makefile
-> > > index a171eafce2a3b..10ed19caecb1b 100644
-> > > --- a/Makefile
-> > > +++ b/Makefile
-> > > @@ -531,6 +531,9 @@ RUSTFLAGS_KERNEL =3D
-> > >  AFLAGS_KERNEL  =3D
-> > >  LDFLAGS_vmlinux =3D
-> > >
-> > > +LDFLAGS_MODULE +=3D --no-dynamic-linker
-> > > +LDFLAGS_vmlinux +=3D --no-dynamic-linker
-> > > +
-> > >  # Use USERINCLUDE when you must reference the UAPI directories only.
-> > >  USERINCLUDE    :=3D \
-> > >                 -I$(srctree)/arch/$(SRCARCH)/include/uapi \
-> > > diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
-> > > index 3cece19b74732..390a4604166eb 100644
-> > > --- a/arch/x86/boot/Makefile
-> > > +++ b/arch/x86/boot/Makefile
-> > > @@ -102,7 +102,7 @@ $(obj)/zoffset.h: $(obj)/compressed/vmlinux FORCE
-> > >  AFLAGS_header.o +=3D -I$(objtree)/$(obj)
-> > >  $(obj)/header.o: $(obj)/zoffset.h
-> > >
-> > > -LDFLAGS_setup.elf      :=3D -m elf_i386 -z noexecstack -T
-> > > +LDFLAGS_setup.elf      :=3D --no-dynamic-linker -m elf_i386 -z noexe=
-cstack -T
-> > >  $(obj)/setup.elf: $(src)/setup.ld $(SETUP_OBJS) FORCE
-> > >         $(call if_changed,ld)
-> > >
-> > > diff --git a/arch/x86/realmode/rm/Makefile b/arch/x86/realmode/rm/Mak=
-efile
-> > > index f614009d3e4e2..4b42006d9ce02 100644
-> > > --- a/arch/x86/realmode/rm/Makefile
-> > > +++ b/arch/x86/realmode/rm/Makefile
-> > > @@ -50,7 +50,7 @@ $(obj)/pasyms.h: $(REALMODE_OBJS) FORCE
-> > >  targets +=3D realmode.lds
-> > >  $(obj)/realmode.lds: $(obj)/pasyms.h
-> > >
-> > > -LDFLAGS_realmode.elf :=3D -m elf_i386 --emit-relocs -T
-> > > +LDFLAGS_realmode.elf :=3D --no-dynamic-linker -m elf_i386 --emit-rel=
-ocs -T
-> > >  CPPFLAGS_realmode.lds +=3D -P -C -I$(objtree)/$(obj)
-> > >
-> > >  targets +=3D realmode.elf
-> > > --
-> > > 2.43.0
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
-> >
->
->
-> --
-> =E5=AE=8B=E6=96=B9=E7=9D=BF
-
---=20
-
-Regards
-Yuxuan Shui
+Konrad
 
