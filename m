@@ -1,121 +1,139 @@
-Return-Path: <linux-kernel+bounces-61804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A2B8516BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AE638516C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:14:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9B6E1F21865
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:14:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3D961F2558C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81EBE3C495;
-	Mon, 12 Feb 2024 14:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 714143CF55;
+	Mon, 12 Feb 2024 14:09:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A63I6iYT"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JpdGu26Z"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331883C47D;
-	Mon, 12 Feb 2024 14:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6403CF41;
+	Mon, 12 Feb 2024 14:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707746931; cv=none; b=niywRmGsNZFa0KN5OAsV7E/m9yy9peOu+4yu7ou0psu2Zonki62GZ2znr0oVmB4jusizNF+ugYYXeawSLAA2ThV06xkD2w6el4z324Gzym6Fjv2MSqBKAaU6IncDPfOrAHrYuC41K7Lq51mZMJjlGfQg02QaUjCzQAH7cQNuzsI=
+	t=1707746966; cv=none; b=tdBTtlcsYmh7uFCIFai/nFvJmd6wInO9SiRM8P0gKZNVhyeeUZtGr/QllPAPpxpFLyyyQ9281a7fagdeS3kSkyuHXzf/0r+OVtB5uKlDY6OPOXQ4ZCVv83CRhlAHtcc69LvD7W5uLfvUbN1uuSLpeTvtyE3zEiXjz5ZEKYpX1Yg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707746931; c=relaxed/simple;
-	bh=2NxEfRi/KZyukI5j1INkNRmDIlc5v9XgZNfzqtBrPoM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=JElFAcvO/7vofdApVHHZx5Q+Eg3yTH1nc4RULI4/EibFC5STEZscgqv5aAH71pS8hd4bpxLMx8TZVfmjG3VQHWi1PR+ASJkbqxJoxyFnU/cic7S5EU1HgtpMzuyzTsm2kFIg4uUKUmewgUpf1bMrvPu0l3WXwvFdXF3DPOAnGAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A63I6iYT; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3cb228b90bso74446666b.3;
-        Mon, 12 Feb 2024 06:08:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707746928; x=1708351728; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KS39/++6JsxDU3N8okrEe8YXDzy7pHHaWYVzpuOYLgg=;
-        b=A63I6iYTKLYwC3XEtc36kn7RnU160EDVHGx+K+WixC+Z99OGJkVM87PxqEws77cj8R
-         4MP3/4bKFwFtcKvg0HHn3tpGXEHeX3dZ/zc774ZvfHeOSCuu6rNhnM/5b0nQUlVAwwAO
-         kH1u6wO7ghfwAWht0TM16RXkkvI7oGRBks6fCFZI3U1y0mWWzDE46dIV09RnLczc6aQs
-         KcDiShyzTTECLXsI8QFzktJtkfDgC2myfGA8Hr35Jr0G/yaKzyvARUxXZwS+587I/h9D
-         UeQ7TrSrsInU68lyd16VC2Z+Av5hix6bUrcekENaZ6fcQi4au0LlNZX+Czd13t9d+65L
-         qCOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707746928; x=1708351728;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KS39/++6JsxDU3N8okrEe8YXDzy7pHHaWYVzpuOYLgg=;
-        b=gHyMG2fiO/Qoa6G460HCpkBP+KpQ/JZQm0rgsISi0G1166wBhhLK1j498LBmCFmsQ3
-         KCCGGuUnv3NVZYEopUXwR+WiBYs+DplCOhUima5wPhb1lph1ZZulxcKXElrbI1iAcz1A
-         enM6RN2EHKpfW3wN7TgBPJ1G3lHFyAQtHYvCda+ZB+CjSvYlr04/6KlcTGHPjC8KWg77
-         HtqJz0U2ULisC7L6nimwgNIn1fNzwqTm4PrQ/b6XtrYIB7wYkJiBv2vmZZnO1cFaZHVE
-         O+OH3pJCvvwMg/1Heeo01hSuCY9ap3xhf7yOmL/d449ABhX3Mw4AIlcrc8667C1QIt49
-         iHLA==
-X-Gm-Message-State: AOJu0Yx3PJ0FrBJ4HywSowXR1f+TyMnrywrGLNKxQ0+wpeOtDazzuGD5
-	GtGgEAfE2IQQGioQKCxMSSkLetC6PniAJu6RhU+Objr6LPOLmCcg
-X-Google-Smtp-Source: AGHT+IGfVEJx4LWDgYWE3ld0HjRSOgXQUBR9hWzUNXX3UUSMz8RLw8CoziSBIt169QsTPnHdSfN4Qw==
-X-Received: by 2002:a17:906:74b:b0:a3c:c5ee:fd84 with SMTP id z11-20020a170906074b00b00a3cc5eefd84mr1233060ejb.48.1707746928063;
-        Mon, 12 Feb 2024 06:08:48 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV6BXAYSTB4A09X5YCrrAMe2VWbTRfMKzuotz+gBQ5EH62N1Dv5uAe34IayoaXL/DFVIUXGwDZlFZyUlC/OT2601OAkb2s2fkmcINYk8aaJfqL3z0OBTJWeLXGECSdC2AsP5xXTd4dhj2H2g/VXDee7heK5cMChdVFfLv0pwXaOSGYhx0yOyLYf5wM2yIe5jg9mASNtGpKvU9FrQ0TSNwBGQ6k8eTAW1rv1JcbIQFU7gHai7KXZQHup13Ps27T/x5Iq6XjbiQFAwig0AOHDLNoRHeRLAqemeqcnG8Ox1wXiwSUCH2xHI1LXWmP+1KzwtWYXTLJeJgxNnlvX5AoCGJKganRMUDmWj4iOIJF6fvNgoCGFg2F9HF7yw0mDWOEGGLHn6evxoJT2Zdc8jp8ngMdws7Z2jAd9tE0plip481CqEphQ5TL5/9ivVoA3l5Lqqvk8IA==
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id kq11-20020a170906abcb00b00a3820ec721csm247967ejb.8.2024.02.12.06.08.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 06:08:47 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>,
+	s=arc-20240116; t=1707746966; c=relaxed/simple;
+	bh=OmHT/FrhDUBQDUhpYbJEhjhkJGs91DlOR2aZmGme0ZE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BuOak+LfBZiAHnnD4dGjiaAYdI1SE9jeqzgIN7IdoAO/f5+u0NVnv8FICcanUUj1mf+dWXG1a2WyHypssaLJfKQGAusY/YmU+MZCcUaNY8WV84wzCq7ts+aMNV1pix0myQ7PceYNiIwiYZ+mq89GFjvQSEAczlLiWpNp5t8+9nw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JpdGu26Z; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707746966; x=1739282966;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=OmHT/FrhDUBQDUhpYbJEhjhkJGs91DlOR2aZmGme0ZE=;
+  b=JpdGu26ZalTrkWHSQxOCb/8u7pi+JSHdjSvetd6XkWueBdE/ZtXm/+Zk
+   BwkFwUxjNID9AvLL0Rp53KJTEJKHJoC1/chmf5kmw6shBUVNxLvKCusVB
+   0t3Av85PJJLKAf1HXoY+M0KpH4Ut+KXTkg4cXjhxxgdtaVtppZUglDcsc
+   ENSVE5siJkNxr4c0VhQ/A2eSHdjMhoQ9sGJxWt+vojBL0rSqeVjwE9b5k
+   JLfTEamLCAt3VlfeQe5TCUbgiWrZlfT8Lrnll8zTpLVfafrsHi3rREe6g
+   CTm8uHHmxsngi0tA3C02oXJA/AYqNt7dy3PgTtUxocgN+9lBGvVCxipVe
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="5536913"
+X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
+   d="scan'208";a="5536913"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 06:09:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="911493193"
+X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
+   d="scan'208";a="911493193"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 06:09:20 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rZWzn-00000003utH-0Cj3;
+	Mon, 12 Feb 2024 16:09:19 +0200
+Date: Mon, 12 Feb 2024 16:09:18 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Sebastian Reichel <sre@kernel.org>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] dt-bindings: vendor-prefixes: add smartrg
-Date: Mon, 12 Feb 2024 15:08:39 +0100
-Message-Id: <20240212140839.27150-1-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
+	Robin van der Gracht <robin@protonic.nl>,
+	Paul Burton <paulburton@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: auxdisplay: hit,hd44780: drop redundant
+ GPIO node
+Message-ID: <Zcomjp9oH9VfO3NA@smile.fi.intel.com>
+References: <20240212083426.26757-1-krzysztof.kozlowski@linaro.org>
+ <ZcofhWb8stiddmru@smile.fi.intel.com>
+ <906db6a6-48ba-41e5-be23-1dea0ecf96ee@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <906db6a6-48ba-41e5-be23-1dea0ecf96ee@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Mon, Feb 12, 2024 at 02:56:43PM +0100, Krzysztof Kozlowski wrote:
+> On 12/02/2024 14:39, Andy Shevchenko wrote:
+> > On Mon, Feb 12, 2024 at 09:34:24AM +0100, Krzysztof Kozlowski wrote:
 
-SmartRG described itself as a CPE manufacturer and produced few home
-network devices (e.g. wireless routers). Their SmartRG SR400ac router
-(smartrg,sr400ac) is covered by in-Linux DT binding and DTS file.
+..
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+> >> -    i2c {
+> >> -            #address-cells = <1>;
+> >> -            #size-cells = <0>;
+> >>  
+> >> -            pcf8574: pcf8574@27 {
+> >> -                    compatible = "nxp,pcf8574";
+> >> -                    reg = <0x27>;
+> >> -                    gpio-controller;
+> >> -                    #gpio-cells = <2>;
+> >> -            };
+> >> -    };
+> > 
+> > In patch 3 you updated the lines that have lost their sense due to this one.
+> 
+> How did they lose it?
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index bf6d8261725b..80a7c07401ed 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1305,6 +1305,8 @@ patternProperties:
-     description: Skyworks Solutions, Inc.
-   "^smartlabs,.*":
-     description: SmartLabs LLC
-+  "^smartrg,.*":
-+    description: SmartRG, Inc.
-   "^smi,.*":
-     description: Silicon Motion Technology Corporation
-   "^smsc,.*":
+Now they are referring to the non-existed node in the example. OTOH, there is
+already hc595 case...
+
+The Q here (as you pointed out that it's better to name nodes in generic way),
+how these names are okay with the schema (hc595, pcf8574) as being referred to?
+
+..
+
+> > And I agree with others, please leave this example in place.
+> 
+> What for? Why this binding is special and 99% of others do not need GPIO
+> expander in the example?
+
+Some people already tried to explain you their point of view, but I see that:
+- the unrelated nodes in the schemas are not welcome (as per your talks
+  and documentation);
+- the current file has other references that have no existing node in the
+  example;
+- you are DT maintainer, so I believe you know this better.
+
+With this, I'm almost (see above question though) satisfied with the series.
+
 -- 
-2.35.3
+With Best Regards,
+Andy Shevchenko
+
 
 
