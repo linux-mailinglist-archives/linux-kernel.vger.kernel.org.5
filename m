@@ -1,52 +1,62 @@
-Return-Path: <linux-kernel+bounces-61407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 067E58511FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:18:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95E30851201
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:18:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38A491C2170C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:18:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A63E1F21947
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 260FA39ACC;
-	Mon, 12 Feb 2024 11:17:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48DEE38FA0;
+	Mon, 12 Feb 2024 11:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uI3t9Err"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m1OuXjK8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB3C39877
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E722BAE7;
+	Mon, 12 Feb 2024 11:18:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707736664; cv=none; b=iBjfEKjHP/Et42baVZR1JtJhmnEZrBpoMCdWuxhM3Fl1YI5tgo5WbZ73iwoQ8MJNlvIsS3QPEaNR+NEaaSRg7AOObx7hjD4dNwm6XjYah/flusqHpz81lw6p9iGPbJEaJXV+sMCSfHi7d56arcsFoQU6eTQMQj+HiA1iaeVE/0c=
+	t=1707736706; cv=none; b=N41Dt154xHFD4JxPseBTjjhulTok+VEX1BoraXj5KeG5nh6h7V9fD+TrOTr3NUHJeVsx8vPu2BbkMx14UDD4T07S85Esdtk6Lc+qqfIPZhvtfpeWx3ZzJZtzfSEp0pC8lsauMfc1X6xQ2uz5iURx/3sRTQMJlizV4A6amKRG06w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707736664; c=relaxed/simple;
-	bh=YCI5M76ZWV3agMAEsxysptr2SwbMtl3GoSgyNq4kuHM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WilFmZqu6qcnSJPweSEY6heB3RguFYEyNYsmJUF4hZdOgCIlm9Sap7Kh/ZvS3UDQA/XviWbtNKlEPty2CRG+7ggS7YszQ46iJkoBcbV27DTHE9j+86be7/6G4DfCDbdtNcjRGIDYOMtn82GyJFzXCwK2hOlGWkew16z+CuQ9F6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uI3t9Err; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33642C433C7;
-	Mon, 12 Feb 2024 11:17:43 +0000 (UTC)
+	s=arc-20240116; t=1707736706; c=relaxed/simple;
+	bh=1lR4IsJGmLUexDJX/zjNYB7tgsa4JkZ3HcVTMHB2dNc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QIAs2vceSqIax5QePmVlBWZewiSyRJLN286BXnyu068jFSeuO1vaBLyFgL+C3BqGLYfS3fULK7JNV+6wC0ZTQSf+L6bRUr8foj3oxfeB0bf+KAcGu1PBtE/4atHoEKiWZ4j9fBrcLnWiv/7e/ML/ZlZtYfmy2SjqWbjpOgSoJcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m1OuXjK8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2547EC433F1;
+	Mon, 12 Feb 2024 11:18:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707736664;
-	bh=YCI5M76ZWV3agMAEsxysptr2SwbMtl3GoSgyNq4kuHM=;
+	s=k20201202; t=1707736706;
+	bh=1lR4IsJGmLUexDJX/zjNYB7tgsa4JkZ3HcVTMHB2dNc=;
 	h=From:To:Cc:Subject:Date:From;
-	b=uI3t9Err5RSXW5W3b0MsjFi/rTEbrQsdY0RZkCxI3OuIZHaoktNEWhszlyUdDfmSG
-	 aDryVTPOn9cBxqiUJNl5KopjoaOFBskt+vCtpzF85hlHlRDc45H8rP+DEsSXhT8ATh
-	 Ar2dYy++CV/rWqE2HXS3rgwb97LoGCL4aycz1fBRLlNx84BDdBZaccZXg08avAZeIW
-	 z/Z600Qbyso+3x1VEngdXtRWxbRcaVRfj5Ny9m2yqtUdeUG0CiYAzXORKYsx87xXVB
-	 wwZJZN1oCjBQTmHCK+AKPdpIFZK83ffIipbBza2Sv/1cf4Z8p24yFOqM5nXJ1EO6eI
-	 04D8nrJm8Uygw==
+	b=m1OuXjK8CZ+NAI6SOCsY1TaOBBI3XiORFTXfFMQ9vxA3c3yftkO8wpysTgFM97Q3q
+	 bJUqMUv9ebPvJdBSdzXnkFLHSJgYchoroVRa8XgogGgE8l064Eo3Ghdhf3jg5hwyJl
+	 4fqFxaCSroYO4hMXj0JJr2eCkQeJH2FsKa/XxCMLTF08OZi4sDZhk5d4EIO8VIn81v
+	 9kacs51BlOrxwHS56vkiZ6hTcegnAOltkl8drmJ0SKdBFZ0zjLBdIfO6cP9mvxB/gj
+	 zi1/nt8vcFiDJd/NTcmShtimOwOfvSTY+uyVdS4rcFPqrYrg+WxiRuF1nN9IH6umil
+	 1JgxnCfdxJT7g==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Tycho Andersen <tycho@tycho.pizza>,
-	Kees Cook <keescook@chromium.org>
+To: Lee Jones <lee@kernel.org>,
+	Daniel Thompson <daniel.thompson@linaro.org>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Helge Deller <deller@gmx.de>,
+	=?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+	Linus Walleij <linus.walleij@linaro.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
+	Flavio Suligoi <f.suligoi@asem.it>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Jianhua Lu <lujianhua000@gmail.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] samples: user-trap: fix strict-aliasing warning
-Date: Mon, 12 Feb 2024 12:17:31 +0100
-Message-Id: <20240212111737.917428-1-arnd@kernel.org>
+Subject: [PATCH] backlight: ktd2801: fix LED dependency
+Date: Mon, 12 Feb 2024 12:18:12 +0100
+Message-Id: <20240212111819.936815-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -58,67 +68,36 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-I started getting warnings for this one file, though I can't see what changed
-since it was originally introduced in commit fec7b6690541 ("samples: add an
-example of seccomp user trap").
+The new backlight driver unconditionally selects LEDS_EXPRESSWIRE, which
+is in a different subsystem that may be disabled here:
 
-samples/seccomp/user-trap.c: In function 'send_fd':
-samples/seccomp/user-trap.c:50:11: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-   50 |         *((int *)CMSG_DATA(cmsg)) = fd;
-      |          ~^~~~~~~~~~~~~~~~~~~~~~~
-samples/seccomp/user-trap.c: In function 'recv_fd':
-samples/seccomp/user-trap.c:83:18: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-   83 |         return *((int *)CMSG_DATA(cmsg));
-      |                 ~^~~~~~~~~~~~~~~~~~~~~~~
+WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
+  Depends on [n]: NEW_LEDS [=n] && GPIOLIB [=y]
+  Selected by [y]:
+  - BACKLIGHT_KTD2801 [=y] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE [=y]
 
-Using a temporary pointer variable avoids the warning.
+Change the select to depends, to ensure the indirect dependency is
+met as well even when LED support is disabled.
 
+Fixes: 66c76c1cd984 ("backlight: Add Kinetic KTD2801 backlight support")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- samples/seccomp/user-trap.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/video/backlight/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/samples/seccomp/user-trap.c b/samples/seccomp/user-trap.c
-index 20291ec6489f..a23fec357b5d 100644
---- a/samples/seccomp/user-trap.c
-+++ b/samples/seccomp/user-trap.c
-@@ -33,6 +33,7 @@ static int send_fd(int sock, int fd)
- {
- 	struct msghdr msg = {};
- 	struct cmsghdr *cmsg;
-+	int *fd_ptr;
- 	char buf[CMSG_SPACE(sizeof(int))] = {0}, c = 'c';
- 	struct iovec io = {
- 		.iov_base = &c,
-@@ -47,7 +48,8 @@ static int send_fd(int sock, int fd)
- 	cmsg->cmsg_level = SOL_SOCKET;
- 	cmsg->cmsg_type = SCM_RIGHTS;
- 	cmsg->cmsg_len = CMSG_LEN(sizeof(int));
--	*((int *)CMSG_DATA(cmsg)) = fd;
-+	fd_ptr = (int *)CMSG_DATA(cmsg);
-+	*fd_ptr = fd;
- 	msg.msg_controllen = cmsg->cmsg_len;
+diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
+index 230bca07b09d..f83f9ef037fc 100644
+--- a/drivers/video/backlight/Kconfig
++++ b/drivers/video/backlight/Kconfig
+@@ -185,7 +185,7 @@ config BACKLIGHT_KTD253
  
- 	if (sendmsg(sock, &msg, 0) < 0) {
-@@ -62,6 +64,7 @@ static int recv_fd(int sock)
- {
- 	struct msghdr msg = {};
- 	struct cmsghdr *cmsg;
-+	int *fd_ptr;
- 	char buf[CMSG_SPACE(sizeof(int))] = {0}, c = 'c';
- 	struct iovec io = {
- 		.iov_base = &c,
-@@ -79,8 +82,9 @@ static int recv_fd(int sock)
- 	}
- 
- 	cmsg = CMSG_FIRSTHDR(&msg);
-+	fd_ptr = (int *)CMSG_DATA(cmsg);
- 
--	return *((int *)CMSG_DATA(cmsg));
-+	return *fd_ptr;
- }
- 
- static int user_trap_syscall(int nr, unsigned int flags)
+ config BACKLIGHT_KTD2801
+ 	tristate "Backlight Driver for Kinetic KTD2801"
+-	select LEDS_EXPRESSWIRE
++	depends on LEDS_EXPRESSWIRE
+ 	help
+ 	  Say Y to enable the backlight driver for the Kinetic KTD2801 1-wire
+ 	  GPIO-controlled backlight found in Samsung Galaxy Core Prime VE LTE.
 -- 
 2.39.2
 
