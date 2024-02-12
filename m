@@ -1,92 +1,39 @@
-Return-Path: <linux-kernel+bounces-61317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A2E88510EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:32:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21C898510F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:33:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E33E1C215C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:32:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF2E3281A94
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7012BAE3;
-	Mon, 12 Feb 2024 10:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rvSUIlG3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gS0xYZ8n";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bJ3WSxTo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aitiJqMK"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DC428385
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FF939846;
+	Mon, 12 Feb 2024 10:32:46 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 855EC38F86;
+	Mon, 12 Feb 2024 10:32:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707733956; cv=none; b=okvA/jovW/fP2Z3bE/EqeXNQa/lz9aY4oKxwWOiYWP3280A+E7ulHLuhJfVCzFt3CqRWljQz2IRQa3Szaa8syNCniv+X2HheAtHRk5rHGgszSif32LdXD5E0hjF58PA+NB/ehc+wELbzN/tDpjVQnuxQ3sC9CcUTPk6VY7yzHCg=
+	t=1707733965; cv=none; b=b3pxc0VfJ2uUDzfOu4eYL4fKBHK7wws3YuMfjMxKubmVEoAMXRyLXo5SIHl5Hv11m6QAhuHRTsO4GaJ5wQrg1pRe4woJ4v4ayxyonTz9NxXaWm63+7KVbFb4Kx80tT7FZkKImFfDpINFu+uTb0P/03724rCm+ZqnwRp5N39kkog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707733956; c=relaxed/simple;
-	bh=ZL+iZTXbTE8pKIVyLeWG5D9ZrvCfW397REGv/VFxjtU=;
+	s=arc-20240116; t=1707733965; c=relaxed/simple;
+	bh=rue4OxYXJdrpeRwQ0vv+gyD470QjAXZx/8+YrSZvDYk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j4MYEQOldsRFVT3sMhBlLRSYOLbZ1UI4zmuq4hUuPrg5bSH4s571RI/Ws7OPWnA99FjxKEXLvf+9gKtR3GMSJpairxDt7QCNsZfuFpwgpub/+UUHNEG/kRTDGw3pLgn9zpiiNXOYCXwL4k1qw75eA9NSn2Kn0WxZxlbYcsRUab4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rvSUIlG3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gS0xYZ8n; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bJ3WSxTo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aitiJqMK; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9A3FF21F97;
-	Mon, 12 Feb 2024 10:32:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707733952; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xEvukcfEXo+TJxamA0z62txjQmubKA5pKuuaq+G1gcE=;
-	b=rvSUIlG3wHZ+3COtOGbqO+23go+XO6w3yhMJ+n/zeDPjJ3a8GPQMa9ORv4flGn5Y3443R+
-	9E6dQJ5nqR/Tsyg6sKgnyw/WwEAszA/8wwq6eAlxFVSL+UoF/Amp+hHTZh8ahxdSS6NnDN
-	yC6ndCQwTzNvDUuGTFGbs+uhtMMuEoo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707733952;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xEvukcfEXo+TJxamA0z62txjQmubKA5pKuuaq+G1gcE=;
-	b=gS0xYZ8nu4NnxKX23LSMEGS2YDbj9G+uPTKOzFEbShSEG21zAzGvD0mb39uLCxuzTPokZd
-	Ps4VF5HExUHizHBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707733950; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xEvukcfEXo+TJxamA0z62txjQmubKA5pKuuaq+G1gcE=;
-	b=bJ3WSxTopjt6ssb4s+nb9jduq3Q+G2+W5DsPGN0cJFVf9m05dNVEvpZnZ6Sxjao6OnLf1c
-	prcZzHw63KNYrngSDx7gphq22FDLy+ZqMZY9Rr6zNNurKcwXJV0D8xbwNLxATYOL94pw8R
-	Ei6M/nb54mE6iskJYmy3wY/4/F0g32E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707733950;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xEvukcfEXo+TJxamA0z62txjQmubKA5pKuuaq+G1gcE=;
-	b=aitiJqMKKUrsvrkiDNzHvKT/QvhYUkSD7pXYx984PPeBi7fwYMS9rOR4o1aw7/V6GiPMy5
-	U2vPcQ4wTrmfNXBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8838412FF7;
-	Mon, 12 Feb 2024 10:32:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EN7vIL7zyWU0FQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 12 Feb 2024 10:32:30 +0000
-Message-ID: <7f34e789-e01f-4929-a618-b73c04ebf4d2@suse.cz>
-Date: Mon, 12 Feb 2024 11:32:30 +0100
+	 In-Reply-To:Content-Type; b=owyDTD7uK+JDBge2yzPLOsfP22HVBbFB+1HJKUcFrtVvuCzLtWnQqtKOKFjML/llJUH2IbpzH7O1Z/sOXycoKPlSK7CnCHXYcosnWw7i8JLhSnjWZMOLIKG1M4QETjoWN6NeZf7XqOqNg+2tI4g/QOvlPvT5Ayx7z4zEE5s2Goc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 255FEDA7;
+	Mon, 12 Feb 2024 02:33:23 -0800 (PST)
+Received: from [10.57.78.115] (unknown [10.57.78.115])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 77AD83F762;
+	Mon, 12 Feb 2024 02:32:38 -0800 (PST)
+Message-ID: <590946ad-a538-4c99-947f-93455c2d96c6@arm.com>
+Date: Mon, 12 Feb 2024 10:32:36 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,109 +41,182 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] mm: compaction: update the cc->nr_migratepages when
- allocating or freeing the freepages
-Content-Language: en-US
-To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org,
- Zi Yan <ziy@nvidia.com>
-Cc: mgorman@techsingularity.net, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <afcd9377351c259df7a25a388a4a0d5862b986f4.1705928395.git.baolin.wang@linux.alibaba.com>
- <0773058df022fa701b78f9a6dfe3c501a1a77351.1705928395.git.baolin.wang@linux.alibaba.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <0773058df022fa701b78f9a6dfe3c501a1a77351.1705928395.git.baolin.wang@linux.alibaba.com>
+Subject: Re: [PATCH v2 09/10] mm/mmu_gather: improve cond_resched() handling
+ with large folios and expensive page freeing
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Yin Fengwei <fengwei.yin@intel.com>, Michal Hocko <mhocko@suse.com>,
+ Will Deacon <will@kernel.org>, "Aneesh Kumar K.V"
+ <aneesh.kumar@linux.ibm.com>, Nick Piggin <npiggin@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>, Michael Ellerman
+ <mpe@ellerman.id.au>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org
+References: <20240209221509.585251-1-david@redhat.com>
+ <20240209221509.585251-10-david@redhat.com>
+ <f1578e92-4de0-4718-bf79-ec29e9a19fe0@arm.com>
+ <6c66f7ca-4b14-4bbb-bf06-e81b3481b03f@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <6c66f7ca-4b14-4bbb-bf06-e81b3481b03f@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-0.09 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[alibaba.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.09
+Content-Transfer-Encoding: 8bit
 
-On 1/22/24 14:01, Baolin Wang wrote:
-> Currently we will use 'cc->nr_freepages >= cc->nr_migratepages' comparison
-> to ensure that enough freepages are isolated in isolate_freepages(), however
-> it just decreases the cc->nr_freepages without updating cc->nr_migratepages
-> in compaction_alloc(), which will waste more CPU cycles and cause too many
-> freepages to be isolated.
-
-Hm yeah I guess this can happen with fast_isolate_freepages() if it returns
-with something but not all the freepages that are expected to be needed, and
-then we get to isolate_freepages() again.
-
-> So we should also update the cc->nr_migratepages when allocating or freeing
-> the freepages to avoid isolating excess freepages. And I can see fewer free
-> pages are scanned and isolated when running thpcompact on my Arm64 server:
->                                        k6.7         k6.7_patched
-> Ops Compaction pages isolated      120692036.00   118160797.00
-> Ops Compaction migrate scanned     131210329.00   154093268.00
-> Ops Compaction free scanned       1090587971.00  1080632536.00
-> Ops Compact scan efficiency               12.03          14.26
+On 12/02/2024 10:11, David Hildenbrand wrote:
+> Hi Ryan,
 > 
-> Moreover, I did not see an obvious latency improvements, this is likely because
-> isolating freepages is not the bottleneck in the thpcompact test case.
->                               k6.7                  k6.7_patched
-> Amean     fault-both-1      1089.76 (   0.00%)     1080.16 *   0.88%*
-> Amean     fault-both-3      1616.48 (   0.00%)     1636.65 *  -1.25%*
-> Amean     fault-both-5      2266.66 (   0.00%)     2219.20 *   2.09%*
-> Amean     fault-both-7      2909.84 (   0.00%)     2801.90 *   3.71%*
-> Amean     fault-both-12     4861.26 (   0.00%)     4733.25 *   2.63%*
-> Amean     fault-both-18     7351.11 (   0.00%)     6950.51 *   5.45%*
-> Amean     fault-both-24     9059.30 (   0.00%)     9159.99 *  -1.11%*
-> Amean     fault-both-30    10685.68 (   0.00%)    11399.02 *  -6.68%*
+>>> -static void tlb_batch_pages_flush(struct mmu_gather *tlb)
+>>> +static void __tlb_batch_free_encoded_pages(struct mmu_gather_batch *batch)
+>>>   {
+>>> -    struct mmu_gather_batch *batch;
+>>> -
+>>> -    for (batch = &tlb->local; batch && batch->nr; batch = batch->next) {
+>>> -        struct encoded_page **pages = batch->encoded_pages;
+>>> +    struct encoded_page **pages = batch->encoded_pages;
+>>> +    unsigned int nr, nr_pages;
+>>>   +    /*
+>>> +     * We might end up freeing a lot of pages. Reschedule on a regular
+>>> +     * basis to avoid soft lockups in configurations without full
+>>> +     * preemption enabled. The magic number of 512 folios seems to work.
+>>> +     */
+>>> +    if (!page_poisoning_enabled_static() && !want_init_on_free()) {
+>>
+>> Is the performance win really worth 2 separate implementations keyed off this?
+>> It seems a bit fragile, in case any other operations get added to free which are
+>> proportional to size in future. Why not just always do the conservative version?
 > 
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->  mm/compaction.c | 2 ++
->  1 file changed, 2 insertions(+)
+> I really don't want to iterate over all entries on the "sane" common case. We
+> already do that two times:
 > 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 066b72b3471a..6c84e3a5b32b 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1779,6 +1779,7 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
->  	dst = list_entry(cc->freepages.next, struct folio, lru);
->  	list_del(&dst->lru);
->  	cc->nr_freepages--;
-> +	cc->nr_migratepages--;
+> a) free_pages_and_swap_cache()
+> 
+> b) release_pages()
+> 
+> Only the latter really is required, and I'm planning on removing the one in (a)
+> to move it into (b) as well.
+> 
+> So I keep it separate to keep any unnecessary overhead to the setups that are
+> already terribly slow.
+> 
+> No need to iterate a page full of entries if it can be easily avoided.
+> Especially, no need to degrade the common order-0 case.
 
-This is breaking the tracepoint TRACE_EVENT(mm_compaction_migratepages)
-which does
+Yeah, I understand all that. But given this is all coming from an array, (so
+easy to prefetch?) and will presumably all fit in the cache for the common case,
+at least, so its hot for (a) and (b), does separating this out really make a
+measurable performance difference? If yes then absolutely this optimizaiton
+makes sense. But if not, I think its a bit questionable.
 
-__entry->nr_failed = cc->nr_migratepages - nr_succeeded;
+You're the boss though, so if your experience tells you this is neccessary, then
+I'm ok with that.
 
-and is called after migrate_pages() finishes, so now this will underflow.
+By the way, Matthew had an RFC a while back that was doing some clever things
+with batches further down the call chain (I think; be memory). Might be worth
+taking a look at that if you are planning a follow up change to (a).
 
-Probably need to get a snapshot of cc->nr_migratepages before calling
-migrate_pages() and then feed that to the tracepoint instead of cc.
+> 
+>>
+>>>           while (batch->nr) {
+>>> -            /*
+>>> -             * limit free batch count when PAGE_SIZE > 4K
+>>> -             */
+>>> -            unsigned int nr = min(512U, batch->nr);
+>>> +            nr = min(512, batch->nr);
+>>
+>> If any entries are for more than 1 page, nr_pages will also be encoded in the
+>> batch, so effectively this could be limiting to 256 actual folios (half of 512).
+> 
+> Right, in the patch description I state "256 folio fragments". It's up to 512
+> folios (order-0).
+> 
+>> Is it worth checking for ENCODED_PAGE_BIT_NR_PAGES_NEXT and limiting accordingly?
+> 
+> At least with 4k page size, we never have more than 510 (IIRC) entries per batch
+> page. So any such optimization would only matter for large page sizes, which I
+> don't think is worth it.
 
->  
->  	return dst;
->  }
-> @@ -1794,6 +1795,7 @@ static void compaction_free(struct folio *dst, unsigned long data)
->  
->  	list_add(&dst->lru, &cc->freepages);
->  	cc->nr_freepages++;
-> +	cc->nr_migratepages++;
->  }
->  
->  /* possible outcome of isolate_migratepages */
+Yep; agreed.
+
+> 
+> Which exact optimization do you have in mind and would it really make a difference?
+
+No I don't think it would make any difference, performance-wise. I'm just
+pointing out that in pathalogical cases you could end up with half the number of
+pages being freed at a time.
+
+> 
+>>
+>> nit: You're using 512 magic number in 2 places now; perhaps make a macro?
+> 
+> I played 3 times with macro names (including just using something "intuitive"
+> like MAX_ORDER_NR_PAGES) but returned to just using 512.
+> 
+> That cond_resched() handling is just absolutely disgusting, one way or the other.
+> 
+> Do you have a good idea for a macro name?
+
+MAX_NR_FOLIOS_PER_BATCH?
+MAX_NR_FOLIOS_PER_FREE?
+
+I don't think the name has to be perfect, because its private to the c file; but
+it ensures the 2 usages remain in sync if someone wants to change it in future.
+
+> 
+>>
+>>>                 /*
+>>>                * Make sure we cover page + nr_pages, and don't leave
+>>> @@ -119,6 +120,37 @@ static void tlb_batch_pages_flush(struct mmu_gather *tlb)
+>>>               cond_resched();
+>>>           }
+>>>       }
+>>> +
+>>> +    /*
+>>> +     * With page poisoning and init_on_free, the time it takes to free
+>>> +     * memory grows proportionally with the actual memory size. Therefore,
+>>> +     * limit based on the actual memory size and not the number of involved
+>>> +     * folios.
+>>> +     */
+>>> +    while (batch->nr) {
+>>> +        for (nr = 0, nr_pages = 0;
+>>> +             nr < batch->nr && nr_pages < 512; nr++) {
+>>> +            if (unlikely(encoded_page_flags(pages[nr]) &
+>>> +                     ENCODED_PAGE_BIT_NR_PAGES_NEXT))
+>>> +                nr_pages += encoded_nr_pages(pages[++nr]);
+>>> +            else
+>>> +                nr_pages++;
+>>> +        }
+>>
+>> I guess worst case here is freeing (511 + 8192) * 64K pages = ~544M. That's up
+>> from the old limit of 512 * 64K = 32M, and 511 pages bigger than your statement
+>> in the commit log. Are you comfortable with this? I guess the only alternative
+>> is to start splitting a batch which would be really messy. I agree your approach
+>> is preferable if 544M is acceptable.
+> 
+> Right, I have in the description:
+> 
+> "if we cannot even free a single MAX_ORDER page on a system without running into
+> soft lockups, something else is already completely bogus.".
+> 
+> That would be 8192 pages on arm64. Anybody freeing a PMD-mapped THP would be in
+> trouble already and should just reconsider life choices running such a machine.
+> 
+> We could have 511 more pages, yes. If 8192 don't trigger a soft-lockup, I am
+> confident that 511 more pages won't make a difference.
+> 
+> But, if that ever is a problem, we can butcher this code as much as we want,
+> because performance with poisoning/zeroing is already down the drain.
+> 
+> As you say, splitting even further is messy, so I rather avoid that unless
+> really required.
+> 
+
+Yep ok, I understand the argument better now - thanks.
 
 
