@@ -1,110 +1,124 @@
-Return-Path: <linux-kernel+bounces-61454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3024585129E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:50:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 067DD8512A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:51:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0A2E1F238E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:50:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 387D11C220ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B270D39AC9;
-	Mon, 12 Feb 2024 11:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C3B39ADD;
+	Mon, 12 Feb 2024 11:51:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q3lQSYuu"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNRa8rWT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F7039FC0;
-	Mon, 12 Feb 2024 11:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E0D39860;
+	Mon, 12 Feb 2024 11:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707738622; cv=none; b=jf2/RX6i46vdERRwZ1AOsfG7gor6mvjPKSOLFPMyuq0+tncS4ZTYwYmRc0qO3c/nRahOjLw2S0jwgMyVxziRI2HTTVtEU7/ajTuQI7aMvgIJKUFDer6xfybmiAjOm2+ODiic88ETbs97TcViGbRaPoHe3vqRB4aCwuknXe8OtrM=
+	t=1707738706; cv=none; b=Ny+JWZE2B5usAFeBeowN/9u7quLE4upACQU7CRyKNiFu9PtD1t3HfzmxZIzsh00uCuxTw7lI+0c0uJSte/pMCWArOMfpjS4vlZRVcdjzI0TXvhcVviMraGKad3k3DZWJCuwfuvw4lguvawNvvwF6Sr2mf7/12vuwyPY7pLEIpn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707738622; c=relaxed/simple;
-	bh=zJ060dchQ2Wc2UN/j+Vrc5RN6W12O560DY3JiXNzlew=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fyz+lVDW9R9nghSW+1ziq+K0wIbhpF0KX++Jsar5uW1QlG2t8T7aJUOU5ZLL2eS04X1SLUdaviUOVe8PDPSsa21Ciseb9JncsNLG3CkcZyGxnN6VgxAm6d6tDweLj3oidmMgzx6b8hMR+DutbmM6WxQJlaKgBD0bL3sHPtfnduM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q3lQSYuu; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707738620; x=1739274620;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zJ060dchQ2Wc2UN/j+Vrc5RN6W12O560DY3JiXNzlew=;
-  b=Q3lQSYuuZltu8AFAbQz2LrouHm9aawJX2JMjpVh+ucl7C6ZySWAuGPlB
-   GMwFMnVbGsaiGVoP3JVWAWgOW5MJWK15GtbfAQOhal7gvOC4hQkMmqVYk
-   UwsFbbXsuhU2Sf0F8iQ4Nb313eFMmCf2rxoa86HeIB33Xx7MnCH9KmVCV
-   XitcK1QXQJzbLMybCc5g5JG8pjkG5Q0DoDLOojUaQ2Z+3wxtMglD03Z3s
-   DNXya3AelXGipYByPsiQhYKl+nTPF8/DUoZCLINwpO9GuvY8+DeGDmIeC
-   +NssTpXbS2zoltQWHC41D+8ZPY3vBku5mmGcq3J8w+k203RMJrlVtrJNf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="2055106"
-X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="2055106"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 03:50:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="911459839"
-X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="911459839"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 03:50:16 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rZUpB-00000003suL-3EH2;
-	Mon, 12 Feb 2024 13:50:13 +0200
-Date: Mon, 12 Feb 2024 13:50:13 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Robin van der Gracht <robin@protonic.nl>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Paul Burton <paulburton@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH v1 10/15] auxdisplay: linedisp: Provide a small buffer in
- the struct linedisp
-Message-ID: <ZcoF9ZxPBkVS_6Da@smile.fi.intel.com>
-References: <20240208184919.2224986-1-andriy.shevchenko@linux.intel.com>
- <20240208184919.2224986-11-andriy.shevchenko@linux.intel.com>
- <20240212092500.62f006cc@ERD993>
+	s=arc-20240116; t=1707738706; c=relaxed/simple;
+	bh=bTVJvlBr8xA7AJ8ry9czvvHc5Z9HCrBIlnOGVk+k5kc=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Lm58nMLKjhXFzJizaa8lswWYHELFv5y73ulS1hbqUC0CdMqhkb/gvcxb0lhW3ylO3jCB/I0cXHfL2YgErUyln1UaeDUJgJcUxywHCX7ONoK7f/e6RBBIEqNTOgnk7SKBRe+bToprrOr1aBnTpU4BNLaPHpxiL8BIA0Q7HyApTmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNRa8rWT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF1D3C433C7;
+	Mon, 12 Feb 2024 11:51:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707738706;
+	bh=bTVJvlBr8xA7AJ8ry9czvvHc5Z9HCrBIlnOGVk+k5kc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jNRa8rWTI8Tc3Pr4lUPjevvzTe7pAKhaadCCx0fkI019EIQ18Zdr6dJy3WPzLYCbD
+	 uCOjznDFiOybYCIq/C8Z4opYCEcxkGGWHuSOcDqLSsM4SwNstzL/qc54RqeV45IdxE
+	 rDWg9wmVSYMIeP+WQgrYSZmzHIHFVANpFtVGOtve2Y57b4a2IRAsZRkIcUOFjzunE1
+	 w5XReuwsR865lfiQmt6n9ninpXl24MCqdW1mjY4znTQbot3W2I9YzG83YR7p65dIQJ
+	 R8iKRkp6A4VaQNLEsot+ptjtRg45bfkP2VW1MJIcRaZB9sEYFnCFYX4YvF3DI4PX1w
+	 nZiyVOBKgHBVg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rZUqd-002OGl-Ck;
+	Mon, 12 Feb 2024 11:51:43 +0000
+Date: Mon, 12 Feb 2024 11:51:42 +0000
+Message-ID: <86frxx6gtt.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	David Matlack <dmatlack@google.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Sean Christopherson <seanjc@google.com>,
+	Fuad Tabba <tabba@google.com>,
+	Shaoqin Huang <shahuang@redhat.com>,
+	Chao Peng <chao.p.peng@linux.intel.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: fix kvm_mmu_memory_cache allocation warning
+In-Reply-To: <20240212112419.1186065-1-arnd@kernel.org>
+References: <20240212112419.1186065-1-arnd@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212092500.62f006cc@ERD993>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: arnd@kernel.org, pbonzini@redhat.com, dmatlack@google.com, arnd@arndb.de, seanjc@google.com, tabba@google.com, shahuang@redhat.com, chao.p.peng@linux.intel.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Mon, Feb 12, 2024 at 09:25:00AM +0100, Robin van der Gracht wrote:
-> On Thu,  8 Feb 2024 20:48:08 +0200
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-
-> > +	linedisp->num_chars = buf ? num_chars : min(num_chars, LINEDISP_DEFAULT_BUF_SZ);
+On Mon, 12 Feb 2024 11:24:10 +0000,
+Arnd Bergmann <arnd@kernel.org> wrote:
 > 
-> It's not a big buffer, but now it's always there even if it's not used.
-> And even if it's used, it might be only partially used.
-> Why not used a malloc instead?
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> gcc-14 notices that the arguments to kvmalloc_array() are mixed up:
+> 
+> arch/x86/kvm/../../../virt/kvm/kvm_main.c: In function '__kvm_mmu_topup_memory_cache':
+> arch/x86/kvm/../../../virt/kvm/kvm_main.c:424:53: error: 'kvmalloc_array' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Werror=calloc-transposed-args]
+>   424 |                 mc->objects = kvmalloc_array(sizeof(void *), capacity, gfp);
+>       |                                                     ^~~~
+> arch/x86/kvm/../../../virt/kvm/kvm_main.c:424:53: note: earlier argument should specify number of elements, later size of each element
+> 
+> The code still works correctly, but the incorrect order prevents the compiler
+> from properly tracking the object sizes.
+> 
+> Fixes: 837f66c71207 ("KVM: Allow for different capacities in kvm_mmu_memory_cache structs")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  virt/kvm/kvm_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 8f03b56dafbd..4c48f61cae35 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -421,7 +421,7 @@ int __kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int capacity,
+>  		if (WARN_ON_ONCE(!capacity))
+>  			return -EIO;
+>  
+> -		mc->objects = kvmalloc_array(sizeof(void *), capacity, gfp);
+> +		mc->objects = kvmalloc_array(capacity, sizeof(void *), gfp);
+>  		if (!mc->objects)
+>  			return -ENOMEM;
+>  
 
-malloc() infra takes more than this IIRC (something like up to 32 bytes on
-64-bit platforms) or comparable sizes. Yes, the malloc() along with the
-linedisp structure might make sense, but will require more invasive change.
+Huh, well spotted GCC. And thanks Arnd for the fix.
 
-Do you want me to drop this one from the set?
-(I have no hard feelings about it, as I see better way and just having no
- time for taking care about, as it's not the main point of the series.)
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+
+	M.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Without deviation from the norm, progress is not possible.
 
