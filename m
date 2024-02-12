@@ -1,108 +1,119 @@
-Return-Path: <linux-kernel+bounces-61793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17BD585169B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:10:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 607148516B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:12:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB4401F24A4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:10:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CFF628126D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:12:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AB83F9D7;
-	Mon, 12 Feb 2024 14:04:00 +0000 (UTC)
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C1E4E1C4;
+	Mon, 12 Feb 2024 14:04:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n33n+3iX"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657473EA8B;
-	Mon, 12 Feb 2024 14:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD934CE13;
+	Mon, 12 Feb 2024 14:04:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707746640; cv=none; b=UnzThGyqwdpHP8+RsZXb3Ga2Bc2Eqpd0bCgoJwBbDh3iwNMiKCpZ0qqA1czslw034lcXwZLwiThIFs0Mc+1x4tEYSo8oaRLKMVp86C3kwk2lSMtp21rcamlop05n8AsGdr2OoRayeOPkduRnRdW6uvCLr/EKSkx08jWvn77HJKA=
+	t=1707746659; cv=none; b=SHtS6L/RhRzNLMLL9RrxXB9PTJlX26tjPP+eyXVCiLODCrDdmWIsSpScccr92XZ5N7i+8/+DwQU5x2YO5z9E6+Oa6lTRqI9yR4HJUcDiu9quhP9o73td/pC1Z3gkdRrjZOQVQmtb/o0qMIH9WiikvJm05u6NiSZcfgzgHmrzruo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707746640; c=relaxed/simple;
-	bh=H/JiaCmNWv0EjZSg6nEGx1vCnFpm+C1tngX5CVtRbpY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Lmxhc1DzuzXKlBTCSFnGQel3CdgIeH/5RTGMJhyQKdlOFIxrFO5oiYtTQp2akbirTXoo35M6U0jZm6eGA1mnCI1pG/3qHCFzWVcKTyJbc4uSt12xAk5GERNj0k8meIj7019R3jvFetSfWOui/MMKuW6SyqGMDS61ULcZ3x9MU/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59a99ef8c7fso903841eaf.0;
-        Mon, 12 Feb 2024 06:03:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707746636; x=1708351436;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SH48FpNzIrh1irMaMafbrbeG1GqtnZpMpdefiQFlYzo=;
-        b=oWN6pnp4r4czomoKMVaS3ugHELDOqI5N8OX3JNVKLIjztQJCqPEuq3Jook3FbSz+uf
-         vcMgNV5RpguC+ObIShLCMoOzSyxlppAENkIC7MUDJyb/zGWj716aJcvglfTE57J/sgpw
-         G6sa5I+WiH/GOUR9+bGGIuaqT76jwMLRDDVvQ5UDNbn5ZJmnXB2zSIWZpVDCfEQQOgYz
-         mPcCqakn2NRVXKaqesnZMg0dUJueYEeOaQR/i+HvqOP8fpncMZ9LkPNZAPUw0DsJjrcc
-         4x7daRXAee2VqnJoKHaLEJTkELNZ1exTE/u62e1Mcgp6VMfJXMcLGJRMUlK0ySC5ZMzb
-         oO4w==
-X-Forwarded-Encrypted: i=1; AJvYcCWV7WH+Fk9o2Uttn1XECEo7Vil2ZPkfGfbhTyIMe/9WUYNTgi8E2DpA6W+TQgbVgWhpcPh+RVCAtBaa1LI41BtAEb6PmNecQlRqTx77uZHevWtGbZFcAdIBe7djajqXS/Pg9bf9tly90KicmPHO4E2rXl1jmSsBwFp1bEGnbz3adjJ6Tp8AjhOsyYkAuHRNiX9GI75PdowisIvAUZ76VGf/aCaIbBqBEg==
-X-Gm-Message-State: AOJu0Yy0KFKVcKeZGT9jNgWEh7aNRdJymVGWRJRD1jA9Rknq1sGFcpjS
-	Oi0ne8xVZQA4ITG//LhFFzSgA0Pb0Tqcg67bt/sKXkbk/zd4V6j5YW0arugFBM8=
-X-Google-Smtp-Source: AGHT+IFnP9k38r05lhUVn+K41SOG2mMb7rBFSoguX5NIklTY8am5/XpsYjU62F2UIWFQ91VR9G7yuQ==
-X-Received: by 2002:a05:6358:7f08:b0:17a:cfb0:828a with SMTP id p8-20020a0563587f0800b0017acfb0828amr7130490rwn.19.1707746635943;
-        Mon, 12 Feb 2024 06:03:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXZpxbIUv5LN0Ik/lc+aGjQkWt/AchNS838pMBO5RU36u36p/Pa5MW9AcSf9j9I8gPCmo3E7v411L9vytczJxrTI7anXxo6bZtJyfWahWQIwNj2tuPjHQApPc1XoQ1ZU0L6QtK9tarT6DHvQxBTFuk7UZDCJkrOp4OB/tX3lngVKGHoW53m5ko7l97Is/27x3aM1JlxEWdfqHu3N1ogTEla6uha7rAR/g==
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id n12-20020a81af0c000000b006077a4ff35csm18424ywh.93.2024.02.12.06.03.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 06:03:55 -0800 (PST)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso2886473276.1;
-        Mon, 12 Feb 2024 06:03:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUsaT3nOo7ZdUY+uo8rLPdXw2B15YV+GThlfM7/wTxmXvvsPzZqnimR+8JaHLt7GUdFeQfyQVt1S6EH3guDVFMsOeWAnS0hYIDdyyL6NBh9CQHefOY+R06KYiCr1r6chz4SVKjSa1ruJSLTvIYK8Uh5JaEMgF3VkJxN8t1dEtFvaWv35Pgs4eYLf9yO4eOLs2wRHPpzEdaDldBoepVnFAfKKJNS79q4pg==
-X-Received: by 2002:a25:2fcc:0:b0:dbd:7491:368f with SMTP id
- v195-20020a252fcc000000b00dbd7491368fmr5193777ybv.7.1707746635632; Mon, 12
- Feb 2024 06:03:55 -0800 (PST)
+	s=arc-20240116; t=1707746659; c=relaxed/simple;
+	bh=kzWubUFjeWgniWqds5o3I9UShRuEGy8wlJtxZHCh1NY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kzin1R0z1tosMB2+awIWdXfAmdjaXvrzleLpATkyeP3r0GBby7boI4HTNzhaeWcYOfiHAZAZ0rNKEw/8hrpOhYqD4/qzjXVm2xZS1rM08ScN9jLaf4OzB5mFaVHza/cpipq8VE+QRKOre1H744K/s3Iukk63j599DDzXKvkYDw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n33n+3iX; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707746658; x=1739282658;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kzWubUFjeWgniWqds5o3I9UShRuEGy8wlJtxZHCh1NY=;
+  b=n33n+3iXu6VdKe3eaXoKRu8ZhOKili5xDihavmmgWdCBdTxNxR/kyLAK
+   DKuVDiXeabpZ/SYo/kWHWCtDKK/gfK7DL0asBRXluPMmOONPFyjaljy4b
+   rHc1Wh8JAVLcoEw2TL1QpuwsIUrfW4pzgvmupiWobH9EaYBiyeOtY882T
+   HLnarCBVwL4289OMEbHEdZPg2kVCXnwltLH5FkuwGxrWxIgIPDCIGdzcJ
+   wyFAOTNws6tCTgO37pJbz6bQo/ZXUOWkxmWeKetI3tVZbHJ4DYzvZ/wxZ
+   dEyQpsr2+e/H6UEqDqT/LEyKgOKNGtEFke3mPRWlZicO6BGWQ120gQG2D
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="5536271"
+X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
+   d="scan'208";a="5536271"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 06:04:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="911491167"
+X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
+   d="scan'208";a="911491167"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 06:04:12 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rZWun-00000003upH-2z5c;
+	Mon, 12 Feb 2024 16:04:09 +0200
+Date: Mon, 12 Feb 2024 16:04:09 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Ralf Schlatterbeck <rsc@runtux.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Robin van der Gracht <robin@protonic.nl>,
+	Paul Burton <paulburton@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: auxdisplay: hit, hd44780: drop
+ redundant GPIO node
+Message-ID: <ZcolWdCeLf0nDPdY@smile.fi.intel.com>
+References: <20240212083426.26757-1-krzysztof.kozlowski@linaro.org>
+ <CAMuHMdU-c5_Z2AMNtNH4Cc4JUrn+oKU-1CumEOAP6=5Zomcj_A@mail.gmail.com>
+ <2922eece-5486-4eff-af99-f7060cb61d17@linaro.org>
+ <20240212115837.efz73yxinkysdmgh@runtux.com>
+ <e2a5b005-7916-4296-b072-c24efd4b3357@linaro.org>
+ <Zcogl6tqbMdQldKA@smile.fi.intel.com>
+ <d603a588-d312-486e-b6c9-647a6b90580c@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208135629.2840932-1-claudiu.beznea.uj@bp.renesas.com> <20240208135629.2840932-3-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240208135629.2840932-3-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 12 Feb 2024 15:03:44 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWVz8ybzA+WAfc88-8jeQ3oO=VL9QBuQdqLDSQW1SN44Q@mail.gmail.com>
-Message-ID: <CAMuHMdWVz8ybzA+WAfc88-8jeQ3oO=VL9QBuQdqLDSQW1SN44Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: renesas: r9a08g045: add PSCI support
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: magnus.damm@gmail.com, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, linus.walleij@linaro.org, 
-	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d603a588-d312-486e-b6c9-647a6b90580c@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, Feb 9, 2024 at 1:16=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
-rote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Add PSCI support to enable the suspend/resume with the help of TF-A.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Mon, Feb 12, 2024 at 02:59:02PM +0100, Krzysztof Kozlowski wrote:
+> On 12/02/2024 14:43, Andy Shevchenko wrote:
+> > On Mon, Feb 12, 2024 at 02:38:27PM +0100, Krzysztof Kozlowski wrote:
+> >> On 12/02/2024 12:58, Ralf Schlatterbeck wrote:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.9.
+..
 
-Gr{oetje,eeting}s,
+> >> Anyway, binding examples should not be collection of unrelated
+> >> solutions, because then we should accept for each device schema several
+> >> other variations and combinations.
+> > 
+> > Is this documented?
+> 
+> Yes, writing schema says what the example is. We repeated it multiple
+> times on multiple reviews, we made multiple commits multiple times and I
+> briefly mentioned it also in my talks.
 
-                        Geert
+Good to know, thanks!
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+-- 
+With Best Regards,
+Andy Shevchenko
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+
 
