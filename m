@@ -1,178 +1,135 @@
-Return-Path: <linux-kernel+bounces-61535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7800185135C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:17:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B91C851367
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:17:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34C1C2843BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:17:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E5E31C20B89
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7039E3A8EE;
-	Mon, 12 Feb 2024 12:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E3639FC4;
+	Mon, 12 Feb 2024 12:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CKG1fEDe"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eJPUqbih"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4833A278
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:15:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8B8339AE1;
+	Mon, 12 Feb 2024 12:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707740139; cv=none; b=g/qX1FRmwiymRyaLciOZ62YBtRfXUaPqcKJBtgkxZdy0r4DDV7qA5VU6feMM1SbUJ5eypZMh4liAG2oF/gwVPCdpS8G+9YF/Zjim51Xdd0hTPtU4iS0FRNM364mCzXdnBFUblVxO6UUmq+0cDyG5sRE2EFrB/fyJ+SoY9g2gnGw=
+	t=1707740256; cv=none; b=K/cM6hZTlY5kLoqDXJWb168q24qybpeDgHLqzHckhonQN57ab9y6UtPhn5zgqj6ZU0gzn0GQRYHH9fcgJn3oWvC/pRW41WmjKnIodFMBHMPrOk1AsamU0XfzIvIJCdMCajhHtXvj3LTtb2oRT7uNSyaz7XkT7eMxF1nQLMBLFdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707740139; c=relaxed/simple;
-	bh=N8tncqgbitEfsa+IsxrMjvd4SefbZ9HRuwb/K2AteQ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EnuEt5ovX8oKl4jak2J0KIcprRIc4bbJOeDZqxwJMYxd9rIPYalsQ1NLy1ec0LZPsBDCDKi4PwDw14dYgf/8+ZjzHB83YUNWNs4isSuBeeHnI4TKr8/4pGDsDKITpWqk03J5kab7p9nSr/Ats4z7Z3gX1cGSaQ+NUiHVi25E9ME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CKG1fEDe; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d89f0ab02bso188475ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 04:15:37 -0800 (PST)
+	s=arc-20240116; t=1707740256; c=relaxed/simple;
+	bh=h+eDKUqejupTNYV2ZlucWTDKZk68JVOgE7r1odf5v+A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FgA5RCyHP7y+6DyyDPIi7KffWwBoohuhgNK08PB3C/ONdqhh0cLP3JnVGDhv+sVcS8ipHpla4fPOmOoNFEehYLvCWbrS/UlmtLcbclc9TwwwjuWIi8ZHkxDkzlTdQvaHehJ0g7kbgIqabqTkdyuL1GMVzf9appntDct01RpAF1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eJPUqbih; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d71cb97937so29474925ad.3;
+        Mon, 12 Feb 2024 04:17:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707740137; x=1708344937; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bI7LEK4WDVLJPhhNr0Vd4fweJ6AqMok5h6N4cph4ogE=;
-        b=CKG1fEDepN4CIrqaufVAQZYW9Vwd8YwefbBvLT+9KzBCSvoO3RAY03XMK3qD2JPKqH
-         f+6mU2aD0eDZxFSiW+mjrLtlWSqJUnSg9b/6yZ6mWY2d47mGIIyxnacl6d2ZwiWg4Dnw
-         oYzM1ezr4IJo17SA6e5m+CFbpZD2sZctqogk+S65SOna5BtlQ5J6n9KT2zLx0gWyuC3g
-         FULci2RwlqWWC6XcB0kBSslamERgbM2GMGRv1rEYtoGurpfsOur7/6tqXdSRSwuTk6bI
-         28SkN+7ywnqw7Bq2w1v1Vq3z0rS+Lji0rG0UN0S1pSnJPxBdD6QTy0ntlS/WwxEoshSX
-         wOjQ==
+        d=gmail.com; s=20230601; t=1707740254; x=1708345054; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gUo2/Sg64m+gluTfzP+6rjHe5+qPkCNx3G6SYPGm/sI=;
+        b=eJPUqbihtaQiAlSpBldnTA/cRH4entRjTG671rrYwyDVRKO8TcFv1zDBojlOYYB3V/
+         17H/QdJnlKrDqBRQaXYvT1OdIrMBdoj8Nsz+aYvWxqKNwGUK9yJCESSYKEb4a8+n+WrR
+         I8hEaa2s7UnluZPnoKgRRiBNKNlSbIh7ZBxQ75evb7PZy3GBru5m8MqKki1EDGJl/XKA
+         5UXGbSTXNh3qnu7APLfPXLIy4dnGaB7ZrebQvKLN+zOjbRv2rNIOgBVvMxTJY2DCGK9i
+         QcnJvhuNrvtV3uGjPsT4StPA2vSEaJ1FJz72DpteXvGiSvk4KF9/yigocD9Um9ZkCDRL
+         vUfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707740137; x=1708344937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bI7LEK4WDVLJPhhNr0Vd4fweJ6AqMok5h6N4cph4ogE=;
-        b=Z0dxwUWWISriszNigdA4EgS7OPhFfHmYV1AwGc+WTRBZ5RVBi3/x/FsPDP//pFVJaN
-         WzufE6CcWxK5ZsaZJWn6oBg/8G1ztJRW+HrAGMlwBRyj77Fo/GeW6azpW6PUpj6d8NtU
-         z5E3GY9r7guGm6BeCRw70yV4X/QVn0XQnbhqnXQ7hJdqCEkNJbGb/CX3GFO8HesOqbx/
-         zzXf2HTR8hnMkrkXZAGyp5Ayns8IUSrUbjEh1Ax/344WxW2WJi3bRgPAm6UfkPGcY14C
-         c3zbs9C0OGPw2MD6x/wsvKvpbFyHo1MFNO9aEtpMHVKuM7LBrBf8YsOO8K47P5zeTfS0
-         bf8g==
-X-Forwarded-Encrypted: i=1; AJvYcCWsegCk3ou6IWhbjIb3yKOtnQGEBLH40Xd3IIWH+K7zmMHMU5dxF7ufsEIHnGeHtjZLDDGWHzsofflVyY1YA+V8nZYGn7JRqExBoAu/
-X-Gm-Message-State: AOJu0YzNXqGdlAKXBBiLBuK3Z4+4Cm6MT9LWx/Le8obDLyxkfQvg3/wc
-	3Ne02FLLRC/NtUFbtexbZWBuJizBpoDoidn9zOKfxw9uitpmmdG/iVnQCcAgfxQ15iBhUAjguC0
-	qfZToSL924wLQ8ZyUWyOJ4GOe4nvy4qWZIu5+
-X-Google-Smtp-Source: AGHT+IHBHINE+I1Ojvjs2h4YbI4fTibMLxN/GcemctMTpyQuPSntiSdNs0ixyKFyckYID55PescGAehf4Gwz57+8UM8=
-X-Received: by 2002:a17:903:44b:b0:1d9:a393:4a38 with SMTP id
- iw11-20020a170903044b00b001d9a3934a38mr253072plb.26.1707740136946; Mon, 12
- Feb 2024 04:15:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707740254; x=1708345054;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gUo2/Sg64m+gluTfzP+6rjHe5+qPkCNx3G6SYPGm/sI=;
+        b=Ikcc+vngzJE3l0Q2rCgnwfd9jsHYZHhO0+NjSt2TrjK5lfIdp+1S/hzmb1vRf+LRl5
+         15TrTtdSUBq46cpftN+0E+lsOw12WsdbsSC15vpyXQyu4LNONyliGw/H3juBr9EFbIT6
+         IwT3GOfB36ej8/YFsA5uCT9OjvUvBF/UIYhdgey/LOG3Bu1kVmmoYK0xM0DhnauVKCPQ
+         bFp3WFHnBeNXDNVct9US4PPAzpSyg146JBC98HkujF54iDJJN6ChOt7IoBRkQWlHqADt
+         HUnP95h8nIP3dcDVMDVDxawVshvRhQyuwdRv/mnS6JSzQXrk9d/EUmk1No+WUAnFYbAt
+         2leg==
+X-Gm-Message-State: AOJu0YxjuLyyTrfrNu4ZzXq3ryLPidjnesQw56j5j2Wwyqu6lW5XpICy
+	os8jnUJvUt+soYhV9SFyvtg2gMWEEbOkKZO7hngBCYyuvnab6zfR
+X-Google-Smtp-Source: AGHT+IFzZoWi800XZAi+x/ypG94jLrL9fnPO+EXDCwS1MscQgFPlWVxztSuKLwoHj+sgV2FOfGRUAg==
+X-Received: by 2002:a17:902:b696:b0:1d9:5596:ffe8 with SMTP id c22-20020a170902b69600b001d95596ffe8mr5309450pls.66.1707740253393;
+        Mon, 12 Feb 2024 04:17:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUYA8Xz5X9EaPh/+2SLYWC4a0TJgPvUOO27bVLQYpVaU5SGcwZsmMpHBougkK2XTigazcx1bA8Ak0t8ElLVcBUxwi1zB/8PJOrmrbKJN1FTyHVxMFLmgM4OyReOS/8ruOqxTSGJA4OWO6H4hhwYMLymcwuZoaOh92N3sy/nBfS/dR6iI6tCDs5gzJN/MIGAheQsCNqMO+JcVWBM7nJvk+l0sB+CrfCofsIvkh6NwWhcJVNfgcc8/5vbW8FpVOHdsZZK74eimU9+VKmawl0MhL2TVLc9ei8+aHK4TZClVLQN+MFdxONt/paHePhfZf46wQ0WK9cgEfEtthRrXnW5ZYTQ2a9+fdTXSaQdb5RrbMlno03vroOg1x/a6lrUBa1L1bCvtjYROSslGLWvl3nIqxkHCva8dRK+LpttCOfm/6z4GqbEc/Ig8PFW9o1IqBcdFh06Vu85JkTP50Pkd7DC
+Received: from localhost ([46.3.240.101])
+        by smtp.gmail.com with ESMTPSA id e21-20020a170902d39500b001d8e5a3be8asm242216pld.259.2024.02.12.04.17.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 04:17:33 -0800 (PST)
+From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+To: u.kleine-koenig@pengutronix.de,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu
+Cc: linux-pwm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	dlan@gentoo.org,
+	inochiama@outlook.com,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Subject: [PATCH v2 0/2] riscv: pwm: sophgo: add pwm support for CV1800
+Date: Mon, 12 Feb 2024 20:17:27 +0800
+Message-Id: <20240212121729.1086718-1-qiujingbao.dlmu@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000c47db50610f92cf9@google.com> <9175d10b-035c-4151-80bc-f76bddc194ba@gmx.com>
-In-Reply-To: <9175d10b-035c-4151-80bc-f76bddc194ba@gmx.com>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Mon, 12 Feb 2024 13:15:22 +0100
-Message-ID: <CANp29Y5f91cP6eLEX55x9rEQcTD1VZMEqYkcDjBDREOAzXMETg@mail.gmail.com>
-Subject: Re: [syzbot] Monthly btrfs report (Feb 2024)
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: syzbot <syzbot+listad2f01a497df9ab5d719@syzkaller.appspotmail.com>, clm@fb.com, 
-	dsterba@suse.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi,
+The Sophgo CV1800 chip provides a set of four independent
+PWM channel outputs.
+This series adds PWM controller support for Sophgo cv1800.
 
-It looks like existing reproducers for this bug began to fail after
-CONFIG_BLK_DEV_WRITE_MOUNTED reached torvalds and syzbot has not found
-a newer reproducer since then (though it does hit the bug, so it must
-be possible even with CONFIG_BLK_DEV_WRITE_MOUNTED=3Dn).
+Changes since v1:
+- drop full stop from subject
+- re-order maintainers and description
+- pass checkpatch.pl --strict
+- fix naming errors
+- add "Limitations" section
+- use a driver specific prefix for all defines
+- using bool instead u32 in cv1800_pwm_enable
+- check and set state->polarity
+- use mul_u64_u64_div_u64
+- use clk_rate_exclusive_get(), balance with clk_rate_exclusive_put()
+- using macro definitions instead of shift operations
+- remove shift operation on 0
+- use priv replace cv_pwm 
+- hardcode npwm
+- set atomic to true
+- remove MODULE_ALIAS
 
-I was was able to reproduce it locally using the older kernel revision
-built by syzbot:
-https://gist.github.com/a-nogikh/f68aa687a72aad4bb46a64d995c2415f
-FWIW here are the docs:
-https://github.com/google/syzkaller/blob/master/docs/syzbot_assets.md
+v1: https://lore.kernel.org/all/20240207055856.672184-1-qiujingbao.dlmu@gmail.com/
 
---=20
-Aleksandr
+Jingbao Qiu (2):
+  dt-bindings: pwm: sophgo: add pwm for Sophgo CV1800 series SoC
+  pwm: sophgo: add pwm support for Sophgo CV1800 SoC
 
-On Sat, Feb 10, 2024 at 9:48=E2=80=AFAM 'Qu Wenruo' via syzkaller-bugs
-<syzkaller-bugs@googlegroups.com> wrote:
->
-> >
-> > Ref  Crashes Repro Title
-> > <1>  5804    Yes   kernel BUG in close_ctree
-> >                     https://syzkaller.appspot.com/bug?extid=3D2665d678f=
-ffcc4608e18
->
-> I'm not sure why, but I never had a good experience reproducing the bug
-> using the C reproduer.
->
-> Furthermore, for this particular case, using that C reproducer only
-> reduced tons of duplicated dmesg of:
->
-> [  162.264838] btrfs: Unknown parameter 'noinode_cache'
-> [  162.308573] loop0: detected capacity change from 0 to 32768
-> [  162.308964] btrfs: Unknown parameter 'noinode_cache'
-> [  162.313582] loop1: detected capacity change from 0 to 32768
-> [  162.314070] btrfs: Unknown parameter 'noinode_cache'
-> [  162.323629] loop3: detected capacity change from 0 to 32768
-> [  162.324000] btrfs: Unknown parameter 'noinode_cache'
-> [  162.328046] loop2: detected capacity change from 0 to 32768
-> [  162.328417] btrfs: Unknown parameter 'noinode_cache'
->
-> Unlike the latest report which shows a lot of other things.
->
-> Anyone can help verifying the C reproducer?
-> Or I'm doing something wrong withe the reproducer?
->
-> Thanks,
-> Qu
-> > <2>  2636    Yes   WARNING in btrfs_space_info_update_bytes_may_use
-> >                     https://syzkaller.appspot.com/bug?extid=3D8edfa01e4=
-6fd9fe3fbfb
-> > <3>  251     Yes   INFO: task hung in lock_extent
-> >                     https://syzkaller.appspot.com/bug?extid=3Deaa05fbc7=
-563874b7ad2
-> > <4>  245     Yes   WARNING in btrfs_chunk_alloc
-> >                     https://syzkaller.appspot.com/bug?extid=3De8e56d5d3=
-1d38b5b47e7
-> > <5>  224     Yes   WARNING in btrfs_remove_chunk
-> >                     https://syzkaller.appspot.com/bug?extid=3De8582cc16=
-881ec70a430
-> > <6>  125     Yes   kernel BUG in insert_state_fast
-> >                     https://syzkaller.appspot.com/bug?extid=3D9ce4a3612=
-7ca92b59677
-> > <7>  99      Yes   kernel BUG in btrfs_free_tree_block
-> >                     https://syzkaller.appspot.com/bug?extid=3Da306f914b=
-4d01b3958fe
-> > <8>  88      Yes   kernel BUG in set_state_bits
-> >                     https://syzkaller.appspot.com/bug?extid=3Db9d2e54d2=
-301324657ed
-> > <9>  79      Yes   WARNING in btrfs_commit_transaction (2)
-> >                     https://syzkaller.appspot.com/bug?extid=3Ddafbca0e2=
-0fbc5946925
-> > <10> 74      Yes   WARNING in btrfs_put_transaction
-> >                     https://syzkaller.appspot.com/bug?extid=3D3706b1df4=
-7f2464f0c1e
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > To disable reminders for individual bugs, reply with the following comm=
-and:
-> > #syz set <Ref> no-reminders
-> >
-> > To change bug's subsystems, reply with:
-> > #syz set <Ref> subsystems: new-subsystem
-> >
-> > You may send multiple commands in a single email message.
-> >
->
+ .../bindings/pwm/sophgo,cv1800-pwm.yaml       |  45 ++++
+ drivers/pwm/Kconfig                           |  10 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-cv1800.c                      | 248 ++++++++++++++++++
+ 4 files changed, 304 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/sophgo,cv1800-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-cv1800.c
+
+
+base-commit: 7afc0e7f681e6efd6b826f003fc14c17b5093643
+-- 
+2.25.1
+
 
