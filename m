@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-62053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5099C851AD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:09:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA5BB851AD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83D261C214A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:09:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4436F1F29482
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241C54D5A5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8AF4D9FA;
 	Mon, 12 Feb 2024 17:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eiefn8T+"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g8rB7BgP"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B1C94652F;
-	Mon, 12 Feb 2024 17:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380C34B5CD;
+	Mon, 12 Feb 2024 17:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707757497; cv=none; b=NM9LT4YNTRxvuWAu4OEzUA/vf2yW6ccpSvEh5SKtuzn3Y6zGpLaYFxrxBhY2D9w/f2RflxYNIIIvxd2tfd7i25hglALZb4+KMBdNh4nKoyI6Gi6WALP8WFWhiJz05Ct8uh0VeVIZBUqUwyIi+rNFvIpyHlI1TA9kHOIldgr4b/w=
+	t=1707757497; cv=none; b=i0FqaQ0AgzXbTJcqwchvCeC4tI1XglXk/VAKxAkJ4vleiYWo0qaUU/jagFkMuHDp300C4M3dhF5fwzlJVqnB+1YgV8NRmr2nHS8b5E1gTsr26RqkMCdmmzw2ibEknqy97in5lpOCTuYkXaAe3FUm3WgpCiocXFsD0n7KH3MZtTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707757497; c=relaxed/simple;
-	bh=FH8g0LViq9a54GUNHUMfITSFf708fBC8temf69sHlcE=;
+	bh=xwQv8uq+9wANm7Kp3tnfC+qRvpRyTa5vpEt37Og3eA0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J2pfmXLGIoC7faABCKtVhSAdu967XRpciEJIVTjai+/noiNNcyB/lWnkeuen9Di+V8IxMCyY0rMMo5ByxkPrNBoj5o5CDRFweuMN5BehyddRWdLSWoF4+MY+dx8NcExi+2NUnY5bHUcUZhcLwbG4GSH+T+VjbYATF5XGhD25nEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eiefn8T+; arc=none smtp.client-ip=198.175.65.10
+	 MIME-Version; b=PIX0GcXeT9uDXMJFLZ6r/PWJRukOnAGGOxdnMfFaCWlaqEMyHsJXSwdCPGQT6mmLZp6apuFRVYxUUahWb8J+RgX+k0quVIX8XvbjEH11P7oTGoj44EwobIzXEKN/9iTZ2oa19bh9r+OFib2wffUgKVR+2pgwG8kvsn9EJNbQQ7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g8rB7BgP; arc=none smtp.client-ip=198.175.65.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707757496; x=1739293496;
+  t=1707757497; x=1739293497;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=FH8g0LViq9a54GUNHUMfITSFf708fBC8temf69sHlcE=;
-  b=eiefn8T+QGEnMSt+huirfFCg/ctPTp4hxasmG6N0LbQYFI9zNUCtzc0F
-   yIYr8GWoArzdux6GbPZvRmWv7DCh1fjeeaofg6/h7mBrZ5kfYkYVKgBFC
-   TnL5Bi+pSEv9qpt/27t1QYk8kCdGccELUHmOiPjODj/cKeTvgmYDkeWlB
-   t/Ttfn+F+k6NiN44DRq3irsJuAbznV9onN8JRS7989RLaeRcgw7Xg/AWJ
-   OgunsjGHV/fFQL08UWWdyRjSXSpAEKK+lnC5z2Nto7hDSwS+sRkMzCxq/
-   +//MlkA3ww6rEFKsAdab1tEu+Rjz/X8xhtMjNkVLmYbCBoh/butwMfrkb
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="19153236"
+  bh=xwQv8uq+9wANm7Kp3tnfC+qRvpRyTa5vpEt37Og3eA0=;
+  b=g8rB7BgPxQR73EpAeiCZdrWaSuvI012tT7YtglB5iG3gDMbO4TZgAwu4
+   37mi5uUCy5F45WWniZZ+XFR58A84Skr/WCpzKs8jnoV+5kC1LwdWbgOqB
+   5y4L7Sz9nzOUDdOlbknHW6o1HLnOyN4VjYit0Ix6rglaOgXeoXHQGJnh4
+   mal66F23svj5MeAgMbrJ4IXDWLIzwxqIku196XGHBfBxaUi79wrELmU3Q
+   mSxkpCREH2Y9ku4o3F59Fm8yTVmrgDKMS9mX24T2adQEaHNhiscQxXRbg
+   HSH05FS8rSXVsgIRg9R6x1t9K012YjeUQUUBR5eSAl69G6qK41OJYfm0C
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="19153240"
 X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
-   d="scan'208";a="19153236"
+   d="scan'208";a="19153240"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 09:04:51 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935116829"
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935116830"
 X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
-   d="scan'208";a="935116829"
+   d="scan'208";a="935116830"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 12 Feb 2024 09:04:47 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 3100243E; Mon, 12 Feb 2024 19:04:43 +0200 (EET)
+	id 36C4F2E9; Mon, 12 Feb 2024 19:04:43 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	devicetree@vger.kernel.org,
@@ -67,9 +67,9 @@ Cc: Andy Shevchenko <andy@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Robin van der Gracht <robin@protonic.nl>,
 	Paul Burton <paulburton@kernel.org>
-Subject: [PATCH v2 13/15] auxdisplay: ht16k33: Use buffer from struct linedisp
-Date: Mon, 12 Feb 2024 19:01:46 +0200
-Message-ID: <20240212170423.2860895-14-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 14/15] dt-bindings: auxdisplay: Add Maxim MAX6958/6959
+Date: Mon, 12 Feb 2024 19:01:47 +0200
+Message-ID: <20240212170423.2860895-15-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com>
 References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com>
@@ -81,110 +81,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-struct linedips embedds a small buffer for the string that we may reuse.
-Update the driver accordingly.
+Add initial device tree documentation for Maxim MAX6958/6959.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/auxdisplay/ht16k33.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
+ .../bindings/auxdisplay/maxim,max6959.yaml    | 35 +++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/auxdisplay/maxim,max6959.yaml
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index b104f08252dd..08cc05b9d216 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -85,11 +85,6 @@ struct ht16k33_fbdev {
- 	uint8_t *cache;
- };
- 
--struct ht16k33_seg {
--	struct linedisp linedisp;
--	char curr[4];
--};
--
- struct ht16k33_priv {
- 	struct i2c_client *client;
- 	struct delayed_work work;
-@@ -97,7 +92,7 @@ struct ht16k33_priv {
- 	struct ht16k33_keypad keypad;
- 	union {
- 		struct ht16k33_fbdev fbdev;
--		struct ht16k33_seg seg;
-+		struct linedisp linedisp;
- 	};
- 	enum display_type type;
- 	uint8_t blink;
-@@ -412,10 +407,9 @@ static void ht16k33_seg7_update(struct work_struct *work)
- {
- 	struct ht16k33_priv *priv = container_of(work, struct ht16k33_priv,
- 						 work.work);
--	struct ht16k33_seg *seg = &priv->seg;
--	struct linedisp *linedisp = &seg->linedisp;
-+	struct linedisp *linedisp = &priv->linedisp;
- 	struct linedisp_map *map = linedisp->map;
--	char *s = seg->curr;
-+	char *s = linedisp->curr;
- 	uint8_t buf[9];
- 
- 	buf[0] = map_to_seg7(&map->map.seg7, *s++);
-@@ -435,10 +429,9 @@ static void ht16k33_seg14_update(struct work_struct *work)
- {
- 	struct ht16k33_priv *priv = container_of(work, struct ht16k33_priv,
- 						 work.work);
--	struct ht16k33_seg *seg = &priv->seg;
--	struct linedisp *linedisp = &seg->linedisp;
-+	struct linedisp *linedisp = &priv->linedisp;
- 	struct linedisp_map *map = linedisp->map;
--	char *s = seg->curr;
-+	char *s = linedisp->curr;
- 	uint8_t buf[8];
- 
- 	put_unaligned_le16(map_to_seg14(&map->map.seg14, *s++), buf + 0);
-@@ -451,8 +444,7 @@ static void ht16k33_seg14_update(struct work_struct *work)
- 
- static int ht16k33_linedisp_get_map_type(struct linedisp *linedisp)
- {
--	struct ht16k33_priv *priv = container_of(linedisp, struct ht16k33_priv,
--						 seg.linedisp);
-+	struct ht16k33_priv *priv = container_of(linedisp, struct ht16k33_priv, linedisp);
- 
- 	switch (priv->type) {
- 	case DISP_MATRIX:
-@@ -471,8 +463,7 @@ static int ht16k33_linedisp_get_map_type(struct linedisp *linedisp)
- 
- static void ht16k33_linedisp_update(struct linedisp *linedisp)
- {
--	struct ht16k33_priv *priv = container_of(linedisp, struct ht16k33_priv,
--						 seg.linedisp);
-+	struct ht16k33_priv *priv = container_of(linedisp, struct ht16k33_priv, linedisp);
- 
- 	schedule_delayed_work(&priv->work, 0);
- }
-@@ -663,14 +654,13 @@ static int ht16k33_fbdev_probe(struct device *dev, struct ht16k33_priv *priv,
- static int ht16k33_seg_probe(struct device *dev, struct ht16k33_priv *priv,
- 			     uint32_t brightness)
- {
--	struct ht16k33_seg *seg = &priv->seg;
- 	int err;
- 
- 	err = ht16k33_brightness_set(priv, brightness);
- 	if (err)
- 		return err;
- 
--	return linedisp_register(&seg->linedisp, dev, 4, seg->curr, &ht16k33_linedisp_ops);
-+	return linedisp_register(&priv->linedisp, dev, 4, NULL, &ht16k33_linedisp_ops);
- }
- 
- static int ht16k33_probe(struct i2c_client *client)
-@@ -754,7 +744,7 @@ static void ht16k33_remove(struct i2c_client *client)
- 
- 	case DISP_QUAD_7SEG:
- 	case DISP_QUAD_14SEG:
--		linedisp_unregister(&priv->seg.linedisp);
-+		linedisp_unregister(&priv->linedisp);
- 		break;
- 	}
- }
+diff --git a/Documentation/devicetree/bindings/auxdisplay/maxim,max6959.yaml b/Documentation/devicetree/bindings/auxdisplay/maxim,max6959.yaml
+new file mode 100644
+index 000000000000..49ce26176797
+--- /dev/null
++++ b/Documentation/devicetree/bindings/auxdisplay/maxim,max6959.yaml
+@@ -0,0 +1,35 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/auxdisplay/maxim,max6959.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MAX6958/6959 7-segment LED display controller with keyscan
++
++maintainers:
++  - Andy Shevchenko <andriy.shevchenko@linux.intel.com>
++
++properties:
++  compatible:
++    const: maxim,max6959
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            max6959: max6959@38 {
++                    compatible = "maxim,max6959";
++                    reg = <0x38>;
++            };
++      };
 -- 
 2.43.0.rc1.1.gbec44491f096
 
