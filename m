@@ -1,127 +1,127 @@
-Return-Path: <linux-kernel+bounces-61205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09D84850EEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:34:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD82A850EEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:34:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15246B21418
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:34:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 099B71C2167D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C49E1101C1;
-	Mon, 12 Feb 2024 08:34:19 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89DC87464;
+	Mon, 12 Feb 2024 08:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hHVahMUL"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AA16F9F6
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12B410A23
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:34:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707726859; cv=none; b=LeOD5LTNzHUrIVQ3bYX/Ttgvu8nw2RuFQDrzvgt9jjDjz37fGGn7wcGDe+MeBaGRtNrOW+SVLt98OLPrGcqahrAYwVQf6GuYbAbpibfZ5AKUkgcxy49CGGAfrFB7Z8f0QiFlglILlwjSEmgurP8V+XWnUm0um/G0HN51pCB+HcI=
+	t=1707726873; cv=none; b=nSZYaKPTGa56h6K0Ff7icpom+k44nHgV2ajw+HrmiV1HFhSz9ROVazinmWzosRZM+Fcly6xzd6W/ia6iZASDts25kfaJtNwHot7WQygFPrrdwxIJlwowN+NzB/M0OnWQ5m69oHG/PEGsvWgVfdSWyFjPpxy0CYRkT3cBCmxepU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707726859; c=relaxed/simple;
-	bh=TC7YkIUu5KcxgTcQjkswqfPLExSnc8VDRJFLg3B3zu8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OcozkOWpi3rmW12Vrvv/XwlHSTrgGY9UCM/tMG+WLSLwpW1l1eFdd8hMUfBzfimDSuAV9lh60rU/urtEBWDTYpe3RRbfn/BOV/cklw+wpiuUAM1k4Ex0RJAsdnfFlANV9XPODCtM/iOt1j4lRbRWH3iGifu4NSslmU2jnhsUlyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-604b2c3c643so23506597b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 00:34:16 -0800 (PST)
+	s=arc-20240116; t=1707726873; c=relaxed/simple;
+	bh=HlXn3h+kaQ0ElD0RQ8Ha9CS2kgD8dt6z4YNhjTiljZA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SGJhZpooEa7Q/0sIE5e5igB+Kvq/ZJsGBn/SQPfAUK13X1vr5Lqj29m5V6FFgwAlcZ4z112dIqQOknWCNC1APd/iuOc83m6NlajH8/6z9Iy1pe2Tp1xeb+u+6PwjcpPgkpX1nuJsCByz/hCHQsUbeNmz7RwHWcGQPVPFWXHU4GE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hHVahMUL; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5114c05806eso4568955e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 00:34:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707726870; x=1708331670; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gv5wKhvz2IkMiVTY6JBsKVbcSvEbLs7uJIPS1y/GGHA=;
+        b=hHVahMUL7Ie+bKU+dKwYKKqREmmxVR5DYml1yKsOevkq7Fyc1rggzJIg5dGjU8aTRT
+         zcamReHQwBxIt1g17pjoqcaZKvVw0C/msaA6RqZ+7S/0pn5vekU2qP3H4kWvnn057oQE
+         MLI8aAGZcfH8NZDFNYUGbtJsNuDw7c4hNuUWftJa2gx7LrcUosN/aZpGf8/RHwh/gknv
+         Rc8jYSylKOeChQkViHIsSLaP3UFAuI6i/5U/SHVEOJ73lxcd+gR0l9vL+HqFUDKEZAhg
+         3bCUfxacZC417VUSrXsSvhzerTzuyMCCEKs124Elbwyk0Yez2Gek7NkFbaQZtPkN2JIE
+         NBbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707726855; x=1708331655;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bQCv0JdYx3KO7ENBhTEo9fPqiTJK6xJp0dwgojv3j0A=;
-        b=vU4eVQMP4GEBBTwX5L/HBpTcwyr4m6BgEsO2n7WW8oVv4ACcX/3yv8RFIHnkpG2Zd/
-         eJeUv4pSn2ZDUm3x6tuaRwg8J0QXPrsIUvYyyLoscnOzltQGX8rP3u0ueqljYRmRIBn+
-         3M52ly0knNdUjW2g+hyqh2EdavwLYDtehA1Ydv9Of1EkkK/TbEHWzb6b6f0jHjRFajKt
-         bbWYdM8lUvJWRBKvSLqQICa0Fo3EmOtkjAOz4ydTjzhMUWXXc5AFN9zK6TQhkf1bDOC2
-         21hHSZsct9YPBDTxBigOsezk8u2k/K44J2riSYcM5k1rPSJiz3fhfJcKDrbsD2tyZ2Cr
-         C7gw==
-X-Forwarded-Encrypted: i=1; AJvYcCV3rWTIyn2+Dby/ViAO5/GUvbl+SznLXaBRW5LJoIWia4RoeJOrQw13XN2CjWwvKK3ReQ/0P3WdDiH2LeLJVHTNyP3W62zYH3rmRErV
-X-Gm-Message-State: AOJu0YxPRO+eevnANB+0AUYHmfRGL4q6qd7IrKw3SUz0nFb6JkyfRIVT
-	5u+IuoYqOfkX/Epy9sbmRDxPi3LhnvFZK73mCEyGP1qLE83qcd0Qsq4zOTOq3u0=
-X-Google-Smtp-Source: AGHT+IG5Dkc3CDAWA6/Ty6pj2QZYqkSVswDFQuneNS9GtI964Rh00fNy0dLBkmJwSNOV6trAjgWOxA==
-X-Received: by 2002:a81:48c5:0:b0:5df:4993:4371 with SMTP id v188-20020a8148c5000000b005df49934371mr2970075ywa.39.1707726855436;
-        Mon, 12 Feb 2024 00:34:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXx6hJ+F1pm5AwiJDn6Op1GXMAuTK9TGPlzA5YdoO+QbFd320w22vY7H1200FLc1DXc4nENfbuYnYAwtc7FyRUfNpimFMBaWwY/fBN5
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id n204-20020a8172d5000000b005ff98d9a7b8sm1092213ywc.19.2024.02.12.00.34.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 00:34:15 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso2390659276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 00:34:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU+fepGNweZpD+h6OfdJnRq6/4FJTlDtpc/bMeXp1dxioxjH67wTZArFJbHkCi9pSkKGf8c9KtJZGPOvsdC7cKJKq7G3RA8U20xMP5h
-X-Received: by 2002:a25:b1a1:0:b0:dc3:71da:35b0 with SMTP id
- h33-20020a25b1a1000000b00dc371da35b0mr2937501ybj.16.1707726854983; Mon, 12
- Feb 2024 00:34:14 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707726870; x=1708331670;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gv5wKhvz2IkMiVTY6JBsKVbcSvEbLs7uJIPS1y/GGHA=;
+        b=AFzk+N9bIwrH3E1d80b1uKIZkR+1th6s2UTwBh1GWmEedGYYPW8oZcBdHQ/1QpLTEX
+         rrdBAgDKHi+B8njBfc2tDXKSna0SZTB4JBXwYfmaPYJDHJgKVyoXoQkgtsL/b+grilCn
+         hY80X8ctLR3xpfbsXENrHN8hqeQlJfcyLGJ5hkXUa4eAdN/7vkVPsrVpa36NjD0U5p+v
+         uuLOyTtah/jGWjUisgQEoQ4+Hmj+Bvzu6oxLXVPm+YqbsKRodiWqtNuXkdwPJtv6rjS/
+         u6KIKC3npu25kWni96SG4w80GOG3ghHVxch5QP3GXvkbUeBAVoPeBDCajC+Zz6UDqisu
+         ApNA==
+X-Gm-Message-State: AOJu0YwnBwkceEP37feVza8P9HEkUHl01jYbAiVyRFGN/G7vsXzvFjvN
+	GKHQyhnBXRBjswAMEjnU/5BqOK0NwoKzkMqRhtIj649au3BflI7Dj/RS8HIc+w0=
+X-Google-Smtp-Source: AGHT+IGxLy+g+zXrEzb6fK7p+nnX2U1Ebgap6clpVk38ct0XBVElw0mqtAvQW8HzVwU5SlBZAAnqfw==
+X-Received: by 2002:a05:6512:ac3:b0:511:622a:97bc with SMTP id n3-20020a0565120ac300b00511622a97bcmr4332576lfu.18.1707726869900;
+        Mon, 12 Feb 2024 00:34:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX2/OOxwQkBfCOqrL69OJ2Og2SLXQbIWxYUftBYaEdpQwcR9KvBj46EaZ/X0p/ECSV6BbcYFfOvCibaxWiaIH8O+40/0TBOGdb42Ra6AqIcOSAVcCwIRGv573ZeMpqVLuvr4YJKNtDlP1j41LiGSiUDlEV69bRyqOTMbMYfZeoUo/MS13JUVmk16rtLWu02oj0un0+f1SKLSEAaBfb9PkljhnaKNk1CPrurjGfcdB+GOhPzgd8rYFcgPH+jHSpRy16k6PrmGXja33hzMUoD53Nor5PTjdU4ofSJDeXN6g8VETb2iRyUdxHLWklpu51CDB2n9fe6R729XyFpfNQzuu558tQ+sozROWCXAuzkCRW8gjrffGPFBWPP01J3r+6Y4uah0YAmR41ZtopZObs=
+Received: from krzk-bin.. ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id y12-20020a056000108c00b0033b40a3f92asm6111024wrw.25.2024.02.12.00.34.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 00:34:29 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Robin van der Gracht <robin@protonic.nl>,
+	Paul Burton <paulburton@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 1/3] dt-bindings: auxdisplay: hit,hd44780: drop redundant GPIO node
+Date: Mon, 12 Feb 2024 09:34:24 +0100
+Message-Id: <20240212083426.26757-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
-In-Reply-To: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 12 Feb 2024 09:34:02 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
-Message-ID: <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
-Subject: Re: stackinit unit test failures on m68k
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi G=C3=BCnter,
+Examples of other nodes, like GPIO controller, are redundant and not
+really needed in device bindings.
 
-On Mon, Feb 12, 2024 at 12:06=E2=80=AFAM Guenter Roeck <linux@roeck-us.net>=
- wrote:
-> I see the following stackinit unit test failures on m68k when running
-> the q800 emulation.
->
->     # test_char_array_zero: ASSERTION FAILED at lib/stackinit_kunit.c:333
->     Expected stackinit_range_contains(fill_start, fill_size, target_start=
-, target_size) to be true, but is false
-> stack fill missed target!? (fill 16 wide, target offset by -12)
->
->     # test_char_array_none: ASSERTION FAILED at lib/stackinit_kunit.c:343
->     Expected stackinit_range_contains(fill_start, fill_size, target_start=
-, target_size) to be true, but is false
-> stack fill missed target!? (fill 16 wide, target offset by -12)
->
-> Do you happen to know if this a problem with the test, with m68k, or mayb=
-e
-> with the configuration ? My configuration is based on mac_defconfig with
-> various test options enabled. I use gcc 11.4 to build the image. I tried
-> with qemu v8.1 and v8.2.
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ .../devicetree/bindings/auxdisplay/hit,hd44780.yaml    | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-Thanks, I see the same failures in the logs of my last testrun on ARAnyM, t=
-oo.
-I haven't looked into the details yet.
+diff --git a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
+index 406a922a714e..73d07f2cb303 100644
+--- a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
++++ b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
+@@ -99,17 +99,7 @@ examples:
+     };
+   - |
+     #include <dt-bindings/gpio/gpio.h>
+-    i2c {
+-            #address-cells = <1>;
+-            #size-cells = <0>;
+ 
+-            pcf8574: pcf8574@27 {
+-                    compatible = "nxp,pcf8574";
+-                    reg = <0x27>;
+-                    gpio-controller;
+-                    #gpio-cells = <2>;
+-            };
+-    };
+     hd44780 {
+             compatible = "hit,hd44780";
+             display-height-chars = <2>;
+-- 
+2.34.1
 
-Only two failures does look like a nice improvement, compared to the
-previous time I ran that test ;-)
-
-https://lore.kernel.org/all/CAMuHMdX_g1tbiUL9PUQdqaegrEzCNN3GtbSvSBFYAL4Tzv=
-stFg@mail.gmail.com
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
