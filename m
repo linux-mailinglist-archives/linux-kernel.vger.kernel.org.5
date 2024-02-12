@@ -1,135 +1,119 @@
-Return-Path: <linux-kernel+bounces-61910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EF56851843
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:38:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB2BF851846
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:39:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE674286D8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:38:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 879E7287387
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5130C3CF7D;
-	Mon, 12 Feb 2024 15:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A69A3C6A3;
+	Mon, 12 Feb 2024 15:39:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rtg7rot/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1YZBWIS+";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ddIc2QxS"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF6B3C495;
-	Mon, 12 Feb 2024 15:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AECB3C495
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707752301; cv=none; b=nIq77NoTzF+sapVRo5NG2T5HlLUrirRZpxPvwU9rzuTsxPUAnPVwOzVpMkq6gL+g4CfXgMLowOyf9Wyna/FboxLFr8M3bGeyyOMoACVAbZh7a01CBEP8Ylc7jrvWMRisUeabS4TuMU/WMRvE4ffAzF4iBW3JAr6sqth5M9J1Iyo=
+	t=1707752354; cv=none; b=LON0w273s7x2SLSMZGCxaEJMomlfkBUa8OuctKWF3mG7OgnHu44Qcc6xtVCnwoPEX1YSvRjVlxLPRBGu+DMaVYWo5XuF1rB9htLqXohlpvCqHGxh6P7PEHPMkrfxJFqfUPAa6FSSlF18aU+W6/2rTlPGispF0OxofG9589dw9uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707752301; c=relaxed/simple;
-	bh=Cd/iw/5vcxyyYrBP24MEFOKZ+DHyFw+KqFdbcnovNVU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jmaGr67RGkBU5ECC+SWtemwzH0l6oBBLEGMWsYA3r2LYUiaLOsqZ/fiPGm8HKZL5vgWvp1z5mlFZdnf11mF2tTD+xOdAlGhMAPVoNAhOapysb2xg4yetwb+eGCoSW4UHZFwSN3uPqTf4czMfDgJ/EKchLCxJdZsfbMYHsjMlwI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rtg7rot/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DC73C43390;
-	Mon, 12 Feb 2024 15:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707752301;
-	bh=Cd/iw/5vcxyyYrBP24MEFOKZ+DHyFw+KqFdbcnovNVU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rtg7rot/f5QgzB4hgk/dy1zl482VuvbYzeiubONaxgc/E+2TLSHhzmiPn2bmw8y3d
-	 oMTEwaSUCrG5M4GUmQ73zy04SBE1mzTNDVgLTps/Ff7d7TXI1cGV77ZmqCGMyU+jvS
-	 XLlS2zoOYNHuTaqe/YjL5OVYbH4ynMz8bH6L6sCdR6XzZ68bW1pY8rzSQseKsG+hIf
-	 30bdfCOuFqWcgBejHMzjUmEnDCHyu8iwMQ709w+PlKZPjTl3y1Fpj5ekQPSUCJJVBJ
-	 WwR7WTCXMi04V2PROGhOKxE7bXGpyd3EOFNRS71TB7wEKO+22WOtAk3zEytYzPvCwX
-	 Q+NwrOtJN8xDA==
-Date: Mon, 12 Feb 2024 15:38:12 +0000
-From: Mark Brown <broonie@kernel.org>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"mgorman@suse.de" <mgorman@suse.de>,
-	"vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-	"fweimer@redhat.com" <fweimer@redhat.com>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"vschneid@redhat.com" <vschneid@redhat.com>,
-	"shuah@kernel.org" <shuah@kernel.org>,
-	"bristot@redhat.com" <bristot@redhat.com>,
-	"hpa@zytor.com" <hpa@zytor.com>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"bp@alien8.de" <bp@alien8.de>,
-	"bsegall@google.com" <bsegall@google.com>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"jannh@google.com" <jannh@google.com>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-	"will@kernel.org" <will@kernel.org>
-Subject: Re: [PATCH RFT v5 4/7] fork: Add shadow stack support to clone3()
-Message-ID: <cc43d304-e24b-40fd-9205-fd27889e6a24@sirena.org.uk>
-References: <20240203-clone3-shadow-stack-v5-0-322c69598e4b@kernel.org>
- <20240203-clone3-shadow-stack-v5-4-322c69598e4b@kernel.org>
- <565ca9697cf26be5509ef4b3c1cc95fa4f692b9f.camel@intel.com>
+	s=arc-20240116; t=1707752354; c=relaxed/simple;
+	bh=wjeNhK7kZBVuy9heSHBrmzMbANAKwBW8sfFYoS7YiDg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=M5F/Y4ChTqGpf8Lo1YfMRnByJdPFPj9yf8fP8qi61cVm41E6LSiU3dWBrtIvHX9m8r2q7ild6tjOpnKPkCdpviEwdoC7ZfBCbSuWxTaM53P0EcEVJkWOmIn0Kd915/g3RIB5a3BQceCDIifPSVvFevXjPxFnX1Mov7cuAPgwECg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1YZBWIS+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ddIc2QxS; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707752351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XzwovLOo0zq9drJi/JKb20aPld1efJPp16/7MuySCxE=;
+	b=1YZBWIS+5XX7YwgmivTZVFmvj0dOUr/OZcuSaiuXTPhO+HVEs4vKMxtKi+8uHdwJ9vYAH8
+	0nu3AuXp9RGWomNW0kDF5evKr1JP7ONMN4YTjzvfqcyDOXXIdsIoaq0WMCaEthtez74b24
+	oOg4YUo/8Dzdyr17GgbN5jfhfoCdWJOtRp2wWufCOiRaFVv154VySCVVmymJQrrzjJvfOC
+	Z7h6L53t7CExhPxflxxkiFeCfYomNhf/zpKJNgck7T4U0UXuw8uHfdcaPgcb2caQA2PxP7
+	xLCNvzmfOsRKQUiybh8Xciwo06aKyUPL7nekKL0dQFbkp51xbYp7twb2CfWc+A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707752351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XzwovLOo0zq9drJi/JKb20aPld1efJPp16/7MuySCxE=;
+	b=ddIc2QxSaWoASmSmg74hBd9py8FvL0afXJ9gxpXwCPBF++Lc1OgJ3T0QGyilp8hThyRlAd
+	xAQSWWpKFvvF8HAQ==
+To: Ashok Raj <ashok_raj@linux.intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org, Tom Lendacky
+ <thomas.lendacky@amd.com>, Andrew Cooper <andrew.cooper3@citrix.com>,
+ Arjan van de Ven <arjan@linux.intel.com>, Huang Rui <ray.huang@amd.com>,
+ Juergen Gross <jgross@suse.com>, Dimitri Sivanich
+ <dimitri.sivanich@hpe.com>, Sohil Mehta <sohil.mehta@intel.com>, K Prateek
+ Nayak <kprateek.nayak@amd.com>, Kan Liang <kan.liang@linux.intel.com>,
+ Zhang Rui <rui.zhang@intel.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Feng Tang <feng.tang@intel.com>, Andy Shevchenko <andy@infradead.org>,
+ Michael Kelley <mhklinux@outlook.com>, "Peter Zijlstra (Intel)"
+ <peterz@infradead.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, Wei
+ Liu <wei.liu@kernel.org>, Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [patch V2 01/22] x86/cpu/topology: Make the APIC mismatch
+ warnings complete
+In-Reply-To: <ZbIvis3zHeQLZerL@araj-dh-work.jf.intel.com>
+References: <20240117124704.044462658@linutronix.de>
+ <20240117124902.403342409@linutronix.de>
+ <ZbIvis3zHeQLZerL@araj-dh-work.jf.intel.com>
+Date: Mon, 12 Feb 2024 16:39:11 +0100
+Message-ID: <87ttmdk7z4.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XnIAPc9INoBAbmh3"
-Content-Disposition: inline
-In-Reply-To: <565ca9697cf26be5509ef4b3c1cc95fa4f692b9f.camel@intel.com>
-X-Cookie: Will stain.
+Content-Type: text/plain
 
+On Thu, Jan 25 2024 at 01:53, Ashok Raj wrote:
+> On Tue, Jan 23, 2024 at 02:10:04PM +0100, Thomas Gleixner wrote:
+>> From: Thomas Gleixner <tglx@linutronix.de>
+>> 
+>> Detect all possible combinations of mismatch right in the CPUID evaluation
+>> code.
+>> 
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>> 
+>> ---
+>>  arch/x86/include/asm/apic.h           |    5 ++---
+>>  arch/x86/kernel/cpu/common.c          |   15 ++-------------
+>>  arch/x86/kernel/cpu/topology_common.c |   12 ++++++++++++
+>>  3 files changed, 16 insertions(+), 16 deletions(-)
+>
+> [snip]
+>
+>> --- a/arch/x86/kernel/cpu/topology_common.c
+>> +++ b/arch/x86/kernel/cpu/topology_common.c
+>> @@ -177,6 +177,18 @@ void cpu_parse_topology(struct cpuinfo_x
+>>  
+>>  	parse_topology(&tscan, false);
+>>  
+>> +	if (IS_ENABLED(CONFIG_X86_LOCAL_APIC)) {
+>> +		if (c->topo.initial_apicid != c->topo.apicid) {
+>> +			pr_err(FW_BUG "CPU%4u: APIC ID mismatch. CPUID: 0x%04x APIC: 0x%04x\n",
+>> +			       cpu, c->topo.initial_apicid, c->topo.apicid);
+>> +		}
+>> +
+>> +		if (c->topo.apicid != cpuid_to_apicid[cpu]) {
+>> +			pr_err(FW_BUG "CPU%4u: APIC ID mismatch. Firmware: 0x%04x APIC: 0x%04x\n",
+>> +			       cpu, cpuid_to_apicid[cpu], c->topo.apicid);
+>> +		}
+>
+> Should we consider tainting the kernel when there is any mismatch?
 
---XnIAPc9INoBAbmh3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Feb 09, 2024 at 08:18:11PM +0000, Edgecombe, Rick P wrote:
-> On Sat, 2024-02-03 at 00:05 +0000, Mark Brown wrote:
-
-> > +=A0=A0=A0=A0=A0=A0=A0if (write_user_shstk_64((u64 __user *)addr, 0))
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0return false;
-> > +
-> > +=A0=A0=A0=A0=A0=A0=A0return true;
-> > +}
-
-> So, don't we want to consume the token on the *new* task's MM, which
-> was already duplicated but still unmapped? In which case I think the
-> other arch's would need to GUP regardless of the existence of shadow
-> stack atomic ops.
-
-Yes, that would be better - if nothing else it allows reuse of the same
-shadow stack for multiple !CLONE_VM clone3()s. =20
-
-> I wonder about adding a shstk_post_fork() to make it easier to think
-> about and maintain, even if there are no issues today.
-
-I agree.
-
---XnIAPc9INoBAbmh3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXKO2MACgkQJNaLcl1U
-h9BqSAf+JmlarRUTbUjNy7XErOY1+sGJ7QrnXHdQSEcNoGjYbcTudWKT2BQBtPU4
-25OZCFe6MnCp1WbVvkSJjlDsRZSWI0fgc/o04ZjWeCSg2vNekeC8PabqKBqGB6eJ
-kPruQ3h37qAloHiol4sFqqRZKSingsICPpOD6K5SIpf5wtOHlBI6rh9kdMPxCAYm
-EiD5bZJCR0WGUAqV7ntWMdT9KDo5W/qbH0RYCeEJlnKBcku1QhfDXu3ixhfjm5cH
-uSQCQnE3fEUu78UJPfbFmnhLW333PHKcZPNRDp4sL4ImxIR/YQyuXrkX05UscKvv
-nWPnxHSYJ9Rv3JB2RMXeeQCfd3cEZw==
-=ZDZz
------END PGP SIGNATURE-----
-
---XnIAPc9INoBAbmh3--
+No strong opinion about that.
 
