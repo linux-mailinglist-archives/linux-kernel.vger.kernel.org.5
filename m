@@ -1,240 +1,162 @@
-Return-Path: <linux-kernel+bounces-61688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD3E5851560
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:37:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC72851558
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:36:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C6761F26448
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:37:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 298231C2084B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C6847A40;
-	Mon, 12 Feb 2024 13:27:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nGoFUZMZ"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342B245BE8
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93B9446C5;
+	Mon, 12 Feb 2024 13:27:09 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6ED3B194
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707744433; cv=none; b=E0fSgCQIqd2TDhi/1EonwB08XJmzr/tkVyhy7HBfiUn5UMC9EKvZ5BNIheuVnGqs/Xo5sR2w7ZqAswpJBfj9buskJ7dBCYROfHnNMjKY8yDvwE6QC5xHMGYa1i3fe6k6246r7tvBuEafqsRSvwdrE0BjtBsS/i6gq6rVTZezCn8=
+	t=1707744429; cv=none; b=R7EBLqPFwoWw4v6bsxYNgsI9uX/psqgFse/JoVJEotVNxyGncMosuTvrM7Ri9XDHH39ZguD2jr5L4KNdNdpM8os2moM+lA9ladkhFhdhgjzp4XSLNn9nE3xzmk/7pZFz0+HG3H0vmMkPK3XKyUmJPlblq8e2mQyCJ60aWH4QqV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707744433; c=relaxed/simple;
-	bh=UgJE8QN26wTVcYTwslTRxKcPKfKIluHtkCRbsH9i8HU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ICwOzGhzF6v9wsgSCSqRU3vsZX2b/1b1MxWAqooR8e0eorsN4d5Vl/eA53EFiaSuWyG6C0+97m4g1ejHQtlutNPyl8hehIr56dfrQgXlmia88oe13TK0MwN62if7Bsbeu2LTc3Foy88y+J2D2rK67JFPy/yLqZ8/hv1DI84vs4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nGoFUZMZ; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc745927098so2616568276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:27:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707744430; x=1708349230; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=voyZqJo/cIne41l5d+IDZJTmO0BrPsamqEotiqg3SZ4=;
-        b=nGoFUZMZjXBY1U0CR9u5EV/I7+w50xRnP2TGdlY8u+rN+EW1dn41R6dVDZwwKFFe2w
-         bcrSTwDuMhhOZm6MqEf6Pn4Ze+iggGnGTlBW7eJTK/U7XegVi9xt5/H/EgdzAYEeBKv5
-         2TUNrf+CJoAnfNLZbE0x1hKE5DYF4W95sbJwBeCezzKcAAbMx03mt6d7YpTnhp6o2QOT
-         B+eO6uqvL2imvfm5mOZ27Jwr6b4bBsfl6Opl2RPEcsq7VzQoLo8WtKek/EOXZsxPOkVH
-         zUdfguGe088cj2rYTpEmvb/ON1NqMoPNXSMyjZoVYLRv9vMnFEztQlcm8aZ5Ou/AcTlB
-         XKYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707744430; x=1708349230;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=voyZqJo/cIne41l5d+IDZJTmO0BrPsamqEotiqg3SZ4=;
-        b=dIGf+YBXKOlamslNi643O0GZPDcxHekg901BIlxa7rAzr25DBMnVI7Um1aOODFjPcV
-         /wKq9+4LyMRlEOJrgOyhiWiiZ6Lt2ph3H70k3D56oZvBKewZNlPsqpqN7oguLcLGebet
-         yVdUEuMSaKDWRsZhD+wtiVU+MfVmZ4pfVMav1IkJxol3Uo2zLpq4egFCit25OEJFuclQ
-         Cm4GbFesQzPb9WoWNe2Ca0zepmL9HuHjUvlUf0YxXYZHXmYCcxXVVYGkmdPimPr3WVVT
-         YrZmlX7I2v8I1sBCyFLwOnyZt0/Gxd0QhhT6MdOY5DEQdY294Cl3PrYlYvOlCtoXhUEG
-         2fIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWRKINwHjWyuEmBk0NDSZKCVDorMoVX0IjhMTAXOS5QmXT5MW+MhHH1DKRLt/f3toKzZ1dYfzmN8PX8BFeJqP82xdPK7f5fBprwukUF
-X-Gm-Message-State: AOJu0YxxmLE4ydpzcY9xP0YmQ9eiIgfioU8W4JC2hG89GMbUUVhOVqwx
-	NWwpjg54Rqzge5+PJS7DPsamvqyxOYuBkK1wwI3NmsQR6Ny9AieEqDJwrunNV0YMY5be3QWg9h2
-	O+TP7+Voq1/tw9XJxAy1Tx89hrASrWBBdwZjCwQ==
-X-Google-Smtp-Source: AGHT+IH2FeH9b90zOdUSsLyLSaIqH2hxHl8fPGS0QQV4ey1Z5w/YkWI71/Atkzgl/Hq1bPQgBvQtf2TUNVTPAW1kDUc=
-X-Received: by 2002:a05:6902:2604:b0:dc7:4fbd:2b55 with SMTP id
- dw4-20020a056902260400b00dc74fbd2b55mr6374378ybb.45.1707744430126; Mon, 12
- Feb 2024 05:27:10 -0800 (PST)
+	s=arc-20240116; t=1707744429; c=relaxed/simple;
+	bh=b9bJMcwC+cn00rgdnKEXAAs3PpIJ9WUsM3I1xGcJypA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Nfat0lpb/rQpsFNIrfIhtz+npcX/ADm6f9tBpld9CqKc4mkpSKms4GlNqqUB4Oi0MNoUNB0iw4Qmqzxs6gb+sl+NuEfi7Lq02ff+FMQnoOn+GqA2EouFQpZV2wdQ1ozZ8Yui8Cb5KJe8V02Ur+W0eB3vG4lGCAj1oHgvtT7E3pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3AF9DA7;
+	Mon, 12 Feb 2024 05:27:47 -0800 (PST)
+Received: from [10.57.78.115] (unknown [10.57.78.115])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 009623F7BD;
+	Mon, 12 Feb 2024 05:27:01 -0800 (PST)
+Message-ID: <e19ba38c-8935-47be-be2a-1920b09034c8@arm.com>
+Date: Mon, 12 Feb 2024 13:27:00 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207-enable_pcie-v1-1-b684afa6371c@quicinc.com>
- <CAA8EJpqjm_2aE+7BtMkFUdet11q7v_jyHbUEpiDHSBSnzhndYA@mail.gmail.com>
- <dec2976e-6e1e-6121-e175-210377ff6925@quicinc.com> <CAA8EJprsm5Tw=vFpmfEKL8fxS-S+aW+YR0byfyL=v78k75TGEw@mail.gmail.com>
- <3ad77846-b4a8-80ee-e9e1-d5cbf4add6d8@quicinc.com> <CAA8EJprRF0tVFZK9c=MT8bSRcBdRvcugBaeEzpX5-wfRyNgc3Q@mail.gmail.com>
- <c8be2bbf-a51c-a38f-6e6f-a88801f953d5@quicinc.com> <20240209075716.GA12035@thinkpad>
- <CAA8EJppfzc_dM9c9mHPVWheVxi-1gJxCmaWPvreELijEQDDSyA@mail.gmail.com> <20240212131551.GA74465@thinkpad>
-In-Reply-To: <20240212131551.GA74465@thinkpad>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 12 Feb 2024 15:26:59 +0200
-Message-ID: <CAA8EJpo2bbWokvRs0=RhTYKYyAEd-axyQnFZxzLkqFQ-NyPEzQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Add PCIe nodes
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com, 
-	quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com, quic_skananth@quicinc.com, 
-	quic_parass@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 18/25] arm64/mm: Split __flush_tlb_range() to elide
+ trailing DSB
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ James Morse <james.morse@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
+ <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+ Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+ Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240202080756.1453939-1-ryan.roberts@arm.com>
+ <20240202080756.1453939-19-ryan.roberts@arm.com>
+ <9e1d793a-02c9-4dbb-a6d4-1e1c0c42638c@redhat.com>
+ <1ef4c737-0926-424c-9698-794c23370b74@arm.com>
+ <608feac1-8cd6-48c2-87ab-688fb9c0bda4@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <608feac1-8cd6-48c2-87ab-688fb9c0bda4@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, 12 Feb 2024 at 15:16, Manivannan Sadhasivam
-<manivannan.sadhasivam@linaro.org> wrote:
->
-> On Fri, Feb 09, 2024 at 12:56:18PM +0200, Dmitry Baryshkov wrote:
-> > On Fri, 9 Feb 2024 at 09:57, Manivannan Sadhasivam
-> > <manivannan.sadhasivam@linaro.org> wrote:
-> > >
-> > > On Fri, Feb 09, 2024 at 12:58:15PM +0530, Krishna Chaitanya Chundru wrote:
-> > > >
-> > > >
-> > > > On 2/8/2024 8:49 PM, Dmitry Baryshkov wrote:
-> > > > > On Thu, 8 Feb 2024 at 16:58, Krishna Chaitanya Chundru
-> > > > > <quic_krichai@quicinc.com> wrote:
-> > > > > > On 2/8/2024 12:21 PM, Dmitry Baryshkov wrote:
-> > > > > > > On Thu, 8 Feb 2024 at 08:14, Krishna Chaitanya Chundru
-> > > > > > > <quic_krichai@quicinc.com> wrote:
-> > > > > > > >
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > On 2/7/2024 5:17 PM, Dmitry Baryshkov wrote:
-> > > > > > > > > On Wed, 7 Feb 2024 at 12:42, Krishna chaitanya chundru
-> > > > > > > > > <quic_krichai@quicinc.com> wrote:
-> > > > > > > > > >
-> > > > > > > > > > Enable PCIe1 controller and its corresponding PHY nodes on
-> > > > > > > > > > qcs6490-rb3g2 platform.
-> > > > > > > > > >
-> > > > > > > > > > PCIe switch is connected to PCIe1, PCIe switch has multiple endpoints
-> > > > > > > > > > connected. For each endpoint a unique BDF will be assigned and should
-> > > > > > > > > > assign unique smmu id. So for each BDF add smmu id.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> > > > > > > > > > ---
-> > > > > > > > > >     arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 42 ++++++++++++++++++++++++++++
-> > > > > > > > > >     1 file changed, 42 insertions(+)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> > > > > > > > > > index 8bb7d13d85f6..0082a3399453 100644
-> > > > > > > > > > --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> > > > > > > > > > +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> > > > > > > > > > @@ -413,6 +413,32 @@ vreg_bob_3p296: bob {
-> > > > > > > > > >            };
-> > > > > > > > > >     };
-> > > > > > > > > >
-> > > > > > > > > > +&pcie1 {
-> > > > > > > > > > +       perst-gpios = <&tlmm 2 GPIO_ACTIVE_LOW>;
-> > > > > > > > > > +
-> > > > > > > > > > +       pinctrl-0 = <&pcie1_reset_n>, <&pcie1_wake_n>;
-> > > > > > > > > > +       pinctrl-names = "default";
-> > > > > > > > > > +
-> > > > > > > > > > +       iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
-> > > > > > > > > > +                   <0x100 &apps_smmu 0x1c81 0x1>,
-> > > > > > > > > > +                   <0x208 &apps_smmu 0x1c84 0x1>,
-> > > > > > > > > > +                   <0x210 &apps_smmu 0x1c85 0x1>,
-> > > > > > > > > > +                   <0x218 &apps_smmu 0x1c86 0x1>,
-> > > > > > > > > > +                   <0x300 &apps_smmu 0x1c87 0x1>,
-> > > > > > > > > > +                   <0x400 &apps_smmu 0x1c88 0x1>,
-> > > > > > > > > > +                   <0x500 &apps_smmu 0x1c89 0x1>,
-> > > > > > > > > > +                   <0x501 &apps_smmu 0x1c90 0x1>;
-> > > > > > > > >
-> > > > > > > > > Is the iommu-map really board specific?
-> > > > > > > > >
-> > > > > > > > The iommu-map for PCIe varies if PCIe switch is connected.
-> > > > > > > > For this platform a PCIe switch is connected and for that reason
-> > > > > > > > we need to define additional smmu ID's for each BDF.
-> > > > > > > >
-> > > > > > > > For that reason we defined here as these ID's are applicable only
-> > > > > > > > for this board.
-> > > > > > >
-> > > > > > > So, these IDs are the same for all boards, just being unused on
-> > > > > > > devices which have no bridges / switches connected to this PCIe host.
-> > > > > > > If this is correct, please move them to sc7280.dtsi.
-> > > > > > >
-> > > > > > Yes ID's will be same for all boards. we can move them sc7280.dtsi
-> > > > > > but the BDF to smmu mapping will be specific to this board only.
-> > > > > > if there is some other PCIe switch with different configuration is
-> > > > > > connected to different board of same variant in future again these
-> > > > > > mapping needs to updated.
-> > > > >
-> > > > > Could you possibly clarify this? Are they assigned one at a time
-> > > > > manually? Or is it somehow handled by the board's TZ code, which
-> > > > > assigns them sequentially to the known endpoints? And is it done via
-> > > > > probing the link or via some static configuration?
-> > > >
-> > > > There is no assignment of SID's in TZ for PCIe.
-> > > > PCIe controller has BDF to SID mapping table which we need to
-> > > > program with the iommu map table.
-> > > >
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/dwc/pcie-qcom.c?h=v6.8-rc3#n997
-> > > >
-> > > > Based upon switch the BDF to SID table will change for example I had two
-> > > > switches with one switch has 2 PCIe ports and other has 3 ports one
-> > > > embedded port which supports multiple functions.
-> > > >
-> > > > For the first switch the BDF's are
-> > > >       - 0x000(root complex),
-> > > >       - 0x100(USP),
-> > > >       - 0x208(DSP 0),
-> > > >       - 0x210(DSP 1),
-> > > >       - 0x300(endpoint connected to DSP 0),
-> > > >       - 0x400( endpoint connected to DSP 1).
-> > > >
-> > > > For 2nd switch the BDF's are
-> > > >       - 0x000(root complex),
-> > > >       - 0x100(USP),
-> > > >       - 0x208(embeeded DSP 0),
-> > > >       - 0x210(DSP 1),
-> > > >       - 0x218 (DSP 2),
-> > > >       - 0x300(embedded endpoint function 0),
-> > > >       - 0x301 (embedded endpoint function 1)
-> > > >       - 0x400( endpoint connected to DSP 1)
-> > > >       - 0x500(endpoint connected to DSP2).
-> > > >
-> > > > For these two switches we need different BDF to SID table so for that
-> > > > reason we are keeping iommu map here as this is specific to this board.
-> > > >
-> > >
-> > > I don't understand why the SID table has to change between PCIe devices. The SID
-> > > mapping should be part of the SoC dtsi, where a single SID would be defined for
-> > > the devices under a bus. And all the devices under the bus have to use the same
-> > > SID.
-> >
-> > This sounds like a sane default, indeed. Nevertheless, I see a point
-> > in having per-device-SID assignment. This increases isolation and can
-> > potentially prevent security issues. However in such case SID
-> > assignment should be handled in some automagic way. In other words,
-> > there must be no need to duplicate the topology of the PCIe bus in the
-> > iommu-maps property.
-> >
->
-> Yes, address space isolation is the primary motive behind this patch. But as
-> you said, we should not do it by hardcoding the SIDs in the board DTS. It won't
-> scale and is not a proper solution.
->
-> Instead, the issue should be addressed in the IOMMU layer by working with the
-> IOMMU folks.
->
-> It should be noted that we _cannot_ use any arbitrary SID for PCIe bus. HYP/TZ
-> will fault the transactions coming with different SIDs than the ones assigned
-> to them. So we still need to pass that info from DT to IOMMU layer.
+On 12/02/2024 13:15, David Hildenbrand wrote:
+> On 12.02.24 14:05, Ryan Roberts wrote:
+>> On 12/02/2024 12:44, David Hildenbrand wrote:
+>>> On 02.02.24 09:07, Ryan Roberts wrote:
+>>>> Split __flush_tlb_range() into __flush_tlb_range_nosync() +
+>>>> __flush_tlb_range(), in the same way as the existing flush_tlb_page()
+>>>> arrangement. This allows calling __flush_tlb_range_nosync() to elide the
+>>>> trailing DSB. Forthcoming "contpte" code will take advantage of this
+>>>> when clearing the young bit from a contiguous range of ptes.
+>>>>
+>>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
+>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>> ---
+>>>>    arch/arm64/include/asm/tlbflush.h | 13 +++++++++++--
+>>>>    1 file changed, 11 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/include/asm/tlbflush.h
+>>>> b/arch/arm64/include/asm/tlbflush.h
+>>>> index 79e932a1bdf8..50a765917327 100644
+>>>> --- a/arch/arm64/include/asm/tlbflush.h
+>>>> +++ b/arch/arm64/include/asm/tlbflush.h
+>>>> @@ -422,7 +422,7 @@ do {                                    \
+>>>>    #define __flush_s2_tlb_range_op(op, start, pages, stride, tlb_level) \
+>>>>        __flush_tlb_range_op(op, start, pages, stride, 0, tlb_level, false,
+>>>> kvm_lpa2_is_enabled());
+>>>>    -static inline void __flush_tlb_range(struct vm_area_struct *vma,
+>>>> +static inline void __flush_tlb_range_nosync(struct vm_area_struct *vma,
+>>>>                         unsigned long start, unsigned long end,
+>>>>                         unsigned long stride, bool last_level,
+>>>>                         int tlb_level)
+>>>> @@ -456,10 +456,19 @@ static inline void __flush_tlb_range(struct
+>>>> vm_area_struct *vma,
+>>>>            __flush_tlb_range_op(vae1is, start, pages, stride, asid,
+>>>>                         tlb_level, true, lpa2_is_enabled());
+>>>>    -    dsb(ish);
+>>>>        mmu_notifier_arch_invalidate_secondary_tlbs(vma->vm_mm, start, end);
+>>>>    }
+>>>>    +static inline void __flush_tlb_range(struct vm_area_struct *vma,
+>>>> +                     unsigned long start, unsigned long end,
+>>>> +                     unsigned long stride, bool last_level,
+>>>> +                     int tlb_level)
+>>>> +{
+>>>> +    __flush_tlb_range_nosync(vma, start, end, stride,
+>>>> +                 last_level, tlb_level);
+>>>> +    dsb(ish);
+>>>> +}
+>>>> +
+>>>>    static inline void flush_tlb_range(struct vm_area_struct *vma,
+>>>>                       unsigned long start, unsigned long end)
+>>>>    {
+>>>
+>>> You're now calling dsb() after mmu_notifier_arch_invalidate_secondary_tlbs().
+>>>
+>>>
+>>> In flush_tlb_mm(), we have the order
+>>>
+>>>      dsb(ish);
+>>>      mmu_notifier_arch_invalidate_secondary_tlbs()
+>>>
+>>> In flush_tlb_page(), we have the effective order:
+>>>
+>>>      mmu_notifier_arch_invalidate_secondary_tlbs()
+>>>      dsb(ish);
+>>>
+>>> In flush_tlb_range(), we used to have the order:
+>>>
+>>>      dsb(ish);
+>>>      mmu_notifier_arch_invalidate_secondary_tlbs();
+>>>
+>>>
+>>> So I *suspect* having that DSB before
+>>> mmu_notifier_arch_invalidate_secondary_tlbs() is fine. Hopefully, nothing in
+>>> there relies on that placement.
+>>
+>> Will spotted this against v3. My argument was that I was following the existing
+>> pattern in flush_tlb_page(). Apparently that is not correct and needs changing,
+>> but the conclusion was to leave my change as is for now, since it is consistent
+>> and change them at a later date together.
+> 
+> Good, I think you should add a few words to the patch description ("ordering
+> might be incorrect, but is in-line with __flush_tlb_page()"; will be resolved
+> separately).
+> 
 
-Yes, passing a range or a masked value sounds logical. Passing 1:1
-mapping for a dynamic bus doesn't.
+ACK, will do. Thanks!
 
-
--- 
-With best wishes
-Dmitry
 
