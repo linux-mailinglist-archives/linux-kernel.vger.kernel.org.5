@@ -1,205 +1,225 @@
-Return-Path: <linux-kernel+bounces-61125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA18F850DBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:13:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 821FA850DC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:16:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E3191F21B78
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:13:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A72361C22BA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E3B66FD8;
-	Mon, 12 Feb 2024 07:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1691756D;
+	Mon, 12 Feb 2024 07:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="vBdU6k13";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="N+6N/5Ua";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="vBdU6k13";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="N+6N/5Ua"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nfOtutd8"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B1B3D65
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 07:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3CA171BF;
+	Mon, 12 Feb 2024 07:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707722024; cv=none; b=RJGSX0+e0oue6UlmOE5OCMSW2YXeN1XO4ItQEegHvONPDen/Scv41/xv4ounR4pqvT3oqMi18N/5H1rTFv184xQOC3zKdvoIKH/NWxAz6sro6QuS7fnFyoNPqpwGJgjkvQ3g7dMqhyhGUApi64bVisKkbfxgZfMFPrktT4PoUZw=
+	t=1707722060; cv=none; b=KNZYYtmmR3j3JTkwwUt7fhUr8Dy5xXbGq7mZ0X435XgHoeuLRlZelt4zfVTjEIBWxCM93u79CnsKbic0gAhTr24M5RIDuRLQGm8jNiyC7GxL32nMOW4beagqiVsMEmQ0jFkuDW5rNgHTsF0A+dF9lgYh6diJz8VP8w7Mh93fmus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707722024; c=relaxed/simple;
-	bh=p2ZQAoNOIYqxMWKVK1KPOXSBJsvB6Ou418OFph63PiY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A9sSHKxua73kasOCr+BblVayhpSWyV4zRSbCKHL0bIjKXeHCvuYfv/viLiKG/gxD5O8AH0IqClDmT9JbO+bhhTz6XCLUl0Fjp1xT6k6o0sFqCrPuQmXrpzYVR142WVsODgTnlJThIv/RSZe8pkFJcPBpw8uUqGEy6urjzOnm1IY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=vBdU6k13; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=N+6N/5Ua; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=vBdU6k13; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=N+6N/5Ua; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B489B21FCE;
-	Mon, 12 Feb 2024 07:13:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707722020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=1WOjUnpnGkXzNsMkm2Jun5Zhamu1kXqO02gV7jrxbkw=;
-	b=vBdU6k13teUUW7vZs32TX5nIBR5LRtxqQvbb8sZJkRqTdfl9RYG2b+dN/IBsPw3r/CjPkJ
-	dmWod4S1vAZWyaq1VxW4q6yhQjOLYq1iIuTAD/fN2rb9KuiOEhw7KqzPWbeHFkcdzNOkfQ
-	UyhV8uKu22M14UOLyvoYHSTQVQRw8Xg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707722020;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=1WOjUnpnGkXzNsMkm2Jun5Zhamu1kXqO02gV7jrxbkw=;
-	b=N+6N/5UaAPszhxbbiIOEG+LyGvHqlTqBwhNgXQIY9cXFW3Mx8+vplQqY6nqB/fHDDcXd+t
-	CyR51MZppnsav+AA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707722020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=1WOjUnpnGkXzNsMkm2Jun5Zhamu1kXqO02gV7jrxbkw=;
-	b=vBdU6k13teUUW7vZs32TX5nIBR5LRtxqQvbb8sZJkRqTdfl9RYG2b+dN/IBsPw3r/CjPkJ
-	dmWod4S1vAZWyaq1VxW4q6yhQjOLYq1iIuTAD/fN2rb9KuiOEhw7KqzPWbeHFkcdzNOkfQ
-	UyhV8uKu22M14UOLyvoYHSTQVQRw8Xg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707722020;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=1WOjUnpnGkXzNsMkm2Jun5Zhamu1kXqO02gV7jrxbkw=;
-	b=N+6N/5UaAPszhxbbiIOEG+LyGvHqlTqBwhNgXQIY9cXFW3Mx8+vplQqY6nqB/fHDDcXd+t
-	CyR51MZppnsav+AA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8380313212;
-	Mon, 12 Feb 2024 07:13:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id Ua78HSTFyWUPWQAAn2gu4w
-	(envelope-from <tzimmermann@suse.de>); Mon, 12 Feb 2024 07:13:40 +0000
-Message-ID: <bf0d02d4-2c90-40a4-8018-bd96a01f2751@suse.de>
+	s=arc-20240116; t=1707722060; c=relaxed/simple;
+	bh=ZZVhOWa+LBNPQ29pS7ToNJb6ifArT4DpTk7X4vrgazg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=VepbleOR80BTPRH5NiCVh5JC1xwQuvfQVqNqdeEFUcfODXKAKG3sTSrXC76BYzKlPfpKHfX+erWFkP1DE2tG7tt6uTXZLzNi8K4n+fW4P0q3tNMnRC8tLUp0u51RLyNWmbdt+1Ve2RP8c1YiipllO2CiZpT6vYRyNi9Zi5blQKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nfOtutd8; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+	:Reply-To:Content-Type:Content-ID:Content-Description;
+	bh=To4jTyxCYxUY5wd7w+9Le458r9Ys3/VfyFqqGfNjFPc=; b=nfOtutd8j/0yHOPqqs1KM8fcvG
+	q75YNKjRHxoc4Blgsq58A8PsYUG7YdvL+tmtdrQdsxoxjEgr/IjOWJBkBvMs+l5cmHKgcjd8uv+Kp
+	6Ol6MRgsBc4zfotAveb+QxwCtqStBJfTcZsbd+o4cxI/Spis1YF5p1g67mL5OBPIwz1jE8rVpopVk
+	+kfLdFl+bliXGifeP7QdRNGixZVQ7R48kHZkHkKkbNGGFGtUCLQRyqq9BHODEkvg0et9bymQbGSWO
+	agC+LF8N1vhEkgfFNyGl7XtKg3Cl9fUsChZREhpyU0ujaUfgWS5nFXu0L8mJuYizPNtdFfLAfkXJN
+	8s709i4g==;
+Received: from [2001:4bb8:190:6eab:75e9:7295:a6e3:c35d] (helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rZQW6-00000004Su2-363S;
+	Mon, 12 Feb 2024 07:14:15 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: linux-mm@kvack.org
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Jan Kara <jack@suse.com>,
+	David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jan Kara <jack@suse.cz>
+Subject: [PATCH 06/14] writeback: rework the loop termination condition in write_cache_pages
 Date: Mon, 12 Feb 2024 08:13:40 +0100
+Message-Id: <20240212071348.1369918-7-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240212071348.1369918-1-hch@lst.de>
+References: <20240212071348.1369918-1-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND] iosys-map: fix typos
-To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-References: <20240212042837.21071-1-rdunlap@infradead.org>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20240212042837.21071-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.29
-X-Spamd-Result: default: False [-4.29 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,infradead.org:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Hi
+Rework the way we deal with the cleanup after the writepage call.
 
-Am 12.02.24 um 05:28 schrieb Randy Dunlap:
-> Correct spellos/typos in comments.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: dri-devel@lists.freedesktop.org
-> ---
->   include/linux/iosys-map.h |    4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff -- a/include/linux/iosys-map.h b/include/linux/iosys-map.h
-> --- a/include/linux/iosys-map.h
-> +++ b/include/linux/iosys-map.h
-> @@ -34,7 +34,7 @@
->    * the same driver for allocation, read and write operations.
->    *
->    * Open-coding access to :c:type:`struct iosys_map <iosys_map>` is considered
-> - * bad style. Rather then accessing its fields directly, use one of the provided
-> + * bad style. Rather than accessing its fields directly, use one of the provided
-Ok.
->    * helper functions, or implement your own. For example, instances of
->    * :c:type:`struct iosys_map <iosys_map>` can be initialized statically with
->    * IOSYS_MAP_INIT_VADDR(), or at runtime with iosys_map_set_vaddr(). These
-> @@ -85,7 +85,7 @@
->    *	if (iosys_map_is_equal(&sys_map, &io_map))
->    *		// always false
->    *
-> - * A set up instance of struct iosys_map can be used to access or manipulate the
-> + * A setup instance of struct iosys_map can be used to access or manipulate the
-That's not a typo. This refers to "an instance that has been set up".
+First handle the magic AOP_WRITEPAGE_ACTIVATE separately from real error
+returns to get it out of the way of the actual error handling path.
 
-Best regards
-Thomas
+The split the handling on intgrity vs non-integrity branches first,
+and return early using a goto for the non-ingegrity early loop condition
+to remove the need for the done and done_index local variables, and for
+assigning the error to ret when we can just return error directly.
 
->    * buffer memory. Depending on the location of the memory, the provided helpers
->    * will pick the correct operations. Data can be copied into the memory with
->    * iosys_map_memcpy_to(). The address can be manipulated with iosys_map_incr().
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+---
+ mm/page-writeback.c | 84 ++++++++++++++++++---------------------------
+ 1 file changed, 33 insertions(+), 51 deletions(-)
 
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 4d862f196d1f05..b49ee15a863e99 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2396,13 +2396,12 @@ int write_cache_pages(struct address_space *mapping,
+ 		      void *data)
+ {
+ 	int ret = 0;
+-	int done = 0;
+ 	int error;
+ 	struct folio_batch fbatch;
++	struct folio *folio;
+ 	int nr_folios;
+ 	pgoff_t index;
+ 	pgoff_t end;		/* Inclusive */
+-	pgoff_t done_index;
+ 	xa_mark_t tag;
+ 
+ 	folio_batch_init(&fbatch);
+@@ -2419,8 +2418,7 @@ int write_cache_pages(struct address_space *mapping,
+ 	} else {
+ 		tag = PAGECACHE_TAG_DIRTY;
+ 	}
+-	done_index = index;
+-	while (!done && (index <= end)) {
++	while (index <= end) {
+ 		int i;
+ 
+ 		nr_folios = filemap_get_folios_tag(mapping, &index, end,
+@@ -2430,11 +2428,7 @@ int write_cache_pages(struct address_space *mapping,
+ 			break;
+ 
+ 		for (i = 0; i < nr_folios; i++) {
+-			struct folio *folio = fbatch.folios[i];
+-			unsigned long nr;
+-
+-			done_index = folio->index;
+-
++			folio = fbatch.folios[i];
+ 			folio_lock(folio);
+ 
+ 			/*
+@@ -2469,45 +2463,32 @@ int write_cache_pages(struct address_space *mapping,
+ 
+ 			trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
+ 			error = writepage(folio, wbc, data);
+-			nr = folio_nr_pages(folio);
+-			wbc->nr_to_write -= nr;
+-			if (unlikely(error)) {
+-				/*
+-				 * Handle errors according to the type of
+-				 * writeback. There's no need to continue for
+-				 * background writeback. Just push done_index
+-				 * past this page so media errors won't choke
+-				 * writeout for the entire file. For integrity
+-				 * writeback, we must process the entire dirty
+-				 * set regardless of errors because the fs may
+-				 * still have state to clear for each page. In
+-				 * that case we continue processing and return
+-				 * the first error.
+-				 */
+-				if (error == AOP_WRITEPAGE_ACTIVATE) {
+-					folio_unlock(folio);
+-					error = 0;
+-				} else if (wbc->sync_mode != WB_SYNC_ALL) {
+-					ret = error;
+-					done_index = folio->index + nr;
+-					done = 1;
+-					break;
+-				}
+-				if (!ret)
+-					ret = error;
++			wbc->nr_to_write -= folio_nr_pages(folio);
++
++			if (error == AOP_WRITEPAGE_ACTIVATE) {
++				folio_unlock(folio);
++				error = 0;
+ 			}
+ 
+ 			/*
+-			 * We stop writing back only if we are not doing
+-			 * integrity sync. In case of integrity sync we have to
+-			 * keep going until we have written all the pages
+-			 * we tagged for writeback prior to entering this loop.
++			 * For integrity writeback we have to keep going until
++			 * we have written all the folios we tagged for
++			 * writeback above, even if we run past wbc->nr_to_write
++			 * or encounter errors.
++			 * We stash away the first error we encounter in
++			 * wbc->saved_err so that it can be retrieved when we're
++			 * done.  This is because the file system may still have
++			 * state to clear for each folio.
++			 *
++			 * For background writeback we exit as soon as we run
++			 * past wbc->nr_to_write or encounter the first error.
+ 			 */
+-			done_index = folio->index + nr;
+-			if (wbc->nr_to_write <= 0 &&
+-			    wbc->sync_mode == WB_SYNC_NONE) {
+-				done = 1;
+-				break;
++			if (wbc->sync_mode == WB_SYNC_ALL) {
++				if (error && !ret)
++					ret = error;
++			} else {
++				if (error || wbc->nr_to_write <= 0)
++					goto done;
+ 			}
+ 		}
+ 		folio_batch_release(&fbatch);
+@@ -2524,14 +2505,15 @@ int write_cache_pages(struct address_space *mapping,
+ 	 * of the file if we are called again, which can only happen due to
+ 	 * -ENOMEM from the file system.
+ 	 */
+-	if (wbc->range_cyclic) {
+-		if (done)
+-			mapping->writeback_index = done_index;
+-		else
+-			mapping->writeback_index = 0;
+-	}
+-
++	if (wbc->range_cyclic)
++		mapping->writeback_index = 0;
+ 	return ret;
++
++done:
++	if (wbc->range_cyclic)
++		mapping->writeback_index = folio->index + folio_nr_pages(folio);
++	folio_batch_release(&fbatch);
++	return error;
+ }
+ EXPORT_SYMBOL(write_cache_pages);
+ 
 -- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
+2.39.2
 
 
