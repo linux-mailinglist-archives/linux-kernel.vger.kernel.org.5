@@ -1,113 +1,224 @@
-Return-Path: <linux-kernel+bounces-62087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6410D851B45
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:23:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5090851B84
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:32:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96C261C217B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:23:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C0F32869C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4AB3EA6C;
-	Mon, 12 Feb 2024 17:23:43 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803363F9F0;
+	Mon, 12 Feb 2024 17:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="TDlzwwoa"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A583E477;
-	Mon, 12 Feb 2024 17:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879AB3EA78;
+	Mon, 12 Feb 2024 17:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707758622; cv=none; b=K+muL8TL/8Ngn1GFGDoZ4HaLlh+1NvBASKNH5zzBAEIW83h6QFdWBp2rbNgou/PfM3iHnGwKTVcPa4EaDgzK+qKhLK/j9IgwMBpErH/5KrHNtCw1dzlFCma1kZLyREc2NM9lEjUrzJkiKLW11JBuLhPDVQAGnYAezjr4utyUNi4=
+	t=1707759109; cv=none; b=HIq5lt/SLl0f2LN2H1kcAtAncwVgEG2MyNAVD2QI2hJMUfYbs/kzUhjx6paTBadYwptLcznXc/QhSSF5DQf1RoaqeCkm0QKEa51zKel6OohO8o2duFssidX+SSvlP7YmfZPc9jn6/Dpzhlwt+ARdMCXvpTvCmj+eyvIgFKeTK3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707758622; c=relaxed/simple;
-	bh=Xy89FyQ5S4TsTqUr35IOZ1Q0qHWjJDfL8WOhAJbBJIA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gYxOmA4VuQci9I1IRQ8iDW9uAJT9ARXB5CbV7ipyACZORMD54rc9BGN0Gb7R8Aw8/GN9+4lsMDXRxP5mExoQV8lLuNwazZyty+N2BXv+Ynj7LcWderE4ygjlIbvXrm8mGzL3rJLrjx5FfLrFwum96pxwGaApzkRIQ8++LsRQHX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98276C433B2;
-	Mon, 12 Feb 2024 17:23:41 +0000 (UTC)
-Date: Mon, 12 Feb 2024 12:24:23 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Vincent Donnefort
- <vdonnefort@google.com>, Sven Schnelle <svens@linux.ibm.com>, Mete Durlu
- <meted@linux.ibm.com>
-Subject: Re: [PATCH v2] tracing: Fix wasted memory in saved_cmdlines logic
-Message-ID: <20240212122423.52dc9ed0@gandalf.local.home>
-In-Reply-To: <20240213004038.7fd10d2bd9f356c72100adcd@kernel.org>
-References: <20240209063622.1f7b6d5f@rorschach.local.home>
-	<20240213004038.7fd10d2bd9f356c72100adcd@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707759109; c=relaxed/simple;
+	bh=KTQRUIWsSy6fCUzMRSakU3C2/jNpAR6/r162Nsdd9e0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Tjm6abfcqbHcfFpjPcdwxKqgzyIDP8Afp3deMOcqlfQ4IGiQj0/2hpCq2l/0MRoeTD1giM16XuJCjBTgOD50YwWQrB8BAZZVKYTgJqYT/weDJeYAgZQ9lf4p2951xlVrCPF5FKypF7QzRNaQ6ojkyOvxtyEgFxl8wGwzp0Kq+y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=TDlzwwoa; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CHQm8x003949;
+	Mon, 12 Feb 2024 17:31:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Uqjq24L/txe6fjmnLR2c3Ml+syRGFsRrMlcBpbusI0E=;
+ b=TDlzwwoaskHJUG7X4SHjHJ7pJt0Js82m6KaMqtH5STaIa2Uvxxw5lJVLeC8M81CSjBjG
+ SVGFrtJsJXb7lYY2/+hLSLpEiDgEbok6dH6oubsKQkIW58D0GqGhD1bdA9tyNLFqeKex
+ xYwJ9guQ7JYgFVgRT3tXvACUULmNMTLY6QNf+0AFTNec5VE2NdeRTO1+htdfR36cSHu4
+ A7CLLbHK6y5nrCNBOAibVyfGE/KExopurx5uvCxEY64fWaOv4aFDetbz4cQlzeFBdyLy
+ ZHVu7RaUIqtft+UIF4oDulMUgCMlRYnLapkUBMNPA4pzboSXr6GamV/ZAYs9C25c8wIo bQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7qr3r69p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 17:31:17 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CHR6aP005757;
+	Mon, 12 Feb 2024 17:31:16 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7qr3r685-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 17:31:16 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CGSULR024878;
+	Mon, 12 Feb 2024 17:26:14 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mfp1x6b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 17:26:14 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CHQB2118285230
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 17:26:14 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CECB658055;
+	Mon, 12 Feb 2024 17:26:11 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 91E6058043;
+	Mon, 12 Feb 2024 17:26:08 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 12 Feb 2024 17:26:08 +0000 (GMT)
+Message-ID: <1175a4ee-94fd-4331-9412-d77987ca1827@linux.ibm.com>
+Date: Mon, 12 Feb 2024 12:26:07 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 15/25] security: Introduce inode_post_create_tmpfile
+ hook
+Content-Language: en-US
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-16-roberto.sassu@huaweicloud.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20240115181809.885385-16-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: b3FvR0c02HCTFg3Zt0r2fkFLkTxKdW1z
+X-Proofpoint-ORIG-GUID: RO1BQ0VD0_K1Qa5cBSbG9DuK2P1ScW3L
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_14,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 clxscore=1015 malwarescore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402120133
 
-On Tue, 13 Feb 2024 00:40:38 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-> > Now, instead of saving only 128 comms by default, by using this wasted
-> > space at the end of the structure it can save over 8000 comms and even
-> > saves space by removing the need for allocating the other array.  
+
+On 1/15/24 13:17, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 > 
-> This looks good to me. So this will allocate the saved_cmdlines in page-size
-> array instead of the power of two.
-
-Once the size is greater than page-size, it still is a power of two ;-)
-
-But I think you meant that it will be a reminder of extra data, and not a
-power of two. Looking at the code, it didn't need to be a power of two as
-the saved names were just in a ring buffer anyway. The recording of a PID
-must be a power of two, as that is masked.
-
-Basically we have three arrays. One for the PIDS that hold the index into the
-COMM array. The COMM array really has no limitation. The PID array is
-PID_MAX_DEFAULT. But PIDs can be more than PID_MAX_DEFAULT as that's just
-the "default" setting. User space can increase it. I need to add a comment
-to how this works, as there are three arrays:
-
- unsigned map_pid_to_cmdline[PID_MAX_DEFAULT + 1];
-
- /* The next two are allocated based on cmdline_num size */
- unsigned map_cmdline_to_pid[cmdline_num];
- char saved_cmdlines[cmdline_num][TASK_COMM_LEN];
-
-map_pid_to_cmdline[task->pid & (PID_MAX_DEFAULT - 1)] = index into the other two arrays;
-
- [ Although I'm not sure I need that "+1" in the array. This code is ancient
-   and I need to re-examine it. ]
-
-To get back to the PID, you need the map_cmdline_to_pid[idx] which contains
-the full PID. Really, that array is only needed if pid max is greater than
-PID_MAX_DEFAULT (which I find is the case for most distros now).
-
-To assign a new comm, we basically do:
-
-	idx = map_pid_to_cmdline[pid & (PID_MAX_DEFAULT - 1)];
-	if (idx == -1) {
-		idx = // get next location in COMM ring buffer
-		map_pid_to_cmdline[pid & (PID_MAX_DEFAULT - 1)] = idx;
-	}
-	map_cmdline_to_pid[idx] = pid;
-	strcpy(saved_cmdlines[idx], task->comm);
-
-And Mathieu pinged me about the non-commented use of that NO_CMDLINE_MAP
-which is just -1. I have it as INT_MAX, but really maybe it should be -1U,
-and add a comment around the memset().
-
+> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> the inode_post_create_tmpfile hook.
 > 
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> As temp files can be made persistent, treat new temp files like other new
+> files, so that the file hash is calculated and stored in the security
+> xattr.
+> 
+> LSMs could also take some action after temp files have been created.
+> 
+> The new hook cannot return an error and cannot cause the operation to be
+> canceled.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 
-Thanks, but Linus already pulled this. But I have some patches to clean
-this up a bit more.
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
--- Steve
+> ---
+>   fs/namei.c                    |  1 +
+>   include/linux/lsm_hook_defs.h |  2 ++
+>   include/linux/security.h      |  6 ++++++
+>   security/security.c           | 15 +++++++++++++++
+>   4 files changed, 24 insertions(+)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index b7f433720b1e..adb3ab27951a 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -3686,6 +3686,7 @@ static int vfs_tmpfile(struct mnt_idmap *idmap,
+>   		inode->i_state |= I_LINKABLE;
+>   		spin_unlock(&inode->i_lock);
+>   	}
+> +	security_inode_post_create_tmpfile(idmap, inode);
+>   	ima_post_create_tmpfile(idmap, inode);
+>   	return 0;
+>   }
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index e08b9091350d..5f90914d23e0 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -121,6 +121,8 @@ LSM_HOOK(int, 0, inode_init_security_anon, struct inode *inode,
+>   	 const struct qstr *name, const struct inode *context_inode)
+>   LSM_HOOK(int, 0, inode_create, struct inode *dir, struct dentry *dentry,
+>   	 umode_t mode)
+> +LSM_HOOK(void, LSM_RET_VOID, inode_post_create_tmpfile, struct mnt_idmap *idmap,
+> +	 struct inode *inode)
+>   LSM_HOOK(int, 0, inode_link, struct dentry *old_dentry, struct inode *dir,
+>   	 struct dentry *new_dentry)
+>   LSM_HOOK(int, 0, inode_unlink, struct inode *dir, struct dentry *dentry)
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index 977dd9f7f51a..1cb604282617 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -344,6 +344,8 @@ int security_inode_init_security_anon(struct inode *inode,
+>   				      const struct qstr *name,
+>   				      const struct inode *context_inode);
+>   int security_inode_create(struct inode *dir, struct dentry *dentry, umode_t mode);
+> +void security_inode_post_create_tmpfile(struct mnt_idmap *idmap,
+> +					struct inode *inode);
+>   int security_inode_link(struct dentry *old_dentry, struct inode *dir,
+>   			 struct dentry *new_dentry);
+>   int security_inode_unlink(struct inode *dir, struct dentry *dentry);
+> @@ -811,6 +813,10 @@ static inline int security_inode_create(struct inode *dir,
+>   	return 0;
+>   }
+>   
+> +static inline void
+> +security_inode_post_create_tmpfile(struct mnt_idmap *idmap, struct inode *inode)
+> +{ }
+> +
+>   static inline int security_inode_link(struct dentry *old_dentry,
+>   				       struct inode *dir,
+>   				       struct dentry *new_dentry)
+> diff --git a/security/security.c b/security/security.c
+> index 750bfe2768d5..5bc7edc22923 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -2013,6 +2013,21 @@ int security_inode_create(struct inode *dir, struct dentry *dentry,
+>   }
+>   EXPORT_SYMBOL_GPL(security_inode_create);
+>   
+> +/**
+> + * security_inode_post_create_tmpfile() - Update inode security of new tmpfile
+> + * @idmap: idmap of the mount
+> + * @inode: inode of the new tmpfile
+> + *
+> + * Update inode security data after a tmpfile has been created.
+> + */
+> +void security_inode_post_create_tmpfile(struct mnt_idmap *idmap,
+> +					struct inode *inode)
+> +{
+> +	if (unlikely(IS_PRIVATE(inode)))
+> +		return;
+> +	call_void_hook(inode_post_create_tmpfile, idmap, inode);
+> +}
+> +
+>   /**
+>    * security_inode_link() - Check if creating a hard link is allowed
+>    * @old_dentry: existing file
 
