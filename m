@@ -1,141 +1,222 @@
-Return-Path: <linux-kernel+bounces-61275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C84D851038
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 922E885103B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18ABF289000
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:01:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22892289319
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD0DB17C74;
-	Mon, 12 Feb 2024 10:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A44418036;
+	Mon, 12 Feb 2024 10:01:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bjaIMASa"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vRdcfGdN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2DD18AE4
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524A05244;
+	Mon, 12 Feb 2024 10:01:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707732047; cv=none; b=nWlC5Fs2TC/vRLSsyWZp92qTfDf4XTJfThysdmguqMSSF7MgYn2EfneHZ/lqP0ZlbB5YzvYl1EHOOpoUX9dxBv//ZPkboxQnRUZgz8JuelGDVfz9/6jRDlWMwecMNS8znVHYCka+CIAkAzPZxS55WduAmS5Ip0TVziHs/5oAM8U=
+	t=1707732070; cv=none; b=RHo4JKsS12kA7Rx+FWwZUwvXZaiFUD37VD7XhXBfqUnJ0wsHqu6wiTlkzg5TozZwyUsnxKq0amWx03ysyQA2pnIi4Jr62Woi29SljbsGydyf7sfrnFRHFVQGEKQKcGXzfPyrFbiehzhgREjd3dkdJ8mrDSjaGFUoIDU9XCKGP1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707732047; c=relaxed/simple;
-	bh=3y4L/Ww9jOlNtiXvABcrsz/8FFXP25E4KZgEUZ8G8fc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ofjFQn/CLOqgJHWNXWzjvh7Pcq8MGie9P/nbObxrbv0fDb5xVmItSUGnJ61KI6LO3rznUBQxuRlceYCmQn0NhN4sipzAB7kZduNdUjgGt74njFp2G9ob7v9l5jblvGE4TrQe8OKcME6W+i3ukehDr1SSGyJrk31YxWtvp513p0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bjaIMASa; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707732044;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l44duX4bruiSysv390/0MeGikPC351P53LEkSBBfAnE=;
-	b=bjaIMASaEaAuxbIRGbbCr0TkHp9FRdoZ7R4ctkW9yZSXgGfs7YVEdqK03WEs3rXy9+/upS
-	Et+aZG18/o9uNkJ8r4hBYmpmwi0FKSonULVxnqgJi/S7vYMjLnBR02CY1FDt7c7LXmcLtL
-	aPaA+tvjCChIJX1XQlHTp05yIuE7xuY=
-Received: from mail-vs1-f69.google.com (mail-vs1-f69.google.com
- [209.85.217.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-678--MBAVieEOFO8J9OlgKn7Pg-1; Mon, 12 Feb 2024 05:00:42 -0500
-X-MC-Unique: -MBAVieEOFO8J9OlgKn7Pg-1
-Received: by mail-vs1-f69.google.com with SMTP id ada2fe7eead31-46d6a12073aso635128137.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:00:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707732041; x=1708336841;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l44duX4bruiSysv390/0MeGikPC351P53LEkSBBfAnE=;
-        b=qDTbyErrTjy7PdI4Kzvh55rOX358z/eqJOJcpldm8+/W66fKH4jl4XwJm4a+N813Pq
-         6ORO3FK7xcJ3NnScu836drTtNx3x7cIm82yZalL2FwP/kqnzZDbAsCbeQCI8I6ZqrWs0
-         VASk7Ed40uPVyqhgfmXu/cgwApAPpWNSw59o14L9dRbKLbmwj+GNmex8MjepypBtS0ni
-         Sb7omcFLxO/MpLhmsxNsJYwWK7rOLXOpqTYmG+8y4FFn/y3KOHqscJGkSJuLcSbl4sAp
-         j64vwOcN93XPfu9WgHiejPFo7DdVU1AW2lO3/RaZlQYFzyAMe+SO2pfvt27uyW2FksYX
-         IOcA==
-X-Forwarded-Encrypted: i=1; AJvYcCXRWoOOAJkPsmgb4TwSwMcaQnRZvtNnYrxGS9NYDVcdMeGFsVnVYjr6lmlYebiQ3bYasg9TImbZN4nw6xGys8j5v5QvoCDxQ2VhdJ1E
-X-Gm-Message-State: AOJu0YzYYo3k9rclCA+ISSLI63/PEo3+a9ghLUyWgaLBOEldKs8stY4V
-	6jpUsALfCEopl1U8hdDoCAS5Pl4xFEDkZJe5kjwfG66duB+QOgy76CFHYb1n89JQhE8xZzt7bMR
-	yizWAQZpQ+VnG83lLW/tryfp//IyhmRr5v8DlZMa/iVRJozh+YXXUgss6woaqZpU2XKkk2eMKtx
-	4CqUA3VJvSRL+E5nsOn+Z2T9W5kgf9GE81Qo3D
-X-Received: by 2002:a67:fdd9:0:b0:46d:162f:a77e with SMTP id l25-20020a67fdd9000000b0046d162fa77emr4229779vsq.16.1707732040099;
-        Mon, 12 Feb 2024 02:00:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHNS2UrbWm61NEj4QS+lNMC4rXIR1d7f9tSEY7SuWQz9LtNYOaIt21AdO+LQgIosdUlO16W/y6MTDYLoVqP5+o=
-X-Received: by 2002:a67:fdd9:0:b0:46d:162f:a77e with SMTP id
- l25-20020a67fdd9000000b0046d162fa77emr4229749vsq.16.1707732039543; Mon, 12
- Feb 2024 02:00:39 -0800 (PST)
+	s=arc-20240116; t=1707732070; c=relaxed/simple;
+	bh=ZV4pECgPYcbYpTFYE/HHDZCGaJXwRLM519uxPcGBl0I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PKSuZrig1GVtHjpM6uqtZY8wBSkBw3q0hEPwC+TGxjHRqOoo4RibGAVvMggxICaXNhLiLkKCcOku8kLtVgRCNerQ3YNG1qiXC2/LNeOv37VSjcAFStQXba2jx/cY9RB7a44XzR5Gi+GaUuZDYg3NbcorZLl2IFIok7y5Pnd8CEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vRdcfGdN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76253C433F1;
+	Mon, 12 Feb 2024 10:01:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707732069;
+	bh=ZV4pECgPYcbYpTFYE/HHDZCGaJXwRLM519uxPcGBl0I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vRdcfGdNCOnmnB8/dcuM1aTGBkhnZCU+s8sdi2HDhKo1bAM9sweGpXpaiAluc56DU
+	 6M+uTI+N44afTG92KjSZS06Cfpa3OKXGNfTgQHDL2jFuLI3Rng7DXh+ZJI3cWNlsJS
+	 BrKiT9j7VQH3iQOQrybjasLvm2WVuEaU0eflNduPT/sjhtKqTrydzL3flueiwkwNlu
+	 f/aJmEAyfDnbIhycldNE2lW71I6zwId6r2BydT7BXebgkkBpsQreTcUL1iJlcsiVx/
+	 1f3nRZU3Jb4tGQY9zd4Z/FxH4FKFD7uYhtz7fG5gF60eK1onGRgp31xxYoRYOP9X6S
+	 MgypK9eU7VjMA==
+Date: Mon, 12 Feb 2024 11:01:07 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Sebastian Wick <sebastian.wick@redhat.com>
+Cc: Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, 
+	Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>, 
+	Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	Hans Verkuil <hverkuil@xs4all.nl>, linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: Re: Re: Re: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add
+ Broadcast RGB property
+Message-ID: <ahfl6f72lpgpsbnrbgvbsh4db4npr2hh36kua2c6krh544hv5r@dndw4hz2mu2g>
+References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
+ <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
+ <20240115143308.GA159345@toolbox>
+ <20240115143720.GA160656@toolbox>
+ <73peztbeeikb3fg6coxu3punxllgtyrmgco34tnxkojtsjbr3s@26bud3sjbcez>
+ <Zb0M_2093UwPXK8y@intel.com>
+ <hez2m57ogqx3yyqk45tzdkvxvhrbdepgm244i4m2aty2xhf5b5@acqgvmxhmmvr>
+ <Zb0aYAapkxQ2kopt@intel.com>
+ <zml6j27skvjmbrfyz7agy5waxajv4p4asbemeexelm3wuv4o7j@xkd2wvnxhbuc>
+ <20240209203435.GB996172@toolbox>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231230172351.574091-1-michael.roth@amd.com> <20231230172351.574091-7-michael.roth@amd.com>
- <ZcKb6VGbNZHlQkzg@google.com>
-In-Reply-To: <ZcKb6VGbNZHlQkzg@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Mon, 12 Feb 2024 11:00:27 +0100
-Message-ID: <CABgObfbMuU5axeCYykXitrKGgV5Zw-BB843--Gp4t_rLe2=gPw@mail.gmail.com>
-Subject: Re: [PATCH v11 06/35] KVM: x86/mmu: Pass around full 64-bit error
- code for KVM page faults
-To: Sean Christopherson <seanjc@google.com>
-Cc: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, linux-coco@lists.linux.dev, 
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, 
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, 
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com, 
-	Isaku Yamahata <isaku.yamahata@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="jve3saefgwx6cqdm"
+Content-Disposition: inline
+In-Reply-To: <20240209203435.GB996172@toolbox>
+
+
+--jve3saefgwx6cqdm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 6, 2024 at 9:52=E2=80=AFPM Sean Christopherson <seanjc@google.c=
-om> wrote:
->
-> On Sat, Dec 30, 2023, Michael Roth wrote:
-> > In some cases the full 64-bit error code for the KVM page fault will be
-> > needed to determine things like whether or not a fault was for a privat=
-e
-> > or shared guest page, so update related code to accept the full 64-bit
-> > value so it can be plumbed all the way through to where it is needed.
-> >
-> > The accessors of fault->error_code are changed as follows:
-> >
-> > - FNAME(page_fault): change to explicitly use lower_32_bits() since tha=
-t
-> >                      is no longer done in kvm_mmu_page_fault()
-> > - kvm_mmu_page_fault(): explicit mask with PFERR_RSVD_MASK,
-> >                         PFERR_NESTED_GUEST_PAGE
-> > - mmutrace: changed u32 -> u64
-> >
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > Link: https://lore.kernel.org/kvm/20230612042559.375660-1-michael.roth@=
-amd.com/T/#mbd0b20c9a2cf50319d5d2a27b63f73c772112076
-> > [mdr: drop references/changes to code not in current gmem tree, update
-> >       commit message]
-> > Signed-off-by: Michael Roth <michael.roth@amd.com>
->
-> I assume Isaku is the original author?  If so, that's missing from this p=
-atch.
+On Fri, Feb 09, 2024 at 09:34:35PM +0100, Sebastian Wick wrote:
+> On Mon, Feb 05, 2024 at 10:39:38AM +0100, Maxime Ripard wrote:
+> > On Fri, Feb 02, 2024 at 06:37:52PM +0200, Ville Syrj=E4l=E4 wrote:
+> > > On Fri, Feb 02, 2024 at 04:59:30PM +0100, Maxime Ripard wrote:
+> > > > On Fri, Feb 02, 2024 at 05:40:47PM +0200, Ville Syrj=E4l=E4 wrote:
+> > > > > On Fri, Feb 02, 2024 at 02:01:39PM +0100, Maxime Ripard wrote:
+> > > > > > Hi,
+> > > > > >=20
+> > > > > > On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebastian Wick wrote:
+> > > > > > > > >  /**
+> > > > > > > > >   * DOC: HDMI connector properties
+> > > > > > > > >   *
+> > > > > > > > > + * Broadcast RGB
+> > > > > > > > > + *      Indicates the RGB Quantization Range (Full vs Li=
+mited) used.
+> > > > > > > > > + *      Infoframes will be generated according to that v=
+alue.
+> > > > > > > > > + *
+> > > > > > > > > + *      The value of this property can be one of the fol=
+lowing:
+> > > > > > > > > + *
+> > > > > > > > > + *      Automatic:
+> > > > > > > > > + *              RGB Range is selected automatically base=
+d on the mode
+> > > > > > > > > + *              according to the HDMI specifications.
+> > > > > > > > > + *
+> > > > > > > > > + *      Full:
+> > > > > > > > > + *              Full RGB Range is forced.
+> > > > > > > > > + *
+> > > > > > > > > + *      Limited 16:235:
+> > > > > > > > > + *              Limited RGB Range is forced. Unlike the =
+name suggests,
+> > > > > > > > > + *              this works for any number of bits-per-co=
+mponent.
+> > > > > > > > > + *
+> > > > > > > > > + *      Drivers can set up this property by calling
+> > > > > > > > > + *      drm_connector_attach_broadcast_rgb_property().
+> > > > > > > > > + *
+> > > > > > > >=20
+> > > > > > > > This is a good time to document this in more detail. There =
+might be two
+> > > > > > > > different things being affected:
+> > > > > > > >=20
+> > > > > > > > 1. The signalling (InfoFrame/SDP/...)
+> > > > > > > > 2. The color pipeline processing
+> > > > > > > >=20
+> > > > > > > > All values of Broadcast RGB always affect the color pipelin=
+e processing
+> > > > > > > > such that a full-range input to the CRTC is converted to ei=
+ther full- or
+> > > > > > > > limited-range, depending on what the monitor is supposed to=
+ accept.
+> > > > > > > >=20
+> > > > > > > > When automatic is selected, does that mean that there is no=
+ signalling,
+> > > > > > > > or that the signalling matches what the monitor is supposed=
+ to accept
+> > > > > > > > according to the spec? Also, is this really HDMI specific?
+> > > > > > > >=20
+> > > > > > > > When full or limited is selected and the monitor doesn't su=
+pport the
+> > > > > > > > signalling, what happens?
+> > > > > > >=20
+> > > > > > > Forgot to mention: user-space still has no control over RGB v=
+s YCbCr on
+> > > > > > > the cable, so is this only affecting RGB? If not, how does it=
+ affect
+> > > > > > > YCbCr?
+> > > > > >=20
+> > > > > > So I dug a bit into both the i915 and vc4 drivers, and it looks=
+ like if
+> > > > > > we're using a YCbCr format, i915 will always use a limited rang=
+e while
+> > > > > > vc4 will follow the value of the property.
+> > > > >=20
+> > > > > The property is literally called "Broadcast *RGB*".
+> > > > > That should explain why it's only affecting RGB.
+> > > >=20
+> > > > Right. And the limited range option is called "Limited 16:235" desp=
+ite
+> > > > being usable on bpc > 8 bits. Naming errors occurs, and history hap=
+pens
+> > > > to make names inconsistent too, that's fine and not an argument in
+> > > > itself.
+> > > >=20
+> > > > > Full range YCbCr is a much rarer beast so we've never bothered
+> > > > > to enable it.
+> > > >=20
+> > > > vc4 supports it.
+> > >=20
+> > > Someone implemented it incorrectly then.
+> >=20
+> > Incorrectly according to what documentation / specification? I'm sorry,
+> > but I find it super ironic that i915 gets to do its own thing, not
+> > document any of it, and when people try to clean things up they get told
+> > that we got it all wrong.
+>=20
+> FWIW, this was an i915 property and if another driver uses the same
+> property name it must have the same behavior. Yes, it isn't standardized
+> and yes, it's not documented (hence this effort here) but it's still on
+> vc4 to make the property compatible.
 
-The root of this patch seem to be in a reply to "KVM: x86: Add
-'fault_is_private' x86 op"
-(https://patchew.org/linux/20230220183847.59159-1-michael.roth@amd.com/2023=
-0220183847.59159-2-michael.roth@amd.com/),
-so yes.
+How is it not compatible? It's a superset of what i915 provides, but
+it's strictly compatible with it.
 
-Paolo
+I would argue that i915 is the broken one since userspace could force a
+full range output, but since the driver takes the YUV vs RGB decision
+itself and only supports limited range for YUV, the driver would
+effectively ignore that user-space property, without the user-space
+being able to tell it was ignored in the first place.
 
+> Trying to make the property handle YCbCr is very much in the "let's try
+> to fix the property" territory that I want to avoid, so I'm in favor of
+> adjusting vc4.
+
+Breaking the ABI in the process. For something that is explicitly
+supported by the spec, the driver, and the hardware. On a property that
+never said it wasn't meant to be used that way, and with semantics based
+on a driver that never provided a way to check those restrictions in the
+first place.
+
+And it's not like i915 is going to use that code anyway.
+
+Maxime
+
+--jve3saefgwx6cqdm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZcnsYgAKCRDj7w1vZxhR
+xbXvAQCwcVIa0ZIBiFB60+Djxs5Q9r6KT+VmRcFEid+4vu5kmAD/SoSSxALs4Fec
+o0UKGT8WuF+A9QWBqCkljcQ1i+X1aAA=
+=q4Ag
+-----END PGP SIGNATURE-----
+
+--jve3saefgwx6cqdm--
 
