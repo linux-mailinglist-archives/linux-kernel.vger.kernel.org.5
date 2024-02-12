@@ -1,110 +1,138 @@
-Return-Path: <linux-kernel+bounces-61118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB7A850D88
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:26:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBA5850D8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:32:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63FA81F25ECD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 06:26:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7799BB2326A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 06:32:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6589C6FD8;
-	Mon, 12 Feb 2024 06:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 555766FD8;
+	Mon, 12 Feb 2024 06:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="VyV8difg"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KeZ6oAxh"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39775538D
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 06:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74AF1876;
+	Mon, 12 Feb 2024 06:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707719185; cv=none; b=JIfWu/1qQmIT1U6c4fhWbXxX+sWcCQI2rXREh1y7spOsC6Yi/G37UHQFKbmTNu30pdBACqNHqnYQl+y9qcddOcKiTNtU/sUBZZAy53qAQPebkUzHVaa7TJx72ywD2bMMUpSc3w9U2T4BNJJbMeCBvjH8z0FIpC6OSuc3Yd8vWAc=
+	t=1707719565; cv=none; b=f8nqdqzXdnynHaKnNrPoFZbYBTXMnzZ2E888e5chuimPgjgKDpByNQdKfNefY42xqve98BknC7529bQIGlMtQontq/fjDpQ6jbIEMBnrPY2v+Wk8oyrjVEvkMtc1DllUWNGbhCqlt5nlgJVQ8Sosm2t/N10JgaPXe3bMSU0Qgh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707719185; c=relaxed/simple;
-	bh=KuLc+F11ArVpFzno+5E4qlkep2uSTg7WemeMowm4Nyo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PHDZhuOCD6EMh+C7opEWae0+Tm+FPclpjyEo6tCQZGA22fr9tcpVdF/fnSjnpkrJeBFwTsj9YrJZyiquO7+LkQcwnGggiW/nQMD/AeDb85wkbz4AC7u3D/AKQsGK87DfOvuUXXdZng3q6v2epHUd7qQEvCwgwuncxF6EKRnQyPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=VyV8difg; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=wRL75x4XE4MFE8XmThFTmgQtY9HLmq9ojhS+mB9cHlI=; b=VyV8difgWT9YdsQl6BOmnco4yM
-	s/eKiBP80J16FSJKTWAJ9Bob23SYqbTSQH43JjLG3iF6JOcfd+ZPUhlGO89bbIlIsWtiBmn2nlD5b
-	yrNm04/neMiRx9jT49FRsivjW3aiN+Ha3jZYCPIFwDj7k5drKwiVlbLUIYKug0bR/MIkaKMiXLJQ6
-	yNSzJBEVx2fvJNHLLHzzxdHGRxfxOLKXWvny6cEV2s/D9zMDXtHJYSA8ZNFkjLEIYCMHPPzwxiIkN
-	+XyHKGZ2pyMVzyfwPwLzVYg+pNN3VyhD/a+O9q9BP9CjkVye/cZmLdslZRKGJsEVQRkAfD/G8s6pL
-	BUB9JWQw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rZPle-006Vty-2y;
-	Mon, 12 Feb 2024 06:26:15 +0000
-Date: Mon, 12 Feb 2024 06:26:14 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Guenter Roeck <linux@roeck-us.net>,
-	David Laight <David.Laight@aculab.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Message-ID: <20240212062614.GI608142@ZenIV>
-References: <20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com>
- <20240207-fix_sparse_errors_checksum_tests-v6-2-4caa9629705b@rivosinc.com>
+	s=arc-20240116; t=1707719565; c=relaxed/simple;
+	bh=WtENbaXqtArIZ1h/ul86KKlsUh8sF5NCgydYyrUusME=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=icVHeoPGZGiRuz1UhSqnuzo1YwDa0h/FR2aFLqlE5wDkoTcG0CRJzJMFUUjJHi73J3wWWRSY2Vj+MmUB5nWQSaOTTCp9ZiIvdWzsIw/SGTvnbvvojDYgB23ljYlKnT47iLZxlujrPDyDYu4zH4lNWFfFRpk1paJB/LaLfqIrADU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=none smtp.mailfrom=ecsmtp.iind.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KeZ6oAxh; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ecsmtp.iind.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707719564; x=1739255564;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=WtENbaXqtArIZ1h/ul86KKlsUh8sF5NCgydYyrUusME=;
+  b=KeZ6oAxh/OFsHP3Hpk3UKglRsnIl0Aq+h/ANK0HNVQ7YfO8i3BZiiqv0
+   KF8inZLt9ZeeeJPMVJpC41yuA/ik4WnjGrTR575psTLTSAbV/vA3Klykm
+   eyJ+uVGlh3ABwyjugCl3pS5gmwJr64QdChhifDPDG9zZTSWWD3ORVfaOL
+   p+zi/AVHITwMQUxiF4lcOwdk+hoSSX2vKSCN8/COdkCGLh0n3HITgpb9d
+   q46HPILfwtfZd7jDbYix/5SbCRKzwDcUrTtDtR4YJR/NzIpJWvttufZso
+   HZHprdb3Db9vr4bBP/lhT5mrhNHgSehhwXm4w966oCObMWWZI4p8ihi/V
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="1538558"
+X-IronPort-AV: E=Sophos;i="6.05,262,1701158400"; 
+   d="scan'208";a="1538558"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2024 22:32:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,262,1701158400"; 
+   d="scan'208";a="2897133"
+Received: from inesxmail01.iind.intel.com ([10.223.57.40])
+  by orviesa008.jf.intel.com with ESMTP; 11 Feb 2024 22:32:41 -0800
+Received: from inlubt0316.iind.intel.com (inlubt0316.iind.intel.com [10.191.20.213])
+	by inesxmail01.iind.intel.com (Postfix) with ESMTP id 882D01CAEA;
+	Mon, 12 Feb 2024 12:02:39 +0530 (IST)
+Received: by inlubt0316.iind.intel.com (Postfix, from userid 12101951)
+	id 837061600100; Mon, 12 Feb 2024 12:02:39 +0530 (IST)
+From: Raag Jadav <raag.jadav@intel.com>
+To: bhelgaas@google.com,
+	jarkko.nikula@linux.intel.com,
+	mika.westerberg@linux.intel.com,
+	andriy.shevchenko@linux.intel.com,
+	stanislaw.gruszka@linux.intel.com,
+	lukas@wunner.de,
+	rafael@kernel.org,
+	ilpo.jarvinen@linux.intel.com
+Cc: linux-pci@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	gregkh@linuxfoundation.org,
+	sashal@kernel.org,
+	Raag Jadav <raag.jadav@intel.com>
+Subject: [PATCH v1] PCI / PM: Really allow runtime PM without callback functions
+Date: Mon, 12 Feb 2024 12:02:33 +0530
+Message-Id: <20240212063233.5599-1-raag.jadav@intel.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207-fix_sparse_errors_checksum_tests-v6-2-4caa9629705b@rivosinc.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 07, 2024 at 04:22:51PM -0800, Charlie Jenkins wrote:
-> +	struct csum_ipv6_magic_data {
-> +		const struct in6_addr saddr;
-> +		const struct in6_addr daddr;
-> +		unsigned int len;
-> +		__wsum csum;
-> +		unsigned char proto;
-> +	} data, *data_ptr;
+Commit c5eb1190074c ("PCI / PM: Allow runtime PM without callback
+functions") tried to eliminate the need for runtime PM callbacks
+by modifying pci_pm_runtime_suspend() and pci_pm_runtime_resume(),
+but didn't modify pci_pm_runtime_idle() with relevant changes, which
+still returns -ENOSYS if the driver supplies no runtime PM callbacks.
 
-Huh?
+Fix this by modifying pci_pm_runtime_idle() such that it allows PCI
+device power state transitions without runtime PM callbacks.
 
-> +	int num_tests = MAX_LEN / WORD_ALIGNMENT - sizeof(struct csum_ipv6_magic_data);
-> +
-> +	for (int i = 0; i < num_tests; i++) {
-> +		data_ptr = (struct csum_ipv6_magic_data *)(random_buf + (i * WORD_ALIGNMENT));
-> +
-> +		cpu_to_be32_array((__be32 *)&data.saddr, (const u32 *)&data_ptr->saddr,
-> +				  sizeof_field(struct csum_ipv6_magic_data, saddr) / 4);
-> +		cpu_to_be32_array((__be32 *)&data.daddr, (const u32 *)&data_ptr->daddr,
-> +				  sizeof_field(struct csum_ipv6_magic_data, daddr) / 4);
-> +		data.len = data_ptr->len;
-> +		data.csum = (__force __wsum)htonl((__force u32)data_ptr->csum);
+ 0)               |  pm_runtime_work() {
+ 0)               |    rpm_idle() {
+ 0)               |      rpm_check_suspend_allowed() {
+ 0)   1.500 us    |        __dev_pm_qos_resume_latency(); /* = 0x7fffffff */
+ 0)   4.840 us    |      } /* rpm_check_suspend_allowed = 0x0 */
+ 0)   1.550 us    |      __rpm_get_callback(); /* = 0xffffffffb4bc84f0 */
+ 0)   1.800 us    |      pci_pm_runtime_idle(); /* = -38 */
+ 0) + 17.070 us   |    } /* rpm_idle = -38 */
+ 0) + 22.450 us   |  } /* pm_runtime_work = -38 */
 
-What are those cpu_to_be32() about?  Checksum calculations *DO* *NOT* involve
-any endianness conversions.  At any point.
+Debugged-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+---
 
-Replace those assignments with memcpy() and be done with that - that will take
-care of unaligned accesses.
+This is not marked for linux-stable for the need of extensive testing
+and can be backported after a few releases if no issues are reported.
 
-Result will have host-independent memory representation.  The only place where you
-might want to play with byteswaps (only 16-bit ones) is if you initialized the
-array of expected results with u16 constants.  That will have opposite memory
-representations on l-e and b-e, so you'll need to byteswap to compare with
-what you get from function.  Alternatively, make it an array of bytes and
-do
-	sum16 = csum_ipv6_magic(saddr, daddr, len, proto, csum);
-	if (memcmp(sum16, expected_csum_ipv6_magic + i * 2, 2))
-		complain
+ drivers/pci/pci-driver.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-That's it.
+diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+index 51ec9e7e784f..bb7f6775b350 100644
+--- a/drivers/pci/pci-driver.c
++++ b/drivers/pci/pci-driver.c
+@@ -1382,10 +1382,7 @@ static int pci_pm_runtime_idle(struct device *dev)
+ 	if (!pci_dev->driver)
+ 		return 0;
+ 
+-	if (!pm)
+-		return -ENOSYS;
+-
+-	if (pm->runtime_idle)
++	if (pm && pm->runtime_idle)
+ 		return pm->runtime_idle(dev);
+ 
+ 	return 0;
+-- 
+2.35.3
+
 
