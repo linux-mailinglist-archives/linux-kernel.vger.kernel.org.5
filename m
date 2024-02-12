@@ -1,224 +1,165 @@
-Return-Path: <linux-kernel+bounces-62550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61EBF8522AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:39:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E5208522AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 863E11C228BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:39:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AB14B237F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4429850254;
-	Mon, 12 Feb 2024 23:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1995351C21;
+	Mon, 12 Feb 2024 23:39:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="t/2mUQ7v"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gaCKnN3a"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5309A50251;
-	Mon, 12 Feb 2024 23:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F4350268;
+	Mon, 12 Feb 2024 23:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707781144; cv=none; b=JlhORQva7Dc2Pov7wpMJbvtWccVjD4e60K8vSt+EIhxCERD6yn4rKKku1UoMc8T2cLdv9q+aTOrxVzYn6vfWStDn/EV3EYZz/1ZMHNC538srlnsGaPwIvstfD6qAg/srZvhnZAFWbfajZEfcy5aOWKOyzTL4+KaYzJeBW7rn7wA=
+	t=1707781147; cv=none; b=HFSKSA/Mp6jVGt2iWBm66pZjnLfteBfTgFhrk2ubh8FAkBuclgxHBw9SY4o3BxKVKIJJ93tdIkKSaLFah4cdvTCwVSS87t9sMSBNKwIPQ601aO6pRS3UPhv6OC6nexH+uQWxCxmzjw3F36xDYkcWRaDEeDhugQ5xKzQlVxXENW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707781144; c=relaxed/simple;
-	bh=Z8oypL0/I5zgoi94ren6g6IFnyKXf9SiRaVde9Wd9DQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=sbBw3ZLTEvE+pstfzbYyqwi7uuw/sLzeNlC0EHyQ7nmvqoM54PkFIIEQm8UvRx9Q3vpzzB1F5G9avzTLobcZ95wpcNL+JL4LDcOQayuj99UYpMIZZZ1a9sG2nIPzGcZdY9rmniHDRL03bf17H95n8NS5NgumFxdiTaTiofQ2K8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=t/2mUQ7v; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41CNctL4125497;
-	Mon, 12 Feb 2024 17:38:55 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707781135;
-	bh=iTFElGTHMEr/JK0EWjRnNYP2a/92ZvSdFx07frdsnqg=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=t/2mUQ7vNwcOFUEM9xjwN7d5akTUNOXdr8hnQ5ta4YsU2RvczrrSMxO2kOFVWMUVd
-	 zkScWSlCLXCUCcERzaFcDgpy4mCMmjMFm4BUBkPdjJIgqjuiFIycv2MguFb6HyQjYw
-	 yPjKBRdktAj9DwgCZnWrAwTu3oKAoX1r4JJwSkuM=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41CNctnP116534
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 12 Feb 2024 17:38:55 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
- Feb 2024 17:38:55 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 12 Feb 2024 17:38:55 -0600
-Received: from [128.247.81.105] (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41CNcsGr049509;
-	Mon, 12 Feb 2024 17:38:54 -0600
-Message-ID: <c94b7399-31c0-4e7d-a616-8f29c86a27ba@ti.com>
-Date: Mon, 12 Feb 2024 17:38:54 -0600
+	s=arc-20240116; t=1707781147; c=relaxed/simple;
+	bh=QPAWSIbAkGzPHg0gCvchvrpX63qIMyVQwVrLpDY0n+c=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fk9zfJ7QYmqacUYHjgUV7yFgq0fmWVYcY9zJvUL9bZzacnqzStDoe+SbLhCkGO7GPaVwRLG3yEjJDmYUIJHZn9IahwnssxTJmuzNpg2PNQgnFrTgXwQ+zRcWNdB+ZW+/gVc0pWxQz3ECK96dBp0xIph1E2SmPTjj4alZVSAH+0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gaCKnN3a; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707781146; x=1739317146;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=QPAWSIbAkGzPHg0gCvchvrpX63qIMyVQwVrLpDY0n+c=;
+  b=gaCKnN3aIXi8iyK5YygR7BBoJNHbLA2Eti0Y1xg+mxJKXifJLKdKt+ih
+   cmVITmm9D41H3uuKe2NZHUolus6pRvu1kJMLW/4KglSPrDOOV2AeZQGZ0
+   fDGcFRCoPlswSwgkZkfXM+yp3B5X5X1vPVtcKmXWwbQ51U8n5RRp4amIG
+   GVWSyxwT49QhJNNRmcli6HKF6gxSDgGB/ZIYoYGBryhhit73Y75TEHO0y
+   A8dNNFj5h+Uktd1YkIdxlZ52W2YyTmyOo4TCRrjvuC2SOtotznYZSgTQz
+   IADCzDilj3qmNbydXdV5UmJjONSemYxecMlOPnfshwDHXdWS4yUvrXdel
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="12332444"
+X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
+   d="scan'208";a="12332444"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 15:39:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
+   d="scan'208";a="2682509"
+Received: from sparrish-mobl1.amr.corp.intel.com (HELO [10.209.29.247]) ([10.209.29.247])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 15:39:04 -0800
+Message-ID: <ef94259e139e4579ee27db99975dc4cf397e2a06.camel@linux.intel.com>
+Subject: Re: [PATCH] tracing: Have saved_cmdlines arrays all in one
+ allocation
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Steven Rostedt <rostedt@goodmis.org>, LKML
+ <linux-kernel@vger.kernel.org>,  Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Mark Rutland <mark.rutland@arm.com>, 
+ Vincent Donnefort <vdonnefort@google.com>, Sven Schnelle
+ <svens@linux.ibm.com>, Mete Durlu <meted@linux.ibm.com>
+Date: Mon, 12 Feb 2024 15:39:03 -0800
+In-Reply-To: <20240212180941.379c419b@gandalf.local.home>
+References: <20240212180941.379c419b@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 11/13] arm64: dts: ti: k3-am62p: Add missing
- properties for MMC
-To: Roger Quadros <rogerq@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh
- Raghavendra <vigneshr@ti.com>, Andrew Davis <afd@ti.com>,
-        Udit Kumar
-	<u-kumar1@ti.com>, <devicetree@vger.kernel.org>,
-        Randolph Sapp <rs@ti.com>
-References: <20240131003714.2779593-1-jm@ti.com>
- <20240131003714.2779593-12-jm@ti.com>
- <0c44863b-7a3e-48bc-bdc8-1069df6d79bd@kernel.org>
-Content-Language: en-US
-From: Judith Mendez <jm@ti.com>
-In-Reply-To: <0c44863b-7a3e-48bc-bdc8-1069df6d79bd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Roger,
+On Mon, 2024-02-12 at 18:09 -0500, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>=20
+> The saved_cmdlines have three arrays for mapping PIDs to COMMs:
+>=20
+>  - map_pid_to_cmdline[]
+>  - map_cmdline_to_pid[]
+>  - saved_cmdlines
+>=20
+> The map_pid_to_cmdline[] is PID_MAX_DEFAULT in size and holds the index
+> into the other arrays. The map_cmdline_to_pid[] is a mapping back to the
+> full pid as it can be larger than PID_MAX_DEFAULT. And the
+> saved_cmdlines[] just holds the COMMs associated to the pids.
+>=20
+> Currently the map_pid_to_cmdline[] and saved_cmdlines[] are allocated
+> together (in reality the saved_cmdlines is just in the memory of the
+> rounding of the allocation of the structure as it is always allocated in
+> powers of two). The map_cmdline_to_pid[] array is allocated separately.
+>=20
+> Since the rounding to a power of two is rather large (it allows for 8000
+> elements in saved_cmdlines), also include the map_cmdline_to_pid[] array.
+> (This drops it to 6000 by default, which is still plenty for most use
+> cases). This saves even more memory as the map_cmdline_to_pid[] array
+> doesn't need to be allocated.
 
-On 2/2/24 3:50 AM, Roger Quadros wrote:
-> 
-> 
-> On 31/01/2024 02:37, Judith Mendez wrote:
->> Add missing properties to enable HS200 timing for MMC0 and
->> SDR104 timing for MMC1 according to the datasheet [0] for
->> AM62p device, refer to Table 7-79 for MMC0 and Table 7-97
->> for MMC1/MMC2.
->>
->> [0] https://www.ti.com/lit/ds/symlink/am625.pdf
->>
->> Signed-off-by: Judith Mendez <jm@ti.com>
->> ---
->>   arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 44 +++++++++++++++++++++--
->>   arch/arm64/boot/dts/ti/k3-am62p5-sk.dts   |  6 ++--
->>   2 files changed, 45 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
->> index 4c51bae06b57..f743700dd5bd 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
->> @@ -534,7 +534,21 @@ sdhci0: mmc@fa10000 {
->>   		clock-names = "clk_ahb", "clk_xin";
->>   		assigned-clocks = <&k3_clks 57 2>;
->>   		assigned-clock-parents = <&k3_clks 57 4>;
->> -		ti,otap-del-sel-legacy = <0x0>;
->> +		bus-width = <8>;
->> +		mmc-ddr-1_8v;
->> +		mmc-hs200-1_8v;
->> +		mmc-hs400-1_8v;
->> +		ti,clkbuf-sel = <0x7>;
->> +		ti,strobe-sel = <0x77>;
->> +		ti,trm-icp = <0x8>;
->> +		ti,otap-del-sel-legacy = <0x1>;
->> +		ti,otap-del-sel-mmc-hs = <0x1>;
->> +		ti,otap-del-sel-ddr52 = <0x6>;
->> +		ti,otap-del-sel-hs200 = <0x8>;
->> +		ti,otap-del-sel-hs400 = <0x5>;
->> +		ti,itap-del-sel-legacy = <0x10>;
->> +		ti,itap-del-sel-mmc-hs = <0xa>;
->> +		ti,itap-del-sel-ddr52 = <0x3>;
->>   		status = "disabled";
->>   	};
->>   
->> @@ -545,7 +559,19 @@ sdhci1: mmc@fa00000 {
->>   		power-domains = <&k3_pds 58 TI_SCI_PD_EXCLUSIVE>;
->>   		clocks = <&k3_clks 58 5>, <&k3_clks 58 6>;
->>   		clock-names = "clk_ahb", "clk_xin";
->> -		ti,otap-del-sel-legacy = <0x8>;
->> +		bus-width = <4>;
->> +		ti,clkbuf-sel = <0x7>;
->> +		ti,otap-del-sel-legacy = <0x0>;
->> +		ti,otap-del-sel-sd-hs = <0x0>;
->> +		ti,otap-del-sel-sdr12 = <0xf>;
->> +		ti,otap-del-sel-sdr25 = <0xf>;
->> +		ti,otap-del-sel-sdr50 = <0xc>;
->> +		ti,otap-del-sel-ddr50 = <0x9>;
->> +		ti,otap-del-sel-sdr104 = <0x6>;
->> +		ti,itap-del-sel-legacy = <0x0>;
->> +		ti,itap-del-sel-sd-hs = <0x0>;
->> +		ti,itap-del-sel-sdr12 = <0x0>;
->> +		ti,itap-del-sel-sdr25 = <0x0>;
->>   		status = "disabled";
->>   	};
->>   
->> @@ -556,7 +582,19 @@ sdhci2: mmc@fa20000 {
->>   		power-domains = <&k3_pds 184 TI_SCI_PD_EXCLUSIVE>;
->>   		clocks = <&k3_clks 184 5>, <&k3_clks 184 6>;
->>   		clock-names = "clk_ahb", "clk_xin";
->> -		ti,otap-del-sel-legacy = <0x8>;
->> +		bus-width = <4>;
->> +		ti,clkbuf-sel = <0x7>;
->> +		ti,otap-del-sel-legacy = <0x0>;
->> +		ti,otap-del-sel-sd-hs = <0x0>;
->> +		ti,otap-del-sel-sdr12 = <0xf>;
->> +		ti,otap-del-sel-sdr25 = <0xf>;
->> +		ti,otap-del-sel-sdr50 = <0xc>;
->> +		ti,otap-del-sel-ddr50 = <0x9>;
->> +		ti,otap-del-sel-sdr104 = <0x6>;
->> +		ti,itap-del-sel-legacy = <0x0>;
->> +		ti,itap-del-sel-sd-hs = <0x0>;
->> +		ti,itap-del-sel-sdr12 = <0x0>;
->> +		ti,itap-del-sel-sdr25 = <0x0>;
->>   		status = "disabled";
->>   	};
->>   
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
->> index 1773c05f752c..10156a04a92c 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
->> @@ -410,13 +410,17 @@ &main_i2c2 {
->>   };
->>   
->>   &sdhci0 {
->> +	/* eMMC */
->> +	bootph-all;
->>   	status = "okay";
->> +	non-removable;
->>   	ti,driver-strength-ohm = <50>;
->>   	disable-wp;
->>   };
->>   
->>   &sdhci1 {
->>   	/* SD/MMC */
->> +	bootph-all;
->>   	status = "okay";
->>   	vmmc-supply = <&vdd_mmc1>;
->>   	vqmmc-supply = <&vddshv_sdio>;
->> @@ -424,8 +428,6 @@ &sdhci1 {
->>   	pinctrl-0 = <&main_mmc1_pins_default>;
->>   	ti,driver-strength-ohm = <50>;
->>   	disable-wp;
->> -	no-1-8-v;
-> 
-> Why was 'no-1-8-v' removed?
 
-To enable HS400 timing, the no-1-8-v property should
-be removed. I add this comment in patch description for
-v1.
+This patch does make better use of the extra space and make the
+previous change better.
 
-Thanks for reviewing!
+Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+=20
+>=20
+> Link: https://lore.kernel.org/linux-trace-kernel/20240212174011.068211d9@=
+gandalf.local.home/
+>=20
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/trace_sched_switch.c | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/kernel/trace/trace_sched_switch.c b/kernel/trace/trace_sched=
+_switch.c
+> index e4fbcc3bede5..210c74dcd016 100644
+> --- a/kernel/trace/trace_sched_switch.c
+> +++ b/kernel/trace/trace_sched_switch.c
+> @@ -201,7 +201,7 @@ static struct saved_cmdlines_buffer *allocate_cmdline=
+s_buffer(unsigned int val)
+>  	int order;
+> =20
+>  	/* Figure out how much is needed to hold the given number of cmdlines *=
+/
+> -	orig_size =3D sizeof(*s) + val * TASK_COMM_LEN;
+> +	orig_size =3D sizeof(*s) + val * (TASK_COMM_LEN + sizeof(int));
 
-~ Judith
+Strictly speaking, *map_cmdline_to_pid is unsigned int so it is more consis=
+tent
+to use sizeof(unsigned) in line above.  But I'm nitpicking and I'm fine to
+leave it as is.
 
-> 
->> -	bootph-all;
->>   };
->>   
->>   &cpsw3g {
-> 
+>  	order =3D get_order(orig_size);
+>  	size =3D 1 << (order + PAGE_SHIFT);
+>  	page =3D alloc_pages(GFP_KERNEL, order);
+> @@ -212,16 +212,11 @@ static struct saved_cmdlines_buffer *allocate_cmdli=
+nes_buffer(unsigned int val)
+>  	memset(s, 0, sizeof(*s));
+> =20
+>  	/* Round up to actual allocation */
+> -	val =3D (size - sizeof(*s)) / TASK_COMM_LEN;
+> +	val =3D (size - sizeof(*s)) / (TASK_COMM_LEN + sizeof(int));
+>  	s->cmdline_num =3D val;
+> =20
+> -	s->map_cmdline_to_pid =3D kmalloc_array(val,
+> -					      sizeof(*s->map_cmdline_to_pid),
+> -					      GFP_KERNEL);
+> -	if (!s->map_cmdline_to_pid) {
+> -		free_saved_cmdlines_buffer(s);
+> -		return NULL;
+> -	}
+> +	/* Place map_cmdline_to_pid array right after saved_cmdlines */
+> +	s->map_cmdline_to_pid =3D (unsigned *)&s->saved_cmdlines[val * TASK_COM=
+M_LEN];
+> =20
+>  	s->cmdline_idx =3D 0;
+>  	memset(&s->map_pid_to_cmdline, NO_CMDLINE_MAP,
 
 
