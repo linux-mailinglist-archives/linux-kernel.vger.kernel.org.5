@@ -1,180 +1,95 @@
-Return-Path: <linux-kernel+bounces-61161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 855C1850E36
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:57:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE602850E5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13994284EA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:56:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 890BC281164
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9638D79FD;
-	Mon, 12 Feb 2024 07:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E346EACD;
+	Mon, 12 Feb 2024 07:58:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="JFKnocQQ"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="QHLMuBxK"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9C279C3
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 07:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4F4EAE3;
+	Mon, 12 Feb 2024 07:58:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707724609; cv=none; b=qjGY/h8CP7fQCVYdQ/ftTfXJIL9AAXyzG7JN1EghCzIDYlrY8MRAEJPIJZ0/d+S7/oCNAD0rvCGJRQMoLXFG87NbN7SEeQRJ5YqktlQG8ZDFO5DBBOAF7SkV4SLQ1bga8ZZDEJ9m4nKKOwQpsxcmUUgTYUMuIq0oH30iJ3blKIw=
+	t=1707724708; cv=none; b=cCNHshvyTWxmbG+4Jmv2KJop+zsrViRC4YvPYoTTxTe1oDbaWiPFl9N0oIrxAUBplMHdgTeUeY1/WdXoM9v6EEmSlCvpCrSD/u8CRtfvsVe5vB0x7KuaJkeWZ8NhePbcACKqLc7+GO0f78h9R0FBu2jBqPgSYktWyLuATWwRtkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707724609; c=relaxed/simple;
-	bh=vF3ZMNbgbWn6zoLtbs5zwCVb+flfkmdV+uWUse2yxew=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OGoHrWY0RywpIkzdEwgeP04NM5jVrmTXnsNqVcaB0EFov4/HiKiFvC/Yu99mHRR/y1boiG+N3q8vRWrbePAj9DWAFrXhMTJs3ViW4SlKjVaXjzJ/8Jyj1cyAxoBV1cPnpRhbIOw7EhNN1G0vOpFCCCqtxwEMOkoBz1wYe9obOoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=JFKnocQQ; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33b2fba3176so1728383f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 23:56:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1707724605; x=1708329405; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IbiB9TdZhTbH/caE8LqMkXLHViwXHf+uAIAh1n4o0eY=;
-        b=JFKnocQQpZg/Ktsw70CzeprbS8vd7F/a1mGw116RRUp2u2gXpXM7DsGT6qT56F5P3T
-         3vFinKJufj9UBCiYXCdcJyMt0JzIDhASWFGHAgNTpwKnGhERhO5fqYEs8SEN2xYVLX8v
-         8OtW9Vs0v5tNHVV4N22jtu4nbJLIH1Cf1Ld3nIGp0k9pjJdAmPwf8XcXXBe3BTBmrWPK
-         KMw6tqhYeyX8j6aAQP3voLDU6ayKtoNzi8ab8NxXfHTADlAXKaGkmYSFc/or87KP0Yj3
-         Zo8vdN74QcT/O/AbiyY9w5laOJkQYTpvGgd6H2qQ9fxXf9JdHNWxCAuLJCPD4s4H8xE0
-         DtCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707724605; x=1708329405;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IbiB9TdZhTbH/caE8LqMkXLHViwXHf+uAIAh1n4o0eY=;
-        b=Cq6wNbp9jfZknjJFhPGciAlWRxFoUfXlqDX1VIYZx1zDZ3Rd4EkaAxddB2AjUi617P
-         yVheLVnvJqqhXad/SHsxvNgoC1oGmSD74FiZiU0YzR7azzIu5c40EJVEliEaRDcjEXfS
-         l5zNpQ/Om8kkisLQbbGrqHzhLHnt9IhjT3Qkna+j5Y0B8JsDEbUrby9zVBnr7p3cOLDu
-         OUGiF+tvre8VsBvDwB4TG6bLIo1bGyVIjRKE7JRQ1oa4Z7CmSL2puYTcNfGNaqn9HXmi
-         tUGS8xkzEQ1d+qUw09lbzW/CRQspGu3L7UCS0YzbSDgAnJngoVPw41w1ew9Y76ttDgun
-         VHYw==
-X-Gm-Message-State: AOJu0YzFlBg4siePlfisMt6TrPywEgA/PC+7/nwZDL3jsW7z4mvSkdQC
-	HM8zQ71+J8TMWJM78qTLWr3trLK5E0TNccBZkSoSoOH8qmMNvtmvvvGkRR8qXOQ=
-X-Google-Smtp-Source: AGHT+IGQlOsXCCeGTX2vr90Sut/bNRRJF3w43WIdCDzlGuvQAdWt5wb1NmGBFX5ZT2+Bf//jzI6Lgw==
-X-Received: by 2002:adf:cd8a:0:b0:33b:810c:7868 with SMTP id q10-20020adfcd8a000000b0033b810c7868mr1569572wrj.57.1707724605383;
-        Sun, 11 Feb 2024 23:56:45 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUAwB++3eta271PwmThU1J/ZAL4ipZIhzcOYDMcw3keg2ipPXCHZVLOspdB8cLyF3NTaMGDjVK07kt1ZYaYuGV1+293HjkVFwsdU3cc4HiI/IustiALVqi06/z8Z1EDJcFxlsVVk3A5gfssl9SlRwNBlOt05q4ostuwTsVWjL+YlK5nlozwVWTQWYpuX2A9yk5dhPFCi660y0eYiLgrsvrcBShoLiDap9oB/+Iz4BaJ0Rf4ffFmSyktPSsuRzYEIwQ1HO6EnBK/mbviw29V7NXgcohDsx56ngYWMfoMEte2yGQUKsFTMIlyrULGcVDEtLrVU+S10lubCM4=
-Received: from [192.168.50.4] ([82.78.167.20])
-        by smtp.gmail.com with ESMTPSA id bq26-20020a5d5a1a000000b0033b4335dce5sm6087448wrb.85.2024.02.11.23.56.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 23:56:45 -0800 (PST)
-Message-ID: <7d0ae75d-2fdb-47cb-b57b-20ee477d6081@tuxon.dev>
-Date: Mon, 12 Feb 2024 09:56:43 +0200
+	s=arc-20240116; t=1707724708; c=relaxed/simple;
+	bh=ChLP6pbuX2n266hqFM2tnkNlDBSoV7MLNaEjbkanKOg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ekaS5vGvXuuio+sBdxfg5AuiLVdgD6LcLmPqMmzYAUR7uToDHbAiL503vJCdWVCfqI1TFttROZRPhkX2znev/HjBqKrXl3vqEQKkQA9YcKuAQz+gjb85e05irY2txtquW2rLiJf5t9MuqRGEQAZbAkZuVu+ITrtpvOFbOGh4x1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=QHLMuBxK; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from gaggiata.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 339EC1FE73;
+	Mon, 12 Feb 2024 08:58:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1707724701;
+	bh=4hwu309SeUk6g/9RpOPLjbl+0yrbn1Vtt3YfrGLQYvY=;
+	h=Received:From:To:Subject;
+	b=QHLMuBxKP2Gw8DE3/9RHOnt4TiG7jSpVnpdNjIXCezQ6q+z6anI++UX4m9IpBqcBG
+	 z/c+iu4DRaYbuU/+dFY4RmDVGbZIVc2WKsfeIlW/Xy9gU9IsKb61aexH6PN9cMsaf8
+	 x+/YXGSFfYVyRJ7okqcQJuMvLB///6UxJhwWTxHEh3E7SgWcaDT/jQGKWwtt803bMI
+	 gmW7AorPGTKPmUIRLTTTyjdLisoFtQ1jYlosNX1Ouf96cHwF5fDJzOWPstW8rDomAa
+	 bd1rHnIr44Y+NeM+91UgGspHg3uLzB/84r4GLJOf3cgBmaPMeHqlcQTqFxdu5ohwRJ
+	 n19/KRrG54cnw==
+Received: by gaggiata.pivistrello.it (Postfix, from userid 1000)
+	id D44AF7F9D7; Mon, 12 Feb 2024 08:58:20 +0100 (CET)
+Date: Mon, 12 Feb 2024 08:58:20 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: "Kumar, Udit" <u-kumar1@ti.com>
+Cc: Francesco Dolcini <francesco@dolcini.it>, nm@ti.com, kristo@kernel.org,
+	ssantosh@kernel.org, chandru@ti.com, rishabh@ti.com, kamlesh@ti.com,
+	vigneshr@ti.com, mturquette@baylibre.com, sboyd@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-clk@vger.kernel.org
+Subject: Re: [PATCH v3] clk: keystone: sci-clk: Adding support for non
+ contiguous clocks
+Message-ID: <ZcnPnMEknPjtwJtz@gaggiata.pivistrello.it>
+References: <20240207091100.4001428-1-u-kumar1@ti.com>
+ <20240211155459.GA4443@francesco-nb>
+ <b27ea51f-ad29-4c8a-8f33-f51640f0c013@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 5/5] net: ravb: Add runtime PM support
-Content-Language: en-US
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240209170459.4143861-1-claudiu.beznea.uj@bp.renesas.com>
- <20240209170459.4143861-6-claudiu.beznea.uj@bp.renesas.com>
- <3808dee0-b623-b870-7d96-94cc5fc12350@omp.ru>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <3808dee0-b623-b870-7d96-94cc5fc12350@omp.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b27ea51f-ad29-4c8a-8f33-f51640f0c013@ti.com>
 
+On Mon, Feb 12, 2024 at 10:06:30AM +0530, Kumar, Udit wrote:
+> 
+> On 2/11/2024 9:24 PM, Francesco Dolcini wrote:
+> > On Wed, Feb 07, 2024 at 02:41:00PM +0530, Udit Kumar wrote:
+> > > Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically probing clocks")
+> > > 
+> > > [0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
+> > > Section Clocks for NAVSS0_CPTS_0 Device,
+> > > clock id 12-15 not present.
+> > > 
+> > > Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+> > no empty lines in between tags and only tags at the end of the commit
+> > message, this [0] reference needs to be before or moved to a `Link:` tag,
+> > whatever works best for you.
+> will below works ?
 
+No, it does not fullfil the expectation to have only tags at the end.
 
-On 09.02.2024 23:00, Sergey Shtylyov wrote:
-> On 2/9/24 8:04 PM, Claudiu wrote:
-> 
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Add runtime PM support for the ravb driver. As the driver is used by
->> different IP variants, with different behaviors, to be able to have the
->> runtime PM support available for all devices, the preparatory commits
->> moved all the resources parsing and allocations in the driver's probe
->> function and kept the settings for ravb_open(). This is due to the fact
->> that on some IP variants-platforms tuples disabling/enabling the clocks
->> will switch the IP to the reset operation mode where registers' content is
-> 
->    This pesky "registers' content" somehow evaded me -- should be "register
-> contents" as well...
-> 
->> lost and reconfiguration needs to be done. For this the rabv_open()
->> function enables the clocks, switches the IP to configuration mode, applies
->> all the registers settings and switches the IP to the operational mode. At
->> the end of ravb_open() IP is ready to send/receive data.
->>
->> In ravb_close() necessary reverts are done (compared with ravb_open()), the
->> IP is switched to reset mode and clocks are disabled.
->>
->> The ethtool APIs or IOCTLs that might execute while the interface is down
->> are either cached (and applied in ravb_open()) or rejected (as at that time
->> the IP is in reset mode). Keeping the IP in the reset mode also increases
->> the power saved (according to the hardware manual).
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-> [...]
-> 
->> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->> index f4be08f0198d..5bbfdfeef8a9 100644
->> --- a/drivers/net/ethernet/renesas/ravb_main.c
->> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->> @@ -1939,16 +1939,21 @@ static int ravb_open(struct net_device *ndev)
->>  {
->>  	struct ravb_private *priv = netdev_priv(ndev);
->>  	const struct ravb_hw_info *info = priv->info;
->> +	struct device *dev = &priv->pdev->dev;
->>  	int error;
->>  
->>  	napi_enable(&priv->napi[RAVB_BE]);
->>  	if (info->nc_queues)
->>  		napi_enable(&priv->napi[RAVB_NC]);
->>  
->> +	error = pm_runtime_resume_and_get(dev);
->> +	if (error < 0)
->> +		goto out_napi_off;
-> 
->    Well, s/error/ret/ -- it would fit better here...
-
-Using error is the "trademark" of this driver, it is used all around the
-driver. I haven't introduced it here, I don't like it. The variable error
-in this particular function is here from the beginning of the driver.
-
-So, I don't consider changing error to ret is the scope of this series.
-
-> 
-> [...]
->> @@ -3066,6 +3089,12 @@ static void ravb_remove(struct platform_device *pdev)
->>  	struct net_device *ndev = platform_get_drvdata(pdev);
->>  	struct ravb_private *priv = netdev_priv(ndev);
->>  	const struct ravb_hw_info *info = priv->info;
->> +	struct device *dev = &priv->pdev->dev;
->> +	int error;
->> +
->> +	error = pm_runtime_resume_and_get(dev);
->> +	if (error < 0)
->> +		return;
-> 
->    Again, s/erorr/ret/ in this case.
-
-error was used here to comply with the rest of the driver. So, if you still
-want me to change it here and in ravb_remove() please confirm.
-
-Thank you,
-Claudiu Beznea
-
-> 
-> [...]
-> 
-> MBR, Sergey
+> [0]https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
+> Section Clocks for NAVSS0_CPTS_0 Device,
+> clock id 12-15 not present
+> Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically
+> probing clocks")
 
