@@ -1,127 +1,182 @@
-Return-Path: <linux-kernel+bounces-62321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0E64851E80
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:14:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2594E851E83
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:16:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89D8C285A13
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:14:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DACF6286A8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552A74C61B;
-	Mon, 12 Feb 2024 20:14:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E7WP7Tud"
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2E5481D7;
+	Mon, 12 Feb 2024 20:15:56 +0000 (UTC)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511E34C604
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:14:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D4246549;
+	Mon, 12 Feb 2024 20:15:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707768886; cv=none; b=nJfHHCsZt5SOG+U0uRQVRbLaNZiVTVsTk5XE9rpN0BBdwIXIetshe/byPfCdUC69pJuzGhnuCGNFXltiG6VmHqYQn8WEW58IMvoyiO8KMPKoyzo4GjPNeZlvW7s4DEhuGDgX0FX8pDY6K6ZXS1enGZ5IP4QVyx06sR2yFn/ShIs=
+	t=1707768955; cv=none; b=qNpSDimDQmVzBxJhqkpbHDKs9aqAZ2o3HUnmZqUjAVUUMhqDdT+Oww8ezRLGAycf2tl/kE3kqG6ncx4pbpCjmYmdr27ez7vbV6HY02uU06sz5icqmLFB8+Y8W+k7pgcs9u650Y6Q2ZDe07gYeMFQbCHf6cwCOcbutxs7gvsBffA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707768886; c=relaxed/simple;
-	bh=pM+JwIpEhS4K66fk0hub7cdKHekvQSrc3X6VYgClJgk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cDoO306hST8dbm/aTJFfJsXjUfqUKh+NzrWld6wXDA+txjaxYXkzSp2OTDz7hLvhWiTN9myi/jSzKQvpxQkTZmyF3y0dRdNNSXwbI0PRnj2GuK31UL3iTQQe8bF1b8oG5O9Qu7A/nTjDj7nQZlRIuJ7+i6ySIi3aGuHR9bZ9hG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=E7WP7Tud; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 12 Feb 2024 20:14:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707768881;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jB6lm62DkG62rqMTYd6eJaWPvnP+AAaRdrvKn0LsuG4=;
-	b=E7WP7TudAWDuX/Ylql0OZ0KhRkLPhK6IXL+TZpzCPqtTJWDHcDM7uArNyMKfZdKsKzBdo3
-	CoTUrrTt78lNuCY1M/7DWdd50K+WUnam2PwOiMsb5+OxsAGX+FWB6NdVIV0bGwCLbbhnWe
-	WKpu0G1iGNQGkGx2h4Cu+Faewh8N00c=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Will Deacon <will@kernel.org>
-Cc: kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-	Ricardo Koller <ricarkol@google.com>
-Subject: Re: [RFC PATCH] KVM: arm64: Fix double-free following
- kvm_pgtable_stage2_free_unlinked()
-Message-ID: <Zcp8LcvsZiZVkNKe@linux.dev>
-References: <20240212193052.27765-1-will@kernel.org>
+	s=arc-20240116; t=1707768955; c=relaxed/simple;
+	bh=6DeBBGjtML8X8YuhkGNNMtZfq39v4Tjs06avkaT38kQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AbFC49kJAUpl9EWyrAjBoh0ilriDpO11WdVlj865OgHlrm1WtMj7aqwUiFOjBYTSkUEMopQtRdo5P5aW1cRxwrFhmOC8ENDETTdCYs+69Yvsd7Z+uGysaV/HHfw7IzW3/8zpl5YD1ADfSek9ICKB94u06p0XIvsDou19IDWFJJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7d6a772e08dso1013856241.2;
+        Mon, 12 Feb 2024 12:15:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707768953; x=1708373753;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BLRvRTEoJFPB+mnvlsBs6KwuSM3ocAbsQPXOvw4Twl8=;
+        b=wi2RPv1cpfwDoUyrVw+D+A2uEwKNcR4+w60kPrnLPc56zvLaeO2GVk9EsPmGvfW+kd
+         u6OJtDycuSEuUYlALjioeJjYekPl4vgNL4C+aGdcShayo8j9eVHhr7lpl7HAxwNvLzub
+         pm8hian5hVFzTMXnJszp3IF+kLmNwoJSuOlT1t6+PvUVnK4yWoUSKXcQBoJ4NGYMMrGX
+         eZPUP0QraAeakwPJTnkKw5I7DsQsXMiRIZz+tkuij9X8+I0ao+e6aOvvzA8Feh6NUUUW
+         QPC8/pkPG4PctIZlOf4z5u9/51w3pINmFjSYAzYECwb0vMHCerGZb/Vpm0OzWQaqNBEh
+         ocdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVZwitFb8VQYuuss5XC025492sVlw17WZBVofkJWpJ2uVkGk3tXck65TiOcGRXImZ6OHOV86V5UbZcbGRdvBwArvGtyUgkERieWXVf+e567UobMdf0ZQiWwoyC+18dw6vyOhb3i+ObNSI98s/i3X2JG5Y+iHvJRV/IngbRE2nbIYzGwYA==
+X-Gm-Message-State: AOJu0YyK8Kq2Pp8piRLRnfeGfCNbGQIMuFkD5k32nviaYCJ+U8m/PunD
+	ide8Q1aViu1Ufnjvh7ooHKJgTfB6xwScuYYpvtfrOKge4tji7HfR+GyabW5Z8aI9VdoYS2cSoiU
+	jvfgDbwktdMWQ102hAKIGu4sNQlE=
+X-Google-Smtp-Source: AGHT+IGBiP7NMzFQIwEfL8eMn322qCQQ1psPygyhoKuY5Hgm4/zaOflDwoxkLzUrfowFj+KOpgsq/zXJYMwNK0OZaFw=
+X-Received: by 2002:a67:cf8c:0:b0:46e:c4d1:25b5 with SMTP id
+ g12-20020a67cf8c000000b0046ec4d125b5mr1838684vsm.22.1707768952762; Mon, 12
+ Feb 2024 12:15:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212193052.27765-1-will@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20240210031746.4057262-1-irogers@google.com> <20240210031746.4057262-2-irogers@google.com>
+In-Reply-To: <20240210031746.4057262-2-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 12 Feb 2024 12:15:41 -0800
+Message-ID: <CAM9d7chEKepmHY_Mgvq27CEcKB1e8bENwn2=pMe-yin30nfGLA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] perf maps: Switch from rbtree to lazily sorted
+ array for addresses
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
+	Colin Ian King <colin.i.king@gmail.com>, Liam Howlett <liam.howlett@oracle.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Artem Savkov <asavkov@redhat.com>, 
+	Changbin Du <changbin.du@huawei.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>, 
+	James Clark <james.clark@arm.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, leo.yan@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 07:30:52PM +0000, Will Deacon wrote:
-> kvm_pgtable_stage2_free_unlinked() does the final put_page() on the
-> root page of the sub-tree before returning, so remove the additional
-> put_page() invocations in the callers.
-> 
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Oliver Upton <oliver.upton@linux.dev>
-> Cc: Ricardo Koller <ricarkol@google.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
+On Fri, Feb 9, 2024 at 7:18=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> Maps is a collection of maps primarily sorted by the starting address
+> of the map. Prior to this change the maps were held in an rbtree
+> requiring 4 pointers per node. Prior to reference count checking, the
+> rbnode was embedded in the map so 3 pointers per node were
+> necessary. This change switches the rbtree to an array lazily sorted
+> by address, much as the array sorting nodes by name. 1 pointer is
+> needed per node, but to avoid excessive resizing the backing array may
+> be twice the number of used elements. Meaning the memory overhead is
+> roughly half that of the rbtree. For a perf record with
+> "--no-bpf-event -g -a" of true, the memory overhead of perf inject is
+> reduce fom 3.3MB to 3MB, so 10% or 300KB is saved.
+>
+> Map inserts always happen at the end of the array. The code tracks
+> whether the insertion violates the sorting property. O(log n) rb-tree
+> complexity is switched to O(1).
+>
+> Remove slides the array, so O(log n) rb-tree complexity is degraded to
+> O(n).
+>
+> A find may need to sort the array using qsort which is O(n*log n), but
+> in general the maps should be sorted and so average performance should
+> be O(log n) as with the rbtree.
+>
+> An rbtree node consumes a cache line, but with the array 4 nodes fit
+> on a cache line. Iteration is simplified to scanning an array rather
+> than pointer chasing.
+>
+> Overall it is expected the performance after the change should be
+> comparable to before, but with half of the memory consumed.
+>
+> To avoid a list and repeated logic around splitting maps,
+> maps__merge_in is rewritten in terms of
+> maps__fixup_overlap_and_insert. maps_merge_in splits the given mapping
+> inserting remaining gaps. maps__fixup_overlap_and_insert splits the
+> existing mappings, then adds the incoming mapping. By adding the new
+> mapping first, then re-inserting the existing mappings the splitting
+> behavior matches.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 > ---
-> 
-> Hi folks,
-> 
-> Sending this as an RFC as I only spotted it from code inspection and I'm
-> surprised others aren't seeing fireworks if it's a genuine bug. I also
-> couldn't come up with a sensible Fixes tag, as all of:
-> 
->  e7c05540c694b ("KVM: arm64: Add helper for creating unlinked stage2 subtrees")
->  8f5a3eb7513fc ("KVM: arm64: Add kvm_pgtable_stage2_split()")
->  f6a27d6dc51b2 ("KVM: arm64: Drop last page ref in kvm_pgtable_stage2_free_removed()")
-> 
-> are actually ok in isolation. Hrm. Please tell me I'm wrong?
-> 
->  arch/arm64/kvm/hyp/pgtable.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index c651df904fe3..ab9d05fcf98b 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -1419,7 +1419,6 @@ kvm_pte_t *kvm_pgtable_stage2_create_unlinked(struct kvm_pgtable *pgt,
->  				 level + 1);
->  	if (ret) {
->  		kvm_pgtable_stage2_free_unlinked(mm_ops, pgtable, level);
-> -		mm_ops->put_page(pgtable);
->  		return ERR_PTR(ret);
->  	}
+[SNIP]
+>  int maps__for_each_map(struct maps *maps, int (*cb)(struct map *map, voi=
+d *data), void *data)
+>  {
+> -       struct map_rb_node *pos;
+> +       bool done =3D false;
+>         int ret =3D 0;
+>
+> -       down_read(maps__lock(maps));
+> -       maps__for_each_entry(maps, pos) {
+> -               ret =3D cb(pos->map, data);
+> -               if (ret)
+> -                       break;
+> +       /* See locking/sorting note. */
+> +       while (!done) {
+> +               down_read(maps__lock(maps));
+> +               if (maps__maps_by_address_sorted(maps)) {
+> +                       /*
+> +                        * maps__for_each_map callbacks may buggily/unsaf=
+ely
+> +                        * insert into maps_by_address. Deliberately relo=
+ad
+> +                        * maps__nr_maps and maps_by_address on each iter=
+ation
+> +                        * to avoid using memory freed by maps__insert gr=
+owing
+> +                        * the array - this may cause maps to be skipped =
+or
+> +                        * repeated.
+> +                        */
+> +                       for (unsigned int i =3D 0; i < maps__nr_maps(maps=
+); i++) {
+> +                               struct map **maps_by_address =3D maps__ma=
+ps_by_address(maps);
 
-AFAICT, this entire branch is effectively dead code, unless there's a
-KVM bug lurking behind the page table walk. The sub-tree isn't visible
-to other software or hardware walkers yet, so none of the PTE races
-could cause this to pop.
+Any chance they can move out of the loop?  I guess not as they are
+not marked to const/pure functions..
 
-So while this is very obviously a bug, it might be pure luck that folks
-haven't seen smoke here. Perhaps while fixing the bug we should take the
-opportunity to promote the condition to WARN_ON_ONCE().
-
-> @@ -1502,7 +1501,6 @@ static int stage2_split_walker(const struct kvm_pgtable_visit_ctx *ctx,
->  
->  	if (!stage2_try_break_pte(ctx, mmu)) {
->  		kvm_pgtable_stage2_free_unlinked(mm_ops, childp, level);
-> -		mm_ops->put_page(childp);
->  		return -EAGAIN;
->  	}
-
-This, on the other hand, seems possible. There exists a race where an
-old block PTE could have the AF set on it and the underlying cmpxchg()
-could fail. There shouldn't be a race with any software walkers, as we
-hold the MMU lock for write here.
-
--- 
 Thanks,
-Oliver
+Namhyung
+
+
+> +                               struct map *map =3D maps_by_address[i];
+> +
+> +                               ret =3D cb(map, data);
+> +                               if (ret)
+> +                                       break;
+> +                       }
+> +                       done =3D true;
+> +               }
+> +               up_read(maps__lock(maps));
+> +               if (!done)
+> +                       maps__sort_by_address(maps);
+>         }
+> -       up_read(maps__lock(maps));
+>         return ret;
+>  }
 
