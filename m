@@ -1,134 +1,206 @@
-Return-Path: <linux-kernel+bounces-61666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9533851523
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4528851527
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:31:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A51F5281337
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:30:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C2822879A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8382B54BD2;
-	Mon, 12 Feb 2024 13:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3053D0CA;
+	Mon, 12 Feb 2024 13:16:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MUkunyN2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NwIEI30M"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5655467C;
-	Mon, 12 Feb 2024 13:16:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831CC3D0AF
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:16:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707743767; cv=none; b=nus7+om8b0u6483hk8k4sLEXbSA0dJyJM8GpTpyR9XresfIyUs2JE/ezMOZA2dPyEy1tqS5Esu16uHoMyD5XLNQsJUgqXc8p1thoj6kcfvGxWRE2aOvdFMPi721I0LZpRCmzK4vsmQOLyNYMGtor5j2uhXZny5rnNphscD09YrY=
+	t=1707743799; cv=none; b=rvLhWfBTS19t1D0uPUQVdGdNSG9WuwMkUQQ0dmuBOFNcR7j7/9uYrMVU/4tvDq4Jw4rAFqL0bbNznJ6eTM8K9fvnf6/8+ByN9bmcUCqTIIG7j4MAiHEFr4jk8z16t1ZJozKTYmK2BOYp7pt+AEs1HLsGytqGpbJYtXIC6OjR7gQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707743767; c=relaxed/simple;
-	bh=PP6/AXI8N1ZB7uTahkyJ97Bokj8Vg9DEe3iPYyte3eE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=udeHYmXufhsUM7HjzIh5FjCbYufJ75//dQoJOgDD/8nuRsnS0Qmm45UHcV88GSrelxYH4yk8DIZT8uymXfNUYQIXXoX4cZr9Xi0D68TCkgZ1z6cPQgll77D6vznVzLVDBrMI5ND0kbEr0QBwWBgyeEoAFLHGKHRgxD/pSk/a3a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MUkunyN2; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707743764; x=1739279764;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=PP6/AXI8N1ZB7uTahkyJ97Bokj8Vg9DEe3iPYyte3eE=;
-  b=MUkunyN2sOSRhhjrc2mxlMgL/ET8FzZBx1ZGFI8prOAZeQ7IvcfYURAt
-   /IBBjXuZ5EUFvfL7K0V8nGXcsHpFgMhMOfRhy0SiRTT1SYnu2FOQcAiaq
-   5JGm8SeOjb5qbjE3kNKl7VNWdpmJbdl8frMDJaDi6HXcaAW+c8GkeW4Bu
-   36CIj395WZOycWgPBFMrvMmADuviH6X3kuPwe0jDnLyC83LYSc0BLQBWY
-   vqIis7hiRLV01XlSQnD/JCthDYbXoEEGjgh77VE19EHNDi04P0DgV3oCk
-   JV7EZTN0Alkb89SMNyBO1NMv6dLmc93OjvAnwk8Z4SK2D8ZKRptTn6UsD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="13092578"
-X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="13092578"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 05:16:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="2561132"
-Received: from belyakov-mobl.ccr.corp.intel.com (HELO localhost) ([10.252.63.91])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 05:15:59 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Vetter
- <daniel.vetter@ffwll.ch>
-Cc: Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>, Somalapuram
- Amaranath
- <Amaranath.Somalapuram@amd.com>, Intel Graphics
- <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, zack.rusin@broadcom.com,
- tzimmermann@suse.de, thomas.hellstrom@linux.intel.com, Joonas Lahtinen
- <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
- <tvrtko.ursulin@linux.intel.com>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-In-Reply-To: <20240206152850.333f620d@canb.auug.org.au>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240206152850.333f620d@canb.auug.org.au>
-Date: Mon, 12 Feb 2024 15:15:54 +0200
-Message-ID: <87y1bp962d.fsf@intel.com>
+	s=arc-20240116; t=1707743799; c=relaxed/simple;
+	bh=mOmu6bKnnbQ/T3Bsy4O7zqo47TuFJtZ6E9Rx8rVgL9c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FddphBzE+8TaQGick7PtKanN9qOf5M59wvprDIpG1mmzwWTNizYxsjOhChhI5TMm9/ub5yjzu7gNC/DYoa2odHo7ECO/ZKn+/2uodjpKh2Q5mou/R/c53Vx6Q3MV2JDe9ruHY3UePeovDpY2C+Msbdu1M8eqsqUiZXtBH1WRMac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NwIEI30M; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707743796;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=VzDYwK2iuJ4LmgQXwNgJ7Lf6QDDAqXO/glvGyId4yYE=;
+	b=NwIEI30MQsMEltYFUqhGP9OPlNwXq5LXQd/9QO7I61i/NZ6gsEBrd9xRjvTqesVMw1Lk1o
+	ZEzW+uxmxNE9wD39uO82hs3wgIKDWbBrDxoiIYYwfzRkiuOwQuJqv26D9KEHTZYfXwzVDP
+	Yw+x57seNKEQetMGUc0FW2kLcYfBfaQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-617-Ma7Pzr4lPKu4yAyvaJL30A-1; Mon, 12 Feb 2024 08:16:35 -0500
+X-MC-Unique: Ma7Pzr4lPKu4yAyvaJL30A-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-337a9795c5cso2080385f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:16:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707743793; x=1708348593;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VzDYwK2iuJ4LmgQXwNgJ7Lf6QDDAqXO/glvGyId4yYE=;
+        b=hlRhBOgYE6elfZnX/M8Pl3sNlX2vHIHcP+GxuBcz/MJ2u73MaaGYEFY31YcA1urKwY
+         lkxFYmLlfYjGt+UvsELKrktk5QSG1jA5fsGnIBJjp1BuTr+/cYsf5ao7E+y0p6zI97XG
+         Et7kdBVnzILmE1YXAeugulLWWsQdeEHyI6Rn/qXmQxJiWeO2HJAF0+ZOTg94RYAodQZq
+         et1o/RZm4tAd3U5+kueZe53TfrYlmaf5n2IjjVrwXqQv7553m4YZJNa1LTks3Zz0aL4O
+         h60M7CeyISQ4GtJlirE0+n95LiQGne38Ao3RFs3OQnLga/4XyYm6Oc+sfA5HqGnP9bIj
+         iW8Q==
+X-Gm-Message-State: AOJu0Yx/U+swNw0AVJxiO0jnb+FjJO30fslPheHd4GLERVnmTjt2bTTt
+	x9gjVbv89yUbB9MO4pVBh5Tw2kbOXnBUVAI/+KCpcAODpgh17ENf/cZfUAFt4yekG2GjMySNexk
+	l+xN+VnFJVAyj/jInp+9MMs7ORMeaeabeVExn5Ll2JsM+eS3aM4JSXy7aQbL6og==
+X-Received: by 2002:adf:fe08:0:b0:33b:2fba:1ea8 with SMTP id n8-20020adffe08000000b0033b2fba1ea8mr4200533wrr.52.1707743793001;
+        Mon, 12 Feb 2024 05:16:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGxpBipBT3X0Dit4wAxSwyYUFXLETqTvvtgvVK9OQyhNeu7c1D+fK2Uy2PwFi2KixZcbrQThg==
+X-Received: by 2002:adf:fe08:0:b0:33b:2fba:1ea8 with SMTP id n8-20020adffe08000000b0033b2fba1ea8mr4200490wrr.52.1707743792624;
+        Mon, 12 Feb 2024 05:16:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWLYLeSLEG7e3LWjbCRQeUUwwjKwOp0UA0H5bXRyDYDGlbn5p9Uzq/h7qHON2mF8M/oLhRd6z2G0n/bh/DbNl4QHZ/TEV1YtjoDYtQloVAo0QXoy60jnrZa8ra4rQM4oruWjJfL4edsfAY8tYKQy192HX7aB+26OVmJ5I6wkDf3xiJBt0xQ4jnAgnXfOtqKwWbwYDs5JmiFiztMSeGa8XhRf3PQ2yByDazK81OLSw58jLsNr3/ixiE3v9Q4+t8sayNY7MHQYo9arpcYuji68swhVQ/+H2PIy+ZxcpILhiHiJD2eyCGToGaBydOhBXiwiw/1FpYMKW/VVNjZ3ee9mmUeOutHsce/p5xqucuPFeIib99cSjlhYGdCutX3NfOo9Hj/+mQ3lzivRBxKlkBkeGm2kBXuX4GkTd1aFBKgHXmFJADSmOm8mR+0E1UBAbYjlHZLNpySMPLeusSsJPWY45sAFpjNNd0qFJnDY46Gi1OT/6H+9PVuyB1gmnjaN8sJtXBmPzCNwxhKaa7e1CflLA46ZBUsYkv9PFsgyCnGqjSVbWFVHL2M8PFBl8SA708aufoKeJ4d0S4lr399pNrGCW69qgUIrbxER9VXU+ur+qXc+yvzSzOcGWxHdoLGk6o0Pqg4GnV3OwelOCZB1VLsAydUr1RVD1uYlLiv0R+F2w+fI6ZCwq9/eHRQHUxEdAxSKHiUcTUtZHALfa55bYUvnp8C6TAYOFNZ+JoNHiXDhs23K4sA48CV+hPGTRLdAGuVr6OxgxOdkOeN9/FkYdiRFBqDzs7FcnWyOvhRdJZAULWJ5tCNeltJqP02f6qNke+jDDyfV5J4v9aQSKzyKX1W7SH5cqLnMdW8d7+Ks1hEe5bUS6S29MFO61JQl0702IGBrVx4oZfbS4zb8iIjxhAQjLT0xj8NERSWMzUM02pVIyip0CcrGt8K1JgXSqkwpT1NviU0ts
+ d7CotME1W6l8UzjPo6PRP0ag1qOZqO8+yu5qTI1Lq9KZNzVCvIWjmBHoy/rmIYjCrYdjoePY8WfthaU+r1YmmQKbWrQWEAJ8Rwn0FuPn/Iyj59quAE4HcNeXI/m52PP86nY4tfP9ZiBIuBgTrrC5I0IUd0qrTHMni5BZgN3GYBebK7jPMU/LevwcFebUWCC9Ojg3fDArD85Ac/nGAmwtMpGx3ZzbcBvKEiL4qtiU4aJA71DQjEc2lxKRZpU3b/MwNe9Y7BZbJ0HKUko4MJkQCYRhKUqm19tENATR8lFC+L3XvnaY9wKW+CrBf+D37PZhXUR/9TCyItDNLR
+Received: from ?IPV6:2003:cb:c730:2200:7229:83b1:524e:283a? (p200300cbc7302200722983b1524e283a.dip0.t-ipconnect.de. [2003:cb:c730:2200:7229:83b1:524e:283a])
+        by smtp.gmail.com with ESMTPSA id en8-20020a056000420800b0033b7d9c14desm3956966wrb.5.2024.02.12.05.16.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 05:16:32 -0800 (PST)
+Message-ID: <6ab142f0-bf66-4611-915d-938d58a277d3@redhat.com>
+Date: Mon, 12 Feb 2024 14:16:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 4/4] vfio: convey kvm that the vfio-pci device is wc
+ safe
+Content-Language: en-US
+To: ankita@nvidia.com, jgg@nvidia.com, maz@kernel.org,
+ oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com,
+ yuzenghui@huawei.com, reinette.chatre@intel.com, surenb@google.com,
+ stefanha@redhat.com, brauner@kernel.org, catalin.marinas@arm.com,
+ will@kernel.org, mark.rutland@arm.com, alex.williamson@redhat.com,
+ kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org,
+ akpm@linux-foundation.org, andreyknvl@gmail.com, wangjinchao@xfusion.com,
+ gshan@redhat.com, shahuang@redhat.com, ricarkol@google.com,
+ linux-mm@kvack.org, lpieralisi@kernel.org, rananta@google.com,
+ ryan.roberts@arm.com, linus.walleij@linaro.org, bhe@redhat.com
+Cc: aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+ targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+ apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+ kvmarm@lists.linux.dev, mochs@nvidia.com, zhiw@nvidia.com,
+ kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240211174705.31992-1-ankita@nvidia.com>
+ <20240211174705.31992-5-ankita@nvidia.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240211174705.31992-5-ankita@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 06 Feb 2024, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> Hi all,
->
-> After merging the drm-misc tree, today's linux-next build (i386 defconfig)
-> failed like this:
->
-> In function 'i915_ttm_placement_from_obj',
->     inlined from 'i915_ttm_get_pages' at drivers/gpu/drm/i915/gem/i915_gem_ttm.c:847:2:
-> drivers/gpu/drm/i915/gem/i915_gem_ttm.c:165:18: error: 'places[0].flags' is used uninitialized [-Werror=uninitialized]
->   165 |         places[0].flags |= TTM_PL_FLAG_DESIRED;
->       |         ~~~~~~~~~^~~~~~
-> drivers/gpu/drm/i915/gem/i915_gem_ttm.c: In function 'i915_ttm_get_pages':
-> drivers/gpu/drm/i915/gem/i915_gem_ttm.c:837:26: note: 'places' declared here
->   837 |         struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1];
->       |                          ^~~~~~
->
-> Caused by commit
->
->   a78a8da51b36 ("drm/ttm: replace busy placement with flags v6")
+On 11.02.24 18:47, ankita@nvidia.com wrote:
+> From: Ankit Agrawal <ankita@nvidia.com>
+> 
+> The code to map the MMIO in S2 as NormalNC is enabled when conveyed
+> that the device is WC safe using a new flag VM_ALLOW_ANY_UNCACHED.
+> 
+> Make vfio-pci set the VM_ALLOW_ANY_UNCACHED flag.
+> 
+> This could be extended to other devices in the future once that
+> is deemed safe.
 
-Cc: more people.
+Maybe add some more details how one could make a decision whether it 
+would be safe (either here or in patch #2).
 
->
-> I applied the following hack for today:
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 6 Feb 2024 15:17:54 +1100
-> Subject: [PATCH] drm/ttm: initialise places
->
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> 
+> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+> Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
 > ---
->  drivers/gpu/drm/i915/gem/i915_gem_ttm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
-> index 80c6cafc8887..34e699e67c25 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
-> @@ -834,7 +834,7 @@ static int __i915_ttm_get_pages(struct drm_i915_gem_object *obj,
->  
->  static int i915_ttm_get_pages(struct drm_i915_gem_object *obj)
->  {
-> -	struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1];
-> +	struct ttm_place places[I915_TTM_MAX_PLACEMENTS + 1] = {};
->  	struct ttm_placement placement;
->  
->  	/* restricted by sg_alloc_table */
-> -- 
-> 2.43.0
+>   drivers/vfio/pci/vfio_pci_core.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+> index 1cbc990d42e0..eba2146202f9 100644
+> --- a/drivers/vfio/pci/vfio_pci_core.c
+> +++ b/drivers/vfio/pci/vfio_pci_core.c
+> @@ -1862,8 +1862,12 @@ int vfio_pci_core_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma
+>   	/*
+>   	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
+>   	 * change vm_flags within the fault handler.  Set them now.
+> +	 *
+> +	 * Set an additional flag VM_ALLOW_ANY_UNCACHED to convey kvm that
+> +	 * the device is wc safe.
+>   	 */
+> -	vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
+> +	vm_flags_set(vma, VM_ALLOW_ANY_UNCACHED | VM_IO | VM_PFNMAP |
+> +			VM_DONTEXPAND | VM_DONTDUMP);
+>   	vma->vm_ops = &vfio_pci_mmap_ops;
+>   
+>   	return 0;
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Jani Nikula, Intel
+Cheers,
+
+David / dhildenb
+
 
