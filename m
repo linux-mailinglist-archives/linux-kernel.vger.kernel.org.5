@@ -1,63 +1,58 @@
-Return-Path: <linux-kernel+bounces-61035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2468850C80
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 01:57:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45211850C81
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 01:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 907A91F21DA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:57:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1AA81F222A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 00:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE5610F9;
-	Mon, 12 Feb 2024 00:57:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE3F20EB;
+	Mon, 12 Feb 2024 00:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BP31ZqYu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSCKBd5+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A2C10E3;
-	Mon, 12 Feb 2024 00:57:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB9A1848;
+	Mon, 12 Feb 2024 00:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707699454; cv=none; b=k9181TCJayc2iMRGHV2ykFp0IsnoIuAsS7FoAo3ZSKuEJ8xZTMk0m8BCOLADwaWV4uS6ty+ctnFUyK+I3fXgtx7Nh5YqHkOW5YldyZez1EP2zTxrpWv4uLXkPlUjgjUu28B6gXKBdWgUzGFtbVsCAskjxFEB7Ulg7mYlABMSj+g=
+	t=1707699457; cv=none; b=OlzqeHFZXki1ppwvCRqYHfQGyMNEJ0KhWVF1jw2UWPdc8zxIc9Am/XOSK9j9A9XovIi0FO76jlz3lCE2E9D2JDFIZfCC42uKJ7XFQF2JKOuyzaK6gA0rXxYGILZ7i/irGsxSMB1DU3jYnbFEk1EDP7NQhvAjtHfqqcrF2HvByDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707699454; c=relaxed/simple;
-	bh=UjSBFa2JSiRKfOnN+/YDukdaZ2mWb6/Pp9XHdBkmxZ0=;
+	s=arc-20240116; t=1707699457; c=relaxed/simple;
+	bh=f1+XyZlGrkT91LtV4ti8zMhmwsUmUGP8D88gDMSdFOk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=OJFEu0oPS5SuON9HIZB6gn3u0kAHV4Mwb/Vz03WY7zDpJ+4eNhWgcPLR/HG+5XtbCUlz/ZKmip7vh4+lDnsC1zqQeNJIhJwe2Iz1xz7ZwDrd1HSH9vwx+WiZJJNWITB2rgc33FwmJweITQoaEMPLPYsa3HxGovHMlJUCiGd5AiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BP31ZqYu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55600C433C7;
-	Mon, 12 Feb 2024 00:57:30 +0000 (UTC)
+	 MIME-Version:Content-Type; b=McXXKvst3EiX1mxlRiuJ9b0ExrrkjrnP16ZxOQJHso9qwP2EIYLwW4Az4n+V+lC+DofWt2PL6Fg13xXR7wdUk6Ier7zv94swLNTzyWlftKmPPOMGapy7CsTghjb9dsiR/OMf7BdL6fa3o/10hxzffz6MBA0HZxL3NuinL0S6wgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSCKBd5+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B3B8C433F1;
+	Mon, 12 Feb 2024 00:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707699454;
-	bh=UjSBFa2JSiRKfOnN+/YDukdaZ2mWb6/Pp9XHdBkmxZ0=;
+	s=k20201202; t=1707699456;
+	bh=f1+XyZlGrkT91LtV4ti8zMhmwsUmUGP8D88gDMSdFOk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=BP31ZqYulSD7X8sIRfQQ0+WLVCQcArYu2SiYdJqRdFNICs64L4QMUSa3xDwA6O36e
-	 9lOlYWE7cdUwL774XkXcIMNJybyeKIMSJXWWBf1mtmHNjJZccVo8bb4aB1lqpiL5cO
-	 3wujtMXB8KzXh+iSgdPraXeART5urvBJjvmNkd6FfWdRQ6JAVVsoVrnX5bmmZpCG8m
-	 J1yOKq70peskan+BzlLIJ7S8iPFS9Vb5wiJNhAyVCFT1hifkQbZtgy+fGnP/f6Ge7D
-	 11QtcxWWBr2i9pcb3QTgazuigJTjM8CVQEUfSqbZNhyapnAKjJw8b2KatSEIDlv1FW
-	 lna+eRC1/EUfQ==
+	b=fSCKBd5+MW3VHjBWqmao4HSGz5LYVXb1FOKCI4jzwfV+v0yBvgoIDolIFeNBsOh9R
+	 PqejjxzdJOP7c5VX8iU7Bi/G3mn0SlWjc1SSOa9Hb9E6V6yJOcfW7ZXX+oWpPLlyZj
+	 sjhaNWbnsGHJpCq/L09QNcfpzbH69JWSJCbefNV9eEu9wjLDhk9CKExHmMajvYeSgs
+	 zQQY/jWdtj/pJ3ms+miSHK9f1idQFhg3WPrXoPSLqvw6ttgjUKNpYZM0jhWI7Kx6T6
+	 sSSGjzBWm2BCUZr3/T5ZHvS2avksNdJQ2Guhrd+zM1150zkjPmiWEEMrzUuZeAUWbU
+	 wOvf3bcXj9YbQ==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, 
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, 
- Bard Liao <yung-chuan.liao@linux.intel.com>, 
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, 
- Daniel Baluta <daniel.baluta@nxp.com>, 
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>, 
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org, 
- linux-kernel@vger.kernel.org, kernel@collabora.com
-In-Reply-To: <20240208234315.2182048-1-cristian.ciocaltea@collabora.com>
-References: <20240208234315.2182048-1-cristian.ciocaltea@collabora.com>
-Subject: Re: [PATCH] ASoC: SOF: amd: Fix locking in ACP IRQ handler
-Message-Id: <170769944944.2475236.12312495340853191634.b4-ty@kernel.org>
-Date: Mon, 12 Feb 2024 00:57:29 +0000
+To: Oder Chiou <oder_chiou@realtek.com>, 
+ Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Shuming Fan <shumingf@realtek.com>, 
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ lvc-project@linuxtesting.org
+In-Reply-To: <1707645514-21196-1-git-send-email-khoroshilov@ispras.ru>
+References: <1707645514-21196-1-git-send-email-khoroshilov@ispras.ru>
+Subject: Re: [PATCH] ASoC: rt5645: Fix deadlock in
+ rt5645_jack_detect_work()
+Message-Id: <170769945366.2475236.12473268972923112116.b4-ty@kernel.org>
+Date: Mon, 12 Feb 2024 00:57:33 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,13 +63,13 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
 
-On Fri, 09 Feb 2024 01:43:14 +0200, Cristian Ciocaltea wrote:
-> A recent change in acp_irq_thread() was meant to address a potential race
-> condition while trying to acquire the hardware semaphore responsible for
-> the synchronization between firmware and host IPC interrupts.
+On Sun, 11 Feb 2024 12:58:34 +0300, Alexey Khoroshilov wrote:
+> There is a path in rt5645_jack_detect_work(), where rt5645->jd_mutex
+> is left locked forever. That may lead to deadlock
+> when rt5645_jack_detect_work() is called for the second time.
 > 
-> This resulted in an improper use of the IPC spinlock, causing normal
-> kernel memory allocations (which may sleep) inside atomic contexts:
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
 > 
 > [...]
 
@@ -84,8 +79,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: amd: Fix locking in ACP IRQ handler
-      commit: c4b603c6e2df3a17831731d8bbec5c16fa7bbdf8
+[1/1] ASoC: rt5645: Fix deadlock in rt5645_jack_detect_work()
+      commit: 6ef5d5b92f7117b324efaac72b3db27ae8bb3082
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
