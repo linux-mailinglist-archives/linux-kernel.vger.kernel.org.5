@@ -1,245 +1,179 @@
-Return-Path: <linux-kernel+bounces-62075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC115851B12
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:16:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54574851B15
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:16:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D09191C22944
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:16:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C1C92869BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343CB3FE36;
-	Mon, 12 Feb 2024 17:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DCA03D994;
+	Mon, 12 Feb 2024 17:16:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="l3gw3I34"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="t9K10Rf2"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2060.outbound.protection.outlook.com [40.107.237.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C423FE2B
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 17:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707758148; cv=none; b=GRLQn4d/kmDmFY5lBpIS6weYPLIwITEdTY6W1NAMbmk2aQGTOSvV7hjhwcJs43m8F6TOTX9bG2XBjLRlvdUz6VVyDeIyC4HatSpFja0pBMgEBMti+/elWTqrEkNMasoYetH+8Lp+o30QSzXp4RoCWwjp4FuPM/uk9OIWKvU09Oo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707758148; c=relaxed/simple;
-	bh=eJxT5RVj55SZTquxPtiS0BzpdsApr0VOzPCbOysOtiA=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=rhbNWLb0X7OwIyZQ0s7kyRSQAr7LCcvBR4+42KoBL3BFT0K+O0pbr+60+lBK/9dKz3zhjUwcgVbnPT8AU5CvCU5KL1HwEZ1yR1rOSQ3Bgzp8vP2WgqbRkwa0b7a+ea11dZizDwC3ZCq1SAto/qhKcbw0TvTq7ToHIHtlM0OdwH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=l3gw3I34; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-337d05b8942so2901838f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:15:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707758144; x=1708362944; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TCXHNKWb/+6WoCF9TfRpEBDgQbEjGvXi9Ab6Kdl3ZDQ=;
-        b=l3gw3I34cJPh87oSXzKNY3xtPWj2Z7miLkmoBBug3Uoo9GQ4RZFzI+Zz1ogksXAqzu
-         RFS+ol9s656ATGeCa/6riMhZkL2H/5ka+NmVJVrUtS4rroS6Yy0ryf1dGiqQYRY2x/dl
-         /SbjzGgmtJlh5Xu1I5auJkgE1WfNUN+80E4aGhWZDwzfw5XEElylabOXl2UjFrTDocUs
-         HmAqpSQCEu++J0JV6LuRKmpwi5urlMlWv1fJVy7Kl8pxV97RyaYadgae5e2pYz1YQd8C
-         J83R/a79xTEEtqfYwNq+A++nqaXngIl9TvuL8xjX0g5PjwQYoPLqJ2jKVqXRORzR/IAf
-         LRLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707758144; x=1708362944;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TCXHNKWb/+6WoCF9TfRpEBDgQbEjGvXi9Ab6Kdl3ZDQ=;
-        b=MmlrgQjakS5e0twhUfJAG71XIhhQChJtRSLNzrbb03seZ3iBIkTvbDifZPwT5CHdlY
-         6byTvutpaDzNDinrmam7WE4XiVvkIX+ETDqC8sYaqHxYJI+lHFGx6/cA7IXVo5ueBcut
-         5ax4v8WmupYq5H1HaIIC/KnMjWiUbG6lNqZ1H34EolzyX2KZgnGcRIu9PWdYXw78JjOk
-         xsSL99cIifokpTz1yDM8abbsCgp2QMWx9s2NSiTwI3xrLARtYmrd1Tx188/XHKyzNjn8
-         8oE1DzHHe0FjM3g6rPXMiqq8dh+WCXIu4R7ZlwHKTh6BYhW1jOk/GbhJelcR7jp+DCzf
-         gQsQ==
-X-Gm-Message-State: AOJu0YxNV2HJreFe1EaGV+auxWHYruTZOMapJKeo2pnXsBMM5xmBR7QE
-	lcTOYpV10HmpMkm8kceaiLPwu16MqXIC/mYqLHkj/dOV+bI5yXydn9saganOxlTN4OS2t+dodv8
-	oB5tcKw==
-X-Google-Smtp-Source: AGHT+IHzQ9zTdthpvCnOzgP62HW4KxrLxqq1RILsJAdLbNvnSUyVf50VHm1rR0AuunzqPoBvZq7Ytg==
-X-Received: by 2002:a5d:69ce:0:b0:33b:7134:a3b0 with SMTP id s14-20020a5d69ce000000b0033b7134a3b0mr4505799wrw.13.1707758144612;
-        Mon, 12 Feb 2024 09:15:44 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW6Zt5xGHtn0aO0cbHV0aGF7RNvEVbzEGaAXJX2mSHAmtpL9hz+vYfmtFNGqStaC22mv44bRhjSbpubmpfEiwscyp+W0HRi+WuwjTT/6aIBB93yZ5bMowJx8fcGSRA0GpHRiQtc4c08Kcw7iaZa3dkdD9H2q7yqy5YM3/kAEekeWtWDAZYv5Mi8EiOfni97ZiHcXbiGYWUlRfy4AQTOxDplW+FWknAK9+iOGtudd9+QD/RCgHdjFyZGT1yr70wL9cNtNz5nLXyXqx9C7gGU9C0HszM7fKQJ85nV6lydm9YAGKZE0QfcbXbA5AYkOOFwb2ZMZCEUl0xsgqyQrL9ReE8F3ERezd2JdTcQb49LeoV9wyWitrifkruKzfZLzLykebYmF1kvIUwq4vtbrmTzHQO55VfHqn/Si9d6iiVf8vTHrIsgkF6iVMKJGq9o/PBgq9sh4wdYn9Si0LIc2t3peHgjyjhlPzlDwGDqKGqKVfl2jEzp42Cc4B8fLTxuekT52VDeO1Gc+UAHcRnDuskNaSsqFqjl4MAkPXFcuzH0RHWdAx0793JpK7QOGf2zCQfZhPdze19pBPfMsBOmpRf9hCLWQbGrCNrC84bl
-Received: from ?IPV6:2a01:e0a:982:cbb0:fcee:f026:296d:135f? ([2a01:e0a:982:cbb0:fcee:f026:296d:135f])
-        by smtp.gmail.com with ESMTPSA id e9-20020a056000120900b0033ae54cdd97sm7275866wrx.100.2024.02.12.09.15.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 09:15:43 -0800 (PST)
-Message-ID: <92397728-d763-402d-b3e6-f4edd6f71740@linaro.org>
-Date: Mon, 12 Feb 2024 18:15:42 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35233D39F;
+	Mon, 12 Feb 2024 17:16:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.60
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707758178; cv=fail; b=qN+6BuAPQh9oZKgyX6py+sSmq9HwwtDasysff9/ZnKEdevt1bzVTHqjcJelBuvB+wlZ8jZfbaHSP/1UmJuIbtWEpjqAidtlpS8NaEW7/rm7O1afalKuJDtJLpZgJCW4zdsYeYkFGB51KYWXoqEf6+zs/UoTdQro12YediSCh4DE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707758178; c=relaxed/simple;
+	bh=yNVyCs4mmI7r778IchtZHAACAF25779mFwoGL24DSYc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=sjZIDZOcL1d29x9e/Gai3FDOM48BjEdZb/PfzcA0kvn+62KqonvyrRb9i4LZTz8GE2lQZ07HNCFiGKw2tlDkHcoLG+H7aHkBXdf5JL9vISOwe4Xkqj8v/yNK5U7098l5qrqrVVhWib6HLVzpyE021xDX+get5nwsDoRCnGHiMw4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=t9K10Rf2; arc=fail smtp.client-ip=40.107.237.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vzbaf3HwwHTIBM5Tq9Hm/GFcxjjU+/GrD+6Sy3J0G9XP5ZghYXsjlEYfZTNd7YITg2gx4v3yEndJkay6DT2a9WQumeDV2ItxKs6ysJ1dZkep6ZBDb4CKZn/S9ExlXax4jJ2NZeXI5tIxoyHf/exHBkU2hj4QmooGh7SpdodJRyqY22KAPm3/dsm2QUXb9+sYD4X7FbVjGnVS4dtN7v9O71LiAX6mWgwHtqZ9jjMEWbWb7B8b6FRJZGHRi9Xmn1p0S4oYcUA/OByJ9MKQ429Pi3SRp88IxCvSbTg18DzoQv/4dxuy5NcK0JUThSCHt4mjsX4Cvhx6Q27cNxPmtY+AAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IXA9O9JMhhhBXHsae8moKHVqeKVQni0glg+wstiDqc0=;
+ b=CtZ0jVJVHb58JQv8R+v4euzaS574m51TLY0OY8IUwx2MOGlNseEPd0uxC3vfHzA5ohuOtROFwtjGn94trSjbjXNiHtF7NMzlEGiT4QCtXZrBuqHtf+LsYwAX08EX09A0xQ5EUNF7UoszMZAZBBgT/m5/H0TsncV3L0X8vKS5apP0fzjygHaREH6+LqQWuEO0y7TxJmYNjUy0OCHYt3epWIB2bKi59K35VdfAymOcwzuyRmVq2a6EjxvKd8u5I++1/vQkpMO1yFXabGtG6QR1EBy9OwG1b/E6IXUnRhTq0r840FasWBWKkmjnBWnR3+u3+hKPPI7wQXrV+g2EBmi+mg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IXA9O9JMhhhBXHsae8moKHVqeKVQni0glg+wstiDqc0=;
+ b=t9K10Rf2Hs0gosSjZ8+95RxqQ7M5IWmTj4e9k9LdkpzWmIj7SlhJt7mzF/qclGH8J44BFAa9lw1uHPdsTbEvPl1y7/rxV+ZNsqjgbTPx/VGdiaeZXvGC37iflD+kFVi9aloqZKvBvWl46AERpAlek1fyrog6wYUQbD2RGirGgbg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by PH7PR12MB8121.namprd12.prod.outlook.com (2603:10b6:510:2b5::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Mon, 12 Feb
+ 2024 17:16:09 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::ee3b:5116:72be:be7a]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::ee3b:5116:72be:be7a%4]) with mapi id 15.20.7292.022; Mon, 12 Feb 2024
+ 17:16:09 +0000
+Message-ID: <88fbd6ba-6118-4a80-980b-122dac5b4d39@amd.com>
+Date: Mon, 12 Feb 2024 11:16:05 -0600
+User-Agent: Mozilla Thunderbird
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v15-RFC 5/8] x86/resctrl: Add "NODE" as an option for
+ resource scope
+To: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Peter Newman <peternewman@google.com>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+ Shaopeng Tan <tan.shaopeng@fujitsu.com>, James Morse <james.morse@arm.com>,
+ Jamie Iles <quic_jiles@quicinc.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Drew Fustini <dfustini@baylibre.com>, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, patches@lists.linux.dev
+References: <20240126223837.21835-1-tony.luck@intel.com>
+ <20240130222034.37181-1-tony.luck@intel.com>
+ <20240130222034.37181-6-tony.luck@intel.com>
+ <6628954f-c7e9-4040-9f03-7b5b6a6d082d@amd.com>
+ <ZcZ7wEUzESxUhs-y@agluck-desk3>
+Content-Language: en-US
+From: "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <ZcZ7wEUzESxUhs-y@agluck-desk3>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR06CA0046.namprd06.prod.outlook.com
+ (2603:10b6:8:54::13) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v4 10/20] drivers: crypto: meson: avoid kzalloc in engine
- thread
-Content-Language: en-US, fr
-To: Alexey Romanov <avromanov@salutedevices.com>, clabbe@baylibre.com,
- herbert@gondor.apana.org.au, davem@davemloft.net, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- khilman@baylibre.com, jbrunet@baylibre.com,
- martin.blumenstingl@googlemail.com, vadim.fedorenko@linux.dev
-Cc: linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel@salutedevices.com
-References: <20240212135108.549755-1-avromanov@salutedevices.com>
- <20240212135108.549755-11-avromanov@salutedevices.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240212135108.549755-11-avromanov@salutedevices.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|PH7PR12MB8121:EE_
+X-MS-Office365-Filtering-Correlation-Id: 17f19952-54f4-41d2-b666-08dc2bee4e11
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	7WNAuHC6gDY5ilnwTQFoDLNQiPDrptUPb9SSbLOHDwACLDLyVAJ6YZkzd7fj0zGzG46FzR6ekKRUdkBzSmS/oDFBkvjFctkrn+8+ge9cnaWBnCdHYwTXNB6NmZcYBLTQWIxGM7ZQsxfdmgWYN+RCDrxmPVdapA3fzYHC0QT6BdpCf4qra1gg+7RIGJZpPlVmp9JvoR1OyPs1fYAErk1NaAATsk2EQkwMZzCUkDDYexGoLWqj3muKjbzy0LFcylKJuhV9bzZ/6jKT3ehV0lTbUpf3ifrEkRidqDpWZbgvEH9lJszzIGk0tspH7dLXBiVwqOuIYKr4S5Ms0z+q0RV1PGKoU91bDRa+1tJva7VuBwp2x8Ow9HZJxXjemEl4a6M18dPnCcmf16+BZQ1rd7YYjziV6+4ruwckotg3143ABdcpvRGmZ7bn8bjA+kahbalGfBix8JhC7tjsMZu+tx8DPo9UjEjIziHNN/LEzEgqqH/gWJnmuJRmrpu6V7MrjvwiXNseHrnLRVXntHun3JQEEPykkcSYzKInvIfnQfNfNG7FembaV+hMXy0gpK+iqmov
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(376002)(346002)(136003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(31686004)(6486002)(6512007)(478600001)(41300700001)(4744005)(8936002)(8676002)(4326008)(3450700001)(2906002)(5660300002)(7416002)(6506007)(66556008)(66946007)(6916009)(53546011)(6666004)(316002)(54906003)(2616005)(66476007)(31696002)(86362001)(26005)(38100700002)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UUtodlpqaUgyMnVZeFJ6bmJmbzd5L1hrdlRleE4rcGhJZXNnMVdqeWlLNkVz?=
+ =?utf-8?B?ZDRuNjk3bEE1alRJQUxDM3k1K01xMGU4QTd4ckJnNW16ZzBuZ2Y3WGFCSzZ3?=
+ =?utf-8?B?emJsK3EvcG44VERjaGlXUTVtS29oL0RHZEgxNjdKelgwclhTSTV6MmhiZGFB?=
+ =?utf-8?B?dWkwV3JGTHJ3T3JOUVRpV1JIMGszcVdqS1hWdlJmLzVTVCtmZ0ZmL28rbll3?=
+ =?utf-8?B?bithdEpZUENOYmU3RStVZ0llejIrbWFJaWR5VG5tWi9KajFjT1BWcld0bmlQ?=
+ =?utf-8?B?V1UrdGJoQkI2c0JpRVZxZCtGUFB1TGdXY0t3UllqMEtBTVM4YURubDMyOG1W?=
+ =?utf-8?B?cSszTk9OeEl4VUV2Si9LWFF2SDk3bk94bEw0WTNuTkRvUWIvZmxFUlBGdDhU?=
+ =?utf-8?B?WHNXZmpYWXBaK3pDcXNFNS9EcnRRKzJqUFArWnBOUEhFdE1SMHJiRjJxY1Ft?=
+ =?utf-8?B?UWpHREdxaHZQUlF2M0F5UHhiQ1prSW5zM3MyWVhuS2RkRkNocXJxN0d2eGR2?=
+ =?utf-8?B?Y3hNM3RJL0tUTVNWbWRNdlQ4d245bUt2SlZ0MUFaMDFMbm5XbmRvdFdUYWJO?=
+ =?utf-8?B?MUJYRGZQQTd2bThvVzl2SmZreEFXMjVrSVVzOG5vaFh4MDZSOHNXQmY4WVpI?=
+ =?utf-8?B?TENYVG1KelQzQ1VVc3JtMEpIRDZLdFJNUjlEVXhBd1hZcWZDZzFxZ1JFM0dj?=
+ =?utf-8?B?eGlPWitYTXJBaDdBdGdETHA0ekVrVFU3MkQwamJQcXdNSUVMbUVxUk85d09Y?=
+ =?utf-8?B?dmVhVHJseFJWS0psbjRjVjBvdWNud0VGdFVhZEdlUysxZzFWc3hyL09iNFdD?=
+ =?utf-8?B?alg2dk5GYjZNd1VUWlQrSkNiTy9MSDU4dGJuaGdTTmlFSmF1YURCQ0ZPeU5M?=
+ =?utf-8?B?bDdmaHRsRWRxQ0p2dENWSjNVRFRXUjl2endQOXZoY213ZEF2N2xyY2VvZkEx?=
+ =?utf-8?B?dEdLNHIvQXhLYmNWTFlIc0tMczVVTTB0bWk5dWU4YVQ5TXRtK3N3SzJoWHdP?=
+ =?utf-8?B?N3d3RHdPc1VDYnY2Z2l2YndZWjRLT2R0ZTJKdGV1ck5qblZ0a0RpS0lHR1Rr?=
+ =?utf-8?B?NVQvZ2JnVk9PVUNCZnllU3o2SzdnQjB2UXd0aU9tOUVyOEl6VEYwcHdnRnRs?=
+ =?utf-8?B?LzZocUpzNXEzc0FuSE02dVFnRzI3aEUyOXQ0bHJMUVhZSGlQeG0zWHpmT2FT?=
+ =?utf-8?B?Ynhud2dBVmtaZUdMcExiUk1EdzQrTnBUME83VTlKbytvN2ppUTNxM0lwTWYy?=
+ =?utf-8?B?ODdneUpyOVVpZkhUWFNjUTIraTF5bThtVlFRVk9pSEF3Wkx1NG5FNVJ5U2dy?=
+ =?utf-8?B?RnVMSVdMbHc5YWFRdFdIV2htZlJBbDdYMHNoSzRMTkl4bnROUXdYVHhjeHBT?=
+ =?utf-8?B?aDZKandQYktoRUdzMmZ2Yy9qaWZOSDRmbHZSR1RGdmRLM3NsRy85K21MZFJo?=
+ =?utf-8?B?QS8vYXBKZXVpRi9URVdYYmdNcVhNNGlXak1Ed0F0RjEyR20xZGR4ZXdMS3VU?=
+ =?utf-8?B?eEYzbVVhb1BQcng4SUl4Rm1VMTMxbUtRSEtVTTV6dXJmdVhtYTA3aUVvaFhI?=
+ =?utf-8?B?NXVzcnJwMFF0c3E2LzFjRmwvN0RIUkhlbk1nM2VmWUVRR1JjeFhsQzhUa3Bi?=
+ =?utf-8?B?YUw0NHkvR3lpU3NNUzZseHpKbnF5YnRsSGIzZS9VQlJ4dWZyYzA3Vk9CZXhy?=
+ =?utf-8?B?aHAvbTV6bGRGQ1JhNXZ0U2dWTTE2Ym4rd1h1bjd3Z2FpbTE4ZHdiVm5ZenhG?=
+ =?utf-8?B?VEN5aUNiWDdPRUZzektwRGpIcU1FbnA4VmNkNkpPNnF5QjFiQXIxMnA4WDNv?=
+ =?utf-8?B?U3diNWpSUXNvKzBvWjdPMDVTR0FpRjRETzJGa3BSWTc4R3pucmJMRG9UWFpo?=
+ =?utf-8?B?SGtLUHZjVDBwLzViMWtWdnljUWx1bE55di9RQjlyWFRtZlRERnEwR2MyaGZ4?=
+ =?utf-8?B?MElvS01jZzMrdFovbzREODJhaFRkNyt0cCtwNzVnSmJaUFRnMzlaQ0FQN0xU?=
+ =?utf-8?B?K2E1OWVCVEJhc2NvNUFyT1psNU92SUhEUVhhSmpSL0NWc21peFNNOVhMZ3FV?=
+ =?utf-8?B?SFE5WS9JVEJmN051YVF2b3Jiamprb0dTV0gxeURqYU43RjlqL0M5NjNYRFh1?=
+ =?utf-8?Q?3/Qw=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17f19952-54f4-41d2-b666-08dc2bee4e11
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 17:16:09.3613
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tPBb1bKRs04CHn5DhqtORgP+i1ALm4PLFO4FIakMiKtJG7GTpG2uBbhm16/CwOi0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8121
 
-On 12/02/2024 14:50, Alexey Romanov wrote:
-> It makes no sense to allocate memory via kzalloc, we
-> can use static buffer, speedup data processing and
-> don't think about kfree() calls.
-> 
-> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
-> ---
->   drivers/crypto/amlogic/amlogic-gxl-cipher.c | 26 ++++++++-------------
->   drivers/crypto/amlogic/amlogic-gxl.h        |  6 ++---
->   2 files changed, 13 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/crypto/amlogic/amlogic-gxl-cipher.c b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-> index c1b3569a614a..3f42b2cc568d 100644
-> --- a/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-> +++ b/drivers/crypto/amlogic/amlogic-gxl-cipher.c
-> @@ -91,7 +91,6 @@ struct cipher_ctx {
->   	struct skcipher_request *areq;
->   	struct scatterlist *src_sg;
->   	struct scatterlist *dst_sg;
-> -	void *bkeyiv;
->   
->   	unsigned int src_offset;
->   	unsigned int dst_offset;
-> @@ -156,8 +155,7 @@ static void meson_setup_keyiv_descs(struct cipher_ctx *ctx)
->   		return;
->   
->   	if (blockmode == DESC_OPMODE_CBC) {
-> -		memcpy(ctx->bkeyiv + AES_MAX_KEY_SIZE, ctx->areq->iv, ivsize);
-> -		ctx->keyiv.len = AES_MAX_KEY_SIZE + ivsize;
-> +		memcpy(op->keyiv + AES_MAX_KEY_SIZE, ctx->areq->iv, ivsize);
->   		dma_sync_single_for_device(mc->dev, ctx->keyiv.addr,
->   					   ctx->keyiv.len, DMA_TO_DEVICE);
->   	}
-> @@ -304,6 +302,7 @@ static int meson_cipher(struct skcipher_request *areq)
->   		.dst_sg = areq->dst,
->   		.cryptlen = areq->cryptlen,
->   	};
-> +	unsigned int ivsize = crypto_skcipher_ivsize(tfm);
->   	int err;
->   
->   	dev_dbg(mc->dev, "%s %s %u %x IV(%u) key=%u ctx.flow=%d\n", __func__,
-> @@ -319,16 +318,16 @@ static int meson_cipher(struct skcipher_request *areq)
->   	mc->chanlist[rctx->flow].stat_req++;
->   #endif
->   
-> -	ctx.bkeyiv = kzalloc(48, GFP_KERNEL | GFP_DMA);
-> -	if (!ctx.bkeyiv)
-> -		return -ENOMEM;
-> -
-> -	memcpy(ctx.bkeyiv, op->key, op->keylen);
->   	ctx.keyiv.len = op->keylen;
->   	if (ctx.keyiv.len == AES_KEYSIZE_192)
->   		ctx.keyiv.len = AES_MAX_KEY_SIZE;
->   
-> -	ctx.keyiv.addr = dma_map_single(mc->dev, ctx.bkeyiv, ctx.keyiv.len,
-> +	if (algt->blockmode == DESC_OPMODE_CBC) {
-> +		memcpy(op->keyiv + AES_MAX_KEY_SIZE, areq->iv, ivsize);
-> +		ctx.keyiv.len = AES_MAX_KEY_SIZE + ivsize;
-> +	}
-> +
-> +	ctx.keyiv.addr = dma_map_single(mc->dev, op->keyiv, ctx.keyiv.len,
->   				  DMA_TO_DEVICE);
->   	err = dma_mapping_error(mc->dev, ctx.keyiv.addr);
->   	if (err) {
-> @@ -366,8 +365,6 @@ static int meson_cipher(struct skcipher_request *areq)
->   	meson_unmap_scatterlist(areq, mc);
->   
->   theend:
-> -	kfree_sensitive(ctx.bkeyiv);
-> -
->   	return err;
->   }
->   
-> @@ -450,7 +447,6 @@ static void meson_cipher_exit(struct crypto_tfm *tfm)
->   {
->   	struct meson_cipher_tfm_ctx *op = crypto_tfm_ctx(tfm);
->   
-> -	kfree_sensitive(op->key);
->   	crypto_free_skcipher(op->fallback_tfm);
->   }
->   
-> @@ -474,11 +470,9 @@ static int meson_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
->   		dev_dbg(mc->dev, "ERROR: Invalid keylen %u\n", keylen);
->   		return -EINVAL;
->   	}
-> -	kfree_sensitive(op->key);
-> +
-> +	memcpy(op->keyiv, key, keylen);
->   	op->keylen = keylen;
-> -	op->key = kmemdup(key, keylen, GFP_KERNEL | GFP_DMA);
-> -	if (!op->key)
-> -		return -ENOMEM;
->   
->   	return crypto_skcipher_setkey(op->fallback_tfm, key, keylen);
->   }
-> diff --git a/drivers/crypto/amlogic/amlogic-gxl.h b/drivers/crypto/amlogic/amlogic-gxl.h
-> index eb2f8cd72b65..e1453dd2e9f4 100644
-> --- a/drivers/crypto/amlogic/amlogic-gxl.h
-> +++ b/drivers/crypto/amlogic/amlogic-gxl.h
-> @@ -129,15 +129,15 @@ struct meson_cipher_req_ctx {
->   
->   /*
->    * struct meson_cipher_tfm_ctx - context for a skcipher TFM
-> - * @key:		pointer to key data
-> + * @keyiv:		key data
->    * @keylen:		len of the key
->    * @keymode:		The keymode(type and size of key) associated with this TFM
->    * @mc:			pointer to the private data of driver handling this TFM
->    * @fallback_tfm:	pointer to the fallback TFM
->    */
->   struct meson_cipher_tfm_ctx {
-> -	u32 *key;
-> -	u32 keylen;
-> +	u8 keyiv[AES_MAX_KEY_SIZE + AES_BLOCK_SIZE] ____cacheline_aligned;
-> +	u32 keylen ____cacheline_aligned;
->   	u32 keymode;
->   	struct meson_dev *mc;
->   	struct crypto_skcipher *fallback_tfm;
+Hi Tony,
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+On 2/9/24 13:23, Tony Luck wrote:
+> On Fri, Feb 09, 2024 at 09:29:03AM -0600, Moger, Babu wrote:
+>> Hi Tony,
+>>
+>> This patch probably needs to be merged with with patch 7.
+> 
+> If it just added RESCTRL_NODE to the enum and the switch() I'd
+> agree (as patch 7 is where RESCTRL_NODE first used). But this
+> patch also adds the sanity checks on scope where it has to be
+> a cache level.
+> 
+> Patch 7 is already on the big side (119 lines added to core.c).
+> 
+> If you really think this series needs to cut back the
+> number of patches, I could move the sanity check pieces
+> from here to patch 3 (where the enum is introduced) and
+> just the RESCTRL_NODE bits to patch 7.
+
+No. You dont have to cut back on number of patches. I think it is easy to
+review if these changes are merged with patch 7.
+
+
+-- 
+Thanks
+Babu Moger
 
