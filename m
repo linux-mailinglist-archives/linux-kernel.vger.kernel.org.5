@@ -1,74 +1,103 @@
-Return-Path: <linux-kernel+bounces-61887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF03C8517DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:24:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E49BC8517DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:24:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7292E1F229B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:24:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37F6CB21B6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F663C47A;
-	Mon, 12 Feb 2024 15:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F9B73CF46;
+	Mon, 12 Feb 2024 15:24:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g3ajAkcW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pb7TQuAh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C930B3C087
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BEF23C694;
+	Mon, 12 Feb 2024 15:24:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707751433; cv=none; b=cGNAAOk/VMp31FsQgxHC3DuavaTuXOuOM5TGfNQ1bXD7wG0Ao6TVlNLS3AKl0urVxcY9dSpTL6Q7ZspkryzGgpJ4gHkWDtr0ZBEB/5Ef+JtAa8mQt67oM1G6Ti20FVu1IuVzabI1ZBeB2ITWNkpH3Ur6qpnEzykQ3UJAHuZBkDQ=
+	t=1707751446; cv=none; b=Jb5Q8xUZcF+role7K2rTTwm5HOMwiRSvH4bhR0SQvstc4I97qrJ82OrKJ1R5SQRec+047QqZIi7YNfB0J375/kDd1z0mgNLC2e7QKBSsuiPXnPU3IeXqkPARFQe6C+jlKEqDXZUprPSeo7uHBInBU0OfAf1nMTU1d9m5cW6wiJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707751433; c=relaxed/simple;
-	bh=cYaR6ewOWivZZlu2DDOh0DduYyQR/eNhIL9vDyNReew=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NLLU2pg7s3RK8PitLEjBI6uqY6KIe2jq9PtM0I5+pBMHbt0CzYurxjIh+N4vl2m1d42s2uOgqhvxawZaDE3wwdSK5KlKMQtpTo7YCuTIRqOY6zOPEq2SQfsHz9Nig3GvlvoV2B/NN/w0l1/LPJ3SRUua/NpXu7SJYsb1UPHyrrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g3ajAkcW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FE9DC433C7;
-	Mon, 12 Feb 2024 15:23:51 +0000 (UTC)
+	s=arc-20240116; t=1707751446; c=relaxed/simple;
+	bh=WWUVJAhmle29IPDO4RHpaZbuj8n80ec/lO+P4P9s3sU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n1nV2cHLeQjZ7N3rXCY/kROOG3K1V4vsOqSKdDcRW9aZ9NlW0x2olqg9Im2dJ5msbFiZCcMbyc+YBkL14GsAoBsv+/weDsg14z17xGFebMs1Q7neV/IZ94b84MQr1ac7++yzfcTX3BvUDIrIONkTkP5sAjrv+Tl/WS2DFOLaAKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pb7TQuAh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3341CC43399;
+	Mon, 12 Feb 2024 15:24:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707751433;
-	bh=cYaR6ewOWivZZlu2DDOh0DduYyQR/eNhIL9vDyNReew=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g3ajAkcW8V+khACIZ14JHJM9bYHDzSX1C26WVvQZx6z5ieTGCXrzXY7a4GcAXIv+1
-	 Ijl5F4vGhkhQsUwd5bmJxeDUYySST0LmAo2molV/d57vXkAoqM9slOkcoOoNXojjPl
-	 rCLc1xQfN6NskdsrC9EGTUZy6MXJLyTr0qUeejv/tTwT4GrDABzagmnIwq0AAwUHbQ
-	 YgOjegQ6RuaixSJcWz6JcFtWOb3CGPl4scPsXXdGOThvFBnGcVAmeJuICpyr7KyUiL
-	 qjk1YyEODxAcG9O4qQe14njzvfqSWj4zDC27EHoAJPTOXemgAH6QzGjC79INyLMnzq
-	 Q/+pfp8Rfuz2A==
-Date: Mon, 12 Feb 2024 16:23:48 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Costa Shulyupin <costa.shul@redhat.com>
-Cc: Waiman Long <longman@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hrtimer: select housekeeping CPU during migration
-Message-ID: <Zco4BKuwYYI3NRIA@localhost.localdomain>
-References: <20240211135213.2518068-1-costa.shul@redhat.com>
+	s=k20201202; t=1707751446;
+	bh=WWUVJAhmle29IPDO4RHpaZbuj8n80ec/lO+P4P9s3sU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Pb7TQuAh5LA2V0Z1dQbw1kV4UTkB48nJHh5Z7sC/btLGtAe5e9A1pMVEDYkxshldY
+	 VguzMoWcI2M+N3bbvhtS0dLP0+pHzaSiK7F5dgAQi64/pCfVQStkqtzAhzavXURgB2
+	 wtzkzz6aXMms0If8UyhaF9f3mod0RbGSfQxQ7+cvkiAg8jXcUU3cE7fVyqZTaIsKFO
+	 WRrZWf0UTZqwRyiDk7e0O+S2eWYsmJ5KY8uo4DRj9vpeHoaXtn0DWmIYcLp61Vt5Nu
+	 dPWJatH+M8jGWtmsL+qLgUPbKcJd2c72qZbpk40uV4GlarsmD6LwUHeg8LB7CeuoWj
+	 6U0pLrcxB2mNw==
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-511490772f6so4043318e87.2;
+        Mon, 12 Feb 2024 07:24:06 -0800 (PST)
+X-Gm-Message-State: AOJu0YzQpL+F1BfV8Yavm1AFPSbEqdcU5Bdv2ySK/VuRH2QQwAMCVERT
+	US8HufFcuJA5TjkTchpoQGTYiTFeZ8uudz6/bIvd+Qou8gO58VVeD1qsxdI4o/rmpOfRTVKXVeb
+	piiVkQXSG3EZ0/V+wR9jKOOV0T8w=
+X-Google-Smtp-Source: AGHT+IHIWYUd8/JvmBEqXUvmGaRWai49eznUC5vZoorTEhUDMCzAofBDgtcWjpFO1JFOZmeCNxyWxz6PBlsbAxS4kk0=
+X-Received: by 2002:a05:6512:238d:b0:511:81ed:1a53 with SMTP id
+ c13-20020a056512238d00b0051181ed1a53mr5043463lfv.42.1707751444365; Mon, 12
+ Feb 2024 07:24:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240211135213.2518068-1-costa.shul@redhat.com>
+References: <20240129180502.4069817-21-ardb+git@google.com>
+ <20240129180502.4069817-30-ardb+git@google.com> <20240212143717.GWZcotHRH-8a3x1gTH@fat_crate.local>
+In-Reply-To: <20240212143717.GWZcotHRH-8a3x1gTH@fat_crate.local>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Mon, 12 Feb 2024 16:23:53 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGNnHzCWJB8RHYUqePRjN_k-8mRXKTM3B_Qq2je3k5iyQ@mail.gmail.com>
+Message-ID: <CAMj1kXGNnHzCWJB8RHYUqePRjN_k-8mRXKTM3B_Qq2je3k5iyQ@mail.gmail.com>
+Subject: Re: [PATCH v3 09/19] x86/head64: Simplify GDT/IDT initialization code
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Le Sun, Feb 11, 2024 at 03:52:13PM +0200, Costa Shulyupin a écrit :
-> because during CPU deactivation a timer can migrate
-> to isolated CPU and break CPU isolation.
-> 
-> For reference see function get_nohz_timer_target,
-> which selects CPU for new timers from housekeeping_cpumask(HK_TYPE_TIMER)
-> 
-> Inspired by Waiman Long <longman@redhat.com>
-> 
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+On Mon, 12 Feb 2024 at 15:37, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Mon, Jan 29, 2024 at 07:05:12PM +0100, Ard Biesheuvel wrote:
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> >
+> > There used to be two separate code paths for programming the IDT early:
+> > one that was called via the 1:1 mapping, and one via the kernel virtual
+> > mapping, where the former used explicit pointer fixups to obtain 1:1
+> > mapped addresses.
+> >
+> > That distinction is now gone so the GDT/IDT init code can be unified and
+> > simplified accordingly.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  arch/x86/kernel/head64.c | 57 +++++++-------------
+> >  1 file changed, 18 insertions(+), 39 deletions(-)
+>
+> Ok, I don't see anything wrong here and since this one is the last of
+> the cleanup, lemme stop here so that you can send a new revision. We can
+> deal with whether we want .pi.text later.
+>
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+OK.
+
+I'll have the next rev out shortly, thanks.
 
