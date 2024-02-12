@@ -1,202 +1,123 @@
-Return-Path: <linux-kernel+bounces-62388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390DB851F88
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:26:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A788F851F8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:28:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E7311F2292D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:26:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 654812815A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E704CDEB;
-	Mon, 12 Feb 2024 21:26:19 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 375524CB51;
+	Mon, 12 Feb 2024 21:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Hf+6DOBZ"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024854C63F
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 21:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EEB41DDC5;
+	Mon, 12 Feb 2024 21:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707773178; cv=none; b=HwU77Khf9N3JtMah85/6Nt5V5GcxYmJ8nb5DrLejnUB6xqMX5AFm/wfyjV+kgFQyZKqJSRHuwQJNPffrjkKcEdtZt0v0pYOIBIzMCGimDEeVX41QI5JKIeabiDHpck9eoJbjhrxst4V0FM9e91rbJQ3j/pSDeeF54ad2eSID39Q=
+	t=1707773283; cv=none; b=RYK/dn7uGogRPwbMRSWjZTWH8hAP8avlZ762GQHXI/9G7Gqyw3KQtPKJLjhymVAt0Ur8zIl7MsmzkJHMGF0enOalzBY0ZcCzo8fZaeYYAyNHqBFByDv2PgPG09D2YAyJ2AQJOA4eez8Qk5mhtJU9wMRxagO6TaEsSlRVlJ8V8EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707773178; c=relaxed/simple;
-	bh=gdBrqYwMAIQdRKLaqdduNKTUrHZMgfta/ChCSoiv/JI=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OLm2P3MmObrY58PZKTDrPjFVD7ly81WqE+sH3bKD9QPkMKGrLCej0utCF2W6/u+DU+gVmMbwkirMmtu0lIh6qTod+SYHoNMME2+6Rjn5JftTC5M9NQuembJbqkx90zbT5O0gUlopJ7il9mWol8mIfaEYZbwOdSgPoi1tKBvMpyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363dfc1a546so37156805ab.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:26:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707773176; x=1708377976;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wagcq9COHb24z/xuskXRn8d6kbGmFHER+wSRaPPVz+w=;
-        b=oXa1vhyzC1Fdb7rfGoVHV90OtjL4zcbbENvQAAlMGcAyyipjWY2xkD7wSozGfyrMnh
-         Uq8xR9ifXGepbZfnLofJlolpsgX5sTIJZUzLQnO8UQxlF1KXxU/5ErDlWDT8IqsER/bx
-         zVjhPI4/WUablc4afXD0Mh92+hDDvIgLxZpMi6McRkGUOciH6WaOMi15hBrNEMp77bXK
-         epunI6w67o18fA6W9T6PIDHjPm+N4h8EVYKTGp6Hff6yOaQeKx6o3LZVFXVCQNndAayX
-         itui6SGC7c9o0INrwOCaG2WDqjkLar4kuhC5a9Rt22r1jVhfGA/mlghArWEub+22bcTF
-         xu9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV8dge+MmghNstciDfLjrulzY7uTTON6DEG+0OeF89pwfYbYeVBWNdLZRtH0fmd7cBC2qaESQv7unJby4/kqmVYZqq7gAb0acFwYDm+
-X-Gm-Message-State: AOJu0YwGIeIPiaJczi+dsh9kptPoSqFTOBq8bk2uLhLgzb2zisS3fm/p
-	kj7j4nTwhjcavBkygqhAEO6pd2/T7iNgNO6YEYSknQMlIzcfJCpv+bGkvz4uS5QYSb9gTKANRTY
-	oZ3B3sNHOMs7+oZ4jBCjmMyNNTZ/W9N35GVvn0976e06u+FFMk4FtWo8=
-X-Google-Smtp-Source: AGHT+IEQ6Yr7NUwr1aO5sIMrfITNumwjXzV8MO5Y/AwbsS6q1SAgcgqkhs5f5Cb/5wsoXRVEZPgBYlQuasVbw4LiOOqFFgIk1CeV
+	s=arc-20240116; t=1707773283; c=relaxed/simple;
+	bh=YZ61mZF1bLjrVmSJ2CG1mBsGDRT77xZa5jGT7hzxP84=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OGfKO0MUMSqQEWn0H02iN+pjriU87m63OmNIvHnxCAVGAyBsOA1AjvtKAq+PhLncoavncre1dmJ9GSBOHZOW4j1mtRyW+x6X7Ph0d0diyOt7xH/biT0ZgqAETEPzZ+gYI3NSsU+ESW1XXobZF8NXHz2AcQzn0BaI1By4bs6AKf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Hf+6DOBZ; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D00CD40E01F7;
+	Mon, 12 Feb 2024 21:27:57 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id z0DJA0e8CGyn; Mon, 12 Feb 2024 21:27:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707773275; bh=tV41PkOi77BQFnFr1wJW0H9Ckl+9yDY0EbtAyYtf1Tk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Hf+6DOBZzTaQ3ZhX3SjZcByUdotf9YaR4x+7FZM9rfKzAqvoG7j9xbQBIsq6cswwu
+	 JuDRf0fRDEMICT1EMQC0Qx9ls11wUNDgCfP/BDkqtk+XRjKkX6OBnjtks7VlfnFZY6
+	 mXiIdL/GLOuZbJu+LZQb9jQMWnbXyVCdYuYvEm3T9TTcpAMWbk8TUy5QMt1BHJPWxL
+	 L3+1+T6UII6opfqSBmVzSXSV4wDFczrc7sERZvP6szkUEO1sMDH8RGgbRM7EY89vMX
+	 5beizSU2az/3T/pl1adQ+M7TqRh//ty+mP6dvyYsTPymJ8wyK6t16juRztsXUvRrXR
+	 XBRQkVILzv2S1jzhgUN1WBwxeRp7io+kxKQzwcIEj8jMDef4gn6e85mp5HHlxWA9k2
+	 4JU98g0+u99CQY2OQGEuOVrHWxhXLYmLMhOiyfdFIzsFe+7ug/vlc6/2fApMCclPdx
+	 BzqucckzhTXlfxAzyvzbnjefXVW9KeTKD0boG5RWYLmT+hcANFMdAYYS1z73eRBbQq
+	 6xXzB5Jz+X9iK087jMueZGRAhCSfAy6ZlhbY9bA6bKoEPSYbhKnhe052gR0nFxNIQt
+	 +1kPrb0VthQB8KJTR9sE69XbWDEXahwCfoesM1YvnSLclC/d4HWUJGRuwI94lfS1XA
+	 NATXatAKpbJZyb38RIrjds9I=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 54D3340E0192;
+	Mon, 12 Feb 2024 21:27:46 +0000 (UTC)
+Date: Mon, 12 Feb 2024 22:27:41 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: "Luck, Tony" <tony.luck@intel.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>,
+	"Naik, Avadhut" <avadnaik@amd.com>,
+	"Mehta, Sohil" <sohil.mehta@intel.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Avadhut Naik <avadhut.naik@amd.com>
+Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
+ Records pool
+Message-ID: <20240212212741.GPZcqNTXfU2OX7uRtx@fat_crate.local>
+References: <20240209205111.GGZcaQP1gb6C9m0WZB@fat_crate.local>
+ <5DB0FF8D-C6DA-45DC-B287-201A9BF48BDA@alien8.de>
+ <75ddf61d-8dda-47fa-9da0-24221feb22a2@amd.com>
+ <20240211111455.GAZcisL09LeFPWa2EI@fat_crate.local>
+ <b5904910-ed58-405f-9425-566383b48068@amd.com>
+ <SJ1PR11MB6083CF3400AD2F2047D65E17FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <34b19db5-bd72-457c-9b6a-c2089f6be83c@amd.com>
+ <SJ1PR11MB6083E7E11F6C7BCC8C6C7F21FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240212201038.GNZcp7PuIqIJndpDM9@fat_crate.local>
+ <47901422-ac07-47db-bf44-3f4353e92b1d@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4904:b0:471:fe5:c48b with SMTP id
- cx4-20020a056638490400b004710fe5c48bmr88097jab.3.1707773176154; Mon, 12 Feb
- 2024 13:26:16 -0800 (PST)
-Date: Mon, 12 Feb 2024 13:26:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000085930e061135ed45@google.com>
-Subject: [syzbot] [wireguard?] KCSAN: data-race in wg_packet_receive /
- wg_packet_receive (7)
-From: syzbot <syzbot+fd07f3da9110f5f18b4f@syzkaller.appspotmail.com>
-To: Jason@zx2c4.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com, wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <47901422-ac07-47db-bf44-3f4353e92b1d@paulmck-laptop>
 
-Hello,
+On Mon, Feb 12, 2024 at 12:44:06PM -0800, Paul E. McKenney wrote:
+> If it is the #MC adding new memory, agreed.
+> 
+> If the #MC is simply traversing the list, and the interrupted context
+> was in the midst of adding a new element, this should be no worse than
+> some other CPU traversing the list while this CPU is in the midst of
+> adding a new element.
 
-syzbot found the following issue on:
+Right, Tony answered which context is doing what.
 
-HEAD commit:    a5b6244cf87c Merge tag 'block-6.8-2024-02-10' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=126f51e0180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3cd0dc1b46a5bc5c
-dashboard link: https://syzkaller.appspot.com/bug?extid=fd07f3da9110f5f18b4f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+What I'm still scratching my head over is, why grab a spinlock around
 
-Unfortunately, I don't have any reproducer for this issue yet.
+	list_add_rcu(&chunk->next_chunk, &pool->chunks);
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c1a21353ecf6/disk-a5b6244c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/675fe8a43c32/vmlinux-a5b6244c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1848dc711f3f/bzImage-a5b6244c.xz
+?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fd07f3da9110f5f18b4f@syzkaller.appspotmail.com
+That's the part that looks really weird.
 
-==================================================================
-BUG: KCSAN: data-race in wg_packet_receive / wg_packet_receive
+And that's the interrupted context, yap.
 
-read to 0xffff88812bad5c08 of 4 bytes by interrupt on cpu 0:
- wg_cpumask_next_online drivers/net/wireguard/queueing.h:127 [inline]
- wg_queue_enqueue_per_device_and_peer drivers/net/wireguard/queueing.h:173 [inline]
- wg_packet_consume_data drivers/net/wireguard/receive.c:526 [inline]
- wg_packet_receive+0xc51/0x12c0 drivers/net/wireguard/receive.c:576
- wg_receive+0x4e/0x70 drivers/net/wireguard/socket.c:326
- udp_queue_rcv_one_skb+0xad0/0xb60 net/ipv4/udp.c:2113
- udp_queue_rcv_skb+0x20a/0x220 net/ipv4/udp.c:2191
- udp_unicast_rcv_skb+0x1c2/0x1f0 net/ipv4/udp.c:2351
- __udp4_lib_rcv+0xb93/0x1110 net/ipv4/udp.c:2427
- udp_rcv+0x4f/0x60 net/ipv4/udp.c:2609
- ip_protocol_deliver_rcu+0x356/0x6d0 net/ipv4/ip_input.c:205
- ip_local_deliver_finish+0x13c/0x1b0 net/ipv4/ip_input.c:233
- NF_HOOK include/linux/netfilter.h:314 [inline]
- ip_local_deliver+0xec/0x1c0 net/ipv4/ip_input.c:254
- dst_input include/net/dst.h:461 [inline]
- ip_rcv_finish net/ipv4/ip_input.c:449 [inline]
- NF_HOOK include/linux/netfilter.h:314 [inline]
- ip_rcv+0x18a/0x260 net/ipv4/ip_input.c:569
- __netif_receive_skb_one_core net/core/dev.c:5534 [inline]
- __netif_receive_skb+0x90/0x1b0 net/core/dev.c:5648
- process_backlog+0x21f/0x380 net/core/dev.c:5976
- __napi_poll+0x60/0x3c0 net/core/dev.c:6576
- napi_poll net/core/dev.c:6645 [inline]
- net_rx_action+0x32b/0x750 net/core/dev.c:6778
- __do_softirq+0xc4/0x27b kernel/softirq.c:553
- do_softirq+0x5e/0x90 kernel/softirq.c:454
- __local_bh_enable_ip+0x66/0x70 kernel/softirq.c:381
- __raw_read_unlock_bh include/linux/rwlock_api_smp.h:257 [inline]
- _raw_read_unlock_bh+0x1b/0x20 kernel/locking/spinlock.c:284
- wg_socket_send_skb_to_peer+0x109/0x130 drivers/net/wireguard/socket.c:184
- wg_packet_create_data_done drivers/net/wireguard/send.c:251 [inline]
- wg_packet_tx_worker+0x127/0x360 drivers/net/wireguard/send.c:276
- process_one_work kernel/workqueue.c:2633 [inline]
- process_scheduled_works+0x5b8/0xa40 kernel/workqueue.c:2706
- worker_thread+0x525/0x730 kernel/workqueue.c:2787
- kthread+0x1d7/0x210 kernel/kthread.c:388
- ret_from_fork+0x48/0x60 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+Thx.
 
-write to 0xffff88812bad5c08 of 4 bytes by interrupt on cpu 1:
- wg_cpumask_next_online drivers/net/wireguard/queueing.h:130 [inline]
- wg_queue_enqueue_per_device_and_peer drivers/net/wireguard/queueing.h:173 [inline]
- wg_packet_consume_data drivers/net/wireguard/receive.c:526 [inline]
- wg_packet_receive+0xd3a/0x12c0 drivers/net/wireguard/receive.c:576
- wg_receive+0x4e/0x70 drivers/net/wireguard/socket.c:326
- udpv6_queue_rcv_one_skb+0xb37/0xbc0 net/ipv6/udp.c:716
- udpv6_queue_rcv_skb+0x20f/0x230 net/ipv6/udp.c:778
- udp6_unicast_rcv_skb+0x195/0x1b0 net/ipv6/udp.c:921
- __udp6_lib_rcv+0xa24/0xc80 net/ipv6/udp.c:1010
- udpv6_rcv+0x4f/0x60 net/ipv6/udp.c:1124
- ip6_protocol_deliver_rcu+0x92f/0xf30 net/ipv6/ip6_input.c:438
- ip6_input_finish net/ipv6/ip6_input.c:483 [inline]
- NF_HOOK include/linux/netfilter.h:314 [inline]
- ip6_input+0xbd/0x1b0 net/ipv6/ip6_input.c:492
- dst_input include/net/dst.h:461 [inline]
- ip6_rcv_finish+0x1d9/0x2d0 net/ipv6/ip6_input.c:79
- NF_HOOK include/linux/netfilter.h:314 [inline]
- ipv6_rcv+0x74/0x150 net/ipv6/ip6_input.c:310
- __netif_receive_skb_one_core net/core/dev.c:5534 [inline]
- __netif_receive_skb+0x90/0x1b0 net/core/dev.c:5648
- process_backlog+0x21f/0x380 net/core/dev.c:5976
- __napi_poll+0x60/0x3c0 net/core/dev.c:6576
- napi_poll net/core/dev.c:6645 [inline]
- net_rx_action+0x32b/0x750 net/core/dev.c:6778
- __do_softirq+0xc4/0x27b kernel/softirq.c:553
- do_softirq+0x5e/0x90 kernel/softirq.c:454
- __local_bh_enable_ip+0x66/0x70 kernel/softirq.c:381
- __raw_read_unlock_bh include/linux/rwlock_api_smp.h:257 [inline]
- _raw_read_unlock_bh+0x1b/0x20 kernel/locking/spinlock.c:284
- wg_socket_send_skb_to_peer+0x109/0x130 drivers/net/wireguard/socket.c:184
- wg_packet_create_data_done drivers/net/wireguard/send.c:251 [inline]
- wg_packet_tx_worker+0x127/0x360 drivers/net/wireguard/send.c:276
- process_one_work kernel/workqueue.c:2633 [inline]
- process_scheduled_works+0x5b8/0xa40 kernel/workqueue.c:2706
- worker_thread+0x525/0x730 kernel/workqueue.c:2787
- kthread+0x1d7/0x210 kernel/kthread.c:388
- ret_from_fork+0x48/0x60 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+-- 
+Regards/Gruss,
+    Boris.
 
-value changed: 0x00000000 -> 0x00000001
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 5475 Comm: kworker/1:6 Not tainted 6.8.0-rc3-syzkaller-00293-ga5b6244cf87c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Workqueue: wg-crypt-wg0 wg_packet_tx_worker
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+https://people.kernel.org/tglx/notes-about-netiquette
 
