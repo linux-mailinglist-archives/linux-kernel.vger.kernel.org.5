@@ -1,90 +1,123 @@
-Return-Path: <linux-kernel+bounces-61801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 919938516B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:13:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFBBF8516BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:13:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D4A2281387
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:13:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BD02280E1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:13:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708213B189;
-	Mon, 12 Feb 2024 14:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE4E3B791;
+	Mon, 12 Feb 2024 14:07:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h7TYYfp5"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VBIv1suT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B8A3A8F6
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 365FE3FB19;
+	Mon, 12 Feb 2024 14:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707746840; cv=none; b=td6Z9idvIZwOKLcR8fd7np9Pl8rGKW0FMeloI3c/lV4wzz2gAy30+Wrlu/wMgYLah7yuzAUgyHUn6a07cyOKrttZNy+E4mboi9h07vWblVrCa785QM8IklyUjWzOY1P50rgxLePmXviIkRp6X6oNhmievTGjKi0WWlkp8jmcQjI=
+	t=1707746855; cv=none; b=KTKC9LwG1div2sojsvQBOG1e9XOZH2D9TOhJZqQAljbdrOKm73P1Kyptb0S+bGduAhY6qAXxQJvpVs9EaNzXQcgNtpHEtSN9GhTtcDJH/jWfYiH8XLRLDCZTlZA39JWqg9UJ7CdjMEwtw8WnYyy1lE3jklm0LoUF9C8BGt32GTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707746840; c=relaxed/simple;
-	bh=X75lLwzkhXfaAKeD9RVPUbK5SugflzA3FB+ADjwrXQs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tCubWD5GKdZq4RKX+QLBDwu9mweGYACJLJnFNB5N8aiZYq/E/roootmgs7ANDMKnJAw+ew5vfduTDNQ2+jBRIbL9DLhUKk4rOMyxIIL4aHFNVlOOxcsAVyzTZQyLHr4MlFOJWGodYoA9SUC/4XfY0gJZtKf20r6KVDGyEvIefjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h7TYYfp5; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-68ca560ecb1so14551726d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 06:07:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707746838; x=1708351638; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=X75lLwzkhXfaAKeD9RVPUbK5SugflzA3FB+ADjwrXQs=;
-        b=h7TYYfp5E/fTBL5VhVihBLSj0ev72vuRI0MaiSXwcjn8PsJSJ5xgFCJttpyKGYDAfs
-         KV31knWaiRccn1dUwl0LZMKoqRr+w1fMzY4lbydcFcqU2ox8mQ3IxcFTFdcvKYFgWcHa
-         9YuHu8+7bcmYuf5G3SGiRCfI2Qi5NarQf7Yr6t2seVm2t81G/y9RgGX6DlbLGP5/gbC8
-         cyObJgQbYaQ4CZXcKeUih+P1qI7O/uNcTcTsh9nxR9Wki7x3Lx3SLjEBPoSA2Y0BLJzD
-         H+42nFDpu6/ga4wE2cl7vKF3kp4NmZiKx/X709F/XA3MXg3vUiOnekHlBj5Nrd8slPZ3
-         k11A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707746838; x=1708351638;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X75lLwzkhXfaAKeD9RVPUbK5SugflzA3FB+ADjwrXQs=;
-        b=AGTNnq9/4rC+cqExAlfaaDpOsiD+xdqXky8z2cxXIFRsh5hvz4xX+NmP40J4gFcdx6
-         pCr/mCrQG2x2Pm+A2HTnc7eB5QSGdO4NHYNGUxjPSWODj0SO6+S41/wgLs9q1Gb5b3YG
-         o8z4IEFtpZYBPQAHgJb3YmnINCRBS8/fOfS2gEoDw4G+oQ/UtsLzeZPcR0KPGFE1DMgB
-         lvx7PFmKoRuyN43jtbFxA7XWzaHqumka6/VclWawglUPln409QH9wd+xrISR2aAi31++
-         8SyoTz968qwlgKW5pEzpgE61mXgA9ZW3k3qpBrmzS7BgyBRiXdCVCd4CpXjfEE9Hhq2B
-         gQJw==
-X-Gm-Message-State: AOJu0YyUznayg9L/1xZ/opCI5p4ZdjKv0Kjf4mKK1B4uuvV/GpYC6EZW
-	xl4DTC+UDl8Ew1jorcr0l+bbXdOuDk9w9bmd+rjMr9mNMSmBRFFzx5kNXmjtCJX/2lOgJj/n/56
-	VSuE5Po+22cAU6savBa2f1AK2NrRMTzv9Pm5vEo1zt6dkmQmkt3Ab
-X-Google-Smtp-Source: AGHT+IGjwPhN6JqVQ82AFNLhiMQTIuzrYEzVitUlSMWygLKcCDX+757lakc71GgIQDPB7QuK/lI1ZJQD6dQcrwSYUxQ=
-X-Received: by 2002:a0c:ca81:0:b0:68c:9621:af26 with SMTP id
- a1-20020a0cca81000000b0068c9621af26mr8077667qvk.15.1707746837886; Mon, 12 Feb
- 2024 06:07:17 -0800 (PST)
+	s=arc-20240116; t=1707746855; c=relaxed/simple;
+	bh=tk7susaLtsbNxhwZtsQjr7OaP2Q6DZ7zgriElIgnzFc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N2zbyhDNZMg3DCaq3j2O8IN+gzYaOGnnxGj2lnCefYbEOa2I9HcopUPwnEP1M26kkArLAM3wa61IScJZEsLy1pwrURnBBhAEX93QbzoE6HZmuQP1tc+frFamSU+UAWRocHDFwvO4ZkrG+EEnVAJUAD4l5zoMXi0fdcZRin6T8QU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VBIv1suT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E59C433F1;
+	Mon, 12 Feb 2024 14:07:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707746854;
+	bh=tk7susaLtsbNxhwZtsQjr7OaP2Q6DZ7zgriElIgnzFc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=VBIv1suTYVrHVE3zSP70AaehI6e/CFMaufnbbSFDsH+oRf69plYP+AZzEGXX2wHRe
+	 8xpaDIiouNJKMiLKVlXDkqxSAZbA+uFj+K1mZxjBFoYDfPQ/NiYE1J/AQlw1AfC6V9
+	 0rQWbNdu94bJY3jIn9eYi9cZRY9Xw+iYaa09THbikE8GIse/2Ebq7eGLysYAF03E8e
+	 u90F6zi4Gzy6XxfyuRvQ3S20MwagFUpC0VhwbPyH5qxyQk0aoyux9ycoKivMAnYGx/
+	 lNFr5+CUCDIOigftSg+kittyM8aD1NTpclDs5KbL3fRfdlBGakFBCKJpUWnTKk8SlJ
+	 PhpKaDPiXcBRQ==
+Message-ID: <0ffbfd54-57d2-474e-8dad-7f1469f4da21@kernel.org>
+Date: Mon, 12 Feb 2024 15:07:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000004b1fa70610fa3230@google.com> <f7a6623d-b55f-4301-be1d-ee0327ebd353@kernel.dk>
-In-Reply-To: <f7a6623d-b55f-4301-be1d-ee0327ebd353@kernel.dk>
-From: Alexander Potapenko <glider@google.com>
-Date: Mon, 12 Feb 2024 15:06:41 +0100
-Message-ID: <CAG_fn=VEEWnqbGUBFXgaTPYpP_E5QHxXtiqaDnuwkNHFzik0Yg@mail.gmail.com>
-Subject: Re: [syzbot] [io-uring?] KMSAN: uninit-value in io_rw_fail (2)
-To: Jens Axboe <axboe@kernel.dk>
-Cc: syzbot <syzbot+0198afa90d8c29ef9557@syzkaller.appspotmail.com>, 
-	asml.silence@gmail.com, io-uring@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] hardening: Enable KFENCE in the hardening config
+Content-Language: en-GB, fr-BE
+To: Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Dmitry Vyukov <dvyukov@google.com>, Alexander Potapenko <glider@google.com>,
+ kasan-dev@googlegroups.com, Jakub Kicinski <kuba@kernel.org>
+References: <20240212130116.997627-1-elver@google.com>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20240212130116.997627-1-elver@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> This was fixed a while back, not sure why an old kernel is being tested. But
-> in any case, the result of this was just garbage in cqe->res for a request
-> that was prematurely errored. Nothing to worry about. In any case:
+Hi Marco,
 
-Unfortunately KMSAN is broken at head, we're waiting for
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=558c04d9535d9d8911162db4d0d758f8f4cda37b
-to reach mainline.
+On 12/02/2024 14:01, Marco Elver wrote:
+> KFENCE is not a security mitigation mechanism (due to sampling), but has
+> the performance characteristics of unintrusive hardening techniques.
+> When used at scale, however, it improves overall security by allowing
+> kernel developers to detect heap memory-safety bugs cheaply.
+
+Thank you for having sent this patch!
+
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
 
