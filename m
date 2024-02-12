@@ -1,181 +1,150 @@
-Return-Path: <linux-kernel+bounces-62009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F144851A07
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:50:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C59C7851A33
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:54:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45D4BB237EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:50:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 046941C22392
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD4663D54D;
-	Mon, 12 Feb 2024 16:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D1C3F9E6;
+	Mon, 12 Feb 2024 16:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dNT2mCxz"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rCSJub/z"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C6123B2A4;
-	Mon, 12 Feb 2024 16:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B373D3BC;
+	Mon, 12 Feb 2024 16:53:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707756624; cv=none; b=S0g1T4P63WJAd6ANO5FZX1pn+dCkvC66gN2SWsSCiypAna1aI/0hLNVDblwshiDLeFqWKBFF1K+dpuU5nfOy3yMdx344GPdvK46COru4WdtsgbeIZk3pGWcLUJLiaN+DMQ8yWnTR2BELSCS0rEoJfNoe+cRbCUdBwV800TSJIlg=
+	t=1707756819; cv=none; b=O5n3kHed5DvBQ3R+tgTTfBfQqHnpMb20Mx49bZ/r/etcGXgq6MrCgPWRusf4i2A81rXWOqRQKSzqOLTJhgzAlYQzr/mFdfTeuuibNslCnsSehkcm9LVt/vI2uS6Xvwlzuxjd3v5MqMvJFuNumb6NRAlc0FgZ2aceWm7zmoHN34g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707756624; c=relaxed/simple;
-	bh=psAYolLubLnXKh+kFdLshH1IwolSJgEuJAOQ4J6CcLU=;
-	h=Content-Type:Mime-Version:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=Dflv+8i5hjEA9M+2CFJts669y+y2ibGCZ7UQ1FBm9c2zy7UGTe+KHIk3lCi3duFpUIapNp/hOjPflm61MYCaisbyA8ugMHKnbtYL5tH7Yruf6jS8GmX/zOFSOygxj/SOHMcMnaHGz0kvSjIxPhdEejzRgc+PWsDcql2UD0FZTGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dNT2mCxz; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55ff5f6a610so4064821a12.3;
-        Mon, 12 Feb 2024 08:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707756620; x=1708361420; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DbtCOz3u26hElchW0PWcPewu+ZG78Aj7zeMZmqh8H1Y=;
-        b=dNT2mCxzWEr53u2iUy94Ob2lLxy1+oONvYndOERnxF1t8JTnl+zutiVmPUomkG1oun
-         RrgOBxRneraUvByoknqwhckgHUiqtclhA1gO4NyIoLqi4AUzrw7eYq28GWYjRcWJjDqj
-         q4HBvL+2rFh2ydvwKQtONNE3BHMHLE1Twa7dmLGzqg1O5sJeP2QBL9+DX0v8uUxkJqom
-         hy3nrMzScBBGJpK7rvRnfndoqTpJhaIsW5Z1G8ivQtqQEoLeLJt3ksXTJ3ENjEjVavK0
-         ULUSV6FBgDBA/Xo44chKfbSN2pFPTuW/5JeQ45I191kz/mTaZQjIJKmbugoCVX4HNHHm
-         uWrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707756620; x=1708361420;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DbtCOz3u26hElchW0PWcPewu+ZG78Aj7zeMZmqh8H1Y=;
-        b=nbHFMLY/PJXa/WN5sRqQNnuRVW8a6RolkarSBw3wkNwqM5Y3/IEElbdv4uageau+Ml
-         GVpqp8GFAEw427erg4PQ7gaxgx0QpIC/l1mZG6eKcMqXLDOUzTAWFOeAnOEp+nQuhlWv
-         zn6nGBJeLM4pfrxwk6bRxWYct1fuRACLRXpJlVbkCfHLEAytGUUqM916AgdpfQaTT1S/
-         adKASSY4IMzl7WaKwUCaYahrIxfw9S2Nj1jCFbbfpQht0qpM0U2AatySXiANA+v8AZnM
-         qVu0Dd3uOUFkWa9cr525Vtc3XaXh4ERokWB91I8ddPdxOir5YfFeX92Zrauf7GjAzzq4
-         EmiA==
-X-Forwarded-Encrypted: i=1; AJvYcCWwWuViV01a/4f4KsL2NPutsmvLkxNCYKeoW3+cwFCJB2p+uNKEKhziBs5VvoWln+Ol7F0YLF2U4w5S/ponwlL08TQJEKL9DkTjbPBla7Ly7/LCuRS3FphHo9unfMhRbyRolgLhnDKniZU=
-X-Gm-Message-State: AOJu0Yw8BJJf3RsVT+1CtcJC634nYnEgZMXPTC8zyuQ9ABjW80JRsocc
-	6aOSyn3DqhZ2Pa9tg0J2kM9nsszi4aoq/Ln2Q4lDzlASum+psQJP
-X-Google-Smtp-Source: AGHT+IFftF7HlCObOuwBQ/Rn6Zi2lSFub53JoK52ItcnhXkLZH4AbtnP3IeLI2bAJ9AZkCoRml7RVw==
-X-Received: by 2002:a05:6402:5d90:b0:561:9f62:8db3 with SMTP id if16-20020a0564025d9000b005619f628db3mr3335969edb.29.1707756620298;
-        Mon, 12 Feb 2024 08:50:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUjZZUQ9opbitxcj18TgINb330mLd5bs/QgDlAbVc+/b+TQo4HTAg3GgfMZ8auVW03Z1K+zY+oia7eAq3u5uS7adDcegYT2WYL8wWZxXkIaVCZW1t3ew+5ZopdP7hUwUNJ3VN9LK7iW3Lsrkct/FM5lg+yVeash9cqoJ6lSzXFHnR+6kCG+2usplPZH2qJlwCr+FAADAKNkiKU9NR0+4jbN8yQUJ5HGHmZ6sPtcLn9ygubDuPIzQ01ytxWScUDKCXou2wIcSabOInIYxvJHqUyIBae0aJx9kTe5ZlEH
-Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id fd9-20020a056402388900b005607f899175sm2927160edb.70.2024.02.12.08.50.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 08:50:19 -0800 (PST)
-Content-Type: multipart/signed;
- boundary=7c640255eac135c68b597b52d418781ce4ba02d5840e4f5c2d60ce4c9520;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+	s=arc-20240116; t=1707756819; c=relaxed/simple;
+	bh=Lcwh9oBaUlbIJIUDyERFA6U/A3CwBvNwqmxbv7vqjcY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X+L353M1/afzvH90AHJEtLaHJ4FXOQcimMfkpcfP7VaF831oda3qAptDlQZEh1xM46Zj6dtQHa27UvEiT7zF4EGR2f933TLMSNf57Ad05wsDZRfH943nJ0qGdkXLOVAS4cYZ9jGmWXVCvBkvgaCXiDOPo+V+YZdu6A3Z6FBSCK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rCSJub/z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA1ABC433A6;
+	Mon, 12 Feb 2024 16:53:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707756818;
+	bh=Lcwh9oBaUlbIJIUDyERFA6U/A3CwBvNwqmxbv7vqjcY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=rCSJub/zIPFFAM8/y0sjGaoc1aoHaLB4akvR3z1UCkPSmfbdf2Y0mbZrRqVt7u7MT
+	 1T1vwvsrtdGPsirrJo/ZcU7lBGb/lK4OsQL9WwMXZpDSIdeWlRUn7i7010+rX2cGoT
+	 p34MYWWKmdsqshE9HFLCecZfOWB8B2EKUCmAB7Q3j8Z1etlBPbxnQSG6CP99DPKCOi
+	 4KuSz8PQ3Sy6fNnvGKWFLhHg1mJCtcrwNzUru24sQxxteh4CSA0s29ZU1Eyw2qLDAL
+	 FICIb1YikFVSXgRubXFjvew+7c2Dq+sXsqlrQfqtGVLGrzaVTJa7Gk9NF74K5eky5h
+	 4dQkGd8UKnhLg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan+linaro@kernel.org>)
+	id 1rZZZ2-000000007Mx-0uIS;
+	Mon, 12 Feb 2024 17:53:52 +0100
+From: Johan Hovold <johan+linaro@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH 00/10] arm64: dts: qcom: sc8280xp: enable GICv3 ITS for PCIe
+Date: Mon, 12 Feb 2024 17:50:33 +0100
+Message-ID: <20240212165043.26961-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Mon, 12 Feb 2024 17:50:19 +0100
-Message-Id: <CZ3974AW5FT3.39WK876PU00AZ@gmail.com>
-Cc: <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] ARM: tegra: set correct naming for Tegra Note 7
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Jon Hunter" <jonathanh@nvidia.com>, "Svyatoslav Ryhel"
- <clamor95@gmail.com>, "Rob Herring" <robh+dt@kernel.org>, "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
- <conor+dt@kernel.org>, "Shubhi Garg" <shgarg@nvidia.com>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240212071843.6679-1-clamor95@gmail.com>
- <20240212071843.6679-2-clamor95@gmail.com>
- <8ffbe7ae-67e9-4a3f-9866-3cd744729971@nvidia.com>
-In-Reply-To: <8ffbe7ae-67e9-4a3f-9866-3cd744729971@nvidia.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
---7c640255eac135c68b597b52d418781ce4ba02d5840e4f5c2d60ce4c9520
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+This series addresses a few problems with the sc8280xp PCIe
+implementation.
 
-On Mon Feb 12, 2024 at 5:14 PM CET, Jon Hunter wrote:
->
-> On 12/02/2024 07:18, Svyatoslav Ryhel wrote:
-> > Correct codename of Tegra Note 7 is "tegratab", while model
-> > name should be "NVIDIA Tegra Note 7". Fix this inconsistency.
-> >=20
-> > Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
-> > ---
-> >   arch/arm/boot/dts/nvidia/Makefile                            | 4 ++--
-> >   .../{tegra114-tn7.dts =3D> tegra114-nvidia-tegratab.dts}       | 5 ++=
-+--
-> >   2 files changed, 5 insertions(+), 4 deletions(-)
-> >   rename arch/arm/boot/dts/nvidia/{tegra114-tn7.dts =3D> tegra114-nvidi=
-a-tegratab.dts} (98%)
-> >=20
-> > diff --git a/arch/arm/boot/dts/nvidia/Makefile b/arch/arm/boot/dts/nvid=
-ia/Makefile
-> > index 7a422f150488..474f3fbbd99d 100644
-> > --- a/arch/arm/boot/dts/nvidia/Makefile
-> > +++ b/arch/arm/boot/dts/nvidia/Makefile
-> > @@ -2,8 +2,8 @@
-> >   dtb-$(CONFIG_ARCH_TEGRA_114_SOC) +=3D \
-> >   	tegra114-asus-tf701t.dtb \
-> >   	tegra114-dalmore.dtb \
-> > -	tegra114-roth.dtb \
-> > -	tegra114-tn7.dtb
-> > +	tegra114-nvidia-tegratab.dtb \
-> > +	tegra114-roth.dtb
-> >   dtb-$(CONFIG_ARCH_TEGRA_124_SOC) +=3D \
-> >   	tegra124-apalis-eval.dtb \
-> >   	tegra124-apalis-v1.2-eval.dtb \
-> > diff --git a/arch/arm/boot/dts/nvidia/tegra114-tn7.dts b/arch/arm/boot/=
-dts/nvidia/tegra114-nvidia-tegratab.dts
-> > similarity index 98%
-> > rename from arch/arm/boot/dts/nvidia/tegra114-tn7.dts
-> > rename to arch/arm/boot/dts/nvidia/tegra114-nvidia-tegratab.dts
-> > index bfbdb345575a..30b2ed91be23 100644
-> > --- a/arch/arm/boot/dts/nvidia/tegra114-tn7.dts
-> > +++ b/arch/arm/boot/dts/nvidia/tegra114-nvidia-tegratab.dts
-> > @@ -5,8 +5,9 @@
-> >   #include "tegra114.dtsi"
-> >  =20
-> >   / {
-> > -	model =3D "Tegra Note 7";
-> > -	compatible =3D "nvidia,tn7", "nvidia,tegra114";
-> > +	model =3D "NVIDIA Tegra Note 7";
-> > +	compatible =3D "nvidia,tegratab", "nvidia,tegra114";
-> > +	chassis-type =3D "tablet";
->
-> No mention of adding the chassis-type in the commit message. Seems like=
-=20
-> that should be a separate change.
+The DWC PCIe controller can either use its internal MSI controller or an
+external one such as the GICv3 ITS. Enabling the latter allows for
+assigning affinity to individual interrupts, but results in a large
+amount of Correctable Errors being logged on both the Lenovo ThinkPad
+X13s and the sc8280xp-crd reference design.
 
-Agreed. Along with Krzysztof's comments maybe this should just be a
-single patch that updates the model property and adds the chassis-type.
-We haven't used chassis-type before, but I see that the devicetree
-specification has it marked as "optional-but-recommended", so maybe we
-should make a pass over all files and add these as appropriate.
+It turns out that these errors are always generated, but for some yet to
+be determined reason, the AER interrupts are never received when using
+the internal MSI controller, which makes the link errors harder to
+notice.
 
-Thierry
+On the X13s, there is a large number of errors generated when bringing
+up the link on boot. This is related to the fact that UEFI firmware has
+already enabled the Wi-Fi PCIe link at Gen2 speed and restarting the
+link at Gen3 generates a massive amount of errors until the Wi-Fi
+firmware is restarted.
 
---7c640255eac135c68b597b52d418781ce4ba02d5840e4f5c2d60ce4c9520
-Content-Type: application/pgp-signature; name="signature.asc"
+A recent commit enabling ASPM on certain Qualcomm platforms introduced
+further errors when using the Wi-Fi on the X13s as well as when
+accessing the NVMe on the CRD. The exact reason for this has not yet
+been identified, but disabling ASPM L0s makes the errors go away. This
+could suggest that either the current ASPM implementation is incomplete
+or that L0s is not supported with these devices.
 
------BEGIN PGP SIGNATURE-----
+Note that the X13s and CRD use the same Wi-Fi controller, but the errors
+are only generated on the X13s. The NVMe controller on my X13s does not
+support L0s so there are no issues there, unlike on the CRD which uses a
+different controller. The modem on the CRD does not generate any errors,
+but both the NVMe and modem keeps bouncing in and out of L0s/L1 also
+when not used, which could indicate that there are bigger problems with
+the ASPM implementation. I don't have a modem on my X13s so I have not
+been able to test whether L0s causes an trouble there.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXKTEsACgkQ3SOs138+
-s6FMYxAAtw170jJGnf2jjS+4ueekSK3Ym6O38q1r0QQu8S71dwn7SHUFfxLmnvzT
-b4eTV+3mSt9S1z2YGxseXo9YCV21ZmhOBqCtjpgnE3hf/yoBCMt6oOGw5O5TYtl7
-5Aa7fTdSBEWvG3zKT39kR73o0TtVn4FV5XecsZIu7922LA7IEqAEkb53T4p7mmTo
-lHmI6qUTzISgYO2T7JhAPTUsh+R3F66HM0mnDTU6s59Leaazi1WfoWX2gufWfDWP
-aUGXb0O+lTJKVIzE83vbGgPeC5MSYMHXlGe9bPIkaThJjbUnO066bUwEZ7e6F/WJ
-V+169e6ueZdPNxr7A/gDVbFN28e3KHbYon7khgdJZOPpfp2TWN0EGfkPPj5Jhdya
-dMnqvOLEt7OTWbDIcjfIzPNPsiKETsOMN9YrTYkCvJN3yOelvFF+oogrvDCkWFpn
-48WFVAxUq83nmPz1Rv71mpwWH2sySWhf6Oe5QesaDxmfaL8gIpmL1MPbtB3o8kz1
-U8LZ0G1+5HPUUsyvQDU6BPaU5TQqS9zqu0/YSwQydlAp/ZZ36H5xwkeMN2PBMNr+
-LKMJl2Sz5FmM0FkIWTkYEfPmCqQSE0i6vNeZqH8Y++qPXfnTCzoGNiBUouME4Cp+
-t5Yh3PnHtu3sCM6rmfWApTqRsJ10UBuDd7fF8BKFlf+tVeBG9Kk=
-=U8Ue
------END PGP SIGNATURE-----
+Enabling AER error reporting on sc8280xp could similarly also reveal
+existing problems with the related sa8295p and sa8540p platforms as they
+share the base dtsi.
 
---7c640255eac135c68b597b52d418781ce4ba02d5840e4f5c2d60ce4c9520--
+The last four patches, marked as RFC, adds support for disabling ASPM
+L0s in the devicetree and disables it selectively for the X13s Wi-Fi
+and CRD NVMe. If it turns out that the Qualcomm PCIe implementation is
+incomplete, we may need to disable ASPM (L0s) completely in the driver
+instead.
+
+Note that disabling ASPM L0s for the X13s Wi-Fi does not seem to have a
+significant impact on the power consumption 
+
+The DT bindings and PCI patch are expected to go through the PCI tree,
+while Bjorn A takes the devicetree updates through the Qualcomm tree.
+
+Johan
+
+
+Johan Hovold (10):
+  dt-bindings: PCI: qcom: Allow 'required-opps'
+  dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
+  arm64: dts: qcom: sc8280xp: add missing PCIe minimum OPP
+  arm64: dts: qcom: sc8280xp-crd: limit pcie4 link speed
+  arm64: dts: qcom: sc8280xp-x13s: limit pcie4 link speed
+  arm64: dts: qcom: sc8280xp: enable GICv3 ITS for PCIe
+  dt-bindings: PCI: qcom: Allow 'aspm-no-l0s'
+  PCI: qcom: Add support for disabling ASPM L0s in devicetree
+  arm64: dts: qcom: sc8280xp-crd: disable ASPM L0s for NVMe
+  arm64: dts: qcom: sc8280xp-x13s: disable ASPM L0s for Wi-Fi
+
+ .../devicetree/bindings/pci/qcom,pcie.yaml    |  6 +++++-
+ arch/arm64/boot/dts/qcom/sc8280xp-crd.dts     |  4 ++++
+ .../qcom/sc8280xp-lenovo-thinkpad-x13s.dts    |  3 +++
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi        | 17 +++++++++++++++-
+ drivers/pci/controller/dwc/pcie-qcom.c        | 20 +++++++++++++++++++
+ 5 files changed, 48 insertions(+), 2 deletions(-)
+
+-- 
+2.43.0
+
 
