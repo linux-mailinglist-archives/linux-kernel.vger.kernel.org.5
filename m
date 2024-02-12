@@ -1,119 +1,256 @@
-Return-Path: <linux-kernel+bounces-61911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB2BF851846
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:39:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A283685184A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:40:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 879E7287387
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:39:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6C111C21AEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A69A3C6A3;
-	Mon, 12 Feb 2024 15:39:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08AA3C6A6;
+	Mon, 12 Feb 2024 15:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1YZBWIS+";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ddIc2QxS"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGODAYzg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AECB3C495
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:39:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DBC25740;
+	Mon, 12 Feb 2024 15:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707752354; cv=none; b=LON0w273s7x2SLSMZGCxaEJMomlfkBUa8OuctKWF3mG7OgnHu44Qcc6xtVCnwoPEX1YSvRjVlxLPRBGu+DMaVYWo5XuF1rB9htLqXohlpvCqHGxh6P7PEHPMkrfxJFqfUPAa6FSSlF18aU+W6/2rTlPGispF0OxofG9589dw9uo=
+	t=1707752443; cv=none; b=q5P20beBORI5vXoIgYJNqMAQgGEDwRzIt4xebX1RWejE2o0X7uyQzVXj+MaA4yGtwvN8JC0yhaJz7VbpCEcORmq9SEQieeSj1FKwnjLf0WpvPxxEp87rV42wVbvYMPRvJ6JEgLiOv1wJ66qpS0ocbiUhABW2kVMD4aNXyBD/TBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707752354; c=relaxed/simple;
-	bh=wjeNhK7kZBVuy9heSHBrmzMbANAKwBW8sfFYoS7YiDg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=M5F/Y4ChTqGpf8Lo1YfMRnByJdPFPj9yf8fP8qi61cVm41E6LSiU3dWBrtIvHX9m8r2q7ild6tjOpnKPkCdpviEwdoC7ZfBCbSuWxTaM53P0EcEVJkWOmIn0Kd915/g3RIB5a3BQceCDIifPSVvFevXjPxFnX1Mov7cuAPgwECg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1YZBWIS+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ddIc2QxS; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707752351;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XzwovLOo0zq9drJi/JKb20aPld1efJPp16/7MuySCxE=;
-	b=1YZBWIS+5XX7YwgmivTZVFmvj0dOUr/OZcuSaiuXTPhO+HVEs4vKMxtKi+8uHdwJ9vYAH8
-	0nu3AuXp9RGWomNW0kDF5evKr1JP7ONMN4YTjzvfqcyDOXXIdsIoaq0WMCaEthtez74b24
-	oOg4YUo/8Dzdyr17GgbN5jfhfoCdWJOtRp2wWufCOiRaFVv154VySCVVmymJQrrzjJvfOC
-	Z7h6L53t7CExhPxflxxkiFeCfYomNhf/zpKJNgck7T4U0UXuw8uHfdcaPgcb2caQA2PxP7
-	xLCNvzmfOsRKQUiybh8Xciwo06aKyUPL7nekKL0dQFbkp51xbYp7twb2CfWc+A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707752351;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XzwovLOo0zq9drJi/JKb20aPld1efJPp16/7MuySCxE=;
-	b=ddIc2QxSaWoASmSmg74hBd9py8FvL0afXJ9gxpXwCPBF++Lc1OgJ3T0QGyilp8hThyRlAd
-	xAQSWWpKFvvF8HAQ==
-To: Ashok Raj <ashok_raj@linux.intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org, Tom Lendacky
- <thomas.lendacky@amd.com>, Andrew Cooper <andrew.cooper3@citrix.com>,
- Arjan van de Ven <arjan@linux.intel.com>, Huang Rui <ray.huang@amd.com>,
- Juergen Gross <jgross@suse.com>, Dimitri Sivanich
- <dimitri.sivanich@hpe.com>, Sohil Mehta <sohil.mehta@intel.com>, K Prateek
- Nayak <kprateek.nayak@amd.com>, Kan Liang <kan.liang@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Feng Tang <feng.tang@intel.com>, Andy Shevchenko <andy@infradead.org>,
- Michael Kelley <mhklinux@outlook.com>, "Peter Zijlstra (Intel)"
- <peterz@infradead.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, Wei
- Liu <wei.liu@kernel.org>, Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [patch V2 01/22] x86/cpu/topology: Make the APIC mismatch
- warnings complete
-In-Reply-To: <ZbIvis3zHeQLZerL@araj-dh-work.jf.intel.com>
-References: <20240117124704.044462658@linutronix.de>
- <20240117124902.403342409@linutronix.de>
- <ZbIvis3zHeQLZerL@araj-dh-work.jf.intel.com>
-Date: Mon, 12 Feb 2024 16:39:11 +0100
-Message-ID: <87ttmdk7z4.ffs@tglx>
+	s=arc-20240116; t=1707752443; c=relaxed/simple;
+	bh=AAYaXAgNwDkJYYCpR5i9Af12gDaXYrAMi0KO9/oZzPQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=J6fOQnoMdQ2aHo01selvjLHE/jsS30csojlXiW64i/NxICX1Y1p63sbSE07lhn5S4y3E7COOa0yQM8YTTrZodUkWOTUN+uiMTpj/NbDWmtAg5lFU2C5b47j2OuEJuWEbP7jkEinG9J2rgp51eMathQH886Lu9GmXZTGFS+eMsKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hGODAYzg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 991C5C433C7;
+	Mon, 12 Feb 2024 15:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707752442;
+	bh=AAYaXAgNwDkJYYCpR5i9Af12gDaXYrAMi0KO9/oZzPQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=hGODAYzgJkQ1uiYpK0b1y8yv6M8DtffkHFvFdM/iwhem65ZofsgzuWYFzeNJb6/u0
+	 fhBhpfgudbaqSFoAyeaKa0H7sG2hx/Oi5Jpaye8uU2jAGhgd/dVioSt01cCLKrmJWT
+	 BpLu4u5MfVTJ3sbMsTWUDnLQ2WfQD3sDR7rfAQv3lf8LQm1YRRS5FQI2Tp4wmVUIJp
+	 YFqrXDm93MgHrhl6YBw9jHUYIaUVKi1iVo02hmuZpwAWMjgASrnofKH+46G+M8s1tA
+	 U1R3VUXhGcsemLVPLL3FWYqYLDU6aLRQlhM8QhlEdEC2zubkGGVSys06FbOhohT8fy
+	 po+nmqzb3y7qA==
+Date: Tue, 13 Feb 2024 00:40:38 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Vincent Donnefort <vdonnefort@google.com>, Sven Schnelle
+ <svens@linux.ibm.com>, Mete Durlu <meted@linux.ibm.com>
+Subject: Re: [PATCH v2] tracing: Fix wasted memory in saved_cmdlines logic
+Message-Id: <20240213004038.7fd10d2bd9f356c72100adcd@kernel.org>
+In-Reply-To: <20240209063622.1f7b6d5f@rorschach.local.home>
+References: <20240209063622.1f7b6d5f@rorschach.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 25 2024 at 01:53, Ashok Raj wrote:
-> On Tue, Jan 23, 2024 at 02:10:04PM +0100, Thomas Gleixner wrote:
->> From: Thomas Gleixner <tglx@linutronix.de>
->> 
->> Detect all possible combinations of mismatch right in the CPUID evaluation
->> code.
->> 
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> 
->> ---
->>  arch/x86/include/asm/apic.h           |    5 ++---
->>  arch/x86/kernel/cpu/common.c          |   15 ++-------------
->>  arch/x86/kernel/cpu/topology_common.c |   12 ++++++++++++
->>  3 files changed, 16 insertions(+), 16 deletions(-)
->
-> [snip]
->
->> --- a/arch/x86/kernel/cpu/topology_common.c
->> +++ b/arch/x86/kernel/cpu/topology_common.c
->> @@ -177,6 +177,18 @@ void cpu_parse_topology(struct cpuinfo_x
->>  
->>  	parse_topology(&tscan, false);
->>  
->> +	if (IS_ENABLED(CONFIG_X86_LOCAL_APIC)) {
->> +		if (c->topo.initial_apicid != c->topo.apicid) {
->> +			pr_err(FW_BUG "CPU%4u: APIC ID mismatch. CPUID: 0x%04x APIC: 0x%04x\n",
->> +			       cpu, c->topo.initial_apicid, c->topo.apicid);
->> +		}
->> +
->> +		if (c->topo.apicid != cpuid_to_apicid[cpu]) {
->> +			pr_err(FW_BUG "CPU%4u: APIC ID mismatch. Firmware: 0x%04x APIC: 0x%04x\n",
->> +			       cpu, cpuid_to_apicid[cpu], c->topo.apicid);
->> +		}
->
-> Should we consider tainting the kernel when there is any mismatch?
+On Fri, 9 Feb 2024 06:36:22 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-No strong opinion about that.
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> While looking at improving the saved_cmdlines cache I found a huge amount
+> of wasted memory that should be used for the cmdlines.
+> 
+> The tracing data saves pids during the trace. At sched switch, if a trace
+> occurred, it will save the comm of the task that did the trace. This is
+> saved in a "cache" that maps pids to comms and exposed to user space via
+> the /sys/kernel/tracing/saved_cmdlines file. Currently it only caches by
+> default 128 comms.
+> 
+> The structure that uses this creates an array to store the pids using
+> PID_MAX_DEFAULT (which is usually set to 32768). This causes the structure
+> to be of the size of 131104 bytes on 64 bit machines.
+> 
+> In hex: 131104 = 0x20020, and since the kernel allocates generic memory in
+> powers of two, the kernel would allocate 0x40000 or 262144 bytes to store
+> this structure. That leaves 131040 bytes of wasted space.
+> 
+> Worse, the structure points to an allocated array to store the comm names,
+> which is 16 bytes times the amount of names to save (currently 128), which
+> is 2048 bytes. Instead of allocating a separate array, make the structure
+> end with a variable length string and use the extra space for that.
+> 
+> This is similar to a recommendation that Linus had made about eventfs_inode names:
+> 
+>   https://lore.kernel.org/all/20240130190355.11486-5-torvalds@linux-foundation.org/
+> 
+> Instead of allocating a separate string array to hold the saved comms,
+> have the structure end with: char saved_cmdlines[]; and round up to the
+> next power of two over sizeof(struct saved_cmdline_buffers) + num_cmdlines * TASK_COMM_LEN
+> It will use this extra space for the saved_cmdline portion.
+> 
+> Now, instead of saving only 128 comms by default, by using this wasted
+> space at the end of the structure it can save over 8000 comms and even
+> saves space by removing the need for allocating the other array.
+
+This looks good to me. So this will allocate the saved_cmdlines in page-size
+array instead of the power of two.
+
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thank you,
+
+
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 939c7a4f04fcd ("tracing: Introduce saved_cmdlines_size file")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+> Changes since v1: https://lore.kernel.org/linux-trace-kernel/20240208105328.7e73f71d@rorschach.local.home
+> 
+> - Added back error check of s->map_cmdline_to_pid allocation failure
+> 
+>  kernel/trace/trace.c | 75 ++++++++++++++++++++++----------------------
+>  1 file changed, 37 insertions(+), 38 deletions(-)
+> 
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 2a7c6fd934e9..9ff8a439d674 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -2320,7 +2320,7 @@ struct saved_cmdlines_buffer {
+>  	unsigned *map_cmdline_to_pid;
+>  	unsigned cmdline_num;
+>  	int cmdline_idx;
+> -	char *saved_cmdlines;
+> +	char saved_cmdlines[];
+>  };
+>  static struct saved_cmdlines_buffer *savedcmd;
+>  
+> @@ -2334,47 +2334,58 @@ static inline void set_cmdline(int idx, const char *cmdline)
+>  	strncpy(get_saved_cmdlines(idx), cmdline, TASK_COMM_LEN);
+>  }
+>  
+> -static int allocate_cmdlines_buffer(unsigned int val,
+> -				    struct saved_cmdlines_buffer *s)
+> +static void free_saved_cmdlines_buffer(struct saved_cmdlines_buffer *s)
+> +{
+> +	int order = get_order(sizeof(*s) + s->cmdline_num * TASK_COMM_LEN);
+> +
+> +	kfree(s->map_cmdline_to_pid);
+> +	free_pages((unsigned long)s, order);
+> +}
+> +
+> +static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
+>  {
+> +	struct saved_cmdlines_buffer *s;
+> +	struct page *page;
+> +	int orig_size, size;
+> +	int order;
+> +
+> +	/* Figure out how much is needed to hold the given number of cmdlines */
+> +	orig_size = sizeof(*s) + val * TASK_COMM_LEN;
+> +	order = get_order(orig_size);
+> +	size = 1 << (order + PAGE_SHIFT);
+> +	page = alloc_pages(GFP_KERNEL, order);
+> +	if (!page)
+> +		return NULL;
+> +
+> +	s = page_address(page);
+> +	memset(s, 0, sizeof(*s));
+> +
+> +	/* Round up to actual allocation */
+> +	val = (size - sizeof(*s)) / TASK_COMM_LEN;
+> +	s->cmdline_num = val;
+> +
+>  	s->map_cmdline_to_pid = kmalloc_array(val,
+>  					      sizeof(*s->map_cmdline_to_pid),
+>  					      GFP_KERNEL);
+> -	if (!s->map_cmdline_to_pid)
+> -		return -ENOMEM;
+> -
+> -	s->saved_cmdlines = kmalloc_array(TASK_COMM_LEN, val, GFP_KERNEL);
+> -	if (!s->saved_cmdlines) {
+> -		kfree(s->map_cmdline_to_pid);
+> -		return -ENOMEM;
+> +	if (!s->map_cmdline_to_pid) {
+> +		free_saved_cmdlines_buffer(s);
+> +		return NULL;
+>  	}
+>  
+>  	s->cmdline_idx = 0;
+> -	s->cmdline_num = val;
+>  	memset(&s->map_pid_to_cmdline, NO_CMDLINE_MAP,
+>  	       sizeof(s->map_pid_to_cmdline));
+>  	memset(s->map_cmdline_to_pid, NO_CMDLINE_MAP,
+>  	       val * sizeof(*s->map_cmdline_to_pid));
+>  
+> -	return 0;
+> +	return s;
+>  }
+>  
+>  static int trace_create_savedcmd(void)
+>  {
+> -	int ret;
+> -
+> -	savedcmd = kmalloc(sizeof(*savedcmd), GFP_KERNEL);
+> -	if (!savedcmd)
+> -		return -ENOMEM;
+> -
+> -	ret = allocate_cmdlines_buffer(SAVED_CMDLINES_DEFAULT, savedcmd);
+> -	if (ret < 0) {
+> -		kfree(savedcmd);
+> -		savedcmd = NULL;
+> -		return -ENOMEM;
+> -	}
+> +	savedcmd = allocate_cmdlines_buffer(SAVED_CMDLINES_DEFAULT);
+>  
+> -	return 0;
+> +	return savedcmd ? 0 : -ENOMEM;
+>  }
+>  
+>  int is_tracing_stopped(void)
+> @@ -6056,26 +6067,14 @@ tracing_saved_cmdlines_size_read(struct file *filp, char __user *ubuf,
+>  	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
+>  }
+>  
+> -static void free_saved_cmdlines_buffer(struct saved_cmdlines_buffer *s)
+> -{
+> -	kfree(s->saved_cmdlines);
+> -	kfree(s->map_cmdline_to_pid);
+> -	kfree(s);
+> -}
+> -
+>  static int tracing_resize_saved_cmdlines(unsigned int val)
+>  {
+>  	struct saved_cmdlines_buffer *s, *savedcmd_temp;
+>  
+> -	s = kmalloc(sizeof(*s), GFP_KERNEL);
+> +	s = allocate_cmdlines_buffer(val);
+>  	if (!s)
+>  		return -ENOMEM;
+>  
+> -	if (allocate_cmdlines_buffer(val, s) < 0) {
+> -		kfree(s);
+> -		return -ENOMEM;
+> -	}
+> -
+>  	preempt_disable();
+>  	arch_spin_lock(&trace_cmdline_lock);
+>  	savedcmd_temp = savedcmd;
+> -- 
+> 2.43.0
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
