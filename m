@@ -1,170 +1,110 @@
-Return-Path: <linux-kernel+bounces-62005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2363F8519F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:48:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 877048519E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:45:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 475BB1C21D3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:48:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 446A628414A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:45:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9916A3D54D;
-	Mon, 12 Feb 2024 16:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D1F3D38D;
+	Mon, 12 Feb 2024 16:42:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="DrNhryt3"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2052.outbound.protection.outlook.com [40.107.237.52])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GAs2AQsD"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03DCA3B2A4;
-	Mon, 12 Feb 2024 16:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707756501; cv=fail; b=IhEXzYqDXOntkNH3NXjHW0tHoMy55SwrE2ikEKWPLyGaQDdwsLfQTIFK8OlFks6YwLhKHeZ8P4e+JGK5g5o0moe2wx1A+X0BvIQI6E1nqLLGyGRADQlkfvYrvk4kjcav9dtieEbCUIk87/1q5Aacy6bLHaqmhKBvKAem3tYpgBk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707756501; c=relaxed/simple;
-	bh=3k5k5qee6eWk7LEhWrYbQZGd9WjyTJHdUL9kGVhJafo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OBDKkFdbJlROKVuJrfv99Ssf5qU5LjncgoRXqRFJsqBbDgAuygUEcQbUasRExZyeq5cVqHQA43LQGEbSSrkfasNWE85SdG0f3iLZurwOMs06s0cefsd93yRL5IowQ5p06WGTQAXtzN1RBy4r4mx4HaDjwbViNPuLlNJiqMPBV20=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=DrNhryt3; arc=fail smtp.client-ip=40.107.237.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CHJRIEz9w4JU/01ioo/csFEuM71FACpGPYCbxVlAO+AFOYM1kaq+0t1SQ7RO6b1qLCjKPcbQ6rp+eIibhl7it2nfWlmaqkflkxrIRiUOYjgrBM79NfdBjU/FObD39NBj5usa+/Gm94+pH774wywnLkhPgQJeEqCbzXKlnZUgdPUT0FrA/YfzT8IG7Y5SZdzfJu5dzKB0QrzfpCHhokcjJqh2qzZtCXNDkkhRD+aUhxF22FS0/Kxmn2vfm4cq/Ap2d+i/YkAOSiHhZb0FKNK/AyiZpSc616c84QzYRyhjMaUf+BTa6nm9SgqXpaR/L9QGQRBxSqCM4dTSEK3vjKCNdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZbMuACD0lPfGD5S/QtazwiBrPKqspUoJ+tvsxoWNemk=;
- b=f48lPEn3Pgmy5/SwyMkLVc19dAg9uxD2H3CA7X4LdA4U3FEcKb4ahl0MrPvXcJRdX851op074RJp0P6ZoA5vt8IQ42PG6XrT1UYIALZNkP8K13ymb7LXPP+tIBdhfFjzs4ZKqFrZ+TmdBpnaY0lvLCaUkjWpP81yyhBpU+9COE2jdECPemFvRRRaSkMqsVdw4Zbdwg6u0YX2rdgf9fly5/4GdwybicsuZ1mvWMSKDaPNrH0UbfxsYJe9AYCJmSrojJw5HKRhOnKDqeMtd9xsJQ8JFuy1a1ZDCgempMY++WubsZQAjWpmL2ZJ7SEjGydZrZZiF8oibz3JCzHKuArzJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZbMuACD0lPfGD5S/QtazwiBrPKqspUoJ+tvsxoWNemk=;
- b=DrNhryt3SiQMZIiViEdy6LKSmFT1udyzL9QY04q9jiHVmSNhq2bOhH/R8dSP3iwdjcO8H+f+urN0e9SGEBMrf1awUYMNgy3F4eF62hH3YPpYOH6HoZmeeS1w/hRwrzu1AiJS6lV0jPiUI8oVJakkHI8jJ6vfyxPu954TqfpkqyA=
-Received: from SJ0PR03CA0369.namprd03.prod.outlook.com (2603:10b6:a03:3a1::14)
- by IA1PR12MB6578.namprd12.prod.outlook.com (2603:10b6:208:3a2::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.10; Mon, 12 Feb
- 2024 16:48:16 +0000
-Received: from SJ1PEPF00001CEA.namprd03.prod.outlook.com
- (2603:10b6:a03:3a1:cafe::81) by SJ0PR03CA0369.outlook.office365.com
- (2603:10b6:a03:3a1::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.38 via Frontend
- Transport; Mon, 12 Feb 2024 16:48:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SJ1PEPF00001CEA.mail.protection.outlook.com (10.167.242.26) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7249.19 via Frontend Transport; Mon, 12 Feb 2024 16:48:15 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 12 Feb
- 2024 10:48:14 -0600
-Date: Mon, 12 Feb 2024 10:42:27 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: Sean Christopherson <seanjc@google.com>, <kvm@vger.kernel.org>,
-	<linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <vkuznets@redhat.com>, <jmattson@google.com>,
-	<luto@kernel.org>, <dave.hansen@linux.intel.com>, <slp@redhat.com>,
-	<pgonda@google.com>, <peterz@infradead.org>,
-	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
-	Isaku Yamahata <isaku.yamahata@intel.com>
-Subject: Re: [PATCH v11 06/35] KVM: x86/mmu: Pass around full 64-bit error
- code for KVM page faults
-Message-ID: <20240212164227.e3647svomtqfld6l@amd.com>
-References: <20231230172351.574091-1-michael.roth@amd.com>
- <20231230172351.574091-7-michael.roth@amd.com>
- <ZcKb6VGbNZHlQkzg@google.com>
- <CABgObfbMuU5axeCYykXitrKGgV5Zw-BB843--Gp4t_rLe2=gPw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 466643C699
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:42:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707756175; cv=none; b=lKZNvhR073+oiX7F2PRsqtT8i4cgjHGXmiVdbcQeNaarp9rtaT9yWo4n3Y9pBsLtJKLOpoOIgDc3kLSUqVQYhHTCfEcLfqk7O+42StFkSZZ5e/7Teqcg3CsaBAUa8vzuypsjTv3Bm5oHqTUiiGHH7jn8FqgxPpuuYSv17+zFVr8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707756175; c=relaxed/simple;
+	bh=skewU5rkJStvOlhKIZ1HeGr5vTl2dNfvJDizEvtwRnM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aHSrn/QbpAJdZZZjGC2QF/t/liLE+t26enREL7+4+ZOtX5OVQl5tIn4JKhwLqKxJdJ6J/aUTYSRnUJYL6g1p6NNZt8Hxg0td8nuoyB8y1qbmCZvEc3YnPt5gIr78qY72YVJJW2492WxkyF97m26HDOxw2ZAjk9oUCDHayZCFz7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GAs2AQsD; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707756173; x=1739292173;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=skewU5rkJStvOlhKIZ1HeGr5vTl2dNfvJDizEvtwRnM=;
+  b=GAs2AQsDKBAJziv6MmHq+Q0ekTql4BaFnmzQ52SuInGmfFSB9CDj/kPR
+   GBSyBbxyVzDvPjQ81h9ykobmNAoMxlnGrjA/UmTcv3t6zypC/NcRwAAeh
+   1UeAG8UMofdDtsR0Awwn32PQwdYncy84m9yUn5czElspwdoptLFgk2eAD
+   lvMmGy/k+qd7+7zI8qNVAuyi/jJXCL2cl1FXvyIidk3B4MfWwMq1gZume
+   ifWhMdkZ6qhAhFlM07u+8XmiYelgcFNCNxwiOwlXBXH+jhhvj7QT3EyL5
+   hV2bhz/JMGRF2/GmhMlIBRn7CyZsvSzNZcQQmddJFda69gB4VO2w/mZwT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="19246321"
+X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
+   d="scan'208";a="19246321"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 08:42:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="911538408"
+X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
+   d="scan'208";a="911538408"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 08:42:50 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rZZOK-00000003x0V-16Xn;
+	Mon, 12 Feb 2024 18:42:48 +0200
+Date: Mon, 12 Feb 2024 18:42:47 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: linux-kernel@vger.kernel.org,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2 1/3] auxdisplay: Take over maintainership, but in Odd
+ Fixes mode
+Message-ID: <ZcpKh_EgNM5IaV-P@smile.fi.intel.com>
+References: <20240212132515.2660837-2-andriy.shevchenko@linux.intel.com>
+ <20240212132515.2660837-3-andriy.shevchenko@linux.intel.com>
+ <9c7df0e5-31a9-4c86-b996-4cba82c4ea2f@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfbMuU5axeCYykXitrKGgV5Zw-BB843--Gp4t_rLe2=gPw@mail.gmail.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CEA:EE_|IA1PR12MB6578:EE_
-X-MS-Office365-Filtering-Correlation-Id: 539bbb21-d96c-49a9-37a4-08dc2bea68c5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4Fk5yvYvVP0prrbHP8jhVTIL7n0M9nEIqP55WWP3quTRoCpHpjnJq/BYVbw5IdNLljDHrBzUiRIHQJnUPVTPhw0ewNGLZb8w3CYt5WFTAxmnz1AX4+DFkR+67oqWrQrowu2aO4IbY3+vUIqw32xxTK3Uy4/crs+3Ys7ScPMs0lSvLiKQsaRx2Fesfd9BMF7GqLIdWmS+t90SIzVjkD27LjLcOjESuhl+QqF3L1O5BwiZoYXVDpCZ/qPUavXp/S4gC307ClD+o2/4bFQYS4tha8Ry4xdSgixbz4lk99RWSzY5412TGj4Uw3E3InL4LC5LbdEh3yb81cJdZV7k04r1nohbWQfuEILqJUMmq85MwfA2qMZ9WX60QrsY/MTMHedSd2pzeHH7bu4fw9gxLX8uFVI+kmTSKgMJdP97QgBIzCDOwcaX7ZOj6QeAR/rm3vtAntHKxhHte17hrwBxLd3HxybhfuPYoocqa0lgj+IdicDiVuhrn6oUD9iLyQgZYt7eWqvljMqFQRCgIfFpPO750VB0Dhh33s67E4l97DVQsFcI8PXJju6Y1TJXKXFuncfz/b59Nh/z6pthBkywqWFL+w==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(396003)(346002)(376002)(230922051799003)(82310400011)(186009)(1800799012)(451199024)(64100799003)(36840700001)(40470700004)(46966006)(8936002)(2906002)(7416002)(5660300002)(8676002)(7406005)(4326008)(41300700001)(44832011)(356005)(81166007)(83380400001)(86362001)(36756003)(336012)(26005)(54906003)(16526019)(426003)(2616005)(82740400003)(316002)(478600001)(70586007)(6916009)(966005)(1076003)(6666004)(70206006)(53546011);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 16:48:15.7989
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 539bbb21-d96c-49a9-37a4-08dc2bea68c5
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00001CEA.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6578
+In-Reply-To: <9c7df0e5-31a9-4c86-b996-4cba82c4ea2f@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Feb 12, 2024 at 11:00:27AM +0100, Paolo Bonzini wrote:
-> On Tue, Feb 6, 2024 at 9:52 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Sat, Dec 30, 2023, Michael Roth wrote:
-> > > In some cases the full 64-bit error code for the KVM page fault will be
-> > > needed to determine things like whether or not a fault was for a private
-> > > or shared guest page, so update related code to accept the full 64-bit
-> > > value so it can be plumbed all the way through to where it is needed.
-> > >
-> > > The accessors of fault->error_code are changed as follows:
-> > >
-> > > - FNAME(page_fault): change to explicitly use lower_32_bits() since that
-> > >                      is no longer done in kvm_mmu_page_fault()
-> > > - kvm_mmu_page_fault(): explicit mask with PFERR_RSVD_MASK,
-> > >                         PFERR_NESTED_GUEST_PAGE
-> > > - mmutrace: changed u32 -> u64
-> > >
-> > > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > Link: https://lore.kernel.org/kvm/20230612042559.375660-1-michael.roth@amd.com/T/#mbd0b20c9a2cf50319d5d2a27b63f73c772112076
-> > > [mdr: drop references/changes to code not in current gmem tree, update
-> > >       commit message]
-> > > Signed-off-by: Michael Roth <michael.roth@amd.com>
-> >
-> > I assume Isaku is the original author?  If so, that's missing from this patch.
+On Mon, Feb 12, 2024 at 05:33:39PM +0100, Thomas Zimmermann wrote:
+> (cc'ing Javier Martinez Canillas)
 > 
-> The root of this patch seem to be in a reply to "KVM: x86: Add
-> 'fault_is_private' x86 op"
-> (https://patchew.org/linux/20230220183847.59159-1-michael.roth@amd.com/20230220183847.59159-2-michael.roth@amd.com/),
-> so yes.
-
-Yes this is Isaku's patch, I think the authorship got mangled during a rebase.
-I'll make sure to get that fixed up.
-
--Mike
-
+> Hi
 > 
-> Paolo
+> Am 12.02.24 um 14:23 schrieb Andy Shevchenko:
+> > I have no time for this, but since it looks like I'm the main
+> > contributor for the last few years to the subsystem, I'll take
+> > it for now. Geert agreed to help me with as a designated reviwer.
+> > Let's see how it will go...
 > 
+> A few days ago, I talked to Javier about how auxdisplay is a hotchpodge of
+> various drivers that seem to belong into other subsystems. Could we attempt
+> to move all drivers into other places and then remove the auxdisplay
+> subsystem?
+
+Can you be more precise on how it can be done? We have at least two clusters of
+the displays: line-display and HD44780-based ones. Moreover, the latter might
+use the former in the future (in some cases).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
