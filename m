@@ -1,78 +1,131 @@
-Return-Path: <linux-kernel+bounces-62462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0C2485211F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8411852127
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:14:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 997641F22F98
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:13:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18AC91F21A4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7BE84D5B4;
-	Mon, 12 Feb 2024 22:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757404D59C;
+	Mon, 12 Feb 2024 22:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GIa7InYR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Y0pKnnLM"
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C944CB22;
-	Mon, 12 Feb 2024 22:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A484D599
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 22:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707775993; cv=none; b=UxMDzbjGCsihfYSl7c7OP4+38WC8scJWA5odMVyflAWh0Pt2EEyea+l8DD6W/ElPXBih9MSLvz++CRuiZaB8PTXve/bzyLS19JQfc125160I7DUPZ8BIair26Xjpr7OIoTizw72OnITJ/EK+YCXIUp4DhU65tfqhwScCWGR9oVs=
+	t=1707776060; cv=none; b=TbJVF+BL/+NN076WIqhWzmwH2LslWy6dopGmGTcoen4BtacIli6DivuXrWMz2dhT0lHqcLkfvUAvMlq2Lj6pxgR0uwlVpAml0p+joM5n/Ieu8x1mnshXqEcjV8tGR+ffOIdiihggN5SGqkFCerIsXjAFyDBbhq2UK1maoTyamoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707775993; c=relaxed/simple;
-	bh=SDBjZNJSlI8khI3Yh6gcu+kDznObYoNuS98OzSe2xJU=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=k3pvMXN5+ZRd9n2upB/dvVXg5R8XE0x1mUknG7OD/7nlbRaJDsZQ4E5pwr+1vmaRjbsfca7+4ewiiKV7yA5vFJjISMsccDCiZZojTHtie4kCs8K9w03YQ7u8Z3y6s5Vxnhs5w+CRfNi+dlE9u4HvouceLZE7rBNbc+VmLr2Uzao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GIa7InYR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9FB80C433C7;
-	Mon, 12 Feb 2024 22:13:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707775992;
-	bh=SDBjZNJSlI8khI3Yh6gcu+kDznObYoNuS98OzSe2xJU=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=GIa7InYRLQzvrXGcJxZgKiIJCLzr+F4TEmg+IEb2PY24ZOUhrESnD6EzMxbIAn1g1
-	 YjMKiItzl1OnqKbYNuEu5N4My1E763yl+EZJDo4/ppjJMpEw3DqhtZWfqJr7FVfzeE
-	 QI/EiVlkZHuDhy5/ilGqP4Ulb6sr88uSlZFvO+es8UywHjg9ulk4d1oZv/9tUvKws/
-	 Jpzi8TsL2JwNDlrdC/kR/WQWtC3c3Xwv2kOxb92hMFjhpqgYkqCOfPvDFbSvHYQhIG
-	 w/gos809hPOEkHgQXfUF0RvUQjW8tAp17FJ9nWMheCz49ufEyXp9LayHa4CpKS28U5
-	 UtdRFO0QmhMnA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8A5E0D84BC3;
-	Mon, 12 Feb 2024 22:13:12 +0000 (UTC)
-Subject: Re: [GIT PULL] Documentation fix for 6.8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <871q9h8hz9.fsf@meer.lwn.net>
-References: <871q9h8hz9.fsf@meer.lwn.net>
-X-PR-Tracked-List-Id: <linux-doc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <871q9h8hz9.fsf@meer.lwn.net>
-X-PR-Tracked-Remote: git://git.lwn.net/linux.git tags/docs-6.8-fixes2
-X-PR-Tracked-Commit-Id: c23de7ceae59e4ca5894c3ecf4f785c50c0fa428
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c664e16bb1ba1c8cf1d7ecf3df5fd83bbb8ac15a
-Message-Id: <170777599255.5978.8885975399696872697.pr-tracker-bot@kernel.org>
-Date: Mon, 12 Feb 2024 22:13:12 +0000
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1707776060; c=relaxed/simple;
+	bh=16fk7xoE50+bBNfgxcCm+Ee3v/cfVODmJmytJVNx6ZE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TwYh/O997xZOCvDnxNibsZYy2UGx4U1wYo/+ukWGm3eSE0Psp/l3Ea4CX49auEhMuHrh21eg+M6Ba1vwrp0O2k23Fw/WhOJuavf4kQCScJA/URYSUA5aQjYMLG2qFnbt+TQdRLSZTubkl0Xvw9yIIEIFB2W1NQxUXNUj9EP/pkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Y0pKnnLM; arc=none smtp.client-ip=209.85.210.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6e12d0af927so2503275a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:14:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707776057; x=1708380857; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wZiXjxKnrMyz6iBNN8FZ/8Z5umOyXaSKjAB1K7uHil4=;
+        b=Y0pKnnLMUuTV5nTgugxSZPcfBuGuQ2jKMG+tv/9HT2Q2WXIryA6UU0aQZrBAaBet73
+         aAW/gQnbPsIsASOLqhCY2pkSOe7gWKbpo/zrQbqfFSAttIF3GLTrRAFCFT3o+qHgEpht
+         XoDjQJqAfIiTfdkZc6LbecsTBWuRapkfu6KCg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707776057; x=1708380857;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wZiXjxKnrMyz6iBNN8FZ/8Z5umOyXaSKjAB1K7uHil4=;
+        b=IjpDHm9MAi7LbTunSjR1YYdcZPh3hHXIWm3ZRT7p6705kvfNl8mhdCTgaGZpAByfdz
+         9Y2NN840HATQU163qFTsmL3xTyee3AfACspvQxCkuXGpL5bvMiGLzLCxasNdcWownnTL
+         isfsMNn/Ts4GLfr7+j1/zfsA+CWSmNQSTPWvZ0oNQK0Qc0ItC5tN2JWoegHB+OYuHAr8
+         cHM7bRgskEvI90Cwp7yfxZJ6EEXhdb1AJ5wCD/5OvVQv2YqBhdBI1re8C0SUx1y+M0lk
+         +/VqRo9wmnYvZ3+WLgaw7aSBRCVoXbAm1p2p/oSR/8dpbgr9+jiFHu5CyduzSSm/7oys
+         uIVw==
+X-Forwarded-Encrypted: i=1; AJvYcCUbqDEGgwSshINaXN9BOuvLndy1M1UvK4QzOj+28D2bw8olFeABPMEB5c+DZbmCn+nFos6n44nQCvkJfLsLL1AM72ZpgvvVcnK2M8P9
+X-Gm-Message-State: AOJu0Yw7LDO33Hf16QIBoibk39uukMN7IHEbV5kVWwXQV/KIvh9lS7Yq
+	UNKBYYDBKWHPtbUg8ghsuW0oJNNNOuvsDNu+4P4JJ5+BH/+yZ1neDRfdGAImKw==
+X-Google-Smtp-Source: AGHT+IFJECsPbCNbGliZWvIYHRL4c/uXXAZZuCyqsAn1ZVqvZdYBLBf67fObnnMqVDNeWoqRd4Gw6Q==
+X-Received: by 2002:a05:6358:7e41:b0:17a:ec8c:72cd with SMTP id p1-20020a0563587e4100b0017aec8c72cdmr2085486rwm.16.1707776057707;
+        Mon, 12 Feb 2024 14:14:17 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWg3dML8VKifNsHk2CVNShk758+NTmByKLZI72E1V2q4Wu9oUmJYkccV4vQiDGOQgADidt5TguGkvh7V4YwOg63GLUryvPiyAQ7f48JUGKHk5FmbcUkOWNBC3Ux7+ARsfis4drosOSrq4FcO2E/nb4nKPd5tTo1IpF7Z2ZQEg+WFRPMypAJ1e34DAT+XFI/el7dGRYPGKNGvKQ6aS8/NETGtgnEw4gK8U9U1Hv73eJqHAkKRRk3J8Ph4Ck//KLXOSNRvO+rAIzUOniypVv1/4JK6yXaykyMLrjMOY39G+2fpgxPBGFw3nZ/LH0KQIjw0EkWhY3rJoqcS/NUxqyJmBf0+SxOykkUoB0LcAsReO1NjiWu0KRnzfLjhQG17Mx1k6lSx7ZZighHq1IIEqMNKmrf+vg0gcVHjQdB9dMPLIKL8hpNfHfvE4J6f62rNrCDo8Bd7E53U+GZrPnL0LkHPW+og8Hr772ylPjBjfFLnALXxOiqaNCPEiXgFsI4tlEu7NYq0RiV8tZ22FLSM13tuC21ckHIWSqolHrrEG281jvnKKCQqMQuN+O/NTCkXba09zfBsvtBX8T2lqUmkKdD00zzZRvUtnr587FITudCjm3qCRbvrPscljCRS1dQo3iBQh8Zy18C+pJxaLHX0SyV1nKKQzyumJgyrZRPaWmuLpyLmJijRnh1cQeWSVGBxt1Wxl7ZPOvMuLO8rM6/m1ZJffXJtGOBjfOlZIyZ/d2SeZ/s9b2tmn7hjA==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id le22-20020a056a004fd600b006e0a30c8c8dsm5334232pfb.117.2024.02.12.14.14.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 14:14:16 -0800 (PST)
+Date: Mon, 12 Feb 2024 14:14:16 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 05/35] mm: introduce slabobj_ext to support slab
+ object extensions
+Message-ID: <202402121413.94791C74D5@keescook>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-6-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212213922.783301-6-surenb@google.com>
 
-The pull request you sent on Mon, 12 Feb 2024 14:56:10 -0700:
+On Mon, Feb 12, 2024 at 01:38:51PM -0800, Suren Baghdasaryan wrote:
+> Currently slab pages can store only vectors of obj_cgroup pointers in
+> page->memcg_data. Introduce slabobj_ext structure to allow more data
+> to be stored for each slab object. Wrap obj_cgroup into slabobj_ext
+> to support current functionality while allowing to extend slabobj_ext
+> in the future.
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-> git://git.lwn.net/linux.git tags/docs-6.8-fixes2
+It looks like this doesn't change which buckets GFP_KERNEL_ACCOUNT comes
+out of, is that correct? I'd love it if we didn't have separate buckets
+so GFP_KERNEL and GFP_KERNEL_ACCOUNT came from the same pools (so that
+the randomized pools would cover GFP_KERNEL_ACCOUNT ...)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c664e16bb1ba1c8cf1d7ecf3df5fd83bbb8ac15a
+Regardless:
 
-Thank you!
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Kees Cook
 
