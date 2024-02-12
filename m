@@ -1,129 +1,185 @@
-Return-Path: <linux-kernel+bounces-61278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD0BE85103D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:03:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E82D85105F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:12:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D1F41F21246
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:03:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7DA1B235C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:12:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBCE1803D;
-	Mon, 12 Feb 2024 10:02:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78BEE1803A;
+	Mon, 12 Feb 2024 10:11:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="th2F7Xso"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b="x1J7Ug7u"
+Received: from smtp107.iad3a.emailsrvr.com (smtp107.iad3a.emailsrvr.com [173.203.187.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A9918021
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A4B17BBE
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:11:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.203.187.107
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707732173; cv=none; b=OkfgH1Yk8j3Cb2ZrJ21GON01jKNAoZyVMXfbEA1vIQlrbVUaPIMT9J2HBqn8G/xO9oOFky+EsZU4Cqv3nvgedttI5Rb8jzbTAIOYbOOIaaXC0UYv52BdgtPrxXz7WQITDAOxxDV+/iCAGlw9biVt9Rxvg4LXRep0b1JLjf8JqtI=
+	t=1707732715; cv=none; b=G4KTcRIXWBUXV4njEd5ZRXUisZ2ulB5CaK0DJfrIGP6bebn9wXICvv1t8Nlk3gWXnCsVghXOt+v4PaH1kz0ERSeBAn4ex37oB7MehwEV8Cd7tOGUWTdkcVAf5b4auhihodr2WY1JjXWHrdv2C97fsS2tZ9OX6X/g6kzXPeIEy2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707732173; c=relaxed/simple;
-	bh=EvNl2NgC20KtoxOIZI2VbWr9lTUl32SJ2A3KDaxxmJU=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=ZxePSK4jOokAf5CrenVnr489OjhqacjOISaqjT+VH7pqsm0Q6O2DBkv1pUy7gqItvzHdEZsQ4VoQ7YS61mqcDpQrWe1DP+DFKmA5MnLtl8KeqPlNQAzYbGEcLHz1kZkJ5MU3fPT+6lqWhuRKt7aQxhMTo+oT+Dn3k+QZXkq1nWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=th2F7Xso; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56037115bb8so40945a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:02:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707732170; x=1708336970; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EvNl2NgC20KtoxOIZI2VbWr9lTUl32SJ2A3KDaxxmJU=;
-        b=th2F7XsorPbvY1ayTqmRHkU6YYCMSTy52i242xqZkLtIIE5U+5SFo0b1UIUhUtSsWd
-         o8Zh/2M75h/D6O2VFce2IjGRh00AeYnZaQiMjfPzEimOG8yEHDLyZCvNqPPzj3Gp+4SZ
-         GrFe+J5LNF95U+NgiJzaaSo5eFy7PomoYpxXlg1HUP7DJdxQyDUu4qdnnXeURxqt1l0q
-         9rmtcGqLXa4fmWP+f3lvyBmSgzvv1QM4+hckpyC/H20NNgZV0TyjEP2zVW5VWgWEN+hW
-         +1ghwzJ0tAJcnpGT12GIht0X1cMgvFvvIiAZPd76N9PKjHgOPbAxYA6k1M5xm0ZyLdbp
-         rzcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707732170; x=1708336970;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EvNl2NgC20KtoxOIZI2VbWr9lTUl32SJ2A3KDaxxmJU=;
-        b=ePFR+iWVWj5JMsDIrOCGXVxSD+xRHRTk2ZBK55DN6JpSm2FcHk0/LRZ5uNaskrc6ZH
-         72960m6yAncPPwRTCfcBE6IjQn6Y96I/mXiqyGs3//9JQseVb+VnZu5T4fGn7G3ABioX
-         g73HQpuhjaLPuVdYJweNkcHlzs0D0WhzAKCaDFJ0EIGEmCMzPp/JRQZ3CTjUYGAuD1jy
-         MUhMRIym97lPTEN7xJqze3dUHjA1p1Jo4uEfm6FkpjckKIhWfYrkVO4W8b4pobwZ9FHj
-         kOAs+ERd8UWGrucdCeZoWAPmOZMcIgAe2HurkZA9sT/sG7z4PXCYeJO/X3ch3/EW/9br
-         PetA==
-X-Gm-Message-State: AOJu0YwBOGGPrCSUEerSaxHvedM+7AGxJ7PEKm1WHEHFsulQTaJbBpxW
-	dbdlCJenM2vSAJ/jJ3WoxlomowjVeJ1n17BbTV3jFDbWys0ZOdTdDUis2SM8uwZkuopykoGNl5G
-	oZs5CroSQFcvmHL3Fgw/8tQMAQm8hG6Ccuz3rAp2/VGa2GvT/mxHN
-X-Google-Smtp-Source: AGHT+IGy2rbxkxBgdwRzO0ruHrDxfHwUgXlzx/bQorwXeDoHWcwkIg0iuOSXpyMdfnNv6DIQoMJgNNTg2C6ijXZSSDs=
-X-Received: by 2002:a50:8a9e:0:b0:560:f37e:2d5d with SMTP id
- j30-20020a508a9e000000b00560f37e2d5dmr170566edj.5.1707732169786; Mon, 12 Feb
- 2024 02:02:49 -0800 (PST)
+	s=arc-20240116; t=1707732715; c=relaxed/simple;
+	bh=2wyzB0QE3kpdGWU3sblt9oxOWxZLihwNJBrY33Ct7PI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r5e7VCmYBRx5cCENqdCGAzvGoitNEXFVkROgzNxIwngfpZiDnEtkpHDLyGau8KeX2pTC2qexujohKZ1ifPR5Q9f2Jlo/1c8EPA3Yha/xTbFuynKVcKl3O5BQxnqt39MkmlFu7Hu5lNsfcBLUdDwVfIMH3CyCkMSitEqvpEDgzJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk; spf=pass smtp.mailfrom=mev.co.uk; dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b=x1J7Ug7u; arc=none smtp.client-ip=173.203.187.107
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mev.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+	s=20221208-6x11dpa4; t=1707732200;
+	bh=2wyzB0QE3kpdGWU3sblt9oxOWxZLihwNJBrY33Ct7PI=;
+	h=Date:Subject:To:From:From;
+	b=x1J7Ug7uhtxfwPCfsgB5EoDPJ2go6hC7AmtiJPip7u520qVNlEYfsxruEn43Rr/0j
+	 DyCh6vmPb0SdSB/doo3/BxJqjCh18kqfZQR+qeunsvlaxPTjWLv3j//2YYtbZwSIN0
+	 4bK+e/xBHI/TIGh9Voxpto+0Sk+wwF5ZMh4SZF4I=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp22.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 9E28A1984;
+	Mon, 12 Feb 2024 05:03:19 -0500 (EST)
+Message-ID: <66d15664-0d54-4e89-bf54-508ff072fab8@mev.co.uk>
+Date: Mon, 12 Feb 2024 10:03:18 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Mon, 12 Feb 2024 11:02:38 +0100
-Message-ID: <CACT4Y+bXfekygoyhO7pCctjnL15=E=Zs31BUGXU0dk8d4rc1Cw@mail.gmail.com>
-Subject: Spurious SIGSEGV with rseq/membarrier
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Peter Oskolkov <posk@google.com>, 
-	Peter Zijlstra <peterz@infradead.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Boqun Feng <boqun.feng@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Chris Kennelly <ckennelly@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] comedi: comedi_8255: Correct error in subdevice
+ initialization
+To: Frej Drejhammar <frej.drejhammar@gmail.com>,
+ H Hartley Sweeten <hsweeten@visionengravers.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+References: <20240211175822.1357-1-frej.drejhammar@gmail.com>
+Content-Language: en-GB
+From: Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+In-Reply-To: <20240211175822.1357-1-frej.drejhammar@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 13877c57-bc63-4c2e-b481-38fe52eaea54-1-1
 
-Hi rseq/membarrier maintainers,
+On 11/02/2024 17:58, Frej Drejhammar wrote:
+> The refactoring done in commit 5c57b1ccecc7 ("comedi: comedi_8255: Rework
+> subdevice initialization functions") to the initialization of the io
+> field of struct subdev_8255_private broke all cards using the
+> drivers/comedi/drivers/comedi_8255.c module.
+> 
+> Prior to 5c57b1ccecc7, __subdev_8255_init() initialized the io field
+> in the newly allocated struct subdev_8255_private to the non-NULL
+> callback given to the function, otherwise it used a flag parameter to
+> select between subdev_8255_mmio and subdev_8255_io. The refactoring
+> removed that logic and the flag, as subdev_8255_mm_init() and
+> subdev_8255_io_init() now explicitly pass subdev_8255_mmio and
+> subdev_8255_io respectively to __subdev_8255_init(), only
+> __subdev_8255_init() never sets spriv->io to the supplied
+> callback. That spriv->io is NULL leads to a later BUG:
+> 
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> PGD 0 P4D 0
+> Oops: 0010 [#1] SMP PTI
+> CPU: 1 PID: 1210 Comm: systemd-udevd Not tainted 6.7.3-x86_64 #1
+> Hardware name: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+> RIP: 0010:0x0
+> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+> RSP: 0018:ffffa3f1c02d7b78 EFLAGS: 00010202
+> RAX: 0000000000000000 RBX: ffff91f847aefd00 RCX: 000000000000009b
+> RDX: 0000000000000003 RSI: 0000000000000001 RDI: ffff91f840f6fc00
+> RBP: ffff91f840f6fc00 R08: 0000000000000000 R09: 0000000000000001
+> R10: 0000000000000000 R11: 000000000000005f R12: 0000000000000000
+> R13: 0000000000000000 R14: ffffffffc0102498 R15: ffff91f847ce6ba8
+> FS:  00007f72f4e8f500(0000) GS:ffff91f8d5c80000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffffffffd6 CR3: 000000010540e000 CR4: 00000000000406f0
+> Call Trace:
+>   <TASK>
+>   ? __die_body+0x15/0x57
+>   ? page_fault_oops+0x2ef/0x33c
+>   ? insert_vmap_area.constprop.0+0xb6/0xd5
+>   ? alloc_vmap_area+0x529/0x5ee
+>   ? exc_page_fault+0x15a/0x489
+>   ? asm_exc_page_fault+0x22/0x30
+>   __subdev_8255_init+0x79/0x8d [comedi_8255]
+>   pci_8255_auto_attach+0x11a/0x139 [8255_pci]
+>   comedi_auto_config+0xac/0x117 [comedi]
+>   ? __pfx___driver_attach+0x10/0x10
+>   pci_device_probe+0x88/0xf9
+>   really_probe+0x101/0x248
+>   __driver_probe_device+0xbb/0xed
+>   driver_probe_device+0x1a/0x72
+>   __driver_attach+0xd4/0xed
+>   bus_for_each_dev+0x76/0xb8
+>   bus_add_driver+0xbe/0x1be
+>   driver_register+0x9a/0xd8
+>   comedi_pci_driver_register+0x28/0x48 [comedi_pci]
+>   ? __pfx_pci_8255_driver_init+0x10/0x10 [8255_pci]
+>   do_one_initcall+0x72/0x183
+>   do_init_module+0x5b/0x1e8
+>   init_module_from_file+0x86/0xac
+>   __do_sys_finit_module+0x151/0x218
+>   do_syscall_64+0x72/0xdb
+>   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> RIP: 0033:0x7f72f50a0cb9
+> Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 47 71 0c 00 f7 d8 64 89 01 48
+> RSP: 002b:00007ffd47e512d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> RAX: ffffffffffffffda RBX: 0000562dd06ae070 RCX: 00007f72f50a0cb9
+> RDX: 0000000000000000 RSI: 00007f72f52d32df RDI: 000000000000000e
+> RBP: 0000000000000000 R08: 00007f72f5168b20 R09: 0000000000000000
+> R10: 0000000000000050 R11: 0000000000000246 R12: 00007f72f52d32df
+> R13: 0000000000020000 R14: 0000562dd06785c0 R15: 0000562dcfd0e9a8
+>   </TASK>
+> Modules linked in: 8255_pci(+) comedi_8255 comedi_pci comedi intel_gtt e100(+) acpi_cpufreq rtc_cmos usbhid
+> CR2: 0000000000000000
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:0x0
+> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+> RSP: 0018:ffffa3f1c02d7b78 EFLAGS: 00010202
+> RAX: 0000000000000000 RBX: ffff91f847aefd00 RCX: 000000000000009b
+> RDX: 0000000000000003 RSI: 0000000000000001 RDI: ffff91f840f6fc00
+> RBP: ffff91f840f6fc00 R08: 0000000000000000 R09: 0000000000000001
+> R10: 0000000000000000 R11: 000000000000005f R12: 0000000000000000
+> R13: 0000000000000000 R14: ffffffffc0102498 R15: ffff91f847ce6ba8
+> FS:  00007f72f4e8f500(0000) GS:ffff91f8d5c80000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffffffffd6 CR3: 000000010540e000 CR4: 00000000000406f0
+> 
+> This patch simply corrects the above mistake by initializing spriv->io
+> to the given io callback.
+> 
+> Fixes: 5c57b1ccecc7 ("comedi: comedi_8255: Rework subdevice initialization functions")
+> Signed-off-by: Frej Drejhammar <frej.drejhammar@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> ---
+>   drivers/comedi/drivers/comedi_8255.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/comedi/drivers/comedi_8255.c b/drivers/comedi/drivers/comedi_8255.c
+> index e4974b508328..a933ef53845a 100644
+> --- a/drivers/comedi/drivers/comedi_8255.c
+> +++ b/drivers/comedi/drivers/comedi_8255.c
+> @@ -159,6 +159,7 @@ static int __subdev_8255_init(struct comedi_device *dev,
+>   		return -ENOMEM;
+>   
+>   	spriv->context = context;
+> +	spriv->io      = io;
+>   
+>   	s->type		= COMEDI_SUBD_DIO;
+>   	s->subdev_flags	= SDF_READABLE | SDF_WRITABLE;
 
-I've spent a bit debugging some spurious SIGSEGVs and it turned out to
-be an interesting interaction between page faults, rseq and
-membarrier. The manifestation is that membarrier(EXPEDITED_RSEQ) is
-effectively not working for a thread (doesn't restart its rseq
-critical section).
+Thanks for the fix. I screwed up!
 
-The real code is inside of tcmalloc and relates to the "slabs resing" procedure:
+Acked-by: Ian Abbott <abbotti@mev.co.uk>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
 
-https://github.com/google/tcmalloc/blob/39775a2d57969eda9497f3673421766bc1e886a0/tcmalloc/internal/percpu_tcmalloc.cc#L176
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
 
-The essence is:
-Threads use a data structure inside of rseq critical section.
-The resize procedure replaces the old data structure with a new one,
-uses a membarrier to ensure that threads don't use the old one any
-more and unmaps/mprotects pages that back the old data structure. At
-this point no threads use the old data structure anymore and no
-threads should get SIGSEGV.
-
-However, what happens is as follows:
-A thread gets a minor page fault on the old data structure inside of
-rseq critical section.
-The page fault handler re-enables preemption and allows other threads
-to be scheduled (I am tno sure this is actually important, but that's
-what I observed in all traces, and it makes the failure scenario much
-more likely).
-Now, the resize procedure is executed, replaces all pointers to the
-old data structure to the new one, executes the membarrier and unmaps
-the old data structure.
-Now the page fault handler resumes, verifies VMA protection and finds
-out that the VMA is indeed inaccessible and the page fault is not a
-minor one, but rather should result in SIGSEGV and sends SIGSEGV.
-Note: at this point the thread has rseq restart pending (from both
-preemption and membarrier), and the restart indeed happens as part of
-SIGSEGV delivery, but it's already too late.
-
-I think the page fault handling should give the rseq restart
-preference in this case, and realize the thread shouldn't be executing
-the faulting instruction in the first place. In such case the thread
-would be restarted, and access the new data structure after the
-restart.
-
-Unmapping/mprotecting the old data in this case is useful for 2 reasons:
-1. It allows to release memory (not possible to do reliably now).
-2. It allows to ensure there are no logical bugs in the user-space
-code and thread don't access the old data when they shouldn't. I was
-actually tracking a potential bug in user-space code, but after
-mprotecting old data, started seeing more of more confusing crashes
-(this spurious SIGSEGV).
 
