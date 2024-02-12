@@ -1,296 +1,114 @@
-Return-Path: <linux-kernel+bounces-62315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42A15851E6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:08:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37AD9851EB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:35:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 292211C22EE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:08:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E863B28327F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1846C481B7;
-	Mon, 12 Feb 2024 20:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1335C1EB34;
+	Mon, 12 Feb 2024 20:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N3T+hmLS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b="b7083Uy6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b="An7LpAIK"
+Received: from fallback17.i.mail.ru (fallback17.i.mail.ru [79.137.243.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2AD47A73;
-	Mon, 12 Feb 2024 20:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6C91DFD8;
+	Mon, 12 Feb 2024 20:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707768503; cv=none; b=t780HZL7eG41UfVKSb2A6qO1wjIN57UBeOlEyurve/tnta8C6kXW5PQ1JhqntaI6nAat3PS0j7i8X3YhrlLr56QpJC1ShAKRQsVRa58adsPFg9CGDXAaVRBexrxSCsKwdMo9gObMgad5cuDC2+LhvNk4oa9gv99GN9CYSUqLDjA=
+	t=1707770135; cv=none; b=N/FIQdDM5PX996YQz07OZwGyrmtg9raioBsrwpz47Qxfl8iPqlBZt8XIyVaEjS5YLjzTHN0SRjJBZNNVLr4NSkjmx2Kdndnl5Ia024ka6I9hYSeIOQRxQxS5+FJd0Vgg0bfiKnYHO5dxLQfNcEnBfEMi5v7RHrlelBSw7yU3bbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707768503; c=relaxed/simple;
-	bh=2K9Jkx7Dbx+wU3PTYaguUrfmvf8b4+S7YQdNN1Rasms=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KBJzlbc8iAwFtTsMfzjA5re0H80XvVOy8hpTQnFoiEVJ3PnYoS5xeLrLhRD7tBHYsUBNreYOHiPoPlRTBdEENKGbJbC30qi76KvIgnBLW1L9I1AEcBsTJxsL3HKi9YrG5IfelammhbfShvsbIe9Djxz69gDAoIXAqu1uquVwzVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N3T+hmLS; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707768502; x=1739304502;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2K9Jkx7Dbx+wU3PTYaguUrfmvf8b4+S7YQdNN1Rasms=;
-  b=N3T+hmLSoWp93KuiX7S6l018QIDfjp6G+kogirbqBIQUaay677JWlQ7T
-   Y/TJEuTBjM3xxfxdeZWfJUsxJVpVvbj3jWAjBR2wNrNbdErrtJI80zThu
-   jBPejs7hnbVdQgcEehQew9doGuUbjqLQjghJ5jJOHUk9cVDSRqPSGszt3
-   iCv2fHB9RdWl3gscqYVS+q2Ow+5WTt88MB7i34/JTH1bomQrNvmdC5tcg
-   e42vDvRHJaBZzVtP3j0s3s6LomdwJNv3GGpO40l86hDtBg+AwHu31KMLc
-   ydtZf9XKXGy+j8ilqRJuPc/7Vetz/+aiWK710QefrF3sHGgXK+V6Elyhs
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1909065"
-X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
-   d="scan'208";a="1909065"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 12:08:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
-   d="scan'208";a="7314343"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.24.100.114])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 12:08:19 -0800
-Date: Mon, 12 Feb 2024 12:13:46 -0800
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Thomas Gleixner
- <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
- kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>, Joerg Roedel
- <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov
- <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul Luse
- <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, Raj Ashok
- <ashok.raj@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
- maz@kernel.org, seanjc@google.com, Robin Murphy <robin.murphy@arm.com>,
- jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 00/15] Coalesced Interrupt Delivery with posted MSI
-Message-ID: <20240212121346.0f8870a7@jacob-builder>
-In-Reply-To: <2aa290eb-ec4b-43b1-87db-4df8ccbeaa37@kernel.dk>
-References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
-	<051cf099-9ecf-4f5a-a3ac-ee2d63a62fa6@kernel.dk>
-	<20240209094307.4e7eacd0@jacob-builder>
-	<9285b29c-6556-46db-b0bb-7a85ad40d725@kernel.dk>
-	<20240212102742.34e1e2c2@jacob-builder>
-	<2aa290eb-ec4b-43b1-87db-4df8ccbeaa37@kernel.dk>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707770135; c=relaxed/simple;
+	bh=vHh93kiXajwHiYYjtPEVQqJ383e7oT0JDL18IYoBdo8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ejhDJgCf17bQr4XDn2+GWy6bRoo2ndloulFgPtW9ntbCReYvkmDHhcMFfx25Av8RC6lzVOFDA+88VDvTzrhh5bRee7brzxAna/G68uGFpog5pus+oOunRl82QtuoL4qu6DcEvXbHb9l4LjDBrEZ/rhhIvxMHbSIqV8kU3getY6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jiaxyga.com; spf=pass smtp.mailfrom=jiaxyga.com; dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b=b7083Uy6; dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b=An7LpAIK; arc=none smtp.client-ip=79.137.243.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jiaxyga.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jiaxyga.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com; s=mailru;
+	h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=F2W/SdjdsgnOeiZVGLagGqwtap8od+DMR4Ml3F1zpIU=;
+	t=1707770131;x=1707860131; 
+	b=b7083Uy6ODfqChIQG0sf1nIJU6CQzNOn8jARNlNDi2FM/n8P51uPrSITE0e975wTD+G5yaeCpMzUVVNQouUhBldf4QpZqQr0nz0uZYTcWw5nwCF08cNLf2gTw6cAMKdCAZU1aAxLucTXgsO0Hke3vP4S/6yVfpRYEIpXZ34wPhY=;
+Received: from [10.12.4.23] (port=58698 helo=smtp49.i.mail.ru)
+	by fallback17.i.mail.ru with esmtp (envelope-from <danila@jiaxyga.com>)
+	id 1rZchR-004HBg-Uy; Mon, 12 Feb 2024 23:14:46 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
+	; s=mailru; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
+	X-Cloud-Ids:Disposition-Notification-To;
+	bh=F2W/SdjdsgnOeiZVGLagGqwtap8od+DMR4Ml3F1zpIU=; t=1707768885; x=1707858885; 
+	b=An7LpAIKyBhfy3iqrfHjzx5dhPuMGatmYqWBQo9GBHvvbFEirdJRgfTqH6e3ZN/ZavTOLsWEyYY
+	RDIsJREhvzDdc6xAZUKU9sB+aIJG2hlwqPGRXF2JyLRuH5GpYqzEMS8s/YVzZ+BCURwt4Ez5PdVmB
+	Vf2fa4gA1d3F+m7fSh0=;
+Received: by smtp49.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
+	id 1rZchC-00000009OKr-08nz; Mon, 12 Feb 2024 23:14:30 +0300
+From: Danila Tikhonov <danila@jiaxyga.com>
+To: andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Danila Tikhonov <danila@jiaxyga.com>
+Subject: [PATCH 0/2] soc: qcom: socinfo: Add SM8475 IDs
+Date: Mon, 12 Feb 2024 23:14:26 +0300
+Message-ID: <20240212201428.87151-1-danila@jiaxyga.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Mailru-Src: smtp
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD96201AD55A1C8F7DB199691BBF2788CA8047EA577E0D2805D182A05F5380850401561197923D86C7F5D1BE6A8D71B10A51A3AAC20FAB14810B994F2484CBC5EEE984BA1D07646E0BA
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE789805A6418246A1AEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006379C6642364E0E74208638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D80401827250B231A0EF2F179BCC448401AAA7369C5BB29C50CC7F00164DA146DAFE8445B8C89999728AA50765F7900637DCE3DBD6F8E38AFD389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8D2DCF9CF1F528DBCF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C643FE6A0CAC512C7302FCEF25BFAB3454AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C3AB70B36A49903258BA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CF17B107DEF921CE791DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C376F138C68E4EE6C935872C767BF85DA2F004C90652538430E4A6367B16DE6309
+X-C1DE0DAB: 0D63561A33F958A5E554248E2912EBFA5002B1117B3ED6964202B572CCA044F3F5FEB6EB1EB183FD823CB91A9FED034534781492E4B8EEADA2D5570B22232E1EC79554A2A72441328621D336A7BC284946AD531847A6065A535571D14F44ED41
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF92AE5381B99C6B92F020487101572E8242FC7BBBEE130D7A6E4928D89FAE3DF30AA6441730D2A0F0233AFEF422F2DFF9E941DB174C08723931CB3C20478AD93CC2780DFB0BF49F4C034D55ECCE8C67C6913E6812662D5F2A78A556DA1408BD603BAB4BE5B351B77B77D7EADF59166DF0
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj1UUEhvrYbM3GH4wRhjrIdA==
+X-Mailru-Sender: 9EB879F2C80682A09F26F806C73949814C6C55408358ED2A1F93A76BF6F7B0A690FBB3BDFE0B09273A782A42D01DD7192C62728BC403A049225EC17F3711B6CF1A6F2E8989E84EC137BFB0221605B344978139F6FA5A77F05FEEDEB644C299C0ED14614B50AE0675
+X-Mras: Ok
+X-7564579A: 646B95376F6C166E
+X-77F55803: 6242723A09DB00B4A77971E4CF73965D9E271BDE2CCB4C0C5E8DE89D725F9123049FFFDB7839CE9E21836B46C57BA719D1F0E982E3F336049CB9E2F28C959EAC41B08CCE821396D7
+X-7FA49CB5: 0D63561A33F958A5FC0A2D135DBE8A398F84CCF55B00C5124AAD531C5438CE2A8941B15DA834481FA18204E546F3947C996A9F7B0561EE47F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F790063781DF5610BC3D4227389733CBF5DBD5E9B5C8C57E37DE458BD96E472CDF7238E0725E5C173C3A84C38ECB62DBB60BCAAD35872C767BF85DA2F004C90652538430E4A6367B16DE6309
+X-87b9d050: 1
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj1UUEhvrYbM0tuos+OshPYQ==
+X-Mailru-MI: 8000000000000800
+X-Mras: Ok
 
-Hi Jens,
+This series adds IDs for Qualcomm SM8475 SoC.
 
-On Mon, 12 Feb 2024 11:36:42 -0700, Jens Axboe <axboe@kernel.dk> wrote:
+To: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+To: Rob Herring <robh@kernel.org> 
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
 
-> On 2/12/24 11:27 AM, Jacob Pan wrote:
-> > Hi Jens,
-> > 
-> > On Fri, 9 Feb 2024 13:31:17 -0700, Jens Axboe <axboe@kernel.dk> wrote:
-> >   
-> >> On 2/9/24 10:43 AM, Jacob Pan wrote:  
-> >>> Hi Jens,
-> >>>
-> >>> On Thu, 8 Feb 2024 08:34:55 -0700, Jens Axboe <axboe@kernel.dk> wrote:
-> >>>     
-> >>>> Hi Jacob,
-> >>>>
-> >>>> I gave this a quick spin, using 4 gen2 optane drives. Basic test,
-> >>>> just IOPS bound on the drive, and using 1 thread per drive for IO.
-> >>>> Random reads, using io_uring.
-> >>>>
-> >>>> For reference, using polled IO:
-> >>>>
-> >>>> IOPS=20.36M, BW=9.94GiB/s, IOS/call=31/31
-> >>>> IOPS=20.36M, BW=9.94GiB/s, IOS/call=31/31
-> >>>> IOPS=20.37M, BW=9.95GiB/s, IOS/call=31/31
-> >>>>
-> >>>> which is abount 5.1M/drive, which is what they can deliver.
-> >>>>
-> >>>> Before your patches, I see:
-> >>>>
-> >>>> IOPS=14.37M, BW=7.02GiB/s, IOS/call=32/32
-> >>>> IOPS=14.38M, BW=7.02GiB/s, IOS/call=32/31
-> >>>> IOPS=14.38M, BW=7.02GiB/s, IOS/call=32/31
-> >>>> IOPS=14.37M, BW=7.02GiB/s, IOS/call=32/32
-> >>>>
-> >>>> at 2.82M ints/sec. With the patches, I see:
-> >>>>
-> >>>> IOPS=14.73M, BW=7.19GiB/s, IOS/call=32/31
-> >>>> IOPS=14.90M, BW=7.27GiB/s, IOS/call=32/31
-> >>>> IOPS=14.90M, BW=7.27GiB/s, IOS/call=31/32
-> >>>>
-> >>>> at 2.34M ints/sec. So a nice reduction in interrupt rate, though not
-> >>>> quite at the extent I expected. Booted with 'posted_msi' and I do see
-> >>>> posted interrupts increasing in the PMN in /proc/interrupts, 
-> >>>>    
-> >>> The ints/sec reduction is not as high as I expected either, especially
-> >>> at this high rate. Which means not enough coalescing going on to get
-> >>> the performance benefits.    
-> >>
-> >> Right, it means that we're getting pretty decent commands-per-int
-> >> coalescing already. I added another drive and repeated, here's that
-> >> one:
-> >>
-> >> IOPS w/polled: 25.7M IOPS
-> >>
-> >> Stock kernel:
-> >>
-> >> IOPS=21.41M, BW=10.45GiB/s, IOS/call=32/32
-> >> IOPS=21.44M, BW=10.47GiB/s, IOS/call=32/32
-> >> IOPS=21.41M, BW=10.45GiB/s, IOS/call=32/32
-> >>
-> >> at ~3.7M ints/sec, or about 5.8 IOPS / int on average.
-> >>
-> >> Patched kernel:
-> >>
-> >> IOPS=21.90M, BW=10.69GiB/s, IOS/call=31/32
-> >> IOPS=21.89M, BW=10.69GiB/s, IOS/call=32/31
-> >> IOPS=21.89M, BW=10.69GiB/s, IOS/call=32/32
-> >>
-> >> at the same interrupt rate. So not a reduction, but slighter higher
-> >> perf. Maybe we're reaping more commands on average per interrupt.
-> >>
-> >> Anyway, not a lot of interesting data there, just figured I'd re-run it
-> >> with the added drive.
-> >>  
-> >>> The opportunity of IRQ coalescing is also dependent on how long the
-> >>> driver's hardirq handler executes. In the posted MSI demux loop, it
-> >>> does not wait for more MSIs to come before existing the pending IRQ
-> >>> polling loop. So if the hardirq handler finishes very quickly, it may
-> >>> not coalesce as much. Perhaps, we need to find more "useful" work to
-> >>> do to maximize the window for coalescing.
-> >>>
-> >>> I am not familiar with optane driver, need to look into how its
-> >>> hardirq handler work. I have only tested NVMe gen5 in terms of
-> >>> storage IO, i saw 30-50% ints/sec reduction at even lower IRQ rate
-> >>> (200k/sec).    
-> >>
-> >> It's just an nvme device, so it's the nvme driver. The IRQ side is very
-> >> cheap - for as long as there are CQEs in the completion ring, it'll
-> >> reap them and complete them. That does mean that if we get an IRQ and
-> >> there's more than one entry to complete, we will do all of them. No IRQ
-> >> coalescing is configured (nvme kind of sucks for that...), but optane
-> >> media is much faster than flash, so that may be a difference.
-> >>  
-> > Yeah, I also check the the driver code it seems just wake up the
-> > threaded handler.  
-> 
-> That only happens if you're using threaded interrupts, which is not the
-> default as it's much slower. What happens for the normal case is that we
-> init a batch, and then poll the CQ ring for completions, and then add
-> them to the completion batch. Once no more are found, we complete the
-> batch.
-> 
-thanks for the explanation.
+Danila Tikhonov (2):
+  dt-bindings: arm: qcom,ids: Add IDs for SM8475 family
+  soc: qcom: socinfo: Add Soc IDs for SM8475 family
 
-> You're not using threaded interrupts, are you?
-No. I didn't add module parameter "use_threaded_interrupts"
+ drivers/soc/qcom/socinfo.c         | 3 +++
+ include/dt-bindings/arm/qcom,ids.h | 3 +++
+ 2 files changed, 6 insertions(+)
 
-> 
-> > For the record, here is my set up and performance data for 4 Samsung
-> > disks. IOPS increased from 1.6M per disk to 2.1M. One difference I
-> > noticed is that IRQ throughput is improved instead of reduction with
-> > this patch on my setup. e.g. BEFORE: 185545/sec/vector 
-> >      AFTER:  220128  
-> 
-> I'm surprised at the rates being that low, and if so, why the posted MSI
-> makes a difference? Usually what I've seen for IRQ being slower than
-> poll is if interrupt delivery is unreasonably slow on that architecture
-> of machine. But ~200k/sec isn't that high at all.
-> 
+-- 
+2.43.0
 
-
-> > [global]                      
-> > bs=4k                         
-> > direct=1                      
-> > norandommap                   
-> > ioengine=libaio               
-> > randrepeat=0                  
-> > readwrite=randread            
-> > group_reporting               
-> > time_based                    
-> > iodepth=64                    
-> > exitall                       
-> > random_generator=tausworthe64 
-> > runtime=30                    
-> > ramp_time=3                   
-> > numjobs=8                     
-> > group_reporting=1             
-> >                               
-> > #cpus_allowed_policy=shared   
-> > cpus_allowed_policy=split     
-> > [disk_nvme6n1_thread_1]       
-> > filename=/dev/nvme6n1         
-> > cpus_allowed=0-7       
-> > [disk_nvme6n1_thread_1]
-> > filename=/dev/nvme5n1  
-> > cpus_allowed=8-15      
-> > [disk_nvme5n1_thread_2]
-> > filename=/dev/nvme4n1  
-> > cpus_allowed=16-23     
-> > [disk_nvme5n1_thread_3]
-> > filename=/dev/nvme3n1  
-> > cpus_allowed=24-31       
-> 
-> For better performance, I'd change that engine=libaio to:
-> 
-> ioengine=io_uring
-> fixedbufs=1
-> registerfiles=1
-> 
-> Particularly fixedbufs makes a big difference, as a big cycle consumer
-> is mapping/unmapping pages from the application space into the kernel
-> for O_DIRECT. With fixedbufs=1, this is done once and we just reuse the
-> buffers. At least for my runs, this is ~15% of the systime for doing IO.
-> It also removes the page referencing, which isn't as big a consumer, but
-> still noticeable.
-> 
-Indeed, the CPU utilization system time goes down significantly. I got the
-following with posted MSI patch applied:
-Before (aio):
-  read: IOPS=8925k, BW=34.0GiB/s (36.6GB/s)(1021GiB/30001msec)
-	user    3m25.156s                                                                                                           	
-	sys     11m16.785s                                                                                                          	
-						
-After (fixedbufs, iouring engine):
-  read: IOPS=8811k, BW=33.6GiB/s (36.1GB/s)(1008GiB/30002msec)
-  	user    2m56.255s                                                                                                  	
-	sys     8m56.378s                                                                                                  	
-				
-It seems to have no gain in IOPS, just CPU utilization reduction.
-
-Both have improvement over libaio w/o posted MSI patch. 
-
-> Anyway, side quest, but I think you'll find this considerably reduces
-> overhead / improves performance. Also makes it so that you can compare
-> with polled IO on nvme, which aio can't do. You'd just add hipri=1 as an
-> option for that (with a side note that you need to configure nvme poll
-> queues, see the poll_queues parameter).
-> 
-> On my box, all the NVMe devices seem to be on node1, not node0 which
-> looks like it's the CPUs you are using. Might be worth checking and
-> adjusting your CPU domains for each drive? I also tend to get better
-> performance by removing the CPU scheduler, eg just pin each job to a
-> single CPU rather than many. It's just one process/thread anyway, so
-> really no point in giving it options here. It'll help reduce variability
-> too, which can be a pain in the butt to deal with.
-> 
-Much faster with poll_queues=32 (32jobs)
-  read: IOPS=13.0M, BW=49.6GiB/s (53.3GB/s)(1489GiB/30001msec)
-     	user    2m29.177s
-	sys     15m7.022s
-				
-Observed no IRQ counts from NVME.
-
-Thanks,
-
-Jacob
 
