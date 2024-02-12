@@ -1,352 +1,126 @@
-Return-Path: <linux-kernel+bounces-61809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8BCF8516CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:15:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEE708516D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:16:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FAEC28839F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:15:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1B7E1C215B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46F473AC14;
-	Mon, 12 Feb 2024 14:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A3E23B287;
+	Mon, 12 Feb 2024 14:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="O6M8R4K7";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XNmOYAI6"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PaSZUKx+"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 729AC25740;
-	Mon, 12 Feb 2024 14:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0063B18A
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707747224; cv=none; b=n1P9gGBVcx2Shht4SGMuFUSwIx5WAswVVad6e08y0tfuoRyNx6qB/mGMthInWEPxUDlzGlyhXxJEhfxkRo4fQvx89iHqT11fE6mnnkMlqnuReHs0/kZEG1SBfbMxAI1RaCynpqXSC46iwBciG3cXaDDjyCtcpFcVlK8U3joywHo=
+	t=1707747284; cv=none; b=Xjn/yPAxEaaAgAHYrVyeogJjgv1yd2HURmI7JNi0Nf4SLwkSl4dop6SbQXh7pwxTRBNFLk1LVgWtBsFmA5O7sMHeyyXa5BGWfnbNHhO0Az4t9YieexpAHqkPP6P/RT3cLbROicUG535AD3YGIYdKr4Nrw1T25asTImLgQZoXkwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707747224; c=relaxed/simple;
-	bh=uI+LMNZYCq6kx+lc/OmKCSNQRSFIRHImLjt07bHMtxU=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=uH6bNuyjShHCcvaha8RgOoxjfwfQHqB++vT98JEGppT0fdpeRS7gdVcAo6aqOFieKRrY5YmEeit392hkDQOUKxhpg8RpKIo1U2tsGPLuVMnpcH+q8wPhO0YNHo7+PMGAH770I9U/H9b6Gyg3Aw/bDpwZlBf5dJi2Lh3Dwmwu2MQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=O6M8R4K7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XNmOYAI6; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 12 Feb 2024 14:13:39 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707747220;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f/btgRaaXpwyohIzAiBllWU5S3huEnjVIWuh9P97HrI=;
-	b=O6M8R4K7GoqhQdGuBgilF0r7S9P+uLX6Gz23AuksoEdBLRgKiMlvTjzxh60hcRUFuqGxl+
-	bn1VupNfEGkrEw8J4C8tziNc7nR4ADd9QED+Zpdt3HyFEFUDqf1rZxvHhZBbgQe9w2LBEK
-	+E3SRisWV60tv+iquZWjcoL7GNXjgJB/2ZGFGRdrzJReoqurCmuapUMJsn8ovcAKNSkwtF
-	TnZeRWLuPw/3g5YELthqbHcoH5SqSt5uxIvN+VMbSAmAm4dURj6arKqO0UTyU008iJkUsk
-	1kBai75n3urs2OfmF7xnRAEky68dhCfa+M1Za1PhHphx9E+N44r2qj6F/nf7Og==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707747220;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f/btgRaaXpwyohIzAiBllWU5S3huEnjVIWuh9P97HrI=;
-	b=XNmOYAI6LfkJI/Zi8hzjfzQ7sHypZAIPr1ojm0chKEZL7GV74G6tbAYudqsCwOk0y3b8i7
-	+fWNCyjxhdZrfACg==
-From: "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't used
- at runtime
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20231010171020.462211-4-david.kaplan@amd.com>
-References: <20231010171020.462211-4-david.kaplan@amd.com>
+	s=arc-20240116; t=1707747284; c=relaxed/simple;
+	bh=gVicl3RswclgeVVuPEpB5nW5Ga4M/HMFlfdw+YVH3cI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Uwx1u6cYDgyImBOdQLsH/DbJqNfDsHf93Jietty1Z7R4KN9M0MAhne8iiJP1nAhkyDYuloPAmmPOpGGy132gW8R1gOROXmLlM3auyg6/2WJqmHuXFx9aGjftRuYK+XGjIwKOuQ0Z5as7GEOfMp/vtfrmQTnJadUUSAvOTbKkqhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PaSZUKx+; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce9555d42eso2524635a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 06:14:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707747282; x=1708352082; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UjO3tmeDqSfXjMSar0lNGn5BmL/XIyPFGpdugjnb3SQ=;
+        b=PaSZUKx+H4oSzZfLKbzQfrubOcbPnC+DIlFQz3Z3bsiio1DU56+iMHJShUWWr5U3S3
+         Nl9ynmp7+l8UXWMc1pAn0XpyaebeiakcBdUpuwRrH1NwsTWGoAri6AfcM9DBlc9tvJlL
+         fKhYlSdOw+VQfoffHCBSF8zCRbekLrggOlIQACgCtYIQ4zskhDNzZ7Z4Bk3Hd6cEMS1c
+         DQmFrllJLzQVKqubMNv2kht1sPa06WU8533+rnLs2mgcwdfrnqRCeqOE4fJmNfZxVe2j
+         CfDS40xTkmFyZ/OaD/1b23FDXkH5C1Pugl3PC+2lUdi/GK4HFM1mOGWbw378b5WcwYhc
+         lSww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707747282; x=1708352082;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UjO3tmeDqSfXjMSar0lNGn5BmL/XIyPFGpdugjnb3SQ=;
+        b=AGde9CnXdcbElPbTwBMeTr6JtUnsdd6Qq2K7r0+l5EkJ6MHPhy7aUdDiHQKc4qXDw8
+         WHTxyXTqmHgU5WcEMhvoA2vxOJQsdSS4DTevSazXcNohysWoRxswt34PNv9VZN6obY0Z
+         LJtrHjqSeiYALP/wnl0pRZJ4up7iDg2nPepuqOn7F+EIRa1CRc9FafAHaatUxcG5N9Tc
+         0Nl8fa/PZa8mgAh1TugzMqfOP3utbR6IgH4skDslG7z/iI0LbmDYEZ/V9BV+3Dfayb96
+         qCBWWk64dQ6TnmZkltTPoWQ4j7fYdsMO578yef9QS+kxUM/7kCauixoYIQnzynBP3pI8
+         xiTw==
+X-Forwarded-Encrypted: i=1; AJvYcCUFm6F8Wbpnb3fca0PmNIR4QcDnpL4lGjSd5ahBXCgHD9Sro7cZJgawerjBE9zD1FmxOBTQxs265ykj75SgeoWblsNnT85Z2p9l63yw
+X-Gm-Message-State: AOJu0YxqesdyMllSesNvC5CTKpA1MpvnR91jryg5zBd3vnulwDI+qKvb
+	nh/tLkWx4diHUhTxOt3cfXutTVYl7qN/aq7QgX+fjmlYlWR+AWCb
+X-Google-Smtp-Source: AGHT+IHBPE2IUt1n597gx69KZ1vfZj7edkTdGiIKU/JprqQfv1zIY5dT8AxSWKci98MkPQvxjNOSlQ==
+X-Received: by 2002:a05:6a20:d386:b0:19e:b8a2:6572 with SMTP id iq6-20020a056a20d38600b0019eb8a26572mr7963308pzb.6.1707747282214;
+        Mon, 12 Feb 2024 06:14:42 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXAD+AY0eEshXcWFUlP5w1JXzY85s65WDZ+Dg3eNOBZTv+VZzaie2Bk/0Hw2ftL7KRj/ouIgYblUWtbdVygDxuuZu2p7efBxTH4+rMExGb5VAEEV6MVgKHK2cCpkGYWDW1c245fyvFtv0khXwXHSH/gIcTeYzp3mWiGKLFoxDC79x5yJfh8VwkJJjZJ/pPOb1yaXUOp3ZrYcz+bVaKgrqm1D70RjhC+Rzk=
+Received: from five231003 ([2405:201:c006:31f8:4630:e95b:8a0d:b0d0])
+        by smtp.gmail.com with ESMTPSA id bm6-20020a056a00320600b006e054704c7dsm5560815pfb.123.2024.02.12.06.14.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 06:14:41 -0800 (PST)
+Date: Mon, 12 Feb 2024 19:44:36 +0530
+From: Kousik Sanagavarapu <five231003@gmail.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH] gpu: drm: display: indent fix in comment
+Message-ID: <ZconzKCU8CST45KF@five231003>
+References: <20240124183659.511731-1-five231003@gmail.com>
+ <ZcTxUDb3_Xtqk8uW@five231003>
+ <7b17f021-cff8-4110-ac8f-c8f635263293@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170774721951.398.8999401565129728535.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7b17f021-cff8-4110-ac8f-c8f635263293@infradead.org>
 
-The following commit has been merged into the x86/bugs branch of tip:
+On Sat, Feb 10, 2024 at 10:49:50PM -0800, Randy Dunlap wrote:
+> 
+> 
+> On 2/8/24 07:20, Kousik Sanagavarapu wrote:
+> > On Thu, Jan 25, 2024 at 12:05:56AM +0530, Kousik Sanagavarapu wrote:
+> >> The comments explaining the function "drm_dp_mst_atom_check_mgr()" had
+> >> uneven indentation which made "make htmldocs" complain:
+> >>
+> >> 	Documentation/gpu/drm-kms-helpers:296:
+> >> 	./drivers/gpu/drm/display/drm_dp_mst_topology.c:5496:
+> >> 	ERROR: Unexpected indentation.
+> >>
+> >> 	Documentation/gpu/drm-kms-helpers:296:
+> >> 	./drivers/gpu/drm/display/drm_dp_mst_topology.c:5500:
+> >> 	WARNING: Block quote ends without a blank line; unexpected unindent.
+> >>
+> >> Fix this by getting the indent right.
+> >>
+> >> Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
+> >> -- 
+> > 
+> > Ping again.
+> > 
+> > Thanks
+> 
+> Hi,
+> This seems to be fixed by commit 1a84c213146a.
 
-Commit-ID:     4461438a8405e800f90e0e40409e5f3d07eed381
-Gitweb:        https://git.kernel.org/tip/4461438a8405e800f90e0e40409e5f3d07eed381
-Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Wed, 03 Jan 2024 19:36:26 +01:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 12 Feb 2024 11:42:15 +01:00
+Makes sense.  Sorry for the noise.
 
-x86/retpoline: Ensure default return thunk isn't used at runtime
-
-Make sure the default return thunk is not used after all return
-instructions have been patched by the alternatives because the default
-return thunk is insufficient when it comes to mitigating Retbleed or
-SRSO.
-
-Fix based on an earlier version by David Kaplan <david.kaplan@amd.com>.
-
-  [ bp: Fix the compilation error of warn_thunk_thunk being an invisible
-        symbol, hoist thunk macro into calling.h ]
-
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Co-developed-by: Borislav Petkov (AMD) <bp@alien8.de>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231010171020.462211-4-david.kaplan@amd.com
-Link: https://lore.kernel.org/r/20240104132446.GEZZaxnrIgIyat0pqf@fat_crate.local
----
- arch/x86/entry/calling.h             | 60 +++++++++++++++++++++++++++-
- arch/x86/entry/entry.S               |  4 ++-
- arch/x86/entry/thunk_32.S            | 34 +++------------
- arch/x86/entry/thunk_64.S            | 33 +---------------
- arch/x86/include/asm/nospec-branch.h |  2 +-
- arch/x86/kernel/cpu/bugs.c           |  5 ++-
- arch/x86/lib/retpoline.S             | 15 ++-----
- 7 files changed, 85 insertions(+), 68 deletions(-)
-
-diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-index 39e069b..bd31b25 100644
---- a/arch/x86/entry/calling.h
-+++ b/arch/x86/entry/calling.h
-@@ -426,3 +426,63 @@ For 32-bit we have the following conventions - kernel is built with
- .endm
- 
- #endif /* CONFIG_SMP */
-+
-+#ifdef CONFIG_X86_64
-+
-+/* rdi:	arg1 ... normal C conventions. rax is saved/restored. */
-+.macro THUNK name, func
-+SYM_FUNC_START(\name)
-+	pushq %rbp
-+	movq %rsp, %rbp
-+
-+	pushq %rdi
-+	pushq %rsi
-+	pushq %rdx
-+	pushq %rcx
-+	pushq %rax
-+	pushq %r8
-+	pushq %r9
-+	pushq %r10
-+	pushq %r11
-+
-+	call \func
-+
-+	popq %r11
-+	popq %r10
-+	popq %r9
-+	popq %r8
-+	popq %rax
-+	popq %rcx
-+	popq %rdx
-+	popq %rsi
-+	popq %rdi
-+	popq %rbp
-+	RET
-+SYM_FUNC_END(\name)
-+	_ASM_NOKPROBE(\name)
-+.endm
-+
-+#else /* CONFIG_X86_32 */
-+
-+/* put return address in eax (arg1) */
-+.macro THUNK name, func, put_ret_addr_in_eax=0
-+SYM_CODE_START_NOALIGN(\name)
-+	pushl %eax
-+	pushl %ecx
-+	pushl %edx
-+
-+	.if \put_ret_addr_in_eax
-+	/* Place EIP in the arg1 */
-+	movl 3*4(%esp), %eax
-+	.endif
-+
-+	call \func
-+	popl %edx
-+	popl %ecx
-+	popl %eax
-+	RET
-+	_ASM_NOKPROBE(\name)
-+SYM_CODE_END(\name)
-+	.endm
-+
-+#endif
-diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
-index 8c8d38f..582731f 100644
---- a/arch/x86/entry/entry.S
-+++ b/arch/x86/entry/entry.S
-@@ -7,6 +7,8 @@
- #include <linux/linkage.h>
- #include <asm/msr-index.h>
- 
-+#include "calling.h"
-+
- .pushsection .noinstr.text, "ax"
- 
- SYM_FUNC_START(entry_ibpb)
-@@ -20,3 +22,5 @@ SYM_FUNC_END(entry_ibpb)
- EXPORT_SYMBOL_GPL(entry_ibpb);
- 
- .popsection
-+
-+THUNK warn_thunk_thunk, __warn_thunk
-diff --git a/arch/x86/entry/thunk_32.S b/arch/x86/entry/thunk_32.S
-index 0103e10..da37f42 100644
---- a/arch/x86/entry/thunk_32.S
-+++ b/arch/x86/entry/thunk_32.S
-@@ -4,33 +4,15 @@
-  * Copyright 2008 by Steven Rostedt, Red Hat, Inc
-  *  (inspired by Andi Kleen's thunk_64.S)
-  */
--	#include <linux/export.h>
--	#include <linux/linkage.h>
--	#include <asm/asm.h>
- 
--	/* put return address in eax (arg1) */
--	.macro THUNK name, func, put_ret_addr_in_eax=0
--SYM_CODE_START_NOALIGN(\name)
--	pushl %eax
--	pushl %ecx
--	pushl %edx
-+#include <linux/export.h>
-+#include <linux/linkage.h>
-+#include <asm/asm.h>
- 
--	.if \put_ret_addr_in_eax
--	/* Place EIP in the arg1 */
--	movl 3*4(%esp), %eax
--	.endif
-+#include "calling.h"
- 
--	call \func
--	popl %edx
--	popl %ecx
--	popl %eax
--	RET
--	_ASM_NOKPROBE(\name)
--SYM_CODE_END(\name)
--	.endm
--
--	THUNK preempt_schedule_thunk, preempt_schedule
--	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
--	EXPORT_SYMBOL(preempt_schedule_thunk)
--	EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
-+THUNK preempt_schedule_thunk, preempt_schedule
-+THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
-+EXPORT_SYMBOL(preempt_schedule_thunk)
-+EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
- 
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index 416b400..119ebdc 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -9,39 +9,6 @@
- #include "calling.h"
- #include <asm/asm.h>
- 
--	/* rdi:	arg1 ... normal C conventions. rax is saved/restored. */
--	.macro THUNK name, func
--SYM_FUNC_START(\name)
--	pushq %rbp
--	movq %rsp, %rbp
--
--	pushq %rdi
--	pushq %rsi
--	pushq %rdx
--	pushq %rcx
--	pushq %rax
--	pushq %r8
--	pushq %r9
--	pushq %r10
--	pushq %r11
--
--	call \func
--
--	popq %r11
--	popq %r10
--	popq %r9
--	popq %r8
--	popq %rax
--	popq %rcx
--	popq %rdx
--	popq %rsi
--	popq %rdi
--	popq %rbp
--	RET
--SYM_FUNC_END(\name)
--	_ASM_NOKPROBE(\name)
--	.endm
--
- THUNK preempt_schedule_thunk, preempt_schedule
- THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
- EXPORT_SYMBOL(preempt_schedule_thunk)
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 2c0679e..5575461 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -357,6 +357,8 @@ extern void entry_ibpb(void);
- 
- extern void (*x86_return_thunk)(void);
- 
-+extern void __warn_thunk(void);
-+
- #ifdef CONFIG_MITIGATION_CALL_DEPTH_TRACKING
- extern void call_depth_return_thunk(void);
- 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index f277541..a78892b 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2850,3 +2850,8 @@ ssize_t cpu_show_gds(struct device *dev, struct device_attribute *attr, char *bu
- 	return cpu_show_common(dev, attr, buf, X86_BUG_GDS);
- }
- #endif
-+
-+void __warn_thunk(void)
-+{
-+	WARN_ONCE(1, "Unpatched return thunk in use. This should not happen!\n");
-+}
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 0045153..721b528 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -369,19 +369,16 @@ SYM_FUNC_END(call_depth_return_thunk)
-  * 'JMP __x86_return_thunk' sites are changed to something else by
-  * apply_returns().
-  *
-- * This should be converted eventually to call a warning function which
-- * should scream loudly when the default return thunk is called after
-- * alternatives have been applied.
-- *
-- * That warning function cannot BUG() because the bug splat cannot be
-- * displayed in all possible configurations, leading to users not really
-- * knowing why the machine froze.
-+ * The ALTERNATIVE below adds a really loud warning to catch the case
-+ * where the insufficient default return thunk ends up getting used for
-+ * whatever reason like miscompilation or failure of
-+ * objtool/alternatives/etc to patch all the return sites.
-  */
- SYM_CODE_START(__x86_return_thunk)
- 	UNWIND_HINT_FUNC
- 	ANNOTATE_NOENDBR
--	ANNOTATE_UNRET_SAFE
--	ret
-+	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE; ret), \
-+		   "jmp warn_thunk_thunk", X86_FEATURE_ALWAYS
- 	int3
- SYM_CODE_END(__x86_return_thunk)
- EXPORT_SYMBOL(__x86_return_thunk)
+> If you don't agree, please explain.
+> Thanks.
+> 
+> -- 
+> #Randy
 
