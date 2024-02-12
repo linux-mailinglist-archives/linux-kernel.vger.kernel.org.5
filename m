@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-61475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F6628512C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:57:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E8C8512CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:58:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 520971C219CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:57:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D4FA1F2694D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D963B3B797;
-	Mon, 12 Feb 2024 11:55:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A573BB3C;
+	Mon, 12 Feb 2024 11:55:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="MO53C63R"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="E9FtuvfW"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BFB3A1B8
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:55:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827C13A262
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707738932; cv=none; b=V0RMU4tNM1FTrUGPOQr0uxinrc2tcxQ2oivgImUIBcq87wymSNxWMtTBT6RO+e7YWG3AzyRlUwI3K/TIv6pvshRdx6k33uYJRIVJ8JIxhqB6yANcPeFO2NSCZCJID1Ai28Aw3qRjfEVRrO1PyAoT1lgu+2gX2mvViZQEVWzfo/Y=
+	t=1707738935; cv=none; b=Crwtgd0g+wD80AmPW3DYttZvxPcFWx9boHHhm4WaV2eWiE9AdzdF+kHGcIThuueD3FHVesWnSuwRlKNXlvv7ZjKX9FcNbDev3SnSJKNB6s9zRsHg7tF0USgykpvFWkJzcFEsou18bmf8/kpm68QzPjU6WtD24ZM5prUEQs8+fro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707738932; c=relaxed/simple;
-	bh=8E0JnpIDpqJTAIa7eziWdB8a1njbnn7OwwrjBeNl/Hc=;
+	s=arc-20240116; t=1707738935; c=relaxed/simple;
+	bh=DFtkYlLlNabbshH9GwA9kiSm8fKyjyUMYUieRVNx8fg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eh9nWJgzjzYRLOFJPZeTK+MDoUlLWPUNveBEsGKldG3KGy+0W+FPmWWIyDu/6qHWBT8yCFbFs2jh44yOBn9ZKAmtGt+pgIhVXcBYQxCVFs+O7nDhK1EndTV/1vfyClCwtl4tlbR8URiQClWwKgKJYDtnjEG3oqFwZU/CUd5sQwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=MO53C63R; arc=none smtp.client-ip=209.85.218.49
+	 MIME-Version; b=siswirw+zjHrUqboKGU6ch7k610ZbSX4pDDEOhRTrm6X4qKEj5gsSQjg6U+WCLVl6eBAHwsF8GkeWMvraPzgiNlhSLQ+VnoVSDvgUOtayYpLy6QKMLSvuYivFigRhW1BrbfM7M2tWVGFyF4NopHyz0ifmcSRop6v7f6PrHinRwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=E9FtuvfW; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a271a28aeb4so386143466b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:55:29 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3c00c98d32so348228366b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:55:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707738927; x=1708343727; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1707738929; x=1708343729; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SjsOhN8aSrNAMTgfG/Xy/2KiT6HC8gp9GBm4gpWbj44=;
-        b=MO53C63R6D5tZkUiKwO0QVmm1d832ChMYvfsPvXRIrDSuaEMiXPaI90sT5NqWEGQI4
-         WMqrsYRXAAXSGvoZCGIhnhMhNKyePkkede6w+RAh3bMt+rT8zK9WBxm5Q5HswQBCwVMx
-         Tr7UdiUet/R0Uip17P8WeNzYd1g9U238lW1/kDXDR3Q3YYrIRdOZXd+KFz1iDAqokOdA
-         dGPBm1cbIV28Bex8FhKKxK7Mt5ibfgMsyl8VBWDbZyMv28H30IsAKTeOOyih2MFlgh2P
-         M85PpdxMYQ10JYOrRfoZzF14WLW971tjeTce85mJwAsGFjl3iXv5yhNhNXmOBaziuii/
-         T5gg==
+        bh=/J9uDdEO2uVwAKDurDnR1+NlqV3E98caoyDJWoT9R94=;
+        b=E9FtuvfWSDp1YiEjK4o6JEVO8Qcg8uFWvKFzygFDXzVRRgAynwZM8OAQveMXmVqWXG
+         x7pR3Rp3g6n99LzB8Itus8xgz8+DtL3yOjprWN2QqbmUbkrWUi4MTCwLfbek2iTotLRq
+         Y7F/b8tOToFjjKG0cmhzXkPQKvzK/DWFhWvavcDo18m7rS0XScXw5f0GzmuRbhF1RUaB
+         AiLsTUUrQndrA+/VTJGHfyYYwWVe5m13073E3cwSlVS5LBjSVGCiNyzSlqzVphWRk02S
+         4EDsm/LL1JG425/fPI7l8ecOgLRz7sdy6MJL3g13hhL75dSbaMQ5erECjy39waAD1SjN
+         hnPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707738927; x=1708343727;
+        d=1e100.net; s=20230601; t=1707738929; x=1708343729;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SjsOhN8aSrNAMTgfG/Xy/2KiT6HC8gp9GBm4gpWbj44=;
-        b=wTkfXysS2SbJzfijKbodIjUZJ7sipcHJbIAqaWkrDQKBAnWPusYWQAKh2TWpi2+bmy
-         vRXZZx2n/4DPUbWtw35cXp78i/oxLal4MlUPf8ROPqoIZmoScKWfJQrNqyFNu8Moip48
-         JExiGNoLRvigEBGXQxj1ZIBNMziZuuNl1CwC5lrqP40szFGCbhuw3Jo2mZDNB2RsCR1b
-         B7mjgfNF7jAkFESemkKBBHGJaWwPVfYtvjHZ5vD7YQMPurjW1q5Z5JEZKBVUDs+e5KuF
-         0/CjZv/MVZpuF6TqHo/bHqYSbD2zVJ7cOr7OpkKO5tfgYbViADzd8SZYufNnSQWYx3DE
-         W5+A==
-X-Gm-Message-State: AOJu0YzX6k9+MARdC62Zs8Yzdhjz4xcF5uyEHpJdaPnyjMxlD5O2Hl1u
-	aa5EEd/ciDOSkZXOqDecCDqkapm3dvV3AUT//3TsHNDPgswgvtmiOZVddP8YQz2LVje+mq7pv6p
-	y
-X-Google-Smtp-Source: AGHT+IFO3ZIT8lUVwCFR4BPXjZ2XmWa/Yl0cEiQIddVDtoQET0n7ZJeLx7cMpWW3C+SVf/kan3ncEA==
-X-Received: by 2002:a17:906:b259:b0:a3c:6052:2f53 with SMTP id ce25-20020a170906b25900b00a3c60522f53mr2900710ejb.37.1707738927381;
-        Mon, 12 Feb 2024 03:55:27 -0800 (PST)
+        bh=/J9uDdEO2uVwAKDurDnR1+NlqV3E98caoyDJWoT9R94=;
+        b=mNK4u/DjGh48ytOa1yD+gwhbw7SAKwrLLfk6irGLwiJilTMCNO5URL3z39notn4f3+
+         vS8ZAAmcJnbpF/NBoM7CD6Pk4QX5LzgAnrXFjsj7jeYFKVNOacxCRl7Q3mBhGudN5WrC
+         6jCljvFtaVE5S+yXN5k8WHAqQ6WhxT3ZIhI6xnXf3E1b2UzkQn4f6YZLCiwk1kfDG+D2
+         t/DFl4cqdrtJRU2x6xwK38uMXSMwwwaZjQ4ee5qqSk0TySLRDoN6/LRX00luNDvTFPO3
+         sH+orcY0wr0pHXo8wd+jfgUq3fMjYbP7VLHRR9YsawIvKXFXpI2PxMcTdjlOtKYemiSn
+         5llg==
+X-Gm-Message-State: AOJu0YxTNGiPliQO2501iHoOnOV+xt2W/2lc0s6SkOFRYu8UqmYf34S8
+	pKBNuZjsdiTAD8eNc2ftjtxDmvryV1IcwjgOj+vRp01Jrnf63Qc2EAh2TL1/BJkFG0owbEsJYS5
+	N
+X-Google-Smtp-Source: AGHT+IFJS6sWhP+eCFVqTCyemstSu0Wn4WbixxjyiocFtdvIz0w462lbHBxbGcoDypmU2rCArvCVZA==
+X-Received: by 2002:a17:906:2493:b0:a3c:d0f5:dbd4 with SMTP id e19-20020a170906249300b00a3cd0f5dbd4mr670812ejb.18.1707738929137;
+        Mon, 12 Feb 2024 03:55:29 -0800 (PST)
 Received: from raven.blarg.de (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id m1-20020a17090607c100b00a36c3e2e52dsm139203ejc.61.2024.02.12.03.55.25
+        by smtp.gmail.com with ESMTPSA id m1-20020a17090607c100b00a36c3e2e52dsm139203ejc.61.2024.02.12.03.55.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 03:55:25 -0800 (PST)
+        Mon, 12 Feb 2024 03:55:27 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v5 14/35] swait.h: move declarations to swait_types.h
-Date: Mon, 12 Feb 2024 12:54:39 +0100
-Message-Id: <20240212115500.2078463-15-max.kellermann@ionos.com>
+Subject: [PATCH v5 15/35] completion.h: move declarations to completion_types.h
+Date: Mon, 12 Feb 2024 12:54:40 +0100
+Message-Id: <20240212115500.2078463-16-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240212115500.2078463-1-max.kellermann@ionos.com>
 References: <20240212115500.2078463-1-max.kellermann@ionos.com>
@@ -88,68 +88,567 @@ dependencies.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- include/linux/swait.h       | 13 +------------
- include/linux/swait_types.h | 20 ++++++++++++++++++++
- 2 files changed, 21 insertions(+), 12 deletions(-)
- create mode 100644 include/linux/swait_types.h
+ drivers/target/target_core_xcopy.c |  1 +
+ include/drm/drm_audio_component.h  |  2 +-
+ include/drm/gpu_scheduler.h        |  2 +-
+ include/linux/ceph/osd_client.h    |  2 +-
+ include/linux/completion.h         | 18 +----------------
+ include/linux/completion_types.h   | 31 ++++++++++++++++++++++++++++++
+ include/linux/cpufreq.h            |  2 +-
+ include/linux/edac.h               |  2 +-
+ include/linux/firewire.h           |  2 +-
+ include/linux/greybus/operation.h  |  2 +-
+ include/linux/hw_random.h          |  2 +-
+ include/linux/hyperv.h             |  2 +-
+ include/linux/livepatch.h          |  2 +-
+ include/linux/mailbox_controller.h |  2 +-
+ include/linux/memremap.h           |  2 +-
+ include/linux/mfd/cs42l43.h        |  2 +-
+ include/linux/mfd/da9052/da9052.h  |  2 +-
+ include/linux/mfd/wm8350/core.h    |  2 +-
+ include/linux/mlx4/device.h        |  2 +-
+ include/linux/mlx5/cq.h            |  1 +
+ include/linux/mlx5/driver.h        |  2 +-
+ include/linux/mmc/core.h           |  2 +-
+ include/linux/mtd/onenand.h        |  2 +-
+ include/linux/mtd/sh_flctl.h       |  2 +-
+ include/linux/ntb.h                |  2 +-
+ include/linux/pm.h                 |  2 +-
+ include/linux/rcupdate_wait.h      |  2 +-
+ include/linux/sched/signal.h       |  2 +-
+ include/linux/soc/qcom/qmi.h       |  2 +-
+ include/linux/spi/spi.h            |  2 +-
+ include/linux/srcutree.h           |  2 +-
+ include/linux/usb.h                |  2 +-
+ include/net/inet_frag.h            |  2 +-
+ include/rdma/ib_sa.h               |  2 +-
+ include/rdma/restrack.h            |  2 +-
+ include/target/target_core_base.h  |  2 +-
+ include/xen/xenbus.h               |  2 +-
+ 37 files changed, 67 insertions(+), 50 deletions(-)
+ create mode 100644 include/linux/completion_types.h
 
-diff --git a/include/linux/swait.h b/include/linux/swait.h
-index 68c2e30edb1c..4a4a240b337e 100644
---- a/include/linux/swait.h
-+++ b/include/linux/swait.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_SWAIT_H
- #define _LINUX_SWAIT_H
- 
-+#include <linux/swait_types.h>
+diff --git a/drivers/target/target_core_xcopy.c b/drivers/target/target_core_xcopy.c
+index fafa738f0f7e..df06ec0f75fe 100644
+--- a/drivers/target/target_core_xcopy.c
++++ b/drivers/target/target_core_xcopy.c
+@@ -16,6 +16,7 @@
+ #include <linux/spinlock.h>
  #include <linux/list.h>
- #include <linux/stddef.h>
- #include <linux/spinlock_types.h>
-@@ -38,18 +39,6 @@
-  * wait queues in most cases.
+ #include <linux/rculist.h>
++#include <linux/completion.h>
+ #include <linux/configfs.h>
+ #include <linux/ratelimit.h>
+ #include <linux/workqueue.h>
+diff --git a/include/drm/drm_audio_component.h b/include/drm/drm_audio_component.h
+index 5a4cd1fa8e2a..d4e95bca4d10 100644
+--- a/include/drm/drm_audio_component.h
++++ b/include/drm/drm_audio_component.h
+@@ -4,7 +4,7 @@
+ #ifndef _DRM_AUDIO_COMPONENT_H_
+ #define _DRM_AUDIO_COMPONENT_H_
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/types.h>
+ 
+ struct drm_audio_component;
+diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+index 05591cc987c2..9a89f72a3bac 100644
+--- a/include/drm/gpu_scheduler.h
++++ b/include/drm/gpu_scheduler.h
+@@ -26,7 +26,7 @@
+ 
+ #include <drm/spsc_queue.h>
+ #include <linux/dma-fence.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/xarray.h>
+ #include <linux/wait_types.h>
+ #include <linux/workqueue_types.h>
+diff --git a/include/linux/ceph/osd_client.h b/include/linux/ceph/osd_client.h
+index 289034e8854f..fa926dcdf940 100644
+--- a/include/linux/ceph/osd_client.h
++++ b/include/linux/ceph/osd_client.h
+@@ -3,7 +3,7 @@
+ #define _FS_CEPH_OSD_CLIENT_H
+ 
+ #include <linux/bitrev.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/kref_types.h>
+ #include <linux/mempool.h>
+ #include <linux/rbtree_types.h>
+diff --git a/include/linux/completion.h b/include/linux/completion.h
+index fb2915676574..a57ffe2836b9 100644
+--- a/include/linux/completion.h
++++ b/include/linux/completion.h
+@@ -9,25 +9,9 @@
+  * See kernel/sched/completion.c for details.
   */
  
--struct task_struct;
--
--struct swait_queue_head {
--	raw_spinlock_t		lock;
--	struct list_head	task_list;
++#include <linux/completion_types.h>
+ #include <linux/swait.h>
+ 
+-/*
+- * struct completion - structure used to maintain state for a "completion"
+- *
+- * This is the opaque structure used to maintain the state for a "completion".
+- * Completions currently use a FIFO to queue threads that have to wait for
+- * the "completion" event.
+- *
+- * See also:  complete(), wait_for_completion() (and friends _timeout,
+- * _interruptible, _interruptible_timeout, and _killable), init_completion(),
+- * reinit_completion(), and macros DECLARE_COMPLETION(),
+- * DECLARE_COMPLETION_ONSTACK().
+- */
+-struct completion {
+-	unsigned int done;
+-	struct swait_queue_head wait;
 -};
 -
--struct swait_queue {
--	struct task_struct	*task;
--	struct list_head	task_list;
--};
--
- #define __SWAITQUEUE_INITIALIZER(name) {				\
- 	.task		= current,					\
- 	.task_list	= LIST_HEAD_INIT((name).task_list),		\
-diff --git a/include/linux/swait_types.h b/include/linux/swait_types.h
+ #define init_completion_map(x, m) init_completion(x)
+ static inline void complete_acquire(struct completion *x) {}
+ static inline void complete_release(struct completion *x) {}
+diff --git a/include/linux/completion_types.h b/include/linux/completion_types.h
 new file mode 100644
-index 000000000000..316038879a37
+index 000000000000..032192c95462
 --- /dev/null
-+++ b/include/linux/swait_types.h
-@@ -0,0 +1,20 @@
++++ b/include/linux/completion_types.h
+@@ -0,0 +1,31 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_SWAIT_TYPES_H
-+#define _LINUX_SWAIT_TYPES_H
++#ifndef __LINUX_COMPLETION_TYPES_H
++#define __LINUX_COMPLETION_TYPES_H
 +
-+#include <linux/list.h>
-+#include <linux/spinlock_types.h>
++/*
++ * (C) Copyright 2001 Linus Torvalds
++ *
++ * Atomic wait-for-completion handler data structures.
++ * See kernel/sched/completion.c for details.
++ */
 +
-+struct task_struct;
++#include <linux/swait_types.h>
 +
-+struct swait_queue_head {
-+	raw_spinlock_t		lock;
-+	struct list_head	task_list;
++/*
++ * struct completion - structure used to maintain state for a "completion"
++ *
++ * This is the opaque structure used to maintain the state for a "completion".
++ * Completions currently use a FIFO to queue threads that have to wait for
++ * the "completion" event.
++ *
++ * See also:  complete(), wait_for_completion() (and friends _timeout,
++ * _interruptible, _interruptible_timeout, and _killable), init_completion(),
++ * reinit_completion(), and macros DECLARE_COMPLETION(),
++ * DECLARE_COMPLETION_ONSTACK().
++ */
++struct completion {
++	unsigned int done;
++	struct swait_queue_head wait;
 +};
 +
-+struct swait_queue {
-+	struct task_struct	*task;
-+	struct list_head	task_list;
-+};
-+
-+#endif /* _LINUX_SWAIT_TYPES_H */
++#endif
+diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+index a56eae4b0787..1087f325d056 100644
+--- a/include/linux/cpufreq.h
++++ b/include/linux/cpufreq.h
+@@ -11,7 +11,7 @@
+ #include <linux/clk.h>
+ #include <linux/cpu.h>
+ #include <linux/cpumask.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/kobject_types.h>
+ #include <linux/notifier.h>
+ #include <linux/of.h>
+diff --git a/include/linux/edac.h b/include/linux/edac.h
+index f939d5fad491..7b78403cac40 100644
+--- a/include/linux/edac.h
++++ b/include/linux/edac.h
+@@ -14,7 +14,7 @@
+ 
+ #include <linux/atomic.h>
+ #include <linux/device.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/workqueue_types.h>
+ #include <linux/debugfs.h>
+ #include <linux/numa.h>
+diff --git a/include/linux/firewire.h b/include/linux/firewire.h
+index feef7e09b60a..a81e31472530 100644
+--- a/include/linux/firewire.h
++++ b/include/linux/firewire.h
+@@ -2,7 +2,7 @@
+ #ifndef _LINUX_FIREWIRE_H
+ #define _LINUX_FIREWIRE_H
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/device.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/kernel.h>
+diff --git a/include/linux/greybus/operation.h b/include/linux/greybus/operation.h
+index c49053e5707d..8d849f4ee99f 100644
+--- a/include/linux/greybus/operation.h
++++ b/include/linux/greybus/operation.h
+@@ -9,7 +9,7 @@
+ #ifndef __OPERATION_H
+ #define __OPERATION_H
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/kref_types.h>
+ #include <linux/timer_types.h>
+ #include <linux/types.h>
+diff --git a/include/linux/hw_random.h b/include/linux/hw_random.h
+index 96cad10d0201..69838419f2e7 100644
+--- a/include/linux/hw_random.h
++++ b/include/linux/hw_random.h
+@@ -12,7 +12,7 @@
+ #ifndef LINUX_HWRANDOM_H_
+ #define LINUX_HWRANDOM_H_
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/types.h>
+ #include <linux/list.h>
+ #include <linux/kref_types.h>
+diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+index 249c4eb67f38..60ed23c4ca17 100644
+--- a/include/linux/hyperv.h
++++ b/include/linux/hyperv.h
+@@ -18,7 +18,7 @@
+ #include <linux/types.h>
+ #include <linux/scatterlist.h>
+ #include <linux/list.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/device.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/interrupt.h>
+diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
+index 9b9b38e89563..5277d2a768eb 100644
+--- a/include/linux/livepatch.h
++++ b/include/linux/livepatch.h
+@@ -11,7 +11,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/ftrace.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/list.h>
+ #include <linux/livepatch_sched.h>
+ 
+diff --git a/include/linux/mailbox_controller.h b/include/linux/mailbox_controller.h
+index 2006897fdaf9..c59f13cb5f28 100644
+--- a/include/linux/mailbox_controller.h
++++ b/include/linux/mailbox_controller.h
+@@ -5,7 +5,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/hrtimer_types.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ 
+ struct device;
+ struct of_phandle_args;
+diff --git a/include/linux/memremap.h b/include/linux/memremap.h
+index eea01060a6b7..767b64ab667b 100644
+--- a/include/linux/memremap.h
++++ b/include/linux/memremap.h
+@@ -2,7 +2,7 @@
+ #ifndef _LINUX_MEMREMAP_H_
+ #define _LINUX_MEMREMAP_H_
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/mmzone.h>
+ #include <linux/range.h>
+ #include <linux/ioport.h>
+diff --git a/include/linux/mfd/cs42l43.h b/include/linux/mfd/cs42l43.h
+index 00e074b8c41f..e09e95ce1538 100644
+--- a/include/linux/mfd/cs42l43.h
++++ b/include/linux/mfd/cs42l43.h
+@@ -9,7 +9,7 @@
+ #ifndef CS42L43_CORE_EXT_H
+ #define CS42L43_CORE_EXT_H
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/mutex_types.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+diff --git a/include/linux/mfd/da9052/da9052.h b/include/linux/mfd/da9052/da9052.h
+index 76feb3a7066d..ade7e7ca0729 100644
+--- a/include/linux/mfd/da9052/da9052.h
++++ b/include/linux/mfd/da9052/da9052.h
+@@ -13,7 +13,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/list.h>
+ #include <linux/mfd/core.h>
+ 
+diff --git a/include/linux/mfd/wm8350/core.h b/include/linux/mfd/wm8350/core.h
+index dc6ff85cb5b0..25379c7f94c4 100644
+--- a/include/linux/mfd/wm8350/core.h
++++ b/include/linux/mfd/wm8350/core.h
+@@ -11,7 +11,7 @@
+ #include <linux/kernel.h>
+ #include <linux/mutex_types.h>
+ #include <linux/interrupt.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/regmap.h>
+ 
+ #include <linux/mfd/wm8350/audio.h>
+diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
+index 27f42f713c89..18d71b808bc2 100644
+--- a/include/linux/mlx4/device.h
++++ b/include/linux/mlx4/device.h
+@@ -36,7 +36,7 @@
+ #include <linux/auxiliary_bus.h>
+ #include <linux/if_ether.h>
+ #include <linux/pci.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/radix-tree.h>
+ #include <linux/cpu_rmap.h>
+ #include <linux/crash_dump.h>
+diff --git a/include/linux/mlx5/cq.h b/include/linux/mlx5/cq.h
+index cb15308b5cb0..7acfefd41950 100644
+--- a/include/linux/mlx5/cq.h
++++ b/include/linux/mlx5/cq.h
+@@ -35,6 +35,7 @@
+ 
+ #include <linux/mlx5/driver.h>
+ #include <linux/refcount.h>
++#include <linux/completion.h>
+ 
+ struct mlx5_core_cq {
+ 	u32			cqn;
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index 7d47499ce75a..d9b99aca9e72 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -34,7 +34,7 @@
+ #define MLX5_DRIVER_H
+ 
+ #include <linux/kernel.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/pci.h>
+ #include <linux/irq.h>
+ #include <linux/spinlock_types.h>
+diff --git a/include/linux/mmc/core.h b/include/linux/mmc/core.h
+index 2c7928a50907..54cee0bf305d 100644
+--- a/include/linux/mmc/core.h
++++ b/include/linux/mmc/core.h
+@@ -5,7 +5,7 @@
+ #ifndef LINUX_MMC_CORE_H
+ #define LINUX_MMC_CORE_H
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/types.h>
+ 
+ struct mmc_data;
+diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
+index 7ebd8180c617..43e0f8812f52 100644
+--- a/include/linux/mtd/onenand.h
++++ b/include/linux/mtd/onenand.h
+@@ -10,7 +10,7 @@
+ #define __LINUX_MTD_ONENAND_H
+ 
+ #include <linux/spinlock_types.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/mtd/flashchip.h>
+ #include <linux/mtd/onenand_regs.h>
+ #include <linux/mtd/bbm.h>
+diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+index 78fc2d4218c8..2f48438bf2a3 100644
+--- a/include/linux/mtd/sh_flctl.h
++++ b/include/linux/mtd/sh_flctl.h
+@@ -8,7 +8,7 @@
+ #ifndef __SH_FLCTL_H__
+ #define __SH_FLCTL_H__
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+diff --git a/include/linux/ntb.h b/include/linux/ntb.h
+index 191b524e5c0d..b8a8be4052e1 100644
+--- a/include/linux/ntb.h
++++ b/include/linux/ntb.h
+@@ -56,7 +56,7 @@
+ #ifndef _NTB_H_
+ #define _NTB_H_
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
+ 
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index c1533ce86893..34cf20dd1ad1 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -15,7 +15,7 @@
+ #include <linux/spinlock_types.h>
+ #include <linux/wait_types.h>
+ #include <linux/hrtimer_types.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ 
+ #ifdef CONFIG_PM_CLK
+ #include <linux/mutex_types.h>
+diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
+index d07f0848802e..a28b4fce69a5 100644
+--- a/include/linux/rcupdate_wait.h
++++ b/include/linux/rcupdate_wait.h
+@@ -7,7 +7,7 @@
+  */
+ 
+ #include <linux/rcupdate.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/sched.h>
+ 
+ /*
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 17436f950ec2..565d3e13efd3 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -7,7 +7,7 @@
+ #include <linux/sched.h>
+ #include <linux/sched/jobctl.h>
+ #include <linux/sched/task.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/refcount.h>
+ #include <linux/pid.h>
+ #include <linux/posix-timers_types.h>
+diff --git a/include/linux/soc/qcom/qmi.h b/include/linux/soc/qcom/qmi.h
+index 900c4b3540cc..d2e725b1864b 100644
+--- a/include/linux/soc/qcom/qmi.h
++++ b/include/linux/soc/qcom/qmi.h
+@@ -6,7 +6,7 @@
+ #ifndef __QMI_HELPERS_H__
+ #define __QMI_HELPERS_H__
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/idr.h>
+ #include <linux/list.h>
+ #include <linux/qrtr.h>
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 586a6ac21535..8f3b79a0d5d1 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -8,7 +8,7 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/bits.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/device.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/kthread.h>
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 74edc15cfcf3..8b1747a66608 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -12,7 +12,7 @@
+ #define _LINUX_SRCU_TREE_H
+ 
+ #include <linux/rcu_node_tree.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/mutex_types.h>
+ #include <linux/workqueue.h>
+ 
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index d7e2fa3d888d..a994f8a5edfd 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -18,7 +18,7 @@
+ #include <linux/kref_types.h>	/* for struct kref */
+ #include <linux/device.h>	/* for struct device */
+ #include <linux/fs.h>		/* for struct file_operations */
+-#include <linux/completion.h>	/* for struct completion */
++#include <linux/completion_types.h>	/* for struct completion */
+ #include <linux/sched.h>	/* for current && schedule_timeout */
+ #include <linux/mutex_types.h>	/* for struct mutex */
+ #include <linux/sprintf.h>
+diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
+index 153960663ce4..eafb78c7cd76 100644
+--- a/include/net/inet_frag.h
++++ b/include/net/inet_frag.h
+@@ -3,7 +3,7 @@
+ #define __NET_FRAG_H__
+ 
+ #include <linux/rhashtable-types.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/in6.h>
+ #include <linux/rbtree_types.h>
+ #include <linux/refcount.h>
+diff --git a/include/rdma/ib_sa.h b/include/rdma/ib_sa.h
+index b46353fc53bf..fd6f7630e91e 100644
+--- a/include/rdma/ib_sa.h
++++ b/include/rdma/ib_sa.h
+@@ -8,7 +8,7 @@
+ #ifndef IB_SA_H
+ #define IB_SA_H
+ 
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/compiler.h>
+ 
+ #include <linux/atomic.h>
+diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
+index f5a4ae56a1d9..48aba5db7544 100644
+--- a/include/rdma/restrack.h
++++ b/include/rdma/restrack.h
+@@ -9,7 +9,7 @@
+ #include <linux/typecheck.h>
+ #include <linux/sched.h>
+ #include <linux/kref_types.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/sched/task.h>
+ #include <uapi/rdma/rdma_netlink.h>
+ 
+diff --git a/include/target/target_core_base.h b/include/target/target_core_base.h
+index 97099a5e3f6c..5b9156adceca 100644
+--- a/include/target/target_core_base.h
++++ b/include/target/target_core_base.h
+@@ -7,7 +7,7 @@
+ #include <linux/sbitmap.h>
+ #include <linux/percpu-refcount.h>
+ #include <linux/semaphore.h>     /* struct semaphore */
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ 
+ #define TARGET_CORE_VERSION		"v5.0"
+ 
+diff --git a/include/xen/xenbus.h b/include/xen/xenbus.h
+index d0f2e0a134be..a7326aa58680 100644
+--- a/include/xen/xenbus.h
++++ b/include/xen/xenbus.h
+@@ -38,7 +38,7 @@
+ #include <linux/notifier.h>
+ #include <linux/export.h>
+ #include <linux/fs.h>
+-#include <linux/completion.h>
++#include <linux/completion_types.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ #include <linux/semaphore.h>
 -- 
 2.39.2
 
