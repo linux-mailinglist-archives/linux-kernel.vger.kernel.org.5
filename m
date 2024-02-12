@@ -1,152 +1,122 @@
-Return-Path: <linux-kernel+bounces-62127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293C4851BEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 52558851BF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 270F9B270B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:47:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC3EDB27DAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:47:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974AB3F9D7;
-	Mon, 12 Feb 2024 17:46:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D589D3F9E6;
+	Mon, 12 Feb 2024 17:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UHgbx6Bb"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="P3DFtDVk"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B1B3F9CE
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 17:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F053F9CC;
+	Mon, 12 Feb 2024 17:47:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707760001; cv=none; b=bSjElvLanzZoVFkI6Ov9No6PTIfax1VhfVIWR/9BOq78gMYfhYxZIb+K+pBPvn4ytFpYS6imSrUpNIserz94xe+BkO60ej8DuI4uT0Dsa74IibK/nEwGg5HVhLHmhy87EuII0Ff6mppvoJajBtJeXwStw5w1KA3tRd5kE856SG4=
+	t=1707760043; cv=none; b=BSyStFC+Wrc/y+LcDABQv40EMMiO2Isv6iavjm0qUJ0T3GKtA2Yvu6PNK6R+cC1ImaxqokSLpn1QwlKBK67krCnS4H+DLavSCVURP87bAQHUTNhws/eKRKyJs7YcFQTjszdXgTTy260M+rRKHPEBRNLDpfeQ0nch+d1Ru9LpCLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707760001; c=relaxed/simple;
-	bh=CVNLoBTpg3SuaSY3T7L6dyU4fC9xnaUQyseVWU7yx70=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=SQCWCyYMbnGOM8sljbEj5gKotellbqsp8y20U5aUdKgHGySTt2xDp02nEVVNgfLC80xBb1uQ3MBKRWLVKUa4Ak59AL4nSuLKAPDbYUxBX/PyVpLqu8SwECFkSqjQYNal0s6dcVcxM5Ug3mQaOlkb8WO3nXlVJF0ZjkrIvMKSomc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UHgbx6Bb; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707759999;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CVNLoBTpg3SuaSY3T7L6dyU4fC9xnaUQyseVWU7yx70=;
-	b=UHgbx6BbnjbNYs+ohegzBhqpL6X+8W6y35iIfSpL92Y48XlaFO9oToLFsR/VYarVW9Xxo6
-	DGg41vERhWLQikOYt2fHPrHqEbVZD1eH+Mgf80fNcZtd4Ybx2DsYb0kRI4uxg75U97Hw/O
-	CcEEhEI1iMnokiAVYMxKbVmEkFMikVI=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-604-hZQ24OJhPZ2NVfXNOHtgRA-1; Mon, 12 Feb 2024 12:46:37 -0500
-X-MC-Unique: hZQ24OJhPZ2NVfXNOHtgRA-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d101f2e09fso5990661fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:46:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707759996; x=1708364796;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CVNLoBTpg3SuaSY3T7L6dyU4fC9xnaUQyseVWU7yx70=;
-        b=lRkKJm1qMnTuBG3/p5mvk3+niELIeIGviTCt3OvahxJi6zQ2dvrGXBkY5M2/dUWt1g
-         K7YrZbNGvlsFmUOgVrFwG1teD5q+tN4p3m4DqyoorhL5uaIIlk4FFh538HJjpb0svCcA
-         BAkEvcLMtcbtRb75PnLYL6FlOL08+5wBSUc80+dyMXeUSLPyqoFrmnILiWqphZn1/2BU
-         7Uo7NYn7xmcbZes/Az3KGbVeWJvj66YENPPLywIm7H3mX4mWhQ9nl4eaVI/2Y/VsUfCg
-         zuU3iX8g/4LppJC+tgWAv5xQ1ihckW6paaGN8NjCBbkWM+JdGX8bxkBj8Gfh77oGVYj1
-         DLow==
-X-Gm-Message-State: AOJu0YzR4H5t+Lw8VTzjeL1YNbOEKrq5tJZJDYEPQhR44it+qo7jGYOg
-	uAv7kgiUGJaivstDtYjfQUeOnsmf/d+XPXcaj68bqFT6b4XYvLvq48imdFrJs/LgItUH9sk2YhB
-	3Z+VFkD55ARybqXSJms8GVPGEFF3USWybu6jqMvI/E7GsWNijT6wqdE64zhWa/w==
-X-Received: by 2002:a2e:96d7:0:b0:2d0:9f3f:7454 with SMTP id d23-20020a2e96d7000000b002d09f3f7454mr4537353ljj.23.1707759996103;
-        Mon, 12 Feb 2024 09:46:36 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEDLaOFvqDM4HNn1dbpMZ9TA7ctF0dgjgp2YSVWd/JfhR1n+VdcVyLbB+7+AP3nkXqAaDCXgQ==
-X-Received: by 2002:a2e:96d7:0:b0:2d0:9f3f:7454 with SMTP id d23-20020a2e96d7000000b002d09f3f7454mr4537328ljj.23.1707759995656;
-        Mon, 12 Feb 2024 09:46:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXTyxnX7RzEvixrd6bUAlXbwyVs3W0zBmUf9jJ39surd7MmbJS2lkLYS5l0/+iB2U+XYD4n3sYblzbkOXb6S+oYnDg3wUkn6ciQ/6eX/w2chonC7hWY1TigDO15pkD9rstm2hi6AWK+fJu6IS9NiUi73JpwUEHHs9G2o5rU7P4xGS5Pb6enIHJEKx9rTArFhitByK9sOZHFpBe50yt1tGYcw5JtDsLNzadXE9jKs5ea5qllU79y9M5RNOvms6yWqxp6+fya2BsRzEMouWNFLCq15EOIKIl/ACTcCEXn4BHLnKCkTtM+RNPN9xFcpjyKuN5TFWsXAJVm2VSkyE8gsXJb27j0GtVOydZvbUvgcxyUMctXLeEj1ForVbvJ5FFQZUSngYvjsMGTuoAhz4YG/99py0ffM1Lhm5jRmSvI1Qtp2bvps1iacY+2huSS8dmRtxGX5FLZ4xHJ1jnYLdKQF1FcCFSq8sN1UL30PmURAv3S6tkHNplmWgPGypF6xdivX5XFa8cbmeGXs3e2//wdfKBIxIjAGbtXsRHJRaOKRr+hTrFtQ/Sl1QnSu3eV9JRBMnts2My0ZZCqOmMfl26hyhJB9bzGNhzoPi6AkI2XlCjAwcA/0/vpfHCwn5wuDso=
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id fd9-20020a056402388900b005607f899175sm2968463edb.70.2024.02.12.09.46.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 09:46:35 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 0396C10F55AE; Mon, 12 Feb 2024 18:46:34 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jiri Kosina
- <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
- <shuah@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
-In-Reply-To: <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
-References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
- <87bk8pve2z.fsf@toke.dk>
- <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
- <875xyxva9u.fsf@toke.dk>
- <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 12 Feb 2024 18:46:34 +0100
-Message-ID: <87r0hhfudh.fsf@toke.dk>
+	s=arc-20240116; t=1707760043; c=relaxed/simple;
+	bh=OybOR9kPB3GYPxQJUA5gaQ/HEOlZCcTK9qUs25f+0yI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=k4NbIM5wYadpLJX5PTmkjsD6HmKv6202Gi5v42DnYPgC9iUmtbl4gHd92W5ztJG/baVoD+91TewFHOSd09agNOLEz0XXmXhHjs1D6pueN08bX6p2Ha9RSMcQYqQxoLLpJO33faR20YwD030kok2qeKjUx8yeG+HRQfx9JVOqeVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=P3DFtDVk; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41CGwOcI009214;
+	Mon, 12 Feb 2024 17:47:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Fgr6iY1ALVYW9Zu2xd74cVCtBaZ1e9imGCIaF5VTL4M=; b=P3
+	DFtDVk+HAqQHXwUvM8T90+5WkO5v9aCuZDglBlpiiL1Vngr50CPpGS4SO8ukpsKz
+	wYGYtFp6IRrf8bi9rxInt7DghqeejpCRPkpI+X8OOuhC2StRwEeHUhrhA+pvbSBy
+	1V4S7Tl6xYqrFQwbMUHnz34F+EYqtX5idVWLUUoNMGqSMniSbWSfxL/6XTXDYE/Z
+	O40I2+ew5xF7gfD8uD47PnBlXDQYYHjzPAJY1DwlXLpcrOeSxPEYl3/K8VS8QrJC
+	eZNpHsTB1siAjHc1LEkhXdqQFicXvb907oXlHX8Dm0CEc6tE2Uiy/kwY7OXicWfJ
+	zIquQs5wfhH72nPE0rZA==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7nk90ceu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 17:47:17 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41CHlHw5004519
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 17:47:17 GMT
+Received: from [10.110.51.3] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 12 Feb
+ 2024 09:47:14 -0800
+Message-ID: <989fa518-4f02-4725-97a4-2f711126939d@quicinc.com>
+Date: Mon, 12 Feb 2024 09:47:09 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] soc: qcom: llcc: Check return value on Broadcast_OR
+ reg read
+Content-Language: en-US
+To: Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Abel Vesa
+	<abel.vesa@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>, Elliot Berman <quic_eberman@quicinc.com>
+References: <20240210011415.3440236-1-quic_uchalich@quicinc.com>
+ <cfc42c1f-ff17-4d66-8e88-cbd4230e7d7b@quicinc.com>
+From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+In-Reply-To: <cfc42c1f-ff17-4d66-8e88-cbd4230e7d7b@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: H_zfbY_f6YAQn6GggDBPV9NNdtVFcC3q
+X-Proofpoint-ORIG-GUID: H_zfbY_f6YAQn6GggDBPV9NNdtVFcC3q
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_14,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 mlxlogscore=503 impostorscore=0
+ clxscore=1015 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401310000 definitions=main-2402120135
 
-Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+On 2/9/2024 5:30 PM, Jeff Johnson wrote:
+> On 2/9/2024 5:14 PM, Unnathi Chalicheemala wrote:
+>> Commit c72ca343f911 ("soc: qcom: llcc: Add v4.1 HW version support")
+>> introduced a new 4.1 if statement in llcc_update_act_ctrl() without
+>> considering that ret might be overwritten. So, adding return value check
+> 
+> nit: s/adding/add/ (use imperative voice)
+> 
 
-[...]
->> IIUC, the bpf_timer callback is just a function (subprog) from the
->> verifier PoV, so it is verified as whatever program type is creating the
->> timer. So in other words, as long as you setup the timer from inside a
->> tracing prog type, you should have access to all the same kfuncs, I
->> think?
->
-> Yep, you are correct. But as mentioned above, I am now in trouble with
-> the sleepable state:
-> - I need to call timer_start() from a non sleepable tracing function
-> (I'm in hard IRQ when dealing with a physical device)
-> - but then, ideally, the callback function needs to be tagged as a
-> sleepable one, so I can export my kfuncs which are doing kzalloc and
-> device IO as such.
->
-> However, I can not really teach the BPF verifier to do so:
-> - it seems to check for the callback first when it is loaded, and
-> there is no SEC() equivalent for static functions
-> - libbpf doesn't have access to the callback as a prog as it has to be
-> a static function, and thus isn't exported as a full-blown prog.
-> - the verifier only checks for the callback when dealing with
-> BPF_FUNC_timer_set_callback, which doesn't have a "flag" argument
-> (though the validation of the callback has already been done while
-> checking it first, so we are already too late to change the sleppable
-> state of the callback)
->
-> Right now, the only OK-ish version I have is declaring the kfunc as
-> non-sleepable, but checking that we are in a different context than
-> the IRQ of the initial event. This way, I am not crashing if this
-> function is called from the initial IRQ, but will still crash if used
-> outside of the hid context.
->
-> This is not satisfactory, but I feel like it's going to be hard to
-> teach the verifier that the callback function is sleepable in that
-> case (maybe we could suffix the callback name, like we do for
-> arguments, but this is not very clean either).
+Ack.
 
-The callback is only set once when the timer is first setup; I *think*
-it works to do the setup (bpf_timer_init() and bpf_timer_set_callback())
-in the context you need (from a sleepable prog), but do the arming
-(bpf_timer_start()) from a different program that is not itself sleepable?
+>> after Broadcast_OR register read in llcc_update_act_ctrl().
+>>
+>> Fixes: c72ca343f911 ("soc: qcom: llcc: Add v4.1 HW version support">
+> 
+> remove this blank line -- the Fixes tag should be grouped with the other
+> tags
+> 
 
--Toke
+Ack. I'll post v3 with these changes, thanks Jeff.
 
+>> Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+>> Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
 
