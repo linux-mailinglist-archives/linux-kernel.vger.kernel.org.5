@@ -1,99 +1,114 @@
-Return-Path: <linux-kernel+bounces-62337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41A1D851EB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:33:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF871851EBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:37:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CE761C224D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:33:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B9DEB220B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 477661EB3F;
-	Mon, 12 Feb 2024 20:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C151405FB;
+	Mon, 12 Feb 2024 20:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tbTxPzGp"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NjoZL6iY"
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE22AA48;
-	Mon, 12 Feb 2024 20:33:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246D01EB21
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707769992; cv=none; b=C7qa7LgHhTEOvSSmNJVFJHXOWjMYWBZFpJxdkRr4yZDRRiHMtNNY+ozxindsTD/A1d+m7rnBi4jN4+LiaaCiLdsczFM2yveAgi7ZYoG56VcKADn5XADDrQYPCi7l1nIXBfYsqLBtJSv+O06GskyCUkTTPBF+QRHz/NG9nWg8664=
+	t=1707770216; cv=none; b=Vdn6+bCr9Vyipd3HEAUb52j7W7Z9u+qM5zgyiKNEdmNundhS4+7MfrN2hsfM7IWdKVwf2c7C375Qa5rgCvdFfYEO8HnAREkdsLAH7caFW7ucpk44/dvAF0nm2EFI5npWhbpGt+IEijOs5ufWp2sv1Bswzdgm9mL0/UH9tobwMSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707769992; c=relaxed/simple;
-	bh=nJUt4pHJ8BpD1u4EJKsxi9gTeO8e+eSF+KEnrBvsl7k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BDbJ8ApbmC75cnIfLBkkhHat1GHKUNkUM6ZwG6UZTh9rifMsjEtwz+yTX2tjxBYRdmeUw7JWiIRXi7Z9JvZWOlnURhyXByvCcs9ycRcrKyJRFMzQXgzOjp6GyLpxmtNkcOwSbVE8MTwY8br2oeItEpCym4cjxo+BJVWNAlTBSsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=tbTxPzGp; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=cB5uI6Uc3sHMEabW/GpnBNsAvTUG2EhVDqN17ZdYZDk=; b=tbTxPzGpCT6Xm4uWLt66esQI+h
-	mFce4aLnEh2/erOnvVwfiyz28Tt5b8YTC9hta3yy3mpw+VlZX7SeOtCnjtQGqbt21zyOYI3d6eM1g
-	TqGC7/P0Vb7wlEx92mv6xOWHIvJcvUfxdMZ9agb+gAXj5sKS1RAZF6z6kDCnjlnmapjPNIEuM2MVK
-	m1tG/nk2OhaXrY1wDOyvWt5C1yA2zmVsBG12NNF8mxA+C0P65GVL4JZVaxpPQByQ4HBL+y6E4CgMZ
-	cfR28tIH/X+8JnzCm4Pglev3Fl1GhAkjI7Mr5OYxjufZ64N3LohcZfrB1aw9stQ3lPxURYNR+Uhdi
-	9+Zaziew==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZczF-00000006sNd-18m4;
-	Mon, 12 Feb 2024 20:33:09 +0000
-Message-ID: <ea0554f6-e0f6-44eb-b98a-d25772273f6e@infradead.org>
-Date: Mon, 12 Feb 2024 12:33:08 -0800
+	s=arc-20240116; t=1707770216; c=relaxed/simple;
+	bh=/Qq/MTNXhRSFGfhT1MpQL4wU8zE0C84XuaSbfhwx1Oc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NdSQ84DftKvLcdeumj5d3Vj29pDzijTpNNflRD/cGUDmsvGd+istDMOiIKO2NNwTTtQPxd9VNHefeHZ90EeYVQtEzebP46orbMhm+YumjVOxoe+X5As6EF7VLk1dQwfLLspAP1L8rYSdXjR/y4nGdVj9fR4x6DW111owJ4GVa9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NjoZL6iY; arc=none smtp.client-ip=209.85.217.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-46d2085eeebso1692801137.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:36:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707770214; x=1708375014; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/Qq/MTNXhRSFGfhT1MpQL4wU8zE0C84XuaSbfhwx1Oc=;
+        b=NjoZL6iYPpuIavLjRBXRakQeIQfNcFALN0lIhvqVa/PtYSrsWMHhX5ZVPtdo6eAnyM
+         uen9fiFZSvvCnBI21ISLhGYYlFR5ed9JE0rvdOgVL5w0hpibwru1INFBjd/rei1GQp/f
+         grAhkOm25LxpHFELEk8QV5JFPuu3AokXm8WP7nSIInq0OAxIyCJRymaI0y7wWKmoSGnU
+         +ck94XCC5Q/10SY5Egc4aY5cAxLkckFKDqld/fzy3uTe474PombiL+Qes9BgRnzbboHc
+         pmwSjA/hRShCE98aC+ZBeu2H5BSlLJOf8jYt8XU1QhE5iHIPcJj6jzHmC0jqTrGhMqY0
+         Cqhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707770214; x=1708375014;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/Qq/MTNXhRSFGfhT1MpQL4wU8zE0C84XuaSbfhwx1Oc=;
+        b=oCkv716DMgCbvNlVHTQFr+zACPkBDMrKUC8FvfqEY9uxxCkNG1z5YPlRxLIKNOJnzC
+         ZwmNztEj4RaH+JN0Tl+ODrb/b9pgB2AjSVcSPIOCLHIz6rI2zqtIzL5iqFVEQjeTxz63
+         J+TxUODerm+tVeFMHWoTYvwWCf63ZERDZ/MgqDGi9K0w0Z+YMlKhxshkmBzE1wPazGv1
+         sUQdvOOymck4R9Cbi7SBJSwn+DZgH0m1bOXuVThyPRG43zfhezTh70hpWKCgGLcGxbG/
+         qgxfEigVsbz60nCW8FU/9MSPVUI2DxikybpQbGedXpdRM6vjfj74yPRBkOjTjxQpFdWF
+         00NQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3hnD2FjGL9mRH1qFgwwR7+jU5Ad/cXiZeLik/db2X7GPXOZz47vIE6yWhbl9LMq+YNmPelfLGM9+D9+RoWKhs33nCLVO9FtEgmmDB
+X-Gm-Message-State: AOJu0Yy29zH2WsppPbgPPSbaxaBaQgj66Bx7Vn2UNJpORiXR3udeBE4w
+	KrxhzuytcEVHliBTl+exG05YDhcrEoC6bVKX0uZm+lTMJGYCs4aAIPo+tn+022xVyvSMJ9eV4eV
+	1vvRRMTsSHkJKBqueICkObmZ5u2wd6SKWKLvj
+X-Google-Smtp-Source: AGHT+IFWndKWzDTOT0x0/4s8Etpblas7Df8C2xR5KB9thOTs6aRnFjIThpiH1ujxZsNIy/J6F6pXaMbg0Ae3jkIJHZ8=
+X-Received: by 2002:a67:e947:0:b0:46e:cadc:f340 with SMTP id
+ p7-20020a67e947000000b0046ecadcf340mr645454vso.7.1707770213832; Mon, 12 Feb
+ 2024 12:36:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Feb 12 (drivers/md/dm-vdo/thread-registry.c
- on arch/loongarch/)
-Content-Language: en-US
-To: Stephen Rothwell <sfr@canb.auug.org.au>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "open list:LOONGARCH" <loongarch@lists.linux.dev>,
- Huacai Chen <chenhuacai@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
- dm-devel@lists.linux.dev, Matthew Sakai <msakai@redhat.com>
-References: <20240212153137.2c37f7e6@canb.auug.org.au>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240212153137.2c37f7e6@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240117-swiftly-parasail-618d62972d6e@spud> <CANiq72mVKCOAuK4Qe+8AHmpkFwyJsVfx8AqB7ccGi3DYpSSWcw@mail.gmail.com>
+ <20240118-implode-delirium-eefdd86e170e@spud> <CANiq72nx1s_nyvPW86jL7eiOxROr18LfOJqNtw8L42CP+gkhRg@mail.gmail.com>
+ <20240125-bucked-payroll-47f82077b262@wendy> <CANiq72k7n0aZrifRRU08N8qLkNe+2EZwijZy5sM7M56n2xYHgQ@mail.gmail.com>
+ <20240125-lazy-thrower-744aacc6632a@wendy> <CANiq72kb+_utZrYHtoKZQtQazikmkjpVUHpTBcaANizduMF5QQ@mail.gmail.com>
+ <20240126-eccentric-jaywalker-3560e2151a92@spud> <CANiq72nu2NXUWYanHZd5EXgX4P_v673EWn6SCRW60Es9naraQQ@mail.gmail.com>
+ <20240209-rage-keg-1b2982cd17d9@spud> <CALNs47sRqAbE=u3=_ciO2oge7Afz-6GBBhW+BwcLRET-TsuxTg@mail.gmail.com>
+ <CAOcBZOSfN8Yefez_Gy_T3_QTAd4HcLzmMCOoR37K2agWD_U_PQ@mail.gmail.com>
+In-Reply-To: <CAOcBZOSfN8Yefez_Gy_T3_QTAd4HcLzmMCOoR37K2agWD_U_PQ@mail.gmail.com>
+From: Sami Tolvanen <samitolvanen@google.com>
+Date: Mon, 12 Feb 2024 12:36:15 -0800
+Message-ID: <CABCJKueFuDkmUmXWbtA3DveQ719vdZx5kBQE1bZ1f6oD5zYNzA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] RISC-V: enable rust
+To: Ramon de C Valle <rcvalle@google.com>
+Cc: Trevor Gross <tmgross@umich.edu>, Conor Dooley <conor@kernel.org>, 
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	linux-riscv@lists.infradead.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
+	rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+	Matthew Maurer <mmaurer@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Feb 12, 2024 at 11:04=E2=80=AFAM Ramon de C Valle <rcvalle@google.c=
+om> wrote:
+>
+> Sorry for the late reply. Sami might be the best person to answer
+> this, but KCFI (not CFI) tests are lowered by passes that are
+> architecture specific (see https://reviews.llvm.org/D119296), so we'd
+> need to add support for RISC-V. There is no additional work required
+> in the Rust compiler besides enabling it for the new target.
 
+LLVM 17 added KCFI support for RISC-V. Sounds like it's just a
+question of whether rustc uses a new enough version of LLVM then?
 
-On 2/11/24 20:31, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20240209:
-> 
-> The mm tree lost its boot failure.
-
-on loongarch:
-
-./drivers/md/dm-vdo/thread-registry.c: In function 'vdo_register_thread':
-./drivers/md/dm-vdo/thread-registry.c:32:28: error: 'current' undeclared (first use in this function)
-   32 |         new_thread->task = current;
-      |                            ^~~~~~~
-./drivers/md/dm-vdo/thread-registry.c:32:28: note: each undeclared identifier is reported only once for each function it appears in
-./drivers/md/dm-vdo/thread-registry.c: In function 'vdo_unregister_thread':
-./drivers/md/dm-vdo/thread-registry.c:61:37: error: 'current' undeclared (first use in this function)
-   61 |                 if (thread->task == current) {
-      |                                     ^~~~~~~
-./drivers/md/dm-vdo/thread-registry.c: In function 'vdo_lookup_thread':
-./drivers/md/dm-vdo/thread-registry.c:84:37: error: 'current' undeclared (first use in this function)
-   84 |                 if (thread->task == current) {
-      |                                     ^~~~~~~
-
-
--- 
-#Randy
+Sami
 
