@@ -1,262 +1,235 @@
-Return-Path: <linux-kernel+bounces-61581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33AF88513E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:57:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0CC08513E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:58:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEE72281605
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:57:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6731728145F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4023A1C5;
-	Mon, 12 Feb 2024 12:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BBF63A29E;
+	Mon, 12 Feb 2024 12:58:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="FErQBZyp"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2042.outbound.protection.outlook.com [40.107.94.42])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="k9bx45/T"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A113A1A3;
-	Mon, 12 Feb 2024 12:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707742620; cv=fail; b=fDb59uBVdSRFaP/YBoknJAgTjtZ4OHwYMH31SNvZemjiYvSs+97GEdE0DpdosoaqkkPWIdyoh7VKkFCevXOplrREVbKMeCjBMKo1mtvta8fwQj8bmUGDX5lC/dAKFTFcOxjBHVj07VHsFLjfpFlB6BmiTHRsjVK34ezJHqD4ijY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707742620; c=relaxed/simple;
-	bh=Mrsivu7FQJj8aBbg2cK17ndUBiJBSOEEsy+lOeH8yzI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=caC9TfdSjKodN8VHMwzhpmD4DZpxj63yUu5wXNFxiSAK5LQyKPzmvlpdx1+Am1jHOVFeq3YaCb6+ZHz7CDGXvgkyuYq13TUp+h0EzJDHrPGbiOK34sdYLIcZeoR48kIkazr00Pubq+ai+FQfROBPFr63h8So5ncIk3ashVc/tWQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=FErQBZyp; arc=fail smtp.client-ip=40.107.94.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ku+mC8wcQkz9y3hQXm362lSdw+PZkZsIE3f4jT40W2iWAEgDN3uvb7PVV2JGye/c0JRAKUYDFD7D4NzKFNbdrZUww0Re9Nifyfcq3g+Ip1X/ugCWrTAsZlz0qgTEr0CNe1l8t+DURe43rRstSR9aQm2zNZKjQXReVsn2b97voif0ySOyQqo1IDuJLFJvXf8w4uvmPR2Bticv/xdwgqZ7sVA4kQxQA1mqVAffAvAIw/DjdnHIkiufwjlmnaGccv1Euchm6aEhjNnH7sfEVjjAINwxGJgoRNwtDWxuAzMCCHqFEqqazIbQDAp8637D3fAa9B32LX4MK4C2yI8Si1Xj/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B2ijP5D0AyjOPwbgv1vcIC8eaaBxrX9ITY0hxjITpYI=;
- b=C7AJIif1jBSKSfqrFWsHqc84pz6mEdKFmLJ6X7TaQGlIwn+S+qYI1AVODtv73pHBYMRT4NmabGryHyyHtqoHBLm5ehQXEDKpahhu+x15NUHurUHYiqi0U+HWnM9ovxVxkbuQLPMIciFTGWePeRZce4pgEk0dQpEs7jkeyeCFBFF+rbCXYG5H0pNgDGujacTzKVpP2me3dcXezEUeI9pmPHuwrVLrEtJB/9sFhpWr6UQ75n5DBZIEpJDEoNOAcRiTsNHlHEsJ9VbY1IturldVS+bExBc/UwBmXQGgvQiqZZmCBMoc6cH6r5Kvy/NjrDR1s1jmFnuL4P9yoT2xxI2QRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B2ijP5D0AyjOPwbgv1vcIC8eaaBxrX9ITY0hxjITpYI=;
- b=FErQBZypBO1B1fbdZnMhOHXKug/mqUzGbmisMWQtPXxLr/Lh+8zS3ygqjImOv5mgasGMHpNKQt+gtB5H8ihhV5udf5gpbPMHuSPgaKAx6hjf5YRrQyktTmXPpJXee2L6GdOwvtJtHmrzqtz/X61N3D6e4itnwOR8CR/CGAcRCgUWsh+9F0ruDhYSWpxDyoGAmh5HI+AxV6/ZKfeX6d45JP4Dx1J30eBlgEEGFwOx2XAHjPrUfR05VPTX1h75A78zCgZuaT23ZVTqPXFlmnmNs6PhDWj+WGA2C2DF0elpsBEY0E4z8yZfEZiHM0T27ATe/Li3+sR2KixNtLquu4gNjQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Mon, 12 Feb
- 2024 12:56:55 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7292.022; Mon, 12 Feb 2024
- 12:56:55 +0000
-Date: Mon, 12 Feb 2024 08:56:54 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: ankita@nvidia.com, maz@kernel.org, oliver.upton@linux.dev,
-	james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
-	reinette.chatre@intel.com, surenb@google.com, stefanha@redhat.com,
-	brauner@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-	mark.rutland@arm.com, alex.williamson@redhat.com,
-	kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org,
-	akpm@linux-foundation.org, andreyknvl@gmail.com,
-	wangjinchao@xfusion.com, gshan@redhat.com, shahuang@redhat.com,
-	ricarkol@google.com, linux-mm@kvack.org, lpieralisi@kernel.org,
-	rananta@google.com, ryan.roberts@arm.com, linus.walleij@linaro.org,
-	bhe@redhat.com, aniketa@nvidia.com, cjia@nvidia.com,
-	kwankhede@nvidia.com, targupta@nvidia.com, vsethi@nvidia.com,
-	acurrid@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com,
-	danw@nvidia.com, kvmarm@lists.linux.dev, mochs@nvidia.com,
-	zhiw@nvidia.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v7 0/4] kvm: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <20240212125654.GV10476@nvidia.com>
-References: <20240211174705.31992-1-ankita@nvidia.com>
- <aa6c1708-d6ac-46f7-b7ab-e97a273a90c2@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa6c1708-d6ac-46f7-b7ab-e97a273a90c2@redhat.com>
-X-ClientProxiedBy: SA0PR11CA0015.namprd11.prod.outlook.com
- (2603:10b6:806:d3::20) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7376F3A262;
+	Mon, 12 Feb 2024 12:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707742685; cv=none; b=kjFEOIDDE446yN75JMdM2LHixjJBa4M9wAuVgeQTN0BaDyV74KrDMWVc4wuMETJTwYoj+JjEMkHeuoEGcIkcT6ycOz0wCvw5Uy7xA2A0evs+ig4kehiVAr44Nogx3TnN7OW/RghlG+GWD8I7B4iCN41gW9yxqvauLTfVHPNHs9w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707742685; c=relaxed/simple;
+	bh=Q6ISYfSKMe0JRvETZ/CD9+AQxsVIiWIjENVVuC0PpvI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Ba79MyMkFoGwvusebg/zDvtCTVkcx6RMoNXTMzdwtKkyhriQJ8RsHuBeigx1nLXk/rIc34NzgNrxp7lm6UkmSVBY8sDzsAk6b+cXqHHYBQbmcUPqpY3vUkgTlt0nyosrNX4zYj/FKCAuni2M7L1ToHCSJMIFG0c7205dyfsEZKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=k9bx45/T; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1823BFF806;
+	Mon, 12 Feb 2024 12:57:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707742680;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=oHSB4EWfMf4xbLc27oNsm2iYLKxUgQDGZiBycNxHBzw=;
+	b=k9bx45/TM+03a5Y0cTOwzNo9Sk0AAozCjelhRPVmIXOyZNJbR5bzO4E36gORC/3ZMHgu2n
+	JZ3TAPqcE0nL9ep6RvKzYuW2O6AWBx9oDp9o3pr0kvgviZEAbT9CH4DjKwTP6IZxKvVt7W
+	gjqc5RWhbFTCBl8zOrfWlpAae/W9parP67lEDzqR7lz+OaVlhwbpFpFnrjKFL8OAsGaksq
+	yAS5QRApqlWVxeBEFUQd4e4kRCttcSmKkQbPhPtNzs34j1ljCDfJz/ivJoUHftmp6uU6/V
+	CoXE57b5qvdpe0br4UGlxkTDLA7vZvbxxOqYneSBjS4EJJFkWMKsqUetvINt0g==
+From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Date: Mon, 12 Feb 2024 13:57:37 +0100
+Subject: [PATCH] wifi: wilc1000: prevent use-after-free on vif when
+ cleaning up all interfaces
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BY5PR12MB4130:EE_
-X-MS-Office365-Filtering-Correlation-Id: cd83e47a-3382-4c8a-16f6-08dc2bca172d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	f0QjHpjT9U1mXtZwMyxuIUtuR1EAU0tX5eUCWWkHF3KsUFUPu6ygQ6+Fngag02MriL5sUp1qErZUtAKybD90rPYX+NZamt2366ZXsiSURJoYT9v9FItUQvECv75cGsjChQkiR//lD8AlJcgD4fn4091PoClcZeswCjO3othjmvax/yo4gZwWn6wEToskTu0PJvyJt+S5SajiqQ6HVptKHbLK3Y2QCR7Y6AkLqAFfdbOsTkp5JWtg2i5WMJMT/gb7M8wuekqHnVFdxWesytfQVsTOmQFFMwCmp+/PvbV9eXDCHkA7eq98OAy7zAygdu1jK7TJO+IBaBefRGKTzCO5ndGKhMkdzwi316lEUqRiX+aJ1ThkAbUS+CqSbuqRdJbdAuc1IJuvYCdTTirO2Z1z0aJLnaReStOAy2biyEPAF7YB5A5J8EVL98ogAw2X2FNpN1hx1QVvG9gn99JTQxsclqepWFo2bzj7+XgSZZfrF0ky+HNBjO8i9YOgRP/XMy0X4AukZ0s6PzMY/AALYMpeysm9djaJnW8qxv6wIlHxlXIfyk807ZHo6GuZYF3bH+nC
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(366004)(39850400004)(346002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(41300700001)(7406005)(7416002)(38100700002)(2616005)(4326008)(8676002)(8936002)(2906002)(316002)(5660300002)(36756003)(66556008)(66476007)(66946007)(6916009)(86362001)(1076003)(6512007)(26005)(83380400001)(6506007)(6486002)(478600001)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?odOmyOy23e1tjrwZ2xm+gGvs92RBUT0wN2UYi/NaEctZjo8o1tMrimPR/4/q?=
- =?us-ascii?Q?nFpEy6nmpFgyFOkTlT/yHcyOO9h+nu2Cet4aXlo9gmTQdCpYyaRc7/pt4VOk?=
- =?us-ascii?Q?HwIqOPdUdh8R/AKVrppgEzNckOm7Ou6Z+zreakErgtElCiYxEgh8qO/jEG9G?=
- =?us-ascii?Q?36cbetHovWDw+dwQB49LZ9hN0n7qS6hQri6M9bqSFcsujeRqFydEe41ps1WB?=
- =?us-ascii?Q?0TNbBzKNfQKJDMtMCoSv64+v/pEPQ/M/AsG+Ja0c4Yr4PCMreuVRuhmiLJXo?=
- =?us-ascii?Q?vT7TXb0vl6ME8UxDpSUQXkELib9CSf7yQjpVBco+IOFUUAZ1ZPmmd7jGzEvO?=
- =?us-ascii?Q?Myvmmwn2+QD7M55qZOvm2fHeB96qsosUfPe8nY4PTkggEJ82sboz3lR6bnMW?=
- =?us-ascii?Q?a+nJztkrvIoZAVTKAcFJSVNb8DMVXTOy+L6SBAUsEevAj42BdMzeDwqyEdE+?=
- =?us-ascii?Q?NGwOv5Ql1srJs9NkWo7ypnTdHlaOY5r9yScZRgzmHLsDbKKfUUIw93d6+cHB?=
- =?us-ascii?Q?i0L17+2yh5fUKN+E4loOhO4NZyeT/8dBuBwuBHvIRpn4WRhk/hLmV+j1BV3u?=
- =?us-ascii?Q?QEiYMFFrornTYciJNiJTDvCuAq9hXTpfeRdg7XbweljQXUYHdd5TypSImuoY?=
- =?us-ascii?Q?gyF8K+gsNl8h6God0OD5sRZ73D7UuFATV939Gt5rPCFzadxmr+LW8I3QJEfu?=
- =?us-ascii?Q?GrreaggReyoF+FqFQ5AFsnexfD02KwFzlMDFsoBP59b14rTGphvyNPzo8yv5?=
- =?us-ascii?Q?lDvTIDTGcRWqdA7qBQKsLWC1tAvd1YG8ej91m1eZxROAAqN3B+jFKOjmtlhv?=
- =?us-ascii?Q?X3oFW2TNRNlQMHKFwnxS6GydwcpK42LcMOQzYrQ5LfKUPFkoxbsSNjDHv6mz?=
- =?us-ascii?Q?r4bHl225ZSy/Jk43bdrOIzFke/LqLYpVY8bzzXWMEDQjkOOAY/V2rrxQ1OuJ?=
- =?us-ascii?Q?HeGtoWVoviiupJQihqaThzfwtJc5qUSJEZ0afnIMM0u7ZdYuFACJB9Z2bFSx?=
- =?us-ascii?Q?0fCg1ufJ7F28sCRGyWP4oN1HovG8PuA7Jr++gQ/z3jQPpZx9zexBauMtnjTl?=
- =?us-ascii?Q?zKRnxr8MoXsUsO3DmaxOhJzb4/FjZmGRVpl9J6TyvjnfsLpUrIjCtHvcD4sB?=
- =?us-ascii?Q?w7DX+kHrEq+17CwZ9SYpdG9hIH9nVgcTAteFDq3pA+dXM6WO48hy+/hEUDS5?=
- =?us-ascii?Q?kvJzngcrcacb637XhdiewVi61wbalPY5dDjy1KHOpAbn/a21xlGbHO5WNQ1p?=
- =?us-ascii?Q?z0BqVy/327gMBL0nABEQnbhXRZyCZyoHvtq4sZbADwF5OU9+a01870BMFVNd?=
- =?us-ascii?Q?QuYFZ7WcPR9B6R1cFz5ARDnzzgg+A10hi/cpEIYjIZ7z7spWcowNY8D2qtSp?=
- =?us-ascii?Q?SAQnycMqr8Wnsr/cTk7/9BvjBoWmjzJorpuDHQwAnA6XJm4muwdRyF8C5N0x?=
- =?us-ascii?Q?lOfqfApuQT68/QKtjoBWuGcpbZOQNrheIeBlehQIC9EcL74vZy8IZi66ajvr?=
- =?us-ascii?Q?LFaamJ1JRxFse5go0gBnz3WqMUHfpRxRNdYEQCOrWGvaocKk86hIq7BUwwui?=
- =?us-ascii?Q?ZGZdZOQB1g4IaLqh9ds=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd83e47a-3382-4c8a-16f6-08dc2bca172d
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 12:56:55.3473
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RafhKT3ea9ocRpN/10DodrXtkhnKxd4j5Kkfe6FChRCj1zA0PN2pHwtnpy1U/ddS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4130
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240212-wilc_rework_deinit-v1-1-9203ae56c27f@bootlin.com>
+X-B4-Tracking: v=1; b=H4sIAMAVymUC/x3M0QpAMBSA4VfRubaaocWrSIvt4ESjM6GWd7dcf
+ hf/HyEgEwZoswiMFwXafUKRZ2CXwc8oyCWDkqqSSjbips0axnvn1TgkT6cobV1W2k3NWGhI4cE
+ 40fNPu/59P1tVoLhkAAAA
+To: linux-wireless@vger.kernel.org
+Cc: Ajay Singh <ajay.kathat@microchip.com>, 
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, Kalle Valo <kvalo@kernel.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ David Mosberger-Tang <davidm@egauge.net>, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-On Mon, Feb 12, 2024 at 11:26:12AM +0100, David Hildenbrand wrote:
+wilc_netdev_cleanup currently triggers a KASAN warning, which can be
+observed on interface registration error path, or simply by
+removing the module/unbinding device from driver:
 
-> I still have to digest some of the stuff I learned about this issue, please
-> bear with me :)
-> 
-> (1) PCI BARs might contain mixtures of RAM and MMIO, the exact
-> locations/semantics within a BAR are only really known to the actual device
-> driver.
+echo spi0.1 > /sys/bus/spi/drivers/wilc1000_spi/unbind
 
-Nit: Not RAM and MMIO but different kinds of MMIO that have different
-access patterns. The conclusion is correct.
+==================================================================
+BUG: KASAN: slab-use-after-free in wilc_netdev_cleanup+0x508/0x5cc
+Read of size 4 at addr c54d1ce8 by task sh/86
 
-> We must not unconditionally map PFNs "the wrong way", because it can have
-> undesired side effects. Side effects might include read-speculation, that
-> can be very problematic with MMIO regions.
+CPU: 0 PID: 86 Comm: sh Not tainted 6.8.0-rc1+ #117
+Hardware name: Atmel SAMA5
+ unwind_backtrace from show_stack+0x18/0x1c
+ show_stack from dump_stack_lvl+0x34/0x58
+ dump_stack_lvl from print_report+0x154/0x500
+ print_report from kasan_report+0xac/0xd8
+ kasan_report from wilc_netdev_cleanup+0x508/0x5cc
+ wilc_netdev_cleanup from wilc_bus_remove+0xc8/0xec
+ wilc_bus_remove from spi_remove+0x8c/0xac
+ spi_remove from device_release_driver_internal+0x434/0x5f8
+ device_release_driver_internal from unbind_store+0xbc/0x108
+ unbind_store from kernfs_fop_write_iter+0x398/0x584
+ kernfs_fop_write_iter from vfs_write+0x728/0xf88
+ vfs_write from ksys_write+0x110/0x1e4
+ ksys_write from ret_fast_syscall+0x0/0x1c
 
-It is worse that some hand wavey "side effect". If you map memory with
-NORMAL_NC (ie for write combining) then writel() doesn't work
-correctly at all.
+[...]
 
-The memory must be mapped according to which kernel APIs the actual
-driver in the VM will use. writel() vs __iowrite64_copy().
+Allocated by task 1:
+ kasan_save_track+0x30/0x5c
+ __kasan_kmalloc+0x8c/0x94
+ __kmalloc_node+0x1cc/0x3e4
+ kvmalloc_node+0x48/0x180
+ alloc_netdev_mqs+0x68/0x11dc
+ alloc_etherdev_mqs+0x28/0x34
+ wilc_netdev_ifc_init+0x34/0x8ec
+ wilc_cfg80211_init+0x690/0x910
+ wilc_bus_probe+0xe0/0x4a0
+ spi_probe+0x158/0x1b0
+ really_probe+0x270/0xdf4
+ __driver_probe_device+0x1dc/0x580
+ driver_probe_device+0x60/0x140
+ __driver_attach+0x228/0x5d4
+ bus_for_each_dev+0x13c/0x1a8
+ bus_add_driver+0x2a0/0x608
+ driver_register+0x24c/0x578
+ do_one_initcall+0x180/0x310
+ kernel_init_freeable+0x424/0x484
+ kernel_init+0x20/0x148
+ ret_from_fork+0x14/0x28
 
-> We can trigger both cases right now inside VMs, where we want the device
-> driver to actually make the decision.
+Freed by task 86:
+ kasan_save_track+0x30/0x5c
+ kasan_save_free_info+0x38/0x58
+ __kasan_slab_free+0xe4/0x140
+ kfree+0xb0/0x238
+ device_release+0xc0/0x2a8
+ kobject_put+0x1d4/0x46c
+ netdev_run_todo+0x8fc/0x11d0
+ wilc_netdev_cleanup+0x1e4/0x5cc
+ wilc_bus_remove+0xc8/0xec
+ spi_remove+0x8c/0xac
+ device_release_driver_internal+0x434/0x5f8
+ unbind_store+0xbc/0x108
+ kernfs_fop_write_iter+0x398/0x584
+ vfs_write+0x728/0xf88
+ ksys_write+0x110/0x1e4
+ ret_fast_syscall+0x0/0x1c
+ [...]
 
-Yes
+David Mosberger-Tan initial investigation [1] showed that this
+use-after-free is due to netdevice unregistration during vif list
+traversal. When unregistering a net device, since the needs_free_netdev has
+been set to true during registration, the netdevice object is also freed,
+and as a consequence, the corresponding vif object too, since it is
+attached to it as private netdevice data. The next occurrence of the loop
+then tries to access freed vif pointer to the list to move forward in the
+list.
+
+Fix this use-after-free thanks to two mechanisms:
+- navigate in the list with list_for_each_entry_safe, which allows to
+  safely modify the list as we go through each element. For each element,
+  remove it from the list with list_del_rcu
+- make sure to wait for RCU grace period end after each vif removal to make
+  sure it is safe to free the corresponding vif too (through
+  unregister_netdev)
+
+Since we are in a RCU "modifier" path (not a "reader" path), and because
+such path is expected not to be concurrent to any other modifier (we are
+using the vif_mutex lock), we do not need to use RCU list API, that's why
+we can benefit from list_for_each_entry_safe.
+
+[1] https://lore.kernel.org/linux-wireless/ab077dbe58b1ea5de0a3b2ca21f275a07af967d2.camel@egauge.net/
+
+Fixes: 8399918f3056 ("staging: wilc1000: use RCU list to maintain vif interfaces list")
+Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
+---
+ drivers/net/wireless/microchip/wilc1000/netdev.c | 28 ++++++------------------
+ 1 file changed, 7 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.c b/drivers/net/wireless/microchip/wilc1000/netdev.c
+index ef22bf6bf86a..8bae0f2485be 100644
+--- a/drivers/net/wireless/microchip/wilc1000/netdev.c
++++ b/drivers/net/wireless/microchip/wilc1000/netdev.c
+@@ -890,8 +890,7 @@ static const struct net_device_ops wilc_netdev_ops = {
  
-> (2) For a VM, that device driver lives inside the VM, for DPDK and friends,
-> it lives in user space. They have this information.
-
-Yes
+ void wilc_netdev_cleanup(struct wilc *wilc)
+ {
+-	struct wilc_vif *vif;
+-	int srcu_idx, ifc_cnt = 0;
++	struct wilc_vif *vif, *vif_tmp;
  
-> We only focus here on optimizing (fixing?) the mapping for VMs, DPDK is out
-> of the picture.
-
-DPDK will be solved through some VFIO ioctl, we know how to do it,
-just nobody has cared enough to do it.
-
-> So we want to allow the VM to achieve a WC/NC mapping by using a
-> relaxed (NC) mapping in stage-1. Whatever is set in stage-2 wins.
-
-Yes
+ 	if (!wilc)
+ 		return;
+@@ -901,32 +900,19 @@ void wilc_netdev_cleanup(struct wilc *wilc)
+ 		wilc->firmware = NULL;
+ 	}
  
-> 
-> (3) vfio knows whether using WC (and NC?) could be problematic, and must
-> forbid it, if that is the case. There are cases where we could otherwise
-> cause harm (bring down the host?). We must keep mapping the memory as
-> DEVICE_nGnRE when in doubt.
+-	srcu_idx = srcu_read_lock(&wilc->srcu);
+-	list_for_each_entry_rcu(vif, &wilc->vif_list, list) {
++	list_for_each_entry_safe(vif, vif_tmp, &wilc->vif_list, list) {
++		mutex_lock(&wilc->vif_mutex);
++		list_del_rcu(&vif->list);
++		wilc->vif_num--;
++		mutex_unlock(&wilc->vif_mutex);
++		synchronize_srcu(&wilc->srcu);
+ 		if (vif->ndev)
+ 			unregister_netdev(vif->ndev);
+ 	}
+-	srcu_read_unlock(&wilc->srcu, srcu_idx);
+ 
+ 	wilc_wfi_deinit_mon_interface(wilc, false);
+ 	destroy_workqueue(wilc->hif_workqueue);
+ 
+-	while (ifc_cnt < WILC_NUM_CONCURRENT_IFC) {
+-		mutex_lock(&wilc->vif_mutex);
+-		if (wilc->vif_num <= 0) {
+-			mutex_unlock(&wilc->vif_mutex);
+-			break;
+-		}
+-		vif = wilc_get_wl_to_vif(wilc);
+-		if (!IS_ERR(vif))
+-			list_del_rcu(&vif->list);
+-
+-		wilc->vif_num--;
+-		mutex_unlock(&wilc->vif_mutex);
+-		synchronize_srcu(&wilc->srcu);
+-		ifc_cnt++;
+-	}
+-
+ 	wilc_wlan_cfg_deinit(wilc);
+ 	wlan_deinit_locks(wilc);
+ 	wiphy_unregister(wilc->wiphy);
 
-Yes, there is an unspecific fear that on ARM platforms using NORMAL_NC
-in the wrong way can trigger a catastrophic error and kill the
-host. There is no way to know if the platform has this bug, so the
-agreement was to be conservative and only allow it for vfio-pci, based
-on some specific details of how PCI has to be implemented and ARM
-guidance on PCI integration..
+---
+base-commit: d55b20fe9b6f0ec5552a3071ae63304978d70500
+change-id: 20240209-wilc_rework_deinit-3c5347df9b17
 
-> Now, what the new mmap() flag does is tell the world "using the wrong
-> mapping type cannot bring down the host", and KVM uses that to use a
-> different mapping type (NC) in stage-1 as setup by vfio in the user space
-> page tables.
+Best regards,
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
-The inverse meaning, we assume VMAs with the flag can bring down the
-host, but yes.
-
-> I was trying to find ways of avoiding a mmap() flag and was hoping that we
-> could just use a PTE bit that does not have semantics in VM_PFNMAP mappings.
-> Unfortunately, arm64 does not support uffd-wp, which I had in mind, so it's
-> not that easy.
-
-Seems like a waste of a valuable PTE bit to me.
-
-> Further, I was wondering if there would be a way to let DPDK similarly
-> benefit, because it looks like we are happily ignoring that (I was told they
-> apply some hacks to work around that).
-
-dpdk doesn't need the VMA bit, we know how to solve it with vfio
-ioctls, it is very straightforward. dpdk just does a ioctl & mmap and
-VFIO will create a vma with pgprote_writecombine(). Completely
-trivial, the only nasty bit is fitting this into the VFIO uAPI.
-
-> (a) User space tells VFIO which parts of a BAR it would like to have mapped
-> differently. For QEMU, this would mean, requesting a NC mapping for the
-> whole BAR. For DPDK, it could mean requesting different types for parts of a
-> BAR.
-
-We don't want to have have the memory mapped as NC in qemu. As I said
-above if it is mapped NC then writel() doesn't work. We can't have
-conflicting mappings that go toward NC when the right answer is
-DEVICE. 
-
-writel() on NC will malfunction.
-
-__iowrite64_copy() on DEVICE will be functionally correct but slower.
-
-The S2 mapping that KVM creates is special because it doesn't actually
-map it once the VM kernel gets started. The VM kernel always supplies
-a S1 table that sets the correct type.
-
-So if qemu has DEVICE, the S2 has NC and the VM's S1 has DEVICE then
-the mapping is realiably made to be DEVICE. The hidden S2 doesn't
-cause a problem.
-
-> That would mean, that we would map NC already in QEMU. I wonder if that
-> could be a problem with read speculation, even if QEMU never really accesses
-> that mmap'ed region.
-
-Also correct.
-
-Further, qemu may need to do emulation for MMIO in various cases and
-the qemu logic for this requires a DEVICE mapping or the emulation
-will malfunction.
-
-Using NC in qemu is off the table.
-
-Jason
 
