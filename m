@@ -1,131 +1,191 @@
-Return-Path: <linux-kernel+bounces-62386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84F6A851F80
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:23:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AD5B851F86
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:24:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FD7E284EF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:23:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03172281D59
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:24:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9E64CB4E;
-	Mon, 12 Feb 2024 21:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1004CDE1;
+	Mon, 12 Feb 2024 21:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d+Bnm3FK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NGcHWXeS"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6338487B0
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 21:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A94F2481AD;
+	Mon, 12 Feb 2024 21:24:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707772992; cv=none; b=go7eITciDm8rcOo7N1sPEY/61C9bVyX/wuTcm+JaSkBks11d/EGWozgTZK9aGk5rHKtU+YSexrZvekRCBF0xPW/qAGE/V4swfbQRlTnIeUsrTC4o03Q7+GLRz2cIht7togCUqksIqXmQaMgxSoX52WCC67FmI964FBNm8a1D5Fs=
+	t=1707773065; cv=none; b=d2LPdsQRkf7/M3OhaSySblsWUzFmshTV2GkK+KRAH/EkoYu/TE3XL/eH0Fdmc6X+fQVB28jiKo1D3JZrnIKxhjcJTXXvmqBSnhJ8IJp6led80tQfq0SZ4JHmxFCcs9POul0qMI0OZ7TrG98bDSlbVM3Ld/7Tl1hLeUkPz0ZDe24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707772992; c=relaxed/simple;
-	bh=GaIow7DABO7d1iaUez27x56iIoIwRTb+Q1jWvdo15Uk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o2LFLZU/YdvWQCvssglI4nbwM51VCmGyzXQKiHg03kzwPz3C5Cmu+vDWf1yY39Ii5HMQCwQszoLzsX5FD4zCq/yqRV9yVxNTLP188S62cYXCqXKJDQThFa3tTndsIZiOkpVjbYheGWFnHUzoQjJpCoYKlB2VQrUn8km+I07H7Y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d+Bnm3FK; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707772989;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GaIow7DABO7d1iaUez27x56iIoIwRTb+Q1jWvdo15Uk=;
-	b=d+Bnm3FKLPY7Eom/Uda70rN69k5PzhXGTOKTqtxQoJXzavPGTPDrZZhU1kz21H0S2FdYtP
-	R7bal3SpO0n4Y0PjVIiq8fpbZ/zImQ9hYwG6UJ4jIzSwrQBm7wflJQ2mrGfylQ8Hg1PIjL
-	lgWFrsFdxt/t2m0mR8sMw4rHN6/cLGg=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-625-RSyT2SdBOJ6Rudy0YhTC_A-1; Mon, 12 Feb 2024 16:23:08 -0500
-X-MC-Unique: RSyT2SdBOJ6Rudy0YhTC_A-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-785947d659cso401291685a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:23:08 -0800 (PST)
+	s=arc-20240116; t=1707773065; c=relaxed/simple;
+	bh=bxE29yGll33bT1hVGkhkpU2SSMDQ/72L2rqcmd5FkqI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=atLfTrauXL/V/yUprSgpr0obyKo8JRPLNOudTG1Va2f9xStq4rQ4q2iz0AFbamJ1C95IXopR5EIEu06j6WdcMNHMAg6xQqvCkWA/Dn49ToLd6JA7ZZN+jnsSRyuojx5RXyz59NV5TOhaz5LfdK8NHhBjMFsWvxoWlLYSJXtr6eA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NGcHWXeS; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33b66883de9so2594926f8f.0;
+        Mon, 12 Feb 2024 13:24:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707773062; x=1708377862; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bxE29yGll33bT1hVGkhkpU2SSMDQ/72L2rqcmd5FkqI=;
+        b=NGcHWXeS4iFkAbyCmXmhwCNxDHcnvpI7Ty7W2/qXLcd2G7JUvaruPJ4siVDDBR+wAA
+         TTiGB6ki1xKHlvqaa0VvVIwYU/QhTSABRBpxgmdQpRdPJkqauBUnyh4MaIjPucsmXcae
+         Ki56aX6n92Al5ogmEVuNQAmm2G6Om8N7WkR4Tw7DPkLxzqiowrK1Zg8gFI60DnPu3+dA
+         rjjVXgBcICKguHPRSZ1JV68OVFd3L5t/LspBUQ6EzpQ/HW+c7pMw3zNNM4VuWvI9L8Er
+         ISFcGjoeZR9MAfraU6350kKKSS7mHmbqBtIZrsXsBUrx+jLFBfngBc8SRA0lwql4erri
+         HTwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707772987; x=1708377787;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GaIow7DABO7d1iaUez27x56iIoIwRTb+Q1jWvdo15Uk=;
-        b=qdqmusTbKL1KxV62euZmqFft4Z9X9mrZLfNT0+SfyYbh/7SfHkHDYTZnR3ulRwGGS/
-         hWocIGfmaFOc1r+2qV/gXaY3umlcMHbq9PkOpUsPPayC9HuVXM78C3GhUirMcnuzMOXs
-         1eySQM5vcQr6HSAtKMrky+xJzob6+p2RVUCU4fibsldedwm1Wh7U5DEbMzjF6wyRqKcl
-         4TosuuQEKPwfttO7Z0jjBAR4dXo4ZcmX0Jh99Elj/fITeFnY/kEdcJaou9XHRrLT2WZ9
-         Dc+7qssUbNOUODTBiRJ5pgWkXEPCm7R3sRtv37qnYG9eErRRIOPiSebw7f1rfOsjAxo4
-         BvRg==
-X-Gm-Message-State: AOJu0YwO7qXDJonew+NRjoA6oxQQM65B+04SYpwm948SAMxAus+6TB9R
-	7q5AKSNnCXEVHaKAbB1A1GXEjcI9bSjVtSAgMzmGFoSyHmaJzUSTyDf2NMxdpG+EpVBiNSZcHzR
-	xZ13QyEJjTatXducPY1NC7dpnvSH0EsOQrD5r6O1k8srV37oNeGhC4Lb/wWZFPA==
-X-Received: by 2002:a05:620a:e81:b0:785:5b28:eaba with SMTP id w1-20020a05620a0e8100b007855b28eabamr6371306qkm.4.1707772987740;
-        Mon, 12 Feb 2024 13:23:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGwMX5DViKV5i8GevVnlP/Ta/Jb6WOrk812GKH9d/JcuehM7OyZ6wIF2DEXwb36IuE6jclwyw==
-X-Received: by 2002:a05:620a:e81:b0:785:5b28:eaba with SMTP id w1-20020a05620a0e8100b007855b28eabamr6371296qkm.4.1707772987503;
-        Mon, 12 Feb 2024 13:23:07 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXoHuKZM1foE0J/pCIYf5+fl4/eTb61+FMWlU637I5jHF/5yZb0g4g6I0QIpAXXvdIVX7qiHsk8d5/Wzu8JOl1kl23GUkXag4OEcB35S/GC0KW56WT2Qaqy70NdAfdhLRgzDaUWinipv2H/MAHphYXTsgINdUqZUVstoQxYWse23GLL3x20LBP/VRo9rdIkR/lY7w0wYhmyl+tdMHMx1Nc51z8XW6ct67J1TnpkYmUcg6RMthCCO2T9RDHDOzmodVxgoA==
-Received: from thinkpad2021 ([71.217.33.204])
-        by smtp.gmail.com with ESMTPSA id x2-20020a05620a14a200b00785d9e3b744sm818978qkj.108.2024.02.12.13.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 13:23:07 -0800 (PST)
-Date: Mon, 12 Feb 2024 16:23:04 -0500
-From: "John B. Wyatt IV" <jwyatt@redhat.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Petr Mladek <pmladek@suse.com>, Clark Williams <williams@redhat.com>,
-	jlelli@redhat.com, Derek Barbosa <debarbos@redhat.com>,
-	"John B. Wyatt IV" <sageofredondo@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-rt-users <linux-rt-users@vger.kernel.org>
-Subject: Re: NMI Reported with console_blast.sh
-Message-ID: <ZcqMOKtHsZ9qnxNg@thinkpad2021>
-References: <ZcQjxa4UA6hzXHnU@thinkpad2021>
- <87v86yc88b.fsf@jogness.linutronix.de>
- <ZcaQI8l1dcBx2feC@thinkpad2021>
- <87a5o8j9gp.fsf@jogness.linutronix.de>
+        d=1e100.net; s=20230601; t=1707773062; x=1708377862;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bxE29yGll33bT1hVGkhkpU2SSMDQ/72L2rqcmd5FkqI=;
+        b=itSjiM0Xd0YhbWTD/WdZT8/Z2JygdYjwb9YVPU3dlRd+lAUowgFZND3l1sGOVr1dpp
+         NfOalQnuW7smERzdnQzZZ3yx/wVlH2FaGqN5/zOvJIU80+5BagBLNd1SKCgQeqtDv9Sz
+         UcVkiYceKHK69D3ZDwtSJvdwfcv3i3g0blIf9EjTuIO1KS1Dw4/PmrWbamCYC31GoI8/
+         IUFdb66v5Io7cOqGJ8lqB8lCxT78wrsLbOmLhr0RDB5+Yaq+OtPfb/l229Q4t2MCM/YS
+         fm+CTwSz/7Gkq8ScAZNvhG2U41yu3+BtizaQuXvg/yaKK71SSpKOfBqU5/ynlsBH6kn6
+         tQew==
+X-Forwarded-Encrypted: i=1; AJvYcCUOef7VnbKhReZZXtw3GMjld0QsvXvQjkuyuuT2XombRWRfVp5N9OpPSIY1WzIhpsJ5E1cSSGt55Q92NMssXA/gvd5HywVQed6SaaqsE9NaTV6cPaGcTYMELvQR00PwaKQEHYxEjKFxPW3MVDMgkIV+6eM7uDKe+ztFl/7XpzJkY9RaQlUvWCGJ5+IWyRk9x235jp5ogfaNvWp9e7BUkuZJvYcAEeJ/F/Axifo/SzhMsWYyjqcY1MWiHFA=
+X-Gm-Message-State: AOJu0YyWL2COuTSVzzMBhEv/ke4ztxMpgPV0OlFskYMVGBJqsYcpE0HA
+	ZYClnIZkBk7oZ4fz4DoeMJESPQDLi/jA9QKzjLXc6dIE0Ug95r93LqZTBwjXa8LKgHc7mVA75op
+	rgCRtE1ZZ6WQcEljxGO5TYlA0pmU=
+X-Google-Smtp-Source: AGHT+IGQJsk4wTT+E8TFIHtU+/AM8HkdWJmfCDLAlARodYmBzIu5z3aknMyj7upwGILqyPN3v8jpKhnatN3rHCwCR5Q=
+X-Received: by 2002:a05:6000:148:b0:33b:8782:985a with SMTP id
+ r8-20020a056000014800b0033b8782985amr1875411wrx.21.1707773061559; Mon, 12 Feb
+ 2024 13:24:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
+ <87bk8pve2z.fsf@toke.dk> <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+ <875xyxva9u.fsf@toke.dk> <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
+ <87r0hhfudh.fsf@toke.dk> <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
+In-Reply-To: <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 12 Feb 2024 13:24:09 -0800
+Message-ID: <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <87a5o8j9gp.fsf@jogness.linutronix.de>
 
-On Sat, Feb 10, 2024 at 10:33:50PM +0106, John Ogness wrote:
-> On 2024-02-09, "John B. Wyatt IV" <jwyatt@redhat.com> wrote:
-> >> Could you provide me your kernel config and boot args?
->=20
-> Thanks for the config. Could you provide me the boot args as well? I am
-> trying to understand why early_printk is showing up in your trace.
+On Mon, Feb 12, 2024 at 10:21=E2=80=AFAM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+> On Mon, Feb 12, 2024 at 6:46=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen =
+<toke@redhat.com> wrote:
+> >
+> > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+> >
+> > [...]
+> > >> IIUC, the bpf_timer callback is just a function (subprog) from the
+> > >> verifier PoV, so it is verified as whatever program type is creating=
+ the
+> > >> timer. So in other words, as long as you setup the timer from inside=
+ a
+> > >> tracing prog type, you should have access to all the same kfuncs, I
+> > >> think?
+> > >
+> > > Yep, you are correct. But as mentioned above, I am now in trouble wit=
+h
+> > > the sleepable state:
+> > > - I need to call timer_start() from a non sleepable tracing function
+> > > (I'm in hard IRQ when dealing with a physical device)
+> > > - but then, ideally, the callback function needs to be tagged as a
+> > > sleepable one, so I can export my kfuncs which are doing kzalloc and
+> > > device IO as such.
+> > >
+> > > However, I can not really teach the BPF verifier to do so:
+> > > - it seems to check for the callback first when it is loaded, and
+> > > there is no SEC() equivalent for static functions
+> > > - libbpf doesn't have access to the callback as a prog as it has to b=
+e
+> > > a static function, and thus isn't exported as a full-blown prog.
+> > > - the verifier only checks for the callback when dealing with
+> > > BPF_FUNC_timer_set_callback, which doesn't have a "flag" argument
+> > > (though the validation of the callback has already been done while
+> > > checking it first, so we are already too late to change the sleppable
+> > > state of the callback)
+> > >
+> > > Right now, the only OK-ish version I have is declaring the kfunc as
+> > > non-sleepable, but checking that we are in a different context than
+> > > the IRQ of the initial event. This way, I am not crashing if this
+> > > function is called from the initial IRQ, but will still crash if used
+> > > outside of the hid context.
+> > >
+> > > This is not satisfactory, but I feel like it's going to be hard to
+> > > teach the verifier that the callback function is sleepable in that
+> > > case (maybe we could suffix the callback name, like we do for
+> > > arguments, but this is not very clean either).
+> >
+> > The callback is only set once when the timer is first setup; I *think*
+> > it works to do the setup (bpf_timer_init() and bpf_timer_set_callback()=
+)
+> > in the context you need (from a sleepable prog), but do the arming
+> > (bpf_timer_start()) from a different program that is not itself sleepab=
+le?
+> >
+>
+> Genius! It works, and I can just keep having them declared as a
+> syscall kfunc, not as a tracing kfunc.
+>
+> But isn't this an issue outside of my use case? I mean, if the
+> callback is assuming the environment for when it is set up but can be
+> called from any context there seems to be a problem when 2 contexts
+> are not equivalent, no?
 
-I forgot to include that, my apologies.
+I agree that workqueue delegation fits into the bpf_timer concept and
+a lot of code can and should be shared.
+All the lessons(bugs) learned with bpf_timer don't need to be re-discovered=
+ :)
+Too bad, bpf_timer_set_callback() doesn't have a flag argument,
+so we need a new kfunc to set a sleepable callback.
+Maybe
+bpf_timer_set_sleepable_cb() ?
+The verifier will set is_async_cb =3D true for it (like it does for regular=
+ cb-s).
+And since prog->aux->sleepable is kinda "global" we need another
+per subprog flag:
+bool is_sleepable: 1;
 
-BOOT_IMAGE=3D(hd0,gpt2)/vmlinuz-6.7.0-rt6 root=3DUUID=3D6e05c61a-a39c-45f1-=
-acf2-0b0892c0739e ro rootflags=3Dsubvol=3Droot console=3DttyS0,115200n81 sk=
-ew_tick=3D1 tsc=3Dreliable rcupdate.rcu_normal_after_boot=3D1 isolcpus=3Dma=
-naged_irq,domain,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2=
-3,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,4=
-8,49,50,51,52,53,54,55,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,7=
-4,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,9=
-9,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,1=
-18,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,=
-137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155=
-,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,17=
-4,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,1=
-93,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,=
-212,213,214,215,216,217,218,219,220,221,222,223 intel_pstate=3Ddisable noso=
-ftlockup
+We can factor out a check "if (prog->aux->sleepable)" into a helper
+that will check that "global" flag and another env->cur_state->in_sleepable
+flag that will work similar to active_rcu_lock.
+Once the verifier starts processing subprog->is_sleepable
+it will set cur_state->in_sleepable =3D true;
+to make all subprogs called from that cb to be recognized as sleepable too.
 
-I talked about the isolcpus options with Juri. Tuned had the realtime profi=
-le enabled. Juri suggested testing with the thoughput-performance profile.
+A bit of a challenge is what to do with global subprogs,
+since they're verified lazily. They can be called from
+sleepable and non-sleepable contex. Should be solvable.
 
-Red Hat's conservers are having an issue with the machine I was testing
-on. It may take me a while to get back to you with more test results.
-
+Overall I think this feature is needed urgently,
+so if you don't have cycles to work on this soon,
+I can prioritize it right after bpf_arena work.
 
