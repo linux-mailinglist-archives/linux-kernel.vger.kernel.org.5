@@ -1,132 +1,124 @@
-Return-Path: <linux-kernel+bounces-61927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34A4851887
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:56:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD01885188B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:56:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B96A1C21F5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:56:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91CC71F22B46
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334563D0AF;
-	Mon, 12 Feb 2024 15:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A138C3CF7A;
+	Mon, 12 Feb 2024 15:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="kHJS4noC"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="aL+V///l"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B970B3C473;
-	Mon, 12 Feb 2024 15:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA713CF68
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707753377; cv=none; b=apV1loz64EOwzzDoejNm0L+WBRDVXvMNtgHfvLiy9yu+FIVWrZNkpy+G2GMX1RO1nsWAgU/E06Zw7gaJ0osM94T0fhHjRgctX0R1ZMrfshW1JfGcadxWcjHjoZ+2iYAySHc4qvNX9LTep7YWnEhKXMsFLoDx7LeU+jC3AZ7DkKs=
+	t=1707753401; cv=none; b=tOn0OxrGTpMrG9bj9RBtl4BDqJXJo6as7Oz5chePPNDkCNsDc4vFDysLiJoONXXG/GHiUYmzL2X9QvRCJ5N6yubZSaMjcMoKJKx6GDZLNMgb9ZxN+nKDkhPUsG5Vm5hJiRMI+bD0vv6LfxlB5LQ7nhjWnKNFrOjL6J1oiTG3eJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707753377; c=relaxed/simple;
-	bh=UEoUzI0eopOfpfMWL9+ubXLmnf6UPKl4bf+SH/FfhF8=;
-	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:Date:CC:
-	 Message-ID:References:To; b=f/PNH0VE/4LcNtjcSvRC3BxycJUq2PbfzXMqiNKlSiNkAZp8JPMvL20Afu5E7suYsWj0ahSfphyeIpyy6glYl2xEKJq4l9ncrsQKBHr/ILDKuWplqtoIRA9EdEUumts0QUp6tZwJ0WeIdqXTTULvUAXbWKGtcsZsAhEqNAZ8rSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=kHJS4noC; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41C7wuOt021531;
-	Mon, 12 Feb 2024 09:55:47 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	content-type:mime-version:subject:from:in-reply-to:date:cc
-	:content-transfer-encoding:message-id:references:to; s=
-	PODMain02222019; bh=UEoUzI0eopOfpfMWL9+ubXLmnf6UPKl4bf+SH/FfhF8=; b=
-	kHJS4noCFaqhHA00df2Nyt5FmY+gB7OQUEEpeP6D0ExctWUJA3mYo5WEuWviyrsZ
-	zHrY3ylV93fWTxp591elNivJTtdqJyFz84ghlZhNvVbLM/Li4w8cSVjED4gkx51C
-	s4zl9UzYuYZNN7Cg86cNIsX6NftCxBvhN8UlXkMfAlPN4EYP+owuwTQYVAA60zpa
-	gxzz2LJgSv2+w2XisaJbdqntbrL1ARM57umBDUA/n2AN0PAqEf/xCTXMjvqdanPN
-	JbN6nYOJQL1XQf5Rhm61D1HnvGjI82/rS/IijKmAjCLoHhqhKYdTqliVB8S9UqRP
-	vA+9bmzebhDR/jr8EXGHwQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w67e220gf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 09:55:47 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 12 Feb
- 2024 15:55:45 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Mon, 12 Feb 2024 15:55:45 +0000
-Received: from smtpclient.apple (unknown [141.131.76.118])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 7CA6A820242;
-	Mon, 12 Feb 2024 15:55:41 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1707753401; c=relaxed/simple;
+	bh=SlIAEswCtdMnuXycyPc/T1ee9S3/cBlWhgi8NkL0dmM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MfT0O0+1ks57D2Ht6uXfRDUSL1yU/tuuBDcZlQizDnh4i0DjGqMOTUgt2kIhLJzKtjhpVNXjlrgUGUkSanHJe9hZhxurw7XYZ576rU1cYcHZ5abtcqkddyEQ6dCP1R/CLevemeEwjXzwpIs3+BTRkuc/wcGv9x3i2DZzZR9dnMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=aL+V///l; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C1C7B40E0196;
+	Mon, 12 Feb 2024 15:56:36 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id w1rDdywF6PGa; Mon, 12 Feb 2024 15:56:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707753393; bh=D7p8PKNHYp9VzJeXUXSzbf4ukN194cyAi9OYp6Ij3QI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aL+V///lS6JzDXEq/Sx3gU4tqGacQPWSuplGf7qRL/z2WRluyO4hCGtYS0qBEjpgz
+	 9hYYeDDITsUKHL1eKtI14bnNNDkDmQm+KThcJul3HIJVPcu5rvClYfPrPXqAgjCEyC
+	 LCAr4p2qBQeatfL2o8Uu80QRci9B/Qa9xfJSJ/u8zIbqS19fBE+a/9hSqxZMAxNB7K
+	 IfF2yopG6X/GC4+A9MbpLU63HIJRQA3KSsz917dSADK/WGQjKGOyMCmaBr66XdNnm0
+	 UIkP8N54U/VHrTdAJEgrpGhfF3xzUHrgqKBXef+jhzOxQ5YtTcB4W15uXLBYLuOo/U
+	 cbUfltC1s7RUdjxYp1KfFHSj+2v2Eov9Yjh7hsKCUiaRYXxpm6yziRdKdU+hhpp3h6
+	 AVVcNdhnMqHD2U8Gwl4QsoYB2nQJnKJijxgAQbLC5bTxiKViyYT/Ec0ZCmkByQXIo5
+	 HP+4Z8SQ2jeGG13w81JZ3NTeoAB5pb0HPULdbdcSeKzlDURuRNskCPrRMMTkAZrjgX
+	 V2tJGJcc9C/ahZfmSUgM2yDo8PxF2gg+34tg7TbJXkWz9iPuim3Bv9iDVd9TxwN8Bs
+	 de29GU3jmK/aqHUdW3MCcMPI4nz4+Dd0MdsIn+bBcPjPNP3J7dAPo0HFFyMe+H5snR
+	 rGx4SW02+gKxQ5Hc7g31lhIo=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 42F6A40E0192;
+	Mon, 12 Feb 2024 15:56:15 +0000 (UTC)
+Date: Mon, 12 Feb 2024 16:56:09 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Arjan van de Ven <arjan@linux.intel.com>,
+	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Zhang Rui <rui.zhang@intel.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Feng Tang <feng.tang@intel.com>,
+	Andy Shevchenko <andy@infradead.org>,
+	Michael Kelley <mhklinux@outlook.com>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [patch v5 13/19] x86/mm/numa: Use core domain size on AMD
+Message-ID: <20240212155609.GXZco_mU_K3wtg70W6@fat_crate.local>
+References: <20240117115752.863482697@linutronix.de>
+ <20240117115909.142089057@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: [PATCH 1/7] dt-bindings: ASoC: cs35l45: Add interrupts
-From: "Rivera-Matos, Ricardo" <rriveram@opensource.cirrus.com>
-In-Reply-To: <ac5cbfbf-45ea-4d34-ac3d-d3a0fc6ff061@linaro.org>
-Date: Mon, 12 Feb 2024 09:55:29 -0600
-CC: James Schulman <james.schulman@cirrus.com>,
-        David Rhodes
-	<david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-        "Rob
- Herring" <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        "Sai Prakash Ranjan" <quic_saipraka@quicinc.com>,
-        Neil Armstrong
-	<neil.armstrong@linaro.org>,
-        Kees Cook <keescook@chromium.org>, Tony Luck
-	<tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        "Marijn
- Suijten" <marijn.suijten@somainline.org>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
-Content-Transfer-Encoding: quoted-printable
-Message-ID: <C8A97AB6-A3BB-4018-A8E3-CEEECFCBECE2@opensource.cirrus.com>
-References: <20240210-topic-1v-v1-0-fda0db38e29b@linaro.org>
- <20240210-topic-1v-v1-1-fda0db38e29b@linaro.org>
- <ac5cbfbf-45ea-4d34-ac3d-d3a0fc6ff061@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
-X-Proofpoint-ORIG-GUID: HVAAhL2KDvY-331du_lPmDeJ2OJzJ91Y
-X-Proofpoint-GUID: HVAAhL2KDvY-331du_lPmDeJ2OJzJ91Y
-X-Proofpoint-Spam-Reason: safe
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240117115909.142089057@linutronix.de>
 
-Konrad,
+On Tue, Jan 23, 2024 at 01:53:50PM +0100, Thomas Gleixner wrote:
+> @@ -158,26 +156,25 @@ int __init amd_numa_init(void)
+>  		return -ENOENT;
+>  
+>  	/*
+> -	 * We seem to have valid NUMA configuration.  Map apicids to nodes
+> -	 * using the coreid bits from early_identify_cpu.
+> +	 * We seem to have valid NUMA configuration. Map apicids to nodes
+> +	 * using the size of the core domain in the APIC space.
 
-> On Feb 12, 2024, at 7:25=E2=80=AFAM, Krzysztof Kozlowski =
-<krzysztof.kozlowski@linaro.org> wrote:
->=20
-> On 12/02/2024 14:10, Konrad Dybcio wrote:
->> This chip seems to have an IRQ line, let us describe it.
->>=20
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->=20
-> Subject: ASoC: dt-bindings: cs35l45=E2=80=A6=E2=80=A6
-ditto
->=20
->=20
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Acked-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com =
-<mailto:rriveram@opensource.cirrus.com>>
->=20
-> Best regards,
-> Krzysztof
->=20
+Since you're touching the comments:
 
-Thanks,
-Ricardo
+	/*
+	 * Valid NUMA configuration detected. Map APICIDs to nodes...
 
+>  	 */
+> -	bits = boot_cpu_data.x86_coreid_bits;
+> -	cores = 1 << bits;
+> -	apicid_base = 0;
+> +	cores = topology_get_domain_size(TOPO_CORE_DOMAIN);
+
+num_cores ...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
