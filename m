@@ -1,109 +1,90 @@
-Return-Path: <linux-kernel+bounces-61844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8343A851758
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:52:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDED685175B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:52:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 387841F2242C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:52:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D0991C2166B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C985B3D0A8;
-	Mon, 12 Feb 2024 14:51:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4CE3BB47;
+	Mon, 12 Feb 2024 14:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QpbkmfCW"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="HhoKQms/"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60AE3CF57;
-	Mon, 12 Feb 2024 14:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0AB3BB34;
+	Mon, 12 Feb 2024 14:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707749496; cv=none; b=d/ZC4vz5AYP9D8i2OY5AlPPeqrgA/njnvQpVgDdUBj0+bndL9OOMoAVmQv84t0KQIm/nqyqcQ65UQ/gF5bnqb77nwKZ44IxVVzCyQHk5jotMxR/rVEzRrgMA20QuuvQbNdTmruJQkMmFRmhvsWmbve4tMtgE4EKX04G5RTySXYg=
+	t=1707749522; cv=none; b=Ha+TiAyJeRDnb8aNrc1nSaJewFkqgxumKbSp6yujTu68fvgg4fgWRDXdhZmOHKOxsbxrycfpfpTPI3KIH3Sf9apeC2cqpB0tYo1zzAi0Q2sPHDh0DhC5guahpY+16EaYD/Wa4YmqT4LP9hGHD0ERwJyNlAQRcms84GWjzFB2QlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707749496; c=relaxed/simple;
-	bh=6X0d2IvNibIl56LRw76KLgL3zAFeQRXW6NnnwscrVLA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=b5vB39obKsQ2otxsfzabTTwuA3HywxJmvaJayGqaS6yvMK/pHHz/AT0fksXmur2+ExebV63Ja/NDFYjgjnFoBlAaGVtgeMzY5uhZ8d1mRCOdUs1sRI9u8U7/nfsgQ5RMekB28XodjYOHVY177JZKls7xUqKmKO9fH7XI3lXh7Is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QpbkmfCW; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707749493;
-	bh=6X0d2IvNibIl56LRw76KLgL3zAFeQRXW6NnnwscrVLA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=QpbkmfCWJzIcJfM0t5YGGzIZIf+8Tp7zIuPnPxpHIXbRimZEN5bkVTCVJViIZLp2x
-	 A+91vAuKSk3GzDg346OTBFEBRTUax6XL4st40STh1HCPASUdpW9kdEiFKa4hLzbIWT
-	 2ZEGM1E8TIKE5V0JNgLeDyh9tMvRlTh0ZrgTO751IMKKWVCJKYwNQzqUDGx4pxPJgS
-	 1Sj5ZCXKBRlYF16H2xeLnX+2nXHd986ulU46O9H4WfKhoVHQ9fybjRN/V13lz+BlnJ
-	 47mBzu4bsli15XU14/dQrhhNDSCvG/QVJJbUvh5fiHqrXJTlO7tB9mKnvpMbvUBceP
-	 hu2u+HSRoP75w==
-Received: from [192.168.1.30] (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DC4BF378203F;
-	Mon, 12 Feb 2024 14:51:29 +0000 (UTC)
-From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Mon, 12 Feb 2024 09:50:08 -0500
-Subject: [PATCH v4 4/4] arm64: defconfig: Enable support for cbmem entries
- in the coreboot table
+	s=arc-20240116; t=1707749522; c=relaxed/simple;
+	bh=CvO5h22bIICO9OVAqHSfrziFGOjtF4BmJIiYlm8gKqk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ix4wViamBw69YY+MbFyZMsNxD8rNArWxueM2Q1gM7+Veb6FMYGnKxXskZ07ufJXkWptDHJailcOs3iP9etSQBWXhIKbLOnHRMGxxUC4PeaL9sAJgp+XKpWPanZ0wpSB2GHJserMiccK9GQ+0lGANsgw+ACQOfcj2i3/NWimtIDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=HhoKQms/; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=8V/n6mYnmYAVnrBX94RlW3GjICZYM1XfZBGebC4iOsg=; b=HhoKQms/prSYZqTTcb2AcWxa8q
+	PExcu4ZShC/u3ut6nS1RttBsqvdv34EBXZ0FXqlQ5R4GmhpAgZXlRIO7nGWijaM59K/7cghvtcT+o
+	2KVPJO+4zqCLhXhBl0nUmcMAmNFiIo3wcxg164WHrTey7BzQoK6QcvKYzJWcwnigk0d4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rZXf4-007aEq-Tx; Mon, 12 Feb 2024 15:51:58 +0100
+Date: Mon, 12 Feb 2024 15:51:58 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Robert Marko <robimarko@gmail.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, hkallweit1@gmail.com,
+	linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, ansuelsmth@gmail.com,
+	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: phy: qca807x: move interface mode check to
+ .config_init_once
+Message-ID: <c97d10fa-39c5-4e5e-93ce-1610635cb4d4@lunn.ch>
+References: <20240212115043.1725918-1-robimarko@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240212-coreboot-mod-defconfig-v4-4-d14172676f6d@collabora.com>
-References: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
-In-Reply-To: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
-To: Tzung-Bi Shih <tzungbi@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Brian Norris <briannorris@chromium.org>, 
- Julius Werner <jwerner@chromium.org>, 
- Masahiro Yamada <masahiroy@kernel.org>, 
- Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, kernel@collabora.com, 
- chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
- linux-kbuild@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212115043.1725918-1-robimarko@gmail.com>
 
-Enable the cbmem driver and dependencies in order to support reading
-cbmem entries from the coreboot table, which are used to store logs from
-coreboot on arm64 Chromebooks, and provide useful information for
-debugging the boot process on those devices.
+On Mon, Feb 12, 2024 at 12:49:34PM +0100, Robert Marko wrote:
+> Currently, we are checking whether the PHY package mode matches the
+> individual PHY interface modes at PHY package probe time, but at that time
+> we only know the PHY package mode and not the individual PHY interface
+> modes as of_get_phy_mode() that populates it will only get called once the
+> netdev to which PHY-s are attached to is being probed and thus this check
+> will always fail and return -EINVAL.
+> 
+> So, lets move this check to .config_init_once as at that point individual
+> PHY interface modes should be populated.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
----
- arch/arm64/configs/defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+Just for my own understanding, not directly about this patch...
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 361c31b5d064..49121133f045 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -255,6 +255,9 @@ CONFIG_INTEL_STRATIX10_RSU=m
- CONFIG_MTK_ADSP_IPC=m
- CONFIG_QCOM_QSEECOM=y
- CONFIG_QCOM_QSEECOM_UEFISECAPP=y
-+CONFIG_GOOGLE_FIRMWARE=y
-+CONFIG_GOOGLE_CBMEM=m
-+CONFIG_GOOGLE_COREBOOT_TABLE=m
- CONFIG_EFI_CAPSULE_LOADER=y
- CONFIG_IMX_SCU=y
- CONFIG_IMX_SCU_PD=y
+priv->package_mode is about PSGMII vs QSGMII for one of the SERDES
+interfaces? We expect the individual PHYs sharing that interface to
+also indicate PSGMII or QSGMII?
 
--- 
-2.43.0
+But what about the other SERDES, which can be connected to an SFP
+cage. You would normally set that to SGMII, or 1000BaseX. When an SFP
+module is inserted, the correct interface mode is then determined from
+the contests of the EEPROM and the PCS needs to be reconfigured. So
+i'm just wondering how this check works in this situation?
 
+    Andrew
 
