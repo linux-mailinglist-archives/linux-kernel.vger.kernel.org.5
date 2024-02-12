@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-62305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD0C2851E54
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:05:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 583C0851E55
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:05:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1F261C2298F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:05:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9C87B24167
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:05:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCDA4CB22;
-	Mon, 12 Feb 2024 20:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09C94CE17;
+	Mon, 12 Feb 2024 20:04:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="QytN18AT"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="c4zIn2tb"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA254C61B
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C2C84CB46
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:04:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707768278; cv=none; b=RX75WYMqAKW5jvKuTHimZTN9qY7jvwZTkZBpE2k7NmsTMfr9QGMVlR1UqbcX4kHTDFdAw2WDNp3AQsmu/Q9SUv+3V5YCh29JJyFudYu1FAjXngMWsvMgX5mrYM1QaOLt3frK53lvN6c9FXxfwgOJ5zq1dOxLa/jGyoNtbCGFn0Q=
+	t=1707768280; cv=none; b=DO6fwgPcKuOI2XLlJ0QLJjIAHumpH6G6R8c64X1XZRdt404Mwl5OpfinCsp8i1PDn0+SrloeixtRj2VZZACjDd0cdkQ8DJyrhJMMRdBy/GfQPW3Z8ssDUDnKf/N7rERcWxrxTLCPfR6mX+ti8SvP51wNa+gBpr+4CnMrhZkk+mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707768278; c=relaxed/simple;
-	bh=0dAO+EHiuSLBj8m4VZ3xVszabZA/PMRk3GFVh4R9llo=;
+	s=arc-20240116; t=1707768280; c=relaxed/simple;
+	bh=4ZVBO+ZZ7qJwYsFNWtQW7anbtRxiXhpsOjP25YzoSmg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=g37q9ErbNa82ncK5zOmRG9wyQc0C0vMLOUbsCvcpYoYPHtbnYFFCbBXzT68tETmrB0YSmdUV+fmOuCmdTDCfSGPdWLDzLtGfshNsu5dnySjTRxXAXE+/mp+QmSOhUsllEUAPz597eGDKBugHtIzCW17gDJ5mZYUhu+fRreEoHKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=QytN18AT; arc=none smtp.client-ip=209.85.215.182
+	 In-Reply-To:To:Cc; b=pPg+IksD9v45u31jtMDY23mRU9KC2nQWMK/kqWlaZkcyyVVsLf/lS4mVwLamZaJsBsilIb5R8VoBjG5iRUj6S/nVNjXqSe9PNUQeKy4ICBiaNp8Xs1p5NWowY3V4p9aOGXNavEEDcE0lKl+3k5Nv2pPxLdH9FwmIFT98KGqyby0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=c4zIn2tb; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d8b519e438so135993a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:04:36 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d76671e5a4so29911465ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:04:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707768276; x=1708373076;
+        d=1e100.net; s=20230601; t=1707768279; x=1708373079;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:dkim-signature:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WXWSV+y18LZ5HLeeHfMaArrF2sqw5eZ12bKConVfkds=;
-        b=XuaMI+w7me3rwPeUgOuhopzg1+xYHF/ZeMw2H7CC5KidCNpshI4X7EhYKYAAdSvdIl
-         y388OKKXbN2cAfvxE4Ks1bEKrtV77MpRJ0fS3TBLCZ3lfSwWCzKA5gK9MknaWAYD5Iug
-         WVF3TGZYPBTNrAaLe3X/eB2Ujs+5uriYwCeRGIBGQa03j7hid8lnxaXLIElkusA0VCWP
-         PU5iwplImv6zP6wjRVFlTV00BMnHaydoNVdkwOPBTOwqQGTFG13yfZYsYUoh2lAU4gnk
-         6jECtgcLCTGpJv18WPf6qA+Bq7tV+S9DbQpES8IDhUfzqY8UC5Jakjma5ORaWb+Dh7yE
-         9drw==
-X-Forwarded-Encrypted: i=1; AJvYcCWp9jVyzoA9EADGtNVoboGEmOsnE6R0Ga+jnxC180V/RjNjB109nkdh2HmTa+pPbeQIf9uh2csdOBxnWFhNkzEsHi9+Jq5yl54yXsXw
-X-Gm-Message-State: AOJu0Yx9GGqTVH1GOgJYhTLyyR9r8ZdLQlMlGQUNYdLk5iPeeKQ3bUk8
-	BZvpXQ8nG58kOr3hEnJX5Ctxh20+2n9LHX9zMkEBtYedueLiWaoQ
-X-Google-Smtp-Source: AGHT+IGMrjwNl1612w0C9k06Puy+10fyLLKUAUNnYXIv9184Riy86C1Og1UKfJZoYAUrTM+Lkplx8w==
-X-Received: by 2002:a17:903:230b:b0:1d9:40f3:ada8 with SMTP id d11-20020a170903230b00b001d940f3ada8mr8856086plh.3.1707768275779;
-        Mon, 12 Feb 2024 12:04:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUDHjxpA0uU3XGvuzhI5SZIquSVLx1zmfFKybGvheSex+hPZy/JzWjZ7CTiIwYLPLehe0po1yJVJC+qBzUb596l742Nkw3KRlh3qazWfWfyUohTv9MGhO+dbyCHa6MnzupDF6nm3JvKh8Ci7crYGe3QSBM9XUHC0Ni5r37pSz/LNHUA3EQt803b9wkUQIPqiPvg1Gul5BTtJgS/Gk4Ub1tbfT/py/ThCrx4v5Z+2eQY1nWr4mA8taDd8P1h6mHV+AkpU960x3GjVIntAmC1
+        bh=IRMd3DmLaPwuNfy5qvMqAI9wlvK5phDwU9Cy7L0yCdE=;
+        b=VsD8yadLuUeSW1Uxu0h1JExm7tYbwEjWB86Qp6MjLvEF/H+jmBOklC39ZkUzU7bU95
+         LPNAxZ9AlOmZhbaMadZHht8UXxMYUbRzvhNLddSs+FnNOFzV1vT134uq/PzA6gTmNl9x
+         NPfRTGArEw/XImJzYuuGe0BsVjHYppTt6mO/77sAmbJEJQuwr5QjrUlZhFZgaLtWwOkq
+         q4Ee8cB8pceWbM0huUG7kFFzwJcwMdYtku4SL8l2FmjtXlP9GB6Q5PJo5qAA1eXepzbH
+         f7tOptN/UtyWeQyECOgS34OdWnRt72z9J6J/jcl49k7RQmhcR9dLgoHZ6ZaHlZ30Jzkh
+         MPrA==
+X-Forwarded-Encrypted: i=1; AJvYcCWy63SuJ3NKmRaeYdjRt7ijSWCdaC6rlUOukhToA6dpAWV8Ylt4v5djp5g1ui83tq/rjjdoVH/i+E5hIKrAEPyIaIE7SXPgPyufMZmm
+X-Gm-Message-State: AOJu0Yx0gVzURaYUTcN469Cxe0riFANudgQWaFa1dSAgng3s5cHhzsLu
+	0H7sb/cru0VGXsyAaB4U5HHq1tVC8+HU/JmQy9E+Rd4AHGdHnC2F
+X-Google-Smtp-Source: AGHT+IFKbcCkA7hnAphfFgB3xshq8pHJCg/OH5SAQH4+dskke83Nn5QL5JYsJy04y/+28TkJejXDUA==
+X-Received: by 2002:a17:902:e88a:b0:1db:29c2:b695 with SMTP id w10-20020a170902e88a00b001db29c2b695mr1426718plg.41.1707768278917;
+        Mon, 12 Feb 2024 12:04:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXIOq0hF/hPZhlh32fYalDvFXC50l3uTYP7hWSp53+wbYCWPD2U7Vnt2zNEe0fbKw/ztcM5EpHruheRt4S22jq14gk7kSPwNdXAd1xZd/3ugxhg+bZZtGsKQIvXGpXPEw5ot+K28yTs5goz5anrzjYvZHlhfXgHmE60+plzST2cGcJjO0FTHpNyKvxPdYLf5QPXp4DMTfwacyxhS9A1MSzNK8wWioUVDLtt6kaNqvEdET6EkP9On3OZd0FMVjvDBi4YZcL0cCvtShqWxNuA
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id ld16-20020a170902fad000b001d70c6d40f3sm704783plb.237.2024.02.12.12.04.35
+        by smtp.gmail.com with ESMTPSA id l4-20020a170903244400b001d8aadaa7easm722394pls.96.2024.02.12.12.04.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 12:04:35 -0800 (PST)
+        Mon, 12 Feb 2024 12:04:38 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707768274;
+	s=2024; t=1707768277;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WXWSV+y18LZ5HLeeHfMaArrF2sqw5eZ12bKConVfkds=;
-	b=QytN18ATL8fKnUEP2ncuOPGuiXEIsGGbkVZ6wJhrjBcmLZmNTLs/hIJyiHTWkr2hyZt81s
-	5pmTK4iknYS51FMajxkKa9HQcswI1uO6at9zJuVR5N0bJdVftvWgO7WGc7qn/sLtcz8YlC
-	TNtn0/iQBImF0B25aCCBWx+X1mWYvGkw3qWmK1wqvnfVigcPUaXdi/1Dmx/9BO+Yz8Q3l4
-	Y6nRPb7hLuw7QM6ufoFBTuvf/mKGotBW07erL1H3JFiQeJJrPrGGAvAfVxnHrUvYn5qjg4
-	GU7VoCVqIAdhsppoD9KXGJe1gB8mog4q3L/WD2HAgAZ/R1LjhWZa0PRJM+AAew==
+	bh=IRMd3DmLaPwuNfy5qvMqAI9wlvK5phDwU9Cy7L0yCdE=;
+	b=c4zIn2tbz7DFJpPM+h4TYSt72F581hIWGPMZ+GP0MavbXRgsAwG9eiMvW1/B3iNTvx+Ph5
+	shCbkAJuNCo1mRxMWL9VNjqDhSBJFKPiaU7uuFd5i8JttlVeJP6cypsUewlXtv2GdO8tRC
+	OpGan+0/nF2g10lB62EDjACYeT4I6vMv1sqmih/drcSfZd0tcZnAndH9kUk9EsBZpzz4P+
+	RepKnvlD4Ra8SiHFIR75HIA9z6TVQm5FqO82oepZZjDnacdHRjHbx1CglO3hq0AyOIQLe6
+	azQ0zyyWA9Qw+jQMNsJl8fxC/G5t3wGSyL23nJEFzN4GgfFm3nqpOdj43M0XBw==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Mon, 12 Feb 2024 17:05:01 -0300
-Subject: [PATCH v2 3/5] powerpc: mpic: make mpic_subsys const
+Date: Mon, 12 Feb 2024 17:05:02 -0300
+Subject: [PATCH v2 4/5] powerpc: pmac: make macio_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,7 +80,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240212-bus_cleanup-powerpc2-v2-3-8441b3f77827@marliere.net>
+Message-Id: <20240212-bus_cleanup-powerpc2-v2-4-8441b3f77827@marliere.net>
 References: <20240212-bus_cleanup-powerpc2-v2-0-8441b3f77827@marliere.net>
 In-Reply-To: <20240212-bus_cleanup-powerpc2-v2-0-8441b3f77827@marliere.net>
 To: Michael Ellerman <mpe@ellerman.id.au>, 
@@ -91,26 +91,26 @@ To: Michael Ellerman <mpe@ellerman.id.au>,
 Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
  "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1352; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=0dAO+EHiuSLBj8m4VZ3xVszabZA/PMRk3GFVh4R9llo=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlynnutnni9XUVE9ggMNrQa0bFx3O0p8SdcpMnT
- bc4vf6TJT2JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcp57gAKCRDJC4p8Y4ZY
- pjVVD/4nYBGZn22+WZU78auZCxMYQWDaHW9MiL8IaAxdjcjFLzfkLKAjb5ss+BIQ7Mqu11gKx+K
- VXEWgxDmIbpAuJpsxSlljamuz00Mjf0+Dx6tP5CyVBLesDUyE0DgAYa+5fGQpLj3QpDhZsMuWz8
- LyRMpA7WcmmOf8p0hGvx4V4qq7qa2KFWitkKeIwaOdNVI6syzYPkvNhjkR1Wci9jjHk7Kde4cfo
- zos7RaoLqbd0DgIc1CPIKOeOtF2xQdCMcn91M7vKvXLgzsDfrJ9x2SjeHHOKMRTkaCjwq8nzPyi
- mbfv7xaccaEFdhjzOSB/FLCf5SNgHyHOiESuhqOdjj66yvtw+5YZfBOyrfpculJ2lOO5H9mzlib
- l1MGtq0uOA8WMrVi71TYlX2NutQBmqoWCaZHknJigYm6zMrtk8LOc/v7rPBiy5o3oO6XF4lhO/d
- IqHkqluyASaq+luXDw1jqu+Fl69wepx6Hv2UDSi3CXohCaz7BUwdqs6Y6AkMS+a0Sa2Llr1cvex
- ypVfDu6UKs09/okvR2aFne7wcvtEQXpWxLkueA6PFSzpxyJLcgXr6WHPf/2xGZMATf/p+eCxeU1
- GdmUtxO0L2sPy7cHh/6f0KnRFGVg4a7cHWOSp++wKy3vmODpIydvixJrk4y4OqGrWriPzFG3Kr1
- VkRPilS+S4Yn7Ww==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1614; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=4ZVBO+ZZ7qJwYsFNWtQW7anbtRxiXhpsOjP25YzoSmg=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlynnv/PyVOgYd2KioAchyKJniQdC3OK4ih9i3z
+ OsxAU/kd92JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcp57wAKCRDJC4p8Y4ZY
+ ph/CD/0RYe4KY9dYDXRqeYmp4qRRSwGRmT9hPk6kjIJFbgBXGecdcHXlNKVqPQr9d7p4lPydOTO
+ U83sQwz3r9UwkhC/yl2h9/2SoDTq2zyko5a34Ll+Iluxlr6BYlZNughubGVIJ9vZawZQKHaQtZs
+ G4cSss9vMQSmSdm18aWOYTDhYJgYSdhVakInGFV3WqOKjNrOxhUI95lsYI8TYZrB5W1x0a3CGFY
+ muRnV6/RzblkFVSGoU6R/vyJs/u1+X6Xp1cRVyr9MxMxJNqLuLH0NGbDnaHVVOcpPVbXA0FKHFH
+ LSLJZ+s+bFuPCak+Iahex9CpyyQnxY3pfNKBnoQVdAe9QLuT6KyLsn5YtnsQRncNIz/Ni0OwMkP
+ g0SodtetAf9V/l3MdY3SMjz2qKqLYgPP6uzScXbi7YN1XwzWTEmwzNkcLMbFwvLLv1pubhfVolu
+ QRqiAqO7JkMLBQe7MsfTqdQ+mfev67du1MR4pePULICnFRBY7lBdVLjsDepRu5q1D5OaCDe56aM
+ RPq0al7Iff/wG6oi/LdJJrONKHtBU+taar+xpcVYVyquc/PTQkxjrx03xq1Ec43Kiq8rJTopwYs
+ 1mJVkf/n3ywVGC/x153u6FzchRyTRn5//f2gzcyNZZ1448srkQZBO8uiEw0NQnvuyGKbEqAZfM/
+ Vn++nulIlYLNpuA==
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
 Since commit d492cc2573a0 ("driver core: device.h: make struct
 bus_type a const *"), the driver core can properly handle constant
-struct bus_type, move the mpic_subsys variable to be a constant
+struct bus_type, move the macio_bus_type variable to be a constant
 structure as well, placing it into read-only memory which can not be
 modified at runtime.
 
@@ -118,36 +118,36 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- arch/powerpc/include/asm/mpic.h | 2 +-
- arch/powerpc/sysdev/mpic.c      | 2 +-
+ arch/powerpc/include/asm/macio.h | 2 +-
+ drivers/macintosh/macio_asic.c   | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/mpic.h b/arch/powerpc/include/asm/mpic.h
-index 58353c5bd3fb..0c03a98986cd 100644
---- a/arch/powerpc/include/asm/mpic.h
-+++ b/arch/powerpc/include/asm/mpic.h
-@@ -336,7 +336,7 @@ struct mpic
- #endif
- };
+diff --git a/arch/powerpc/include/asm/macio.h b/arch/powerpc/include/asm/macio.h
+index 3a07c62973aa..ab9608e63e40 100644
+--- a/arch/powerpc/include/asm/macio.h
++++ b/arch/powerpc/include/asm/macio.h
+@@ -6,7 +6,7 @@
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
  
--extern struct bus_type mpic_subsys;
-+extern const struct bus_type mpic_subsys;
+-extern struct bus_type macio_bus_type;
++extern const struct bus_type macio_bus_type;
  
- /*
-  * MPIC flags (passed to mpic_alloc)
-diff --git a/arch/powerpc/sysdev/mpic.c b/arch/powerpc/sysdev/mpic.c
-index dabbdd356664..d94cf36b0f65 100644
---- a/arch/powerpc/sysdev/mpic.c
-+++ b/arch/powerpc/sysdev/mpic.c
-@@ -49,7 +49,7 @@
- #define DBG(fmt...)
- #endif
+ /* MacIO device driver is defined later */
+ struct macio_driver;
+diff --git a/drivers/macintosh/macio_asic.c b/drivers/macintosh/macio_asic.c
+index a5ee8f736a8e..565f1e21ff7d 100644
+--- a/drivers/macintosh/macio_asic.c
++++ b/drivers/macintosh/macio_asic.c
+@@ -136,7 +136,7 @@ static int macio_device_modalias(const struct device *dev, struct kobj_uevent_en
  
--struct bus_type mpic_subsys = {
-+const struct bus_type mpic_subsys = {
- 	.name = "mpic",
- 	.dev_name = "mpic",
- };
+ extern const struct attribute_group *macio_dev_groups[];
+ 
+-struct bus_type macio_bus_type = {
++const struct bus_type macio_bus_type = {
+        .name	= "macio",
+        .match	= macio_bus_match,
+        .uevent	= macio_device_modalias,
 
 -- 
 2.43.0
