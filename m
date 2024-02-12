@@ -1,168 +1,193 @@
-Return-Path: <linux-kernel+bounces-61309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F38A28510D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:29:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 265438510D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:29:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F5D81F2190E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:29:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B0C21C20F69
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A617D18046;
-	Mon, 12 Feb 2024 10:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7751919478;
+	Mon, 12 Feb 2024 10:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ewZU95JZ"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="0fQtlRgd";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+/y2VEXJ";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="0fQtlRgd";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+/y2VEXJ"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25D2179B8;
-	Mon, 12 Feb 2024 10:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BB518AE4
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707733774; cv=none; b=EttkAj+zji33FwdqQgP75l63Fot0DVD2AytoX6yAJnCmpar11x26oBNJS8XTYIchOotywXCjaXvoCw2fYrvuXohpYlgVMuiHdNsJqt20+mnLGWnnEm4ljpdf6nAkCI9E+YPUbwcJ0iyZwi3nWqhfoHY44NBnUfHsU5PvQri2nYg=
+	t=1707733790; cv=none; b=qeeFNaR0XbkLMseIy3Jgwea2Q3Ed8SgfoS5uCRU18JkDYAl7LGBlZAo35iNRJD+HnpmPGg3D/dCEiwUGV8wEgSUFa31AcCeXud41JP+WpwnVxGcnNxAfKJq6sI2ecMpc3cVzZk2S+OYwtKkvFWlISnjY0MDpmh+Svv8gt86E7yI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707733774; c=relaxed/simple;
-	bh=lM1ikn/+ntRnbPmGODrfBa9eMNqWS/z2GjeqQpt4V0Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iqG8JbQ/Us0RtJAH6gJDUbU+Xm73c40s7MSP1TSrPyV2SLSK1j02t+XBqatSuMBqMmhHYuR9XZf1KB6hrDUqjL4UCm4dMIVA5gJoNlyzLVbZUCY7ZvTCA9Bv32hakX0l77A/TXrTkFHAG8mDKmavfIYaoIsO7q/06JF6gdwg8mM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ewZU95JZ; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 54CE940E01A9;
-	Mon, 12 Feb 2024 10:29:28 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Qfqc-ypnMKxE; Mon, 12 Feb 2024 10:29:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707733765; bh=8zzxZzAd70wLVlqCQfwTbwt/dFp7veEPvkKLq3mmCGc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ewZU95JZ5AgG6rZJLPSyQ4+uco/ylQ/tMZeYqEi7wKs9BhYt/fG7UUUw5O9c+EANz
-	 PSom6AgWUMW2IS8WNEUftXLmPq3pN41pcL/lPl3Gs6sVikGhK3Uv147SDRM8qFdvI6
-	 O4ICiy7mrjH18ayfOBcEHRXSI6KU7zjCK+FPdkrx5XyyVDvrNUmK2FIFkjCrUY9t07
-	 nvzxQimDDhYzoLZ/30kpmiOwB5+s5SJLLA0GPjtbH2OhEd6GpQvU2vLDKH5OACoh1G
-	 x6of9WfDLm8z5xPXQIpU5179BSwfJtwmo/F5n+6nHTVmrW2ALHtwLNfqohPSK3dJex
-	 6mv7RMbVLCXcVyjluiK0DvUKxPZQJX35vKF2OgcMN8GTmDVlu+J/P8efvxpIzznLs5
-	 rSdU+n7H8mrAxoeQFuNMu3BI9kHDsGDETqPzTo1hCZU6qiXdg/ThRjEoX/Tb/EvajN
-	 MDn4GSgKo/gzOq5gv9mJ8vEjCA+/zEBCindjhc+OeCGhW1bIBjK1hsHd3hKxmzky79
-	 fYJiCPIT3BcOQJ7wOUlO0HtgmUFu/x4VyJL+53TbPc3MTLnVijXoCKik3ByfmwzdLN
-	 vFdwoJq+FzycmgelzaQn/+VPw3wnvDRgmxWLpW74v7xdmEab8qX0+E4Pv6uzS4FS+l
-	 1ln5F/fr/a3P8lcfbf0/v0YQ=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	s=arc-20240116; t=1707733790; c=relaxed/simple;
+	bh=24KMFTDtM8zDrK2zoHWmRLkUEB0HDxDBEyiRrun12dg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N4U+150KeLCuGU2Gm71oRpblr+FVMeAqD0f5ZJTEUQ8X2OqBoKgV5ibEHOGf90qXyQ5vO4Bfka63dYpgQWg10IbVS8Qp2CAPwqKJkOErjE8llWnKkV4PN89knijjvQM1RQSi1MYB26wyJY/IYyGAd1+b8ecE0hPqqGAqg0Tee9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=0fQtlRgd; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+/y2VEXJ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=0fQtlRgd; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+/y2VEXJ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A5EF940E0192;
-	Mon, 12 Feb 2024 10:29:07 +0000 (UTC)
-Date: Mon, 12 Feb 2024 11:29:01 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-	Kevin Loughlin <kevinloughlin@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>,
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v3 08/19] x86/head64: Replace pointer fixups with PIE
- codegen
-Message-ID: <20240212102901.GVZcny7WeK_ZWt0HEP@fat_crate.local>
-References: <20240129180502.4069817-21-ardb+git@google.com>
- <20240129180502.4069817-29-ardb+git@google.com>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 592AA21FAA;
+	Mon, 12 Feb 2024 10:29:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707733787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eHSEkwkOSqT6ah+GaDRFScqUEIBxmXVYMhJHdx6LhuE=;
+	b=0fQtlRgdCdmPDINWNLZBDyijqCHhRZheRxW/VfYdPOG+dSjcsQUyFdlXEq+2/p51MPIFfW
+	sbC7Vw9+7+A6vMAO92YUx/dtYZ6kjlIEvwj1SOyGGVLOguaQkDQUfzIfTtEdsBWmOXl6xw
+	9NGQ7kkLD0/Wm/fyGL5jkS0ffho/jXo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707733787;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eHSEkwkOSqT6ah+GaDRFScqUEIBxmXVYMhJHdx6LhuE=;
+	b=+/y2VEXJMhaa2DDJvrdcrKdTwCkfRl0UBgBGQdZTo79EE8CULguyJGtCzmjucbGtpdpktU
+	uCuh5lvhnDGoZLAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707733787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eHSEkwkOSqT6ah+GaDRFScqUEIBxmXVYMhJHdx6LhuE=;
+	b=0fQtlRgdCdmPDINWNLZBDyijqCHhRZheRxW/VfYdPOG+dSjcsQUyFdlXEq+2/p51MPIFfW
+	sbC7Vw9+7+A6vMAO92YUx/dtYZ6kjlIEvwj1SOyGGVLOguaQkDQUfzIfTtEdsBWmOXl6xw
+	9NGQ7kkLD0/Wm/fyGL5jkS0ffho/jXo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707733787;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eHSEkwkOSqT6ah+GaDRFScqUEIBxmXVYMhJHdx6LhuE=;
+	b=+/y2VEXJMhaa2DDJvrdcrKdTwCkfRl0UBgBGQdZTo79EE8CULguyJGtCzmjucbGtpdpktU
+	uCuh5lvhnDGoZLAA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3B01813A0E;
+	Mon, 12 Feb 2024 10:29:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 4lPzDBvzyWU9CQAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Mon, 12 Feb 2024 10:29:47 +0000
+From: Daniel Wagner <dwagner@suse.de>
+To: James Smart <james.smart@broadcom.com>
+Cc: Keith Busch <kbusch@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Hannes Reinecke <hare@suse.de>,
+	linux-nvme@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH] nvmet-fc: move RCU read lock to nvmet_fc_assoc_exists
+Date: Mon, 12 Feb 2024 11:29:40 +0100
+Message-ID: <20240212102940.11137-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240129180502.4069817-29-ardb+git@google.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Bar: /
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=0fQtlRgd;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="+/y2VEXJ"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.33 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.16)[88.76%]
+X-Spam-Score: 0.33
+X-Rspamd-Queue-Id: 592AA21FAA
+X-Spam-Flag: NO
 
-On Mon, Jan 29, 2024 at 07:05:11PM +0100, Ard Biesheuvel wrote:
-> From: Ard Biesheuvel <ardb@kernel.org>
-> 
-> Some of the C code in head64.c may be called from a different virtual
-> address than it was linked at. Currently, we deal with this by using
+The RCU lock is only needed for the lookup loop and not for
+list_ad_tail_rcu call. Thus move it down the call chain into
+nvmet_fc_assoc_exists.
 
-Yeah, make passive pls: "Currently, this is done by using... "
+While at it also fix the name typo of the function.
 
-> ordinary, position dependent codegen, and fixing up all symbol
-> references on the fly. This is fragile and tricky to maintain. It is
-> also unnecessary: we can use position independent codegen (with hidden
-		   ^^^
-Ditto: "use ..."
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+ drivers/nvme/target/fc.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-In the comments below too, pls, where it says "we".
-
-> visibility) to ensure that all compiler generated symbol references are
-> RIP-relative, removing the need for fixups entirely.
-> 
-> It does mean we need explicit references to kernel virtual addresses to
-> be generated by hand, so generate those using a movabs instruction in
-> inline asm in the handful places where we actually need this.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  arch/x86/Makefile                 |  8 ++
->  arch/x86/boot/compressed/Makefile |  2 +-
->  arch/x86/include/asm/desc.h       |  3 +-
->  arch/x86/include/asm/setup.h      |  4 +-
->  arch/x86/kernel/Makefile          |  5 ++
->  arch/x86/kernel/head64.c          | 88 +++++++-------------
->  arch/x86/kernel/head_64.S         |  5 +-
->  7 files changed, 51 insertions(+), 64 deletions(-)
-> 
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 1a068de12a56..2b5954e75318 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -168,6 +168,14 @@ else
->          KBUILD_CFLAGS += -mcmodel=kernel
->          KBUILD_RUSTFLAGS += -Cno-redzone=y
->          KBUILD_RUSTFLAGS += -Ccode-model=kernel
-> +
-> +	PIE_CFLAGS-$(CONFIG_STACKPROTECTOR)	+= -fno-stack-protector
-
-Main Makefile has
-
-KBUILD_CFLAGS += -fno-PIE
-
-and this ends up being:
-
-gcc -Wp,-MMD,arch/x86/kernel/.head64.s.d -nostdinc ... -fno-PIE ... -fpie ... -fverbose-asm -S -o arch/x86/kernel/head64.s arch/x86/kernel/head64.c
-
-Can you pls remove -fno-PIE from those TUs which use PIE_CFLAGS so that
-there's no confusion when staring at V=1 output?
-
-> +	PIE_CFLAGS-$(CONFIG_LTO)		+= -fno-lto
-> +
-> +	PIE_CFLAGS := -fpie -mcmodel=small $(PIE_CFLAGS-y) \
-> +		      -include $(srctree)/include/linux/hidden.h
-> +
-> +	export PIE_CFLAGS
->  endif
->  
->  #
-
-Other than that, that code becomes much more readable, cool!
-
-Thx.
-
+diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
+index fd229f310c93..337ee1cb09ae 100644
+--- a/drivers/nvme/target/fc.c
++++ b/drivers/nvme/target/fc.c
+@@ -1115,16 +1115,21 @@ nvmet_fc_schedule_delete_assoc(struct nvmet_fc_tgt_assoc *assoc)
+ }
+ 
+ static bool
+-nvmet_fc_assoc_exits(struct nvmet_fc_tgtport *tgtport, u64 association_id)
++nvmet_fc_assoc_exists(struct nvmet_fc_tgtport *tgtport, u64 association_id)
+ {
+ 	struct nvmet_fc_tgt_assoc *a;
++	bool found = false;
+ 
++	rcu_read_lock();
+ 	list_for_each_entry_rcu(a, &tgtport->assoc_list, a_list) {
+-		if (association_id == a->association_id)
+-			return true;
++		if (association_id == a->association_id) {
++			found = true;
++			break;
++		}
+ 	}
++	rcu_read_unlock();
+ 
+-	return false;
++	return found;
+ }
+ 
+ static struct nvmet_fc_tgt_assoc *
+@@ -1164,13 +1169,11 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
+ 		ran = ran << BYTES_FOR_QID_SHIFT;
+ 
+ 		spin_lock_irqsave(&tgtport->lock, flags);
+-		rcu_read_lock();
+-		if (!nvmet_fc_assoc_exits(tgtport, ran)) {
++		if (!nvmet_fc_assoc_exists(tgtport, ran)) {
+ 			assoc->association_id = ran;
+ 			list_add_tail_rcu(&assoc->a_list, &tgtport->assoc_list);
+ 			done = true;
+ 		}
+-		rcu_read_unlock();
+ 		spin_unlock_irqrestore(&tgtport->lock, flags);
+ 	} while (!done);
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.43.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
