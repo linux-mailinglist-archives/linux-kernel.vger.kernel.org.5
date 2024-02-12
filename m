@@ -1,105 +1,175 @@
-Return-Path: <linux-kernel+bounces-61380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E699F85119A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:55:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AF758511A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:56:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F179B25FE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:55:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C53B71F21B98
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:56:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E1038F94;
-	Mon, 12 Feb 2024 10:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0106139AFC;
+	Mon, 12 Feb 2024 10:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="euifF5nB"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Xu1kwmSu"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A12138DE6
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:54:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCCB320B2E;
+	Mon, 12 Feb 2024 10:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707735283; cv=none; b=lGLFPNACQq85h48tQ4us3Fd1lnS+TzwB1b0FwHySuo6BpOhx38wYPrOLzj+X3fsnzAArUgnAR8eEFu11ZKpBlFuy0ceIpr9+rc4iokwAJNTzZj0ozxWUacccKDrGeK+TKRbwm1LgE/YAj0xShscJrtrLgkbKPUFSZBWFAhzDDNo=
+	t=1707735321; cv=none; b=lRNnfrptcVE59N6mBuzm/Wcqc97VjM/RXD+I6R886kT1Pf2lZ1c8HMLRkPuDsX/0UT5FUNRiU83fXf4I5y4+fU1cBblZWI6woiVkbMIqwVo6cQkk/5XcefFSw3RIp0DkQ+UTx22DzH22YwMIENjpdkgbwpPhTWAbbt30b+LNfS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707735283; c=relaxed/simple;
-	bh=AN73LICug5VW++U499t0Wayh8Nvzz5HHvSHgzNyjW2E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ckk8h+v6z2BVOiZsWLeO1od6Sv1Kg9eGf80jLHyktjdoA7uv8SP9QCOzBaunEtlqeD1XfYNUy+gIZzWELwQAkHAcqV1gQyL71gh7aFwWzxbXXwu2eVMgYLp0G4AqcbTHiAGWLrnFhkhh7xeCLyYT7hEUvTHuPKLeUyqqH4mk3qE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=euifF5nB; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4109f9afc1bso14897065e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:54:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707735279; x=1708340079; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AN73LICug5VW++U499t0Wayh8Nvzz5HHvSHgzNyjW2E=;
-        b=euifF5nB+ifEOc5Qes2Z7UsNMzAiMQ0zgymIJCJBqilR26t166cteBvFmEW8CT22OI
-         4oVWHgrcQpyKefyRenUF3EwaA8Q/Vef/sq//7LJcUQJ7uPuquv7qcZe1ZvTLFRbUcr8T
-         /ETqMAM0ilXg8WW3SH1XOOnvRxDc4SZVHBb0fIRBTj/irpzjC+rxGNW1MgcPPLsrceqS
-         CVeuhG/gBWyBVYkV0AVTQKs2lwfQiLphFa5ZSjJu/9C9jgC7YPQkaF+ymwgkmS8uZ3oe
-         1ln9FaMsqMaonTvyRDTQYKOqv93YqXCxSgJOP/+sKU9kdMlIHufTMJDXplC0M4BLfDIO
-         W0zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707735279; x=1708340079;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AN73LICug5VW++U499t0Wayh8Nvzz5HHvSHgzNyjW2E=;
-        b=umEBdvsdBXnm1IcC3EhEHnMvNw8j8CZYvdupQE36QXtZRF7Wd3l9h6o9ABAsgEVuya
-         GufBql7K90bAL0xN2KiiecS67+sDN8ljalsXxFzbUbrlB2fvv1AA3NlMnPgjdxIH0VcA
-         40dRU7aEyIs6gGdh3Fh6rjKolrbVOcHUpnOFcVZAr2CLWFzcJ3JD4dP4dmnU7YN8/6s0
-         sobYL6nHAmbHBTxIcS7y/t5WO61SssT4XBwTJsQoq1X51USWPhzn+qwR70bXyT0oMue0
-         vtToGceSJ1eyIx7rB3OoekBNxMrlUg+8oQYtLQRpPKR/p8BmawwPlOWaZQBlTzF7s6rP
-         jBEA==
-X-Gm-Message-State: AOJu0YxDrLxotSG1aYCxg/b6NGD6bEpwKnE0iSC87P7ojdddqGePkcSV
-	+aGIOeII7FjyEGEr4zXNXiTz/6D9VUE+O26y68Xw4iPwDIHQO48OpUusmcApWzE=
-X-Google-Smtp-Source: AGHT+IHSe4H9vS5lPNXIEa7nwJk3bFBhiBabiLH5VYY4Y79eetaSZxnzvF+amgrzd0Ufd1oi5wt6wA==
-X-Received: by 2002:adf:e441:0:b0:33b:60ba:d990 with SMTP id t1-20020adfe441000000b0033b60bad990mr4371624wrm.19.1707735279570;
-        Mon, 12 Feb 2024 02:54:39 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUCe2LrvntnsOtdZ25erDPdrpNU0Pkuuo26fivdkvy0LpaVzwmyVxiMipi/TjvBVoLO9tSja2KfIgxo39/LF8ZZKy971lfFj0uGuYDx+hXduyixJ7m2zvDCJR/CL1bBaj8wgx/MRAFx2GIMdmJUngscf1naw/2ab1L4SA3TlW4AYI50IWqiD8Dwevo2r9ZpxFwEK06jBUUgvpUYco1fjh4E8XHGQw0wG4Uc5htxi5gHOiMbfn97Vf7CFenQPkqsbhnXGzl94bt/1nOrN79/8R9pKwF0ylax7jpvsveEFSqBUnP3QQTI606SpqMNvOxY5A409mHcK3fPyNqjMz6y/+ZqbgkbGOZyhfP8ZRnp0APrGaqE/Af8ocgj6OdGI0ucQJxZYdVYAt4rA4EpzdRxug==
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id ce9-20020a5d5e09000000b0033b8808355fsm592374wrb.28.2024.02.12.02.54.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 02:54:38 -0800 (PST)
-Date: Mon, 12 Feb 2024 10:54:37 +0000
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-	Helge Deller <deller@gmx.de>, Karel Balej <balejk@matfyz.cz>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] backlight: ktd2801: make timing struct static
-Message-ID: <20240212105437.GA4593@aspen.lan>
-References: <20240210-ktd2801-static-v1-1-90ad2e2e8483@skole.hr>
+	s=arc-20240116; t=1707735321; c=relaxed/simple;
+	bh=EawNjPbCYcS/tAMoeRo1vOT1H5rphtp7aMvvQEXuLbA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=MHcp+pnAKTudsme8M9HHXbqYC8ji/akbquOHpjYIeFgKmxhDJOaDAGPPYK3VN6/Kll2Jjotn8P+9px0SLKr68TxVg6OdwMAXuo08W4k3CpyJILOPZgc2LLFcSNkgS9d0spPlEPEChsn+EVetqy6plq56E0WbPQqTd6vqFGcncio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Xu1kwmSu; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CAgHcb004087;
+	Mon, 12 Feb 2024 10:54:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=zoVRmRi8SldJa0D8D0wv+7S4X/v7cfA5ay35VLyY9l4=;
+ b=Xu1kwmSu6Aorj1i1sDCBWstHrix6T+AEiVK037yo4yRHX0CITslpJXem8tD1ezVBm4L3
+ HnQUueSsPp9naidq8IUXdLJYQooagAzKEUZT7XH0hlUI0mieGpEJPVdVb4s9xF9BcbCu
+ ExrxuxvKvNAOPivEVVoKJ9afYDqymfFjwD/K9RwjX6vOSv4Vxx4ZfE9d1hYmTUmzaULm
+ UlLF6lbcybPIlA1MycZ79RrgEcw9wO71m9Gd/mnikW/DyWzRmiFc0HYleSSZZO65E9ok
+ JZlfW81n1F0GCw1i9ebyfqhanHJeSo0msDhqOSKnjJthsxbmD38DYVqWL85Ge23A7ODR Pw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7htf8fnd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 10:54:57 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CAgxmI006433;
+	Mon, 12 Feb 2024 10:54:57 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7htf8fmu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 10:54:57 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41C8j2ov009728;
+	Mon, 12 Feb 2024 10:54:55 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6p62fk2b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 10:54:55 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CAsom918023054
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 10:54:52 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 16E7F20043;
+	Mon, 12 Feb 2024 10:54:50 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C12292004B;
+	Mon, 12 Feb 2024 10:54:45 +0000 (GMT)
+Received: from li-c9696b4c-3419-11b2-a85c-f9edc3bf8a84.in.ibm.com (unknown [9.109.198.187])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 12 Feb 2024 10:54:45 +0000 (GMT)
+From: Nilay Shroff <nilay@linux.ibm.com>
+To: john.g.garry@oracle.com
+Cc: axboe@kernel.dk, brauner@kernel.org, bvanassche@acm.org,
+        dchinner@redhat.com, djwong@kernel.org, hch@lst.de, jack@suse.cz,
+        jbongio@google.com, jejb@linux.ibm.com, kbusch@kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
+        martin.petersen@oracle.com, ming.lei@redhat.com, ojaswin@linux.ibm.com,
+        sagi@grimberg.me, tytso@mit.edu, viro@zeniv.linux.org.uk
+Subject: Re:[PATCH v3 09/15] block: Add checks to merging of atomic writes
+Date: Mon, 12 Feb 2024 16:24:44 +0530
+Message-ID: <20240212105444.43262-1-nilay@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240124113841.31824-10-john.g.garry@oracle.com>
+References: <20240124113841.31824-10-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240210-ktd2801-static-v1-1-90ad2e2e8483@skole.hr>
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: l6UR2kJ2av9VC-Gz59rrtIFBEPbdj0UY
+X-Proofpoint-ORIG-GUID: Q0gM8ieRkli4blZ8gcHTGllf5lrbi8pv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_07,2024-02-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ mlxscore=0 mlxlogscore=999 impostorscore=0 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 malwarescore=0 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402120082
 
-On Sat, Feb 10, 2024 at 05:16:17PM +0100, Duje Mihanović wrote:
-> The struct containing the KTD2801 timing can be made static as it's not
-> referenced outside the KTD2801 driver. Do this to prevent sparse
-> complaints.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202402100625.M0RkJhMh-lkp@intel.com/
-> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
-
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-
-Daniel.
+>+static bool rq_straddles_atomic_write_boundary(struct request *rq,=0D
+>+					unsigned int front,=0D
+>+					unsigned int back)=0D
+>+{=0D
+>+	unsigned int boundary =3D queue_atomic_write_boundary_bytes(rq->q);=0D
+>+	unsigned int mask, imask;=0D
+>+	loff_t start, end;=0D
+>+=0D
+>+	if (!boundary)=0D
+>+		return false;=0D
+>+=0D
+>+	start =3D rq->__sector << SECTOR_SHIFT;=0D
+>+	end =3D start + rq->__data_len;=0D
+>+=0D
+>+	start -=3D front;=0D
+>+	end +=3D back;=0D
+>+=0D
+>+	/* We're longer than the boundary, so must be crossing it */=0D
+>+	if (end - start > boundary)=0D
+>+		return true;=0D
+>+=0D
+>+	mask =3D boundary - 1;=0D
+>+=0D
+>+	/* start/end are boundary-aligned, so cannot be crossing */=0D
+>+	if (!(start & mask) || !(end & mask))=0D
+>+		return false;=0D
+>+=0D
+>+	imask =3D ~mask;=0D
+>+=0D
+>+	/* Top bits are different, so crossed a boundary */=0D
+>+	if ((start & imask) !=3D (end & imask))=0D
+>+		return true;=0D
+>+=0D
+>+	return false;=0D
+>+}=0D
+>+=0D
+=0D
+Shall we ensure here that we don't cross max limit of atomic write supporte=
+d by =0D
+device? It seems that if the boundary size is not advertized by the device =
+=0D
+(in fact, I have one NVMe drive which has boundary size zero i.e. nabo/nabs=
+pf/=0D
+nawupf are all zero but awupf is non-zero) then we (unconditionally) allow =
+=0D
+merging. However it may be possible that post merging the total size of the=
+ =0D
+request may exceed the atomic-write-unit-max-size supported by the device a=
+nd =0D
+if that happens then most probably we would be able to catch it very late i=
+n =0D
+the driver code (if the device is NVMe). =0D
+=0D
+So is it a good idea to validate here whether we could potentially exceed =
+=0D
+the atomic-write-max-unit-size supported by device before we allow merging?=
+ =0D
+In case we exceed the atomic-write-max-unit-size post merge then don't allo=
+w=0D
+merging?=0D
+ =0D
+Thanks,=0D
+--Nilay=0D
+=0D
 
