@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-61480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E534A8512C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:58:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20C8F8512CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:00:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70B931F2419A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:58:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD26F283C3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A7FA3BB31;
-	Mon, 12 Feb 2024 11:55:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C934D3D569;
+	Mon, 12 Feb 2024 11:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="XTzHhAej"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="goL+SXTK"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E67AA3A8FE
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75F43AC25
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707738938; cv=none; b=ebC6gNDJcQv2rX/C8jO9SxIMl0e2xkfKN4fIPwrvrm0FAlxc+WqD4m1q0DTEaAwUN4jS1RXTBfqew2JohSHoe91f5tWda6sLwPOZ1xZQ3t7aCN8sOBenOlRaWQLl1eZT9eEXmCtKVBvA3nnCAl+DOZdtLzUz3+W9op3jf7A7rAg=
+	t=1707738940; cv=none; b=KRVU3VMIrDyMcJHLdIuphxFO5pOmFSmEyOwnPX58uTICh1VHfVwM6yJn7nZKoAkHxk3X5zKEK8t7Tzg+aCmj1qOaOsHu7qvqPc/mEDiO+XERfBPDMYYiAuvTziFoqcCm20o8JkUPS6e4YuHi1zDDDFTQwbcpuUjeE2eHQ7O/rCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707738938; c=relaxed/simple;
-	bh=4QO81KEDKay0yFCAsc2rxdLCjv2qqeiYr3qK18+rth8=;
+	s=arc-20240116; t=1707738940; c=relaxed/simple;
+	bh=Bin3DNZnSCUMXH5aICZHgBTErX76nCGHVd62Jfb1blU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SIfIZtu6ReIeVVx2UsqSpfrGWo6WvqL3MiYfsFsi3ySfNK6KvXfW3KzBn7ti5hAZ5iYxacuUr9I7aTjaOV+pBkY6jsSH4f4hs4u7l/wGDsXE9DlOvG17X2CpL5NY4Sx+YLnKQFlQKDyuNROyOiDZBgp7mY+yteyo4m7scmBG3dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=XTzHhAej; arc=none smtp.client-ip=209.85.218.51
+	 MIME-Version; b=AZZX38D8RB3yTcG50MJBJ9+IA/wmpAn1qK+bg9daOhM6Bn+7G57annv+B/6Cv78lRoaoQj338gVctGbb3Yc9X6227FpDKb1nwF2WJV/Sep23KIjq+PLqULTU1mRRAk9OUZLWl6rccZMqFvcj1tK84chfrPx8rilBoDLZPLHARcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=goL+SXTK; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3ca07df603so95048466b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:55:35 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5605c7b1f32so4163264a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 03:55:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google; t=1707738934; x=1708343734; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=55y/MpLm4siZas8N+/jjEVmpsMcuf6T3/F4NQL7Vz68=;
-        b=XTzHhAej6WjkMa9rOsqo1pQSOyph+hjF5EeIJIGrx3jwItD6tYZXZmV1RQgVHLWH7w
-         8nNU1rB21x9s+xJKzc0R4MHICazEyKJr20eT59vaEo+xe1UiDOIUe61AoiZXb/o8fQbY
-         TCfiV9446TOjTWixallOlv8P0HGZ9l+cw5AmihQFQM2L2F711mnZ2CXhjxZqwLLsm7pY
-         37nbirvCk46bHOJ1URqvIubXxPX2PascKKsdtn1C8gZzBhpD0O04efEkzY/Ql0wCzrWa
-         O8avCSMhkqznACvu6ln+BEBfOELKVlJGGzOKt8cO3DR0hQ5A2Whw/IYhnIkbHJly2IWW
-         QWQQ==
+        bh=g2+Iouf2UVGvs4mCNtCFcBfpV0dyvUFr5y+VeLzPrck=;
+        b=goL+SXTK/3qRMqOUeQ4iZzinmfik50I62xMbGLYlxY6Z4CiRcQZ+NzFDIFMMJ6tjhy
+         kI5MvqUTDa+Ys0EUOuWr2jOM1TvYywmWi3CcJiZRp1QU9SB7I1JLHEWrHXmPsMBhBkZn
+         K4Oa3gCZ42QKWK6x62blzd0wY/4EHBRqaHHk6oMNgl++xjjPq4jvkMevgbJdoOWUFcip
+         zJM0MIg+gk3dCQVKhbFQn8/EGe6VxYoIgudtP99fDPy+2x41fH3nbjSFylfBZEzElrp8
+         0xAvAadaGLkTynJw3Dd8yCqYDxjT6OvTPsfhXjGBActxCd2xGvfIdt1Zv4gs+SeHErPE
+         v53g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1707738934; x=1708343734;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=55y/MpLm4siZas8N+/jjEVmpsMcuf6T3/F4NQL7Vz68=;
-        b=uUFyLR74OhaU8er11XW2df68kYZY5KQjfacdFy4TZZGMAGQjLi50q4bSxb5kFsdaEu
-         eQoCAKdH55kgoLG1ul/ylxFK/4PJ6PpYHBy55dGLhD4wzL4Fz3wig0X5W4g82qQEsra4
-         PnBg6eZ0lHsAjxKfgUcmepp1+DDeI+2BxJNhFwJHEbrNq7nm2CLEyIyfeyR4cVCnQZ4I
-         3inHLMp8AA8WTbStPeXWKQEXYeKaxPbZfklpbFNuPNjUM2UoIxvw6ohXywPDD9MCZn7w
-         MHzu8B08+ruZEQo/jMjaaOfd5+rzG37NCfYcgNy1ISZn5AUcvONtrPX1kZh4QdUy0qAM
-         FM5A==
-X-Gm-Message-State: AOJu0Yyvtn0a8WvZjP98Ag7upFlmpPrkB7AwjTzbFnItiF2xz/p0eb73
-	NRReeKo6iYz6R4JTc6PmQKDPyJcvNsfaeUQ8X92kRh6KOKz1u/YzTJxIlostk0nKZNteFPX60jy
-	P
-X-Google-Smtp-Source: AGHT+IEK1fS5kdhTqTaCVe+EI6mAKN4pANC+6qzGdWUlBK6FSAm6+2sxl19FuTIdh7CY3hIC8iV8Fg==
-X-Received: by 2002:a17:906:234b:b0:a37:478c:6021 with SMTP id m11-20020a170906234b00b00a37478c6021mr5285669eja.76.1707738933926;
-        Mon, 12 Feb 2024 03:55:33 -0800 (PST)
+        bh=g2+Iouf2UVGvs4mCNtCFcBfpV0dyvUFr5y+VeLzPrck=;
+        b=Y3xTec1BO9r07qDtBNT3riBvCwkMsyTMa5QVbU8HzHksHVN3l6wDf4mEKuASaoK6Jb
+         lsgkYPqJUrIlUHKnTfCcQ/CZDb7f7Nz94DzW33qaRwYwPbHuFgk+uXdg/ukL6ylM6OC1
+         /zDch3mHWeyB1vfsjVTX0Qzmka0eqM7pmgBbl/wXIEDDNePez4mjoCFrnyEKgYNj36jh
+         hPbO1ztO4GzLomU+hT6omeTwXCFH+NDIBZBQAlcghmOcVOe0GjsYzCfVXtBBJBGlaM5j
+         a40vOtBiSgI5idl8GXSy23IklbdINjdhkSNYos5zfCMHWsvccmogJXQggbyLszIKM8nj
+         Yxcw==
+X-Gm-Message-State: AOJu0YwF0T1MxX8hZBuRSbZ4IkFYgCa3e3tFZ/FjLRBitiL4tW3ZpV1G
+	4p6HrpMiMCSk1AOs2xhff3shX2bi2f1TsObmBZMepLAGj67PjYoBbfsqtrlIgjDM4liAyFk4d18
+	h
+X-Google-Smtp-Source: AGHT+IGc5FNIYBMf/EACCBp1txSeFwQcMy197OPwHZm/231ZBswhTTbT9nSQwwg7pzNOcyJjasbU3g==
+X-Received: by 2002:a17:906:d96f:b0:a3c:ccf7:5fda with SMTP id rp15-20020a170906d96f00b00a3cccf75fdamr688046ejb.46.1707738934581;
+        Mon, 12 Feb 2024 03:55:34 -0800 (PST)
 Received: from raven.blarg.de (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id m1-20020a17090607c100b00a36c3e2e52dsm139203ejc.61.2024.02.12.03.55.33
+        by smtp.gmail.com with ESMTPSA id m1-20020a17090607c100b00a36c3e2e52dsm139203ejc.61.2024.02.12.03.55.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 03:55:33 -0800 (PST)
+        Mon, 12 Feb 2024 03:55:34 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v5 20/35] bio.h: move declarations to bio_types.h
-Date: Mon, 12 Feb 2024 12:54:45 +0100
-Message-Id: <20240212115500.2078463-21-max.kellermann@ionos.com>
+Subject: [PATCH v5 21/35] percpu-refcount.h: move declarations to percpu-refcount_types.h
+Date: Mon, 12 Feb 2024 12:54:46 +0100
+Message-Id: <20240212115500.2078463-22-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240212115500.2078463-1-max.kellermann@ionos.com>
 References: <20240212115500.2078463-1-max.kellermann@ionos.com>
@@ -88,221 +88,290 @@ dependencies.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- include/linux/bio.h       | 74 +---------------------------------
- include/linux/bio_types.h | 84 +++++++++++++++++++++++++++++++++++++++
- include/linux/blkdev.h    |  2 +-
- 3 files changed, 86 insertions(+), 74 deletions(-)
- create mode 100644 include/linux/bio_types.h
+ drivers/target/target_core_pr.c       |  1 +
+ drivers/target/target_core_xcopy.c    |  1 +
+ include/linux/blkdev.h                |  2 +-
+ include/linux/bpf-cgroup-defs.h       |  2 +-
+ include/linux/bpf.h                   |  2 +-
+ include/linux/cgroup-defs.h           |  2 +-
+ include/linux/cgroup.h                |  1 +
+ include/linux/percpu-refcount.h       | 64 +-----------------------
+ include/linux/percpu-refcount_types.h | 71 +++++++++++++++++++++++++++
+ include/linux/slab.h                  |  1 -
+ include/target/target_core_base.h     |  2 +-
+ 11 files changed, 80 insertions(+), 69 deletions(-)
+ create mode 100644 include/linux/percpu-refcount_types.h
 
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index b8562d4b57b2..cada670f63d8 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -5,6 +5,7 @@
- #ifndef __LINUX_BIO_H
- #define __LINUX_BIO_H
+diff --git a/drivers/target/target_core_pr.c b/drivers/target/target_core_pr.c
+index 6ed604a164f8..0ee29c16a161 100644
+--- a/drivers/target/target_core_pr.c
++++ b/drivers/target/target_core_pr.c
+@@ -20,6 +20,7 @@
+ #include <linux/fcntl.h>
+ #include <linux/fs.h>
+ #include <linux/kref.h>
++#include <linux/percpu-refcount.h>
+ #include <scsi/scsi_proto.h>
+ #include <asm/unaligned.h>
  
-+#include <linux/bio_types.h>
- #include <linux/mempool.h>
- /* struct bio, bio_vec and BIO_* flags are defined in blk_types.h */
- #include <linux/blk_types.h>
-@@ -20,35 +21,6 @@ static inline unsigned int bio_max_segs(unsigned int nr_segs)
- 	return min(nr_segs, BIO_MAX_VECS);
- }
- 
--#define bio_prio(bio)			(bio)->bi_ioprio
--#define bio_set_prio(bio, prio)		((bio)->bi_ioprio = prio)
--
--#define bio_iter_iovec(bio, iter)				\
--	bvec_iter_bvec((bio)->bi_io_vec, (iter))
--
--#define bio_iter_page(bio, iter)				\
--	bvec_iter_page((bio)->bi_io_vec, (iter))
--#define bio_iter_len(bio, iter)					\
--	bvec_iter_len((bio)->bi_io_vec, (iter))
--#define bio_iter_offset(bio, iter)				\
--	bvec_iter_offset((bio)->bi_io_vec, (iter))
--
--#define bio_page(bio)		bio_iter_page((bio), (bio)->bi_iter)
--#define bio_offset(bio)		bio_iter_offset((bio), (bio)->bi_iter)
--#define bio_iovec(bio)		bio_iter_iovec((bio), (bio)->bi_iter)
--
--#define bvec_iter_sectors(iter)	((iter).bi_size >> 9)
--#define bvec_iter_end_sector(iter) ((iter).bi_sector + bvec_iter_sectors((iter)))
--
--#define bio_sectors(bio)	bvec_iter_sectors((bio)->bi_iter)
--#define bio_end_sector(bio)	bvec_iter_end_sector((bio)->bi_iter)
--
--/*
-- * Return the data direction, READ or WRITE.
-- */
--#define bio_data_dir(bio) \
--	(op_is_write(bio_op(bio)) ? WRITE : READ)
--
- static inline void *bio_data(struct bio *bio)
- {
- 	if (bio_has_data(bio))
-@@ -521,18 +493,6 @@ static inline void bio_set_dev(struct bio *bio, struct block_device *bdev)
- 	bio_associate_blkg(bio);
- }
- 
--/*
-- * BIO list management for use by remapping drivers (e.g. DM or MD) and loop.
-- *
-- * A bio_list anchors a singly-linked list of bios chained through the bi_next
-- * member of the bio.  The bio_list also caches the last list member to allow
-- * fast access to the tail.
-- */
--struct bio_list {
--	struct bio *head;
--	struct bio *tail;
--};
--
- static inline int bio_list_empty(const struct bio_list *bl)
- {
- 	return bl->head == NULL;
-@@ -656,38 +616,6 @@ static inline void bio_inc_remaining(struct bio *bio)
-  */
- #define BIO_POOL_SIZE 2
- 
--struct bio_set {
--	struct kmem_cache *bio_slab;
--	unsigned int front_pad;
--
--	/*
--	 * per-cpu bio alloc cache
--	 */
--	struct bio_alloc_cache __percpu *cache;
--
--	mempool_t bio_pool;
--	mempool_t bvec_pool;
--#if defined(CONFIG_BLK_DEV_INTEGRITY)
--	mempool_t bio_integrity_pool;
--	mempool_t bvec_integrity_pool;
--#endif
--
--	unsigned int back_pad;
--	/*
--	 * Deadlock avoidance for stacking block drivers: see comments in
--	 * bio_alloc_bioset() for details
--	 */
--	spinlock_t		rescue_lock;
--	struct bio_list		rescue_list;
--	struct work_struct	rescue_work;
--	struct workqueue_struct	*rescue_workqueue;
--
--	/*
--	 * Hot un-plug notifier for the per-cpu cache, if used
--	 */
--	struct hlist_node cpuhp_dead;
--};
--
- static inline bool bioset_initialized(struct bio_set *bs)
- {
- 	return bs->bio_slab != NULL;
-diff --git a/include/linux/bio_types.h b/include/linux/bio_types.h
-new file mode 100644
-index 000000000000..bf0d8def2777
---- /dev/null
-+++ b/include/linux/bio_types.h
-@@ -0,0 +1,84 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2001 Jens Axboe <axboe@suse.de>
-+ */
-+#ifndef __LINUX_BIO_TYPES_H
-+#define __LINUX_BIO_TYPES_H
-+
-+#include <linux/mempool.h>
-+#include <linux/workqueue_types.h>
-+
-+#define bio_prio(bio)			(bio)->bi_ioprio
-+#define bio_set_prio(bio, prio)		((bio)->bi_ioprio = prio)
-+
-+#define bio_iter_iovec(bio, iter)				\
-+	bvec_iter_bvec((bio)->bi_io_vec, (iter))
-+
-+#define bio_iter_page(bio, iter)				\
-+	bvec_iter_page((bio)->bi_io_vec, (iter))
-+#define bio_iter_len(bio, iter)					\
-+	bvec_iter_len((bio)->bi_io_vec, (iter))
-+#define bio_iter_offset(bio, iter)				\
-+	bvec_iter_offset((bio)->bi_io_vec, (iter))
-+
-+#define bio_page(bio)		bio_iter_page((bio), (bio)->bi_iter)
-+#define bio_offset(bio)		bio_iter_offset((bio), (bio)->bi_iter)
-+#define bio_iovec(bio)		bio_iter_iovec((bio), (bio)->bi_iter)
-+
-+#define bvec_iter_sectors(iter)	((iter).bi_size >> 9)
-+#define bvec_iter_end_sector(iter) ((iter).bi_sector + bvec_iter_sectors((iter)))
-+
-+#define bio_sectors(bio)	bvec_iter_sectors((bio)->bi_iter)
-+#define bio_end_sector(bio)	bvec_iter_end_sector((bio)->bi_iter)
-+
-+/*
-+ * Return the data direction, READ or WRITE.
-+ */
-+#define bio_data_dir(bio) \
-+	(op_is_write(bio_op(bio)) ? WRITE : READ)
-+
-+/*
-+ * BIO list management for use by remapping drivers (e.g. DM or MD) and loop.
-+ *
-+ * A bio_list anchors a singly-linked list of bios chained through the bi_next
-+ * member of the bio.  The bio_list also caches the last list member to allow
-+ * fast access to the tail.
-+ */
-+struct bio_list {
-+	struct bio *head;
-+	struct bio *tail;
-+};
-+
-+struct bio_set {
-+	struct kmem_cache *bio_slab;
-+	unsigned int front_pad;
-+
-+	/*
-+	 * per-cpu bio alloc cache
-+	 */
-+	struct bio_alloc_cache __percpu *cache;
-+
-+	mempool_t bio_pool;
-+	mempool_t bvec_pool;
-+#if defined(CONFIG_BLK_DEV_INTEGRITY)
-+	mempool_t bio_integrity_pool;
-+	mempool_t bvec_integrity_pool;
-+#endif
-+
-+	unsigned int back_pad;
-+	/*
-+	 * Deadlock avoidance for stacking block drivers: see comments in
-+	 * bio_alloc_bioset() for details
-+	 */
-+	spinlock_t		rescue_lock;
-+	struct bio_list		rescue_list;
-+	struct work_struct	rescue_work;
-+	struct workqueue_struct	*rescue_workqueue;
-+
-+	/*
-+	 * Hot un-plug notifier for the per-cpu cache, if used
-+	 */
-+	struct hlist_node cpuhp_dead;
-+};
-+
-+#endif /* __LINUX_BIO_TYPES_H */
+diff --git a/drivers/target/target_core_xcopy.c b/drivers/target/target_core_xcopy.c
+index df06ec0f75fe..37d306570f8a 100644
+--- a/drivers/target/target_core_xcopy.c
++++ b/drivers/target/target_core_xcopy.c
+@@ -18,6 +18,7 @@
+ #include <linux/rculist.h>
+ #include <linux/completion.h>
+ #include <linux/configfs.h>
++#include <linux/percpu-refcount.h>
+ #include <linux/ratelimit.h>
+ #include <linux/workqueue.h>
+ #include <scsi/scsi_proto.h>
 diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 6bfa4b92bb32..6747965c3580 100644
+index 6747965c3580..5cd0edada09d 100644
 --- a/include/linux/blkdev.h
 +++ b/include/linux/blkdev.h
-@@ -14,7 +14,7 @@
- #include <linux/timer_types.h>
- #include <linux/workqueue_types.h>
- #include <linux/wait_types.h>
--#include <linux/bio.h>
-+#include <linux/bio_types.h>
+@@ -18,7 +18,7 @@
  #include <linux/gfp_types.h>
  #include <linux/kdev_t.h>
  #include <linux/rcupdate.h>
+-#include <linux/percpu-refcount.h>
++#include <linux/percpu-refcount_types.h>
+ #include <linux/blkzoned.h>
+ #include <linux/sched.h>
+ #include <linux/uio.h> // for iov_iter_is_aligned()
+diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
+index f3b400858129..70b79fd81fee 100644
+--- a/include/linux/bpf-cgroup-defs.h
++++ b/include/linux/bpf-cgroup-defs.h
+@@ -5,7 +5,7 @@
+ #ifdef CONFIG_CGROUP_BPF
+ 
+ #include <linux/list.h>
+-#include <linux/percpu-refcount.h>
++#include <linux/percpu-refcount_types.h>
+ #include <linux/workqueue_types.h>
+ 
+ struct bpf_prog_array;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index c5c435d04460..e28c74dd67ab 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -21,7 +21,7 @@
+ #include <linux/capability.h>
+ #include <linux/sched/mm.h>
+ #include <linux/slab.h>
+-#include <linux/percpu-refcount.h>
++#include <linux/percpu-refcount_types.h>
+ #include <linux/stddef.h>
+ #include <linux/bpfptr.h>
+ #include <linux/btf.h>
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 99e24f3034df..878deefba0e1 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -15,7 +15,7 @@
+ #include <linux/mutex_types.h>
+ #include <linux/rcupdate.h>
+ #include <linux/refcount_types.h>
+-#include <linux/percpu-refcount.h>
++#include <linux/percpu-refcount_types.h>
+ #include <linux/percpu-rwsem.h>
+ #include <linux/u64_stats_sync.h>
+ #include <linux/workqueue.h>
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 24dcff53bd05..19a5e801f77d 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -21,6 +21,7 @@
+ #include <linux/ns_common.h>
+ #include <linux/nsproxy.h>
+ #include <linux/user_namespace.h>
++#include <linux/percpu-refcount.h>
+ #include <linux/refcount.h>
+ #include <linux/kernel_stat.h>
+ 
+diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
+index dd2f19ea08bd..ded13def0acd 100644
+--- a/include/linux/percpu-refcount.h
++++ b/include/linux/percpu-refcount.h
+@@ -50,74 +50,12 @@
+ #ifndef _LINUX_PERCPU_REFCOUNT_H
+ #define _LINUX_PERCPU_REFCOUNT_H
+ 
+-#include <linux/atomic.h>
++#include <linux/percpu-refcount_types.h>
+ #include <linux/percpu.h>
+ #include <linux/rcupdate.h>
+ #include <linux/types.h>
+ #include <linux/gfp_types.h>
+ 
+-struct percpu_ref;
+-typedef void (percpu_ref_func_t)(struct percpu_ref *);
+-
+-/* flags set in the lower bits of percpu_ref->percpu_count_ptr */
+-enum {
+-	__PERCPU_REF_ATOMIC	= 1LU << 0,	/* operating in atomic mode */
+-	__PERCPU_REF_DEAD	= 1LU << 1,	/* (being) killed */
+-	__PERCPU_REF_ATOMIC_DEAD = __PERCPU_REF_ATOMIC | __PERCPU_REF_DEAD,
+-
+-	__PERCPU_REF_FLAG_BITS	= 2,
+-};
+-
+-/* @flags for percpu_ref_init() */
+-enum {
+-	/*
+-	 * Start w/ ref == 1 in atomic mode.  Can be switched to percpu
+-	 * operation using percpu_ref_switch_to_percpu().  If initialized
+-	 * with this flag, the ref will stay in atomic mode until
+-	 * percpu_ref_switch_to_percpu() is invoked on it.
+-	 * Implies ALLOW_REINIT.
+-	 */
+-	PERCPU_REF_INIT_ATOMIC	= 1 << 0,
+-
+-	/*
+-	 * Start dead w/ ref == 0 in atomic mode.  Must be revived with
+-	 * percpu_ref_reinit() before used.  Implies INIT_ATOMIC and
+-	 * ALLOW_REINIT.
+-	 */
+-	PERCPU_REF_INIT_DEAD	= 1 << 1,
+-
+-	/*
+-	 * Allow switching from atomic mode to percpu mode.
+-	 */
+-	PERCPU_REF_ALLOW_REINIT	= 1 << 2,
+-};
+-
+-struct percpu_ref_data {
+-	atomic_long_t		count;
+-	percpu_ref_func_t	*release;
+-	percpu_ref_func_t	*confirm_switch;
+-	bool			force_atomic:1;
+-	bool			allow_reinit:1;
+-	struct rcu_head		rcu;
+-	struct percpu_ref	*ref;
+-};
+-
+-struct percpu_ref {
+-	/*
+-	 * The low bit of the pointer indicates whether the ref is in percpu
+-	 * mode; if set, then get/put will manipulate the atomic_t.
+-	 */
+-	unsigned long		percpu_count_ptr;
+-
+-	/*
+-	 * 'percpu_ref' is often embedded into user structure, and only
+-	 * 'percpu_count_ptr' is required in fast path, move other fields
+-	 * into 'percpu_ref_data', so we can reduce memory footprint in
+-	 * fast path.
+-	 */
+-	struct percpu_ref_data  *data;
+-};
+-
+ int __must_check percpu_ref_init(struct percpu_ref *ref,
+ 				 percpu_ref_func_t *release, unsigned int flags,
+ 				 gfp_t gfp);
+diff --git a/include/linux/percpu-refcount_types.h b/include/linux/percpu-refcount_types.h
+new file mode 100644
+index 000000000000..9f4f93e8faaf
+--- /dev/null
++++ b/include/linux/percpu-refcount_types.h
+@@ -0,0 +1,71 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _LINUX_PERCPU_REFCOUNT_TYPES_H
++#define _LINUX_PERCPU_REFCOUNT_TYPES_H
++
++#include <linux/atomic.h>
++#include <linux/types.h>
++
++struct percpu_ref;
++typedef void (percpu_ref_func_t)(struct percpu_ref *);
++
++/* flags set in the lower bits of percpu_ref->percpu_count_ptr */
++enum {
++	__PERCPU_REF_ATOMIC	= 1LU << 0,	/* operating in atomic mode */
++	__PERCPU_REF_DEAD	= 1LU << 1,	/* (being) killed */
++	__PERCPU_REF_ATOMIC_DEAD = __PERCPU_REF_ATOMIC | __PERCPU_REF_DEAD,
++
++	__PERCPU_REF_FLAG_BITS	= 2,
++};
++
++/* @flags for percpu_ref_init() */
++enum {
++	/*
++	 * Start w/ ref == 1 in atomic mode.  Can be switched to percpu
++	 * operation using percpu_ref_switch_to_percpu().  If initialized
++	 * with this flag, the ref will stay in atomic mode until
++	 * percpu_ref_switch_to_percpu() is invoked on it.
++	 * Implies ALLOW_REINIT.
++	 */
++	PERCPU_REF_INIT_ATOMIC	= 1 << 0,
++
++	/*
++	 * Start dead w/ ref == 0 in atomic mode.  Must be revived with
++	 * percpu_ref_reinit() before used.  Implies INIT_ATOMIC and
++	 * ALLOW_REINIT.
++	 */
++	PERCPU_REF_INIT_DEAD	= 1 << 1,
++
++	/*
++	 * Allow switching from atomic mode to percpu mode.
++	 */
++	PERCPU_REF_ALLOW_REINIT	= 1 << 2,
++};
++
++struct percpu_ref_data {
++	atomic_long_t		count;
++	percpu_ref_func_t	*release;
++	percpu_ref_func_t	*confirm_switch;
++	bool			force_atomic:1;
++	bool			allow_reinit:1;
++	struct rcu_head		rcu;
++	struct percpu_ref	*ref;
++};
++
++struct percpu_ref {
++	/*
++	 * The low bit of the pointer indicates whether the ref is in percpu
++	 * mode; if set, then get/put will manipulate the atomic_t.
++	 */
++	unsigned long		percpu_count_ptr;
++
++	/*
++	 * 'percpu_ref' is often embedded into user structure, and only
++	 * 'percpu_count_ptr' is required in fast path, move other fields
++	 * into 'percpu_ref_data', so we can reduce memory footprint in
++	 * fast path.
++	 */
++	struct percpu_ref_data  *data;
++};
++
++#endif
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index a7ee429c0535..df92bb41affb 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -17,7 +17,6 @@
+ #include <linux/log2.h>
+ #include <linux/overflow.h>
+ #include <linux/types.h>
+-#include <linux/percpu-refcount.h>
+ #include <linux/cleanup.h>
+ #include <linux/hash.h>
+ #include <linux/mmzone.h>
+diff --git a/include/target/target_core_base.h b/include/target/target_core_base.h
+index 5b9156adceca..1598a4062398 100644
+--- a/include/target/target_core_base.h
++++ b/include/target/target_core_base.h
+@@ -5,7 +5,7 @@
+ #include <linux/configfs.h>      /* struct config_group */
+ #include <linux/dma-direction.h> /* enum dma_data_direction */
+ #include <linux/sbitmap.h>
+-#include <linux/percpu-refcount.h>
++#include <linux/percpu-refcount_types.h>
+ #include <linux/semaphore.h>     /* struct semaphore */
+ #include <linux/completion_types.h>
+ 
 -- 
 2.39.2
 
