@@ -1,282 +1,276 @@
-Return-Path: <linux-kernel+bounces-62129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3AB5851BF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:49:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12003851BAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:38:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A3211F2197C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:49:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9189F1F21B8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:38:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7973FB06;
-	Mon, 12 Feb 2024 17:48:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228F63F8EA;
+	Mon, 12 Feb 2024 17:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nsrl8yIb"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="PVMNLNo4"
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2122.outbound.protection.outlook.com [40.107.14.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114913E49E;
-	Mon, 12 Feb 2024 17:48:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707760128; cv=none; b=gxpCgRPH6himCzoyasBsu73DWcCxshq6XLhE7Og95nsgOWR0sIlU42oe8qbm6rIuZNrSu3yFI8k4TsIPp7dXaq6aOyUyGZx+WEC27emeYQ6AHLsJChde1ERz3i6V1EzuHPAmDSqr9pleAVT3cjMaIUjRcoX6T85TzBv50j9Wc9A=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707760128; c=relaxed/simple;
-	bh=fg208aqq/dk9zqQHNCp4uzls8PkYl7qxboWUqwuQpQE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZaBWwwXZtH0nECm6GSe7E/LH1CXD2fZY/mBxx0G3MUOPOMk4QTmX8+8LhnWEaa1ri6A0OPLAnr71SBftO4nhrBNtGQBeNE8Ne603uE4ylIPfU9kMdbVYMqfhJGLJu19lxVFMvMJ3Cb8SSBiH10JRERgCmuA/b9RWr0bflGntU8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nsrl8yIb; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CHgrrb019260;
-	Mon, 12 Feb 2024 17:48:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=fJVNv/6nZjWeb7KILVPEur4+gl0mUhLZHgPunP6732g=;
- b=nsrl8yIblo/4b4jgIGYcob76ZTrOiuPBgqKmENaL3i9++PU5lXKpSGtaxj6ocdbKwq3f
- pD4Y7ripUyoZ0n/RIc7Syth+DdsPTHecTY72ZuWjovSZ2jKlNRn/UkYiinvryGwsPbT8
- HU/pF2sK/zbDVz0uWAw/z5Z+BDdvRnNFyQ1MfhRqMZGdasgdhv8fkKy17GYBAdeHBEJF
- H/+dt7+Gbix8RU4J//AhNcnufTBlUlN/F/58yYoyk25A3W3ji6NJtbp91NxGiNJEx3/t
- lh692v+RrvllD4ARBqiZRFuT3tagOt314C1qP8NDfX+b7Av0kn80cMrG5jVAqC/w7Y/X pA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7qyng4vs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 17:48:09 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CHhJ25020005;
-	Mon, 12 Feb 2024 17:48:08 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7qyng4td-5
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 17:48:08 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CGSUOs024878;
-	Mon, 12 Feb 2024 17:37:29 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mfp200h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 17:37:29 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CHbQED43123078
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 Feb 2024 17:37:28 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B22FC58061;
-	Mon, 12 Feb 2024 17:37:24 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0C1C95805E;
-	Mon, 12 Feb 2024 17:37:21 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 12 Feb 2024 17:37:20 +0000 (GMT)
-Message-ID: <fd6ddc3d-e5d3-4b9c-b00b-ac2b1f22d653@linux.ibm.com>
-Date: Mon, 12 Feb 2024 12:37:20 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10A61EEE4;
+	Mon, 12 Feb 2024 17:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.122
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707759502; cv=fail; b=nt6dxa5vt4CYFRpyPvilE80W/Q0YH/IS9Z7gtVDcW8b0w5Dn548SJIhssiO9EsXrxjTzRwnEr1uWzu2BhSqM+xK3aHtWvaqvd9UUTbWrDr3gEyI2Rnlm5+SjyqKAwJCbwbOju7w4sPejy/oS3tScUrnWAYecsVFyPmH1cqUUzXk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707759502; c=relaxed/simple;
+	bh=IEtViY7CaD0iO31pT2wYb++TXgnSWaSPlcgvcYY3LQA=;
+	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=q2zaeVkO1yfl9gSCUVWALb2xrP2ig/8Mwnqx/65BlxEtt4q1juOMO1WJI9h1o6fChn2cxmUoC5inA4bFBZvxk9htRniSB+280GhINrxRbOkloPoOChF7n7wcCjMZpo5vNpHRb8QzbYs2tjvyAb5iWy/4p1tEstBp+OWYLilImL0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com; spf=pass smtp.mailfrom=solid-run.com; dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b=PVMNLNo4; arc=fail smtp.client-ip=40.107.14.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y/2A/3RQVyh3lJ+GW36NJZmxtFOqNAVVHCmks99VfDzzP8b5HT8fQD4ZBcuGT9eLH9afc0OVt5hEsLebCTK+XVQagEHXFkCDVaOZ0rZduXwG+pv2g6pzNUO2FAc8nq3r/Oe8xubq+1/GB+5cX696rXtHQ6fPqXB0jNuO79i+xAWIfpw5osPhSvnjCTSCxQTGee6UsUtjwTGg13BWcWFOm45OUhcJkdcV5MT4ubF8HOt/N/XHfRXFrE6m2RAcQEgWMx/Fme4FRo8phV/6nGvsdykUFuU5hiURbV0aHHLJMjAbdu2ydgGHKukq439HUdMPLeWVul31Y8twWaA/ldb+4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=A7ozJX8gEn4oDXO+mPD4jjZp1ovQwYBgUPFIyAWED+8=;
+ b=Bg8t/cF8adILL2c8BuiipUpFyvror3mO8ldWrPpDj0fa75TdPbqrTNB1ar20Tekdjfod2equSFEe4i7ANNfveFrDAcnpyzcAbkMTlNv50MO3xkRBi/gzxvIKYETWKLOiLnoIJBc62by8iqWmnTA9eJYfcOGn1v3k9AfnYhycVx+c8dwW7d3/qvDEVWz+s0JHIwaTpKaED2NNnGyL3T1c0wUYHIIqeHWk7ClGgzPqueYML9JecmEBAdT6/AmbRiIxVsby/7oG+SzHnKCqwHP3nT1wvyxl7JBBmpMY4/reX3L/ec7HvacAJiqtT5/uNObwI8UJBGWs4UX3HBdJwBc3mg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=solid-run.com; dmarc=pass action=none
+ header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A7ozJX8gEn4oDXO+mPD4jjZp1ovQwYBgUPFIyAWED+8=;
+ b=PVMNLNo4zf9I0lVFgEIplnbquYyHjd0OlGdaTUYASoDtqVaRPwJ1kaFgC9kvvHXWvR5IER4yR49lKL3RwaQp/DpZ14/RGFSytIs6xKCGbZdXXc6YeqTBrB2eweeGo04nLaPW+GT8QtjePL6eu/uTsb1LuBqc8TQWwbQmdcCWP+s=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=solid-run.com;
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
+ by AS8PR04MB7909.eurprd04.prod.outlook.com (2603:10a6:20b:2a2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.24; Mon, 12 Feb
+ 2024 17:38:17 +0000
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::3b94:f607:ebe1:7d6c]) by AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::3b94:f607:ebe1:7d6c%7]) with mapi id 15.20.7249.039; Mon, 12 Feb 2024
+ 17:38:16 +0000
+From: Josua Mayer <josua@solid-run.com>
+Subject: [PATCH v6 0/7] arm64: dts: add description for solidrun am642 som
+ and hummingboard evb
+Date: Mon, 12 Feb 2024 18:38:07 +0100
+Message-Id: <20240212-add-am64-som-v6-0-b59edb2bc8c3@solid-run.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAH9XymUC/33QwUoEMQwG4FdZerbSpO10xpPvIR5qm7oFZyqtF
+ mWZdze7IK7j4CXwJ+Qj5CQa1UxN3B1OolLPLZeFw3BzEOHol2eSOXIWqNAoUCB9jNLPg5GtzNK
+ Ch+CNo5i04JXXSil/XLiHR87H3N5K/bzoHc7db0j/hjpIJWP0kCZE5yndt/KSo6zvy20oszhjH
+ a8AwA2ADIAeLZohGBzDHqB/AC4bQDOAyfBIR6to2gPMf4BhwKbxCdAnSw72AHsFwOaZ3TLgJkX
+ RAQKaPxes6/oFYG/Fb7ABAAA=
+To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Alessandro Zummo <a.zummo@towertech.it>, 
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, 
+ Eugene Zaikonnikov <ez@norophonic.com>, 
+ Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>
+Cc: Yazan Shhady <yazan.shhady@solid-run.com>, 
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org, 
+ linux-iio@vger.kernel.org, Rob Herring <robh@kernel.org>, 
+ linux-mtd@lists.infradead.org, Josua Mayer <josua@solid-run.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Suman Anna <s-anna@ti.com>, Grygorii Strashko <grygorii.strashko@ti.com>, 
+ MD Danish Anwar <danishanwar@ti.com>
+X-Mailer: b4 0.12.4
+X-ClientProxiedBy: FR3P281CA0027.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1c::14) To AM9PR04MB7586.eurprd04.prod.outlook.com
+ (2603:10a6:20b:2d5::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 19/25] integrity: Move
- integrity_kernel_module_request() to IMA
-Content-Language: en-US
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
- <20240115181809.885385-20-roberto.sassu@huaweicloud.com>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20240115181809.885385-20-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: EjolkXjCCnV6IXr0rLl_iQi_aPKLzovk
-X-Proofpoint-ORIG-GUID: FcZAfoeYEX1DkXNqmP6J6TNlDhQJioeb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-12_14,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 priorityscore=1501 clxscore=1015
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402120135
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM9PR04MB7586:EE_|AS8PR04MB7909:EE_
+X-MS-Office365-Filtering-Correlation-Id: bc0c8ce7-9f29-4631-6672-08dc2bf16559
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Jxh931NooluzDs3NaDQHdxwfbo2Ls8RsHnUQvck3KjZo+zDzeil3m+3YwU4D8mbHdOa7EOuEWxlunwIt4OiQvLWyk4M2aRVv7zzG1h9SaYANOITq5C/ZK0nsvHS5BcyWrFDwtCqk7bLU1jNl1If428Wie5obzZZk0jhiiChWF0YdLmzao9LfOvWf03OHQmxVmbUNsY8qFWeLFAuS4whA90XjYYtl1flZXL9+EURpPaGT2hly7Uix4MNKEhBqWjLZ+HfPrPnp7/kgvczBNvIoBBHaDLJMO4ZgfPRCbnrP76cBFp7R5mOouAw/IOw0MFDNqX5q0cHLspI6MTBe+0z7NBN0Ji+NZDeILyb5ePZzPhWXarP4jiDkw/uKaYBzyuGr1I/9DButXRgO+bkJdunLiPFFTIOdK5gHStSFJX542d7/ItSnwD4jTCAXqMA6ZkypKSEjCOuZQ9PDXKS1j1fEnzaYRYDklu9WwCeLMNBJzO/RJIDxPLDxazInbSog53mU9Fyq/tjrFTkxESCUjoTOBCem0hd1cchs3OP18SlJT/nG44YmMEFR8DioJc9DyXYpeB4IGh7RQobzpc0njahrVRDkz5meW6nRWU3rqpQ1fVIoIATew7tkjm6faA7k5+gI
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(366004)(376002)(39840400004)(230922051799003)(230273577357003)(64100799003)(1800799012)(451199024)(186009)(8936002)(7416002)(66946007)(4326008)(66476007)(8676002)(66556008)(5660300002)(2906002)(41300700001)(26005)(2616005)(38350700005)(36756003)(38100700002)(86362001)(83380400001)(110136005)(54906003)(52116002)(966005)(6512007)(6666004)(6506007)(316002)(921011)(6486002)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TjdIeG1PblhnMHJYT0dGRi9nRWxYNEpKTEVOU3h1THlDZHhaS256TDVBaDU1?=
+ =?utf-8?B?dUVDcUJhUi9JUkRhR1pHUTJ1V1pISXRLSzVxQkxrSU8vOHpsSks0SzdCd2Z2?=
+ =?utf-8?B?UGNENzJ2YWh0Q2gzdFV5ZkdscmRHSWZxNmxOZHRVclJNMGpaNkFQeU1NNklu?=
+ =?utf-8?B?MlNXRVhwTFBWV2ZyMzhJV2VMd0ZzbkgwRlUraUUzV085WTFCeWFwWUVtYzNz?=
+ =?utf-8?B?aUdwRGNwRTlLYnBqWktkRTROemxLQVo1Tkc0alpkUEp4cUw0M2p0RzcydEJr?=
+ =?utf-8?B?TWFldm1tY2pzTHpCeUR4MUZUYUk2OHJtd0QrUEZXVXdJSEE1Y3RGekRTYVc3?=
+ =?utf-8?B?Wnh0YXRqZnphekZEWXpvRTZIL2tuQzVFOGNRQVhhL0k0OTBxVzVPU1diV0JJ?=
+ =?utf-8?B?YlJGTFA3YTIxS0dmLzVYMzgrWUl1RVZ0VklXaEFWZ1k0NzJhclNITURyeERC?=
+ =?utf-8?B?NXIvUWE1ZC8rZW1pelR1aHQzMTBNZ3pMUFNVSEc3Q0ZCM1d0QkpHemZyR0dn?=
+ =?utf-8?B?RHRiMnB5ZUYwazZnNnNIaXdQOXMyY0NYUHl6UCs5OFZmNXRFbWZ4aHpqMmxx?=
+ =?utf-8?B?dFRVYVBHUVJ0bHlOOFRsS0RheGxHTlJad3d0NDQ3bExGVWJhOEk1SFc0OFcr?=
+ =?utf-8?B?VzFDNDhrZmdEQUtrWngzRHpSWktZMU9WVGpaUFB4WnBsUmhrVldxYWVwSVRP?=
+ =?utf-8?B?cU9YMExvNlNDSlN3alVrNzNNMC95NTE0WGVaWDhrMGphd1VWbTcxYzFFL0JH?=
+ =?utf-8?B?cEZ2UnFVaGVTTEVSRm0vQm9GNml0YUxNT0IrR240MWt2dDgzZXFIZTlieThi?=
+ =?utf-8?B?VVc2VU5ZbGNXQ01GTk8ycmxGWDRDL0Rnb3VZejJmMEx4TW54cjhFb01jMW1k?=
+ =?utf-8?B?ODZLR2Q1R04zM1JVOXRNc2FPdFZUOXhmRlJka21qTUxaQVFLR0lKR0VMZ3VR?=
+ =?utf-8?B?d0F2REJ6djJudlpoeFdOZ2gwTk04d3JMZjB6VU1FYnl1cWYxU01wL3p6eEpt?=
+ =?utf-8?B?by9YaXNheDBCM1RFQml0WGgzWFlsQ1RBWHdaT0xMTHRRRGxheDg2Q1hRa0lj?=
+ =?utf-8?B?NDdrUDdmYzY5eFBEejgvV2pNYXJJSWZwbG1iS0tkaG03cDBrS1BXMTVCNWpJ?=
+ =?utf-8?B?bGl5ejgzejE2RjVJL1lXeVd6dmsvYkh0ZzFpZlBRdXA3M2ppRUVDMkVrTGRv?=
+ =?utf-8?B?MjdDZzM5VmRWeHVjZG8yRU1uYlFvUnBNbjVxRWpvYUlLQjlUN01SMlRHRnlC?=
+ =?utf-8?B?M3dIQi9NZFF1SmgxZjNpbUtDN2JOaHEvUWtSVjQ4YmZIenRoTWZPSkJ2RHUw?=
+ =?utf-8?B?VFJ1NGRuRFZEaGwwaDhJVWM4M3BZSGpvMVBZelRrVkZLT0lISk9DN0NuSS9k?=
+ =?utf-8?B?Y1BFWjVFT1hOK09odERBb0h1blUxUGFxT3V6WHBESDlCMlp4YU9JdXNEYTg0?=
+ =?utf-8?B?SlY0WGVFU3gvZTJoQ2JpbWhqK25QQlFSUlNLT0MyQXk1bFlpZm90LzQ1eW43?=
+ =?utf-8?B?WXBBZVphcDlKNHFsenZmN2tQWnI5alRtK1ZQTWxCTkJ1dW9WOVFRMC9aYW14?=
+ =?utf-8?B?cksybWo2dlVNT21ydWlzR3JKMTNTcXcxR2pJbVJHNUYrNkFPc1hic3NOOTNw?=
+ =?utf-8?B?RWtjOE1xejBUTnlFYlZaQ0pMMzMzM2kvUVpSZmNLci9aY1crdHBUTHFnQ1BK?=
+ =?utf-8?B?V3kzazFrNUZDdU1QYkpyQUpURVJ6RVpXS3prSDdMZGRqNFR3cWlrSXpwVVNo?=
+ =?utf-8?B?bDZKS0JKTUJiWWw4VGNMT0VRcnM5cVZnS1hXS0xMV1dRZy9ZVEhNLzcrcVl2?=
+ =?utf-8?B?TmpzMEpwVE4yNVd1V2JIVE9sVTNUNHMrSGNQYjRWdzJNSWlHcHJmYWJVcTVY?=
+ =?utf-8?B?ME1pNkhIK1dGRnRyTmFGZTBZTjVYWWNpdDBWckRaSnJ3UjNzL3diQXFrWHow?=
+ =?utf-8?B?TjdlbG5xRVNhWDF1K0JqUW5ZOUNmeC94anN5S2dka0h2U2hlZHBUR2JGU1dF?=
+ =?utf-8?B?MlFSaHpabmhDbmhPQndSOUVPa3ZmUjdOMWt4ZVhmajBMd0ZLcFJKNW1FTjVh?=
+ =?utf-8?B?UHJPa3I1NlI3UlNDbk9Ma0pLZDZ4TTV1SWVjZDVPRFVLN2c0WHdYYUpVMzhR?=
+ =?utf-8?Q?qXSRQm5s8rcB7cXNqkeRdZKOP?=
+X-OriginatorOrg: solid-run.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc0c8ce7-9f29-4631-6672-08dc2bf16559
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 17:38:16.8912
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lvgID/0Iq1icugwn3ADEmXbby2PrvD8cnGmZtbpNP3AQWLo1O6I992/QEHB+uqTQSlj63Xn4VheP+DslxpniVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7909
 
+This series adds DT bindings and dts descriptions for SolidRun AM642
+based SoM and Hummingboard EVB.
 
+Additionally a commit from downstream vendor kernel are included,
+enhancing support for pru based ethernet.
+I wasn't sure how to properly annotate it in commit description /
+signed-off area ...:
 
-On 1/15/24 13:18, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> In preparation for removing the 'integrity' LSM, move
-> integrity_kernel_module_request() to IMA, and rename it to
-> ima_kernel_module_request().
-> 
-> Compile it conditionally if CONFIG_INTEGRITY_ASYMMETRIC_KEYS is enabled,
-> and call it from security.c (removed afterwards with the move of IMA to the
-> LSM infrastructure).
-> 
-> Adding this hook cannot be avoided, since IMA has no control on the flags
-> passed to crypto_alloc_sig() in public_key_verify_signature(), and thus
-> cannot pass CRYPTO_NOLOAD, which solved the problem for EVM hashing with
-> commit e2861fa71641 ("evm: Don't deadlock if a crypto algorithm is
-> unavailable").
-> 
-> EVM alone does not need to implement this hook, first because there is no
-> mutex to deadlock, and second because even if it had it, there should be a
-> recursive call. However, since verification from EVM can be initiated only
-> by setting inode metadata, deadlock would occur if modprobe would do the
-> same while loading a kernel module (which is unlikely).
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->   include/linux/ima.h                    | 10 +++++++++
->   include/linux/integrity.h              | 13 ------------
->   security/integrity/digsig_asymmetric.c | 23 --------------------
->   security/integrity/ima/ima_main.c      | 29 ++++++++++++++++++++++++++
->   security/security.c                    |  2 +-
->   5 files changed, 40 insertions(+), 37 deletions(-)
-> 
-> diff --git a/include/linux/ima.h b/include/linux/ima.h
-> index 31ef6c3c3207..0f9af283cbc8 100644
-> --- a/include/linux/ima.h
-> +++ b/include/linux/ima.h
-> @@ -256,4 +256,14 @@ static inline bool ima_appraise_signature(enum kernel_read_file_id func)
->   	return false;
->   }
->   #endif /* CONFIG_IMA_APPRAISE && CONFIG_INTEGRITY_TRUSTED_KEYRING */
-> +
-> +#if defined(CONFIG_IMA) && defined(CONFIG_INTEGRITY_ASYMMETRIC_KEYS)
-> +extern int ima_kernel_module_request(char *kmod_name);
-> +#else
-> +static inline int ima_kernel_module_request(char *kmod_name)
-> +{
-> +	return 0;
-> +}
-> +
-> +#endif
->   #endif /* _LINUX_IMA_H */
-> diff --git a/include/linux/integrity.h b/include/linux/integrity.h
-> index 2ea0f2f65ab6..ef0f63ef5ebc 100644
-> --- a/include/linux/integrity.h
-> +++ b/include/linux/integrity.h
-> @@ -42,17 +42,4 @@ static inline void integrity_load_keys(void)
->   }
->   #endif /* CONFIG_INTEGRITY */
->   
-> -#ifdef CONFIG_INTEGRITY_ASYMMETRIC_KEYS
-> -
-> -extern int integrity_kernel_module_request(char *kmod_name);
-> -
-> -#else
-> -
-> -static inline int integrity_kernel_module_request(char *kmod_name)
-> -{
-> -	return 0;
-> -}
-> -
-> -#endif /* CONFIG_INTEGRITY_ASYMMETRIC_KEYS */
-> -
->   #endif /* _LINUX_INTEGRITY_H */
-> diff --git a/security/integrity/digsig_asymmetric.c b/security/integrity/digsig_asymmetric.c
-> index 895f4b9ce8c6..de603cf42ac7 100644
-> --- a/security/integrity/digsig_asymmetric.c
-> +++ b/security/integrity/digsig_asymmetric.c
-> @@ -132,26 +132,3 @@ int asymmetric_verify(struct key *keyring, const char *sig,
->   	pr_debug("%s() = %d\n", __func__, ret);
->   	return ret;
->   }
-> -
-> -/**
-> - * integrity_kernel_module_request - prevent crypto-pkcs1pad(rsa,*) requests
-> - * @kmod_name: kernel module name
-> - *
-> - * We have situation, when public_key_verify_signature() in case of RSA
-> - * algorithm use alg_name to store internal information in order to
-> - * construct an algorithm on the fly, but crypto_larval_lookup() will try
-> - * to use alg_name in order to load kernel module with same name.
-> - * Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel modules,
-> - * we are safe to fail such module request from crypto_larval_lookup().
-> - *
-> - * In this way we prevent modprobe execution during digsig verification
-> - * and avoid possible deadlock if modprobe and/or it's dependencies
-> - * also signed with digsig.
-> - */
-> -int integrity_kernel_module_request(char *kmod_name)
-> -{
-> -	if (strncmp(kmod_name, "crypto-pkcs1pad(rsa,", 20) == 0)
-> -		return -EINVAL;
-> -
-> -	return 0;
-> -}
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 02021ee467d3..908fa026ec58 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -1091,6 +1091,35 @@ int ima_measure_critical_data(const char *event_label,
->   }
->   EXPORT_SYMBOL_GPL(ima_measure_critical_data);
->   
-> +#ifdef CONFIG_INTEGRITY_ASYMMETRIC_KEYS
-> +
-> +/**
-> + * ima_kernel_module_request - Prevent crypto-pkcs1pad(rsa,*) requests
-> + * @kmod_name: kernel module name
-> + *
-> + * We have situation, when public_key_verify_signature() in case of RSA > + * algorithm use alg_name to store internal information in order to
-> + * construct an algorithm on the fly, but crypto_larval_lookup() will try
-> + * to use alg_name in order to load kernel module with same name.
-> + * Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel modules,
-> + * we are safe to fail such module request from crypto_larval_lookup().
-> + *
-> + * In this way we prevent modprobe execution during digsig verification
-> + * and avoid possible deadlock if modprobe and/or it's dependencies
-> + * also signed with digsig.
+1. add description for "Industrial Ethernet Peripherals" (IEP) to am64
+   https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/commit/arch/arm64/boot/dts/ti/k3-am64-main.dtsi?h=ti-linux-6.1.y-cicd&id=5afb73d82a014b59462162d960b350b8c58e5ae6
+   IEP is already supported in-tree by a driver, and used in
+   k3-am65-main.dtsi.
 
-This text needs to some reformulation at some point..
+Unfortunately dtbs_check still reports one problem:
 
-> + *
-> + * Return: Zero if it is safe to load the kernel module, -EINVAL otherwise.
-> + */
-> +int ima_kernel_module_request(char *kmod_name)
-> +{
-> +	if (strncmp(kmod_name, "crypto-pkcs1pad(rsa,", 20) == 0)
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +#endif /* CONFIG_INTEGRITY_ASYMMETRIC_KEYS */
-> +
->   static int __init init_ima(void)
->   {
->   	int error;
-> diff --git a/security/security.c b/security/security.c
-> index d2a1226e6e69..6c6571a141a1 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -3255,7 +3255,7 @@ int security_kernel_module_request(char *kmod_name)
->   	ret = call_int_hook(kernel_module_request, 0, kmod_name);
->   	if (ret)
->   		return ret;
-> -	return integrity_kernel_module_request(kmod_name);
-> +	return ima_kernel_module_request(kmod_name);
->   }
->   
->   /**
+- 'mux-controller' does not match any of the regexes
+  The expectation seems to be that a mux-controller at minimum has an
+  address, something to put behind an @, e.g. "mux-controller@7".
+  However this mux is not on a bus, it is just a gpio-mux,
+  not sure how to name it better.
 
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+---
+Changes in v6:
+- renamed pinctrl nodes to *-default-pins
+  (reported by Vignesh Raghavendra <vigneshr@ti.com>)
+  (dropped Reviewed-by: Andrew Davis <afd@ti.com>)
+- removed tabs from pinctrl comments to shorten lines
+- updated humidity sensor yaml with interrupts property
+- updated spi-nor flash yaml with interrupts property
+- Link to v5: https://lore.kernel.org/r/20240211-add-am64-som-v5-0-790ed7121249@solid-run.com
+
+Changes in v5:
+- abracon,abx80x.yaml:
+  - reworded 'compatible' description
+  - removed $ref to interrupts.yaml
+  - nested example in fake i2c
+  - changed maintainer to rtc list
+  (reported by Conor Dooley <conor@kernel.org>)
+- patch 4/5 dts:
+  - re-added status properties for sdhci nodes
+    k3-am64-main.dtsi has been changed in-tree since v1
+    such that sdhci nodes are explicitly status disabled now.
+  - picked up reviewed-by
+  (reported by Andrew Davis <afd@ti.com>)
+- Link to v4: https://lore.kernel.org/r/20240202-add-am64-som-v4-0-5f8b12af5e71@solid-run.com
+
+Changes in v4:
+- abracon,abx80x.yaml: fixed dtc error in example irq reference
+- Link to v3: https://lore.kernel.org/r/20240202-add-am64-som-v3-0-2f44023d50e9@solid-run.com
+
+Changes in v3:
+- removed lots more status properties, double-checked against soc dtsi
+  (reported by Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>)
+  (reported by Andrew Davis <afd@ti.com>)
+- removed intentionally-disabled pcie node from dts
+- rewrote yaml bindings to use enum instead of anyof+const+description
+  (reported by Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>)
+- abracon yaml
+  - added missing maintainer
+  - added diode type property type
+  - added example
+  (reported by Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>)
+  - added reference to /schemas/interrupts.yaml#
+- use generic name for pru ethernet controller node
+  (reported by Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>)
+- removed unnamed dmas from pru ethernet controller node
+- moved pcie/usb3 features to dtb overlays
+- Link to v2: https://lore.kernel.org/r/20240112-add-am64-som-v2-0-1385246c428c@solid-run.com
+
+Changes in v2:
+- reordered patchset to drop separate patch adding iep handle to som
+- moved dtbs_check warnings to cover letter
+- converted abracon abx80x rtc bindings to yaml
+- updated dts:
+  - remove unnecessary status properties
+  - changed non-generic node names
+  - use color property for led descriptions,
+    they have no default function on evaluation board
+  - drop earlycon bootargs from chosen node
+  (reported by Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>)
+- converted charger node to comment, part not assembled, has no bindings
+- picked up acked-by on board bindings patch
+- Link to v1: https://lore.kernel.org/r/20240103-add-am64-som-v1-0-dda1f9227aef@solid-run.com
+
+---
+Josua Mayer (6):
+      dt-bindings: arm: ti: Add bindings for SolidRun AM642 HummingBoard-T
+      dt-bindings: rtc: abx80x: convert to yaml
+      dt-bindings: iio: humidity: hdc20x0: add optional interrupts property
+      dt-bindings: mtd: spi-nor: add optional interrupts property
+      arm64: dts: add description for solidrun am642 som and evaluation board
+      arm64: dts: ti: hummingboard-t: add overlays for m.2 pci-e and usb-3
+
+Suman Anna (1):
+      arm64: dts: ti: k3-am64-main: Add ICSSG IEP nodes
+
+ Documentation/devicetree/bindings/arm/ti/k3.yaml   |   7 +
+ .../bindings/iio/humidity/ti,hdc2010.yaml          |   3 +
+ .../devicetree/bindings/mtd/jedec,spi-nor.yaml     |   3 +
+ .../devicetree/bindings/rtc/abracon,abx80x.txt     |  31 --
+ .../devicetree/bindings/rtc/abracon,abx80x.yaml    |  79 +++
+ arch/arm64/boot/dts/ti/Makefile                    |   7 +
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi           |  24 +
+ .../boot/dts/ti/k3-am642-hummingboard-t-pcie.dtso  |  45 ++
+ .../boot/dts/ti/k3-am642-hummingboard-t-usb3.dtso  |  44 ++
+ arch/arm64/boot/dts/ti/k3-am642-hummingboard-t.dts | 292 ++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-sr-som.dtsi        | 594 +++++++++++++++++++++
+ 11 files changed, 1098 insertions(+), 31 deletions(-)
+---
+base-commit: 83d0ff463b50d2395e05339a34e35d14ba82043f
+change-id: 20240101-add-am64-som-51a1ca47edf3
+
+Sincerely,
+-- 
+Josua Mayer <josua@solid-run.com>
+
 
