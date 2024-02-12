@@ -1,145 +1,224 @@
-Return-Path: <linux-kernel+bounces-62266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B769851DC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:15:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC441851DC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:17:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E0771C219B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:15:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12D26B21ECE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:17:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F067447A5C;
-	Mon, 12 Feb 2024 19:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DBEB46B83;
+	Mon, 12 Feb 2024 19:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="nW+VyRJJ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="yZVCs8cW"
-Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com [103.168.172.151])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z5Ex1MWX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D86405F8;
-	Mon, 12 Feb 2024 19:14:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41B446546
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 19:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707765284; cv=none; b=B0NPh9RfFfMuhmP5pJuTveY0Ubg5H8k4NbqF3y7RIiZEO8nZCofcqpor/JflM1hkyPzbGusrZe9UGgrnTOnahLHtsMMYL7ymZpJjA2qwbsfPIB/ChI5mUWtzBnfnG2o3A8UfJ9otDzyjyBTLZC9C+tzPW3T54vhjylQac0kIHw8=
+	t=1707765444; cv=none; b=pSujE5KH2+9mnilNRMGE7v7/CqdPfoLDFljl070BwpbdpWMIumqCztiBoMu8O4N0bXJh3+h/SEiJ+7BAnxXnIajDLcV4mHXfiGYs5j1K6FKCrQJFYL2T5Gw8nFzHu0RtcKEDvpwyAWMyBHEx5rX8AA0qkDZZj6jxJNNXa23mWhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707765284; c=relaxed/simple;
-	bh=VObJ2rct3pw2cbR6hCgheYS2cpTkK2Z4nveT/kYaBF4=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=W2NDX+A+cJS0KpCoyIBqTu64TXvXG8H3SDcps0ugPzGrEG/9fp+z0sqEFaPg4whq49R4hKuWdhKJs2vFwVqgguiHRTrXPJyM3VDLc+vmtu2+3XFDsWzqZoT0IYqhWkiiHs/afrtowaVNB4LZ8ueb25lCqKmkMcJmkch62oCkJ1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=nW+VyRJJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=yZVCs8cW; arc=none smtp.client-ip=103.168.172.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 2452513800A5;
-	Mon, 12 Feb 2024 14:14:41 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 12 Feb 2024 14:14:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1707765281;
-	 x=1707851681; bh=owswN7XU/Fn0mSvnFsqZqiicnFod/NS5cnjRqcaw1U8=; b=
-	nW+VyRJJFFU1Zxtj1eZWKi+KMs2BVX3Z8BA+KwbAyA812Sh6+PcWLAItYIb98btw
-	NY8oHmLn/UzMfA/xzunxmaq8Huh7a230fwMqh+x6rJAmkYm8QrtrrtLK87GirL8u
-	xVArA6xM1ORyPi/gjCkwOsaN214DgGWT1cfJ5Xu7lGEQbz+0FmYEEkpQFjdJ2w7A
-	6EqXM0zJZwz8xQWyLu9GH3/zMvCdx8W5Ggdvw73T06RtPCpomopN8a0qp91yRFCN
-	dOKfwHOAlkMAa6rzIdnLYueGHL0i8Y8wZZc186AkZ6NrXaDOy2KIiIqj6xq8pGld
-	mehi1NWe3zCevzCya2whlQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707765281; x=
-	1707851681; bh=owswN7XU/Fn0mSvnFsqZqiicnFod/NS5cnjRqcaw1U8=; b=y
-	ZVCs8cWJMmS/foQOdJrpUc7TbWBIaLeICwQTavWekPIalfjX48b8dBEW539Mc93C
-	VS8xq+ReDnciLn6eXns6WzMZtZIFeLpjLuYU5/dJLvxccnFTU6a71zYheZTiWbiB
-	xsA6Umg20/zfbV2ejxiHbJivyLYFyVTOlA7q8cE1d2Q+eZU9gqI4IjcUWmivaj6g
-	9p5Xw5BgnDcMDX1dukXtNVKYvrdK+lBxbpF/pM5Iw41vU2J6u0gDL7xMsIyk8Wf1
-	is0fBYmKuGG/QDCdjz9g/mbFci94I3vnNHMG0610usIiQ6XsVg3CFGawxTDjNKcd
-	Dp7ixXkFLDA2rSqCpMKEA==
-X-ME-Sender: <xms:IG7KZfoXX4N5T5lq4ALykSgSgZ7zogu0GQDjjd59DWI6wh06-fWNBQ>
-    <xme:IG7KZZrtdY2nZl5IlC3uAvPSyF4VvBFTUgrB-VfJnIgEXYVORQw2aoqDzs1CubqgC
-    glS665VZTkx-KeCRRc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefgdduvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:IG7KZcPeBrzOTwwpsnH8vneIDZt98fD1SAopAyqNNiwHr1m6B9wBVg>
-    <xmx:IG7KZS53t_XSYXsI5-aZ0ahMbIrePfPA6EP3NOgW6xhsxbjorB7xMw>
-    <xmx:IG7KZe7W3HIdZ1bFhA2U7kxhuAWhL119lTskO0dw9lHFEndu5sGtfA>
-    <xmx:IW7KZRJbyVsb_ls52tp7cqiPAckIN9K9IlBBLfSt8wvAtm5CaBQ9AA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 5A778B6008D; Mon, 12 Feb 2024 14:14:40 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1707765444; c=relaxed/simple;
+	bh=hCPIVz2rsHP449BdbfGe9x7zZLIk+rF9nrvXV0NjKjQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zkho7JEB8G7Q+8ECUXr1w+niF3Xfy0XLA5d+couH07/hRwI0IANF3GAlgfgxkE/izIvzlNgkheLSUrFqLJv8NSvdIXR1TKw6QoVFlmUkrlSqIWnzDtzfByap5t5gzBOXMAVXE42ma/aJyUXrHsLPYLwqMO0jGeeMwsnsnm2qGrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z5Ex1MWX; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707765441;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WMLetVOi1Tf9hmTdZnCJzk/WpjTPZas7r5FuMe1bTCI=;
+	b=Z5Ex1MWX5kAt6rAkN9S2yZGlEHjVG54xHosLvWf1eRf3/+0vDIfmf/bndn7isg3kcuoU6D
+	e4JTcV31p9TcayqzEp9hjC67kfYUYAZOQfvJkBMqkmdtjIXwUj7EYgTch668TdbIUUHYRT
+	lzBAC6IyLBtPpcdbMOdwaVgNuDCRi/E=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-659-OK3ipWSyNQCoR-oRH_7Xcw-1; Mon, 12 Feb 2024 14:17:20 -0500
+X-MC-Unique: OK3ipWSyNQCoR-oRH_7Xcw-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7859f5ae990so10087085a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:17:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707765439; x=1708370239;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WMLetVOi1Tf9hmTdZnCJzk/WpjTPZas7r5FuMe1bTCI=;
+        b=qXWbzwjDtQ3dYuw13thHazWI+iSaENg+95Lh5//rmAJOKBGQ9XIr7cZDAL9ProVNUD
+         9H6fgnH6gFSlc02WXEr2HPPYB1dy5BcrtVbQKGYTFo/4rFB5QswrS3GeW3oNPC/TmHb7
+         flSdyykuuhHGjeXy4Y/zpmV0H+3LcXdp5hR7YhgsOZr83p78Gme9tQR5fIMWPTCvQc72
+         CAXHdXD521/AZ4exKM49EC3dW3qiRJomolrDTuZT8b6TNjji585EyiLtCoh1WPK/os6D
+         7DfcDbt2MNYlqupksUkaCRgdM2v8XWEMlgMStyuqfjXWsd3Iex51mNNXxbGuClrRTFzF
+         0pww==
+X-Forwarded-Encrypted: i=1; AJvYcCX4/6yf2PyYGfQ8zv1h232jhXKkT2kRplAtqszSzDMNxg4OQ1cfc5MiELN3d+gqHGxf2i6zbN6ozGanwU6G9P4rax3WzrK82bobGBa7
+X-Gm-Message-State: AOJu0Yxk0RU6u/v/4ETBbv4MMmdIk8LfuVzdY6GC9sBUf5fAWD2NXybe
+	2JpKE4GMtG13i3jE1LbncvbfAZA12oRjIK2fb8dgZwaqLRC/QoRJ0Wb3e3jdj0EQnp/v7+sHviI
+	/ViCx/EmPo3Xu9UPaFMGvAClnPbKT7wlTFk87/Vaz2yiPU/XLB1Ev/7qvT+6QJA==
+X-Received: by 2002:ae9:f710:0:b0:785:ca61:7ea3 with SMTP id s16-20020ae9f710000000b00785ca617ea3mr6779543qkg.75.1707765439714;
+        Mon, 12 Feb 2024 11:17:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGUoF4IBEbRpvyWPgS+aTYEr5wceo25NS27dmn3f7aIryzOLvnJvIl/jTbTBOLemUaKcBH26w==
+X-Received: by 2002:ae9:f710:0:b0:785:ca61:7ea3 with SMTP id s16-20020ae9f710000000b00785ca617ea3mr6779524qkg.75.1707765439403;
+        Mon, 12 Feb 2024 11:17:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWHNd5mtEeuRGeiTxZmbrytYgOlMyUVp07tEqmXgWzzcSqfe5SNDj/Fud6qax6Zyc8BXlT+w1Ehg8Y5p3v4Yywo0ocVaoqwUQUGFW3DUSPzygLTWl54gswZ62IrenQX8B+GnWawcCEeB1phpQBGrOs8XeC/cTjFmJYe4RgzaIzG5MdDpq/BlMuoEh6an8W4aIz76LNaskj4Djhi9FCcN/iP5nFnQfJk83BIr+3djfrDH7lWQtm5A6x3pWGvRbqeNEd0agL2jZd9U+oGwxL3nIQMo/JKWGJ0TRgFc0Pc8XXDDI+spwJtwZwg3ZWLPCgLe7IzTogq7kXp332oU9VEyjeRnQXsGiaeZHOoH1n+2SfkrNWQlUeI1L2fyvEboVk91s3kV7sl3jeo1lLRR0zlEk3BEnvr0oRO67AGaRYqvyZnge/0cz0ltDzHZr6TEE7jHHU=
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id u2-20020ae9c002000000b0077f435ed844sm2280803qkk.112.2024.02.12.11.17.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 11:17:19 -0800 (PST)
+Date: Mon, 12 Feb 2024 13:17:16 -0600
+From: Andrew Halaney <ahalaney@redhat.com>
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	neil.armstrong@linaro.org, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, quic_ppratap@quicinc.com, 
+	quic_jackp@quicinc.com
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sa8540-ride: Enable first port of
+ tertiary usb controller
+Message-ID: <stci5fykvlstgvblrtqd33f2mgbnwlc4rwguwfybqm3awbasmq@uo2qqszrgz2s>
+References: <20240206114745.1388491-1-quic_kriskura@quicinc.com>
+ <20240206114745.1388491-4-quic_kriskura@quicinc.com>
+ <23824242-1b37-4544-ae9a-0a5a0582580e@linaro.org>
+ <CAA8EJpqbXvKMQktGsxMFJnR+fXoOz8hFmm+E3ROPTjjiD0QLvg@mail.gmail.com>
+ <6q2ocvrujbli42rjddflyol74xianr7j47jwcgdnnmwjanv25d@uw2da7zulqqd>
+ <CAA8EJpr6k8c5C54S9xxQgZvd9NYFoxi5qQrOTz2AMrp0xeZZpw@mail.gmail.com>
+ <baw3wxbdvzpkqqb6a7iut2wpt6jgzyqii5uyfkzptzt4ryjvao@4tpee6nqup5w>
+ <b5c25274-9af0-4b3e-ade7-9a55d3cecd29@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <2cacd8dc-6150-4aa2-af9e-830a202fb0a8@app.fastmail.com>
-In-Reply-To: <4869921.GXAFRqVoOG@radijator>
-References: <20240212111819.936815-1-arnd@kernel.org>
- <20240212124428.GB4593@aspen.lan> <4869921.GXAFRqVoOG@radijator>
-Date: Mon, 12 Feb 2024 20:14:20 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
- "Arnd Bergmann" <arnd@kernel.org>,
- "Daniel Thompson" <daniel.thompson@linaro.org>
-Cc: "Lee Jones" <lee@kernel.org>, "Jingoo Han" <jingoohan1@gmail.com>,
- "Helge Deller" <deller@gmx.de>, "Linus Walleij" <linus.walleij@linaro.org>,
- "Flavio Suligoi" <f.suligoi@asem.it>, "Hans de Goede" <hdegoede@redhat.com>,
- "Jianhua Lu" <lujianhua000@gmail.com>,
- "Matthew Wilcox" <willy@infradead.org>, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] backlight: ktd2801: fix LED dependency
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5c25274-9af0-4b3e-ade7-9a55d3cecd29@quicinc.com>
 
-On Mon, Feb 12, 2024, at 15:31, Duje Mihanovi=C4=87 wrote:
-> On Monday, February 12, 2024 1:44:28 PM CET Daniel Thompson wrote:
->> On Mon, Feb 12, 2024 at 12:18:12PM +0100, Arnd Bergmann wrote:
-> I believe this would be the best thing to do here. Making LEDS_EXPRESS=
-WIRE=20
-> user selectable doesn't make much sense to me as the library is rather=
- low-
-> level (a quick grep turns up BTREE as an example of something similar)=
- and IMO=20
-> the GPIOLIB dependency should be handled by LEDS_EXPRESSWIRE as it's t=
-he one=20
-> actually using the GPIO interface (except maybe for KTD2692 as it has =
-some=20
-> extra GPIOs not present in the other one and thus handles them itself).
+On Sat, Feb 10, 2024 at 04:13:51PM +0530, Krishna Kurapati PSSNV wrote:
+> > Krishna, when you make v2 can you update the wording about the USB 2.0
+> > mux? Maybe something like "which by default on boot is selected to mux
+> > to the external port on the board (with the other option being a test
+> > point)." instead of the wording I originally had? That way the
+> > information Dmitry requested here is easily accessible in the future.
+> > 
+> > > 
+> > > > 
+> 
+> [...]
+> 
+> > > > > > >    };
+> > > > > > 
+> > > > > > Isn't gpio-hog the preferred way to describe that ?
+> > > > > 
+> > > > > That depends. As this pinctrl describes board configuration, I'd agree
+> > > > > with Neil.
+> > > > 
+> > > > I unfortunately don't have the experience with gpio-hog to weigh in
+> > > > here, but wouldn't be opposed to Krishna switching it if that's what's
+> > > > recommended for this type of thing.
+> > > 
+> > > Quoting gpio.txt:
+> > > 
+> > > The GPIO chip may contain GPIO hog definitions. GPIO hogging is a mechanism
+> > > providing automatic GPIO request and configuration as part of the
+> > > gpio-controller's driver probe function.
+> > > 
+> > > See sdm845-pinctrl.yaml for an example of the gpio-hog node.
+> > 
+> > Thanks, that seems like the way to go. Krishna please take note of this
+> > for v2!
+> > 
+> 
+> Hi Andrew,
+> 
+>  Can you help test the following patch. It is just an add-on to your
+> original one. I don't have a SA8540P Ride at the moment and getting one
+> might take time. Incase you can confirm this patch is working. I can push v2
+> of this series.
 
-Agree, let's do it this way. Maybe the leds-expresswire.c file should
-not be in drivers/leds either, but it's already there and I can't think
-of a better place for it.so just adapting Kconfig should be enough.
+I just realized that unfortunately I no longer have access to a
+sa8540p-ride, and I'm not sure if I'll regain access.
 
-Please add the corresponding Makefile change as well though:
+So I would not be opposed to dropping this patch altogether and someone
+dealing with sa8540p-ride when they can test it :/
 
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -135,7 +135,7 @@ obj-$(CONFIG_CPU_IDLE)              +=3D cpuidle/
- obj-y                          +=3D mmc/
- obj-y                          +=3D ufs/
- obj-$(CONFIG_MEMSTICK)         +=3D memstick/
--obj-$(CONFIG_NEW_LEDS)         +=3D leds/
-+obj-y                          +=3D leds/
- obj-$(CONFIG_INFINIBAND)       +=3D infiniband/
- obj-y                          +=3D firmware/
- obj-$(CONFIG_CRYPTO)           +=3D crypto/
+Sorry,
+Andrew
 
-Without this, the expresswire library module won't
-get built unless NEW_LEDS is enabled.
+> 
+> 
+> diff --git
+> a/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
+> b/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
+> index ed344deaf8b9..aa42ac5a3197 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sc8280xp-tlmm.yaml
+> @@ -36,6 +36,10 @@ patternProperties:
+>              $ref: "#/$defs/qcom-sc8280xp-tlmm-state"
+>          additionalProperties: false
+> 
+> +  "-hog(-[0-9]+)?$":
+> +    required:
+> +      - gpio-hog
+> +
+>  $defs:
+>    qcom-sc8280xp-tlmm-state:
+>      type: object
+> diff --git a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> index b04f72ec097c..aa0cec0b4cc2 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> +++ b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> @@ -503,6 +503,18 @@ &usb_2_qmpphy0 {
+>         status = "okay";
+>  };
+> 
+> +&usb_2 {
+> +       pinctrl-0 = <&usb2_en_state>;
+> +       pinctrl-names = "default";
+> +
+> +       status = "okay";
+> +};
+> +
+> +&usb_2_dwc3 {
+> +       phy-names = "usb2-port0", "usb3-port0";
+> +       phys = <&usb_2_hsphy0>, <&usb_2_qmpphy0>;
+> +};
+> +
+>  &xo_board_clk {
+>         clock-frequency = <38400000>;
+>  };
+> @@ -655,4 +667,19 @@ wake-pins {
+>                         bias-pull-up;
+>                 };
+>         };
+> +
+> +       usb2-en-hog {
+> +               gpio-hog;
+> +               gpios = <24 GPIO_ACTIVE_LOW>;
+> +               output-low;
+> +       };
+> +
+> +       usb2_en_state: usb2-en-state {
+> +               /* TS3USB221A USB2.0 mux select */
+> +               pins = "gpio24";
+> +               function = "gpio";
+> +               drive-strength = <2>;
+> +               bias-disable;
+> +               output-low;
+> +       };
+> 
+> 
+> Regards,
+> Krishna,
+> 
 
-     Arnd
 
