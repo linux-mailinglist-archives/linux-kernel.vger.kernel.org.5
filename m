@@ -1,109 +1,194 @@
-Return-Path: <linux-kernel+bounces-61575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C80F8513CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:48:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F66B8513D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:53:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED29C280E89
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:48:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 081D11F22974
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:53:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6950839FFE;
-	Mon, 12 Feb 2024 12:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68FB53A1A3;
+	Mon, 12 Feb 2024 12:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lR+S/LxF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Fdpbv5pW"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CAE3A1A0;
-	Mon, 12 Feb 2024 12:48:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA5039FEE;
+	Mon, 12 Feb 2024 12:52:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707742117; cv=none; b=edICQQkbGDMBtTdbCEYtqljHXPOrSgufk5eTOxIweqbfd5sg1dLkuLZ7DyVSvQkkuYgVH8osdgpQPtPN7Pu4gOmbhJtWwiymz0tbhQ/eUoK2v9yzhKSOl41vqf1pWbHRaH8yh2jn7mB3gOuOpzjon+1dJMv9iSzq2bzK8t9AaAw=
+	t=1707742374; cv=none; b=EAB4wfH35Y2Gy49mLPAOSdekIlpX3a6KjFibDeYeRAcrSbyt76lR7Qco4SBz0pzatWbSmcJdWxCNGxKXRZ2KPVk0XW143qKLFmsVfuz2GnEeydZyF7NCNvKOGREEoGl4Z1LtZBkvaQV57GbLuWUOPRAx+ta56BKAftS98CeASc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707742117; c=relaxed/simple;
-	bh=5P++wSu6rb8H++7C5Eq+SD+MlK7YQnTcw5tYWYdLQWY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lu9whhhNGVqIJ4UzWT4uSR2yvZ9JaD6oMSTBi8M/8j6kTcCc1er47FdHwVxKglSlU3elpGY8dJWKpJxdJCIMq9LoahtTdTu91uOmyLv4lphyn8TfZImwhwWFTMmuVCbRKyhw8lh9b9swxx2AzKuJF3vjwdRBE/Y2Y/lfyODOp8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=lR+S/LxF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4600C433F1;
-	Mon, 12 Feb 2024 12:48:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707742117;
-	bh=5P++wSu6rb8H++7C5Eq+SD+MlK7YQnTcw5tYWYdLQWY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lR+S/LxF1HlwOPrgK7e6+aARvDJoTyfQ5wH1UzbljjNecsLu0TD5YHxQZOH9qLFtN
-	 relyl94NX0gV/qkNZAzaeVHZe564fMHHeqWxUgXB+Ovk7AjfmBkhIN86RdJeETGsLz
-	 1muiy2dWtbTlxEA2ZPgc1TJqpW+3TtQ5nJQN/Tps=
-Date: Mon, 12 Feb 2024 13:48:34 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: fsa4480: Check if the chip is really there
-Message-ID: <2024021222-dismantle-ouch-a72b@gregkh>
-References: <20240212-topic-fs4480_check-v1-1-d9969e4d6f9a@linaro.org>
+	s=arc-20240116; t=1707742374; c=relaxed/simple;
+	bh=6afESl8ji0nrWjSycErOnuewc2Nz1C3FUk6hiC18jcs=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=ZlPZQO+bjrK8qjXzW2ZcDpyDH1nskigmCBHtGxjOWyfqTNMrUOlFhAOipQIHx9MemKVgA5u0yZDkWlITnmXjDx8ASQ9jlOQQiSr/3AjX10pqmAgaCm0Vn2qyuNLBDje19MIaDRymlSXWiyw9dwklBOULJkFx6LmkFKMC9/3Yvo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Fdpbv5pW; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41C9eLYZ011091;
+	Mon, 12 Feb 2024 12:52:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=RlnNmNKxZ+OT
+	iubKfVtBwXhbJHaiIJPiVQpTnrhvbMI=; b=Fdpbv5pWEtkO4bEQMXgwu8A0LaSr
+	DE7Ty2ajywJM45/iJr6mLmV8jXJv/yh2jGzz+mDb2urjc077cmyekNdPKd203hG4
+	vJ+7yeTEVf9Oq3PtxQpXBzzTjo6cPId46M9ffGN2ODVqUwy40S/KzDo32BuTud7Z
+	fdvjNSqQMH8BMjsBJyA4jo9RBoPpwCH54/R7Ks5+FNIxsUIYhvkI8tKul1QEI2l3
+	VS9qQzSW4jP5bv8C4SeXWzgCbNOqmIkzPBNtBzbYTlYO8CH1+xlEWdSYm+SZnq1L
+	v8fGrvqfA19UPgJ2RkbSRlfEreXkGqTQ+e0fW6CHZsRynPbL6OjcptRMXg==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7gvjgfgk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 12:52:46 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 41CCqhSH004434;
+	Mon, 12 Feb 2024 12:52:43 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3w627kpub8-1;
+	Mon, 12 Feb 2024 12:52:43 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CCqhXo004428;
+	Mon, 12 Feb 2024 12:52:43 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-vdadhani-hyd.qualcomm.com [10.213.106.28])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 41CCqhLL004427;
+	Mon, 12 Feb 2024 12:52:43 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4047106)
+	id 489DE500A3F; Mon, 12 Feb 2024 18:22:42 +0530 (+0530)
+From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+To: andersson@kernel.org, konrad.dybcio@linaro.org, andi.shyti@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vkoul@kernel.org,
+        quic_bjorande@quicinc.com, manivannan.sadhasivam@linaro.org,
+        bryan.odonoghue@linaro.org, dmitry.baryshkov@linaro.org
+Cc: quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com,
+        Viken Dadhaniya <quic_vdadhani@quicinc.com>
+Subject: [PATCH v4] i2c: i2c-qcom-geni: Correct I2C TRE sequence
+Date: Mon, 12 Feb 2024 18:22:39 +0530
+Message-Id: <20240212125239.7764-1-quic_vdadhani@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: CG7qLS0VHRwTDcxexlNdH2MfYKi6OB5V
+X-Proofpoint-ORIG-GUID: CG7qLS0VHRwTDcxexlNdH2MfYKi6OB5V
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_09,2024-02-12_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ suspectscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402120098
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212-topic-fs4480_check-v1-1-d9969e4d6f9a@linaro.org>
 
-On Mon, Feb 12, 2024 at 01:01:30PM +0100, Konrad Dybcio wrote:
-> Currently, the driver will happily register the switch/mux devices, and
-> so long as the i2c master doesn't complain, the user would never know
-> there's something wrong.
-> 
-> Add a device id check (based on [1]) and return -ENODEV if the read
-> fails or returns nonsense.
-> 
-> Checking the value on a Qualcomm SM6115P-based Lenovo Tab P11 tablet,
-> the ID mentioned in the datasheet does indeed show up:
->  fsa4480 1-0042: Found FSA4480 v1.1 (Vendor ID = 0)
-> 
-> [1] https://www.onsemi.com/pdf/datasheet/fsa4480-d.pdf
-> 
-> Fixes: 1dc246320c6b ("usb: typec: mux: Add On Semi fsa4480 driver")
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/usb/typec/mux/fsa4480.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+For i2c read operation in GSI mode, we are getting timeout
+due to malformed TRE basically incorrect TRE sequence
+in gpi(drivers/dma/qcom/gpi.c) driver.
 
-Hi,
+I2C driver has geni_i2c_gpi(I2C_WRITE) function which generates GO TRE and
+geni_i2c_gpi(I2C_READ)generates DMA TRE. Hence to generate GO TRE before
+DMA TRE, we should move geni_i2c_gpi(I2C_WRITE) before
+geni_i2c_gpi(I2C_READ) inside the I2C GSI mode transfer function
+i.e. geni_i2c_gpi_xfer().
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+TRE stands for Transfer Ring Element - which is basically an element with
+size of 4 words. It contains all information like slave address,
+clk divider, dma address value data size etc).
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Mainly we have 3 TREs(Config, GO and DMA tre).
+- CONFIG TRE : consists of internal register configuration which is
+               required before start of the transfer.
+- DMA TRE :    contains DDR/Memory address, called as DMA descriptor.
+- GO TRE :     contains Transfer directions, slave ID, Delay flags, Length
+               of the transfer.
 
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documentation/process/stable-kernel-rules.rst file for how to resolve
-  this.
+I2c driver calls GPI driver API to config each TRE depending on the
+protocol.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+For read operation tre sequence will be as below which is not aligned
+to hardware programming guide.
 
-thanks,
+- CONFIG tre
+- DMA tre
+- GO tre
 
-greg k-h's patch email bot
+As per Qualcomm's internal Hardware Programming Guide, we should configure
+TREs in below sequence for any RX only transfer.
+
+- CONFIG tre
+- GO tre
+- DMA tre
+
+Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org> # qrb5165-rb5
+Co-developed-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+
+---
+v3 -> v4:
+- Update commit log.
+- Add review/tested/co-develop tag.
+- Fix patch title by adding "PATCH" string.
+
+v2 -> v3:
+- Update commit log to explain change in simple way.
+- Correct fix tag format.
+
+v1 -> v2:
+- Remove redundant check.
+- update commit log.
+- add fix tag.
+---
+---
+ drivers/i2c/busses/i2c-qcom-geni.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+index 0d2e7171e3a6..da94df466e83 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -613,20 +613,20 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
+ 
+ 		peripheral.addr = msgs[i].addr;
+ 
++		ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
++				    &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
++		if (ret)
++			goto err;
++
+ 		if (msgs[i].flags & I2C_M_RD) {
+ 			ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
+ 					    &rx_addr, &rx_buf, I2C_READ, gi2c->rx_c);
+ 			if (ret)
+ 				goto err;
+-		}
+-
+-		ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
+-				    &tx_addr, &tx_buf, I2C_WRITE, gi2c->tx_c);
+-		if (ret)
+-			goto err;
+ 
+-		if (msgs[i].flags & I2C_M_RD)
+ 			dma_async_issue_pending(gi2c->rx_c);
++		}
++
+ 		dma_async_issue_pending(gi2c->tx_c);
+ 
+ 		timeout = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
 
