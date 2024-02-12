@@ -1,72 +1,71 @@
-Return-Path: <linux-kernel+bounces-61792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C33851695
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:10:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D079A8516A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:10:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF7C61F24C3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:10:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F3341C214C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E2C3F8FB;
-	Mon, 12 Feb 2024 14:04:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AFD645BF1;
+	Mon, 12 Feb 2024 14:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="egvck0U6"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kdlNehZG"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E89A3E49C
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FEE3F8C8
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:03:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707746639; cv=none; b=kuBY4IwZqrDCKghyZiW3z/aKlRqQzv4PRzufravyQwYrik0LwZ9PLbZD/8osJLBWr0NsOP8UyLnSSXfAwuHnwcGKyTpEy7dGIu9EXo8OywjbTMvhvcUyw1odKH0236ppEedjsRz/D0cYdWZ4SvY8PIbdDfRCL7Y1EUY5r2+oJg4=
+	t=1707746641; cv=none; b=Rymz8VV2c5vDVnE8ZtCDU3op1hCIvNUI8rqid0WDlZZikhuIXM+dFAo/C3a6YXCtVsWGzVj0G9poLJGuX8dkl1dISyBbkEGJcXeFEly7a2Of1YyvuS0lKx6zUAF59hQdCjhDsRUsV75lyAl1kRxa+KQl9ZIjZFbxmlxHln1vKNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707746639; c=relaxed/simple;
-	bh=rx5UcKRqmBa2xMJwQBoCtiPbpkdNk/dwmf6spW1NzkA=;
+	s=arc-20240116; t=1707746641; c=relaxed/simple;
+	bh=LEhcV/DRGuck7Ycrdv2oDV0m9G3uCaehI82ftyxYpr4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j4vDRTv8Rbi9hev+48aipF6v1iIEzMgBEhpNWO9dtfeOh+a9IV5dsuPeeBYhR4oTTxMjfxcVNCxWfirRXFSyQGzY1n0q3cir5+NFQ0m/s1FxCgRTF0qQWRZXrx9ad5VKkl2pmWimQewxQBxLWzWajwMOaGc4oQCnoV53f/qV0w0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=egvck0U6; arc=none smtp.client-ip=209.85.167.49
+	 MIME-Version; b=QZuHtfRmyqWq/OuF4iKb/R81xmtkOR1Zy5uylL4sJXdK8vH2Ajnsp0UxMoL0S67xHFGiZmxnuF/9Mpk5Ml81O3ZQMlo80nfHVz/5ANxS3wAr28OLt2bIuZ/g1gNiNngbuKAUt2Rjt8IXxXj7LNsmtk545YFyOGN9uxvWwBGvnpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kdlNehZG; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5116bf4dcf4so3820270e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 06:03:56 -0800 (PST)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-411a5b8765bso1269075e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 06:03:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707746635; x=1708351435; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707746637; x=1708351437; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BwyqOxCBKuWUKHqwJM3+S1e7+XETwlW6DJMJjNuYLS0=;
-        b=egvck0U6f7ZQZlEf2AmBH0ddUqDxudpImgvb12zb3hep4w4jOjoRjXosvJw1mPFKK3
-         +WgoiQXBb6r0I8ZNBAFAY7fxvxrybzbOBxiLDYZiXoTO3Fy3YdXv7Ltk9cZb4+NsGLGI
-         yiAh2JYdByfOpuevQbR4syNsRLR1oCVN+dFJ8QpKwgWxwESyQSEAbeJhl4Vxr398X4bT
-         V0SUh0za7RhDrNpv3qoYFRIR/20/eNig/h18rguzHjF+Nmge3ZkQ8o+tEtfWAryNMhY2
-         8K0fp1wIDfh2wsVO3orVJi7QHmWmR3i6pVJJkgWlUD4OqrFqLrnUiispwaixOweQ1KtL
-         kyqg==
+        bh=TbvKAanWHb5NHCc78DYWj3IudYbRJBQeeD4twXOiMjs=;
+        b=kdlNehZGTbnZxB2Vq+6xJWvOGwEg62sHPVW1SrZOc9ZGLMl+QZGTsngMGSbtZMe4Z6
+         QaE8W0EeyFzZxYySr2XLlJtyH/5GifBN6NjSQyagcn93828Osjxd+1CbzRDE1bsU9/ct
+         VpPxVrMM9LnWz88To8v/ONcIJVXH1owV/2qN0xvry5vxA0jcKxeJfiB4iqSk1832M88O
+         JX+4IosQr8wsJHthH6EK79p2wwPubv/xssVD031QPnoXcUiKuzsg1JD9xsyR1Qr+XqM3
+         D5hA6kx4qidIXdEn73GwfQpVnGhm8dPEiUXoVTm87j5G0CTPSqUSN3d4RrGzXgaDdWl/
+         qZDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707746635; x=1708351435;
+        d=1e100.net; s=20230601; t=1707746637; x=1708351437;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BwyqOxCBKuWUKHqwJM3+S1e7+XETwlW6DJMJjNuYLS0=;
-        b=lviQ0M/9u9OQZvUJCnVWWgfzfzUM3npQIc4WflG4Il+KAfIGa2EBeRL1zqN/tIuL+b
-         AolECANBYmlVfXqH1I4SrRNpn9d6jA3qJYBNICsZIX/ppe9pUtzc8qgjnjW1/P7qT+/s
-         EM/dx3SKJEjBZ9BVFcFQ2O146d1Zeqf1DSpbiZE0SotKTfy49WvWxJPRewSioYUwqZcm
-         72m7qytLkrUOtiCkPUu8+Vt6rT3p49snMVb3PUBsRjNGUtnDPc5s+BL6jRrdQq/yT4UV
-         QaPRGcf1XTHBUArvBExvjvG1RuakJfKCqKQIakRTQAr+gfn74UCelmo8sHhU2lK3CLC6
-         YEFw==
-X-Forwarded-Encrypted: i=1; AJvYcCV1yvUxh7t1CoyBsjlyhVAR6xX7O+EXYpbI60FijQFIpcuxKgl7ZxJu2GT2oypGMSdGKnlJEq5pctrg0SOkZEgZAhYYovWVOfdgWGic
-X-Gm-Message-State: AOJu0YypstGlO7inyr7jKdXYInqeCo7YGpnmUO+esP8bryv5IY61aw1e
-	ehLWvtCl92KMTAnJrGhLuSwHGczGS6MkbMlfDoEtnyAEJ1Y2schJgu33KHxb+B0=
-X-Google-Smtp-Source: AGHT+IFg3qLWNvNwUnn8P/BhJ5Ietz8B1yvexMNQAGrgiWUo0KCF6uBK6Sl80tvi0CllLESKTMuoaA==
-X-Received: by 2002:a05:6512:47c:b0:511:8c4b:8f49 with SMTP id x28-20020a056512047c00b005118c4b8f49mr2517416lfd.25.1707746635085;
-        Mon, 12 Feb 2024 06:03:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUZE3PZkuKNAn2tR9aGo/I3vn3MVfSpp0JHsjBEZGcqPndunlQiZ8aegoxwuwC4jHefmlXyK02+DbV1HsXe+NnjulQIIx+vPoyuFOuDByU7sbr5Lb1oirG7j/LpWtOKn5nyYsscuflY7jQVf6iFmkkOCV5HqaybQWIwT9scB4ok11j2S1V06vgx8M1eu/V/2AvalKNEUwqko+NajGDMV/qcWF1RtwQ28cvCgqKg/5HUd1Rj2Y9zaxl1Yo9mrd41Su/ETC/2Il2poJ9360qNqvbLHQ9iWTvrdZEVwwII/F9jpuObPz5zcmJDDpZ8+k//jJMyLw8AYwW0oe8wNHFhR7FQnFZyscudTJNSsA6Oy2FA+30nnZ6opVKyU4yQOU9BE+5wbKOKLTnhcT3KIQtOneprgFBM2p7TDaCwbwkOO2/CtoezA4XVGC3qM0BRd/lXyrMIOLcrWdNIEp7jnhKJQMDeJ58snE1PM+xlRQRVJJepzG/bSul105iq7ZdqVZa6rVCvMRuG8sDSurqjtt5vTU+3uTKuTaGxh9ROkI79hj5T6XE3Tl1Ff8oQc5tXsL3HQbEMx5gmMQ5lFjM2K7N2v++SHsyq7OyIi0ABiqadyhEl/8vcreY=
+        bh=TbvKAanWHb5NHCc78DYWj3IudYbRJBQeeD4twXOiMjs=;
+        b=BA1Nl09mUoJFC3nw4e+OOcjMsdG6Tdq9bUDBPo0qAVnqfgE1e2CpRnPl/UdWG11v7O
+         95ptDX8qk6xvFsk+k0wWNXBHSqziIwhhaLJzcDuewiu6KgQiRA++hlyjb9dy7rGzN2qQ
+         M0W77pY6/WCny0FL0E2W92AIR5ZIUAHKOYN29G5WgyU5dc+hAUh5LfTAC7iDzgnj9rOx
+         ue8L3W2CZY6ADh3NUoxRG0nhuEDBvVa7FTivVC5pJFEKyo9f75xq9x5UFvXW9jTPmBRi
+         a5jKXr4E3JMMFmI3MY+CcH2MJgkJkWI9Tmn0Nns7yLiTxIzBGKp3WTkMAJrB/vn7/SOp
+         Rcuw==
+X-Gm-Message-State: AOJu0Yz+OXF5uZFedH8ZWV8I4PPmp38HERr+unJT08cuvlU99Gm+uHSr
+	ZVtimvfor3x4KzakBF+6O+saAgj9gx6MCrEMOPro7xNSlantjvQENf1wT4wwb2Y=
+X-Google-Smtp-Source: AGHT+IEif4Fg7pSF6wN8emTX0pwbAdYoKZjFc03ubpGOGgiV2E/6mDETDnx3EoITL8YannPLkhJeQw==
+X-Received: by 2002:a05:600c:602a:b0:410:9b48:9272 with SMTP id az42-20020a05600c602a00b004109b489272mr5049483wmb.8.1707746637405;
+        Mon, 12 Feb 2024 06:03:57 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX+EDbaisOa+6yIrGqWWJq40OpsatdFleMrj0aGtjiVtvx/JwCZfrfa1FjMCYZVt5AX0x7cAHzHT2sXjTjmA8F76rUdDvpoxl6vwfzYL9ytEofC5FsJksrbvTEChnZAjfUAyZ/A0quDuPRPwy/oJjkewzO5TBFmfdCoApBdCVS+tgqGlECF2Fy0/fheMtV/+WJMk5Ri68RYI3Jhp7NzOwM1TwtltB9NkXYLt7l2tRFd3MhrPsvsxa0UENb6w9qMwUdXDOChwP7wVOkWMbMnXh86vI95zN5uAkPpGVBi/HNfRElHDTCMLrohDEr0Zoxh4OuUAwMgBYTqW/ATCf96ZTbzFYrjLtA3DhE8vRKuwgL+gG5DCc3biGuMBoM4TGpvUOcXYFOwvRuSUkC6bc0KmeWdEDTJuvqHO8kKzW915R8ZtfKFZ1CctnwWPlGQz2VWvygY5M2EWvbWKxwE9sGY04c0umwYOjQRMMuW/NDN9RTr70AdmRnWDwSp7bLAdx8HPuybGXreVnzbvxDgIgzYJIBmJX2SoyOPZ3eAGViiU/h695HMB1A8HgH8MBdmJYfOnxa8i6DgnqytHWiktBqwNkUcX0tr9Vz/QkIlL2cdBXOCXxwpSRM=
 Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id v9-20020a5d4b09000000b0033b843786e1sm2135356wrq.51.2024.02.12.06.03.54
+        by smtp.gmail.com with ESMTPSA id v9-20020a5d4b09000000b0033b843786e1sm2135356wrq.51.2024.02.12.06.03.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 06:03:54 -0800 (PST)
+        Mon, 12 Feb 2024 06:03:56 -0800 (PST)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: broonie@kernel.org,
 	robh@kernel.org,
@@ -86,9 +85,9 @@ Cc: alim.akhtar@samsung.com,
 	devicetree@vger.kernel.org,
 	arnd@arndb.de,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v2 06/12] spi: s3c64xx: allow FIFO depth to be determined from the compatible
-Date: Mon, 12 Feb 2024 14:03:25 +0000
-Message-ID: <20240212140331.915498-7-tudor.ambarus@linaro.org>
+Subject: [PATCH v2 07/12] spi: s3c64xx: let the SPI core determine the bus number
+Date: Mon, 12 Feb 2024 14:03:26 +0000
+Message-ID: <20240212140331.915498-8-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 In-Reply-To: <20240212140331.915498-1-tudor.ambarus@linaro.org>
 References: <20240212140331.915498-1-tudor.ambarus@linaro.org>
@@ -100,58 +99,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There are SoCs that use the same FIFO depth for all the instances of the
-SPI IP. See the fifo_lvl_mask defined for gs101 for example:
-    .fifo_lvl_mask  = { 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f,
-                        0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f},
-
-Instead of specifying the FIFO depth with the same value for all 16
-nodes in this case, allow such SoCs to infer the FIFO depth from the
-compatible. There are other SoCs than can benefit of this, see:
-{gs101, fsd, exynos850, s3c641, s3c2443}_spi_port_config.
-
-The FIFO depth inferred from the compatible has a higher precedence than
-the one that might be specified via device tree, the driver shall know
-better.
+Let the core determine the bus number, either by getting the alias ID
+(as the driver forces now), or by allocating a dynamic bus number when
+the alias is absent. Prepare the driver to allow dt aliases to be
+absent.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/spi/spi-s3c64xx.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/spi/spi-s3c64xx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index b1c63f75021d..68f95c04d092 100644
+index 68f95c04d092..ac47755beb02 100644
 --- a/drivers/spi/spi-s3c64xx.c
 +++ b/drivers/spi/spi-s3c64xx.c
-@@ -137,6 +137,7 @@ struct s3c64xx_spi_dma_data {
-  * struct s3c64xx_spi_port_config - SPI Controller hardware info
-  * @fifo_lvl_mask: Bit-mask for {TX|RX}_FIFO_LVL bits in SPI_STATUS register.
-  * @rx_lvl_offset: Bit offset of RX_FIFO_LVL bits in SPI_STATUS regiter.
-+ * @fifo_depth: depth of the FIFO.
-  * @rx_fifomask: SPI_STATUS.RX_FIFO_LVL mask. Shifted mask defining the field's
-  *               length and position.
-  * @tx_fifomask: SPI_STATUS.TX_FIFO_LVL mask. Shifted mask defining the field's
-@@ -159,6 +160,7 @@ struct s3c64xx_spi_dma_data {
- struct s3c64xx_spi_port_config {
- 	int	fifo_lvl_mask[MAX_SPI_PORTS];
- 	int	rx_lvl_offset;
-+	unsigned int fifo_depth;
- 	u32	rx_fifomask;
- 	u32	tx_fifomask;
- 	int	tx_st_done;
-@@ -1263,8 +1265,10 @@ static int s3c64xx_spi_probe(struct platform_device *pdev)
- 		sdd->port_id = pdev->id;
+@@ -1279,7 +1279,7 @@ static int s3c64xx_spi_probe(struct platform_device *pdev)
+ 	sdd->rx_dma.direction = DMA_DEV_TO_MEM;
+ 
+ 	host->dev.of_node = pdev->dev.of_node;
+-	host->bus_num = sdd->port_id;
++	host->bus_num = -1;
+ 	host->setup = s3c64xx_spi_setup;
+ 	host->cleanup = s3c64xx_spi_cleanup;
+ 	host->prepare_transfer_hardware = s3c64xx_spi_prepare_transfer;
+@@ -1360,7 +1360,7 @@ static int s3c64xx_spi_probe(struct platform_device *pdev)
  	}
  
--	if (of_property_read_u32(pdev->dev.of_node, "fifo-depth",
--				 &sdd->fifo_depth))
-+	if (sdd->port_conf->fifo_depth)
-+		sdd->fifo_depth = sdd->port_conf->fifo_depth;
-+	else if (of_property_read_u32(pdev->dev.of_node, "fifo-depth",
-+				      &sdd->fifo_depth))
- 		sdd->fifo_depth = FIFO_DEPTH(sdd);
+ 	dev_dbg(&pdev->dev, "Samsung SoC SPI Driver loaded for Bus SPI-%d with %d Targets attached\n",
+-					sdd->port_id, host->num_chipselect);
++		host->bus_num, host->num_chipselect);
+ 	dev_dbg(&pdev->dev, "\tIOmem=[%pR]\tFIFO %dbytes\n",
+ 		mem_res, sdd->fifo_depth);
  
- 	s3c64xx_spi_set_fifomask(sdd);
 -- 
 2.43.0.687.g38aa6559b0-goog
 
