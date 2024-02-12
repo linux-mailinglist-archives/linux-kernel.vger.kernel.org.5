@@ -1,100 +1,178 @@
-Return-Path: <linux-kernel+bounces-61534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59F0F851359
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:16:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7800185135C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:17:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D41A1C20F6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:16:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34C1C2843BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:17:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB66939FCC;
-	Mon, 12 Feb 2024 12:15:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7039E3A8EE;
+	Mon, 12 Feb 2024 12:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mr7tY7zf"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CKG1fEDe"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940F53A1B5;
-	Mon, 12 Feb 2024 12:15:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4833A278
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707740137; cv=none; b=sgmy+Iw4MWqF9uwN+gyQqij1iFqZ9TIoJWf1NixeNSmenb/N3FzBTQD3qMDu/jezSarTkSUzMO0zhUrR5IAAfjq5p18faFl8Mn8KXB9x/UEQGMnUcPO1+LX+qB4qQBukaDyp+rn82QVAWO4Bsv/N84s41n81Kjp5nY7DnzphO5Q=
+	t=1707740139; cv=none; b=g/qX1FRmwiymRyaLciOZ62YBtRfXUaPqcKJBtgkxZdy0r4DDV7qA5VU6feMM1SbUJ5eypZMh4liAG2oF/gwVPCdpS8G+9YF/Zjim51Xdd0hTPtU4iS0FRNM364mCzXdnBFUblVxO6UUmq+0cDyG5sRE2EFrB/fyJ+SoY9g2gnGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707740137; c=relaxed/simple;
-	bh=PZkQPDyP1m/c/g1ZAZtDwyEcA3ZFwJ232NOy9QvkH/U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rut0Pilm8A9Llabc08ks+gvMPc/Ml1Cbcy9LR1Dg18hIp/dbdeMpzhHZpfynVQQj6yulcDrlzhAaptdH+MNSGQ/oIKgUlLzpfR2yFawCoM6V0A5tqjFx3GddhYiOdRzOTlGUSdTlcOMT8Jrs72x62U956AM+79m8piR40hk9maI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mr7tY7zf; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707740135; x=1739276135;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PZkQPDyP1m/c/g1ZAZtDwyEcA3ZFwJ232NOy9QvkH/U=;
-  b=mr7tY7zfi2UY3xUHdUT6IZcKsenI32Eed+WE48VfWO8fpXBxrQZAvnR0
-   3J67RZOQbusV1L52BgQ/adSmdG7FY+TOA8/tlSvFuy3ltyBhsVCoD7arZ
-   FbcctEPHJrj8HP3VjKjXBwgJgp0tJGcvpNhFMjQv0qSYbYp/eEV2px6fL
-   fPW5nrd4w8x8x8a9mmO5ym+LagthlDPlV4WB5DJU/9Yb9bxfwTgTKZ5tq
-   A7RHoJH60d6wQFlKE5s+0MO8SNcdOvlpPz/TbTqG2ACcpMmkpSTOcZQvD
-   VLIr7IGG0oP4n0CqbJgXMXUxdq+SJ3hyMT1YKOGOfCk6PyYI7jQqakcBD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="1590963"
-X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="1590963"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:15:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="911465640"
-X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="911465640"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:15:07 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rZVDE-00000003tCF-2Die;
-	Mon, 12 Feb 2024 14:15:04 +0200
-Date: Mon, 12 Feb 2024 14:15:04 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Paul Burton <paulburton@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] dt-bindings: auxdisplay: hit,hd44780: use defines
- for GPIO flags
-Message-ID: <ZcoLyAI-RuaN5X6H@smile.fi.intel.com>
-References: <20240212083426.26757-1-krzysztof.kozlowski@linaro.org>
- <20240212083426.26757-3-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1707740139; c=relaxed/simple;
+	bh=N8tncqgbitEfsa+IsxrMjvd4SefbZ9HRuwb/K2AteQ4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EnuEt5ovX8oKl4jak2J0KIcprRIc4bbJOeDZqxwJMYxd9rIPYalsQ1NLy1ec0LZPsBDCDKi4PwDw14dYgf/8+ZjzHB83YUNWNs4isSuBeeHnI4TKr8/4pGDsDKITpWqk03J5kab7p9nSr/Ats4z7Z3gX1cGSaQ+NUiHVi25E9ME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CKG1fEDe; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d89f0ab02bso188475ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 04:15:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707740137; x=1708344937; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bI7LEK4WDVLJPhhNr0Vd4fweJ6AqMok5h6N4cph4ogE=;
+        b=CKG1fEDepN4CIrqaufVAQZYW9Vwd8YwefbBvLT+9KzBCSvoO3RAY03XMK3qD2JPKqH
+         f+6mU2aD0eDZxFSiW+mjrLtlWSqJUnSg9b/6yZ6mWY2d47mGIIyxnacl6d2ZwiWg4Dnw
+         oYzM1ezr4IJo17SA6e5m+CFbpZD2sZctqogk+S65SOna5BtlQ5J6n9KT2zLx0gWyuC3g
+         FULci2RwlqWWC6XcB0kBSslamERgbM2GMGRv1rEYtoGurpfsOur7/6tqXdSRSwuTk6bI
+         28SkN+7ywnqw7Bq2w1v1Vq3z0rS+Lji0rG0UN0S1pSnJPxBdD6QTy0ntlS/WwxEoshSX
+         wOjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707740137; x=1708344937;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bI7LEK4WDVLJPhhNr0Vd4fweJ6AqMok5h6N4cph4ogE=;
+        b=Z0dxwUWWISriszNigdA4EgS7OPhFfHmYV1AwGc+WTRBZ5RVBi3/x/FsPDP//pFVJaN
+         WzufE6CcWxK5ZsaZJWn6oBg/8G1ztJRW+HrAGMlwBRyj77Fo/GeW6azpW6PUpj6d8NtU
+         z5E3GY9r7guGm6BeCRw70yV4X/QVn0XQnbhqnXQ7hJdqCEkNJbGb/CX3GFO8HesOqbx/
+         zzXf2HTR8hnMkrkXZAGyp5Ayns8IUSrUbjEh1Ax/344WxW2WJi3bRgPAm6UfkPGcY14C
+         c3zbs9C0OGPw2MD6x/wsvKvpbFyHo1MFNO9aEtpMHVKuM7LBrBf8YsOO8K47P5zeTfS0
+         bf8g==
+X-Forwarded-Encrypted: i=1; AJvYcCWsegCk3ou6IWhbjIb3yKOtnQGEBLH40Xd3IIWH+K7zmMHMU5dxF7ufsEIHnGeHtjZLDDGWHzsofflVyY1YA+V8nZYGn7JRqExBoAu/
+X-Gm-Message-State: AOJu0YzNXqGdlAKXBBiLBuK3Z4+4Cm6MT9LWx/Le8obDLyxkfQvg3/wc
+	3Ne02FLLRC/NtUFbtexbZWBuJizBpoDoidn9zOKfxw9uitpmmdG/iVnQCcAgfxQ15iBhUAjguC0
+	qfZToSL924wLQ8ZyUWyOJ4GOe4nvy4qWZIu5+
+X-Google-Smtp-Source: AGHT+IHBHINE+I1Ojvjs2h4YbI4fTibMLxN/GcemctMTpyQuPSntiSdNs0ixyKFyckYID55PescGAehf4Gwz57+8UM8=
+X-Received: by 2002:a17:903:44b:b0:1d9:a393:4a38 with SMTP id
+ iw11-20020a170903044b00b001d9a3934a38mr253072plb.26.1707740136946; Mon, 12
+ Feb 2024 04:15:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212083426.26757-3-krzysztof.kozlowski@linaro.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <000000000000c47db50610f92cf9@google.com> <9175d10b-035c-4151-80bc-f76bddc194ba@gmx.com>
+In-Reply-To: <9175d10b-035c-4151-80bc-f76bddc194ba@gmx.com>
+From: Aleksandr Nogikh <nogikh@google.com>
+Date: Mon, 12 Feb 2024 13:15:22 +0100
+Message-ID: <CANp29Y5f91cP6eLEX55x9rEQcTD1VZMEqYkcDjBDREOAzXMETg@mail.gmail.com>
+Subject: Re: [syzbot] Monthly btrfs report (Feb 2024)
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: syzbot <syzbot+listad2f01a497df9ab5d719@syzkaller.appspotmail.com>, clm@fb.com, 
+	dsterba@suse.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 09:34:26AM +0100, Krzysztof Kozlowski wrote:
-> Improve example DTS readability by using known defines for GPIO flags.
+Hi,
 
-Yes, it's better this way.
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+It looks like existing reproducers for this bug began to fail after
+CONFIG_BLK_DEV_WRITE_MOUNTED reached torvalds and syzbot has not found
+a newer reproducer since then (though it does hit the bug, so it must
+be possible even with CONFIG_BLK_DEV_WRITE_MOUNTED=3Dn).
 
--- 
-With Best Regards,
-Andy Shevchenko
+I was was able to reproduce it locally using the older kernel revision
+built by syzbot:
+https://gist.github.com/a-nogikh/f68aa687a72aad4bb46a64d995c2415f
+FWIW here are the docs:
+https://github.com/google/syzkaller/blob/master/docs/syzbot_assets.md
 
+--=20
+Aleksandr
 
+On Sat, Feb 10, 2024 at 9:48=E2=80=AFAM 'Qu Wenruo' via syzkaller-bugs
+<syzkaller-bugs@googlegroups.com> wrote:
+>
+> >
+> > Ref  Crashes Repro Title
+> > <1>  5804    Yes   kernel BUG in close_ctree
+> >                     https://syzkaller.appspot.com/bug?extid=3D2665d678f=
+ffcc4608e18
+>
+> I'm not sure why, but I never had a good experience reproducing the bug
+> using the C reproduer.
+>
+> Furthermore, for this particular case, using that C reproducer only
+> reduced tons of duplicated dmesg of:
+>
+> [  162.264838] btrfs: Unknown parameter 'noinode_cache'
+> [  162.308573] loop0: detected capacity change from 0 to 32768
+> [  162.308964] btrfs: Unknown parameter 'noinode_cache'
+> [  162.313582] loop1: detected capacity change from 0 to 32768
+> [  162.314070] btrfs: Unknown parameter 'noinode_cache'
+> [  162.323629] loop3: detected capacity change from 0 to 32768
+> [  162.324000] btrfs: Unknown parameter 'noinode_cache'
+> [  162.328046] loop2: detected capacity change from 0 to 32768
+> [  162.328417] btrfs: Unknown parameter 'noinode_cache'
+>
+> Unlike the latest report which shows a lot of other things.
+>
+> Anyone can help verifying the C reproducer?
+> Or I'm doing something wrong withe the reproducer?
+>
+> Thanks,
+> Qu
+> > <2>  2636    Yes   WARNING in btrfs_space_info_update_bytes_may_use
+> >                     https://syzkaller.appspot.com/bug?extid=3D8edfa01e4=
+6fd9fe3fbfb
+> > <3>  251     Yes   INFO: task hung in lock_extent
+> >                     https://syzkaller.appspot.com/bug?extid=3Deaa05fbc7=
+563874b7ad2
+> > <4>  245     Yes   WARNING in btrfs_chunk_alloc
+> >                     https://syzkaller.appspot.com/bug?extid=3De8e56d5d3=
+1d38b5b47e7
+> > <5>  224     Yes   WARNING in btrfs_remove_chunk
+> >                     https://syzkaller.appspot.com/bug?extid=3De8582cc16=
+881ec70a430
+> > <6>  125     Yes   kernel BUG in insert_state_fast
+> >                     https://syzkaller.appspot.com/bug?extid=3D9ce4a3612=
+7ca92b59677
+> > <7>  99      Yes   kernel BUG in btrfs_free_tree_block
+> >                     https://syzkaller.appspot.com/bug?extid=3Da306f914b=
+4d01b3958fe
+> > <8>  88      Yes   kernel BUG in set_state_bits
+> >                     https://syzkaller.appspot.com/bug?extid=3Db9d2e54d2=
+301324657ed
+> > <9>  79      Yes   WARNING in btrfs_commit_transaction (2)
+> >                     https://syzkaller.appspot.com/bug?extid=3Ddafbca0e2=
+0fbc5946925
+> > <10> 74      Yes   WARNING in btrfs_put_transaction
+> >                     https://syzkaller.appspot.com/bug?extid=3D3706b1df4=
+7f2464f0c1e
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > To disable reminders for individual bugs, reply with the following comm=
+and:
+> > #syz set <Ref> no-reminders
+> >
+> > To change bug's subsystems, reply with:
+> > #syz set <Ref> subsystems: new-subsystem
+> >
+> > You may send multiple commands in a single email message.
+> >
+>
 
