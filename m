@@ -1,186 +1,161 @@
-Return-Path: <linux-kernel+bounces-62201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B5BF851CF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:38:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07EF3851CEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:38:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27EF828391A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:38:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D7791C2237A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8A940C1F;
-	Mon, 12 Feb 2024 18:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57FD4405F4;
+	Mon, 12 Feb 2024 18:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EMUyCia9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="WQ43ewbJ"
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04900405D4;
-	Mon, 12 Feb 2024 18:38:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1726E26AC9;
+	Mon, 12 Feb 2024 18:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707763105; cv=none; b=kvSiE2YzgjkwZkN1gFyU7fyC2kkLGrf5P9LU0KH2QiTsu0Kw+HoaqcZ2w8lJyyYOBiRJFyfErEXkXbLattIuaWUKQ3R1mCW73i5WP47yIyUYb9nV8aac1tHLqt18+CVEK3H++OucmFYoCX1awyHjtGGx/4bFD1dOAMu0BokFz/s=
+	t=1707763085; cv=none; b=Ft0bNwXk60XaauYlUWYe0qrAEUNyaMYvIXaPBdgz8nvHGX3CBGyir+ClbvddZ3Y7nhKkztr9p9iYHAGBCIaZq/SnDzHHhPwO44t+t8F4AVcL5I65+R/6hmNAeXzbe9wGMN/DdhnjKYzeKIGeO7mmKB73aWX96mjv8bO77Cf8NjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707763105; c=relaxed/simple;
-	bh=DB+QxJu9d3ZS9rmjqca4J9xEJVvpvRrU2w7NHJpSp2s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZOy63eNQZht85Gm/xqP11fyK8VUleonPbV799w/2xFKGVCWFpue048PM7IeEhGvqcErtLtHeDC/qpjIY0iYmPs6W2xe7cfTk1RnTjxfWHE0eRYzPJFzCPiSXcX0eDqeQkRcHG/AhVRyF5Lz4QYodLmtpuT6bl4UEcSeY+PdBO/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EMUyCia9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B78EC433C7;
-	Mon, 12 Feb 2024 18:38:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707763104;
-	bh=DB+QxJu9d3ZS9rmjqca4J9xEJVvpvRrU2w7NHJpSp2s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EMUyCia9MG/ccuDFUpmDHiaLgC+igJvueSb2uGUiW+TWBq+vBFJgv8cUhmQuvL+pz
-	 5iUT2b3vi+tdzkMXYYrc1B47l5j0QmWiB9PXCy926EZDb90ffrj4N8HGa+6ELm+baa
-	 d1O2E1uY04FIGeZwOqJkdmUtPJLY5anr/dqnPnvxGLeRiKmLD0fwaP48UDg+6JQpGI
-	 kmvpJ2wegkC+GvoCO932G8UHkEkGm1sJGgCoev1AUcQOsunK5XzdWaUaXPYSOGUYqp
-	 p9S5u9N0bEQx6QB8D9+o/mABVRhhIOFXR2yemqFi5EEwnKE1jChO2G6vNh5tKdRLgQ
-	 16/DAqRwQIcPg==
-Date: Mon, 12 Feb 2024 18:38:19 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Christophe Kerello <christophe.kerello@foss.st.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	krzysztof.kozlowski@linaro.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH 08/12] dt-bindings: mtd: st,stm32: add MP25 support
-Message-ID: <20240212-squeak-mortality-5a53a4d1039c@spud>
-References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
- <20240212174822.77734-9-christophe.kerello@foss.st.com>
+	s=arc-20240116; t=1707763085; c=relaxed/simple;
+	bh=0lGQUm+90KYZlz47xHNxcrHu+599ngPLg8L6TVE81vo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=nW1KVjEc3yXPG7a7mjaiUnyplMxLtsaHAG5/6NgjCZ1tIRc07nVEIvaKxWWgNMf1pl5A84Jl2QZGr94Th4BP7RLfhhetPPU4f7yY9dmPcmqgkcCKZeMfutNtClmYIvK0MWmTEmrnNDs8tb51bUylNogW5DdKcyxiKgr986F8Ggs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=WQ43ewbJ; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-363d85fda93so11659515ab.1;
+        Mon, 12 Feb 2024 10:38:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707763083; x=1708367883;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bNiM+AN62rI0NY0c9YiwkLlKxLPUGxqDQX5HJ1+BhGg=;
+        b=IJ/ia/ItIphxaBmhQRiqRaiOl4QwzFyCAMnWIJC0yqr//hb7hzUcxoHOclcACIM5X+
+         O7JXOJl50m9hLXxaXzddqzAthbml68lCwhk1YL3ceW7QqostYguPPfh46CmAlTJ92mga
+         VP3aPxCj+/3gPKQz7gne1eXhmDmKGKChXcre3WK9Ajzo13nj4gvncZiBgoZuiNdZSjdN
+         aHoyrmaX5jolbt/Rp+p1t+MhGk7x7xToeoDbxOqgI6BqKaRi3U2NIqOuRXHrRZeRwRZG
+         Y3YEqOuSNd6ZB0609kaYHBbyUzEcJs9pS/TfQOcTFgVDyVaEgDMCBN4EOeZzQ4jCfZ3L
+         M6rQ==
+X-Gm-Message-State: AOJu0YwVRqvX3Ho9pwOlWshfE4tOlFPQipwIj3avFs8JO0RrwCYFLQWg
+	PZqwN0hUUsQS4WcQOwNVmGafGJjvRQy63Ig/FRuzW23bT9bRfwt9
+X-Google-Smtp-Source: AGHT+IFFmvWkuM4WujnnyAcBACdfqGZnKD0NTa4x68Ww7GK0iUhFM2efjjWt+7Q641UuAEnz+OFs8g==
+X-Received: by 2002:a05:6e02:2193:b0:364:12e5:c7d6 with SMTP id j19-20020a056e02219300b0036412e5c7d6mr2175633ila.12.1707763083137;
+        Mon, 12 Feb 2024 10:38:03 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW7enC5WzJ72fjDcMepZ8KDO1TjTjz7aFO4Nhd8iPJZjMRjF/MJFBfpP1u1DtqgMPfLZNQJnAmIiRz882nXmS4l4jEEVLvHeXMYAIHWUzCXeCAgn2GQMAo6QuMf4+vERJ/TjnYpL+FlmEUS1GThjwFX9UI5brTGCEFF7qUTtCl0lm4pPoo=
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id l193-20020a633eca000000b005cf450e91d2sm767004pga.52.2024.02.12.10.38.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 10:38:02 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707763080;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=bNiM+AN62rI0NY0c9YiwkLlKxLPUGxqDQX5HJ1+BhGg=;
+	b=WQ43ewbJt4U319YlseqJJU1tKH6gs9A4WIQvLGmCkzw6Elubeg/r9OtkpsVjFolN7BR512
+	ku/rkFKNRm9LabXRu/pwN3J63i5Wh1UiyyEgxbkdOp3x2I8gZlUa0ohux0hsaUpngLL/6E
+	uWjlze1K9tLfU1HLHpBKurRrC5o55IAOFkVKOxQVVKXFJJQWW0c97n5iyqtWATks8yLU7v
+	dMhcru7ejs00hWLS+8plF62ZjkC9sNW1mErOERHyMyQmsXDJrVvk+Sre4NHQnWKXMu2t3u
+	hZ9tj5FG31yQ8IzXjDyJfHiZOp7LCeW54ZxH8/T+PX5xfA8DyFOVPg2GIdSNlA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Mon, 12 Feb 2024 15:38:37 -0300
+Subject: [PATCH v2] scsi: Make scsi_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5x9qetWChxMtvEey"
-Content-Disposition: inline
-In-Reply-To: <20240212174822.77734-9-christophe.kerello@foss.st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240212-bus_cleanup-scsi2-v2-1-65004493ff09@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAKxlymUC/32NQQrCMBBFr1JmbSQTS1FX3kOKJOnEDtS0ZNqil
+ Nzd2AO4fA/++xsIJSaBa7VBopWFx1jAHCrwvY1PUtwVBqNNrQ2icos8/EA2LpMSL2wUNv7kg7M
+ XtAHKbkoU+L03723hnmUe02e/WPFn/9VWVKi6TtdEZ0ON07eXTQNTomOkGdqc8xfhtMxTtQAAA
+ A==
+To: "James E.J. Bottomley" <jejb@linux.ibm.com>, 
+ "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2009; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=0lGQUm+90KYZlz47xHNxcrHu+599ngPLg8L6TVE81vo=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlymWvEaMUcbqZliWm13EdoggzqpVzGtyKn0NtO
+ z/tCOLLZjyJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcplrwAKCRDJC4p8Y4ZY
+ pvHhD/93Yw+N/lWfQNo8IvQP3P6fmgKghr3f+sctlJx8HtP8R7YcMW/5CJ66O8MyXonvjhKNPnd
+ B39xJjVpR1nB0gLR1ekJTQIxBdudLKS0AcVHw/mmuwgmLmpYnBbdq2L6A9Bc+/CzsaeUVtKMQt5
+ nSWWtHCzORievpVAqM7xDbhJsXGtYhJAQJcvT6eunx2Z6q7wnIR4r627w4QKus0LgknzxOef9d8
+ ZyEolVTTzcZERsg3/jKq1inazxN6V5qx8p+Eh85VFEyV3ovyo5oflOgBAid08150MTBQV1igth0
+ x5rHG5cS06zy8rDkJU5QVbEcgkTHuFNadCdT49TboXltpsZp8fGQfc7yteWd+4oHAjXgWZeqDfu
+ 8pQ9nc2ewNhCfbzrFAOLAacfrLexjSUpU7+lsJAOwEl1oQW4u/Rvx3R+hcGzih9UdtUNZsCPsPp
+ +AT3/nhr1htBwH8vrbjfgcHVbLu0NTOnEOUSv8lj1tLhe39MEo6uNOa78aTib/AHH15Ectvl0GW
+ RoI/D/CKSmeMrRLRqPe8eTOmYvhvUphfrQQkB+Y+DGkRlEFUliGUYBDH7KsGDIQvwKdMC+9aWNX
+ zvtmdKIMZJEnrl064iVLuG+dRUWdcMbbbwrPEsiCKBbD8WWUCvo3rQ4j7vK+DwpwK5DZdGk19eS
+ ygKf3BiBeFUMuUA==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
+Since commit d492cc2573a0 ("driver core: device.h: make struct
+bus_type a const *"), the driver core can properly handle constant
+struct bus_type, move the scsi_bus_type variable to be a constant
+structure as well, placing it into read-only memory which can not be
+modified at runtime.
 
---5x9qetWChxMtvEey
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+Changes in v2:
+- Improved changelog to remove the word "Now".
+- Removed unrelated whitespace cleanup.
+- Link to v1: https://lore.kernel.org/r/20240211-bus_cleanup-scsi2-v1-1-dd04ee82e6b0@marliere.net
+---
+ drivers/scsi/scsi_priv.h  | 2 +-
+ drivers/scsi/scsi_sysfs.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On Mon, Feb 12, 2024 at 06:48:18PM +0100, Christophe Kerello wrote:
-> Add 2 new compatible strings to support MP25 SOC.
-> MP25 SOC supports up to 4 chip select.
+diff --git a/drivers/scsi/scsi_priv.h b/drivers/scsi/scsi_priv.h
+index 1fbfe1b52c9f..9fc397a9ce7a 100644
+--- a/drivers/scsi/scsi_priv.h
++++ b/drivers/scsi/scsi_priv.h
+@@ -156,7 +156,7 @@ extern void scsi_sysfs_device_initialize(struct scsi_device *);
+ extern struct scsi_transport_template blank_transport_template;
+ extern void __scsi_remove_device(struct scsi_device *);
+ 
+-extern struct bus_type scsi_bus_type;
++extern const struct bus_type scsi_bus_type;
+ extern const struct attribute_group *scsi_shost_groups[];
+ 
+ /* scsi_netlink.c */
+diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+index 24f6eefb6803..14d0be0da0c6 100644
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -549,7 +549,7 @@ static int scsi_bus_uevent(const struct device *dev, struct kobj_uevent_env *env
+ 	return 0;
+ }
+ 
+-struct bus_type scsi_bus_type = {
++const struct bus_type scsi_bus_type = {
+         .name		= "scsi",
+         .match		= scsi_bus_match,
+ 	.uevent		= scsi_bus_uevent,
 
-Again, please explain why the new device is not compatible with the
-existing ones. Also, please explain why two compatibles are required for
-the mp25.
+---
+base-commit: 59828c7b5975f442ad5bb74a031fe388341f323e
+change-id: 20240211-bus_cleanup-scsi2-16c3cfba91af
 
-Thanks,
-Conor.
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
 
->=20
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> ---
->  .../bindings/mtd/st,stm32-fmc2-nand.yaml      | 58 ++++++++++++++++++-
->  1 file changed, 57 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yam=
-l b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-> index e72cb5bacaf0..33a753c8877b 100644
-> --- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-> @@ -14,10 +14,12 @@ properties:
->      enum:
->        - st,stm32mp15-fmc2
->        - st,stm32mp1-fmc2-nfc
-> +      - st,stm32mp25-fmc2
-> +      - st,stm32mp25-fmc2-nfc
-> =20
->    reg:
->      minItems: 6
-> -    maxItems: 7
-> +    maxItems: 13
-> =20
->    interrupts:
->      maxItems: 1
-> @@ -92,6 +94,60 @@ allOf:
->              - description: Chip select 1 command
->              - description: Chip select 1 address space
-> =20
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: st,stm32mp25-fmc2
-> +    then:
-> +      properties:
-> +        reg:
-> +          items:
-> +            - description: Registers
-> +            - description: Chip select 0 data
-> +            - description: Chip select 0 command
-> +            - description: Chip select 0 address space
-> +            - description: Chip select 1 data
-> +            - description: Chip select 1 command
-> +            - description: Chip select 1 address space
-> +            - description: Chip select 2 data
-> +            - description: Chip select 2 command
-> +            - description: Chip select 2 address space
-> +            - description: Chip select 3 data
-> +            - description: Chip select 3 command
-> +            - description: Chip select 3 address space
-> +
-> +        clocks:
-> +          maxItems: 1
-> +
-> +        resets:
-> +          maxItems: 1
-> +
-> +      required:
-> +        - clocks
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: st,stm32mp25-fmc2-nfc
-> +    then:
-> +      properties:
-> +        reg:
-> +          items:
-> +            - description: Chip select 0 data
-> +            - description: Chip select 0 command
-> +            - description: Chip select 0 address space
-> +            - description: Chip select 1 data
-> +            - description: Chip select 1 command
-> +            - description: Chip select 1 address space
-> +            - description: Chip select 2 data
-> +            - description: Chip select 2 command
-> +            - description: Chip select 2 address space
-> +            - description: Chip select 3 data
-> +            - description: Chip select 3 command
-> +            - description: Chip select 3 address space
-> +
->  required:
->    - compatible
->    - reg
-> --=20
-> 2.25.1
->=20
-
---5x9qetWChxMtvEey
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcplmwAKCRB4tDGHoIJi
-0qEaAQC6FzMEWUZon7Rbw9b51wIt52mF6FLV+DfSgClzOalRFAEAiDB3FOanV76n
-XJT9NErVw/coKCkhHjtRx02Cv9xOtQI=
-=9ijQ
------END PGP SIGNATURE-----
-
---5x9qetWChxMtvEey--
 
