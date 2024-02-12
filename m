@@ -1,39 +1,76 @@
-Return-Path: <linux-kernel+bounces-62310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BAE2851E61
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:06:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05C5E851E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:04:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 958E6B25173
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:06:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1609281F66
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8333F47F57;
-	Mon, 12 Feb 2024 20:04:49 +0000 (UTC)
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E6647F46;
+	Mon, 12 Feb 2024 20:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="C11Iw4bH"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43604D9E9;
-	Mon, 12 Feb 2024 20:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1783A47A70
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707768289; cv=none; b=KYdF9Zw8QpHzr+0dHTtVKY2GmvC3euMkGxCcZIq/AGnWB3C5KOdJ14HdBKRbVEhr8Ruoj8dJZWCa78uKRcrqrqXOQ14h6tjxn1TuflGiFF6GgUmQDGrMA2kOSCHxiOP7uSVM+y9VKiRN0aWxkMYH3Qi/DwctGpF/PVm4f0tXskc=
+	t=1707768268; cv=none; b=Lfi7PmyAXNOF7nwc0ri0v7XngaoJ6t9sxMz/7yKKpXuMc4bdxVjJh13akkOB7nyPPxfVyDqFXLs6qKuJh6e/8URtJFxDXNaqLUa8sksq7c0Iy11RHoROVj0JtF7H/zVqmN5tuUOmzOKu78DiymczMCgJKPlpWcXaCos2weUU9Tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707768289; c=relaxed/simple;
-	bh=8oXLHu5mf6GCO+ZMr+tU6h6oKIscP7uIjmv7rxzg+zo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=bkNO3HDTPNqfiW3IY/oyxMacCEOxXP3N7LhqVI9xhA34IUuSswr4xAUvyDq8TWpLr1gKDkPdbFAOD3dV4gFHqlvE7tCf6+63z/N3J+QH8Wzj/9fai4TrhyLCfPRa8EyXrW+FgOcrwm0AgOq+wuDBfeRa0uupoTSMY66wVmCQP4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 982CF83C56;
-	Mon, 12 Feb 2024 21:04:38 +0100 (CET)
-From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date: Mon, 12 Feb 2024 21:03:26 +0100
-Subject: [PATCH 2/2] leds: expresswire: don't depend on NEW_LEDS
+	s=arc-20240116; t=1707768268; c=relaxed/simple;
+	bh=46m5kgpYafsjbmkgwgaR3UEdg9F5o1nC2dyStdDKowI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=uT+/W//PNgWbjaCwuWnjH0UBGt4Psi9qDlhCv7zE2dHXDRlE6hHZFi0UZaF7grtAY+n/YV42hQ9SLCqQ9iGMfxPRRYBplkvkNr0fUTAeIEo4MYDQ3ThYaNTgJFbHg9KBq7QKgvFmtTdjOFUJ6Vih8ms1efPqe0qumpaqdOVXYJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=C11Iw4bH; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so2861860a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:04:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707768266; x=1708373066;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=oHyBDS7WaykcBxou7weKIofyX0CqedvQH5iZaXyJUSI=;
+        b=uM/y1y74OOYXOSzPa5GJigHSFeD7IkWXJk75HfBGiDs7uhDh/3mhmFXbbvJwBwBuoA
+         HnXugnBnD8jP+h8T5PpEPIzBjfVg0dHvIrj8og03UIr8p8UkSKRq015vinrWeeGlZDCR
+         ZMfm9S++PuPDN8ZEi/oUdCTvNpvRmmfmPO9riiM8pk6NlwpKldEPeSmsbF3hH5M41eIw
+         E8M/T+Zyg50vTVkiwGAMQ/yUwGSd8WZJ94ye5ZYkIPN41+zafwXD1UBMvg/PpudOiHLR
+         Tc72yK5Fv03wi4pV6JBuTSmpriSX1UCB+AJPR6/AiFlOCyCHF5N7f05olz1QwTHAkQe9
+         MkhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX1nEG1WwBeWuGIqe+X+zwLIxPGrpAFzinZpfTyWWYD0EL17X8xcfwvHHF24iftYFxpuM3tbdc6IvmUNBzx428ATGiAno7y3xmHbzKj
+X-Gm-Message-State: AOJu0YyGap/0udTOTJyQ3jLVBnu+hzKAMkpHGcxgX9jYKRyyQWRJ7nBi
+	UhAoD/4OLy1YzdAhmHBdMn5gvDjdat3dbRWq5KSxzbTGlDCZrSSx
+X-Google-Smtp-Source: AGHT+IEMGnpxGT56LrXgCFndTnvCesBsLlgnBQKvMecarsRHN8zHvIvLfxyta8lDj4PhdImTon3wBw==
+X-Received: by 2002:a17:90a:348d:b0:296:1bf4:e797 with SMTP id p13-20020a17090a348d00b002961bf4e797mr5843091pjb.39.1707768266250;
+        Mon, 12 Feb 2024 12:04:26 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXedhrpGpeN/mZtKPE3iUbsChTf1bVigu3+DpaD6WA1ZRSMHipyEPQETX+Lv3vb7jJTFxad2niSeQ0nFqmkqb1V6Wdu7sSePH/lfNh70NjSKNo1UmzG6x4+UuBYaktj9f/fsDdGeAWlUoniKT2TpmdQMMIucI6BHWDFDtkrFx3ygS9fIWUyDgzKIkGMxTp2Ec/7BeAXhUyjdzBQocBe8QhMsIKm3orsx12oMvDGqy9A6KlVAwQGycr8f7S3LY08eGrt9G9YONShmzflbA/T
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id mr1-20020a17090b238100b00296bb0b2f57sm938628pjb.21.2024.02.12.12.04.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 12:04:25 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707768264;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=oHyBDS7WaykcBxou7weKIofyX0CqedvQH5iZaXyJUSI=;
+	b=C11Iw4bHxhH3M1/VOZDftgEoILCd3GlmfqDD6dN8rYyZx2g2Sp+nSDeKFmFz+xeRSoZTMC
+	o/esB8Z/s3cn9XVMaNMOzligTd4fszB7Tk0VPT5NkYWopLDiBlS5yp96lfg3w/kPDmV8rj
+	rgDZBJmItUwmszZhwSIHvK5LNoiH4/QxP5lDv9nFqYRRAe1fRJlLLpbapf+ag4J6ZFEZD6
+	a5M1V7Jom6t/8mgk2K1gMkp7h/+a6mtKccz/SbvRndbTpm1r4HFIi8XAcNHozQgCH/b/KN
+	wjOTK3j4l7hDKU9zGK99eV9tAI1BvoT3ilGaB3EKB6HKlWWEIKAQMuH8yBSj2A==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Subject: [PATCH v2 0/5] powerpc: struct bus_type cleanup
+Date: Mon, 12 Feb 2024 17:04:58 -0300
+Message-Id: <20240212-bus_cleanup-powerpc2-v2-0-8441b3f77827@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,91 +78,78 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240212-expresswire-deps-v1-2-685ad10cd693@skole.hr>
-References: <20240212-expresswire-deps-v1-0-685ad10cd693@skole.hr>
-In-Reply-To: <20240212-expresswire-deps-v1-0-685ad10cd693@skole.hr>
-To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>, 
- Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: Flavio Suligoi <f.suligoi@asem.it>, Hans de Goede <hdegoede@redhat.com>, 
- Jianhua Lu <lujianhua000@gmail.com>, 
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
- Helge Deller <deller@gmx.de>, Jingoo Han <jingoohan1@gmail.com>, 
- Karel Balej <balejk@matfyz.cz>, dri-devel@lists.freedesktop.org, 
- linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-leds@vger.kernel.org, 
- =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1760;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=8oXLHu5mf6GCO+ZMr+tU6h6oKIscP7uIjmv7rxzg+zo=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlynmgL8L0kP8ZVEOL1g3BmNLjNbTU+Q9Ykoclo
- JRlY2qTALGJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZcp5oAAKCRCaEZ6wQi2W
- 4ZkvD/9Tm0AdqRYDjoU8A+UDGagpNQJX5o2MxYzKRI15Kjuili8GVVflTvViVBi8H34/ML2TaNa
- jEeaHxyeQssz/2zcEpflayLn02Sq1FOwKnbvzp7VjdvltWyeAkIPn6Nx3gLszasLNrh3FisGZ+8
- pg4FlXvlkDpxnflQ7tu8hTKLCnPWnbzIX8dZqP2JDTTljWc0fqL8CvLXfOqz3W4kdj3JYmGpAB+
- NPcKfhUn+aP+MUzP3j0hxCUiaywhKiR5e0hvgIgyiXYY7KHcD/tfh6P5nefeV3x6nD/NsStw5eO
- sOkyzOe3hc0KlLT2sgdzGw7t1Zm5ytPX6LYjwfBwiBG9vvCC0Cxa6xbqpdr5cUPjmJL0wRFO3/Z
- E0baLz6BFlGEs64xGzWz1dTG+VMlG2V3Or2CKO4p4AIsx7QEio/Rjm6tGChAcqupljAZCeetnSA
- 4GcUqixr4W8gbqcFkylk86tIXZmqaI4YsTEyObgqQwmSFIHwUhnU8aV2pLH7JBtJQHABysUjUXz
- P97uJRkCfNs1CVOYbBgH3tYIKH3aSkzIuv4i+gf/8LPtge3BGEOEUHYXc8E4TvJJTnZ1tFP2Zh4
- qzDs5rdjQ6ZsABIz4sdsizTeQjIJytLO0ZIWgZGxjtXnH1U9iT5vCcdUe6qTMkpr20jL9/XqD28
- eOvZ3avwrFwS2jg==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOp5ymUC/4WNQQ6CMBBFr0JmbU1pEKkr72GIacsgk2DbTAE1h
+ LtbuYDL95L//goJmTDBpViBcaFEwWdQhwLcYPwDBXWZQUlVSSW1sHO6uxGNn6OI4YUcnRKVbip
+ V985Z3UCeRsae3nv21mYeKE2BP/vLUv7sn+BSCinO2pzqzhm0trw+DY+EjEePE7Tbtn0BD9AKR
+ 7sAAAA=
+To: Michael Ellerman <mpe@ellerman.id.au>, 
+ Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1854; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=46m5kgpYafsjbmkgwgaR3UEdg9F5o1nC2dyStdDKowI=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlynnuMoCq0skqVLkNyeXmP6y8brBEXCdxD+d4j
+ tgdu4ncXBKJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcp57gAKCRDJC4p8Y4ZY
+ poMsD/0RvTTqHv+De6ldjUB5U9FVw9LSQpxhixM4+Vea1K/AUn/X06Slrqk2KGuB4t0hNee8q3+
+ CMCyqcE2Ggdf618CxQ0Dl04JBWol8rgcOuFCv5xnnwOFlBT173GjFuph2qS900Q2SBPK7fmDSec
+ PaJOmu7VZ8n8rGzUrdc0sHTwjeOyqHxrCTGdn7yU7aCtHn2IrxTr/9Zj/TMxWeRRU5p8a8Kjw0n
+ D6NmhGLwHfiO02H+hZW/uoUmD4jixo6aSQp8RPi12nbO3oWIhCK+CASr+SuhfRIg7cou3QWwT1s
+ rCVKOeHT2alFnwWWxlgv/XkpMR4eixScTnzR2a4joKjAOPEzOdmWNujmfXX4hUswjGbapkjSAIl
+ wIqGSwcTYUUeLFP7kW4YeieDJ3Q9YUCBHlNZhYQ8M8Y1NSINCbrI5liJdt0bf9gaNCgCbFtlo5h
+ 9L6C1h6idOImKJ1I+HXKM1H3mIiprbc9tkBSvBSoyIZjzZhFQCyqfLb/mR0Ns0Uar8UrPysS5SW
+ RIffqFjxOCAD5xiU8ldo3hl3ycstEVZjm7BRUi4c4s9kSSaidl4c+KObiMQABynvvcyeEzJ5p4B
+ xOv3MBK0yzo8iUV59ZtVpoXd5IVbGP9/e+GC8YlUMK1FAVbsgprDLUtuS1CjQdkXSlH0lRx3rkq
+ QRUy+o6OPIZ9WSw==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-The ExpressWire library does not depend on NEW_LEDS and selecting it
-from a subsystem other than LEDs may cause Kconfig warnings:
+This series is part of an effort to cleanup the users of the driver
+core, as can be seen in many recent patches authored by Greg across the
+tree (e.g. [1]). Patch 1/5 is a prerequisite to 2/5, but the others have
+no dependency. They were built using bootlin's without warnings using
+powerpc64le-power8--glibc--stable-2023.11-1 toolchain.
 
-WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
-  Depends on [n]: NEW_LEDS [=n] && GPIOLIB [=y]
-  Selected by [y]:
-  - BACKLIGHT_KTD2801 [=y] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE [=y]
-
-Move it out of the "if NEW_LEDS" block to allow selection from other
-subsystems (in particular backlight) without raising this warning.
-
-Link: https://lore.kernel.org/20240212111819.936815-1-arnd@kernel.org
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-Fixes: 25ae5f5f4168 ("leds: Introduce ExpressWire library")
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- drivers/leds/Kconfig | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+[1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
 
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index 52328d295b4e..66998b938ed3 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -6,6 +6,12 @@ config LEDS_GPIO_REGISTER
- 	  As this function is used by arch code it must not be compiled as a
- 	  module.
- 
-+# This library does not depend on NEW_LEDS and must be independent so it can be
-+# selected from other subsystems (specifically backlight).
-+config LEDS_EXPRESSWIRE
-+	bool
-+	depends on GPIOLIB
-+
- menuconfig NEW_LEDS
- 	bool "LED Support"
- 	help
-@@ -186,10 +192,6 @@ config LEDS_EL15203000
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called leds-el15203000.
- 
--config LEDS_EXPRESSWIRE
--	bool
--	depends on GPIOLIB
--
- config LEDS_TURRIS_OMNIA
- 	tristate "LED support for CZ.NIC's Turris Omnia"
- 	depends on LEDS_CLASS_MULTICOLOR
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
+---
+Changes in v2:
+- Added a new patch to make macio_bus_type const.
+- Improved changelogs to remove the word "Now".
+- Fixed a build error: https://lore.kernel.org/oe-kbuild-all/202402102142.uphiKeqw-lkp@intel.com/
+- Link to v1: https://lore.kernel.org/r/20240209-bus_cleanup-powerpc2-v1-0-79a56dcaebb1@marliere.net
+
+---
+Ricardo B. Marliere (5):
+      powerpc: vio: move device attributes into a new ifdef
+      powerpc: vio: make vio_bus_type const
+      powerpc: mpic: make mpic_subsys const
+      powerpc: pmac: make macio_bus_type const
+      powerpc: ibmebus: make ibmebus_bus_type const
+
+ arch/powerpc/include/asm/ibmebus.h       |  2 +-
+ arch/powerpc/include/asm/macio.h         |  2 +-
+ arch/powerpc/include/asm/mpic.h          |  2 +-
+ arch/powerpc/include/asm/vio.h           |  2 +-
+ arch/powerpc/platforms/pseries/ibmebus.c |  4 +--
+ arch/powerpc/platforms/pseries/vio.c     | 61 ++++++++++++++++++--------------
+ arch/powerpc/sysdev/mpic.c               |  2 +-
+ drivers/macintosh/macio_asic.c           |  2 +-
+ 8 files changed, 43 insertions(+), 34 deletions(-)
+---
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+change-id: 20240209-bus_cleanup-powerpc2-498426fccb98
+
+Best regards,
 -- 
-2.43.1
-
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
