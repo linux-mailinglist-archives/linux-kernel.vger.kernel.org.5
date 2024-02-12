@@ -1,112 +1,90 @@
-Return-Path: <linux-kernel+bounces-61861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EFF7851782
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:03:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69AE08517B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:11:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A813282F1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:03:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D2871F21611
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C9F63C68C;
-	Mon, 12 Feb 2024 15:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AB33C68C;
+	Mon, 12 Feb 2024 15:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="z1Q3cIZp";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DL0xfnIw"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="NslzxFXW"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B373C680
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294E43BB47;
+	Mon, 12 Feb 2024 15:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707750225; cv=none; b=Rm0LXlx86Nh4kqwwLVb0hvDCoGtY5bzYNm2NJcWmB56NL84MAibGftQ3+GTZLu+dl5kbIzICb6pAVNPLLaUaxPmaS3CIj5GZO9twv6XfENq2tYHiSyDJGIN8MA8777S+/nZyrSSKje0t33U//+wlLjXfJkLJQh5bvsxwXfGBi8Q=
+	t=1707750687; cv=none; b=nNki16YOWys2BY1lRuZlGn+Lfe7UgdJcUCn12/kV45h5s+RVxzK8l/AX4d4RzQXJWxhe+x0gGLV4O444xAyPh1QNHyE3Pi29gSyZCr4z4uMkkNW1V6UQYvf32yLa8DQz3mr7dHMhQUpqPkHdyxxF9wO382Vyu1OO1AhiEQnlnvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707750225; c=relaxed/simple;
-	bh=yLdZ044RR8tzkqHTq1T2/FUjDwuAMQovYCA01kek/r0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=arzjdc0vDU301BFNpEozwbWNz8Q78q2B5VyrVMrp6NVKk090AesZ5BRWEThZ75ceRXXl5tsbPi7byfXbvUrMvshnb9cNKtZG002EQYV45Y9J1leDv9DFTwxc6HHoILl6yFMlKNwFagSI7+bO542BjuphlTg7B2ZL2Wc2ZtmRrh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=z1Q3cIZp; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DL0xfnIw; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707750222;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=v1glk031wqZcbbm/jOYZ8J2yM9vWz7AxqAE4GGPiTx4=;
-	b=z1Q3cIZpknDXRTBZVv2/sOH092ZX7SMy+oAk3dFq0AgvoKq76vWK9yE5cCDWKggrTvnZMA
-	sKLsoinsoJPrhAGnVSEDgz1ePru2xlVwtarnAc6QbWGPQa63vccX4VIw0EqDP3peDy0VaU
-	rKNTp/bTKfHsYAjNcZr8prLo8kpOszZoIJoFMT0sXSlvNWcsLmKVFkzn1kEvYO0gUHuxcx
-	TS8AqZFpjnQ8ZJh7lOe+0i+L9jqkxKpbMvnXmCD7VwDJVrtBQ6OXs4+ao9ONp/5vV0Knlv
-	7bvM3P1FjjElib1poPwevve17e/wc9SJnBbMVnVyDRXMH5Z5uPppHHaYVOXnXA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707750222;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=v1glk031wqZcbbm/jOYZ8J2yM9vWz7AxqAE4GGPiTx4=;
-	b=DL0xfnIwOuRH+z4PyPUnb7bEgnertudTfObU/RUGFRSeD/+5XnxyMuc2wQlV5u0ZtvE+N/
-	5cHk4Z5p4oPP1JAg==
-To: Borislav Petkov <bp@alien8.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org, Tom Lendacky
- <thomas.lendacky@amd.com>, Andrew Cooper <andrew.cooper3@citrix.com>,
- Arjan van de Ven <arjan@linux.intel.com>, Huang Rui <ray.huang@amd.com>,
- Juergen Gross <jgross@suse.com>, Dimitri Sivanich
- <dimitri.sivanich@hpe.com>, Sohil Mehta <sohil.mehta@intel.com>, K Prateek
- Nayak <kprateek.nayak@amd.com>, Kan Liang <kan.liang@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Feng Tang <feng.tang@intel.com>, Andy Shevchenko <andy@infradead.org>,
- Michael Kelley <mhklinux@outlook.com>, "Peter Zijlstra (Intel)"
- <peterz@infradead.org>
-Subject: Re: [patch v5 06/19] x86/cpu: Provide a sane leaf 0xb/0x1f parser
-In-Reply-To: <87il2tlqba.ffs@tglx>
-References: <20240117115752.863482697@linutronix.de>
- <20240117115908.674834306@linutronix.de>
- <20240130193102.GEZblOdor_bzoVhT0f@fat_crate.local> <87il2tlqba.ffs@tglx>
-Date: Mon, 12 Feb 2024 16:03:41 +0100
-Message-ID: <87a5o5lo6q.ffs@tglx>
+	s=arc-20240116; t=1707750687; c=relaxed/simple;
+	bh=Z6PbrS/54nr3uTDQ/r5+bbWElRXdrXgp6MGlAFsN3TE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nqq5tH8bFURoASiy9XT3MQxCAR/Cn1PvWmMV/+hRcfdCSTAWMSzOgyuYqE1LY5U9UGUHnFwXI3Gz/lY3UAkc9zweZ/ReQd4fs3n4huFwNPlda9UrzibdKzRXU9IxDas4xgQ/wcSdVjzykzJypEd+B9/Dilsb7kYWwTms+4CDCwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=NslzxFXW; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=ss2Gdsb9s4ZaDWMsTt+eMw+ubVBWFoCUmo1ODydN/mM=; b=NslzxFXW4ui1gaNavsjs4QcwMT
+	ef+/bfTQUiNfNdWJNJfyzZZ9IJmo9X7HOu/t0+uEK8HM4UOVzMZ6rYnJECu+Y4U3KgMfXlIfNVBI8
+	MjkEebpguYjvxTgUqs38DyyeCaYsysHpkwp3CFhEMszREnHc3AyX+A4zGSeZqlq4cKJ0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rZXQl-007a9N-Lw; Mon, 12 Feb 2024 15:37:11 +0100
+Date: Mon, 12 Feb 2024 15:37:11 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: POPESCU Catalin <catalin.popescu@leica-geosystems.com>
+Cc: "davem@davemloft.net" <davem@davemloft.net>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"afd@ti.com" <afd@ti.com>,
+	"hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+	"linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>,
+	"m.felsch@pengutronix.de" <m.felsch@pengutronix.de>
+Subject: Re: [PATCH v4 2/2] net: phy: dp83826: support TX data voltage tuning
+Message-ID: <10ed19e3-01a9-4fcb-819f-686c6d0bf772@lunn.ch>
+References: <20240212074649.806812-1-catalin.popescu@leica-geosystems.com>
+ <20240212074649.806812-2-catalin.popescu@leica-geosystems.com>
+ <186cf83c-b7a7-4d28-a8b1-85dde032287b@leica-geosystems.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <186cf83c-b7a7-4d28-a8b1-85dde032287b@leica-geosystems.com>
 
-On Mon, Feb 12 2024 at 15:17, Thomas Gleixner wrote:
-> On Tue, Jan 30 2024 at 20:31, Borislav Petkov wrote:
-> TBH, the // comment style is really better for struct definitions. It's
-> denser and easier to parse.
->
-> 		// eax
-> 		u32	x2apic_shift	:  5, // Number of bits to shift APIC ID right
-> 					      // for the topology ID at the next level
-> 					: 27; // Reserved
-> 		// ebx
-> 		u32	num_processors	: 16, // Number of processors at current level
-> 					: 16; // Reserved
->
-> versus:
->
-> 		/* eax */
-> 		u32	x2apic_shift	:  5, /*
->                                                * Number of bits to shift APIC ID right
-> 					       * for the topology ID at	the next level
->                                                */
-> 					: 27; /* Reserved */
->
-> 		/* ebx */
-> 		u32	num_processors	: 16, /* Number of processors at current level */
-> 					: 16; /* Reserved */
->
-> Especially x2apic_shift is horrible and the comments of EBX are visually
-> impaired while with the C++ comments x2apic_shift looks natural and the
-> EBX comments are just open to the right and therefore simpler.
+On Mon, Feb 12, 2024 at 02:15:47PM +0000, POPESCU Catalin wrote:
+> I just figured out that I forgot to disable WOL in the callback config_init.
+> It looks the PHY driver should explicitly disable WOL feature at init, 
+> and leave it to ethtool to be enabled.
+> I will provide a v5 ASAP to fix that.
 
-Aside of that it would make the struct generator in the CPUID data base
-more complex.
+WoL is a bit murky. On x86, it can be the BIOS which configures WoL,
+behind the back of Linux. That is not something i would actually
+recommend, so disabling it at boot does make sense. But consider
+suspend and resume. If the PHY is used for WoL, the WoL settings
+should be kept through suspend/resume. So you need to be careful where
+you disable it, so its only disables on boot, not resume.
+
+    Andrew
 
