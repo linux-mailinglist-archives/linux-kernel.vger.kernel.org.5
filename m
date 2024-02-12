@@ -1,227 +1,349 @@
-Return-Path: <linux-kernel+bounces-61613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8547985144C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:13:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC8FA8514D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:21:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E69321F21BF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:13:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31C85B22DA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:21:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD5D03A28B;
-	Mon, 12 Feb 2024 13:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC444642B;
+	Mon, 12 Feb 2024 13:14:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NtvMES3J"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RGARsEI9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DA63A1C4
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9AF45BE3;
+	Mon, 12 Feb 2024 13:14:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707743592; cv=none; b=mhvgnB4ogQy9yZmXZf322oXdikyn8p3tFzMsfPD/Hoiirm9uGYuRiPmhsBONTjiWjmyZXEBoAUfjCFGxlMR5x5uS8nzFSdQ/6V1EpvEEnwkVpVCFHW5Glt91co0bkZxchonX2IwVEpjI5lEn4iEWmcF0qvbrFNWnJ3IqcJQvEfA=
+	t=1707743668; cv=none; b=m4XqCHZgj5ws3HfyvRUNkaU+9pjZkdUk9hqxHxpiqvP8Hc3dXOi+938+lN6BUJ1E1d8JogKxU3KUzUYrtwScZlJFtZK6BDlJnbnmEPcVdCCu+9lageWWxLhcEHRyQhzz9jkREukGRPQYjHBefOFkqZzcv0Ay2KRjBCbh4q3fSwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707743592; c=relaxed/simple;
-	bh=VGqK2EXbpd35gsVz1xmG61zXP49yz5ANJzMkWNNw1mQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j/WP8ZINL7TPsk3NHb2dXsZid60AyvdQgfArT9VAreF8IeSIQRNh3k307wbF22czMKnNotGnfZ1SVEaVIwi1iktMAM5VQFaYTV9E6VjLl4TOo00vkPRkSK4+BoIL3Yk+gKCBUJHuQ0cQwk3kzJ/tdN9QcEUioQLaaoG3scZt3vM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NtvMES3J; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707743590;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Hww63RycILkhWmUV7kV9IBG+ru1x1IcPxqyllH9PLOo=;
-	b=NtvMES3JDRz+gOZrytBvubZ/ImWAIzdiNH4fUMRP702TYpgmvrexrdC22dVZ4EePkpEnII
-	B5zYrhAqES7qIW9HOow66bXolaXz9xEjBlUXlM23LDYDtp13Wp3Roo0o6qmvqB2r4eq3BD
-	u4KjjQ6K22BwgmcGrT/1gR5JCdT3rSw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-495-cn3LjGIWNOur0P8gVGcukw-1; Mon, 12 Feb 2024 08:13:08 -0500
-X-MC-Unique: cn3LjGIWNOur0P8gVGcukw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33b26d4294dso1392171f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:13:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707743587; x=1708348387;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hww63RycILkhWmUV7kV9IBG+ru1x1IcPxqyllH9PLOo=;
-        b=ZI1wVAu19pJZ7nomD6QE8qi/uqXNEtA2VPmzRwBOJA0yslt5aTFWUC7N+5cVWMoaFS
-         s8lK4SnyNvSjI53Ts/sAtxcYU/IA6raUY3sExDQgByrqdZCe3GK4KmOzAAikPabVImFm
-         Hf+yX3AJPXfIw9elMfw7dmynVBhABCvmLdHc4dhgcBUero1W3Ei5CvxJMJAmql6+RYf4
-         XURjh27YTlAGDXpVcHyuG5GJ7+nDMSKbE9eix7xAY7jhkZu26zB43owTPWbdI2AyfIDt
-         BlG184nluprDt8G8HmduwGjTFHqYMA2RH4cN/WxjiPk5FmPF2bl6cx9/imThGuAw9vcK
-         wGbA==
-X-Gm-Message-State: AOJu0YypyP8exfqE3ZrwJe25E7yVhcTNedaPkqWmtU8LI39wDr+mHmEU
-	kIRTOGHR7dEjKmQLZznoF45kRCEYMgVgCVK2+/9gegeISMX0mq0RHpFZ8XVGSfRXiYNLTD/IfwO
-	zuZV8agK5KCOngOpzEG6BtgTv7RXNt4NwosER3KM0ykvPAwXze8bD9MtRcM/5Xw==
-X-Received: by 2002:a5d:6486:0:b0:33b:2300:9cdc with SMTP id o6-20020a5d6486000000b0033b23009cdcmr7236138wri.46.1707743587353;
-        Mon, 12 Feb 2024 05:13:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEReINvzzr3H3VeDrYjZvaBxMo8PW95UvCVHUhmv21+hC5vvpCm8WTG48/ufAWGbGiAoJPPvA==
-X-Received: by 2002:a5d:6486:0:b0:33b:2300:9cdc with SMTP id o6-20020a5d6486000000b0033b23009cdcmr7236087wri.46.1707743586951;
-        Mon, 12 Feb 2024 05:13:06 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWWeeld+7JwdNTQDsO0jkryY+u3yAmckhW5SgRfY+5fV0ldQLhXXhSGIBvW6yxuM6zRKiccyP3VhYlPNRkp6gCsN4NupAgVtdA53/cZN1jEJvW9vV3mSCetbGX6LwDzEn3zJpuZsXFm6CNGtibvKcTPpb233CZ22JVAPXIXTCmZntQaFS3fMBEcrgnI0PEOEWpVW+Hm9hvrwz+t82XpzsFwC4KNE0TV5Sh19Rlmv0ziwCGeLv6DOUDBWNPVIegCMaIRSoF4C3Zxw2EcsDgQ7Lsdfdsf3B2iFGeDqjN3AUxGZ3OemCE3PMbXHE4Kp5lsdGr55YiNMKbg4GK7AyLyDeK+rhAstxl4MJn+9OumR2Hd4/9tgDhqDsHHZPr+k3UjsfQ4wSTI70zR71/k4RmpH5RXijU020/DjCK8qfsVVvuSrUVtfZ0QIqYeSYIwFksKpKipoURwJ7twbuLZXn5D30oieiRwXmKp4Vm3nm52Us+3cpnJcEJGqkrLeRn+mC+Wpwy1TthMiFKfJWwVJhcO/71VNGpHQTx+sFFbVl4PY/KqwO2U5snvWjBxpmXohzrw4PpUdu2a1f2iNR/J/GF5GwRBGzq8bNS/l3v0a3YGxtjyArrx3aA4MGFJ9kP3F8rxmUWSgmKN7EJwEDrBsbB/u6RofAe3tv4CwuGCyN/ggyOiX71r0C4FH6E/7DDH0RKkQrZl49ObylJ4I4dJjA6xWeWiM6Itpno30Zt1AfZU0jmMkv+JbKTuIG0MgjquGpaZV03XvGtbNbGcevA3XfoWU3l5KhPrsaAN5JyXobw0snxKWjQ7zZ0TIBqmYoAT5taJ1TGPlKfxQ3LXb3tCAcj8iT6R2XUgjIQCZWqsUa5jHxw8h0Q0R0Iq2MNqI2CYyC1zlXUc2Q0iF/lNw6SowtcdKTAUH8MyBD9YN2zO7Dp3Ml1iS1l08wSULWfQqgWMlRbGQBPpq2
- 4FEEQifKZjTIU02Tf7cbrbE3std9+7VYMZtSN8ow3ZMho9DSfMsFshcXi7IrBQjs3eaE6roSK1Ci0cvCQ6ZsaY50LI19L30xDdDEsJN60TWYUfLupgPQTHWE7JOryQy4zkCgzfF1srp0GLCDtV3PBfnctsJ5+KPMRBg+dlHvtAfRzm7TXFDOfiJd+Luhuksi21pxTg2vINRJheJIiGsbdMMYI9/ACXKt7i4+gB8H8st97ckVnIGfalVW/sWoJWe88CbAu5yy0wkW3eyV1EAf4W+IBe4Y6m83uKzJWFOhK4vYhveT/wkym+/0Eelze0DHYINSgRdvq8jojh
-Received: from ?IPV6:2003:cb:c730:2200:7229:83b1:524e:283a? (p200300cbc7302200722983b1524e283a.dip0.t-ipconnect.de. [2003:cb:c730:2200:7229:83b1:524e:283a])
-        by smtp.gmail.com with ESMTPSA id x8-20020a5d6508000000b0033b1b01e4fcsm6805291wru.96.2024.02.12.05.13.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 05:13:06 -0800 (PST)
-Message-ID: <165363ba-d6cc-47a7-ab2a-d3a27a42f739@redhat.com>
+	s=arc-20240116; t=1707743668; c=relaxed/simple;
+	bh=LhniIRDebcQ1WtQbDyA1K0rXNp4WmruPrv/0+dGUHSk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=Mcx7aIzOn5X9VdH6XHMMMTPOm/TScT359Buahm1i8+n7P9DDByDbidcPyjPyio5usWeAM7JZ/FQfCo8NjiN3B8iv0dBVkrrO/SRDpARBC2vj9ODQz5GhotjVwQLCxLHlp68ydnd9UleNuUGbfo1+B1GqOo/V6Bq+jDFpf5vBt2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RGARsEI9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 602A9C433B2;
+	Mon, 12 Feb 2024 13:14:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707743667;
+	bh=LhniIRDebcQ1WtQbDyA1K0rXNp4WmruPrv/0+dGUHSk=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=RGARsEI9kyGSSVGtidFq+XfP5T8+mkOh/+uHtPtUy5kGKrS09eIDPwqBXVkoS4Lwo
+	 ORcSZfKmfLMft2CfVpQNWMK8yhuM7uaVxc+pB0J3BqTxLWo0Dms0rIA5kZAlGSyO+L
+	 XLgHAgDzxKyck6g6UqMZimOkXrHRSFVkXonp4synnOmlZBW1+jM857op3o+9AJIkai
+	 d6cL5+/M61LR/kfHDxkWnCw5tD3Ox344Myht0BuiAwu4DLgbAAO2lIfJ24yacdNu8o
+	 klzSxIMQ4ALpyhLGfZ2EIdxBj/RwKj6+aSC0A7re2GResTmNN6j0cVWfP+mlYgim+T
+	 USPcSwa7EbgRA==
+From: Maxime Ripard <mripard@kernel.org>
 Date: Mon, 12 Feb 2024 14:13:04 +0100
+Subject: [PATCH v6 21/36] drm/connector: hdmi: Add custom hook to filter
+ TMDS character rate
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/4] mm: introduce new flag to indicate wc safe
-Content-Language: en-US
-To: ankita@nvidia.com, jgg@nvidia.com, maz@kernel.org,
- oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com,
- yuzenghui@huawei.com, reinette.chatre@intel.com, surenb@google.com,
- stefanha@redhat.com, brauner@kernel.org, catalin.marinas@arm.com,
- will@kernel.org, mark.rutland@arm.com, alex.williamson@redhat.com,
- kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org,
- akpm@linux-foundation.org, andreyknvl@gmail.com, wangjinchao@xfusion.com,
- gshan@redhat.com, shahuang@redhat.com, ricarkol@google.com,
- linux-mm@kvack.org, lpieralisi@kernel.org, rananta@google.com,
- ryan.roberts@arm.com, linus.walleij@linaro.org, bhe@redhat.com
-Cc: aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
- targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
- apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
- kvmarm@lists.linux.dev, mochs@nvidia.com, zhiw@nvidia.com,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240211174705.31992-1-ankita@nvidia.com>
- <20240211174705.31992-3-ankita@nvidia.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240211174705.31992-3-ankita@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240212-kms-hdmi-connector-state-v6-21-f4bcdc979e6f@kernel.org>
+References: <20240212-kms-hdmi-connector-state-v6-0-f4bcdc979e6f@kernel.org>
+In-Reply-To: <20240212-kms-hdmi-connector-state-v6-0-f4bcdc979e6f@kernel.org>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+ Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, 
+ Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>, 
+ =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>
+Cc: Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org, 
+ linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+ linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+ Maxime Ripard <mripard@kernel.org>, 
+ Dave Stevenson <dave.stevenson@raspberrypi.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10268; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=LhniIRDebcQ1WtQbDyA1K0rXNp4WmruPrv/0+dGUHSk=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmnJLN3FTwN/cr+uzvNdveV3+9Fp6W2bDK24LiV/Ps8q
+ 2rWj5vRHaUsDGJcDLJiiiwxwuZL4k7Net3JxjcPZg4rE8gQBi5OAZjIAkuGv4Kcxb3h/SycSWdm
+ RT28sEqE35rx/cJiCW1PQyP1SwfzWBn+8PHFFCdafdlhXcpzuuGuw9R/LpKftwc/XyReXLZoa2U
+ DGwA=
+X-Developer-Key: i=mripard@kernel.org; a=openpgp;
+ fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 
-On 11.02.24 18:47, ankita@nvidia.com wrote:
-> From: Ankit Agrawal <ankita@nvidia.com>
-> 
-> Generalizing S2 setting from DEVICE_nGnRE to NormalNc for non PCI
-> devices may be problematic. E.g. GICv2 vCPU interface, which is
-> effectively a shared peripheral, can allow a guest to affect another
-> guest's interrupt distribution. The issue may be solved by limiting
-> the relaxation to mappings that have a user VMA. Still there is
-> insufficient information and uncertainity in the behavior of
+Most of the HDMI controllers have an upper TMDS character rate limit
+they can't exceed. On "embedded"-grade display controllers, it will
+typically be lower than what high-grade monitors can provide these days,
+so drivers will filter the TMDS character rate based on the controller
+capabilities.
 
-s/uncertainity/uncertainty/
+To make that easier to handle for drivers, let's provide an optional
+hook to be implemented by drivers so they can tell the HDMI controller
+helpers if a given TMDS character rate is reachable for them or not.
 
-> non PCI drivers.
-> 
-> Add a new flag VM_ALLOW_ANY_UNCACHED to indicate KVM that the device
-> is WC capable and these S2 changes can be extended to it. KVM can use
-> this flag to activate the code.
-> 
+This will then be useful to figure out the best format and bpc count for
+a given mode.
 
-MM people will stumble only over this commit at some point, looking for 
-details. It might make sense to add a bit more details on the underlying 
-problem (user space tables vs. stage-1 vs. stage-2) and why we want to 
-have a different mapping in user space compared to stage-1.
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
+---
+ drivers/gpu/drm/drm_atomic_state_helper.c          |  9 +++++++
+ drivers/gpu/drm/drm_connector.c                    |  4 +++
+ .../gpu/drm/tests/drm_atomic_state_helper_test.c   |  4 +++
+ drivers/gpu/drm/tests/drm_connector_test.c         | 15 +++++++++++
+ include/drm/drm_connector.h                        | 30 ++++++++++++++++++++++
+ 5 files changed, 62 insertions(+)
 
-Then, describe that the VMA flag was found to be the simplest and 
-cleanest way to communicate this information from VFIO to KVM.
-
-> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
-> ---
->   include/linux/mm.h | 14 ++++++++++++++
->   1 file changed, 14 insertions(+)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index f5a97dec5169..59576e56c58b 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -391,6 +391,20 @@ extern unsigned int kobjsize(const void *objp);
->   # define VM_UFFD_MINOR		VM_NONE
->   #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
->   
-> +/*
-> + * This flag is used to connect VFIO to arch specific KVM code. It
-> + * indicates that the memory under this VMA is safe for use with any
-> + * non-cachable memory type inside KVM. Some VFIO devices, on some
-> + * platforms, are thought to be unsafe and can cause machine crashes
-> + * if KVM does not lock down the memory type.
-> + */
-> +#ifdef CONFIG_64BIT
-> +#define VM_ALLOW_ANY_UNCACHED_BIT	39
-> +#define VM_ALLOW_ANY_UNCACHED		BIT(VM_ALLOW_ANY_UNCACHED_BIT)
-> +#else
-> +#define VM_ALLOW_ANY_UNCACHED		VM_NONE
-> +#endif
-> +
->   /* Bits set in the VMA until the stack is in its final location */
->   #define VM_STACK_INCOMPLETE_SETUP (VM_RAND_READ | VM_SEQ_READ | VM_STACK_EARLY)
->   
-
-It's not perfect (very VFIO <-> KVM specific right now, VMA flags feel a 
-bit wrong), but it certainly easier and cleaner than any alternatives I 
-could think of.
-
-Acked-by: David Hildenbrand <david@redhat.com>
+diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/drm/drm_atomic_state_helper.c
+index ac77d47a0ce3..3a965c4aa59b 100644
+--- a/drivers/gpu/drm/drm_atomic_state_helper.c
++++ b/drivers/gpu/drm/drm_atomic_state_helper.c
+@@ -688,11 +688,20 @@ hdmi_clock_valid(const struct drm_connector *connector,
+ 		 const struct drm_display_mode *mode,
+ 		 unsigned long long clock)
+ {
++	const struct drm_connector_hdmi_funcs *funcs = connector->hdmi.funcs;
+ 	const struct drm_display_info *info = &connector->display_info;
+ 
+ 	if (info->max_tmds_clock && clock > info->max_tmds_clock * 1000)
+ 		return MODE_CLOCK_HIGH;
+ 
++	if (funcs && funcs->tmds_char_rate_valid) {
++		enum drm_mode_status status;
++
++		status = funcs->tmds_char_rate_valid(connector, mode, clock);
++		if (status != MODE_OK)
++			return status;
++	}
++
+ 	return MODE_OK;
+ }
+ 
+diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+index 332477c6a987..a4466a79421e 100644
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -457,6 +457,7 @@ EXPORT_SYMBOL(drmm_connector_init);
+  * @dev: DRM device
+  * @connector: A pointer to the HDMI connector to init
+  * @funcs: callbacks for this connector
++ * @hdmi_funcs: HDMI-related callbacks for this connector
+  * @connector_type: user visible type of the connector
+  * @ddc: optional pointer to the associated ddc adapter
+  * @supported_formats: Bitmask of @hdmi_colorspace listing supported output formats
+@@ -476,6 +477,7 @@ EXPORT_SYMBOL(drmm_connector_init);
+ int drmm_connector_hdmi_init(struct drm_device *dev,
+ 			     struct drm_connector *connector,
+ 			     const struct drm_connector_funcs *funcs,
++			     const struct drm_connector_hdmi_funcs *hdmi_funcs,
+ 			     int connector_type,
+ 			     struct i2c_adapter *ddc,
+ 			     unsigned long supported_formats,
+@@ -512,6 +514,8 @@ int drmm_connector_hdmi_init(struct drm_device *dev,
+ 	if (max_bpc > 8)
+ 		drm_connector_attach_hdr_output_metadata_property(connector);
+ 
++	connector->hdmi.funcs = hdmi_funcs;
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(drmm_connector_hdmi_init);
+diff --git a/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c b/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
+index d76fafb91025..a43bbfc2c2d0 100644
+--- a/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
++++ b/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
+@@ -110,6 +110,9 @@ static int set_connector_edid(struct kunit *test, struct drm_connector *connecto
+ 	return 0;
+ }
+ 
++static const struct drm_connector_hdmi_funcs dummy_connector_hdmi_funcs = {
++};
++
+ static int dummy_connector_get_modes(struct drm_connector *connector)
+ {
+ 	struct drm_atomic_helper_connector_hdmi_priv *priv =
+@@ -192,6 +195,7 @@ drm_atomic_helper_connector_hdmi_init(struct kunit *test,
+ 	conn = &priv->connector;
+ 	ret = drmm_connector_hdmi_init(drm, conn,
+ 				       &dummy_connector_funcs,
++				       &dummy_connector_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       NULL,
+ 				       formats,
+diff --git a/drivers/gpu/drm/tests/drm_connector_test.c b/drivers/gpu/drm/tests/drm_connector_test.c
+index 0a838924a546..6a3651b08c81 100644
+--- a/drivers/gpu/drm/tests/drm_connector_test.c
++++ b/drivers/gpu/drm/tests/drm_connector_test.c
+@@ -22,6 +22,9 @@ struct drm_connector_init_priv {
+ 	struct i2c_adapter ddc;
+ };
+ 
++static const struct drm_connector_hdmi_funcs dummy_hdmi_funcs = {
++};
++
+ static const struct drm_connector_funcs dummy_funcs = {
+ 	.atomic_destroy_state	= drm_atomic_helper_connector_destroy_state,
+ 	.atomic_duplicate_state	= drm_atomic_helper_connector_duplicate_state,
+@@ -187,6 +190,7 @@ static void drm_test_connector_hdmi_init_valid(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       &priv->ddc,
+ 				       BIT(HDMI_COLORSPACE_RGB),
+@@ -205,6 +209,7 @@ static void drm_test_connector_hdmi_init_null_ddc(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       NULL,
+ 				       BIT(HDMI_COLORSPACE_RGB),
+@@ -223,6 +228,7 @@ static void drm_test_connector_hdmi_init_bpc_invalid(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       &priv->ddc,
+ 				       BIT(HDMI_COLORSPACE_RGB),
+@@ -241,6 +247,7 @@ static void drm_test_connector_hdmi_init_bpc_null(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       &priv->ddc,
+ 				       BIT(HDMI_COLORSPACE_RGB),
+@@ -263,6 +270,7 @@ static void drm_test_connector_hdmi_init_bpc_8(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       &priv->ddc,
+ 				       BIT(HDMI_COLORSPACE_RGB),
+@@ -297,6 +305,7 @@ static void drm_test_connector_hdmi_init_bpc_10(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       &priv->ddc,
+ 				       BIT(HDMI_COLORSPACE_RGB),
+@@ -331,6 +340,7 @@ static void drm_test_connector_hdmi_init_bpc_12(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       &priv->ddc,
+ 				       BIT(HDMI_COLORSPACE_RGB),
+@@ -361,6 +371,7 @@ static void drm_test_connector_hdmi_init_formats_empty(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       &priv->ddc,
+ 				       0,
+@@ -379,6 +390,7 @@ static void drm_test_connector_hdmi_init_formats_no_rgb(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       &priv->ddc,
+ 				       BIT(HDMI_COLORSPACE_YUV422),
+@@ -398,6 +410,7 @@ static void drm_test_connector_hdmi_init_type_valid(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       connector_type,
+ 				       &priv->ddc,
+ 				       BIT(HDMI_COLORSPACE_RGB),
+@@ -431,6 +444,7 @@ static void drm_test_connector_hdmi_init_type_invalid(struct kunit *test)
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       connector_type,
+ 				       &priv->ddc,
+ 				       BIT(HDMI_COLORSPACE_RGB),
+@@ -695,6 +709,7 @@ static void drm_test_drm_connector_attach_broadcast_rgb_property_hdmi_connector(
+ 
+ 	ret = drmm_connector_hdmi_init(&priv->drm, connector,
+ 				       &dummy_funcs,
++				       &dummy_hdmi_funcs,
+ 				       DRM_MODE_CONNECTOR_HDMIA,
+ 				       &priv->ddc,
+ 				       BIT(HDMI_COLORSPACE_RGB),
+diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+index 59016d9c17f5..3eaf4d54364d 100644
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -1093,6 +1093,30 @@ struct drm_connector_state {
+ 	} hdmi;
+ };
+ 
++/**
++ * struct drm_connector_hdmi_funcs - drm_hdmi_connector control functions
++ */
++struct drm_connector_hdmi_funcs {
++	/**
++	 * @tmds_char_rate_valid:
++	 *
++	 * This callback is invoked at atomic_check time to figure out
++	 * whether a particular TMDS character rate is supported by the
++	 * driver.
++	 *
++	 * The @tmds_char_rate_valid callback is optional.
++	 *
++	 * Returns:
++	 *
++	 * Either &drm_mode_status.MODE_OK or one of the failure reasons
++	 * in &enum drm_mode_status.
++	 */
++	enum drm_mode_status
++	(*tmds_char_rate_valid)(const struct drm_connector *connector,
++				const struct drm_display_mode *mode,
++				unsigned long long tmds_rate);
++};
++
+ /**
+  * struct drm_connector_funcs - control connectors on a given device
+  *
+@@ -1967,6 +1991,11 @@ struct drm_connector {
+ 		 * supported by the controller.
+ 		 */
+ 		unsigned long supported_formats;
++
++		/**
++		 * @funcs: HDMI connector Control Functions
++		 */
++		const struct drm_connector_hdmi_funcs *funcs;
+ 	} hdmi;
+ };
+ 
+@@ -1989,6 +2018,7 @@ int drmm_connector_init(struct drm_device *dev,
+ int drmm_connector_hdmi_init(struct drm_device *dev,
+ 			     struct drm_connector *connector,
+ 			     const struct drm_connector_funcs *funcs,
++			     const struct drm_connector_hdmi_funcs *hdmi_funcs,
+ 			     int connector_type,
+ 			     struct i2c_adapter *ddc,
+ 			     unsigned long supported_formats,
 
 -- 
-Cheers,
-
-David / dhildenb
+2.43.0
 
 
