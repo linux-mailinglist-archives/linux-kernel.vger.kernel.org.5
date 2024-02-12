@@ -1,136 +1,104 @@
-Return-Path: <linux-kernel+bounces-61141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85201850DDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:19:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A5F850DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:17:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39F141F27924
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:19:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6A621C21AF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:17:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3BB2AE72;
-	Mon, 12 Feb 2024 07:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BE0182A3;
+	Mon, 12 Feb 2024 07:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qGm4DgDh"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T2sbedfI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8792282F9;
-	Mon, 12 Feb 2024 07:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEA017C71;
+	Mon, 12 Feb 2024 07:14:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707722080; cv=none; b=pY5dXmAfhKc/Tmyqz7pZcPnNzFGFP4xitXIsI0KLE+Ja2Q15Fh4EluEMByQ2JD/IWHFxPYgpUrkLV8NpBqhuGfJuD1fwDQ7vPgG5wilKXsdcoIRXIdPnkdt6McZ4Lv3j22SvyuDSZewuBSepPnayIBlsF0p5I+frVdka367d2WA=
+	t=1707722067; cv=none; b=JWJncPOBzz/N4Xj0M4mCKaRvjH0sWgSWGPnMoroyyDSNarsYVL5HJg3uYOkhQlSfgdWVlvC98B3MtBbZrJZDPOGzvaN++Mst15NMzk0MuQBSahNgiE0CJ8kPannQUPuBGsR5VRGb7GinfDOjvB1U6cnvRnbpzpi9YXiDrL9v+CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707722080; c=relaxed/simple;
-	bh=MKMZqD2/w+QWED2+pauhKDqx2bzrHQVvjTQI06WBrSw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E9f/ihYx8mQgbqpUG2zxIvNtBeYLYvwshJabEK0RZWsFCCL0ryR0+7nxtrv+T+H7moA8CCAF5i64oPTB0egZ06Lamfh7t6XVbGhAkyY/nfT2ATFXEJp9L8d4Ga/jOIaL6jrPmNzToQyJRj9xrrGKjJEvkIBnlCfvqNspm/whsnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=qGm4DgDh; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=KFNTqb7k3Ymo30IuEwDaihs1yCQpUBV3RN+kFxOoV/I=; b=qGm4DgDhGagw28iocodC5iIhS6
-	xsiMjPN63KLn6sFjMYCPL7iseVbubE2wS8w6bXJ+dcbmYvOHEWzOAZUcrSN0z9s6qgqeA4zE+v25Z
-	Ieo4AhffrF+snI/gQkbKzpqjnhFvronw/KWUEfMYR/mvFkRA7Rkarbpg0iWyZZlXzrZJHp4jqfsi9
-	q9boZv/wYg0kxsnUDqX9688gwSdlI9bqz14Z3r5AjizGcXXBELXp/TxTAsBR1zhWDROEl8xd9MQ6z
-	QcXvVjnwYut7/ExXvXXIN3edVcs960N7aYgwjVh71uI9ph52Edo7WhetgJdrGm5ARyCfAEeyxZjds
-	ynVt7v1g==;
-Received: from [2001:4bb8:190:6eab:75e9:7295:a6e3:c35d] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZQWT-00000004T5c-0Fro;
-	Mon, 12 Feb 2024 07:14:37 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: linux-mm@kvack.org
-Cc: Matthew Wilcox <willy@infradead.org>,
-	Jan Kara <jack@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Brian Foster <bfoster@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jan Kara <jack@suse.cz>
-Subject: [PATCH 14/14] writeback: Remove a use of write_cache_pages() from do_writepages()
-Date: Mon, 12 Feb 2024 08:13:48 +0100
-Message-Id: <20240212071348.1369918-15-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240212071348.1369918-1-hch@lst.de>
-References: <20240212071348.1369918-1-hch@lst.de>
+	s=arc-20240116; t=1707722067; c=relaxed/simple;
+	bh=6lp/WH08J/LRYj3MSpfMxgfWTwohOEkcpPcuQchVods=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=EOhtc2CYcjzmEF8mprbb/n8Rlp/SMAAFG4LTi2XILK0uH3gxEs/hm4sIGXVzRlYQ5PWvKeSOe3O0zTjx6BWKESPbR+imsnp0R+j5h+gLwi+XSy14HqPjeNpj+meZ4v5PgnkWDwvaSDKgcLqLzWngv+DXg51suK/FCrY9G8n0/xI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T2sbedfI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33B8CC433C7;
+	Mon, 12 Feb 2024 07:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707722067;
+	bh=6lp/WH08J/LRYj3MSpfMxgfWTwohOEkcpPcuQchVods=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=T2sbedfI/LZ26pARy0lxvc9zmdh4lHKKljYEP6/5qJaKWWXBKvA1+OT15u3PB8D8a
+	 RJNdgz8JnnOLnuXe8dBUrGN/dcN/AjpTlwfeyTbQxOiit0OEXRo1w11Vw2aUxlQY/Z
+	 cEs0f4wjhMXPsvEJijvPndqpydpjD7NtGXzwY50CIT0F0esWYu/I0ALEkxJkQ7GYds
+	 iz0XfohaAis2DZzXuqnglZ1OdrkYgoDO71WJJeCtWCz5FPSEVeHPDFWNd2Rrk7Cinf
+	 o+Dnsu6820ngR0j1zxOvI12SLfeHA9PxG5T6MLhd6KEbpkowoVWbqaS+ZHuk63ydtf
+	 nO298PTCVEwCQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: Max Kellermann <max.kellermann@ionos.com>
+Cc: miriam.rachel.korenblit@intel.com,  linux-wireless@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  ayala.barazani@intel.com
+Subject: Re: [PATCH] iwlwifi/uefi: remove CONFIG_ACPI check
+References: <20240211201919.3751551-1-max.kellermann@ionos.com>
+Date: Mon, 12 Feb 2024 09:14:23 +0200
+In-Reply-To: <20240211201919.3751551-1-max.kellermann@ionos.com> (Max
+	Kellermann's message of "Sun, 11 Feb 2024 21:19:19 +0100")
+Message-ID: <87r0hif92o.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Max Kellermann <max.kellermann@ionos.com> writes:
 
-Use the new writeback_iter() directly instead of indirecting
-through a callback.
+> This fixes a build failure on ARCH=arm when CONFIG_EFI is set but
+> CONFIG_ACPI is not, because uefi.h declares iwl_uefi_get_sgom_table()
+> and iwl_uefi_get_uats_table() as dummy inline function, but uefi.c
+> contains the real (non-inline) implementation:
+>
+>  drivers/net/wireless/intel/iwlwifi/fw/uefi.c:359:6: error: redefinition of 'iwl_uefi_get_sgom_table'
+>    359 | void iwl_uefi_get_sgom_table(struct iwl_trans *trans,
+>        |      ^~~~~~~~~~~~~~~~~~~~~~~
+>  In file included from drivers/net/wireless/intel/iwlwifi/fw/uefi.c:11:
+>  drivers/net/wireless/intel/iwlwifi/fw/uefi.h:294:6: note: previous
+> definition of 'iwl_uefi_get_sgom_table' with type 'void(struct
+> iwl_trans *, struct iwl_fw_runtime *)'
+>    294 | void iwl_uefi_get_sgom_table(struct iwl_trans *trans, struct iwl_fw_runtime *fwrt)
+>        |      ^~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/net/wireless/intel/iwlwifi/fw/uefi.c:392:5: error: redefinition of 'iwl_uefi_get_uats_table'
+>    392 | int iwl_uefi_get_uats_table(struct iwl_trans *trans,
+>        |     ^~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/net/wireless/intel/iwlwifi/fw/uefi.h:299:5: note: previous
+> definition of 'iwl_uefi_get_uats_table' with type 'int(struct
+> iwl_trans *, struct iwl_fw_runtime *)'
+>    299 | int iwl_uefi_get_uats_table(struct iwl_trans *trans,
+>        |     ^~~~~~~~~~~~~~~~~~~~~~~
+>
+> I don't know how the driver works, and I do not know why the
+> CONFIG_ACPI check was added in the first place by commit c593d2fae592a
+> ("iwlwifi: support SAR GEO Offset Mapping override via BIOS"), but
+> since it did not add the same #ifdef to uefi.c, my first guess is that
+> this piece of code shall be used even if ACPI is disabled.
+>
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> ---
+>  drivers/net/wireless/intel/iwlwifi/fw/uefi.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-[hch: ported to the while based iter style]
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- mm/page-writeback.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+"wifi:" missing from title but I'm guessing Johannes can add that.
 
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 1996200849e577..2fd83d438f92bd 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2577,12 +2577,24 @@ int write_cache_pages(struct address_space *mapping,
- }
- EXPORT_SYMBOL(write_cache_pages);
- 
--static int writepage_cb(struct folio *folio, struct writeback_control *wbc,
--		void *data)
-+static int writeback_use_writepage(struct address_space *mapping,
-+		struct writeback_control *wbc)
- {
--	struct address_space *mapping = data;
-+	struct folio *folio = NULL;
-+	struct blk_plug plug;
-+	int err;
- 
--	return mapping->a_ops->writepage(&folio->page, wbc);
-+	blk_start_plug(&plug);
-+	while ((folio = writeback_iter(mapping, wbc, folio, &err))) {
-+		err = mapping->a_ops->writepage(&folio->page, wbc);
-+		if (err == AOP_WRITEPAGE_ACTIVATE) {
-+			folio_unlock(folio);
-+			err = 0;
-+		}
-+	}
-+	blk_finish_plug(&plug);
-+
-+	return err;
- }
- 
- int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
-@@ -2598,12 +2610,7 @@ int do_writepages(struct address_space *mapping, struct writeback_control *wbc)
- 		if (mapping->a_ops->writepages) {
- 			ret = mapping->a_ops->writepages(mapping, wbc);
- 		} else if (mapping->a_ops->writepage) {
--			struct blk_plug plug;
--
--			blk_start_plug(&plug);
--			ret = write_cache_pages(mapping, wbc, writepage_cb,
--						mapping);
--			blk_finish_plug(&plug);
-+			ret = writeback_use_writepage(mapping, wbc);
- 		} else {
- 			/* deal with chardevs and other special files */
- 			ret = 0;
 -- 
-2.39.2
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
