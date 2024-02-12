@@ -1,185 +1,282 @@
-Return-Path: <linux-kernel+bounces-62113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEE98851BAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:36:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3AB5851BF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E323C1C205BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:36:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A3211F2197C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545C83EA93;
-	Mon, 12 Feb 2024 17:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7973FB06;
+	Mon, 12 Feb 2024 17:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="oKdGKz0+"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2087.outbound.protection.outlook.com [40.107.220.87])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nsrl8yIb"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCE93D55F;
-	Mon, 12 Feb 2024 17:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707759316; cv=fail; b=sV1GLRhI5XPG0yHBbCiNymVtaoi99oSLmzxep3HKwnQO2goZbPa3Wcx1RsKXaQrjS4QoK7gtWadsez7VZP7u8+yHIzj/48l1+rB5fj5x5veTqnRjuhMrE6EyUPFwFLfMOiE6s5FWNN6lTJ9JvYjHUOUtMzmKKUpFoAcZbfokxLo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707759316; c=relaxed/simple;
-	bh=WMHrL96k2g8+ATXsz7jzwTP3GdsAvtMJDjJJ8H1XuLo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=cLlVFdbXZFenjqik191wwRy3qWD8ZtxQFogtrMG+FMwoTuKyeSeoJzbOOClBKlwkU2FPsCaRzgnovzpi6AjMkBBOSgdXhKhOmuctylYmQC2s8NHWrQs4+8l+xuhRn6/tKkkHTtwHtLqA7oyqvNey8B5Q6qHS5y3LARIFVKevQ5c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=oKdGKz0+; arc=fail smtp.client-ip=40.107.220.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eCsY7x+2ZU7jDG3blHUrRQjDGTo1E9yKu87qBwAFEub2mEBk/ET6EalV6JOFi8p+o3+Yk/Eit5CoCk4ZqRO7p07XAhZEQ5Juu1GAzw2aPhwSTrh9JNbIX7LMTNWBrQyfbs0BBLMQSvHMVn5hbJJ2iGFr5J3gWL2aGJZyJ2Q9HSI+w9ppkbh+UJq9JA4d7rYo8Zw+rnykoB9k41GC9EhilYSEdCVVqWU4c/9FOT8X7MjuFILpjQLcL1yRgOLxeFC21EU60HGYJCwOz6UYRiKtK1gkKED9S+uzZrUgyar0DBmLw3D+JT08I/YOMV49Ip17s32x9A+YkFDezOdgxOrKIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WMHrL96k2g8+ATXsz7jzwTP3GdsAvtMJDjJJ8H1XuLo=;
- b=R3gxrsBCFA6I3VlK9rIXzQv5u/bX3eO7DfCn0VuU7McrZgMfPSVbaKiCnLHPu8YQ/p+BT0nALWGDFJp7b21W4HJjXnKQDIAoqfiiYcwGujjDr/ejmVpiCa3+NMYJRIBNMVmTTdXth4IyERepooNAmADaWo5wEJ3LiIW5t5fomtnufMN03hCDa/ZfSLk7GdC8su7miJJ+be27qUYbc81hOVPvDAS10sDFcT59efkbFvLN+U0i+ofH2u4aK+tHui+guEsRwUMTG2OPnvrCtw41YcdARtlwnqwb8y+EIRQ689/ApAkZxoPRUw9eEFUPTAqouLmKuzyOMHyKsT3gTjM9DQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WMHrL96k2g8+ATXsz7jzwTP3GdsAvtMJDjJJ8H1XuLo=;
- b=oKdGKz0+JK5V08nhCMZ0/2R1OnF59X757O4Y+e7kPGy3d/549kCXA9KrdinSbM6CxVaIbUmJlxuOiBenXCUi0THWcce2bedsrFDy9RjvcmrDk5d5U26AGEjMae/7MFxSUtkUFUNYIFO1uCCwb1ACpaKhJfP+5Rfe3mGoE6clwHhG8/WE7LcKBXj3S/UxVimbZh9DZjAG+pJ+XFogbFG4f4gSxqRx4IfE3P7wC3vwTcVgjuAswvMQwhmhJptK54wPOr8y4q2UiJNvaAYBZebHhL73O7kjp0uy8mRNrOaMm/RcsBXTkBkxj13TE6JjViWYIsH8l8DrbTA+0iALdsD8BQ==
-Received: from MN2PR12MB4206.namprd12.prod.outlook.com (2603:10b6:208:1d5::18)
- by CH3PR12MB9145.namprd12.prod.outlook.com (2603:10b6:610:19b::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.21; Mon, 12 Feb
- 2024 17:35:10 +0000
-Received: from MN2PR12MB4206.namprd12.prod.outlook.com
- ([fe80::a45b:5d87:d755:2154]) by MN2PR12MB4206.namprd12.prod.outlook.com
- ([fe80::a45b:5d87:d755:2154%4]) with mapi id 15.20.7292.018; Mon, 12 Feb 2024
- 17:35:10 +0000
-From: Kirti Wankhede <kwankhede@nvidia.com>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>, Alex Williamson
-	<alex.williamson@redhat.com>
-CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: RE: [PATCH] vfio: mdev: make mdev_bus_type const
-Thread-Topic: [PATCH] vfio: mdev: make mdev_bus_type const
-Thread-Index: AQHaWsmeVy2KA2IQd06liqfU2sJPZLEG/fGA
-Date: Mon, 12 Feb 2024 17:35:10 +0000
-Message-ID:
- <MN2PR12MB42064DF281EBAAE82852F2C4DC482@MN2PR12MB4206.namprd12.prod.outlook.com>
-References: <20240208-bus_cleanup-vfio-v1-1-ed5da3019949@marliere.net>
-In-Reply-To: <20240208-bus_cleanup-vfio-v1-1-ed5da3019949@marliere.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN2PR12MB4206:EE_|CH3PR12MB9145:EE_
-x-ms-office365-filtering-correlation-id: 1f62bc75-0a8d-43e0-c904-08dc2bf0f631
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- H5NqxvABQTUpf0jONxCvdCmT7AphskICdUmVqxDx57woQS7Sod3xCRduGOQN83ajKQFQqBwS0OK+M/AvWNr0BenGY+VFs8vK4IisNJZ3m2vN0H4L+xkvkZrbSAqMijl6hjp1rLGJEnsBLbsUzqBKImJKSDT8D3OXV9ZgJd+LPDbITGir9DsfJSL2dEj8lpYm2y2+WDk/hbYaQrF5TwJVC2XBNuX16Pdw25tjpwxWYQulLKOv6sAXzH68wwblS3dPhdrhnIgvEV+UOpzEB8V388oM0ErSoUOaLoQuBBDTY9CrSqbc96sxvl3Nrv1nlBpPZ63IcPecKj0eaK7zegIVIz0JFf9T+SBop0qMSqMR+PKiWoXCycBYglyRLsa7FXMi1nDyJ6uKv9OO5lYdhGAKE9DsPK2eLMbkFeFVLVSBLlTX3uFrc0qZubEOKJmbi0g3zGZMmU39VmXb7K5U4dSablRE1nDdEu6lw58iAgT69Dp1S8k8it1YOzEkMWh1OVewypSm9I4ElnZGSEVUpBD18Whi3puWQfI3mWug+F+8Eoi2/HX3vamJyQV8z/yHTwE0fIuOWx63+PPx4sEx+cTt9MsgMwSeE9tJB6/ezt1IqKrtKpnucqdkJunnN+z6KGxD
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4206.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(376002)(346002)(396003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(55016003)(38070700009)(6506007)(7696005)(2906002)(9686003)(33656002)(86362001)(5660300002)(66946007)(38100700002)(122000001)(76116006)(83380400001)(478600001)(53546011)(54906003)(110136005)(71200400001)(316002)(4326008)(52536014)(64756008)(66446008)(66476007)(66556008)(8676002)(8936002)(41300700001)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?WTI2LzgraTk3OExDNUhvTnNvQUs0bHJ4OU04eDVwcllYOFBOMDBuRGlpRVZr?=
- =?utf-8?B?UzV1QnhXVXNoUFhvelpoMmM0TWM3SnBDM0p2OHQ0UEdsY2tTc1hvUERCeUto?=
- =?utf-8?B?ei8yMmhlZnY2Nk5VWFMvL2MyNjdtTDZmejdMUU5KQUxQY2x2Smc1b240TVo3?=
- =?utf-8?B?bVQvV1pUdGkyVlJmVVYwSTJPRzYzNnQwdlh6dTVQb3JFMWNPc2MrcDNFWUdY?=
- =?utf-8?B?SHo1Y3RGQWlueDhDb1BNSmtZNWhXMEdpZEdhK2ErRE5LMzArSDJ0cFc2ekp3?=
- =?utf-8?B?dlZxamVKbG5RcERMRkRiZytuMktubG9NSlRHT3FVcXZkVjg1S2xRbk8ybDZ4?=
- =?utf-8?B?UUxzQWpEQ1J1YjRQU2loSGtva2toVkVnbFlmMndJSmd4YlpsbExERkxGZzY2?=
- =?utf-8?B?Qk1veDhYc0YyZGZMUWIreWFOV0I2Q2EvaFp6VWxVYXp5YTBWL2lGbUlRWEN5?=
- =?utf-8?B?Rkp3WXBaNGE4Vmx5ZVY3eGVGOHNvNEJhb0FKRXRXNlFNMitJdVZhWG5FK2U2?=
- =?utf-8?B?OHhVQ0JWWVRGZXgxWnFLTkVGb3V0ZGNRTHhxZXBDK2REaWc0anVlUTZkSng4?=
- =?utf-8?B?ZVp3akFHVUNwOS9ML0lwVGpPZ2UrM2lKM2RkR05yRXFsb1ZnN2x4bXQrM3JN?=
- =?utf-8?B?VkJTSzQ1STNjQjMwS2YwcWJUaTZRVGh5dDRhbTU0VnRMMnBSRFFFY01lVit3?=
- =?utf-8?B?bFpKNTZQejRHSkxwTG5xdWZWNFRQMWdsSnQ0cGRwRXdocXJqbDJqc2JUd2R5?=
- =?utf-8?B?ZDZFT09odVg1c1Nwd2l4SFV1dnU3RExSY0Z4NkdsOHBtOWZ5L1cvdGRaaVEv?=
- =?utf-8?B?R1FEWWJ4Tmo1ZytOVmcrQysxMGw4bzRDVzZWTTdpOG84UzcxTW14Y1YxMkFB?=
- =?utf-8?B?cXNzUCs2aDVLRTJRcVhTWDlEbEIrNitSRXlFRzlUZHVocGdlK1dKakpvUjFE?=
- =?utf-8?B?cG13djZ2YlBYRldEYjI3RmROTjdPeDdHYjkyaDhveHU2YzlzREVTS0xIQXB0?=
- =?utf-8?B?SFNGQWI2ak1hak9ScXUrdnJ4dVFWanJCNktyd295T3NPb3dzQlNzbmYwbDEx?=
- =?utf-8?B?K1BSTDdLYW9HL3VxNXhMMlhrTWhCS3Jla01LOU40cG03eWpCWHhJalFGWkpT?=
- =?utf-8?B?TzUwbmc3QktHZHZiU2NHcTBHZElGTjVkWGhNQzVIS3RCOGlJM2hHKzdGKzU3?=
- =?utf-8?B?UXp6K3VVOEh3RlBGMi9nVVFoUS9iZjhrMklqKy9aYVBwV0U5T1RRZmR6Mmxy?=
- =?utf-8?B?eDh2WmxCYWc0TEhhRTljNUtVMHhOZ2tsMnlSRVJtSmFvTEdHRm80cnZzMUQ3?=
- =?utf-8?B?Q0tYcGNYNWxrWXN0VTRROTJ4WEFKN3RxTGtmSTBBWkNQOW5TVzVRSEV6enRh?=
- =?utf-8?B?MWxCV3ZvWHhWKzFxdEQ3SFhjV25CN3ZYV2dTWnFGMkFZOVFRZlVHVE5idkp2?=
- =?utf-8?B?QXBUN2VwcVV6KzY4VVRlSk5BdlNaQndrZzdLM3hxb2NUdmZzQmxZTi9pZDdG?=
- =?utf-8?B?V1BGS3JjNldaT1FwZDErTE1rM0F0cE03K1FWREtMUmc4SzRZeG9DOFJrNk9E?=
- =?utf-8?B?TVlqZi91YkUzRWRYQXB2aUNjVzdkYlkvdlViRTAvaGdDOXVMYUlXYnN0S3hS?=
- =?utf-8?B?ZzQxTm16Y3JKWEhDeU5aN0FPajRjdTVoNFhnUUtBWk9reU41QjVKQmdtREND?=
- =?utf-8?B?NXBkN3lZZ0ZpWU9uZldocCtPNDdMb1lhZ2NGbWFaN0JoQ01OVjJ4N2RkaHUx?=
- =?utf-8?B?YWlFcm9vaTVWblJBejJpSkxTVisvZ3NZTmtrblRCNzU0SXlUMUllZjYxZUt4?=
- =?utf-8?B?bGdRSW44WGRQTm96SkNrMkJzaXVTc3dWaWs4VVJIQVp1RVR5ZGRMaWJrL1hS?=
- =?utf-8?B?dC80bHpMbzh6M3pObG5mOUhaVWVvb09PQnBGSzlmbEg5RjZHYTdUWHR4eHQ0?=
- =?utf-8?B?bzFUd2o4TnVRa1VMdTBNVlZ5Q1ZVaEg4K01WSnZna2VkWE9lVTZ3U1gvVzNJ?=
- =?utf-8?B?U0grMEJXNVY5VGc3UGpnRHRwK2lOdlNGRDUxZHltZEdxRThPVm50Z0h1S25y?=
- =?utf-8?B?UFNoTDExQU1sUzh6azdEWWMrYTRCbUhNK3EzTmZTY2k1S3NIN3RuQUxnaCsx?=
- =?utf-8?Q?UGpIwBFLVwcNdA463q9TNnd9p?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114913E49E;
+	Mon, 12 Feb 2024 17:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707760128; cv=none; b=gxpCgRPH6himCzoyasBsu73DWcCxshq6XLhE7Og95nsgOWR0sIlU42oe8qbm6rIuZNrSu3yFI8k4TsIPp7dXaq6aOyUyGZx+WEC27emeYQ6AHLsJChde1ERz3i6V1EzuHPAmDSqr9pleAVT3cjMaIUjRcoX6T85TzBv50j9Wc9A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707760128; c=relaxed/simple;
+	bh=fg208aqq/dk9zqQHNCp4uzls8PkYl7qxboWUqwuQpQE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZaBWwwXZtH0nECm6GSe7E/LH1CXD2fZY/mBxx0G3MUOPOMk4QTmX8+8LhnWEaa1ri6A0OPLAnr71SBftO4nhrBNtGQBeNE8Ne603uE4ylIPfU9kMdbVYMqfhJGLJu19lxVFMvMJ3Cb8SSBiH10JRERgCmuA/b9RWr0bflGntU8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nsrl8yIb; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CHgrrb019260;
+	Mon, 12 Feb 2024 17:48:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=fJVNv/6nZjWeb7KILVPEur4+gl0mUhLZHgPunP6732g=;
+ b=nsrl8yIblo/4b4jgIGYcob76ZTrOiuPBgqKmENaL3i9++PU5lXKpSGtaxj6ocdbKwq3f
+ pD4Y7ripUyoZ0n/RIc7Syth+DdsPTHecTY72ZuWjovSZ2jKlNRn/UkYiinvryGwsPbT8
+ HU/pF2sK/zbDVz0uWAw/z5Z+BDdvRnNFyQ1MfhRqMZGdasgdhv8fkKy17GYBAdeHBEJF
+ H/+dt7+Gbix8RU4J//AhNcnufTBlUlN/F/58yYoyk25A3W3ji6NJtbp91NxGiNJEx3/t
+ lh692v+RrvllD4ARBqiZRFuT3tagOt314C1qP8NDfX+b7Av0kn80cMrG5jVAqC/w7Y/X pA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7qyng4vs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 17:48:09 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CHhJ25020005;
+	Mon, 12 Feb 2024 17:48:08 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7qyng4td-5
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 17:48:08 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CGSUOs024878;
+	Mon, 12 Feb 2024 17:37:29 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mfp200h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 17:37:29 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CHbQED43123078
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 17:37:28 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B22FC58061;
+	Mon, 12 Feb 2024 17:37:24 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0C1C95805E;
+	Mon, 12 Feb 2024 17:37:21 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 12 Feb 2024 17:37:20 +0000 (GMT)
+Message-ID: <fd6ddc3d-e5d3-4b9c-b00b-ac2b1f22d653@linux.ibm.com>
+Date: Mon, 12 Feb 2024 12:37:20 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4206.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f62bc75-0a8d-43e0-c904-08dc2bf0f631
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2024 17:35:10.2274
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8krg7NrAC9R9NO2YfBJlFOMEFc6umWgno+zazeJQEaTpPiLTmcuYFzSKOF0ZQUtp7pj7HKQHPuCS81NVJGuCTA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9145
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 19/25] integrity: Move
+ integrity_kernel_module_request() to IMA
+Content-Language: en-US
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-20-roberto.sassu@huaweicloud.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20240115181809.885385-20-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: EjolkXjCCnV6IXr0rLl_iQi_aPKLzovk
+X-Proofpoint-ORIG-GUID: FcZAfoeYEX1DkXNqmP6J6TNlDhQJioeb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_14,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 priorityscore=1501 clxscore=1015
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402120135
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFJpY2FyZG8gQi4gTWFybGll
-cmUgPHJpY2FyZG9AbWFybGllcmUubmV0Pg0KPiBTZW50OiBGcmlkYXksIEZlYnJ1YXJ5IDksIDIw
-MjQgMTozMiBBTQ0KPiBUbzogS2lydGkgV2Fua2hlZGUgPGt3YW5raGVkZUBudmlkaWEuY29tPjsg
-QWxleCBXaWxsaWFtc29uDQo+IDxhbGV4LndpbGxpYW1zb25AcmVkaGF0LmNvbT4NCj4gQ2M6IGt2
-bUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IEdyZWcgS3Jv
-YWgtSGFydG1hbg0KPiA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+OyBSaWNhcmRvIEIuIE1h
-cmxpZXJlIDxyaWNhcmRvQG1hcmxpZXJlLm5ldD4NCj4gU3ViamVjdDogW1BBVENIXSB2ZmlvOiBt
-ZGV2OiBtYWtlIG1kZXZfYnVzX3R5cGUgY29uc3QNCj4gDQo+IE5vdyB0aGF0IHRoZSBkcml2ZXIg
-Y29yZSBjYW4gcHJvcGVybHkgaGFuZGxlIGNvbnN0YW50IHN0cnVjdCBidXNfdHlwZSwNCj4gbW92
-ZSB0aGUgbWRldl9idXNfdHlwZSB2YXJpYWJsZSB0byBiZSBhIGNvbnN0YW50IHN0cnVjdHVyZSBh
-cyB3ZWxsLA0KPiBwbGFjaW5nIGl0IGludG8gcmVhZC1vbmx5IG1lbW9yeSB3aGljaCBjYW4gbm90
-IGJlIG1vZGlmaWVkIGF0IHJ1bnRpbWUuDQo+IA0KPiBDYzogR3JlZyBLcm9haC1IYXJ0bWFuIDxn
-cmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4NCj4gU3VnZ2VzdGVkLWJ5OiBHcmVnIEtyb2FoLUhh
-cnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPg0KPiBTaWduZWQtb2ZmLWJ5OiBSaWNh
-cmRvIEIuIE1hcmxpZXJlIDxyaWNhcmRvQG1hcmxpZXJlLm5ldD4NCg0KUmV2aWV3ZWQtYnk6IEtp
-cnRpIFdhbmtoZWRlIDxrd2Fua2hlZGVAbnZpZGlhLmNvbT4gDQoNCg0KPiAtLS0NCj4gIGRyaXZl
-cnMvdmZpby9tZGV2L21kZXZfZHJpdmVyLmMgIHwgMiArLQ0KPiAgZHJpdmVycy92ZmlvL21kZXYv
-bWRldl9wcml2YXRlLmggfCAyICstDQo+ICAyIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygr
-KSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZmaW8vbWRldi9t
-ZGV2X2RyaXZlci5jIGIvZHJpdmVycy92ZmlvL21kZXYvbWRldl9kcml2ZXIuYw0KPiBpbmRleCA3
-ODI1ZDgzYTU1ZjguLmI5ODMyMjk2NmIzZSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy92ZmlvL21k
-ZXYvbWRldl9kcml2ZXIuYw0KPiArKysgYi9kcml2ZXJzL3ZmaW8vbWRldi9tZGV2X2RyaXZlci5j
-DQo+IEBAIC00MCw3ICs0MCw3IEBAIHN0YXRpYyBpbnQgbWRldl9tYXRjaChzdHJ1Y3QgZGV2aWNl
-ICpkZXYsIHN0cnVjdA0KPiBkZXZpY2VfZHJpdmVyICpkcnYpDQo+ICAJcmV0dXJuIDA7DQo+ICB9
-DQo+IA0KPiAtc3RydWN0IGJ1c190eXBlIG1kZXZfYnVzX3R5cGUgPSB7DQo+ICtjb25zdCBzdHJ1
-Y3QgYnVzX3R5cGUgbWRldl9idXNfdHlwZSA9IHsNCj4gIAkubmFtZQkJPSAibWRldiIsDQo+ICAJ
-LnByb2JlCQk9IG1kZXZfcHJvYmUsDQo+ICAJLnJlbW92ZQkJPSBtZGV2X3JlbW92ZSwNCj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvdmZpby9tZGV2L21kZXZfcHJpdmF0ZS5oDQo+IGIvZHJpdmVycy92
-ZmlvL21kZXYvbWRldl9wcml2YXRlLmgNCj4gaW5kZXggYWY0NTdiMjdmNjA3Li42M2ExMzE2YjA4
-YjcgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvdmZpby9tZGV2L21kZXZfcHJpdmF0ZS5oDQo+ICsr
-KyBiL2RyaXZlcnMvdmZpby9tZGV2L21kZXZfcHJpdmF0ZS5oDQo+IEBAIC0xMyw3ICsxMyw3IEBA
-DQo+ICBpbnQgIG1kZXZfYnVzX3JlZ2lzdGVyKHZvaWQpOw0KPiAgdm9pZCBtZGV2X2J1c191bnJl
-Z2lzdGVyKHZvaWQpOw0KPiANCj4gLWV4dGVybiBzdHJ1Y3QgYnVzX3R5cGUgbWRldl9idXNfdHlw
-ZTsNCj4gK2V4dGVybiBjb25zdCBzdHJ1Y3QgYnVzX3R5cGUgbWRldl9idXNfdHlwZTsNCj4gIGV4
-dGVybiBjb25zdCBzdHJ1Y3QgYXR0cmlidXRlX2dyb3VwICptZGV2X2RldmljZV9ncm91cHNbXTsN
-Cj4gDQo+ICAjZGVmaW5lIHRvX21kZXZfdHlwZV9hdHRyKF9hdHRyKQlcDQo+IA0KPiAtLS0NCj4g
-YmFzZS1jb21taXQ6IDc4ZjcwYzAyYmRiY2NiNWU5YjBiMGM3MjgxODVkNGFlYjcwNDRhY2UNCj4g
-Y2hhbmdlLWlkOiAyMDI0MDIwOC1idXNfY2xlYW51cC12ZmlvLTc1YTYxODBiNWVmZQ0KPiANCj4g
-QmVzdCByZWdhcmRzLA0KPiAtLQ0KPiBSaWNhcmRvIEIuIE1hcmxpZXJlIDxyaWNhcmRvQG1hcmxp
-ZXJlLm5ldD4NCg0K
+
+
+On 1/15/24 13:18, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> In preparation for removing the 'integrity' LSM, move
+> integrity_kernel_module_request() to IMA, and rename it to
+> ima_kernel_module_request().
+> 
+> Compile it conditionally if CONFIG_INTEGRITY_ASYMMETRIC_KEYS is enabled,
+> and call it from security.c (removed afterwards with the move of IMA to the
+> LSM infrastructure).
+> 
+> Adding this hook cannot be avoided, since IMA has no control on the flags
+> passed to crypto_alloc_sig() in public_key_verify_signature(), and thus
+> cannot pass CRYPTO_NOLOAD, which solved the problem for EVM hashing with
+> commit e2861fa71641 ("evm: Don't deadlock if a crypto algorithm is
+> unavailable").
+> 
+> EVM alone does not need to implement this hook, first because there is no
+> mutex to deadlock, and second because even if it had it, there should be a
+> recursive call. However, since verification from EVM can be initiated only
+> by setting inode metadata, deadlock would occur if modprobe would do the
+> same while loading a kernel module (which is unlikely).
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>   include/linux/ima.h                    | 10 +++++++++
+>   include/linux/integrity.h              | 13 ------------
+>   security/integrity/digsig_asymmetric.c | 23 --------------------
+>   security/integrity/ima/ima_main.c      | 29 ++++++++++++++++++++++++++
+>   security/security.c                    |  2 +-
+>   5 files changed, 40 insertions(+), 37 deletions(-)
+> 
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 31ef6c3c3207..0f9af283cbc8 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -256,4 +256,14 @@ static inline bool ima_appraise_signature(enum kernel_read_file_id func)
+>   	return false;
+>   }
+>   #endif /* CONFIG_IMA_APPRAISE && CONFIG_INTEGRITY_TRUSTED_KEYRING */
+> +
+> +#if defined(CONFIG_IMA) && defined(CONFIG_INTEGRITY_ASYMMETRIC_KEYS)
+> +extern int ima_kernel_module_request(char *kmod_name);
+> +#else
+> +static inline int ima_kernel_module_request(char *kmod_name)
+> +{
+> +	return 0;
+> +}
+> +
+> +#endif
+>   #endif /* _LINUX_IMA_H */
+> diff --git a/include/linux/integrity.h b/include/linux/integrity.h
+> index 2ea0f2f65ab6..ef0f63ef5ebc 100644
+> --- a/include/linux/integrity.h
+> +++ b/include/linux/integrity.h
+> @@ -42,17 +42,4 @@ static inline void integrity_load_keys(void)
+>   }
+>   #endif /* CONFIG_INTEGRITY */
+>   
+> -#ifdef CONFIG_INTEGRITY_ASYMMETRIC_KEYS
+> -
+> -extern int integrity_kernel_module_request(char *kmod_name);
+> -
+> -#else
+> -
+> -static inline int integrity_kernel_module_request(char *kmod_name)
+> -{
+> -	return 0;
+> -}
+> -
+> -#endif /* CONFIG_INTEGRITY_ASYMMETRIC_KEYS */
+> -
+>   #endif /* _LINUX_INTEGRITY_H */
+> diff --git a/security/integrity/digsig_asymmetric.c b/security/integrity/digsig_asymmetric.c
+> index 895f4b9ce8c6..de603cf42ac7 100644
+> --- a/security/integrity/digsig_asymmetric.c
+> +++ b/security/integrity/digsig_asymmetric.c
+> @@ -132,26 +132,3 @@ int asymmetric_verify(struct key *keyring, const char *sig,
+>   	pr_debug("%s() = %d\n", __func__, ret);
+>   	return ret;
+>   }
+> -
+> -/**
+> - * integrity_kernel_module_request - prevent crypto-pkcs1pad(rsa,*) requests
+> - * @kmod_name: kernel module name
+> - *
+> - * We have situation, when public_key_verify_signature() in case of RSA
+> - * algorithm use alg_name to store internal information in order to
+> - * construct an algorithm on the fly, but crypto_larval_lookup() will try
+> - * to use alg_name in order to load kernel module with same name.
+> - * Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel modules,
+> - * we are safe to fail such module request from crypto_larval_lookup().
+> - *
+> - * In this way we prevent modprobe execution during digsig verification
+> - * and avoid possible deadlock if modprobe and/or it's dependencies
+> - * also signed with digsig.
+> - */
+> -int integrity_kernel_module_request(char *kmod_name)
+> -{
+> -	if (strncmp(kmod_name, "crypto-pkcs1pad(rsa,", 20) == 0)
+> -		return -EINVAL;
+> -
+> -	return 0;
+> -}
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 02021ee467d3..908fa026ec58 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -1091,6 +1091,35 @@ int ima_measure_critical_data(const char *event_label,
+>   }
+>   EXPORT_SYMBOL_GPL(ima_measure_critical_data);
+>   
+> +#ifdef CONFIG_INTEGRITY_ASYMMETRIC_KEYS
+> +
+> +/**
+> + * ima_kernel_module_request - Prevent crypto-pkcs1pad(rsa,*) requests
+> + * @kmod_name: kernel module name
+> + *
+> + * We have situation, when public_key_verify_signature() in case of RSA > + * algorithm use alg_name to store internal information in order to
+> + * construct an algorithm on the fly, but crypto_larval_lookup() will try
+> + * to use alg_name in order to load kernel module with same name.
+> + * Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel modules,
+> + * we are safe to fail such module request from crypto_larval_lookup().
+> + *
+> + * In this way we prevent modprobe execution during digsig verification
+> + * and avoid possible deadlock if modprobe and/or it's dependencies
+> + * also signed with digsig.
+
+This text needs to some reformulation at some point..
+
+> + *
+> + * Return: Zero if it is safe to load the kernel module, -EINVAL otherwise.
+> + */
+> +int ima_kernel_module_request(char *kmod_name)
+> +{
+> +	if (strncmp(kmod_name, "crypto-pkcs1pad(rsa,", 20) == 0)
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +#endif /* CONFIG_INTEGRITY_ASYMMETRIC_KEYS */
+> +
+>   static int __init init_ima(void)
+>   {
+>   	int error;
+> diff --git a/security/security.c b/security/security.c
+> index d2a1226e6e69..6c6571a141a1 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -3255,7 +3255,7 @@ int security_kernel_module_request(char *kmod_name)
+>   	ret = call_int_hook(kernel_module_request, 0, kmod_name);
+>   	if (ret)
+>   		return ret;
+> -	return integrity_kernel_module_request(kmod_name);
+> +	return ima_kernel_module_request(kmod_name);
+>   }
+>   
+>   /**
+
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
