@@ -1,278 +1,202 @@
-Return-Path: <linux-kernel+bounces-61305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4A1C8510CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:27:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B848510CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:28:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B900282E88
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:27:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C44C11F213EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4CEE2B9D5;
-	Mon, 12 Feb 2024 10:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OTMBsINB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E008B376F7;
+	Mon, 12 Feb 2024 10:26:27 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E1991B7FD
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D32B2BAE5
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707733580; cv=none; b=IVL4yQQR/N3qGZP8W6TIGL7D2TYD7sn8Wpp+lsyN0aWCNAji3zywKp4R1VshfvSYbV140eAgW9ow67AjjGlFq1cxU+LQWWbxqC1Be6lNCBM62UqhXGiy0cesPXik93/gIpH03LaAgOufTQ84MbqwogG4PL+gKoGPFxVapJhu4cE=
+	t=1707733587; cv=none; b=UGfwEvHINOg6FEDAfUEY9lXPcP+BsE8WfwjLBI3xqEgT9rdJyXAlhqV664YEWtYdon8xiB2e0uFnSpyl9U0ndJexF3nX9x2lMImmjU6uU3Q3pIJThMm7ev7DuCNNf3rW1fj6E8GYffMR9BgWuPu20sUXvG0LRrQ+hig9n6grN5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707733580; c=relaxed/simple;
-	bh=sOL90vEBcEko5xkjlPxp8zv+72g9wfoxFuHOUtP0+l8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S1oZLBMQdfLEttlN8jHssUJfmVM225JwuLvaHfjN+o4DDTHgWkwxg4owErZuAYvW4sGRX30tG04lCJqWyI1wT2wbDQpxhAAoXmQs5GJMpbKGvq9Viy1cp5eC5tCmF3mQBW6Gnr003vcQLWw2XLWOScf8j07gkM9z5UXDE3l9ZDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OTMBsINB; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707733578;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ajsmGt1bfpvDAI9sBo5jj02X8v7xaTXyEQzhR5XLbDM=;
-	b=OTMBsINBLrFPqQKATio2oh/1l6r3vThQwAckepCxcxqtJz+sghG1pCYTDf1XDZRLNH5mEi
-	K3/ZbRCoNUbyJ8FHjrw3UowgF12EkfNGBTqjKT/wSvHueRCibaevKroAS5gh1SAFPNmMVy
-	wL7rCI6pEZpDtB5siF8VAcNUFx2rN6k=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-624-sV4mv4r3NYyBNFI1gU31sw-1; Mon, 12 Feb 2024 05:26:16 -0500
-X-MC-Unique: sV4mv4r3NYyBNFI1gU31sw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-410e8509891so1976465e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:26:16 -0800 (PST)
+	s=arc-20240116; t=1707733587; c=relaxed/simple;
+	bh=hgJkpOUwtfmr9Ijzr7liYopCApaSzSfsm4RU1NOld+E=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Oq9UVIu5+ZXCEFzJG1cIRChWT1ilGQy4tCjY7cLPhnC3u3jOnLUDd5FbyOfq4Tel5CopIm0FeAv8jGpSc1ups4B/ov2NKcnb7e7FeV7eFfZ4skgx14SzCbIePbt0d/xZ6tuSl5FP4WRaU+v268f+K4v37v9b+gpWV1aEZVliwM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fc6976630so28591445ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:26:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707733575; x=1708338375;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ajsmGt1bfpvDAI9sBo5jj02X8v7xaTXyEQzhR5XLbDM=;
-        b=ZTqWnUwN6KaE8h+9FqE/aYvXrQrmKjxuARgKjiRTQQPNgdSqnCXaCmYioacRNHpFLq
-         y6SKxATgCuAclkGx7M3t7TPCJ2hOr3JQ+GklAZUBqiGOlu0lIJUtGJTQv7y0Mzy/TTtr
-         ZLAVMz/xL6562YSTn7UsVBpT2oj+1xWmO9ta6QaPgZnDJsi10RMUi2XSpV2/wxyf+59i
-         /lWu4AqFacJtTUMs8wNWSg4xngKc42fbG5hkY0mDe8Su5ZHsPMRv7AK1B3IcxYsikyGh
-         LRbZIz1OkzGLKKKbIqgYCN+A8lYDLfisGW4Muq+ykAVilQPurJCVKOaQBVODx/NlrqX8
-         9sPw==
-X-Forwarded-Encrypted: i=1; AJvYcCXLXvcIndxnwy2xI7QQkK2BNvn0DEGuykFQ16Xm6tP9aiZ10z8uuRhVmb5FojhnxXLe5twOGH33rzw6b2chfdFYct5hXYOWNGCz1d7A
-X-Gm-Message-State: AOJu0YxOxuDiaANb1FcsvbgPVAah8cYDFTF+1h29hqOVsXUyjWnsuLJU
-	LThuhUxPyRquyFJON71ChpiF9Rl3rvbpZaX71MJmZk++cHiy1IycSBNiaJkUkzUxDfrbriWvqa+
-	4NPVNgAh/vEGvwBI54//N5yLEzz6U3AthuiQLHxKKjl8B9gkSIUiu1CrVLZ7D5w==
-X-Received: by 2002:a05:600c:1547:b0:410:c25d:38fe with SMTP id f7-20020a05600c154700b00410c25d38femr2340014wmg.28.1707733575631;
-        Mon, 12 Feb 2024 02:26:15 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEVD8DZA+W7q7BMDIBUU3MF2lO2KU7zAmuFrQYrgoMoZ6HW+m5qw6f8vnK6rVyl/q9ES5E3Nw==
-X-Received: by 2002:a05:600c:1547:b0:410:c25d:38fe with SMTP id f7-20020a05600c154700b00410c25d38femr2339995wmg.28.1707733575193;
-        Mon, 12 Feb 2024 02:26:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX4gsbNkHRRqRmeaCnsyMXIotsiVg8FOGx+3lUiGBeU2q6YxqcVLPBsdJFC8G3G2qx1rxh00i5dYr6fj9YEK5zqrZuEpcfxmAxQ46gy8Q+B5E+a2GU0I+OFu0+r5kBSTuRBs20wyCgi1LXiZsn/6SmSOSkpZnhRgnllKfy+urzdhuQpFVA/BIjiShdbJhzo0Drtt3wH86j1Pp8RRXRc0UfHPxM71eiSbr3EY7+nlLAhXR2m8V6BZwKJrmTzilX3Afw/L1UJKjv0VOEt4MyqSE8hljrUMPmcryJBkGs51sHWaTCe5l0jjNnLTSUum3K+FI2BqPsqzctt4sl6FW0YfccXpvYOec6FoYlFflT1Ami3jWtwsxkXFTizPQEpoVZWEg1OASFtA830BpZB6qkw12j738pUTct/V82ZOliICzx1gvAhvrLbjtCE37RN6cLs6XZG5xhB03QMbAPcQArwZs6dUKvBL0bCZabxbVKcaGTIs4t34vn4CRpm/SzixoJcOAKXBduyQ1g8yWRI2QdBSzX6GtjgeQUSHRG19NyhIxvFZ/nzeIy6SecPDCZvxKSA+QXXkt68bHZfTl6beajEC3uB+qACmihudYp2FnvSmCHnUqqeu5HIWXl36JkzkrbLEVFxfYg/T3t5q809awy4nrDie2Gusi70eaFwofZOnZpkl4Y+lxGeb+BwsO7P6YZ2O0iCdfVBBdZzPaCdZjWqc/9us17tLXRS+0t3j3Wp3wapgsSNtPRMUsxn7Dxinv4xPajMWKnWLXwC6CRzDs+Lg4VMPYifyloEsPS2cMK/e2CKVzz+7rLwA00bblUPoHiGCIEHYV9JD3mYH7MVZfGHq6alr+hetrPnk92soENAxNlHW9+ISYQdGLK53Pjqn4MuIbyrmGz8J4bgl7WfsA3I3Mlqi8nw+Ex80BTB2byg7ZUG5OmSjXNLFOR9XlGCqBVtys50br
- 4TO+Fs2wkaz0wz6ozhv9kHVheahIztFhA0uQQdrFTtkwuMV/nusxIMhuCnWZ/wLvoB0tDTEjhL2C0gIE+ENdCLK4P1zj0EY0PFGwDy30/vTgAcQf/ANyNt9xevrA3hPwSG0LDkYmiSkDXYwXhPTCZWm05Z0wposEib542tAOOoIiK7GubvwMLSN9fa7ByIMVPe9GIlaqbhC5PYOhB1dziPivbXlPwuUECUZT8dd57WK00Fl+HmH1IQJ/wFYugJNT59S5QPSopt+6PvFsgpcwevf57u3BE577aB55MKZrwfsA9OMNL6+Vp1Bd3C0jW14ajFbflLWD8k2BV5
-Received: from ?IPV6:2003:cb:c730:2200:7229:83b1:524e:283a? (p200300cbc7302200722983b1524e283a.dip0.t-ipconnect.de. [2003:cb:c730:2200:7229:83b1:524e:283a])
-        by smtp.gmail.com with ESMTPSA id js26-20020a05600c565a00b0040fe3147babsm8164556wmb.0.2024.02.12.02.26.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 02:26:14 -0800 (PST)
-Message-ID: <aa6c1708-d6ac-46f7-b7ab-e97a273a90c2@redhat.com>
-Date: Mon, 12 Feb 2024 11:26:12 +0100
+        d=1e100.net; s=20230601; t=1707733584; x=1708338384;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+S1KVrX9I5Ts209Z1QyzWipPgFBmpJGS9brjneXDxOs=;
+        b=t8OzFXFprYBSCvjWxmEwDestZoN1FTqepi1JUlb9TQ0eAiAof2k08HDju2ib8LNLOR
+         xIGJf9p6aFG4BXioaha1Ng18KB9vL/JV/UvvsPOGSHsFf9ALDWGriwO+1f2ThFhZur0P
+         ojSfroqikN/oTvd1zv1suU0Y+xiy38do89gQaC7OJbsghFiQ4g+iRj0Cw9zAK4oHN4MC
+         x3k7HbswxyLicgRz/X5gERfn5SimmY33bA1JJtloVpT61Ifc7sOCfRAG+0Et+9h0aGb4
+         cjhqlHDv2B4dCvc4C+kVak5L9GTKCbnqf0cSqRL+18co84GC9DUgw1G4Lp6AnWZlFQE3
+         S4og==
+X-Forwarded-Encrypted: i=1; AJvYcCXqBc8JkAcwQHXk/nG3HmiLtZfsHtTqUc3neKlYoR9f6zfDEklaVNaA39X9fp8MWvHtV25JcoPStuQMzl1/06C3uQ+aHC4fdp7XXKrw
+X-Gm-Message-State: AOJu0YzzVoxBRcRWiZvaIceiUPxw6p6xDE4xKtwZNYGDRF2e0EKmT6GI
+	LisL/GBINMy0cLB7jmqq2osFakDkK0d4mFFwlJnnCsWVAzlHEqda45898N4rVXkDoX9eKFYscw/
+	MCgq+NDm4Zdyi29nmNXB1Midv+OysgrToQ/KxbRL3UNSTXbSDrf4BWOs=
+X-Google-Smtp-Source: AGHT+IFocCpxDhklmIVXj6a6DiahtPX5mvpPE6Y9X0Lw7VbxCcJzYqa3K4GYh97gZ0Y1dhU/YVjfyE6WDJEtfFxp0EAOQ/3lB0g2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 0/4] kvm: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Content-Language: en-US
-To: ankita@nvidia.com, jgg@nvidia.com, maz@kernel.org,
- oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com,
- yuzenghui@huawei.com, reinette.chatre@intel.com, surenb@google.com,
- stefanha@redhat.com, brauner@kernel.org, catalin.marinas@arm.com,
- will@kernel.org, mark.rutland@arm.com, alex.williamson@redhat.com,
- kevin.tian@intel.com, yi.l.liu@intel.com, ardb@kernel.org,
- akpm@linux-foundation.org, andreyknvl@gmail.com, wangjinchao@xfusion.com,
- gshan@redhat.com, shahuang@redhat.com, ricarkol@google.com,
- linux-mm@kvack.org, lpieralisi@kernel.org, rananta@google.com,
- ryan.roberts@arm.com, linus.walleij@linaro.org, bhe@redhat.com
-Cc: aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
- targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
- apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
- kvmarm@lists.linux.dev, mochs@nvidia.com, zhiw@nvidia.com,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240211174705.31992-1-ankita@nvidia.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240211174705.31992-1-ankita@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1c8e:b0:363:cb3c:f304 with SMTP id
+ w14-20020a056e021c8e00b00363cb3cf304mr574998ill.4.1707733584584; Mon, 12 Feb
+ 2024 02:26:24 -0800 (PST)
+Date: Mon, 12 Feb 2024 02:26:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ae28ce06112cb52e@google.com>
+Subject: [syzbot] [batman?] BUG: soft lockup in sys_sendmsg
+From: syzbot <syzbot+a6a4b5bb3da165594cff@syzkaller.appspotmail.com>
+To: a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	mareklindner@neomailbox.ch, netdev@vger.kernel.org, pabeni@redhat.com, 
+	sven@narfation.org, sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 11.02.24 18:47, ankita@nvidia.com wrote:
-> From: Ankit Agrawal <ankita@nvidia.com>
-> 
+Hello,
 
-Hi,
+syzbot found the following issue on:
 
-> Currently, KVM for ARM64 maps at stage 2 memory that is considered device
-> with DEVICE_nGnRE memory attributes; this setting overrides (per
-> ARM architecture [1]) any device MMIO mapping present at stage 1,
-> resulting in a set-up whereby a guest operating system cannot
-> determine device MMIO mapping memory attributes on its own but
-> it is always overridden by the KVM stage 2 default.
-> 
-> This set-up does not allow guest operating systems to select device
-> memory attributes independently from KVM stage-2 mappings
-> (refer to [1], "Combining stage 1 and stage 2 memory type attributes"),
-> which turns out to be an issue in that guest operating systems
-> (e.g. Linux) may request to map devices MMIO regions with memory
-> attributes that guarantee better performance (e.g. gathering
-> attribute - that for some devices can generate larger PCIe memory
-> writes TLPs) and specific operations (e.g. unaligned transactions)
-> such as the NormalNC memory type.
-> 
-> The default device stage 2 mapping was chosen in KVM for ARM64 since
-> it was considered safer (i.e. it would not allow guests to trigger
-> uncontained failures ultimately crashing the machine) but this
-> turned out to be asynchronous (SError) defeating the purpose.
-> 
-> For these reasons, relax the KVM stage 2 device memory attributes
-> from DEVICE_nGnRE to Normal-NC.
-> 
-> Generalizing to other devices may be problematic, however. E.g.
-> GICv2 VCPU interface, which is effectively a shared peripheral, can
-> allow a guest to affect another guest's interrupt distribution. Hence
-> limit the change to VFIO PCI as caution. This is achieved by
-> making the VFIO PCI core module set a flag that is tested by KVM
-> to activate the code. This could be extended to other devices in
-> the future once that is deemed safe.
+HEAD commit:    41bccc98fb79 Linux 6.8-rc2
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=14200118180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=451a1e62b11ea4a6
+dashboard link: https://syzkaller.appspot.com/bug?extid=a6a4b5bb3da165594cff
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
-I still have to digest some of the stuff I learned about this issue, 
-please bear with me :)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-(1) PCI BARs might contain mixtures of RAM and MMIO, the exact 
-locations/semantics within a BAR are only really known to the actual 
-device driver.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0772069e29cf/disk-41bccc98.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/659d3f0755b7/vmlinux-41bccc98.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7780a45c3e51/Image-41bccc98.gz.xz
 
-We must not unconditionally map PFNs "the wrong way", because it can 
-have undesired side effects. Side effects might include 
-read-speculation, that can be very problematic with MMIO regions.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a6a4b5bb3da165594cff@syzkaller.appspotmail.com
 
-The safe way (for the host) is DEVICE_nGnRE. But that is actually 
-problematic for performance (where we want WC?) and unaligned accesses 
-(where we want NC?).
-
-We can trigger both cases right now inside VMs, where we want the device 
-driver to actually make the decision.
-
-
-(2) For a VM, that device driver lives inside the VM, for DPDK and 
-friends, it lives in user space. They have this information.
-
-We only focus here on optimizing (fixing?) the mapping for VMs, DPDK is 
-out of the picture. So we want to allow the VM to achieve a WC/NC 
-mapping by using a relaxed (NC) mapping in stage-1. Whatever is set in 
-stage-2 wins.
+watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [syz-executor.0:28718]
+Modules linked in:
+irq event stamp: 45929391
+hardirqs last  enabled at (45929390): [<ffff8000801d9dc8>] __local_bh_enable_ip+0x224/0x44c kernel/softirq.c:386
+hardirqs last disabled at (45929391): [<ffff80008ad57108>] __el1_irq arch/arm64/kernel/entry-common.c:499 [inline]
+hardirqs last disabled at (45929391): [<ffff80008ad57108>] el1_interrupt+0x24/0x68 arch/arm64/kernel/entry-common.c:517
+softirqs last  enabled at (2040): [<ffff80008002189c>] softirq_handle_end kernel/softirq.c:399 [inline]
+softirqs last  enabled at (2040): [<ffff80008002189c>] __do_softirq+0xac8/0xce4 kernel/softirq.c:582
+softirqs last disabled at (2052): [<ffff80008aacbc40>] spin_lock_bh include/linux/spinlock.h:356 [inline]
+softirqs last disabled at (2052): [<ffff80008aacbc40>] batadv_tt_local_resize_to_mtu+0x60/0x154 net/batman-adv/translation-table.c:3949
+CPU: 1 PID: 28718 Comm: syz-executor.0 Not tainted 6.8.0-rc2-syzkaller-g41bccc98fb79 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : should_resched arch/arm64/include/asm/preempt.h:79 [inline]
+pc : __local_bh_enable_ip+0x228/0x44c kernel/softirq.c:388
+lr : __local_bh_enable_ip+0x224/0x44c kernel/softirq.c:386
+sp : ffff80009a0670b0
+x29: ffff80009a0670c0 x28: ffff70001340ce60 x27: ffff80009a0673d0
+x26: ffff00011e860290 x25: ffff0000d08a9f08 x24: 0000000000000001
+x23: 1fffe00023d4d3c1 x22: dfff800000000000 x21: ffff80008aacbf98
+x20: 0000000000000202 x19: ffff00011ea69e08 x18: ffff80009a066800
+x17: 77656e2074696620 x16: ffff80008031ffc8 x15: 0000000000000001
+x14: 1fffe0001ba5a290 x13: 0000000000000000 x12: 0000000000000003
+x11: 0000000000040000 x10: 0000000000000003 x9 : 0000000000000000
+x8 : 0000000002bcd3ae x7 : ffff80008aacbe30 x6 : 0000000000000000
+x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
+x2 : 0000000000000002 x1 : ffff80008aecd7e0 x0 : ffff80012545c000
+Call trace:
+ __daif_local_irq_enable arch/arm64/include/asm/irqflags.h:27 [inline]
+ arch_local_irq_enable arch/arm64/include/asm/irqflags.h:49 [inline]
+ __local_bh_enable_ip+0x228/0x44c kernel/softirq.c:386
+ __raw_spin_unlock_bh include/linux/spinlock_api_smp.h:167 [inline]
+ _raw_spin_unlock_bh+0x3c/0x4c kernel/locking/spinlock.c:210
+ spin_unlock_bh include/linux/spinlock.h:396 [inline]
+ batadv_tt_local_purge+0x264/0x2e8 net/batman-adv/translation-table.c:1356
+ batadv_tt_local_resize_to_mtu+0xa0/0x154 net/batman-adv/translation-table.c:3956
+ batadv_update_min_mtu+0x74/0xa4 net/batman-adv/hard-interface.c:651
+ batadv_netlink_set_mesh+0x50c/0x1078 net/batman-adv/netlink.c:500
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:1113 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:1193 [inline]
+ genl_rcv_msg+0x874/0xb6c net/netlink/genetlink.c:1208
+ netlink_rcv_skb+0x214/0x3c4 net/netlink/af_netlink.c:2543
+ genl_rcv+0x38/0x50 net/netlink/genetlink.c:1217
+ netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
+ netlink_unicast+0x65c/0x898 net/netlink/af_netlink.c:1367
+ netlink_sendmsg+0x83c/0xb20 net/netlink/af_netlink.c:1908
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x56c/0x840 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmsg+0x26c/0x33c net/socket.c:2667
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __arm64_sys_sendmsg+0x80/0x94 net/socket.c:2674
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.8.0-rc2-syzkaller-g41bccc98fb79 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : arch_local_irq_enable+0x8/0xc arch/arm64/include/asm/irqflags.h:51
+lr : default_idle_call+0xf8/0x128 kernel/sched/idle.c:103
+sp : ffff80008ebe7cd0
+x29: ffff80008ebe7cd0 x28: dfff800000000000 x27: 1ffff00011d7cfa8
+x26: ffff80008ec6d000 x25: 0000000000000000 x24: 0000000000000001
+x23: 1ffff00011d8da74 x22: ffff80008ec6d3a0 x21: 0000000000000000
+x20: ffff80008ec94e00 x19: ffff8000802cff08 x18: 1fffe000367ff796
+x17: ffff80008ec6d000 x16: ffff8000802cf7cc x15: 0000000000000001
+x14: 1fffe00036801310 x13: 0000000000000000 x12: 0000000000000003
+x11: 0000000000000001 x10: 0000000000000003 x9 : 0000000000000000
+x8 : 0000000000bf0413 x7 : ffff800080461668 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000001 x3 : ffff80008ad5af48
+x2 : 0000000000000000 x1 : ffff80008aecd7e0 x0 : ffff80012543a000
+Call trace:
+ __daif_local_irq_enable arch/arm64/include/asm/irqflags.h:27 [inline]
+ arch_local_irq_enable+0x8/0xc arch/arm64/include/asm/irqflags.h:49
+ cpuidle_idle_call kernel/sched/idle.c:170 [inline]
+ do_idle+0x1f0/0x4e8 kernel/sched/idle.c:312
+ cpu_startup_entry+0x5c/0x74 kernel/sched/idle.c:410
+ rest_init+0x2dc/0x2f4 init/main.c:730
+ start_kernel+0x0/0x4e8 init/main.c:827
+ start_kernel+0x3e8/0x4e8 init/main.c:1072
+ __primary_switched+0xb4/0xbc arch/arm64/kernel/head.S:523
 
 
-(3) vfio knows whether using WC (and NC?) could be problematic, and must 
-forbid it, if that is the case. There are cases where we could otherwise 
-cause harm (bring down the host?). We must keep mapping the memory as 
-DEVICE_nGnRE when in doubt.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Now, what the new mmap() flag does is tell the world "using the wrong 
-mapping type cannot bring down the host", and KVM uses that to use a 
-different mapping type (NC) in stage-1 as setup by vfio in the user 
-space page tables.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-I was trying to find ways of avoiding a mmap() flag and was hoping that 
-we could just use a PTE bit that does not have semantics in VM_PFNMAP 
-mappings. Unfortunately, arm64 does not support uffd-wp, which I had in 
-mind, so it's not that easy.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-Further, I was wondering if there would be a way to let DPDK similarly 
-benefit, because it looks like we are happily ignoring that (I was told 
-they apply some hacks to work around that).
-
-
-In essence, user space knows how it will consume that memory: QEMU wants 
-to mmap() it only to get it into stage-1 and not access it via the user 
-page tables. DPDK wants to mmap() it to actually access it from user space.
-
-
-So I am curious, is the following problematic, and why:
-
-(a) User space tells VFIO which parts of a BAR it would like to have 
-mapped differently. For QEMU, this would mean, requesting a NC mapping 
-for the whole BAR. For DPDK, it could mean requesting different types 
-for parts of a BAR.
-
-(b) VFIO decides if it is safe to use a relaxed mapping. If in doubt, it 
-falls back to existing (legacy) handling -- DEVICE_nGnRE.
-
-(c) KVM simply uses the existing mapping type instead of diverging from 
-the one in the user space mapping.
-
-
-That would mean, that we would map NC already in QEMU. I wonder if that 
-could be a problem with read speculation, even if QEMU never really 
-accesses that mmap'ed region.
-
-Something like that would of course require user space changes. Handling 
-it without such changes (ignoring DPDK of course) would require some 
-information exchange between KVM and vfio, like the mmap flag proposed.
-
--- 
-Cheers,
-
-David / dhildenb
-
+If you want to undo deduplication, reply with:
+#syz undup
 
