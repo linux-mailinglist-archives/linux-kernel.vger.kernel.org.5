@@ -1,102 +1,146 @@
-Return-Path: <linux-kernel+bounces-61441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA18A851260
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:37:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86215851269
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:38:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49F241F22BBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:37:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 829F0B2876B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75C7339AF6;
-	Mon, 12 Feb 2024 11:37:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DH5sWi2f"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A139D39847;
+	Mon, 12 Feb 2024 11:37:41 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED7A39AEE
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 11:36:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E0E63984F;
+	Mon, 12 Feb 2024 11:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707737821; cv=none; b=CwEHuKKmoop8G69EANRyMlvasBIsZGe4oRcQDtFFBDZajPPT8fgUFF05VrIJRogG/zCqLSde9EHCy+0X5v8WG8ukUY4/EGFvfKio+50K0i0CXidRxVcndi2SRzbcaaSc96TyGJBD1QP/y2YDKYQAB5AGPlR9+M4U8458j3gIFR4=
+	t=1707737861; cv=none; b=DBlVsjg7dNht3+8uR737t2ga8hMCJVtBbNH4kzh28ndZmF02hFRyCheU76wRFZxthwxGFUYTy/Np2Z24og8P2uALXsKTVLByUGxPJyn8MZ9QUDLCDySEwMm3ypT76UhlK/JN5/HSn7GKhgPUbk1JTTu1QRAduN2BTqz1U6eUAis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707737821; c=relaxed/simple;
-	bh=VWZfy27Rgmx2YQk+lzFL4JxIppzdl0mvi57tgaoo/Kc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ljeVSw2uedbHAXhaPFh00rUQUYQ9wJuE3N+q/dyEHakUwUxvzQ4vpPHpvUMknEm6DzerwHpfQlN87/SyStWb/gaW8kykYG1ZiDieK09Io0UdGLJp9JdUjKs90WqgNAhTq2RgTKaG0H8GUO0Ozj0NTjmyc1pYaf+ThERsm1I9vPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DH5sWi2f; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707737820; x=1739273820;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=VWZfy27Rgmx2YQk+lzFL4JxIppzdl0mvi57tgaoo/Kc=;
-  b=DH5sWi2fJD6KYGUJw2Wt6A/ieuPTmcW87GTZ+FpF/K33R53riJ7o8oTg
-   J4Lw18EAz9yUkm0iKqqKJ+CU9jc8t5sIdMoZPLphrrAdPeUAf+yZh0C6M
-   mps9Ua9oEuvJdVqgmshXO+tl3cWSgQFKo8fQpB7LnZmUy0Ybux0IQ5Aub
-   s6UyZ1y7GjvEeoqE9dJVxHTaCMKjMrQsZc17ZI303ClZ63dFl3+dSpTvM
-   0z4hVo8U6qcqHVtXgZ+bH4NIpUHkFGwB7u6U32PVPWiCqknsC6Mrw1NP7
-   xty0HymhN2YPFk4YesumrePuMFGJVOPZ6hpBIUX3Z6SV/3e8/OtjPl+v3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="13085179"
-X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="13085179"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 03:36:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="935043706"
-X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="935043706"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 12 Feb 2024 03:36:58 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id E4D57F7; Mon, 12 Feb 2024 13:36:56 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: linux-kernel@vger.kernel.org
-Cc: Miguel Ojeda <ojeda@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] auxdisplay: Take over maintainership, but in Odd Fixes mode
-Date: Mon, 12 Feb 2024 13:36:53 +0200
-Message-ID: <20240212113653.2625776-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1707737861; c=relaxed/simple;
+	bh=LANI5gKq1ByHLjiH+h5+HQGDiFqfmM8ncEdFP0M7WX0=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pSuPs8kn6UweINtRcsff2NlHJQCqt0up1H7fA5nUhOVaGKjUv8cnl8xJBunKMZPgdkXmOlgC9TqHX8MZN5/9l4JhO30sWhxQpl/yTHGK9K7DhYz5znYv+u3x1w8GP4lrxcbqA18b+SDD7aiRhqHVmfueHWY/pYEngmwjzFB9Nqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TYMmM33vZz67lZn;
+	Mon, 12 Feb 2024 19:33:55 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id EA940140DAF;
+	Mon, 12 Feb 2024 19:37:29 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 12 Feb
+ 2024 11:37:29 +0000
+Date: Mon, 12 Feb 2024 11:37:28 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Julia Lawall <julia.lawall@inria.fr>
+CC: Jonathan Cameron <jic23@kernel.org>, <linux-iio@vger.kernel.org>, "Rob
+ Herring" <robh@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
+	<linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Nicolas Palix <nicolas.palix@imag.fr>, Sumera Priyadarsini
+	<sylphrenadin@gmail.com>, "Rafael J . Wysocki" <rafael@kernel.org>, "Len
+ Brown" <lenb@kernel.org>, <linux-acpi@vger.kernel.org>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>
+Subject: Re: [PATCH 2/8] of: Introduce for_each_*_child_of_node_scoped() to
+ automate of_node_put() handling
+Message-ID: <20240212113728.00001e81@Huawei.com>
+In-Reply-To: <6c65d280-9b8f-393c-2adb-2387535ad924@inria.fr>
+References: <20240211174237.182947-1-jic23@kernel.org>
+	<20240211174237.182947-3-jic23@kernel.org>
+	<6c65d280-9b8f-393c-2adb-2387535ad924@inria.fr>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-I have no time for this, but since it looks like I'm the main
-contributor for the last few years to the subsystem, I'll take
-it for now. Let's see how it will go...
+On Mon, 12 Feb 2024 09:20:35 +0100 (CET)
+Julia Lawall <julia.lawall@inria.fr> wrote:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> On Sun, 11 Feb 2024, Jonathan Cameron wrote:
+> 
+> > From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> >
+> > To avoid issues with out of order cleanup, or ambiguity about when the
+> > auto freed data is first instantiated, do it within the for loop definition.
+> >
+> > The disadvantage is that the struct device_node *child variable creation
+> > is not immediately obvious where this is used.
+> > However, in many cases, if there is another definition of
+> > struct device_node *child; the compiler / static analysers will notify us
+> > that it is unused, or uninitialized.
+> >
+> > Note that, in the vast majority of cases, the _available_ form should be
+> > used and as code is converted to these scoped handers, we should confirm
+> > that any cases that do not check for available have a good reason not
+> > to.  
+> 
+> Is it a good idea to make the two changes at once?  Maybe it would slow
+> down the use of the scoped form, which can really simplify the code.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 73d898383e51..bfad581adf24 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3376,8 +3376,8 @@ F:	drivers/base/auxiliary.c
- F:	include/linux/auxiliary_bus.h
- 
- AUXILIARY DISPLAY DRIVERS
--M:	Miguel Ojeda <ojeda@kernel.org>
--S:	Maintained
-+M:	Andy Shevchenko <andy@kernel.org>
-+S:	Odd Fixes
- F:	Documentation/devicetree/bindings/auxdisplay/
- F:	drivers/auxdisplay/
- F:	include/linux/cfag12864b.h
--- 
-2.43.0.rc1.1.gbec44491f096
+Good question.  I combined them based on what I think Rob was asking for.
+
+Rob,
+
+What would you prefer?
+
+Jonathan
+
+> 
+> julia
+> 
+> >
+> > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > ---
+> >  include/linux/of.h | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> >
+> > diff --git a/include/linux/of.h b/include/linux/of.h
+> > index 50e882ee91da..024dda54b9c7 100644
+> > --- a/include/linux/of.h
+> > +++ b/include/linux/of.h
+> > @@ -1430,10 +1430,23 @@ static inline int of_property_read_s32(const struct device_node *np,
+> >  #define for_each_child_of_node(parent, child) \
+> >  	for (child = of_get_next_child(parent, NULL); child != NULL; \
+> >  	     child = of_get_next_child(parent, child))
+> > +
+> > +#define for_each_child_of_node_scoped(parent, child) \
+> > +	for (struct device_node *child __free(device_node) =		\
+> > +	     of_get_next_child(parent, NULL);				\
+> > +	     child != NULL;						\
+> > +	     child = of_get_next_child(parent, child))
+> > +
+> >  #define for_each_available_child_of_node(parent, child) \
+> >  	for (child = of_get_next_available_child(parent, NULL); child != NULL; \
+> >  	     child = of_get_next_available_child(parent, child))
+> >
+> > +#define for_each_available_child_of_node_scoped(parent, child) \
+> > +	for (struct device_node *child __free(device_node) =		\
+> > +	     of_get_next_available_child(parent, NULL);			\
+> > +	     child != NULL;						\
+> > +	     child = of_get_next_available_child(parent, child))
+> > +
+> >  #define for_each_of_cpu_node(cpu) \
+> >  	for (cpu = of_get_next_cpu_node(NULL); cpu != NULL; \
+> >  	     cpu = of_get_next_cpu_node(cpu))
+> > --
+> > 2.43.1
+> >
+> >  
 
 
