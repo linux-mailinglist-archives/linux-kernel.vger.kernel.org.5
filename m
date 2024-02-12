@@ -1,117 +1,96 @@
-Return-Path: <linux-kernel+bounces-62259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDEA0851DA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:12:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6863851DA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:12:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E04B1F2555F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:12:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D08D28128C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17AC5482ED;
-	Mon, 12 Feb 2024 19:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E8FE4642A;
+	Mon, 12 Feb 2024 19:11:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SxEBtPVz"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qTp+Xwir"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE4047772;
-	Mon, 12 Feb 2024 19:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CEAC40C15;
+	Mon, 12 Feb 2024 19:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707765095; cv=none; b=DL/PbCpFcemY9P5yAiMJHz0R+gEYh3P/AJhNckQ1HijTDZlbKaPvK0fDmVKPh3sLo3oAY1+FzAB5FnWZ5H5w61KIba32LgyxJeExk/oD4t//2hMn+VTYQ9JYw5Jdqk3/XYe/PdLMmUZ94cQ0c3wcALOT1RmhGyuW/Dzr2x6L5jE=
+	t=1707765085; cv=none; b=EpJIuMGIq0jj+ZhHRBMOiRAEzNzV+FQQ6XPi01a/EPDJT6zL2Z1eQ9QjPN+r9bl01K7ukxCn+MFjlrVRP28bDNeQTmIODRBsDqZxtpXRylD09xbnk6vnGGodY3h0FpuMKsq96fgxIZjnBfJ86wBEg2hY8yZEL3JXdznourZK1QM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707765095; c=relaxed/simple;
-	bh=uShb6ZcgqhX2ALUmZCWrjlz3y5tvNFOTevE37zcmKJA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=teBwHUCy1A2FC8TUttP83baHtbXqgus1FlPknxq7uyak179qRhIvhLr/cFWIE2u8AqVC86myGYgpA/NXATspZ61fOXjKIr1fhV3K5BscjAGqbGsg/F4jmpKW14nXIEMQpZs7fvTMolOS2K4nSymXdrwc0c4Pxg2LRmGpYzTlCsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SxEBtPVz; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc236729a2bso102878276.0;
-        Mon, 12 Feb 2024 11:11:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707765093; x=1708369893; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uShb6ZcgqhX2ALUmZCWrjlz3y5tvNFOTevE37zcmKJA=;
-        b=SxEBtPVzbSP1DXv65obqVo5hwkeW3UaNUwmtfAiGt7OLXeFRlkUaaaeH8D1lptRvbR
-         D4eCbeP9gvtWBn5/Gu5GCCT58nByUKRqKzKaWtcOzYwOVlsCLeoVBzaZaMKvpcZb5ztE
-         Dg8JPLuFg0/9f0ryQQjNPYikkrE9TSyuJ2GWiy71NJ/Cp15v0eoIOVl3eKkB0J0XHLso
-         cN4KOInEEP/fSRRJGqvkmY7xwnCLmM656LPngGdqmUajj6z1e3iXZf9fE+tlk7e5ZYlx
-         3rHg43FxsVLB3CgoeNWhN51Mq2pTs8XnmoIY4xF2vY3oiQgbLnK90VQGv+se0byOZd3z
-         WA3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707765093; x=1708369893;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uShb6ZcgqhX2ALUmZCWrjlz3y5tvNFOTevE37zcmKJA=;
-        b=iooptvjgsOldMRa9+PNcX2V0iczqt4JtbwUENBQyxsG6tgESN9qXcjiGlrW+wgZFSp
-         sCsGk7WvPtuVGTYFzWSPzhwdOfbJ04MgvCAABKB3qwr7W6I1cdwBtVKljQRPEW9aqBHo
-         ay0eLECJDLCmXo9anCk49hZVUPORKuaRmqmIKJo/9RtEh/NOG62sHNyKLAVqdeXFynpQ
-         /k5vE0IGG6sDogTB0f+I7KP+arB1stv2q6CckP3oPoPRj0AOSiSD8sgCUGbtwxdI8MQH
-         vnBRGUcTGauy1yXr1RDUVJbXTArS1qotDY+IsSvxaIJBUNTd53C/4NxMR6CCIP2VBOa4
-         p+Iw==
-X-Forwarded-Encrypted: i=1; AJvYcCWBAVKijnygfGrhEUr/62YztSy8iXptrIoy1MO8YrHQRVZ/oWGLGKB74k5PvV7KSIHdOWNOLyWwn8/km79Bc0qcT5rupMO5XAhsd+XuUO+3Fv4iZ4OurQoDaWizJUDDMHNLgSBK/NVuBULEHY48VdMZJS6ZtqaKHTH9sxQdhqkhlEAlq2p8QIg=
-X-Gm-Message-State: AOJu0YwG23NqzJf7pXc8QwCFEylnDvcp0/7XogimcHFtytBF8datB6Xu
-	1d/AHTw1fzA2fMMvvxDX+W/4Ktr5bzjHs9+TpNzpndc0PJVgSMO14Zu85c1070TWuUGJl0d95Si
-	9MEcuFfVijxdrjFHiI3vfcL6B5Vy0g4a3imY=
-X-Google-Smtp-Source: AGHT+IHqXLnUCxAsb7XvKnFAPSGDB3hUHETodqtr+uDm3QdrNT5WCj6II1sL9VaSLYPlv+uufOR+eCV6bruG7EgGquo=
-X-Received: by 2002:a05:6902:4e6:b0:dc7:4758:7802 with SMTP id
- w6-20020a05690204e600b00dc747587802mr6000531ybs.48.1707765092762; Mon, 12 Feb
- 2024 11:11:32 -0800 (PST)
+	s=arc-20240116; t=1707765085; c=relaxed/simple;
+	bh=pjntRaF2ZUWt8qehOJs7aNCu4rWg3wEuvPh0NwqnyJM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QYGHRtrOpBEJCPlKFOpvRCIc5+3uGxd9bd3Cr9xCdEd0Ht9W60meeV7dZ7qQqUjYjESfJkg13jTnLl9uhCEhPPuAm0m16lnNhHPwUoJx1teRBtJ3uEzYIaVKJSfBkbQLDOgxc9vWgBawM5J5S/592nLdrAs19vXV8ulVy7qC2WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qTp+Xwir; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C44CC433C7;
+	Mon, 12 Feb 2024 19:11:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707765085;
+	bh=pjntRaF2ZUWt8qehOJs7aNCu4rWg3wEuvPh0NwqnyJM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=qTp+XwirSwdHzbf45kpucBQD0HIfaC92cmy/XEVivyxCi6XUM0/MhfcnOc24Hu3Xx
+	 2gDWPZv2x1veS6rYfJRjr8hL/rXKukAuXFgom/vbpWDJ6jGhqNpjEdh2Od2/q5Z6yQ
+	 5I0Rfd7l2RZ5R9W5SLxVqngs9padHVu4V7uAdAqYPKSoX9xwPAigIz6Bt3Pa5tXPdu
+	 AR0FhBi098eU+gP9MeqkPabpxFgdef/R9e/MTZLu0h5SrUn97iSfwZp9ornDuwKAoA
+	 pWbSg/GGC7LZ3LShgBsUe8HFvM2yZFRwJ+AidmcjMsfLW+iFCtYgwXTGDrHLLXnypj
+	 EYIpV84mprUPw==
+From: Namhyung Kim <namhyung@kernel.org>
+To: irogers@google.com,
+	james.clark@arm.com,
+	Yicong Yang <yangyicong@huawei.com>,
+	adrian.hunter@intel.com,
+	alexander.shishkin@linux.intel.com,
+	peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	jolsa@kernel.org,
+	linux-kernel@vger.kernel.org,
+	mark.rutland@arm.com,
+	linux-perf-users@vger.kernel.org
+Cc: tim.c.chen@intel.com,
+	Tim Chen <tim.c.chen@linux.intel.com>,
+	fanghao11@huawei.com,
+	prime.zeng@hisilicon.com,
+	linux-arm-kernel@lists.infradead.org,
+	yangyicong@hisilicon.com,
+	linuxarm@huawei.com,
+	Jonathan.Cameron@huawei.com,
+	zhanjie9@hisilicon.com,
+	21cnbao@gmail.com
+Subject: Re: [PATCH v5] perf stat: Support per-cluster aggregation
+Date: Mon, 12 Feb 2024 11:11:21 -0800
+Message-ID: <170776504994.3461281.10666322368252974000.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+In-Reply-To: <20240208024026.2691-1-yangyicong@huawei.com>
+References: <20240208024026.2691-1-yangyicong@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117-swiftly-parasail-618d62972d6e@spud> <CANiq72mVKCOAuK4Qe+8AHmpkFwyJsVfx8AqB7ccGi3DYpSSWcw@mail.gmail.com>
- <20240118-implode-delirium-eefdd86e170e@spud> <CANiq72nx1s_nyvPW86jL7eiOxROr18LfOJqNtw8L42CP+gkhRg@mail.gmail.com>
- <20240125-bucked-payroll-47f82077b262@wendy> <CANiq72k7n0aZrifRRU08N8qLkNe+2EZwijZy5sM7M56n2xYHgQ@mail.gmail.com>
- <20240125-lazy-thrower-744aacc6632a@wendy> <CANiq72kb+_utZrYHtoKZQtQazikmkjpVUHpTBcaANizduMF5QQ@mail.gmail.com>
- <20240126-eccentric-jaywalker-3560e2151a92@spud> <CANiq72nu2NXUWYanHZd5EXgX4P_v673EWn6SCRW60Es9naraQQ@mail.gmail.com>
- <20240209-rage-keg-1b2982cd17d9@spud> <CALNs47sRqAbE=u3=_ciO2oge7Afz-6GBBhW+BwcLRET-TsuxTg@mail.gmail.com>
- <CAOcBZORDaHHH3jTL3GO7OsDubhhyQE0Uy2uAjJpiRzrKBgqaOw@mail.gmail.com>
-In-Reply-To: <CAOcBZORDaHHH3jTL3GO7OsDubhhyQE0Uy2uAjJpiRzrKBgqaOw@mail.gmail.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Mon, 12 Feb 2024 20:11:21 +0100
-Message-ID: <CANiq72=VBFvB9O9c84YxpBBftpfNnnXx-+Xes0h8h6rN3EN5pA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] RISC-V: enable rust
-To: Ramon de C Valle <rcvalle@google.com>
-Cc: Trevor Gross <tmgross@umich.edu>, Conor Dooley <conor@kernel.org>, 
-	Conor Dooley <conor.dooley@microchip.com>, linux-riscv@lists.infradead.org, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
-	rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
-	Matthew Maurer <mmaurer@google.com>, Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 12, 2024 at 8:02=E2=80=AFPM Ramon de C Valle <rcvalle@google.co=
-m> wrote:
->
-> Sorry for the late reply. Sami might be the best person to answer this, b=
-ut KCFI (not CFI) tests are lowered by passes that are architecture specifi=
-c (see https://reviews.llvm.org/D119296), so we'd need to add support for R=
-ISC-V. There is no additional work required in the Rust compiler besides en=
-abling it for the new target.
+On Thu, 8 Feb 2024 10:40:26 +0800, Yicong Yang wrote:
+> From: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> Some platforms have 'cluster' topology and CPUs in the cluster will
+> share resources like L3 Cache Tag (for HiSilicon Kunpeng SoC) or L2
+> cache (for Intel Jacobsville). Currently parsing and building cluster
+> topology have been supported since [1].
+> 
+> [...]
 
-Thanks a lot Ramon!
+Applied to perf-tools-next, thanks!
 
-Then for RISC-V let's go for the `depends on` for the moment, and we
-can remove when the support lands for RISC-V (ideally when someone has
-managed to boot it at least under some configuration).
-
-Cheers,
-Miguel
+Best regards,
+-- 
+Namhyung Kim <namhyung@kernel.org>
 
