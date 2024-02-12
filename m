@@ -1,104 +1,113 @@
-Return-Path: <linux-kernel+bounces-61136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73A5F850DD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:17:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F511850DE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:19:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6A621C21AF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:17:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 346931F27D2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 07:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BE0182A3;
-	Mon, 12 Feb 2024 07:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T2sbedfI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 253D32B9DF;
+	Mon, 12 Feb 2024 07:15:03 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEA017C71;
-	Mon, 12 Feb 2024 07:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FDA12B9D9
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 07:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707722067; cv=none; b=JWJncPOBzz/N4Xj0M4mCKaRvjH0sWgSWGPnMoroyyDSNarsYVL5HJg3uYOkhQlSfgdWVlvC98B3MtBbZrJZDPOGzvaN++Mst15NMzk0MuQBSahNgiE0CJ8kPannQUPuBGsR5VRGb7GinfDOjvB1U6cnvRnbpzpi9YXiDrL9v+CI=
+	t=1707722102; cv=none; b=vE/rzkDS50oqyqQTa4rTI+sOeEYqikTHw4WMOK+Xu2Ca1ADpyIokcXKLVmDLXmJ1Og3K5J8T8RcOk1TYdp6KKmkPs9y0EkBuIvhnDmEoS3Jk2+lATl9x5VgkSjZpQMbDty7ZW4yWak5sBZtycZH8fY4pLorSdcpogtvSIEn56xI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707722067; c=relaxed/simple;
-	bh=6lp/WH08J/LRYj3MSpfMxgfWTwohOEkcpPcuQchVods=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=EOhtc2CYcjzmEF8mprbb/n8Rlp/SMAAFG4LTi2XILK0uH3gxEs/hm4sIGXVzRlYQ5PWvKeSOe3O0zTjx6BWKESPbR+imsnp0R+j5h+gLwi+XSy14HqPjeNpj+meZ4v5PgnkWDwvaSDKgcLqLzWngv+DXg51suK/FCrY9G8n0/xI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T2sbedfI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33B8CC433C7;
-	Mon, 12 Feb 2024 07:14:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707722067;
-	bh=6lp/WH08J/LRYj3MSpfMxgfWTwohOEkcpPcuQchVods=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=T2sbedfI/LZ26pARy0lxvc9zmdh4lHKKljYEP6/5qJaKWWXBKvA1+OT15u3PB8D8a
-	 RJNdgz8JnnOLnuXe8dBUrGN/dcN/AjpTlwfeyTbQxOiit0OEXRo1w11Vw2aUxlQY/Z
-	 cEs0f4wjhMXPsvEJijvPndqpydpjD7NtGXzwY50CIT0F0esWYu/I0ALEkxJkQ7GYds
-	 iz0XfohaAis2DZzXuqnglZ1OdrkYgoDO71WJJeCtWCz5FPSEVeHPDFWNd2Rrk7Cinf
-	 o+Dnsu6820ngR0j1zxOvI12SLfeHA9PxG5T6MLhd6KEbpkowoVWbqaS+ZHuk63ydtf
-	 nO298PTCVEwCQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Max Kellermann <max.kellermann@ionos.com>
-Cc: miriam.rachel.korenblit@intel.com,  linux-wireless@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  ayala.barazani@intel.com
-Subject: Re: [PATCH] iwlwifi/uefi: remove CONFIG_ACPI check
-References: <20240211201919.3751551-1-max.kellermann@ionos.com>
-Date: Mon, 12 Feb 2024 09:14:23 +0200
-In-Reply-To: <20240211201919.3751551-1-max.kellermann@ionos.com> (Max
-	Kellermann's message of "Sun, 11 Feb 2024 21:19:19 +0100")
-Message-ID: <87r0hif92o.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1707722102; c=relaxed/simple;
+	bh=jYjodvYdPgaA2R6RTwlHo99I3LADJFhgrLfeHWg5EAg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nrp+dd9gygtRD0fJKjjXTJHIanQXu4FVivzic7X/A8gUelON+Cjczmuy2e0qFXtR0XLIyeSvkyU8jm0+KKtPhxDoVztrBzOBtgdgqYRdSjsBa0+BVKnRTCiKnXTso2kC1DP3Sjn03VcpH8tFI2hX0ETAdNa82FPkIwu37bjnAww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rZQWU-0003cF-7C; Mon, 12 Feb 2024 08:14:38 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rZQWT-000EsZ-1a; Mon, 12 Feb 2024 08:14:37 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rZQWS-002wvz-37;
+	Mon, 12 Feb 2024 08:14:36 +0100
+Date: Mon, 12 Feb 2024 08:14:36 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Raag Jadav <raag.jadav@intel.com>
+Cc: jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com, 
+	andriy.shevchenko@linux.intel.com, linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/2] LPSS PWM cleanups
+Message-ID: <lfenqtr2hgjfisn6x6gffme55htmt3o6cbdiroilwanm52zyvs@frlnph7kkwg7>
+References: <20240212061037.4271-1-raag.jadav@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7dxxvd6dgm2rpgvr"
+Content-Disposition: inline
+In-Reply-To: <20240212061037.4271-1-raag.jadav@intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Max Kellermann <max.kellermann@ionos.com> writes:
 
-> This fixes a build failure on ARCH=arm when CONFIG_EFI is set but
-> CONFIG_ACPI is not, because uefi.h declares iwl_uefi_get_sgom_table()
-> and iwl_uefi_get_uats_table() as dummy inline function, but uefi.c
-> contains the real (non-inline) implementation:
->
->  drivers/net/wireless/intel/iwlwifi/fw/uefi.c:359:6: error: redefinition of 'iwl_uefi_get_sgom_table'
->    359 | void iwl_uefi_get_sgom_table(struct iwl_trans *trans,
->        |      ^~~~~~~~~~~~~~~~~~~~~~~
->  In file included from drivers/net/wireless/intel/iwlwifi/fw/uefi.c:11:
->  drivers/net/wireless/intel/iwlwifi/fw/uefi.h:294:6: note: previous
-> definition of 'iwl_uefi_get_sgom_table' with type 'void(struct
-> iwl_trans *, struct iwl_fw_runtime *)'
->    294 | void iwl_uefi_get_sgom_table(struct iwl_trans *trans, struct iwl_fw_runtime *fwrt)
->        |      ^~~~~~~~~~~~~~~~~~~~~~~
->  drivers/net/wireless/intel/iwlwifi/fw/uefi.c:392:5: error: redefinition of 'iwl_uefi_get_uats_table'
->    392 | int iwl_uefi_get_uats_table(struct iwl_trans *trans,
->        |     ^~~~~~~~~~~~~~~~~~~~~~~
->  drivers/net/wireless/intel/iwlwifi/fw/uefi.h:299:5: note: previous
-> definition of 'iwl_uefi_get_uats_table' with type 'int(struct
-> iwl_trans *, struct iwl_fw_runtime *)'
->    299 | int iwl_uefi_get_uats_table(struct iwl_trans *trans,
->        |     ^~~~~~~~~~~~~~~~~~~~~~~
->
-> I don't know how the driver works, and I do not know why the
-> CONFIG_ACPI check was added in the first place by commit c593d2fae592a
-> ("iwlwifi: support SAR GEO Offset Mapping override via BIOS"), but
-> since it did not add the same #ifdef to uefi.c, my first guess is that
-> this piece of code shall be used even if ACPI is disabled.
->
-> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-> ---
->  drivers/net/wireless/intel/iwlwifi/fw/uefi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+--7dxxvd6dgm2rpgvr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"wifi:" missing from title but I'm guessing Johannes can add that.
+Hello,
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+On Mon, Feb 12, 2024 at 11:40:35AM +0530, Raag Jadav wrote:
+> This series implements minor cleanups for LPSS PWM driver.
+>=20
+> Raag Jadav (2):
+>   pwm: lpss: use devm_pm_runtime_enable() helper
+>   pwm: lpss: drop redundant runtime PM handles
+>=20
+>  drivers/pwm/pwm-lpss-pci.c      | 22 ----------------------
+>  drivers/pwm/pwm-lpss-platform.c | 10 +---------
+>  2 files changed, 1 insertion(+), 31 deletions(-)
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+the series looks fine to me. Will give others some more time to comment
+and apply later.
+
+Thanks
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--7dxxvd6dgm2rpgvr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXJxVsACgkQj4D7WH0S
+/k6Qewf8D2r0SZoTgNIPbAgqzXZmkWt05MDzsZuccY6QBwKTpI997AoIWkBIqYtT
+5Q758V6bxBOV9OE092c/Xv3ZkTWS1BYQ+rM8ZPvzFlvaLFuIrAo4NrXW1UJAZFF6
+9iAOJ1JpcAOwHcQgSdGS8A7Ji4h/xKwVuQXx+BMV7k6JFq7gM4v+Wdqc0JjBFO0D
+hQYNPHUdvu4OQqoeMe0tsNg3P616uXxWERVEk64bJzOAxRYBsVROmPvWowhmbTaR
+LC92Xoqq01FKtg7Y80HGxkd9HSDHHL906WlbJ08S8bwwd/CLA5/c0Jq1qeoXbPH8
+RT5V8q0Ly7Le9sPGwVb26OkpiKX0Vg==
+=Y5op
+-----END PGP SIGNATURE-----
+
+--7dxxvd6dgm2rpgvr--
 
