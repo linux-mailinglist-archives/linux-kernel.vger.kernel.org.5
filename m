@@ -1,103 +1,112 @@
-Return-Path: <linux-kernel+bounces-62141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6A0851C22
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:54:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2659C851C2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:55:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE92D1F22DDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:54:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5F2F282179
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EB746B80;
-	Mon, 12 Feb 2024 17:51:59 +0000 (UTC)
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A893FB3B;
+	Mon, 12 Feb 2024 17:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKoSQVXx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D00946551;
-	Mon, 12 Feb 2024 17:51:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915A4481B8;
+	Mon, 12 Feb 2024 17:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707760319; cv=none; b=vEH/lo7kYG6ETMBbyymbD43NX5dKiipqT7+dWL7c6yBX1Jl/bnqaf0mVSRsKu810zvySh/68SlKq8d1NHO7ARmC4ApNk4D9h49e5k7tAtFDkC41IjkOF0jpRUQyUJzuEco1jWNfSEsp+2i8l9P/g08f1Ty1vGYR5STUE4EGONlM=
+	t=1707760375; cv=none; b=Cgu9j0m/3UNo1N2p2itzdFeAQKx2tZX7PAc/HHbq2T/QxbneJBjFo8PU3oa/3HOuDTH1zeIigjlC0V8A+DV1a6ZkIg4exjfbdaqmhLnh1Ua+8Xcrf4Foxtdd8NeWmmsmRilhCm/RKvkEv83hG2/AwvEanFKP0mZsynIPl3+h6cI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707760319; c=relaxed/simple;
-	bh=MSV9z83/rPdyR+wFYfqvWW44qfCrTEBxvdnwMXkgwpY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rmqESiPPm8q3TeMMJZ0H4n+Ybwe3S8kb6hGl0P/k2DMzx1V0M/Kk9XtraShrjeSyB9lbgm7WVyxmhUP/EaMzo5UMNyG4xnY9WrqhhxstTIyzBMJdvb+JoiFw1Wnm5ixwDHJ27VhyDPGD7tneJE1p5G39xeZTvzxmM424/WjlCa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-59a24bf7cadso1164584eaf.0;
-        Mon, 12 Feb 2024 09:51:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707760316; x=1708365116;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tV5WxbgiDjtX0x1opWnkC9kI2tXW3KAWA0QX8hrZmag=;
-        b=PhFt9ohh9nxcrsEwRCf7COytUq+U0NjIHFDOaiImfRHEFxvWP+HzljzckTPvNRzVCg
-         uUp6bjC+kufNAZWRx+gMjIQ/H1Qh8y84LBO2958gktk2ZzxDktUVhpVnJBp1Z/3Yp0sN
-         oskLU65MtP5ObRtXCWnriVzF9IC9CdU/v7RLJETPXAc32XKlADv/13GUuP0x7KvnWCLf
-         miauTEYPTEG5eoANDiiolY+/TMiJzc2IFg0RE6/NvOSjDn8v0E6wNnoH2lQYtbIHcRNx
-         Ak8lvd+N8conwGkief8PzaB7G9KOG+DEMzwnT12S6mlw/2Qsyn1vw/trBbCMUD2Jo5fm
-         nbWw==
-X-Forwarded-Encrypted: i=1; AJvYcCXbzTt/nsGGYNiBDxz6jhW8h5VVsAg2mqYLghez6cNYv+C3gdPL90it9o+PV1SYNbqEPLNdPjqn05FIZSnY9s0BkXWbHVkVIDWkblya72WfRZPcL3sGJ/1m041nwQlUDXNHh1GmK3X3Hg4bmKU6zzrXbcYEB23TUlnlOAgwTzLmPfU=
-X-Gm-Message-State: AOJu0YwGx4YmDYFxtldRI4SkBeqD/o7zzWZmklpTNJtF4sJsHgHRciYY
-	9BhzW0aye2SJ3A6zawA5LbKtEPlHpemNYsjm8xiR76Et6g+2Nv0C+JzgjPZpYee7eXeTPDyK3OV
-	vKHzllaxSsZNq9jLyIjUf5J6HiDQ=
-X-Google-Smtp-Source: AGHT+IGTtJKI1BtcYOhVTDcIlt7hZ7fg57x3IPWUNB2Hg4KNLtSgBkQokvKCbcf0cXy4NSPB8zdSrOL3u0ZqfyGhhzQ=
-X-Received: by 2002:a05:6820:2b12:b0:59a:bf5:a0da with SMTP id
- dt18-20020a0568202b1200b0059a0bf5a0damr5424442oob.0.1707760316733; Mon, 12
- Feb 2024 09:51:56 -0800 (PST)
+	s=arc-20240116; t=1707760375; c=relaxed/simple;
+	bh=siY669FZ6RXJrctnpBX04wiLC7H2qfVhFbtIGFlZ2/o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XRJmLwf2hiAKvMdMCvYfBxanCO99inQpGvTNHji+TseEDzXTvOXcdDDcxdvrGaCy2OpwhQnkbqqIobDB/RSrcv6prv12CdYTcIzq2ag53NyBLbTIIsQkm4U/twjDl89otUXS7RnX2M88CsdLzvFmRA+RJexAZ56PLsr++G82B8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKoSQVXx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D341C433C7;
+	Mon, 12 Feb 2024 17:52:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707760375;
+	bh=siY669FZ6RXJrctnpBX04wiLC7H2qfVhFbtIGFlZ2/o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MKoSQVXxnma+6s1eD5MZLUMIcglrYaYh8l+Q3olqyG9DAPS4/txam6oJqEtkOli+E
+	 3cX3G1erolcFJnizQC/Sdc8j+QdYkRCeYml2c+H8Swo0AhrOTarwcYP8jlIOmdUfQL
+	 yd97GfJlJ4x5z6Zxjud53CBaWeU4taUg4iMKe/TUt1FuFUqYP9jGB7c4ZSEM5/fI1Y
+	 YUz6eIvzg3fxNFvBT+BhJk8L4+0unG6nfGMyVDpqwl6LfpDi5KEDsc+LZEAvJCKTWo
+	 6vP2q/q463oZk1DQlEnOSqSz64R1UMZ2vxhvNxeGO+0SeopWshIK3J7VnK7W4OdlqX
+	 8SwHS8VTHJ6kg==
+Date: Mon, 12 Feb 2024 17:52:49 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] dt-bindings: net: qca,ar9331: convert to DT
+ schema
+Message-ID: <20240212-wildfowl-bubble-227ae356d652@spud>
+References: <20240212105445.45341-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202152120.13317-1-s921975628@gmail.com>
-In-Reply-To: <20240202152120.13317-1-s921975628@gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 12 Feb 2024 18:51:45 +0100
-Message-ID: <CAJZ5v0horZ06Qm9+pNR39MQkokBfqRADYEJd=Kc55_cO79Y9Vw@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: PM: Fix system hibernation section
-To: Yiwei Lin <s921975628@gmail.com>
-Cc: rafael@kernel.org, linux-pm@vger.kernel.org, corbet@lwn.net, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="O5dTm4RSUa0ofWQs"
+Content-Disposition: inline
+In-Reply-To: <20240212105445.45341-1-krzysztof.kozlowski@linaro.org>
 
-On Fri, Feb 2, 2024 at 4:21=E2=80=AFPM Yiwei Lin <s921975628@gmail.com> wro=
-te:
->
-> From: RinHizakura <s921975628@gmail.com>
->
-> According to the context, 'pci_pm_suspend_noirq' is the right
-> word for the changed sentence.
->
-> Signed-off-by: Yiwei Lin <s921975628@gmail.com>
-> ---
->  Documentation/power/pci.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/power/pci.rst b/Documentation/power/pci.rst
-> index a125544b4..120703203 100644
-> --- a/Documentation/power/pci.rst
-> +++ b/Documentation/power/pci.rst
-> @@ -625,7 +625,7 @@ The PCI subsystem-level callbacks they correspond to:=
-:
->         pci_pm_poweroff()
->         pci_pm_poweroff_noirq()
->
-> -work in analogy with pci_pm_suspend() and pci_pm_poweroff_noirq(), respe=
-ctively,
-> +work in analogy with pci_pm_suspend() and pci_pm_suspend_noirq(), respec=
-tively,
->  although they don't attempt to save the device's standard configuration
->  registers.
->
-> --
 
-Applied as 6.9 material, thanks!
+--O5dTm4RSUa0ofWQs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Feb 12, 2024 at 11:54:45AM +0100, Krzysztof Kozlowski wrote:
+
+> +  mdio:
+> +    $ref: /schemas/net/mdio.yaml#
+> +    unevaluatedProperties: false
+> +    properties:
+> +      interrupt-parent: true
+> +
+> +    patternProperties:
+> +      '@[0-9a-f]+$':
+
+The thing I don't quite follow in this binding is why this regex is so
+permissive. Is it not limited to "just" phys?
+
+> +        type: object
+> +        unevaluatedProperties: false
+> +
+> +        properties:
+> +          reg: true
+> +          interrupts:
+> +            maxItems: 1
+
+
+
+--O5dTm4RSUa0ofWQs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcpa8QAKCRB4tDGHoIJi
+0iqDAQDU/QNRC8C7WyvBGo1WA4MrnTHyQFctUP7NhoVFbexTEAEAl5Dlwhns4N0H
+AKM5s/88h1MISG8C/NpkabLZnHmQ2wA=
+=rOaj
+-----END PGP SIGNATURE-----
+
+--O5dTm4RSUa0ofWQs--
 
