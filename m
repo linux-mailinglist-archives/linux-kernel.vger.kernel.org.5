@@ -1,107 +1,103 @@
-Return-Path: <linux-kernel+bounces-61703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5B33851597
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:44:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D479A85158C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:42:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7D8AB28B2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:42:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 129551C20B65
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 090703D55D;
-	Mon, 12 Feb 2024 13:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC1E3BB26;
+	Mon, 12 Feb 2024 13:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dhnWrfMp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aDI2BUWF"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B633B785;
-	Mon, 12 Feb 2024 13:35:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5EAE3A1C9
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:36:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707744918; cv=none; b=tR28Nrc9mUfAtCePdG4rFQDnn6nnPycehXPWoAJHSjUO4hBVQiyu246E5+NJ3dqiq1avKaZ/tORXN79mfCNCEl1NAkY6GyKywl0ZEEU0o15vYWVLYL5+cKKvtB7xXzNPLX9+/DZ9OLVGJWeMGtthpOnSGW02LfRNJjxJBR+XHXU=
+	t=1707744962; cv=none; b=A4MElUkYoLM2+O8/HSfTP70vhXA/9c7q9YDm31rOZgJJhFkH499VCb+PbYvxwxaXSyXxAS0G7jErIPcwmBIzQuRRW34s2pY7DJB6ORTzitpHJAZW+SC1TxhuqHXpDHxnLr4GlTLysYyfH3SGnZ1u18krEGVeMJNYpYtG/Rl0c1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707744918; c=relaxed/simple;
-	bh=V4lbPJZ3qP0qBipIkWFbBDXjWwgPyX2OPgDSAvz12/Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OwL85kQYDg6t50VMTlvv2tI0zZAbpu8HqRxASgc8/Ny2JkpQqBNoBmUiW8nsFRpgz2wU8wAk0D1GE0ehou7EzzXlMTfbfEz6Fn/e6znCRSRVFHC2yn5bLUVRmYFBMCvvMUCOfAvsWW0kgomu3fQPB7/ACqRMXiEpNOU3dxgSrJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dhnWrfMp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17E22C433C7;
-	Mon, 12 Feb 2024 13:35:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707744917;
-	bh=V4lbPJZ3qP0qBipIkWFbBDXjWwgPyX2OPgDSAvz12/Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dhnWrfMpMCmDrMWf2D4F9lCiaqP6X+Wd2c7l2eHXy/MNx5wfjHWyiIBwYJkuhv/rw
-	 1rVEwfiWcv7wKvtTpPgr0RRPnqD8dPQ/3kiySaVEXpE9ZE6zD36zFebZqIrwC+g58Z
-	 kpzSif0ra2iOHVyEfoO0JC5E8abFcHENAIuFYyyU2iEmhyrCyb7yPss1LFOTmIumUV
-	 NeN8X4eGzfjU6fZK1jwaj53kCpUFRYTxkkDtSC64S0BWjHvrY6jHTpukBirFzgE5Nd
-	 C/GOdPI95ahA/+aVDK8ILPXauFmeVWYU9SCVqy/Ep2bpkxEJMnTLcoBEwPorB4sk6y
-	 YQ2n5RQwPqwCw==
-Date: Mon, 12 Feb 2024 13:35:12 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dhruva Gole <d-gole@ti.com>
-Cc: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH] spi: spi-mem: add statistics support to ->exec_op() calls
-Message-ID: <5c1a5edd-adfd-44f2-a993-bc3f43222a3a@sirena.org.uk>
-References: <20240209-spi-mem-stats-v1-1-dd1a422fc015@bootlin.com>
- <20240212111355.gle4titwolqtzwpi@dhruva>
+	s=arc-20240116; t=1707744962; c=relaxed/simple;
+	bh=ID6fgbHIriXzsFWD9h1J/HknENOu7mtqM9iVqBiNICE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SN/k7HBX5pMm+iUlzAjHe2avZ1jRuQv/T7Qd7FvqBLTFRA6UGuxAVIr7+0GT9sed0hZu4MI/ga8JsWz93WIIE4CXMXjcDHY8m4ENeP91K3sOXVECbISdV3TVgpojHSKPC1y3Ep9eOv5pvKWT0PU6Ivz02gvJZ0bmKsX2AV0iHSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aDI2BUWF; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-604b94c0556so22629477b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:36:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707744960; x=1708349760; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ID6fgbHIriXzsFWD9h1J/HknENOu7mtqM9iVqBiNICE=;
+        b=aDI2BUWFZanp2jAEexkB3EnVGlQgx0fBENqsF+zCCYqVnUPGTyHNlOtWtty8a4zKza
+         QqIVj8bJ4mq6Ycj3p9JCHJYLb5+ZYBpJDfog5EUVmixsSZxh/m3ZChiNT4GXyN5jvWUu
+         L9gIor58rhbT8Igs/TD7N+t0zAN0EFXJvHC0Jxwn0kvzHlUF0CVQZ2pHt5NsJMIUNz8f
+         JrXwfQW+l5pzaamTTMQARagMbi68ZJwHMxdD84GnCrekWR2T9tlaekyqyuDtjFseeQOo
+         RjGEQJ4dPTqzvyIHGRLcnFA97Mm3z7dqWuoOjXPuGFHgMKm/kxztMobi7foX+4OuGbn1
+         Q6vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707744960; x=1708349760;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ID6fgbHIriXzsFWD9h1J/HknENOu7mtqM9iVqBiNICE=;
+        b=ZZA+s09w1NonyIui+SQWOU9/Z0mjthrk40aZiNPt8TqSeVoYZg546Gs6f+2KN0qd/s
+         chJXu/t2V7+hNog58bawzj+ZMx3nzNrUxOiKz5qzoxmU+DCnwcu7VLLihAZSt/TbmWYP
+         ylVQct2V/Y6GbRzEI/epkgqn9QJwmyaOMHC59sFsbDIeJlVgJXjLEGdDG1zi8Ih65SR/
+         FWkyJwbbHLCT1qWuU8EDnjKr9oNeO5a8B7bjq3h0kFqoPIgvrrQTsPzFsgAMcWsz53th
+         Pa5TRw1/D1GqUoKlfewXPj6CFN7p/FtKLkjEZ+E4tNPo1fOppUw2YI0Dordz0ud21ejh
+         vabQ==
+X-Gm-Message-State: AOJu0Yw1LK6Y1q8Cx6O+Nsr/bPwEvhMD1BACF4epPpXvAqDmdlHi6u57
+	YEQKmEIyJylyn8jN9p/6IYjy4PMwYqrc8NJ5WgkWHNd6if9JVT3H49rDRm0Gd5K2gPNH+fGNIKa
+	O7ckoQfACSYD7zB3P0o8aRwNoKGE=
+X-Google-Smtp-Source: AGHT+IHtikm1xzMnoru26iO5bcM8x244FUoaHl/+476ymlW/Kj6bX1YOXyrtrwWkRXQwSvXivQ4cZ0lzelcGO4L8xVY=
+X-Received: by 2002:a25:b1a1:0:b0:dc3:71da:35b0 with SMTP id
+ h33-20020a25b1a1000000b00dc371da35b0mr3460772ybj.16.1707744959791; Mon, 12
+ Feb 2024 05:35:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qfEan8YTTsWnxYla"
-Content-Disposition: inline
-In-Reply-To: <20240212111355.gle4titwolqtzwpi@dhruva>
-X-Cookie: Will stain.
-
-
---qfEan8YTTsWnxYla
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+References: <20240212113653.2625776-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240212113653.2625776-1-andriy.shevchenko@linux.intel.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Mon, 12 Feb 2024 14:35:48 +0100
+Message-ID: <CANiq72k-oqVqDGyxqR1pZzwUqpQcFvx=T68BrmLEGDFMY4L3Vw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] auxdisplay: Take over maintainership, but in Odd
+ Fixes mode
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 04:43:55PM +0530, Dhruva Gole wrote:
-> On Feb 09, 2024 at 14:51:23 +0100, Th=E9o Lebrun wrote:
+On Mon, Feb 12, 2024 at 12:37=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> I have no time for this, but since it looks like I'm the main
+> contributor for the last few years to the subsystem, I'll take
+> it for now. Let's see how it will go...
 
-> > +	/*
-> > +	 * We do not have the concept of messages or transfers. Let's consider
-> > +	 * that one operation is equivalent to one message and one transfer.
+Thanks Andy, I appreciate it -- with Geert added as reviewer as
+discussed privately:
 
-> Why 1 message _and_ 1 xfer and not simply 1 xfer?
-> Even in the example of testing that you showed above the values for
-> message and xfer are anyway going to be same, then why have these 2
-> members in the first place? Can we not do away with one of these?
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
 
-If the device supports regular SPI operations as well as spi-mem
-operations then this will ensure that the spi-mem stats fit in with the
-other operations.  If it only supports spi-mem operations it would not
-matter so much.
+if you want to already take it yourself :)
 
---qfEan8YTTsWnxYla
-Content-Type: application/pgp-signature; name="signature.asc"
+Otherwise I can pick it up.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXKHpAACgkQJNaLcl1U
-h9ApIAf8CFpmSqm+vuO7RrlK573k/K80dAGpyOYDvb4SkGCshATMJ3VLM50ZvVR5
-BXdev13tBegdvN5gg+i9FeFLYGyBVJDpCsNedg/1aXvSrofa4n97zB4p3E/s+ndv
-egC/u9kawfrOJ5k7PEr7pVmlP2ZaajCvuSTq/huoD8zePvEWUOgaqTehpmxqhNVa
-g/oxTEBTv0biZHC6z8PMrffb6ugnVf2ppSlfYL8GF8ceoONUMHvmL+yPq0H83u+a
-3bXyC65cZOs+Xa5GextzRqeTHt0uk1V0tXisJSNkIxU+gRsZDvI1e6ZfBlTTWE5+
-5hFP8z4lVCFXvdaNAjcryp1E7xKOgw==
-=nLML
------END PGP SIGNATURE-----
-
---qfEan8YTTsWnxYla--
+Cheers,
+Miguel
 
