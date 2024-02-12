@@ -1,175 +1,434 @@
-Return-Path: <linux-kernel+bounces-61382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AF758511A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:56:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C3E885119D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:56:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C53B71F21B98
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:56:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85CF3B261D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0106139AFC;
-	Mon, 12 Feb 2024 10:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D4EB3987C;
+	Mon, 12 Feb 2024 10:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Xu1kwmSu"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BTWytZL9"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCCB320B2E;
-	Mon, 12 Feb 2024 10:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569E53984B
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707735321; cv=none; b=lRNnfrptcVE59N6mBuzm/Wcqc97VjM/RXD+I6R886kT1Pf2lZ1c8HMLRkPuDsX/0UT5FUNRiU83fXf4I5y4+fU1cBblZWI6woiVkbMIqwVo6cQkk/5XcefFSw3RIp0DkQ+UTx22DzH22YwMIENjpdkgbwpPhTWAbbt30b+LNfS8=
+	t=1707735293; cv=none; b=bbPkHFBI+S+neCfnnIjUbfF/27SUF5Zvx/onCkkM5u2dDHGO6ZlFnyXEnOje855G4swDaohPtkR3X6IWxDQ79AR9cFUfrSbjapFhzvV4Gueg63XtZosUH8kJ4DeMFNyVnKlovuJhyRC5kx0ORGxopYF3RNtPVUd6GKVS9PKytas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707735321; c=relaxed/simple;
-	bh=EawNjPbCYcS/tAMoeRo1vOT1H5rphtp7aMvvQEXuLbA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MHcp+pnAKTudsme8M9HHXbqYC8ji/akbquOHpjYIeFgKmxhDJOaDAGPPYK3VN6/Kll2Jjotn8P+9px0SLKr68TxVg6OdwMAXuo08W4k3CpyJILOPZgc2LLFcSNkgS9d0spPlEPEChsn+EVetqy6plq56E0WbPQqTd6vqFGcncio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Xu1kwmSu; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CAgHcb004087;
-	Mon, 12 Feb 2024 10:54:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=zoVRmRi8SldJa0D8D0wv+7S4X/v7cfA5ay35VLyY9l4=;
- b=Xu1kwmSu6Aorj1i1sDCBWstHrix6T+AEiVK037yo4yRHX0CITslpJXem8tD1ezVBm4L3
- HnQUueSsPp9naidq8IUXdLJYQooagAzKEUZT7XH0hlUI0mieGpEJPVdVb4s9xF9BcbCu
- ExrxuxvKvNAOPivEVVoKJ9afYDqymfFjwD/K9RwjX6vOSv4Vxx4ZfE9d1hYmTUmzaULm
- UlLF6lbcybPIlA1MycZ79RrgEcw9wO71m9Gd/mnikW/DyWzRmiFc0HYleSSZZO65E9ok
- JZlfW81n1F0GCw1i9ebyfqhanHJeSo0msDhqOSKnjJthsxbmD38DYVqWL85Ge23A7ODR Pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7htf8fnd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 10:54:57 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CAgxmI006433;
-	Mon, 12 Feb 2024 10:54:57 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7htf8fmu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 10:54:57 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41C8j2ov009728;
-	Mon, 12 Feb 2024 10:54:55 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6p62fk2b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 10:54:55 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CAsom918023054
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 Feb 2024 10:54:52 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 16E7F20043;
-	Mon, 12 Feb 2024 10:54:50 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C12292004B;
-	Mon, 12 Feb 2024 10:54:45 +0000 (GMT)
-Received: from li-c9696b4c-3419-11b2-a85c-f9edc3bf8a84.in.ibm.com (unknown [9.109.198.187])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 12 Feb 2024 10:54:45 +0000 (GMT)
-From: Nilay Shroff <nilay@linux.ibm.com>
-To: john.g.garry@oracle.com
-Cc: axboe@kernel.dk, brauner@kernel.org, bvanassche@acm.org,
-        dchinner@redhat.com, djwong@kernel.org, hch@lst.de, jack@suse.cz,
-        jbongio@google.com, jejb@linux.ibm.com, kbusch@kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
-        martin.petersen@oracle.com, ming.lei@redhat.com, ojaswin@linux.ibm.com,
-        sagi@grimberg.me, tytso@mit.edu, viro@zeniv.linux.org.uk
-Subject: Re:[PATCH v3 09/15] block: Add checks to merging of atomic writes
-Date: Mon, 12 Feb 2024 16:24:44 +0530
-Message-ID: <20240212105444.43262-1-nilay@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124113841.31824-10-john.g.garry@oracle.com>
-References: <20240124113841.31824-10-john.g.garry@oracle.com>
+	s=arc-20240116; t=1707735293; c=relaxed/simple;
+	bh=JkGNB6EACZs7G0wca90SjCDRR1MMVvxtGzQZVSSTfnA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IGgszcXGxRC59ovSQqfnSlflXw7ZH0e3ANCl63K7ZCVH3ZpGF7fLFaAlgpq13fTnz5TA9Go1aE4zSOOBe8+QJD5nBpUJef8DHyRIfmB0oSFmGzui33S2P0zkUQHrLJ3HMZlfnasAftTObNVxwYO+s+J5qEnEIuUKoCW9sTllpTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BTWytZL9; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5116bf4dcf4so3606075e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:54:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707735289; x=1708340089; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ku8IgqKXgZ1aGnd9uYNvU88mrbVJaBGhSivSTqvjkG4=;
+        b=BTWytZL9jm6F2+TS5DPFO/AbXTPbtMr2r5f1PKSYwA8QBJR3gK9lezWit4QJ3ATDIe
+         4Z+Rzur0CP4VghfftkIUN06Gxk1YMoyg9+kdvxA9/5C1EW6GuRma9FrJKAvFhmdN49pJ
+         4WdsV6zfqZhyX2zQck9zAmCS/ZBfYHEfRSs4QEvBL++iYKWvHtGg8RR1efdArgLFQpYH
+         wn017ZnPMqsnPD+zkGplR90ptl8WgdXZIc3p8j3wxof3EScNlLXmtkAhun607O8SEGCE
+         0Lok48hZepxFl8PNW5RUp57E50ajH/ho95UwKsfT+XVKMfMexck7kvTF+dF98Hfnm+qJ
+         /UYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707735289; x=1708340089;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ku8IgqKXgZ1aGnd9uYNvU88mrbVJaBGhSivSTqvjkG4=;
+        b=FiB1BYIJz2LPzBboHt8+Zb6lUgfRNRI3J8g9J/ZlmvLMCEgNULtEjtOTwWXgPF9GNn
+         9g1wjFe1b/iLlr+RLRl8/y79Kma6/FNtlQ1h/BjfuNkBHgRNH1XUtanNqvG9x3weGp1E
+         vKQ9dGvwTQjQTyfU6axUeuqW8hLN2Ic2KbxiMK3Jfdzbt9r2QFwm6u1BZjgEfgCSwj2w
+         Nm6zGjFNO1BlLciahPbgPMS9m17s8UHCbVkdaOFkFz4ZkXJ8OAhP+3EIEb/DJG6KMdq7
+         JNFTnT7Tqu9hGj9scwQi4UtOWcMeFy6fwBXCrKAiI0AIgYyZimSA0DnZaTV2bcH7+BD0
+         4W5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUiULfOvG58lEzCv4uGKigqI1cHB+GMYyiWBwjcpUk4cj91srxY0QaTswAZYAPQSsOQwrivqJtXKQLxV3m/5BUaxO4xbnMXMqPO9v4U
+X-Gm-Message-State: AOJu0Yzjz1y2qSDxVeQI9Y3v29Uc6Zr/Ug60bhJqMsLtfTGyUmMkVCBw
+	0j1EQKTpOto9NngTxDjrhkWpMd31XG3gu/kMtPCb+ZpoxeeQ/UdSwHi+O0GHhgw=
+X-Google-Smtp-Source: AGHT+IHsBDotn/x5BD/p+sM1GZBMREIr2F7mHACW9xeTtzvtTArG/x3WnIz7chqZs8i/kxyttofBBQ==
+X-Received: by 2002:ac2:48ae:0:b0:511:4e6a:12e7 with SMTP id u14-20020ac248ae000000b005114e6a12e7mr4069980lfg.58.1707735289337;
+        Mon, 12 Feb 2024 02:54:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXUuuWtapF0T9cozNGQIW32rnMy0ZE0ChapQXoo6k9hEeUmQFrGZtzDoVmADFxRBSSv7TKPzCfJ+KWfhX3gUX/B1U59ToS1llc6o6EfieZ+6YU1SspBUAhquTrJARdDo0qlcbKX8dJdRAF6565A1DbA6QB8vjdQ0z+kbXgdpbgOlVoyDpcdzHcq3bsnCwIP9zf0JbCorKy+3QM5Bvur0hegGkHnZI5UYhD6BNrrSjvprPvI9Yz5XaETCR2+oCrs518A3ROWDqehNSZuNa9Kvodvut9mmnsG8RX6o7nkaLINYEMBfie2PIqWsBS1nBhvyFHb8OJh2u32cOYUuB9gk+rhopDWrPNPxmNgLLRA+VxCDaJ6D9tMYFvmgmSSSZdCS5r+a3giOYgrPCtcFfa0nV14VJMObggr
+Received: from krzk-bin.. ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b00410794ddfc6sm8349380wms.35.2024.02.12.02.54.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 02:54:48 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH net-next] dt-bindings: net: qca,ar9331: convert to DT schema
+Date: Mon, 12 Feb 2024 11:54:45 +0100
+Message-Id: <20240212105445.45341-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: l6UR2kJ2av9VC-Gz59rrtIFBEPbdj0UY
-X-Proofpoint-ORIG-GUID: Q0gM8ieRkli4blZ8gcHTGllf5lrbi8pv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-12_07,2024-02-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
- mlxscore=0 mlxlogscore=999 impostorscore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 malwarescore=0 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402120082
+Content-Transfer-Encoding: 8bit
 
->+static bool rq_straddles_atomic_write_boundary(struct request *rq,=0D
->+					unsigned int front,=0D
->+					unsigned int back)=0D
->+{=0D
->+	unsigned int boundary =3D queue_atomic_write_boundary_bytes(rq->q);=0D
->+	unsigned int mask, imask;=0D
->+	loff_t start, end;=0D
->+=0D
->+	if (!boundary)=0D
->+		return false;=0D
->+=0D
->+	start =3D rq->__sector << SECTOR_SHIFT;=0D
->+	end =3D start + rq->__data_len;=0D
->+=0D
->+	start -=3D front;=0D
->+	end +=3D back;=0D
->+=0D
->+	/* We're longer than the boundary, so must be crossing it */=0D
->+	if (end - start > boundary)=0D
->+		return true;=0D
->+=0D
->+	mask =3D boundary - 1;=0D
->+=0D
->+	/* start/end are boundary-aligned, so cannot be crossing */=0D
->+	if (!(start & mask) || !(end & mask))=0D
->+		return false;=0D
->+=0D
->+	imask =3D ~mask;=0D
->+=0D
->+	/* Top bits are different, so crossed a boundary */=0D
->+	if ((start & imask) !=3D (end & imask))=0D
->+		return true;=0D
->+=0D
->+	return false;=0D
->+}=0D
->+=0D
-=0D
-Shall we ensure here that we don't cross max limit of atomic write supporte=
-d by =0D
-device? It seems that if the boundary size is not advertized by the device =
-=0D
-(in fact, I have one NVMe drive which has boundary size zero i.e. nabo/nabs=
-pf/=0D
-nawupf are all zero but awupf is non-zero) then we (unconditionally) allow =
-=0D
-merging. However it may be possible that post merging the total size of the=
- =0D
-request may exceed the atomic-write-unit-max-size supported by the device a=
-nd =0D
-if that happens then most probably we would be able to catch it very late i=
-n =0D
-the driver code (if the device is NVMe). =0D
-=0D
-So is it a good idea to validate here whether we could potentially exceed =
-=0D
-the atomic-write-max-unit-size supported by device before we allow merging?=
- =0D
-In case we exceed the atomic-write-max-unit-size post merge then don't allo=
-w=0D
-merging?=0D
- =0D
-Thanks,=0D
---Nilay=0D
-=0D
+Convert the Qualcomm Atheros AR9331 built-in switch bindings to DT
+schema.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+---
+
+DSA switch bindings still bring me headache...
+---
+ .../devicetree/bindings/net/dsa/ar9331.txt    | 147 ----------------
+ .../bindings/net/dsa/qca,ar9331.yaml          | 161 ++++++++++++++++++
+ 2 files changed, 161 insertions(+), 147 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/dsa/ar9331.txt
+ create mode 100644 Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
+
+diff --git a/Documentation/devicetree/bindings/net/dsa/ar9331.txt b/Documentation/devicetree/bindings/net/dsa/ar9331.txt
+deleted file mode 100644
+index f824fdae0da2..000000000000
+--- a/Documentation/devicetree/bindings/net/dsa/ar9331.txt
++++ /dev/null
+@@ -1,147 +0,0 @@
+-Atheros AR9331 built-in switch
+-=============================
+-
+-It is a switch built-in to Atheros AR9331 WiSoC and addressable over internal
+-MDIO bus. All PHYs are built-in as well.
+-
+-Required properties:
+-
+- - compatible: should be: "qca,ar9331-switch"
+- - reg: Address on the MII bus for the switch.
+- - resets : Must contain an entry for each entry in reset-names.
+- - reset-names : Must include the following entries: "switch"
+- - interrupt-parent: Phandle to the parent interrupt controller
+- - interrupts: IRQ line for the switch
+- - interrupt-controller: Indicates the switch is itself an interrupt
+-   controller. This is used for the PHY interrupts.
+- - #interrupt-cells: must be 1
+- - mdio: Container of PHY and devices on the switches MDIO bus.
+-
+-See Documentation/devicetree/bindings/net/dsa/dsa.txt for a list of additional
+-required and optional properties.
+-Examples:
+-
+-eth0: ethernet@19000000 {
+-	compatible = "qca,ar9330-eth";
+-	reg = <0x19000000 0x200>;
+-	interrupts = <4>;
+-
+-	resets = <&rst 9>, <&rst 22>;
+-	reset-names = "mac", "mdio";
+-	clocks = <&pll ATH79_CLK_AHB>, <&pll ATH79_CLK_AHB>;
+-	clock-names = "eth", "mdio";
+-
+-	phy-mode = "mii";
+-	phy-handle = <&phy_port4>;
+-};
+-
+-eth1: ethernet@1a000000 {
+-	compatible = "qca,ar9330-eth";
+-	reg = <0x1a000000 0x200>;
+-	interrupts = <5>;
+-	resets = <&rst 13>, <&rst 23>;
+-	reset-names = "mac", "mdio";
+-	clocks = <&pll ATH79_CLK_AHB>, <&pll ATH79_CLK_AHB>;
+-	clock-names = "eth", "mdio";
+-
+-	phy-mode = "gmii";
+-
+-	fixed-link {
+-		speed = <1000>;
+-		full-duplex;
+-	};
+-
+-	mdio {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		switch10: switch@10 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-
+-			compatible = "qca,ar9331-switch";
+-			reg = <0x10>;
+-			resets = <&rst 8>;
+-			reset-names = "switch";
+-
+-			interrupt-parent = <&miscintc>;
+-			interrupts = <12>;
+-
+-			interrupt-controller;
+-			#interrupt-cells = <1>;
+-
+-			ports {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-
+-				switch_port0: port@0 {
+-					reg = <0x0>;
+-					ethernet = <&eth1>;
+-
+-					phy-mode = "gmii";
+-
+-					fixed-link {
+-						speed = <1000>;
+-						full-duplex;
+-					};
+-				};
+-
+-				switch_port1: port@1 {
+-					reg = <0x1>;
+-					phy-handle = <&phy_port0>;
+-					phy-mode = "internal";
+-				};
+-
+-				switch_port2: port@2 {
+-					reg = <0x2>;
+-					phy-handle = <&phy_port1>;
+-					phy-mode = "internal";
+-				};
+-
+-				switch_port3: port@3 {
+-					reg = <0x3>;
+-					phy-handle = <&phy_port2>;
+-					phy-mode = "internal";
+-				};
+-
+-				switch_port4: port@4 {
+-					reg = <0x4>;
+-					phy-handle = <&phy_port3>;
+-					phy-mode = "internal";
+-				};
+-			};
+-
+-			mdio {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-
+-				interrupt-parent = <&switch10>;
+-
+-				phy_port0: phy@0 {
+-					reg = <0x0>;
+-					interrupts = <0>;
+-				};
+-
+-				phy_port1: phy@1 {
+-					reg = <0x1>;
+-					interrupts = <0>;
+-				};
+-
+-				phy_port2: phy@2 {
+-					reg = <0x2>;
+-					interrupts = <0>;
+-				};
+-
+-				phy_port3: phy@3 {
+-					reg = <0x3>;
+-					interrupts = <0>;
+-				};
+-
+-				phy_port4: phy@4 {
+-					reg = <0x4>;
+-					interrupts = <0>;
+-				};
+-			};
+-		};
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml b/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
+new file mode 100644
+index 000000000000..5c4f789a75fb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
+@@ -0,0 +1,161 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/dsa/qca,ar9331.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Atheros AR9331 built-in switch
++
++maintainers:
++  - Oleksij Rempel <o.rempel@pengutronix.de>
++
++description:
++  Qualcomm Atheros AR9331 is a switch built-in to Atheros AR9331 WiSoC and
++  addressable over internal MDIO bus. All PHYs are built-in as well.
++
++properties:
++  compatible:
++    const: qca,ar9331-switch
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    const: 1
++
++  mdio:
++    $ref: /schemas/net/mdio.yaml#
++    unevaluatedProperties: false
++    properties:
++      interrupt-parent: true
++
++    patternProperties:
++      '@[0-9a-f]+$':
++        type: object
++        unevaluatedProperties: false
++
++        properties:
++          reg: true
++          interrupts:
++            maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    items:
++      - const: switch
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - '#interrupt-cells'
++  - mdio
++  - ports
++  - resets
++  - reset-names
++
++allOf:
++  - $ref: dsa.yaml#/$defs/ethernet-ports
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    mdio {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        switch10: switch@10 {
++            compatible = "qca,ar9331-switch";
++            reg = <0x10>;
++
++            interrupt-parent = <&miscintc>;
++            interrupts = <12>;
++            interrupt-controller;
++            #interrupt-cells = <1>;
++
++            resets = <&rst 8>;
++            reset-names = "switch";
++
++            ports {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                port@0 {
++                    reg = <0x0>;
++                    ethernet = <&eth1>;
++
++                    phy-mode = "gmii";
++
++                    fixed-link {
++                        speed = <1000>;
++                        full-duplex;
++                    };
++                };
++
++                port@1 {
++                    reg = <0x1>;
++                    phy-handle = <&phy_port0>;
++                    phy-mode = "internal";
++                };
++
++                port@2 {
++                    reg = <0x2>;
++                    phy-handle = <&phy_port1>;
++                    phy-mode = "internal";
++                };
++
++                port@3 {
++                    reg = <0x3>;
++                    phy-handle = <&phy_port2>;
++                    phy-mode = "internal";
++                };
++
++                port@4 {
++                    reg = <0x4>;
++                    phy-handle = <&phy_port3>;
++                    phy-mode = "internal";
++                };
++            };
++
++            mdio {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                interrupt-parent = <&switch10>;
++
++                phy_port0: ethernet-phy@0 {
++                    reg = <0x0>;
++                    interrupts = <0>;
++                };
++
++                phy_port1: ethernet-phy@1 {
++                    reg = <0x1>;
++                    interrupts = <0>;
++                };
++
++                phy_port2: ethernet-phy@2 {
++                    reg = <0x2>;
++                    interrupts = <0>;
++                };
++
++                phy_port3: ethernet-phy@3 {
++                    reg = <0x3>;
++                    interrupts = <0>;
++                };
++
++                phy_port4: ethernet-phy@4 {
++                    reg = <0x4>;
++                    interrupts = <0>;
++                };
++            };
++        };
++    };
+-- 
+2.34.1
+
 
