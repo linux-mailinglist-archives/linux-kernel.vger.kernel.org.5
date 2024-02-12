@@ -1,133 +1,332 @@
-Return-Path: <linux-kernel+bounces-62293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A033851E2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:51:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1E77851E2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:53:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38A281F24CED
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:51:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A986E2842D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011EB47F6A;
-	Mon, 12 Feb 2024 19:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CDBC47A40;
+	Mon, 12 Feb 2024 19:53:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oNTEXslP"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iq5ZBchw"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8217445C14;
-	Mon, 12 Feb 2024 19:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081C645C14;
+	Mon, 12 Feb 2024 19:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707767459; cv=none; b=gWUk4rXosBwMvX/JJkZmT6a7Onb/dtOLTdKmFcapENmUDjFb05dIFSRRdMLURQzlnoZIIgd+dVTuF6osbuXZxZJAiVzDzkNIBRLUkhNMK+nodATUFlVyOwkCyfvMj0FixH/8YhRuzgs6HGiFmgcdpS3VMVo6qdYGPvgtO3+Yp9Q=
+	t=1707767612; cv=none; b=ZxN2oYniAYpe7nWJOdtHE1rGdX6Rc+CMTyxkgr829g+n7QO5CKpgUQjrejdZOr5iDZucIV63mi7+FQH5vqTxhRTEBcb+B0Lh3OkQuhuy+ImDf2nzDJZJWXT3jvgG4V2kctmp/qPEyrAb+b2LwuYFFDP9al5XIBJP0xnrQq4ZhDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707767459; c=relaxed/simple;
-	bh=xygywyVHBKkxm+gRiy6QRXMZqerCVsdLdDFpylmsoJo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N+SCEjSlLG3A0IitUj80HCGL+t/qB2s6/JzGYdJxk29DT2yNmvz++QZW6QJ+hM6m20zy2ixkXmOthrHWVYpp9JlPhwgC3HEQBSGiODi/MurLvVByoC4qV4t9dWwGrMylI0FcUo4vAudD2OBl505J8yiHT2KbM2tuzm9pvx6gpVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oNTEXslP; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CJeoCH004547;
-	Mon, 12 Feb 2024 19:50:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=1qWSDMw9Z9QAM3QnEVb9qYve2metSqJEdiPenNizCLs=;
- b=oNTEXslPSizSVjjyeDq+EMgL7tHDAlvmINDHuNhX0Qw9a0kRcOA21dnIkohMrgpOwCxc
- F/EV1mQnK1eH1kfddU/Le1U8Kr2eEOela0IR/FrjWmuABDwRUCfUhiX6tANXz/U66YT5
- SoaLxlxIVzNgO0Vv89KEamoLRorIWb3vWnk9dHzGfKsurRrdT5RiYIQH9pW5KOtTh4gj
- nONby+BsDdxWtTEZ9GfO2Ew8XTzUNsUOPFETpM89+wA/SN2++YNg+z4ojT7H1rrA0Ahi
- EeeEEQGAJu5GPiCCirTcXQ+xtf2CTb6tRa9e8prRbeYn+x9Oreg4++eHLFaO7eHj3YQI zA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7rq41tkw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 19:50:30 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CJf0oB005378;
-	Mon, 12 Feb 2024 19:50:29 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7rq41tj5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 19:50:29 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CJ0bJE004287;
-	Mon, 12 Feb 2024 19:50:27 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6kv030db-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 19:50:27 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CJoOjK4981448
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 Feb 2024 19:50:26 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 43C3458059;
-	Mon, 12 Feb 2024 19:50:24 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8A09E58066;
-	Mon, 12 Feb 2024 19:50:22 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 12 Feb 2024 19:50:22 +0000 (GMT)
-Message-ID: <d86d658e-7025-491c-b0b7-6fb4d7247ea6@linux.ibm.com>
-Date: Mon, 12 Feb 2024 14:50:22 -0500
+	s=arc-20240116; t=1707767612; c=relaxed/simple;
+	bh=SYpILfxnJBftX3d8ipN1rFbW+nAmqKnfLZBCjozWMYM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o1HAMe8DI1mRY8B/GVgyIAqC+tY2Dnmyb9MhkiYKOqmisODQFgzmOL9jb1F67s6rgV2b9Y3HFVnleEVyhoieKI2kKjMM8NmGdC2hyfz8TsmNNwudLL+ylYy8SKz63OivDa2c47r+xooGTpJFV1ztSW1kW5c9oxqZAKIyioltHm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iq5ZBchw; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d07ffa0a9cso41150861fa.2;
+        Mon, 12 Feb 2024 11:53:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707767608; x=1708372408; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K7fm4hX9W12F7JLAHxenWMNhY+lYQBb+lHuuTkMdNBo=;
+        b=iq5ZBchwpfkEzyEZmAQk/2K6nVsPqN5/lTVqSBMCi9E+NFoPCHY2vFlEWRh4notaxG
+         zTyoHLvhdL6kRzpjrRzKqoH8KhyQ03C8DOYOyfhKfATFk0xydnYKgeLiOL6V3Q4ZABRG
+         7wGdgx+bR3iMYzC6OTjJ4imguIbvJiVcOc+vvJX5pJBCa+EsAcqkeu6KNAhUq68P2Nx7
+         7vmrDvKHvYxWQ+fl/WyKXhfpYwVJIEcykfvWcs8iNbeN5HovVBW5S4dQUAo+qIL11+UO
+         39XvB+85sN8RdNAkeTMWMxsiuXqZtph0rjQH633/cmQnMR21RuQpUOl49jmdU+SY8Fa7
+         BZHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707767608; x=1708372408;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K7fm4hX9W12F7JLAHxenWMNhY+lYQBb+lHuuTkMdNBo=;
+        b=EPCe85Mky8Vblg8QOuRcfntu63ZGrDVnGsBkHXoo9hMXDTV4HGW1cskBCucXeptaOA
+         m3C+tTS29grLnRd++Pzs6J9Tox+46r1xyPPWLh6DSDh+CT4VZQHfDsyEm4IConvgwu/+
+         4AgbrQYQIlvgzyIIjOIwJioJ2hi8bPMPIbJUvpWCjl6hXyTMyqJ4QPIkrCXktnHAFQ+0
+         JXAqGQf9SXyw5cYc3IDojg79jz7Qkz4DSfFvYre8k+BCjN39WfKxQYFAbrjnu+B4GdUg
+         HuCm4nelNfW6O7nrcLZPbV8hL7Q+pKiknWvOU7o97VpT6eUxt6rfnLW+clDzp4atVD+Y
+         VHyg==
+X-Gm-Message-State: AOJu0YxKE/1RT+G7W0KMmdbETOEoMFccZDK+AYjkoB/YNCdJSWntWsku
+	mR0Iy3iy4sJO1kHI1JybIX9yplHYEbNYI5vGDoJYmjO918MidUxI4OtxB817FGK8jZc9TDHX+A4
+	1R8f/mOuEQGdLf8abGi6B85l6bDM=
+X-Google-Smtp-Source: AGHT+IF86cB2lsmSMqTMtcHqjmIrV84/7dmv2VDTK/yXJRQOMJBizDxjO6x/EUsrBw9c0Mq/IZ6Y1/OC/PR6a5YUUf8=
+X-Received: by 2002:a2e:879a:0:b0:2d0:a6d3:56c6 with SMTP id
+ n26-20020a2e879a000000b002d0a6d356c6mr4751073lji.32.1707767607601; Mon, 12
+ Feb 2024 11:53:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 25/25] integrity: Remove LSM
-Content-Language: en-US
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
- <20240115181809.885385-26-roberto.sassu@huaweicloud.com>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20240115181809.885385-26-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ahnTHdsVblC8Ug3sV-oVFAGWgTXNd1r4
-X-Proofpoint-GUID: aKlEuRg5f8xAaWyCHensofr4krYSlqAL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-12_16,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=966
- adultscore=0 mlxscore=0 suspectscore=0 phishscore=0 clxscore=1015
- malwarescore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402120152
+References: <20240206182559.32264-1-ryncsn@gmail.com> <CAF8kJuMe7MYsAhwX804jZfO4w6kt74YMZXuz+FqUbZEt70p7Rg@mail.gmail.com>
+ <CAGsJ_4zF+U5JG8XYANe2x0VbjovokFCirf=YLHOfO3E-U8b4sg@mail.gmail.com>
+ <CAF8kJuOBtT+n5CM2s1Mobk5fzpgetCSMTZ-nb8+0KUj1W5f+Mw@mail.gmail.com>
+ <CAMgjq7CV-Cxar8cRj1SxB4ZtO8QPTUuA5mj9_vQro7sm+eFH=w@mail.gmail.com>
+ <CAF8kJuOQqqqM6MvOvo4PyOhT9eyNFreQjWC+TybGYDgXRfpweA@mail.gmail.com>
+ <CAMgjq7CBV4dVo7ETr0K1VbLE=M7T0Go5=7pHBUY6=o0cuXaZXg@mail.gmail.com>
+ <ZcPMi6DX5PN4WwHr@google.com> <CAMgjq7AJo1SKzRc-w5UuK3Ojk5PaXxRV2_G2Ww9BGgiNRp_5Eg@mail.gmail.com>
+ <87eddnxy47.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAMgjq7Cg+8zy25Cif2DJ0Qey3bC=Ni0q7xHNO9ka+ezoK1rgxA@mail.gmail.com>
+ <CAF8kJuNXr7CT7-homTfOX=XYfie2woPbcS9sKkt4R3HSiHUmng@mail.gmail.com> <CAMgjq7A+B4s52XYOFSan0fzUV-7o-GeAD3pfKkQtHo6uPHbrxQ@mail.gmail.com>
+In-Reply-To: <CAMgjq7A+B4s52XYOFSan0fzUV-7o-GeAD3pfKkQtHo6uPHbrxQ@mail.gmail.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Tue, 13 Feb 2024 03:53:09 +0800
+Message-ID: <CAMgjq7BvTJmxrWQOJvkLt4g_jnvmx07NdU63sGeRMGde4Ov=gA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/swap: fix race when skipping swapcache
+To: Chris Li <chrisl@kernel.org>
+Cc: "Huang, Ying" <ying.huang@intel.com>, Minchan Kim <minchan@kernel.org>, 
+	Barry Song <21cnbao@gmail.com>, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Yu Zhao <yuzhao@google.com>, 
+	Barry Song <v-songbaohua@oppo.com>, SeongJae Park <sj@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Feb 9, 2024 at 1:30=E2=80=AFPM Kairui Song <ryncsn@gmail.com> wrote=
+:
+>
+> On Fri, Feb 9, 2024 at 3:42=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote=
+:
+> >
+> > On Thu, Feb 8, 2024 at 11:01=E2=80=AFAM Kairui Song <ryncsn@gmail.com> =
+wrote:
+> > >
+> > > On Thu, Feb 8, 2024 at 2:36=E2=80=AFPM Huang, Ying <ying.huang@intel.=
+com> wrote:
+> > > >
+> > > > Kairui Song <ryncsn@gmail.com> writes:
+> > > >
+> > > > > On Thu, Feb 8, 2024 at 2:31=E2=80=AFAM Minchan Kim <minchan@kerne=
+l.org> wrote:
+> > > > >>
+> > > > >> On Wed, Feb 07, 2024 at 12:06:15PM +0800, Kairui Song wrote:
+> > > >
+> > > > [snip]
+> > > >
+> > > > >> >
+> > > > >> > So I think the thing is, it's getting complex because this pat=
+ch
+> > > > >> > wanted to make it simple and just reuse the swap cache flags.
+> > > > >>
+> > > > >> I agree that a simple fix would be the important at this point.
+> > > > >>
+> > > > >> Considering your description, here's my understanding of the oth=
+er idea:
+> > > > >> Other method, such as increasing the swap count, haven't proven =
+effective
+> > > > >> in your tests. The approach risk forcing racers to rely on the s=
+wap cache
+> > > > >> again and the potential performance loss in race scenario.
+> > > > >>
+> > > > >> While I understand that simplicity is important, and performance=
+ loss
+> > > > >> in this case may be infrequent, I believe swap_count approach co=
+uld be a
+> > > > >> suitable solution. What do you think?
+> > > > >
+> > > > > Hi Minchan
+> > > > >
+> > > > > Yes, my main concern was about simplicity and performance.
+> > > > >
+> > > > > Increasing swap_count here will also race with another process fr=
+om
+> > > > > releasing swap_count to 0 (swapcache was able to sync callers in =
+other
+> > > > > call paths but we skipped swapcache here).
+> > > >
+> > > > What is the consequence of the race condition?
+> > >
+> > > Hi Ying,
+> > >
+> > > It will increase the swap count of an already freed entry, this race
+> > > with multiple swap free/alloc logic that checks if count =3D=3D
+> > > SWAP_HAS_CACHE or sets count to zero, or repeated free of an entry,
+> > > all result in random corruption of the swap map. This happens a lot
+> > > during stress testing.
+> >
+> > In theory, the original code before your patch can get into a
+> > situation similar to what you try to avoid.
+> > CPU1 enters the do_swap_page() with entry swap count =3D=3D 1 and
+> > continues handling the swap fault without swap cache.  Then some
+> > operation bumps up the swap entry count and CPU2 enters the
+> > do_swap_page() racing with CPU1 with swap count =3D=3D 2. CPU2 will nee=
+d
+> > to go through the swap cache case.  We still need to handle this
+> > situation correctly.
+>
+> Hi Chris,
+>
+> This won't happen, nothing can bump the swap entry count unless it's
+> swapped in and freed. There are only two places that call
+> swap_duplicate: unmap or fork, unmap need page mapped and entry alloc,
+> so it won't happen unless we hit the entry reuse issue. Fork needs the
+> VMA lock which we hold it during page fault.
+>
+> > So the complexity is already there.
+> >
+> > If we can make sure the above case works correctly, then one way to
+> > avoid the problem is just send the CPU2 to use the swap cache (without
+> > the swap cache by-passing).
+>
+> Yes, more auditing of existing code and explanation is needed to
+> ensure things won't go wrong, that's the reason I tried to avoid
+> things from going too complex...
+>
+> > > > > So the right step is: 1. Lock the cluster/swap lock; 2. Check if =
+still
+> > > > > have swap_count =3D=3D 1, bail out if not; 3. Set it to 2;
+> > > > > __swap_duplicate can be modified to support this, it's similar to
+> > > > > existing logics for SWAP_HAS_CACHE.
+> > > > >
+> > > > > And swap freeing path will do more things, swapcache clean up nee=
+ds to
+> > > > > be handled even in the bypassing path since the racer may add it =
+to
+> > > > > swapcache.
+> > > > >
+> > > > > Reusing SWAP_HAS_CACHE seems to make it much simpler and avoided =
+many
+> > > > > overhead, so I used that way in this patch, the only issue is
+> > > > > potentially repeated page faults now.
+> > > > >
+> > > > > I'm currently trying to add a SWAP_MAP_LOCK (or SWAP_MAP_SYNC, I'=
+m bad
+> > > > > at naming it) special value, so any racer can just spin on it to =
+avoid
+> > > > > all the problems, how do you think about this?
+> > > >
+> > > > Let's try some simpler method firstly.
+> > >
+> > > Another simpler idea is, add a schedule() or
+> > > schedule_timeout_uninterruptible(1) in the swapcache_prepare failure
+> > > path before goto out (just like __read_swap_cache_async). I think thi=
+s
+> > > should ensure in almost all cases, PTE is ready after it returns, als=
+o
+> > > yields more CPU.
+> >
+> > I mentioned in my earlier email and Ying points out that as well.
+> > Looping waiting inside do_swap_page() is bad because it is holding
+> > other locks.
+>
+> It's not looping here though, just a tiny delay, since
+> SWP_SYNCHRONOUS_IO is supposed to be super fast devices so a tiny
+> delay should be enough.
+>
+> > Sorry I started this idea but it seems no good.
+>
+> Not at all, more reviewing helps to find a better solution :)
+>
+> > If we can have CPU2 make forward progress without retrying
+> > the page fault would be the best, if possible.
+>
+> Yes, making CPU2 fall back to cached swapin path is doable after
+> careful auditing. Just CPU2 is usually slower than CPU1 due to cache
+> and timing, so what it does will most likely be in vain and need to be
+> reverted, causing more work for both code logic and CPU. The case of
+> the race (CPU2 went faster) is very rare.
+>
+> I'm not against the idea of bump count, it's better if things that can
+> be done without introducing too much noise. Will come back after more
+> tests and work on this.
 
+Hi,
 
-On 1/15/24 13:18, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> Since now IMA and EVM use their own integrity metadata, it is safe to
-> remove the 'integrity' LSM, with its management of integrity metadata.
-> 
-> Keep the iint.c file only for loading IMA and EVM keys at boot, and for
-> creating the integrity directory in securityfs (we need to keep it for
-> retrocompatibility reasons).
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+After some more testing, I still think bump swap count is a bad idea
+here. Besides the issues I mentioned above, adding folio into cache is
+fundamentally in conflict with the problem we are trying to solve:
+folio in swapcache can be swapped out without allocating a new entry,
+so the entry reuse issue will be much more serious.
 
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+If we want to avoid this we have to release the cache unconditionally
+before folio unlock because it can't tell if there is a parallel cache
+bypassing swapin going on or not. This is unacceptable, it breaks
+normal usage of swap cache. There are also other potential issues like
+read ahead, race causing stalled folio remain in swap cache, so I dont
+think this is a good approach.
+
+Instead if we add a schedule or schedule_timeout_uninterruptible(1),
+it seems quite enough to avoid repeated page faults. I did following
+test with the reproducer I provided in the commit message:
+
+Using ZRAM instead of brd for more realistic workload:
+$ perf stat -e minor-faults,major-faults -I 30000 ./a.out
+
+Unpatched kernel:
+#           time             counts unit events
+    30.000096504             33,089      minor-faults:u
+    30.000096504            958,745      major-faults:u
+    60.000375308             22,150      minor-faults:u
+    60.000375308          1,221,665      major-faults:u
+    90.001062176             24,840      minor-faults:u
+    90.001062176          1,005,427      major-faults:u
+   120.004233268             23,634      minor-faults:u
+   120.004233268          1,045,596      major-faults:u
+   150.004530091             22,358      minor-faults:u
+   150.004530091          1,097,871      major-faults:u
+
+Patched kernel:
+#           time             counts unit events
+    30.000069753            280,094      minor-faults:u
+    30.000069753          1,198,871      major-faults:u
+    60.000415915            436,862      minor-faults:u
+    60.000415915            919,860      major-faults:u
+    90.000651670            359,176      minor-faults:u
+    90.000651670            955,340      major-faults:u
+   120.001088135            289,137      minor-faults:u
+   120.001088135            992,317      major-faults:u
+
+Indeed there is a huge increase of minor page faults, which indicate
+the raced path returned without handling the fault. This reproducer
+tries to maximize the race chance so the reading is more terrifying
+than usual.
+
+But after adding a schedule/schedule_timeout_uninterruptible(1) after
+swapcache_prepare failed, still using the same test:
+
+Patched kernel (adding a schedule() before goto out):
+#           time             counts unit events
+    30.000335901             43,066      minor-faults:u
+    30.000335901          1,163,232      major-faults:u
+    60.034629687             35,652      minor-faults:u
+    60.034629687            844,188      major-faults:u
+    90.034941472             34,957      minor-faults:u
+    90.034941472          1,218,174      major-faults:u
+   120.035255386             36,241      minor-faults:u
+   120.035255386          1,073,395      major-faults:u
+   150.035535786             33,057      minor-faults:u
+   150.035535786          1,171,684      major-faults:u
+
+Patched kernel (adding a schedule_timeout_uninterruptible(1) before goto ou=
+t):
+#           time             counts unit events
+    30.000044452             26,748      minor-faults:u
+    30.000044452          1,202,064      major-faults:u
+    60.000317379             19,883      minor-faults:u
+    60.000317379          1,186,152      major-faults:u
+    90.000568779             18,333      minor-faults:u
+    90.000568779          1,151,015      major-faults:u
+   120.000787253             22,844      minor-faults:u
+   120.000787253            887,531      major-faults:u
+   150.001309065             18,900      minor-faults:u
+   150.001309065          1,211,894      major-faults:u
+
+The minor faults are basically the same as before, or even lower since
+other races are also reduced, with no observable performance
+regression so far.
+If the vague margin of this schedule call is still concerning, I think
+another approach is just a new swap map value for parallel cache
+bypassed swapping to loop on.
 
