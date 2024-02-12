@@ -1,276 +1,108 @@
-Return-Path: <linux-kernel+bounces-61742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6EE851618
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:57:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96541851656
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:02:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F49EB25F0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:54:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC92AB2A954
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:54:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766B44DA09;
-	Mon, 12 Feb 2024 13:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F19854E1DF;
+	Mon, 12 Feb 2024 13:44:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="FEuE7F60"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Q8p8h/uC"
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85FD9487A7;
-	Mon, 12 Feb 2024 13:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593654D5A3
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:44:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707745490; cv=none; b=ShYyvrxGXnEPzX+ndFtlxXFbWIlynLBMmov7yhnfwI/Xlws1sJ5CFYkmD3X8JV88lqS06WG+VjLyM42ilf9ZX4bxyYxUMMIb8zVe1LDBIE66puAPeqIZ7RhEFX6PRHqHRt19dwSJkBLYqO92ypcEnq34aOD087g6+mj3kJb27iI=
+	t=1707745492; cv=none; b=KA2HsEBK67jfpk1xKibUcRDvs9lCQbRQrbGfYmc+EixNCm2Y2U3FEx/Xm/Hf+oCNN+w2YQlwzUYQWOcGGl2YIAGmqn5t/+FoGuAqIeSKe5g17t8bqPkmat4RCZVg5EXPaU7o46o7XiJnauurZBvSQg1kw0eQHzE2bf9TokwJ4oI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707745490; c=relaxed/simple;
-	bh=AOujWblAL/Eb3SoFX/DXZmLu4by42Gj1/JOw1DWfuS8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fySjpcaL2IxQt05lXlmeghC7zT53+XBxvoj4/Z5pJTHBLrJftkSs89IUs35S4qzMfI9SO7rCOt6qo4WQKMCsQlsKCHyLm86qNqyTI7d29iv+UKRbI3uOJyRfuUkDT9XxJsLMHNw3Lpw+opET5zXdXadCGYDaAbXIldD53C4lCMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=FEuE7F60; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E59C7FF80D;
-	Mon, 12 Feb 2024 13:44:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707745485;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ntwnUlVjSIXSSPhME4Hzl2L0UVU1UFUtEinrPzePqbc=;
-	b=FEuE7F60GbzlKRHPPJBWauRvqMcuSgV8RV3aIUMUmQyFbdDZBR6GhUc1Icb5cwl4iLA6Wa
-	sG+z4mYAo0SPRU5zatybX2y2De23/gGgNld179CWO46ltbv4YBcOiNVkD07Kjs/i1vCi64
-	mCzPyQZ3KTYcb4UHvLPAsjb7t9GEemSpU7ctBusSKKeC80/u86AdcQ/QbhmdQD/uANZGn3
-	5vlQswfP609J3hRyVVzBonv0Mz9u/WM6jZr6LOm2mKuwN60aCMbe6qXIMqiNgAxJiC1Lup
-	gWZjBn5LqwmE0Fvw9Y3GwX/eNkVvvvk1uuQHaTO++nmygxsej7TK4RnFOQn2KA==
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Mon, 12 Feb 2024 14:44:44 +0100
-Subject: [PATCH v6 13/13] MIPS: mobileye: eyeq5: add pinctrl node & pinmux
- function nodes
+	s=arc-20240116; t=1707745492; c=relaxed/simple;
+	bh=pbQuBXFHw1o0/Z9ineAwD3HEwjXD+2A+xezjlyIhPgk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kjqckJO2yWcTC2nCH0mP2RvDngKcCF78RYoV59RcOztutHdQy8MUNl7dN0wdjq3ErfD+4RQyShGOymAH6K2jDRArj0nd9P4ndtSt45dOAG2s4Yq8VfEB4VOZS+t93xCSVKFoZviuMvsrdWyHUQWmj+tO04F8hj6Y8QQKoU38OYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Q8p8h/uC; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bb9b28acb4so2626895b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:44:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1707745489; x=1708350289; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uGXjdHO8XjU5jzrVV0nG9dx+YzuEyrCWweYCQg9Rxzo=;
+        b=Q8p8h/uCkgyvUNliEmcYatZzPuvEXc2HjzCHNsRTqR5hXrrDeqIXSCMa3ixLO2Swp3
+         l5Wj6rAzysV1p0WIcvuKap+dmB0DhkflDYmipztOGvGSnvy/kjXkJcZHOWmYFKlkHiqz
+         sehTNJ+L30y3C3xxLD8dVEKLP+0m5NP26v7Gm0JCPOCPSqpuTgA7BcQVTjBgnUAVde8E
+         nt2ax0IpqaEtnyS75U3XkVxMcs5V35yOqMlXsKTeMvhRflmWDqzb05lra66Z+XT9FYrQ
+         Nm1CnbuEUvfBbI6zf59c1HQPKkygliHRTBdrbUWJMDgE/RtZIM68pXvy8e8GW3kfQeQ8
+         dPSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707745489; x=1708350289;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uGXjdHO8XjU5jzrVV0nG9dx+YzuEyrCWweYCQg9Rxzo=;
+        b=JBl5qifgKyqj+zKnk0WQcqhd6zZPdAw2bkDkdvmwqgvfHIIsM6e3HL8qKXOd3HSnYy
+         LUuf8spw+vEiuvK90F1BWpAm6ANRoCELY6ZpfkMX3Ysx6mORqhnVHP6Bq7V/IrUgQbxx
+         w2lMQfA7xzF/vu5i1/z/0ZtKG3lxTTjd6YNfIPFfihLDYDtFkGeysbwvHr0kXHmGB23z
+         Mz872oFbvSO7fGytZM//02LiKg6fMR/URrVyURL8FtEnj8c7SRjk/Rc+x0JTaOSHM9QL
+         LxBKBhyq8zYtyytYigpjvgz/4UikbbXA1PXBHdMSLjIcPGr1etPUuazvDA687AXlNxSp
+         O41A==
+X-Gm-Message-State: AOJu0Yw4pmRyPkkqmeHmdOIL7yY1EI/38M+79h9ZMd/J0Xs3wRiD2nwk
+	TpTpXwNXqZ4H8c+FU192FV5yiLmUKuChrmTeyAlZPqrF5TmabMx1xtPT7DD0r7k=
+X-Google-Smtp-Source: AGHT+IFGR9r99HJE7DQeQZXr1YOwwDxduMFfkDo90GDDsOOblr8csu3ww1+fSvm/uT4KLESekErhUw==
+X-Received: by 2002:a05:6808:650a:b0:3c0:3e27:b122 with SMTP id fm10-20020a056808650a00b003c03e27b122mr1273092oib.39.1707745489408;
+        Mon, 12 Feb 2024 05:44:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUuODdFqYOxs3shUrxfjF20Q5OP5KgiYqXfaW9qGZ26oFB+YjdxhFIR11ymkSOn0GJ+uY4cO5Uqanl4Fkvjby/2kJylAJPjfUWOVRo8tRQzejeVVC+YQY8QJaiViARy3zC6iz+zG2K+5+blbybY3SaKScl/6A88S+6z4kY4N2VUWcAw4ZYyogeK6f136AipGMX1qGcsUS74ahs=
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id dj9-20020a056808418900b003c03ae77e0csm51778oib.51.2024.02.12.05.44.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 05:44:48 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rZWc4-00Gwv7-4x;
+	Mon, 12 Feb 2024 09:44:48 -0400
+Date: Mon, 12 Feb 2024 09:44:48 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Kirti Wankhede <kwankhede@nvidia.com>,
+	Alex Williamson <alex.williamson@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] vfio: mdev: make mdev_bus_type const
+Message-ID: <20240212134448.GC765010@ziepe.ca>
+References: <20240208-bus_cleanup-vfio-v1-1-ed5da3019949@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240212-mbly-clk-v6-13-c46fa1f93839@bootlin.com>
-References: <20240212-mbly-clk-v6-0-c46fa1f93839@bootlin.com>
-In-Reply-To: <20240212-mbly-clk-v6-0-c46fa1f93839@bootlin.com>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: b4 0.12.4
-X-GND-Sasl: theo.lebrun@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240208-bus_cleanup-vfio-v1-1-ed5da3019949@marliere.net>
 
-Pins on this platform have two functions: GPIO or something-else. We
-create function nodes for each something-else based on functions.
+On Thu, Feb 08, 2024 at 05:02:04PM -0300, Ricardo B. Marliere wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the mdev_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+>  drivers/vfio/mdev/mdev_driver.c  | 2 +-
+>  drivers/vfio/mdev/mdev_private.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-UART nodes are present in the platform devicetree. Add pinctrl to them
-now that the pin controller is supported.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
----
- arch/mips/boot/dts/mobileye/eyeq5-pins.dtsi | 125 ++++++++++++++++++++++++++++
- arch/mips/boot/dts/mobileye/eyeq5.dtsi      |  13 +++
- 2 files changed, 138 insertions(+)
-
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5-pins.dtsi b/arch/mips/boot/dts/mobileye/eyeq5-pins.dtsi
-new file mode 100644
-index 000000000000..42acda13e57a
---- /dev/null
-+++ b/arch/mips/boot/dts/mobileye/eyeq5-pins.dtsi
-@@ -0,0 +1,125 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+
-+/*
-+ * Default pin configuration for Mobileye EyeQ5 boards. We mostly create one
-+ * pin configuration node per function.
-+ */
-+
-+&pinctrl {
-+	timer0_pins: timer0-pins {
-+		function = "timer0";
-+		pins = "PA0", "PA1";
-+	};
-+	timer1_pins: timer1-pins {
-+		function = "timer1";
-+		pins = "PA2", "PA3";
-+	};
-+	timer2_pins: timer2-pins {
-+		function = "timer2";
-+		pins = "PA4", "PA5";
-+	};
-+	pps0_pins: pps0-pin {
-+		function = "timer2";
-+		pins = "PA4";
-+	};
-+	pps1_pins: pps1-pin {
-+		function = "timer2";
-+		pins = "PA5";
-+	};
-+	timer5_ext_pins: timer5-ext-pins {
-+		function = "timer5";
-+		pins = "PA6", "PA7", "PA8", "PA9";
-+	};
-+	timer5_ext_input_pins: timer5-ext-input-pins {
-+		function = "timer5";
-+		pins = "PA6", "PA7";
-+	};
-+	timer5_ext_incap_a_pins: timer5-ext-incap-a-pin {
-+		function = "timer5";
-+		pins = "PA6";
-+	};
-+	timer5_ext_incap_b_pins: timer5-ext-incap-b-pin {
-+		function = "timer5";
-+		pins = "PA7";
-+	};
-+	can0_pins: can0-pins {
-+		function = "can0";
-+		pins = "PA14", "PA15";
-+	};
-+	can1_pins: can1-pins {
-+		function = "can1";
-+		pins = "PA16", "PA17";
-+	};
-+	uart0_pins: uart0-pins {
-+		function = "uart0";
-+		pins = "PA10", "PA11";
-+	};
-+	uart1_pins: uart1-pins {
-+		function = "uart1";
-+		pins = "PA12", "PA13";
-+	};
-+	spi0_pins: spi0-pins {
-+		function = "spi0";
-+		pins = "PA18", "PA19", "PA20", "PA21", "PA22";
-+	};
-+	spi1_pins: spi1-pins {
-+		function = "spi1";
-+		pins = "PA23", "PA24", "PA25", "PA26", "PA27";
-+	};
-+	spi1_slave_pins: spi1-slave-pins {
-+		function = "spi1";
-+		pins = "PA24", "PA25", "PA26";
-+	};
-+	refclk0_pins: refclk0-pin {
-+		function = "refclk0";
-+		pins = "PA28";
-+	};
-+	timer3_pins: timer3-pins {
-+		function = "timer3";
-+		pins = "PB0", "PB1";
-+	};
-+	timer4_pins: timer4-pins {
-+		function = "timer4";
-+		pins = "PB2", "PB3";
-+	};
-+	timer6_ext_pins: timer6-ext-pins {
-+		function = "timer6";
-+		pins = "PB4", "PB5", "PB6", "PB7";
-+	};
-+	timer6_ext_input_pins: timer6-ext-input-pins {
-+		function = "timer6";
-+		pins = "PB4", "PB5";
-+	};
-+	timer6_ext_incap_a_pins: timer6-ext-incap-a-pin {
-+		function = "timer6";
-+		pins = "PB4";
-+	};
-+	timer6_ext_incap_b_pins: timer6-ext-incap-b-pin {
-+		function = "timer6";
-+		pins = "PB5";
-+	};
-+	can2_pins: can2-pins {
-+		function = "can2";
-+		pins = "PB10", "PB11";
-+	};
-+	uart2_pins: uart2-pins {
-+		function = "uart2";
-+		pins = "PB8", "PB9";
-+	};
-+	spi2_pins: spi2-pins {
-+		function = "spi2";
-+		pins = "PB12", "PB13", "PB14", "PB15", "PB16";
-+	};
-+	spi3_pins: spi3-pins {
-+		function = "spi3";
-+		pins = "PB17", "PB18", "PB19", "PB20", "PB21";
-+	};
-+	spi3_slave_pins: spi3-slave-pins {
-+		function = "spi3";
-+		pins = "PB18", "PB19", "PB20";
-+	};
-+	mclk0_pins: mclk0-pin {
-+		function = "mclk0";
-+		pins = "PB22";
-+	};
-+};
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-index 76935f237ab5..8d4f65ec912d 100644
---- a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-+++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-@@ -79,6 +79,8 @@ uart0: serial@800000 {
- 			clocks  = <&uart_clk>, <&occ_periph>;
- 			clock-names = "uartclk", "apb_pclk";
- 			resets = <&reset 0 10>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&uart0_pins>;
- 		};
- 
- 		uart1: serial@900000 {
-@@ -90,6 +92,8 @@ uart1: serial@900000 {
- 			clocks  = <&uart_clk>, <&occ_periph>;
- 			clock-names = "uartclk", "apb_pclk";
- 			resets = <&reset 0 11>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&uart1_pins>;
- 		};
- 
- 		uart2: serial@a00000 {
-@@ -101,6 +105,8 @@ uart2: serial@a00000 {
- 			clocks  = <&uart_clk>, <&occ_periph>;
- 			clock-names = "uartclk", "apb_pclk";
- 			resets = <&reset 0 12>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&uart2_pins>;
- 		};
- 
- 		olb: system-controller@e00000 {
-@@ -125,6 +131,11 @@ clocks: clock-controller@e0002c {
- 				clocks = <&xtal>;
- 				clock-names = "ref";
- 			};
-+
-+			pinctrl: pinctrl@e000b0 {
-+				compatible = "mobileye,eyeq5-pinctrl";
-+				reg = <0x0b0 0x30>;
-+			};
- 		};
- 
- 		gic: interrupt-controller@140000 {
-@@ -149,3 +160,5 @@ timer {
- 		};
- 	};
- };
-+
-+#include "eyeq5-pins.dtsi"
-
--- 
-2.43.0
-
+Jason
 
