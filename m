@@ -1,129 +1,186 @@
-Return-Path: <linux-kernel+bounces-62211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB03A851D13
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:43:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B5BF851CF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 178911C21E93
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:43:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27EF828391A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3C5481C6;
-	Mon, 12 Feb 2024 18:42:35 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8A940C1F;
+	Mon, 12 Feb 2024 18:38:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EMUyCia9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC21B3FE44;
-	Mon, 12 Feb 2024 18:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04900405D4;
+	Mon, 12 Feb 2024 18:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707763355; cv=none; b=kZj2N1GMp61RygJFLN6KheHfv5jwLd5Gu8LoouABzpFn9CsAg5pZ8cPaWL42zkIGzj9PxT1YFaXGfMw7Yg8Xg7OK0fKWWy4Jmu9zHy41UDZ/oJ79cTSqVR6ufya9FIAbNgeRQRdvsZzu3HX0wpNBU8q46XrdIfV0+HR0MIFO0XI=
+	t=1707763105; cv=none; b=kvSiE2YzgjkwZkN1gFyU7fyC2kkLGrf5P9LU0KH2QiTsu0Kw+HoaqcZ2w8lJyyYOBiRJFyfErEXkXbLattIuaWUKQ3R1mCW73i5WP47yIyUYb9nV8aac1tHLqt18+CVEK3H++OucmFYoCX1awyHjtGGx/4bFD1dOAMu0BokFz/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707763355; c=relaxed/simple;
-	bh=0fjHyFCgQiCJ7Xf9wqWXnNvGeNJWsCVj3Z7wFx692qc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ogUnMkS7nCblb10QkqU3rySOZBGpWtZ4Rm9oiJlxmMwaIEvbTmac0py1hw4x0MiPz00D8dB/LAu+CGhV+OIdGu4oGLEFmL7qfD8M27e9eI5Q0XcTIEMdGq2xuIOGBmLKcEAnzO3tVhnLrPIT93owoBoKFozxmzPQxl3JTcKiFSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id e1f8ca868e59d311; Mon, 12 Feb 2024 19:42:30 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 2107C669CF2;
-	Mon, 12 Feb 2024 19:42:30 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: Lukasz Luba <lukasz.luba@arm.com>, LKML <linux-kernel@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>, netdev@vger.kernel.org,
- Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
- Miri Korenblit <miriam.rachel.korenblit@intel.com>,
- linux-wireless@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-Subject:
- [PATCH v2 6/9] wifi: iwlwifi: mvm: Set THERMAL_TRIP_FLAG_RW_TEMP directly
-Date: Mon, 12 Feb 2024 19:38:07 +0100
-Message-ID: <22182690.EfDdHjke4D@kreacher>
-In-Reply-To: <6017196.lOV4Wx5bFT@kreacher>
-References: <6017196.lOV4Wx5bFT@kreacher>
+	s=arc-20240116; t=1707763105; c=relaxed/simple;
+	bh=DB+QxJu9d3ZS9rmjqca4J9xEJVvpvRrU2w7NHJpSp2s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZOy63eNQZht85Gm/xqP11fyK8VUleonPbV799w/2xFKGVCWFpue048PM7IeEhGvqcErtLtHeDC/qpjIY0iYmPs6W2xe7cfTk1RnTjxfWHE0eRYzPJFzCPiSXcX0eDqeQkRcHG/AhVRyF5Lz4QYodLmtpuT6bl4UEcSeY+PdBO/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EMUyCia9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B78EC433C7;
+	Mon, 12 Feb 2024 18:38:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707763104;
+	bh=DB+QxJu9d3ZS9rmjqca4J9xEJVvpvRrU2w7NHJpSp2s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EMUyCia9MG/ccuDFUpmDHiaLgC+igJvueSb2uGUiW+TWBq+vBFJgv8cUhmQuvL+pz
+	 5iUT2b3vi+tdzkMXYYrc1B47l5j0QmWiB9PXCy926EZDb90ffrj4N8HGa+6ELm+baa
+	 d1O2E1uY04FIGeZwOqJkdmUtPJLY5anr/dqnPnvxGLeRiKmLD0fwaP48UDg+6JQpGI
+	 kmvpJ2wegkC+GvoCO932G8UHkEkGm1sJGgCoev1AUcQOsunK5XzdWaUaXPYSOGUYqp
+	 p9S5u9N0bEQx6QB8D9+o/mABVRhhIOFXR2yemqFi5EEwnKE1jChO2G6vNh5tKdRLgQ
+	 16/DAqRwQIcPg==
+Date: Mon, 12 Feb 2024 18:38:19 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Christophe Kerello <christophe.kerello@foss.st.com>
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	krzysztof.kozlowski@linaro.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH 08/12] dt-bindings: mtd: st,stm32: add MP25 support
+Message-ID: <20240212-squeak-mortality-5a53a4d1039c@spud>
+References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
+ <20240212174822.77734-9-christophe.kerello@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudefgdduudegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepudeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshht
- rghnihhslhgrfidrghhruhhsiihkrgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=16 Fuz1=16 Fuz2=16
-
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-It is now possible to flag trip points with THERMAL_TRIP_FLAG_RW_TEMP
-to allow their temperature to be set from user space via sysfs instead
-of using a nonzero writable trips mask during thermal zone registration,
-so make the iwlwifi code do that.
-
-No intentional functional impact.
-
-Note that this change is requisite for dropping the mask argument from
-thermal_zone_device_register_with_trips() going forward.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v1 -> v2:
-   * Rename trip flag (Stanislaw).
-   * Fix coding mistake in iwl_mvm_thermal_zone_register().
-   * Add "wifi:" prefix to the subject (Kalle).
-
----
- drivers/net/wireless/intel/iwlwifi/mvm/tt.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-Index: linux-pm/drivers/net/wireless/intel/iwlwifi/mvm/tt.c
-===================================================================
---- linux-pm.orig/drivers/net/wireless/intel/iwlwifi/mvm/tt.c
-+++ linux-pm/drivers/net/wireless/intel/iwlwifi/mvm/tt.c
-@@ -667,9 +667,6 @@ static  struct thermal_zone_device_ops t
- 	.set_trip_temp = iwl_mvm_tzone_set_trip_temp,
- };
- 
--/* make all trips writable */
--#define IWL_WRITABLE_TRIPS_MSK (BIT(IWL_MAX_DTS_TRIPS) - 1)
--
- static void iwl_mvm_thermal_zone_register(struct iwl_mvm *mvm)
- {
- 	int i, ret;
-@@ -692,11 +689,12 @@ static void iwl_mvm_thermal_zone_registe
- 	for (i = 0 ; i < IWL_MAX_DTS_TRIPS; i++) {
- 		mvm->tz_device.trips[i].temperature = THERMAL_TEMP_INVALID;
- 		mvm->tz_device.trips[i].type = THERMAL_TRIP_PASSIVE;
-+		mvm->tz_device.trips[i].flags = THERMAL_TRIP_FLAG_RW_TEMP;
- 	}
- 	mvm->tz_device.tzone = thermal_zone_device_register_with_trips(name,
- 							mvm->tz_device.trips,
- 							IWL_MAX_DTS_TRIPS,
--							IWL_WRITABLE_TRIPS_MSK,
-+							0,
- 							mvm, &tzone_ops,
- 							NULL, 0, 0);
- 	if (IS_ERR(mvm->tz_device.tzone)) {
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5x9qetWChxMtvEey"
+Content-Disposition: inline
+In-Reply-To: <20240212174822.77734-9-christophe.kerello@foss.st.com>
 
 
+--5x9qetWChxMtvEey
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Feb 12, 2024 at 06:48:18PM +0100, Christophe Kerello wrote:
+> Add 2 new compatible strings to support MP25 SOC.
+> MP25 SOC supports up to 4 chip select.
+
+Again, please explain why the new device is not compatible with the
+existing ones. Also, please explain why two compatibles are required for
+the mp25.
+
+Thanks,
+Conor.
+
+>=20
+> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> ---
+>  .../bindings/mtd/st,stm32-fmc2-nand.yaml      | 58 ++++++++++++++++++-
+>  1 file changed, 57 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yam=
+l b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+> index e72cb5bacaf0..33a753c8877b 100644
+> --- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+> @@ -14,10 +14,12 @@ properties:
+>      enum:
+>        - st,stm32mp15-fmc2
+>        - st,stm32mp1-fmc2-nfc
+> +      - st,stm32mp25-fmc2
+> +      - st,stm32mp25-fmc2-nfc
+> =20
+>    reg:
+>      minItems: 6
+> -    maxItems: 7
+> +    maxItems: 13
+> =20
+>    interrupts:
+>      maxItems: 1
+> @@ -92,6 +94,60 @@ allOf:
+>              - description: Chip select 1 command
+>              - description: Chip select 1 address space
+> =20
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: st,stm32mp25-fmc2
+> +    then:
+> +      properties:
+> +        reg:
+> +          items:
+> +            - description: Registers
+> +            - description: Chip select 0 data
+> +            - description: Chip select 0 command
+> +            - description: Chip select 0 address space
+> +            - description: Chip select 1 data
+> +            - description: Chip select 1 command
+> +            - description: Chip select 1 address space
+> +            - description: Chip select 2 data
+> +            - description: Chip select 2 command
+> +            - description: Chip select 2 address space
+> +            - description: Chip select 3 data
+> +            - description: Chip select 3 command
+> +            - description: Chip select 3 address space
+> +
+> +        clocks:
+> +          maxItems: 1
+> +
+> +        resets:
+> +          maxItems: 1
+> +
+> +      required:
+> +        - clocks
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: st,stm32mp25-fmc2-nfc
+> +    then:
+> +      properties:
+> +        reg:
+> +          items:
+> +            - description: Chip select 0 data
+> +            - description: Chip select 0 command
+> +            - description: Chip select 0 address space
+> +            - description: Chip select 1 data
+> +            - description: Chip select 1 command
+> +            - description: Chip select 1 address space
+> +            - description: Chip select 2 data
+> +            - description: Chip select 2 command
+> +            - description: Chip select 2 address space
+> +            - description: Chip select 3 data
+> +            - description: Chip select 3 command
+> +            - description: Chip select 3 address space
+> +
+>  required:
+>    - compatible
+>    - reg
+> --=20
+> 2.25.1
+>=20
+
+--5x9qetWChxMtvEey
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcplmwAKCRB4tDGHoIJi
+0qEaAQC6FzMEWUZon7Rbw9b51wIt52mF6FLV+DfSgClzOalRFAEAiDB3FOanV76n
+XJT9NErVw/coKCkhHjtRx02Cv9xOtQI=
+=9ijQ
+-----END PGP SIGNATURE-----
+
+--5x9qetWChxMtvEey--
 
