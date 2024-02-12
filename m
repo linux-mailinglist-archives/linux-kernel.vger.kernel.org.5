@@ -1,181 +1,135 @@
-Return-Path: <linux-kernel+bounces-61952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63FC78518E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:25:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B84851912
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:27:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD7021F220F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:25:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 973E21F220D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B023D397;
-	Mon, 12 Feb 2024 16:25:01 +0000 (UTC)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B207C3D3BB;
+	Mon, 12 Feb 2024 16:27:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O/x9p0N4"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBD03D0D1;
-	Mon, 12 Feb 2024 16:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70EE93D0DB
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707755101; cv=none; b=k1F4w6d68wPEDXrlHYvpNBioszIczHy9SNW9JIEbxSyDa+YQ3tkVfWAm7KsCu97ZArJTAwvlNYtsnUZjYkDaA82Z/u4YnfaTFNcV2q7oW59FXDqkP1GkwWtJMxAVP3P5Dr2RjksSGXnrX4aDUpHgq8HnLRJ25Lu5qV8vAvIyRzw=
+	t=1707755246; cv=none; b=vDGdvbSxkEraxtYj13TjHlWVX18TtY5r3dYcrPV/T7SQuJElE3wof1PhL+OPsoPSpFUcPjlpN1sDhBHS3uVsLMzHOVUVGXZRrU9Qvlra/r1fw410jR5J5O3CClEf98FOqfx7y16CLPNaRxMUqOSoqXUTv7xO3YX56FqV1ssePKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707755101; c=relaxed/simple;
-	bh=rmkbXCdg84yoQwpkq7NH1fqrGGiLhnDvubFSBGJe+yk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LHzMHkGpGnNIAWhhJEIS8PG/lkzwUvO5TTYuE9PpV0WtTBovJcYipOZ2ViaLozdTkm6wZX5FmmkCTjMTBTEoeiPWa1spROeShSsMFZou8y0FLBBfQCP/xmIJM4G2DPAVseJAF+gyZ67PIOfP6etL6cap6Ri/QjvtHZuKjtnhJqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc75c5e3151so2088598276.1;
-        Mon, 12 Feb 2024 08:24:59 -0800 (PST)
+	s=arc-20240116; t=1707755246; c=relaxed/simple;
+	bh=Ldgz4EaDjAiFoWUe/b915SB6Or4QvlmL0gWc1JCpdjQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ewPIWB70QG0u8SMFvWLy8vWHNB2QqXesLGWlGBdYsPtx7glDs3MMaMqmInhOnoy2nD12yTI1ye0v1WJuV5FWkiJX8iyhrbqsZsnSnh46gk2cETaRyZ20aoG9J1R3DBjK268CMd34aow9cNd+z0bKY7PkxG8ohgPQr+nOOfosL9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=O/x9p0N4; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc74ac7d015so4609307276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:27:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707755243; x=1708360043; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jEjTcKce0fZYlWVBDi232LEPLK7jT44Dgj/oRcn95IY=;
+        b=O/x9p0N4LKvhXVYOd82ekpVjqc2RNJVb3t5bVbajDYfuOW4z/+HMPdZelBpHrekri9
+         9AR34o47I1Jm1ZLQkGA8nlXC05Dh4AdpKHi3kUpQ/n2I8NEIt0vloc3Yc8fqU5mtIc7v
+         NeMurczZEv3nBCzow6N5d8VeB2jMz+nkJHbpiF7jBe9spgZZYwg4w52C1LeMzO4eRlke
+         VdnGZCbqUPgVtz6F0Q7xw54FwH5OF6dTRFk4XQ/cABHYAb7yQpqN+ksJofVCAtNjICzq
+         9VmKnsoQJPu1s7v3cziMGCbqrG0EcZsAok0Xm5CkWx4N581QhXYYLeCG9TLiURQ+SuM3
+         ZUdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707755097; x=1708359897;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hb3maADtaAKKNSwdn2QybG1Ogk1CA+GA1APXldxFH+U=;
-        b=mF20jCC4ZiLO2U98+apDlVN+AZAEpQIoFraQutsq0NXYaJiwAVNvUzuSzNkEQEgd8u
-         ZvH+8iEetOw/3c0KT8X9HwQLFsIFtcBOkr1VD/T/NEsNAJ5PRB5yfYCrm29Tg8U0PYtW
-         kacXiqV4sqxSKQvkth56FRJ6ynrJLtIY2C1BZbI8oyOG9RtxeBfuwWjMxPWEZ6WVIVrZ
-         bxfvnx9zdi9nKK+EshD82kLpYr6swiUz5ED8+sEJvRM5DVqIm1GYS6oMblapFyg8XUd1
-         AEC4W44qRKRf0fkQOfu8cVgIK36FCsco7pHH6oISCcLk54U8IQ9VArprPWlOud2A5G0K
-         Thsw==
-X-Forwarded-Encrypted: i=1; AJvYcCVY+9B52u89K1gqqvODb2qXDNgZgQmymaFZdxU/uCpdvAfwXz232F3GevlMWkORz+GlciCgd3IjUhyiluMT0jo6RV2z9qqJ82YhJ0XpTTdMWS2GYyXuJT2PpFn2l/pyH5XS0O6K3HASrKWaEysn+M322rHtDPOcsslYN3sZps19DCA5+6W5mZQj6e7T
-X-Gm-Message-State: AOJu0Yy5xwE3FAThNA3rO0GWdimt+AkEwjYBWyUf7w8dK54RAwhYhNdr
-	j910RZy5KzhwC6tTiLS6Rl7JXk8UqqkZF+iA+rut0RlJCyrR4xQNTt/wlMX9QTs=
-X-Google-Smtp-Source: AGHT+IGpDKCUm49Jrpq+v9zw3n8Ses4IzwmHcEiXGGrrGrSeqEg5V+hCRB8febkQaOTLxNy9I3Mufw==
-X-Received: by 2002:a25:4194:0:b0:dcb:ca7e:7e73 with SMTP id o142-20020a254194000000b00dcbca7e7e73mr781765yba.11.1707755097672;
-        Mon, 12 Feb 2024 08:24:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW1j6E5u4H0tycjyhjF5ZCA2dOuOkHsSqfQu1bHrwCGFryKpRz468S1q5vKReoq8D8gOVhdUbEgsn0kIbVQ/0vQITaIsI0/JCAw5p4ChEjmmYFIpq5hO5D89G6E/LC7F/vEDAph58rnUmamhxCsQirxZJ8gW7iWhxcd83aVLvSW9kCoVlqMYunOL3Zr
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id l37-20020a25ad65000000b00dc230f91674sm1298716ybe.26.2024.02.12.08.24.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 08:24:57 -0800 (PST)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcbbc41d3d5so419705276.3;
-        Mon, 12 Feb 2024 08:24:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVTPj5fGxYzBzb5YQUnTZVF2f4vM3MHoXLXRXXDdMLzrJsoGc+Dkbo8pyOeFCJLMSQ/Lgl0SpEyI666KVOorETX6gCzObFtWviuc8JoXouJCWbKr3u8aAJjtTwbZsS+JHH9dXga8paw812tPDmjUgmBQpvGe8dSYRj/gGScTBPfkt+P+gsKSd1UQdbx
-X-Received: by 2002:a25:aa6d:0:b0:dc6:d7de:5b29 with SMTP id
- s100-20020a25aa6d000000b00dc6d7de5b29mr5622636ybi.10.1707755097054; Mon, 12
- Feb 2024 08:24:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707755243; x=1708360043;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jEjTcKce0fZYlWVBDi232LEPLK7jT44Dgj/oRcn95IY=;
+        b=YmEM/ml4WCxvQVT7ZrBSqNeOU3cGuSNeGp8DXmN+CtYKWf2ZMSxpcOWFa6lHU4OMdE
+         KAKtNWywzXUXK8VlOPBsM80bHg8AGq/1Zx7tHQGovdMuQVzwyKMyukq7sm+lmDwdL4mS
+         7OxMjbBegZF25Bv1ExKmOTCqwqvE4/F/fA4VGdGoXqoYsSbnF8p3FewocMH49ELFS/io
+         TVfwuUCiekKZx31eUr5ikfRqYzIepcVHkxtsUPlc5QjEU149DrOM+kaeFKpcvO8YUuEN
+         mEPjfWwwcSwfQnx2+vNdKUUBBaCcJBYBirZWH82aJVxDZwTVzhcSI/u9wJ73iij1aSlL
+         imzA==
+X-Gm-Message-State: AOJu0YxBnmqloPh4/+cS+AFOwtTHC6ZAuygo7W8cq2rjkB3guRN1ipho
+	KsEPT6IAH+bE/omsMqDX21+edMRChsqYfweAhqqDThjCt9qzwCIlYoFyKAjEis9fm4yiYi7GRHe
+	BUA==
+X-Google-Smtp-Source: AGHT+IEsXJBF4/bgLbVzuTLfn0V+5NyBJ3BEiCA1tlOmkNRLRYQ2dckzNx5kcO0b5SJRLl+MJVUD0K6FNQI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1005:b0:dcb:c2c0:b319 with SMTP id
+ w5-20020a056902100500b00dcbc2c0b319mr42995ybt.9.1707755243421; Mon, 12 Feb
+ 2024 08:27:23 -0800 (PST)
+Date: Mon, 12 Feb 2024 08:27:21 -0800
+In-Reply-To: <CABgObfanrHTL429Cr8tcMGqs-Ov+6LWeQbzghvjQiGu9tz0EUA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240205144421.51195-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240205144421.51195-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240205144421.51195-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 12 Feb 2024 17:24:45 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW0xWgA+9rtDcRUgoS1HYvd+mukvK25MHbzHpo=1uGq0g@mail.gmail.com>
-Message-ID: <CAMuHMdW0xWgA+9rtDcRUgoS1HYvd+mukvK25MHbzHpo=1uGq0g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: interrupt-controller:
- renesas,rzg2l-irqc: Update interrupts
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20231230172351.574091-1-michael.roth@amd.com> <20231230172351.574091-10-michael.roth@amd.com>
+ <CABgObfanrHTL429Cr8tcMGqs-Ov+6LWeQbzghvjQiGu9tz0EUA@mail.gmail.com>
+Message-ID: <ZcpG6Ul4_8xAsnuy@google.com>
+Subject: Re: [PATCH v11 09/35] KVM: x86: Determine shared/private faults based
+ on vm_type
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, linux-coco@lists.linux.dev, 
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, 
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, 
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Prabhakar,
-
-On Mon, Feb 5, 2024 at 3:44=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.co=
+On Mon, Feb 12, 2024, Paolo Bonzini wrote:
+> On Sat, Dec 30, 2023 at 6:24=E2=80=AFPM Michael Roth <michael.roth@amd.co=
 m> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> All the RZ/G2L and alike SoC's (listed below) have ECCRAM0/1 interrupts
-> supported by the IRQC block, reflect the same in DT binding doc.
->
-> - R9A07G043U              - RZ/G2UL
-> - R9A07G044L/R9A07G044LC  - RZ/{G2L,G2LC}
-> - R9A07G054               - RZ/V2L
-> - R9A08G045               - RZ/G3S
->
-> For the RZ/G3S SoC ("R9A08G045") ECCRAM0/1 interrupts combined into singl=
-e
-> interrupt so we just use the below to represent them:
-> - ec7tie1-0
-> - ec7tie2-0
-> - ec7tiovf-0
->
-> Previously, it was assumed that BUS-error and ECCRAM0/1 error interrupts
-> were only supported by RZ/G2UL ("R9A07G043U") and RZ/G3S ("R9A08G045")
-> SoCs. However, in reality, all RZ/G2L and similar SoCs (listed above)
-> support these interrupts. Therefore, mark the 'interrupt-names' property
-> as required for all the SoCs and update the example node in the binding
-> document.
->
-> Fixes: 96fed779d3d4 ("dt-bindings: interrupt-controller: Add Renesas RZ/G=
-2L Interrupt Controller")
-> Fixes: 1cf0697a24ef ("dt-bindings: interrupt-controller: renesas,rzg2l-ir=
-qc: Document RZ/G3S")
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > For KVM_X86_SNP_VM, only the PFERR_GUEST_ENC_MASK flag is needed to
+> > determine with an #NPF is due to a private/shared access by the guest.
+> > Implement that handling here. Also add handling needed to deal with
+> > SNP guests which in some cases will make MMIO accesses with the
+> > encryption bit.
+> >
+> > Signed-off-by: Michael Roth <michael.roth@amd.com>
+> > ---
+> >  arch/x86/kvm/mmu/mmu.c          | 12 ++++++++++--
+> >  arch/x86/kvm/mmu/mmu_internal.h | 20 +++++++++++++++++++-
+> >  2 files changed, 29 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index d3fbfe0686a0..61213f6648a1 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -4331,6 +4331,7 @@ static int kvm_faultin_pfn_private(struct kvm_vcp=
+u *vcpu,
+> >  static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fa=
+ult *fault)
+> >  {
+> >         struct kvm_memory_slot *slot =3D fault->slot;
+> > +       bool private_fault =3D fault->is_private;
+>=20
+> I think it's nicer to just make the fault !is_private in
+> kvm_mmu_do_page_fault().
 
-Thanks for your patch!
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-> --- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2=
-l-irqc.yaml
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2=
-l-irqc.yaml
-> @@ -88,9 +88,15 @@ properties:
->        - description: GPIO interrupt, TINT30
->        - description: GPIO interrupt, TINT31
->        - description: Bus error interrupt
-> +      - description: ECCRAM0 1bit error interrupt
-> +      - description: ECCRAM0 2bit error interrupt
-> +      - description: ECCRAM0 error overflow interrupt
-> +      - description: ECCRAM1 1bit error interrupt
-> +      - description: ECCRAM1 2bit error interrupt
-> +      - description: ECCRAM1 error overflow interrupt
->
->    interrupt-names:
-> -    minItems: 41
-> +    minItems: 45
->      items:
->        - const: nmi
->        - const: irq0
-> @@ -134,6 +140,12 @@ properties:
->        - const: tint30
->        - const: tint31
->        - const: bus-err
-> +      - const: ec7tie1-0   # For RZ/G3S SoC ("R9A08G045") ECCRAM0/1 inte=
-rrupts are combined into single interrupt.
-> +      - const: ec7tie2-0   # For RZ/G3S SoC ("R9A08G045") ECCRAM0/1 inte=
-rrupts are combined into single interrupt.
-> +      - const: ec7tiovf-0  # For RZ/G3S SoC ("R9A08G045") ECCRAM0/1 inte=
-rrupts are combined into single interrupt.
-
-These lines are indeed a bit long, and might become longer when newer
-SoCs are introduced.
-
-What about changing the descriptions instead, like
-
-    -      - description: ECCRAM0 1bit error interrupt
-    +      - description: ECCRAM0 or combined ECCRAM0/1 1bit error interrup=
-t
-
-?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Yeah.  I'm starting to recall more of this discussion.  This is one of the =
+reasons
+I suggested/requested stuffing the error code to piggy-back the new SNP bit=
+; doing
+so allows is_private to be computed from the get-go without needing any ven=
+dor
+specific hooks.
 
