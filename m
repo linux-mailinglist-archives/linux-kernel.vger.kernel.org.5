@@ -1,386 +1,247 @@
-Return-Path: <linux-kernel+bounces-61640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330AA8514D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:21:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6D48851516
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57B981C22D10
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:21:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 608D928B08D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4154654B;
-	Mon, 12 Feb 2024 13:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 841CF53E24;
+	Mon, 12 Feb 2024 13:15:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ERFJ23DD"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rYYVQ48W"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4144F4597C
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D14D53810;
+	Mon, 12 Feb 2024 13:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707743669; cv=none; b=RCk0hHd65ED+/dVce/eR2O9NUa9dmy/khXNYpJwACYSNFB0hUcP/Pk0JWLdG6P0510OM6TMsD593rhUad5YyS6w98ALRNTnRYetIGvGAGiRskgaZ9f2qAQCyD5xrk0OrW/w2wfKAZcEnq4drdVppwRO2ZkR8c+wLiLQmMRP9gfk=
+	t=1707743711; cv=none; b=o1GrIR4RLHPaUcNkI4h6ZYzpcOzFN+yo5jdshwyE1Ig/h8xUO486/8aVsE1xK9/cjGRliEta5jn3ga31xHzwryJJehYQLsN6m2TYBZesAf1ahFi+rxvaXzeQ8uvoyoxjg9poFlMJfe3FwiVotCU7dU0tAkBKI1k3qvpRGoOw45s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707743669; c=relaxed/simple;
-	bh=a9pxujH5PHZG0UGOA2G3s/Ee5bI2Qul5wfUj2II7oQM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=f3mI7Qc1A/rMDYvRFoHiJCb3vdlp68t3rTQvVWlvnZsM+6cMQ6H3rMlvXTieVNyXw4fZBee+EDOJZ9v1xcB8n8aqJ/+HhHrts8L3EmMW03B6c8CNtArGzgFndEUGQBQQ+A2YiVn648oUr7p1DlCJJxRmacIiTJFFHWHhqw+eceA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ERFJ23DD; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe9e13775aso4864416276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:14:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707743666; x=1708348466; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8xYmC6/7GB0cnLvoqQ6/O63HTLhsqtwrPQr/DNWfuhA=;
-        b=ERFJ23DD8hfWbfKTs8r5GBhmKa25ypfb55bv5P1euHXG+2Pp4e08H9H73JhmYQtd+5
-         CFsRLKXdrMuKi/TUmDYHnWo9gc/vY4aUUyHbQ0akJ3s2ZFimMTIc9w/oadkhcu+0yBIw
-         ZD2R2KXu1aORsSc6TkKFWjeQ2W1ggaebYSAjbbH6yOPKyPdW5ndYHxxywA3xHi6gDMD6
-         sKCqiAY8I9gW9Nzbya+kUIYRsoxaj+dbW9uGp00OrHxPYL1FGELVQsTiF5HnvYTBiWd7
-         eRbqYrZaSzOmETJCUosGLOdKy0eq3SLeM8XGll0yPCoLCvF/AZJHhXW6zJzi8jLT+Jjh
-         rt6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707743666; x=1708348466;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8xYmC6/7GB0cnLvoqQ6/O63HTLhsqtwrPQr/DNWfuhA=;
-        b=ammA61rrvDDh+ndJ+9/iJfsJHkffAEfzy2AoY66sVSsfoPnEvTT4iDt5B48CTFgzNH
-         pLs7RfT3WZdfLCeDpU11sNzSd6fA78xcNrT4DBIOfto/lLmRXOoNBrdswApCkJn3Uwfw
-         am83CNA1Igu6va7wQza4H4eDnEgGEScqQb/uMKmC9xVNj/MfAWbSxYcTRWhaTayWtl8P
-         UqE4yXt8ilx4Asscukn3U4BGtJ1fpEJ4Yqc3ZctxzJLjDtqhytIWDLZW/u9NsSqBJULK
-         c7WqwOOXu7UXya8fsmwtA4+bDcy6nXxL1lxGfQ2ZSkRF9fHkH3rJ5+fdf0BVGuVjuUWq
-         Z0vg==
-X-Forwarded-Encrypted: i=1; AJvYcCUtUOBukieYZ+GstgXHNwT9/DqQQI5kGJu4vKPaprK/Pjms74AiXgCb4PYpute1gbYyaerVeOm0sm+MxBF3vbHr24Y30nH0nwDwHqf9
-X-Gm-Message-State: AOJu0YyeK8Fawc90T54rPpD3LLXiKNL1hLrLoHkz9/9eku5P7HH/nSjM
-	9FgEEkmxA0l7mmGTDjMkm7tMex/+rhqLQZVwiP9YlW/oE2d/Y+s+QkUnag76/mGpQoC0E4hOBGq
-	jErI6e13buw==
-X-Google-Smtp-Source: AGHT+IGr/8RYkrogU8h5JqNlm8G2W8mO4LpimxJKVyG5rXvwK9zlBMJNVG0OW3CPbZyD6F94Yb4Gk8OO+lh9AA==
-X-Received: from szatan.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2d83])
- (user=panikiel job=sendgmr) by 2002:a05:6902:102c:b0:dc7:49a9:6666 with SMTP
- id x12-20020a056902102c00b00dc749a96666mr1825457ybt.3.1707743666187; Mon, 12
- Feb 2024 05:14:26 -0800 (PST)
-Date: Mon, 12 Feb 2024 13:13:18 +0000
-In-Reply-To: <20240212131323.2162161-1-panikiel@google.com>
+	s=arc-20240116; t=1707743711; c=relaxed/simple;
+	bh=jFJZOzfWjLZ2zEQYriox+hHfpbIA1hm9BhGPRAYICP0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=XEUQIXCPA6V1jWv0PkO3VcZdL3wHsO0dISAocPY24WUJzY98Jof1puvrShRW1U/V1xj2b6aeg8n7V4CR3IqpY7nXHqvHIQOa3Lh5OO/7UNwra7WJaiG/looL2GgaFGxgEkiHtHlaKkownKXXZfdnU19jJLadmdlm+BJVPZXXYSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rYYVQ48W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEA5EC43399;
+	Mon, 12 Feb 2024 13:15:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707743711;
+	bh=jFJZOzfWjLZ2zEQYriox+hHfpbIA1hm9BhGPRAYICP0=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=rYYVQ48WM5WoX2UZp8zvyb4xIs+WOd4GGc3TSOOsio+iMNZOv4TPiG0Lqp0Zq91jm
+	 lXUSu61Tl935PQHqZ20aj+2U0O61X5YMPevPCP+HZWALeargn0QOEZjUTMxT1nqeYN
+	 UZRc/AabDlMubEbBnVF6LLBTewrwVMEYqgKBD/UbmCNW29Nk1jHGz5TIEr6gZsbMGQ
+	 xAOf3208m+Ourr+hv5hO0i822AIKMlqI9rcqiLbdqbuMCEr7njQpONHDjQ+6FyCjWz
+	 uifmG1isS1IWNoQ4uN9/5oOfNdPkjtZGQWK0UeIEzHcJkiMaLYDokPaxPIEauPhdbH
+	 hZk32iGzp0IgA==
+From: Maxime Ripard <mripard@kernel.org>
+Date: Mon, 12 Feb 2024 14:13:19 +0100
+Subject: [PATCH v6 36/36] drm/sun4i: hdmi: Switch to HDMI connector
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240212131323.2162161-1-panikiel@google.com>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240212131323.2162161-5-panikiel@google.com>
-Subject: [PATCH 4/9] lib: Move DisplayPort CRC functions to common lib
-From: "=?UTF-8?q?Pawe=C5=82=20Anikiel?=" <panikiel@google.com>
-To: airlied@gmail.com, akpm@linux-foundation.org, conor+dt@kernel.org, 
-	daniel@ffwll.ch, dinguyen@kernel.org, hverkuil-cisco@xs4all.nl, 
-	krzysztof.kozlowski+dt@linaro.org, maarten.lankhorst@linux.intel.com, 
-	mchehab@kernel.org, mripard@kernel.org, robh+dt@kernel.org, 
-	tzimmermann@suse.de
-Cc: devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
-	chromeos-krk-upstreaming@google.com, ribalda@chromium.org, 
-	"=?UTF-8?q?Pawe=C5=82=20Anikiel?=" <panikiel@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240212-kms-hdmi-connector-state-v6-36-f4bcdc979e6f@kernel.org>
+References: <20240212-kms-hdmi-connector-state-v6-0-f4bcdc979e6f@kernel.org>
+In-Reply-To: <20240212-kms-hdmi-connector-state-v6-0-f4bcdc979e6f@kernel.org>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+ Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>, 
+ Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>, 
+ =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>
+Cc: Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org, 
+ linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+ linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+ Maxime Ripard <mripard@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6185; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=jFJZOzfWjLZ2zEQYriox+hHfpbIA1hm9BhGPRAYICP0=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmnJEsP6sxfslW0I8Rk6k31fjNl8y/vatOOzH9T57i3b
+ QPHh3TNjlIWBjEuBlkxRZYYYfMlcadmve5k45sHM4eVCWQIAxenAExkoTzD/9oHG859STrm6pqc
+ Jsh7YcXdptKyFMlZFZ7X5LyvOBctkWb4Z+TQLnLY2LtXhutS4eLtB1urt7B9M3bRTPRfUmZp4/y
+ bHQA=
+X-Developer-Key: i=mripard@kernel.org; a=openpgp;
+ fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 
-The CRC functions found in drivers/gpu/drm/display/drm_dp_mst_topology.c
-may be useful for other non-DRM code that deals with DisplayPort, e.g.
-v4l2 drivers for DP receivers. Move these functions to /lib.
+The new HDMI connector infrastructure allows to remove some boilerplate,
+especially to generate infoframes. Let's switch to it.
 
-Signed-off-by: Pawe=C5=82 Anikiel <panikiel@google.com>
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
 ---
- drivers/gpu/drm/display/Kconfig               |  1 +
- drivers/gpu/drm/display/drm_dp_mst_topology.c | 76 ++----------------
- include/linux/crc-dp.h                        | 10 +++
- lib/Kconfig                                   |  8 ++
- lib/Makefile                                  |  1 +
- lib/crc-dp.c                                  | 78 +++++++++++++++++++
- 6 files changed, 103 insertions(+), 71 deletions(-)
- create mode 100644 include/linux/crc-dp.h
- create mode 100644 lib/crc-dp.c
+ drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 80 ++++++++++++++++++++++------------
+ 1 file changed, 51 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/gpu/drm/display/Kconfig b/drivers/gpu/drm/display/Kcon=
-fig
-index 09712b88a5b8..c615f50152f2 100644
---- a/drivers/gpu/drm/display/Kconfig
-+++ b/drivers/gpu/drm/display/Kconfig
-@@ -14,6 +14,7 @@ config DRM_DISPLAY_HELPER
- config DRM_DISPLAY_DP_HELPER
- 	bool
- 	depends on DRM_DISPLAY_HELPER
-+	select CRC_DP
- 	help
- 	  DRM display helpers for DisplayPort.
-=20
-diff --git a/drivers/gpu/drm/display/drm_dp_mst_topology.c b/drivers/gpu/dr=
-m/display/drm_dp_mst_topology.c
-index f7c6b60629c2..ada1f90fa808 100644
---- a/drivers/gpu/drm/display/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/display/drm_dp_mst_topology.c
-@@ -22,6 +22,7 @@
-=20
- #include <linux/bitfield.h>
- #include <linux/delay.h>
-+#include <linux/crc-dp.h>
- #include <linux/errno.h>
- #include <linux/i2c.h>
- #include <linux/init.h>
-@@ -195,73 +196,6 @@ drm_dp_mst_rad_to_str(const u8 rad[8], u8 lct, char *o=
-ut, size_t len)
- }
-=20
- /* sideband msg handling */
--static u8 drm_dp_msg_header_crc4(const uint8_t *data, size_t num_nibbles)
--{
--	u8 bitmask =3D 0x80;
--	u8 bitshift =3D 7;
--	u8 array_index =3D 0;
--	int number_of_bits =3D num_nibbles * 4;
--	u8 remainder =3D 0;
--
--	while (number_of_bits !=3D 0) {
--		number_of_bits--;
--		remainder <<=3D 1;
--		remainder |=3D (data[array_index] & bitmask) >> bitshift;
--		bitmask >>=3D 1;
--		bitshift--;
--		if (bitmask =3D=3D 0) {
--			bitmask =3D 0x80;
--			bitshift =3D 7;
--			array_index++;
--		}
--		if ((remainder & 0x10) =3D=3D 0x10)
--			remainder ^=3D 0x13;
--	}
--
--	number_of_bits =3D 4;
--	while (number_of_bits !=3D 0) {
--		number_of_bits--;
--		remainder <<=3D 1;
--		if ((remainder & 0x10) !=3D 0)
--			remainder ^=3D 0x13;
--	}
--
--	return remainder;
--}
--
--static u8 drm_dp_msg_data_crc4(const uint8_t *data, u8 number_of_bytes)
--{
--	u8 bitmask =3D 0x80;
--	u8 bitshift =3D 7;
--	u8 array_index =3D 0;
--	int number_of_bits =3D number_of_bytes * 8;
--	u16 remainder =3D 0;
--
--	while (number_of_bits !=3D 0) {
--		number_of_bits--;
--		remainder <<=3D 1;
--		remainder |=3D (data[array_index] & bitmask) >> bitshift;
--		bitmask >>=3D 1;
--		bitshift--;
--		if (bitmask =3D=3D 0) {
--			bitmask =3D 0x80;
--			bitshift =3D 7;
--			array_index++;
--		}
--		if ((remainder & 0x100) =3D=3D 0x100)
--			remainder ^=3D 0xd5;
--	}
--
--	number_of_bits =3D 8;
--	while (number_of_bits !=3D 0) {
--		number_of_bits--;
--		remainder <<=3D 1;
--		if ((remainder & 0x100) !=3D 0)
--			remainder ^=3D 0xd5;
--	}
--
--	return remainder & 0xff;
--}
- static inline u8 drm_dp_calc_sb_hdr_size(struct drm_dp_sideband_msg_hdr *h=
-dr)
+diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+index b7cf369b1906..8a9106a39f23 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
++++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+@@ -36,30 +36,24 @@
+ #define drm_connector_to_sun4i_hdmi(c)		\
+ 	container_of_const(c, struct sun4i_hdmi, connector)
+ 
+-static int sun4i_hdmi_setup_avi_infoframes(struct sun4i_hdmi *hdmi,
+-					   struct drm_display_mode *mode)
++static int sun4i_hdmi_write_infoframe(struct drm_connector *connector,
++				      enum hdmi_infoframe_type type,
++				      const u8 *buffer, size_t len)
  {
- 	u8 size =3D 3;
-@@ -284,7 +218,7 @@ static void drm_dp_encode_sideband_msg_hdr(struct drm_d=
-p_sideband_msg_hdr *hdr,
- 		(hdr->msg_len & 0x3f);
- 	buf[idx++] =3D (hdr->somt << 7) | (hdr->eomt << 6) | (hdr->seqno << 4);
-=20
--	crc4 =3D drm_dp_msg_header_crc4(buf, (idx * 2) - 1);
-+	crc4 =3D crc_dp_msg_header(buf, (idx * 2) - 1);
- 	buf[idx - 1] |=3D (crc4 & 0xf);
-=20
- 	*len =3D idx;
-@@ -305,7 +239,7 @@ static bool drm_dp_decode_sideband_msg_hdr(const struct=
- drm_dp_mst_topology_mgr
- 	len +=3D ((buf[0] & 0xf0) >> 4) / 2;
- 	if (len > buflen)
- 		return false;
--	crc4 =3D drm_dp_msg_header_crc4(buf, (len * 2) - 1);
-+	crc4 =3D crc_dp_msg_header(buf, (len * 2) - 1);
-=20
- 	if ((crc4 & 0xf) !=3D (buf[len - 1] & 0xf)) {
- 		drm_dbg_kms(mgr->dev, "crc4 mismatch 0x%x 0x%x\n", crc4, buf[len - 1]);
-@@ -725,7 +659,7 @@ static void drm_dp_crc_sideband_chunk_req(u8 *msg, u8 l=
-en)
- {
- 	u8 crc4;
-=20
--	crc4 =3D drm_dp_msg_data_crc4(msg, len);
-+	crc4 =3D crc_dp_msg_data(msg, len);
- 	msg[len] =3D crc4;
+-	struct hdmi_avi_infoframe frame;
+-	u8 buffer[17];
+-	int i, ret;
++	struct sun4i_hdmi *hdmi = drm_connector_to_sun4i_hdmi(connector);
++	int i;
+ 
+-	ret = drm_hdmi_avi_infoframe_from_display_mode(&frame,
+-						       &hdmi->connector, mode);
+-	if (ret < 0) {
+-		DRM_ERROR("Failed to get infoframes from mode\n");
+-		return ret;
++	if (type != HDMI_INFOFRAME_TYPE_AVI) {
++		drm_err(connector->dev,
++			"Unsupported infoframe type: %u\n", type);
++		return 0;
+ 	}
+ 
+-	ret = hdmi_avi_infoframe_pack(&frame, buffer, sizeof(buffer));
+-	if (ret < 0) {
+-		DRM_ERROR("Failed to pack infoframes\n");
+-		return ret;
+-	}
+-
+-	for (i = 0; i < sizeof(buffer); i++)
++	for (i = 0; i < len; i++)
+ 		writeb(buffer[i], hdmi->base + SUN4I_HDMI_AVI_INFOFRAME_REG(i));
+ 
+ 	return 0;
++
  }
-=20
-@@ -782,7 +716,7 @@ static bool drm_dp_sideband_append_payload(struct drm_d=
-p_sideband_msg_rx *msg,
-=20
- 	if (msg->curchunk_idx >=3D msg->curchunk_len) {
- 		/* do CRC */
--		crc4 =3D drm_dp_msg_data_crc4(msg->chunk, msg->curchunk_len - 1);
-+		crc4 =3D crc_dp_msg_data(msg->chunk, msg->curchunk_len - 1);
- 		if (crc4 !=3D msg->chunk[msg->curchunk_len - 1])
- 			print_hex_dump(KERN_DEBUG, "wrong crc",
- 				       DUMP_PREFIX_NONE, 16, 1,
-diff --git a/include/linux/crc-dp.h b/include/linux/crc-dp.h
-new file mode 100644
-index 000000000000..b63435c82b96
---- /dev/null
-+++ b/include/linux/crc-dp.h
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_CRC_DP_H
-+#define _LINUX_CRC_DP_H
+ 
+ static void sun4i_hdmi_disable(struct drm_encoder *encoder,
+@@ -82,14 +76,18 @@ static void sun4i_hdmi_enable(struct drm_encoder *encoder,
+ {
+ 	struct drm_display_mode *mode = &encoder->crtc->state->adjusted_mode;
+ 	struct sun4i_hdmi *hdmi = drm_encoder_to_sun4i_hdmi(encoder);
+-	struct drm_display_info *display = &hdmi->connector.display_info;
++	struct drm_connector *connector = &hdmi->connector;
++	struct drm_display_info *display = &connector->display_info;
++	struct drm_connector_state *conn_state =
++		drm_atomic_get_new_connector_state(state, connector);
++	unsigned long long tmds_rate = conn_state->hdmi.tmds_char_rate;
+ 	unsigned int x, y;
+ 	u32 val = 0;
+ 
+ 	DRM_DEBUG_DRIVER("Enabling the HDMI Output\n");
+ 
+-	clk_set_rate(hdmi->mod_clk, mode->crtc_clock * 1000);
+-	clk_set_rate(hdmi->tmds_clk, mode->crtc_clock * 1000);
++	clk_set_rate(hdmi->mod_clk, tmds_rate);
++	clk_set_rate(hdmi->tmds_clk, tmds_rate);
+ 
+ 	/* Set input sync enable */
+ 	writel(SUN4I_HDMI_UNKNOWN_INPUT_SYNC,
+@@ -142,7 +140,8 @@ static void sun4i_hdmi_enable(struct drm_encoder *encoder,
+ 
+ 	clk_prepare_enable(hdmi->tmds_clk);
+ 
+-	sun4i_hdmi_setup_avi_infoframes(hdmi, mode);
++	drm_atomic_helper_connector_hdmi_update_infoframes(connector, state);
 +
-+#include <linux/types.h>
+ 	val |= SUN4I_HDMI_PKT_CTRL_TYPE(0, SUN4I_HDMI_PKT_AVI);
+ 	val |= SUN4I_HDMI_PKT_CTRL_TYPE(1, SUN4I_HDMI_PKT_END);
+ 	writel(val, hdmi->base + SUN4I_HDMI_PKT_CTRL_REG(0));
+@@ -195,7 +194,7 @@ static int sun4i_hdmi_connector_atomic_check(struct drm_connector *connector,
+ 	enum drm_mode_status status;
+ 
+ 	status = sun4i_hdmi_connector_clock_valid(connector, mode,
+-						  mode->clock * 1000);
++						  conn_state->hdmi.tmds_char_rate);
+ 	if (status != MODE_OK)
+ 		return -EINVAL;
+ 
+@@ -206,8 +205,11 @@ static enum drm_mode_status
+ sun4i_hdmi_connector_mode_valid(struct drm_connector *connector,
+ 				struct drm_display_mode *mode)
+ {
+-	return sun4i_hdmi_connector_clock_valid(connector, mode,
+-						mode->clock * 1000);
++	unsigned long long rate =
++		drm_connector_hdmi_compute_mode_clock(mode, 8,
++						      HDMI_COLORSPACE_RGB);
 +
-+u8 crc_dp_msg_header(const uint8_t *data, size_t num_nibbles);
-+u8 crc_dp_msg_data(const uint8_t *data, u8 number_of_bytes);
++	return sun4i_hdmi_connector_clock_valid(connector, mode, rate);
+ }
+ 
+ static int sun4i_hdmi_get_modes(struct drm_connector *connector)
+@@ -253,6 +255,11 @@ static struct i2c_adapter *sun4i_hdmi_get_ddc(struct device *dev)
+ 	return ddc;
+ }
+ 
++static const struct drm_connector_hdmi_funcs sun4i_hdmi_hdmi_connector_funcs = {
++	.tmds_char_rate_valid	= sun4i_hdmi_connector_clock_valid,
++	.write_infoframe	= sun4i_hdmi_write_infoframe,
++};
 +
-+#endif /* _LINUX_CRC_DP_H */
-diff --git a/lib/Kconfig b/lib/Kconfig
-index 5ddda7c2ed9b..28f9f6cfec9f 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -171,6 +171,14 @@ config CRC_ITU_T
- 	  the kernel tree does. Such modules that use library CRC ITU-T V.41
- 	  functions require M here.
-=20
-+config CRC_DP
-+	tristate "CRC DisplayPort MST functions"
-+	help
-+	  This option is provided for the case where no in-kernel-tree
-+	  modules require CRC DisplayPort MST functions, but a module built outsi=
-de
-+	  the kernel tree does. Such modules that use library CRC DisplayPort MST
-+	  functions require M here.
-+
- config CRC32
- 	tristate "CRC32/CRC32c functions"
- 	default y
-diff --git a/lib/Makefile b/lib/Makefile
-index 6b09731d8e61..e4d7ffa260b3 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -188,6 +188,7 @@ obj-$(CONFIG_CRC7)	+=3D crc7.o
- obj-$(CONFIG_LIBCRC32C)	+=3D libcrc32c.o
- obj-$(CONFIG_CRC8)	+=3D crc8.o
- obj-$(CONFIG_CRC64_ROCKSOFT) +=3D crc64-rocksoft.o
-+obj-$(CONFIG_CRC_DP)	+=3D crc-dp.o
- obj-$(CONFIG_XXHASH)	+=3D xxhash.o
- obj-$(CONFIG_GENERIC_ALLOCATOR) +=3D genalloc.o
-=20
-diff --git a/lib/crc-dp.c b/lib/crc-dp.c
-new file mode 100644
-index 000000000000..95b58bc436d4
---- /dev/null
-+++ b/lib/crc-dp.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/crc-dp.h>
-+
-+/*
-+ * Sideband MSG Header CRC
-+ * Defined in DisplayPort 1.2 spec, section 2.11.3.1.9
-+ */
-+u8 crc_dp_msg_header(const uint8_t *data, size_t num_nibbles)
+ static const struct drm_connector_helper_funcs sun4i_hdmi_connector_helper_funcs = {
+ 	.atomic_check	= sun4i_hdmi_connector_atomic_check,
+ 	.mode_valid	= sun4i_hdmi_connector_mode_valid,
+@@ -274,11 +281,17 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
+ 	return connector_status_connected;
+ }
+ 
++static void sun4i_hdmi_connector_reset(struct drm_connector *connector)
 +{
-+	u8 bitmask =3D 0x80;
-+	u8 bitshift =3D 7;
-+	u8 array_index =3D 0;
-+	int number_of_bits =3D num_nibbles * 4;
-+	u8 remainder =3D 0;
-+
-+	while (number_of_bits !=3D 0) {
-+		number_of_bits--;
-+		remainder <<=3D 1;
-+		remainder |=3D (data[array_index] & bitmask) >> bitshift;
-+		bitmask >>=3D 1;
-+		bitshift--;
-+		if (bitmask =3D=3D 0) {
-+			bitmask =3D 0x80;
-+			bitshift =3D 7;
-+			array_index++;
-+		}
-+		if ((remainder & 0x10) =3D=3D 0x10)
-+			remainder ^=3D 0x13;
-+	}
-+
-+	number_of_bits =3D 4;
-+	while (number_of_bits !=3D 0) {
-+		number_of_bits--;
-+		remainder <<=3D 1;
-+		if ((remainder & 0x10) !=3D 0)
-+			remainder ^=3D 0x13;
-+	}
-+
-+	return remainder;
++	drm_atomic_helper_connector_reset(connector);
++	__drm_atomic_helper_connector_hdmi_reset(connector, connector->state);
 +}
 +
-+/*
-+ * Sideband MSG Data CRC
-+ * Defined in DisplayPort 1.2 spec, section 2.11.3.2.2
-+ */
-+u8 crc_dp_msg_data(const uint8_t *data, u8 number_of_bytes)
-+{
-+	u8 bitmask =3D 0x80;
-+	u8 bitshift =3D 7;
-+	u8 array_index =3D 0;
-+	int number_of_bits =3D number_of_bytes * 8;
-+	u16 remainder =3D 0;
-+
-+	while (number_of_bits !=3D 0) {
-+		number_of_bits--;
-+		remainder <<=3D 1;
-+		remainder |=3D (data[array_index] & bitmask) >> bitshift;
-+		bitmask >>=3D 1;
-+		bitshift--;
-+		if (bitmask =3D=3D 0) {
-+			bitmask =3D 0x80;
-+			bitshift =3D 7;
-+			array_index++;
-+		}
-+		if ((remainder & 0x100) =3D=3D 0x100)
-+			remainder ^=3D 0xd5;
-+	}
-+
-+	number_of_bits =3D 8;
-+	while (number_of_bits !=3D 0) {
-+		number_of_bits--;
-+		remainder <<=3D 1;
-+		if ((remainder & 0x100) !=3D 0)
-+			remainder ^=3D 0xd5;
-+	}
-+
-+	return remainder & 0xff;
-+}
---=20
-2.43.0.687.g38aa6559b0-goog
+ static const struct drm_connector_funcs sun4i_hdmi_connector_funcs = {
+ 	.detect			= sun4i_hdmi_connector_detect,
+ 	.fill_modes		= drm_helper_probe_single_connector_modes,
+ 	.destroy		= drm_connector_cleanup,
+-	.reset			= drm_atomic_helper_connector_reset,
++	.reset			= sun4i_hdmi_connector_reset,
+ 	.atomic_duplicate_state	= drm_atomic_helper_connector_duplicate_state,
+ 	.atomic_destroy_state	= drm_atomic_helper_connector_destroy_state,
+ };
+@@ -637,10 +650,19 @@ static int sun4i_hdmi_bind(struct device *dev, struct device *master,
+ 
+ 	drm_connector_helper_add(&hdmi->connector,
+ 				 &sun4i_hdmi_connector_helper_funcs);
+-	ret = drm_connector_init_with_ddc(drm, &hdmi->connector,
+-					  &sun4i_hdmi_connector_funcs,
+-					  DRM_MODE_CONNECTOR_HDMIA,
+-					  hdmi->ddc_i2c);
++	ret = drmm_connector_hdmi_init(drm, &hdmi->connector,
++				       /*
++					* NOTE: Those are likely to be
++					* wrong, but I couldn't find the
++					* actual ones in the BSP.
++					*/
++				       "AW", "HDMI",
++				       &sun4i_hdmi_connector_funcs,
++				       &sun4i_hdmi_hdmi_connector_funcs,
++				       DRM_MODE_CONNECTOR_HDMIA,
++				       hdmi->ddc_i2c,
++				       BIT(HDMI_COLORSPACE_RGB),
++				       8);
+ 	if (ret) {
+ 		dev_err(dev,
+ 			"Couldn't initialise the HDMI connector\n");
+
+-- 
+2.43.0
 
 
