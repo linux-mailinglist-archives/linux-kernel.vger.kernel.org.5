@@ -1,124 +1,172 @@
-Return-Path: <linux-kernel+bounces-61928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD01885188B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:56:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CD5F85188E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91CC71F22B46
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:56:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BA031C21771
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A138C3CF7A;
-	Mon, 12 Feb 2024 15:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACBC13D0B5;
+	Mon, 12 Feb 2024 15:56:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="aL+V///l"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NEo6XOsC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA713CF68
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F56F3CF72
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707753401; cv=none; b=tOn0OxrGTpMrG9bj9RBtl4BDqJXJo6as7Oz5chePPNDkCNsDc4vFDysLiJoONXXG/GHiUYmzL2X9QvRCJ5N6yubZSaMjcMoKJKx6GDZLNMgb9ZxN+nKDkhPUsG5Vm5hJiRMI+bD0vv6LfxlB5LQ7nhjWnKNFrOjL6J1oiTG3eJ0=
+	t=1707753414; cv=none; b=bXlm7KzxAtI0kq+DPodtoBTcdW5/xcOsJBEgVJxIXZ2oV1lDtR7gEnsl3HBZeG/5ZhbQZEinoqT8F8PyMpA/HjlaetwXWKlW/Prr3/OkaGgnt5ebOy+PmVPtuWBQV3kULpvGPjbh/zpcrvF1NJ6BdfbXpRboBfjX8B99AU9ZUq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707753401; c=relaxed/simple;
-	bh=SlIAEswCtdMnuXycyPc/T1ee9S3/cBlWhgi8NkL0dmM=;
+	s=arc-20240116; t=1707753414; c=relaxed/simple;
+	bh=i+CWSXjieb9+g3XNqpNF8tfttfF6GckHkqIIP8N1CSA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MfT0O0+1ks57D2Ht6uXfRDUSL1yU/tuuBDcZlQizDnh4i0DjGqMOTUgt2kIhLJzKtjhpVNXjlrgUGUkSanHJe9hZhxurw7XYZ576rU1cYcHZ5abtcqkddyEQ6dCP1R/CLevemeEwjXzwpIs3+BTRkuc/wcGv9x3i2DZzZR9dnMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=aL+V///l; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C1C7B40E0196;
-	Mon, 12 Feb 2024 15:56:36 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id w1rDdywF6PGa; Mon, 12 Feb 2024 15:56:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707753393; bh=D7p8PKNHYp9VzJeXUXSzbf4ukN194cyAi9OYp6Ij3QI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aL+V///lS6JzDXEq/Sx3gU4tqGacQPWSuplGf7qRL/z2WRluyO4hCGtYS0qBEjpgz
-	 9hYYeDDITsUKHL1eKtI14bnNNDkDmQm+KThcJul3HIJVPcu5rvClYfPrPXqAgjCEyC
-	 LCAr4p2qBQeatfL2o8Uu80QRci9B/Qa9xfJSJ/u8zIbqS19fBE+a/9hSqxZMAxNB7K
-	 IfF2yopG6X/GC4+A9MbpLU63HIJRQA3KSsz917dSADK/WGQjKGOyMCmaBr66XdNnm0
-	 UIkP8N54U/VHrTdAJEgrpGhfF3xzUHrgqKBXef+jhzOxQ5YtTcB4W15uXLBYLuOo/U
-	 cbUfltC1s7RUdjxYp1KfFHSj+2v2Eov9Yjh7hsKCUiaRYXxpm6yziRdKdU+hhpp3h6
-	 AVVcNdhnMqHD2U8Gwl4QsoYB2nQJnKJijxgAQbLC5bTxiKViyYT/Ec0ZCmkByQXIo5
-	 HP+4Z8SQ2jeGG13w81JZ3NTeoAB5pb0HPULdbdcSeKzlDURuRNskCPrRMMTkAZrjgX
-	 V2tJGJcc9C/ahZfmSUgM2yDo8PxF2gg+34tg7TbJXkWz9iPuim3Bv9iDVd9TxwN8Bs
-	 de29GU3jmK/aqHUdW3MCcMPI4nz4+Dd0MdsIn+bBcPjPNP3J7dAPo0HFFyMe+H5snR
-	 rGx4SW02+gKxQ5Hc7g31lhIo=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 42F6A40E0192;
-	Mon, 12 Feb 2024 15:56:15 +0000 (UTC)
-Date: Mon, 12 Feb 2024 16:56:09 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Arjan van de Ven <arjan@linux.intel.com>,
-	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-	Sohil Mehta <sohil.mehta@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Zhang Rui <rui.zhang@intel.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Feng Tang <feng.tang@intel.com>,
-	Andy Shevchenko <andy@infradead.org>,
-	Michael Kelley <mhklinux@outlook.com>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch v5 13/19] x86/mm/numa: Use core domain size on AMD
-Message-ID: <20240212155609.GXZco_mU_K3wtg70W6@fat_crate.local>
-References: <20240117115752.863482697@linutronix.de>
- <20240117115909.142089057@linutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PfPmwLsvO93IhuxC643vytIsSPwn0F9bYSnz4wIcAMuevZpMjc6aWUVMZUYW5NOdtgbf/uE27e7B4lzX7Y6cKxEl+4ffvJaHOqcR4FQd0i4Lut9xkwPP97mcaKkRXPIsRIkuWtMSlavD0XLammQjP7/RgzwqA3lh86ORiZHHVaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NEo6XOsC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707753412;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=80GrjE91srg+UL67pV7wExMUIzc8aRkIezP7bk9CD6k=;
+	b=NEo6XOsCUZS7fd1Na9MvitwSnOSqJJXhYXSDJ+eWGuIe8ogVXXhHz2k0UJRaGBDSP9nL/c
+	THNIGDd7ZLPHWyLiYUr56p7aMl1odzy37cGgf3uZQJWQ1eCC1OF9ocBBmN1cHTheGjgyQ/
+	vah/nJlEO7jpuygMyUgAZbv6AcERBA0=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-584-0E5WVMycNuqzcQRPl9bcRg-1; Mon, 12 Feb 2024 10:56:49 -0500
+X-MC-Unique: 0E5WVMycNuqzcQRPl9bcRg-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a2f71c83b7eso260467466b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 07:56:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707753408; x=1708358208;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=80GrjE91srg+UL67pV7wExMUIzc8aRkIezP7bk9CD6k=;
+        b=WDmpshS5W0YRnenjR5bkMEFGrMhU06j8r6eNURCqwhsM2f5Uq9szrDWST3GLrFT0Gl
+         32GfjLQr0uKOchFOTM+mRM6TumQM5hill5V0Gj6dRWYr6VddtLb/LcKdV/ID71nKeHx+
+         iMhv/SpnIvauKmLtf3GsQ+9ZDZU6e4j3GiAtsruRw0DjgdkCQtkEZ8rZDZoajpTSirl0
+         OGajsKKvaWTVEsxN0+mwKQdogNsnsS2KQJE3YS/UE0R1+sBZDxmRouTbnp+dB8sWikjy
+         +fRKrZH0h604c7AsjK3vKW4DqXwUiNvv+tLgui+L3prZE8Ng/YZpmtqUKZCVthqezrCb
+         ySpw==
+X-Gm-Message-State: AOJu0YxZ/ko3WcrKoauctKqpBP0bQZOKXO1HrCxh8vLIX3bEzWLS4Bhh
+	Ov1IE/pMgGqglqF9v22o1+iz5sXono7jGD+4eHzfXrpULOf5QLjR//dZ4bc15jCAq40IfBn6iHh
+	GhN79GUjucalc+pn1mzBGotGaFcQse2WLZuSs2aWHTGf151VCvMBuzOVFLSenSg==
+X-Received: by 2002:a17:906:dd2:b0:a3c:d159:cb27 with SMTP id p18-20020a1709060dd200b00a3cd159cb27mr1049462eji.72.1707753408721;
+        Mon, 12 Feb 2024 07:56:48 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEyKF1R8d6gAgnYz0NnbDP75czUwW1lB9zvvmzVavx3OhAr2ygTGmn4J2bxDaU9fm51Qb++4g==
+X-Received: by 2002:a17:906:dd2:b0:a3c:d159:cb27 with SMTP id p18-20020a1709060dd200b00a3cd159cb27mr1049449eji.72.1707753408300;
+        Mon, 12 Feb 2024 07:56:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUe7XGBQb9gJA94EmQMG/iEZxuM39xO8CoJr7ldFc2kcTVE8KHBgtrE3eutSTFm7JQHbvX9iTEf7oH2wHP+x50U3qEUtf9y+yIGzwicMdnos0Ajy5B0RkbgH+3QtYAQIz4VOwQG8Bjkrqrx01U0yvf1aV9xDHw7GjOMxDUatXoFIizfsH/rT2Y+eU/Fr4VOBJ5qiyl+5so/SD4yLKeWsp9cSvY=
+Received: from redhat.com ([2.52.146.238])
+        by smtp.gmail.com with ESMTPSA id gv20-20020a170906f11400b00a3c9bd8e1c9sm330563ejb.76.2024.02.12.07.56.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 07:56:47 -0800 (PST)
+Date: Mon, 12 Feb 2024 10:56:44 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Steven Sistare <steven.sistare@oracle.com>
+Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+	Jason Wang <jasowang@redhat.com>,
+	Si-Wei Liu <si-wei.liu@oracle.com>,
+	Eugenio Perez Martin <eperezma@redhat.com>,
+	Stefano Garzarella <sgarzare@redhat.com>
+Subject: Re: [PATCH V1] vdpa: suspend and resume require DRIVER_OK
+Message-ID: <20240212105604-mutt-send-email-mst@kernel.org>
+References: <1707517799-137286-1-git-send-email-steven.sistare@oracle.com>
+ <20240212031722-mutt-send-email-mst@kernel.org>
+ <a4d2626d-7d74-4243-93a9-01d7adc8cda4@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240117115909.142089057@linutronix.de>
+In-Reply-To: <a4d2626d-7d74-4243-93a9-01d7adc8cda4@oracle.com>
 
-On Tue, Jan 23, 2024 at 01:53:50PM +0100, Thomas Gleixner wrote:
-> @@ -158,26 +156,25 @@ int __init amd_numa_init(void)
->  		return -ENOENT;
->  
->  	/*
-> -	 * We seem to have valid NUMA configuration.  Map apicids to nodes
-> -	 * using the coreid bits from early_identify_cpu.
-> +	 * We seem to have valid NUMA configuration. Map apicids to nodes
-> +	 * using the size of the core domain in the APIC space.
+On Mon, Feb 12, 2024 at 09:56:31AM -0500, Steven Sistare wrote:
+> On 2/12/2024 3:19 AM, Michael S. Tsirkin wrote:
+> > On Fri, Feb 09, 2024 at 02:29:59PM -0800, Steve Sistare wrote:
+> >> Calling suspend or resume requires VIRTIO_CONFIG_S_DRIVER_OK, for all
+> >> vdpa devices.
+> >>
+> >> Suggested-by: Eugenio Perez Martin <eperezma@redhat.com>"
+> >> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+> > 
+> > I don't think failing suspend or resume makes sense though -
+> > e.g. practically failing suspend will just prevent sleeping I think -
+> > why should guest not having driver loaded prevent system suspend?
+> 
+> Got it, my fix is too heavy handed.
+> 
+> > there's also state such as features set which does need to be
+> > preserved.
+> > 
+> > I think the thing to do is to skip invoking suspend/resume callback
+> 
+> OK.
+> 
+> >  and in
+> > fact checking suspend/resume altogether.
+> 
+> Currently ops->suspend, vhost_vdpa_can_suspend(), and VHOST_BACKEND_F_SUSPEND
+> are equivalent.  Hence if !ops->suspend, then then the driver does not support
+> it, and indeed may break if suspend is used, so system suspend must be blocked,
+> AFAICT.  Yielding:
 
-Since you're touching the comments:
+If DRIVER_OK is not set then there's nothing to be done for migration.
+So callback not needed.
 
-	/*
-	 * Valid NUMA configuration detected. Map APICIDs to nodes...
 
->  	 */
-> -	bits = boot_cpu_data.x86_coreid_bits;
-> -	cores = 1 << bits;
-> -	apicid_base = 0;
-> +	cores = topology_get_domain_size(TOPO_CORE_DOMAIN);
+>     vhost_vdpa_suspend()
+>         if (!ops->suspend)
+>             return -EOPNOTSUPP;
+> 
+>         if (!(ops->get_status(vdpa) & VIRTIO_CONFIG_S_DRIVER_OK))
+>             return 0;
+> 
+> - Steve
+> 
+> >> ---
+> >>  drivers/vhost/vdpa.c | 6 ++++++
+> >>  1 file changed, 6 insertions(+)
+> >>
+> >> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> >> index bc4a51e4638b..ce1882acfc3b 100644
+> >> --- a/drivers/vhost/vdpa.c
+> >> +++ b/drivers/vhost/vdpa.c
+> >> @@ -598,6 +598,9 @@ static long vhost_vdpa_suspend(struct vhost_vdpa *v)
+> >>  	if (!ops->suspend)
+> >>  		return -EOPNOTSUPP;
+> >>  
+> >> +	if (!(ops->get_status(vdpa) & VIRTIO_CONFIG_S_DRIVER_OK))
+> >> +		return -EINVAL;
+> >> +
+> >>  	ret = ops->suspend(vdpa);
+> >>  	if (!ret)
+> >>  		v->suspended = true;
+> >> @@ -618,6 +621,9 @@ static long vhost_vdpa_resume(struct vhost_vdpa *v)
+> >>  	if (!ops->resume)
+> >>  		return -EOPNOTSUPP;
+> >>  
+> >> +	if (!(ops->get_status(vdpa) & VIRTIO_CONFIG_S_DRIVER_OK))
+> >> +		return -EINVAL;
+> >> +
+> >>  	ret = ops->resume(vdpa);
+> >>  	if (!ret)
+> >>  		v->suspended = false;
+> >> -- 
+> >> 2.39.3
+> > 
 
-num_cores ...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
