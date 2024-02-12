@@ -1,140 +1,120 @@
-Return-Path: <linux-kernel+bounces-62344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E931851EBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:38:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC775851EC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C79A62838DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:38:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8952283204
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEE947A67;
-	Mon, 12 Feb 2024 20:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ERoYmQ4j"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285C41EB58;
-	Mon, 12 Feb 2024 20:37:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9297D405FB;
+	Mon, 12 Feb 2024 20:39:09 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0B41DA5B
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:39:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707770280; cv=none; b=fhHKtbtppvNJT+BddZik0b2HzwJYgiEPug/XlHLvynYyXB+Ub5NklFJGO4QIyCJZ3/AA3fK8tHU7xQdK4iXEcIFq/IFCcglPV/9ovBVQr9b9AsEXjrr3lvC6V4DZZ6nmO0988h9BFOVpCvIzZwaNLlrYcfKi+9oGJF7zQwRHfsM=
+	t=1707770349; cv=none; b=qtg0cKcjwL47AjgV1qp9sgP9ACAC4OEBStM/nXQT6sfNjjZVLG4huWrwh26BiThYM5ALLCwMOU8bv4IvGMtlgenrp+HnTdZxU52+3P2WdyIOa+7qF3IVOV/i0o5Uv7RPNh5SBioUwrQatL9jaBfKR2WYluBnT8KSp1W6Ypr+QOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707770280; c=relaxed/simple;
-	bh=Fpc0F+qyMdb3ioJ2lc0gnHuRhUOcZrHYZrPqSExGyO0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u0tK/JHwLy0AxC8F5DOVyRVwMDSea3lVtsYg90i0U9km8VtDGX1KSFGStiQpoKcEjRfIaN2wlBwmgMHiLwPsfi8elnEbxChg747ajpPHpbjm1JOyTU9E9ZYa+mPsgf7/cS3pcwNlP4qn4gU6a5BJX9n52F4O4/MnMPyx18Yn9dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ERoYmQ4j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 680E0C433C7;
-	Mon, 12 Feb 2024 20:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707770279;
-	bh=Fpc0F+qyMdb3ioJ2lc0gnHuRhUOcZrHYZrPqSExGyO0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ERoYmQ4jogZzX3jGbXTPFUvQKZxZNyUDWD1L2SOQZHWtQ7IFM5lc9jiHFaHnsMIXX
-	 FuaeoD3/gDRGSXA6Q0aG0m0mRh3347oJzaYWzkY2HfQuua1xc53rOETQSs9Vmn58Fd
-	 rlAXeBece75Z0pCccGm6xTU/O3OCAnzS5JiJohr90Dm1DK5RWh46KFxwjnQxh4izeu
-	 HSQOyL3bfOQ6/W3mqm1GuWLJUhB2EiNdWsxcrXqRmkbSgZBU1l7wRHclc3D9vN1pDk
-	 azNptHEvsIBkkmmNalf8ik6jEbP/rpO/lgIQeQSrxowuNPYZiAq6webhKmgLTFpTrE
-	 YoKwiqot/WBWg==
-Date: Mon, 12 Feb 2024 20:37:53 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Ramon de C Valle <rcvalle@google.com>, Trevor Gross <tmgross@umich.edu>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	linux-riscv@lists.infradead.org, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>, rust-for-linux@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, Matthew Maurer <mmaurer@google.com>,
-	Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH v1 0/2] RISC-V: enable rust
-Message-ID: <20240212-outdoors-french-a40d57e38c71@spud>
-References: <CANiq72k7n0aZrifRRU08N8qLkNe+2EZwijZy5sM7M56n2xYHgQ@mail.gmail.com>
- <20240125-lazy-thrower-744aacc6632a@wendy>
- <CANiq72kb+_utZrYHtoKZQtQazikmkjpVUHpTBcaANizduMF5QQ@mail.gmail.com>
- <20240126-eccentric-jaywalker-3560e2151a92@spud>
- <CANiq72nu2NXUWYanHZd5EXgX4P_v673EWn6SCRW60Es9naraQQ@mail.gmail.com>
- <20240209-rage-keg-1b2982cd17d9@spud>
- <CALNs47sRqAbE=u3=_ciO2oge7Afz-6GBBhW+BwcLRET-TsuxTg@mail.gmail.com>
- <CAOcBZORDaHHH3jTL3GO7OsDubhhyQE0Uy2uAjJpiRzrKBgqaOw@mail.gmail.com>
- <CANiq72=VBFvB9O9c84YxpBBftpfNnnXx-+Xes0h8h6rN3EN5pA@mail.gmail.com>
- <20240212-demotion-blitz-1c9ab85dbc73@spud>
+	s=arc-20240116; t=1707770349; c=relaxed/simple;
+	bh=4n4tjW723V0IAbGF5or8C4v6NovmCSgEHxp3WKxnaao=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=traWz+FkjRS5gBmXOdXeiEkbguy1z3QjkC+M95Wwq1HQG+ncXVpv2TSRQGvMs7xfuG+sNhSxW9t1s1yB8rQmMlXd77FlJqLwd76rnjMGAw/afpFlSCxIEa9XSrCdP2WC42jjxi9kY9DdCUyJihnO14Uj2CCyvYQ09jowk7yBSOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56446DA7;
+	Mon, 12 Feb 2024 12:39:47 -0800 (PST)
+Received: from [10.57.78.115] (unknown [10.57.78.115])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C95403F766;
+	Mon, 12 Feb 2024 12:39:00 -0800 (PST)
+Message-ID: <64395ae4-3a7d-45dd-8f1d-ea6b232829c5@arm.com>
+Date: Mon, 12 Feb 2024 20:38:59 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="7thX9cC6woknPGKe"
-Content-Disposition: inline
-In-Reply-To: <20240212-demotion-blitz-1c9ab85dbc73@spud>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 19/25] arm64/mm: Wire up PTE_CONT for user mappings
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ James Morse <james.morse@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, David Hildenbrand <david@redhat.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
+ <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+ Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+ Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, linux-arm-kernel@lists.infradead.org,
+ x86@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240202080756.1453939-1-ryan.roberts@arm.com>
+ <20240202080756.1453939-20-ryan.roberts@arm.com>
+ <ZcoIVypNwOPIX30w@FVFF77S0Q05N>
+ <c899f252-dbf3-4e7b-8342-b5a5180486cd@arm.com>
+ <aa232591-e0c8-422d-a641-fa555914c5f0@arm.com>
+In-Reply-To: <aa232591-e0c8-422d-a641-fa555914c5f0@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+[...]
 
---7thX9cC6woknPGKe
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>>> +static inline bool mm_is_user(struct mm_struct *mm)
+>>>> +{
+>>>> +	/*
+>>>> +	 * Don't attempt to apply the contig bit to kernel mappings, because
+>>>> +	 * dynamically adding/removing the contig bit can cause page faults.
+>>>> +	 * These racing faults are ok for user space, since they get serialized
+>>>> +	 * on the PTL. But kernel mappings can't tolerate faults.
+>>>> +	 */
+>>>> +	return mm != &init_mm;
+>>>> +}
+>>>
+>>> We also have the efi_mm as a non-user mm, though I don't think we manipulate
+>>> that while it is live, and I'm not sure if that needs any special handling.
+>>
+>> Well we never need this function in the hot (order-0 folio) path, so I think I
+>> could add a check for efi_mm here with performance implication. It's probably
+>> safest to explicitly exclude it? What do you think?
+> 
+> Oops: This should have read "I think I could add a check for efi_mm here
+> *without* performance implication"
 
-On Mon, Feb 12, 2024 at 08:17:31PM +0000, Conor Dooley wrote:
-> On Mon, Feb 12, 2024 at 08:11:21PM +0100, Miguel Ojeda wrote:
-> > On Mon, Feb 12, 2024 at 8:02=E2=80=AFPM Ramon de C Valle <rcvalle@googl=
-e.com> wrote:
-> > >
-> > > Sorry for the late reply. Sami might be the best person to answer thi=
-s, but KCFI (not CFI) tests are lowered by passes that are architecture spe=
-cific (see https://reviews.llvm.org/D119296), so we'd need to add support f=
-or RISC-V. There is no additional work required in the Rust compiler beside=
-s enabling it for the new target.
-> >=20
-> > Thanks a lot Ramon!
-> >=20
-> > Then for RISC-V let's go for the `depends on` for the moment, and we
-> > can remove when the support lands for RISC-V (ideally when someone has
-> > managed to boot it at least under some configuration).
->=20
-> If all you want is a boot under some configuration, that's not
-> difficult. After all, I found the original issue by booting a kernel
-> with CFI_CLANG enabled on the C side...
+It turns out that efi_mm is only defined when CONFIG_EFI is enabled. I can do this:
 
-Also, regardless of depends on on RISC-V, things will still be broken
-on arm64 and x86_64, since KCFI is not enabled in rustc there either?
+return mm != &init_mm && (!IS_ENABLED(CONFIG_EFI) || mm != &efi_mm);
 
-> > There is no additional work required in the Rust compiler besides enabl=
-ing it for the new target.
->=20
-> This is not super clear though, it says "in the Rust compiler", not "in
-> the kernel's buildsystem".
+Is that acceptable? This is my preference, but nothing else outside of efi
+references this symbol currently.
 
-I realise I was not clear either. What I meant was that this talks about
-rustc and not kbuild, so what is meant by "the new target" is not clear.
-Do arm64 and x86_64 have functional support, so adding RISC-V in rustc
-is needed, or did you mean for the new target in the kernel?
+Or perhaps I can convince myself that its safe to treat efi_mm like userspace.
+There are a couple of things that need to be garanteed for it to be safe:
 
+  - The PFNs of present ptes either need to have an associated struct page or
+    need to have the PTE_SPECIAL bit set (either pte_mkspecial() or
+    pte_mkdevmap())
 
+  - Live mappings must either be static (no changes that could cause fold/unfold
+    while live) or the system must be able to tolerate a temporary fault
 
---7thX9cC6woknPGKe
-Content-Type: application/pgp-signature; name="signature.asc"
+Mark suggests efi_mm is not manipulated while live, so that meets the latter
+requirement, but I'm not sure about the former?
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Ryan
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcqBoQAKCRB4tDGHoIJi
-0iGKAP97UKgRmbxcqgRIJWahLsNbdWqhmMMWsoa78Iykcp7gmQD+JtaSuLVZzvRC
-7MFMT30bfndJIV8nNlMBmx4+XtVlHw8=
-=gsZ6
------END PGP SIGNATURE-----
-
---7thX9cC6woknPGKe--
 
