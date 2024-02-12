@@ -1,111 +1,109 @@
-Return-Path: <linux-kernel+bounces-61596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88BA585140A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA6FA85140F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:05:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4275328697F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:04:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B950286E35
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:05:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68FF13B79C;
-	Mon, 12 Feb 2024 13:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17C73A1C1;
+	Mon, 12 Feb 2024 13:05:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c5N0YQ00"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ugbnwtqm"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4613A8CB;
-	Mon, 12 Feb 2024 13:02:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC1E3A1A0;
+	Mon, 12 Feb 2024 13:05:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707742979; cv=none; b=rC3ntrSbZSSTKLipimGEty5/ByYzyBz6KetL1tRqRFVvxvM0peKkVp6somb7rV+614AuzWcoMQOVSbwWx8zlXong0504ESrOE0JCNHYO8WawRrn9Vl8haqPCRGP34gBXhMMELjQZlYqcaG/vBQ9ntNwtAi7CnDvbSxZReCC4l2s=
+	t=1707743147; cv=none; b=XtRMQzjY/l6AJIseKGY9zD3EaXdLA/jAfaWtO6a0YiVwAToQBnT8OMN6cxllnzudgdwFH3hcZcy7dlB5ga110yx/iWqUWNvxL0MVrWuJwHkJEd1drkVGkBkUrpBYASu4xAsg2KeP3fKsMQa7YsJGIb0gm4C/hiLwH/GE0o0IiZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707742979; c=relaxed/simple;
-	bh=B3s2F89GzkRqiCuF715R3/bfNCpfUIA+Ssd1CZYkmYM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YLm4W626qoX7GHdUFK+5NUwF8vTmHWhXKIrT4XhONyuhJ1dzwNuw0gmeBwFf3RIxP1wvPaYpWCNIB8CeT/ac9y38zBnXLvKk95Eq5bqs4Yljy68yetsq9EkgtUtJqn0IWBVdg+VbOoSjQqSeqh2BUm4GFimmj1AYHEeGDjQPZVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=none smtp.mailfrom=ecsmtp.iind.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c5N0YQ00; arc=none smtp.client-ip=192.198.163.17
+	s=arc-20240116; t=1707743147; c=relaxed/simple;
+	bh=TBXApfwK8hbONStkVoXVydtssWRk/QH7CP5R59ri3vs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uYap+wuCs2aLEapS/9PHsLtKaT9dTynFWPzUIhWFw6m9zEsa83Mhtebl9YbFa4s2EI7srAfn3i/WKmSds7MIFs2ZH9entBx/t9xvwAkPNf2qdQxO0rBQT8ockP07s2yifS6aq5aQW86FF+jqRXxPbtm4HHgzamF2l341WOoGNyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ugbnwtqm; arc=none smtp.client-ip=134.134.136.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ecsmtp.iind.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707742976; x=1739278976;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=B3s2F89GzkRqiCuF715R3/bfNCpfUIA+Ssd1CZYkmYM=;
-  b=c5N0YQ00+km2atJAvKL6Qz9OIf0gPKhRXUc+GEa/vVE0lXAcyrzDkeMB
-   aflft9KcFCsYb2F4cwMIR37SUqR7RkdNZFmGBlo9nlkgHmJStN5fE1LWY
-   Bov+ugEOMIeBPcTNbvLEs5kQGfARtZ+rrQkugC9B3O9Y9ATo6qNmHBgRf
-   XfcT2YeSor9osh3vVlXLE9DDH030ksLnd8xZVdnoT4fTLThq9l+WXAd6o
-   UDIjJXiaXNQGqxzrxpBXxGmmE4jECNxXZbkXGNPM/jECk5j9dtk3oV3L/
-   C3Cp6D97z0UMPJDoiXynyM+eQNRva1Sz6uJDm33LLPwZVlr1CypwfBSKr
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="1594836"
+  t=1707743145; x=1739279145;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TBXApfwK8hbONStkVoXVydtssWRk/QH7CP5R59ri3vs=;
+  b=Ugbnwtqmyjko1CsS58fFHo4DA2sZm3xIfqfQEfZiE5E01sYwyiVajL6u
+   6ldaI9iJUkS6C2lJtMVvEx0qsLtBdbai39m/ck1xJnSZV4euQCQeOh2Zq
+   Xl2Zj1GDQTqrdKCdtPtgtuUI4jl4a22x0LN6KMtZd+pnWnrjjkVy6FKTm
+   L4OBJ6KTTE2YqpANcmyr8tuQL3cIJt+vxU0894M5GZXnEg4YqE8E39W/+
+   KWd2TRb5VNpXphI5QYdh2xOiED4nC4cCTnc2TmrWkQ6T7Mt1AQgj1GGa+
+   4RdsDdQXu/6vyieUI7jtKoeGn4LYPPzOIYRVoaaOQ34WGFyPjR/qpZzlM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="396152022"
 X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="1594836"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 05:02:52 -0800
+   d="scan'208";a="396152022"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 05:05:43 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
-   d="scan'208";a="33378392"
-Received: from inesxmail01.iind.intel.com ([10.223.57.40])
-  by orviesa002.jf.intel.com with ESMTP; 12 Feb 2024 05:02:50 -0800
-Received: from inlubt0316.iind.intel.com (inlubt0316.iind.intel.com [10.191.20.213])
-	by inesxmail01.iind.intel.com (Postfix) with ESMTP id 5756C1CACF;
-	Mon, 12 Feb 2024 18:32:49 +0530 (IST)
-Received: by inlubt0316.iind.intel.com (Postfix, from userid 12101951)
-	id 541C51600101; Mon, 12 Feb 2024 18:32:49 +0530 (IST)
-From: Raag Jadav <raag.jadav@intel.com>
-To: u.kleine-koenig@pengutronix.de,
-	jarkko.nikula@linux.intel.com,
-	mika.westerberg@linux.intel.com,
-	andriy.shevchenko@linux.intel.com,
-	lakshmi.sowjanya.d@intel.com
-Cc: linux-pwm@vger.kernel.org,
+   d="scan'208";a="33654468"
+Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.216])
+  by fmviesa001.fm.intel.com with ESMTP; 12 Feb 2024 05:05:41 -0800
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To: herbert@gondor.apana.org.au
+Cc: linux-crypto@vger.kernel.org,
+	qat-linux@intel.com,
+	sfr@canb.auug.org.au,
+	damian.muszynski@intel.com,
+	mun.chun.yep@intel.com,
 	linux-kernel@vger.kernel.org,
-	Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH v3 1/5] pwm: dwc: use pm_sleep_ptr() macro
-Date: Mon, 12 Feb 2024 18:32:43 +0530
-Message-Id: <20240212130247.9985-2-raag.jadav@intel.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240212130247.9985-1-raag.jadav@intel.com>
-References: <20240212130247.9985-1-raag.jadav@intel.com>
+	linux-next@vger.kernel.org,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Subject: [PATCH] Documentation: qat: fix auto_reset section
+Date: Mon, 12 Feb 2024 13:05:09 +0000
+Message-ID: <20240212130532.50350-1-giovanni.cabiddu@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
 Content-Transfer-Encoding: 8bit
 
-Since we don't have runtime PM handles here, we should be using
-pm_sleep_ptr() macro, so that the compiler can discard it in case
-CONFIG_PM_SLEEP=n.
+Remove unneeded colon in the auto_reset section.
 
-Fixes: 30b5b066fa83 ("pwm: dwc: Use DEFINE_SIMPLE_DEV_PM_OPS for PM functions")
-Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This resolves the following errors when building the documentation:
+
+    Documentation/ABI/testing/sysfs-driver-qat:146: ERROR: Unexpected indentation.
+    Documentation/ABI/testing/sysfs-driver-qat:146: WARNING: Block quote ends without a blank line; unexpected unindent.
+
+Fixes: f5419a4239af ("crypto: qat - add auto reset on error")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Closes: https://lore.kernel.org/linux-kernel/20240212144830.70495d07@canb.auug.org.au/T/
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 ---
- drivers/pwm/pwm-dwc.c | 2 +-
+ Documentation/ABI/testing/sysfs-driver-qat | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pwm/pwm-dwc.c b/drivers/pwm/pwm-dwc.c
-index 4929354f8cd9..a4a057ae03ea 100644
---- a/drivers/pwm/pwm-dwc.c
-+++ b/drivers/pwm/pwm-dwc.c
-@@ -120,7 +120,7 @@ static struct pci_driver dwc_pwm_driver = {
- 	.remove = dwc_pwm_remove,
- 	.id_table = dwc_pwm_id_table,
- 	.driver = {
--		.pm = pm_ptr(&dwc_pwm_pm_ops),
-+		.pm = pm_sleep_ptr(&dwc_pwm_pm_ops),
- 	},
- };
+diff --git a/Documentation/ABI/testing/sysfs-driver-qat b/Documentation/ABI/testing/sysfs-driver-qat
+index 6778f1fea874..96020fb051c3 100644
+--- a/Documentation/ABI/testing/sysfs-driver-qat
++++ b/Documentation/ABI/testing/sysfs-driver-qat
+@@ -153,7 +153,7 @@ Description:	(RW) Reports the current state of the autoreset feature
  
+ 		Device auto reset is disabled by default.
+ 
+-		The values are::
++		The values are:
+ 
+ 		* 1/Yy/on: auto reset enabled. If the device encounters an
+ 		  unrecoverable error, it will be reset automatically.
 -- 
-2.35.3
+2.43.0
 
 
