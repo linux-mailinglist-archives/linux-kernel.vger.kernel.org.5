@@ -1,242 +1,208 @@
-Return-Path: <linux-kernel+bounces-61211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F39D850EF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:37:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5E2F850EF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 09:37:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ACD11F223CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:37:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76D00B20D46
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 08:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F46F9CA;
-	Mon, 12 Feb 2024 08:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tum.de header.i=@tum.de header.b="YsH696/s"
-Received: from postout1.mail.lrz.de (postout1.mail.lrz.de [129.187.255.137])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A4FF500
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.187.255.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BC14F9CC;
+	Mon, 12 Feb 2024 08:37:39 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F14333F7;
+	Mon, 12 Feb 2024 08:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707727043; cv=none; b=ePq34sGKnfeVEA1tvScFko9EgZ9COHnPD/Zt5XWds4MGfwP2nB+NLQVkKAB/q7rffX7NfGk7qQPcZcCndZzvKONi4RPszHBWFh86/5TdvuShc3r789vvrQ8FHIRqXnCfHirWExviu20Ov8CgvcHplJ4TBLnF3pSXyx2PRq05bpU=
+	t=1707727059; cv=none; b=R5MIpdzvld6WrTjKyjruProFH53DkZU+cxglg2haTuvk0XriZpkXvS7Hgl8ccSXGntOJyHmAlkNIDqzE2NCMw+0k/Q6UqczvJ2VZEQCX3r+FuaJp2CDDfbJFYXfuOuitHIuE+n82qtD1wyS8HYAeDRolZwR11Gs9w4FtPDPum0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707727043; c=relaxed/simple;
-	bh=HE1DLq9o0LiwemEBOzOaTO1lbAeymqKCBx6e3PXDex8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ek88OtzHbCzVONps6phSehxfnAw1MH0bqNJXFM0M3+GOtTdnAWLW4Z8/ZlUtaDsRBylZsXq7Fckg54bMUgkTZe5OQnlTUdwGqjQh5PdrKrdQoPQ94u7G56VsWoD2xOlpM4emryD1igtG+pFhvEWKnUcHzmYpsYgG4DmvdOfL1LA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tum.de; spf=pass smtp.mailfrom=tum.de; dkim=pass (2048-bit key) header.d=tum.de header.i=@tum.de header.b=YsH696/s; arc=none smtp.client-ip=129.187.255.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tum.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tum.de
-Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
-	by postout1.mail.lrz.de (Postfix) with ESMTP id 4TYHrZ2sWtzyVF;
-	Mon, 12 Feb 2024 09:37:18 +0100 (CET)
-Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
-	reason="pass (just generated, assumed good)" header.d=tum.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
-	in-reply-to:content-transfer-encoding:content-disposition
-	:content-type:content-type:mime-version:references:message-id
-	:subject:subject:from:from:date:date:received:received; s=
-	tu-postout21; t=1707727037; bh=HE1DLq9o0LiwemEBOzOaTO1lbAeymqKCB
-	x6e3PXDex8=; b=YsH696/sE4f3KFIGfnFazB7IZ0JEnaWXqQ5sjDsOAye3RFkdx
-	wNPBZsFTbUQ2EatiUK2Yk6rOXXH1X9xYQh/cSMewDZzknhlVwB1HTVKpGQ701gf3
-	V6NQxd7MRLe6uAoLOJqA+fLSAOnq4m5Ul3oCvKP+MJ2Ka2UMRVn6QJGODrVokfBH
-	ppd/iGQT/HmGYIMRGPbWtiTSH4sZaPH5NZNMJJbtvckP3yDTp+ctZlviFf+bZVg9
-	mKa0mbCPtTN0B9QyQNuLlunYeKyaUb3E05tVkUKv4RQV1j4Y6YKKSJwFoEnKzjW0
-	HHQLonkcTYd89YV83uxOwl/J5Rb0nKlwcGYxQ==
-X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs51.srv.lrz.de
-X-Spam-Flag: NO
-X-Spam-Score: -2.879
-X-Spam-Level:
-Received: from postout1.mail.lrz.de ([127.0.0.1])
-	by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
-	with LMTP id I03PoRHcZDqc; Mon, 12 Feb 2024 09:37:17 +0100 (CET)
-Received: from pine.fritz.box (unknown [IPv6:2001:a61:25f3:6e01:57f:7a4d:e41f:6949])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by postout1.mail.lrz.de (Postfix) with ESMTPSA id 4TYHrX4fqszyTl;
-	Mon, 12 Feb 2024 09:37:16 +0100 (CET)
-Date: Mon, 12 Feb 2024 09:37:10 +0100
-From: Paul =?utf-8?Q?Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
-To: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: akpm@linux-foundation.org, dvyukov@google.com, elver@google.com, 
-	glider@google.com, kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, ryabinin.a.a@gmail.com, vincenzo.frascino@arm.com, 
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2] kasan: add atomic tests
-Message-ID: <mofzkwb2a2wr5z7kg2fe3lowzdca7kqvol5hevhj5dcs5pxvu2@7d4gydk3enon>
-References: <20240202113259.3045705-1-paul.heidekrueger@tum.de>
- <20240211091720.145235-1-paul.heidekrueger@tum.de>
- <CA+fCnZcfUyqzok0yV2uvsDdhiT95Y-KYnozY77y04YDBwKhj-Q@mail.gmail.com>
+	s=arc-20240116; t=1707727059; c=relaxed/simple;
+	bh=Gb03w9GjFy0RW+c0j9zZ7K/5lxbYES/OXeUcepSVlp4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nfY1AYBrxRdhSGeqpNRU+wQ/RKmNnq//ujlsLNJDvC1+7Aic38cdTWj/wX28P8o25ju0Sy1+CdT6kCEhVZie0GyJH6Lmy6PkH2qA/pw8MuX6vvnwoctyOCYPI4hP73SfkX0bi0VmLO06OyEelh/MQPefnq2G4qaOD53eLe7mTu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C332DA7;
+	Mon, 12 Feb 2024 00:38:17 -0800 (PST)
+Received: from [10.57.78.115] (unknown [10.57.78.115])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB68C3F762;
+	Mon, 12 Feb 2024 00:37:32 -0800 (PST)
+Message-ID: <d0de978e-6cca-49c0-88d2-b7c807fb25c4@arm.com>
+Date: Mon, 12 Feb 2024 08:37:31 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+fCnZcfUyqzok0yV2uvsDdhiT95Y-KYnozY77y04YDBwKhj-Q@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/10] mm/memory: factor out zapping of present pte
+ into zap_present_pte()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Yin Fengwei <fengwei.yin@intel.com>, Michal Hocko <mhocko@suse.com>,
+ Will Deacon <will@kernel.org>, "Aneesh Kumar K.V"
+ <aneesh.kumar@linux.ibm.com>, Nick Piggin <npiggin@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>, Michael Ellerman
+ <mpe@ellerman.id.au>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org
+References: <20240209221509.585251-1-david@redhat.com>
+ <20240209221509.585251-2-david@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240209221509.585251-2-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 12.02.2024 00:16, Andrey Konovalov wrote:
-> On Sun, Feb 11, 2024 at 10:17 AM Paul Heidekrüger
-> <paul.heidekrueger@tum.de> wrote:
-> >
-> > Test that KASan can detect some unsafe atomic accesses.
-> >
-> > As discussed in the linked thread below, these tests attempt to cover
-> > the most common uses of atomics and, therefore, aren't exhaustive.
-> >
-> > CC: Marco Elver <elver@google.com>
-> > CC: Andrey Konovalov <andreyknvl@gmail.com>
-> > Link: https://lore.kernel.org/all/20240131210041.686657-1-paul.heidekrueger@tum.de/T/#u
-> > Closes: https://bugzilla.kernel.org/show_bug.cgi?id=214055
-> > Reviewed-by: Marco Elver <elver@google.com>
-> > Tested-by: Marco Elver <elver@google.com>
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> > Signed-off-by: Paul Heidekrüger <paul.heidekrueger@tum.de>
-> > ---
-> > Changes PATCH v1 -> PATCH v2:
-> > * Make explicit cast implicit as per Mark's feedback
-> > * Increase the size of the "a2" allocation as per Andrey's feedback
-> > * Add tags
-> >
-> > Changes PATCH RFC v2 -> PATCH v1:
-> > * Remove casts to void*
-> > * Remove i_safe variable
-> > * Add atomic_long_* test cases
-> > * Carry over comment from kasan_bitops_tags()
-> >
-> > Changes PATCH RFC v1 -> PATCH RFC v2:
-> > * Adjust size of allocations to make kasan_atomics() work with all KASan modes
-> > * Remove comments and move tests closer to the bitops tests
-> > * For functions taking two addresses as an input, test each address in a separate function call.
-> > * Rename variables for clarity
-> > * Add tests for READ_ONCE(), WRITE_ONCE(), smp_load_acquire() and smp_store_release()
-> >
-> >  mm/kasan/kasan_test.c | 79 +++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 79 insertions(+)
-> >
-> > diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
-> > index 8281eb42464b..7bf09699b145 100644
-> > --- a/mm/kasan/kasan_test.c
-> > +++ b/mm/kasan/kasan_test.c
-> > @@ -1150,6 +1150,84 @@ static void kasan_bitops_tags(struct kunit *test)
-> >         kfree(bits);
-> >  }
-> >
-> > +static void kasan_atomics_helper(struct kunit *test, void *unsafe, void *safe)
-> > +{
-> > +       int *i_unsafe = unsafe;
-> > +
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, READ_ONCE(*i_unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, WRITE_ONCE(*i_unsafe, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, smp_load_acquire(i_unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, smp_store_release(i_unsafe, 42));
-> > +
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_read(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_set(unsafe, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_add(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_sub(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_and(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_andnot(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_or(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_xor(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_xchg(unsafe, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_cmpxchg(unsafe, 21, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_try_cmpxchg(unsafe, safe, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_try_cmpxchg(safe, unsafe, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_sub_and_test(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec_and_test(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc_and_test(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_add_negative(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_add_unless(unsafe, 21, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc_not_zero(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_inc_unless_negative(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec_unless_positive(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_dec_if_positive(unsafe));
-> > +
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_read(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_set(unsafe, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_add(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_sub(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_inc(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_dec(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_and(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_andnot(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_or(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_xor(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_xchg(unsafe, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_cmpxchg(unsafe, 21, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_try_cmpxchg(unsafe, safe, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_try_cmpxchg(safe, unsafe, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_sub_and_test(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_dec_and_test(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_inc_and_test(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_add_negative(42, unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_add_unless(unsafe, 21, 42));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_inc_not_zero(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_inc_unless_negative(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_dec_unless_positive(unsafe));
-> > +       KUNIT_EXPECT_KASAN_FAIL(test, atomic_long_dec_if_positive(unsafe));
-> > +}
-> > +
-> > +static void kasan_atomics(struct kunit *test)
-> > +{
-> > +       void *a1, *a2;
-> > +
-> > +       /*
-> > +        * Just as with kasan_bitops_tags(), we allocate 48 bytes of memory such
-> > +        * that the following 16 bytes will make up the redzone.
-> > +        */
-> > +       a1 = kzalloc(48, GFP_KERNEL);
-> > +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a1);
-> > +       a2 = kzalloc(sizeof(atomic_long_t), GFP_KERNEL);
-> > +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, a1);
+On 09/02/2024 22:15, David Hildenbrand wrote:
+> Let's prepare for further changes by factoring out processing of present
+> PTEs.
 > 
-> This should check for a2, not a1. Sorry for not spotting this before.
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-No need to apologise. I'm the one who made the mistake, so I'm the one who 
-should've spotted it in the first place :-)
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 
-> > +
-> > +       /* Use atomics to access the redzone. */
-> > +       kasan_atomics_helper(test, a1 + 48, a2);
-> > +
-> > +       kfree(a1);
-> > +       kfree(a2);
-> > +}
-> > +
-> >  static void kmalloc_double_kzfree(struct kunit *test)
-> >  {
-> >         char *ptr;
-> > @@ -1553,6 +1631,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
-> >         KUNIT_CASE(kasan_strings),
-> >         KUNIT_CASE(kasan_bitops_generic),
-> >         KUNIT_CASE(kasan_bitops_tags),
-> > +       KUNIT_CASE(kasan_atomics),
-> >         KUNIT_CASE(kmalloc_double_kzfree),
-> >         KUNIT_CASE(rcu_uaf),
-> >         KUNIT_CASE(workqueue_uaf),
-> > --
-> > 2.40.1
-> >
+> ---
+>  mm/memory.c | 94 ++++++++++++++++++++++++++++++-----------------------
+>  1 file changed, 53 insertions(+), 41 deletions(-)
 > 
-> With the mentioned change:
-> 
-> Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
-> 
-> Thank you!
-
-Just sent v3.
-
-Many thanks,
-Paul
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 7c3ca41a7610..5b0dc33133a6 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1532,13 +1532,61 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
+>  	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
+>  }
+>  
+> +static inline void zap_present_pte(struct mmu_gather *tlb,
+> +		struct vm_area_struct *vma, pte_t *pte, pte_t ptent,
+> +		unsigned long addr, struct zap_details *details,
+> +		int *rss, bool *force_flush, bool *force_break)
+> +{
+> +	struct mm_struct *mm = tlb->mm;
+> +	struct folio *folio = NULL;
+> +	bool delay_rmap = false;
+> +	struct page *page;
+> +
+> +	page = vm_normal_page(vma, addr, ptent);
+> +	if (page)
+> +		folio = page_folio(page);
+> +
+> +	if (unlikely(!should_zap_folio(details, folio)))
+> +		return;
+> +	ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
+> +	arch_check_zapped_pte(vma, ptent);
+> +	tlb_remove_tlb_entry(tlb, pte, addr);
+> +	zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
+> +	if (unlikely(!page)) {
+> +		ksm_might_unmap_zero_page(mm, ptent);
+> +		return;
+> +	}
+> +
+> +	if (!folio_test_anon(folio)) {
+> +		if (pte_dirty(ptent)) {
+> +			folio_mark_dirty(folio);
+> +			if (tlb_delay_rmap(tlb)) {
+> +				delay_rmap = true;
+> +				*force_flush = true;
+> +			}
+> +		}
+> +		if (pte_young(ptent) && likely(vma_has_recency(vma)))
+> +			folio_mark_accessed(folio);
+> +	}
+> +	rss[mm_counter(folio)]--;
+> +	if (!delay_rmap) {
+> +		folio_remove_rmap_pte(folio, page, vma);
+> +		if (unlikely(page_mapcount(page) < 0))
+> +			print_bad_pte(vma, addr, ptent, page);
+> +	}
+> +	if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
+> +		*force_flush = true;
+> +		*force_break = true;
+> +	}
+> +}
+> +
+>  static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  				struct vm_area_struct *vma, pmd_t *pmd,
+>  				unsigned long addr, unsigned long end,
+>  				struct zap_details *details)
+>  {
+> +	bool force_flush = false, force_break = false;
+>  	struct mm_struct *mm = tlb->mm;
+> -	int force_flush = 0;
+>  	int rss[NR_MM_COUNTERS];
+>  	spinlock_t *ptl;
+>  	pte_t *start_pte;
+> @@ -1555,7 +1603,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  	arch_enter_lazy_mmu_mode();
+>  	do {
+>  		pte_t ptent = ptep_get(pte);
+> -		struct folio *folio = NULL;
+> +		struct folio *folio;
+>  		struct page *page;
+>  
+>  		if (pte_none(ptent))
+> @@ -1565,45 +1613,9 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  			break;
+>  
+>  		if (pte_present(ptent)) {
+> -			unsigned int delay_rmap;
+> -
+> -			page = vm_normal_page(vma, addr, ptent);
+> -			if (page)
+> -				folio = page_folio(page);
+> -
+> -			if (unlikely(!should_zap_folio(details, folio)))
+> -				continue;
+> -			ptent = ptep_get_and_clear_full(mm, addr, pte,
+> -							tlb->fullmm);
+> -			arch_check_zapped_pte(vma, ptent);
+> -			tlb_remove_tlb_entry(tlb, pte, addr);
+> -			zap_install_uffd_wp_if_needed(vma, addr, pte, details,
+> -						      ptent);
+> -			if (unlikely(!page)) {
+> -				ksm_might_unmap_zero_page(mm, ptent);
+> -				continue;
+> -			}
+> -
+> -			delay_rmap = 0;
+> -			if (!folio_test_anon(folio)) {
+> -				if (pte_dirty(ptent)) {
+> -					folio_mark_dirty(folio);
+> -					if (tlb_delay_rmap(tlb)) {
+> -						delay_rmap = 1;
+> -						force_flush = 1;
+> -					}
+> -				}
+> -				if (pte_young(ptent) && likely(vma_has_recency(vma)))
+> -					folio_mark_accessed(folio);
+> -			}
+> -			rss[mm_counter(folio)]--;
+> -			if (!delay_rmap) {
+> -				folio_remove_rmap_pte(folio, page, vma);
+> -				if (unlikely(page_mapcount(page) < 0))
+> -					print_bad_pte(vma, addr, ptent, page);
+> -			}
+> -			if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
+> -				force_flush = 1;
+> +			zap_present_pte(tlb, vma, pte, ptent, addr, details,
+> +					rss, &force_flush, &force_break);
+> +			if (unlikely(force_break)) {
+>  				addr += PAGE_SIZE;
+>  				break;
+>  			}
 
 
