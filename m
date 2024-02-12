@@ -1,163 +1,165 @@
-Return-Path: <linux-kernel+bounces-62262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AF22851DAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:13:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C99851DBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:14:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AC301C21931
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:13:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E03A91F20592
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 232E046522;
-	Mon, 12 Feb 2024 19:13:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6816A47F6C;
+	Mon, 12 Feb 2024 19:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m/LzKzah"
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JU3sj7wi"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB4333D561;
-	Mon, 12 Feb 2024 19:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1BDF3EA78;
+	Mon, 12 Feb 2024 19:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707765197; cv=none; b=IrkAl7rd9fBtMhPxVIXOukMpu85smL4AuTlCKECIvM3kYIRMQt6G7p24Aq10grRwwO9OdjeQaj1xi1Yc127NUJP7UzlDdfSALtx24EqY8xq7Ip8rs9MH1A9KPzz6UNlFHGS632qPEuhvWxUEv74Pe3AFkfuS2aYccdM1nFJR6ho=
+	t=1707765233; cv=none; b=bnoftLAzaY+2X1WgKv4dsXB+TfjjknTpdbJpIIhbNpX4dBme+GfAYbItsqd4jUjkUxetBNQ1u/kAeLI2bZbyxEne/utg6whQsG4hZIVYHgGLPlNs+NjFvG1noPfbPXDehUZMN+q5ufSfj4thsBURkZmGwrh3tvOJpI8bQEXstnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707765197; c=relaxed/simple;
-	bh=sjKyP/Ui/aZeeBiNNFm9sGugbeL29/KNiXApbSxpSls=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gwkWxoyrDAxnDX0LJCnZOrGVIWFIh8ZOst7YN5P5pDTL/z19P6jwUXKhpNfffC7oW90As88bJrhGJ1FPkDTf3kwTGhvz9BJwzeMn2qcilgnDxDk/KwVDdLyY6hTicxXLc8taETokSO/aoy7qWE7z/PKBZRJ8DfBV0xiO9B8IbqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m/LzKzah; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-60495209415so34006847b3.3;
-        Mon, 12 Feb 2024 11:13:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707765195; x=1708369995; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AZe21kBcPy6KSx7IZa4AcUw4sbKfAv+h51Ru4ZWOH8U=;
-        b=m/LzKzahzNPtvsskOUnw6Q6WE9WcjNpVp+drbk272zpjwnpz7d34oaYiTWSp6LI/wm
-         BFEQ5cP8GmRXedsxbXiKwBOYFdUvXBSMrDKWL5x/j7dADIItjkGJzT4rrFZ/o9EIdkup
-         vZmVFkR+kDMxvqotMueH/gkSVkbvjN+Zk7Ub6K5roe7bSnaCFk9DshrYn3Qa80HxxVkW
-         OUobN9mJ5/5qFLwZURDid5Oco6WoHOeuINM5SH5Q6OqEV8m9S71EYeN9/K+ZPDVMFTMp
-         3QO8xkAdwAY3hdfM2fhbtlS9FrSPy5V8Us3IpUsTAaj0sDVJVw4g493FDHzgOZcBKCtT
-         WEkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707765195; x=1708369995;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AZe21kBcPy6KSx7IZa4AcUw4sbKfAv+h51Ru4ZWOH8U=;
-        b=PIxmUAUo/nubOLfSOqhTh5Zn4xSBHRIxRrG5jqxvxDcY1O1PZDqTJJBuc6Z6b6BJkg
-         6GTP1kW6cT9yv4KjEuhTHYoWWUrFhXPuQzEUaQH/zh7voG8BZI/VFegMZu4HypwfEbrR
-         EdSfVnb8eGMPYddhFSShojBEywVFzNXdJJdT64JAVrfydpSGvnxt4u8g/JNfNMhyeMaJ
-         Dtx8BA3WEmpo/hEzJnV4VS8J6l/RJkFKJ07YZ7z29HsaoSp0jM9cxZV0ejycTVVz0qlV
-         RLWMf761+T7un8koV/Qw3sotNK1bLtInS7U25zopzEAdU99QkxGRVqDyooN2kTbBmC/c
-         XCBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVtq5XjL8eQiTsUAlIQb4Yto+31XP2hwrv+321tS75cScvVlj6iRbpMikinWSiRh9QbwrauzZkyPW9y7e+KikOmYXOiaPWq4R9sWdytQyBQPnOOVkV0J5n31i6VGK9l7+6KoKj9
-X-Gm-Message-State: AOJu0YyDLYd+tCQRkreI7FizKgBBV4CjFkFBIbrmrlP/bZRmnDb1ftLb
-	KYWcxg4B7lzTETZUJA1gmY0gl9Ro0baGcxxaiEvSlxOsC82LDSu+
-X-Google-Smtp-Source: AGHT+IFl6LJsfG6jRVqYDLExIYsaAihqzqU6vk5Hqvlokz2+AkO7Jtfo5penBfmuwtQEibPQUzwGHw==
-X-Received: by 2002:a81:c24d:0:b0:604:cd5c:a2f9 with SMTP id t13-20020a81c24d000000b00604cd5ca2f9mr5823219ywg.30.1707765194731;
-        Mon, 12 Feb 2024 11:13:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU1ASV0QDP7aeAOV6u2nseazEB/qvenVbrU9hUHMbQ9Qqunpn7PAMBP/3/ftCW7daPRa72DOTHC3OcdaNfQxEOQe/wHYvmmFicrxtfHW/G7nY+bxYpp8WBFszjlI/Ql0F+acf+jKtlXEVOPcUiKc9g3Xa0JKA1A4B8cQxGj0dCXL3lOSPRFq8kthiwn3DUxAa67S16uGWggx8BnE+sAqBMpInVM9xAQahdaaXfYc0UOBw9IcIeGpuUnhpUoNBNl+u1IvAPfRryOyZc+pzg1Js2pyon0cXL9MfxyNM33FZbY1rT+FlII54J2d5XOzIJq3uTNYktlARuzWfNvOG5ZNTHLTFrn57o7xpvpmWACOnrkYcqeCbB+TVV5Qgig4VK1q6fxROrcX6HDefkykpAMNsUokffnWEDckH+WfaerJHFE9VEcGQDCPg7kViWm4lDDUxNuA9bDLz3xro9emsTI7XNLodcPnsQ=
-Received: from localhost ([2601:344:8301:57f0:85b5:dd54:cd99:b])
-        by smtp.gmail.com with ESMTPSA id y5-20020a818805000000b006040f198d3esm1279723ywf.142.2024.02.12.11.13.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 11:13:14 -0800 (PST)
-Date: Mon, 12 Feb 2024 11:13:13 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Herve Codina <herve.codina@bootlin.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
-	Mark Brown <broonie@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 RESEND 3/6] bitmap: Make bitmap_onto() available to
- users
-Message-ID: <Zcptyd/AWrDD3EAL@yury-ThinkPad>
-References: <20240212075646.19114-1-herve.codina@bootlin.com>
- <20240212075646.19114-4-herve.codina@bootlin.com>
- <ZcoOpPb9HfXOYmAr@smile.fi.intel.com>
- <20240212143753.620ddd6e@bootlin.com>
- <ZcokwpMb6SFWhLBB@smile.fi.intel.com>
- <20240212152022.75b10268@bootlin.com>
- <Zcos9F3ZCX5c936p@smile.fi.intel.com>
+	s=arc-20240116; t=1707765233; c=relaxed/simple;
+	bh=Zg4dI59X8fKukbLuWBgS80Z3J3/AqqKxoPMGlLwMCM4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m3IAYJ4hB+DAJACU22PSFaGvCFwwJptLbGJn8YvE3SJlYARDufK40+SW9oNnGv34cn0Y+QXzgSP8mSzdeIW7CVybj7PSidLrDlUJ3qAYl4QRH0KuTxGTjoDw2XNzoxeF3VcA1PNyBIpI3K0MB5OWMBtrbQ24JiNXjYk+/LrIKkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=JU3sj7wi; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CIvYkZ028573;
+	Mon, 12 Feb 2024 19:13:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=xRAtTXA0GYOC3hlcnkylDGI7YmiZlOBntAK8dL6+NIQ=;
+ b=JU3sj7wi5sa3W3/c6ROS4fOw0SdEdRB57/eO2Br+dxuGpdK5Ozbtr1U+pD3nilnER6OF
+ ys+xLlq+l/9Xz8On6ORJXNZH5E+RubgEydbi4lrH5Q/GLOo3ZA425tyDA8uHp2paNXO2
+ F7IV0cv2HiDLlvMLPJAxpQClXgWGmuh8luwA0gEWjzmrlHcZYbY0sGw+TGmIhWKK3yKw
+ 3VzKCztg50EGasmePeKpf+VPs9v42qEq5k6OwPRi99tDk3iuc/aorcvWjzozgxiegJ8d
+ ufKmukVI4AoTmxmoOyTbLEUc1tIy3eWK7Zio37pm7nMO6qn3cowP8uhomS3zMzXaSvgZ Gg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7s2crg9v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 19:13:24 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CJ09Js004446;
+	Mon, 12 Feb 2024 19:13:23 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7s2crg9e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 19:13:23 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CIPK9G009904;
+	Mon, 12 Feb 2024 19:13:22 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6p62j08h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 19:13:22 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CJDJKI19530190
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 19:13:21 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 850F75805F;
+	Mon, 12 Feb 2024 19:13:19 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 70F8758059;
+	Mon, 12 Feb 2024 19:13:17 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 12 Feb 2024 19:13:17 +0000 (GMT)
+Message-ID: <5ee562ed-e461-4e63-9219-827619c55b3e@linux.ibm.com>
+Date: Mon, 12 Feb 2024 14:13:17 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zcos9F3ZCX5c936p@smile.fi.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 23/25] evm: Make it independent from 'integrity' LSM
+Content-Language: en-US
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-24-roberto.sassu@huaweicloud.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20240115181809.885385-24-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ji7sCJbvayq_fEExhtw88aZrsgxS19-n
+X-Proofpoint-ORIG-GUID: dWteap1k1f3oG6uA_Xu3h5dvHPWJsTNJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_16,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 malwarescore=0 clxscore=1015 priorityscore=1501 suspectscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 mlxscore=0 mlxlogscore=942
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402120147
 
-On Mon, Feb 12, 2024 at 04:36:36PM +0200, Andy Shevchenko wrote:
-> On Mon, Feb 12, 2024 at 03:20:22PM +0100, Herve Codina wrote:
-> > On Mon, 12 Feb 2024 16:01:38 +0200
-> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+
+
+On 1/15/24 13:18, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 > 
-> ...
+> Define a new structure for EVM-specific metadata, called evm_iint_cache,
+> and embed it in the inode security blob. Introduce evm_iint_inode() to
+> retrieve metadata, and register evm_inode_alloc_security() for the
+> inode_alloc_security LSM hook, to initialize the structure (before
+> splitting metadata, this task was done by iint_init_always()).
 > 
-> > Agree, the bitmap_onto() code is simpler to understand than its help.
-> > 
-> > I introduced bitmap_off() to be the "reverse" bitmap_onto() operations
-> > and I preferred to avoid duplicating function that do the same things.
-> > 
-> > On my side, I initially didn't use the bitmap_*() functions and did the the
-> > bits manipulation by hand.
-> > During the review, it was suggested to use the bitmap_*() family and I followed
-> > this suggestion.
+> Keep the non-NULL checks after calling evm_iint_inode() except in
+> evm_inode_alloc_security(), to take into account inodes for which
+> security_inode_alloc() was not called. When using shared metadata,
+> obtaining a NULL pointer from integrity_iint_find() meant that the file
+> wasn't in the IMA policy. Now, because IMA and EVM use disjoint metadata,
+> the EVM status has to be stored for every inode regardless of the IMA
+> policy.
 > 
-> I also would go this way, the problems I see with the current implementation are:
-
-Sure, opencoding and duplicating the functionality is always a bad
-idea.
-
-> - being related to NUMA (and as Rasmus once pointed out better to be there);
-
-It's 'related to NUMA' for the only reason - it's used by NUMA only.
-Nothing NUMA-specific in the function itself.
-
-Now that we've got a non-NUMA user, the bitmap_onto() is not related
-to NUMA anymore.
-
-> - unclear naming, esp. proposed bitmap_off();
-
-That's I agree. Scatter/gather from your last approach sound better.
-Do you plan to send a v2?
-
-> - the quite hard to understand help text
-
-Yes, we need a picture that would illustrate what actually happens
-
-> - atomicity when it's not needed (AFAICT).
-
-Agree. A series of atomic ops is not atomic. For example
-
-        if (test_bit(n, map))
-                set_bit(m, map);
-
-is not atomic as a whole. And this is what we do in bitmap_onto/off()
-in a loop. This must be fixed by using underscoded version.
-
-> > I did tests to be sure that bitmap_onto() and bitmap_off() did
-> > exactly the same things as my previous code did.
+> Given that from now on EVM relies on its own metadata, remove the iint
+> parameter from evm_verifyxattr(). Also, directly retrieve the iint in
+> evm_verify_hmac(), called by both evm_verifyxattr() and
+> evm_verify_current_integrity(), since now there is no performance penalty
+> in retrieving EVM metadata (constant time).
 > 
-> Yuri, what do you think about all this?
+> Replicate the management of the IMA_NEW_FILE flag, by introducing
+> evm_post_path_mknod() and evm_file_release() to respectively set and clear
+> the newly introduced flag EVM_NEW_FILE, at the same time IMA does. Like for
+> IMA, select CONFIG_SECURITY_PATH when EVM is enabled, to ensure that files
+> are marked as new.
+> 
+> Unlike ima_post_path_mknod(), evm_post_path_mknod() cannot check if a file
+> must be appraised. Thus, it marks all affected files. Also, it does not
+> clear EVM_NEW_FILE depending on i_version, but that is not a problem
+> because IMA_NEW_FILE is always cleared when set in ima_check_last_writer().
+> 
+> Move the EVM-specific flag EVM_IMMUTABLE_DIGSIG to
+> security/integrity/evm/evm.h, since that definition is now unnecessary in
+> the common integrity layer.
+> 
+> Finally, switch to the LSM reservation mechanism for the EVM xattr, and
+> consequently decrement by one the number of xattrs to allocate in
+> security_inode_init_security().
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-I think your scatter/gather is better then this onto/off by naming and
-implementation. If you'll send a v2, and it would work for Herve, I'd
-prefer scatter/gather. But we can live with onto/off as well.
-
-Thanks,
-Yury
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
