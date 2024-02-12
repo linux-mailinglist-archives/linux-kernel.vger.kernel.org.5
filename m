@@ -1,136 +1,199 @@
-Return-Path: <linux-kernel+bounces-62524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D220852254
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:14:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C5DB852256
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:16:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F2C32840D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:14:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D385428352A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3C44F214;
-	Mon, 12 Feb 2024 23:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BBF4F613;
+	Mon, 12 Feb 2024 23:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="E8hi6jKG";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lV0RyuQI"
-Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M7LvsJfA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61DAF4EB49
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25A64EB5C;
+	Mon, 12 Feb 2024 23:15:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707779690; cv=none; b=u3QgsOfyhqWu36pDRVArINUca0Vpb/wLjGCsnia7HgTcttmiyvobKPYWQmZ1lG2SIE7jX7FAPV4et4C7W4hv/oXTaApZKb+sS4e3gDBZpddRyZvCQ2DSuAmlLL5At/IESbZ14BiFctKUwubdD2GWWWp3W+qDhr6uHvQ4poovZnQ=
+	t=1707779752; cv=none; b=NSfzakD2PwpZh3GnrPmCZA2C0e6yN2NA1qTSJ+v5NyzJu3mvhkOsVnD1zXQmUvsJnRqnNKF/nYnHCTWKBR2Tobfm8MTvW+QPiv5vRkaF20sIvGan4LjlWjTnc8H4DSX0Ff4pp7i1ih9pWMRHQ2yEtoOPgvGxRebcTwWWH3VhVIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707779690; c=relaxed/simple;
-	bh=9nl15u7EBzbTLxafb5O8ds33OrCIC2ZYVzALBf14jdg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kqG0vxtKqdekJjnRaa7J93MuCcVQbDbX38koj4nkTTUfqPl9yoXtgj/x8abW9JwNGTUvZQ++tkJ/Ww0Zt9hg50cfqTQMvpVj1RFCyZkPv7LGw3i3azeVlEyP208w4Akfllvs0/fg3YXoF+MK9T9Sp5k9Mevc6hJDiW8OmzYVrIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=E8hi6jKG; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lV0RyuQI; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 234B511400BF;
-	Mon, 12 Feb 2024 18:14:47 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 12 Feb 2024 18:14:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1707779687; x=1707866087; bh=QyGuhjRy2C
-	AhPp7km2OtYzK7OMbyUKD1K9kuodelDyc=; b=E8hi6jKGC7rA0SsgSYRIHuVqRE
-	IHWA3Wt/M2fbKg4GYN0xgmSMbTAEryvAN+aWjmxGCeeY6dID6tVAAM++UaaTG3I4
-	A4qWcQl2mVq+2SvO4j2c7+3Gm98a9M2tRH1DX9xrr/E0vqd5X9JGc7UqFCMpi+sK
-	t7htY3MBi5aPSALoKCvaMbAiEJfoDFE3lWcA7t+WmLC9bs+iLRYRHU8LAFfOEKvf
-	YSlr+92GTQhZWrNFlPa54FbUi3jZJPz6DQyTWPgOTP/k/MCbMajTVz0KBGJNN2CG
-	CMMsvolSfhnZ5b35+isqdvDSmnje4oK5Rd0s+OQVNy2tKi/gtxn2yDkR1CWA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707779687; x=1707866087; bh=QyGuhjRy2CAhPp7km2OtYzK7OMby
-	UKD1K9kuodelDyc=; b=lV0RyuQIiNznM5Xqt+T/9on7PaP5RtvH2+3ytxGoEAFQ
-	4qusYD55GaO8fKcA2Py1QGjcx5Kr0ZtfxxA74CTdbxzuMAb168vOeEAlK0WhmKkS
-	Ez2J2d241wfWw8wtEIUT6PnCI9EHviSjHOljJ8fWKGfHjfxetvCh5y0HdT51KHkj
-	lvj7ElnBTJou78t/oonwNjzXPaOvVEwV1TrgYXx6MZReyBbvbFc/Hwk8VBTDUmj3
-	Aeyz4/zUjTlMCxEZvL98Wsbks9XMKfdlDunfz78Mcwzzu+VKRHqFiOqIpXS6mfdm
-	53+euS3cnDtFeYPGsGvFYYjXIADC97QxA4c7P80j3A==
-X-ME-Sender: <xms:ZqbKZXKU-TTDGxNZSwiHmhJhSvQtXKCU35vYIK4JqMRCIXWIfdq26Q>
-    <xme:ZqbKZbK8sMayL5pjBGojxMuJfXdtYdzQY6td4HQmcXZCd4lkGijYBDxizhhaAo2Ab
-    IQTEp1eLq5Wh6asB0U>
-X-ME-Received: <xmr:ZqbKZfubQKpnUnbq-b2UiqBXPCc99Bqo2W2uqd1lCpGxE2vSKAtu631dReL9StEEi_SnD5GN3L3xQyICTOmGqc9Tzhpl>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeggddtkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeelveduteeghfehkeeukefhudfftefhheetfedthfevgfetleevvdduveet
-    ueefheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiii
-    rg
-X-ME-Proxy: <xmx:ZqbKZQZY7UN0XUknm3COUgmq_GIYdgkOp17MS38IP71pOEONaEcOvA>
-    <xmx:ZqbKZeai7751ROZ2MRGLL2viN1edZsPLp35O1Cpl5A3Wp7zQ0_6-Vw>
-    <xmx:ZqbKZUCcUbkMjvF4d0jwK6Fjd3Jhn_4U9SVXMYvAq1IVZL_Sz_Lm0w>
-    <xmx:Z6bKZVU6BPTcrTDCqHKlDJSbm0XQB5ScZH09veozHma5scOvNj8J6g>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 12 Feb 2024 18:14:46 -0500 (EST)
-Date: Mon, 12 Feb 2024 16:14:45 -0700
-From: Tycho Andersen <tycho@tycho.pizza>
-To: Kees Cook <keescook@chromium.org>
-Cc: Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] samples: user-trap: fix strict-aliasing warning
-Message-ID: <ZcqmZdZ6x5w54nTI@tycho.pizza>
-References: <20240212111737.917428-1-arnd@kernel.org>
- <170776334482.2557794.95461406898503535.b4-ty@chromium.org>
+	s=arc-20240116; t=1707779752; c=relaxed/simple;
+	bh=2V5ih+rh+uJ8v7Og2vnvqzcZcn7X0cF6QU3gjcKFHDs=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=hIEM8fCqTLn83H87Y0NW8XhXqSrrgDKeNXUHEOSr6wHjW5sCS9YOQdyCfyzTcmF9W4SORZPhgTDmx1H4CUdgcIyQyiMWvwxqM+aGV3Vd2hts/xInxReaZTfkqwlRmE59wSsrOHdfA3Kh7j335cN5I32yJ++pTdVw/Z5vwNt47ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M7LvsJfA; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707779752; x=1739315752;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=2V5ih+rh+uJ8v7Og2vnvqzcZcn7X0cF6QU3gjcKFHDs=;
+  b=M7LvsJfARDw6F4p+ajzBS3HSK3zm/gYlXaKiXAgOXv2v6deiD7p12dHF
+   966KWYiG5eJtj+0t1Ue+VrfO0cyQrOGvgzfqYB9wxBLTNDKyZV9HH6wAe
+   KFDyPE3iIPZwg/WnAVEWgg4qitBTPgFKeFpc62EfIpUgN7aZRTByigDBQ
+   XevQYO3Ju5lVFw1VIlFbFBwLsSO6sdZ6wM/4SuPPXxk6siIxhAhaCayzh
+   4P2auVAQby5hjiC0fyzqifgxlJLBomn98C62RW3ihhgJA2pJ+wM9NLsln
+   99aZN793VZU4kk0Os97kDvhvGpna0yI6vCDkgmfJKFhz1+qNISjogAm+t
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="13173245"
+X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
+   d="scan'208";a="13173245"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 15:15:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
+   d="scan'208";a="7350882"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 12 Feb 2024 15:15:48 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com, "Jarkko
+ Sakkinen" <jarkko@kernel.org>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
+ try_charge()
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-11-haitao.huang@linux.intel.com>
+ <CZ3D53XFVXAW.25EK0ZBFH3HV2@kernel.org>
+Date: Mon, 12 Feb 2024 17:15:42 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170776334482.2557794.95461406898503535.b4-ty@chromium.org>
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2i1xkgedwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CZ3D53XFVXAW.25EK0ZBFH3HV2@kernel.org>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Mon, Feb 12, 2024 at 10:42:27AM -0800, Kees Cook wrote:
-> On Mon, 12 Feb 2024 12:17:31 +0100, Arnd Bergmann wrote:
-> > I started getting warnings for this one file, though I can't see what changed
-> > since it was originally introduced in commit fec7b6690541 ("samples: add an
-> > example of seccomp user trap").
-> > 
-> > samples/seccomp/user-trap.c: In function 'send_fd':
-> > samples/seccomp/user-trap.c:50:11: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-> >    50 |         *((int *)CMSG_DATA(cmsg)) = fd;
-> >       |          ~^~~~~~~~~~~~~~~~~~~~~~~
-> > samples/seccomp/user-trap.c: In function 'recv_fd':
-> > samples/seccomp/user-trap.c:83:18: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-> >    83 |         return *((int *)CMSG_DATA(cmsg));
-> >       |                 ~^~~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > [...]
-> 
-> Applied to for-next/seccomp, thanks!
-> 
-> [1/1] samples: user-trap: fix strict-aliasing warning
->       https://git.kernel.org/kees/c/9ad28ca5238d
-> 
-> Take care,
+Hi Jarkko
 
-If you happen to update the trailers, looks good to me too:
+On Mon, 12 Feb 2024 13:55:46 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
-Acked-by: Tycho Andersen <tandersen@netflix.com>
+> On Mon Feb 5, 2024 at 11:06 PM EET, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>
+>> When the EPC usage of a cgroup is near its limit, the cgroup needs to
+>> reclaim pages used in the same cgroup to make room for new allocations.
+>> This is analogous to the behavior that the global reclaimer is triggered
+>> when the global usage is close to total available EPC.
+>>
+>> Add a Boolean parameter for sgx_epc_cgroup_try_charge() to indicate
+>> whether synchronous reclaim is allowed or not. And trigger the
+>> synchronous/asynchronous reclamation flow accordingly.
+>>
+>> Note at this point, all reclaimable EPC pages are still tracked in the
+>> global LRU and per-cgroup LRUs are empty. So no per-cgroup reclamation
+>> is activated yet.
+>>
+>> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> ---
+>> V7:
+>> - Split this out from the big patch, #10 in V6. (Dave, Kai)
+>> ---
+>>  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 26 ++++++++++++++++++++++++--
+>>  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  4 ++--
+>>  arch/x86/kernel/cpu/sgx/main.c       |  2 +-
+>>  3 files changed, 27 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c  
+>> b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> index d399fda2b55e..abf74fdb12b4 100644
+>> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> @@ -184,13 +184,35 @@ static void  
+>> sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
+>>  /**
+>>   * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single EPC  
+>> page
+>>   * @epc_cg:	The EPC cgroup to be charged for the page.
+>> + * @reclaim:	Whether or not synchronous reclaim is allowed
+>>   * Return:
+>>   * * %0 - If successfully charged.
+>>   * * -errno - for failures.
+>>   */
+>> -int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
+>> +int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool  
+>> reclaim)
+>>  {
+>> -	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE);
+>> +	for (;;) {
+>> +		if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
+>> +					PAGE_SIZE))
+>> +			break;
+>> +
+>> +		if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
+>> +			return -ENOMEM;
+>> + +		if (signal_pending(current))
+>> +			return -ERESTARTSYS;
+>> +
+>> +		if (!reclaim) {
+>> +			queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
+>> +			return -EBUSY;
+>> +		}
+>> +
+>> +		if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, false))
+>> +			/* All pages were too young to reclaim, try again a little later */
+>> +			schedule();
+>
+> This will be total pain to backtrack after a while when something
+> needs to be changed so there definitely should be inline comments
+> addressing each branch condition.
+>
+> I'd rethink this as:
+>
+> 1. Create static __sgx_epc_cgroup_try_charge() for addressing single
+>    iteration with the new "reclaim" parameter.
+> 2. Add a new sgx_epc_group_try_charge_reclaim() function.
+>
+> There's a bit of redundancy with sgx_epc_cgroup_try_charge() and
+> sgx_epc_cgroup_try_charge_reclaim() because both have almost the
+> same loop calling internal __sgx_epc_cgroup_try_charge() with
+> different parameters. That is totally acceptable.
+>
+> Please also add my suggested-by.
+>
+> BR, Jarkko
+>
+> BR, Jarkko
+>
+For #2:
+The only caller of this function, sgx_alloc_epc_page(), has the same  
+boolean which is passed into this this function.
 
-I also don't understand what changed, or why this really fixes it.
-We're still "violating" strict aliasing as far as I can tell, since we
-just introduce `int *fd_ptr` insted of memcpy()-ing out the fd into
-an int?
+If we separate it into sgx_epc_cgroup_try_charge() and  
+sgx_epc_cgroup_try_charge_reclaim(), then the caller has to have the  
+if/else branches. So separation here seems not help?
 
-But whatever shuts the compiler up works for me.
 
-Tycho
+For #1:
+If we don't do #2, It seems overkill at the moment for such a short  
+function.
+
+How about we add inline comments for each branch for now, and if later  
+there are more branches and the function become too long we add  
+__sgx_epc_cgroup_try_charge() as you suggested?
+
+Thanks
+Haitao
 
