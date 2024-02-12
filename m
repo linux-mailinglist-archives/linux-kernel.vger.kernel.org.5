@@ -1,160 +1,180 @@
-Return-Path: <linux-kernel+bounces-62176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5A10851CB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:27:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A32D1851D20
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:45:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 366DCB24A84
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:27:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11EC91F23CC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:45:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2B845010;
-	Mon, 12 Feb 2024 18:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="K8JRXJ4P"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C93844DA0E;
+	Mon, 12 Feb 2024 18:42:38 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A45405C6;
-	Mon, 12 Feb 2024 18:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8AA7481DA;
+	Mon, 12 Feb 2024 18:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707762413; cv=none; b=Zg0a4MWqaJhQ62NAPRLXa4Rw3AnA4UNZm1g+nIPx/x0fG9L1micB/UlC3Dp5jKGCUGyWj48wJH69ZnYg5ofvRzzXY550mPoYZk0gZQOvy0nNRMldt/vtT4XbEHXk9Et58Y8quOS82thxEPv2o7436Jqbj1zNwFwq5NEh5LsqNhk=
+	t=1707763358; cv=none; b=CRwUpA9+m+6qg/iB2zfH+v5fVElA/qSIAITaezlS5Wl9uSt8+peaWfdcXWEaltiw+VNHLS699zBHEidUaiBHVfb+hlyboc5xxX0chYravo8uD133Lc1VPJh3Buw4GT3wsRu8oDndWAXdMqgpRNQFpJ0egdo+YNVN4RlRC6zCZHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707762413; c=relaxed/simple;
-	bh=zPCAl5W84MBNOsC7L5RhtuIjML3Qo3/ZiF/pSR55Tw4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DZzvsjyAZdnPVs/eTLajqh8zEjneN/Ilu9rZzcMfZn6TYTQoz//iXTrEV+bqGSWYVOoFzN/6WkRLTLp5CnDh4V/SNmS0B1F9/rt/QkgPaGg2l54qQGgE5XwMgWU7W3eEYPeCcQylqAcUIaBs3cmC1Mc/RtOvNB1xxbnvpNU47kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=K8JRXJ4P; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CI7Cpo010517;
-	Mon, 12 Feb 2024 18:26:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Orzq42MMO1ZEvKZjaWq3C1tqDEzzTaEwvYhlVNC563w=;
- b=K8JRXJ4PqLVKZ0WMD9nrgP1IEz3u4RKWc619cNgQ9yK16WPJyqQChwh0pZWP+YrBu/Ng
- Hd+Tiibuch3pwMxs62A2ybloGjiMw+Tv0fkKflFiNohOcesTjpewb5+8WYKeaJXhc1YK
- SHei8YaI/TClrRSYWEJMBg9aiP6rdy5Ekw7qZd8oWpkA7jQ6GcgiS3IBecNeqQPmk69W
- MALZnxHex4n8dnMOkyMzZTpV4RosSize1Rp6RUWtlCNIHam/bW8EP5FQvMpDTxWQsREb
- DIlGj7Z0bttGNMGgx7CKU2Sk0XfvcTBE5AXgWgQGEfFr6mVeICDExbT1zrCDEyEhPFTd /Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7raq0f34-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 18:26:21 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CI7mtC012593;
-	Mon, 12 Feb 2024 18:26:21 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7raq0f22-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 18:26:21 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CGx4f0024877;
-	Mon, 12 Feb 2024 18:26:20 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mfp27hd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 18:26:19 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CIQH4n17629696
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 Feb 2024 18:26:19 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2AAB858059;
-	Mon, 12 Feb 2024 18:26:17 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8480B58067;
-	Mon, 12 Feb 2024 18:26:10 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 12 Feb 2024 18:26:10 +0000 (GMT)
-Message-ID: <5d10e7d8-9d3e-43f9-95d8-67247ffa091c@linux.ibm.com>
-Date: Mon, 12 Feb 2024 13:26:09 -0500
+	s=arc-20240116; t=1707763358; c=relaxed/simple;
+	bh=ruCrcRG0ZxbpdLcx0rWNmfXeUOipHCx6oaOxdYBpTi8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FmNQfk/VYn2CjH4yL32389ZPx0exw9W8G+4kVDgrjOw4guBREOtN/jIM3j4Q2lvDOYt7Sr078yoEzXcD/y+C7UQBvdMGTLdRungEvrnj6iX8O27P0qdVrwsZYTOz+lv2eqSGoQq/KvbuoqvzFi4ekZ73HcMdqP5II+MJUSxtKV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id f4cc19245f191df7; Mon, 12 Feb 2024 19:42:33 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 3CC00669CF2;
+	Mon, 12 Feb 2024 19:42:33 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: Lukasz Luba <lukasz.luba@arm.com>, LKML <linux-kernel@vger.kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Zhang Rui <rui.zhang@intel.com>, netdev@vger.kernel.org,
+ Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+ Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+ linux-wireless@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+Subject: [PATCH v2 1/9] thermal: Get rid of CONFIG_THERMAL_WRITABLE_TRIPS
+Date: Mon, 12 Feb 2024 19:26:25 +0100
+Message-ID: <4545870.LvFx2qVVIh@kreacher>
+In-Reply-To: <6017196.lOV4Wx5bFT@kreacher>
+References: <6017196.lOV4Wx5bFT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 22/25] evm: Move to LSM infrastructure
-Content-Language: en-US
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
- <20240115181809.885385-23-roberto.sassu@huaweicloud.com>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20240115181809.885385-23-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sHIteHYy_ZuTq_ohDZCWtRB_3ocR2sgr
-X-Proofpoint-ORIG-GUID: 90lN_cbqjmQZCAMAtg7OuVMDbdTvBlWj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-12_15,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 spamscore=0
- priorityscore=1501 clxscore=1015 mlxscore=0 bulkscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402120139
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudefgdduudegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepudeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshht
+ rghnihhslhgrfidrghhruhhsiihkrgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=16 Fuz1=16 Fuz2=16
+
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+The only difference made by CONFIG_THERMAL_WRITABLE_TRIPS is whether or
+not the writable trips mask passed during thermal zone registration
+will take any effect, but whoever passes a non-zero writable trips mask
+to thermal_zone_device_register_with_trips() can be forgiven thinking
+that it will always work.
+
+Moreover, some thermal drivers expect user space to set trip temperature
+values, so they select CONFIG_THERMAL_WRITABLE_TRIPS, possibly overriding
+a manual choice to unset it and going against the design purportedly
+allowing system integrators to decide on the writability of trip points
+for the given kernel build.  It is also set in one platform's defconfig.
+
+Forthermore, CONFIG_THERMAL_WRITABLE_TRIPS only affects trip temperature,
+because trip hysteresis is writable as long as the thermal zone provides
+a callback to update it, regardless of the CONFIG_THERMAL_WRITABLE_TRIPS
+value.
+
+The above means that the symbol in question is used inconsistently and
+its purpose is at least moot, so remove it and always take the writable
+trip mask passed to thermal_zone_device_register_with_trips() into
+account.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v1 -> v2: No changes
+
+---
+ arch/arm/configs/imx_v6_v7_defconfig |    1 -
+ drivers/thermal/Kconfig              |   11 -----------
+ drivers/thermal/intel/Kconfig        |    2 --
+ drivers/thermal/thermal_sysfs.c      |    3 +--
+ 4 files changed, 1 insertion(+), 16 deletions(-)
+
+Index: linux-pm/drivers/thermal/Kconfig
+===================================================================
+--- linux-pm.orig/drivers/thermal/Kconfig
++++ linux-pm/drivers/thermal/Kconfig
+@@ -83,17 +83,6 @@ config THERMAL_OF
+ 	  Say 'Y' here if you need to build thermal infrastructure
+ 	  based on device tree.
+ 
+-config THERMAL_WRITABLE_TRIPS
+-	bool "Enable writable trip points"
+-	help
+-	  This option allows the system integrator to choose whether
+-	  trip temperatures can be changed from userspace. The
+-	  writable trips need to be specified when setting up the
+-	  thermal zone but the choice here takes precedence.
+-
+-	  Say 'Y' here if you would like to allow userspace tools to
+-	  change trip temperatures.
+-
+ choice
+ 	prompt "Default Thermal governor"
+ 	default THERMAL_DEFAULT_GOV_STEP_WISE
+Index: linux-pm/drivers/thermal/thermal_sysfs.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_sysfs.c
++++ linux-pm/drivers/thermal/thermal_sysfs.c
+@@ -458,8 +458,7 @@ static int create_trip_attrs(struct ther
+ 						tz->trip_temp_attrs[indx].name;
+ 		tz->trip_temp_attrs[indx].attr.attr.mode = S_IRUGO;
+ 		tz->trip_temp_attrs[indx].attr.show = trip_point_temp_show;
+-		if (IS_ENABLED(CONFIG_THERMAL_WRITABLE_TRIPS) &&
+-		    mask & (1 << indx)) {
++		if (mask & (1 << indx)) {
+ 			tz->trip_temp_attrs[indx].attr.attr.mode |= S_IWUSR;
+ 			tz->trip_temp_attrs[indx].attr.store =
+ 							trip_point_temp_store;
+Index: linux-pm/drivers/thermal/intel/Kconfig
+===================================================================
+--- linux-pm.orig/drivers/thermal/intel/Kconfig
++++ linux-pm/drivers/thermal/intel/Kconfig
+@@ -23,7 +23,6 @@ config X86_PKG_TEMP_THERMAL
+ 	tristate "X86 package temperature thermal driver"
+ 	depends on X86_THERMAL_VECTOR
+ 	select THERMAL_GOV_USER_SPACE
+-	select THERMAL_WRITABLE_TRIPS
+ 	select INTEL_TCC
+ 	default m
+ 	help
+@@ -47,7 +46,6 @@ config INTEL_SOC_DTS_THERMAL
+ 	tristate "Intel SoCs DTS thermal driver"
+ 	depends on X86 && PCI && ACPI
+ 	select INTEL_SOC_DTS_IOSF_CORE
+-	select THERMAL_WRITABLE_TRIPS
+ 	help
+ 	  Enable this to register Intel SoCs (e.g. Bay Trail) platform digital
+ 	  temperature sensor (DTS). These SoCs have two additional DTSs in
+Index: linux-pm/arch/arm/configs/imx_v6_v7_defconfig
+===================================================================
+--- linux-pm.orig/arch/arm/configs/imx_v6_v7_defconfig
++++ linux-pm/arch/arm/configs/imx_v6_v7_defconfig
+@@ -228,7 +228,6 @@ CONFIG_SENSORS_IIO_HWMON=y
+ CONFIG_SENSORS_PWM_FAN=y
+ CONFIG_SENSORS_SY7636A=y
+ CONFIG_THERMAL_STATISTICS=y
+-CONFIG_THERMAL_WRITABLE_TRIPS=y
+ CONFIG_CPU_THERMAL=y
+ CONFIG_IMX_THERMAL=y
+ CONFIG_WATCHDOG=y
 
 
 
-On 1/15/24 13:18, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> As for IMA, move hardcoded EVM function calls from various places in the
-> kernel to the LSM infrastructure, by introducing a new LSM named 'evm'
-> (last and always enabled like 'ima'). The order in the Makefile ensures
-> that 'evm' hooks are executed after 'ima' ones.
-> 
-> Make EVM functions as static (except for evm_inode_init_security(), which
-> is exported), and register them as hook implementations in init_evm_lsm().
-> Also move the inline functions evm_inode_remove_acl(),
-> evm_inode_post_remove_acl(), and evm_inode_post_set_acl() from the public
-> evm.h header to evm_main.c.
-> 
-> Unlike before (see commit to move IMA to the LSM infrastructure),
-> evm_inode_post_setattr(), evm_inode_post_set_acl(),
-> evm_inode_post_remove_acl(), and evm_inode_post_removexattr() are not
-> executed for private inodes.
-> 
-> Finally, add the LSM_ID_EVM case in lsm_list_modules_test.c
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-
->   }
->   
-> +static struct security_hook_list evm_hooks[] __ro_after_init = {
-> +	LSM_HOOK_INIT(inode_setattr, evm_inode_setattr),
-> +	LSM_HOOK_INIT(inode_post_setattr, evm_inode_post_setattr),
-> +	LSM_HOOK_INIT(inode_copy_up_xattr, evm_inode_copy_up_xattr),
-> +	LSM_HOOK_INIT(inode_setxattr, evm_inode_setxattr),
-> +	LSM_HOOK_INIT(inode_set_acl, evm_inode_set_acl),
-> +	LSM_HOOK_INIT(inode_post_set_acl, evm_inode_post_set_acl),
-> +	LSM_HOOK_INIT(inode_remove_acl, evm_inode_remove_acl),
-> +	LSM_HOOK_INIT(inode_post_remove_acl, evm_inode_post_remove_acl),
-> +	LSM_HOOK_INIT(inode_post_setxattr, evm_inode_post_setxattr),
-
-nit: move this one up after inode_setxattr.
-
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
