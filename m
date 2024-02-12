@@ -1,110 +1,119 @@
-Return-Path: <linux-kernel+bounces-62263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7BE8851DB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:13:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5AE851DBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB7A21C21756
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:13:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 845D11F218CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA024778C;
-	Mon, 12 Feb 2024 19:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2472146448;
+	Mon, 12 Feb 2024 19:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mVJxBcyW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Na5cIFTp"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A31A47A5D;
-	Mon, 12 Feb 2024 19:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8891E45C12;
+	Mon, 12 Feb 2024 19:14:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707765206; cv=none; b=qVgUoSkGoa7QAQ08JwuZ021N8FthEIBPGE+0c2+9jvaztyjVwsSDMEq0IeRKXtBRQYqbFk3La89NNGjbBDI9z+XYTiaulZhe5zDS3PvgNnd8LrECwm7JN7RtQdWpCN10Qt2piSXTukiyntXc9Nb9z+X6RpTo8sUlsu33k0CMFJU=
+	t=1707765266; cv=none; b=QXu0PdwHUX9Jq3IhJxdG/ETshVPqGf1jz1hJdmyCknw1aNlokBCPNI4DBV4/6MFs1Oyv2B0lXhwOsAtrwdAD0p7+L+p5BBnlWTXRrhZLgoCBUYC/nWoA8VBYsCjqNgEgxgR+6gPO18WSSNAOmYGcydgB5JlwZ5GB3MyQQ5dXiNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707765206; c=relaxed/simple;
-	bh=lVcxz1blE5LkyB5fmTf0yVlJWy7lRWV3QJg/2l55jq0=;
+	s=arc-20240116; t=1707765266; c=relaxed/simple;
+	bh=wk4IdpB+jmxZs3ctjwHg8x2TnIHTBOV5b+cPXBULd28=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AITymmRmAb+huiUGETSzc5FROA4JT8OVbOrTaP2Jdv59N1cG9VXwx2XQj2MmF2MOk3leLPgH4IVqOzXLL8N7tvealpQ7q6QAthsy4J79VXSh4Sm9KwFonQN4DM5fQ9yUpYn/CDzpk0HtZQ4t2ku5UFTlAItEDOxLEIb89nloFKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mVJxBcyW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 720D6C433C7;
-	Mon, 12 Feb 2024 19:13:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707765205;
-	bh=lVcxz1blE5LkyB5fmTf0yVlJWy7lRWV3QJg/2l55jq0=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=KqrhLP/BjDXr7SflyPlWp3Qoh2NwIqZ9tTUGYKfWrjyuhmnRfCLzrCHq1RmbgVnyZQbt+xWkL4JA9AxKdmB9+GW757a1jjmWm0Yn89KhKPQCO3Poaj1LZGSdzWPY/GJXAqYDegxTwzoAnkpgjmUG513yEu9gPHd+NmKzFN/PAXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Na5cIFTp; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3DBE140E01A9;
+	Mon, 12 Feb 2024 19:14:20 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id BVXoUC6KDzMB; Mon, 12 Feb 2024 19:14:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707765257; bh=C5wEpCM0L2FZSRTo/20pndRjhx4iPSK/Cw1XrpMyaoE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mVJxBcyWkPzcN+qZv3RfniWWGIxIMuPq7cihILT1zdcW3PpqQpuzEdZHJken6yMyf
-	 WAvjW6AvzVC/Co6VuJc360H0F+jOU4dobxIDBhHHRdK8myIQH0o+Noh6jug8t6imf2
-	 wzUqv2t02CDOVpFwfoKz/h+43IHzgh+ccr7S2Yw4lV13r4imNb4G6OvsMjGX10Yl6W
-	 RcJB2U4ED2FReuYFniuGnBBtdlP9YtKLEuasCecdh7rChvqi+bwPZ6R5wT6j6aOobN
-	 /Gva6vrnLumFDO0SGBhGNz8ANC4jplUx/cK2rMkXBVVP73Zku488B0NWM0o9oTiUFZ
-	 GhsLHp6DrGmTg==
-Date: Mon, 12 Feb 2024 19:13:21 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/mm: Don't needlessly use sudo to obtain root
- in run_vmtests.sh
-Message-ID: <75fa3e12-8b0d-407b-b11f-333be70d157e@sirena.org.uk>
-References: <20240209-kselftest-mm-check-deps-v1-1-19b09b151522@kernel.org>
- <17c0b7a1-6ec2-4504-8287-f0fa111b9748@arm.com>
- <ZcdthfAvzLQ9lzvd@finisterre.sirena.org.uk>
- <9ff817f4-e999-4a95-b00d-6984a7ea6181@arm.com>
+	b=Na5cIFTpl514oNlTpw0KdaDEwKc826n/EbZ6nue8mfsMCRolpONHuU6WJnPdRhm2H
+	 s9wjWsZL1QgGvVgBjP1Uvg5OPzj71TyQTCyrNoiSl3DPTGTLnfi9QidMPMeG4yVVkq
+	 rpL8PyGH+HjZx5IINDoDqUNgtIITXbdWlHjmssTG47av7EN++OmqV2vHcsKouWNnJa
+	 o1tSW9xokADow36zadnrX9zA6F4UYzt+0IN38Wa5RWIQQhsrUqBMvObbaPukOcEUZq
+	 UY8eDkwLcTX5FX5DsosQlvQvw8ZSlqqiaAkLX/oOEF1hqM3RGtCHxrj8tTe9RAQa9g
+	 I10eeDdeTRO/az8tde8j26mD75gepjXqDke1uaMlR96/lLbf4+CBHM7sSI7jU9/S4r
+	 EaoMBz6BIVQ0GCGZsmQYc7ph4r0lqycGBLMZxDWwoFZiEKTLW4egyfv3caX4omkXDN
+	 DuF+1DNRrliiYuWs8ZEpu7iT3ScCVlrX7hdNvUykJn2KDa+9JJWUS9S462cbu8ncrk
+	 tu+ZbbFlF7W+oDxcbCkaolwvFg62BmD4wM9msmtaYpe+Iw3lsI1WXBHtafd3ohxnFF
+	 bQwf176pWCdAcL4VqGVF0ILTGYipdgPMOZpiZwhk0GkTurx00qu8wbcApX8x1D3dfg
+	 W/PwjjsO+aHvEnr1jLD/6Gws=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 968F740E01F7;
+	Mon, 12 Feb 2024 19:14:09 +0000 (UTC)
+Date: Mon, 12 Feb 2024 20:14:01 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Luck, Tony" <tony.luck@intel.com>
+Cc: "Naik, Avadhut" <avadnaik@amd.com>,
+	"Mehta, Sohil" <sohil.mehta@intel.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+	Avadhut Naik <avadhut.naik@amd.com>
+Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
+ Records pool
+Message-ID: <20240212191401.GLZcpt-XHFqPg3cDw-@fat_crate.local>
+References: <20240209205111.GGZcaQP1gb6C9m0WZB@fat_crate.local>
+ <5DB0FF8D-C6DA-45DC-B287-201A9BF48BDA@alien8.de>
+ <75ddf61d-8dda-47fa-9da0-24221feb22a2@amd.com>
+ <20240211111455.GAZcisL09LeFPWa2EI@fat_crate.local>
+ <774e7ca5-154d-4ca4-bc4c-2f945c20b938@amd.com>
+ <20240212085801.GAZcndma4UTPtKm33e@fat_crate.local>
+ <20240212093246.GBZcnlvkPKDC8C7rv5@fat_crate.local>
+ <SJ1PR11MB6083B3511D18787BE823AB2CFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240212175408.GIZcpbQHVjEtwRKLS-@fat_crate.local>
+ <SJ1PR11MB60830AF35FA89C7869B8C11EFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="uZViTPliezr/CpYc"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9ff817f4-e999-4a95-b00d-6984a7ea6181@arm.com>
-X-Cookie: I'm not available for comment..
+In-Reply-To: <SJ1PR11MB60830AF35FA89C7869B8C11EFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
 
+On Mon, Feb 12, 2024 at 06:45:34PM +0000, Luck, Tony wrote:
+> So it is currently true that number of CPUs has been computed at this point.
 
---uZViTPliezr/CpYc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It needs a proper explanation why that's ok rather than an empirical
+test only.
 
-On Mon, Feb 12, 2024 at 08:32:58AM +0000, Ryan Roberts wrote:
-> On 10/02/2024 12:35, Mark Brown wrote:
+> I use "git send-email" to send out patches, and usually "b4" to get them
+> to my desktop. I do have "mutt" on there, but IT have made it complex
+> for me to use it to simply read & reply.
 
-> > Ah, I was assuming that some of the suite ran usefully as non-root given
-> > that the only point of that sudo was to acquire root.  If the whole
-> > thing needs to be root then we should instead have a check for root at
-> > the top of run_vmtests.sh and just skip the whole thing if we aren't
-> > root, but then I'm unclear why it's invoking sudo in the first place.
+IT departments all around the world make sure of that. :)
 
-> I can't speak for how others use the suite, but there are a bunch of setup
-> operations in the script itself that require root (e.g. reserving huge pages).
-> Some of the tests will work without root, I'm sure, but I'm not sure its hugely
-> valuable. Personally, I'd vote for just doing a test for root at the top, as you
-> suggest.
+> It requires separate mutt config files to fetch mail and a different
+> config to send mail because of the firewall rules on the lab where my
+> desktop lives.
 
-The hugetlb tests appear to be checking for root while running...  I'm
-not super fussed either way myself, I don't really use these tests
-myself except in a general "keeping an eye on CI" kind of way so I'd not
-object if people wanted to just go for just requiring root for the whole
-thing.
+Yeah, that's why I'm working with !company mail account. For my own
+sanity.
 
---uZViTPliezr/CpYc
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+Regards/Gruss,
+    Boris.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXKbdAACgkQJNaLcl1U
-h9C6wgf/RJIOLX4PFd2MsE1xuGjw2/lCoxf8qoDdaoqGpAAVWq86BvYjlgCaB9H4
-g6HK0IaPAvY0XWfuPV4ouY6OsbBE9DuvB7mwNbqG7pg7hKIdpod/fuev95pfWZbo
-SnYocqjGxxYZQwPE+YqWcnbMIvkcboD+8gcIy3yle013yXOkn3dHdndPDpnNzAK0
-+Sa8Y8E+pUt4pBJjLIuklEmf9tOfHakk2zMZk0JbF55KQVxcI6hPcENxZ7AGCEOx
-cG8h/N3e/2luVdi7FqAKo7McRek9EQpIpg96YKBA+QX8xgjzEZ2komh6G9hBdvvL
-Xd2XSTk7BozvqzbobHD0PGrBro40CQ==
-=wlBc
------END PGP SIGNATURE-----
-
---uZViTPliezr/CpYc--
+https://people.kernel.org/tglx/notes-about-netiquette
 
