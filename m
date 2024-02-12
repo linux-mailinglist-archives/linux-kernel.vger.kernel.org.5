@@ -1,79 +1,82 @@
-Return-Path: <linux-kernel+bounces-61078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D598F850CF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 03:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D2351850CF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 03:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98274288934
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 02:56:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88692288CF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 02:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E013F9F5;
-	Mon, 12 Feb 2024 02:55:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9300510A22;
+	Mon, 12 Feb 2024 02:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Q7u+4E6n"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="PahwK4Ny"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6D48C1D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAB1D516
 	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707706536; cv=none; b=K3T7nGeGFkfUHlnDEKVHNEPyF1CPGXNDpNAbkHD+Hz+Vk4sFcGgweln2PkiUWu6bWOJSIBADoDUxvC96lF3KmJp5u4reFu3jne654nMw8aeKSUAgQVTODB8XLRJyN41TfpontE3PnTxGlQrQND1WECEbh8v9c/5zCEufswY84OA=
+	t=1707706537; cv=none; b=HIB3XobClhaymFEw6ve9Fy3XjmgOSFgseZmXLu86/uhLbpurUnfZFTZ+BchmmN7srS2jOuW+Qsz69J95Cp/zpmSidDfKz3Now98u2kYlQEK+/H3kTM8W/bWNRSPQG4sTWq8KTybMIo+2nvU62K0ub8venmF70K32lAlmzdOcW1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707706536; c=relaxed/simple;
-	bh=FfLB9kZNEE0mzUFK+6fXY29r9iKKYgvLMRPENpobDoM=;
+	s=arc-20240116; t=1707706537; c=relaxed/simple;
+	bh=AXO7VsflvKGWTnEvz0+V2dNgfy1ulMK/F7UiLVzpIV0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sxu1rN8gQBjmRQ0TOyc7o/83TmMGorQPdfBIU1/T04oUjtpwfzRHOSU50jy397BCoie4iP+JPX1hbGzJSVoeNhhEY2vDwF4+yMdO3uX8PbAFXG1con6vh1UHYVdfNyKtttr0suJookR2aMLCmu+H3AHZYeeYkTVYrsAmrnoqOoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Q7u+4E6n; arc=none smtp.client-ip=209.85.214.169
+	 MIME-Version; b=S9wARA3NhP8ICjWUH6yiJUTZX88l0ePeHe5EqGsypIM/osdx3qbcN+/SrWTtLMoUZlWWgCKhwBhVD0NUmwSYrc5tmOm73PE247BUz0RWz++0ClMGN5kj2mScB/qJEL/pAIF7xnLG1pYJLKT2qbnfI+0KWlGs15AQUZe1iwD6YKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=PahwK4Ny; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d944e8f367so18143685ad.0
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d953fa3286so21300365ad.2
         for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 18:55:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1707706534; x=1708311334; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1707706535; x=1708311335; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+lt2Zw8ci3FBMgsxbvxJ1Pjg/pitk5ttZsMbyNXtz18=;
-        b=Q7u+4E6nEn57xSQ+jMaSfTXNIAVVT0XnUvDBRjdVYgxj0LIJBffye3IRLZGCBGtB8/
-         Mw4pq5OZaT4df8C0IaaV0JH0KEdNf93I8u6O2dAIMCgJEsdugdkx4I6uOcZTtiEKLKpX
-         jd7tDJ2eZI3M75NZghyXG3MTBW2vXXfXaWKYu12767MNsCJreS3fV3ag583Q5z4tLCJc
-         PurLBSewSqSwS9lc+jHgJQfe4an8NF1wzfdv2e+XS+/2BLzOHT3NEHnoWvs7RtcACH1g
-         AcSI+B9G3lQNievwnhnM4VSAC256pZE65P9o1p4ZMkF1fFsfX8VDL34TlJMBLrabjKDN
-         Ympg==
+        bh=6J8NdLE0ucNiNKFND0rK4zdkXC5jx9zUaL7zwsJdJPc=;
+        b=PahwK4NyuQ04a94ZVkBg4mEywR/its8gyuo29TCJ/e+ePRZn8l6xK6IWUJqJybOS4F
+         jG4XsUxVw0Lsck4UQaXaVTpH6bLu3cwQ5Uh0AtCjpaCoEkduPPtFSU0FC8RgCJ2r8lX3
+         UxxXpxa7nljntlZNP+UrtM1PSimWng9GA0iEtai+Y7eheAgFOEYAUY5N1DtWTrKwVvhP
+         ZYCeu5dlM5Yy4/Eu3DwwquIw0Zdeh9JhvatjA+Wqemw4w/BvfeFJYunENmvcxPPDbkCd
+         RSHaLwsURRGW2qwRygAUONw5jKoQ22F0KVpMcuHTh0VW2CXG8so0AHr4tRm9bqLLhZS8
+         HB3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707706534; x=1708311334;
+        d=1e100.net; s=20230601; t=1707706535; x=1708311335;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+lt2Zw8ci3FBMgsxbvxJ1Pjg/pitk5ttZsMbyNXtz18=;
-        b=aAnlAw5/n2aAMjnk0rP70BwHG0HLFGusagzCs5VKJfwfOGONAm9RCfwDHviV4n3Hk6
-         w4ab9LJbwrXav01G/6qHH5whb+g/zf3siylps8NlYsN6m7+WVQ9+qy7ePmNHUymj2o5E
-         pJIdcYJ1uJ0D/Q5L5hckRxBaAzrR+L3xSSgzyFvZF5m8doIau0z64kVAKeZz0g63G33n
-         Ovny1bYRHfnHQKyBS8YrWNDfrE4A64r4FfJHaTZxcw7YnkgxfeLkOG9oXrd5P9IZ1g35
-         W/h84d240C/Joh/d7Tm5rfE/qwpMBy+os3L49YwaMqbXMjPCki09H464GrKAor1eh8Ou
-         QE8A==
-X-Gm-Message-State: AOJu0YwscDd3YKVV7EiO/MqSa2YaDG4c/DXd/8eqTQCMR61Aob+iUIo4
-	rR8NKVjiVAglm3kAiyceipk1YxghAHTfKxQ4OZP/jNVkSXUOp6HQ2YdFBVpNmEc=
-X-Google-Smtp-Source: AGHT+IHmG+CIpQJOL1eOAU1mMo3rp+EDyWfC1D+PpAxX+YwHAEt1nNZRP5QwPUg9G/1IMuX30R9ESQ==
-X-Received: by 2002:a17:902:c412:b0:1da:2bd6:a450 with SMTP id k18-20020a170902c41200b001da2bd6a450mr2170203plk.32.1707706534554;
-        Sun, 11 Feb 2024 18:55:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUFMcthFL4l/bTCJyUVKIFRBG6Uzr3J1H/8KTDyjhZF+VEX0+59ZHlo17zAIHsqjff6iEJHbL5ZnLE1y5qPIbZtcNiH5g1S2cNMGOkIIb1/slKb0HWnZF9jNLbDe4rF1SmjOZQImKvG
+        bh=6J8NdLE0ucNiNKFND0rK4zdkXC5jx9zUaL7zwsJdJPc=;
+        b=nHS9X4TECGOGbzvQlCeUbHqd318FjnrIj1526V4w2DzZZZux9CHi/6PpVz6890FCgg
+         OWcNxr8P5osHoRWjHM/WFgvD87zL56+DhGqsRyNZ+HX9FJ4Yz5CA721TjXZq4PPp5Cyo
+         mBlllXUN42m2tZHN2tRsUwpFezVTWNfnSVlxUuDM5ta8CSIMmqmBMP8f68Z6366G4SzG
+         u8RljJS1E4OfLtdyY4cv84/MxF5HV62Zvj6K+5Rb5/rU/hKBI4ycPDALzpO8GfRNhcWu
+         Cctpa2biEa+N+AwGzFyYQQmUg99Su3XxMIsUUV74vUWDcLTjqzqB6Aq0CqJ/RY8Chxar
+         y/3g==
+X-Forwarded-Encrypted: i=1; AJvYcCVYIOH7KAgy6VRjba9TEPLCsQLydCUZTUZQQmAlfpvOs9kvSUoHc7gp3mkj0AhtNJD/WKECfc1sXCoLKTj7mSJ9sI6jCYBuYnWj+qu1
+X-Gm-Message-State: AOJu0YyEzVYn9WD0i2tV5+6RHWguYsufEnX1HCExeAKS6BAkTAqmAtBK
+	o54vHEYnoTIQNciJIMmDQF0udo0bbtjHhkXBWAlUksk4SD0E8yGkH9ZUHsZuimc=
+X-Google-Smtp-Source: AGHT+IFUXXjAhYh8fPaDzJdt/6c0qL5uB2s4002mQVmQJYBv4oZI2UnLxM9T/HLUqj7hh7tlkNZOxg==
+X-Received: by 2002:a17:903:25d2:b0:1d9:ed80:607f with SMTP id jc18-20020a17090325d200b001d9ed80607fmr5933876plb.41.1707706535523;
+        Sun, 11 Feb 2024 18:55:35 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXMVP8J2/uywWjIa8v+LtUBwTbCg6k4nUS11lldS4d4SPpgOkiUESJKifpQiePYf+5sb5RPwR8/2RD7ppjseWiDMb+tH3c47JIEhVd/KYoxUfEzqxLbMUoa1Z6QGicm0wv/0P7m6Mt2up3tJ9kh5+AfUU29Up1ThFadmZrNYH3Ghb/6ZESNPzpIMTLZVkLg6+08WA==
 Received: from sw06.internal.sifive.com ([4.53.31.132])
         by smtp.gmail.com with ESMTPSA id lb3-20020a170902fa4300b001d9af77893esm4906443plb.58.2024.02.11.18.55.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 18:55:34 -0800 (PST)
+        Sun, 11 Feb 2024 18:55:35 -0800 (PST)
 From: Samuel Holland <samuel.holland@sifive.com>
 To: Palmer Dabbelt <palmer@dabbelt.com>
 Cc: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH 4/7] riscv: Simplify text patching loops
-Date: Sun, 11 Feb 2024 18:55:15 -0800
-Message-ID: <20240212025529.1971876-5-samuel.holland@sifive.com>
+	Samuel Holland <samuel.holland@sifive.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	bpf@vger.kernel.org
+Subject: [PATCH 5/7] riscv: Pass patch_text() the length in bytes
+Date: Sun, 11 Feb 2024 18:55:16 -0800
+Message-ID: <20240212025529.1971876-6-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240212025529.1971876-1-samuel.holland@sifive.com>
 References: <20240212025529.1971876-1-samuel.holland@sifive.com>
@@ -85,69 +88,157 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This reduces the number of variables and makes the code easier to parse.
+patch_text_nosync() already handles an arbitrary length of code, so this
+removes a superfluous loop and reduces the number of icache flushes.
 
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
 
- arch/riscv/kernel/patch.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ arch/riscv/include/asm/patch.h     |  2 +-
+ arch/riscv/kernel/patch.c          | 15 +++++----------
+ arch/riscv/kernel/probes/kprobes.c | 20 +++++++++++---------
+ arch/riscv/net/bpf_jit_comp64.c    |  7 ++++---
+ 4 files changed, 21 insertions(+), 23 deletions(-)
 
+diff --git a/arch/riscv/include/asm/patch.h b/arch/riscv/include/asm/patch.h
+index 9f5d6e14c405..7228e266b9a1 100644
+--- a/arch/riscv/include/asm/patch.h
++++ b/arch/riscv/include/asm/patch.h
+@@ -9,7 +9,7 @@
+ int patch_insn_write(void *addr, const void *insn, size_t len);
+ int patch_text_nosync(void *addr, const void *insns, size_t len);
+ int patch_text_set_nosync(void *addr, u8 c, size_t len);
+-int patch_text(void *addr, u32 *insns, int ninsns);
++int patch_text(void *addr, u32 *insns, size_t len);
+ 
+ extern int riscv_patch_in_stop_machine;
+ 
 diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-index bccd9ed04a05..7f030b46eae5 100644
+index 7f030b46eae5..9aa0050225c0 100644
 --- a/arch/riscv/kernel/patch.c
 +++ b/arch/riscv/kernel/patch.c
-@@ -155,7 +155,6 @@ NOKPROBE_SYMBOL(__patch_insn_write);
+@@ -19,7 +19,7 @@
+ struct patch_insn {
+ 	void *addr;
+ 	u32 *insns;
+-	int ninsns;
++	size_t len;
+ 	atomic_t cpu_count;
+ };
  
- static int patch_insn_set(void *addr, u8 c, size_t len)
+@@ -227,15 +227,10 @@ NOKPROBE_SYMBOL(patch_text_nosync);
+ static int patch_text_cb(void *data)
  {
--	size_t patched = 0;
- 	size_t size;
- 	int ret = 0;
+ 	struct patch_insn *patch = data;
+-	unsigned long len;
+-	int i, ret = 0;
++	int ret = 0;
  
-@@ -163,11 +162,12 @@ static int patch_insn_set(void *addr, u8 c, size_t len)
- 	 * __patch_insn_set() can only work on 2 pages at a time so call it in a
- 	 * loop with len <= 2 * PAGE_SIZE.
- 	 */
--	while (patched < len && !ret) {
--		size = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(addr + patched), len - patched);
--		ret = __patch_insn_set(addr + patched, c, size);
-+	while (len && !ret) {
-+		size = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(addr), len);
-+		ret = __patch_insn_set(addr, c, size);
+ 	if (atomic_inc_return(&patch->cpu_count) == num_online_cpus()) {
+-		for (i = 0; ret == 0 && i < patch->ninsns; i++) {
+-			len = GET_INSN_LENGTH(patch->insns[i]);
+-			ret = patch_text_nosync(patch->addr + i * len,
+-						&patch->insns[i], len);
+-		}
++		ret = patch_text_nosync(patch->addr, patch->insns, patch->len);
+ 		atomic_inc(&patch->cpu_count);
+ 	} else {
+ 		while (atomic_read(&patch->cpu_count) <= num_online_cpus())
+@@ -247,13 +242,13 @@ static int patch_text_cb(void *data)
+ }
+ NOKPROBE_SYMBOL(patch_text_cb);
  
--		patched += size;
-+		addr += size;
-+		len -= size;
- 	}
- 
- 	return ret;
-@@ -190,7 +190,6 @@ NOKPROBE_SYMBOL(patch_text_set_nosync);
- 
- int patch_insn_write(void *addr, const void *insn, size_t len)
+-int patch_text(void *addr, u32 *insns, int ninsns)
++int patch_text(void *addr, u32 *insns, size_t len)
  {
--	size_t patched = 0;
- 	size_t size;
- 	int ret = 0;
+ 	int ret;
+ 	struct patch_insn patch = {
+ 		.addr = addr,
+ 		.insns = insns,
+-		.ninsns = ninsns,
++		.len = len,
+ 		.cpu_count = ATOMIC_INIT(0),
+ 	};
  
-@@ -198,11 +197,13 @@ int patch_insn_write(void *addr, const void *insn, size_t len)
- 	 * Copy the instructions to the destination address, two pages at a time
- 	 * because __patch_insn_write() can only handle len <= 2 * PAGE_SIZE.
- 	 */
--	while (patched < len && !ret) {
--		size = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(addr + patched), len - patched);
--		ret = __patch_insn_write(addr + patched, insn + patched, size);
-+	while (len && !ret) {
-+		size = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(addr), len);
-+		ret = __patch_insn_write(addr, insn, size);
+diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+index cbf8197072bf..a64461fa715c 100644
+--- a/arch/riscv/kernel/probes/kprobes.c
++++ b/arch/riscv/kernel/probes/kprobes.c
+@@ -23,14 +23,14 @@ post_kprobe_handler(struct kprobe *, struct kprobe_ctlblk *, struct pt_regs *);
  
--		patched += size;
-+		addr += size;
-+		insn += size;
-+		len -= size;
- 	}
+ static void __kprobes arch_prepare_ss_slot(struct kprobe *p)
+ {
++	size_t len = GET_INSN_LENGTH(p->opcode);
+ 	u32 insn = __BUG_INSN_32;
+-	unsigned long offset = GET_INSN_LENGTH(p->opcode);
  
- 	return ret;
+-	p->ainsn.api.restore = (unsigned long)p->addr + offset;
++	p->ainsn.api.restore = (unsigned long)p->addr + len;
+ 
+-	patch_text_nosync(p->ainsn.api.insn, &p->opcode, 1);
+-	patch_text_nosync(p->ainsn.api.insn + offset,
+-			  &insn, 1);
++	patch_text_nosync(p->ainsn.api.insn, &p->opcode, len);
++	patch_text_nosync(p->ainsn.api.insn + len,
++			  &insn, GET_INSN_LENGTH(insn));
+ }
+ 
+ static void __kprobes arch_prepare_simulate(struct kprobe *p)
+@@ -117,16 +117,18 @@ void *alloc_insn_page(void)
+ /* install breakpoint in text */
+ void __kprobes arch_arm_kprobe(struct kprobe *p)
+ {
+-	u32 insn = (p->opcode & __INSN_LENGTH_MASK) == __INSN_LENGTH_32 ?
+-		   __BUG_INSN_32 : __BUG_INSN_16;
++	size_t len = GET_INSN_LENGTH(p->opcode);
++	u32 insn = len == 4 ? __BUG_INSN_32 : __BUG_INSN_16;
+ 
+-	patch_text(p->addr, &insn, 1);
++	patch_text(p->addr, &insn, len);
+ }
+ 
+ /* remove breakpoint from text */
+ void __kprobes arch_disarm_kprobe(struct kprobe *p)
+ {
+-	patch_text(p->addr, &p->opcode, 1);
++	size_t len = GET_INSN_LENGTH(p->opcode);
++
++	patch_text(p->addr, &p->opcode, len);
+ }
+ 
+ void __kprobes arch_remove_kprobe(struct kprobe *p)
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 719a97e7edb2..43be2585f0d4 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -14,6 +14,7 @@
+ #include "bpf_jit.h"
+ 
+ #define RV_FENTRY_NINSNS 2
++#define RV_FENTRY_NBYTES (RV_FENTRY_NINSNS * 4)
+ 
+ #define RV_REG_TCC RV_REG_A6
+ #define RV_REG_TCC_SAVED RV_REG_S6 /* Store A6 in S6 if program do calls */
+@@ -681,7 +682,7 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (memcmp(ip, old_insns, RV_FENTRY_NINSNS * 4))
++	if (memcmp(ip, old_insns, RV_FENTRY_NBYTES))
+ 		return -EFAULT;
+ 
+ 	ret = gen_jump_or_nops(new_addr, ip, new_insns, is_call);
+@@ -690,8 +691,8 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+ 
+ 	cpus_read_lock();
+ 	mutex_lock(&text_mutex);
+-	if (memcmp(ip, new_insns, RV_FENTRY_NINSNS * 4))
+-		ret = patch_text(ip, new_insns, RV_FENTRY_NINSNS);
++	if (memcmp(ip, new_insns, RV_FENTRY_NBYTES))
++		ret = patch_text(ip, new_insns, RV_FENTRY_NBYTES);
+ 	mutex_unlock(&text_mutex);
+ 	cpus_read_unlock();
+ 
 -- 
 2.43.0
 
