@@ -1,97 +1,273 @@
-Return-Path: <linux-kernel+bounces-62196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DD2F851CE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CFF35851CE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:36:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AC7F282626
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:36:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FE83282EFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:36:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3CB445018;
-	Mon, 12 Feb 2024 18:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D3340BE0;
+	Mon, 12 Feb 2024 18:36:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vk0DFFjQ"
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="sZ3kUerr"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 556344176D
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DDAE45BE8
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707762987; cv=none; b=pnL+dxJ7Ey3YzudIGK8kjiH733OXmHam+laMr0bxUS+rFvjZ6l9sH5DCzzKqBNB+Z+oIfvGOSKNCDcwbmbk6IcnIlymtX3F+tPVibzS7640cFVlLHLwFzT8zj3nKNCM7dlmzo0VDB0o7Of/4ygQJeydGveHIzYslaaeq7oH1CFg=
+	t=1707763007; cv=none; b=i9+lt2F12bdeNKJRI6Co3CgCpkqL0zRLELIAo2vynZFX1kipehrao730KFjEFCBR/afNSzJNeOI9ESKO1JvV34DXhdKUFUsRmKnKAjO5mGeEht+e4iSWlCvAGR64nIgLaX6DiWxy5dgR80w9lWlQH8QOH1HDLiH/jKIQI8Xgp0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707762987; c=relaxed/simple;
-	bh=WXKqSYyybXp6uV6dewa2nvBTpPzl9LPRGTDSAu1cgDM=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=cj8txtmA5koK2B1311TzkIT71epKKro6weE0YtxEiW1q6pDxJQsGr+qlvtiME3G5CZTfU8xPdlPqBXHXpGwheWPj4PXYhm02pCqp8JiSPjGyGYNmyPrDrYEeHapKdf9VY9z4EoAkGVbC6+Fc5Dulh/qMAZi0MuP9Fd62kQt7M5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vk0DFFjQ; arc=none smtp.client-ip=209.85.222.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7d6024b181bso1273233241.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:36:25 -0800 (PST)
+	s=arc-20240116; t=1707763007; c=relaxed/simple;
+	bh=m8jYFCrSiAHQCrclsFFugQkVkQ8mNvCBEUbX8VM2B3s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Bew1t6/xZTptuwXjtNwgiBZmydmPR0kKA40xfuhsmsSaAwNyXQMfhgIB9/K6TmPxRTBn2vrLkxiryCkrdGLAtR23o+ZJHbhZKXVMcV7o5lEiruvKnNe8audFCBakmZubXDQ+E9cCsVe6b+83gJ7cyTTov5MvQPhKkqc/Mg+EMkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=sZ3kUerr; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-363edc74eabso1450425ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:36:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707762984; x=1708367784; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WXKqSYyybXp6uV6dewa2nvBTpPzl9LPRGTDSAu1cgDM=;
-        b=vk0DFFjQA04k1ypGjRU9WCB47IMT1XjhG3otYGAKvggPQK8ujFDKCs5mFHeq3Cbv/d
-         pLknOTfAoAz9FltE5o05OC/AhRbIhd8Q+aC7cb3t6kpg4Qns2Ms3b2DZPbiw3X3JHQGs
-         WdqFXDfTXVHsBEFURF4CcJWDT6wd1suVtRwSDNfas9ynrMuaCFOmhDQmOhUugLtnkgn7
-         pNVRfnocaWnSxx3adv/r5v5mp4SoBftQtbs+RdKe+7LkJNvRW/dZw+nNGF7sKVjnRorR
-         mZ2JZ1FD25u/irR75UBHDluBpuNGlLFW4wa16Jx9r1gZR4n0H6oNZ4DbF1dfa/sQBzIQ
-         UQqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707762984; x=1708367784;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707763004; x=1708367804; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WXKqSYyybXp6uV6dewa2nvBTpPzl9LPRGTDSAu1cgDM=;
-        b=jQcsPRp5F/6X4vFAj7tZJfXS24OOx+fjoHwxaWoTLK8EeGvzxFgx//+xtk6ttkSF0u
-         JBj+P9UTOvSPTaWqmVQkLI29UBeorvz3KYc3ESBTd6sOBMBEvtltRwat744yKrab+0lp
-         AZd8KJ7SnDCJmw+ANRfvVRHhluQ7N2xLXUidI4Lcz4N77V3iM0dhC0ecQp58/CtMnc6b
-         4kgPiEkU0ZFPN7SwoHMFzJhmnFI45v75xg5cxwbdKGoxMmJMmTFlniH90wfq4JKvL4Ih
-         80THoP2xqS6blrV7oUMUBJXmYzIlREJl7wmsIfCBeEZ7/hX83278SoJgzN9Cvuc6BZrL
-         FYnw==
-X-Gm-Message-State: AOJu0YyJcNaFoJqn9UkFTAWLr2Fi/Ew+GiIwplSLkNSRH5haih1IpdNK
-	CM2GvPoAXbvjJL5mrr7HkjceHZyhGoNhDeAEzFv79ywCnxrL5sK2kGaoWwa4z1ATcNwL4kpJGQu
-	7VXARH7Vr82W2nv9b4gHacqwKPJtcry8EPkJIzg==
-X-Google-Smtp-Source: AGHT+IEGZANl6emZY1UqGcSik514xyBzWU+XBPYnRHQZC/PhIexcuWbWZ04L9aeTVXS9UkOAD0ILzGf2zegYmfLzUl4=
-X-Received: by 2002:a67:e445:0:b0:46d:19df:f3b2 with SMTP id
- n5-20020a67e445000000b0046d19dff3b2mr6250849vsm.7.1707762984219; Mon, 12 Feb
- 2024 10:36:24 -0800 (PST)
+        bh=QamGh/bSN8B/QUCshCi8/HvCoWOBlZLPzsuAV9yhvF0=;
+        b=sZ3kUerrX1wuctlMN4KUvBiHcj8BOzmfmdwgZxoRXJh6A2NtrqvVX1yJdlK7BM7QT0
+         WvMVyY9BYOK8/1PxQ/fxVbNJsY8KkJZJ0dQXvCYtlKrZZREbfW+MOQRzsU2qNgMFlCpM
+         nRTbwryeBSjo9TNJFiv8D+Ijj+gy8d4oPweqMJtoWSB+EDAWxOye8sj89KkOUctgLEs1
+         AQRII2ABeB/TMdCN/1b5hDkprcN7GZM+tYNoTdm5isOkuph/tOlVZQmkcu5Xm0KS1JB1
+         eKbhmT44tMXgAMHuJPeMymZk8D12w5Jz3yA1/zDCRxSj/J0WNkHsUJmgxdYL8+DlkxYz
+         6PZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707763004; x=1708367804;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QamGh/bSN8B/QUCshCi8/HvCoWOBlZLPzsuAV9yhvF0=;
+        b=wxzhqfR1aFkhmHyCP4/kUifjqZmoFbfAjJNDEBhSe3oFejFKlCgqCcRoPtUKN+mL6K
+         6S7/pUIRIG7SfWYa+Xaekd4sNtdbiSGQaquQMil40iWf4wH6UPkXKRAXNQAK7ouCwvHT
+         1bKfCmDWtpsYzRBsjKLE4CVGPVmQ2S15SEoBYF7LK3yk8foicVP9W0fe1HefVdsG/63A
+         +GZhxIDCQH6bNRlidfTZya8w5y8nVi1Vlodah9StE5KZGgNwKzWDzT3AaX3kLQXodFyn
+         YNuEgadQOYSKyPt8sIIOQgN0ItDhJquoDAoNNwY+I0Msw0Y7uxFkczgL4rltm4xpWGyN
+         +dfA==
+X-Gm-Message-State: AOJu0Yx3Pgvp4kWXV9znq+SOooVmkNI0HlOUvYWv6ULlhqDs0eTAgR7y
+	uo6zpTGrV0oE/NuiR1Ug7PmBnIHc8hjPtexuwvy10Y7YTVKiIVRO4LZKYad4nxiUP90rbL3asXg
+	v
+X-Google-Smtp-Source: AGHT+IGx6UQ1RmewCkB263/NEIp8AIh9XRrVDN/CzTI5LD8F8RcBh7WZSovuc7AMI02CREDfWILuew==
+X-Received: by 2002:a05:6602:2c41:b0:7c4:5898:11d0 with SMTP id x1-20020a0566022c4100b007c4589811d0mr6176466iov.1.1707763004363;
+        Mon, 12 Feb 2024 10:36:44 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXVJNEWyA0uLfG1KCQYyFnbZS6dUF/q18fJLotyRTkoB71luThdqtt/fYhsZtKzXR4OefxNFpCAzmRDEZt84gpU+K4IU4WtGW1WE56CX9tQJvjVYnOQos6IsYVhvu3aPBggPWiOY7p5RjbWtAeEBmcCdpVCf5Qa/8lqdHDUwgEelbcyf4ooD9ZQgpZ0ZZxVMpNApdZEBynHueLOQFdoOAYL7lTeeU1sTpHeavUScHlMwSUrASo364ktR0RDz/1O2djdYmLOmzRlnLjRlFhDpn4cOmECIkNYeyhyrnrqZ5icYn3+gsWDyWy4NUPNTd9hP+e0QGfZyCcfu5IRMa9/gnmItBZxvKSQ9t0kVY//4fpobw+anEm465/cjdQFNJhTu4B70iScGwOjGVvmjZniXupW/jH037IEEsHjfIKBCfoK5wJ3k+xoavt4DCzeLwdaTYbAvm6VlGeZbvSRaKCxICuB48Tew97/Dhoni9XFxnALqulXXzFSR5Uy1Cc60SF6taTL4oVAIV0D2E7nySG9Jpmt1mlXjKSZ4fQaPw==
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id e22-20020a6b6916000000b007c422dfb2f0sm1738311ioc.35.2024.02.12.10.36.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 10:36:43 -0800 (PST)
+Message-ID: <2aa290eb-ec4b-43b1-87db-4df8ccbeaa37@kernel.dk>
+Date: Mon, 12 Feb 2024 11:36:42 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 13 Feb 2024 00:06:12 +0530
-Message-ID: <CA+G9fYuRwO6FLZ4do1wR0RdiZh9NGpRLKckQcKN2aAkqBH7k0g@mail.gmail.com>
-Subject: Powerpc: ps3av.c:(.text+0x19e8): undefined reference to `video_get_options'
-To: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, open list <linux-kernel@vger.kernel.org>, 
-	lkft-triage@lists.linaro.org, Linux Regressions <regressions@lists.linux.dev>, 
-	clang-built-linux <llvm@lists.linux.dev>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>, Javier Martinez Canillas <javierm@redhat.com>, 
-	Geoff Levand <geoff@infradead.org>, Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/15] Coalesced Interrupt Delivery with posted MSI
+Content-Language: en-US
+To: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev,
+ Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
+ kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>,
+ Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+ Paul Luse <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+ Raj Ashok <ashok.raj@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+ maz@kernel.org, seanjc@google.com, Robin Murphy <robin.murphy@arm.com>
+References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
+ <051cf099-9ecf-4f5a-a3ac-ee2d63a62fa6@kernel.dk>
+ <20240209094307.4e7eacd0@jacob-builder>
+ <9285b29c-6556-46db-b0bb-7a85ad40d725@kernel.dk>
+ <20240212102742.34e1e2c2@jacob-builder>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240212102742.34e1e2c2@jacob-builder>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-I encountered the following build warnings/errors while compiling the powerpc
-kernel on Linux next-20240208 .. next-20240212 tag with clang toolchain.
+On 2/12/24 11:27 AM, Jacob Pan wrote:
+> Hi Jens,
+> 
+> On Fri, 9 Feb 2024 13:31:17 -0700, Jens Axboe <axboe@kernel.dk> wrote:
+> 
+>> On 2/9/24 10:43 AM, Jacob Pan wrote:
+>>> Hi Jens,
+>>>
+>>> On Thu, 8 Feb 2024 08:34:55 -0700, Jens Axboe <axboe@kernel.dk> wrote:
+>>>   
+>>>> Hi Jacob,
+>>>>
+>>>> I gave this a quick spin, using 4 gen2 optane drives. Basic test, just
+>>>> IOPS bound on the drive, and using 1 thread per drive for IO. Random
+>>>> reads, using io_uring.
+>>>>
+>>>> For reference, using polled IO:
+>>>>
+>>>> IOPS=20.36M, BW=9.94GiB/s, IOS/call=31/31
+>>>> IOPS=20.36M, BW=9.94GiB/s, IOS/call=31/31
+>>>> IOPS=20.37M, BW=9.95GiB/s, IOS/call=31/31
+>>>>
+>>>> which is abount 5.1M/drive, which is what they can deliver.
+>>>>
+>>>> Before your patches, I see:
+>>>>
+>>>> IOPS=14.37M, BW=7.02GiB/s, IOS/call=32/32
+>>>> IOPS=14.38M, BW=7.02GiB/s, IOS/call=32/31
+>>>> IOPS=14.38M, BW=7.02GiB/s, IOS/call=32/31
+>>>> IOPS=14.37M, BW=7.02GiB/s, IOS/call=32/32
+>>>>
+>>>> at 2.82M ints/sec. With the patches, I see:
+>>>>
+>>>> IOPS=14.73M, BW=7.19GiB/s, IOS/call=32/31
+>>>> IOPS=14.90M, BW=7.27GiB/s, IOS/call=32/31
+>>>> IOPS=14.90M, BW=7.27GiB/s, IOS/call=31/32
+>>>>
+>>>> at 2.34M ints/sec. So a nice reduction in interrupt rate, though not
+>>>> quite at the extent I expected. Booted with 'posted_msi' and I do see
+>>>> posted interrupts increasing in the PMN in /proc/interrupts, 
+>>>>  
+>>> The ints/sec reduction is not as high as I expected either, especially
+>>> at this high rate. Which means not enough coalescing going on to get the
+>>> performance benefits.  
+>>
+>> Right, it means that we're getting pretty decent commands-per-int
+>> coalescing already. I added another drive and repeated, here's that one:
+>>
+>> IOPS w/polled: 25.7M IOPS
+>>
+>> Stock kernel:
+>>
+>> IOPS=21.41M, BW=10.45GiB/s, IOS/call=32/32
+>> IOPS=21.44M, BW=10.47GiB/s, IOS/call=32/32
+>> IOPS=21.41M, BW=10.45GiB/s, IOS/call=32/32
+>>
+>> at ~3.7M ints/sec, or about 5.8 IOPS / int on average.
+>>
+>> Patched kernel:
+>>
+>> IOPS=21.90M, BW=10.69GiB/s, IOS/call=31/32
+>> IOPS=21.89M, BW=10.69GiB/s, IOS/call=32/31
+>> IOPS=21.89M, BW=10.69GiB/s, IOS/call=32/32
+>>
+>> at the same interrupt rate. So not a reduction, but slighter higher
+>> perf. Maybe we're reaping more commands on average per interrupt.
+>>
+>> Anyway, not a lot of interesting data there, just figured I'd re-run it
+>> with the added drive.
+>>
+>>> The opportunity of IRQ coalescing is also dependent on how long the
+>>> driver's hardirq handler executes. In the posted MSI demux loop, it does
+>>> not wait for more MSIs to come before existing the pending IRQ polling
+>>> loop. So if the hardirq handler finishes very quickly, it may not
+>>> coalesce as much. Perhaps, we need to find more "useful" work to do to
+>>> maximize the window for coalescing.
+>>>
+>>> I am not familiar with optane driver, need to look into how its hardirq
+>>> handler work. I have only tested NVMe gen5 in terms of storage IO, i saw
+>>> 30-50% ints/sec reduction at even lower IRQ rate (200k/sec).  
+>>
+>> It's just an nvme device, so it's the nvme driver. The IRQ side is very
+>> cheap - for as long as there are CQEs in the completion ring, it'll reap
+>> them and complete them. That does mean that if we get an IRQ and there's
+>> more than one entry to complete, we will do all of them. No IRQ
+>> coalescing is configured (nvme kind of sucks for that...), but optane
+>> media is much faster than flash, so that may be a difference.
+>>
+> Yeah, I also check the the driver code it seems just wake up the threaded
+> handler.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+That only happens if you're using threaded interrupts, which is not the
+default as it's much slower. What happens for the normal case is that we
+init a batch, and then poll the CQ ring for completions, and then add
+them to the completion batch. Once no more are found, we complete the
+batch.
 
-powerpc64le-linux-gnu-ld: drivers/ps3/ps3av.o: in function `ps3av_probe':
-ps3av.c:(.text+0x19e8): undefined reference to `video_get_options'
-make[3]: *** [/builds/linux/scripts/Makefile.vmlinux:37: vmlinux] Error 1
-make[3]: Target '__default' not remade because of errors.
+You're not using threaded interrupts, are you?
 
-Links:
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2cFkli5H02fikrpga6PluAWLAMa/
+> For the record, here is my set up and performance data for 4 Samsung disks.
+> IOPS increased from 1.6M per disk to 2.1M. One difference I noticed is that
+> IRQ throughput is improved instead of reduction with this patch on my setup.
+> e.g. BEFORE: 185545/sec/vector 
+>      AFTER:  220128
 
+I'm surprised at the rates being that low, and if so, why the posted MSI
+makes a difference? Usually what I've seen for IRQ being slower than
+poll is if interrupt delivery is unreasonably slow on that architecture
+of machine. But ~200k/sec isn't that high at all.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+> [global]                      
+> bs=4k                         
+> direct=1                      
+> norandommap                   
+> ioengine=libaio               
+> randrepeat=0                  
+> readwrite=randread            
+> group_reporting               
+> time_based                    
+> iodepth=64                    
+> exitall                       
+> random_generator=tausworthe64 
+> runtime=30                    
+> ramp_time=3                   
+> numjobs=8                     
+> group_reporting=1             
+>                               
+> #cpus_allowed_policy=shared   
+> cpus_allowed_policy=split     
+> [disk_nvme6n1_thread_1]       
+> filename=/dev/nvme6n1         
+> cpus_allowed=0-7       
+> [disk_nvme6n1_thread_1]
+> filename=/dev/nvme5n1  
+> cpus_allowed=8-15      
+> [disk_nvme5n1_thread_2]
+> filename=/dev/nvme4n1  
+> cpus_allowed=16-23     
+> [disk_nvme5n1_thread_3]
+> filename=/dev/nvme3n1  
+> cpus_allowed=24-31     
+
+For better performance, I'd change that engine=libaio to:
+
+ioengine=io_uring
+fixedbufs=1
+registerfiles=1
+
+Particularly fixedbufs makes a big difference, as a big cycle consumer
+is mapping/unmapping pages from the application space into the kernel
+for O_DIRECT. With fixedbufs=1, this is done once and we just reuse the
+buffers. At least for my runs, this is ~15% of the systime for doing IO.
+It also removes the page referencing, which isn't as big a consumer, but
+still noticeable.
+
+Anyway, side quest, but I think you'll find this considerably reduces
+overhead / improves performance. Also makes it so that you can compare
+with polled IO on nvme, which aio can't do. You'd just add hipri=1 as an
+option for that (with a side note that you need to configure nvme poll
+queues, see the poll_queues parameter).
+
+On my box, all the NVMe devices seem to be on node1, not node0 which
+looks like it's the CPUs you are using. Might be worth checking and
+adjusting your CPU domains for each drive? I also tend to get better
+performance by removing the CPU scheduler, eg just pin each job to a
+single CPU rather than many. It's just one process/thread anyway, so
+really no point in giving it options here. It'll help reduce variability
+too, which can be a pain in the butt to deal with.
+
+-- 
+Jens Axboe
+
 
