@@ -1,80 +1,63 @@
-Return-Path: <linux-kernel+bounces-61989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B75F8519AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:40:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66DD98519AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:40:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E4321F236A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:40:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98B481C20AE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:40:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 767E14597C;
-	Mon, 12 Feb 2024 16:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B80741760;
+	Mon, 12 Feb 2024 16:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="fVDCymGL"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="u02bZ6Mz"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC5D3D566
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:33:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F473D566;
+	Mon, 12 Feb 2024 16:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707755611; cv=none; b=KLoXTOX0/hq9vhzrOcnnxxUBeTrr7dRl/vAeCBtoTX0BsQnwAo72hElI+F1Z1U2gvPp/aZ33daM+xgy/zBaRvIMlzbiPsrcpoBI43THLxdFIsoZrnfTkF3stRX1e6sA/G410xQrfuAAtlAffJurWOZ6fmxOMAPi6gs2SMrPv+AM=
+	t=1707755603; cv=none; b=T3ca8x9num26gHFGWBg5G5NhM4YQSMDs5gRaiWYF0Hd/aOtNKPL8smHvgJQ4YUOloJwXoZuz88zXb5UNWnVr32Iio6OmJXBbAuBY6i7FlBOGHmZAatZubu/vm/6fhsl+Uip0tn7Bh0gA/YS7z/oBgcIj6xcCCyNcn8GTLhAQnDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707755611; c=relaxed/simple;
-	bh=y0rQ7md8dSpziIPwq351580LwTvSO5cMAtMGhD2sD4s=;
+	s=arc-20240116; t=1707755603; c=relaxed/simple;
+	bh=B+YBuhuqUOSgESZcvnrhqDgq1djTLds5pMENfQ0P5JU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D+xb/ON1eqV7XRHzdp0CRiX9MiyIRaD+hDoL9fGtj72XKNUioUjRB35wiAKfv1QfC21pf9jPf8+u44oZx8phEDYAv9I5hHOeYmbsGiAzWXiBYg/fYWyxLZ6tdbrCvj0dLGSfrOWWaxICpAurOiQNambLhUa3q5s+VHTuvm+s0tc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=fVDCymGL; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-116-68.bstnma.fios.verizon.net [173.48.116.68])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41CGWaFt017659
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 11:32:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1707755561; bh=dQeklz7XleQ5cWK9tnOkGna6cm/Ji39W7G3AvRTDy+0=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=fVDCymGL76+YwEh2v7DrscPA0mjbKOyrxO+8OGo8720Uh6qpG0+FptkkJpErxIjyn
-	 Tn5RtmfOwKe7Syq6ViHb+qspjyXAs205iKkzHMuknxsLRyqum9TeBkC+L0LnLm+Zx0
-	 u6BpKwUp7xWfJr88EdcKc2I5jZmapwhEyaJ+GDYD2BEknlveGK4LRZb40EqZSvf30r
-	 rmIcE0anqTRcMy0n5kml8jBH4JMCqtduNnKMqhmq1O3lT4pU0NBmB7tsI5RaYfOpVC
-	 L68FGPizpap9TJ09qTbaO1YgsH7F0j+zmOtqrtZBhl7YT9q+aodYiaLbpzjAMNQhtw
-	 tQVB0X3ep/7Vw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id BEA7915C0336; Mon, 12 Feb 2024 11:32:36 -0500 (EST)
-Date: Mon, 12 Feb 2024 11:32:36 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kalra, Ashish" <ashish.kalra@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
-Message-ID: <20240212163236.GA444708@mit.edu>
-References: <20240131171042.GA2371371@mit.edu>
- <DM8PR11MB5750C7D16DC566CD1329D5A5E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <CAHmME9q-eUXnXnpaDu0VOQemOYysst7SaJ-=b8-vCFP9h50Szg@mail.gmail.com>
- <20240201045710.GD2356784@mit.edu>
- <CAHmME9oqM2a766dBK22-yKr8=2-icg=UkQzmBOF8G5Zh_Y9E9w@mail.gmail.com>
- <DM8PR11MB57505F657A8F08E15DC34673E7422@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20240202153927.GA119530@mit.edu>
- <Zb4RlTzq_LV7AzsH@zx2c4.com>
- <CAHmME9owdbHzfb66xisoWmvWeT_-hkxCu7tR2=Rbye_ik1JgQQ@mail.gmail.com>
- <DM8PR11MB5750C1A848A9F1EF6BE66241E7482@DM8PR11MB5750.namprd11.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=c5JB9Xl9rqvroIhv/Jnqmy8M9wfAHx6xdN6L/1KBbc98asdU+B9jtwb1D6jGO/xmafHq/bZC5L9Jxxt0cDuJpOqQXEoq4ZfrtolGvZxv2FVS9IDlJXhbmtRM/kuoMhW73zme7AM4wdim++L3BRTDHbN3pZIDu1b34RpppZ4TwyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=u02bZ6Mz; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (237.69-130-109.adsl-dyn.isp.belgacom.be [109.130.69.237])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 41E6263B;
+	Mon, 12 Feb 2024 17:33:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1707755598;
+	bh=B+YBuhuqUOSgESZcvnrhqDgq1djTLds5pMENfQ0P5JU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=u02bZ6Mzpx64exzZXhbiJpJ9VclEuCgnoht2HmYeMMN5/jFsrADpIOZLVG/dC7WaZ
+	 U/zFQsRUvZYnLwqIIELhzC5XNytWoA16g+tPnM15hL46yHCa0+DJ/BvCiz2shhQxA9
+	 Qu63Wn5nr6KFuUE+Mm+phjuPvJZVa9cNHvvuNy7A=
+Date: Mon, 12 Feb 2024 18:33:22 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Changhuang Liang <changhuang.liang@starfivetech.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Ming Qian <ming.qian@nxp.com>,
+	Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+	Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>,
+	Mingjia Zhang <mingjia.zhang@mediatek.com>,
+	Jack Zhu <jack.zhu@starfivetech.com>, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v3 00/13] Add ISP 3A for StarFive
+Message-ID: <20240212163322.GF32016@pendragon.ideasonboard.com>
+References: <20240205090424.40302-1-changhuang.liang@starfivetech.com>
+ <5940e2cd-64f9-45d6-9e1d-e9a1d14c8ad9@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,45 +66,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DM8PR11MB5750C1A848A9F1EF6BE66241E7482@DM8PR11MB5750.namprd11.prod.outlook.com>
+In-Reply-To: <5940e2cd-64f9-45d6-9e1d-e9a1d14c8ad9@gmail.com>
 
-On Mon, Feb 12, 2024 at 08:25:33AM +0000, Reshetova, Elena wrote:
-> What if we instead of doing some special treatment on rdrand/seed, we
-> try to fix the underneath problem of Linux RNG not supporting CoCo threat
-> model. Linux RNG has almost set in stone definition of what sources contribute
-> entropy and what don’t (with some additional flexibility with flags like trust_cpu).
-> This works well for the current fixed threat model, but doesn’t work for
-> CoCo because some sources are suddenly not trusted anymore to contribute
-> entropy. However, some are still trusted and that is not just rdrand/rdseed,
-> but we would also trust add_hwgenerator_randomness (given that we use
-> TEE IO device here or have a way to get this input securely). So, even in
-> theoretical scenario that both rdrand/rdseed is broken (let's say HW failure),
-> a Linux RNG can actually boot securely in the guest if we have enough
-> entropy from add_hwgenerator_randomness.
+Hi Matthias,
 
-So the problem with this is that there is now way we can authenticate
-the hardware RNG.  For example, the hypervisor could claim that there
-is a ChaosKey USB key attached, and at the moment, unlike all other
-hardware random number generators, the Linux kernel is configured to
-blindly trust the ChaosKey because it was designed by Keith Packard
-and Bdale Garbee, and "It Must Be Good".  But the only way that we
-know that it is a ChaosKey is by its USB major and minor id numbers
---- and a malicious hypervisor could fake up such a device.
+On Mon, Feb 12, 2024 at 01:40:57PM +0100, Matthias Brugger wrote:
+> Dear Changhuang,
+> 
+> On 05/02/2024 10:04, Changhuang Liang wrote:
+> > Changhuang Liang (13):
+> >    media: starfive: Add JH7110 ISP module definitions
+> >    media: Documentation: Add description for StarFive ISP metadata
+> >      formats
+> >    media: videodev2.h, v4l2-ioctl: Add StarFive ISP meta buffer format
+> >    staging: media: starfive: Add a params sink pad and a scd source pad
+> >      for ISP
+> >    staging: media: starfive: Separate buffer from ISP hardware operation
+> >    staging: media: starfive: Separate buffer be a common file
+> >    staging: media: starfive: Separate ISP hardware from capture device
+> >    staging: media: starfive: Add for StarFive ISP 3A SC
+> >    staging: media: starfive: Update ISP initialise config for 3A
+> >    staging: media: starfive: Add V4L2_CAP_IO_MC capability
+> >    staging: media: starfive: Add ISP params video device
+> >    staging: media: starfive: Add ISP parameters hardware configure
+> >    admin-guide: media: Update documents for StarFive Camera Subsystem
+> 
+> I think instead of adding more support on top of the staging driver, the first 
+> step would be to get the driver out of staging and make it a regular Linux 
+> driver. After that new HW support should be added.
 
-And of course, that's not unique to the hypervisor --- someone could
-create a hardware USB key that claimed to be a ChaosKey, but which
-generated a fixed sequence, say 3,1,4,1,5,9,2,6,... and it would pass
-most RNG quality checkers, since it's obviously not a repeated
-sequence of digits, so the mandated FIPS required check would give it
-a thumbs up.  And it doesn't have to be a faked ChaosKey device; a
-hypervisor could claim that there is a virtual TPM with its hardware
-random number generator, but it's also gimmicked to always give the
-same fixed sequence, and there's no way the guest OS could know
-otherwise.
+We asked for the driver to be upstreamed in staging first because it was
+mising important features, which this patch series implements (at least
+partly, I still need to review the series in more details). I would
+prefer merging the necessary features first, and destaging the driver
+next, right after.
 
-Hence, for the unique requirements of Confidential Compute, I'm afraid
-it's RDRAND/RSEED or bust....
+-- 
+Regards,
 
-						- Ted
+Laurent Pinchart
 
