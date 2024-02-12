@@ -1,462 +1,439 @@
-Return-Path: <linux-kernel+bounces-62178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88105851CB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40225851CBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:29:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 141572847FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:29:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3309D280DA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:29:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF59C3FE2B;
-	Mon, 12 Feb 2024 18:28:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895B83FE3E;
+	Mon, 12 Feb 2024 18:29:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="YEasuRxn"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TUXrDHmC"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30DB340BE0;
-	Mon, 12 Feb 2024 18:28:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A946440BF9
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707762537; cv=none; b=fRlQxaLWsMgaz8ziZSWR2HAIHnzpfF7hsTp2aH10m2jSOC7fnpp/hgOP9021WhXiJkXt8XbiuEoB8FKcyhfPm5Q2MKmYXV2ecYDoxwAvvVAtgVQjRb3i+QgccAet/NWoXItnLv6HwY3zP9vdDsYEZmAwHp4cmYiL4OFY0KQKCzo=
+	t=1707762557; cv=none; b=jxHfXN2yItsKB/rLH5CN9egOOYC3Ie6FBiC6l+EJkh++BwdSaUkVcqLhD6vOqFOQlTAOvYLd2Ck+Q4PyGkhhre/TY/IGzA6tNGSctIdDixZQH/GDjBgtC7hXtNH+rYZ5+PnKLTvXw7DQ7/qvzvfd+mtDNSIxTgRyQp2hUy4/Ctw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707762537; c=relaxed/simple;
-	bh=LpudjD+lpuCqBJajm53UPKdQDRtAnUxmuetQzRE+AQ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mM9LfZlP4SySzSsSmRubwYejKRE9zhG3nJhxAfU+F5Nl1E1TDr16a6r201V05Ez1TCytrUTPLRbys+CIb+w9zrbvIxaLhucTiGZysQetdZdiPHPh1OXTY5OpvBu49d3MXkAtbA5rmAIOvGJbPs7k6NznE36y8SwNNc58XdfMYEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=YEasuRxn; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1707762518; x=1708367318; i=wahrenst@gmx.net;
-	bh=LpudjD+lpuCqBJajm53UPKdQDRtAnUxmuetQzRE+AQ4=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=YEasuRxnU8e3s9zUElw3+yJql/uaeDxUOVDEBYSU0oIhM4BnmF7VtzUooO/ZzjAA
-	 H6+p9dFlfG5Q66Sfws6iR/q9tQYkoletvn1cbe3xgonFsF98G2SYfGPCRAKU/5WSO
-	 Hg7eUbtJuD1g1msMeR7BxrMqp26KJtOrCYL1NFu9z0OeMdlC3ryNMeKSP71qgpybr
-	 PKKzbVDQ9HEzo4R73M/mp7Pc/ju+cqKjFKKn4QmA9wBTKx3Etz6eBY1JhJSqfKgZx
-	 sXyLbjXTfUzqmxfnxKa5+Tc+LqxbzMtdJsHP1hk2DZpHX6VEUSF711TL/tYHMU0mU
-	 sXAZGZpsUFYrdu56Vw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MPogF-1rM4EI3dBb-00Msyf; Mon, 12
- Feb 2024 19:28:37 +0100
-Message-ID: <c38e7c68-e725-4174-aa0a-0594a55c8d56@gmx.net>
-Date: Mon, 12 Feb 2024 19:28:36 +0100
+	s=arc-20240116; t=1707762557; c=relaxed/simple;
+	bh=2oSQyyFtLgPUGqbrN+g4ldKCGIcpH9Wkq0dbCYNLPbA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lCOqdnKfXim9UySreomomXTT/5QOcafG40QyoxRDbjL90iSkUKiBOizzYKA7v/dG5aX4x2AtYjwwKAl+esF+JR9xrC8BajM3+9RrqyhMQvuI6gyckVaFnrDAXFbRBJ/Xs/QuLbGN+v5MCnOebhUdDshewSHDE8CZTJRJCfv+fys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TUXrDHmC; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40f02b8d176so29171465e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:29:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707762554; x=1708367354; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gKODUFCzXH1xAGWHJPaTGC50QYmXdJIdivv6eKgvZnk=;
+        b=TUXrDHmCzhgBbKT0Pmvz0QBYNQh/8wl1C9+dOaUPGnlPe1gsIV2Wwten1XY40lq+yd
+         NVgGO9lV3ys3XQZv8jCUyy8/AG14ox5wFmByEGen5Inoyn55EekJ7hnMbaDeKQLrYdk+
+         Raay5cJ7rRHT19TMdlV0g57uLU75joQ76sZFFH0xJN6agQl3PHO2pJPmWp91NsuOfrKy
+         jDpWycyNQe94Viw3OZUQTSmSHCeyAPwzWVJPAvcO/gZsqR91HCMaJtYbZIkUqR9/NkvZ
+         4vjXO6L10L7Dqsk5z5ohDkX7ni0xMys9XrpQqPUlua7jPugyT6vPirhYvsKPDsAkynQU
+         tNnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707762554; x=1708367354;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gKODUFCzXH1xAGWHJPaTGC50QYmXdJIdivv6eKgvZnk=;
+        b=YPGXYREDq3+VUDd56wWz844d6LfZtIyN85IoFlW9dabsEE4XkWPkifF147KjR0pb9U
+         qRMcZd9MTnOwRN+jbr891EgeG3/I2vx9T9p7qc8xltNJBnK9iELNwXp8SGOjkYtRDlde
+         IUVqXwjDeX5y6udQ7/wGIqCRWIrmEW317bC2Ih919eGUc1+ChnIw94w3P9lLpik90Xgi
+         pEMpuOq4uoqsZFfVtuYoUWsN4OXUUlRXApMLoGbFGPEzbpYMz6ypwKFvphdRRYEfvlfO
+         BlwEDIb9M6Dbgrp+i46ObapvX9LyZHwDj3P2GZ/UgQtWoJ4ljBTN8dd+eHJZSVXRnGsl
+         gEeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV8ClFj4ITusL58JbTFL2SN6XgDPCaQ5MyYbrzZAYa4FKbnEMAphr0WY0nlhEKh2B4ko49mTwvDh2q7z6+ZpUvH4LFAmWDQWkUBnTZo
+X-Gm-Message-State: AOJu0YxdEdRaV+M5LHFklMEPEPPZPBzsLDkmrjFsjshBW9m1uVj6Ncf7
+	ocjBGWa9cd9D/NtULR5HNwDRFO/vo7agAHjFV7wb38zBrUSo+jy3IXtPHLXARuy2DTGWBe5grtd
+	p
+X-Google-Smtp-Source: AGHT+IGH2x7z4naCBsdzCmdXabnMaXlTApon5v6PZ5vGE7i+pfWbTlduPiqvFV2qfsxz0kJHSyRHsw==
+X-Received: by 2002:a05:600c:5489:b0:410:78fb:c1ef with SMTP id iv9-20020a05600c548900b0041078fbc1efmr6012650wmb.33.1707762553991;
+        Mon, 12 Feb 2024 10:29:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXp6FkjBNynrg8ReFDDny+o5EVQnDKfABedo8FJVRo+H7hun+D4Gy3kjYEaBRAAYcoXvHBwpja7Up2NqIbDJy3EAZQIV4HAeDSGBVrpGoTX2ZHT1Vqaly2uYYcTUxepBUXE2/eAnYxiQ3w6xsgoJJ8HcuuG+P0pApq7imxhvAZQpHIHBKxvde0DnP/q8l8PapmHny+FpQS3ClNXCPAWcuBRIVxBOMlo0TB0awTEFDYhcW22yBnQHTL40G0hMICR01JvyqZQuJFh75Xx8VrOXtpkAnDN6isHl4j0UsUupEdfPhfGXCKWEwX/oT9qo13VAByWxSlVuKziO7z0vrMAmXyc5CAk5JdnumvbXXEO30toy+emXFtjttaTxMxg3EyhWP5yiqqtHkbuWUmmWzOTKebBiUSiCU80
+Received: from krzk-bin.. ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id i5-20020a05600c290500b0040ef95e1c78sm9337299wmd.3.2024.02.12.10.29.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 10:29:13 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2] dt-bindings: net: qca,ar9331: convert to DT schema
+Date: Mon, 12 Feb 2024 19:29:11 +0100
+Message-Id: <20240212182911.233819-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 14/14] ARM: dts: imx6ull-uti260b: Add board
-Content-Language: en-US
-To: Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- NXP Linux Team <linux-imx@nxp.com>
-Cc: Dong Aisheng <aisheng.dong@nxp.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Mark Brown
- <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240210012114.489102-1-sre@kernel.org>
- <20240210012114.489102-15-sre@kernel.org>
-From: Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <20240210012114.489102-15-sre@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:c5VKWE6hflMXQlXN/6TTdFqRmDuxE/gvmdmcDu81apxLxddWs+a
- BKnRV5ppwdnFry+J/+pv/LTEFb4dYOatMWvEac4Monq5Ocjv26F4AXX4gQepZM2rwgq9rlj
- kv8uOMZldhgAA+mVaJXUvCTLDU6ZgimSqVbOXRtGS9SVO4elOewbhX4e3uoH6/qTylx5P8K
- zQd82jGPu2tgeqNa7tkVQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:PlaWpC3rTSM=;mhGfFz4fJLaAFF0WXu9Z7tkIIvH
- a4yAwr65CAF0T8vurm/Thgf04QxiUQYL1m68aizRhpPA6GNPRQ7rx3MtgbSU26cc/uebsesY6
- JsO1TANeezDubHDeFeHVYuPAKsK51P2Ndm3b4w3Ljkmjjfn21G0SPTCTDIPAatAcQ0b52vtVs
- hscdLmjURTOZrPs7ZZV6u13QX4SBC/2GO23/IpRJbWeSWnXeHkmx7F3uoOnQrVeElBynrRgGv
- a8EAjTHdhqm2X/ixWjcRJIlGTuYfi4oGV7bRJCcw7NbZFMwR9zP7o9VPfZ9oWB3X1dBKo7uXY
- HRE/54U5tHmGKPrH9spdMydihRqxkiYhVl3SSvG4emcHPlmmPwrnayuNoGg0p8T/dOyghfkyN
- tGpQVgyPLOzBK+ynfIJTi3YUVP4BDbZbWcPhtfvTKDEAiv5VSmjEn6e6IWYJRMfSyjTSQXNdB
- L5jV6TaZUZJ/lRaHn8/TMvUWzuxLbI2wNaMHuHSBZxMLIN2VkwL4YsYbxL36VSP6rg/AYyZJh
- yJ9oF36+KpA8p0jyXh2PO6OW1ilabOT7TG3HnN2agmts74da4uZwmnZeyziFv/MoFD8bONIim
- pBGbPcDzWy2tM0u9dQvG1es4gd9yfONg995hJj8bVHBuz/6u6cZnZb83hcybtOO49ES2kOLYM
- XLjL+Mf7b45YySz+AwrNk77RsenxxV4YnqLzYlqUxQmN16Eh+zNAlUlaVxqz1Q90mrnxOsluQ
- Lu3CtdkKJo1uqwn/q/mjilNymLQWzA8h6/zIQNfs1BUQoZpaeMJ1166UudHByJL3IeZ5Ao/53
- 238A/3zdILLzpSrc8KaFEjOqk6QwKcwexDWOrzMVIIatY=
+Content-Transfer-Encoding: 8bit
 
-Hi Sebastian,
+Convert the Qualcomm Atheros AR9331 built-in switch bindings to DT
+schema.
 
-Am 10.02.24 um 02:18 schrieb Sebastian Reichel:
-> Add UNI-T UTi260b thermal camera board.
->
-> Signed-off-by: Sebastian Reichel <sre@kernel.org>
-> ---
->   arch/arm/boot/dts/nxp/imx/Makefile            |   1 +
->   arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts | 564 ++++++++++++++++++
->   2 files changed, 565 insertions(+)
->   create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts
->
-> diff --git a/arch/arm/boot/dts/nxp/imx/Makefile b/arch/arm/boot/dts/nxp/=
-imx/Makefile
-> index a724d1a7a9a0..47350cf3ddeb 100644
-> --- a/arch/arm/boot/dts/nxp/imx/Makefile
-> +++ b/arch/arm/boot/dts/nxp/imx/Makefile
-> @@ -349,6 +349,7 @@ dtb-$(CONFIG_SOC_IMX6UL) +=3D \
->   	imx6ull-tarragon-slavext.dtb \
->   	imx6ull-tqma6ull2-mba6ulx.dtb \
->   	imx6ull-tqma6ull2l-mba6ulx.dtb \
-> +	imx6ull-uti260b.dtb \
->   	imx6ulz-14x14-evk.dtb \
->   	imx6ulz-bsh-smm-m2.dtb
->   dtb-$(CONFIG_SOC_IMX7D) +=3D \
-> diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts b/arch/arm/bo=
-ot/dts/nxp/imx/imx6ull-uti260b.dts
-> new file mode 100644
-> index 000000000000..336727895fa4
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts
-> @@ -0,0 +1,564 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +// Copyright (C) 2022 Sebastian Reichel <sre@kernel.org>
-2024 ?
-> +
-> +/dts-v1/;
-> +#include "imx6ull.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/clock/imx6ul-clock.h>
-> +
-> +/ {
-> +	model =3D "UNI-T UTi260B Thermal Camera";
-> +	compatible =3D "uni-t,imx6ull-uti260b", "fsl,imx6ull";
-> +
-> +	chosen {
-> +		stdout-path =3D "serial0:115200n8";
-> +	};
-> +
-> +	memory@80000000 {
-> +		device_type =3D "memory";
-> +		reg =3D <0x80000000 0x20000000>;
-> +	};
-> +
-> +	leds {
-> +		compatible =3D "gpio-leds";
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&mux_led_ctrl>;
-> +
-> +		led {
-> +			label =3D "led";
-The label property is deprecated, please use color and function instead.
-> +			gpios =3D <&gpio2 2 GPIO_ACTIVE_HIGH>;
-> +			default-state =3D "off";
-> +		};
-> +	};
-> +
-> +	gpio-keys {
-> +		compatible =3D "gpio-keys";
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&mux_gpio_keys>;
-> +		autorepeat;
-> +
-> +		up-key {
-> +			label =3D "Up";
-> +			gpios =3D <&gpio2 11 GPIO_ACTIVE_LOW>;
-> +			linux,code =3D <KEY_UP>;
-> +		};
-> +
-> +		down-key {
-> +			label =3D "Down";
-> +			gpios =3D <&gpio2 12 GPIO_ACTIVE_LOW>;
-> +			linux,code =3D <KEY_DOWN>;
-> +		};
-> +
-> +		left-key {
-> +			label =3D "Left";
-> +			gpios =3D <&gpio2 13 GPIO_ACTIVE_LOW>;
-> +			linux,code =3D <KEY_LEFT>;
-> +		};
-> +
-> +		right-key {
-> +			label =3D "Right";
-> +			gpios =3D <&gpio2 10 GPIO_ACTIVE_LOW>;
-> +			linux,code =3D <KEY_RIGHT>;
-> +		};
-> +
-> +		ok-key {
-> +			label =3D "Ok";
-> +			gpios =3D <&gpio2 9 GPIO_ACTIVE_LOW>;
-> +			linux,code =3D <KEY_ENTER>;
-> +		};
-> +
-> +		return-key {
-> +			label =3D "Return";
-> +			gpios =3D <&gpio2 15 GPIO_ACTIVE_LOW>;
-> +			linux,code =3D <KEY_ESC>;
-> +		};
-> +
-> +		play-key {
-> +			label =3D "Media";
-> +			gpios =3D <&gpio2 8 GPIO_ACTIVE_LOW>;
-> +			linux,code =3D <KEY_MEDIA>;
-> +		};
-> +
-> +		trigger-key {
-> +			label =3D "Trigger";
-> +			gpios =3D <&gpio2 14 GPIO_ACTIVE_LOW>;
-> +			linux,code =3D <BTN_TRIGGER>;
-> +		};
-> +
-> +		power-key {
-> +			label =3D "Power";
-> +			gpios =3D <&gpio2 3 GPIO_ACTIVE_LOW>;
-> +			linux,code =3D <KEY_POWER>;
-> +		};
-> +
-> +		light-key {
-> +			label =3D "Light";
-> +			gpios =3D <&gpio2 1 GPIO_ACTIVE_LOW>;
-> +			linux,code =3D <KEY_LIGHTS_TOGGLE>;
-> +		};
-> +	};
-> +
-> +	panel_backlight: backlight {
-> +		compatible =3D "pwm-backlight";
-> +		brightness-levels =3D <0 4 8 16 32 64 128 255>;
-> +		default-brightness-level =3D <6>;
-> +		enable-gpios =3D <&gpio1 9 GPIO_ACTIVE_LOW>;
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&mux_backlight_enable>;
-> +		power-supply =3D <&reg_vsd>;
-> +		pwms =3D <&pwm1 0 50000 0>;
-> +	};
-> +
-> +	reg_vsd: regulator-vsd {
-i think the node name should be just "regulator"
-> +		compatible =3D "regulator-fixed";
-> +		regulator-name =3D "VSD_3V3";
-> +		regulator-min-microvolt =3D <3300000>;
-> +		regulator-max-microvolt =3D <3300000>;
-> +	};
-> +
-> +	reg_vref: regulator-vref-4v2 {
-dito
-> +		compatible =3D "regulator-fixed";
-> +		regulator-name =3D "VREF_4V2";
-> +		regulator-min-microvolt =3D <4200000>;
-> +		regulator-max-microvolt =3D <4200000>;
-> +	};
-> +
-> +	tp5000: charger {
-> +		compatible =3D "gpio-charger";
-> +		charger-type =3D "usb-sdp";
-> +		gpios =3D <&gpio1 1 GPIO_ACTIVE_LOW>;
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&mux_charger_stat1>;
-> +	};
-> +
-> +	battery: battery {
-> +		compatible =3D "simple-battery";
-> +		/* generic 26650 battery */
-> +		device-chemistry =3D "lithium-ion";
-> +		charge-full-design-microamp-hours =3D <5000000>;
-> +		voltage-max-design-microvolt =3D <4200000>;
-> +		voltage-min-design-microvolt =3D <3300000>;
-> +	};
-> +
-> +	fuel-gauge {
-> +		compatible =3D "adc-battery";
-> +		charged-gpios =3D <&gpio1 2 GPIO_ACTIVE_LOW>;
-> +		io-channel-names =3D "voltage";
-> +		io-channels =3D <&adc1 7>;
-> +		monitored-battery =3D <&battery>;
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&mux_charger_stat2>;
-> +		power-supplies =3D <&tp5000>;
-> +	};
-> +
-> +	poweroff {
-> +		compatible =3D "gpio-poweroff";
-> +		gpios =3D <&gpio2 4 GPIO_ACTIVE_LOW>;
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&mux_poweroff>;
-> +	};
-> +};
-> +
-> +&gpio1 {
-> +	ir-reset-hog {
-> +		gpio-hog;
-> +		gpios =3D <3 GPIO_ACTIVE_LOW>;
-> +		line-name =3D "ir-reset-gpio";
-> +		output-low;
-> +		pinctrl-0 =3D <&mux_ir_reset>;
-Doesn't this miss pinctrl-names =3D "default" ?
-> +	};
-> +};
-> +
-> +&gpio2 {
-> +	/* configuring this to output-high results in poweroff */
-> +	power-en-hog {
-> +		gpio-hog;
-> +		gpios =3D <6 GPIO_ACTIVE_HIGH>;
-> +		line-name =3D "power-en-gpio";
-> +		output-low;
-> +		pinctrl-0 =3D <&mux_poweroff2>;
-> +	};
-> +};
-> +
-> +&ecspi3 {
-> +	cs-gpios =3D <&gpio1 20 GPIO_ACTIVE_LOW>;
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mux_spi3>, <&mux_spi3_cs>;
-> +	status =3D "okay";
-> +
-> +	panel@0 {
-> +		compatible =3D "inanbo,t28cp45tn89-v17";
-> +		reg =3D <0>;
-> +		backlight =3D <&panel_backlight>;
-> +		power-supply =3D <&reg_vsd>;
-> +		spi-cpha;
-> +		spi-cpol;
-> +		spi-max-frequency =3D <100000>;
-This seems slow to me. Is this a limitation of the display?
-> +		spi-rx-bus-width =3D <0>;
-> +
-> +		port {
-> +			panel_in: endpoint {
-> +				remote-endpoint =3D <&display_out>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&uart1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mux_uart>;
-> +	status =3D "okay";
-> +};
-> +
-> +&pwm1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mux_pwm>;
-> +	status =3D "okay";
-> +};
-> +
-> +&i2c1 {
-> +	clock-frequency =3D <100000>;
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mux_i2c1>;
-> +	status =3D "okay";
-> +
-> +	camera@21 {
-> +		compatible =3D "galaxycore,gc0308";
-> +		reg =3D <0x21>;
-> +		clocks =3D <&clks IMX6UL_CLK_CSI>;
-> +		pinctrl-names =3D "default";
-> +		pinctrl-0 =3D <&mux_gc0308>;
-> +		powerdown-gpios =3D <&gpio1 5 GPIO_ACTIVE_HIGH>;
-> +		reset-gpios =3D <&gpio1 6 GPIO_ACTIVE_LOW>;
-> +		vdd28-supply =3D <&reg_vsd>;
-> +
-> +		port {
-> +			gc0308_to_parallel: endpoint {
-> +				remote-endpoint =3D <&parallel_from_gc0308>;
-> +				bus-width =3D <8>;
-> +				data-shift =3D <2>; /* lines 9:2 are used */
-> +				hsync-active =3D <1>; /* active high */
-> +				vsync-active =3D <1>; /* active high */
-> +				data-active =3D <1>; /* active high */
-> +				pclk-sample =3D <1>; /* sample on rising edge */
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&csi {
-> +	status =3D "okay";
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mux_csi>;
-> +
-> +	port {
-> +		parallel_from_gc0308: endpoint {
-> +			remote-endpoint =3D <&gc0308_to_parallel>;
-> +		};
-> +	};
-> +};
-> +
-> +&i2c2 {
-> +	clock-frequency =3D <100000>;
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mux_i2c2>;
-> +	status =3D "okay";
-> +
-> +	rtc@51 {
-> +		compatible =3D "nxp,pcf8563";
-> +		reg =3D <0x51>;
-> +	};
-> +};
-> +
-> +&lcdif {
-> +	assigned-clocks =3D <&clks IMX6UL_CLK_LCDIF_PRE_SEL>;
-> +	assigned-clock-parents =3D <&clks IMX6UL_CLK_PLL5_VIDEO_DIV>;
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mux_lcd_data>, <&mux_lcd_ctrl>;
-> +	status =3D "okay";
-> +
-> +	port {
-> +		display_out: endpoint {
-> +			remote-endpoint =3D <&panel_in>;
-> +		};
-> +	};
-> +};
-> +
-> +&usdhc1 {
-Would be nice to place a comment above this, which mentions the intended
-use case: eMMC, SD card, ...
-> +	cd-gpios =3D <&gpio1 19 GPIO_ACTIVE_LOW>;
-> +	keep-power-in-suspend;
-> +	no-1-8-v;
-> +	pinctrl-names =3D "default", "state_100mhz", "state_200mhz";
-> +	pinctrl-0 =3D <&mux_sdhc1>, <&mux_sdhc1_cd>;
-> +	pinctrl-1 =3D <&mux_sdhc1_100mhz>, <&mux_sdhc1_cd>;
-> +	pinctrl-2 =3D <&mux_sdhc1_200mhz>, <&mux_sdhc1_cd>;
-> +	wakeup-source;
-> +	vmmc-supply =3D <&reg_vsd>;
-> +	status =3D "okay";
-> +};
-> +
-> +&usdhc2 {
-dito
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Best regards
-> +	keep-power-in-suspend;
-> +	no-1-8-v;
-> +	non-removable;
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mux_sdhc2>;
-> +	wakeup-source;
-> +	status =3D "okay";
-> +};
-> +
-> +&wdog1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mux_wdog>;
-> +};
-> +
-> +&adc1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&mux_adc>;
-> +	vref-supply =3D <&reg_vref>;
-> +	#io-channel-cells =3D <1>;
-> +	status =3D "okay";
-> +};
-> +
->
+---
+
+DSA switch bindings still bring me headache...
+
+Changes in v2:
+1. Narrow pattern for phy children to ethernet-phy@ or phy@ (MIPS DTS
+   has the latter) - Conor.
+---
+ .../devicetree/bindings/net/dsa/ar9331.txt    | 147 ----------------
+ .../bindings/net/dsa/qca,ar9331.yaml          | 161 ++++++++++++++++++
+ 2 files changed, 161 insertions(+), 147 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/dsa/ar9331.txt
+ create mode 100644 Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
+
+diff --git a/Documentation/devicetree/bindings/net/dsa/ar9331.txt b/Documentation/devicetree/bindings/net/dsa/ar9331.txt
+deleted file mode 100644
+index f824fdae0da2..000000000000
+--- a/Documentation/devicetree/bindings/net/dsa/ar9331.txt
++++ /dev/null
+@@ -1,147 +0,0 @@
+-Atheros AR9331 built-in switch
+-=============================
+-
+-It is a switch built-in to Atheros AR9331 WiSoC and addressable over internal
+-MDIO bus. All PHYs are built-in as well.
+-
+-Required properties:
+-
+- - compatible: should be: "qca,ar9331-switch"
+- - reg: Address on the MII bus for the switch.
+- - resets : Must contain an entry for each entry in reset-names.
+- - reset-names : Must include the following entries: "switch"
+- - interrupt-parent: Phandle to the parent interrupt controller
+- - interrupts: IRQ line for the switch
+- - interrupt-controller: Indicates the switch is itself an interrupt
+-   controller. This is used for the PHY interrupts.
+- - #interrupt-cells: must be 1
+- - mdio: Container of PHY and devices on the switches MDIO bus.
+-
+-See Documentation/devicetree/bindings/net/dsa/dsa.txt for a list of additional
+-required and optional properties.
+-Examples:
+-
+-eth0: ethernet@19000000 {
+-	compatible = "qca,ar9330-eth";
+-	reg = <0x19000000 0x200>;
+-	interrupts = <4>;
+-
+-	resets = <&rst 9>, <&rst 22>;
+-	reset-names = "mac", "mdio";
+-	clocks = <&pll ATH79_CLK_AHB>, <&pll ATH79_CLK_AHB>;
+-	clock-names = "eth", "mdio";
+-
+-	phy-mode = "mii";
+-	phy-handle = <&phy_port4>;
+-};
+-
+-eth1: ethernet@1a000000 {
+-	compatible = "qca,ar9330-eth";
+-	reg = <0x1a000000 0x200>;
+-	interrupts = <5>;
+-	resets = <&rst 13>, <&rst 23>;
+-	reset-names = "mac", "mdio";
+-	clocks = <&pll ATH79_CLK_AHB>, <&pll ATH79_CLK_AHB>;
+-	clock-names = "eth", "mdio";
+-
+-	phy-mode = "gmii";
+-
+-	fixed-link {
+-		speed = <1000>;
+-		full-duplex;
+-	};
+-
+-	mdio {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		switch10: switch@10 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-
+-			compatible = "qca,ar9331-switch";
+-			reg = <0x10>;
+-			resets = <&rst 8>;
+-			reset-names = "switch";
+-
+-			interrupt-parent = <&miscintc>;
+-			interrupts = <12>;
+-
+-			interrupt-controller;
+-			#interrupt-cells = <1>;
+-
+-			ports {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-
+-				switch_port0: port@0 {
+-					reg = <0x0>;
+-					ethernet = <&eth1>;
+-
+-					phy-mode = "gmii";
+-
+-					fixed-link {
+-						speed = <1000>;
+-						full-duplex;
+-					};
+-				};
+-
+-				switch_port1: port@1 {
+-					reg = <0x1>;
+-					phy-handle = <&phy_port0>;
+-					phy-mode = "internal";
+-				};
+-
+-				switch_port2: port@2 {
+-					reg = <0x2>;
+-					phy-handle = <&phy_port1>;
+-					phy-mode = "internal";
+-				};
+-
+-				switch_port3: port@3 {
+-					reg = <0x3>;
+-					phy-handle = <&phy_port2>;
+-					phy-mode = "internal";
+-				};
+-
+-				switch_port4: port@4 {
+-					reg = <0x4>;
+-					phy-handle = <&phy_port3>;
+-					phy-mode = "internal";
+-				};
+-			};
+-
+-			mdio {
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-
+-				interrupt-parent = <&switch10>;
+-
+-				phy_port0: phy@0 {
+-					reg = <0x0>;
+-					interrupts = <0>;
+-				};
+-
+-				phy_port1: phy@1 {
+-					reg = <0x1>;
+-					interrupts = <0>;
+-				};
+-
+-				phy_port2: phy@2 {
+-					reg = <0x2>;
+-					interrupts = <0>;
+-				};
+-
+-				phy_port3: phy@3 {
+-					reg = <0x3>;
+-					interrupts = <0>;
+-				};
+-
+-				phy_port4: phy@4 {
+-					reg = <0x4>;
+-					interrupts = <0>;
+-				};
+-			};
+-		};
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml b/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
+new file mode 100644
+index 000000000000..fd9ddc59d38c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
+@@ -0,0 +1,161 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/dsa/qca,ar9331.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Atheros AR9331 built-in switch
++
++maintainers:
++  - Oleksij Rempel <o.rempel@pengutronix.de>
++
++description:
++  Qualcomm Atheros AR9331 is a switch built-in to Atheros AR9331 WiSoC and
++  addressable over internal MDIO bus. All PHYs are built-in as well.
++
++properties:
++  compatible:
++    const: qca,ar9331-switch
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    const: 1
++
++  mdio:
++    $ref: /schemas/net/mdio.yaml#
++    unevaluatedProperties: false
++    properties:
++      interrupt-parent: true
++
++    patternProperties:
++      '(ethernet-)?phy@[0-4]+$':
++        type: object
++        unevaluatedProperties: false
++
++        properties:
++          reg: true
++          interrupts:
++            maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    items:
++      - const: switch
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - '#interrupt-cells'
++  - mdio
++  - ports
++  - resets
++  - reset-names
++
++allOf:
++  - $ref: dsa.yaml#/$defs/ethernet-ports
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    mdio {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        switch10: switch@10 {
++            compatible = "qca,ar9331-switch";
++            reg = <0x10>;
++
++            interrupt-parent = <&miscintc>;
++            interrupts = <12>;
++            interrupt-controller;
++            #interrupt-cells = <1>;
++
++            resets = <&rst 8>;
++            reset-names = "switch";
++
++            ports {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                port@0 {
++                    reg = <0x0>;
++                    ethernet = <&eth1>;
++
++                    phy-mode = "gmii";
++
++                    fixed-link {
++                        speed = <1000>;
++                        full-duplex;
++                    };
++                };
++
++                port@1 {
++                    reg = <0x1>;
++                    phy-handle = <&phy_port0>;
++                    phy-mode = "internal";
++                };
++
++                port@2 {
++                    reg = <0x2>;
++                    phy-handle = <&phy_port1>;
++                    phy-mode = "internal";
++                };
++
++                port@3 {
++                    reg = <0x3>;
++                    phy-handle = <&phy_port2>;
++                    phy-mode = "internal";
++                };
++
++                port@4 {
++                    reg = <0x4>;
++                    phy-handle = <&phy_port3>;
++                    phy-mode = "internal";
++                };
++            };
++
++            mdio {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                interrupt-parent = <&switch10>;
++
++                phy_port0: ethernet-phy@0 {
++                    reg = <0x0>;
++                    interrupts = <0>;
++                };
++
++                phy_port1: ethernet-phy@1 {
++                    reg = <0x1>;
++                    interrupts = <0>;
++                };
++
++                phy_port2: ethernet-phy@2 {
++                    reg = <0x2>;
++                    interrupts = <0>;
++                };
++
++                phy_port3: ethernet-phy@3 {
++                    reg = <0x3>;
++                    interrupts = <0>;
++                };
++
++                phy_port4: ethernet-phy@4 {
++                    reg = <0x4>;
++                    interrupts = <0>;
++                };
++            };
++        };
++    };
+-- 
+2.34.1
+
 
