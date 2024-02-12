@@ -1,357 +1,176 @@
-Return-Path: <linux-kernel+bounces-61383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCD4C8511A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:56:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCEBF8511AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 11:58:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D4811C2377E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:56:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD9851C209B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 10:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D208C38DE0;
-	Mon, 12 Feb 2024 10:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360F82BAE9;
+	Mon, 12 Feb 2024 10:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V9ztVVXj"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oPLwlbXx"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A623B2BAEA
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:56:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B74A1864C;
+	Mon, 12 Feb 2024 10:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707735384; cv=none; b=YWb0GvZ7baGxqPUWT0bHw7yDNKWN9l/gdzTym8XrsdLgOGB7FaKYrFN2oQvAgd2QqtGc1OOdpjUyiUmjOEs3e5+kMPZPD15uCYfe2I6MvNpM0RgnchK7p2uA4yXZV0/0vTCzfhDCyacV9an3qe+5ZgKwBBeHygcIeqOYGjcbDH8=
+	t=1707735466; cv=none; b=CTxyKZ5s/ASls1QVKrw1Bss56K12QryrJBf37OrSmLJsDRgo31hWeN5WevcNFqIE7TqlNH3cXuMbuiVXG/fg+kjd6lc5NJW5Ce8PBJqEvINk7i4Ba9KcNiBO/Sm/Y6ffZpfkemq9wv68O5/AfVv4/hbixLcFnI3h6EqtL1iqHgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707735384; c=relaxed/simple;
-	bh=iN0ZQbM9DZxALFUgS9Q08kQ+Ol82GM4tETLHfgNCsNk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f/rD9LjKrdEzQk3kcQ6B9xYB24Kkunw7OnHWQUTy+xqwb+Zn1Bb0HVA75Wc5VgHLDDoHzTfE9rlyYWPirLBljwzkekwENvLvP1/ODe8TJutb6tY3lDGBkYariDuJ2dPABeG6AeVuFde5OHPjYMni1qronC1UgixS8riGJJSm9m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V9ztVVXj; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707735381;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UV8bdgpmsnr14qmRHmP9LgSt0o7Rd0LaIu3KD5rWrF0=;
-	b=V9ztVVXjg28sJ7KYahdWaz86ngf19x0D5VaRqLGp5Cz0lXYcVpP0MTCJBDGWSRhxT19uD6
-	SOboJ51Du85+WeBLaAi+EFhEUEb8gq9IJVUTq1GrueIWosgzhSg8N782CUztr6Td5acjTJ
-	zbhI4IQcew/GUktz9OQvXEte7/C2T+8=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-576-SxygerGdPNWK3Q7MOuGv4A-1; Mon, 12 Feb 2024 05:56:14 -0500
-X-MC-Unique: SxygerGdPNWK3Q7MOuGv4A-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33b880a620bso98642f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 02:56:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707735373; x=1708340173;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UV8bdgpmsnr14qmRHmP9LgSt0o7Rd0LaIu3KD5rWrF0=;
-        b=QLNTsuWYRADI26HNDGTMFQz2ndfcazBkXA0UPqPbZFMVtn5YLQo92elh9p01LQhBTx
-         M4UBFDXNt4Q4a0VORwaCbcU4bDGc1liIl4EZ98gsWfMnUOu5Kf/4KiIHTmkDUc3PQmQc
-         3W6SkhEU+IDvqXoDcMW2LCksfeODdEjhQGDGfdp6qIXLiUeZj14E9RAlJqsjiLPI70zS
-         txHn+RhX2CSMc8/pHR2LjOHf8pkIfehSNwaGP2ekenMOAapW8RdkmZV5DYGkRUZRVmaf
-         B8uOheR+B29UMr1H50/J8kHgTtXki7QmtLBkZ6UewIKh66I6aLt0IBNU03z7eRWsrkZg
-         4N9A==
-X-Gm-Message-State: AOJu0YxSvB5bSo5PJV+dYvA1UVnYS0JumqEFd0n/lKtb/BbYx+4ynEU3
-	o13M1l9Ul+VkwLt3mBbha5CB8iSu7Kkqz9m8WIzfb1HmuxDsDXzpnXhawHDLTpfg8wB/w4DIDJE
-	fAgIFkzl35zLsjlvzrnu+lJtqtjIUUwAzmbPMpgFHj2gwOCg2RlH0Bqt/5x1Egg==
-X-Received: by 2002:adf:f783:0:b0:33b:6d36:de48 with SMTP id q3-20020adff783000000b0033b6d36de48mr4787399wrp.26.1707735373489;
-        Mon, 12 Feb 2024 02:56:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG/IczVnpqG7OkL74qqeEO8Efr3rPNiI2sLLGfEI45Sntu72wIYKx9fA7rHUuSCnjIuJqb7rg==
-X-Received: by 2002:adf:f783:0:b0:33b:6d36:de48 with SMTP id q3-20020adff783000000b0033b6d36de48mr4787383wrp.26.1707735373053;
-        Mon, 12 Feb 2024 02:56:13 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXjROoncsMS9ff/iccqKfqz0fi4PCC42VOc6vvwHBjhJXjzTpJlaTL/AcE4wlksfudxTI8Nufs1TaBw9FXcJAvIGseizwGfpxHdXA91AMi85HfqCVcWrZmAhA3vZkmt2Apb8EUGV7dsVepCozjNuALNAFILi4S1lEWPFA2EpYHWGbnq+al1ucIyDhLO6GYlvPt6CH52fPmJ6WZpvf6zSbVQ5BKD2Kux+GliB5ikYPH4IeWitD+J94+wHP/34NkYzOoGAVf5cDaKG2D+z8Tcj90Jllx2pQr/4FEJcvOX/r0uaPpwRIphvNTZrwlCMR/ofGFaNaFBcrakwcc6oCnzK4UH1GTnXGyqA3ct2TtXIGbXz5SgvPmcheBpCfmU3JBbtYjYJVOq/Cu9kPFBq+iV7BynOkk+LoYeavXAsKrJUEoxNqk7gJl1hVxmdbaHNRJ8GH/Xrep1FcL7ndv35Ff16lr+2y+KVyZcjp3vcFmekmjm1fP3DsAUD1AaCsrZ8ui/QWYnR8UJrHN1i4j0VP2kvQx3aAjFGQAhbf0rpwA914ul/9WCChdJIzh0+GSYZiRdVIOwT3amXD4KZNjOzHEfzMFG927T7BqZceLrfF6cUarIizPaeuFRSVL84WFcql7Rw3wC+P9g9pTa3pJGcQ+4RTKA649h0MJBUEeEzta0LzDdHl4QDvtp6+86jFU39Hh8luio0tRTYoC9rHDbADrYT6bGtiodX2nkZeYloJipmlKST9qoRl8=
-Received: from ?IPV6:2003:cb:c730:2200:7229:83b1:524e:283a? (p200300cbc7302200722983b1524e283a.dip0.t-ipconnect.de. [2003:cb:c730:2200:7229:83b1:524e:283a])
-        by smtp.gmail.com with ESMTPSA id bq26-20020a5d5a1a000000b0033b4335dce5sm6603003wrb.85.2024.02.12.02.56.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 02:56:12 -0800 (PST)
-Message-ID: <e6774e16-90c0-4fba-9b9c-98de803fc920@redhat.com>
-Date: Mon, 12 Feb 2024 11:56:11 +0100
+	s=arc-20240116; t=1707735466; c=relaxed/simple;
+	bh=9xW0e/NGcWkk+FEV31dLjsWMJfc9mdwIin0wbI9k+Vw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=To3dHpobRcHQm4WzBXhSUziEja2mOntQFoBOqMAOmMn0HGhmRfJfBE0nPenKh4YbML2TaPcWtx4T7yZEBkJ0vrCELsaIiPqE14qQWkpJT1a3XRgPgRtSDvKAub2pIoPkpLoCXBGut60/2dUkKCO8G+9z0WrP9RFMhXVVpZFFvwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=oPLwlbXx; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41CAvXFW117411;
+	Mon, 12 Feb 2024 04:57:33 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707735453;
+	bh=tkADkNXyuq0rzbZNH8mLuZ5jl0kk11rq9K3V6xvB+bo=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=oPLwlbXxW2Hij6ZnKcI7jhDd+p3S8L3omOYL/nfq9Z5Df8PY0vI9Ex8wWXLXVIZBZ
+	 274Rt9lODVhmJTNm/92ornuec/qtlv9MdRUq2PWkuHl/AlGqg6R5Yr0krPPlzeXK6o
+	 12nYwurZQWS1Vealtk7HPNrvirRMlUV7fc32+gZE=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41CAvXKa083841
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 12 Feb 2024 04:57:33 -0600
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
+ Feb 2024 04:57:33 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 12 Feb 2024 04:57:33 -0600
+Received: from [172.24.227.193] (devarsht.dhcp.ti.com [172.24.227.193])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41CAvSNE002368;
+	Mon, 12 Feb 2024 04:57:29 -0600
+Message-ID: <9c5b7b2c-8a66-4173-dfe9-5724ec5f733d@ti.com>
+Date: Mon, 12 Feb 2024 16:27:28 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 09/10] mm/mmu_gather: improve cond_resched() handling
- with large folios and expensive page freeing
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] dt-bindings: media: Add sram-size Property for Wave5
 Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Yin Fengwei <fengwei.yin@intel.com>, Michal Hocko <mhocko@suse.com>,
- Will Deacon <will@kernel.org>, "Aneesh Kumar K.V"
- <aneesh.kumar@linux.ibm.com>, Nick Piggin <npiggin@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, Michael Ellerman
- <mpe@ellerman.id.au>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
- linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org
-References: <20240209221509.585251-1-david@redhat.com>
- <20240209221509.585251-10-david@redhat.com>
- <f1578e92-4de0-4718-bf79-ec29e9a19fe0@arm.com>
- <6c66f7ca-4b14-4bbb-bf06-e81b3481b03f@redhat.com>
- <590946ad-a538-4c99-947f-93455c2d96c6@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <590946ad-a538-4c99-947f-93455c2d96c6@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Nicolas Dufresne <nicolas@ndufresne.ca>, Brandon Brnich <b-brnich@ti.com>,
+        Nishanth Menon <nm@ti.com>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Nas Chung
+	<nas.chung@chipsnmedia.com>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Mauro
+ Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh
+ Raghavendra <vigneshr@ti.com>,
+        Darren Etheridge <detheridge@ti.com>
+References: <20240201184238.2542695-1-b-brnich@ti.com>
+ <1209b7cf-5be2-4107-aa6b-d67a32ea3737@linaro.org>
+ <20240202125257.p4astjuxpzr5ltjs@dragster>
+ <8091a8cf-c1c0-49b0-b136-1ad0d185aa6a@linaro.org>
+ <20240202155813.szxvi7bfp5xh7rvw@babble>
+ <adfef53c-d64e-4855-ab61-101b6fa419e5@linaro.org>
+ <20240205141255.z5kybm42qld44tdz@portfolio>
+ <20240205192003.3qns6cxqurqnnj7c@udba0500997>
+ <ab029558-fc04-854e-1f97-785f5cec0681@ti.com>
+ <fccdc181727307f52a36f3bb621d6a4e192096da.camel@ndufresne.ca>
+From: Devarsh Thakkar <devarsht@ti.com>
+In-Reply-To: <fccdc181727307f52a36f3bb621d6a4e192096da.camel@ndufresne.ca>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 12.02.24 11:32, Ryan Roberts wrote:
-> On 12/02/2024 10:11, David Hildenbrand wrote:
->> Hi Ryan,
+Hi Nicolas,
+
+On 09/02/24 23:12, Nicolas Dufresne wrote:
+> Le jeudi 08 février 2024 à 11:52 +0530, Devarsh Thakkar a écrit :
+>> I think even with the approach selected in [1] i.e. referring the
+>> mmio-sram node using DT property, you can still use dynamic SRAM
+>> allocation.
+>> The driver can still allocate from global sram pool dynamically using
+>> of_gen_pool API as being explained here [3] i.e allocate when first
+>> instance is opened and free up later when no instances are running.
 >>
->>>> -static void tlb_batch_pages_flush(struct mmu_gather *tlb)
->>>> +static void __tlb_batch_free_encoded_pages(struct mmu_gather_batch *batch)
->>>>    {
->>>> -    struct mmu_gather_batch *batch;
->>>> -
->>>> -    for (batch = &tlb->local; batch && batch->nr; batch = batch->next) {
->>>> -        struct encoded_page **pages = batch->encoded_pages;
->>>> +    struct encoded_page **pages = batch->encoded_pages;
->>>> +    unsigned int nr, nr_pages;
->>>>    +    /*
->>>> +     * We might end up freeing a lot of pages. Reschedule on a regular
->>>> +     * basis to avoid soft lockups in configurations without full
->>>> +     * preemption enabled. The magic number of 512 folios seems to work.
->>>> +     */
->>>> +    if (!page_poisoning_enabled_static() && !want_init_on_free()) {
->>>
->>> Is the performance win really worth 2 separate implementations keyed off this?
->>> It seems a bit fragile, in case any other operations get added to free which are
->>> proportional to size in future. Why not just always do the conservative version?
+>> But I agree with Nishanth's point too that we may not want to give all
+>> of SRAM to VPU. For e.g. on AM62A we have 64KiB SRAM and a 1080p
+>> use-case requires 48KiB and even higher for 4K so if there is another
+>> peripheral who is referring this sram node, then it may not get enough
+>> as VPU will hog the major chunk (or all) of it while it is running and
+>> this is where an optional property like sram-size will help to cap the
+>> max sram usage for VPU and so this helps especially on platforms with
+>> limited SRAM availability.
 >>
->> I really don't want to iterate over all entries on the "sane" common case. We
->> already do that two times:
+>> As I understand, the sram size allocation is dependent on resolution and
+>> once programmed can't be changed until all instances of VPU are done,
+>> and we can't predict how many instances user will launch and with what
+>> resolutions.
 >>
->> a) free_pages_and_swap_cache()
+>> So here's the flow we had thought of some time back :
+>> 1) Define worst case sram size (per 4K use-case as I believe that's the
+>> max for CnM wave521c) as a macro in driver
 >>
->> b) release_pages()
+>> Then the condition for determining sram size to be allocated should be
+>> as below  :
 >>
->> Only the latter really is required, and I'm planning on removing the one in (a)
->> to move it into (b) as well.
+>> 2) When first instance of VPU is opened, allocate as per sram-size if
+>> sram-size property is specified.
 >>
->> So I keep it separate to keep any unnecessary overhead to the setups that are
->> already terribly slow.
+>> 3) If sram-size is not specified then :
+>>    -> Allocate as per worst case size macro defined in driver from sram
+>> pool,
+>>    -> If worst case size of SRAM > max SRAM size, then allocate
+>>       max SRAM size
 >>
->> No need to iterate a page full of entries if it can be easily avoided.
->> Especially, no need to degrade the common order-0 case.
+>> 4). When all of the instances of VPU are closed, then free up all
+>> allocated SRAM.
+>>
+>> [3] :
+>> https://wiki.analog.com/resources/tools-software/linuxdsp/docs/linux-kernel-and-drivers/sram
 > 
-> Yeah, I understand all that. But given this is all coming from an array, (so
-> easy to prefetch?) and will presumably all fit in the cache for the common case,
-> at least, so its hot for (a) and (b), does separating this out really make a
-> measurable performance difference? If yes then absolutely this optimizaiton
-> makes sense. But if not, I think its a bit questionable.
-
-I primarily added it because
-
-(a) we learned that each cycle counts during mmap() just like it does 
-during fork().
-
-(b) Linus was similarly concerned about optimizing out another batching 
-walk in c47454823bd4 ("mm: mmu_gather: allow more than one batch of 
-delayed rmaps"):
-
-"it needs to walk that array of pages while still holding the page table 
-lock, and our mmu_gather infrastructure allows for batching quite a lot 
-of pages.  We may have thousands on pages queued up for freeing, and we 
-wanted to walk only the last batch if we then added a dirty page to the 
-queue."
-
-So if it matters enough for reducing the time we hold the page table 
-lock, it surely adds "some" overhead in general.
-
-
+> Only issue here is that DT is not a use case configuration file. That DT
+> parameter is meant for HW that simply cannot be operated without it. This is
+> also edgy, because it also means that it should only be used if that information
+> is not static and vary unpredictably per SoC, which seems generally unlikely. 
 > 
-> You're the boss though, so if your experience tells you this is neccessary, then
-> I'm ok with that.
-
-I did not do any measurements myself, I just did that intuitively as 
-above. After all, it's all pretty straight forward (keeping the existing 
-logic, we need a new one either way) and not that much code.
-
-So unless there are strong opinions, I'd just leave the common case as 
-it was, and the odd case be special.
-
+> The Wave5 IP *can* work without it, so it should resort to something more
+> dynamic. User configuration should be sorted out at the OS level.
 > 
-> By the way, Matthew had an RFC a while back that was doing some clever things
-> with batches further down the call chain (I think; be memory). Might be worth
-> taking a look at that if you are planning a follow up change to (a).
-> 
+> Nicolas
 
-Do you have a pointer?
+Thanks, yeah that makes sense. The sram allocation size is dependent on
+resolution so I think we should employ a fallback model for sram allocation as
+described below :
 
->>
->>>
->>>>            while (batch->nr) {
->>>> -            /*
->>>> -             * limit free batch count when PAGE_SIZE > 4K
->>>> -             */
->>>> -            unsigned int nr = min(512U, batch->nr);
->>>> +            nr = min(512, batch->nr);
->>>
->>> If any entries are for more than 1 page, nr_pages will also be encoded in the
->>> batch, so effectively this could be limiting to 256 actual folios (half of 512).
->>
->> Right, in the patch description I state "256 folio fragments". It's up to 512
->> folios (order-0).
->>
->>> Is it worth checking for ENCODED_PAGE_BIT_NR_PAGES_NEXT and limiting accordingly?
->>
->> At least with 4k page size, we never have more than 510 (IIRC) entries per batch
->> page. So any such optimization would only matter for large page sizes, which I
->> don't think is worth it.
-> 
-> Yep; agreed.
-> 
->>
->> Which exact optimization do you have in mind and would it really make a difference?
-> 
-> No I don't think it would make any difference, performance-wise. I'm just
-> pointing out that in pathalogical cases you could end up with half the number of
-> pages being freed at a time.
+1) Driver code should enumerate required sram sizes for each of the standard
+resolutions (for e.g. #define 1080P_SRAM_SIZE 48128, #define 4K_SRAM_SIZE
+66368 and so on...) and try to allocate per highest enumerated resolution
+first) from sram pool using gen_pool_alloc when first instance of VPU is opened.
 
-Yes, I'll extend the patch description!
+2) If the allocation fails, then driver should try to fallback to lower
+resolution sram allocation size (viz. 1080P_SRAM_SIZE) for sram allocation.
 
-> 
->>
->>>
->>> nit: You're using 512 magic number in 2 places now; perhaps make a macro?
->>
->> I played 3 times with macro names (including just using something "intuitive"
->> like MAX_ORDER_NR_PAGES) but returned to just using 512.
->>
->> That cond_resched() handling is just absolutely disgusting, one way or the other.
->>
->> Do you have a good idea for a macro name?
-> 
-> MAX_NR_FOLIOS_PER_BATCH?
-> MAX_NR_FOLIOS_PER_FREE?
-> 
-> I don't think the name has to be perfect, because its private to the c file; but
-> it ensures the 2 usages remain in sync if someone wants to change it in future.
+3) When all of the VPU instances get closed, then free up all allocated SRAM
+back to the pool so that other peripherals can use it.
 
-Makes sense, I'll use something along those lines.
-
-> 
->>
->>>
->>>>                  /*
->>>>                 * Make sure we cover page + nr_pages, and don't leave
->>>> @@ -119,6 +120,37 @@ static void tlb_batch_pages_flush(struct mmu_gather *tlb)
->>>>                cond_resched();
->>>>            }
->>>>        }
->>>> +
->>>> +    /*
->>>> +     * With page poisoning and init_on_free, the time it takes to free
->>>> +     * memory grows proportionally with the actual memory size. Therefore,
->>>> +     * limit based on the actual memory size and not the number of involved
->>>> +     * folios.
->>>> +     */
->>>> +    while (batch->nr) {
->>>> +        for (nr = 0, nr_pages = 0;
->>>> +             nr < batch->nr && nr_pages < 512; nr++) {
->>>> +            if (unlikely(encoded_page_flags(pages[nr]) &
->>>> +                     ENCODED_PAGE_BIT_NR_PAGES_NEXT))
->>>> +                nr_pages += encoded_nr_pages(pages[++nr]);
->>>> +            else
->>>> +                nr_pages++;
->>>> +        }
->>>
->>> I guess worst case here is freeing (511 + 8192) * 64K pages = ~544M. That's up
->>> from the old limit of 512 * 64K = 32M, and 511 pages bigger than your statement
->>> in the commit log. Are you comfortable with this? I guess the only alternative
->>> is to start splitting a batch which would be really messy. I agree your approach
->>> is preferable if 544M is acceptable.
->>
->> Right, I have in the description:
->>
->> "if we cannot even free a single MAX_ORDER page on a system without running into
->> soft lockups, something else is already completely bogus.".
->>
->> That would be 8192 pages on arm64. Anybody freeing a PMD-mapped THP would be in
->> trouble already and should just reconsider life choices running such a machine.
->>
->> We could have 511 more pages, yes. If 8192 don't trigger a soft-lockup, I am
->> confident that 511 more pages won't make a difference.
->>
->> But, if that ever is a problem, we can butcher this code as much as we want,
->> because performance with poisoning/zeroing is already down the drain.
->>
->> As you say, splitting even further is messy, so I rather avoid that unless
->> really required.
->>
-> 
-> Yep ok, I understand the argument better now - thanks.
-> 
-
-I'll further extend the patch description.
-
-Thanks!
-
--- 
-Cheers,
-
-David / dhildenb
-
+Regards
+Devarsh
 
