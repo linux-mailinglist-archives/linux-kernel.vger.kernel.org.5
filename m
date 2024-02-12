@@ -1,174 +1,99 @@
-Return-Path: <linux-kernel+bounces-62006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD71E8519F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A5078519FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:49:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5825A1F23A8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:49:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3B231F23C3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4753D556;
-	Mon, 12 Feb 2024 16:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9493D3BF;
+	Mon, 12 Feb 2024 16:49:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="G5WmLzJu"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2054.outbound.protection.outlook.com [40.107.94.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GNmqJokx"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D653C699;
-	Mon, 12 Feb 2024 16:48:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707756521; cv=fail; b=P1HCSJGy5wHPpgoTre8M2aWEDP5RXW0MTpgEDu2qrzf8P9XjoTfex1f/zyzQFJxQYfKhTltLDM+swVXeQYaL42tLd6dTvW3LV7xqS2gScnOBW/GSPYsHEV68FFQb2dBiklIsXFaAhvjYYWsCDpy30/aY/Ac2ZgSKpbTIqSD547U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707756521; c=relaxed/simple;
-	bh=l7OAEpOSeipd+I7UPuUvvIEjro6bxpmH/wjc3SmpjXw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=En6Mb3ib15Zx8CvY/gu8LhlfXPT6/bpMkQXavw3++Yvk+fn2pimotW6uErUOhp9myiRS6G2EpZgUCWCffO9p3c3uT+uLAZQJ4iaAFwKeAGgdTHNvQYquwJkYT8XAojQoSSFqHLa3kMiBnHhqETiHDuAu3EampDEzqjracvkJIG0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=G5WmLzJu; arc=fail smtp.client-ip=40.107.94.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VUddeyoPkPO/20q+ZoUGIk0dN1732sIBPvfUUKVowQejtn9HjJWFpDEU8P4MUC6fX0OWhDHTOOwqkbhcZuZ01LvYQuROa9NR2D3Wg0w7sGYuRUQGMxHNdQu93FxvO7F5YhMncX3W4EahP0v8pNmqNBQSeLug2v5uNb6fE1UjedGA7dwRgT7HYJ6LzPvX6fhBMtCVFMyIQF+a7VMK/Hxe+eIX1SwmNxLfbGU5LjZqnkNWH/JxYUDU5UNwxEBeSE3pc5aLBQQTXNFXIWcrGWDa56tEgtRjNRRj1vUKxya9C+n6+1t9Kfmdi0xcjsrmrc1Nz37cgls0dMp03k6vPSzcMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y6fuWCc0jG1unLA95FAG0wKoLIczJavaPCUrOzohaZM=;
- b=GBvOgtU14V01brxDBkGCKeG8EefQaeWZrucygvHQIIxwHDWNU+XI6ObJGZ/6cXtqP/Sx40ob//OY2ZlXz5aT173QFWHiGXFByEE4MNz6DolIgwGeX85ohNosY3396OnKQAbCq0FWTzvZ4TNRprWHRSffM3I0oX6SmT2Imw2DSltBwhMiMSPL8OI+LTomcN/wxhmsu3x1A3dR7Da1ylJnq3qTXN2w+NwVKz/WzKBjkuaO3r/1w66rTMM7aSOJfWx7ZtANVjr7lReDd19pzg6eqKvS2AAy/Edg1qaWitAkz3AD/igdNH71rcrgtYPYiOJL/FY6mKijJoyESFWZe7rOAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y6fuWCc0jG1unLA95FAG0wKoLIczJavaPCUrOzohaZM=;
- b=G5WmLzJuRtvFKYpAg73RvkuA6OqpKO9HOeaQCHAyGcwCuPysD8s0BqguqVSPA+FtDNygsrgVmRuMNpt7PP1CkLFXwPqAPDmWirq6am7tUL2qBm8vGKabpTitQDaeG6rN/VOufK+n41Oo3tjRxfrxdY/Zjw2str5+BqeHRgFW+OU=
-Received: from SJ0PR03CA0383.namprd03.prod.outlook.com (2603:10b6:a03:3a1::28)
- by DM4PR12MB6253.namprd12.prod.outlook.com (2603:10b6:8:a6::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.24; Mon, 12 Feb
- 2024 16:48:36 +0000
-Received: from SJ1PEPF00001CEA.namprd03.prod.outlook.com
- (2603:10b6:a03:3a1:cafe::21) by SJ0PR03CA0383.outlook.office365.com
- (2603:10b6:a03:3a1::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.38 via Frontend
- Transport; Mon, 12 Feb 2024 16:48:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SJ1PEPF00001CEA.mail.protection.outlook.com (10.167.242.26) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7249.19 via Frontend Transport; Mon, 12 Feb 2024 16:48:36 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 12 Feb
- 2024 10:48:35 -0600
-Date: Mon, 12 Feb 2024 10:47:59 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: Sean Christopherson <seanjc@google.com>
-CC: Paolo Bonzini <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
-	<linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <vkuznets@redhat.com>, <jmattson@google.com>,
-	<luto@kernel.org>, <dave.hansen@linux.intel.com>, <slp@redhat.com>,
-	<pgonda@google.com>, <peterz@infradead.org>,
-	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>
-Subject: Re: [PATCH v11 09/35] KVM: x86: Determine shared/private faults
- based on vm_type
-Message-ID: <20240212164759.35cb7gds4p2inprg@amd.com>
-References: <20231230172351.574091-1-michael.roth@amd.com>
- <20231230172351.574091-10-michael.roth@amd.com>
- <CABgObfanrHTL429Cr8tcMGqs-Ov+6LWeQbzghvjQiGu9tz0EUA@mail.gmail.com>
- <ZcpG6Ul4_8xAsnuy@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EEEA3D0D0
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707756558; cv=none; b=EoeuWLcbc0DkxRjCK3oafKOXjCzvp2Fn5+pzi6bcb54O1S/5+lPIK3lvCZBYoMTQh1NO5UCUOPXcop9eEvgAV3BpHB8eLnnvUipFVIOg8EexNXLsEOSw2n1Ep3Pz/RUyDVj069YyrE0+4Ewt3utV+yOoz/a+pCZqG0fdxrf15so=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707756558; c=relaxed/simple;
+	bh=hXu9sHdM7IJbBPOMIED59R9v4IKiIdSqswjDn3ekmdM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=uwwb6MZzHwyX453aLnci/rkpTxvBXSxpc//q2b6QdVKsFqY3cZzH5HnfOLquApizMMvtcLq+wxt09QS7+ybjuFjL7kLdQgE2O3xEpKgTWcZnYljRbxmBhDmzoLgzZKmugWMywKWhAVssXJAWmvWK2m9IzKf0n0y3S8SI+Mv+SDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GNmqJokx; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-604acd1d164so63692307b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 08:49:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707756556; x=1708361356; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GPlRou6Cx1Kdm8J9ZJTFkbCu7oULoCtJIpW6s3E0mRs=;
+        b=GNmqJokxsI8aKjS2krCmc0qdSe6NyftOx5gCWtz7HB4VXuoWG+0zGjn41YwKFaRbPf
+         fqeek6CXgXEbzNOQFmMgc+/4ezs/lHy3E+GDhk/DmtxIAbsbBScRqJ7aT/W5xu2IKJpo
+         9KYnh7ivuK+kYg6tjhpcnST+5HYmzAY3jQpdUwlHI3yo4LFsEN5+PUieQhxgKN9wd7Oq
+         SzrWmYdq6e7Qvbq2SAeU/7GhbWyDNOAZV6Lx3TQ9TiVvGmMNlx9IKqqXv68qPKv7ubEF
+         wC9c8UrIgJZtfqYNw+zQnCfiGA13nuPgXISVZv79TD6DOTDd8DW74cNN4+tfI75teUMI
+         s2gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707756556; x=1708361356;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GPlRou6Cx1Kdm8J9ZJTFkbCu7oULoCtJIpW6s3E0mRs=;
+        b=nG78IodzyyC9nzUsktxlN8iJH++MpXm4H/bny6QxgekfpxDftfkaX8iN6HgBhjsoLM
+         srH26IwNZ9EOISADrBh5sLW8Vg18Q8YmfXEYNagpxTKMihyZIV/lnutkpgCarBVJQKQM
+         eRWaOWCximUMqtMLM6IM5v1mXEQlGeGUnKkTwZPE348oi1l5NGvx03HizVfoF9Y96KBt
+         XAV6w++CLGK07CS9ltLf+bPSbjRawx/a5cSsczFgVVJaOP63XV5fCPj4p3J5vUpR/+OO
+         qDccpr1TaLAF3LAmEqg171WH/oVcmBurjTntgKCA4R4fqOQwESiH9xqqt0nLnNYs7hIJ
+         2GNg==
+X-Gm-Message-State: AOJu0Yx1d3n6HnkmnMSlwcSdxGvUetmBwqG3dfsSRZMRuD9i6OkWM1Yi
+	B/bvxsoZBDCGW6OXrNfWG3K1zW+jO7Sa9Eem0TuRufE0N/6azuM9dp7DOVYdU6g9mg==
+X-Google-Smtp-Source: AGHT+IHEfCmAmT/rBYK+wi7o54NKRrx/37fqsl6J959zqBb9V8tYzhdFiVREtU9nIAEW9Q7UkGAkihk=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:690c:3388:b0:5fc:6edc:448e with SMTP id
+ fl8-20020a05690c338800b005fc6edc448emr2177007ywb.0.1707756556445; Mon, 12 Feb
+ 2024 08:49:16 -0800 (PST)
+Date: Mon, 12 Feb 2024 08:49:14 -0800
+In-Reply-To: <7lv62yiyvmj5a7eozv2iznglpkydkdfancgmbhiptrgvgan5sy@3fl3onchgdz3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <7lv62yiyvmj5a7eozv2iznglpkydkdfancgmbhiptrgvgan5sy@3fl3onchgdz3>
+Message-ID: <ZcpMCnJMwbgiUMmE@google.com>
+Subject: Re: [PATCH v4 bpf-next] net: remove check in __cgroup_bpf_run_filter_skb
+From: Stanislav Fomichev <sdf@google.com>
+To: Oliver Crumrine <ozlinuxc@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZcpG6Ul4_8xAsnuy@google.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CEA:EE_|DM4PR12MB6253:EE_
-X-MS-Office365-Filtering-Correlation-Id: 33846d7f-4fef-4026-5e57-08dc2bea7510
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	yrP/NggfU4d85NfP6WNH+aZMKyPZvL/Mm8TB3QCQiq2EaCKmRbdIrmvq7z9a29jG1yMaTOINWI6+SY+qgq9wU/6fvM22J6U4dYbtNML2wvqpi/fo7UC46fScodjFwztqAqCDc8edlefbfEkKAH4vIPJpL2HZ4ubey6KfiOLGlyFCobuDma46bgA56eo8eH7OZv1Kvdmrr3GIhXbrYE98j47TfvVvi8mjRhAeRDpivXteVPoPCPcYYPkdr/s9EEec/J01wfE2W5LmD9qnzlV8yLjeGF9kkWKokRfYc79VBHIR9ODBWm0oP4kgsE2pIyxSIY5i+PqI0scuSxWD8SJSUyppL6kag99pilkg+frF3TOh7yW0JcHSo6gNJJBcVzpCyj5BoiBPa4j7VuOEr1idycYeO/EVgkxj5LJIIvVUsSsqIVVK1tbXtgrG7JM0oiQWXDO+l1KrPjV3t/j4r/37WLmcBHWNSm2kHlXjNDgHPY+bIdJid7G6neNpvM/KwPQ65CUDV+30RaS7z2F4+i8k5QMalD5sHnQQoGDVrDEEbM1su4wrvTZCslpQZVxd2N1UE09pQWmv5Qnyhdp3tE+ZDGv+qJUktUsMOtV1dcQaZEVObYi2YNQXRzUyapukAxFi
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(82310400011)(40470700004)(36840700001)(46966006)(26005)(83380400001)(426003)(336012)(41300700001)(1076003)(2616005)(16526019)(44832011)(8676002)(4326008)(8936002)(478600001)(82740400003)(356005)(966005)(81166007)(70206006)(70586007)(36756003)(316002)(6916009)(86362001)(54906003)(6666004)(53546011)(7416002)(2906002)(7406005)(5660300002)(66899024);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 16:48:36.4866
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33846d7f-4fef-4026-5e57-08dc2bea7510
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00001CEA.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6253
 
-On Mon, Feb 12, 2024 at 08:27:21AM -0800, Sean Christopherson wrote:
-> On Mon, Feb 12, 2024, Paolo Bonzini wrote:
-> > On Sat, Dec 30, 2023 at 6:24 PM Michael Roth <michael.roth@amd.com> wrote:
-> > >
-> > > For KVM_X86_SNP_VM, only the PFERR_GUEST_ENC_MASK flag is needed to
-> > > determine with an #NPF is due to a private/shared access by the guest.
-> > > Implement that handling here. Also add handling needed to deal with
-> > > SNP guests which in some cases will make MMIO accesses with the
-> > > encryption bit.
-> > >
-> > > Signed-off-by: Michael Roth <michael.roth@amd.com>
-> > > ---
-> > >  arch/x86/kvm/mmu/mmu.c          | 12 ++++++++++--
-> > >  arch/x86/kvm/mmu/mmu_internal.h | 20 +++++++++++++++++++-
-> > >  2 files changed, 29 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > > index d3fbfe0686a0..61213f6648a1 100644
-> > > --- a/arch/x86/kvm/mmu/mmu.c
-> > > +++ b/arch/x86/kvm/mmu/mmu.c
-> > > @@ -4331,6 +4331,7 @@ static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
-> > >  static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
-> > >  {
-> > >         struct kvm_memory_slot *slot = fault->slot;
-> > > +       bool private_fault = fault->is_private;
-> > 
-> > I think it's nicer to just make the fault !is_private in
-> > kvm_mmu_do_page_fault().
+On 02/09, Oliver Crumrine wrote:
+> Originally, this patch removed a redundant check in
+> BPF_CGROUP_RUN_PROG_INET_EGRESS, as the check was already being done in
+> the function it called, __cgroup_bpf_run_filter_skb. For v2, it was
+> reccomended that I remove the check from __cgroup_bpf_run_filter_skb,
+> and add the checks to the other macro that calls that function,
+> BPF_CGROUP_RUN_PROG_INET_INGRESS.
 > 
-> Yeah.  I'm starting to recall more of this discussion.  This is one of the reasons
-> I suggested/requested stuffing the error code to piggy-back the new SNP bit; doing
-> so allows is_private to be computed from the get-go without needing any vendor
-> specific hooks.
+> To sum it up, checking that the socket exists and that it is a full
+> socket is now part of both macros BPF_CGROUP_RUN_PROG_INET_EGRESS and
+> BPF_CGROUP_RUN_PROG_INET_INGRESS, and it is no longer part of the
+> function they call, __cgroup_bpf_run_filter_skb.
+> 
+> Signed-off-by: Oliver Crumrine <ozlinuxc@gmail.com>
 
-Makes sense to me. Based on your suggestion here:
-
-  https://lore.kernel.org/kvm/ZcUO5sFEAIH68JIA@google.com/
-
-I was planning to drop this patch and adopt the TDX implementation:
-
-  https://github.com/intel/tdx/commit/3717a903ef453aa7b62e7eb65f230566b7f158d4
-
--Mike
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
