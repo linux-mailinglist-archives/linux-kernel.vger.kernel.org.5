@@ -1,714 +1,247 @@
-Return-Path: <linux-kernel+bounces-62489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA8C1852197
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:40:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D1DA85219A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 609651F2289E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:40:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3AA8B22C05
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0DE4EB2C;
-	Mon, 12 Feb 2024 22:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED8A54DA19;
+	Mon, 12 Feb 2024 22:41:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Q0UUxwyg"
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PheYA0as"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 869494E1B5
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 22:40:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61BA84E1BD;
+	Mon, 12 Feb 2024 22:41:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707777619; cv=none; b=YRG5vQvmPIuzO0Ziiw1EaXLcUPt4M4hwoieqFdNoH1BKU33ILk+7lD6Z/vJhY1/EeeKt7JTPBScTDCrq+fHzZPNO6mwe2B5bCJ2WC2RUcB5LIyAd3wHlh1bfiCKuhtDNlGqufK9nL8KapgjKUOklgTAFIUi++iwt4LCn2PZmiYM=
+	t=1707777718; cv=none; b=Kn50BZxzSxZ1cSWq1obb4Y8YM60P8yKK1kIF5IlaburOAWE5nRyBOH3SET+d9CZJM+74C656BRpM1XEtrFi+TnBF1G4H7+YBnmZs/2V54vK+3nPXPZE4LWed3C29U1xtJyQpNaSz3dTM/2MFuoIoWuXQyDri2huCR7bk0J9NfK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707777619; c=relaxed/simple;
-	bh=bhCwGIkHoaG4LQ6MECcP536cCmSst//pelqxPajFtqo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tB6XzwEn38OYqK1TLMe/sP2nfF/goAk40nkTJKUPv9y2KrgV8F2PGWTPirzkmbV+6V9QrzwJzSqj5+/lVW8OlPQJvkXEHpqhUoVx/b/qz/kS8jvP9KUCOZJTPp29ZFXeOkKqi2J2zM8PPHVMoy+K4pVUFkyejB8iWPAX3d1IvjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Q0UUxwyg; arc=none smtp.client-ip=209.85.210.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6e2dbf54b2eso1474171a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:40:15 -0800 (PST)
+	s=arc-20240116; t=1707777718; c=relaxed/simple;
+	bh=cAUEs+amnVSeKIK8NpO4FC2BVKtrt76059q1ciUIwV8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fP+OHIPknk80BlxCcOxX8TaDwW4hEkf62Uei1CgzD/oUi1SxwnTdvh0p3kV3XH19eSgpD2f8dsXQGi7fIB4gXPoWhPLGbEvC26J+3dx9X/EzgBnQW5a2mcGK8B2e289xcdxkaDm4N0X2481Ede1rzfFYG/aZUExwZGg46geDJEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PheYA0as; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d09bdddfc9so49005401fa.2;
+        Mon, 12 Feb 2024 14:41:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707777614; x=1708382414; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hczO4cJiUHC8ASa5scEplagLmB2u+1lBcHrJWJ9tWV0=;
-        b=Q0UUxwygyirdnY3xsCU1CdIvsIjoIPUKuHsCOQxjjMuMx6T2sNFFsy3YZnQSIisoCn
-         IJy/ijqDeQSJwyTP59Nizn4/nBdfzmnsfsRfDXDGU2PHC3i9FAtJ1K8Y46dDTApFtB6e
-         ptP4hH/G5Eee0aeVf9hsOzHIAdvfjFjjP7iS0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707777614; x=1708382414;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1707777714; x=1708382514; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hczO4cJiUHC8ASa5scEplagLmB2u+1lBcHrJWJ9tWV0=;
-        b=h3x4h1DsHBnOL1+0lsGue8KK6aHICbMs3o5R/YrQxfAsyzuClIi44zPxg1iu+Zs6yU
-         2UfgCgjU31JauFVNuNMbolOSYsovteIbye6mnHuePvt233Ekj9muT3KSMje29ieoXEJS
-         0ii3/j52ojyyDC+s5rPQNq1QLqE8KO8IFIORbT0jeTmg8DZUdJE7ZQlwaBcTguDKZH0p
-         0m0By/vBlVLwlfh8PJz+WkpjpRa3JBbqDRqFvuhh0TDMEl0cX2UwI85uhvfJo59jWfkc
-         DzXy7TPxxO8nbf5GXK6jlJal+tnWbS7yMMGJeqXwb8+2nHixcSudvX9IL2l795nf6v/C
-         3xKQ==
-X-Gm-Message-State: AOJu0YxS62yH7Q0uqRmdIPpm3Z7fXT/YuF8N3lqTeAKS6h8m8LmXq83Z
-	aIFvgpd3WD5FrbW5KIx3/9xD+2pyi76/ivSVd64xu7z/XqARmb9lqcQOcNqIEQ==
-X-Google-Smtp-Source: AGHT+IG9KJK0AjmD3ofHI/IoGzZorJQkMHxWZCTQYWQ+oeIbR/dIChUQH09cl8uv/WKmTr+ga9e2Xw==
-X-Received: by 2002:a05:6358:e4a1:b0:17a:e9fd:fe23 with SMTP id by33-20020a056358e4a100b0017ae9fdfe23mr2523168rwb.3.1707777614393;
-        Mon, 12 Feb 2024 14:40:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWB4m332uQ2jpTqeqcNX/ypOsN2XNU8hzW9FBETzjY4yeTtfk8qCXoSG1dIKUhLtSGKK+EkDJXigJEP9jqSQuXFNmpZRVo4DgaJDTmm/C6TE9rTj6mm5/asNTRxrhCpan0AsgrQmW8EYyf+FEjD2sW9fMRcNZMSzbXyKDz9ihShVunQiEAzuTJmeSggfATl2XMpaTEXw7yQGo/BjzH0P9IU4YDSm5z9Jxnwyt79ZBMR5Kp5mzP1J+CgDMf3sJ7ekymBgxOeUISJSisqO6EX3l5+9HAxdec2IqIOr1iwwX9Ntz7MrpMc6s7oWadC6pUzpH21+ekYNc46nRb6aUhQykvl05hptyHf7CA+3jkkfvN34U98FPdFXQFoo6kyuvyCj1uTrHbhYS7PbemFDt6ibA2sTtcvBQcOTgw3Gsm1IEaHyEDcPDHVM2wVidy4CpWCHGNUeESROATmfmOQYu2NLLW2mLb2skTsLbMocicLkT937m9kCv1PtmFqZUPfK7NnZ21IAeN/9YVzLIJ7Gg9txBflJDy1zA7ybpJfb1ovtaoyaroMkMj0bf+yrfg7P7dj+mRpy3dvmrFVC7BsPAK8QFpbsGTkvkk7Jugv16vfgpKY2w/CDE7kHU/rOVPsPg0JDdZnjU+1/XQWECTPEhQ+/wRJEfn+Ct+ikC7vb9NeLwrxGfVnO0p27OSnsTF2IUbywB4Y8Afae+gDiAK7Jzuf6pdrTP9pShi0Xiwa7dYe/877s10lA11N2g==
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y29-20020aa793dd000000b006dd6bb57a2asm6025136pff.114.2024.02.12.14.40.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 14:40:12 -0800 (PST)
-Date: Mon, 12 Feb 2024 14:40:12 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
-	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, peterx@redhat.com, david@redhat.com,
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
-	ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, shakeelb@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
- allocation profiling
-Message-ID: <202402121433.5CC66F34B@keescook>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-14-surenb@google.com>
+        bh=ZiHemHBfh4EaF7fWAPqUeUVvkic0kmQVtldtUj1mK2Q=;
+        b=PheYA0asI5hlM8wpj399a7+lw8KcRekZGFLI2pozfjb7isb7T6cf0lPi2E60nKyCcK
+         /JtPLeV1fOz602qDhJbBcuV7oxmd+/ROpdoHMO4kwnM+JbRFnVhBrYxWtfRIIscyum2g
+         XwkdAa/83Sm4nCshZJQJVFIWmvMZj60aoAWWMhFIlgo4aulboaEkmir0OfaBieoy2eR1
+         tZle1g7NYpV5YTR87BG6HdymfozSuE9yqQlfWoVLXG7ciH5IpPJp2SnwxuYP702lvBqR
+         yCN3XV4JC5NBJ/c5j5Eh2jO61ctPGPz8+z3L66SGMRfwlygM/JqmMbPzNQqg+YRRdRtL
+         yC7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707777714; x=1708382514;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZiHemHBfh4EaF7fWAPqUeUVvkic0kmQVtldtUj1mK2Q=;
+        b=hE45yiRh2Zcv5CvV89aOJXOpugDaCNXYWHiVCQjxaZQOMBqrb5BUDs0YN68nB7mCo6
+         a3aE9W9/4C7glq7iiJNZeoWafPf6F+6DkJja08swFiFXHQxzu615YNk9Zz5qnslTMJOl
+         Dn/lyOhyOJN0gTgDdR1seSS0NcatfhjeRt12rQp5ULTQ6/osxuxad83i2/YOy2lQpICp
+         t9jPILnugeBtER8V6OlBki2r7n+SMW7G900w1+xpSrtnhg84sNAzWRT8PYkZELUhZPbv
+         kCRGVOHtyx0qGu5Fhe+39jY6i8JEH3PzsFFNj/6pRC8jf9kpG3iI5lbn1XG40CjXzVrj
+         98sQ==
+X-Gm-Message-State: AOJu0YwcJX09Sau+zLr7ygTSSaVMgi2H6Kyl5gUuBFEcJaxajr2zRmTT
+	841Y4ZnBsDzNNskHVMoaz9tZd3P2X1/SXCW+zCQ2ZZVLSVpkp3yVzY7mxYzVayLBT5EEf0dhj7h
+	UDFjQPrlS2M+/oIi04J/6wqpExZg=
+X-Google-Smtp-Source: AGHT+IERyjvfCjhn603iTivehWnyeXs3W/EcTiLPKkZ4jkU87YeiavRXuORh8ve9NLURqBkLybIhq4E0QvKF6/s6xIQ=
+X-Received: by 2002:a2e:2e11:0:b0:2d0:d3d8:a44d with SMTP id
+ u17-20020a2e2e11000000b002d0d3d8a44dmr4995934lju.41.1707777713943; Mon, 12
+ Feb 2024 14:41:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212213922.783301-14-surenb@google.com>
+References: <20240208012057.2754421-2-yshuiv7@gmail.com> <CAK7LNAT0KT7sbZJZNXtq5waM-UjUm4zHyf9xHZc3uHLvZ_eAfA@mail.gmail.com>
+ <CAFP8O3Kqx-gdTBFn_hesWzd-6NCpGEz1=fMoJXuX+n4c7sp0Bw@mail.gmail.com>
+In-Reply-To: <CAFP8O3Kqx-gdTBFn_hesWzd-6NCpGEz1=fMoJXuX+n4c7sp0Bw@mail.gmail.com>
+From: Yuxuan Shui <yshuiv7@gmail.com>
+Date: Mon, 12 Feb 2024 22:41:42 +0000
+Message-ID: <CAGqt0zzq3yK6340d1OxGAByH+ZQLV3LWY+-WqxTu7MGU0cNbyQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Fix building with LLVM on NixOS
+To: Fangrui Song <maskray@google.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev, nathan@kernel.org, 
+	nicolas@fjasle.eu, linux-kbuild@vger.kernel.org, tglx@linutronix.de, 
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
+	hpa@zytor.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 01:38:59PM -0800, Suren Baghdasaryan wrote:
-> Introduce CONFIG_MEM_ALLOC_PROFILING which provides definitions to easily
-> instrument memory allocators. It registers an "alloc_tags" codetag type
-> with /proc/allocinfo interface to output allocation tag information when
+Hi,
 
-Please don't add anything new to the top-level /proc directory. This
-should likely live in /sys.
+On Mon, Feb 12, 2024 at 9:59=E2=80=AFPM Fangrui Song <maskray@google.com> w=
+rote:
+>
+> On Mon, Feb 12, 2024 at 1:30=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
+org> wrote:
+> >
+> > +Cc: Fangrui Song <maskray@google.com>
+> >
+> >
+> >
+> > On Thu, Feb 8, 2024 at 10:22=E2=80=AFAM Yuxuan Shui <yshuiv7@gmail.com>=
+ wrote:
+> > >
+> > > NixOS is designed to have immutable packages, and explicit dependenci=
+es.
+> > > It allows multiple different versions of the same shared library to
+> > > co-exist in its file system.
+> > >
+> > > Each application built with Nix, the NixOS package manager, will have
+> > > paths to its dependency shared libraries hardcoded into its executabl=
+e,
+> > > this includes the dynamic linker. To achieve this, Nix adds a
+> > > --dynamic-linker linker flag when building any application.
+> > >
+> > > This isn't a problem if the kernel is built with ld.bfd, because ld.b=
+fd
+> > > ignores the --dynamic-linker flag when the resulting binary doesn't h=
+ave
+> > > a DT_NEEDED entry. However, ld.lld respects --dynamic-linker
+> > > unconditionally, which breaks linking in several cases.
+> > >
+> > > This commit adds an explicit --no-dynamic-linker flag which overrides
+> > > the flag added by Nix.
+> >
+> >
+> >
+> > I expect some Acks from LLVM folks (especially, from Frangrui)
+> > if this is the right thing to do.
+>
+> GNU ld seems to ignore --dynamic-linker for a position-dependent
+> executable (ET_EXEC) when there is no DT_NEEDED entry.
+> ld.lld respects --dynamic-linker in this case. Before this kernel
+> report, I do not know any user inconvenienced by this difference.
+> (mold respects --dynamic-linker as well.)
+> This could be helpful to test an executable with PT_INTERP but no DT_NEED=
+ED.
+>
+> I think this patch does not fix non-x86 builds.
 
-> the feature is enabled.
-> CONFIG_MEM_ALLOC_PROFILING_DEBUG is provided for debugging the memory
-> allocation profiling instrumentation.
-> Memory allocation profiling can be enabled or disabled at runtime using
-> /proc/sys/vm/mem_profiling sysctl when CONFIG_MEM_ALLOC_PROFILING_DEBUG=n.
-> CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT enables memory allocation
-> profiling by default.
-> 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> ---
->  Documentation/admin-guide/sysctl/vm.rst |  16 +++
->  Documentation/filesystems/proc.rst      |  28 +++++
->  include/asm-generic/codetag.lds.h       |  14 +++
->  include/asm-generic/vmlinux.lds.h       |   3 +
->  include/linux/alloc_tag.h               | 133 ++++++++++++++++++++
->  include/linux/sched.h                   |  24 ++++
->  lib/Kconfig.debug                       |  25 ++++
->  lib/Makefile                            |   2 +
->  lib/alloc_tag.c                         | 158 ++++++++++++++++++++++++
->  scripts/module.lds.S                    |   7 ++
->  10 files changed, 410 insertions(+)
->  create mode 100644 include/asm-generic/codetag.lds.h
->  create mode 100644 include/linux/alloc_tag.h
->  create mode 100644 lib/alloc_tag.c
-> 
-> diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-> index c59889de122b..a214719492ea 100644
-> --- a/Documentation/admin-guide/sysctl/vm.rst
-> +++ b/Documentation/admin-guide/sysctl/vm.rst
-> @@ -43,6 +43,7 @@ Currently, these files are in /proc/sys/vm:
->  - legacy_va_layout
->  - lowmem_reserve_ratio
->  - max_map_count
-> +- mem_profiling         (only if CONFIG_MEM_ALLOC_PROFILING=y)
->  - memory_failure_early_kill
->  - memory_failure_recovery
->  - min_free_kbytes
-> @@ -425,6 +426,21 @@ e.g., up to one or two maps per allocation.
->  The default value is 65530.
->  
->  
-> +mem_profiling
-> +==============
-> +
-> +Enable memory profiling (when CONFIG_MEM_ALLOC_PROFILING=y)
-> +
-> +1: Enable memory profiling.
-> +
-> +0: Disabld memory profiling.
-> +
-> +Enabling memory profiling introduces a small performance overhead for all
-> +memory allocations.
-> +
-> +The default value depends on CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT.
-> +
-> +
->  memory_failure_early_kill:
->  ==========================
->  
-> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> index 104c6d047d9b..40d6d18308e4 100644
-> --- a/Documentation/filesystems/proc.rst
-> +++ b/Documentation/filesystems/proc.rst
-> @@ -688,6 +688,7 @@ files are there, and which are missing.
->   ============ ===============================================================
->   File         Content
->   ============ ===============================================================
-> + allocinfo    Memory allocations profiling information
->   apm          Advanced power management info
->   bootconfig   Kernel command line obtained from boot config,
->   	      and, if there were kernel parameters from the
-> @@ -953,6 +954,33 @@ also be allocatable although a lot of filesystem metadata may have to be
->  reclaimed to achieve this.
->  
->  
-> +allocinfo
-> +~~~~~~~
-> +
-> +Provides information about memory allocations at all locations in the code
-> +base. Each allocation in the code is identified by its source file, line
-> +number, module and the function calling the allocation. The number of bytes
-> +allocated at each location is reported.
-> +
-> +Example output.
-> +
-> +::
-> +
-> +    > cat /proc/allocinfo
-> +
-> +      153MiB     mm/slub.c:1826 module:slub func:alloc_slab_page
-> +     6.08MiB     mm/slab_common.c:950 module:slab_common func:_kmalloc_order
-> +     5.09MiB     mm/memcontrol.c:2814 module:memcontrol func:alloc_slab_obj_exts
-> +     4.54MiB     mm/page_alloc.c:5777 module:page_alloc func:alloc_pages_exact
-> +     1.32MiB     include/asm-generic/pgalloc.h:63 module:pgtable func:__pte_alloc_one
-> +     1.16MiB     fs/xfs/xfs_log_priv.h:700 module:xfs func:xlog_kvmalloc
-> +     1.00MiB     mm/swap_cgroup.c:48 module:swap_cgroup func:swap_cgroup_prepare
-> +      734KiB     fs/xfs/kmem.c:20 module:xfs func:kmem_alloc
-> +      640KiB     kernel/rcu/tree.c:3184 module:tree func:fill_page_cache_func
-> +      640KiB     drivers/char/virtio_console.c:452 module:virtio_console func:alloc_buf
-> +      ...
-> +
-> +
->  meminfo
->  ~~~~~~~
->  
-> diff --git a/include/asm-generic/codetag.lds.h b/include/asm-generic/codetag.lds.h
-> new file mode 100644
-> index 000000000000..64f536b80380
-> --- /dev/null
-> +++ b/include/asm-generic/codetag.lds.h
-> @@ -0,0 +1,14 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +#ifndef __ASM_GENERIC_CODETAG_LDS_H
-> +#define __ASM_GENERIC_CODETAG_LDS_H
-> +
-> +#define SECTION_WITH_BOUNDARIES(_name)	\
-> +	. = ALIGN(8);			\
-> +	__start_##_name = .;		\
-> +	KEEP(*(_name))			\
-> +	__stop_##_name = .;
-> +
-> +#define CODETAG_SECTIONS()		\
-> +	SECTION_WITH_BOUNDARIES(alloc_tags)
-> +
-> +#endif /* __ASM_GENERIC_CODETAG_LDS_H */
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 5dd3a61d673d..c9997dc50c50 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -50,6 +50,8 @@
->   *               [__nosave_begin, __nosave_end] for the nosave data
->   */
->  
-> +#include <asm-generic/codetag.lds.h>
-> +
->  #ifndef LOAD_OFFSET
->  #define LOAD_OFFSET 0
->  #endif
-> @@ -366,6 +368,7 @@
->  	. = ALIGN(8);							\
->  	BOUNDED_SECTION_BY(__dyndbg_classes, ___dyndbg_classes)		\
->  	BOUNDED_SECTION_BY(__dyndbg, ___dyndbg)				\
-> +	CODETAG_SECTIONS()						\
->  	LIKELY_PROFILE()		       				\
->  	BRANCH_PROFILE()						\
->  	TRACE_PRINTKS()							\
-> diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
-> new file mode 100644
-> index 000000000000..cf55a149fa84
-> --- /dev/null
-> +++ b/include/linux/alloc_tag.h
-> @@ -0,0 +1,133 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * allocation tagging
-> + */
-> +#ifndef _LINUX_ALLOC_TAG_H
-> +#define _LINUX_ALLOC_TAG_H
-> +
-> +#include <linux/bug.h>
-> +#include <linux/codetag.h>
-> +#include <linux/container_of.h>
-> +#include <linux/preempt.h>
-> +#include <asm/percpu.h>
-> +#include <linux/cpumask.h>
-> +#include <linux/static_key.h>
-> +
-> +struct alloc_tag_counters {
-> +	u64 bytes;
-> +	u64 calls;
-> +};
-> +
-> +/*
-> + * An instance of this structure is created in a special ELF section at every
-> + * allocation callsite. At runtime, the special section is treated as
-> + * an array of these. Embedded codetag utilizes codetag framework.
-> + */
-> +struct alloc_tag {
-> +	struct codetag			ct;
-> +	struct alloc_tag_counters __percpu	*counters;
-> +} __aligned(8);
-> +
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> +
-> +static inline struct alloc_tag *ct_to_alloc_tag(struct codetag *ct)
-> +{
-> +	return container_of(ct, struct alloc_tag, ct);
-> +}
-> +
-> +#ifdef ARCH_NEEDS_WEAK_PER_CPU
-> +/*
-> + * When percpu variables are required to be defined as weak, static percpu
-> + * variables can't be used inside a function (see comments for DECLARE_PER_CPU_SECTION).
-> + */
-> +#error "Memory allocation profiling is incompatible with ARCH_NEEDS_WEAK_PER_CPU"
+This is true. I am not familiar with non-x86, and I don't have a test
+environment for them.
+That being said, if you or someone can point to me what other linker
+flag variables I need
+to change, I will try to fix them as well.
 
-Is this enforced via Kconfig as well? (Looks like only alpha and s390?)
+> It feels to me that NixOS should provide a linker wrapper that does
+> not force --dynamic-linker=3D.
 
-> +#endif
-> +
-> +#define DEFINE_ALLOC_TAG(_alloc_tag, _old)					\
-> +	static DEFINE_PER_CPU(struct alloc_tag_counters, _alloc_tag_cntr);	\
-> +	static struct alloc_tag _alloc_tag __used __aligned(8)			\
-> +	__section("alloc_tags") = {						\
-> +		.ct = CODE_TAG_INIT,						\
-> +		.counters = &_alloc_tag_cntr };					\
-> +	struct alloc_tag * __maybe_unused _old = alloc_tag_save(&_alloc_tag)
-> +
-> +DECLARE_STATIC_KEY_MAYBE(CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT,
-> +			mem_alloc_profiling_key);
-> +
-> +static inline bool mem_alloc_profiling_enabled(void)
-> +{
-> +	return static_branch_maybe(CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT,
-> +				   &mem_alloc_profiling_key);
-> +}
-> +
-> +static inline struct alloc_tag_counters alloc_tag_read(struct alloc_tag *tag)
-> +{
-> +	struct alloc_tag_counters v = { 0, 0 };
-> +	struct alloc_tag_counters *counter;
-> +	int cpu;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		counter = per_cpu_ptr(tag->counters, cpu);
-> +		v.bytes += counter->bytes;
-> +		v.calls += counter->calls;
-> +	}
-> +
-> +	return v;
-> +}
-> +
-> +static inline void __alloc_tag_sub(union codetag_ref *ref, size_t bytes)
-> +{
-> +	struct alloc_tag *tag;
-> +
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
-> +	WARN_ONCE(ref && !ref->ct, "alloc_tag was not set\n");
-> +#endif
-> +	if (!ref || !ref->ct)
-> +		return;
-> +
-> +	tag = ct_to_alloc_tag(ref->ct);
-> +
-> +	this_cpu_sub(tag->counters->bytes, bytes);
-> +	this_cpu_dec(tag->counters->calls);
-> +
-> +	ref->ct = NULL;
-> +}
-> +
-> +static inline void alloc_tag_sub(union codetag_ref *ref, size_t bytes)
-> +{
-> +	__alloc_tag_sub(ref, bytes);
-> +}
-> +
-> +static inline void alloc_tag_sub_noalloc(union codetag_ref *ref, size_t bytes)
-> +{
-> +	__alloc_tag_sub(ref, bytes);
-> +}
-> +
-> +static inline void alloc_tag_add(union codetag_ref *ref, struct alloc_tag *tag, size_t bytes)
-> +{
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
-> +	WARN_ONCE(ref && ref->ct,
-> +		  "alloc_tag was not cleared (got tag for %s:%u)\n",\
-> +		  ref->ct->filename, ref->ct->lineno);
-> +
-> +	WARN_ONCE(!tag, "current->alloc_tag not set");
-> +#endif
-> +	if (!ref || !tag)
-> +		return;
-> +
-> +	ref->ct = &tag->ct;
-> +	this_cpu_add(tag->counters->bytes, bytes);
-> +	this_cpu_inc(tag->counters->calls);
-> +}
-> +
-> +#else
-> +
-> +#define DEFINE_ALLOC_TAG(_alloc_tag, _old)
-> +static inline void alloc_tag_sub(union codetag_ref *ref, size_t bytes) {}
-> +static inline void alloc_tag_sub_noalloc(union codetag_ref *ref, size_t bytes) {}
-> +static inline void alloc_tag_add(union codetag_ref *ref, struct alloc_tag *tag,
-> +				 size_t bytes) {}
-> +
-> +#endif
-> +
-> +#endif /* _LINUX_ALLOC_TAG_H */
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index ffe8f618ab86..da68a10517c8 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -770,6 +770,10 @@ struct task_struct {
->  	unsigned int			flags;
->  	unsigned int			ptrace;
->  
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> +	struct alloc_tag		*alloc_tag;
-> +#endif
+I actually tried that. The problem is, NixOS tries to enforce the same
+build environment
+for downstream packages that depend on the kernel (think kernel
+modules, perf, etc.) This
+is reasonable in most cases. But if I use a linker wrapper that does
+_not_ have --dynamic-linker
+for the kernel, then all downstream packages will inherit the same
+linker wrapper too. This
+breaks, for example, zfs. Because its configure script tries to build
+some executable and
+run them, which fails because it's using a linker wrapper without
+--dynamic-linker.
 
-Normally scheduling is very sensitive to having anything early in
-task_struct. I would suggest moving this the CONFIG_SCHED_CORE ifdef
-area.
+> While it's extremely uncommon (and generally not recommended), certain
+> programs invoke the linker directly (instead of using a compiler
+> driver).
+> Such programs would run into a problem when they make a
+> position-dependent executable with no dependency as well.
 
-> +
->  #ifdef CONFIG_SMP
->  	int				on_cpu;
->  	struct __call_single_node	wake_entry;
-> @@ -810,6 +814,7 @@ struct task_struct {
->  	struct task_group		*sched_task_group;
->  #endif
->  
-> +
->  #ifdef CONFIG_UCLAMP_TASK
->  	/*
->  	 * Clamp values requested for a scheduling entity.
-> @@ -2183,4 +2188,23 @@ static inline int sched_core_idle_cpu(int cpu) { return idle_cpu(cpu); }
->  
->  extern void sched_set_stop_task(int cpu, struct task_struct *stop);
->  
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> +static inline struct alloc_tag *alloc_tag_save(struct alloc_tag *tag)
-> +{
-> +	swap(current->alloc_tag, tag);
-> +	return tag;
-> +}
-> +
-> +static inline void alloc_tag_restore(struct alloc_tag *tag, struct alloc_tag *old)
-> +{
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
-> +	WARN(current->alloc_tag != tag, "current->alloc_tag was changed:\n");
-> +#endif
-> +	current->alloc_tag = old;
-> +}
-> +#else
-> +static inline struct alloc_tag *alloc_tag_save(struct alloc_tag *tag) { return NULL; }
-> +#define alloc_tag_restore(_tag, _old)
-> +#endif
-> +
->  #endif
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 0be2d00c3696..78d258ca508f 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -972,6 +972,31 @@ config CODE_TAGGING
->  	bool
->  	select KALLSYMS
->  
-> +config MEM_ALLOC_PROFILING
-> +	bool "Enable memory allocation profiling"
-> +	default n
-> +	depends on PROC_FS
-> +	depends on !DEBUG_FORCE_WEAK_PER_CPU
-> +	select CODE_TAGGING
-> +	help
-> +	  Track allocation source code and record total allocation size
-> +	  initiated at that code location. The mechanism can be used to track
-> +	  memory leaks with a low performance and memory impact.
-> +
-> +config MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
-> +	bool "Enable memory allocation profiling by default"
-> +	default y
-> +	depends on MEM_ALLOC_PROFILING
-> +
-> +config MEM_ALLOC_PROFILING_DEBUG
-> +	bool "Memory allocation profiler debugging"
-> +	default n
-> +	depends on MEM_ALLOC_PROFILING
-> +	select MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
-> +	help
-> +	  Adds warnings with helpful error messages for memory allocation
-> +	  profiling.
-> +
->  source "lib/Kconfig.kasan"
->  source "lib/Kconfig.kfence"
->  source "lib/Kconfig.kmsan"
-> diff --git a/lib/Makefile b/lib/Makefile
-> index 6b48b22fdfac..859112f09bf5 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -236,6 +236,8 @@ obj-$(CONFIG_OF_RECONFIG_NOTIFIER_ERROR_INJECT) += \
->  obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
->  
->  obj-$(CONFIG_CODE_TAGGING) += codetag.o
-> +obj-$(CONFIG_MEM_ALLOC_PROFILING) += alloc_tag.o
-> +
->  lib-$(CONFIG_GENERIC_BUG) += bug.o
->  
->  obj-$(CONFIG_HAVE_ARCH_TRACEHOOK) += syscall.o
-> diff --git a/lib/alloc_tag.c b/lib/alloc_tag.c
-> new file mode 100644
-> index 000000000000..4fc031f9cefd
-> --- /dev/null
-> +++ b/lib/alloc_tag.c
-> @@ -0,0 +1,158 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include <linux/alloc_tag.h>
-> +#include <linux/fs.h>
-> +#include <linux/gfp.h>
-> +#include <linux/module.h>
-> +#include <linux/proc_fs.h>
-> +#include <linux/seq_buf.h>
-> +#include <linux/seq_file.h>
-> +
-> +static struct codetag_type *alloc_tag_cttype;
-> +
-> +DEFINE_STATIC_KEY_MAYBE(CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT,
-> +			mem_alloc_profiling_key);
-> +
-> +static void *allocinfo_start(struct seq_file *m, loff_t *pos)
-> +{
-> +	struct codetag_iterator *iter;
-> +	struct codetag *ct;
-> +	loff_t node = *pos;
-> +
-> +	iter = kzalloc(sizeof(*iter), GFP_KERNEL);
-> +	m->private = iter;
-> +	if (!iter)
-> +		return NULL;
-> +
-> +	codetag_lock_module_list(alloc_tag_cttype, true);
-> +	*iter = codetag_get_ct_iter(alloc_tag_cttype);
-> +	while ((ct = codetag_next_ct(iter)) != NULL && node)
-> +		node--;
-> +
-> +	return ct ? iter : NULL;
-> +}
-> +
-> +static void *allocinfo_next(struct seq_file *m, void *arg, loff_t *pos)
-> +{
-> +	struct codetag_iterator *iter = (struct codetag_iterator *)arg;
-> +	struct codetag *ct = codetag_next_ct(iter);
-> +
-> +	(*pos)++;
-> +	if (!ct)
-> +		return NULL;
-> +
-> +	return iter;
-> +}
-> +
-> +static void allocinfo_stop(struct seq_file *m, void *arg)
-> +{
-> +	struct codetag_iterator *iter = (struct codetag_iterator *)m->private;
-> +
-> +	if (iter) {
-> +		codetag_lock_module_list(alloc_tag_cttype, false);
-> +		kfree(iter);
-> +	}
-> +}
-> +
-> +static void alloc_tag_to_text(struct seq_buf *out, struct codetag *ct)
-> +{
-> +	struct alloc_tag *tag = ct_to_alloc_tag(ct);
-> +	struct alloc_tag_counters counter = alloc_tag_read(tag);
-> +	s64 bytes = counter.bytes;
-> +	char val[10], *p = val;
-> +
-> +	if (bytes < 0) {
-> +		*p++ = '-';
-> +		bytes = -bytes;
-> +	}
-> +
-> +	string_get_size(bytes, 1,
-> +			STRING_SIZE_BASE2|STRING_SIZE_NOSPACE,
-> +			p, val + ARRAY_SIZE(val) - p);
-> +
-> +	seq_buf_printf(out, "%8s %8llu ", val, counter.calls);
-> +	codetag_to_text(out, ct);
-> +	seq_buf_putc(out, ' ');
-> +	seq_buf_putc(out, '\n');
-> +}
+I don't think I quite get what you are trying to say here.
 
-/me does happy seq_buf dance!
+> I don't feel that NixOS forcing --dynamic-linker=3D is enough
+> justification to change linkers.
 
-> +
-> +static int allocinfo_show(struct seq_file *m, void *arg)
-> +{
-> +	struct codetag_iterator *iter = (struct codetag_iterator *)arg;
-> +	char *bufp;
-> +	size_t n = seq_get_buf(m, &bufp);
-> +	struct seq_buf buf;
-> +
-> +	seq_buf_init(&buf, bufp, n);
-> +	alloc_tag_to_text(&buf, iter->ct);
-> +	seq_commit(m, seq_buf_used(&buf));
-> +	return 0;
-> +}
-> +
-> +static const struct seq_operations allocinfo_seq_op = {
-> +	.start	= allocinfo_start,
-> +	.next	= allocinfo_next,
-> +	.stop	= allocinfo_stop,
-> +	.show	= allocinfo_show,
-> +};
-> +
-> +static void __init procfs_init(void)
-> +{
-> +	proc_create_seq("allocinfo", 0444, NULL, &allocinfo_seq_op);
-> +}
+You already rejected the option of changing lld to match ld.bfd's behavior.
+If you reject this kernel patch also, then what's left can only be some hor=
+rible
+hacks on NixOS' side; or this means NixOS will never get a clang built kern=
+el.
+Which would be quite unfortunate.
 
-As mentioned, this really should be in /sys somewhere.
+>
+> > > Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
+> > > ---
+> > >  Makefile                      | 3 +++
+> > >  arch/x86/boot/Makefile        | 2 +-
+> > >  arch/x86/realmode/rm/Makefile | 2 +-
+> > >  3 files changed, 5 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/Makefile b/Makefile
+> > > index a171eafce2a3b..10ed19caecb1b 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -531,6 +531,9 @@ RUSTFLAGS_KERNEL =3D
+> > >  AFLAGS_KERNEL  =3D
+> > >  LDFLAGS_vmlinux =3D
+> > >
+> > > +LDFLAGS_MODULE +=3D --no-dynamic-linker
+> > > +LDFLAGS_vmlinux +=3D --no-dynamic-linker
+> > > +
+> > >  # Use USERINCLUDE when you must reference the UAPI directories only.
+> > >  USERINCLUDE    :=3D \
+> > >                 -I$(srctree)/arch/$(SRCARCH)/include/uapi \
+> > > diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
+> > > index 3cece19b74732..390a4604166eb 100644
+> > > --- a/arch/x86/boot/Makefile
+> > > +++ b/arch/x86/boot/Makefile
+> > > @@ -102,7 +102,7 @@ $(obj)/zoffset.h: $(obj)/compressed/vmlinux FORCE
+> > >  AFLAGS_header.o +=3D -I$(objtree)/$(obj)
+> > >  $(obj)/header.o: $(obj)/zoffset.h
+> > >
+> > > -LDFLAGS_setup.elf      :=3D -m elf_i386 -z noexecstack -T
+> > > +LDFLAGS_setup.elf      :=3D --no-dynamic-linker -m elf_i386 -z noexe=
+cstack -T
+> > >  $(obj)/setup.elf: $(src)/setup.ld $(SETUP_OBJS) FORCE
+> > >         $(call if_changed,ld)
+> > >
+> > > diff --git a/arch/x86/realmode/rm/Makefile b/arch/x86/realmode/rm/Mak=
+efile
+> > > index f614009d3e4e2..4b42006d9ce02 100644
+> > > --- a/arch/x86/realmode/rm/Makefile
+> > > +++ b/arch/x86/realmode/rm/Makefile
+> > > @@ -50,7 +50,7 @@ $(obj)/pasyms.h: $(REALMODE_OBJS) FORCE
+> > >  targets +=3D realmode.lds
+> > >  $(obj)/realmode.lds: $(obj)/pasyms.h
+> > >
+> > > -LDFLAGS_realmode.elf :=3D -m elf_i386 --emit-relocs -T
+> > > +LDFLAGS_realmode.elf :=3D --no-dynamic-linker -m elf_i386 --emit-rel=
+ocs -T
+> > >  CPPFLAGS_realmode.lds +=3D -P -C -I$(objtree)/$(obj)
+> > >
+> > >  targets +=3D realmode.elf
+> > > --
+> > > 2.43.0
+> > >
+> >
+> >
+> > --
+> > Best Regards
+> > Masahiro Yamada
+> >
+>
+>
+> --
+> =E5=AE=8B=E6=96=B9=E7=9D=BF
 
-> +
-> +static bool alloc_tag_module_unload(struct codetag_type *cttype,
-> +				    struct codetag_module *cmod)
-> +{
-> +	struct codetag_iterator iter = codetag_get_ct_iter(cttype);
-> +	struct alloc_tag_counters counter;
-> +	bool module_unused = true;
-> +	struct alloc_tag *tag;
-> +	struct codetag *ct;
-> +
-> +	for (ct = codetag_next_ct(&iter); ct; ct = codetag_next_ct(&iter)) {
-> +		if (iter.cmod != cmod)
-> +			continue;
-> +
-> +		tag = ct_to_alloc_tag(ct);
-> +		counter = alloc_tag_read(tag);
-> +
-> +		if (WARN(counter.bytes, "%s:%u module %s func:%s has %llu allocated at module unload",
-> +			  ct->filename, ct->lineno, ct->modname, ct->function, counter.bytes))
-> +			module_unused = false;
-> +	}
-> +
-> +	return module_unused;
-> +}
-> +
-> +static struct ctl_table memory_allocation_profiling_sysctls[] = {
-> +	{
-> +		.procname	= "mem_profiling",
-> +		.data		= &mem_alloc_profiling_key,
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
-> +		.mode		= 0444,
-> +#else
-> +		.mode		= 0644,
-> +#endif
-> +		.proc_handler	= proc_do_static_key,
-> +	},
-> +	{ }
-> +};
-> +
-> +static int __init alloc_tag_init(void)
-> +{
-> +	const struct codetag_type_desc desc = {
-> +		.section	= "alloc_tags",
-> +		.tag_size	= sizeof(struct alloc_tag),
-> +		.module_unload	= alloc_tag_module_unload,
-> +	};
-> +
-> +	alloc_tag_cttype = codetag_register_type(&desc);
-> +	if (IS_ERR_OR_NULL(alloc_tag_cttype))
-> +		return PTR_ERR(alloc_tag_cttype);
-> +
-> +	register_sysctl_init("vm", memory_allocation_profiling_sysctls);
-> +	procfs_init();
-> +
-> +	return 0;
-> +}
-> +module_init(alloc_tag_init);
-> diff --git a/scripts/module.lds.S b/scripts/module.lds.S
-> index bf5bcf2836d8..45c67a0994f3 100644
-> --- a/scripts/module.lds.S
-> +++ b/scripts/module.lds.S
-> @@ -9,6 +9,8 @@
->  #define DISCARD_EH_FRAME	*(.eh_frame)
->  #endif
->  
-> +#include <asm-generic/codetag.lds.h>
-> +
->  SECTIONS {
->  	/DISCARD/ : {
->  		*(.discard)
-> @@ -47,12 +49,17 @@ SECTIONS {
->  	.data : {
->  		*(.data .data.[0-9a-zA-Z_]*)
->  		*(.data..L*)
-> +		CODETAG_SECTIONS()
->  	}
->  
->  	.rodata : {
->  		*(.rodata .rodata.[0-9a-zA-Z_]*)
->  		*(.rodata..L*)
->  	}
-> +#else
-> +	.data : {
-> +		CODETAG_SECTIONS()
-> +	}
->  #endif
->  }
+--=20
 
-Otherwise, looks good.
-
--- 
-Kees Cook
+Regards
+Yuxuan Shui
 
