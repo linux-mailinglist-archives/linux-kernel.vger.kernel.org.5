@@ -1,432 +1,102 @@
-Return-Path: <linux-kernel+bounces-62301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0E2E851E40
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:00:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12E27851E3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:00:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 790B52827CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:00:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96B76B2277E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A5E482FF;
-	Mon, 12 Feb 2024 20:00:25 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17DCB47F6C;
+	Mon, 12 Feb 2024 20:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijI2R8Nl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34CC9481C2
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59EE347A6F;
+	Mon, 12 Feb 2024 20:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707768025; cv=none; b=L2j7gKNTUl0tZ/g3haa8jVA9TZBFW5qeRz3oL8IU370UYLcbkYlogK46XXARwU9EMVkvNCxb5sUrubvwxexJ78eAOD1ogHsrk/U1yR+lr3PfEOaHDAao2J+ccLIaUb/RnHidq4XZF2ArQzIcaQ8Lhb9rIvPJxFZLTx6V5bcAejU=
+	t=1707768021; cv=none; b=WsjDOFrG5g8OISS21/730vB28c/lcjQBV4RiXOpfJxYspQcdFQq2RTfOIWFK+o3VdOkEriBkQf+5zBsXn0FrDbY/IpBwrNEBf5TIhIpdUE8dAO1JQ83BurrZXfHAH0Fbldk3LbsGdO6vl72pU6QZRVDd1R6dHSQYMk2ip6F22vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707768025; c=relaxed/simple;
-	bh=9r0Id5Y9RoU/xKvxd9uPoImX5rBlLcjKbbbOl+v6fnQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mwfXeoMIfHjroxHyQ1SrQQk+kJ9qvDslH4QIXQkOLCODNC+GeHCL+jcZEXrNoEpMMZXK45w0kPdZ0iGiKUE8LyPFaeptk1X3yQTEbwiIKKoNf41gmhGD4Y+JZ8iBek3Pa4FaqRebkKb/7+7H81OYTDBTwT6u0nP21EV9wzqgiLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rZcTE-00053s-4C; Mon, 12 Feb 2024 21:00:04 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rZcTC-000LdK-94; Mon, 12 Feb 2024 21:00:02 +0100
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rZcTC-005fbl-0Z;
-	Mon, 12 Feb 2024 21:00:02 +0100
-Date: Mon, 12 Feb 2024 21:00:02 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: net: qca,ar9331: convert to DT schema
-Message-ID: <Zcp4wvmGX-CJvC5J@pengutronix.de>
-References: <20240212182911.233819-1-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1707768021; c=relaxed/simple;
+	bh=wyl9knvIggF/HM3rHnTsgcR+8vF6KjdZXU5A19UcB/o=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=O30ueeZeTpFU0MjAVVCVt3bmA6cERjaK0wOmzLPJ4uwc8dJ4974OaEhN7IfTciXCNB1B0QZgRFaBO5Qyd4UjB82gnrffje108VxowanNwBxQqRZwZoC5kFfwg4sJRjBFbRDzaA0NiX/j4RZ/gxA2jaJPPU/oUwyGCJU4WuxSbP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijI2R8Nl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C506C43390;
+	Mon, 12 Feb 2024 20:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707768020;
+	bh=wyl9knvIggF/HM3rHnTsgcR+8vF6KjdZXU5A19UcB/o=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=ijI2R8NliQiyAoV+aL+oTS+R9fytpZ6NTSIctPqirhj1N3sDZ8EmPwjNFJ7xOJB2W
+	 a8slDzuJcRRoqd5cKuLXyQIOy6r1geDT/KE1yuYP1/WlL9uERCbEs8QwfnWPcYTDJn
+	 29ZJaWjJ3r/5CdTZGsKmCCteJZF6gJWiZFFD7du4Y/EnCaZJR7aLRJIoS/8RiJRqNa
+	 gYchRXhge/hqSaOmxshAiej/ub8yhkuChVhWwhMD6cOAcWipQDrRGnuR3Pr6837z3G
+	 CAlTOO3xiiln2aVAnsAHVIhhhPd4IVfaeR1cR9y6gg2iHHnAryD6QG52eIgY4RMypp
+	 I9MQuV5NgNBYQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240212182911.233819-1-krzysztof.kozlowski@linaro.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 12 Feb 2024 22:00:17 +0200
+Message-Id: <CZ3D8KKRVFH4.Y7KBNMB4YXTS@kernel.org>
+To: "Randy Dunlap" <rdunlap@infradead.org>, <linux-kernel@vger.kernel.org>
+Cc: "Dave Hansen" <dave.hansen@linux.intel.com>,
+ <linux-sgx@vger.kernel.org>, <x86@kernel.org>, "Kai Huang"
+ <kai.huang@intel.com>
+Subject: Re: [PATCH v2] x86/sgx: fix kernel-doc comment misuse
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.16.0
+References: <20240211062434.16351-1-rdunlap@infradead.org>
+In-Reply-To: <20240211062434.16351-1-rdunlap@infradead.org>
 
-On Mon, Feb 12, 2024 at 07:29:11PM +0100, Krzysztof Kozlowski wrote:
-> Convert the Qualcomm Atheros AR9331 built-in switch bindings to DT
-> schema.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
-
-Thank you!
-
+On Sun Feb 11, 2024 at 8:24 AM EET, Randy Dunlap wrote:
+> Don't use "/**" for a non-kernel-doc comment. This prevents a warning
+> from scripts/kernel-doc:
+>
+> main.c:740: warning: expecting prototype for A section metric is concaten=
+ated in a way that @low bits 12(). Prototype was for sgx_calc_section_metri=
+c() instead
+>
+> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: linux-sgx@vger.kernel.org
+> Cc: x86@kernel.org
+> Reviewed-by: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 > ---
-> 
-> DSA switch bindings still bring me headache...
-> 
-> Changes in v2:
-> 1. Narrow pattern for phy children to ethernet-phy@ or phy@ (MIPS DTS
->    has the latter) - Conor.
-> ---
->  .../devicetree/bindings/net/dsa/ar9331.txt    | 147 ----------------
->  .../bindings/net/dsa/qca,ar9331.yaml          | 161 ++++++++++++++++++
->  2 files changed, 161 insertions(+), 147 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/dsa/ar9331.txt
->  create mode 100644 Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/dsa/ar9331.txt b/Documentation/devicetree/bindings/net/dsa/ar9331.txt
-> deleted file mode 100644
-> index f824fdae0da2..000000000000
-> --- a/Documentation/devicetree/bindings/net/dsa/ar9331.txt
-> +++ /dev/null
-> @@ -1,147 +0,0 @@
-> -Atheros AR9331 built-in switch
-> -=============================
-> -
-> -It is a switch built-in to Atheros AR9331 WiSoC and addressable over internal
-> -MDIO bus. All PHYs are built-in as well.
-> -
-> -Required properties:
-> -
-> - - compatible: should be: "qca,ar9331-switch"
-> - - reg: Address on the MII bus for the switch.
-> - - resets : Must contain an entry for each entry in reset-names.
-> - - reset-names : Must include the following entries: "switch"
-> - - interrupt-parent: Phandle to the parent interrupt controller
-> - - interrupts: IRQ line for the switch
-> - - interrupt-controller: Indicates the switch is itself an interrupt
-> -   controller. This is used for the PHY interrupts.
-> - - #interrupt-cells: must be 1
-> - - mdio: Container of PHY and devices on the switches MDIO bus.
-> -
-> -See Documentation/devicetree/bindings/net/dsa/dsa.txt for a list of additional
-> -required and optional properties.
-> -Examples:
-> -
-> -eth0: ethernet@19000000 {
-> -	compatible = "qca,ar9330-eth";
-> -	reg = <0x19000000 0x200>;
-> -	interrupts = <4>;
-> -
-> -	resets = <&rst 9>, <&rst 22>;
-> -	reset-names = "mac", "mdio";
-> -	clocks = <&pll ATH79_CLK_AHB>, <&pll ATH79_CLK_AHB>;
-> -	clock-names = "eth", "mdio";
-> -
-> -	phy-mode = "mii";
-> -	phy-handle = <&phy_port4>;
-> -};
-> -
-> -eth1: ethernet@1a000000 {
-> -	compatible = "qca,ar9330-eth";
-> -	reg = <0x1a000000 0x200>;
-> -	interrupts = <5>;
-> -	resets = <&rst 13>, <&rst 23>;
-> -	reset-names = "mac", "mdio";
-> -	clocks = <&pll ATH79_CLK_AHB>, <&pll ATH79_CLK_AHB>;
-> -	clock-names = "eth", "mdio";
-> -
-> -	phy-mode = "gmii";
-> -
-> -	fixed-link {
-> -		speed = <1000>;
-> -		full-duplex;
-> -	};
-> -
-> -	mdio {
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -
-> -		switch10: switch@10 {
-> -			#address-cells = <1>;
-> -			#size-cells = <0>;
-> -
-> -			compatible = "qca,ar9331-switch";
-> -			reg = <0x10>;
-> -			resets = <&rst 8>;
-> -			reset-names = "switch";
-> -
-> -			interrupt-parent = <&miscintc>;
-> -			interrupts = <12>;
-> -
-> -			interrupt-controller;
-> -			#interrupt-cells = <1>;
-> -
-> -			ports {
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> -
-> -				switch_port0: port@0 {
-> -					reg = <0x0>;
-> -					ethernet = <&eth1>;
-> -
-> -					phy-mode = "gmii";
-> -
-> -					fixed-link {
-> -						speed = <1000>;
-> -						full-duplex;
-> -					};
-> -				};
-> -
-> -				switch_port1: port@1 {
-> -					reg = <0x1>;
-> -					phy-handle = <&phy_port0>;
-> -					phy-mode = "internal";
-> -				};
-> -
-> -				switch_port2: port@2 {
-> -					reg = <0x2>;
-> -					phy-handle = <&phy_port1>;
-> -					phy-mode = "internal";
-> -				};
-> -
-> -				switch_port3: port@3 {
-> -					reg = <0x3>;
-> -					phy-handle = <&phy_port2>;
-> -					phy-mode = "internal";
-> -				};
-> -
-> -				switch_port4: port@4 {
-> -					reg = <0x4>;
-> -					phy-handle = <&phy_port3>;
-> -					phy-mode = "internal";
-> -				};
-> -			};
-> -
-> -			mdio {
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> -
-> -				interrupt-parent = <&switch10>;
-> -
-> -				phy_port0: phy@0 {
-> -					reg = <0x0>;
-> -					interrupts = <0>;
-> -				};
-> -
-> -				phy_port1: phy@1 {
-> -					reg = <0x1>;
-> -					interrupts = <0>;
-> -				};
-> -
-> -				phy_port2: phy@2 {
-> -					reg = <0x2>;
-> -					interrupts = <0>;
-> -				};
-> -
-> -				phy_port3: phy@3 {
-> -					reg = <0x3>;
-> -					interrupts = <0>;
-> -				};
-> -
-> -				phy_port4: phy@4 {
-> -					reg = <0x4>;
-> -					interrupts = <0>;
-> -				};
-> -			};
-> -		};
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml b/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
-> new file mode 100644
-> index 000000000000..fd9ddc59d38c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/dsa/qca,ar9331.yaml
-> @@ -0,0 +1,161 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/dsa/qca,ar9331.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Atheros AR9331 built-in switch
-> +
-> +maintainers:
-> +  - Oleksij Rempel <o.rempel@pengutronix.de>
-> +
-> +description:
-> +  Qualcomm Atheros AR9331 is a switch built-in to Atheros AR9331 WiSoC and
-> +  addressable over internal MDIO bus. All PHYs are built-in as well.
-> +
-> +properties:
-> +  compatible:
-> +    const: qca,ar9331-switch
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  interrupt-controller: true
-> +
-> +  '#interrupt-cells':
-> +    const: 1
-> +
-> +  mdio:
-> +    $ref: /schemas/net/mdio.yaml#
-> +    unevaluatedProperties: false
-> +    properties:
-> +      interrupt-parent: true
-> +
-> +    patternProperties:
-> +      '(ethernet-)?phy@[0-4]+$':
-> +        type: object
-> +        unevaluatedProperties: false
-> +
-> +        properties:
-> +          reg: true
-> +          interrupts:
-> +            maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  reset-names:
-> +    items:
-> +      - const: switch
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-controller
-> +  - '#interrupt-cells'
-> +  - mdio
-> +  - ports
-> +  - resets
-> +  - reset-names
-> +
-> +allOf:
-> +  - $ref: dsa.yaml#/$defs/ethernet-ports
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    mdio {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        switch10: switch@10 {
-> +            compatible = "qca,ar9331-switch";
-> +            reg = <0x10>;
-> +
-> +            interrupt-parent = <&miscintc>;
-> +            interrupts = <12>;
-> +            interrupt-controller;
-> +            #interrupt-cells = <1>;
-> +
-> +            resets = <&rst 8>;
-> +            reset-names = "switch";
-> +
-> +            ports {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                port@0 {
-> +                    reg = <0x0>;
-> +                    ethernet = <&eth1>;
-> +
-> +                    phy-mode = "gmii";
-> +
-> +                    fixed-link {
-> +                        speed = <1000>;
-> +                        full-duplex;
-> +                    };
-> +                };
-> +
-> +                port@1 {
-> +                    reg = <0x1>;
-> +                    phy-handle = <&phy_port0>;
-> +                    phy-mode = "internal";
-> +                };
-> +
-> +                port@2 {
-> +                    reg = <0x2>;
-> +                    phy-handle = <&phy_port1>;
-> +                    phy-mode = "internal";
-> +                };
-> +
-> +                port@3 {
-> +                    reg = <0x3>;
-> +                    phy-handle = <&phy_port2>;
-> +                    phy-mode = "internal";
-> +                };
-> +
-> +                port@4 {
-> +                    reg = <0x4>;
-> +                    phy-handle = <&phy_port3>;
-> +                    phy-mode = "internal";
-> +                };
-> +            };
-> +
-> +            mdio {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                interrupt-parent = <&switch10>;
-> +
-> +                phy_port0: ethernet-phy@0 {
-> +                    reg = <0x0>;
-> +                    interrupts = <0>;
-> +                };
-> +
-> +                phy_port1: ethernet-phy@1 {
-> +                    reg = <0x1>;
-> +                    interrupts = <0>;
-> +                };
-> +
-> +                phy_port2: ethernet-phy@2 {
-> +                    reg = <0x2>;
-> +                    interrupts = <0>;
-> +                };
-> +
-> +                phy_port3: ethernet-phy@3 {
-> +                    reg = <0x3>;
-> +                    interrupts = <0>;
-> +                };
-> +
-> +                phy_port4: ethernet-phy@4 {
-> +                    reg = <0x4>;
-> +                    interrupts = <0>;
-> +                };
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.34.1
-> 
-> 
+> v2: add Rev-by: Kai Huang
+>
+>  arch/x86/kernel/cpu/sgx/main.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff -- a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -731,7 +731,7 @@ out:
+>  	return 0;
+>  }
+> =20
+> -/**
+> +/*
+>   * A section metric is concatenated in a way that @low bits 12-31 define=
+ the
+>   * bits 12-31 of the metric and @high bits 0-19 define the bits 32-51 of=
+ the
+>   * metric.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+
+BR, Jarkko
 
