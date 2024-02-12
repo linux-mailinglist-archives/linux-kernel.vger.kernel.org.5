@@ -1,134 +1,175 @@
-Return-Path: <linux-kernel+bounces-62348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7012851ECA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:40:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D687E851ECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 21:41:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C9AD1F229C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:40:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 437541F22F14
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 20:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6F4D47A67;
-	Mon, 12 Feb 2024 20:40:16 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF944644F;
+	Mon, 12 Feb 2024 20:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="XCpJ7ZjC"
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E735E1EB3D;
-	Mon, 12 Feb 2024 20:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CE82AEF1
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 20:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707770416; cv=none; b=iJGZdyJF8UIL8i9sFQ83dEHeYzY9jHq1j/MngqUIcMbUZ1oVuLeq8YDp2NAIojVdt1WTutdhdIQC15q3LgLbgXCizbpcbZKlq0IpMb8Q0RvPluFk9kZqbDLUGcwCBLa0lYBJRLkdTLvdOxwHw4dnHbJSC3YIhVbu2uyWy7fztC4=
+	t=1707770488; cv=none; b=pVUYeP8bLVSXgpGAV9vv8cWULyvoZWiwI+VmdG3L4XqgkFuziRfshagTyHmO8Si4BjqFa6Q97FQ82WzDbdiCgwwUHp96kq4U1qT1rnvp8PlFxse7RN4lZLFjWX5VyLH6NBETtmODFEcKHmVD9By/s8rww74QxDbiTa7iMJ0YTdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707770416; c=relaxed/simple;
-	bh=ts416wrAK6dKQgFPcsXRwARoY2LTcVFjNPySoHIIVHY=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=NHI1mU5SoGVV9y4U9q0F4XQ0iY7UvnAo0w8UnqzZUraVWvIAG5kdajRNkaQhuPNb0ck+PEeVNNaCDGObXOzMxt9JA+HA3ywdQHGVhcqlUMCzpYhwnJFJhFsMbhMgHC5DcSbpnqEHC1/y0A2T7xWjQNIdZFNgkXp6xBiPpnk4Qp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (178.176.73.92) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 12 Feb
- 2024 23:40:04 +0300
-Subject: Re: [RFC PATCH net-next v2 6/7] net: ravb: Enable SW IRQ Coalescing
- for GbEth
-To: Paul Barker <paul.barker.ct@bp.renesas.com>, "David S . Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-CC: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Wolfram Sang
-	<wsa+renesas@sang-engineering.com>, <netdev@vger.kernel.org>,
-	<linux-renesas-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240206091909.3191-1-paul.barker.ct@bp.renesas.com>
- <20240206091909.3191-7-paul.barker.ct@bp.renesas.com>
- <2251fe66-11b7-2f30-c905-7bc1b9a57dab@omp.ru>
- <895bdec7-05d6-4435-8be1-fe8ca716cbcb@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <7c28bbea-0b3f-ee62-05c8-e6f1bc738b0b@omp.ru>
-Date: Mon, 12 Feb 2024 23:40:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1707770488; c=relaxed/simple;
+	bh=hdhLudHYo5bMj33n3Yyh9anyqdYEL/SsIr/1AeSObis=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H3kGxktmBznaqOEqT3+viIyuDy9FvJGQj1Fnj6dEnilORYm+jSlgcUn3sRIzg3gz2zy9gunhIomRTehNgie/OSPpMVoELzqkKbee3tgiDWqvqsRpIr35jmtZxoIj24CwnVwpVUfcyMTErZBhqsGTkyQXRUf9z3JCaMiI/lU+cT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=XCpJ7ZjC; arc=none smtp.client-ip=44.202.169.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
+	by cmsmtp with ESMTPS
+	id Zb1LrRJoc8uLRZd7ArgU1N; Mon, 12 Feb 2024 20:41:20 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id Zd78rckywfaGzZd79rRpU0; Mon, 12 Feb 2024 20:41:19 +0000
+X-Authority-Analysis: v=2.4 cv=d9BWygjE c=1 sm=1 tr=0 ts=65ca826f
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=VwQbUJbxAAAA:8 a=7YfXLusrAAAA:8 a=ZyVk2ItIS7mYbqNWDTwA:9 a=QEXdDO2ut3YA:10
+ a=9cHFzqQdt-sA:10 a=PUnBvhIW4WwA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=SLz71HocmBbuEhFRYD3r:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=bw54feNBMSUAWt9H1kUwQT6TtWMrX6VS0KfO9CyJw9E=; b=XCpJ7ZjCAG/KP/VTwD4kYXi1K6
+	/TbC0ueZTpwPte6x1WspBWfomnu9CbJKxBlg8AEJUb6bYruRsKh3OO2vXtRvNlWkDxzDo2VFlYy3f
+	qSYbkP4Dq87K/EzMIfjT8nCoZF+MVL6JAojreH7zGZIG0ouO7a0Dcvr/liR1UWwMaOCAoExudUqpA
+	THXkXJWEjbVSnKGcXxVcmR6wQkBei74Dpwno4G8U4P1oRPOAZygKG7GlOwYpoL35YVeM6gy8CnNFF
+	HFNjBkxUkew9YfwsXFMbDVMdrqTG8mBK/rG56ejxDeAgvDakcbig5I9eWSpbucLebhmNuNIMOlBP+
+	cTZ2GOzg==;
+Received: from [201.172.172.225] (port=34544 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rZd77-000F5z-0a;
+	Mon, 12 Feb 2024 14:41:17 -0600
+Message-ID: <0f3213d3-9010-45d5-8852-f0ab3ffc8f8b@embeddedor.com>
+Date: Mon, 12 Feb 2024 14:41:11 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <895bdec7-05d6-4435-8be1-fe8ca716cbcb@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iommu/mtk_iommu: Use devm_kcalloc() instead of
+ devm_kzalloc()
 Content-Language: en-US
+To: Erick Archer <erick.archer@gmx.com>, Yong Wu <yong.wu@mediatek.com>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Kees Cook <keescook@chromium.org>
+Cc: iommu@lists.linux.dev, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hardening@vger.kernel.org
+References: <20240211182250.12656-1-erick.archer@gmx.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240211182250.12656-1-erick.archer@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/12/2024 20:22:58
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 183376 [Feb 12 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.73.92 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;178.176.73.92:7.4.1,7.7.3;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.73.92
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 02/12/2024 20:28:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 2/12/2024 6:23:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.172.225
+X-Source-L: No
+X-Exim-ID: 1rZd77-000F5z-0a
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:34544
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfG8qEgi8JtnbL2eCm3ZPlmw2QVu9S/VGzJGzsduzvjetV6j1ELB3Ayx8S7TzwQF8W+KDNq6GTGXYjcM3b00j3JI3lNa64IBt/flcvZuu+ACsGDgiiMb0
+ a8EYCBtADZZRKbFN5xalTynhq7T7AlFXtaouhLdOoWHx6FWlGrhAROX1eFxPoZlFzj7QeTc0Uxja8IsM56RoMhgjsR78+nff5Kk3Wb9LUxbG/0NHB9Ivrgwz
 
-On 2/12/24 2:45 PM, Paul Barker wrote:
-[...]
->>> diff --git a/drivers/net/ethernet/renesas/ravb.h b/drivers/net/ethernet/renesas/ravb.h
->>> index 55a7a08aabef..ca7a66759e35 100644
->>> --- a/drivers/net/ethernet/renesas/ravb.h
->>> +++ b/drivers/net/ethernet/renesas/ravb.h
->>> @@ -1078,6 +1078,7 @@ struct ravb_hw_info {
->>>  	unsigned nc_queues:1;		/* AVB-DMAC has RX and TX NC queues */
->>>  	unsigned magic_pkt:1;		/* E-MAC supports magic packet detection */
->>>  	unsigned half_duplex:1;		/* E-MAC supports half duplex mode */
->>> +	unsigned needs_irq_coalesce:1;	/* Requires SW IRQ Coalescing to achieve best performance */
->>
->>    Is this really a hardware feature?
+
+
+On 2/11/24 12:22, Erick Archer wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1].
 > 
-> It's more like a requirement to get the best out of this hardware and the Linux networking stack.
+> Here the multiplication is obviously safe because MTK_PROTECT_PA_ALIGN
+> is defined as a literal value of 256 or 128.
 > 
-> I considered checking the compatible string in the probe function but I decided that storing a configuration bit in the HW info struct was cleaner.
-
-   Yes, but you added the new bit under the "hardware features" commet. :-)
-
->>    Also, s/Requires SW/Needs software/ and s/to achieve best performance//,
->> please...
+> For the "mtk_iommu.c" file: 256
+> For the "mtk_iommu_v1.c" file: 128
 > 
-> Will do.
+> However, using devm_kcalloc() is more appropriate [2] and improves
+> readability. This patch has no effect on runtime behavior.
+> 
+> Link: https://github.com/KSPP/linux/issues/162 [1]
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 
-   The comment is too long, I think. :-)
+LGTM:
 
-[...]
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-> Thanks for the review,
-> Paul
+Thanks!
+-- 
+Gustavo
 
-MBR, Sergey
+> ---
+>   drivers/iommu/mtk_iommu.c    | 2 +-
+>   drivers/iommu/mtk_iommu_v1.c | 4 ++--
+>   2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index 7abe9e85a570..9aae6eb604b1 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -1264,7 +1264,7 @@ static int mtk_iommu_probe(struct platform_device *pdev)
+>   	data->plat_data = of_device_get_match_data(dev);
+> 
+>   	/* Protect memory. HW will access here while translation fault.*/
+> -	protect = devm_kzalloc(dev, MTK_PROTECT_PA_ALIGN * 2, GFP_KERNEL);
+> +	protect = devm_kcalloc(dev, 2, MTK_PROTECT_PA_ALIGN, GFP_KERNEL);
+>   	if (!protect)
+>   		return -ENOMEM;
+>   	data->protect_base = ALIGN(virt_to_phys(protect), MTK_PROTECT_PA_ALIGN);
+> diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
+> index 25b41222abae..45cd845d153f 100644
+> --- a/drivers/iommu/mtk_iommu_v1.c
+> +++ b/drivers/iommu/mtk_iommu_v1.c
+> @@ -621,8 +621,8 @@ static int mtk_iommu_v1_probe(struct platform_device *pdev)
+>   	data->dev = dev;
+> 
+>   	/* Protect memory. HW will access here while translation fault.*/
+> -	protect = devm_kzalloc(dev, MTK_PROTECT_PA_ALIGN * 2,
+> -			GFP_KERNEL | GFP_DMA);
+> +	protect = devm_kcalloc(dev, 2, MTK_PROTECT_PA_ALIGN,
+> +			       GFP_KERNEL | GFP_DMA);
+>   	if (!protect)
+>   		return -ENOMEM;
+>   	data->protect_base = ALIGN(virt_to_phys(protect), MTK_PROTECT_PA_ALIGN);
+> --
+> 2.25.1
+> 
+> 
 
