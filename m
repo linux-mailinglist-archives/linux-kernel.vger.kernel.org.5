@@ -1,165 +1,132 @@
-Return-Path: <linux-kernel+bounces-61926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 304F7851884
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:55:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D34A4851887
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:56:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D96E41F21A48
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:55:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B96A1C21F5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F4803CF79;
-	Mon, 12 Feb 2024 15:55:12 +0000 (UTC)
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334563D0AF;
+	Mon, 12 Feb 2024 15:56:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="kHJS4noC"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDF425740;
-	Mon, 12 Feb 2024 15:55:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B970B3C473;
+	Mon, 12 Feb 2024 15:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707753311; cv=none; b=hvj6NWIrcO5TtSDpF+3ydf6/mETfkU46rPpWTHxbi+CYH3oDQbYAmL5kt1K9mRjM3qkAqY8e2bzud43MoQs7JWws9X9FHfZKjhEwCP5Y+KaJRUmloA/d/1TxGBDWqzuTCg9xRJvmQw125r8w6Xx3Gs83aRUBze5NopgHsfOf1mA=
+	t=1707753377; cv=none; b=apV1loz64EOwzzDoejNm0L+WBRDVXvMNtgHfvLiy9yu+FIVWrZNkpy+G2GMX1RO1nsWAgU/E06Zw7gaJ0osM94T0fhHjRgctX0R1ZMrfshW1JfGcadxWcjHjoZ+2iYAySHc4qvNX9LTep7YWnEhKXMsFLoDx7LeU+jC3AZ7DkKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707753311; c=relaxed/simple;
-	bh=cQbWgrlnIZwyNKcCKHVsWPQRlIykh63Q3/WdiiwnYYk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ClJriHEw3JsabnkGHSXn9vX0xxCC+ZWKGaPFNBDw5dhmga3YgzoO8db/WHuh2NIZRLC0sck7TTsfzITjcCV6cGQ+HXIEtibLHipyoe6/hTunnFagV3CxSl3oXCXi3lGRM+zAra16uCBCtlsaag0KyNijVb01HNAbmmPXmpVXzQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59d249f8e57so185247eaf.1;
-        Mon, 12 Feb 2024 07:55:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707753308; x=1708358108;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dujpNDTGdXCKvYGZS10rcgFgfYJ2arhZ7Y4ipEQpcXE=;
-        b=hnTEkg8YaDuTbzJyTDOd/rPmhWjshF4XZevHjc486ljPGRet59Ec1dEK13csNWSGz6
-         fQX+O0zv9joG7Zd64raJuLa0YsASf9Dv21XGdDis0ZVEVn/eh+UtM90WO6K7/338sf/M
-         MClRYEMNAsNGmk+yIahDPOnyUWm3MmeXB6tVE1vRqliyWS3TgZUnoLFXuvt/V0C/tzZg
-         /MnfTMiidHLcX6CZxdRVomEABjae1c4kToH6Z57vrWLZ0xF53pr6q5/LAIl9y18rJXP6
-         rd8w/1n/mFnVeJcBHGPxDhv3d4FoEPzQwOvUpn2vS+nLdo4wDnqmT4SJ1a+xqOg0OBbH
-         Y5pg==
-X-Forwarded-Encrypted: i=1; AJvYcCUks/ewUZKFGmAsFspfCBZMcqiDeWVDnQLc1raD/QlQtYW2yVCI/EKRWDkDNVNRYU0Qu6A8VRkAcbsLIGaKMvBWVAjJIF+JcYZJiks5ILmlLszl61QFzs6FgEIc5TW4nlXJGh2bjd4=
-X-Gm-Message-State: AOJu0YzTlfxqorC68uXETRf2UgSSxJiloRu7W3yeUGWsxnecz2t2tW1U
-	LJQ54BqMxbhXmr0TOWLQY3XMwm7+Ozm+RieVSEPUTVSof5YV3Mv9Sa62ngAUXBPT5tqOn9LUbRl
-	OV7wKOQz1Yhzi5mteXL/Xmipi+XQQfOiG
-X-Google-Smtp-Source: AGHT+IHhTnBNcIsQMOyuDhimfKe4C01cy8jc/sgluobphgih1wk5PW+xYxcVwcsgFO/WJGVpwsPjivvFT2DIROy3/sg=
-X-Received: by 2002:a4a:ee91:0:b0:59c:7c63:928f with SMTP id
- dk17-20020a4aee91000000b0059c7c63928fmr5268927oob.0.1707753308526; Mon, 12
- Feb 2024 07:55:08 -0800 (PST)
+	s=arc-20240116; t=1707753377; c=relaxed/simple;
+	bh=UEoUzI0eopOfpfMWL9+ubXLmnf6UPKl4bf+SH/FfhF8=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:Date:CC:
+	 Message-ID:References:To; b=f/PNH0VE/4LcNtjcSvRC3BxycJUq2PbfzXMqiNKlSiNkAZp8JPMvL20Afu5E7suYsWj0ahSfphyeIpyy6glYl2xEKJq4l9ncrsQKBHr/ILDKuWplqtoIRA9EdEUumts0QUp6tZwJ0WeIdqXTTULvUAXbWKGtcsZsAhEqNAZ8rSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=kHJS4noC; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41C7wuOt021531;
+	Mon, 12 Feb 2024 09:55:47 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	content-type:mime-version:subject:from:in-reply-to:date:cc
+	:content-transfer-encoding:message-id:references:to; s=
+	PODMain02222019; bh=UEoUzI0eopOfpfMWL9+ubXLmnf6UPKl4bf+SH/FfhF8=; b=
+	kHJS4noCFaqhHA00df2Nyt5FmY+gB7OQUEEpeP6D0ExctWUJA3mYo5WEuWviyrsZ
+	zHrY3ylV93fWTxp591elNivJTtdqJyFz84ghlZhNvVbLM/Li4w8cSVjED4gkx51C
+	s4zl9UzYuYZNN7Cg86cNIsX6NftCxBvhN8UlXkMfAlPN4EYP+owuwTQYVAA60zpa
+	gxzz2LJgSv2+w2XisaJbdqntbrL1ARM57umBDUA/n2AN0PAqEf/xCTXMjvqdanPN
+	JbN6nYOJQL1XQf5Rhm61D1HnvGjI82/rS/IijKmAjCLoHhqhKYdTqliVB8S9UqRP
+	vA+9bmzebhDR/jr8EXGHwQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w67e220gf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 09:55:47 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 12 Feb
+ 2024 15:55:45 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Mon, 12 Feb 2024 15:55:45 +0000
+Received: from smtpclient.apple (unknown [141.131.76.118])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 7CA6A820242;
+	Mon, 12 Feb 2024 15:55:41 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240205022006.2229877-1-qyousef@layalina.io>
-In-Reply-To: <20240205022006.2229877-1-qyousef@layalina.io>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 12 Feb 2024 16:54:57 +0100
-Message-ID: <CAJZ5v0g68atmQAbKFdm1bhp_Uvw6+C9SnJp9jZK0vEHA4mX7bw@mail.gmail.com>
-Subject: Re: [PATCH] sched: cpufreq: Rename map_util_perf to apply_dvfs_headroom
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: [PATCH 1/7] dt-bindings: ASoC: cs35l45: Add interrupts
+From: "Rivera-Matos, Ricardo" <rriveram@opensource.cirrus.com>
+In-Reply-To: <ac5cbfbf-45ea-4d34-ac3d-d3a0fc6ff061@linaro.org>
+Date: Mon, 12 Feb 2024 09:55:29 -0600
+CC: James Schulman <james.schulman@cirrus.com>,
+        David Rhodes
+	<david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        "Rob
+ Herring" <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        "Sai Prakash Ranjan" <quic_saipraka@quicinc.com>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        Kees Cook <keescook@chromium.org>, Tony Luck
+	<tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Marijn
+ Suijten" <marijn.suijten@somainline.org>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
 Content-Transfer-Encoding: quoted-printable
+Message-ID: <C8A97AB6-A3BB-4018-A8E3-CEEECFCBECE2@opensource.cirrus.com>
+References: <20240210-topic-1v-v1-0-fda0db38e29b@linaro.org>
+ <20240210-topic-1v-v1-1-fda0db38e29b@linaro.org>
+ <ac5cbfbf-45ea-4d34-ac3d-d3a0fc6ff061@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
+X-Proofpoint-ORIG-GUID: HVAAhL2KDvY-331du_lPmDeJ2OJzJ91Y
+X-Proofpoint-GUID: HVAAhL2KDvY-331du_lPmDeJ2OJzJ91Y
+X-Proofpoint-Spam-Reason: safe
 
-On Mon, Feb 5, 2024 at 3:20=E2=80=AFAM Qais Yousef <qyousef@layalina.io> wr=
-ote:
->
-> We are providing headroom for the utilization to grow until the next
-> decision point to pick the next frequency. Give the function a better
-> name and give it some documentation. It is not really mapping anything.
->
-> Also move it to sched.h. This function relies on updating util signal
-> appropriately to give a headroom to grow. This is more of a scheduler
-> functionality than cpufreq. Move it to sched.h where all the other util
-> handling code belongs.
->
-> Signed-off-by: Qais Yousef <qyousef@layalina.io>
-> ---
->  include/linux/sched/cpufreq.h    |  5 -----
->  kernel/sched/cpufreq_schedutil.c |  2 +-
->  kernel/sched/sched.h             | 17 +++++++++++++++++
->  3 files changed, 18 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.=
-h
-> index bdd31ab93bc5..d01755d3142f 100644
-> --- a/include/linux/sched/cpufreq.h
-> +++ b/include/linux/sched/cpufreq.h
-> @@ -28,11 +28,6 @@ static inline unsigned long map_util_freq(unsigned lon=
-g util,
->  {
->         return freq * util / cap;
->  }
-> -
-> -static inline unsigned long map_util_perf(unsigned long util)
-> -{
-> -       return util + (util >> 2);
-> -}
->  #endif /* CONFIG_CPU_FREQ */
->
->  #endif /* _LINUX_SCHED_CPUFREQ_H */
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_sche=
-dutil.c
-> index 95c3c097083e..abbd1ddb0359 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -179,7 +179,7 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsig=
-ned long actual,
->                                  unsigned long max)
->  {
->         /* Add dvfs headroom to actual utilization */
-> -       actual =3D map_util_perf(actual);
-> +       actual =3D apply_dvfs_headroom(actual);
->         /* Actually we don't need to target the max performance */
->         if (actual < max)
->                 max =3D actual;
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index e58a54bda77d..0da3425200b1 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -3002,6 +3002,23 @@ unsigned long sugov_effective_cpu_perf(int cpu, un=
-signed long actual,
->                                  unsigned long min,
->                                  unsigned long max);
->
-> +/*
-> + * DVFS decision are made at discrete points. If CPU stays busy, the uti=
-l will
-> + * continue to grow, which means it could need to run at a higher freque=
-ncy
-> + * before the next decision point was reached. IOW, we can't follow the =
-util as
-> + * it grows immediately, but there's a delay before we issue a request t=
-o go to
-> + * higher frequency. The headroom caters for this delay so the system co=
-ntinues
-> + * to run at adequate performance point.
-> + *
-> + * This function provides enough headroom to provide adequate performanc=
-e
-> + * assuming the CPU continues to be busy.
-> + *
-> + * At the moment it is a constant multiplication with 1.25.
-> + */
-> +static inline unsigned long apply_dvfs_headroom(unsigned long util)
-> +{
-> +       return util + (util >> 2);
-> +}
->
->  /*
->   * Verify the fitness of task @p to run on @cpu taking into account the
-> --
+Konrad,
 
-This touches sched.h, so I'd prefer it to go in via tip and
+> On Feb 12, 2024, at 7:25=E2=80=AFAM, Krzysztof Kozlowski =
+<krzysztof.kozlowski@linaro.org> wrote:
+>=20
+> On 12/02/2024 14:10, Konrad Dybcio wrote:
+>> This chip seems to have an IRQ line, let us describe it.
+>>=20
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>=20
+> Subject: ASoC: dt-bindings: cs35l45=E2=80=A6=E2=80=A6
+ditto
+>=20
+>=20
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com =
+<mailto:rriveram@opensource.cirrus.com>>
+>=20
+> Best regards,
+> Krzysztof
+>=20
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+Thanks,
+Ricardo
+
 
