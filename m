@@ -1,244 +1,103 @@
-Return-Path: <linux-kernel+bounces-62500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 379158521C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:49:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF0588521C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:50:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D23722848D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:49:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90E64284614
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 22:50:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB51E4E1C5;
-	Mon, 12 Feb 2024 22:49:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A58A4EB2E;
+	Mon, 12 Feb 2024 22:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IE7oNZWe"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZOzWMZ22"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051484E1B5
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 22:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7A51B299
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 22:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707778179; cv=none; b=ZLwQW+wFfJJ3XmjOY1Uhe9B5ppJP8UKFMrdRcc7/RqCb+78QZOZ4AtSvTZdC71UZTsGz3aJlRWPaFCTEzns9EOyuFQOFu0zEyeUATBSMjo1puUhSFOnFGjN1tLoVildihIMT6gYix1elTSOq/PYm8KrclSut6FuKk7RqB4X0LtU=
+	t=1707778216; cv=none; b=YybP9VP/gL04G7kAtesJ9WR2GaijEwdgdexrQ97NjObOzY7CeQamV4Z6QIZUOeoSrmgv+x1bK1ihPJaiTxu6C+Z0hcsEmVUaYfpEvi4vNFEl4XYFAsAbLPfDkFRUK+bWjohaJi6OBt843QdT3Pzlz/ck4ebzy3W7o08WCvLFT70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707778179; c=relaxed/simple;
-	bh=jJ7Q+uAzBM/2QUtMSW3fMxfNQj/NahTWX0hTiFl7U4E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YzybgfHh/BND6SP2rEy5OS4e0vSx4wrzYUM4airtxUtHiVYBag2qkaObSWzXatPfCSdcY/B2PycnBDiSYeul6HDUyTp4n8oRP9E22orzJnyfWs3LUZoB9ZJx+4WVxK0tLAs+ldzp4BU4wlGi6pj1ukKBskNi6uiZlzhOsDVnEYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IE7oNZWe; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d7354ba334so31881945ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:49:35 -0800 (PST)
+	s=arc-20240116; t=1707778216; c=relaxed/simple;
+	bh=qD8UKLBdZY2kK0F8HUsRnxW+15Z0FwvLOlUar5mXRSo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OavV80byx5Zh8siLL1leWHoRWjnkHRXKVzp9UwADAIK5S8Ualhy6SXNeHzIO+38HvZ3LCVH/7zujvwshBf7Jofwo+XEHVgBfzsuwTwce5IrewG0Y4rK0S2RvsnWOCjbmtrNKn2p2C8gUqdt0NCiunFJNAqZkGe5CoNMQDPQYX4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZOzWMZ22; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso3827074276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 14:50:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707778175; x=1708382975; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xx+E2mv21N0lU1zbrbyeE8PV+0+SQ7K7DmnAXJKKlPc=;
-        b=IE7oNZWeS73+rgfvuVW0cw0U6tpbZYbfeOHUiV8+WVWzTj3n6S6ROeEBzcCVScF81V
-         qCz4l5KUih2yz5w9S/++VzLJHY4duzNWfKuR1tzi+Y7MmJ3DFCLRrpH5s35lBmK1fvzz
-         AGvopWt5YlUBzDOyScAuQnBlPvx46X2011z+M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707778175; x=1708382975;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1707778214; x=1708383014; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xx+E2mv21N0lU1zbrbyeE8PV+0+SQ7K7DmnAXJKKlPc=;
-        b=VRQujZaC14bnrn1/9Nbgpitz9ejDQ3dyy18GXHXHxYfNFz2oBwuYO70YBs9b19n2+O
-         36Rm1dhrrify9SY2qmkmYxQ9qsfWx48cBpeeJ3154wnNyM2TiguyZODu1/9eQAsA24gr
-         YIvAf7a4DP2P39CHXYjELPikEBydMb/8O07WS074xxCLhVuhYVeo+FmQ4s97Lp2YgGfR
-         +eguKnyJrE6mTPKy+ManJwdkORBNYXo1ZlWmZJn1LIydWyG0cpAGyN7cVUX3cyNSnGDx
-         fTVystSYneXX/bxcMp5qu6AHFaNNU9ByINrMVp9Ogz8a0EPt8Lux9rtAYhe07TzNpEmw
-         11tg==
-X-Forwarded-Encrypted: i=1; AJvYcCVk0edY40GKZ7lqxZzV/pjLFsWYx0UmpUlGBt4eKXSWD83p616bBtTHdYDAPwk8z6E5ni2nPzgdNAs76din/A3pRCal1zsKS0FJMgZn
-X-Gm-Message-State: AOJu0Yy2ZVDB26qN28kL3NQ7rkHnrYwDy8qdeQwsbmcjImVrxy7p+abi
-	/cJfaGIuZnNQU7pKcljIX36rXjqraa9nefhZBBNRPF/EYMBM4VC/bqpNcglCdw==
-X-Google-Smtp-Source: AGHT+IFhdBwz0gkUHXypIGqz/59W5VQq7xXUv7g5AJuySlRLjNX5zZEVE7mi47XR/49TsBREqCstWw==
-X-Received: by 2002:a17:902:f54e:b0:1d9:4544:ed22 with SMTP id h14-20020a170902f54e00b001d94544ed22mr9047716plf.42.1707778175450;
-        Mon, 12 Feb 2024 14:49:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUasX8XpzsSiDZ5/EFiO7pro9PNRyHSQqtLX17pXnFY6qHBIb3d0CatX0NjldJ2PIwuY8MFElGCiBNMf1vy8L++HSYbuXBJ6AZvmBWue0hbc7GGdbfvzgL1xNSjTfM9X5+ku0Yd02eXA1Fb287VhTjN4I3F2u/jh5y1xCVgzJR9RKBSTcdsL3dVakoYqC0QGWEcuLIvThYkH09TucQGniMYD9Hy5lpNpuDkIKRIrZtqX15u2ENuIryu60uAgOeNnkC5z9phPyK8U3UIEyEbopJ6O3xKqIXBCuCXLKQSuMwCOAUdQUY8u0MEx4lSn60txGtd6/rcMmjHo8BlE4D91TT5e/PtYivpmNWde+QdxXxO1g1J8Wxp6AjdZqiQvCuJspekBpiI1yois+s9psLLwVurUsoM08nC9VIoLWscj4RAQo7eqcvr3M/CWVxf2Eqf5S5e7dRIGH/475snDdZDbxLykVvtNsfHe0jxNnhuKfMo/sgOqTnAi4/31NC2A/8ttOA3uIN0T5OED1gvzRtZoCCSI4TE8FmGVQHQT09FvO3sHnVyrkDAVSQn6xJiJwRws4QIv4z+F2OLLPP5Yqumj94miFYqmOEEptLqMEb4FNByAGeMRWfIsD5mNQx16rkqPDgxn774LFEHt6u9Rf4B8f4eRWOBTslPPY54XfDRLRhyP9CZDOq2ZhfiJSPdfj6kiDCOaj+DqIgsHECinmKRBHYLRPse782vR1gbs1q6Ldg0Jn9FP81oaA==
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s13-20020a17090330cd00b001d8d56a8b9fsm846040plc.105.2024.02.12.14.49.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 14:49:34 -0800 (PST)
-Date: Mon, 12 Feb 2024 14:49:34 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
-	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, peterx@redhat.com, david@redhat.com,
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
-	ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, shakeelb@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 34/35] codetag: debug: introduce OBJEXTS_ALLOC_FAIL to
- mark failed slab_ext allocations
-Message-ID: <202402121448.AF0AA8E@keescook>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-35-surenb@google.com>
+        bh=qD8UKLBdZY2kK0F8HUsRnxW+15Z0FwvLOlUar5mXRSo=;
+        b=ZOzWMZ224jishYKS0prK36mcZ+2pecA70S/XipHt2/d84xF79wlTXwY9wIJRyBQbbA
+         FJPYFjFKEaOdmV0qinyO2eMCifd7bO1fhM1Rt1dUZZEoZO5KxEeIViX+tRxFCNrz8wev
+         71WNSRWmKRSF9tix7eod0AouRxRf5A4CewjrS6cASro+EqmIIIbitF3CsSyR7iCmnksS
+         mZGK+TvGx3KtJBrLKZp7x/5z5SiqfbxskRL+ZxvGWT8uaXiv/vNU5zO7OxStKQV02i6+
+         vGLnAf8gpGHhbW3dabQLW/61XILr86w+NzOlwQ3R9HG6OD0vGhXdTb1JccKu2Kz3mFbY
+         7hsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707778214; x=1708383014;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qD8UKLBdZY2kK0F8HUsRnxW+15Z0FwvLOlUar5mXRSo=;
+        b=NirwGojoNEhcsiHRsOAcImSAbDTNiWT6Dx96rJsEnCUdY5dCokSl87i3u9iKAiDQml
+         Q4zhiJLe91LMREB6mM++cKoL3x7Zz5qZgOaLgXJOL+GXtsIFIxJnqXZt3emF9CEjfCZ6
+         w96nfK0/2FN0M1qdGdMMbhuyRJLFts+PYSt8rtZrWYj1Vl7QkgCnmSEFdP47v0KRPk8i
+         xlQA/qtBoGkDB6GcWfjbPrbF42/VFA2Kr+CusD2oR9L9UL5MKnkHtpvgIh+WvfSwBQni
+         6YQ8kOx/F2Ucgtvsay3gGgSMMGbWRIBuFk5d5vW9LxY8U+p6tIKCChiRI9LnskbonaIP
+         8j9w==
+X-Forwarded-Encrypted: i=1; AJvYcCVZR00Yyzr5qBn4BDAddKoJB1QeEjyXctKL3Yi0GHuqgd+43hHRnqa7cyTteT1PH+QW/yGQi5XHuMkiCoZIiD5MGICAbP2SpH1ntyUI
+X-Gm-Message-State: AOJu0Yx1/RvmXoN/b8Np+3Y5HnI/EtOk8JIpxe6bBojiNkb6/Hsl/SSe
+	rufI0Ds9Y00MNU0c+PYZpLBVTn7NdkqmOriU0pX+loiaNyWyr5q5xZZEvb0H3KRh0QDoS/OnbJg
+	aHbGnl74Rtx5chljS+OnuvFKJ9/ZbQ+NRRzqYBA==
+X-Google-Smtp-Source: AGHT+IEdOLxPuhsAdrfItDyVRXigbzOFJkr6GtqwjG5kU8LZoYijo+TvjkKpY/ldTPbLMloC6vQ21/brrZj250gV9S4=
+X-Received: by 2002:a25:2688:0:b0:dcc:275e:7323 with SMTP id
+ m130-20020a252688000000b00dcc275e7323mr1013341ybm.18.1707778214130; Mon, 12
+ Feb 2024 14:50:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212213922.783301-35-surenb@google.com>
+References: <20240212-realtek-fix_ext0-v1-1-f3d2536d191a@gmail.com>
+In-Reply-To: <20240212-realtek-fix_ext0-v1-1-f3d2536d191a@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 12 Feb 2024 23:50:02 +0100
+Message-ID: <CACRpkdakahhg9AZRfGeM_FNwjgyXBAKuEEqsYOxqerR=OFpLbA@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: dsa: realtek: fix digital interface select
+ macro for EXT0
+To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc: =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
+	Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
+	Vladimir Oltean <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 01:39:20PM -0800, Suren Baghdasaryan wrote:
-> If slabobj_ext vector allocation for a slab object fails and later on it
-> succeeds for another object in the same slab, the slabobj_ext for the
-> original object will be NULL and will be flagged in case when
-> CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled.
-> Mark failed slabobj_ext vector allocations using a new objext_flags flag
-> stored in the lower bits of slab->obj_exts. When new allocation succeeds
-> it marks all tag references in the same slabobj_ext vector as empty to
-> avoid warnings implemented by CONFIG_MEM_ALLOC_PROFILING_DEBUG checks.
-> 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  include/linux/memcontrol.h |  4 +++-
->  mm/slab.h                  | 25 +++++++++++++++++++++++++
->  mm/slab_common.c           | 22 +++++++++++++++-------
->  3 files changed, 43 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 2b010316016c..f95241ca9052 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -365,8 +365,10 @@ enum page_memcg_data_flags {
->  #endif /* CONFIG_MEMCG */
->  
->  enum objext_flags {
-> +	/* slabobj_ext vector failed to allocate */
-> +	OBJEXTS_ALLOC_FAIL = __FIRST_OBJEXT_FLAG,
->  	/* the next bit after the last actual flag */
-> -	__NR_OBJEXTS_FLAGS  = __FIRST_OBJEXT_FLAG,
-> +	__NR_OBJEXTS_FLAGS  = (__FIRST_OBJEXT_FLAG << 1),
->  };
->  
->  #define OBJEXTS_FLAGS_MASK (__NR_OBJEXTS_FLAGS - 1)
-> diff --git a/mm/slab.h b/mm/slab.h
-> index cf332a839bf4..7bb3900f83ef 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -586,9 +586,34 @@ static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
->  	}
->  }
->  
-> +static inline void mark_failed_objexts_alloc(struct slab *slab)
-> +{
-> +	slab->obj_exts = OBJEXTS_ALLOC_FAIL;
+On Mon, Feb 12, 2024 at 10:34=E2=80=AFPM Luiz Angelo Daros de Luca
+<luizluca@gmail.com> wrote:
 
-Uh, does this mean slab->obj_exts is suddenly non-NULL? Is everything
-that accesses obj_exts expecting this?
+> While no supported devices currently utilize EXT0, the register reserves
+> the bits for an EXT0. EXT0 is utilized by devices from the generation
+> prior to rtl8365mb, such as those supported by the driver library
+> rtl8367b.
+>
+> Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
 
--Kees
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> +}
-> +
-> +static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
-> +			struct slabobj_ext *vec, unsigned int objects)
-> +{
-> +	/*
-> +	 * If vector previously failed to allocate then we have live
-> +	 * objects with no tag reference. Mark all references in this
-> +	 * vector as empty to avoid warnings later on.
-> +	 */
-> +	if (obj_exts & OBJEXTS_ALLOC_FAIL) {
-> +		unsigned int i;
-> +
-> +		for (i = 0; i < objects; i++)
-> +			set_codetag_empty(&vec[i].ref);
-> +	}
-> +}
-> +
-> +
->  #else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
->  
->  static inline void mark_objexts_empty(struct slabobj_ext *obj_exts) {}
-> +static inline void mark_failed_objexts_alloc(struct slab *slab) {}
-> +static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
-> +			struct slabobj_ext *vec, unsigned int objects) {}
->  
->  #endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
->  
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index d5f75d04ced2..489c7a8ba8f1 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -214,29 +214,37 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
->  			gfp_t gfp, bool new_slab)
->  {
->  	unsigned int objects = objs_per_slab(s, slab);
-> -	unsigned long obj_exts;
-> -	void *vec;
-> +	unsigned long new_exts;
-> +	unsigned long old_exts;
-> +	struct slabobj_ext *vec;
->  
->  	gfp &= ~OBJCGS_CLEAR_MASK;
->  	/* Prevent recursive extension vector allocation */
->  	gfp |= __GFP_NO_OBJ_EXT;
->  	vec = kcalloc_node(objects, sizeof(struct slabobj_ext), gfp,
->  			   slab_nid(slab));
-> -	if (!vec)
-> +	if (!vec) {
-> +		/* Mark vectors which failed to allocate */
-> +		if (new_slab)
-> +			mark_failed_objexts_alloc(slab);
-> +
->  		return -ENOMEM;
-> +	}
->  
-> -	obj_exts = (unsigned long)vec;
-> +	new_exts = (unsigned long)vec;
->  #ifdef CONFIG_MEMCG
-> -	obj_exts |= MEMCG_DATA_OBJEXTS;
-> +	new_exts |= MEMCG_DATA_OBJEXTS;
->  #endif
-> +	old_exts = slab->obj_exts;
-> +	handle_failed_objexts_alloc(old_exts, vec, objects);
->  	if (new_slab) {
->  		/*
->  		 * If the slab is brand new and nobody can yet access its
->  		 * obj_exts, no synchronization is required and obj_exts can
->  		 * be simply assigned.
->  		 */
-> -		slab->obj_exts = obj_exts;
-> -	} else if (cmpxchg(&slab->obj_exts, 0, obj_exts)) {
-> +		slab->obj_exts = new_exts;
-> +	} else if (cmpxchg(&slab->obj_exts, old_exts, new_exts) != old_exts) {
->  		/*
->  		 * If the slab is already in use, somebody can allocate and
->  		 * assign slabobj_exts in parallel. In this case the existing
-> -- 
-> 2.43.0.687.g38aa6559b0-goog
-> 
-
--- 
-Kees Cook
+Yours,
+Linus Walleij
 
