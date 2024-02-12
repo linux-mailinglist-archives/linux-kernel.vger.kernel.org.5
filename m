@@ -1,249 +1,184 @@
-Return-Path: <linux-kernel+bounces-61676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A00A85153E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:33:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CB6F85153C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:33:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3D8C1F20F44
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:33:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22E47288880
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:33:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498B83EA87;
-	Mon, 12 Feb 2024 13:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CAD3E48C;
+	Mon, 12 Feb 2024 13:22:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="2IDabaR/";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Qu3c62fk"
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kD0FmYMT"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDAC3B289
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978BD3B289
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707744145; cv=none; b=W4HOseCb1W4xquOUFO4viLE36sc6v9Y/uDwMupBEY4bHgapvnBsneDeZeeJXaBrcaSlNpdzJvHlOkEGwHcJu9F305msCirIZZ2tqnGcp9lzZGpBq0wKQJeLbJ6prHyaoBH8sLtrkfjVVBBLaiIBLGT1t7j3dJO1RzCnEdOzkTKY=
+	t=1707744131; cv=none; b=u7d8DeuZlCo8rqp9Cq5v3EmsqzwFF41c6JpPI3230FAK5UqXehZB1w34Fe6tFPtlkj4K5NWPIB8AfrNA0cPeTBoq0rSV+8LiUCELc165DriINA81Muvj2Fi5w4f8GzW/PhHi2rK4WHVBScSvbgLHg4a10S2zAea3KeGWItRjET8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707744145; c=relaxed/simple;
-	bh=r+wkHhx//o+42koojDql1BGXd7+/Km/wxdmeRtnEm0Q=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=OjVb2ov9FcDG7JSWsoy+vC+hR0UNA0MkuBz2CfDZ2Qu1ggDg6m4E2MvbT3b3ffaBCNpyNKQDT3FftojpNFL4+Um7LrqK0qoVmWdGeJX2jxeCAJCrJK9SViKjNNVMwdb0u045ekWwmW2e0pSnpe2nGdk9acRW2aMOitR2qSWxkAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=2IDabaR/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Qu3c62fk; arc=none smtp.client-ip=66.111.4.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.nyi.internal (Postfix) with ESMTP id 4768A5C0091;
-	Mon, 12 Feb 2024 08:22:22 -0500 (EST)
-Received: from imap50 ([10.202.2.100])
-  by compute7.internal (MEProxy); Mon, 12 Feb 2024 08:22:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1707744142; x=1707830542; bh=tYVEFq3KKz
-	S37pkWyX/NsqZeEFJtfC+Kq3xqJ9xTUUw=; b=2IDabaR/c5r7d0u6aFiFX+gumQ
-	jMW8jt0nS+HZAdZ8nxsX2VdAaY8xI+1WhfLuLcSK5r53s7Ki/8jsrqiH4bWs9NsV
-	CgcZiMYo7rkHxDJsxDmWpNhj7Z9CaqrReRR0A79n1YnW+nI1PbVHpWjoWlUo7vh7
-	FQNOamToROwO8i7cFOGr/9csN2cLgcvIvWinycxy8BMTBqwxkUjP8SLBwWUT3u2a
-	XilQw2JP/x5FOKCMPsd7cl9k1CmieeZwcaWT0jI1G5XiiGUaehLEXLbrTBhiTBsW
-	wSG6WaEjMHLzdVsmoclglJNuE/Nirz67QF5K2NKr7RJIsDMRDI2Dr5h++YlA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707744142; x=1707830542; bh=tYVEFq3KKzS37pkWyX/NsqZeEFJt
-	fC+Kq3xqJ9xTUUw=; b=Qu3c62fkEzwLe4zVsFeTcyfEPKecebSJOt9Ijws3FKK/
-	nlX8GLbVeA/SFcc92j7tfxoC+ZqlEMom/zXQa4OzOiAa3LrTK0MefB6hmrhDtUFo
-	5CbnVo7UA2Y6CP5cfPzaFils8r2Jk3BqV4IZREI8ccMKwyK8Nw0tHueUvmGjwRx9
-	h6T5jKo3QAhHPabjdecrdOA5e0X0lz/eOU4p+ePrSjXAN+hA1O9952q1RanGiYmU
-	FNzWKpSUD8nCbsiTCEsdxsbbvhHo6wjxdJuXWS+VLhZe9id538OqaVxsR+/bk7k3
-	ACw2Ydu8dVB5C83yFfKZVfZiBVUz/0ZZvpRnbcA1Fw==
-X-ME-Sender: <xms:jhvKZU_Z3l9oXS-8vieFhUr2clmUpfXFw9mpQHArVcLerTt1K4XcNg>
-    <xme:jhvKZTn8VEqFD0kHe8dg-SA7lJMHrMPENVXBjlSS98NKhAeGBgm6uxTh0is4uVtx0
-    WJ6CMJsPrrgJDzKAg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefgdegkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdfuthgv
-    fhgrnhcuqfdktfgvrghrfdcuoehsohhrvggrrhesfhgrshhtmhgrihhlrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeejueehgedtueetgefhheejjeeigffhieefjeehuddvueegtdfh
-    heevgfeggfektdenucffohhmrghinhepihhnfhhrrgguvggrugdrohhrghenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsohhrvggrrhesfhgr
-    shhtmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:jhvKZW8b6P0WMstMn4TE8hgAytgqMpybfxscv8mrDCQJl3kDhGvRgg>
-    <xmx:jhvKZRlyoJ426oqFfB_wyZjGy_fyZewuoPV9nLFRngBgiOmbzFpYhw>
-    <xmx:jhvKZT3LDfEg7ERXsYiIIQ2O7fN_9qsoTUI28-EBuo_KlCFyh4nMAw>
-    <xmx:jhvKZU5OPiOkLZOwMGT-L4EMv3Yu6RGdfdchJlPA88gCFUSudcpuCQ>
-Feedback-ID: i84414492:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 1F8501700093; Mon, 12 Feb 2024 08:22:22 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1707744131; c=relaxed/simple;
+	bh=gUFUO9iusGmntxDZLEAmUKl4lzKp0f8CnkBErWMnJhc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bhVgHdUaq7g51jT0u+UJgKUbB74pGs8s8THHYF4IvS66ZbInPjqHVN5JpwlsKFNjI/QOlRbRdiL3XnXepst1lGofEUkC5G2Bf+qygqFC0z5ryhXZDSBgy1duWalMDILSuI8Fqm37i1Ha7kN4KWcBFaUnzZjJs/ZysYSrLvEK78A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kD0FmYMT; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3ce44c5ac0so3077066b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:22:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707744127; x=1708348927; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VwZff36T1I/LCHGsIKBrchvCl6TLE40Tpq9Mdew09mk=;
+        b=kD0FmYMTJHV/xkITEBNGF0eVvju4++31BxOdsaMVkpFJGELz8PM8Xkp04vVpn1Pznc
+         znDYWA8gv2/Ac3PqvklNomi4r4UKL4uqjMrPVBVJWDI5Lqv9igaYp3jvjt4Omj1G8QHy
+         9ZS/GBKY6aLxHv0HI5nEAR5pVRURqfecHj5REckMqg4ywin+2/ng5O6wp7F/zfLhQ7YK
+         85x2n8JIRFdZQIGkhcy0SLj8HA2TELQoLyHvPVt6f1pkCgkgMeoW4EocKhcbGOmO5aBT
+         PQcMFOaZUiMwhuUA5B7r6D0JgBPRHmvvJ5racz9l5OeqEdU/0AqJCOUljZnZIUneFT7B
+         MHqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707744127; x=1708348927;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VwZff36T1I/LCHGsIKBrchvCl6TLE40Tpq9Mdew09mk=;
+        b=V5huvgTH1d4cLnw5Akhdecjwwp6oL3y/Akfi1VhUxgnABk3/LHqVyH2n/ngb4dhtFW
+         0qJ8ccG77WPUeEmwLAtTX69xJWFPaHeUN3CYlOBmjP7groR9MDRPZfN6aR62G7dE98oP
+         G+8z1ZxPhknUmg6YxMeQHi/RQEZVr1bqSmOwQGCA9sKM+Ru3iWahtf40D4UEimP6ILOU
+         GS5Bq8dDjqC0FYSzRx6jTA3sysMWEZ7sKOPuBs8neNIoXSdbHaZZ+JszXMrrSDzGm+K5
+         vbMNfr20+vGDf/IzxTX+oWL4ChFGywddCZCmFh1Eg9XWpme5qLtwoUMp1Lto4jBTAGXO
+         DMzw==
+X-Forwarded-Encrypted: i=1; AJvYcCUN4mRO+GXabt5iXcBQGfd+U0lFjEmJl9BDKUbZyCMSzLKSarQ31eFFmK8SyibwVMwgUPVRThK1vlwHWgm74EoePTbInR4RfQzu2jz6
+X-Gm-Message-State: AOJu0Yz7grJS1QNALOw5ULiO3S3npbgprX7TzVNGMLkZDof0zgZQn//A
+	lTb5T5OY910HaBYjsWdXbZSOqvRRcKvCm9qBuziHOxzYKyhZaPPveQnmpulbwp9IlGkIfdtwlZN
+	E
+X-Google-Smtp-Source: AGHT+IFKD7n58BP7ztMm3pvdIeaoRBnrc/V/tjWzqPfuKdoiMvXxXQX7nsAZQlD57/gb6NwbXD7lPQ==
+X-Received: by 2002:a17:906:b855:b0:a3c:1070:8054 with SMTP id ga21-20020a170906b85500b00a3c10708054mr4479903ejb.10.1707744126806;
+        Mon, 12 Feb 2024 05:22:06 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUHgwjtNC1nvCZ3U/qOZVG6Qy+4AKhnkZInEvOTikYS1xjVivaa+CrG1rcceGZC8LUIdEs0NjjXGnisFXopJob+JdCOp3o7n/+LXpnV//ryBMEhZrXauoRGHrHRa6ngZRNsiScNz9760Cs7R7fogWe+mgCiWlQ1M7MlLeM96qNIzQ15CvJsLDahIOr5lAP2vYWkfLx649GABIA4L1N2gpfxk6kzMQvFZq+KFBuIqJipIL+HxoI=
+Received: from [192.168.192.135] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
+        by smtp.gmail.com with ESMTPSA id md21-20020a170906ae9500b00a371037a42bsm200533ejb.208.2024.02.12.05.22.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Feb 2024 05:22:06 -0800 (PST)
+Message-ID: <7b33d9a6-8871-4234-8cb0-bf1c2c578210@linaro.org>
+Date: Mon, 12 Feb 2024 14:22:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <f1d370c1-a7d8-4240-a15a-a55616f5b4a6@app.fastmail.com>
-In-Reply-To: <20240212022642.1968739-2-samuel.holland@sifive.com>
-References: <20240212022642.1968739-1-samuel.holland@sifive.com>
- <20240212022642.1968739-2-samuel.holland@sifive.com>
-Date: Mon, 12 Feb 2024 08:21:58 -0500
-From: "Stefan O'Rear" <sorear@fastmail.com>
-To: "Samuel Holland" <samuel.holland@sifive.com>,
- "Andrew Jones" <ajones@ventanamicro.com>,
- "Palmer Dabbelt" <palmer@dabbelt.com>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@kernel.org
-Subject: Re: [PATCH -fixes 2/2] riscv: Save/restore envcfg CSR during CPU suspend
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] power: supply: mm8013: implement
+ POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE
+Content-Language: en-US
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+ Hans de Goede <hdegoede@redhat.com>
+Cc: Sebastian Reichel <sre@kernel.org>, Konrad Dybcio
+ <konradybcio@kernel.org>, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20240204-power_supply-charge_behaviour_prop-v1-0-06a20c958f96@weissschuh.net>
+ <20240204-power_supply-charge_behaviour_prop-v1-3-06a20c958f96@weissschuh.net>
+ <2f244f9f-8796-4cad-8bf8-d0c3411588c1@redhat.com>
+ <569bbc9f-1c34-40c1-a563-e7f6aecf63d5@t-8ch.de>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <569bbc9f-1c34-40c1-a563-e7f6aecf63d5@t-8ch.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 11, 2024, at 9:26 PM, Samuel Holland wrote:
-> The value of the [ms]envcfg CSR is lost when entering a nonretentive
-> idle state, so the CSR must be rewritten when resuming the CPU.
->
-> Because the [ms]envcfg CSR is part of the base RISC-V privileged ISA
-> specification, it cannot be detected from the ISA string. However, most
-> existing hardware is too old to implement this CSR. As a result, it must
-> be probed at runtime.
->
-> Extend the logic for the Zicsr ISA extension to probe for the presence
-> of specific CSRs. Since the CSR number is encoded as an immediate value
-> within the csrr instruction, a switch case is necessary for any CSR that
-> must be probed this way. Use the exception table to handle the illegal
-> instruction exception raised when the CSR is not implemented.
+On 5.02.2024 12:21, Thomas Weißschuh wrote:
+> On 2024-02-05 11:00:01+0100, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 2/4/24 18:26, Thomas Weißschuh wrote:
+>>> The sysfs is documented to report both the current and all available
+>>> behaviours. For this POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR_AVAILABLE needs
+>>> to be implemented.
+>>>
+>>> Note that this changes the format of the sysfs file
+>>> (to the documented format):
+>>>
+>>> Before: "auto"
+>>> After:  "[auto] inhibit-charge"
+>>>
+>>> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+>>
+>> Changing userspace API like this is never ideal, but given how
+>> new the mm8013 driver is and that this brings things inline
+>> with the docs I think that this should be fine:
+> 
+> I agree that it's unfortunate.
+> 
+> However looking at the datasheet [0] it seems to me the driver is
+> not correctly using the API.
+> 
+> Page 23 documents the flag CHG_INH as follows:
+> 
+>   CHG_INH : Charge Inhibit      When the current is more than or equal to charge
+>                                 threshold current,
+>                                 charge inhibit temperature (upper/lower limit) ：1
+>                                 charge permission temperature or the current is
+>                                 less than charge threshold current ：0
+> 
+> This is only diagnostic information and not a control-knob, which the API
+> was meant for.
+> So POWER_SUPPLY_STATUS_NOT_CHARGING seems like the better match.
 
-We support non-conforming extensions, so we can't assume that if an
-implementation does not provide the Ss1p12 extension which defines senvcfg,
-the corresponding CSR number will not be used for other purposes.
+Oh, that's definitely something I glossed over, thanks for taking a look!
 
--s
+I'll send a patch untangling this shortly.
 
-> Cc: stable@kernel.org
-> Fixes: 43c16d51a19b ("RISC-V: Enable cbo.zero in usermode")
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
->
->  arch/riscv/include/asm/csr.h     | 23 +++++++++++++++++++++++
->  arch/riscv/include/asm/suspend.h |  1 +
->  arch/riscv/kernel/cpufeature.c   | 23 +++++++++++++++++++++++
->  arch/riscv/kernel/suspend.c      |  2 ++
->  4 files changed, 49 insertions(+)
->
-> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-> index 2468c55933cd..daff95feb817 100644
-> --- a/arch/riscv/include/asm/csr.h
-> +++ b/arch/riscv/include/asm/csr.h
-> @@ -542,6 +542,29 @@
->  			      : "memory");			\
->  })
+Konrad
+
 > 
-> +#define ALT_CSR_READ(csr)					\
-> +({								\
-> +	unsigned long __v;					\
-> +	__asm__ __volatile__ (					\
-> +		ALTERNATIVE("li %[v], 0", "csrr %[v], %[r]", 0,	\
-> +			    csr << 16 | RISCV_ISA_EXT_ZICSR, 1)	\
-> +		: [v] "=r" (__v)				\
-> +		: [r] "i" (csr)					\
-> +		: "memory");					\
-> +	__v;							\
-> +})
-> +
-> +#define ALT_CSR_WRITE(csr, val)					\
-> +({								\
-> +	unsigned long __v = (unsigned long)(val);		\
-> +	__asm__ __volatile__ (					\
-> +		ALTERNATIVE("nop", "csrw %[r], %[v]", 0,	\
-> +			    csr << 16 | RISCV_ISA_EXT_ZICSR, 1)	\
-> +		: : [r] "i" (csr), [v] "rK" (__v)		\
-> +		: "memory");					\
-> +	__v;							\
-> +})
-> +
->  #endif /* __ASSEMBLY__ */
+>> [..]
 > 
->  #endif /* _ASM_RISCV_CSR_H */
-> diff --git a/arch/riscv/include/asm/suspend.h b/arch/riscv/include/asm/suspend.h
-> index 02f87867389a..491296a335d0 100644
-> --- a/arch/riscv/include/asm/suspend.h
-> +++ b/arch/riscv/include/asm/suspend.h
-> @@ -14,6 +14,7 @@ struct suspend_context {
->  	struct pt_regs regs;
->  	/* Saved and restored by high-level functions */
->  	unsigned long scratch;
-> +	unsigned long envcfg;
->  	unsigned long tvec;
->  	unsigned long ie;
->  #ifdef CONFIG_MMU
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index c5b13f7dd482..934090270ae5 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -954,6 +954,27 @@ void riscv_user_isa_enable(void)
->  }
+> Thomas
 > 
->  #ifdef CONFIG_RISCV_ALTERNATIVE
-> +static bool riscv_cpufeature_probe_csr(u16 csr)
-> +{
-> +	bool ret = false;
-> +
-> +	switch (csr) {
-> +#define PROBE_CSR_CASE(_csr)			\
-> +	case _csr:				\
-> +		asm("1:	csrr zero, %[csr]\n"	\
-> +		    "	li %[r], 1\n"		\
-> +		    "2:\n"			\
-> +		    _ASM_EXTABLE(1b, 2b)	\
-> +			: [r] "+r" (ret)	\
-> +			: [csr] "i" (_csr));	\
-> +		break
-> +	PROBE_CSR_CASE(CSR_ENVCFG);
-> +#undef PROBE_CSR_CASE
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  /*
->   * Alternative patch sites consider 48 bits when determining when to patch
->   * the old instruction sequence with the new. These bits are broken into a
-> @@ -974,6 +995,8 @@ static bool riscv_cpufeature_patch_check(u16 id, u16 value)
->  		return true;
 > 
->  	switch (id) {
-> +	case RISCV_ISA_EXT_ZICSR:
-> +		return riscv_cpufeature_probe_csr(value);
->  	case RISCV_ISA_EXT_ZICBOZ:
->  		/*
->  		 * Zicboz alternative applications provide the maximum
-> diff --git a/arch/riscv/kernel/suspend.c b/arch/riscv/kernel/suspend.c
-> index 239509367e42..fe544f12a5c5 100644
-> --- a/arch/riscv/kernel/suspend.c
-> +++ b/arch/riscv/kernel/suspend.c
-> @@ -15,6 +15,7 @@
->  void suspend_save_csrs(struct suspend_context *context)
->  {
->  	context->scratch = csr_read(CSR_SCRATCH);
-> +	context->envcfg = ALT_CSR_READ(CSR_ENVCFG);
->  	context->tvec = csr_read(CSR_TVEC);
->  	context->ie = csr_read(CSR_IE);
-> 
-> @@ -36,6 +37,7 @@ void suspend_save_csrs(struct suspend_context *context)
->  void suspend_restore_csrs(struct suspend_context *context)
->  {
->  	csr_write(CSR_SCRATCH, context->scratch);
-> +	ALT_CSR_WRITE(CSR_ENVCFG, context->envcfg);
->  	csr_write(CSR_TVEC, context->tvec);
->  	csr_write(CSR_IE, context->ie);
-> 
-> -- 
-> 2.43.0
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> [0] https://product.minebeamitsumi.com/en/product/category/ics/battery/fuel_gauge/parts/download/__icsFiles/afieldfile/2023/07/12/1_download_01_12.pdf
 
