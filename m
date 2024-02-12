@@ -1,74 +1,127 @@
-Return-Path: <linux-kernel+bounces-62156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 909DB851C68
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:04:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEAF6851C58
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D5ABB2BC42
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:00:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 719531F230B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DABE405E5;
-	Mon, 12 Feb 2024 17:56:37 +0000 (UTC)
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F328D3FB01;
-	Mon, 12 Feb 2024 17:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D8845BFC;
+	Mon, 12 Feb 2024 17:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="LRiaR+iH"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A590741766
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 17:57:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707760597; cv=none; b=WEssJSmY/dIE7fgWMzW1h1v+RLL4CJW+7RrbyDW1Db1Dy4PpDW0GgkxrrUNtSdUG9O9b9BJD+cwZhT//pnD+Ceni995qVm5H1IUlPgrNhxJSTgsiB4B9wx7+cJtMlYlKyAVR3/vdYFoXVREh7qcI1q9plBhv+/F3F9mzEnHi54w=
+	t=1707760624; cv=none; b=KOqS3B9jJpxg9FYtgwwVuQgkI2bqB6kL8qWzf0TSGzUjqhH1rPG8rHT+8k0lQoHGLyRIwceagY+an/eNRZe7cNmmxZR/Z6RhxZ5m7oB1Y3LwtLmYIheCmkIFM5h1Q9pFWNqct6sICERQFO3Jl/coMQTZeI+4NHev+ph9hmY3B7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707760597; c=relaxed/simple;
-	bh=I3MvNd9GG3UHQ1Uxe5i0qiVgl2rcA++mX9gcx6ezgTA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=tFOPY06ZcFlNAAeNvKmJwWiBDn7dWVMqL6DL5/G8PQorM9hv6LY+7u8w3rF4FzYz6SH/0WyE1zTzElrNVSlQ8neYghdviO3M22SKUgY+f9h5WQL6QghHHGCMGI2LlEvKqzROiYsh5pTSLh0gvG0UpC5WthGN8yUVo4dCxAHOxi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 47C1592009D; Mon, 12 Feb 2024 18:56:26 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 4452592009B;
-	Mon, 12 Feb 2024 17:56:26 +0000 (GMT)
-Date: Mon, 12 Feb 2024 17:56:26 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-cc: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH 1/2] PCI: Clear LBMS on resume to avoid Target Speed
- quirk
-In-Reply-To: <alpine.DEB.2.21.2402011800320.15781@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2402121745300.2376@angie.orcam.me.uk>
-References: <20240129184354.GA470131@bhelgaas> <aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linux.intel.com> <alpine.DEB.2.21.2401301537070.15781@angie.orcam.me.uk> <a7ff7695-77c5-cf5a-812a-e24b716c3842@linux.intel.com> <d5f14b8f-f935-5d5e-e098-f2e78a2766c6@linux.intel.com>
- <alpine.DEB.2.21.2402011800320.15781@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1707760624; c=relaxed/simple;
+	bh=GO+XqADvFPujimGfIAAMQ9biA+SOVkTb0kZua4dtRds=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pF7cGxZrGjigl9ewY3MJSKtW0Mi5mz6z92GuIK6HcEzAECM9gyv2dq3y2s/qXrMx/Pr/kN188qap7Tps/B2SF2RmFZfC5tJ8fTTNOEWBFuSQKxAV9Rrobk8QxNQuNRPhhJlfKGFQl7bgOObnrOzZsk1TFIUsT6YnWXUz3AcGIWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=LRiaR+iH; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-604b94c0556so25666577b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 09:57:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1707760621; x=1708365421; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GywgT/kIpRIiEaoNj7SzkmI6fseY2YuE7XBhiV1W3IM=;
+        b=LRiaR+iHlnh9kzMtOaWL8uSftEEFJ52PPgddWsecZFY4BgcuAlwZK4R4dL/SZh1mrE
+         Y2w7AzzbskSyTKL8jhIgfcCH1JKlqWdBJlWj/6pLDwhsGSvJ7JPrbBN/CwPj5looxEM8
+         lHZ/TNidgCuBjffnQET4rpNppKqx732X6YNmBP9YmEE6Nx0uqWgRwx5aZdrWcv/7bfLq
+         S6kD2XXIyP+9wPD23o3fFt4nVhgPZe6OizA3ViMyaIA5hEaSQcPiCDVyBqqBaNJARkg+
+         GEz0ooTgJSysfQSHZSy7xILJ+U8sJOILqkDOKoayxnGfmKzmn0lxKxGLankZqDCiZa/w
+         RTPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707760621; x=1708365421;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GywgT/kIpRIiEaoNj7SzkmI6fseY2YuE7XBhiV1W3IM=;
+        b=ASUUb1O8vfBKHAuMonvOzcEanNRff84rkVX8eb0DWJL+TDgkKKB0r46jIi6TJ0yQfw
+         pGXEeggSfXBVZrgqvufpKUrDAgOZedNO634UzU3TGzzo4LKx5mzu46iV46U1WLwzsAtJ
+         IYPyOzsSCN8VzQQf0bTIEhp2EFYf6vTflT/Q9YnzyKTFBSZUbmS3Ev7NILrunYsXEHs7
+         l8iz+gc4YkdYjjrD+F0pKnORWsoPTVyVgK51UT8GwkrMZrdi/lU2CovCustqUOndXT+0
+         dofU6Scnft+ylWjlP7ZPKLXS4hZUbLwFSwRFjoJk61yYup0qzfh4ZTEmelHyzBqm1ve8
+         W9+g==
+X-Gm-Message-State: AOJu0YxcYzCLptyx4AG+IkciJJlztOYFZvgi2iKYQxgS1hQZQXEfG5na
+	KlSTq+gJ5oGN8I9D237HpwMD3W4fKMqdw1IZQYV+5vHF+Xfa7bcsRNIBAjQg1uXUb5XM9YPwv2x
+	QaiETwM4wQbHaqwLk1LG4sSNeVzl1EyZXDY5x
+X-Google-Smtp-Source: AGHT+IGjhdaYUNjwcSJFIvuNyHx9uH/3Qz50J2Oo2Jf2sLDKqyYEZrikDyUgVsDTlP7Ry4VIyaFcE3Lr2B40t4UjJbg=
+X-Received: by 2002:a81:d507:0:b0:5ff:aa34:7c5f with SMTP id
+ i7-20020a81d507000000b005ffaa347c5fmr4677040ywj.46.1707760621630; Mon, 12 Feb
+ 2024 09:57:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-20-roberto.sassu@huaweicloud.com> <fd6ddc3d-e5d3-4b9c-b00b-ac2b1f22d653@linux.ibm.com>
+In-Reply-To: <fd6ddc3d-e5d3-4b9c-b00b-ac2b1f22d653@linux.ibm.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Mon, 12 Feb 2024 12:56:50 -0500
+Message-ID: <CAHC9VhTY=X7z5SRQZzFe25FGB2E3FBBkuZ_YYA1+ETyr7pv=tA@mail.gmail.com>
+Subject: Re: [PATCH v9 19/25] integrity: Move integrity_kernel_module_request()
+ to IMA
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de, 
+	kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, jmorris@namei.org, 
+	serge@hallyn.com, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
+	eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org, 
+	stephen.smalley.work@gmail.com, eparis@parisplace.org, casey@schaufler-ca.com, 
+	shuah@kernel.org, mic@digikod.net, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	keyrings@vger.kernel.org, selinux@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 1 Feb 2024, Maciej W. Rozycki wrote:
+On Mon, Feb 12, 2024 at 12:48=E2=80=AFPM Stefan Berger <stefanb@linux.ibm.c=
+om> wrote:
+> On 1/15/24 13:18, Roberto Sassu wrote:
 
-> > > There's always an option to store it into pci_dev for later use when the 
-> > > quirk is found to be working for the first time if other solutions don't 
-> > > work.
-> 
->  Indeed there is.
+..
 
- On second thoughts there is not.
+> > +/**
+> > + * ima_kernel_module_request - Prevent crypto-pkcs1pad(rsa,*) requests
+> > + * @kmod_name: kernel module name
+> > + *
+> > + * We have situation, when public_key_verify_signature() in case of RS=
+A > + * algorithm use alg_name to store internal information in order to
+> > + * construct an algorithm on the fly, but crypto_larval_lookup() will =
+try
+> > + * to use alg_name in order to load kernel module with same name.
+> > + * Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel module=
+s,
+> > + * we are safe to fail such module request from crypto_larval_lookup()=
+.
+> > + *
+> > + * In this way we prevent modprobe execution during digsig verificatio=
+n
+> > + * and avoid possible deadlock if modprobe and/or it's dependencies
+> > + * also signed with digsig.
+>
+> This text needs to some reformulation at some point..
 
- The thing is if we handle a situation where the downstream device can be 
-replaced while in suspend (which I infer from the discussion that we do), 
-then it could be that one device will require the quirk while the other 
-one will not.
+There is no time like the present.  If you have a suggestion I would
+love to hear it and I'm sure Roberto would too.
 
- So any previous results have to be considered irrelevant and the whole 
-dance with the quirk has to be repeated every time at resume or hot-plug.
-
-  Maciej
+--=20
+paul-moore.com
 
