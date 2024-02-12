@@ -1,90 +1,78 @@
-Return-Path: <linux-kernel+bounces-61100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFFC4850D45
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:51:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 880AE850D46
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:52:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B3002860C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 04:51:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F150E1F25E82
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 04:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68A85396;
-	Mon, 12 Feb 2024 04:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD3D6FBF;
+	Mon, 12 Feb 2024 04:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pdp7-com.20230601.gappssmtp.com header.i=@pdp7-com.20230601.gappssmtp.com header.b="hDFCrnOo"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fZBUpXjY"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95F5E6FA7
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 04:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8198E6FA7
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 04:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707713510; cv=none; b=Mh5B3LKVU5DgIxoZGidXyJW2zQwsFp9ROjQXH7ygivLQfTSVvEsPfh2eKqOndlyLGfG73M8AzcCLGV61+xEWwgNIQ398ZcYBeNQFz0ddMykMSBWeLM+bA3Xn+tP58twcsyIMOXdO1nY0R3qsxoEw27wD+0ir/2a8IxR9xMZDlTU=
+	t=1707713554; cv=none; b=srbTT8C2AiniK4ED07b36mUlqgzSMER/YC/LaH9Q1wBnEm6kc7LVnud4bq989aWmW+hQVjODpeSZsl5UwhBIFOz5z0IjsJ1V4jWjnVkffSUn8FZfHgVjCDaVBsaRwqbx8sHcFxaECVcYeJrXKvAujbuWFaTHDiQDNtz49Rm3a0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707713510; c=relaxed/simple;
-	bh=ycDmJ8sSzq/z4s/iOCsk1Vsc5DOZRrjGfbxabXVUfMw=;
+	s=arc-20240116; t=1707713554; c=relaxed/simple;
+	bh=3azz1M9ulZmRqHPlpbmfo8wZIFZL+JYpkzBM25GgJfU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JvjfKUA5dHXZgNtMVmzVCDHt05T0j81Z0TMXNgtmvKKhv/z5wDrSYfVpWgM4x3S4tCwLTu6l2mWkZTwF4YGB26Tnl0pbpV/3cC6cUTfK29KdtqAH4lqKK1NK1pur9gr3HinxZms0gZHPZ1vg/9WHM+JkpuliWOKjGF/F2aXmG9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pdp7.com; spf=none smtp.mailfrom=pdp7.com; dkim=pass (2048-bit key) header.d=pdp7-com.20230601.gappssmtp.com header.i=@pdp7-com.20230601.gappssmtp.com header.b=hDFCrnOo; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pdp7.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=pdp7.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d7393de183so17510065ad.3
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 20:51:48 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=NViGj5qOiOsmbjvGGvpcZYUfnd+hoS+zeSAtXgWA7r0/GYvv5V3oKUzOhNSB70nIefqJSFh47GRyyyLNE2fBP8KLR1BiJj8Qv3sb2Twgyr3GSgI5SNKlQTykp3zailY1T7lLM2QmBcvtm1r51h/EAn9Ub+G95fNVZ00rXT8OLfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fZBUpXjY; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so2340487a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Feb 2024 20:52:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pdp7-com.20230601.gappssmtp.com; s=20230601; t=1707713508; x=1708318308; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707713552; x=1708318352; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TN1N5wHd/5s/p1QMyzLjtp6F087WNnhanJgsh/0rH+g=;
-        b=hDFCrnOotm1QglenU7JYk2VxDjysOmPUDtCSONvlv+IkIt8uC9HefD/M7eh1tEaqu+
-         t/cIgp8GF4FCY+nzehZaFQVxVix+S7Gzd9NwVGZ78TufwRwDahJAVZ4CLn9thOqHY6Nd
-         PMZjCf/jqL9RMFtH2IRiNyHkLc+Yyc8l8cjE23i0rvaRSo9rJAJeAkDSVqVyzg0il7oy
-         mcCBk8XXBn0P3exT+CF8cl3F6yGFkeD6hbkdtAWUQ8AUVRBM7T3JeTpNKo12fduonC8x
-         U+Wgz3ba+HRVPNbKW09l85UqQ+77ePHHCUIn7zzRAufw90FikzflB3IMV/vAqVXdgoEm
-         TCJw==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1evrDlaQclp/DrCuFqkMquvRkDV/fOqtOpgkKsW9H7w=;
+        b=fZBUpXjY5yymmfbVRk30aoEOl2CCybKw7GD5VRrFpk1HV5le3nxAk4t7623qI5/WfS
+         qvu7v7COKR3sGnPnxREPeuAJCTqVdAwRPdJhKobvDUvBDt3qSY30wJyx5pRBKjCp1IDP
+         l6ICfYTkyc2RS2Tv5CwL8RCaCqBPq3AqR/DZt3v98SgdPmD70XmGygXVNnv0cf+BOkBq
+         3G/P1j50oZOI22RFRC1ZHe5RVqupjmJQ6EshSHMoWxK7V1FU6zloNu/M+vpJll1nFRo7
+         0GurSr96MB3+r1RHAfNVp4RctEqVRhul6SeE3deVVm8tT0RJELmq0b+4TIkrBzeYqox7
+         cHgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707713508; x=1708318308;
+        d=1e100.net; s=20230601; t=1707713552; x=1708318352;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TN1N5wHd/5s/p1QMyzLjtp6F087WNnhanJgsh/0rH+g=;
-        b=Tdzr6Fw0/oktW8wJvjD0srzgoC7/fEKMAg9dQM/9OSnDy2okujjS5a312yEvSH7dkM
-         81xm7sC6HtAKiIOJb6ZMTlAaWJ5dSAS1uNOXsKXk7gxjxzBG+lythIvkNTkN0YcSPSfA
-         rVPA4rpUoiAz0y1EAmj7KouRZWc/QYsj+I2Jz0S0SoErx2TijT98gKNVmaZJaNCpxNUG
-         SpaJ5I/zdGTmPBGz2fN2wA12sAC2L2ivw4EwlueRzQI79jG/0KsNPztV4QME208xgCW9
-         u+SUaGEJgK6wcQ1lU/gRMlDg69Y0NX22Re1czvvIv2FWZaNo6XlgULBGCYHCxnS3kgVV
-         xxOg==
-X-Forwarded-Encrypted: i=1; AJvYcCVGGhCUoGPJRLWIDXpOxO6OYFYooRhWAFLduysxYhUaF3W6dhTpmC+j4KVVCEoRi8lFbSU/oYdw7T+8sWxHUvhGCdJHh+8lHCwTNLF6
-X-Gm-Message-State: AOJu0YxlKMXvGFeFvCiWuewDKaeH30d9sYQ6QFNM39UF98QSe+JXxoJd
-	EKQh79pO38MkXl/1vB+JBxA4nC5LzS1ezS4tsIqdrc4oemZ9x7pzuioNUFSKzjDcZ7FnEv2N1pf
-	E0uM=
-X-Google-Smtp-Source: AGHT+IEY75u/xGNwtso6ikxk6UIGByK6eYyNtc4JEQmcS7pJ05+PReKBC2npnp/ZrQdzl+9s0BWt7A==
-X-Received: by 2002:a17:902:d4c8:b0:1da:1d05:7a9d with SMTP id o8-20020a170902d4c800b001da1d057a9dmr6074230plg.16.1707713507909;
-        Sun, 11 Feb 2024 20:51:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVaPIfssrHeVXME5NSMoqDcFAbff4F2+6YsQy+XASCsypNoJZZdJHge7fzlNUi7H3PsNCFUndZbUckz7YHhySgjrUiLVYUNbPBrLxwjOaQccFIxgkFRw3Zg41GRWir8liPg+DvGfitTROQU6FPAq+yTsR4a+Qm8IwSAuenAgEjHqdCJ86Av8CdW4Cy97co/t28+wrRjzQP/W+K/WqosgfJcBV+g2fgiT2ipQmpUXMmot4CvVxOtXNtQWKE0ezI2cYxPJyZ7W902ZAVQMi5/On+PtLhfRTdiJV9b1xCZrVlp4G6mFqm8KPQT9jEJE03awXg2VMQ9KHkO7fig1rccHthlW/rtxFXAmtbG4MNYaGk5xOf6C2yjjWozW3z44Feqs302nDBIh3t+E2frxXIsM1qsrSEaE6F2Qw7jeSNGUixgfnYQUtXszVCVK2ZRTRvwEoDRVK0YHY1tovWkbtPrayC8jBHBuYmAQLlS1O8ZxVc1LhQ+AYJQgKYPiir2Xrm9
-Received: from x1 ([2601:1c2:1800:f680:a936:a777:2d19:7ea9])
-        by smtp.gmail.com with ESMTPSA id jz8-20020a170903430800b001d8e41b3f95sm5038876plb.51.2024.02.11.20.51.46
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1evrDlaQclp/DrCuFqkMquvRkDV/fOqtOpgkKsW9H7w=;
+        b=l8J4rpwaqTy1SXcGaPo1St5fIufhThPLeuyW1yLJeAdQlaCuA6X8aBheZFRNwBK0Zb
+         uWH1IxdG4qw695FI1zO8TMk+Zk+1//tpSoel7aCGruUVQ8pVriSw8iW8JG/e1UcMemTn
+         hnRMuzqv3fujHWlULSzbbTFFOzd8MA4Eqd8w2544DQ3kCaEGnDcikF2Cw4g61K0f+QvR
+         3kyG0ts1DfYvmY5ZIg0TihoJvPP0zjFT+yfw96ih/BsRJuK4EgV2y11/Ze2LRx+VY5cB
+         ZbfBTUYQC0h7qWgHsI79xEqG5K06kFem/PVfNW1Jqf+/SoA4HJ1UbSrljU8Fb7yi+Igv
+         +rsg==
+X-Gm-Message-State: AOJu0YzZ+pCuAKoLeCNawOdxnrGg56oukpRs3QPqX0lfU3e1cVx6ozlN
+	dWHQHC88whLP72CrUoT/XRz1teUJKM30I03xWjXq/Ie3+1gPtgBVaCM7ks+w
+X-Google-Smtp-Source: AGHT+IGn8YX6hGMbrI1Glof9d02H5dSYOlPGsKCRvcdhQnD5Blo+9ouZlZSDPCo/2G8uNQF5MHoDcQ==
+X-Received: by 2002:a05:6a20:c68e:b0:19e:bff0:c8fc with SMTP id gq14-20020a056a20c68e00b0019ebff0c8fcmr8516710pzb.56.1707713551632;
+        Sun, 11 Feb 2024 20:52:31 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id ev9-20020a17090aeac900b0029685873233sm5908916pjb.45.2024.02.11.20.52.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 20:51:47 -0800 (PST)
-Date: Sun, 11 Feb 2024 20:51:44 -0800
-From: Drew Fustini <drew@pdp7.com>
-To: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Conor Dooley <conor@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
-	Fu Wei <wefu@redhat.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Jason Kridner <jkridner@beagleboard.org>,
-	Robert Nelson <robertcnelson@beagleboard.org>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: (subset) [PATCH v8 0/4] RISC-V: Add MMC support for TH1520 boards
-Message-ID: <Zcmj4Pbi/1c49dR+@x1>
-References: <20231206-th1520_mmc_dts-v8-0-69220e373e8f@baylibre.com>
- <20231212-flammable-idiom-660b1d85e20d@spud>
+        Sun, 11 Feb 2024 20:52:30 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sun, 11 Feb 2024 20:52:29 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 6.8-rc4
+Message-ID: <d56f35c3-ce83-4356-bf78-66ed5f99d19f@roeck-us.net>
+References: <CAHk-=wg1c4Q1Ve6BG71DikHu-AEoKUUQoj1QbVdjwGQyTExqCw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,40 +81,175 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231212-flammable-idiom-660b1d85e20d@spud>
+In-Reply-To: <CAHk-=wg1c4Q1Ve6BG71DikHu-AEoKUUQoj1QbVdjwGQyTExqCw@mail.gmail.com>
 
-On Tue, Dec 12, 2023 at 07:13:25PM +0000, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
+On Sun, Feb 11, 2024 at 12:36:02PM -0800, Linus Torvalds wrote:
+> Commit counts and contents look normal for this phase of the release,
+> nothing here really stands out.
 > 
-> On Wed, 06 Dec 2023 00:09:20 -0800, Drew Fustini wrote:
-> > This series enables the MMC controller in the T-Head TH1520 SoC and
-> > enables the eMMC and microSD on both the BeagleV Ahead and the Sipeed
-> > LicheePi 4A.
-> > 
-> > The drivers/mmc/host patches from v6 were applied by Ulf and are already
-> > in the linux-next [1][2] as well as the bindings patch [3]. Thus v7 was
-> > only a defconfig patch and three device tree patches. This v8 is a
-> > followup to change the dwcmshc node names to match the documentation.
-> > 
-> > [...]
+> Sure, we've got a ntfs3 fix dump, which shows up a bit in the stats,
+> but the bulk is all the usual suspects: drivers (particularly gpu and
+> networking) and core networking.
 > 
-> Applied to riscv-dt-for-next, thanks! The defconfig patch is Palmer's
-> to take :)
+> The rest is the usual random collection of fixes all over: other
+> drivers, some architecture fixes (mainly x86 and RISC-V), and some
+> core vm and tracing noise. And selftests.
 > 
-> [2/4] riscv: dts: thead: Add TH1520 mmc controllers and sdhci clock
->       https://git.kernel.org/conor/c/a77f02e84896
-> [3/4] riscv: dts: thead: Enable BeagleV Ahead eMMC and microSD
->       https://git.kernel.org/conor/c/18d92a03b319
-> [4/4] riscv: dts: thead: Enable LicheePi 4A eMMC and microSD
->       https://git.kernel.org/conor/c/b6b5028473ce
+> Please continue testing,
+> 
 
-Hi Palmer,
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 549 pass: 547 fail: 2
+Unit test results:
+	pass: 161894 fail: 968
 
-I don't see this in fixes or for-next. Could you pick it up please?
+Unit test failures look like a lot, but it is mostly the same set
+of tests failing in several or even all test runs. Some of the tests
+fail due to a problem with the test, but there are also several bugs
+in the tested code. Note that some of the unit test failures are old;
+I only recently updated my scripts to check unit test results.
 
-I've tested that Lichee Pi 4a and Ahead boot okay on 6.8-rc4 once
-'CONFIG_MMC_SDHCI_OF_DWCMSHC=y' is set.
+Almost all problems are fixed in the 'testing' branch at
+git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git
 
-Thanks,
-Drew
+Guenter
+
+======
+
+Runtime crashes
+===============
+
+an385:mps2_defconfig:mps2-an385:initrd
+--------------------------------------
+
+an385 does not support unaligned accesses, but test_ip_fast_csum
+expects it.
+
+Fix:
+https://lore.kernel.org/lkml/20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com/
+
+See additional information below about checksum unit test failures.
+
+xtensa:de212:kc705-nommu:nommu_kc705_defconfig
+----------------------------------------------
+
+Crash in kunit_iov_iter unit test if CONFIG_TEST_IOV_ITER is enabled.
+
+    BUG: failure at mm/nommu.c:318/vmap()!
+    Kernel panic - not syncing: BUG!
+
+The test code calls vmap() directly, but vmap() is not supported on nommu systems.
+
+Suggested fix:
+https://lore.kernel.org/lkml/20240208153010.1439753-1-linux@roeck-us.net/
+
+Warning backtraces
+==================
+
+WARNING: inconsistent lock state
+6.8.0-rc4 #1 Tainted: G                 N
+--------------------------------
+inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
+kworker/0:2/39 [HC1[1]:SC0[2]:HE0:SE0] takes:
+ef792074 (&syncp->seq#2){?...}-{0:0}, at: sun8i_dwmac_dma_interrupt+0x9c/0x28c
+{HARDIRQ-ON-W} state was registered at: 
+  lock_acquire+0x11c/0x368
+  __u64_stats_update_begin+0x104/0x1ac
+  stmmac_xmit+0x4d0/0xc58
+  dev_hard_start_xmit+0xc4/0x2a0
+  sch_direct_xmit+0xf8/0x30c
+  __dev_queue_xmit+0x400/0xcc4
+  ip6_finish_output2+0x254/0xafc
+  mld_sendpack+0x260/0x5b0
+  mld_ifc_work+0x274/0x588
+  process_one_work+0x230/0x604
+  worker_thread+0x1dc/0x494
+  kthread+0x100/0x120
+  ret_from_fork+0x14/0x28
+
+Caused by commit 38cc3c6dcc09 ("net: stmmac: protect updates of 64-bit
+statistics counters.")
+
+Report:
+https://lore.kernel.org/lkml/ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net/
+
+Unit test failures
+==================
+
+checksum
+--------
+
+Various checksum tests fail on several machines, with different reasons.
+Too many to list in detail.
+
+Reports:
+
+https://lore.kernel.org/lkml/ec44bf32-8b66-40c4-bc62-4deed3702f99@roeck-us.net/
+https://lore.kernel.org/lkml/9b004c45-45f8-4abb-a24e-bb47b369b1a5@roeck-us.net/
+https://lore.kernel.org/lkml/65ed7c95-712c-410b-84f3-58496b0c9649@roeck-us.net/
+
+Suggested fixes:
+
+https://lore.kernel.org/lkml/20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com/
+https://lore.kernel.org/lkml/20240210175526.3710522-1-linux@roeck-us.net/
+https://lore.kernel.org/lkml/20240211160837.2436375-1-linux@roeck-us.net/
+https://lore.kernel.org/lkml/20240210191556.3761064-1-linux@roeck-us.net/
+
+Handshake API
+-------------
+
+  # req_destroy works: EXPECTATION FAILED at net/handshake/handshake-test.c:477
+  Expected handshake_req_destroy_test == req, but
+      handshake_req_destroy_test == 00000000
+      req == c4aef640
+  not ok 11 req_destroy works
+
+Observed in v6.1.y and later. The maintainer wasn't happy with my suggested
+fix (see discussion and patch in my 'testing' branch). I am not aware of a
+pending patch.
+
+Discussion:
+https://lore.kernel.org/all/20240202164705.6813edf2@kernel.org/T/
+
+regmap
+------
+
+Reports:
+https://lore.kernel.org/lkml/fc1d865d-3e2e-48bc-8cd1-389ec6b15909@roeck-us.net/
+https://lore.kernel.org/lkml/dc5e573d-0979-4d7e-ab4a-de18a4711385@roeck-us.net/T/#u
+
+Pending fixes:
+https://lore.kernel.org/lkml/20240206151004.1636761-2-ben.wolsieffer@hefring.com/
+https://lore.kernel.org/lkml/20240211-regmap-kunit-random-change-v3-1-e387a9ea4468@kernel.org/
+
+cpumask
+-------
+
+Report:
+https://lore.kernel.org/lkml/e6f0ab85-5bbe-41c1-8976-5ba00044998c@roeck-us.net/raw
+
+Also see
+https://lore.kernel.org/lkml/Zb0mbHlIud_bqftx@slm.duckdns.org/t/
+
+Caused by commit 0921244f6f4f ("parisc: Only list existing CPUs in cpu_possible_mask")
+which will need to be reverted. Observed in v6.1.y and later.
+
+stackinit
+---------
+
+Seen with m68k:q800 emulation.
+
+    # test_char_array_zero: ASSERTION FAILED at lib/stackinit_kunit.c:333
+    Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
+stack fill missed target!? (fill 16 wide, target offset by -12)
+
+    # test_char_array_none: ASSERTION FAILED at lib/stackinit_kunit.c:343
+    Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
+stack fill missed target!? (fill 16 wide, target offset by -12)
+
+Report:
+https://lore.kernel.org/lkml/a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net/
+
 
