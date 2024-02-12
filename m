@@ -1,168 +1,126 @@
-Return-Path: <linux-kernel+bounces-62512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B59D9852230
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:01:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6989B852235
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EAA5284CFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:01:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6F1D281532
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 23:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D16654F5FE;
-	Mon, 12 Feb 2024 23:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6024F214;
+	Mon, 12 Feb 2024 23:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4QVWVS5P";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lDBRH2wk"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YNoHMl8H"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00854EB32;
-	Mon, 12 Feb 2024 23:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDAB951013
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707778868; cv=none; b=o6PJA588msDg6OI6Ara6sSvE468agwlocmzgr+VpcDzKcLTdBnNOdutriewrwP1LI0JU5LkVs132896hzQhg7iPgCOXxn/VcuaxKQIxgLb6Ggijs7A+IcgDIBAcTWZeLd4DXLVICw+EBA5u+1Zv/4ynr1wwdFJTpaEr9QxLUh2g=
+	t=1707778883; cv=none; b=mtyNMZKkUWJEGIV5sEY/uMdbA70VErXZk48zdCz2zZNhyVaGj//p8i6aZ+91z2/KBy9FUbTDupSPjN9TuDccPm7i7SDiD0ZT4mBsxJIsG0vDjpptUBJoADO5rkHc7IImvjaLSJkSlmufwu2sq5sL8f2Y+Vsaalo82zTQp1fojMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707778868; c=relaxed/simple;
-	bh=dz7Bo1p6nMIUN4HZJcwpOyE8WVu5se81Ug/mMhzK6uE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Pun6XKd8c4auOGiDLrse2MrM/Aet2P1MlkYKst7cnlqEnPbFpgA7fjTVrNHwDioDmINKC4cHFwJX3rRYgpC2+HI0XgeyvU5PqWrC9KMGr+47lXrDTN+KlrqruKN7RLwq4/A7s3cZdV16HRpyV5LcIgXGOL1GKM8v3IMNKebLpJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4QVWVS5P; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lDBRH2wk; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707778863;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cJvi9CRczxtyvt+qDDAp8M1Cn+0bYcrQ7i1j7oLPeQ0=;
-	b=4QVWVS5P8I5fXGOVrY9yhMPnb2fr6bh5DstEwe9iyViUGasAAce0JhykHVrbma4jNBnd4Y
-	bJlwmkgZe1xx716rstpRBKVrqHN/THOe88UDz5+ffgYp4IH4rK8tfkb77ht+0E5QwPwMUW
-	WvvHYKa3dwoVgL4NvSbZkVOKuVKvDTN078CIHboWrZCFTNkYTuNe1plQ3/MK0URLcf6UL5
-	cJKUpVf6phI5gSlUkz5bez5sSyyf1pBVZGicPVXiup2weX1N5hu8bK+PngRyOPbYT0PhjM
-	zSxQ8bcSsh2pLO4nNovEs6pAdIZ8lh6aJpLK2kqSIIUTNiA46zrnwItg4/CTqw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707778863;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cJvi9CRczxtyvt+qDDAp8M1Cn+0bYcrQ7i1j7oLPeQ0=;
-	b=lDBRH2wkcBL4ybc1JUik/fBkcxnxlfhNUH8/+IaAX1ZpWWS2Aj2u1jJ/vRqlhL2Olqe4/m
-	kSBbaC99OGfImqCQ==
-To: syzbot <syzbot+039399a9b96297ddedca@syzkaller.appspotmail.com>,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Cc: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, "David S. Miller" <davem@davemloft.net>
-Subject: Re: [syzbot] [kernel?] BUG: unable to handle kernel NULL pointer
- dereference in hrtimer_active
-In-Reply-To: <00000000000014671906112cb2ef@google.com>
-References: <00000000000014671906112cb2ef@google.com>
-Date: Tue, 13 Feb 2024 00:01:03 +0100
-Message-ID: <875xytjnio.ffs@tglx>
+	s=arc-20240116; t=1707778883; c=relaxed/simple;
+	bh=tTpbh5UfZfyy28Rs/Cv2qtnww4MwOrI6Z7e146A9LpI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JeVYs7WV99/bdUwBCceWHjnx6tx4yEe8FaboTVJoMO2foZeRN80oF7LQbFkdCr/c0vlOrRVONCHCWAXyzdBZGV7g99urZkUUjxpcdCK4ACtAjKLusBLHK8bTkrZzzlth6mf24cUgV8YEFLuSOLDttpjnrm/xlAb/4+PzWxKNPDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YNoHMl8H; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e08dd0fa0bso2545014b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:01:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707778881; x=1708383681; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FzsjrPnusIaHUIYYiKKdbD1PNR9YsTLIdgA5piLTr48=;
+        b=YNoHMl8HoMvf8bHoQ14GAwd8t1a5Tz1VLxpRPT9+25A8wfNg6DQhOHiIXVsgyL/7ph
+         kjH+DoMMK4X+8kyCZW60fFI6ixvJZH8IRakeT0/mlh3TVkwU8oJze10u/z6Q/M4cXq8X
+         +bXouy3+5739nJ7PwDQieSRut2Qe8ERkrzO0o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707778881; x=1708383681;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FzsjrPnusIaHUIYYiKKdbD1PNR9YsTLIdgA5piLTr48=;
+        b=BOqrnZYgHUCBrQs9awuYVIMrQlP+/v8lZAgq3Ibg3U/CoBngJpOmI3LncyGmLMLs6X
+         nPK5o//5GfhLsjhRF/Hh2Zg0c91pvFYKkndHPgKw97NU7fSz13jOiAxjbE13Zwj3aENP
+         mvisvD0w5iQu78WyuvCQB55UKtwUAkrQvjmd4g9QQOUSb/B18TAjarp8eTZeZJ7/BAvY
+         VopL3ZQ7w5RSWhHis94e2t3LjjIl3zIYNhLNslciTxAY0/I2J7iwq9SbPUo9HipWlwtr
+         PR6AyAIUqtmfC4o4T4ZLGEXil1VQF9yFN9cclM8tXfz5rXBr5Uu/C6zgEtO3M+HIxmKP
+         MZVg==
+X-Forwarded-Encrypted: i=1; AJvYcCVNxQ3gCeu1HSIueT1PZgtUYTeF5SzSqU4/nhROImXQFM59heAaTYPp2WgZPO449D/tQOtsglcrjfNCONl4rUvv/3GK5TSaRBkNWzz0
+X-Gm-Message-State: AOJu0YxiQ1VwBJXflAizQMYl8GWCIqzBwkTo7Q/0Z1/Irfnbsfp5R2wi
+	+zW1IY92oEM/GPgl+r+2T1BM6zYMjUg9dlxnyhFjKqXjiXcc1/cu+c5tAUdoLg==
+X-Google-Smtp-Source: AGHT+IHKYkrvWP6pn+Z0bv1j498bkNcTGlpfF62jfvH5sqEIpqwicwiMKjizBBkpoFi7tjdt3fDdpQ==
+X-Received: by 2002:a05:6a00:194c:b0:6e0:6aaf:5e57 with SMTP id s12-20020a056a00194c00b006e06aaf5e57mr1150993pfk.8.1707778881054;
+        Mon, 12 Feb 2024 15:01:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVqPDglaouwlesQHnb43T4Isv16NQxb4dXSRTJuJSE5aNgdLn5NkEJGctOyntILaXZQS0mnDZpLVHN+/xwOB9IoAgg9x0u29PK/IhT7vjo91yIRFcPvoSMBYBFTzt+86JDN1jgMokFHBEXgSllBDYGACxIo0zUFX17bzZBEU7NwjPK5esvpkzsm8ibJaJyYxi2UJsA8zbTPNgaMTjZhnLBqFB+AILhOnQMu3xiK9ZU4f7GtCTbRmKaQQgFh0z0TRcxbJff4bi+eT3yTtwdcnSLjIvBdWA0x+ELkk+GqvBo+wxUIMd3R/SyxCqpTCriDuDr9DirngV3+ShKRVfu2nluGcwRSZfrhSjApbK/fCGIR4/LdLALZhVz/s56pny6O3gcmucfFvYV4odX4ckaTFciS8AJBREeUfEUPAnq8fWaB96nB3adrPIkjaAnXVxmnTdxL5X6oM/t8wis1hvXbcOnobKCN9fFEDPgjNVeA+QNqNhdzD3YRnTrs3sRnZeZs0tuUf0LW4+UtqwmVIsYxmql8pL7fOpAREfPaCHgqX0NFpVieKkvY0fMMnu3nRh0xKbfllsY9sjEzjpCwyZQCJ/CKBP9jT9n6AKjiVTNe50JwZj4ZeSvaC/a6uMZ0lhgP0nfkvvI7EFxu+TtZRjrzuIHn6E+fxmBlhHOCFV79XFx8fJc/wu0AHsf2VzlWSUIzFXGqPnNMDjAzpTzvx/l9cNLUx4eRQl6ExPiTPL5iDDwJCxAOJ7ppGA==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id r19-20020aa78b93000000b006da19433468sm6077507pfd.61.2024.02.12.15.01.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 15:01:20 -0800 (PST)
+Date: Mon, 12 Feb 2024 15:01:19 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 22/35] mm/slab: enable slab allocation tagging for
+ kmalloc and friends
+Message-ID: <202402121500.68DFA4A32D@keescook>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-23-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212213922.783301-23-surenb@google.com>
 
+On Mon, Feb 12, 2024 at 01:39:08PM -0800, Suren Baghdasaryan wrote:
+> Redefine kmalloc, krealloc, kzalloc, kcalloc, etc. to record allocations
+> and deallocations done by these functions.
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-Cc: +netdev
+I'm not a big fan of the _noprof suffix, but anything else I can think
+of isn't as descriptive, so:
 
-On Mon, Feb 12 2024 at 02:25, syzbot wrote:
-> HEAD commit:    4a7bbe7519b6 Merge tag 'scsi-fixes' of git://git.kernel.or..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10476de0180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=264238120cdb2bda
-> dashboard link: https://syzkaller.appspot.com/bug?extid=039399a9b96297ddedca
-> compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm64
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-4a7bbe75.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/ee3f97d1ed38/vmlinux-4a7bbe75.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/eb6f9f8f9f37/Image-4a7bbe75.gz.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+039399a9b96297ddedca@syzkaller.appspotmail.com
->
-> infiniband syz0: set active
-> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000010
-> CPU: 1 PID: 3665 Comm: syz-executor.0 Not tainted 6.8.0-rc3-syzkaller-00279-g4a7bbe7519b6 #0
-> pc : __seqprop_raw_spinlock_sequence include/linux/seqlock.h:226 [inline]
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-That's:
-
-        seq = raw_read_seqcount_begin(&base->seq);
-
-where base == NULL. That can only happen when hrtimer_cancel() is
-invoked with a non-initialized timer.
-
-> pc : hrtimer_active+0x4/0x60 kernel/time/hrtimer.c:1614
-> lr : hrtimer_try_to_cancel+0x1c/0xf8 kernel/time/hrtimer.c:1331
-> sp : ffff800082c63300
-> x29: ffff800082c63300 x28: 0000000000000000 x27: 0000000000000000
-> x26: 0000000000000340 x25: 0000000000000000 x24: f3ff00001ab7e9e0
-> x23: 0000000000000000 x22: 000061100fc019e9 x21: 0000000000000009
-> x20: 0000000000000000 x19: fbff00001abf9920 x18: 0000000000000000
-> x17: 0000000000000000 x16: 0000000000000000 x15: ffff80008144d28c
-> x14: ffff80008144d20c x13: ffff80008144d28c x12: ffff80008144d20c
-> x11: ffff800080011558 x10: ffff800081907d14 x9 : ffff8000819078a4
-> x8 : ffff800082c63408 x7 : 0000000000000000 x6 : ffff800080026d20
-> x5 : f2ff000033f2c800 x4 : 000061100fc019e9 x3 : 0000000000000340
-> x2 : 0000000000000000 x1 : 000000000000000d x0 : fbff00001abf9920
-> Call trace:
->  hrtimer_active+0x4/0x60 kernel/time/hrtimer.c:1613
->  hrtimer_cancel+0x1c/0x38 kernel/time/hrtimer.c:1446
->  napi_disable+0x5c/0x11c net/core/dev.c:6502
->  veth_napi_del_range+0x64/0x1d8 drivers/net/veth.c:1109
->  veth_napi_del drivers/net/veth.c:1129 [inline]
->  veth_set_features+0x68/0x98 drivers/net/veth.c:1580
->  __netdev_update_features+0x200/0x6ec net/core/dev.c:9872
->  netdev_update_features+0x28/0x6c net/core/dev.c:9946
->  veth_xdp_set drivers/net/veth.c:1681 [inline]
->  veth_xdp+0x108/0x224 drivers/net/veth.c:1694
->  dev_xdp_install+0x64/0xf8 net/core/dev.c:9243
->  dev_xdp_attach+0x250/0x52c net/core/dev.c:9395
->  dev_change_xdp_fd+0x16c/0x218 net/core/dev.c:9643
->  do_setlink+0xdd0/0xf14 net/core/rtnetlink.c:3132
->  rtnl_group_changelink net/core/rtnetlink.c:3452 [inline]
->  __rtnl_newlink+0x460/0x898 net/core/rtnetlink.c:3711
->  rtnl_newlink+0x50/0x7c net/core/rtnetlink.c:3748
->  rtnetlink_rcv_msg+0x12c/0x380 net/core/rtnetlink.c:6615
->  netlink_rcv_skb+0x5c/0x128 net/netlink/af_netlink.c:2543
->  rtnetlink_rcv+0x18/0x24 net/core/rtnetlink.c:6633
->  netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
->  netlink_unicast+0x2f4/0x360 net/netlink/af_netlink.c:1367
->  netlink_sendmsg+0x1a4/0x3e8 net/netlink/af_netlink.c:1908
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  __sock_sendmsg+0x54/0x60 net/socket.c:745
->  ____sys_sendmsg+0x274/0x2ac net/socket.c:2584
->  ___sys_sendmsg+0xac/0x100 net/socket.c:2638
->  __sys_sendmsg+0x84/0xe0 net/socket.c:2667
->  __do_sys_sendmsg net/socket.c:2676 [inline]
->  __se_sys_sendmsg net/socket.c:2674 [inline]
->  __arm64_sys_sendmsg+0x24/0x30 net/socket.c:2674
-
-So something in that syzbot test case manages to tear down a napi
-context which has not yet been fully initialized. While the rest of
-napi_disable() does not care much as long as neither NAPIF_STATE_SCHED
-nor NAPIF_STATE_NPSVC are set in napi->state, hrtimer_cancel() pretty
-much cares as demonstrated by the NULL pointer dereference.
-
-While it would be trivial to harden the hrtimer code for the case that a
-non-initialized hrtimer is canceled, I wonder whether this invocation of
-napi_disable() is harmless (aside of the hrtimer issue) or if there are
-some hidden subtle issues with that.
-
-Thanks,
-
-        tglx
-
-
+-- 
+Kees Cook
 
