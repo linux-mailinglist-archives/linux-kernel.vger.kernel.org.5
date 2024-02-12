@@ -1,181 +1,140 @@
-Return-Path: <linux-kernel+bounces-61518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B1A5851327
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:11:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C691985132D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:12:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DD151C22263
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:11:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6626C1F20F86
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:12:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BF63B19B;
-	Mon, 12 Feb 2024 12:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AFC3BB4D;
+	Mon, 12 Feb 2024 12:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WW14W2bJ"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oxcAnoTM"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5478C3A8D6;
-	Mon, 12 Feb 2024 12:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524FD3BB24;
+	Mon, 12 Feb 2024 12:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707739607; cv=none; b=XxPi58bO3Vxs0Hum1cjmfyOjje7o6yMcabK+6pHHEL3i1Xo3ScCL1PkGFJHkiLIwwRimvRvCFPmIc5uj3h/Ba1Llh1aZ3WrhmPrETG0ApzS4SI51uWRQJLwr2gZ4a2UACmmWyPV7YEGigCgdJnDKX5hxDKNV4afc0D6z+exvaGc=
+	t=1707739631; cv=none; b=WOm4KwFYN5fzs7dM5jmpyc5/Ur3bWeVpdp5O+GPjmpRN0MogKZfHwudusmkX1Gu57tQeVz7dUGkPccytPLCfVk26SML4DCf9Z+SOe6pyMO8MEMQRwqWN3hZwOdSo5+BsYT+xNTWZLbx+HQfDANi90DKzhIvx+d9gS8APGhM0kCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707739607; c=relaxed/simple;
-	bh=WS2EwGIYfjfVYeJeT+YZsja3GaMwcTRbUQylau3i3Fc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=r9OHITgxSQuNk3Paz+SCftp3M0rs2HTLNYa8/8aRYQ5KVYae4n8ifshrThpmmld0EiyN9/KWHfP/BkMmUgn7yrj4rwzUk+F153kNXx/3mExtoVUkHFniknJwwgXVlrOSPrgXbjzdX+Qm5202sulH3Dgl7hanwVLxp57Tkawc4DA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=WW14W2bJ; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41CC6dZT117182;
-	Mon, 12 Feb 2024 06:06:39 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707739599;
-	bh=S5J/1ObFeoSiJ6gia+94nSw92mC+A99I/PrxqgTLWS4=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=WW14W2bJfJTJeCbB7afdwKJWmIZVkb3pzb9UZCYWr6IQaq6oD6MaC8c6e/R6GCJVO
-	 dqXrc4cGoX/3NewVDdqfmSu6RuDTUXg8HZWPSs1/rsMiFZVldTdaCs7TpKbuS3LSKj
-	 KAd2oWHLOQLfamyjV7xN+CFhm19CWiYr3tPeVumw=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41CC6dWJ022746
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 12 Feb 2024 06:06:39 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
- Feb 2024 06:06:38 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 12 Feb 2024 06:06:38 -0600
-Received: from [10.24.69.142] ([10.24.69.142])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41CC3s6u085591;
-	Mon, 12 Feb 2024 06:06:35 -0600
-Message-ID: <a64d7c6b-8c22-47c3-a60f-e9dc39026fe0@ti.com>
-Date: Mon, 12 Feb 2024 17:36:34 +0530
+	s=arc-20240116; t=1707739631; c=relaxed/simple;
+	bh=0DyiaGyyGIHgup9XhsyQjnGll8E1135K/YwtSLtvfVs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fcI7pegp7Ezu0ZzwJnvv3BkByV0iXebzbTudjSE9oOweB/14/gsACmTLzRfzbiQM7VDWvznKA+onv/Fz6bw+YfWhxGSiPEbzWerwEXoDqf3uvgEfevwjN9VHWNn5SbNgH90jQeGyzYVWjdbsf57eGwydMnxoIMtaG4Kq9NMImzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oxcAnoTM; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CC3B3D000955;
+	Mon, 12 Feb 2024 12:07:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=dGG9SILZKV/Oz0gPPI9T8rSU4QPX3nFvHXj7JOyTqvY=;
+ b=oxcAnoTMQedDlO3gplAKicH/zyFcQAsYVZs2R3bamvFCBesi/pDm2Sf6hedDstbaogW1
+ Lb8qRsGoBLMqp5G2yQM/NXKMyN/Tg4nEj9eiLbRo/NEIyGYVjt0uGhZcpQ64TPO23+dU
+ mIjspfOAymB5ZqDHS+rfZ0b6VQ9xAse8Sp7cNNkIH5USyFzMclJX2Gdp8rOssryplDka
+ RqGehGUulfNc+Z9MXQEVULLIwH56dJyYdrKp+3mGqIxSonKGnHKzI93xOJPMjVEuyoq7
+ i96CZcl3zpKXPnbL/8ZdgbzyKcfzchCzyCS/9DvLq1xsNuAbjgjKvDcoFtVvAtxTRGt3 HA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7k0a02c5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 12:07:01 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CC3YTu002029;
+	Mon, 12 Feb 2024 12:07:01 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7k0a029u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 12:07:00 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CAO7EX024888;
+	Mon, 12 Feb 2024 12:06:53 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mfp0cqe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 12:06:53 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CC6nl363570366
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 12:06:51 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 64AE820040;
+	Mon, 12 Feb 2024 12:06:49 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1656020043;
+	Mon, 12 Feb 2024 12:06:47 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 12 Feb 2024 12:06:46 +0000 (GMT)
+Date: Mon, 12 Feb 2024 17:36:44 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: hch@lst.de, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
+        martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com
+Subject: Re: [PATCH 0/6] block atomic writes for XFS
+Message-ID: <ZcoJ1IqADvWdYgFa@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20240124142645.9334-1-john.g.garry@oracle.com>
+ <ZcXQ879zXGFOfDaL@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <66e0b76e-c1aa-4e65-9372-07a1fccaeb6b@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] arm64: dts: ti: k3-am62p: Add nodes for CSI-RX
-Content-Language: en-US
-To: Jai Luthra <j-luthra@ti.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh
- Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>, Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Andrew Davis <afd@ti.com>,
-        Bryan Brattlof <bb@ti.com>, Dhruva Gole
-	<d-gole@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Devarsh Thakkar <devarsht@ti.com>,
-        Aradhya
- Bhatia <a-bhatia1@ti.com>
-References: <20240201-am62p_csi-v1-0-c83bb9eaeb49@ti.com>
- <20240201-am62p_csi-v1-3-c83bb9eaeb49@ti.com>
-From: Vaishnav Achath <vaishnav.a@ti.com>
-In-Reply-To: <20240201-am62p_csi-v1-3-c83bb9eaeb49@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66e0b76e-c1aa-4e65-9372-07a1fccaeb6b@oracle.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: yi_Qjc2kOH7LAh_FkIuacgaQAClRoDaf
+X-Proofpoint-GUID: ySSzboXxOFKAKju86qpfYKgmU7Radp3j
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_09,2024-02-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=876
+ lowpriorityscore=0 adultscore=0 impostorscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 suspectscore=0 phishscore=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402120092
 
+On Fri, Feb 09, 2024 at 09:22:20AM +0000, John Garry wrote:
+> On 09/02/2024 07:14, Ojaswin Mujoo wrote:
+> > On Wed, Jan 24, 2024 at 02:26:39PM +0000, John Garry wrote:
+> > > This series expands atomic write support to filesystems, specifically
+> > > XFS. Since XFS rtvol supports extent alignment already, support will
+> > > initially be added there. When XFS forcealign feature is merged, then we
+> > > can similarly support atomic writes for a non-rtvol filesystem.
+> > 
+> > Hi John,
+> > 
+> > Along with rtvol check, we can also have a simple check to see if the
+> > FS blocksize itself is big enough to satisfy the atomic requirements.
+> > For eg on machines with 64K page, we can have say 16k or 64k block sizes
+> > which should be able to provide required allocation behavior for atomic
+> > writes. In such cases we don't need rtvol.
+> > 
+> I suppose we could do, but I would rather just concentrate on rtvol support
+> initially, and there we do report atomic write unit min = FS block size
+> (even if rt extsize is unset).
 
+Okay understood. 
 
-On 01/02/24 18:37, Jai Luthra wrote:
-> AM62P supports image capture via the MIPI CSI-2 protocol, it uses three
-> IPs to achieve this: Cadence DPHY, Cadence CSI-RX, and TI's pixelgrabber
-> wrapper on top. Enable all of these IPs in the devicetree.
+Thanks,
+ojaswin
+
 > 
-
-Add nodes and keep them disabled sounds more apt here as you are keeping 
-all of these disabled.
-
-> Signed-off-by: Jai Luthra <j-luthra@ti.com>
-> ---
->   arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 61 +++++++++++++++++++++++++++++++
->   1 file changed, 61 insertions(+)
+> In addition, I plan to initially just support atomic write unit min = FS
+> block size (for both rtvol and !rtvol).
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> index 57ec4ef334e4..fdd835a04327 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> @@ -928,4 +928,65 @@ mcasp2: audio-controller@2b20000 {
->   		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
->   		status = "disabled";
->   	};
-> +
-> +	ti_csi2rx0: ticsi2rx@30102000 {
-> +		compatible = "ti,j721e-csi2rx-shim";
-> +		reg = <0x00 0x30102000 0x00 0x1000>;
-> +		ranges;
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		dmas = <&main_bcdma_csi 0 0x5000 0>;
-> +		dma-names = "rx0";
-> +		power-domains = <&k3_pds 182 TI_SCI_PD_EXCLUSIVE>;
-> +		status = "disabled";
-> +
-> +		cdns_csi2rx0: csi-bridge@30101000 {
-> +			compatible = "ti,j721e-csi2rx", "cdns,csi2rx";
-> +			reg = <0x00 0x30101000 0x00 0x1000>;
-> +			clocks = <&k3_clks 182 0>, <&k3_clks 182 3>, <&k3_clks 182 0>,
-> +				<&k3_clks 182 0>, <&k3_clks 182 4>, <&k3_clks 182 4>;
-> +			clock-names = "sys_clk", "p_clk", "pixel_if0_clk",
-> +				"pixel_if1_clk", "pixel_if2_clk", "pixel_if3_clk";
-> +			phys = <&dphy0>;
-> +			phy-names = "dphy";
-> +
-> +			ports {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +
-> +				csi0_port0: port@0 {
-> +					reg = <0>;
-> +					status = "disabled";
-> +				};
-> +
-> +				csi0_port1: port@1 {
-> +					reg = <1>;
-> +					status = "disabled";
-> +				};
-> +
-> +				csi0_port2: port@2 {
-> +					reg = <2>;
-> +					status = "disabled";
-> +				};
-> +
-> +				csi0_port3: port@3 {
-> +					reg = <3>;
-> +					status = "disabled";
-> +				};
-> +
-> +				csi0_port4: port@4 {
-> +					reg = <4>;
-> +					status = "disabled";
-> +				};
-> +			};
-> +		};
-> +	};
-> +
-> +	dphy0: phy@30110000 {
-> +		compatible = "cdns,dphy-rx";
-> +		reg = <0x00 0x30110000 0x00 0x1100>;
-> +		#phy-cells = <0>;
-> +		power-domains = <&k3_pds 185 TI_SCI_PD_EXCLUSIVE>;
-> +		status = "disabled";
-> +	};
-
-Reviewed-by: Vaishnav Achath <vaishnav.a@ti.com>
-
->   };
-> 
+> Thanks,
+> John
 
