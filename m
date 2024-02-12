@@ -1,74 +1,52 @@
-Return-Path: <linux-kernel+bounces-61570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AED2C8513C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:46:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 563948513CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:48:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B66E282E25
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:46:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E79261F2104E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E64E3A1D8;
-	Mon, 12 Feb 2024 12:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C897C39FFF;
+	Mon, 12 Feb 2024 12:48:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IJO4yTxU"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EdRFzBOn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2AD3A1A1
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 12:45:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9CED1E482;
+	Mon, 12 Feb 2024 12:48:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707741948; cv=none; b=iWE2wNIhaajVjE3GN45Fo+qyfKBVdNpRrhJk98a0+WaYddJCInZi0zYxuhk2wcWWyjKYX5q4afiy3jWOGm/ViZTfCzNIXFPzie52rsrc5fB4XhpGY6t3mYTLuuJmn/fZuMW48qDcxdLMO/GO3v6cTUFadKwGDcsUnFXToJJMaY8=
+	t=1707742102; cv=none; b=bV0nVCeaLEEdp1/DaGItHkTZfJQy3xexmRMFjd53vPtE7Dr8DXc76f4k4V8Aqcmj5WOFOV7VIJUKY8/xdH8GZXFWqkDBXV5DX06Ko0U7SreDMjN58fkISQxGpsdk/Y+qiWnA0hznMAeX2uI6qIzDwwhEpsdLGl40vVtO3QeK0T0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707741948; c=relaxed/simple;
-	bh=47Vc+He3k3RnRH0Ql7hR/kVezI3csD20gT8aPlqqG/w=;
+	s=arc-20240116; t=1707742102; c=relaxed/simple;
+	bh=b/ETvNH0QRXgyQ+Z96RbxU4jW5NVr2/e7WLbdFuf5H4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hWilx0OCthbURvobHyNaXqWekAUfCn5f7UMxPSbl9h7VFvDEWnvhHvviMyHvqdpLBkZ0Nr0gM0E/cENbKKq74rV6+FMxucH1g6kI5y1eY8IoQtc5APZObjBa/Iyc7HLmAN3YCyriZW8X1gOleSSjp9ejPsADUDbkfWTZCl0FqJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IJO4yTxU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707741945;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CDSPlvIYjBlKyfzOSysIpxi5bGhwenO4Xb+dpw1JB1E=;
-	b=IJO4yTxU9HC6nXUps5gL36XZmVLsSWPrxmz02UIGsV/7CcQuzDpZbSx/C+YyqMmc6f3soX
-	8GhG8xi/vO7uxZ3WTwIcJtfXcmxUH7ut4BHk2hMW7oosMaDcF8MUzs5YTNoWWfpepdNqcW
-	UVv2ijBgr1fuq1ol68Y5fqVDnTjwnSY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-417-ba70zfwLNsySkNpyQxSsgg-1; Mon,
- 12 Feb 2024 07:45:42 -0500
-X-MC-Unique: ba70zfwLNsySkNpyQxSsgg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2CEB81C29EA0;
-	Mon, 12 Feb 2024 12:45:42 +0000 (UTC)
-Received: from bfoster (unknown [10.22.8.118])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 9FCFBC2E1E6;
-	Mon, 12 Feb 2024 12:45:41 +0000 (UTC)
-Date: Mon, 12 Feb 2024 07:47:00 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Dave Chinner <david@fromorbit.com>, brauner@kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v2 3/7] fs: FS_IOC_GETUUID
-Message-ID: <ZcoTROgZiKOfp3iM@bfoster>
-References: <20240206201858.952303-1-kent.overstreet@linux.dev>
- <20240206201858.952303-4-kent.overstreet@linux.dev>
- <ZcKsIbRRfeXfCObl@dread.disaster.area>
- <cm4wbdmpuq6mlyfqrb3qqwyysa3qao6t5sc2eq3ykmgb4ptpab@qkyberqtvrtt>
- <ZcN+8iOBR97t451x@bfoster>
- <krc2udjtkvylugzuledk7hre7rizmiajrgkiwvwcmsxtgxobyz@miqndphw7uhi>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JcwL/iND+qnZeDUkJnfYzPU/zreRhO4JQJ9iHppXdXtGYeg9PhZSCxQnRRaj7aSgjxQ+DNZrPtSQwdZQFrtgbMPTddEPQ7jUqYXDyxB/EmJvYxRyQbZyncHmxdjRq+oPYdtbSWARWRy3MFNjDNMTDc86RApZ2RLZLRMwVAX41S8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EdRFzBOn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D11AC433C7;
+	Mon, 12 Feb 2024 12:48:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707742101;
+	bh=b/ETvNH0QRXgyQ+Z96RbxU4jW5NVr2/e7WLbdFuf5H4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EdRFzBOnTpS3rDSbuz7FiOBXtI6XSOgoSuWJK0FA4z60FXKMfDgtK/YYppokqwIaP
+	 mfGv7m58H9u97aYa3U1lMUzGlHo4aQYRbqTj0N4GaY7H3AYQ1aiAMH6kc8ZGAMktli
+	 RN/3FoKcmoVxYx7EckOkWb9BkTo5p0fXlKRyxOFA=
+Date: Mon, 12 Feb 2024 13:48:18 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: fsa4480: Check if the chip is really there
+Message-ID: <2024021210-bacteria-camping-7e48@gregkh>
+References: <20240212-topic-fs4480_check-v1-1-d9969e4d6f9a@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,100 +55,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <krc2udjtkvylugzuledk7hre7rizmiajrgkiwvwcmsxtgxobyz@miqndphw7uhi>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+In-Reply-To: <20240212-topic-fs4480_check-v1-1-d9969e4d6f9a@linaro.org>
 
-On Thu, Feb 08, 2024 at 04:57:02PM -0500, Kent Overstreet wrote:
-> On Wed, Feb 07, 2024 at 08:05:29AM -0500, Brian Foster wrote:
-> > On Tue, Feb 06, 2024 at 05:37:22PM -0500, Kent Overstreet wrote:
-> > > On Wed, Feb 07, 2024 at 09:01:05AM +1100, Dave Chinner wrote:
-> > > > On Tue, Feb 06, 2024 at 03:18:51PM -0500, Kent Overstreet wrote:
-> > > > > +static int ioctl_getfsuuid(struct file *file, void __user *argp)
-> > > > > +{
-> > > > > +	struct super_block *sb = file_inode(file)->i_sb;
-> > > > > +
-> > > > > +	if (!sb->s_uuid_len)
-> > > > > +		return -ENOIOCTLCMD;
-> > > > > +
-> > > > > +	struct fsuuid2 u = { .len = sb->s_uuid_len, };
-> > > > > +	memcpy(&u.uuid[0], &sb->s_uuid, sb->s_uuid_len);
-> > > > > +
-> > > > > +	return copy_to_user(argp, &u, sizeof(u)) ? -EFAULT : 0;
-> > > > > +}
-> > > > 
-> > > > Can we please keep the declarations separate from the code? I always
-> > > > find this sort of implicit scoping of variables both difficult to
-> > > > read (especially in larger functions) and a landmine waiting to be
-> > > > tripped over. This could easily just be:
-> > > > 
-> > > > static int ioctl_getfsuuid(struct file *file, void __user *argp)
-> > > > {
-> > > > 	struct super_block *sb = file_inode(file)->i_sb;
-> > > > 	struct fsuuid2 u = { .len = sb->s_uuid_len, };
-> > > > 
-> > > > 	....
-> > > > 
-> > > > and then it's consistent with all the rest of the code...
-> > > 
-> > > The way I'm doing it here is actually what I'm transitioning my own code
-> > > to - the big reason being that always declaring variables at the tops of
-> > > functions leads to separating declaration and initialization, and worse
-> > > it leads people to declaring a variable once and reusing it for multiple
-> > > things (I've seen that be a source of real bugs too many times).
-> > > 
-> > 
-> > I still think this is of questionable value. I know I've mentioned
-> > similar concerns to Dave's here on the bcachefs list, but still have not
-> > really seen any discussion other than a bit of back and forth on the
-> > handful of generally accepted (in the kernel) uses of this sort of thing
-> > for limiting scope in loops/branches and such.
-> > 
-> > I was skimming through some more recent bcachefs patches the other day
-> > (the journal write pipelining stuff) where I came across one or two
-> > medium length functions where this had proliferated, and I found it kind
-> > of annoying TBH. It starts to almost look like there are casts all over
-> > the place and it's a bit more tedious to filter out logic from the
-> > additional/gratuitous syntax, IMO.
-> > 
-> > That's still just my .02, but there was also previous mention of
-> > starting/having discussion on this sort of style change. Is that still
-> > the plan? If so, before or after proliferating it throughout the
-> > bcachefs code? ;) I am curious if there are other folks in kernel land
-> > who think this makes enough sense that they'd plan to adopt it. Hm?
+On Mon, Feb 12, 2024 at 01:01:30PM +0100, Konrad Dybcio wrote:
+> Currently, the driver will happily register the switch/mux devices, and
+> so long as the i2c master doesn't complain, the user would never know
+> there's something wrong.
 > 
-> That was the discussion :)
+> Add a device id check (based on [1]) and return -ENODEV if the read
+> fails or returns nonsense.
 > 
-> bcachefs is my codebase, so yes, I intend to do it there. I really think
-> this is an instance where you and Dave are used to the way C has
-> historically forced us to do things; our brains get wired to read code a
-> certain way and changes are jarring.
+> Checking the value on a Qualcomm SM6115P-based Lenovo Tab P11 tablet,
+> the ID mentioned in the datasheet does indeed show up:
+>  fsa4480 1-0042: Found FSA4480 v1.1 (Vendor ID = 0)
 > 
-
-Heh, fair enough. That's certainly your prerogative. I'm certainly not
-trying to tell you what to do or not with bcachefs. That's at least
-direct enough that it's clear it's not worth debating too much. ;)
-
-> But take a step back; if we were used to writing code the way I'm doing
-> it, and you were arguing for putting declarations at the tops of
-> functions, what would the arguments be?
+> [1] https://www.onsemi.com/pdf/datasheet/fsa4480-d.pdf
 > 
-
-I think my thought process would be similar. I.e., is the proposed
-benefit of such a change worth the tradeoffs?
-
-> I would say you're just breaking up the flow of ideas for no reason; a
-> chain of related statements now includes a declaration that isn't with
-> the actual logic.
+> Fixes: 1dc246320c6b ("usb: typec: mux: Add On Semi fsa4480 driver")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/usb/typec/mux/fsa4480.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
-> And bugs due to variable reuse, missed initialization - there's real
-> reasons not to do it that way.
-> 
+> diff --git a/drivers/usb/typec/mux/fsa4480.c b/drivers/usb/typec/mux/fsa4480.c
+> index cb7cdf90cb0a..d622f4f3bd54 100644
+> --- a/drivers/usb/typec/mux/fsa4480.c
+> +++ b/drivers/usb/typec/mux/fsa4480.c
+> @@ -13,6 +13,10 @@
+>  #include <linux/usb/typec_dp.h>
+>  #include <linux/usb/typec_mux.h>
+>  
+> +#define FSA4480_DEVICE_ID	0x00
+> + #define DEVICE_ID_VENDOR_ID	GENMASK(7, 6)
+> + #define DEVICE_ID_VERSION_ID	GENMASK(5, 3)
+> + #define DEVICE_ID_REV_ID	GENMASK(2, 0)
 
-And were I in that position, I don't think I would reduce a decision
-that affects readability/reviewability of my subsystem to a nontrivial
-degree (for other people, at least) to that single aspect. This would be
-the answer to the question: "is this worth considering?"
+Why the indent?
 
-Brian
+And those are _VERY_ generic #defines, please give a better name for
+these so you don't conflict with other stuff in the kernel accidentally.
 
+thanks,
+
+greg k-h
 
