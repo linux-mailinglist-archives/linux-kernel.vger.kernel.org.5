@@ -1,113 +1,190 @@
-Return-Path: <linux-kernel+bounces-61773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFC8A851666
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:04:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63037851700
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F0541C23316
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:04:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71DFBB26708
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:05:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E89482D3;
-	Mon, 12 Feb 2024 13:55:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF154C601;
+	Mon, 12 Feb 2024 13:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NRkSAQk/"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DxQCJbvS"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9089F3F9F1
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 13:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E9C4B5CD;
+	Mon, 12 Feb 2024 13:55:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707746118; cv=none; b=ALt5AXgEOf+A5bTDY3y+XdV8436BcB79dZSvvEDCfYJTs+8Cv+iyPLpqcRB2iyeJAW2A2CYc2N7wlt9ToGYTCmaNfQotZosHtKQ0PeQpIBx8PlIGwcrQlsf8y+GCHw1oFZzTBCwKSj/mkPaZXVO5BRYECL8U7pmGzrY4QhW9hEw=
+	t=1707746126; cv=none; b=E+LY1Ffpx5LLk4Gp+DGdNgSwuZxb5QEGtHufsdaEOdRETjuWcuWSsMHtm8ZtvZ1b+B9T3dYrDqbmX7RyNpFOD5NbKXPsC0vlQW0XKDt93OGtLFEyF7sF67i5TZpntBwmS7J1TDoIlQVox2NLYOu4LSakFCZ4be4KygJR5PlMUyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707746118; c=relaxed/simple;
-	bh=A7CF62CM0SmP/RQtAarmAlFDk0JBcuGbt4p09vT/r9U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G9v7Xur0OOWWrYul5Cw9rnQXi1G7o2I2OlIN9qHE7EXVhck1Jmd8hMXjvET2zvDNLiYNa4rlrIgRmeixeG7PllfmHpAqx54EuvTzSTpm0I3M8H81wi7tJiEp/N+wNp0hhQ7eosaM5pvxKUV0pk7IRYEPWUyMdBWggVe3rJwCkwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NRkSAQk/; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5602500d1a6so4388621a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 05:55:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707746114; x=1708350914; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=m0H408okGAfg/chpgekYfx9JZudQHf9tmXBxZ5aIo1g=;
-        b=NRkSAQk/MbfJ6oIoSuXIjbWB5WvMg5oHBOqSisMx3zsIjAEMRDPFi3MoBvlmw1e6mX
-         N68ZnkHdVygxhRUu/Ef1c3yCdA4C7osws/jxSJWaOZhb7tjELMfAUqu1HAO6kY9xfXse
-         v8iYEacQYR1+UNCE3X9r3KQRMwIpib09vBt8xs+AVmrZNCoJGEMmXSaRtUNXjZuplRP9
-         a/Bo6WIEnQsH09xJgBX1RTeiPueeDj3D2bgOFyV2RQVQlz5wBK18snrsF3/msPauSg1y
-         CUHquTuuiqqFEWiTA6mosbnO78Mg5t66nH+uOWT1LNVqyWB7D8EgK14EF21YW4cvseMd
-         c7fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707746114; x=1708350914;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m0H408okGAfg/chpgekYfx9JZudQHf9tmXBxZ5aIo1g=;
-        b=vAYsT220U5d0SEfMeR8BU4zNjvuKqprpKg/Jcy59e/ZguKvAujFHbRHC7x+QUj+mYi
-         8a6x4qmh9nzkT9idU91dtsYdQu3IseM/21R43DzsXUckdn+AmXMk9pV1KXhv4KmvcwHg
-         kZBWZsTO+L5JOzT2rndqI55GA2cQkVQJGgAHfEky0+5vGLHE/tAIEBOFVRefPtcksN9e
-         tIe+XVK9uQ5eGTQUFEMV44LNRfPegBTff39V+ZQGl2LKAyCwZCTaN4T3eC943ECnTWYy
-         MzePbGkWXkCH/v0LVaPbyrG4oWyVU/pTHAL2kIcYCtGr5H6Bcqs5eM47rKgRIMSq2bYf
-         qE2Q==
-X-Gm-Message-State: AOJu0YynuVJ9uZAGMskmSWXdIYchON96W6i32v6Pm6gjjCowFh9anvLA
-	hKswWv7Eqf6ed2YSaJvMrJtilDZIjB2hMVOdVW3N4kZ16UE/bQE7Cme927Gp9L0=
-X-Google-Smtp-Source: AGHT+IETnL3gImozTuiUtynzbC6bLh97EMSE60Utc5/HsrktVZ2hPhuoH1IZ7mdo6fEzeRkE2O4DhA==
-X-Received: by 2002:a50:f689:0:b0:561:85ba:dd96 with SMTP id d9-20020a50f689000000b0056185badd96mr3562213edn.35.1707746113884;
-        Mon, 12 Feb 2024 05:55:13 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWeMEykx8W0S83/Sk7edDhPMHvOlfn30LstaMUHO01B1X9l+Ruz7bfR2TM/At/hbeHGMfQgPIp5J5ddnbVTF0khxmV/AJoaa14FL0f3m6jfIk5zG/sCbkQ/tpQvBh2UB4ijI6DRqN4FdaChzkOnDdNmsVt7gLcYHbtKYaKs15w0AvBBhZSr8WLL+SOEKDAcrxWiIVodkGBrZSvRN18BIIsBV5zTOwW7VMqfccvLiigi7j4hHe8oDYaqxyJdbAI=
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id n16-20020a05640205d000b005616db210c1sm2504560edx.67.2024.02.12.05.55.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 05:55:13 -0800 (PST)
-Date: Mon, 12 Feb 2024 16:55:09 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Moritz C. Weber" <mo.c.weber@gmail.com>
-Cc: marvin24@gmx.de, ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: nvec: nvec: fixed two usleep_range is preferred
- over udelay warnings
-Message-ID: <e57cb313-77da-47c3-be5a-93725a52707f@moroto.mountain>
-References: <20240212133645.1836-1-mo.c.weber@gmail.com>
+	s=arc-20240116; t=1707746126; c=relaxed/simple;
+	bh=l8lJVhpkkMOQn4SYIDOmKjhE1C4PJtr6LTU/kQWgbWM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=o9/OY4ygrHxsUbyiI3RLPoFtq8Xiid3u7nHGikTuVjr5K/0anmyCCxaERnBoHzvP+yraO3C7M38gvS1P+lPQaqMCFM73GicNZb4Sm50nE30Qsrn8/96TWQ9RWxCImngk3fetodfj8GZz3KHWip7ZZtpwIgnEKxa4DjecEfzHFLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=DxQCJbvS; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CDll6R002089;
+	Mon, 12 Feb 2024 13:55:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=1VsmOyecYehuELNL1sbz6IGptMSx6hES5aL/RB2W1V8=;
+ b=DxQCJbvSXEYk/EtPG7SslOqdyu76QYro297XQenBo3AbxyjIOrWw7qJED+5ls5ysySY9
+ 2y5WTncbztnEnJxUHbSCipJ2m7dfS0BLI+DAgQPvhAwh0IeFLSXkFuYCAEKH9OMnVdGz
+ lAaAlcnaSFv5aH8hRLneWSai2QnH1BPMsN6lAAY7jMow0Lp1/oJe2rkSjam+rV6VMt84
+ gB9sEAKCqQvG0d5dQvObAvLS7syI0XbolWIu2wdL408mD4MB6+hHEbbfzoeK1hoFeT+N
+ roDNtT3AHOCPl4CMfKg+ex2LrcKLUKE4tEh4JkNQUdV9L05C3KDlDBVyw7cBYxMks7Ce TQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7mheg56b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 13:55:21 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CDn1N3006548;
+	Mon, 12 Feb 2024 13:55:20 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7mheg561-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 13:55:20 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41CDhtIc024961;
+	Mon, 12 Feb 2024 13:55:19 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mfp0vce-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Feb 2024 13:55:19 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CDtDnF17105456
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Feb 2024 13:55:15 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A1C2920043;
+	Mon, 12 Feb 2024 13:55:13 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 02BFD20040;
+	Mon, 12 Feb 2024 13:55:13 +0000 (GMT)
+Received: from osiris (unknown [9.171.5.16])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 12 Feb 2024 13:55:12 +0000 (GMT)
+Date: Mon, 12 Feb 2024 14:55:11 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, maskray@google.com, ndesaulniers@google.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev
+Subject: Re: [PATCH 04/11] s390: vmlinux.lds.S: Discard unnecessary sections
+Message-ID: <20240212135511.65142-A-hca@linux.ibm.com>
+References: <20240207-s390-lld-and-orphan-warn-v1-0-8a665b3346ab@kernel.org>
+ <20240207-s390-lld-and-orphan-warn-v1-4-8a665b3346ab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207-s390-lld-and-orphan-warn-v1-4-8a665b3346ab@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: tuVIMDreazdkQtVfRLrmJ6yBZCO6xFUF
+X-Proofpoint-GUID: y5h8jGMhNdFw4guclN1-R3JpP2Oi7u6i
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212133645.1836-1-mo.c.weber@gmail.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_10,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0 spamscore=0
+ phishscore=0 clxscore=1015 adultscore=0 priorityscore=1501 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402120105
 
-On Mon, Feb 12, 2024 at 02:36:45PM +0100, Moritz C. Weber wrote:
-> Fixed a code style issue raised by checkpatch.
-
-Needs Signed-off-by.  Please run your patches through checkpatch.
-
-> ---
->  drivers/staging/nvec/nvec.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+On Wed, Feb 07, 2024 at 05:14:56PM -0700, Nathan Chancellor wrote:
+> When building with CONFIG_LD_ORPHAN_WARN after selecting
+> CONFIG_ARCH_HAS_LD_ORPHAN_WARN, there are some warnings around certain
+> ELF sections that are unnecessary for the kernel's purposes.
 > 
-> diff --git a/drivers/staging/nvec/nvec.c b/drivers/staging/nvec/nvec.c
-> index 2823cacde..18c5471d5 100644
-> --- a/drivers/staging/nvec/nvec.c
-> +++ b/drivers/staging/nvec/nvec.c
-> @@ -627,7 +627,7 @@ static irqreturn_t nvec_interrupt(int irq, void *dev)
->  		break;
->  	case 2:		/* first byte after command */
->  		if (status == (I2C_SL_IRQ | RNW | RCVD)) {
-> -			udelay(33);
-> +			usleep_range(32, 33);
+>   s390-linux-ld: warning: orphan section `.dynstr' from `arch/s390/kernel/head64.o' being placed in section `.dynstr'
+>   s390-linux-ld: warning: orphan section `.dynamic' from `arch/s390/kernel/head64.o' being placed in section `.dynamic'
+>   s390-linux-ld: warning: orphan section `.hash' from `arch/s390/kernel/head64.o' being placed in section `.hash'
+>   s390-linux-ld: warning: orphan section `.gnu.hash' from `arch/s390/kernel/head64.o' being placed in section `.gnu.hash'
+> 
+> Add them to the discards to clear up the warnings, which matches other
+> architectures.
+> 
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  arch/s390/kernel/vmlinux.lds.S | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+..
+> -		*(.interp)
+> +		*(.interp .dynamic)
+> +		*(.dynstr .hash .gnu.hash)
 
-We only accept these udelay() -> usleep_range() patches if they have
-been tested on real hardware.  Sorry.
+This seems to be wrong, since it leads to 1000s of error messages when
+using the "crash" utility e.g. when looking into a live dump of system
+with the generated debug info:
 
-regards,
-dan carpenter
+BFD: /usr/lib/debug/usr/lib/modules/6.8.0-20240211.rc3.git0.bdca9b8dcf3f.300.fc39.s390x/vmlinux: attempt to load strings from a non-string section (number 0)
+
+I will change this commit to the below; it seems to work and is in
+line with other architectures:
+
+-----
+
+When building with CONFIG_LD_ORPHAN_WARN after selecting
+CONFIG_ARCH_HAS_LD_ORPHAN_WARN, there are some warnings around certain
+ELF sections:
+
+  s390-linux-ld: warning: orphan section `.dynstr' from `arch/s390/kernel/head64.o' being placed in section `.dynstr'
+  s390-linux-ld: warning: orphan section `.dynamic' from `arch/s390/kernel/head64.o' being placed in section `.dynamic'
+  s390-linux-ld: warning: orphan section `.hash' from `arch/s390/kernel/head64.o' being placed in section `.hash'
+  s390-linux-ld: warning: orphan section `.gnu.hash' from `arch/s390/kernel/head64.o' being placed in section `.gnu.hash'
+
+Explicitly keep those sections like other architectures when
+CONFIG_RELOCATABLE is enabled, which is always true for s390.
+
+[hca@linux.ibm.com: keep sections instead of discarding]
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Link: https://lore.kernel.org/r/20240207-s390-lld-and-orphan-warn-v1-4-8a665b3346ab@kernel.org
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+---
+ arch/s390/kernel/vmlinux.lds.S | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/arch/s390/kernel/vmlinux.lds.S b/arch/s390/kernel/vmlinux.lds.S
+index 661a487a3048..d46e3c383952 100644
+--- a/arch/s390/kernel/vmlinux.lds.S
++++ b/arch/s390/kernel/vmlinux.lds.S
+@@ -200,6 +200,21 @@ SECTIONS
+ 		*(.rela*)
+ 		__rela_dyn_end = .;
+ 	}
++	.dynamic ALIGN(8) : {
++		*(.dynamic)
++	}
++	.dynsym ALIGN(8) : {
++		*(.dynsym)
++	}
++	.dynstr ALIGN(8) : {
++		*(.dynstr)
++	}
++	.hash ALIGN(8) : {
++		*(.hash)
++	}
++	.gnu.hash ALIGN(8) : {
++		*(.gnu.hash)
++	}
+ 
+ 	. = ALIGN(PAGE_SIZE);
+ 	__init_end = .;		/* freed after init ends here */
+-- 
+2.40.1
 
 
