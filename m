@@ -1,240 +1,385 @@
-Return-Path: <linux-kernel+bounces-62219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8F3F851D2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:48:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A16A5851D31
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:48:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 489A31F2417A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:48:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56346284B55
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC94445BF9;
-	Mon, 12 Feb 2024 18:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02CF347A40;
+	Mon, 12 Feb 2024 18:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Cnnn5VNN"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O5t8mlbD"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3717F45BE8
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:44:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7DAB4776F
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:44:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707763450; cv=none; b=jXr/OVgua1DUAiq1wnjCw0F20VXmIoG+1/PPnoBOdQ1ny1rFnIM6pVIj9LzjwVUnG64aNkTVIwF2+e+wTP1pkbCdmlzEWNXgTbR8+/v+BNm4RNvNvkD/suaNuKs3NsVLzpXYQmaOVdF6/4zWjOCj869/iUZ+7EAGD8Imss/FdkU=
+	t=1707763487; cv=none; b=DZTGoh/RbQ+AFyOzPsCRnC182Y6FAk8QhuQ0YClV1sy92VjxocnVeCiKrbKw7SohVCbTPZ6ZKVMBi/4MtBahck7H+yt8OWLYOGHMKqgoUdGIJHUKh2AcARu5kH1I6jeIiwZu464FEu4+OK95c3cp3zgcvznvBGipxYG/sBwO+Kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707763450; c=relaxed/simple;
-	bh=ggjzpCTsIN11gB0mcnOs/blBuM22pBJUK+jpoAbT0Tg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VjJZ9M4+CHROSGadaCe2DV0E9u0pTqpfx0wQWEK9hPnzpTDHfYljffooT4nxSmazJ4kY9Ymx2tTFrkfWhtgelGjQdsGHnjnVfmyEJS34kvwJ/BiV0WzrmfFCuEzL2se9bh0HSO9BbPU39OBMK0PtnkAN8k+4seRsn3UiNLkjtQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Cnnn5VNN; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33b8807b55aso501838f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:44:07 -0800 (PST)
+	s=arc-20240116; t=1707763487; c=relaxed/simple;
+	bh=NIxDKLA8cfy0iQFxJSdSV8c8EqUx+hRLVZGKl2b9lPI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g3xtqJ9WYOPijKNR0BxQPncXUuoT7AKxHRhgQGywvWqqNfyN5ArPTD1YxtyOYnEs/xzrwBA0ZezOAqpEIWMRTP9SHt7+5DthYCNMrR9lcSb9/e1MsSLTvRpFM5eMSLzcfwN/RiR5tBvXNxeEtAcoNOqQI/NsYYr94n2BeERzKOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=O5t8mlbD; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40f0218476aso4755e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:44:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707763446; x=1708368246; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cLI6uvtWJiJNaaVlPDaGYM7oaeBfeQ4b4L3zMgYgLRs=;
-        b=Cnnn5VNN+fHonnaAhN+9xNVYxUL510NHin28Nu0H9REAljXpomBEEkns0z0proiKHe
-         0b7E49Vq/VO0X0ucXoFqnOFOxTU7nlz+YaYZcUdO092ed0UWt8J1MJXrkKnQIAwoNwdT
-         LNx3JBK35qM7StkdNk2Q1TEw6snCabB3ZmP8cX6rKDZbi2w5wAnyb7+pkG2udpo2akKJ
-         Mjj43lRckcuuB0H6zcqLt1W2tP4aurlT5sfCxDWRSOkUFC3kZeZ77B8fVCqk28vnKi+B
-         9lucYb0uQYIEiCqwfAzze1NmpE1Bk4EA81XTJnSMhZXR0NJNqJOUl2shOaC/3WwWhki5
-         FQ/A==
+        d=google.com; s=20230601; t=1707763484; x=1708368284; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=awleO4UbaLWotLxN2WegZSolmgUNeBekfvMVRlHYfJY=;
+        b=O5t8mlbDSP68JbFlQfTDb1OWOi9bkBiDKVWwe8YFdI0UhCExo/C8sCsasUfqm3F1vF
+         wlOmwKNxgCjHQQPfRU8JDBiMWfo/lfe3nQgm/tbvA0fJGrixHWMNC1F5ionQlk7dZr2U
+         i4zDQmuZru5mK0JjMvbT4ZOz3HPqzr4kQlDQcxKjS5a98IpEOBnpRtvBGUjIfR+BBPW2
+         sWXbxzyBvQUcfZFrEesxOVS3ktrAWydErTmZZjIc3vJL/dA+5SDw9hf7dxUqdy7WLlsk
+         l+JOcjm43X2diDlJP2GGcHD+l8JGGEG1C2vMjKP1jvmbnDjnAnuhFxZSIdGKBoTdKmEO
+         CHGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707763446; x=1708368246;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cLI6uvtWJiJNaaVlPDaGYM7oaeBfeQ4b4L3zMgYgLRs=;
-        b=KBEHsY8Z21I0NLP0FQZP9zoYkv5ZtV+Dp3GLuTYWojTXeNa++I4iX2QZagXWjNoZQ3
-         hkaTcmqq6meQ549R/qNc6SXN/wt8Pi6tGzn7c/KY0c6UzPofgqncrY7s3j30k2ybwHOb
-         QoRsfFRt/dVqdANW0X5dAQPcWeT4NhEFFa5+SZK6Z+N3hUKdnRTcuxqEpkYxboGRCIDi
-         zbmJuw9rbOT8BvK2K1BumhOrqJ3CvWW/kSiqB0AM0F+UjF6Fb0HFT8+LKiMZ7O2cCyDK
-         xgflWAqsG7XTahWIONkz9g7gugY8aScUXkSfwIvj/EZ6eojP35TayS8RRJ+8i0F+ifdq
-         ZDyg==
-X-Forwarded-Encrypted: i=1; AJvYcCXAtQZQ6KkW2rfR3Ar0DxuEdaz2uqThDWNiX6uq56c0CShGgOpMvjmPX82IcZOXkybYKZ6BBKxFHNIaDD0rYJ8HAgKsdGgVAR7qKHY7
-X-Gm-Message-State: AOJu0YxV5ufHqmkeH9pVoZ4ciR6lRmSYLTPo7O0KXMDvT6hFQrfUUkzW
-	PhTiCp9Ox5Dm8/z416TrrsdXwOLuBBdpIRzbLph9HgR8mP37gJ/njPmo7VNsyX0=
-X-Google-Smtp-Source: AGHT+IHLbJI4HfzbTuKjLym5/RCgm7GtPC5HjkGAf5cn6cHNV0VwlDqLTCQaOgq8c81mozNchAy57g==
-X-Received: by 2002:adf:f189:0:b0:33b:8787:2d9e with SMTP id h9-20020adff189000000b0033b87872d9emr1533322wro.44.1707763446509;
-        Mon, 12 Feb 2024 10:44:06 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU7wUI9UR3Q6Lny/OeoyG49MdQiMsbnvgoN6SbRUDpFrqJeb7yvikH/y86E7x0MrbZdrAXEdymyFhPev9OG2LxF3vB5l5l1ZBJ+aAUSYXFAGrJuDEhAx4VpLMpKKCRAr4qIQvyTffELv/pys/dARgK9yX383hTjjqOuf6pjYaFu9bu0MjVVTjwSfZ4BCGfiWnzKYaANbJeioGBJ0NKHy6HSjv25UcCAFBBqt7/Rgkavgib3tCmct2vbaivVVcbrWVrhMo0X0wTV
-Received: from krzk-bin.. ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id w13-20020a5d404d000000b0033b4dae972asm7448371wrp.37.2024.02.12.10.44.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 10:44:05 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2] arm64: dts: qcom: x1e80100-crd: add sound card
-Date: Mon, 12 Feb 2024 19:44:03 +0100
-Message-Id: <20240212184403.246299-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1707763484; x=1708368284;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=awleO4UbaLWotLxN2WegZSolmgUNeBekfvMVRlHYfJY=;
+        b=Js0SY3sncM7iepvSwIfIuORoPO0ce3ExrtRL4zGXeIHPaestVcRkDXInmECdIlcShG
+         Cnb5eo80BU1jmFuA87lRYyGtsDv1KvmmRVGcQt1y5egZPwzIN/N9Exw4V1Qe9bE3JAT1
+         f74FAHChh8tSKNtUj1/uTNGZ6WrFkqDXG9OouSQpEs7BUdVJBgpBTv7tZbLXKlHbaRaU
+         pOhBx57lEzcKAC3D+bP+GrLNb46iunvzQS2ovtQ9ARGVbVMTdl9cC77pYyG1HXxTnfN6
+         VW4erlB55w6DhoOLAMl0j10KSABAi5Qs8wlMia5lOTye+biTuHqo5d26w9By24gS85Ss
+         /j5w==
+X-Gm-Message-State: AOJu0YzbF0xaf7yMulAdV79cpuU2nOeEjwjcqfVukVL07lLQ5mDauias
+	5Lful6N2xIOz4CNUB2DkM+jhLxkp3e4UKK1dmdUUdhcs2h2fi3R6e5hoGPobM1qrReoVSm9Ou0F
+	2ywhHfBjYzqwRbC3RKa/Tyr9BTZb6Wl3VqGlu
+X-Google-Smtp-Source: AGHT+IENP53VWALBr0STyXawCM5pf9m4nMO4OZUSg9qhAJyD+ZItym9RSlBRbLX6pXQojaovw/gacAZk/E5wIwrlVF4=
+X-Received: by 2002:a05:600c:601c:b0:410:daa5:66f0 with SMTP id
+ az28-20020a05600c601c00b00410daa566f0mr179825wmb.6.1707763483681; Mon, 12 Feb
+ 2024 10:44:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240212163510.859822-1-zi.yan@sent.com>
+In-Reply-To: <20240212163510.859822-1-zi.yan@sent.com>
+From: Yu Zhao <yuzhao@google.com>
+Date: Mon, 12 Feb 2024 11:44:07 -0700
+Message-ID: <CAOUHufa5c9592Vc=S=-Bdc4jy0HVRi2SGJkOQEqj6+CGP_uWxg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] Enable >0 order folio memory compaction
+To: Zi Yan <ziy@nvidia.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	"Huang, Ying" <ying.huang@intel.com>, Ryan Roberts <ryan.roberts@arm.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	David Hildenbrand <david@redhat.com>, "Yin, Fengwei" <fengwei.yin@intel.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
+	Kemeng Shi <shikemeng@huaweicloud.com>, Mel Gorman <mgorman@techsingularity.net>, 
+	Rohan Puri <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>, 
+	Adam Manzanares <a.manzanares@samsung.com>, "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, 
+	Suren Baghdasaryan <surenb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add sound card to X1E80100-CRD board and update DMIC supply.  Works so
-far:
- - Audio playback via speakers or audio jack headset,
- - DMIC0-3 recording.
+On Mon, Feb 12, 2024 at 9:35=E2=80=AFAM Zi Yan <zi.yan@sent.com> wrote:
+>
+> From: Zi Yan <ziy@nvidia.com>
+>
+> Hi all,
+>
+> This patchset enables >0 order folio memory compaction, which is one of
+> the prerequisitions for large folio support[1]. It is on top of
+> mm-everything-2024-02-10-00-56.
+>
+> I am aware of that split free pages is necessary for folio
+> migration in compaction, since if >0 order free pages are never split
+> and no order-0 free page is scanned, compaction will end prematurely due
+> to migration returns -ENOMEM. Free page split becomes a must instead of
+> an optimization.
+>
+> lkp ncompare results (on a 8-CPU (Intel Xeon E5-2650 v4 @2.20GHz) 16G VM)
+> for default LRU (-no-mglru) and CONFIG_LRU_GEN are shown at the bottom,
+> copied from V3[4], since V4 is only a code refactoring of V3.
+> In sum, most of vm-scalability applications do not see performance
+> change, and the others see ~4% to ~26% performance boost under default LR=
+U
+> and ~2% to ~6% performance boost under CONFIG_LRU_GEN.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Suren has been testing 64KB THP on Android and seeing regressions
+under memory pressure (a significant portion of client devices are
+always under memory pressure). Hopefully this series will help.
 
----
+I threw this series into some stress tests we have with both 64KB and
+2MB THP enabled and didn't see any obvious problems.
 
-Change in v2:
-1. Rebase omn dmic02->dmic23 renaming.
-2. Add missing dmic pinctrl in lpass_vamacro node.
-3. Add Rb tag.
+Tested-by: Yu Zhao <yuzhao@google.com>
 
-Depends on dmic02->dmic23 renaming:
-https://lore.kernel.org/linux-devicetree/20240212172335.124845-5-krzysztof.kozlowski@linaro.org/T/#u
+> Overview
+> =3D=3D=3D
+>
+> To support >0 order folio compaction, the patchset changes how free pages=
+ used
+> for migration are kept during compaction. Free pages used to be split int=
+o
+> order-0 pages that are post allocation processed (i.e., PageBuddy flag cl=
+eared,
+> page order stored in page->private is zeroed, and page reference is set t=
+o 1).
+> Now all free pages are kept in a MAX_ORDER+1 array of page lists based
+> on their order without post allocation process. When migrate_pages() asks=
+ for
+> a new page, one of the free pages, based on the requested page order, is
+> then processed and given out.
 
-For full bindings dtbs_check compliance (not a dependency!) also needed:
-https://lore.kernel.org/linux-devicetree/20240212183800.243017-1-krzysztof.kozlowski@linaro.org/
----
- arch/arm64/boot/dts/qcom/x1e80100-crd.dts | 98 ++++++++++++++++++++++-
- 1 file changed, 97 insertions(+), 1 deletion(-)
+And THP <2MB would need this feature (spell it out).
 
-diff --git a/arch/arm64/boot/dts/qcom/x1e80100-crd.dts b/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-index 12abc9287a75..6a0a54532e5f 100644
---- a/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-+++ b/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-@@ -18,7 +18,7 @@ aliases {
- 		serial0 = &uart21;
- 	};
- 
--	audio-codec {
-+	wcd938x: audio-codec {
- 		compatible = "qcom,wcd9385-codec";
- 
- 		pinctrl-names = "default";
-@@ -48,6 +48,94 @@ chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
- 
-+	sound {
-+		compatible = "qcom,x1e80100-sndcard";
-+		model = "X1E80100-CRD";
-+		audio-routing = "WooferLeft IN", "WSA WSA_SPK1 OUT",
-+				"TwitterLeft IN", "WSA WSA_SPK2 OUT",
-+				"WooferRight IN", "WSA2 WSA_SPK2 OUT",
-+				"TwitterRight IN", "WSA2 WSA_SPK2 OUT",
-+				"IN1_HPHL", "HPHL_OUT",
-+				"IN2_HPHR", "HPHR_OUT",
-+				"AMIC2", "MIC BIAS2",
-+				"VA DMIC0", "MIC BIAS3",
-+				"VA DMIC1", "MIC BIAS3",
-+				"VA DMIC2", "MIC BIAS1",
-+				"VA DMIC3", "MIC BIAS1",
-+				"VA DMIC0", "VA MIC BIAS3",
-+				"VA DMIC1", "VA MIC BIAS3",
-+				"VA DMIC2", "VA MIC BIAS1",
-+				"VA DMIC3", "VA MIC BIAS1",
-+				"TX SWR_INPUT1", "ADC2_OUTPUT";
-+
-+		wcd-playback-dai-link {
-+			link-name = "WCD Playback";
-+
-+			cpu {
-+				sound-dai = <&q6apmbedai RX_CODEC_DMA_RX_0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&wcd938x 0>, <&swr1 0>, <&lpass_rxmacro 0>;
-+			};
-+
-+			platform {
-+				sound-dai = <&q6apm>;
-+			};
-+		};
-+
-+		wcd-capture-dai-link {
-+			link-name = "WCD Capture";
-+
-+			cpu {
-+				sound-dai = <&q6apmbedai TX_CODEC_DMA_TX_3>;
-+			};
-+
-+			codec {
-+				sound-dai = <&wcd938x 1>, <&swr2 0>, <&lpass_txmacro 0>;
-+			};
-+
-+			platform {
-+				sound-dai = <&q6apm>;
-+			};
-+		};
-+
-+		wsa-dai-link {
-+			link-name = "WSA Playback";
-+
-+			cpu {
-+				sound-dai = <&q6apmbedai WSA_CODEC_DMA_RX_0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&left_woofer>, <&left_tweeter>,
-+					    <&swr0 0>, <&lpass_wsamacro 0>,
-+					    <&right_woofer>, <&right_tweeter>,
-+					    <&swr3 0>, <&lpass_wsa2macro 0>;
-+			};
-+
-+			platform {
-+				sound-dai = <&q6apm>;
-+			};
-+		};
-+
-+		va-dai-link {
-+			link-name = "VA Capture";
-+
-+			cpu {
-+				sound-dai = <&q6apmbedai VA_CODEC_DMA_TX_0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&lpass_vamacro 0>;
-+			};
-+
-+			platform {
-+				sound-dai = <&q6apm>;
-+			};
-+		};
-+	};
-+
- 	vph_pwr: vph-pwr-regulator {
- 		compatible = "regulator-fixed";
- 
-@@ -494,6 +582,14 @@ spkr_23_sd_n_active: spkr-23-sd-n-active-state {
- 	};
- };
- 
-+&lpass_vamacro {
-+	pinctrl-0 = <&dmic01_default>, <&dmic23_default>;
-+	pinctrl-names = "default";
-+
-+	vdd-micb-supply = <&vreg_l1b_1p8>;
-+	qcom,dmic-sample-rate = <4800000>;
-+};
-+
- &mdss {
- 	status = "okay";
- };
--- 
-2.34.1
 
+
+> vm-scalability results on CONFIG_LRU_GEN
+> =3D=3D=3D
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/mmap-xread-seq-mt/vm-scalability
+>
+> commit:
+>   6.8.0-rc1-mm-everything-2024-01-29-07-19+
+>   6.8.0-rc1-split-folio-in-compaction+
+>   6.8.0-rc1-folio-migration-in-compaction+
+>   6.8.0-rc1-folio-migration-free-page-split+
+>
+> 6.8.0-rc1-mm-eve 6.8.0-rc1-split-folio-in-co 6.8.0-rc1-folio-migration-i =
+6.8.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- =
+---------------------------
+>          %stddev     %change         %stddev     %change         %stddev =
+    %change         %stddev
+>              \          |                \          |                \   =
+       |                \
+>   15107616            +3.2%   15590339            +1.3%   15297619       =
+     +3.0%   15567998        vm-scalability.throughput
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/mmap-pread-seq/vm-scalability
+>
+> commit:
+>   6.8.0-rc1-mm-everything-2024-01-29-07-19+
+>   6.8.0-rc1-split-folio-in-compaction+
+>   6.8.0-rc1-folio-migration-in-compaction+
+>   6.8.0-rc1-folio-migration-free-page-split+
+>
+> 6.8.0-rc1-mm-eve 6.8.0-rc1-split-folio-in-co 6.8.0-rc1-folio-migration-i =
+6.8.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- =
+---------------------------
+>          %stddev     %change         %stddev     %change         %stddev =
+    %change         %stddev
+>              \          |                \          |                \   =
+       |                \
+>   12611785            +1.8%   12832919            +0.9%   12724223       =
+     +1.6%   12812682        vm-scalability.throughput
+>
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/lru-file-readtwice/vm-scalability
+>
+> commit:
+>   6.8.0-rc1-mm-everything-2024-01-29-07-19+
+>   6.8.0-rc1-split-folio-in-compaction+
+>   6.8.0-rc1-folio-migration-in-compaction+
+>   6.8.0-rc1-folio-migration-free-page-split+
+>
+> 6.8.0-rc1-mm-eve 6.8.0-rc1-split-folio-in-co 6.8.0-rc1-folio-migration-i =
+6.8.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- =
+---------------------------
+>          %stddev     %change         %stddev     %change         %stddev =
+    %change         %stddev
+>              \          |                \          |                \   =
+       |                \
+>    9833393            +5.7%   10390190            +3.0%   10126606       =
+     +5.9%   10408804        vm-scalability.throughput
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/lru-file-mmap-read/vm-scalability
+>
+> commit:
+>   6.8.0-rc1-mm-everything-2024-01-29-07-19+
+>   6.8.0-rc1-split-folio-in-compaction+
+>   6.8.0-rc1-folio-migration-in-compaction+
+>   6.8.0-rc1-folio-migration-free-page-split+
+>
+> 6.8.0-rc1-mm-eve 6.8.0-rc1-split-folio-in-co 6.8.0-rc1-folio-migration-i =
+6.8.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- =
+---------------------------
+>          %stddev     %change         %stddev     %change         %stddev =
+    %change         %stddev
+>              \          |                \          |                \   =
+       |                \
+>    7034709 =C2=B1  3%      +2.9%    7241429            +3.2%    7256680 =
+=C2=B1  2%      +3.9%    7308375        vm-scalability.throughput
+>
+>
+>
+> vm-scalability results on default LRU (with -no-mglru suffix)
+> =3D=3D=3D
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/mmap-xread-seq-mt/vm-scalability
+>
+> commit:
+>   6.8.0-rc1-mm-everything-2024-01-29-07-19-no-mglru+
+>   6.8.0-rc1-split-folio-in-compaction-no-mglru+
+>   6.8.0-rc1-folio-migration-in-compaction-no-mglru+
+>   6.8.0-rc1-folio-migration-free-page-split-no-mglru+
+>
+> 6.8.0-rc1-mm-eve 6.8.0-rc1-split-folio-in-co 6.8.0-rc1-folio-migration-i =
+6.8.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- =
+---------------------------
+>          %stddev     %change         %stddev     %change         %stddev =
+    %change         %stddev
+>              \          |                \          |                \   =
+       |                \
+>   14401491            +3.7%   14940270            +2.4%   14748626       =
+     +4.0%   14975716        vm-scalability.throughput
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/mmap-pread-seq/vm-scalability
+>
+> commit:
+>   6.8.0-rc1-mm-everything-2024-01-29-07-19-no-mglru+
+>   6.8.0-rc1-split-folio-in-compaction-no-mglru+
+>   6.8.0-rc1-folio-migration-in-compaction-no-mglru+
+>   6.8.0-rc1-folio-migration-free-page-split-no-mglru+
+>
+> 6.8.0-rc1-mm-eve 6.8.0-rc1-split-folio-in-co 6.8.0-rc1-folio-migration-i =
+6.8.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- =
+---------------------------
+>          %stddev     %change         %stddev     %change         %stddev =
+    %change         %stddev
+>              \          |                \          |                \   =
+       |                \
+>   11407497            +5.1%   11989632            -0.5%   11349272       =
+     +4.8%   11957423        vm-scalability.throughput
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/mmap-pread-seq-mt/vm-scalability
+>
+> commit:
+>   6.8.0-rc1-mm-everything-2024-01-29-07-19-no-mglru+
+>   6.8.0-rc1-split-folio-in-compaction-no-mglru+
+>   6.8.0-rc1-folio-migration-in-compaction-no-mglru+
+>   6.8.0-rc1-folio-migration-free-page-split-no-mglru+
+>
+> 6.8.0-rc1-mm-eve 6.8.0-rc1-split-folio-in-co 6.8.0-rc1-folio-migration-i =
+6.8.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- =
+---------------------------
+>          %stddev     %change         %stddev     %change         %stddev =
+    %change         %stddev
+>              \          |                \          |                \   =
+       |                \
+>   11348474            +3.3%   11719453            -1.2%   11208759       =
+     +3.7%   11771926        vm-scalability.throughput
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/lru-file-readtwice/vm-scalability
+>
+> commit:
+>   6.8.0-rc1-mm-everything-2024-01-29-07-19-no-mglru+
+>   6.8.0-rc1-split-folio-in-compaction-no-mglru+
+>   6.8.0-rc1-folio-migration-in-compaction-no-mglru+
+>   6.8.0-rc1-folio-migration-free-page-split-no-mglru+
+>
+> 6.8.0-rc1-mm-eve 6.8.0-rc1-split-folio-in-co 6.8.0-rc1-folio-migration-i =
+6.8.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- =
+---------------------------
+>          %stddev     %change         %stddev     %change         %stddev =
+    %change         %stddev
+>              \          |                \          |                \   =
+       |                \
+>    8065614 =C2=B1  3%      +7.7%    8686626 =C2=B1  2%      +5.0%    8467=
+577 =C2=B1  4%     +11.8%    9016077 =C2=B1  2%  vm-scalability.throughput
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> compiler/kconfig/rootfs/runtime/tbox_group/test/testcase:
+>   gcc-13/defconfig/debian/300s/qemu-vm/lru-file-mmap-read/vm-scalability
+>
+> commit:
+>   6.8.0-rc1-mm-everything-2024-01-29-07-19-no-mglru+
+>   6.8.0-rc1-split-folio-in-compaction-no-mglru+
+>   6.8.0-rc1-folio-migration-in-compaction-no-mglru+
+>   6.8.0-rc1-folio-migration-free-page-split-no-mglru+
+>
+> 6.8.0-rc1-mm-eve 6.8.0-rc1-split-folio-in-co 6.8.0-rc1-folio-migration-i =
+6.8.0-rc1-folio-migration-f
+> ---------------- --------------------------- --------------------------- =
+---------------------------
+>          %stddev     %change         %stddev     %change         %stddev =
+    %change         %stddev
+>              \          |                \          |                \   =
+       |                \
+>    6438422 =C2=B1  2%     +27.5%    8206734 =C2=B1  2%     +10.6%    7118=
+390           +26.2%    8127192 =C2=B1  4%  vm-scalability.throughput
+
+Thanks for the data! Based on the above:
+
+Test case                          default   MGLRU     Change
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+mmap-xread-seq-mt/vm-scalability   14975716  15567998  +4%
+mmap-pread-seq/vm-scalability      11957423  12812682  +7%
+mmap-pread-seq-mt/vm-scalability   11771926  unavail   N/A
+lru-file-readtwice/vm-scalability  9016077   10408804  +15%
+lru-file-mmap-read/vm-scalability  8127192   7308375   -10%
+
+So it seems that MGLRU regressed for the last test. I'll find someone
+on our team to take a look.
 
