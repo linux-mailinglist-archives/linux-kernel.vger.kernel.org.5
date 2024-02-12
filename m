@@ -1,35 +1,60 @@
-Return-Path: <linux-kernel+bounces-61996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49A7D8519C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:42:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43B458519CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 17:43:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DA381C2189A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:42:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D68A71F22F66
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54BCE3E487;
-	Mon, 12 Feb 2024 16:39:10 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31ED23EA95;
+	Mon, 12 Feb 2024 16:39:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZyxTWdzl"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90064210E4;
-	Mon, 12 Feb 2024 16:39:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B658B3E496;
+	Mon, 12 Feb 2024 16:39:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707755949; cv=none; b=BLQijGk579GezfelYXtFv27Iv6GwelCP/WgjtDFtUsH+ubvQEYy5agizWNS56vnL12HEauv/3rVhYALQDG3ty8EBM5mtArEJtPhP3aPW6NL6ZMrer62q+lQQ6YMRwmdzCtAldRogEA1dCDZfEYahsEMlZrgmpHk2cpm/3epuFds=
+	t=1707755968; cv=none; b=NIq+qwS14pBBysVjjGVVny+pcPP0tKWJzlKejHGDZiDMyxkR/EMsPyrkISPBHq/46YAAiQpO1UZK/jcTW/7tR8Sv3GpHDJN7XiM5ogNBqBfS6vy1Pzrr3ZXpcRF+yVM7on/zFGCNCl980KaJm8f6sOBbiZWW2vAfWQCUWfvrTks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707755949; c=relaxed/simple;
-	bh=vcordRo2KvlABpChEq+Z7OeNWOiTzGB0Zd1pEepkQ9A=;
+	s=arc-20240116; t=1707755968; c=relaxed/simple;
+	bh=709knkAaP8MjULstfYL4E5uSLG2m2pepQhQRAsUmO4M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ppGFFNJJWnPF8DFkrVH1/6osfz9NJ0qtAcJoETyvVD6rhUUkpNeuJwAkb37sXnETTQorss+s5T3ia5UBAW26ReZuV+p+bQzyPsUp/ip/M+PfRFfg0ZRN3TxcIUK6IjPEox8y6/jfAIEgi1Q3b3qN7SplZEAS6ZZImP1fWoAchR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C339C433C7;
-	Mon, 12 Feb 2024 16:39:05 +0000 (UTC)
-Message-ID: <0b3e31e6-34ae-46e3-a43d-bc4895542d8a@xs4all.nl>
-Date: Mon, 12 Feb 2024 17:39:03 +0100
+	 In-Reply-To:Content-Type; b=pg7u/kGfIHGXsJAA0V6f3M2hith2AKOZfRAK6Dk/F+zKgAMbNaRHb+FKww5d9U5HKJubywxZuhqwsv2KRuAqYB3hsk53Bgddp9Y074Ejwg45SUfeQmYozshrro3tt1bgcitQWOUO9Cpj86k3hNNevY9z3q/QhDZi0u3M2dbBMCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZyxTWdzl; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707755967; x=1739291967;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=709knkAaP8MjULstfYL4E5uSLG2m2pepQhQRAsUmO4M=;
+  b=ZyxTWdzlk5pTvAItvtZ2XpDq6TEjT1zP98Qtgc4Sftt752Z36TJYg1Jq
+   mDLGz8PWkq96X1YViA9AHGeVAeVzJN8dysQSfsILTtGZ2zB8Lqm8veiId
+   pCf0Vr6mU020YdFyuIUSMQMWrKV85d+oRWBBg0bp0jQkt1TtK+qGW09Rl
+   qoF8V+TOHPtYBadAJysUJR6jTSA+/auYbXMb075ydHoT6s9EhASim67XZ
+   XmP+cjzU4yTUsdCb2amNa2zMaLTMQic22xqkAwAHrfJNGolEqUn+T1MPb
+   S8wTmq2zFb7z7jQSg93hDsnGaoJQ8nTa/Abz+baMHnjhjaRwh1lWzqMMW
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1646427"
+X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
+   d="scan'208";a="1646427"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 08:39:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
+   d="scan'208";a="2815060"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.113.42]) ([10.246.113.42])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 08:39:25 -0800
+Message-ID: <c643b6a3-0f41-416f-9268-3072f76939e3@intel.com>
+Date: Mon, 12 Feb 2024 09:39:24 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -37,211 +62,57 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast RGB property
-Content-Language: en-US, nl
-To: =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>
-Cc: Sebastian Wick <sebastian.wick@redhat.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
- Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>,
- =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-References: <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
- <20240115143308.GA159345@toolbox> <20240115143720.GA160656@toolbox>
- <73peztbeeikb3fg6coxu3punxllgtyrmgco34tnxkojtsjbr3s@26bud3sjbcez>
- <Zb0M_2093UwPXK8y@intel.com>
- <hez2m57ogqx3yyqk45tzdkvxvhrbdepgm244i4m2aty2xhf5b5@acqgvmxhmmvr>
- <Zb0aYAapkxQ2kopt@intel.com>
- <zml6j27skvjmbrfyz7agy5waxajv4p4asbemeexelm3wuv4o7j@xkd2wvnxhbuc>
- <20240209203435.GB996172@toolbox>
- <ahfl6f72lpgpsbnrbgvbsh4db4npr2hh36kua2c6krh544hv5r@dndw4hz2mu2g>
- <Zco-DQaXqae7B1jt@intel.com>
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <Zco-DQaXqae7B1jt@intel.com>
+Subject: Re: [PATCH] dmaengine: idxd: Clear Event Log head in idxd upon
+ completion of the Enable Device command
+To: Fenghua Yu <fenghua.yu@intel.com>, Vinod Koul <vkoul@kernel.org>
+Cc: dmaengine@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>,
+ Lingyan Guo <lingyan.guo@intel.com>
+References: <20240209191851.1050501-1-fenghua.yu@intel.com>
+ <36895817-8f71-461a-93e0-5db1a39cd3c4@intel.com>
+ <18761e12-822a-16b4-fdc5-0ac889b1693c@intel.com>
+Content-Language: en-US
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <18761e12-822a-16b4-fdc5-0ac889b1693c@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 12/02/2024 16:49, Ville Syrjälä wrote:
-> On Mon, Feb 12, 2024 at 11:01:07AM +0100, Maxime Ripard wrote:
->> On Fri, Feb 09, 2024 at 09:34:35PM +0100, Sebastian Wick wrote:
->>> On Mon, Feb 05, 2024 at 10:39:38AM +0100, Maxime Ripard wrote:
->>>> On Fri, Feb 02, 2024 at 06:37:52PM +0200, Ville Syrjälä wrote:
->>>>> On Fri, Feb 02, 2024 at 04:59:30PM +0100, Maxime Ripard wrote:
->>>>>> On Fri, Feb 02, 2024 at 05:40:47PM +0200, Ville Syrjälä wrote:
->>>>>>> On Fri, Feb 02, 2024 at 02:01:39PM +0100, Maxime Ripard wrote:
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>> On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebastian Wick wrote:
->>>>>>>>>>>  /**
->>>>>>>>>>>   * DOC: HDMI connector properties
->>>>>>>>>>>   *
->>>>>>>>>>> + * Broadcast RGB
->>>>>>>>>>> + *      Indicates the RGB Quantization Range (Full vs Limited) used.
->>>>>>>>>>> + *      Infoframes will be generated according to that value.
->>>>>>>>>>> + *
->>>>>>>>>>> + *      The value of this property can be one of the following:
->>>>>>>>>>> + *
->>>>>>>>>>> + *      Automatic:
->>>>>>>>>>> + *              RGB Range is selected automatically based on the mode
->>>>>>>>>>> + *              according to the HDMI specifications.
->>>>>>>>>>> + *
->>>>>>>>>>> + *      Full:
->>>>>>>>>>> + *              Full RGB Range is forced.
->>>>>>>>>>> + *
->>>>>>>>>>> + *      Limited 16:235:
->>>>>>>>>>> + *              Limited RGB Range is forced. Unlike the name suggests,
->>>>>>>>>>> + *              this works for any number of bits-per-component.
->>>>>>>>>>> + *
->>>>>>>>>>> + *      Drivers can set up this property by calling
->>>>>>>>>>> + *      drm_connector_attach_broadcast_rgb_property().
->>>>>>>>>>> + *
->>>>>>>>>>
->>>>>>>>>> This is a good time to document this in more detail. There might be two
->>>>>>>>>> different things being affected:
->>>>>>>>>>
->>>>>>>>>> 1. The signalling (InfoFrame/SDP/...)
->>>>>>>>>> 2. The color pipeline processing
->>>>>>>>>>
->>>>>>>>>> All values of Broadcast RGB always affect the color pipeline processing
->>>>>>>>>> such that a full-range input to the CRTC is converted to either full- or
->>>>>>>>>> limited-range, depending on what the monitor is supposed to accept.
->>>>>>>>>>
->>>>>>>>>> When automatic is selected, does that mean that there is no signalling,
->>>>>>>>>> or that the signalling matches what the monitor is supposed to accept
->>>>>>>>>> according to the spec? Also, is this really HDMI specific?
->>>>>>>>>>
->>>>>>>>>> When full or limited is selected and the monitor doesn't support the
->>>>>>>>>> signalling, what happens?
->>>>>>>>>
->>>>>>>>> Forgot to mention: user-space still has no control over RGB vs YCbCr on
->>>>>>>>> the cable, so is this only affecting RGB? If not, how does it affect
->>>>>>>>> YCbCr?
->>>>>>>>
->>>>>>>> So I dug a bit into both the i915 and vc4 drivers, and it looks like if
->>>>>>>> we're using a YCbCr format, i915 will always use a limited range while
->>>>>>>> vc4 will follow the value of the property.
->>>>>>>
->>>>>>> The property is literally called "Broadcast *RGB*".
->>>>>>> That should explain why it's only affecting RGB.
->>>>>>
->>>>>> Right. And the limited range option is called "Limited 16:235" despite
->>>>>> being usable on bpc > 8 bits. Naming errors occurs, and history happens
->>>>>> to make names inconsistent too, that's fine and not an argument in
->>>>>> itself.
->>>>>>
->>>>>>> Full range YCbCr is a much rarer beast so we've never bothered
->>>>>>> to enable it.
->>>>>>
->>>>>> vc4 supports it.
->>>>>
->>>>> Someone implemented it incorrectly then.
->>>>
->>>> Incorrectly according to what documentation / specification? I'm sorry,
->>>> but I find it super ironic that i915 gets to do its own thing, not
->>>> document any of it, and when people try to clean things up they get told
->>>> that we got it all wrong.
+
+
+On 2/10/24 6:49 PM, Fenghua Yu wrote:
+> Hi, Dave,
+> 
+> On 2/9/24 12:17, Dave Jiang wrote:
+>>
+>>
+>> On 2/9/24 12:18 PM, Fenghua Yu wrote:
+>>> If Event Log is supported, upon completion of the Enable Device command,
+>>> the Event Log head in the variable idxd->evl->head should be cleared to
+>>> match the state of the EVLSTATUS register. But the variable is not reset
+>>> currently, leading mismatch of the variable and the register state.
+>>> The mismatch causes incorrect processing of Event Log entries.
 >>>
->>> FWIW, this was an i915 property and if another driver uses the same
->>> property name it must have the same behavior. Yes, it isn't standardized
->>> and yes, it's not documented (hence this effort here) but it's still on
->>> vc4 to make the property compatible.
+>>> Fix the issue by clearing the variable after completion of the command.
 >>
->> How is it not compatible? It's a superset of what i915 provides, but
->> it's strictly compatible with it.
+>> Should this be done in idxd_device_clear_state() instead?
 > 
-> No it is not. Eg. what happens if you set the thing to full range for
-> RGB (which you must on many broken monitors), and then the kernel
-> automagically switches to YCbCr (for whatever reason) but the monitor
-> doesn't support full range YCbCr? Answer: you get crap output.
+> If clear evl->head in idxd_device_clear_state(), evl->head still mismatches head in EVLSTATUS in some cases.
+> 
+> For exmample, when a few event log entries are logged and then device is disabled, head in EVLSTATUS is still a valid non-zero value. Clearing evl->head in idxd_device_clear_state() when disabling device makes evl->head and head in EVLSTATUS mismatched.
+> 
+> I haven't thought a failure test case when they mismatch in these cases though.
+> 
+> But while thinking evl->head more, I wonder why is it even needed?
+> 
+> head of event log can always be read from EVLSTATUS instead of from its shadow evl->head. And reading head from EVLSTATUS won't degrade performance because tail is always read from EVLSTATUS whenever head is read (no matter from evl->head or from EVLSATUS).
+> 
+> To avoid any mismatch issue/trouble, I think the right fix is to remove head definition in struct idxd_evl and always read head from EVLSTATUS.
+> 
+> Do you think this is the right fix?
 
-The Broadcast RGB setting is really specific to RGB output. That's where
-you need it, since due to messed up standards in the past it is common to
-have to override this.
-
-For YCbCr it is not needed since it is always limited range in practice.
-If there is ever a need to support full range YCbCr, then a new "Broadcast YCbCr"
-setting should be created.
-
-The only place were you see full range YCbCr being used is in combination with
-JPEG codecs, since JPEG uses full range YCbCr. But it does not normally occur
-on video output interfaces.
-
-Regards,
-
-	Hans
+I was to avoid register reads during event processing. But if you think there's no performance impact then feel free to read directly from the register. 
 
 > 
->>
->> I would argue that i915 is the broken one since userspace could force a
->> full range output, but since the driver takes the YUV vs RGB decision
->> itself and only supports limited range for YUV, the driver would
->> effectively ignore that user-space property, without the user-space
->> being able to tell it was ignored in the first place.
->>
->>> Trying to make the property handle YCbCr is very much in the "let's try
->>> to fix the property" territory that I want to avoid, so I'm in favor of
->>> adjusting vc4.
->>
->> Breaking the ABI in the process. For something that is explicitly
->> supported by the spec, the driver, and the hardware. On a property that
->> never said it wasn't meant to be used that way, and with semantics based
->> on a driver that never provided a way to check those restrictions in the
->> first place.
->>
->> And it's not like i915 is going to use that code anyway.
->>
->> Maxime
+> Thanks.
 > 
-> 
-> 
-
+> -Fenghua
 
