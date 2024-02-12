@@ -1,165 +1,185 @@
-Return-Path: <linux-kernel+bounces-61507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8332A851307
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:08:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB01C8512F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 13:06:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5412AB27231
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:08:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 192991C2294A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 12:06:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B2E3D0DA;
-	Mon, 12 Feb 2024 12:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA2033AC26;
+	Mon, 12 Feb 2024 12:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="LEhPO0Y2"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VewNf8WA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2D13D0A8;
-	Mon, 12 Feb 2024 12:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EF53A8F3;
+	Mon, 12 Feb 2024 12:01:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707739374; cv=none; b=LXrx1MDm6WZfVyzEYIlyEqAVDrppI4z7aEZDvE9HXY7T27eHeoSdEeV+xwYVvdZE0Bk1AWLKizB4AclNuTvIQQch4bWH9aL11CyM5+LYcm0SaZBFfwKEHh0uGnUF5Lei5rLA0FkLxj/BxUnOlHQSy9mUBNbIZf0o/nyOSQxSXzw=
+	t=1707739295; cv=none; b=gGqFaX4kMmfVSxsNqiqqKXKB/nyv6OYjFCWoNmH6ZtVd5RereMoxGH6SJTRGuWCw9Rv7Pg3DJCCl3xJkoke2vla3qwZ7neaSU41ugs7cmqfjr5aTL6htuprZ5yA8+QyG0qqBs35kXxxQN1EXJTXBI9rH8tQZHY6yR99oJfixYK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707739374; c=relaxed/simple;
-	bh=qTs4pmRhkWrU86rLUbk4gL5rcAV4yNZx6VSPad5e3vs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DMteucOGZtgFF4dtPBp8HUR7+TNbXsvPE6q9R0S7wxlwiIG8VEIisa1dR1x3QbQES2eFxEMljZ3Me/NwCMEwpSMLuTn9fWROpYc4zTj9wkThujVMa7jEJw6DhG8/p+dYBpbTjNasXUUXjn3rup6smy0Rl3RRvdmCQIKTWA+WRco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=LEhPO0Y2; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41CBxpc8019223;
-	Mon, 12 Feb 2024 12:02:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YJwOyB26zpENJsbMFuKna5WNVCpfnRlTrcC0jJUIE6I=;
- b=LEhPO0Y2LgHEhBSc2hT2MvSoUOspss/4W+42H4wTvZXpxNugAPXQkLnDhDx4dS5ERovW
- evtrC6nWeJLLUk7t7GCXJzCbLMIVDMscaDm2hMW+WkhpZCGtZoJr4Ol2BHH/w/jjfOff
- WYWweAfSyLGUV7VWuu+GmmyypPJ1FxTllSHZN/Z6HEHkCKaKGENks2ONa6qd7khN0LAq
- HZ3qyPdnCw1LflWEeUVEkeVL5+Ls4vclGPC6QAFpi8LdWA4Bo12RPIWuI66KC7iOAjzG
- W8Lwnr2GSRZaAYzSd32hAJ4+GX2xsZ/bBJWCB0a/l5WMIZthLIDaOHv+YOKJ69KUsVtj UA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7jxt8517-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 12:02:28 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41CC07Lu020727;
-	Mon, 12 Feb 2024 12:02:12 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w7jxt84fk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 12:02:12 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41C9KOSa032596;
-	Mon, 12 Feb 2024 12:01:32 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6kft8nfn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Feb 2024 12:01:32 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41CC1TE710617556
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 Feb 2024 12:01:31 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4AE2658064;
-	Mon, 12 Feb 2024 12:01:29 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CAA1158066;
-	Mon, 12 Feb 2024 12:01:21 +0000 (GMT)
-Received: from [9.109.198.187] (unknown [9.109.198.187])
-	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 12 Feb 2024 12:01:21 +0000 (GMT)
-Message-ID: <76b6067f-109f-464c-97fb-fa519f3d1c56@linux.ibm.com>
-Date: Mon, 12 Feb 2024 17:31:20 +0530
+	s=arc-20240116; t=1707739295; c=relaxed/simple;
+	bh=6JvoMl+MHdSsuOMcAJwraxyF5vh1I7HnMGQ855T0VP8=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=dEBveNKwWK+NP4kYu4GlkX1MmZLuTxNLrKg8LcVQnsS3vtwbtzJXGYwt6y5BX+mD4xNmJf1+lklwxLl7GWIEDQGzwIYLMAkj6nRtT9hCKnYAqX1j+An8dIPN/I6tPt+8QBIG3toUR58SpiThPmA6XCoeUT5/fpGmD9hs/PIdhp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VewNf8WA; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707739294; x=1739275294;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=6JvoMl+MHdSsuOMcAJwraxyF5vh1I7HnMGQ855T0VP8=;
+  b=VewNf8WAu2VJhTS/NeCpBjr53C+KnQPwsj2ErGx36r8fQoEbDzDzPfaP
+   uevvIcAR5qgnqLKIQovNYoPCxPcQPaxfV8rwys3A7Mfys42UFbuStDmSv
+   WviuZUvK2ul3Klfkp7fli6CdkTIGW0IXzc/1NT7LRGlvMxSUQ5XUqD02T
+   D9TSpBBWW/Z4kMs/mTFh2GzsTpG1bK1QLB5c6sTz2h47rLh+nHonJzgC+
+   HkrwwlI1OcGweZUZhbKJ/Bd8dSZV5flzv5aYshJgMS/Hg+kV5fiDNJywC
+   60OjOfGf1utGl2uxQ+kiNj34/IzdU+/SgNwC3Es1uEbpYJbNESdX7c0Ub
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="12800646"
+X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
+   d="scan'208";a="12800646"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:01:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,263,1705392000"; 
+   d="scan'208";a="2576576"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.49.160])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 04:01:31 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 12 Feb 2024 14:01:25 +0200 (EET)
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+cc: Bjorn Helgaas <bhelgaas@google.com>, 
+    Mika Westerberg <mika.westerberg@linux.intel.com>, 
+    linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] PCI: Correct error reporting with PCIe failed link
+ retraining
+In-Reply-To: <alpine.DEB.2.21.2402100045590.2376@angie.orcam.me.uk>
+Message-ID: <f4eafdbc-b295-a982-fe8e-dbd11b98d56f@linux.intel.com>
+References: <alpine.DEB.2.21.2402092125070.2376@angie.orcam.me.uk> <alpine.DEB.2.21.2402100045590.2376@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 09/15] block: Add checks to merging of atomic writes
-Content-Language: en-US
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, bvanassche@acm.org,
-        dchinner@redhat.com, djwong@kernel.org, hch@lst.de, jack@suse.cz,
-        jbongio@google.com, jejb@linux.ibm.com, kbusch@kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
-        martin.petersen@oracle.com, ming.lei@redhat.com, ojaswin@linux.ibm.com,
-        sagi@grimberg.me, tytso@mit.edu, viro@zeniv.linux.org.uk
-References: <20240124113841.31824-10-john.g.garry@oracle.com>
- <20240212105444.43262-1-nilay@linux.ibm.com>
- <484a449b-5c7e-4766-97d3-36b01c78687c@oracle.com>
-From: Nilay Shroff <nilay@linux.ibm.com>
-In-Reply-To: <484a449b-5c7e-4766-97d3-36b01c78687c@oracle.com>
+Content-Type: multipart/mixed; boundary="8323328-194427090-1707739285=:1013"
+
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323328-194427090-1707739285=:1013
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: B2dfMfSJRgps0Gdgt4dUb_kj3eYMZmpg
-X-Proofpoint-GUID: HOcnTpxZ3fhpvWkDTSso8nxFZzTevVO8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-12_09,2024-02-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- clxscore=1015 mlxlogscore=979 spamscore=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 phishscore=0 mlxscore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402120091
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
+On Sat, 10 Feb 2024, Maciej W. Rozycki wrote:
 
+> Only return successful completion status from `pcie_failed_link_retrain'=
+=20
+> if retraining has actually been done, preventing excessive delays from=20
+> being triggered at call sites in a hope that communication will finally=
+=20
+> be established with the downstream device where in fact nothing has been=
+=20
+> done about the link in question that would justify such a hope.
+>=20
+> Fixes: a89c82249c37 ("PCI: Work around PCIe link training failures")
+> Reported-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> Link: https://lore.kernel.org/r/aa2d1c4e-9961-d54a-00c7-ddf8e858a9b0@linu=
+x.intel.com/
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Cc: stable@vger.kernel.org # v6.5+
 
-On 2/12/24 16:50, John Garry wrote:
-> I'm not sure what is going on with your mail client here.
+Thanks.
 
-Sorry for the inconvenience, I will check the settings.
+The original thread might be useful for context if somebody has to look at=
+=20
+this change later on from the history, so:
 
->>
->> So is it a good idea to validate here whether we could potentially exceed
->>
->> the atomic-write-max-unit-size supported by device before we allow merging?
-> 
-> Note that we have atomic_write_max_bytes and atomic_write_max_unit_size, and they are not always the same thing.
-> 
->>
->> In case we exceed the atomic-write-max-unit-size post merge then don't allow
->>
->> merging?
-> 
-> We check this elsewhere. I just expanded the normal check for max request size to cover atomic writes.
-> 
-> Normally we check that a merged request would not exceed max_sectors value, and this max_sectors value can be got from blk_queue_get_max_sectors().
-> 
-> So if you check a function like ll_back_merge_fn(), we have a merging size check:
-> 
->     if (blk_rq_sectors(req) + bio_sectors(bio) >
->         blk_rq_get_max_sectors(req, blk_rq_pos(req))) {
->         req_set_nomerge(req->q, req);
->         return 0;
->     }
-> 
-> And here the blk_rq_get_max_sectors() -> blk_queue_get_max_sectors() call now also supports atomic writes (see patch #7):
-OK got it. I think I have missed this part.
+Link: https://lore.kernel.org/linux-pci/20240129112710.2852-2-ilpo.jarvinen=
+@linux.intel.com/T/#u
 
-> 
-> @@ -167,7 +167,16 @@ static inline unsigned get_max_io_size(struct bio *bio,
->  {
-> ...
-> 
-> +    if (bio->bi_opf & REQ_ATOMIC)
-> +        max_sectors = lim->atomic_write_max_sectors;
-> +    else
-> +        max_sectors = lim->max_sectors;
-> 
-> Note that we do not allow merging of atomic and non-atomic writes.
-> 
-Yeah 
+Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
 
-Thanks,
---Nilay
+--=20
+ i.
+
+> ---
+>  drivers/pci/quirks.c |   18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
+>=20
+> linux-pcie-failed-link-retrain-status-fix.diff
+> Index: linux-macro/drivers/pci/quirks.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-macro.orig/drivers/pci/quirks.c
+> +++ linux-macro/drivers/pci/quirks.c
+> @@ -74,7 +74,8 @@
+>   * firmware may have already arranged and lift it with ports that alread=
+y
+>   * report their data link being up.
+>   *
+> - * Return TRUE if the link has been successfully retrained, otherwise FA=
+LSE.
+> + * Return TRUE if the link has been successfully retrained, otherwise FA=
+LSE,
+> + * also when retraining was not needed in the first place.
+>   */
+>  bool pcie_failed_link_retrain(struct pci_dev *dev)
+>  {
+> @@ -83,10 +84,11 @@ bool pcie_failed_link_retrain(struct pci
+>  =09=09{}
+>  =09};
+>  =09u16 lnksta, lnkctl2;
+> +=09bool ret =3D false;
+> =20
+>  =09if (!pci_is_pcie(dev) || !pcie_downstream_port(dev) ||
+>  =09    !pcie_cap_has_lnkctl2(dev) || !dev->link_active_reporting)
+> -=09=09return false;
+> +=09=09return ret;
+> =20
+>  =09pcie_capability_read_word(dev, PCI_EXP_LNKCTL2, &lnkctl2);
+>  =09pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
+> @@ -98,9 +100,10 @@ bool pcie_failed_link_retrain(struct pci
+>  =09=09lnkctl2 |=3D PCI_EXP_LNKCTL2_TLS_2_5GT;
+>  =09=09pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
+> =20
+> -=09=09if (pcie_retrain_link(dev, false)) {
+> +=09=09ret =3D pcie_retrain_link(dev, false) =3D=3D 0;
+> +=09=09if (!ret) {
+>  =09=09=09pci_info(dev, "retraining failed\n");
+> -=09=09=09return false;
+> +=09=09=09return ret;
+>  =09=09}
+> =20
+>  =09=09pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
+> @@ -117,13 +120,14 @@ bool pcie_failed_link_retrain(struct pci
+>  =09=09lnkctl2 |=3D lnkcap & PCI_EXP_LNKCAP_SLS;
+>  =09=09pcie_capability_write_word(dev, PCI_EXP_LNKCTL2, lnkctl2);
+> =20
+> -=09=09if (pcie_retrain_link(dev, false)) {
+> +=09=09ret =3D pcie_retrain_link(dev, false) =3D=3D 0;
+> +=09=09if (!ret) {
+>  =09=09=09pci_info(dev, "retraining failed\n");
+> -=09=09=09return false;
+> +=09=09=09return ret;
+>  =09=09}
+>  =09}
+> =20
+> -=09return true;
+> +=09return ret;
+>  }
+> =20
+>  static ktime_t fixup_debug_start(struct pci_dev *dev,
+>=20
+
+--8323328-194427090-1707739285=:1013--
 
