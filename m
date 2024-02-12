@@ -1,85 +1,53 @@
-Return-Path: <linux-kernel+bounces-62162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EFDB851C7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:09:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DA87851C81
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:10:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3443A1C21442
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:09:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C17511C218BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:10:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FDB41202;
-	Mon, 12 Feb 2024 18:09:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A72923FB1D;
+	Mon, 12 Feb 2024 18:10:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ptV7i8BC"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T/FBnrt2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 366C540C03
-	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:09:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5D13F9FD
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:10:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707761375; cv=none; b=Qb7fQfGiD09nj/MwLX0mz771aqADTHMr07Fj98DetmVgrxILzaEwqgNNwjY83DT7h01oB0RXI6HX5Jllep4k/UJ4EGpm5GVCL0r1opJGivoPVeOBgHmdBN0mF+u6e6iBHuYjeBfqlIxUEbFkA+D2YeodikCuBk57uOrAa+pwWwQ=
+	t=1707761433; cv=none; b=DF0KD5LBTPN+mo4Gxr771oFMK8hPSKRVWhej4rgqaL0y7z5ntrmm9EcJq9vA+NcPWOUByOMYUtVbrh6d2EGZ2rooQfSOk68nYu8zJN2JTsOC0zmw071Jar2qwOLI8QdPrfTEAFRXCPEasuv+8fFTAt/MfqsQbIiJPOFX6yZStHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707761375; c=relaxed/simple;
-	bh=gRuSKBOYTpOhumtH7yjdK5bdWFyLj8VQskN97z+Bwi0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MBEl31ZWtW5erX1XlWjnrpU8doiQq53h5PiBR1LDIMnAGlwcZc9XElc7hwd30DqKQaFsRsI26vpKS4hWFaMvJfaOxiNB88Va4a83czIbB1HN1jW+YzIJgFNpGPzuWeaXyWyxaystaPN1Gr7fKSBPZkDWS5ek0eoI3pA53zm0tl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=ptV7i8BC; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-60757c46e34so913317b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:09:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707761372; x=1708366172; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LgHEWN/9ibe7PSimy9tUv0TwC6oTt5ihEg494Xlo1nQ=;
-        b=ptV7i8BCGWZGY6RSKiFzmSp7Bv+hDijTEVUBnsHI9hy1e2eafk9HtAadDIAJr7MRCe
-         7qX//h0FafbzSOsYTsMHJkhh6qyu4itU0epwhkd+Boyx+WHWNmaiuXU9O8u5Zy+Kyi/J
-         +qw2HoX8y522KmtfGpHJVwasdRQQTrXG31bTf6+YOyUDf2cs9be0bJIOQ6042otGkNJc
-         cx/gmhtZmkFlXmLBBF2InpQjwOxSr+NU2FVCz+uDH8ToV2rKecZg28+yqKjmVNMVynMX
-         wMQUdJqjQmJFmxDpGoUlrve3XKkRvNeX9tUSwnEOwbBXoKs5JwY/punsdsbG5HaJfDk6
-         gaWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707761372; x=1708366172;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LgHEWN/9ibe7PSimy9tUv0TwC6oTt5ihEg494Xlo1nQ=;
-        b=AJtrtphv/OgCkVttYp35W8ZaHZ9UX9hPuP2xheV8FaxdKo3uKCis61J7/6R6/1mUb9
-         9+c2oQC1F1K+LRlVDU5rk/cLNqwplfUWlapgnklgLOdj70syIZnhEB0edA10NEgn7hU9
-         iceVPR9+F5/bQyJmINWSV13yPcxiZVm12ZMv8RRHkJn/W8Jf//ji/toPorUTsWOd2GkT
-         sAtAbhu6EIgJgaQebIn1FZAtU+oVlnVuE0txe7LfCkVjorzF0uBME1PW7qCTo+7KkZAO
-         tXll2GHvTfBSHoRx/FW63hDvDQ95+zCbEr4Hk0c5uUpn3QQGoWt7UT9xshpYsexkVxC4
-         /3yQ==
-X-Gm-Message-State: AOJu0YxwZfiYd21MJHDLx7kRHC3UW6QADt9WwFj4IDpqU/fS5qebHiCM
-	/XuquooVmR5AyHBhK1DnBDYpN0QfM2diV77q5KVvdZlQynHFUpHdgG82TH/Vqus=
-X-Google-Smtp-Source: AGHT+IF4NH6hubgV3ijWRgRsPLEYf8DbaMN2+BpEJqS/wrIO4Mnpt332eRpqriYqg10EkROXVZ3kYQ==
-X-Received: by 2002:a05:690c:428c:b0:604:dd57:7845 with SMTP id gj12-20020a05690c428c00b00604dd577845mr4496765ywb.2.1707761371992;
-        Mon, 12 Feb 2024 10:09:31 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUb2VbWgM3lFMkGXCcqUUy8SUWKynyGXZZcdaarGyjT6833ChZ1134evE2E8uQjdAVTpI1XSfSiDkYi8+VqoBNtzjuUKfy+0xOf5M92SQYTtg98wqsxP+Y5y55SvPglYY31WwYsk6vRA+pmTTG/e9ibyLEYnPkb6NYhIIlY4bs4aKtQMMm0nBmP6/09YFmVvFCZ+kZK
-Received: from ghost ([50.146.0.2])
-        by smtp.gmail.com with ESMTPSA id i5-20020a0ddf05000000b0060484467cddsm1286447ywe.32.2024.02.12.10.09.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 10:09:31 -0800 (PST)
-Date: Mon, 12 Feb 2024 13:09:29 -0500
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	David Laight <David.Laight@aculab.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Message-ID: <Zcpe2ZthpFf1BVGg@ghost>
-References: <20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com>
- <20240207-fix_sparse_errors_checksum_tests-v6-2-4caa9629705b@rivosinc.com>
- <20240212062614.GI608142@ZenIV>
- <52393411-8313-4e94-9618-916b57f7d52e@roeck-us.net>
+	s=arc-20240116; t=1707761433; c=relaxed/simple;
+	bh=o9yCZBr6xeuisTA4HYzCMNiegLDPVi4vpLAGavAhywk=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PuiGBwW23Opvfjm8+n5xsNqVmd7Ru5Ehgqba1FEVQFa6EMVOCWWtKS7SHl8SCj7ExT97XsrDmn7oHtazGbWwGyDNfzEe2P03CUAagWpMCN523fUHpcnToMVuJMlF9tppilT8GqmZtUFXY11WBqtWl8LonOB7CU+kmUALbfW9xuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T/FBnrt2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15E4CC433F1;
+	Mon, 12 Feb 2024 18:10:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707761433;
+	bh=o9yCZBr6xeuisTA4HYzCMNiegLDPVi4vpLAGavAhywk=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=T/FBnrt2GlFMrGrvJKXSrCg5OSpVa8p2+8N4noR9Gs3taJ5JvBV7sdiX4GFsxlR3z
+	 tt5TLNvVZrLSWXaKclsLywji345cVy+0axxM/t4ZEDUOvw48jRrknDYAZgIgGh/LFU
+	 1bvKDUnXwjTaf9KpJVmMd7PJwhmzoucf5yRkJ5MWen2qjdrsXlWpQOqUUBt5kvoLsU
+	 fUxHk/zAqHrFvo3ZSNDCSzUpPnshrwYn65SbWqjUExbAT0sn1v22DY+mzdQoluQ5Fz
+	 6LL5qblfgPCIR0qhFHsb4EESucZ3vHhG72D6dMksTh6xxrrtyGRy8nWijXS9WaB7jv
+	 juHabXgfxJXgw==
+Date: Mon, 12 Feb 2024 10:10:31 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 2/3 v2] f2fs: use BLKS_PER_SEG, BLKS_PER_SEC, and
+ SEGS_PER_SEC
+Message-ID: <ZcpfF9UJz8bNW6ge@google.com>
+References: <20240207005105.3744811-1-jaegeuk@kernel.org>
+ <20240207005105.3744811-2-jaegeuk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,76 +56,907 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <52393411-8313-4e94-9618-916b57f7d52e@roeck-us.net>
+In-Reply-To: <20240207005105.3744811-2-jaegeuk@kernel.org>
 
-On Mon, Feb 12, 2024 at 09:18:14AM -0800, Guenter Roeck wrote:
-> On Mon, Feb 12, 2024 at 06:26:14AM +0000, Al Viro wrote:
-> > On Wed, Feb 07, 2024 at 04:22:51PM -0800, Charlie Jenkins wrote:
-> > > +	struct csum_ipv6_magic_data {
-> > > +		const struct in6_addr saddr;
-> > > +		const struct in6_addr daddr;
-> > > +		unsigned int len;
-> > > +		__wsum csum;
-> > > +		unsigned char proto;
-> > > +	} data, *data_ptr;
-> > 
-> > Huh?
-> > 
-> > > +	int num_tests = MAX_LEN / WORD_ALIGNMENT - sizeof(struct csum_ipv6_magic_data);
-> > > +
-> > > +	for (int i = 0; i < num_tests; i++) {
-> > > +		data_ptr = (struct csum_ipv6_magic_data *)(random_buf + (i * WORD_ALIGNMENT));
-> > > +
-> > > +		cpu_to_be32_array((__be32 *)&data.saddr, (const u32 *)&data_ptr->saddr,
-> > > +				  sizeof_field(struct csum_ipv6_magic_data, saddr) / 4);
-> > > +		cpu_to_be32_array((__be32 *)&data.daddr, (const u32 *)&data_ptr->daddr,
-> > > +				  sizeof_field(struct csum_ipv6_magic_data, daddr) / 4);
-> > > +		data.len = data_ptr->len;
-> > > +		data.csum = (__force __wsum)htonl((__force u32)data_ptr->csum);
-> > 
-> > What are those cpu_to_be32() about?  Checksum calculations *DO* *NOT* involve
-> > any endianness conversions.  At any point.
-> > 
-> > Replace those assignments with memcpy() and be done with that - that will take
-> > care of unaligned accesses.
-> > 
-> > Result will have host-independent memory representation.  The only place where you
-> > might want to play with byteswaps (only 16-bit ones) is if you initialized the
-> > array of expected results with u16 constants.  That will have opposite memory
-> > representations on l-e and b-e, so you'll need to byteswap to compare with
-> > what you get from function.  Alternatively, make it an array of bytes and
-> > do
-> > 	sum16 = csum_ipv6_magic(saddr, daddr, len, proto, csum);
-> > 	if (memcmp(sum16, expected_csum_ipv6_magic + i * 2, 2))
-> > 		complain
-> > 
-> > That's it.
-> 
-> Almost. Turns out the csum parameter of csum_ipv6_magic() needs to be in
-> network byte order, and the length parameter needs to be in host byte order.
-> So instead of
-> 	data.len = data_ptr->len;
-> 	data.csum = (__force __wsum)htonl((__force u32)data_ptr->csum);
-> it needs to be something like
-> 	data.len = ntohl(data_ptr->len);
-> 	data.csum = data_ptr->csum;
-> 
-> Also, as you mentioned, either the returned checksum or the expected
-> checksum needs to be converted for the comparison because one is in
-> network byte order and the other in host byte order.
-> 
-> Address conversions are indeed not needed.
-> 
-> Thanks,
-> Guenter
+No functional change.
 
-Aww that makes sense thank you. I was reversing everything except len
-and the solution was to only reverse len... Thank you for figuring that
-out for me.
+Reviewed-by: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
 
-I will send out another version with your change. Should I add a
-signed-off-by with your tag for this patch?
+ Change log from v1:
+  - use div_u64
 
-- Charlie
+ fs/f2fs/checkpoint.c |  10 ++--
+ fs/f2fs/debug.c      |   6 +--
+ fs/f2fs/f2fs.h       |  19 +++++---
+ fs/f2fs/file.c       |  12 ++---
+ fs/f2fs/gc.c         |  40 ++++++++--------
+ fs/f2fs/node.c       |   4 +-
+ fs/f2fs/node.h       |   4 +-
+ fs/f2fs/recovery.c   |   2 +-
+ fs/f2fs/segment.c    | 109 +++++++++++++++++++++----------------------
+ fs/f2fs/segment.h    |  18 ++++---
+ fs/f2fs/super.c      |   8 ++--
+ fs/f2fs/sysfs.c      |   6 +--
+ 12 files changed, 119 insertions(+), 119 deletions(-)
+
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index b85820e70f5e..a09a9609e228 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -900,7 +900,7 @@ static struct page *validate_checkpoint(struct f2fs_sb_info *sbi,
+ 
+ 	cp_blocks = le32_to_cpu(cp_block->cp_pack_total_block_count);
+ 
+-	if (cp_blocks > sbi->blocks_per_seg || cp_blocks <= F2FS_CP_PACKS) {
++	if (cp_blocks > BLKS_PER_SEG(sbi) || cp_blocks <= F2FS_CP_PACKS) {
+ 		f2fs_warn(sbi, "invalid cp_pack_total_block_count:%u",
+ 			  le32_to_cpu(cp_block->cp_pack_total_block_count));
+ 		goto invalid_cp;
+@@ -1335,7 +1335,7 @@ static void update_ckpt_flags(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+ 
+ 	if (cpc->reason & CP_UMOUNT) {
+ 		if (le32_to_cpu(ckpt->cp_pack_total_block_count) +
+-			NM_I(sbi)->nat_bits_blocks > sbi->blocks_per_seg) {
++			NM_I(sbi)->nat_bits_blocks > BLKS_PER_SEG(sbi)) {
+ 			clear_ckpt_flags(sbi, CP_NAT_BITS_FLAG);
+ 			f2fs_notice(sbi, "Disable nat_bits due to no space");
+ 		} else if (!is_set_ckpt_flags(sbi, CP_NAT_BITS_FLAG) &&
+@@ -1538,7 +1538,7 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+ 		cp_ver |= ((__u64)crc32 << 32);
+ 		*(__le64 *)nm_i->nat_bits = cpu_to_le64(cp_ver);
+ 
+-		blk = start_blk + sbi->blocks_per_seg - nm_i->nat_bits_blocks;
++		blk = start_blk + BLKS_PER_SEG(sbi) - nm_i->nat_bits_blocks;
+ 		for (i = 0; i < nm_i->nat_bits_blocks; i++)
+ 			f2fs_update_meta_page(sbi, nm_i->nat_bits +
+ 					(i << F2FS_BLKSIZE_BITS), blk + i);
+@@ -1741,9 +1741,9 @@ void f2fs_init_ino_entry_info(struct f2fs_sb_info *sbi)
+ 		im->ino_num = 0;
+ 	}
+ 
+-	sbi->max_orphans = (sbi->blocks_per_seg - F2FS_CP_PACKS -
++	sbi->max_orphans = (BLKS_PER_SEG(sbi) - F2FS_CP_PACKS -
+ 			NR_CURSEG_PERSIST_TYPE - __cp_payload(sbi)) *
+-				F2FS_ORPHANS_PER_BLOCK;
++			F2FS_ORPHANS_PER_BLOCK;
+ }
+ 
+ int __init f2fs_create_checkpoint_caches(void)
+diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+index fdbf994f1271..0d02224b99b7 100644
+--- a/fs/f2fs/debug.c
++++ b/fs/f2fs/debug.c
+@@ -41,7 +41,7 @@ void f2fs_update_sit_info(struct f2fs_sb_info *sbi)
+ 	total_vblocks = 0;
+ 	blks_per_sec = CAP_BLKS_PER_SEC(sbi);
+ 	hblks_per_sec = blks_per_sec / 2;
+-	for (segno = 0; segno < MAIN_SEGS(sbi); segno += sbi->segs_per_sec) {
++	for (segno = 0; segno < MAIN_SEGS(sbi); segno += SEGS_PER_SEC(sbi)) {
+ 		vblocks = get_valid_blocks(sbi, segno, true);
+ 		dist = abs(vblocks - hblks_per_sec);
+ 		bimodal += dist * dist;
+@@ -135,7 +135,7 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+ 	si->cur_ckpt_time = sbi->cprc_info.cur_time;
+ 	si->peak_ckpt_time = sbi->cprc_info.peak_time;
+ 	spin_unlock(&sbi->cprc_info.stat_lock);
+-	si->total_count = (int)sbi->user_block_count / sbi->blocks_per_seg;
++	si->total_count = (int)sbi->user_block_count / BLKS_PER_SEG(sbi);
+ 	si->rsvd_segs = reserved_segments(sbi);
+ 	si->overp_segs = overprovision_segments(sbi);
+ 	si->valid_count = valid_user_blocks(sbi);
+@@ -208,7 +208,7 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+ 		if (!blks)
+ 			continue;
+ 
+-		if (blks == sbi->blocks_per_seg)
++		if (blks == BLKS_PER_SEG(sbi))
+ 			si->full_seg[type]++;
+ 		else
+ 			si->dirty_seg[type]++;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 4c52136cbc10..0fb3947787d0 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1813,6 +1813,14 @@ struct f2fs_sb_info {
+ #endif
+ };
+ 
++/* Definitions to access f2fs_sb_info */
++#define BLKS_PER_SEG(sbi)					\
++	((sbi)->blocks_per_seg)
++#define BLKS_PER_SEC(sbi)					\
++	((sbi)->segs_per_sec << (sbi)->log_blocks_per_seg)
++#define SEGS_PER_SEC(sbi)					\
++	((sbi)->segs_per_sec)
++
+ __printf(3, 4)
+ void f2fs_printk(struct f2fs_sb_info *sbi, bool limit_rate, const char *fmt, ...);
+ 
+@@ -2511,11 +2519,8 @@ static inline int get_dirty_pages(struct inode *inode)
+ 
+ static inline int get_blocktype_secs(struct f2fs_sb_info *sbi, int block_type)
+ {
+-	unsigned int pages_per_sec = sbi->segs_per_sec * sbi->blocks_per_seg;
+-	unsigned int segs = (get_pages(sbi, block_type) + pages_per_sec - 1) >>
+-						sbi->log_blocks_per_seg;
+-
+-	return segs / sbi->segs_per_sec;
++	return div_u64(get_pages(sbi, block_type) + BLKS_PER_SEC(sbi) - 1,
++							BLKS_PER_SEC(sbi));
+ }
+ 
+ static inline block_t valid_user_blocks(struct f2fs_sb_info *sbi)
+@@ -2579,7 +2584,7 @@ static inline block_t __start_cp_addr(struct f2fs_sb_info *sbi)
+ 	block_t start_addr = le32_to_cpu(F2FS_RAW_SUPER(sbi)->cp_blkaddr);
+ 
+ 	if (sbi->cur_cp_pack == 2)
+-		start_addr += sbi->blocks_per_seg;
++		start_addr += BLKS_PER_SEG(sbi);
+ 	return start_addr;
+ }
+ 
+@@ -2588,7 +2593,7 @@ static inline block_t __start_cp_next_addr(struct f2fs_sb_info *sbi)
+ 	block_t start_addr = le32_to_cpu(F2FS_RAW_SUPER(sbi)->cp_blkaddr);
+ 
+ 	if (sbi->cur_cp_pack == 1)
+-		start_addr += sbi->blocks_per_seg;
++		start_addr += BLKS_PER_SEG(sbi);
+ 	return start_addr;
+ }
+ 
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index c6cd9474ba2d..b0be576b2090 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -2580,7 +2580,6 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
+ 					.m_may_create = false };
+ 	struct extent_info ei = {};
+ 	pgoff_t pg_start, pg_end, next_pgofs;
+-	unsigned int blk_per_seg = sbi->blocks_per_seg;
+ 	unsigned int total = 0, sec_num;
+ 	block_t blk_end = 0;
+ 	bool fragmented = false;
+@@ -2689,7 +2688,8 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
+ 		set_inode_flag(inode, FI_SKIP_WRITES);
+ 
+ 		idx = map.m_lblk;
+-		while (idx < map.m_lblk + map.m_len && cnt < blk_per_seg) {
++		while (idx < map.m_lblk + map.m_len &&
++						cnt < BLKS_PER_SEG(sbi)) {
+ 			struct page *page;
+ 
+ 			page = f2fs_get_lock_data_page(inode, idx, true);
+@@ -2709,7 +2709,7 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
+ 
+ 		map.m_lblk = idx;
+ check:
+-		if (map.m_lblk < pg_end && cnt < blk_per_seg)
++		if (map.m_lblk < pg_end && cnt < BLKS_PER_SEG(sbi))
+ 			goto do_map;
+ 
+ 		clear_inode_flag(inode, FI_SKIP_WRITES);
+@@ -4081,7 +4081,6 @@ static int f2fs_ioc_decompress_file(struct file *filp)
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 	struct f2fs_inode_info *fi = F2FS_I(inode);
+ 	pgoff_t page_idx = 0, last_idx;
+-	unsigned int blk_per_seg = sbi->blocks_per_seg;
+ 	int cluster_size = fi->i_cluster_size;
+ 	int count, ret;
+ 
+@@ -4125,7 +4124,7 @@ static int f2fs_ioc_decompress_file(struct file *filp)
+ 		if (ret < 0)
+ 			break;
+ 
+-		if (get_dirty_pages(inode) >= blk_per_seg) {
++		if (get_dirty_pages(inode) >= BLKS_PER_SEG(sbi)) {
+ 			ret = filemap_fdatawrite(inode->i_mapping);
+ 			if (ret < 0)
+ 				break;
+@@ -4160,7 +4159,6 @@ static int f2fs_ioc_compress_file(struct file *filp)
+ 	struct inode *inode = file_inode(filp);
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 	pgoff_t page_idx = 0, last_idx;
+-	unsigned int blk_per_seg = sbi->blocks_per_seg;
+ 	int cluster_size = F2FS_I(inode)->i_cluster_size;
+ 	int count, ret;
+ 
+@@ -4203,7 +4201,7 @@ static int f2fs_ioc_compress_file(struct file *filp)
+ 		if (ret < 0)
+ 			break;
+ 
+-		if (get_dirty_pages(inode) >= blk_per_seg) {
++		if (get_dirty_pages(inode) >= BLKS_PER_SEG(sbi)) {
+ 			ret = filemap_fdatawrite(inode->i_mapping);
+ 			if (ret < 0)
+ 				break;
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index 6899f434ad68..d61a60c1c844 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -259,7 +259,7 @@ static void select_policy(struct f2fs_sb_info *sbi, int gc_type,
+ 		p->ofs_unit = 1;
+ 	} else {
+ 		p->gc_mode = select_gc_type(sbi, gc_type);
+-		p->ofs_unit = sbi->segs_per_sec;
++		p->ofs_unit = SEGS_PER_SEC(sbi);
+ 		if (__is_large_section(sbi)) {
+ 			p->dirty_bitmap = dirty_i->dirty_secmap;
+ 			p->max_search = count_bits(p->dirty_bitmap,
+@@ -282,7 +282,8 @@ static void select_policy(struct f2fs_sb_info *sbi, int gc_type,
+ 
+ 	/* let's select beginning hot/small space first in no_heap mode*/
+ 	if (f2fs_need_rand_seg(sbi))
+-		p->offset = get_random_u32_below(MAIN_SECS(sbi) * sbi->segs_per_sec);
++		p->offset = get_random_u32_below(MAIN_SECS(sbi) *
++						SEGS_PER_SEC(sbi));
+ 	else if (test_opt(sbi, NOHEAP) &&
+ 		(type == CURSEG_HOT_DATA || IS_NODESEG(type)))
+ 		p->offset = 0;
+@@ -295,13 +296,13 @@ static unsigned int get_max_cost(struct f2fs_sb_info *sbi,
+ {
+ 	/* SSR allocates in a segment unit */
+ 	if (p->alloc_mode == SSR)
+-		return sbi->blocks_per_seg;
++		return BLKS_PER_SEG(sbi);
+ 	else if (p->alloc_mode == AT_SSR)
+ 		return UINT_MAX;
+ 
+ 	/* LFS */
+ 	if (p->gc_mode == GC_GREEDY)
+-		return 2 * sbi->blocks_per_seg * p->ofs_unit;
++		return 2 * BLKS_PER_SEG(sbi) * p->ofs_unit;
+ 	else if (p->gc_mode == GC_CB)
+ 		return UINT_MAX;
+ 	else if (p->gc_mode == GC_AT)
+@@ -496,9 +497,9 @@ static void add_victim_entry(struct f2fs_sb_info *sbi,
+ 			return;
+ 	}
+ 
+-	for (i = 0; i < sbi->segs_per_sec; i++)
++	for (i = 0; i < SEGS_PER_SEC(sbi); i++)
+ 		mtime += get_seg_entry(sbi, start + i)->mtime;
+-	mtime = div_u64(mtime, sbi->segs_per_sec);
++	mtime = div_u64(mtime, SEGS_PER_SEC(sbi));
+ 
+ 	/* Handle if the system time has changed by the user */
+ 	if (mtime < sit_i->min_mtime)
+@@ -599,7 +600,6 @@ static void atssr_lookup_victim(struct f2fs_sb_info *sbi,
+ 	unsigned long long age;
+ 	unsigned long long max_mtime = sit_i->dirty_max_mtime;
+ 	unsigned long long min_mtime = sit_i->dirty_min_mtime;
+-	unsigned int seg_blocks = sbi->blocks_per_seg;
+ 	unsigned int vblocks;
+ 	unsigned int dirty_threshold = max(am->max_candidate_count,
+ 					am->candidate_ratio *
+@@ -629,7 +629,7 @@ static void atssr_lookup_victim(struct f2fs_sb_info *sbi,
+ 	f2fs_bug_on(sbi, !vblocks);
+ 
+ 	/* rare case */
+-	if (vblocks == seg_blocks)
++	if (vblocks == BLKS_PER_SEG(sbi))
+ 		goto skip_node;
+ 
+ 	iter++;
+@@ -755,7 +755,7 @@ int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
+ 	int ret = 0;
+ 
+ 	mutex_lock(&dirty_i->seglist_lock);
+-	last_segment = MAIN_SECS(sbi) * sbi->segs_per_sec;
++	last_segment = MAIN_SECS(sbi) * SEGS_PER_SEC(sbi);
+ 
+ 	p.alloc_mode = alloc_mode;
+ 	p.age = age;
+@@ -896,7 +896,7 @@ int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
+ 			else
+ 				sm->last_victim[p.gc_mode] = segno + p.ofs_unit;
+ 			sm->last_victim[p.gc_mode] %=
+-				(MAIN_SECS(sbi) * sbi->segs_per_sec);
++				(MAIN_SECS(sbi) * SEGS_PER_SEC(sbi));
+ 			break;
+ 		}
+ 	}
+@@ -1670,7 +1670,7 @@ static int do_garbage_collect(struct f2fs_sb_info *sbi,
+ 	struct f2fs_summary_block *sum;
+ 	struct blk_plug plug;
+ 	unsigned int segno = start_segno;
+-	unsigned int end_segno = start_segno + sbi->segs_per_sec;
++	unsigned int end_segno = start_segno + SEGS_PER_SEC(sbi);
+ 	int seg_freed = 0, migrated = 0;
+ 	unsigned char type = IS_DATASEG(get_seg_entry(sbi, segno)->type) ?
+ 						SUM_TYPE_DATA : SUM_TYPE_NODE;
+@@ -1678,7 +1678,7 @@ static int do_garbage_collect(struct f2fs_sb_info *sbi,
+ 	int submitted = 0;
+ 
+ 	if (__is_large_section(sbi))
+-		end_segno = rounddown(end_segno, sbi->segs_per_sec);
++		end_segno = rounddown(end_segno, SEGS_PER_SEC(sbi));
+ 
+ 	/*
+ 	 * zone-capacity can be less than zone-size in zoned devices,
+@@ -1686,7 +1686,7 @@ static int do_garbage_collect(struct f2fs_sb_info *sbi,
+ 	 * calculate the end segno in the zone which can be garbage collected
+ 	 */
+ 	if (f2fs_sb_has_blkzoned(sbi))
+-		end_segno -= sbi->segs_per_sec -
++		end_segno -= SEGS_PER_SEC(sbi) -
+ 					f2fs_usable_segs_in_sec(sbi, segno);
+ 
+ 	sanity_check_seg_type(sbi, get_seg_entry(sbi, segno)->type);
+@@ -1986,7 +1986,7 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
+ 
+ 	/* Force block allocation for GC */
+ 	MAIN_SECS(sbi) -= secs;
+-	start = MAIN_SECS(sbi) * sbi->segs_per_sec;
++	start = MAIN_SECS(sbi) * SEGS_PER_SEC(sbi);
+ 	end = MAIN_SEGS(sbi) - 1;
+ 
+ 	mutex_lock(&DIRTY_I(sbi)->seglist_lock);
+@@ -2004,7 +2004,7 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
+ 		f2fs_allocate_segment_for_resize(sbi, type, start, end);
+ 
+ 	/* do GC to move out valid blocks in the range */
+-	for (segno = start; segno <= end; segno += sbi->segs_per_sec) {
++	for (segno = start; segno <= end; segno += SEGS_PER_SEC(sbi)) {
+ 		struct gc_inode_list gc_list = {
+ 			.ilist = LIST_HEAD_INIT(gc_list.ilist),
+ 			.iroot = RADIX_TREE_INIT(gc_list.iroot, GFP_NOFS),
+@@ -2048,7 +2048,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
+ 	int segment_count;
+ 	int segment_count_main;
+ 	long long block_count;
+-	int segs = secs * sbi->segs_per_sec;
++	int segs = secs * SEGS_PER_SEC(sbi);
+ 
+ 	f2fs_down_write(&sbi->sb_lock);
+ 
+@@ -2061,7 +2061,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
+ 	raw_sb->segment_count = cpu_to_le32(segment_count + segs);
+ 	raw_sb->segment_count_main = cpu_to_le32(segment_count_main + segs);
+ 	raw_sb->block_count = cpu_to_le64(block_count +
+-					(long long)segs * sbi->blocks_per_seg);
++			(long long)(segs << sbi->log_blocks_per_seg));
+ 	if (f2fs_is_multi_device(sbi)) {
+ 		int last_dev = sbi->s_ndevs - 1;
+ 		int dev_segs =
+@@ -2076,8 +2076,8 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
+ 
+ static void update_fs_metadata(struct f2fs_sb_info *sbi, int secs)
+ {
+-	int segs = secs * sbi->segs_per_sec;
+-	long long blks = (long long)segs * sbi->blocks_per_seg;
++	int segs = secs * SEGS_PER_SEC(sbi);
++	long long blks = (long long)(segs << sbi->log_blocks_per_seg);
+ 	long long user_block_count =
+ 				le64_to_cpu(F2FS_CKPT(sbi)->user_block_count);
+ 
+@@ -2119,7 +2119,7 @@ int f2fs_resize_fs(struct file *filp, __u64 block_count)
+ 		int last_dev = sbi->s_ndevs - 1;
+ 		__u64 last_segs = FDEV(last_dev).total_segments;
+ 
+-		if (block_count + last_segs * sbi->blocks_per_seg <=
++		if (block_count + (last_segs << sbi->log_blocks_per_seg) <=
+ 								old_block_count)
+ 			return -EINVAL;
+ 	}
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 1d898a16f05a..51241996b9ec 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -2841,7 +2841,7 @@ int f2fs_restore_node_summary(struct f2fs_sb_info *sbi,
+ 	int i, idx, last_offset, nrpages;
+ 
+ 	/* scan the node segment */
+-	last_offset = sbi->blocks_per_seg;
++	last_offset = BLKS_PER_SEG(sbi);
+ 	addr = START_BLOCK(sbi, segno);
+ 	sum_entry = &sum->entries[0];
+ 
+@@ -3158,7 +3158,7 @@ static int __get_nat_bitmaps(struct f2fs_sb_info *sbi)
+ 	if (!is_set_ckpt_flags(sbi, CP_NAT_BITS_FLAG))
+ 		return 0;
+ 
+-	nat_bits_addr = __start_cp_addr(sbi) + sbi->blocks_per_seg -
++	nat_bits_addr = __start_cp_addr(sbi) + BLKS_PER_SEG(sbi) -
+ 						nm_i->nat_bits_blocks;
+ 	for (i = 0; i < nm_i->nat_bits_blocks; i++) {
+ 		struct page *page;
+diff --git a/fs/f2fs/node.h b/fs/f2fs/node.h
+index 5bd16a95eef8..6aea13024ac1 100644
+--- a/fs/f2fs/node.h
++++ b/fs/f2fs/node.h
+@@ -208,10 +208,10 @@ static inline pgoff_t current_nat_addr(struct f2fs_sb_info *sbi, nid_t start)
+ 
+ 	block_addr = (pgoff_t)(nm_i->nat_blkaddr +
+ 		(block_off << 1) -
+-		(block_off & (sbi->blocks_per_seg - 1)));
++		(block_off & (BLKS_PER_SEG(sbi) - 1)));
+ 
+ 	if (f2fs_test_bit(block_off, nm_i->nat_bitmap))
+-		block_addr += sbi->blocks_per_seg;
++		block_addr += BLKS_PER_SEG(sbi);
+ 
+ 	return block_addr;
+ }
+diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+index aad1d1a9b3d6..b3baec666afe 100644
+--- a/fs/f2fs/recovery.c
++++ b/fs/f2fs/recovery.c
+@@ -354,7 +354,7 @@ static unsigned int adjust_por_ra_blocks(struct f2fs_sb_info *sbi,
+ 	if (blkaddr + 1 == next_blkaddr)
+ 		ra_blocks = min_t(unsigned int, RECOVERY_MAX_RA_BLOCKS,
+ 							ra_blocks * 2);
+-	else if (next_blkaddr % sbi->blocks_per_seg)
++	else if (next_blkaddr % BLKS_PER_SEG(sbi))
+ 		ra_blocks = max_t(unsigned int, RECOVERY_MIN_RA_BLOCKS,
+ 							ra_blocks / 2);
+ 	return ra_blocks;
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index e5759813276a..8d330664b925 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -448,8 +448,8 @@ static inline bool excess_dirty_threshold(struct f2fs_sb_info *sbi)
+ 	unsigned int nodes = get_pages(sbi, F2FS_DIRTY_NODES);
+ 	unsigned int meta = get_pages(sbi, F2FS_DIRTY_META);
+ 	unsigned int imeta = get_pages(sbi, F2FS_DIRTY_IMETA);
+-	unsigned int threshold = sbi->blocks_per_seg * factor *
+-					DEFAULT_DIRTY_THRESHOLD;
++	unsigned int threshold = (factor * DEFAULT_DIRTY_THRESHOLD) <<
++				sbi->log_blocks_per_seg;
+ 	unsigned int global_threshold = threshold * 3 / 2;
+ 
+ 	if (dents >= threshold || qdata >= threshold ||
+@@ -1134,8 +1134,7 @@ static void __check_sit_bitmap(struct f2fs_sb_info *sbi,
+ 	struct seg_entry *sentry;
+ 	unsigned int segno;
+ 	block_t blk = start;
+-	unsigned long offset, size, max_blocks = sbi->blocks_per_seg;
+-	unsigned long *map;
++	unsigned long offset, size, *map;
+ 
+ 	while (blk < end) {
+ 		segno = GET_SEGNO(sbi, blk);
+@@ -1145,7 +1144,7 @@ static void __check_sit_bitmap(struct f2fs_sb_info *sbi,
+ 		if (end < START_BLOCK(sbi, segno + 1))
+ 			size = GET_BLKOFF_FROM_SEG0(sbi, end);
+ 		else
+-			size = max_blocks;
++			size = BLKS_PER_SEG(sbi);
+ 		map = (unsigned long *)(sentry->cur_valid_map);
+ 		offset = __find_rev_next_bit(map, size, offset);
+ 		f2fs_bug_on(sbi, offset != size);
+@@ -2044,7 +2043,6 @@ static bool add_discard_addrs(struct f2fs_sb_info *sbi, struct cp_control *cpc,
+ 							bool check_only)
+ {
+ 	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
+-	int max_blocks = sbi->blocks_per_seg;
+ 	struct seg_entry *se = get_seg_entry(sbi, cpc->trim_start);
+ 	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
+ 	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
+@@ -2056,8 +2054,9 @@ static bool add_discard_addrs(struct f2fs_sb_info *sbi, struct cp_control *cpc,
+ 	struct list_head *head = &SM_I(sbi)->dcc_info->entry_list;
+ 	int i;
+ 
+-	if (se->valid_blocks == max_blocks || !f2fs_hw_support_discard(sbi) ||
+-			!f2fs_block_unit_discard(sbi))
++	if (se->valid_blocks == BLKS_PER_SEG(sbi) ||
++	    !f2fs_hw_support_discard(sbi) ||
++	    !f2fs_block_unit_discard(sbi))
+ 		return false;
+ 
+ 	if (!force) {
+@@ -2074,13 +2073,14 @@ static bool add_discard_addrs(struct f2fs_sb_info *sbi, struct cp_control *cpc,
+ 
+ 	while (force || SM_I(sbi)->dcc_info->nr_discards <=
+ 				SM_I(sbi)->dcc_info->max_discards) {
+-		start = __find_rev_next_bit(dmap, max_blocks, end + 1);
+-		if (start >= max_blocks)
++		start = __find_rev_next_bit(dmap, BLKS_PER_SEG(sbi), end + 1);
++		if (start >= BLKS_PER_SEG(sbi))
+ 			break;
+ 
+-		end = __find_rev_next_zero_bit(dmap, max_blocks, start + 1);
+-		if (force && start && end != max_blocks
+-					&& (end - start) < cpc->trim_minlen)
++		end = __find_rev_next_zero_bit(dmap,
++						BLKS_PER_SEG(sbi), start + 1);
++		if (force && start && end != BLKS_PER_SEG(sbi) &&
++		    (end - start) < cpc->trim_minlen)
+ 			continue;
+ 
+ 		if (check_only)
+@@ -2162,8 +2162,8 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+ 								start + 1);
+ 
+ 		if (section_alignment) {
+-			start = rounddown(start, sbi->segs_per_sec);
+-			end = roundup(end, sbi->segs_per_sec);
++			start = rounddown(start, SEGS_PER_SEC(sbi));
++			end = roundup(end, SEGS_PER_SEC(sbi));
+ 		}
+ 
+ 		for (i = start; i < end; i++) {
+@@ -2191,9 +2191,9 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+ 		if (!IS_CURSEC(sbi, secno) &&
+ 			!get_valid_blocks(sbi, start, true))
+ 			f2fs_issue_discard(sbi, START_BLOCK(sbi, start_segno),
+-				sbi->segs_per_sec << sbi->log_blocks_per_seg);
++						BLKS_PER_SEC(sbi));
+ 
+-		start = start_segno + sbi->segs_per_sec;
++		start = start_segno + SEGS_PER_SEC(sbi);
+ 		if (start < end)
+ 			goto next;
+ 		else
+@@ -2212,7 +2212,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+ find_next:
+ 		if (is_valid) {
+ 			next_pos = find_next_zero_bit_le(entry->discard_map,
+-					sbi->blocks_per_seg, cur_pos);
++						BLKS_PER_SEG(sbi), cur_pos);
+ 			len = next_pos - cur_pos;
+ 
+ 			if (f2fs_sb_has_blkzoned(sbi) ||
+@@ -2224,13 +2224,13 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+ 			total_len += len;
+ 		} else {
+ 			next_pos = find_next_bit_le(entry->discard_map,
+-					sbi->blocks_per_seg, cur_pos);
++						BLKS_PER_SEG(sbi), cur_pos);
+ 		}
+ skip:
+ 		cur_pos = next_pos;
+ 		is_valid = !is_valid;
+ 
+-		if (cur_pos < sbi->blocks_per_seg)
++		if (cur_pos < BLKS_PER_SEG(sbi))
+ 			goto find_next;
+ 
+ 		release_discard_addr(entry);
+@@ -2279,7 +2279,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+ 	dcc->max_ordered_discard = DEFAULT_MAX_ORDERED_DISCARD_GRANULARITY;
+ 	dcc->discard_io_aware = DPOLICY_IO_AWARE_ENABLE;
+ 	if (F2FS_OPTION(sbi).discard_unit == DISCARD_UNIT_SEGMENT)
+-		dcc->discard_granularity = sbi->blocks_per_seg;
++		dcc->discard_granularity = BLKS_PER_SEG(sbi);
+ 	else if (F2FS_OPTION(sbi).discard_unit == DISCARD_UNIT_SECTION)
+ 		dcc->discard_granularity = BLKS_PER_SEC(sbi);
+ 
+@@ -2542,7 +2542,7 @@ static unsigned short f2fs_curseg_valid_blocks(struct f2fs_sb_info *sbi, int typ
+ 	struct curseg_info *curseg = CURSEG_I(sbi, type);
+ 
+ 	if (sbi->ckpt->alloc_type[type] == SSR)
+-		return sbi->blocks_per_seg;
++		return BLKS_PER_SEG(sbi);
+ 	return curseg->next_blkoff;
+ }
+ 
+@@ -2630,7 +2630,7 @@ static int is_next_segment_free(struct f2fs_sb_info *sbi,
+ 	unsigned int segno = curseg->segno + 1;
+ 	struct free_segmap_info *free_i = FREE_I(sbi);
+ 
+-	if (segno < MAIN_SEGS(sbi) && segno % sbi->segs_per_sec)
++	if (segno < MAIN_SEGS(sbi) && segno % SEGS_PER_SEC(sbi))
+ 		return !test_bit(segno, free_i->free_segmap);
+ 	return 0;
+ }
+@@ -2654,7 +2654,7 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
+ 
+ 	spin_lock(&free_i->segmap_lock);
+ 
+-	if (!new_sec && ((*newseg + 1) % sbi->segs_per_sec)) {
++	if (!new_sec && ((*newseg + 1) % SEGS_PER_SEC(sbi))) {
+ 		segno = find_next_zero_bit(free_i->free_segmap,
+ 			GET_SEG_FROM_SEC(sbi, hint + 1), *newseg + 1);
+ 		if (segno < GET_SEG_FROM_SEC(sbi, hint + 1))
+@@ -2757,7 +2757,7 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
+ 
+ 	sanity_check_seg_type(sbi, seg_type);
+ 	if (f2fs_need_rand_seg(sbi))
+-		return get_random_u32_below(MAIN_SECS(sbi) * sbi->segs_per_sec);
++		return get_random_u32_below(MAIN_SECS(sbi) * SEGS_PER_SEC(sbi));
+ 
+ 	/* if segs_per_sec is large than 1, we need to keep original policy. */
+ 	if (__is_large_section(sbi))
+@@ -2827,7 +2827,7 @@ static int __next_free_blkoff(struct f2fs_sb_info *sbi,
+ 	for (i = 0; i < entries; i++)
+ 		target_map[i] = ckpt_map[i] | cur_map[i];
+ 
+-	return __find_rev_next_zero_bit(target_map, sbi->blocks_per_seg, start);
++	return __find_rev_next_zero_bit(target_map, BLKS_PER_SEG(sbi), start);
+ }
+ 
+ static int f2fs_find_next_ssr_block(struct f2fs_sb_info *sbi,
+@@ -2838,7 +2838,7 @@ static int f2fs_find_next_ssr_block(struct f2fs_sb_info *sbi,
+ 
+ bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
+ {
+-	return __next_free_blkoff(sbi, segno, 0) < sbi->blocks_per_seg;
++	return __next_free_blkoff(sbi, segno, 0) < BLKS_PER_SEG(sbi);
+ }
+ 
+ /*
+@@ -3238,8 +3238,8 @@ int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range)
+ 	end_segno = (end >= MAX_BLKADDR(sbi)) ? MAIN_SEGS(sbi) - 1 :
+ 						GET_SEGNO(sbi, end);
+ 	if (need_align) {
+-		start_segno = rounddown(start_segno, sbi->segs_per_sec);
+-		end_segno = roundup(end_segno + 1, sbi->segs_per_sec) - 1;
++		start_segno = rounddown(start_segno, SEGS_PER_SEC(sbi));
++		end_segno = roundup(end_segno + 1, SEGS_PER_SEC(sbi)) - 1;
+ 	}
+ 
+ 	cpc.reason = CP_DISCARD;
+@@ -3437,7 +3437,7 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+ 	}
+ 	*new_blkaddr = NEXT_FREE_BLKADDR(sbi, curseg);
+ 
+-	f2fs_bug_on(sbi, curseg->next_blkoff >= sbi->blocks_per_seg);
++	f2fs_bug_on(sbi, curseg->next_blkoff >= BLKS_PER_SEG(sbi));
+ 
+ 	f2fs_wait_discard_bio(sbi, *new_blkaddr);
+ 
+@@ -3881,7 +3881,7 @@ static int read_compacted_summaries(struct f2fs_sb_info *sbi)
+ 		seg_i->next_blkoff = blk_off;
+ 
+ 		if (seg_i->alloc_type == SSR)
+-			blk_off = sbi->blocks_per_seg;
++			blk_off = BLKS_PER_SEG(sbi);
+ 
+ 		for (j = 0; j < blk_off; j++) {
+ 			struct f2fs_summary *s;
+@@ -3949,7 +3949,7 @@ static int read_normal_summaries(struct f2fs_sb_info *sbi, int type)
+ 			struct f2fs_summary *ns = &sum->entries[0];
+ 			int i;
+ 
+-			for (i = 0; i < sbi->blocks_per_seg; i++, ns++) {
++			for (i = 0; i < BLKS_PER_SEG(sbi); i++, ns++) {
+ 				ns->version = 0;
+ 				ns->ofs_in_node = 0;
+ 			}
+@@ -4582,21 +4582,20 @@ static int build_sit_entries(struct f2fs_sb_info *sbi)
+ 
+ 			sit_valid_blocks[SE_PAGETYPE(se)] += se->valid_blocks;
+ 
+-			if (f2fs_block_unit_discard(sbi)) {
+-				/* build discard map only one time */
+-				if (is_set_ckpt_flags(sbi, CP_TRIMMED_FLAG)) {
+-					memset(se->discard_map, 0xff,
++			if (!f2fs_block_unit_discard(sbi))
++				goto init_discard_map_done;
++
++			/* build discard map only one time */
++			if (is_set_ckpt_flags(sbi, CP_TRIMMED_FLAG)) {
++				memset(se->discard_map, 0xff,
+ 						SIT_VBLOCK_MAP_SIZE);
+-				} else {
+-					memcpy(se->discard_map,
+-						se->cur_valid_map,
++				goto init_discard_map_done;
++			}
++			memcpy(se->discard_map, se->cur_valid_map,
+ 						SIT_VBLOCK_MAP_SIZE);
+-					sbi->discard_blks +=
+-						sbi->blocks_per_seg -
++			sbi->discard_blks += BLKS_PER_SEG(sbi) -
+ 						se->valid_blocks;
+-				}
+-			}
+-
++init_discard_map_done:
+ 			if (__is_large_section(sbi))
+ 				get_sec_entry(sbi, start)->valid_blocks +=
+ 							se->valid_blocks;
+@@ -4736,7 +4735,7 @@ static void init_dirty_segmap(struct f2fs_sb_info *sbi)
+ 		return;
+ 
+ 	mutex_lock(&dirty_i->seglist_lock);
+-	for (segno = 0; segno < MAIN_SEGS(sbi); segno += sbi->segs_per_sec) {
++	for (segno = 0; segno < MAIN_SEGS(sbi); segno += SEGS_PER_SEC(sbi)) {
+ 		valid_blocks = get_valid_blocks(sbi, segno, true);
+ 		secno = GET_SEC_FROM_SEG(sbi, segno);
+ 
+@@ -4835,7 +4834,7 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
+ 		if (curseg->alloc_type == SSR)
+ 			continue;
+ 
+-		for (blkofs += 1; blkofs < sbi->blocks_per_seg; blkofs++) {
++		for (blkofs += 1; blkofs < BLKS_PER_SEG(sbi); blkofs++) {
+ 			if (!f2fs_test_bit(blkofs, se->cur_valid_map))
+ 				continue;
+ out:
+@@ -5114,7 +5113,7 @@ static inline unsigned int f2fs_usable_zone_blks_in_seg(
+ 	unsigned int secno;
+ 
+ 	if (!sbi->unusable_blocks_per_sec)
+-		return sbi->blocks_per_seg;
++		return BLKS_PER_SEG(sbi);
+ 
+ 	secno = GET_SEC_FROM_SEG(sbi, segno);
+ 	seg_start = START_BLOCK(sbi, segno);
+@@ -5129,10 +5128,10 @@ static inline unsigned int f2fs_usable_zone_blks_in_seg(
+ 	 */
+ 	if (seg_start >= sec_cap_blkaddr)
+ 		return 0;
+-	if (seg_start + sbi->blocks_per_seg > sec_cap_blkaddr)
++	if (seg_start + BLKS_PER_SEG(sbi) > sec_cap_blkaddr)
+ 		return sec_cap_blkaddr - seg_start;
+ 
+-	return sbi->blocks_per_seg;
++	return BLKS_PER_SEG(sbi);
+ }
+ #else
+ int f2fs_fix_curseg_write_pointer(struct f2fs_sb_info *sbi)
+@@ -5158,7 +5157,7 @@ unsigned int f2fs_usable_blks_in_seg(struct f2fs_sb_info *sbi,
+ 	if (f2fs_sb_has_blkzoned(sbi))
+ 		return f2fs_usable_zone_blks_in_seg(sbi, segno);
+ 
+-	return sbi->blocks_per_seg;
++	return BLKS_PER_SEG(sbi);
+ }
+ 
+ unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
+@@ -5167,7 +5166,7 @@ unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
+ 	if (f2fs_sb_has_blkzoned(sbi))
+ 		return CAP_SEGS_PER_SEC(sbi);
+ 
+-	return sbi->segs_per_sec;
++	return SEGS_PER_SEC(sbi);
+ }
+ 
+ /*
+@@ -5182,14 +5181,14 @@ static void init_min_max_mtime(struct f2fs_sb_info *sbi)
+ 
+ 	sit_i->min_mtime = ULLONG_MAX;
+ 
+-	for (segno = 0; segno < MAIN_SEGS(sbi); segno += sbi->segs_per_sec) {
++	for (segno = 0; segno < MAIN_SEGS(sbi); segno += SEGS_PER_SEC(sbi)) {
+ 		unsigned int i;
+ 		unsigned long long mtime = 0;
+ 
+-		for (i = 0; i < sbi->segs_per_sec; i++)
++		for (i = 0; i < SEGS_PER_SEC(sbi); i++)
+ 			mtime += get_seg_entry(sbi, segno + i)->mtime;
+ 
+-		mtime = div_u64(mtime, sbi->segs_per_sec);
++		mtime = div_u64(mtime, SEGS_PER_SEC(sbi));
+ 
+ 		if (sit_i->min_mtime > mtime)
+ 			sit_i->min_mtime = mtime;
+@@ -5228,7 +5227,7 @@ int f2fs_build_segment_manager(struct f2fs_sb_info *sbi)
+ 		sm_info->ipu_policy = BIT(F2FS_IPU_FSYNC);
+ 	sm_info->min_ipu_util = DEF_MIN_IPU_UTIL;
+ 	sm_info->min_fsync_blocks = DEF_MIN_FSYNC_BLOCKS;
+-	sm_info->min_seq_blocks = sbi->blocks_per_seg;
++	sm_info->min_seq_blocks = BLKS_PER_SEG(sbi);
+ 	sm_info->min_hot_blocks = DEF_MIN_HOT_BLOCKS;
+ 	sm_info->min_ssr_sections = reserved_sections(sbi);
+ 
+diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+index 8129be788bd5..96cec83012f1 100644
+--- a/fs/f2fs/segment.h
++++ b/fs/f2fs/segment.h
+@@ -99,8 +99,6 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
+ 	((!__is_valid_data_blkaddr(blk_addr)) ?			\
+ 	NULL_SEGNO : GET_L2R_SEGNO(FREE_I(sbi),			\
+ 		GET_SEGNO_FROM_SEG0(sbi, blk_addr)))
+-#define BLKS_PER_SEC(sbi)					\
+-	((sbi)->segs_per_sec * (sbi)->blocks_per_seg)
+ #define CAP_BLKS_PER_SEC(sbi)					\
+ 	((sbi)->segs_per_sec * (sbi)->blocks_per_seg -		\
+ 	 (sbi)->unusable_blocks_per_sec)
+@@ -364,7 +362,7 @@ static inline unsigned int get_ckpt_valid_blocks(struct f2fs_sb_info *sbi,
+ 		unsigned int blocks = 0;
+ 		int i;
+ 
+-		for (i = 0; i < sbi->segs_per_sec; i++, start_segno++) {
++		for (i = 0; i < SEGS_PER_SEC(sbi); i++, start_segno++) {
+ 			struct seg_entry *se = get_seg_entry(sbi, start_segno);
+ 
+ 			blocks += se->ckpt_valid_blocks;
+@@ -449,7 +447,7 @@ static inline void __set_free(struct f2fs_sb_info *sbi, unsigned int segno)
+ 	free_i->free_segments++;
+ 
+ 	next = find_next_bit(free_i->free_segmap,
+-			start_segno + sbi->segs_per_sec, start_segno);
++			start_segno + SEGS_PER_SEC(sbi), start_segno);
+ 	if (next >= start_segno + usable_segs) {
+ 		clear_bit(secno, free_i->free_secmap);
+ 		free_i->free_sections++;
+@@ -485,7 +483,7 @@ static inline void __set_test_and_free(struct f2fs_sb_info *sbi,
+ 		if (!inmem && IS_CURSEC(sbi, secno))
+ 			goto skip_free;
+ 		next = find_next_bit(free_i->free_segmap,
+-				start_segno + sbi->segs_per_sec, start_segno);
++				start_segno + SEGS_PER_SEC(sbi), start_segno);
+ 		if (next >= start_segno + usable_segs) {
+ 			if (test_and_clear_bit(secno, free_i->free_secmap))
+ 				free_i->free_sections++;
+@@ -793,10 +791,10 @@ static inline int check_block_count(struct f2fs_sb_info *sbi,
+ 		return -EFSCORRUPTED;
+ 	}
+ 
+-	if (usable_blks_per_seg < sbi->blocks_per_seg)
++	if (usable_blks_per_seg < BLKS_PER_SEG(sbi))
+ 		f2fs_bug_on(sbi, find_next_bit_le(&raw_sit->valid_map,
+-				sbi->blocks_per_seg,
+-				usable_blks_per_seg) != sbi->blocks_per_seg);
++				BLKS_PER_SEG(sbi),
++				usable_blks_per_seg) != BLKS_PER_SEG(sbi));
+ 
+ 	/* check segment usage, and check boundary of a given segment number */
+ 	if (unlikely(GET_SIT_VBLOCKS(raw_sit) > usable_blks_per_seg
+@@ -915,9 +913,9 @@ static inline int nr_pages_to_skip(struct f2fs_sb_info *sbi, int type)
+ 		return 0;
+ 
+ 	if (type == DATA)
+-		return sbi->blocks_per_seg;
++		return BLKS_PER_SEG(sbi);
+ 	else if (type == NODE)
+-		return 8 * sbi->blocks_per_seg;
++		return 8 * BLKS_PER_SEG(sbi);
+ 	else if (type == META)
+ 		return 8 * BIO_MAX_VECS;
+ 	else
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index f1516fd5088a..c0688c124aa7 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3643,7 +3643,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+ 	}
+ 
+ 	main_segs = le32_to_cpu(raw_super->segment_count_main);
+-	blocks_per_seg = sbi->blocks_per_seg;
++	blocks_per_seg = BLKS_PER_SEG(sbi);
+ 
+ 	for (i = 0; i < NR_CURSEG_NODE_TYPE; i++) {
+ 		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
+@@ -3756,8 +3756,8 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
+ 	sbi->secs_per_zone = le32_to_cpu(raw_super->secs_per_zone);
+ 	sbi->total_sections = le32_to_cpu(raw_super->section_count);
+ 	sbi->total_node_count =
+-		(le32_to_cpu(raw_super->segment_count_nat) / 2)
+-			* sbi->blocks_per_seg * NAT_ENTRY_PER_BLOCK;
++		((le32_to_cpu(raw_super->segment_count_nat) / 2) *
++		NAT_ENTRY_PER_BLOCK) << sbi->log_blocks_per_seg;
+ 	F2FS_ROOT_INO(sbi) = le32_to_cpu(raw_super->root_ino);
+ 	F2FS_NODE_INO(sbi) = le32_to_cpu(raw_super->node_ino);
+ 	F2FS_META_INO(sbi) = le32_to_cpu(raw_super->meta_ino);
+@@ -3766,7 +3766,7 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
+ 	sbi->next_victim_seg[BG_GC] = NULL_SEGNO;
+ 	sbi->next_victim_seg[FG_GC] = NULL_SEGNO;
+ 	sbi->max_victim_search = DEF_MAX_VICTIM_SEARCH;
+-	sbi->migration_granularity = sbi->segs_per_sec;
++	sbi->migration_granularity = SEGS_PER_SEC(sbi);
+ 	sbi->seq_file_ra_mul = MIN_RA_MUL;
+ 	sbi->max_fragment_chunk = DEF_FRAGMENT_SIZE;
+ 	sbi->max_fragment_hole = DEF_FRAGMENT_SIZE;
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index a7ec55c7bb20..906d2af2d849 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -493,8 +493,8 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		spin_lock(&sbi->stat_lock);
+ 		if (t > (unsigned long)(sbi->user_block_count -
+ 				F2FS_OPTION(sbi).root_reserved_blocks -
+-				sbi->blocks_per_seg *
+-				SM_I(sbi)->additional_reserved_segments)) {
++				(SM_I(sbi)->additional_reserved_segments <<
++					sbi->log_blocks_per_seg))) {
+ 			spin_unlock(&sbi->stat_lock);
+ 			return -EINVAL;
+ 		}
+@@ -551,7 +551,7 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 	}
+ 
+ 	if (!strcmp(a->attr.name, "migration_granularity")) {
+-		if (t == 0 || t > sbi->segs_per_sec)
++		if (t == 0 || t > SEGS_PER_SEC(sbi))
+ 			return -EINVAL;
+ 	}
+ 
+-- 
+2.43.0.687.g38aa6559b0-goog
 
 
