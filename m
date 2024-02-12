@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-61091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD55F850D25
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:27:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF0D850D27
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 05:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35362B22DD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 04:27:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CF721F24129
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 04:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C0D612B;
-	Mon, 12 Feb 2024 04:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158F25396;
+	Mon, 12 Feb 2024 04:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VVAl/WKS"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="S1j14499"
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A47C538D;
-	Mon, 12 Feb 2024 04:27:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269174694
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 04:28:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707712031; cv=none; b=Vravpx/74InXmAN2s+RSl7UmIixekB4DtIYVyaoLGDkufI2KUNqNurVXxGk9GjOrKJEsWA+ViuaI4Ni3w2/zJhx9Q3nhE1w9Ip8IHLUjPiQjEPMs7ZaiWXjgoRbrVwN9HV8KyNZdoNhovXoYJBziCEoNBpul0Uahih3EEENHNJo=
+	t=1707712120; cv=none; b=THMhUcx7Ef3D7MqBdrVU2+KK3f4kw1ipIleaUqA9W32NBZdKxfr38mcCGQJrXUHkV+T8UnkOYAZK11MoaxpTZ8C5qs7SrNMTbw+j02nFTeqds4aNazk8A7CDFsFrJsLV1Md6/LGxi6LZfr82JpgjKGFNw8DatzBEVhSDUuiHlVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707712031; c=relaxed/simple;
-	bh=PI7OsLMBcGqvxQAELryVmcH2/hBuWkPphtMfo+aLq18=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f4bMwhxU88x2h/zZS4jphMJFmA3QFznbIaMOT1P4G98zzuQX8tV/AfWEuig4Nn7eT2/KFuSDOlipAizgcFc9n3mmOOkaK9mfLhtBI0yTOELHgsg6oRMMFxTOOvN0bPioOCGtqeOpvpX7A5EL6YMIovnL50btKppxTHmkEtd78Io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VVAl/WKS; arc=none smtp.client-ip=198.137.202.133
+	s=arc-20240116; t=1707712120; c=relaxed/simple;
+	bh=bd6yJxMcNOgz/8tJXNdeyMpl5daoRnonFofpJ2tgvzw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TEe5HW7FmIFvTtjmGZ/x0jCm0xzg6/nhUGW4KFYMo0CcE0n4ANTcDEh7PDcPciNxQFH3th+qNqBEGzk4kc6DNy71eqvwbqIv0HWgd/8xJN7HWharkB9/JFY14gJKXEXP3eOOv9wdO6T+7PNa7BtxJGaXQS3ywmafs/aL6rG2UD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=S1j14499; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
 	Content-ID:Content-Description:In-Reply-To:References;
-	bh=3zU9qWCg0noGR4z5kjUevqgcV3l4ea81bsNQeNCgnKI=; b=VVAl/WKSlhOou0KvishC96wmu9
-	w5jzd/YP2sYMX9CznDgnfww9H5rQqaEi7pymo197s3GlgZbVky0PO3NN0iJKmssZZRZL8kSHCx3h/
-	f8dhN8ZBRCvro6M1v0FejJ9zzL933bXhQ+gH7ac7d1+1KxkAsD7SS3/LF8SZh+1VH0Hq/pDpa21le
-	SyyS5o9elVYGoPBUh9993iWKAdaTwIOY/juFIEqYH8RraGKJAOFa0z0pR6v7terSSTLj4xF91UxKI
-	gnTD81xt8KhSgbMAFCwYxcKJK83kBP0qh9eZQ+IJKrpMSywn/5oNt/tITQVmq1/zXgMJELrlbJo73
-	CzZSYIoA==;
+	bh=79tMagtsx8zWFd0gwV9uxN+xp9p3j086sCtxdA2GSnk=; b=S1j14499hTlFQh4PjQdIe5aq1V
+	Yzq4+AHFjY13dZpmxeO8cgp2BIrgk5/6DtVUybA+cU8V7QZzspwdwFy3L+J1BTAjIdEjqQpC5VG5R
+	Z0WxNRTokWO5Zihd3TQ8sAm0XYjpOxWVltOS4uK5z1NZw+bvwkfmIkXwLrupuAcodxEgGMpyEcpxP
+	WWzAixZpddqKEPv/J/UUJ3olp0QZ0CAew4TE6hAxAww7PPyauYdh9YaRtsYl9vC1vCxED6fySbE6l
+	Kv5MowAhPDXBDNcwdTzrKYqXxKXsGm45YTYX4RE2+nSFKlVdhg3XGTwwmFqBGUxfvvomBArTsCLeu
+	RCDizLXQ==;
 Received: from [50.53.50.0] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZNuO-00000004IVh-3WIv;
-	Mon, 12 Feb 2024 04:27:08 +0000
+	id 1rZNvq-00000004Iou-1Cay;
+	Mon, 12 Feb 2024 04:28:38 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	linux-arch@vger.kernel.org
-Subject: [PATCH RESEND] asm-generic/io.h: fix grammar typos
-Date: Sun, 11 Feb 2024 20:27:07 -0800
-Message-ID: <20240212042707.13006-1-rdunlap@infradead.org>
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH RESEND] iosys-map: fix typos
+Date: Sun, 11 Feb 2024 20:28:37 -0800
+Message-ID: <20240212042837.21071-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -60,31 +60,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Correct grammar mistakes.
+Correct spellos/typos in comments.
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arch@vger.kernel.org
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: dri-devel@lists.freedesktop.org
 ---
- include/asm-generic/io.h |    4 ++--
+ include/linux/iosys-map.h |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff -- a/include/asm-generic/io.h b/include/asm-generic/io.h
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -1019,12 +1019,12 @@ static inline void *phys_to_virt(unsigne
+diff -- a/include/linux/iosys-map.h b/include/linux/iosys-map.h
+--- a/include/linux/iosys-map.h
++++ b/include/linux/iosys-map.h
+@@ -34,7 +34,7 @@
+  * the same driver for allocation, read and write operations.
   *
-  * Architectures with an MMU are expected to provide ioremap() and iounmap()
-  * themselves or rely on GENERIC_IOREMAP.  For NOMMU architectures we provide
-- * a default nop-op implementation that expect that the physical address used
-+ * a default nop-op implementation that expects that the physical addresses used
-  * for MMIO are already marked as uncached, and can be used as kernel virtual
-  * addresses.
+  * Open-coding access to :c:type:`struct iosys_map <iosys_map>` is considered
+- * bad style. Rather then accessing its fields directly, use one of the provided
++ * bad style. Rather than accessing its fields directly, use one of the provided
+  * helper functions, or implement your own. For example, instances of
+  * :c:type:`struct iosys_map <iosys_map>` can be initialized statically with
+  * IOSYS_MAP_INIT_VADDR(), or at runtime with iosys_map_set_vaddr(). These
+@@ -85,7 +85,7 @@
+  *	if (iosys_map_is_equal(&sys_map, &io_map))
+  *		// always false
   *
-  * ioremap_wc() and ioremap_wt() can provide more relaxed caching attributes
-- * for specific drivers if the architecture choses to implement them.  If they
-+ * for specific drivers if the architecture chooses to implement them.  If they
-  * are not implemented we fall back to plain ioremap. Conversely, ioremap_np()
-  * can provide stricter non-posted write semantics if the architecture
-  * implements them.
+- * A set up instance of struct iosys_map can be used to access or manipulate the
++ * A setup instance of struct iosys_map can be used to access or manipulate the
+  * buffer memory. Depending on the location of the memory, the provided helpers
+  * will pick the correct operations. Data can be copied into the memory with
+  * iosys_map_memcpy_to(). The address can be manipulated with iosys_map_incr().
 
