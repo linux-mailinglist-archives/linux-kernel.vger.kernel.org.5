@@ -1,171 +1,140 @@
-Return-Path: <linux-kernel+bounces-62227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F16F1851D51
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BED50851D56
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 19:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8755D1F245CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:50:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73CDD1F223FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 18:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A3045014;
-	Mon, 12 Feb 2024 18:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="g4LAiLuL"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6443841775;
+	Mon, 12 Feb 2024 18:51:29 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28CB40BED;
-	Mon, 12 Feb 2024 18:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77138405F8
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707763835; cv=none; b=oV6nT+x+f3bauhtrA/+l5JCNKybQwcM9bQSpllWpQLzwOkLf1D5M4DO7qnjV47WcQTlk8vhTqis34KM0YsfYcm4DvTuVXudfsag5a1mNhzrhDeOpxzA5VMlFJ3FKw0huOIbjSLZtkgsBcKAE3tjeW0tZHLmao1jRx8bcnkwgzj4=
+	t=1707763889; cv=none; b=rELxhl8NnzxzgX4m1l3HmesL1mS7FWegUFdjbLKNPTsFqWWpwOY4hqVnMCAcBa3DgpuR3PNbSFi+6SH5dPTom1j9ORjz+TMie207NliOhoMveCk5ZyEQbpOlHLiiYa7a/1olOyLZ4HibAzU478ccDU1bIYzk/+qB71QFWjZij8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707763835; c=relaxed/simple;
-	bh=OaBvBiTGUiwCLcN4iX8qbX37EqEth2DdHe8eZKM6cz8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=npSHWsxp/A+jovMn0sJotAdmL1NiR4PXvw3li7kbOVvbmAdKN2ZgxWlwbOlQYYYdQ4n6zB4YFI6VUtAuZoJz3GVe26UeMsq1O5+s0gL/+Fh4/zfsIfDviD85kR8k/BFHupQo40btG+nOTo0LHe4bQxb1OKzUChEr6fqKxGj6aRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=g4LAiLuL; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1707763823; x=1708368623; i=w_armin@gmx.de;
-	bh=OaBvBiTGUiwCLcN4iX8qbX37EqEth2DdHe8eZKM6cz8=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=g4LAiLuLBDH6uWyyDFZ3rG3IROL/AER7xFJfapfPEM+CTatqxcTdlcjswHC69EHJ
-	 5hZrRJBXH34o20MxHgWvNxToAbtbH6343GvHBOD3olTHRlyE4Df/ka2gNgdYtZwvF
-	 sC17gWMUopfLq0yYSev1r6G350758vqjBZZDelyA15q461H8NV56MQbMkHGVB1O4L
-	 PdSOx5/5vtz1mMrk2f6CANrdrjRlQ0dZbZXlaicD9zZ4LXzGdQSPohJ9AXso7Zahf
-	 CoILx6XRsdVfv1RTBj/ubwKcPqHJWa5pU4340KPu45UA2SNjgQHBETkQG098GTNEB
-	 1EqI44tZfgWD8yDqaQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MowKc-1rC4Wn1rrS-00qTgy; Mon, 12 Feb 2024 19:50:23 +0100
-From: Armin Wolf <W_Armin@gmx.de>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com
-Cc: sathyanarayanan.kuppuswamy@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] platform/x86: wmi: Make input buffer madatory when evaulating methods
-Date: Mon, 12 Feb 2024 19:50:16 +0100
-Message-Id: <20240212185016.5494-1-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707763889; c=relaxed/simple;
+	bh=ziC0jdjSOn57oxkidJiFB3fh21tLRHD/tRm5IxXvmfc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=GoJ8a7lgkJyD5xrjT+72GxUCz81bSQR7Buyu53uil1YUeIQOPFWzTs9LGkTW1ONwMymeJR0XMaRD20/37BIxmIoduJLJdAY1+q1fgDaVIB0bhinMeSuVMk4nRX36fHQRkF3DkrU4x+pphjFLGhTv5aHwEEtI972icJ6ksR1Uu/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fc6976630so33269075ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 10:51:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707763886; x=1708368686;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ADqcTXDt3h4lpXEcZoVVs37L5+rC4WHYFhye8PBDplg=;
+        b=wWHwg+GVXJdsJs5nitMdWf2DGmX+66G6V7CCLBk3jdKCrOi8Hgc01lVjexIqbmhW+c
+         d43EZpik3XlMxdI9IBmvYkegBNN6hJwdi8LMU4a6/X7dWGf18pOmUpyqFCSP6/mOphJf
+         DI/q8k94WRyLYAlavIYO8CCKkWrA7vCsbNjMnFuYmUdHL/RwCbfehh/FtM/40YwbIBDX
+         ludVZHF4GAwNmzkrbHfi9ZdoxJOWVtcnBcDXhZ63gx2s2sl49YfInq2D32RbubhB2Sif
+         3LWLbvfMaFgN6I+oCxU/Ff9jm9PtBm/6LGwq3dfMQBOyW+kCv9ocUampMYbm0772/bGc
+         DlTA==
+X-Forwarded-Encrypted: i=1; AJvYcCW3vVk11ZxEt9TUwG+6wh+GYknOAng27IDGNIgib1qL8RuHJnBgb/YiZ8vbX30RRJKhGS7vIJo+p1HtCVcKp9+i5iJh3bsGp9KsPzsp
+X-Gm-Message-State: AOJu0YziKkRzUtZ+1LvFxFPHbXwinggYimYjB/43vEcApJ//K6h7IJNJ
+	NUuNsDo6zsa6M4yhfrt253UPEG/KvUKDuFtG+zEpaYF5DdYPZo1EIyJGQXQV7CmddNnKXsxUXNC
+	HNnoKOWhSV4uU9Dx8/QwykdEio9xJJp4oX87s5tBz9fpEzAsrXUGQlKU=
+X-Google-Smtp-Source: AGHT+IFbdKSQxCB0DJY/GiqaqjR8/NSQmFPFQKGctC/4muwMdSaqWUxXKBchKm9dgjbCe04xWlhcRsMAzbbYb5zbnYpfNiiA2OaT
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:O8IROVyt86Fl1e27xS7q23A9N/P5obLbpJxwBLTdsAk+RTWY+uu
- vlenLHJNVfpSiPDsPPVvMAZWa0hanQ1MFhTWSQtuJaUfR6MWLAkLVE98KadxYa/giB9KJ2i
- XdlzQtV1N7JcmzaXRT1id1Nk3//TT0q/Soi/rdxNJcAhP6wiL9XKwn10IMBgUkBaQ2qv1HN
- vsvmotU5lPtrq1Jr1toJQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:TZE+uP34Amc=;PUo8oRdN3+QqLhxqNiCHyiVhK1k
- /bhA5QLOcZngE2fZMAxmmaPOrXMwNyxMTV/qnUFFXIO9xXCXPxegJJIoEjdmRvbCloe4t+cvf
- owHHNLhfu8nAa36RROAdwNrm37APuyKdRgw5MrNw6uxmOrEeDwlVLVinqz630r1KCZcY8NLtz
- aedNXHHelyuox3zF8he3Ro3z3vqE93OIhJiT66HKmqkTkk8xa1t66hc/ZmUXJL9NqTVSsOxwL
- uZ0kZfQ2D7oZeqkZGPeqNmNMZ+nziUStX4mjVM12ZLMQvoehN9IxQyfh4mh/YsRE6poeEnZw9
- 16C8+9pc7536PBfiprpqsjUSE2DvJWPRji6zFvbhIIXtcH6c8cO8z3uy5SVYHHNmm4j1hpyTS
- zzmCN9NZS/nMC66N+GnREDETkoYjHSspE9SXccU7sY/9MjKOmRvEps37CezKxMljh0rEduWfM
- x1Y1mJkc0EPKnlN4wkiJC34BwMZ+oeus6pO1tq2HCo/X0fhQkTBy4Hnf6O5JnZGEvTSrleNip
- 7GIq/hKmyUBd/JppcZLc1zxLpoHidpiKBVw+JJxlDO+o1TI+hicg7Tx7fRzjoKXbkN5pGh7kv
- ZfktqNhbXDBBhQe4LmLTaldZpuvLQZg2MPuKl6ECKbagxuzHg0nuVusLd3bTJGHu5ZZtAaU34
- eMwq9BMwOmmcTMlFEb1FRqMnS8UM/EuqE6qw33FoKPgGWPa8WDum9rRhock13nU2yp/am52Cm
- de9elkiE3xFLFcRgO2/z2bbuCy/bRa6cAoodaS0tfoXDjG8PRNyhLU2bhCuT6Nfkiuq+nFoc1
- k8S0sOlTgL6fhZ95JmNuSVTOAirGyvO9fbp4mrjveChO0=
+X-Received: by 2002:a05:6e02:1d02:b0:363:d720:a9d0 with SMTP id
+ i2-20020a056e021d0200b00363d720a9d0mr664869ila.3.1707763886601; Mon, 12 Feb
+ 2024 10:51:26 -0800 (PST)
+Date: Mon, 12 Feb 2024 10:51:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d23cfc061133c3ae@google.com>
+Subject: [syzbot] [usb?] WARNING in wdm_rxwork/usb_submit_urb (2)
+From: syzbot <syzbot+c6a1953c27ace6cc34e5@syzkaller.appspotmail.com>
+To: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, 
+	linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-The ACPI-WMI specification declares in the section "ACPI Control Method
-Naming Conventions and Functionality for Windows 2000 Instrumentation"
-that a WMxx control method takes 3 arguments: instance, method id and
-argument buffer.
-This is also the case even when the underlying WMI method does not
-have any input arguments.
+Hello,
 
-So if a WMI driver evaluates a WMI method without passing an input
-buffer, ACPICA will log a warning complaining that the third argument
-is missing.
+syzbot found the following issue on:
 
-Prevent this by checking that a input buffer was passed, and return
-an error if this was not the case.
+HEAD commit:    841c35169323 Linux 6.8-rc4
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=108afb04180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1d7c92dd8d5c7a1e
+dashboard link: https://syzkaller.appspot.com/bug?extid=c6a1953c27ace6cc34e5
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Tested on a Asus PRIME B650-Plus.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.=
-intel.com>
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
-Changes since v1:
-- add section reference
-- add Reviewed-by
-=2D--
- drivers/platform/x86/wmi.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/38e234de95d9/disk-841c3516.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b6bebb81917b/vmlinux-841c3516.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3b5bf5ac63c3/bzImage-841c3516.xz
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 63906fdd0abf..f9e23d491dd9 100644
-=2D-- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -296,7 +296,7 @@ EXPORT_SYMBOL_GPL(wmidev_instance_count);
-  * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417=
-f2f49ba
-  * @instance: Instance index
-  * @method_id: Method ID to call
-- * @in: Buffer containing input for the method call
-+ * @in: Mandatory buffer containing input for the method call
-  * @out: Empty buffer to return the method results
-  *
-  * Call an ACPI-WMI method, the caller must free @out.
-@@ -326,7 +326,7 @@ EXPORT_SYMBOL_GPL(wmi_evaluate_method);
-  * @wdev: A wmi bus device from a driver
-  * @instance: Instance index
-  * @method_id: Method ID to call
-- * @in: Buffer containing input for the method call
-+ * @in: Mandatory buffer containing input for the method call
-  * @out: Empty buffer to return the method results
-  *
-  * Call an ACPI-WMI method, the caller must free @out.
-@@ -347,26 +347,25 @@ acpi_status wmidev_evaluate_method(struct wmi_device=
- *wdev, u8 instance, u32 met
- 	block =3D &wblock->gblock;
- 	handle =3D wblock->acpi_device->handle;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c6a1953c27ace6cc34e5@syzkaller.appspotmail.com
 
-+	if (!in)
-+		return AE_BAD_DATA;
-+
- 	if (!(block->flags & ACPI_WMI_METHOD))
- 		return AE_BAD_DATA;
+------------[ cut here ]------------
+URB ffff88802d18b550 submitted while active
+WARNING: CPU: 1 PID: 16572 at drivers/usb/core/urb.c:379 usb_submit_urb+0x1039/0x18c0 drivers/usb/core/urb.c:379
+Modules linked in:
+CPU: 1 PID: 16572 Comm: kworker/1:0 Not tainted 6.8.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+Workqueue: events wdm_rxwork
+RIP: 0010:usb_submit_urb+0x1039/0x18c0 drivers/usb/core/urb.c:379
+Code: 00 eb 66 e8 59 f7 8e fa e9 79 f0 ff ff e8 4f f7 8e fa c6 05 25 9f 6b 08 01 90 48 c7 c7 c0 ae 4a 8c 4c 89 ee e8 f8 01 53 fa 90 <0f> 0b 90 90 e9 40 f0 ff ff e8 29 f7 8e fa eb 12 e8 22 f7 8e fa 41
+RSP: 0018:ffffc90004b4fb20 EFLAGS: 00010246
+RAX: e7c54bd420f7c300 RBX: 0000000000000cc0 RCX: ffff888039421dc0
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff88802d18b558 R08: ffffffff81577992 R09: 1ffff92000969eb8
+R10: dffffc0000000000 R11: fffff52000969eb9 R12: 1ffff11005523912
+R13: ffff88802d18b550 R14: dffffc0000000000 R15: ffff88802a91c828
+FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555555d4f938 CR3: 000000000df32000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ wdm_rxwork+0x116/0x1f0 drivers/usb/class/cdc-wdm.c:989
+ process_one_work kernel/workqueue.c:2633 [inline]
+ process_scheduled_works+0x913/0x1420 kernel/workqueue.c:2706
+ worker_thread+0xa5f/0x1000 kernel/workqueue.c:2787
+ kthread+0x2ef/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
+ </TASK>
 
- 	if (block->instance_count <=3D instance)
- 		return AE_BAD_PARAMETER;
 
--	input.count =3D 2;
-+	input.count =3D 3;
- 	input.pointer =3D params;
-+
- 	params[0].type =3D ACPI_TYPE_INTEGER;
- 	params[0].integer.value =3D instance;
- 	params[1].type =3D ACPI_TYPE_INTEGER;
- 	params[1].integer.value =3D method_id;
--
--	if (in) {
--		input.count =3D 3;
--
--		params[2].type =3D get_param_acpi_type(wblock);
--		params[2].buffer.length =3D in->length;
--		params[2].buffer.pointer =3D in->pointer;
--	}
-+	params[2].type =3D get_param_acpi_type(wblock);
-+	params[2].buffer.length =3D in->length;
-+	params[2].buffer.pointer =3D in->pointer;
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- 	get_acpi_method_name(wblock, 'M', method);
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-=2D-
-2.39.2
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
