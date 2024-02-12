@@ -1,135 +1,169 @@
-Return-Path: <linux-kernel+bounces-61826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2596B85170E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:32:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE34685172E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:39:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFF752831D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:32:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3AC9B24C38
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 14:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E4C3A8EB;
-	Mon, 12 Feb 2024 14:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AYdgzBft"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01AE3B29A;
+	Mon, 12 Feb 2024 14:39:10 +0000 (UTC)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE75FC16;
-	Mon, 12 Feb 2024 14:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FEA3AC14;
+	Mon, 12 Feb 2024 14:39:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707748317; cv=none; b=GSKXJvQup/zOSWctbq7jPkEC3o1HWgyo11v9TYyZ11tXy6C+dVkamYzF6lzANgf5Sf4lJQ5WIzhxn/B1btrnH55ioCY4phls58418bK8D0y+ijytGTqHZMnFj45WhJiizURhMhZHezBWflFD/byv0tmSFaVshHIh6XRLfG4K/jw=
+	t=1707748750; cv=none; b=qJcDgDat0A8VtOzntVOuQjEW8QI6T0QrOkU8AkTq5XlBpCQpIZo5mCKCkjDHc5eWuc6IAw27gH9jEBiizpm6X50tzWwDKAZxVBHO5oIn+EIik2ICE8iMI5eeJULcv7jhYkFWeSOyY9dslemyLK7OZh8zu3fQUnxMYcXGENnH90g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707748317; c=relaxed/simple;
-	bh=3JKFf0dcMk7JwnUdDXS61uJeYNwcS3K7/8lxDPV9RgE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oeS2BSZWVoM/Ei0zqE5jBwtybW5wQOGVdI0sxb4ElrtZd+GOS+m+Qh3UJDPleLFDm9TmY2ktJcEvFsNGjVJln8vsglI35FyZAd6xOIeMUaRxnBcqLAmTUJdmFL1aHCJgDVZ1F0JYZJ4Tfyhwt+Q3UZMHnlUyh7ijs9+U6Kw0sTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AYdgzBft; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707748317; x=1739284317;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3JKFf0dcMk7JwnUdDXS61uJeYNwcS3K7/8lxDPV9RgE=;
-  b=AYdgzBftByJ9b3K/t/7JXfNkdatGGyVw1sIZM1siuQDWHb3pydei2Nfn
-   LnFaH7pUqe4E//WodbSEnBxDaxpUvcSUMGc8Diu8UwBsxXUzpqNi8fhMP
-   VuE5IDgnum4RmAuU70ux9/Y8zWD6Xnw3BmFLSwksUuRmbzu3VK1okc6lk
-   wqpc9+RBfziIUQa75+AXB8XIJMTYRUSj6U0V4uPjlOh51260b0vsemfad
-   IOA7H5nquR1BQ0BIcel6iIHGs3TKfHrzRYDPEMPz9EfF0Mkrz/cqWnOxU
-   VRSS0jesQUwhDUXOzXrV0Onz5QrkjRKdH1bYyImhdrwqtae8aEu2+5JNG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="12814863"
-X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
-   d="scan'208";a="12814863"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 06:31:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10981"; a="911497299"
-X-IronPort-AV: E=Sophos;i="6.06,264,1705392000"; 
-   d="scan'208";a="911497299"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 06:31:52 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rZXLZ-00000003vFt-1yfL;
-	Mon, 12 Feb 2024 16:31:49 +0200
-Date: Mon, 12 Feb 2024 16:31:49 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Paul Burton <paulburton@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: auxdisplay: hit,hd44780: drop redundant
- GPIO node
-Message-ID: <Zcor1RYVMh3-V-wL@smile.fi.intel.com>
-References: <20240212083426.26757-1-krzysztof.kozlowski@linaro.org>
- <ZcofhWb8stiddmru@smile.fi.intel.com>
- <906db6a6-48ba-41e5-be23-1dea0ecf96ee@linaro.org>
- <Zcomjp9oH9VfO3NA@smile.fi.intel.com>
- <b836cf9d-dc71-4835-b45f-1092aafa1dfd@linaro.org>
+	s=arc-20240116; t=1707748750; c=relaxed/simple;
+	bh=bhdRHyoW7lPVIkTI8IjDK4sPL6Ctj/nSJiAUABT6vdc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Rh5ps9diC055XoLKLTDU+OFFuuBRYvIDEsblB285BRF9liqRz7RAP9YYcBHBXSJKSR69jqR46Zx6M1zKMKYKcqLTg5g2egxR7grLgHcd8UyHe2O+ohODCfNlyC+0mA89p90VZep5GmOoat8vWZ9bnGlGFNqwvI2BWA03j30+TGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 2BAEB84EA7;
+	Mon, 12 Feb 2024 15:32:42 +0100 (CET)
+From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
+To: Arnd Bergmann <arnd@kernel.org>,
+ Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+ Helge Deller <deller@gmx.de>, Linus Walleij <linus.walleij@linaro.org>,
+ Arnd Bergmann <arnd@arndb.de>, Flavio Suligoi <f.suligoi@asem.it>,
+ Hans de Goede <hdegoede@redhat.com>, Jianhua Lu <lujianhua000@gmail.com>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] backlight: ktd2801: fix LED dependency
+Date: Mon, 12 Feb 2024 15:31:50 +0100
+Message-ID: <4869921.GXAFRqVoOG@radijator>
+In-Reply-To: <20240212124428.GB4593@aspen.lan>
+References:
+ <20240212111819.936815-1-arnd@kernel.org> <20240212124428.GB4593@aspen.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b836cf9d-dc71-4835-b45f-1092aafa1dfd@linaro.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Autocrypt: addr=duje.mihanovic@skole.hr;
+ keydata=
+ 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
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, Feb 12, 2024 at 03:20:26PM +0100, Krzysztof Kozlowski wrote:
-> On 12/02/2024 15:09, Andy Shevchenko wrote:
-> > On Mon, Feb 12, 2024 at 02:56:43PM +0100, Krzysztof Kozlowski wrote:
-> >> On 12/02/2024 14:39, Andy Shevchenko wrote:
-> >>> On Mon, Feb 12, 2024 at 09:34:24AM +0100, Krzysztof Kozlowski wrote:
-
-..
-
-> >>>> -    i2c {
-> >>>> -            #address-cells = <1>;
-> >>>> -            #size-cells = <0>;
-> >>>>  
-> >>>> -            pcf8574: pcf8574@27 {
-> >>>> -                    compatible = "nxp,pcf8574";
-> >>>> -                    reg = <0x27>;
-> >>>> -                    gpio-controller;
-> >>>> -                    #gpio-cells = <2>;
-> >>>> -            };
-> >>>> -    };
-> >>>
-> >>> In patch 3 you updated the lines that have lost their sense due to this one.
-> >>
-> >> How did they lose it?
+On Monday, February 12, 2024 1:44:28 PM CET Daniel Thompson wrote:
+> On Mon, Feb 12, 2024 at 12:18:12PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > > 
-> > Now they are referring to the non-existed node in the example. OTOH, there is
-> > already hc595 case...
-> 
-> All of the bindings examples do it. It's expected.
-> 
+> > The new backlight driver unconditionally selects LEDS_EXPRESSWIRE, which
+> > is in a different subsystem that may be disabled here:
 > > 
-> > The Q here (as you pointed out that it's better to name nodes in generic way),
-> > how these names are okay with the schema (hc595, pcf8574) as being referred to?
+> > WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
+> > 
+> >   Depends on [n]: NEW_LEDS [=n] && GPIOLIB [=y]
+> >   Selected by [y]:
+> >   - BACKLIGHT_KTD2801 [=y] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE 
+[=y]
+> > 
+> > Change the select to depends, to ensure the indirect dependency is
+> > met as well even when LED support is disabled.
+> > 
+> > Fixes: 66c76c1cd984 ("backlight: Add Kinetic KTD2801 backlight support")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> > 
+> >  drivers/video/backlight/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/video/backlight/Kconfig
+> > b/drivers/video/backlight/Kconfig index 230bca07b09d..f83f9ef037fc 100644
+> > --- a/drivers/video/backlight/Kconfig
+> > +++ b/drivers/video/backlight/Kconfig
+> > @@ -185,7 +185,7 @@ config BACKLIGHT_KTD253
+> > 
+> >  config BACKLIGHT_KTD2801
+> >  
+> >  	tristate "Backlight Driver for Kinetic KTD2801"
+> > 
+> > -	select LEDS_EXPRESSWIRE
+> > +	depends on LEDS_EXPRESSWIRE
 > 
-> They are not OK, although I don't see the name "hc595". There is phandle
-> to the hc595 label, but that's fine. Not a node name.
+> As far as I can tell this resolves the warning by making it impossible
+> to enable BACKLIGHT_KTD2801 unless a largely unrelated driver
+> (LEDS_KTD2692) is also enabled!
+> 
+> A better way to resolve this problem might be to eliminate the NEW_LEDS
+> dependency entirely:
 
-Ah, okay, so it's a semantic difference. Thank you for your patience and elaboration!
+I believe this would be the best thing to do here. Making LEDS_EXPRESSWIRE 
+user selectable doesn't make much sense to me as the library is rather low-
+level (a quick grep turns up BTREE as an example of something similar) and IMO 
+the GPIOLIB dependency should be handled by LEDS_EXPRESSWIRE as it's the one 
+actually using the GPIO interface (except maybe for KTD2692 as it has some 
+extra GPIOs not present in the other one and thus handles them itself).
 
+Regards,
 -- 
-With Best Regards,
-Andy Shevchenko
+Duje
+
 
 
 
