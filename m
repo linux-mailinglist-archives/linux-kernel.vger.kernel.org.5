@@ -1,149 +1,119 @@
-Return-Path: <linux-kernel+bounces-61854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-61857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC586851773
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:00:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAF50851779
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 16:01:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A87F1C21472
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:00:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89FBCB242CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Feb 2024 15:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5163F3BB5E;
-	Mon, 12 Feb 2024 15:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79683C46C;
+	Mon, 12 Feb 2024 15:01:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MvvqIR95";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MvvqIR95"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="cT3sgJxJ"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0346F39FD5;
-	Mon, 12 Feb 2024 15:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8EE3C46E
+	for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 15:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707750040; cv=none; b=qwEsrw+UjD02wM4oEc2TvkSBTtClabuk9y1nCgfNtoirZ/FW5HUrxBfsgY1RT1lyWqLu+JfURvtlfV5p96dBhBd6YDpBRnVIKy/MKpumIGf7Pf1kv2ZRx3vysyDbMrU40aE/qQhGf+dlTMJGO7/WPybke40r9wJD3Z9+A3ar3Jg=
+	t=1707750085; cv=none; b=EYDoVsh75nPYZlgTFSq2E8Kf1AHPnfPh2VGPeclGVh2LD9054GPT25LVVF4+4qfz7YamFnFevknrfKMweCdgb79yDdiqVTOoHFHkVdr6UuEL3ZFcVHoUqfPCjiGLn5SDGGzCJISEm6fFbsdSzH8EAIW2gAvUuy97vgiaZaa2Oww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707750040; c=relaxed/simple;
-	bh=zCA6YMIgfL2kSQYWwcG3dnu2KR4ZdNffoBP3LtJDiiQ=;
+	s=arc-20240116; t=1707750085; c=relaxed/simple;
+	bh=5ET/+ywHrfQ2igMiio3kOR+E5f7alalaj3ZSVBSVj3Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MSJ3eMR5aG6pdae+54Yz6ikEw6UkH5ZCDhVsVG2D2WAwK3I0p5zUEzCnDPnBCdRPrRcvFjC2qp7pXAEFFzQtiy0dqDTJEBedvcrjg46ojqJe1RL+jk95MRqVh25RAXVdvTOM1XoxuPVIGe72elT5UOUth5IiI7fGDk5oOSfYqr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MvvqIR95; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MvvqIR95; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from blackpad (unknown [10.100.12.75])
+	 Content-Type:Content-Disposition:In-Reply-To; b=qwXKGdjTsmPFNMiMiLDQvZiSl7NMxRKt3P5IobZSML0Yi5rXEq/OfSWJ9SwA3R7+rE+eJsG5j+QrUcgmysXjE67V+p6uloDcwDcTZyA36ahztQpyqEZ4EK8TkQfbZi4BCAfEopRHoID9N3VAr8YIoYFXB0yYDHRl4yQkcyzYGVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=cT3sgJxJ; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8837440E0256;
+	Mon, 12 Feb 2024 15:01:19 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 2MssPnb7UQOE; Mon, 12 Feb 2024 15:01:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707750076; bh=niftb5ulUuRKgvqltBydGR3ZDoIKCm7EqemWD0my8+Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cT3sgJxJEUQL3sUMBYE2zL6pDBagFdBpHHyPhrXcB2azluuIoE2FOP7ISTZi4UHqo
+	 9GsBD5Fk0JKoq+htXXpfjOvYU+SZtk+/0APaRzC5KnFBL/PzSRw3bMepPHm56HwBXR
+	 0T82qzNiteh7lsxLqUhBoumBTdXS4CjfPUlab872RiKTaZoA7EEk6YtHWvG3hR1+R4
+	 yfYFwH0suSs4WKlB9mX3ZlosbXNT6iGk4ztgeOZ74fF992M6C/WSl0W5Mgl+vbIjN+
+	 ApFVHmxnbVjmCyInCBFoSGng4Wf3lLdY0UP58SmPgVR78X9j8fTAwUUt39qoHO2hoG
+	 4lYXoHxg9MEYZkk+VB2GHegPCnissXNJJVYKV4qmsqLRqkACOijixKrYOnfgMXWdCg
+	 oZe+xPtP3+z8rqNsDDLpvCJkH0klIDdo0Wn48BV8Sxq8CHcZAHdwn27l9t2WSXnxV5
+	 qGRY6ZiPES0aulRO0tl5vZ0QvW296+pjJsn67A2eLA649y2uUIu9+CsmPSKar03CzU
+	 w//ZmAJ5LAfAoDGmRdJSiQs07LVts1aYYiwfEaacKZ03jjOCmlokwtp4af8j+I6mja
+	 Hth/AHjuNCl4x4iMbQW64mos+24Bu69Q3iJtqp+qBynw3zlSuIb+kNQHGh8vswGlI9
+	 sQM7Z6Xxsa8//hXcb/VGZBOY=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2643721BDD;
-	Mon, 12 Feb 2024 15:00:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707750037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zCA6YMIgfL2kSQYWwcG3dnu2KR4ZdNffoBP3LtJDiiQ=;
-	b=MvvqIR95yBP75tWFFy1E1AQN+7JSPPgRSEt6Mv39rfeUc6lnAA1+ajIgsxDBV2O3pfCrMf
-	hunvnm68UfdHJTa/XZ5WtpnzS3ACHsonwVULiwzLCTQxVvSOJL1ERy4mupMUaSdc+QnZHG
-	nKfmBE0Wg2ucd43Je97aRJ2o/WOC9pA=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707750037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zCA6YMIgfL2kSQYWwcG3dnu2KR4ZdNffoBP3LtJDiiQ=;
-	b=MvvqIR95yBP75tWFFy1E1AQN+7JSPPgRSEt6Mv39rfeUc6lnAA1+ajIgsxDBV2O3pfCrMf
-	hunvnm68UfdHJTa/XZ5WtpnzS3ACHsonwVULiwzLCTQxVvSOJL1ERy4mupMUaSdc+QnZHG
-	nKfmBE0Wg2ucd43Je97aRJ2o/WOC9pA=
-Date: Mon, 12 Feb 2024 16:00:36 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: "Jan Kratochvil (Azul)" <jkratochvil@azul.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, containers@lists.osdl.org, Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2] Port hierarchical_{memory,swap}_limit cgroup1->cgroup2
-Message-ID: <ked455hccs23ghrqug3ieqck6qmmlip5htgszjvz7n3cvhvaeo@7kkg6faezy2a>
-References: <ZcmaPqZ9HzoN0GFM@host1.jankratochvil.net>
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 56F4840E01A9;
+	Mon, 12 Feb 2024 15:00:58 +0000 (UTC)
+Date: Mon, 12 Feb 2024 16:00:53 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Arjan van de Ven <arjan@linux.intel.com>,
+	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Zhang Rui <rui.zhang@intel.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Feng Tang <feng.tang@intel.com>,
+	Andy Shevchenko <andy@infradead.org>,
+	Michael Kelley <mhklinux@outlook.com>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [patch v5 06/19] x86/cpu: Provide a sane leaf 0xb/0x1f parser
+Message-ID: <20240212150053.GEZcoypaBQPB1IcZGY@fat_crate.local>
+References: <20240117115752.863482697@linutronix.de>
+ <20240117115908.674834306@linutronix.de>
+ <20240130193102.GEZblOdor_bzoVhT0f@fat_crate.local>
+ <87il2tlqba.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="udftjw4lcp7jj2yb"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZcmaPqZ9HzoN0GFM@host1.jankratochvil.net>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.95
-X-Spamd-Result: default: False [-2.95 / 50.00];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-0.975];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 BAYES_HAM(-0.05)[60.57%]
-X-Spam-Flag: NO
+In-Reply-To: <87il2tlqba.ffs@tglx>
 
+On Mon, Feb 12, 2024 at 03:17:45PM +0100, Thomas Gleixner wrote:
+> Especially x2apic_shift is horrible and the comments of EBX are visually
+> impaired while with the C++ comments x2apic_shift looks natural and the
+> EBX comments are just open to the right and therefore simpler.
 
---udftjw4lcp7jj2yb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'd say, put comments *above* the member versus on the side. We don't
+like side comments, if you remember. :-)
 
-Hello.
+And, for example, the commenting in arch/x86/include/asm/fpu/types.h is
+not half as bad and works real nice for struct definitions, I'd say.
 
-Something like this would come quite handy.
+But if you want to make that into a rule to have C++, side comments for
+struct members I guess I'll get accustomed to it eventually.
 
-On Mon, Feb 12, 2024 at 12:10:38PM +0800, "Jan Kratochvil (Azul)" <jkratoch=
-vil@azul.com> wrote:
-> which are useful for userland to easily and performance-wise find out the
-> effective cgroup limits being applied.
+> If it's caught in early testing, this should be fixed, no?
 
-And the only way to figure out inside cgroupns.
+Hope dies last. :)
 
-> But for cgroup2 it has been missing so far, this is just a copy-paste of =
-the
-> cgroup1 code while changing s/memsw/swap/ as that is what cgroup1 vs. cgr=
-oup2
-> tracks. I have added it to the end of "memory.stat" to prevent possible
-> compatibility problems with existing code parsing that file.
+-- 
+Regards/Gruss,
+    Boris.
 
-I was thinking of memory.max.effective (and others).
-
-- no need to (possibly flush) stats when reading memory.stat
-- can be generalized also for pids controller (and other "limiting" control=
-lers)=20
-- analogous to precedent of cpuset.cpus.effective
-
-Whereas, using v1 approach in v2:
-- memory.stat mixes true stats and limits,
-- memmory.stat is hierarchical by default, no need for the prefix.
-
-What do you think of the separate .effective file(s)?
-
-Thanks
-Michal
-
---udftjw4lcp7jj2yb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZcoykQAKCRAGvrMr/1gc
-jrcRAQCmHQ3zahZOyBX4mYSsgAGeyZnpqwR6DtFU4iC+td8H0gD8CMLymLYdXAGC
-I89BNel0pL7qDQzxSuSAVFvoyZhlRws=
-=v9Sh
------END PGP SIGNATURE-----
-
---udftjw4lcp7jj2yb--
+https://people.kernel.org/tglx/notes-about-netiquette
 
