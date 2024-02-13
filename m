@@ -1,95 +1,109 @@
-Return-Path: <linux-kernel+bounces-63935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71819853690
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:49:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0ED8853691
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:49:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A450F1C2420F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:49:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F36C61C24282
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D93B6025E;
-	Tue, 13 Feb 2024 16:47:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834C960260;
+	Tue, 13 Feb 2024 16:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="atNoYoBw"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FODxZYvu"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0F995FF08
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B245F54E
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707842860; cv=none; b=uWd0WR/caeAETkfi5xhRKuhlejZLRSeD28vbj0JGfxzp3sOcQa5t1iNwTSOaDuV8FjLCZfUkezIydWxngeiMS4RkfVj/tT0MSp7cSaUxM3rRA5RBQqfOsIk/n8MHMD+d05KrUOaiMG223EYxYh7ZRsFNEtiyPUDz+VQTPd3nGU8=
+	t=1707842880; cv=none; b=u8drkd1diH9Hkc/WjgvGzwIzEXWHjORs3T1720su6zYV7U0fpR/v7Z2HPhJ8Iq3Qg4uAPc4bvKh8cGYEzjfw98eXjopeOI9EjpjLY71RcHemPirkTcJhimrPEVMj7plqa8PhUBseovVVqic2rKM2Mrt0598b+U/We9zVXcJ9gIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707842860; c=relaxed/simple;
-	bh=ElKTNlIuQPudvJiFcN+N/woy8qoA+pviJFvwMDbhHmA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JtiEOdEuwykWhaZpCJQzwU9+4jU8CH2luGbE4uEyl72GG+CzT7SKu3pjTcqDxupOWCEmmPCExUMtUEv9v4l7l0ot5nphgZRazeep2H3T7jtX++HJtOD2BPJLgoAHZfDhtUAc2pFu+hUgwODq5A399eeS9Cf/6aM4YTHC7dbf/sE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=atNoYoBw; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707842859; x=1739378859;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ElKTNlIuQPudvJiFcN+N/woy8qoA+pviJFvwMDbhHmA=;
-  b=atNoYoBwwhlD1t7cNbrye9iFQ23nQ+r9QaklzZQ60vWLXW8/U5k8Gr88
-   qmOglovsCtMSr7fKtvgpOe/TTYuFXg4WUOH8xPm/N0bJrKG67LAfVR3CB
-   giwkLP0R0SNXOXmv3buv7XgylisEyizbSL+01nl3C5NdqfRa4Hm1uEdvs
-   tR40B+5MkQCuDFgipPW09wYXppWmLwvIahZAW/Mjt8qaSCYy+oyRnd9Vh
-   Uj8e6d+2NTCj7j4OitW+Cyj1FREtscG5l2bAoe34oEvXbZ8KJTwovNMk8
-   gqQbA7sAzpJ3/RZ6c7xJKve0/vQytRl+BqxUXtDk/QVy3mu/HX2WH4wp3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="4827115"
-X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="4827115"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 08:47:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="911833156"
-X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="911833156"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 08:47:36 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rZvwU-00000004Giw-1noo;
-	Tue, 13 Feb 2024 18:47:34 +0200
-Date: Tue, 13 Feb 2024 18:47:34 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Cc: Miguel Ojeda <ojeda@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 0/3] auxdisplay: Refresh MAINTAINERS for the subsystem
-Message-ID: <ZcudJl-H_PrJM_8D@smile.fi.intel.com>
-References: <20240212132515.2660837-2-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1707842880; c=relaxed/simple;
+	bh=QMyITr22VNOez+0Eu6FIvd5XT+rl1JLLwyX/uWCBhQQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bf2fcfljQNPWqn4vQKf8jwvEFoX+gLEvNpdg3SDeVDdaNzSMAj/kKO64RCKJE6q6YmSYQFMLiiUhSNUT80/JL+rTuGbEByB885V7Q4HMT9NRLO5RVgPJXk6KqwOoOD2TNIbtSZ0d0a2U7me1pGUBhlGbfFWLPc0ByoEsknAxmCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FODxZYvu; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707842878;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QMyITr22VNOez+0Eu6FIvd5XT+rl1JLLwyX/uWCBhQQ=;
+	b=FODxZYvuvfvnvqutrYSQgZh8eWSK7zFJ8kCgOIJnJsfUm31LRdrxsUYvC7hinV9aGueNUN
+	yOKTtY+1CiusyxktCUhfrxFAISQM+aYW7kHkQVDhx2MNhKYHQMUURm6GGyWiNNYgffQv4i
+	meUOSLkgY0Otae1URJmy+4GpIzWzt/k=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-693-w-iK0o4KMcaqwPHBFcDmqQ-1; Tue, 13 Feb 2024 11:47:56 -0500
+X-MC-Unique: w-iK0o4KMcaqwPHBFcDmqQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33b8837355dso715227f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:47:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707842875; x=1708447675;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QMyITr22VNOez+0Eu6FIvd5XT+rl1JLLwyX/uWCBhQQ=;
+        b=M+CxOnbECwYn3jG2CZBVQGXztX9llyAuMgbx6a4VbQOpZET1KnUQPLuuaD2NXjG5vM
+         MYFD1jLbJnIogCCrA05onrbv9rbwJVVYI2hLcU5lTp6kJeG+xIM1+dIk4PNYeff6hIQy
+         Kgem7u9kwWOHjcqM3jpjHvHIK5kXLx+dpFT3tcTgMnlYwYge7Cd/X2acnlWQ1iPTC07V
+         25szsq0nBCX5uVei0Ivn8UGEQJAERVqEMKLSM+Jg22EuuLe5y18JOndVVtszRaseisgB
+         kW3CZcwXrS5HDhXkMl4O2ALiDmI+2QZxKCiCwbS9qwt2iDIgU9p6qDyj5sYKjBLXIbEG
+         kpkg==
+X-Forwarded-Encrypted: i=1; AJvYcCUFBxb7uGg1fmshGTUWWJucVLx/0hNKVNMlwQ0zHLzHyP4iiInb2DKgTOt7AYdSXNZMGIugay4RHtry3m5HRhO1Z99Qk/XXgcKGzTWN
+X-Gm-Message-State: AOJu0YyWAZ6Jvj/bn/y9u2ZuwEJWyYHK3DPkQCR9cWzlX1CMfvsUOW11
+	YFqkAikuqwgBW6v+DWBKvyUh+MGJZ7g9fbHCV3ySRxbT16/2OMh8NKQw6Sxnc5fn011wqncrbZj
+	ooigaogVO/kOnvvIorhO5RwH699aWudReK/rsCZp0kfk5ql0bou/5Jyp6HWDvAQFVITBHT6dWjz
+	BQNFRTKHnAOGVcx3fHfa1xiGCg6fatYdChs7bS
+X-Received: by 2002:a5d:5706:0:b0:33c:e339:6b21 with SMTP id a6-20020a5d5706000000b0033ce3396b21mr317084wrv.3.1707842875448;
+        Tue, 13 Feb 2024 08:47:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFjt8790Sjzdp3j57iU8n+hsTKRyoCw6s864kVDcam+5Q/1BmuuCqAAfIwXrcWPZpVf9etFaTvSje6Pkl6muNc=
+X-Received: by 2002:a5d:5706:0:b0:33c:e339:6b21 with SMTP id
+ a6-20020a5d5706000000b0033ce3396b21mr317064wrv.3.1707842875120; Tue, 13 Feb
+ 2024 08:47:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212132515.2660837-2-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <591420ca62f0a9ac2478c2715181201c23f8acf0.1705965635.git.isaku.yamahata@intel.com>
+ <CABgObfaEz8zmdqy4QatCKKqjugMxW+AsnLDAg6PN+BX1QyV01A@mail.gmail.com> <Zcrarct88veirZx7@google.com>
+In-Reply-To: <Zcrarct88veirZx7@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Tue, 13 Feb 2024 17:47:43 +0100
+Message-ID: <CABgObfYFnpe_BO5bNRvXC6Y-3rUxFAogs2TGFUTBu+JR25N=pQ@mail.gmail.com>
+Subject: Re: [PATCH v18 032/121] KVM: x86/mmu: introduce config for PRIVATE
+ KVM MMU
+To: Sean Christopherson <seanjc@google.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com, erdemaktas@google.com, 
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, 
+	hang.yuan@intel.com, tina.zhang@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 03:23:52PM +0200, Andy Shevchenko wrote:
-> Update MAINTAINERS for AUXDISPLAY subsystem in accordance to the last
-> (administrative) changes.
-> 
-> In v2:
-> - included Geert as Reviewer and added Git tree 
-> - added two more patches that are related to MAINTAINERS
+On Tue, Feb 13, 2024 at 3:57=E2=80=AFAM Sean Christopherson <seanjc@google.=
+com> wrote:
+> The only thing that even so much as approaches being a hot path is
+> kvm_gfn_shared_mask(), and if that needs to be optimized, then we'd proba=
+bly be
+> better off with a static_key, a la kvm_has_noapic_vcpu (though I'm *extre=
+mely*
+> skeptical that that adds any measurable benefit).
 
-Pushed to my tree, thanks!
+I'm okay with killing it altogether.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
+Paolo
 
 
