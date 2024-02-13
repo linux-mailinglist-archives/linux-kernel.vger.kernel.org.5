@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-64286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D166853CCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:15:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30AC8853CCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:15:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0827B1F28441
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:15:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3FE528D179
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766957A706;
-	Tue, 13 Feb 2024 21:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE2D7A719;
+	Tue, 13 Feb 2024 21:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cTju2dmk";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="I+qTAjla"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nzSJUvqK";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fcZWcQ9I"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFFD627E9
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D66162807
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707858339; cv=none; b=Vj0rHRFCiVv7o9kkGDaBAT/csu1dH8ZCET0SJUlQwEXTPsTXNNize/irBtPyAb/u6R0v+sFvVCR64C6Ogg6w9Nezf15JuIaAqzcZsMuA3KkjBzuBS2Xy/1Qr2jT/AMR0nE/4W0GAzP3GNlDlJpB3i6jEZjMy9IYr2yC2GxyY5WA=
+	t=1707858340; cv=none; b=Qm/GOXJH+cr+Es7kI+uPabnTxtyzQkIJKz92tRa2kJb9B157TkILHOe0F7M+aUfsFB+XZG0d/pVxUxiL8P/BizVWYug9nmYV2sDxS6T6L0EQgVIXvXe/XFMlDZpnG69KRetN7/Mv/2xP3eO3EnkH3d1nJ9Kl8DEOkv88pQT3Ysg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707858339; c=relaxed/simple;
-	bh=WWNdNmpp30no7bggG3A5bq2RFzUx1lR4502O9QeYXug=;
+	s=arc-20240116; t=1707858340; c=relaxed/simple;
+	bh=sDs7RvIn02Lmy+oNh0MGYv+YqHG81vDMgrLJBwfgZfM=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=ueSxwy980HfIV2vm9DfO8m7ZBuwVTIRInJM7hHra8ehvKpbwuclFjfLAcJZCYrOhslCQ2K2oryzoMjCUH+oe6ps6Zo8Y4vsUBbU/F7gjCaJr4vhSw8B30XyVSwVJXSfRYwmV97h72b5B2qb0FJZfY/6YgNfHRFZ81Ad9l/tSqIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cTju2dmk; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=I+qTAjla; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=Ex4zTbZeUiAgdBtzAWO0jtVY7oQQF3UuMkNwQV6J44GozJq0BG8FpET5WVovkzU3cVT4EMysFu4+mkjCuqYfnsNf7X2fur/iwt0PYmXAb5JLFbs06L6y7iPLhOMts/LfcFFKMkxs3Kkgge6v7cX/U7+PmmsLTFaqlFRlbedddzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nzSJUvqK; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fcZWcQ9I; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240213210251.543948812@linutronix.de>
+Message-ID: <20240213210251.605007456@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707858335;
+	s=2020; t=1707858336;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=BEi9L5Qul8R2TWefVL07Inw18MPYGX4wh2IRJRnS66Q=;
-	b=cTju2dmkf7cErodEfKHanlKbi+YpT0izgdl4s5nNxXdQ5PvF2tN5Lahv18RJXa9mXQYpNF
-	QXSL3jzrKjSaMNFUMEqdgpSZwh8Kpq+xGLfz1+/r6fURdaFI0oCfdEFf/3SaydgE5DLqKc
-	g94lzKx9RvushZJuPyT4g6k3UpEldNvr4WfCZdILaZzSa0ZPOPnXBVaDuNrECWf/BW//Y8
-	TTG5EC5rHV5St9BxwkcHSRRdbc5riVbz1RhuvwH9t7661iJ7583IGqZD5X0BkZk9Oa5Vva
-	oP3T072VeorCceXq8BGeFFmG+V+IQpgta75xIBbNYprGyTzVLznMwH3udnwubg==
+	 references:references; bh=6gy/+SDaPiJlc3v0/1odqe8c5XxnqRbgBVGqNF2CHsE=;
+	b=nzSJUvqK1nGr17J4uXPhroi2mfTEsVVEGeIoveyxQt/07m2A5bFtSMG/9fHkscKD5mO+Lv
+	L7ylETGmPaxdEQDsm6woOZaLXNuSq/4Y44SuBHXFQxqLv6L8++O7l7xTpI4Kj25K+oKH2E
+	UQaG4ko9eeXZbklxAkH4UD4Bfr74BmmlBZ+wWyFsgjL0qRSQIMhNsHnspyW4Ho3pCOnV1f
+	gZdXcww5NX5SoAr6MXUaW2QMABvjtvxzBaifOwmTt4NwUdbFtM3yAUyv1DXEZWdNh+o74s
+	KlDyLWZj/NyYYTN2kEWbuSZcsYC64p+fG4fdGAcqRKrULjni8m0B68sqMZstpA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707858335;
+	s=2020e; t=1707858336;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=BEi9L5Qul8R2TWefVL07Inw18MPYGX4wh2IRJRnS66Q=;
-	b=I+qTAjlapHvSy24e4D3hPtXtrcB2fvrO6u6QjOkPSQfb6ZwK9ulKeZALFdkwbX19nVm90S
-	zlqUCnDRtVtRjBBg==
+	 references:references; bh=6gy/+SDaPiJlc3v0/1odqe8c5XxnqRbgBVGqNF2CHsE=;
+	b=fcZWcQ9IlUikvP/7EIH8GsD0hSoy5g8QePXhP1uOrMhNNBPzkyzV4HFod0X4kWQlZD7zvp
+	A2uGaeuUvw7KZ6Cg==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -67,7 +67,8 @@ Cc: x86@kernel.org,
  Andy Shevchenko <andy@infradead.org>,
  Michael Kelley <mhklinux@outlook.com>,
  "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch 01/30] x86/cpu/topology: Move registration out of APIC code
+Subject: [patch 02/30] x86/cpu/topology: Provide separate APIC registration
+ functions
 References: <20240213205415.307029033@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -76,486 +77,196 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 13 Feb 2024 22:05:35 +0100 (CET)
+Date: Tue, 13 Feb 2024 22:05:36 +0100 (CET)
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-The APIC/CPU registration sits in the middle of the APIC code. In fact this
-is a topology evaluation function and has nothing to do with the inner
-workings of the local APIC.
+generic_processor_info() aside of being a complete misnomer is used for
+both early boot registration and ACPI CPU hotplug.
 
-Move it out into a file which reflects what this is about.
+While it's arguable that this can share some code, it results in code which
+is hard to understand and kept around post init for no real reason.
+
+Also the call sites do lots of manual fiddling in topology related
+variables instead of having proper interfaces for the purpose which handle
+the topology internals correctly.
+
+Provide topology_register_apic(), topology_hotplug_apic() and
+topology_hotunplug_apic() which have the extra magic of the call sites
+incorporated and for now are wrappers around generic_processor_info().
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 
 ---
- arch/x86/include/asm/apic.h    |    2 
- arch/x86/kernel/apic/apic.c    |  185 -----------------------------------------
- arch/x86/kernel/cpu/Makefile   |   12 +-
- arch/x86/kernel/cpu/topology.c |  184 ++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 195 insertions(+), 188 deletions(-)
- create mode 100644 arch/x86/kernel/cpu/topology.c
+ arch/x86/include/asm/apic.h    |    3 +
+ arch/x86/kernel/cpu/topology.c |  113 ++++++++++++++++++++++++++++++++++-------
+ 2 files changed, 98 insertions(+), 18 deletions(-)
 ---
 
 --- a/arch/x86/include/asm/apic.h
 +++ b/arch/x86/include/asm/apic.h
-@@ -171,6 +171,8 @@ extern bool apic_needs_pit(void);
+@@ -171,7 +171,10 @@ extern bool apic_needs_pit(void);
  
  extern void apic_send_IPI_allbutself(unsigned int vector);
  
-+extern void topology_register_boot_apic(u32 apic_id);
-+
++extern void topology_register_apic(u32 apic_id, u32 acpi_id, bool present);
+ extern void topology_register_boot_apic(u32 apic_id);
++extern int topology_hotplug_apic(u32 apic_id, u32 acpi_id);
++extern void topology_hotunplug_apic(unsigned int cpu);
+ 
  #else /* !CONFIG_X86_LOCAL_APIC */
  static inline void lapic_shutdown(void) { }
- #define local_apic_timer_c2_ok		1
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -68,26 +68,12 @@
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -84,32 +84,38 @@ early_initcall(smp_init_primary_thread_m
+ static inline void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid) { }
+ #endif
  
- #include "local.h"
- 
--unsigned int num_processors;
--
--unsigned disabled_cpus;
--
- /* Processor that is doing the boot up */
- u32 boot_cpu_physical_apicid __ro_after_init = BAD_APICID;
- EXPORT_SYMBOL_GPL(boot_cpu_physical_apicid);
- 
- u8 boot_cpu_apic_version __ro_after_init;
- 
--/* Bitmap of physically present CPUs. */
--DECLARE_BITMAP(phys_cpu_present_map, MAX_LOCAL_APIC);
--
--/*
-- * Processor to be disabled specified by kernel parameter
-- * disable_cpu_apicid=<int>, mostly used for the kdump 2nd kernel to
-- * avoid undefined behaviour caused by sending INIT from AP to BSP.
-- */
--static u32 disabled_cpu_apicid __ro_after_init = BAD_APICID;
--
- /*
-  * This variable controls which CPUs receive external NMIs.  By default,
-  * external NMIs are delivered only to the BSP.
-@@ -107,14 +93,6 @@ static inline bool apic_accessible(void)
- 	return x2apic_mode || apic_mmio_base;
- }
- 
--/*
-- * Map cpu index to physical APIC ID
-- */
--DEFINE_EARLY_PER_CPU_READ_MOSTLY(u32, x86_cpu_to_apicid, BAD_APICID);
--DEFINE_EARLY_PER_CPU_READ_MOSTLY(u32, x86_cpu_to_acpiid, CPU_ACPIID_INVALID);
--EXPORT_EARLY_PER_CPU_SYMBOL(x86_cpu_to_apicid);
--EXPORT_EARLY_PER_CPU_SYMBOL(x86_cpu_to_acpiid);
--
- #ifdef CONFIG_X86_32
- /* Local APIC was disabled by the BIOS and enabled by the kernel */
- static int enabled_via_apicbase __ro_after_init;
-@@ -1676,8 +1654,6 @@ void apic_ap_setup(void)
- 	end_local_APIC_setup();
- }
- 
--static __init void cpu_set_boot_apic(void);
--
- static __init void apic_read_boot_cpu_id(bool x2apic)
- {
- 	/*
-@@ -1692,7 +1668,8 @@ static __init void apic_read_boot_cpu_id
- 		boot_cpu_physical_apicid = read_apic_id();
- 		boot_cpu_apic_version = GET_APIC_VERSION(apic_read(APIC_LVR));
- 	}
--	cpu_set_boot_apic();
-+	topology_register_boot_apic(boot_cpu_physical_apicid);
-+	x86_32_probe_bigsmp_early();
- }
- 
- #ifdef CONFIG_X86_X2APIC
-@@ -2291,155 +2268,6 @@ void disconnect_bsp_APIC(int virt_wire_s
- 	apic_write(APIC_LVT1, value);
- }
- 
--/*
-- * The number of allocated logical CPU IDs. Since logical CPU IDs are allocated
-- * contiguously, it equals to current allocated max logical CPU ID plus 1.
-- * All allocated CPU IDs should be in the [0, nr_logical_cpuids) range,
-- * so the maximum of nr_logical_cpuids is nr_cpu_ids.
-- *
-- * NOTE: Reserve 0 for BSP.
-- */
--static int nr_logical_cpuids = 1;
--
--/*
-- * Used to store mapping between logical CPU IDs and APIC IDs.
-- */
--u32 cpuid_to_apicid[] = { [0 ... NR_CPUS - 1] = BAD_APICID, };
--
--bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
--{
--	return phys_id == (u64)cpuid_to_apicid[cpu];
--}
--
--#ifdef CONFIG_SMP
--static void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid)
--{
--	/* Isolate the SMT bit(s) in the APICID and check for 0 */
--	u32 mask = (1U << (fls(smp_num_siblings) - 1)) - 1;
--
--	if (smp_num_siblings == 1 || !(apicid & mask))
--		cpumask_set_cpu(cpu, &__cpu_primary_thread_mask);
--}
--
--/*
-- * Due to the utter mess of CPUID evaluation smp_num_siblings is not valid
-- * during early boot. Initialize the primary thread mask before SMP
-- * bringup.
-- */
--static int __init smp_init_primary_thread_mask(void)
--{
--	unsigned int cpu;
--
--	/*
--	 * XEN/PV provides either none or useless topology information.
--	 * Pretend that all vCPUs are primary threads.
--	 */
--	if (xen_pv_domain()) {
--		cpumask_copy(&__cpu_primary_thread_mask, cpu_possible_mask);
--		return 0;
--	}
--
--	for (cpu = 0; cpu < nr_logical_cpuids; cpu++)
--		cpu_mark_primary_thread(cpu, cpuid_to_apicid[cpu]);
--	return 0;
--}
--early_initcall(smp_init_primary_thread_mask);
--#else
--static inline void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid) { }
--#endif
--
 -/*
 - * Should use this API to allocate logical CPU IDs to keep nr_logical_cpuids
 - * and cpuid_to_apicid[] synchronized.
 - */
 -static int allocate_logical_cpuid(int apicid)
--{
--	int i;
--
++static int topo_lookup_cpuid(u32 apic_id)
+ {
+ 	int i;
+ 
 -	/*
 -	 * cpuid <-> apicid mapping is persistent, so when a cpu is up,
 -	 * check if the kernel has allocated a cpuid for it.
 -	 */
--	for (i = 0; i < nr_logical_cpuids; i++) {
++	/* CPU# to APICID mapping is persistent once it is established */
+ 	for (i = 0; i < nr_logical_cpuids; i++) {
 -		if (cpuid_to_apicid[i] == apicid)
--			return i;
--	}
--
--	/* Allocate a new cpuid. */
--	if (nr_logical_cpuids >= nr_cpu_ids) {
--		WARN_ONCE(1, "APIC: NR_CPUS/possible_cpus limit of %u reached. "
--			     "Processor %d/0x%x and the rest are ignored.\n",
--			     nr_cpu_ids, nr_logical_cpuids, apicid);
--		return -EINVAL;
--	}
--
--	cpuid_to_apicid[nr_logical_cpuids] = apicid;
--	return nr_logical_cpuids++;
--}
--
--static void cpu_update_apic(int cpu, u32 apicid)
--{
--#if defined(CONFIG_SMP) || defined(CONFIG_X86_64)
--	early_per_cpu(x86_cpu_to_apicid, cpu) = apicid;
--#endif
--	set_cpu_possible(cpu, true);
--	set_bit(apicid, phys_cpu_present_map);
--	set_cpu_present(cpu, true);
--	num_processors++;
--
--	if (system_state != SYSTEM_BOOTING)
--		cpu_mark_primary_thread(cpu, apicid);
--}
--
--static __init void cpu_set_boot_apic(void)
--{
--	cpuid_to_apicid[0] = boot_cpu_physical_apicid;
--	cpu_update_apic(0, boot_cpu_physical_apicid);
--	x86_32_probe_bigsmp_early();
--}
--
--int generic_processor_info(int apicid)
--{
--	int cpu, max = nr_cpu_ids;
--
--	/* The boot CPU must be set before MADT/MPTABLE parsing happens */
--	if (cpuid_to_apicid[0] == BAD_APICID)
--		panic("Boot CPU APIC not registered yet\n");
--
--	if (apicid == boot_cpu_physical_apicid)
--		return 0;
--
--	if (disabled_cpu_apicid == apicid) {
--		int thiscpu = num_processors + disabled_cpus;
--
--		pr_warn("APIC: Disabling requested cpu. Processor %d/0x%x ignored.\n",
--			thiscpu, apicid);
--
--		disabled_cpus++;
--		return -ENODEV;
--	}
--
--	if (num_processors >= nr_cpu_ids) {
--		int thiscpu = max + disabled_cpus;
--
--		pr_warn("APIC: NR_CPUS/possible_cpus limit of %i reached. "
--			"Processor %d/0x%x ignored.\n", max, thiscpu, apicid);
--
--		disabled_cpus++;
--		return -EINVAL;
--	}
--
--	cpu = allocate_logical_cpuid(apicid);
--	if (cpu < 0) {
--		disabled_cpus++;
--		return -EINVAL;
--	}
--
--	cpu_update_apic(cpu, apicid);
--	return cpu;
--}
--
--
- void __irq_msi_compose_msg(struct irq_cfg *cfg, struct msi_msg *msg,
- 			   bool dmar)
- {
-@@ -2828,15 +2656,6 @@ static int __init lapic_insert_resource(
-  */
- late_initcall(lapic_insert_resource);
- 
--static int __init apic_set_disabled_cpu_apicid(char *arg)
--{
--	if (!arg || !get_option(&arg, &disabled_cpu_apicid))
--		return -EINVAL;
--
--	return 0;
--}
--early_param("disable_cpu_apicid", apic_set_disabled_cpu_apicid);
--
- static int __init apic_set_extnmi(char *arg)
- {
- 	if (!arg)
---- a/arch/x86/kernel/cpu/Makefile
-+++ b/arch/x86/kernel/cpu/Makefile
-@@ -26,14 +26,16 @@ obj-y			+= bugs.o
- obj-y			+= aperfmperf.o
- obj-y			+= cpuid-deps.o
- obj-y			+= umwait.o
-+obj-y 			+= capflags.o powerflags.o
- 
--obj-$(CONFIG_PROC_FS)	+= proc.o
--obj-y += capflags.o powerflags.o
-+obj-$(CONFIG_X86_LOCAL_APIC)		+= topology.o
- 
--obj-$(CONFIG_IA32_FEAT_CTL) += feat_ctl.o
-+obj-$(CONFIG_PROC_FS)			+= proc.o
-+
-+obj-$(CONFIG_IA32_FEAT_CTL)		+= feat_ctl.o
- ifdef CONFIG_CPU_SUP_INTEL
--obj-y			+= intel.o intel_pconfig.o tsx.o
--obj-$(CONFIG_PM)	+= intel_epb.o
-+obj-y					+= intel.o intel_pconfig.o tsx.o
-+obj-$(CONFIG_PM)			+= intel_epb.o
- endif
- obj-$(CONFIG_CPU_SUP_AMD)		+= amd.o
- obj-$(CONFIG_CPU_SUP_HYGON)		+= hygon.o
---- /dev/null
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -0,0 +1,184 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/cpu.h>
-+
-+#include <xen/xen.h>
-+
-+#include <asm/apic.h>
-+#include <asm/mpspec.h>
-+#include <asm/smp.h>
-+
-+/*
-+ * Map cpu index to physical APIC ID
-+ */
-+DEFINE_EARLY_PER_CPU_READ_MOSTLY(u32, x86_cpu_to_apicid, BAD_APICID);
-+DEFINE_EARLY_PER_CPU_READ_MOSTLY(u32, x86_cpu_to_acpiid, CPU_ACPIID_INVALID);
-+EXPORT_EARLY_PER_CPU_SYMBOL(x86_cpu_to_apicid);
-+EXPORT_EARLY_PER_CPU_SYMBOL(x86_cpu_to_acpiid);
-+
-+/* Bitmap of physically present CPUs. */
-+DECLARE_BITMAP(phys_cpu_present_map, MAX_LOCAL_APIC) __read_mostly;
-+
-+/* Used for CPU number allocation and parallel CPU bringup */
-+u32 cpuid_to_apicid[] __read_mostly = { [0 ... NR_CPUS - 1] = BAD_APICID, };
-+
-+/*
-+ * Processor to be disabled specified by kernel parameter
-+ * disable_cpu_apicid=<int>, mostly used for the kdump 2nd kernel to
-+ * avoid undefined behaviour caused by sending INIT from AP to BSP.
-+ */
-+static u32 disabled_cpu_apicid __ro_after_init = BAD_APICID;
-+
-+unsigned int num_processors;
-+unsigned disabled_cpus;
-+
-+/*
-+ * The number of allocated logical CPU IDs. Since logical CPU IDs are allocated
-+ * contiguously, it equals to current allocated max logical CPU ID plus 1.
-+ * All allocated CPU IDs should be in the [0, nr_logical_cpuids) range,
-+ * so the maximum of nr_logical_cpuids is nr_cpu_ids.
-+ *
-+ * NOTE: Reserve 0 for BSP.
-+ */
-+static int nr_logical_cpuids = 1;
-+
-+bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
-+{
-+	return phys_id == (u64)cpuid_to_apicid[cpu];
++		if (cpuid_to_apicid[i] == apic_id)
+ 			return i;
+ 	}
++	return -ENODEV;
 +}
-+
-+#ifdef CONFIG_SMP
-+static void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid)
-+{
-+	/* Isolate the SMT bit(s) in the APICID and check for 0 */
-+	u32 mask = (1U << (fls(smp_num_siblings) - 1)) - 1;
-+
-+	if (smp_num_siblings == 1 || !(apicid & mask))
-+		cpumask_set_cpu(cpu, &__cpu_primary_thread_mask);
-+}
-+
-+/*
-+ * Due to the utter mess of CPUID evaluation smp_num_siblings is not valid
-+ * during early boot. Initialize the primary thread mask before SMP
-+ * bringup.
-+ */
-+static int __init smp_init_primary_thread_mask(void)
-+{
-+	unsigned int cpu;
-+
-+	/*
-+	 * XEN/PV provides either none or useless topology information.
-+	 * Pretend that all vCPUs are primary threads.
-+	 */
-+	if (xen_pv_domain()) {
-+		cpumask_copy(&__cpu_primary_thread_mask, cpu_possible_mask);
-+		return 0;
-+	}
-+
-+	for (cpu = 0; cpu < nr_logical_cpuids; cpu++)
-+		cpu_mark_primary_thread(cpu, cpuid_to_apicid[cpu]);
-+	return 0;
-+}
-+early_initcall(smp_init_primary_thread_mask);
-+#else
-+static inline void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid) { }
-+#endif
 +
 +/*
 + * Should use this API to allocate logical CPU IDs to keep nr_logical_cpuids
 + * and cpuid_to_apicid[] synchronized.
 + */
-+static int allocate_logical_cpuid(int apicid)
++static int allocate_logical_cpuid(u32 apic_id)
 +{
-+	int i;
++	int cpu = topo_lookup_cpuid(apic_id);
 +
-+	/*
-+	 * cpuid <-> apicid mapping is persistent, so when a cpu is up,
-+	 * check if the kernel has allocated a cpuid for it.
-+	 */
-+	for (i = 0; i < nr_logical_cpuids; i++) {
-+		if (cpuid_to_apicid[i] == apicid)
-+			return i;
++	if (cpu >= 0)
++		return cpu;
+ 
+ 	/* Allocate a new cpuid. */
+ 	if (nr_logical_cpuids >= nr_cpu_ids) {
+ 		WARN_ONCE(1, "APIC: NR_CPUS/possible_cpus limit of %u reached. "
+ 			     "Processor %d/0x%x and the rest are ignored.\n",
+-			     nr_cpu_ids, nr_logical_cpuids, apicid);
++			     nr_cpu_ids, nr_logical_cpuids, apic_id);
+ 		return -EINVAL;
+ 	}
+ 
+-	cpuid_to_apicid[nr_logical_cpuids] = apicid;
++	cpuid_to_apicid[nr_logical_cpuids] = apic_id;
+ 	return nr_logical_cpuids++;
+ }
+ 
+@@ -127,12 +133,6 @@ static void cpu_update_apic(int cpu, u32
+ 		cpu_mark_primary_thread(cpu, apicid);
+ }
+ 
+-void __init topology_register_boot_apic(u32 apic_id)
+-{
+-	cpuid_to_apicid[0] = apic_id;
+-	cpu_update_apic(0, apic_id);
+-}
+-
+ int generic_processor_info(int apicid)
+ {
+ 	int cpu, max = nr_cpu_ids;
+@@ -174,6 +174,83 @@ int generic_processor_info(int apicid)
+ 	return cpu;
+ }
+ 
++/**
++ * topology_register_apic - Register an APIC in early topology maps
++ * @apic_id:	The APIC ID to set up
++ * @acpi_id:	The ACPI ID associated to the APIC
++ * @present:	True if the corresponding CPU is present
++ */
++void __init topology_register_apic(u32 apic_id, u32 acpi_id, bool present)
++{
++	int cpu;
++
++	if (apic_id >= MAX_LOCAL_APIC) {
++		pr_err_once("APIC ID %x exceeds kernel limit of: %x\n", apic_id, MAX_LOCAL_APIC - 1);
++		return;
 +	}
 +
-+	/* Allocate a new cpuid. */
-+	if (nr_logical_cpuids >= nr_cpu_ids) {
-+		WARN_ONCE(1, "APIC: NR_CPUS/possible_cpus limit of %u reached. "
-+			     "Processor %d/0x%x and the rest are ignored.\n",
-+			     nr_cpu_ids, nr_logical_cpuids, apicid);
-+		return -EINVAL;
++	if (!present) {
++		disabled_cpus++;
++		return;
 +	}
 +
-+	cpuid_to_apicid[nr_logical_cpuids] = apicid;
-+	return nr_logical_cpuids++;
++	cpu = generic_processor_info(apic_id);
++	if (cpu >= 0)
++		early_per_cpu(x86_cpu_to_acpiid, cpu) = acpi_id;
 +}
 +
-+static void cpu_update_apic(int cpu, u32 apicid)
-+{
-+#if defined(CONFIG_SMP) || defined(CONFIG_X86_64)
-+	early_per_cpu(x86_cpu_to_apicid, cpu) = apicid;
-+#endif
-+	set_cpu_possible(cpu, true);
-+	set_bit(apicid, phys_cpu_present_map);
-+	set_cpu_present(cpu, true);
-+	num_processors++;
-+
-+	if (system_state != SYSTEM_BOOTING)
-+		cpu_mark_primary_thread(cpu, apicid);
-+}
-+
++/**
++ * topology_register_boot_apic - Register the boot CPU APIC
++ * @apic_id:	The APIC ID to set up
++ *
++ * Separate so CPU #0 can be assigned
++ */
 +void __init topology_register_boot_apic(u32 apic_id)
 +{
 +	cpuid_to_apicid[0] = apic_id;
 +	cpu_update_apic(0, apic_id);
 +}
 +
-+int generic_processor_info(int apicid)
++#ifdef CONFIG_ACPI_HOTPLUG_CPU
++/**
++ * topology_hotplug_apic - Handle a physical hotplugged APIC after boot
++ * @apic_id:	The APIC ID to set up
++ * @acpi_id:	The ACPI ID associated to the APIC
++ */
++int topology_hotplug_apic(u32 apic_id, u32 acpi_id)
 +{
-+	int cpu, max = nr_cpu_ids;
++	int cpu;
 +
-+	/* The boot CPU must be set before MADT/MPTABLE parsing happens */
-+	if (cpuid_to_apicid[0] == BAD_APICID)
-+		panic("Boot CPU APIC not registered yet\n");
-+
-+	if (apicid == boot_cpu_physical_apicid)
-+		return 0;
-+
-+	if (disabled_cpu_apicid == apicid) {
-+		int thiscpu = num_processors + disabled_cpus;
-+
-+		pr_warn("APIC: Disabling requested cpu. Processor %d/0x%x ignored.\n",
-+			thiscpu, apicid);
-+
-+		disabled_cpus++;
-+		return -ENODEV;
-+	}
-+
-+	if (num_processors >= nr_cpu_ids) {
-+		int thiscpu = max + disabled_cpus;
-+
-+		pr_warn("APIC: NR_CPUS/possible_cpus limit of %i reached. "
-+			"Processor %d/0x%x ignored.\n", max, thiscpu, apicid);
-+
-+		disabled_cpus++;
++	if (apic_id >= MAX_LOCAL_APIC)
 +		return -EINVAL;
-+	}
 +
-+	cpu = allocate_logical_cpuid(apicid);
++	cpu = topo_lookup_cpuid(apic_id);
 +	if (cpu < 0) {
-+		disabled_cpus++;
-+		return -EINVAL;
++		cpu = generic_processor_info(apic_id);
++		if (cpu >= 0)
++			per_cpu(x86_cpu_to_acpiid, cpu) = acpi_id;
 +	}
-+
-+	cpu_update_apic(cpu, apicid);
 +	return cpu;
 +}
 +
-+static int __init apic_set_disabled_cpu_apicid(char *arg)
++/**
++ * topology_hotunplug_apic - Remove a physical hotplugged APIC after boot
++ * @cpu:	The CPU number for which the APIC ID is removed
++ */
++void topology_hotunplug_apic(unsigned int cpu)
 +{
-+	if (!arg || !get_option(&arg, &disabled_cpu_apicid))
-+		return -EINVAL;
++	u32 apic_id = cpuid_to_apicid[cpu];
 +
-+	return 0;
++	if (apic_id == BAD_APICID)
++		return;
++
++	per_cpu(x86_cpu_to_apicid, cpu) = BAD_APICID;
++	clear_bit(apic_id, phys_cpu_present_map);
++	set_cpu_present(cpu, false);
++	num_processors--;
 +}
-+early_param("disable_cpu_apicid", apic_set_disabled_cpu_apicid);
-
++#endif
++
+ static int __init apic_set_disabled_cpu_apicid(char *arg)
+ {
+ 	if (!arg || !get_option(&arg, &disabled_cpu_apicid))
 
 
 
