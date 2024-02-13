@@ -1,207 +1,150 @@
-Return-Path: <linux-kernel+bounces-63130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4265B852B50
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:39:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA548852B57
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:40:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAF11B209E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:39:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C6091F23EAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF921AAD0;
-	Tue, 13 Feb 2024 08:39:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C751B599;
+	Tue, 13 Feb 2024 08:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nq+FAIFG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="FqR3nORj";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AQiCdoC+"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E985318026;
-	Tue, 13 Feb 2024 08:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0848118AED;
+	Tue, 13 Feb 2024 08:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707813546; cv=none; b=MhQ2f/JsYWLSWtDp+3bU6FobzO0dscvGpCQozwMMOj+aqezwwj+v6onr2ZvNyW5+A8syGf79OQn0u855smNcsqvOjDhUACUfTXLR4TCJLShucgYzKJHfv3d9nIDddfPgwGx/RgrirJ5YZQqAuFWAYTjPMO/ZBTrZlDSTm8jQCxg=
+	t=1707813599; cv=none; b=a5Kot4nBSZ236qLHd2olGt2dK9nL0u9IqijClLlCgZlgAzB87ta8cJP7we6lylyWRHJusr73P0smYht7pfQSaGBMZmhkrdUHbEMAS06rtfj02pSF2d0xqUiJSx5Hrswnz/PPC3MNtxkn+rNHtnjMaqLwUElh6kXqEYZI6pBNdN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707813546; c=relaxed/simple;
-	bh=EW4hyg6ywuwUU3ETBIP6P9hAzw5rF+JafXM/qqClrws=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=avs1y9JDav9cQD5zsRLTMUBxkDPAOs3zyUFHxzAUysHsG58QlO3JT1W3zWdul7qKmur+MMBSWvetj32PgkP4gXv6MYO/e2vqimmpdvxkOdMMVWRpOxkhZRcNvwhlp71RDGMjEbbAJGcW6Q+jg5D8w75ntp1nf76l9hMonwTQimI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nq+FAIFG; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707813545; x=1739349545;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=EW4hyg6ywuwUU3ETBIP6P9hAzw5rF+JafXM/qqClrws=;
-  b=Nq+FAIFGZ+vbGpaspxZZQWfqyNugROV6PtXFRLG/ecZM05I1/hnl5Pch
-   1RfZ+UCB4q1eY0D1957NvXPYbXm1dN0/NHh1y3Na4VTGMVkqeZ4GUQSNQ
-   FzuqXLKQ+CmnNYP2uFwgegqjOUA1fH/lfeM38NOhD0qF92noIQkCoigF8
-   28JL7YE2j7XLam03dRHI4NiiDeWnBPpAq5j3bOjFZ/GHAQuTkzs0ucVTT
-   IayjMpdrHnakqd9B6+uKfNjOLjOvrVsK7KWA/U/Jt1jBfJbAxL5oUxWnW
-   03GgYBbZTd3mldytNV4biVsnNmBs4ohpCeBeqKIsUhk2qGofs3scxjyxR
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="5629257"
-X-IronPort-AV: E=Sophos;i="6.06,156,1705392000"; 
-   d="scan'208";a="5629257"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 00:39:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="826052613"
-X-IronPort-AV: E=Sophos;i="6.06,156,1705392000"; 
-   d="scan'208";a="826052613"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga001.jf.intel.com with SMTP; 13 Feb 2024 00:38:57 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Tue, 13 Feb 2024 10:38:56 +0200
-Date: Tue, 13 Feb 2024 10:38:56 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Sebastian Wick <sebastian.wick@redhat.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>,
-	Sandy Huang <hjc@rock-chips.com>,
-	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: Re: Re: Re: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add
- Broadcast RGB property
-Message-ID: <ZcsqoPCJDjA5PJUF@intel.com>
-References: <20240115143720.GA160656@toolbox>
- <73peztbeeikb3fg6coxu3punxllgtyrmgco34tnxkojtsjbr3s@26bud3sjbcez>
- <Zb0M_2093UwPXK8y@intel.com>
- <hez2m57ogqx3yyqk45tzdkvxvhrbdepgm244i4m2aty2xhf5b5@acqgvmxhmmvr>
- <Zb0aYAapkxQ2kopt@intel.com>
- <zml6j27skvjmbrfyz7agy5waxajv4p4asbemeexelm3wuv4o7j@xkd2wvnxhbuc>
- <20240209203435.GB996172@toolbox>
- <ahfl6f72lpgpsbnrbgvbsh4db4npr2hh36kua2c6krh544hv5r@dndw4hz2mu2g>
- <Zco-DQaXqae7B1jt@intel.com>
- <yx2t7xltxxgsngdsxamsfq6y7dze3wzegxcqwmsb5yrxen73x6@u3vilqhpci4w>
+	s=arc-20240116; t=1707813599; c=relaxed/simple;
+	bh=FUVFlKXHErfQHwVS12HqcrL/BlrR/XNwXJub9R1UUnU=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=G7v+x5ePbIRzfpmjiH/NMnjre8W212Ezmb0GrFQeTiO0qVDgKCKIcWDxwjKHn/fV4K2F8Vc3NlnetDz3taVy/xJaBXK6XKjSciWXCxDcL+UIFMuJ4BBAhPL9dHfJTfGnBm8GSbVZ5Cy8PXXlGrCdg/BxLK4z0gMzvB5TiLpb/KU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=FqR3nORj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AQiCdoC+; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 13 Feb 2024 08:39:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707813589;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/ormm+PHwLi/CeFwP1A2naAwgJmnQBsAxeCyqCbJneM=;
+	b=FqR3nORjlwLo57t5FFCrDcJZrZ4kYwEPfnB3zBdljb27/X2S0xX2X5N9SihSn1NQc9+p9m
+	12UEu3gOC/PC2sb6lV3CuXbn8mqNt8AMMAPV3WNrfbZEI8XcwJ9zIhvPidWnUoUFqjOGuQ
+	+8U7Cm4V92KF+hRjVZgBSudaUg2Duvu0F5iiDiuXePDzd/mFQB9Jyhfid2cYIrHswjx/rD
+	hAfHK/1MqrD+uuYJ3rcd0ls5zadun6mlaxl0VtpKH1LYRHZQEibyq/5ZfSkL7rT7K12TVb
+	+ttOU/0+i2PePC6ldcfzwpvzrfj42b+AE8+Tjxg7IyrIGuVci29LO/ONtE/VTg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707813589;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/ormm+PHwLi/CeFwP1A2naAwgJmnQBsAxeCyqCbJneM=;
+	b=AQiCdoC+rhHsjRbWwMJIAPgzekYzRRp3O89tm1Qz4JWgVsOPYnTU2xrjeKYHUV6+j9Tvbq
+	10p9R4wWT1wFTHBg==
+From: "tip-bot2 for Doug Berger" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] irqchip/irq-brcmstb-l2: Add write memory barrier
+ before exit
+Cc: Doug Berger <opendmb@gmail.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>,
+ stable@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240210012449.3009125-1-florian.fainelli@broadcom.com>
+References: <20240210012449.3009125-1-florian.fainelli@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <yx2t7xltxxgsngdsxamsfq6y7dze3wzegxcqwmsb5yrxen73x6@u3vilqhpci4w>
-X-Patchwork-Hint: comment
+Message-ID: <170781358867.398.2362878690950793714.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 12, 2024 at 05:53:48PM +0100, Maxime Ripard wrote:
-> On Mon, Feb 12, 2024 at 05:49:33PM +0200, Ville Syrjälä wrote:
-> > On Mon, Feb 12, 2024 at 11:01:07AM +0100, Maxime Ripard wrote:
-> > > On Fri, Feb 09, 2024 at 09:34:35PM +0100, Sebastian Wick wrote:
-> > > > On Mon, Feb 05, 2024 at 10:39:38AM +0100, Maxime Ripard wrote:
-> > > > > On Fri, Feb 02, 2024 at 06:37:52PM +0200, Ville Syrjälä wrote:
-> > > > > > On Fri, Feb 02, 2024 at 04:59:30PM +0100, Maxime Ripard wrote:
-> > > > > > > On Fri, Feb 02, 2024 at 05:40:47PM +0200, Ville Syrjälä wrote:
-> > > > > > > > On Fri, Feb 02, 2024 at 02:01:39PM +0100, Maxime Ripard wrote:
-> > > > > > > > > Hi,
-> > > > > > > > > 
-> > > > > > > > > On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebastian Wick wrote:
-> > > > > > > > > > > >  /**
-> > > > > > > > > > > >   * DOC: HDMI connector properties
-> > > > > > > > > > > >   *
-> > > > > > > > > > > > + * Broadcast RGB
-> > > > > > > > > > > > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
-> > > > > > > > > > > > + *      Infoframes will be generated according to that value.
-> > > > > > > > > > > > + *
-> > > > > > > > > > > > + *      The value of this property can be one of the following:
-> > > > > > > > > > > > + *
-> > > > > > > > > > > > + *      Automatic:
-> > > > > > > > > > > > + *              RGB Range is selected automatically based on the mode
-> > > > > > > > > > > > + *              according to the HDMI specifications.
-> > > > > > > > > > > > + *
-> > > > > > > > > > > > + *      Full:
-> > > > > > > > > > > > + *              Full RGB Range is forced.
-> > > > > > > > > > > > + *
-> > > > > > > > > > > > + *      Limited 16:235:
-> > > > > > > > > > > > + *              Limited RGB Range is forced. Unlike the name suggests,
-> > > > > > > > > > > > + *              this works for any number of bits-per-component.
-> > > > > > > > > > > > + *
-> > > > > > > > > > > > + *      Drivers can set up this property by calling
-> > > > > > > > > > > > + *      drm_connector_attach_broadcast_rgb_property().
-> > > > > > > > > > > > + *
-> > > > > > > > > > > 
-> > > > > > > > > > > This is a good time to document this in more detail. There might be two
-> > > > > > > > > > > different things being affected:
-> > > > > > > > > > > 
-> > > > > > > > > > > 1. The signalling (InfoFrame/SDP/...)
-> > > > > > > > > > > 2. The color pipeline processing
-> > > > > > > > > > > 
-> > > > > > > > > > > All values of Broadcast RGB always affect the color pipeline processing
-> > > > > > > > > > > such that a full-range input to the CRTC is converted to either full- or
-> > > > > > > > > > > limited-range, depending on what the monitor is supposed to accept.
-> > > > > > > > > > > 
-> > > > > > > > > > > When automatic is selected, does that mean that there is no signalling,
-> > > > > > > > > > > or that the signalling matches what the monitor is supposed to accept
-> > > > > > > > > > > according to the spec? Also, is this really HDMI specific?
-> > > > > > > > > > > 
-> > > > > > > > > > > When full or limited is selected and the monitor doesn't support the
-> > > > > > > > > > > signalling, what happens?
-> > > > > > > > > > 
-> > > > > > > > > > Forgot to mention: user-space still has no control over RGB vs YCbCr on
-> > > > > > > > > > the cable, so is this only affecting RGB? If not, how does it affect
-> > > > > > > > > > YCbCr?
-> > > > > > > > > 
-> > > > > > > > > So I dug a bit into both the i915 and vc4 drivers, and it looks like if
-> > > > > > > > > we're using a YCbCr format, i915 will always use a limited range while
-> > > > > > > > > vc4 will follow the value of the property.
-> > > > > > > > 
-> > > > > > > > The property is literally called "Broadcast *RGB*".
-> > > > > > > > That should explain why it's only affecting RGB.
-> > > > > > > 
-> > > > > > > Right. And the limited range option is called "Limited 16:235" despite
-> > > > > > > being usable on bpc > 8 bits. Naming errors occurs, and history happens
-> > > > > > > to make names inconsistent too, that's fine and not an argument in
-> > > > > > > itself.
-> > > > > > > 
-> > > > > > > > Full range YCbCr is a much rarer beast so we've never bothered
-> > > > > > > > to enable it.
-> > > > > > > 
-> > > > > > > vc4 supports it.
-> > > > > > 
-> > > > > > Someone implemented it incorrectly then.
-> > > > > 
-> > > > > Incorrectly according to what documentation / specification? I'm sorry,
-> > > > > but I find it super ironic that i915 gets to do its own thing, not
-> > > > > document any of it, and when people try to clean things up they get told
-> > > > > that we got it all wrong.
-> > > > 
-> > > > FWIW, this was an i915 property and if another driver uses the same
-> > > > property name it must have the same behavior. Yes, it isn't standardized
-> > > > and yes, it's not documented (hence this effort here) but it's still on
-> > > > vc4 to make the property compatible.
-> > > 
-> > > How is it not compatible? It's a superset of what i915 provides, but
-> > > it's strictly compatible with it.
-> > 
-> > No it is not.
-> 
-> The property is compatible with i915 interpretation of it, whether you
-> like it or not. And that's what Sebastian was referring to.
-> 
-> > Eg. what happens if you set the thing to full range for RGB (which you
-> > must on many broken monitors), and then the kernel automagically
-> > switches to YCbCr (for whatever reason) but the monitor doesn't
-> > support full range YCbCr? Answer: you get crap output.
-> 
-> And that part is just moving goalposts.
+The following commit has been merged into the irq/urgent branch of tip:
 
-No. Allowing users to get correct colors with broken displays
-is the sole reason why this property even exists.
+Commit-ID:     b0344d6854d25a8b3b901c778b1728885dd99007
+Gitweb:        https://git.kernel.org/tip/b0344d6854d25a8b3b901c778b1728885dd99007
+Author:        Doug Berger <opendmb@gmail.com>
+AuthorDate:    Fri, 09 Feb 2024 17:24:49 -08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 13 Feb 2024 09:33:31 +01:00
 
--- 
-Ville Syrjälä
-Intel
+irqchip/irq-brcmstb-l2: Add write memory barrier before exit
+
+It was observed on Broadcom devices that use GIC v3 architecture L1
+interrupt controllers as the parent of brcmstb-l2 interrupt controllers
+that the deactivation of the parent interrupt could happen before the
+brcmstb-l2 deasserted its output. This would lead the GIC to reactivate the
+interrupt only to find that no L2 interrupt was pending. The result was a
+spurious interrupt invoking handle_bad_irq() with its associated
+messaging. While this did not create a functional problem it is a waste of
+cycles.
+
+The hazard exists because the memory mapped bus writes to the brcmstb-l2
+registers are buffered and the GIC v3 architecture uses a very efficient
+system register write to deactivate the interrupt.
+
+Add a write memory barrier prior to invoking chained_irq_exit() to
+introduce a dsb(st) on those systems to ensure the system register write
+cannot be executed until the memory mapped writes are visible to the
+system.
+
+[ florian: Added Fixes tag ]
+
+Fixes: 7f646e92766e ("irqchip: brcmstb-l2: Add Broadcom Set Top Box  Level-2 interrupt controller")
+Signed-off-by: Doug Berger <opendmb@gmail.com>
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20240210012449.3009125-1-florian.fainelli@broadcom.com
+---
+ drivers/irqchip/irq-brcmstb-l2.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/irq-brcmstb-l2.c b/drivers/irqchip/irq-brcmstb-l2.c
+index 5559c94..2b0b317 100644
+--- a/drivers/irqchip/irq-brcmstb-l2.c
++++ b/drivers/irqchip/irq-brcmstb-l2.c
+@@ -2,7 +2,7 @@
+ /*
+  * Generic Broadcom Set Top Box Level 2 Interrupt controller driver
+  *
+- * Copyright (C) 2014-2017 Broadcom
++ * Copyright (C) 2014-2024 Broadcom
+  */
+ 
+ #define pr_fmt(fmt)	KBUILD_MODNAME	": " fmt
+@@ -112,6 +112,9 @@ static void brcmstb_l2_intc_irq_handle(struct irq_desc *desc)
+ 		generic_handle_domain_irq(b->domain, irq);
+ 	} while (status);
+ out:
++	/* Don't ack parent before all device writes are done */
++	wmb();
++
+ 	chained_irq_exit(chip, desc);
+ }
+ 
 
