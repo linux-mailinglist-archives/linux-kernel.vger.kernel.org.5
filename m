@@ -1,110 +1,85 @@
-Return-Path: <linux-kernel+bounces-63730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD8CA8533C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:56:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D5C08533C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:56:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7917128CAF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:56:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AC9C1F2C4AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D915FB90;
-	Tue, 13 Feb 2024 14:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E4A5EE7F;
+	Tue, 13 Feb 2024 14:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KYTVHJp3"
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="rfyQAM/O"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFBA5FB81
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C702057873;
+	Tue, 13 Feb 2024 14:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707836120; cv=none; b=fVl+LLd4Ix9ote2beqTKobNb3VyboCGT16s6YyP8tckhc6AJf295ehdFb0zOIIF1XzvIItfNG+oZ5I9NdWWAUJpcpVIdJmKGeGAf6ouXFNvYKfiYzRxLagQerwuBCxysHJCplGzG8V0LXPXFxpNO4uyYiEdsdeVuSxeJHE5ryW0=
+	t=1707836088; cv=none; b=q33zg6qwpX5TmhXhJXurJzq03mchHfvv98Narv3/2TWFLm4+Fgg8f56CFxa8CVWOimHTjEKYNdQS0IkpH4LY/qHW/sg5t73kEMnhyQbHLsVgd/nNyhNNxPN0xCaF0yUCh5sZXiuB4SOXIA93h5AzvLe3mZNeJ2mXtnvCc6O6+54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707836120; c=relaxed/simple;
-	bh=pbQ9YJSw5E0+ttHRSXOOHeePYtcyL9fOOfJ+pMzPZjw=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=q9sfuDGrmzM+QjQLsP2apgLMlPpTLPtcRCvcuo5ifXX1uGEG/yQC5eEatNFvRZySBZOxNw7miISO5MjfCKgy9UU236KYD4FonuoqQCo6++yx2bLrm6nmSSCLuDkaIP9vIJ8UMwMjj3UyJE5LvZHzbVjsxE8KCRHj/2+cejOq3rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KYTVHJp3; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707836115;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=odYQg0X9p03RWw1VAUk5+w53bWUrUJQlPaSag6Pv+fw=;
-	b=KYTVHJp3bZ4HyXSa9gVUA7hxufisU/fPUeL6G7jUuLNTFkA3o2EphAGK6sIdAS3pHd1Lcl
-	D8+S9dbL//Ecx9d2IEUQN2TwTFketNEQ1ZSC46SW7H0oCvZdkaeICRdoYwZtJLsUPfay7y
-	E3sVn7QZdsvgvCcd3ijFrW1zjH8362s=
+	s=arc-20240116; t=1707836088; c=relaxed/simple;
+	bh=M/B+3yw64jbG6sFisbulB5VVpBChPxrc3SPUXNhkWiA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mPWIcOy0ua8YI7Fc5Yl6s9FxwWEj9cYyM9ZjMbWJyiI2ASLDegjXGT36tfvzqCCiF8z+xFZ52rWdL94RryNhW3BF+/k7+g2aIyUqzj1OWpaci9B+WMCSE4ic5rh3a2+bUY2Slptoi+Lkf+UfcvR18WQcZ8uRvJhBY6lXaQVJ8vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=rfyQAM/O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98077C433C7;
+	Tue, 13 Feb 2024 14:54:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707836088;
+	bh=M/B+3yw64jbG6sFisbulB5VVpBChPxrc3SPUXNhkWiA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rfyQAM/Oau8KINFZBl3gA4Bu4iUCvDZgr+F8N8k59QnUii4xQRcOW9C6XRUQAO6xf
+	 WuLgQ3ZCto8hbVW9ciwakU3F3aITes1//fGc58/jomutcCwJFWgA/+sSyWmdpMPJBz
+	 b1GIdanQsvvyTnhPIbVzJhZgXbQ/Vmpsgd44AoCE=
+Date: Tue, 13 Feb 2024 15:54:44 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: kovalev@altlinux.org
+Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org, u.kleine-koenig@pengutronix.de,
+	a.firago@yadro.com, sashal@kernel.org, zhuning0077@gmail.com,
+	tiwai@suse.com, perex@perex.cz, broonie@kernel.org,
+	lgirdwood@gmail.com
+Subject: Re: [PATCH 6.1.y 0/7] ASoC: codecs: es8326: fix support
+Message-ID: <2024021335-mourner-impurity-82bd@gregkh>
+References: <20240130094708.290485-1-kovalev@altlinux.org>
+ <2024020205-suffering-paparazzi-8a49@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH v1 2/2] hugetlb: process multiple lists in
- gather_bootmem_prealloc_parallel
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20240213111347.3189206-3-gang.li@linux.dev>
-Date: Tue, 13 Feb 2024 22:54:40 +0800
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Steffen Klassert <steffen.klassert@secunet.com>,
- Daniel Jordan <daniel.m.jordan@oracle.com>,
- Jane Chu <jane.chu@oracle.com>,
- "Paul E . McKenney" <paulmck@kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>,
- kernel test robot <lkp@intel.com>,
- Gang Li <ligang.bdlg@bytedance.com>,
- linux-kernel@vger.kernel.org,
- linux-mm@kvack.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <1B2A09F0-8F2B-426A-9D1D-6A39C3A6CF64@linux.dev>
-References: <20240213111347.3189206-1-gang.li@linux.dev>
- <20240213111347.3189206-3-gang.li@linux.dev>
-To: Gang Li <gang.li@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024020205-suffering-paparazzi-8a49@gregkh>
 
+On Fri, Feb 02, 2024 at 05:13:50PM -0800, Greg KH wrote:
+> On Tue, Jan 30, 2024 at 12:47:01PM +0300, kovalev@altlinux.org wrote:
+> > These patches were backported from v6.6 upstream and
+> > are intended for 6.1.y stable kernel.
+> > 
+> > Patches have been successfully tested on the latest 6.1.75 kernel.
+> > 
+> > [PATCH 6.1.y 1/7] ASoC: codecs: es8326: Convert to i2c's .probe_new()
+> > [PATCH 6.1.y 2/7] ASoC: codecs: ES8326: Add es8326_mute function
+> > [PATCH 6.1.y 3/7] ASoC: codecs: ES8326: Change Hp_detect register names
+> > [PATCH 6.1.y 4/7] ASoC: codecs: ES8326: Change Volatile Reg function
+> > [PATCH 6.1.y 5/7] ASoC: codecs: ES8326: Fix power-up sequence
+> > [PATCH 6.1.y 6/7] ASOC: codecs: ES8326: Add calibration support for
+> > [PATCH 6.1.y 7/7] ASoC: codecs: ES8326: Update jact detection function
+> > 
+> > 
+> 
+> What exactly is being "fixed" here?  Was the driver not working properly
+> in 5.15?  What broke in 6.1?  Or has this hardware just never worked?
+> 
+> These all don't seem to be fixes, so what is the need for these?
 
-
-> On Feb 13, 2024, at 19:13, Gang Li <gang.li@linux.dev> wrote:
-> 
-> gather_bootmem_prealloc_node currently only process one list in
-> huge_boot_pages array. So gather_bootmem_prealloc expects
-> padata_do_multithreaded to run num_node_state(N_MEMORY) instances of
-> gather_bootmem_prealloc_node to process all lists in huge_boot_pages.
-> 
-> This works well in current padata_do_multithreaded implementation.
-> It guarantees that size/min_chunk <= thread num <= max_threads.
-> 
-> ```
-> /* Ensure at least one thread when size < min_chunk. */
-> nworks = max(job->size / max(job->min_chunk, job->align), 1ul);
-> nworks = min(nworks, job->max_threads);
-> 
-> ps.nworks      = padata_work_alloc_mt(nworks, &ps, &works);
-> ```
-> 
-> However, the comment of padata_do_multithreaded API only promises a
-> maximum value for the number of threads and does not specify a
-> minimum value. Which may pass multiple nodes to
-> gather_bootmem_prealloc_node and only one node will be processed.
-> 
-> To avoid potential errors, introduce gather_bootmem_prealloc_parallel
-> to handle the case where the number of threads does not meet the
-> requirement of max_threads.
-> 
-> Fixes: 0306f03dcbd7 ("hugetlb: parallelize 1G hugetlb initialization")
-> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
-
-Reviewed-by: Muchun Song <muchun.song@linux.dev>
-
-Thanks.
-
+Dropped from my queues due to lack of response :(
 
