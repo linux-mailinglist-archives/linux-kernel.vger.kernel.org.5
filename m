@@ -1,247 +1,289 @@
-Return-Path: <linux-kernel+bounces-63541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B27A8530FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DC05853104
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53038283F79
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:56:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4482328A35C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DEC482EE;
-	Tue, 13 Feb 2024 12:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B1643ADC;
+	Tue, 13 Feb 2024 12:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jbiwsb5U";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="GAEUyXMj";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jbiwsb5U";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="GAEUyXMj"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nDEXEzVG"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB43383AE;
-	Tue, 13 Feb 2024 12:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A9739FF0
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707828984; cv=none; b=H1H/0BZzPKD9Jb2VLQB2TmzjAFHJlpIHOP4aISKBsqKGFgaZrx1v0N43uyjaLgffqcj531Ag5mbrHPxBYLrAn8Pkq8sJPbMF3++B/rDgxa19aqvac4TF2WCukSy68iNXo7SOtM79qWwBf8R5nUB/jt5+n4h6f7M2WKvyZp8R8pY=
+	t=1707829067; cv=none; b=pm+ikB+ucVXrHgDXUKM/+YtoCckYHfJnUUenWIqaZw0hHWZB8OvWVBPPIsUml7cUiHb5HyivE7xVOY9yuWtpTzVutEZ61rloPLcOhhGtD6cmljB+fiJ0IPOt1jHEvOu0cKTEdAkh7ZGF4eVDQ2XrcKAwEwY5//F1HxFLkdPD60I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707828984; c=relaxed/simple;
-	bh=t1x649ig19aP6KHbfZwn5EC4H55tmsOlY9ADZyGqX1A=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=npyCXFbGRKvjdH6LPQbxij47OH63z9Gc3DKOVJcPCAqBj2G6EtVJJ3LxBZvGlbmy1cRolAMGA9BnQl/9N+ivTn4PajnINN4hoG/edvsIuLI+X/r2+K4noTMF4aD99OIOea27w6mO3GkvpgOLbTLwyC/z55WWVrq86orxxLUesI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jbiwsb5U; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=GAEUyXMj; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jbiwsb5U; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=GAEUyXMj; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C408C21CCD;
-	Tue, 13 Feb 2024 12:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707828980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XZxzAm1AtsNglX5/RVCycu9VVDNzxxqqfa1iuH8Lttc=;
-	b=jbiwsb5U8m7im9qAiRpvb7++489pbODKjl1JF+wwF12q+/e4CYLSHODtnGpOZdQtYFmshF
-	hUc5d1ap0fc9br1cuQXMcPfcYcbowBlfD3R+M9HH4b5/ays5fUW1bJQ6v0hOoVLeuovvUE
-	ZFUYyUcK3kYsvtPiE0OzVWJoyVZTXW4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707828980;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XZxzAm1AtsNglX5/RVCycu9VVDNzxxqqfa1iuH8Lttc=;
-	b=GAEUyXMjAaktrXRIIkJcP8QJbCBrdb3DUt1ZgdEOziHmva61PThKob1XNQlgHs/fDGCQvB
-	RWQrZgWFvUTg/2Cw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707828980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XZxzAm1AtsNglX5/RVCycu9VVDNzxxqqfa1iuH8Lttc=;
-	b=jbiwsb5U8m7im9qAiRpvb7++489pbODKjl1JF+wwF12q+/e4CYLSHODtnGpOZdQtYFmshF
-	hUc5d1ap0fc9br1cuQXMcPfcYcbowBlfD3R+M9HH4b5/ays5fUW1bJQ6v0hOoVLeuovvUE
-	ZFUYyUcK3kYsvtPiE0OzVWJoyVZTXW4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707828980;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XZxzAm1AtsNglX5/RVCycu9VVDNzxxqqfa1iuH8Lttc=;
-	b=GAEUyXMjAaktrXRIIkJcP8QJbCBrdb3DUt1ZgdEOziHmva61PThKob1XNQlgHs/fDGCQvB
-	RWQrZgWFvUTg/2Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9892413404;
-	Tue, 13 Feb 2024 12:56:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6YyyI/Rmy2XxEAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 13 Feb 2024 12:56:20 +0000
-Date: Tue, 13 Feb 2024 13:56:20 +0100
-Message-ID: <87il2sy13f.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Curtis Malainey <cujomalainey@chromium.org>,
-	Dmitry Antipov <dmantipov@yandex.ru>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH] ALSA: fix function cast warnings
-In-Reply-To: <20240213101020.459183-1-arnd@kernel.org>
-References: <20240213101020.459183-1-arnd@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1707829067; c=relaxed/simple;
+	bh=Ho1Qa1Jy8ZOgz+lsF+HOczsTKU1zq5l3pgHCZ0HnWV4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=q61xPbvnGaVdLh+32ij8fpx09CQ51231plu3PzJk6ukMihFkUwQjgqyQt0x2wkP+WTNwxpwdEgmFtQ6WzfXw4MSPEdhso5uMu/NFZJJreQWLsq8KNGnIqacTvOZ+ONdJXGEc7IykWf7kgCMNGL+uCDglS8dRm4WOD6oJ9Sbdnpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nDEXEzVG; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcd1779adbeso465525276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:57:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707829064; x=1708433864; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Umi4A1gRJfLDzJlbzZAb6wHjrA4iMhaSTJrxE4a8GCU=;
+        b=nDEXEzVG2Ne+OwtGylcp16O3Qb0hJawaEPQvD3ERepDtGZnaubEs++n1uG4INlTERi
+         FSgl6njEbxrqQS0IUBeBJRTpiaRNG/HPgioUtNMsZRVJz+BMYe++QOOOshVqska7NPee
+         TYJGidz99IEWY6tHHDV+yqltCPsk/vGj/mh7OJZxOtXlgKWGwkmgSG6C1MHklQkNmCd+
+         bQHe+mb0Ffq4oUqDfF+I9PqdLsbGRIdAg+W/RLsmnRAjwt1QRanyCUyKUWAChpKcUpta
+         kl5xj2xQKTfAYw9QK7UTOaMj84rXT3L4vG5RSSdNMOr0Lz+FDYuxGCE5CKN/Gutv3/r3
+         7AIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707829064; x=1708433864;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Umi4A1gRJfLDzJlbzZAb6wHjrA4iMhaSTJrxE4a8GCU=;
+        b=iEX99hojcCCwLYE4YMyZ99CwOXau06KlSSCSIq0MGjd1f2er8QpuNXFrWDB51k9MTk
+         cH43y43XHGGcll5iwu4fqNN3OUJ8G+s53m3TWGrQIX6+8hBnvVDNnKbbH8jvkTfinyDY
+         W36eCBBScTKt5bi0sc0wUKQlYFuC74Dt0djsd84Zwun+nqyb5SF41h+EwdSSqMvWOpRv
+         OJ7V+WNSWTIBDXom66O9SrM+ANTI7u/6QyxP8+Wretat1v/xtTx+od2Kve/qY3Eu7m0V
+         pIIB2gpbTUspcH5oDN50800oCwJHZLv2wlEkH5aI7LjpndftGVjrHkgjl34P6TVUtdy6
+         tVaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXSvueHc5t+h83s80Me+H2OF8/HTryehOAhYpvdIUF3x8mOGHIETMoxJDAWD+tb9clXMTvKAypqqmD2Bq9X1ClqWksNi/qP//91GBru
+X-Gm-Message-State: AOJu0Yx4t/COVKbtdxes/ejIe4zQmmF/hRlXhoah0hFav8FUJxg5Y9ro
+	y+6ZxSPsmwt5tCTP/4QFktZ3Ip0XVmXvZ3V6uXpjcfvhnXJHHL3RW8Er6tCsZZGjBeiky5IFAN6
+	2HwYxyNLd7AELBET95A==
+X-Google-Smtp-Source: AGHT+IFMfKkTkzGgWixRu1kUKYdF5213MuinjX0UAfDLUTqb0In8qLrCEBA7jEhX6iMEAmRyWv8ldqsacZuywuXq
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:1106:b0:dc7:9218:df47 with
+ SMTP id o6-20020a056902110600b00dc79218df47mr1645904ybu.5.1707829064544; Tue,
+ 13 Feb 2024 04:57:44 -0800 (PST)
+Date: Tue, 13 Feb 2024 12:57:42 +0000
+In-Reply-To: <20240210-zswap-global-lru-v1-1-853473d7b0da@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.30
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[yandex.ru];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[perex.cz,suse.com,arndb.de,kernel.org,google.com,chromium.org,yandex.ru,vger.kernel.org,lists.linux.dev];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Mime-Version: 1.0
+References: <20240210-zswap-global-lru-v1-0-853473d7b0da@bytedance.com> <20240210-zswap-global-lru-v1-1-853473d7b0da@bytedance.com>
+Message-ID: <ZctnRnNMOwQNn_3j@google.com>
+Subject: Re: [PATCH 1/2] mm/zswap: global lru and shrinker shared by all zswap_pools
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, 13 Feb 2024 11:09:56 +0100,
-Arnd Bergmann wrote:
+On Sun, Feb 11, 2024 at 01:57:04PM +0000, Chengming Zhou wrote:
+> Dynamic zswap_pool creation may create/reuse to have multiple
+> zswap_pools in a list, only the first will be current used.
 > 
-> From: Arnd Bergmann <arnd@arndb.de>
+> Each zswap_pool has its own lru and shrinker, which is not
+> necessary and has its problem:
 > 
-> clang-16 points out a control flow integrity (kcfi) issue when event
-> callbacks get converted to incompatible types:
+> 1. When memory has pressure, all shrinker of zswap_pools will
+>    try to shrink its own lru, there is no order between them.
 > 
-> sound/core/seq/seq_midi.c:135:30: error: cast from 'int (*)(struct snd_rawmidi_substream *, const char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
->   135 |                 snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
->       |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> sound/core/seq/seq_virmidi.c:83:31: error: cast from 'int (*)(struct snd_rawmidi_substream *, const unsigned char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
->    83 |                         snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
->       |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 2. When zswap limit hit, only the last zswap_pool's shrink_work
+>    will try to shrink its lru, which is inefficient.
 > 
-> Change these both to take a 'const void *' buffer and a 'void *' context,
-> converting to the respective types in the callee. The change to 'const'
-> buffers propagates to a couple of other functions.
+> Anyway, having a global lru and shrinker shared by all zswap_pools
+> is better and efficient.
+
+It is also a great simplification.
+
 > 
-> The code was originally added with the initial ALSA merge in linux-2.5.4.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 > ---
->  include/sound/rawmidi.h            | 3 +--
->  include/sound/seq_kernel.h         | 2 +-
->  sound/core/rawmidi.c               | 6 +++---
->  sound/core/seq/oss/seq_oss_readq.c | 4 ++--
->  sound/core/seq/oss/seq_oss_readq.h | 2 +-
->  sound/core/seq/seq_memory.c        | 4 ++--
->  sound/core/seq/seq_midi.c          | 5 +++--
->  sound/core/seq/seq_virmidi.c       | 2 +-
->  8 files changed, 14 insertions(+), 14 deletions(-)
+>  mm/zswap.c | 153 ++++++++++++++++++++++---------------------------------------
+>  1 file changed, 55 insertions(+), 98 deletions(-)
 > 
-> diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
-> index f31cabf0158c..91947fb16e07 100644
-> --- a/include/sound/rawmidi.h
-> +++ b/include/sound/rawmidi.h
-> @@ -161,8 +161,7 @@ int snd_rawmidi_free(struct snd_rawmidi *rmidi);
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 62fe307521c9..7668db8c10e3 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -176,14 +176,17 @@ struct zswap_pool {
+>  	struct kref kref;
+>  	struct list_head list;
+>  	struct work_struct release_work;
+> -	struct work_struct shrink_work;
+>  	struct hlist_node node;
+>  	char tfm_name[CRYPTO_MAX_ALG_NAME];
+> +};
+> +
+> +struct {
+
+static?
+
+>  	struct list_lru list_lru;
+> -	struct mem_cgroup *next_shrink;
+> -	struct shrinker *shrinker;
+
+Just curious, any reason to change the relative ordering of members
+here? It produces a couple more lines of diff :)
+
+>  	atomic_t nr_stored;
+> -};
+> +	struct shrinker *shrinker;
+> +	struct work_struct shrink_work;
+> +	struct mem_cgroup *next_shrink;
+> +} zswap;
 >  
->  /* callbacks */
+>  /*
+>   * struct zswap_entry
+> @@ -301,9 +304,6 @@ static void zswap_update_total_size(void)
+>  * pool functions
+>  **********************************/
 >  
-> -int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
-> -			const unsigned char *buffer, int count);
-> +int snd_rawmidi_receive(void *ptr, const void *buffer, int count);
+> -static void zswap_alloc_shrinker(struct zswap_pool *pool);
+> -static void shrink_worker(struct work_struct *w);
+> -
+>  static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
+>  {
+>  	int i;
+> @@ -353,30 +353,16 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
+>  	if (ret)
+>  		goto error;
+>  
+> -	zswap_alloc_shrinker(pool);
+> -	if (!pool->shrinker)
+> -		goto error;
+> -
+> -	pr_debug("using %s compressor\n", pool->tfm_name);
+> -
 
-If it were only about the type of the buffer argument being a void
-pointer, it's fine.  But the substream argument should be explicitly
-typed, otherwise it's confusing for other normal call patterns.
+Why are we removing this debug print?
 
-I guess the suitable fix for now would be to provide wrapper functions
-that are used for callbacks and bridge to the actual function with
-pointer cast, something like below.  Eventually we can put more const,
-but it's basically irrelevant with the warning itself.
+>  	/* being the current pool takes 1 ref; this func expects the
+>  	 * caller to always add the new pool as the current pool
+>  	 */
+>  	kref_init(&pool->kref);
+>  	INIT_LIST_HEAD(&pool->list);
+> -	if (list_lru_init_memcg(&pool->list_lru, pool->shrinker))
+> -		goto lru_fail;
+> -	shrinker_register(pool->shrinker);
+> -	INIT_WORK(&pool->shrink_work, shrink_worker);
+> -	atomic_set(&pool->nr_stored, 0);
+>  
+>  	zswap_pool_debug("created", pool);
+>  
+>  	return pool;
+>  
+> -lru_fail:
+> -	list_lru_destroy(&pool->list_lru);
+> -	shrinker_free(pool->shrinker);
+>  error:
+>  	if (pool->acomp_ctx)
+>  		free_percpu(pool->acomp_ctx);
+[..]
+> @@ -816,14 +777,10 @@ void zswap_folio_swapin(struct folio *folio)
+>  
+>  void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
+>  {
+> -	struct zswap_pool *pool;
+> -
+> -	/* lock out zswap pools list modification */
+> +	/* lock out zswap shrinker walking memcg tree */
+>  	spin_lock(&zswap_pools_lock);
+> -	list_for_each_entry(pool, &zswap_pools, list) {
+> -		if (pool->next_shrink == memcg)
+> -			pool->next_shrink = mem_cgroup_iter(NULL, pool->next_shrink, NULL);
+> -	}
+> +	if (zswap.next_shrink == memcg)
+> +		zswap.next_shrink = mem_cgroup_iter(NULL, zswap.next_shrink, NULL);
 
+Now that next_shrink has nothing to do with zswap pools, it feels weird
+that we are using zswap_pools_lock for its synchronization. Does it make
+sense to have a separate lock for it just for semantic purposes?
 
-thanks,
+>  	spin_unlock(&zswap_pools_lock);
+>  }
+>  
+[..]
+> @@ -1328,7 +1284,6 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
+>  static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+>  		struct shrink_control *sc)
+>  {
+> -	struct zswap_pool *pool = shrinker->private_data;
+>  	struct mem_cgroup *memcg = sc->memcg;
+>  	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
+>  	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
+> @@ -1343,7 +1298,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+>  #else
+>  	/* use pool stats instead of memcg stats */
+>  	nr_backing = get_zswap_pool_size(pool) >> PAGE_SHIFT;
 
-Takashi
+"pool" is still being used here.
 
--- 8< --
---- a/sound/core/seq/seq_midi.c
-+++ b/sound/core/seq/seq_midi.c
-@@ -113,6 +113,12 @@ static int dump_midi(struct snd_rawmidi_substream *substream, const char *buf, i
- 	return 0;
- }
- 
-+/* callback for snd_seq_dump_var_event(), bridging to dump_midi() */
-+static int __dump_midi(void *ptr, void *buf, int count)
-+{
-+	return dump_midi(ptr, buf, count);
-+}
-+
- static int event_process_midi(struct snd_seq_event *ev, int direct,
- 			      void *private_data, int atomic, int hop)
- {
-@@ -132,7 +138,7 @@ static int event_process_midi(struct snd_seq_event *ev, int direct,
- 			pr_debug("ALSA: seq_midi: invalid sysex event flags = 0x%x\n", ev->flags);
- 			return 0;
- 		}
--		snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
-+		snd_seq_dump_var_event(ev, __dump_midi, substream);
- 		snd_midi_event_reset_decode(msynth->parser);
- 	} else {
- 		if (msynth->parser == NULL)
---- a/sound/core/seq/seq_virmidi.c
-+++ b/sound/core/seq/seq_virmidi.c
-@@ -62,6 +62,13 @@ static void snd_virmidi_init_event(struct snd_virmidi *vmidi,
- /*
-  * decode input event and put to read buffer of each opened file
-  */
-+
-+/* callback for snd_seq_dump_var_event(), bridging to snd_rawmidi_receive() */
-+static int dump_to_rawmidi(void *ptr, void *buf, int count)
-+{
-+	return snd_rawmidi_receive(ptr, buf, count);
-+}
-+
- static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
- 					 struct snd_seq_event *ev,
- 					 bool atomic)
-@@ -80,7 +87,7 @@ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
- 		if (ev->type == SNDRV_SEQ_EVENT_SYSEX) {
- 			if ((ev->flags & SNDRV_SEQ_EVENT_LENGTH_MASK) != SNDRV_SEQ_EVENT_LENGTH_VARIABLE)
- 				continue;
--			snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
-+			snd_seq_dump_var_event(ev, dump_to_rawmidi, vmidi->substream);
- 			snd_midi_event_reset_decode(vmidi->parser);
- 		} else {
- 			len = snd_midi_event_decode(vmidi->parser, msg, sizeof(msg), ev);
+> -	nr_stored = atomic_read(&pool->nr_stored);
+> +	nr_stored = atomic_read(&zswap.nr_stored);
+>  #endif
+>  
+>  	if (!nr_stored)
+[..]  
+> @@ -1804,6 +1749,21 @@ static int zswap_setup(void)
+>  	if (ret)
+>  		goto hp_fail;
+>  
+> +	shrink_wq = alloc_workqueue("zswap-shrink",
+> +			WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
+> +	if (!shrink_wq)
+> +		goto hp_fail;
+
+I think we need a new label here to call cpuhp_remove_multi_state(), but
+apparently this is missing from the current code for some reason.
+
+> +
+> +	zswap.shrinker = zswap_alloc_shrinker();
+> +	if (!zswap.shrinker)
+> +		goto shrinker_fail;
+> +	if (list_lru_init_memcg(&zswap.list_lru, zswap.shrinker))
+> +		goto lru_fail;
+> +	shrinker_register(zswap.shrinker);
+> +
+> +	INIT_WORK(&zswap.shrink_work, shrink_worker);
+> +	atomic_set(&zswap.nr_stored, 0);
+> +
+>  	pool = __zswap_pool_create_fallback();
+>  	if (pool) {
+>  		pr_info("loaded using pool %s/%s\n", pool->tfm_name,
+> @@ -1815,19 +1775,16 @@ static int zswap_setup(void)
+>  		zswap_enabled = false;
+>  	}
+>  
+> -	shrink_wq = alloc_workqueue("zswap-shrink",
+> -			WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
+> -	if (!shrink_wq)
+> -		goto fallback_fail;
+> -
+>  	if (zswap_debugfs_init())
+>  		pr_warn("debugfs initialization failed\n");
+>  	zswap_init_state = ZSWAP_INIT_SUCCEED;
+>  	return 0;
+>  
+> -fallback_fail:
+> -	if (pool)
+> -		zswap_pool_destroy(pool);
+> +lru_fail:
+> +	list_lru_destroy(&zswap.list_lru);
+
+Do we need to call list_lru_destroy() here? I know it is currently being
+called if list_lru_init_memcg() fails, but I fail to understand why. It
+seems like list_lru_destroy() will do nothing anyway.
+
+> +	shrinker_free(zswap.shrinker);
+> +shrinker_fail:
+> +	destroy_workqueue(shrink_wq);
+>  hp_fail:
+>  	kmem_cache_destroy(zswap_entry_cache);
+>  cache_fail:
+> 
+> -- 
+> b4 0.10.1
 
