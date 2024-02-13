@@ -1,124 +1,106 @@
-Return-Path: <linux-kernel+bounces-63487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63488-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C153E853046
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:12:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7851853047
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:12:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC558B2377D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:12:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64C4A28B5B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E783FE47;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9E742070;
 	Tue, 13 Feb 2024 12:12:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F6CdSnP1"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bLdx5kyF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1983B3FB06
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 394F53FE2E;
+	Tue, 13 Feb 2024 12:12:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707826326; cv=none; b=ijODj4ciFpcBdCL7+DsnHsqFAZ2szJRclSyW3j6oqrdWCGu8fKHiC1MKDtQNr/UJAnQfp+Mdlknav1YpkqFlyx+7TBX5A0Px4BVifMz7QXqu7bTlB4voH8jabVPF3Xm0H1eYtydIk6uolx702adb70tZPOHX7Q18kOJY4yEU6J0=
+	t=1707826327; cv=none; b=MB5UAAOYJFMxht1vMT0BX/f1fKIWM44KgsJA8MRkUQu6XKJODsrP1Q92NUKHR6o/TLoHnRXfaNVHdJc8zyQJvhJNzNh+L2OREWv77qK6HcvbjwFin+7MscCylswe4jzDHLVVqHMzWhcFeGJSQ/fHu8LIsJwEmwciousdZucTAPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707826326; c=relaxed/simple;
-	bh=bRjvQQ59r2pfSvCpuOfK4WkAjhBTBaeJfQZn4iu1nyA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tJMKS+AUtJu36NtGoJNKBOKJRt1rJFYrPsBzv0mYbIh1nR0oFnqSzC8XrWGlwFmjuvqyfNoUTTnmY7i4wWKb2XK2fz5va4fMQxSW5wgfVuxNdCHdJDdypM+bZ1yQh+gsrf50YYhL2YHdn/ptZzn6xYWOlglDUolcawsHFgFPZL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F6CdSnP1; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc7472aa206so3579725276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:12:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707826324; x=1708431124; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bRjvQQ59r2pfSvCpuOfK4WkAjhBTBaeJfQZn4iu1nyA=;
-        b=F6CdSnP1JDO/J39eniZxBRSFVY33qlf+Toh+BaaYrba7s8U8ggyomVxxvotWerfkSK
-         U8UehxJb0880PMoNrr76ArtkFvSV8eoWO1sVUInoU2mQNJkbuf+Ts1KQnlmP2BikRYEP
-         MMT6EQ51J+Bv0sPtOMFlZgA2UMgrGsIZXu0IQx4vE3emVO48jfMtlwE/a3gpXUa5AAEp
-         Cb8zsz+2nHCdc5SkM8+975Ciy/FmfKCWL8so3V0MEDSxFWuep/tp6uGeMyBjybJNzN9O
-         tAy8tF8s3xmhKSfYpn+dWuSPTtcuHFWw4mJhcK8d8PY+ItW2cny830ew4ykIiIsx40y0
-         z/Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707826324; x=1708431124;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bRjvQQ59r2pfSvCpuOfK4WkAjhBTBaeJfQZn4iu1nyA=;
-        b=SSGZkVp/1Pcgg1lSTjafi7a2kBCekHo+yXtkZ8QGtyPWu7zFTlfb2tqSok6M8ziX/t
-         j+78m+4wA0lrzqPTH4VOAD92yakwzE0MybBPFpsZB/5FRGmAcVJd8UVyNQXuUMALCs55
-         VgWHrrkoVg6k2fB+KCFaucxTmu73Tx6m1LGKaAtRHawGJpmgg3PpjFDa5MoFbY7tg+6Z
-         nzz5wbkpLrcZ/HHK7YRFtIAsvQAxQxRl0APEwdIJ42wfQMBieoE6eEaUtWxghgmLV7el
-         jk1c0bZx0cvlFuxiy5qwjYDmtJp0E3xbo/u/H/V0WUKYE+mER+zplvzIcI0VizYqDhyl
-         AkLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXzB4xFSX1cyVpxBhGbJ5Lx6sEdVsacyF5x5e3aGxUQnYKjq5rkZFj5DOuG3IuTGRwXRWkjJcZabs0rp/A3wbZRLwnJIqVwEWYW67+E
-X-Gm-Message-State: AOJu0YylM2fXSuOp2F0JfNy+Ws6yZSSULGB3tFScwDEr9fmVUnH4X8rW
-	fcrimYFY8vKa0KWDNAMM/iz1g8Bz0eC3abnyBXqp6V3voRYWKvoVDX8aXEluVYOje32XW+0BemB
-	yNrnf4kcbPU7k42p8VBwfP9PfNY0=
-X-Google-Smtp-Source: AGHT+IHItGs9GsQLl/Vh5HJFbD/xVmvTeiFf7Ru6uA0BgA11Rh1KAeWoWgVxI6oDQNZpq8xhRWLvEtZltOA26qnO9Ts=
-X-Received: by 2002:a05:6902:e12:b0:dc6:b088:e742 with SMTP id
- df18-20020a0569020e1200b00dc6b088e742mr10140114ybb.8.1707826323934; Tue, 13
- Feb 2024 04:12:03 -0800 (PST)
+	s=arc-20240116; t=1707826327; c=relaxed/simple;
+	bh=ib6PZ8xXRpfgU5jIgXHVcqSo6CO9mgmFcvdOj5YPt6k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q1F2cDUptuSAx7RNnRX857VXbkWYqGrUgq6+cbv7U1Wgfi56LrJVmaZ8BfWwRM200vF7dQy/bvnSwKC5P8bgXlHeO8km8UGqCEAWf9NK8uVvPziIbwf0G8bv5IC1Ve90/1zm+zKnOE4HX+/h3ON7XlIwQCWQIYoCJfIHbXkYJqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bLdx5kyF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B0FDC43390;
+	Tue, 13 Feb 2024 12:12:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707826326;
+	bh=ib6PZ8xXRpfgU5jIgXHVcqSo6CO9mgmFcvdOj5YPt6k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bLdx5kyFQjxOp5IYua7o7cVsJmsJy2pBEm3Yy7q2STJO4bSvzi7zwLSe5tzY8sIa7
+	 uZmcgQrvfFs6LT+qVv7aKjSDO3j45v7i6IRtRta/LiSFQfkYGHZWpTBgUdOToX/GVp
+	 y0z5d9wIQAEsjkxVZKagE/t5lap6MwcngGWPt29IafqIQH3DAZfC+WumxJRLqM6fKr
+	 nFZDvcIJQEJbEB3idooxRE2/u1w0YV513qPeqwnnUKJJe8enga9EaLfd5EGKrYwFgc
+	 vTIQPSsNLJ53oNstXGzX8ZymOi0KYRNflmALGumljUjorSn0IXqw5YoKOzA9Iv/lYA
+	 ZKXiy/ZJG2C8Q==
+Date: Tue, 13 Feb 2024 12:12:01 +0000
+From: Will Deacon <will@kernel.org>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>, kvmarm@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Ricardo Koller <ricarkol@google.com>
+Subject: Re: [RFC PATCH] KVM: arm64: Fix double-free following
+ kvm_pgtable_stage2_free_unlinked()
+Message-ID: <20240213121201.GA28682@willie-the-truck>
+References: <20240212193052.27765-1-will@kernel.org>
+ <Zcp8LcvsZiZVkNKe@linux.dev>
+ <86cyt062jh.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212132515.2660837-2-andriy.shevchenko@linux.intel.com>
- <20240212132515.2660837-3-andriy.shevchenko@linux.intel.com>
- <9c7df0e5-31a9-4c86-b996-4cba82c4ea2f@suse.de> <ZcpKh_EgNM5IaV-P@smile.fi.intel.com>
- <ZcpKwz8J8OoODMYl@smile.fi.intel.com> <87sf1wkcmv.fsf@minerva.mail-host-address-is-not-set>
-In-Reply-To: <87sf1wkcmv.fsf@minerva.mail-host-address-is-not-set>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 13 Feb 2024 13:11:52 +0100
-Message-ID: <CANiq72=shaF=PQchzztD1R8EJFHeORRhoobBsNAHZwm19JtMRw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] auxdisplay: Take over maintainership, but in Odd
- Fixes mode
-To: Javier Martinez Canillas <javierm@redhat.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org, 
-	Miguel Ojeda <ojeda@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86cyt062jh.wl-maz@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Tue, Feb 13, 2024 at 9:10=E2=80=AFAM Javier Martinez Canillas
-<javierm@redhat.com> wrote:
->
-> AFAICT Miguel Ojeda is quite responsive and is still doing reviews/acks
-> for auxdisplay patches. Can you elaborate why the maintainership change
-> has to be made?
->
-> You can still be listed as co-maintainer of course, and maybe Miguel is
-> on board to drop this but then I think that should be mentioned in your
-> commit message (and have an ack from him).
+On Tue, Feb 13, 2024 at 11:12:34AM +0000, Marc Zyngier wrote:
+> On Mon, 12 Feb 2024 20:14:37 +0000,
+> Oliver Upton <oliver.upton@linux.dev> wrote:
+> > On Mon, Feb 12, 2024 at 07:30:52PM +0000, Will Deacon wrote:
+> > > Sending this as an RFC as I only spotted it from code inspection and I'm
+> > > surprised others aren't seeing fireworks if it's a genuine bug. I also
+> > > couldn't come up with a sensible Fixes tag, as all of:
+> > > 
+> > >  e7c05540c694b ("KVM: arm64: Add helper for creating unlinked stage2 subtrees")
+> > >  8f5a3eb7513fc ("KVM: arm64: Add kvm_pgtable_stage2_split()")
+> > >  f6a27d6dc51b2 ("KVM: arm64: Drop last page ref in kvm_pgtable_stage2_free_removed()")
+> 
+> I'd blame it on the last commit, as we really ought to have it if we
+> have the others.
 
-Thanks Javier, I appreciate the kind words.
+Yes, that's probably the best approach if you're adding a Fixes tag.
 
-To clarify, auxdisplay has had just about 16 patches a year (i.e. very
-low), and a significant fraction of those came from Andy and Geert. In
-addition, they have some of the relevant hardware and have tested
-patches in the past (which I really appreciated). By contrast, I have
-not had any of the hardware for years now.
+> > > @@ -1502,7 +1501,6 @@ static int stage2_split_walker(const struct kvm_pgtable_visit_ctx *ctx,
+> > >  
+> > >  	if (!stage2_try_break_pte(ctx, mmu)) {
+> > >  		kvm_pgtable_stage2_free_unlinked(mm_ops, childp, level);
+> > > -		mm_ops->put_page(childp);
+> > >  		return -EAGAIN;
+> > >  	}
+> > 
+> > This, on the other hand, seems possible. There exists a race where an
+> > old block PTE could have the AF set on it and the underlying cmpxchg()
+> > could fail. There shouldn't be a race with any software walkers, as we
+> > hold the MMU lock for write here.
+> 
+> AF update is indeed a likely candidate.
+> 
+> In any case, this patch looks good to me as it is, and we can always
+> have a separate tweak to adjust the severity of the first case as
+> required. Unless anyone objects, I'd like to queue it shortly.
 
-So I asked Geert and Andy in private if they wanted to become the
-maintainers/reviewers. They do not have much time, but Andy wants to
-submit a new driver anyway, so we ended up going with Andy as M and
-Geert as R, which I really appreciate.
+Fine by me! Even though I found it by inspection, I have taken the patch
+for a spin to check that I (somehow) didn't break something else.
 
-If somebody else wants to join, I am sure they would be happy to. And
-for those that may not be involved with upstream development but have
-some kernel development experience, this may be a nice opportunity as
-well to try becoming a reviewer/maintainer -- it is a small, fun
-subsystem (if you have the hardware), with low traffic, and with a few
-experienced maintainers around it like Andy and Geert that may be able
-to help test patches etc.
-
-Cheers,
-Miguel
+Will
 
