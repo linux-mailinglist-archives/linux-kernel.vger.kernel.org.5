@@ -1,69 +1,63 @@
-Return-Path: <linux-kernel+bounces-62675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F499852446
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:47:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B8A185246E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:51:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDFCB284381
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:47:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4654E1C235F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4835565BD5;
-	Tue, 13 Feb 2024 00:22:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208D378685;
+	Tue, 13 Feb 2024 00:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O5jKDBM0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90CA657C1;
-	Tue, 13 Feb 2024 00:22:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE1077F38;
+	Tue, 13 Feb 2024 00:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783726; cv=none; b=B6Kd8NG0IqN32SgiNkipxFatpfddqB4vLV/gy58xCk2sw+ck/DCvZnfx33eKC1UsroNvbehWuVzQpwUT4PGhti3IVvSt6nUfP2io46E7QmB6YbEKG7cMR3SW7DVCSKAH4xXm0LnZ6FirY1bj9AxSwx1FKwLhaxsrE+eqMtVdXLs=
+	t=1707783766; cv=none; b=X+RUlsmW2S8oXrx6NHM6VJIDeQN1aGCaldZ1GXDNKHqoCU+rsMOP8skZ3H0Z6/RUyc/SvDniP2G4zFUDieRvSyYHbNfl1hU7KN025b6pESKdEty8Z6vg5Eu82BLLY/lFyX5SpT1BD6eHvVvmrPgroJ+2a3IYj0tCISNxU3ahkLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783726; c=relaxed/simple;
-	bh=noY3yf17t8mOkaySw87fwbJJodozX5gvpalHBVzPw5Q=;
+	s=arc-20240116; t=1707783766; c=relaxed/simple;
+	bh=TuTEr8omUxfqM1O8DocELWTt9yAKpzvpGXNjHsPxxuc=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=I9GP1q591+9htsbCpGkFJY7i+xbPy5fAxX3XFbaGvsy2QOIjtHlK+P5uxu3RU0PVB9DAbwEuqt6EqOaGUoqHLTxrZ7JAvUpdt9eejUPy4kHRUyfkYCCmvEariWANvXfsclFdILsQP9whF+qqapZFSnPybCEri1YQP7IrLt1l4v4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ED59C4166A;
-	Tue, 13 Feb 2024 00:21:59 +0000 (UTC)
-Date: Mon, 12 Feb 2024 19:22:42 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
- kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
- hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
- dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
- corbet@lwn.net, void@manifault.com, peterz@infradead.org,
- juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
- arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com,
- vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
- ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
- bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
- penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
- glider@google.com, elver@google.com, dvyukov@google.com,
- shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
- rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
- kernel-team@android.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
- linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-modules@vger.kernel.org,
- kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in
- show_mem()
-Message-ID: <20240212192242.44493392@gandalf.local.home>
-In-Reply-To: <202402121606.687E798B@keescook>
-References: <20240212213922.783301-1-surenb@google.com>
-	<20240212213922.783301-32-surenb@google.com>
-	<202402121606.687E798B@keescook>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	 MIME-Version:Content-Type; b=Wu0MeY3X5d6ibsGSJpJMtV4f1Fn4dd+uailb5fFM4vCZ3BnkKLp+tBpd12SSiIPnUy7jXDwRXkh81QX+axhsJ8fl1YI6/aXM/0lq2RhslqS5VsxyOIM/eH6tz79Qy8uf6ibE2PBkqz8hEU3bKHAmK5pQ6M1JPa0F+SbDYmwW56k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O5jKDBM0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF312C43399;
+	Tue, 13 Feb 2024 00:22:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707783765;
+	bh=TuTEr8omUxfqM1O8DocELWTt9yAKpzvpGXNjHsPxxuc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=O5jKDBM0g7YIMdQomXfz1EQQYXPp37dpkB4EONhCwaIyb0zjxJCTGjHrZ/5TroElx
+	 Bzp0e5kFbTmwK6t28wyoWt/fBp7Fixsbd6mWPSWid2Ore7tNbIwlNE7YT57QPQPzXM
+	 PZadVo5wKMlLuZTowenZP9hVkjfSqkcgCaESHfYXE7OlUXW66va3IUrGWFZd5cyM7T
+	 TIhWZx1SwFIgqa7Zo8rVTtomiFD7xJcdpfFm9ZXlH8pa9VIqtVWY7YWKYbOBUAECyR
+	 F8yL2UCW4RJ+hOggfVngUXf+prjvJuhXRGRQ0i6e1IkrNFRxAxeq6az9LQtZ+sawD8
+	 fMSgyCqhGKuEw==
+Date: Mon, 12 Feb 2024 16:22:44 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Elad Yifee <eladwf@gmail.com>
+Cc: Felix Fietkau <nbd@nbd.name>, Sean Wang <sean.wang@mediatek.com>, Mark
+ Lee <Mark-MC.Lee@mediatek.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, Russell King
+ <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v3] net: ethernet: mtk_eth_soc: ppe: add
+ support for multiple PPEs
+Message-ID: <20240212162244.3c011072@kernel.org>
+In-Reply-To: <20240210135620.28368-1-eladwf@gmail.com>
+References: <Zcdtb-eyvxzX9yPe@makrotopia.org>
+	<20240210135620.28368-1-eladwf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,19 +67,56 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 12 Feb 2024 16:10:02 -0800
-Kees Cook <keescook@chromium.org> wrote:
+On Sat, 10 Feb 2024 15:56:07 +0200 Elad Yifee wrote:
+> Add the missing pieces to allow multiple PPEs units, one for each GMAC.
+> mtk_gdm_config has been modified to work on targted mac ID,
+> the inner loop moved outside of the function to allow unrelated
+> operations like setting the MAC's PPE index.
 
-> >  #endif
-> > +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> > +	{
-> > +		struct seq_buf s;
-> > +		char *buf = kmalloc(4096, GFP_ATOMIC);  
-> 
-> Why 4096? Maybe use PAGE_SIZE instead?
+> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> index a6e91573f8da..5d5cf73a5d5a 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> @@ -2010,6 +2010,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+>  	struct mtk_rx_dma_v2 *rxd, trxd;
+>  	int done = 0, bytes = 0;
+>  	dma_addr_t dma_addr = DMA_MAPPING_ERROR;
+> +	u8 ppe_index = 0;
 
-Will it make a difference for architectures that don't have 4096 PAGE_SIZE?
-Like PowerPC which has PAGE_SIZE of anywhere between 4K to 256K!
+Please don't use u8 for basic on-stack variables unless it matches some
+HW field which is 8b.
 
--- Steve
+> @@ -3358,6 +3350,8 @@ static int mtk_open(struct net_device *dev)
+>  	struct mtk_mac *mac = netdev_priv(dev);
+>  	struct mtk_eth *eth = mac->hw;
+>  	int i, err;
+> +	struct mtk_mac *target_mac;
+> +	const u8 ppe_num = mtk_get_ppe_num(eth);
+
+nit: Please order variable decl lines longest to shortest.
+If the order breaks init, you should move the init to the body.
+
+It's a bit unclear what the difference between ppe_num, num_ppe and
+ppe_index, id and ppe_idx are. It'd be good to increase the naming
+consistency.
+
+> @@ -1311,6 +1313,7 @@ struct mtk_eth {
+>  struct mtk_mac {
+>  	int				id;
+>  	phy_interface_t			interface;
+> +	u8			ppe_idx;
+
+this looks misaligned
+
+>  	int				speed;
+>  	struct device_node		*of_node;
+>  	struct phylink			*phylink;
+
+When you repost please do not reply in the same thread.
+Start a new one. 
+
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#resending-after-review
+
+-- 
+pw-bot: cr
 
