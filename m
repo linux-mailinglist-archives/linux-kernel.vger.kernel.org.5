@@ -1,143 +1,155 @@
-Return-Path: <linux-kernel+bounces-63698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763EB853369
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:43:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7BDB853368
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:43:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30BED287005
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:43:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DD8F1F22F4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010E357898;
-	Tue, 13 Feb 2024 14:43:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62BC5B05E;
+	Tue, 13 Feb 2024 14:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QW+u9o2N"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="bGiYtAd4"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E0B5647F;
-	Tue, 13 Feb 2024 14:43:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5DD157899;
+	Tue, 13 Feb 2024 14:42:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707835383; cv=none; b=gxbWFSTrR8crvSTZwhb8sp1ZBunLx2f1oDeybS9dzWVm3iQTcS2gHgzlextWIK/GI1VSM6T60McXL3BXnoEJuSeFutpfPfa9HVWcOTwYHGjfkDmfk74N/GDibc/08YlP9mVaHq0tEtUVHJn1WWV9E49tHZj2p8CLy+0KF/7VSQc=
+	t=1707835361; cv=none; b=SwUmPLUz3omkb4z69qnEVCgJUtH4E+aMR2hUOVU3AFnu2bW+kSuvI+MIX03IrVyPPI3oBjBGunfH0DQ0Q8cjTrJEY/UMhKMymKeDbgLO/WzAgcWl6fqv7E5txFNmU9kn+E4E/Z6znu2h0Et/k2cX4LYEBliPXsrHoUm93Zre/pE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707835383; c=relaxed/simple;
-	bh=hBY4Przzr9r9vbICCXsAtnHmOm199MIsVifivtT0k6g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FbwPAhpf2RSgBlnyBXQDLvDH1QdSMGR/yFaUbjLuk1yga/B3384OzEwDUMfBtKxTr6vwiFL0Z6x3BhGAa5eNlEGMcWu9OVHSQA5d1LB0dfaVpgvPcbuYavIbURjaOjJjMetqjS/UlZQqjWQpTARibnFdbthS3ATd63llpKUTyAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QW+u9o2N; arc=none smtp.client-ip=134.134.136.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707835381; x=1739371381;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hBY4Przzr9r9vbICCXsAtnHmOm199MIsVifivtT0k6g=;
-  b=QW+u9o2NCmFpJbLt4TDLq9mpaR3AMrmzj+XHYdU654K+pC1FS4lCDuLA
-   Z9wVETTsqK0FLb23/11xfnP3bXmylNDBdLuYl/IFnKdGwwc5JThTgHp+1
-   FcdLVTNSrOUUHSG6HoHXObt6JVs3oviKBYmRvqRz1G8QTMeiSjbOAC8pj
-   f40ksGlF0QaXUg9KggAsc1F6pkIWBau4a544ihyVr9n3WbwUDZwqsD/5/
-   DXF7/qPaJL1hQ0o4snvxR8i/haVPY0Q0yLtP20JoqYUs32rB6l9qBgI8g
-   aAjRO29tAStQW7ARZ0B0+eDiUwWs8ePo2OR/3eWtOqDBj5n8EipEGZyIa
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="396278108"
-X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="396278108"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 06:43:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="911802315"
-X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="911802315"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 06:42:57 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rZtzq-00000004F4c-15OT;
-	Tue, 13 Feb 2024 16:42:54 +0200
-Date: Tue, 13 Feb 2024 16:42:53 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] gpio: initialize descriptor SRCU structure before adding
- OF-based chips
-Message-ID: <Zct_7YcJk5-sg2pT@smile.fi.intel.com>
-References: <20240212213920.49796-1-brgl@bgdev.pl>
+	s=arc-20240116; t=1707835361; c=relaxed/simple;
+	bh=qx1rU47qp5SxtB5/of0+ajlZlnqS9KlZ7Xr19U+lVpU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=OOE+RS/ghZ/jUQcbp6ZYc4sV2W/7QtA0qimyxEAASEfd0jmsxC/uOFRl+06S+ekZenRRhdMTBvRkON7jI5Qd0DH3q0XPriEnanKwPdk3XiuqF3QBbonTDiPlFaygHJKOVV2MMnqtDfmwSJPEJoTxWO1tQQTLHGWDUApTNTKJWUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=bGiYtAd4; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d8da50bffaso18515855ad.2;
+        Tue, 13 Feb 2024 06:42:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707835359; x=1708440159;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QxuGEKv2vwSIUHy4n7Mz5CLswGcccldauEpdNmNdUUM=;
+        b=Ez+6t1FsSpZPW22LviNQTfgvzxuNDQl2qW8Zx3lSKqQv+sUJ6uAYgBQHJPMmD4XaE3
+         W78gqTDSsmCo/1g4pkrnqu7pHxbjCEAntE0/GRJGUk0ecsv+qTwbJ62rp30UP3DBQHjZ
+         VBfR5OwVTdTN1IRHyrFH/QLpNfLbqA0SqtU2pWOsqw2szDx3r170c30z2JShyB867oll
+         jS56YnOIFdlhF2IRRxAOHv0mZMSGJY4hNvdnRYlpkbNGV9misvCeN/506+kczqvSO1O6
+         9THgu3h+IxksID1yEMu0xnQbBEOqtkyyvi/WO01tsWE6tQ1KR0v0Z9k2AOCVK8SO5E59
+         7l9A==
+X-Gm-Message-State: AOJu0YxhE/SoCH1+eFdLZCGRaXIF3wc5buOI0rbJ/r6RqONd7Fn2Z6bK
+	P4WEVWPyad+luKstZK+2H+m11LEfIFJCP0Js+DVyY2BmijKNJ8vD
+X-Google-Smtp-Source: AGHT+IGdk73sv1uqFOWt/SjvaqGyOsWsH6lHsQtY1bs2jDjceO619LloI5Yr0wzSUTdu2O6UknX4+A==
+X-Received: by 2002:a17:903:1ce:b0:1db:4b42:ce7f with SMTP id e14-20020a17090301ce00b001db4b42ce7fmr729213plh.8.1707835359251;
+        Tue, 13 Feb 2024 06:42:39 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVZVMIdUeSJ81vLJoYvAoVbenJwn0AjPQgwaGjaqYVnfrSUug6IVOTaF5+DYc74P6OL6K5LsZda1EVP7A3c0J6dWVz8n/nA4ZHzlRa50ZkmcNf5JPpPoBvdKku26pcq90MPuyPgNQI1LY73hkGjl+KKquGj4L2MhaYb6E9EM0zUh55Hij2ZGIM33FiUYsU3zI0=
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id kj12-20020a17090306cc00b001d9773a197esm2155334plb.209.2024.02.13.06.42.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 06:42:38 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707835355;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=QxuGEKv2vwSIUHy4n7Mz5CLswGcccldauEpdNmNdUUM=;
+	b=bGiYtAd4le2yypgeqY4HcQa5cf+bUV5RX0nLBtwWAPVfQp640jI4835vi7GbeuxJb0ji6J
+	cm5U5m8LG3TLW30czXlAPcJVCfIQ6CvdGYrfQXXYWm9qZIVB98qc9ez9qwk1tmniDFu1Ag
+	vvkyuLeT6TLMzMwgY7eq2fxfda9h4y74FR7CYR9+FU4xd4k9W1JP4/QqTgLjhSDBPw9EqO
+	4yHReqKb3z7LiDsDI6Wd2xOq7ag3Nq44/ktlGFvLkki0QXOMq3LSBwCbyPzqt6S8mbO9uo
+	E4aD/eB2TmM0aKlqQrd9+9zAO1nkrPnD+1cjgg0Vj6ZXWoaDTFwslGyfMvWVJA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Tue, 13 Feb 2024 11:43:15 -0300
+Subject: [PATCH] dmaengine: idxd: make dsa_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212213920.49796-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240213-bus_cleanup-idxd-v1-1-c3e703675387@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAAKAy2UC/x2MWwqAIBAAryL7naD2ILpKRJiutRAmiiFEd0/6H
+ IaZBxJGwgQTeyDiTYkuX0E2DMyh/Y6cbGVQQnVCyZZvOa3mRO1zqKpYPjrUTmnXd4OEmoWIjsq
+ /nJf3/QDBE4A3YgAAAA==
+To: Fenghua Yu <fenghua.yu@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
+ Vinod Koul <vkoul@kernel.org>
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1757; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=qx1rU47qp5SxtB5/of0+ajlZlnqS9KlZ7Xr19U+lVpU=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBly4ADS36vQF93+0pXIsVYMlI7hG/r7uf9ssBSw
+ QiwAJrTz8uJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcuAAwAKCRDJC4p8Y4ZY
+ ptHdD/4n4SVsd1trzl4F4F2fAQKO4DWSVPw9jvc2Fc/CsncmwoT2vteYoMQGIT5T5rnZ0n4QO09
+ hWoRXSBExqYpNshXECiUFSKWzc++9Dmkkv90mNqe7DCw1ozuazzvvHZaViTivA3wKG/dLAV7Eo0
+ Om5SpAm6v2C3gUGspaiws/tfy+eZNXc6sg9E+fu7osyvXmJKU2NyEaEpy8vL9KyydTyx6qw/jPv
+ 5d1EUVd6slGHWD6AVmHc9+4zKqRVsHvfoUg88kEn+3S0jDhu/WNu9r0VGTAY58AJj3UOBoz4nJ2
+ 6m5y7QhZotnkKp+4vtjieAEb7BmEsBBgS/1ddfXVr6v1atXJOv/zkeeNWw63OAxCXzxAZgxvqaU
+ XtgLstYwnybarNFxzqWzuTGpdLH/leonMc9c5cSrkcMmWkzlXXP5OO1jZfUpnomadjnrzelPwJC
+ kMKELYHMtUhHRtaMX9sUXAWxdcmrElIHTEexzAGs2lnMd8fPxb21tHXQfaFrIPDMJbQXp5n5vj/
+ kPi+JVP/pRaAXOg/wAQ9uOt8IGBWjaajUTQIbjBRbeBPpLS3Fzvap2Y9NV5OTi26M8XdDQfyveX
+ no2UhrhJBRxnSdqTw+oTn4vUVZlogDqPXaxpy5wp1YsItP9kOrRI6eauFDfzcFon78Ht/74eto/
+ 6mJgZXjcbkHqPtw==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On Mon, Feb 12, 2024 at 10:39:20PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> In certain situations we may end up taking the GPIO descriptor SRCU read
-> lock in of_gpiochip_add() before the SRCU struct is initialized. Move
-> the initialization before the call to of_gpiochip_add().
+Since commit d492cc2573a0 ("driver core: device.h: make struct
+bus_type a const *"), the driver core can properly handle constant
+struct bus_type, move the dsa_bus_type variable to be a constant
+structure as well, placing it into read-only memory which can not be
+modified at runtime.
 
-..
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/dma/idxd/bus.c  | 2 +-
+ drivers/dma/idxd/idxd.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-This is a bit unclear why you moved to that place and how it had been tested.
+diff --git a/drivers/dma/idxd/bus.c b/drivers/dma/idxd/bus.c
+index 0c9e689a2e77..b83b27e04f2a 100644
+--- a/drivers/dma/idxd/bus.c
++++ b/drivers/dma/idxd/bus.c
+@@ -72,7 +72,7 @@ static int idxd_bus_uevent(const struct device *dev, struct kobj_uevent_env *env
+ 	return add_uevent_var(env, "MODALIAS=" IDXD_DEVICES_MODALIAS_FMT, 0);
+ }
+ 
+-struct bus_type dsa_bus_type = {
++const struct bus_type dsa_bus_type = {
+ 	.name = "dsa",
+ 	.match = idxd_config_bus_match,
+ 	.probe = idxd_config_bus_probe,
+diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
+index 47de3f93ff1e..f14a660a2a34 100644
+--- a/drivers/dma/idxd/idxd.h
++++ b/drivers/dma/idxd/idxd.h
+@@ -516,7 +516,7 @@ static inline void idxd_set_user_intr(struct idxd_device *idxd, bool enable)
+ 	iowrite32(reg.bits, idxd->reg_base + IDXD_GENCFG_OFFSET);
+ }
+ 
+-extern struct bus_type dsa_bus_type;
++extern const struct bus_type dsa_bus_type;
+ 
+ extern bool support_enqcmd;
+ extern struct ida idxd_ida;
 
-> @@ -991,10 +991,6 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
->  	if (ret)
->  		goto err_cleanup_gdev_srcu;
->  
-> -	ret = of_gpiochip_add(gc);
-> -	if (ret)
-> -		goto err_free_gpiochip_mask;
-> -
->  	for (i = 0; i < gc->ngpio; i++) {
->  		struct gpio_desc *desc = &gdev->descs[i];
->  
+---
+base-commit: de7d9cb3b064fdfb2e0e7706d14ffee20b762ad2
+change-id: 20240213-bus_cleanup-idxd-8feaf2af5461
 
->  		if (ret) {
->  			for (j = 0; j < i; j++)
->  				cleanup_srcu_struct(&gdev->descs[j].srcu);
-> -			goto err_remove_of_chip;
-> +			goto err_free_gpiochip_mask;
->  		}
->  
->  		if (gc->get_direction && gpiochip_line_is_valid(gc, i)) {
-
->  		}
->  	}
->  
-> -	ret = gpiochip_add_pin_ranges(gc);
-> +	ret = of_gpiochip_add(gc);
->  	if (ret)
->  		goto err_cleanup_desc_srcu;
->  
-> +	ret = gpiochip_add_pin_ranges(gc);
-> +	if (ret)
-> +		goto err_remove_of_chip;
-> +
->  	acpi_gpiochip_add(gc);
-
-My logic tells me that if you need to call gpiochip_add_pin_ranges() before
-calling of_gpiochip_add(). It won't collide right now, but allows to cleanup
-further (with the gpio-ranges parser be generalized for fwnodes and be moved
-to gpiolib.c from gpiolib-of.c).
-
+Best regards,
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
