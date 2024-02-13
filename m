@@ -1,63 +1,59 @@
-Return-Path: <linux-kernel+bounces-62604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53AA285238A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:28:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 517AD85238D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:28:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 110E12828B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:28:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83B4B1C211F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:28:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B5B25660;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD05554649;
 	Tue, 13 Feb 2024 00:19:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TNon0623"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cm7UCYGk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5440153E25;
-	Tue, 13 Feb 2024 00:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53EB4C9F;
+	Tue, 13 Feb 2024 00:19:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783571; cv=none; b=r3UoYjAw7Vo3yhfnqo4Z5vADB2icVedaF1uC2+qQ1vkwdSuO4pcaUwS303zmSqc76icsi8UhMxq+RZfms5UBSnzJ/H5SJZ15SnwLAjjfjyPC7ivoxZvaXMlGHq9Y7o1q3PmJuFW1/1ihq0NPPHHT5RrPg4rksYBjBGXzGxAnjv8=
+	t=1707783572; cv=none; b=hvWrF04cFiHx1MqjzVGK+n8ycDWNPcettyhJA9YXvQ+XNA/5AGze8eZ81ELL/ZfzPPWC62ReF9aWl3Wffq2M0i54Rg+lqlXqkair30xeTR9Ya6ViB/HHneyWM4qS+R+HZ4UE/XrAc8DwDekw7NWx/lFx22LmvULCO5Ks3aT6L2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783571; c=relaxed/simple;
-	bh=YtZoeSc5wThDzrqhQZJibdxh6/kPDakwPfAOeT08oRM=;
+	s=arc-20240116; t=1707783572; c=relaxed/simple;
+	bh=D5FmZorhaZefGTlqcT+FkW4aV8RoGBMwO9d0EJXg7IA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FYR1kcqZnfYrFi9qvn7LUKiMR/Sl8tThoAJW4SUpSH73jpZrKMcJAB1qpo5zjohlhtnZyr3oI0CvdgmBv0Zcvcw6QmsbxFfRO5PlfgQLfaiznvLEZLL5xpDAkTdwpG6ZWIO32NmerYzL6RwQ4GZUWJsKUeSZn295/8Cwx3e0Y4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TNon0623; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 923D9C433F1;
-	Tue, 13 Feb 2024 00:19:28 +0000 (UTC)
+	 MIME-Version; b=s4CQ97uC0NYjoZllsQ86CZTD6tPrNBXBop15NIPbr0PGMfoXgXIR1JsPzPiPsXlkvO8mZbMgYVhM1tlSMEVtAYzc6w5R9Lv1VeheWxO/TlMi+DtbdJzanbL2YKrJkXkiOLktQQXwF4CGVvsSUC3X4xia03bWhbmxgWduMQD5QR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cm7UCYGk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93D5CC43390;
+	Tue, 13 Feb 2024 00:19:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783570;
-	bh=YtZoeSc5wThDzrqhQZJibdxh6/kPDakwPfAOeT08oRM=;
+	s=k20201202; t=1707783571;
+	bh=D5FmZorhaZefGTlqcT+FkW4aV8RoGBMwO9d0EJXg7IA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TNon0623S6n1nNqshilUgpLxj4aKpvMlq6rHfLzXuWN10BjzXF7VqpQkMBp96Zb/u
-	 LRCubuodZnx7nwBHWkqiFsjj8elZnZsuETScUFqZn78rJFfq13S1EqIg3yJy/+3iou
-	 R8eP9trz3XeV/4ex3MX+Fte6WFLYv11xXI8rV54LKhMxP/TLypqsZ6p1xMbXSBoXes
-	 7iPDNnyjM8t+wfgwHnfs2XYAcL9fxvEkcZp5vK5z6ZUg/OyOTXrVbAcS0xlXxIMYa9
-	 LxKZhWI23rUlXGTrzMoAIqhIJKfJB8+tUAlBr2c/rjF15I8z8fRWHuJt6teFvmq86w
-	 RyBZP1FShvxog==
+	b=Cm7UCYGkK6gRtz5JFCyi1uB8gWbuTav75ULfRKc3di7xtymFtOydyVLR+Jsses1b7
+	 mcklIyfkON8MhyiGpJ8Vz5WlQrV7kiueyyLoFrTlrFE0W33NfBRx8ifokNPMRCHGgA
+	 pgPkEzg14Fp8ephnGErijD5GlCWRFIj1BK3KTYhD4pE6q9V4uJ/BnmMva7PXD3Dope
+	 8xStmEX/jonfKqUg1rw44XGxP5oWh9B640TORM15pXWKoLpmuoRMc9HvNJWFPV7cYb
+	 o+5IWE+AvTQSN16V4VJnzYm4xbURqbiIKx1WNMDsne6BjoGHlCRmaTI68Xsg50rEiN
+	 KZwPCo8gFpFeA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Timur Tabi <ttabi@nvidia.com>,
-	Danilo Krummrich <dakr@redhat.com>,
+Cc: Hannes Reinecke <hare@suse.de>,
+	Daniel Wagner <dwagner@suse.de>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
-	kherbst@redhat.com,
-	lyude@redhat.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	airlied@redhat.com,
-	bskeggs@redhat.com,
-	dan.carpenter@linaro.org,
-	dri-devel@lists.freedesktop.org,
-	nouveau@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.7 35/58] drm/nouveau: nvkm_gsp_radix3_sg() should use nvkm_gsp_mem_ctor()
-Date: Mon, 12 Feb 2024 19:17:41 -0500
-Message-ID: <20240213001837.668862-35-sashal@kernel.org>
+	james.smart@broadcom.com,
+	dick.kennedy@broadcom.com,
+	jejb@linux.ibm.com,
+	linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 36/58] scsi: lpfc: Use unsigned type for num_sge
+Date: Mon, 12 Feb 2024 19:17:42 -0500
+Message-ID: <20240213001837.668862-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213001837.668862-1-sashal@kernel.org>
 References: <20240213001837.668862-1-sashal@kernel.org>
@@ -72,73 +68,78 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.4
 Content-Transfer-Encoding: 8bit
 
-From: Timur Tabi <ttabi@nvidia.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 34e659f34a7559ecfd9c1f5b24d4c291f3f54711 ]
+[ Upstream commit d6c1b19153f92e95e5e1801d540e98771053afae ]
 
-Function nvkm_gsp_radix3_sg() uses nvkm_gsp_mem objects to allocate the
-radix3 tables, but it unnecessarily creates those objects manually
-instead of using the standard nvkm_gsp_mem_ctor() function like the
-rest of the code does.
+LUNs going into "failed ready running" state observed on >1T and on even
+numbers of size (2T, 4T, 6T, 8T and 10T). The issue occurs when DIF is
+enabled at the host.
 
-Signed-off-by: Timur Tabi <ttabi@nvidia.com>
-Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240202230608.1981026-2-ttabi@nvidia.com
+The kernel logs:
+
+  Cannot setup S/G List for HBAIO segs 1/1 SGL 512 SCSI 256: 3 0
+
+The host lpfc driver is failing to setup scatter/gather list (protection
+data) for the I/Os.
+
+The return type lpfc_bg_setup_sgl()/lpfc_bg_setup_sgl_prot() causes the
+compiler to remove the most significant bit. Use an unsigned type instead.
+
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+[dwagner: added commit message]
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Link: https://lore.kernel.org/r/20231220162658.12392-1-dwagner@suse.de
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/scsi/lpfc/lpfc_scsi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-index 9ee58e2a0eb2..09e2eb1369cb 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-@@ -1938,20 +1938,20 @@ nvkm_gsp_radix3_dtor(struct nvkm_gsp *gsp, struct nvkm_gsp_radix3 *rx3)
-  * See kgspCreateRadix3_IMPL
-  */
- static int
--nvkm_gsp_radix3_sg(struct nvkm_device *device, struct sg_table *sgt, u64 size,
-+nvkm_gsp_radix3_sg(struct nvkm_gsp *gsp, struct sg_table *sgt, u64 size,
- 		   struct nvkm_gsp_radix3 *rx3)
- {
- 	u64 addr;
+diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
+index d26941b131fd..bf879d81846b 100644
+--- a/drivers/scsi/lpfc/lpfc_scsi.c
++++ b/drivers/scsi/lpfc/lpfc_scsi.c
+@@ -1918,7 +1918,7 @@ lpfc_bg_setup_bpl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+  *
+  * Returns the number of SGEs added to the SGL.
+  **/
+-static int
++static uint32_t
+ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 		struct sli4_sge *sgl, int datasegcnt,
+ 		struct lpfc_io_buf *lpfc_cmd)
+@@ -1926,8 +1926,8 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 	struct scatterlist *sgde = NULL; /* s/g data entry */
+ 	struct sli4_sge_diseed *diseed = NULL;
+ 	dma_addr_t physaddr;
+-	int i = 0, num_sge = 0, status;
+-	uint32_t reftag;
++	int i = 0, status;
++	uint32_t reftag, num_sge = 0;
+ 	uint8_t txop, rxop;
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	uint32_t rc;
+@@ -2099,7 +2099,7 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+  *
+  * Returns the number of SGEs added to the SGL.
+  **/
+-static int
++static uint32_t
+ lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 		struct sli4_sge *sgl, int datacnt, int protcnt,
+ 		struct lpfc_io_buf *lpfc_cmd)
+@@ -2123,8 +2123,8 @@ lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 	uint32_t rc;
+ #endif
+ 	uint32_t checking = 1;
+-	uint32_t dma_offset = 0;
+-	int num_sge = 0, j = 2;
++	uint32_t dma_offset = 0, num_sge = 0;
++	int j = 2;
+ 	struct sli4_hybrid_sgl *sgl_xtra = NULL;
  
- 	for (int i = ARRAY_SIZE(rx3->mem) - 1; i >= 0; i--) {
- 		u64 *ptes;
--		int idx;
-+		size_t bufsize;
-+		int ret, idx;
- 
--		rx3->mem[i].size = ALIGN((size / GSP_PAGE_SIZE) * sizeof(u64), GSP_PAGE_SIZE);
--		rx3->mem[i].data = dma_alloc_coherent(device->dev, rx3->mem[i].size,
--						      &rx3->mem[i].addr, GFP_KERNEL);
--		if (WARN_ON(!rx3->mem[i].data))
--			return -ENOMEM;
-+		bufsize = ALIGN((size / GSP_PAGE_SIZE) * sizeof(u64), GSP_PAGE_SIZE);
-+		ret = nvkm_gsp_mem_ctor(gsp, bufsize, &rx3->mem[i]);
-+		if (ret)
-+			return ret;
- 
- 		ptes = rx3->mem[i].data;
- 		if (i == 2) {
-@@ -1991,7 +1991,7 @@ r535_gsp_fini(struct nvkm_gsp *gsp, bool suspend)
- 		if (ret)
- 			return ret;
- 
--		ret = nvkm_gsp_radix3_sg(gsp->subdev.device, &gsp->sr.sgt, len, &gsp->sr.radix3);
-+		ret = nvkm_gsp_radix3_sg(gsp, &gsp->sr.sgt, len, &gsp->sr.radix3);
- 		if (ret)
- 			return ret;
- 
-@@ -2194,7 +2194,7 @@ r535_gsp_oneinit(struct nvkm_gsp *gsp)
- 	memcpy(gsp->sig.data, data, size);
- 
- 	/* Build radix3 page table for ELF image. */
--	ret = nvkm_gsp_radix3_sg(device, &gsp->fw.mem.sgt, gsp->fw.len, &gsp->radix3);
-+	ret = nvkm_gsp_radix3_sg(gsp, &gsp->fw.mem.sgt, gsp->fw.len, &gsp->radix3);
- 	if (ret)
- 		return ret;
- 
+ 	sgpe = scsi_prot_sglist(sc);
 -- 
 2.43.0
 
