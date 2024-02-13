@@ -1,67 +1,57 @@
-Return-Path: <linux-kernel+bounces-62613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9F228523A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:30:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A618523A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:30:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79DEE1F22D96
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:30:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1C38281453
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE7855E71;
-	Tue, 13 Feb 2024 00:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B61156743;
+	Tue, 13 Feb 2024 00:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TLK7uGDz"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNxlG2KB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913C855E4D;
-	Tue, 13 Feb 2024 00:19:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C785645E;
+	Tue, 13 Feb 2024 00:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783588; cv=none; b=oGCgk8FyFfkgQG3+p3YEBf9d97UQOvn53O4W20RPMkjFDtMex04xjxcca2MJ02E/5TtGDK2nhtJk6Si3zPYydVuglZiBwncJzkgOm88CxTfiHOESJGN9827QwR0d8fwQs/OOeyHfvaBKZQtkmW+7F6FAY0Ry3nd85YR3np6z8nQ=
+	t=1707783590; cv=none; b=KculKqnsGakI94ffFA6xqAAnBppaMPfKcMRvTswfNDs50obAgRBtmqw6fBAtqkWZw/Mv0Ai4wgwQOoopDqxzdrP9/sKd6FsTB10fNZS/bQtb2b2wGDGx+sljSzXGrkjMHH9hM/sRrciq7JODi9Nr5PP7y9qjp6kVNwE6Gb4g5xQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783588; c=relaxed/simple;
-	bh=9PvseMVXZBtb/cwZqzTiH66r08HVA91dkLfACeiIZu4=;
+	s=arc-20240116; t=1707783590; c=relaxed/simple;
+	bh=QGj5j0oEDjjnBXJCwY1815nVn1vrlL+NkbYjRzcy7qg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vjys16Wnke6zA93Uh2ptq38Maj1nkXDZ/fQ8Py7OjPrmvsl9yfkKc7bdq3+q47lkSZepKn/mr5n47BpB1yP6qVq4EvcFk635baE7WXxpbbzxOimP1rCS2aK3MApvAAJshfHQr7LxdQWY52WyIV9OeruQFLRyu1SdI6hH+6avm/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TLK7uGDz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51E9BC43390;
-	Tue, 13 Feb 2024 00:19:46 +0000 (UTC)
+	 MIME-Version; b=I985AFdV1hWLl6r7SbKO4O83A+0FZgpp170Yk42TAOE5v7IvGxlXtmc8DA+WrfszSi9zJ0trYjJ1ry1uKN9dRrDG10L8KlyVaLYygjsutoULAti1q1QoEhzJcwz3FAGGK+AcDSOpR6dnL3E74yhwT7D6maEODoQnmQ+Lht5uwlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNxlG2KB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBE94C433C7;
+	Tue, 13 Feb 2024 00:19:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783588;
-	bh=9PvseMVXZBtb/cwZqzTiH66r08HVA91dkLfACeiIZu4=;
+	s=k20201202; t=1707783590;
+	bh=QGj5j0oEDjjnBXJCwY1815nVn1vrlL+NkbYjRzcy7qg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TLK7uGDzQHV33+jP9uo3eeoHEXTbXb71kibUA3QBHdxiv+oMF/w0L4rGSFpSMM+3i
-	 3HMe1k2V+gpm65dOY52JOi8iuwkIkH94ObMxSplIirprQhSP363MWmTlh21KufHqlM
-	 Pro+UHbHbYecS8c1ibMjBqni3B3AVzzwMoz2NZpMGDb2GsbADpDOLafN13bwgEH7k5
-	 5Z6U0SVczMEmWmLOn646G02Q+9IYX3NGCnTVEChBoGPG3+iwSttfswWATIehV+a5O5
-	 A0jQufN+Ok3EEURtrrW0Ci7ENfxQd6ioELJPK8S6vrWQtd7jozW5GP2Eu3P2vRcID7
-	 +L2Gt9HU5ejTA==
+	b=jNxlG2KBDhk9ksqueWhPLERSUO+PHPUuA68K0IlRtp8J2sHryz6nFryDhPrxohAZ/
+	 JtihtLlXnCBTzRbCTh813v61R7/Jk9+FgzVNR5AgL498/41YgO8syMUOTrGcGoCLoV
+	 rertq50f0qP3HUKVzW8lK0U9jWYLa1yKPsiNCBLiUvJXMXl5aLrpeZlK5a2+DMdPBR
+	 UADq8u6CdwykSLPDK0hFvPdoMmcc8ua/98EYTEgksRfMvCW0fdoG4i7FST3SG+jiBd
+	 7DfNbL+85MmivRFb4fWws9eC/Kx5tS7BCk8R1IEhhMNwoQLAw0LwQq5MDnSeKoFiVM
+	 Vhg+1cEHXkUsA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	kernel test robot <lkp@intel.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Fangrui Song <maskray@google.com>,
-	loongarch@lists.linux.dev,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Sasha Levin <sashal@kernel.org>,
-	git@xen0n.name,
-	deller@gmx.de,
-	svens@linux.ibm.com,
-	chenfeiyang@loongson.cn,
-	zhangqing@loongson.cn
-Subject: [PATCH AUTOSEL 6.7 42/58] LoongArch: vDSO: Disable UBSAN instrumentation
-Date: Mon, 12 Feb 2024 19:17:48 -0500
-Message-ID: <20240213001837.668862-42-sashal@kernel.org>
+Cc: "Wachowski, Karol" <karol.wachowski@intel.com>,
+	Wachowski@web.codeaurora.org,
+	Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
+	Jeffrey Hugo <quic_jhugo@quicinc.com>,
+	Sasha Levin <sashal@kernel.org>, stanislaw.gruszka@linux.intel.com,
+	ogabbay@kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.7 43/58] accel/ivpu: Force snooping for MMU writes
+Date: Mon, 12 Feb 2024 19:17:49 -0500
+Message-ID: <20240213001837.668862-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213001837.668862-1-sashal@kernel.org>
 References: <20240213001837.668862-1-sashal@kernel.org>
@@ -76,44 +66,75 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.4
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <keescook@chromium.org>
+From: "Wachowski, Karol" <karol.wachowski@intel.com>
 
-[ Upstream commit cca5efe77a6a2d02b3da4960f799fa233e460ab1 ]
+[ Upstream commit c9da9a1f17bf4fa96b115950fd389c917b583c1c ]
 
-The vDSO executes in userspace, so the kernel's UBSAN should not
-instrument it. Solves these kind of build errors:
+Set AW_SNOOP_OVERRIDE bit in VPU_37/40XX_HOST_IF_TCU_PTW_OVERRIDES
+to force snooping for MMU write accesses (setting event queue events).
 
-  loongarch64-linux-ld: arch/loongarch/vdso/vgettimeofday.o: in function `vdso_shift_ns':
-  lib/vdso/gettimeofday.c:23:(.text+0x3f8): undefined reference to `__ubsan_handle_shift_out_of_bounds'
+MMU event queue buffer is the only buffer written by MMU and
+mapped as write-back which break cache coherency. Force write
+transactions to be snooped solving the problem.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202401310530.lZHCj1Zl-lkp@intel.com/
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Fangrui Song <maskray@google.com>
-Cc: loongarch@lists.linux.dev
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Signed-off-by: Wachowski, Karol <karol.wachowski@intel.com>
+Signed-off-by: Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>
+Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240126122804.2169129-2-jacek.lawrynowicz@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/loongarch/vdso/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/accel/ivpu/ivpu_hw_37xx.c | 2 +-
+ drivers/accel/ivpu/ivpu_hw_40xx.c | 2 +-
+ drivers/accel/ivpu/ivpu_mmu.c     | 3 ---
+ 3 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/arch/loongarch/vdso/Makefile b/arch/loongarch/vdso/Makefile
-index c74c9921304f..f597cd08a96b 100644
---- a/arch/loongarch/vdso/Makefile
-+++ b/arch/loongarch/vdso/Makefile
-@@ -2,6 +2,7 @@
- # Objects to go into the VDSO.
+diff --git a/drivers/accel/ivpu/ivpu_hw_37xx.c b/drivers/accel/ivpu/ivpu_hw_37xx.c
+index d530384f8d60..e658fcf849f7 100644
+--- a/drivers/accel/ivpu/ivpu_hw_37xx.c
++++ b/drivers/accel/ivpu/ivpu_hw_37xx.c
+@@ -523,7 +523,7 @@ static void ivpu_boot_no_snoop_enable(struct ivpu_device *vdev)
+ 	u32 val = REGV_RD32(VPU_37XX_HOST_IF_TCU_PTW_OVERRIDES);
  
- KASAN_SANITIZE := n
-+UBSAN_SANITIZE := n
- KCOV_INSTRUMENT := n
+ 	val = REG_SET_FLD(VPU_37XX_HOST_IF_TCU_PTW_OVERRIDES, NOSNOOP_OVERRIDE_EN, val);
+-	val = REG_SET_FLD(VPU_37XX_HOST_IF_TCU_PTW_OVERRIDES, AW_NOSNOOP_OVERRIDE, val);
++	val = REG_CLR_FLD(VPU_37XX_HOST_IF_TCU_PTW_OVERRIDES, AW_NOSNOOP_OVERRIDE, val);
+ 	val = REG_SET_FLD(VPU_37XX_HOST_IF_TCU_PTW_OVERRIDES, AR_NOSNOOP_OVERRIDE, val);
  
- # Include the generic Makefile to check the built vdso.
+ 	REGV_WR32(VPU_37XX_HOST_IF_TCU_PTW_OVERRIDES, val);
+diff --git a/drivers/accel/ivpu/ivpu_hw_40xx.c b/drivers/accel/ivpu/ivpu_hw_40xx.c
+index e691c49c9841..8a7440bcd6df 100644
+--- a/drivers/accel/ivpu/ivpu_hw_40xx.c
++++ b/drivers/accel/ivpu/ivpu_hw_40xx.c
+@@ -526,7 +526,7 @@ static void ivpu_boot_no_snoop_enable(struct ivpu_device *vdev)
+ 	u32 val = REGV_RD32(VPU_40XX_HOST_IF_TCU_PTW_OVERRIDES);
+ 
+ 	val = REG_SET_FLD(VPU_40XX_HOST_IF_TCU_PTW_OVERRIDES, SNOOP_OVERRIDE_EN, val);
+-	val = REG_CLR_FLD(VPU_40XX_HOST_IF_TCU_PTW_OVERRIDES, AW_SNOOP_OVERRIDE, val);
++	val = REG_SET_FLD(VPU_40XX_HOST_IF_TCU_PTW_OVERRIDES, AW_SNOOP_OVERRIDE, val);
+ 	val = REG_CLR_FLD(VPU_40XX_HOST_IF_TCU_PTW_OVERRIDES, AR_SNOOP_OVERRIDE, val);
+ 
+ 	REGV_WR32(VPU_40XX_HOST_IF_TCU_PTW_OVERRIDES, val);
+diff --git a/drivers/accel/ivpu/ivpu_mmu.c b/drivers/accel/ivpu/ivpu_mmu.c
+index 2538c78fbebe..9898946174fd 100644
+--- a/drivers/accel/ivpu/ivpu_mmu.c
++++ b/drivers/accel/ivpu/ivpu_mmu.c
+@@ -533,7 +533,6 @@ static int ivpu_mmu_reset(struct ivpu_device *vdev)
+ 	mmu->cmdq.cons = 0;
+ 
+ 	memset(mmu->evtq.base, 0, IVPU_MMU_EVTQ_SIZE);
+-	clflush_cache_range(mmu->evtq.base, IVPU_MMU_EVTQ_SIZE);
+ 	mmu->evtq.prod = 0;
+ 	mmu->evtq.cons = 0;
+ 
+@@ -847,8 +846,6 @@ static u32 *ivpu_mmu_get_event(struct ivpu_device *vdev)
+ 	if (!CIRC_CNT(IVPU_MMU_Q_IDX(evtq->prod), IVPU_MMU_Q_IDX(evtq->cons), IVPU_MMU_Q_COUNT))
+ 		return NULL;
+ 
+-	clflush_cache_range(evt, IVPU_MMU_EVTQ_CMD_SIZE);
+-
+ 	evtq->cons = (evtq->cons + 1) & IVPU_MMU_Q_WRAP_MASK;
+ 	REGV_WR32(IVPU_MMU_REG_EVTQ_CONS_SEC, evtq->cons);
+ 
 -- 
 2.43.0
 
