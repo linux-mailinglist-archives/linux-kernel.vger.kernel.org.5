@@ -1,56 +1,60 @@
-Return-Path: <linux-kernel+bounces-62724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EB7C8524D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:01:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE7BE8524DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:01:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26EC5B287D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:01:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EE0DB2888D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:01:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05AF1272C3;
-	Tue, 13 Feb 2024 00:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F7BC12837A;
+	Tue, 13 Feb 2024 00:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L0J0wFxE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dnSwQ2Cn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCA0B128376;
-	Tue, 13 Feb 2024 00:23:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4695812836B;
+	Tue, 13 Feb 2024 00:23:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783827; cv=none; b=bnszmJ/EdJl9o334YpvcO04YXQiFFXS+qmQH2SLzo+SCDjRrlCw8gWS+4kGDUK7ClxOmwWzZ7y47/HvkRcENkHRQQky9Rmk5rzf+CIn66+dOO7IJsw21RB4eG8fwc/vcUEdz8KarAiToO0S0NIoTpaRh/S0JWGaCZD6i2RDCFyQ=
+	t=1707783828; cv=none; b=AkTqNrgNzRzMAlFbjDlnb94NIG1kecNsvP33dwIZsAgwYQGT18uqVZgZZWUe9mEtOG1BOVmRzOGhNEmGST4rkiMC5UiztQUpLhVGjkNyzpyYGIIE+rK+yIZSKS9gmzmY1Q/IQWaE62sL3UzHzU223FO9k/ys2yh5z84mTCSkSJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783827; c=relaxed/simple;
-	bh=izmuI3L5atRkTiiozb8n4IWjISJZNUDm1SJ6sz2EJ8s=;
+	s=arc-20240116; t=1707783828; c=relaxed/simple;
+	bh=cBm2UBuJTG5yTg3NrSywZMdNfQKwSwm2BxLFtbcWarI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=it9TEULXpA73pf2CrnlP+OhLYJ352WME6TqxocqHTSHHUJ2b2e8kYXcvJbJNNgYnsLZm4MIinzbj6EtTL50ug3ypLEqxJZp3Bc0MwKhXo67hMYtwl39Wn0y4VSO1VfeE+nsYILn7N2ofQyQmsjvrwQ1oSPR3hoIDGj3goF5gWIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L0J0wFxE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92214C43390;
-	Tue, 13 Feb 2024 00:23:45 +0000 (UTC)
+	 MIME-Version; b=BS7M6I5mjDjqdS/LJCYcgXylrUZoXTHWTy999eK15ToVEhS6BnhKnLZzGAYpI4gkZr/VZ07lo/rDHQBOuJvXMoCxgZcIFNYoeJXiuKrDL40v/uqWem40sG/VJBZbjt6lZg24ors5DJmqwQ1u/2UnCysG5WhQK4GF/lBvGhhkeD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dnSwQ2Cn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D503BC43399;
+	Tue, 13 Feb 2024 00:23:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783826;
-	bh=izmuI3L5atRkTiiozb8n4IWjISJZNUDm1SJ6sz2EJ8s=;
+	s=k20201202; t=1707783828;
+	bh=cBm2UBuJTG5yTg3NrSywZMdNfQKwSwm2BxLFtbcWarI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L0J0wFxECLWA9eHBQGORkVp8QXGX/ci6O488EFLNPyPY+mdMI0ZzUpmYjIn3dFfes
-	 23zl4Xl+FH3bGQzXUE2PY5C315uoyBUV1/WHBeDb+cgoce1YBOqc7G55DdTcH+mirA
-	 PLsmNGAwNNspZ+2JZQpVK/WoNn11auOzn7nddAerY4Lu8ANUiC80xBPdiZSMKU47Km
-	 Aj+f8VntortMGJKMj6Xy8gP5+p1f3SQy0tmjQmWCiKM16W/3nbcd9y0KRNE50mzDwC
-	 uMFAvBbSzcfc4YHAgrPxQDrqw1abs0AFRWIrpQeizclMrYxkK1FTtNWTMmUrduHVs/
-	 Wd0gFFxkqFiug==
+	b=dnSwQ2CnRctiX1f7chLSG239QZHL18Xt6eoqc8FIBOaathpaX/2NeJtTkVVOs5YH3
+	 nmFjlQ3DtOwaLsfCnB7hSiSk2/4O7CtxOrEfgFmM1a8Mu0PDcQKM4ngFQQLUjlwOgZ
+	 gHHblCvtWgkje/nW5igsCaiL61uzjRF5CewHg+Ulkr135/GOotGxRB/LhM+Kcw9whz
+	 H1WTFKpi1Cx8+pXIBtnYsSlDVPKkVu8UrQ4X2sE9/1mhPP+9nmhU66gDJ38/ZG/H0e
+	 dI+Fssw8e7n73Wc35G1Ot7ihNgZymg1Kx6Pg4zAY9h5y/RUefHos0JrH/T16rtaVzU
+	 BjcVq+rdHQ2Bg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Edward Adam Davis <eadavis@qq.com>,
-	syzbot+65e940cfb8f99a97aca7@syzkaller.appspotmail.com,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+Cc: Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	ntfs3@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.15 12/22] fs/ntfs3: Fix oob in ntfs_listxattr
-Date: Mon, 12 Feb 2024 19:23:14 -0500
-Message-ID: <20240213002331.672583-12-sashal@kernel.org>
+	johannes@sipsolutions.net,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 13/22] wifi: mac80211: adding missing drv_mgd_complete_tx() call
+Date: Mon, 12 Feb 2024 19:23:15 -0500
+Message-ID: <20240213002331.672583-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002331.672583-1-sashal@kernel.org>
 References: <20240213002331.672583-1-sashal@kernel.org>
@@ -65,34 +69,33 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.148
 Content-Transfer-Encoding: 8bit
 
-From: Edward Adam Davis <eadavis@qq.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 731ab1f9828800df871c5a7ab9ffe965317d3f15 ]
+[ Upstream commit c042600c17d8c490279f0ae2baee29475fe8047d ]
 
-The length of name cannot exceed the space occupied by ea.
+There's a call to drv_mgd_prepare_tx() and so there should
+be one to drv_mgd_complete_tx(), but on this path it's not.
+Add it.
 
-Reported-and-tested-by: syzbot+65e940cfb8f99a97aca7@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Link: https://msgid.link/20240131164824.2f0922a514e1.I5aac89b93bcead88c374187d70cad0599d29d2c8@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/xattr.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/mac80211/mlme.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index 8e739023e305..d0b75d7f58a7 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -217,6 +217,9 @@ static ssize_t ntfs_list_ea(struct ntfs_inode *ni, char *buffer,
- 		if (!ea->name_len)
- 			break;
+diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
+index cc6d38a2e6d5..5da0c2a2e293 100644
+--- a/net/mac80211/mlme.c
++++ b/net/mac80211/mlme.c
+@@ -5923,6 +5923,7 @@ int ieee80211_mgd_deauth(struct ieee80211_sub_if_data *sdata,
+ 		ieee80211_report_disconnect(sdata, frame_buf,
+ 					    sizeof(frame_buf), true,
+ 					    req->reason_code, false);
++		drv_mgd_complete_tx(sdata->local, sdata, &info);
+ 		return 0;
+ 	}
  
-+		if (ea->name_len > ea_size)
-+			break;
-+
- 		if (buffer) {
- 			/* Check if we can use field ea->name */
- 			if (off + ea_size > size)
 -- 
 2.43.0
 
