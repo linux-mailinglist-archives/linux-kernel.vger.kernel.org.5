@@ -1,134 +1,105 @@
-Return-Path: <linux-kernel+bounces-63083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7268852AB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:17:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94AF6852ABF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA97B1C21A45
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:17:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB30FB21836
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:18:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD57224D5;
-	Tue, 13 Feb 2024 08:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2111224E6;
+	Tue, 13 Feb 2024 08:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="JTDqkXlM"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="HLthi65g"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3774622334
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFF321364
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:17:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707812203; cv=none; b=RCh2K9F1R3jv8bXZxsSzOhJVAyq51f+BZ7DGIlQe/MBc3scvOU1ZAG1wlu20OtITABkPHqY6AjG6cZK120Xift4WjcKbb5darjOwE2Dqk6gKCRCcDTYsh9G9rWPk2Gudk3j5xVdw4po9TLz+JfAcKBSgX7laPpKvUFNgLLnuKCc=
+	t=1707812229; cv=none; b=eQzNwhIN1Q8EZMYX2aPD5NsvR/Lhyp4btYzK1Snw9LB8h5UvUjRpnfYV9loVZU1hi9+Iz9LWkxjNv2B4Y5y159h8zOk/59mSPgoDv0BiakhI0r2YllTkezwRF4YbRQQgX71GJZ2WegD1tuDQ4Hqa4fZDFO+3udTrZaG0SrG+d/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707812203; c=relaxed/simple;
-	bh=pUSVavZmcjyYbi6RShnaW6jH3HO+mvOqqtpuCzNxeUU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NgAATqm0+NckT6saCAzOUhvdc9a9JBmVUeS+deTi5HF5j6DM3OcVihk2Re4+Ckm2Be2kCGJH18x/hiw0lSwpAQ1RNFGybzOZ1OooOGJcjltOnwNNK0DeMWSOmeHF++9fdlcDyBcCohg6+goDeFaJon50U+9qpmkAfvpuYmCM7vA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=JTDqkXlM; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d8aadc624dso29902755ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:16:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1707812200; x=1708417000; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K+aOrCJIUWm9gZNxG5N0dygbdBPzUIeW3edWmhaMQB0=;
-        b=JTDqkXlMw3oFhGhOQ+xYUcspUqxYWHU+vROYhHI1RV/tvZww1CAalRYRXImLPYCbMU
-         b9S24yMYmRMWfo0DUT0kDz2zvhJ3Zwf2Q26tu2nfbdD1xBHahtB9vJDOQOVmucph3Hla
-         sIkq6LU1CgouoGHOOD32v1BnW6/MsKeq/P2LJTD2rEnD12OS0hrvCVC7qch7hZj46Xdr
-         6AY9zXv+axAXLrYnDGLxqDVY4BFMCqs5NQwDdOcXouGeZgFfAOkzx9/5Qok6jKVl3jIE
-         qKW5O6whncjCORccYbwfKlBXBst0tPljWEsG2YeaWWaRve46RYbftEcNzCXXsYctEhkq
-         ekQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707812200; x=1708417000;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K+aOrCJIUWm9gZNxG5N0dygbdBPzUIeW3edWmhaMQB0=;
-        b=P1zRvwT+bLd3ljh76RXq3MZcG/XwCTMplBboIhlZFWtWMyLSx2j85eFxqPq+qgGu8T
-         UTxFkyJrm//AZqf+47nQKSc/m69yavugptRIDisf0h9xS1w0Aq+W7n7DN+gt+EsM5Ufu
-         S5F9dhahgpo+7Fy2AKnqPwLxi3h2ShOKgV/YVl2UM5bsP9e5YCOpJPRK53LWQjZUHs5n
-         Nycuj3Cm78CZQVsWrpMVK+1O31J5DHCzTUswwAgNYNgS7Jykhw35+Mu/BbeTjp3d9kwX
-         n6H+yQadaq6LcXmdbJQf9a6WLdc2TjKddRGRRGEJGVpoJFJVKqhWGGxNpMaVaWsRQ3Vs
-         1AeA==
-X-Forwarded-Encrypted: i=1; AJvYcCUU9hkxM0EOIunsINhGOfFdvVcu4Qvh6NwVDSbGLmddJ+hWEAwm8joJ9d6M+R/e2aEJLq+MywV/0Dt4kPNCBRGtkrB9dIVOwVaTY/c5
-X-Gm-Message-State: AOJu0Yy4LjH8ewelh08RPAXo863x7riaHu2CJvs9zDu7BZP/KtlVSAKP
-	SrtVPjjsCeIukvjkPblfsbiMq7hasgM3ZBVowcuKTGLcRN+b9TrcOvQRjuR3euU=
-X-Google-Smtp-Source: AGHT+IHN30FOf76CIlJ70s4RXG08RhVc6llnrHToPYD4rI38cBg1UPCeufOMlRlWoRo7BYjOTkacFg==
-X-Received: by 2002:a17:902:784e:b0:1d9:bf92:f51e with SMTP id e14-20020a170902784e00b001d9bf92f51emr7463057pln.49.1707812200433;
-        Tue, 13 Feb 2024 00:16:40 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVYaiB4sJIlOpc7RRe3eZfg5f90Re+8kea9EJomeq8BGe9OkX8RGdoQT5J50iUT4DchvymvZt2277c1SRur2DQ9jXLBwtcktzhgrlV8inuxHYziucR2B3sGPqnetqihS6EsrH4vMPkRLcDzps4GERHVa7pMGkDlYVF9fe0RjRJEDGeIzxi+CowcX9zmvVf6CbZN9mnquFaARgFq73e3EWur064bF3Vyf4CdaWMcDfkM9NP2V5jTy4dwJuDUoyk2WDbt9ZwEE7n8lmxvTOAypu74vdH4h6mdc8bLm9YECEK4pmm48e0YFKKW2tuS
-Received: from localhost ([2620:10d:c091:400::5:b0f])
-        by smtp.gmail.com with ESMTPSA id kq5-20020a170903284500b001d8ecf5ff6csm129187plb.147.2024.02.13.00.16.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 00:16:39 -0800 (PST)
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeelb@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Jonas=20Sch=C3=A4fer?= <jonas@wielicki.name>,
-	Narcis Garcia <debianlists@actiu.net>,
-	Yosry Ahmed <yosryahmed@google.com>
-Subject: [PATCH] mm: memcontrol: clarify swapaccount=0 deprecation warning
-Date: Tue, 13 Feb 2024 03:16:34 -0500
-Message-ID: <20240213081634.3652326-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707812229; c=relaxed/simple;
+	bh=ks4fukdqMyGr+GEJndFKiSXNpWWX9ybSOnrpYXFOU+8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gD91KQcT0xLLLBfotw6aZ6obdiHtLeBQmlP3DcLhaqtGzJLFBHworXLyi+4ihF0fXpILOnqy+H+LDJbeFDAmMVlZJ5EQLgc7l02JtdHe2MhAmkjJNMu+AITsUWHL6Fvm3OKrtxfSgH4REwgYhxbaoxXgiJrK8rvPYSorVCLNLq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=HLthi65g; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [127.0.1.1] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 85995D49;
+	Tue, 13 Feb 2024 09:17:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1707812223;
+	bh=ks4fukdqMyGr+GEJndFKiSXNpWWX9ybSOnrpYXFOU+8=;
+	h=From:Subject:Date:To:Cc:From;
+	b=HLthi65gqWy/28VHJhje68hii13RB0OOcUZ8FVQHYysiUsqUWTnk/C1P0LDp2G+j+
+	 9SHogsvACyLtwUfCdOC+7daRKJUhrWIh+DNMz/oYqdfUItTlyItoxn4NlSaJeH3UXG
+	 OMvpAgTtCqCq/1lZRG5FdYS84PrUAqyAmNhhJWUQ=
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: [PATCH 0/2] drm/tidss: Fixes for zpos and multi-display
+Date: Tue, 13 Feb 2024 10:16:35 +0200
+Message-Id: <20240213-tidss-fixes-v1-0-d709e8dfa505@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGMly2UC/x3LSwqAMAwA0atI1hb6Q8GriAtJo2ZTpRERSu9uc
+ PkYpoJQYRKYugqFHhY+s8L1HeCx5p0MJzV466P1Lpibk4jZ+CUxiGGMDtNgI4IeV6E/6DAvrX1
+ Tdut1XQAAAA==
+To: Jyri Sarha <jyri.sarha@iki.fi>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Sam Ravnborg <sam@ravnborg.org>, Devarsh Thakkar <devarsht@ti.com>, 
+ Aradhya Bhatia <a-bhatia1@ti.com>, Francesco Dolcini <francesco@dolcini.it>
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>, dri-devel@lists.freedesktop.org, 
+ linux-kernel@vger.kernel.org, 
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=668;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=ks4fukdqMyGr+GEJndFKiSXNpWWX9ybSOnrpYXFOU+8=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlyyV55l6tBmXG7ff/FpJCDglNGuypuv4flkXj7
+ 84AVLkkESqJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZcsleQAKCRD6PaqMvJYe
+ 9eulEACsmMyrXHHrhieBrENiD5omeb8WHKRM8oq53fMSR9pVKgFXW+IQdy7WferMD7ozjKLBsAN
+ 9MGsBFUQPuPJV+7qA/gpYLV1s8b5dwjBrTbM3FqlJsObRraUICyG8ODdoOiNtmHNEB03MZCwrrj
+ ehTTnXc6Kn8nISJIzHiMVhqhW848nZBxUANHDNAnBteEgv8wtC2QBA7qaxprCztK6vd+LRae+aZ
+ EsjOchQ2UtwUW88uHcERtC0wnIKm8puwPEJp0AVMooEtTHERfyLUEaKidNhWUf1Tb8Tau2+19vF
+ w5PvjUeW+dQVyJ1Pc1BMYbfomUAVK9CP1s3u1o2qUyJGv+VlBEnq3dOwH+t9dRHBW/lCYIDsOOB
+ m5HTQjBinNcjdv/T+3HNaG43UUFpuaDGrrR3RaEXTiBgwjTL3ay00PFfG2le7SOMeeXAIiQaOs4
+ 6QDy3YsMdIjXxNJKiOIlvyr/xAlEIJm144ZN/Q9NjgILeSbc0fuA3RxdN7OcsGHGDsUBwmjpnTw
+ S/AhpURae4shRCGEjTcS8XkekI8KeVM5aKkKF3/bndFnksAiE6Z3jaaM4q9lEmt/oLW0tyPw9hx
+ 1ecVf7ovb5RB7LhYzUehlJoyBlfYFGn3Ak+C9eMRvY0UQvy9HbaziC7+1V6PnebnPa5tddyvXaO
+ RQ4x8ZNSckT6rZQ==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 
-The swapaccount deprecation warning is throwing false positives. Since
-we deprecated the knob and defaulted to enabling, the only reports
-we've been getting are from folks that set swapaccount=1. While this
-is a nice affirmation that always-enabling was the right choice, we
-certainly don't want to warn when users request the supported mode.
+Two fixes for tidss: The first one helps Weston deal with the planes,
+the second fixes a possible sync-lost issue with multiple displays.
 
-Only warn when disabling is requested, and clarify the warning.
-
-Fixes: b25806dcd3d5 ("mm: memcontrol: deprecate swapaccounting=0 mode")
-Cc: stable@vger.kernel.org
-Reported-by: "Jonas Schäfer" <jonas@wielicki.name>
-Reported-by: Narcis Garcia <debianlists@actiu.net>
-Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
- mm/memcontrol.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+Tomi Valkeinen (2):
+      drm/tidss: Fix initial plane zpos values
+      drm/tidss: Fix sync-lost issue with two displays
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 1ed40f9d3a27..107ec5d36819 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7971,9 +7971,13 @@ bool mem_cgroup_swap_full(struct folio *folio)
- 
- static int __init setup_swap_account(char *s)
- {
--	pr_warn_once("The swapaccount= commandline option is deprecated. "
--		     "Please report your usecase to linux-mm@kvack.org if you "
--		     "depend on this functionality.\n");
-+	bool res;
-+
-+	if (!kstrtobool(s, &res) && !res)
-+		pr_warn_once("The swapaccount=0 commdandline option is deprecated "
-+			     "in favor of configuring swap control via cgroupfs. "
-+			     "Please report your usecase to linux-mm@kvack.org if you "
-+			     "depend on this functionality.\n");
- 	return 1;
- }
- __setup("swapaccount=", setup_swap_account);
+ drivers/gpu/drm/tidss/tidss_crtc.c  | 10 ++++++++++
+ drivers/gpu/drm/tidss/tidss_plane.c |  2 +-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+---
+base-commit: 423af970da74db7eed1b14f2b7f115714a67aeb8
+change-id: 20240213-tidss-fixes-cc3741cd604c
+
+Best regards,
 -- 
-2.43.0
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
 
