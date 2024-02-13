@@ -1,127 +1,336 @@
-Return-Path: <linux-kernel+bounces-64319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42C1B853CFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:23:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56294853D0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:24:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCB201F234FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:23:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A603AB28CC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:24:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E13062148;
-	Tue, 13 Feb 2024 21:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39DB3629E9;
+	Tue, 13 Feb 2024 21:11:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="MDMpb4pm"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3qw+DHL3"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A41B4501B
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2902626BB
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707858591; cv=none; b=cWyBQt+Io2/GgKp+oXhpXSOVr6IGCOu0t3IKFsmSDN9G5YK+BA8/n1ymvXMckDG2x+qklN1/ztvmA9dY60nJIoxoOY5rx9gINcRTMSK5wAdRnzN+zg3wSIcNwLQ0V1gY5b6IVT9RpqfAcceZ/4DHrAXny0mRqY2qJvREaezgVuw=
+	t=1707858707; cv=none; b=e5/qxOPY4aE05mKU8UfgoqRoiZcap7Naur5fIu3ADfW0ivIuefCDdu/AN/6MUEdN19YpgUad/rmJG7s0ammpoEkPnWiu+z1cmza3qyYINqYPZa1FKqHfY3qW2f86lFdM02+uXw0HbavNIA9/S1b0S2KhrU13lIz3wEy78pp3GDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707858591; c=relaxed/simple;
-	bh=yE563jYemyl/vAZ+FK/z0jc0wfNO0ntt3wJwgwq9H40=;
+	s=arc-20240116; t=1707858707; c=relaxed/simple;
+	bh=8PgonvMIbvrH9MSbhuItBe3sWcnPc7IU56AmceLpoEw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NyDWfSy0drWGzm1YGpy29wYgnQgDLwgb63i1m3rRkA4BmMfCaymV7sV+/m6OTfBhEZS/ZYiXk6r5B6Hbc7nChxoWOrQLucJ6f3j+u1d4ixIsr2YGLclofvIsxdxhqt/4faSxiBHKa8OOGb8VMyCLR4NWwhm5RI5oitj3x5rjR9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=MDMpb4pm; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5620f15c3e5so946955a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:09:49 -0800 (PST)
+	 To:Cc:Content-Type; b=hinJxqFdN1dm8P9YswDaUdjRu14B3eD/9YycXH5jfxn+YRIdEBOkprGIiA9s5gDWvkQ+pgSY4X7y13D23DWtAq3+QZMZyxeD86akJ7X7+Nzmpwc7BZp+eesUfioRrfYsImfB0yg8X5QiBsGWZeaQ5Sh3ph8sftWrSVyXW1siox8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3qw+DHL3; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3d2cce1126so48481766b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:11:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707858587; x=1708463387; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707858701; x=1708463501; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=odSVkG5Ep60HRCR2A/0o61mTWPkFfp+uEG3bmWlcvqQ=;
-        b=MDMpb4pmYr5kNXB94iWQO9W3RymH8jC8OzQZIHa04lsZZtKnk56Tg+LnvQ7GcvyuLb
-         Gtuep7G0JleVYgKgM2Dyi+izFPQ9etLhWLMdy/Vh2UiCLeruHwa/ysy4vmPS55eCNFsW
-         nEE6328pdD0OtCGJn6aSXDinxyeW1aNFjfTck=
+        bh=zsOIUemMTVXHoEVROLysOcQX18quXE3mcOSmusaiTVU=;
+        b=3qw+DHL3WKlvdWe731UgqTCdG+qi223RsObe3z8CUbETTRm40/NN6mBjH9dyNhgr5g
+         s33N2CJFc+rqmBDXPEqp1KSyPW8W2LMKeGsrgtN8m9F4+AZBS1GiPhBk73x4Po73Ug1z
+         ghvS03vAElxM0Ms8sO62V0tRLtk/6tnozaNNfNNYN1NGGj+qvBdNh70xCj0EIvwg1LBI
+         o148syW51Ot0cGQdz0rlPhjYAmhNxxf4TbCdrHIvglxbE1M/2+B2q3GZuB6YP1S8lZjr
+         LkBH0EFmodTlsm4KnccJYrPjlq0NCH1D3nDjfCEfEQ/88RtrGhpZgh66F8SUReet9Eqi
+         P68A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707858587; x=1708463387;
+        d=1e100.net; s=20230601; t=1707858701; x=1708463501;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=odSVkG5Ep60HRCR2A/0o61mTWPkFfp+uEG3bmWlcvqQ=;
-        b=XM75bXLzLDBc4AHgViLcXtzH5M6EC74T+Pss9vnSaHRWxsQ4kpIpG7XPGuxVIcC+rS
-         eepB98/jNScQJLOx4Opuikr/NUx+pa5hqCNHolyzQQSbNAZrU8Auv/LT3mAzMPoCkBve
-         jrQXh8JB4moyM6ivFq/rv+eTS2RLIx/MZtzmztDccHbjWezdkF1lTVd1AQ/9m3QVqwnj
-         o6qI5KZl8DVvUq3wZQ2SSyhbwdAompcCduFsl26RnGeYe/0ohz8n9snWBtEpxLPqNNT2
-         0CGfyqxf2oN90J5V/Xz7C2ADTGMGbx6l1fQG6F9z90sSXFfkyiF95+MeanvPq9tNFkZp
-         kPvg==
-X-Forwarded-Encrypted: i=1; AJvYcCW0BDpKDzbMHa0wEI1wbcV8hhHTHFiLiMBY3+SMSStRcZE1SHI1mT2iWey82YIywffCgqDCnbaYO3z64I2VBpwkXjS9yAgdGCbWodEu
-X-Gm-Message-State: AOJu0YxH14+TyYx6Y37FQtwS5WouGKJldpbTh70sLIXB1T3lcT5lLoOA
-	qauX3GUeyvySH6wKpRZT5Ngwisyk5IXO5ILh6EDIGY1lqnM/tptJw18byUTPIEzAONyXnub4hX+
-	uSA==
-X-Google-Smtp-Source: AGHT+IFAVXnTwShs2v9rntKUPcdqky6dn6OLnsAkdVEj3wExsLDc5kHVWTHRK4DOEUq4LCPLKG2NLA==
-X-Received: by 2002:a17:906:7c9:b0:a3c:1402:e042 with SMTP id m9-20020a17090607c900b00a3c1402e042mr318233ejc.37.1707858587029;
-        Tue, 13 Feb 2024 13:09:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWiKjikcEjYtMriI9Uojx/DxFsxWTKML9V/2WZOQybsGJOFI71aNQcXlaFGvUuN7iuzkUDBx842DnzOMlVzKK+HXWJk6KyHlR+JwqCl
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
-        by smtp.gmail.com with ESMTPSA id ti13-20020a170907c20d00b00a3ce3c5b2a4sm1461202ejc.195.2024.02.13.13.09.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 13:09:46 -0800 (PST)
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-410cf70a057so88505e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:09:46 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWPXNPfMfM3AhbD4LuXanVEWaisDhHBFNxLOltzX/zlfbWe3yuLkjc4B9gWeB7aiGNpaHBcthWSnCca0ESgZTgK/WsqUxpV7CuQgt/C
-X-Received: by 2002:a05:600c:1d93:b0:411:cdf8:f3d1 with SMTP id
- p19-20020a05600c1d9300b00411cdf8f3d1mr85206wms.0.1707858585791; Tue, 13 Feb
- 2024 13:09:45 -0800 (PST)
+        bh=zsOIUemMTVXHoEVROLysOcQX18quXE3mcOSmusaiTVU=;
+        b=Gz0UT8c6kPffieTz/FxufemNiRHx0vCD0tD3o+j4/cCt7w+bSbXOuyaiYx+KZ/4kBA
+         49ITDwTtUewd/ncwSUcuXbFV7IyaqnwZ1hhmSUMpuuf42VVTT+pGa80KOsPcfi6oQkAS
+         iupB0HTd4huShiQ5T/7VVSIiMz+facErFYyBAunRYK0iOJ1laTysA8+YrMNcpgUHg2Nt
+         HCVvyYM1H5bcKmdBXEIw8uQ5pTr6FqJ+5zQKhAqMortN5CW62Rj6/zNKwVcVsC7YynMd
+         B6ZlOofR65eYanTCCnSkpTw8Bq60yXxiw89OrrcWblqwlI/ZFjAkG0cITI7BJrd1Xmaw
+         VyzA==
+X-Forwarded-Encrypted: i=1; AJvYcCVeekZP7mHVcvgEaMdv024XhwaDtSRLEEPw04X9sWZtqWTfMyAFi5wvy61FsUCtiCflRjp4MFOGVa1etRtDfbIcgFlU2PCBAOP4p1t2
+X-Gm-Message-State: AOJu0Yx4vbfCH+Vmjf1H0SWSDQdhtdRJs7/O669CUbmzomkj695G1eOQ
+	TksY0gwDM+Nh3rh7cWpgFyTaMveHm9UAYRLL929kwPFjUBatOpaAftlFpamzPcFJSNdAdiYNm+0
+	gxHk5Susjz72NNc/b6Cyyw0RKFSvGvH8+5eF4
+X-Google-Smtp-Source: AGHT+IExITBQize1fGZuvy7b+0mnYFOUMkpqQ+6ifMmjq7oa8jqrG3qPbdpWEJmCURVq8IK8JranwyOGOl5XdgYpzX0=
+X-Received: by 2002:a17:906:8410:b0:a3c:eb18:8a4d with SMTP id
+ n16-20020a170906841000b00a3ceb188a4dmr349416ejx.62.1707858700745; Tue, 13 Feb
+ 2024 13:11:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213145124.342514-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240213145124.342514-1-krzysztof.kozlowski@linaro.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Tue, 13 Feb 2024 13:09:30 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=V+MNxSpNLCjrHb553QrK4NjZHNJZymQ9+Q7qB2qjOfEw@mail.gmail.com>
-Message-ID: <CAD=FV=V+MNxSpNLCjrHb553QrK4NjZHNJZymQ9+Q7qB2qjOfEw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: replace underscores in node names
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20231218024024.3516870-1-almasrymina@google.com>
+ <20231218024024.3516870-8-almasrymina@google.com> <3374356e-5f4b-4a6f-bb19-8cb7c56103bc@gmail.com>
+In-Reply-To: <3374356e-5f4b-4a6f-bb19-8cb7c56103bc@gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 13 Feb 2024 13:11:28 -0800
+Message-ID: <CAHS8izO2zARuMovrYU3kdwSXsQAM6+SajQjDT3ckSvVOfHwaCQ@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v5 07/14] page_pool: devmem support
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeelb@google.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Tue, Feb 13, 2024 at 6:51=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On Tue, Feb 13, 2024 at 5:28=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.=
+com> wrote:
 >
-> Underscores should not be used in node names (dtc with W=3D2 warns about
-> them), so replace them with hyphens.
+> On 12/18/23 02:40, Mina Almasry wrote:
+> > Convert netmem to be a union of struct page and struct netmem. Overload
+> > the LSB of struct netmem* to indicate that it's a net_iov, otherwise
+> > it's a page.
+> >
+> > Currently these entries in struct page are rented by the page_pool and
+> > used exclusively by the net stack:
+> >
+> > struct {
+> >       unsigned long pp_magic;
+> >       struct page_pool *pp;
+> >       unsigned long _pp_mapping_pad;
+> >       unsigned long dma_addr;
+> >       atomic_long_t pp_ref_count;
+> > };
+> >
+> > Mirror these (and only these) entries into struct net_iov and implement
+> > netmem helpers that can access these common fields regardless of
+> > whether the underlying type is page or net_iov.
+> > Implement checks for net_iov in netmem helpers which delegate to mm
+> > APIs, to ensure net_iov are never passed to the mm stack.
+> >
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> > ---
+> >
+> > RFCv5:
+> > - Use netmem instead of page* with LSB set.
+> > - Use pp_ref_count for refcounting net_iov.
+> > - Removed many of the custom checks for netmem.
+> >
+> > v1:
+> > - Disable fragmentation support for iov properly.
+> > - fix napi_pp_put_page() path (Yunsheng).
+> > - Use pp_frag_count for devmem refcounting.
+> >
+> > ---
+> >   include/net/netmem.h            | 145 ++++++++++++++++++++++++++++++-=
+-
+> >   include/net/page_pool/helpers.h |  25 +++---
+> >   net/core/page_pool.c            |  26 +++---
+> >   net/core/skbuff.c               |   9 +-
+> >   4 files changed, 164 insertions(+), 41 deletions(-)
+> >
+> > diff --git a/include/net/netmem.h b/include/net/netmem.h
+> > index 31f338f19da0..7557aecc0f78 100644
+> > --- a/include/net/netmem.h
+> > +++ b/include/net/netmem.h
+> > @@ -12,11 +12,47 @@
+> >
+> >   /* net_iov */
+> >
+> > +DECLARE_STATIC_KEY_FALSE(page_pool_mem_providers);
+> > +
+> > +/*  We overload the LSB of the struct page pointer to indicate whether=
+ it's
+> > + *  a page or net_iov.
+> > + */
+> > +#define NET_IOV 0x01UL
+> > +
+> >   struct net_iov {
+> > +     unsigned long __unused_padding;
+> > +     unsigned long pp_magic;
+> > +     struct page_pool *pp;
+> >       struct dmabuf_genpool_chunk_owner *owner;
+> >       unsigned long dma_addr;
+> > +     atomic_long_t pp_ref_count;
+> >   };
 >
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/msm8939.dtsi              |  2 +-
->  .../boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi  |  2 +-
->  .../dts/qcom/msm8994-sony-xperia-kitakami.dtsi     |  2 +-
->  arch/arm64/boot/dts/qcom/msm8994.dtsi              |  4 ++--
->  arch/arm64/boot/dts/qcom/msm8996.dtsi              |  4 ++--
->  arch/arm64/boot/dts/qcom/qcm6490-idp.dts           |  2 +-
->  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts       |  2 +-
->  arch/arm64/boot/dts/qcom/sc7180.dtsi               |  2 +-
->  arch/arm64/boot/dts/qcom/sc7280.dtsi               |  2 +-
->  arch/arm64/boot/dts/qcom/sdm845-shift-axolotl.dts  |  2 +-
->  arch/arm64/boot/dts/qcom/sdm845.dtsi               |  4 ++--
->  arch/arm64/boot/dts/qcom/sm6115.dtsi               | 14 +++++++-------
->  arch/arm64/boot/dts/qcom/sm8150.dtsi               | 10 +++++-----
->  arch/arm64/boot/dts/qcom/sm8250.dtsi               |  6 +++---
->  arch/arm64/boot/dts/qcom/sm8350.dtsi               |  4 ++--
->  15 files changed, 31 insertions(+), 31 deletions(-)
+> I wonder if it would be better to extract a common sub-struct
+> used in struct page, struct_group_tagged can help to avoid
+> touching old code:
+>
+> struct page {
+>         unsigned long flags;
+>         union {
+>                 ...
+>                 struct_group_tagged(<struct_name>, ...,
+>                         /**
+>                          * @pp_magic: magic value to avoid recycling non
+>                          * page_pool allocated pages.
+>                          */
+>                         unsigned long pp_magic;
+>                         struct page_pool *pp;
+>                         unsigned long _pp_mapping_pad;
+>                         unsigned long dma_addr;
+>                         atomic_long_t pp_ref_count;
+>                 );
+>         };
+> }
+>
+> struct net_iov {
+>         unsigned long pad;
+>         struct <struct_name> p;
+> };
+>
+>
+> A bit of a churn with the padding and nesting net_iov but looks
+> sturdier. No duplication, and you can just check positions of the
+> structure instead of per-field NET_IOV_ASSERT_OFFSET, which you
+> have to not forget to update e.g. when adding a new field. Also,
 
-FWIW, everything here looks reasonable to me. Thanks for the cleanup!
+Yes, this is nicer. If possible I'll punt it to a minor cleanup as a
+follow up change. Logistically I think if this series need-not touch
+code outside of net/, that's better.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> with the change __netmem_clear_lsb can return a pointer to that
+> structure, casting struct net_iov when it's a page is a bit iffy.
+>
+> And the next question would be whether it'd be a good idea to encode
+> iov vs page not by setting a bit but via one of the fields in the
+> structure, maybe pp_magic.
+>
+
+I will push back against this, for 2 reasons:
+
+1. I think pp_magic's first 2 bits (and maybe more) are used by mm
+code and thus I think extending usage of pp_magic in this series is a
+bit iffy and I would like to avoid it. I just don't want to touch the
+semantics of struct page if I don't have to.
+2. I think this will be a measurable perf regression. Currently we can
+tell if a pointer is a page or net_iov without dereferencing the
+pointer and dirtying the cache-line. This will cause us to possibly
+dereference the pointer in areas where we don't need to. I think I had
+an earlier version of this code that required a dereference to tell if
+a page was devmem and Eric pointed to me it was a perf regression.
+
+I also don't see any upside of using pp_magic, other than making the
+code slightly more readable, maybe.
+
+> With that said I'm a bit concerned about the net_iov size. If each
+> represents 4096 bytes and you're registering 10MB, then you need
+> 30 pages worth of memory just for the iov array. Makes kvmalloc
+> a must even for relatively small sizes.
+>
+
+This I think is an age-old challenge with pages. 1.6% of the machine's
+memory is 'wasted' on every machine because a struct page needs to be
+allocated for each PAGE_SIZE region. We're running into the same issue
+here where if we want to refer to PAGE_SIZE regions of memory we need
+to allocate some reference to it. Note that net_iov can be relatively
+easily extended to support N order pages. Also note that in the devmem
+TCP use case it's not really an issue; the minor increase in mem
+utilization is more than offset by the saving in memory bw as compared
+to using host memory as a bounce buffer. All in all I vote this is
+something that can be tuned or improved in the future if someone finds
+the extra memory usage a hurdle to using devmem TCP or this net_iov
+infra.
+
+> And the final bit, I don't believe the overlay is necessary in
+> this series. Optimisations are great, but this one is a bit more on
+> the controversial side. Unless I missed something and it does make
+> things easier, it might make sense to do it separately later.
+>
+
+I completely agree, the overlay is not necessary. I implemented the
+overlay in response to Yunsheng's  strong requests for more 'unified'
+processing between page and devmem. This is the most unification I can
+do IMO without violating the requirements from Jason. I'm prepared to
+remove the overlay if it turns out controversial, but so far I haven't
+seen any complaints. Jason, please do take a look if you have not
+already.
+
+>
+> > +/* These fields in struct page are used by the page_pool and net stack=
+:
+> > + *
+> > + *   struct {
+> > + *           unsigned long pp_magic;
+> > + *           struct page_pool *pp;
+> > + *           unsigned long _pp_mapping_pad;
+> > + *           unsigned long dma_addr;
+> > + *           atomic_long_t pp_ref_count;
+> > + *   };
+> > + *
+> > + * We mirror the page_pool fields here so the page_pool can access the=
+se fields
+> > + * without worrying whether the underlying fields belong to a page or =
+net_iov.
+> > + *
+> > + * The non-net stack fields of struct page are private to the mm stack=
+ and must
+> > + * never be mirrored to net_iov.
+> > + */
+> > +#define NET_IOV_ASSERT_OFFSET(pg, iov)             \
+> > +     static_assert(offsetof(struct page, pg) =3D=3D \
+> > +                   offsetof(struct net_iov, iov))
+> > +NET_IOV_ASSERT_OFFSET(pp_magic, pp_magic);
+> > +NET_IOV_ASSERT_OFFSET(pp, pp);
+> > +NET_IOV_ASSERT_OFFSET(dma_addr, dma_addr);
+> > +NET_IOV_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
+> > +#undef NET_IOV_ASSERT_OFFSET
+> > +
+> >   static inline struct dmabuf_genpool_chunk_owner *
+> >   net_iov_owner(const struct net_iov *niov)
+> >   {
+> > @@ -47,19 +83,25 @@ net_iov_binding(const struct net_iov *niov)
+> >   struct netmem {
+> >       union {
+> >               struct page page;
+> > -
+> > -             /* Stub to prevent compiler implicitly converting from pa=
+ge*
+> > -              * to netmem_t* and vice versa.
+> > -              *
+> > -              * Other memory type(s) net stack would like to support
+> > -              * can be added to this union.
+> > -              */
+> > -             void *addr;
+> > +             struct net_iov niov;
+> >       };
+> >   };
+> >
+> ...
+>
+> --
+> Pavel Begunkov
+
+
+
+--
+Thanks,
+Mina
 
