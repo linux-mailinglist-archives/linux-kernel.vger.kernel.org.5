@@ -1,373 +1,192 @@
-Return-Path: <linux-kernel+bounces-63836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43073853540
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:53:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2E62853545
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:53:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EED98283699
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:53:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 135E21C22E76
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:53:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4C65F551;
-	Tue, 13 Feb 2024 15:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE545F859;
+	Tue, 13 Feb 2024 15:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="koe3/Qg6"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MtvDxhL+"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3FF65EE86;
-	Tue, 13 Feb 2024 15:52:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EFF65F575
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707839582; cv=none; b=G9u3Myb7FE2Os18yFWcan0mEfZqXR0Lo4xHdHy/Y4IZOUEgQrcGFCmtnxymyw8+tsrk39iNWQpZSK9bk5yQT2czcGplZ7283G2P4NJmVbZ1jawN/zfVvFH3YKuRLZlVnL7m82v3UBE85qD3ek3tvBt8S6GGr5VzCtEFACFgRURA=
+	t=1707839587; cv=none; b=tzhw9GBf+JRwOztSw+zV0m+m9XQ6j6Z1xd1Ry0CtRYpr8LrMAh6gE5XIE0aV5YWgEyvTcbSk+ZamP1aSs6cRS4R/OVBszzCb39oQaP9Kvv1ZPgEgKBaVsoVpv4sMq5jhUdb+msWntq/Bs3jPhYIWAHYDXleHo3f8ERNcHYxw2Yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707839582; c=relaxed/simple;
-	bh=JOElLBZRLNXkgO+ogIXtBjUlGRxT4DytUTJ0a4Pm/gI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IkB1EEiWX8mlYmmm9rfYLVSQG48/BnAMPgrKIioJoKq0iq0d1+m6vgvKuHwyBr5N9rbKeffJzhoxgMDWd/4VLU5T+RY7Xjwaj2zKWDl/R7CfuUCUfENXHFYxCRQf98HSQRl55kWjXSRpYn3vBx567ATOPeGlbIncbNvvJOwI9Ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=koe3/Qg6; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41DFqYqi022638;
-	Tue, 13 Feb 2024 09:52:34 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707839554;
-	bh=z00QlEOHtNWhJ8YhrANRAr/ZBFrK+uBZEFZ7BAZUXFU=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=koe3/Qg6ngX6wLCQgQXoxuKxtV58ZdLlJUD4ZJ+9VXzky4WSwU9PLIAFXgZtuT/0G
-	 9V9hFHPEhs6evQ/u1QB96WjkLUFtcvRpj6kHDwBxVcBGQHGT47UzIuGhCHnVPgl4X+
-	 q4ilnZhCSTmYSkhLC8vaUawjBWg/VdYmIoNAXIJ8=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41DFqY6K002313
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 13 Feb 2024 09:52:34 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 13
- Feb 2024 09:52:33 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 13 Feb 2024 09:52:33 -0600
-Received: from [128.247.81.105] (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41DFqXS0057794;
-	Tue, 13 Feb 2024 09:52:33 -0600
-Message-ID: <e805b72a-17a2-4a54-bb90-dab44a551711@ti.com>
-Date: Tue, 13 Feb 2024 09:52:33 -0600
+	s=arc-20240116; t=1707839587; c=relaxed/simple;
+	bh=9A1aL1knmmwJVorj88nXW9OtdjLYNUKnXWl0BQKd3Ks=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GkFykBAP86DxmyaZCEUYVc9zGnPrJ7BpML6XooIR+2EPgOl8ZGOrRgKrOPguEGBq8IMMgoobQNN/v/br3tuZcJjE9wlH+t12Gbsnp+k55l7lBg3urMwWiODz6CBfJtmPs2wOHWhh3wLbYrVUu+/RTniTL1TC3qEwKPJ/eeuzeo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MtvDxhL+; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-561f0f116ecso11269a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:53:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707839583; x=1708444383; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XBXU1a0C1GpqZ/Yh6XHCPcPsqtZQLKwjO20TKE3Arqc=;
+        b=MtvDxhL+Dv+2hyfcuuBkK78bTBhM8FfextBcZIxytdEiWQEgC1Y99i1cSR6iB6zg/D
+         RnxU8E4b/Db3z3FT1Hok1qS2/uQSWTTb5oHtD4U1uyVO8xREFmEx6AxUJ6cPK/2OJEbM
+         gZUpawNo1bC37nabqUOreN1Zl1FwIlu2qHbGAoA5KeONGYsgBBWkm2uz9a4N7osjuFYO
+         IBraaTw+pVYTgCwuFLeL7+QmkkVtOkzy6LCUhV2rhEkQCHW0N/41NnQAQ8Xeax4xJY5k
+         f2wFuRjRoOobP01Upx3WGkKOHJZRvimLdssbJvGtORWgAqHVBbt1dA0MiQqV5CNd96HQ
+         kw6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707839583; x=1708444383;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XBXU1a0C1GpqZ/Yh6XHCPcPsqtZQLKwjO20TKE3Arqc=;
+        b=JjxzezJocT3c/esKxCkTKDSd+ZSD7Iwv0/m3ynTWuFxy5Ktm+ViIW8S8MaUIJcieIj
+         zeWk6Xy5U2JTTA4qqugWUz/2S2QQjr61AQbk0cIX4JWx/c/GH1QFOK/daw8cEDG8C88f
+         eZCw92hRVWQg0v0/JNllMU7zDOuw+B7eZbj4nyaauxGbylilAapqeXW/XIreI48KJfc1
+         XLDU8vlvNdMoDvNHjwKvS8UUD4SZIlLqfyRc53XtCYVJxTQ6VOqHi6sjEPhwGNgRO7qS
+         0UOHhGEYhJ1+DLfMBkBrPftXBjdFBx48pAmwMOpDKEEJCmO9YgkeWwpNYy6HFBL1QJUb
+         El0g==
+X-Forwarded-Encrypted: i=1; AJvYcCVGT2f8EleJaRp8rYYgp5D7FU0dr3fBBdFv7AvPxXKiqFDTvkalBy1/xec/KcR4k8Y0VNuWJwZzVHRH/VPZpw3AWryfMoZqYyxbMP/8
+X-Gm-Message-State: AOJu0YwOVVLg4xN3v1PusDfvX+BEQoIoqoSFxqQVZ7/6Bb3Q5DJG7I2M
+	NqcEamS1FV1D1z9l5kkI4vGSAZIw0ashOEheHid7j46ZU9Tu4njSYmw4k5kiI3M3q+bSLOvy+B2
+	KbgEsBRxAU9RVbTU7drpez384yEvhIQ9FG75+
+X-Google-Smtp-Source: AGHT+IHO4nXHXvIeiK2c1XPlkV5MqBQcEx/6pbzTc8rR72I7ntPP6rrE8mRSCDELaXel/6Zxu9D7gKkN/LWr+JpZIgM=
+X-Received: by 2002:a50:9f08:0:b0:561:e7d8:50a8 with SMTP id
+ b8-20020a509f08000000b00561e7d850a8mr5534edf.0.1707839583026; Tue, 13 Feb
+ 2024 07:53:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/9] arm64: dts: ti: k3-am6*: Remove DLL properties for
- soft PHYs
-Content-Language: en-US
-To: Wadim Egorov <w.egorov@phytec.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero
- Kristo <kristo@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Francesco
- Dolcini <francesco.dolcini@toradex.com>
-References: <20240213002416.1560357-1-jm@ti.com>
- <20240213002416.1560357-7-jm@ti.com>
- <5f9fd69e-d3f6-4293-8746-06173f24e521@phytec.de>
-From: Judith Mendez <jm@ti.com>
-In-Reply-To: <5f9fd69e-d3f6-4293-8746-06173f24e521@phytec.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240203190927.19669-1-petr@tesarici.cz> <ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net>
+ <Zct5qJcZw0YKx54r@xhacker> <CANn89i+4tVWezqr=BYZ5AF=9EgV2EPqhdHun=u=ga32CEJ4BXQ@mail.gmail.com>
+ <20d94512-c4f2-49f7-ac97-846dc24a6730@roeck-us.net>
+In-Reply-To: <20d94512-c4f2-49f7-ac97-846dc24a6730@roeck-us.net>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 13 Feb 2024 16:52:52 +0100
+Message-ID: <CANn89iL1piwsbsBx4Z=kySUfmPa9LbZn-SNthgA+W6NEnojgSQ@mail.gmail.com>
+Subject: Re: [PATCH net v3] net: stmmac: protect updates of 64-bit statistics counters
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Jisheng Zhang <jszhang@kernel.org>, Petr Tesarik <petr@tesarici.cz>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	"open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>, 
+	"moderated list:ARM/STM32 ARCHITECTURE" <linux-stm32@st-md-mailman.stormreply.com>, 
+	"moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"open list:ARM/Allwinner sunXi SoC support" <linux-sunxi@lists.linux.dev>, Marc Haber <mh+netdev@zugschlus.de>, 
+	Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Wadim,
+On Tue, Feb 13, 2024 at 4:26=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
+wrote:
+>
+> On Tue, Feb 13, 2024 at 03:51:35PM +0100, Eric Dumazet wrote:
+> > On Tue, Feb 13, 2024 at 3:29=E2=80=AFPM Jisheng Zhang <jszhang@kernel.o=
+rg> wrote:
+> > >
+> > > On Sun, Feb 11, 2024 at 08:30:21PM -0800, Guenter Roeck wrote:
+> > > > Hi,
+> > > >
+> > > > On Sat, Feb 03, 2024 at 08:09:27PM +0100, Petr Tesarik wrote:
+> > > > > As explained by a comment in <linux/u64_stats_sync.h>, write side=
+ of struct
+> > > > > u64_stats_sync must ensure mutual exclusion, or one seqcount upda=
+te could
+> > > > > be lost on 32-bit platforms, thus blocking readers forever. Such =
+lockups
+> > > > > have been observed in real world after stmmac_xmit() on one CPU r=
+aced with
+> > > > > stmmac_napi_poll_tx() on another CPU.
+> > > > >
+> > > > > To fix the issue without introducing a new lock, split the static=
+s into
+> > > > > three parts:
+> > > > >
+> > > > > 1. fields updated only under the tx queue lock,
+> > > > > 2. fields updated only during NAPI poll,
+> > > > > 3. fields updated only from interrupt context,
+> > > > >
+> > > > > Updates to fields in the first two groups are already serialized =
+through
+> > > > > other locks. It is sufficient to split the existing struct u64_st=
+ats_sync
+> > > > > so that each group has its own.
+> > > > >
+> > > > > Note that tx_set_ic_bit is updated from both contexts. Split this=
+ counter
+> > > > > so that each context gets its own, and calculate their sum to get=
+ the total
+> > > > > value in stmmac_get_ethtool_stats().
+> > > > >
+> > > > > For the third group, multiple interrupts may be processed by diff=
+erent CPUs
+> > > > > at the same time, but interrupts on the same CPU will not nest. M=
+ove fields
+> > > > > from this group to a newly created per-cpu struct stmmac_pcpu_sta=
+ts.
+> > > > >
+> > > > > Fixes: 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistic=
+s where necessary")
+> > > > > Link: https://lore.kernel.org/netdev/Za173PhviYg-1qIn@torres.zugs=
+chlus.de/t/
+> > > > > Cc: stable@vger.kernel.org
+> > > > > Signed-off-by: Petr Tesarik <petr@tesarici.cz>
+> > > >
+> > > > This patch results in a lockdep splat. Backtrace and bisect results=
+ attached.
+> > > >
+> > > > Guenter
+> > > >
+> > > > ---
+> > > > [   33.736728] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > [   33.736805] WARNING: inconsistent lock state
+> > > > [   33.736953] 6.8.0-rc4 #1 Tainted: G                 N
+> > > > [   33.737080] --------------------------------
+> > > > [   33.737155] inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
+> > > > [   33.737309] kworker/0:2/39 [HC1[1]:SC0[2]:HE0:SE0] takes:
+> > > > [   33.737459] ef792074 (&syncp->seq#2){?...}-{0:0}, at: sun8i_dwma=
+c_dma_interrupt+0x9c/0x28c
+> > > > [   33.738206] {HARDIRQ-ON-W} state was registered at:
+> > > > [   33.738318]   lock_acquire+0x11c/0x368
+> > > > [   33.738431]   __u64_stats_update_begin+0x104/0x1ac
+> > > > [   33.738525]   stmmac_xmit+0x4d0/0xc58
+> > >
+> > > interesting lockdep splat...
+> > > stmmac_xmit() operates on txq_stats->q_syncp, while the
+> > > sun8i_dwmac_dma_interrupt() operates on pcpu's priv->xstats.pcpu_stat=
+s
+> > > they are different syncp. so how does lockdep splat happen.
+> >
+> > Right, I do not see anything obvious yet.
+>
+> Wild guess: I think it maybe saying that due to
+>
+>         inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
+>
+> the critical code may somehow be interrupted and, while handling the
+> interrupt, try to acquire the same lock again.
 
-On 2/12/24 11:26 PM, Wadim Egorov wrote:
-> Hi Judith,
-> 
-> Am 13.02.24 um 01:24 schrieb Judith Mendez:
->> Remove DLL properties which are not applicable for soft PHYs
->> since these PHYs do not have a DLL to enable.
->>
->> Signed-off-by: Judith Mendez <jm@ti.com>
->> ---
->>   arch/arm64/boot/dts/ti/k3-am62-main.dtsi              | 3 ---
->>   arch/arm64/boot/dts/ti/k3-am62-phycore-som.dtsi       | 1 -
->>   arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi     | 1 -
->>   arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi        | 1 -
->>   arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi       | 1 -
->>   arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi            | 2 --
->>   arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts        | 3 ---
->>   arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts | 1 -
->>   arch/arm64/boot/dts/ti/k3-am62a-main.dtsi             | 1 -
->>   arch/arm64/boot/dts/ti/k3-am62a7-sk.dts               | 1 -
->>   arch/arm64/boot/dts/ti/k3-am62p5-sk.dts               | 1 -
->>   arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi        | 2 --
->>   arch/arm64/boot/dts/ti/k3-am64-main.dtsi              | 1 -
->>   arch/arm64/boot/dts/ti/k3-am642-evm.dts               | 1 -
->>   arch/arm64/boot/dts/ti/k3-am642-sk.dts                | 1 -
-> 
-> what about sdhci1 node updates on
->    - k3-am642-phyboard-electra-rdk.dts
->    - k3-am642-tqma64xxl-mbax4xxl.dts
-> 
+This should not happen, the 'syncp' are different. They have different
+lockdep classes.
 
-The same patch applies for this boards.
+One is exclusively used from hard irq context.
 
-> Also does this apply only for am64 and sdhci1 (and not sdhci0)?
-> In your v1 you are describing that only AM64x and AM62p devices have a 
-> DLL to update the drive strength.
-> Trying to understand why only one of the interfaces gets updated.
-
-This patch only applies for AM64x sdhci1 node, since sdhci1
-is a soft PHY and does not have a DLL.
-
-~ Judith
-
-> 
-> Regards,
-> Wadim
-> 
->>   15 files changed, 21 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
->> index fe0cc4a9a501..79ed5cbbbda1 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
->> @@ -561,7 +561,6 @@ sdhci0: mmc@fa10000 {
->>           assigned-clock-parents = <&k3_clks 57 8>;
->>           mmc-ddr-1_8v;
->>           mmc-hs200-1_8v;
->> -        ti,trm-icp = <0x2>;
->>           bus-width = <8>;
->>           ti,clkbuf-sel = <0x7>;
->>           ti,otap-del-sel-legacy = <0x0>;
->> @@ -580,7 +579,6 @@ sdhci1: mmc@fa00000 {
->>           power-domains = <&k3_pds 58 TI_SCI_PD_EXCLUSIVE>;
->>           clocks = <&k3_clks 58 5>, <&k3_clks 58 6>;
->>           clock-names = "clk_ahb", "clk_xin";
->> -        ti,trm-icp = <0x2>;
->>           ti,otap-del-sel-legacy = <0x8>;
->>           ti,otap-del-sel-sd-hs = <0x0>;
->>           ti,otap-del-sel-sdr12 = <0x0>;
->> @@ -604,7 +602,6 @@ sdhci2: mmc@fa20000 {
->>           power-domains = <&k3_pds 184 TI_SCI_PD_EXCLUSIVE>;
->>           clocks = <&k3_clks 184 5>, <&k3_clks 184 6>;
->>           clock-names = "clk_ahb", "clk_xin";
->> -        ti,trm-icp = <0x2>;
->>           ti,otap-del-sel-legacy = <0x8>;
->>           ti,otap-del-sel-sd-hs = <0x0>;
->>           ti,otap-del-sel-sdr12 = <0x0>;
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62-phycore-som.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-am62-phycore-som.dtsi
->> index 3372a256c90f..43488cc8bcb1 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62-phycore-som.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62-phycore-som.dtsi
->> @@ -317,7 +317,6 @@ serial_flash: flash@0 {
->>   &sdhci0 {
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&main_mmc0_pins_default>;
->> -    ti,driver-strength-ohm = <50>;
->>       disable-wp;
->>       non-removable;
->>       status = "okay";
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
->> index bf6d27e70bc4..6c4cec8728e4 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
->> @@ -185,7 +185,6 @@ &ospi0 {
->>   /* Verdin SD_1 */
->>   &sdhci1 {
->> -    ti,driver-strength-ohm = <33>;
->>       status = "okay";
->>   };
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
->> index 680071688dcb..be62648e7818 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
->> @@ -206,7 +206,6 @@ &ospi0 {
->>   /* Verdin SD_1 */
->>   &sdhci1 {
->> -    ti,driver-strength-ohm = <33>;
->>       status = "okay";
->>   };
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi
->> index a6808b10c7b2..4768ef42c4fc 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi
->> @@ -26,7 +26,6 @@ &sdhci2 {
->>       mmc-pwrseq = <&wifi_pwrseq>;
->>       non-removable;
->>       ti,fails-without-test-cd;
->> -    ti,driver-strength-ohm = <50>;
->>       vmmc-supply = <&reg_3v3>;
->>       status = "okay";
->>   };
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
->> index 6a06724b6d16..d68310444bcb 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
->> @@ -1407,7 +1407,6 @@ &sdhci0 {
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&pinctrl_sdhci0>;
->>       non-removable;
->> -    ti,driver-strength-ohm = <50>;
->>       status = "okay";
->>   };
->> @@ -1416,7 +1415,6 @@ &sdhci1 {
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&pinctrl_sdhci1>;
->>       disable-wp;
->> -    ti,driver-strength-ohm = <50>;
->>       vmmc-supply = <&reg_sdhc1_vmmc>;
->>       vqmmc-supply = <&reg_sdhc1_vqmmc>;
->>       status = "disabled";
->> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts 
->> b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
->> index 3b4246ce49de..bb6a5837bcb3 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
->> @@ -819,7 +819,6 @@ &sdhci0 {
->>       bootph-all;
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&emmc_pins_default>;
->> -    ti,driver-strength-ohm = <50>;
->>       disable-wp;
->>       status = "okay";
->>   };
->> @@ -832,7 +831,6 @@ &sdhci1 {
->>       vmmc-supply = <&vdd_3v3_sd>;
->>       vqmmc-supply = <&vdd_sd_dv>;
->> -    ti,driver-strength-ohm = <50>;
->>       disable-wp;
->>       cd-gpios = <&main_gpio1 48 GPIO_ACTIVE_LOW>;
->>       cd-debounce-delay-ms = <100>;
->> @@ -849,7 +847,6 @@ &sdhci2 {
->>       ti,fails-without-test-cd;
->>       cap-power-off-card;
->>       keep-power-in-suspend;
->> -    ti,driver-strength-ohm = <50>;
->>       assigned-clocks = <&k3_clks 157 158>;
->>       assigned-clock-parents = <&k3_clks 157 160>;
->>       #address-cells = <1>;
->> diff --git a/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts 
->> b/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
->> index 5c31f0453def..a83a90497857 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
->> @@ -334,7 +334,6 @@ &sdhci1 {
->>       vqmmc-supply = <&vddshv5_sdio>;
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&main_mmc1_pins_default>;
->> -    ti,driver-strength-ohm = <50>;
->>       disable-wp;
->>       no-1-8-v;
->>       status = "okay";
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
->> index 6806288ec227..f283777d54b4 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
->> @@ -561,7 +561,6 @@ sdhci1: mmc@fa00000 {
->>           power-domains = <&k3_pds 58 TI_SCI_PD_EXCLUSIVE>;
->>           clocks = <&k3_clks 58 5>, <&k3_clks 58 6>;
->>           clock-names = "clk_ahb", "clk_xin";
->> -        ti,trm-icp = <0x2>;
->>           ti,otap-del-sel-legacy = <0x0>;
->>           ti,otap-del-sel-sd-hs = <0x0>;
->>           ti,otap-del-sel-sdr12 = <0xf>;
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts 
->> b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
->> index c99b2e90f76d..f241637a5642 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
->> @@ -582,7 +582,6 @@ &sdhci1 {
->>       vmmc-supply = <&vdd_mmc1>;
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&main_mmc1_pins_default>;
->> -    ti,driver-strength-ohm = <50>;
->>       disable-wp;
->>   };
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts 
->> b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
->> index 8c73587b0b62..5c9b73726ebd 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
->> @@ -422,7 +422,6 @@ &sdhci1 {
->>       vqmmc-supply = <&vddshv_sdio>;
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&main_mmc1_pins_default>;
->> -    ti,driver-strength-ohm = <50>;
->>       disable-wp;
->>       bootph-all;
->>   };
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
->> index 6dd496cd459a..3c45782ab2b7 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
->> @@ -411,7 +411,6 @@ &sdhci0 {
->>       status = "okay";
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&main_mmc0_pins_default>;
->> -    ti,driver-strength-ohm = <50>;
->>       disable-wp;
->>   };
->> @@ -421,7 +420,6 @@ &sdhci1 {
->>       status = "okay";
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&main_mmc1_pins_default>;
->> -    ti,driver-strength-ohm = <50>;
->>       disable-wp;
->>   };
->> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
->> index 9bfa0a969bfc..a29847735c6e 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
->> @@ -646,7 +646,6 @@ sdhci1: mmc@fa00000 {
->>           power-domains = <&k3_pds 58 TI_SCI_PD_EXCLUSIVE>;
->>           clocks = <&k3_clks 58 3>, <&k3_clks 58 4>;
->>           clock-names = "clk_ahb", "clk_xin";
->> -        ti,trm-icp = <0x2>;
->>           ti,otap-del-sel-legacy = <0x0>;
->>           ti,otap-del-sel-sd-hs = <0x0>;
->>           ti,otap-del-sel-sdr12 = <0xf>;
->> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts 
->> b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
->> index 5c546ae76d3e..f308076d608a 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
->> @@ -508,7 +508,6 @@ &sdhci1 {
->>       pinctrl-names = "default";
->>       bus-width = <4>;
->>       pinctrl-0 = <&main_mmc1_pins_default>;
->> -    ti,driver-strength-ohm = <50>;
->>       disable-wp;
->>   };
->> diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts 
->> b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
->> index cce04e188ff6..b286eaa02ada 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
->> @@ -471,7 +471,6 @@ &sdhci1 {
->>       pinctrl-names = "default";
->>       bus-width = <4>;
->>       pinctrl-0 = <&main_mmc1_pins_default>;
->> -    ti,driver-strength-ohm = <50>;
->>       disable-wp;
->>   };
-
+The second one only used from BH context.
 
