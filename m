@@ -1,145 +1,149 @@
-Return-Path: <linux-kernel+bounces-62739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDD81852513
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:06:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67BFB852548
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:10:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60F981F21DA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:06:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 717C21C23AB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:10:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1E412CDBC;
-	Tue, 13 Feb 2024 00:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBDB912FB00;
+	Tue, 13 Feb 2024 00:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xbb3tTUC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pmkqNOwY"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6AC28399;
-	Tue, 13 Feb 2024 00:24:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B95B130ACD;
+	Tue, 13 Feb 2024 00:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783857; cv=none; b=PUJfUwKL0wpuUVhm2ALS58/hniVBqLio/JsN93Eozdts53TYQAd9ykDBp20QEtjNNy8q0D+eypDqQ2k9FwF8SJi9G6H14aJ43829zPHa8NeYGmsVUIBnTOJ17CzDRbLst/yw5LADrUC2AEgeJuJybslC+eQnUq7jvpARWoVdeSE=
+	t=1707783876; cv=none; b=HLBCGj/vHIs+9ghGmVPCCQMtKZWKZpubUIub0b5X+PVfM0DEUCoVYBgmves14KUM2+R/RkcqnBgOapmq/VT+Fb9WAaq9YaKnng+CLs++ozBC4xcuTlkbJDijru9vaeL7egvQlY3ekwZZJx01qZkBsoSu2WKIIQgm3dho+S8+45w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783857; c=relaxed/simple;
-	bh=+ehf5yaovVJh3SS3wm2stwoHwrbHr9H8j275kaivKFk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IwsVuYEe1hiLWqZ6emdwYA3h8Bcw6stNglJQ5A/V1wR14cmIPJLB5MQ1yGUerSzqjOm0Yc3Qk7KRw9NqbYIm2y8AC/i7QT6kuki0nIHlcC44kEDYy/W2dvGFS5JRFKjMJ1cfiIjM+xz7WASKdmK6cpI0nCwM4fb7Zkx35xHPJFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xbb3tTUC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CC18C43390;
-	Tue, 13 Feb 2024 00:24:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783856;
-	bh=+ehf5yaovVJh3SS3wm2stwoHwrbHr9H8j275kaivKFk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Xbb3tTUCL2Jkmzm6U1XxOtkBNEKAddKzljyTJOuJsatXVICpDkrgHYvVXrZJ+xJhP
-	 qjjXe7ZMNL21TtWtDZAmvtKJPLNYIcU8/W/0vzFaMNWpyG4V8ijJciozluCRWF7TDJ
-	 4C0AbpTadh2yM2k/u+KYUH6iYJFiUnNmYrAa01fXtaFmKw9VzyLvDHBb2dFHsccOGs
-	 Aqw2S3bpFmhIfSgHmP6/g7GV+MJsNZ8qDb6bKByxZP0zQy9mDdqENgmII0Y5piN59P
-	 c41aAtjilyzvQzN9raAn7BPpRoayAD0rxxJVdNCuJcElJYoLCCVmsBgx+rbpnpIBst
-	 fZ9Irc9VCtsQA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Hannes Reinecke <hare@suse.de>,
-	Daniel Wagner <dwagner@suse.de>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Sasha Levin <sashal@kernel.org>,
-	james.smart@broadcom.com,
-	dick.kennedy@broadcom.com,
-	jejb@linux.ibm.com,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 4/6] scsi: lpfc: Use unsigned type for num_sge
-Date: Mon, 12 Feb 2024 19:24:06 -0500
-Message-ID: <20240213002409.673084-4-sashal@kernel.org>
+	s=arc-20240116; t=1707783876; c=relaxed/simple;
+	bh=FXhH1wQzbIwGCvQrq8FSKOMRbxbkr/ACCqi97KWWZDE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IbTC3I7bCYFvfnVjK6VVcXkbr4gNfBs+NMUTYZbgX8sMyjPWo+YcsumQiSrP+AXYo9HwSTcYzxHnJA3OM1BE6Gw1UFwzXNJ3LxlgCBIQmvDEnWDF9r1tpF7NW8HR2f156yR1I1ckndYq5SBewT8w2LNuWMXDNDJO7+gMrrt7UpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=pmkqNOwY; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41D0OHXV061424;
+	Mon, 12 Feb 2024 18:24:17 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707783857;
+	bh=KRdHsmmSf+DstTGqo1ZdeTIDrC/r9iMRVkf72BFbhHw=;
+	h=From:To:CC:Subject:Date;
+	b=pmkqNOwYTyofL1GUOwxJhCqYLKrdLszZK2e5mWmLXapselbh6LxxRcFiJhpTD7dEU
+	 W+qC3W7O/dzO1aMumGqN4Mw8bq22x3LGTeNbOtajDImyhjLMY1rHLgCr0SG7aQhreQ
+	 7BuIctNvoBHth/il1wTtMNMtb5vIkmViyFXXM7WI=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41D0OHLH031528
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 12 Feb 2024 18:24:17 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
+ Feb 2024 18:24:16 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 12 Feb 2024 18:24:16 -0600
+Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41D0OGXe119810;
+	Mon, 12 Feb 2024 18:24:16 -0600
+From: Judith Mendez <jm@ti.com>
+To: Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero
+ Kristo <kristo@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Wadim Egorov
+	<w.egorov@phytec.de>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: [PATCH v2 0/9] Fix MMC properties on Sitara devices
+Date: Mon, 12 Feb 2024 18:24:07 -0600
+Message-ID: <20240213002416.1560357-1-jm@ti.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240213002409.673084-1-sashal@kernel.org>
-References: <20240213002409.673084-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.209
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Hannes Reinecke <hare@suse.de>
+This patch series aims to update MMC nodes for TI 
+K3 Sitara devices.
 
-[ Upstream commit d6c1b19153f92e95e5e1801d540e98771053afae ]
+The series introduces MMC0 and MMC2 nodes and enables
+eMMC for AM62ax platform.
 
-LUNs going into "failed ready running" state observed on >1T and on even
-numbers of size (2T, 4T, 6T, 8T and 10T). The issue occurs when DIF is
-enabled at the host.
+Also introduce fixes for MMC ITAP/OTAP values for AM64x
+platform according to device datasheet [0], and add ITAP/
+OTAP values for AM62p to enable the highest timing possible
+for MMC0 and MMC1, according to device datasheet [1].
 
-The kernel logs:
+The DLL properties ti,trm-icp and ti,driver-strength-ohm
+should be removed for devices with soft PHYs since drive
+strength cannot be changed, so remove these properties when
+not applicable. Since this fix touches non-TI boards and
+therefore cannot be tested, all tested-by's are welcome.
 
-  Cannot setup S/G List for HBAIO segs 1/1 SGL 512 SCSI 256: 3 0
+Also include a few fixes for ti,clkbuf-sel, bus-width,
+and bootph-all device tree properties in MMC nodes.
 
-The host lpfc driver is failing to setup scatter/gather list (protection
-data) for the I/Os.
+This series was tested on:
+- AM62a SK
+- AM62x SK
+- AM62p SK
+- AM64x GP EVM
+- AM64x SK EVM
+- Beagleplay
 
-The return type lpfc_bg_setup_sgl()/lpfc_bg_setup_sgl_prot() causes the
-compiler to remove the most significant bit. Use an unsigned type instead.
+[0] https://www.ti.com/lit/ds/symlink/am6442.pdf
+[1] https://www.ti.com/lit/ds/symlink/am62p.pdf
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-[dwagner: added commit message]
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-Link: https://lore.kernel.org/r/20231220162658.12392-1-dwagner@suse.de
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/scsi/lpfc/lpfc_scsi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Judith Mendez (7):
+  arm64: dts: ti: k3-am62a-main: Add sdhci2 instance
+  arm64: dts: ti: k3-am64-main: Fix ITAP/OTAP values for MMC
+  arm64: dts: ti: k3-am62p: Add ITAP/OTAP values for MMC
+  arm64: dts: ti: k3-am6*: Remove DLL properties for soft PHYs
+  arm64: dts: ti: k3-am6*: Fix ti,clkbuf-sel property in MMC nodes
+  arm64: dts: ti: k3-am6*: Fix bus-width property in MMC nodes
+  arm64: dts: ti: k3-am6*: Add bootph-all property in MMC node
 
-diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
-index 983eeb0e3d07..b4b87e5d8b29 100644
---- a/drivers/scsi/lpfc/lpfc_scsi.c
-+++ b/drivers/scsi/lpfc/lpfc_scsi.c
-@@ -1944,7 +1944,7 @@ lpfc_bg_setup_bpl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
-  *
-  * Returns the number of SGEs added to the SGL.
-  **/
--static int
-+static uint32_t
- lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 		struct sli4_sge *sgl, int datasegcnt,
- 		struct lpfc_io_buf *lpfc_cmd)
-@@ -1952,8 +1952,8 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 	struct scatterlist *sgde = NULL; /* s/g data entry */
- 	struct sli4_sge_diseed *diseed = NULL;
- 	dma_addr_t physaddr;
--	int i = 0, num_sge = 0, status;
--	uint32_t reftag;
-+	int i = 0, status;
-+	uint32_t reftag, num_sge = 0;
- 	uint8_t txop, rxop;
- #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
- 	uint32_t rc;
-@@ -2124,7 +2124,7 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
-  *
-  * Returns the number of SGEs added to the SGL.
-  **/
--static int
-+static uint32_t
- lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 		struct sli4_sge *sgl, int datacnt, int protcnt,
- 		struct lpfc_io_buf *lpfc_cmd)
-@@ -2148,8 +2148,8 @@ lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 	uint32_t rc;
- #endif
- 	uint32_t checking = 1;
--	uint32_t dma_offset = 0;
--	int num_sge = 0, j = 2;
-+	uint32_t dma_offset = 0, num_sge = 0;
-+	int j = 2;
- 	struct sli4_hybrid_sgl *sgl_xtra = NULL;
- 
- 	sgpe = scsi_prot_sglist(sc);
+Nitin Yadav (2):
+  arm64: dts: ti: k3-am62a-main: Add sdhci0 instance
+  arm64: dts: ti: k3-am62a7-sk: Enable eMMC support
+
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi      | 12 +++--
+ .../boot/dts/ti/k3-am62-phycore-som.dtsi      |  1 -
+ .../boot/dts/ti/k3-am62-verdin-dahlia.dtsi    |  1 -
+ .../arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi |  1 -
+ .../boot/dts/ti/k3-am62-verdin-wifi.dtsi      |  1 -
+ arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi    |  2 -
+ .../arm64/boot/dts/ti/k3-am625-beagleplay.dts |  4 --
+ .../dts/ti/k3-am625-phyboard-lyra-rdk.dts     |  1 -
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi     | 45 ++++++++++++++++++-
+ arch/arm64/boot/dts/ti/k3-am62a7-sk.dts       | 27 ++++++++++-
+ arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     | 44 ++++++++++++++++--
+ arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |  3 +-
+ .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi |  2 -
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi      | 15 +++++--
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  4 +-
+ arch/arm64/boot/dts/ti/k3-am642-sk.dts        |  2 -
+ 16 files changed, 129 insertions(+), 36 deletions(-)
+
+
+base-commit: 1e6bbc5185bcd113c8d2f7aa0a02f588a6bdbe5d
 -- 
 2.43.0
 
