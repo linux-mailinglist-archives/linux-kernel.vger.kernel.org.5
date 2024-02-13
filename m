@@ -1,119 +1,232 @@
-Return-Path: <linux-kernel+bounces-64116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64117-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0700F853A35
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:51:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E6BE853A39
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:51:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 835BCB28E9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:51:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 877181F22184
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7821CD10;
-	Tue, 13 Feb 2024 18:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015B61CA94;
+	Tue, 13 Feb 2024 18:48:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="2MT5sfTZ"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="CxuBn95f"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE9F1CA8F;
-	Tue, 13 Feb 2024 18:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF7801F5FA;
+	Tue, 13 Feb 2024 18:48:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707850008; cv=none; b=TEOTl9Rurpe5gaWwSNUVcbE7bGrZ0JKcsZ8MEXl4fC8LCKmHlFvIdBHpk4GhGv1CCb00pMbwWF4s5rPFajYWhMR/vA767wmNfOsubKP1fo0o/Zq7ObA5OP4ZqJ2W+cBa4XU00viPqy8JUMXIbhV75CqvHbNGJfkXlDCLSmYAAdk=
+	t=1707850102; cv=none; b=JKJI5LiUmBhantSykhJV2VvGo/QdzfJcMAHCG3H9tRRyZ7dnGRQ6tktLJlqVO3yfqBi4Jk6C13QX29+qoLKa4dFOYmiZEdNEtCbHNuvUZDlhrgHWKCpqjV3nEkukZg1ByRFUiqRnffsmHZl1s49niQZTuT14Hhadp6JwoS8hOOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707850008; c=relaxed/simple;
-	bh=lcWJKroqnVoZeeUmZmZEfdTXGoqvGouIATK9PaCgMg4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fYTIJV01g/c21zemhtfy8dcx6zOTWyrXYxqjFhCMoBjljxEd6FeMEHUgtMC80yNTg1qsKldJSD/uDdQ3HDNEzOeHrXeXWzHTF29qM6asNH6i5MytBKAIaEAiQPi02KEPrV4xFi+YMDH4mim+NAqAXAa3P81F1zF3U6or+z/5wxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=2MT5sfTZ; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=3XeLjS7yUXexGit1/+ZjYAFdk3R9Y2+oOfIWTeb8D+o=; b=2MT5sfTZ3I0vGDcXw9vLNINaGz
-	XQWphb/FQ6NVP3K6r4/eqDb7Xja5HcYg+SbohdEZZ3CZwLF3VcPgBv1aUYJAuluT4WgvWb4M3auOx
-	NkyzNPwdzK3mjCi5s+MH+KYl8avTmrNvuoT/w5e94OCbW0ZVhRs4G/YTywMxRcuWZUzk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rZxnp-007iIQ-Ok; Tue, 13 Feb 2024 19:46:45 +0100
-Date: Tue, 13 Feb 2024 19:46:45 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Robert Marko <robimarko@gmail.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next RFC PATCH 0/2] net: phy: aquantia: fix system
- interface provision
-Message-ID: <ee00b11a-4679-4ba4-be42-10f15d5e9f65@lunn.ch>
-References: <20240213182415.17223-1-ansuelsmth@gmail.com>
+	s=arc-20240116; t=1707850102; c=relaxed/simple;
+	bh=cvAoXtbJEwuTK60j1+t8oFvkHcGa9yopyDdarxYElP0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UyXDGJrMm9Oa0sW4i+4gU6/guuUxtO7Tw7LyhKRNQ0vqH3F3dFtapFs8Hx3JZyL3RDmxCkfTInfrni2pcFNXf8WN6tjHPREUbsBqWG9D6433KDHOiVpsfNNQIfkFAQNj8fpAs4qPKjfSJc2vH7bNpf+/LDbbYHRmP6UUe1hh4fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=CxuBn95f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E27CDC433F1;
+	Tue, 13 Feb 2024 18:48:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707850101;
+	bh=cvAoXtbJEwuTK60j1+t8oFvkHcGa9yopyDdarxYElP0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CxuBn95fFORGesLBWQFOCMIHZVgXfZ1eCxTjcQ2aMX2c/d07cOlF4spffnDquvsaN
+	 RDiTBeSNm8UG1P8dftlfrOG/bcSWETB0hgBIeYQC2vJVyPLjozNS3CwEKG7ItpIjV0
+	 FUTLk275PbrUytDqToj0g65H3B2eVGKQV1A6Pl4E=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: corbet@lwn.net
+Cc: workflows@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	security@kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sasha Levin <sashal@kernel.org>,
+	Lee Jones <lee@kernel.org>
+Subject: [PATCH] Documentation: Document the Linux Kernel CVE process
+Date: Tue, 13 Feb 2024 19:48:12 +0100
+Message-ID: <2024021314-unwelcome-shrill-690e@gregkh>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213182415.17223-1-ansuelsmth@gmail.com>
+Lines: 167
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8105; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=cvAoXtbJEwuTK60j1+t8oFvkHcGa9yopyDdarxYElP0=; b=owGbwMvMwCRo6H6F97bub03G02pJDKmnd+Y9vJOneXiJsHrFWb9ff7d6HQ3I77z3Zu1pA9F06 /XCTT/jO2JZGASZGGTFFFm+bOM5ur/ikKKXoe1pmDmsTCBDGLg4BWAiD+8zLDjzben+2afsPzv8 XlK5l39P7qWCA3MYFly1YHl9P18j1eyKQHgJ1zFr+c+/CgE=
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 13, 2024 at 07:24:10PM +0100, Christian Marangi wrote:
-> Posting this as RFC as I think this require some discussion on the topic.
-> 
-> There is currently a problem. OEM multiple time provision Aquantia FW
-> with random and wrong data that may apply for one board but doesn't for
-> another. And at the same time OEM use the same broken FW for multiple
-> board and apply fixup at runtime.
-> 
-> This is the common case for AQR112 where downstream (uboot, OEM sdk,
-> openwrt to have the port correctly working) hack patch are used to fixup
-> broken system interface provision from the FW.
-> 
-> The downstream patch do one simple thing, they setup the SERDES startup
-> rate (that the FW may wrongly not init) and overwrite the
-> global system config for each rate to default values for the rwquested PHY
-> interface.
-> 
-> Now setting the SERDES startup value is SAFE, and this can be implemented
-> right away.
-> 
-> Overwriting the SERDES modes for each rate tho might pose some question
-> on how this is correct or wrong.
-> 
-> Reality is that probably every user an Aquantia PHY in one way or another
-> makes use of the SDK and have this patch in use making any kind of
-> provision on the FW ignored, (since the default values are always applied
-> at runtime) making the introduction of this change safe and restoring
-> correct functionality of AQR112 in the case of a broken FW loaded.
+The Linux kernel project now has the ability to assign CVEs to fixed
+issues, so document the process and how individual developers can get a
+CVE if one is not automatically assigned for their fixes.
 
-This is part of the discussion i had with Aquantia about
-provisioning. Basically, you cannot trust any register to contain a
-known value, e.g the value the data sheet indicates the reset value
-should be, or that the 802.3 standard says it should be.
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Lee Jones <lee@kernel.org>
+---
+ Documentation/process/cve.rst           | 116 ++++++++++++++++++++++++
+ Documentation/process/index.rst         |   1 +
+ Documentation/process/security-bugs.rst |   6 +-
+ 3 files changed, 120 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/process/cve.rst
 
-So in effect, the driver needs to write every single register it
-depends on.
+diff --git a/Documentation/process/cve.rst b/Documentation/process/cve.rst
+new file mode 100644
+index 000000000000..17df5d673102
+--- /dev/null
++++ b/Documentation/process/cve.rst
+@@ -0,0 +1,116 @@
++CVEs
++====
++
++Common Vulnerabilities and Exposure (CVE®) numbers, were developed as an
++unambiguous way to identify, define, and catalog publically disclosed
++security vulnerabilities.  Over time, their usefulness has declined with
++regards to the kernel project, and CVE numbers were very often assigned
++in inappropriate ways and for inappropriate reasons.  Because of this,
++the kernel development community has tended to avoid them.  However, the
++combination of continuing pressure to assign CVEs and other forms of
++security identifiers, and ongoing abuses by community members outside of
++the kernel community has made it clear that the kernel community should
++have control over those assignments.
++
++The Linux kernel developer team does have the ability to assign CVEs for
++potential Linux kernel security issues.  This assignment is independent
++of the :doc:`normal Linux kernel security bug reporting
++process<../process/security_bugs>`.
++
++A list of all assigned CVEs for the Linux kernel can be found in the
++archives of the linux-cve mailing list, as seen on
++https://lore.kernel.org/linux-cve-announce/.  To get notice of the
++assigned CVEs, please subscribe to that mailing list.
++
++Process
++-------
++
++As part of the normal stable release process, kernel changes that are
++potentially security issues are identified by the developers responsible
++for CVE number assignments and have CVE numbers automatically assigned
++to them.  These assignments are published on the linux-cve mailing list
++as announcements on a frequent basis.
++
++Note, due to the layer at which the Linux kernel is in a system, almost
++any bug might be exploitable to compromise the security of the kernel,
++but the possibility of exploitation is often not evident when the bug is
++fixed.  Because of this, the CVE assignment team are overly cautious and
++assign CVE numbers to any bugfix that they identify.  This
++explains the seemingly large number of CVEs that are issued by the Linux
++kernel team.
++
++If the CVE assignment team misses a specific fix that any user feels
++should have a CVE assigned to it, please email them at <cve@kernel.org>
++and the team there will work with you on it.  Note, that no potential
++security issues should be sent to this alias, it is ONLY for assignment
++of CVEs for fixes that are already in released kernel trees.  If you
++feel you have found an unfixed security issue, please follow the
++:doc:`normal Linux kernel security bug reporting
++process<../process/security_bugs>`.
++
++No CVEs will be assigned for unfixed security issues in the Linux
++kernel, assignment will only happen after a fix is available as it can
++be properly tracked that way by the git commit id of the original fix.
++
++No CVEs will be assigned for any issue found in a version of the kernel
++that is not currently being actively supported by the Stable/LTS kernel
++team.  A list of the currently supported kernel branches can be found at
++https://kernel.org/category/releases.html
++
++Disputes of assigned CVEs
++-------------------------
++
++The authority to dispute or modify an assigned CVE for a specific kernel
++change lies solely with the maintainers of the relevant subsystem
++affected.  This principle ensures a high degree of accuracy and
++accountability in vulnerability reporting.  Only those individuals with
++deep expertise and intimate knowledge of the subsystem can effectively
++assess the validity and scope of a reported vulnerability and determine
++its appropriate CVE designation.  Any attempt to modify or dispute a CVE
++outside of this designated authority could lead to confusion, inaccurate
++reporting, and ultimately, compromised systems.
++
++Invalid CVEs
++------------
++
++If a security issue is found in a Linux kernel that is only supported by
++a Linux distribution due to the changes that have been made by that
++distribution, or due to the distribution supporting a kernel version
++that is no longer one of the kernel.org supported releases, then a CVE
++can not be assigned by the Linux kernel CVE team, and must be asked for
++from that Linux distribution itself.
++
++Any CVE that is assigned against the Linux kernel for an actively
++supported kernel version, by any group other than the kernel assignment
++CVE team should not be treated as a valid CVE.  Please notify the
++kernel CVE assignment team at <cve@kernel.org> so that they can work to
++invalidate such entries through the CNA remediation process.
++
++Applicability of specific CVEs
++------------------------------
++
++As the Linux kernel can be used in many different ways, with many
++different ways of accessing it by external users, or no access at all,
++the applicability of any specific CVE is up to the user of Linux to
++determine, it is not up to the CVE assignment team.  Please do not
++contact us to attempt to determine the applicability of any specific
++CVE.
++
++Also, as the source tree is so large, and any one system only uses a
++small subset of the source tree, any users of Linux should be aware that
++large numbers of assigned CVEs are not relevant for their systems.
++
++In short, we do not know your use case, and we do not know what portions
++of the kernel that you use, so there is no way for us to determine if a
++specific CVE is relevant for your system.
++
++As always, it is best to take all released kernel changes, as they are
++tested together in a unified whole by many community members, and not as
++individual cherry-picked changes.  Also note that for many bugs, the
++solution to the overall problem is not found in a single change, but by
++the sum of many fixes on top of each other.  Ideally CVEs will be
++assigned to all fixes for all issues, but sometimes we do not notice
++fixes in released kernels, so do not assume that because a specific
++change does not have a CVE assigned to it, that it is not relevant to
++take.
++
+diff --git a/Documentation/process/index.rst b/Documentation/process/index.rst
+index 6cb732dfcc72..de9cbb7bd7eb 100644
+--- a/Documentation/process/index.rst
++++ b/Documentation/process/index.rst
+@@ -81,6 +81,7 @@ of special classes of bugs: regressions and security problems.
+ 
+    handling-regressions
+    security-bugs
++   cve
+    embargoed-hardware-issues
+ 
+ Maintainer information
+diff --git a/Documentation/process/security-bugs.rst b/Documentation/process/security-bugs.rst
+index 692a3ba56cca..132842d8b377 100644
+--- a/Documentation/process/security-bugs.rst
++++ b/Documentation/process/security-bugs.rst
+@@ -99,9 +99,9 @@ CVE assignment
+ The security team does not assign CVEs, nor do we require them for
+ reports or fixes, as this can needlessly complicate the process and may
+ delay the bug handling.  If a reporter wishes to have a CVE identifier
+-assigned, they should find one by themselves, for example by contacting
+-MITRE directly.  However under no circumstances will a patch inclusion
+-be delayed to wait for a CVE identifier to arrive.
++assigned, after a fix is created and merged into a public tree, they can
++contact the :doc:`kernel CVE assignment team<../process/cve>` to obtain
++one.
+ 
+ Non-disclosure agreements
+ -------------------------
+-- 
+2.43.1
 
-> This might be the safest change but again would not give us 100% idea that
-> the thing provision by the FW are correct.
-
-I would say, we have to assume provision is 100% wrong. Write every
-single register with the needed value.
-
-Is the provisioning information available? Can it be read from the
-flash? Can it be dumped from firmware we have on disk? Dumping it for
-a number of devices could give a list of register values which are
-highly suspect, ones that OEMs typically mess with. We could start by
-always setting those registers.
-
-       Andrew
 
