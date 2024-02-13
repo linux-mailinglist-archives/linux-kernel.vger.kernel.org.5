@@ -1,208 +1,152 @@
-Return-Path: <linux-kernel+bounces-63995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A81F853861
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:36:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 668AA85385E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:36:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CD1BB29D75
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:36:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07BFBB29BA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E552D604DD;
-	Tue, 13 Feb 2024 17:35:54 +0000 (UTC)
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839AF5FDD6;
+	Tue, 13 Feb 2024 17:35:51 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC60604BC;
-	Tue, 13 Feb 2024 17:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A425F54E;
+	Tue, 13 Feb 2024 17:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707845754; cv=none; b=fcIH73j84jZ6uwXhkpyK/cU91EgHxo7i/w8Hl3kBy/Dgox5fEDyOXvj7pzzuQWKZ0ooreXw+5bhUGBalQ8n63I+WPJW+hLf9xDitzKPGHKYA98qYfB2t3IYGyZMUT0oAT2Kc6zAVsouHU/WpVqiCPMyaHeIMRexGso6c8jF4tOo=
+	t=1707845751; cv=none; b=eAe1L6pwfk+UNZsnGoMTNsukyt38qfFJlTBBwZz72p3JfdGtneF1Wjhrw8mhpbJrlbskAwsft1qG5Vkl8PsiChw2RcG2v8zjYz1aCehJvJjzQgXfH1ge9u0N8FVKpRqwRMz+5v5ujNahxHXLH+UPwGMyxukVBoyO0LMQ3n5adBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707845754; c=relaxed/simple;
-	bh=w1JomXnVeLI4MA0rDKNXo6hV6XaIbmS9RWIewRAWYFU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ilKFHE6xncmCaSkg+4KKfWtibJmR7NEUn0GCmTcx7YfJ96aruP0H4mzzVukmRLtq+wXbMoRf7fcuqGzfr3HuH8EC5TWR9FZ5hqJWGWOcQ1eDfga2EflrCwEa1FKbGznom4HWf7Jj725mudY0JymzsxPrLKjDBN/D7YhCJhcziDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d73066880eso42553895ad.3;
-        Tue, 13 Feb 2024 09:35:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707845752; x=1708450552;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=whrnsXTyKI9UGwzj48XrHgmMnZYTDLT9RoWvxO8dIUQ=;
-        b=flPKUS7wgC+6gJMUoQw+P9rS8A937fY2GyChAp2KD9lQUrJEGZFLF2JHWuml1byart
-         x27PyjRumK/PXRc/XrOt9izxUy1UqDpbre1KTxLaijKzorcg39+0m+IXpuqHkOBLBJqE
-         pj6QgW1x9QyGH9xUT/zI0G4IAHMilo2DMcJFdhqsJQ4u+yjRLhwdA2o1wtDC3qe1y+/Y
-         yTFxM3IsO5fgqK13EUiHrMAtnSVKwgtLQ/x2mzcZYaWviMZQxkXeWu2ZkD+1iKfAJ47B
-         CQJlTLZnKacIgLA8sh2mOShkIlBfzZRVaBb3KCX6NorG192DVFJ/lL3VgIern4Gb8iUR
-         t0MQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVNbNsk/OO5l+dkENVYSDVuvtWqWjSceuzWbyZ2A/yXSn5Q85tG6w7rPQXD601zoAbX2Q3YxKil4qW7iAyVQZtrI3q0UeJfs0jrN6UMoaDFaRYwXPenFmAOiF7WfeHGRARh
-X-Gm-Message-State: AOJu0Yx3JtvdLGxv5ScJ207kHfNMPtb7BXVA26M4Zz6XWhv6ZcOsHPBx
-	4S4C19E1G6r97ofPuvkj+cw1RG9Aj5GSZbIJrQ/iXYkEgyapePF3dfqJdMKmf0EYdkx6q56UqmL
-	Xw2kljckPS0h27pSRr8F7r9r+gyc=
-X-Google-Smtp-Source: AGHT+IGsJHfa6vUZvMxcrVEarhYgpxxjvzmv0NPalE8qE+SJN0CHD1l4sGTv0XjvlcsqBIaw/bHlCbpOgnu/i/eLcyE=
-X-Received: by 2002:a17:902:cecc:b0:1d9:87b6:e09e with SMTP id
- d12-20020a170902cecc00b001d987b6e09emr256807plg.21.1707845751877; Tue, 13 Feb
- 2024 09:35:51 -0800 (PST)
+	s=arc-20240116; t=1707845751; c=relaxed/simple;
+	bh=hFdRFXyJ6J0gRuqn20aKLMCP8hDT2Psu1blkps/Bmn4=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qqVEXC7hTNpoFLxZzYVZeYPoL7bsRBGhCsIomRMorvBB2MRlqXOgvVYdBR7g+JRp2ffGmyzcIF5nu4gWc32/igX6niuawBa72ZWItC9BKkgu7mx899xuLZS3ByaiSKUBvtdioff0gzS6ZJGxcwicDcMXdjRFJcy+xbs6fEM5lcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TZ7gT4cFdz67LmL;
+	Wed, 14 Feb 2024 01:32:21 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id A9F471400D9;
+	Wed, 14 Feb 2024 01:35:46 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 13 Feb
+ 2024 17:35:46 +0000
+Date: Tue, 13 Feb 2024 17:35:45 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: David Lechner <dlechner@baylibre.com>
+CC: Mark Brown <broonie@kernel.org>, Martin Sperl <kernel@martin.sperl.org>,
+	David Jander <david@protonic.nl>, Jonathan Cameron <jic23@kernel.org>,
+	Michael Hennerich <michael.hennerich@analog.com>, Nuno =?ISO-8859-1?Q?S?=
+ =?ISO-8859-1?Q?=E1?= <nuno.sa@analog.com>, Alain Volmat
+	<alain.volmat@foss.st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, <linux-spi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH 2/5] spi: move splitting transfers to
+ spi_optimize_message()
+Message-ID: <20240213173545.00006564@Huawei.com>
+In-Reply-To: <20240212-mainline-spi-precook-message-v1-2-a2373cd72d36@baylibre.com>
+References: <20240212-mainline-spi-precook-message-v1-0-a2373cd72d36@baylibre.com>
+	<20240212-mainline-spi-precook-message-v1-2-a2373cd72d36@baylibre.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122062535.8265-1-khuey@kylehuey.com> <CAP045Apecy=G_Wmcw6TMjSDfa3TbkMfFVkzGDJ9xTVksCLkZ0w@mail.gmail.com>
- <CAADnVQ+tRwMZiPa9Zrf6nD22dfF9MAiqv-1ML5Z2pELFNKa9KQ@mail.gmail.com> <CAP045Aoc3e1NE8VMWz67LZNVo68nGhxfgapjd30vAaSyBD4kFg@mail.gmail.com>
-In-Reply-To: <CAP045Aoc3e1NE8VMWz67LZNVo68nGhxfgapjd30vAaSyBD4kFg@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 13 Feb 2024 09:35:39 -0800
-Message-ID: <CAM9d7chDGjpQ7dJ_EvhaV3RpudDw6e1ns-MZ=T0Q_nkKb4NvEQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] Combine perf and bpf for fast eval of hw
- breakpoint conditions
-To: Kyle Huey <me@kylehuey.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Kyle Huey <khuey@kylehuey.com>, 
-	LKML <linux-kernel@vger.kernel.org>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hello,
+On Mon, 12 Feb 2024 17:26:42 -0600
+David Lechner <dlechner@baylibre.com> wrote:
 
-On Mon, Feb 12, 2024 at 7:57=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
->
-> On Mon, Feb 12, 2024 at 6:42=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Feb 12, 2024 at 8:37=E2=80=AFAM Kyle Huey <me@kylehuey.com> wro=
-te:
-> > >
-> > > On Sun, Jan 21, 2024 at 10:25=E2=80=AFPM Kyle Huey <me@kylehuey.com> =
-wrote:
-> > > >
-> > > > rr, a userspace record and replay debugger[0], replays asynchronous=
- events
-> > > > such as signals and context switches by essentially[1] setting a br=
-eakpoint
-> > > > at the address where the asynchronous event was delivered during re=
-cording
-> > > > with a condition that the program state matches the state when the =
-event
-> > > > was delivered.
-> > > >
-> > > > Currently, rr uses software breakpoints that trap (via ptrace) to t=
-he
-> > > > supervisor, and evaluates the condition from the supervisor. If the
-> > > > asynchronous event is delivered in a tight loop (thus requiring the
-> > > > breakpoint condition to be repeatedly evaluated) the overhead can b=
-e
-> > > > immense. A patch to rr that uses hardware breakpoints via perf even=
-ts with
-> > > > an attached BPF program to reject breakpoint hits where the conditi=
-on is
-> > > > not satisfied reduces rr's replay overhead by 94% on a pathological=
- (but a
-> > > > real customer-provided, not contrived) rr trace.
-> > > >
-> > > > The only obstacle to this approach is that while the kernel allows =
-a BPF
-> > > > program to suppress sample output when a perf event overflows it do=
-es not
-> > > > suppress signalling the perf event fd or sending the perf event's S=
-IGTRAP.
-> > > > This patch set redesigns __perf_overflow_handler() and
-> > > > bpf_overflow_handler() so that the former invokes the latter direct=
-ly when
-> > > > appropriate rather than through the generic overflow handler machin=
-ery,
-> > > > passes the return code of the BPF program back to __perf_overflow_h=
-andler()
-> > > > to allow it to decide whether to execute the regular overflow handl=
-er,
-> > > > reorders bpf_overflow_handler() and the side effects of perf event
-> > > > overflow, changes __perf_overflow_handler() to suppress those side =
-effects
-> > > > if the BPF program returns zero, and adds a selftest.
-> > > >
-> > > > The previous version of this patchset can be found at
-> > > > https://lore.kernel.org/linux-kernel/20240119001352.9396-1-khuey@ky=
-lehuey.com/
-> > > >
-> > > > Changes since v4:
-> > > >
-> > > > Patches 1, 2, 3, 4 added various Acked-by.
-> > > >
-> > > > Patch 4 addresses additional nits from Song.
-> > > >
-> > > > v3 of this patchset can be found at
-> > > > https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@k=
-ylehuey.com/
-> > > >
-> > > > Changes since v3:
-> > > >
-> > > > Patches 1, 2, 3 added various Acked-by.
-> > > >
-> > > > Patch 4 addresses Song's review comments by dropping signals_expect=
-ed and the
-> > > > corresponding ASSERT_OKs, handling errors from signal(), and fixing=
- multiline
-> > > > comment formatting.
-> > > >
-> > > > v2 of this patchset can be found at
-> > > > https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@ky=
-lehuey.com/
-> > > >
-> > > > Changes since v2:
-> > > >
-> > > > Patches 1 and 2 were added from a suggestion by Namhyung Kim to ref=
-actor
-> > > > this code to implement this feature in a cleaner way. Patch 2 is se=
-parated
-> > > > for the benefit of the ARM arch maintainers.
-> > > >
-> > > > Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cl=
-eaner
-> > > > implementation thanks to the earlier refactoring.
-> > > >
-> > > > Patch 4 is v2's patch 3, and addresses review comments about C++ st=
-yle
-> > > > comments, getting a TRAP_PERF definition into the test, and unneces=
-sary
-> > > > NULL checks.
-> > > >
-> > > > [0] https://rr-project.org/
-> > > > [1] Various optimizations exist to skip as much as execution as pos=
-sible
-> > > > before setting a breakpoint, and to determine a set of program stat=
-e that
-> > > > is practical to check and verify.
-> > >
-> > > Since everyone seems to be satisfied with this now, can we get it int=
-o
-> > > bpf-next (or wherever) for 6.9?
-> >
-> > The changes look fine, but since they change perf side we need
-> > perf maintainer's ack-s before we can land the patches.
-> > And none of them were cc-ed.
-> > So please resend the whole set and cc
-> > PERFORMANCE EVENTS SUBSYSTEM
-> > M:      Peter Zijlstra <peterz@infradead.org>
-> > M:      Ingo Molnar <mingo@redhat.com>
-> > M:      Arnaldo Carvalho de Melo <acme@kernel.org>
-> > M:      Namhyung Kim <namhyung@kernel.org>
->
-> They're all CCd to the three non-test patches in this set, Namhyung
-> Kim is CCd to all of them and this cover email, and he both suggested
-> the first patch and acked the third.
+> Splitting transfers is an expensive operation so we can potentially
+> optimize it by doing it only once per optimization of the message
+> instead of repeating each time the message is transferred.
+> 
+> The transfer splitting functions are currently the only user of
+> spi_res_alloc() so spi_res_release() can be safely moved at this time
+> from spi_finalize_current_message() to spi_unoptimize_message().
+> 
+> The doc comments of the public functions for splitting transfers are
+> also updated so that callers will know when it is safe to call them
+> to ensure proper resource management.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
+Trivial thing (which applies equally to the original code).
+Otherwise LGTM.
+FWIW
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-I think we need to wait for Peter or Ingo for the kernel part.
+> +/**
+> + * spi_split_transfers - generic handling of transfer splitting
+> + * @msg: the message to split
+> + *
+> + * Under certain conditions, a SPI controller may not support arbitrary
+> + * transfer sizes or other features required by a peripheral. This function
+> + * will split the transfers in the message into smaller transfers that are
+> + * supported by the controller.
+> + *
+> + * Controllers with special requirements not covered here can also split
+> + * transfers in the optimize_message() callback.
+> + *
+> + * Context: can sleep
+> + * Return: zero on success, else a negative error code
+> + */
+> +static int spi_split_transfers(struct spi_message *msg)
+> +{
+> +	struct spi_controller *ctlr = msg->spi->controller;
+> +	struct spi_transfer *xfer;
+> +	int ret;
+> +
+> +	/*
+> +	 * If an SPI controller does not support toggling the CS line on each
+> +	 * transfer (indicated by the SPI_CS_WORD flag) or we are using a GPIO
+> +	 * for the CS line, we can emulate the CS-per-word hardware function by
+> +	 * splitting transfers into one-word transfers and ensuring that
+> +	 * cs_change is set for each transfer.
+> +	 */
+> +	if ((msg->spi->mode & SPI_CS_WORD) && (!(ctlr->mode_bits & SPI_CS_WORD) ||
+> +					       spi_is_csgpiod(msg->spi))) {
+	if ((msg->spi->mode & SPI_CS_WORD) &&
+	    (!(ctlr->mode_bits & SPI_CS_WORD) || spi_is_csgpiod(msg->spi))) {
 
-Thanks,
-Namhyung
+Seems easier to read to me. I appreciate you are just moving it though so
+don't mind that much if you leave it in the original form.
+
+
+
+> +		ret = spi_split_transfers_maxwords(ctlr, msg, 1);
+> +		if (ret)
+> +			return ret;
+> +
+> +		list_for_each_entry(xfer, &msg->transfers, transfer_list) {
+> +			/* Don't change cs_change on the last entry in the list */
+> +			if (list_is_last(&xfer->transfer_list, &msg->transfers))
+> +				break;
+> +
+> +			xfer->cs_change = 1;
+> +		}
+> +	} else {
+> +		ret = spi_split_transfers_maxsize(ctlr, msg,
+> +						  spi_max_transfer_size(msg->spi));
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+
 
