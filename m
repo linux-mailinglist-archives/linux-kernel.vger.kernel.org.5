@@ -1,213 +1,154 @@
-Return-Path: <linux-kernel+bounces-63287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32834852D44
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:59:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B824852D47
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:00:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8822DB245FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:59:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 413E41C20F7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108E622625;
-	Tue, 13 Feb 2024 09:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="u9tCx31Z"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C3323778;
+	Tue, 13 Feb 2024 09:58:17 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D330322615
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF08B22EEB
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707818293; cv=none; b=WJqco5XnvylSw7PVgSJb3Drujk5+gAhXJPprQHGoIayGVeK+O0InANMOSeokZrrmkpRRf0FbaavLUsu8U1yreLNIYUKsGimEiwvwmVFjh1JRYxZxBDL9D5hDqEhmu102vVTRXEnBlnPr3JB/87xIX/a1L/vDCXu33hXsOrHzjWM=
+	t=1707818296; cv=none; b=g9vVsjKhYsk5LxhovIrKnWbMdLTp4yYWUHxE7NstTrX6p8c+mzcZ45KQQUrK9KhDvdKLrpaTKYYVFr9xu0hy7JwO/tjyCJarbR0zjWyzHa5himzD/EOpZkoIKi1HmlRiS0O6VIEVl0Vw/1Q7g2K0jwYglK9pW3RsxzUegBHKHmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707818293; c=relaxed/simple;
-	bh=ouU1j20z/DfnqBG1Em7H9dgwI4BCmGk+z++d4OjXHp8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ETVOQVJ/z/kjVy88UMcl0pOxk+xoLhq6KP13+Jnert8MpoGJLUi7gVcApiTJgmuK/uI7ELQftwPH238Gt9AmuQuJGOntIdeRmxsm7QtbjD5gdbzyAHmU8q5MW0Ga/scUuWeGjkIyATRZYNRWwe4xr2KXgb3lGy7jkE0v7DAkr4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=u9tCx31Z; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9077483F;
-	Tue, 13 Feb 2024 10:57:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1707818280;
-	bh=ouU1j20z/DfnqBG1Em7H9dgwI4BCmGk+z++d4OjXHp8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=u9tCx31ZXCFfMqP6b3Gs/BxmSZqZITtXjB+joWze2vCyyunePuw0czpSUr4Eo1G+E
-	 W8hU5bg54q0ZfFA214nxgbsnf8t7/LluA886tLmrajr02rOAGThYwLOCeAvDu0w0/j
-	 4emXSYZVJJ6T2fHQalqCuLIvvxxATrINegGD1nM4=
-Message-ID: <bb8089cd-2a57-4ed0-a8bd-2140a89b0887@ideasonboard.com>
-Date: Tue, 13 Feb 2024 11:57:59 +0200
+	s=arc-20240116; t=1707818296; c=relaxed/simple;
+	bh=buHQqgA9PJmKH08QqCJcwEZzYqGaox6glEvk7ezmG9w=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Re2l+5oHD735DPYw006YURWmwHXYub7bcdJFaxPCi6gReMtjZc4f/iT4+RU4R6MBFj5exKrjQRHglh4WcY9gqcIpaL5o2OAhpltZ0ULp9jay3tani8IcWCVd7aZId/Qsk4E4pkQmCKn2YbPQNCfFt4xBTRxkEsFWAERy2LiKB1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363e7f0c9daso26787905ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 01:58:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707818294; x=1708423094;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3G4oWomSO8B+fHRBn+T30jaygW1WjcEa8TRPVgJlG6M=;
+        b=P77BfuxevhcdhnBKYaAvGtXjCoNOu9BOudWA68Buqb1yNWCtCq45HwWoFnGeQ8qsQm
+         ZmkZfiCGuh/Cr/g5Ir2YOdYrkLWm9+1Hp+e+nIylXbAtFeIgVd+yoatBEQAo9l4AWOVj
+         O7AtjXY+gRtPOX5/8lpZDojv+xCZkwZ37/wR9xp5/a/gvjr0k/DRjPV8xTAngyxKJIeK
+         mt9Rp+TCt7qkcdLW3kDoijmSPhf2mIRuBf1KBB/G9hcXhHJ5EZ4yembT4kUpTj0myuU+
+         2QGOcL2Ct1PuNl0afd2DXax2zbarNyby+we8QM/h7X/nr885sHl9gdsmEF6jDq4PVqU5
+         mN2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVxIfEmQBDyn87s/G7+r9/fThzB/w1LZus3Q+sS05PIrwOdZrMoUEhLyb0FgWh2ohMpz1QmAYD5ISm7966wJIulBiTUI71sQyhtzajG
+X-Gm-Message-State: AOJu0YwO1nIxqr5/waUN6DwDwJW9cgBZQqb/m3QzECu8ZJa02giRIzSR
+	KFj2fdWZDTf/Wn2Oa1rIFv8B5T4uxqiCydV2vdPrxz5am84T12kFgZf9qfGn7kv4jrd5HpNON7a
+	Q4Zv7tg7X2IusDqe6xpyIOzC6+safo7D6nPsJDAGn7t+CabS/NIRL9sU=
+X-Google-Smtp-Source: AGHT+IGfsKCOOK1a+TeuJvZKuzJnFeJYixWJAsDzFlaOfHhAzRdLKZH9O5FFbcGvwxuCQNKg9ZBmpbPGY9piOqjA3RhxLIb17JDy
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] drm/tidss: Fix initial plane zpos values
-Content-Language: en-US
-To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-Cc: Jyri Sarha <jyri.sarha@iki.fi>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Sam Ravnborg <sam@ravnborg.org>, Devarsh Thakkar <devarsht@ti.com>,
- Aradhya Bhatia <a-bhatia1@ti.com>, Francesco Dolcini <francesco@dolcini.it>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org,
- "wayland-devel@lists.freedesktop.org" <wayland-devel@lists.freedesktop.org>,
- Randolph Sapp <rs@ti.com>
-References: <20240213-tidss-fixes-v1-0-d709e8dfa505@ideasonboard.com>
- <20240213-tidss-fixes-v1-1-d709e8dfa505@ideasonboard.com>
- <20240213110440.13af335a@eldfell>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240213110440.13af335a@eldfell>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1c2f:b0:360:134:535e with SMTP id
+ m15-20020a056e021c2f00b003600134535emr168811ilh.1.1707818294088; Tue, 13 Feb
+ 2024 01:58:14 -0800 (PST)
+Date: Tue, 13 Feb 2024 01:58:14 -0800
+In-Reply-To: <000000000000b8f8610609479fa3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c299950611406e55@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
+ dereference in sk_psock_verdict_data_ready
+From: syzbot <syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, mukattreyee@gmail.com, netdev@vger.kernel.org, 
+	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+syzbot has found a reproducer for the following issue on:
 
-On 13/02/2024 11:04, Pekka Paalanen wrote:
-> On Tue, 13 Feb 2024 10:16:36 +0200
-> Tomi Valkeinen <tomi.valkeinen@ideasonboard.com> wrote:
-> 
->> When the driver sets up the zpos property it sets the default zpos value
->> to the HW id of the plane. That is fine as such, but as on many DSS
->> versions the driver arranges the DRM planes in a different order than
->> the HW planes (to keep the non-scalable planes first), this leads to odd
->> initial zpos values. An example is J721e, where the initial zpos values
->> for DRM planes are 1, 3, 0, 2.
->>
->> In theory the userspace should configure the zpos values properly when
->> using multiple planes, and in that sense the initial zpos values
->> shouldn't matter, but there's really no reason not to fix this and help
->> the userspace apps which don't handle zpos perfectly. In particular,
->> Weston seems to have issues dealing with the planes with the current
->> default zpos values.
->>
->> So let's change the zpos values for the DRM planes to 0, 1, 2, 3.
->>
->> Another option would be to configure the planes marked as primary planes
->> to zpos 0. On a two display system this would give us plane zpos values
->> of 0, 0, 1, 2. The end result and behavior would be very similar in this
->> option, and I'm not aware that this would actually help us in any way.
->> So, to keep the code simple, I opted for the 0, 1, 2, 3 values.
->>
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->> Fixes: 32a1795f57ee ("drm/tidss: New driver for TI Keystone platform Display SubSystem")
-> 
-> Hi Tomi,
-> 
-> have you reported this to Weston? What exactly is the problem?
+HEAD commit:    577e4432f3ac tcp: add sanity checks to rx zerocopy
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=149a6fe0180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5e23375d0c3afdc8
+dashboard link: https://syzkaller.appspot.com/bug?extid=fd7b34375c1c8ce29c93
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e2ddf4180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c5d592180000
 
-I haven't. I'm quite unfamiliar with Weston, and Randolph from TI (cc'd) 
-has been working on the Weston side of things. I also don't know if 
-there's something TI specific here, as the use case is with non-mainline 
-GPU drivers and non-mainline Mesa. I should have been a bit clearer in 
-the patch description, as I didn't mean that upstream Weston has a bug 
-(maybe it has, maybe it has not).
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d512cc35258d/disk-577e4432.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/83484fcd4968/vmlinux-577e4432.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/dc2452784eec/bzImage-577e4432.xz
 
-The issue seen is that when Weston decides to use DRM planes for 
-composition, the plane zpositions are not configured correctly (or at 
-all?). Afaics, this leads to e.g. weston showing a window with a DRM 
-"overlay" plane that is behind the "primary" root plane, so the window 
-is not visible. And as Weston thinks that the area supposedly covered by 
-the overlay plane does not need to be rendered on the root plane, there 
-are also artifacts on that area.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com
 
-Also, the Weston I used is a bit older one (10.0.1), as I needed to go 
-back in my buildroot versions to get all that non-mainline GPU stuff 
-compiled and working. A more recent Weston may behave differently.
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 8000000023d8f067 P4D 8000000023d8f067 PUD 7af79067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 PID: 5255 Comm: syz-executor278 Not tainted 6.8.0-rc1-syzkaller-00195-g577e4432f3ac #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffc9000437f8c8 EFLAGS: 00010246
+RAX: 1ffff1100482de5c RBX: ffff88802416f2e0 RCX: ffff888023a7bb80
+RDX: 0000000000000000 RSI: ffff88802416f000 RDI: ffff888023a96800
+RBP: ffffc9000437fad0 R08: ffffffff8957112c R09: 1ffffffff2590c84
+R10: dffffc0000000000 R11: 0000000000000000 R12: dffffc0000000000
+R13: 0000000000000004 R14: ffffffff89570ff9 R15: ffff888023a96800
+FS:  00007f8dfb0eb6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000023dae000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ sk_psock_verdict_data_ready+0x232/0x340 net/core/skmsg.c:1230
+ unix_stream_sendmsg+0x9b4/0x1230 net/unix/af_unix.c:2293
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f8dfb16c729
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8dfb0eb218 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f8dfb1f6368 RCX: 00007f8dfb16c729
+RDX: 0000000000040000 RSI: 0000000020000980 RDI: 0000000000000003
+RBP: 00007f8dfb1f6360 R08: 00007fff2e940fc7 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f8dfb1f636c
+R13: 00007f8dfb1c3074 R14: 656c6c616b7a7973 R15: 00007fff2e940fc8
+ </TASK>
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffc9000437f8c8 EFLAGS: 00010246
+RAX: 1ffff1100482de5c RBX: ffff88802416f2e0 RCX: ffff888023a7bb80
+RDX: 0000000000000000 RSI: ffff88802416f000 RDI: ffff888023a96800
+RBP: ffffc9000437fad0 R08: ffffffff8957112c R09: 1ffffffff2590c84
+R10: dffffc0000000000 R11: 0000000000000000 R12: dffffc0000000000
+R13: 0000000000000004 R14: ffffffff89570ff9 R15: ffff888023a96800
+FS:  00007f8dfb0eb6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000023dae000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-> It doesn't seem like a good idea to work around userspace bugs
-> (non-regression, I presume?) with kernel changes.
 
-Presuming this is not related to any TI specific code, I guess it's a 
-regression in the sense that at some point Weston added the support to 
-use planes for composition, so previously with only a single plane per 
-display there was no issue.
-
-I agree with you, this patch shouldn't be merged to "fix" issues with 
-tidss + Weston. However, the current default zpos values really don't 
-make sense, so I think this patch can stand on its own, and should be 
-merged just to make the tidss behavior a bit saner.
-
-But even if this patch merged, the issue with Weston should be looked at 
-(*poke* Randolph =).
-
-  Tomi
-
-> 
-> 
-> Thanks,
-> pq
-> 
->> ---
->>   drivers/gpu/drm/tidss/tidss_plane.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/tidss/tidss_plane.c b/drivers/gpu/drm/tidss/tidss_plane.c
->> index e1c0ef0c3894..68fed531f6a7 100644
->> --- a/drivers/gpu/drm/tidss/tidss_plane.c
->> +++ b/drivers/gpu/drm/tidss/tidss_plane.c
->> @@ -213,7 +213,7 @@ struct tidss_plane *tidss_plane_create(struct tidss_device *tidss,
->>   
->>   	drm_plane_helper_add(&tplane->plane, &tidss_plane_helper_funcs);
->>   
->> -	drm_plane_create_zpos_property(&tplane->plane, hw_plane_id, 0,
->> +	drm_plane_create_zpos_property(&tplane->plane, tidss->num_planes, 0,
->>   				       num_planes - 1);
->>   
->>   	ret = drm_plane_create_color_properties(&tplane->plane,
->>
-> 
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
