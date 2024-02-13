@@ -1,206 +1,236 @@
-Return-Path: <linux-kernel+bounces-63643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 012D08532B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:09:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CF938532AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:08:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2711E1C265B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:09:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CF1D1F274B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3355787C;
-	Tue, 13 Feb 2024 14:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="nMntoFeh";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="JxW7B0Aw"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C974557310;
+	Tue, 13 Feb 2024 14:08:18 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0CA56770;
-	Tue, 13 Feb 2024 14:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707833382; cv=fail; b=DdFLDovWqHs15/hRujMjKk1ujDbHkM3ZZrRyRcXe9beviTUJoSHK1Kt24Mq4tTlXmzSzHcKCTZKrMpLJAJYrQAhfi2D9aF6ExYNqQSvOseXkrRbEM+elBtAJNxev3hOhvypkEY29NUlLCw2YurRyC5tkPZMJiFLVFM6x/cKCgag=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707833382; c=relaxed/simple;
-	bh=//6DhNmNXbYX3/JL/3n9zUx+hZRw5en5TJjk5aPnktE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=qfU4OQRXDShmP4Hxmowfcu9VHBWQxWg6vWwXTkFdRErIWcTvyWjJcG3kWuhlTxP9pdic7jfJhXyAY7wEdHxzWIGsmYV5Th29iQk86SCMo3NthHrtx+WgmqXa3cGFpsi0bWHBXqr3LpD1dpnCrgvy8xFxKP5rzTe/iCxEQbVwNXE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=nMntoFeh; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=JxW7B0Aw; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41DDmnDj014119;
-	Tue, 13 Feb 2024 14:08:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=5fRa+O+Iyufr3AUbxXs96Yw2X43lvGjR6RaHORj+MYE=;
- b=nMntoFehMGzxwJ1uHHfrWJ0Wcy0tonDJJ/ETb8bRRcSEFfRN3kEmStc5YTQQp0P0Hv/7
- yrr6XDQ/9VlfCdr5YZdHlW0UE/9IWD0ppNDURdDFo5mjKSEIr6/YoMLEwKrCD8oE0Y1q
- rY6yQD3eALnIMwDHxbW6PF/0aJimKwu/+tC6Hert3T4s8R2HOKQ6Zhi2RGNQv29FneDA
- DcYQhV22zlmvuac+hcuJeBYCXS675X0o/fXOUm2hierGFkEFpA9tZlCOcxdFfzfG9ALc
- ej70UEnc6Krw+jrvMzuX6E+oZrgGqjRAW9d62c63qazjgEGfLj6OCv7H5o6LA3Ltk9Nv vQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w89brg31c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 14:08:15 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41DE7BPq000755;
-	Tue, 13 Feb 2024 14:08:15 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w5yk7cqvu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 14:08:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oJ2VMiwyX37jczxT7FWN1Nny8D1i21yVeC2MP7wIzaHknlsNjiYOuyL6VcMMVhEOfWrlT31N7DBuYbv5g+FXZDgD+gIS7+gYkTGfGvXq3LYiRn/HkVJbg/kwp2JGW2Ov/kpg3IAvusSYaX3qfqEnlAAtW4X5X1n/Jom0PJlEczYAWpqJTxumOyM6y9sKIGTZVwVHfeHbRt36d/vTAHZ138l964H+qP708D04MPUmoZvATQMSY/6W5uv4RIR5268Fw+SXa4eHnjxyfTZRmT5UVtlrSSWmEocs9idfn1ez1ULYbw+Se7tFsgt0KFNTsRYp1PFej/h4EHfFSUI8gmHUwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5fRa+O+Iyufr3AUbxXs96Yw2X43lvGjR6RaHORj+MYE=;
- b=kMGwryZe/enVStbFJ8UNgo89HIGaANJeTtYIaC59nRWSdeN3Q/MDvFvQfHuqMS4pkv1yDzCE+ieJpcItwy0YMW1GlPzEe879o1ELDUtS49cCCxvU2lVi2842KuHAGAA0mXZdWQu68yrAv3F+P1mfUw9nD8UP6rCvKEZs+VzxXP7ZXVAZCDso2URxO0C6Ms0Jj6kyYvOh0I3Nq8XPqI8KNV6b+ZeRx0WEd8KmdIUBemqxx4un+eGNCIq1cT4DuwagTp2Ag1x6j0rW12gwBdZTSM4/KEs7UTpLBisChW/VPCB20toTS7/DbVsbaDj9MdG6e75EvK0iLHlxo19BH66ohQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5fRa+O+Iyufr3AUbxXs96Yw2X43lvGjR6RaHORj+MYE=;
- b=JxW7B0Aw/E0Eirq2KG7TPAlJP2DUF2XfDkw6DYRhfip6QqfsvTpPltk8aRma1JwpuOEc+0S1CC290to48prLIsZcHJ8UVhzVorjBrRYhvw4dndbs/guY+Y6yhWXJot/XKwE0Uxc3F4xoeakZS8FbmAsY1CGBHLrFXkfhMXcJIZ8=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by PH0PR10MB4485.namprd10.prod.outlook.com (2603:10b6:510:41::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Tue, 13 Feb
- 2024 14:08:12 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::56f9:2210:db18:61c4]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::56f9:2210:db18:61c4%4]) with mapi id 15.20.7292.026; Tue, 13 Feb 2024
- 14:08:12 +0000
-Message-ID: <385ff2e5-ad79-456a-9632-9581c0d26d9a@oracle.com>
-Date: Tue, 13 Feb 2024 14:07:57 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 15/15] nvme: Ensure atomic writes will be executed
- atomically
-Content-Language: en-US
-To: Christoph Hellwig <hch@lst.de>
-Cc: axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-scsi@vger.kernel.org, ming.lei@redhat.com, ojaswin@linux.ibm.com,
-        bvanassche@acm.org, Alan Adamson <alan.adamson@oracle.com>
-References: <20240124113841.31824-1-john.g.garry@oracle.com>
- <20240124113841.31824-16-john.g.garry@oracle.com>
- <20240213064241.GC23305@lst.de>
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <20240213064241.GC23305@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2P153CA0024.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::11)
- To DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F3257300
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707833298; cv=none; b=DuNcwbRQ4eW8kVqP8hN6QeAvv37DFzXfKQ8b4j3HJv7cZPCC8D+ZsqFHjzxxopYo0lHbd7804ZNcxZImsKhNzgOwdVg+1XinrDespZk3pKqovjr6xsb3kZIU0bgP1Z1XcVlCxItAPM37lntQL9K55l4CeTPxAOD3p6d2AJWdXtM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707833298; c=relaxed/simple;
+	bh=44p5IxhulwXkZPzA7Xr3EjodhLPS8gaHeHiaYI83Cws=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=oQxtswF0vlWnib3siZCLGLChQiMWauay+PFVlv2R+YqPb9K16FDUlel+jH/EWzKNsc9F6YQz+6QLB0VmOvL3Y3O2a6irEdqIdKpfB4S5WnNevHr40E1psVKk9U5FOUHqjnz3QouMMY8svAhLTuQjbR/Ig6uZkp+H34yldz0xMTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36387e7abccso7042575ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:08:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707833295; x=1708438095;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AVvcv6zE2WG6qP6TAxb9h0JZjjLETbfDdGCQEtHM0hg=;
+        b=vfY3oCudlpqGE8ESLEHFc7dcBpSLFlaKpSc61t1Mx1Aj9+tnL1dHl9/uTvPbiBxp8u
+         ld28GD0yjga32qStZMLcJIdux6gGLuNfWnLk5XiE3AyI6g3K/RpcnJep+Vts92CWtbxn
+         ymZcPUuTpkpQwJaPPDxPaQV5mvkOAy610NmfNiq44EUlsPCU5reSeT6/xiyuj4P/Q4au
+         THuPbaFngA6u9l2jEx/SzdSFepYe0sfTCq0Etc3panGuOqHkUBYq4PqVu/9JJUVbfDCI
+         mSXBQTf4/KT6JqhfSJVOgXFGEcof4uD9083XVl3nVTfwtoq0lvqQ8OXNjKLNzXRCrAN7
+         4kFw==
+X-Forwarded-Encrypted: i=1; AJvYcCUHVxdfFj0sKu4YJkTvgjVYEBPu35sX7Or8+g1SsjDYCHGHq9RsX27p0tFgUlsva2F4f/3ab7VGd72x6uJt03TwjrinrRiZXl5Pf+zA
+X-Gm-Message-State: AOJu0YzRuItY2fM6h8uQhuBl2TanLYhDGO3zMP4IePCwiJldKgjCl6z+
+	IbmvLyPMkzjWgCqxDLzSSPE/V1WCPduAcEDxnjGhRy+weFiyF1kHNCG0PHkJpKMpqsRRjXNqk3d
+	yJsX3sLAi69U2j475ACWKV6YPrPhAdEQdqsytzJT9XH4naItaWMhc6Fk=
+X-Google-Smtp-Source: AGHT+IF3mB2NNHgYRuJ1bIXNxeIi1aNd+qgxdmDfQx88zkQH4UqnqnBOzLITdPHD2y3LUm7k5G7Spe4v5zlbsYD0bicS75TmH6ju
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|PH0PR10MB4485:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8f500d2d-fdc7-47d3-0ee2-08dc2c9d36ff
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	jvszXZrzgBLmdXw+o5++r5kr0szKH4Surn8XrJVk2oooBm9J/Smjj7xFcDesDA5hap+15vAFzF+HmQ5YE0foF+vhVxUHod3uHBWTZ05V0XLhDq7gC3ygXOzCnfZSe6Q69TN6MJgxTES9RdA0StpLPfsNnwZwgDFXOZhc1x0NWtfmUwC/+WIKZd8e8ddozc6etOlD3fdTheVoXLSicURzwyqqeiFLQgPt08/GcJ4hIeoEHf4FcOUynSUQP6ZjMiCZ/1u/6iSs8LX34cpBJlUNTJwrR7cEMvXuZkxjl5NXN3Uq6qFty6mrl3NMxunBUBA8dFSrln52cMagPJQlYQ6rIZ5aw4scCBaLtl1w5VSINnyvhgQBgoksDdUxzYT2Tmqp8CDpgWCNBQ1ZEG6mtahcW5g6ad44lkjuYTgxs8xCFoHVgTlb0nuhArrJvLLwBihvdjAm/jFw9s5XCNzynYkkTed8jFJW2E/L3NgbXj2i8QcktnXZVVT+K14QpcO19GjuzZwIWOg2Nm7GFe17BQGIDiq/k6wnLXri1kYeX21LAJqu2YdKLchHCbbzv63A15ME
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(376002)(366004)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(36756003)(31686004)(316002)(6666004)(86362001)(36916002)(31696002)(8676002)(6916009)(4326008)(8936002)(6506007)(478600001)(5660300002)(6486002)(2906002)(6512007)(7416002)(4744005)(53546011)(38100700002)(107886003)(66946007)(66476007)(66556008)(26005)(2616005)(83380400001)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?clRBWmZNbEQrei83Q3JUdWIyWXpDVzdNdzhmd296ZW1CMkFRRnc2UnlBT3VL?=
- =?utf-8?B?QkFEdlAwZjUwUEMxSjI2VDg1R01Pd2xPcjF2MGhaTm9GRXN3RkZRdzVnWlhr?=
- =?utf-8?B?YzhQZzN0YjZHMkRzTWNaL0piVTJQY0JMNVArSWFpcHduYy9BdlYwcURUMWxa?=
- =?utf-8?B?QWxLMkdNU21JNGFtbFlucU0zS2s0YUJuMG9IVXowZ3Btc0c2WXA0bFVIeVhR?=
- =?utf-8?B?amZ3RkdlTWwyZWd1eGxWbmdib0RGazIzeWJIN2ZzQWROZUI1dERLMHpuMDFy?=
- =?utf-8?B?a3FZdWZsVmNKNFJHckZZL0hnc3lDQkY0RTJyckhQL2pTSjhqblNqWWozVnor?=
- =?utf-8?B?UDhtVks1OWFSeXFpSmMxbFpITXJyVHROWVpNcExUa0orZS92T0JTMU4vZWRF?=
- =?utf-8?B?a2hwRDZSZkk2SC81Z3BhL1grbUZZWDJLSmE3dlM4bG50ak9NaTRSOTBubHpa?=
- =?utf-8?B?WUFocFowQVF4U2tGSzJBK3hIM1hOWVZNbE8vQnZhSzVXa2pBaVBZNWpidzhQ?=
- =?utf-8?B?a3pObzdRWUVaQVhyUU9ienorVlg0WE83VXpvbEJRU1ZFNHZkZE1kL1FWQ3Zi?=
- =?utf-8?B?cnd2OCtYcE96N1FyRVhVenUzZjhlWXRKb3QyeStQc0U3d0RDTzdXRWRPRmM3?=
- =?utf-8?B?Z3NDUE5aSXZNTVljVnBDaURNYytOcjVLNURBNFBkb3FCdW83TFFCVTcxOXM4?=
- =?utf-8?B?MTk0enZkbEJBenNwellvOTgxYnhtNnM1cklEL2tFblI0OVI5Tk5wOENzZGdY?=
- =?utf-8?B?TlpxQndEck1LWHF1S1lIc0t1ajlROVJlT3dJVy9LNE5ERXViNFVsSWxRYzd2?=
- =?utf-8?B?WUk3M0w4cHgycVMyVmN0R3BlS1pqZUYvSGJZL0NmMzNENzU4WGNSWVVHTUtK?=
- =?utf-8?B?eDBXZXV4eUxJcW9aTldGSTdGRTdRanpTWjJqV1FKbEhiSkYxMldqbEk0a0R4?=
- =?utf-8?B?emNnQXYybU9ReUQrdzdkdHA3MDNEOFppS1NmWE11VUdrNG5nVm82NzhiRHNN?=
- =?utf-8?B?RmRqcUhSa0pXVGZ5OU1wdEovUVpNSDZzR05tbWFQeWNIRDZJczV2dGRsOU02?=
- =?utf-8?B?T1pWMGRBOS81cVEwYlNkeStQRkhBMnc1NDIyRmRtZ0R3ZURGWmVjaEQvblRy?=
- =?utf-8?B?T25zVG83Y2tGZlphSEkzV1oyQjhxa1IzTGR1WnpEL1Fpckh3VkplVWpRMkhZ?=
- =?utf-8?B?MFpmYXpxU2dlcTB6SmVUdHM0ejFJcWtCM05UOG15WUpXcVRaMndpNkN1RW9z?=
- =?utf-8?B?RlZJNXJjTzNobTZBTURYWmVKbTVtTlhEZGpMRHQ0YWJnM1BidnJ5b3Q1Q2Jp?=
- =?utf-8?B?L2p0VENGUk5UcWhrYUhSdk9ubUlVb1dDWE5ySmNHQzJxQTZIV04rSGV2YzE3?=
- =?utf-8?B?SzFrSGYvYmRackxQR1dvNFFxQ1ZaczhHR0lhME9OdTJUZVBrOWRxVmZzVEp0?=
- =?utf-8?B?N0h0RTRHKzNZVFBPTEs4a1NqaENQYkd6UXA1ZUFLNUVzTlg5Y2NxOUd1ZnlK?=
- =?utf-8?B?Q21vSHRjck1mT2JpTTFLUUhHV3ZwNlJ0N3RWK1ZjZWEzaTF6R2VQNTFhK1hm?=
- =?utf-8?B?M1NTMFJESGRFN0E0b0JWTy9TSmJvSVZrQXJCOFVCaFlmbTY5QitSYnNxYXNr?=
- =?utf-8?B?N1ArR3llY2dTSXljOU5tRG9vZXYxczJLUjlRTURIVDBheVhaZ0pzcFVyRmxa?=
- =?utf-8?B?V1lRcmJOMTlnUlZVVVZidEVhaC96NWhsOHpmMmJwZnV0U1doQ0xXb2dvWjRa?=
- =?utf-8?B?OHUvR1FHWWNZUktqY2pIM3VrbHd3ODN5T3NYSlRnOW9lMW9GelJ5R0FRcXdD?=
- =?utf-8?B?OHVITlNwU24rd05vL3Uxcmo2U0ZkQ2t0ZGtXN0o5U0xLcnRNdHlIWHVFZjlR?=
- =?utf-8?B?dkpGMWdiUjNaL0dEVUQ4QS9MSTVTTUhCWTVROVVSd3B4cTl3Y2FoamNQQ1dl?=
- =?utf-8?B?V2haanM1Z2NCa2RwOWhmdmpndzl0NVJRZHlQQitRMVUyOEZpSy92bTlJeit4?=
- =?utf-8?B?UlRqVmg5TXZDbmhPbW9DckRLREwrNzRsT09KbTN3UDBQemtTY1loOTNhMFZv?=
- =?utf-8?B?K1htRVV2OXBtdkRBd2dvaUgxNTBORjlYTUlwUldwbGhLRC9jRDBtTGZERjcy?=
- =?utf-8?Q?84N+6jFiXn4H8oQTi/3zDdl/j?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	eB8fqlNfV/cdHyHieKNqMxKBYDQSL18D2ttudTBVVSVkXkyUZfePzI/8fzcULex7do8C7IrwV28moF2tpaVlNzH7FxNVw48+vmGVBWRfh5AlfCdBHP1FPGb/Yjf7jFIcfAlYDxh88ySWaQHDJw3fs460zqQuD3Y7bqNPgDRp9mp1rPupTAeHl+hbuNqNncusn3zuNgEOKjk7sluANzJLoRkO7hEZG38/FLIo8ydp1ShIJJYuyq0t5eHAWueoFFNjXlW8JqBz0NSp4jbDayCu/6zS1B0SOI9nm28IVdXJQ2uhxx6chWKyBNhMLjSWev0xaVf0awlf+G3ZomhT9d5TDYQN7PEmt3+rLFo3KHglDpc2zjZt+yLvKKxgbn8jla0xXTnT3H36P3fqo1eSRsXcEfchxxfqGAqis1ICxot1B0PQZbR96GWY9sISMPcMbJnJsqZcRAqsG+UYPuqLsrrUvZpRstt3ArDmraqEHlhT0JfsYPu5Ued4AubF/lHt9IXhGCIkj3Ms3P0cIXdA6Rt44SeGrOkSdnTjBDAoh/TLomBmx+LPeUXzPyJvanszafsyhizRKhXhVqSF/dhOgKRGN4oHUXiR3/JjX5McQc+H6Ms=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f500d2d-fdc7-47d3-0ee2-08dc2c9d36ff
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 14:08:12.7506
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RVOaqcZeaNHV6kN78oJNWZ18X7IbbRX0voDjEdmKdU8TLcG4ssDcLW7HywFhsO1ZPVko0oA0YtnLIkIIp7SUOw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4485
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_08,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=732 phishscore=0 mlxscore=0
- bulkscore=0 spamscore=0 malwarescore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402130112
-X-Proofpoint-ORIG-GUID: g84YTYG9LBSUF4-dPcUGP_HsXWRONxlE
-X-Proofpoint-GUID: g84YTYG9LBSUF4-dPcUGP_HsXWRONxlE
+X-Received: by 2002:a92:c265:0:b0:363:de50:f7bb with SMTP id
+ h5-20020a92c265000000b00363de50f7bbmr850266ild.2.1707833295651; Tue, 13 Feb
+ 2024 06:08:15 -0800 (PST)
+Date: Tue, 13 Feb 2024 06:08:15 -0800
+In-Reply-To: <0000000000001d010d06112d0bf2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ec4c32061143ec95@google.com>
+Subject: Re: [syzbot] [dri?] KASAN: slab-use-after-free Read in
+ drm_atomic_helper_wait_for_vblanks (2)
+From: syzbot <syzbot+0f999d26a4fd79c3a23b@syzkaller.appspotmail.com>
+To: airlied@gmail.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, maarten.lankhorst@linux.intel.com, 
+	mripard@kernel.org, syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
+Content-Type: text/plain; charset="UTF-8"
 
-On 13/02/2024 06:42, Christoph Hellwig wrote:
-> If we don't end up doing the checks in the block layer:
-> 
->> +	/*
->> +	 * Ensure that nothing has been sent which cannot be executed
->> +	 * atomically.
->> +	 */
->> +	if (req->cmd_flags & REQ_ATOMIC) {
->> +		struct nvme_ns_head *head = ns->head;
->> +		u32 boundary_bytes = head->atomic_boundary;
-> 
-> ... please split the checks into a helper. 
+syzbot has found a reproducer for the following issue on:
 
-ok
+HEAD commit:    c664e16bb1ba Merge tag 'docs-6.8-fixes2' of git://git.lwn...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14f8d1e0180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df82262440d95bc4
+dashboard link: https://syzkaller.appspot.com/bug?extid=0f999d26a4fd79c3a23b
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1086cd48180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11fcdba2180000
 
-> And merge them into the
-> previous patch.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-c664e16b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c838390fdb6c/vmlinux-c664e16b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d25123cb1896/bzImage-c664e16b.xz
 
-Fine, if you prefer that.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0f999d26a4fd79c3a23b@syzkaller.appspotmail.com
 
-> 
+==================================================================
+BUG: KASAN: slab-use-after-free in drm_atomic_helper_wait_for_vblanks.part.0+0x84f/0x930 drivers/gpu/drm/drm_atomic_helper.c:1661
+Read of size 1 at addr ffff88802d6f0409 by task kworker/u16:1/13
 
+CPU: 1 PID: 13 Comm: kworker/u16:1 Not tainted 6.8.0-rc4-syzkaller-00005-gc664e16bb1ba #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Workqueue: events_unbound commit_work
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:488
+ kasan_report+0xda/0x110 mm/kasan/report.c:601
+ drm_atomic_helper_wait_for_vblanks.part.0+0x84f/0x930 drivers/gpu/drm/drm_atomic_helper.c:1661
+ drm_atomic_helper_wait_for_vblanks drivers/gpu/drm/drm_atomic_helper.c:1657 [inline]
+ drm_atomic_helper_commit_tail+0xcb/0xf0 drivers/gpu/drm/drm_atomic_helper.c:1757
+ commit_tail+0x356/0x410 drivers/gpu/drm/drm_atomic_helper.c:1834
+ process_one_work+0x889/0x15e0 kernel/workqueue.c:2633
+ process_scheduled_works kernel/workqueue.c:2706 [inline]
+ worker_thread+0x8b9/0x12a0 kernel/workqueue.c:2787
+ kthread+0x2c6/0x3b0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
+ </TASK>
+
+Allocated by task 5401:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:372 [inline]
+ __kasan_kmalloc+0xaa/0xb0 mm/kasan/common.c:389
+ kmalloc include/linux/slab.h:590 [inline]
+ drm_atomic_helper_crtc_duplicate_state+0x70/0xd0 drivers/gpu/drm/drm_atomic_state_helper.c:177
+ drm_atomic_get_crtc_state+0x162/0x440 drivers/gpu/drm/drm_atomic.c:362
+ page_flip_common+0x57/0x320 drivers/gpu/drm/drm_atomic_helper.c:3629
+ drm_atomic_helper_page_flip+0xb6/0x190 drivers/gpu/drm/drm_atomic_helper.c:3690
+ drm_mode_page_flip_ioctl+0x103f/0x1470 drivers/gpu/drm/drm_plane.c:1489
+ drm_ioctl_kernel+0x1ec/0x3e0 drivers/gpu/drm/drm_ioctl.c:744
+ drm_ioctl+0x5d8/0xc00 drivers/gpu/drm/drm_ioctl.c:841
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x193/0x220 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+
+Freed by task 5401:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
+ poison_slab_object mm/kasan/common.c:241 [inline]
+ __kasan_slab_free+0x121/0x1c0 mm/kasan/common.c:257
+ kasan_slab_free include/linux/kasan.h:184 [inline]
+ slab_free_hook mm/slub.c:2121 [inline]
+ slab_free mm/slub.c:4299 [inline]
+ kfree+0x124/0x370 mm/slub.c:4409
+ drm_atomic_state_default_clear+0x3aa/0xde0 drivers/gpu/drm/drm_atomic.c:225
+ drm_atomic_state_clear drivers/gpu/drm/drm_atomic.c:294 [inline]
+ __drm_atomic_state_free+0x185/0x2b0 drivers/gpu/drm/drm_atomic.c:311
+ kref_put include/linux/kref.h:65 [inline]
+ drm_atomic_state_put include/drm/drm_atomic.h:490 [inline]
+ drm_client_modeset_commit_atomic+0x6db/0x810 drivers/gpu/drm/drm_client_modeset.c:1057
+ drm_client_modeset_commit_locked+0x14d/0x580 drivers/gpu/drm/drm_client_modeset.c:1154
+ drm_client_modeset_commit+0x4f/0x80 drivers/gpu/drm/drm_client_modeset.c:1180
+ __drm_fb_helper_restore_fbdev_mode_unlocked drivers/gpu/drm/drm_fb_helper.c:251 [inline]
+ __drm_fb_helper_restore_fbdev_mode_unlocked drivers/gpu/drm/drm_fb_helper.c:230 [inline]
+ drm_fb_helper_restore_fbdev_mode_unlocked drivers/gpu/drm/drm_fb_helper.c:278 [inline]
+ drm_fb_helper_lastclose+0xc7/0x160 drivers/gpu/drm/drm_fb_helper.c:2005
+ drm_fbdev_generic_client_restore+0x2c/0x40 drivers/gpu/drm/drm_fbdev_generic.c:258
+ drm_client_dev_restore+0x188/0x2a0 drivers/gpu/drm/drm_client.c:247
+ drm_release+0x32f/0x3e0 drivers/gpu/drm/drm_file.c:437
+ __fput+0x270/0xb80 fs/file_table.c:376
+ __fput_sync+0x47/0x50 fs/file_table.c:461
+ __do_sys_close fs/open.c:1554 [inline]
+ __se_sys_close fs/open.c:1539 [inline]
+ __x64_sys_close+0x87/0x100 fs/open.c:1539
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+
+The buggy address belongs to the object at ffff88802d6f0400
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 9 bytes inside of
+ freed 512-byte region [ffff88802d6f0400, ffff88802d6f0600)
+
+The buggy address belongs to the physical page:
+page:ffffea0000b5bc00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2d6f0
+head:ffffea0000b5bc00 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888014c42c80 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5401, tgid 5401 (syz-executor102), ts 53592743984, free_ts 53573722996
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d4/0x350 mm/page_alloc.c:1533
+ prep_new_page mm/page_alloc.c:1540 [inline]
+ get_page_from_freelist+0xa28/0x3780 mm/page_alloc.c:3311
+ __alloc_pages+0x22f/0x2440 mm/page_alloc.c:4567
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2190 [inline]
+ allocate_slab mm/slub.c:2354 [inline]
+ new_slab+0xcc/0x3a0 mm/slub.c:2407
+ ___slab_alloc+0x4af/0x19a0 mm/slub.c:3540
+ __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3625
+ __slab_alloc_node mm/slub.c:3678 [inline]
+ slab_alloc_node mm/slub.c:3850 [inline]
+ kmalloc_trace+0x30b/0x340 mm/slub.c:4007
+ kmalloc include/linux/slab.h:590 [inline]
+ kzalloc include/linux/slab.h:711 [inline]
+ drm_master_create+0x43/0x4d0 drivers/gpu/drm/drm_auth.c:136
+ drm_new_set_master+0xd6/0x450 drivers/gpu/drm/drm_auth.c:172
+ drm_master_open+0x181/0x1f0 drivers/gpu/drm/drm_auth.c:342
+ drm_open_helper+0x3fc/0x500 drivers/gpu/drm/drm_file.c:330
+ drm_open+0x1a0/0x490 drivers/gpu/drm/drm_file.c:380
+ drm_stub_open+0x28e/0x430 drivers/gpu/drm/drm_drv.c:1046
+ chrdev_open+0x26d/0x6f0 fs/char_dev.c:414
+ do_dentry_open+0x8da/0x18c0 fs/open.c:953
+ do_open fs/namei.c:3641 [inline]
+ path_openat+0x1e00/0x29a0 fs/namei.c:3798
+page last free pid 5398 tgid 5398 stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1140 [inline]
+ free_unref_page_prepare+0x527/0xb10 mm/page_alloc.c:2346
+ free_unref_page+0x33/0x3c0 mm/page_alloc.c:2486
+ rcu_do_batch kernel/rcu/tree.c:2190 [inline]
+ rcu_core+0x819/0x1680 kernel/rcu/tree.c:2465
+ __do_softirq+0x21c/0x8e7 kernel/softirq.c:553
+
+Memory state around the buggy address:
+ ffff88802d6f0300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88802d6f0380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88802d6f0400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                      ^
+ ffff88802d6f0480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88802d6f0500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
