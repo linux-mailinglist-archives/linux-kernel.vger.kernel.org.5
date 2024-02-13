@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-62801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321F3852677
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:30:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A535385267F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:30:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8E541F28FD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:30:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFC791C24383
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74BC96025C;
-	Tue, 13 Feb 2024 00:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B8E604D0;
+	Tue, 13 Feb 2024 00:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Bz1dLKH6"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VnG7ZAlv"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51AC7381DF;
-	Tue, 13 Feb 2024 00:55:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0BB454BD4;
+	Tue, 13 Feb 2024 00:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707785703; cv=none; b=niMu5Bz05MB36m93sjFfjvOWd6ZknJRv/dKOoEPGZrQYRN7MLWeV8yxOqS8/qNwENcJ0Dl6ZrZtKWsEEiockKEvIAFz8Il551NLz8RNKvTSDrZmK//0DrQRd0897andEtXLimOAqlRZT+T33k4CCO7esS8dfZJLKBJ2wWFdxBfo=
+	t=1707785705; cv=none; b=jFZN92BcuchuAWbSq8RyHozBqZnnya7RFp6YQIE17btgRol2YY5iad8ZCRgs5soGnftawtH6Jgs5NHvu3qw2wQ3Qe1EqLIdcjE6dWdWfkrxFYFq6JsqHJnHLTTkc2KjQreRkdE7cV8SXWSXNjoLxivkpQ1EvhTgYvZVtFAgOao8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707785703; c=relaxed/simple;
-	bh=/CBCu7xtzLoC6vN95Vv2nxS4gvDbU4mm+K3QyU75FAU=;
+	s=arc-20240116; t=1707785705; c=relaxed/simple;
+	bh=rkRwkloXLH0NBDDjwKKTUt3p6SyUAZaYvxUn2f86zKQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=C/H60O+jaHGw9Yi9WNrmxoaMzHrEnyFXQ0nVled+85KFio3kWbrq/7ADWTsuHmRya4k8odaXy7mzEBCkqfN2igocki5qkhSs5EC1uQH60jTvy56cS6LtQMUUpLHB6PqxXPckPQ6MCd1tYl+dst2qWXUb4ajwU9MEGeo7B2VNl5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Bz1dLKH6; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version:Content-Type; b=mZ84PV8f7SA41HNI6nzZFs0Zxdu8PsyIL4V3Mpfpa1PB5bTxkvY89vgqaD5vnEr1+M7JprJYvz0MEU5p1uya320JzZqmepft6YQpg5QqMqpFaAoHLZzu/MeIcNOVucpkGmYmKl+djK53D6BGFY/nbpX8gXY9QF/ZA7z8iQzSZWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VnG7ZAlv; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41CMULkP014138;
-	Tue, 13 Feb 2024 00:54:44 GMT
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41D0VGfh023525;
+	Tue, 13 Feb 2024 00:54:45 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=Rknx4yFlGtTVBQ/y80iN
-	V/1i6qwGSOJ39GzerqlUVGA=; b=Bz1dLKH6BPpIVv16JP7teGrtUFFG30o9T9cj
-	cns5AnVjp4haZCEVHFaiDhzzHREL1AIUMegSljuvsk17dc4RlBYwyj5eUUkoeUoU
-	yGNiDUTygkGPYTRx1RFw4BY1dAG+uAF4GBoGh3ewy9PMUS0HZzw7NSI/kv0h6dGt
-	L4kVTI/mJA2oFYOvfU0zEhcHAfdA/9xCHAuN1N8LmgGuxSV4zo22YpTEwexeo/N3
-	PDQgeu6dEyiv1POqBNIrXjbDkU06ztU3S6sanuGMaIgB/MsGHNCby0652vyPMmWY
-	3kUkwIYy0C8otLcwHrH2S8SJMqK3Q0B48fyqLUABmy+tmq6jtA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7s390kbr-1
+	:mime-version:content-type; s=qcppdkim1; bh=b5WcYA4M++5hMV1+dtL2
+	ECGuhzTzBXFt95TLOE5PGsc=; b=VnG7ZAlvZsGVW0FmO7tQ7+PhFRMe9dAmKrJQ
+	qbWV+huWUHCzdeMroCjvodDt7H20OU3cP/5nP+1UxJOVTgpnnfMbjuuKoA/zjp5a
+	qm8d/4Sv9X6BRZihnulhHAjSR5ieUu4/MAIdsUIQs+1m6b4ES4BUemIX5RH5r+7F
+	WZMeAqGQ7pDHlr72ZXD/MT0ZJe3LzEXt1EkG7Bi31x7FBej5TwjXWM8ZjCuv7cN0
+	pY8gnGx5SS8k52GbKprQu6y4r4tsbwGY5sh/OadxNYYkofzwzDmw2hiRhHwIXJdR
+	OFrHu6DoQSwsujv7+pDSF0DFxPNPJ5O67hDJmpVJm9UQVJxXjw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7nk9150k-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 13 Feb 2024 00:54:44 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D0shMi030059
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D0shGx026840
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 13 Feb 2024 00:54:43 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
@@ -66,9 +66,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v15 38/50] ASoC: qcom: qdsp6: Add support to track available USB PCM devices
-Date: Mon, 12 Feb 2024 16:54:10 -0800
-Message-ID: <20240213005422.3121-39-quic_wcheng@quicinc.com>
+Subject: [PATCH v15 39/50] ASoC: Introduce SND kcontrols to select sound card and PCM device
+Date: Mon, 12 Feb 2024 16:54:11 -0800
+Message-ID: <20240213005422.3121-40-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240213005422.3121-1-quic_wcheng@quicinc.com>
 References: <20240213005422.3121-1-quic_wcheng@quicinc.com>
@@ -83,60 +83,152 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: QyEi1xdc81R80fnhXLHwtalCXmHLLtDx
-X-Proofpoint-GUID: QyEi1xdc81R80fnhXLHwtalCXmHLLtDx
+X-Proofpoint-GUID: oRCiRXLe4PkUsoS5oC8awhJlcA5FVkrF
+X-Proofpoint-ORIG-GUID: oRCiRXLe4PkUsoS5oC8awhJlcA5FVkrF
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-12_20,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 spamscore=0 bulkscore=0
- phishscore=0 clxscore=1015 impostorscore=0 priorityscore=1501
- malwarescore=0 mlxlogscore=948 classifier=spam adjust=0 reason=mlx
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0
+ clxscore=1015 suspectscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.19.0-2401310000 definitions=main-2402130005
 
-The USB backend should know about which sound resources are being shared
-between the ASoC and USB SND paths.  This can be utilized to properly
-select and maintain the offloading devices.
+Add SND kcontrol to SOC USB, which will allow for userpsace to determine
+which USB card number and PCM device to offload.  This allows for userspace
+to potentially tag an alternate path for a specific USB SND card and PCM
+device.  Previously, control was absent, and the offload path would be
+enabled on the last USB SND device which was connected.  This logic will
+continue to be applicable if no mixer input is received for specific device
+selection.
+
+An example to configure the offload device using tinymix:
+tinymix -D 0 set 'USB Offload Playback Route Select' 1 0
+
+The above command will configure the offload path to utilize card#1 and PCM
+stream#0.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/soc/qcom/qdsp6/q6usb.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ include/sound/soc-usb.h |  7 ++++-
+ sound/soc/soc-usb.c     | 67 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 73 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
-index 833a57deb321..e539b411c35e 100644
---- a/sound/soc/qcom/qdsp6/q6usb.c
-+++ b/sound/soc/qcom/qdsp6/q6usb.c
-@@ -27,11 +27,18 @@
- 
- #define Q6_USB_SID_MASK	0xF
- 
-+struct q6usb_status {
-+	struct snd_soc_usb_device *sdev;
-+	unsigned int pcm_index;
-+};
-+
- struct q6usb_port_data {
- 	struct q6afe_usb_cfg usb_cfg;
- 	struct snd_soc_usb *usb;
- 	struct q6usb_offload priv;
- 	int active_usb_chip_idx;
-+	unsigned long available_card_slot;
-+	struct q6usb_status status[SNDRV_CARDS];
+diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
+index 2790b51d979e..7b0531f975c2 100644
+--- a/include/sound/soc-usb.h
++++ b/include/sound/soc-usb.h
+@@ -26,14 +26,19 @@ struct snd_soc_usb_device {
+  * @dev - USB backend device reference
+  * @component - reference to ASoC component
+  * @connection_status_cb - callback to notify connection events
++ * @put_offload_dev - callback to select USB sound card/PCM device
++ * @get_offload_dev - callback to fetch selected USB sound card/PCM device
+  * @priv_data - driver data
+  **/
+ struct snd_soc_usb {
+ 	struct list_head list;
+-	struct device *dev;
+ 	struct snd_soc_component *component;
+ 	int (*connection_status_cb)(struct snd_soc_usb *usb,
+ 			struct snd_soc_usb_device *sdev, bool connected);
++	int (*put_offload_dev)(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol);
++	int (*get_offload_dev)(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol);
+ 	void *priv_data;
  };
  
- static const struct snd_soc_dapm_widget q6usb_dai_widgets[] = {
-@@ -113,6 +120,12 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb,
- 	if (connected) {
- 		/* We only track the latest USB headset plugged in */
- 		data->active_usb_chip_idx = sdev->card_idx;
-+
-+		set_bit(sdev->card_idx, &data->available_card_slot);
-+		data->status[sdev->card_idx].sdev = sdev;
-+	} else {
-+		clear_bit(sdev->card_idx, &data->available_card_slot);
-+		data->status[sdev->card_idx].sdev = NULL;
- 	}
+diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
+index e3556c397b39..a55d1c509297 100644
+--- a/sound/soc/soc-usb.c
++++ b/sound/soc/soc-usb.c
+@@ -15,6 +15,9 @@ static struct device_node *snd_soc_find_phandle(struct device *dev)
+ {
+ 	struct device_node *node;
  
- 	return 0;
++	if (!dev)
++		return ERR_PTR(-ENODEV);
++
+ 	node = of_parse_phandle(dev->of_node, "usb-soc-be", 0);
+ 	if (!node)
+ 		return ERR_PTR(-ENODEV);
+@@ -38,6 +41,64 @@ static struct snd_soc_usb *snd_soc_find_usb_ctx(struct device_node *node)
+ 	return NULL;
+ }
+ 
++/* SOC USB sound kcontrols */
++static int soc_usb_put_offload_dev(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_usb *ctx = snd_soc_usb_find_priv_data(component->dev);
++	int ret = 0;
++
++	mutex_lock(&ctx_mutex);
++	if (ctx && ctx->put_offload_dev)
++		ret = ctx->put_offload_dev(kcontrol, ucontrol);
++	mutex_unlock(&ctx_mutex);
++
++	return ret;
++}
++
++static int soc_usb_get_offload_dev(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct snd_soc_usb *ctx = snd_soc_usb_find_priv_data(component->dev);
++	int ret = 0;
++
++	mutex_lock(&ctx_mutex);
++	if (ctx && ctx->get_offload_dev)
++		ret = ctx->get_offload_dev(kcontrol, ucontrol);
++	mutex_unlock(&ctx_mutex);
++
++	return ret;
++
++}
++
++static int soc_usb_offload_dev_info(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 2;
++	uinfo->value.integer.min = -1;
++	uinfo->value.integer.max = SNDRV_CARDS;
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new soc_usb_dev_ctrl = {
++	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.name = "USB Offload Playback Route Select",
++	.info = soc_usb_offload_dev_info,
++	.get = soc_usb_get_offload_dev,
++	.put = soc_usb_put_offload_dev,
++};
++
++static int snd_soc_usb_control_init(struct snd_soc_component *component)
++{
++	return snd_ctl_add(component->card->snd_card,
++				snd_ctl_new1(&soc_usb_dev_ctrl, component));
++}
++
+ /**
+  * snd_soc_usb_get_components_tag() - Retrieve SOC USB component tag
+  * @playback: direction of audio stream
+@@ -157,6 +218,12 @@ EXPORT_SYMBOL_GPL(snd_soc_usb_free_port);
+  */
+ int snd_soc_usb_add_port(struct snd_soc_usb *usb)
+ {
++	int ret;
++
++	ret = snd_soc_usb_control_init(usb->component);
++	if (ret < 0)
++		return ret;
++
+ 	mutex_lock(&ctx_mutex);
+ 	list_add_tail(&usb->list, &usb_ctx_list);
+ 	mutex_unlock(&ctx_mutex);
 
