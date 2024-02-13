@@ -1,135 +1,267 @@
-Return-Path: <linux-kernel+bounces-62559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E27208522E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:09:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB31B8522EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:09:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71E941F22F58
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:09:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE29B1C227D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D607E1;
-	Tue, 13 Feb 2024 00:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A41B5CBD;
+	Tue, 13 Feb 2024 00:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="rKD1zx+U"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Dqem6BUr"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6EC621;
-	Tue, 13 Feb 2024 00:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431CF4439
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707782944; cv=none; b=M6C/89E4EzoAiUppw28JyH1Ng8q/OGXZG2eWgW+YVPsN53y5aeciCfDYzMcXUG2gZZUCfNvbVgWYMbkyGmWc69VnFP/qHeYouyosdZWDuppyspzuC9dfCRyrpOiwhAHidd9r4ElOqmY9L2eNFUkSw8k4rR1SepeNnOJjgymvhcE=
+	t=1707782979; cv=none; b=sHQQWu+7EkrUVLAYCIFrQ61aC5H5PjTbbr1oyRzJ8I3BGnfsTLDV1pRvPytXYfynDXHMhCX4QIVpyJuUOMQq+KzpNnl/BHWx8p2JQZEzayuGfPEkyWoijxA9VD0F0sRRKYWCT3SLSPvAO5FuCIokJKCyeVzh5MzvMZG3fu+NFL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707782944; c=relaxed/simple;
-	bh=RvflJdzl0Jc9vk19OoqP+WEbH4d8Gr0XXL8NXNFQ/K8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=D6GiuSarat+MOoQcbyLtrJPOa2C/r+9vZIWCU3YgJROaqVMcupwcc4FfMZbo1+CABra7lLohFqJzsXFfnBW6rT7/vJgLxAypOl/nHQ6GhD/duuNcoM75UIiS2mJBDdczbBukaGvI6K8z94Q+vxKVRtuKll6HaH2tLmL5noOtyao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=rKD1zx+U; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707782937;
-	bh=2nfZYxxE+1dxFM4SEfJqpgzynVkamsIwAnSU0lPVsxA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=rKD1zx+UkYmZLwgLYJzKgJX8nSyoUSWu8e1drAjJeEOUNgi11aawinhW6EqKhFT4m
-	 xrpmEFOtQnhn0uR5m4NG/oBFTHKrX0HZzce2KU4oIDMgoIRV1SvvyggASWABf2NZDc
-	 3gAKsGyPTRbixP4ZL0BTJ1j3x0+Bw8tZuwM3Pw9jlu12MM533RGlx4uG+8a32WeqT6
-	 WB3TuMj+ZIP4zahJPaX1iBBcFEa2U9sTz+uASPlD2vPv4JjUS6ey0+SW9zSPTiE9HU
-	 jq+RNsGzZhhn4X26uPXS6CywO+k+wcby20VAzwGAV00sLYeAsxAbbqFjTNP1kYFZ7J
-	 7r6B9UkJ/SZpw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TYhWW3hXWz4wcp;
-	Tue, 13 Feb 2024 11:08:54 +1100 (AEDT)
-Date: Tue, 13 Feb 2024 11:08:52 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Kalle Valo <kvalo@kernel.org>, Johannes Berg
- <johannes@sipsolutions.net>, Wireless <linux-wireless@vger.kernel.org>,
- "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Johannes Berg <johannes.berg@intel.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Miri Korenblit
- <miriam.rachel.korenblit@intel.com>, "Rafael J. Wysocki"
- <rafael.j.wysocki@intel.com>
-Subject: linux-next: manual merge of the wireless-next tree with the pm tree
-Message-ID: <20240213110852.51524899@canb.auug.org.au>
+	s=arc-20240116; t=1707782979; c=relaxed/simple;
+	bh=XuwWJ5Dw+8x+0dOrRRNuv+dH3uOAg+IXu71lodinJZc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TXOkR1wk1VVrpHDMl1eCp8w+kfkEtIEB4m42NOShrd+LNqOoIImgXrh9itCxMW0hGgSIBAXbJYJ6fdgAYe+yzlacGM08U8wmnLKfwOCzrlJ0GCfMXr/z/2fGOjbOghFte4dnDPTSXI8I0MfduUswm9B0fMRbIpLGJ7l6oNXOOzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Dqem6BUr; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc7472aa206so3211271276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:09:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707782976; x=1708387776; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gLK7xEb3jxgpuysPUzwq60xsYYfX0bEwBasjsp6nC7A=;
+        b=Dqem6BUrpUFhDF+tudKwN9UlsKgkco3lToizzpx8jxBLDRjnA55NCEnitkMSxPbskb
+         nPfP5QPSCbA4aajaOVf+p47nTdmNttlquCMyop+WTSCJPsIvJEv+mETX2DQ8rJXaSMSL
+         2b7MyIpJjaPBx+3z5aiS4RtwjlR4JVvH1XRLYyBtl4mvpsme/S6H9dSw4PsopMVaJwRS
+         0sfv6TDLvalqOM1QpihoXEB+QIYnNK3vpIOWcGvDDnxSdVJLBY8gm6FCO4xsoNrQltoy
+         1cGB1NgOLXyHdKn+11hsJB2hq+ddhFMDcy3fYzcufKFnKqHkTRAFmSKyZufHX8sQe1Sg
+         5dSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707782976; x=1708387776;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gLK7xEb3jxgpuysPUzwq60xsYYfX0bEwBasjsp6nC7A=;
+        b=H3w1uTeENLdgdzaXoH6AlBUBn6By5/blkwV24gZy3fau/gy9VxWdh85QGHrHeeKUO1
+         mi+ErOsPM5UEd4tl7+S1nhXlpXBSNcBCJpvnAtBqggBe+Uk6x+VGpDj1VNlAlYb/TXIO
+         vD8BfMNtsddLZq10d/62tpQyhG2uwRH528NsfADyOfXmr2LkxOWghjJnJeGsPx8v5UIM
+         Cz6+09XoTbpl3zS/DXHih3d5QtxFQLNAPbbsPyTm3byBlWZHmaLoAyzDh+y4MeWFj70a
+         VcW8RLngocayFPvIPqoYaKYm6/D4+lwRYcoCI5YRK8H6qOzBqJQNo6JF1KC3djELvjU3
+         kb9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWAI8feS1sCeqj6oDe/OXkgUiuti6GHyzV7HdtHElS6xwJrzZVVkkVwWdmY6VfM1sh/PVbpRQWxNV+FvntoTbx/Zq3Bfeee8ZdqrXIM
+X-Gm-Message-State: AOJu0YzHtJjAWNjgNdDxyHdCYC30gxCQymJ5+1NljBy2d22FR5aP/9G0
+	8F9zotuTBlVQIzRmpnBEjG/9lU4iWBVbW9NZG67ujYuqkGTz+zGQjkwMeA/AWU+mecb1UOsYQ21
+	qkWA7/B9pswjOCebTuv7mw6lpbgM/X6z4SPMv
+X-Google-Smtp-Source: AGHT+IFcIoxxZ/at1Ut37e+obqddPjXFDoTfSw2W9xlVFGkbEDUuUmXcmdD9+Fz3EgwVz//7/lLpGbCXr+gCQA4ZbLI=
+X-Received: by 2002:a25:8241:0:b0:dcc:623d:e475 with SMTP id
+ d1-20020a258241000000b00dcc623de475mr508725ybn.30.1707782975978; Mon, 12 Feb
+ 2024 16:09:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xWx+rnaTt=Lmy3hfd=gt658";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/xWx+rnaTt=Lmy3hfd=gt658
-Content-Type: text/plain; charset=US-ASCII
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-35-surenb@google.com>
+ <202402121448.AF0AA8E@keescook>
+In-Reply-To: <202402121448.AF0AA8E@keescook>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 12 Feb 2024 16:09:21 -0800
+Message-ID: <CAJuCfpEUQ+KctApss1upC4pWLvnU2bWVopbL5EsBzhsF0JzrPA@mail.gmail.com>
+Subject: Re: [PATCH v3 34/35] codetag: debug: introduce OBJEXTS_ALLOC_FAIL to
+ mark failed slab_ext allocations
+To: Kees Cook <keescook@chromium.org>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com, 
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
+	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
+	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
+	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Mon, Feb 12, 2024 at 2:49=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Mon, Feb 12, 2024 at 01:39:20PM -0800, Suren Baghdasaryan wrote:
+> > If slabobj_ext vector allocation for a slab object fails and later on i=
+t
+> > succeeds for another object in the same slab, the slabobj_ext for the
+> > original object will be NULL and will be flagged in case when
+> > CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled.
+> > Mark failed slabobj_ext vector allocations using a new objext_flags fla=
+g
+> > stored in the lower bits of slab->obj_exts. When new allocation succeed=
+s
+> > it marks all tag references in the same slabobj_ext vector as empty to
+> > avoid warnings implemented by CONFIG_MEM_ALLOC_PROFILING_DEBUG checks.
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> >  include/linux/memcontrol.h |  4 +++-
+> >  mm/slab.h                  | 25 +++++++++++++++++++++++++
+> >  mm/slab_common.c           | 22 +++++++++++++++-------
+> >  3 files changed, 43 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 2b010316016c..f95241ca9052 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -365,8 +365,10 @@ enum page_memcg_data_flags {
+> >  #endif /* CONFIG_MEMCG */
+> >
+> >  enum objext_flags {
+> > +     /* slabobj_ext vector failed to allocate */
+> > +     OBJEXTS_ALLOC_FAIL =3D __FIRST_OBJEXT_FLAG,
+> >       /* the next bit after the last actual flag */
+> > -     __NR_OBJEXTS_FLAGS  =3D __FIRST_OBJEXT_FLAG,
+> > +     __NR_OBJEXTS_FLAGS  =3D (__FIRST_OBJEXT_FLAG << 1),
+> >  };
+> >
+> >  #define OBJEXTS_FLAGS_MASK (__NR_OBJEXTS_FLAGS - 1)
+> > diff --git a/mm/slab.h b/mm/slab.h
+> > index cf332a839bf4..7bb3900f83ef 100644
+> > --- a/mm/slab.h
+> > +++ b/mm/slab.h
+> > @@ -586,9 +586,34 @@ static inline void mark_objexts_empty(struct slabo=
+bj_ext *obj_exts)
+> >       }
+> >  }
+> >
+> > +static inline void mark_failed_objexts_alloc(struct slab *slab)
+> > +{
+> > +     slab->obj_exts =3D OBJEXTS_ALLOC_FAIL;
+>
+> Uh, does this mean slab->obj_exts is suddenly non-NULL? Is everything
+> that accesses obj_exts expecting this?
 
-Today's linux-next merge of the wireless-next tree got a conflict in:
+Hi Kees,
+Thank you for the reviews!
+Yes, I believe everything that accesses slab->obj_exts directly
+(currently alloc_slab_obj_exts() and free_slab_obj_exts()) handle this
+special non-NULL case. kfence_init_pool() initialized slab->obj_exts
+directly, but since it's setting it and not accessing it, it does not
+need to handle OBJEXTS_ALLOC_FAIL. All other slab->obj_exts users use
+slab_obj_exts() which applies OBJEXTS_FLAGS_MASK and masks out any
+special bits.
+Thanks,
+Suren.
 
-  drivers/net/wireless/intel/iwlwifi/mvm/mvm.h
-
-between commit:
-
-  2e171a57c312 ("iwlwifi: mvm: Drop unused fw_trips_index[] from iwl_mvm_th=
-ermal_device")
-
-from the pm tree and commit:
-
-  8cb3a308ceb1 ("wifi: iwlwifi: mvm: fix thermal kernel-doc")
-
-from the wireless-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/net/wireless/intel/iwlwifi/mvm/mvm.h
-index a618824f0b65,83263d510a45..000000000000
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mvm.h
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mvm.h
-@@@ -537,8 -540,9 +540,8 @@@ struct iwl_mvm_tt_mgmt=20
- =20
-  #ifdef CONFIG_THERMAL
-  /**
--  *struct iwl_mvm_thermal_device - thermal zone related data
--  * @temp_trips: temperature thresholds for report
-+  * struct iwl_mvm_thermal_device - thermal zone related data
-+  * @trips: temperature thresholds for report
- - * @fw_trips_index: keep indexes to original array - temp_trips
-   * @tzone: thermal zone device data
-  */
-  struct iwl_mvm_thermal_device {
-
---Sig_/xWx+rnaTt=Lmy3hfd=gt658
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXKsxQACgkQAVBC80lX
-0GyuTwf/a8D7+UV9abG8o84U+eYLjKJH0aImG46vrcPW3w1LYfVMNtJ+b7GbnNgC
-fJCcFmFcdMHNZ9wxy06qQsbtp78fEsZB+WTwNXQwiZj1btxG6cZggm8w6NC8FnXP
-evkAT5DLzOvQPE0jWkURTX7zQWBeGMFeak9zScx2YJy8qTtV+8fbWoDagOt7GZbR
-IiIEQiXcyEBTe7cpEJ1iGecR3+ekZ4h+luiRigfm3zBc7NrUmO404/kBw2M1JpZ2
-tw7A7Yg1jzSFYQKkgLbb7rAeo9MY8Jz3gQvwiXcsRB4XNMxNLqoK7g5CDZk/SqDJ
-wC96Zsr/5E4OQ+ss8e30k3PtmdJWlg==
-=mK8G
------END PGP SIGNATURE-----
-
---Sig_/xWx+rnaTt=Lmy3hfd=gt658--
+>
+> -Kees
+>
+> > +}
+> > +
+> > +static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
+> > +                     struct slabobj_ext *vec, unsigned int objects)
+> > +{
+> > +     /*
+> > +      * If vector previously failed to allocate then we have live
+> > +      * objects with no tag reference. Mark all references in this
+> > +      * vector as empty to avoid warnings later on.
+> > +      */
+> > +     if (obj_exts & OBJEXTS_ALLOC_FAIL) {
+> > +             unsigned int i;
+> > +
+> > +             for (i =3D 0; i < objects; i++)
+> > +                     set_codetag_empty(&vec[i].ref);
+> > +     }
+> > +}
+> > +
+> > +
+> >  #else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
+> >
+> >  static inline void mark_objexts_empty(struct slabobj_ext *obj_exts) {}
+> > +static inline void mark_failed_objexts_alloc(struct slab *slab) {}
+> > +static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
+> > +                     struct slabobj_ext *vec, unsigned int objects) {}
+> >
+> >  #endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
+> >
+> > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > index d5f75d04ced2..489c7a8ba8f1 100644
+> > --- a/mm/slab_common.c
+> > +++ b/mm/slab_common.c
+> > @@ -214,29 +214,37 @@ int alloc_slab_obj_exts(struct slab *slab, struct=
+ kmem_cache *s,
+> >                       gfp_t gfp, bool new_slab)
+> >  {
+> >       unsigned int objects =3D objs_per_slab(s, slab);
+> > -     unsigned long obj_exts;
+> > -     void *vec;
+> > +     unsigned long new_exts;
+> > +     unsigned long old_exts;
+> > +     struct slabobj_ext *vec;
+> >
+> >       gfp &=3D ~OBJCGS_CLEAR_MASK;
+> >       /* Prevent recursive extension vector allocation */
+> >       gfp |=3D __GFP_NO_OBJ_EXT;
+> >       vec =3D kcalloc_node(objects, sizeof(struct slabobj_ext), gfp,
+> >                          slab_nid(slab));
+> > -     if (!vec)
+> > +     if (!vec) {
+> > +             /* Mark vectors which failed to allocate */
+> > +             if (new_slab)
+> > +                     mark_failed_objexts_alloc(slab);
+> > +
+> >               return -ENOMEM;
+> > +     }
+> >
+> > -     obj_exts =3D (unsigned long)vec;
+> > +     new_exts =3D (unsigned long)vec;
+> >  #ifdef CONFIG_MEMCG
+> > -     obj_exts |=3D MEMCG_DATA_OBJEXTS;
+> > +     new_exts |=3D MEMCG_DATA_OBJEXTS;
+> >  #endif
+> > +     old_exts =3D slab->obj_exts;
+> > +     handle_failed_objexts_alloc(old_exts, vec, objects);
+> >       if (new_slab) {
+> >               /*
+> >                * If the slab is brand new and nobody can yet access its
+> >                * obj_exts, no synchronization is required and obj_exts =
+can
+> >                * be simply assigned.
+> >                */
+> > -             slab->obj_exts =3D obj_exts;
+> > -     } else if (cmpxchg(&slab->obj_exts, 0, obj_exts)) {
+> > +             slab->obj_exts =3D new_exts;
+> > +     } else if (cmpxchg(&slab->obj_exts, old_exts, new_exts) !=3D old_=
+exts) {
+> >               /*
+> >                * If the slab is already in use, somebody can allocate a=
+nd
+> >                * assign slabobj_exts in parallel. In this case the exis=
+ting
+> > --
+> > 2.43.0.687.g38aa6559b0-goog
+> >
+>
+> --
+> Kees Cook
 
