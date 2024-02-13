@@ -1,141 +1,143 @@
-Return-Path: <linux-kernel+bounces-63154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98544852BA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:50:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF861852BAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:50:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5436C285D32
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:50:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 652981F24C50
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E80F1B598;
-	Tue, 13 Feb 2024 08:50:00 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CAFE20DF8
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78908210FE;
+	Tue, 13 Feb 2024 08:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oxy4pqDA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDE11C6AB
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:50:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707814200; cv=none; b=tocfaWKA48JIVLa4pKbeB1pDlBR+8mnKRLeeD2XP3/wd5xl1hLQvK4mWpyNftJlSVFBEr9hZvF807Stwyxc9pwaKOaGP6KBngAj15/k6hJwuvOk6zoeXq7cGbamiQ+MiBuRWiHtCyhWSKRFXrzUtw16JEvijSreAkwq9pMlYz9g=
+	t=1707814239; cv=none; b=mIlpxd2k06fGe62J1kuWHssuM2Ba+grJx4SouR05ShXt7Bpp6+x+S2tDFWoitRo8gz7F9PvoI5U2+nMO2z6O+hye9MHEo/ia/tV/uSUBWgbFEosnrtR75tC+oqJjz2raoedT7/T2ddcX6FmBh/oRbfUDTpb7bAcH41aGwmIc0LM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707814200; c=relaxed/simple;
-	bh=sadaPCdmwkHHMrHeq/JKhLMCFklg7Qow7J7JVWooHss=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QoZUzNA4gHCpoRGO5E/9ZkJsHaxhx8+HNsDRwWNUgETeRAZ3y95etp0290Z1seHgrHLOOCl053eYB1rK59ddA5SflP14OfQXpDm0df+hD7d545RvISjkKnK1bckzXSV9KXFEx+LnGiQMfJdNpo/frf/WzTRnK21TMzI5uALz8NM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68DFEDA7;
-	Tue, 13 Feb 2024 00:50:36 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 943EA3F5A1;
-	Tue, 13 Feb 2024 00:49:53 -0800 (PST)
-Date: Tue, 13 Feb 2024 08:49:51 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: kernel test robot <lkp@intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	sudeep.holla@arm.com, vincent.guittot@linaro.org,
-	peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com,
-	quic_nkela@quicinc.com, souvik.chakravarty@arm.com
-Subject: Re: [PATCH 06/11] firmware: arm_scmi: Implement Clock
- .is_notify_supported callback
-Message-ID: <ZcstL8tRVKIUFoBr@pluto>
-References: <20240212123233.1230090-7-cristian.marussi@arm.com>
- <202402131047.2NVZWHma-lkp@intel.com>
+	s=arc-20240116; t=1707814239; c=relaxed/simple;
+	bh=q/EXQ5TrC5wCxku8z/hIEWVjCy2XD4czkGnjpWgWo9s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j4IJr4s0hdr///66+KH+2hX2B17Xz1AFkJl9WRAim9E0O1b62sUf3fq0zmSxCDsON8/imubCWzWrWm7ptuSxyw9xZHsWz62wQGPHvfFUZb7rYMapWVMdjc8Xcg6TpwH6H9v6DtDdqHnyevP8m8wlz/0BkZYlGYOSVBHdRlVO+TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oxy4pqDA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA40DC433F1;
+	Tue, 13 Feb 2024 08:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707814239;
+	bh=q/EXQ5TrC5wCxku8z/hIEWVjCy2XD4czkGnjpWgWo9s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Oxy4pqDA+00vFQ+H1Z8J2Jb+czbF0YYLhDFF6Y1bQBFA/wGMjDLOFNiMIEWi9PHbp
+	 gQIyYQQrMA36wBdeX2PSkWVuuEuBcP7HCT7BYbosyi/TeOGZ3hOvNKMLSomgByZvvw
+	 UE/JCTpH0M8v0w5uu7yIC8GNGS/xUNZwWVXcc/UazFI98mc6elSrNIhjRQZg+Zvm3N
+	 IaNE9fhPF0ty+WGwITtbxC/mgvB9EJymgNMp2ksIInI+kZjW522XOr1dgzUB6reouv
+	 rpIwun3fVT7M6LLHtA0AxGq969BZToqTwBFrodJy67T4wZTkcXqOIjMV6+LoJZiBMC
+	 j+wMZCEiU0zBg==
+Message-ID: <136e2760-1734-4426-9fdf-56ce46a08614@kernel.org>
+Date: Tue, 13 Feb 2024 09:50:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202402131047.2NVZWHma-lkp@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -fixes v2 2/4] dt-bindings: riscv: Add ratified privileged
+ ISA versions
+Content-Language: en-US
+To: Samuel Holland <samuel.holland@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Andrew Jones <ajones@ventanamicro.com>, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Stefan O'Rear <sorear@fastmail.com>
+References: <20240213033744.4069020-1-samuel.holland@sifive.com>
+ <20240213033744.4069020-3-samuel.holland@sifive.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240213033744.4069020-3-samuel.holland@sifive.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 13, 2024 at 10:58:23AM +0800, kernel test robot wrote:
-> Hi Cristian,
+On 13/02/2024 04:37, Samuel Holland wrote:
+> The baseline for the RISC-V privileged ISA is version 1.10. Using
+> features from newer versions of the privileged ISA requires the
+> supported version to be reported by platform firmware, either in the ISA
+> string (where the binding already accepts version numbers) or in the
+> riscv,isa-extensions property. So far two newer versions are ratified.
 > 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on soc/for-next]
-> [also build test ERROR on linus/master v6.8-rc4 next-20240212]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
 
-Hi,
+Please Cc DT list.
 
-this series, as stated in the cover-letter, is based off the current tip of
+Standard disclaimer:
 
-	sudeep/for-next/scmi/updates
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-and particularly needs commit:
+Tools like b4 or scripts/get_maintainer.pl provide you proper list of
+people, so fix your workflow. Tools might also fail if you work on some
+ancient tree (don't, instead use mainline), work on fork of kernel
+(don't, instead use mainline) or you ignore some maintainers (really
+don't). Just use b4 and everything should be fine, although remember
+about `b4 prep --auto-to-cc` if you added new patches to the patchset.
 
-	9c5bc650031e firmware: arm_scmi: Rework clock domain info lookups
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling.
 
-from there, since it contains the missing scmi_clock_domain_lookup().
+Please kindly resend and include all necessary To/Cc entries.
 
-Not_sure/dont_known if there is any way to convey this "based-on-branch"
-info to your/any CI at the moment.
+Best regards,
+Krzysztof
 
-Thanks,
-Cristian
-
-> url:    https://github.com/intel-lab-lkp/linux/commits/Cristian-Marussi/firmware-arm_scmi-Check-for-notification-support/20240212-203727
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-> patch link:    https://lore.kernel.org/r/20240212123233.1230090-7-cristian.marussi%40arm.com
-> patch subject: [PATCH 06/11] firmware: arm_scmi: Implement Clock .is_notify_supported callback
-> config: hexagon-allmodconfig (https://download.01.org/0day-ci/archive/20240213/202402131047.2NVZWHma-lkp@intel.com/config)
-> compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project c08b90c50bcac9f3f563c79491c8dbcbe7c3b574)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240213/202402131047.2NVZWHma-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202402131047.2NVZWHma-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
-> >> drivers/firmware/arm_scmi/clock.c:853:8: error: call to undeclared function 'scmi_clock_domain_lookup'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->      853 |         clk = scmi_clock_domain_lookup(ci, src_id);
->          |               ^
-> >> drivers/firmware/arm_scmi/clock.c:853:6: error: incompatible integer to pointer conversion assigning to 'struct scmi_clock_info *' from 'int' [-Wint-conversion]
->      853 |         clk = scmi_clock_domain_lookup(ci, src_id);
->          |             ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    2 errors generated.
-> 
-> 
-> vim +/scmi_clock_domain_lookup +853 drivers/firmware/arm_scmi/clock.c
-> 
->    842	
->    843	static bool scmi_clk_notify_supported(const struct scmi_protocol_handle *ph,
->    844					      u8 evt_id, u32 src_id)
->    845	{
->    846		bool supported;
->    847		struct scmi_clock_info *clk;
->    848		struct clock_info *ci = ph->get_priv(ph);
->    849	
->    850		if (evt_id >= ARRAY_SIZE(evt_2_cmd))
->    851			return false;
->    852	
->  > 853		clk = scmi_clock_domain_lookup(ci, src_id);
->    854		if (IS_ERR(clk))
->    855			return false;
->    856	
->    857		if (evt_id == SCMI_EVENT_CLOCK_RATE_CHANGED)
->    858			supported = clk->rate_changed_notifications;
->    859		else
->    860			supported = clk->rate_change_requested_notifications;
->    861	
->    862		return supported;
->    863	}
->    864	
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
 
