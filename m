@@ -1,397 +1,109 @@
-Return-Path: <linux-kernel+bounces-63975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E706F85372E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:22:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB10685373A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:23:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E7372826A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:22:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E4181F231EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC80B5FF01;
-	Tue, 13 Feb 2024 17:22:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1BC5FEF6;
+	Tue, 13 Feb 2024 17:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K14fKYE7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HKHhYaeo"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97EDD5FDD7;
-	Tue, 13 Feb 2024 17:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D0B5FBB5;
+	Tue, 13 Feb 2024 17:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707844926; cv=none; b=NfPOoi5GlsWcXY8MNTd3l3LKmdvtZGFeF/ON/46BADRvpsV2AYJyxnWhGIgZBMbAPERnq5WBAo6pQv/+dDk4hRX5IFxY+stTUcS2fGIpINjFqo5rZz9aiGYBllUG9NCmQgr9p1PzX6z4zAjqQdObU6iW2a2Ki9s9wA6PpA4t3Q8=
+	t=1707844987; cv=none; b=MIK+YWBy+DCmCBTlzF6Wb2CgsmfH3f5xeQINZDzbv0ez2Z8xJp0NLvV/LHa8uUYcLym4EuOQjJQLA8/SiofoRipzI95yX7kwi0goL2QPODP30NWt+Q6LDIAmRCBL7hex399XfZuVJqKGJJf1kkQtEemh0jfzlkF1zVOkA7NvHzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707844926; c=relaxed/simple;
-	bh=To3Jplc1Hs9QlBbTukDWDJGGxree2BbyKdwj8GEDX6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uVSZd7u2+mDPqbtujNroVpeDFU99kNrNMkaNhYNpbsYnu12YAov+L/Qfjcs3M2Nna/bMEIrLL5b3v6eV5L6TleTmg2xtnzVLbsmGfnqfx/4jb73S975jPcLAHAnxbDc76M/It6Z5u0vrDZUaKze0klSJy5mN5PYlyzDwZbii4GQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K14fKYE7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C697C433F1;
-	Tue, 13 Feb 2024 17:22:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707844926;
-	bh=To3Jplc1Hs9QlBbTukDWDJGGxree2BbyKdwj8GEDX6M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=K14fKYE7jtWB8MNOcxMj8HMZYf6FrgCI4JTiwtDt2Wlc4GUuHPLCb5Ucs0WtMV4Hj
-	 hdS/9mHiqe+PFNVE70WHabqdo8JinUjp2TETNNCdI7T8298E5NPXFFD7sFDF6/lnmR
-	 UsBg5lqyBayUoVF4L5cqXf2zyMK//P4YLWBJ3sg8g1uXn8ZHjcm1Ob56pUCEemMnS1
-	 75rhLS3muji/DoCnLHKAaBjsPdnYQi/wODadcbCBq3OFmsoMqNo01f6hPSt3Rd5r5G
-	 CwKJyu2oZYKpqF/hcwbHRxkj79sABpMYBTFB+Bk/1HGBGdMkf4QlgBawyRgPVA/Yj6
-	 PI1x3JbaTWliQ==
-Date: Tue, 13 Feb 2024 09:22:05 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
-	martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com
-Subject: Re: [PATCH 3/6] fs: xfs: Support FS_XFLAG_ATOMICWRITES for rtvol
-Message-ID: <20240213172205.GA6184@frogsfrogsfrogs>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-4-john.g.garry@oracle.com>
- <20240202175225.GH6184@frogsfrogsfrogs>
- <7330574a-edc5-4585-8f1a-367871271786@oracle.com>
+	s=arc-20240116; t=1707844987; c=relaxed/simple;
+	bh=mjmEg/6Q3rSOWsCjzIpsBAIuas/iBfGgROiAASE43cA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Lzlsa9u7eYV8eA+et4Hcm9NcXs1CiB5TOhSRORTWoYee/dHydBulsVUqYeCgBO/GgI1SSvwQvxvqpkg+u+htdzF8qBYPO9k9UIYvDe7EUeMN+0Ptispg/VO8DsuxtL+RfMe/MNbTzvRE9PJTThk38tLg+tA2qaSH9+yNXdWlAzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HKHhYaeo; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-290c5c705d5so986521a91.0;
+        Tue, 13 Feb 2024 09:23:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707844985; x=1708449785; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mjmEg/6Q3rSOWsCjzIpsBAIuas/iBfGgROiAASE43cA=;
+        b=HKHhYaeo3cZ8z84ZilS5FKjxTuBK1acUfXKycVehS0SazfkxsOmhKPvCnCqPaCN22J
+         Svl6QTfxnk4T/M1/2YH8oyhmGTWzP7dYkZQTfuinosIf2LrH97KAqyRFwJVwrwA3fF2Z
+         g5xX5Flsw1FZcxAapg/iO3pv9F+XaRsgsCU4oeIi0ISSPXPCpN8zhbOqwOdT7ShTBLaP
+         w5jKeiCiAo/0ySvO/881lhSwgnrsPpQ9QGbD12WDjqikVF1ndI+4VEyBe1fWyg2lxYnm
+         qPOni+kcX45ZIIu4yv4x/8efT3LVNG5/TubFgQQjMyLQd4jwvJRVe++FdhlWxcdk9S+0
+         bpBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707844985; x=1708449785;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mjmEg/6Q3rSOWsCjzIpsBAIuas/iBfGgROiAASE43cA=;
+        b=qmJz9HD5G6B4Y7fQ93RnO+PUE8sirdOUfbyEDyBNF/En3IvpLOofYofPqTu9ZSL35q
+         TGU3qQWbniF1g1APSA6DBwzudib6dgPAozUNFSXl4nlNicqa/mMvJP7Blw7cjtvMvBjq
+         COvydKyg9WnLOrNibWLlCl7P6VYNDVr/f7RPbXgSqy6s5uQGoF8mqs3FqiTMlAuLtliT
+         UVfUi9QWSBhI2Dxy07myacS0ZAXtzkE+2eBMrmIqIy9qancSoZKpN9R078RUzNpW5wLS
+         0zNlkJ2oAnslgQktTyRqWptUMiPzN8IMTXfQPqpcd55xO9hstKgHYtMsIz+QeDj+u9WB
+         tv6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVlCVbHNQ+N4rlYDG8zE1BZw9LFyDin3Hq//3W0y2H3d8kDSTbzYmXscuAuiaypifxVnFP36/RMavk587VdxT3OdhB6OhMGRJqbWMuskmQcqoQftP4UB3m8/0RnBigLq31DbEXxSvB1
+X-Gm-Message-State: AOJu0YxPFVODW9+Rev0Yn6x03EpX3J9SGc4iffXQ/h6z5965N1M6pCdw
+	C4PWOn5AwiCcGXx74ohwbKzGUYt6XM0Hqfxp1xglY+DxWcw70lbEFL0e/BzKipcIUtPXha0zu8W
+	63WSbrtSfnrSjNKAPT59ZyJ+8vZQ=
+X-Google-Smtp-Source: AGHT+IHyWbnAbhgYmg9qvuwrKRqdGf18Qtp/hf6y3X8hqyT+QZL902aJc1N5SOAWWYm3Nu/ZGTNtr0sUSNeTT+e5DUo=
+X-Received: by 2002:a17:90a:558e:b0:297:18f8:ac02 with SMTP id
+ c14-20020a17090a558e00b0029718f8ac02mr103398pji.2.1707844985305; Tue, 13 Feb
+ 2024 09:23:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7330574a-edc5-4585-8f1a-367871271786@oracle.com>
+References: <20240202115330.wxkbfmvd76sy3a6a@runtux.com> <20240213170657.puwlx5pjl3odcs2k@runtux.com>
+In-Reply-To: <20240213170657.puwlx5pjl3odcs2k@runtux.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 13 Feb 2024 14:22:53 -0300
+Message-ID: <CAOMZO5CD7+E_BBH+oQ8HUdBeRFZxWW7s2uJgS5eaQAW_Fe4CNg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] spi-mxs: Fix chipselect glitch
+To: Ralf Schlatterbeck <rsc@runtux.com>
+Cc: Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	NXP Linux Team <linux-imx@nxp.com>, linux-spi@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 05, 2024 at 12:51:07PM +0000, John Garry wrote:
-> On 02/02/2024 17:52, Darrick J. Wong wrote:
-> > On Wed, Jan 24, 2024 at 02:26:42PM +0000, John Garry wrote:
-> > > Add initial support for FS_XFLAG_ATOMICWRITES in rtvol.
-> > > 
-> > > Current kernel support for atomic writes is based on HW support (for atomic
-> > > writes). As such, it is required to ensure extent alignment with
-> > > atomic_write_unit_max so that an atomic write can result in a single
-> > > HW-compliant IO operation.
-> > > 
-> > > rtvol already guarantees extent alignment, so initially add support there.
-> > > 
-> > > Signed-off-by: John Garry <john.g.garry@oracle.com>
-> > > ---
-> > >   fs/xfs/libxfs/xfs_format.h |  8 ++++++--
-> > >   fs/xfs/libxfs/xfs_sb.c     |  2 ++
-> > >   fs/xfs/xfs_inode.c         | 22 ++++++++++++++++++++++
-> > >   fs/xfs/xfs_inode.h         |  7 +++++++
-> > >   fs/xfs/xfs_ioctl.c         | 19 +++++++++++++++++--
-> > >   fs/xfs/xfs_mount.h         |  2 ++
-> > >   fs/xfs/xfs_super.c         |  4 ++++
-> > >   7 files changed, 60 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/fs/xfs/libxfs/xfs_format.h b/fs/xfs/libxfs/xfs_format.h
-> > > index 382ab1e71c0b..79fb0d4adeda 100644
-> > > --- a/fs/xfs/libxfs/xfs_format.h
-> > > +++ b/fs/xfs/libxfs/xfs_format.h
-> > > @@ -353,11 +353,13 @@ xfs_sb_has_compat_feature(
-> > >   #define XFS_SB_FEAT_RO_COMPAT_RMAPBT   (1 << 1)		/* reverse map btree */
-> > >   #define XFS_SB_FEAT_RO_COMPAT_REFLINK  (1 << 2)		/* reflinked files */
-> > >   #define XFS_SB_FEAT_RO_COMPAT_INOBTCNT (1 << 3)		/* inobt block counts */
-> > > +#define XFS_SB_FEAT_RO_COMPAT_ATOMICWRITES (1 << 29)	/* aligned file data extents */
-> > 
-> > I thought FORCEALIGN was going to signal aligned file data extent
-> > allocations being mandatory?
-> 
-> Right, I'll fix that comment
-> 
-> > 
-> > This flag (AFAICT) simply marks the inode as something that gets
-> > FMODE_CAN_ATOMIC_WRITES, right?
-> 
-> Correct
-> 
-> > 
-> > >   #define XFS_SB_FEAT_RO_COMPAT_ALL \
-> > >   		(XFS_SB_FEAT_RO_COMPAT_FINOBT | \
-> > >   		 XFS_SB_FEAT_RO_COMPAT_RMAPBT | \
-> > >   		 XFS_SB_FEAT_RO_COMPAT_REFLINK| \
-> > > -		 XFS_SB_FEAT_RO_COMPAT_INOBTCNT)
-> > > +		 XFS_SB_FEAT_RO_COMPAT_INOBTCNT | \
-> > > +		 XFS_SB_FEAT_RO_COMPAT_ATOMICWRITES)
-> > >   #define XFS_SB_FEAT_RO_COMPAT_UNKNOWN	~XFS_SB_FEAT_RO_COMPAT_ALL
-> > >   static inline bool
-> > >   xfs_sb_has_ro_compat_feature(
-> > > @@ -1085,16 +1087,18 @@ static inline void xfs_dinode_put_rdev(struct xfs_dinode *dip, xfs_dev_t rdev)
-> > >   #define XFS_DIFLAG2_COWEXTSIZE_BIT   2  /* copy on write extent size hint */
-> > >   #define XFS_DIFLAG2_BIGTIME_BIT	3	/* big timestamps */
-> > >   #define XFS_DIFLAG2_NREXT64_BIT 4	/* large extent counters */
-> > > +#define XFS_DIFLAG2_ATOMICWRITES_BIT 6
-> > 
-> > Needs a comment here ("files flagged for atomic writes").
-> 
-> ok
-> 
-> > Also not sure
-> > why you skipped bit 5, though I'm guessing it's because the forcealign
-> > series is/was using it?
-> 
-> Right, I'll fix that
-> 
-> > 
-> > >   #define XFS_DIFLAG2_DAX		(1 << XFS_DIFLAG2_DAX_BIT)
-> > >   #define XFS_DIFLAG2_REFLINK     (1 << XFS_DIFLAG2_REFLINK_BIT)
-> > >   #define XFS_DIFLAG2_COWEXTSIZE  (1 << XFS_DIFLAG2_COWEXTSIZE_BIT)
-> > >   #define XFS_DIFLAG2_BIGTIME	(1 << XFS_DIFLAG2_BIGTIME_BIT)
-> > >   #define XFS_DIFLAG2_NREXT64	(1 << XFS_DIFLAG2_NREXT64_BIT)
-> > > +#define XFS_DIFLAG2_ATOMICWRITES	(1 << XFS_DIFLAG2_ATOMICWRITES_BIT)
-> > >   #define XFS_DIFLAG2_ANY \
-> > >   	(XFS_DIFLAG2_DAX | XFS_DIFLAG2_REFLINK | XFS_DIFLAG2_COWEXTSIZE | \
-> > > -	 XFS_DIFLAG2_BIGTIME | XFS_DIFLAG2_NREXT64)
-> > > +	 XFS_DIFLAG2_BIGTIME | XFS_DIFLAG2_NREXT64 | XFS_DIFLAG2_ATOMICWRITES)
-> > >   static inline bool xfs_dinode_has_bigtime(const struct xfs_dinode *dip)
-> > >   {
-> > > diff --git a/fs/xfs/libxfs/xfs_sb.c b/fs/xfs/libxfs/xfs_sb.c
-> > > index 4a9e8588f4c9..28a98130a56d 100644
-> > > --- a/fs/xfs/libxfs/xfs_sb.c
-> > > +++ b/fs/xfs/libxfs/xfs_sb.c
-> > > @@ -163,6 +163,8 @@ xfs_sb_version_to_features(
-> > >   		features |= XFS_FEAT_REFLINK;
-> > >   	if (sbp->sb_features_ro_compat & XFS_SB_FEAT_RO_COMPAT_INOBTCNT)
-> > >   		features |= XFS_FEAT_INOBTCNT;
-> > > +	if (sbp->sb_features_ro_compat & XFS_SB_FEAT_RO_COMPAT_ATOMICWRITES)
-> > > +		features |= XFS_FEAT_ATOMICWRITES;
-> > >   	if (sbp->sb_features_incompat & XFS_SB_FEAT_INCOMPAT_FTYPE)
-> > >   		features |= XFS_FEAT_FTYPE;
-> > >   	if (sbp->sb_features_incompat & XFS_SB_FEAT_INCOMPAT_SPINODES)
-> > > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> > > index 1fd94958aa97..0b0f525fd043 100644
-> > > --- a/fs/xfs/xfs_inode.c
-> > > +++ b/fs/xfs/xfs_inode.c
-> > > @@ -65,6 +65,26 @@ xfs_get_extsz_hint(
-> > >   	return 0;
-> > >   }
-> > > +/*
-> > > + * helper function to extract extent size
-> > 
-> > How does that differ from xfs_get_extsz_hint?
-> 
-> The idea of this function is to return the guaranteed extent alignment, and
-> not just the hint
-> 
-> > 
-> > > + */
-> > > +xfs_extlen_t
-> > > +xfs_get_extsz(
-> > > +	struct xfs_inode	*ip)
-> > > +{
-> > > +	/*
-> > > +	 * No point in aligning allocations if we need to COW to actually
-> > > +	 * write to them.
-> > 
-> > What does alwayscow have to do with untorn writes?
-> 
-> Nothing at the moment, so I'll remove this.
-> 
-> > 
-> > > +	 */
-> > > +	if (xfs_is_always_cow_inode(ip))
-> > > +		return 0;
-> > > +
-> > > +	if (XFS_IS_REALTIME_INODE(ip))
-> > > +		return ip->i_mount->m_sb.sb_rextsize;
-> > > +
-> > > +	return 1;
-> > > +}
-> > 
-> > Does this function exist to return the allocation unit for a given file?
-> > https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?h=djwong-wtf&id=b8ddcef3df8da02ed2c4aacbed1d811e60372006
-> > 
-> 
-> Yes, something like xfs_inode_alloc_unitsize() there.
-> 
-> What's the upstream status for that change? I see it mentioned in linux-xfs
-> lore and seems to be part of a mega patchset.
+Hi Ralf,
 
-It's stuck in review along with the other ~1400 patches that I've been
-grumbling about in our staff meetings for years now.
+On Tue, Feb 13, 2024 at 2:07=E2=80=AFPM Ralf Schlatterbeck <rsc@runtux.com>=
+ wrote:
+>
+> On Fri, Feb 02, 2024 at 12:53:30PM +0100, Ralf Schlatterbeck wrote:
+> > There was a change in the mxs-dma engine that uses a new custom flag.
+> > The change was not applied to the mxs spi driver.
+> > This results in chipselect being deasserted too early.
+> > This fixes the chipselect problem by using the new flag in the mxs-spi
+> > driver.
+> >
+> > Fixes: ceeeb99cd821 ("dmaengine: mxs: rename custom flag")
+> > Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
+> > ---
+> > For oscilloscope screenshots and a verbose explanation see my blog post
+> > at https://blog.runtux.com/posts/2024/02/01/
 
-> > > +
-> > >   /*
-> > >    * Helper function to extract CoW extent size hint from inode.
-> > >    * Between the extent size hint and the CoW extent size hint, we
-> > > @@ -629,6 +649,8 @@ xfs_ip2xflags(
-> > >   			flags |= FS_XFLAG_DAX;
-> > >   		if (ip->i_diflags2 & XFS_DIFLAG2_COWEXTSIZE)
-> > >   			flags |= FS_XFLAG_COWEXTSIZE;
-> > > +		if (ip->i_diflags2 & XFS_DIFLAG2_ATOMICWRITES)
-> > > +			flags |= FS_XFLAG_ATOMICWRITES;
-> > >   	}
-> > >   	if (xfs_inode_has_attr_fork(ip))
-> > > diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-> > > index 97f63bacd4c2..0e0a21d9d30f 100644
-> > > --- a/fs/xfs/xfs_inode.h
-> > > +++ b/fs/xfs/xfs_inode.h
-> > > @@ -305,6 +305,11 @@ static inline bool xfs_inode_has_large_extent_counts(struct xfs_inode *ip)
-> > >   	return ip->i_diflags2 & XFS_DIFLAG2_NREXT64;
-> > >   }
-> > > +static inline bool xfs_inode_atomicwrites(struct xfs_inode *ip)
-> > 
-> > I think this predicate wants a verb in its name, the rest of them have
-> > "is" or "has" somewhere:
-> > 
-> > "xfs_inode_has_atomicwrites"
-> 
-> ok, fine.
-> 
-> Note that I was copying xfs_inode_forcealign() in terms of naming.
+I suggest putting the link to your detailed explanation into the
+commit log as this is useful information.
 
-Yeah, I could rename that xfs_inode_forces_alignment() or something.
-
-Or just leave the condensed version where the verb and object are
-smashed together.
-
-xfs_inode_has_forcealign?
-
-Yeah.  I'll go with that.
-
-> > 
-> > > +{
-> > > +	return ip->i_diflags2 & XFS_DIFLAG2_ATOMICWRITES;
-> > > +}
-> > > +
-> > >   /*
-> > >    * Return the buftarg used for data allocations on a given inode.
-> > >    */
-> > > @@ -542,7 +547,9 @@ void		xfs_lock_two_inodes(struct xfs_inode *ip0, uint ip0_mode,
-> > >   				struct xfs_inode *ip1, uint ip1_mode);
-> > >   xfs_extlen_t	xfs_get_extsz_hint(struct xfs_inode *ip);
-> > > +xfs_extlen_t	xfs_get_extsz(struct xfs_inode *ip);
-> > >   xfs_extlen_t	xfs_get_cowextsz_hint(struct xfs_inode *ip);
-> > > +xfs_extlen_t	xfs_get_atomicwrites_size(struct xfs_inode *ip);
-> > >   int xfs_init_new_inode(struct mnt_idmap *idmap, struct xfs_trans *tp,
-> > >   		struct xfs_inode *pip, xfs_ino_t ino, umode_t mode,
-> > > diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-> > > index f02b6e558af5..c380a3055be7 100644
-> > > --- a/fs/xfs/xfs_ioctl.c
-> > > +++ b/fs/xfs/xfs_ioctl.c
-> > > @@ -1110,6 +1110,8 @@ xfs_flags2diflags2(
-> > >   		di_flags2 |= XFS_DIFLAG2_DAX;
-> > >   	if (xflags & FS_XFLAG_COWEXTSIZE)
-> > >   		di_flags2 |= XFS_DIFLAG2_COWEXTSIZE;
-> > > +	if (xflags & FS_XFLAG_ATOMICWRITES)
-> > > +		di_flags2 |= XFS_DIFLAG2_ATOMICWRITES;
-> > >   	return di_flags2;
-> > >   }
-> > > @@ -1122,10 +1124,12 @@ xfs_ioctl_setattr_xflags(
-> > >   {
-> > >   	struct xfs_mount	*mp = ip->i_mount;
-> > >   	bool			rtflag = (fa->fsx_xflags & FS_XFLAG_REALTIME);
-> > > +	bool			atomic_writes = fa->fsx_xflags & FS_XFLAG_ATOMICWRITES;
-> > >   	uint64_t		i_flags2;
-> > > -	if (rtflag != XFS_IS_REALTIME_INODE(ip)) {
-> > > -		/* Can't change realtime flag if any extents are allocated. */
-> > 
-> > Please augment this comment ("Can't change realtime or atomicwrites
-> > flags if any extents are allocated") instead of deleting it.
-> 
-> I wasn't supposed to delete that - will remedy.
-> 
-> >  This is
-> > validation code, the requirements should be spelled out in English.
-> > 
-> > > +
-> > > +	if (rtflag != XFS_IS_REALTIME_INODE(ip) ||
-> > > +	    atomic_writes != xfs_inode_atomicwrites(ip)) {
-> > >   		if (ip->i_df.if_nextents || ip->i_delayed_blks)
-> > >   			return -EINVAL;
-> > >   	}
-> > > @@ -1146,6 +1150,17 @@ xfs_ioctl_setattr_xflags(
-> > >   	if (i_flags2 && !xfs_has_v3inodes(mp))
-> > >   		return -EINVAL;
-> > > +	if (atomic_writes) {
-> > > +		if (!xfs_has_atomicwrites(mp))
-> > > +			return -EINVAL;
-> > > +
-> > > +		if (!rtflag)
-> > > +			return -EINVAL;
-> > > +
-> > > +		if (!is_power_of_2(mp->m_sb.sb_rextsize))
-> > > +			return -EINVAL;
-> > 
-> > Shouldn't we check sb_rextsize w.r.t. the actual block device queue
-> > limits here?  I keep seeing similar validation logic open-coded
-> > throughout both atomic write patchsets:
-> > 
-> > 	if (l < queue_atomic_write_unit_min_bytes())
-> > 		/* fail */
-> > 	if (l > queue_atomic_write_unit_max_bytes())
-> > 		/* fail */
-> > 	if (!is_power_of_2(l))
-> > 		/* fail */
-> > 	/* ok */
-> > 
-> > which really should be a common helper somewhere.
-> 
-> I think that it is a reasonable comment about duplication the atomic writes
-> checks for the bdev and iomap write paths - I can try to improve that.
-> 
-> But the is_power_of_2(mp->m_sb.sb_rextsize) check is to ensure that the
-> extent size is suitable for enabling atomic writes. I don't see a point in
-> checking the bdev queue limits here.
-
-Ok, skip the queue limits then.
-
-> > 
-> > 		/*
-> > 		 * Don't set atomic write if the allocation unit doesn't
-> > 		 * align with the device requirements.
-> > 		 */
-> > 		if (!bdev_validate_atomic_write(<target blockdev>,
-> > 				XFS_FSB_TO_B(mp, mp->m_sb.sb_rextsize))
-> > 			return -EINVAL;
-> > 
-> > Too bad we have to figure out the target blockdev and file allocation
-> > unit based on the ioctl in-params and can't use the xfs_inode helpers
-> > here.
-> 
-> I am not sure what bdev_validate_atomic_write() would even do. If
-> sb_rextsize exceeded the bdev atomic write unit max, then we just cap
-> reported atomic write unit max in statx to that which the bdev reports and
-> vice-versa.
-> 
-> And didn't we previously have a concern that it is possible to change the
-> geometry of the device?
-
-The thing is, I don't want this logic:
-
-	if (!is_power_of_2(mp->m_sb.sb_rextsize))
-		/* fail */
-
-to be open-coded inside xfs.  I'd rather have a standard bdev_* helper
-that every filesystem can call, so we don't end up with more generic
-code copy-pasted all over the codebase.
-
-The awkward part (for me) is the naming, since filesystems usually don't
-have to check with the block layer about their units of space allocation.
-
-/*
- * Ensure that a file space allocation unit is congruent with the atomic
- * write unit capabilities of supported block devices.
- */
-static inline bool bdev_validate_atomic_write_allocunit(unsigned au)
-{
-	return is_power_of_2(au);
-}
-
-	if (!bdev_validate_atomic_write_allocunit(mp->m-sb.sb_rextsize))
-		return -EINVAL;
-
-> If so, not much point in this check.
-
-Yes, that is a disadvantage of me reading patchsets in reverse order. ;)
-
---D
-
-> Thanks,
-> John
-> 
-> 
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
 
