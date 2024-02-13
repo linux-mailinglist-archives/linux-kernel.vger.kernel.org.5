@@ -1,219 +1,234 @@
-Return-Path: <linux-kernel+bounces-63651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD7B8532CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0708185331E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:29:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88C56B212DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:16:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 599AEB247B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E5457865;
-	Tue, 13 Feb 2024 14:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6EA958206;
+	Tue, 13 Feb 2024 14:29:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgdWUkbC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RmNP62gd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F086456767
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:16:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE42957330;
+	Tue, 13 Feb 2024 14:29:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707833778; cv=none; b=dy1fsap8fUCSCbKd4wD32AH/GXcw/7BiwLJvEcX+pg8ozAj36mtzmOe8RffaPthS0Ny3pPjt9brYF9g++JSwUsAAo1dLE3FUKDENh+cJPRsY8NiEO+g5ifB2ViOjg1fcb9z1kIiPYcPEQZ7am5MLJdPamapEy0gmvsM7O4H4K50=
+	t=1707834550; cv=none; b=p0nSb1nATi2vKTIerHprgpGwPRrcy6fVdjXWduQk99J4Xi4PjRJeSjJ58QtR5ro02gqEHECQy9aCg8IgkcB8LBhzRig8exEga7hFFZsQ/AcGEH11pnR9u+rB+AEdKySwhLlT6lX5lH8zY9Z+dnlMi3tHzZ5IzQPY+8fsHxe6rbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707833778; c=relaxed/simple;
-	bh=L6jRfxMYCh8UD1FD1aOEy6MCfeW64Gaqwg9aSufjq50=;
+	s=arc-20240116; t=1707834550; c=relaxed/simple;
+	bh=bkxQHEEvFbJVsjwqQM0FXCG10bjF+SKVlqu1iHkdggg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kRlnBsDUvGIhCnVKX2XJvG0/ushCgV/mbNuxa3MJ5M8efeDHFTzLv/mbtax2eRdFh2Vz/wylS3c63ZLwoyANfps9vBaXs9SXom3TaqTRv3w7BLRuYenrjNfvMOfogkegbDHKxl+4l2BNMla3cnyRM04kHzc6cwCsFdxwA97v+KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgdWUkbC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73155C433C7;
-	Tue, 13 Feb 2024 14:16:14 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=DACIewhqRKQqJ75ENM8DjftCV9tebN6cCkck6Pf4B6EWi3ldRyKD+cf7s7PFuU8slbE8mIFUVvGOaFycYmK01aJrUiQKxDt+PmdXeOihEGTY4yNFQBRW1Z3WWxo8bgQ3E9VLUX5cRPZcdJdLG91vRhV664KRwpldKdgMEOKQYYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RmNP62gd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27F2CC433C7;
+	Tue, 13 Feb 2024 14:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707833777;
-	bh=L6jRfxMYCh8UD1FD1aOEy6MCfeW64Gaqwg9aSufjq50=;
+	s=k20201202; t=1707834550;
+	bh=bkxQHEEvFbJVsjwqQM0FXCG10bjF+SKVlqu1iHkdggg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sgdWUkbCwCbviBUoRnyk0DAh9/UAUx61Z33BY+4ngyew4ErGf0x0MDBgnW55JNIPw
-	 t/iytl4JaD0nsJrrqXBSslMdEKDCjS4cYQIrIKT6CQzNj+UmmIlgLogG9CQprWetl+
-	 1RNy/qVEvbA93I6TIY8zItmAZJdalHOE0R+DjEFXIHXx7JEcgNICVAQqDvaqggyUaL
-	 XScLhr8wYnlUVIGcJXYOLejCq1rFHpJ7fLjXtmFN1dOEUGJ/61xLEelyZxeSTHObSe
-	 ifmCOlEECfZwwtKkPDiHA2pyogdX5StZMBXA7T7M1+EF5v9xd6Un99N2FL5fUuz/Zn
-	 KDXkbIqzlfIyg==
-Date: Tue, 13 Feb 2024 16:15:54 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-	Mel Gorman <mgorman@techsingularity.net>,
-	Matthew Wilcox <willy@infradead.org>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	Pasha Tatashin <pasha.tatashin@soleen.com>,
-	Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH] mm: document memalloc_noreclaim_save() and
- memalloc_pin_save()
-Message-ID: <Zct5mtrHoeGD5S0f@kernel.org>
-References: <20240212182950.32730-2-vbabka@suse.cz>
+	b=RmNP62gdX/gNhzr6q2LEJ0XLcrhwXDNa8SLDDN9hkMLKe4JcZG8+1IKae8zT1ts9R
+	 pfTtF2wFF1rL3dHRXUqcEsDbTlPBGFiEjKqEzQTB1EPri1s6+wPT2UBAHuM8Eb+hCO
+	 KpHOVFq5ZaW4vdmdMxfEwY5f86maAHGLlFzNq3stSzpZM2+349pPqDZrknKZl6Ktgf
+	 LQemuoTfISC1nPMe6utRRe5mxVCXq3/jtPrryPt0/xhtiW3IXSdu0vFT3AfHPqjE2K
+	 2LbVaD0mlvOjJ8Uu/TpiebnSmmMpD0LN5mb4dq0ns7IuCKS5xH20HJr3vk7a9pWGpa
+	 Fz7QM/sET4+sQ==
+Date: Tue, 13 Feb 2024 22:16:08 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Petr Tesarik <petr@tesarici.cz>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	"open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>,
+	"moderated list:ARM/STM32 ARCHITECTURE" <linux-stm32@st-md-mailman.stormreply.com>,
+	"moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:ARM/Allwinner sunXi SoC support" <linux-sunxi@lists.linux.dev>,
+	Marc Haber <mh+netdev@zugschlus.de>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH net v3] net: stmmac: protect updates of 64-bit statistics
+ counters
+Message-ID: <Zct5qJcZw0YKx54r@xhacker>
+References: <20240203190927.19669-1-petr@tesarici.cz>
+ <ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240212182950.32730-2-vbabka@suse.cz>
+In-Reply-To: <ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net>
 
-On Mon, Feb 12, 2024 at 07:29:51PM +0100, Vlastimil Babka wrote:
-> The memalloc_noreclaim_save() function currently has no documentation
-> comment, so the implications of its usage are not obvious. Namely that
-> it not only prevents entering reclaim (as the name suggests), but also
-> allows using all memory reserves and thus should be only used in
-> contexts that are allocating memory to free memory. This may lead to new
-> improper usages being added.
+On Sun, Feb 11, 2024 at 08:30:21PM -0800, Guenter Roeck wrote:
+> Hi,
 > 
-> Thus add a documenting comment, based on the description of
-> __GFP_MEMALLOC. While at it, also document memalloc_pin_save() so that
-> all the memalloc_ scopes are documented. In the comments describing the
-> relevant PF_MEMALLOC flags, refer to their scope setting functions.
+> On Sat, Feb 03, 2024 at 08:09:27PM +0100, Petr Tesarik wrote:
+> > As explained by a comment in <linux/u64_stats_sync.h>, write side of struct
+> > u64_stats_sync must ensure mutual exclusion, or one seqcount update could
+> > be lost on 32-bit platforms, thus blocking readers forever. Such lockups
+> > have been observed in real world after stmmac_xmit() on one CPU raced with
+> > stmmac_napi_poll_tx() on another CPU.
+> > 
+> > To fix the issue without introducing a new lock, split the statics into
+> > three parts:
+> > 
+> > 1. fields updated only under the tx queue lock,
+> > 2. fields updated only during NAPI poll,
+> > 3. fields updated only from interrupt context,
+> > 
+> > Updates to fields in the first two groups are already serialized through
+> > other locks. It is sufficient to split the existing struct u64_stats_sync
+> > so that each group has its own.
+> > 
+> > Note that tx_set_ic_bit is updated from both contexts. Split this counter
+> > so that each context gets its own, and calculate their sum to get the total
+> > value in stmmac_get_ethtool_stats().
+> > 
+> > For the third group, multiple interrupts may be processed by different CPUs
+> > at the same time, but interrupts on the same CPU will not nest. Move fields
+> > from this group to a newly created per-cpu struct stmmac_pcpu_stats.
+> > 
+> > Fixes: 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistics where necessary")
+> > Link: https://lore.kernel.org/netdev/Za173PhviYg-1qIn@torres.zugschlus.de/t/
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Petr Tesarik <petr@tesarici.cz>
 > 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-
-Except few nits below
-
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
-
+> This patch results in a lockdep splat. Backtrace and bisect results attached.
+> 
+> Guenter
+> 
 > ---
->  include/linux/sched.h    |  9 ++++----
->  include/linux/sched/mm.h | 45 ++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 50 insertions(+), 4 deletions(-)
+> [   33.736728] ================================
+> [   33.736805] WARNING: inconsistent lock state
+> [   33.736953] 6.8.0-rc4 #1 Tainted: G                 N
+> [   33.737080] --------------------------------
+> [   33.737155] inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
+> [   33.737309] kworker/0:2/39 [HC1[1]:SC0[2]:HE0:SE0] takes:
+> [   33.737459] ef792074 (&syncp->seq#2){?...}-{0:0}, at: sun8i_dwmac_dma_interrupt+0x9c/0x28c
+> [   33.738206] {HARDIRQ-ON-W} state was registered at:
+> [   33.738318]   lock_acquire+0x11c/0x368
+> [   33.738431]   __u64_stats_update_begin+0x104/0x1ac
+> [   33.738525]   stmmac_xmit+0x4d0/0xc58
+
+interesting lockdep splat...
+stmmac_xmit() operates on txq_stats->q_syncp, while the
+sun8i_dwmac_dma_interrupt() operates on pcpu's priv->xstats.pcpu_stats
+they are different syncp. so how does lockdep splat happen.
+
+> [   33.738605]   dev_hard_start_xmit+0xc4/0x2a0
+> [   33.738689]   sch_direct_xmit+0xf8/0x30c
+> [   33.738763]   __dev_queue_xmit+0x400/0xcc4
+> [   33.738831]   ip6_finish_output2+0x254/0xafc
+> [   33.738903]   mld_sendpack+0x260/0x5b0
+> [   33.738969]   mld_ifc_work+0x274/0x588
+> [   33.739032]   process_one_work+0x230/0x604
+> [   33.739101]   worker_thread+0x1dc/0x494
+> [   33.739165]   kthread+0x100/0x120
+> [   33.739225]   ret_from_fork+0x14/0x28
+> [   33.739302] irq event stamp: 3553
+> [   33.739371] hardirqs last  enabled at (3552): [<c03e884c>] __call_rcu_common.constprop.0+0x1a4/0x6b4
+> [   33.739515] hardirqs last disabled at (3553): [<c0300bd4>] __irq_svc+0x54/0xb8
+> [   33.739638] softirqs last  enabled at (3542): [<c1254a60>] neigh_resolve_output+0x1fc/0x254
+> [   33.739795] softirqs last disabled at (3546): [<c1243798>] __dev_queue_xmit+0x48/0xcc4
+> [   33.739919]
+> [   33.739919] other info that might help us debug this:
+> [   33.740021]  Possible unsafe locking scenario:
+> [   33.740021]
+> [   33.740111]        CPU0
+> [   33.740158]        ----
+> [   33.740204]   lock(&syncp->seq#2);
+> [   33.740314]   <Interrupt>
+> [   33.740363]     lock(&syncp->seq#2);
+> [   33.740511]
+> [   33.740511]  *** DEADLOCK ***
+> [   33.740511]
+> [   33.740665] 8 locks held by kworker/0:2/39:
+> [   33.740761]  #0: c4bfb2a8 ((wq_completion)mld){+.+.}-{0:0}, at: process_one_work+0x168/0x604
+> [   33.741025]  #1: f0909f20 ((work_completion)(&(&idev->mc_ifc_work)->work)){+.+.}-{0:0}, at: process_one_work+0x168/0x604
+> [   33.741230]  #2: c328baac (&idev->mc_lock){+.+.}-{3:3}, at: mld_ifc_work+0x24/0x588
+> [   33.741387]  #3: c2191488 (rcu_read_lock){....}-{1:2}, at: mld_sendpack+0x0/0x5b0
+> [   33.741553]  #4: c2191488 (rcu_read_lock){....}-{1:2}, at: ip6_finish_output2+0x174/0xafc
+> [   33.741716]  #5: c219149c (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x48/0xcc4
+> [   33.741877]  #6: c4d3a974 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_queue_xmit+0x334/0xcc4
+> [   33.742070]  #7: c49e5050 (_xmit_ETHER#2){+...}-{2:2}, at: sch_direct_xmit+0x158/0x30c
+> [   33.742250]
+> [   33.742250] stack backtrace:
+> [   33.742426] CPU: 0 PID: 39 Comm: kworker/0:2 Tainted: G                 N 6.8.0-rc4 #1
+> [   33.742578] Hardware name: Allwinner sun8i Family
+> [   33.742776] Workqueue: mld mld_ifc_work
+> [   33.742998]  unwind_backtrace from show_stack+0x10/0x14
+> [   33.743119]  show_stack from dump_stack_lvl+0x68/0x90
+> [   33.743232]  dump_stack_lvl from mark_lock.part.0+0xbd8/0x12d8
+> [   33.743345]  mark_lock.part.0 from __lock_acquire+0xad4/0x224c
+> [   33.743458]  __lock_acquire from lock_acquire+0x11c/0x368
+> [   33.743564]  lock_acquire from __u64_stats_update_begin+0x104/0x1ac
+> [   33.743683]  __u64_stats_update_begin from sun8i_dwmac_dma_interrupt+0x9c/0x28c
+> [   33.743805]  sun8i_dwmac_dma_interrupt from stmmac_napi_check+0x40/0x1c8
+> [   33.743917]  stmmac_napi_check from stmmac_interrupt+0xa4/0x154
+> [   33.744020]  stmmac_interrupt from __handle_irq_event_percpu+0xcc/0x2ec
+> [   33.744134]  __handle_irq_event_percpu from handle_irq_event+0x38/0x80
+> [   33.744243]  handle_irq_event from handle_fasteoi_irq+0x9c/0x1c4
+> [   33.744346]  handle_fasteoi_irq from generic_handle_domain_irq+0x28/0x38
+> [   33.744459]  generic_handle_domain_irq from gic_handle_irq+0x98/0xcc
+> [   33.744567]  gic_handle_irq from generic_handle_arch_irq+0x34/0x44
+> [   33.744673]  generic_handle_arch_irq from call_with_stack+0x18/0x20
+> [   33.744831]  call_with_stack from __irq_svc+0x9c/0xb8
+> [   33.745018] Exception stack(0xf0909c00 to 0xf0909c48)
+> [   33.745221] 9c00: f0ab0000 c49e506c 0000005a 00000000 c0000006 f0ab0014 0000005a c0f5da68
+> [   33.745387] 9c20: c35bd810 c4b50000 c4b50000 c365d300 00000000 f0909c50 c0f70a70 c0f70a74
+> [   33.745574] 9c40: 60000013 ffffffff
+> [   33.745668]  __irq_svc from sun8i_dwmac_enable_dma_transmission+0x20/0x24
+> [   33.745809]  sun8i_dwmac_enable_dma_transmission from stmmac_xmit+0x790/0xc58
+> [   33.745975]  stmmac_xmit from dev_hard_start_xmit+0xc4/0x2a0
+> [   33.746100]  dev_hard_start_xmit from sch_direct_xmit+0xf8/0x30c
+> [   33.746220]  sch_direct_xmit from __dev_queue_xmit+0x400/0xcc4
+> [   33.746350]  __dev_queue_xmit from ip6_finish_output2+0x254/0xafc
+> [   33.746462]  ip6_finish_output2 from mld_sendpack+0x260/0x5b0
+> [   33.746568]  mld_sendpack from mld_ifc_work+0x274/0x588
+> [   33.746670]  mld_ifc_work from process_one_work+0x230/0x604
+> [   33.746793]  process_one_work from worker_thread+0x1dc/0x494
+> [   33.746906]  worker_thread from kthread+0x100/0x120
+> [   33.746994]  kthread from ret_from_fork+0x14/0x28
+> [   33.747076] Exception stack(0xf0909fb0 to 0xf0909ff8)
+> [   33.747165] 9fa0:                                     00000000 00000000 00000000 00000000
+> [   33.747303] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> [   33.747433] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
 > 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index ffe8f618ab86..f2cb479f56a7 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1623,15 +1623,15 @@ extern struct pid *cad_pid;
->  #define PF_SUPERPRIV		0x00000100	/* Used super-user privileges */
->  #define PF_DUMPCORE		0x00000200	/* Dumped core */
->  #define PF_SIGNALED		0x00000400	/* Killed by a signal */
-> -#define PF_MEMALLOC		0x00000800	/* Allocating memory */
-> +#define PF_MEMALLOC		0x00000800	/* Allocating memory to free memory. See memalloc_noreclaim_save() */
->  #define PF_NPROC_EXCEEDED	0x00001000	/* set_user() noticed that RLIMIT_NPROC was exceeded */
->  #define PF_USED_MATH		0x00002000	/* If unset the fpu must be initialized before use */
->  #define PF_USER_WORKER		0x00004000	/* Kernel thread cloned from userspace thread */
->  #define PF_NOFREEZE		0x00008000	/* This thread should not be frozen */
->  #define PF__HOLE__00010000	0x00010000
->  #define PF_KSWAPD		0x00020000	/* I am kswapd */
-> -#define PF_MEMALLOC_NOFS	0x00040000	/* All allocation requests will inherit GFP_NOFS */
-> -#define PF_MEMALLOC_NOIO	0x00080000	/* All allocation requests will inherit GFP_NOIO */
-> +#define PF_MEMALLOC_NOFS	0x00040000	/* All allocations inherit GFP_NOFS. See memalloc_nfs_save() */
-> +#define PF_MEMALLOC_NOIO	0x00080000	/* All allocations inherit GFP_NOIO. See memalloc_noio_save() */
->  #define PF_LOCAL_THROTTLE	0x00100000	/* Throttle writes only against the bdi I write to,
->  						 * I am cleaning dirty pages from some other bdi. */
->  #define PF_KTHREAD		0x00200000	/* I am a kernel thread */
-> @@ -1641,7 +1641,8 @@ extern struct pid *cad_pid;
->  #define PF__HOLE__02000000	0x02000000
->  #define PF_NO_SETAFFINITY	0x04000000	/* Userland is not allowed to meddle with cpus_mask */
->  #define PF_MCE_EARLY		0x08000000      /* Early kill for mce process policy */
-> -#define PF_MEMALLOC_PIN		0x10000000	/* Allocation context constrained to zones which allow long term pinning. */
-> +#define PF_MEMALLOC_PIN		0x10000000	/* Allocations constrained to zones which allow long term pinning.
-> +						 * See memalloc_pin_save() */
->  #define PF__HOLE__20000000	0x20000000
->  #define PF__HOLE__40000000	0x40000000
->  #define PF_SUSPEND_TASK		0x80000000      /* This thread called freeze_processes() and should not be frozen */
-> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> index 9a19f1b42f64..eef8fa5ba5de 100644
-> --- a/include/linux/sched/mm.h
-> +++ b/include/linux/sched/mm.h
-> @@ -368,6 +368,27 @@ static inline void memalloc_nofs_restore(unsigned int flags)
->  	current->flags = (current->flags & ~PF_MEMALLOC_NOFS) | flags;
->  }
->  
-> +/**
-> + * memalloc_noreclaim_save - Marks implicit __GFP_MEMALLOC scope.
-> + *
-> + * This functions marks the beginning of the __GFP_MEMALLOC allocation scope.
-
-          ^ function
-
-> + * All further allocations will implicitly add the __GFP_MEMALLOC flag, which
-> + * prevents entering reclaim and allows access to all memory reserves. This
-> + * should only be used when the caller guarantees the allocation will allow more
-> + * memory to be freed very shortly, i.e. it needs to allocate some memory in
-> + * the process of freeing memory, and cannot reclaim due to potential recursion.
-> + *
-> + * Users of this scope have to be extremely careful to not deplete the reserves
-> + * completely and implement a throttling mechanism which controls the
-> + * consumption of the reserve based on the amount of freed memory. Usage of a
-> + * pre-allocated pool (e.g. mempool) should be always considered before using
-> + * this scope.
-> + *
-> + * Individual allocations under the scope can opt out using __GFP_NOMEMALLOC
-> + *
-> + * This function should not be used in an interrupt context as that one does not
-> + * give PF_MEMALLOC access to reserves, see __gfp_pfmemalloc_flags().
-
-Missing Return: description
-
-> + */
->  static inline unsigned int memalloc_noreclaim_save(void)
->  {
->  	unsigned int flags = current->flags & PF_MEMALLOC;
-> @@ -375,11 +396,27 @@ static inline unsigned int memalloc_noreclaim_save(void)
->  	return flags;
->  }
->  
-> +/**
-> + * memalloc_noreclaim_restore - Ends the implicit __GFP_MEMALLOC scope.
-> + * @flags: Flags to restore.
-> + *
-> + * Ends the implicit __GFP_MEMALLOC scope started by memalloc_noreclaim_save
-> + * function. Always make sure that the given flags is the return value from the
-> + * pairing memalloc_noreclaim_save call.
-> + */
->  static inline void memalloc_noreclaim_restore(unsigned int flags)
->  {
->  	current->flags = (current->flags & ~PF_MEMALLOC) | flags;
->  }
->  
-> +/**
-> + * memalloc_pin_save - Marks implicit ~__GFP_MOVABLE scope.
-> + *
-> + * This functions marks the beginning of the ~__GFP_MOVABLE allocation scope.
-
-          ^ function
-
-> + * All further allocations will implicitly remove the __GFP_MOVABLE flag, which
-> + * will constraint the allocations to zones that allow long term pinning, i.e.
-> + * not ZONE_MOVABLE zones.
-
-Missing Return: description
-
-> + */
->  static inline unsigned int memalloc_pin_save(void)
->  {
->  	unsigned int flags = current->flags & PF_MEMALLOC_PIN;
-> @@ -388,6 +425,14 @@ static inline unsigned int memalloc_pin_save(void)
->  	return flags;
->  }
->  
-> +/**
-> + * memalloc_pin_restore - Ends the implicit ~__GFP_MOVABLE scope.
-> + * @flags: Flags to restore.
-> + *
-> + * Ends the implicit ~__GFP_MOVABLE scope started by memalloc_pin_save function.
-> + * Always make sure that the given flags is the return value from the pairing
-> + * memalloc_pin_save call.
-> + */
->  static inline void memalloc_pin_restore(unsigned int flags)
->  {
->  	current->flags = (current->flags & ~PF_MEMALLOC_PIN) | flags;
-> -- 
-> 2.43.0
-> 
-> 
-
--- 
-Sincerely yours,
-Mike.
+> ---
+> # bad: [841c35169323cd833294798e58b9bf63fa4fa1de] Linux 6.8-rc4
+> # good: [54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478] Linux 6.8-rc3
+> git bisect start 'HEAD' 'v6.8-rc3'
+> # bad: [c76b766ec50d3d43e2dacea53a733b285f4b730d] Merge tag 'drm-fixes-2024-02-09' of git://anongit.freedesktop.org/drm/drm
+> git bisect bad c76b766ec50d3d43e2dacea53a733b285f4b730d
+> # bad: [63e4b9d693e0f8c28359c7ea81e1ee510864c37b] Merge tag 'nf-24-02-08' of git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
+> git bisect bad 63e4b9d693e0f8c28359c7ea81e1ee510864c37b
+> # bad: [75428f537d7cae33c7e4dd726144074f78622c09] net: intel: fix old compiler regressions
+> git bisect bad 75428f537d7cae33c7e4dd726144074f78622c09
+> # good: [1a1c13303ff6d64e6f718dc8aa614e580ca8d9b4] nfp: flower: prevent re-adding mac index for bonded port
+> git bisect good 1a1c13303ff6d64e6f718dc8aa614e580ca8d9b4
+> # good: [3871aa01e1a779d866fa9dfdd5a836f342f4eb87] tipc: Check the bearer type before calling tipc_udp_nl_bearer_add()
+> git bisect good 3871aa01e1a779d866fa9dfdd5a836f342f4eb87
+> # good: [58086721b7781c3e35b19c9b78c8f5a791070ba3] devlink: avoid potential loop in devlink_rel_nested_in_notify_work()
+> git bisect good 58086721b7781c3e35b19c9b78c8f5a791070ba3
+> # bad: [38cc3c6dcc09dc3a1800b5ec22aef643ca11eab8] net: stmmac: protect updates of 64-bit statistics counters
+> git bisect bad 38cc3c6dcc09dc3a1800b5ec22aef643ca11eab8
+> # good: [cb88cb53badb8aeb3955ad6ce80b07b598e310b8] ppp_async: limit MRU to 64K
+> git bisect good cb88cb53badb8aeb3955ad6ce80b07b598e310b8
+> # first bad commit: [38cc3c6dcc09dc3a1800b5ec22aef643ca11eab8] net: stmmac: protect updates of 64-bit statistics counters
 
