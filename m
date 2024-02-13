@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-62618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED198523B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:31:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDA788523B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:32:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 522891F21393
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:31:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B3F6B24F44
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70FF8813;
-	Tue, 13 Feb 2024 00:19:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4932157888;
+	Tue, 13 Feb 2024 00:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BjyG5zde"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pqF7iaev"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BB854FA5;
-	Tue, 13 Feb 2024 00:19:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46DD15810C;
+	Tue, 13 Feb 2024 00:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783593; cv=none; b=SRJg8LSadUmwsX2Vclu1V5+hY499qUCj2rtpop6IiTGHHNJy9Kbx1JbHja2tuGZPXi97gTNv5bQPSIzqge5CaMSeddsHtWhAq9RgbKj1E3NiIeN8h/6uSX4O8LY5f+U3RwQo4AHqBWsCOaiIp7k7Bq2HfIBtVeCOSS8GUMrL7nc=
+	t=1707783594; cv=none; b=TX/lsevl8ABKeRBsAociH4zWQUpIXvjesk7zPP6xlixfA0Xt6Fz1FIZM+ybt8oBa+kzG0MjnTk2v7HiIrdVdP4MOjTgzGFB9inblzF+1PBaQlIbc1Mfo6wtI9Rszu+/ywwWl/0RW5oKY98govik0EpzZXwCLGTHyrvmpScwMHlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783593; c=relaxed/simple;
-	bh=7ynkB4KuekvjZkQ7J+ZoqGj1ObfsvOxomf1rtb8eb44=;
+	s=arc-20240116; t=1707783594; c=relaxed/simple;
+	bh=bj702VN0XmTEu8yDDq5cohwrnty4yLLvXhphQ+HAfi4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VmZnmf396n0Do2nU0C4gbZY/7DI+o9fHFrLRGFF0tWsrEEXdwpjLAypqw5jjqSHObqQrvMxe1BVt0YjOv9uPhiEudiPy6xivkdzFPbhqADiv2+YWaXfBt3MxF3MrqgWDNlVnpi0mF+o8LKHKCJUpJ7OgxSR/IF3NVMjzdoCI2oU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BjyG5zde; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D05DDC433B2;
-	Tue, 13 Feb 2024 00:19:51 +0000 (UTC)
+	 MIME-Version; b=E4LNeDLcEFUeYU/1/YJdFjn8S6UlEV/oqsSrtM13+TAask7+M38qyFNWESjBXJcHgqarR+Vjl7oFIs9UvzPxcHbJHon7zcYVM+xxAPrtcUSOxwi0AUFZShSG8JdNzHIeg+gjDKbNtxE8WonWzREDunodK8oAHC+DQ2zM9Pb8SYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pqF7iaev; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5509EC433B1;
+	Tue, 13 Feb 2024 00:19:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783592;
-	bh=7ynkB4KuekvjZkQ7J+ZoqGj1ObfsvOxomf1rtb8eb44=;
+	s=k20201202; t=1707783594;
+	bh=bj702VN0XmTEu8yDDq5cohwrnty4yLLvXhphQ+HAfi4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BjyG5zde0/6FjWz3SggcmWOXSYfzPiNmInBST0SysY7/XiAmrzT84rT/XSiyDOmsF
-	 XpiIDT5LSa9wrVr3byVW4JpYzCYa/yz2IRK7UBA9rjArTUGeujecrHDoYlOc1of30C
-	 S9Q++y9uU0dZSThrai54S8mO7IhtycV8FYuyOJMm2HpaRRa9KfQblrYrWFapgu8Dl9
-	 h0q0BVe+PCrptQlBpbjy2FwIC8u2VZ1qoLMVQQGQ0F9Y0AdTU66oWtgAAYpdOLIL3j
-	 bp6Qo5dISKvAKneE/7IjWK2/ncaPeWFsHY9V4LbFL93XOfCKFqqs+UcsJiCZ7Tg9Yr
-	 Yu3yWbV4xfU8Q==
+	b=pqF7iaeveEMCaNee6VCB8Lprh/mwWbc3YdrhXTFfWMJFxQdyi5cWb9DtjzKPMd5IB
+	 dzzDivOUHnygIu8giFITnXbKQl7udnr/6vvycywiSd1rbxO396M3tuit7TSOLfk8LT
+	 +V2HZ4woZ5ytbE/BGpgHMUdlQHB8cGuCkGd73117hNRfR9LvITERMkBzuhryplYcEW
+	 qCNREAnGO9tOjFAERwPshMRBscNIDbeA45UUY73ap81Asi5FslAujyA9aAJi58kw1h
+	 iCcfWOKb7zxHJ4r0xekIYbSXpP49JYoNcEGamP/9f8sPa1eREwQUexkP/yfRr1GmPq
+	 mwC2bvQw8gbsg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Krystian Pradzynski <krystian.pradzynski@intel.com>,
-	Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
-	Jeffrey Hugo <quic_jhugo@quicinc.com>,
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+	Adam Goldman <adamg@pobox.com>,
 	Sasha Levin <sashal@kernel.org>,
-	stanislaw.gruszka@linux.intel.com,
-	ogabbay@kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.7 45/58] accel/ivpu/40xx: Stop passing SKU boot parameters to FW
-Date: Mon, 12 Feb 2024 19:17:51 -0500
-Message-ID: <20240213001837.668862-45-sashal@kernel.org>
+	linux1394-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 6.7 46/58] firewire: core: send bus reset promptly on gap count error
+Date: Mon, 12 Feb 2024 19:17:52 -0500
+Message-ID: <20240213001837.668862-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213001837.668862-1-sashal@kernel.org>
 References: <20240213001837.668862-1-sashal@kernel.org>
@@ -67,44 +64,127 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.4
 Content-Transfer-Encoding: 8bit
 
-From: Krystian Pradzynski <krystian.pradzynski@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit 553099da45397914a995dce6307d6c26523c2567 ]
+[ Upstream commit 7ed4380009e96d9e9c605e12822e987b35b05648 ]
 
-This parameter was never used by the 40xx FW.
+If we are bus manager and the bus has inconsistent gap counts, send a
+bus reset immediately instead of trying to read the root node's config
+ROM first. Otherwise, we could spend a lot of time trying to read the
+config ROM but never succeeding.
 
-Signed-off-by: Krystian Pradzynski <krystian.pradzynski@intel.com>
-Signed-off-by: Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240126122804.2169129-7-jacek.lawrynowicz@linux.intel.com
+This eliminates a 50+ second delay before the FireWire bus is usable after
+a newly connected device is powered on in certain circumstances.
+
+The delay occurs if a gap count inconsistency occurs, we are not the root
+node, and we become bus manager. One scenario that causes this is with a TI
+XIO2213B OHCI, the first time a Sony DSR-25 is powered on after being
+connected to the FireWire cable. In this configuration, the Linux box will
+not receive the initial PHY configuration packet sent by the DSR-25 as IRM,
+resulting in the DSR-25 having a gap count of 44 while the Linux box has a
+gap count of 63.
+
+FireWire devices have a gap count parameter, which is set to 63 on power-up
+and can be changed with a PHY configuration packet. This determines the
+duration of the subaction and arbitration gaps. For reliable communication,
+all nodes on a FireWire bus must have the same gap count.
+
+A node may have zero or more of the following roles: root node, bus manager
+(BM), isochronous resource manager (IRM), and cycle master. Unless a root
+node was forced with a PHY configuration packet, any node might become root
+node after a bus reset. Only the root node can become cycle master. If the
+root node is not cycle master capable, the BM or IRM should force a change
+of root node.
+
+After a bus reset, each node sends a self-ID packet, which contains its
+current gap count. A single bus reset does not change the gap count, but
+two bus resets in a row will set the gap count to 63. Because a consistent
+gap count is required for reliable communication, IEEE 1394a-2000 requires
+that the bus manager generate a bus reset if it detects that the gap count
+is inconsistent.
+
+When the gap count is inconsistent, build_tree() will notice this after the
+self identification process. It will set card->gap_count to the invalid
+value 0. If we become bus master, this will force bm_work() to send a bus
+reset when it performs gap count optimization.
+
+After a bus reset, there is no bus manager. We will almost always try to
+become bus manager. Once we become bus manager, we will first determine
+whether the root node is cycle master capable. Then, we will determine if
+the gap count should be changed. If either the root node or the gap count
+should be changed, we will generate a bus reset.
+
+To determine if the root node is cycle master capable, we read its
+configuration ROM. bm_work() will wait until we have finished trying to
+read the configuration ROM.
+
+However, an inconsistent gap count can make this take a long time.
+read_config_rom() will read the first few quadlets from the config ROM. Due
+to the gap count inconsistency, eventually one of the reads will time out.
+When read_config_rom() fails, fw_device_init() calls it again until
+MAX_RETRIES is reached. This takes 50+ seconds.
+
+Once we give up trying to read the configuration ROM, bm_work() will wake
+up, assume that the root node is not cycle master capable, and do a bus
+reset. Hopefully, this will resolve the gap count inconsistency.
+
+This change makes bm_work() check for an inconsistent gap count before
+waiting for the root node's configuration ROM. If the gap count is
+inconsistent, bm_work() will immediately do a bus reset. This eliminates
+the 50+ second delay and rapidly brings the bus to a working state.
+
+I considered that if the gap count is inconsistent, a PHY configuration
+packet might not be successful, so it could be desirable to skip the PHY
+configuration packet before the bus reset in this case. However, IEEE
+1394a-2000 and IEEE 1394-2008 say that the bus manager may transmit a PHY
+configuration packet before a bus reset when correcting a gap count error.
+Since the standard endorses this, I decided it's safe to retain the PHY
+configuration packet transmission.
+
+Normally, after a topology change, we will reset the bus a maximum of 5
+times to change the root node and perform gap count optimization. However,
+if there is a gap count inconsistency, we must always generate a bus reset.
+Otherwise the gap count inconsistency will persist and communication will
+be unreliable. For that reason, if there is a gap count inconstency, we
+generate a bus reset even if we already reached the 5 reset limit.
+
+Signed-off-by: Adam Goldman <adamg@pobox.com>
+Reference: https://sourceforge.net/p/linux1394/mailman/message/58727806/
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/accel/ivpu/ivpu_hw_40xx.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/firewire/core-card.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/accel/ivpu/ivpu_hw_40xx.c b/drivers/accel/ivpu/ivpu_hw_40xx.c
-index 8a7440bcd6df..a7c976256ed3 100644
---- a/drivers/accel/ivpu/ivpu_hw_40xx.c
-+++ b/drivers/accel/ivpu/ivpu_hw_40xx.c
-@@ -700,7 +700,6 @@ static int ivpu_hw_40xx_info_init(struct ivpu_device *vdev)
- {
- 	struct ivpu_hw_info *hw = vdev->hw;
- 	u32 tile_disable;
--	u32 tile_enable;
- 	u32 fuse;
+diff --git a/drivers/firewire/core-card.c b/drivers/firewire/core-card.c
+index 6ac5ff20a2fe..8aaa7fcb2630 100644
+--- a/drivers/firewire/core-card.c
++++ b/drivers/firewire/core-card.c
+@@ -429,7 +429,23 @@ static void bm_work(struct work_struct *work)
+ 	 */
+ 	card->bm_generation = generation;
  
- 	fuse = REGB_RD32(VPU_40XX_BUTTRESS_TILE_FUSE);
-@@ -721,10 +720,6 @@ static int ivpu_hw_40xx_info_init(struct ivpu_device *vdev)
- 	else
- 		ivpu_dbg(vdev, MISC, "Fuse: All %d tiles enabled\n", TILE_MAX_NUM);
- 
--	tile_enable = (~tile_disable) & TILE_MAX_MASK;
--
--	hw->sku = REG_SET_FLD_NUM(SKU, HW_ID, LNL_HW_ID, hw->sku);
--	hw->sku = REG_SET_FLD_NUM(SKU, TILE, tile_enable, hw->sku);
- 	hw->tile_fuse = tile_disable;
- 	hw->pll.profiling_freq = PLL_PROFILING_FREQ_DEFAULT;
- 
+-	if (root_device == NULL) {
++	if (card->gap_count == 0) {
++		/*
++		 * If self IDs have inconsistent gap counts, do a
++		 * bus reset ASAP. The config rom read might never
++		 * complete, so don't wait for it. However, still
++		 * send a PHY configuration packet prior to the
++		 * bus reset. The PHY configuration packet might
++		 * fail, but 1394-2008 8.4.5.2 explicitly permits
++		 * it in this case, so it should be safe to try.
++		 */
++		new_root_id = local_id;
++		/*
++		 * We must always send a bus reset if the gap count
++		 * is inconsistent, so bypass the 5-reset limit.
++		 */
++		card->bm_retries = 0;
++	} else if (root_device == NULL) {
+ 		/*
+ 		 * Either link_on is false, or we failed to read the
+ 		 * config rom.  In either case, pick another root.
 -- 
 2.43.0
 
