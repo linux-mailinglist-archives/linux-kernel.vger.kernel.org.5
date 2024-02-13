@@ -1,175 +1,131 @@
-Return-Path: <linux-kernel+bounces-63831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 273B285350F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:48:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFE7C85351B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:51:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9748A1F27366
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:48:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAC71B24900
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424A35EE86;
-	Tue, 13 Feb 2024 15:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B970B5EE94;
+	Tue, 13 Feb 2024 15:51:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cUUxxoWJ"
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="pD7zKTm8"
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692935EE72
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:48:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45C55DF3A
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707839303; cv=none; b=NlToxxg/BfgoTxAKO+itwssHezTNzzlSMSOmC+I6OKvp42FJAEqwVH8Z/fLMAkW/6BXBFflifgwR0diaXkG+t0IGcfSThbNjCRJp/oyiYK+YsxkV34kL/l9YnDNouYTzyYwooaJ6tngOySYGbOqD9PnHopJV1ScasJCx9q4E1/U=
+	t=1707839473; cv=none; b=c4leUT4FKTDlsz21Yt99JzjY9tkniz6VnijPSWaVQZaYooFz+nC8LPi7PB7fIo6tMd0O0s85SyEh2wzuFKAjw06jNZhF+iGNMBj3zfvJTJMa3Gi9iKiw41ED8rSUxyPjYRLbBjxcvCgrst568U/r4bDHIA3bzlmC3fpoZWNokzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707839303; c=relaxed/simple;
-	bh=w4l6xchzgDPveYf3jkjUBQu5hN9tYPEa+bUtNK5UN+U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PSdkyvA3MdDqZthUUf9I2FpuyvEnxSHeznD5IjaWBv0gpCcd5LWuMUGFEJEVULddVw5NgbsD+gTlGXUBtDZNW5jDgb2ts82aFP4VPHO4VuI0D+aAPMakL+mkCMqfBhXUT+tiD/O3gp6olkKPFDq4Ok2UrYqT09BLxnuo/dA0Vzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cUUxxoWJ; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <45292232-af27-4945-9285-e1c42f1ba65e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707839297;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NdXff2HKhkHBa8EZi7NPSQYCYp0SJeGlooiKKxB4EZU=;
-	b=cUUxxoWJ+nEcgp1Xd4gvcJnoOUn0IX/OwvYELXLEKAWWrEcb8XV0n6dcmiw6kAa9mDNXtM
-	ZNjZ99/1Uj5N1nfkBVASWW5ycGUGXRcDf6+1FOrS0eeG5PeU4MQhJlPyFYAOvZwjHsY8lk
-	m3gQ/BmN+r3r7wR+pjvbzeHpC6Guaas=
-Date: Tue, 13 Feb 2024 23:48:07 +0800
+	s=arc-20240116; t=1707839473; c=relaxed/simple;
+	bh=qHDRkqY3kkFkB1NcHRRGMNVhib7uLrwYARmPcz70D4c=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RRDhDQ+OvLU862ooCM5W2pgPkTtG86bK5GZPL0UWkodfGG6wFvqaBW1PH9iPWcI3xpKxwjfR0aJRAL8kVVhd0DnEgT8YRrNmjaN7l4+9GdAJV9G/LQdIpMplYqHlHY5weEDOPHiWAZgaelpTjtOpJdXbyhPTb+wd+XzhuRUCumc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=pD7zKTm8; arc=none smtp.client-ip=185.125.188.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6727B3FA81
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:51:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1707839460;
+	bh=PqDyS1H1K/fgosXDqnPB4MGkbFe2muNuJORUG4Z+IbA=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=pD7zKTm85khSfoDW9yNqdMgRpWdYY2nWRekb+7okxqF9l7/QYKIOwwpXoIWILvVZg
+	 OGAD34Ytz9A7N4qKebPXFm3G790HzmXrgOUP68b/vjp4tZoHuYHL09TAb3PVKfecKn
+	 cdHFpmAX/djGqLxysMqg1mhVNpYgKiUlxc2LdBerwQxetSGuJvfK7DOgecna5uZvFj
+	 tMFd1DX3LEkQKrKY/henZsDynAtFe18CTE2e4jIMD5gKTOpwJ30W+QA0rdzmiRyffd
+	 flFuUoNjlmQY8oSz83j83k3cl7Ayl7srfDdoz1gA6Y+o8MIUIzhTc3qeOtK0gG3fHt
+	 gbQpEeg9tK/Vw==
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-42db2604f93so5866301cf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:51:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707839459; x=1708444259;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PqDyS1H1K/fgosXDqnPB4MGkbFe2muNuJORUG4Z+IbA=;
+        b=iMzVpi70lBgcWuqhtKLWDvhAVWcIQ95Wr/J10QZmrrfLHPDUUbLR5tvuIebVbWDf+k
+         kpmeOgxdMEUAI5S7bIlHUo7n6AjRNsevYHScue2Byu0ZCT9qiCamfTQgTH7AA+tEgSLu
+         Yc4U6SIw+FPicUq5SFHmgPxNd9KK8+7hhazh3qXa2N1vzKdTjWzq9Hxrb6qpCNSqSPKo
+         5thL2Cg2iH9SeIm/5tufXGCXJzstMh31uxRWK5iXSakeeMetM4AKOTfoKwRLFHTm7v4C
+         QXEjb2r7nQtM2GwvQf2Di669G0ANFiUrarpHcKw4V8fBG+oAzA3FHrIX/lnNDX3RheMA
+         vyrQ==
+X-Gm-Message-State: AOJu0YwuLCAiw9tOpOWuAhZhK7HBvzPC01bQedwoK30DAtedpM0icAP8
+	Jl3o6LzoXbj0ilRbzqPiJIauCHL6C5rNQ08pBKvAbY5pPf2QLO8K4xX/ro8ViZ3SXHWXjRO5ThG
+	QCgnzHvzKisaISVZvO9n94qFg0GN6w+ZMhC9Syv62tfeGQZE/s/W2hzfRsHIGYGb/LRk4RGGjAh
+	eJ3iysBiMWcoVjoG8k7+oBHSOmYDbtemVkh9SUOyPgnEv3AWaAkALe
+X-Received: by 2002:a05:622a:1106:b0:42c:3928:86f3 with SMTP id e6-20020a05622a110600b0042c392886f3mr11501542qty.49.1707839459046;
+        Tue, 13 Feb 2024 07:50:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGHQyoPI0wxKtVPCeLp3fl0yJNJIsSPsu5VT04yEP7zIQdzx8woRDQ98UPB4t2EnAdJ2f8tLMNm4riVmabc3fk=
+X-Received: by 2002:a05:622a:1106:b0:42c:3928:86f3 with SMTP id
+ e6-20020a05622a110600b0042c392886f3mr11501526qty.49.1707839458723; Tue, 13
+ Feb 2024 07:50:58 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 13 Feb 2024 07:50:58 -0800
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20240213142856.2416073-1-ericchancf@google.com>
+References: <20240213142632.2415127-1-ericchancf@google.com> <20240213142856.2416073-1-ericchancf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [etnaviv-next v13 7/7] drm/etnaviv: Add support for vivante GPU
- cores attached via PCI(e)
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Lucas Stach <l.stach@pengutronix.de>,
- Russell King <linux+etnaviv@armlinux.org.uk>,
- Christian Gmeiner <christian.gmeiner@gmail.com>,
- David Airlie <airlied@gmail.com>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240206172759.421737-1-sui.jingfeng@linux.dev>
- <20240206172759.421737-8-sui.jingfeng@linux.dev>
- <ZcNO9aZwWzyYs-Rv@phenom.ffwll.local>
- <jahydq72bqb27de2ijwwmdjh4ri326mxhfjn5pbvf7cqcpnauq@rw5hjdiroi5d>
- <ZcYGWEG8eqAiqqai@phenom.ffwll.local>
- <65qv24hhkmmy4haylh53muvz2xliejysc3uywq44pl3xx7rus4@ynyau4djposv>
- <67936300-7bfb-4f5e-9b80-ee339313fd61@linux.dev>
- <7ejh5uoppa257ap64ps33wrtabn4iu6flf4fn5lqhuuhbtmpjj@25rqv7mnko5q>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <7ejh5uoppa257ap64ps33wrtabn4iu6flf4fn5lqhuuhbtmpjj@25rqv7mnko5q>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Date: Tue, 13 Feb 2024 07:50:58 -0800
+Message-ID: <CAJM55Z9qiQ6GpzKbYORQP12sz4V67UBGfWChZJeHvD_5j_d93Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] riscv/barrier: Define __{mb,rmb,wmb}
+To: Eric Chan <ericchancf@google.com>, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+Eric Chan wrote:
+> Introduce __{mb,rmb,wmb}, and rely on the generic definitions
+> for {mb,rmb,wmb}.
+> Although KCSAN is not yet support,
+> it can be made more consistent with generic instrumentation.
 
-On 2024/2/13 22:38, Maxime Ripard wrote:
-> On Sat, Feb 10, 2024 at 12:25:33AM +0800, Sui Jingfeng wrote:
->> On 2024/2/9 23:15, Maxime Ripard wrote:
->>> On Fri, Feb 09, 2024 at 12:02:48PM +0100, Daniel Vetter wrote:
->>>> On Thu, Feb 08, 2024 at 04:27:02PM +0100, Maxime Ripard wrote:
->>>>> On Wed, Feb 07, 2024 at 10:35:49AM +0100, Daniel Vetter wrote:
->>>>>> On Wed, Feb 07, 2024 at 01:27:59AM +0800, Sui Jingfeng wrote:
->>>>>>> The component helper functions are the glue, which is used to bind multiple
->>>>>>> GPU cores to a virtual master platform device. Which is fine and works well
->>>>>>> for the SoCs who contains multiple GPU cores.
->>>>>>>
->>>>>>> The problem is that usperspace programs (such as X server and Mesa) will
->>>>>>> search the PCIe device to use if it is exist. In other words, usperspace
->>>>>>> programs open the PCIe device with higher priority. Creating a virtual
->>>>>>> master platform device for PCI(e) GPUs is unnecessary, as the PCI device
->>>>>>> has been created by the time drm/etnaviv is loaded.
->>>>>>>
->>>>>>> we create virtual platform devices as a representation for the vivante GPU
->>>>>>> ip core. As all of subcomponent are attached via the PCIe master device,
->>>>>>> we reflect this hardware layout by binding all of the virtual child to the
->>>>>>> the real master.
->>>>>>>
->>>>>>> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
->>>>>> Uh so my understanding is that drivers really shouldn't create platform
->>>>>> devices of their own. For this case here I think the aux-bus framework is
->>>>>> the right thing to use. Alternatively would be some infrastructure where
->>>>>> you feed a DT tree to driver core or pci subsystem and it instantiates it
->>>>>> all for you correctly, and especially with hotunplug all done right since
->>>>>> this is pci now, not actually part of the soc that cannot be hotunplugged.
->>>>> I don't think we need intermediate platform devices at all. We just need
->>>>> to register our GPU against the PCI device and that's it. We don't need
->>>>> a platform device, we don't need the component framework.
->>>> Afaik that's what this series does. The component stuff is for the
->>>> internal structure of the gpu ip, so that the same modular approach that
->>>> works for arm-soc also works for pci chips.
->>> But there should be a single PCI device, while we have multiple "DT"
->>> devices, right? Or is there several PCI devices too on that PCI card?
->>
->> There is only a single PCI(e) device on that PCI(e) card, this single
->> PCI(e) device is selected as the component master. All other Hardware IP
->> blocks are shipped by the single PCI(e) master. It may includes Display
->> controllers, GPUs, video decoders, HDMI display bridges hardware unit etc.
->>
->> But all of those Hardware IP share the same MMIO registers PCI BAR, this
->> PCI BAR is a kind of PCI(e) MEM resource. It is a relative *big* chunk,
->> as large as 32MB in address ranges for the JingJia Macro dGPU. Therefore,
->> I break the whole registers memory(MMIO) resource into smaller pieces by
->> creating platform device manually, manually created platform device is
->> called as virtual child in this series.
->>
->> In short, we cut the whole into smaller piece, each smaller piece is a
->> single hardware IP block, thus deserve a single device driver. We will
->> have multiple platform devices if the dGPU contains multiple hardware
->> IP block. On the driver side, we bind all of the scattered driver module
->> with component.
-> That's kind of my point then. If there's a single device, there's no
-> need to create intermediate devices and use the component framework to
-> tie them all together. You can have a simpler approach where you create
-> a function that takes the memory area it operates on (and whatever
-> additional resource it needs: interrupt, clocks, etc.) and call that
-> directly from the PCIe device probe, and the MMIO device bind.
+nit: this commit message has some weird line breaks
 
-
-Yes, you are right. I have implemented the method just as you told me at
-V12 of this series (see 0004 patch at [1]). But at V13, I suddenly realized
-that the component code path plus(+) non-component code path yield a
-"side-by-side" implement. The old non-component approach can not support
-binding multiple sub-core, it can only support one Vivante GPU IP core case.
-But there are dGPU which shipping two identical core.
-
-While, the component-based approach implemented at this version is the most
-universal and the most flexible and extensible. We could bind a virtual
-display driver and/or a real display driver to the real master (refer to the
-PCI(e) device).  The PCI(e) device is responsible for present the DRM service
-to userspace, like a leader or agent. All other sub hardware and software are
-hiding behind of the master.
-
-
-Besides, Lucas asked me implement the driver like this way at V10 (see [2])
-
-Lucas said:
-
-"My favorite option would be to just always use the component path
-even when the GPU is on a PCI device to keep both paths mostly aligned.
-One could easily image both a 3D and a 2D core being made available
-though the same PCI device."
-
-Lucas, are you watching? How about this version? Can you help to review please?
-
-
-[1] https://patchwork.freedesktop.org/series/127084/
-
-[2] 
-https://lore.kernel.org/dri-devel/0f1095ef333da7ea103486a1121ca9038815e57c.camel@pengutronix.de/
-
-
-> Maxime
+>
+> Signed-off-by: Eric Chan <ericchancf@google.com>
+> ---
+>  arch/riscv/include/asm/barrier.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/barrier.h b/arch/riscv/include/asm/barrier.h
+> index 110752594228..4c49a8ff2c68 100644
+> --- a/arch/riscv/include/asm/barrier.h
+> +++ b/arch/riscv/include/asm/barrier.h
+> @@ -20,9 +20,9 @@
+>  	__asm__ __volatile__ ("fence " #p "," #s : : : "memory")
+>
+>  /* These barriers need to enforce ordering on both devices or memory. */
+> -#define mb()		RISCV_FENCE(iorw,iorw)
+> -#define rmb()		RISCV_FENCE(ir,ir)
+> -#define wmb()		RISCV_FENCE(ow,ow)
+> +#define __mb()		RISCV_FENCE(iorw,iorw)
+> +#define __rmb()		RISCV_FENCE(ir,ir)
+> +#define __wmb()		RISCV_FENCE(ow,ow)
+>
+>  /* These barriers do not need to enforce ordering on devices, just memory. */
+>  #define __smp_mb()	RISCV_FENCE(rw,rw)
+> --
+> 2.43.0.687.g38aa6559b0-goog
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
