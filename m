@@ -1,118 +1,124 @@
-Return-Path: <linux-kernel+bounces-64190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 244BC853B7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:46:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C09AC853B93
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:49:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 572DF1C271EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:46:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B99E7B23249
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F3D4608F1;
-	Tue, 13 Feb 2024 19:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="FdhVOZwn"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F836089D;
+	Tue, 13 Feb 2024 19:48:51 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D14360DC2;
-	Tue, 13 Feb 2024 19:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83E51119A;
+	Tue, 13 Feb 2024 19:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707853577; cv=none; b=aIttM3m1+kc3iT88OoEFgQ0U8UouADl54ujP7HddjUe/HCghPFd5T24T7PBhVQIjxRtfGvBYeQ30AVGdX6bOCXkJONiAd/9hXzs2gFaj56Bs6TdcVZa7ZCOTg+X1v9KDUfzYYaYG7QvkT75qLXFyovZNTEUY7tBWLUB4adMbbcY=
+	t=1707853730; cv=none; b=G8f9ttJm4eN1P7wXcUmyjaLY5lzi6PSrrcIbW8f9VJfogRh7z8x14Z9p9Lv+zNGVdmEN3/VV5G7G4fLmGHlnjjihHUC/4fBFl02PZa2VZcTPVnCO/q9i2OryBInunKLFvX4loL4Ahaz14dhcyyANQ165NBkA/JxOGMz+BHaI27g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707853577; c=relaxed/simple;
-	bh=91fMcwc23t/9Ue36JL2amNbWqAs6AjesdadtoLuKu0M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fw2v3f/n35s4vkq05zMvRyifsJtQYSdxOaCOdaRISvYL61cwJIUnLKNlk4HKCPHG4epS7/PkZdxtQedRf5s+LZV6WW8xBHGVCSbUCd7MExx1yCItKIv3FxNCYVNZZGG6K3vtr1wRvSG0m6BxDoUw8BMJgj+RjgARKcyRPtYFeQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=FdhVOZwn; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1707853565;
-	bh=91fMcwc23t/9Ue36JL2amNbWqAs6AjesdadtoLuKu0M=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FdhVOZwnEphOvwoVCm/OLjFElpH0U2cr0/fOq2wMSCpthaCO33T56W6XQ4mQiOUhe
-	 SX2qxP+8yLW9KYYxyqxWi2J5VQv5bfpYrsWxwzfnaWwWiEDDvXarA+Z3spkl8GOhfv
-	 gAZmKFyTk31OtlM/cGs+Z7j1P4Xl3jrfRgoxV6XSbAucQ1qdmLAqfJqL9h7n2igwRv
-	 /lv+D8Nm6bI+wjjfL4io04GN7Lo4fU8FOJ2Lo2uJXk2jSd5rRT+vE8/aZlO2nbuffk
-	 az9OgSu5jDtvYnxfk832jOr2vqOKLTK/ZQQ/Zqpmopd4D0XQTwtqTOtI41nj3XlSFR
-	 Sj1mzC+AAMlZQ==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TZBdn2yXnzYPf;
-	Tue, 13 Feb 2024 14:46:05 -0500 (EST)
-Message-ID: <c0a08e00-e7b5-48ac-a152-3068ab0c9e15@efficios.com>
-Date: Tue, 13 Feb 2024 14:46:05 -0500
+	s=arc-20240116; t=1707853730; c=relaxed/simple;
+	bh=7SiwIiQebY/i31zXI8C2/lngPlCEN/CPhq0nW0Fo2lY=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=aspKrPP8Vm+ropUpN6ccPkoBHQZGWrdUfnebrkOhe20TVhBmhOemPTYzuSfMAQ6P8IWzNVyU8VW07B0ch6L0PeglwneTJCCvnIFW3p/hSKDUjfbeMVGHyl3kYIefxbfFIp+ew9crKJBwqFnA8LllAoY85zCBQU/nsi36vl2TYeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (178.176.75.253) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 13 Feb
+ 2024 22:48:38 +0300
+Subject: Re: [PATCH net-next v3 5/6] net: ravb: Do not apply features to
+ hardware if the interface is down
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<biju.das.jz@bp.renesas.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240213094110.853155-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240213094110.853155-6-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <58923624-042d-dbd0-bc47-4a4f66a6553e@omp.ru>
+Date: Tue, 13 Feb 2024 22:48:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 5/8] virtio: Treat alloc_dax() -EOPNOTSUPP failure as
- non-fatal
+In-Reply-To: <20240213094110.853155-6-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To: Lukas Wunner <lukas@wunner.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
- Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- linux-arch@vger.kernel.org, linux-cxl@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-xfs@vger.kernel.org, dm-devel@lists.linux.dev, nvdimm@lists.linux.dev,
- linux-s390@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
- Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>
-References: <20240212163101.19614-1-mathieu.desnoyers@efficios.com>
- <20240212163101.19614-6-mathieu.desnoyers@efficios.com>
- <20240213062559.GA27364@wunner.de>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20240213062559.GA27364@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/13/2024 19:36:27
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 183416 [Feb 13 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.253 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;178.176.75.253:7.4.1,7.1.2;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: {cloud_iprep_silent}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.253
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/13/2024 19:40:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 2/13/2024 4:21:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On 2024-02-13 01:25, Lukas Wunner wrote:
-> On Mon, Feb 12, 2024 at 11:30:58AM -0500, Mathieu Desnoyers wrote:
->> In preparation for checking whether the architecture has data cache
->> aliasing within alloc_dax(), modify the error handling of virtio
->> virtio_fs_setup_dax() to treat alloc_dax() -EOPNOTSUPP failure as
->> non-fatal.
->>
->> Co-developed-by: Dan Williams <dan.j.williams@intel.com>
->> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
->> Fixes: d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
+On 2/13/24 12:41 PM, Claudiu wrote:
+
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> That's a v4.0 commit, yet this patch uses DEFINE_FREE() which is
-> only available in v6.6 but not any earlier stable kernels.
-
-I asked this question to Greg KH before creating this patch, and his
-answer was to implement my fix for master, and stable kernels would take
-care of backporting all the required dependencies.
-
-Now if I look at latest 6.1, 5.15, 5.10, 5.4, 4.19 stable kernels,
-none seem to have include/linux/cleanup.h today. But I suspect that
-sooner or later relevant master branch fixes will require stable
-kernels to backport cleanup.h, so why not do it now ?
-
-Thanks,
-
-Mathieu
-
-
+> Do not apply features to hardware if the interface is down. In case runtime
+> PM is enabled, and while the interface is down, the IP will be in reset
+> mode (as for some platforms disabling the clocks will switch the IP to
+> reset mode, which will lead to losing register contents) and applying
+> settings in reset mode is not an option. Instead, cache the features and
+> apply them in ravb_open() through ravb_emac_init().
 > 
-> So the Fixes tag feels a bit weird.
+> To avoid accessing the hardware while the interface is down
+> pm_runtime_active() check was introduced. Along with it the device runtime
+> PM usage counter has been incremented to avoid disabling the device clocks
+> while the check is in progress (if any).
 > 
-> Apart from that,
-> Reviewed-by: Lukas Wunner <lukas@wunner.de>
+> Commit prepares for the addition of runtime PM.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
+[...]
+
+MBR, Sergey
 
