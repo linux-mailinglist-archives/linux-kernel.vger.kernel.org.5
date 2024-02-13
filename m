@@ -1,172 +1,160 @@
-Return-Path: <linux-kernel+bounces-63692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 156FA853353
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:38:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FE42853356
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:40:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDDAC28B469
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:38:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D65851F2212E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:40:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6501143AC7;
-	Tue, 13 Feb 2024 14:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD96C4E1D2;
+	Tue, 13 Feb 2024 14:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rs3vEq5j"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="FbKgLYhf"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942971DFEF
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:38:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03AA1E529
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707835111; cv=none; b=fWQvMvhSpIKWYXpTwEQOvpMLt+1PkpP9YHLeBCEo+siKc4YbfgIR92dwADb4sP5wCjnI+PUzsUmj0BtTUZ0MZGlgqKOG1DEU6tUPq8oHWq2mEBstJCpoXleaUB2PUAalLi/kLRMKzHFEdQ6Af3E1CswlzSHYnEuqd99scj65aWU=
+	t=1707835201; cv=none; b=YrTKDXHE+t7HZ7cMA9uIYNNRZLLK7YJDCQc/pUt0u6UFA6zvAgX7CaYSioA0lhfh0PB5XBCXT2PNinCs4ngV9q12HYuIgpEbk3gRc1Yaggs+imPbGj+Tt/GIQAH24CTj4cPqp25jtxnti6XRg7O+voLm6UlHz6oCWsf5g9Zl/tQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707835111; c=relaxed/simple;
-	bh=HkvguROhQZsd+G1Vad6pse4NfKaAKlAN9DMRfmWV42w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SA7CKj2mF1AD0Pml4CTwVrQC8DrVJDYC9XD7o4Uzv+LOgCQ1mNG45FnMTsPQzW59Nu2adyvfCes7gMkrI83FTK465fw8DtqTzDcaNJCswrGy+gCsUDxPx16z8tMKam033u401Blirc54GBpOiBs2vMrc8OKh+VU1fNBgths1dj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rs3vEq5j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5BCAC433C7;
-	Tue, 13 Feb 2024 14:38:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707835111;
-	bh=HkvguROhQZsd+G1Vad6pse4NfKaAKlAN9DMRfmWV42w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rs3vEq5jaJJUcVta1XAt000rxNei7Z7El1SeVa5+xmwhCA1cWIIN+joeuftQEvAJw
-	 FffjqghKAIeCdxQz5+B0PJJ1hm0k+IKNiv5S64Ic9CyYCOABmvqOgPAFSecWUdeGSV
-	 5myfozbdyaEAlyGfkYU7PJLO5wmgBMgG/FURmPJBtsmih7oPOkEvkgnRhPfF7f7x9l
-	 jJufEe/i9jdDfOU/luwOE34KBDE5M+9y/NM6kVRNmDrc08eYbvXhNPjusFGdc0BCMY
-	 V9+KyYoEao1XB1ip7BjRgMFYQmwn+hT8aO8cw+qVQuQvkRWqiGE0ZBkzsjSo3GULvY
-	 9pXC5nuCpPoig==
-Date: Tue, 13 Feb 2024 15:38:28 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Lucas Stach <l.stach@pengutronix.de>, 
-	Russell King <linux+etnaviv@armlinux.org.uk>, Christian Gmeiner <christian.gmeiner@gmail.com>, 
-	David Airlie <airlied@gmail.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [etnaviv-next v13 7/7] drm/etnaviv: Add support for vivante
- GPU cores attached via PCI(e)
-Message-ID: <7ejh5uoppa257ap64ps33wrtabn4iu6flf4fn5lqhuuhbtmpjj@25rqv7mnko5q>
-References: <20240206172759.421737-1-sui.jingfeng@linux.dev>
- <20240206172759.421737-8-sui.jingfeng@linux.dev>
- <ZcNO9aZwWzyYs-Rv@phenom.ffwll.local>
- <jahydq72bqb27de2ijwwmdjh4ri326mxhfjn5pbvf7cqcpnauq@rw5hjdiroi5d>
- <ZcYGWEG8eqAiqqai@phenom.ffwll.local>
- <65qv24hhkmmy4haylh53muvz2xliejysc3uywq44pl3xx7rus4@ynyau4djposv>
- <67936300-7bfb-4f5e-9b80-ee339313fd61@linux.dev>
+	s=arc-20240116; t=1707835201; c=relaxed/simple;
+	bh=By8R5Yo81SvmGRAazgxdA8dka+BIIwO8Hj3OoAVL7iI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=EUwonFur5bgVC4ubeXGgOD3TFiNBT+DYu46fHcxtBG0Nk0WaWPDdm2zzYXPjcceJGu9ioK8pWLyk4L2JLCI4tvJslQCh98i76r8gPaHna0HogIYpXxdEuWZgsRqbhxRAFougT9k/7XarRvSRk+5OgMzvorfVRUVnN65rF3w3hZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=FbKgLYhf; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce9555d42eso3359967a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:39:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707835199; x=1708439999;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zPFk5u19QOItiNka/L08vE774FgQgmKj4OELxHFSgiU=;
+        b=a5SFZR7zVgLG95FkSEYFiTZjnrF/2LezYNoV5Dd2ipS8jWitpPqFkcYVX804nb6lTp
+         l2xYBXMJoaRmagPAmWq11OR+FimvMfjUrR6AJUMdCFPWhUxiKiP7CNHjx/+Xp9MJCw3Z
+         PDuipr+WVj3rJIM6oSTdfq7SCWYXSlWUKlwL5GbXTWASb88kaiahi6bKiMrRncC3U4vB
+         uCmhgBxGJ2W1OLnwYXfOMyXEiynU0knz8sgiQXEtsWViSjuHGDN659I0szSwSruSlLsu
+         L0SYlGU0GRM2GR8yu9G6gIHeuXh3lOzvMMPUTpCDYx8oEespBGVCmv/qG7wvAlBQzuUa
+         eaig==
+X-Forwarded-Encrypted: i=1; AJvYcCV/fSDiWaRtQnl1ccVQkPisj85OouthsXkPY+Ajlr6JEydMmprfGG9116IOElHxPWskpf0OWfEIkxCS03vN4PCJku7MLIlbgH8XTS6z
+X-Gm-Message-State: AOJu0YwT+sARX7iWobP48TKV0Z2Pdb9yDN6cN6+2ys91v4QKMzY6XiZG
+	FQycXO5ZfVyOxZInW1vpuvCBGmQURusJVHeg9sMF2ReGlFOIuK2N
+X-Google-Smtp-Source: AGHT+IHCRZaoaPugACk7Dl521flHhhqvx3GUaNO5emNBoR6fTcT2LYDmpSyHLLNJ0QNQ8GY++OZFuQ==
+X-Received: by 2002:a17:90a:cf13:b0:295:d722:a420 with SMTP id h19-20020a17090acf1300b00295d722a420mr6877720pju.6.1707835198959;
+        Tue, 13 Feb 2024 06:39:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW2iAkRxkB8aNc6GjeuAEjVOJq/qTB5N7Ck5EVx/L45I9W4vlnhK82zF5kL6Q/HjFEHXBRXO+ToBcLIlSGQMVVMI4k9cQ46TLqxczeLvFaQ/a+Pf9ZqLgYosx2HbmaXiWcTFKj3OM216w==
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id ok5-20020a17090b1d4500b0029703476e9bsm2607984pjb.44.2024.02.13.06.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 06:39:58 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707835196;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=zPFk5u19QOItiNka/L08vE774FgQgmKj4OELxHFSgiU=;
+	b=FbKgLYhf68mOpmyvH6kn6WKa6aVFFpIBTSP97GS3nGCLBqnKu72smK2I8YxR6ClfT//4rS
+	1RjuuyUZlHFXHCDoOo5YJN6fXfl6DcD8f0i8iFkwKgE8QXHSdEZsm9jpyHr8u5G+fF0iaI
+	z9kbuLuOc14ZEIOg93zOiictBCC/5abxowF2nTDN6YNhjVY+Pge6LxpRXCFMTEFthEEvAI
+	CvcKCZWqXlZBhR2/6Y9A7BpC8QeezSFp+PF+JF5s6/NlKcI9VxRvkz07fifQg5y8eJozNU
+	GXm/rSpZuex4J16AkQuyY8HdRxfTPAoz/06D9ho9cbNb4p0FE5xqvxosqEyzCA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Tue, 13 Feb 2024 11:40:35 -0300
+Subject: [PATCH] slimbus: core: make slimbus_bus const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nw547t3zpoboj52w"
-Content-Disposition: inline
-In-Reply-To: <67936300-7bfb-4f5e-9b80-ee339313fd61@linux.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240213-bus_cleanup-slimbus-v1-1-34f06d82de6e@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAGJ/y2UC/x3MSwqAMAwA0atI1hZqFKVeRUT8RA3UKg0VoXh3i
+ 8u3mIkg5JkE2iyCp5uFT5dQ5BnM++g2UrwkA2qsNBalmoIMs6XRhUuJ5SNZEZaTIdPU64KQysv
+ Tys9/7fr3/QBI14F+ZQAAAA==
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1902; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=By8R5Yo81SvmGRAazgxdA8dka+BIIwO8Hj3OoAVL7iI=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBly39kVYKVfpnOCQ/hAmX0x+ePSNPlhKNmnr2OE
+ Od9rtMT0BSJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZct/ZAAKCRDJC4p8Y4ZY
+ pv65D/4295SRRNKk58I65nHpvAHJryb0Po4ksZxilmB8ksI5/V9eWW67BXeSms0+TddcICx/Epk
+ SXidM6Oz8XXWFSOMkiVH6Z9M56hvAc4tfWa3h7Rb5sfb4SCMjpVywm3kWQgdyb4Sg/gP6MzSuhg
+ 8tbWowR+wVWhFufmzmwosGxOMJ0VRkg+b2SpZXNmg0fm6H4G+WbSt/9IInrvAuGb37slg1M1pRo
+ FebGVkfEddhYVKeX2bVNryECxWKfzMVHrmcSEiPdZsbqG+TQuiG0US1QQVXZbdj4W7mdYSaqObO
+ jmf4tkM2LM2+slgT08gYlXD1YOzkXy8UVS6SMcd9uyk/bVctcvYMiUEVVtE192Fja3Pe6OjrEdF
+ /ZCAbYbpahaiia177NnxTNgcKyx0kRssnpZItO9qdtC4/ToaZ/cOZU0S/k8lXRKaH+JoibG1vSO
+ AcZOx1muU0QEOaEhYmTwUauvUg8kAwRqu71nSaHtHg6LicilIWt5nusvdHpwqP0IFDOzV67Mv01
+ rVQajKjAgZrbT8kIfMyfNzqnuQXuGEiqaQyNOwj4NxFS0WZ9l7etxGZbm+PGLEzoTSsrSOvGPHE
+ 9QxDkx2VAI60pM+OAvzVP64rJxFrf74JVKJIFOZtRwtgIs8IBtLuhWgMQ5Tgq4DN+dFLmyMAqHw
+ aagAuCC2hLz88Xg==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
+Since commit d492cc2573a0 ("driver core: device.h: make struct
+bus_type a const *"), the driver core can properly handle constant
+struct bus_type, move the slimbus_bus variable to be a constant
+structure as well, placing it into read-only memory which can not be
+modified at runtime.
 
---nw547t3zpoboj52w
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+This patch is based on
+https://git.kernel.org/pub/scm/linux/kernel/git/srini/slimbus.git/,
+should this tree be listed under "SERIAL LOW-POWER INTER-CHIP MEDIA BUS
+(SLIMbus)" in the MAINTAINERS file?
+---
+ drivers/slimbus/core.c  | 2 +-
+ include/linux/slimbus.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On Sat, Feb 10, 2024 at 12:25:33AM +0800, Sui Jingfeng wrote:
-> On 2024/2/9 23:15, Maxime Ripard wrote:
-> > On Fri, Feb 09, 2024 at 12:02:48PM +0100, Daniel Vetter wrote:
-> > > On Thu, Feb 08, 2024 at 04:27:02PM +0100, Maxime Ripard wrote:
-> > > > On Wed, Feb 07, 2024 at 10:35:49AM +0100, Daniel Vetter wrote:
-> > > > > On Wed, Feb 07, 2024 at 01:27:59AM +0800, Sui Jingfeng wrote:
-> > > > > > The component helper functions are the glue, which is used to b=
-ind multiple
-> > > > > > GPU cores to a virtual master platform device. Which is fine an=
-d works well
-> > > > > > for the SoCs who contains multiple GPU cores.
-> > > > > >=20
-> > > > > > The problem is that usperspace programs (such as X server and M=
-esa) will
-> > > > > > search the PCIe device to use if it is exist. In other words, u=
-sperspace
-> > > > > > programs open the PCIe device with higher priority. Creating a =
-virtual
-> > > > > > master platform device for PCI(e) GPUs is unnecessary, as the P=
-CI device
-> > > > > > has been created by the time drm/etnaviv is loaded.
-> > > > > >=20
-> > > > > > we create virtual platform devices as a representation for the =
-vivante GPU
-> > > > > > ip core. As all of subcomponent are attached via the PCIe maste=
-r device,
-> > > > > > we reflect this hardware layout by binding all of the virtual c=
-hild to the
-> > > > > > the real master.
-> > > > > >=20
-> > > > > > Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
-> > > > > Uh so my understanding is that drivers really shouldn't create pl=
-atform
-> > > > > devices of their own. For this case here I think the aux-bus fram=
-ework is
-> > > > > the right thing to use. Alternatively would be some infrastructur=
-e where
-> > > > > you feed a DT tree to driver core or pci subsystem and it instant=
-iates it
-> > > > > all for you correctly, and especially with hotunplug all done rig=
-ht since
-> > > > > this is pci now, not actually part of the soc that cannot be hotu=
-nplugged.
-> > > > I don't think we need intermediate platform devices at all. We just=
- need
-> > > > to register our GPU against the PCI device and that's it. We don't =
-need
-> > > > a platform device, we don't need the component framework.
-> > > Afaik that's what this series does. The component stuff is for the
-> > > internal structure of the gpu ip, so that the same modular approach t=
-hat
-> > > works for arm-soc also works for pci chips.
-> > But there should be a single PCI device, while we have multiple "DT"
-> > devices, right? Or is there several PCI devices too on that PCI card?
->=20
->=20
-> There is only a single PCI(e) device on that PCI(e) card, this single
-> PCI(e) device is selected as the component master. All other Hardware IP
-> blocks are shipped by the single PCI(e) master. It may includes Display
-> controllers, GPUs, video decoders, HDMI display bridges hardware unit etc.
->=20
-> But all of those Hardware IP share the same MMIO registers PCI BAR, this
-> PCI BAR is a kind of PCI(e) MEM resource. It is a relative *big* chunk,
-> as large as 32MB in address ranges for the JingJia Macro dGPU. Therefore,
-> I break the whole registers memory(MMIO) resource into smaller pieces by
-> creating platform device manually, manually created platform device is
-> called as virtual child in this series.
->=20
-> In short, we cut the whole into smaller piece, each smaller piece is a
-> single hardware IP block, thus deserve a single device driver. We will
-> have multiple platform devices if the dGPU contains multiple hardware
-> IP block. On the driver side, we bind all of the scattered driver module
-> with component.
+diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
+index d43873bb5fe6..375218e02e28 100644
+--- a/drivers/slimbus/core.c
++++ b/drivers/slimbus/core.c
+@@ -100,7 +100,7 @@ static int slim_device_uevent(const struct device *dev, struct kobj_uevent_env *
+ 	return add_uevent_var(env, "MODALIAS=slim:%s", dev_name(&sbdev->dev));
+ }
+ 
+-struct bus_type slimbus_bus = {
++const struct bus_type slimbus_bus = {
+ 	.name		= "slimbus",
+ 	.match		= slim_device_match,
+ 	.probe		= slim_device_probe,
+diff --git a/include/linux/slimbus.h b/include/linux/slimbus.h
+index 12c9719b2a55..3042385b7b40 100644
+--- a/include/linux/slimbus.h
++++ b/include/linux/slimbus.h
+@@ -10,7 +10,7 @@
+ #include <linux/completion.h>
+ #include <linux/mod_devicetable.h>
+ 
+-extern struct bus_type slimbus_bus;
++extern const struct bus_type slimbus_bus;
+ 
+ /**
+  * struct slim_eaddr - Enumeration address for a SLIMbus device
 
-That's kind of my point then. If there's a single device, there's no
-need to create intermediate devices and use the component framework to
-tie them all together. You can have a simpler approach where you create
-a function that takes the memory area it operates on (and whatever
-additional resource it needs: interrupt, clocks, etc.) and call that
-directly from the PCIe device probe, and the MMIO device bind.
+---
+base-commit: 04b945e4cf81a12365f8207a4d34dbc81ba17413
+change-id: 20240213-bus_cleanup-slimbus-e23b9e976fd2
 
-Maxime
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
 
---nw547t3zpoboj52w
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZct+4wAKCRDj7w1vZxhR
-xat4AP9e1PY52OcgTMPszeofC8fTKw5ic9bt51A2Zmj8FSz2NQEAv4IkzKOx/Ccz
-KQP5HLb6qdwAWA0qWoszs8ZWUtAdAA0=
-=WIP3
------END PGP SIGNATURE-----
-
---nw547t3zpoboj52w--
 
