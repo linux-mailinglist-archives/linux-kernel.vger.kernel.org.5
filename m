@@ -1,89 +1,89 @@
-Return-Path: <linux-kernel+bounces-63841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8FAB85355B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:56:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EBA385355D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:56:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17DB91C22DC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:56:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1929B23EE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C467A5EE76;
-	Tue, 13 Feb 2024 15:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137285F845;
+	Tue, 13 Feb 2024 15:56:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="t/lQtua2"
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="n43bYSSt"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDE25F47E
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:55:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01425F48A
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:56:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707839762; cv=none; b=fkk6BmRnDH23qmVtbsS8yV96ptRb0MBUsJqOcLIuef4zP/mbkETm/Hb0VKP7TAtZnDH2zPOTTE+fPR6WmLu7FOoonYH2U1S9MrqVqAYUvW4BSlD7JhJyCsCVmBSeY8fo4zvpXZAmwLooaM9oLBngJ0IB95d22VnwPPMCwLnwFz8=
+	t=1707839762; cv=none; b=oC4piUjYft2Xfo8iTOReABYF1r5hCiGgY2gu7Nk4RTCcaOJ8qhelZ6djKUUVtVA32V1WK7z36Q7LF9yCAZmsrJkyrW3Dv+laZvcP+HCRbzEiU+DXsRBqRplHWSmQCpcf/S3pHKbF8IvbZ/BUaT39cCYiVeML57fM3UEa6ckkIUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707839762; c=relaxed/simple;
-	bh=hWMAioBnPaY3o/tfzz5sN+jFgjLyXD1M9Gr59P8svxU=;
+	bh=oC2NFUiPz6KNjQfbEYAP3hQ9ne7nidbfMTCAjfTNbaE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=SCKiBBnmxUJz+chWdBN3aha8sYabuExQwK8HeLyiV9PE5Y87RzlhY/FxTNdXIE8bTfuDMUKE7Shlksq3VqKNM+6VZAyGmdluOQEl7YRl7AAFIYear6EXvqbQx8efRPFZ/9b59hlCiw8OAW+Fh18qsO1i6QZ2ptqW0Q1MW5FFuWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=t/lQtua2; arc=none smtp.client-ip=209.85.166.178
+	 MIME-Version:Content-Type; b=Md9PEuelRuDnk2dJcFPybrffRq/iZDNOFipg71uDeyzZgX1lxpMSIRQmqQh5pw7WGOxUzOXlRg0N60/QEecBgXj9ycrq19o1exU2VnNVB035v13IT/iJf/isz59TxwDZRolV7RvULqN68Z4iReeDZk5Za9fJNf1YCl4adOV+bpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=n43bYSSt; arc=none smtp.client-ip=209.85.166.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-363e7d542f4so3905475ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:55:59 -0800 (PST)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7c3d923f7cbso22123639f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:56:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707839758; x=1708444558; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707839759; x=1708444559; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wDE12yUESOyzwOOqs6qP5OzjvYX0WWrL2dOPvbiyCJg=;
-        b=t/lQtua2NxoMawJOceOuybgPH7gUYRGIxIdgdLrigdokK9uyLiaUJk1CfAcekNbhpi
-         E6ZNjPyGYj6j6kZuVYh53Lx4YNhB15i6cy5U35tbBXPYliWcRcMaGfjQyV2PrHQsK9uQ
-         yg6L3B2iMFc1eCrbo5YnZugpXI088njx2fM/s++TI7ylIGLcsRoGW9XfDF9ck/n4JLRE
-         DXRFCgx3eLLQtbn2sAiQ6YhJ3Z6/MaTyn6Uq8IqkVzQLaxkY4cOHg24jmRoqllvl+WZW
-         3Bi9HYqTZP1ANp2PqzCa3CO+MjG9C57GLdjwXBAIsl+EPuOYZrZf62oLFVcsTPir9Uui
-         vI4A==
+        bh=ZPsZ61/B147XeUCItHAVNy9atLHaMQ7vWuQvVfNBe/E=;
+        b=n43bYSSt6qA420G2XrpbuDz+t8MJlEuwY6wQhU79/6rRxe2cnn9QC2m36jvBeKr0Rw
+         RL7U9k5Hkxy9+YWCA7IK18DnmGn/QmhNKgjHevrBZJnQZLoC5uN1QOv2hJqEZ9uADQ59
+         fk6RUsm2KFk1g7hVNGCbDfLR7lFa+S7Ae0vOt8kENeXfektWg18i7alX8DVqDYu8Zd+I
+         +VTU2piqoUBpKkvCJOnNlqhHR0oZ0yvxJ7W64FJLdpSmvpTOaUS7JajLWB6pf2ipY1yR
+         dXl0nVSMRvQC992yZCOlbsh11QnGp5C2keRpA0ux5+f0lJ+/r2264OGJoJtojakbdeI7
+         QRdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707839758; x=1708444558;
+        d=1e100.net; s=20230601; t=1707839759; x=1708444559;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wDE12yUESOyzwOOqs6qP5OzjvYX0WWrL2dOPvbiyCJg=;
-        b=XipF7xlHs9NrH7DLXu7UWWhQRc+gS2J3bDkl+lJ44o9hArAb0jmTNKj7gGWUGJT1M2
-         64B42LLdFs8uKysDTOnFYNj4+mQiQIpR0jfiMBrkwJC7VoR+mTlaL1+GYVuj2jdu9qR8
-         uDWARlVxSkwrpqa/h/iuFS7J3jHdloa3xwkJxaLZ31pAH5Ds2puCrmY0YorGdvaQapnO
-         6cvk80KMVc0PTFTZXvK587K3ecurWv6WoUQCQzoKF7pId/DNXhLUMWx+g/0AswXPH87M
-         noGl+5pi4xz5CyWqeEMIXFnR5bACvVZAII43X100lPYSzCInUH4qfwbxfXPGka2ZZq8Q
-         zmAw==
-X-Forwarded-Encrypted: i=1; AJvYcCXX5lssH7MxMJkHsUWtMG5uXelX5UQnzUjOT93FbnM1bIfNTjp5+FmYz/4Tjd07H9GUg/5dSp12ceW9OjCNUUWvDJxLqymevGWIXwg6
-X-Gm-Message-State: AOJu0YzxFEKYSKkKgBoY1NOD00OsTWdsp8k8BOxvv5GuhIhG5ULL5d6Q
-	jSG/mTcUunC1BJUJqvkTWKA0MOCI1zVN2uAycAkSOqjoWgI0z+Rm5KrFphnhPFbtzyPLkYZFpHl
-	n
-X-Google-Smtp-Source: AGHT+IEODykzgn8ir9YrP0mljLSv9E/0vpdgq46Aapczeh99yEQl4PF2hUUpFW8gJ95jH6d6/2UxpA==
-X-Received: by 2002:a5e:8909:0:b0:7c4:527d:628e with SMTP id k9-20020a5e8909000000b007c4527d628emr117369ioj.0.1707839758138;
-        Tue, 13 Feb 2024 07:55:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXtmRN9hf1sTEqQHaomPdDhjZ/rBqevRFQLhRGOvNdVgrrmzMRU46ycGbZdKsVahi7rr3CCulnDlGn0BJCFpzzPWfrqmKcmyOIkohgol58ihRNuG8+McYohme6FmujP543wMnm/GLGvwbCXwyCapal26uTc7epXwG1faZx0XcQZd8e1dfRE/5n0JvjBOAy5vAKs3jiB4mqcZe+FKEoKeP+rQrS2t9y+WodxgE6li2LrIf4tTpUkIO0EBLoieRoDdzN7/nMoZ7PsROrLA2TeuGaUolKkrKX5cHVgWbwC5nQskTG9O8ZBhiJ9zt+foE+YBG4uoGJJNsHK7MMtHfEy9UHEsspFcndMI4XuRq5U3zEugg1HnnhUmUy3Pu1Ld9PGKQsASQk5EkRLEj777Jy5SuicR4XeRRwYKEMWtSBKVQMvCCV03TLdwihjU9FCCc3+HSKHcNUrxFrum66C7KOcpyf4
+        bh=ZPsZ61/B147XeUCItHAVNy9atLHaMQ7vWuQvVfNBe/E=;
+        b=STLQDpXPqiMFjo+8G27U3/NHK8yxGXZdDw7FPRiGI8JKH+BpXuxjz32vqPoMeKYlDa
+         wmIzRe/RYaBIX389yRTWUt4rX7FskDTL4kX9qZ/+WSl4Ww4KfBcm2Z+sCpT1mLGs10VC
+         EHuJMsuKcfRRLsBaAt4kUhyqbmlzv8aJw8IIlfNcoKF92EatfpXsyhQr1+yJ3IFY7ktU
+         npT75gnxshx81yA4sDkqyR+Bm0NxnkcbNVNOwvMwKYW0XzniyDYS7JwH0Y91CfbGT77D
+         jnnCKrMWvnOVXyOq3gChSZFeHw+DCv9h7RLVoOPmoZ4SZlCzkJvYm6hql355MSUnzqeP
+         HI8A==
+X-Forwarded-Encrypted: i=1; AJvYcCX8MdSaUR4rQvKeU77vwxZtaeL0vNevxF2nTC523rVlJnn6NxCK/rsXZCMPQmMD/8KbOrsriwZFlOwhsNqc9MlypjYxqNcY/9sLZWrN
+X-Gm-Message-State: AOJu0Yx/aCdSXCmeGbu3SQ5Kxp3BDDtSiNn85SUxM1p9vr1SJYO+IZGs
+	GvrgWN1PnybhM5vjBKhNXR9sJ8OZGCjASxU8YTllqRohbsCfURNRGf117jRNiGFjnY/Bkjigo2s
+	7
+X-Google-Smtp-Source: AGHT+IEslLXJyHXnsj51AumuBlOy6N0oP+uPR/PHnApNPg2IYUR26OYsdB25n355+SMmGoWI5yZEXQ==
+X-Received: by 2002:a5e:9411:0:b0:7c4:4f32:8311 with SMTP id q17-20020a5e9411000000b007c44f328311mr44941ioj.2.1707839759646;
+        Tue, 13 Feb 2024 07:55:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU/S1UrM7pG0AjHa4py/2k7FGa1SDtErFeE4Lc7xt6L3BDoPYiSiEH8JVbfCLyHDMUwZX01txjBWgNqXC64Iu9aqLcJfFHHI7xpcYPORy8iC7EDl3VY+S2Lqywgj5yDCpGsRu4GV7OnCVgiqP9bcCOe2UmDctiD76nULVMnih/Uyj4QlWnvDk4EaMDWm+8H1/wOI4CnL6t24O5IYvTiykt8dQDIoaeH/C1J/feEnXtVKKsf+hM8qmhcEDs75hQS5J7jN3WCoqYt5uj7vFEN7/vCqXoOPJeBr4p3P/O9L80ITraOIB60kfgD9qqndGwK0Be6h0BLEFUHkBAXfmTLwCMyaUVOBCOzfyoSf11lrQjKfQRRk35dCwwSpqWKrhBynySDIqvRLcY2MDTlZemxzBVCcssGSPxAEBpgZovxz9kqglYJ47RCIK1NgDeiWXAa1FY=
 Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id ay31-20020a056638411f00b00473ca57bfefsm403153jab.124.2024.02.13.07.55.57
+        by smtp.gmail.com with ESMTPSA id ay31-20020a056638411f00b00473ca57bfefsm403153jab.124.2024.02.13.07.55.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 07:55:57 -0800 (PST)
+        Tue, 13 Feb 2024 07:55:58 -0800 (PST)
 From: Jens Axboe <axboe@kernel.dk>
-To: Denis Efremov <efremov@linux.com>, Arnd Bergmann <arnd@kernel.org>
+To: Philipp Reisner <philipp.reisner@linbit.com>, 
+ Lars Ellenberg <lars.ellenberg@linbit.com>, 
+ =?utf-8?q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>, 
+ Arnd Bergmann <arnd@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
  Nick Desaulniers <ndesaulniers@google.com>, 
  Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
- Christian Brauner <brauner@kernel.org>, Hannes Reinecke <hare@suse.de>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, 
+ "Uladzislau Rezki (Sony)" <urezki@gmail.com>, drbd-dev@lists.linbit.com, 
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
  llvm@lists.linux.dev
-In-Reply-To: <20240213095918.455478-1-arnd@kernel.org>
-References: <20240213095918.455478-1-arnd@kernel.org>
-Subject: Re: [PATCH] floppy: fix function pointer cast warnings
-Message-Id: <170783975707.2331975.5627126509877821543.b4-ty@kernel.dk>
-Date: Tue, 13 Feb 2024 08:55:57 -0700
+In-Reply-To: <20240213100354.457128-1-arnd@kernel.org>
+References: <20240213100354.457128-1-arnd@kernel.org>
+Subject: Re: [PATCH] drbd: fix function cast warnings in state machine
+Message-Id: <170783975824.2331975.17734171438051214868.b4-ty@kernel.dk>
+Date: Tue, 13 Feb 2024 08:55:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,20 +95,31 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.5-dev-2aabd
 
 
-On Tue, 13 Feb 2024 10:59:07 +0100, Arnd Bergmann wrote:
-> clang-16 complains about a control flow integrity (kcfi) violation
-> casting between incompatible pointers:
+On Tue, 13 Feb 2024 11:03:01 +0100, Arnd Bergmann wrote:
+> There are four state machines in drbd that use a common infrastructure, with
+> a cast to an incompatible function type in REMEMBER_STATE_CHANGE that clang-16
+> now warns about:
 > 
-> drivers/block/floppy.c:2001:11: error: cast from 'void (*)(void)' to 'done_f' (aka 'void (*)(int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
->  2001 |         .done           = (done_f)empty
->       |                           ^~~~~~~~~~~~~
+> drivers/block/drbd/drbd_state.c:1632:3: error: cast from 'int (*)(struct sk_buff *, unsigned int, struct drbd_resource_state_change *, enum drbd_notification_type)' to 'typeof (last_func)' (aka 'int (*)(struct sk_buff *, unsigned int, void *, enum drbd_notification_type)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+>  1632 |                 REMEMBER_STATE_CHANGE(notify_resource_state_change,
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  1633 |                                       resource_state_change, NOTIFY_CHANGE);
+>       |                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/block/drbd/drbd_state.c:1619:17: note: expanded from macro 'REMEMBER_STATE_CHANGE'
+>  1619 |            last_func = (typeof(last_func))func; \
+>       |                        ^~~~~~~~~~~~~~~~~~~~~~~
+> drivers/block/drbd/drbd_state.c:1641:4: error: cast from 'int (*)(struct sk_buff *, unsigned int, struct drbd_connection_state_change *, enum drbd_notification_type)' to 'typeof (last_func)' (aka 'int (*)(struct sk_buff *, unsigned int, void *, enum drbd_notification_type)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+>  1641 |                         REMEMBER_STATE_CHANGE(notify_connection_state_change,
+>       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  1642 |                                               connection_state_change, NOTIFY_CHANGE);
+>       |                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] floppy: fix function pointer cast warnings
-      commit: 7789bf05529889a39bcf4cd17a68521de063b88b
+[1/1] drbd: fix function cast warnings in state machine
+      commit: fe0b1e9a73d60f01fdc391925be74e823af7c91d
 
 Best regards,
 -- 
