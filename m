@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-64276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 968EE853CC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:12:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F3F1853CC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:12:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C99C71C22540
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:12:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 340281F252AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF1F626DD;
-	Tue, 13 Feb 2024 21:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A15FF77651;
+	Tue, 13 Feb 2024 21:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="k2PkmRqo";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SbyS0xgX"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="EsT9Z0Vh";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="10oVLj5h"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F8B74E3A
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C127691C
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:05:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707858315; cv=none; b=Jqd76VsgT0zUQxWVLnEe4pe1miPmOBaxV76IAhHT9Vodj4KgbSd+5kmUMdfqF41oiq4aMHEZcI5NtwbONlZlbuEjcVq3o/aCi9m85IIHTh7zTphF2hkPWySlE4rWIsne5r+BMQ1SxvShZxa511jSuDqhBCIl5lWW052/tBkmFuY=
+	t=1707858317; cv=none; b=UcxGSl6nt/S65vddD4SVC3OYTvdHawd36xuu60qE6kGxaQJljhsU6fw0lvbH3jJ3jj6kMVEa8CuMo2i6EAjBT54Lst0jcAwlihPDI2GPsBic7Zs93lKcsg6jwyyNXc9Z4SZKo+5aX3bOn9SLRplpM9U4plo02wJVAwgDyJSDcgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707858315; c=relaxed/simple;
-	bh=SGXrE8Yw2ANix13HVyPL7ecmVibMK1HhvzhajBLDnlA=;
+	s=arc-20240116; t=1707858317; c=relaxed/simple;
+	bh=5HSRVk5h3AkWg+lqq7ttEcP7WRyiUHD3Vc0ApyeScBI=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=A4GIthIynRs4/qoRQEYgVB5C5OwjTBbjVUYpBgYTuEEc5+TfotcDvoxK1q0x4yEi2IV3/hE41brhaMqXtC8YGT0gXam17eCsVKN9C7fpsrQ1/iQYZmzvUHZgWnryzxsK88mjF9ZnG8xMPGpvBAAXJwZau4xAdAKmKTgGE4dtWKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=k2PkmRqo; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SbyS0xgX; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=rQF/WZYn0RIiY0VsjsHYzNNX5B81XnuJSpYwrWNjF0mCYwZ4jE9AJgEbIOY9sg4Yskjy0vBXV8ByNG9WWGZyF9XaNEUPiNL3Fk926WqXVoR6J22rIRbNT5F+J7j0/WgXCkzibTuEu76XicWDhl9ZTAZr59sqqModM5ZgW0LJR/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=EsT9Z0Vh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=10oVLj5h; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240212154639.745028043@linutronix.de>
+Message-ID: <20240212154639.808238769@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707858312;
+	s=2020; t=1707858313;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=wDzo3sDxLcX+PY8MPqJ3TBw1kK5S3plxLG9oPF/78Vw=;
-	b=k2PkmRqoIrtlYtsAZz5T5V7QKInngLBGeQP5zHlRE2tefW+sISLfXbJeJSwN+TBYSHqHwK
-	kPh+iZDBu7SZ/PTsHzW8B1wC4BWd3zwGIePsHEeNlM0Afb6PtMtTGD3A8rzFX/ApUTgST9
-	QNHyg7mKnsZnFqAV9r3vroVhFfQBn7O36+kJjbKKo5ru3Dy8BqKGzjRpaLlfEOy2JqCkYF
-	hgOZelzEIbFiP6zEGY+ydPUXHSlJwXKpccbUuyDbhSoMa7YTre5RzFoV0ia1rqV+MJBCWj
-	Ly2NUB9FkekH3aQnl4a5GjRzfQ+7c/Td7rdb4Sjgf8W3ZJHSqMCH4ZfqWEXV1w==
+	 references:references; bh=K89CMORbjEKKY+pUQ0RBLv6Of1M8KhQqpEbF+zotYIo=;
+	b=EsT9Z0VhoZ3THyVDW0T0Y3lkX0VOqMuemxxsh94Dxmvh4g0uJKRDAPiAxnmjKOuRJUhpCq
+	qNTx/2D7c/GvHQhvXUqdSQ8uf6fdvZBga3AYJ8D0O+Mpj++tM6/2Tdc8D3u5qSS2uCGzIs
+	yNUi73/WclEz+/HTinO3du7RnrKmhqVyFeXuI0SSoy04Oi7UKQpdgMFMTOp63gY0Lraqel
+	mQ1FD39ws/bAoL0aouLh5MOSr6ps6zZgvD1RLzfdzlDLW8j7oew4FtNub9vhDhvJiFmxOh
+	RlBbUZn1nvNVN8jVWsyDi/zJ/Bs8FIiWgYYM8gSfh8sU+A7DdnnBPR1hy+NiZA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707858312;
+	s=2020e; t=1707858313;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=wDzo3sDxLcX+PY8MPqJ3TBw1kK5S3plxLG9oPF/78Vw=;
-	b=SbyS0xgXPBt0nhX7p9sPYt5BBY7qZhwQmHZL2+oh07LL+1Khvwm97Z1O0OE0wQ3AxFR6wk
-	EMprhcefQNvB6WAQ==
+	 references:references; bh=K89CMORbjEKKY+pUQ0RBLv6Of1M8KhQqpEbF+zotYIo=;
+	b=10oVLj5hbkN04pOJL2gORds0hxnjAfGlivSFGH1R4tVEvLJ59QLQ/rjiiDqRSr2Whmy22W
+	m1WoKYPemjF5JIAA==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -69,7 +69,7 @@ Cc: x86@kernel.org,
  "Peter Zijlstra (Intel)" <peterz@infradead.org>,
  Andy Shevchenko <andy.shevchenko@gmail.com>,
  Wei Liu <wei.liu@kernel.org>
-Subject: [patch V3 15/22] x86/xen/smp_pv: Prepare for separate mpparse
+Subject: [patch V3 16/22] x86/hyperv/vtl: Prepare for separate mpparse
  callbacks
 References: <20240212154529.402604963@linutronix.de>
 Precedence: bulk
@@ -79,49 +79,31 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 13 Feb 2024 22:05:12 +0100 (CET)
+Date: Tue, 13 Feb 2024 22:05:13 +0100 (CET)
 
-From: Thomas Gleixner <tglx@linutronix.de>
-
-Provide a wrapper around the existing function and fill the new callbacks
-in.
-
-No functional change as the new callbacks are not yet operational.
+Initialize the new callbacks in preparation for switching the core code.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-
 ---
- arch/x86/xen/smp_pv.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+V5: New patch
 ---
+ arch/x86/hyperv/hv_vtl.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/xen/smp_pv.c
-+++ b/arch/x86/xen/smp_pv.c
-@@ -185,6 +185,11 @@ static void __init _get_smp_config(unsig
- 	smp_found_config = 1;
- }
- 
-+static void __init xen_pv_smp_config(void)
-+{
-+	_get_smp_config(false);
-+}
-+
- static void __init xen_pv_smp_prepare_boot_cpu(void)
- {
- 	BUG_ON(smp_processor_id() != 0);
-@@ -455,6 +460,8 @@ void __init xen_smp_init(void)
- 	smp_ops = xen_smp_ops;
+--- a/arch/x86/hyperv/hv_vtl.c
++++ b/arch/x86/hyperv/hv_vtl.c
+@@ -26,7 +26,9 @@ void __init hv_vtl_init_platform(void)
+ 	x86_init.timers.timer_init = x86_init_noop;
  
  	/* Avoid searching for BIOS MP tables */
--	x86_init.mpparse.find_mptable = x86_init_noop;
--	x86_init.mpparse.get_smp_config = _get_smp_config;
-+	x86_init.mpparse.find_mptable		= x86_init_noop;
-+	x86_init.mpparse.early_parse_smp_cfg	= x86_init_noop;
-+	x86_init.mpparse.parse_smp_cfg		= xen_pv_smp_config;
-+	x86_init.mpparse.get_smp_config		= _get_smp_config;
- }
-
+-	x86_init.mpparse.find_smp_config = x86_init_noop;
++	x86_init.mpparse.find_mptable = x86_init_noop;
++	x86_init.mpparse.early_parse_smp_cfg = x86_init_noop;
++	x86_init.mpparse.parse_smp_cfg = x86_init_noop;
+ 	x86_init.mpparse.get_smp_config = x86_init_uint_noop;
+ 
+ 	x86_platform.get_wallclock = get_rtc_noop;
 
 
 
