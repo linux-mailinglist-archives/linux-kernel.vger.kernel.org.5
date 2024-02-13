@@ -1,149 +1,141 @@
-Return-Path: <linux-kernel+bounces-64197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC4D0853BAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:52:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0479853BB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:55:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B73A1C26836
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:52:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 852261F238B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F656608F1;
-	Tue, 13 Feb 2024 19:52:31 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47AB060B86;
+	Tue, 13 Feb 2024 19:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="z0jk3FZU"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E4860ECB;
-	Tue, 13 Feb 2024 19:52:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0DB260885
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 19:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707853950; cv=none; b=diOnD79lhd9G2qfX4txMoqmxezFLlu0+XTMKV0vm4zejeOQsabN4UFle3Ma1jxI+2Yk0dqmsVzSF/uPEJDAe4mbRhrnVrLvS9MKS5PCakCaqdeLpIJMz9jAgFn1IDSQvP5Cir2ulfOaQcLkJMtbgE2CGJodiN8VBVsdkKgeHDHw=
+	t=1707854126; cv=none; b=gu/4jRt/3BkHuqhgGJJzXpmObOxjWqL8yF5AQCsuKX7z9eIpuA+YnJw4qO2X7Vpv1IXfVWOKOlAEtgkRNDjSjx0Xq0YlNNFSQXsh827NLLmJTbCBRoRQL92ieYEx0ba7me4xUixTgYxf92i8LKrE3pwRArtT6bI2AbETFlugO8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707853950; c=relaxed/simple;
-	bh=B/Zh10xQbdlld19xfJvnSNoL4PD7RYqchRBmmWzUX6Q=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=vEIaQL0ck/wgdjb4sjUOCNJhXCqE25iKcIDkcoSptxm9IkOw2tJtap+XIjFigaOj/dwotRecLUpQT4cRY82PfH6nG+lc+goBWPFXTYMZtOVHziliz1pfTFKGv7PAhlU4ezTLW/Uc9yE1A8WY6PyMDlwHfsLc11W225GXg027f8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (178.176.75.253) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 13 Feb
- 2024 22:52:25 +0300
-Subject: Re: [PATCH net-next v3 4/6] net: ravb: Move the update of
- ndev->features to ravb_set_features()
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<biju.das.jz@bp.renesas.com>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20240213094110.853155-1-claudiu.beznea.uj@bp.renesas.com>
- <20240213094110.853155-5-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <3747ad9a-217a-2f43-835a-7c23f6a710d2@omp.ru>
-Date: Tue, 13 Feb 2024 22:52:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1707854126; c=relaxed/simple;
+	bh=wCNV3+N+xUXw6aiO9cmWCuAOUAtC1r54THKKfvL6V50=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=mcs1umtrPZFE9b3S8MKgdWAAThfCD0f/Y7LdWRGk+bq9oarZ29xUD0gKAxPcUiQOAMY8V2PRn737BZ4TIyjOC0qyAgHc3qDgbKjhs01sCquCU1PsmmvVRlVVZrTqssWh9DxWYEF40n4NZiKCBzAOYluxYSs+SX9g9H7hUu2BCNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=z0jk3FZU; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-411dd149bd9so1141275e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:55:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707854123; x=1708458923; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K4FCa1V10al25x2H6TCYXD+ZgK9d/r75JguWzXT91NQ=;
+        b=z0jk3FZUMPyV1u8Imb+DIBEQF1DEpBE3EGMKEHAY4HToz/jDHQ6EItUfVjAFuCrQ8/
+         7flweKN0VPkVaOc4F1ui43oAh4U1jZBQuEiIsk/1onU9HZie+nRVdHRTez+c6YofvFn4
+         O6NunSR/FXAxDrA2KD3jzBnhPVORcTXwrEFSjVEhnXnGApfbD+IDCrtFcq2IQcBwjuYQ
+         rgpgoAeJEob0hDvWnTOppewLswvKmNlpRn2keU59BT2TUDHq/UQniBuKgLfYAlkLYnIJ
+         0s+wXYfp0yWRfNQ8Mpi1xUDLmOKJPWEFyWF3AbyS99VnfdF3T0IZosR+cm+iUQ5ubf+d
+         x1hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707854123; x=1708458923;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K4FCa1V10al25x2H6TCYXD+ZgK9d/r75JguWzXT91NQ=;
+        b=OfGdA5zjw3IVdzZbFbLYg30SRHl3kH8Jylux6e1GHzDaKPP+iuT8fChANHRFUSiBQG
+         aJZdwFDzlaV+FbFxjTmvTIgRMUr1yaVh71a6/KMFtG/NKWHedt+cnSnAUJ2NddXjX3JE
+         6AEl6LvkJ+Dae4PW/bXYblqoEbKW0VxxMNpetQ2mPpZ285yyJZSf/N2aQCKOWNi2Na7j
+         O+1dnjIILYJKfpt91QM9xfpo6zCplRKfhzndVv9CQXRpUgOxCUgEzU5EPGkDEnrm8U3M
+         lNXBPzaoq9DVx6j6SeYc/0EyI0ARcz03IE5pwxljwVOzrSFG2VL9/ZZAaJNL52pi3uEs
+         mkrw==
+X-Forwarded-Encrypted: i=1; AJvYcCVxF/8LeOx64tleCa+eyqZkioyUrSU0FD9DjFXE4BVU7u28FrxwDG6+Pdg6m/lTLKeChm0r509gcCp/4CBa2WU8m4Ya7Wqe9tPdzG8y
+X-Gm-Message-State: AOJu0YxPfzW6Kcbf2hWYqSlkk42EUb/q5PqhY1aiyr4T8D7MZNeHcFoC
+	TFzER7sW66sVP8cDp7Hm5N5oFqb/3fSsKcX6lCeilT2g8S09ZdwsJP7WmXRlWYc6yHdaQmscpse
+	v4n8aHQYSsXunwLJb9OgWA8QOerQB3gJuuo1x
+X-Google-Smtp-Source: AGHT+IFWXIXONMt5zEShnmDZcWhv7RgwcR3a9xWQLu/Tf+5zhkKq9vpvvpAG+xYDdOhe8qKwW8Xr2MTM/tJoxmlie5c=
+X-Received: by 2002:a5d:6ac5:0:b0:33a:e2d3:c3ec with SMTP id
+ u5-20020a5d6ac5000000b0033ae2d3c3ecmr210990wrw.60.1707854123043; Tue, 13 Feb
+ 2024 11:55:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240213094110.853155-5-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/13/2024 19:36:27
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 183416 [Feb 13 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info:
-	omp.ru:7.1.1;178.176.75.253:7.4.1,7.7.3;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.253
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 02/13/2024 19:40:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 2/13/2024 4:21:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+References: <CA+EESO5TNubw4vi08P6BO-4XKTLNVeNfjM92ieZJTd_oJt9Ygw@mail.gmail.com>
+ <20240213170609.s3queephdyxzrz7j@revolver> <CA+EESO5URPpJj35-jQy+Lrp1EtKms8r1ri2ZY3ZOpsSJU+CScw@mail.gmail.com>
+ <CAJuCfpFXWJovv6G4ou2nK2W1D2-JGb5Hw8m77-pOq4Rh24-q9A@mail.gmail.com>
+ <20240213184905.tp4i2ifbglfzlwi6@revolver> <CAJuCfpG+8uypn3Mw0GNBj0TUM51gaSdAnGZB-RE4HdJs7dKb0A@mail.gmail.com>
+ <CA+EESO6M5VudYK-CqT2snvs25dnrdTLzzKAjoSe7368X-PcFew@mail.gmail.com>
+ <20240213192744.5fqwrlqz5bbvqtf5@revolver> <CAJuCfpEvdK-jOS9a7yv1_KnFeyu8665gFtk871ac-y+3BiMbVw@mail.gmail.com>
+ <CA+EESO6TowKNh10+tzwawBemykVcVDP+_ep1fg-_RiqBzfR7ew@mail.gmail.com> <20240213195125.yhg5ti6qrchpela6@revolver>
+In-Reply-To: <20240213195125.yhg5ti6qrchpela6@revolver>
+From: Lokesh Gidra <lokeshgidra@google.com>
+Date: Tue, 13 Feb 2024 11:55:11 -0800
+Message-ID: <CA+EESO5F7RB-_AwgxPV=9tCKx=E59sbaxvtc4q3u4sCL6PpcTg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] userfaultfd: use per-vma locks in userfaultfd operations
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Lokesh Gidra <lokeshgidra@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, selinux@vger.kernel.org, 
+	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
+	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com, 
+	willy@infradead.org, jannh@google.com, kaleshsingh@google.com, 
+	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/13/24 12:41 PM, Claudiu wrote:
+On Tue, Feb 13, 2024 at 11:51=E2=80=AFAM Liam R. Howlett
+<Liam.Howlett@oracle.com> wrote:
+>
+> * Lokesh Gidra <lokeshgidra@google.com> [240213 14:37]:
+> ...
+>
+> > Asking to avoid any more iterations: these functions should call the
+> > currently defined ones or should replace them. For instance, should I
+> > do the following:
+> >
+> > #ifdef CONFIG_PER_VMA_LOCK
+> > ... uffd_mfill_lock()
+> > {
+> >         return find_and_lock_dst_vma(...);
+> > }
+> > #else
+> > ...uffd_mfill_lock()
+> > {
+> >        return lock_mm_and_find_dst_vma(...);
+> > }
+> > #endif
+> >
+> > or have the function replace
+> > find_and_lock_dst_vma()/lock_mm_and_find_dst_vma() ?
+>
+> Since the two have the same prototype, then you can replace the function
+> names directly.
+>
+> The other side should take the vma and use vma->vm_mm to get the mm to
+> unlock the mmap_lock in the !CONFIG_PER_VMA_LOCK.  That way those
+> prototypes also match and can use the same names directly.
+>
+> move_pages() requires unlocking two VMAs or one, so pass both VMAs
+> through and do the check in there.  This, unfortunately means that one
+> of the VMAs will not be used in the !CONFIG_PER_VMA_LOCK case.  You
+> could add an assert to ensure src_vma is locked prior to using dst_vma
+> to unlock the mmap_lock(), to avoid potential bot emails.
+>
+Perfect. Will do that and address the other comments you had on v5 as well.
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Commit c2da9408579d ("ravb: Add Rx checksum offload support for GbEth")
-> introduced support for setting GbEth features. With this the IP-specific
-> features update functions update the ndev->features individually.
-> 
-> Next commits add runtime PM support for the ravb driver. The runtime PM
-> implementation will enable/disable the IP clocks on
-> the ravb_open()/ravb_close() functions. Accessing the IP registers with
-> clocks disabled blocks the system.
-> 
-> The ravb_set_features() function could be executed when the Ethernet
-> interface is closed so we need to ensure we don't access IP registers while
-> the interface is down when runtime PM support will be in place.
-> 
-> For these, move the update of ndev->features to ravb_set_features() and
-> make the IP-specific features set function return int. In this way we
-> update the ndev->features only when the IP-specific features set function
-> returns success and we can avoid code duplication when introducing
-> runtime PM registers protection.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-[...]
+Regarding int vs long for 'err' type, I'm assuming you are ok with my
+explanation and I should keep long?
 
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index 7a7f743a1fef..b3b91783bb7a 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -2475,7 +2475,7 @@ static int ravb_change_mtu(struct net_device *ndev, int new_mtu)
->  	return 0;
->  }
->  
-> -static void ravb_set_rx_csum(struct net_device *ndev, bool enable)
-> +static int ravb_set_rx_csum(struct net_device *ndev, bool enable)
->  {
->  	struct ravb_private *priv = netdev_priv(ndev);
->  	unsigned long flags;
-> @@ -2492,6 +2492,8 @@ static void ravb_set_rx_csum(struct net_device *ndev, bool enable)
->  	ravb_rcv_snd_enable(ndev);
->  
->  	spin_unlock_irqrestore(&priv->lock, flags);
-> +
-> +	return 0;
->  }
->  
->  static int ravb_endisable_csum_gbeth(struct net_device *ndev, enum ravb_reg reg,
-
-   Wait! You're not updating the call site of ravb_set_rx_csum(), are you?
-It looks like the above 2 hunks aren't needed...
-
-[...]
-
-MBR, Sergey
+> Thanks,
+> Liam
 
