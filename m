@@ -1,60 +1,57 @@
-Return-Path: <linux-kernel+bounces-62599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F39C85237C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:26:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64BFD85237F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:27:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82F2828249F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:26:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19A8E1F21AAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2054552F6D;
-	Tue, 13 Feb 2024 00:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85B053378;
+	Tue, 13 Feb 2024 00:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wel6KRZx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tMCxd4wG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56CDF524C7;
-	Tue, 13 Feb 2024 00:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E62D52F92;
+	Tue, 13 Feb 2024 00:19:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783557; cv=none; b=lgyQdqWwGXIEoyMmL3BHMcpAAPASEBs4HUJOF1V9qKy6f17yDv4RcHXOSVnpiBkJeHx2mU57F53DipQ8hHGSh+aZ84cmr3Hs7ohb9I/115ynorxMVTvfI5rgoLlMEiDjuOc+jZennQR3GDyMw3zgK31SqkmhmAPUadfyCXSK+1Y=
+	t=1707783559; cv=none; b=YrtiRKDsA9w8iUqnN1vVodApgrbieqkQTfAAfCzexEEvssf696MthYyC4gBclfwtYItJsdBYSNROF/nUkyarQs8T557XrMqqRK2sw+i8gYD//s5AlAEibHpMAPd0T9JxNv9vaYMfr4wG11msjo17IwDb8l89Pz0rPXItFqCS58Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783557; c=relaxed/simple;
-	bh=0O9Sh5Abd4gM3TkCOsUM4nc+bJHsHARx5zwVBuxqdhQ=;
+	s=arc-20240116; t=1707783559; c=relaxed/simple;
+	bh=uVHzwgSKzY/3Tmm6JxcNU/AAvfLOdgaM57QwPSLF0bs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Hdu7JxyhsaeRyRP67Mcjq6AkJFYNtKgL+RuqfVQQkxaFwS9bO41vYGO45YRgvPQIHTSX709Yf596TliE5FKe8ViAebGqcwuK1dO42QTYezb5jKedo7RXPL2MQ6ZzsFgmSBbomZLC2v6WOzqc5uSFtclRdUNozc8kgdPtSFblSAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wel6KRZx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1827C43390;
-	Tue, 13 Feb 2024 00:19:15 +0000 (UTC)
+	 MIME-Version; b=lv7Y4yWBFwc6TQ73Gqi7oOuVQz8lud903vGOCWdo7AMQg4iPH0M0xy8c93dhzUDDCyF1cKTUjTUQM4rjC5xpsMNu2rYzZxVCZsB8A0Y2QMZPhn5HhbiY6jfKhIwFlESMaq3UPrx1tXcrJKB20zna+nOD6DGOt10BVVMcTxT7EBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tMCxd4wG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95E84C43399;
+	Tue, 13 Feb 2024 00:19:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783557;
-	bh=0O9Sh5Abd4gM3TkCOsUM4nc+bJHsHARx5zwVBuxqdhQ=;
+	s=k20201202; t=1707783558;
+	bh=uVHzwgSKzY/3Tmm6JxcNU/AAvfLOdgaM57QwPSLF0bs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Wel6KRZxHuzkOBVJPoSGRKfTpECsz0aN7xCo9Ceq2maodr2uxYBG8zfyckXyCZlF1
-	 yL6+7bPRjvxYu3a27cOfriOH6gZxWfl/dqUiiIS4Vm3rj32mT6wIjLSQYrQL/g9EBa
-	 PJK0pbb534Quk0ZohPkW6jnIEkw7zKgZudE65Rn18otTe5ln1451zhaHuPaxhIGAzZ
-	 uJ0Gi15MV3H6cDKNpKIzNQF5ZjQ/Rgk20nz3sviDcN45hmBsZoohrwX0kk170jOOZC
-	 GkbEiZbv41f86e39Pbxoi8iXvrdBpvYj11s+jofsbIyNayRH/edqBTlpj2L/enZOji
-	 I55bDqKZ4r1Yw==
+	b=tMCxd4wGcwE1SILJX++2Wy+R4bMFuScR2st3jSen4EA1ayZDilEuvRtTHyr9leR87
+	 AX65FaoqivCDKUNUwdfYfwjB0L6rhuEGJRosX0WwOFHyjQh5GdK2cz6BiNZJq9Gfdh
+	 PGc5XQL+q50pqFMjjdnKcfq46gUr3C0PrGsPy2EbWOQ5RL4qnzZNgTCPVR389tNkEP
+	 +RDDQ72zC6aj2aoR6Kl9Ld2OUtCu6mlHuAv87VadTV02/GkDmdiPJ9T5hHzZm5UUr/
+	 h4WlDYyf7IW99rLS4lNciSHBLW7+2P3HvztOrFAXoZvwKWh4p2u+dRsls9NI0DTEz1
+	 ZLwK2nC4nPnsQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
+Cc: Benjamin Berg <benjamin.berg@intel.com>,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	johannes@sipsolutions.net,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 30/58] wifi: mac80211: accept broadcast probe responses on 6 GHz
-Date: Mon, 12 Feb 2024 19:17:36 -0500
-Message-ID: <20240213001837.668862-30-sashal@kernel.org>
+	kvalo@kernel.org,
+	linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 31/58] wifi: iwlwifi: do not announce EPCS support
+Date: Mon, 12 Feb 2024 19:17:37 -0500
+Message-ID: <20240213001837.668862-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213001837.668862-1-sashal@kernel.org>
 References: <20240213001837.668862-1-sashal@kernel.org>
@@ -69,95 +66,54 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.4
 Content-Transfer-Encoding: 8bit
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-[ Upstream commit 62a6183c13319e4d2227473a04abd104c4f56dcf ]
+[ Upstream commit a23c0af103e184bb1252dddddda040f6641bea7b ]
 
-On the 6 GHz band, probe responses are sent as broadcast to
-optimise medium usage. However, without OCE configuration
-we weren't accepting them, which is wrong, even if wpa_s is
-by default enabling OCE. Accept them without the OCE config
-as well.
+mac80211 does not have proper support for EPCS currently as that would
+require changing the ECDA parameters if EPCS (Emergency Preparedness
+Communications Service) is in use. As such, do not announce support for
+it in the capabilities.
 
-Link: https://msgid.link/20240129200907.5a89c2821897.I92e9dfa0f9b350bc7f37dd4bb38031d156d78d8a@changeid
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+Link: https://msgid.link/20240201155157.59d71656addc.Idde91b3018239c49fc6ed231b411d05354fb9fb1@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/scan.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/net/mac80211/scan.c b/net/mac80211/scan.c
-index 24fa06105378..fca3f67ac0e8 100644
---- a/net/mac80211/scan.c
-+++ b/net/mac80211/scan.c
-@@ -9,7 +9,7 @@
-  * Copyright 2007, Michael Wu <flamingice@sourmilk.net>
-  * Copyright 2013-2015  Intel Mobile Communications GmbH
-  * Copyright 2016-2017  Intel Deutschland GmbH
-- * Copyright (C) 2018-2023 Intel Corporation
-+ * Copyright (C) 2018-2024 Intel Corporation
-  */
- 
- #include <linux/if_arp.h>
-@@ -216,14 +216,18 @@ ieee80211_bss_info_update(struct ieee80211_local *local,
- }
- 
- static bool ieee80211_scan_accept_presp(struct ieee80211_sub_if_data *sdata,
-+					struct ieee80211_channel *channel,
- 					u32 scan_flags, const u8 *da)
- {
- 	if (!sdata)
- 		return false;
--	/* accept broadcast for OCE */
--	if (scan_flags & NL80211_SCAN_FLAG_ACCEPT_BCAST_PROBE_RESP &&
--	    is_broadcast_ether_addr(da))
-+
-+	/* accept broadcast on 6 GHz and for OCE */
-+	if (is_broadcast_ether_addr(da) &&
-+	    (channel->band == NL80211_BAND_6GHZ ||
-+	     scan_flags & NL80211_SCAN_FLAG_ACCEPT_BCAST_PROBE_RESP))
- 		return true;
-+
- 	if (scan_flags & NL80211_SCAN_FLAG_RANDOM_ADDR)
- 		return true;
- 	return ether_addr_equal(da, sdata->vif.addr);
-@@ -272,6 +276,12 @@ void ieee80211_scan_rx(struct ieee80211_local *local, struct sk_buff *skb)
- 		wiphy_delayed_work_queue(local->hw.wiphy, &local->scan_work, 0);
- 	}
- 
-+	channel = ieee80211_get_channel_khz(local->hw.wiphy,
-+					    ieee80211_rx_status_to_khz(rx_status));
-+
-+	if (!channel || channel->flags & IEEE80211_CHAN_DISABLED)
-+		return;
-+
- 	if (ieee80211_is_probe_resp(mgmt->frame_control)) {
- 		struct cfg80211_scan_request *scan_req;
- 		struct cfg80211_sched_scan_request *sched_scan_req;
-@@ -289,19 +299,15 @@ void ieee80211_scan_rx(struct ieee80211_local *local, struct sk_buff *skb)
- 		/* ignore ProbeResp to foreign address or non-bcast (OCE)
- 		 * unless scanning with randomised address
- 		 */
--		if (!ieee80211_scan_accept_presp(sdata1, scan_req_flags,
-+		if (!ieee80211_scan_accept_presp(sdata1, channel,
-+						 scan_req_flags,
- 						 mgmt->da) &&
--		    !ieee80211_scan_accept_presp(sdata2, sched_scan_req_flags,
-+		    !ieee80211_scan_accept_presp(sdata2, channel,
-+						 sched_scan_req_flags,
- 						 mgmt->da))
- 			return;
- 	}
- 
--	channel = ieee80211_get_channel_khz(local->hw.wiphy,
--					ieee80211_rx_status_to_khz(rx_status));
--
--	if (!channel || channel->flags & IEEE80211_CHAN_DISABLED)
--		return;
--
- 	bss = ieee80211_bss_info_update(local, rx_status,
- 					mgmt, skb->len,
- 					channel);
+diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c b/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
+index 480f8edbfd35..678c4a071869 100644
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
+@@ -668,7 +668,6 @@ static const struct ieee80211_sband_iftype_data iwl_he_eht_capa[] = {
+ 			.has_eht = true,
+ 			.eht_cap_elem = {
+ 				.mac_cap_info[0] =
+-					IEEE80211_EHT_MAC_CAP0_EPCS_PRIO_ACCESS |
+ 					IEEE80211_EHT_MAC_CAP0_OM_CONTROL |
+ 					IEEE80211_EHT_MAC_CAP0_TRIG_TXOP_SHARING_MODE1 |
+ 					IEEE80211_EHT_MAC_CAP0_TRIG_TXOP_SHARING_MODE2 |
+@@ -793,7 +792,6 @@ static const struct ieee80211_sband_iftype_data iwl_he_eht_capa[] = {
+ 			.has_eht = true,
+ 			.eht_cap_elem = {
+ 				.mac_cap_info[0] =
+-					IEEE80211_EHT_MAC_CAP0_EPCS_PRIO_ACCESS |
+ 					IEEE80211_EHT_MAC_CAP0_OM_CONTROL |
+ 					IEEE80211_EHT_MAC_CAP0_TRIG_TXOP_SHARING_MODE1 |
+ 					IEEE80211_EHT_MAC_CAP0_TRIG_TXOP_SHARING_MODE2,
+@@ -1020,8 +1018,7 @@ iwl_nvm_fixup_sband_iftd(struct iwl_trans *trans,
+ 	if (CSR_HW_REV_TYPE(trans->hw_rev) == IWL_CFG_MAC_TYPE_GL &&
+ 	    iftype_data->eht_cap.has_eht) {
+ 		iftype_data->eht_cap.eht_cap_elem.mac_cap_info[0] &=
+-			~(IEEE80211_EHT_MAC_CAP0_EPCS_PRIO_ACCESS |
+-			  IEEE80211_EHT_MAC_CAP0_TRIG_TXOP_SHARING_MODE1 |
++			~(IEEE80211_EHT_MAC_CAP0_TRIG_TXOP_SHARING_MODE1 |
+ 			  IEEE80211_EHT_MAC_CAP0_TRIG_TXOP_SHARING_MODE2);
+ 		iftype_data->eht_cap.eht_cap_elem.phy_cap_info[3] &=
+ 			~(IEEE80211_EHT_PHY_CAP0_PARTIAL_BW_UL_MU_MIMO |
 -- 
 2.43.0
 
