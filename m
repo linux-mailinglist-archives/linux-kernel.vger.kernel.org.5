@@ -1,174 +1,133 @@
-Return-Path: <linux-kernel+bounces-63637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62C0D853298
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:05:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61278853139
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:04:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F36D71F2695A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:05:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 942131C26C4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B5DC5730A;
-	Tue, 13 Feb 2024 14:05:51 +0000 (UTC)
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA65482EE;
+	Tue, 13 Feb 2024 13:03:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KFt+kmr9"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C97C5674B
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:05:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEFC0482DA
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707833151; cv=none; b=fJuHyxepqcJZq0MoxqcXvRRV52/36Vif8H45zsHZepe+GMB/fkJSpuiR9IEbSmcpAki9+5O4eEti3eDMtexWyogAdTjbgLLneCbpNLqNHM14VFEaZ69k1YbZAjmqExhc/TGefBJA3ixHMD48X6HkIOFooAyKbDrLrey1LNUUOlo=
+	t=1707829424; cv=none; b=EGWP8Ok4ZyVVWMyRQcZmzPs6nxF+sI+Yy9g4owmZXpPStsYla0OBDHjaXFiB3kBRAO8l6Pd6kIcvA5/NW6EX+mJBtWZnGEHD9rVsCB66Bm/PESI1a/hFrQvFGhgi1nb/FnXVnrK08F6EykAi7PT4O+5uoQxGXKsGcdsGJ/A36Gs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707833151; c=relaxed/simple;
-	bh=ZffPAM8vbEKI9/iymjjwBQJuBEoGb2F5+MVh2HRI0PQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=b/KOUVpJ5qCRUKJZlXQ1yD5GB5tQYcC5BJp21v2tnzuMZq07u9J4LTw2aUli2bjWLRXCOaHKaLXFkMdE1oyNr1NphfY6uJ3Cj9uFzAO8LSvTT69NVaiBlt13JNi04vOVP26TpAau1q17V8xxxmc+bxRrk3q5JTvlC/MsX5m1oxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:47b8:b872:d87c:512])
-	by andre.telenet-ops.be with bizsmtp
-	id me5d2B0091wMtyi01e5dSF; Tue, 13 Feb 2024 15:05:39 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rZtPe-000Z13-Fy;
-	Tue, 13 Feb 2024 15:05:37 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rZpxf-00G3dP-K7;
-	Tue, 13 Feb 2024 11:24:23 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Andrew Davis <afd@ti.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Alex Shi <alexs@kernel.org>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-doc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] docs: dt: Update overlay file extension
-Date: Tue, 13 Feb 2024 11:24:18 +0100
-Message-Id: <5ac79104822cdce7a4caab87f14ce02477f85820.1707819511.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707829424; c=relaxed/simple;
+	bh=6/8cJXoSjzIifXMl8cdj9SqNamhz3R4iwV033H5CW7A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AxO7V4zV4GW8qmXe38df8nk6MXiVrf9MBVcO6oWv9pdLxwT7JT4PqJSEHf4AYuk5INf6+66RA/dDh7lz86xQu4qV1FBRYlEsBlZBvLicZaR5uQ3TNMG6iH1IR9rgpp7ZOGMAX7YVpXwegOGJcqaZJpdDsh4oQpEZm7bWPtGsYGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KFt+kmr9; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-411d2836b20so613595e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 05:03:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707829421; x=1708434221; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C5NrW5FTTwB3Xw2yt6Nvx3f3s8HF+s3K3TJHJX5IeCg=;
+        b=KFt+kmr9/hABtqx72UHB+4CnzcdDUudvj3QPMqKq6sRBzJtEmlIPmS64kUPbl3GVyT
+         MYl+VFVBH8FuLP+Nm3I31ZKoFDO+FK9st0aj3rjZTVklcRMafgGFoX1LbFRgosK8fQqa
+         Lqj+AHSi7XRtj+2Bh7DzuM6AunaQfL2Ms0wwGLmKEh4M3WDoRTOjZSw9BVkYY3aVs/rX
+         sTpmUk9dyNxzlAhrm5s3L5jzJA4Sb5+67brzjkDaTh1eI606As2+50wTVKaJfOVwUj19
+         e1yLVg8rZJ68LJ3JzC9cdhKs69ZbwfRmj/kg1DO9lKhpBryZozsB7Dty/t399ZPmBYY2
+         VL2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707829421; x=1708434221;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C5NrW5FTTwB3Xw2yt6Nvx3f3s8HF+s3K3TJHJX5IeCg=;
+        b=oLUwucOqlEUwchUWbWiWzY4Yq8YDOSBnU88u61Et8vD8dqhJa/eiKQVkv8coQbfw+r
+         HdU/YRR3hkQnIKKmUswTBFWRxDfX+agjlazZK42qFEUbn+xLSYc87TDnh4rNzUYS4qN0
+         Xw9NCq1tVjXgOzna0CaBmE0XVq8ziAMX6duBWxoED7uMXb7bM/cJAGTHq48BZNmFDG5L
+         VrLgUTl0Or1rTQZnDT/5r9r0Q+CCgjBo7YjsHdFuX+LRaRLmkQVQLxMB6vWth4r+CiwA
+         pOkQCFFXJOVRFuOSHad3476MeFB6WajnYXXeWf47X1rmkWKpiS2fIE7bT1mCvhPrfNbN
+         V37g==
+X-Forwarded-Encrypted: i=1; AJvYcCWyytYF/z8O5Qwn3/BYRx9ZpIBg15Nl4CcMwDP3QVcX7DDpLy+UrtXpvazgbtixCqeIGCDH3L+GvGxgVeuqSJgJIwFwfxi8js+rrvo5
+X-Gm-Message-State: AOJu0Yyb17JtW0DkAn3IKQb2JSdw7V+RRySmoNXSY8uFppvu/B1jOmoY
+	j9IGNbgTBpn11nT9pP+TKRnKyF5mcufLrJ3ovMe0Ueg7FHUkkBesm7XH3A52/L8=
+X-Google-Smtp-Source: AGHT+IGff4Ny4f1WeJGCs+3nuZxbToyUFx8GempT/EH0khCzbnM4pZaGfiEmTfd7EjnRLIAX3EhG9A==
+X-Received: by 2002:a05:600c:3b86:b0:40f:fe1a:6baf with SMTP id n6-20020a05600c3b8600b0040ffe1a6bafmr6994110wms.1.1707829421015;
+        Tue, 13 Feb 2024 05:03:41 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW7CtLuect2QEqcymxQGaUVmVCPIyY1NdHNUpoLLZHXRt9+n/gP+2I6mH9ctZZlAnwNCbloiXyQRv9bQh+MF5UWYu1yRjChSKHqVrHw8wnHuac0mRrY1Gj7p9X/s2YJDdaZ5mSMdtRpTNTm6GaISrpY1EQpQ+b6t1VrU+0xsYEm8bwBlZmUtkBNxcN5vVx20fwpOp6xICEzXAypqtVuaZoL/C7RzpDGn+aRrdZJieEGE/btmHIpyWNcL8dPDbdkE8zLdibnJa5m/CcTl5lC/oHHy7v52s8tA4V/zcBwIUUbmI6eks6zokE63AeiPVHcU/UGEAIWk/7/kuIk0ephB0BuEVIm1+vtMFWk90ZljITNTf6YVyg8QHCbvqwL32VOUlerYK0QGoRBeACZD4ijWSgdiWGABW9JkLNzK2MF7xv8iD1PQ7UAJbJm7BmmVaQNK2/vhxQEhb2tnJPR3PkbKensFAb7wKFZMGtBXV+dO9zdpn45vC/xXjXkxs3ARiFVNyjydEOvQ/kTHjVgNzVLqhb+6wlM10wrJpW05sV9e6HW7jIbKVqZEhMyh2DAWiDqr1yk/Vz2S1lDfjL7K1XkIc4+OPQqqWfxcskmUJmbbFBkWgqVQP/AGwqU50T0L4psZXPemJdpkXwoyOU=
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id v1-20020a05600c214100b00410395dc7d1sm11615850wml.7.2024.02.13.05.03.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 05:03:40 -0800 (PST)
+Message-ID: <6092ee3a-4a28-488b-97fe-538e619f8983@linaro.org>
+Date: Tue, 13 Feb 2024 14:03:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: timer: renesas: ostm: Document RZ/Five SoC
+Content-Language: en-US
+To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc: Chris Brandt <chris.brandt@renesas.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Magnus Damm <magnus.damm@gmail.com>,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Biju Das <biju.das.jz@bp.renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20231115212908.33131-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8tN-qn8zuimte=-riahJBWGgGi8i5botNfWqdWwJ7w-4g@mail.gmail.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <CA+V-a8tN-qn8zuimte=-riahJBWGgGi8i5botNfWqdWwJ7w-4g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Building DTB overlays from .dts files is no longer supported.
-Update the documentation to reflect this.
+On 13/02/2024 11:22, Lad, Prabhakar wrote:
+> Hi Daniel,
+> 
+> On Wed, Nov 15, 2023 at 9:29 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+>>
+>> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>>
+>> The OSTM block on the RZ/Five SoC is identical to one found on the RZ/G2UL
+>> SoC. "renesas,r9a07g043-ostm" compatible string will be used on the RZ/Five
+>> SoC so to make this clear and to keep this file consistent, update the
+>> comment to include RZ/Five SoC.
+>>
+>> No driver changes are required as generic compatible string "renesas,ostm"
+>> will be used as a fallback on RZ/Five SoC.
+>>
+>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>> ---
+>>   Documentation/devicetree/bindings/timer/renesas,ostm.yaml | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+> Gentle ping!
 
-Fixes: 81d362732bac05f6 ("kbuild: Disallow DTB overlays to built from .dts named source files")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- Documentation/devicetree/overlay-notes.rst           | 12 ++++++------
- .../translations/zh_CN/devicetree/overlay-notes.rst  | 12 ++++++------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+Applied, thanks for the head up
 
-diff --git a/Documentation/devicetree/overlay-notes.rst b/Documentation/devicetree/overlay-notes.rst
-index e139f22b363e9f36..35e79242af9a928d 100644
---- a/Documentation/devicetree/overlay-notes.rst
-+++ b/Documentation/devicetree/overlay-notes.rst
-@@ -38,10 +38,10 @@ Lets take an example where we have a foo board with the following base tree::
- 	};
-     ---- foo.dts ---------------------------------------------------------------
- 
--The overlay bar.dts,
-+The overlay bar.dtso,
- ::
- 
--    ---- bar.dts - overlay target location by label ----------------------------
-+    ---- bar.dtso - overlay target location by label ---------------------------
- 	/dts-v1/;
- 	/plugin/;
- 	&ocp {
-@@ -51,7 +51,7 @@ The overlay bar.dts,
- 			... /* various properties and child nodes */
- 		};
- 	};
--    ---- bar.dts ---------------------------------------------------------------
-+    ---- bar.dtso --------------------------------------------------------------
- 
- when loaded (and resolved as described in [1]) should result in foo+bar.dts::
- 
-@@ -88,9 +88,9 @@ in the base DT. In this case, the target path can be provided. The target
- location by label syntax is preferred because the overlay can be applied to
- any base DT containing the label, no matter where the label occurs in the DT.
- 
--The above bar.dts example modified to use target path syntax is::
-+The above bar.dtso example modified to use target path syntax is::
- 
--    ---- bar.dts - overlay target location by explicit path --------------------
-+    ---- bar.dtso - overlay target location by explicit path -------------------
- 	/dts-v1/;
- 	/plugin/;
- 	&{/ocp} {
-@@ -100,7 +100,7 @@ The above bar.dts example modified to use target path syntax is::
- 			... /* various properties and child nodes */
- 		}
- 	};
--    ---- bar.dts ---------------------------------------------------------------
-+    ---- bar.dtso --------------------------------------------------------------
- 
- 
- Overlay in-kernel API
-diff --git a/Documentation/translations/zh_CN/devicetree/overlay-notes.rst b/Documentation/translations/zh_CN/devicetree/overlay-notes.rst
-index 43e3c0bc5a9f8235..ba5edd05dc1e7fd2 100644
---- a/Documentation/translations/zh_CN/devicetree/overlay-notes.rst
-+++ b/Documentation/translations/zh_CN/devicetree/overlay-notes.rst
-@@ -43,10 +43,10 @@ Documentation/devicetree/dynamic-resolution-notes.rst[1]的配套文档。
- 	};
-     ---- foo.dts ---------------------------------------------------------------
- 
--覆盖bar.dts,
-+覆盖bar.dtso,
- ::
- 
--    ---- bar.dts - 按标签覆盖目标位置 ----------------------------
-+    ---- bar.dtso - 按标签覆盖目标位置 ---------------------------
- 	/dts-v1/;
- 	/插件/;
- 	&ocp {
-@@ -56,7 +56,7 @@ Documentation/devicetree/dynamic-resolution-notes.rst[1]的配套文档。
- 			... /* 各种属性和子节点 */
- 		};
- 	};
--    ---- bar.dts ---------------------------------------------------------------
-+    ---- bar.dtso --------------------------------------------------------------
- 
- 当加载（并按照[1]中描述的方式解决）时，应该产生foo+bar.dts::
- 
-@@ -90,9 +90,9 @@ Documentation/devicetree/dynamic-resolution-notes.rst[1]的配套文档。
- DT中的适当位置。在这种情况下，可以提供目标路径。通过标签的目标位置的语法是比
- 较好的，因为不管标签在DT中出现在哪里，覆盖都可以被应用到任何包含标签的基础DT上。
- 
--上面的bar.dts例子被修改为使用目标路径语法，即为::
-+上面的bar.dtso例子被修改为使用目标路径语法，即为::
- 
--    ---- bar.dts - 通过明确的路径覆盖目标位置 --------------------
-+    ---- bar.dtso - 通过明确的路径覆盖目标位置 -------------------
- 	/dts-v1/;
- 	/插件/;
- 	&{/ocp} {
-@@ -102,7 +102,7 @@ DT中的适当位置。在这种情况下，可以提供目标路径。通过标
- 			... /* 各种外围设备和子节点 */
- 		}
- 	};
--    ---- bar.dts ---------------------------------------------------------------
-+    ---- bar.dtso --------------------------------------------------------------
- 
- 
- 内核中关于覆盖的API
 -- 
-2.34.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
