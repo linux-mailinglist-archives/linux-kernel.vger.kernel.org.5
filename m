@@ -1,161 +1,177 @@
-Return-Path: <linux-kernel+bounces-62916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D53AC8527CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:39:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3ABF8527CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:40:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B45EB250A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:39:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D6A41C22B9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A48AD24;
-	Tue, 13 Feb 2024 03:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F49C8D2;
+	Tue, 13 Feb 2024 03:39:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rzLqbW6R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iqHm2blK"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4B4A929;
-	Tue, 13 Feb 2024 03:38:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5726BE58
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707795502; cv=none; b=gxD8MPDNFvsDmBI2/GD2CxB4rkPH+OoYbpSul38bsgVIAmYbdvO5PXIhFV+1iLDqcp2HW5IgUd4qCBni6ByktpiajfgWpF7YbK6qCysoNJ4dXv/yM3LvHZPO9bPetxsbmPMyQeCUQPJCJ6Mu4rPo3ZwKmDl4hDq1kAgBojI4V9Q=
+	t=1707795593; cv=none; b=b3mpDSauglFUgPvMBpEmKpGUYbbRGuGKEphpoTv1TACIEvdpzXq6E447GvtzfzyXubz37YbBmm7JCCQRdi3ewBj6C3uPIbgn/0Zqf1P7WjcsABK91EnRouhpqeDeOIS/RMcZGx4Ey0w2rZjve7xGmrAXRlxnlrNz5ExjW8FVu/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707795502; c=relaxed/simple;
-	bh=kwHg/8yeDZh54hwz8uAm2M9HXikrnVyKxYeaYuDaks8=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=Q8rRmt3DUIjzMqxeMy4aNdVTQpFwdNe8dlv4N0YdGNKiCC13Y96Nzo//jFqQExE6tWqiGr6WbOGmuwn0xHiZlBcC4AXJRODOtJwIs6HtTDsxjDGtW1nGwn8BAlytZVvQ2lnLDsKzvanTTONr2qWuwUyQcZ/T7gV+xHIQ2mpSGWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rzLqbW6R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E887DC433F1;
-	Tue, 13 Feb 2024 03:38:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707795502;
-	bh=kwHg/8yeDZh54hwz8uAm2M9HXikrnVyKxYeaYuDaks8=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=rzLqbW6R5Hmi6zNkXMZjPbZbCym+9Q/jGRNYl8bQuDqEbNbi3JcEuyx99bWAuVXa/
-	 cDlR5/fdrVOJkdJOZBddXvKF+7QE9ahDycPrzH870c7B80/ffWazcqkjDBnorx3Nyy
-	 xkKmwizKe23xCn2UPZNQX7SBg3JQ4rjRpTjmGxvNDssdHehhgJue3EmpLcBod3losk
-	 PUETEcWgl3Q225G0zU+ypS+cZliaFo2HADSVQPBVTExlQ0bQ+shPS0niW4ZLM7pEfB
-	 ZRSoIjXrj/BB+KCD7EkaH6aFyKhCIx88GMaAnQwA4VOkAQTNipL+lOlLtcbaY6Hq0t
-	 eqtfm2fIC5A1Q==
-Date: Mon, 12 Feb 2024 21:38:20 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1707795593; c=relaxed/simple;
+	bh=5+qYZYJemzYwmTCaksNFbQuIKvJDzxrLlD2bZz/R0H8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=cVDxj2mAm0EptzbKumj1iFAPWV4My0WsU34lx7RKbhGjbuGxmc8NJPBTNjQ8cii4obmLGBUeZlCxbEdyZdssB+iccPPpV/jvdr5JBimWBllprb0yalYAqYJ2W68lI5ZFIBdQhNV0XzUv8p5iNL3hif7qTQg97me7CDFTxyUPRMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iqHm2blK; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e0a646cf95so2038050b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 19:39:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707795591; x=1708400391; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RA6zNvnSFSM19FK25XmCjdxkJlEdzHYrL47jTvjMoZg=;
+        b=iqHm2blKCbxI+zmJl7oaUHywzfPRoyciVuywnPzNHJ7b60FonHTeDx+NQ3x94SdoxO
+         S0MhGe9SPTYqfiIlF1uK0eh/m3pK0yT+GVp3GxaU9S3opnPCxxwIM43B9kf3eXnccFOG
+         ZXi3AmiH2OQRhw4nEaD2WoxrUBE0Pq2ULPrcaUz/15aR2JrDVmwLl9j9GGIILHiRCbv1
+         Rp68CqKu5VLa15wnYcqAqjxm1fwjYFmFqT30WnKUz23spVWuYclFM73jwyGA9O/b+uy3
+         v/kUKTz4SQrxVOmPZ14pehFFp37ajFEA//nXtlePAsN/vxUmjVfw2h417pyvczIO1W5F
+         CvzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707795591; x=1708400391;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RA6zNvnSFSM19FK25XmCjdxkJlEdzHYrL47jTvjMoZg=;
+        b=aFBKZc/9zo1ZjjgJLxdzCqEs7vqgI+LdMwULPHQR5vp7MdbCHp/txlyteMK6Yd5alj
+         KpTPlPiJtEkM2xdbb9o0bROoNPjW/VdysVlJ2O8f10OlyvzZ3B8ABknqrmISq6L262KM
+         5IjLw7zkq9qNm6t5CpGt5bVjiz5ZqOawXCpQxrzoH537z8BwN/BL3hO+/KVIjvKpWntE
+         7An5uR2NzL1xIX//d/3Lw4smpJPEJBBmSyB+KBZbL4uGMyt5idcWQfaSsjFkO6QN+AB5
+         Dq0QwA4cp+fmXxweoKexk4F0JKBKepgv1gfeAtXSLg53zmpb8R0mI6y01I7DXllTG43w
+         CJ2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUmdnVfXhrgxbJccyyaE7D4FWZJunESNVbLgrqSo7GFqjEnRAugw5VzrgQkHGrRcXRep98RNS93poA8xq1MKtcPGuqkdw3fvXJ5aIfm
+X-Gm-Message-State: AOJu0YyzNqA2DCk5402lmPOerIhJ+fNQLlO7kRxFZCV96yIU0qYwPf4l
+	3FVZByFPspvWZxDLYd04pl/C6jWT7cTTq7AZyGGsVL8JwtQGahAprKMBGHfvZwr1pG3gH9jZyj6
+	i/g==
+X-Google-Smtp-Source: AGHT+IEVp/50JegG3InAOxeb5TGvnesSNFGJiZW76v1yp1CrU8i9BBgmf4sz3sT9bQH82+Mrt5/Bh9zaKk0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2d2a:b0:6e0:e2f8:cf40 with SMTP id
+ fa42-20020a056a002d2a00b006e0e2f8cf40mr175477pfb.0.1707795591087; Mon, 12 Feb
+ 2024 19:39:51 -0800 (PST)
+Date: Mon, 12 Feb 2024 19:39:49 -0800
+In-Reply-To: <ZcGn0t3l8OCL5mv6@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Sebastian Reichel <sre@kernel.org>
-Cc: linux-kernel@vger.kernel.org, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
- NXP Linux Team <linux-imx@nxp.com>, Fabio Estevam <festevam@gmail.com>, 
- devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Shawn Guo <shawnguo@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, 
- Conor Dooley <conor+dt@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>
-In-Reply-To: <20240213010347.1075251-3-sre@kernel.org>
-References: <20240213010347.1075251-1-sre@kernel.org>
- <20240213010347.1075251-3-sre@kernel.org>
-Message-Id: <170779549979.3767632.14798050917184496330.robh@kernel.org>
-Subject: Re: [PATCH v2 02/17] dt-bindings: bus: imx-weim: convert to YAML
+Mime-Version: 1.0
+References: <20230911021637.1941096-1-stevensd@google.com> <CAD=HUj5733eL9momi=V53njm85BQv_QkVrX92xReiq0_9JhqxQ@mail.gmail.com>
+ <ZUEPn_nIoE-gLspp@google.com> <CAD=HUj5g9BoziHT5SbbZ1oFKv75UuXoo32x8DC3TYgLGZ6G_Bw@mail.gmail.com>
+ <ZYJFPoFYkp4xajRO@google.com> <ZcGn0t3l8OCL5mv6@google.com>
+Message-ID: <ZcrkhTn1Da5-vND2@google.com>
+Subject: Re: [PATCH v9 0/6] KVM: allow mapping non-refcounted pages
+From: Sean Christopherson <seanjc@google.com>
+To: David Stevens <stevensd@chromium.org>
+Cc: kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Feb 05, 2024, Sean Christopherson wrote:
+> On Tue, Dec 19, 2023, Sean Christopherson wrote:
+> > On Tue, Dec 12, 2023, David Stevens wrote:
+> > > On Tue, Oct 31, 2023 at 11:30=E2=80=AFPM Sean Christopherson <seanjc@=
+google.com> wrote:
+> > > >
+> > > > On Tue, Oct 31, 2023, David Stevens wrote:
+> > > > > Sean, have you been waiting for a new patch series with responses=
+ to
+> > > > > Maxim's comments? I'm not really familiar with kernel contributio=
+n
+> > > > > etiquette, but I was hoping to get your feedback before spending =
+the
+> > > > > time to put together another patch series.
+> > > >
+> > > > No, I'm working my way back toward it.  The guest_memfd series took=
+ precedence
+> > > > over everything that I wasn't confident would land in 6.7, i.e. lar=
+ger series
+> > > > effectively got put on the back burner.  Sorry :-(
+> > >=20
+> > > Is this series something that may be able to make it into 6.8 or 6.9?
+> >=20
+> > 6.8 isn't realistic.  Between LPC, vacation, and non-upstream stuff, I'=
+ve done
+> > frustratingly little code review since early November.  Sorry :-(
+> >=20
+> > I haven't paged this series back into memory, so take this with a grain=
+ of salt,
+> > but IIRC there was nothing that would block this from landing in 6.9.  =
+Timing will
+> > likely be tight though, especially for getting testing on all architect=
+ures.
+>=20
+> I did a quick-ish pass today.  If you can hold off on v10 until later thi=
+s week,
+> I'll try to take a more in-depth look by EOD Thursday.
 
-On Tue, 13 Feb 2024 02:00:51 +0100, Sebastian Reichel wrote:
-> Convert the i.MX  Wireless External Interface Module binding to YAML.
-> 
-> Signed-off-by: Sebastian Reichel <sre@kernel.org>
-> ---
->  .../devicetree/bindings/bus/imx-weim.txt      | 117 ----------
->  .../fsl/fsl,imx-weim-peripherals.yaml         |  36 ++++
->  .../memory-controllers/fsl/fsl,imx-weim.yaml  | 201 ++++++++++++++++++
->  .../mc-peripheral-props.yaml                  |   1 +
->  .../fieldbus/arcx,anybus-controller.txt       |   2 +-
->  5 files changed, 239 insertions(+), 118 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/bus/imx-weim.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim-peripherals.yaml
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim.yaml
-> 
+So I took a "deeper" look, but honestly it wasn't really any more in-depth =
+than
+the previous look.  I think I was somewhat surprised at the relatively smal=
+l amount
+of churn this ended up requiring.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Anywho, no major complaints.  This might be fodder for 6.9?  Maybe.  It'll =
+be
+tight.  At the very least though, I expect to shove v10 in a branch and sta=
+rt
+beating on it in anticipation of landing it no later than 6.10.
 
-yamllint warnings/errors:
+One question though: what happened to the !FOLL_GET logic in kvm_follow_ref=
+counted_pfn()?
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/bus/socionext,uniphier-system-bus.example.dtb: serial@5,200000: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/intel,ixp4xx-expansion-bus-controller.example.dtb: flash@0,0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/intel,ixp4xx-expansion-bus-controller.example.dtb: serial@1,0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/intel,ixp4xx-expansion-bus-controller.example.dtb: serial@1,0: Unevaluated properties are not allowed ('intel,ixp4xx-eb-byte-access', 'intel,ixp4xx-eb-cycle-type', 'intel,ixp4xx-eb-t3', 'intel,ixp4xx-eb-write-enable' were unexpected)
-	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,ifc.example.dtb: flash@0,0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/ingenic,nemc.example.dtb: memory-controller@13410000: ethernet@6: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/memory-controllers/ingenic,nemc.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/ingenic,nemc.example.dtb: ethernet@6: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/net/davicom,dm9000.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/ingenic,nemc.example.dtb: ethernet@6: Unevaluated properties are not allowed ('ingenic,nemc-tAH', 'ingenic,nemc-tAS', 'ingenic,nemc-tAW', 'ingenic,nemc-tBP', 'ingenic,nemc-tSTRV' were unexpected)
-	from schema $id: http://devicetree.org/schemas/net/davicom,dm9000.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.example.dtb: memory-controller@58002000: psram@0,0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/memory-controllers/st,stm32-fmc2-ebi.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.example.dtb: memory-controller@58002000: nand-controller@4,0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/memory-controllers/st,stm32-fmc2-ebi.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.example.dtb: psram@0,0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/watchdog/maxim,max63xx.example.dtb: watchdog@50000000: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/watchdog/maxim,max63xx.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/serial/serial.example.dtb: serial@1234: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/serial/8250.example.dtb: serial@80230000: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/serial/8250.example.dtb: serial@49042000: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/serial/8250.example.dtb: serial@1e787000: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/davicom,dm9000.example.dtb: ethernet@a8000000: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/net/davicom,dm9000.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/micrel,ks8851.example.dtb: ethernet@1,0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/net/micrel,ks8851.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.example.dtb: memory-controller@47034000: flash@0,0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/mtd/ti,am654-hbmc.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.example.dtb: flash@0,0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mtd-physmap.example.dtb: flash@ff000000: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mtd-physmap.example.dtb: flash@0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mtd-physmap.example.dtb: sram@2,0: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mtd-physmap.example.dtb: flash@20000000: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/ingenic,nand.example.dtb: memory-controller@13410000: nand-controller@1: 'fsl,weim-cs-timing' is a required property
-	from schema $id: http://devicetree.org/schemas/memory-controllers/ingenic,nemc.yaml#
+In a previous version, I suggested:
 
-doc reference errors (make refcheckdocs):
+  static kvm_pfn_t kvm_follow_refcounted_pfn(struct kvm_follow_pfn *foll,
+                                             struct page *page)
+  {
+       kvm_pfn_t pfn =3D page_to_pfn(page);
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240213010347.1075251-3-sre@kernel.org
+       foll->is_refcounted_page =3D true;
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+       /*
+        * FIXME: Ideally, KVM wouldn't pass FOLL_GET to gup() when the call=
+er
+        * doesn't want to grab a reference, but gup() doesn't support getti=
+ng
+        * just the pfn, i.e. FOLL_GET is effectively mandatory.  If that ev=
+er
+        * changes, drop this and simply don't pass FOLL_GET to gup().
+        */
+       if (!(foll->flags & FOLL_GET))
+               put_page(page);
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+       return pfn;
+  }
 
-pip3 install dtschema --upgrade
+but in v9 it's simply:
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+  static kvm_pfn_t kvm_follow_refcounted_pfn(struct kvm_follow_pfn *foll,
+					     struct page *page)
+  {
+	kvm_pfn_t pfn =3D page_to_pfn(page);
 
+	foll->is_refcounted_page =3D true;
+	return pfn;
+  }
+
+And instead the x86 page fault handlers manually drop the reference.  Why i=
+s that?
 
