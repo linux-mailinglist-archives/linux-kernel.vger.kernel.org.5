@@ -1,81 +1,65 @@
-Return-Path: <linux-kernel+bounces-63312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E932852D87
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 506C9852D89
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:11:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D17621C225B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:10:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83D251C249F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36154225B2;
-	Tue, 13 Feb 2024 10:10:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C504225B2;
+	Tue, 13 Feb 2024 10:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="bDqkAJ/A"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D0STckFO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3122224E0
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:10:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F243224DE;
+	Tue, 13 Feb 2024 10:11:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707819019; cv=none; b=Bn4Ss/8i6z0c2gVHH7xDrELajSNf/qNZpFwsCW1IonLYtS7uJCE0qz2GLIID1Ib9oJ+GZagebdc4JgWYOJYbfE2Y/q1N/dqy/w9700q9NYR/aca410MUvCaXtADfjHbbcb0B6HtyxFd70fW6n1ejUPNI/FR6YhBGforxazZBJBg=
+	t=1707819073; cv=none; b=hkvjOoQzdmqFQfbBzO/f6B1iczmd9BobkUvXI4b9gL5mtbfCmBqH5wQA/iRF86pYEKiaZmD+1M9FtI0qN4HvHFMTqubBqWZ4jt/wyb6b2gPIyrfhLKeBgbT1rdcl+O0en6qK6f/YfZzuJERfXAItTjrRJohPJQi2GtZfC0X9BSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707819019; c=relaxed/simple;
-	bh=V9cYulzfYb7FqDqY0/zGsr+wR7nxlESe3HrJDyaeXPM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LNEjegZD9pWFTWrlNaZTgLhazuLU4dLJfbAvA4A3BPVrbEYChmwQDWl++2NoXsB6dYevkwYk72aGi3Wj3fR+bshsVINkm3JLR7TD8rccvhS0C0HCWDUe8zay8x+orkG/f+7oViVXQH/GiN3oN0m8wzOmUf5/BGLHKeMunYUovBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=bDqkAJ/A; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33ce20635baso34507f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 02:10:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707819015; x=1708423815; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=44veiaBqGMc5lNCdO5QoQ2ouGyAA43jz0m7IM734+yA=;
-        b=bDqkAJ/AsLSjrUQYQ/6OacG8zS2NzmUaf9MZR+iwixyJipGF4pE9bqXDYiuZvvrlEe
-         Nvh3/Dy29yPGUFbQlF1pa/xz6x/eJrgN3AinExf2GK05/21Ah9rrQ15VsmV1qqqaY5mH
-         41VD90OVwA3OzAOfJriec228hOZqtabAyp8qOiqJDezCyoMacgU7xE2G9uwrCBmy630m
-         TbfA/JVzrY2eQqVE+Gj1YXlUfD7QfMnCNQjh1GgOybiX/EIDPpcunOgVyZLTkZYT3Ky3
-         rqHnSuVW6JpDCpz6kLhtY/eNfqdm5TChO6afqlenObRU3CAt/kpJujxViuSHOh4nnLKh
-         E7VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707819015; x=1708423815;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=44veiaBqGMc5lNCdO5QoQ2ouGyAA43jz0m7IM734+yA=;
-        b=d3gwjVvafqbPVXplVu7A/lSxcIX40zzO2/WJdt/QZ3dkPRHGBza9lsrlHC+LCdiBOZ
-         IY9mkqlV3BGYtAHvpalsfeUn/iihlde8sdTKh6bpDFKcDsuStOD1csXBVK3etzuvVrmt
-         3IuaIQQ+H6Ma8Fybd6YaKP097jYtsrxR3JUwdij3nTQsapAXlApOxZjrRv+pf+TR7d3o
-         xeQDK65tW1Dxf4lr1zVV4XHps40fPr7LF9nCJ0I63ZygOTJ6P7WDfPDVkPOCto16nqRH
-         GdRVFHOQPUF1AvbL9anKjnNKmGBRq0KFg5FbBraD0nY8feuRYx/iqBsyhD5W3JJkeOyw
-         AivQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW63eWnPITCqlFJspG1op28BRYVVoFTlpy2s6HZByNO7aRYUjnN1/Hydf0P9Xp3vZVD/LG/1uhfTIqSBuLEPyW8pa9+2z3dvWCJA+ZA
-X-Gm-Message-State: AOJu0YzkQ42hoc4yG929JRJkkhLaUBbjU/mhXaXToaM9FhxPsmHvvveJ
-	nohK3vOPl92YkEzUeXTZOh02idlPgiGLF5THJdJ3dU5VXo2F0YdpdJ8J789tXtE=
-X-Google-Smtp-Source: AGHT+IF48kMd4o6kuMj09jog6IyBi+Fpq6HfXZ4TbeQ6YQ97bupfm6zbfhP0q4ah5kEaehBaGLLu3g==
-X-Received: by 2002:adf:f848:0:b0:33c:def5:1802 with SMTP id d8-20020adff848000000b0033cdef51802mr480082wrq.6.1707819015226;
-        Tue, 13 Feb 2024 02:10:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV8nfdwr1JotIHXrpC1l20SNFZhNapHegZmkgo0W02sYWECeFAPSysM4xhrVCDGsVj36bD3gaPGz2PhaeeGyEZP6ns/cgTrrP/mKZK+TLjBREevGCmfy5hHYluDfV9VpFVGSpNATd5Be3/+es3EvZazOY/d1uupCG7kV9BvM5kCuPWbLb/3Uu2ucFRZl3sSzD2nDiWigZjpQMBq03NfO4W2JUk=
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:f634:2e37:58a9:242a])
-        by smtp.gmail.com with ESMTPSA id dd18-20020a0560001e9200b0033b3d28ef1fsm9075805wrb.65.2024.02.13.02.10.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 02:10:14 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	linux-gpio@vger.kernel.org,
+	s=arc-20240116; t=1707819073; c=relaxed/simple;
+	bh=mL4XO56Z6BWv4tMNoHpJYHvphFG+5pdC53wWnQvEb5Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TyC92Z6l/lUTftSEMeVQTBEqb+5QWs5ClE8M2PyNCszMZfrOjdHfzCi8st5+F57lb18OKyg3oAK8td8HAyDKU4F8Q0t+/ho7DDQj79lzWK0m8uFtwcD34UNtemIYjYj1z2uGsVIHxpt8PhAHrL+YnhxAVRIp3DgyPfyLQhSVM+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D0STckFO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6125C433F1;
+	Tue, 13 Feb 2024 10:11:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707819073;
+	bh=mL4XO56Z6BWv4tMNoHpJYHvphFG+5pdC53wWnQvEb5Y=;
+	h=From:To:Cc:Subject:Date:From;
+	b=D0STckFOFxSAdd91J4HTYXokBfOyGak+23LmZrrtGV8AmqeeGqFOg7G9KY4zrdkQo
+	 9fJbaRR9gKmH9eJ/i9WDck6tH3Lh0kNVuNI8I4TYDJZkvjsNAoifcmIfGk/P8DhvaQ
+	 F65xBXJ3N/cRhr40DhCUME0JWoxEXNRazJ1M8xnu3euc7YWesbTpIjVJ+WGkZOzu4R
+	 g67zJBv1Vz8uDDPz8oZhzsBl6dluwFkNVth8k+9Pz624uJAAvdN/dcHPLX/5aW565v
+	 GofS96pPXezVY6x1A5pS55CqTLqMEzRJoRCnAvkg218pRjmFS6UYizMDpd6kn1wbiA
+	 DaAlElGw6nIUg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [GIT PULL] gpio: immutable branch with GPIO stubs for the reset subsystem
-Date: Tue, 13 Feb 2024 11:10:00 +0100
-Message-Id: <20240213101000.16700-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
+	llvm@lists.linux.dev
+Subject: [PATCH] ASoC: q6dsp: fix event handler prototype
+Date: Tue, 13 Feb 2024 11:10:46 +0100
+Message-Id: <20240213101105.459402-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,37 +68,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Philipp,
+clang-16 points out a mismatch in function types that was hidden
+by a typecast:
 
-Please pull the following changes from the GPIO tree to accommodate
-Krzysztof's reset-gpios patch series.
+sound/soc/qcom/qdsp6/q6apm-dai.c:355:38: error: cast from 'void (*)(uint32_t, uint32_t, uint32_t *, void *)' (aka 'void (*)(unsigned int, unsigned int, unsigned int *, void *)') to 'q6apm_cb' (aka 'void (*)(unsigned int, unsigned int, void *, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+  355 |         prtd->graph = q6apm_graph_open(dev, (q6apm_cb)event_handler, prtd, graph_id);
+sound/soc/qcom/qdsp6/q6apm-dai.c:499:38: error: cast from 'void (*)(uint32_t, uint32_t, uint32_t *, void *)' (aka 'void (*)(unsigned int, unsigned int, unsigned int *, void *)') to 'q6apm_cb' (aka 'void (*)(unsigned int, unsigned int, void *, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+  499 |         prtd->graph = q6apm_graph_open(dev, (q6apm_cb)event_handler_compr, prtd, graph_id);
 
-Thanks,
-Bartosz
+The only difference here is the 'payload' argument, which is not even
+used in this function, so just fix its type and remove the cast.
 
-The following changes since commit 841c35169323cd833294798e58b9bf63fa4fa1de:
+Fixes: 88b60bf047fd ("ASoC: q6dsp: q6apm-dai: Add open/free compress DAI callbacks")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/qcom/qdsp6/q6apm-dai.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-  Linux 6.8-rc4 (2024-02-11 12:18:13 -0800)
+diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
+index 052e40cb38fe..00bbd291be5c 100644
+--- a/sound/soc/qcom/qdsp6/q6apm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
+@@ -123,7 +123,7 @@ static struct snd_pcm_hardware q6apm_dai_hardware_playback = {
+ 	.fifo_size =            0,
+ };
+ 
+-static void event_handler(uint32_t opcode, uint32_t token, uint32_t *payload, void *priv)
++static void event_handler(uint32_t opcode, uint32_t token, void *payload, void *priv)
+ {
+ 	struct q6apm_dai_rtd *prtd = priv;
+ 	struct snd_pcm_substream *substream = prtd->substream;
+@@ -157,7 +157,7 @@ static void event_handler(uint32_t opcode, uint32_t token, uint32_t *payload, vo
+ }
+ 
+ static void event_handler_compr(uint32_t opcode, uint32_t token,
+-				uint32_t *payload, void *priv)
++				void *payload, void *priv)
+ {
+ 	struct q6apm_dai_rtd *prtd = priv;
+ 	struct snd_compr_stream *substream = prtd->cstream;
+@@ -352,7 +352,7 @@ static int q6apm_dai_open(struct snd_soc_component *component,
+ 
+ 	spin_lock_init(&prtd->lock);
+ 	prtd->substream = substream;
+-	prtd->graph = q6apm_graph_open(dev, (q6apm_cb)event_handler, prtd, graph_id);
++	prtd->graph = q6apm_graph_open(dev, event_handler, prtd, graph_id);
+ 	if (IS_ERR(prtd->graph)) {
+ 		dev_err(dev, "%s: Could not allocate memory\n", __func__);
+ 		ret = PTR_ERR(prtd->graph);
+@@ -496,7 +496,7 @@ static int q6apm_dai_compr_open(struct snd_soc_component *component,
+ 		return -ENOMEM;
+ 
+ 	prtd->cstream = stream;
+-	prtd->graph = q6apm_graph_open(dev, (q6apm_cb)event_handler_compr, prtd, graph_id);
++	prtd->graph = q6apm_graph_open(dev, event_handler_compr, prtd, graph_id);
+ 	if (IS_ERR(prtd->graph)) {
+ 		ret = PTR_ERR(prtd->graph);
+ 		kfree(prtd);
+-- 
+2.39.2
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-driver-h-stubs-for-v6.8-rc5
-
-for you to fetch changes up to 2df8aa3cad407044f2febdbbdf220c6dae839c79:
-
-  gpiolib: add gpio_device_get_label() stub for !GPIOLIB (2024-02-13 11:02:53 +0100)
-
-----------------------------------------------------------------
-Add missing stubs for new GPIO functions
-
-----------------------------------------------------------------
-Krzysztof Kozlowski (3):
-      gpiolib: add gpiod_to_gpio_device() stub for !GPIOLIB
-      gpiolib: add gpio_device_get_base() stub for !GPIOLIB
-      gpiolib: add gpio_device_get_label() stub for !GPIOLIB
-
- include/linux/gpio/driver.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
 
