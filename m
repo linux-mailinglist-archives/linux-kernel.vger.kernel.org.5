@@ -1,184 +1,149 @@
-Return-Path: <linux-kernel+bounces-63789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4B17853466
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:15:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89EAB853468
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:15:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BB7A284D21
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:15:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 289CD1F231F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:15:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0E05B672;
-	Tue, 13 Feb 2024 15:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD34E5DF0E;
+	Tue, 13 Feb 2024 15:15:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sJ5JlmaL"
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FyA5XqZ+"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875DB57873
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1FE58105;
+	Tue, 13 Feb 2024 15:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707837336; cv=none; b=YqdlW67TGwtrS0sgaQTjYRdxjLCPQUeZZ5YitgouDdJsmCMcBSNwGXlYPgSbD7jGKu1hsgT/76Lcewi0CWajd71X7pmt32fedkGM/imHYJcfN9SFGuRI5ZDqveDVNeLP7DPYZy84Tu3PODAkelaIG47mQww8GSXtKH+/C01jzv4=
+	t=1707837352; cv=none; b=q4B9m0CD5hQ2SMeYlsOuuX1ytANaQnF4Bxa7T5JXKjfAeuqAWWqhbUK36OgdxT3j/mVCAwBh3HR/NNZ5vN+5ux4kQglqx1hudSUYr81WYRZB66vb0u/JE9ty/M3A4NJcowrbHkWn8DuWP0S3DvzqJBrm/kbBTGn7XWadLLB3+YM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707837336; c=relaxed/simple;
-	bh=dlUSDbd7nGLnrGH1bSHqT7K/Vgq8GbjzqnuUBb6jfdc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L2SRcnhpZt0UFguh6jbyXJf5E+wnRynokh0+J5V93Fi8TlWTERg9ISG7Gz3X1ytdkKLNHvVl7Z/rXCBYMmSj/c82pNKtCFjXmLxaY+4KRaK39b4IOSPZMW3mnGRY1496jTTkyyLxG9CrTxA7XifFShy1KzD6NKDs6rLaTfnRltg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sJ5JlmaL; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <146c8a41-8864-4cff-80ce-173812441844@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707837332;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XIaty3z7Z757dXnIxnECy1zx9DTTw+93Glqw9JJsdD4=;
-	b=sJ5JlmaL7tdAo/xSpNwms2zr99C8iwBVaUDwvBf/vZDNDsjHwCo2mn+8g33o8Sao94rY3l
-	r5n2gOh80IBhZOIHRueT6CWZGkeccf8jMd+PuI5tK9mSVHeUGqCSGtixoOkJw3FyR1ZHzS
-	27nL20e8f5C1njfJjabODJtMsato0Cg=
-Date: Tue, 13 Feb 2024 23:15:19 +0800
+	s=arc-20240116; t=1707837352; c=relaxed/simple;
+	bh=k4oOxKcYZyEq6YjY1eN1q/nkEMvOrsu2JIaDdZAAxNM=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AenJzrUJWZ3RysZLPLpRhff+c1rVOJuI5iCsc1gne/rMt6KyFCCIqZk76LVBz4DdMS6LiSNceulHlngE9T247whaj2GZhVETy7c0tL1P3Wy7qB6d8Hcxl2EY/HAAhgGsiJwXeS1ElbQ+z5gO5sbk6w8i+o6qVIn0DOFiT9XoC4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FyA5XqZ+; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33aea66a31cso2630596f8f.1;
+        Tue, 13 Feb 2024 07:15:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707837348; x=1708442148; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=EWbtSDfnGjcwi2wHYGMjwerm3bMEBcFqsyDVWZr+IWo=;
+        b=FyA5XqZ+VgCKdkOXE9bEWhORJYG40LvluWfaN3sIkp4B28dtruth67iHF29vR9rVY0
+         b+XgjMWHRmgUZC6MKaW/lKYaYIEt4g/hFQFOMaLbe8Q2ohPBksZwdVTmn8WKwUcNfroj
+         WHHoh3uegencWceuDi8kXTT1jNht4+YUfaguie3DVDSCmVN+rUjnFe0fGXYlYbkNUM25
+         nI2v/hQ86TKUC5/dp/uSt2QlZe5m0h9XB9Gfv9xnBbzIhxb+3RjmnEJZvxkmdUSOr/HV
+         PXjI/b5Wp4hN/BK229GoDBihbiEVSUYCPruyG5kOLVeb6ZImq0fEmS1DVf4DFJOQsSsM
+         97tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707837348; x=1708442148;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EWbtSDfnGjcwi2wHYGMjwerm3bMEBcFqsyDVWZr+IWo=;
+        b=AJlh4DRJo3h+z6RAlt0hnqvH+3igWa9lqFqhz4xxHWqwnjelLi5AmGLDlHRwEobcG5
+         LXVTVkaqHmFy+LgOVLMrdSHdUYpjWKnSIDguOh3s72ZMJ2vPsuPzq73pJQ9C/YZyCJGc
+         XkgywD4z5DdN6rZHtytsf+qfohsR0i9TF5x14NV0hfLiH15Qd71ECwiII4IlUFqdA4FU
+         sVDDv5QECCfcP2PNOtzcxbs9B9nMWRjXgxwZFR6Pu5UuD3Z7sk77O8S1OSogKdqcsoqY
+         QzvMN3UKPTaLYF9rLjA82x6tvUId4qHiGJee+rcidi7YkcInbqKB5WE9kJa/Qznt3lpE
+         DNVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV7+hKNz8zboKwrOMiAw6nL0VFFrHLwHAPy6CEBbuchVOnzaht13BcFgFmwgbMDR2KFOIIp6HsLjzAi1GP12A72IkdqsaChGi5BC4+TquG08ol4pBSX7r6Chib+nHukGVlBn1y4
+X-Gm-Message-State: AOJu0YzxESwp2r6mla/dqEPZxT+u8JVSMuBF4NAXRMobVYswtwbJx7c3
+	mLZtsbdLnyVlj9Bcf57bZYnCIF/d9/dB3TbMiEwfgx7dqu1OCPlN
+X-Google-Smtp-Source: AGHT+IH69la8E5K5xN63QUjTTjL/gRgiJhgdVnK5KDBw4Z57Fo18hW3gp/Eu/FOsO0A80Njt1SUpxQ==
+X-Received: by 2002:adf:ed06:0:b0:33c:d4ff:5fa6 with SMTP id a6-20020adfed06000000b0033cd4ff5fa6mr1616648wro.22.1707837348081;
+        Tue, 13 Feb 2024 07:15:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUui7VsYHqf6B5cyTVHLemd2BjrwSswNPAYDTk+TKfE/yvAhodjZFkcBtt8YLWSFTk4K55KGR2O04vzSdq9XE9jLDJj1xCItsGWSZTEstc1AgYlCAykwIFop+Qo1DxlxJM9VvibUuXxJRBA8kPU31TsHJm1k0A4zyQR00lTXb/C5WPF08Cxa6Dq4ocRgKrX+GA/+Wn1MTfChGo2UPvnoADmfPrpzQ4S7ope4gVgoNrSLo4X6V99oYbC2M3onzg1jzzPi2tSvrBhRQyhfGsMqekvE8yTqmJJHySiuVaJA1TalVhSOVl54KDYSggXTjI/JcgRGVcuhrtu5eZi
+Received: from Ansuel-XPS. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id ce9-20020a5d5e09000000b0033cddadde6esm1537692wrb.80.2024.02.13.07.15.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 07:15:47 -0800 (PST)
+Message-ID: <65cb87a3.5d0a0220.69795.6a1d@mx.google.com>
+X-Google-Original-Message-ID: <ZcuHn4Sg4Yrv2NLF@Ansuel-XPS.>
+Date: Tue, 13 Feb 2024 16:15:43 +0100
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH] net: phy: aquantia: add AQR111 and AQR111B0 PHY
+ ID
+References: <20240213133558.1836-1-ansuelsmth@gmail.com>
+ <233cd45b-28d5-477d-a193-8273684953aa@lunn.ch>
+ <65cb7a25.5d0a0220.de7b7.a1f3@mx.google.com>
+ <a10c3b55-c6c3-4982-b294-d6e5b9383e31@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 1/2] padata: downgrade padata_do_multithreaded to
- serial execution for non-SMP
-To: Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Steffen Klassert <steffen.klassert@secunet.com>,
- Daniel Jordan <daniel.m.jordan@oracle.com>, Jane Chu <jane.chu@oracle.com>,
- "Paul E . McKenney" <paulmck@kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>, kernel test robot <lkp@intel.com>,
- Gang Li <ligang.bdlg@bytedance.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20240213111347.3189206-1-gang.li@linux.dev>
- <20240213111347.3189206-2-gang.li@linux.dev>
- <89b3bee3-5ee3-4b75-99e3-881b759e79de@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Gang Li <gang.li@linux.dev>
-In-Reply-To: <89b3bee3-5ee3-4b75-99e3-881b759e79de@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a10c3b55-c6c3-4982-b294-d6e5b9383e31@lunn.ch>
 
-
-
-On 2024/2/13 22:52, Muchun Song wrote:
-> On 2024/2/13 19:13, Gang Li wrote:
->> Randy Dunlap and kernel test robot reported a warning:
->>
->> ```
->> WARNING: unmet direct dependencies detected for PADATA
->>    Depends on [n]: SMP [=n]
->>    Selected by [y]:
->>    - HUGETLBFS [=y] && (X86 [=y] || SPARC64 || ARCH_SUPPORTS_HUGETLBFS 
->> [=n] || BROKEN [=n]) && (SYSFS [=y] || SYSCTL [=n])
->> ```
->>
->> hugetlb parallelization depends on PADATA, and PADATA depends on SMP.
->>
->> PADATA consists of two distinct functionality: One part is
->> padata_do_multithreaded which disregards order and simply divides
->> tasks into several groups for parallel execution. Hugetlb
->> init parallelization depends on padata_do_multithreaded.
->>
->> The other part is composed of a set of APIs that, while handling data in
->> an out-of-order parallel manner, can eventually return the data with
->> ordered sequence. Currently Only `crypto/pcrypt.c` use them.
->>
->> All users of PADATA of non-SMP case currently only use
->> padata_do_multithreaded. It is easy to implement a serial one in
->> include/linux/padata.h. And it is not necessary to implement another
->> functionality unless the only user of crypto/pcrypt.c does not depend on
->> SMP in the future.
->>
->> Fixes: a2cefb08be66 ("hugetlb: have CONFIG_HUGETLBFS select 
->> CONFIG_PADATA")
->> Reported-by: Randy Dunlap <rdunlap@infradead.org>
->> Closes: 
->> https://lore.kernel.org/lkml/ec5dc528-2c3c-4444-9e88-d2c48395b433@infradead.org/
->> Reported-by: kernel test robot <lkp@intel.com>
->> Closes: 
->> https://lore.kernel.org/oe-kbuild-all/202402020454.6EPkP1hi-lkp@intel.com/
->> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
->> ---
->>   fs/Kconfig             |  2 +-
->>   include/linux/padata.h | 13 +++++++++----
->>   2 files changed, 10 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/Kconfig b/fs/Kconfig
->> index 4a51331f172e5..7963939592d70 100644
->> --- a/fs/Kconfig
->> +++ b/fs/Kconfig
->> @@ -261,7 +261,7 @@ menuconfig HUGETLBFS
->>       depends on X86 || SPARC64 || ARCH_SUPPORTS_HUGETLBFS || BROKEN
->>       depends on (SYSFS || SYSCTL)
->>       select MEMFD_CREATE
->> -    select PADATA
->> +    select PADATA if SMP
+On Tue, Feb 13, 2024 at 04:10:01PM +0100, Andrew Lunn wrote:
+> On Tue, Feb 13, 2024 at 03:18:09PM +0100, Christian Marangi wrote:
+> > On Tue, Feb 13, 2024 at 03:09:57PM +0100, Andrew Lunn wrote:
+> > > On Tue, Feb 13, 2024 at 02:35:51PM +0100, Christian Marangi wrote:
+> > > > Add Aquantia AQR111 and AQR111B0 PHY ID. These PHY advertise 10G speed
+> > > > but actually supports up to 5G speed, hence some manual fixup is needed.
+> > > 
+> > > Any chance this is a "golden screwdriver" situation? The chip really
+> > > can do 10G, but the firmware is supposed to limit it to 5G? This is
+> > > just a firmware "bug"?
+> > >
+> > 
+> > >From [1] the PHY can support up to 5G so yes it is a firmware bug. I can
+> > try searching for some regs to fix the wrong provision values if really
+> > needed.
+> > 
+> > [1] https://www.marvell.com/content/dam/marvell/en/public-collateral/transceivers/marvell-phys-transceivers-aqrate-gen3-product-brief-2019-09.pdf
 > 
-> I'd like to drop this dependence since HugeTLB does not depend
-> on PADATA anymore. If some users take care about the kernel
-> image size, it also can disable PADATA individually.
+> I think you missed the meaning of golden screwdriver.
+> 
+> https://www.urbandictionary.com/define.php?term=Golden%20Screwdriver
+> 
+> It could be that the silicon can do 10G, but marvell are selling it as
+> a 5G device, with firmware limiting it to 5G. And that firmware
+> limitation has a bug, so some of the 10G functionality is leaking
+> through.
+
+Oh! Yep I didn't know the meaning of Golden Screwdriver.
+
+With the amount of things we are noticing on these PHY it can be
+anything from Marvell itself, from OEM messing up with the Provision to
+a buf in the FW itself...
+
+(example that thing that Asus made on the other patch where they HW
+disable the port by default, that is against any default spec of the
+documentation)
+
+(or also a patch that I still have to submit where some manual fixup are
+needed on aqr112 since the FW mess with the SERDES startup regs (again
+probably OEM not correctly provisioning the FW))
+
+> 
+> Anyway, you change looks O.K.
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 > 
 
-Only CRYPTO_PCRYPT, HUGETLBFS and DEFERRED_STRUCT_PAGE_INIT select
-PADATA. If drop this dependence, hugetlb init parallelization may not
-work at all.
+Thanks for the Reviewed-by tag!
 
-Maybe we can set PADATA enabled on default?
-
->>       help
->>         hugetlbfs is a filesystem backing for HugeTLB pages, based on
->>         ramfs. For architectures that support it, say Y here and read
->> diff --git a/include/linux/padata.h b/include/linux/padata.h
->> index 8f418711351bc..7b84eb7d73e7f 100644
->> --- a/include/linux/padata.h
->> +++ b/include/linux/padata.h
->> @@ -180,10 +180,6 @@ struct padata_instance {
->>   #ifdef CONFIG_PADATA
->>   extern void __init padata_init(void);
->> -#else
->> -static inline void __init padata_init(void) {}
->> -#endif
->> -
->>   extern struct padata_instance *padata_alloc(const char *name);
->>   extern void padata_free(struct padata_instance *pinst);
->>   extern struct padata_shell *padata_alloc_shell(struct 
->> padata_instance *pinst);
->> @@ -194,4 +190,13 @@ extern void padata_do_serial(struct padata_priv 
->> *padata);
->>   extern void __init padata_do_multithreaded(struct padata_mt_job *job);
->>   extern int padata_set_cpumask(struct padata_instance *pinst, int 
->> cpumask_type,
->>                     cpumask_var_t cpumask);
->> +#else
->> +static inline void __init padata_init(void) {}
->> +static inline void __init padata_do_multithreaded(struct 
->> padata_mt_job *job)
->> +{
->> +    if (job->size)
-> 
-> I think we could drop this check, at least now there is no users will
-> pass a zero of ->size to this function, and even if someone does in the
-> future, I think it is really a corner case, it is unnecessary to optimize
-> it and ->thread_fn is supporsed to handle case of zero size if it dose
-> pass a zero size.
-> 
-> Thanks.
-> 
->> +        job->thread_fn(job->start, job->start + job->size, job->fn_arg);
->> +}
->> +#endif
->> +
->>   #endif
-> 
+-- 
+	Ansuel
 
