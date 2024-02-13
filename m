@@ -1,122 +1,111 @@
-Return-Path: <linux-kernel+bounces-64330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FE3B853D27
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD2F1853D29
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:30:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 932021C27407
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:29:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D27651C273F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:30:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5F996167A;
-	Tue, 13 Feb 2024 21:29:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF0E61674;
+	Tue, 13 Feb 2024 21:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tw2vRvgv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HLBdByLU"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B902612DF;
-	Tue, 13 Feb 2024 21:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A18F62144
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:29:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707859757; cv=none; b=RttSJUzCbFAjxmVTbTCU6bgZWSa39n5lNh0SDVJENWYMQGUAHPqymHblpoKeMes4QBYPrkFesO/vr0CVjaN/9hpWTjmhxzkq2KcGd02N8HA6qEJOmW22BNAcbzMWCK/ukRBhzkkuMVdVdBJ1vQ756DnRL0a4mO7h/Edycn4UIBw=
+	t=1707859798; cv=none; b=hD4L6i6JmgNC5alPST4gYz55z3snNt2jOuZzv3I5Jqji5/q2x/ou/lpkvjhGydMCEAxRfy8WWzVahbq8udeJUi9f8ZhNbhNg0aqHsjrbYmxcdPitwgQjLsRyITpoObFIib/kJrkkb0FNlz95ddHqMQVgZCY7g+3UUsX+8/xtFNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707859757; c=relaxed/simple;
-	bh=QClImjY1lYcfORamVxbILEkRAbA7o0MUEXBX6cK6mdo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dQsXjNqaaZUzpj7twwKtnWTIWNjp4vW43wEnmq45drMFTIusEt/mXUnxvqDAdiyd5DTCb25ehbmKErBJfyEM4qtcK2AihmRIqeldoD6ishEhHqGdcz0nhyO7iNKBJ1QfR4KHNwPK92RfP3Cs5NLiAHasGgh7us4W2zB7llq2rSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tw2vRvgv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DDE0C433F1;
-	Tue, 13 Feb 2024 21:29:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707859756;
-	bh=QClImjY1lYcfORamVxbILEkRAbA7o0MUEXBX6cK6mdo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Tw2vRvgvBGoL0Ybzyb89j9Y1Lm4agG8oAyI/KLsbv3TRTZOvVBQCjGbNELkZdSC19
-	 gpRw2yOJELK7gbM82zJ28/vuizg6p0Zt9gme8w7eEhoH7nYgW/dakZeWvM8k7VT6Ka
-	 QXLqI2SttC5f+otkU1PkmVz4crUdpqcBV7kDsO08/S2/g2bl7Nlqi0hwW5N9KvDJXR
-	 3neoJi0i0g2NpSg+CqOuCk3yP+mCS7T4u/skbEPqkj86JzM1y9POHMvvzgp7/gzkjm
-	 pYxrrB1WQDGmyO6My01WjdOh2FATKOWemRL0m/T4587jN1wLfe9HXOcRtS0GFiW2EO
-	 Mr2rUD9JKmtMw==
-Date: Tue, 13 Feb 2024 13:29:14 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
-	kbusch@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com,
-	linux-kernel@vger.kernel.org, hare@suse.de, willy@infradead.org,
-	linux-mm@kvack.org, david@fromorbit.com
-Subject: Re: [RFC v2 01/14] fs: Allow fine-grained control of folio sizes
-Message-ID: <20240213212914.GW616564@frogsfrogsfrogs>
-References: <20240213093713.1753368-1-kernel@pankajraghav.com>
- <20240213093713.1753368-2-kernel@pankajraghav.com>
- <20240213163431.GS6184@frogsfrogsfrogs>
- <xy45wh2y55oinrvkhea36yxtnqmsoikp7eawaa2b5ejivfv4ku@ob72fvbkj4uh>
+	s=arc-20240116; t=1707859798; c=relaxed/simple;
+	bh=o1itvEeV8LvxyIcYXdwYU40slMynHwwlOpApN5Ly8Kg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PJiyfXRzB1NNfPINCL/zZF0DX20zNzhIqK1v8MnKsslrGZnEfLf/z2b9Y+n/9YbY1ePXuUrqYOV0eVArhPDLBgcBxvoIw2kR0x43Y+jVr6a3GfOryynKcAt3hncrdbdlV7O0GavuxtzUc29eVNGeHOpH4BoJitZDQdyubFqIr/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HLBdByLU; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso4491330276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:29:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707859796; x=1708464596; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o1itvEeV8LvxyIcYXdwYU40slMynHwwlOpApN5Ly8Kg=;
+        b=HLBdByLUVfJKKCP+rBlx1VzhmanWNu3IYFi0/UxjnAzX9AQFRHv4rjNrt0Sl2gVUtw
+         hC7xWWesP2hKpaVh6lmbLxUWxkCkRe8TxDN7pRjVJCROuXyfvuX6v5gAZQkdfQ+X10jU
+         SDBRDMjeQxz4nF40gqBCD8ldm2r8hVpsu9hsNYQnOaQckkwYQtPzlLeD7y7ggXdzyJ0p
+         n5X3wZ4997ZZGuSgNDIohQ9SWiPN9WtYjtsGOtBADseqHSaIQXRpyMsEOzWM3IKfTNi7
+         ochLIqyNztOF+YFkBPdnt6WJbbnCvy9x42fCLuq7yzcUE5B6uzd44FG0bXUKR1nDwJ0E
+         zSZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707859796; x=1708464596;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o1itvEeV8LvxyIcYXdwYU40slMynHwwlOpApN5Ly8Kg=;
+        b=DXEbF6p3s+5s2gcoxKS+YgEXvAvERbYGqEQaZgmWzqDQLRG446Eq24u03KSt2A0o42
+         qvV/uM5OTsfaf+uUih3SW7oMHwVqUpEGzR3nothncDA4f/z6d2IAu96LmMJKmeZrDS0c
+         PPaC/VxqoCOOVFJ2XN2lfk+929K7BcMOI3wqsmr0bq+JKEnr7JXqkX+X0ieGoNKaacC5
+         vJgxWvJaHpKVd7iq3kGjZnQXN1elcmZADNJs1Ll5RwkyvV1vdKcbJVenjgWZCF2mPoQC
+         NjkHfEcpT5hGpzI2tLNd655icoYbSxX6DDWnMNeU7HsvBZoX/nMiykTKa5HzfoyNY6Np
+         8YDg==
+X-Forwarded-Encrypted: i=1; AJvYcCW3l6qAmZzANey0Q2d5XLE6mDoc2j96NUwgPGN1reBId9iNKWOzRaud/WDliymCAcdiH99zFapU+oyhSAacvGzQ3N5cOg+qZ+HA9WYP
+X-Gm-Message-State: AOJu0YyQSYqgOisN9ovziUo0a7bIiX3TVX6YhHb7XnVD1sSX8jsZ5D9p
+	HKtunInV0B2SSyCwEt6ZHPJPZo1YqMqIF3ax3zMkRivcMB6bGA506pJmgUBrAUcwv20WqD+fVaf
+	5eWTc/5DdnF2IHAGxPxtE820KR2MBqvO4t4n7xg==
+X-Google-Smtp-Source: AGHT+IE6Hn4KEA1CCZ5bUfGs/Lvut+AenGj0UJMnAqTB0xOfHh21zeTj0SjsLn4VnQD+guWwO3Cv2/0eNjCGw69OW40=
+X-Received: by 2002:a05:6902:2082:b0:dc6:4062:1341 with SMTP id
+ di2-20020a056902208200b00dc640621341mr509698ybb.16.1707859796006; Tue, 13 Feb
+ 2024 13:29:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xy45wh2y55oinrvkhea36yxtnqmsoikp7eawaa2b5ejivfv4ku@ob72fvbkj4uh>
+References: <20240213093108.13922-1-brgl@bgdev.pl> <20240213093108.13922-2-brgl@bgdev.pl>
+In-Reply-To: <20240213093108.13922-2-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 13 Feb 2024 22:29:45 +0100
+Message-ID: <CACRpkdY5fVNJBhVDrCb0cbrsWAKAZBkCACUgSjWGoHqtnaJJtQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] gpio: take the SRCU read lock in gpiod_hog()
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 10:05:54PM +0100, Pankaj Raghav (Samsung) wrote:
-> On Tue, Feb 13, 2024 at 08:34:31AM -0800, Darrick J. Wong wrote:
-> > On Tue, Feb 13, 2024 at 10:37:00AM +0100, Pankaj Raghav (Samsung) wrote:
-> > > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> > > 
-> > > Some filesystems want to be able to limit the maximum size of folios,
-> > > and some want to be able to ensure that folios are at least a certain
-> > > size.  Add mapping_set_folio_orders() to allow this level of control.
-> > > The max folio order parameter is ignored and it is always set to
-> > > MAX_PAGECACHE_ORDER.
-> > 
-> > Why?  If MAX_PAGECACHE_ORDER is 8 and I instead pass in max==3, I'm
-> > going to be surprised by my constraint being ignored.  Maybe I said that
-> > because I'm not prepared to handle an order-7 folio; or some customer
-> > will have some weird desire to twist this knob to make their workflow
-> > faster.
-> > 
-> > --D
-> Maybe I should have been explicit. We are planning to add support
-> for min order in the first round, and we want to add support for max order
-> once the min order support is upstreamed. It was done mainly to reduce
-> the scope and testing of this series.
-> 
-> I definitely agree there are usecases for setting the max order. It is
-> also the feedback we got from LPC.
-> 
-> So one idea would be not to expose max option until we add the support
-> for max order? So filesystems can only set the min_order with the
-> initial support?
+On Tue, Feb 13, 2024 at 10:31=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
 
-Yeah, there's really no point in having an argument that's deliberately
-ignored.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> gpiod_hog() may be called without the gpio_device SRCU read lock taken
+> so we need to do it here as well. It's alright if someone else is
+> already holding the lock as SRCU read critical sections can be nested.
+>
+> Fixes: d83cee3d2bb1 ("gpio: protect the pointer to gpio_chip in gpio_devi=
+ce with SRCU")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202402122234.d85cca9b-lkp@intel.co=
+m
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
---D
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> > > +static inline void mapping_set_folio_orders(struct address_space *mapping,
-> > > +					    unsigned int min, unsigned int max)
-> > > +{
-> > > +	if (min == 1)
-> > > +		min = 2;
-> > > +	if (max < min)
-> > > +		max = min;
-> > > +	if (max > MAX_PAGECACHE_ORDER)
-> > > +		max = MAX_PAGECACHE_ORDER;
-> > > +
-> > > +	/*
-> > > +	 * XXX: max is ignored as only minimum folio order is supported
-> > > +	 * currently.
-> > > +	 */
-> > > +	mapping->flags = (mapping->flags & ~AS_FOLIO_ORDER_MASK) |
-> > > +			 (min << AS_FOLIO_ORDER_MIN) |
-> > > +			 (MAX_PAGECACHE_ORDER << AS_FOLIO_ORDER_MAX);
-> > > +}
-> > > +
-> 
+Looking at the CLASS() stuff I see this is definitely the way to go
+with the code now that we face massive scaling. Nice work.
+
+Yours,
+Linus Walleij
 
