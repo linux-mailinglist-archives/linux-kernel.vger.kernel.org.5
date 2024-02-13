@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-63117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BEFE852B23
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:28:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EB54852B26
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C847D28460C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:28:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE5741F234D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B5D1B59C;
-	Tue, 13 Feb 2024 08:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE7B0224D5;
+	Tue, 13 Feb 2024 08:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nJ4ixXEq"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ekIk+xBU"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3742522324;
-	Tue, 13 Feb 2024 08:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DBEF21364;
+	Tue, 13 Feb 2024 08:27:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707812868; cv=none; b=uCw3IX1+B2hEFJ0iQeSfQ1ebqBP4IA677+1fM4/rdTOShodac0GmmP5d5dy6TRTqgh98/Ypbh5c45M3R2s0JBd7E8KObjxyPqGvn78Nb2wCtDek3ftVV7+9FBRdHSM8oDqNRzAOyJfQKZYMiAYHnUNHGeipshfwJ9VGTZYGLFiM=
+	t=1707812872; cv=none; b=WIWLWIYqlSCgifdTC+M1TxD/aKgrdGUsgyJ/03BEOcnmanmMGZqSzvdMd6Ri4oj+0vF8vxyRVydtH5CwBXuAbPA5fOGgePbuKfFDiwznXVhKeZpoAgkibBSspEgGyCaY9NEpTkrNp6vDWSNMb1G8O+O8CHuaXqtpjGtbE2+Z/vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707812868; c=relaxed/simple;
-	bh=xAYKHqlHEthQAN+4S4NMMj+DMvc0iEget2l+WujxX2A=;
+	s=arc-20240116; t=1707812872; c=relaxed/simple;
+	bh=q/hQM3vLKQ0kH5wHz/078deb+2M0ui5GWzSIObPddmM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EmHDR28J/415S+x/SKvItO2JkRn4g4sFh54uAk2UPFZ/D4b3bZ7f/Lz4o43GJG28zqnVdz9nTTW6Rqj7ZEXQsFVcaR8xTVxGeqd8vZbUUUgHH+hN99sUEg1aQSZDYT+I2lOEwTVi1qjOOQkVLP3gvJ2qf42QTIY9OFub7dMCQ3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nJ4ixXEq; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version:Content-Type; b=baeS95pObkKGvrAlBeMh8afWxl/WjquUnL5SxTmjGSYCG+uruZUiW1uAmw8weC9gshEBj09mxKgHQwxdlfXd7HqhzaiIVIKP8Sn6qktG5VykytuI2nFUffwYLTNPOsLsjSqkTkHIekttqAXU+BBXOoYRiuRqMZgATmxEuSCGy3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ekIk+xBU; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41D7o2la011939;
-	Tue, 13 Feb 2024 08:27:43 GMT
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41D7WNgl021522;
+	Tue, 13 Feb 2024 08:27:47 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=Q1uvwE06BQI1HQ/N/wQtkdLnTP7ndnAwOmAar30LvIY=; b=nJ
-	4ixXEqI5ETaDC/78yvu9jVBnvdVPWC4L1Eh61tIGHPMCA79bmEIWvS61HpWF2aHu
-	FS0wcPyH8K4sbajlbQxSmb8ASFqCUbzy3WiFp9VFhtsMH6jb7lYwXw3HyAgu1psl
-	dgzRosbgmbKeqHvsZ/3+0w99pELhUvfasZAxJnT8R7DqZLxe3PfeJIs54SLAuXHR
-	0y20f2M//I1aRRvtLzkuIXOciUcmg088iDEaMi9cO8o900a0FIRgyKSxRskM0x7L
-	/E5Y7gHqoYlmVtUci2kXbSwrDPTSXqedSgWdaVQFCAuz0Hp0qDGLZAdXpvqNJm+T
-	JXkBQ2d3DS0+xwMguJiA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7nk91syy-1
+	qcppdkim1; bh=ebEnLGtxdvQ9BU1aamNWVJHMtfALLgzEIZ/kTA0keJM=; b=ek
+	Ik+xBU1YEUM0khvudIKU/uWlQVvJEgkAqUQY9iIBiJF2bFd7WJiexzV3sx3Opvtt
+	KOuvZxPoPiclwV8GO4mHKgwwqWMfjaWmcgIpWC2rj9B60HRLeDzOVhBadS+G4zB/
+	Da/PjtymnpVZl2TRjiNA/ohth34s/mlEx4b5qzZ/a4wyJlSmMNgrZ4nIP0OQJJ3P
+	WtGMGV/TfAXo0hDD00ldxnmF+a7eOXYYQpWmxOVKaz2uZd7eJxEntuEFn9aRDw93
+	bPkOYjd8aPFsB2pbI07XcBXGPjOE3eiJZIy5LcamRCqfARf9NGTacW4576AnmGc6
+	3v24FGl7Q+Mmd6qfKZQg==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8448r2wa-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 08:27:42 +0000 (GMT)
+	Tue, 13 Feb 2024 08:27:47 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D8RfmC017394
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D8RkXR031258
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 08:27:41 GMT
+	Tue, 13 Feb 2024 08:27:46 GMT
 Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 13 Feb 2024 00:27:38 -0800
+ 15.2.1118.40; Tue, 13 Feb 2024 00:27:42 -0800
 From: Krishna Kurapati <quic_kriskura@quicinc.com>
 To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring
@@ -66,9 +66,9 @@ To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
         <quic_jackp@quicinc.com>, Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [PATCH v2 1/2] arm64: dts: qcom: sc8280xp: Add multiport controller node for SC8280
-Date: Tue, 13 Feb 2024 13:57:23 +0530
-Message-ID: <20240213082724.1789096-2-quic_kriskura@quicinc.com>
+Subject: [PATCH v2 2/2] arm64: dts: qcom: sa8295p: Enable tertiary controller and its 4 USB ports
+Date: Tue, 13 Feb 2024 13:57:24 +0530
+Message-ID: <20240213082724.1789096-3-quic_kriskura@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240213082724.1789096-1-quic_kriskura@quicinc.com>
 References: <20240213082724.1789096-1-quic_kriskura@quicinc.com>
@@ -84,119 +84,146 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: R1wJEUdSpv3wDmJzB7Nof6qW1499Qv-X
-X-Proofpoint-ORIG-GUID: R1wJEUdSpv3wDmJzB7Nof6qW1499Qv-X
+X-Proofpoint-ORIG-GUID: 5YjYtrDPVf7EICzgwMu8AI4kZe-4iSet
+X-Proofpoint-GUID: 5YjYtrDPVf7EICzgwMu8AI4kZe-4iSet
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-13_04,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 malwarescore=0 mlxscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=997 impostorscore=0
- clxscore=1015 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401310000 definitions=main-2402130065
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=622
+ phishscore=0 adultscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
+ spamscore=0 suspectscore=0 priorityscore=1501 impostorscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
+ definitions=main-2402130065
 
-Add USB and DWC3 node for tertiary port of SC8280 along with multiport
-IRQ's and phy's. This will be used as a base for SA8295P and SA8295-Ride
-platforms.
+Multiport USB controller (host-only) of SA8295 ADP has 4 Type-A ports
+exposed for connecting peripherals. The VBUS to these peripherals is
+provided by TPS2559QWDRCTQ1 regulators connected to these ports. Each
+regulator has an enable pin controlled by PMM8540. Since these regulators
+are GPIO controlled regulators, model them as fixed regulators and keep
+them Always-On at boot since we are wakeup capable and we don't need to
+turn them off on suspend. Also since we don't enter device mode, these
+regulators can be kept on.
 
 Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 82 ++++++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
+ arch/arm64/boot/dts/qcom/sa8295p-adp.dts | 83 ++++++++++++++++++++++++
+ 1 file changed, 83 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-index febf28356ff8..29dbf2a9cdba 100644
---- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-@@ -3331,6 +3331,88 @@ system-cache-controller@9200000 {
- 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
- 		};
+diff --git a/arch/arm64/boot/dts/qcom/sa8295p-adp.dts b/arch/arm64/boot/dts/qcom/sa8295p-adp.dts
+index fd253942e5e5..49418843c214 100644
+--- a/arch/arm64/boot/dts/qcom/sa8295p-adp.dts
++++ b/arch/arm64/boot/dts/qcom/sa8295p-adp.dts
+@@ -9,6 +9,7 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include <dt-bindings/spmi/spmi.h>
++#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
  
-+		usb_2: usb@a4f8800 {
-+			compatible = "qcom,sc8280xp-dwc3-mp", "qcom,dwc3";
-+			reg = <0 0x0a4f8800 0 0x400>;
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			ranges;
+ #include "sa8540p.dtsi"
+ #include "sa8540p-pmics.dtsi"
+@@ -108,6 +109,46 @@ edp3_connector_in: endpoint {
+ 			};
+ 		};
+ 	};
 +
-+			clocks = <&gcc GCC_CFG_NOC_USB3_MP_AXI_CLK>,
-+				 <&gcc GCC_USB30_MP_MASTER_CLK>,
-+				 <&gcc GCC_AGGRE_USB3_MP_AXI_CLK>,
-+				 <&gcc GCC_USB30_MP_SLEEP_CLK>,
-+				 <&gcc GCC_USB30_MP_MOCK_UTMI_CLK>,
-+				 <&gcc GCC_AGGRE_USB_NOC_AXI_CLK>,
-+				 <&gcc GCC_AGGRE_USB_NOC_NORTH_AXI_CLK>,
-+				 <&gcc GCC_AGGRE_USB_NOC_SOUTH_AXI_CLK>,
-+				 <&gcc GCC_SYS_NOC_USB_AXI_CLK>;
-+			clock-names = "cfg_noc", "core", "iface", "sleep", "mock_utmi",
-+				      "noc_aggr", "noc_aggr_north", "noc_aggr_south", "noc_sys";
++	regulator-usb2-vbus {
++		compatible = "regulator-fixed";
++		regulator-name = "USB2_VBUS";
++		gpio = <&pmm8540c_gpios 9 GPIO_ACTIVE_HIGH>;
++		pinctrl-0 = <&usb2_en>;
++		pinctrl-names = "default";
++		enable-active-high;
++		regulator-always-on;
++	};
 +
-+			assigned-clocks = <&gcc GCC_USB30_MP_MOCK_UTMI_CLK>,
-+					  <&gcc GCC_USB30_MP_MASTER_CLK>;
-+			assigned-clock-rates = <19200000>, <200000000>;
++	regulator-usb3-vbus {
++		compatible = "regulator-fixed";
++		regulator-name = "USB3_VBUS";
++		gpio = <&pmm8540e_gpios 5 GPIO_ACTIVE_HIGH>;
++		pinctrl-0 = <&usb3_en>;
++		pinctrl-names = "default";
++		enable-active-high;
++		regulator-always-on;
++	};
 +
-+			interrupts-extended = <&intc GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 857 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 856 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 860 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&intc GIC_SPI 859 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&pdc 127 IRQ_TYPE_EDGE_RISING>,
-+					      <&pdc 126 IRQ_TYPE_EDGE_RISING>,
-+					      <&pdc 129 IRQ_TYPE_EDGE_RISING>,
-+					      <&pdc 128 IRQ_TYPE_EDGE_RISING>,
-+					      <&pdc 131 IRQ_TYPE_EDGE_RISING>,
-+					      <&pdc 130 IRQ_TYPE_EDGE_RISING>,
-+					      <&pdc 133 IRQ_TYPE_EDGE_RISING>,
-+					      <&pdc 132 IRQ_TYPE_EDGE_RISING>,
-+					      <&pdc 16 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&pdc 17 IRQ_TYPE_LEVEL_HIGH>;
++	regulator-usb4-vbus {
++		compatible = "regulator-fixed";
++		regulator-name = "USB4_VBUS";
++		gpio = <&pmm8540g_gpios 5 GPIO_ACTIVE_HIGH>;
++		pinctrl-0 = <&usb4_en>;
++		pinctrl-names = "default";
++		enable-active-high;
++		regulator-always-on;
++	};
 +
-+			interrupt-names = "pwr_event_1", "pwr_event_2",
-+					  "pwr_event_3", "pwr_event_4",
-+					  "hs_phy_1",	 "hs_phy_2",
-+					  "hs_phy_3",	 "hs_phy_4",
-+					  "dp_hs_phy_1", "dm_hs_phy_1",
-+					  "dp_hs_phy_2", "dm_hs_phy_2",
-+					  "dp_hs_phy_3", "dm_hs_phy_3",
-+					  "dp_hs_phy_4", "dm_hs_phy_4",
-+					  "ss_phy_1",	 "ss_phy_2";
++	regulator-usb5-vbus {
++		compatible = "regulator-fixed";
++		regulator-name = "USB5_VBUS";
++		gpio = <&pmm8540g_gpios 9 GPIO_ACTIVE_HIGH>;
++		pinctrl-0 = <&usb5_en>;
++		pinctrl-names = "default";
++		enable-active-high;
++		regulator-always-on;
++	};
+ };
+ 
+ &apps_rsc {
+@@ -584,6 +625,10 @@ &usb_1_qmpphy {
+ 	status = "okay";
+ };
+ 
++&usb_2 {
++	status = "okay";
++};
 +
-+			power-domains = <&gcc USB30_MP_GDSC>;
-+			required-opps = <&rpmhpd_opp_nom>;
+ &usb_2_hsphy0 {
+ 	vdda-pll-supply = <&vreg_l5a>;
+ 	vdda18-supply = <&vreg_l7g>;
+@@ -636,6 +681,44 @@ &xo_board_clk {
+ 
+ /* PINCTRL */
+ 
++&pmm8540c_gpios {
++	usb2_en: usb2-en-state {
++		pins = "gpio9";
++		function = "normal";
++		qcom,drive-strength = <PMIC_GPIO_STRENGTH_HIGH>;
++		output-enable;
++		power-source = <0>;
++	};
++};
 +
-+			resets = <&gcc GCC_USB30_MP_BCR>;
++&pmm8540e_gpios {
++	usb3_en: usb3-en-state {
++		pins = "gpio5";
++		function = "normal";
++		qcom,drive-strength = <PMIC_GPIO_STRENGTH_HIGH>;
++		output-enable;
++		power-source = <0>;
++	};
++};
 +
-+			interconnects = <&aggre1_noc MASTER_USB3_MP 0 &mc_virt SLAVE_EBI1 0>,
-+					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_MP 0>;
-+			interconnect-names = "usb-ddr", "apps-usb";
++&pmm8540g_gpios {
++	usb4_en: usb4-en-state {
++		pins = "gpio5";
++		function = "normal";
++		qcom,drive-strength = <PMIC_GPIO_STRENGTH_HIGH>;
++		output-enable;
++		power-source = <0>;
++	};
 +
-+			wakeup-source;
++	usb5_en: usb5-en-state {
++		pins = "gpio9";
++		function = "normal";
++		qcom,drive-strength = <PMIC_GPIO_STRENGTH_HIGH>;
++		output-enable;
++		power-source = <0>;
++	};
++};
 +
-+			status = "disabled";
-+
-+			usb_2_dwc3: usb@a400000 {
-+				compatible = "snps,dwc3";
-+				reg = <0 0x0a400000 0 0xcd00>;
-+				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-+				iommus = <&apps_smmu 0x800 0x0>;
-+				phys = <&usb_2_hsphy0>, <&usb_2_qmpphy0>,
-+				       <&usb_2_hsphy1>, <&usb_2_qmpphy1>,
-+				       <&usb_2_hsphy2>,
-+				       <&usb_2_hsphy3>;
-+				phy-names = "usb2-0", "usb3-0",
-+					    "usb2-1", "usb3-1",
-+					    "usb2-2",
-+					    "usb2-3";
-+				dr_mode = "host";
-+			};
-+		};
-+
- 		usb_0: usb@a6f8800 {
- 			compatible = "qcom,sc8280xp-dwc3", "qcom,dwc3";
- 			reg = <0 0x0a6f8800 0 0x400>;
+ &tlmm {
+ 	pcie2a_default: pcie2a-default-state {
+ 		clkreq-n-pins {
 -- 
 2.34.1
 
