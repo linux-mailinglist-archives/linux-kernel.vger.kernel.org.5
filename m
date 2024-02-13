@@ -1,149 +1,136 @@
-Return-Path: <linux-kernel+bounces-63094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8030852ADA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:21:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F3A85298C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:04:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E58D281F40
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:21:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 798081C233A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A1D17C71;
-	Tue, 13 Feb 2024 08:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 092CA168D8;
+	Tue, 13 Feb 2024 07:04:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="n45jA2m5"
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="aouEfcPz"
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EECA1B7F5
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E058914296;
+	Tue, 13 Feb 2024 07:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.147.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707812374; cv=none; b=qufGkjscIdC0/UvXOOTCXCHv71/RmLYP9Q52JTpu9a0WzDJj76CKc6uCzfAGp/JXp8aLb+h1GwluccleQ3mj7AW/KlIH+7J9+o/uiPZLt6vcGAjYSzUL+fO3xy4+a8WANW8IEVAIv0DoXKNUdTbVwrp/K7uWpbzkXeetKtWk5Kg=
+	t=1707807871; cv=none; b=V2jqXxfS7iqedeTWahsZqceOnA6avBdoLHdUgLtYfFCQk76aVLwqv3Uy2XyFPC9plBa1+o6tC7Lbcm8xPcvosMLqb6jeYBpg3759XA+lOEHz77lmcYjC7L4dDAhDdQI4fBC/jLGi1m+o158EmXrlRZ861XPRO7t8GQ1oed1DQVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707812374; c=relaxed/simple;
-	bh=a9KpPEigrsX1iLMABeTlXtvEaBlx5SwQTXXvUiczMB0=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:References; b=eDh3Kv1Zl9bVu+U5XJxq2fY5MJIfYBb2KfpRy7cuTl7Cjz+UFVr4zanShdEi/LNaWl97Rau41M1hKhpuNuES965wOdEopagSYEXHVtqAal3kJKF9JNFWbCnzohwLym5kYy7lif3RGeKmAm+4wNHDfpEDzAiBKJbMtoad5HIVlTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=n45jA2m5; arc=none smtp.client-ip=203.254.224.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240213081929epoutp03803462219adebfbab61ce9eb270af6c1~zXk023W991794017940epoutp03o
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:19:29 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240213081929epoutp03803462219adebfbab61ce9eb270af6c1~zXk023W991794017940epoutp03o
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1707812369;
-	bh=H1tmDljItywEqFTrCeVCWWEvSW1ptNZPOJ2e9OZtBDU=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=n45jA2m5Khgp+gF6RFYFySgSlZT9CDOxAOUd4ycn9dYHvn7FygcCV9OEL4NqevpOH
-	 JsOGGtvhe6DUebUjL5GEhy4TTaQCfnsHLWnHsBMQHtJIUaZAt8PGh8Nvdxzkcr9yLm
-	 0lFnNhsHM6MF5Na8YatpJi20iO09915MH0DHvyT4=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20240213081928epcas5p335b1317d210ea234c717440690a8224d~zXk0Zpb9U1947019470epcas5p3-;
-	Tue, 13 Feb 2024 08:19:28 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.175]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4TYvPW1Rzyz4x9Pw; Tue, 13 Feb
-	2024 08:19:27 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	8B.49.10009.F062BC56; Tue, 13 Feb 2024 17:19:27 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-	20240213045739epcas5p49f28920efda3cb80351b1fcae580b21e~zU0mg__Ak3076530765epcas5p4j;
-	Tue, 13 Feb 2024 04:57:39 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240213045739epsmtrp195d85b4c2bfb9a6608a56432f75f2021~zU0mf7ZVQ2138221382epsmtrp1U;
-	Tue, 13 Feb 2024 04:57:39 +0000 (GMT)
-X-AuditID: b6c32a4a-261fd70000002719-78-65cb260f034a
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	4D.0C.07368.3C6FAC56; Tue, 13 Feb 2024 13:57:39 +0900 (KST)
-Received: from cheetah.sa.corp.samsungelectronics.net (unknown
-	[107.109.115.53]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240213045736epsmtip1f0d0b60a43c700a19890074823abd3b6~zU0kNhaz_0854708547epsmtip1E;
-	Tue, 13 Feb 2024 04:57:36 +0000 (GMT)
-From: Aakarsh Jain <aakarsh.jain@samsung.com>
-To: linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc: m.szyprowski@samsung.com, andrzej.hajda@intel.com, mchehab@kernel.org,
-	hverkuil-cisco@xs4all.nl, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-samsung-soc@vger.kernel.org, andi@etezian.org, gost.dev@samsung.com,
-	alim.akhtar@samsung.com, pankaj.dubey@samsung.com, aakarsh.jain@samsung.com
-Subject: [Patch v2] dt-bindings: media: s5p-mfc: Remove s5p-mfc.txt binding
-Date: Tue, 13 Feb 2024 10:27:33 +0530
-Message-Id: <20240213045733.63876-1-aakarsh.jain@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEJsWRmVeSWpSXmKPExsWy7bCmui6/2ulUg7aDHBZPd8xktXgwbxub
-	xeIfz5ks7i/+zGKxZu85Jov5R86xWtw8sJPJ4uLMuywWfS8eMltsenyN1eLyrjlsFj0btrJa
-	zDi/j8li7ZG77BbLNv1hsli09Qu7ReveI+wOgh7Xl3xi9li85yWTx6ZVnWwed67tYfPYvKTe
-	o2/LKkaPz5vkPE59/cwewBGVbZORmpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCX
-	mJtqq+TiE6DrlpkD9IaSQlliTilQKCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8CkQK84Mbe4
-	NC9dLy+1xMrQwMDIFKgwITtj4Y60gn2sFfPerGdrYHzK0sXIySEhYCJx9csU1i5GLg4hgd2M
-	Esc33IRyPjFKXL+5jQXC+cYo0fhzJSNMy6OpF5kgEnsZJTbdPcoO4bQySZyc8J65i5GDg01A
-	V+Ls9hyQBhGBRkaJxx0lIDazwHkmiQudKSC2sIC3xLX1D9lBbBYBVYldzw4zg9i8ArYS06Zf
-	YodYJi+xesMBZpD5EgK9HBLX2s5DHe4iMXvfMWYIW1ji1fEtUA1SEi/726DsZInHi15C1eRI
-	rN8zBarXXuLAlTksIHcyC2hKrN+lDxGWlZh6ah0TxJ18Er2/nzBBxHkldsyDsdUk5tz5wQph
-	y0gcXr0UGigeEi3vH4KtEhKIldh/9S7bBEbZWQgbFjAyrmKUTC0ozk1PLTYtMMpLLYfHU3J+
-	7iZGcOLU8trB+PDBB71DjEwcjIcYJTiYlUR4L804kSrEm5JYWZValB9fVJqTWnyI0RQYZhOZ
-	pUST84GpO68k3tDE0sDEzMzMxNLYzFBJnPd169wUIYH0xJLU7NTUgtQimD4mDk6pBqZtsjzT
-	OzgvM76/aWrY7LSFsckhPJKxwP2nS4fP+nzGTzf8lhw0v3Rst96SuY35sfYKS/gmLCzyP8c2
-	U3zve+0/n/T0Gdjv3eza9ajReYvETOdfz7c6fvlYz1tx4n9e/IH29nshJ3b6GioGqaVM2rtg
-	qbhSVfzHhTNM3v+QuRX8UF//9j1/b0Xvuv3NSnc/n3RbyK5Uv9zA7O3h0zyRnZf9K3gPH+0w
-	Efr990ue5eWury+3my4PvVQrzl3Kkr/nyjGOFZdFz+ioei1k7DAyXrJG76GFjdSarbPP2ymu
-	qQtymL9sxQP+/6b6k06n3rrxf9Kmay2y2f/uVe7d7sD24+WtXZnyNktqsv53yZR3Gv9WYinO
-	SDTUYi4qTgQAlmfW9iUEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPLMWRmVeSWpSXmKPExsWy7bCSnO7hb6dSDS7ME7R4umMmq8WDedvY
-	LBb/eM5kcX/xZxaLNXvPMVnMP3KO1eLmgZ1MFhdn3mWx6HvxkNli0+NrrBaXd81hs+jZsJXV
-	Ysb5fUwWa4/cZbdYtukPk8WirV/YLVr3HmF3EPS4vuQTs8fiPS+ZPDat6mTzuHNtD5vH5iX1
-	Hn1bVjF6fN4k53Hq62f2AI4oLpuU1JzMstQifbsEroyFO9IK9rFWzHuznq2B8SlLFyMnh4SA
-	icSjqReZuhi5OIQEdjNKdL7bBpWQkfjfdowdwhaWWPnvOTtEUTOTxMab+4E6ODjYBHQlzm7P
-	AYmLCLQySlxf2Qk2iVngPpPElYm3WUG6hQW8Ja6tfwg2iUVAVWLXs8PMIDavgK3EtOmXoDbI
-	S6zecIB5AiPPAkaGVYySqQXFuem5yYYFhnmp5XrFibnFpXnpesn5uZsYwWGspbGD8d78f3qH
-	GJk4GA8xSnAwK4nwXppxIlWINyWxsiq1KD++qDQntfgQozQHi5I4r+GM2SlCAumJJanZqakF
-	qUUwWSYOTqkGJuUJE7kuvcjiX8GapGAVZWNzl+eHYOujiOIjBdOfKpSVvjaQ//86htf52M6d
-	RbxnLJ9GrUirTUqYwVb8pT1vxYvYhv7Nwga9iWfe6TvJR71zUTCp3a3FP0H0dz1n8JGaLqfP
-	LNnGKZE7BC6f0ma6mj2nfs+UpE+60hv+LvZcueLwl9dKsd86lS0WVBZaVad0lmQcer52UsLC
-	zsdLTRtvuvrVCbLbqSn0b4vVWPB489LerGnvzuc7avMder51jf/XYsvJUn/V7LsvyWs58GUr
-	mDzpn33JtLjd/sZX/9zZr+ITfk9plr05J+kkB/vFHQ6//77L+seyumvRmxtnmB9NmtS1Wzg0
-	vzj2a8KxM85KSizFGYmGWsxFxYkAY8iUUNICAAA=
-X-CMS-MailID: 20240213045739epcas5p49f28920efda3cb80351b1fcae580b21e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240213045739epcas5p49f28920efda3cb80351b1fcae580b21e
-References: <CGME20240213045739epcas5p49f28920efda3cb80351b1fcae580b21e@epcas5p4.samsung.com>
+	s=arc-20240116; t=1707807871; c=relaxed/simple;
+	bh=E+QR563gX4hLxvs7YXfuwIMnx6zZm7FGrlrZu5sSaCk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tNLpQ6gCPGCBrfpxUqaqUuN4ccPVLiOS4xEMfMyopMwfS9ycwAaeYt+Lv6hsddK62dksu0BskkDpvEtTLu2wQAphFWKNkL527nxNzdZu89Ok1IhNh3Pqbp2Et0+dVxkwapMbxbFzhdZmePi3PcLZkR/RKNdoFLrOv9L8T7CUw6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=aouEfcPz; arc=none smtp.client-ip=148.163.147.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
+	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41D5J2pv006063;
+	Tue, 13 Feb 2024 07:04:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=ZGCUbwQrOfaJeluWHwCgQ75rPKumNutfMnfqnj/tllA=;
+ b=aouEfcPzk3/G9SabiCcwa7lmww9jKr2+aBjuFx9VoNIwoWw6ym2aBWOA9NaGP1tkRsUD
+ yIRxNU1+JOxPZF9to2XSxcsRmrDeoc3V06GSKSRS2HwGrUq/9IRznwRzNuwmOWNBWiTq
+ COS7Ah8cNcJLpj2xijwZ0+2yNp3/Y0lBhTyx/+UwpB1oB79J79iA1YQZmC92jrW1Jz41
+ yt5teGS8JcAdVRHs4QfHwCOWynSMwK5uV5sOwIODjT4hMkuBHQp49ztYo4c7ujmdtE+O
+ 0FkZ8cbavE8GgPYb+Tavxnjrmx/6ef6MvYJ9ApXRdMwGdQ7z1kYv+0r086y3buXMQnAz mQ== 
+Received: from p1lg14878.it.hpe.com ([16.230.97.204])
+	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3w7vf0538d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 07:04:09 +0000
+Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14878.it.hpe.com (Postfix) with ESMTPS id CE28C1378D;
+	Tue, 13 Feb 2024 07:03:58 +0000 (UTC)
+Received: from anatevka.americas.hpqcorp.net (unknown [16.231.227.36])
+	by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTP id 9425F80AD9F;
+	Tue, 13 Feb 2024 07:03:57 +0000 (UTC)
+From: Jerry Hoemann <jerry.hoemann@hpe.com>
+To: linux@roeck-us.net
+Cc: wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jerry Hoemann <jerry.hoemann@hpe.com>
+Subject: [PATCH] watchdog/hpwdt: Support Suspend and Resume
+Date: Tue, 13 Feb 2024 00:02:03 -0700
+Message-ID: <20240213070203.489846-1-jerry.hoemann@hpe.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: RuPWc8ZjGihonCsa0ZSqFaSOSvqLDwP1
+X-Proofpoint-GUID: RuPWc8ZjGihonCsa0ZSqFaSOSvqLDwP1
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-13_03,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 phishscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ mlxscore=0 clxscore=1011 mlxlogscore=765 spamscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402130053
 
-commit "538af6e5856b" which convert s5p-mfc bindings to
-json-schema is already merged. Remove "s5p-mfc.txt" file.
+Add call backs to support suspend and resume.
 
-Fixes: 538af6e5856b ("dt-bindings: media: s5p-mfc: convert
-bindings to json-schema")
-Signed-off-by: Aakarsh Jain <aakarsh.jain@samsung.com>
+Signed-off-by: Jerry Hoemann <jerry.hoemann@hpe.com>
 ---
-changelog:
-v1->v2
-Add Fixes tag suggested by Krzysztof
- Documentation/devicetree/bindings/media/s5p-mfc.txt | 0
- 1 file changed, 0 insertions(+), 0 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/media/s5p-mfc.txt
+ drivers/watchdog/hpwdt.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/media/s5p-mfc.txt b/Documentation/devicetree/bindings/media/s5p-mfc.txt
-deleted file mode 100644
-index e69de29bb2d1..000000000000
+diff --git a/drivers/watchdog/hpwdt.c b/drivers/watchdog/hpwdt.c
+index 138dc8d8ca3d..6565cfaa8e57 100644
+--- a/drivers/watchdog/hpwdt.c
++++ b/drivers/watchdog/hpwdt.c
+@@ -378,11 +378,38 @@ static void hpwdt_exit(struct pci_dev *dev)
+ 	pci_disable_device(dev);
+ }
+ 
++static int hpwdt_suspend(struct device *dev)
++{
++	dev_dbg(dev, "Suspend watchdog\n");
++
++	if (watchdog_active(&hpwdt_dev))
++		hpwdt_stop();
++
++	return 0;
++}
++
++static int hpwdt_resume(struct device *dev)
++{
++	dev_dbg(dev, "Resume watchdog\n");
++
++	if (watchdog_active(&hpwdt_dev))
++		hpwdt_start(&hpwdt_dev);
++
++	return 0;
++}
++
++static DEFINE_SIMPLE_DEV_PM_OPS(hpwdt_pm_ops, hpwdt_suspend, hpwdt_resume);
++
+ static struct pci_driver hpwdt_driver = {
+ 	.name = "hpwdt",
+ 	.id_table = hpwdt_devices,
+ 	.probe = hpwdt_init_one,
+ 	.remove = hpwdt_exit,
++
++	.driver = {
++		.name = "hpwdt",
++		.pm = &hpwdt_pm_ops,
++	}
+ };
+ 
+ MODULE_AUTHOR("Tom Mingarelli");
 -- 
-2.17.1
+2.43.0
 
 
