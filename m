@@ -1,139 +1,130 @@
-Return-Path: <linux-kernel+bounces-63173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB828852BE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:06:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AE6C852BE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:06:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 383B6B2241C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:06:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92F6928358E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:06:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81EF208CB;
-	Tue, 13 Feb 2024 09:05:51 +0000 (UTC)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD3020B02;
+	Tue, 13 Feb 2024 09:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="SlMwwo4n"
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB411C68E;
-	Tue, 13 Feb 2024 09:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 063E41C687
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.26.50.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707815151; cv=none; b=LJVwzXIS2+khxWPqZHXgfEb0tZ0v7F2FU3LI3ElmAOa+7LLcDVBUxpmSDxHNLtT2sQlPZtVbXWJ2JJWGWAAaAGBZDZKap44Ou9usQMk2EBPqbhAdxACuiM8xEGFNuNNiadYvtw5ONkmyODjwo3dEzB/6XPsNytcTY03Txr3XApA=
+	t=1707815166; cv=none; b=pvav+Ub9uPSoYxT+/1BEh7jWfaO+XbLte/kAFRd7GWZ24RABVBZaeFFabq+3tvDi08FUbwlGvxb35XLTyBOtEuqpiac6+yHusyYVGBfeSZ82iLEKOUBp5WMlJ64plWzvV+mp12G9O0frbRw6Um8e7Wviq6LoyshF16+rpbMiM+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707815151; c=relaxed/simple;
-	bh=FfFqrAXQmAjTt+8Bu5s9ZKzqV1A1ADlvxCsN+bbef9Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sPaye+IBbyXgZ08VhGs5KRtGgiqHq010A0bRJ4RRmcSu9DQNK6sBWgeFCsmye5gkTyzGzt784FrA3oiLTYVOuPVTOq9a5K4MGHeLdQuiYK7YEEjwWRNb9nCWK4sEKnVoqcNAMytnymZ5iaSwIM0xiUOXHZIpt7Jty+8YkeSQIOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc74435c428so3905411276.2;
-        Tue, 13 Feb 2024 01:05:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707815148; x=1708419948;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MuURYQOwee17LWBBo2vHscRz5g8g3MQtGwSiu1BG0Hg=;
-        b=aV36jC7lcWenoGEhiWNOz25grc69Ln+di+s1utZ2KB7WdcfCut3OHLKOVUdT8tuPVG
-         lCWsolTIUivcEI/6lfushb9T5N31R4npI8JF0HhwPqzOK9vAPArgszeWMbYIInEqDC4D
-         s1h4ZtgSl25XfvdqtRWEiJOg4PFiw+C67WnCw1enJndf5q6QnnVT8B6rmsf+UBqvn41u
-         vWGdBdE3J0JyIKtYe4+mG2qhA7h7W2NNYszEX2P1ZAvc6EDmkxIXxnPh8HwPH4jSG1H/
-         kCU9IhQNmctzWwWK0DxaY6vCmJvDl/BxonLnAA6JU7XITFp7fwJKYbHKc250z6Rm4jmZ
-         w6sg==
-X-Forwarded-Encrypted: i=1; AJvYcCVYS5ytMfjUAROFifhnldBqDKW/oJUK0hmv5lkKFQbtktY3UQZFgIs+0o1iiHLm7EY4o5DLFWDySfxcoQxCTAsBN3kNehREESJqdtKJHRu9z4xGGMsk1HkN62ugvmefEDS5yPZp/F1y3Foqpwn57Te2YmdvESV1SEOeGdui5fufp4jGUm0v1xh7nRAx
-X-Gm-Message-State: AOJu0YzPW34QeVR3/NYsMjdbFefaWnRY7QxAkbv1AHevulVa4ohS9glj
-	k0/K+DUd7KA/sVLefvV8K3i53AOIhSfIWXZIH3qlkySgfCY1RYmKNqxR42Tsi74=
-X-Google-Smtp-Source: AGHT+IF9b6Zs8sgAJySimeeAwc/byYS632OGj672ixlQyji9wDWG2j8TBdEhFg2PVEeJrDoSeLUXyA==
-X-Received: by 2002:a25:8745:0:b0:dc7:4776:e31 with SMTP id e5-20020a258745000000b00dc747760e31mr7443428ybn.24.1707815147629;
-        Tue, 13 Feb 2024 01:05:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV0pB35EpM+VNkepI8lixDxd0Ub+OZMp6Fspr+AUyV/lR7JwhlRNLgUeivTlFc6DERe+YprL9sSC89+YkIM3imAe+df/zyMcro2qZxTdIQK8oTpKVAGEK+W4e1G4GKZF6kl3TWPwwRNCV2NO4ePolhIdoL+xrYN4pmMTSpM8f9gAwmH1MjXcWeOu/sP
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id a8-20020a256608000000b00dc6f1cdd45csm1557949ybc.22.2024.02.13.01.05.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 01:05:47 -0800 (PST)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso1172226276.3;
-        Tue, 13 Feb 2024 01:05:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWlu7YEPScc5bUPIszVbUd0DICWdLwAW6Fu8qqhYrKycyerrJrM1lb3zgIKbl/ERtyTkfGuSkn0jRESIGxzG8pRCFAYF+juzyB8Efpifl9gx7YKOdHMMghzD8V4h+p5GGibiJyPbLoJJQiOQlvX9U7OYr9P4taN9rSJVcxurTC1Ou6M1bKD1OA+bCVy
-X-Received: by 2002:a25:bfcd:0:b0:dc6:c617:7ca with SMTP id
- q13-20020a25bfcd000000b00dc6c61707camr7330323ybm.29.1707815147208; Tue, 13
- Feb 2024 01:05:47 -0800 (PST)
+	s=arc-20240116; t=1707815166; c=relaxed/simple;
+	bh=HSrUZ41VNdnvYhAQ/IMyr9Isrfz3FJedb6hFHGlYTKQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=jbGrUZRCW36bU1VEK1nnzH4+Hc2X33hltCmjp9JpTJkjt22itZdH4HDD4oO17Ce0Nc9+qBUQlZZTvkutDdn4BNp7rmgKqv9wBc3TA/cTlVWH2LzMfbzRvXwECI1H48bGnpmDEEMamLlBpA0CnUckbt7/UaRtJJgrOZdNRf+TFK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de; spf=pass smtp.mailfrom=phytec.de; dkim=pass (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b=SlMwwo4n; arc=none smtp.client-ip=91.26.50.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+	q=dns/txt; i=@phytec.de; t=1707815154; x=1710407154;
+	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=HSrUZ41VNdnvYhAQ/IMyr9Isrfz3FJedb6hFHGlYTKQ=;
+	b=SlMwwo4nhAQzaFmynwxVbAymD6XokuxWcrXhHbMTM3LGui/Mh38yj3ReNTzcdeoI
+	qXvX0xY6OoLnhGKAF5I1WRPTqs83gq5hyOGxhdoAMnxkZ7iWYpT9UJciNi8PUULF
+	9hObejOjRqLLTWEBuIVNIrkL+FFiruw0tsQGVGfgpow=;
+X-AuditID: ac14000a-fbefe7000000290d-1a-65cb30f2ff50
+Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
+	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 82.8E.10509.2F03BC56; Tue, 13 Feb 2024 10:05:54 +0100 (CET)
+Received: from [172.25.39.28] (172.25.0.11) by Berlix.phytec.de (172.25.0.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Tue, 13 Feb
+ 2024 10:05:49 +0100
+Message-ID: <0d8d8b85-1208-4021-b1f8-1c1c593ddbfe@phytec.de>
+Date: Tue, 13 Feb 2024 10:05:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213085912.56600-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240213085912.56600-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 13 Feb 2024 10:05:35 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVbG4bVNOYkycOOYV1oszzj9WPTbU936PokOE9jmp7iDQ@mail.gmail.com>
-Message-ID: <CAMuHMdVbG4bVNOYkycOOYV1oszzj9WPTbU936PokOE9jmp7iDQ@mail.gmail.com>
-Subject: Re: [PATCH v3] dt-bindings: interrupt-controller: renesas,rzg2l-irqc:
- Update interrupts
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 8/9] arm64: dts: ti: k3-am6*: Fix bus-width property in
+ MMC nodes
+Content-Language: en-US
+To: Francesco Dolcini <francesco@dolcini.it>
+CC: Judith Mendez <jm@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>, Vignesh Raghavendra
+	<vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Francesco Dolcini
+	<francesco.dolcini@toradex.com>
+References: <20240213002416.1560357-1-jm@ti.com>
+ <20240213002416.1560357-9-jm@ti.com>
+ <c6ad3a3e-330c-40cd-8e25-fd259fd1e398@phytec.de>
+ <20240213081953.GB3810@francesco-nb>
+From: Wadim Egorov <w.egorov@phytec.de>
+In-Reply-To: <20240213081953.GB3810@francesco-nb>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
+ (172.25.0.12)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsWyRpKBR/eTwelUg2lzzSzW7D3HZDH/yDlW
+	i7tLfzJavD22ksni04dMi+WfZ7Nb9L14yGyx6fE1VovLu+awWbz5cZbJonXvEXaL/2c/sDvw
+	eGzZ85PFY9OqTjaPO9f2sHlsXlLvcfzGdiaPTa88PD5vkgtgj+KySUnNySxLLdK3S+DK6Dk4
+	h6XgJWfFhLsPmBsY77B3MXJySAiYSLxr7GHtYuTiEBJYzCSxYNs6RgjnLqPEk9vTWEGqeAVs
+	JJauXMYCYrMIqEpM+zCVDSIuKHFy5hOwuKiAvMT9WzPApgoLREncefAEzGYWEJe49WQ+E4gt
+	IqAjceXyMrAFzAJLmSWabrcyQWzbyCixYc9BsCo2AXWJOxu+gW3mFDCU+DD7FDPEJAuJxW8O
+	Qk2Vl9j+dg5YXAjIfnFpOQvEP/IS0869ZoawQyW2ftnONIFReBaSY2chOWoWkrGzkIxdwMiy
+	ilEoNzM5O7UoM1uvIKOyJDVZLyV1EyMoCkUYuHYw9s3xOMTIxMF4iFGCg1lJhPfSjBOpQrwp
+	iZVVqUX58UWlOanFhxilOViUxHlXdwSnCgmkJ5akZqemFqQWwWSZODilGhi3GkYej6+WsPuh
+	9T2KK76msbfK57fvs4jCwPJZF6V+ypuy7te+7Ntpfm2SwcozFpfd7sxsPtXaE7bQ5GR6sokU
+	v0mztLJTguXEI6v/uWXv0rQ2jbC+xP2xUmb+UaH1qcevW08Uuv7tRY0v24XShQkFclOfcRhl
+	LljtbhJ4bd332iLzxTEnq5VYijMSDbWYi4oTAcDzcWiwAgAA
 
-On Tue, Feb 13, 2024 at 9:59=E2=80=AFAM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+
+Am 13.02.24 um 09:19 schrieb Francesco Dolcini:
+> On Tue, Feb 13, 2024 at 06:07:28AM +0100, Wadim Egorov wrote:
+>> Hi Judith,
+>>
+>> Am 13.02.24 um 01:24 schrieb Judith Mendez:
+>>> Move bus-width property to *main.dtsi, above the OTAP/ITAP
+>>> delay values. While there is no error with where it is
+>>> currently at, it is easier to read the MMC node if the
+>>> bus-width property is located above the OTAP/ITAP delay
+>>> values consistently across MMC nodes.
+>>>
+>>> Add missing bus-width for MMC2 in k3-am62-main.
+>>>
+>>> Signed-off-by: Judith Mendez <jm@ti.com>
+>>> ---
+>>>    arch/arm64/boot/dts/ti/k3-am62-main.dtsi       | 5 +++--
+>>>    arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 1 -
+>>>    arch/arm64/boot/dts/ti/k3-am62a-main.dtsi      | 2 +-
+>>>    arch/arm64/boot/dts/ti/k3-am64-main.dtsi       | 2 ++
+>>>    arch/arm64/boot/dts/ti/k3-am642-evm.dts        | 2 --
+>>>    arch/arm64/boot/dts/ti/k3-am642-sk.dts         | 1 -
+>> I think you missed to update all non TI boards.
+> Not sure which boards are you referring to.
 >
-> All the RZ/G2L and alike SoC's (listed below) have ECCRAM0/1 interrupts
-> supported by the IRQC block, reflect the same in DT binding doc.
+> I would not change the verdin-am62 boards, the bus-width there is
+> consistent with the schematics, it's just correct and in the right place
+> IMO.
+
+Ah, yes. Agree.
+
+
 >
-> - R9A07G043U              - RZ/G2UL
-> - R9A07G044L/R9A07G044LC  - RZ/{G2L,G2LC}
-> - R9A07G054               - RZ/V2L
-> - R9A08G045               - RZ/G3S
+> Francesco
 >
-> For the RZ/G3S SoC ("R9A08G045") ECCRAM0/1 interrupts combined into singl=
-e
-> interrupt so we just use the below to represent them:
-> - ec7tie1-0
-> - ec7tie2-0
-> - ec7tiovf-0
->
-> Previously, it was assumed that BUS-error and ECCRAM0/1 error interrupts
-> were only supported by RZ/G2UL ("R9A07G043U") and RZ/G3S ("R9A08G045")
-> SoCs. However, in reality, all RZ/G2L and similar SoCs (listed above)
-> support these interrupts. Therefore, mark the 'interrupt-names' property
-> as required for all the SoCs and update the example node in the binding
-> document.
->
-> Fixes: 96fed779d3d4 ("dt-bindings: interrupt-controller: Add Renesas RZ/G=
-2L Interrupt Controller")
-> Fixes: 1cf0697a24ef ("dt-bindings: interrupt-controller: renesas,rzg2l-ir=
-qc: Document RZ/G3S")
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
-> v2 -> v3:
-> - Fixed IRQ description as pointed by Geert
-> - Sending this individual patch as DTSI patches have been Reviewed by Gee=
-rt
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
