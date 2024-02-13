@@ -1,111 +1,135 @@
-Return-Path: <linux-kernel+bounces-64480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 959F4853F06
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:47:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 093DB853F23
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:50:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2095B288A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:46:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CCDA1C2824E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97A9B62813;
-	Tue, 13 Feb 2024 22:46:12 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 309336313A;
+	Tue, 13 Feb 2024 22:49:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IYveZ237"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 075DA626B2;
-	Tue, 13 Feb 2024 22:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8636310E;
+	Tue, 13 Feb 2024 22:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707864372; cv=none; b=uFfAUCfKb1k+vMYIpdbZofbIhyvzVzcovZRkfuwhkj8PwIvdg/jhM4KxIlOMYPi8i98pu9kRtHUz+LrSTSqv4vj7iGs8YmdWKJZWNQxHuwp8lJIExNP6htXT2eVkH8RyBI5KfFOXp2bVyr9dIMLqX7Ks1veUa2CIlhPySusbgKk=
+	t=1707864559; cv=none; b=lLDL71mF/gGaJ+uYT/tWcDORvxMTZetx4JfZfOgrb9NM4171ETajiO3FWriEqvFFhC92GTjup8dOPBkm2FUNaUpgqvlem0V4RAE1CnGa7hHC5sVuN4G16hzQx2uhpijERlHDC9bPoaA5eOSe6Fz6TPYU95lEP1WBwBdi8eAJlyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707864372; c=relaxed/simple;
-	bh=6AWrD9fLn9rIoWsfdQ1zN/JM/sKG+z0lxc9s0V1f1BY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K2L2GgG5UXbunjvUu53WSY3kBT4M1pNs7CWMYUv5/4CXZ9oFFgfgHlr30XzzZiXNhovAWcEivwrIl3J42LMBLVy6E0T8zR+WXp/9bEdqbxeV7sEMkGhvLgnEIEUb/NeWb2QacjiR7i8+2XL5vOcM4/wdBQlEsWLJJero2/+71fA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29488C433C7;
-	Tue, 13 Feb 2024 22:46:04 +0000 (UTC)
-Date: Tue, 13 Feb 2024 17:47:33 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, "Darrick J. Wong"
- <djwong@kernel.org>, akpm@linux-foundation.org, kent.overstreet@linux.dev,
- mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
- void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
- catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
- tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
- x86@kernel.org, peterx@redhat.com, david@redhat.com, axboe@kernel.dk,
- mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org,
- dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
- paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
- yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
- andreyknvl@gmail.com, ndesaulniers@google.com, vvvvvv@google.com,
- gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
- allocation profiling
-Message-ID: <20240213174733.086b2e3e@gandalf.local.home>
-In-Reply-To: <202402131436.2CA91AE@keescook>
-References: <20240212213922.783301-1-surenb@google.com>
-	<20240212213922.783301-14-surenb@google.com>
-	<202402121433.5CC66F34B@keescook>
-	<CAJuCfpGU+UhtcWxk7M3diSiz-b7H64_7NMBaKS5dxVdbYWvQqA@mail.gmail.com>
-	<20240213222859.GE6184@frogsfrogsfrogs>
-	<CAJuCfpGHrCXoK828KkmahJzsO7tJsz=7fKehhkWOT8rj-xsAmA@mail.gmail.com>
-	<202402131436.2CA91AE@keescook>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707864559; c=relaxed/simple;
+	bh=jHvv+4ryYbSvF7PPwhAN75HK+TodxoZw2ak0Ibxc0XA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=f9nfOLhtiNRbhKXwnZwDJXRUuoPMzzRHnC+aRa4RW7pqeHkzkoqlKzkbxOnGRmQEKPcg7fylDE82vWfsO87IoZX+Yyi2xn4oZw9rpqDIC7XNqfDeJtLiLI6/ol68ITlVrjVShNOKqKCymwNToEtGigEQXW42DnbRqvbj6FE0Msw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=IYveZ237; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41DMNqvB013597;
+	Tue, 13 Feb 2024 22:48:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=kS0BuS/dFc0Sb2CDmjSXKeRKMVaweomB8kr69lr3DUI=; b=IY
+	veZ237BYo3/8kkpCqtX8a0sQz3ISSeSw1tccp3RkOlE6Y43Axf71iYjuE2NSieSv
+	09W7xZATnKZfM+C7VArnuqvb/mqOn8+hfN6Irq8zT7seH9rqT6SAMcGkUu2FCZlF
+	Iprk/CyP+3OLlBJ6gS+QTOsqPHtdI5JD74oarLbPAp8Rs8Wf4ChGdUWXXRJTMSf8
+	aQWUiCHRcr+QQBQPOPQ9bXOB7u5GeOXd7AUq+/CrKHcVQsTRQyNlcat5kB8mndON
+	n1cHkAmUFWFO5DqBIWsyb73MUimvr2IeLhKT/zWMxDS4aAH5cOsWZgwidmCYpwiR
+	dderqNLjSn7fbZJk4sFw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7yh329ba-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 22:48:37 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41DMma8G004283
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 22:48:36 GMT
+Received: from [10.110.76.255] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 13 Feb
+ 2024 14:48:36 -0800
+Message-ID: <289ae266-c1a4-796a-1f87-387d8ec98646@quicinc.com>
+Date: Tue, 13 Feb 2024 14:48:31 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v15 29/50] ALSA: usb-audio: qcom: Introduce QC USB SND
+ offloading support
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
+References: <20240213005422.3121-1-quic_wcheng@quicinc.com>
+ <20240213005422.3121-30-quic_wcheng@quicinc.com>
+ <87wmr8y6hi.wl-tiwai@suse.de>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <87wmr8y6hi.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: CPkrbzsESQIWkFFv2CJithY9DWfBhg74
+X-Proofpoint-GUID: CPkrbzsESQIWkFFv2CJithY9DWfBhg74
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-13_14,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ mlxlogscore=666 phishscore=0 spamscore=0 malwarescore=0 clxscore=1015
+ suspectscore=0 mlxscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402130179
 
-On Tue, 13 Feb 2024 14:38:16 -0800
-Kees Cook <keescook@chromium.org> wrote:
+Hi Takashi,
 
-> > > Save yourself a cycle of "rework the whole fs interface only to have
-> > > someone else tell you no" and put it in debugfs, not sysfs.  Wrangling
-> > > with debugfs is easier than all the macro-happy sysfs stuff; you don't
-> > > have to integrate with the "device" model; and there is no 'one value
-> > > per file' rule.  
-> > 
-> > Thanks for the input. This file used to be in debugfs but reviewers
-> > felt it belonged in /proc if it's to be used in production
-> > environments. Some distros (like Android) disable debugfs in
-> > production.  
+On 2/13/2024 2:59 AM, Takashi Iwai wrote:
+> On Tue, 13 Feb 2024 01:54:01 +0100,
+> Wesley Cheng wrote:
+>> +static int __init qc_usb_audio_offload_init(void)
+>> +{
+>> +	struct uaudio_qmi_svc *svc;
+>> +	int ret;
+>> +
+>> +	svc = kzalloc(sizeof(struct uaudio_qmi_svc), GFP_KERNEL);
+>> +	if (!svc)
+>> +		return -ENOMEM;
+>> +
+>> +	svc->uaudio_wq = create_singlethread_workqueue("uaudio_svc");
+>> +	if (!svc->uaudio_wq) {
+>> +		ret = -ENOMEM;
+>> +		goto free_svc;
+>> +	}
 > 
-> FWIW, I agree debugfs is not right. If others feel it's right in /proc,
-> I certainly won't NAK -- it's just been that we've traditionally been
-> trying to avoid continuing to pollute the top-level /proc and instead
-> associate new things with something in /sys.
+> Do we need a dedicated workqueue?  I don't mind much, but an own
+> workqueue isn't usually needed unless specifically required such as
+> the request quantity control or isolation.
+> 
 
-You can create your own file system, but I would suggest using kernfs for it ;-)
+I think we can remove this.  I checked the QMI interface implementation 
+and looks like they are running all the notifications on its own WQ, so 
+doing duplicate work with queuing to our own WQ here in qc_audio_offload.
 
-If you look in /sys/kernel/ you'll see a bunch of kernel file systems already there:
-
- ~# mount |grep kernel
- securityfs on /sys/kernel/security type securityfs (rw,nosuid,nodev,noexec,relatime)
- debugfs on /sys/kernel/debug type debugfs (rw,nosuid,nodev,noexec,relatime)
- tracefs on /sys/kernel/tracing type tracefs (rw,nosuid,nodev,noexec,relatime)
- configfs on /sys/kernel/config type configfs (rw,nosuid,nodev,noexec,relatime)
-
--- Steve
+Thanks
+Wesley Cheng
 
