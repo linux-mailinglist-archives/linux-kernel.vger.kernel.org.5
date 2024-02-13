@@ -1,210 +1,298 @@
-Return-Path: <linux-kernel+bounces-63893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D49FC853620
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9300185360D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:31:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C6BE28B23B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:34:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50A1C286C92
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381035FDB5;
-	Tue, 13 Feb 2024 16:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="EGBC73Yt"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8480026AD7;
-	Tue, 13 Feb 2024 16:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B032BA2D;
+	Tue, 13 Feb 2024 16:31:51 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD4902919
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707842025; cv=none; b=r6+n211DcjzAlp7RyIyAojEbGYmsN2lN8M2OYTuzL3V2Ve2Nfgpq/gUQeoUlfJr+ZheGUfK7/R/Ndc3vL2joIAdR4YGKttDsMIkXQNruq4oC1wiX1WoD/TlE8HvDa9D4oYfCRUlWdZodwgvWAY2JghP3DRRu5cI2lD9bMglnqAM=
+	t=1707841910; cv=none; b=ry4Ai4pJz3WYkanYqnUxF1nS9jDT9LB/yrpCKBRAW50pLs0KZLvyDakIPE7R2bleY1tzDp7M8zdJlLL16P+GdQqZlOv6N7S/HtdVyHH+imRDN7TPH7oz89nT2/wc98cvDnx3ea5V8Lt+B9WVn2BIkDvLdenGj1QdPCQr7Y51ezo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707842025; c=relaxed/simple;
-	bh=A07J6sqhM54HR9uLgNXXEdd8RFnknbXR0ltWdOpPdw4=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=uWPOgHzQfXkAna8Zdk5bx2LooS4GLIgJ691h8Qu0CrUCQbO8oxOZ8Tjd5ae7LChWdhqvCYwvm3xC8fFllWWz/5D7tf1QHcZIz5d4j5/SC+pBhR/T+O61+WCiF5wqHJWp7lzJLD+oiOqW4TLvUCygfziMqSTnmhHgKoLyFErDCjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=EGBC73Yt; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41DFst9D028182;
-	Tue, 13 Feb 2024 16:33:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : from : subject : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=UgvbajqcPtxWyMn3yRWVa6zmR/EN7tedRiy2deW+QGU=;
- b=EGBC73YtFO68WSb+N2FPNSH+qeujPBGBR2TVYmRVBxGljcdBnFcaC9xqlTIZpBA+KNNf
- rBnBg1K/xh9Eoss8iPX57M8aB3QseGU5Zu7iawItX2GNSjDx4J46Q6/5nl7KeT86uSIb
- LVaH7M5ZU5em3AzE7viL8TXZSFWK9GuRKPckgMDO4VlN0nP7W/7Sb4CGayN3PIWNh/Nd
- lptcoH7a8ag9I6or8tEF+Cu5MQVIoj511RN+rT1X/HhubGATe4F7rKhAPyge5gvxUGK3
- of//seJapC5kgspPve9qBSffQuapBdaZqthMQVnRWalI1S3bFT3i1ejzZuSRfQYSIEVo 8g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w87gkfyrk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 16:33:03 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41DG6e1F018013;
-	Tue, 13 Feb 2024 16:32:05 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w87gkfya7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 16:32:05 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41DF30vX016184;
-	Tue, 13 Feb 2024 16:31:31 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mymgbn9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 16:31:31 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41DGVS705702208
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 16:31:30 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7079558059;
-	Tue, 13 Feb 2024 16:31:28 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7C2A458058;
-	Tue, 13 Feb 2024 16:31:27 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 13 Feb 2024 16:31:27 +0000 (GMT)
-Message-ID: <1d8f8990-43e2-4afc-835e-629c7328d497@linux.ibm.com>
-Date: Tue, 13 Feb 2024 11:31:26 -0500
+	s=arc-20240116; t=1707841910; c=relaxed/simple;
+	bh=/kkLoYdzhCdq3WELOZKd9MgucjRXD6NUBDgH9zSLoyw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XvPqi4wb4yN9pFUsofoV+1VsUgJ16ybMJsAprc0L/CxfTF2QYW2WH93bvhxNsDaPj/N1N3t9CtdK5QdGlaA92zrvrSGCm5kEH8+cM91LweQ7c03vxoUWy+Fzwccb6yh9S4GEiVg1hJEgHSIYe72740RxNdFlvF4AzhUCLUxujfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09511DA7;
+	Tue, 13 Feb 2024 08:32:27 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.130])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1051A3F5A1;
+	Tue, 13 Feb 2024 08:31:41 -0800 (PST)
+Date: Tue, 13 Feb 2024 16:31:36 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 20/25] arm64/mm: Implement new wrprotect_ptes() batch
+ API
+Message-ID: <ZcuZaO8pars3aFtu@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240202080756.1453939-1-ryan.roberts@arm.com>
+ <20240202080756.1453939-21-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v9 19/25] integrity: Move
- integrity_kernel_module_request() to IMA
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, chuck.lever@oracle.com,
-        jlayton@kernel.org, neilb@suse.de, kolga@netapp.com,
-        Dai.Ngo@oracle.com, tom@talpey.com, jmorris@namei.org,
-        serge@hallyn.com, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
- <20240115181809.885385-20-roberto.sassu@huaweicloud.com>
- <fd6ddc3d-e5d3-4b9c-b00b-ac2b1f22d653@linux.ibm.com>
- <CAHC9VhTY=X7z5SRQZzFe25FGB2E3FBBkuZ_YYA1+ETyr7pv=tA@mail.gmail.com>
- <7940b9d0-3133-4b08-b397-ad9ee34e3b34@linux.ibm.com>
- <b95967cd1aa2a4e751a8be3d23f72b7e1db0e4b6.camel@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <b95967cd1aa2a4e751a8be3d23f72b7e1db0e4b6.camel@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9tDAfUnsoLLQtRaYozl8hJE8AlJiBDzw
-X-Proofpoint-ORIG-GUID: fA6Gn1wQxZmMUpZtwqYWP5VACQonDsxR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_09,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 phishscore=0 adultscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2402130130
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202080756.1453939-21-ryan.roberts@arm.com>
 
-
-
-On 2/13/24 03:57, Roberto Sassu wrote:
-> On Mon, 2024-02-12 at 15:28 -0500, Stefan Berger wrote:
->>
->> On 2/12/24 12:56, Paul Moore wrote:
->>> On Mon, Feb 12, 2024 at 12:48 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
->>>> On 1/15/24 13:18, Roberto Sassu wrote:
->>>
->>> ...
->>>
->>>>> +/**
->>>>> + * ima_kernel_module_request - Prevent crypto-pkcs1pad(rsa,*) requests
->>>>> + * @kmod_name: kernel module name
->>>>> + *
->>>>> + * We have situation, when public_key_verify_signature() in case of RSA > + * algorithm use alg_name to store internal information in order to
->>>>> + * construct an algorithm on the fly, but crypto_larval_lookup() will try
->>>>> + * to use alg_name in order to load kernel module with same name.
->>>>> + * Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel modules,
->>>>> + * we are safe to fail such module request from crypto_larval_lookup().
->>>>> + *
->>>>> + * In this way we prevent modprobe execution during digsig verification
->>>>> + * and avoid possible deadlock if modprobe and/or it's dependencies
->>>>> + * also signed with digsig.
->>>>
->>>> This text needs to some reformulation at some point..
->>>
->>> There is no time like the present.  If you have a suggestion I would
->>> love to hear it and I'm sure Roberto would too.
->>>
->>
->> My interpretation of the issue after possibly lossy decoding of the
->> above sentences:
->>
->> Avoid a deadlock by rejecting a virtual kernel module with the name
->> "crypto-pkcs1pad(rsa,*)". This module may be requested by
->> crypto_larval_lookup() while trying to verify an RSA signature in
->> public_key_verify_signature(). Since the loading of the RSA module may
->> itself cause the request for an RSA signature verification it will
->> otherwise lead to a deadlock.
+On Fri, Feb 02, 2024 at 08:07:51AM +0000, Ryan Roberts wrote:
+> Optimize the contpte implementation to fix some of the fork performance
+> regression introduced by the initial contpte commit. Subsequent patches
+> will solve it entirely.
 > 
-> I can be even more precise I guess (I actually reproduced it). >
-> Avoid a verification loop where verifying the signature of the modprobe
-> binary requires executing modprobe itself. Since the modprobe iint-
->> mutex is already held when the signature verification is performed, a
-> deadlock occurs as soon as modprobe is executed within the critical
-> region, since the same lock cannot be taken again.
+> During fork(), any private memory in the parent must be write-protected.
+> Previously this was done 1 PTE at a time. But the core-mm supports
+> batched wrprotect via the new wrprotect_ptes() API. So let's implement
+> that API and for fully covered contpte mappings, we no longer need to
+> unfold the contpte. This has 2 benefits:
+> 
+>   - reduced unfolding, reduces the number of tlbis that must be issued.
+>   - The memory remains contpte-mapped ("folded") in the parent, so it
+>     continues to benefit from the more efficient use of the TLB after
+>     the fork.
+> 
+> The optimization to wrprotect a whole contpte block without unfolding is
+> possible thanks to the tightening of the Arm ARM in respect to the
+> definition and behaviour when 'Misprogramming the Contiguous bit'. See
+> section D21194 at https://developer.arm.com/documentation/102105/latest/
 
-When ecdsa is used for signing files it could get stuck as well and 
-would need this patch:
+Minor nit, but it'd be better to refer to a specific revision of the document,
+e.g.
 
-diff --git a/security/integrity/ima/ima_main.c 
-b/security/integrity/ima/ima_main.c
-index 45f1a102c599..2e71dc977d43 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -1110,7 +1110,9 @@ EXPORT_SYMBOL_GPL(ima_measure_critical_data);
-   */
-  static int ima_kernel_module_request(char *kmod_name)
-  {
--       if (strncmp(kmod_name, "crypto-pkcs1pad(rsa,", 20) == 0)
-+       if (strncmp(kmod_name, "crypto-pkcs1pad(rsa,", 20) == 0 ||
-+           strncmp(kmod_name, "crypto-ecdsa-nist-p", 19) == 0 ||
-+           strcmp(kmod_name, "cryptomgr") == 0)
-                 return -EINVAL;
+  https://developer.arm.com/documentation/102105/ja-07/
 
-         return 0;
-
-Rejecting cryptomgr seems necessary in the ecdsa case though I am not 
-sure what the side effects of rejecting it all the time could be.
-
-    Stefan
+That way people can see the specific version of the text you were referring to
+even if that changes later, and it means the link is still useful when D21194
+gets merged into the ARM ARM and dropped from the known issues doc.
 
 > 
-> This happens when public_key_verify_signature(), in case of RSA
-> algorithm, use alg_name to store internal information in order to
-> construct an algorithm on the fly, but crypto_larval_lookup() will try
-> to use alg_name in order to load a kernel module with same name.
+> Tested-by: John Hubbard <jhubbard@nvidia.com>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>  arch/arm64/include/asm/pgtable.h | 61 ++++++++++++++++++++++++++------
+>  arch/arm64/mm/contpte.c          | 35 ++++++++++++++++++
+>  2 files changed, 86 insertions(+), 10 deletions(-)
 > 
-> Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel modules,
-> we are safe to fail such module request from crypto_larval_lookup(),
-> and avoid the verification loop.
-> 
-> Roberto
-> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 34892a95403d..c07f0d563733 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -978,16 +978,12 @@ static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
+>  }
+>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>  
+> -/*
+> - * __ptep_set_wrprotect - mark read-only while trasferring potential hardware
+> - * dirty status (PTE_DBM && !PTE_RDONLY) to the software PTE_DIRTY bit.
+> - */
+> -static inline void __ptep_set_wrprotect(struct mm_struct *mm,
+> -					unsigned long address, pte_t *ptep)
+> +static inline void ___ptep_set_wrprotect(struct mm_struct *mm,
+> +					unsigned long address, pte_t *ptep,
+> +					pte_t pte)
+>  {
+> -	pte_t old_pte, pte;
+> +	pte_t old_pte;
+>  
+> -	pte = __ptep_get(ptep);
+>  	do {
+>  		old_pte = pte;
+>  		pte = pte_wrprotect(pte);
+> @@ -996,6 +992,25 @@ static inline void __ptep_set_wrprotect(struct mm_struct *mm,
+>  	} while (pte_val(pte) != pte_val(old_pte));
+>  }
+>  
+> +/*
+> + * __ptep_set_wrprotect - mark read-only while trasferring potential hardware
+> + * dirty status (PTE_DBM && !PTE_RDONLY) to the software PTE_DIRTY bit.
+> + */
+> +static inline void __ptep_set_wrprotect(struct mm_struct *mm,
+> +					unsigned long address, pte_t *ptep)
+> +{
+> +	___ptep_set_wrprotect(mm, address, ptep, __ptep_get(ptep));
+> +}
+> +
+> +static inline void __wrprotect_ptes(struct mm_struct *mm, unsigned long address,
+> +				pte_t *ptep, unsigned int nr)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
+> +		__ptep_set_wrprotect(mm, address, ptep);
+> +}
+> +
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  #define __HAVE_ARCH_PMDP_SET_WRPROTECT
+>  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+> @@ -1156,6 +1171,8 @@ extern int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
+>  				unsigned long addr, pte_t *ptep);
+>  extern int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
+>  				unsigned long addr, pte_t *ptep);
+> +extern void contpte_wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, unsigned int nr);
+>  extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+>  				unsigned long addr, pte_t *ptep,
+>  				pte_t entry, int dirty);
+> @@ -1269,12 +1286,35 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+>  	return contpte_ptep_clear_flush_young(vma, addr, ptep);
+>  }
+>  
+> +#define wrprotect_ptes wrprotect_ptes
+> +static inline void wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, unsigned int nr)
+> +{
+> +	if (likely(nr == 1)) {
+> +		/*
+> +		 * Optimization: wrprotect_ptes() can only be called for present
+> +		 * ptes so we only need to check contig bit as condition for
+> +		 * unfold, and we can remove the contig bit from the pte we read
+> +		 * to avoid re-reading. This speeds up fork() which is sensitive
+> +		 * for order-0 folios. Equivalent to contpte_try_unfold().
+> +		 */
+> +		pte_t orig_pte = __ptep_get(ptep);
+> +
+> +		if (unlikely(pte_cont(orig_pte))) {
+> +			__contpte_try_unfold(mm, addr, ptep, orig_pte);
+> +			orig_pte = pte_mknoncont(orig_pte);
+> +		}
+> +		___ptep_set_wrprotect(mm, addr, ptep, orig_pte);
+> +	} else {
+> +		contpte_wrprotect_ptes(mm, addr, ptep, nr);
+> +	}
+> +}
+> +
+>  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+>  static inline void ptep_set_wrprotect(struct mm_struct *mm,
+>  				unsigned long addr, pte_t *ptep)
+>  {
+> -	contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+> -	__ptep_set_wrprotect(mm, addr, ptep);
+> +	wrprotect_ptes(mm, addr, ptep, 1);
+>  }
+>  
+>  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
+> @@ -1306,6 +1346,7 @@ static inline int ptep_set_access_flags(struct vm_area_struct *vma,
+>  #define ptep_clear_flush_young			__ptep_clear_flush_young
+>  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+>  #define ptep_set_wrprotect			__ptep_set_wrprotect
+> +#define wrprotect_ptes				__wrprotect_ptes
+>  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
+>  #define ptep_set_access_flags			__ptep_set_access_flags
+>  
+> diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
+> index bfb50e6b44c7..c85e64baf03b 100644
+> --- a/arch/arm64/mm/contpte.c
+> +++ b/arch/arm64/mm/contpte.c
+> @@ -23,6 +23,23 @@ static inline pte_t *contpte_align_down(pte_t *ptep)
+>  	return (pte_t *)(ALIGN_DOWN((unsigned long)ptep >> 3, CONT_PTES) << 3);
+>  }
+>  
+> +static void contpte_try_unfold_partial(struct mm_struct *mm, unsigned long addr,
+> +					pte_t *ptep, unsigned int nr)
+> +{
+> +	/*
+> +	 * Unfold any partially covered contpte block at the beginning and end
+> +	 * of the range.
+> +	 */
+> +
+> +	if (ptep != contpte_align_down(ptep) || nr < CONT_PTES)
+> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+> +
+> +	if (ptep + nr != contpte_align_down(ptep + nr))
+> +		contpte_try_unfold(mm, addr + PAGE_SIZE * (nr - 1),
+> +				ptep + nr - 1,
+> +				__ptep_get(ptep + nr - 1));
+
+Nit: we should use braces for this 'if' block since it covers multiple lines
+(even though the function call is a single statement).
+
+It *might* be worth using temporaries for the last ptep and addr, e.g.
+
+	if (ptep + nr != contpte_align_down(ptep + nr)) {
+		unsigned long last_addr = addr + PAGE_SIZE * (nr - 1);
+		pte_t *last_ptep = ptep + nr - 1;
+		contpte_try_unfold(mm, last_addr, last_ptep,
+				   __ptep_get(last_ptep));
+	}
+
+.. but I'm happy without the temporaries so long as we have braces.
+
+> +}
+> +
+>  static void contpte_convert(struct mm_struct *mm, unsigned long addr,
+>  			    pte_t *ptep, pte_t pte)
+>  {
+> @@ -236,6 +253,24 @@ int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
+>  }
+>  EXPORT_SYMBOL(contpte_ptep_clear_flush_young);
+>  
+> +void contpte_wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+> +					pte_t *ptep, unsigned int nr)
+> +{
+> +	/*
+> +	 * If wrprotecting an entire contig range, we can avoid unfolding. Just
+> +	 * set wrprotect and wait for the later mmu_gather flush to invalidate
+> +	 * the tlb. Until the flush, the page may or may not be wrprotected.
+> +	 * After the flush, it is guarranteed wrprotected. If its a partial
+
+Typo: s/guarranteed/guaranteed/
+Typo: s/its/it's/ (or s/its/it is/)
+
+Other than the above this looks good to me.
+
+Mark.
+
+> +	 * range though, we must unfold, because we can't have a case where
+> +	 * CONT_PTE is set but wrprotect applies to a subset of the PTEs; this
+> +	 * would cause it to continue to be unpredictable after the flush.
+> +	 */
+> +
+> +	contpte_try_unfold_partial(mm, addr, ptep, nr);
+> +	__wrprotect_ptes(mm, addr, ptep, nr);
+> +}
+> +EXPORT_SYMBOL(contpte_wrprotect_ptes);
+> +
+>  int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+>  					unsigned long addr, pte_t *ptep,
+>  					pte_t entry, int dirty)
+> -- 
+> 2.25.1
 > 
 
