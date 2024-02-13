@@ -1,177 +1,178 @@
-Return-Path: <linux-kernel+bounces-64075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C67A8539D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:25:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6E778539DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:25:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC4801F21D78
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:25:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA8EB1C226C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14855608F1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6443C60B8D;
 	Tue, 13 Feb 2024 18:24:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dxKpCBVI"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HC9BhcIQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9702B605D7;
-	Tue, 13 Feb 2024 18:24:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C4B76088C
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 18:24:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707848684; cv=none; b=VBaSb75ODnGuV6+0AzCjbbllJVOUGgzH4cGiyLPAM6SvQemjVv9KgoljLCHTXA/l/4xOV9/pM/02yCMjtqOixf9P90CquN9wMIKpT5xUColdjfMlNcbeJBZ3CG75mJTa2phBhdSrE3rTqWqyEF6WAjmMEeLjCmEAdmpO2D0Sw/o=
+	t=1707848684; cv=none; b=cWWPxT201/W52RPtEaX/b1UfkAP1aP2WYeVU/1H02HE2+Eyc4kD7Sfpt13SPtgPvn9NfZj0C3Xx4oldqnc/XP3eNoV5ILVjr6aMSGERHVg5dNgLcbMPPYWRvXN+apI/X0DIncs0CvovjiiAT95gMwhGpFECKuDgeFvn8yyKBj5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707848684; c=relaxed/simple;
-	bh=fnTzBjLURMPPnnFwAqXvcee6LhO+VYPuwjsXSyZI66U=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vg240UNIot6h7gG+N2UM7NVBvcNBIUbjENz5IcDHZVFzP0tCQG1N2PKZApJW+bMU9Xr69rFM3/nwk3fKHQaxRXOqtTas0X/gmYqZorruGNFIVkfiPRlBvKoELE25nAWDHdUZ0p7IPcVSryJWHYNPy+L4N9rAMMV2HhcA+L+IrAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dxKpCBVI; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-411c779ab2dso6087395e9.0;
-        Tue, 13 Feb 2024 10:24:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707848681; x=1708453481; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V4TjUgrrN8kUFZKa9YdsCe7iLr0TTloHFQfT8i4JwJA=;
-        b=dxKpCBVILLPZF3axeAj6K3/2vK8s1rWELw2ufqXczKvCZuqlipSf1e4VO1mrcjnDmq
-         Mqanw8o4c4+/gQnWDpqF7wvqYXzEnHL3PXsdE2yHeDt3eb8WMIc9Xy4RoB/+7WERYWwh
-         wkk+28/oFO9B8zmaQDdxS8y0TEHcRAZz7vIdRsbFKbULHrEfqT7dCtg9uvTVrvlw6fk5
-         +OZt8AblKCQqfexOo1rHUnqIAKMwh3R0gnPpJkc/lfPXm/y+PvH1HZmDxg++UZftHhv7
-         dBtLDUoIEXYAaSPQavLr7KII810V0RmdebsIw7lNlKtaWHVwHy7pnIuCuKerqV07sAAt
-         Hecw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707848681; x=1708453481;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V4TjUgrrN8kUFZKa9YdsCe7iLr0TTloHFQfT8i4JwJA=;
-        b=UFVStLNGUma5+UrqSFgnKaKZMuU1/gzzf8W90zXsWDmBL5AFQnVJanmTAMw0EHaO4C
-         oZrmdIt7rKKm4GLi9gdD3NUmeuZsQvmBjABuvRkCpwe5nFNpgsXsc24gbyAHF9Q+raGs
-         iChuOBq53MXTqmXKRCZbnjNqF/gp95NJbPpnXy00bVa5xfsTfvbQXmr/Iuuir898I93C
-         FDLZaqIXaJLaJTQaHO6QKmUnftk7Fs5b2Y0MJRYV9M8F57VfsyXxGx9rWlkowJ/MKqd3
-         AggSEtZEa551Hzo1q0LGIHDHnKDpEJo41768Aw5FwPiH0/YH0zazO9uIVJtiE3ecWxdo
-         sekQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJWWkOCXVfyeU2ysxPiDx1RsweWWdF2bDnv+l3deHtWXR0XpQktKQg1du2BaRW+ORP+bHb0EbBxbgXWKNT/Td3Rfk/p/FX7PVL3pEqyF1lNfvGNZd9x14VJbFBGHplhiMrCADK
-X-Gm-Message-State: AOJu0YyD4wJrKA4lNRcgOW1e7iAyYyYpXj+/puuDMvlwX+uV0AW87RGt
-	P7b/doQ7DfHwlskrScJUeC//PHB9SevndxNWI3qwiHU/et7+3ZDg
-X-Google-Smtp-Source: AGHT+IFfE+WWdPVmkY/X+GJ+aQZG7IukTb+HGNX6RlQGRFjR22i3CERWAPD34sD7pM0vliGAfGf1Gg==
-X-Received: by 2002:a05:600c:4f95:b0:410:ee8e:d3b2 with SMTP id n21-20020a05600c4f9500b00410ee8ed3b2mr363617wmq.5.1707848680803;
-        Tue, 13 Feb 2024 10:24:40 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVtATT/hqyfHbAajUMcA27FRnBa3cCMwhOv9kxStVv5Zs5DLAeHRjqnDmRRNojAlbXo1ATnBzbBjAAUKx9pbleJ8cusSKp7J+5LtAmxZa+z/s01Nu/Udet12S2tqkPV/vBl04HOf9ShkeIYCSzVcbzvklftTL1IypkEsUyr8RhE17IwLEqIgdUUHrVD5W3gYLPQhhrZerburEJyE9y+181RFZUzzHJNYOgMXhGjcpGitc/AdzcJPEa+4VvoNNPxJSWWD2/yok1JViHD8FOKjQ0lp8AF3M3XwvcEewtfgTTzmOZXOYqP91WFyss5FVtwcZN1Wl1iOhM8XDzlHzrvS4VQbGnXS/Ok7DXNGOMc+rpZdi0DxN7KAvTkDZTzTjXlwIsfeN0LifA=
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id bs25-20020a056000071900b0033b45bdb2a1sm10347974wrb.4.2024.02.13.10.24.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 10:24:40 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Robert Marko <robimarko@gmail.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [net-next RFC PATCH 2/2] net: phy: aquantia: add AQR112C and AQR112R PHY ID
-Date: Tue, 13 Feb 2024 19:24:12 +0100
-Message-ID: <20240213182415.17223-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240213182415.17223-1-ansuelsmth@gmail.com>
-References: <20240213182415.17223-1-ansuelsmth@gmail.com>
+	bh=I5zIgI+QjhRatSLfoEbbhZ6aVR0T34jHoAcGOwHYwms=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Z9Gxm8TWblX8cNnmL8PEnCbL9T6lRw0HxvyOq4cSn+Jo5KACX0hPRtrj726psAK4cFCl40vgZuP55aVwlIktP3x8Zckxyeu9y+EV7fNKUKsl4mfKwy/3oBccTFk2dpMHOn0+Ew0gmc9zWHmSDTFBa57ZzCeP6VcmXAAVLeKc+qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HC9BhcIQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 448DFC43390;
+	Tue, 13 Feb 2024 18:24:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707848684;
+	bh=I5zIgI+QjhRatSLfoEbbhZ6aVR0T34jHoAcGOwHYwms=;
+	h=From:Date:Subject:To:Cc:From;
+	b=HC9BhcIQ+NObwtf5QsVwZyOrTCF+0RQYLbPCWl0k9nK7j7t1qrSVZFxsRE8C2f6OS
+	 V3f/Zg84eOx4aCvJov0C5MVIfkY7puH4t/vHlN0LMwuWhNjiLfa7cD/6VG87rHz9sA
+	 Qf3PS0At/k2vVwP1bQQE/1T0JstsiU8bQuFaDj9sj3GnB/LAmPm5tN+cFRLX/MrEyv
+	 xiOwTazzt73c0aYEctze2VCyEoSDoXEs6Sp17QUpMFMf9kWa/JZ26bIYFfIDPc32rt
+	 FlunKZo+2u6/xnHFHQU/m3NDxU41KfZOzyVLqPaPKd06h6iE1tBPVtUKgMSLDdVpYW
+	 h1EGSyDiiAU1Q==
+From: Mark Brown <broonie@kernel.org>
+Date: Tue, 13 Feb 2024 18:24:38 +0000
+Subject: [PATCH v2] arm64/sve: Lower the maximum allocation for the SVE
+ ptrace regset
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240213-arm64-sve-ptrace-regset-size-v2-1-c7600ca74b9b@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAOWzy2UC/33NQQ6CMBCF4auQWTuGFkKoK+9hWBR8QqMCmSGNS
+ ri71cStm0n+WXxvJYUEKB2ylQQxaJjGFHaXUTf4sQeHc2qyuS3zdNjLvSpZI3hexHdgQa9YWMM
+ LbE2bO1u7ysFQImbBJTy+/KlJPQRdJnl+16L5fH9w8R+Ohg3brmi9KeqqdTheISNu+0l6arZte
+ wOGU3DsyQAAAA==
+To: Will Deacon <will@kernel.org>, 
+ Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dave Martin <Dave.Martin@arm.com>, Oleg Nesterov <oleg@redhat.com>, 
+ Al Viro <viro@zeniv.linux.org.uk>, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Doug Anderson <dianders@chromium.org>, 
+ Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-a684c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4370; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=I5zIgI+QjhRatSLfoEbbhZ6aVR0T34jHoAcGOwHYwms=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBly7PpI4cciiXeYNP+EEVt3Y4INFoiOrI/rWmsp/ke
+ 3UYsdwKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZcuz6QAKCRAk1otyXVSH0ELxB/
+ 4/7F5im0GANZp1+aO+MD+khEacxi3g7TQuULUlLOSRa1Bojd1b3COou7f4YXUN0PfA2Nms6UDEGtse
+ z0+0djdKCZS0xxNiE66INGT3SPlZh1evAmLNIvEgTT6FR02VAoUNj1XP8q2tF3x/eBqtUvtCt4oQjd
+ 95JbNESua5OhDTwmbZ070bPLFi8LMylPmQLDy8xPyl0EVM6M+KykV4jnFDfXUJdycE43Ej6sEJy2J0
+ OmLwCoRvrSzdNxk5M5/NNRpx9XjC77PdNpBbFLP6WfmN7Ik+5ZhX0F+Xjftj/wmm3MVNIAR02LAAOL
+ KGimltgZ7MekxKVaCrCD6dd2SL+ZQF
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-Add Aquantia AQR112C and AQR112R PHY ID. These additional PHY are just
-variant of the AQR112 with a different chip size or a different target
-market. The R variant is usually found on commercial product from PUZZEL
-OEM.
+Doug Anderson observed that ChromeOS crashes are being reported which
+include failing allocations of order 7 during core dumps due to ptrace
+allocating storage for regsets:
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+  chrome: page allocation failure: order:7,
+          mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
+          nodemask=(null),cpuset=urgent,mems_allowed=0
+   ...
+  regset_get_alloc+0x1c/0x28
+  elf_core_dump+0x3d8/0xd8c
+  do_coredump+0xeb8/0x1378
+
+with further investigation showing that this is:
+
+   [   66.957385] DOUG: Allocating 279584 bytes
+
+which is the maximum size of the SVE regset. As Doug observes it is not
+entirely surprising that such a large allocation of contiguous memory might
+fail on a long running system.
+
+The SVE regset is currently sized to hold SVE registers with a VQ of
+SVE_VQ_MAX which is 512, substantially more than the architectural maximum
+of 16 which we might see even in a system emulating the limits of the
+architecture. Since we don't expose the size we tell the regset core
+externally let's define ARCH_SVE_VQ_MAX with the actual architectural
+maximum and use that for the regset, we'll still overallocate most of the
+time but much less so which will be helpful even if the core is fixed to
+not require contiguous allocations.
+
+Specify ARCH_SVE_VQ_MAX in terms of the maximum value that can be written
+into ZCR_ELx.LEN (where this is set in the hardware). For consistency
+update the maximum SME vector length to be specified in the same style
+while we are at it.
+
+We could also teach the ptrace core about runtime discoverable regset sizes
+but that would be a more invasive change and this is being observed in
+practical systems.
+
+Reported-by: Doug Anderson <dianders@chromium.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/net/phy/aquantia/aquantia_main.c | 42 ++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+We should probably also use the actual architectural limit for the
+bitmasks we use in the VL enumeration code, though that's both a little
+bit more involved and less immediately a problem.
+---
+Changes in v2:
+- Specify the value using the size of the bitfield it goes into.
+- Link to v1: https://lore.kernel.org/r/20240203-arm64-sve-ptrace-regset-size-v1-1-2c3ba1386b9e@kernel.org
+---
+ arch/arm64/include/asm/fpsimd.h | 12 ++++++------
+ arch/arm64/kernel/ptrace.c      |  3 ++-
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/phy/aquantia/aquantia_main.c b/drivers/net/phy/aquantia/aquantia_main.c
-index 6ee1a134bc60..fd7a79dbb4fb 100644
---- a/drivers/net/phy/aquantia/aquantia_main.c
-+++ b/drivers/net/phy/aquantia/aquantia_main.c
-@@ -23,6 +23,8 @@
- #define PHY_ID_AQCS109	0x03a1b5c2
- #define PHY_ID_AQR405	0x03a1b4b0
- #define PHY_ID_AQR112	0x03a1b662
-+#define PHY_ID_AQR112C	0x03a1b790
-+#define PHY_ID_AQR112R	0x31c31d12
- #define PHY_ID_AQR412	0x03a1b712
- #define PHY_ID_AQR113C	0x31c31c12
+diff --git a/arch/arm64/include/asm/fpsimd.h b/arch/arm64/include/asm/fpsimd.h
+index 50e5f25d3024..481d94416d69 100644
+--- a/arch/arm64/include/asm/fpsimd.h
++++ b/arch/arm64/include/asm/fpsimd.h
+@@ -62,13 +62,13 @@ static inline void cpacr_restore(unsigned long cpacr)
+  * When we defined the maximum SVE vector length we defined the ABI so
+  * that the maximum vector length included all the reserved for future
+  * expansion bits in ZCR rather than those just currently defined by
+- * the architecture. While SME follows a similar pattern the fact that
+- * it includes a square matrix means that any allocations that attempt
+- * to cover the maximum potential vector length (such as happen with
+- * the regset used for ptrace) end up being extremely large. Define
+- * the much lower actual limit for use in such situations.
++ * the architecture.  Using this length to allocate worst size buffers
++ * results in excessively large allocations, and this effect is even
++ * more pronounced for SME due to ZA.  Define more suitable VLs for
++ * these situations.
+  */
+-#define SME_VQ_MAX	16
++#define ARCH_SVE_VQ_MAX ((ZCR_ELx_LEN_MASK >> ZCR_ELx_LEN_SHIFT) + 1)
++#define SME_VQ_MAX	((SMCR_ELx_LEN_MASK >> SMCR_ELx_LEN_SHIFT) + 1)
  
-@@ -954,6 +956,44 @@ static struct phy_driver aqr_driver[] = {
- 	.get_stats	= aqr107_get_stats,
- 	.link_change_notify = aqr107_link_change_notify,
- },
-+{
-+	PHY_ID_MATCH_MODEL(PHY_ID_AQR112C),
-+	.name		= "Aquantia AQR112C",
-+	.probe		= aqr107_probe,
-+	.config_init	= aqr112_config_init,
-+	.config_aneg    = aqr_config_aneg,
-+	.config_intr	= aqr_config_intr,
-+	.handle_interrupt = aqr_handle_interrupt,
-+	.get_tunable    = aqr107_get_tunable,
-+	.set_tunable    = aqr107_set_tunable,
-+	.suspend	= aqr107_suspend,
-+	.resume		= aqr107_resume,
-+	.read_status	= aqr107_read_status,
-+	.get_rate_matching = aqr107_get_rate_matching,
-+	.get_sset_count = aqr107_get_sset_count,
-+	.get_strings	= aqr107_get_strings,
-+	.get_stats	= aqr107_get_stats,
-+	.link_change_notify = aqr107_link_change_notify,
-+},
-+{
-+	PHY_ID_MATCH_MODEL(PHY_ID_AQR112R),
-+	.name		= "Aquantia AQR112R",
-+	.probe		= aqr107_probe,
-+	.config_init	= aqr112_config_init,
-+	.config_aneg    = aqr_config_aneg,
-+	.config_intr	= aqr_config_intr,
-+	.handle_interrupt = aqr_handle_interrupt,
-+	.get_tunable    = aqr107_get_tunable,
-+	.set_tunable    = aqr107_set_tunable,
-+	.suspend	= aqr107_suspend,
-+	.resume		= aqr107_resume,
-+	.read_status	= aqr107_read_status,
-+	.get_rate_matching = aqr107_get_rate_matching,
-+	.get_sset_count = aqr107_get_sset_count,
-+	.get_strings	= aqr107_get_strings,
-+	.get_stats	= aqr107_get_stats,
-+	.link_change_notify = aqr107_link_change_notify,
-+},
- {
- 	PHY_ID_MATCH_MODEL(PHY_ID_AQR412),
- 	.name		= "Aquantia AQR412",
-@@ -1005,6 +1045,8 @@ static struct mdio_device_id __maybe_unused aqr_tbl[] = {
- 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQCS109) },
- 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR405) },
- 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR112) },
-+	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR112C) },
-+	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR112R) },
- 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR412) },
- 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR113C) },
- 	{ }
+ struct task_struct;
+ 
+diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+index dc6cf0e37194..e3bef38fc2e2 100644
+--- a/arch/arm64/kernel/ptrace.c
++++ b/arch/arm64/kernel/ptrace.c
+@@ -1500,7 +1500,8 @@ static const struct user_regset aarch64_regsets[] = {
+ #ifdef CONFIG_ARM64_SVE
+ 	[REGSET_SVE] = { /* Scalable Vector Extension */
+ 		.core_note_type = NT_ARM_SVE,
+-		.n = DIV_ROUND_UP(SVE_PT_SIZE(SVE_VQ_MAX, SVE_PT_REGS_SVE),
++		.n = DIV_ROUND_UP(SVE_PT_SIZE(ARCH_SVE_VQ_MAX,
++					      SVE_PT_REGS_SVE),
+ 				  SVE_VQ_BYTES),
+ 		.size = SVE_VQ_BYTES,
+ 		.align = SVE_VQ_BYTES,
+
+---
+base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+change-id: 20240202-arm64-sve-ptrace-regset-size-21b0928969e1
+
+Best regards,
 -- 
-2.43.0
+Mark Brown <broonie@kernel.org>
 
 
