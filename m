@@ -1,99 +1,122 @@
-Return-Path: <linux-kernel+bounces-63240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83C11852CBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:45:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AE5E852CCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:46:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 402B528AAB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:45:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C17291F26163
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:46:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75C50249F5;
-	Tue, 13 Feb 2024 09:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C024381BF;
+	Tue, 13 Feb 2024 09:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="A9/0Pdap"
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	dkim=pass (2048-bit key) header.d=orange.com header.i=@orange.com header.b="ZKUW7uXy"
+Received: from smtp-out.orange.com (smtp-out.orange.com [80.12.210.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591361E4A2
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CEBC286A6;
+	Tue, 13 Feb 2024 09:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.210.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707817224; cv=none; b=eXC8o1sKJp3j1+h3EHAzFi5vihfgD27Yg/5e3sRH8ahjPmeicWtRKUvpT2YuNePOx7s9QjwM26iUZ4GIhFr1fkrhsbR1Ym7/26qEM4i9VueezdPYOV3HCaKLRaq25gMkMsMegrD8ZWM16W6EWIdsH2ttmogYr9OATSfwVBHBBfo=
+	t=1707817302; cv=none; b=c+4AbkQSpVlTulaFGIvFvNJjxjnwmUCrM2XjrOGTgqicWTUC9mAzPlc89znq+F7Pge0xcXY/C2ZjHfj9hwcKiISaUrP93h435+Y/ZE4tWTYEwkGnsa5A2ge8ys/QYHLlwpXEqQadC0SD2IP43M6/axFLqNL176lIixkCiusa738=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707817224; c=relaxed/simple;
-	bh=Hw7vNI2Kb24vC0nkaK7/5I/kAuFRQ3NHTOq4CoOcbhQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SRcsZD2IKNWwjzUeFb6So1dU5+RjAEsoqBvuz2Rzm12bITGpajaqHA7tlgMsNsb/ooBy+R2CaVkS/XhpJyGiHZ9vOqH9Tf6jEdTZI9HBmGiuACD60jQqf1djZ38IUA1RiUgO8nQGU7q/8/+zJlO+JgvEZQEHl1XIfqv6hrc9FFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=A9/0Pdap; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707817221;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OvMkuTAmZ2Y4I5mIeurgoX7p1vggpBUJZeCNdIuhqjI=;
-	b=A9/0Pdapfde4UMXWBuOSYEnsYs3XzXeTFT8/HtvInZYMXQGfoyHtP9GTyIEbV2KV6N5ZJf
-	1GzoPWM9GzgXptD4kKnxk5qSHY2zanY52NPwmDaJzKgsZSISUa26dRM3mo7RTWUFOcRMKa
-	pXPEbI09FCmKKPQNM2lUj+U/uXTIovE=
-From: Oliver Upton <oliver.upton@linux.dev>
-To: kvmarm@lists.linux.dev
-Cc: kvm@vger.kernel.org,
-	Marc Zyngier <maz@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	linux-kernel@vger.kernel.org,
-	Oliver Upton <oliver.upton@linux.dev>
-Subject: [PATCH v2 16/23] KVM: arm64: vgic-its: Rely on RCU to protect translation cache reads
-Date: Tue, 13 Feb 2024 09:40:12 +0000
-Message-ID: <20240213094012.3961447-1-oliver.upton@linux.dev>
-In-Reply-To: <20240213093250.3960069-1-oliver.upton@linux.dev>
-References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+	s=arc-20240116; t=1707817302; c=relaxed/simple;
+	bh=MIns2JF+IYI+MYAJQHKqKYjEvmpYHQ0YIEx0P7Hr5dY=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:CC:References:
+	 In-Reply-To:Content-Type; b=qLQntGD03TYjAlO2ug22BLbxgXEiuApbEha4XWpZht0jkhxj8phMpfBTGgozRR5jBngCUEfrPI5f+Xwgv88DDrhZxVncvI5WFMimmkuWFaPF3mzZSOW2MD4J142mDBr6SK36ZB1L9Db35pTa3t3Bn3KxEACFytgndfJH5+wIx9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=orange.com; spf=pass smtp.mailfrom=orange.com; dkim=pass (2048-bit key) header.d=orange.com header.i=@orange.com header.b=ZKUW7uXy; arc=none smtp.client-ip=80.12.210.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=orange.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=orange.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=orange.com; i=@orange.com; q=dns/txt; s=orange002;
+  t=1707817300; x=1739353300;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   in-reply-to:content-transfer-encoding:from;
+  bh=MIns2JF+IYI+MYAJQHKqKYjEvmpYHQ0YIEx0P7Hr5dY=;
+  b=ZKUW7uXyY16cxEEkDWmzWTwCa3ODyYtol2JCy6j2tM2NEtWshgjdMhqe
+   uHOTDI3w7bFmsXnKXYutoWUNGy+UTBWRA/G9/A/o7n6tAK6oiYXaSyroo
+   8gvuNgxgcLG533x4gW71jcDlwnvreBAuynzmtukWZZZz9yZuOGd0vJnDp
+   i5MYuQHmPAaeKT0Ke4+PMnVJPGfVZWhHfosNssJARILlLjLr42DGMOqKS
+   N+fqkZqKwiWxXR8o1g6+UuRgeiwxftFa3Ar350ymbsfXaVtS8ShB7+civ
+   M2uWRWBrIK0HhCsI2l6ZkgM8opB0sSAh7uqaLQFRwrgeBJ70L7nmEi8aQ
+   Q==;
+Received: from unknown (HELO opfedv3rlp0b.nor.fr.ftgroup) ([x.x.x.x]) by
+ smtp-out.orange.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Feb 2024 10:40:29 +0100
+Received: from unknown (HELO OPE16NORMBX204.corporate.adroot.infra.ftgroup)
+ ([x.x.x.x]) by opfedv3rlp0b.nor.fr.ftgroup with
+ ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Feb 2024 10:40:29 +0100
+Received: from [x.x.x.x] [x.x.x.x] by OPE16NORMBX204.corporate.adroot.infra.ftgroup
+ [x.x.x.x] with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35;
+ Tue, 13 Feb 2024 10:40:29 +0100
+From: pierre.cregut@orange.com
+X-IronPort-AV: E=Sophos;i="6.06,156,1705359600"; 
+   d="scan'208";a="105395682"
+Message-ID: <2ba3b9d5-4017-49bb-8e22-7232a143e829@orange.com>
+Date: Tue, 13 Feb 2024 10:40:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] PCI/IOV: Revert "PCI/IOV: Serialize sysfs
+ sriov_numvfs reads vs writes"
+To: Jim Harris <jim.harris@samsung.com>, Bjorn Helgaas <helgaas@kernel.org>
+CC: Leon Romanovsky <leonro@nvidia.com>, Kuppuswamy Sathyanarayanan
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, Bjorn Helgaas
+	<bhelgaas@google.com>, "linux-pci@vger.kernel.org"
+	<linux-pci@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Jason Gunthorpe <jgg@nvidia.com>, Alex
+ Williamson <alex.williamson@redhat.com>
+References: <20240211084844.GA805332@unreal>
+ <20240212202714.GA1142983@bhelgaas>
+ <CGME20240212225904uscas1p19a3d7743607a0abe3627fb8c4829f27b@uscas1p1.samsung.com>
+ <ZcqitnWTh+zQ+H4p@ubuntu>
+Content-Language: en-US
+In-Reply-To: <ZcqitnWTh+zQ+H4p@ubuntu>
+X-ClientProxiedBy: OPE16NORMBX107.corporate.adroot.infra.ftgroup (10.115.27.4)
+ To OPE16NORMBX204.corporate.adroot.infra.ftgroup (10.115.26.9)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 
-Stop taking the lpi_list_lock when reading the LPI translation cache.
-
-Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
----
- arch/arm64/kvm/vgic/vgic-its.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-index 55463eb84763..0e449f8c1f01 100644
---- a/arch/arm64/kvm/vgic/vgic-its.c
-+++ b/arch/arm64/kvm/vgic/vgic-its.c
-@@ -593,15 +593,14 @@ static struct vgic_irq *vgic_its_check_cache(struct kvm *kvm, phys_addr_t db,
- {
- 	struct vgic_dist *dist = &kvm->arch.vgic;
- 	struct vgic_irq *irq;
--	unsigned long flags;
- 
--	raw_spin_lock_irqsave(&dist->lpi_list_lock, flags);
-+	rcu_read_lock();
- 
- 	irq = __vgic_its_check_cache(dist, db, devid, eventid);
- 	if (!vgic_try_get_irq_kref(irq))
- 		irq = NULL;
- 
--	raw_spin_unlock_irqrestore(&dist->lpi_list_lock, flags);
-+	rcu_read_unlock();
- 
- 	return irq;
- }
--- 
-2.43.0.687.g38aa6559b0-goog
+Rmlyc3Qgc29ycnkgZm9yIG5vdCBhbnN3ZXJpbmcgZWFybGllciBidXQgaXQgaXMgYSBsb25nIHRp
+bWUgYWdvLiBJIGRvCm5vdCB3b3JrIG9uIHRoZSB0b3BpYyBhbnkgbW9yZSAoYSBtb25pdG9yaW5n
+IHRvb2wgU2t5ZGl2ZSwgYW4gb3Blbgpzb3VyY2UgcHJvamVjdCBubyBtb3JlIGFjdGl2ZWx5IGRl
+dmVsb3BlZCBhcyBmYXIgYXMgSSBrbm93KSBhbmQgb25seQpoYXZlIHZhZ3VlIG1lbW9yaWVzIG9m
+IGl0LgoKPiAKPiAgICAgIGtvYmplY3RfdWV2ZW50KCZkZXYtPmRldi5rb2JqLCBLT0JKX0NIQU5H
+RSk7Cj4gICAgICBpb3YtPm51bV9WRnMgPSBucl92aXJ0Zm47Cj4gCj4gd2hpY2ggaXMgaWRlbnRp
+Y2FsIHRvIGhvdyB0aGUgY29kZSBsb29rcyB0b2RheS4gSXMgaXQgcG9zc2libGUgdGhhdAo+IHVz
+ZXJzcGFjZSBjb3VsZCByZWFjdCB0byB0aGlzIHVldmVudCBhbmQgcmVhZCB0aGUgc3RhbGUgbnVt
+X1ZGcyBiZWZvcmUKPiBpb3YtPm51bV9WRnMgZ2V0cyB3cml0dGVuIGhlcmU/IEkgbWVhbiwgdGhl
+b3JldGljYWxseSBpdCdzIHBvc3NpYmxlLCBidXQKPiBmcm9tIHRoZSBidWcgcmVwb3J0IGl0IHNl
+ZW1zIGxpa2UgdGhlIHNjZW5hcmlvIFBpZXJyZSB3YXMgZmFjaW5nIHdhcwo+IDEwMCUgcmVwcm9k
+dWNpYmxlLgogRnJvbSBteSBtZW1vcmllcyB5ZXMgdGhhdCB3YXMgZXhhY3RseSB0aGUgcHJvYmxl
+bS4gQW55IHN0YWJsZSBtZXRob2QKdGhhdCBjb3VsZCBkZXRlY3QgdGhlIGNoYW5nZSBvZiBjb25m
+aWd1cmF0aW9uIGluIHVzZXIgbGFuZCBhbmQgZW5zdXJlCnRoYXQgd2UgZ2V0IGEgcmVsaWFibGUg
+dmFsdWUgb2YgbnVtX3ZmcyBhZnRlciB3ZSByZWNlaXZlZCBpdCB3b3VsZCBiZQpmaW5lLgoKQmVz
+dCByZWdhcmRzLAoKUGllcnJlIENyw6lndXQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXw0KQ2UgbWVzc2FnZSBldCBzZXMgcGllY2VzIGpvaW50ZXMg
+cGV1dmVudCBjb250ZW5pciBkZXMgaW5mb3JtYXRpb25zIGNvbmZpZGVudGllbGxlcyBvdSBwcml2
+aWxlZ2llZXMgZXQgbmUgZG9pdmVudCBkb25jDQpwYXMgZXRyZSBkaWZmdXNlcywgZXhwbG9pdGVz
+IG91IGNvcGllcyBzYW5zIGF1dG9yaXNhdGlvbi4gU2kgdm91cyBhdmV6IHJlY3UgY2UgbWVzc2Fn
+ZSBwYXIgZXJyZXVyLCB2ZXVpbGxleiBsZSBzaWduYWxlcg0KYSBsJ2V4cGVkaXRldXIgZXQgbGUg
+ZGV0cnVpcmUgYWluc2kgcXVlIGxlcyBwaWVjZXMgam9pbnRlcy4gTGVzIG1lc3NhZ2VzIGVsZWN0
+cm9uaXF1ZXMgZXRhbnQgc3VzY2VwdGlibGVzIGQnYWx0ZXJhdGlvbiwNCk9yYW5nZSBkZWNsaW5l
+IHRvdXRlIHJlc3BvbnNhYmlsaXRlIHNpIGNlIG1lc3NhZ2UgYSBldGUgYWx0ZXJlLCBkZWZvcm1l
+IG91IGZhbHNpZmllLiBNZXJjaS4NCg0KVGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMg
+bWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIHByaXZpbGVnZWQgaW5mb3JtYXRpb24gdGhhdCBt
+YXkgYmUgcHJvdGVjdGVkIGJ5IGxhdzsNCnRoZXkgc2hvdWxkIG5vdCBiZSBkaXN0cmlidXRlZCwg
+dXNlZCBvciBjb3BpZWQgd2l0aG91dCBhdXRob3Jpc2F0aW9uLg0KSWYgeW91IGhhdmUgcmVjZWl2
+ZWQgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBkZWxl
+dGUgdGhpcyBtZXNzYWdlIGFuZCBpdHMgYXR0YWNobWVudHMuDQpBcyBlbWFpbHMgbWF5IGJlIGFs
+dGVyZWQsIE9yYW5nZSBpcyBub3QgbGlhYmxlIGZvciBtZXNzYWdlcyB0aGF0IGhhdmUgYmVlbiBt
+b2RpZmllZCwgY2hhbmdlZCBvciBmYWxzaWZpZWQuDQpUaGFuayB5b3UuCg==
 
 
