@@ -1,137 +1,142 @@
-Return-Path: <linux-kernel+bounces-62996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 730808528A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:15:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91A998528A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:15:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CA5F284877
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:15:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28A11C2318C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:15:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011F9134C0;
-	Tue, 13 Feb 2024 06:15:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF60134AB;
+	Tue, 13 Feb 2024 06:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e3glaTYJ"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lNm2UMVz"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983F5134A1;
-	Tue, 13 Feb 2024 06:15:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409841428F
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707804910; cv=none; b=sb6/g5egS/HEkZuMDJ4CYiYIP/KLofmZFe5g1nYr/nrMJe1pJLcWcj/34bSOaaYfjbolMfGhHA8QHAm+i0eoRyIM5sAASW+G4JkICGeJs3ePIYP/gN5nADWUsFKHyd3yijEYBlGrM2Q4cWlP9lSP5wFiac2ORvp4WFoK7YCIwBc=
+	t=1707804920; cv=none; b=IXWJTnUDAEkdfFKt8OnLOZHoChbd3Ql4+3VInxOuCCajiB6hTpUxpm7YwUTKTBXKsoKys8UZEsNWIAXsWfBpk7GSpzxXH17wl8KTQvu6cquiMMkUh5ANYLT9XZRa4W+ipMOav4d2SP0dBhcaz5U2zxd3CqEkLWhJxTIjqU7EmHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707804910; c=relaxed/simple;
-	bh=W+XnatEuWjY55uYnIcTVImixNZpiX7TXUq4AWRF7L2U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=NQbc8WA5yClp8ThEa0ljOkYCaE75pg19K92uL9YVxrTnhAg7qinaRYMIQxVHNeB54Vm+XfDC86uc1oD5Xt7NJymnGmW3qvaraelGFxVp1o6HWNGC1gTzKRgDJ404tML0giOD2IhKdQO93imLbC1SV3dxV/kI/dJild8tlxbJ+QA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e3glaTYJ; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3832ef7726so457100066b.0;
-        Mon, 12 Feb 2024 22:15:08 -0800 (PST)
+	s=arc-20240116; t=1707804920; c=relaxed/simple;
+	bh=u8yZi7AQT/813a+tj4axejVbUv5iQUwpTR2TYQK9hnY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LDh1Y+ta9ajVoUYhFVB99qQ7OlpXjnC7voZIlGUZE8pSlz3iMrDRDUPAfU2PmavTskhldKEFXJTsUTUOYT2BsNv5eD4X7LV1cIHa77+432cHALXJVP4BHtyt58JnvFa+tWk+0ZWbaWMBO8oHEJOP+iK+t9VuIL9SpXI6lgivku0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lNm2UMVz; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d74045c463so31315935ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 22:15:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707804907; x=1708409707; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xU96ytnGGcxSAcqxvNbh0M7/JHhcz9bM8B0eaNoETfA=;
-        b=e3glaTYJp4d2Iil+rTo7RgluBNMABrj0kjOgdOBGhk3D5ECaCVUkyMHc+9inrbBpU2
-         NxchzjnzbIdI4dLWJQxF3MsIOwvkrRakh98ZWdm3sgBcmIwFgmEYv4mfFSfZITPuHqyj
-         wY7WKtDwCq/U0Qac5dKjfKmw8FM5DrUBChWmQ1S/DGZARTu5gi+LZtUspOy632t6h9Zb
-         +qy3a6CvzGjRF2L8Ck2pMNvyH/MOOSHcwPN7YUchuH6xWZwC/POQjrNJJhzYwyAHJFjt
-         1PcXv+gp7IHnTou2wlrKa9sxhSzi9Yg/axs70Rcckc/CyLQMHBFHyaaNDSJCu+4oGeCw
-         Ltyw==
+        d=linaro.org; s=google; t=1707804918; x=1708409718; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GJ45qOxQygjER8m1e9kp6gKBtLTSJcN85GoQ73Py9I0=;
+        b=lNm2UMVzy2U12VM1LGrysZqJgpzn9fsEdwf9aysEfiqZiKB8z4MDiTy8M1sAFnIOBU
+         GF29VhYl50DwVFiCkUuXULsVZ/T3bR+r3jIMJm8u6BYEMdCyOgGUujCgFPv+NrdZ2ok/
+         uxyg/ntdozAhfrvm36Ut6wWrgVJ0boWc/U2hG8iRtMv37zRKq8cxrPwnoWtuFZmwRl9A
+         NGkN1uB/TkpJ5TcFwX3oxRfYt3p8UA6xJo0fHfcq5g1aeXil8g2JbbeXVJxrHGUQnGAw
+         LYBVUSiHgnP6uD+O3i3zlzqY/lUX1LngL5sSZSzWpurRh5QJtHJWBmoQysRpdat0b1QU
+         2quQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707804907; x=1708409707;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xU96ytnGGcxSAcqxvNbh0M7/JHhcz9bM8B0eaNoETfA=;
-        b=wyjItYuAycZEfR+GoLMY27NAkcx7zv0MqKAhR/oLtsINXGQnHSVqq9da2+wu39qUL7
-         Th6uhMeYs2eNctEP1vq/PDn1RxlI+d2WfYbt8g1yaDEHaY6OxbYJ3A56eDWDlEy14Ush
-         PcZfrArJWOKDYgQAdOLMXcV9Dl4pZQLaeR0CB/tucLCIe5Q8+objjehas7AL0nT1IQf9
-         Q0xz/HgxiHVew0V83RcmaPyhfQNDigeO/JJwuwUULwqiGvmluoDJEJdSiVZpYx0muZdB
-         2IpHiH1qeM25SaiVSglNmR9p+7svfEPmYWeZEtbvMpIhyvTkvDW9ggb7jl0DnMnroJUT
-         TqEg==
-X-Forwarded-Encrypted: i=1; AJvYcCV2NuojaBf8O3xhXW7Nmsaf0QSVsA6aXAeZ5DHRm7LYrdyCqWxl2V/QEYOvlDJQcspLG8xtgpT1AAUvjAM2TJmshKJUCKQT0zZP18aQAua3I0EfJV0ou1pIK77UTmbQytzEUdaCOC2rLA==
-X-Gm-Message-State: AOJu0YwveEqUMP+BFbET65A0XlYeUMBDTWLoRrtIeunymyPwPuVORduw
-	19mFbmatNbEcJYMQavlYILfeq9WZt8izFVgXyME2BaFjTdk6Jh8q
-X-Google-Smtp-Source: AGHT+IFzSg0OICApgiUNwb4wnigBaoMrIrGDV77w26PaubZJj3Ppm2rFAgElGTRB+vEGLfTc3Y/z5w==
-X-Received: by 2002:a17:906:cf86:b0:a28:d1f9:976 with SMTP id um6-20020a170906cf8600b00a28d1f90976mr5110872ejb.65.1707804906663;
-        Mon, 12 Feb 2024 22:15:06 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXA0GOg4AbFYK+3P17jrNUNemuktljTy4SPxvPykPgsseH74kIius1m5cEmLlM9ilsehaRtioqzrXyzv/WAZrNkyBJ+IiQMD6wdrYRQCdWyxJWXB7cCxmtfSRlHLFUMDhT3zdOzP/kLbI/MiJR0WmVM+SdB225+UzC775dZPjttNYjCzylKu8N9jWXnHqgO2xLpncu+wf7hZWa8REiTC85FcDj0FUMySEE+VH+HXEmIY+HO0ykNxOXP7wjLDKt8ZQymypghJiPM1JWlyiiNmPkRvAta3+SXLi2WhNIbH8Ycvu1YeMF9BddVWrIL652YmL6NvipWmFykdgbeaoem8e0jYAlc0R75uhM4TNLJVj8ssLSP9RxfArfgOkG5pGH7sAj7ycMLtEQ7D0jvpqCygfGtUYrsLUw/Kc06BinSu7z5NpSsDvwq/zmnJ3BJhK36cA==
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id hw20-20020a170907a0d400b00a3cf243de37sm508679ejc.111.2024.02.12.22.15.05
+        d=1e100.net; s=20230601; t=1707804918; x=1708409718;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GJ45qOxQygjER8m1e9kp6gKBtLTSJcN85GoQ73Py9I0=;
+        b=hr1MxuIOqzdF+3iqwAzgQzSVnNt9EKaPsHz07G7FJGZ5QaEZcc5pFqE2F4iT/ert8h
+         HOBwUo3v5r+FOMJbw1lJkw8xqMl1n/8a4CRrDR+xFe7fU2otky6DtxA1D5kHUALOj3lx
+         sSBs83VHX9gfIbQHfvKCQFaGZ6/qRCCKnF6sfGZ2eYp3vUbAGSTiDk7XzbM3LEGyvdWv
+         3brZEYyYLkG8x9crPu7FlLIlLZSdpbZxiBUqipXXn9/rI3o53LwpO/ArAFzpetZYdpy/
+         N6g3ZxYOrlAojKjotpDbfqqfPGSN7GcjzJYiHm3Pdl64i3Sli2rqI4MUq7QkAx9DLv9Y
+         sFQw==
+X-Forwarded-Encrypted: i=1; AJvYcCWjeQg4AZK01BOHBDI+x8pswHLFFA5NeUzOlZgBxpHzuLb0SglkM4I5nTCVHgfnIF4pTaQWHfUpL+I1YPn8YItzU4JgW/JnBMJX6j02
+X-Gm-Message-State: AOJu0YyWZLjONEM5IOcKgtksidyp2BwjBS9jB4LXoqV4+o8Q5SBboE+Q
+	wX/tlJkJnE5rzdNFxq2YZzvQKUj0aDXy8zN+5H/bfadS/gxQ10M7XY+5W3Ip6zo=
+X-Google-Smtp-Source: AGHT+IGUi3DzFtU5GCBI3jPrDosrmH0laHEfMHGNSX3/jONnrMeRzSaScuSFaMYurZ9SbwCiek8r+w==
+X-Received: by 2002:a17:903:442:b0:1da:2c11:54af with SMTP id iw2-20020a170903044200b001da2c1154afmr4125403plb.63.1707804918640;
+        Mon, 12 Feb 2024 22:15:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU6p0I8t3iGuopuoBs6axX29J/x4aeFiOGMbt+F2tIsk5b7fad2JT8DgSpKvC0GKCuZaUqRzJOZ05Rdn7G9wy3AXz7OtJ5QpF7fdp09Ikx5EO4EzWLiTdm85xRhNJ5Sr/NgmyrivZmVvzG4i7h1pw2A3PVwh+XDuZORnVC+b9JFmAZn8JyAqjcv8ImGBFkdGN8wK7gEk1vpjJWOFZXZnR+FdWBJDb2PhzwvhjkXhpqIwT1Fi008FFS0253FdcI53uvsGrwP0gHPryoX3JEZtD1d0WMnljvwRaZyMeJKJaodWeisbRgCWe5R7phEZpsuYs0i5m32OS7jnH3p8iC+YrQ7IxpVqojA2WCKUe0/1bwN7WaC0eRGKMi5HuDsnPsbDFTeqP5p/lSRBHiKGQ0J2N4evDuhAeqUzzlRve8uXkm+8CYWqjv2Zwlkb1DfrqhizMhactkAICRceS0+IA==
+Received: from localhost ([122.172.83.95])
+        by smtp.gmail.com with ESMTPSA id jv13-20020a170903058d00b001da0ce93890sm1302529plb.152.2024.02.12.22.15.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 22:15:06 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Daniel Golle <daniel@makrotopia.org>,
-	Frank Wunderlich <frank-w@public-files.de>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] arm64: dts: mediatek: mt7986: prefix BPI-R3 cooling maps with "map-"
-Date: Tue, 13 Feb 2024 07:14:59 +0100
-Message-Id: <20240213061459.17917-1-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
+        Mon, 12 Feb 2024 22:15:18 -0800 (PST)
+Date: Tue, 13 Feb 2024 11:45:16 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Sunil V L <sunilvl@ventanamicro.com>, linux-riscv@lists.infradead.org,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Len Brown <lenb@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Anup Patel <apatel@ventanamicro.com>
+Subject: Re: [PATCH v1 -next 0/3] RISC-V: ACPI: Enable CPPC based cpufreq
+ support
+Message-ID: <20240213061516.kbvwdyabw2p6egwr@vireshk-i7>
+References: <20240208034414.22579-1-sunilvl@ventanamicro.com>
+ <CAJZ5v0iwV4mG40hbhomrTgiUoUpn_ocNH_5K84yseSpsZtviVg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0iwV4mG40hbhomrTgiUoUpn_ocNH_5K84yseSpsZtviVg@mail.gmail.com>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On 12-02-24, 16:24, Rafael J. Wysocki wrote:
+> On Thu, Feb 8, 2024 at 4:44 AM Sunil V L <sunilvl@ventanamicro.com> wrote:
+> >
+> > This series enables the support for "Collaborative Processor Performance
+> > Control (CPPC) on ACPI based RISC-V platforms. It depends on the
+> > encoding of CPPC registers as defined in RISC-V FFH spec [2].
+> >
+> > CPPC is described in the ACPI spec [1]. RISC-V FFH spec required to
+> > enable this, is available at [2].
+> >
+> > [1] - https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#collaborative-processor-performance-control
+> > [2] - https://github.com/riscv-non-isa/riscv-acpi-ffh/releases/download/v1.0.0/riscv-ffh.pdf
+> >
+> > The series is based on the LPI support series.
+> > Based-on: 20240118062930.245937-1-sunilvl@ventanamicro.com
+> > (https://lore.kernel.org/lkml/20240118062930.245937-1-sunilvl@ventanamicro.com/)
+> >
+> > Sunil V L (3):
+> >   ACPI: RISC-V: Add CPPC driver
+> >   cpufreq: Move CPPC configs to common Kconfig and add RISC-V
+> >   RISC-V: defconfig: Enable CONFIG_ACPI_CPPC_CPUFREQ
+> >
+> >  arch/riscv/configs/defconfig |   1 +
+> >  drivers/acpi/riscv/Makefile  |   1 +
+> >  drivers/acpi/riscv/cppc.c    | 157 +++++++++++++++++++++++++++++++++++
+> >  drivers/cpufreq/Kconfig      |  29 +++++++
+> >  drivers/cpufreq/Kconfig.arm  |  26 ------
+> >  5 files changed, 188 insertions(+), 26 deletions(-)
+> >  create mode 100644 drivers/acpi/riscv/cppc.c
+> >
+> > --
+> 
+> This is fine with me, so
+> 
+> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> 
+> and it would be good to ask Viresh (who maintains the CPPC cpufreq
+> driver) for an ACK.
 
-This fixes:
-arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dtb: thermal-zones: cpu-thermal:cooling-maps: 'cpu-active-high', 'cpu-active-low', 'cpu-active-med' do not match any of the regexes: '^map[-a-zA-Z0-9]*$', 'pinctrl-[0-9]+'
-        from schema $id: http://devicetree.org/schemas/thermal/thermal-zones.yaml#
+I have provided my Ack over the cpufreq patch. Thanks.
 
-Fixes: c26f779a2295 ("arm64: dts: mt7986: add pwm-fan and cooling-maps to BPI-R3 dts")
-Cc: Daniel Golle <daniel@makrotopia.org>
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts b/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts
-index e04b1c0c0ebb..ed79ad1ae871 100644
---- a/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts
-@@ -146,19 +146,19 @@ sfp2: sfp-2 {
- 
- &cpu_thermal {
- 	cooling-maps {
--		cpu-active-high {
-+		map-cpu-active-high {
- 			/* active: set fan to cooling level 2 */
- 			cooling-device = <&fan 2 2>;
- 			trip = <&cpu_trip_active_high>;
- 		};
- 
--		cpu-active-med {
-+		map-cpu-active-med {
- 			/* active: set fan to cooling level 1 */
- 			cooling-device = <&fan 1 1>;
- 			trip = <&cpu_trip_active_med>;
- 		};
- 
--		cpu-active-low {
-+		map-cpu-active-low {
- 			/* active: set fan to cooling level 0 */
- 			cooling-device = <&fan 0 0>;
- 			trip = <&cpu_trip_active_low>;
 -- 
-2.35.3
-
+viresh
 
