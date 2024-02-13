@@ -1,103 +1,136 @@
-Return-Path: <linux-kernel+bounces-62892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 564BA852798
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:53:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC4D685279D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E973B1F238A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:53:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18F6CB23FC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:58:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BF28C0B;
-	Tue, 13 Feb 2024 02:53:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1BCA92E;
+	Tue, 13 Feb 2024 02:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LGk7uUHg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EmtYwMSo"
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552BA8BE8;
-	Tue, 13 Feb 2024 02:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C241E8F45
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 02:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707792785; cv=none; b=KgACR2dC4lfybvSMY1/PTcsXYCc8DrFoUKNuOuCH9m+ax4TBnA4qY4JCyoI5eJWJTlgbKZfjgCuOeL+jID4BohDJvn2oN8ePlWwxzMbzyErX5M3MoNuIuuXl1dhGDA2UTGZR2k3OiwlaoMsVTktSUTi5nSDkvp7+nrFCQAbDNQs=
+	t=1707793073; cv=none; b=I7kZnVouovzlIWfuZ1ezTBWHDvCuvh7BCWvKQZkRRoNZCE38U0YvwQku2rYUdfpRqvfXBYGuKuz/Sxh/T82upfqxeXtoet6seic3EX/HFEaLT0vRwv1h+u/sHOv5EU80WCDqoz1D+4n7Fr6lGXzNWwnOvF2O9oBirSemJWfy6qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707792785; c=relaxed/simple;
-	bh=CAs0UMp0BUjGybDRGjh0Nyg6O4tl4J6ISVjwah+57MI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KRKjnzAQ0uDvYmhqbuYNgn3NULNhYiDn+GzHYGmGTKFx5kqBwJX8GPFyALiQDwix5rF46Y1lmV7JY/wiS6I0T4MFKIJFRiGIFmTo8mD5LaqyniC2NvcZ4QPh4F4WtDPHjXKjkZ7nsOeOG51Lu5YjV20NqeUzZwH0iawlJAdfj58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LGk7uUHg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D93EC433F1;
-	Tue, 13 Feb 2024 02:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707792784;
-	bh=CAs0UMp0BUjGybDRGjh0Nyg6O4tl4J6ISVjwah+57MI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LGk7uUHg0aWZlEP6w6wzMkOo2Y/yS76VDz8euCfjoGqlyjyhcFLmUzNyBNikw6qns
-	 dePhwicnPM86j2thaGSc/CcCJR0qb+nSF/LPctPfx9Q1TlPgiTvufrTB7DTq/06Fv1
-	 m+weN/Jv2U8HA8SLYcWsLHtzH7qsGrR3HT+7v7R4O0ZfOpeulAviP0l0t58GplIJ8X
-	 yZdw96zDmJDJWk/ZfHikVo0Sl6vmwkZhPMRl3EXs+PaUZ2glPhiOLnJgkuZZzA8QRu
-	 xYRTOHF30pKLqf+gIQyCrULaxg2S3+mATIRZpnUCtw8Mew+CMj1NNZg8lai0beP7Bl
-	 84Y9hfwpyhqUw==
-Date: Mon, 12 Feb 2024 19:53:03 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: llvm@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: Prebuilt LLVM 18.1.0-rc2 uploaded
-Message-ID: <20240213025303.GA4006766@dev-arch.thelio-3990X>
-References: <20240208002841.GA2601476@dev-arch.thelio-3990X>
- <CANiq72=G--5LW-9sg2PscTL863mFVNdnX7LUQX2Xj02qZs4crA@mail.gmail.com>
- <20240212234850.GB3221859@dev-arch.thelio-3990X>
+	s=arc-20240116; t=1707793073; c=relaxed/simple;
+	bh=gKJFfu63jwMr2L/Cxwzv3BXvXjhYSn8OnEebVEApyZw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=fqjVpus+YlKjHq0FX95ppWTZNprAkE/HRbWIkFH2fCHDpeZf2iy+fwpxTR/z+2NoCchlIsjAa275BDXPmEVB7rtrcl7b9TTr9KpR7kj9SNB4t4V18oKne/lzPQC0EugG7mdCPv+yW3BGygP9X8WfDsqUO2TPd6A72Z/qe8cQhcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EmtYwMSo; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2966a804063so1955279a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:57:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707793071; x=1708397871; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8VHA+kbZQmNH0KfmyjD++Vx8goDUnnVPYFFFCFvDlx0=;
+        b=EmtYwMSo48x7+THuTePd9B5/UR0VH/0UMYMc0kAnVXWkgwt+zO7jFHUMO/Etn+gxRA
+         LigI8U6qSoOVydhdrMgfq1C5t7IWUqZfHEzbKcUkjlFgsPF4DNIQr2Bo6oCtqV6MPBMu
+         FdfBnZWG5y8CImgy6dukTUJSrK0lHPt8uOUiaIRD/Z886FvVc/DFQqtJc8fSczR6aOgJ
+         vdWrYxDnWFxo46S2c5P2aAANUvUbv2Yf5QC0DcLO8wDMil64Ycc3Nw9PSZrnZzsDoOy1
+         7tUZg5WqS9eHoGzcjT2LsPoqCXS/iy6uF5AFO9ZWcyofSzZ0aINuUhKZDdYUYdBOV5RH
+         37yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707793071; x=1708397871;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8VHA+kbZQmNH0KfmyjD++Vx8goDUnnVPYFFFCFvDlx0=;
+        b=QLHQHZkcxuqezYUilEco7qBm9pHAlw7RjkEP1tQEBnvidDsJLcLmaYRT+tasTHlVtp
+         igKr5jltJu7eL3mGDpW30KypWGNKkjIQy4s8CZkVaBRcq2afEDuHN1beNizahtXFT9eq
+         fMHChIrF/ku+rTd19SYwX8+F3rqEH3d2jKX3p2E4U5mEkLeilBSTD13OEz4q4dXc0MBf
+         AljilAWZapkpzg8BevNqnVvhyVV9UBYR5fFaJLfmPQUMq/THAcdiEe0525Rz0FewDkKk
+         PSgm/gEJacMHc43IACL27sFZ7JZNaSFgGnAHe2XNiZRZWdpeSbx3vTRBfyqGCfhiTyMB
+         +lNQ==
+X-Gm-Message-State: AOJu0Yz0sNiQNGZFbjVABWqkZTkD2DI4xbMCSlz4rwKhphUSYky+BalZ
+	fEFipzF7zBnZID7OiuYT3jwzEoZr55w7JDc6t1Py+fvnhz2sxwxhJfKcoajOOg669iME/or+URK
+	FJg==
+X-Google-Smtp-Source: AGHT+IFLrQSyWAo34mcTmEij2pzvFCTRIp5Lmw1QGmSvrKDx9ju4v7ZA3sh0svx4UcZhzStGpLmD0gR3W2Y=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:35c3:b0:296:d696:a5ac with SMTP id
+ nb3-20020a17090b35c300b00296d696a5acmr56630pjb.5.1707793071021; Mon, 12 Feb
+ 2024 18:57:51 -0800 (PST)
+Date: Mon, 12 Feb 2024 18:57:49 -0800
+In-Reply-To: <CABgObfaEz8zmdqy4QatCKKqjugMxW+AsnLDAg6PN+BX1QyV01A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240212234850.GB3221859@dev-arch.thelio-3990X>
+Mime-Version: 1.0
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <591420ca62f0a9ac2478c2715181201c23f8acf0.1705965635.git.isaku.yamahata@intel.com>
+ <CABgObfaEz8zmdqy4QatCKKqjugMxW+AsnLDAg6PN+BX1QyV01A@mail.gmail.com>
+Message-ID: <Zcrarct88veirZx7@google.com>
+Subject: Re: [PATCH v18 032/121] KVM: x86/mmu: introduce config for PRIVATE
+ KVM MMU
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com, erdemaktas@google.com, 
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, 
+	hang.yuan@intel.com, tina.zhang@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 04:48:52PM -0700, Nathan Chancellor wrote:
-> Hi Miguel,
-> 
-> On Sat, Feb 10, 2024 at 05:36:01PM +0100, Miguel Ojeda wrote:
-> > On Thu, Feb 8, 2024 at 1:28 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> > >
-> > > I have built and uploaded a prebuilt version of LLVM 18.1.0-rc2 to
-> > > https://mirrors.edge.kernel.org/pub/tools/llvm/.
-> > >
-> > > As with Linux -rc releases, this is not the final version that will
-> > > ship. If you run across any issues, especially ones that were not
-> > > present in earlier LLVM releases, please consider reporting them to us
-> > > so that we have a chance to investigate and fix them before the final
-> > > release.
-> > 
-> > I took a look at the LLVM 18 prerelease to see if these would work
-> > with Rust for e.g. CI and other users (instead of using the
-> > LLVM-provided apt ones, for instance), and noticed it does not bundle
-> > `libclang.so`.
-> > 
-> > Would it be possible to include it so that we can use `bindgen` and
-> > thus enable Rust with them?
-> > 
-> > I understand they are intended to be minimal toolchains, but if you
-> > think it would not be an unreasonable overhead, then it would be great
-> > to have it.
-> 
-> Absolutely, I am more than happy to include libclang.so and anything
-> else that would be useful for the kernel. Everything gets built but I
-> only install what has felt needed for the kernel, so there is no real
-> overhead aside from package size, which obviously should not increase
-> much with this change. I've added the targets to my build scripts and
-> kicked off a set of builds. If they finish successfully, I will upload
-> them so that you can test them out and make sure they will work.
+On Mon, Feb 12, 2024, Paolo Bonzini wrote:
+> On Tue, Jan 23, 2024 at 12:55=E2=80=AFAM <isaku.yamahata@intel.com> wrote=
+:
+> >
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> >
+> > To keep the case of non TDX intact, introduce a new config option for
+> > private KVM MMU support.  At the moment, this is synonym for
+> > CONFIG_INTEL_TDX_HOST && CONFIG_KVM_INTEL.  The config makes it clear
+> > that the config is only for x86 KVM MMU.
+>=20
+> Better, just put this as:
+>=20
+> config KVM_MMU_PRIVATE
+>     bool
+>=20
+> but also add a reverse dependency to KVM_INTEL:
+>=20
+> config KVM_INTEL
+>      tristate "KVM for Intel (and compatible) processors support"
+>      depends on KVM && IA32_FEAT_CTL
+>      select KVM_MMU_PRIVATE if INTEL_TDX_HOST
+>      ...
+>=20
+> This matches the usage of kvm-intel-$(INTEL_TDX_HOST) in the Makefile.
 
-Alright, I reuploaded 18.1.0-rc2 with libclang.so included, please let
-me know if this will work for you going forward.
+But why even bother with a Kconfig in the first place?  Saving the is_priva=
+te
+bit in the role adds no value whatsoever.  In fact, it's probably a big net
+negative because it necessitates this ugly code:
 
-Cheers,
-Nathan
+	if (private)
+		kvm_mmu_page_role_set_private(&role);
+
+which really should just be
+
+	role.private =3D private;
+
+Ditto for kvm_mmu_page.private_spt.
+
+The only thing that even so much as approaches being a hot path is
+kvm_gfn_shared_mask(), and if that needs to be optimized, then we'd probabl=
+y be
+better off with a static_key, a la kvm_has_noapic_vcpu (though I'm *extreme=
+ly*
+skeptical that that adds any measurable benefit).
 
