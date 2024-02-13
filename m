@@ -1,172 +1,120 @@
-Return-Path: <linux-kernel+bounces-64437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 015F2853E4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4211A853E13
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:06:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 263561C22ABC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:14:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 751DD1C28CEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64FA7866B;
-	Tue, 13 Feb 2024 22:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A9F162A06;
+	Tue, 13 Feb 2024 22:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iRCPqLSu"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4Pu7e+w"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 636E977F39;
-	Tue, 13 Feb 2024 22:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9AD6627F0;
+	Tue, 13 Feb 2024 22:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707861991; cv=none; b=RCiUEeGIEpb+eLZ9Q84RR/oT73xB7PKfmSOT7h4Q5qrezA1Altg8lx4j8mHb8x7VprW0owdjSDh9GO2Y1ZuvKa3OdtBf8jPrAdBDyWUQqml9pF6H+qEv3O1T6Id1vSSau7llUWwuH3s5wuhoGJcR96M9OynBLvERcUfsoFWmIAA=
+	t=1707861824; cv=none; b=IIir0G3xpc/cvhWUmgjvW8053vXez0c9pXV5QXiYaCggDb4NazvqpexFGroAK7qxcZib06JcYoXDVN05jxY0dfZh7wyd78TvQs2Z0eAODV0NTF1RNgGbN8et4EDDBVTTTnLbpZEEYw34h0PPkCVbAKelh7p+JYwQOU+DQE9i8jM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707861991; c=relaxed/simple;
-	bh=tqxykmJnjc+t9OZKEIA9fiqhEZrLIlF9e6epDeBzR7U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QNpn6mhxGDw2J5CqZOxgYZZ1uCkdTkeFg/qmiDFEq78L1+fq9oM4w0zqnhdrvU9OkongQywk+phuXlKVCGCUpHPhanH/08nvc+DVmgw/00YXd2ickxKB6Cf9CCaTpVizEgmLSKG6pn9jfnMNuU7TBqKdbtosmJTqUxFLHzP5TqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iRCPqLSu; arc=none smtp.client-ip=209.85.218.53
+	s=arc-20240116; t=1707861824; c=relaxed/simple;
+	bh=ZN/ERQybVeyach0ht9MlIPex+bb6wOcAovzlJrtd+n4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c46piih1SD2b0ji+XyLqOkHx5sastnCnfma2iujtyzm/w5FC3mnV/B+7c1Zlspz4ZlGO3ilXHXczXm6Kcy0QWmCcziHBhq6yLDgQey+zryft1MR+U3oWcnG6telTTS6+/ADA9FmJu1QHUDrEeIDL1euogFXkHduftgXfZ4Gk448=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I4Pu7e+w; arc=none smtp.client-ip=209.85.222.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3cc2f9621aso150031066b.1;
-        Tue, 13 Feb 2024 14:06:29 -0800 (PST)
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7838af983c1so387402385a.3;
+        Tue, 13 Feb 2024 14:03:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707861987; x=1708466787; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vdHuk5ughM3e+Z5D0Z5R0C1DnmENSSx3TlDfYYFTKI0=;
-        b=iRCPqLSuX0xy8+EDAjaF/U5QDF/XozMFI/zWd5cUbmtB0eu7KOU/4yzYyDUxyZzGJx
-         4wVczj1aZ9fRNNdiRjE/7IugYARioPj/6DFekiVWvRO21FpgCxxvCFK2qy3rGrRoNZXD
-         oRFECNcvml4LjR5npIXfh9DA/bdq101mIf4YGSzOIZx9ZQYS18Il54dNkZX39YixXglX
-         oSL0sscpOc7UVyhZyF+C562jmWGtGBo6oqBFANw5KNUAZvadgp6avOEr8k80bqBViP2v
-         slyIbROcFRyhESTGK/hWV5EuH953SMQ/A2/F5XRsFq9RTAEqr2iO/xXIkLcXSt9rP1NK
-         a3mg==
+        d=gmail.com; s=20230601; t=1707861821; x=1708466621; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I2HXMDB/MGTQCp5MFRiwYdYl9rpm9iyOypkHduc/gLg=;
+        b=I4Pu7e+wuDOQMQMh/dNCMP6u5Bru/2JBUrO3PTNXmbN+EYTchP3PKi0Of1XC93E/rB
+         znw+ZCo+MMFmIireck5gULJzI0z5cPwz7j83qyqtwhzfCVU0J4KWZW0wgatQpFPX0ovM
+         Edq3fWpi4UDeIp7Hw6pec7rH3l3EQGwErk5BPFL6/YoIoQaT9StlcF5OJ7TPLxlYLt4T
+         kBTJSAVegZdNTJfUsoaOkPHyFWVJP5F5YJ5omZ35PG6Ay86S72sFZuFG2kyKPsy0ao/C
+         in0/YX+6ZKhVqoGgDwQXgkcluUNPsRZuvkgWY8KJypu9NLR4tpvXrq4G3Q1QBCD9DcO6
+         oDHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707861987; x=1708466787;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vdHuk5ughM3e+Z5D0Z5R0C1DnmENSSx3TlDfYYFTKI0=;
-        b=FeNPbkJL3MaFcP0sKXNagU4Kx+sviehGx/nPmB6lTPKnEvbR48IcoYz3TwugrW0DW8
-         dZ0t6RCAwTzh/CfUbb36ol70HJA0cIG5xhuAymGV727lLIUGEbYGcrnCsUpss9EuqhHy
-         FLlq9pkgZZ+XWX3bzHGR2CgDoRLakzjLQCt2vuu808d0B8KwOqO24Ue56Ac2+WPeP1hM
-         un0MN9YJ3nl/PskYqaFXha9VFTQFu4vd5UPNG8n841Cg0HHgMSzvClnTAw2wRuK/aC1A
-         KKMRkrN4Gkgd/71c5vrvK/oXjWh7YIbslU9KWs/fyzeuTWGkzYVDFgPyx6iFBll2x8i6
-         jpEw==
-X-Forwarded-Encrypted: i=1; AJvYcCXPfLjeiEHt2zg+GlOFYQSV+mUWPxDShULfRl3z98aqXDztIZ2ZpLjQrxKq50dnCgMe6YqmYmHrEqX6rYZHCshURZLLFLdJ7rM9RBU4
-X-Gm-Message-State: AOJu0YxEamZzaaue15j8yqufNcL8jrauKOqb5WxLpGAIU28cZJEbWt9Y
-	FLTI3bdsV0eXDV7bge1BQW1mfCUgC2RGsjLxLGO+xm5AiN3m+tM8r3rVTYDG3AM=
-X-Google-Smtp-Source: AGHT+IFGujdPsKw3SRnEv1IWCGv78SR/COTAjTrsM2RTRpPIwr+ywNUzEnrCqFcwh1VGfw/CdT3xHA==
-X-Received: by 2002:a17:906:7c9:b0:a3c:1402:e042 with SMTP id m9-20020a17090607c900b00a3c1402e042mr388757ejc.37.1707861987378;
-        Tue, 13 Feb 2024 14:06:27 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWTLZa1aLuYKMp0xw8j6FTHAlWMyQ1Oc2lhyEpjW3LHjjlbWFrJdDnAVnsGJrsvYo7wHyP30IbdL2Obfx2lXqsGMVdNUBfTk5sCdsXQc2nbmpv7mdchHGxjVq63UZTjEy8k+6wx/yO/eOtYXRETJXTSvsG4S9czLiIs0yHLKgB99kJBX714Gn/gxP3KZZhUP9yRuzDBJ9rBV46NajErjjDqDYPkoq/kQQXsGMKBArWNm3rm5AeJ2QvgpleiUC0U8sgod/Vgp4nh/4v/HsSqlbwhB4Ys7JFNLpKmUzmJFFR5qWi7wqFCFrYs6wK5wVNXXSaL80piyORBQxZ11AGTOaWTc9JtOK16GOS9tQF+6SjgeYVEhOrrKexNojKTlY+y0sD7pgezqPRYF66WbiO3+Ul0HwrdCx6CEUUlbLCWkh0JuF8HB/86i3Gpwql0IBovmtDZA50suV5g5g==
-Received: from WBEC325.dom.lan ([185.188.71.122])
-        by smtp.gmail.com with ESMTPSA id p12-20020a170906b20c00b00a3bdf8ae86asm1706800ejz.10.2024.02.13.14.06.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 14:06:27 -0800 (PST)
-From: Pawel Dembicki <paweldembicki@gmail.com>
-To: netdev@vger.kernel.org
-Cc: linus.walleij@linaro.org,
-	Pawel Dembicki <paweldembicki@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Claudiu Manoil <claudiu.manoil@nxp.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	UNGLinuxDriver@microchip.com,
-	Russell King <linux@armlinux.org.uk>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 15/15] net: dsa: vsc73xx: Add bridge support
-Date: Tue, 13 Feb 2024 23:03:28 +0100
-Message-Id: <20240213220331.239031-16-paweldembicki@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240213220331.239031-1-paweldembicki@gmail.com>
-References: <20240213220331.239031-1-paweldembicki@gmail.com>
+        d=1e100.net; s=20230601; t=1707861821; x=1708466621;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I2HXMDB/MGTQCp5MFRiwYdYl9rpm9iyOypkHduc/gLg=;
+        b=Eei2Oq//THRiRC8KpF4ijJ3uC7sNgs9XlREdNm2cLJ+YRX6iIjdN9Qb+zmnvhC4fkt
+         4ShvgSVxSnZsbvCJR5j0DNJQEIE9PbRDFDM2zK8t5NATBdPOHngdAtFKJA1n9rCPTGT8
+         1JMloc2DffD39xK44j047tl2t+IGWDIOarvpcXORQ8QzjbHqh28cA1DNnAmJIgyEKxa9
+         Ar+ywiel8SROW6Zi99F2kGiNsh6cCKN7k0MS6HybTCcRIRaMUgvQUZwoOnGIeZQpFREc
+         wpVIGoAjtY0lw9+m7BH0cbH5WD6QbQKXIPexjlAXD3EXWlbGEqUqntni4td5/R6gAi+x
+         3vGA==
+X-Forwarded-Encrypted: i=1; AJvYcCUSgODOpIm4hlobPOMrmPu1Vnb9776f+7aVA1E3l9NBkMloJXgMnvOtj3cvzCeFAJgrQtyv2c2gJ7aIIB4In6ruwYLBtCXXL3KexqS56qsH0uR4HfEsg/BmjmaiqU2uJdpHa8xn
+X-Gm-Message-State: AOJu0Yw9fAvCHmnuc8J3qG16aG1828TALCmnskCr31MYune61aBEHmIB
+	yc6jniUCCiCNwkuw8SfOq4G4Dr8CipUMIb68SpTxxxqad4jXyaDfVNUFPqYwF6I=
+X-Google-Smtp-Source: AGHT+IGhZcXrp1agoKvRRle1EnMepwO4A7TW+UC/jmdeFBAZawkSzsugIYbzsOajfD4xZw5xSn1fCg==
+X-Received: by 2002:a05:620a:4612:b0:785:dae1:550f with SMTP id br18-20020a05620a461200b00785dae1550fmr1197929qkb.6.1707861821639;
+        Tue, 13 Feb 2024 14:03:41 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUJOfKetfgi9zVioqweyExdTNWvgGz2UGEkSeFdTWJRhTXozFtK4/x7UZGzEmo9kpvC4+INZfWYyZvpTqxL8tk35KRMPEE1I99LVjIntgNuDZjytf8Nd/xaBfzdMwrKlTupt0a+ckqB26Ldsp4iug2jku1MvdYY8mAfvhEnBYc31BAnq+4ATKm0Ve1pMqE+gZwnHtNlyWgu1RTMJOXd1FTF9fTqBg6gVAoPEDEpi+RQsQDRE0E4AECaMNhkx2BdELp8mq/CyCRcWJp++mRXQLZTLaTfXWnU7VALKNp91bszzViQk8lZbxCh/pRUkcpbYdDkOW58a7tQR2ZQjA/SXVFDnMoHc3veEeXVeXwLXbaNOSDsuCdIyr8RdlvNgyIKtZwhkb0bTT9TSr5z0gxy7/xEbxlHQuWRyaSiA9n2Ks7/BHG4rHMMN+7vFUu05TG61a4EzQ6A9dD5CsLCzjExjpEt4BIz2ze1tfW4LQZzTAivD8Gg5ZCtcNnW9HmUz+ofdn0ghzOGRe6q
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id z3-20020ae9c103000000b00785ae649de0sm3281105qki.97.2024.02.13.14.03.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 14:03:41 -0800 (PST)
+Message-ID: <56365edc-c073-46f8-8bf9-ead7cd8c9d03@gmail.com>
+Date: Tue, 13 Feb 2024 14:03:38 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.6 000/121] 6.6.17-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com
+References: <20240213171852.948844634@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240213171852.948844634@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This patch adds bridge support for vsc73xx driver.
-It introduce two functions for port_bridge_join and
-vsc73xx_port_bridge_leave handling.
+On 2/13/24 09:20, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.17 release.
+> There are 121 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 15 Feb 2024 17:18:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.17-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Those functions implement forwarding adjust and use
-dsa_tag_8021q_bridge_* api for adjust VLAN configuration.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
----
-v4:
-  - remove forward configuration after stp patch refactoring
-  - implement new define with max num of bridges for tag8021q devices
-v3:
-  - All vlan commits was reworked
-  - move VLAN_AWR and VLAN_DBLAWR to port setup in other commit
-  - drop vlan table upgrade
-v2:
-  - no changes done
-
- drivers/net/dsa/vitesse-vsc73xx-core.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
-index 9f94ae8c763a..ade90a48c53f 100644
---- a/drivers/net/dsa/vitesse-vsc73xx-core.c
-+++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
-@@ -675,6 +675,9 @@ static int vsc73xx_setup(struct dsa_switch *ds)
- 
- 	dev_info(vsc->dev, "set up the switch\n");
- 
-+	ds->untag_bridge_pvid = true;
-+	ds->max_num_bridges = DSA_TAG_8021Q_MAX_NUM_BRIDGES;
-+
- 	/* Issue RESET */
- 	vsc73xx_write(vsc, VSC73XX_BLOCK_SYSTEM, 0, VSC73XX_GLORESET,
- 		      VSC73XX_GLORESET_MASTER_RESET);
-@@ -1536,6 +1539,22 @@ static int vsc73xx_tag_8021q_vlan_del(struct dsa_switch *ds, int port, u16 vid)
- 	return vsc73xx_update_vlan_table(vsc, port, vid, false);
- }
- 
-+static int vsc73xx_port_bridge_join(struct dsa_switch *ds, int port,
-+				    struct dsa_bridge bridge,
-+				    bool *tx_fwd_offload,
-+				    struct netlink_ext_ack *extack)
-+{
-+	*tx_fwd_offload = true;
-+
-+	return dsa_tag_8021q_bridge_join(ds, port, bridge);
-+}
-+
-+static void vsc73xx_port_bridge_leave(struct dsa_switch *ds, int port,
-+				      struct dsa_bridge bridge)
-+{
-+	dsa_tag_8021q_bridge_leave(ds, port, bridge);
-+}
-+
- static int vsc73xx_port_setup(struct dsa_switch *ds, int port)
- {
- 	struct vsc73xx *vsc = ds->priv;
-@@ -1657,6 +1676,8 @@ static const struct dsa_switch_ops vsc73xx_ds_ops = {
- 	.port_setup = vsc73xx_port_setup,
- 	.port_enable = vsc73xx_port_enable,
- 	.port_disable = vsc73xx_port_disable,
-+	.port_bridge_join = vsc73xx_port_bridge_join,
-+	.port_bridge_leave = vsc73xx_port_bridge_leave,
- 	.port_change_mtu = vsc73xx_change_mtu,
- 	.port_max_mtu = vsc73xx_get_max_mtu,
- 	.port_stp_state_set = vsc73xx_port_stp_state_set,
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.34.1
+Florian
 
 
