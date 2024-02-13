@@ -1,111 +1,103 @@
-Return-Path: <linux-kernel+bounces-63142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA616852B91
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:46:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36150852B93
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:47:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCD4A1C22748
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:46:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 696F61C227DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D68224D2;
-	Tue, 13 Feb 2024 08:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2E91B592;
+	Tue, 13 Feb 2024 08:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PfBosD5V";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="d3EQaR1t"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oaRbXUHU"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C79224C6;
-	Tue, 13 Feb 2024 08:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7C22261F
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707814002; cv=none; b=B33jJK8HCcNIO/XbOgylW+Ga1qw6JMvAB1tEbqHthaJWPLj2w2ha70FTP3/pNS4dheH9im2RxeQIEp1rF3MvKASYuZg56KIJMg396WHnouKego5h21+QODJhi+KzytBYvjVjebKbEKW76g0b7XzLG8cDOiI54BRfad6O83jPdsE=
+	t=1707814024; cv=none; b=dzMIeslRE1w75yHJP0A7Nevef+dU0JamMYIOzrjdb1nkMn7kjvuN8zhSINdAanv1jlRF0IyBr7ePgw2h1mhngtkrtwsFlnJFti4DdsohBCxZfIVeyj/k9vsXP2C6AnBfCWA5hnhv2Rn3ogOUyNux6dNZbtaFFnr80rtcMUkjSWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707814002; c=relaxed/simple;
-	bh=qQiwpn09B4+vwleHQGtUBug9CbJpwTwlrCSrjzBa3z4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=UObQu9QBk0O1mT3GE4UBEd97z+m1Wrl4sVFuf2/shfQUrzOYdDH8jmgf2Cpg2DpKTFNeXWL4d+AtafeABBmYzH5HIRrIdbLUDnOgMndMQRyAwUo6fJlQJhzKFkGLdayHfI+eXbqfNwWjBHQsOeozDGLTks8uGGkke6d3nWZtpYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PfBosD5V; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=d3EQaR1t; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707813999;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sv7XIDRdwrOpwhStOB8VNj5SMdSkv/7xoAweXnGu+b0=;
-	b=PfBosD5V0ngTuqtDPittmA5h/Gr0F4p9mccJqaALyIIvxeMC1WkTdYQIVkUDnP5g7tT4HC
-	nVI6onaEYHpm7OD+KkOlUeeZ+6Y9DvYQTFeaooJ1wvS7gYbAdbZT76SC8GIZKKFbx+Oscp
-	rSWrsHFnYxFXBCbTv7S84ood32Em5nLWbFWwdvtwsiqZu7nCmZPuXsb4+oInKgr5rUs+Wj
-	ys88ZB+nuhQPgMC5GeOwT+XSm0ZMEbvfWCyfIJO7OoIf36eNmLKR0wXVswNHBayos9H2Dx
-	3bxg34TMU2wPA08iMfOkXbt7DpONHwpcIogb5tf/VsV1ill6B45DHk2P9XjLLA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707813999;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sv7XIDRdwrOpwhStOB8VNj5SMdSkv/7xoAweXnGu+b0=;
-	b=d3EQaR1tV6hGzu+06Fh8PgLDPqDxQfWAfnF1J0MzvPuDhoSppXX/D8yErXivQ+0cYj+POq
-	h8dzB4ZaYwCmjcDQ==
-To: Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
- Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Sergey
- Shtylyov <s.shtylyov@omp.ru>, lvjianmin@loongson.cn, Huacai Chen
- <chenhuacai@loongson.cn>
-Subject: Re: [PATCH v5 1/3] irqchip/loongson-eiointc: Typo fix in function
- eiointc_domain_alloc
-In-Reply-To: <20240130082722.2912576-2-maobibo@loongson.cn>
-References: <20240130082722.2912576-1-maobibo@loongson.cn>
- <20240130082722.2912576-2-maobibo@loongson.cn>
-Date: Tue, 13 Feb 2024 09:46:39 +0100
-Message-ID: <87frxwiweo.ffs@tglx>
+	s=arc-20240116; t=1707814024; c=relaxed/simple;
+	bh=2cuQrRHVGcWfh39M8jUML+qmGE6F/UQTXYTXU1snfS4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OR4vJoF42CariCNIJzMzNQ0nPIlmgRsB+pgm2RrJ3GCBYhiujEVAAoZxm/yRW+axbzRLTbEqiwZrH27I/r40BkthZEST/VSHFE8UA8gKKITMh5Ljf/dNLaaf7sDJured/SmKalDZKKBzLeZY1qiodf+tsj/t+435H9AYWIp/yQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oaRbXUHU; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60777552d72so10635797b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:47:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707814022; x=1708418822; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2cuQrRHVGcWfh39M8jUML+qmGE6F/UQTXYTXU1snfS4=;
+        b=oaRbXUHUWbgLTtGnGtj98Wy838xfLDEkPlHLQj45Ba3JaeZHgw/EPk81+J2oKF7mYP
+         DCh0mN/PEFHHSsjSe+3R092O7ZK3Ak/ike7Wy00fNm68/BzprChY4G4OL8Ds724/aCkI
+         2BMagwv/l2A8nZDuZUpaJWxw7JChLyFrFu98qRCCmBJ5+G9EylvZaRW4N0eDecEU1AXf
+         EsN2k6mFHJ5mlXXlyy3RWn9Y5d1hbaWJ78Uxn+7PtiHXZLFEah+00XpNa1y/HMj4xZgJ
+         AXnOVQfGfdc0q/+9QVr4xaeLmFTKigPsNojAvMLB8sYgRrK0cWA9oiknpvDeInyQwUwl
+         iaAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707814022; x=1708418822;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2cuQrRHVGcWfh39M8jUML+qmGE6F/UQTXYTXU1snfS4=;
+        b=TmjheFjxRW9fcSHP4SMjnp0FT31TUJ3NrFbIzYckMCiQM69tLCPDco7zzAQdW2gGwr
+         IuWlcLLkhWIqhgbORSZcpgHLoVt/YpR3G0eTzJnyyLXeusQgPe8zAa+jSiDoFkTCcspn
+         x2NXMoJnxJafmft4sul1nYKn0VJZ2DBNICLu9ZHNUW0vvLzNG+YniMPYcJUgk4FqOc5e
+         lr3Be9WbLTgYVQ85qs11ggOYSBPbkvVTtPK8AipV+E3R2N8gPDGJekylHJbrO5xz19OK
+         gjCYgieDfBWS77x6NTb8ON3T6pKVQd5OUsUjn8P29fGRyAoP3ALfdfq45GbgbXXPjNv0
+         0obw==
+X-Forwarded-Encrypted: i=1; AJvYcCUVDSxO1Ofj8n/Yo1k0wgmMRpCeshItYu3Ssez4CCE22o4QjCWmyEK0kp2wb8MTHdm05NsVGlvsaOF+v2WhC4F/Bt4iIudSj1XSU3+S
+X-Gm-Message-State: AOJu0YxgwfkudwrydZ0jkCTgcNS+gPTv8IUA+d6YOIKjh/73XY3PLoWb
+	IN8uhnMHMHGChW3dA9G93Q6t4+bXgew/1DxVt136zfcXRt/AMQ1tBRbTOhraeQOQ2VBR0ryg8/f
+	NF8KrAgnTQ4m8dQTZ7bo2zTZ/HivT/5rDlm6Z/w==
+X-Google-Smtp-Source: AGHT+IFRZG5n++fAlPdmu+eyqxVBk49aoGoRp+I6MM/Om+FCfXmCNP1OwSYuG71bW545yrJ84k7ogl9bJKstYF+w/0E=
+X-Received: by 2002:a5b:910:0:b0:dc7:4610:3791 with SMTP id
+ a16-20020a5b0910000000b00dc746103791mr8332489ybq.44.1707814022204; Tue, 13
+ Feb 2024 00:47:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240213010347.1075251-1-sre@kernel.org> <20240213010347.1075251-2-sre@kernel.org>
+In-Reply-To: <20240213010347.1075251-2-sre@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 13 Feb 2024 09:46:51 +0100
+Message-ID: <CACRpkdZ1VwU1xpf8Fe7qNn-WEfUGsNjWD3jFK0+5LxgxNtu+gA@mail.gmail.com>
+Subject: Re: [PATCH v2 01/17] dt-bindings: pinctrl: fsl,imx6ul-pinctrl:
+ convert to YAML
+To: Sebastian Reichel <sre@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	NXP Linux Team <linux-imx@nxp.com>, Dong Aisheng <aisheng.dong@nxp.com>, 
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 30 2024 at 16:27, Bibo Mao wrote:
-> There is small typo in function eiointc_domain_alloc(), and there is
-> no
+On Tue, Feb 13, 2024 at 2:03=E2=80=AFAM Sebastian Reichel <sre@kernel.org> =
+wrote:
 
-This is not a typo. The code uses an undeclared struct type, no?
-
-> definition about eiointc struct, instead its name should be eiointc_priv
-> struct. It is strange that there is no warning with gcc compiler.
-
-It's absolutely not strange. The compiler treats 'struct eiointc *priv'
-as forward declaration and it does not complain because the assignment
-is a void pointer and it's handed into irq_domain_set_info() as a void
-pointer argument. C is wonderful, isn't it?
-
-> This patch fixes the small typo issue.
-
-# git grep 'This patch' Documentation/process/
-
-> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-> Acked-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
->  drivers/irqchip/irq-loongson-eiointc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Convert i.MX6UL pinctrl bindings to YAML.
 >
-> diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
-> index 1623cd779175..b3736bdd4b9f 100644
-> --- a/drivers/irqchip/irq-loongson-eiointc.c
-> +++ b/drivers/irqchip/irq-loongson-eiointc.c
-> @@ -241,7 +241,7 @@ static int eiointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
->  	int ret;
->  	unsigned int i, type;
->  	unsigned long hwirq = 0;
-> -	struct eiointc *priv = domain->host_data;
-> +	struct eiointc_priv *priv = domain->host_data;
->  
->  	ret = irq_domain_translate_onecell(domain, arg, &hwirq, &type);
->  	if (ret)
+> Signed-off-by: Sebastian Reichel <sre@kernel.org>
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
 
