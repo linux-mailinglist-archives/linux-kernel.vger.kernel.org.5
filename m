@@ -1,58 +1,99 @@
-Return-Path: <linux-kernel+bounces-63933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C51685368C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:49:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4365585368F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:49:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E91C1C2167B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:49:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AECEFB21352
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB7260870;
-	Tue, 13 Feb 2024 16:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE0760241;
+	Tue, 13 Feb 2024 16:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CUApaTHR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bZGOzY/U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OKyzF7I2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bZGOzY/U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OKyzF7I2"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16BC9605D7;
-	Tue, 13 Feb 2024 16:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D645FEF6;
+	Tue, 13 Feb 2024 16:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707842831; cv=none; b=JDjJqtNvK4Z66pDDtl/iu0leXX6TqLcL4/K7d/D096lJnIuAEAmmrNQwU0/be7u23z3gkWYaqXMS1mTxOiPzZWE44SZqcZZS8aK2FzoUUsPBPbwB/l84/32mjTJjUkrq6eRnO4On3LPhhWT6n3GYIPCTK/L1raCQGv8JjNLaZss=
+	t=1707842844; cv=none; b=hqiR8hMLFjay8ntEZnIxPfkstn4ZKcswRtlG9PTN0cvBWnPwgaXmnWr/UKcCRwp2Y19zjO/suk6fEppKUfPN2IWMfoicJ4oVsyfj0jrsbXRLsaLjUVIwzCDgJGWPcLITpNV92hCoFX8kNz5xAWtapw4flGpNw4tMrh2enLBSm6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707842831; c=relaxed/simple;
-	bh=NdN2Ja2ehPSCmCWIF4zS46W/wsgKmR+1NTmC15pVJ8c=;
+	s=arc-20240116; t=1707842844; c=relaxed/simple;
+	bh=lMuuoAlD9aAlJ2tMUAOTkGkO745CkEARAiifW3gVgLA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ad7cSG0hDGCwlblie5ClLPcN0wHePdDTwORmJxiB0lwp9c+aeO7anAJcs6GUMPMXRzInE3bEANWod/5o8k7VJOcW8gGcrNYXX9P3k2rsLSYJ/4+5n853VcQQmwgweHBCdKEeUoRxX1L1xbpcKWz8KMKAJmWTEdiObQwsOG/ZJZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CUApaTHR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77242C43390;
-	Tue, 13 Feb 2024 16:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707842830;
-	bh=NdN2Ja2ehPSCmCWIF4zS46W/wsgKmR+1NTmC15pVJ8c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CUApaTHRZ0VkLxXsU9EbaadXGfH4cZRNqlvBKVrBHBONMQnNXHhqxJpRC7PXBAS/R
-	 1M9er3q+mjyku1+kZeG/gf2P880C3CSsn3Yn9CQVOFsyzCL7sRaQjYjh/QHL6KHYIF
-	 tBntToqk82c7PZIv6pRfB2WUkzqufyUjtO/0LvbE4rkSQ/hv0vlM7OHdAYkbcnAWTH
-	 57FK0CURnw3ApKQpXcDCKBrGNZHtnnFsoWHXZhCY6JW4eFxkLGNcKxD5ji556ClaiK
-	 c5sVK8TFANHXkysJkJ268QrC770HE+w7pe2EtWi3gJw/03PJLELkGHtxKtcv001d0X
-	 97t1xaLOnIo1w==
-Date: Tue, 13 Feb 2024 08:47:10 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
-	kbusch@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com,
-	linux-kernel@vger.kernel.org, hare@suse.de, willy@infradead.org,
-	linux-mm@kvack.org, david@fromorbit.com
-Subject: Re: [RFC v2 07/14] readahead: allocate folios with mapping_min_order
- in ra_(unbounded|order)
-Message-ID: <20240213164710.GY6184@frogsfrogsfrogs>
-References: <20240213093713.1753368-1-kernel@pankajraghav.com>
- <20240213093713.1753368-8-kernel@pankajraghav.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ECLmHKUF6U7WVp27t86Wg8XDkmxvwBxf1LdNHbirwNx74dBWReJ/26SVr1tIEkGrAReFMeNcK+c+AfTA7YmrgWHQIhKCME12/CcOukpiT/RDhf/IDkcHaObm04lxtTIQN2aH/S+AIjfaCxfRAbCAs4dRubQEsTgorwd0YFzn1MU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bZGOzY/U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OKyzF7I2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bZGOzY/U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OKyzF7I2; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B8EB21FCEA;
+	Tue, 13 Feb 2024 16:47:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707842839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y47o/y5NIvk4vOfnPZ2qEDutF6P7mev6M9MfWBPW2uk=;
+	b=bZGOzY/UIbjRAREUz1NSzrhOM5R3yIO8T4PFGpl7GPBecM5XgHdDXv4zmEkfShOQ9iGrfO
+	QQa2P3PIAR22BEFlTZUC33shLVUG49psKzqLkTx7adsaFNA4p2TzT5O0jp+Sa6Y1amrAxv
+	za97fneNFhOJo1PaIEDW9DPi721xV/c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707842839;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y47o/y5NIvk4vOfnPZ2qEDutF6P7mev6M9MfWBPW2uk=;
+	b=OKyzF7I2xqaBySBJh//PoWUHCl0f2DsplS3XEzdcSgdn3qpUqRQWPQpLYj8cpLe0wOgvyE
+	v8eKesUc1a/j+TAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707842839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y47o/y5NIvk4vOfnPZ2qEDutF6P7mev6M9MfWBPW2uk=;
+	b=bZGOzY/UIbjRAREUz1NSzrhOM5R3yIO8T4PFGpl7GPBecM5XgHdDXv4zmEkfShOQ9iGrfO
+	QQa2P3PIAR22BEFlTZUC33shLVUG49psKzqLkTx7adsaFNA4p2TzT5O0jp+Sa6Y1amrAxv
+	za97fneNFhOJo1PaIEDW9DPi721xV/c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707842839;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y47o/y5NIvk4vOfnPZ2qEDutF6P7mev6M9MfWBPW2uk=;
+	b=OKyzF7I2xqaBySBJh//PoWUHCl0f2DsplS3XEzdcSgdn3qpUqRQWPQpLYj8cpLe0wOgvyE
+	v8eKesUc1a/j+TAQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AB90F1329E;
+	Tue, 13 Feb 2024 16:47:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id jrvbKRedy2XnDwAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 13 Feb 2024 16:47:19 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 61CF8A0809; Tue, 13 Feb 2024 17:47:19 +0100 (CET)
+Date: Tue, 13 Feb 2024 17:47:19 +0100
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: Re: [PATCH 2/7] ext4: refactor out ext4_generic_attr_store()
+Message-ID: <20240213164719.w4pwobwndkfvupgi@quack3>
+References: <20240126085716.1363019-1-libaokun1@huawei.com>
+ <20240126085716.1363019-3-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,111 +102,129 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240213093713.1753368-8-kernel@pankajraghav.com>
+In-Reply-To: <20240126085716.1363019-3-libaokun1@huawei.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="bZGOzY/U";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=OKyzF7I2
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -2.51
+X-Rspamd-Queue-Id: B8EB21FCEA
+X-Spam-Flag: NO
 
-On Tue, Feb 13, 2024 at 10:37:06AM +0100, Pankaj Raghav (Samsung) wrote:
-> From: Pankaj Raghav <p.raghav@samsung.com>
+On Fri 26-01-24 16:57:11, Baokun Li wrote:
+> Refactor out the function ext4_generic_attr_store() to handle the setting
+> of values of various common types, with no functional changes.
 > 
-> Allocate folios with at least mapping_min_order in
-> page_cache_ra_unbounded() and page_cache_ra_order() as we need to
-> guarantee a minimum order in the page cache.
-> 
-> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-
-Acked-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-> ---
->  mm/readahead.c | 30 ++++++++++++++++++++++++++----
->  1 file changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/readahead.c b/mm/readahead.c
-> index 13b62cbd3b79..a361fba18674 100644
-> --- a/mm/readahead.c
-> +++ b/mm/readahead.c
-> @@ -214,6 +214,7 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
->  	unsigned long index = readahead_index(ractl);
->  	gfp_t gfp_mask = readahead_gfp_mask(mapping);
->  	unsigned long i = 0;
-> +	unsigned int min_nrpages = mapping_min_folio_nrpages(mapping);
->  
->  	/*
->  	 * Partway through the readahead operation, we will have added
-> @@ -235,6 +236,8 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
->  		struct folio *folio = xa_load(&mapping->i_pages, index + i);
->  
->  		if (folio && !xa_is_value(folio)) {
-> +			long nr_pages = folio_nr_pages(folio);
-> +
->  			/*
->  			 * Page already present?  Kick off the current batch
->  			 * of contiguous pages before continuing with the
-> @@ -244,19 +247,31 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
->  			 * not worth getting one just for that.
->  			 */
->  			read_pages(ractl);
-> -			ractl->_index += folio_nr_pages(folio);
-> +
-> +			/*
-> +			 * Move the ractl->_index by at least min_pages
-> +			 * if the folio got truncated to respect the
-> +			 * alignment constraint in the page cache.
-> +			 *
-> +			 */
-> +			if (mapping != folio->mapping)
-> +				nr_pages = min_nrpages;
-> +
-> +			VM_BUG_ON_FOLIO(nr_pages < min_nrpages, folio);
-> +			ractl->_index += nr_pages;
->  			i = ractl->_index + ractl->_nr_pages - index;
->  			continue;
->  		}
->  
-> -		folio = filemap_alloc_folio(gfp_mask, 0);
-> +		folio = filemap_alloc_folio(gfp_mask,
-> +					    mapping_min_folio_order(mapping));
->  		if (!folio)
->  			break;
->  		if (filemap_add_folio(mapping, folio, index + i,
->  					gfp_mask) < 0) {
->  			folio_put(folio);
->  			read_pages(ractl);
-> -			ractl->_index++;
-> +			ractl->_index += min_nrpages;
->  			i = ractl->_index + ractl->_nr_pages - index;
->  			continue;
->  		}
-> @@ -516,6 +531,7 @@ void page_cache_ra_order(struct readahead_control *ractl,
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+..
+> -static ssize_t ext4_attr_store(struct kobject *kobj,
+> -			       struct attribute *attr,
+> -			       const char *buf, size_t len)
+> +static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
+> +				       struct ext4_sb_info *sbi,
+> +				       const char *buf, size_t len)
 >  {
->  	struct address_space *mapping = ractl->mapping;
->  	pgoff_t index = readahead_index(ractl);
-> +	unsigned int min_order = mapping_min_folio_order(mapping);
->  	pgoff_t limit = (i_size_read(mapping->host) - 1) >> PAGE_SHIFT;
->  	pgoff_t mark = index + ra->size - ra->async_size;
->  	int err = 0;
-> @@ -542,11 +558,17 @@ void page_cache_ra_order(struct readahead_control *ractl,
->  		if (index & ((1UL << order) - 1))
->  			order = __ffs(index);
->  		/* Don't allocate pages past EOF */
-> -		while (index + (1UL << order) - 1 > limit)
-> +		while (order > min_order && index + (1UL << order) - 1 > limit)
->  			order--;
->  		/* THP machinery does not support order-1 */
->  		if (order == 1)
->  			order = 0;
+> -	struct ext4_sb_info *sbi = container_of(kobj, struct ext4_sb_info,
+> -						s_kobj);
+> -	struct ext4_attr *a = container_of(attr, struct ext4_attr, attr);
+> -	void *ptr = calc_ptr(a, sbi);
+> -	unsigned long t;
+>  	int ret;
+> +	unsigned long t;
+> +	void *ptr = calc_ptr(a, sbi);
 > +
-> +		if (order < min_order)
-> +			order = min_order;
+> +	if (!ptr)
+> +		return 0;
+> +	ret = kstrtoul(skip_spaces(buf), 0, &t);
+
+The refactorization is nice but I'd keep the string to number conversion
+inside the switch so that we can distinguish uint and ulong cases.
+
+								Honza
+
+> +	if (ret)
+> +		return ret;
+>  
+>  	switch (a->attr_id) {
+> -	case attr_reserved_clusters:
+> -		return reserved_clusters_store(sbi, buf, len);
+>  	case attr_pointer_ui:
+> -		if (!ptr)
+> -			return 0;
+> -		ret = kstrtoul(skip_spaces(buf), 0, &t);
+> -		if (ret)
+> -			return ret;
+>  		if (t != (unsigned int)t)
+>  			return -EINVAL;
+>  		if (a->attr_ptr == ptr_ext4_super_block_offset)
+> @@ -471,19 +467,30 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
+>  			*((unsigned int *) ptr) = t;
+>  		return len;
+>  	case attr_pointer_ul:
+> -		if (!ptr)
+> -			return 0;
+> -		ret = kstrtoul(skip_spaces(buf), 0, &t);
+> -		if (ret)
+> -			return ret;
+>  		*((unsigned long *) ptr) = t;
+>  		return len;
+> +	}
+> +	return 0;
+> +}
 > +
-> +		VM_BUG_ON(index & ((1UL << order) - 1));
+> +static ssize_t ext4_attr_store(struct kobject *kobj,
+> +			       struct attribute *attr,
+> +			       const char *buf, size_t len)
+> +{
+> +	struct ext4_sb_info *sbi = container_of(kobj, struct ext4_sb_info,
+> +						s_kobj);
+> +	struct ext4_attr *a = container_of(attr, struct ext4_attr, attr);
 > +
->  		err = ra_alloc_folio(ractl, index, mark, order, gfp);
->  		if (err)
->  			break;
+> +	switch (a->attr_id) {
+> +	case attr_reserved_clusters:
+> +		return reserved_clusters_store(sbi, buf, len);
+>  	case attr_inode_readahead:
+>  		return inode_readahead_blks_store(sbi, buf, len);
+>  	case attr_trigger_test_error:
+>  		return trigger_test_error(sbi, buf, len);
+> +	default:
+> +		return ext4_generic_attr_store(a, sbi, buf, len);
+>  	}
+> -	return 0;
+>  }
+>  
+>  static void ext4_sb_release(struct kobject *kobj)
 > -- 
-> 2.43.0
+> 2.31.1
 > 
-> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
