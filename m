@@ -1,105 +1,162 @@
-Return-Path: <linux-kernel+bounces-63886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EFB48535F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:27:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 426B38535FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:29:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19C0C1F24498
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:27:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A29C28B247
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1ED5F875;
-	Tue, 13 Feb 2024 16:27:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36795F878;
+	Tue, 13 Feb 2024 16:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O73GiMWi"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GZTwqKcD"
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38DA356B65
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:27:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6245D91C
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707841670; cv=none; b=jzqLdmjBnpxIy1yYlEi1mvjbk1CQzkGvFtBaur/qlJBymVcDNMlH16idCrGCC7Ys0r8TBBtulLNcIXAqcPGpqFk+8dN7bJFqaX0QkZg2G0BlKy/qj8E1Zhg7GafXp5Q08vfik97VZk7Sbmhiin3ZTIKKkBRwX7YzpaDrl4ECTsw=
+	t=1707841791; cv=none; b=YZT7JKnNesOlAgbgk0O4G5iJCnaao2KNb1V70Ye8poCxHxyk/4qWFXh4eYwbOOysT5Ea8LNpKoXH7seTIduSflXuiHAxXzajjrbWYyQZYNoJaduN6YN62sujeKk+zUrSrerVzP7nJuViRYTiJHvkakYsHzR8SjsoZ9r6Xc/RnAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707841670; c=relaxed/simple;
-	bh=493bNgvRuweZimbX4Xhwo671z6/HUwelN8/FJypwO9g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LkKrrwyuWBAFQdG2RgjFhjek78C/PfbfusclqXgb18TpEIV45LOUfr5w1dd+fGtgppWQwIFoXfJ1utfKSsUeX8IQccq/WYxRb7cuuJLggaHmOya0pfvZlnR7gt4UmSPjtop1Ss6vRbX1Ffv8vw0BqoJ6ObuF+v/5xIyD0uQML6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O73GiMWi; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707841668; x=1739377668;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=493bNgvRuweZimbX4Xhwo671z6/HUwelN8/FJypwO9g=;
-  b=O73GiMWiHnjTCae994xnG5PYQYywa8iUsrFE2mcFuayDW2yLdQFmorn4
-   eODirSw07yQk4W+1h9xmYzd0MtcRKzwtDDW9wW5VEaz97W+uJtxlugbPz
-   SGgW9PnGKNoxORoctTHkR55IkEmpI/wZ8x6y8nhOjCJezq4Dj9lW6Yuvy
-   ZGipi1bppsxHpPsOnbU1B5vbdaQsv8kEBRZ0HmqHN3ERdOdKM6TmLMNYu
-   PyfgMpPHUoI+LCUWIxS5x7XIq0vnHMAofB+PFYpFPCG+CteEAIDj6w8XW
-   Gn8Vlj2oRD8zCKLAwFXUnbceWrOgG2WMd7jCtM2cLmVYrtqiuDEaq8z7T
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1736599"
-X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="1736599"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 08:27:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935386688"
-X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="935386688"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Feb 2024 08:27:45 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 506B7184; Tue, 13 Feb 2024 18:27:44 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Luis Chamberlain <mcgrof@kernel.org>,
-	Jason Baron <jbaron@akamai.com>,
-	linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Jim Cromie <jim.cromie@gmail.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] dyndbg: Replace kstrdup() + strchr() with kstrdup_and_replace()
-Date: Tue, 13 Feb 2024 18:27:41 +0200
-Message-ID: <20240213162741.3102810-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1707841791; c=relaxed/simple;
+	bh=pwq/fcA6g9rlxCQRDTT5fhtljDd9PZwU2WOBG2ktlBs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pHUj/JOiAIp5gK9QFEjv+Bq2DgOyv2Smrn/+ZooTGgfHPB4Oroq+nW0dNWAZzUgnmyPRSBgfhc3mJoZO6DyDRxJ0WH7PP5Q0P5tYdV0q8YqQ9jKezpoBuzHd786H0D1R8RNFC1XXDemxxLuexAC+SoC+Wo8uZBlx/8IINMke/TI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GZTwqKcD; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 13 Feb 2024 16:29:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707841787;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mF7J0g2Nxf+VBOHYwoPE53ZcMPEVUheZGZS5pd1pQoU=;
+	b=GZTwqKcD2J+jk67hFJUI3xSvi3EfxyJevFW4Mm24S4k7iXdUVJDaHRgP+ME3UCJML/Srlw
+	mz9++W2jHHizB72MeD3m/8UTo9wxGeZFTjbl4O28g8kSfkXpLD0yjGCESVeW9t/In3J4jm
+	1Yds7/qCgTwuF5j0aeLIT+dHrfTQyaA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Will Deacon <will@kernel.org>, kvmarm@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Ricardo Koller <ricarkol@google.com>
+Subject: Re: [RFC PATCH] KVM: arm64: Fix double-free following
+ kvm_pgtable_stage2_free_unlinked()
+Message-ID: <ZcuY9rdvGaJ66edx@linux.dev>
+References: <20240212193052.27765-1-will@kernel.org>
+ <Zcp8LcvsZiZVkNKe@linux.dev>
+ <86cyt062jh.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86cyt062jh.wl-maz@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-Replace open coded functionalify of kstrdup_and_replace() with a call.
+On Tue, Feb 13, 2024 at 11:12:34AM +0000, Marc Zyngier wrote:
+> On Mon, 12 Feb 2024 20:14:37 +0000,
+> Oliver Upton <oliver.upton@linux.dev> wrote:
+> > 
+> > On Mon, Feb 12, 2024 at 07:30:52PM +0000, Will Deacon wrote:
+> > > kvm_pgtable_stage2_free_unlinked() does the final put_page() on the
+> > > root page of the sub-tree before returning, so remove the additional
+> > > put_page() invocations in the callers.
+> > > 
+> > > Cc: Marc Zyngier <maz@kernel.org>
+> > > Cc: Oliver Upton <oliver.upton@linux.dev>
+> > > Cc: Ricardo Koller <ricarkol@google.com>
+> > > Signed-off-by: Will Deacon <will@kernel.org>
+> > > ---
+> > > 
+> > > Hi folks,
+> > > 
+> > > Sending this as an RFC as I only spotted it from code inspection and I'm
+> > > surprised others aren't seeing fireworks if it's a genuine bug. I also
+> > > couldn't come up with a sensible Fixes tag, as all of:
+> > > 
+> > >  e7c05540c694b ("KVM: arm64: Add helper for creating unlinked stage2 subtrees")
+> > >  8f5a3eb7513fc ("KVM: arm64: Add kvm_pgtable_stage2_split()")
+> > >  f6a27d6dc51b2 ("KVM: arm64: Drop last page ref in kvm_pgtable_stage2_free_removed()")
+> 
+> I'd blame it on the last commit, as we really ought to have it if we
+> have the others.
+> 
+> > >
+> > > are actually ok in isolation. Hrm. Please tell me I'm wrong?
+> > > 
+> > >  arch/arm64/kvm/hyp/pgtable.c | 2 --
+> > >  1 file changed, 2 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > > index c651df904fe3..ab9d05fcf98b 100644
+> > > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > > @@ -1419,7 +1419,6 @@ kvm_pte_t *kvm_pgtable_stage2_create_unlinked(struct kvm_pgtable *pgt,
+> > >  				 level + 1);
+> > >  	if (ret) {
+> > >  		kvm_pgtable_stage2_free_unlinked(mm_ops, pgtable, level);
+> > > -		mm_ops->put_page(pgtable);
+> > >  		return ERR_PTR(ret);
+> > >  	}
+> > 
+> > AFAICT, this entire branch is effectively dead code, unless there's a
+> > KVM bug lurking behind the page table walk. The sub-tree isn't visible
+> > to other software or hardware walkers yet, so none of the PTE races
+> > could cause this to pop.
+> > 
+> > So while this is very obviously a bug, it might be pure luck that folks
+> > haven't seen smoke here. Perhaps while fixing the bug we should take the
+> > opportunity to promote the condition to WARN_ON_ONCE().
+> 
+> Can't you construct a case where an allocation fails during the walk
+> (memcache empty), and we end up on this exact path?
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- lib/dynamic_debug.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Possibly, but AFAICT that can only happen if there was a bug in KVM. We
+don't start the walk at all if userspace set the split chunk size to 0,
+and otherwise we expect it to be at least PMD_SIZE, which will top up
+the cache to 1 every pass. stage2_split_walker() will 'do the right
+thing' if there aren't enough preallocated pages to get down to level 3.
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 6fba6423cc10..c78f335fa981 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -640,10 +640,9 @@ static int param_set_dyndbg_classnames(const char *instr, const struct kernel_pa
- 	int cls_id, totct = 0;
- 	bool wanted;
- 
--	cl_str = tmp = kstrdup(instr, GFP_KERNEL);
--	p = strchr(cl_str, '\n');
--	if (p)
--		*p = '\0';
-+	cl_str = tmp = kstrdup_and_replace(instr, '\n', '\0', GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
- 
- 	/* start with previously set state-bits, then modify */
- 	curr_bits = old_bits = *dcp->bits;
+It really doesn't matter either way, I'm just trying to convince myself
+of the reasons why we haven't seen this explode yet :)
+
+> > 
+> > > @@ -1502,7 +1501,6 @@ static int stage2_split_walker(const struct kvm_pgtable_visit_ctx *ctx,
+> > >  
+> > >  	if (!stage2_try_break_pte(ctx, mmu)) {
+> > >  		kvm_pgtable_stage2_free_unlinked(mm_ops, childp, level);
+> > > -		mm_ops->put_page(childp);
+> > >  		return -EAGAIN;
+> > >  	}
+> > 
+> > This, on the other hand, seems possible. There exists a race where an
+> > old block PTE could have the AF set on it and the underlying cmpxchg()
+> > could fail. There shouldn't be a race with any software walkers, as we
+> > hold the MMU lock for write here.
+> 
+> AF update is indeed a likely candidate.
+> 
+> In any case, this patch looks good to me as it is, and we can always
+> have a separate tweak to adjust the severity of the first case as
+> required. Unless anyone objects, I'd like to queue it shortly.
+
+Agreed, happy with the way this looks and should've added:
+
+Reviewed-by: Oliver Upton <oliver.upton@linux.dev>
+
+the first time around.
+
 -- 
-2.43.0.rc1.1.gbec44491f096
-
+Thanks,
+Oliver
 
