@@ -1,149 +1,131 @@
-Return-Path: <linux-kernel+bounces-63947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 784A08536A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:55:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47C218536A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:56:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17DCD1F28368
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:55:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED26628D29A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:56:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B82065FB97;
-	Tue, 13 Feb 2024 16:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hJ0ir3bi"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8505D5FDA8
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDAA5F856;
+	Tue, 13 Feb 2024 16:55:57 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14D3BA57
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:55:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707843335; cv=none; b=kD2xC/PEROen7Qd15rQ+mm0X2O20y0pJsd24veZjpVZ4n3qPNoCSFM8xhscsixqlLiTuiWR5MhFKBJ5qwZpRqRS3FkYGyNrjqzV1hjeqFPI0tnqRrlTQ/gKI005VGNHRln0R2VSwW/mY/mlDPuocuxz6P5v8WwdFce+u3YNcIjY=
+	t=1707843357; cv=none; b=Av1rJ5afkFUtQeQsCyCdqohcB36+ioiQsccHkFk8b3+fZ07CJ3lw5ctLDnVfCfxiErQm+9XURXbEksaHqDvBPFBlcL6zzqouZkMqD1nvDkemv/aHleh+BLLcKwOFetjuwolkwwOmQEYF9r5/Xki+FIOQKCI3G68IwbHkrcllG2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707843335; c=relaxed/simple;
-	bh=HE/20Xm9WCTyMPH/lmK4IPJtvUMDxg+CfKS4AXTMswA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X+Mw23eN1qbYRmw5eIVGQpJewv91xN4D6U5g+eOCM9aIZIYs9zzhWs7KgxFb/IFkCMDCA+GF7wm5Gk3y7T8YDG+dxcmtze6ZlmqALNq2kk2afDj4An/2sIPuEfmrCn85DX4VIYTmzlbSduBvjj37LiCdmaqlcJUA70vaWU/8rNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hJ0ir3bi; arc=none smtp.client-ip=209.85.167.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c0490445eeso307082b6e.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:55:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707843332; x=1708448132; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E4lPSxTY6wTzszL0a5uZSwuzQyy5laP/IX8YJFhtcMQ=;
-        b=hJ0ir3biFRyJOa95GJT1sIelu/9HHCFooTNOy0k6iF5kbqHZqgzxvM1mWiX9YN1qfQ
-         fe9vcN6aKgkVB0tRns5PXpr3Oi2zgL+exr5MlCMbT6maFXwq+AC0Tq3F0Nu+z3pz49fN
-         0Adk/QvqpX4kkw3veMoFVLJEDrDq1dFpy9ylA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707843332; x=1708448132;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E4lPSxTY6wTzszL0a5uZSwuzQyy5laP/IX8YJFhtcMQ=;
-        b=wh7l9ybbE2qF56WiD745Q0uGMbkjTL0sBsxd01TKNE3pHBc5AZtgLZuQhwIMLmO5x1
-         7Fug1UtNN18aHxEVU774ArmWlRqRHB/Arg0vLn59Bj3e9Rrd1f1Dxefzr31TcQltJTms
-         EhFAOlyZ5jJgJfzWZq8in7uQnIbgGH8Qd2Jlw6O4CctPXR3VdXkJIdT8OL1jKdDwAW/2
-         7/N1NsOjoh1YUVCc5YSNRoSexSoiH36EB3/fIFTJNuncD2/AZNnqaxe0yNgYnkLpzxHz
-         g+86JXpdd9lb3GUObDArcIf+ALhC8WdvAXu0sgdJWb7go+k6NsK5Tk8gplmsvr1+YLdT
-         Y4IQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX6FOQTmZ7d9NgCg4AjTHIKqseeFjsW1+x8PBfFyaO7MflA6RhWb6dCg1nj4cjswu/zBIxF+EgC3cEHg5wLzYVNcqpc8Xze42E+Bman
-X-Gm-Message-State: AOJu0Yx/Hwam8bxIL9Fu+Pr/YMzMcnVL1BRypsSxMnfYqFppmDiClnnu
-	uqqxuPwoO5OWZJuoXQHbKC4+sxTGsx0EYinCRrkCAfnR/qbS+mhyrQ9DO/uJISGgjIb/eg2Jx2j
-	suxz1/aHtxK6jKiE7rji2Bis95rFVnSDJy3kJ
-X-Google-Smtp-Source: AGHT+IF621AcZlHabo8tSWMrLrYcsvXNOTbA67xsv4QZQyYYW0BcYdZTIRHza0q2P5iytSfC6OBpB6w1KP2sxrbZPoI=
-X-Received: by 2002:a05:6808:188d:b0:3c0:4719:45ad with SMTP id
- bi13-20020a056808188d00b003c0471945admr1531810oib.40.1707843332527; Tue, 13
- Feb 2024 08:55:32 -0800 (PST)
+	s=arc-20240116; t=1707843357; c=relaxed/simple;
+	bh=OlqJ2fXyLvszO74uYT8l1d7byfWBYIMFbndu+5mdxmg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mZIt3W1cboX1OlqYsezSfeUTH4/jKHjLnbVNR4oOONKrmwxF4vgCIlLYYGWOGzgyfohjed5eopL0wXihmQAPOBldnRoE+y6kSv6wxFGgjoxHufTFn00DZl62W0Lo7qscacwBJ+emBMcVLI9nslW3b7aLFSnDt4xi3tGxPrVrwQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FC74DA7;
+	Tue, 13 Feb 2024 08:56:36 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.130])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6CD3D3F5A1;
+	Tue, 13 Feb 2024 08:55:51 -0800 (PST)
+Date: Tue, 13 Feb 2024 16:55:49 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 24/25] arm64/mm: __always_inline to improve fork() perf
+Message-ID: <ZcufFVa7FJRgrEI1@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240202080756.1453939-1-ryan.roberts@arm.com>
+ <20240202080756.1453939-25-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213130018.3029991-1-heikki.krogerus@linux.intel.com> <20240213130018.3029991-3-heikki.krogerus@linux.intel.com>
-In-Reply-To: <20240213130018.3029991-3-heikki.krogerus@linux.intel.com>
-From: Prashant Malani <pmalani@chromium.org>
-Date: Tue, 13 Feb 2024 08:55:20 -0800
-Message-ID: <CACeCKadLKg89c8s68QD6VsqiKBMms6765O7mFFihqtET30pUyQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Make sure the USB
- role switch has PLD
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Benson Leung <bleung@chromium.org>, 
-	Tzung-Bi Shih <tzungbi@kernel.org>, Guenter Roeck <groeck@chromium.org>, 
-	Emilie Roberts <hadrosaur@google.com>, "Nyman, Mathias" <mathias.nyman@intel.com>, 
-	"Regupathy, Rajaram" <rajaram.regupathy@intel.com>, 
-	"Radjacoumar, Shyam Sundar" <ssradjacoumar@google.com>, Samuel Jacob <samjaco@google.com>, 
-	Uday Bhat <uday.m.bhat@intel.com>, linux-usb@vger.kernel.org, 
-	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240202080756.1453939-25-ryan.roberts@arm.com>
 
-Hi Heikki,
+On Fri, Feb 02, 2024 at 08:07:55AM +0000, Ryan Roberts wrote:
+> As set_ptes() and wrprotect_ptes() become a bit more complex, the
+> compiler may choose not to inline them. But this is critical for fork()
+> performance. So mark the functions, along with contpte_try_unfold()
+> which is called by them, as __always_inline. This is worth ~1% on the
+> fork() microbenchmark with order-0 folios (the common case).
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-On Tue, Feb 13, 2024 at 5:00=E2=80=AFAM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> The USB role switch does not always have the _PLD (Physical
-> Location of Device) in ACPI tables. If it's missing,
-> assigning the PLD hash of the port to the switch. That
-> should guarantee that the USB Type-C port mapping code is
-> always able to find the connection between the two (the port
-> and the switch).
->
-> Tested-by: Uday Bhat <uday.m.bhat@intel.com>
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+I have no strong feelings either way on this, so:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
 > ---
->  drivers/platform/chrome/cros_ec_typec.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/c=
-hrome/cros_ec_typec.c
-> index 2b2f14a1b711..4d305876ec08 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -24,6 +24,23 @@
->  #define DP_PORT_VDO    (DP_CONF_SET_PIN_ASSIGN(BIT(DP_PIN_ASSIGN_C) | BI=
-T(DP_PIN_ASSIGN_D)) | \
->                                 DP_CAP_DFP_D | DP_CAP_RECEPTACLE)
->
-> +static void cros_typec_role_switch_quirk(struct fwnode_handle *fwnode)
-> +{
-> +#ifdef CONFIG_ACPI
-> +       struct fwnode_handle *switch_fwnode;
-> +
-> +       /* Supply the USB role switch with the correct pld_crc if it's mi=
-ssing. */
-> +       switch_fwnode =3D fwnode_find_reference(fwnode, "usb-role-switch"=
-, 0);
-> +       if (!IS_ERR_OR_NULL(switch_fwnode)) {
-> +               struct acpi_device *adev =3D to_acpi_device_node(switch_f=
-wnode);
-> +
-> +               if (adev && !adev->pld_crc)
-> +                       adev->pld_crc =3D to_acpi_device_node(fwnode)->pl=
-d_crc;
-> +               fwnode_handle_put(switch_fwnode);
-> +       }
-> +#endif
-> +}
-> +
-
-I'll reiterate my comment[ 1] from v1: can this be in the
-common Type-C code, i.e typec_register_port() ?
-
-I don't see anything in this implementation which is Chrome OS specific.
-
-Thanks,
-
--Prashant
-
-[1] https://lore.kernel.org/chrome-platform/CACeCKaffZBPA0Q_Bqs1hjKJB4HCj=
-=3DVKrqO21dXj4AF5C5VwtVQ@mail.gmail.com/
+>  arch/arm64/include/asm/pgtable.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 353ea67b5d75..cdc310880a3b 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -1213,8 +1213,8 @@ extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+>  				unsigned long addr, pte_t *ptep,
+>  				pte_t entry, int dirty);
+>  
+> -static inline void contpte_try_unfold(struct mm_struct *mm, unsigned long addr,
+> -					pte_t *ptep, pte_t pte)
+> +static __always_inline void contpte_try_unfold(struct mm_struct *mm,
+> +				unsigned long addr, pte_t *ptep, pte_t pte)
+>  {
+>  	if (unlikely(pte_valid_cont(pte)))
+>  		__contpte_try_unfold(mm, addr, ptep, pte);
+> @@ -1279,7 +1279,7 @@ static inline void set_pte(pte_t *ptep, pte_t pte)
+>  }
+>  
+>  #define set_ptes set_ptes
+> -static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+> +static __always_inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+>  				pte_t *ptep, pte_t pte, unsigned int nr)
+>  {
+>  	pte = pte_mknoncont(pte);
+> @@ -1361,8 +1361,8 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+>  }
+>  
+>  #define wrprotect_ptes wrprotect_ptes
+> -static inline void wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+> -				pte_t *ptep, unsigned int nr)
+> +static __always_inline void wrprotect_ptes(struct mm_struct *mm,
+> +				unsigned long addr, pte_t *ptep, unsigned int nr)
+>  {
+>  	if (likely(nr == 1)) {
+>  		/*
+> -- 
+> 2.25.1
+> 
 
