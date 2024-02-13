@@ -1,79 +1,132 @@
-Return-Path: <linux-kernel+bounces-63648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E72F18532C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:13:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 586268532C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3E90285044
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:13:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1334D285B97
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A7257336;
-	Tue, 13 Feb 2024 14:13:18 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D9D357872;
+	Tue, 13 Feb 2024 14:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="POd8PqyF"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E095731B
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:13:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8744257865
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707833598; cv=none; b=ohMiKFajz/1iN6FsRTufzj5YOfj7qnfw7Lj/7mKIRQnCzez4l5pc1Pi+4Km3I3G7L1QniH3h66tkQMlM0skM0W0Hi75PAtzgO4sODxXz52W5Ox0rn1DwN7H7VT+kiUBix1FaXFk/vQPyu8gwlZef7fC3362cgVZTkxwxQdUm8Gc=
+	t=1707833612; cv=none; b=F0mc5sT1YJZj+3F8vmkxd/0olsZkfQGwdTXiPpxH8L5BtlhkSyIzvBsnMYXpXod24vjlqwy+IKh+X9r0CS5SYLfmMSSOELHvpu1pjeQKRwNAyw6zu5VqaPJDj0BSQWa9NqL+5kfsGpUdlXpiUsTt98MxGQhGVByE9Ed2qCLtBqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707833598; c=relaxed/simple;
-	bh=PEVdEyWMp3HVrKR9TYMKV3fjkz7arurJjIDXn+uMMzE=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=vEfHYWOdPm36uh9Fpkgh9GS31+EjSfzz8DO4Uwh0VT6PQXbJM8gbFHQi1aCggZFgd5YhRS9NbFKM6KGKGbTIE3ss7Je+MP9CR80wLf7ySmINekwFwCpLoJHxwa6Y1vTcOcvq7OMKUmI+HFpi36WBVf7BNM8UsZkoRFOvGYYCnxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-363bde409b2so34044135ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:13:16 -0800 (PST)
+	s=arc-20240116; t=1707833612; c=relaxed/simple;
+	bh=5fI9tCr8zaLU98fmef1NViRValWabP78KKoZNLaPZu4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mUQH0tohNzOM8yKWSP7qK2y/qTPkqVI+MDKHoQus5R/1XIfiB5h4AndwO7ozzgTXdEtTj1QCzef1i+PdQ1dShx+3624bxmtOzOS/07j8dumy6Bedqj1UX6qNcAufCEL4HYRYKswQVs+odK3e14NIN8Rz3O1Q+JPvnP5uHs9+Poo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=POd8PqyF; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51182ece606so2331823e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:13:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707833608; x=1708438408; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qmq2UPFRqaq5ws3fnqDxJqDcSha4yTKtswPkJsibWOY=;
+        b=POd8PqyFwgb8DsJK1T0sFAHxVDVNhaET9sW8dszzh+gFOj9GsJgeJB4A8POvLzaCwY
+         CH2CpQ8IF7XXH1RUOpLbLh4pQztlYVb+hrjlWkTVH2Gngm79Vk6+2VRONJnjdXdu0Wi3
+         L2ruz53JNLQ8PXhRQm/Zf8pizmWX2FJaNAMlA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707833595; x=1708438395;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PEVdEyWMp3HVrKR9TYMKV3fjkz7arurJjIDXn+uMMzE=;
-        b=SObEB5gk58MDRyA2yWm+OpPh9X/g0l+lizwrKMezU1mT1XeSBy6/dAn72DZ0lpC8NX
-         dxoFUX4wPxf6mxFz3Wg3CyAZ8peuXzc/oAZOHCwmTHC7gBqw32zcLpOVMha/mV8V+6n0
-         nTC/Dhgk0ZyqbGh/v1aR8taMds6jSAu1F6qWeiLiWivb3qXmGlluwtEeTqdmBd+kY3Zn
-         ct/eJmiRx94zOmDb4QMtahjjJFS7nPckulyAREyPFOXi7kF1WnG3UQu3NMQm3F85dodH
-         SDvaBL1C2g6ksRKsNc7v/1SHTrEDdeGNJd+ME2CyyvVUxciS3TAXlzlHtSjnv3Mpakbe
-         5+cQ==
-X-Gm-Message-State: AOJu0YxUR7e08J9Tjdm6kfKPQc48wuo+j97pH1io2iWLxg/TLVq95jhz
-	l2EeziZYh8vh5WIB2eUwwSYcijvCZUZttrIv57IBJM5hKOc1MFC2I/oscppr72wajPBugJvsEb4
-	Jcd5capwI0hk16L9H4QtGPp5XA+Ilf2CM/UOdHBnQrsVHp8z8csyFCPlgoQ==
-X-Google-Smtp-Source: AGHT+IHsR62WEqRZpM+f3SRViO4NCXH2qW/89hZa/womdZZuuLUL2F6K9YLaVtbDAMEgzKDvoI+lJC+4iFWm3NiTosxu26x5M0Oa
+        d=1e100.net; s=20230601; t=1707833608; x=1708438408;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qmq2UPFRqaq5ws3fnqDxJqDcSha4yTKtswPkJsibWOY=;
+        b=Dy8Xn28Yps+WwI69a40x0gl7ocAz97S3t0h3zTNUmniknVraHJMqaJ5uIzB3Cw3fTV
+         55lZn1nt7e4w1imva4ckFwFcARn2Rar3as6KwCJgqB96LZcfGLHYYhYjkFKndTdNmOOt
+         D2Cwm81f+R7kZrrWAaUtudv9FVB2XWRazvUgQiX5KCzUv4CSvEMM+u/nU+/zoAfdLrFR
+         DSs1LC/xpizzR7GwKhX8b4bk+Z4/TQrAb1aG1HBwArUIPs5OYNz8LX3EbdESPWkrxMAe
+         Fmatt9H9h4CR/0fBQ4393lIXILxcT7cpFbSfKMFFkeMg00vU74D60LT4tMnNnlnKavs6
+         Emfg==
+X-Forwarded-Encrypted: i=1; AJvYcCXN+GxrB6mjS1hbVejv47ycT9ySFh/bQK9yBT/FUsvFJ1VPuhLBEXRZgVCgSAWiYmIyczjeSl3+aTnUifPnLrvjeTDBk2Q1zcZEsWrQ
+X-Gm-Message-State: AOJu0Yy1Bu8sSr87LwaZd9WRs37Zjk3NePJHOZ1MTY0ztuZo7HzRbn/C
+	s4xyllfezH99HTAtoMN/hCgAmbSqaXl4h8pX4m6e8x8U6Tvbu9RQeMygauvgtrlNelM5mOchp4R
+	XONo04+gxCE66l/6wzwUcVyvYbLeMrv0cEwxS
+X-Google-Smtp-Source: AGHT+IHBdt44ohe1WEmDJRwWk0PqMe3siXeot/wfISehMT/XqiceqCjXRIx22oyAYF8z9DxqrEN1z0sOsGsvydhzfN8=
+X-Received: by 2002:a05:6512:4db:b0:511:6ef0:33d1 with SMTP id
+ w27-20020a05651204db00b005116ef033d1mr949357lfq.13.1707833608459; Tue, 13 Feb
+ 2024 06:13:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:6207:b0:471:805a:3552 with SMTP id
- fg7-20020a056638620700b00471805a3552mr63050jab.1.1707833595858; Tue, 13 Feb
- 2024 06:13:15 -0800 (PST)
-Date: Tue, 13 Feb 2024 06:13:15 -0800
-In-Reply-To: <000000000000708723060df6ab96@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d1143e061143fe2e@google.com>
-Subject: Re: [syzbot] [syzbot] [wpan?] KMSAN: uninit-value in
- ieee802154_hdr_push (2)
-From: syzbot <syzbot+60a66d44892b66b56545@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
+References: <20240130095656.3712469-1-wenst@chromium.org> <20240130095656.3712469-4-wenst@chromium.org>
+ <92d4d421-54a8-4a41-8b47-61ae39b55ebb@linaro.org>
+In-Reply-To: <92d4d421-54a8-4a41-8b47-61ae39b55ebb@linaro.org>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Tue, 13 Feb 2024 22:13:17 +0800
+Message-ID: <CAGXv+5Ej1cEiNegMEf9GOMYTiabiBU1DpfC7QkQAsHEjuNPCxA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] nvmem: mtk-efuse: Drop NVMEM device name
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	William-tw Lin <william-tw.lin@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Tue, Feb 13, 2024 at 9:07=E2=80=AFPM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+>
+>
+> On 30/01/2024 09:56, Chen-Yu Tsai wrote:
+> > The MT8183 has not one but two efuse devices. The static name and ID
+> > causes the second efuse device to fail to probe, due to duplicate sysfs
+> > entries.
+>
+> have you considered using NVMEM_DEVID_AUTO?
 
-***
+Yes, that was considered and what is actually implemented downstream.
 
-Subject: [syzbot] [wpan?] KMSAN: uninit-value in ieee802154_hdr_push (2)
-Author: n.zhandarovich@fintech.ru
+However, since the reason for using a custom name no longer exists, it
+seems simpler to just revert to the previous behavior, which is to let
+the nvmem core deal with naming.
 
-Check that issue is still active.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+ChenYu
+
+> --srini
+> >
+> > With the rework of the mtk-socinfo driver, lookup by name is no longer
+> > necessary. The custom name can simply be dropped.
+> >
+> > Fixes: 4e6102d60d88 ("nvmem: mtk-efuse: Register MediaTek socinfo drive=
+r from efuse")
+> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> > ---
+> >   drivers/nvmem/mtk-efuse.c | 1 -
+> >   1 file changed, 1 deletion(-)
+> >
+> > diff --git a/drivers/nvmem/mtk-efuse.c b/drivers/nvmem/mtk-efuse.c
+> > index f5bebcecf9bd..9caf04667341 100644
+> > --- a/drivers/nvmem/mtk-efuse.c
+> > +++ b/drivers/nvmem/mtk-efuse.c
+> > @@ -86,7 +86,6 @@ static int mtk_efuse_probe(struct platform_device *pd=
+ev)
+> >       econfig.size =3D resource_size(res);
+> >       econfig.priv =3D priv;
+> >       econfig.dev =3D dev;
+> > -     econfig.name =3D "mtk-efuse";
+> >       if (pdata->uses_post_processing)
+> >               econfig.fixup_dt_cell_info =3D &mtk_efuse_fixup_dt_cell_i=
+nfo;
+> >       nvmem =3D devm_nvmem_register(dev, &econfig);
 
