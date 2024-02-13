@@ -1,123 +1,235 @@
-Return-Path: <linux-kernel+bounces-62562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C26ED8522F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:10:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10EA88522F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63B39B254AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:10:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B6E51C228CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278B128E3;
-	Tue, 13 Feb 2024 00:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24537ED8;
+	Tue, 13 Feb 2024 00:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="T25wJcfY"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ot+1a5Ht"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A81781FAB
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:10:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301D479DC
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783015; cv=none; b=bF7zFMu+kryNUw1E3hKLWML+1TMoskG7cAiZg2Tuk+SbXMGsfkqeG/ncmwEb6fpJf9/iUHgJJZaQ6Ks9lAXCFAF3t2Qd56GbYJaDsTy5cnzQUyCD/mn4jYHS1c2zsY48gIIpJ4qRaPTN444OeuSvOXyCJzDIxru2YWB14AdipKM=
+	t=1707783009; cv=none; b=r5U9iDFIIsBQQcKxQ2V8LVvl0oClqtwpdtZKEkyLbn8H+kEyyAzhYp3Ds0UjqmiHIzvAN7ZYbJDPMiRRm3B3d1mLsJsqUaoQ5pihHIuvsFJQr2daVMFkWa9//Ph/2P4AuN76n+l1XztvSfD/p4qkCRsknsK3+yuOAsKK09LLu6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783015; c=relaxed/simple;
-	bh=J7FejEFnbMm74uZsExP5QWA3ZxhT4NbGZP6EJnx295g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ItwcSKhq5+XFaD0CTFC30MSrlVkrtW9zxg301CBiaqO20fJ1c5FuId+4Hp29FWIu5MlJ52hb1bCAGY1qGjgHVIWkTsybWzHkWXxTexgnqqtsNhjEFuiN3H4CAzP2yZRmBP/61ctWJlmMmhhjAr+YWsSuObm3XVU3opnYzt1Xg8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=T25wJcfY; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41CNNWC9002327;
-	Tue, 13 Feb 2024 00:09:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=SKTZ/3gDrjTrmPt81XU/FfX33drgx94XxgkNqX5kp7Y=; b=T2
-	5wJcfYBq8HUo5ZGxsokAPOP8K9BC2QvE3Iz8ZTy/DCE2WQ1eRui+5C/9cXtsAghE
-	QSNETroOGAfpQ6aPqx3GfXel40SyCKBP9FzmHNJELPk5o1xuJJgmUFTxZF5pFDf/
-	3TaeuDikn35hJ1BnViB4fQ5buOj5uiFjQfXBJnywCEW0q0izkeSPTsOj5WIwuntQ
-	Ox1b3z8sgTJBtWSDhuCfRpZttQ6sIOgS+IhfAwuKHBUv29kL5iD64Tb29GfEiQJR
-	0ctWmM4Nnchg6jcYpqc68DAxLNU9OZC08uqHy5IY4+UfQ8Otb6EVgo4el2ORsc0h
-	kXui0XdyyNup2vXQYylw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7gvjhsv4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 00:09:53 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D09qgn001486
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 00:09:52 GMT
-Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 12 Feb
- 2024 16:09:51 -0800
-Message-ID: <e5dd6d92-0d9d-fcfe-2aac-8302b421c0a0@quicinc.com>
-Date: Mon, 12 Feb 2024 16:09:50 -0800
+	s=arc-20240116; t=1707783009; c=relaxed/simple;
+	bh=Cn8xM3W1fFtR/5/yiI3lbiK+cKlzcW0/663LC3bcJ3o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NYXDJ6VEJ/kWSMnPJA9oYkZqKTog8QSfTvTs17DsewlSGsDTihDqOZ5Zp72GCR1vj/Q/zfu5ziB8gdko+2nPovOejb5j/fkAVDjgY9rZNGT3KHFhJ88DQERvxlMVSGR6iV6DXUwrhOZi3NpRmIiK7km6VvDZvaEaAgf3cs+RWOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ot+1a5Ht; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e08dd0fa0bso2581229b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:10:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707783006; x=1708387806; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CVCj3/bUzmp/ihK8I5QTojP8ThiaEloYRG+XcmjM3wg=;
+        b=Ot+1a5Ht2YLq8o93C5ZvNMpcmu+vM5a8jx35ZLNBWEuvjqlexX5dxLpI6XUDk38aaz
+         ycjT1OFWIpKNryOJ9INI1sQACy5QWehca2yoT8Pj5lBGq40SsB9piPEKA8jv+rHYDkm1
+         Sf+NDZide1OE5+bxwG/F4R2CUe0ko5rKcn3OI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707783006; x=1708387806;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CVCj3/bUzmp/ihK8I5QTojP8ThiaEloYRG+XcmjM3wg=;
+        b=mv6Nn5qVCvdvfVsbNTlz0K7aBtgcbr5stfzfwTzD0MIW7zXBQp3XJucyfRc1hcWAfq
+         gHFFouuI9kXrLSxSW6HN+EFh7N4GsrbehxP+leP974ShrghQdj39+WG/OVbV9JH+u0Se
+         zRSydmXRaBKMRB6kJ3M/gIPnY1sO4j0vOJNphy6m8aVTiMdkaLIxJksaylRhvGqvwajh
+         /CcsotnJACreruWKOHrF662HMBgd8VYGsLnnJ6xF/+juo+3B9VBlVZZKxYu8oS7o58bj
+         j4JjpNrVFRPebYuCeAmNlsomUylu01z2bnEz8x9zoqj5mRwqS8A6MCclyUDOv1KuOLRY
+         4c9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXSMcUSeN7Yu1nghQEeIbVtdml3beto4RF/SyAJcEtvDCYHD34372R3DBcwS00QfhO0A4XvPGRjsA/b3py7vtwQgR46Dfbi1zsd3D2l
+X-Gm-Message-State: AOJu0YxBUmYOi/xu8j9N4cGs3wusJ9pkiUU/9cVNmd/zq65KIcAA4O/D
+	KFd1bw4eKiuIIvRBKDboONSel77Hv4JE21uUznONw2qsgkokAK7/UkU8NOBJ3Q==
+X-Google-Smtp-Source: AGHT+IFAb5Y0OjFtRBdBi76LWWap6GYJ2vlFyUiWl2KnT6Jl5dQ3zxzCTPwpD04g4Ayonld7YB9n4A==
+X-Received: by 2002:a05:6a20:9585:b0:19e:5fd5:5244 with SMTP id iu5-20020a056a20958500b0019e5fd55244mr1519903pzb.1.1707783006571;
+        Mon, 12 Feb 2024 16:10:06 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXMk5K03F8OvcNP58pCH03c9Xh1q0R3zKG3V6LgreI39ZPp4ENmjuqg9HNOYn2JOhd5i3Dcos9pSuv7mqGH/NV7ZQC6zfETPnz24P3OIOdf/mv6CZgZwY2vYx6EGoiOg2xNJqsbxCHxzRFjiHhrzG/af2rpU2TkVUGVR/tfH57shjxuZFYYCssRTnw/WVDWIzcG9HRqx2oKw1uxIboRc88vlS8FWVbQ3ettKC9j3B8pWVHCT0GOShBVDA8wFQBHmI2e72ZEfLgSrYDoR33l79Kqa0TgiEGqCJYryx4jY7flqGZhOcKbalSLGFs388r+b6v3UcCDPb27pxwP3wBLF+9f5ryy9Qha3cIwlJsboN3MKsbL+mCkb6o5D3+Twe32ozBmQmyoHciMxfwddOjMklF69k5e2wE1tkvkfCeyOXKbED6IaKsd9wY50STBrOsjUT4FjQMhyoPllLfKte7AlgAJqCat+Ey39f7WNHINAStlBqz3CzMiG7HpGoOGFxfhydwk24UUP7aNFQiSPJMnEsgO81x3zQgRT/VQMGSDJpdo1Wmn6CujFLxlh7BgH4MBg7Rl41r4vho5XKHN/yODpxiE07lO6Ns1MgG0Qxxl78Y7wNnjav4kBKco6I/9QWaE+aKs5eRwUZu6MVIyYf9WGJVJouxQdkCiiYxXbc9ppFiLPa1VjNMEkXTbiAHLtC+P7UgZHt9NlwAKBf0U+iMViuzenKLyBs3u481L6eE5M+jOB0BF9KX4TA==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id n5-20020a632705000000b005dc36279d6dsm1048821pgn.73.2024.02.12.16.10.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 16:10:02 -0800 (PST)
+Date: Mon, 12 Feb 2024 16:10:02 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
+Message-ID: <202402121606.687E798B@keescook>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-32-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm/crtc: fix uninitialized variable use even harder
-Content-Language: en-US
-To: Rob Clark <robdclark@gmail.com>, <dri-devel@lists.freedesktop.org>
-CC: Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@intel.com>,
-        open
- list <linux-kernel@vger.kernel.org>
-References: <20240212215534.190682-1-robdclark@gmail.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20240212215534.190682-1-robdclark@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Z6k0dI9SZ8x1JhC7HruQaOgew-bmVxBU
-X-Proofpoint-ORIG-GUID: Z6k0dI9SZ8x1JhC7HruQaOgew-bmVxBU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-12_19,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- suspectscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=881 adultscore=0
- bulkscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402120186
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212213922.783301-32-surenb@google.com>
 
-
-
-On 2/12/2024 1:55 PM, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Mon, Feb 12, 2024 at 01:39:17PM -0800, Suren Baghdasaryan wrote:
+> Include allocations in show_mem reports.
 > 
-> DRM_MODESET_LOCK_ALL_BEGIN() has a hidden trap-door (aka retry loop),
-> which means we can't rely too much on variable initializers.
-> 
-> Fixes: 6e455f5dcdd1 ("drm/crtc: fix uninitialized variable use")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 > ---
-> I have mixed feelings about DRM_MODESET_LOCK_ALL_BEGIN() (and friends)
-> magic.  On one hand it simplifies the deadlock/back dance.  OTOH it
-> conceals a nasty sharp edge.  Maybe it is better to have the complicated
-> restart path a bit more explicit, like it was originally.
+>  include/linux/alloc_tag.h |  2 ++
+>  lib/alloc_tag.c           | 38 ++++++++++++++++++++++++++++++++++++++
+>  mm/show_mem.c             | 15 +++++++++++++++
+>  3 files changed, 55 insertions(+)
 > 
->   drivers/gpu/drm/drm_crtc.c | 1 +
->   1 file changed, 1 insertion(+)
+> diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
+> index 3fe51e67e231..0a5973c4ad77 100644
+> --- a/include/linux/alloc_tag.h
+> +++ b/include/linux/alloc_tag.h
+> @@ -30,6 +30,8 @@ struct alloc_tag {
+>  
+>  #ifdef CONFIG_MEM_ALLOC_PROFILING
+>  
+> +void alloc_tags_show_mem_report(struct seq_buf *s);
+> +
+>  static inline struct alloc_tag *ct_to_alloc_tag(struct codetag *ct)
+>  {
+>  	return container_of(ct, struct alloc_tag, ct);
+> diff --git a/lib/alloc_tag.c b/lib/alloc_tag.c
+> index 2d5226d9262d..54312c213860 100644
+> --- a/lib/alloc_tag.c
+> +++ b/lib/alloc_tag.c
+> @@ -96,6 +96,44 @@ static const struct seq_operations allocinfo_seq_op = {
+>  	.show	= allocinfo_show,
+>  };
+>  
+> +void alloc_tags_show_mem_report(struct seq_buf *s)
+> +{
+> +	struct codetag_iterator iter;
+> +	struct codetag *ct;
+> +	struct {
+> +		struct codetag		*tag;
+> +		size_t			bytes;
+> +	} tags[10], n;
+> +	unsigned int i, nr = 0;
+> +
+> +	codetag_lock_module_list(alloc_tag_cttype, true);
+> +	iter = codetag_get_ct_iter(alloc_tag_cttype);
+> +	while ((ct = codetag_next_ct(&iter))) {
+> +		struct alloc_tag_counters counter = alloc_tag_read(ct_to_alloc_tag(ct));
+> +
+> +		n.tag	= ct;
+> +		n.bytes = counter.bytes;
+> +
+> +		for (i = 0; i < nr; i++)
+> +			if (n.bytes > tags[i].bytes)
+> +				break;
+> +
+> +		if (i < ARRAY_SIZE(tags)) {
+> +			nr -= nr == ARRAY_SIZE(tags);
+> +			memmove(&tags[i + 1],
+> +				&tags[i],
+> +				sizeof(tags[0]) * (nr - i));
+> +			nr++;
+> +			tags[i] = n;
+> +		}
+> +	}
+> +
+> +	for (i = 0; i < nr; i++)
+> +		alloc_tag_to_text(s, tags[i].tag);
+> +
+> +	codetag_lock_module_list(alloc_tag_cttype, false);
+> +}
+> +
+>  static void __init procfs_init(void)
+>  {
+>  	proc_create_seq("allocinfo", 0444, NULL, &allocinfo_seq_op);
+> diff --git a/mm/show_mem.c b/mm/show_mem.c
+> index 8dcfafbd283c..d514c15ca076 100644
+> --- a/mm/show_mem.c
+> +++ b/mm/show_mem.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/hugetlb.h>
+>  #include <linux/mm.h>
+>  #include <linux/mmzone.h>
+> +#include <linux/seq_buf.h>
+>  #include <linux/swap.h>
+>  #include <linux/vmstat.h>
+>  
+> @@ -423,4 +424,18 @@ void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
+>  #ifdef CONFIG_MEMORY_FAILURE
+>  	printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_pages));
+>  #endif
+> +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> +	{
+> +		struct seq_buf s;
+> +		char *buf = kmalloc(4096, GFP_ATOMIC);
+
+Why 4096? Maybe use PAGE_SIZE instead?
+
+> +
+> +		if (buf) {
+> +			printk("Memory allocations:\n");
+
+This needs a printk prefix, or better yet, just use pr_info() or similar.
+
+> +			seq_buf_init(&s, buf, 4096);
+> +			alloc_tags_show_mem_report(&s);
+> +			printk("%s", buf);
+
+Once a seq_buf "consumes" a char *, please don't use any directly any
+more. This should be:
+
+			pr_info("%s", seq_buf_str(s));
+
+Otherwise %NUL termination isn't certain. Very likely, given the use
+case here, but let's use good hygiene. :)
+
+> +			kfree(buf);
+> +		}
+> +	}
+> +#endif
+>  }
+> -- 
+> 2.43.0.687.g38aa6559b0-goog
 > 
 
-Nice catch !!
-
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+-- 
+Kees Cook
 
