@@ -1,74 +1,92 @@
-Return-Path: <linux-kernel+bounces-63668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B43A853302
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:23:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4CDD853309
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:25:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 438F12815BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:23:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D3CCB231AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417935788A;
-	Tue, 13 Feb 2024 14:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CCD58124;
+	Tue, 13 Feb 2024 14:25:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="A50BY/KL"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="peaY5gJu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3ve7YYNp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="peaY5gJu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3ve7YYNp"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9704A5787C
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C28B58119
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:25:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707834169; cv=none; b=n6DM14ROpMEy4SUw4WueKeRDtIDjxj3Zjcl8EEZ6ofW+N8H2YeCK4RwJK8udAraBd6d8ARH+djo1sppCK4aMliqgmCFRBu41/wfJ8V4XnzqT75So0UiynawK40L2VDggkD3jQQYQ7RV69hhZ1Syj1PlfpttOfKszfDGjxInTEMI=
+	t=1707834330; cv=none; b=pFfrSnXvxPntzU9swZJ9aYM0MuBTdb++Mt3qKoLi5Ph3+LRhnXUBrRc4WCJxKrKbqNpv93kHtIgGPRq8qY3DB9Cc/c7dx2Mpgff5O7vnXOYxOyQ/nCPYFX7wakNwAyJxGNwpNLPLfrbe/9yoIvbJP2fP0VVPH6Jxzdms4J4eGpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707834169; c=relaxed/simple;
-	bh=J43zOcElWg4UxeJmgC3Ghm7RwJqXsIj/fnaTglFh3OM=;
+	s=arc-20240116; t=1707834330; c=relaxed/simple;
+	bh=47GLH3r8Ecss8GdXJNiRzcux3kAUlP7QKTP2wmpdSxw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uKHEjr+QzMc/3XeZoSZdPEcJpajGIVnWayJHzlKHu5c3ug9fq3eUB0gX8TX9zA8oQuidFnFZ72Zoo3Vi4thIsX0uxFuhQRj6A9DoJL/N8Dlc9IxBc89ebIdN0f8IOVi9aES+8gQ/znenhjOX/0LkNPpOHKEmL0PZU7vBC5u8pPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=A50BY/KL; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e06c06c0f6so3104732b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:22:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1707834166; x=1708438966; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yoOD+hWlWE/17i8/Lqi/FjvHCDIa9+g3UCcdDeLmuOw=;
-        b=A50BY/KL4b6dh4Mz4G1R+ofttwZRGYdSaENw5ZUW6Gc+/C0d2VV/9cxDQqwgsP7gPG
-         g8CY+6UMenxzcUKLQXwzsjBZhkFPgNDOMtZ5BdMN7Lu08ARKnyQDX0mkU5FnduT72FT8
-         2wDGDVFOTfaWNDaP7EF4HZkTaUeT4Ru1j1GF7Z0jxPeh+xnVmC7kQwigUrFoHxB3nNty
-         CZSgfe8krYlptz+6mZHUYCqqQpJA14yowmauggkWwtB+qNidZTTDpr+XlyXkuK1i+MLU
-         iww1gs2d2Kahwz2AqINJhcqGWKbYli6ziLG7onLibWIoaervDpu+UFOInIM28Y5JsoEM
-         k4UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707834166; x=1708438966;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yoOD+hWlWE/17i8/Lqi/FjvHCDIa9+g3UCcdDeLmuOw=;
-        b=O0MDDlIenxcRHWYNFHlzVinOiIuTZlkFt5xs9sLycwpRQXeZ5pwvCAayMODksPUTLD
-         Ib+8vqziLvN5JwRwy+ydq9PltjA2DUqs7uqZUFdEvc5loL0AHRkutUMF89ofU7XRuRyc
-         5HxCKzzFN+BkWoZZoXFv12IPZb7OtpTJ9ri7QD3GxR2+8gvZI9mgY/8FfN2yP3SFEXfZ
-         +jCLPucREo6GsFoSvQyVSiAu7dDIelMdDECqNjKE+PLBvuGMVx80XoX8DVqFxYtRg0ux
-         SJnOny8qjWKZIu00ZX/qRMNOqz204M67VX6jXzp1kgzh8fvGxD1o3JAZpyCVJ2d38b4V
-         GL5w==
-X-Forwarded-Encrypted: i=1; AJvYcCWzDDSAYYwjAoU3pT+ls5cEg7C7egrbAaBOb0chiJItRhBoUDV8mcRPpnF9hvWaZGj/Y1tNKr1eaIzT3qCvHenM5SMgF0LUuB5U1ihI
-X-Gm-Message-State: AOJu0Yy/rQ1nT9cgRCOopEej6NGwoUzwtECo4gJZJY8+dz7b+/zZ9AKo
-	V6MyK3Jh2/yFXQ+XZKK44/hRtcquqEs5ZIeWCdxrLPeXBXlBwHmZFHrl54vr/p8=
-X-Google-Smtp-Source: AGHT+IHFb+hFkNqYKVSW8GLr5IBYjAxPORH03FsRoQfyMkPGmpev9pa2Jb48PJVDq1OtWR9Q55jyUg==
-X-Received: by 2002:a05:6a21:998a:b0:19e:c985:f9f3 with SMTP id ve10-20020a056a21998a00b0019ec985f9f3mr3105250pzb.12.1707834166638;
-        Tue, 13 Feb 2024 06:22:46 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUmez5g8ORnZeCquaDa/pZEmHRpwGrwjXKMqaErxTDvZ007StaGvM1GQU14+e8TOcPHNYo8vnAQxxwDsyhXkEMqPooTRUEWiHvamrONe/ICFwtA5koW1vrBLKNFMFgEWPsCCODQp5o9DiKVbZddgoFbhlflFzPlz/jchblMgiunfp2N+C5zPMSOcT8u
-Received: from [10.254.125.113] ([139.177.225.244])
-        by smtp.gmail.com with ESMTPSA id ca29-20020a056a02069d00b005cf5cbac29asm2142042pgb.53.2024.02.13.06.22.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 06:22:46 -0800 (PST)
-Message-ID: <e4f3acd9-88a4-428a-8f66-1486037c35f9@bytedance.com>
-Date: Tue, 13 Feb 2024 22:22:40 +0800
+	 In-Reply-To:Content-Type; b=i7Amqpfjh7V6qWP9h4Hog3ysgsl5ZDjzMxSQZHQ6cZTaMv6juUsbef111626wK+g1kEF7Gt9nFxyF2QKhQo2x3Ui5Qd8aV+wQOQ3PQR+A4I/O+oHj67yIH0sqprFqS+radPQ5OcUAuexClC6RMTuzHaL88C+UFDt8IEfmuJ5H4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=peaY5gJu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3ve7YYNp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=peaY5gJu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3ve7YYNp; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B95B01FCDB;
+	Tue, 13 Feb 2024 14:25:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707834326; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pkBvOLVHi2de+ERnUxon6wSh8Yr7kE+kebwjXh01sD0=;
+	b=peaY5gJuPxc4TrCtINsGhmTcHGex6SOS5vhB9gGhZEWPhfKGFlg/JxrgvNZMx4b6iDhd4V
+	TzlToyjyxXV5H4WHxg/xpMa7greVATkwSezqoYuqoTdyzWUyvvRmYddWN3cV6W3O0ZBGfA
+	wT1una36u+FGKfZZAMB8qQrsvqm6dkA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707834326;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pkBvOLVHi2de+ERnUxon6wSh8Yr7kE+kebwjXh01sD0=;
+	b=3ve7YYNpOHvJkXrspWvQI4ZuMd781BYzdNLdn7LDHxk/4kk5fnEkAS9wdbVZMKQy1fSwn2
+	fR/cdqqcOZ5L/rDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707834326; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pkBvOLVHi2de+ERnUxon6wSh8Yr7kE+kebwjXh01sD0=;
+	b=peaY5gJuPxc4TrCtINsGhmTcHGex6SOS5vhB9gGhZEWPhfKGFlg/JxrgvNZMx4b6iDhd4V
+	TzlToyjyxXV5H4WHxg/xpMa7greVATkwSezqoYuqoTdyzWUyvvRmYddWN3cV6W3O0ZBGfA
+	wT1una36u+FGKfZZAMB8qQrsvqm6dkA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707834326;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pkBvOLVHi2de+ERnUxon6wSh8Yr7kE+kebwjXh01sD0=;
+	b=3ve7YYNpOHvJkXrspWvQI4ZuMd781BYzdNLdn7LDHxk/4kk5fnEkAS9wdbVZMKQy1fSwn2
+	fR/cdqqcOZ5L/rDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A498F1370C;
+	Tue, 13 Feb 2024 14:25:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 8FDaJ9Z7y2UsKQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 13 Feb 2024 14:25:26 +0000
+Message-ID: <b706176a-c60a-4960-ba4a-2755c612d9c8@suse.cz>
+Date: Tue, 13 Feb 2024 15:25:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,110 +94,116 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] mm/zswap: change zswap_pool kref to percpu_ref
+Subject: Re: [PATCH v8 3/5] mm,page_owner: Display all stacks and their count
 Content-Language: en-US
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosryahmed@google.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240210-zswap-global-lru-v1-0-853473d7b0da@bytedance.com>
- <20240210-zswap-global-lru-v1-2-853473d7b0da@bytedance.com>
- <CAKEwX=MCkhH2Qa2+dGErpo2e_27=HyyVeEDWVO=+O6D-7mRQ1Q@mail.gmail.com>
- <900cd5da-da96-4107-b5f0-c7d975a8ba97@bytedance.com>
- <CAKEwX=PtOWJ3=dur30sPBmhrAemPcoEQqJkOXCo8=XQLqO1Fvw@mail.gmail.com>
-From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAKEwX=PtOWJ3=dur30sPBmhrAemPcoEQqJkOXCo8=XQLqO1Fvw@mail.gmail.com>
+To: Oscar Salvador <osalvador@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>,
+ Alexander Potapenko <glider@google.com>
+References: <20240212223029.30769-1-osalvador@suse.de>
+ <20240212223029.30769-4-osalvador@suse.de>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240212223029.30769-4-osalvador@suse.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -7.83
+X-Spamd-Result: default: False [-7.83 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 TO_DN_SOME(0.00)[];
+	 REPLY(-4.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-0.986];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-2.55)[97.96%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
 
-On 2024/2/13 02:53, Nhat Pham wrote:
-> On Mon, Feb 12, 2024 at 5:29 AM Chengming Zhou
-> <zhouchengming@bytedance.com> wrote:
->>
->> On 2024/2/12 05:21, Nhat Pham wrote:
->>> On Sun, Feb 11, 2024 at 5:58 AM Chengming Zhou
->>> <zhouchengming@bytedance.com> wrote:
->>>>
->>>> All zswap entries will take a reference of zswap_pool when
->>>> zswap_store(), and drop it when free. Change it to use the
->>>> percpu_ref is better for scalability performance.
->>>>
->>>> Testing kernel build in tmpfs with memory.max=2GB
->>>> (zswap shrinker and writeback enabled with one 50GB swapfile).
->>>>
->>>>         mm-unstable  zswap-global-lru
->>>> real    63.20        63.12
->>>> user    1061.75      1062.95
->>>> sys     268.74       264.44
->>>>
->>>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->>>> ---
->>>>  mm/zswap.c | 30 +++++++++++++++++++++---------
->>>>  1 file changed, 21 insertions(+), 9 deletions(-)
->>>>
->>>> diff --git a/mm/zswap.c b/mm/zswap.c
->>>> index 7668db8c10e3..afb31904fb08 100644
->>>> --- a/mm/zswap.c
->>>> +++ b/mm/zswap.c
->>>> @@ -173,7 +173,7 @@ struct crypto_acomp_ctx {
->>>>  struct zswap_pool {
->>>>         struct zpool *zpools[ZSWAP_NR_ZPOOLS];
->>>>         struct crypto_acomp_ctx __percpu *acomp_ctx;
->>>> -       struct kref kref;
->>>> +       struct percpu_ref ref;
->>>>         struct list_head list;
->>>>         struct work_struct release_work;
->>>>         struct hlist_node node;
->>>> @@ -303,6 +303,7 @@ static void zswap_update_total_size(void)
->>>>  /*********************************
->>>>  * pool functions
->>>>  **********************************/
->>>> +static void __zswap_pool_empty(struct percpu_ref *ref);
->>>>
->>>>  static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
->>>>  {
->>>> @@ -356,13 +357,18 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
->>>>         /* being the current pool takes 1 ref; this func expects the
->>>>          * caller to always add the new pool as the current pool
->>>>          */
->>>> -       kref_init(&pool->kref);
->>>> +       ret = percpu_ref_init(&pool->ref, __zswap_pool_empty,
->>>> +                             PERCPU_REF_ALLOW_REINIT, GFP_KERNEL);
->>>> +       if (ret)
->>>> +               goto ref_fail;
->>>>         INIT_LIST_HEAD(&pool->list);
->>>>
->>>>         zswap_pool_debug("created", pool);
->>>>
->>>>         return pool;
->>>>
->>>> +ref_fail:
->>>> +       cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->node);
->>>>  error:
->>>>         if (pool->acomp_ctx)
->>>>                 free_percpu(pool->acomp_ctx);
->>>> @@ -435,8 +441,8 @@ static void __zswap_pool_release(struct work_struct *work)
->>>>
->>>>         synchronize_rcu();
->>>>
->>>> -       /* nobody should have been able to get a kref... */
->>>> -       WARN_ON(kref_get_unless_zero(&pool->kref));
->>>
->>> Do we no longer care about this WARN? IIUC, this is to catch someone
->>> still holding a reference to the pool at release time, which sounds
->>> like a bug. I think we can simulate the similar behavior with:
->>
->> Ok, I thought it has already been put to 0 when we're here, so any tryget
->> will fail. But keeping this WARN_ON() is also fine to me, will keep it.
+On 2/12/24 23:30, Oscar Salvador wrote:
+> This patch adds a new directory called 'page_owner_stacks' under
+> /sys/kernel/debug/, with a file called 'show_stacks' in it.
+> Reading from that file will show all stacks that were added by page_owner
+> followed by their counting, giving us a clear overview of stack <-> count
+> relationship.
 > 
-> Yup - it should fail, if the code is not buggy. But that's a pretty big if :)
+> E.g:
 > 
-> Jokes aside, we can remove it if folks think the benefit is not worth
-> the cost/overhead. However, I'm a bit hesitant to remove checks in
-> zswap, especially given how buggy it has been (some of which are
-> refcnt bugs as well, IIRC).
+>   prep_new_page+0xa9/0x120
+>   get_page_from_freelist+0x801/0x2210
+>   __alloc_pages+0x18b/0x350
+>   alloc_pages_mpol+0x91/0x1f0
+>   folio_alloc+0x14/0x50
+>   filemap_alloc_folio+0xb2/0x100
+>   __filemap_get_folio+0x14a/0x490
+>   ext4_write_begin+0xbd/0x4b0 [ext4]
+>   generic_perform_write+0xc1/0x1e0
+>   ext4_buffered_write_iter+0x68/0xe0 [ext4]
+>   ext4_file_write_iter+0x70/0x740 [ext4]
+>   vfs_write+0x33d/0x420
+>   ksys_write+0xa5/0xe0
+>   do_syscall_64+0x80/0x160
+>   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>  stack_count: 4578
+> 
+> The seq stack_{start,next} functions will iterate through the list
+> stack_list in order to print all stacks.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
 
-Yes, agree. It looks clearer to keep it, which should be no cost at all.
+..
 
-Thanks!
+> +static int stack_print(struct seq_file *m, void *v)
+> +{
+> +	char *buf;
+> +	int ret = 0;
+> +	struct stack *stack = v;
+> +	struct stack_record *stack_record = stack->stack_record;
+> +
+> +	if (!stack_record->size || stack_record->size < 0 ||
+> +	    refcount_read(&stack_record->count) < 2)
+> +		return 0;
+> +
+> +	buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
+> +
+> +	ret += stack_trace_snprint(buf, PAGE_SIZE, stack_record->entries,
+> +				   stack_record->size, 0);
+> +	if (!ret)
+> +		goto out;
+> +
+> +	scnprintf(buf + ret, PAGE_SIZE - ret, "stack_count: %d\n\n",
+> +		  refcount_read(&stack_record->count));
+> +
+> +	seq_printf(m, buf);
+> +	seq_puts(m, "\n\n");
+> +out:
+> +	kfree(buf);
+
+Seems rather wasteful to do kzalloc/kfree so you can print into that buffer
+first and then print/copy it again using seq_printf. If you give up on using
+stack_trace_snprintf() it's not much harder to print the stack directly with
+a loop of seq_printf. See e.g. slab_debugfs_show().
+
+> +
+> +	return 0;
+> +}
+> +
+
 
