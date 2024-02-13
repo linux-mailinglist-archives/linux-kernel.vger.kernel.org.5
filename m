@@ -1,259 +1,157 @@
-Return-Path: <linux-kernel+bounces-64254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CDCE853CA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:07:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85291853CAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:08:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22E2028304A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:07:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5FCD1C236C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:08:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E4D64A80;
-	Tue, 13 Feb 2024 21:04:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EAF62813;
+	Tue, 13 Feb 2024 21:04:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="FGQ4SkzP";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ljlKok6N"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="JMB6NJ4T"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7EA63408
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43F464A92
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:04:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707858263; cv=none; b=P3nSeqYcZsa1UutXVk77tgLmAHm0e9dWqfYWPBNTwG74q5LfNbS/SjypUqEH1EyOM2Uar1r8VIMzl3FEviwyfBSLtBSK6NEbfyCPU3QNCxRa8MVdtS94lZyfjjAmmSkJynG0nm+4/gutczx6y0P9krUxgOpgghqxJB7EZ6MaCwc=
+	t=1707858267; cv=none; b=sn/ZiWTVEq+B4mA+Mt3HIUrrhOOxkNmP6UjcnxAVzc4ms5u5ZhpAjb5lYKUwu5CRFCKgJTov3X+BuSsKlIWsPrWcJxxlW0wPWbxCVsy6JGQs+REmXEkz/YzxxoZExtBHJ36IdM/Mu0+dY7oxAeCg9bNznx+wdUj5Um47ZznhRxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707858263; c=relaxed/simple;
-	bh=swUJgfNVhjwrZII83+6GSi9j+s/XkYQeOa3Vgleo/6M=;
-	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=q6XvxG35ZrzVgJ6kQx6wFGIRoyEeIxWiISkpsrdsZXN+EVmItBy0CZo+N9vsBzAShwJyVHQMVL1sLsnKQH6nye5w02mFC77Guv2WNyq45ACos9/qshmZ/KhqFVM+MbuMkrrNyhTn7HGYaRXxJNhSnzxnw5hc13XTwRHQr7s9RKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=FGQ4SkzP; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ljlKok6N; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240212153625.395230346@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707858260;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=14vpVUg4NgC36dmKytDzQfFlwR9EgV0MbRQlWlktVgs=;
-	b=FGQ4SkzPjDldemscVxHubKqj2q2akEv4L0rrEaBQHyS+fBeQwPQ/DVU04Zgm9AZeECLYwL
-	L8E31sKzm0F60hf5+7nMJUAD8WoYi6BdRANRb39KRTJsKaGBPuUOI1C8tG54xu+eUKnuky
-	+QMBxIl0KJ4rCiY3vMjZcOJLx+eTThkMSCsv7gatwBF5AlJ3sQnSdXwVI0NKY4W3F3XeBu
-	BFNsxv0MUtqNZBKbsQpvJGkKo8w0y5sNUACMX0lITJvWwOzsx2DDndE9KLzUpNnb+J6IFl
-	pVzmtAWnOxma9Zuf/V+GJt26VL7qzBLSvV57MlMCaBmcX8lSzKpCrqU2A8OCeA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707858260;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=14vpVUg4NgC36dmKytDzQfFlwR9EgV0MbRQlWlktVgs=;
-	b=ljlKok6NhHVzl5ifmbvoq5yCK88BzpB4EQkbzhrdOUhfnsw7VL5rXtKhoncqS6rrygGzcF
-	BTR5zsje96xHt4Cw==
-From: Thomas Gleixner <tglx@linutronix.de>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: x86@kernel.org,
- Tom Lendacky <thomas.lendacky@amd.com>,
- Andrew Cooper <andrew.cooper3@citrix.com>,
- Arjan van de Ven <arjan@linux.intel.com>,
- Huang Rui <ray.huang@amd.com>,
- Juergen Gross <jgross@suse.com>,
- Dimitri Sivanich <dimitri.sivanich@hpe.com>,
- Sohil Mehta <sohil.mehta@intel.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- Kan Liang <kan.liang@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Feng Tang <feng.tang@intel.com>,
- Andy Shevchenko <andy@infradead.org>,
- Michael Kelley <mhklinux@outlook.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Wang Wendy <wendy.wang@intel.com>
-Subject: [patch V6 15/19] x86/cpu: Remove topology.c
-References: <20240212153109.330805450@linutronix.de>
+	s=arc-20240116; t=1707858267; c=relaxed/simple;
+	bh=unxZOrs9XDbzoXsCj96S95ndlfevfpGn8crX2VsMceo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PAROmvPjhso8TZK+8qyEu7sUwvuDL/xsMiqkoQtuNjKHJ9hH7QjotYh9r69ITZYJWfEi6AqDvDlrHdCmY0OOD0Wvb/D6Nysuwb4TG1nkhWRQH0UWLxjBwlT8APl6omLcfbvEkuZK/ubrAwVk6qGanwbB6PRYYxBHCw+1bZRkSxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=JMB6NJ4T; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso1065023276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:04:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707858264; x=1708463064; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6WpcrNvlFPgLJQNuLJ6h+eMksOi6n36MRReQFJjkwlI=;
+        b=JMB6NJ4TwDe4C2jjPbeLOlRDA8BUi20jfZw72JnfXG1tGxGSw+Mpv6VYsqejKzy8c1
+         cFTvAE4INDnReg68hGisEKVkURPi5SjvuJM4B40D3W2PXVjmWhR8tsRiP1JmMNxllYOI
+         zF5xmBY9l6W3a4HZU9VE2xvhHm40qB3HHv5IHSgRi+/0wCPDxa66hRaXVLT1SJQ1gqir
+         mwg5SzvGOjGDd6qNoO64EqO7JAhMI+yQxLsVsOuLcG57WXoOn3YQZxCxSfnM7nrP7urv
+         mexT+gZut7zNLt3Ji9NK1e1y4X2Z54Cij2U8XkdxE22KYUKXIvA0GbQQ0MgZSFoPS5Dj
+         /TVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707858264; x=1708463064;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6WpcrNvlFPgLJQNuLJ6h+eMksOi6n36MRReQFJjkwlI=;
+        b=sHAdZotuZnFhA+k82BjLH6L1ThYA9S27flq0UtEMXhzX95MWHoPg0R4l3rQPI/uj2c
+         3YMzKZHK30zbtD9TpKbZFk2uQWH4sDLGBTmsJthh+SerR3cOirV5WBfjCdoNEYVqXQt1
+         OEFllkadyC0DI5vAcuJqfBmY3z2/INTk8gYQdarxLFbCqSwl0hfpn+Dw3txlqMpfMVei
+         MwrGxsAlc6d1O+AkwlvKQ/cqoV/5sdzCw6MIDkP/0cANYaHxYPMiB8eCOTSHcT+wN9w6
+         oPpuJIjo9BxpfrE4qHqZFwUuX29FnBv2mqTkz+43VAO1CzP1+a7pHN+luUHmnvN45Mew
+         7veg==
+X-Forwarded-Encrypted: i=1; AJvYcCVOy8PpvJ5g4L/I9ToGiNBGQZym4b9QHY/GWF5pyTmG9dqIgWJv5XPAxa6uGjsEz60Q4o+kGhHzGk9Gbnh6LSUPfVp5c+rs4gXkqhgg
+X-Gm-Message-State: AOJu0Yx+qGH0GhEhV2/gIykbr9bZfnFFyyOuNusHj6MsZbor8QeP97Nb
+	63AQStroUoWTmFkBIyKbUWw9szUYn7cW3npveBjVOj+uaRE0+P2AHPRj7ZhFpW0=
+X-Google-Smtp-Source: AGHT+IGuhB7i7Can7GRRRP7ZoLvLMIK+FNyBhgPsmOzQYSQiDEPs9JYTpO+KUBpE+u8T7iLWINCm6Q==
+X-Received: by 2002:a81:838b:0:b0:604:69ee:5b4c with SMTP id t133-20020a81838b000000b0060469ee5b4cmr674166ywf.18.1707858262387;
+        Tue, 13 Feb 2024 13:04:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXmvajECjHBVC7eK1T3+mN2RBiopPph9GnxGfJw2yyyl11dZUu5JKrWODyKI0eKUdKqynzV/pJZKL83VThrGokefoaqgeZs8bYX4XDEBme3v8GaoFszV2jwuwn0P3ithjtKKsP6uLb1YIAR3UalNS6rO4TUwNIlKFxbIRGlzvBqetmEgFq2ZoONoGI6woxU/UKbWo3pU7c6Wk87alI/E60DJpVAHHh7
+Received: from ghost ([50.146.0.2])
+        by smtp.gmail.com with ESMTPSA id v137-20020a81488f000000b0060792690431sm299939ywa.105.2024.02.13.13.04.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 13:04:21 -0800 (PST)
+Date: Tue, 13 Feb 2024 16:04:20 -0500
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Helge Deller <deller@gmx.de>,
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Palmer Dabbelt <palmer@rivosinc.com>
+Subject: Re: [PATCH] parisc: Fix ip_fast_csum
+Message-ID: <ZcvZVGCNd0qMkMbY@ghost>
+References: <20240210175526.3710522-1-linux@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 13 Feb 2024 22:04:20 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240210175526.3710522-1-linux@roeck-us.net>
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Sat, Feb 10, 2024 at 09:55:26AM -0800, Guenter Roeck wrote:
+> IP checksum unit tests report the following error when run on hppa/hppa64.
+> 
+>     # test_ip_fast_csum: ASSERTION FAILED at lib/checksum_kunit.c:463
+>     Expected ( u64)csum_result == ( u64)expected, but
+>         ( u64)csum_result == 33754 (0x83da)
+>         ( u64)expected == 10946 (0x2ac2)
+>     not ok 4 test_ip_fast_csum
+> 
+> 0x83da is the expected result if the IP header length is 20 bytes. 0x2ac2
+> is the expected result if the IP header length is 24 bytes. The test fails
+> with an IP header length of 24 bytes. It appears that ip_fast_csum()
+> always returns the checksum for a 20-byte header, no matter how long
+> the header actually is.
+> 
+> Code analysis shows a suspicious assembler sequence in ip_fast_csum().
+> 
+>  "      addc            %0, %3, %0\n"
+>  "1:    ldws,ma         4(%1), %3\n"
+>  "      addib,<         0, %2, 1b\n"	<---
+> 
+> While my understanding of HPPA assembler is limited, it does not seem
+> to make much sense to subtract 0 from a register and to expect the result
+> to ever be negative. Subtracting 1 from the length parameter makes more
+> sense. On top of that, the operation should be repeated if and only if
+> the result is still > 0, so change the suspicious instruction to
+>  "      addib,>         -1, %2, 1b\n"
+> 
+> The IP checksum unit test passes after this change.
+> 
+> Cc: Charlie Jenkins <charlie@rivosinc.com>
+> Cc: Palmer Dabbelt <palmer@rivosinc.com>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+> Prerequisite for this patch is
+> https://lore.kernel.org/lkml/20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com/
+> 
+> No idea how that was not detected before. Maybe I am missing something.
+> 
+> Note that test_csum_ipv6_magic still fails on 32-bit parisc systems
+> after this patch has been applied. That is a different problem.
+> 
+>  arch/parisc/include/asm/checksum.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/parisc/include/asm/checksum.h b/arch/parisc/include/asm/checksum.h
+> index 3c43baca7b39..f705e5dd1074 100644
+> --- a/arch/parisc/include/asm/checksum.h
+> +++ b/arch/parisc/include/asm/checksum.h
+> @@ -40,7 +40,7 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
+>  "	addc		%0, %5, %0\n"
+>  "	addc		%0, %3, %0\n"
+>  "1:	ldws,ma		4(%1), %3\n"
+> -"	addib,<		0, %2, 1b\n"
+> +"	addib,>		-1, %2, 1b\n"
+>  "	addc		%0, %3, %0\n"
+>  "\n"
+>  "	extru		%0, 31, 16, %4\n"
+> -- 
+> 2.39.2
+> 
 
-No more users. Stick it into the ugly code museum.
+I got my parisc setup working and this does indeed fix the issue.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Juergen Gross <jgross@suse.com>
-Tested-by: Sohil Mehta <sohil.mehta@intel.com>
-Tested-by: Michael Kelley <mhklinux@outlook.com>
-Tested-by: Zhang Rui <rui.zhang@intel.com>
-Tested-by: Wang Wendy <wendy.wang@intel.com>
-
-
-
----
- arch/x86/kernel/cpu/Makefile   |    2 
- arch/x86/kernel/cpu/topology.c |  142 -----------------------------------------
- 2 files changed, 1 insertion(+), 143 deletions(-)
- delete mode 100644 arch/x86/kernel/cpu/topology.c
----
-
---- a/arch/x86/kernel/cpu/Makefile
-+++ b/arch/x86/kernel/cpu/Makefile
-@@ -18,7 +18,7 @@ KMSAN_SANITIZE_common.o := n
- KCSAN_SANITIZE_common.o := n
- 
- obj-y			:= cacheinfo.o scattered.o
--obj-y			+= topology_common.o topology_ext.o topology_amd.o topology.o
-+obj-y			+= topology_common.o topology_ext.o topology_amd.o
- obj-y			+= common.o
- obj-y			+= rdrand.o
- obj-y			+= match.o
---- a/arch/x86/kernel/cpu/topology.c
-+++ /dev/null
-@@ -1,142 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Check for extended topology enumeration cpuid leaf 0xb and if it
-- * exists, use it for populating initial_apicid and cpu topology
-- * detection.
-- */
--
--#include <linux/cpu.h>
--#include <asm/apic.h>
--#include <asm/memtype.h>
--#include <asm/processor.h>
--
--#include "cpu.h"
--
--/* leaf 0xb SMT level */
--#define SMT_LEVEL	0
--
--/* extended topology sub-leaf types */
--#define INVALID_TYPE	0
--#define SMT_TYPE	1
--#define CORE_TYPE	2
--#define DIE_TYPE	5
--
--#define LEAFB_SUBTYPE(ecx)		(((ecx) >> 8) & 0xff)
--#define BITS_SHIFT_NEXT_LEVEL(eax)	((eax) & 0x1f)
--#define LEVEL_MAX_SIBLINGS(ebx)		((ebx) & 0xffff)
--
--#ifdef CONFIG_SMP
--/*
-- * Check if given CPUID extended topology "leaf" is implemented
-- */
--static int check_extended_topology_leaf(int leaf)
--{
--	unsigned int eax, ebx, ecx, edx;
--
--	cpuid_count(leaf, SMT_LEVEL, &eax, &ebx, &ecx, &edx);
--
--	if (ebx == 0 || (LEAFB_SUBTYPE(ecx) != SMT_TYPE))
--		return -1;
--
--	return 0;
--}
--/*
-- * Return best CPUID Extended Topology Leaf supported
-- */
--static int detect_extended_topology_leaf(struct cpuinfo_x86 *c)
--{
--	if (c->cpuid_level >= 0x1f) {
--		if (check_extended_topology_leaf(0x1f) == 0)
--			return 0x1f;
--	}
--
--	if (c->cpuid_level >= 0xb) {
--		if (check_extended_topology_leaf(0xb) == 0)
--			return 0xb;
--	}
--
--	return -1;
--}
--#endif
--
--/*
-- * Check for extended topology enumeration cpuid leaf, and if it
-- * exists, use it for populating initial_apicid and cpu topology
-- * detection.
-- */
--int detect_extended_topology(struct cpuinfo_x86 *c)
--{
--#ifdef CONFIG_SMP
--	unsigned int eax, ebx, ecx, edx, sub_index;
--	unsigned int ht_mask_width, core_plus_mask_width, die_plus_mask_width;
--	unsigned int core_select_mask, core_level_siblings;
--	unsigned int die_select_mask, die_level_siblings;
--	unsigned int pkg_mask_width;
--	bool die_level_present = false;
--	int leaf;
--
--	leaf = detect_extended_topology_leaf(c);
--	if (leaf < 0)
--		return -1;
--
--	/*
--	 * Populate HT related information from sub-leaf level 0.
--	 */
--	cpuid_count(leaf, SMT_LEVEL, &eax, &ebx, &ecx, &edx);
--	c->topo.initial_apicid = edx;
--	core_level_siblings = LEVEL_MAX_SIBLINGS(ebx);
--	smp_num_siblings = max_t(int, smp_num_siblings, LEVEL_MAX_SIBLINGS(ebx));
--	core_plus_mask_width = ht_mask_width = BITS_SHIFT_NEXT_LEVEL(eax);
--	die_level_siblings = LEVEL_MAX_SIBLINGS(ebx);
--	pkg_mask_width = die_plus_mask_width = BITS_SHIFT_NEXT_LEVEL(eax);
--
--	sub_index = 1;
--	while (true) {
--		cpuid_count(leaf, sub_index, &eax, &ebx, &ecx, &edx);
--
--		/*
--		 * Check for the Core type in the implemented sub leaves.
--		 */
--		if (LEAFB_SUBTYPE(ecx) == CORE_TYPE) {
--			core_level_siblings = LEVEL_MAX_SIBLINGS(ebx);
--			core_plus_mask_width = BITS_SHIFT_NEXT_LEVEL(eax);
--			die_level_siblings = core_level_siblings;
--			die_plus_mask_width = BITS_SHIFT_NEXT_LEVEL(eax);
--		}
--		if (LEAFB_SUBTYPE(ecx) == DIE_TYPE) {
--			die_level_present = true;
--			die_level_siblings = LEVEL_MAX_SIBLINGS(ebx);
--			die_plus_mask_width = BITS_SHIFT_NEXT_LEVEL(eax);
--		}
--
--		if (LEAFB_SUBTYPE(ecx) != INVALID_TYPE)
--			pkg_mask_width = BITS_SHIFT_NEXT_LEVEL(eax);
--		else
--			break;
--
--		sub_index++;
--	}
--
--	core_select_mask = (~(-1 << pkg_mask_width)) >> ht_mask_width;
--	die_select_mask = (~(-1 << die_plus_mask_width)) >>
--				core_plus_mask_width;
--
--	c->topo.core_id = apic->phys_pkg_id(c->topo.initial_apicid,
--				ht_mask_width) & core_select_mask;
--
--	if (die_level_present) {
--		c->topo.die_id = apic->phys_pkg_id(c->topo.initial_apicid,
--					core_plus_mask_width) & die_select_mask;
--	}
--
--	c->topo.pkg_id = apic->phys_pkg_id(c->topo.initial_apicid, pkg_mask_width);
--	/*
--	 * Reinit the apicid, now that we have extended initial_apicid.
--	 */
--	c->topo.apicid = apic->phys_pkg_id(c->topo.initial_apicid, 0);
--
--	c->x86_max_cores = (core_level_siblings / smp_num_siblings);
--	__max_die_per_package = (die_level_siblings / core_level_siblings);
--#endif
--	return 0;
--}
+Tested-by: Charlie Jenkins <charlie@rivosinc.com>
+Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
 
 
