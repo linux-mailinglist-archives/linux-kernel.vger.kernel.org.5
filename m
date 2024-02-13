@@ -1,607 +1,241 @@
-Return-Path: <linux-kernel+bounces-64004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E71DD8538DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:46:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D323B8538EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:48:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5708A1F237E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:46:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 496B01F24115
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:48:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91685FF1C;
-	Tue, 13 Feb 2024 17:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNP8/pNm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55CE48C0A;
-	Tue, 13 Feb 2024 17:46:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76A2604CC;
+	Tue, 13 Feb 2024 17:48:40 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DADF1604C0
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:48:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707846377; cv=none; b=ARrZy4RLvhLy7YEl9GqiHa9Z6Bw+BklieIOPzn/ZTB6bTrIF0b2yJjj5nj8lYO07EQKQnhpo9rxyVIHwprjuKK325Ch59qKLygprgHzZ/gb45ag/+tzAkC5SS+DAs2nzbObVOqFvGRV6pOQqoJwzFTv2T09gTwsH/dL9GhKPQIA=
+	t=1707846520; cv=none; b=NAL0dtS1Z9GAxKLLYTj88JP4MR8ILPRP2nvnaHOkKJyJ52xidE8wbCsnudgNWbZr9fKvwN8vkOxaaA+FrOAEvHiskwRNQP3f2fCIhkV3cfhELRDj4FeXvJrm0hV/ZhHyDfFpBTOOVXpT0emrojk43wiYbKehOjUbwzZTkTqzK08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707846377; c=relaxed/simple;
-	bh=AVSXJeMD8NMzaOCebzmgDUBvECAgBumsSpW90nbp8nc=;
+	s=arc-20240116; t=1707846520; c=relaxed/simple;
+	bh=7ewTIC+OiMjtPxuyV7/Lbf12q8otsaPeyAGiT0v6Wxs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lvymrw5xvHrkrNVtXoRD0SP4OfWGTGlk5xhZG2dCBqaRlXEcVzWM9RC6q4bxchV610eR3e1pcdk7k9Jw49CPwKelE3fHfwgTetIRsn9MnnYVa1a0wscS4RZLQdw7kFLdiaQlJfU/XqohpS+FdloGHcBkjKLl31X0gOKDBqqPurs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNP8/pNm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D321C433C7;
-	Tue, 13 Feb 2024 17:46:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707846376;
-	bh=AVSXJeMD8NMzaOCebzmgDUBvECAgBumsSpW90nbp8nc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jNP8/pNmDSRSpssOu0s+Dy4OJmCqL9e0TIaaBU4JFMFgZnxhf0IFy8K48jVsbtSos
-	 PjaTJOyud5FkG8tuWgcqKcGipwvWkxePULMG177ZnXfQ6ZSq8tIB+7IFiJARU/XE65
-	 7sntG/ZVG457BryVF7UiQKP2ut4DPEGhwhuvN1pJTH4UEw8FOf2+e/L0yTRdyF7D4L
-	 MWWrVDAJHdz8d7RM2FEUjLm+AU5AAaj4WObRWf/zoIBDyWm+D9BO2Af/K6oCx8BTmM
-	 ER6f8bcgIaL06wbFOveLWQHcLbF8fdQWroyyuyptaArtWRUjnlk8cMOaTgBSkZtJvt
-	 uiM/dm3jbtdJg==
-Date: Tue, 13 Feb 2024 18:46:09 +0100
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
-Message-ID: <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
-References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
- <87bk8pve2z.fsf@toke.dk>
- <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
- <875xyxva9u.fsf@toke.dk>
- <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
- <87r0hhfudh.fsf@toke.dk>
- <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
- <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OyHkB9+oH3sagtMyaZNkO4XzvCBvxcoG9htRGpOdPYB7GRik5cSX6vRlzbEv5IgXA5eB2w9KQftPRvUdKr64pV25z4oEC5eqvYuaPTe9Hy/+5cpjNBWGvW7lzOSujm4dazdsZ595zFkxYtV5YyVO3nBhhNaSeAb8Rq0OwO3ETBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E3311FB;
+	Tue, 13 Feb 2024 09:49:17 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.130])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E06323F766;
+	Tue, 13 Feb 2024 09:48:32 -0800 (PST)
+Date: Tue, 13 Feb 2024 17:48:30 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Maxwell Bland <mbland@motorola.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, catalin.marinas@arm.com, will@kernel.org,
+	dennis@kernel.org, tj@kernel.org, cl@linux.com,
+	akpm@linux-foundation.org, shikemeng@huaweicloud.com,
+	david@redhat.com, rppt@kernel.org, anshuman.khandual@arm.com,
+	willy@infradead.org, ryan.roberts@arm.com,
+	rick.p.edgecombe@intel.com, pcc@google.com,
+	rmk+kernel@armlinux.org.uk, tglx@linutronix.de, gshan@redhat.com,
+	gregkh@linuxfoundation.org, Jonathan.Cameron@huawei.com,
+	james.morse@arm.com, awheeler@motorola.com
+Subject: Re: [PATCH] arm64: allow post-init vmalloc PXNTable
+Message-ID: <ZcurbvkUR-BoGTxu@FVFF77S0Q05N.cambridge.arm.com>
+References: <CAP5Mv+ydhk=Ob4b40ZahGMgT-5+-VEHxtmA=-LkJiEOOU+K6hw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
+In-Reply-To: <CAP5Mv+ydhk=Ob4b40ZahGMgT-5+-VEHxtmA=-LkJiEOOU+K6hw@mail.gmail.com>
 
-On Feb 12 2024, Alexei Starovoitov wrote:
-> On Mon, Feb 12, 2024 at 10:21 AM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > On Mon, Feb 12, 2024 at 6:46 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> > >
-> > > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
-> > >
-[...]
-> I agree that workqueue delegation fits into the bpf_timer concept and
-> a lot of code can and should be shared.
-
-Thanks Alexei for the detailed answer. I've given it an attempt but still can not
-figure it out entirely.
-
-> All the lessons(bugs) learned with bpf_timer don't need to be re-discovered :)
-> Too bad, bpf_timer_set_callback() doesn't have a flag argument,
-> so we need a new kfunc to set a sleepable callback.
-> Maybe
-> bpf_timer_set_sleepable_cb() ?
-
-OK. So I guess I should drop Toke's suggestion with the bpf_timer_ini() flag?
-
-> The verifier will set is_async_cb = true for it (like it does for regular cb-s).
-> And since prog->aux->sleepable is kinda "global" we need another
-> per subprog flag:
-> bool is_sleepable: 1;
-
-done (in push_callback_call())
-
+On Tue, Feb 13, 2024 at 10:05:45AM -0600, Maxwell Bland wrote:
+> Apologies if this is a duplicate mail, it will be the last one. Moto's SMTP
+> server sucks!!
 > 
-> We can factor out a check "if (prog->aux->sleepable)" into a helper
-> that will check that "global" flag and another env->cur_state->in_sleepable
-> flag that will work similar to active_rcu_lock.
-
-done (I think), cf patch 2 below
-
-> Once the verifier starts processing subprog->is_sleepable
-> it will set cur_state->in_sleepable = true;
-> to make all subprogs called from that cb to be recognized as sleepable too.
-
-That's the point I don't know where to put the new code.
-
-It seems the best place would be in do_check(), but I am under the impression
-that the code of the callback is added at the end of the instruction list, meaning
-that I do not know where it starts, and which subprog index it corresponds to.
-
+> Ensures that PXNTable can be set on all table descriptors allocated
+> through vmalloc. Normally, PXNTable is set only during initial memory
+> mapping and does not apply thereafter, making it possible for attackers
+> to target post-init allocated writable PTEs as a staging region for
+> injection of their code into the kernel. Presently it is not possible to
+> efficiently prevent these attacks as VMALLOC_END overlaps with _text,
+> e.g.:
 > 
-> A bit of a challenge is what to do with global subprogs,
-> since they're verified lazily. They can be called from
-> sleepable and non-sleepable contex. Should be solvable.
-
-I must confess this is way over me (and given that I didn't even managed to make
-the "easy" case working, that might explain things a little :-P )
-
+> VMALLOC_START ffff800080000000 VMALLOC_END fffffbfff0000000
+> _text         ffffb6c0c1400000 _end        ffffb6c0c3e40000
 > 
-> Overall I think this feature is needed urgently,
-> so if you don't have cycles to work on this soon,
-> I can prioritize it right after bpf_arena work.
+> Setting VMALLOC_END to _text in init would resolve this issue with the
+> caveat of a sizeable reduction in the size of available vmalloc memory
+> due to requirements on aslr randomness. However, there are circumstances
+> where this trade-off is necessary: in particular, hypervisor-level
+> security monitors where 1) the microarchitecture contains race
+> conditions on PTE level updates or 2) a per-PTE update verifier comes at
+> a significant hit to performance.
 
-I can try to spare a few cycles on it. Even if your instructions were on
-spot, I still can't make the subprogs recognized as sleepable.
+Which "hypervisor-level security monitors" are you referring to? We don't
+support any of those upstream AFAIK.
 
-For reference, this is where I am (probably bogus, but seems to be
-working when timer_set_sleepable_cb() is called from a sleepable context
-as mentioned by Toke):
+How much VA space are you potentially throwing away?
 
----
-From d4aa3d969fa9a89c6447d843dad338fde2ac0155 Mon Sep 17 00:00:00 2001
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Tue, 13 Feb 2024 18:40:01 +0100
-Subject: [PATCH RFC bpf-next v2 01/11] Sleepable timers
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240213-hid-bpf-sleepable-v2-1-6c2d6b49865c@kernel.org>
+How does this work with other allocations of executable memory? e.g. modules,
+BPF?
 
----
- include/linux/bpf_verifier.h   |  2 +
- include/uapi/linux/bpf.h       | 13 ++++++
- kernel/bpf/helpers.c           | 91 +++++++++++++++++++++++++++++++++++++++---
- kernel/bpf/verifier.c          | 20 ++++++++--
- tools/include/uapi/linux/bpf.h | 13 ++++++
- 5 files changed, 130 insertions(+), 9 deletions(-)
+I'm not keen on this as-is.
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 84365e6dd85d..789ef5fec547 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -426,6 +426,7 @@ struct bpf_verifier_state {
- 	 * while they are still in use.
- 	 */
- 	bool used_as_loop_entry;
-+	bool in_sleepable;
- 
- 	/* first and last insn idx of this verifier state */
- 	u32 first_insn_idx;
-@@ -626,6 +627,7 @@ struct bpf_subprog_info {
- 	bool is_async_cb: 1;
- 	bool is_exception_cb: 1;
- 	bool args_cached: 1;
-+	bool is_sleepable: 1;
- 
- 	u8 arg_cnt;
- 	struct bpf_subprog_arg_info args[MAX_BPF_FUNC_REG_ARGS];
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index d96708380e52..ef1f2be4cfef 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5742,6 +5742,18 @@ union bpf_attr {
-  *		0 on success.
-  *
-  *		**-ENOENT** if the bpf_local_storage cannot be found.
-+ *
-+ * long bpf_timer_set_sleepable_cb(struct bpf_timer *timer, void *callback_fn)
-+ *	Description
-+ *		Configure the timer to call *callback_fn* static function in a
-+ *		sleepable context.
-+ *	Return
-+ *		0 on success.
-+ *		**-EINVAL** if *timer* was not initialized with bpf_timer_init() earlier.
-+ *		**-EPERM** if *timer* is in a map that doesn't have any user references.
-+ *		The user space should either hold a file descriptor to a map with timers
-+ *		or pin such map in bpffs. When map is unpinned or file descriptor is
-+ *		closed all timers in the map will be cancelled and freed.
-  */
- #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
- 	FN(unspec, 0, ##ctx)				\
-@@ -5956,6 +5968,7 @@ union bpf_attr {
- 	FN(user_ringbuf_drain, 209, ##ctx)		\
- 	FN(cgrp_storage_get, 210, ##ctx)		\
- 	FN(cgrp_storage_delete, 211, ##ctx)		\
-+	FN(timer_set_sleepable_cb, 212, ##ctx)		\
- 	/* */
- 
- /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 4db1c658254c..e3b83d27b1b6 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1097,9 +1097,11 @@ const struct bpf_func_proto bpf_snprintf_proto = {
-  */
- struct bpf_hrtimer {
- 	struct hrtimer timer;
-+	struct work_struct work;
- 	struct bpf_map *map;
- 	struct bpf_prog *prog;
- 	void __rcu *callback_fn;
-+	void __rcu *sleepable_cb_fn;
- 	void *value;
- };
- 
-@@ -1113,18 +1115,64 @@ struct bpf_timer_kern {
- 	struct bpf_spin_lock lock;
- } __attribute__((aligned(8)));
- 
-+static void bpf_timer_work_cb(struct work_struct *work)
-+{
-+	struct bpf_hrtimer *t = container_of(work, struct bpf_hrtimer, work);
-+	struct bpf_map *map = t->map;
-+	void *value = t->value;
-+	bpf_callback_t callback_fn;
-+	void *key;
-+	u32 idx;
-+
-+	BTF_TYPE_EMIT(struct bpf_timer);
-+
-+	rcu_read_lock();
-+	callback_fn = rcu_dereference(t->sleepable_cb_fn);
-+	rcu_read_unlock();
-+	if (!callback_fn)
-+		return;
-+
-+	// /* bpf_timer_work_cb() runs in hrtimer_run_softirq. It doesn't migrate and
-+	//  * cannot be preempted by another bpf_timer_cb() on the same cpu.
-+	//  * Remember the timer this callback is servicing to prevent
-+	//  * deadlock if callback_fn() calls bpf_timer_cancel() or
-+	//  * bpf_map_delete_elem() on the same timer.
-+	//  */
-+	// this_cpu_write(hrtimer_running, t);
-+	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
-+		struct bpf_array *array = container_of(map, struct bpf_array, map);
-+
-+		/* compute the key */
-+		idx = ((char *)value - array->value) / array->elem_size;
-+		key = &idx;
-+	} else { /* hash or lru */
-+		key = value - round_up(map->key_size, 8);
-+	}
-+
-+	callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0);
-+	/* The verifier checked that return value is zero. */
-+
-+	// this_cpu_write(hrtimer_running, NULL);
-+}
-+
- static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
- 
- static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
- {
- 	struct bpf_hrtimer *t = container_of(hrtimer, struct bpf_hrtimer, timer);
-+	bpf_callback_t callback_fn, sleepable_cb_fn;
- 	struct bpf_map *map = t->map;
- 	void *value = t->value;
--	bpf_callback_t callback_fn;
- 	void *key;
- 	u32 idx;
- 
- 	BTF_TYPE_EMIT(struct bpf_timer);
-+	sleepable_cb_fn = rcu_dereference_check(t->sleepable_cb_fn, rcu_read_lock_bh_held());
-+	if (sleepable_cb_fn) {
-+		schedule_work(&t->work);
-+		goto out;
-+	}
-+
- 	callback_fn = rcu_dereference_check(t->callback_fn, rcu_read_lock_bh_held());
- 	if (!callback_fn)
- 		goto out;
-@@ -1190,7 +1238,9 @@ BPF_CALL_3(bpf_timer_init, struct bpf_timer_kern *, timer, struct bpf_map *, map
- 	t->map = map;
- 	t->prog = NULL;
- 	rcu_assign_pointer(t->callback_fn, NULL);
-+	rcu_assign_pointer(t->sleepable_cb_fn, NULL);
- 	hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
-+	INIT_WORK(&t->work, bpf_timer_work_cb);
- 	t->timer.function = bpf_timer_cb;
- 	WRITE_ONCE(timer->timer, t);
- 	/* Guarantee the order between timer->timer and map->usercnt. So
-@@ -1221,8 +1271,8 @@ static const struct bpf_func_proto bpf_timer_init_proto = {
- 	.arg3_type	= ARG_ANYTHING,
- };
- 
--BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void *, callback_fn,
--	   struct bpf_prog_aux *, aux)
-+static int __bpf_timer_set_callback(struct bpf_timer_kern *timer, void *callback_fn,
-+				    struct bpf_prog_aux *aux, bool is_sleepable)
- {
- 	struct bpf_prog *prev, *prog = aux->prog;
- 	struct bpf_hrtimer *t;
-@@ -1260,12 +1310,24 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void *, callb
- 			bpf_prog_put(prev);
- 		t->prog = prog;
- 	}
--	rcu_assign_pointer(t->callback_fn, callback_fn);
-+	if (is_sleepable) {
-+		rcu_assign_pointer(t->sleepable_cb_fn, callback_fn);
-+		rcu_assign_pointer(t->callback_fn, NULL);
-+	} else {
-+		rcu_assign_pointer(t->callback_fn, callback_fn);
-+		rcu_assign_pointer(t->sleepable_cb_fn, NULL);
-+	}
- out:
- 	__bpf_spin_unlock_irqrestore(&timer->lock);
- 	return ret;
- }
- 
-+BPF_CALL_3(bpf_timer_set_callback, struct bpf_timer_kern *, timer, void *, callback_fn,
-+	   struct bpf_prog_aux *, aux)
-+{
-+	return __bpf_timer_set_callback(timer, callback_fn, aux, false);
-+}
-+
- static const struct bpf_func_proto bpf_timer_set_callback_proto = {
- 	.func		= bpf_timer_set_callback,
- 	.gpl_only	= true,
-@@ -1274,6 +1336,20 @@ static const struct bpf_func_proto bpf_timer_set_callback_proto = {
- 	.arg2_type	= ARG_PTR_TO_FUNC,
- };
- 
-+BPF_CALL_3(bpf_timer_set_sleepable_cb, struct bpf_timer_kern *, timer, void *, callback_fn,
-+	   struct bpf_prog_aux *, aux)
-+{
-+	return __bpf_timer_set_callback(timer, callback_fn, aux, true);
-+}
-+
-+static const struct bpf_func_proto bpf_timer_set_sleepable_cb_proto = {
-+	.func		= bpf_timer_set_sleepable_cb,
-+	.gpl_only	= true,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_TIMER,
-+	.arg2_type	= ARG_PTR_TO_FUNC,
-+};
-+
- BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs, u64, flags)
- {
- 	struct bpf_hrtimer *t;
-@@ -1353,6 +1429,7 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_timer_kern *, timer)
- 	 * if it was running.
- 	 */
- 	ret = ret ?: hrtimer_cancel(&t->timer);
-+	ret = ret ?: cancel_work_sync(&t->work);
- 	return ret;
- }
- 
-@@ -1405,8 +1482,10 @@ void bpf_timer_cancel_and_free(void *val)
- 	 * effectively cancelled because bpf_timer_cb() will return
- 	 * HRTIMER_NORESTART.
- 	 */
--	if (this_cpu_read(hrtimer_running) != t)
-+	if (this_cpu_read(hrtimer_running) != t) {
- 		hrtimer_cancel(&t->timer);
-+	}
-+	cancel_work_sync(&t->work);
- 	kfree(t);
- }
- 
-@@ -1749,6 +1828,8 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_timer_init_proto;
- 	case BPF_FUNC_timer_set_callback:
- 		return &bpf_timer_set_callback_proto;
-+	case BPF_FUNC_timer_set_sleepable_cb:
-+		return &bpf_timer_set_sleepable_cb_proto;
- 	case BPF_FUNC_timer_start:
- 		return &bpf_timer_start_proto;
- 	case BPF_FUNC_timer_cancel:
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 64fa188d00ad..400c625efe22 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -513,7 +513,8 @@ static bool is_sync_callback_calling_function(enum bpf_func_id func_id)
- 
- static bool is_async_callback_calling_function(enum bpf_func_id func_id)
- {
--	return func_id == BPF_FUNC_timer_set_callback;
-+	return func_id == BPF_FUNC_timer_set_callback ||
-+	       func_id == BPF_FUNC_timer_set_sleepable_cb;
- }
- 
- static bool is_callback_calling_function(enum bpf_func_id func_id)
-@@ -1414,6 +1415,7 @@ static int copy_verifier_state(struct bpf_verifier_state *dst_state,
- 	}
- 	dst_state->speculative = src->speculative;
- 	dst_state->active_rcu_lock = src->active_rcu_lock;
-+	dst_state->in_sleepable = src->in_sleepable;
- 	dst_state->curframe = src->curframe;
- 	dst_state->active_lock.ptr = src->active_lock.ptr;
- 	dst_state->active_lock.id = src->active_lock.id;
-@@ -9434,11 +9436,13 @@ static int push_callback_call(struct bpf_verifier_env *env, struct bpf_insn *ins
- 
- 	if (insn->code == (BPF_JMP | BPF_CALL) &&
- 	    insn->src_reg == 0 &&
--	    insn->imm == BPF_FUNC_timer_set_callback) {
-+	    (insn->imm == BPF_FUNC_timer_set_callback ||
-+	     insn->imm == BPF_FUNC_timer_set_sleepable_cb)) {
- 		struct bpf_verifier_state *async_cb;
- 
- 		/* there is no real recursion here. timer callbacks are async */
- 		env->subprog_info[subprog].is_async_cb = true;
-+		env->subprog_info[subprog].is_sleepable = insn->imm == BPF_FUNC_timer_set_sleepable_cb;
- 		async_cb = push_async_cb(env, env->subprog_info[subprog].start,
- 					 insn_idx, subprog);
- 		if (!async_cb)
-@@ -10280,6 +10284,8 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 					 set_map_elem_callback_state);
- 		break;
- 	case BPF_FUNC_timer_set_callback:
-+		fallthrough;
-+	case BPF_FUNC_timer_set_sleepable_cb:
- 		err = push_callback_call(env, insn, insn_idx, meta.subprogno,
- 					 set_timer_callback_state);
- 		break;
-@@ -15586,7 +15592,9 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
- 		return DONE_EXPLORING;
- 
- 	case BPF_CALL:
--		if (insn->src_reg == 0 && insn->imm == BPF_FUNC_timer_set_callback)
-+		if (insn->src_reg == 0 &&
-+		    (insn->imm == BPF_FUNC_timer_set_callback ||
-+		     insn->imm == BPF_FUNC_timer_set_sleepable_cb))
- 			/* Mark this call insn as a prune point to trigger
- 			 * is_state_visited() check before call itself is
- 			 * processed by __check_func_call(). Otherwise new
-@@ -16762,6 +16770,9 @@ static bool states_equal(struct bpf_verifier_env *env,
- 	if (old->active_rcu_lock != cur->active_rcu_lock)
- 		return false;
- 
-+	if (old->in_sleepable != cur->in_sleepable)
-+		return false;
-+
- 	/* for states to be equal callsites have to be the same
- 	 * and all frame states need to be equivalent
- 	 */
-@@ -19639,7 +19650,8 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			continue;
- 		}
- 
--		if (insn->imm == BPF_FUNC_timer_set_callback) {
-+		if (insn->imm == BPF_FUNC_timer_set_callback ||
-+		    insn->imm == BPF_FUNC_timer_set_sleepable_cb) {
- 			/* The verifier will process callback_fn as many times as necessary
- 			 * with different maps and the register states prepared by
- 			 * set_timer_callback_state will be accurate.
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index d96708380e52..ef1f2be4cfef 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5742,6 +5742,18 @@ union bpf_attr {
-  *		0 on success.
-  *
-  *		**-ENOENT** if the bpf_local_storage cannot be found.
-+ *
-+ * long bpf_timer_set_sleepable_cb(struct bpf_timer *timer, void *callback_fn)
-+ *	Description
-+ *		Configure the timer to call *callback_fn* static function in a
-+ *		sleepable context.
-+ *	Return
-+ *		0 on success.
-+ *		**-EINVAL** if *timer* was not initialized with bpf_timer_init() earlier.
-+ *		**-EPERM** if *timer* is in a map that doesn't have any user references.
-+ *		The user space should either hold a file descriptor to a map with timers
-+ *		or pin such map in bpffs. When map is unpinned or file descriptor is
-+ *		closed all timers in the map will be cancelled and freed.
-  */
- #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
- 	FN(unspec, 0, ##ctx)				\
-@@ -5956,6 +5968,7 @@ union bpf_attr {
- 	FN(user_ringbuf_drain, 209, ##ctx)		\
- 	FN(cgrp_storage_get, 210, ##ctx)		\
- 	FN(cgrp_storage_delete, 211, ##ctx)		\
-+	FN(timer_set_sleepable_cb, 212, ##ctx)		\
- 	/* */
- 
- /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
+Mark.
 
--- 
-2.43.0
-
----
-From 6c654010a4660fd26ffce44406dba308ded3b465 Mon Sep 17 00:00:00 2001
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Tue, 13 Feb 2024 18:40:02 +0100
-Subject: [PATCH RFC bpf-next v2 02/11] bpf/verifier: introduce in_sleepable() helper
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240213-hid-bpf-sleepable-v2-2-6c2d6b49865c@kernel.org>
-
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
- kernel/bpf/verifier.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 400c625efe22..8c3707d27c02 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5257,6 +5257,12 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
- 	return -EINVAL;
- }
- 
-+static bool in_sleepable(struct bpf_verifier_env *env)
-+{
-+	return env->prog->aux->sleepable ||
-+	       (env->cur_state && env->cur_state->in_sleepable);
-+}
-+
- /* The non-sleepable programs and sleepable programs with explicit bpf_rcu_read_lock()
-  * can dereference RCU protected pointers and result is PTR_TRUSTED.
-  */
-@@ -5264,7 +5270,7 @@ static bool in_rcu_cs(struct bpf_verifier_env *env)
- {
- 	return env->cur_state->active_rcu_lock ||
- 	       env->cur_state->active_lock.ptr ||
--	       !env->prog->aux->sleepable;
-+	       !in_sleepable(env);
- }
- 
- /* Once GCC supports btf_type_tag the following mechanism will be replaced with tag check */
-@@ -10153,7 +10159,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 		return -EINVAL;
- 	}
- 
--	if (!env->prog->aux->sleepable && fn->might_sleep) {
-+	if (!in_sleepable(env) && fn->might_sleep) {
- 		verbose(env, "helper call might sleep in a non-sleepable prog\n");
- 		return -EINVAL;
- 	}
-@@ -10183,7 +10189,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 			return -EINVAL;
- 		}
- 
--		if (env->prog->aux->sleepable && is_storage_get_function(func_id))
-+		if (in_sleepable(env) && is_storage_get_function(func_id))
- 			env->insn_aux_data[insn_idx].storage_get_func_atomic = true;
- 	}
- 
-@@ -11544,7 +11550,7 @@ static bool check_css_task_iter_allowlist(struct bpf_verifier_env *env)
- 			return true;
- 		fallthrough;
- 	default:
--		return env->prog->aux->sleepable;
-+		return in_sleepable(env);
- 	}
- }
- 
-@@ -12065,7 +12071,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 	}
- 
- 	sleepable = is_kfunc_sleepable(&meta);
--	if (sleepable && !env->prog->aux->sleepable) {
-+	if (sleepable && !in_sleepable(env)) {
- 		verbose(env, "program must be sleepable to call sleepable kfunc %s\n", func_name);
- 		return -EACCES;
- 	}
-@@ -18208,7 +18214,7 @@ static int resolve_pseudo_ldimm64(struct bpf_verifier_env *env)
- 				return -E2BIG;
- 			}
- 
--			if (env->prog->aux->sleepable)
-+			if (in_sleepable(env))
- 				atomic64_inc(&map->sleepable_refcnt);
- 			/* hold the map. If the program is rejected by verifier,
- 			 * the map will be released by release_maps() or it
-@@ -19685,7 +19691,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 		}
- 
- 		if (is_storage_get_function(insn->imm)) {
--			if (!env->prog->aux->sleepable ||
-+			if (!in_sleepable(env) ||
- 			    env->insn_aux_data[i + delta].storage_get_func_atomic)
- 				insn_buf[0] = BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_ATOMIC);
- 			else
-
--- 
-2.43.0
----
-
-Cheers,
-Benjamin
+> Because the address of _text is aslr-sensitive and this patch associates
+> this value with VMALLOC_END, we remove the use of VMALLOC_END in a print
+> statement in mm/percpu.c. However, only the format string is updated in
+> crash_core.c, since we are dead at that point regardless. VMALLOC_END is
+> updated in kernel/setup.c to associate the feature closely with aslr and
+> region allocation code.
+> 
+> Signed-off-by: Maxwell Bland <mbland@motorola.com>
+> ---
+>  arch/arm64/Kconfig                   | 13 +++++++++++++
+>  arch/arm64/include/asm/pgtable.h     |  6 ++++++
+>  arch/arm64/include/asm/vmalloc-pxn.h | 10 ++++++++++
+>  arch/arm64/kernel/crash_core.c       |  2 +-
+>  arch/arm64/kernel/setup.c            |  9 +++++++++
+>  mm/percpu.c                          |  4 ++--
+>  6 files changed, 41 insertions(+), 3 deletions(-)
+>  create mode 100644 arch/arm64/include/asm/vmalloc-pxn.h
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index aa7c1d435139..5f1e75d70e14 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -2165,6 +2165,19 @@ config ARM64_DEBUG_PRIORITY_MASKING
+>     If unsure, say N
+>  endif # ARM64_PSEUDO_NMI
+> 
+> +config ARM64_VMALLOC_PXN
+> + bool "Ensures table descriptors pointing to kernel data are PXNTable"
+> + help
+> +   Reduces the range of the kernel data vmalloc region to remove any
+> +   overlap with kernel code, making it possible to enable the PXNTable
+> +   bit on table descriptors allocated after the kernel's initial memory
+> +   mapping.
+> +
+> +   This increases the performance of security monitors which protect
+> +   against malicious updates to page table entries.
+> +
+> +   If unsure, say N.
+> +
+>  config RELOCATABLE
+>   bool "Build a relocatable kernel image" if EXPERT
+>   select ARCH_HAS_RELR
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 79ce70fbb751..49f64ea77c81 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -22,7 +22,9 @@
+>   * and fixed mappings
+>   */
+>  #define VMALLOC_START (MODULES_END)
+> +#ifndef CONFIG_ARM64_VMALLOC_PXN
+>  #define VMALLOC_END (VMEMMAP_START - SZ_256M)
+> +#endif
+> 
+>  #define vmemmap ((struct page *)VMEMMAP_START - (memstart_addr >> PAGE_SHIFT))
+> 
+> @@ -35,6 +37,10 @@
+>  #include <linux/sched.h>
+>  #include <linux/page_table_check.h>
+> 
+> +#ifdef CONFIG_ARM64_VMALLOC_PXN
+> +#include <asm/vmalloc-pxn.h>
+> +#endif
+> +
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
+> 
+> diff --git a/arch/arm64/include/asm/vmalloc-pxn.h
+> b/arch/arm64/include/asm/vmalloc-pxn.h
+> new file mode 100644
+> index 000000000000..c8c4f878eb62
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/vmalloc-pxn.h
+> @@ -0,0 +1,10 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_ARM64_VMALLOC_PXN_H
+> +#define _ASM_ARM64_VMALLOC_PXN_H
+> +
+> +#ifdef CONFIG_ARM64_VMALLOC_PXN
+> +extern u64 __vmalloc_end __ro_after_init;
+> +#define VMALLOC_END (__vmalloc_end)
+> +#endif /* CONFIG_ARM64_VMALLOC_PXN */
+> +
+> +#endif /* _ASM_ARM64_VMALLOC_PXN_H */
+> diff --git a/arch/arm64/kernel/crash_core.c b/arch/arm64/kernel/crash_core.c
+> index 66cde752cd74..39dccae11a40 100644
+> --- a/arch/arm64/kernel/crash_core.c
+> +++ b/arch/arm64/kernel/crash_core.c
+> @@ -24,7 +24,7 @@ void arch_crash_save_vmcoreinfo(void)
+>   vmcoreinfo_append_str("NUMBER(MODULES_VADDR)=0x%lx\n", MODULES_VADDR);
+>   vmcoreinfo_append_str("NUMBER(MODULES_END)=0x%lx\n", MODULES_END);
+>   vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
+> - vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%lx\n", VMALLOC_END);
+> + vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%llx\n", VMALLOC_END);
+>   vmcoreinfo_append_str("NUMBER(VMEMMAP_START)=0x%lx\n", VMEMMAP_START);
+>   vmcoreinfo_append_str("NUMBER(VMEMMAP_END)=0x%lx\n", VMEMMAP_END);
+>   vmcoreinfo_append_str("NUMBER(kimage_voffset)=0x%llx\n",
+> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> index 42c690bb2d60..b7ccee672743 100644
+> --- a/arch/arm64/kernel/setup.c
+> +++ b/arch/arm64/kernel/setup.c
+> @@ -54,6 +54,11 @@
+>  #include <asm/xen/hypervisor.h>
+>  #include <asm/mmu_context.h>
+> 
+> +#ifdef CONFIG_ARM64_VMALLOC_PXN
+> +u64 __vmalloc_end __ro_after_init = VMEMMAP_START - SZ_256M;
+> +EXPORT_SYMBOL(__vmalloc_end);
+> +#endif /* CONFIG_ARM64_VMALLOC_PXN */
+> +
+>  static int num_standard_resources;
+>  static struct resource *standard_resources;
+> 
+> @@ -298,6 +303,10 @@ void __init __no_sanitize_address setup_arch(char
+> **cmdline_p)
+> 
+>   kaslr_init();
+> 
+> +#ifdef CONFIG_ARM64_VMALLOC_PXN
+> + __vmalloc_end = ALIGN_DOWN((u64) _text, PMD_SIZE);
+> +#endif
+> +
+>   /*
+>   * If know now we are going to need KPTI then use non-global
+>   * mappings from the start, avoiding the cost of rewriting
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index 4e11fc1e6def..a902500ebfa0 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -3128,8 +3128,8 @@ int __init pcpu_embed_first_chunk(size_t
+> reserved_size, size_t dyn_size,
+> 
+>   /* warn if maximum distance is further than 75% of vmalloc space */
+>   if (max_distance > VMALLOC_TOTAL * 3 / 4) {
+> - pr_warn("max_distance=0x%lx too large for vmalloc space 0x%lx\n",
+> - max_distance, VMALLOC_TOTAL);
+> + pr_warn("max_distance=0x%lx too large for vmalloc space\n",
+> + max_distance);
+>  #ifdef CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK
+>   /* and fail if we have fallback */
+>   rc = -EINVAL;
+> 
+> base-commit: 716f4aaa7b48a55c73d632d0657b35342b1fefd7
+> -- 
+> 2.39.0
 
