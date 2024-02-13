@@ -1,277 +1,189 @@
-Return-Path: <linux-kernel+bounces-63564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5482853170
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:10:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E53BB85318A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:16:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5ED481F282CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:10:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EEA528B5F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B299953E17;
-	Tue, 13 Feb 2024 13:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6129755799;
+	Tue, 13 Feb 2024 13:15:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RjdMiMLD"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="inDrKRFm"
+Received: from out203-205-251-72.mail.qq.com (out203-205-251-72.mail.qq.com [203.205.251.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F9A537EA;
-	Tue, 13 Feb 2024 13:10:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ABBE29CE4;
+	Tue, 13 Feb 2024 13:15:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707829824; cv=none; b=P0xs0aUTNcNs/MW6g8v+rlAgwP5sMZRrOlhyrJGs79ZpGfEceT05bv2/SwUO6szJaNBKU3+YNQMtw0Jg9bNI4naP4k53S1xtlwvHPqtgvBAEli8JObdhpg4S7fg6YgUtrlWrq8GD9q90vaUAIUXvCYirHHv8rm8sZ/o3aOO4438=
+	t=1707830154; cv=none; b=JWsSs/misDe5Sz+VTXn0zy3EENilIlZKzmZBwa5YKBV2Z0sUcVqJAeu1/61yNCw+/X1kKEl+B3KeCRqvp+oS1dR3N9s0hO3kl81s2QYG4gth6psq2edcPY7zqZBOoHKxw3sZNvuMFJzdhzfRD5GUPifMLVO7Q0uqlbMXHCqcbMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707829824; c=relaxed/simple;
-	bh=DR14cMVeZlNNNiE6vPfYyzqWf6W2FdEaVW+XB5vYdqw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=lqiCCdWvBtAlLA2ECY+DE+C+MGy0oRcoK6qJbwVN4T0dFXDozDb3k1Njd+qudUbEBxvVvNLW8+yve305AM/FU6YCKvbXnFrT2eLMiNxUY1njMpUoKbkbSIlmW8u6UHPjs8n8m+BrjmHQxOpvcp4umxypgVPDDRrMERhEll46hZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=RjdMiMLD; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41DCX7EP008081;
-	Tue, 13 Feb 2024 13:10:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=2V9i1J+1jVraKN1yhEZ5q4+HSSJA2paBI28wkJjhPCU=; b=Rj
-	dMiMLDcdsC/k2+mWjCbMVUO/43gfsY5Kj8fZO2V99Abkbh4WGb2HXNUFZS6vP7SA
-	xkXm4mj+kmBrIITDedu3G66omsl/QQ8pRMTxoBOGyMRszO/BgyjLX9uaB1XhQn9/
-	Ad66pQCEaan3kbxX2WXoiFEtwjhEdeKnaqvZy/jTqPoN0xyJfIm0IxV/bwMl5fq0
-	LcIFZW1A7i0oTreJksqC2CYtTjvnx5CEn0rtWuyOhAi4Q4nbeEUsAUVmtnWFGMVv
-	ou/Mhwin76vyk/2lDByhzgDVmCfeEPAve69LpV8ALq4PGFbvTxDSHzlnoc3c77ek
-	rZ6tLYDmkVQDitQRDj9g==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w88gq02dm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 13:10:13 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41DDAC7C006472
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 13:10:12 GMT
-Received: from [10.218.5.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 13 Feb
- 2024 05:10:05 -0800
-Message-ID: <87b7967f-d8c4-426e-92ed-5a418c702481@quicinc.com>
-Date: Tue, 13 Feb 2024 18:40:05 +0530
+	s=arc-20240116; t=1707830154; c=relaxed/simple;
+	bh=gxpXc33c0/tivVgSIAJHqg/XR8543C4zbAojXjlXODA=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ka8ev9oXOYnrYPw8MZ4theyBZaejlPUy/tJ5YTcIW8kgQTF81Ed2lXTh7IXJ3LG5EOfPU5FLrXhX66/wyLfNT0Vu2z8OS6O5dor4HSTtrFwlcbkAlms9UCawCkaW7LV7FYPeELOOauzGxnxrIAgCiwpj3S+Mu7NIy6E1HroHhnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=inDrKRFm; arc=none smtp.client-ip=203.205.251.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1707829841; bh=bkKyuqkAwr4sG3hZNQo0E5KcA8LMWQh9y91i0CS2DG0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=inDrKRFmll8R+yYYY0ftDPrWIm0WucaYoqI0Ga56vMTs+tUBXBYsSF85WhFWWujeI
+	 E3zyBYj+dlqwtryJCF18OLKniYpapYhRjQz1hCN6ahKl6bZlyhf+LUtV2Q29nOGYtp
+	 eLoDTEn7wjQR+fo/10kRVQZDoJD0XSDKbwKVZQLc=
+Received: from pek-lxu-l1.wrs.com ([36.129.58.158])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id 2A63AECA; Tue, 13 Feb 2024 21:10:38 +0800
+X-QQ-mid: xmsmtpt1707829838toask8lu6
+Message-ID: <tencent_1755B769F77446DC1379E362296083BF0405@qq.com>
+X-QQ-XMAILINFO: NafziRg7Bx69/VRWICJG/HVsVWgnLmPvroYF2fGmjhVx6dncrzPuT8+LDaDWSs
+	 3n0h1nb2CVwyaCRYXwDloJFxK+8Mbd9TPKtbImqRzbFpZoInlh6STMyEm7Sd4yj6MhWH8pZZwNnv
+	 8klZ6hpx70GfD4pokKZAsMqMVYJLS8NVLRsfSTpOZDH6SMmXWzPZ2PFkbE91gj+w4WTQ7P2suhb5
+	 Ao30tj7jq5yjlUrJOxcwr7bUk7Sem7Ed8fkQ6pBlasdVI9igCitZuHRIB0AcRItpFFsOzwUD8FFG
+	 PwbjzkFVHNt7JQ4YWCBg6ov5YOtlPMmw93bBHpm5O2KtaJbtpwxNC9l1VfqcMzzq/cFS71Jv1fnc
+	 axXopahYqGGDcxPnx19xiGNVqevMUH80A5wIk9BF0U7nbV5lyNQxcvlOXBT1vdONXL9vifncrpKA
+	 euauM5LGJEHnvz8u6D4MahEdC2ypHGbxftRehTROvY4aNXhyqBbLiXwKVbFAboU8+QoHMy+616+1
+	 3NOue9/H6uZsurf/4LlUWKwTPUJizdfhD0Z/Z43hotake0W6RDdbtrIEjiGCrKvN2uqozDnx74dp
+	 05kf12F0gMlLe9NQgH1NEcFaqu8owAzNTvK7xAw18jWkd3BxTo8MLQ3j6klN+YrOVgC/bEE1cJbz
+	 bjZYJlpKZ5TQDLOCynsMfNDEofJWscVn1Rum+wvQ3uoA+fTY4K+xPtEtpTluvL2OsqJxa6v5LC5P
+	 INN2bsw7o6PEYQ2PLd3JOZ6Hw3zsh7p7JkmhbjdEYqG+AjHl8zRSfXk338snhCstuLa1ZPiPZfe0
+	 YVZmeAET7/D3uU7qDogfok5j7c1QAwKQm8pIT+Sh51vgayXpSs7V/ODhSl5CBGhEQ2AudKzpI6HM
+	 hSQEIlcEoWUAhVZr+8Gqj+9bewIvmRHRhTs7caF7WKKYeuF4mWsJlaa/S6GptoRhOZbaPL1YcqRz
+	 jx1YxZdqA=
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: Edward Adam Davis <eadavis@qq.com>
+To: gregkh@linuxfoundation.org
+Cc: eadavis@qq.com,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	rafael@kernel.org,
+	syzbot+8e41bb0c055b209ebbf4@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH riscv64] kobject: fix WARNING in input_register_device
+Date: Tue, 13 Feb 2024 21:10:37 +0800
+X-OQ-MSGID: <20240213131037.1139171-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <2024021316-nuclei-botany-5446@gregkh>
+References: <2024021316-nuclei-botany-5446@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] PM: domains: Allow devices attached to genpd to be
- managed by HW
-Content-Language: en-US
-To: Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>
-CC: "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman
-	<khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown
-	<len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Andy
- Gross" <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        Stephen Boyd
-	<sboyd@kernel.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash
- Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue
-	<bryan.odonoghue@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-media@vger.kernel.org>
-References: <20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org>
- <20240122-gdsc-hwctrl-v4-1-9061e8a7aa07@linaro.org>
- <tax3c6o5qjegy6tv3zbgrd5rencfvypr3zg7twxfrmdngscp74@n44ei3q63g64>
- <CAPDyKFpdtrWbzNksLoY++aOY7Ltyt1HhtLZo8bj8sQ05-4Sq0g@mail.gmail.com>
- <l7icfezpajren25545n4cjtqehhividt5b2dxnxgetdsshc3k3@tdws423qdblk>
- <CAPDyKFp1vg2+-pHJ_idkdhb_zZUMpq7W17DnCCGj0eTwd4jFbQ@mail.gmail.com>
-From: Jagadeesh Kona <quic_jkona@quicinc.com>
-In-Reply-To: <CAPDyKFp1vg2+-pHJ_idkdhb_zZUMpq7W17DnCCGj0eTwd4jFbQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _8AYuTAM0-bPYxF4NoadvYK_7XRGkJYm
-X-Proofpoint-ORIG-GUID: _8AYuTAM0-bPYxF4NoadvYK_7XRGkJYm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_06,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- suspectscore=0 impostorscore=0 clxscore=1015 bulkscore=0 phishscore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402130104
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+On Tue, 13 Feb 2024 08:20:52 +0100, Greg KH wrote:
+> On Thu, 8 Feb 2024 10:56:00, Greg KH wrote:
+> On Tue, Feb 13, 2024 at 08:43:26AM +0800, Edward Adam Davis wrote:
+> > On Thu, 8 Feb 2024 12:25:10 +0000, Greg KH wrote:
+> > > On Thu, Feb 08, 2024 at 07:37:56PM +0800, Edward Adam Davis wrote:
+> > > > On Thu, 8 Feb 2024 10:56:00, Greg KH wrote:
+> > > > > > The input_add_uevent_modalias_var()->input_print_modalias() will add 1684 bytes
+> > > > > > of data to env, which will result in insufficient memory allocated to the buf
+> > > > > > members of env.
+> > > > >
+> > > > > What is "env"?  And can you wrap your lines at 72 columns please?
+> > > > env is an instance of struct kobj_uevent_env.
+> > >
+> > > Ok, be specific please in your changelog text, otherwise we can't really
+> > > understand what is happening.
+> > >
+> > > > > > Reported-and-tested-by: syzbot+8e41bb0c055b209ebbf4@syzkaller.appspotmail.com
+> > > > > > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> > > > > > ---
+> > > > > >  include/linux/kobject.h | 2 +-
+> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/include/linux/kobject.h b/include/linux/kobject.h
+> > > > > > index c30affcc43b4..74b37b6459cd 100644
+> > > > > > --- a/include/linux/kobject.h
+> > > > > > +++ b/include/linux/kobject.h
+> > > > > > @@ -30,7 +30,7 @@
+> > > > > >
+> > > > > >  #define UEVENT_HELPER_PATH_LEN		256
+> > > > > >  #define UEVENT_NUM_ENVP			64	/* number of env pointers */
+> > > > > > -#define UEVENT_BUFFER_SIZE		2048	/* buffer for the variables */
+> > > > > > +#define UEVENT_BUFFER_SIZE		2560	/* buffer for the variables */
+> > > > >
+> > > > > That's an odd number, why that?  Why not just a page?  What happens if
+> > > > > some other path wants more?
+> > > > An increase of 512 bytes is sufficient for the current issue. Do not consider
+> > > > the problem of hypothetical existence.
+> > >
+> > > Why is this 512 bytes sufficient now?  What changed to cause this?
+> > There is the following code in input_print_modalias():
+> >
+> > drivers/input/input.c
+> >    1         len += input_print_modalias_bits(buf + len, size - len,
+> > 1403                                 'k', id->keybit, KEY_MIN_INTERESTING, KEY_MAX);
+> > This code will add up to 2608 bytes of data to env at most.
+> > (KEY_MAX - KEY_MIN_INTERESTING) * 4 = (256 * 3 - 1 - 113 ) * 4 = (765 - 113) * 4 = 652 * 4 = 2608 bytes。
+> > Note: In the expression, 4 represents 3 bytes of hexadecimal data and 1 byte of comma.
+> 
+> So your change above is wrong and will not work for the max size?
+Yes.
+> 
+> Why not restrict the modalias here to fit instead of overflowing?  Odds
+> are we should be checking this properly no matter what the value is
+> changed to, right?
+Right.
+It may be necessary to deepen our understanding of this piece of code before
+fixing this issue internally.
+> 
+> > include/uapi/linux/input-event-codes.h
+> > 188 #define KEY_MUTE                113
+> > 807 #define KEY_MIN_INTERESTING     KEY_MUTE
+> > 808 #define KEY_MAX                 0x2ff
+> > During my actual testing process, I found that a total of 1684 bytes were
+> > contributed in input_print_modalias().
+> > >
+> > > And how can we detect this automatically in the future?  Shouldn't we
+> > > just be truncating the buffer instead of having an overflow?
+> > >
+> > > > > And what's causing the input stack to have so many variables all of a
+> > > > > sudden, what changed to cause this?  Is this a bugfix for a specific
+> > > > > commit that needs to be backported to older kernels?  Why did this
+> > > > > buffer size all of a sudden be too small?
+> > > > The result of my analysis is that several members of struct input_dev are too
+> > > > large, such as its member keybit.
+> > >
+> > > And when did that change?  What commit id?  What prevents it from
+> > > growing again and us needing to change this again?
+> > The code that caused this issue has been introduced for a long time, and it is
+> > speculated that it was due to the fact that the warning in add_uevent_var() was
+> > returned directly to ENOMEM without being taken seriously.
+> >
+> > lib/kobject_uevent.c
+> >   2         if (len >= (sizeof(env->buf) - env->buflen)) {
+> >   1                 WARN(1, KERN_ERR "add_uevent_var: buffer size too small\n");
+> > 672                 return -ENOMEM;
+> 
+> Odd line numbers?
+> 
+> Anyway, we should get rid of the WARN() as that will cause crashes, and
+> just handle it properly there.
+> 
+> 
+> >   1         }
+> >
+> > I believe that this issue was introduced by:
+> > 7eff2e7a8b65 - Driver core: change add_ueventvar to use a struct.
+> 
+> In 2007?  And never been actually hit since then?  So is this a real
+> issue? :)
+Yes. But as I mentioned earlier, in add_uevent_var(), it will exit directly after
+a warning, so this issue has not been given enough attention, perhaps it has
+happened many times.
 
+thanks,
+edward.
 
-On 2/2/2024 5:59 PM, Ulf Hansson wrote:
-> On Fri, 2 Feb 2024 at 00:51, Bjorn Andersson <andersson@kernel.org> wrote:
->>
->> On Wed, Jan 31, 2024 at 01:12:00PM +0100, Ulf Hansson wrote:
->>> On Wed, 31 Jan 2024 at 02:09, Bjorn Andersson <andersson@kernel.org> wrote:
->>>>
->>>> On Mon, Jan 22, 2024 at 10:47:01AM +0200, Abel Vesa wrote:
->>>>> From: Ulf Hansson <ulf.hansson@linaro.org>
->>>>>
->>>>> Some power-domains may be capable of relying on the HW to control the power
->>>>> for a device that's hooked up to it. Typically, for these kinds of
->>>>> configurations the consumer driver should be able to change the behavior of
->>>>> power domain at runtime, control the power domain in SW mode for certain
->>>>> configurations and handover the control to HW mode for other usecases.
->>>>>
->>>>> To allow a consumer driver to change the behaviour of the PM domain for its
->>>>> device, let's provide a new function, dev_pm_genpd_set_hwmode(). Moreover,
->>>>> let's add a corresponding optional genpd callback, ->set_hwmode_dev(),
->>>>> which the genpd provider should implement if it can support switching
->>>>> between HW controlled mode and SW controlled mode. Similarly, add the
->>>>> dev_pm_genpd_get_hwmode() to allow consumers to read the current mode and
->>>>> its corresponding optional genpd callback, ->get_hwmode_dev(), which the
->>>>> genpd provider can also implement for reading back the mode from the
->>>>> hardware.
->>>>>
->>>>> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
->>>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
->>>>> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>>>> ---
->>>>>   drivers/pmdomain/core.c   | 69 +++++++++++++++++++++++++++++++++++++++++++++++
->>>>>   include/linux/pm_domain.h | 17 ++++++++++++
->>>>>   2 files changed, 86 insertions(+)
->>>>>
->>>>> diff --git a/drivers/pmdomain/core.c b/drivers/pmdomain/core.c
->>>>> index a1f6cba3ae6c..41b6411d0ef5 100644
->>>>> --- a/drivers/pmdomain/core.c
->>>>> +++ b/drivers/pmdomain/core.c
->>>>> @@ -548,6 +548,75 @@ void dev_pm_genpd_synced_poweroff(struct device *dev)
->>>>>   }
->>>>>   EXPORT_SYMBOL_GPL(dev_pm_genpd_synced_poweroff);
->>>>>
->>>>> +/**
->>>>> + * dev_pm_genpd_set_hwmode - Set the HW mode for the device and its PM domain.
->>>>
->>>> This isn't proper kernel-doc
->>>
->>> Sorry, I didn't quite get that. What is wrong?
->>>
->>
->> https://docs.kernel.org/doc-guide/kernel-doc.html#function-documentation
->> says that there should be () after the function name, and below there
->> should be a Return:
-> 
-> Thanks for the pointers!
-> 
->>
->>>>
->>>>> + *
->>>>> + * @dev: Device for which the HW-mode should be changed.
->>>>> + * @enable: Value to set or unset the HW-mode.
->>>>> + *
->>>>> + * Some PM domains can rely on HW signals to control the power for a device. To
->>>>> + * allow a consumer driver to switch the behaviour for its device in runtime,
->>>>> + * which may be beneficial from a latency or energy point of view, this function
->>>>> + * may be called.
->>>>> + *
->>>>> + * It is assumed that the users guarantee that the genpd wouldn't be detached
->>>>> + * while this routine is getting called.
->>>>> + *
->>>>> + * Returns 0 on success and negative error values on failures.
->>>>> + */
->>>>> +int dev_pm_genpd_set_hwmode(struct device *dev, bool enable)
->>>>> +{
->>>>> +     struct generic_pm_domain *genpd;
->>>>> +     int ret = 0;
->>>>> +
->>>>> +     genpd = dev_to_genpd_safe(dev);
->>>>> +     if (!genpd)
->>>>> +             return -ENODEV;
->>>>> +
->>>>> +     if (!genpd->set_hwmode_dev)
->>>>> +             return -EOPNOTSUPP;
->>>>> +
->>>>> +     genpd_lock(genpd);
->>>>> +
->>>>> +     if (dev_gpd_data(dev)->hw_mode == enable)
->>>>
->>>> Between this and the gdsc patch, the hw_mode state might not match the
->>>> hardware state at boot.
->>>>
->>>> With hw_mode defaulting to false, your first dev_pm_genpd_set_hwmode(,
->>>> false) will not bring control to SW - which might be fatal.
->>>
->>> Right, good point.
->>>
->>> I think we have two ways to deal with this:
->>> 1) If the provider is supporting ->get_hwmode_dev(), we can let
->>> genpd_add_device() invoke it to synchronize the state.
->>
->> I'd suggest that we skip the optimization for now and just let the
->> update hit the driver on each call.
-> 
-> Okay.
-> 
->>
->>> 2) If the provider doesn't support ->get_hwmode_dev() we need to call
->>> ->set_hwmode_dev() to allow an initial state to be set.
->>>
->>> The question is then, if we need to allow ->get_hwmode_dev() to be
->>> optional, if the ->set_hwmode_dev() is supported - or if we can
->>> require it. What's your thoughts around this?
->>>
->>
->> Iiuc this resource can be shared between multiple clients, and we're
->> in either case returning the shared state. That would mean a client
->> acting upon the returned value, is subject to races.
-> 
-> Not sure I understand this, but I also don't have in-depth knowledge
-> of how the HW works.
-> 
-> Isn't the HW mode set on a per device basis?
-> 
->>
->> I'm therefore inclined to say that we shouldn't have a getter, other
->> than for debugging purposes, in which case reading the HW-state or
->> failing would be reasonable outcomes.
-> 
-> If you only want this for debug purposes, it seems better to keep it
-> closer to the rpmh code, rather than adding generic callbacks to the
-> genpd interface.
-> 
-> So to conclude, you think having a ->set_hwmode_dev() callback should
-> be sufficient and no caching of the current state?
-> 
-> Abel, what's your thoughts around this?
-> 
-
-We believe it is good to have get_hwmode_dev() callback supported from 
-GenPD, since if multiple devices share a GenPD, and if one device moves 
-the GenPD to HW mode, the other device won't be aware of it and second 
-device's dev_gpd_data(dev)->hw_mode will still be false.
-
-If we have this dev_pm_genpd_get_hwmode() API supported and if we assign 
-dev_gpd_data(dev)->hw_mode after getting the mode from get_hwmode_dev() 
-callback, consumer drivers can use this API to sync the actual HW mode 
-of the GenPD.
-
-Thanks,
-Jagadeesh
-
-> Kind regards
-> Uffe
 
