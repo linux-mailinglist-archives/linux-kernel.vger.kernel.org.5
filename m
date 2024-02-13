@@ -1,207 +1,150 @@
-Return-Path: <linux-kernel+bounces-64061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18181853989
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:10:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D91BB85398E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CD0D1C216BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:10:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 754781F247C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEBC160867;
-	Tue, 13 Feb 2024 18:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b="SHOGLMNv"
-Received: from smtp102.iad3a.emailsrvr.com (smtp102.iad3a.emailsrvr.com [173.203.187.102])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEF96605B1
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 18:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.203.187.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B9D605B8;
+	Tue, 13 Feb 2024 18:11:41 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA902605A3;
+	Tue, 13 Feb 2024 18:11:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707847827; cv=none; b=oofjfHTMs6NX8QclPJHMr5oZWwVr++xDJmUl+OBx3da3PT5i7xW7xbE0fmmNImmZu3xycPb3zK66et33TmmlOZphIPo5dkmhtWyK2lfNsVnh4q6a9MksMg5iIeFnt6+dHiWTIZUpOzuNQfe9yvUfLisu8GdSQBIZJp4ntOC9mrA=
+	t=1707847900; cv=none; b=YSxpnF810XXi3320J2qRdyiv7lgY/TZ2d9eyQP+seGJwIoy4rUBQO7FQyMVt0wcwVT1QVFzt8m3hK7u7KKN2Yg7xypXRzq+scLSe92cSa8KBCzODKmkBtHirIo4qwY/FHNWYUnhT6+djtXQO6nDfiPgkycYaQ/wBdeJZFxKPM/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707847827; c=relaxed/simple;
-	bh=pjbuxl8oRQ0+R+g36gg/gBcvAmBulWkgzcftiFFzEzc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dm6aXamRHG+rU3texM2N93VpMgzmVuNVabt+v+einzTdhr1uvUbL7XqQC1WJDikSv15777kZ7awAbOAc/ylCw4DVa9dbHsth7IN71AYSamtbVnKXllTdVsRySocXUdmNi8ww7bvQH6GlFSKc7U1txyaTWrd/ymq1GRiveHvyNy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk; spf=pass smtp.mailfrom=mev.co.uk; dkim=pass (1024-bit key) header.d=mev.co.uk header.i=@mev.co.uk header.b=SHOGLMNv; arc=none smtp.client-ip=173.203.187.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mev.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mev.co.uk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-	s=20221208-6x11dpa4; t=1707847819;
-	bh=pjbuxl8oRQ0+R+g36gg/gBcvAmBulWkgzcftiFFzEzc=;
-	h=From:To:Subject:Date:From;
-	b=SHOGLMNv4peTulwzUKMCjCrkHdXPCQtzjvUY+5UrWYuajT9QGy2WRexnZM/yWArAs
-	 21aO1AbTAWmhXg5Lg/qSCLLVS0pIOi7DZqaQAvQ0Djju3ofC7QTy8OqCeqGP9QpdHn
-	 aeoxWzuP+LDqrC8kd8TdHGRMBD6rl2Xi28slCsXQ=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp29.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 4D98124EB0;
-	Tue, 13 Feb 2024 13:10:18 -0500 (EST)
-From: Ian Abbott <abbotti@mev.co.uk>
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Ian Abbott <abbotti@mev.co.uk>,
-	H Hartley Sweeten <hsweeten@visionengravers.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] comedi: comedi_test: Prevent timers rescheduling during deletion
-Date: Tue, 13 Feb 2024 18:10:04 +0000
-Message-ID: <20240213181004.105072-1-abbotti@mev.co.uk>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707847900; c=relaxed/simple;
+	bh=gkS582LnEt5AZDBlyZUbpbZ4EnHP61TwjQ5pjt1x8Ew=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QqDDOlN4eAT5qrmzeKPHSNiAK2NeQzHJ6EvyTpPBIyC6S4JFd6PfeMHeXdkxZuATys5vafvX0WkzF7IHsf1DQeLUzWqcKmOKeLFT8c6a1raJpXuIP5qI39+y9yCcbrTwKxGzERnFiFM3mIqDUIQ09RZxG3zkIFiJfEu75nEMiEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A57831FB;
+	Tue, 13 Feb 2024 10:12:19 -0800 (PST)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8B393F766;
+	Tue, 13 Feb 2024 10:11:30 -0800 (PST)
+Message-ID: <a36b14b0-84d0-f815-b8c9-d10841f8b5d0@arm.com>
+Date: Tue, 13 Feb 2024 18:11:29 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Classification-ID: 969d28ca-18e8-4879-92d9-b2ffe5639bd8-1-1
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v15-RFC 0/8] Add support for Sub-NUMA cluster (SNC)
+ systems
+Content-Language: en-GB
+To: Tony Luck <tony.luck@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>
+Cc: "babu.moger@amd.com" <babu.moger@amd.com>,
+ "Yu, Fenghua" <fenghua.yu@intel.com>, Peter Newman <peternewman@google.com>,
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
+ "x86@kernel.org" <x86@kernel.org>, Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+ Jamie Iles <quic_jiles@quicinc.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Drew Fustini <dfustini@baylibre.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "patches@lists.linux.dev" <patches@lists.linux.dev>
+References: <20240126223837.21835-1-tony.luck@intel.com>
+ <20240130222034.37181-1-tony.luck@intel.com>
+ <91bd281e-e21f-4b60-9e73-2f14fcbec316@amd.com>
+ <642f81da-669b-4057-8b97-2894dd57842b@intel.com>
+ <SJ1PR11MB6083036DC25D4FA55B02589AFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <16a63923-2fd2-4d44-a8a3-32d8d6eeee9e@intel.com>
+ <ZcqWFr8fX9G0hoJU@agluck-desk3>
+From: James Morse <james.morse@arm.com>
+In-Reply-To: <ZcqWFr8fX9G0hoJU@agluck-desk3>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The comedi_test devices have a couple of timers (ai_timer and ao_timer)
-that can be started to simulate hardware interrupts.  Their expiry
-functions normally reschedule the timer.  The driver code calls either
-del_timer_sync() or del_timer() to delete the timers from the queue, but
-does not currently prevent the timers from rescheduling themselves so
-synchronized deletion may be ineffective.
+Hello,
 
-Add a couple of boolean members (one for each timer: ai_timer_enable and
-ao_timer_enable) to the device private data structure to indicate
-whether the timers are allowed to reschedule themselves.  Set the member
-to true when adding the timer to the queue, and to false when deleting
-the timer from the queue in the waveform_ai_cancel() and
-waveform_ao_cancel() functions.
+On 12/02/2024 22:05, Tony Luck wrote:
+> On Mon, Feb 12, 2024 at 01:43:56PM -0800, Reinette Chatre wrote:
+>> On 2/12/2024 11:57 AM, Luck, Tony wrote:
+>>>>> To be honest, I like this series more than the previous series. I always
+>>>>> thought RDT_RESOURCE_L3_MON should have been a separate resource by itself.
+>>>>
+>>>> Would you prefer that your "Reviewed-by" tag be removed from the
+>>>> previous series?
+>>>
+>>> I'm thinking that I could continue splitting things and break "struct rdt_resource" into
+>>> separate "ctrl" and "mon" structures. Then we'd have a clean split from top to bottom.
+>>
+>> It is not obvious what you mean with "continue splitting things". Are you
+>> speaking about "continue splitting from v14" or "continue splitting from v15-RFC"?
+> 
+> I'm speaking of some future potential changes. Not proposing to
+> do this now.
+> 
+>> I think that any solution needs to consider what makes sense for resctrl
+>> as a whole instead of how to support SNC with smallest patch possible.
 
-The del_timer_sync() function is also called from the waveform_detach()
-function, but the timer enable members will already be set to false when
-that function is called, so no change is needed there.
+>> There should not be any changes that makes resctrl harder to understand
+>> and maintain, as exemplified by confusion introduced by a simple thing as
+>> resource name choice [1].
+>>
+>>>
+>>> Doing that would get rid of the rdt_resources_all[] array. Replacing with individual
+>>> rdt_hw_ctrl_resource and rdt_hw_mon_resource declarations for each feature.
+>>>
+>>> Features found on a system would be added to a list of ctrl or list of mon resources.
+>>
+>> Could you please elaborate what is architecturally wrong with v14 and how this
+>> new proposal addresses that?
+> 
+> There is nothing architecturally wrong with v14. I thought it was more
+> complex than it needed to be. You have convinced me that my v15-RFC
+> series, while simpler, is not a reasonable path for long-term resctrl
+> maintainability.
 
-Fixes: 403fe7f34e33 ("staging: comedi: comedi_test: fix timer race conditions")
-Cc: <stable@vger.kernel.org> # 4.4+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
----
- drivers/comedi/drivers/comedi_test.c | 37 +++++++++++++++++++++++++---
- 1 file changed, 33 insertions(+), 4 deletions(-)
+I'm not sure if its helpful to describe a third approach at this point - but on the off
+chance its useful:
+With SNC enable, the L3 monitors are unaffected, but the controls behave as if they were
+part of some other component in the system..
 
-diff --git a/drivers/comedi/drivers/comedi_test.c b/drivers/comedi/drivers/comedi_test.c
-index 30ea8b53ebf8..7fefe0de0bcc 100644
---- a/drivers/comedi/drivers/comedi_test.c
-+++ b/drivers/comedi/drivers/comedi_test.c
-@@ -87,6 +87,8 @@ struct waveform_private {
- 	struct comedi_device *dev;	/* parent comedi device */
- 	u64 ao_last_scan_time;		/* time of previous AO scan in usec */
- 	unsigned int ao_scan_period;	/* AO scan period in usec */
-+	bool ai_timer_enable:1;		/* should AI timer be running? */
-+	bool ao_timer_enable:1;		/* should AO timer be running? */
- 	unsigned short ao_loopbacks[N_CHANS];
- };
- 
-@@ -232,12 +234,18 @@ static void waveform_ai_timer(struct timer_list *t)
- 	if (cmd->stop_src == TRIG_COUNT && async->scans_done >= cmd->stop_arg) {
- 		async->events |= COMEDI_CB_EOA;
- 	} else {
-+		unsigned long flags;
-+
- 		if (devpriv->ai_convert_time > now)
- 			time_increment = devpriv->ai_convert_time - now;
- 		else
- 			time_increment = 1;
--		mod_timer(&devpriv->ai_timer,
--			  jiffies + usecs_to_jiffies(time_increment));
-+		spin_lock_irqsave(&dev->spinlock, flags);
-+		if (devpriv->ai_timer_enable) {
-+			mod_timer(&devpriv->ai_timer,
-+				  jiffies + usecs_to_jiffies(time_increment));
-+		}
-+		spin_unlock_irqrestore(&dev->spinlock, flags);
- 	}
- 
- overrun:
-@@ -352,6 +360,7 @@ static int waveform_ai_cmd(struct comedi_device *dev,
- 	struct comedi_cmd *cmd = &s->async->cmd;
- 	unsigned int first_convert_time;
- 	u64 wf_current;
-+	unsigned long flags;
- 
- 	if (cmd->flags & CMDF_PRIORITY) {
- 		dev_err(dev->class_dev,
-@@ -393,9 +402,12 @@ static int waveform_ai_cmd(struct comedi_device *dev,
- 	 * Seem to need an extra jiffy here, otherwise timer expires slightly
- 	 * early!
- 	 */
-+	spin_lock_irqsave(&dev->spinlock, flags);
-+	devpriv->ai_timer_enable = true;
- 	devpriv->ai_timer.expires =
- 		jiffies + usecs_to_jiffies(devpriv->ai_convert_period) + 1;
- 	add_timer(&devpriv->ai_timer);
-+	spin_unlock_irqrestore(&dev->spinlock, flags);
- 	return 0;
- }
- 
-@@ -403,7 +415,11 @@ static int waveform_ai_cancel(struct comedi_device *dev,
- 			      struct comedi_subdevice *s)
- {
- 	struct waveform_private *devpriv = dev->private;
-+	unsigned long flags;
- 
-+	spin_lock_irqsave(&dev->spinlock, flags);
-+	devpriv->ai_timer_enable = false;
-+	spin_unlock_irqrestore(&dev->spinlock, flags);
- 	if (in_softirq()) {
- 		/* Assume we were called from the timer routine itself. */
- 		del_timer(&devpriv->ai_timer);
-@@ -494,9 +510,14 @@ static void waveform_ao_timer(struct timer_list *t)
- 	} else {
- 		unsigned int time_inc = devpriv->ao_last_scan_time +
- 					devpriv->ao_scan_period - now;
-+		unsigned long flags;
- 
--		mod_timer(&devpriv->ao_timer,
--			  jiffies + usecs_to_jiffies(time_inc));
-+		spin_lock_irqsave(&dev->spinlock, flags);
-+		if (devpriv->ao_timer_enable) {
-+			mod_timer(&devpriv->ao_timer,
-+				  jiffies + usecs_to_jiffies(time_inc));
-+		}
-+		spin_unlock_irqrestore(&dev->spinlock, flags);
- 	}
- 
- underrun:
-@@ -510,6 +531,7 @@ static int waveform_ao_inttrig_start(struct comedi_device *dev,
- 	struct waveform_private *devpriv = dev->private;
- 	struct comedi_async *async = s->async;
- 	struct comedi_cmd *cmd = &async->cmd;
-+	unsigned long flags;
- 
- 	if (trig_num != cmd->start_arg)
- 		return -EINVAL;
-@@ -517,9 +539,12 @@ static int waveform_ao_inttrig_start(struct comedi_device *dev,
- 	async->inttrig = NULL;
- 
- 	devpriv->ao_last_scan_time = ktime_to_us(ktime_get());
-+	spin_lock_irqsave(&dev->spinlock, flags);
-+	devpriv->ao_timer_enable = true;
- 	devpriv->ao_timer.expires =
- 		jiffies + usecs_to_jiffies(devpriv->ao_scan_period);
- 	add_timer(&devpriv->ao_timer);
-+	spin_unlock_irqrestore(&dev->spinlock, flags);
- 
- 	return 1;
- }
-@@ -602,8 +627,12 @@ static int waveform_ao_cancel(struct comedi_device *dev,
- 			      struct comedi_subdevice *s)
- {
- 	struct waveform_private *devpriv = dev->private;
-+	unsigned long flags;
- 
- 	s->async->inttrig = NULL;
-+	spin_lock_irqsave(&dev->spinlock, flags);
-+	devpriv->ao_timer_enable = false;
-+	spin_unlock_irqrestore(&dev->spinlock, flags);
- 	if (in_softirq()) {
- 		/* Assume we were called from the timer routine itself. */
- 		del_timer(&devpriv->ao_timer);
--- 
-2.43.0
+ACPI describes something called "memory side caches" [0] in the HMAT table, which are
+outside the CPU cache hierarchy, and are associated with a Proximity-Domain. I've heard
+that one of Arm's partners has built a system with MPAM controls on something like this.
+How would we support this - and would this be a better fit for the way SNC behaves?
 
+I think this would be a new resource and schema, 'MSC'(?) with domain-ids using the NUMA
+nid. As these aren't CPU caches, they wouldn't appear in the same part of the sysfs
+hierarchy, and wouldn't necessarily have a cache-id.
+
+For SNC systems, I think this would look like CMT on the L3, and CAT on the 'MSC'.
+Existing software wouldn't know to use the new schema, but equally wouldn't be surprised
+by the domain-ids being something other than the cache-id, and the controls and monitors
+not lining up.
+Where its not quite right for SNC is sysfs may not describe a memory side cache, but one
+would be present in resctrl. I don't think that's a problem - unless these systems do also
+have a memory-side-cache that behaves differently. (where is the controls being applied at
+the 'near' side of the link - I don't think the difference matters)
+
+
+I'm a little nervous that the SNC support looks strange if we ever add support for
+something like the above. Given its described in ACPI, I assume there are plenty of
+machines out there that look like this.
+
+(Why aren't memory-side-caches a CPU cache? They live near the memory controller and cache
+based on the PA, not the CPU that issued the transaction)
+
+
+Thanks,
+
+James
+
+[0]
+https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#memory-side-cache-overview
 
