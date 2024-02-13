@@ -1,59 +1,57 @@
-Return-Path: <linux-kernel+bounces-62711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3001F8524AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:57:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E83C8524AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:58:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C51E2B26E2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:57:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 516E21C23BC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B79A284FB0;
-	Tue, 13 Feb 2024 00:23:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86EF1854;
+	Tue, 13 Feb 2024 00:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ESADVmR4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lJ5n8b5N"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB7084A2B;
-	Tue, 13 Feb 2024 00:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C6384FC2;
+	Tue, 13 Feb 2024 00:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783803; cv=none; b=S4CiE+0NNlA8tp5pGIFnx2hnG5MEtgV14cW3s/0aTLMXxLvqwUzwO+9Lqpa2guLWhLTOKnTutQDbCQynoFPiNIctO5CxcHFUZlM0mb/+8FqbxULXKRXmHWvXXJ7cjPgI03mdUX0+CaMozu8S/vZg5ZQ0ni7iTjnJ07CooBv2jpU=
+	t=1707783804; cv=none; b=uKmuP/KkHK22cr1MhPRis2/kCknWu/zZmCLAjBys8KssKaaxC1YG0s6CmomdEwvS7F4q1oCyeE3xyCVteDXvrfS6l2ZamFMeafdGC6/y2U2Y4Sm0LXGA+L7yROlI6NJDomnhrphutKypnsOYvnHt+2oYiple8MKRMnYw60zEnlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783803; c=relaxed/simple;
-	bh=ee/Eq08r7U8onjKVLB5ysFDesQFgbqc77E/WGIAnGyA=;
+	s=arc-20240116; t=1707783804; c=relaxed/simple;
+	bh=oWzmkZ1ju8RBE5yuRIcaKQBsApDM7Iev/GO/WME2q6w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CQxfMv4qF4DNhM+yiFtUGNPlBYRrUzP0n7JAVPVfY3m96ZxPwqmcuZAZWfMyUHvDo+WxC9pXffuvLveEPv3CYBQnuvL7h4o5y79Cq4moCBEyppJU4jocpbVy2GLt5AerKKhk7q33ZMx+tg9bKhj5jPowc72gMQou5smKI2/ci/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ESADVmR4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A965C43390;
-	Tue, 13 Feb 2024 00:23:21 +0000 (UTC)
+	 MIME-Version; b=AJ9TDSL5/oKL8Kb/VwxuG1SLmR5LuPjz1ADqUCr8zA4kyN33rucDfgLSIfemN0/efGnnLEtvk8fiwjWXTfW/WNjFiVCymPOwBo7CQcWLjetRebKwbYtjrquL/HwcZMSXVgic0C70O6PY242n+tEinIJ9d2UiRS1HzzvbDR181Hw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lJ5n8b5N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2D47C433C7;
+	Tue, 13 Feb 2024 00:23:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783802;
-	bh=ee/Eq08r7U8onjKVLB5ysFDesQFgbqc77E/WGIAnGyA=;
+	s=k20201202; t=1707783803;
+	bh=oWzmkZ1ju8RBE5yuRIcaKQBsApDM7Iev/GO/WME2q6w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ESADVmR492P/YybK+D+ARZhXlNd60MCBNhqESBdzgiI67NQa2BhBxHC4x+ZE/LEmj
-	 +OHruH46JW8WO3KszXq+KZcJTUnvKIb5GBmVR4wZHtgPViAmzymhoMNlvE2Iv3bAKR
-	 nMkQlxDHD1Uv98lB0GQG5E2PbdTgaqkaP5qRqhkH/9nAFUn+cZxxNpRP+Q+wgkOFQV
-	 qilX/ZRmZEKzGKCgSdN4k3VgqhRIeaCs3p4ZBBpcIAwcV8Vfjt71C1cnDXDCWuCCXZ
-	 tVrsqzP9R1qwW+Yqu1AOydj2uXGt/gpJZzbwPX8rHU4ZkDh7ffktX/hkpHBEU0wNCz
-	 FEjOxgiOrMwqQ==
+	b=lJ5n8b5NG1eGjRb9ZnKEkBcjeLPyRSQ1mq2Aw/R54m9kh8rygB7smrI6iTqg4wXue
+	 ZWVV0tD7SDMMa/TJxzwTlg3q2qQ7iVVHuoEUC/vZVKAayuCDHuWJBklvOByYHWdABs
+	 mDMgSDRbYvSiO3BwRMqwo74vQxN571GxioBVwXPvENzL0RFYgNPDaNPfa1JOBBLuaf
+	 0m25lIXX8ZnKsd5/Da8yUsxPGb+EH1vpk880fTCBVIt7zykIzREFoNRWNTMj4zWZzZ
+	 vDa2f2tVoH6O4MoKoI7BYhP9WDv6h6iVhr03bkOdAVisCrdmf3ObMF/V30O0A9pbCW
+	 bBJYXxL5rIx2A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yi Sun <yi.sun@unisoc.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>,
-	Jens Axboe <axboe@kernel.dk>,
+Cc: Steve French <stfrench@microsoft.com>,
+	Shyam Prasad N <sprasad@microsoft.com>,
 	Sasha Levin <sashal@kernel.org>,
-	mst@redhat.com,
-	jasowang@redhat.com,
-	virtualization@lists.linux.dev,
-	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 27/28] virtio-blk: Ensure no requests in virtqueues before deleting vqs.
-Date: Mon, 12 Feb 2024 19:22:25 -0500
-Message-ID: <20240213002235.671934-27-sashal@kernel.org>
+	sfrench@samba.org,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org
+Subject: [PATCH AUTOSEL 6.1 28/28] smb3: clarify mount warning
+Date: Mon, 12 Feb 2024 19:22:26 -0500
+Message-ID: <20240213002235.671934-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002235.671934-1-sashal@kernel.org>
 References: <20240213002235.671934-1-sashal@kernel.org>
@@ -68,62 +66,36 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.77
 Content-Transfer-Encoding: 8bit
 
-From: Yi Sun <yi.sun@unisoc.com>
+From: Steve French <stfrench@microsoft.com>
 
-[ Upstream commit 4ce6e2db00de8103a0687fb0f65fd17124a51aaa ]
+[ Upstream commit a5cc98eba2592d6e3c5a4351319595ddde2a5901 ]
 
-Ensure no remaining requests in virtqueues before resetting vdev and
-deleting virtqueues. Otherwise these requests will never be completed.
-It may cause the system to become unresponsive.
+When a user tries to use the "sec=krb5p" mount parameter to encrypt
+data on connection to a server (when authenticating with Kerberos), we
+indicate that it is not supported, but do not note the equivalent
+recommended mount parameter ("sec=krb5,seal") which turns on encryption
+for that mount (and uses Kerberos for auth).  Update the warning message.
 
-Function blk_mq_quiesce_queue() can ensure that requests have become
-in_flight status, but it cannot guarantee that requests have been
-processed by the device. Virtqueues should never be deleted before
-all requests become complete status.
-
-Function blk_mq_freeze_queue() ensure that all requests in virtqueues
-become complete status. And no requests can enter in virtqueues.
-
-Signed-off-by: Yi Sun <yi.sun@unisoc.com>
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-Link: https://lore.kernel.org/r/20240129085250.1550594-1-yi.sun@unisoc.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/virtio_blk.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/smb/client/fs_context.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-index 3124837aa406..505026f0025c 100644
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -1206,14 +1206,15 @@ static int virtblk_freeze(struct virtio_device *vdev)
- {
- 	struct virtio_blk *vblk = vdev->priv;
+diff --git a/fs/smb/client/fs_context.c b/fs/smb/client/fs_context.c
+index f4818599c00a..4d5302b58b53 100644
+--- a/fs/smb/client/fs_context.c
++++ b/fs/smb/client/fs_context.c
+@@ -209,7 +209,7 @@ cifs_parse_security_flavors(struct fs_context *fc, char *value, struct smb3_fs_c
  
-+	/* Ensure no requests in virtqueues before deleting vqs. */
-+	blk_mq_freeze_queue(vblk->disk->queue);
-+
- 	/* Ensure we don't receive any more interrupts */
- 	virtio_reset_device(vdev);
- 
- 	/* Make sure no work handler is accessing the device. */
- 	flush_work(&vblk->config_work);
- 
--	blk_mq_quiesce_queue(vblk->disk->queue);
--
- 	vdev->config->del_vqs(vdev);
- 	kfree(vblk->vqs);
- 
-@@ -1231,7 +1232,7 @@ static int virtblk_restore(struct virtio_device *vdev)
- 
- 	virtio_device_ready(vdev);
- 
--	blk_mq_unquiesce_queue(vblk->disk->queue);
-+	blk_mq_unfreeze_queue(vblk->disk->queue);
- 	return 0;
- }
- #endif
+ 	switch (match_token(value, cifs_secflavor_tokens, args)) {
+ 	case Opt_sec_krb5p:
+-		cifs_errorf(fc, "sec=krb5p is not supported!\n");
++		cifs_errorf(fc, "sec=krb5p is not supported. Use sec=krb5,seal instead\n");
+ 		return 1;
+ 	case Opt_sec_krb5i:
+ 		ctx->sign = true;
 -- 
 2.43.0
 
