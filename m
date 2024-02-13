@@ -1,55 +1,61 @@
-Return-Path: <linux-kernel+bounces-62671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 099F7852436
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:46:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAF4585243A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:46:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B526C284282
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:46:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED8221C237E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:46:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9491B634E3;
-	Tue, 13 Feb 2024 00:21:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A2F64AB6;
+	Tue, 13 Feb 2024 00:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nXcfDZOc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VCBAK0E2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A26634FF;
-	Tue, 13 Feb 2024 00:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D7463CB4;
+	Tue, 13 Feb 2024 00:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783714; cv=none; b=px0QOBV5uUa9zVBcGkgqAUM5WV3e+nsE1e4GR4rbvTIPBhseArVEFx2nxwE4EUvF8SoV0OnlUCl/n0px2zguMEKIjk4OsUmSVqpsQroyQCXGIn/6L/HPjiru2544avVyKrCAKRSVbUl0gNp74+5VZqz9tYRQ9G52/WM45LZZRF0=
+	t=1707783716; cv=none; b=FiN3GURxvx+ErDcxbLOPwoqrnuC6lptN0JGI+9X9W0XpbULoJufPST3e7DxyrMIfAMEPR15dJnJwaeH/N1qW0zazF25GoxzW8Fve5a1dS8Un7ukQ4xOiN3SFdIxkiVvnGI+m0bB8Qg8P3OzJNG9C2aVBF2zmFfBCiVpgY+rakOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783714; c=relaxed/simple;
-	bh=bj702VN0XmTEu8yDDq5cohwrnty4yLLvXhphQ+HAfi4=;
+	s=arc-20240116; t=1707783716; c=relaxed/simple;
+	bh=k89xFbyGwJEbzgkK7f8r2lTSUKobgTo9d5zHFqwHJ7Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aBz94snKCCZhtSAtPX1u5X8O7sLGd3421ZnXlGcP850EQjTxYmYro/w2kixjPrTfPqxznL/3kP9bfIASD2LpXEvjtJMHdU3W20fvowLKrl1TXiixT7s3hBPMRn+5DaZ/SJv8+hKe9GdLjMhx0aqe/d8txL91jszrYT4XSSaYpRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nXcfDZOc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B512C433B1;
-	Tue, 13 Feb 2024 00:21:53 +0000 (UTC)
+	 MIME-Version; b=O/lMrZg9JhFryUt2SYLSQgJfwgRqJIdQgbSGAp1yV9Qw6m2WIsLF+3UO8XBF37/PtnJWJpQCNxUAxucMUIk/EG+E6CrHO218ShFmU3GwnNVmwfcxLRy2106MqEpiY+wRMUKdfFne0D5AZMMfGIXU7BMxo11ORDBDHL0whHOxVpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VCBAK0E2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAF52C433C7;
+	Tue, 13 Feb 2024 00:21:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783714;
-	bh=bj702VN0XmTEu8yDDq5cohwrnty4yLLvXhphQ+HAfi4=;
+	s=k20201202; t=1707783716;
+	bh=k89xFbyGwJEbzgkK7f8r2lTSUKobgTo9d5zHFqwHJ7Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nXcfDZOcgu5AX3VG55TbX2AmPmw9BcHl9QrjX14h0puHDBhj8Ee7iTmd5IuQNJU29
-	 f157UyC5OAalKczgzgODa3oS+HpL2rG6XZaJbBHhoHomd0v8Z7C9LRHfu/YNnOmM38
-	 hIEpOkNDPO2ikjCjiXg2SfUpdueB3mGIjFrwO9381qb4GlLTQcgcJXKuoALi60KxW+
-	 zbjohBlQiC0FQK1xTaLtsa/sedO2swKwZlD000HOvWVpGlGs0MUIm+7B/8lfalwv0G
-	 slf/VsUbj/0UbLCgEwLdYz9PfO0QNPDw52+vNCWVFe5t5qLdU91WuvP4mFxkqqgrqF
-	 DgTb6TNflGiSw==
+	b=VCBAK0E2uPibjCGm93cnhx9ce1rH5qOzHV0tHAyWABVkqbJTI3I3ldGn67qAIsy6U
+	 mSb0t89bn1f85XcGb1L1cj3fSlihg2FXdSTnQckQdamsqgwWMG+JFtjzKRi2R2RT+C
+	 6a9hSyjpb4phJWiORbnodXXxH40/n093cIv+edwoXUvahu6EX5jMFmjtTKe7k/UMAo
+	 pUh3+ySaCQfewQnozGUpVIxltk2/ysWH5JiSWXsg5JgCIKQT/var5cNZfrFtrOUj6e
+	 AP1scrGUiaeOfNlqgh84qgm+2Uyj6Mm+3GnRZTi993bIucWNHo88fWSLxSwYu9mJFQ
+	 Z3D4OC+kkjLAg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Adam Goldman <adamg@pobox.com>,
+Cc: Xiubo Li <xiubli@redhat.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Ilya Dryomov <idryomov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux1394-devel@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 6.6 40/51] firewire: core: send bus reset promptly on gap count error
-Date: Mon, 12 Feb 2024 19:20:17 -0500
-Message-ID: <20240213002052.670571-40-sashal@kernel.org>
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ceph-devel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 41/51] libceph: fail sparse-read if the data length doesn't match
+Date: Mon, 12 Feb 2024 19:20:18 -0500
+Message-ID: <20240213002052.670571-41-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002052.670571-1-sashal@kernel.org>
 References: <20240213002052.670571-1-sashal@kernel.org>
@@ -64,127 +70,79 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.16
 Content-Transfer-Encoding: 8bit
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Xiubo Li <xiubli@redhat.com>
 
-[ Upstream commit 7ed4380009e96d9e9c605e12822e987b35b05648 ]
+[ Upstream commit cd7d469c25704d414d71bf3644f163fb74e7996b ]
 
-If we are bus manager and the bus has inconsistent gap counts, send a
-bus reset immediately instead of trying to read the root node's config
-ROM first. Otherwise, we could spend a lot of time trying to read the
-config ROM but never succeeding.
+Once this happens that means there have bugs.
 
-This eliminates a 50+ second delay before the FireWire bus is usable after
-a newly connected device is powered on in certain circumstances.
-
-The delay occurs if a gap count inconsistency occurs, we are not the root
-node, and we become bus manager. One scenario that causes this is with a TI
-XIO2213B OHCI, the first time a Sony DSR-25 is powered on after being
-connected to the FireWire cable. In this configuration, the Linux box will
-not receive the initial PHY configuration packet sent by the DSR-25 as IRM,
-resulting in the DSR-25 having a gap count of 44 while the Linux box has a
-gap count of 63.
-
-FireWire devices have a gap count parameter, which is set to 63 on power-up
-and can be changed with a PHY configuration packet. This determines the
-duration of the subaction and arbitration gaps. For reliable communication,
-all nodes on a FireWire bus must have the same gap count.
-
-A node may have zero or more of the following roles: root node, bus manager
-(BM), isochronous resource manager (IRM), and cycle master. Unless a root
-node was forced with a PHY configuration packet, any node might become root
-node after a bus reset. Only the root node can become cycle master. If the
-root node is not cycle master capable, the BM or IRM should force a change
-of root node.
-
-After a bus reset, each node sends a self-ID packet, which contains its
-current gap count. A single bus reset does not change the gap count, but
-two bus resets in a row will set the gap count to 63. Because a consistent
-gap count is required for reliable communication, IEEE 1394a-2000 requires
-that the bus manager generate a bus reset if it detects that the gap count
-is inconsistent.
-
-When the gap count is inconsistent, build_tree() will notice this after the
-self identification process. It will set card->gap_count to the invalid
-value 0. If we become bus master, this will force bm_work() to send a bus
-reset when it performs gap count optimization.
-
-After a bus reset, there is no bus manager. We will almost always try to
-become bus manager. Once we become bus manager, we will first determine
-whether the root node is cycle master capable. Then, we will determine if
-the gap count should be changed. If either the root node or the gap count
-should be changed, we will generate a bus reset.
-
-To determine if the root node is cycle master capable, we read its
-configuration ROM. bm_work() will wait until we have finished trying to
-read the configuration ROM.
-
-However, an inconsistent gap count can make this take a long time.
-read_config_rom() will read the first few quadlets from the config ROM. Due
-to the gap count inconsistency, eventually one of the reads will time out.
-When read_config_rom() fails, fw_device_init() calls it again until
-MAX_RETRIES is reached. This takes 50+ seconds.
-
-Once we give up trying to read the configuration ROM, bm_work() will wake
-up, assume that the root node is not cycle master capable, and do a bus
-reset. Hopefully, this will resolve the gap count inconsistency.
-
-This change makes bm_work() check for an inconsistent gap count before
-waiting for the root node's configuration ROM. If the gap count is
-inconsistent, bm_work() will immediately do a bus reset. This eliminates
-the 50+ second delay and rapidly brings the bus to a working state.
-
-I considered that if the gap count is inconsistent, a PHY configuration
-packet might not be successful, so it could be desirable to skip the PHY
-configuration packet before the bus reset in this case. However, IEEE
-1394a-2000 and IEEE 1394-2008 say that the bus manager may transmit a PHY
-configuration packet before a bus reset when correcting a gap count error.
-Since the standard endorses this, I decided it's safe to retain the PHY
-configuration packet transmission.
-
-Normally, after a topology change, we will reset the bus a maximum of 5
-times to change the root node and perform gap count optimization. However,
-if there is a gap count inconsistency, we must always generate a bus reset.
-Otherwise the gap count inconsistency will persist and communication will
-be unreliable. For that reason, if there is a gap count inconstency, we
-generate a bus reset even if we already reached the 5 reset limit.
-
-Signed-off-by: Adam Goldman <adamg@pobox.com>
-Reference: https://sourceforge.net/p/linux1394/mailman/message/58727806/
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Xiubo Li <xiubli@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firewire/core-card.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ include/linux/ceph/osd_client.h |  3 ++-
+ net/ceph/osd_client.c           | 18 +++++++++++++++---
+ 2 files changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/firewire/core-card.c b/drivers/firewire/core-card.c
-index 6ac5ff20a2fe..8aaa7fcb2630 100644
---- a/drivers/firewire/core-card.c
-+++ b/drivers/firewire/core-card.c
-@@ -429,7 +429,23 @@ static void bm_work(struct work_struct *work)
- 	 */
- 	card->bm_generation = generation;
+diff --git a/include/linux/ceph/osd_client.h b/include/linux/ceph/osd_client.h
+index bf9823956758..f703fb8030de 100644
+--- a/include/linux/ceph/osd_client.h
++++ b/include/linux/ceph/osd_client.h
+@@ -45,6 +45,7 @@ enum ceph_sparse_read_state {
+ 	CEPH_SPARSE_READ_HDR	= 0,
+ 	CEPH_SPARSE_READ_EXTENTS,
+ 	CEPH_SPARSE_READ_DATA_LEN,
++	CEPH_SPARSE_READ_DATA_PRE,
+ 	CEPH_SPARSE_READ_DATA,
+ };
  
--	if (root_device == NULL) {
-+	if (card->gap_count == 0) {
-+		/*
-+		 * If self IDs have inconsistent gap counts, do a
-+		 * bus reset ASAP. The config rom read might never
-+		 * complete, so don't wait for it. However, still
-+		 * send a PHY configuration packet prior to the
-+		 * bus reset. The PHY configuration packet might
-+		 * fail, but 1394-2008 8.4.5.2 explicitly permits
-+		 * it in this case, so it should be safe to try.
-+		 */
-+		new_root_id = local_id;
-+		/*
-+		 * We must always send a bus reset if the gap count
-+		 * is inconsistent, so bypass the 5-reset limit.
-+		 */
-+		card->bm_retries = 0;
-+	} else if (root_device == NULL) {
- 		/*
- 		 * Either link_on is false, or we failed to read the
- 		 * config rom.  In either case, pick another root.
+@@ -64,7 +65,7 @@ struct ceph_sparse_read {
+ 	u64				sr_req_len;  /* orig request length */
+ 	u64				sr_pos;      /* current pos in buffer */
+ 	int				sr_index;    /* current extent index */
+-	__le32				sr_datalen;  /* length of actual data */
++	u32				sr_datalen;  /* length of actual data */
+ 	u32				sr_count;    /* extent count in reply */
+ 	int				sr_ext_len;  /* length of extent array */
+ 	struct ceph_sparse_extent	*sr_extent;  /* extent array */
+diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
+index d3a759e052c8..a2abfda17a24 100644
+--- a/net/ceph/osd_client.c
++++ b/net/ceph/osd_client.c
+@@ -5859,8 +5859,8 @@ static int osd_sparse_read(struct ceph_connection *con,
+ 	struct ceph_osd *o = con->private;
+ 	struct ceph_sparse_read *sr = &o->o_sparse_read;
+ 	u32 count = sr->sr_count;
+-	u64 eoff, elen;
+-	int ret;
++	u64 eoff, elen, len = 0;
++	int i, ret;
+ 
+ 	switch (sr->sr_state) {
+ 	case CEPH_SPARSE_READ_HDR:
+@@ -5912,8 +5912,20 @@ static int osd_sparse_read(struct ceph_connection *con,
+ 		convert_extent_map(sr);
+ 		ret = sizeof(sr->sr_datalen);
+ 		*pbuf = (char *)&sr->sr_datalen;
+-		sr->sr_state = CEPH_SPARSE_READ_DATA;
++		sr->sr_state = CEPH_SPARSE_READ_DATA_PRE;
+ 		break;
++	case CEPH_SPARSE_READ_DATA_PRE:
++		/* Convert sr_datalen to host-endian */
++		sr->sr_datalen = le32_to_cpu((__force __le32)sr->sr_datalen);
++		for (i = 0; i < count; i++)
++			len += sr->sr_extent[i].len;
++		if (sr->sr_datalen != len) {
++			pr_warn_ratelimited("data len %u != extent len %llu\n",
++					    sr->sr_datalen, len);
++			return -EREMOTEIO;
++		}
++		sr->sr_state = CEPH_SPARSE_READ_DATA;
++		fallthrough;
+ 	case CEPH_SPARSE_READ_DATA:
+ 		if (sr->sr_index >= count) {
+ 			sr->sr_state = CEPH_SPARSE_READ_HDR;
 -- 
 2.43.0
 
