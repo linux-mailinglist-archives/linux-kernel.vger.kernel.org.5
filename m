@@ -1,116 +1,127 @@
-Return-Path: <linux-kernel+bounces-63828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC06853509
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:46:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A38AC853501
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:45:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4564B28745
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:45:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5B951C23295
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99535F568;
-	Tue, 13 Feb 2024 15:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAC85EE81;
+	Tue, 13 Feb 2024 15:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=soleen.com header.i=@soleen.com header.b="Vmj1mmLQ"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ips1xZJX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A7C5F560
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:45:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 241825DF26
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707839134; cv=none; b=rdX0tjum0Zhg66hi8h+lhLtjmJN0V6scyoSeBqmcgN97FbkkOK4cOqMe+lq3VI4lxIllciRfoTRHP92hv1ORbJxaiYYmMhF7Z6ZpQ9wE/WZ3qfH4F0/P+kQtjEGqFZx2B/VBM+m6xZe+ojjTBl1D5rgkxQ6RsJdni9Y3DiHzS7Y=
+	t=1707839126; cv=none; b=t0lDs2J921ZSGRvhbjuMfSCU3UNNwHEJEI3Ab3HLgwdy2UI58ute/dgcF8f+KUN2RC+PosAPl2D7SKhmMCchgME7EyvHANLckZmcGUrb/qKc4kVl5d+TuO6f2UPCR99eI9h0RdeyY4huLA6Af4U75O3pEGwA19YTzysEZlm8k04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707839134; c=relaxed/simple;
-	bh=Mb7cfkVoTPe9SpFqQPiRQCgZRgp43WdceLq+nhIl53M=;
+	s=arc-20240116; t=1707839126; c=relaxed/simple;
+	bh=+/Eg3fKlMGekNo4yQ3rdUF3VeqRNJ0tYyXOMZSXk47w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RPOjNssdY1qHYq7v/AHJYwiEgALpkrVLQxMPKwKHw+YCK42oTfeHCKG+gBiZSJx2gcx9rd8A46Y1nVJMNdVCymuMR9j76C+vN/onQZUMWs/YBBKj7o9GoQXABlRvLDgQOCX9AaRhxT3ghc5FVcTjZMyChFS8wsbIb1M1uJ9zAfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com; spf=none smtp.mailfrom=soleen.com; dkim=fail (0-bit key) header.d=soleen.com header.i=@soleen.com header.b=Vmj1mmLQ reason="key not found in DNS"; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=soleen.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-785d5705681so188477285a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:45:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1707839131; x=1708443931; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=r+5lFm1GOYo46btsIaJvA6S/B+CQsp17IG3lccG/v6g=;
-        b=Vmj1mmLQ4yhugjb/lPfx3+kxHd1E/h0Kv5YjC6n1verDh8bforL8WJmTrmhqdYgyPX
-         56y9RZo1Mc5U/mF8FPCurWhd+rExv7UZueNkedhf/F3UMF4+TPDSL5z8wNhEeajGsva1
-         RCpTP8BbUJksyQEqy8waWFK14wWRVqePBgqfNsbDvyEJP5lN8zOpVxyRtyXGGxCqS9c+
-         eqSxQH/KlzMgGlgL+X73aBsTzO3bzsCM6zp8Bgti1AKInfQCsdy01WaodSCDPOx/76N3
-         k9pq74Hhw6oeQhYWQr/K8cMbwAzbnEL8K3HilA2scUgyGNxbQVBZCq4/4ORbpCYcCO5L
-         CfOQ==
+	 To:Cc:Content-Type; b=XJ8jLtKUBEptEiGXc941sauIQdqOgrw/+axjV8EJVfAeqI+o4I/klcJxRuA3hJ/GfvxXIQEk0HwmGMCAD1NZzR2Qbecjsg+TgwKoNOzjLvCDcxEWVSNx293N5PCz7maZtFHDU6OFg8AKMFcyREMjkL15BjrGyjq1yMipSoEfewc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ips1xZJX; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707839123;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mC+O0WAY8x9UWake37mLtLpIEPCaj8+5EiUT3ECyHuY=;
+	b=ips1xZJXBsCjitpGA+J8LYashFPU2S/PrE2ZlpdmWLtyLRl0LUKSmIwN00jdBrdMy0xRQz
+	uaVbsfgtRjPDhE5SnhHxSNzwyrX5zMalpakz7KNMZ6SLcf64Kq9cDcR2vWW+QQ2A6BZHIA
+	0GUE5/6P4Z3lblxfee8UKnQdIb/2qTg=
+Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
+ [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-515-fa_VlJTGMUuY_sz0VkgQWw-1; Tue, 13 Feb 2024 10:45:22 -0500
+X-MC-Unique: fa_VlJTGMUuY_sz0VkgQWw-1
+Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7d2de089407so3086974241.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:45:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707839131; x=1708443931;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r+5lFm1GOYo46btsIaJvA6S/B+CQsp17IG3lccG/v6g=;
-        b=DhwlPr2lQAZNTAuwn8ZvAZ0nuxXy7smue9V5jjsxh6VwGtSRb1im3oz8n170b/zkEY
-         fkQZmuOdwGpi8RPdwo9/HXY7bjGY8cSGsJEQdLpEYOwo+SqReZE0pOTAORS1m5gREyU8
-         0Jo1RBTYkOYed8CGNKAqm06RVirSeCmMDjE8zjkPAZ8LzlpQyWKyK8PeVrdRpQ5TGrrY
-         rrSAw+8a/5BIphv09L9f4STXtSd8189JtCfElDneTGn4mFEdcp+96uP1Ajn156C5Pg4A
-         QUoTg7coyWuKFwH7LJ6eZFV8UrGechgpOrkgabuhenK/LFDfxkrB6V8SzstlBAC8odDO
-         bbtA==
-X-Gm-Message-State: AOJu0YzCtPrTLSesbIFVgCL+kFTgTh8V66bhhdiXRAygEDKeMg8Xd46f
-	H3AVAe0xq6+641whZ3QwqhYEoy2ZyOPSSvqzfp74Nyk6XY+MmGF4L/g4WlpXDT3d27n2uXThxaa
-	j0A3F3xFa+EUjBmmfZhe6y5kEX/t/bD64sYTeWw==
-X-Google-Smtp-Source: AGHT+IFqChznTFjr/EeidSN571ZA0nQfVJvF+Fp0E+Y2flaP6eNCXc4z1s3ADkdtr1CrUfrPgpTF+9pex3Z052b1w5U=
-X-Received: by 2002:a05:620a:618b:b0:787:1db5:f0de with SMTP id
- or11-20020a05620a618b00b007871db5f0demr2991955qkn.26.1707839131046; Tue, 13
- Feb 2024 07:45:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707839122; x=1708443922;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mC+O0WAY8x9UWake37mLtLpIEPCaj8+5EiUT3ECyHuY=;
+        b=KXxrCg7Sf+0hoX+GEPQtF+4nuQvV1nkIxbUgNKBjzYzEGRNF4jNCtk4g64rPs8Bj3c
+         ClZNIpme+wAknvL3KxCDK4yhhFtVUUkuvq/xS9qUS2E8izI+CdIDrYhicODrCH2/GBcR
+         0w8pFR0Hs4wl9HMouiKh2eDo+rIa/ryRqr2Lx4Vl1oKjTQQ1RaRdXYc6UO7b1FZYlUiK
+         p7tI4OHcNTv6P8VEpAwmBQ6uHMFJU+R3mB7aMoY44Tzw4BVhYKaiBRc+0Wg4HdVdAR57
+         yisrbgMNCaOU2xrnyfoiVeYHAt27Jp+wikWS/gSrMucotkXVr8H7FWKtqfHZoCY/HiuM
+         DhwA==
+X-Gm-Message-State: AOJu0YwMFyaG4c02qxehwdLqYJXusV/KpZkfllT15419VF8EnTSiE5Rb
+	+ZrKaSxV0b50GNMha/5GCU7oJNx7jM2zneMEZSDmKNRglQKMRvKAV0nbYZaap+yxKuMh6PkFwR2
+	u1lrTALxPtU/e+cD+rbC4TYLDi5WY4tOMbYS3Ghmu2Lb2gSkvfW/XxO8yP7+GbYoUParslS2JbL
+	CGo1UMFixh+UyM2cMUdH7oc435PtrvvbsqE1TP
+X-Received: by 2002:a05:6102:2404:b0:46d:5e5a:5e80 with SMTP id j4-20020a056102240400b0046d5e5a5e80mr7770268vsi.31.1707839121828;
+        Tue, 13 Feb 2024 07:45:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF5uZRjDeJV9I7SDi5aFF14RvjRJfCYm3XpvfMki8n9aEbHyODKiVLPo9TTtcP8SbrbzA5HrAm6y05wjIoyygo=
+X-Received: by 2002:a05:6102:2404:b0:46d:5e5a:5e80 with SMTP id
+ j4-20020a056102240400b0046d5e5a5e80mr7770086vsi.31.1707839120113; Tue, 13 Feb
+ 2024 07:45:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
- <20231226200205.562565-11-pasha.tatashin@soleen.com> <20240213131210.GA28926@willie-the-truck>
-In-Reply-To: <20240213131210.GA28926@willie-the-truck>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Tue, 13 Feb 2024 10:44:53 -0500
-Message-ID: <CA+CK2bB4Z+z8tocO79AdsAy+gmN_4aVHgFUsm_gYLUJ2zV1A6A@mail.gmail.com>
-Subject: Re: [PATCH v3 10/10] iommu: account IOMMU allocated memory
-To: Will Deacon <will@kernel.org>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
-	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
-	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
-	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
-	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
-	yu-cheng.yu@intel.com, rientjes@google.com
+References: <20240131230902.1867092-1-pbonzini@redhat.com> <2b5e6d68-007e-48bd-be61-9a354be2ccbf@intel.com>
+ <CABgObfa_7ZAq1Kb9G=ehkzHfc5if3wnFi-kj3MZLE3oYLrArdQ@mail.gmail.com> <CABgObfbetwO=4whrCE+cFfCPJa0nsK=h6sQAaoamJH=UqaJqTg@mail.gmail.com>
+In-Reply-To: <CABgObfbetwO=4whrCE+cFfCPJa0nsK=h6sQAaoamJH=UqaJqTg@mail.gmail.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Tue, 13 Feb 2024 16:45:06 +0100
+Message-ID: <CABgObfbUcG5NyKhLOnihWKNVM0OZ7zb9R=ADzq7mjbyOCg3tUw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] x86/cpu: fix invalid MTRR mask values for SEV or TME
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	Zixi Chen <zixchen@redhat.com>, Adam Dunlap <acdunlap@google.com>, 
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, Xiaoyao Li <xiaoyao.li@intel.com>, 
+	Kai Huang <kai.huang@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, x86@kernel.org, 
+	stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> >  SecPageTables
-> > -              Memory consumed by secondary page tables, this currently
-> > -              currently includes KVM mmu allocations on x86 and arm64.
-> > +              Memory consumed by secondary page tables, this currently includes
-> > +              KVM mmu and IOMMU allocations on x86 and arm64.
+On Sun, Feb 4, 2024 at 6:21=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com> =
+wrote:
+> On Fri, Feb 2, 2024 at 12:08=E2=80=AFAM Paolo Bonzini <pbonzini@redhat.co=
+m> wrote:
+> > On Thu, Feb 1, 2024 at 7:29=E2=80=AFPM Dave Hansen <dave.hansen@intel.c=
+om> wrote:
+> > > I really wanted get_cpu_address_sizes() to be the one and only spot
+> > > where c->x86_phys_bits is established.  That way, we don't get a bunc=
+h
+> > > of code all of the place tweaking it and fighting for who "wins".
+> > > We're not there yet, but the approach in this patch moves it back in =
+the
+> > > wrong direction because it permits the random tweaking of c->x86_phys=
+_bits.
+> >
+> > There is unfortunately an important hurdle [...] in that
+> > currently the BSP and AP flows are completely different. For the BSP
+> > the flow is ->c_early_init(), then get_cpu_address_sizes(), then again
+> > ->c_early_init() called by ->c_init(), then ->c_init(). For APs it is
+> > get_cpu_address_sizes(), then ->c_early_init() called by ->c_init(),
+> > then the rest of ->c_init(). And let's not even look at
+> > ->c_identify(). [...] get_cpu_address_sizes()
+> > is called too early to see enc_phys_bits on APs. But it was also
+> > something that fbf6449f84bf didn't take into account, because it left
+> > behind the tentative initialization of x86_*_bits in identify_cpu(),
+> > while removing it from early_identify_cpu().  And
 
-Hi Will,
+Ping, either for applying the original patches or for guidance on how
+to proceed.
 
-> While I can see the value in this for IOMMU mappings managed by VFIO,
-> doesn't this end up conflating that with the normal case of DMA domains?
-> For systems that e.g. rely on an IOMMU for functional host DMA, it seems
-> wrong to subject that to accounting constraints.
+Paolo
 
-The accounting constraints are only applicable when GFP_KERNEL_ACCOUNT
-is passed to the iommu mapping functions. We do that from the vfio,
-iommufd, and vhost. Without this flag, the memory useage is reported
-in /proc/meminfo as part of  SecPageTables field, but not constrained
-in cgroup.
-
-Pasha
 
