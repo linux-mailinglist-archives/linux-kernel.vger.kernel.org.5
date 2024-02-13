@@ -1,387 +1,184 @@
-Return-Path: <linux-kernel+bounces-63075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08193852A8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:07:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ECD2852A90
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 568E51F22C08
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:07:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43EF01C21AFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6EE01B59C;
-	Tue, 13 Feb 2024 08:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D213918021;
+	Tue, 13 Feb 2024 08:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="qBhHpKbS"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2057.outbound.protection.outlook.com [40.107.8.57])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Usbbman+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 567C31B599;
-	Tue, 13 Feb 2024 08:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707811641; cv=fail; b=nOttCtjPwJAHnyisQKG+O+HYoNEzUlZB/ZvijTEA5oiDQOicTOXrJE5GuVFxi0TsHtgtC81uaXiuLJCp0lUG5wnAjtADbEcpgj2T+pdXfWdSgampbZM7CItiVDCd+un7KJ5TzRJinmOuGv0xosL2FA8um37+DRqpvlfqTNLGQxo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707811641; c=relaxed/simple;
-	bh=Vpw0zKDYx+QaZKgSPbHtZXV8hIZOw4PK3pGbiLTN+xY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kPzuzUSoxHcXy0Jr5NxPYDsnGPuTl5hb05n1YC7omTBwwI03dLc+ZGITI7KyoEkPYm/J/L964s4KmAqne4Td2Wn01Erk3NDeaLq4ogs9b2Xb+vSDthtIJsHfEt51Qg3nYoYgaAMSk7mr0H8hGHJCvChlBCEPbmDIsCuy1fKKbe4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=qBhHpKbS; arc=fail smtp.client-ip=40.107.8.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T3dc1MoxvwR7NdqGrDCqEq7HQd10VoRIMClRyho9mMU1Ybfp6bdJc7pT9b+H0Hny/jvVF9NbZo9J3Jyw3sr6CT/2vPar/4Z5AUP3IFzUG9urZ7j2CFGDQukieMNuou4UpL0DJmlU8dzK7sBtmPgPeETRBqpcZhKc4fNUZ6mWcLHhr2wFeYXcNysmITwcgLnKxc5rsSAoBaMinvxe01JVqB80wKHIkN+p4WLEQ5sP7n6RgvBt+nRy52D61Xy1XWZgmZhjMqIBfs8aR0OjWgoh6ElEG5OcSaHJAypHgjiR3XbtybT0m2EKHV2LIxFus4IiR/mjZ5ZWAxDCzPnuN7f2sQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O3eFUueocJmujmimKrqINFOrmzYjipFdqsGHa40q48s=;
- b=V/kCEbOb2a1rJb8ALKMxuY/infEcnDHSS30+V5Xde/Cj/Zudejy4lEhyELhzFamq6XWo57Yw63YcIVQBaTNXHcdxG5xvDiULLfuH8K2gXjR1ps6yq3UaorlFVbZ/01tBUMMxF0YL6h/pgsojY7HwAo7C01tYonJBk0OBjIZ5XZfFrwFCQtQf4hm4BYMSKZm+7uzAgFlNlz9fuYqPqC1ib1trcfrIP9MtsuazDCQ82TJyPxAANixBAZ22kr5yR3RHJL4tQNR8ggreyZwSMsndPYeJaqzjC3z6nbdjmGg4q1EfwIX6Od7PmKDiRIA8P4ORiRK/Q7hp3lcopPXyVSwYnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 193.8.40.94) smtp.rcpttodomain=vger.kernel.org
- smtp.mailfrom=leica-geosystems.com; dmarc=pass (p=reject sp=reject pct=100)
- action=none header.from=leica-geosystems.com; dkim=none (message not signed);
- arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O3eFUueocJmujmimKrqINFOrmzYjipFdqsGHa40q48s=;
- b=qBhHpKbSGlC6Su9UYzcrWp611g//OLthie8X9/6qWF1n4sKHH6HCuOcI2AJQB/+pMmRo6puysJAbyFmrMSb3TcEwcOZ7Z/unkKns5kLq6v7W0we5gMa1LtS/Q5uEIDC/5BBTXsC5ak4zAa1hPseGUIByz5cZK9Dtic+yFlh1ti8=
-Received: from AS8PR04CA0072.eurprd04.prod.outlook.com (2603:10a6:20b:313::17)
- by AM8PR06MB6835.eurprd06.prod.outlook.com (2603:10a6:20b:1d1::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Tue, 13 Feb
- 2024 08:07:08 +0000
-Received: from AMS0EPF000001B7.eurprd05.prod.outlook.com
- (2603:10a6:20b:313:cafe::ce) by AS8PR04CA0072.outlook.office365.com
- (2603:10a6:20b:313::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39 via Frontend
- Transport; Tue, 13 Feb 2024 08:07:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.94)
- smtp.mailfrom=leica-geosystems.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=leica-geosystems.com;
-Received-SPF: Pass (protection.outlook.com: domain of leica-geosystems.com
- designates 193.8.40.94 as permitted sender) receiver=protection.outlook.com;
- client-ip=193.8.40.94; helo=hexagon.com; pr=C
-Received: from hexagon.com (193.8.40.94) by
- AMS0EPF000001B7.mail.protection.outlook.com (10.167.16.171) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25 via Frontend Transport; Tue, 13 Feb 2024 08:07:08 +0000
-Received: from aherlnxbspsrv01.lgs-net.com ([10.60.34.116]) by hexagon.com with Microsoft SMTPSVC(10.0.17763.1697);
-	 Tue, 13 Feb 2024 09:07:08 +0100
-From: Catalin Popescu <catalin.popescu@leica-geosystems.com>
-To: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	afd@ti.com,
-	andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk
-Cc: netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bsp-development.geo@leica-geosystems.com,
-	m.felsch@pengutronix.de,
-	Catalin Popescu <catalin.popescu@leica-geosystems.com>
-Subject: [PATCH v5 2/2] net: phy: dp83826: support TX data voltage tuning
-Date: Tue, 13 Feb 2024 09:07:05 +0100
-Message-Id: <20240213080705.4184566-2-catalin.popescu@leica-geosystems.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240213080705.4184566-1-catalin.popescu@leica-geosystems.com>
-References: <20240213080705.4184566-1-catalin.popescu@leica-geosystems.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9CB134CD
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:09:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707811745; cv=none; b=pkbJ56fGmVdKIcw5VB6W1ZkvizVBkn8NVrrfGkUkiyz0/1VpqQWLvblYJjFDOpdNfUDr8NRvjJ/34Cr1SLGfdKCL63R93snv/Qh+DrA67GJOZa37f6pwc8AP7XZn0HDFokhSzBUliE38Z4Jy3EK+MgKsGUQzSJFB0bYlHlmlQtk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707811745; c=relaxed/simple;
+	bh=Him3uu+VhmW+P97SEtrpmNC4Q3nMKaWaoPwFM5roTjI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CnHV3ikBXP8I8YHU54amSE3JJuZFg5d253nfysHJKiu3xF05h/MVYliXzp87SbMpHKUncI2mbWCan/8Tr45cUgs3HIUujXeutgnWL8XCYZlt8MBUOlXGvPXeFL5s1n9EgPXLm4uwCcR5sD9E3sMiJYVTn4Xw2InB6zMRw7V80RI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Usbbman+; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707811741;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E2znvQ6ssT4uVnr2WUtHz2BuLWLoRgEnRzMe+E1iIug=;
+	b=Usbbman+AgSMfvbOFyLP0ITv6M2QdcD+s7JbmG+ovTIj1L7muv/he7qERAn3VMYBaG5tV8
+	LY09Xb6l9m5xM91yGVIf7HWp+93UGbjU0Txle6r3wA7yHf6ssxIkuwN5bJikM98VjoVMSI
+	AmD5jhXV+fq9BWYJl+E5p+lrLPQJF08=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-413-sp_88SMtOJGx1uxW7Wmcmw-1; Tue, 13 Feb 2024 03:08:58 -0500
+X-MC-Unique: sp_88SMtOJGx1uxW7Wmcmw-1
+Received: by mail-yb1-f198.google.com with SMTP id 3f1490d57ef6-dc6b267bf11so4860919276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:08:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707811737; x=1708416537;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E2znvQ6ssT4uVnr2WUtHz2BuLWLoRgEnRzMe+E1iIug=;
+        b=Hp8IhjvODu3T9dVHEK0iXzC7MQGjSsJVzQNKPH81D9lh8hBLxnDA/5ZguoatOptHDa
+         ReKTS//42CzvWPQa3/7XyO+lHlPttdyvat+H3MkDfR45j2wmuZJoGReVhO6yDuJ07yQy
+         xHeGOtlv14CvmX4dlmzR06qrXi1d6PbognprtI/+tae+LiV+h69k6cG+XPlKmhcQE/er
+         quCFbExhJOQHUN1zYUZWKG7GvRJiNbUIcSqmTJweRkTDtDfVcisVJpPc8SO6CEPak3NP
+         lofj+wf/iZv4BZ5WrjvGSTzOUNd7fAEFl/91XuyN3q4pQFz1IT7IDL5whmM6LZvUEplw
+         Fl0g==
+X-Forwarded-Encrypted: i=1; AJvYcCVwYCecjxeL+VaCN6qsPJFhVIEhyNqDtxLr2fM49UGFdz6GKlLb2et8jgJ3/j64m3hT0Z2VL+t2GUdbcSrJhK1YCogQFq7CCMuC/YpA
+X-Gm-Message-State: AOJu0Yxv9YipL6o4P51qehFBtbgBNp33J27wYruWJWY2bseBqfxPGtrT
+	4SEvPN2bMEE4Qo7NqRgdntNbOqxrc9U/GUWavDD9uqS6agu69xWYsVCfAPlUq4JigcWDPHV4Fi5
+	tEa05ZU6GitBvBV0NNQowaMtqhsOSyFN3mW4pG94Us8ad5RI+jaf0O8ucQ+eHsDtze7ua18tSDO
+	cpU3qkZdK/oJroCgPAGRYmqhv1hWKhujWo4U5t
+X-Received: by 2002:a25:c5cc:0:b0:dcc:2da:e44e with SMTP id v195-20020a25c5cc000000b00dcc02dae44emr2067605ybe.61.1707811737591;
+        Tue, 13 Feb 2024 00:08:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFB85iA0wuX+bkrV7RmCTb44Tsqf91DLHEXY9MpcVOEMNtO1sH+p0OEz/bSxFF4evsBn6zlqrdsfYYEIKF7iFA=
+X-Received: by 2002:a25:c5cc:0:b0:dcc:2da:e44e with SMTP id
+ v195-20020a25c5cc000000b00dcc02dae44emr2067598ybe.61.1707811737307; Tue, 13
+ Feb 2024 00:08:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 13 Feb 2024 08:07:08.0330 (UTC) FILETIME=[A3BE38A0:01DA5E53]
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AMS0EPF000001B7:EE_|AM8PR06MB6835:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: f9d5d589-9939-45a2-4fad-08dc2c6ac680
-X-SET-LOWER-SCL-SCANNER: YES
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	216BfGQABM7lt4tv7piphDq2AUicHpI+UMfqDzGOXTzXdFEK8NeeaIYjWYvi92t5sD8U9innzrb51o1kRduDh+IP+dD/sUAjpJDLUi9OHZ/zaVRnRAey3yXLX8p3XIpRS23e1p6NKNB+8osHHDHNBknPSK2fb+7I/b4TjAIFbvDVpIMeiHba8nYUHuLuENPGRkn4gU+UUaAOo4N1kZG9eIr0wove/A3ncie1yqc/U1KNGLsFh57Q4/JE3KqXtbaiIYZW84pEVOJ2td+76jj6ReJ1sk8m6Xw7uZ1UUVyEDvCm8J7n3dXzefg1kTVN10/yOPFb5EVW6hMxBDEHCMXGAdf9bJeIRPTTMO9Eo83H/oLofth8ocRvAfUIxnnI8k+WsY1JFrM6URie+XhqQ0LZldWQLD4isF7ajoqg1So8uY2BJHRIQ8Pxbrk1n56fl3zzUVUM3ybvLjm1mGVmbZVhH7mL7hRjbOfISMTW/iihgzvQVzkAsVrGDkWjKqXqzHwCLZdTharIg7gb546govFL2k4/yW9f3yzEnHFVTbdGhLOKG1iOwPlADIEAmnhHsdwkA30oOLpP4w6ieMbRJfrM4ZeuOcOuODYd/2wjEfTdNZqkypuniQ+2B79FrZ3Q9H1EeM1LcEmZdrhPUy8CpS+QsA==
-X-Forefront-Antispam-Report:
-	CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(136003)(396003)(39860400002)(230922051799003)(186009)(1800799012)(82310400011)(451199024)(64100799003)(40470700004)(36840700001)(46966006)(83380400001)(86362001)(66899024)(107886003)(70206006)(70586007)(316002)(2616005)(1076003)(82740400003)(6666004)(478600001)(5660300002)(44832011)(2906002)(81166007)(336012)(8676002)(450100002)(8936002)(4326008)(26005)(921011)(36756003)(356005)(41300700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 08:07:08.7127
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f9d5d589-9939-45a2-4fad-08dc2c6ac680
-X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.94];Helo=[hexagon.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	AMS0EPF000001B7.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR06MB6835
+References: <1707517799-137286-1-git-send-email-steven.sistare@oracle.com>
+ <20240212031722-mutt-send-email-mst@kernel.org> <CAJaqyWcyoDCp6OVQQbU=Pd73tGki0dBQmb82=i5MmsLcZTZfyw@mail.gmail.com>
+In-Reply-To: <CAJaqyWcyoDCp6OVQQbU=Pd73tGki0dBQmb82=i5MmsLcZTZfyw@mail.gmail.com>
+From: Eugenio Perez Martin <eperezma@redhat.com>
+Date: Tue, 13 Feb 2024 09:08:21 +0100
+Message-ID: <CAJaqyWcmYMXvLmJ2JYbrcF818doz1og625CHst7fWED6oMBCHQ@mail.gmail.com>
+Subject: Re: [PATCH V1] vdpa: suspend and resume require DRIVER_OK
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Steve Sistare <steven.sistare@oracle.com>, 
+	virtualization <virtualization@lists.linux-foundation.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, Jason Wang <jasowang@redhat.com>, 
+	Si-Wei Liu <si-wei.liu@oracle.com>, Stefano Garzarella <sgarzare@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DP83826 offers the possibility to tune the voltage of logical
-levels of the MLT-3 encoded TX data. This is useful when there
-is a voltage drop in between the PHY and the connector and we
-want to increase the voltage levels to compensate for that drop.
+On Tue, Feb 13, 2024 at 8:49=E2=80=AFAM Eugenio Perez Martin
+<eperezma@redhat.com> wrote:
+>
+> On Mon, Feb 12, 2024 at 9:20=E2=80=AFAM Michael S. Tsirkin <mst@redhat.co=
+m> wrote:
+> >
+> > On Fri, Feb 09, 2024 at 02:29:59PM -0800, Steve Sistare wrote:
+> > > Calling suspend or resume requires VIRTIO_CONFIG_S_DRIVER_OK, for all
+> > > vdpa devices.
+> > >
+> > > Suggested-by: Eugenio Perez Martin <eperezma@redhat.com>"
+> > > Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+> >
+> > I don't think failing suspend or resume makes sense though -
+> > e.g. practically failing suspend will just prevent sleeping I think -
+> > why should guest not having driver loaded prevent
+> > system suspend?
+> >
+>
+> In the QEMU case the vhost device has not started, so QEMU should
+> allow the system suspension.
+>
+> I haven't tested the QEMU behavior on suspend (not poweroff) with the
+> guest driver loaded, but I think QEMU should indeed block the
+> suspension, as there is no way to recover the device after that
+> without the guest cooperation?
+>
+> > there's also state such as features set which does need to be
+> > preserved.
+> >
+>
+> That's true if the device does not support resuming. Well, in the
+> particular case of features, maybe we need to keep it, as userspace
+> could call VHOST_GET_FEATURES. But maybe we can clean some things,
+> right.
+>
+> > I think the thing to do is to skip invoking suspend/resume callback, an=
+d in
+> > fact checking suspend/resume altogether.
+> >
+>
+> I don't follow this. What should be done in this cases by QEMU?
+> 1) The device does not support suspend
+> 2) The device support suspend but not resume
+>
+> In my opinion 1) should be forbidden, as we don't support to resume
+> the device properly, and 2) can be allowed by fetching all the state.
+>
 
-Prior to PHY configuration, the driver SW resets the PHY which has
-the same effect as the HW reset pin according to the datasheet.
-Hence, there's no need to force update the VOD_CFG registers to make
-sure they hold their reset values. VOD_CFG registers need to be
-updated only if the DT has been configured with values other than
-the reset ones.
+Ok I missed the whole other thread, everything is clear now.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
----
-Changes in v2:
- - remove raw values mapping tables dp83826_cfg_dac_minus_raw/
-   dp83826_cfg_dac_plus_raw and replace them with functions
-   dp83826_to_dac_minus_one_regval/dp83826_to_dac_plus_one_regval
- - increase readability of function dp83826_config_init
- - change return value of function dp83826_of_init from int to void
-   since it never returns any error
+Thanks!
 
-Changes in v3:
- - rename DT properties to "-bp"
- - rename DP83826_CFG_DAC_MPERCENT_DEFAULT/DP83826_CFG_DAC_MPERCENT_PER_STEP
-   to DP83826_CFG_DAC_PERCENT_DEFAULT/DP83826_CFG_DAC_PERCENT_PER_STEP and
-   update their values to reflect the new unit "basis point"
- - update commit message with explanation about the registers reset
-   values
-
-Changes in v4:
- - update commit message to be more meaningful
-
-Changes in v5:
- - add reviewed-by tag
----
- drivers/net/phy/dp83822.c | 130 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 126 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index b7cb71817780..30f2616ab1c2 100644
---- a/drivers/net/phy/dp83822.c
-+++ b/drivers/net/phy/dp83822.c
-@@ -12,6 +12,7 @@
- #include <linux/of.h>
- #include <linux/phy.h>
- #include <linux/netdevice.h>
-+#include <linux/bitfield.h>
- 
- #define DP83822_PHY_ID	        0x2000a240
- #define DP83825S_PHY_ID		0x2000a140
-@@ -34,6 +35,10 @@
- #define MII_DP83822_GENCFG	0x465
- #define MII_DP83822_SOR1	0x467
- 
-+/* DP83826 specific registers */
-+#define MII_DP83826_VOD_CFG1	0x30b
-+#define MII_DP83826_VOD_CFG2	0x30c
-+
- /* GENCFG */
- #define DP83822_SIG_DET_LOW	BIT(0)
- 
-@@ -110,6 +115,19 @@
- #define DP83822_RX_ER_STR_MASK	GENMASK(9, 8)
- #define DP83822_RX_ER_SHIFT	8
- 
-+/* DP83826: VOD_CFG1 & VOD_CFG2 */
-+#define DP83826_VOD_CFG1_MINUS_MDIX_MASK	GENMASK(13, 12)
-+#define DP83826_VOD_CFG1_MINUS_MDI_MASK		GENMASK(11, 6)
-+#define DP83826_VOD_CFG2_MINUS_MDIX_MASK	GENMASK(15, 12)
-+#define DP83826_VOD_CFG2_PLUS_MDIX_MASK		GENMASK(11, 6)
-+#define DP83826_VOD_CFG2_PLUS_MDI_MASK		GENMASK(5, 0)
-+#define DP83826_CFG_DAC_MINUS_MDIX_5_TO_4	GENMASK(5, 4)
-+#define DP83826_CFG_DAC_MINUS_MDIX_3_TO_0	GENMASK(3, 0)
-+#define DP83826_CFG_DAC_PERCENT_PER_STEP	625
-+#define DP83826_CFG_DAC_PERCENT_DEFAULT		10000
-+#define DP83826_CFG_DAC_MINUS_DEFAULT		0x30
-+#define DP83826_CFG_DAC_PLUS_DEFAULT		0x10
-+
- #define MII_DP83822_FIBER_ADVERTISE    (ADVERTISED_TP | ADVERTISED_MII | \
- 					ADVERTISED_FIBRE | \
- 					ADVERTISED_Pause | ADVERTISED_Asym_Pause)
-@@ -118,6 +136,8 @@ struct dp83822_private {
- 	bool fx_signal_det_low;
- 	int fx_enabled;
- 	u16 fx_sd_enable;
-+	u8 cfg_dac_minus;
-+	u8 cfg_dac_plus;
- };
- 
- static int dp83822_set_wol(struct phy_device *phydev,
-@@ -233,7 +253,7 @@ static int dp83822_config_intr(struct phy_device *phydev)
- 				DP83822_ENERGY_DET_INT_EN |
- 				DP83822_LINK_QUAL_INT_EN);
- 
--		/* Private data pointer is NULL on DP83825/26 */
-+		/* Private data pointer is NULL on DP83825 */
- 		if (!dp83822 || !dp83822->fx_enabled)
- 			misr_status |= DP83822_ANEG_COMPLETE_INT_EN |
- 				       DP83822_DUP_MODE_CHANGE_INT_EN |
-@@ -254,7 +274,7 @@ static int dp83822_config_intr(struct phy_device *phydev)
- 				DP83822_PAGE_RX_INT_EN |
- 				DP83822_EEE_ERROR_CHANGE_INT_EN);
- 
--		/* Private data pointer is NULL on DP83825/26 */
-+		/* Private data pointer is NULL on DP83825 */
- 		if (!dp83822 || !dp83822->fx_enabled)
- 			misr_status |= DP83822_ANEG_ERR_INT_EN |
- 				       DP83822_WOL_PKT_INT_EN;
-@@ -474,6 +494,43 @@ static int dp83822_config_init(struct phy_device *phydev)
- 	return dp8382x_disable_wol(phydev);
- }
- 
-+static int dp83826_config_init(struct phy_device *phydev)
-+{
-+	struct dp83822_private *dp83822 = phydev->priv;
-+	u16 val, mask;
-+	int ret;
-+
-+	if (dp83822->cfg_dac_minus != DP83826_CFG_DAC_MINUS_DEFAULT) {
-+		val = FIELD_PREP(DP83826_VOD_CFG1_MINUS_MDI_MASK, dp83822->cfg_dac_minus) |
-+		      FIELD_PREP(DP83826_VOD_CFG1_MINUS_MDIX_MASK,
-+				 FIELD_GET(DP83826_CFG_DAC_MINUS_MDIX_5_TO_4,
-+					   dp83822->cfg_dac_minus));
-+		mask = DP83826_VOD_CFG1_MINUS_MDIX_MASK | DP83826_VOD_CFG1_MINUS_MDI_MASK;
-+		ret = phy_modify_mmd(phydev, DP83822_DEVADDR, MII_DP83826_VOD_CFG1, mask, val);
-+		if (ret)
-+			return ret;
-+
-+		val = FIELD_PREP(DP83826_VOD_CFG2_MINUS_MDIX_MASK,
-+				 FIELD_GET(DP83826_CFG_DAC_MINUS_MDIX_3_TO_0,
-+					   dp83822->cfg_dac_minus));
-+		mask = DP83826_VOD_CFG2_MINUS_MDIX_MASK;
-+		ret = phy_modify_mmd(phydev, DP83822_DEVADDR, MII_DP83826_VOD_CFG2, mask, val);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (dp83822->cfg_dac_plus != DP83826_CFG_DAC_PLUS_DEFAULT) {
-+		val = FIELD_PREP(DP83826_VOD_CFG2_PLUS_MDIX_MASK, dp83822->cfg_dac_plus) |
-+		      FIELD_PREP(DP83826_VOD_CFG2_PLUS_MDI_MASK, dp83822->cfg_dac_plus);
-+		mask = DP83826_VOD_CFG2_PLUS_MDIX_MASK | DP83826_VOD_CFG2_PLUS_MDI_MASK;
-+		ret = phy_modify_mmd(phydev, DP83822_DEVADDR, MII_DP83826_VOD_CFG2, mask, val);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int dp8382x_config_init(struct phy_device *phydev)
- {
- 	return dp8382x_disable_wol(phydev);
-@@ -509,11 +566,44 @@ static int dp83822_of_init(struct phy_device *phydev)
- 
- 	return 0;
- }
-+
-+static int dp83826_to_dac_minus_one_regval(int percent)
-+{
-+	int tmp = DP83826_CFG_DAC_PERCENT_DEFAULT - percent;
-+
-+	return tmp / DP83826_CFG_DAC_PERCENT_PER_STEP;
-+}
-+
-+static int dp83826_to_dac_plus_one_regval(int percent)
-+{
-+	int tmp = percent - DP83826_CFG_DAC_PERCENT_DEFAULT;
-+
-+	return tmp / DP83826_CFG_DAC_PERCENT_PER_STEP;
-+}
-+
-+static void dp83826_of_init(struct phy_device *phydev)
-+{
-+	struct dp83822_private *dp83822 = phydev->priv;
-+	struct device *dev = &phydev->mdio.dev;
-+	u32 val;
-+
-+	dp83822->cfg_dac_minus = DP83826_CFG_DAC_MINUS_DEFAULT;
-+	if (!device_property_read_u32(dev, "ti,cfg-dac-minus-one-bp", &val))
-+		dp83822->cfg_dac_minus += dp83826_to_dac_minus_one_regval(val);
-+
-+	dp83822->cfg_dac_plus = DP83826_CFG_DAC_PLUS_DEFAULT;
-+	if (!device_property_read_u32(dev, "ti,cfg-dac-plus-one-bp", &val))
-+		dp83822->cfg_dac_plus += dp83826_to_dac_plus_one_regval(val);
-+}
- #else
- static int dp83822_of_init(struct phy_device *phydev)
- {
- 	return 0;
- }
-+
-+static void dp83826_of_init(struct phy_device *phydev)
-+{
-+}
- #endif /* CONFIG_OF_MDIO */
- 
- static int dp83822_read_straps(struct phy_device *phydev)
-@@ -567,6 +657,22 @@ static int dp83822_probe(struct phy_device *phydev)
- 	return 0;
- }
- 
-+static int dp83826_probe(struct phy_device *phydev)
-+{
-+	struct dp83822_private *dp83822;
-+
-+	dp83822 = devm_kzalloc(&phydev->mdio.dev, sizeof(*dp83822),
-+			       GFP_KERNEL);
-+	if (!dp83822)
-+		return -ENOMEM;
-+
-+	phydev->priv = dp83822;
-+
-+	dp83826_of_init(phydev);
-+
-+	return 0;
-+}
-+
- static int dp83822_suspend(struct phy_device *phydev)
- {
- 	int value;
-@@ -610,6 +716,22 @@ static int dp83822_resume(struct phy_device *phydev)
- 		.resume = dp83822_resume,			\
- 	}
- 
-+#define DP83826_PHY_DRIVER(_id, _name)				\
-+	{							\
-+		PHY_ID_MATCH_MODEL(_id),			\
-+		.name		= (_name),			\
-+		/* PHY_BASIC_FEATURES */			\
-+		.probe          = dp83826_probe,		\
-+		.soft_reset	= dp83822_phy_reset,		\
-+		.config_init	= dp83826_config_init,		\
-+		.get_wol = dp83822_get_wol,			\
-+		.set_wol = dp83822_set_wol,			\
-+		.config_intr = dp83822_config_intr,		\
-+		.handle_interrupt = dp83822_handle_interrupt,	\
-+		.suspend = dp83822_suspend,			\
-+		.resume = dp83822_resume,			\
-+	}
-+
- #define DP8382X_PHY_DRIVER(_id, _name)				\
- 	{							\
- 		PHY_ID_MATCH_MODEL(_id),			\
-@@ -628,8 +750,8 @@ static int dp83822_resume(struct phy_device *phydev)
- static struct phy_driver dp83822_driver[] = {
- 	DP83822_PHY_DRIVER(DP83822_PHY_ID, "TI DP83822"),
- 	DP8382X_PHY_DRIVER(DP83825I_PHY_ID, "TI DP83825I"),
--	DP8382X_PHY_DRIVER(DP83826C_PHY_ID, "TI DP83826C"),
--	DP8382X_PHY_DRIVER(DP83826NC_PHY_ID, "TI DP83826NC"),
-+	DP83826_PHY_DRIVER(DP83826C_PHY_ID, "TI DP83826C"),
-+	DP83826_PHY_DRIVER(DP83826NC_PHY_ID, "TI DP83826NC"),
- 	DP8382X_PHY_DRIVER(DP83825S_PHY_ID, "TI DP83825S"),
- 	DP8382X_PHY_DRIVER(DP83825CM_PHY_ID, "TI DP83825M"),
- 	DP8382X_PHY_DRIVER(DP83825CS_PHY_ID, "TI DP83825CS"),
--- 
-2.34.1
+> Thanks!
+>
+> > > ---
+> > >  drivers/vhost/vdpa.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> > > index bc4a51e4638b..ce1882acfc3b 100644
+> > > --- a/drivers/vhost/vdpa.c
+> > > +++ b/drivers/vhost/vdpa.c
+> > > @@ -598,6 +598,9 @@ static long vhost_vdpa_suspend(struct vhost_vdpa =
+*v)
+> > >       if (!ops->suspend)
+> > >               return -EOPNOTSUPP;
+> > >
+> > > +     if (!(ops->get_status(vdpa) & VIRTIO_CONFIG_S_DRIVER_OK))
+> > > +             return -EINVAL;
+> > > +
+> > >       ret =3D ops->suspend(vdpa);
+> > >       if (!ret)
+> > >               v->suspended =3D true;
+> > > @@ -618,6 +621,9 @@ static long vhost_vdpa_resume(struct vhost_vdpa *=
+v)
+> > >       if (!ops->resume)
+> > >               return -EOPNOTSUPP;
+> > >
+> > > +     if (!(ops->get_status(vdpa) & VIRTIO_CONFIG_S_DRIVER_OK))
+> > > +             return -EINVAL;
+> > > +
+> > >       ret =3D ops->resume(vdpa);
+> > >       if (!ret)
+> > >               v->suspended =3D false;
+> > > --
+> > > 2.39.3
+> >
+> >
 
 
