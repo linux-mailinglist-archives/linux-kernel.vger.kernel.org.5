@@ -1,197 +1,202 @@
-Return-Path: <linux-kernel+bounces-62890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DA8885278A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:42:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A467685278F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:46:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DCC71F231B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:42:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 117B3B2354C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:46:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07374C64;
-	Tue, 13 Feb 2024 02:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDD503D6D;
+	Tue, 13 Feb 2024 02:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="flN+DJdF"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="k12m35I4"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3701415B7;
-	Tue, 13 Feb 2024 02:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7114515B7
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 02:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707792141; cv=none; b=DmfXEYKVWFJuRQSCIVBYQal3E9auIDfAJr28YiHl6VEChrEOfqucEHPbRsLHU0QGavrfPU0U8kNwzqqQN47Bb3PNwJpeTbZk1aqp5xbFZUPUA+ebUEKXSC6okJAL+bOGWboth1IP6RcF/deRkNAnC4RyjrYxGaIVF6Vc77B5Aiw=
+	t=1707792387; cv=none; b=F1Ykj9Ve8b2uZp16QZZL6/KKvJ6UKf8pX61ZB6rSBxGggfFrff6YKcWl64oD+WleEWXXlwespUXVAtSgnxFiJFYFiJwjKATxZLk1eO7fm/JQDHZ4Zo0SeDsDXCFEDH47iMXSa3JXalDg6sihx6IhaLBEpnA7Jl31UiWFRC7B2KQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707792141; c=relaxed/simple;
-	bh=/9hajlwYk/rvsyuO51iMyQDNbLLqRFyaoZc4ehCnN7s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OmwCIL07N/nfpF78zAQWLwiAzsEVITdWxjpl1RQjvYTv0CzxHAiukHXwEHptsuzg2ntUs8m2Bd99yra7HVaE8zeWGUpt+nJtBrYf8nX6gS5ioJhr/mxrJLvWx483mHSWuxQxxXinoVV16A+KcJu3NhTzv0JNYn0FCLvqZ7uD0Kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=flN+DJdF; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33934567777so2544857f8f.1;
-        Mon, 12 Feb 2024 18:42:18 -0800 (PST)
+	s=arc-20240116; t=1707792387; c=relaxed/simple;
+	bh=bi//PTUtY+EwVoi0mPqaJExzueAl50/QOcxwdbDfkec=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=rxSRmzzR6Iho8BAGKFdqKvo2hhnAv4TRQQoFPG2NCtJVNpiHWkEvRjhQ7kW4ymqLcyaspMKBc7JxAdf6o/obpJnBm4dArRn+p9UxQICDzyP5OmfENa9TtGWDGePp655ofNVT5Tb1NWn93rofSlrGY5lvlyVaLFN+siwuema8UzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=k12m35I4; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60492d6bfc0so51520017b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 18:46:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707792137; x=1708396937; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rxk9tTynWHUWVnj9UZhwfBhaRWhwkQhpAgLGbZWzgJc=;
-        b=flN+DJdFLib4HqTob2u90SLMPRx/1z9ta4Prye8Zbc3ZG05UTQ69PH38J4zwH0oGlH
-         idQQHNqVZP30sHjJmcxLowdfMvuBzT2Em4kyDApNxVdFnpBU/YAF0NkGSeQN1JIzzqf8
-         YO0FcRzrVvl1ZaTfROa9HHNj3FxM5avHJQjlW40cOg2ZB8hKcDmH2IRTM4m0APcB3s7A
-         xj6sSnMDt85NdeFI9afin/pKnnB8B3OZMucxnyG0vPglAeui1F2SfE0KFo+sQosjomJ8
-         H5y6mMnMOYTzNy4FWbiGd7SFl00k7YBWNNJ6csZk84Awqd2OvCiTFmQNsXQMBDlQRwS6
-         lPEA==
+        d=google.com; s=20230601; t=1707792384; x=1708397184; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fa6JPy2ikfqnkDj89yS4RCnJk+0NDmtRigU+S/WJCr8=;
+        b=k12m35I4wgJvNv2P/brlbjo8hlFADt7YWUvI5tpnrye8jukTPbfsFJ5iYKrHNxRYAq
+         RKjhAIyrFdkwggD+aAOULmCvaxoCNr3XD968p11kQ5zEAgcMC6EGyufEX7zSetAJcFE8
+         jgzEH8djQnI8Qe0OPrwTbLQU3jO6L3D3h+fVPhGTacI3gVmTPn2MKX2PIXnd6On+mIt+
+         rbl/AMBeqUs/HhInBbHP00NVpoinuzmitr1xmCkMZWjmggShuHdMlECDKhXSIZNjL1Oi
+         6UUmMM0+4lHBDkvb60dw/NE2FsEpjDvUWw7FWvXTwj2r1Lt9TKFlDWCqlossYuE69WyF
+         VA9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707792137; x=1708396937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rxk9tTynWHUWVnj9UZhwfBhaRWhwkQhpAgLGbZWzgJc=;
-        b=GWHjBH6pz1vs81o+298Ui9ttdRMKIe7vfKNSLEAMFksGVmYKcJHPSajHTMWuVqYe7y
-         f687sPv8sPa56jY/CEfNQlyGcC3KkAKZQxioy9ZxKOaJJ+O0A++GKAZcVxaHjU8JnTO7
-         4g/worB22A0yldxSdHgvMp4R6pAicZyGvMg32wFdkchH+Bo5oPL+8VLK/te+TqY334l4
-         JpYZg3jWqcbuTYhQVQQP58lfSfmDuUsB9XZSpWp1HYtEGaW7Jd6k1Xdg7wHmrkZ+7drf
-         Kzey3DPQddSlqBI+iaowM7CveHh8m56SmjIGbTA+tf8cAGwRLC7kAa/6uwqoD93rUZq/
-         8FPw==
-X-Forwarded-Encrypted: i=1; AJvYcCWnZUG9EZUq9ZjcZQFfd4w9oRV5TIhOVb8PtjpfXL46Aes2S7nls0JpYjHqA2PlWqUM4kUS5/WfMM7rY3HQ5XpFoly8cf7O8jeruVrKpJe9DUE94x+7zguuxAXZs5a7Inhc
-X-Gm-Message-State: AOJu0Ywk6lckl/7FLA7vzPeIlrKvae4AnVPozsNrgAwwcf00ghl3rOOm
-	sOO+YLhqfyZ0eEG9dt5C3rDThPD5X0V5tE2eubA0KUtHlZ6SIzycGMf5dg5MwdaDOvQYrEEhQcE
-	ZC+Jx64+6S4mVjcdSm+NyS6QhSSI=
-X-Google-Smtp-Source: AGHT+IHtztV834P91o8nikwmI9WOia8raU0tU6uGzvQQMfDeYO1FL4vchpLUrS1j73DWy/WlKhq5Sc1ooP1iFZyiVX8=
-X-Received: by 2002:a5d:5f93:0:b0:33a:e6e4:945d with SMTP id
- dr19-20020a5d5f93000000b0033ae6e4945dmr8307057wrb.2.1707792137151; Mon, 12
- Feb 2024 18:42:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707792384; x=1708397184;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fa6JPy2ikfqnkDj89yS4RCnJk+0NDmtRigU+S/WJCr8=;
+        b=B4yr4tuwa+GqFuLhYQlUkVDw084ZSFW+GyqgjFfNiiiPUG2gkJecZomFNJR1cUeUvK
+         zqwy6r2OzcfEWXw0EpV+wdmzNPrrBLVlL8DQzQn6A3yri0bDVUtAHSOyquyDC52lhYKT
+         0nctBR/oP6/hN8sZq5e1QYPLStaa73vgLj+hNDmDU0DbflplWtqdbfId9aO8jUJOkFo2
+         MfgFZEVoMp0AJ0UoQWvdhUU3bohqNuHo6PIffomDUmNJEC5LYQqkhQQCeVxIMMHENar7
+         jzhN0K90OZWymCZtcyMShDz4ntZVd8MJWVi6gWlL5Y7USZl2dgFePVBnhUBcr1lcBvYX
+         LCPg==
+X-Gm-Message-State: AOJu0YyiB0nuujX80dLP8j9RjlgPdP8Ix7l2NPiJjob1GDg8RcNNqIWw
+	99zSwDduKBMi4RanCVIm3vGew2KaKHbe2s+3fyxgZqf1bWsYPfJFGufyOunzJBT25d9QOSPaXIj
+	4gQ==
+X-Google-Smtp-Source: AGHT+IG/ZSnLAURqx4lnOTAhY5bAE9qh5urnqzGu6F6ugq7mMYh8QI//JZSqfEiPz4iWnQgtIf0dTS0PHII=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d603:0:b0:607:7901:425b with SMTP id
+ y3-20020a0dd603000000b006077901425bmr340812ywd.0.1707792384492; Mon, 12 Feb
+ 2024 18:46:24 -0800 (PST)
+Date: Mon, 12 Feb 2024 18:46:23 -0800
+In-Reply-To: <CABgObfaum2=MpXE2kJsETe31RqWnXJQWBQ2iCMvFUoJXJkhF+w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240122062535.8265-1-khuey@kylehuey.com> <CAP045Apecy=G_Wmcw6TMjSDfa3TbkMfFVkzGDJ9xTVksCLkZ0w@mail.gmail.com>
-In-Reply-To: <CAP045Apecy=G_Wmcw6TMjSDfa3TbkMfFVkzGDJ9xTVksCLkZ0w@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 12 Feb 2024 18:42:05 -0800
-Message-ID: <CAADnVQ+tRwMZiPa9Zrf6nD22dfF9MAiqv-1ML5Z2pELFNKa9KQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] Combine perf and bpf for fast eval of hw
- breakpoint conditions
-To: Kyle Huey <me@kylehuey.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20240209183743.22030-1-pbonzini@redhat.com> <ZcZ_m5By49jsKNXn@google.com>
+ <CABgObfaum2=MpXE2kJsETe31RqWnXJQWBQ2iCMvFUoJXJkhF+w@mail.gmail.com>
+Message-ID: <ZcrX_4vbXNxiQYtM@google.com>
+Subject: Re: [PATCH 00/10] KVM: SEV: allow customizing VMSA features
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
+	aik@amd.com, isaku.yamahata@intel.com
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 8:37=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote:
->
-> On Sun, Jan 21, 2024 at 10:25=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrot=
-e:
+On Fri, Feb 09, 2024, Paolo Bonzini wrote:
+> On Fri, Feb 9, 2024 at 8:40=E2=80=AFPM Sean Christopherson <seanjc@google=
+com> wrote:
+> > On Fri, Feb 09, 2024, Paolo Bonzini wrote:
+> > > The idea that no parameter would ever be necessary when enabling SEV =
+or
+> > > SEV-ES for a VM was decidedly optimistic.
 > >
-> > rr, a userspace record and replay debugger[0], replays asynchronous eve=
-nts
-> > such as signals and context switches by essentially[1] setting a breakp=
-oint
-> > at the address where the asynchronous event was delivered during record=
-ing
-> > with a condition that the program state matches the state when the even=
-t
-> > was delivered.
-> >
-> > Currently, rr uses software breakpoints that trap (via ptrace) to the
-> > supervisor, and evaluates the condition from the supervisor. If the
-> > asynchronous event is delivered in a tight loop (thus requiring the
-> > breakpoint condition to be repeatedly evaluated) the overhead can be
-> > immense. A patch to rr that uses hardware breakpoints via perf events w=
-ith
-> > an attached BPF program to reject breakpoint hits where the condition i=
-s
-> > not satisfied reduces rr's replay overhead by 94% on a pathological (bu=
-t a
-> > real customer-provided, not contrived) rr trace.
-> >
-> > The only obstacle to this approach is that while the kernel allows a BP=
-F
-> > program to suppress sample output when a perf event overflows it does n=
-ot
-> > suppress signalling the perf event fd or sending the perf event's SIGTR=
-AP.
-> > This patch set redesigns __perf_overflow_handler() and
-> > bpf_overflow_handler() so that the former invokes the latter directly w=
-hen
-> > appropriate rather than through the generic overflow handler machinery,
-> > passes the return code of the BPF program back to __perf_overflow_handl=
-er()
-> > to allow it to decide whether to execute the regular overflow handler,
-> > reorders bpf_overflow_handler() and the side effects of perf event
-> > overflow, changes __perf_overflow_handler() to suppress those side effe=
-cts
-> > if the BPF program returns zero, and adds a selftest.
-> >
-> > The previous version of this patchset can be found at
-> > https://lore.kernel.org/linux-kernel/20240119001352.9396-1-khuey@kylehu=
-ey.com/
-> >
-> > Changes since v4:
-> >
-> > Patches 1, 2, 3, 4 added various Acked-by.
-> >
-> > Patch 4 addresses additional nits from Song.
-> >
-> > v3 of this patchset can be found at
-> > https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kyleh=
-uey.com/
-> >
-> > Changes since v3:
-> >
-> > Patches 1, 2, 3 added various Acked-by.
-> >
-> > Patch 4 addresses Song's review comments by dropping signals_expected a=
-nd the
-> > corresponding ASSERT_OKs, handling errors from signal(), and fixing mul=
-tiline
-> > comment formatting.
-> >
-> > v2 of this patchset can be found at
-> > https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehu=
-ey.com/
-> >
-> > Changes since v2:
-> >
-> > Patches 1 and 2 were added from a suggestion by Namhyung Kim to refacto=
-r
-> > this code to implement this feature in a cleaner way. Patch 2 is separa=
-ted
-> > for the benefit of the ARM arch maintainers.
-> >
-> > Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleane=
-r
-> > implementation thanks to the earlier refactoring.
-> >
-> > Patch 4 is v2's patch 3, and addresses review comments about C++ style
-> > comments, getting a TRAP_PERF definition into the test, and unnecessary
-> > NULL checks.
-> >
-> > [0] https://rr-project.org/
-> > [1] Various optimizations exist to skip as much as execution as possibl=
-e
-> > before setting a breakpoint, and to determine a set of program state th=
-at
-> > is practical to check and verify.
->
-> Since everyone seems to be satisfied with this now, can we get it into
-> bpf-next (or wherever) for 6.9?
+> > That implies there was a conscious decision regarding the uAPI.  AFAICT=
+, all of
+> > the SEV uAPIs are direct reflections of the PSP invocations.  Which is =
+why I'm
+> > being so draconian about the SNP uAPIs; this time around, we need to ac=
+tually
+> > design something.
+>=20
+> You liked that word, heh? :) The part that I am less sure about, is
+> that it's actually _possible_ to design something.
+>=20
+> If you end up with a KVM_CREATE_VM2 whose arguments are
+>=20
+>    uint32_t flags;
+>    uint32_t vm_type;
+>    uint64_t arch_mishmash_0; /* Intel only */
+>    uint64_t arch_mishmash_1; /* AMD only */
+>    uint64_t arch_mishmash_2; /* Intel only */
+>    uint64_t arch_mishmash_3; /* AMD only */
+>=20
+> and half of the flags are Intel only, the other half are AMD only...
+> do you actually gain anything over a vendor-specific ioctl?
 
-The changes look fine, but since they change perf side we need
-perf maintainer's ack-s before we can land the patches.
-And none of them were cc-ed.
-So please resend the whole set and cc
-PERFORMANCE EVENTS SUBSYSTEM
-M:      Peter Zijlstra <peterz@infradead.org>
-M:      Ingo Molnar <mingo@redhat.com>
-M:      Arnaldo Carvalho de Melo <acme@kernel.org>
-M:      Namhyung Kim <namhyung@kernel.org>
+Sane, generic names.  I agree the code gains are likely negligible, but for=
+ me
+at least, having KVM-friendly names for the commands would be immensely hel=
+pful.
+E.g. for KVM_CREATE_VM2, I was thinking more like:
+
+  __u32 flags;
+  __u32 vm_type;
+  union {
+	struct tdx;
+	struct sev;
+	struct sev_es;
+	struct sev_snp;
+	__u8 pad[<big size>]
+  };
+
+Rinse and repeat for APIs that have a common purpose, but different payload=
+s.
+
+Similar to KVM_{SET,GET}_NESTED_STATE, where the data is wildly different, =
+and
+there's very little overlap between {svm,vmx}_set_nested_state(), I find it=
+ quite
+valuable to have a single set of APIs.  E.g. I don't have to translate betw=
+een
+VMX and SVM terminology when thinking about the APIs, when discussing them,=
+ etc.
+
+That's especially true for all this CoCo goo, where the names are ridiculou=
+sly
+divergent, and often not exactly intuitive.  E.g. LAUNCH_MEASURE reads like
+"measure the launch", but surprise, it's "get the measurement".
+
+> Case in point being that the SEV VMSA features would be one of the
+> fields above, and they would obviously not be available for TDX.
+>=20
+> kvm_run is a different story because it's the result of mmap, and not
+> a ioctl. But in this case we have:
+>=20
+> - pretty generic APIs like UPDATE_DATA and MEASURE that should just be
+> renamed to remove SEV references. Even DBG_DECRYPT and DBG_ENCRYPT
+> fall in this category
+>=20
+> - APIs that seem okay but may depend on specific initialization flows,
+> for example LAUNCH_UPDATE_VMSA. One example of the problems with
+> initialization flows is LAUNCH_FINISH, which seems pretty tame but is
+> different between SEV{,-ES} and SNP. Another example could be CPUID
+> which is slightly different between vendors.
+>=20
+> - APIs that are currently vendor-specific, but where a second version
+> has a chance of being cross-vendor, for example LAUNCH_SECRET or
+> GET_ATTESTATION_REPORT. Or maybe not.
+
+AFAICT, LAUNCH_SECRET (a.k.a. LAUNCH_UPDATE_SECRET) and GET_ATTESTATION_REP=
+ORT
+shouldn't even be a KVM APIs.  Ditto for LAUNCH_MEASURE, and probably other=
+ PSP
+commands.  IIUC, userspace has the VM's firmware handle, I don't see why KV=
+M
+needs to be a middle-man.
+
+> - others that have no hope, because they include so many pieces of
+> vendor-specific data that there's hardly anything to share. INIT is
+> one of them. I guess you could fit the Intel CPUID square hole into
+> AMD's CPUID round peg or vice versa, but there's really little in
+> common between the two.
+>=20
+> I think we should try to go for the first three, but realistically
+> will have to stop at the first one in most cases. Honestly, this
+> unified API effort should have started years ago if we wanted to go
+> there. I see where you're coming from, but the benefits are marginal
+> (like the amount of userspace code that could be reused) and the
+> effort huge in comparison.
+
+The effort doesn't seem huge, so long as we don't try to make the parameter=
+s
+common across vendor code.  The list of APIs doesn't seem insurmountable (n=
+ote,
+I'm not entirely sure these are correct mappings):
+
+  create
+  init VM   (LAUNCH_START / TDH.MNG.INIT)
+  update    (LAUNCH_UPDATE_DATA / TDH.MEM.PAGE.ADD+TDH.MR.EXTEND)
+  init vCPU (LAUNCH_UPDATE_VMSA / TDH.VP.INIT)
+  finalize  (LAUNCH_FINISH / TDH.MR.FINALIZE)
 
