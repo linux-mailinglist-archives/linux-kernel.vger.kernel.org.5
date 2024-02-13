@@ -1,165 +1,142 @@
-Return-Path: <linux-kernel+bounces-63179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 596C7852BF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:09:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30108852BF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D77C61F21D02
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:09:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6258F1C22F1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C67A5210FE;
-	Tue, 13 Feb 2024 09:09:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A765921100;
+	Tue, 13 Feb 2024 09:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="M2JZ3glv"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="k3WNDCip"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B2B1799D;
-	Tue, 13 Feb 2024 09:09:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8E91B273;
+	Tue, 13 Feb 2024 09:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707815351; cv=none; b=j25IvJl3p1PV1VsfC3qWiA4MlwDhsbXYt5imfb+LqSEKtP+/xYP66mr+h6oAsIP3I5B0IsNAVNih0QQFWb9ovf5E1hw7oKRHedWGHPAnzbALxJ0ffuKSftZQRNa7qk2CEhIGGsnlXYHUtIQYigkmYNlZl0iqwYJL1xXU4GH0hns=
+	t=1707815429; cv=none; b=WxxLRrIWWJJcbr8AK4z8O1lkAdpiZLp51FDCN7SV/ltoR6bHxkog1r4l1VhlGXqimps33XMEUCMANcEzks04kwVLBF3TgkBfSvP5MgQO+hQ7PA0/2yxl9onICYlF2FtAp+yNMryt2UpBTRpPj1wHXFluDcHnBt85oPCICBk18L8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707815351; c=relaxed/simple;
-	bh=fp9FGluwMSXxSuqD4GvNc9fG6fxLNPpYbuY+L6o9QAU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bDoQVDmt9PXBLBSWWxeTwg+GiZf9Pu4N6Naaxl3Tv6cuMsUACr3jfJeg8DXFu63v5w5gDMhSRqnXIJ2cppGIyIuDZbDoIN46eFwz6JHiZvY5eT6C3k2FIJkbAeFhXeXFYo0PKzNRzUke59MLQKrLzVsFTib27ZXmZ96v6vS2o/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=M2JZ3glv; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707815347;
-	bh=fp9FGluwMSXxSuqD4GvNc9fG6fxLNPpYbuY+L6o9QAU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=M2JZ3glvC7qhQgMUEee6dMUQpQy4grZJc7duZhsoSxfLjpVAgIbyCiZVLPAGeDaWu
-	 CWxjEcWAv29bG0mkxPSJWzzHqCS+yrC0fW/iXJwux1TBAqG5wft9Id8nkh7PoEopeQ
-	 xWgttt3GZ/dy+vUx8wRXHXmUJFkKv7dqDHAI8IMipIRNhfMIoslcmE3wCbP1mLRfbk
-	 PTrN/ADI8YYQtTF07p/QUutDhR4FqXL2l5mQc6QuMQZ6DkBLtw6eelM0TUgOgtCQnQ
-	 T7NKpFXMPG5cEUkuBKsjmjXVpfaE9at9ckJV4dDxgJAwVD/uAF33lrGGwTVVZk4Mig
-	 xkJb5z5jRmfjQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6EE023781FEF;
-	Tue, 13 Feb 2024 09:09:06 +0000 (UTC)
-Message-ID: <6429a878-af3c-4182-b65f-60e1c0afccc5@collabora.com>
-Date: Tue, 13 Feb 2024 10:09:05 +0100
+	s=arc-20240116; t=1707815429; c=relaxed/simple;
+	bh=R8R7lZbqyir1X5V99j2RDN+30uNU2eW0kHTHyCiLY44=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=k/ARKlWbDacaI27n8JayyUCNOBBW5aFbaibd2tbn9VY18gw+Uf6NPkDyv1zcAfVlLOforXNWVRFq+tS0IwIZt2LiFXVvoN0hh6IIyLUbC/0up8hldSv9bMOKrzyZIR/803xEq1bBJrRhsENJNN+wC7B4Yx7ZU8jbFehFTa2Ekz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=k3WNDCip; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41D90DcC024107;
+	Tue, 13 Feb 2024 09:10:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=50qwoBL1qZUcAT1DGTn4Ldk2t5cnvbQ47VWB0Xov2Ag=; b=k3
+	WNDCipSlVk/SSLwh7LmBCCTV2oUzK9QxNxIWKdrUiFlvvmIsVDIKBfunERblcIFH
+	faaQi4JQvEIrFOTL3ukgpwrG8CDGM5BQfWc7IxFvn5X+0GwiSfb0f/+vZRJ1vLNy
+	4shQMdWQfohXjM+rPJ93KFATaAHZtLnR0R2ZutF2Uk3vbSzu7qVRMHCwLBqz6oxj
+	DvBuyVRihkheHh09mg19JzUvKfvlPw4+M2qARymF8Wen7LQ9V4KyvcoZxZTWVyut
+	mkL1RyZA0SzpaCo+bn1hKAi/9xZZgrAFEzqSbZaRZdJLVKj+v32KHGbgb0f7lXp9
+	xlbInF9TecfIv2CRq1IA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7gse2hgt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 09:10:09 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D9A8Ea032524
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 09:10:08 GMT
+Received: from [10.214.66.164] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 13 Feb
+ 2024 01:10:05 -0800
+Message-ID: <50d61d66-e17c-55b9-23f4-ceea93e81e68@quicinc.com>
+Date: Tue, 13 Feb 2024 14:40:02 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: mediatek: mt8186: Add missing clocks to ssusb
- power domains
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mm/huge_memory: fix swap entry values of tail pages of
+ THP
+To: Matthew Wilcox <willy@infradead.org>
+CC: <gregkh@linuxfoundation.org>, <akpm@linux-foundation.org>,
+        <vbabka@suse.cz>, <dhowells@redhat.com>, <david@redhat.com>,
+        <surenb@google.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        #
+ see patch description <stable@vger.kernel.org>
+References: <1707814102-22682-1-git-send-email-quic_charante@quicinc.com>
+ <ZcsuLLhNPPylU-hi@casper.infradead.org>
 Content-Language: en-US
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Chen-Yu Tsai <wenst@chromium.org>,
- Eugen Hristev <eugen.hristev@collabora.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Allen-KH Cheng <allen-kh.cheng@mediatek.com>, kernel@collabora.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240212-mt8186-ssusb-domain-clk-fix-v1-1-26cb98746aa3@collabora.com>
- <985e1a4f-c538-4a9d-be58-2c688aa7350c@notapiano>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <985e1a4f-c538-4a9d-be58-2c688aa7350c@notapiano>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Charan Teja Kalla <quic_charante@quicinc.com>
+In-Reply-To: <ZcsuLLhNPPylU-hi@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: bYcMl3QYj68A3s_ZMeMrEvrIklLd6DO1
+X-Proofpoint-ORIG-GUID: bYcMl3QYj68A3s_ZMeMrEvrIklLd6DO1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-13_04,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 spamscore=0 clxscore=1015 phishscore=0
+ malwarescore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402130071
 
-Il 12/02/24 22:53, Nícolas F. R. A. Prado ha scritto:
-> On Mon, Feb 12, 2024 at 04:32:44PM -0500, Nícolas F. R. A. Prado wrote:
->> The ssusb power domains currently don't list any clocks, despite
->> depending on some, and thus rely on the bootloader leaving the required
->> clocks on in order to work.
->>
->> When booting with the upstream arm64 defconfig, the power domain
->> controller will defer probe until modules have loaded since it has an
->> indirect dependency on CONFIG_MTK_CMDQ, which is configured as a module.
->> However at the point where modules are loaded, unused clocks are also
->> disabled, causing the ssusb domains to fail to be enabled and
->> consequently the controller to fail probe:
->>
->> mtk-power-controller 10006000.syscon:power-controller: /soc/syscon@10006000/power-controller/power-domain@4: failed to power on domain: -110
->> mtk-power-controller: probe of 10006000.syscon:power-controller failed with error -110
->>
->> Add the missing clocks to the ssusb power domains so the power
->> controller can boot without relying on bootloader state.
->>
->> Fixes: d9e43c1e7a38 ("arm64: dts: mt8186: Add power domains controller")
->> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
->> ---
->>   arch/arm64/boot/dts/mediatek/mt8186.dtsi | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->> index adaf5e57fac5..02f33ec3cbd3 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->> +++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->> @@ -931,11 +931,19 @@ power-domain@MT8186_POWER_DOMAIN_CSIRX_TOP {
->>   
->>   				power-domain@MT8186_POWER_DOMAIN_SSUSB {
->>   					reg = <MT8186_POWER_DOMAIN_SSUSB>;
->> +					clocks = <&topckgen CLK_TOP_USB_TOP>,
->> +						 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_REF>,
->> +						 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_XHCI>;
->> +					clock-names = "sys_ck", "ref_ck", "xhci_ck";
->>   					#power-domain-cells = <0>;
->>   				};
->>   
->>   				power-domain@MT8186_POWER_DOMAIN_SSUSB_P1 {
->>   					reg = <MT8186_POWER_DOMAIN_SSUSB_P1>;
->> +					clocks = <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_P1_SYS>,
->> +						 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_P1_REF>,
->> +						 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_P1_XHCI>;
->> +					clock-names = "sys_ck", "ref_ck", "xhci_ck";
-> 
-> I forgot to mention this here, but the XHCI clock wasn't needed to get the power
-> domains to work per se, but leaving it out caused issues when probing the mtu3
-> devices:
-> <3>[   15.431506] mtu3 11201000.usb: clks of sts1 are not stable!
-> <3>[   15.443965] mtu3 11201000.usb: device enable failed -110
-> <3>[   15.454306] mtu3 11201000.usb: mtu3 hw init failed:-110
-> <3>[   15.463865] mtu3 11201000.usb: failed to initialize gadget
-> <4>[   15.477890] mtu3: probe of 11201000.usb failed with error -110
-> 
-> <3>[   15.514603] mtu3 11281000.usb: clks of sts1 are not stable!
-> <3>[   15.525239] mtu3 11281000.usb: device enable failed -110
-> <3>[   15.614174] mtu3 11281000.usb: mtu3 hw init failed:-110
-> <3>[   15.619647] mtu3 11281000.usb: failed to initialize gadget
-> <4>[   15.630623] mtu3: probe of 11281000.usb failed with error -110
-> 
-> Not sure if this issue should be handled separately (maybe the mtu3 device
-> should enable the XHCI clock?), but I opted to include the clock here to get
-> boot working for this device at once.
-> 
+Thanks Matthew!!
 
-Hey Nicolas,
-As you just said: having the XHCI clock in the power domain is wrong :-)
+On 2/13/2024 2:24 PM, Matthew Wilcox wrote:
+> I am deeply confused by this commit message.
+> 
+> Are you saying there is a problem in current HEAD which this fixes, or
+> are you saying that this problem has already been fixed, and this patch
+> is for older kernels?
 
-Almost comically, the MTU3 binding already supports having a XHCI clock
-named "xhci_ck" after "dma_ck"... so the solution is to add the TOP_XHCI
-clock in the mtu3 node and that's it. Do not remove it from the children.
+Sorry, I meant this patch is __only for older kernels__. We are seeing
+this issue on 6.1 LTS kernel.
 
-mtu3-node-at-somewhere {
-		clocks = <&topckgen CLK_TOP_USB_TOP>,
-			 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_REF>,
-			 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_HCLK>,
-			 <&infracfg_ao CLK_INFRA_AO_ICUSB>,
-			 <&infracfg_ao CLK_INFRA_AO_SSUSB_TOP_XHCI>;
-		clock-names = "sys_ck", "ref_ck", "mcu_ck", "dma_ck", "xhci_ck";
+At least I am not expecting this issue on the HEAD of the linux-next branch.
+
+Seems the below message is not clear from my side to say that:
+a) why this issue won't be seen on the latest kernel and
+b) the problems associated with the respective patches in back porting
+to LTS branch?
+
+"On the recent kernels, this issues is indirectly getting fixed with the
+series[1], to be specific[2].
+
+When tried to back port this series, it is observed many merge
+conflicts and also seems dependent on many other changes. As backporting
+to LTS branches is not a trivial one, the similar change from [2] is
+picked as a fix.
+
+[1] https://lore.kernel.org/all/20230821160849.531668-1-david@redhat.com/
+[2] https://lore.kernel.org/all/20230821160849.531668-5-david@redhat.com/"
+
+IOW, the below couple of line is ensuring the proper swap entry is
+stored in the tail pages which is somehow missed on the older kernels.
+
+static void __split_huge_page_tail(struct folio *folio, int tail,
+ 		struct lruvec *lruvec, struct list_head *list)
+{
+     .............
++	if (folio_test_swapcache(folio))
++		new_folio->swap.val = folio->swap.val + tail;
+     .............
 }
 
-Waiting for a v2...
-
-Cheers,
-Angelo
+Thanks.
 
