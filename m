@@ -1,192 +1,255 @@
-Return-Path: <linux-kernel+bounces-63837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2E62853545
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:53:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F8A385354A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:53:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 135E21C22E76
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:53:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BEEA1F217FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE545F859;
-	Tue, 13 Feb 2024 15:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5CB35F56B;
+	Tue, 13 Feb 2024 15:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MtvDxhL+"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="SeXgpPJS"
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EFF65F575
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E77C5F476
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707839587; cv=none; b=tzhw9GBf+JRwOztSw+zV0m+m9XQ6j6Z1xd1Ry0CtRYpr8LrMAh6gE5XIE0aV5YWgEyvTcbSk+ZamP1aSs6cRS4R/OVBszzCb39oQaP9Kvv1ZPgEgKBaVsoVpv4sMq5jhUdb+msWntq/Bs3jPhYIWAHYDXleHo3f8ERNcHYxw2Yw=
+	t=1707839597; cv=none; b=WQuuUC6sw3/SvmaNPrxvz4rc24seoSBXNiTL5fGYoI4K1m7brzQinfR6vMMcpWoEyEOXuBWVTA5wWr6g9qvcHWDdM324RYG8HQsexxXgkL6u7LYDllct388w8zcMswa13pRghEoUAH3padRw0Ff/lRrzWp8OgtTMh3wpX//M89c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707839587; c=relaxed/simple;
-	bh=9A1aL1knmmwJVorj88nXW9OtdjLYNUKnXWl0BQKd3Ks=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GkFykBAP86DxmyaZCEUYVc9zGnPrJ7BpML6XooIR+2EPgOl8ZGOrRgKrOPguEGBq8IMMgoobQNN/v/br3tuZcJjE9wlH+t12Gbsnp+k55l7lBg3urMwWiODz6CBfJtmPs2wOHWhh3wLbYrVUu+/RTniTL1TC3qEwKPJ/eeuzeo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MtvDxhL+; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-561f0f116ecso11269a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:53:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707839583; x=1708444383; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XBXU1a0C1GpqZ/Yh6XHCPcPsqtZQLKwjO20TKE3Arqc=;
-        b=MtvDxhL+Dv+2hyfcuuBkK78bTBhM8FfextBcZIxytdEiWQEgC1Y99i1cSR6iB6zg/D
-         RnxU8E4b/Db3z3FT1Hok1qS2/uQSWTTb5oHtD4U1uyVO8xREFmEx6AxUJ6cPK/2OJEbM
-         gZUpawNo1bC37nabqUOreN1Zl1FwIlu2qHbGAoA5KeONGYsgBBWkm2uz9a4N7osjuFYO
-         IBraaTw+pVYTgCwuFLeL7+QmkkVtOkzy6LCUhV2rhEkQCHW0N/41NnQAQ8Xeax4xJY5k
-         f2wFuRjRoOobP01Upx3WGkKOHJZRvimLdssbJvGtORWgAqHVBbt1dA0MiQqV5CNd96HQ
-         kw6w==
+	s=arc-20240116; t=1707839597; c=relaxed/simple;
+	bh=bxnK+PIwuuQWPaJLyrZQzzOgAP+DAixzsuRNg/XrAps=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fWVqVWQPh8VFjjP41ME8smIBNnd33TP+75niQGQeOSvPAfIETYdyFQl5d9enuJWGBmSoyu6k1EVzX2gdjh0spJR57W7ISVPzCLawekoEQo3oDp3XZp+nkufp7va2wAixZ65HDb/Ucm8pua43qdH17L5bpaEB1ynpbpJuU4qgK6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=SeXgpPJS; arc=none smtp.client-ip=185.125.188.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CD2A53F186
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:53:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1707839592;
+	bh=q5WAT9xlsrwi7nU49VclyEz1XabNb44H4w1xGoGEwPc=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=SeXgpPJSTS6ALCD6UgkKT5pXqwKZ3e37YNF3YMHCYS76qRmLU/A0M/F2eH/XSxDiX
+	 nYq7HqlXPTRPC+O2zbRfdkl57FhLwr3kVppeQkMEpB3/saA5mAchLjHlIhI+0BZbmw
+	 p8c/zuHHnckdQXZGtJzQ7OLBLrZMf526vX5jOWFGSHXa2PVCFuacJERqVWylqKga0D
+	 1DRzM0LDDIPpqyiSjGBXgCikddNAoL+PYiOTbQLV6ny/Dgp4xYi0y40vFP57uRy3IH
+	 As4aFZGteKNxfSL08E2QqR343ICTiF3i1Hztjlobo83Ype91sGScS2FolqHYklIfH9
+	 CiFQ3hTdl/9UA==
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-42bff6e8630so45471591cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:53:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707839583; x=1708444383;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XBXU1a0C1GpqZ/Yh6XHCPcPsqtZQLKwjO20TKE3Arqc=;
-        b=JjxzezJocT3c/esKxCkTKDSd+ZSD7Iwv0/m3ynTWuFxy5Ktm+ViIW8S8MaUIJcieIj
-         zeWk6Xy5U2JTTA4qqugWUz/2S2QQjr61AQbk0cIX4JWx/c/GH1QFOK/daw8cEDG8C88f
-         eZCw92hRVWQg0v0/JNllMU7zDOuw+B7eZbj4nyaauxGbylilAapqeXW/XIreI48KJfc1
-         XLDU8vlvNdMoDvNHjwKvS8UUD4SZIlLqfyRc53XtCYVJxTQ6VOqHi6sjEPhwGNgRO7qS
-         0UOHhGEYhJ1+DLfMBkBrPftXBjdFBx48pAmwMOpDKEEJCmO9YgkeWwpNYy6HFBL1QJUb
-         El0g==
-X-Forwarded-Encrypted: i=1; AJvYcCVGT2f8EleJaRp8rYYgp5D7FU0dr3fBBdFv7AvPxXKiqFDTvkalBy1/xec/KcR4k8Y0VNuWJwZzVHRH/VPZpw3AWryfMoZqYyxbMP/8
-X-Gm-Message-State: AOJu0YwOVVLg4xN3v1PusDfvX+BEQoIoqoSFxqQVZ7/6Bb3Q5DJG7I2M
-	NqcEamS1FV1D1z9l5kkI4vGSAZIw0ashOEheHid7j46ZU9Tu4njSYmw4k5kiI3M3q+bSLOvy+B2
-	KbgEsBRxAU9RVbTU7drpez384yEvhIQ9FG75+
-X-Google-Smtp-Source: AGHT+IHO4nXHXvIeiK2c1XPlkV5MqBQcEx/6pbzTc8rR72I7ntPP6rrE8mRSCDELaXel/6Zxu9D7gKkN/LWr+JpZIgM=
-X-Received: by 2002:a50:9f08:0:b0:561:e7d8:50a8 with SMTP id
- b8-20020a509f08000000b00561e7d850a8mr5534edf.0.1707839583026; Tue, 13 Feb
- 2024 07:53:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707839591; x=1708444391;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q5WAT9xlsrwi7nU49VclyEz1XabNb44H4w1xGoGEwPc=;
+        b=mtp9VLeynQvzkwnYWPemyf8ONe9YXwP8TZI3WjfEfbOoVzMPdlyNM3TnAYD+6TRhGg
+         ecBpaag0MaYsQ/6rPmuP7OWKI++4ETpaJj53kmbHQUyNtdtyZJ0foEaChDJhBJoU5IdO
+         xhdPigEXNSnmokfoT3RbWNfjanLT1yOWt9vB0o83hlUlKnByipOc2fChMZ4q/LFeuE+G
+         v8Zkbe4VPW6ReTCslve0D5tQU/tMQuMp7j3CnyjsgtUpSsKTJ2OSbGw7K2R4D82XPhtl
+         81g51WBLAxycoJzpKpAjT2RNiaRrZ9BQGyhznUGC8lESgOoCalhTRqwhLn5R3f3xB/3U
+         y64g==
+X-Forwarded-Encrypted: i=1; AJvYcCWBuRhhoBW4kiQRZzUStC8/5/z5tPKP5oOsTwdybEYnSY9irjzkelLUE6OI6SOMFhIxCS5GxolF1ONweGyqEWUnxiozLWsQtkz7cUrc
+X-Gm-Message-State: AOJu0Yz1Uf07RdtkKM3N6FdFe/m9rrmuI1JMT0/54CZc8vivaMN4dzSO
+	DIqBZxc/dMHNv1aufCP/i6cJOAAZZPwvnEYi/VMPFenJpzAk/7Zqic3HmoGySo8AXAJlqZjtkJJ
+	13VZ9jTtxrGjEUBHQWKZm6KHNRX9TJCAwtZjTvn+tVlIGqqGbLwhHyjUhO0oqeCzTLrbWel+TJi
+	vIJ7q6rV0Uy0GQf1Z0KKlUMWTX4hR+Bta8PWg7YjNiNewfj4ZcqyBCxeMZfAD/
+X-Received: by 2002:a05:622a:10b:b0:42d:b08a:989a with SMTP id u11-20020a05622a010b00b0042db08a989amr1485779qtw.12.1707839591460;
+        Tue, 13 Feb 2024 07:53:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHeTEwmPdBmetgPyADcrTQz1p1Sm+PlqQJKgFlYISYShQDJYai6tEyxiizFvBKTYZWmTi1/3o6xjC8oXx9AJW0=
+X-Received: by 2002:a05:622a:10b:b0:42d:b08a:989a with SMTP id
+ u11-20020a05622a010b00b0042db08a989amr1485761qtw.12.1707839591207; Tue, 13
+ Feb 2024 07:53:11 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 13 Feb 2024 07:53:10 -0800
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20240213143105.2418044-1-ericchancf@google.com>
+References: <20240213142632.2415127-1-ericchancf@google.com> <20240213143105.2418044-1-ericchancf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240203190927.19669-1-petr@tesarici.cz> <ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net>
- <Zct5qJcZw0YKx54r@xhacker> <CANn89i+4tVWezqr=BYZ5AF=9EgV2EPqhdHun=u=ga32CEJ4BXQ@mail.gmail.com>
- <20d94512-c4f2-49f7-ac97-846dc24a6730@roeck-us.net>
-In-Reply-To: <20d94512-c4f2-49f7-ac97-846dc24a6730@roeck-us.net>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 13 Feb 2024 16:52:52 +0100
-Message-ID: <CANn89iL1piwsbsBx4Z=kySUfmPa9LbZn-SNthgA+W6NEnojgSQ@mail.gmail.com>
-Subject: Re: [PATCH net v3] net: stmmac: protect updates of 64-bit statistics counters
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Jisheng Zhang <jszhang@kernel.org>, Petr Tesarik <petr@tesarici.cz>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	"open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>, 
-	"moderated list:ARM/STM32 ARCHITECTURE" <linux-stm32@st-md-mailman.stormreply.com>, 
-	"moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	"open list:ARM/Allwinner sunXi SoC support" <linux-sunxi@lists.linux.dev>, Marc Haber <mh+netdev@zugschlus.de>, 
-	Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, stable@vger.kernel.org
+Mime-Version: 1.0
+Date: Tue, 13 Feb 2024 07:53:10 -0800
+Message-ID: <CAJM55Z9MOoZ3A=h4uFaO2hD461U3BMDyWxXLBt0tUdOuJJ5t+g@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] riscv/barrier: Resolve checkpath.pl error
+To: Eric Chan <ericchancf@google.com>, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 4:26=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
-wrote:
->
-> On Tue, Feb 13, 2024 at 03:51:35PM +0100, Eric Dumazet wrote:
-> > On Tue, Feb 13, 2024 at 3:29=E2=80=AFPM Jisheng Zhang <jszhang@kernel.o=
-rg> wrote:
-> > >
-> > > On Sun, Feb 11, 2024 at 08:30:21PM -0800, Guenter Roeck wrote:
-> > > > Hi,
-> > > >
-> > > > On Sat, Feb 03, 2024 at 08:09:27PM +0100, Petr Tesarik wrote:
-> > > > > As explained by a comment in <linux/u64_stats_sync.h>, write side=
- of struct
-> > > > > u64_stats_sync must ensure mutual exclusion, or one seqcount upda=
-te could
-> > > > > be lost on 32-bit platforms, thus blocking readers forever. Such =
-lockups
-> > > > > have been observed in real world after stmmac_xmit() on one CPU r=
-aced with
-> > > > > stmmac_napi_poll_tx() on another CPU.
-> > > > >
-> > > > > To fix the issue without introducing a new lock, split the static=
-s into
-> > > > > three parts:
-> > > > >
-> > > > > 1. fields updated only under the tx queue lock,
-> > > > > 2. fields updated only during NAPI poll,
-> > > > > 3. fields updated only from interrupt context,
-> > > > >
-> > > > > Updates to fields in the first two groups are already serialized =
-through
-> > > > > other locks. It is sufficient to split the existing struct u64_st=
-ats_sync
-> > > > > so that each group has its own.
-> > > > >
-> > > > > Note that tx_set_ic_bit is updated from both contexts. Split this=
- counter
-> > > > > so that each context gets its own, and calculate their sum to get=
- the total
-> > > > > value in stmmac_get_ethtool_stats().
-> > > > >
-> > > > > For the third group, multiple interrupts may be processed by diff=
-erent CPUs
-> > > > > at the same time, but interrupts on the same CPU will not nest. M=
-ove fields
-> > > > > from this group to a newly created per-cpu struct stmmac_pcpu_sta=
-ts.
-> > > > >
-> > > > > Fixes: 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistic=
-s where necessary")
-> > > > > Link: https://lore.kernel.org/netdev/Za173PhviYg-1qIn@torres.zugs=
-chlus.de/t/
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Signed-off-by: Petr Tesarik <petr@tesarici.cz>
-> > > >
-> > > > This patch results in a lockdep splat. Backtrace and bisect results=
- attached.
-> > > >
-> > > > Guenter
-> > > >
-> > > > ---
-> > > > [   33.736728] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > > [   33.736805] WARNING: inconsistent lock state
-> > > > [   33.736953] 6.8.0-rc4 #1 Tainted: G                 N
-> > > > [   33.737080] --------------------------------
-> > > > [   33.737155] inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
-> > > > [   33.737309] kworker/0:2/39 [HC1[1]:SC0[2]:HE0:SE0] takes:
-> > > > [   33.737459] ef792074 (&syncp->seq#2){?...}-{0:0}, at: sun8i_dwma=
-c_dma_interrupt+0x9c/0x28c
-> > > > [   33.738206] {HARDIRQ-ON-W} state was registered at:
-> > > > [   33.738318]   lock_acquire+0x11c/0x368
-> > > > [   33.738431]   __u64_stats_update_begin+0x104/0x1ac
-> > > > [   33.738525]   stmmac_xmit+0x4d0/0xc58
-> > >
-> > > interesting lockdep splat...
-> > > stmmac_xmit() operates on txq_stats->q_syncp, while the
-> > > sun8i_dwmac_dma_interrupt() operates on pcpu's priv->xstats.pcpu_stat=
-s
-> > > they are different syncp. so how does lockdep splat happen.
-> >
-> > Right, I do not see anything obvious yet.
->
-> Wild guess: I think it maybe saying that due to
->
->         inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
->
-> the critical code may somehow be interrupted and, while handling the
-> interrupt, try to acquire the same lock again.
+Eric Chan wrote:
+> The original form would cause checkpath.pl to issue a error.
+> The error message is as follows:
+> ERROR: space required after that ',' (ctx:VxV)
+> +#define __atomic_acquire_fence()       RISCV_FENCE(r,rw)
+>                                                      ^
+> correct the form of RISCV_FENCE and RISCV_FENCE_ASM even if they
+> already exist.
 
-This should not happen, the 'syncp' are different. They have different
-lockdep classes.
+A lot of the changes in this patch fixes lines that was added in the previous
+patches. I'd prefer to add new code correctly and then only fix the remaining
+instances in this patch.
 
-One is exclusively used from hard irq context.
+/Emil
 
-The second one only used from BH context.
+>
+> Signed-off-by: Eric Chan <ericchancf@google.com>
+> ---
+>  arch/riscv/include/asm/atomic.h  |  4 ++--
+>  arch/riscv/include/asm/barrier.h | 18 +++++++++---------
+>  arch/riscv/include/asm/fence.h   |  6 +++---
+>  arch/riscv/include/asm/io.h      |  8 ++++----
+>  arch/riscv/include/asm/mmio.h    |  4 ++--
+>  arch/riscv/include/asm/mmiowb.h  |  2 +-
+>  6 files changed, 21 insertions(+), 21 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/atomic.h b/arch/riscv/include/asm/atomic.h
+> index 1b2ae3259f1d..19050d13b6c1 100644
+> --- a/arch/riscv/include/asm/atomic.h
+> +++ b/arch/riscv/include/asm/atomic.h
+> @@ -18,8 +18,8 @@
+>
+>  #include <asm/cmpxchg.h>
+>
+> -#define __atomic_acquire_fence()	RISCV_FENCE(r,rw)
+> -#define __atomic_release_fence()	RISCV_FENCE(rw,r)
+> +#define __atomic_acquire_fence()	RISCV_FENCE(r, rw)
+> +#define __atomic_release_fence()	RISCV_FENCE(rw, r)
+>
+>  static __always_inline int arch_atomic_read(const atomic_t *v)
+>  {
+> diff --git a/arch/riscv/include/asm/barrier.h b/arch/riscv/include/asm/barrier.h
+> index 4f4743d7440d..880b56d8480d 100644
+> --- a/arch/riscv/include/asm/barrier.h
+> +++ b/arch/riscv/include/asm/barrier.h
+> @@ -19,19 +19,19 @@
+>
+>
+>  /* These barriers need to enforce ordering on both devices or memory. */
+> -#define __mb()		RISCV_FENCE(iorw,iorw)
+> -#define __rmb()		RISCV_FENCE(ir,ir)
+> -#define __wmb()		RISCV_FENCE(ow,ow)
+> +#define __mb()		RISCV_FENCE(iorw, iorw)
+> +#define __rmb()		RISCV_FENCE(ir, ir)
+> +#define __wmb()		RISCV_FENCE(ow, ow)
+>
+>  /* These barriers do not need to enforce ordering on devices, just memory. */
+> -#define __smp_mb()	RISCV_FENCE(rw,rw)
+> -#define __smp_rmb()	RISCV_FENCE(r,r)
+> -#define __smp_wmb()	RISCV_FENCE(w,w)
+> +#define __smp_mb()	RISCV_FENCE(rw, rw)
+> +#define __smp_rmb()	RISCV_FENCE(r, r)
+> +#define __smp_wmb()	RISCV_FENCE(w, w)
+>
+>  #define __smp_store_release(p, v)					\
+>  do {									\
+>  	compiletime_assert_atomic_type(*p);				\
+> -	RISCV_FENCE(rw,w);						\
+> +	RISCV_FENCE(rw, w);						\
+>  	WRITE_ONCE(*p, v);						\
+>  } while (0)
+>
+> @@ -39,7 +39,7 @@ do {									\
+>  ({									\
+>  	typeof(*p) ___p1 = READ_ONCE(*p);				\
+>  	compiletime_assert_atomic_type(*p);				\
+> -	RISCV_FENCE(r,rw);						\
+> +	RISCV_FENCE(r, rw);						\
+>  	___p1;								\
+>  })
+>
+> @@ -68,7 +68,7 @@ do {									\
+>   * instances the scheduler pairs this with an mb(), so nothing is necessary on
+>   * the new hart.
+>   */
+> -#define smp_mb__after_spinlock()	RISCV_FENCE(iorw,iorw)
+> +#define smp_mb__after_spinlock()	RISCV_FENCE(iorw, iorw)
+>
+>  #include <asm-generic/barrier.h>
+>
+> diff --git a/arch/riscv/include/asm/fence.h b/arch/riscv/include/asm/fence.h
+> index ca094d72ec20..5b46f96a3ec8 100644
+> --- a/arch/riscv/include/asm/fence.h
+> +++ b/arch/riscv/include/asm/fence.h
+> @@ -6,9 +6,9 @@
+>  	({ __asm__ __volatile__ (RISCV_FENCE_ASM(p, s) : : : "memory"); })
+>
+>  #ifdef CONFIG_SMP
+> -#define RISCV_ACQUIRE_BARRIER		RISCV_FENCE_ASM(r,rw)
+> -#define RISCV_RELEASE_BARRIER		RISCV_FENCE_ASM(rw,r)
+> -#define RISCV_FULL_BARRIER		RISCV_FENCE_ASM(rw,rw)
+> +#define RISCV_ACQUIRE_BARRIER		RISCV_FENCE_ASM(r, rw)
+> +#define RISCV_RELEASE_BARRIER		RISCV_FENCE_ASM(rw, r)
+> +#define RISCV_FULL_BARRIER		RISCV_FENCE_ASM(rw, rw)
+>  #else
+>  #define RISCV_ACQUIRE_BARRIER
+>  #define RISCV_RELEASE_BARRIER
+> diff --git a/arch/riscv/include/asm/io.h b/arch/riscv/include/asm/io.h
+> index afb5ead7552e..1c5c641075d2 100644
+> --- a/arch/riscv/include/asm/io.h
+> +++ b/arch/riscv/include/asm/io.h
+> @@ -47,10 +47,10 @@
+>   * sufficient to ensure this works sanely on controllers that support I/O
+>   * writes.
+>   */
+> -#define __io_pbr()	RISCV_FENCE(io,i)
+> -#define __io_par(v)	RISCV_FENCE(i,ior)
+> -#define __io_pbw()	RISCV_FENCE(iow,o)
+> -#define __io_paw()	RISCV_FENCE(o,io)
+> +#define __io_pbr()	RISCV_FENCE(io, i)
+> +#define __io_par(v)	RISCV_FENCE(i, ior)
+> +#define __io_pbw()	RISCV_FENCE(iow, o)
+> +#define __io_paw()	RISCV_FENCE(o, io)
+>
+>  /*
+>   * Accesses from a single hart to a single I/O address must be ordered.  This
+> diff --git a/arch/riscv/include/asm/mmio.h b/arch/riscv/include/asm/mmio.h
+> index a708968d4a0f..06cadfd7a237 100644
+> --- a/arch/riscv/include/asm/mmio.h
+> +++ b/arch/riscv/include/asm/mmio.h
+> @@ -132,8 +132,8 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
+>   * doesn't define any ordering between the memory space and the I/O space.
+>   */
+>  #define __io_br()	do {} while (0)
+> -#define __io_ar(v)	RISCV_FENCE(i,ir)
+> -#define __io_bw()	RISCV_FENCE(w,o)
+> +#define __io_ar(v)	RISCV_FENCE(i, ir)
+> +#define __io_bw()	RISCV_FENCE(w, o)
+>  #define __io_aw()	mmiowb_set_pending()
+>
+>  #define readb(c)	({ u8  __v; __io_br(); __v = readb_cpu(c); __io_ar(__v); __v; })
+> diff --git a/arch/riscv/include/asm/mmiowb.h b/arch/riscv/include/asm/mmiowb.h
+> index 3bcae97d4803..52ce4a399d9b 100644
+> --- a/arch/riscv/include/asm/mmiowb.h
+> +++ b/arch/riscv/include/asm/mmiowb.h
+> @@ -7,7 +7,7 @@
+>   * "o,w" is sufficient to ensure that all writes to the device have completed
+>   * before the write to the spinlock is allowed to commit.
+>   */
+> -#define mmiowb()	RISCV_FENCE(o,w)
+> +#define mmiowb()	RISCV_FENCE(o, w)
+>
+>  #include <linux/smp.h>
+>  #include <asm-generic/mmiowb.h>
+> --
+> 2.43.0.687.g38aa6559b0-goog
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
