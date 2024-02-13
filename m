@@ -1,129 +1,125 @@
-Return-Path: <linux-kernel+bounces-63825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 209978534ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:40:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0BA28534F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:41:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C914D1F2B961
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:40:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CEA7282A20
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:41:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36A1B5EE72;
-	Tue, 13 Feb 2024 15:40:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5555EE77;
+	Tue, 13 Feb 2024 15:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U/nfvhss"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iBcRM02X"
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B17C5E3D8;
-	Tue, 13 Feb 2024 15:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15345EE62;
+	Tue, 13 Feb 2024 15:41:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707838839; cv=none; b=p/9jWn0Bw/KDTLsytCOD3LBw0gmdI7dP826jjuQS+wg9QztNN3uEKIwCeCXYce2a5UyURZk5u3EaiAxV+0FyVrwPZzri2kkabANvRJ4omSu+lDkfc0Rv1Lc5ofcyKlz1aTJ6Mlt98rHWE6jDq8Cvfm8GSVYNdBHHlticrx7oG4U=
+	t=1707838871; cv=none; b=QJn5h8rvOkmEjN2aNlVcLEFHV9sEyHf4Mht5pU6crpBNSK5oqXGvEEidIr6ikayv8WPULsjfoz7K8xvU7A2FXJugdsvLS8JMlyjDxiOyZB93tTSMBetfDw5Y/+IKfu8dbI7Pl8KzJWuM5InYKDFmqemiWXrNktioOjB5k7qsucc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707838839; c=relaxed/simple;
-	bh=cSfu80XHbT7znX6NPl5XQnfRKw6aBMa5zx+QbGgMUB0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=An8NsmmQuualme40Rk4e6UayMsAixzuvpLTz0RKn7N0abDM0jCKHITlmqHL66YNkAGg4Z4cp+me2rAsKK+I4NWXG15Sdxpw226sTe9LXvvx+o1m8U2WBBckSSPQvPnz3uW3n4YamKjrrAWZhHIs6XDwR1pUTmWcUSmixv/g2URg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U/nfvhss; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1707838871; c=relaxed/simple;
+	bh=pmt8LBlGQ72tRLTCtSSKT8KBTn44RMC9sRMvMykqm9w=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
+	 In-Reply-To:Content-Type; b=qrwPO8zreOB1UtHp3kfSVRz6W15GjKuAv+ML6TnrtGkPTOCI50JXK+NW8s+5f3aAKGk6K2QMh275OoBd8w0Gz6oZ0n8yI4IOfqMPK34KHjY+dplyCtddTx4kN2x1MujV7bO9jt4bwQNlKTiMmyGKz3wrrcgdjZ4wnEQFA4QhC6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iBcRM02X; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707838837; x=1739374837;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=cSfu80XHbT7znX6NPl5XQnfRKw6aBMa5zx+QbGgMUB0=;
-  b=U/nfvhssVfqdd+Si8DxaGBXiYdQX+3Gh8O0aJXADf6A+21IDlHk0xsnf
-   1d00IbfFEpllUY++6tJAD9uWatLDYv+TNnmWaxTxgc2YCBOkkhq4+beWt
-   Cljld21PpatLuGO14/J89uUv8zdo9wZmrLFcZZbuQWGOTsj2aIGc/oYx/
-   CTajkghgMT84XRRLxK4qLg1hQj8xTiszNzOkKG/B3+4PGKtgZ7MqkpUwU
-   X9SMRfrS4kp/9T5F+tsD8K6+HmJ+HSYurItRfXwqTmgNOzsEjKhfDmpBY
-   3PmTE6PdoKquLzUeqbug6WNpiq5k938ILGsfr1K/+dgJDkDs4infZOvdL
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="436997070"
+  t=1707838869; x=1739374869;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=pmt8LBlGQ72tRLTCtSSKT8KBTn44RMC9sRMvMykqm9w=;
+  b=iBcRM02XJ65txIFqK/Jaw+3L3/aBK3H16TgUZkOCdPyqX6D0YNxu53IX
+   YZbZX3jhZ9CWHtEswPcvGTUkN/mceIsYmncqS+4OghVO9tNJq8MHmevRd
+   dgF+OJqfnfiu+g46U6Q/RAdux8PlfxqShyuV/tw27R/dNkR3NFRl9tziz
+   asOuI3jLPRQwNqQED+AtLDs8L2kFcC60Y+wElZ3BGgkMHlpkOvQdB+u8p
+   PFKfjZiVT8X6Zse6ldUQ480pcigkMk0wv18vLzTScdP/0S5mq3K8IB39h
+   lE5bC4hdRU1pnjTp+qqOB9BXmicocAYtV1Aqt4ld5srVJfK69OsAAH38b
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="436997103"
 X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="436997070"
+   d="scan'208";a="436997103"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 07:40:32 -0800
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 07:41:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935370496"
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935370607"
 X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="935370496"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.113.145]) ([10.246.113.145])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 07:40:31 -0800
-Message-ID: <7d2ca329-2f24-4673-bb8e-a692f5700b61@intel.com>
-Date: Tue, 13 Feb 2024 08:40:30 -0700
+   d="scan'208";a="935370607"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Feb 2024 07:41:07 -0800
+Message-ID: <a715f138-079c-0d45-6bba-ab88097ae678@linux.intel.com>
+Date: Tue, 13 Feb 2024 17:42:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dmaengine: idxd: make dsa_bus_type const
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
 Content-Language: en-US
-To: "Ricardo B. Marliere" <ricardo@marliere.net>,
- Fenghua Yu <fenghua.yu@intel.com>, Vinod Koul <vkoul@kernel.org>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240213-bus_cleanup-idxd-v1-1-c3e703675387@marliere.net>
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240213-bus_cleanup-idxd-v1-1-c3e703675387@marliere.net>
-Content-Type: text/plain; charset=UTF-8
+To: Jan Henrik Weinstock <jan@mwa.re>, mathias.nyman@intel.com,
+ gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: =?UTF-8?Q?Lukas_J=c3=bcnger?= <lukas@mwa.re>
+References: <CANi1PHh4W7KPagKkvZW6cNAQqgAeG3zxaaTJKkg3KiTbsFRMdg@mail.gmail.com>
+ <1b2558f7-94ea-123e-dd3f-b43ecd85c2ef@linux.intel.com>
+ <CANi1PHhY67HZxivA9mCoNXfM4YUOjm=tCZsnhrrcu4E6dqDYUQ@mail.gmail.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: XHCI without USB2 ports
+In-Reply-To: <CANi1PHhY67HZxivA9mCoNXfM4YUOjm=tCZsnhrrcu4E6dqDYUQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
+> Is it so unusual to have an XHCI that has only USB3 ports?
 
+Yes, this is the first one I've heard of.
 
-On 2/13/24 7:43 AM, Ricardo B. Marliere wrote:
-> Since commit d492cc2573a0 ("driver core: device.h: make struct
-> bus_type a const *"), the driver core can properly handle constant
-> struct bus_type, move the dsa_bus_type variable to be a constant
-> structure as well, placing it into read-only memory which can not be
-> modified at runtime.
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> My understanding was that a port can either be USB3 or USB2 (assigned
+> via the Supported Protocol Capability).
 
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> ---
->  drivers/dma/idxd/bus.c  | 2 +-
->  drivers/dma/idxd/idxd.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+Each USB3 host connector has both a USB3 and USB2 port in the Supported
+Protocol Capability.
+See xHCI specification 7.2.2.1 "USB Protocols" note:
+
+"Note: To support USB3 device certification requirements for USB2 user attached
+  devices, USB 2.0 and USB 3.x Supported Protocol Capabilities shall be declared
+  if any USB3 connectors are associated with xHCI Root Hub ports that enable user
+  attached devices. Refer to sections 11.1 and 11.3 in the USB3 spec"
 > 
-> diff --git a/drivers/dma/idxd/bus.c b/drivers/dma/idxd/bus.c
-> index 0c9e689a2e77..b83b27e04f2a 100644
-> --- a/drivers/dma/idxd/bus.c
-> +++ b/drivers/dma/idxd/bus.c
-> @@ -72,7 +72,7 @@ static int idxd_bus_uevent(const struct device *dev, struct kobj_uevent_env *env
->  	return add_uevent_var(env, "MODALIAS=" IDXD_DEVICES_MODALIAS_FMT, 0);
->  }
->  
-> -struct bus_type dsa_bus_type = {
-> +const struct bus_type dsa_bus_type = {
->  	.name = "dsa",
->  	.match = idxd_config_bus_match,
->  	.probe = idxd_config_bus_probe,
-> diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
-> index 47de3f93ff1e..f14a660a2a34 100644
-> --- a/drivers/dma/idxd/idxd.h
-> +++ b/drivers/dma/idxd/idxd.h
-> @@ -516,7 +516,7 @@ static inline void idxd_set_user_intr(struct idxd_device *idxd, bool enable)
->  	iowrite32(reg.bits, idxd->reg_base + IDXD_GENCFG_OFFSET);
->  }
->  
-> -extern struct bus_type dsa_bus_type;
-> +extern const struct bus_type dsa_bus_type;
->  
->  extern bool support_enqcmd;
->  extern struct ida idxd_ida;
-> 
-> ---
-> base-commit: de7d9cb3b064fdfb2e0e7706d14ffee20b762ad2
-> change-id: 20240213-bus_cleanup-idxd-8feaf2af5461
-> 
-> Best regards,
+> This would mean that in order to work correctly with Linux, all XHCIs
+> right now would have to support at least one USB2 port in addition to
+> their USB3 ports.
+
+Yes, that is currently the case.
+But normally each USB3 connector has a matching USB3 and USB2 port pair.
+
+USB 3.2 specification section 11.1 dictates that:
+
+11.1 USB 3.2 Host Support for USB 2.0
+"USB 3.2-capable ports on hosts shall also support USB 2.0 operation in order
+  to enable backward compatibility with USB 2.0 devices. It should be noted,
+  however, that USB 3.2-capable hosts are not required to support Enhanced
+  SuperSpeed operation on all of the ports available on the host, i.e.,
+  some USB 3.2-capable hosts may have a mix of USB 2.0-only and USB 3.2-capable
+  ports."
+
+(Similar statement exists in older USB 3.0 specification)
+
+xHC with just one USB3 port could maybe be possible in some built in SSIC device
+case without user attachable ports, or some setup with several host controllers
+where one handles the USB3 traffic and the other the USB2 traffic of the same USB3
+connector.
+
+Thanks
+Mathias
+
 
