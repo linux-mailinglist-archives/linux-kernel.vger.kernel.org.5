@@ -1,179 +1,104 @@
-Return-Path: <linux-kernel+bounces-63759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5AB5853423
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:04:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0B38853427
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88B271F22F68
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:04:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C681283683
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2DB5FDAA;
-	Tue, 13 Feb 2024 15:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E6B5FDD1;
+	Tue, 13 Feb 2024 15:02:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="szUl72B+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="pB4wlgdE";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="o9IGtX0d";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qKc059pN"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="RW5U5X5J"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CA65F875;
-	Tue, 13 Feb 2024 15:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 959DF58108;
+	Tue, 13 Feb 2024 15:02:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707836546; cv=none; b=o1Jiv+6mFSEbkgBx+fq/yIe1kV16mszOFfXAh8gNGtQ6cyISAvD07HR61SxbxjPdtM0EAzitWzJvIAGFqXCHNFHcow+wogKzNk2qizisjklFJ6uk5qUX0d5hNd2fAQiO10xH1ltDncvaLGiEU87/Yk9QyKLLFbgxXQz5o0qmLws=
+	t=1707836570; cv=none; b=RjMqbWPrJLRDMW+Z+V8tYt4aI6dwTmpZOe4rUDP0wiq/+LsjBq5tR51WuzoG+GhgZ4lC95cl5Y4MayOLcwPpIQNC4wlsGR/VpOazRbEF1D3i0R+bFgNA/Bh5AkZVfQ77mS1j/4kp3bJEVCVYpjbGQSdeocTojH6SHMRPVFIbXXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707836546; c=relaxed/simple;
-	bh=eD3n1DvnnA0M9NFRVpspeNsUx9c6TLcRCtfrJaIZcys=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mDWDV0/UaO0RVBsnMUpbILK7nATtPfgxZyLVIBvxPzLS+E43rxc5ufrO/rbfrTjYmee0FoJ6Z3HnFDAliDsq9kpWJRp90e2Y0V6h3cX2/jlrJ5jpQwBNAk4z6jWC0Z0QwtTIV1WzQr63f1yBq72cW34V4+2rapSzaD9Kkh59hTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=szUl72B+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=pB4wlgdE; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=o9IGtX0d; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qKc059pN; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	s=arc-20240116; t=1707836570; c=relaxed/simple;
+	bh=eEv8+8VvC86Bw7Uzhzb/XCZwOrbOPyVh+VvVVKoxqyM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=MKUeCbXaQXB4tKR96Z1NKOWbN78xtEUajO46vibo8UjqjWTz4hYynHBgCbmOxwx7tWiEfxuppVgSItRaI6ADa5mpPhYKIcDXzCIMC4pqibBWdN2R/SBM3/97dtWvNd6+E9HC6CI+D7T49AmY9qdRqFFoJk6HGHjlL94/+x78ufs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=RW5U5X5J; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707836563;
+	bh=eEv8+8VvC86Bw7Uzhzb/XCZwOrbOPyVh+VvVVKoxqyM=;
+	h=From:Subject:Date:To:Cc:From;
+	b=RW5U5X5JHjwOZzH44YpfCuXOVcUUlLHIWNRTX3iI6/5ddJ+8fo0fm0lnEmrzuSmLI
+	 2soL9QJSTeS6pa4ufqbyycCFUUh7rp5PxyP9CH2sIlMJfpum0cm+fv1KmB5DztZ9uH
+	 a+uC8ACYdi7GrCazaRADh3OrXYQpC52iVtT/qT81Doww6fRiMvBdyJEUr99u3V+zZi
+	 ifHGixsc1ZYtPIVD5CpoIjv/9wnherQxp5QPeqicqav6PEDhoDKGO86Op5W1fsKWn6
+	 Cx3Sw3Y1nk9bRv9jvu9rPT0Kd1lPauoZly7IZOolHhzSAbu+LjcFtlfewj5xi6GKpj
+	 0c+HizhaYg3dw==
+Received: from [192.168.1.42] (zone.collabora.co.uk [167.235.23.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3AE8421AFD;
-	Tue, 13 Feb 2024 15:02:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707836543; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YT1Rr5EWPvxoN+JMJcAcT2S5g9ul6hPcJDVKcRLYfJ4=;
-	b=szUl72B+6uo1DF7EH2JHX7ZuNfwKO9N5ZK9CYmHPgFApxJ76c41tdr3VYjfdZ4VWopRy+R
-	v86gHcXZswxZVlB1uOrg27bIHL+YowY2sMbupA74jRu8bk/YjXBG23xkV7OrqODSyVh/tF
-	qZ5Fxd1dbythUDszV6YVZIqpoUjnDXM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707836543;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YT1Rr5EWPvxoN+JMJcAcT2S5g9ul6hPcJDVKcRLYfJ4=;
-	b=pB4wlgdErdYLk2ZZK7SOEhpOT94jvQ885Sycon3Vg6KyfDqnRZXpRVjXiTfMf0YYljMJLE
-	xlsnfIeE4/f8P5Cw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707836541; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YT1Rr5EWPvxoN+JMJcAcT2S5g9ul6hPcJDVKcRLYfJ4=;
-	b=o9IGtX0dCKnhUL5WW4GxZwsXndxBXQfy+f8gbuAOn/8d5rIzuRxOvMPwNw1l1qbLB+e96H
-	3UGfopXY2EZ/1pWQ+3u6GeiKtnHFTccpgxH4n7zshA1rI0JODqG+CJOO7Tu/3uU03WdBKi
-	NZu5qVRTt8Xxw88iKGMmgcdxkGcXjB4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707836541;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YT1Rr5EWPvxoN+JMJcAcT2S5g9ul6hPcJDVKcRLYfJ4=;
-	b=qKc059pNKsq65TuPbj3YpSNhE/bQf5j5AlEM/PpbkVwv5hHTMNAk0GpfXrdgXufpErhIyS
-	V+1d6okHsIFTjNDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F37BB13404;
-	Tue, 13 Feb 2024 15:02:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GOhHOnyEy2VlMwAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 13 Feb 2024 15:02:20 +0000
-Message-ID: <45e982ba-c983-4c57-96cb-6bd0d342a46f@suse.de>
-Date: Tue, 13 Feb 2024 16:02:20 +0100
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E18013780BFE;
+	Tue, 13 Feb 2024 15:02:40 +0000 (UTC)
+From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+Subject: [PATCH v2 0/2] arm64: dts: mediatek: mt8186: Fixes for ssusb hang
+ using defconfig
+Date: Tue, 13 Feb 2024 10:02:36 -0500
+Message-Id: <20240213-mt8186-ssusb-domain-clk-fix-v2-0-1f981d35f3fd@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC v2 08/14] mm: do not split a folio if it has minimum folio
- order requirement
-Content-Language: en-US
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
- linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc: mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
- kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com,
- p.raghav@samsung.com, linux-kernel@vger.kernel.org, willy@infradead.org,
- linux-mm@kvack.org, david@fromorbit.com
-References: <20240213093713.1753368-1-kernel@pankajraghav.com>
- <20240213093713.1753368-9-kernel@pankajraghav.com>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240213093713.1753368-9-kernel@pankajraghav.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-0.22 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-0.13)[67.80%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[samsung.com:email,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.22
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAI2Ey2UC/42NQQ6CMBAAv0L27BpaSC2e/IfhsJRFNgIlLRIN4
+ e9WXuBx5jCzQeQgHOGabRB4lSh+SqBPGbiepgejtIlB57rMtdI4LlZZgzG+YoOtH0kmdMMTO3k
+ jmUoxO1uUXQupMAdO+qjf68S9xMWHzzFb1c/+110VKtTGNZW9lIaouDk/DNT4QGfnR6j3ff8Cz
+ Yfb/coAAAA=
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Chen-Yu Tsai <wenst@chromium.org>, 
+ Eugen Hristev <eugen.hristev@collabora.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Allen-KH Cheng <allen-kh.cheng@mediatek.com>, kernel@collabora.com, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+ =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+X-Mailer: b4 0.12.4
 
-On 2/13/24 10:37, Pankaj Raghav (Samsung) wrote:
-> From: Pankaj Raghav <p.raghav@samsung.com>
-> 
-> As we don't have a way to split a folio to a any given lower folio
-> order yet, avoid splitting the folio in split_huge_page_to_list() if it
-> has a minimum folio order requirement.
-> 
-> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->   mm/huge_memory.c | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
-> 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 94c958f7ebb5..d897efc51025 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -3026,6 +3026,19 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
->   			goto out;
->   		}
->   
-> +		/*
-> +		 * Do not split if mapping has minimum folio order
-> +		 * requirement.
-> +		 *
-> +		 * XXX: Once we have support for splitting to any lower
-> +		 * folio order, then it could be split based on the
-> +		 * min_folio_order.
-> +		 */
-> +		if (mapping_min_folio_order(mapping)) {
-> +			ret = -EAGAIN;
-> +			goto out;
-> +		}
-> +
->   		gfp = current_gfp_context(mapping_gfp_mask(mapping) &
->   							GFP_RECLAIM_MASK);
->   
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+Two fixes in ssusb components (the power domain and usb controller) to
+allow them to successfully probe and the mt8186 to boot using the
+upstream defconfig.
 
-Cheers,
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+---
+Changes in v2:
+- Moved the XHCI clock from the power domain to the mtu3 node and to a
+  separate commit
+- Link to v1: https://lore.kernel.org/r/20240212-mt8186-ssusb-domain-clk-fix-v1-1-26cb98746aa3@collabora.com
 
-Hannes
+---
+Nícolas F. R. A. Prado (2):
+      arm64: dts: mediatek: mt8186: Add missing clocks to ssusb power domains
+      arm64: dts: mediatek: mt8186: Add missing xhci clock to usb controllers
+
+ arch/arm64/boot/dts/mediatek/mt8186.dtsi | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+---
+base-commit: 2ae0a045e6814c8c1d676d6153c605a65746aa29
+change-id: 20240212-mt8186-ssusb-domain-clk-fix-a691eec834fd
+
+Best regards,
+-- 
+Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
 
