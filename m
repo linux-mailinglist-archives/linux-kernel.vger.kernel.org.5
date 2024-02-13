@@ -1,160 +1,137 @@
-Return-Path: <linux-kernel+bounces-63006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF0D08528CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:20:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 227448528D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 247E01F2505F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:20:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 557641C23420
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBEF817556;
-	Tue, 13 Feb 2024 06:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C1P4jQIj"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A92BF175A9;
+	Tue, 13 Feb 2024 06:20:23 +0000 (UTC)
+Received: from alerce.blitiri.com.ar (alerce.blitiri.com.ar [49.12.208.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98CCB171A5;
-	Tue, 13 Feb 2024 06:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9568917590
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.208.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707805209; cv=none; b=FGgIj1Cjv5tY/qoBtTrARv8BWdJCZmClG7WLG3JUEJNk2ya2IcCCsAenvf3T04hLvsHg4qhaFvXOqypIi4jw8FAshu+4tK3zGCRj4NTEMcb+rpdFgWrOkBMTq2biIU9cafcqwenclZ2NAkjnomvSV9CRf/0mAXsslcW1g7dQeeg=
+	t=1707805223; cv=none; b=K4e7pr5gxVKmOsyGyVJVhUzhdeFJMmId5rtR5AVvqdFDdHl3N48qcOFSeolE028+X80b7NYTHrNUfuhb+lgLSFqfueHrbbOv7V9ycMgfB4Cwv5d3hpfgg+6qqAO3/a5x9h0U3+StU/yE0UtHUVn7ErkZetICmrVpvNqungPMhGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707805209; c=relaxed/simple;
-	bh=xgIXZYSXIrqcMkw53O3O1RcP+HVXrGrG1W+8CKl3pCU=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=iXFfq/IwQTLCrkZwpBK/PjFID8ACEa9X2MtP1LEZ1gCq9dx4wGeTOl6jBDAvcwBurPnpNo/bI8R7Z/nLaRlS8xxGPSSuioCDbNrWbAEmV4/MyhaSy3JAoi5Fk805J5QCKRBX+eBTWhUcYeE/iKklOITyzkF/dI1e+5wypgI8SR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C1P4jQIj; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e08dd0fa0bso2745558b3a.1;
-        Mon, 12 Feb 2024 22:20:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707805207; x=1708410007; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4kofx/nI+3+ZfyrelDKxGbf/J5Ye+MoFyXznYtLtU6o=;
-        b=C1P4jQIjsSljCpzpMqNS6Dmd+tFn+pGinHUL21QSPbdcwp1Nawj4jMZCYGhSQHAf20
-         oZQ7YAdXedAA/pCp+eRyuJL8ghGHrZgPURqd9dQ7VVnEJVtFQBhNtGk/9WriGmsg9hZh
-         3x+bFz7uSrW/mseuElMmBmhvXT/parpt1UJnREkbOKaofXiJAmLSImbUoAVXdmRMFFtG
-         rG+C18+8hN4vmsq3Zxu/leJxxJZatwgh/bgP0K9WLYCj7ZuRENxESdC8snrQwvfXWw7R
-         DQ/6WrD6XVrb+P7LufMh0BUbUqK6LANyBdtChIiFs/S0hRPd8G0hMZZpteMPQyYuJP3O
-         01SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707805207; x=1708410007;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4kofx/nI+3+ZfyrelDKxGbf/J5Ye+MoFyXznYtLtU6o=;
-        b=Q5qA7/o8XualN2QLoq31YlG+RLLDOx+eJYfMFaYOhqtc5P0dF/80LH90LcVZAIok8C
-         A7Y7PVr47AQRzTWfTvyS16YbBD1KShZr9ZNu3Xc9LEJ9Vj4WgKjCB47VT9kOz16CwU0C
-         vD58s/gMdlhwpSev4fKhiBKqQCNnEj9vjaSuC5jabzb1RMsYWPiaIiGfxHmxrkgGI/Th
-         pWKssOpF1ba+caLh+voUhfFa1jfwNNihO2WAnGOPZ0KqqPLJJDmIXx6kzp88M9LNNANj
-         u1rW6QjhrDbvTMgSqcJYCw2PYNs09veSxzFWXwj15OD2e0wxKQeZabEAd9ZAfaVXGYeG
-         nOFA==
-X-Gm-Message-State: AOJu0Yxf/Xtmii5cdJ+zuusYZifE6pk2clXKeNBuqUvHs1XsvWSngJ5b
-	LyUG4WLFypFWj0gSWIvsb2ySHxRZmGhsbM7Xm+NfzX3qXaCXoSIT
-X-Google-Smtp-Source: AGHT+IHyUo7nOK8uBkU3/T+x1m01hGbINCMe1YWJaeeN9ud0lV4Ba/c2LV2ZmyDrSSWWrDIoUxK/Jg==
-X-Received: by 2002:a05:6a20:d39a:b0:19e:427f:9d52 with SMTP id iq26-20020a056a20d39a00b0019e427f9d52mr2376490pzb.14.1707805206684;
-        Mon, 12 Feb 2024 22:20:06 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVM3rcWSlOtxa7y1ukw6p7WxJp5N4lTra55S0XsNahbHX49gM5kAwGMKe5vmkXsfHSRfAwGDtwqwAf47WrUPPSMK8eUlUGUnaiDu0ga+xxJXvJTOyPp0sbxJeSvlbC5WtYYDPurkXMId+GrZufdQSMUZ280GPN+5XIVKyvzGw1z8mfin3zoKmDWqa9W3dbC8gl/cmQKZlT0PMkubtdj85OL7xrJohpFku/5
-Received: from mhkubun.hawaii.rr.com (076-173-166-017.res.spectrum.com. [76.173.166.17])
-        by smtp.gmail.com with ESMTPSA id v11-20020a056a00148b00b006e0334e3dd9sm6464791pfu.76.2024.02.12.22.20.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 22:20:06 -0800 (PST)
-From: mhkelley58@gmail.com
-X-Google-Original-From: mhklinux@outlook.com
-To: haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	boqun.feng@gmail.com,
-	linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org
-Subject: [PATCH 1/1] Drivers: hv: vmbus: Calculate ring buffer size for more efficient use of memory
-Date: Mon, 12 Feb 2024 22:19:59 -0800
-Message-Id: <20240213061959.782110-1-mhklinux@outlook.com>
-X-Mailer: git-send-email 2.25.1
-Reply-To: mhklinux@outlook.com
+	s=arc-20240116; t=1707805223; c=relaxed/simple;
+	bh=/heVYW+CDh4v4PfxyLKnGyX5vzL0XxVPCXx4mh2FCVw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=omdbpII/v1wiBhWNvA8BHHF/mErA+bb/kd/f8jOssRA7LkeURchqcBaWqPdXrb0hgeDChXAjy7+xcZibo/UljHholdv0xZWUyobEvambc58b8ivq0dOGASOAPKqbnGLz1RyRPtkBL5ynbmuXLnqlEJCDLSJ8wKfjiqNxAwsQFGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar; spf=pass smtp.mailfrom=sdfg.com.ar; arc=none smtp.client-ip=49.12.208.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sdfg.com.ar
+Received: from [192.168.0.26]
+	by sdfg.com.ar (chasquid) with ESMTPSA
+	tls TLS_AES_128_GCM_SHA256
+	(over submission+TLS, TLS-1.3, envelope from "rodrigo@sdfg.com.ar")
+	; Tue, 13 Feb 2024 06:20:18 +0000
+Message-ID: <4de5a6a5-8f7f-4af4-a4ad-d6521b056a4f@sdfg.com.ar>
+Date: Tue, 13 Feb 2024 07:20:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] tools/nolibc: Fix strlcat() return code and size
+ usage
+Content-Language: en-US
+From: Rodrigo Campos <rodrigo@sdfg.com.ar>
+To: Willy Tarreau <w@1wt.eu>
+Cc: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+ linux-kernel@vger.kernel.org
+References: <20240129141516.198636-1-rodrigo@sdfg.com.ar>
+ <20240129141516.198636-3-rodrigo@sdfg.com.ar> <20240211104817.GA19364@1wt.eu>
+ <52c52665-35f5-4111-a9d4-f8669c79bf70@sdfg.com.ar>
+In-Reply-To: <52c52665-35f5-4111-a9d4-f8669c79bf70@sdfg.com.ar>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Michael Kelley <mhklinux@outlook.com>
+On 2/13/24 00:16, Rodrigo Campos wrote:
+> On 2/11/24 11:48, Willy Tarreau wrote:
+>> Hi Rodrigo,
+>>
+>> first, thanks for the series!
+> 
+> Thank you, for your time and review! :)
+> 
+>> On Mon, Jan 29, 2024 at 03:15:14PM +0100, Rodrigo Campos wrote:
+>>> The return code should always be strlen(src) + strlen(dst), but dst is
+>>> considered shorter if size is less than strlen(dst).
+>>>
+>>> While we are there, make sure to copy at most size-1 bytes and
+>>> null-terminate the dst buffer.
+>>>
+>>> Signed-off-by: Rodrigo Campos <rodrigo@sdfg.com.ar>
+>>> ---
+>>>   tools/include/nolibc/string.h | 14 +++++++-------
+>>>   1 file changed, 7 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/tools/include/nolibc/string.h 
+>>> b/tools/include/nolibc/string.h
+>>> index ed15c22b1b2a..b2149e1342a8 100644
+>>> --- a/tools/include/nolibc/string.h
+>>> +++ b/tools/include/nolibc/string.h
+>>> @@ -187,23 +187,23 @@ char *strndup(const char *str, size_t maxlen)
+>>>   static __attribute__((unused))
+>>>   size_t strlcat(char *dst, const char *src, size_t size)
+>>>   {
+>>> -    size_t len;
+>>>       char c;
+>>> +    size_t len = strlen(dst);
+>>> +    size_t ret = strlen(src) + (size < len? size: len);
+>>
+>>  From what I'm reading in the man page, ret should *always* be the sum
+>> of the two string lengths. I guess it helps for reallocation. It's even
+>> explicitly mentioned:
+>>
+>>    "While this may seem somewhat confusing, it was done to make 
+>> truncation
+>>     detection simple."
+> 
+> Yes, that was my *first* understanding of the manpage too. But it 
+> doesn't seem to be the correct interpretation.
+> 
+> Also, this is exactly what I tried to say in the cover letter, with:
+> 
+>      I thought the manpage was clear, but when checking against that,
+>      I noted a few twists (like the manpage says the return code of
+>      strlcat is strlen(src) + strlen(dst), but it was not clear it is
+>      not that if size < strlen(dst). When looking at the libbsd
+>      implementation and re-reading the manpage, I understood what it
+>      really meant).
+> 
+> 
+> Sorry if I wasn't clear. Let me try again.
+> 
+> My first interpretation of the manpage was also that, and I think it 
+> would make sense to be that one. However, it is wrong, they also say 
+> this, that is what made me add the ternary operator:
+> 
+>      Note, however, that if strlcat() traverses size characters
+>      without finding a NUL, the length of the string is considered
+>      to be  size and the destination string will not be NUL
+>      terminated (since there was no space for the NUL)
+> 
+> So, my interpretation is that it is the sum of both, except when we 
+> can't find the NUL in that size, in which case we conside "size" to be 
+> the len of dst.
+> 
+> If you compare it with the output of libbsd, the return code seems to be 
+> exactly that. I was surprised too, as the manpage seem so clear... :-/
 
-The VMBUS_RING_SIZE macro adds space for a ring buffer header to the
-requested ring buffer size.  The header size is always 1 page, and so
-its size varies based on the PAGE_SIZE for which the kernel is built.
-If the requested ring buffer size is a large power-of-2 size and the header
-size is small, the resulting size is inefficient in its use of memory.
-For example, a 512 Kbyte ring buffer with a 4 Kbyte page size results in
-a 516 Kbyte allocation, which is rounded to up 1 Mbyte by the memory
-allocator, and wastes 508 Kbytes of memory.
 
-In such situations, the exact size of the ring buffer isn't that important,
-and it's OK to allocate the 4 Kbyte header at the beginning of the 512
-Kbytes, leaving the ring buffer itself with just 508 Kbytes. The memory
-allocation can be 512 Kbytes instead of 1 Mbyte and nothing is wasted.
+I'm not convinced now if that is the right interpretation. I'll check 
+the libbsd code, I don't remember it now, it's been a few days already.
 
-Update VMBUS_RING_SIZE to implement this approach for "large" ring buffer
-sizes.  "Large" is somewhat arbitrarily defined as 8 times the size of
-the ring buffer header (which is of size PAGE_SIZE).  For example, for
-4 Kbyte PAGE_SIZE, ring buffers of 32 Kbytes and larger use the first
-4 Kbytes as the ring buffer header.  For 64 Kbyte PAGE_SIZE, ring buffers
-of 512 Kbytes and larger use the first 64 Kbytes as the ring buffer
-header.  In both cases, smaller sizes add space for the header so
-the ring size isn't reduced too much by using part of the space for
-the header.  For example, with a 64 Kbyte page size, we don't want
-a 128 Kbyte ring buffer to be reduced to 64 Kbytes by allocating half
-of the space for the header.  In such a case, the memory allocation
-is less efficient, but it's the best that can be done.
-
-Fixes: c1135c7fd0e9 ("Drivers: hv: vmbus: Introduce types of GPADL")
-Signed-off-by: Michael Kelley <mhklinux@outlook.com>
----
- include/linux/hyperv.h | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index 2b00faf98017..6ef0557b4bff 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -164,8 +164,28 @@ struct hv_ring_buffer {
- 	u8 buffer[];
- } __packed;
- 
-+
-+/*
-+ * If the requested ring buffer size is at least 8 times the size of the
-+ * header, steal space from the ring buffer for the header. Otherwise, add
-+ * space for the header so that is doesn't take too much of the ring buffer
-+ * space.
-+ *
-+ * The factor of 8 is somewhat arbitrary. The goal is to prevent adding a
-+ * relatively small header (4 Kbytes on x86) to a large-ish power-of-2 ring
-+ * buffer size (such as 128 Kbytes) and so end up making a nearly twice as
-+ * large allocation that will be almost half wasted. As a contrasting example,
-+ * on ARM64 with 64 Kbyte page size, we don't want to take 64 Kbytes for the
-+ * header from a 128 Kbyte allocation, leaving only 64 Kbytes for the ring.
-+ * In this latter case, we must add 64 Kbytes for the header and not worry
-+ * about what's wasted.
-+ */
-+#define VMBUS_HEADER_ADJ(payload_sz) \
-+	((payload_sz) >=  8 * sizeof(struct hv_ring_buffer) ? \
-+	0 : sizeof(struct hv_ring_buffer))
-+
- /* Calculate the proper size of a ringbuffer, it must be page-aligned */
--#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(sizeof(struct hv_ring_buffer) + \
-+#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(VMBUS_HEADER_ADJ(payload_sz) + \
- 					       (payload_sz))
- 
- struct hv_ring_buffer_info {
--- 
-2.25.1
-
+My memory is that it was not something so sane.
 
