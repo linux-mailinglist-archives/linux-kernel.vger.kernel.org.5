@@ -1,185 +1,110 @@
-Return-Path: <linux-kernel+bounces-64000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 511398538CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:43:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71B7B8538D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:43:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CA2A2822EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:43:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A389D1C265CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A045FF0D;
-	Tue, 13 Feb 2024 17:43:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFEDA5FF04;
+	Tue, 13 Feb 2024 17:43:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="1DT8Sawh";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="f5dtiXPx"
-Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sSzNwVKY"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8685D5FEE9
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:42:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CA67111A6
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707846181; cv=none; b=ppkVOPm/cc/x/6nq7eFGcsveOk/lClDT/+suFsJNHwqZX2dx+OSRlYMZh62WzHybu9Wf8ABq5QVx6B9UpU3FXK8N6VSry5yWwrEz/et/T7nKwnEOsHtTjUq12efwPoh5WmTVJ5uUnC9UgZVzAGjgPLyMLUIn6ffNfhpBZKTe75c=
+	t=1707846220; cv=none; b=lBPPS3ImZ7nA5E5ucsVX0J8myzDb7VkCPj7EsOKkBXsNyHnYM0kU3CHsfUCN7p2/6s2pbvN0yqKbWRh46RKiCwm+ma+JsiAAsMX1ZmTuDz8kTsy9ZL1zPpbG+y1ljMr63onQuy281y+ahHRuGrQtT5ECPk2O0Ronv7Yx4edH+Fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707846181; c=relaxed/simple;
-	bh=R6UuKRBqDSOyzLFi4W3/cHdBrCqcsC6PslbCDx2B1rg=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=FKvIWRIt401Z4fczqLQ4ypfdIKHa2DeaE0y/8icj9siyLtI+1vOcZuA19J4RiD+DJAKWq7FYyjLEAYOLTdBvBLAntWYi2fS6VLGz/3kSE+U8e2NH5o/qZdeHXxHwufo+cZjsLSVMagKr/arC9XuCY1PbgFxa1sw/w075Yx8x7mw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=1DT8Sawh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=f5dtiXPx; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 51E6113800D0;
-	Tue, 13 Feb 2024 12:42:58 -0500 (EST)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Tue, 13 Feb 2024 12:42:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1707846178; x=1707932578; bh=85jyEdoLBZ
-	fXHvD7lJWU0c6Qkt7S0BbhM44jabeka5g=; b=1DT8SawhP734exUuEaxNd4Iztw
-	l7tRdcYL7oei/3tnIKapYPZeB3PgXr2h3Q2ogAEZqLeUwaBrhVA1cf969+DLzHLW
-	XMFloDe5c5Q7xRHOKVDCVKLrOytoNQ7pSfkyl7zcmimiUVL/QSml5XgOF483BPcZ
-	FHjMl3EcmQTMvbNOcQ6pa4soBVhUD+8FUqpnZwu1Rs+O+MWtxE08zrL9aQOMvc0S
-	hBFZSI40SXPJBZUz/sITA6awNXw6tczr95RVXzL/2l+XSq2sYsXdPkGnJ0wrKuSR
-	cZ5oeVNS9cU3dJKWLQnGXCwvKAm8ozVlGPaSzjmkM6dtT2+z2F75wWn0p0Tg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707846178; x=1707932578; bh=85jyEdoLBZfXHvD7lJWU0c6Qkt7S
-	0BbhM44jabeka5g=; b=f5dtiXPx8oJUvW3VDum6lAzKvVcspaykwVyntLxzRzoM
-	9/xdPSWKYbvWsXeI6pWPmCPze/1fF90NwxYby5u8Y9fqcUliQTqB/aLpf6SN4jxL
-	oehyx6Ly+pdpZCIALTHejc2h+JevxA++ucei2g72nReKLmntQbedmlDMHvcmMqKz
-	b8Cw81HRw3Giya3m4M/jvpeRvhOI+im/5bvzCX12N9+lC4EjCLk0jslYRwycfxIB
-	VDeHtV4gt8UDnA9GwcvyPjHjqztbx4SEZc+BQ6R7GKS9nwywLSxA9UNhIguYejFd
-	blUjL/OiEqTCvIBlL2JM/UUVkl5YVOCefjykMgOz3g==
-X-ME-Sender: <xms:IqrLZWs1Tlzmx8JAkpukbu9SnBpm1wYLJ8MamB_MzQ_9WYqT_E3cfw>
-    <xme:IqrLZbf85OHlFTQkqq2txNH6s_ZhJteP0btHR5dEGZFoVKbhM_fIrG-hXEUh7p7k7
-    GL_vZQBP6jOCGlQFg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehgddutdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfufht
-    vghfrghnucfqkdftvggrrhdfuceoshhorhgvrghrsehfrghsthhmrghilhdrtghomheqne
-    cuggftrfgrthhtvghrnhepjeeuheegtdeuteeghfehjeejiefghfeifeejheduvdeugedt
-    hfehvefggefgkedtnecuffhomhgrihhnpehinhhfrhgruggvrggurdhorhhgnecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhorhgvrghrsehf
-    rghsthhmrghilhdrtghomh
-X-ME-Proxy: <xmx:IqrLZRxcoIv3FDqvRGrb_EmcIcYZs8hw83EMEZNehUXfnDv4YDKz4w>
-    <xmx:IqrLZRPMu_zW81eXT-y-EzxebeF31n-Rv_wHQlMilGteCZ-V_g8Pvg>
-    <xmx:IqrLZW-6Fi33AWaN5WV-i1iimn3PzkwP-lT6QevwnF_M1Jt5_TeJnQ>
-    <xmx:IqrLZdnwgLsoF7XZMqKgPr1k0iQvlB-yO7fECnRvHkxKAEK293b1hA>
-Feedback-ID: i84414492:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 12D551700093; Tue, 13 Feb 2024 12:42:58 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1707846220; c=relaxed/simple;
+	bh=jeL3jmuNA+2cZ8gk+1JE/g89YrEigyGIek9rxeXkew0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=dunDTxZKy8dfHFrbmmROQNFK5Rm1q8zRFOMfoh6cb3MFYGyRkvlHQ5Ozdbxz04Gfw9v6fSslLSri2nqqdRKRaqc3qypoYDzBRASWOdjkZfsulm4GhE/zdyMFtn7DL/NMC/VLTY3HMqsBq82QoCbtZqZmiZGHnPKT/c4CVuf00r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sSzNwVKY; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc58cddb50so2050981276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707846217; x=1708451017; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2KwJMEy4sS/qM3Y5N93JFeZraBwlubTDdqUKKmj/hdQ=;
+        b=sSzNwVKY2PX+6cMy4LLJ+bvj3AmNQdLQYAS5zl699PuOTcefxn6fbHX9iclVaz73cF
+         sYSy5tnVaHV3iF39voT/y2EvwBJgEyFoT3sUWWJgMMZFG/B0FlnERnkAs/fUfvJnDEI9
+         nfkybi4DFnwcrwLDAe2j6AUzlr3Isx92udggpDdKTJJVeLxR7iN/Ax2D2gM7+0d3dnnF
+         Qcdg1RHQ9rH3xoJDgsgpcsuN35yU+tMgIJbZfwuyu+H7R++Eo82RNl+HNQIbQMRmwsm6
+         th+k+aVNphC8WRwyoNid77Ai7zC2M53/pf0Q5g3+ZgmKKGvkclZ1R9CqBx8Ndf8jcz0O
+         vAxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707846217; x=1708451017;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2KwJMEy4sS/qM3Y5N93JFeZraBwlubTDdqUKKmj/hdQ=;
+        b=QUhp84urJveHD1nseWB8gumucPDo4IokQ44bF7ai2rQSQYoWBxUG2exocqGWGGbu6F
+         Wa/oD9IzNZuV9PbB6UZU32fl9zkxPA0OSdwtmaGXct0lYSGTyf2SUeepFps3Iha8bWzS
+         6mqpyrv+9d8BAdHIr7uY9P/Ebl0Mc2IdaLEmZZIVach1LcQtXkB33tKtxEtddaJsMR6X
+         AfbhFN9ZHg8cJGlahupWXsdW8iObcGZjKcvHAzy05mZzvAtP8+69dBV7vG80US0N6viI
+         H9lCvyIGYH2nkQFa5+VUHdBdXWeDGIMfqIudbRHooAm3zT9IpofAIFTArVZvXlL+5FBy
+         jA6g==
+X-Forwarded-Encrypted: i=1; AJvYcCVKC40+wzDb3wynz+5VVU8h9ZlIU2YxnafLr/Vkr1gxP7wLGY8GecmurJDw/WlysVRmJ4eew/nxhKdTKQ5TZIp6fl1bkTQdUEx1uvFv
+X-Gm-Message-State: AOJu0YwAo5w8t8pvYPLmaO7wNlEsijUHYqJRaVzr1mbGTLZ/Y036MTYH
+	WRqtWZP1wKKag10vWwATMuNe4jHizv+pethWOs+UyYinRzEPh+TTbxORtFBD73Nj7CB83wHlFth
+	Fm4PBoH4qcu8PPiXD9g==
+X-Google-Smtp-Source: AGHT+IGlLBH/abZsC+jCB97eWiFSL+EQnp3tg/1z71JKyCYUkKCSbCluqfyE6etiG3YuwSx9HMgMW2+Rf/dUggc+
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:1109:b0:dc6:5396:c0d4 with
+ SMTP id o9-20020a056902110900b00dc65396c0d4mr2952081ybu.1.1707846217557; Tue,
+ 13 Feb 2024 09:43:37 -0800 (PST)
+Date: Tue, 13 Feb 2024 17:43:35 +0000
+In-Reply-To: <e094857d-41c8-4064-8475-a5a43e315f6d@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-Id: <31024f04-e3e0-4bf9-beca-ebcd4f6fe51b@app.fastmail.com>
-In-Reply-To: <20240213-limping-ether-adbdc205ebc6@spud>
-References: <20240213033744.4069020-1-samuel.holland@sifive.com>
- <20240213033744.4069020-3-samuel.holland@sifive.com>
- <20240213-limping-ether-adbdc205ebc6@spud>
-Date: Tue, 13 Feb 2024 12:42:37 -0500
-From: "Stefan O'Rear" <sorear@fastmail.com>
-To: "Conor Dooley" <conor@kernel.org>,
- "Samuel Holland" <samuel.holland@sifive.com>
-Cc: "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Andrew Jones" <ajones@ventanamicro.com>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -fixes v2 2/4] dt-bindings: riscv: Add ratified privileged ISA
- versions
-Content-Type: text/plain
+Mime-Version: 1.0
+References: <20240210-zswap-global-lru-v1-0-853473d7b0da@bytedance.com>
+ <20240210-zswap-global-lru-v1-1-853473d7b0da@bytedance.com>
+ <ZctnRnNMOwQNn_3j@google.com> <e094857d-41c8-4064-8475-a5a43e315f6d@bytedance.com>
+Message-ID: <ZcuqR7KeBPuarevU@google.com>
+Subject: Re: [PATCH 1/2] mm/zswap: global lru and shrinker shared by all zswap_pools
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, Feb 13, 2024, at 12:03 PM, Conor Dooley wrote:
-> On Mon, Feb 12, 2024 at 07:37:33PM -0800, Samuel Holland wrote:
->> The baseline for the RISC-V privileged ISA is version 1.10. Using
->> features from newer versions of the privileged ISA requires the
->> supported version to be reported by platform firmware, either in the ISA
->> string (where the binding already accepts version numbers) or in the
->> riscv,isa-extensions property. So far two newer versions are ratified.
->> 
->> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
->> ---
->> 
->> Changes in v2:
->>  - New patch for v2
->> 
->>  .../devicetree/bindings/riscv/extensions.yaml | 20 +++++++++++++++++++
->>  1 file changed, 20 insertions(+)
->> 
->> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
->> index 63d81dc895e5..7faf22df01af 100644
->> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
->> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
->> @@ -121,6 +121,16 @@ properties:
->>              version of the privileged ISA specification.
->>  
->>          # multi-letter extensions, sorted alphanumerically
->
->> +        - const: sm1p11
->
-> Why are we beholden to this "1p11" format of RVI's? We have free choice
-> of characters here, what's stopping us using "machine-v1.11", for
-> example?
->
-> Thanks,
-> Conor.
+> >> @@ -353,30 +353,16 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
+> >>  	if (ret)
+> >>  		goto error;
+> >>  
+> >> -	zswap_alloc_shrinker(pool);
+> >> -	if (!pool->shrinker)
+> >> -		goto error;
+> >> -
+> >> -	pr_debug("using %s compressor\n", pool->tfm_name);
+> >> -
+> > 
+> > Why are we removing this debug print?
 
-I'd prefer to use names that are at least somewhat recognizable, e.g. in
-the profiles spec, rather than making up something from whole cloth.
+This pr_debug() was introduced when dynamic zswap pools were introduced,
+and it was supposed to be printed right after the compressor is
+initialized. IOW, it is supposed to be after the call to
+cpuhp_state_add_instance() succeeds. The call to zswap_alloc_shrinker()
+was mistakenly added above that pr_debug() call.
 
--s
+Anyway, I just realized you are now removing all failure cases between
+than pr_debug() and the zswap_pool_debug() below, so there is no need to
+keep both. You are right.
 
->
->> +          description:
->> +            The standard Machine ISA v1.11, as ratified in the 20190608
->> +            version of the privileged ISA specification.
->> +
->> +        - const: sm1p12
->> +          description:
->> +            The standard Machine ISA v1.12, as ratified in the 20211203
->> +            version of the privileged ISA specification.
->> +
->>          - const: smaia
->>            description: |
->>              The standard Smaia supervisor-level extension for the advanced
->> @@ -134,6 +144,16 @@ properties:
->>              added by other RISC-V extensions in H/S/VS/U/VU modes and as
->>              ratified at commit a28bfae (Ratified (#7)) of riscv-state-enable.
->>  
->> +        - const: ss1p11
->> +          description:
->> +            The standard Supervisor ISA v1.11, as ratified in the 20190608
->> +            version of the privileged ISA specification.
->> +
->> +        - const: ss1p12
->> +          description:
->> +            The standard Supervisor ISA v1.12, as ratified in the 20211203
->> +            version of the privileged ISA specification.
->> +
->>          - const: ssaia
->>            description: |
->>              The standard Ssaia supervisor-level extension for the advanced
->> -- 
->> 2.43.0
->> 
->> 
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
->
-> Attachments:
-> * signature.asc
+I am wondering if these debug prints are useful at all now, but that's a
+question for another day :)
 
