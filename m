@@ -1,176 +1,164 @@
-Return-Path: <linux-kernel+bounces-64167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F06853AF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:32:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3FCA853B0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA5441C219FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:32:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23C931F22064
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:35:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DFBE60875;
-	Tue, 13 Feb 2024 19:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2168E6089E;
+	Tue, 13 Feb 2024 19:35:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Jon8VBr0"
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bAHFe5L7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F081CAA3
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 19:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA0C60263;
+	Tue, 13 Feb 2024 19:35:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707852753; cv=none; b=dwtyjl81Tx1hMoQSP6frTbW6IA0faygWax+BY3sifrScYAB+KeZOe29KGH+d0Y1zm86q7r53aeRm4eqTADsGNg/BOnzbDVeu5PDqA1l+GY/+UaEXXGHnNmwiQZELQ7f1nltF12VcS1nfgfM3euN0OnrO6eI0HooE3UYCYHqaZVw=
+	t=1707852910; cv=none; b=U+wFv3M1ZQRZbedM83cQvho7GzUlaEz8I3OeEx6rhyNtWqAimcsHq70DZ8k7aAoxMYFRFNV1Kj5gwmwhVpqUwnEUZ/YbfNl5GcagRudQmozAQGD6f2+Nx7evh/+lOByN35fSliDeRxlO/Fke4b9guB7VJ8pJo5l9PLPKJPKWbjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707852753; c=relaxed/simple;
-	bh=t3pGuIMAeZfDG+Nm+EbDi25ksSmaX2ngcVn9XDu9vc4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Eh2xR/Leb7gwul8yBW5PEr/UqRGQ7pexfQlthkfRpuR+ZWOq4CZCGBasKX6l8d9DIpIoKFNQS65Tg9OXvY0lgM7rkpFYFSfHYtPpesa8BjhTV78ZufsN7oNDysbz6XFvTHq8CEdhOq2No28v3VAGrU0lXFDdPipw71vg5ZVF3JU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Jon8VBr0; arc=none smtp.client-ip=209.85.161.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-59d11e0b9e1so2823452eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:32:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707852750; x=1708457550; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rymEGgxm+55ne6xbo9ccaE33zwysrx5gpeBPKrQKGdo=;
-        b=Jon8VBr0D6ju45gTv6XMepJF/4uvhaXJFN4QH7qdemSPI8KmcMK5IuCRTLNyays/tJ
-         9AFTAXQT1qGBPccP66akBXjjgBeKl0UeU5pdl0nletZLRQ0ei6QAWs1eryZ0hNef5ePy
-         NKh8ZQCrCoMJyT6A1LUohs6AQo6jkfv15hRovL/RxaZhYFBN3g9gOcrD0cwJUvXmRxR6
-         M8/Xm3EFH5wCqA7ZEOk54ny0WoErixLYQjFeLnUFepTHEOrKm5r6IAIr+CmA41OE2pRl
-         Z2h3Md9XQyHCZ6IBMw9BY+XtLZEK4Mjt2VaesN9JEB9obK2yI4sKSaIkNSdn2/q8hl0x
-         9nfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707852750; x=1708457550;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rymEGgxm+55ne6xbo9ccaE33zwysrx5gpeBPKrQKGdo=;
-        b=TosXsTuVWO7TAahdyoa1IDudChJkMgNxO/hcLlhE7BI/WD1lldlaWOpr5/apE0WzzW
-         746nmQkptzBVv/KzrPTj9Zwy3PjX7YdmWNMN0tKP3JTsV/j7/kbJ64GxKYWTZmiQmzzM
-         aSCTcjg+D0aHywlh6wh1/iI3nRJsXfe5Eb/ZwnKn0gsgDiixUugkPORW1McpWp2+/RzJ
-         ZaiCmoiPFf4OpO0Ccmbt0yGwiq/BX0BCGD2kbvjHZMqE1sqR/5Mpy8BChTdyKvE7dyt4
-         ZlznVR7gdDkwDa/h7Vc/stQ1mpN+9zR5IVPSmzvAUeTD5RzMDA2PoxvpVDY124/7r/4K
-         MKDA==
-X-Forwarded-Encrypted: i=1; AJvYcCUtKBkrauDYbsGvimpFAva3s8hjZqNIcPJQ+kNlHopFdwQv4GHnewSeNwkneZR8nRdrF80DsfnZ3Q+sGDbYqVvtRICP9N+DMcNWOReu
-X-Gm-Message-State: AOJu0YxFwiyaBNxfWEdfycxFGO4ccjQvN9zJ06Kblgq7WVOXxwGdF+62
-	3AU9wFzavYtPVXobMBwTNEtCBXJxynA1DmX9sMoN2AXQrtcOJ1Ymv8AflCfS0TV8K4nZF6mxtes
-	EE1AjvPO/uMD/bKFk+zPDF+xC3Cmj4pbqjldz
-X-Google-Smtp-Source: AGHT+IEp5DLRKl4WmMWFKz448wdqBHqEkoU9rO21Ie/NNxREpveSx1dNQrQHhbxeUkU/xxk6YvLS5sKAohRXRmJrsWE=
-X-Received: by 2002:a4a:e615:0:b0:59d:d416:3372 with SMTP id
- f21-20020a4ae615000000b0059dd4163372mr582997oot.0.1707852750038; Tue, 13 Feb
- 2024 11:32:30 -0800 (PST)
+	s=arc-20240116; t=1707852910; c=relaxed/simple;
+	bh=O2rijBlETPV1mvIsb2fGr/xbJahLcxzbFbT0uIUHBKg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=rz95cV8kqQJLIcHoqzfCO82OWzq7lFnxGeRPbk5gbCGZDkGCcnPji+It01tnnqHwcogxj8g5Omv6SGZbDcWiASg9VF8qW1WNZz0FwpmVKaaRTGlMNaCvddFQqcIS1/22ebNanA5qX0z8g53idsUqd0PCIuhlTT/hSKEhj62B0r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bAHFe5L7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70A66C433F1;
+	Tue, 13 Feb 2024 19:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707852909;
+	bh=O2rijBlETPV1mvIsb2fGr/xbJahLcxzbFbT0uIUHBKg=;
+	h=From:Subject:Date:List-Id:To:Cc:From;
+	b=bAHFe5L7UR7xP/kCitee/iv9eS0lpinKuT9Yamt03CiuUYMC7YJ8S4Mo8zhHyvvXy
+	 smFxcN0KVo8KGPSRn74E/DsZvyDbmiOw9J/sMQczNXr1h5eq06vGIQiQ323cA/mjOD
+	 AIURazkAWZvo+DmAwMndDAtePLjU7O+a1JwaRdMswSLa8kkV8Wgnnqs61BPbbm8W4S
+	 nx4RoBLQByL4sGoYmlGrGvVSTBTl2O8sOskTgzgaAn+sk0Gwid6QOtaxruZKGNBVYx
+	 3JKFh3NMw7YVWEgSHzVc/H2bHWxr8Yk82Rih7f0/OmBlzs1hXYaWV6p4YCKCR0A8dm
+	 bDrQYULSGpk5Q==
+From: Rob Herring <robh@kernel.org>
+Subject: [PATCH 0/6] dts: Fix dtc interrupt warnings
+Date: Tue, 13 Feb 2024 13:34:24 -0600
+Message-Id: <20240213-arm-dt-cleanups-v1-0-f2dee1292525@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206153405.489531-1-avagin@google.com> <ZcujIJemLxhjnjfN@google.com>
-In-Reply-To: <ZcujIJemLxhjnjfN@google.com>
-From: Andrei Vagin <avagin@google.com>
-Date: Tue, 13 Feb 2024 11:32:18 -0800
-Message-ID: <CAEWA0a78GhJ1FUmk7JX-kCKTCD2vjvzNoBbFODV6BJeu=1mKLg@mail.gmail.com>
-Subject: Re: [PATCH v2] kvm/x86: allocate the write-tracking metadata on-demand
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	kvm@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEDEy2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDI0Nj3cSiXN2UEt3knNTEvNKCYl1zs6QkcyOzlFRLEwsloK6CotS0zAq
+ widGxtbUANsZJ1WEAAAA=
+To: soc@kernel.org, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Tsahee Zidenberg <tsahee@annapurnalabs.com>, 
+ Antoine Tenart <atenart@kernel.org>, Joel Stanley <joel@jms.id.au>, 
+ Andrew Jeffery <andrew@codeconstruct.com.au>, Ray Jui <rjui@broadcom.com>, 
+ Scott Branden <sbranden@broadcom.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, 
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
+ =?utf-8?q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, Stefan Agner <stefan@agner.ch>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ =?utf-8?q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>, 
+ Tony Lindgren <tony@atomide.com>, Chanho Min <chanho.min@lge.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ Magnus Damm <magnus.damm@gmail.com>, Linus Walleij <linusw@kernel.org>, 
+ Imre Kaloz <kaloz@openwrt.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Masahiro Yamada <masahiroy@kernel.org>, 
+ Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org, 
+ openbmc@lists.ozlabs.org, linux-tegra@vger.kernel.org, 
+ linux-stm32@st-md-mailman.stormreply.com, linux-omap@vger.kernel.org, 
+ linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, linux-kbuild@vger.kernel.org
+X-Mailer: b4 0.13-dev
 
-On Tue, Feb 13, 2024 at 9:13=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Tue, Feb 06, 2024, Andrei Vagin wrote:
-> > The write-track is used externally only by the gpu/drm/i915 driver.
-> > Currently, it is always enabled, if a kernel has been compiled with thi=
-s
-> > driver.
-> >
-> > Enabling the write-track mechanism adds a two-byte overhead per page ac=
-ross
-> > all memory slots. It isn't significant for regular VMs. However in gVis=
-or,
-> > where the entire process virtual address space is mapped into the VM, e=
-ven
-> > with a 39-bit address space, the overhead amounts to 256MB.
-> >
-> > This change rework the write-tracking mechanism to enable it on-demand
-> > in kvm_page_track_register_notifier.
->
-> Don't use "this change", "this patch", or any other variant of "this blah=
-" that
-> you come up with.  :-)  Simply phrase the changelog as a command.
+I had a branch with most of these changes sitting in my tree for some 
+time. Geert's asking about some errors not getting found prompted me to 
+clean it up and send it out. This series fixes all* interrupt related 
+warnings and enables the check by default. 
 
-ok:)
+SoC maintainers, Can you please take this series directly. 
 
->
-> > Here is Sean's comment about the locking scheme:
-> >
-> > The only potential hiccup would be if taking slots_arch_lock would
-> > deadlock, but it should be impossible for slots_arch_lock to be taken i=
-n
-> > any other path that involves VFIO and/or KVMGT *and* can be coincident.
-> > Except for kvm_arch_destroy_vm() (which deletes KVM's internal
-> > memslots), slots_arch_lock is taken only through KVM ioctls(), and the
-> > caller of kvm_page_track_register_notifier() *must* hold a reference to
-> > the VM.
-> >
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: Sean Christopherson <seanjc@google.com>
-> > Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-> > Suggested-by: Sean Christopherson <seanjc@google.com>
-> > Signed-off-by: Andrei Vagin <avagin@google.com>
-> > ---
-> > v1: https://lore.kernel.org/lkml/ZcErs9rPqT09nNge@google.com/T/
-> > v2: allocate the write-tracking metadata on-demand
-> >
-> >  arch/x86/include/asm/kvm_host.h |  2 +
-> >  arch/x86/kvm/mmu/mmu.c          | 24 +++++------
-> >  arch/x86/kvm/mmu/page_track.c   | 74 ++++++++++++++++++++++++++++-----
-> >  arch/x86/kvm/mmu/page_track.h   |  3 +-
-> >  4 files changed, 78 insertions(+), 25 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm=
-_host.h
-> > index d271ba20a0b2..c35641add93c 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -1503,6 +1503,8 @@ struct kvm_arch {
-> >        */
-> >  #define SPLIT_DESC_CACHE_MIN_NR_OBJECTS (SPTE_ENT_PER_PAGE + 1)
-> >       struct kvm_mmu_memory_cache split_desc_cache;
-> > +
-> > +     bool page_write_tracking_enabled;
->
-> Rather than a generic page_write_tracking_enabled, I think it makes sense=
- to
-> explicitly track if there are *external* write tracking users.  One could=
- argue
-> it makes the total tracking *too* fine grained, but I think it would be h=
-elpful
-> for readers to when KVM itself is using write tracking (shadow paging) ve=
-rsus
-> when KVM has write tracking enabled, but has not allocated rmaps (externa=
-l write
-> tracking user).
->
-> That way, kernels with CONFIG_KVM_EXTERNAL_WRITE_TRACKING=3Dn don't need =
-to check
-> the bool (though they'll still check kvm_shadow_root_allocated()).  And a=
-s a
-> bonus, the diff is quite a bit smaller.
->
+Rob
 
-Your patch looks good to me. I ran kvm and gvisor tests and didn't
-find any issues. I sent it as v3:
-https://lkml.org/lkml/2024/2/13/1181
+*There's a few Renesas warnings still Geert said he would fix.
 
-I didn't do any changes, so feel free to change the author.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+Rob Herring (6):
+      arm64: dts: freescale: Disable interrupt_map check
+      arm: dts: Fix dtc interrupt_provider warnings
+      arm64: dts: Fix dtc interrupt_provider warnings
+      arm: dts: Fix dtc interrupt_map warnings
+      arm64: dts: qcom: Fix interrupt-map cell sizes
+      dtc: Enable dtc interrupt_provider check
 
-Thanks for the help.
+ arch/arm/boot/dts/amazon/alpine.dtsi                  |  1 -
+ arch/arm/boot/dts/aspeed/aspeed-g4.dtsi               | 14 --------------
+ arch/arm/boot/dts/aspeed/aspeed-g5.dtsi               | 15 +--------------
+ arch/arm/boot/dts/aspeed/aspeed-g6.dtsi               | 18 ++----------------
+ arch/arm/boot/dts/broadcom/bcm-cygnus.dtsi            |  3 +++
+ arch/arm/boot/dts/broadcom/bcm-hr2.dtsi               |  1 +
+ arch/arm/boot/dts/broadcom/bcm-nsp.dtsi               |  2 ++
+ .../boot/dts/intel/ixp/intel-ixp42x-gateway-7001.dts  |  2 ++
+ .../dts/intel/ixp/intel-ixp42x-goramo-multilink.dts   |  2 ++
+ arch/arm/boot/dts/marvell/kirkwood-l-50.dts           |  2 ++
+ arch/arm/boot/dts/nuvoton/nuvoton-wpcm450.dtsi        |  2 ++
+ arch/arm/boot/dts/nvidia/tegra30-apalis-v1.1.dtsi     |  1 -
+ arch/arm/boot/dts/nvidia/tegra30-apalis.dtsi          |  1 -
+ arch/arm/boot/dts/nvidia/tegra30-colibri.dtsi         |  1 -
+ arch/arm/boot/dts/nxp/imx/imx6q-b850v3.dts            |  3 ---
+ arch/arm/boot/dts/nxp/imx/imx6q-bx50v3.dtsi           |  2 +-
+ arch/arm/boot/dts/nxp/imx/imx6qdl-apalis.dtsi         |  1 -
+ arch/arm/boot/dts/nxp/imx/imx6qdl-colibri.dtsi        |  1 -
+ arch/arm/boot/dts/nxp/imx/imx6qdl-emcon.dtsi          |  1 -
+ arch/arm/boot/dts/nxp/imx/imx6qdl-phytec-pfla02.dtsi  |  1 +
+ .../boot/dts/nxp/imx/imx6qdl-phytec-phycore-som.dtsi  |  1 +
+ arch/arm/boot/dts/nxp/imx/imx7d-pico-dwarf.dts        |  1 +
+ arch/arm/boot/dts/nxp/vf/vf610-zii-dev-rev-b.dts      |  1 +
+ arch/arm/boot/dts/qcom/qcom-sdx55.dtsi                |  8 ++++----
+ arch/arm/boot/dts/st/stm32429i-eval.dts               |  1 -
+ arch/arm/boot/dts/st/stm32mp157c-dk2.dts              |  1 -
+ arch/arm/boot/dts/ti/omap/am5729-beagleboneai.dts     |  1 -
+ arch/arm64/boot/dts/amazon/alpine-v2.dtsi             |  1 -
+ arch/arm64/boot/dts/amazon/alpine-v3.dtsi             |  1 -
+ arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi      |  1 +
+ arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi   |  1 +
+ arch/arm64/boot/dts/freescale/Makefile                | 19 +++++++++++++++++++
+ arch/arm64/boot/dts/lg/lg1312.dtsi                    |  1 -
+ arch/arm64/boot/dts/lg/lg1313.dtsi                    |  1 -
+ arch/arm64/boot/dts/marvell/armada-ap80x.dtsi         |  1 -
+ arch/arm64/boot/dts/mediatek/mt8195-demo.dts          |  1 +
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi                 |  8 ++++----
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi                 | 16 ++++++++--------
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi              |  4 ++++
+ scripts/Makefile.lib                                  |  3 +--
+ 40 files changed, 65 insertions(+), 81 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240213-arm-dt-cleanups-76bb726de948
+
+Best regards,
+-- 
+Rob Herring <robh@kernel.org>
+
 
