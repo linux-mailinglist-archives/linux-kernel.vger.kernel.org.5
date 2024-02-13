@@ -1,208 +1,132 @@
-Return-Path: <linux-kernel+bounces-63300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 277DD852D69
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:04:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A6A6852D6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:04:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BB501C203DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:04:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9E7228528E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C3F23758;
-	Tue, 13 Feb 2024 10:04:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA70250F4;
+	Tue, 13 Feb 2024 10:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DrgfU7Zx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KUMnIGZT"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC62C22EFB;
-	Tue, 13 Feb 2024 10:04:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAEE24B24
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:04:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707818642; cv=none; b=Zbmk9DpX/jlVj5yQdfEJny3IDrWJ/jQdDzCGEYBHjKzhUWEXblRZdnRfX0qhZntuaadHfZM3G+uMxalnsxtgnjCL+8mtldxT5K90CYlYfGoeV/RkwAsk2KlZ/TLQMOPcErQMG5RPS48gN+JncGof7GV7gpPrwP+77y4lUMCZYqo=
+	t=1707818672; cv=none; b=tmXtPgbZc8OLEqldbPCocnMuAOID8LMR/AXuqfhAvipff4HwHxF3mQuAFqCFD3ABgY47CF1sPMvXl2l8iCEIGPENcs75/jNDMsx+p/sFYzitRrz+eZ0HtzINAkwfNwTEYtvTbYYvjYlbiPCNxsomwl8Q3XbTteAdcD+Gtb6k5Pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707818642; c=relaxed/simple;
-	bh=AMPyajMBIKdkNHT3a2o6PUCBHMhRtBLpcuVcQ5oFUck=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F6tHmUSzaz8WrLsQHjDGFuuO4m0QDhiBiAO3XtrtC/+NCowHnggoFbN7NSJNoytDLWlKEk8jMtAKvlamXSa8AW1YHArvB7IV0GmFqRVbD6VY5x6Jk8fIvi03jWj2hhzc+PNLFikZWn28qRfw4m2kUPRM4dotqkzhE+J5+jwUYAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DrgfU7Zx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CF98C433C7;
-	Tue, 13 Feb 2024 10:03:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707818641;
-	bh=AMPyajMBIKdkNHT3a2o6PUCBHMhRtBLpcuVcQ5oFUck=;
-	h=From:To:Cc:Subject:Date:From;
-	b=DrgfU7Zx6Etobfy1vv5gV1AHdFbilX9QehQ1OaWhDyfH6329fDE3v0nH7JlHBz2fb
-	 PZzRouGmom4B5PIGODjMrlwOGNtQN6JSoO41ORbywm3BAUjUrYC8vsxmvxGoDbCei7
-	 C7SIYU9AkC4UrNNhxOMG2/NQSo2ippl2uas//vJ0hcdhhWctvOQ0zO51dm1I90N3e2
-	 6VnebmDZT3dYrXVGYH/Jrks8y0S1vO0Dwaw69Wpj/ClUOy5WdYuuRplyyEMNeNqkNK
-	 Re3EJ4ITP7mGM5Vw7vvj8PBjN9pzRkc3nLL79nkBFVthLOkpiPTDh828Sw1rIjRZ9c
-	 SdVWAIh87EmlQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Philipp Reisner <philipp.reisner@linbit.com>,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	=?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Jens Axboe <axboe@kernel.dk>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	"Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	drbd-dev@lists.linbit.com,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] drbd: fix function cast warnings in state machine
-Date: Tue, 13 Feb 2024 11:03:01 +0100
-Message-Id: <20240213100354.457128-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707818672; c=relaxed/simple;
+	bh=J7i4hg0ziGrlmf3vTFEfUk1q2oL5XXsskSRGKTloeXQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Fg3936LHhlmawcCLPZcYmEXuiH7GCWJrdXxvAnETWPbPAFQuGaAZbGwjuQdwhfE2+2dxUFiqAbd+Jey4oYq198v15e5z55xsp/TH7EDqUmpmn+wqQY1y+8vgOm4JCezKCal/Ov0mhech2bfYNYlD7m7XbuTy5GpQI3h7LvkpW8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KUMnIGZT; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707818671; x=1739354671;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=J7i4hg0ziGrlmf3vTFEfUk1q2oL5XXsskSRGKTloeXQ=;
+  b=KUMnIGZT9MdwV1OaeB1zmIQ2UTf4HLO4sFBXPs0ovsT9xyHiSaLKBE2L
+   t/G99Ddrt5s68TbDI60qZ5hUjVzuabN9BS2HPAJ3NU2cDShq8ZhD6j/1V
+   BxTQc/dA+Rp+40ufGKMsVjrIPr+Zcc+1ubTUeQSFpVWpxe6CC9zGlEnj2
+   jVVSV7Ax+WPBiAWFgxVubJlJ3oIx0uJsn2fiL+8/ErFBG3m8LJvN5wp7G
+   yUWdJpOpbuXY1gJJKC5HTON/xBeDDtw+cC4Os9qCuK5vv7EAgFSsk2fmR
+   7T/0HIBy8T075NXcoCEzVTsI1XwtWNjgnF9xo/QQpjyiaWuI5ZwRDw9/O
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1940297"
+X-IronPort-AV: E=Sophos;i="6.06,156,1705392000"; 
+   d="scan'208";a="1940297"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 02:04:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,156,1705392000"; 
+   d="scan'208";a="2826055"
+Received: from dstacken-mobl1.ger.corp.intel.com (HELO [10.249.254.89]) ([10.249.254.89])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 02:04:27 -0800
+Message-ID: <4ebd085d9c2100e0709c9ee7fb9685f58810c937.camel@linux.intel.com>
+Subject: Re: [PATCH] drm/xe: avoid function cast warnings
+From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
+To: Arnd Bergmann <arnd@kernel.org>, Lucas De Marchi
+ <lucas.demarchi@intel.com>,  Oded Gabbay <ogabbay@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+ intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Date: Tue, 13 Feb 2024 11:04:23 +0100
+In-Reply-To: <20240213095719.454865-1-arnd@kernel.org>
+References: <20240213095719.454865-1-arnd@kernel.org>
+Autocrypt: addr=thomas.hellstrom@linux.intel.com; prefer-encrypt=mutual;
+ keydata=mDMEZaWU6xYJKwYBBAHaRw8BAQdAj/We1UBCIrAm9H5t5Z7+elYJowdlhiYE8zUXgxcFz360SFRob21hcyBIZWxsc3Ryw7ZtIChJbnRlbCBMaW51eCBlbWFpbCkgPHRob21hcy5oZWxsc3Ryb21AbGludXguaW50ZWwuY29tPoiTBBMWCgA7FiEEbJFDO8NaBua8diGTuBaTVQrGBr8FAmWllOsCGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQuBaTVQrGBr/yQAD/Z1B+Kzy2JTuIy9LsKfC9FJmt1K/4qgaVeZMIKCAxf2UBAJhmZ5jmkDIf6YghfINZlYq6ixyWnOkWMuSLmELwOsgPuDgEZaWU6xIKKwYBBAGXVQEFAQEHQF9v/LNGegctctMWGHvmV/6oKOWWf/vd4MeqoSYTxVBTAwEIB4h4BBgWCgAgFiEEbJFDO8NaBua8diGTuBaTVQrGBr8FAmWllOsCGwwACgkQuBaTVQrGBr/P2QD9Gts6Ee91w3SzOelNjsus/DcCTBb3fRugJoqcfxjKU0gBAKIFVMvVUGbhlEi6EFTZmBZ0QIZEIzOOVfkaIgWelFEH
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, 2024-02-13 at 10:56 +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> clang-16 warns about a cast between incompatible function types:
+>=20
+> drivers/gpu/drm/xe/xe_range_fence.c:155:10: error: cast from 'void
+> (*)(const void *)' to 'void (*)(struct xe_range_fence *)' converts to
+> incompatible function type [-Werror,-Wcast-function-type-strict]
+> =C2=A0 155 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .free =3D (v=
+oid (*)(struct xe_range_fence *rfence))
+> kfree,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
+> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>=20
+> Avoid this with a trivial helper function that calls kfree() here.
+>=20
+> Fixes: 845f64bdbfc9 ("drm/xe: Introduce a range-fence utility")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-There are four state machines in drbd that use a common infrastructure, with
-a cast to an incompatible function type in REMEMBER_STATE_CHANGE that clang-16
-now warns about:
+Thanks, will push as soon as it passes CI.
 
-drivers/block/drbd/drbd_state.c:1632:3: error: cast from 'int (*)(struct sk_buff *, unsigned int, struct drbd_resource_state_change *, enum drbd_notification_type)' to 'typeof (last_func)' (aka 'int (*)(struct sk_buff *, unsigned int, void *, enum drbd_notification_type)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1632 |                 REMEMBER_STATE_CHANGE(notify_resource_state_change,
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 1633 |                                       resource_state_change, NOTIFY_CHANGE);
-      |                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/block/drbd/drbd_state.c:1619:17: note: expanded from macro 'REMEMBER_STATE_CHANGE'
- 1619 |            last_func = (typeof(last_func))func; \
-      |                        ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/block/drbd/drbd_state.c:1641:4: error: cast from 'int (*)(struct sk_buff *, unsigned int, struct drbd_connection_state_change *, enum drbd_notification_type)' to 'typeof (last_func)' (aka 'int (*)(struct sk_buff *, unsigned int, void *, enum drbd_notification_type)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1641 |                         REMEMBER_STATE_CHANGE(notify_connection_state_change,
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 1642 |                                               connection_state_change, NOTIFY_CHANGE);
-      |                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Change these all to actually expect a void pointer to be passed, which
-matches the caller.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/block/drbd/drbd_state.c        | 24 ++++++++++++++----------
- drivers/block/drbd/drbd_state_change.h |  8 ++++----
- 2 files changed, 18 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/block/drbd/drbd_state.c b/drivers/block/drbd/drbd_state.c
-index 287a8d1d3f70..e858e7e0383f 100644
---- a/drivers/block/drbd/drbd_state.c
-+++ b/drivers/block/drbd/drbd_state.c
-@@ -1542,9 +1542,10 @@ int drbd_bitmap_io_from_worker(struct drbd_device *device,
- 
- int notify_resource_state_change(struct sk_buff *skb,
- 				  unsigned int seq,
--				  struct drbd_resource_state_change *resource_state_change,
-+				  void *state_change,
- 				  enum drbd_notification_type type)
- {
-+	struct drbd_resource_state_change *resource_state_change = state_change;
- 	struct drbd_resource *resource = resource_state_change->resource;
- 	struct resource_info resource_info = {
- 		.res_role = resource_state_change->role[NEW],
-@@ -1558,13 +1559,14 @@ int notify_resource_state_change(struct sk_buff *skb,
- 
- int notify_connection_state_change(struct sk_buff *skb,
- 				    unsigned int seq,
--				    struct drbd_connection_state_change *connection_state_change,
-+				    void *state_change,
- 				    enum drbd_notification_type type)
- {
--	struct drbd_connection *connection = connection_state_change->connection;
-+	struct drbd_connection_state_change *p = state_change;
-+	struct drbd_connection *connection = p->connection;
- 	struct connection_info connection_info = {
--		.conn_connection_state = connection_state_change->cstate[NEW],
--		.conn_role = connection_state_change->peer_role[NEW],
-+		.conn_connection_state = p->cstate[NEW],
-+		.conn_role = p->peer_role[NEW],
- 	};
- 
- 	return notify_connection_state(skb, seq, connection, &connection_info, type);
-@@ -1572,9 +1574,10 @@ int notify_connection_state_change(struct sk_buff *skb,
- 
- int notify_device_state_change(struct sk_buff *skb,
- 				unsigned int seq,
--				struct drbd_device_state_change *device_state_change,
-+				void *state_change,
- 				enum drbd_notification_type type)
- {
-+	struct drbd_device_state_change *device_state_change = state_change;
- 	struct drbd_device *device = device_state_change->device;
- 	struct device_info device_info = {
- 		.dev_disk_state = device_state_change->disk_state[NEW],
-@@ -1585,9 +1588,10 @@ int notify_device_state_change(struct sk_buff *skb,
- 
- int notify_peer_device_state_change(struct sk_buff *skb,
- 				     unsigned int seq,
--				     struct drbd_peer_device_state_change *p,
-+				     void *state_change,
- 				     enum drbd_notification_type type)
- {
-+	struct drbd_peer_device_state_change *p = state_change;
- 	struct drbd_peer_device *peer_device = p->peer_device;
- 	struct peer_device_info peer_device_info = {
- 		.peer_repl_state = p->repl_state[NEW],
-@@ -1605,8 +1609,8 @@ static void broadcast_state_change(struct drbd_state_change *state_change)
- 	struct drbd_resource_state_change *resource_state_change = &state_change->resource[0];
- 	bool resource_state_has_changed;
- 	unsigned int n_device, n_connection, n_peer_device, n_peer_devices;
--	int (*last_func)(struct sk_buff *, unsigned int, void *,
--			  enum drbd_notification_type) = NULL;
-+	int (*last_func)(struct sk_buff *, unsigned int,
-+		void *, enum drbd_notification_type) = NULL;
- 	void *last_arg = NULL;
- 
- #define HAS_CHANGED(state) ((state)[OLD] != (state)[NEW])
-@@ -1616,7 +1620,7 @@ static void broadcast_state_change(struct drbd_state_change *state_change)
- 	})
- #define REMEMBER_STATE_CHANGE(func, arg, type) \
- 	({ FINAL_STATE_CHANGE(type | NOTIFY_CONTINUES); \
--	   last_func = (typeof(last_func))func; \
-+	   last_func = func; \
- 	   last_arg = arg; \
- 	 })
- 
-diff --git a/drivers/block/drbd/drbd_state_change.h b/drivers/block/drbd/drbd_state_change.h
-index 9d78d8e3912e..a56a57d67686 100644
---- a/drivers/block/drbd/drbd_state_change.h
-+++ b/drivers/block/drbd/drbd_state_change.h
-@@ -46,19 +46,19 @@ extern void forget_state_change(struct drbd_state_change *);
- 
- extern int notify_resource_state_change(struct sk_buff *,
- 					 unsigned int,
--					 struct drbd_resource_state_change *,
-+					 void *,
- 					 enum drbd_notification_type type);
- extern int notify_connection_state_change(struct sk_buff *,
- 					   unsigned int,
--					   struct drbd_connection_state_change *,
-+					   void *,
- 					   enum drbd_notification_type type);
- extern int notify_device_state_change(struct sk_buff *,
- 				       unsigned int,
--				       struct drbd_device_state_change *,
-+				       void *,
- 				       enum drbd_notification_type type);
- extern int notify_peer_device_state_change(struct sk_buff *,
- 					    unsigned int,
--					    struct drbd_peer_device_state_change *,
-+					    void *,
- 					    enum drbd_notification_type type);
- 
- #endif  /* DRBD_STATE_CHANGE_H */
--- 
-2.39.2
+Reviewed-by: Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com>
+> ---
+> =C2=A0drivers/gpu/drm/xe/xe_range_fence.c | 7 ++++++-
+> =C2=A01 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/xe/xe_range_fence.c
+> b/drivers/gpu/drm/xe/xe_range_fence.c
+> index d35d9ec58e86..8510be4466eb 100644
+> --- a/drivers/gpu/drm/xe/xe_range_fence.c
+> +++ b/drivers/gpu/drm/xe/xe_range_fence.c
+> @@ -151,6 +151,11 @@ xe_range_fence_tree_next(struct xe_range_fence
+> *rfence, u64 start, u64 last)
+> =C2=A0	return xe_range_fence_tree_iter_next(rfence, start, last);
+> =C2=A0}
+> =C2=A0
+> +static void xe_range_fence_free(struct xe_range_fence * rfence)
+> +{
+> +	kfree(rfence);
+> +}
+> +
+> =C2=A0const struct xe_range_fence_ops xe_range_fence_kfree_ops =3D {
+> -	.free =3D (void (*)(struct xe_range_fence *rfence)) kfree,
+> +	.free =3D xe_range_fence_free,
+> =C2=A0};
 
 
