@@ -1,110 +1,137 @@
-Return-Path: <linux-kernel+bounces-63457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21751852FCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:45:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 279EC852FCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4CC01F26686
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:45:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFFEE1F23D4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EDA137715;
-	Tue, 13 Feb 2024 11:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A411D381A1;
+	Tue, 13 Feb 2024 11:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QLKDQ3Z+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FszU3cEU"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E589B376F7
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:45:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B65F376E6
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:49:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707824723; cv=none; b=IhwvWKBiYSR75W0jTaXzcJYVCZtO9IbzN0f4SNsMnPklznn1NI4E75+x3YUZAbHJhJPmFsuZ2z0ePDWgOUZmDx6N6L6VyAEYzur4TxqTQtLruFDwZ8lx7doiQSJjx3PeHIh5E+SHnMiaRViNHiIDH/6IFcR8bmoWMDasawhSlA8=
+	t=1707824951; cv=none; b=ccFHosZ1R/Ysq9OTNrjSD0BXOGHOsqxOiqTMKCU76BMrY2Wd5JqAxmGjosvLaQrCuWctQxBk6U1CVVVf25DlTW9IMbzS0p2zwL9XbMB1hQzEotptlj5UZ8maeMw69HrjRfeALEDoaZ5vjRmGh509haNXJnvgJubbzuB4E2f4sPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707824723; c=relaxed/simple;
-	bh=Iro2uYYnfnYe+OWzj+GsG7aHp915R3LpIFlDLSEohDY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C2PaX1OnHwrctNPV5bnJ5UZoxS+SP6uHg75ZxF0cWd8SY47JJItm65YWFRHei9BWN33mZGTirqehc4oQDJtiY+i/PctmWX8CtKuAkRzsFsiqvQvl7zeZN5w7MRWn+5CbW92oHTG1LBEKzShKpRXDzJDhzX/A1+SdsZ5UA3KHRwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QLKDQ3Z+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9DBEC433F1;
-	Tue, 13 Feb 2024 11:45:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707824722;
-	bh=Iro2uYYnfnYe+OWzj+GsG7aHp915R3LpIFlDLSEohDY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QLKDQ3Z+dxTk3P+E2A70GmxAn6yxMYtA0scHWyLcCyNZc+7LwV/R401QyDDzCoWMl
-	 B+YR/qyWbp8zHUrtOo/eMHz9GYROsjVBq4ZYYaWectCht8mdyJMZQPNNzFiPx4l0ia
-	 PAon9ys47LQuiIj/gmBM03m59Ecy9wf3O6EDYecM=
-Date: Tue, 13 Feb 2024 12:45:18 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Paul Barker <paul.barker.ct@bp.renesas.com>
-Cc: sudeep.holla@arm.com, rafael@kernel.org, vschneid@redhat.com,
-	bristot@redhat.com, mgorman@suse.de, bsegall@google.com,
-	rostedt@goodmis.org, dietmar.eggemann@arm.com,
-	juri.lelli@redhat.com, peterz@infradead.org, mingo@redhat.com,
-	lukasz.luba@arm.com, ionela.voinescu@arm.com,
-	linux-kernel@vger.kernel.org,
-	Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [Resend PATCH] topology: Set capacity_freq_ref in all cases
-Message-ID: <2024021357-stranger-supremacy-a985@gregkh>
-References: <20240117190545.596057-1-vincent.guittot@linaro.org>
- <75f0bfc7-fb95-409a-a5d9-b00732e892f0@bp.renesas.com>
- <8108129e-d7b8-4540-bf53-ed29cd4bbff9@bp.renesas.com>
+	s=arc-20240116; t=1707824951; c=relaxed/simple;
+	bh=FYBm5VUOZNBLyP4qOZ4sPzIQloS1I0i/GF6hxRuLPW4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aGPMW45IgO7HfcPA3JdYTuhk6gt/cz4EsaVliah7EsnecqSCtm29kBczKtCTC1TdhnuDkeyiDySZBmEBA7eGYdnMTsLBMMdqk4dS1Ncv+LzlL8k5DmYBkpUT4oaX+38InuK4dhwNHJkHYEzfsI0zASxbVKwThET7Q43IwZJSS1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FszU3cEU; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3394bec856fso3109611f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:49:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1707824947; x=1708429747; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MLxYb8ulK3/+KD2RG1jbewIrsAiXBJRq0PO1rsmumS0=;
+        b=FszU3cEUZnMMxQUKbanRKkWWdR+V6AZBVFZkZThY/3e0Ay511rGfJyzWh3mkz3wdb4
+         kdOp780kVUs7Y/HhfOh4BVdkID864gNtPgZcH8YqzXUwP/jmC5dB3HKj7v0lWnl2GCz8
+         Mzru2qAiVcoHwaPf0SO+Xixqu9GAay3LIQwSjdJxU5aoc6/+gR6gJ46ntl4rkE8GrTMo
+         vSwLozOQHUrRVQtOR3QQ8GxbZkFzGZOyOXgzQFK4MDuT8lE3N3Naszw6MWIIHMlEU/ZC
+         dJ6Yrw+cxuEucVNGTIvFu9WtRuwMtNUbEU4V0o/2zkCU9ORyOFJXVgtVuZfUjhk8w4LE
+         mcVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707824947; x=1708429747;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MLxYb8ulK3/+KD2RG1jbewIrsAiXBJRq0PO1rsmumS0=;
+        b=bAQ1XQ9fW+CLIKS1PHOxGZeNJaPCfcwFSdTIfJFXqrnBbVZ6GDt6qiSvA/pUqnBllg
+         bRlFvfoUi1BJ2/f3vGeyYexGSVe7jwL5x1fB/q5kdwqQnJy7ManxY/xYpuG+yT4JWB1q
+         s3Q8n8PE9MoRfIWZAIdtjCUi8lOja120/HkTX4YfI83Rkw8hoMRHXELhSsVCCOofVeoE
+         mVZ0CVIDL6QF1YajwhiuHW2u1VE/bo8mWP9Hy/BvPHDacySnOnDjIaErzYG4U4WWQK53
+         c5PXehbdisQwG64Q5GEBSjgb6/sa6dx2RAXfW1pY/eY8biruCLTz06YAx6Y69A1TpSra
+         F0jA==
+X-Forwarded-Encrypted: i=1; AJvYcCVVoE/DJQsIbva9hLchKEc2p7xPSj3cw4F0bL4zE6hDM2vzd6HyAqgrPzdvHey5895mhBrSpBrUCmp9H7gnizir3ly2LT2ceg42U+01
+X-Gm-Message-State: AOJu0YzLSLlKBUb5XYyTDUvP7GWsuoNaz0qviFI2bXCrT8enqIVR2Ixg
+	H+/p1EUQ/JFEG/8xUQVUuhq+lLIbVE0PvRLFu/O2x7sFfuuvRrSq/Vb8TQAS8GY=
+X-Google-Smtp-Source: AGHT+IHQGw8/XonnfpC633ywE2gwBWrQnwyRK1evZjZRcHekINMxQLs/ScJ0kylBjM6kxlH3CYkC2Q==
+X-Received: by 2002:a5d:570d:0:b0:33c:df1c:8e18 with SMTP id a13-20020a5d570d000000b0033cdf1c8e18mr879713wrv.26.1707824947610;
+        Tue, 13 Feb 2024 03:49:07 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXH49yLxdY/J4W1Z27yp6IOnBdU0EPBCFf501YQZ9g7s9fij4pchHE4EcG6saQrqzXJNKmw8N2a6bALghy7WDe1OJe89rjEkRe6QzoCoc3UPvY7bDwArtWirSnqCJBL6nbQy3CdtNwhfHfNTEko/nf3uCk2v8FDpDa+RYZIR0766q+KqWktcamx6VoR6KRG2hMdszY2s+VNKOwJ2Z8=
+Received: from [192.168.0.20] (nborisov.ddns.nbis.net. [85.187.217.136])
+        by smtp.gmail.com with ESMTPSA id bo26-20020a056000069a00b0033cd06387ddsm1920891wrb.82.2024.02.13.03.49.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 03:49:07 -0800 (PST)
+Message-ID: <6678b65c-15ab-4bbf-b3cc-a3110dca97e1@suse.com>
+Date: Tue, 13 Feb 2024 13:49:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8108129e-d7b8-4540-bf53-ed29cd4bbff9@bp.renesas.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86: Improve description of
+ IA32_EMULATION_DEFAULT_DISABLED
+Content-Language: en-US
+To: Borislav Petkov <bp@alien8.de>, =?UTF-8?Q?Hanno_B=C3=B6ck?=
+ <hanno@hboeck.de>
+Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20240130104543.28840812.hanno@hboeck.de>
+ <20240206145823.GGZcJJD8rDtPRNBkhe@fat_crate.local>
+From: Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <20240206145823.GGZcJJD8rDtPRNBkhe@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 13, 2024 at 11:06:48AM +0000, Paul Barker wrote:
-> Hi Greg,
-> 
-> On 23/01/2024 16:23, Paul Barker wrote:
-> > On 17/01/2024 19:05, Vincent Guittot wrote:
-> >> If "capacity-dmips-mhz" is not set, raw_capacity is null and we skip the
-> >> normalization step which includes setting per_cpu capacity_freq_ref.
-> >> Always register the notifier but skip the capacity normalization if
-> >> raw_capacity is null.
-> >>
-> >> Fixes: 9942cb22ea45 ("sched/topology: Add a new arch_scale_freq_ref() method")
-> >> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > 
-> > We've had some Ethernet performance issues with linux-next and v6.8-rc1
-> > on the Renesas RZ/G2L and RZ/G2UL arm64 SoCs. I've confirmed that the
-> > CPU frequency is stuck at the minimum (150MHz) in v6.8-rc1, even when
-> > running iperf3. Applying this patch allows the SoC to switch up the the
-> > maximum frequency (1200MHz) when needed and fixes our Ethernet
-> > performance.
-> > 
-> > iperf3 results in Mbps for RZ/G2L SMARC evaluation board:
-> >                 TCP TX    TCP RX    UDP TX    UDP RX
-> > v6.8-rc1        255       175       102       (*)
-> > +this patch     874       650       802       948
-> > 
-> > (*) Testing UDP RX in v6.8-rc1 with a server sending traffic at 1Gbps
-> > locks up our NFS rootfs mount so we don't get any result at all.
-> > 
-> > Results with v6.8-rc1 + this patch are in line with what we see in v6.7.
-> > 
-> > Tested-by: Paul Barker <paul.barker.ct@bp.renesas.com>
-> 
-> I see this patch landed in the 'driver-core-linus' branch of
-> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
-> on 2024-01-30 as commit 98323e9d7017, however it looks like that hasn't
-> been merged to Linus' tree yet. In v6.8-rc4 I see the same issue on the
-> RZ/G2L with the CPU frequency stuck at 150MHz.
-> 
-> Is there anything I need to do to help get this patch merged before v6.8
-> is released?
 
-It will get there, sorry, been traveling for weeks and will catch up and
-send my trees to Linus later this week.
 
-greg k-h
+On 6.02.24 г. 16:58 ч., Borislav Petkov wrote:
+> On Tue, Jan 30, 2024 at 10:45:43AM +0100, Hanno Böck wrote:
+>> The description of the option disables a default, but does not mention
+>> how to change that default. To make it easier to find out, mention boot
+>> parameter ia32_emulation.
+>>
+>> Signed-off-by: Hanno Böck <hanno@hboeck.de>
+>> ---
+>>
+>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>> index 5edec175b..a65ff33e0 100644
+>> --- a/arch/x86/Kconfig
+>> +++ b/arch/x86/Kconfig
+>> @@ -3006,8 +3006,10 @@ config IA32_EMULATION_DEFAULT_DISABLED
+>>   	depends on IA32_EMULATION
+>>   	help
+>>   	  Make IA32 emulation disabled by default. This prevents loading 32-bit
+>> -	  processes and access to 32-bit syscalls. If unsure, leave it to its
+>> -	  default value.
+>> +	  processes and access to 32-bit syscalls. If set, IA32 emulation can be
+>> +	  re-enabled with the boot parameter ia32_emulation=true.
+> 
+> That sentence should say one can enable it *dynamically* with the cmdline
+> param.
+> 
+> But this text reads weird: if I want to enable it, then I won't set
+> IA32_EMULATION_DEFAULT_DISABLED in the first place and I won't have that
+> problem.
+> 
+> So the use case must be something along the lines of, ia32 emu is
+> default-disabled at build time but for certain cases where one wants it,
+> one can still enable it per-boot with a cmdline param.
+> 
+> So what's the story here?
+
+The use case is if a distribution wants to disable ia32 emu by default 
+but at the same time wants to give users the ability to override it. 
+Which is pretty much the use case you presented.
+
+> 
+> Thx.
+> 
 
