@@ -1,289 +1,130 @@
-Return-Path: <linux-kernel+bounces-63543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DC05853104
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:57:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FC2085310D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:59:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4482328A35C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:57:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42FBB1C264F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B1643ADC;
-	Tue, 13 Feb 2024 12:57:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5F448795;
+	Tue, 13 Feb 2024 12:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nDEXEzVG"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F+9muNtm"
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A9739FF0
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED77482C5
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707829067; cv=none; b=pm+ikB+ucVXrHgDXUKM/+YtoCckYHfJnUUenWIqaZw0hHWZB8OvWVBPPIsUml7cUiHb5HyivE7xVOY9yuWtpTzVutEZ61rloPLcOhhGtD6cmljB+fiJ0IPOt1jHEvOu0cKTEdAkh7ZGF4eVDQ2XrcKAwEwY5//F1HxFLkdPD60I=
+	t=1707829141; cv=none; b=PIGZb2BoLzbno/QegriL7gBN8pNugCbr9wZswUAUHM1VfjKeFCl0b1QKNvO2hlkVyfVp23ZPhNNwGFFHYlJSusdBBwTXfxRIGu6u/syX2nH5ARmBe2cs+xdpZAuIRXOVWbY0KV9QiZk/fB66tAtX0UH7s6YucROflnwihspoSQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707829067; c=relaxed/simple;
-	bh=Ho1Qa1Jy8ZOgz+lsF+HOczsTKU1zq5l3pgHCZ0HnWV4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=q61xPbvnGaVdLh+32ij8fpx09CQ51231plu3PzJk6ukMihFkUwQjgqyQt0x2wkP+WTNwxpwdEgmFtQ6WzfXw4MSPEdhso5uMu/NFZJJreQWLsq8KNGnIqacTvOZ+ONdJXGEc7IykWf7kgCMNGL+uCDglS8dRm4WOD6oJ9Sbdnpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nDEXEzVG; arc=none smtp.client-ip=209.85.219.201
+	s=arc-20240116; t=1707829141; c=relaxed/simple;
+	bh=HBXn8+mPI60aWGXqXtUgXSjVYMbihc5fwmExHw46ewo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qskflMktrWuhU4uBFAdzw9pncWI3e2/rNhYxnqLmL0N4WEP/DqyB54YPBZov31++YnF00roQAs3l0CXtLuRwgnXMyIMQTiAenamtI0K2oq9VWWJZZfbgmvGDafH1Ys0JoaWuOnLDpkDtnU+1c6tqegu+y5bSBYQt+T96aADGeMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=F+9muNtm; arc=none smtp.client-ip=209.85.222.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcd1779adbeso465525276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:57:45 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7ce55932330so1707150241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:58:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707829064; x=1708433864; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Umi4A1gRJfLDzJlbzZAb6wHjrA4iMhaSTJrxE4a8GCU=;
-        b=nDEXEzVG2Ne+OwtGylcp16O3Qb0hJawaEPQvD3ERepDtGZnaubEs++n1uG4INlTERi
-         FSgl6njEbxrqQS0IUBeBJRTpiaRNG/HPgioUtNMsZRVJz+BMYe++QOOOshVqska7NPee
-         TYJGidz99IEWY6tHHDV+yqltCPsk/vGj/mh7OJZxOtXlgKWGwkmgSG6C1MHklQkNmCd+
-         bQHe+mb0Ffq4oUqDfF+I9PqdLsbGRIdAg+W/RLsmnRAjwt1QRanyCUyKUWAChpKcUpta
-         kl5xj2xQKTfAYw9QK7UTOaMj84rXT3L4vG5RSSdNMOr0Lz+FDYuxGCE5CKN/Gutv3/r3
-         7AIQ==
+        d=google.com; s=20230601; t=1707829139; x=1708433939; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z882ZjxzlMo5zCfCXALkNVq7HPWFHS34A/7S9zGVAME=;
+        b=F+9muNtmfxJKvyhik3RT/Nw/ro9svhjuYDIgx4rTpLPzJ3pyqTd9WROVbW59aB36mA
+         /lNorJ/On5vTS2+OR321d/hJK71hGNLkwzlamGd5KWrDLJOluLJ/Q3yR4DPUitb4UabN
+         pjctP3aU8FKfZQEm96b7Z0F1fQS+tYdOEU5URZ/flevkgkPwechaEJEDl5sew88MJ5os
+         fu1rgkb4pZSQNBxF74egfY7ySMPoRRwy9j4UQx0njirxg5S97FS24/2SHGZJIYHU/TAY
+         O7F6+qggzjTDc1hZea0omNyTKXSWRzi8B0VcknYSsy8UDNFJ32Cy2V2JaNVWchxnU5hp
+         gXaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707829064; x=1708433864;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Umi4A1gRJfLDzJlbzZAb6wHjrA4iMhaSTJrxE4a8GCU=;
-        b=iEX99hojcCCwLYE4YMyZ99CwOXau06KlSSCSIq0MGjd1f2er8QpuNXFrWDB51k9MTk
-         cH43y43XHGGcll5iwu4fqNN3OUJ8G+s53m3TWGrQIX6+8hBnvVDNnKbbH8jvkTfinyDY
-         W36eCBBScTKt5bi0sc0wUKQlYFuC74Dt0djsd84Zwun+nqyb5SF41h+EwdSSqMvWOpRv
-         OJ7V+WNSWTIBDXom66O9SrM+ANTI7u/6QyxP8+Wretat1v/xtTx+od2Kve/qY3Eu7m0V
-         pIIB2gpbTUspcH5oDN50800oCwJHZLv2wlEkH5aI7LjpndftGVjrHkgjl34P6TVUtdy6
-         tVaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXSvueHc5t+h83s80Me+H2OF8/HTryehOAhYpvdIUF3x8mOGHIETMoxJDAWD+tb9clXMTvKAypqqmD2Bq9X1ClqWksNi/qP//91GBru
-X-Gm-Message-State: AOJu0Yx4t/COVKbtdxes/ejIe4zQmmF/hRlXhoah0hFav8FUJxg5Y9ro
-	y+6ZxSPsmwt5tCTP/4QFktZ3Ip0XVmXvZ3V6uXpjcfvhnXJHHL3RW8Er6tCsZZGjBeiky5IFAN6
-	2HwYxyNLd7AELBET95A==
-X-Google-Smtp-Source: AGHT+IFMfKkTkzGgWixRu1kUKYdF5213MuinjX0UAfDLUTqb0In8qLrCEBA7jEhX6iMEAmRyWv8ldqsacZuywuXq
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:1106:b0:dc7:9218:df47 with
- SMTP id o6-20020a056902110600b00dc79218df47mr1645904ybu.5.1707829064544; Tue,
- 13 Feb 2024 04:57:44 -0800 (PST)
-Date: Tue, 13 Feb 2024 12:57:42 +0000
-In-Reply-To: <20240210-zswap-global-lru-v1-1-853473d7b0da@bytedance.com>
+        d=1e100.net; s=20230601; t=1707829139; x=1708433939;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z882ZjxzlMo5zCfCXALkNVq7HPWFHS34A/7S9zGVAME=;
+        b=HJCnJ/vtQC7spcPD/jvaWo/Wd3KcJE7kKeJCnULMoQ5wsep/4QHFxJPW5rZenar1d9
+         bpXTsSrRlOzdvICl7J2Szrz3RG53+QbjkmIEKwLRPGTgOyPz7ah6d4epb7gHwNnahDzC
+         4CrpmfqHhbr4i5b/NxNBOhSPUsH11iFlCKDIk+JLSLU2QQRVt3LLmsRAUTvwg0IVzhzV
+         612Cy/1g5FVUQiyB5jvTeJELFQxNAuGJcT0P20ptWvZ2kg88hXXI+Lu08FJfpvIYLK8T
+         iEAN/S17MTdpI03nTwsPRK9ni7C4pZDaYmA7hqCC4cuWY8lQuJz6WRbOlwWsXsRag7ZD
+         1i5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXqrVjY+WwhNWkFeDvEDfe1t50fS8u178/I3NOwFwPS0weoybYSDT32rGgcjRYruhCcEAX5MSkfoZjdBU3/jputWZ3WB2+MwpXeHMY0
+X-Gm-Message-State: AOJu0Yyn6l9Skd5HRnPvORapqXG8JuXWPG5VKS1BqjjWdRE56zT1o/TE
+	JsYhKJhSAUw0AI9YjCDufDSTOKp3NekFR+GYc2t2TYHwSw8C8DYGfriOZT//rxUiMPBWfLPK2r5
+	hY/0q0qDu51h/FgQbfhXCpQa4Xq8F90IWhTrI
+X-Google-Smtp-Source: AGHT+IGEl2/Ks/zmua8jJheJoTJ5AyEUCZITHYOQdH02hKJf5Sek673WLDYX43f2OqCRu6b/hHSfKBHURX1E2mYmIW0=
+X-Received: by 2002:a05:6102:30b8:b0:46d:2b65:aa16 with SMTP id
+ y24-20020a05610230b800b0046d2b65aa16mr4623538vsd.34.1707829138393; Tue, 13
+ Feb 2024 04:58:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240210-zswap-global-lru-v1-0-853473d7b0da@bytedance.com> <20240210-zswap-global-lru-v1-1-853473d7b0da@bytedance.com>
-Message-ID: <ZctnRnNMOwQNn_3j@google.com>
-Subject: Re: [PATCH 1/2] mm/zswap: global lru and shrinker shared by all zswap_pools
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240212223029.30769-1-osalvador@suse.de> <20240212223029.30769-3-osalvador@suse.de>
+ <fc4f498b-fc35-4ba8-abf0-7664d6f1decb@suse.cz> <CANpmjNO8CHC6gSFVEOSzYsTAP-j5YvfbfzZMUwnGqSAC1Y4A8g@mail.gmail.com>
+ <11cb2ac2-102f-4acd-aded-bbfd29f7269a@suse.cz> <ZctjNn7i3atRPccE@localhost.localdomain>
+In-Reply-To: <ZctjNn7i3atRPccE@localhost.localdomain>
+From: Marco Elver <elver@google.com>
+Date: Tue, 13 Feb 2024 13:58:20 +0100
+Message-ID: <CANpmjNPntT0ApG6RzS--+1pou_XK+LjT+r-Qh4wvFiyWPqegYA@mail.gmail.com>
+Subject: Re: [PATCH v8 2/5] mm,page_owner: Implement the tracking of the
+ stacks count
+To: Oscar Salvador <osalvador@suse.de>
+Cc: Vlastimil Babka <vbabka@suse.cz>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Michal Hocko <mhocko@suse.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
+	Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Feb 11, 2024 at 01:57:04PM +0000, Chengming Zhou wrote:
-> Dynamic zswap_pool creation may create/reuse to have multiple
-> zswap_pools in a list, only the first will be current used.
-> 
-> Each zswap_pool has its own lru and shrinker, which is not
-> necessary and has its problem:
-> 
-> 1. When memory has pressure, all shrinker of zswap_pools will
->    try to shrink its own lru, there is no order between them.
-> 
-> 2. When zswap limit hit, only the last zswap_pool's shrink_work
->    will try to shrink its lru, which is inefficient.
-> 
-> Anyway, having a global lru and shrinker shared by all zswap_pools
-> is better and efficient.
+On Tue, 13 Feb 2024 at 13:39, Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Tue, Feb 13, 2024 at 12:34:55PM +0100, Vlastimil Babka wrote:
+> > On 2/13/24 10:21, Marco Elver wrote:
+> > > On Tue, 13 Feb 2024 at 10:16, Vlastimil Babka <vbabka@suse.cz> wrote:
+> > >> Isn't this racy? Shouldn't we use some atomic cmpxchg operation to change
+> > >> from REFCOUNT_SATURATED to 1?
+> > >
+> > > If 2 threads race here, both will want to add it to the list as well
+> > > and take the lock. So this could just be solved with double-checked
+> > > locking:
+> > >
+> > > if (count == REFCOUNT_SATURATED) {
+> > >   spin_lock(...);
+> >
+> > Yeah probably stack_list_lock could be taken here already. But then the
+> > kmalloc() of struct stack must happen also here, before taking the lock.
+>
+> I am thinking what would be a less expensive and safer option here.
+> Of course, taking the spinlock is easier, but having the allocation
+> inside is tricky, and having it outside could mean that we might free
+> the struct once we checked __within__ the lock that the refcount
+> is no longer REFCOUNT_SATURATED. No big deal, but a bit sub-optimal.
+>
+> On the other hand, IIUC, cmpxchg has some memory ordering, like
+> store_and_release/load_acquire do, so would it be safe to use it
+> instead of taking the lock?
 
-It is also a great simplification.
+Memory ordering here is secondary because the count is not used to
+release and later acquire any memory (the list is used for that, you
+change list head reads/writes to smp_load_acquire/smp_store_release in
+the later patch). The problem is mutual exclusion. You can do mutual
+exclusion with something like this as well:
 
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  mm/zswap.c | 153 ++++++++++++++++++++++---------------------------------------
->  1 file changed, 55 insertions(+), 98 deletions(-)
-> 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 62fe307521c9..7668db8c10e3 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -176,14 +176,17 @@ struct zswap_pool {
->  	struct kref kref;
->  	struct list_head list;
->  	struct work_struct release_work;
-> -	struct work_struct shrink_work;
->  	struct hlist_node node;
->  	char tfm_name[CRYPTO_MAX_ALG_NAME];
-> +};
-> +
-> +struct {
+>       if (refcount_read(&stack->count) == REFCOUNT_SATURATED) {
+>               int old = REFCOUNT_SATURATED;
+>               if (atomic_try_cmpxchg_relaxed(&stack->count.refs, &old, 1))
+>                       add_stack_record_to_list(...);
+>       }
+>       refcount_inc(&stack->count);
 
-static?
-
->  	struct list_lru list_lru;
-> -	struct mem_cgroup *next_shrink;
-> -	struct shrinker *shrinker;
-
-Just curious, any reason to change the relative ordering of members
-here? It produces a couple more lines of diff :)
-
->  	atomic_t nr_stored;
-> -};
-> +	struct shrinker *shrinker;
-> +	struct work_struct shrink_work;
-> +	struct mem_cgroup *next_shrink;
-> +} zswap;
->  
->  /*
->   * struct zswap_entry
-> @@ -301,9 +304,6 @@ static void zswap_update_total_size(void)
->  * pool functions
->  **********************************/
->  
-> -static void zswap_alloc_shrinker(struct zswap_pool *pool);
-> -static void shrink_worker(struct work_struct *w);
-> -
->  static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
->  {
->  	int i;
-> @@ -353,30 +353,16 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
->  	if (ret)
->  		goto error;
->  
-> -	zswap_alloc_shrinker(pool);
-> -	if (!pool->shrinker)
-> -		goto error;
-> -
-> -	pr_debug("using %s compressor\n", pool->tfm_name);
-> -
-
-Why are we removing this debug print?
-
->  	/* being the current pool takes 1 ref; this func expects the
->  	 * caller to always add the new pool as the current pool
->  	 */
->  	kref_init(&pool->kref);
->  	INIT_LIST_HEAD(&pool->list);
-> -	if (list_lru_init_memcg(&pool->list_lru, pool->shrinker))
-> -		goto lru_fail;
-> -	shrinker_register(pool->shrinker);
-> -	INIT_WORK(&pool->shrink_work, shrink_worker);
-> -	atomic_set(&pool->nr_stored, 0);
->  
->  	zswap_pool_debug("created", pool);
->  
->  	return pool;
->  
-> -lru_fail:
-> -	list_lru_destroy(&pool->list_lru);
-> -	shrinker_free(pool->shrinker);
->  error:
->  	if (pool->acomp_ctx)
->  		free_percpu(pool->acomp_ctx);
-[..]
-> @@ -816,14 +777,10 @@ void zswap_folio_swapin(struct folio *folio)
->  
->  void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
->  {
-> -	struct zswap_pool *pool;
-> -
-> -	/* lock out zswap pools list modification */
-> +	/* lock out zswap shrinker walking memcg tree */
->  	spin_lock(&zswap_pools_lock);
-> -	list_for_each_entry(pool, &zswap_pools, list) {
-> -		if (pool->next_shrink == memcg)
-> -			pool->next_shrink = mem_cgroup_iter(NULL, pool->next_shrink, NULL);
-> -	}
-> +	if (zswap.next_shrink == memcg)
-> +		zswap.next_shrink = mem_cgroup_iter(NULL, zswap.next_shrink, NULL);
-
-Now that next_shrink has nothing to do with zswap pools, it feels weird
-that we are using zswap_pools_lock for its synchronization. Does it make
-sense to have a separate lock for it just for semantic purposes?
-
->  	spin_unlock(&zswap_pools_lock);
->  }
->  
-[..]
-> @@ -1328,7 +1284,6 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
->  static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
->  		struct shrink_control *sc)
->  {
-> -	struct zswap_pool *pool = shrinker->private_data;
->  	struct mem_cgroup *memcg = sc->memcg;
->  	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
->  	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
-> @@ -1343,7 +1298,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
->  #else
->  	/* use pool stats instead of memcg stats */
->  	nr_backing = get_zswap_pool_size(pool) >> PAGE_SHIFT;
-
-"pool" is still being used here.
-
-> -	nr_stored = atomic_read(&pool->nr_stored);
-> +	nr_stored = atomic_read(&zswap.nr_stored);
->  #endif
->  
->  	if (!nr_stored)
-[..]  
-> @@ -1804,6 +1749,21 @@ static int zswap_setup(void)
->  	if (ret)
->  		goto hp_fail;
->  
-> +	shrink_wq = alloc_workqueue("zswap-shrink",
-> +			WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
-> +	if (!shrink_wq)
-> +		goto hp_fail;
-
-I think we need a new label here to call cpuhp_remove_multi_state(), but
-apparently this is missing from the current code for some reason.
-
-> +
-> +	zswap.shrinker = zswap_alloc_shrinker();
-> +	if (!zswap.shrinker)
-> +		goto shrinker_fail;
-> +	if (list_lru_init_memcg(&zswap.list_lru, zswap.shrinker))
-> +		goto lru_fail;
-> +	shrinker_register(zswap.shrinker);
-> +
-> +	INIT_WORK(&zswap.shrink_work, shrink_worker);
-> +	atomic_set(&zswap.nr_stored, 0);
-> +
->  	pool = __zswap_pool_create_fallback();
->  	if (pool) {
->  		pr_info("loaded using pool %s/%s\n", pool->tfm_name,
-> @@ -1815,19 +1775,16 @@ static int zswap_setup(void)
->  		zswap_enabled = false;
->  	}
->  
-> -	shrink_wq = alloc_workqueue("zswap-shrink",
-> -			WQ_UNBOUND|WQ_MEM_RECLAIM, 1);
-> -	if (!shrink_wq)
-> -		goto fallback_fail;
-> -
->  	if (zswap_debugfs_init())
->  		pr_warn("debugfs initialization failed\n");
->  	zswap_init_state = ZSWAP_INIT_SUCCEED;
->  	return 0;
->  
-> -fallback_fail:
-> -	if (pool)
-> -		zswap_pool_destroy(pool);
-> +lru_fail:
-> +	list_lru_destroy(&zswap.list_lru);
-
-Do we need to call list_lru_destroy() here? I know it is currently being
-called if list_lru_init_memcg() fails, but I fail to understand why. It
-seems like list_lru_destroy() will do nothing anyway.
-
-> +	shrinker_free(zswap.shrinker);
-> +shrinker_fail:
-> +	destroy_workqueue(shrink_wq);
->  hp_fail:
->  	kmem_cache_destroy(zswap_entry_cache);
->  cache_fail:
-> 
-> -- 
-> b4 0.10.1
+Probably simpler.
 
