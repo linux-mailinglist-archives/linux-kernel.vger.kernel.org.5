@@ -1,111 +1,184 @@
-Return-Path: <linux-kernel+bounces-64335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E590853D37
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:34:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A3C6853D3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:34:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5984928DFFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:34:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E4DC1C27B9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB806167F;
-	Tue, 13 Feb 2024 21:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CAE62141;
+	Tue, 13 Feb 2024 21:34:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mk3HhX1S"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="mT4kZqkR"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F0A61673
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B46461676
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:34:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707860040; cv=none; b=Dceoaowkly7R65Ci2eh1Ipbec4eYpuLfX3YGUf4J5MttXAY9H4SX4ArYbp7+PsGDvt6Ehmr8OL+l5V2cLbRaCLo6hVrqfWSwEUcaf/QwY3MjHTZH30zLU2OsKV68TX5zHZ9MlkkjDctc2/IADuabwF/ROdRWt0/8VUiAcmobpKI=
+	t=1707860046; cv=none; b=jkxmOdqd3HddKFnT/c9Lv1+Vm9R0DS+a43y/WyDwrIOx+5KCaoXm5UGafUNOsBua2CTKODY+2Er3UqSAcXZgHLBKLj2aO/M+I/bkijg37Cr4aDVKf33CqRvnBFhTTLwH0p4WxF/DFBXtBgjwiIwpUmav1lszdSBeoJobKY+N/oM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707860040; c=relaxed/simple;
-	bh=dPrrXtUFDA/aPNkcV7uPwb86n8qu+g5IfAXRcr4JbEY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pO+W1QRr6WK/FePSTfbDa1PRrWRyd3lH1w2JV400NM4ftefXxaJ3AcrP1n52lXUQtbN/K7zYq5FF0vIyuBF6EeslLwbPsEQZbU84wzRXaPot4NiYjUB+xxCyEUz5j25rEkL6fkleDNAEIZejISd62sCo7f3UIWgkfmTnzGcfKrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mk3HhX1S; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-db3a09e96daso4065259276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:33:57 -0800 (PST)
+	s=arc-20240116; t=1707860046; c=relaxed/simple;
+	bh=tczYnlV7Pr8X3MlzIngKo1f157AZrBw0PbLNu1TEpug=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nlMnhvxLzBHp/eFfeaKnFp1weVD81WsEDU4ETH798YFtaUO/pr7/T415u7/kIY3Cft5gIzTQieQXubHfstQzONrhbeSz7Njq9lcZki8bReIiU4vabUTZ54VOl3Kq1UIhBx2XOtl6X1HGYJQBk1bLN5bE4rQOojKJcISEwnCbdM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=mT4kZqkR; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d94b222a3aso40147595ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:34:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707860037; x=1708464837; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dPrrXtUFDA/aPNkcV7uPwb86n8qu+g5IfAXRcr4JbEY=;
-        b=Mk3HhX1SOIpYSZbMjz1+YZYfLdoW07ghN51SGBx4RMJDurH4iigF9edLE+S7ltqWPD
-         0TWwXR7+110wWVCMHIZzvYP6v7LmcIWlmpiIfuLAZ2qc8TihejnEJAVeG/NBnH7ji1So
-         8Ws/LIxcYJfqa/XbUdX2DqrXcLZ2C8ahSyU9rWMNj0tDaRd3g8vFv1c4yv+PkYKq+i+x
-         qUsSZopIFSf9Kxw++m/ncioMHBEuuVVGvOhCfFsWcOwArGaQTm2YHrsNOxMxvdejZXx4
-         wROjoWiB27j1bdiLV9cufTTZsxG+WPgcIjO9Ylpx75ERmxYNb+Ma1qWwrC7Z25rDrIMA
-         v/ig==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707860044; x=1708464844; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X3Dh7id3ipnoR2TxmXquXUcK+gi6YFcV7mpm+5XHZi8=;
+        b=mT4kZqkRysOVCDZaWeggYO8ymCIjeOHvAaujfE9WxcjeXUYStM3F9A2RpGl3Ltrstg
+         FZEfEw+SGhGUaJUyMib9ZMxchoq1vtvIBet0+e+DA3BJccFV/jdUmox4JB2r9ZlYHk5s
+         EaBik5M0y2cWNbP2NsRXOyVisO5dJrEA+R00x9NRLsip50UOPthpLNykr/QyJjmD2gt9
+         t2yai3NPjvFUbSbUKyunyj9NYGm/JvEyGV87hyoGNPImFFmyp7hb5xl8bLNexliiYuOa
+         2gnPV0iq8XBaPHgScmNpBf0cE5SN+wt+GIroLtTiVW9Y4oqpIhH8RxqY54r+GupFGHoI
+         AJfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707860037; x=1708464837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dPrrXtUFDA/aPNkcV7uPwb86n8qu+g5IfAXRcr4JbEY=;
-        b=wgrAhOrdoK92DBiQ8YLmWS/kxVMJWy+AR2szgNFXAC1vjEWo23Gkk4ypfu2cGWm0cB
-         RmXhTi7YKEAwPM3hrzeSv3P14jCTDgW0Uh1cEH7/30MY+6jnvkHI8xoo1QtXLJHAxK61
-         BllQiiWItuhNmCxHSWeUj73Vyw/Rvp4Kmtb56Dz/HBYujzwcVVOWM2QttK3GV4imgmub
-         DWbIfqh5M8RfI5V9a4wP1aa9yApatAO1AFKq8WkK0ECmb488BtWuoiT4g4cNq0V8aLur
-         dEGa8TPgfhpR9JzOE7Cg6Lgpp3u20DxSpm1uxbrybpnsfkDFM/gO+UDixuDGbpJTp+zW
-         jUKA==
-X-Forwarded-Encrypted: i=1; AJvYcCVfRHG/k8QDQ1ZKBRAMct+wUPaGeOcoRz6t2Lnw8o+hQZ0va/VMlRtwoLogZ3afOYc++ivm+hrS5FL1qVWI82nmKkWdyUO51+yQBlLe
-X-Gm-Message-State: AOJu0YwMf44xzq/4aSAOXKjNuUMBy+JjwhP99RRCgsv0G3WLy/p/bM5D
-	uTU8ZTVXemtHa1kRC07ptmmJxkLtW4/Cps+7DYfJX88GFelaLLCcoR554WM79wph4uRMAsC0rrg
-	bG+X3DKZei2lrOzzn5ovxH3260tGmqgs4c8WLzg==
-X-Google-Smtp-Source: AGHT+IE8VfqsD0uTdG/aeXwz1tBQu3evMyjL6FRuGSeeGZJLNoEkLi0+zH8NDzaWDKXgLBog66EMzE/k98ESnu4pSWk=
-X-Received: by 2002:a25:838f:0:b0:dc2:1f53:3a4f with SMTP id
- t15-20020a25838f000000b00dc21f533a4fmr390290ybk.5.1707860037159; Tue, 13 Feb
- 2024 13:33:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707860044; x=1708464844;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X3Dh7id3ipnoR2TxmXquXUcK+gi6YFcV7mpm+5XHZi8=;
+        b=FzUWoa0HZu92TLESJ4xQJlDX01cyikxFTQ389nfql6KZHe65zM2ALBFVqnPmkH2/os
+         qen3hiGY4BYT+4Ev6wIj02iDkJrR7xg9FW+W2g0YTpIG0JhKPPaSsbFEW7YXrWVdbZiN
+         HFyGxZXByyQ29nfqA6hlL2Xq+it3+RA7BMZzDx0HDjzYeBclGzZNPcRYdiBsdGMS9Yy7
+         eyOPf/yZyXz7bVkINOK0pMDoEpyNLqDFVEJONqqN7Av9zKZpCBF4IcbacL6n66pqhJP+
+         ADLk5v0iHG8o1721E+/7eSJ3QcUFCtBUNG7Or2yRS3Y6YGxg/SqWzii6q8xrow6GDqw1
+         9cdw==
+X-Forwarded-Encrypted: i=1; AJvYcCWd/QY8q5ojzIRgNFQVBxPmWARYOKZ9lu+690EJJITAyLddbPC5W7FwB9v0ewPUp9ecFzBKdqa2t42agLx1hp3tJJlODmY15gBnZMZ0
+X-Gm-Message-State: AOJu0YzbnpkKcJjJd48O+xwWSGDBSUDzFqduhXrcTTD99NhcppiaMRCU
+	v28YlXFf1y4fEXl0xBF2gRmlGcWHZDfb59HVp5G3zGWf6k+icAoq3l1OTIkXMXo=
+X-Google-Smtp-Source: AGHT+IHbs+SB1OAwKdQv4FKE5O0WNqesf8jQbsn5a+dVy174Ibcc6He4LWUJox+5v9FAkWcAj7o37A==
+X-Received: by 2002:a17:903:245:b0:1d9:b749:d279 with SMTP id j5-20020a170903024500b001d9b749d279mr898647plh.50.1707860044272;
+        Tue, 13 Feb 2024 13:34:04 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXWlnI3L91uv5pob/Jz5WI+4ura4qD1cse3IW1Up+u1tb0s52riHCk7ERx4gpDtQGkKH+iy+wzE4fteO+0hNQZLlUvxe6yq62f9R4dWECVk3zq7w1BAXIYVUqDNngHjANkxT4IoypDfmUYXQRVnnxLnZx4MqoXaOHddJuTATZ0H6sQDkIo1195KoZFyTqQ1V6QasL3XGfL7yZq8DevcRsajIornkiMKQinjM90biJMDTZ5C1PJw4it5PUylz09PHHoNJIdSVXjjSNer5kuk4clcdqzTZfQ2z5wLZGg0MyLuJYUxmO9ex/Oh+I31pWnrNMeqZNtINhLwZezh0l/WhWL17HtSKai7VgBvGDalE/sSF1mZZKnBotGpdAc8P6Iy8U8PW/IIV+gT60+Yuf/tDQ0eAM/wysKhMpZG4hA=
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id e12-20020a170902f1cc00b001db474154d1sm957268plc.87.2024.02.13.13.34.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 13:34:03 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1ra0Ph-00671z-0j;
+	Wed, 14 Feb 2024 08:34:01 +1100
+Date: Wed, 14 Feb 2024 08:34:01 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
+	kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com,
+	p.raghav@samsung.com, linux-kernel@vger.kernel.org, hare@suse.de,
+	willy@infradead.org, linux-mm@kvack.org
+Subject: Re: [RFC v2 14/14] xfs: enable block size larger than page size
+ support
+Message-ID: <ZcvgSSbIqm4N6TVJ@dread.disaster.area>
+References: <20240213093713.1753368-1-kernel@pankajraghav.com>
+ <20240213093713.1753368-15-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213093108.13922-1-brgl@bgdev.pl> <20240213093108.13922-3-brgl@bgdev.pl>
-In-Reply-To: <20240213093108.13922-3-brgl@bgdev.pl>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 13 Feb 2024 22:33:46 +0100
-Message-ID: <CACRpkdYbfU3LV=+xEiE=+MN4xc-_zc_6WiNOP84_PzqttCsQTA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] gpio: cdev: use correct pointer accessors with SRCU
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213093713.1753368-15-kernel@pankajraghav.com>
 
-On Tue, Feb 13, 2024 at 10:31=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
+On Tue, Feb 13, 2024 at 10:37:13AM +0100, Pankaj Raghav (Samsung) wrote:
+> From: Pankaj Raghav <p.raghav@samsung.com>
+> 
+> Page cache now has the ability to have a minimum order when allocating
+> a folio which is a prerequisite to add support for block size > page
+> size. Enable it in XFS under CONFIG_XFS_LBS.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> ---
+>  fs/xfs/xfs_icache.c | 8 ++++++--
+>  fs/xfs/xfs_super.c  | 8 +++-----
+>  2 files changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
+> index dba514a2c84d..9de81caf7ad4 100644
+> --- a/fs/xfs/xfs_icache.c
+> +++ b/fs/xfs/xfs_icache.c
+> @@ -73,6 +73,7 @@ xfs_inode_alloc(
+>  	xfs_ino_t		ino)
+>  {
+>  	struct xfs_inode	*ip;
+> +	int			min_order = 0;
+>  
+>  	/*
+>  	 * XXX: If this didn't occur in transactions, we could drop GFP_NOFAIL
+> @@ -88,7 +89,8 @@ xfs_inode_alloc(
+>  	/* VFS doesn't initialise i_mode or i_state! */
+>  	VFS_I(ip)->i_mode = 0;
+>  	VFS_I(ip)->i_state = 0;
+> -	mapping_set_large_folios(VFS_I(ip)->i_mapping);
+> +	min_order = max(min_order, ilog2(mp->m_sb.sb_blocksize) - PAGE_SHIFT);
+> +	mapping_set_folio_orders(VFS_I(ip)->i_mapping, min_order, MAX_PAGECACHE_ORDER);
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> We never dereference the chip pointer in character device code so we can
-> use the lighter rcu_access_pointer() helper. This also makes lockep
-> happier as it no longer complains about suspicious rcu_dereference()
-> usage.
->
-> Fixes: d83cee3d2bb1 ("gpio: protect the pointer to gpio_chip in gpio_devi=
-ce with SRCU")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202402122234.d85cca9b-lkp@intel.co=
-m
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+That's pretty nasty. You're using max() to hide underflow in the
+subtraction to clamp the value to zero. And you don't need ilog2()
+because we have the log of the block size in the superblock already.
 
-I had to check what rcu_access_pointer() does and it's clearly the
-right thing to do so:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+	int			min_order = 0;
+	.....
+	if (mp->m_sb.sb_blocksize > PAGE_SIZE)
+		min_order = mp->m_sb.sb_blocklog - PAGE_SHIFT;
 
-Yours,
-Linus Walleij
+But, really why recalculate this -constant- on every inode
+allocation?  That's a very hot path, so this should be set in the
+M_IGEO(mp) structure (mp->m_ino_geo) at mount time and then the code
+is simply:
+
+	mapping_set_folio_orders(VFS_I(ip)->i_mapping,
+			M_IGEO(mp)->min_folio_order, MAX_PAGECACHE_ORDER);
+
+We already access the M_IGEO(mp) structure every inode allocation,
+so there's little in way of additional cost here....
+
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index 5a2512d20bd0..6a3f0f6727eb 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -1625,13 +1625,11 @@ xfs_fs_fill_super(
+>  		goto out_free_sb;
+>  	}
+>  
+> -	/*
+> -	 * Until this is fixed only page-sized or smaller data blocks work.
+> -	 */
+> -	if (mp->m_sb.sb_blocksize > PAGE_SIZE) {
+> +	if (!IS_ENABLED(CONFIG_XFS_LBS) && mp->m_sb.sb_blocksize > PAGE_SIZE) {
+>  		xfs_warn(mp,
+>  		"File system with blocksize %d bytes. "
+> -		"Only pagesize (%ld) or less will currently work.",
+> +		"Only pagesize (%ld) or less will currently work. "
+> +		"Enable Experimental CONFIG_XFS_LBS for this support",
+>  				mp->m_sb.sb_blocksize, PAGE_SIZE);
+>  		error = -ENOSYS;
+>  		goto out_free_sb;
+
+This should just issue a warning if bs > ps.
+
+	if (mp->m_sb.sb_blocksize > PAGE_SIZE) {
+  		xfs_warn(mp,
+"EXPERIMENTAL: Filesystem with Large Block Size (%d bytes) enabled.",
+			mp->m_sb.sb_blocksize);
+	}
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
