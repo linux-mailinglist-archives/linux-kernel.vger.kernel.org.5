@@ -1,99 +1,56 @@
-Return-Path: <linux-kernel+bounces-63861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526148535A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:07:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 787F08535A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:07:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A362128A5DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:07:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 948E91C2145B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 073AB6024C;
-	Tue, 13 Feb 2024 16:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E596027A;
+	Tue, 13 Feb 2024 16:06:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IOrx63uV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kmvH+est";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mZm9Vi3Y";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MomgODCR"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="HpC+xxk7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127CF5FF09;
-	Tue, 13 Feb 2024 16:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965276025B;
+	Tue, 13 Feb 2024 16:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707840360; cv=none; b=LmrLCCgbBtW8mCw3O1B1MJjUgo14HMlAWLOfy9oZOmt7T804y/RIYJqv7lrgFro+wk/4bhhBxSD1epNdvvZ34fIuJbSXyL2qBpBpokJJyEwopKZl6yjMotm8RrJmfujlGmhc5FTgTWI99aM5iDdHi2gSzPZehsbzpx0pDsSgMmo=
+	t=1707840361; cv=none; b=ckBCBAiRxImlno3/T5qO6jOrYUulbemxlWj9EFg9vkarrkn8Ru6mVnw2PPnaOhMZJCE1LRgEokghcPuUYYuGumM9BUoUtdrbZ4VP9oSo5WnUUyfKwObxICFNcv6rPkl6Y40O4LO8Xsk9tNx1GQlpf1NFe7H21CBgoDp+FGYsYsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707840360; c=relaxed/simple;
-	bh=RSfgWvK3PUkWv6IYeIUP4jd95r0kAZpMfmZQzwkXJMs=;
+	s=arc-20240116; t=1707840361; c=relaxed/simple;
+	bh=8IrZp1R6Id5dnAPQaTPV1kv7PcWpRQgZiextr7aFPgs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E0HHbCl39CkFmc1Rz44+Qqg5Nc7FqGFuUGr0OU9OJtB9EzOpzrdZN1C83x2JZp8z1HiquYvAP3ju5tog82XWbfYW+AOOelh/7pcVUaY0ZXDTJ/ng8JvKkqqYpwMwXxYFWj4qZbTlFr14N2u2CJwoOCwAQgw7hy66HC+8RyjeVCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IOrx63uV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kmvH+est; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mZm9Vi3Y; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MomgODCR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2566221B5D;
-	Tue, 13 Feb 2024 16:05:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707840356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gb3KHU7wx9iO7ZIvkAPLliWDZuFR1RA9JAptAreeXbE=;
-	b=IOrx63uVQVWyK4sTh72r+QBXSUlKnXvRLBQTYUZxwsPVIng+KnPht+hdxH74ZevHk2i+Hq
-	poZP1BPxvKr6pmMDuRZa0QLE4CCzarVS1MCMTY4xI9HMLwJUgb5UHhEyowNcjiwSdB4tjw
-	c75NBOheKXJ9OmNDn0yfhjSP9UFPyuU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707840356;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gb3KHU7wx9iO7ZIvkAPLliWDZuFR1RA9JAptAreeXbE=;
-	b=kmvH+estBDgz5BZMOHOABGKjgQ1cXJkW60GByBv+gYp7aZlsM94d7V3VUr/cNvJkPiF5A7
-	whtLDu11y2jgiPAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707840355; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gb3KHU7wx9iO7ZIvkAPLliWDZuFR1RA9JAptAreeXbE=;
-	b=mZm9Vi3YU97Ie0hXf31KuZp1xOvi+KPptoKthnUd14EAqLZk2KaQ/BnS5hnQ1dQGVaTjW6
-	m/AbrCd90lCCwt0GGjKyC3H7SFl4QT4FL+6n8Uh+Jg6teU3t68XNrIk0nEm99Z1or62Pyq
-	oFABIe2rRV+C6XypO7bQpFwdGdJMXF4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707840355;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gb3KHU7wx9iO7ZIvkAPLliWDZuFR1RA9JAptAreeXbE=;
-	b=MomgODCRjmGnifLMGtardNXqbYGmusZGiFdI/SyIuwMn/y6ZjPoB4eYT7qD8JbSw0nQNcw
-	+5gHIMOwEhrtfEAA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 16DF81329E;
-	Tue, 13 Feb 2024 16:05:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id SjqPBWOTy2XqBQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 13 Feb 2024 16:05:55 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B09B2A0809; Tue, 13 Feb 2024 17:05:54 +0100 (CET)
-Date: Tue, 13 Feb 2024 17:05:54 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: Re: [PATCH 1/7] ext4: avoid overflow when setting values via sysfs
-Message-ID: <20240213160554.35cpsfqqeqpgtux2@quack3>
-References: <20240126085716.1363019-1-libaokun1@huawei.com>
- <20240126085716.1363019-2-libaokun1@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TOlrpyAowLi9nLbdfXe/BHSQ0fHxRn83ZAiBX9J3z4lJYsawI+Jx7hpcGWJ/nUtDYgcCEHv0vWe6WXz6ANfPUX83yPyXG6WWkWyZ42W4evQGx7Sv4eEcYZTLjjOA3g0NQOJtNMsETFxTZWU0rll7EZ1w4M1UWfQZGjoWbYme3WE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=HpC+xxk7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54887C433C7;
+	Tue, 13 Feb 2024 16:06:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707840361;
+	bh=8IrZp1R6Id5dnAPQaTPV1kv7PcWpRQgZiextr7aFPgs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HpC+xxk7dsmGsS1klQiOYCtvx6SRk+i18WHGYIJ9m76XsA7lICyPtbdD/Zmq9NgJg
+	 UdVSkS6nCzOyFanbdyUtMRKA6v/znfAccvaYRlsUpJSIQ/dy40h3j11X877fP+bVnS
+	 huOtfjQXil86hwRFyNJTynz/n6SmVB6+MzbrgWHU=
+Date: Tue, 13 Feb 2024 17:05:57 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: David Laight <David.Laight@aculab.com>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
+	Sasha Levin <sashal@kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [regression] linux-6.6.y, minmax: virtual memory exhausted in
+ i586 chroot during kernel compilation
+Message-ID: <2024021331-famished-underpass-1080@gregkh>
+References: <f9f89284-0f48-4971-ad8d-86938a82fafc@leemhuis.info>
+ <2024021318-shifty-daybed-fca8@gregkh>
+ <699726f6-8f5d-4482-8c27-8ea47a483f8a@leemhuis.info>
+ <19d0ed563ba0449dac089b95456026dd@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -102,87 +59,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240126085716.1363019-2-libaokun1@huawei.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+In-Reply-To: <19d0ed563ba0449dac089b95456026dd@AcuMS.aculab.com>
 
-On Fri 26-01-24 16:57:10, Baokun Li wrote:
-> When setting values of type unsigned int through sysfs, we use kstrtoul()
-> to parse it and then truncate part of it as the final set value, when the
-> set value is greater than UINT_MAX, the set value will not match what we
-> see because of the truncation. As follows:
+On Tue, Feb 13, 2024 at 03:13:10PM +0000, David Laight wrote:
+> From: Linux regression tracking (Thorsten Leemhuis)
+> > Sent: 13 February 2024 15:01
+> > 
+> > On 13.02.24 15:50, Greg KH wrote:
+> > > On Mon, Feb 12, 2024 at 05:16:58PM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
+> > >>
+> > >> I noticed a regression report in bugzilla.kernel.org that seems to be
+> > >> specific to the linux-6.6.y series:
+> > >>
+> > >> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218484 :
+> > >>
+> > >>> After upgrading to version 6.6.16, the kernel compilation on a i586
+> > >>> arch (on a 32bit chroot in a 64bit host) fails with a message:
+> > >>>
+> > >>> virtual memory exhausted: Cannot allocate memory
+> > >>>
+> > >>> this happens even lowering the number of parallel compilation
+> > >>> threads. On a x86_64 arch the same problem doesn't occur. It's not
+> > >>> clear whether some weird recursion is triggered that exhausts the
+> > >>> memory, but it seems that the problem is caused by the patchset
+> > >>> 'minmax' added to the 6.6.16 version, in particular it seems caused
+> > >>> by these patches:
+> > >>>
+> > >>> - minmax-allow-min-max-clamp-if-the-arguments-have-the-same-signedness.patch
+> > >>> - minmax-fix-indentation-of-__cmp_once-and-__clamp_once.patch
+> > >>> - minmax-allow-comparisons-of-int-against-unsigned-char-short.patch
+> > >>> - minmax-relax-check-to-allow-comparison-between-unsigned-arguments-and-signed-constants.patch
+> > >>>
+> > >>> Reverting those patches fixes the memory exhaustion problem during compilation.
+> > >>
+> > >> The reporter later added:
+> > >>
+> > >>> From a quick test the same problem doesn't occur in 6.8-rc4.
+> > >> See the ticket for more details.
+> > >
+> > > I think this was already fixed in 6.7 or Linus's tree, but I can't seem
+> > > to find the commit at the moment.
+> > 
+> > I thought so as well, but was in the same situation. But your comment
+> > made me look again and now I found it: that was 31e97d7c9ae3de ("media:
+> > solo6x10: replace max(a, min(b, c)) by clamp(b, a, c)"), which indeed is
+> > not yet in 6.6.y.
 > 
->   $ echo 4294967296 > /sys/fs/ext4/sda/mb_max_linear_groups
->   $ cat /sys/fs/ext4/sda/mb_max_linear_groups
->     0
+> The code is actually (now) doing:
+> 	clamp(b, clamp(c, a, d), d)
+> but previously was four nested min()/max().
+> Even the a/b/c/d aren't trivial.
+> It always was a pretty long line, but the longer expansions made it explode.
 > 
-> So when the value set is outside the variable type range, -EINVAL is
-> returned to avoid the inconsistency described above. In addition, a
-> judgment is added to avoid setting s_resv_clusters less than 0.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->  fs/ext4/sysfs.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index 6d332dff79dd..3671a8aaf4af 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -104,7 +104,7 @@ static ssize_t reserved_clusters_store(struct ext4_sb_info *sbi,
->  	int ret;
->  
->  	ret = kstrtoull(skip_spaces(buf), 0, &val);
-> -	if (ret || val >= clusters)
-> +	if (ret || val >= clusters || (s64)val < 0)
->  		return -EINVAL;
+> I was mildly surprised to see the minmax changes backported.
+> Not complaining though.
 
-This looks a bit pointless, doesn't it? 'val' is u64, clusters is u64. We
-know that val < clusters so how could (s64)val be < 0?
+They were needed to fix build errors in a different driver that was
+depending on the type checking changes in them.  That's why I added
+them.
 
-> @@ -463,6 +463,8 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
->  		ret = kstrtoul(skip_spaces(buf), 0, &t);
->  		if (ret)
->  			return ret;
-> +		if (t != (unsigned int)t)
-> +			return -EINVAL;
->  		if (a->attr_ptr == ptr_ext4_super_block_offset)
->  			*((__le32 *) ptr) = cpu_to_le32(t);
->  		else
+> But 31e97d7c9ae3de needs backporting as well.
 
-I kind of agree with Alexey that using kstrtouint() here instead would look
-nicer. And it isn't like you have to define many new variables. You just
-need unsigned long for attr_pointer_ul and unsigned int for
-attr_pointer_ui.
+Now queued up, thanks.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+greg k-h
 
