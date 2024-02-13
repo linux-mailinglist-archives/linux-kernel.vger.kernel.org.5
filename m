@@ -1,97 +1,133 @@
-Return-Path: <linux-kernel+bounces-63949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DDF48536A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:56:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07F368536AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C1BAB23667
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:56:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B11A6288611
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:57:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA125FDBE;
-	Tue, 13 Feb 2024 16:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0336024B;
+	Tue, 13 Feb 2024 16:57:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PV1yosfO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n3LMBlIq"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02C45FDA5;
-	Tue, 13 Feb 2024 16:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5927060241
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:57:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707843368; cv=none; b=Y1lPFDu5SOH0TO4wOAFApwYAkO5TM2yElg5jTiLcCoGPlnMqIeILr6xUSuXQYRAC40JLOTQm2b5TM6VIZUR0LZyPAkTAzBh3sccMBbgtAChnYS/RcmdqVSB95Uf0vSPDobk5AdLIuwYbPSFnKMq+E+LQ9M1f9+pKE4og38G5p84=
+	t=1707843445; cv=none; b=JY7RCS5QvqssqJIq4fwPl/tg9KEzoqSz4BBpsnpLL9ENgoeOXiqgbDyFDlirE6OV4xkqefD7jRsYNdZBF6fUWp3jowa2NEunkXIHipdZrNNTigRxDYsu/3kp+rEbUDNuyblaWnXqoOdCrNBirBU7vBsD0VFj1LXNjSxvM3eLuBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707843368; c=relaxed/simple;
-	bh=ZmEGmNbg7orCIXpnVHbhJQ6i7Pd0eRRr5N6YyUcq8k8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bFxI/4sNl9jhEVmhNH6/RPpoQVQP33XLdXCaHOjCRn/F4HkBy0g4sg92Nr512yVJvMgNATcMdCZYbEmtBfp2z4ZM0/hxj1eUF8Fz5kIqr4f07W5Xc7UqM8H98DjrRJ7jQ/9KIR9b9zr3AQf2tSKZvP2Ji0uqolFg2SC/+mjgWJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PV1yosfO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38FB4C433C7;
-	Tue, 13 Feb 2024 16:56:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707843368;
-	bh=ZmEGmNbg7orCIXpnVHbhJQ6i7Pd0eRRr5N6YyUcq8k8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PV1yosfOXudZVK+Vz4yeF7xCvhUbzxWBJNUoc/eb0D86jFQYLddVcH119UHcvXHBx
-	 VgfhDYYijG+CLAlkCjV6DVYdUrIY/c7adxgii2dTOJzqh9/rGDtn2tTK12I0rHMjku
-	 fhnHvbOIFqeXDFFDKbaOzz2XzCAXsNy2cBR4742BufF7n1l+hNhTTaksQI0HXFe9oJ
-	 wLXc2ucagJCCKGt3h74sz7quMfwdgiDw9v6ro1Am26LAAi3aBwKnOk6C6CwtBY5fwp
-	 yXL9BiPEuQZMUAXXRibIC6HhDLtTq21gVDnJ5qF9wuFs6hKNdqxSofNI/aK1XicRZB
-	 vFOlYcNKr3iiw==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Fenglin Wu <quic_fenglinw@quicinc.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	ChiYuan Huang <cy_huang@richtek.com>,
-	=?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	linux-leds@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] leds: ktd2692: add gpiolib dependency
-Date: Tue, 13 Feb 2024 17:55:50 +0100
-Message-Id: <20240213165602.2230970-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707843445; c=relaxed/simple;
+	bh=Jw8FkE8KKiGwtiIUrclqp1VCgjmVOjxfsPjaH1shq0I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g+rNQdOKg/vTyX/C/vD0Ym0CZh/qAxLtUL2LgPmivVoXTb6gKMptxVZBeU8VjcFS6NeNWEIImyELhX03TAd7XrAcvjg56EmRpVci3NJEZQrQodz0445fU1TP0EncfipgsrMT51gxprlBG1/l9dOCEv/wKwMbAT9cUol1OyVfGTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n3LMBlIq; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707843443; x=1739379443;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=Jw8FkE8KKiGwtiIUrclqp1VCgjmVOjxfsPjaH1shq0I=;
+  b=n3LMBlIqQWLhdYkhBrkOm/iIRHBUUezec1wedwkB5tFVSJcA3EuRyekm
+   8TOW7rMLz44sLKAXrAmvaXpW4MCWZ+UuhkLZIe/AoBDyYIuOPxW1iSOjA
+   AfBYjh1CYF7A0RwkhQ3b9Apop+twyeMpbunmSQdj9ieXY2+4+3nBioHuE
+   v75yEJIlXn5E+HXT2TIYHHjmgVnG7EucRb+VcUkBH3z5Ee3bCTpsOHLm0
+   w4EFL4ZJoCFtp0FpSrqHV6fGBx5XKaN0kWTeRI6TIJif1LVGROsAVc2aq
+   cvV90aN+bfYE7EoctEazHT3qDLsci3zknwcyUPbpOQbHXdoj3yo8PlH61
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="4828360"
+X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
+   d="scan'208";a="4828360"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 08:57:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935398422"
+X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
+   d="scan'208";a="935398422"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Feb 2024 08:57:20 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 73077184; Tue, 13 Feb 2024 18:57:19 +0200 (EET)
+Date: Tue, 13 Feb 2024 18:57:19 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH, RESEND] x86/pat: Simplifying the PAT programming protocol
+Message-ID: <vquojgkflafiro5w27qijetm6uat6dfzijq3vszplirselombz@4xeofmdczpif>
+References: <20240124130650.496056-1-kirill.shutemov@linux.intel.com>
+ <20240131175738.GIZbqKEhlDKhaKfh_w@fat_crate.local>
+ <67hqgqargmt6nln5mds672g263lka7glyzbvcdgt4owdg7xc2e@v6wvuizw5ond>
+ <20240131202340.GLZbqsTJkeFQycXT0B@fat_crate.local>
+ <fvzki5mtpbsoyljy354qnva5rllgukba7iuxufxjttceio5osd@tdvgddwttfqo>
+ <20240213161514.GCZcuVku13t8p5wHnj@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240213161514.GCZcuVku13t8p5wHnj@fat_crate.local>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Feb 13, 2024 at 05:15:14PM +0100, Borislav Petkov wrote:
+> On Thu, Feb 01, 2024 at 12:17:32AM +0200, Kirill A. Shutemov wrote:
+> > > So the "relaxation" is the removal of that CR0.CD requirement?
+> 
+> So I'm looking at the SDM, revisions 081US and 082US.
+> 
+> Section
+> 
+> "12.11.8 MTRR Considerations in MP Systems"
 
-The expresswire module requires gpiolib, so anything selecting it
-also needs this dependency:
+The point is that PAT programming doesn't need to follow MTRR
+considerations anymore.
 
-WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
-  Depends on [n]: NEW_LEDS [=y] && GPIOLIB [=n]
-  Selected by [y]:
-  - LEDS_KTD2692 [=y] && NEW_LEDS [=y] && LEDS_CLASS_FLASH [=y] && OF [=y]
+Previously "Programming the PAT" section had this:
 
-Fixes: e59a15af7aa6 ("leds: ktd2692: Convert to use ExpressWire library")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/leds/flash/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+   The operating system is responsible for ensuring that changes to a PAT
+   entry occur in a manner that maintains the consistency of the processor
+   caches and translation lookaside buffers (TLB). This is accomplished by
+   following the procedure as specified in Section 12.11.8, “MTRR
+   Considerations in MP Systems,” for changing the value of an MTRR in a
+   multiple processor system. It requires a specific sequence of
+   operations that includes flushing the processors caches and TLBs.
 
-diff --git a/drivers/leds/flash/Kconfig b/drivers/leds/flash/Kconfig
-index 01998d71a6a2..809b6d98bb3e 100644
---- a/drivers/leds/flash/Kconfig
-+++ b/drivers/leds/flash/Kconfig
-@@ -23,6 +23,7 @@ config LEDS_AS3645A
- config LEDS_KTD2692
- 	tristate "LED support for Kinetic KTD2692 flash LED controller"
- 	depends on OF
-+	depends on GPIOLIB
- 	select LEDS_EXPRESSWIRE
- 	help
- 	  This option enables support for Kinetic KTD2692 LED flash connected
+The new version points to MTTR consideration as one of possible way to
+invalidate TLB and caches:
+
+  The operating system (OS) is responsible for ensuring that changes to a
+  PAT entry occur in a manner that maintains the consistency of the
+  processor caches and translation lookaside buffers (TLB). It requires the
+  OS to invalidate all affected TLB entries (including global entries) and
+  all entries in all paging-structure caches. It may also require flushing
+  of the processor caches in certain situations. This can be accomplished
+  in various ways, including the sequence below or by following the
+  procedure specified in Section 12.11.8, “MTRR Considerations in MP
+  Systems.” (See Section 4.10.4, “Invalidation of TLBs and
+  Paging-Structure Caches” for additional background information.) Also
+  note that in a multi-processor environment, it is the software's
+  responsibility to resolve differences in conflicting memory types across
+  logical processors that may arise from changes to the PAT (e.g., if two
+  logical processors map a linear address to the same physical address but
+  have PATs that specify a different memory type for that physical
+  address).
+
+The new text follows with example of sequence that flushes TLB and
+caches. And it doesn't touch CR0.CD.
+
 -- 
-2.39.2
-
+  Kiryl Shutsemau / Kirill A. Shutemov
 
