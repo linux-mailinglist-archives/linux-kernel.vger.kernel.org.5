@@ -1,127 +1,94 @@
-Return-Path: <linux-kernel+bounces-63817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B71128534CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D69D8534D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:38:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C12A1F29676
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:37:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 104AE1F2A616
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:38:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D381E5FDC8;
-	Tue, 13 Feb 2024 15:36:05 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E050A5EE76;
+	Tue, 13 Feb 2024 15:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EfTqm80V"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C695F863
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1275EE65
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707838565; cv=none; b=dcsg4r+P1qd/64iNTNMTXhvDsVl+JndEbc+rtwrduR67C1gHnJHXSLTU/w/vO9drRSgjKx8XOP5IxB8MNwOGT29FmfsOvppoLUn2CANZDiua9x/ZM9GwTyaPcLz8bIyoKLvuAXHOW24PpbEOD94zAU/Lixa6UiWp3mnMNm4pwfg=
+	t=1707838670; cv=none; b=Y/Vvjnq3IGvt9VBw792xCD30Ofh33wxcwdugcx3YDix4fyBSshLOBalDH/HCSAcTj+NuusBraWCxt1yx+zR/Eag8Ak9CGaCrvjrIGy1VsuszpKNeMpdXN0hOWLEvKhIvzTogmCrTR/ENqyYcs/nMeUkDir99WxJTVY1e8syd7TI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707838565; c=relaxed/simple;
-	bh=xZUB8BUYh9q0K4zYhrKO5UiHbHyA8zQWz3EYhJ1Eclw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OgDJL/jDwrxQoxzr3swJ2eEdHCjPQO287DCXOhAVQRsPRmzT3ThvB9Geg0CJm2q/fKi1Kdv+V8mU4alBu7UQ0z2TW94Q27V5pbck9VQBpPAxa6IzdfTz4bxSQxfoGDNd67IdlRL5P3NXiaH5k+cqwTEXbLkyUANQVp6DRpekHFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EB2BA22017;
-	Tue, 13 Feb 2024 15:36:01 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD70D1370C;
-	Tue, 13 Feb 2024 15:36:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id M+mrMWGMy2VzQAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 13 Feb 2024 15:36:01 +0000
-Message-ID: <ff695557-603c-4bbd-ac6e-3a35ae6ed74f@suse.cz>
-Date: Tue, 13 Feb 2024 16:36:01 +0100
+	s=arc-20240116; t=1707838670; c=relaxed/simple;
+	bh=icr/pOYN3NQ4vt5p2G2RvMWyYtK1FI1GNj7EmEU+oGU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GJ01bkM7+7NCq0Be2V2C4RwAmsIOQgS2SIwmdzoELfkBFPTgPCz7lNnJLmLyCQ+9sVJWOOl44SBBNeVbp6Zrbma+reblhaDCKu8s7POd1nBSKQGnGIIDkSqM/ObGwG+lnK4YFBwPZU+PPlgNARtLKTdhV+Sj0vl8Dait2+WvvZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EfTqm80V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4588C433C7;
+	Tue, 13 Feb 2024 15:37:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707838669;
+	bh=icr/pOYN3NQ4vt5p2G2RvMWyYtK1FI1GNj7EmEU+oGU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EfTqm80VkfhaBxwvM10KIiWzm2C3AZLuhwDmIjMZA0IiRiRikvPeOEeTDJKVlmiz1
+	 ANHxqv9lM8Zrm6Ndo6vFfM0V+LYYLdB0v5jaN5/b53xTm77qX7hHK2TwygpEWimAPO
+	 g7f8ACeY5d2oolCc++pr1hFvveBU0dokMFCTZAB9t0gSfpoKC8ttAZKRJxR8IZG8U7
+	 0m9ZPWeDP5/eeFBOiILYf89Xg5oasTxKRrcE94dWoKvd4Rjd0ASvdSbBRX8Yi2U2tA
+	 xoI0Xd5xZImgc1tRNV3CfdLYhbR+aK8mx7gp6+U6gvHEyFuif2o0m3NYWYClzG4Ktv
+	 DZ6VKMWONz2pg==
+Date: Tue, 13 Feb 2024 15:37:45 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Naresh Solanki <naresh.solanki@9elements.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, mazziesaccount@gmail.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator (max5970): Fix regulator child node name
+Message-ID: <7a687805-3c99-4e1e-bad7-f40ed06ea96e@sirena.org.uk>
+References: <20240213145801.2564518-1-naresh.solanki@9elements.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 3/5] mm,page_owner: Display all stacks and their count
-Content-Language: en-US
-To: Oscar Salvador <osalvador@suse.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
- Marco Elver <elver@google.com>, Andrey Konovalov <andreyknvl@gmail.com>,
- Alexander Potapenko <glider@google.com>
-References: <20240212223029.30769-1-osalvador@suse.de>
- <20240212223029.30769-4-osalvador@suse.de>
- <b706176a-c60a-4960-ba4a-2755c612d9c8@suse.cz>
- <ZcuLyjU52Gd3xJI8@localhost.localdomain>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ZcuLyjU52Gd3xJI8@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: EB2BA22017
-X-Spam-Level: 
-X-Spam-Score: -4.00
-X-Spam-Flag: NO
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="LLRaq9BoFVNdMckq"
+Content-Disposition: inline
+In-Reply-To: <20240213145801.2564518-1-naresh.solanki@9elements.com>
+X-Cookie: Does not include installation.
 
-On 2/13/24 16:33, Oscar Salvador wrote:
-> On Tue, Feb 13, 2024 at 03:25:26PM +0100, Vlastimil Babka wrote:
->> On 2/12/24 23:30, Oscar Salvador wrote:
->> > +static int stack_print(struct seq_file *m, void *v)
->> > +{
->> > +	char *buf;
->> > +	int ret = 0;
->> > +	struct stack *stack = v;
->> > +	struct stack_record *stack_record = stack->stack_record;
->> > +
->> > +	if (!stack_record->size || stack_record->size < 0 ||
->> > +	    refcount_read(&stack_record->count) < 2)
->> > +		return 0;
->> > +
->> > +	buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
->> > +
->> > +	ret += stack_trace_snprint(buf, PAGE_SIZE, stack_record->entries,
->> > +				   stack_record->size, 0);
->> > +	if (!ret)
->> > +		goto out;
->> > +
->> > +	scnprintf(buf + ret, PAGE_SIZE - ret, "stack_count: %d\n\n",
->> > +		  refcount_read(&stack_record->count));
->> > +
->> > +	seq_printf(m, buf);
->> > +	seq_puts(m, "\n\n");
->> > +out:
->> > +	kfree(buf);
->> 
->> Seems rather wasteful to do kzalloc/kfree so you can print into that buffer
->> first and then print/copy it again using seq_printf. If you give up on using
->> stack_trace_snprintf() it's not much harder to print the stack directly with
->> a loop of seq_printf. See e.g. slab_debugfs_show().
-> 
-> Well, I thought about not reinventing the wheel there, but fair enough
-> than performing a kmalloc/free op on every print might be suboptimal.
-> I will try to do ir with seq_printf alone.
 
-Of course once there's more than one stackdepot user printing into a
-seq_file, creating a common seq_file helper analogy of
-stack_trace_snprintf() and using it from all places, would also be an option :)
+--LLRaq9BoFVNdMckq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Thanks
->  
-> 
+On Tue, Feb 13, 2024 at 08:28:00PM +0530, Naresh Solanki wrote:
+> Update regulator child node name to lower case i.e., sw0 & sw1 as
+> descibed in max5970 dt binding.
 
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
+
+--LLRaq9BoFVNdMckq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXLjMkACgkQJNaLcl1U
+h9AxgQf+M9nClxgcBOj/MSRtFgP+bD9RUfJOpOAnZomdPANSDgzuytH7i8Z4BtdW
+gR5eJzvz384kkX9GkIFzq3DCxHbojsp8/+gNjvJeEiVDO21wDCIrip5j+LU7omb/
+5tPNp/rBZ17vMMCMyFlnDwGyDv4uE+LU8us/0yY/0TSVOOwC5pg5xRGJTcVdgqkN
+TXBJLU8MnQ0XaV1h2VSgdj0uxdCxEmy+S3A+Gs/zOYFe9yYwN9+4hMgAGCZPQryn
+55fV8WS+fiMBKOS8+eV2mJVdnIdXFBZoTOmWTxseqfxQhDJsPzVjc4nHnH9mttJW
+DGdm+Zl85/UoD6GoIrRfFpiZy47cqQ==
+=G118
+-----END PGP SIGNATURE-----
+
+--LLRaq9BoFVNdMckq--
 
