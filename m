@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-62708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC6D185249F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:56:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2ECD8524A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:57:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 177C8B21880
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:56:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FB0F286177
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E01832261F;
-	Tue, 13 Feb 2024 00:23:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA66224FD;
+	Tue, 13 Feb 2024 00:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cevW7IBc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PkO+sMXh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231C7839E2;
-	Tue, 13 Feb 2024 00:23:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE419839E2;
+	Tue, 13 Feb 2024 00:23:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783796; cv=none; b=O/Mv/d/A5JDcSJMAKAqDtdqA8pn/a7xd+aBkzJ/K84ZTNTB1wS3S1y5LOEzH5xqcgJiJUzgC5e3Us/TIUL3c36tpu+y8HdKjdBA7JUjgvJu5c/91XEAZ8X+3TlDhoxCRCFRVu1OsobEMpCVCUgOfRc9VftX7ea5YoqOHbGT/XzA=
+	t=1707783800; cv=none; b=MIjZa16YTy7vd05BV8sOLS8wD9OI4z/dDJUt7kp0C/YscaMj1RIIoZJs1mBoXlH3Jc0b/hfpdWsXrriQu9GMSZOz97a9Wq2te53LApFDrxLXxeKiK+mZK3VPRWEPwnXFSfDmFMLk4EjHRwnNldWqRNzHejkr4JuSlVB4PclHbBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783796; c=relaxed/simple;
-	bh=dyYuoQO6LL8LOppQkKkh22dO/q0dhL/RGV1YgeuYVDo=;
+	s=arc-20240116; t=1707783800; c=relaxed/simple;
+	bh=6ryKZXEJRLnRj7J4B6wkp1zy0wxQlLN4XSjp4TGtT9c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OIIUYsD+B3Ogd328NPUew6QztKUoHIgQIXLnvPVEw4s8kE/RgsrRTDP9siTF2jHAggzrLS8DZGtdey+9Lz71/X+lCjp5LqrsIgjGGm+uAWzhMPWAnCMy/55Ydnc5ZxNqz7BX99O7LuVYtzL4Hp2aLnPfutuoKWOEKRWTyC9wHVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cevW7IBc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72A7CC433F1;
-	Tue, 13 Feb 2024 00:23:13 +0000 (UTC)
+	 MIME-Version; b=fuvVYVKtNe1cHeTh6O5b2Q80/hueku7SagLPFX3P6gho0ZL+VrY7J5neFkjnkevLaBy4plKcrGt/BcVX9vxZ5MWEpvokmUTmM/1y8bYA2P0NKR0FZbFBcft2pHaeRCoQSyJU7AeqAvKvOa+2EuSSdR976szIyWmMAFqsTkNo95Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PkO+sMXh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B300C433F1;
+	Tue, 13 Feb 2024 00:23:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783796;
-	bh=dyYuoQO6LL8LOppQkKkh22dO/q0dhL/RGV1YgeuYVDo=;
+	s=k20201202; t=1707783799;
+	bh=6ryKZXEJRLnRj7J4B6wkp1zy0wxQlLN4XSjp4TGtT9c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cevW7IBcdSX19+TWVvjsmKYDTBdjZYNUrNLvPBKOqHUYY5Jg8CJKOk9pbY8xaWGKd
-	 RqkYwxpIhVX3qBP59Q4Yy8iVhN5KpLGjxqc/PzrYFVdilY/QG3KOby45rAPbHkJt27
-	 yE9VmC8p5Gx+e4a3HBTi1Su8WT/uRckP7X1PkvYoBlv4UKQU9J0OoDFifaWAbG/oOp
-	 oSZk6zaFbM6rgdpjKrEnUaocjyTj6tzALDx5YREI0shuIhYjWVX6LI2ck/ardRwO86
-	 xJ5xseouyQMFMov/mNph2xaqfTR47U0dQ8DL99IMw0+unE0BlcoECBH5BOvj6byqyA
-	 pw0bO/1XxptDg==
+	b=PkO+sMXhT3gwB0ctHjTumT5bHyyQggpTr5Kis49bBvOtwjQbWodH++7Mz3lYDNclF
+	 MhftX1/WzAIVBorsMSNi0mCbzKAEwzDZt2xQvIU2LomzMzAmSDaz+tpzRUOyR+7T1b
+	 JGKJc9xFUjcmmkCoNcyu7+IZJFvi9gKgJaDUlFpc08Eb3GrXjM5za/Ml2Fw9Ql2R67
+	 mtpO688z1P/OHNF9tagvbdqyAsH17/t7cJ8tzjPybQaRKTJ8KY/mXy3Krim95ipwP8
+	 SxIjts3DGOuSPDOkJ0zLR0ZLPTKeWlf7wEtN+etvMTHO2ur4icW7D3LxB01KetbR2p
+	 zRIrrvr7bdYlg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,23 +50,18 @@ Cc: Prike Liang <Prike.Liang@amd.com>,
 	Xinhui.Pan@amd.com,
 	airlied@gmail.com,
 	daniel@ffwll.ch,
-	lijo.lazar@amd.com,
 	Hawking.Zhang@amd.com,
-	mario.limonciello@amd.com,
+	lijo.lazar@amd.com,
 	le.ma@amd.com,
-	andrealmeid@igalia.com,
-	maarten.lankhorst@linux.intel.com,
-	srinivasan.shanmugam@amd.com,
 	James.Zhu@amd.com,
-	aurabindo.pillai@amd.com,
-	Jiadong.Zhu@amd.com,
-	guchun.chen@amd.com,
-	jesse.zhang@amd.com,
+	shane.xiao@amd.com,
+	sonny.jiang@amd.com,
+	Likun.Gao@amd.com,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.1 24/28] drm/amdgpu: skip to program GFXDEC registers for suspend abort
-Date: Mon, 12 Feb 2024 19:22:22 -0500
-Message-ID: <20240213002235.671934-24-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 25/28] drm/amdgpu: reset gpu for s3 suspend abort case
+Date: Mon, 12 Feb 2024 19:22:23 -0500
+Message-ID: <20240213002235.671934-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002235.671934-1-sashal@kernel.org>
 References: <20240213002235.671934-1-sashal@kernel.org>
@@ -83,75 +78,59 @@ Content-Transfer-Encoding: 8bit
 
 From: Prike Liang <Prike.Liang@amd.com>
 
-[ Upstream commit 93bafa32a6918154aa0caf9f66679a32c2431357 ]
+[ Upstream commit 6ef82ac664bb9568ca3956e0d9c9c478e25077ff ]
 
-In the suspend abort cases, the gfx power rail doesn't turn off so
-some GFXDEC registers/CSB can't reset to default value and at this
-moment reinitialize GFXDEC/CSB will result in an unexpected error.
-So let skip those program sequence for the suspend abort case.
+In the s3 suspend abort case some type of gfx9 power
+rail not turn off from FCH side and this will put the
+GPU in an unknown power status, so let's reset the gpu
+to a known good power state before reinitialize gpu
+device.
 
 Signed-off-by: Prike Liang <Prike.Liang@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu.h     | 2 ++
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 2 ++
- drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c   | 8 ++++++++
- 3 files changed, 12 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/soc15.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index c46c6fbd235e..e636c7850f77 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -999,6 +999,8 @@ struct amdgpu_device {
- 	bool				in_s3;
- 	bool				in_s4;
- 	bool				in_s0ix;
-+	/* indicate amdgpu suspension status */
-+	bool				suspend_complete;
+diff --git a/drivers/gpu/drm/amd/amdgpu/soc15.c b/drivers/gpu/drm/amd/amdgpu/soc15.c
+index 811dd3ea6362..489c89465c78 100644
+--- a/drivers/gpu/drm/amd/amdgpu/soc15.c
++++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
+@@ -1285,10 +1285,32 @@ static int soc15_common_suspend(void *handle)
+ 	return soc15_common_hw_fini(adev);
+ }
  
- 	enum pp_mp1_state               mp1_state;
- 	struct amdgpu_doorbell_index doorbell_index;
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-index b9983ca99eb7..f24c3a20e901 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -2414,6 +2414,7 @@ static int amdgpu_pmops_suspend(struct device *dev)
- 	struct drm_device *drm_dev = dev_get_drvdata(dev);
- 	struct amdgpu_device *adev = drm_to_adev(drm_dev);
- 
-+	adev->suspend_complete = false;
- 	if (amdgpu_acpi_is_s0ix_active(adev))
- 		adev->in_s0ix = true;
- 	else if (amdgpu_acpi_is_s3_active(adev))
-@@ -2428,6 +2429,7 @@ static int amdgpu_pmops_suspend_noirq(struct device *dev)
- 	struct drm_device *drm_dev = dev_get_drvdata(dev);
- 	struct amdgpu_device *adev = drm_to_adev(drm_dev);
- 
-+	adev->suspend_complete = true;
- 	if (amdgpu_acpi_should_gpu_reset(adev))
- 		return amdgpu_asic_reset(adev);
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-index 84ca601f7d5f..195b29892354 100644
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-@@ -3064,6 +3064,14 @@ static int gfx_v9_0_cp_gfx_start(struct amdgpu_device *adev)
- 
- 	gfx_v9_0_cp_gfx_enable(adev, true);
- 
-+	/* Now only limit the quirk on the APU gfx9 series and already
-+	 * confirmed that the APU gfx10/gfx11 needn't such update.
++static bool soc15_need_reset_on_resume(struct amdgpu_device *adev)
++{
++	u32 sol_reg;
++
++	sol_reg = RREG32_SOC15(MP0, 0, mmMP0_SMN_C2PMSG_81);
++
++	/* Will reset for the following suspend abort cases.
++	 * 1) Only reset limit on APU side, dGPU hasn't checked yet.
++	 * 2) S3 suspend abort and TOS already launched.
 +	 */
-+	if (adev->flags & AMD_IS_APU &&
-+			adev->in_s3 && !adev->suspend_complete) {
-+		DRM_INFO(" Will skip the CSB packet resubmit\n");
-+		return 0;
++	if (adev->flags & AMD_IS_APU && adev->in_s3 &&
++			!adev->suspend_complete &&
++			sol_reg)
++		return true;
++
++	return false;
++}
++
+ static int soc15_common_resume(void *handle)
+ {
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+ 
++	if (soc15_need_reset_on_resume(adev)) {
++		dev_info(adev->dev, "S3 suspend abort case, let's reset ASIC.\n");
++		soc15_asic_reset(adev);
 +	}
- 	r = amdgpu_ring_alloc(ring, gfx_v9_0_get_csb_size(adev) + 4 + 3);
- 	if (r) {
- 		DRM_ERROR("amdgpu: cp failed to lock ring (%d).\n", r);
+ 	return soc15_common_hw_init(adev);
+ }
+ 
 -- 
 2.43.0
 
