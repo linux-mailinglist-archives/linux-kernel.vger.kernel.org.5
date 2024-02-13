@@ -1,207 +1,270 @@
-Return-Path: <linux-kernel+bounces-63385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D4A2852E89
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:58:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 134AD852E7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:58:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D7001F217BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:58:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD776281C62
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468D5364C5;
-	Tue, 13 Feb 2024 10:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609F12BB1B;
+	Tue, 13 Feb 2024 10:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="4lKeigsm"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="INTKDBba"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF2A2BB09;
-	Tue, 13 Feb 2024 10:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7963D28E3C;
+	Tue, 13 Feb 2024 10:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707821908; cv=none; b=sq/heuUtQ6cWzrr4ktrTK5LYGujSV7szUH6KpFOQE16uZELiwKx6nS8YLogPoC7u5+sZvskIgj+WP7HpUawGFEDmLmhHIiToyibyfYB6WC03oAedMnIg6uPfAJN/Q8AhDqR6f2Qhcz10dM0uWVmBUzpAjdEiG6l54ZNeTfxX3SM=
+	t=1707821883; cv=none; b=KfZYWbKXhk9dH6ZS/dWrWIh7VqZHKnPIy5daib7eftiWNcTbGDFuReTjq72RQ7OObTL4N7g40ashTPvn3S01Ufq4LtmsPduvP7ZVOoR7Rz91Qd3xd3Wn8Sgb2C/ta8aY6RN6x9SwHiKXesacptn+h6lfsU8H1C+W7sqBqph0S18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707821908; c=relaxed/simple;
-	bh=0WirMBbWssbyY1Zxpsq0pBMfD2qxvM/rMR6Y+Q2bQyU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ZoiJWiidTOjUH+NcYPKDntkOjasASNO+yWhFic1DEVtAv0SlryuVah2i3TAWqUh/NQJRaCJD5bfSt4qJyuB4clPxP3DjGoA35Oh1hfTzhml1K+tIi1OVxlZVI4HppS+Cwrg54vCTtOZ6LJKYrPz4INZ+uAzX/BkX8Te1Y3dTzPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=4lKeigsm; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41DA9Si1026396;
-	Tue, 13 Feb 2024 11:58:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=1J5ztYg9uk0Ni/zb1+iLOfL8R7ELBVGeERYFdVqxo4k=; b=4l
-	KeigsmJRyRSZpDB1GGpZeGwsU+pxVgR5svCf0mUhv4HRWOKBopyE/cjDw8pfG5MY
-	1X/2MSOr7n3mRjNQ4NCjlj0G24eGjJ2rCmnGP94JlQYEtqJmvPV472r8hkSgONFp
-	sOo1C7E6uory1zMAPzC6LkjgG/RvRdi6CwwfAMBRhwfyxj3HiY+yDWtvpexGvAst
-	NNhTjTGSq/P52etuCNGLWx27555zq/dpT4S5P07XC7thxZfm2zHYxq+ztRFYnQk8
-	MZn4FFIxbLMYVjkziRIhgZHwuJPJ9Im66MWQugZk92r3V8+t+R2esBoS7GlcRCz/
-	RykY3g4r9eUJq1U4xnIA==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3w6kk4r3h2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 11:58:08 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 5C7D140049;
-	Tue, 13 Feb 2024 11:58:05 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0E12A22D19E;
-	Tue, 13 Feb 2024 11:57:28 +0100 (CET)
-Received: from [10.201.22.200] (10.201.22.200) by SHFDAG1NODE3.st.com
- (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 13 Feb
- 2024 11:57:27 +0100
-Message-ID: <4ec4a926-fd1c-44e7-990b-4af0e09b9224@foss.st.com>
-Date: Tue, 13 Feb 2024 11:57:27 +0100
+	s=arc-20240116; t=1707821883; c=relaxed/simple;
+	bh=UbTGdcO5Bm4Sgp9Ihu7UwBcjhxFPyxzYn0e9t6YIqgI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uIM52w8TH4eZcBrLNVYO4RMOIdZZJHEWvy0B7y1UISKxgUpEhQO74Vf/OYBnNn7uFRD3LGE9Vgdhx+NPYUhf9nDSiY003rI+7msRUSZIQawnu82UMB5qRMMADSUnKaJJuyRb93KYAo8zdDv7qPc6KQj1atcZyiyLFb0Ou2r8oDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=INTKDBba; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CC3EC433C7;
+	Tue, 13 Feb 2024 10:57:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707821883;
+	bh=UbTGdcO5Bm4Sgp9Ihu7UwBcjhxFPyxzYn0e9t6YIqgI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=INTKDBba8hXyE6vt/uWzBbB8QaeDqCluqtP9DTn56EQMqVjm8m/dZhZOgIWvnp0Lx
+	 RBnicsUYj5AyrzCAHVDl+rD6TT6dW5u64WXYorKlZox6b+otEToPRFEhV/NvJipswD
+	 UfthNFX2YltDLZJg//Skp/N+rWyG17ClDyTLKtRUk+mcQntw02vmltuirlILX+yZNT
+	 jyBWD52c2ztAnHujkwSNhnsToO/T+EyZVPPsCM/wmo1WMMVkerMiQ5nJFUmsuYf88q
+	 dVA6aMdHPEkcp8BDjhqcLyKmAIo0puRTDNnvCZ6FTIg9MP85hJgbPr+Y6+vn1X6Hzp
+	 WZxmOwNmUn5TQ==
+Date: Tue, 13 Feb 2024 11:57:55 +0100
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: manivannan.sadhasivam@linaro.org, bhelgaas@google.com,
+	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
+	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
+	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
+	krzysztof.kozlowski@linaro.org, kw@linux.com,
+	l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
+	shawnguo@kernel.org
+Subject: Re: [PATCH v9 07/16] PCI: imx6: Simplify configure_type() by using
+ mode_off and mode_mask
+Message-ID: <ZctLM7xLf7L3CJrr@lpieralisi>
+References: <20240119171122.3057511-1-Frank.Li@nxp.com>
+ <20240119171122.3057511-8-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/12] dt-bindings: mtd: st,stm32: add MP25 support
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <krzysztof.kozlowski@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>
-References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
- <20240212174822.77734-9-christophe.kerello@foss.st.com>
- <20240212-squeak-mortality-5a53a4d1039c@spud>
-From: Christophe Kerello <christophe.kerello@foss.st.com>
-In-Reply-To: <20240212-squeak-mortality-5a53a4d1039c@spud>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_05,2024-02-12_03,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240119171122.3057511-8-Frank.Li@nxp.com>
 
-
-
-On 2/12/24 19:38, Conor Dooley wrote:
-> On Mon, Feb 12, 2024 at 06:48:18PM +0100, Christophe Kerello wrote:
->> Add 2 new compatible strings to support MP25 SOC.
->> MP25 SOC supports up to 4 chip select.
+On Fri, Jan 19, 2024 at 12:11:13PM -0500, Frank Li wrote:
+> Add drvdata::mode_off and drvdata::mode_mask to simplify
+> imx6_pcie_configure_type() logic.
 > 
-> Again, please explain why the new device is not compatible with the
-> existing ones. Also, please explain why two compatibles are required for
-> the mp25.
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
 > 
-
-Hi Conor,
-
-FMC2 IP supports up to 4 chip select. On MP1 SoC, only 2 of them are 
-available when on MP25 SoC, the 4 chip select are available.
-
-MP1 SoC also embeds revision 1.1 of the FMC2 IP when MP25 SoC embeds 
-revision 2.0 of the FMC2 IP.
-
-I will add this explanation in the commit message.
-
-Regards,
-Christophe Kerello.
-
-> Thanks,
-> Conor.
+> Notes:
+>     Chagne from v8 to v9
+>     - add Manivannan's review tag
+>     Change from v7 to v8
+>     - replace simple with simplify
+>     - remove reduntant comments about FILED_PREP
+>     Change from v3 to v7
+>     - none
+>     Change from v2 to v3
+>     - none
+>     Change from v1 to v2
+>     - use ffs() to fixe build error.
+>     
+>     Change from v2 to v3
+>     - none
+>     Change from v1 to v2
+>     - use ffs() to fixe build error.
 > 
->>
->> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->> ---
->>   .../bindings/mtd/st,stm32-fmc2-nand.yaml      | 58 ++++++++++++++++++-
->>   1 file changed, 57 insertions(+), 1 deletion(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
->> index e72cb5bacaf0..33a753c8877b 100644
->> --- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
->> +++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
->> @@ -14,10 +14,12 @@ properties:
->>       enum:
->>         - st,stm32mp15-fmc2
->>         - st,stm32mp1-fmc2-nfc
->> +      - st,stm32mp25-fmc2
->> +      - st,stm32mp25-fmc2-nfc
->>   
->>     reg:
->>       minItems: 6
->> -    maxItems: 7
->> +    maxItems: 13
->>   
->>     interrupts:
->>       maxItems: 1
->> @@ -92,6 +94,60 @@ allOf:
->>               - description: Chip select 1 command
->>               - description: Chip select 1 address space
->>   
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: st,stm32mp25-fmc2
->> +    then:
->> +      properties:
->> +        reg:
->> +          items:
->> +            - description: Registers
->> +            - description: Chip select 0 data
->> +            - description: Chip select 0 command
->> +            - description: Chip select 0 address space
->> +            - description: Chip select 1 data
->> +            - description: Chip select 1 command
->> +            - description: Chip select 1 address space
->> +            - description: Chip select 2 data
->> +            - description: Chip select 2 command
->> +            - description: Chip select 2 address space
->> +            - description: Chip select 3 data
->> +            - description: Chip select 3 command
->> +            - description: Chip select 3 address space
->> +
->> +        clocks:
->> +          maxItems: 1
->> +
->> +        resets:
->> +          maxItems: 1
->> +
->> +      required:
->> +        - clocks
->> +
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: st,stm32mp25-fmc2-nfc
->> +    then:
->> +      properties:
->> +        reg:
->> +          items:
->> +            - description: Chip select 0 data
->> +            - description: Chip select 0 command
->> +            - description: Chip select 0 address space
->> +            - description: Chip select 1 data
->> +            - description: Chip select 1 command
->> +            - description: Chip select 1 address space
->> +            - description: Chip select 2 data
->> +            - description: Chip select 2 command
->> +            - description: Chip select 2 address space
->> +            - description: Chip select 3 data
->> +            - description: Chip select 3 command
->> +            - description: Chip select 3 address space
->> +
->>   required:
->>     - compatible
->>     - reg
->> -- 
->> 2.25.1
->>
+>  drivers/pci/controller/dwc/pci-imx6.c | 59 ++++++++++++++++++---------
+>  1 file changed, 39 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index d19fcb54fde0d..8df07b71c93e5 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -68,6 +68,7 @@ enum imx6_pcie_variants {
+>  
+>  #define IMX6_PCIE_MAX_CLKS       6
+>  
+> +#define IMX6_PCIE_MAX_INSTANCES			2
+>  struct imx6_pcie_drvdata {
+>  	enum imx6_pcie_variants variant;
+>  	enum dw_pcie_device_mode mode;
+> @@ -78,6 +79,8 @@ struct imx6_pcie_drvdata {
+>  	const u32 clks_cnt;
+>  	const u32 ltssm_off;
+>  	const u32 ltssm_mask;
+> +	const u32 mode_off[IMX6_PCIE_MAX_INSTANCES];
+> +	const u32 mode_mask[IMX6_PCIE_MAX_INSTANCES];
+>  };
+>  
+>  struct imx6_pcie {
+> @@ -174,32 +177,24 @@ static unsigned int imx6_pcie_grp_offset(const struct imx6_pcie *imx6_pcie)
+>  
+>  static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
+>  {
+> -	unsigned int mask, val, mode;
+> +	const struct imx6_pcie_drvdata *drvdata = imx6_pcie->drvdata;
+> +	unsigned int mask, val, mode, id;
+>  
+> -	if (imx6_pcie->drvdata->mode == DW_PCIE_EP_TYPE)
+> +	if (drvdata->mode == DW_PCIE_EP_TYPE)
+>  		mode = PCI_EXP_TYPE_ENDPOINT;
+>  	else
+>  		mode = PCI_EXP_TYPE_ROOT_PORT;
+>  
+> -	switch (imx6_pcie->drvdata->variant) {
+> -	case IMX8MQ:
+> -	case IMX8MQ_EP:
+> -		if (imx6_pcie->controller_id == 1) {
+> -			mask = IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE;
+> -			val  = FIELD_PREP(IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE,
+> -					  mode);
+> -		} else {
+> -			mask = IMX6Q_GPR12_DEVICE_TYPE;
+> -			val  = FIELD_PREP(IMX6Q_GPR12_DEVICE_TYPE, mode);
+> -		}
+> -		break;
+> -	default:
+> -		mask = IMX6Q_GPR12_DEVICE_TYPE;
+> -		val  = FIELD_PREP(IMX6Q_GPR12_DEVICE_TYPE, mode);
+> -		break;
+> -	}
+> +	id = imx6_pcie->controller_id;
+> +
+> +	/* If mode_mask[id] is zero, means each controller have its individual gpr */
+> +	if (!drvdata->mode_mask[id])
+> +		id = 0;
+
+I don't understand what this means. If the mode mask for id is == 0, we
+are falling back to mode_mask and mode_off for controller ID 0 ? Is that
+what this code is supposed to do ? If so the comment makes no sense to
+me.
+
+Lorenzo
+
+> +
+> +	mask = drvdata->mode_mask[id];
+> +	val = mode << (ffs(mask) - 1);
+>  
+> -	regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12, mask, val);
+> +	regmap_update_bits(imx6_pcie->iomuxc_gpr, drvdata->mode_off[id], mask, val);
+>  }
+>  
+>  static int pcie_phy_poll_ack(struct imx6_pcie *imx6_pcie, bool exp_val)
+> @@ -1385,6 +1380,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.clks_cnt = ARRAY_SIZE(imx6q_clks),
+>  		.ltssm_off = IOMUXC_GPR12,
+>  		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX6SX] = {
+>  		.variant = IMX6SX,
+> @@ -1396,6 +1393,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.clks_cnt = ARRAY_SIZE(imx6sx_clks),
+>  		.ltssm_off = IOMUXC_GPR12,
+>  		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX6QP] = {
+>  		.variant = IMX6QP,
+> @@ -1408,6 +1407,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.clks_cnt = ARRAY_SIZE(imx6q_clks),
+>  		.ltssm_off = IOMUXC_GPR12,
+>  		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX7D] = {
+>  		.variant = IMX7D,
+> @@ -1417,6 +1418,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx7d-iomuxc-gpr",
+>  		.clk_names = imx6q_clks,
+>  		.clks_cnt = ARRAY_SIZE(imx6q_clks),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX8MQ] = {
+>  		.variant = IMX8MQ,
+> @@ -1425,6 +1428,10 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mq-iomuxc-gpr",
+>  		.clk_names = imx8mq_clks,
+>  		.clks_cnt = ARRAY_SIZE(imx8mq_clks),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+> +		.mode_off[1] = IOMUXC_GPR12,
+> +		.mode_mask[1] = IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE,
+>  	},
+>  	[IMX8MM] = {
+>  		.variant = IMX8MM,
+> @@ -1434,6 +1441,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+>  		.clk_names = imx8mm_clks,
+>  		.clks_cnt = ARRAY_SIZE(imx8mm_clks),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX8MP] = {
+>  		.variant = IMX8MP,
+> @@ -1443,6 +1452,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+>  		.clk_names = imx8mm_clks,
+>  		.clks_cnt = ARRAY_SIZE(imx8mm_clks),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX8MQ_EP] = {
+>  		.variant = IMX8MQ_EP,
+> @@ -1452,6 +1463,10 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mq-iomuxc-gpr",
+>  		.clk_names = imx8mq_clks,
+>  		.clks_cnt = ARRAY_SIZE(imx8mq_clks),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+> +		.mode_off[1] = IOMUXC_GPR12,
+> +		.mode_mask[1] = IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE,
+>  	},
+>  	[IMX8MM_EP] = {
+>  		.variant = IMX8MM_EP,
+> @@ -1460,6 +1475,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+>  		.clk_names = imx8mm_clks,
+>  		.clks_cnt = ARRAY_SIZE(imx8mm_clks),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  	[IMX8MP_EP] = {
+>  		.variant = IMX8MP_EP,
+> @@ -1468,6 +1485,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+>  		.clk_names = imx8mm_clks,
+>  		.clks_cnt = ARRAY_SIZE(imx8mm_clks),
+> +		.mode_off[0] = IOMUXC_GPR12,
+> +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
+>  	},
+>  };
+>  
+> -- 
+> 2.34.1
+> 
 
