@@ -1,83 +1,74 @@
-Return-Path: <linux-kernel+bounces-64449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73817853E75
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:18:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3A12853EC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:32:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28EF828F415
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:18:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3632B2B41F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:19:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFEA862152;
-	Tue, 13 Feb 2024 22:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7952D6215D;
+	Tue, 13 Feb 2024 22:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iRPAZtKi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mh0zY8kZ"
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8308626C9
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2FD6168F;
+	Tue, 13 Feb 2024 22:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707862661; cv=none; b=chfYkxjOqxKCZYokzCIast12fHRR+r2WRb9ifyIscUBhylZdrTkGPxhHMa82bpVrRrlxqQC1c/Cv5YQE0rr59QLk5RJVOsk1sLM0bvcGosHn43WfqP5UtUp3LTJnMIqg2agJna4QkR+11Ca3dl2ZiFPH5aS089qJylc14thgzWI=
+	t=1707862758; cv=none; b=IVZ2+uKv3jpkH8hO/CcddliVX85y/jTMy5YNOSXUbmcLH7bNVmi9IzfOL5LJ5YkpywYlYih9OO7rRhcc4cEePJp0gT+yp0PIJe7L9TBMD9C3WcYmOpe9ksGwKMeg35oeFOBnBETzUJXQR/DO18RD7W6FwUqNrftcJNls7axgyDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707862661; c=relaxed/simple;
-	bh=8rvVOGJK5G0bW1+vry5drj6mEJOTeH3T5v0nCt6fKJs=;
+	s=arc-20240116; t=1707862758; c=relaxed/simple;
+	bh=fTJeE/0vTi3j4ZDncZgiJFys8r51ebCtKQPYxoUm5CQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q5YgUCjrZg7CwexCi79lOlmFqeu37Yyn1pp4AHlPvhqNfrUVKZDFhkIcLJa0uXldA9xeARBKKO1+mSj7qJBZ4Rp43Zmcs54ldQ0bjcNdGr68en0vhVHfwHfdgCpfEHnfaOa8w2PPWkXNwtmAvRxcpRI3Pek6O9k5F2mtitUsF54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iRPAZtKi; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707862658;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=eCcHtaszOKE9Vsf07irwuhOuZ163lqjSaVd6CZ9ODTE=;
-	b=iRPAZtKipeR0q8NnKKWo4IhHxjI7wwFqVhBJFUejpESTGt+l8mEjFVp+fHdWGYJNwWmSs/
-	KPMwkLId8ctih3dG8kxtZuZ5V84U5TQNDHke9xX7zlNn0O+XhMnfGqnO+VRxj7TSJ9FHoS
-	C7uU4VwYUCPtTijDLryz7w063j+SKJw=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-668-rW78RSr2NfCD58pP2iYcXw-1; Tue, 13 Feb 2024 17:17:37 -0500
-X-MC-Unique: rW78RSr2NfCD58pP2iYcXw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33cd2fcad9dso505011f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:17:37 -0800 (PST)
+	 In-Reply-To:Content-Type; b=JCwSFRgN5O1OzUH3tAYOqxiMQT1kGd7Y53RX5zQ4c07NQLJ/EuomjxeNEeSpUSoX8I90FI3z7WjhVbp/Ak1luyz7O2Taif+fxEp0bqF2YjOTTh5dsrfULtEZuzf+mzm5D9XUPSUf8/E++4m4eU2ceIPSCezrET8U3bgErCK4d4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mh0zY8kZ; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-783f553fdabso14195785a.0;
+        Tue, 13 Feb 2024 14:19:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707862756; x=1708467556; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HOwk/2w2eY60TLURHPvbKuNQvYKfknP+nGTPYSp2+GU=;
+        b=mh0zY8kZ2gqGEQYVweLUgjuVKK0zbaGEVOUbCm2VDCNsxrxr4c1iSf22/4vBaBAw3Q
+         k9SDOjeDGWC9eAI8e9dYV0rCZFhKVTfxMgI6xlF7pyTpopkbGpTSnYQs2oaZlmqSPvcu
+         r6x1rKcLU5WcK+vWpzCvRfdRUqlCrDHUC4JlPvb7aNGCvm8qhpAiduugGv0oTmmPkTae
+         6XCMjniXKvbozIEvjgZtKAw22UTVX1yL06SfHC5K5l658NpOdc/3WsKj0QeKefpKm8E1
+         P0kub8kf1pkd8ijWsOsTXiL+hWHn7118/qVRSwKeZVfXLQoFmDiLPc2g1pQUNaJJ86Es
+         40kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707862656; x=1708467456;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eCcHtaszOKE9Vsf07irwuhOuZ163lqjSaVd6CZ9ODTE=;
-        b=GMrqaxsLdVFdcpZbMaSxe8ZskNVzgDs8133+YxTWbfdNuu8OGNdRcaALdaTmM+vukV
-         kyKHUUTUoKC4Ns0DUWklBa6PS7wkJIr4ULqcyDmCGYMOFWbWHRTE6jmcbhZ7+JNsq4Ss
-         Hzsu3Jzj/i/JU7RAY6dCYjtbF8RIpwVeDsPhfYn9aOBbS7rWAsRjowU9WXgfjaCL0j9Y
-         s6ae+WeYudXqzc83V/bxiVchnsicLJ+Y/HsJuA11u5T2BQmunPz2fsC1RNmgCEvbgji1
-         ILddRQx/1qD/sB10eAYC5RbxFz1OLn3ve1a6qOKdDnku97Oxab4eiDyWl5IJ60GLpx8e
-         rzcg==
-X-Forwarded-Encrypted: i=1; AJvYcCXsmKK9GRgSlpQ7utwgyP6OCoVGnzxsFz828pWnOhBE9vCdi1xj1fp/9/UErzUSWsI+dRXiq45HTFFCfsTe1NP895R+UKpPzenIFt2l
-X-Gm-Message-State: AOJu0Yw/vizHq/tv+ysMhJ6zvCRETEjPh3Q8bGDbqpBj9WHKxue1knaZ
-	mAjqtPl+bFoaiAmCBoRBvLoXieAj0p5jBJd6wIydEmT4OQTr9y1h0oycJqC1QmRXaG1E7/Ya5Y1
-	y+xaxLYsvqpm7hibc7jcFBphPHOeH29AlFoRT4TK5xZdhhfi8UAeIS6cuilQYQw==
-X-Received: by 2002:a05:6000:104c:b0:33c:ddf4:742e with SMTP id c12-20020a056000104c00b0033cddf4742emr417680wrx.22.1707862656067;
-        Tue, 13 Feb 2024 14:17:36 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG0u4tRLYxr8Wbu4Etuf8Kb0cSQQoNXaCggyJ3xo82iccJCWEBHgyRkhNW4ZESCo8cWB0ObFw==
-X-Received: by 2002:a05:6000:104c:b0:33c:ddf4:742e with SMTP id c12-20020a056000104c00b0033cddf4742emr417626wrx.22.1707862655588;
-        Tue, 13 Feb 2024 14:17:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; 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
-Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
-        by smtp.gmail.com with ESMTPSA id f14-20020a056000128e00b0033b50e0d493sm10564789wrx.59.2024.02.13.14.17.33
+        d=1e100.net; s=20230601; t=1707862756; x=1708467556;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HOwk/2w2eY60TLURHPvbKuNQvYKfknP+nGTPYSp2+GU=;
+        b=m5vk+Y2GNwlXy4LdKi5/W3KEM8lVxQErqI8WebhQMFHjwRVP9i+WECWVY6p2YY2ZN4
+         zVs/FHUDJWdWltcQvBG5wjerJ4k3i3Au3CddRlJfzpl/63/lEp99h5vjT5rKBKkaUa5q
+         RwulqFhSxoXaSnFH7zFPfv7DSGGoEjKyOx4PrRYIi8SMqzGyAxvRWT5SXaXm2mLMzVgD
+         CFH7VOsQ+2eBR9EEpZk9hRg4DF1mXK96cmOrvQWDQqoyGKYnf7H/R1Lo//Mkxs7Gp/QR
+         X38wNesXiiuDrVptI+mQb2Opf0jkmZM5aKA/m7ZMWlQZdtWefbZnb75NSmSvVbTqjKb1
+         1I4g==
+X-Forwarded-Encrypted: i=1; AJvYcCV6+elGfbaBdfcfVz0d9p+rUtJKHmVkxuFuOzGATRYxtLsUmQEeACOknnjPeSLzpPVGEd9kDuQYrDyMf+/eFSsfufzqQNKaXVwiUqh+rw5d1LXnDRBaAdM94nmmgqirPaYiZ9dL
+X-Gm-Message-State: AOJu0Yxw48tQ8PjSB5CHbAGeAkUSCwfHnV0PhZXBDNWe9gS/+G8M7QJI
+	ytjJGXCoSHmRxWoX4LVFIlLeEH4svk1hJddob3CvnnucoeelBa85
+X-Google-Smtp-Source: AGHT+IHGHrykYSlNOyjcS/UZ6V4dNHsB1WQ6ZHMxk3R/TLseCIBbsBNj5CZuJv4DpukvlbxrMZDZEw==
+X-Received: by 2002:a05:620a:9c6:b0:787:18b5:f56b with SMTP id y6-20020a05620a09c600b0078718b5f56bmr305955qky.34.1707862756217;
+        Tue, 13 Feb 2024 14:19:16 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUQWEXelBgT9oVykeo4eUb5AO+sFg5/aRwKxasJIC9ql0n+08RV5wwSQteDqeZJKuXvu3Qg3T0TmXGKycuzb+o8bpeTeeojh9w7381pktWRSaj1hidZhDJErIils6+ExmR4BJtsD5Hzt4u+jQtqx20JjbsfcFlGZz3koKLI7snxS71tg7Ej+4jgR3FZQyjxxgaWY15Lcv9zbN4mH3T9YbKyDUdGYLLWL6XuBMdu3OXRv+AdgErqK4pPcmyFHF/DqEnofsRC9mzsC0lh2xCYJw5iW41d6ZNbYgEthTtPZgzbWcbMC09ZVYPP7IwKrytZ01exUluV5pvs4Oe0yFpoJAFV5JCgfiNi8zhqIN794NRF8pNWwnZPWfPbkj70f3XvlgrJRAanyAqQehNmZ3DjZh+t5wjXgq+ykRAjcaGk6Tc89LIUQhLMt69STQ8v22/7qJgSQW435DXaYzMEQ0ds59IRxQXeUPH5kwNyQBqS4SrAuh/2NQ0Rxm5SkqOJiZIzRJJilhlxiR+g
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id d9-20020a05620a166900b00783f1e600aasm3282430qko.38.2024.02.13.14.19.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 14:17:35 -0800 (PST)
-Message-ID: <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
-Date: Tue, 13 Feb 2024 23:17:32 +0100
+        Tue, 13 Feb 2024 14:19:15 -0800 (PST)
+Message-ID: <ff048126-fc13-46d5-a77d-d7ccd21578fc@gmail.com>
+Date: Tue, 13 Feb 2024 14:19:12 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,142 +76,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+Subject: Re: [PATCH 6.7 000/124] 6.7.5-rc1 review
 Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- akpm@linux-foundation.org, vbabka@suse.cz, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
- void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
- catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de,
- mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
- peterx@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <Zctfa2DvmlTYSfe8@tiehlicka>
- <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
- <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
- <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com
+References: <20240213171853.722912593@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240213171853.722912593@linuxfoundation.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 13.02.24 23:09, Kent Overstreet wrote:
-> On Tue, Feb 13, 2024 at 11:04:58PM +0100, David Hildenbrand wrote:
->> On 13.02.24 22:58, Suren Baghdasaryan wrote:
->>> On Tue, Feb 13, 2024 at 4:24 AM Michal Hocko <mhocko@suse.com> wrote:
->>>>
->>>> On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
->>>> [...]
->>>>> We're aiming to get this in the next merge window, for 6.9. The feedback
->>>>> we've gotten has been that even out of tree this patchset has already
->>>>> been useful, and there's a significant amount of other work gated on the
->>>>> code tagging functionality included in this patchset [2].
->>>>
->>>> I suspect it will not come as a surprise that I really dislike the
->>>> implementation proposed here. I will not repeat my arguments, I have
->>>> done so on several occasions already.
->>>>
->>>> Anyway, I didn't go as far as to nak it even though I _strongly_ believe
->>>> this debugging feature will add a maintenance overhead for a very long
->>>> time. I can live with all the downsides of the proposed implementation
->>>> _as long as_ there is a wider agreement from the MM community as this is
->>>> where the maintenance cost will be payed. So far I have not seen (m)any
->>>> acks by MM developers so aiming into the next merge window is more than
->>>> little rushed.
->>>
->>> We tried other previously proposed approaches and all have their
->>> downsides without making maintenance much easier. Your position is
->>> understandable and I think it's fair. Let's see if others see more
->>> benefit than cost here.
->>
->> Would it make sense to discuss that at LSF/MM once again, especially
->> covering why proposed alternatives did not work out? LSF/MM is not "too far"
->> away (May).
->>
->> I recall that the last LSF/MM session on this topic was a bit unfortunate
->> (IMHO not as productive as it could have been). Maybe we can finally reach a
->> consensus on this.
+On 2/13/24 09:20, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.7.5 release.
+> There are 124 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I'd rather not delay for more bikeshedding. Before agreeing to LSF I'd
-> need to see a serious proposl - what we had at the last LSF was people
-> jumping in with half baked alternative proposals that very much hadn't
-> been thought through, and I see no need to repeat that.
+> Responses should be made by Thu, 15 Feb 2024 17:18:29 +0000.
+> Anything received after that time might be too late.
 > 
-> Like I mentioned, there's other work gated on this patchset; if people
-> want to hold this up for more discussion they better be putting forth
-> something to discuss.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-I'm thinking of ways on how to achieve Michal's request: "as long as 
-there is a wider agreement from the MM community". If we can achieve 
-that without LSF, great! (a bi-weekly MM meeting might also be an option)
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-Cheers,
-
-David / dhildenb
+Florian
 
 
