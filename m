@@ -1,196 +1,101 @@
-Return-Path: <linux-kernel+bounces-63996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5CD285387D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:38:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 424D085388C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:38:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AAE5283A48
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:37:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3C602838F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6A0604A5;
-	Tue, 13 Feb 2024 17:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44ED45FF19;
+	Tue, 13 Feb 2024 17:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uRgat5YL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="UaTqpjr/"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B0A160277;
-	Tue, 13 Feb 2024 17:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79D4A93C
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:37:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707845825; cv=none; b=GUyo34wwukATmeCBmy4UJYYnWuu+hUz3fAYIhcCkWIgimHIm6NEywo3+rWCaDuL3aCfL/bnP9WWPTR0r78V7hfhjLdlRwIrcVTZFgXGcbdLi5IQZ/dUcuhxvXSkZuEaFY1h3jFdLneGYrvZX+Ab4WzXvyLZQOxhtai0gJpMUEBw=
+	t=1707845868; cv=none; b=jULjK/egnbicFBUgmUlFf58n7c7+Lz5YxJC7TnrNOqiIn1uenGeIC1+/GJIBTuLv7WiemVk85/8tVaLwseRFyrNYV/u0RkqTOyMD3j3XEUHE5bBe4tZH+7v9NTgZMi0QCtyH2FER6Bs3UOtiTf9JWBFrA3A5n4vf90Go1Da2fps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707845825; c=relaxed/simple;
-	bh=weTfkdDGfVyj9ft48D1i7g/tBfv43g3swJkzlG5GT7Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E1KU2SKw4JXvkeWdc0BJWm7Cf6QL/5zVGfAiWgy+KkCKzxWYeeT5lFi+utGRsm4+X3bezpImAXYzEXQrLZPH3hidCYzFYRpUl/Ib/1LWdAYVihM6ql5kUBWeHecgAS6X224pOH6uPmREePSK9zsfTQzdhn3jb8TYQPmUub+YyBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uRgat5YL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 299A0C43390;
-	Tue, 13 Feb 2024 17:37:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707845825;
-	bh=weTfkdDGfVyj9ft48D1i7g/tBfv43g3swJkzlG5GT7Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uRgat5YLmBlCUakEyYE3n6PfDxy+ugO7fNxY/oIoUHCH/jNIZxiw6luO2bZ5Ln0zO
-	 8dc2au/LoB7zgGiIqfXN45FSe5p2blBJknTqydtiZ5Ak86al+yRm58ncY3pAebrBbv
-	 pZh26fXkrJcJz17DKn+pcumVclhI3SyOUOl5FryZ6geh2yOfbenW3zn4VxUAzTPCrQ
-	 VJ6cuGU2+fPCKziiJ9wOSjb72APkkw65xXOGXGRCef/mDtszsyeBFPd82tpsMGFw4Z
-	 PuQ8u9bpTNFpGL/6PzGEHFEMEe/61VgPTK+60+5NtxPhh2jDpvdt441hr8FFl94DDd
-	 7N73lD7HI2dKQ==
-Date: Tue, 13 Feb 2024 09:37:04 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
-	martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com
-Subject: Re: [PATCH 4/6] fs: xfs: Support atomic write for statx
-Message-ID: <20240213173704.GB6184@frogsfrogsfrogs>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-5-john.g.garry@oracle.com>
- <20240202180517.GJ6184@frogsfrogsfrogs>
- <9b966c59-3b9f-4093-9913-c9b8a3469a8b@oracle.com>
+	s=arc-20240116; t=1707845868; c=relaxed/simple;
+	bh=I8mDZVj6Lh3NqcfdRheicyl2vrErwPOLCoL9JFRpzQ8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VQ2EP30ieROcM+gVu6LstQR5MGuvu2XxXaO0Ncjll09bmiHpMcTmDeW0k7O0qH2Sav/khEfXnl9nokg1BBIdOdP3kVpeBA7zf0wMRyt5HWGkQ7aLJOHHO68lu++9EklVkYiMJhkOU22khSCpJJvtJ+R55+jCNDuPLoQbjh2esy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=UaTqpjr/; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e0507eb60cso3000232b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:37:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1707845866; x=1708450666; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=I8mDZVj6Lh3NqcfdRheicyl2vrErwPOLCoL9JFRpzQ8=;
+        b=UaTqpjr/E4D0CycohBjXqMI9W5bwX5ly+Wgy/QXqru+jL6fM4xB2mUqegJtz7YIzgO
+         vPkM3WfWURZZTzw9JUi0mXlkIBp1q2XvQJJdqEovm0PP7ZZ4+MtdB5luvdrk5Wwcl4zQ
+         3anZlQJLC1O7cmM26oFCMk19+lnuuWLDtfHhfKzm8VNcJKBCv4LTrPBFXt8LUG4711ro
+         65q7k3IFFpvUMEa/JFSmzEFwKEpTVfxbd5nFMxfgzO3uD9RhStBZcdwBDJQK2WXYaL16
+         db3ab13oH5//m7A2GY2XfeBKT9H3jDBOzXwhs1PePC+ykXGXefHrv9/zt3cAc2liSesR
+         /Rlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707845866; x=1708450666;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I8mDZVj6Lh3NqcfdRheicyl2vrErwPOLCoL9JFRpzQ8=;
+        b=KEBrSvirvW+AVW3calXCrYMDGXJypVU0+NYnbrLRPLBeGz4R8Qn5s9ausL3aCZUs8r
+         0NZ6nRmJheZbz8hw8GSR4UfAbybfrrkud0HdMXp8if0u4bZxv5wa248YQcQwflfu7KAd
+         zUGqK4nPCEjyqeUOgwjpldpslYGH+4REJ9ISyJpOiox/x3/cqlqqR9J9m05tQ0cwrVfD
+         8+TbJCbNG0gnvwAsaCeTd7I/pY14sPtEATQ/it3zzNgUsMh649CtR+mY0oTGgLyhfRC4
+         d5myezGEAdhjFTwoDynxFf7XiLIMQ2KpCKyb4yqEDaUgRywvHahnch18jI8QPWEVXn8Y
+         UUOw==
+X-Forwarded-Encrypted: i=1; AJvYcCXCoLKLi06mP4nt8XHNSPoNbo3NKn0cehz/2Z4gCGlvD6bAodzOuVCnxa+k8paquEolB4ne9k92LcRw5hLo6BtxMwpE3W+uSasQrC3j
+X-Gm-Message-State: AOJu0Yz4uep0GJ9yNm+sGvy9kevHflfiOECMqxG6GKzBsbCFfmTgZwMz
+	NXZGRfDTfRHIg9YSZMj7eL1d/aVJXV6xdit+pGHlsb8qirnZ5Bb36rTEhtChlb+4a1NNQQIXp4r
+	4wx38160TK2Hvz4BCDDa9Luvbufc/Wsun0nx5MxkolMTD2vfNppA=
+X-Google-Smtp-Source: AGHT+IGR9l1Bod7ozyRA9DgvlNkdzGA1VYqYrURigssymDliHRQjrvW1U1r6bS1AkgrgnRmDqNdcMtCOuIiDrMtJpWM=
+X-Received: by 2002:a05:6a20:d04b:b0:19c:a934:a116 with SMTP id
+ hv11-20020a056a20d04b00b0019ca934a116mr275041pzb.11.1707845866240; Tue, 13
+ Feb 2024 09:37:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9b966c59-3b9f-4093-9913-c9b8a3469a8b@oracle.com>
+References: <20240213145801.2564518-1-naresh.solanki@9elements.com> <7a687805-3c99-4e1e-bad7-f40ed06ea96e@sirena.org.uk>
+In-Reply-To: <7a687805-3c99-4e1e-bad7-f40ed06ea96e@sirena.org.uk>
+From: Naresh Solanki <naresh.solanki@9elements.com>
+Date: Tue, 13 Feb 2024 23:07:36 +0530
+Message-ID: <CABqG17iDN4wtJddYOnCPYhoT0kVsTjZGEXKEzV9gSGbpu+r0Ew@mail.gmail.com>
+Subject: Re: [PATCH] regulator (max5970): Fix regulator child node name
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, mazziesaccount@gmail.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Feb 05, 2024 at 01:10:54PM +0000, John Garry wrote:
-> On 02/02/2024 18:05, Darrick J. Wong wrote:
-> > On Wed, Jan 24, 2024 at 02:26:43PM +0000, John Garry wrote:
-> > > Support providing info on atomic write unit min and max for an inode.
-> > > 
-> > > For simplicity, currently we limit the min at the FS block size, but a
-> > > lower limit could be supported in future.
-> > > 
-> > > The atomic write unit min and max is limited by the guaranteed extent
-> > > alignment for the inode.
-> > > 
-> > > Signed-off-by: John Garry <john.g.garry@oracle.com>
-> > > ---
-> > >   fs/xfs/xfs_iops.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
-> > >   fs/xfs/xfs_iops.h |  4 ++++
-> > >   2 files changed, 49 insertions(+)
-> > > 
-> > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> > > index a0d77f5f512e..0890d2f70f4d 100644
-> > > --- a/fs/xfs/xfs_iops.c
-> > > +++ b/fs/xfs/xfs_iops.c
-> > > @@ -546,6 +546,44 @@ xfs_stat_blksize(
-> > >   	return PAGE_SIZE;
-> > >   }
-> > > +void xfs_get_atomic_write_attr(
-> > 
-> > static void?
-> 
-> We use this in the iomap and statx code
-> 
-> > 
-> > > +	struct xfs_inode *ip,
-> > > +	unsigned int *unit_min,
-> > > +	unsigned int *unit_max)
-> > 
-> > Weird indenting here.
-> 
-> hmmm... I thought that this was the XFS style
-> 
-> Can you show how it should look?
+Hi,
 
-The parameter declarations should line up with the local variables:
 
-void
-xfs_get_atomic_write_attr(
-	struct xfs_inode	*ip,
-	unsigned int		*unit_min,
-	unsigned int		*unit_max)
-{
-	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
-	struct block_device	*bdev = target->bt_bdev;
-	struct request_queue	*q = bdev->bd_queue;
-	struct xfs_mount	*mp = ip->i_mount;
-	unsigned int		awu_min, awu_max, align;
-	xfs_extlen_t		extsz = xfs_get_extsz(ip);
+On Tue, 13 Feb 2024 at 21:07, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Feb 13, 2024 at 08:28:00PM +0530, Naresh Solanki wrote:
+> > Update regulator child node name to lower case i.e., sw0 & sw1 as
+> > descibed in max5970 dt binding.
+>
+> Please submit patches using subject lines reflecting the style for the
+> subsystem, this makes it easier for people to identify relevant patches.
+> Look at what existing commits in the area you're changing are doing and
+> make sure your subject lines visually resemble what they're doing.
+> There's no need to resubmit to fix this alone.
+Ack.
 
-> > 
-> > > +{
-> > > +	xfs_extlen_t		extsz = xfs_get_extsz(ip);
-> > > +	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
-> > > +	struct block_device	*bdev = target->bt_bdev;
-> > > +	unsigned int		awu_min, awu_max, align;
-> > > +	struct request_queue	*q = bdev->bd_queue;
-> > > +	struct xfs_mount	*mp = ip->i_mount;
-> > > +
-> > > +	/*
-> > > +	 * Convert to multiples of the BLOCKSIZE (as we support a minimum
-> > > +	 * atomic write unit of BLOCKSIZE).
-> > > +	 */
-> > > +	awu_min = queue_atomic_write_unit_min_bytes(q);
-> > > +	awu_max = queue_atomic_write_unit_max_bytes(q);
-> > > +
-> > > +	awu_min &= ~mp->m_blockmask;
-> > 
-> > Why do you round /down/ the awu_min value here?
-> 
-> This is just to ensure that we returning *unit_min >= BLOCKSIZE
-> 
-> For example, if awu_min, max 1K, 64K from the bdev, we now have 0 and 64K.
-> And below this gives us awu_min, max of 4k, 64k.
-> 
-> Maybe there is a more logical way of doing this.
-
-	awu_min = roundup(queue_atomic_write_unit_min_bytes(q),
-			  mp->m_sb.sb_blocksize);
-
-?
-
-> 
-> > 
-> > > +	awu_max &= ~mp->m_blockmask;
-> > 
-> > Actually -- since the atomic write units have to be powers of 2, why is
-> > rounding needed here at all?
-> 
-> Sure, but the bdev can report a awu_min < BLOCKSIZE
-> 
-> > 
-> > > +
-> > > +	align = XFS_FSB_TO_B(mp, extsz);
-> > > +
-> > > +	if (!awu_max || !xfs_inode_atomicwrites(ip) || !align ||
-> > > +	    !is_power_of_2(align)) {
-> > 
-> > ...and if you take my suggestion to make a common helper to validate the
-> > atomic write unit parameters, this can collapse into:
-> > 
-> > 	alloc_unit_bytes = xfs_inode_alloc_unitsize(ip);
-> > 	if (!xfs_inode_has_atomicwrites(ip) ||
-> > 	    !bdev_validate_atomic_write(bdev, alloc_unit_bytes))  > 		/* not supported, return zeroes */
-> > 		*unit_min = 0;
-> > 		*unit_max = 0;
-> > 		return;
-> > 	}
-> > 
-> > 	*unit_min = max(alloc_unit_bytes, awu_min);
-> > 	*unit_max = min(alloc_unit_bytes, awu_max);
-> 
-> Again, we need to ensure that *unit_min >= BLOCKSIZE
-
-The file allocation unit and hence the return value of
-xfs_inode_alloc_unitsize is always a multiple of sb_blocksize.
-
---D
-
-> Thanks,
-> John
-> 
-> 
+Regards,
+Naresh
 
