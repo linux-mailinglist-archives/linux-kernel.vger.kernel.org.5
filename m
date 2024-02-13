@@ -1,125 +1,126 @@
-Return-Path: <linux-kernel+bounces-63591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33BC08531EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47F438531F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F657B21E4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:29:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C06F9B26439
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8583E55E71;
-	Tue, 13 Feb 2024 13:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D49E56460;
+	Tue, 13 Feb 2024 13:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L3GUCKn9"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="xdNZb5FN";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mDTl5L+J"
+Received: from wfout8-smtp.messagingengine.com (wfout8-smtp.messagingengine.com [64.147.123.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8AA55577C;
-	Tue, 13 Feb 2024 13:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350E355E6C;
+	Tue, 13 Feb 2024 13:31:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707830959; cv=none; b=ebxJx5dHoRppd802s0wYYhxf/sGUOzmDRGiBkcBBuujdorf2XDXu9bex4VuoDi4gfBmFUNbS6Uw1kXhsKQ+segYjVBHaQ/rjNGjKHsX/W8KXrk2LTt6neFc/heI0BSaA4wkuCKUTCY1YqxHyqs+2D0aQ40XnHZQ5yTfhSwwexaE=
+	t=1707831083; cv=none; b=At9hQgyN+FbTjDdNquXnlZ5UZuzMxbNeLQHQ8k4poLge1Ac1q6f0g7AMVq75O05MXx7SsHZcN2f2w3H7SGM7pWx7J8uXiikuqQnqisn2oMrAwV/3NSK5yS3qgUrrZ2+St4wPaRNcJRTSKRYJ+L0d0Otak0WYwqoEDftbcHxpwRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707830959; c=relaxed/simple;
-	bh=vtTZA17cL6Wm52kSuIewLvI/yQxbjqL1mzAraV6tiIQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=axf/H06ec9DwdZ9b1FeHI8NK+z7j/+bU5pjz1K4LkTjF5uX5BUTCHRV53wZ4ipQKqwV53J4G49rr2DKFZ2UKFHJ5pZdh2MuxtK5pR7omBZFkLODkDluvSzitBpcv9cdetVM1VRoiuxTDiLZM4OlX7IH8dPei/VbXg/JKgsQynwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L3GUCKn9; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5ceb3fe708eso2957680a12.3;
-        Tue, 13 Feb 2024 05:29:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707830957; x=1708435757; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UaeqwtgSIyVzHS16YQknys4xdcQHPDxWpe0YrROxhb0=;
-        b=L3GUCKn96cZE+da9YuktTaTFi18VC1mwaoF9Iy2CVNrwRAlxXlU9LTzDtwvG9eTXm6
-         9EeY8OkvH4olQl23BWziTi32sig7Y9xj6Amqxoc9BoYAvSQoVSrmr8pllaDrniGfGM/j
-         m6N26uuLmdlZ7LdHUhyEkl0yS/RUCPB75Q6Ll0NN+21tSi1lvW0NTuKo3Fnblpj8F+YP
-         C45czeBH6pK8/1IDCpUCYparZahSII9qIyrf8SViJREpDHpPgogDwQF3tK3ADTCpQVae
-         gsTCjhWsp2pLptDycHVifnvxNMZ4+2OU84m/chLcibnYb6j7g/1czUI5ljMbyRdrUAl3
-         WvOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707830957; x=1708435757;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UaeqwtgSIyVzHS16YQknys4xdcQHPDxWpe0YrROxhb0=;
-        b=dnzZJfrIOtGoetSCQEUW9pSyqFT5vgBYHT13bB2qStjtXqfU2UCIF1tcYchBy085qs
-         3muBlTCcw+umZPMHjEQ+nPj/1mNk2i+wE20t2G2XcmX8ZzWYMpLFkW7gFih+CJhVQnxc
-         KVqSVs4D44HEvVVAoX0mQstAUQ5mZuxkSJpAwUM+uyqmqNnbhrc/vnnyGHFmBIaH6oQm
-         iy2fMLp71JJH9rQ+ACVBQpvj9Rs56nEq6T3Q2gaGfzvtva4LIyhnm/mswBe9Wfz34I+S
-         SZ+fQxzCwz2IHZySMcLynT9O3r+Xs15XLyiZtBph2R7GaMsmN/c8Fu0EY0l3i+RXcUOV
-         urbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMTq6lvfCdYH1aCuuIY8DD54302+NdVtLCMbUi0l1NSEZhbJu+zshAZzJphIU6BTNxknOJ4fNY2t33Q+9dTdcsXTyYgW+fBW25agAWrD13D6Xx2WMW3dxTP7xcxf4FsDLQajeAbxSxCg==
-X-Gm-Message-State: AOJu0Yy6/LCBCa22UldXSRU4zIgKjPljKptXD/vsh5hJ/3C4vMxlMoOI
-	qshtD1ZMCjKlO/0cyR7FBkj87lALEPepxC0FZSRL11eoBXbxtN64cZ3VMrMXtveIs7wbxMLOsYX
-	sjui7+1Y/DY+xrOMHRGsa3pRutL0=
-X-Google-Smtp-Source: AGHT+IFirH4aeuABJGuJpGluUR/k6qc7RQ0cPXWpBU05uEa+O9ZbTIMRRS7wseCb+9I+EE5L24HoLreQuoUG8z9cSWc=
-X-Received: by 2002:a17:90a:cf13:b0:297:ca7:fd10 with SMTP id
- h19-20020a17090acf1300b002970ca7fd10mr6856956pju.1.1707830957041; Tue, 13 Feb
- 2024 05:29:17 -0800 (PST)
+	s=arc-20240116; t=1707831083; c=relaxed/simple;
+	bh=t7dUzixQgGgfHCE+xYRgs18If0gl9ptwlMELTWn8130=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=jNi5YrooLagUY6obgElf3TFacnZ9uLjAys5yFyTWLaRhRRQUybWHVvhVx4Lvo6lX0qaZJgzOEYnV8YjKQYjLmm8wbOBqWIupYu2f3T+l0axpu0G11TprnW0dkLNsXcwiS1KGIDQDjOMrm+3j3LmoV84HFvHv0T5KVp5uIrcdW5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=xdNZb5FN; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mDTl5L+J; arc=none smtp.client-ip=64.147.123.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 497C31C00085;
+	Tue, 13 Feb 2024 08:31:20 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 13 Feb 2024 08:31:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1707831079; x=1707917479; bh=1CLqAnvekW
+	i/zNDdu70Gx6QdI5camKVBGuus8xrH8zA=; b=xdNZb5FNWGxs6g0/IjlAzo6Ewg
+	VqlzT6dyirVa/hAWd5PDLWgo/uSQnKJrL+OC9MPRLRS4BJhfkOnCAvlqzXwHwJhQ
+	X7m6gVUgWsCfASesb9P5Kc0HEnHsS2759+Hya/00npgfFN26qXoUADiPUZISdvBq
+	ynv0y8SfoIQrYiHQdBUUV7Kb34Pr9nazLu9mNgqwMNHTuymH7adYVaPxb1aFh8JK
+	yzgEmViMzpU0pewmSQoX2Uhj55meTkfRBxJ9L5CjhoRwkiuHNU57blrd2NNGdJXy
+	eNs3SOmwslfaK4oREf2PINmJ6j2R26ArXAaNWjmMG9hhDtyOCazz16znyzYQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707831079; x=1707917479; bh=1CLqAnvekWi/zNDdu70Gx6QdI5ca
+	mKVBGuus8xrH8zA=; b=mDTl5L+JmD1mJuEYjZcOXxTMvaMaa3Ef5BhezVP1PmVk
+	WNikl29u/WAwRo+J9tGJ+OxSOjUJsjfTuqfJ0x2WZDtx/QNuwpgdQ6KP6hWhXrcl
+	6351E9W1bzzmdBQ9Je5QUF50/vuMxkvUwxFLBSCZDnl1HrP8H7wTwOE4rmyGFeuw
+	f42PY3L9N9TK9vW5a6IG2RnGUALidaQ6HzmY7koKvnShut5gmjhZ96ncNqjerTcR
+	zsbeH/qgDs1hMkN2fGx+kZ7FVxb5Z+3nyiT5PFASTDDGmGuTIjcK5kb5T65aCvtP
+	LX3XjkeUODDTJxP2wPdifUsaIjXx/BHeQu/SqdatiA==
+X-ME-Sender: <xms:Jm_LZYjhmfgC47H8TkqMFaMx3VoS1gRSES4dZyiRuxlziUiaqemKBQ>
+    <xme:Jm_LZRBTeztoQz9CmYBQulMnw9uPD0qFAHAwAJADUcDq5R_gfGQrxBU2IS9sExvzS
+    wApmoiUnbGTHT7gOrs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehgdehvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:Jm_LZQEWQ4oxLhgOWX3NmKwC_7Abh6478ddmWSYl6fl6nORcbPF__w>
+    <xmx:Jm_LZZSwJJDaPY7SHrW1IgiPMDm3R7dLtnXv5GpKziyOcHhLAzvkGg>
+    <xmx:Jm_LZVzr97J6qp9riKpgD8w7RhqlSPl7H_iqLsGmuXU5i164X3MDKg>
+    <xmx:J2_LZYqQ6mRIN5SGUYH6EgmpbNTGreBRvyZ6c-FxtbHYvYE2u0885N1dzGw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 86C7AB6008D; Tue, 13 Feb 2024 08:31:18 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213124146.202391-1-aford173@gmail.com> <20240213125618.GG52537@atomide.com>
- <20240213130208.GI52537@atomide.com>
-In-Reply-To: <20240213130208.GI52537@atomide.com>
-From: Adam Ford <aford173@gmail.com>
-Date: Tue, 13 Feb 2024 07:29:05 -0600
-Message-ID: <CAHCN7xLmTEk0439XTuRPG7SSdH=4YiMTmrSXmfTkpC2bo_kNGw@mail.gmail.com>
-Subject: Re: [PATCH] arm: dts: omap3: Migrate hsmmc driver to sdhci driver
-To: Tony Lindgren <tony@atomide.com>
-Cc: linux-omap@vger.kernel.org, aford@beaconembedded.com, 
-	=?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <6a52b971-227b-4433-bdf9-b4a69a41d061@app.fastmail.com>
+In-Reply-To: <87il2sy13f.wl-tiwai@suse.de>
+References: <20240213101020.459183-1-arnd@kernel.org>
+ <87il2sy13f.wl-tiwai@suse.de>
+Date: Tue, 13 Feb 2024 14:30:56 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Takashi Iwai" <tiwai@suse.de>, "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Jaroslav Kysela" <perex@perex.cz>, "Takashi Iwai" <tiwai@suse.com>,
+ "Nathan Chancellor" <nathan@kernel.org>,
+ "Nick Desaulniers" <ndesaulniers@google.com>,
+ "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
+ "Curtis Malainey" <cujomalainey@chromium.org>,
+ "Dmitry Antipov" <dmantipov@yandex.ru>, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] ALSA: fix function cast warnings
+Content-Type: text/plain
 
-On Tue, Feb 13, 2024 at 7:02=E2=80=AFAM Tony Lindgren <tony@atomide.com> wr=
-ote:
->
-> * Tony Lindgren <tony@atomide.com> [240213 12:56]:
-> > * Adam Ford <aford173@gmail.com> [240213 12:41]:
-> > > The sdhci driver has been around for several years, and it supports
-> > > the OMAP3 family.  Instead of using the older driver, let's finally
-> > > migrate to the newer one.
-> >
-> > I think we also should do these to avoid incomplete conversion:
-> >
-> > - ti,dual-volt property can be dropped
-> >
-> > - ti,non-removable should become non-removable
+On Tue, Feb 13, 2024, at 13:56, Takashi Iwai wrote:
+> On Tue, 13 Feb 2024 11:09:56 +0100,
 
-I'll do a more comprehensive search for these flags.  When I did my
-testing on the AM3517, I didn't notice these, but I see now that
-others might.  I'll do a multi-patch series to first address the
-multi-block, then  omap3-ldp.dts, then migrate the omap3.dtsi to the
-new driver while dropping the flags, and lastly update the individual
-boards accordingly.  I just have one question below.
-> >
-> > - ti,omap3-pre-es3-hsmmc probably should not be needed with sdhci
+>>  
+>> -int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
+>> -			const unsigned char *buffer, int count);
+>> +int snd_rawmidi_receive(void *ptr, const void *buffer, int count);
 >
-> Hmm actually we may need to set SDHCI_QUIRK_NO_MULTIBLOCK for
-> compatible ti,omap3-pre-es3-hsmmc.
+> If it were only about the type of the buffer argument being a void
+> pointer, it's fine.  But the substream argument should be explicitly
+> typed, otherwise it's confusing for other normal call patterns.
+>
+> I guess the suitable fix for now would be to provide wrapper functions
+> that are used for callbacks and bridge to the actual function with
+> pointer cast, something like below.  Eventually we can put more const,
+> but it's basically irrelevant with the warning itself.
 
-Should I update the driver and binding to add  ti,omap3-pre-es3-sdhci
-to set that flag, or should we create a boolean (maybe
-'ti,sdhci-no-multiblock') to the device tree options for that driver?
+Right, makes sense. I gave your patch a spin and it addresses the
+warnings I saw in randconfig builds, so please apply that with
+"Reported-by: Arnd Bergmann <arnd@arndb.de>".
 
-adam
->
-> Regards,
->
-> Tony
+     Arnd
 
