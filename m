@@ -1,233 +1,155 @@
-Return-Path: <linux-kernel+bounces-64398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D204D853DE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:00:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0CC5853DE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:01:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88BB928A750
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:00:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 205401C287F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EF8A62140;
-	Tue, 13 Feb 2024 21:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE2862A01;
+	Tue, 13 Feb 2024 21:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=azul.com header.i=@azul.com header.b="LVQwYYU9"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2091.outbound.protection.outlook.com [40.107.102.91])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z2syN5LN"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4C961695;
-	Tue, 13 Feb 2024 21:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.91
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707861394; cv=fail; b=FaP5M6xa27eU5/W32qJKmJf0UO4Zj0K4DjIh0oUxj8lmpf28Or/cK+I/S0xN22cubnfqFNFhc/T4xcRI+Et3YBcb8XdcIfOTh1nFiu2Rr7yjNAJcVbufN8Rkg8m2afOXues1sIFMokAFWorcRdsp+0R5zNJ9D3njgpwz9kBoRo4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707861394; c=relaxed/simple;
-	bh=A+rjHPrVnewG792klY3Tc84EDI5hIW5C66QHFWYYM/U=;
-	h=Date:From:To:Subject:Message-ID:Content-Type:Content-Disposition:
-	 MIME-Version; b=INpjo88//mLPNpkQS/ilNL3hl9b1w/fRyuAuaa1XG2EIgFPi1U3osWupzEkMYhahPhtEGS7UpW3xhusY2BdYv/vYuLVNl9PTg3VRAe17AMhC4SmJz6OgD9V/PAhtSSfP1trPLdhbV5n9nV2GJUm+rRRfbQQOEXVfAjN+Kt6/IL4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=azul.com; spf=pass smtp.mailfrom=azul.com; dkim=pass (2048-bit key) header.d=azul.com header.i=@azul.com header.b=LVQwYYU9; arc=fail smtp.client-ip=40.107.102.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=azul.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azul.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bdTxYjbQAj8aPHiX9aK6NV1vjqsIZF2aHAydCQ4qNOqlQXAaXqSaT1ohVbh2uxDi1Y4wtVoxCtPKTl4eT/qDBCl/rhjri4bTE3MBdgfbFkDMCE6So5XfyYnOjwgSi2V/UJKStfe+dy8BLxXitLcrmFcp4Np7Dju22URaDmhpgvqrMxyvSEfb07sgHuLnv/mJPsmCpjHDmz38P6xuDxqBbau/Te8kxlcLAWbkAJ4jJ9uxIrG3ABnUO+c/+3iFndcl0ytsHYj0Cin4XKdZ0P++xdI7ZHYzD4vkHRRm7jSqHnxcQaGQHLPJth85Nd+4a8jjksrY1smmwT4iABldmGbDKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IbSY+mIhMEBqPxs6kaSUCiP7Ans6rCJhGr04oMsXQyY=;
- b=TFhrQzSjZKjaIneMYW+5mBQ2d/IZLKtfc7ZeA5C+yrjuZX11S7nQ8SCVFk0CSLcNdRAjU6V2o1qZbCYLIEqaZddX8YBCpGzpj3yjRHdqeva/XYBH02abfbkN7gurYRNEOd7zIWpZbeCjm5OU4w3i/P2ZDzgQ5udYvFbj1HJYNONHc9ZpqxNJA1s38lyCtxG3Vf2jSoO6V6/Z9JMYDM0Wu2TIJFUgVIqN3F1Hafdl5sWs42yQidHvRZEP1jHCbB7j/7uzb60GY3ELTq/5CxuqsdapWJ0+SHVbbBTlCn5Ie7cLWvWUUbOfKnOpPOJOVqfzYi3jswZ9eTAXwRVfVoE3OA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=azul.com; dmarc=pass action=none header.from=azul.com;
- dkim=pass header.d=azul.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=azul.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IbSY+mIhMEBqPxs6kaSUCiP7Ans6rCJhGr04oMsXQyY=;
- b=LVQwYYU9S1Kt+Wkz+OCOLTXgqXK93xG6vvfMnFcOaf2OzvuwPsBahGwYc+vvr+g8rcHLcWQkK3OG7CDTPJMCgZPd5dAhH63hpbJ/GtBUVcIzmVlJWloGvSHrcYe1ao14nRNkBkjkkyzjaVTi6SwdcPx8jRbcaqS1NpgYjmne6nrRKewe7w31qJuqhTv4gg2LH/m3hvUsrGYsqUqbWaAOavKccSL6GtZX7gkoNLjvkIo878XS4vVAdRwyxxwQvS6Ydvife7nPs/urUOfi+MBFC6SkY9ZQO6drIf6yFkkO9AqARvXg4/3wNxrAVP85CZIxsgaaPMpqdig5ecRDW1kmdA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=azul.com;
-Received: from CH2PR11MB4342.namprd11.prod.outlook.com (2603:10b6:610:3b::19)
- by CH0PR11MB5268.namprd11.prod.outlook.com (2603:10b6:610:e3::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.35; Tue, 13 Feb
- 2024 21:56:27 +0000
-Received: from CH2PR11MB4342.namprd11.prod.outlook.com
- ([fe80::b505:1895:94e1:91c3]) by CH2PR11MB4342.namprd11.prod.outlook.com
- ([fe80::b505:1895:94e1:91c3%5]) with mapi id 15.20.7270.033; Tue, 13 Feb 2024
- 21:56:26 +0000
-Date: Wed, 14 Feb 2024 05:56:20 +0800
-From: "Jan Kratochvil (Azul)" <jkratochvil@azul.com>
-To: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, Waiman Long <longman@redhat.com>,
-	Michal Koutny <mkoutny@suse.com>
-Subject: [PATCH v4] cgroup2: New memory.max.effective like cgroup1
- hierarchical_memory_limit
-Message-ID: <ZcvlhOZ4VBEX9raZ@host1.jankratochvil.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-ClientProxiedBy: VI1PR06CA0095.eurprd06.prod.outlook.com
- (2603:10a6:803:8c::24) To CH2PR11MB4342.namprd11.prod.outlook.com
- (2603:10b6:610:3b::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05BF4629E1
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707861475; cv=none; b=N/sY6Fwp3KCX7opJZ1nfFZCPZltR93bjoG2l4nHhgn2hd0MWu2R2yb1HTd9YcCJEaCBoz8GEH+BeL7A9ffUrPQlJWt0GbXC2n63H6T/vz8NoKt7ork4NKHWYrrmHqIG4z8YwkXenYqylFI1FWQe3ZM5KZ7WisXH0Xv6zSYqLdYQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707861475; c=relaxed/simple;
+	bh=LC9aLap2APj/OH/lobM36oEQVV0oPuQPtnUuvAgE1is=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=KWlT/ZtH/rF/be5QEBy15T9ibSrQKfTs0UsHn6jC4Njt61cE5ctoIpNYgVM2y1CKoyvhVRzAOTDRudCOLWNh2r/Ot0ebmnaT9AKho5Sfzr6bh963II0Ysb1F18Jl9hN1TfkIJk1otGQftIRNzIoOwnbEs1KqdBOUM1iaPt5b5CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z2syN5LN; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60753c3fab9so3009657b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:57:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707861473; x=1708466273; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ir4+0EAbk6DmHSJMCOQ+63RTEjcKM6OBoUCHYQ558Qo=;
+        b=Z2syN5LNhc2RrVTe9Wh5aUgM42WA5VdKdJTmY84ptaaTakQ+cs4Ey/MNDxzMC7fBTV
+         eKysJJJgcHq6/Vckrs/T0ms7yu08hgDyqoYkmLgh4IJUnI/+A+BDuuv4ZHPGiuyV6Wgz
+         SCzYA9zLbFh2+TXaktRIfRDawTsN/RuDXR9uNHu7QcR/4rDvanhKpXIF2ortyeVMIrNE
+         wgiCDxvS0VSLN+qPR2GqIw7KktiFpU/bAJqfHxUwrCiMR1XaSm5aj8zwz2WTBB2HD9WN
+         fMxTMCu+j5SrkDqlbIzaYiGhZX9w4uOZhfleKzle0Oc5ZCPpGLiW+ObD6V47fFzzafq/
+         0Icg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707861473; x=1708466273;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ir4+0EAbk6DmHSJMCOQ+63RTEjcKM6OBoUCHYQ558Qo=;
+        b=bu6cYTKos96xE2uur7tLmMwVhAs+lYLxf4FssJ9HEUzYkVBzQ8WJRFbW72ImBbfC0M
+         PhVcsctcWxIAP3fQ8v42qlI8etViJ5oAgspMo0RDYb1mGpLfKF2K0Rc5JCz5lbewg7IX
+         0cmCEuPBRmchi7RW1GNkhSoXEQGQk463kP8Tm4Vw3TLAanntVP2Vo+HLOuwTIbYt1did
+         UbIX1kaCdKQoALyIG8vWyHVcIQZLJkZWMNK3eA5+FIyLm2J5MbfP77heB9UUV/0Y3JWA
+         zoiT+9JM8moMvagkCVli4pAesb8ox0b8zx5jzqEqGwNtGV+Qsh7eQQNNCvWKWe6jWmw5
+         rrXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUqnJA6O2ZfmDNVvtnEAg7nRoEYzXsoFGhigeqlefhG8GGXBpMlU4ImUiCOwLPdpq2hNnm5L8g3+3C9br0uRx5ALnSLAT2/fxI5U7hs
+X-Gm-Message-State: AOJu0Yz07Cqy2tovARqyEBQzFhphgHR1sej/Qt8+HLtlV/CUTq9urYye
+	RIVGEM8WUzHGdY7C817u++pZMxVcMwXpc2PMdueX015k6SMBc4J7rOlYXXPpaWKuCjHwa4s78f3
+	D4OYotg5Es4xDdyKYeAtDZw==
+X-Google-Smtp-Source: AGHT+IFDSd5xu2FB72V4FXpKTmeqW1QesEeAS6gwaRywm0PkcXIJA1oGvUM9nR5x/IAVPoUhZ5UVHHp7Mrodt7B/AA==
+X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:ce6c:821f:a756:b4b8])
+ (user=lokeshgidra job=sendgmr) by 2002:a81:5702:0:b0:5ff:6ec3:b8da with SMTP
+ id l2-20020a815702000000b005ff6ec3b8damr12240ywb.1.1707861473107; Tue, 13 Feb
+ 2024 13:57:53 -0800 (PST)
+Date: Tue, 13 Feb 2024 13:57:38 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PR11MB4342:EE_|CH0PR11MB5268:EE_
-X-MS-Office365-Filtering-Correlation-Id: bdf0a830-9b0a-4752-3a29-08dc2cdea05e
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	vuhqRv1svc4hrrZNLEdppysYpQGtgMkCfCsXmAVpi/BTmC1GQTy/G3+uqZZZCwqiByouEd1yrQqQxGQc9RTesowGQI0uoasq+gvQ5CvvCcOmQoRRlvEpo3nwQXSydg74LiLcbiiSrzBCU7mZMBmW/vWeRj/eIKF4Jy6nwR9H1tHjeSaunvh+smfzw2tdzOOVXeKil+ncVogTXH7hAOaZcMVjbcqO/d6RlG4BkfBdDPdUHIajF/Mrj0GrH/oZbU3CjB936ZH6bk9+GtYTJa5yizs5kAKM1FXVuQMV1q2jJihVXUOKmMBtSKCh8nuBw7ofYxHbi8IZ8lr7PuvWR7W6whv9trqwUMDi/bNvQvyy/K2FYM2ufwN2bavUSGYu6iYhCu7Hm/OHMOBxoYPcfdu2q8miNIn//Mla4btCl+dNkHKrJSf5QPDnNuwd5RbNTpZ2eH1cFdewom4+oizhN2oCY395Xpe5mwrszPhzCLLG0pIyOLjWfrOFwpkVkm0hdL8Al5RbnzuDCyvTPELjGkMpuDiNkHtCUVBeMmf/vU72zRE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR11MB4342.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(39850400004)(366004)(136003)(64100799003)(1800799012)(451199024)(186009)(38100700002)(86362001)(966005)(316002)(110136005)(478600001)(8936002)(66946007)(6486002)(66476007)(66556008)(8676002)(2906002)(5660300002)(9686003)(83380400001)(6506007)(6512007)(6666004)(41300700001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?XhSlqKCQV3V/Pv0WDyFuY/Opjq8vYyLFKUrVWF6npmMApSFWPhgKUIOmt9Dw?=
- =?us-ascii?Q?TlNALsyuiIjxuVqNYo0lbpifr6GpJsmn3q5XXqrdOjvf5RxklblEwdmM0piE?=
- =?us-ascii?Q?dLI0fuJJWVGJbu2D4djTD3bmb29m5lD88l7nqsvjDnm3ohdRE1zTngIs9FVm?=
- =?us-ascii?Q?/MrTulqU0wXIRn6RfLdDDwXVxYJHBaP6KGxIWewIzz94wZTckdW3VG+EK4cg?=
- =?us-ascii?Q?SqJA0HPLz4EcjoRiHUMEOIP8dx/PRWhhjBoGwhTq9qeuSBFPettFtwAOAkWM?=
- =?us-ascii?Q?jqLkM/uwHSWYJKxX4sfNJsu/UDSVaBcPZeUcBBeKPpVOYmR0ppIYsxhpKaGZ?=
- =?us-ascii?Q?aKqm7JdqfMWPkstLjsoYiQqBmsGCfP2msK9qsXlH6Kqvqs177N6bSsPkzLDF?=
- =?us-ascii?Q?MkdQk9CSxCRSPLdQdlSKHbK53SZCTbxFazSXt/r6ot98QECSxF96Y94HJt2c?=
- =?us-ascii?Q?OqPgL76Zg5fUfCg1DJf/wMaaohcbOFrFSoF2zBywk8fb74bsllnonufrcyrT?=
- =?us-ascii?Q?hVzv6QbBRlG9aa+/o7PCJml0Ik4Ce7qH3Tmy7iBRynkGtGxHt4pKpvojH6sT?=
- =?us-ascii?Q?TbWiRDXetqRc1rhwkvXZSPz0oHNMbWwtYlrRSrM8RAyYvxH9ozLtqXtZRN3U?=
- =?us-ascii?Q?hjknrIEXaPmRxDZkwk8WPqQwBBR2C5c/FOPgbDPj4nC7NhFzRa9nPSuPxIQD?=
- =?us-ascii?Q?SfBeoPSe3ZB1iPVgyZ2rjaPeFW4HTywZ0Es2lVeN2aDDmxZYBANVOvYlerEn?=
- =?us-ascii?Q?r7hnRreYpdNYqTnXm4hQ63k5XgYhqSMO77r5/vSbmRaKRPQU6eNKAlLvsZMf?=
- =?us-ascii?Q?DrnljPkRtfbG+idQ7sAmVTrzfwodPXfuhDRGC46uM29tjdv4W/7pERbGOp5R?=
- =?us-ascii?Q?AI4BW/TYuP8qYMgjuuTTnFCM4kgZhuLTqxc+Q+YzCX2WoSIFnv8uqOedHsCp?=
- =?us-ascii?Q?n9gvdPG4WXyA5zF6UWDiQzOiYoF4NZqSLD3E8gmzEACNzCX7hCgYR/45LTo7?=
- =?us-ascii?Q?sTDd6b7IaMwzUTN0dyhsBX5KvSDl7FrqOFBJ/Mljxv5nwpqe/mDn5kNIV7dX?=
- =?us-ascii?Q?gnuBQH8Dga3ALUd2Y3dnlrNvboarN/ew0eGBvt7m5Sn/4E0LL8vi4FYD+xBl?=
- =?us-ascii?Q?4/6yvVCuGSgoCY3qWWsL3JYjrppWFFuvrYAzqncCp8ZPOMcO65GsdW7vzRDD?=
- =?us-ascii?Q?iBvRmIL+RPFOa1DY6YwPBMPUY0/dCH+bA2AM2B4M0OkrGqJ6ty44tArB8Rkt?=
- =?us-ascii?Q?ArYx7EgvfzSal9WGt5gu80GF/01tZE3XKfo+m3bA2KQhYM30FdRoYPAx8QCG?=
- =?us-ascii?Q?7Jln1XKsYR2dghiDXezwZe7KHIw4PDH/7BD21KVZGDhnzHvNPtLPmoRebIMv?=
- =?us-ascii?Q?zOi8He/x3Sx5ZXU8suNhGl8TYpq1QOTCCJh2gkPZAPBNqVGdM/8aLz1PyeOv?=
- =?us-ascii?Q?ZQNvtqU0pT6VP4SDlhV+iYZ6mPzkoO+JYd+n2KA8nMJRKIiIFx+OsWHsOYB/?=
- =?us-ascii?Q?uM7urtymBjRSNkDMsLIyJXa49SOBHFGcP5xTCQBVmb6x2c5acJxoAsKuBpC7?=
- =?us-ascii?Q?UdKYHOBG9Do8ehPVP466O5xCAX2g6A4jnWdIRbeHS+oiRGvYHmsjwcGcraNi?=
- =?us-ascii?Q?fA=3D=3D?=
-X-OriginatorOrg: azul.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdf0a830-9b0a-4752-3a29-08dc2cdea05e
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR11MB4342.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 21:56:26.5762
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: c480eb31-2b17-43d7-b4c7-9bcb20cc4bf2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Rh/r1UymEPVwhcVuWKGXv1jbx1ktq47ziXH/P02HbdZKTV0e2D5xq6Im1XISCeVsfZxoBpUtfqI311rTnQRLKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5268
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Message-ID: <20240213215741.3816570-1-lokeshgidra@google.com>
+Subject: [PATCH v6 0/3] per-vma locks in userfaultfd
+From: Lokesh Gidra <lokeshgidra@google.com>
+To: akpm@linux-foundation.org
+Cc: lokeshgidra@google.com, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, selinux@vger.kernel.org, surenb@google.com, 
+	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
+	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com, 
+	willy@infradead.org, jannh@google.com, kaleshsingh@google.com, 
+	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org, 
+	Liam.Howlett@oracle.com
+Content-Type: text/plain; charset="UTF-8"
 
-Implement cgroup2 "memory.max.effective" and "memory.swap.max.effective" files
-similar to existing "cpuset.cpus.effective".
+Performing userfaultfd operations (like copy/move etc.) in critical
+section of mmap_lock (read-mode) causes significant contention on the
+lock when operations requiring the lock in write-mode are taking place
+concurrently. We can use per-vma locks instead to significantly reduce
+the contention issue.
 
-cgroup1 (by function memcg1_stat_format) contains two lines
-	hierarchical_memory_limit %llu
-	hierarchical_memsw_limit %llu
+Android runtime's Garbage Collector uses userfaultfd for concurrent
+compaction. mmap-lock contention during compaction potentially causes
+jittery experience for the user. During one such reproducible scenario,
+we observed the following improvements with this patch-set:
 
-which are useful for userland to easily and performance-wise find out the
-effective cgroup limits being applied. Otherwise userland has to
-open+read+close the file "memory.max" and/or "memory.swap.max" in multiple
-parent directories of a nested cgroup.
+- Wall clock time of compaction phase came down from ~3s to <500ms
+- Uninterruptible sleep time (across all threads in the process) was
+  ~10ms (none in mmap_lock) during compaction, instead of >20s
 
-For cgroup1 it was implemented by:
-	memcg: show real limit under hierarchy mode
-	https://github.com/torvalds/linux/commit/fee7b548e6f2bd4bfd03a1a45d3afd593de7d5e9
-	Date:   Wed Jan 7 18:08:26 2009 -0800
+Changes since v5 [5]:
+- Use abstract function names (like uffd_mfill_lock/uffd_mfill_unlock)
+  to avoid using too many #ifdef's, per Suren Baghdasaryan and Liam
+  Howlett
+- Use 'unlikely' (as earlier) to anon_vma related checks, per Liam Howlett
+- Eliminate redundant ptr->err->ptr conversion, per Liam Howlett
+- Use 'int' instead of 'long' for error return type, per Liam Howlett
 
-But for cgroup2 it has been missing so far.
+Changes since v4 [4]:
+- Fix possible deadlock in find_and_lock_vmas() which may arise if
+  lock_vma() is used for both src and dst vmas.
+- Ensure we lock vma only once if src and dst vmas are same.
+- Fix error handling in move_pages() after successfully locking vmas.
+- Introduce helper function for finding dst vma and preparing its
+  anon_vma when done in mmap_lock critical section, per Liam Howlett.
+- Introduce helper function for finding dst and src vmas when done in
+  mmap_lock critical section.
 
-v4:
-Adjust the commit message.
-v3:
-memory.stat fields -> *.max.effective separate files suggested by Michal Koutny
-v2:
-hierarchical_memsw_limit -> hierarchical_swap_limit fix found by Waiman Long
-v1:
-hierarchical_memory_limit && hierarchical_memsw_limit in memory.stat
+Changes since v3 [3]:
+- Rename function names to clearly reflect which lock is being taken,
+  per Liam Howlett.
+- Have separate functions and abstractions in mm/userfaultfd.c to avoid
+  confusion around which lock is being acquired/released, per Liam Howlett.
+- Prepare anon_vma for all private vmas, anonymous or file-backed,
+  per Jann Horn.
 
+Changes since v2 [2]:
+- Implement and use lock_vma() which uses mmap_lock critical section
+  to lock the VMA using per-vma lock if lock_vma_under_rcu() fails,
+  per Liam R. Howlett. This helps simplify the code and also avoids
+  performing the entire userfaultfd operation under mmap_lock.
 
-Signed-off-by: Jan Kratochvil (Azul) <jkratochvil@azul.com>
+Changes since v1 [1]:
+- rebase patches on 'mm-unstable' branch
 
- mm/memcontrol.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+[1] https://lore.kernel.org/all/20240126182647.2748949-1-lokeshgidra@google.com/
+[2] https://lore.kernel.org/all/20240129193512.123145-1-lokeshgidra@google.com/
+[3] https://lore.kernel.org/all/20240206010919.1109005-1-lokeshgidra@google.com/
+[4] https://lore.kernel.org/all/20240208212204.2043140-1-lokeshgidra@google.com/
+[5] https://lore.kernel.org/all/20240213001920.3551772-1-lokeshgidra@google.com/
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 1ed40f9d3..8c4cb5f60 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6845,6 +6845,19 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 	return nbytes;
- }
- 
-+static int memory_max_effective_show(struct seq_file *m, void *v)
-+{
-+	unsigned long memory;
-+	struct mem_cgroup *mi;
-+
-+	/* Hierarchical information */
-+	memory = PAGE_COUNTER_MAX;
-+	for (mi = mem_cgroup_from_seq(m); mi; mi = parent_mem_cgroup(mi))
-+		memory = min(memory, READ_ONCE(mi->memory.max));
-+
-+	return seq_puts_memcg_tunable(m, memory);
-+}
-+
- /*
-  * Note: don't forget to update the 'samples/cgroup/memcg_event_listener'
-  * if any new events become available.
-@@ -7038,6 +7051,11 @@ static struct cftype memory_files[] = {
- 		.seq_show = memory_max_show,
- 		.write = memory_max_write,
- 	},
-+	{
-+		.name = "max.effective",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.seq_show = memory_max_effective_show,
-+	},
- 	{
- 		.name = "events",
- 		.flags = CFTYPE_NOT_ON_ROOT,
-@@ -8040,6 +8058,19 @@ static ssize_t swap_max_write(struct kernfs_open_file *of,
- 	return nbytes;
- }
- 
-+static int swap_max_effective_show(struct seq_file *m, void *v)
-+{
-+	unsigned long swap;
-+	struct mem_cgroup *mi;
-+
-+	/* Hierarchical information */
-+	swap = PAGE_COUNTER_MAX;
-+	for (mi = mem_cgroup_from_seq(m); mi; mi = parent_mem_cgroup(mi))
-+		swap = min(swap, READ_ONCE(mi->swap.max));
-+
-+	return seq_puts_memcg_tunable(m, swap);
-+}
-+
- static int swap_events_show(struct seq_file *m, void *v)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-@@ -8072,6 +8103,11 @@ static struct cftype swap_files[] = {
- 		.seq_show = swap_max_show,
- 		.write = swap_max_write,
- 	},
-+	{
-+		.name = "swap.max.effective",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.seq_show = swap_max_effective_show,
-+	},
- 	{
- 		.name = "swap.peak",
- 		.flags = CFTYPE_NOT_ON_ROOT,
+Lokesh Gidra (3):
+  userfaultfd: move userfaultfd_ctx struct to header file
+  userfaultfd: protect mmap_changing with rw_sem in userfaulfd_ctx
+  userfaultfd: use per-vma locks in userfaultfd operations
+
+ fs/userfaultfd.c              |  86 ++-----
+ include/linux/userfaultfd_k.h |  75 ++++--
+ mm/userfaultfd.c              | 438 +++++++++++++++++++++++++---------
+ 3 files changed, 405 insertions(+), 194 deletions(-)
+
+-- 
+2.43.0.687.g38aa6559b0-goog
+
 
