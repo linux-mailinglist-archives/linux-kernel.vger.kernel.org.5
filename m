@@ -1,165 +1,131 @@
-Return-Path: <linux-kernel+bounces-63098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6826852AE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:22:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54ED3852A34
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48D6DB22C97
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:22:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11362283F89
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7A11B593;
-	Tue, 13 Feb 2024 08:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76577179A5;
+	Tue, 13 Feb 2024 07:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="e3Frrq6E"
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hjN0yzWp"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6444B225D5
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B86417980;
+	Tue, 13 Feb 2024 07:45:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707812469; cv=none; b=LFBD3f9B2GC7qOMq2Qn5VuJ++wPc5dD+O4DYTHk1B9yaLJzkyxOH4/+4PXx07K8JKIBepusAYvo5N+GKY+v35rUhoIa19WmLZwmjE3YPnWqUmOgVO60ymuZReF/jiB6PhiiQF2mExPm3/4QQzy41x9nO8fqzgUZPliCf5hKlsDc=
+	t=1707810338; cv=none; b=BcsXMCVDSKcSGlUV0I+82PgdhwnN+7FiwxaPIDTx6jpn1pKhuEifgDbhhZ2AVqs0YnHo6FBGTZPash/+pyyqPf1QGtAPxkTzFr5R3S+oJ7q8tziVP/ZqkoYy8GrjKOZt0KckzMqmRsFPJxTpTtXpQZ1MYWT9ps5UtGHYDhsqXfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707812469; c=relaxed/simple;
-	bh=cFeJ49ozuDHgvVdgMByqtpMP0RchPUnBC6gtca+4OqM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
-	 Content-Type:References; b=b7ZZvxuAhHayT69SI8zuphEXlcOJPBa7bsQCFha5buYrscUUUFbaV8LtVJ2d0W52BmoECMeCm6VO3qxppEjf8YTIv9C2vS7RYrCEasNhVXkPN8vjo6tjg28JkhgJ47qZiwHf8Ji88nXN/gTuzuzQyNqL+Hk/hWssHiTDZW0nZw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=e3Frrq6E; arc=none smtp.client-ip=203.254.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20240213082105epoutp04d0562c2f2548fda4ea30a24d1273f789~zXmOR7rWC0365903659epoutp04E
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:21:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20240213082105epoutp04d0562c2f2548fda4ea30a24d1273f789~zXmOR7rWC0365903659epoutp04E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1707812465;
-	bh=92Ux7FtbDU/8AIHbTeinFsj9GB+AdwJ5W6wN/FBK/xQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e3Frrq6Eh2ga+UxktN6l6QBQuOO0iP1rTsreMaEmLeVl+pDn6FCRYAC/ySUZmlPtz
-	 AA7rglbyUiGY8sWXEKOR4FMDgHmHZq/0NYew+4Z/khDBMQ4gTAxoLjuVolLcwYkDLJ
-	 YDoNCTkDJO/w9rPZqoo4xHx5FFEpO010zNnWPfWY=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20240213082104epcas5p3a08eac06f25b1f052c54e4fa1f8ca47c~zXmNoDO281141011410epcas5p3Z;
-	Tue, 13 Feb 2024 08:21:04 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-	epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	ED.E3.09634.0762BC56; Tue, 13 Feb 2024 17:21:04 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-	20240213074436epcas5p4757b38265bea29c3bb6f1e0aa90f602a~zXGYB3Tj_0248002480epcas5p43;
-	Tue, 13 Feb 2024 07:44:36 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240213074436epsmtrp145ceff6af741c1bfddf992dff802ea0f~zXGYAoL9r1967419674epsmtrp1c;
-	Tue, 13 Feb 2024 07:44:36 +0000 (GMT)
-X-AuditID: b6c32a49-eebff700000025a2-32-65cb26702eba
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	86.94.08817.4ED1BC56; Tue, 13 Feb 2024 16:44:36 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.44]) by
-	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240213074432epsmtip2e975d3ca0a810946d70ecb4ffe1ff68e~zXGUKwsyY1391213912epsmtip2C;
-	Tue, 13 Feb 2024 07:44:32 +0000 (GMT)
-From: Onkarnarth <onkarnath.1@samsung.com>
-To: rafael@kernel.org, lenb@kernel.org, bhelgaas@google.com,
-	viresh.kumar@linaro.org, mingo@redhat.com, peterz@infradead.org,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-	r.thapliyal@samsung.com, maninder1.s@samsung.com, helgaas@kernel.org,
-	Onkarnath <onkarnath.1@samsung.com>, Stanislaw Gruszka
-	<stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH v3 2/2] cpufreq/schedutil: print errors with %pe for better
- readability of logs
-Date: Tue, 13 Feb 2024 13:14:16 +0530
-Message-Id: <20240213074416.2169929-2-onkarnath.1@samsung.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240213074416.2169929-1-onkarnath.1@samsung.com>
+	s=arc-20240116; t=1707810338; c=relaxed/simple;
+	bh=s/VnGkah36o5e86AM1uOTnVb660SGkn6WdUDvWapgLM=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=RRPRIxy3rktw6kSUIN0Q5pZrgjSdJnYGgOt0Sfpk7x0xtTrG07aEqxAGlseRcFyxMy82EBsHRHiko3Xpboi7AdhksMvkjp/DT11/biPthg0sW4cnrQDr/bghANbsj9PW5rw6gMv9sbAehVVXrJerNuFATi0EGMO+cFGBRa5P+Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hjN0yzWp; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d8da50bffaso16641615ad.2;
+        Mon, 12 Feb 2024 23:45:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707810336; x=1708415136; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lf6TU7R23fdwJeKphz6y3AoUlEwOvpYPP6zi5/0Y1Nw=;
+        b=hjN0yzWpqs/SxzJFV3e/D94oUFEjib269EiJfwKtXgN2M8YUhmYoRpco8JxWG0ojNb
+         J7SSdHot4kIggYJcLSztBp2xiUeIzGO6gJo+SYvDEzUKoMfKtmTcLcjTSB6vlPjA8tSw
+         OSAH2+ebq6z61FaLb+0sB/e7CivFlxWCA/BtAxfGgXoOM3FBVmwPJvdTKrZJ3ln8FKog
+         4EFUsmxYAa9T1c52cc0mxw8cbaXxB3MkmuZOp5N+g6OOQg4K9P8Alz9zRnyptUMkeBE4
+         Dy3JzPoIU2w1HSuIlCQsFTt92OB94O2ReeDeTQOwe3aeZasfYzzVDKR/7CuRzYuLnYu7
+         hvUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707810336; x=1708415136;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lf6TU7R23fdwJeKphz6y3AoUlEwOvpYPP6zi5/0Y1Nw=;
+        b=RMz2LwjxHKyL6dWHWg3iJ3xZu5s5hSuqe7NouqVJC/Ouiqj0DtoEJWr8EZ55FmUoLC
+         lGmXzlpNI2KAXnPw16tRI0z/TKZ1ym5rTWx3ND2vYNa2zkCE/YtIHzjJS4XFnA8Slnpt
+         dZJFlQeaa9RDKc7I1m9m9T4aoyQpZXRkoMM3BYlvd6yNCrr/il2wk6hywhp/XDJjxZR/
+         D3QeAVIAYiUy2/IIBomWpquEPbQMKwDtHKM/paCTvUTpS695ynRovQyC+/qjBOrRzyuK
+         sjMYEZibBGvydzJngNVNp3k+PxUQLNkr1TxMe/tX+R7kQuMKtLwPTj46hGZ02R6RYzgQ
+         l9+g==
+X-Forwarded-Encrypted: i=1; AJvYcCVPDgh0IsjLkVPg38jxXtgxlv8a/Duh9i0DVTqm3AYp3gyXqSPIE3QTs4sBoUHSmadK8DDift+s4B+Vm7FR33K60kdS4bz/lx8nuTuFv2guYMWzE/0Kke57ZlBJZ84BYeK+iupMAn3f079x2LLd2Axmt05N4boWrNMONtioN3ZTUD2sD4lx8w==
+X-Gm-Message-State: AOJu0Yykvx9J4RpJCxmrhlN5ec6Kn6JYWi3DtiRpAe8/TGjkmFsLbK73
+	N6kI9SC348RjIPLPtByEIZCxnLENnQ3FF2xCYPcNKSRAwfh8ba2i
+X-Google-Smtp-Source: AGHT+IFB32NDcQmAPenodD0C/m/q3IvvehbB5VLqV5e/hF7bajsOzyb4m5wuvYgLsq7sKPW9KLr0pA==
+X-Received: by 2002:a17:902:7594:b0:1d9:f495:cfa0 with SMTP id j20-20020a170902759400b001d9f495cfa0mr7908830pll.17.1707810336465;
+        Mon, 12 Feb 2024 23:45:36 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUWfCKAy0R554PZgy+jTF7bvQinwiK40SDfAd3dbexA1oYjayA5IhibOFUs1K03rNnFvwPrTQhFUbehdd538hbKeNbbBTEVGAqAEKCFnl4tp8DnSiIjke213xXJnioacFNU8ePiXU7ifNheBw3hjJxlCQiQtJDLL2SWXJ0lfrsMcLfN2p00QXwcfc2C9O2eaeqZa43W2m7mvH+13vSGTJSjoU43+VgIzSqLchJK3zKp9qLBkQa9sdz0JQf6+Mu6zq7ZHKbhu9m4jRkpOi2NZoMYBsBwiSviIEOkzjTaec6i2jYsl51bdKJtj4IY0h87vzu0UjBxui3X56FPTD7KOfZYU13CaXx8ACIzgqmAyu05pOTkQD1P0sLdHsdT87nPGcTjTJXDXlejFn7bmv+oC7cbDQ0OI0koXWn/ZziVB2AqnrNiOL/p8HvJ
+Received: from dw-tp ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id f14-20020a170902ce8e00b001d7252fef6bsm1463926plg.299.2024.02.12.23.45.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 23:45:35 -0800 (PST)
+Date: Tue, 13 Feb 2024 13:15:29 +0530
+Message-Id: <87cyt0vmcm.fsf@doe.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: John Garry <john.g.garry@oracle.com>, hch@lst.de, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com
+Cc: martin.petersen@oracle.com, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com, John Garry <john.g.garry@oracle.com>
+Subject: Re: [PATCH 0/6] block atomic writes for XFS
+In-Reply-To: <20240124142645.9334-1-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLKsWRmVeSWpSXmKPExsWy7bCmlm6B2ulUg7dTNS2WNGVYXHp8lc1i
-	+stGFounE7YyW7w6s5bN4m7/VBaLnQ/fslks39fPaHF51xw2i7PzjrNZfO49wmhxeH4bi8Xk
-	d88YLS4dWMBksaLnA6vF8d4DTBYb72VbzP0yldliX8cDJouPezYwWnQc+cZssfGrh8XWo9/Z
-	HcQ91sxbw+jRsu8Wu8eCTaUem1doeWxa1cnmcefaHjaPeScDPd7vu8rm0bdlFaPH5tPVHp83
-	yQVwR3HZpKTmZJalFunbJXBlHNvzjrngEkfFkwXX2BoYl7B3MXJySAiYSBzvP8UCYgsJ7GaU
-	uLVSrouRC8j+xChxtLWHCcL5xigx51QnK0zHjqk/2CESexklLvyYyAbhfGGU2HP5EFgVm4CW
-	xIw7B8DaRQS2MEksuXQQrIVZYDaTxLpv38E2CgskSvzacQfsEhYBVYmHLZ/ZQGxeATuJW42L
-	WSD2yUvMvPQdrIZTwF5iT8sDFogaQYmTM5+A2cxANc1bZzODLJAQaOaUePXwD1Szi8TXxasZ
-	IWxhiVfHt0C9LSXxsr8Nys6XaJk9C6iZA8iukbj6VBUibC/x5OJCVpAws4CmxPpd+hBhWYmp
-	p9YxQazlk+j9/YQJIs4rsWMejK0q8WvKVKgLpCXu/57LBmF7SCx5dBEappOAAbzrJMsERoVZ
-	SN6ZheSdWQirFzAyr2KUTC0ozk1PLTYtMMxLLdcrTswtLs1L10vOz93ECE6hWp47GO8++KB3
-	iJGJg/EQowQHs5II76UZJ1KFeFMSK6tSi/Lji0pzUosPMUpzsCiJ875unZsiJJCeWJKanZpa
-	kFoEk2Xi4JRqYJqoumutkfbNxw+kJMLbnvJH7T/lybLk14v7Zqza8UZed7+XKnd/kJfsvqO2
-	+Ji+7JXHOmmhoh+SDlmuKVBSPvxfZe//x/ILpj0L0FRcacKpdvji8WVGgpf1/O8eO66sf71o
-	08lrc91eLJlycSrLMV/2H/on509pW/ftvsn36sq1p+Yv/ajzvaZX5f5dTe5lhffPGh2S1e6u
-	b7TUKj/N9ra7wjyZq5ZTqnyW2Nxu2UlFv68tNZ4peFTAavfin+v2rYxsW7llCtuChy69cj+u
-	ZxtuZVp9VO+/5YOGf7oHdlzwOanq/v7HIber83+GrO8zrvyxmuuCUuzMX4IvsudlNzzmYPf+
-	/J1TSF34ZZHvNkEHJZbijERDLeai4kQAwhAP8xAEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPIsWRmVeSWpSXmKPExsWy7bCSvO4T2dOpBpu+6lgsacqwuPT4KpvF
-	9JeNLBZPJ2xltnh1Zi2bxd3+qSwWOx++ZbNYvq+f0eLyrjlsFmfnHWez+Nx7hNHi8Pw2FovJ
-	754xWlw6sIDJYkXPB1aL470HmCw23su2mPtlKrPFvo4HTBYf92xgtOg48o3ZYuNXD4utR7+z
-	O4h7rJm3htGjZd8tdo8Fm0o9Nq/Q8ti0qpPN4861PWwe804Gerzfd5XNo2/LKkaPzaerPT5v
-	kgvgjuKySUnNySxLLdK3S+DKOLbnHXPBJY6KJwuusTUwLmHvYuTkkBAwkdgx9QeQzcUhJLCb
-	UWLdwodsEAlpiU+X50AVCUus/PccqugTo8SjaXuYQBJsAloSM+4cYAJJiAgcY5KY1r+RBcRh
-	FljMJLGxewEjSJWwQLzEh++LwTpYBFQlHrZ8BlvBK2AncatxMQvECnmJmZe+g63jFLCX2NPy
-	ACjOAbTOTuLCciWIckGJkzOfgJUzA5U3b53NPIFRYBaS1CwkqQWMTKsYJVMLinPTc4sNC4zy
-	Usv1ihNzi0vz0vWS83M3MYLjVEtrB+OeVR/0DjEycTAeYpTgYFYS4b0040SqEG9KYmVValF+
-	fFFpTmrxIUZpDhYlcd5vr3tThATSE0tSs1NTC1KLYLJMHJxSDUzW/EytRU6esp/iv7gs5H60
-	4dW5WW2ea+bIHPg+7VH45XDDzVbr5vTda9vzmn3+2Z82n7/EVHbMfJ5rfen3pAs8R93fS8k0
-	xrt/99mmf+gfI0taWk7+72nuzj27lwWzP2JySVtWePNXr1NDyJkz3qxfTojrrnng4PMjh3ny
-	ojxpJ+f/2X2HLB8fSPHLvVBv19RftdjZ519fzCv2hVO3zH0TpPJPY8eDRxHr0mYWHE6QsYq6
-	msPdX1zbdN70gATnYacTKtPPne7n8vzcEHl/3v9XjxazT4/hvhDixjpd+DNzpNjSl46ZIkry
-	PzkSG7xnesZMEhM9UVMRySh24XX7MjuvyCndqW/O+H+/fVdc9pkSS3FGoqEWc1FxIgDDbtDE
-	QgMAAA==
-X-CMS-MailID: 20240213074436epcas5p4757b38265bea29c3bb6f1e0aa90f602a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20240213074436epcas5p4757b38265bea29c3bb6f1e0aa90f602a
-References: <20240213074416.2169929-1-onkarnath.1@samsung.com>
-	<CGME20240213074436epcas5p4757b38265bea29c3bb6f1e0aa90f602a@epcas5p4.samsung.com>
 
-From: Onkarnath <onkarnath.1@samsung.com>
+John Garry <john.g.garry@oracle.com> writes:
 
-Instead of printing errros as a number(%ld), it's better to print in string
-format for better readability of logs.
+> This series expands atomic write support to filesystems, specifically
+> XFS. Since XFS rtvol supports extent alignment already, support will
+> initially be added there. When XFS forcealign feature is merged, then we
+> can similarly support atomic writes for a non-rtvol filesystem.
+>
+> Flag FS_XFLAG_ATOMICWRITES is added as an enabling flag for atomic writes.
+>
+> For XFS rtvol, support can be enabled through xfs_io command:
+> $xfs_io -c "chattr +W" filename
+> $xfs_io -c "lsattr -v" filename
+> [realtime, atomic-writes] filename
 
-Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
-Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
----
-v1 -> v2: Updated subject as per file history.
-v2 -> v3: No change in this patch, change done in PATCH v3 1/2.
+Hi John,
 
- kernel/sched/cpufreq_schedutil.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I first took your block atomic write patch series [1] and then applied this
+series on top. I also compiled xfsprogs with chattr atomic write support from [2]. 
 
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index eece6244f9d2..2c42eaa56fa3 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -671,7 +671,7 @@ static int sugov_kthread_create(struct sugov_policy *sg_policy)
- 				"sugov:%d",
- 				cpumask_first(policy->related_cpus));
- 	if (IS_ERR(thread)) {
--		pr_err("failed to create sugov thread: %ld\n", PTR_ERR(thread));
-+		pr_err("failed to create sugov thread: %pe\n", thread);
- 		return PTR_ERR(thread);
- 	}
- 
--- 
-2.25.1
+[1]: https://lore.kernel.org/linux-nvme/20240124113841.31824-1-john.g.garry@oracle.com/T/#m4ad28b480a8e12eb51467e17208d98ca50041ff2
+[2]: https://github.com/johnpgarry/xfsprogs-dev/commits/atomicwrites/
 
+
+But while setting +W attr, I see an Invalid argument error. Is there
+anything I need to do first?
+
+root@ubuntu:~# /root/xt/xfsprogs-dev/io/xfs_io -c "chattr +W" /mnt1/test/f1
+xfs_io: cannot set flags on /mnt1/test/f1: Invalid argument
+
+root@ubuntu:~# /root/xt/xfsprogs-dev/io/xfs_io -c "lsattr -v" /mnt1/test/f1
+[realtime] /mnt1/test/f1
+
+>
+> The FS needs to be formatted with a specific extent alignment size, like:
+> mkf.xfs -r rtdev=/dev/sdb,extsize=16K -d rtinherit=1 /dev/sda
+>
+> This enables 16K atomic write support. There are no checks whether the
+> underlying HW actually supports that for enabling atomic writes with
+> xfs_io, though, so statx needs to be issued for a file to know atomic
+> write limits.
+>
+
+Here you say that xfs_io does not check whether underlying HW actually
+supports atomic writes or not. So I am assuming xfs_io -c "chattr +W"
+should have just worked?
+
+Sorry, I am still in the process of going over the patches, but I thought let
+me anyways ask this first.
+
+
+-ritesh
 
