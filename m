@@ -1,160 +1,278 @@
-Return-Path: <linux-kernel+bounces-64458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429F3853EA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:29:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0951853EA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:30:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB8931F28637
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:29:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A81D1F28597
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A68D6281F;
-	Tue, 13 Feb 2024 22:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D30627FB;
+	Tue, 13 Feb 2024 22:29:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NkR1gNLT"
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="EnxUA+i/"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85E7629E2
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368BD627E8
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707863359; cv=none; b=pcRU6VregrQLg1STohipf82QlUDzl+czjUUpyugNNU9D1cKtlU81GnmadnNx61rWLg/wtb6MkCPGiwzxbtiBsMv7KSqFSwRnNqMVO82FVVvTymKOgVq6FBPHVdxJRVfpm+dpIQQlzKsM0K3u/kjHIdFOV55hwv8Pn/9QVHzM0pU=
+	t=1707863381; cv=none; b=e6lPAAAZmd+KNLu/IMq3vt19IKnyz/esg95KOMq9DXgXG60wFTWllUSur6swfePiKkCUKtwbuLPQ51cCK41XqUPsBeS532Hrv+2eBhgrpUy+mxioBLUd4NJmcAoIUIcSitEPHxnoekByZs9Te6FR0I9OVEM/ej1kCXrzGWMmv5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707863359; c=relaxed/simple;
-	bh=s+BcvKq+A48EUw1jpY7zV7egs67MQ2caE5VLt8B0MeA=;
+	s=arc-20240116; t=1707863381; c=relaxed/simple;
+	bh=plPgDVCs3ncoYYDkHaVCanRJ2fiPA9gJh32izYMOpbQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SHQqKeNPR7kEzXfUB3jOdQI6fxyCKex/C0BUUVzBGBGPqsfTpFC9JmaKRi6nBiDy4iT7mzW+qR+GRM2HXabEwC1rwG85u02uNXljAp2G6j9XuhvhNAf+sRre2uMdA26G3kGKG0g4DMt1Voau4xgWixJtuOsXp22mr+GUMJjfBr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NkR1gNLT; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 13 Feb 2024 17:29:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707863355;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wx/MC+bC4jjIx0YLEQfGF9XmXIKmKElg0ARBnR+PN7U=;
-	b=NkR1gNLT+RslhaXlT2mq+xaYEQdluCzm3dX/A6JCoEiHuJfxIoq5giPdBQiazQrbxW3d3H
-	NAWI1FOS39F6bwgQHKcV40dBRXc+mP8riyFuX3w+XvU40iyQ62zvPPtotTap95Rpir3zAT
-	qPzlJdKC0PPafov0tierh8SpKFGEJjc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: David Hildenbrand <david@redhat.com>
-Cc: Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
-	akpm@linux-foundation.org, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, 
-	dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, 
-	paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com, 
-	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
-	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Message-ID: <huysjw5jiyd7m7ouf6g5n2yptg7slxk3am457x2x4ecz277k4o@gjfy2lu7ntos>
-References: <20240212213922.783301-1-surenb@google.com>
- <Zctfa2DvmlTYSfe8@tiehlicka>
- <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
- <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
- <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
- <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GdFZ7R5acORqiMtPDzkJeMcySmtFLU1j6XeDMLw81+BZ6EtmxLI2tkMfFNKlWUs6hV+vBip+3G2xlLTvq6whDzQ2scDpVva03oYRdsu/wfkdRvhfaQbMvslSwEMzZ5p8aYuuS8bnwInqi7ydfP6bYD/4dQBq2Tozo/pmmwyRfFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=EnxUA+i/; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so4039138b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:29:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707863379; x=1708468179; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1tsGlujf3U5wgIjzjj3ZkynAP7g286QKuhgEsG9eCxo=;
+        b=EnxUA+i/v+41PVqCYgYKpd4E+T/MasJuDjnclungdnkfZzf1FvOvA0BV4noWfBV5D3
+         Th4po+yZkE+aQdk4ch01r4JhrzXBZy5ot9KgMPhWGWYxd4GvTgPzmIDBC/5rycbwE9Kp
+         2iyNJwQxOgc5aZ9a7ORiKNjmv0wzCvCyw8XR5w4lBEAvjlnI7KLEHxgm3NgcWLU9dceR
+         HEts8oIgu/kS0ou1rv4bUhBNAPAeObnDRww2F26VletOgM0/uZfh3nXuqhz4DnSkJ1uT
+         Ba15wvYpuTV14Rfpamjx4NKZSg6IYO9xIKa4Oc52HsqW4lgEwVGA+0DuxtzUfCp3ppl2
+         Ot4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707863379; x=1708468179;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1tsGlujf3U5wgIjzjj3ZkynAP7g286QKuhgEsG9eCxo=;
+        b=mGdLx1x6uTcHJshz69N8EL/+ukL+NOtElhQrKcEwmDikCRwHUbNGBPRJ5GeJO+9AGj
+         zXctqJMQEi2QH9VHCWJdGSpQYtCRcJs+MnTwm+8rvICijmTEcb2HVXvJuSg3Yduos2OR
+         mIHwj7uIVq6E8EbNaj3J1AFho6fMiMFV2gvB/YEdwp8bPE7Om5++6tjxAI8sb+iTdpI1
+         YT/3AryQify9jC9F1mTcD3kbE5uOvAhpGdQjds/4lizqCXlLxwapVNuFGtK/GrctYBPd
+         ivjeHMjJpRaWMEaXhoTndSsV2YcbLVMho1UtdiwqI/Ld4BbcIsd7tBPSmcf1gtYhYv7Q
+         N2uw==
+X-Forwarded-Encrypted: i=1; AJvYcCWwh809OsxGTV+G2xaWoQAmlwyN5r3vVNQOvFzUX5OijPOOmcRbTMSUKZZMTRlwFnzThE5+tQLNbJ0G5Y//MFJLGVi2hGLdqGbbXsyX
+X-Gm-Message-State: AOJu0Yw1yfhqEGphI22WlgPTtykKEYeSzVCKZvfi+xLqubv/4ICRKz8e
+	47TOTKRK2cHGjlvyi5+FDEdDVIU03ER6YgyY5R1Km4tStEKJQHPlHlIW0NO26ME=
+X-Google-Smtp-Source: AGHT+IEyaWb1NzllIEt0at5U+E7258Vf7P56wt9349tb0T7YpOyIYiSsnC+HuSOyBQ/Of0B8ji1y9A==
+X-Received: by 2002:a05:6a00:2d0d:b0:6e0:f2a6:abde with SMTP id fa13-20020a056a002d0d00b006e0f2a6abdemr845966pfb.5.1707863379463;
+        Tue, 13 Feb 2024 14:29:39 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVGBAOI42Qf39cV7pTd7API1uDQ3e1AxePniZJsj3B6uhT0nwuRLh8I5gLz1dnxk/7lJ+QwPOs/cJAiCXhPwRh6v4eXRFRqkps8PEyVpta9zgy7T+Pw2nb34xBI8Bs7z5BmKaeHJpFcMAxDgaGoc2aEPpEiXuZHRzQJ/PqzIPZhkAmesxB8p+0i5BwgWVgG5jCKMqAQMKu7lY11o7rJMxaro64t7+t/SWVNfoLOgZJVxf7JPZ7Rh/7YwJxzp+FTpLGY83me1rZ8FVCoddoMer/CKcKFZzDQ3mmTmpm9r/W+gjl8oBvjeZVHmqQfUb7vzPWZoyRctYepplqNR5W7Orn1gSXGGSaopCLks+/MLg3M2b4mclSqQyopeBENQ0Y588UZwf10BiWLwVXY9Hs7ULICuXo4yR8NRghA/CI=
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id z1-20020a056a00240100b006e1078461casm323798pfh.183.2024.02.13.14.29.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 14:29:38 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1ra1HU-0068Aq-1v;
+	Wed, 14 Feb 2024 09:29:36 +1100
+Date: Wed, 14 Feb 2024 09:29:36 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
+	kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com,
+	p.raghav@samsung.com, linux-kernel@vger.kernel.org, hare@suse.de,
+	willy@infradead.org, linux-mm@kvack.org
+Subject: Re: [RFC v2 05/14] readahead: align index to mapping_min_order in
+ ondemand_ra and force_ra
+Message-ID: <ZcvtUOecezQD7Mm6@dread.disaster.area>
+References: <20240213093713.1753368-1-kernel@pankajraghav.com>
+ <20240213093713.1753368-6-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240213093713.1753368-6-kernel@pankajraghav.com>
 
-On Tue, Feb 13, 2024 at 11:17:32PM +0100, David Hildenbrand wrote:
-> On 13.02.24 23:09, Kent Overstreet wrote:
-> > On Tue, Feb 13, 2024 at 11:04:58PM +0100, David Hildenbrand wrote:
-> > > On 13.02.24 22:58, Suren Baghdasaryan wrote:
-> > > > On Tue, Feb 13, 2024 at 4:24 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > 
-> > > > > On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
-> > > > > [...]
-> > > > > > We're aiming to get this in the next merge window, for 6.9. The feedback
-> > > > > > we've gotten has been that even out of tree this patchset has already
-> > > > > > been useful, and there's a significant amount of other work gated on the
-> > > > > > code tagging functionality included in this patchset [2].
-> > > > > 
-> > > > > I suspect it will not come as a surprise that I really dislike the
-> > > > > implementation proposed here. I will not repeat my arguments, I have
-> > > > > done so on several occasions already.
-> > > > > 
-> > > > > Anyway, I didn't go as far as to nak it even though I _strongly_ believe
-> > > > > this debugging feature will add a maintenance overhead for a very long
-> > > > > time. I can live with all the downsides of the proposed implementation
-> > > > > _as long as_ there is a wider agreement from the MM community as this is
-> > > > > where the maintenance cost will be payed. So far I have not seen (m)any
-> > > > > acks by MM developers so aiming into the next merge window is more than
-> > > > > little rushed.
-> > > > 
-> > > > We tried other previously proposed approaches and all have their
-> > > > downsides without making maintenance much easier. Your position is
-> > > > understandable and I think it's fair. Let's see if others see more
-> > > > benefit than cost here.
-> > > 
-> > > Would it make sense to discuss that at LSF/MM once again, especially
-> > > covering why proposed alternatives did not work out? LSF/MM is not "too far"
-> > > away (May).
-> > > 
-> > > I recall that the last LSF/MM session on this topic was a bit unfortunate
-> > > (IMHO not as productive as it could have been). Maybe we can finally reach a
-> > > consensus on this.
-> > 
-> > I'd rather not delay for more bikeshedding. Before agreeing to LSF I'd
-> > need to see a serious proposl - what we had at the last LSF was people
-> > jumping in with half baked alternative proposals that very much hadn't
-> > been thought through, and I see no need to repeat that.
-> > 
-> > Like I mentioned, there's other work gated on this patchset; if people
-> > want to hold this up for more discussion they better be putting forth
-> > something to discuss.
+On Tue, Feb 13, 2024 at 10:37:04AM +0100, Pankaj Raghav (Samsung) wrote:
+> From: Luis Chamberlain <mcgrof@kernel.org>
 > 
-> I'm thinking of ways on how to achieve Michal's request: "as long as there
-> is a wider agreement from the MM community". If we can achieve that without
-> LSF, great! (a bi-weekly MM meeting might also be an option)
+> Align the ra->start and ra->size to mapping_min_order in
+> ondemand_readahead(), and align the index to mapping_min_order in
+> force_page_cache_ra(). This will ensure that the folios allocated for
+> readahead that are added to the page cache are aligned to
+> mapping_min_order.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> ---
+>  mm/readahead.c | 48 ++++++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 40 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/readahead.c b/mm/readahead.c
+> index 4fa7d0e65706..5e1ec7705c78 100644
+> --- a/mm/readahead.c
+> +++ b/mm/readahead.c
+> @@ -315,6 +315,7 @@ void force_page_cache_ra(struct readahead_control *ractl,
+>  	struct file_ra_state *ra = ractl->ra;
+>  	struct backing_dev_info *bdi = inode_to_bdi(mapping->host);
+>  	unsigned long max_pages, index;
+> +	unsigned int min_nrpages = mapping_min_folio_nrpages(mapping);
+>  
+>  	if (unlikely(!mapping->a_ops->read_folio && !mapping->a_ops->readahead))
+>  		return;
+> @@ -324,6 +325,13 @@ void force_page_cache_ra(struct readahead_control *ractl,
+>  	 * be up to the optimal hardware IO size
+>  	 */
+>  	index = readahead_index(ractl);
+> +	if (!IS_ALIGNED(index, min_nrpages)) {
+> +		unsigned long old_index = index;
+> +
+> +		index = round_down(index, min_nrpages);
+> +		nr_to_read += (old_index - index);
+> +	}
 
-A meeting wouldn't be out of the question, _if_ there is an agenda, but:
+	new_index = mapping_align_start_index(mapping, index);
+	if (new_index != index) {
+		nr_to_read += index - new_index;
+		index = new_index
+	}
 
-What's that coffeee mug say? I just survived another meeting that
-could've been an email? What exactly is the outcome we're looking for?
+> +
+>  	max_pages = max_t(unsigned long, bdi->io_pages, ra->ra_pages);
+>  	nr_to_read = min_t(unsigned long, nr_to_read, max_pages);
 
-Is there info that people are looking for? I think we summed things up
-pretty well in the cover letter; if there are specifics that people
-want to discuss, that's why we emailed the series out.
+This needs to have a size of at least the minimum folio order size
+so readahead can fill entire folios, not get neutered to the maximum
+IO size the underlying storage supports.
 
-There's people in this thread who've used this patchset in production
-and diagnosed real issues (gigabytes of memory gone missing, I heard the
-other day); I'm personally looking for them to chime in on this thread
-(Johannes, Pasha).
+>  	while (nr_to_read) {
+> @@ -332,6 +340,7 @@ void force_page_cache_ra(struct readahead_control *ractl,
+>  		if (this_chunk > nr_to_read)
+>  			this_chunk = nr_to_read;
+>  		ractl->_index = index;
+> +		VM_BUG_ON(!IS_ALIGNED(index, min_nrpages));
+>  		do_page_cache_ra(ractl, this_chunk, 0);
+>  
+>  		index += this_chunk;
+> @@ -344,11 +353,20 @@ void force_page_cache_ra(struct readahead_control *ractl,
+>   * for small size, x 4 for medium, and x 2 for large
+>   * for 128k (32 page) max ra
+>   * 1-2 page = 16k, 3-4 page 32k, 5-8 page = 64k, > 8 page = 128k initial
+> + *
+> + * For higher order address space requirements we ensure no initial reads
+> + * are ever less than the min number of pages required.
+> + *
+> + * We *always* cap the max io size allowed by the device.
+>   */
+> -static unsigned long get_init_ra_size(unsigned long size, unsigned long max)
+> +static unsigned long get_init_ra_size(unsigned long size,
+> +				      unsigned int min_nrpages,
+> +				      unsigned long max)
+>  {
+>  	unsigned long newsize = roundup_pow_of_two(size);
+>  
+> +	newsize = max_t(unsigned long, newsize, min_nrpages);
 
-If it's just grumbling about "maintenance overhead" we need to get past
-- well, people are going to have to accept that we can't deliver
-features without writing code, and I'm confident that the hooking in
-particular is about as clean as it's going to get, _regardless_ of
-toolchain support; and moreover it addresses what's been historically a
-pretty gaping hole in our ability to profile and understand the code we
-write.
+This really doesn't need to care about min_nrpages. That rounding
+can be done in the caller when the new size is returned.
+
+>  	if (newsize <= max / 32)
+>  		newsize = newsize * 4;
+>  	else if (newsize <= max / 4)
+> @@ -356,6 +374,8 @@ static unsigned long get_init_ra_size(unsigned long size, unsigned long max)
+>  	else
+>  		newsize = max;
+>  
+> +	VM_BUG_ON(newsize & (min_nrpages - 1));
+> +
+>  	return newsize;
+>  }
+>  
+> @@ -364,14 +384,16 @@ static unsigned long get_init_ra_size(unsigned long size, unsigned long max)
+>   *  return it as the new window size.
+>   */
+>  static unsigned long get_next_ra_size(struct file_ra_state *ra,
+> +				      unsigned int min_nrpages,
+>  				      unsigned long max)
+>  {
+> -	unsigned long cur = ra->size;
+> +	unsigned long cur = max(ra->size, min_nrpages);
+>  
+>  	if (cur < max / 16)
+>  		return 4 * cur;
+>  	if (cur <= max / 2)
+>  		return 2 * cur;
+> +
+>  	return max;
+
+Ditto.
+
+>  }
+>  
+> @@ -561,7 +583,11 @@ static void ondemand_readahead(struct readahead_control *ractl,
+>  	unsigned long add_pages;
+>  	pgoff_t index = readahead_index(ractl);
+>  	pgoff_t expected, prev_index;
+> -	unsigned int order = folio ? folio_order(folio) : 0;
+> +	unsigned int min_order = mapping_min_folio_order(ractl->mapping);
+> +	unsigned int min_nrpages = mapping_min_folio_nrpages(ractl->mapping);
+> +	unsigned int order = folio ? folio_order(folio) : min_order;
+
+Huh? If we have a folio, then the order is whatever that folio is,
+otherwise we use min_order. What if the folio is larger than
+min_order? Doesn't that mean that this:
+
+> @@ -583,8 +609,8 @@ static void ondemand_readahead(struct readahead_control *ractl,
+>  	expected = round_down(ra->start + ra->size - ra->async_size,
+>  			1UL << order);
+>  	if (index == expected || index == (ra->start + ra->size)) {
+> -		ra->start += ra->size;
+> -		ra->size = get_next_ra_size(ra, max_pages);
+> +		ra->start += round_down(ra->size, min_nrpages);
+> +		ra->size = get_next_ra_size(ra, min_nrpages, max_pages);
+
+may set up the incorrect readahead range because the folio order is
+larger than min_nrpages?
+
+>  		ra->async_size = ra->size;
+>  		goto readit;
+>  	}
+> @@ -603,13 +629,18 @@ static void ondemand_readahead(struct readahead_control *ractl,
+>  				max_pages);
+>  		rcu_read_unlock();
+>  
+> +		start = round_down(start, min_nrpages);
+
+		start = mapping_align_start_index(mapping, start);
+> +
+> +		VM_BUG_ON(folio->index & (folio_nr_pages(folio) - 1));
+> +
+>  		if (!start || start - index > max_pages)
+>  			return;
+>  
+>  		ra->start = start;
+>  		ra->size = start - index;	/* old async_size */
+> +
+>  		ra->size += req_size;
+> -		ra->size = get_next_ra_size(ra, max_pages);
+> +		ra->size = get_next_ra_size(ra, min_nrpages, max_pages);
+
+		ra->size = max(min_nrpages, get_next_ra_size(ra, max_pages));
+
+>  		ra->async_size = ra->size;
+>  		goto readit;
+>  	}
+> @@ -646,7 +677,7 @@ static void ondemand_readahead(struct readahead_control *ractl,
+>  
+>  initial_readahead:
+>  	ra->start = index;
+> -	ra->size = get_init_ra_size(req_size, max_pages);
+> +	ra->size = get_init_ra_size(req_size, min_nrpages, max_pages);
+
+	ra->size = max(min_nrpages, get_init_ra_size(req_size, max_pages));
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
