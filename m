@@ -1,130 +1,136 @@
-Return-Path: <linux-kernel+bounces-64440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9C6E853EA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:30:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9969A853E5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:15:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B572AB2E885
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:15:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55534285594
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:15:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A35626C9;
-	Tue, 13 Feb 2024 22:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A74A62814;
+	Tue, 13 Feb 2024 22:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wiJHD1ro"
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="ErAo2G/h"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFF76217C
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DDC4627FD
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707862164; cv=none; b=P/ZZ6j+YgI1qpq6ZYIlc8tGhM7+96NVy9R5J/JuZePuAsjFrlBAqSIBxItmLRs+P6sTvefPiVBFgNPCl7cq5gLE+GeQEtaxj9oz6R1jzPCaAbK6fciAUUyc/RK5ZetQPsJJ/TLlYF3zv5keuHvLpbcUjl8v2gAIJQkRgpZDhHfw=
+	t=1707862198; cv=none; b=gCO74/VQF7vlXwMCBznTfQcbLL0w+leVpszF3VGYqpTmpLgH/zBbSz5qLExkuP5o9vnIrX/ciAdt1PEnkjtO4QQaq6p8Ww2LkeD1EWkILCdfIRkx5xRtSBylsRn7IpWv221BoK3GPXg10TFsR0yD4DzkJXrUdbKbVd4vuyPId2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707862164; c=relaxed/simple;
-	bh=CQb32P5/QLDxINSuKEKh86H/jAnvOUAlJuL9HRgom5M=;
+	s=arc-20240116; t=1707862198; c=relaxed/simple;
+	bh=W8CKXLRXzCPIbeiYhYvLTtnfDtGO8TmN5pF7T5jBlOE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CcKunuaznsmFet/Gl4J0Ns8DOvTa4V9XNcekMB9wdpqDSFgbqQlV5kbTFXFuV4pQXd85onr2pWwv96cBm528Bnxfp62YSWRE2+doJVwutJfeTmKnLjgep5VixLBzNrsPKPKYq0gT9EgdD/SfHfiw0WBZtTZibqnKQbgQBjPEeZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wiJHD1ro; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 13 Feb 2024 17:09:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707862160;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=K19bAPZc3Kc3I3XpLB02dh4st8ojApfa6FF0rrEkdlU=;
-	b=wiJHD1rocU4W8es0ltTxc6zAKxsWq50Cz4wsYEYyTUt+NDk4yTr58JN+k2ZAwaGAMttrjn
-	Ck50Qdg/1aaDREh6YRmyahMrRfD0jYD6p78aHLEPD5//ML214VVyZeX2kIoz692QSHm6HT
-	8WN0b9HNN/rXmUQrlAmcLAijp1Fq9O8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: David Hildenbrand <david@redhat.com>
-Cc: Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
-	akpm@linux-foundation.org, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, 
-	dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, 
-	paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com, 
-	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
-	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Message-ID: <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
-References: <20240212213922.783301-1-surenb@google.com>
- <Zctfa2DvmlTYSfe8@tiehlicka>
- <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
- <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hS7UvTO87II3WgTipksaGmB8S/kNtJBzbdFkake5MJKOfadkmsIXV4Y1VQmOLLJxFS4GxVXmf9yTmGHo60UEjpNZEW73U4SEuheaMxZcXhKFnzWpDGrjj1x6YNzjbROXHyJcvULcjUm3Re+0oNpZ7glESa94eFo5M4oVBEy+JsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=ErAo2G/h; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d70b0e521eso36992735ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:09:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707862196; x=1708466996; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KHrAkUvYa6loZ8pQ9MvgMBm7Y/FcJKqjouZpJd3Deg4=;
+        b=ErAo2G/hJ/ZxmlbuU9tjLAdCWW2ovpypumay2kxa3Q4ub7fwWqDo94g2yvKnIrlZG8
+         eCCec52cAgWrPjktmrsyQqTbFm+lCLeW8GJfPmQi6ekECy4qrXtGKc/XgQICTzaNqYfY
+         LwVBbXwijBQR7+Bq1HCkbdaj101v2hC7wMYESLg7FuYSGh7KWkPMeK/fLri4DZb38mGR
+         Co06+kfrnFyjim5orX5wksGvdzVyN5NvF45lMsb4D6wHE9AvbPBMcgsW25Nv42awDlak
+         jrbjUdD72BLFExhEtghrcyK9kFNBDoxc3iv11fFQpvtnJngncV8BMiGjn45IVsp5ptsr
+         9puQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707862196; x=1708466996;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KHrAkUvYa6loZ8pQ9MvgMBm7Y/FcJKqjouZpJd3Deg4=;
+        b=WhOk/wUGOqNnNFQcABq92uZv6N7nMjeM8nf6DL201ORtIKmyZ9EzrfEd8toCqwU42+
+         ElZCBXVMBmWUfaRjefcEakAmLGo0swCNMRTTlHkPErkx9AArTLLyk8UqQWNM9kTaQyZB
+         /lP9C41wSJh5Y75QSH5zqPYBm8gSWP00/fu0fzVeqZZdfLFKS+G7xH0mOp8myxRoZB31
+         E7L5BVZXwvQJOFVpajEVp1+fWZZvsUTHX2XnPVr0Qq7ZWAxzDGb/qp1paA0UZ3MIkbCE
+         RcBbRuML8gJ2aw0fh1ek1MYu30vToetmFsm3eJV/WuubtDSdIv0pJ8FA5bv+als98La7
+         Cb/w==
+X-Forwarded-Encrypted: i=1; AJvYcCVCDUkOb8WUDG3lad5orWLUsPGAV1ComFAzLzliW3iOE3WVmdS6vOurFimQ6f1WjARg/7x80qYOYBXjLa+AUS4kLLRbz9hn7hKcqvcv
+X-Gm-Message-State: AOJu0YwTFthNBgzkIFB6FHacsg1cnZkulp9dZo+W5d9JdBnl7NBzyl2e
+	B/kjVHSsCMypQtTcbgzrWjBnxpNmACFTixDjj4EzG5V3SMTHhn5SXofNL2hnGUTdK86dnObXglk
+	9
+X-Google-Smtp-Source: AGHT+IGgqUUsjn257/XY2P22HF+jK6l4KCqtveCToMslA6YTTEIfSnRD2gkjjAU8E2S7/q7gFf6VFw==
+X-Received: by 2002:a17:902:e5d0:b0:1d9:14fb:d142 with SMTP id u16-20020a170902e5d000b001d914fbd142mr1287192plf.32.1707862196652;
+        Tue, 13 Feb 2024 14:09:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU0ESVTZZSVdnxEus9YiyUaZmdXAgx/Xl1gU3CR6MVu9J4mZ+RaM5oZScWBYV6lzac7Dd70RSYsCsBl6RjMuqdB1SViohyMqK9AjP/0Nubsg9spL66O5OJ9Ilh7PBEprTOECIhR4U6k6dNjIhuTIXL/2IwZhep/x5ggajcUnMC/bk5OAyhKaCOSKT/Fhh0h9gzWNpDTA1yDdR0F3fWjhBlbaaNq9IE4qPiAV6YN6DHzTGkL0o98qmyE1stg1SerRm983++Xdcd9i9cIKm6UmxT76yjpRoBGWL4/rDpAF6zXb4cbDPR+ZUd4YdnTtJs5vpMd34GoiUONqcfhPSbbZ7BjT1L6j/ImosHNqAYul6ynTtmVdRe1uBCKFj0KHY0Z7CP/NUPO++Ga4G3eJACOq5GzM8gHlKkeW/vvvzQ=
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id jc19-20020a17090325d300b001db2ff16acasm1894517plb.128.2024.02.13.14.09.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 14:09:56 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1ra0yP-0067hn-1k;
+	Wed, 14 Feb 2024 09:09:53 +1100
+Date: Wed, 14 Feb 2024 09:09:53 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
+	kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com,
+	p.raghav@samsung.com, linux-kernel@vger.kernel.org, hare@suse.de,
+	willy@infradead.org, linux-mm@kvack.org
+Subject: Re: [RFC v2 04/14] readahead: set file_ra_state->ra_pages to be at
+ least mapping_min_order
+Message-ID: <ZcvosYG9F0ImM9OS@dread.disaster.area>
+References: <20240213093713.1753368-1-kernel@pankajraghav.com>
+ <20240213093713.1753368-5-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240213093713.1753368-5-kernel@pankajraghav.com>
 
-On Tue, Feb 13, 2024 at 11:04:58PM +0100, David Hildenbrand wrote:
-> On 13.02.24 22:58, Suren Baghdasaryan wrote:
-> > On Tue, Feb 13, 2024 at 4:24 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > 
-> > > On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
-> > > [...]
-> > > > We're aiming to get this in the next merge window, for 6.9. The feedback
-> > > > we've gotten has been that even out of tree this patchset has already
-> > > > been useful, and there's a significant amount of other work gated on the
-> > > > code tagging functionality included in this patchset [2].
-> > > 
-> > > I suspect it will not come as a surprise that I really dislike the
-> > > implementation proposed here. I will not repeat my arguments, I have
-> > > done so on several occasions already.
-> > > 
-> > > Anyway, I didn't go as far as to nak it even though I _strongly_ believe
-> > > this debugging feature will add a maintenance overhead for a very long
-> > > time. I can live with all the downsides of the proposed implementation
-> > > _as long as_ there is a wider agreement from the MM community as this is
-> > > where the maintenance cost will be payed. So far I have not seen (m)any
-> > > acks by MM developers so aiming into the next merge window is more than
-> > > little rushed.
-> > 
-> > We tried other previously proposed approaches and all have their
-> > downsides without making maintenance much easier. Your position is
-> > understandable and I think it's fair. Let's see if others see more
-> > benefit than cost here.
+On Tue, Feb 13, 2024 at 10:37:03AM +0100, Pankaj Raghav (Samsung) wrote:
+> From: Luis Chamberlain <mcgrof@kernel.org>
 > 
-> Would it make sense to discuss that at LSF/MM once again, especially
-> covering why proposed alternatives did not work out? LSF/MM is not "too far"
-> away (May).
+> Set the file_ra_state->ra_pages in file_ra_state_init() to be at least
+> mapping_min_order of pages if the bdi->ra_pages is less than that.
 > 
-> I recall that the last LSF/MM session on this topic was a bit unfortunate
-> (IMHO not as productive as it could have been). Maybe we can finally reach a
-> consensus on this.
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  mm/readahead.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/mm/readahead.c b/mm/readahead.c
+> index 2648ec4f0494..4fa7d0e65706 100644
+> --- a/mm/readahead.c
+> +++ b/mm/readahead.c
+> @@ -138,7 +138,12 @@
+>  void
+>  file_ra_state_init(struct file_ra_state *ra, struct address_space *mapping)
+>  {
+> +	unsigned int min_nrpages = mapping_min_folio_nrpages(mapping);
+> +	unsigned int max_pages = inode_to_bdi(mapping->host)->io_pages;
+> +
+>  	ra->ra_pages = inode_to_bdi(mapping->host)->ra_pages;
+> +	if (ra->ra_pages < min_nrpages && min_nrpages < max_pages)
+> +		ra->ra_pages = min_nrpages;
 
-I'd rather not delay for more bikeshedding. Before agreeing to LSF I'd
-need to see a serious proposl - what we had at the last LSF was people
-jumping in with half baked alternative proposals that very much hadn't
-been thought through, and I see no need to repeat that.
+Why do we want to clamp readahead in this case to io_pages?
 
-Like I mentioned, there's other work gated on this patchset; if people
-want to hold this up for more discussion they better be putting forth
-something to discuss.
+We're still going to be allocating a min_order folio in the page
+cache, but it is far more efficient to initialise the entire folio
+all in a single readahead pass than it is to only partially fill it
+with data here and then have to issue and wait for more IO to bring
+the folio fully up to date before we can read out data out of it,
+right?
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
