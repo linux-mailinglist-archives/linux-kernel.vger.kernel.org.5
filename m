@@ -1,92 +1,129 @@
-Return-Path: <linux-kernel+bounces-62832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1B628526AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:39:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EEC78526D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:44:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F40531C24F2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:39:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4227B24D68
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C91612CF;
-	Tue, 13 Feb 2024 01:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86FA625565;
+	Tue, 13 Feb 2024 01:04:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c4hVa7CJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="A8Uxo6+I"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBAF624B23;
-	Tue, 13 Feb 2024 01:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184E3250F8;
+	Tue, 13 Feb 2024 01:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707786174; cv=none; b=QVUyapG7sSV7DGBGa4rwszvBBRHHTnKUbCKCcS7tCmuU4ktvC5OcgQYGYrhbmt9tVHTDqBAYV7aZssGz7OkRy+P8+c6CCAVvJUmJ66PmlYe7I1ddANC7UXMToergzlHIpm7qy+XRKR3po4JYIKLekzR1fvKmabQnOoDUJOPSarU=
+	t=1707786258; cv=none; b=a0MQx1oZ0VFmtOGCmsII/BbSzsKH2lyIC7naFWZy7Z1u2vIWofyP68Vxh8/t3+/eKi8mZG0Fo7aLkyDHYRKzAYuJLFktnzvVDxMQ5DMsqN8tAZCUUuaeITmfPz5L3ZRF6O9LSRYcxdlsQvDPG4XINPybBc6Q7f/I9eapJ/zi9/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707786174; c=relaxed/simple;
-	bh=iDPXLQ+QAA4sNBOgwos8SKpEyCmdUavp1j7CpWHBJAg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=da0u/rYRvvkFzJzaY3u7c79sOnczXMKvjYMt5kfFkw6OdnOluGT6jnH+zcoS6GRGvEDkPrqvvAIDMBlnOQccQhT95Q1A+z3Lu50zCaKK6SnZDOZR9gTeoJBrbvutmFcOdgejtixn/Sa2NIaeKXq/KBxiOV1a6Pdv6dh6wG2pVpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c4hVa7CJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01FBEC433C7;
-	Tue, 13 Feb 2024 01:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707786174;
-	bh=iDPXLQ+QAA4sNBOgwos8SKpEyCmdUavp1j7CpWHBJAg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=c4hVa7CJ+LbCRONT+XU52v7lq5ZiUUVnU0/tjEu9078af4as2HXZp4YgtQAqOcmn/
-	 bYu833ywt2XR8TxQD18OBOKGDFwm6F8xfRaMoR2T1ZB7ll53ELmWhSNVCCXGsn2xLN
-	 46johqmQaNNFls/GrfG37aY/3OLukS661jTumVBhgtl2tP1o7sjXlRtCRsc7Vyh4wT
-	 wCV7DB4I8MIkvsVgXSIr07IdVTUjKnpLeXTT3tZC7JdGt5qcTVmUi7LYfL3g0tKj/z
-	 vCf/fym09Q2pYoVArrsXpfYgM+BPiP6rUtrze/y8kKUAZoKCJEZm+J281iGdA6OYg4
-	 Qnm0F1Vcma2zA==
-Date: Mon, 12 Feb 2024 17:02:53 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>,
- linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Qian Cai
- <quic_qiancai@quicinc.com>, mptcp@lists.linux.dev, netdev@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] configs/debug: add NET debug config
-Message-ID: <20240212170253.77a7be7c@kernel.org>
-In-Reply-To: <202402121039.E14DF37@keescook>
-References: <20240212-kconfig-debug-enable-net-v1-1-fb026de8174c@kernel.org>
-	<202402121039.E14DF37@keescook>
+	s=arc-20240116; t=1707786258; c=relaxed/simple;
+	bh=giwJ46mPDfIHm6ENmysvTYdlLWa93FRQ2pBpII0aImw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=jPLI/YBggCW6HGKt3G+1lJq/dnPsJYGu6jJPv00nc4oXgd8FYIT6j5Oy7iJ4A2nvSZAQit7TJJ16P3iMHHH9VscM92o+ElglK3YnZZfI0vjXcT9bzljtx/DmlSqgWG5YgwBPMHBUP4t4YE/nij2UdM0dmGguZvSmzY4K1PL1KmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=A8Uxo6+I; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707786253;
+	bh=o5Tlbx4aE/Gpku6F/ewBl1HwifS1BiiLHPWkcYc/+es=;
+	h=Date:From:To:Cc:Subject:From;
+	b=A8Uxo6+ID6vcWIeRXHjyS097+pbzW3PIK5/sJBHSBncpF3pmDwK7qEFN5tniyQhml
+	 h9o4ZgcdefHlT4N72XruRKnzF66ts/ejMZQfsYz6oCwdwXEWJuljDrTKKN9z8hIkpp
+	 HPkQS7KZyRoqLbHsbFJQzySflfka+CWYhHXSW58e11CXAxvxPNzQtK1qBm6gPQfzeV
+	 vaORi25N2/3T6fHkgQ1NDPIkGKvvUEpl9dNgbDo9U7a6uGx3vGIiONqpIYX1jzUwWK
+	 lcz3buhllt8XYCR6fmrPNeYxFa2WVrmyB2is5IF81FX8Xv1pwNq1s3RxuqM+6+QT5e
+	 sW4ib29l1nL9g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TYjlJ2q6jz4wcl;
+	Tue, 13 Feb 2024 12:04:12 +1100 (AEDT)
+Date: Tue, 13 Feb 2024 12:04:10 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Jani Nikula <jani.nikula@intel.com>, Intel Graphics
+ <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20240213120410.75c45763@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/6SNLxr7Gj4oO+.6T.Mf7CrA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/6SNLxr7Gj4oO+.6T.Mf7CrA
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 12 Feb 2024 10:39:55 -0800 Kees Cook wrote:
-> > Notes:
-> >   - It looks like this debug.config doesn't have a specific maintainer.
-> >     If this patch is not rejected, I don't know if this modification can
-> >     go through the net tree, or if it should be handled by Andrew.
-> >     Probably the latter? I didn't add [net-next] in the subject for this
-> >     reason.  
-> 
-> Adding these seem reasonable. I touched debug.config last, so I can take
-> it via the kernel hardening tree if netdev doesn't want to take it.
+Hi all,
 
-I'd prefer to have it in net-next sooner rather than later, because
-when our CI hits an issue we can tell people:
+After merging the drm-misc tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-	make defconfig debug.config
-	make
+drivers/gpu/drm/xe/xe_guc_submit.c: In function 'simple_error_capture':
+drivers/gpu/drm/xe/xe_guc_submit.c:814:48: error: passing argument 1 of 'dr=
+m_err_printer' from incompatible pointer type [-Werror=3Dincompatible-point=
+er-types]
+  814 |         struct drm_printer p =3D drm_err_printer("");
+      |                                                ^~
+      |                                                |
+      |                                                char *
+In file included from drivers/gpu/drm/xe/xe_assert.h:11,
+                 from drivers/gpu/drm/xe/xe_guc_submit.c:19:
+include/drm/drm_print.h:349:69: note: expected 'struct drm_device *' but ar=
+gument is of type 'char *'
+  349 | static inline struct drm_printer drm_err_printer(struct drm_device =
+*drm,
+      |                                                  ~~~~~~~~~~~~~~~~~~=
+~^~~
+drivers/gpu/drm/xe/xe_guc_submit.c:814:32: error: too few arguments to func=
+tion 'drm_err_printer'
+  814 |         struct drm_printer p =3D drm_err_printer("");
+      |                                ^~~~~~~~~~~~~~~
+include/drm/drm_print.h:349:34: note: declared here
+  349 | static inline struct drm_printer drm_err_printer(struct drm_device =
+*drm,
+      |                                  ^~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
 
-otherwise I have to explain what options to twiddle with. And the
-refcount options do catch bugs, I had to do this exact the explaining
-last Friday :(
+Caused by commit
 
-So I'd offer these three options:
- - we put it on a shared branch and both pull in
- - you send to Linus within a week and we'll get it soon that way
- - we take it to net-next directly
+  5e0c04c8c40b ("drm/print: make drm_err_printer() device specific by using=
+ drm_err()")
 
-What's your preference?
+I have used the drm-misc tree from next-20240209 again today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/6SNLxr7Gj4oO+.6T.Mf7CrA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXKwAoACgkQAVBC80lX
+0Gy6xwf+OZxIVBmEY/rj22JngdZj1fuLWrpqgw7hAF9Krd0UuevXsW9OYC5BbOjg
+iQCHdt7epxWxRL6lVYIjfgxDeS3IcitHn+EA/K4FyWEJ+0ZpaIyJuH24N/IKiEqw
+EsyYFWSaeYzzLE6z/Z+u/T9J/pXulyHS90cFkqU7zNTKdefyaMZ5NfU8RE+FtQY+
+6XR8XQXHSZW87DZ7NsVEWx+IygxF93ayG61q6B0rR8nTmp7eR6mJZ4ZxJgNxMCS2
+dksH50v3Jo1Dakw4IP73LY5WnnJXARBUHw80OlBnikD/J4GI8mKEw+emRvcUfVZQ
+QpddlqwTobavbULIN1nVd54eZMYlkg==
+=gzZk
+-----END PGP SIGNATURE-----
+
+--Sig_/6SNLxr7Gj4oO+.6T.Mf7CrA--
 
