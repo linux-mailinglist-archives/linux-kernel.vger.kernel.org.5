@@ -1,96 +1,378 @@
-Return-Path: <linux-kernel+bounces-63473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B964E853009
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:02:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB3B85300D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:03:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 758FC28593C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:02:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3EBA1C22411
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833E938DD5;
-	Tue, 13 Feb 2024 12:01:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RwjyCxY2"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD4838380;
-	Tue, 13 Feb 2024 12:01:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F9EC38DDA;
+	Tue, 13 Feb 2024 12:02:59 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7660E2BB16
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:02:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707825718; cv=none; b=SKPQqujR3hN/P/tMrQnDqESUEpO0diSCuHRzu21VPGPdQPHwm9yOSrJEhshSJGrQdOAH4pY2nTLKABiv3oYutBngo8/bsBKyVTbqSYN86MzwyMysLGWWVKRnfv3WyP5hyyYQudeCUYn1nWwEH6EG5Hns7hHa9CJ946DxEfVed+A=
+	t=1707825778; cv=none; b=CWHrISAsTJCR7Y56XRCYn+7rLGB2EXzsvp3P676gpG+UfjhUl7psQ9kG7Lm4Nsu2iAAD1eDxEfpTOZ5XtDZ7/Kk8Xo+Tb9s7LiRyTEQ5TOikDbRYOLdxPzbWQ2+Au4aAB1AG4EvC/l0kDCYOTUStA2TP2vlWEdKU9oM7tT+qTOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707825718; c=relaxed/simple;
-	bh=cNukAC2lj8Vitoz014bWjpa4UuuRTFxJ/G1TZ9IGHeU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=HtuWrWj4pIzv/beL/jEcJpBHGsn3uPASxjywrFVpky7/Vd8k8N7lnxzD0EkVIgRJgCLt9ZvM47eKE/dj2qNMxwXeik5rgUTAnkJffg3NCRTHKeBM1YrpmlBToVLprKHRFHjTY6+E66RMmj8tcy2y8GkgexUvljC1BbQN2aAIS10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RwjyCxY2; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707825717; x=1739361717;
-  h=from:to:cc:in-reply-to:references:subject:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=cNukAC2lj8Vitoz014bWjpa4UuuRTFxJ/G1TZ9IGHeU=;
-  b=RwjyCxY2aNuXVYP9b/nyor3K7MxKfoIMgiNdf/r71oJ9i2YxcjnhoZOW
-   g6BWA0eMEJ2dABwp/Llkt/xAshPmBprusptuoNWo957gv8ZtkEAkGKjfC
-   mpDd6kKo69k36b08kUYakmMIlL+e6bK6/ScIqfBLHFa8rU5Y5YX6brzih
-   RDs9+e7x7R8jt3i9z66DMcdPiL9uUM+8WxCtZChVGUGFqbHsy1Ou2hI03
-   ChE3TT3x7cf7n5x/5u0Zhkdj8PdNSY/qCQguo3iHn4xE6IRolLGMzxs8A
-   TX8qD5h8XtKJNCBYCWHDe1krMakxtnj+0PNz4b6MWzjZLUdn43JE9wPuU
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1682360"
-X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="1682360"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 04:01:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="7508828"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.32.103])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 04:01:54 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Ike Panhc <ike.pan@canonical.com>, Hans de Goede <hdegoede@redhat.com>, 
- Gergo Koteles <soyer@irl.hu>
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <0cdbc0e6eb65e160384ae0ed152e7de3ded1d9d5.1707604991.git.soyer@irl.hu>
-References: <0cdbc0e6eb65e160384ae0ed152e7de3ded1d9d5.1707604991.git.soyer@irl.hu>
-Subject: Re: [PATCH] platform/x86: ideapad-laptop: support Fn+R
- dual-function key
-Message-Id: <170782570805.2763.12736496055327560798.b4-ty@linux.intel.com>
-Date: Tue, 13 Feb 2024 14:01:48 +0200
+	s=arc-20240116; t=1707825778; c=relaxed/simple;
+	bh=brjX5342BCNeOuJ1ijwoX8t5qyVdecmxsUF4rPPxK4s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oVwtDWVv9D5X6wvsM0s3DK/b3xc3qb2fUNaiH0Svkj5ZYNumcherjH1Ngw3R1CgpMDsaeSHj61eQ+Xh9uh0FAC43e2BRr+JcQvdSGcjgGI/uhM2+3BWuzwcy4epUU8eUFFPz9YEH6c0gum2TktfPmmEVmVd/8tKPWwSTjSqof/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1341DA7;
+	Tue, 13 Feb 2024 04:03:36 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.130])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 045093F762;
+	Tue, 13 Feb 2024 04:02:51 -0800 (PST)
+Date: Tue, 13 Feb 2024 12:02:49 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 19/25] arm64/mm: Wire up PTE_CONT for user mappings
+Message-ID: <ZctaaeVFF8TpjA8Z@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240202080756.1453939-1-ryan.roberts@arm.com>
+ <20240202080756.1453939-20-ryan.roberts@arm.com>
+ <ZcoIVypNwOPIX30w@FVFF77S0Q05N>
+ <c899f252-dbf3-4e7b-8342-b5a5180486cd@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c899f252-dbf3-4e7b-8342-b5a5180486cd@arm.com>
 
-On Sat, 10 Feb 2024 23:51:57 +0100, Gergo Koteles wrote:
+On Mon, Feb 12, 2024 at 12:59:57PM +0000, Ryan Roberts wrote:
+> On 12/02/2024 12:00, Mark Rutland wrote:
+> > Hi Ryan,
 
-> According to the manual, Fn+R adjusts the display refresh rate.
-> Map Fn+R to KEY_DISPLAYTOGGLE.
+[...]
+
+> >> +static inline void set_pte(pte_t *ptep, pte_t pte)
+> >> +{
+> >> +	/*
+> >> +	 * We don't have the mm or vaddr so cannot unfold contig entries (since
+> >> +	 * it requires tlb maintenance). set_pte() is not used in core code, so
+> >> +	 * this should never even be called. Regardless do our best to service
+> >> +	 * any call and emit a warning if there is any attempt to set a pte on
+> >> +	 * top of an existing contig range.
+> >> +	 */
+> >> +	pte_t orig_pte = __ptep_get(ptep);
+> >> +
+> >> +	WARN_ON_ONCE(pte_valid_cont(orig_pte));
+> >> +	__set_pte(ptep, pte_mknoncont(pte));
+> >> +}
+> >> +
+> >> +#define set_ptes set_ptes
+> >> +static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+> >> +				pte_t *ptep, pte_t pte, unsigned int nr)
+> >> +{
+> >> +	pte = pte_mknoncont(pte);
+> > 
+> > Why do we have to clear the contiguous bit here? Is that for the same reason as
+> > set_pte(), or do we expect callers to legitimately call this with the
+> > contiguous bit set in 'pte'?
+> > 
+> > I think you explained this to me in-person, and IIRC we don't expect callers to
+> > go set the bit themselves, but since it 'leaks' out to them via __ptep_get() we
+> > have to clear it here to defer the decision of whether to set/clear it when
+> > modifying entries. It would be nice if we could have a description of why/when
+> > we need to clear this, e.g. in the 'public API' comment block above.
 > 
+> Yes, I think you've got it, but just to ram home the point: The PTE_CONT bit is
+> private to the architecture code and is never set directly by core code. If the
+> public API ever receives a pte that happens to have the PTE_CONT bit set, it
+> would be bad news if we then accidentally set that in the pgtable.
 > 
+> Ideally, we would just uncondidtionally clear the bit before a getter returns
+> the pte (e.g. ptep_get(), ptep_get_lockless(), ptep_get_and_clear(), ...). That
+> way, the code code is guarranteed never to see a pte with the PTE_CONT bit set
+> and can therefore never accidentally pass such a pte into a setter function.
+> However, there is existing functionality that relies on being able to get a pte,
+> then pass it to pte_leaf_size(), and arch function that checks the PTE_CONT bit
+> to determine how big the leaf is. This is used in perf_get_pgtable_size().
+> 
+> So to allow perf_get_pgtable_size() to continue to see the "real" page size, I
+> decided to allow PTE_CONT to leak through the getters and instead
+> unconditionally clear the bit when a pte is passed to any of the setters.
+> 
+> I'll add a (slightly less verbose) comment as you suggest.
 
+Great, thanks!
 
-Thank you for your contribution, it has been applied to my local
-review-ilpo branch. Note it will show up in the public
-platform-drivers-x86/review-ilpo branch only once I've pushed my
-local branch there, which might take a while.
+[...]
 
-The list of commits applied:
-[1/1] platform/x86: ideapad-laptop: support Fn+R dual-function key
-      commit: c5211eacf3326538fbf31b612e5ea546ca8a3425
+> >> +static inline bool mm_is_user(struct mm_struct *mm)
+> >> +{
+> >> +	/*
+> >> +	 * Don't attempt to apply the contig bit to kernel mappings, because
+> >> +	 * dynamically adding/removing the contig bit can cause page faults.
+> >> +	 * These racing faults are ok for user space, since they get serialized
+> >> +	 * on the PTL. But kernel mappings can't tolerate faults.
+> >> +	 */
+> >> +	return mm != &init_mm;
+> >> +}
+> > 
+> > We also have the efi_mm as a non-user mm, though I don't think we manipulate
+> > that while it is live, and I'm not sure if that needs any special handling.
+> 
+> Well we never need this function in the hot (order-0 folio) path, so I think I
+> could add a check for efi_mm here with performance implication. It's probably
+> safest to explicitly exclude it? What do you think?
 
---
- i.
+That sounds ok to me.
 
+Otherwise, if we (somehow) know that we avoid calling this at all with an EFI
+mm (e.g. because of the way we construct that), I'd be happy with a comment.
+
+Probably best to Cc Ard for whatever we do here.
+
+> >> +static inline pte_t *contpte_align_down(pte_t *ptep)
+> >> +{
+> >> +	return (pte_t *)(ALIGN_DOWN((unsigned long)ptep >> 3, CONT_PTES) << 3);
+> > 
+> > I think this can be:
+> > 
+> > static inline pte_t *contpte_align_down(pte_t *ptep)
+> > {
+> > 	return PTR_ALIGN_DOWN(ptep, sizeof(*ptep) * CONT_PTES);
+> > }
+> 
+> Yep - that's much less ugly - thanks!
+> 
+> > 
+> >> +
+> >> +static void contpte_convert(struct mm_struct *mm, unsigned long addr,
+> >> +			    pte_t *ptep, pte_t pte)
+> >> +{
+> >> +	struct vm_area_struct vma = TLB_FLUSH_VMA(mm, 0);
+> >> +	unsigned long start_addr;
+> >> +	pte_t *start_ptep;
+> >> +	int i;
+> >> +
+> >> +	start_ptep = ptep = contpte_align_down(ptep);
+> >> +	start_addr = addr = ALIGN_DOWN(addr, CONT_PTE_SIZE);
+> >> +	pte = pfn_pte(ALIGN_DOWN(pte_pfn(pte), CONT_PTES), pte_pgprot(pte));
+> >> +
+> >> +	for (i = 0; i < CONT_PTES; i++, ptep++, addr += PAGE_SIZE) {
+> >> +		pte_t ptent = __ptep_get_and_clear(mm, addr, ptep);
+> >> +
+> >> +		if (pte_dirty(ptent))
+> >> +			pte = pte_mkdirty(pte);
+> >> +
+> >> +		if (pte_young(ptent))
+> >> +			pte = pte_mkyoung(pte);
+> >> +	}
+> > 
+> > Not a big deal either way, but I wonder if it makes more sense to accumulate
+> > the 'ptent' dirty/young values, then modify 'pte' once, i.e.
+> > 
+> > 	bool dirty = false, young = false;
+> > 
+> > 	for (...) {
+> > 		pte_t ptent = __ptep_get_and_clear(mm, addr, ptep);
+> > 		dirty |= pte_dirty(ptent);
+> > 		young |= pte_young(ptent);
+> > 	}
+> > 
+> > 	if (dirty)
+> > 		pte_mkdirty(pte);
+> > 	if (young)
+> > 		pte_mkyoung(pte);
+> > 
+> > I suspect that might generate slightly better code, but I'm also happy with the
+> > current form if people thnk that's more legible (I have no strong feelings
+> > either way).
+> 
+> I kept it this way, because its the same pattern used in arm64's hugetlbpage.c.
+> We also had the same comment against David's batching patches recently, and he
+> opted to stick with the former version:
+> 
+> https://lore.kernel.org/linux-mm/d83309fa-4daa-430f-ae52-4e72162bca9a@redhat.com/
+> 
+> So I'm inclined to leave it as is, since you're not insisting :)
+
+That rationale is reasonable, and I'm fine with this as-is.
+
+[...]
+
+> >> +pte_t contpte_ptep_get_lockless(pte_t *orig_ptep)
+> >> +{
+> >> +	/*
+> >> +	 * Gather access/dirty bits, which may be populated in any of the ptes
+> >> +	 * of the contig range. We may not be holding the PTL, so any contiguous
+> >> +	 * range may be unfolded/modified/refolded under our feet. Therefore we
+> >> +	 * ensure we read a _consistent_ contpte range by checking that all ptes
+> >> +	 * in the range are valid and have CONT_PTE set, that all pfns are
+> >> +	 * contiguous and that all pgprots are the same (ignoring access/dirty).
+> >> +	 * If we find a pte that is not consistent, then we must be racing with
+> >> +	 * an update so start again. If the target pte does not have CONT_PTE
+> >> +	 * set then that is considered consistent on its own because it is not
+> >> +	 * part of a contpte range.
+> >> +	 */
+> >> +
+> >> +	pgprot_t orig_prot;
+> >> +	unsigned long pfn;
+> >> +	pte_t orig_pte;
+> >> +	pgprot_t prot;
+> >> +	pte_t *ptep;
+> >> +	pte_t pte;
+> >> +	int i;
+> >> +
+> >> +retry:
+> >> +	orig_pte = __ptep_get(orig_ptep);
+> >> +
+> >> +	if (!pte_valid_cont(orig_pte))
+> >> +		return orig_pte;
+> >> +
+> >> +	orig_prot = pte_pgprot(pte_mkold(pte_mkclean(orig_pte)));
+> >> +	ptep = contpte_align_down(orig_ptep);
+> >> +	pfn = pte_pfn(orig_pte) - (orig_ptep - ptep);
+> >> +
+> >> +	for (i = 0; i < CONT_PTES; i++, ptep++, pfn++) {
+> >> +		pte = __ptep_get(ptep);
+> >> +		prot = pte_pgprot(pte_mkold(pte_mkclean(pte)));
+> >> +
+> >> +		if (!pte_valid_cont(pte) ||
+> >> +		   pte_pfn(pte) != pfn ||
+> >> +		   pgprot_val(prot) != pgprot_val(orig_prot))
+> >> +			goto retry;
+> >> +
+> >> +		if (pte_dirty(pte))
+> >> +			orig_pte = pte_mkdirty(orig_pte);
+> >> +
+> >> +		if (pte_young(pte))
+> >> +			orig_pte = pte_mkyoung(orig_pte);
+> >> +	}
+> >> +
+> >> +	return orig_pte;
+> >> +}
+> >> +EXPORT_SYMBOL(contpte_ptep_get_lockless);
+> > 
+> > I'm struggling to convince myself that this is safe in general, as it really
+> > depends on how the caller will use this value. Which caller(s) actually care
+> > about the access/dirty bits, given those could change at any time anyway?
+> 
+> I think your points below are valid, and agree we should try to make this work
+> without needing access/dirty if possible. But can you elaborate on why you don't
+> think it's safe?
+
+Having mulled this over, I think it is safe as-is, and I was being overly
+cautious.
+
+I had a general fear of potential problems stemming from the fact that (a) the
+accumulation of access/dirty bits isn't atomic and (b) the loop is unbounded.
+From looking at how this is used today, I think (a) is essentially the same as
+reading a stale non-contiguous entry, and I'm being overly cautious there. For
+(b), I think that's largely a performance concern and the would only retry
+indefinitely in the presence of mis-programmed entries or consistent racing
+with a writer under heavy contention.
+
+I think it's still desirable to avoid the accumulation in most cases (to avoid
+redundant work and to minimize the potential for unbounded retries), but I'm
+happy with that being a follow-up improvement.
+
+> > I took a quick scan, and AFAICT:
+> 
+> Thanks for enumerating these; Saves me from having to refresh my memory :)
+> > 
+> > * For perf_get_pgtable_size(), we only care about whether the entry is valid
+> >   and has the contig bit set. We could clean that up with a new interface, e.g.
+> >   something like a new ptep_get_size_lockless().
+> > 
+> > * For gup_pte_range(), I'm not sure we actually need the access/dirty bits when
+> >   we look at the pte to start with, since we only care where we can logically
+> >   write to the page at that point.
+> > 
+> >   I see that we later follow up with:
+> > 
+> >     with pte_val(pte) != pte_val(ptep_get(ptep)))
+> > 
+> >   ... is that why we need ptep_get_lockless() to accumulate the access/dirty
+> >   bits? So that shape of lockless-try...locked-compare sequence works?
+> > 
+> > * For huge_pte_alloc(), arm64 doesn't select CONFIG_ARCH_WANT_GENERAL_HUGETLB,
+> >   so this doesn' seem to matter.
+> > 
+> > * For __collapse_huge_page_swapin(), we only care if the pte is a swap pte,
+> >   which means the pte isn't valid, and we'll return the orig_pte as-is anyway.
+> > 
+> > * For pte_range_none() the access/dirty bits don't matter.
+> > 
+> > * For handle_pte_fault() I think we have the same shape of
+> >   lockless-try...locked-compare sequence as for gup_pte_range(), where we don't
+> >   care about the acess/dirty bits before we reach the locked compare step.
+> > 
+> > * For ptdump_pte_entry() I think it's arguable that we should continue to
+> >   report the access/dirty bits separately for each PTE, as we have done until
+> >   now, to give an accurate representation of the contents of the translation
+> >   tables.
+> > 
+> > * For swap_vma_readahead() and unuse_pte_range() we only care if the PTE is a
+> >   swap entry, the access/dirty bits don't matter.
+> > 
+> > So AFAICT this only really matters for gup_pte_range() and handle_pte_fault(),
+> > and IIUC that's only so that the locklessly-loaded pte value can be compared
+> > with a subsequently locked-loaded entry (for which the access/dirty bits will
+> > be accumulated). Have I understood that correctly?
+> 
+> Yes, I agree with what you are saying. My approach was to try to implement the
+> existing APIs accurately though, the argument being that it reduces the chances
+> of getting it wrong. But if you think the implementation is unsafe, then I guess
+> it blows that out of the water...
+
+I think your approach makes sense, and as above I'm happy to defer the API
+changes/additions to avoid the accumulation of access/dirty bits.
+
+> > If so, I wonder if we could instead do that comparison modulo the access/dirty
+> > bits, 
+> 
+> I think that would work - but will need to think a bit more on it.
+> 
+> > and leave ptep_get_lockless() only reading a single entry?
+> 
+> I think we will need to do something a bit less fragile. ptep_get() does collect
+> the access/dirty bits so its confusing if ptep_get_lockless() doesn't IMHO. So
+> we will likely want to rename the function and make its documentation explicit
+> that it does not return those bits.
+> 
+> ptep_get_lockless_noyoungdirty()? yuk... Any ideas?
+> 
+> Of course if I could convince you the current implementation is safe, I might be
+> able to sidestep this optimization until a later date?
+
+Yep. :)
+
+Mark.
 
