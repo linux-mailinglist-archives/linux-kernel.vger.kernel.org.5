@@ -1,197 +1,143 @@
-Return-Path: <linux-kernel+bounces-63022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29F9A85296A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6C1285296D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D31E12871FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:53:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AE362875B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE73717562;
-	Tue, 13 Feb 2024 06:53:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4DF1755B;
+	Tue, 13 Feb 2024 06:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="S74kmW2d"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YO4qNku4"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00AB31428D;
-	Tue, 13 Feb 2024 06:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AA1171A1;
+	Tue, 13 Feb 2024 06:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707807213; cv=none; b=r4rmxSxIm6tb9iNAZXCqBUaT7XorqSdSnq8LA8/hWMCa4w1TFd+0pQmzwyejJpW1B0sMK8v+8//2nH80ZZNLOPr/lIysZ887N1FfNmMuZ4fmnQRqMJ2y/MSqOcUgsIMyC8K53q6+IrEnPZcO4zAd8LpYhVBBV+9RgQRLoOYvKMQ=
+	t=1707807259; cv=none; b=uBaDetC/jOOywFJHHioA2gaa0KUqorgaA8KLD4QQ1d452808+awINs8S4k3FVB7xe+5OXnkvdeD3FJGVTEjhdCcbMwD0q4mZ+NzxSsYXVkKl6FZgi6IQXz5Lp4j/wPLapLEvm8xXjdo+5gHe7xC+XjYKMcPgL7bmF0Aknj9NozE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707807213; c=relaxed/simple;
-	bh=ITCyrLghQ30aRAorX9qB6Sajy1pj+WJa1/6sGk5iABA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j6iYEpackaG53PqGAi+2qAFVoo0hn13dl2NVb1m//AMulKOFxz6k8HaHwWcQ6YoamNkbP4+uRx3YqFMRSupaCPv7xzyjEba1DULgTLTBUbIOSl0qE3gpyJysKLGaX3s5PImMQs9P4e91KTQUhH7hJuRVIycqDuplrVYaBi0th+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=S74kmW2d; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41D6HNoH025985;
-	Tue, 13 Feb 2024 06:53:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=4NKSIh+Fr8WTVMUu4ha6UjzCuFYZLVL2fWiORrY97GU=;
- b=S74kmW2d80x+hFC5/TxZKlmfG7tAde7IhH4F71YI8/UuQkebWKd9W11mUixEgpj+hZz5
- rNwjYSo88ST8ocy8BvYsXIdlHNzir5YFMf5Ijoc5WN9qTQHySxNMSaQgaHGg17hMiMBy
- 3pSOyxlvTyjFdtVEfWw++ykuJTJk6WBKGO8z2YDjhg8Gm1H2PVCwJbD9XGvNth8AvHoG
- m/WWtf2uTePFI+T8Uoax2DWsf0RmwXHBqhAdc7audRu16xyIHw+IlcrShp2JM9x9qX8t
- P3FH8W23S6CE5Vtr2tdA/112ljGvHXNfzF+/H8wS/bMXfjbC8y9mThYUom0VcULqYbAM ng== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w83160nae-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 06:53:01 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41D6k86N003140;
-	Tue, 13 Feb 2024 06:53:01 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w83160n9y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 06:53:01 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41D63fs3010083;
-	Tue, 13 Feb 2024 06:53:00 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6npkndw9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 06:53:00 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41D6quVH22872716
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 06:52:58 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BEBD458063;
-	Tue, 13 Feb 2024 06:52:56 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4EFEA5805D;
-	Tue, 13 Feb 2024 06:52:50 +0000 (GMT)
-Received: from [9.109.198.187] (unknown [9.109.198.187])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 13 Feb 2024 06:52:49 +0000 (GMT)
-Message-ID: <8ce0068d-aaff-46e0-9fec-f09206938106@linux.ibm.com>
-Date: Tue, 13 Feb 2024 12:22:48 +0530
+	s=arc-20240116; t=1707807259; c=relaxed/simple;
+	bh=yPX55pPyRylfJOPpMRVJ/Y/KCJxWM0ADAW0OZLaUtRw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JnJfQ8DYHFOEaFm30oIUsDID0TV5DLuud/0L+2L2RwO/uXeiFvc8E52ZBHDM5Qu6KWio7khmos+s81JYacWhlwYLO51B7N4jDfMLeXD3PpXYS/EdB9ji+rLqRai2QUeMNIDesz8wHu8ZX00R8I8ifRYnCT2h2/16Dqjw/ASYJaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YO4qNku4; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e0eacc5078so854247b3a.0;
+        Mon, 12 Feb 2024 22:54:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707807258; x=1708412058; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eE4n/xcjwe72umix/tvKZC1RPGH2ElYNbvUqnG6AUB4=;
+        b=YO4qNku4JBJ9tB72SklUhgI8ArLAXIYoXb6SYtAag3x294DC4M6+0VkT1asEgQx63p
+         Y1sLUlRbOQw/gY3XqKTLXVuyje5nZWdM5Q6WnhF7uIOFLw7PB1Fsg7Z8i2z5eTQ40+PU
+         B9UEyyZD3OHwCdw/KPUeCR2fITnUcUgiNjfyxMlAeupf6gfe8/XIJCQy+0rjPOsZE/Vr
+         HYjTPLoU7xGkFGnq4CFkLTmrZR1UmKB3fS60j/H9YSjviiAU0SFKcQOsstXbXVgRCzDu
+         U/rdbJDrYunuLobDaBwiFnziXI7TJ4kZBY7sd9fvwHqdjr5irRg1iqNNY3qsrC1jz5Ad
+         XZzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707807258; x=1708412058;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eE4n/xcjwe72umix/tvKZC1RPGH2ElYNbvUqnG6AUB4=;
+        b=TvnFpb0ahnXPYiGQFovUKJtC0oXe1hhhaAwmrP/PBmpqhj7t6tHq79aFh2bfFEb7e9
+         DnV1/aetgvLFOYbTxH+YtNl/AqpfuvNZl9uLsfLH/xKrY994ENwkeMfAtjX2Sv4WVwK9
+         cF7wMKWieiyyMmXN+qSMJjF6/WgfU+6l1EsddDnlECFvCC6q688s8KmbB/4EhTYljT+O
+         K8bnzj163ZsejT0bKexUcNYllHyCGluKFUy8qAAojJkTbqYaMXiON+mmObWbbaq7DU2S
+         fmZ6OdduFasHy7/GiV7rfUX3LqHKRz1G2Tkt+xe+OgArJp8t8FoLWhaT2psyizsLZlpa
+         9WHA==
+X-Forwarded-Encrypted: i=1; AJvYcCWCofmXIxRt3mHn4LV3i7rqq/yeX/LwLld/xyV6KvqKuZnI/K0aWM4BXvKTvCUvN+R4cgK+zUoXWw5SoZM+CvTVkF73ux6kTSqcjRQ5I924pIXjpXyNSsqW1jVf5J5ns5O+NKc/gwc3m7g=
+X-Gm-Message-State: AOJu0YypOh9yOdb5cXCQvIUfCSKbrJU4NGRgxxssAz2eZSY1GWFhYr4L
+	YoJ9xRikCKoeRibm7QN+HfP2KOQkCxCchXgZT2jlNiUURwMVhbrc
+X-Google-Smtp-Source: AGHT+IHM4Fk9YQ8Oq7wBOTXN/PqA34hx26fsW6gLj3+enE3vzc5VqmWa07lPaO5kGn9LEiXR+nStYw==
+X-Received: by 2002:a17:90b:4f89:b0:298:9688:56 with SMTP id qe9-20020a17090b4f8900b0029896880056mr3491422pjb.9.1707807257712;
+        Mon, 12 Feb 2024 22:54:17 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXmG3OCdg3WqHsCukgRY3T/dN57iG8mSJsgjeZ8SS9+yDASLknfjr8rbSxX/3DGFpf+vluGzA5G0p4VjnAQ/5mn8A9w5NNHpIwwirRtj7+xDIJMuS4heROYmjqso4E/1sJiqYR/Ax5eHAyawKkF04L9lFtxMgedKW19uBrpOD0b8af43pU5GhWAEa1rYfLL+ZjczlmqKNLeuAmnk60jubgSh8CExoqFKov5ZVBF3A35EQ/c4o32S4okPryN30akCjy372QO8xKsz60=
+Received: from barry-desktop.hub ([2407:7000:8942:5500:a7ed:f419:b281:4119])
+        by smtp.gmail.com with ESMTPSA id nh11-20020a17090b364b00b00296a686dd17sm1699933pjb.56.2024.02.12.22.54.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 22:54:17 -0800 (PST)
+From: Barry Song <21cnbao@gmail.com>
+To: axboe@kernel.dk,
+	minchan@kernel.org,
+	senozhatsky@chromium.org,
+	linux-block@vger.kernel.org
+Cc: zhengtangquan@oppo.com,
+	akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org,
+	Barry Song <v-songbaohua@oppo.com>
+Subject: [PATCH v3] zram: do not allocate physically contiguous strm buffers
+Date: Tue, 13 Feb 2024 19:54:00 +1300
+Message-Id: <20240213065400.6561-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 09/15] block: Add checks to merging of atomic writes
-Content-Language: en-US
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, bvanassche@acm.org,
-        dchinner@redhat.com, djwong@kernel.org, hch@lst.de, jack@suse.cz,
-        jbongio@google.com, jejb@linux.ibm.com, kbusch@kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
-        martin.petersen@oracle.com, ming.lei@redhat.com, ojaswin@linux.ibm.com,
-        sagi@grimberg.me, tytso@mit.edu, viro@zeniv.linux.org.uk
-References: <20240124113841.31824-10-john.g.garry@oracle.com>
- <20240212105444.43262-1-nilay@linux.ibm.com>
- <b3ce860d-4a1e-4980-97d9-0e8ad381c689@oracle.com>
-From: Nilay Shroff <nilay@linux.ibm.com>
-In-Reply-To: <b3ce860d-4a1e-4980-97d9-0e8ad381c689@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: NEMKpa3nLFWJoO5v4hM9IsmvrbmlpotD
-X-Proofpoint-GUID: PrYV3wPBZoaTkpgDGCYdZ-6A1zflaRBR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_03,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0 suspectscore=0
- mlxlogscore=999 clxscore=1015 phishscore=0 mlxscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402130051
+Content-Transfer-Encoding: 8bit
 
+From: Barry Song <v-songbaohua@oppo.com>
 
+Currently zram allocates 2 physically contiguous pages per-CPU's
+compression stream (we may have up to 4 streams per-CPU). Since
+those buffers are per-CPU we allocate them from CPU hotplug path,
+which may have higher risks of failed allocations on devices with
+fragmented memory.
 
-On 2/12/24 17:39, John Garry wrote:
-> On 12/02/2024 10:54, Nilay Shroff wrote:
->>
->> Shall we ensure here that we don't cross max limit of atomic write supported by
->>
->> device? It seems that if the boundary size is not advertized by the device
->>
->> (in fact, I have one NVMe drive which has boundary size zero i.e. nabo/nabspf/
->>
->> nawupf are all zero but awupf is non-zero) then we (unconditionally) allow
->>
->> merging.
-> 
-> BTW, if you don't mind, can you share awupf value and device model? I have been on the search for NVMe devices which support atomic writes (with non-zero PF reported value). All I have is a M.2 card which has a 4KB PF atomic write value.
-> 
-> But if this is private info, then ok.
-> 
-> Thanks,
-> John
+Switch to virtually contiguous allocations - crypto comp does not
+seem impose requirements on compression working buffers to be
+physically contiguous.
 
-Yeah sure. Below are the details about NVMe:
+Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+---
+ -v3:
+ Thank Sergey very much for rewriting commit log
 
-# lspci 
-0040:01:00.0 Non-Volatile memory controller: KIOXIA Corporation Device 0025 (rev 01)
+ drivers/block/zram/zcomp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-# nvme id-ctrl /dev/nvme0 -H 
-NVME Identify Controller:
-vid       : 0x1e0f
-ssvid     : 0x1014
-sn        : Z130A00LTGZ8        
-mn        : 800GB NVMe Gen4 U.2 SSD                 
-fr        : REV.C9S2
-[...]
-awun      : 65535
-awupf     : 63
-[...]
+diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
+index 55af4efd7983..8237b08c49d8 100644
+--- a/drivers/block/zram/zcomp.c
++++ b/drivers/block/zram/zcomp.c
+@@ -11,6 +11,7 @@
+ #include <linux/sched.h>
+ #include <linux/cpu.h>
+ #include <linux/crypto.h>
++#include <linux/vmalloc.h>
+ 
+ #include "zcomp.h"
+ 
+@@ -37,7 +38,7 @@ static void zcomp_strm_free(struct zcomp_strm *zstrm)
+ {
+ 	if (!IS_ERR_OR_NULL(zstrm->tfm))
+ 		crypto_free_comp(zstrm->tfm);
+-	free_pages((unsigned long)zstrm->buffer, 1);
++	vfree(zstrm->buffer);
+ 	zstrm->tfm = NULL;
+ 	zstrm->buffer = NULL;
+ }
+@@ -53,7 +54,7 @@ static int zcomp_strm_init(struct zcomp_strm *zstrm, struct zcomp *comp)
+ 	 * allocate 2 pages. 1 for compressed data, plus 1 extra for the
+ 	 * case when compressed size is larger than the original one
+ 	 */
+-	zstrm->buffer = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 1);
++	zstrm->buffer = vzalloc(2 * PAGE_SIZE);
+ 	if (IS_ERR_OR_NULL(zstrm->tfm) || !zstrm->buffer) {
+ 		zcomp_strm_free(zstrm);
+ 		return -ENOMEM;
+-- 
+2.34.1
 
-# nvme id-ns /dev/nvme0n1 -H 
-NVME Identify Namespace 1:
-nsze    : 0x18ffff3
-ncap    : 0x18ffff3
-nuse    : 0
-nsfeat  : 0x14
-  [4:4] : 0x1	NPWG, NPWA, NPDG, NPDA, and NOWS are Supported
-  [3:3] : 0	NGUID and EUI64 fields if non-zero, Reused
-  [2:2] : 0x1	Deallocated or Unwritten Logical Block error Supported
-  [1:1] : 0	Namespace uses AWUN, AWUPF, and ACWU
-  [0:0] : 0	Thin Provisioning Not Supported
-
-[...]
-
-nawun   : 0
-nawupf  : 0
-nacwu   : 0
-nabsn   : 0
-nabo    : 0
-nabspf  : 0
-
-[...]
-
-LBA Format  0 : Metadata Size: 0   bytes - Data Size: 4096 bytes - Relative Performance: 0 Best (in use)
-LBA Format  1 : Metadata Size: 8   bytes - Data Size: 4096 bytes - Relative Performance: 0 Best 
-LBA Format  2 : Metadata Size: 0   bytes - Data Size: 512 bytes - Relative Performance: 0 Best 
-LBA Format  3 : Metadata Size: 8   bytes - Data Size: 512 bytes - Relative Performance: 0 Best 
-LBA Format  4 : Metadata Size: 64  bytes - Data Size: 4096 bytes - Relative Performance: 0 Best 
-LBA Format  5 : Metadata Size: 8   bytes - Data Size: 512 bytes - Relative Performance: 0 Best 
-
-
-As shown above, I am using KIOXIA NVMe. This NVMe has one namespace created(nvme0n1). 
-The nsfeat reports that this namespace uses AWUN, AWUPF, and ACWU.The awupf for this NVMe is 63. 
-As awupf is 0's based value, it's actually 64. The configured LBA for the namespace (in use) is 4096 
-bytes and so that means that this NVMe supports writing 262144 (64*4096) bytes of data atomically 
-during power failure. Further, please note that on this NVMe we have nawupf/nabspf/nabo all set
-to zero. 
-
-Let me know if you need any other details. And BTW, if you want I could help you with anything 
-you'd like to test on this NVMe. 
-
-Thanks,
---Nilay
 
