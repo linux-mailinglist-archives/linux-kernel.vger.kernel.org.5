@@ -1,92 +1,159 @@
-Return-Path: <linux-kernel+bounces-63401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC1EC852ED6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:12:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 650AA852ED8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:12:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64D1E1F26F12
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:12:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5466B22408
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:12:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FABD33CD2;
-	Tue, 13 Feb 2024 11:12:13 +0000 (UTC)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E39364B6;
+	Tue, 13 Feb 2024 11:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Og/M57C7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151CE2BD1C
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:12:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA25533CD2;
+	Tue, 13 Feb 2024 11:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707822732; cv=none; b=Uewy6cp/2jV0z57mMX2O0B1cgH4je2WDitRljW2Ay5Pw4Jk8AwAvWKk/QY3W2KdcaBFEgI6VKfjMotZM1vDXNYYR4Y2trOjgO4nwjHfWfKlPKfKaTJt5IQBQWmU87hV/uLlC8M+WaTXwTz/saohwGRAnfXsDZHi8UwkdPn1TXBM=
+	t=1707822758; cv=none; b=BAsQieRm2PVAcy7oNZ8CZDwDfuin8v6qR1hjQInJq67gYIEx+V1A9DM7UlDPcdcgrUqqu2k9st/vX/hjZZ0c1YT/JgmPqQjlo9NjBKSj1zMNo92ata/f1f0gaDO6Vw8eErXxLNIPbTguHnWnTVvffuaV6t2TRcCpV+hAQVcerC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707822732; c=relaxed/simple;
-	bh=ml6DaSPAgvx0MDCXLVrcM13BtnghxuN6dJ1Og0NPY2o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LeVFuHW23MBek+4kbMR9uZNeVYFyDJbG1h+AnTXa3q5dzAFGf8Tnl2EukrpJG4ojQWO3sDkYWphR5EvwswRdMwh20XxXo4zs53z7MF8QhcRMtbH33fKdns2AcYIeiSEN3HqVHbTdNIyzl3OuCSmLHiU3UQnasNTV2PlLugKb3Bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 628A01FC81;
-	Tue, 13 Feb 2024 11:12:09 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4EB2813404;
-	Tue, 13 Feb 2024 11:12:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Gy/cEolOy2VKdAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 13 Feb 2024 11:12:09 +0000
-Message-ID: <8e432cce-d5c9-45f2-bba9-6add1453a01d@suse.cz>
-Date: Tue, 13 Feb 2024 12:12:09 +0100
+	s=arc-20240116; t=1707822758; c=relaxed/simple;
+	bh=l/AxHuvyDAvfAeJ5JccBgRd6aZPBlEBLaye5AHZE0xA=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UFLfb215OhsBUkoPIqE0r/KpNwNdvBiPvW2/7E1+TJHnl3j6zHA0G+QFSDdaDj12gu9MNFamK4KXC6W8TtaggIqQxRJeH46tLjrsxhssu121Kd+kIVTCY3lPsxK9G70KIEJYQFrZ+VxebI6Xsj+Fj+K8+U5uoJwNmViS8hBxCBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Og/M57C7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DEC5C433F1;
+	Tue, 13 Feb 2024 11:12:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707822757;
+	bh=l/AxHuvyDAvfAeJ5JccBgRd6aZPBlEBLaye5AHZE0xA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Og/M57C7LQu00prdAWJXqpV2oMEynPTBR9XSjclZ3/8LnEMoXQWAU02JwRQexq0Q2
+	 y9DZxcgl8ZNzRf9AeMBrg1YBvZK08E5oCCCtyqpuEaL0jJS87bHx0QV2hKdEDKQ46Z
+	 J2ruq+3i5m2PJP7glCUxu4mZCg++RxHZuO3QYYYqMsESX20dFSgUlpNMcuG/E27ccZ
+	 QFLjrT7rIvBLWwLOmqMtBUo+Zbeob6GPKWW++KWeVk9zc0UHnfnwOpvqkc7bl4oZD5
+	 a7IJ6dOg82EIrWhuW7P0G9rMGEgLzQm15EY+C6vn0PupohGo6Wr93UpsFDArPYz2+W
+	 mxIvvTWeWYnXw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rZqiI-002kE0-TP;
+	Tue, 13 Feb 2024 11:12:34 +0000
+Date: Tue, 13 Feb 2024 11:12:34 +0000
+Message-ID: <86cyt062jh.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Will Deacon <will@kernel.org>, Oliver Upton <oliver.upton@linux.dev>
+Cc: 	kvmarm@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Ricardo Koller <ricarkol@google.com>
+Subject: Re: [RFC PATCH] KVM: arm64: Fix double-free following kvm_pgtable_stage2_free_unlinked()
+In-Reply-To: <Zcp8LcvsZiZVkNKe@linux.dev>
+References: <20240212193052.27765-1-will@kernel.org>
+	<Zcp8LcvsZiZVkNKe@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 1/5] lib/stackdepot: Move stack_record struct
- definition into the header
-Content-Language: en-US
-To: Oscar Salvador <osalvador@suse.de>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>,
- Alexander Potapenko <glider@google.com>
-References: <20240212223029.30769-1-osalvador@suse.de>
- <20240212223029.30769-2-osalvador@suse.de>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240212223029.30769-2-osalvador@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 628A01FC81
-X-Spam-Flag: NO
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: will@kernel.org, oliver.upton@linux.dev, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ricarkol@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On 2/12/24 23:30, Oscar Salvador wrote:
-> In order to move the heavy lifting into page_owner code, this one
-> needs to have access to the stack_record structure, which right now
-> sits in lib/stackdepot.c.
-> Move it to the stackdepot.h header so page_owner can access
-> stack_record's struct fields.
+On Mon, 12 Feb 2024 20:14:37 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
 > 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> On Mon, Feb 12, 2024 at 07:30:52PM +0000, Will Deacon wrote:
+> > kvm_pgtable_stage2_free_unlinked() does the final put_page() on the
+> > root page of the sub-tree before returning, so remove the additional
+> > put_page() invocations in the callers.
+> > 
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Oliver Upton <oliver.upton@linux.dev>
+> > Cc: Ricardo Koller <ricarkol@google.com>
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > ---
+> > 
+> > Hi folks,
+> > 
+> > Sending this as an RFC as I only spotted it from code inspection and I'm
+> > surprised others aren't seeing fireworks if it's a genuine bug. I also
+> > couldn't come up with a sensible Fixes tag, as all of:
+> > 
+> >  e7c05540c694b ("KVM: arm64: Add helper for creating unlinked stage2 subtrees")
+> >  8f5a3eb7513fc ("KVM: arm64: Add kvm_pgtable_stage2_split()")
+> >  f6a27d6dc51b2 ("KVM: arm64: Drop last page ref in kvm_pgtable_stage2_free_removed()")
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+I'd blame it on the last commit, as we really ought to have it if we
+have the others.
 
+> >
+> > are actually ok in isolation. Hrm. Please tell me I'm wrong?
+> > 
+> >  arch/arm64/kvm/hyp/pgtable.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > index c651df904fe3..ab9d05fcf98b 100644
+> > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > @@ -1419,7 +1419,6 @@ kvm_pte_t *kvm_pgtable_stage2_create_unlinked(struct kvm_pgtable *pgt,
+> >  				 level + 1);
+> >  	if (ret) {
+> >  		kvm_pgtable_stage2_free_unlinked(mm_ops, pgtable, level);
+> > -		mm_ops->put_page(pgtable);
+> >  		return ERR_PTR(ret);
+> >  	}
+> 
+> AFAICT, this entire branch is effectively dead code, unless there's a
+> KVM bug lurking behind the page table walk. The sub-tree isn't visible
+> to other software or hardware walkers yet, so none of the PTE races
+> could cause this to pop.
+> 
+> So while this is very obviously a bug, it might be pure luck that folks
+> haven't seen smoke here. Perhaps while fixing the bug we should take the
+> opportunity to promote the condition to WARN_ON_ONCE().
+
+Can't you construct a case where an allocation fails during the walk
+(memcache empty), and we end up on this exact path?
+
+> 
+> > @@ -1502,7 +1501,6 @@ static int stage2_split_walker(const struct kvm_pgtable_visit_ctx *ctx,
+> >  
+> >  	if (!stage2_try_break_pte(ctx, mmu)) {
+> >  		kvm_pgtable_stage2_free_unlinked(mm_ops, childp, level);
+> > -		mm_ops->put_page(childp);
+> >  		return -EAGAIN;
+> >  	}
+> 
+> This, on the other hand, seems possible. There exists a race where an
+> old block PTE could have the AF set on it and the underlying cmpxchg()
+> could fail. There shouldn't be a race with any software walkers, as we
+> hold the MMU lock for write here.
+
+AF update is indeed a likely candidate.
+
+In any case, this patch looks good to me as it is, and we can always
+have a separate tweak to adjust the severity of the first case as
+required. Unless anyone objects, I'd like to queue it shortly.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
