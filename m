@@ -1,96 +1,98 @@
-Return-Path: <linux-kernel+bounces-62829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E32AD85269B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:38:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 863148526A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:38:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F96B1C24E84
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:38:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED521C24F27
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:38:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DE02260B;
-	Tue, 13 Feb 2024 00:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA5323754;
+	Tue, 13 Feb 2024 01:00:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VWQuaStS"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="euyajDF5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F197C17F7
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE35622EEF;
+	Tue, 13 Feb 2024 01:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707785837; cv=none; b=LNOYGDZ4DA+GP7awTYHSe/eHsc6PjWO3/julrWKhH2jGdT5KnvpP2WQrbxYRxR6C8+dzPjUO1WQsWQjYL0aGgbbMa7P5SjHpbmQm1DqAMvyomSMECwWa7LQiBw2XI7h6gadTHwxLJbywkaoQLHK1cOlBffIp2Ch97ud8Uc6yq/E=
+	t=1707786028; cv=none; b=DGFJk5r2RJXG53q+UXoCLIYHwMeAKiAnuL04OsdJ+O0zEssaZdcIecrXBtFTOJAHZ12pwqs4Ut96F9hysWuKTBrjJUQou5mX4ubXU34jLp6BfWABwIOX7YUkGHxpfClsIS6A/O9jV5axyfw3ORd/+DWYAFQhySpeGZFGpRkbT/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707785837; c=relaxed/simple;
-	bh=xTXIDHG2wJphSzrFpnX801otcYVQ7IDuiyEbbp9hOk8=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=gVuQYN5ZV/gS+GUWzhwiQ27whzg3g1wnSIPmLW+7uS+uqbTfEeIZLKYvCpmK+mFxnW94WYJvQ085WjrFQ7sxkwpdS2NAA0jlYuCjKL+shiBWycJ0qs8+w0fWttNkWDiEJFCjrve+N3oNmAhRTLjbFxNgX7ZqIgG1psV37jauKDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VWQuaStS; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e0e690a604so1107983b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:57:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707785835; x=1708390635; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JBIur676zT6P6eG98QMheQvfYDK752Rf+DKu7jIji2U=;
-        b=VWQuaStSiUdUA7/CqEV4VucfLSFTRVqNm3lPt7gxYs7AkZZ1xrjoSja9yGdF3FPVdJ
-         +KxcF/utFfhTIohf9gFBnthhTOYV0bBxTnbeGDxaaksUJnGcCUjYwxExOpOUUhhVGLIP
-         IEq+Z0W77D9EeyxjWoY44LU4xm7O9JbltbWOnQi3hBNQOx5EStIX0ULf3V1IYsTWPLEp
-         0h6uNBKcrH0u8QxJNX1ndYYzd3ZNWf9umErjRcnsinDqLvnRNTP+5w1JrW0AaOVxIYx2
-         1u444yhCPGD+PqDVYzpLSGCSsMgwAJqqH/zXtZ4bWTAMWF9pl9u86iK4QBBebqw5b8Nb
-         TYxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707785835; x=1708390635;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JBIur676zT6P6eG98QMheQvfYDK752Rf+DKu7jIji2U=;
-        b=MUVFcAJS29JgLZalf+dy56pFbFc2jcAYC2pQgjh6fJzFGvwvxCMJ5vAnhXKZ49Fqof
-         JwlzjNdBuhKtlH7tJKSu4bO54IBP1H8Z9han3RAFpFY4/TpSFwEvv98T2LCygstCWi60
-         /5auI0FhL24uXKxNrjQBY6mnhQ3g09HofxbcW2ZwI4YQucbBZHZZgiH2iomIccF2iT1g
-         d7bnuR/cwgE3LDcttYCzxtDqpV4HYWRJnA7fKSvG40OrK4G7ue0LV9jL6HGtmjA/Ou+3
-         URRwxbgoPYbGWa+ADdcQRU4/ixjY4t+hLWbJBpVYyGMwImD1iYxlgGs6bH5TmYVWUtmN
-         wFsw==
-X-Gm-Message-State: AOJu0YxrW1p4ZzVbSwFdv+PE/st0+kDl5308VRuR+GpSn04ySahUywEG
-	aM8qXi+blz9z0fxXjjtPbz2FM1bC68i53JS+whBusbxEH6GLWWA9wM8st3LQEJevPjNu0/QSyd+
-	NKQ==
-X-Google-Smtp-Source: AGHT+IGkT++R3hxv+8HWbuPSSQjWt7Da93fgLYOCgw6aiV7tvgUL+Wq5ZRgmR8ln7k1UmOJhD4eSF98azzA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:939c:b0:6e0:f6ed:cf32 with SMTP id
- ka28-20020a056a00939c00b006e0f6edcf32mr53269pfb.5.1707785835275; Mon, 12 Feb
- 2024 16:57:15 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Mon, 12 Feb 2024 16:57:10 -0800
+	s=arc-20240116; t=1707786028; c=relaxed/simple;
+	bh=DeFvXgMJs2jrx0WVg5vaFA6wFwnJT16WI3dFiDV1II8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ohBHuP4+ZKPhmMeWuY4kZu8WAnXO2s4Fta9UUVd4VP8iEZvxhsvrwZSzg4A82QvIZR4fhVFCd9Yvh91zoTERwpRKOl/zKZUBJFTYVYBQr0n1dszrm0kf4wXpEOorpmqD99RUX65yDq1vi1OEP33aAk9tQ8rTIiiwdOIZJF589Ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=euyajDF5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 459DDC43390;
+	Tue, 13 Feb 2024 01:00:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707786028;
+	bh=DeFvXgMJs2jrx0WVg5vaFA6wFwnJT16WI3dFiDV1II8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=euyajDF5ZFS+RfAZ6FaEqcrdr14EsVEsksM/wejI9WJ3J/SK2lNgsWH1gxjZwmMtt
+	 yQ6UIK6S/shD5MrSw01AHoOyAEdWufWNLCccEWrvZFBI/BCRy0/oozDPgaTC3u6OT1
+	 f46X2RfT7G7gZqw2cNjTQH4Z5+h8+UfVK7fFgxft0CWaJSty+UoX5jxIwWD6xs7WAo
+	 3Sf/x7ctB+uqtbAgwi3TuxACE6hPeVwT8OnBTgALlg/oWtiZf3peu1euKO96d6km8J
+	 NaQhvSneyASbl6k+zZzv76o9To4E5EJltS2MZ4XV4c6F4lNg/M9RIJNZSEXWFiPTZd
+	 Bevy0zcYNIgLg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2B189D84BC6;
+	Tue, 13 Feb 2024 01:00:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240213005710.672448-1-seanjc@google.com>
-Subject: [GIT PULL (sort of)] KVM: x86: fixes and selftests fixes/cleanups
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v4] net/mlx5e: link NAPI instances to queues and IRQs
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170778602817.24441.17425446527268970551.git-patchwork-notify@kernel.org>
+Date: Tue, 13 Feb 2024 01:00:28 +0000
+References: <20240209202312.30181-1-jdamato@fastly.com>
+In-Reply-To: <20240209202312.30181-1-jdamato@fastly.com>
+To: Joe Damato <jdamato@fastly.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
+ rrameshbabu@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ richardcochran@gmail.com, gal@nvidia.com, vadim.fedorenko@linux.dev,
+ linux-rdma@vger.kernel.org
 
-I have two pull requests for 6.8, but I goofed (or maybe raced with you
-pushing to kvm/master), and based everything on 6.8-rc2 instead of 6.8-rc1 as
-you did.  And so of course the pull requests would bring in waaaaay more than
-just the intended KVM changes.
+Hello:
 
-Can I bribe you to do a back merge of 6.8-rc2, so that my pull requests don't
-make me look like a complete idiot?
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-It's not the end of the world for me to rebase, but I'd prefer not to throw
-away the hashes and the time the commits have spent in -next.
+On Fri,  9 Feb 2024 20:23:08 +0000 you wrote:
+> Make mlx5 compatible with the newly added netlink queue GET APIs.
+> 
+> Signed-off-by: Joe Damato <jdamato@fastly.com>
+> ---
+> v3 -> v4:
+>   - Use sq->netdev and sq->cq.napi to get the netdev and NAPI structures in
+>     mlx5e_activate_txqsq and mlx5e_deactivate_txqsq as requested by Tariq
+>     Toukan [1]
+>   - Only set or unset NETDEV_QUEUE_TYPE_RX when the MLX5E_PTP_STATE_RX bit
+>     is on in mlx5e_ptp_activate_channel and mlx5e_ptp_deactivate_channel as
+>     requested by Rahul Rameshbabu [2]
+> 
+> [...]
 
-FWIW, the two tags are:
+Here is the summary with links:
+  - [net-next,v4] net/mlx5e: link NAPI instances to queues and IRQs
+    https://git.kernel.org/netdev/net-next/c/f25e7b82635f
 
- https://github.com/kvm-x86/linux.git tags/kvm-x86-fixes-6.8-rcN
- https://github.com/kvm-x86/linux.git tags/kvm-x86-selftests-6.8-rcN
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
