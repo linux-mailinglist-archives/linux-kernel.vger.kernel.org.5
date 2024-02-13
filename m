@@ -1,173 +1,135 @@
-Return-Path: <linux-kernel+bounces-63807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2BD58534B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:32:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD0078534B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:34:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 137A61C21067
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:32:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C96B1F2298C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4125EE71;
-	Tue, 13 Feb 2024 15:32:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455AE5EE71;
+	Tue, 13 Feb 2024 15:33:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="es4UNiST";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+mHTXTqZ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="es4UNiST";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="+mHTXTqZ"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="FaJ+SJ2r"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B535DF3E
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:32:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA805EE60
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707838345; cv=none; b=Kh5yq37AvrzLWqNftrygQRL5aFCtG3L9kJ8GxaiWs9NMjU4fP1klH8UbpXAk8MhaBVYpDI0NMorF29gjxwGqIHoPmMC5WsnmkdxVEcokHLMOpbJ4mjG0b9S+cIhiYrlcPa36qhvXaZ088Br5B7T0lF8/ZVspmx1Cp6IJCq7fUDo=
+	t=1707838436; cv=none; b=O4bKhYoVdXaDSO9eBTXW1zdRFOSvnZvAedd6CqLTzKTzgptmjvWha4eBOq1ymBXxMOjQYxNAUqeYTTa1+91KKbDSCfpuISGF7nX0r/AbmkU//NiGbtWkq1xrepnngnGXrCxViJDjWcePT+/eJgVf6USXXI2ExsDzJZjxh75mvIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707838345; c=relaxed/simple;
-	bh=Jy8VoZSnqR67yqm7MPHgwgHoYLAdDwVSuN2jp8+Gmis=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BkZ3wKcXQb+ERMXZ3Lozg/LPtT0Luxj185kCkbbCMm7cuBZ6MXJYpnkuoNlrcbeU+CHrfvOjmemhXxMiGRn8zwqSiz+pnQ4K7m/IWboNiMfboriwfQabN+rJxXKR8iU57dmhPFwG7IG88WsCSuZuOxdyxWOn9M9VdTmWS8mrN5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=es4UNiST; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+mHTXTqZ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=es4UNiST; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=+mHTXTqZ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E424C1FCE2;
-	Tue, 13 Feb 2024 15:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707838341; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Lwad023+VpCp8Em+c31I+OWYiRbkKktBQYYUbNSO2Bg=;
-	b=es4UNiSTfoBYDBzKtt5jQvZx0jSaafqS3+MdTQ9QMIP69JC8IMTGc8cf4E31MEQodQbx9E
-	9i2seiwxuXdntZep8C6D4x2KTFYjAQKBe8OzDC4in0JQbXaaP1bh2pMAWZzxU6Oc6/SD3r
-	ZJembWCzqMx94E4v7Q5J7LU7ZgZPKlc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707838341;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Lwad023+VpCp8Em+c31I+OWYiRbkKktBQYYUbNSO2Bg=;
-	b=+mHTXTqZ1+F6RWZObuc1tTqn3dwoELDnmrt3xxLyML731VQ5NkPkZtL/Tn8rXmyVlITN2x
-	1J9hS91wKUwmt/CQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707838341; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Lwad023+VpCp8Em+c31I+OWYiRbkKktBQYYUbNSO2Bg=;
-	b=es4UNiSTfoBYDBzKtt5jQvZx0jSaafqS3+MdTQ9QMIP69JC8IMTGc8cf4E31MEQodQbx9E
-	9i2seiwxuXdntZep8C6D4x2KTFYjAQKBe8OzDC4in0JQbXaaP1bh2pMAWZzxU6Oc6/SD3r
-	ZJembWCzqMx94E4v7Q5J7LU7ZgZPKlc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707838341;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Lwad023+VpCp8Em+c31I+OWYiRbkKktBQYYUbNSO2Bg=;
-	b=+mHTXTqZ1+F6RWZObuc1tTqn3dwoELDnmrt3xxLyML731VQ5NkPkZtL/Tn8rXmyVlITN2x
-	1J9hS91wKUwmt/CQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 65EAA13A0E;
-	Tue, 13 Feb 2024 15:32:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id NYe6FYWLy2UPfQAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Tue, 13 Feb 2024 15:32:21 +0000
-Date: Tue, 13 Feb 2024 16:33:30 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH v8 3/5] mm,page_owner: Display all stacks and their count
-Message-ID: <ZcuLyjU52Gd3xJI8@localhost.localdomain>
-References: <20240212223029.30769-1-osalvador@suse.de>
- <20240212223029.30769-4-osalvador@suse.de>
- <b706176a-c60a-4960-ba4a-2755c612d9c8@suse.cz>
+	s=arc-20240116; t=1707838436; c=relaxed/simple;
+	bh=1wgOC11E4WsIHJN8sQAbPNgNjm1Tj7LN4SZFvsn5QAw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gQjpSXhkmxl2mxliE1efeO8vtAxoTP/Eug8F0Sp+/BiF8TPUdvbIIcDWnbKX9FkVolnEHAOzaSzMwErO9OGYfM1jRVOLVb0tdT7qJa4Li5H2Wle3vriPPu6rEvNcwa0Uaoe1Gofcpt1VP4nVkhpYW34j9Ex70LF27p9XrLrHESU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=FaJ+SJ2r; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc80d6004bso793150276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:33:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1707838434; x=1708443234; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WqydKoyTOasPxiPJoWDY9vsZCIGGHm243lsYdLUdgFs=;
+        b=FaJ+SJ2rWv9CKMitnT5LLuR41tbjkrm+BMWVk5oD+ec/erdSd9QVZ2je05QqdnMRWk
+         Im9W0wj5gHWVvnF2/3Oma13A1S5T+br7kgBW/UFFPMaSUFiGbNlBIxfTdJlmxdh52UUf
+         /hruPYfY4OxF4TPP7Huzhtzpuxl4e9co9fH1yQajmkbDGsktPzyqUXWSQG7yj+xzUOXR
+         voiLBL6f/Vkb5iHgvEQ86RFnJNBzxZ6hNVQWFUZGuVN94AHcc/dueNO1wElhkCRbEHLA
+         0GmF5ZbfUFqLBPr1WQ5pEI+kFOBsp/k3RBLKJjlSVHcE8WVQtkGPF+1j2LqDeLfvBj0q
+         +DSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707838434; x=1708443234;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WqydKoyTOasPxiPJoWDY9vsZCIGGHm243lsYdLUdgFs=;
+        b=qbX6XQjJmsfzhwTNObYKSKGnZfqGlODyHb5pfGMROp7Bn/iGJzGEmkbszzdbaAeFxs
+         cneStZzGea70apKbRzHYNA8yWhdkaFeCasyPTj6g8s/kZwomMel31Y0Xym5LZkflcy8z
+         827pbVhSn43BLWJcuKQtptZZGXcG/nRjL/jBGfYhQ+GQwHEFFwqeT2gUtXxta2flwfVI
+         aZEeyJzlT46gy6byVIg3MhdnWotX7mQV0PhJ5hYW6W6EDu2KnfSc1iFmcD0RFd+nMvRz
+         WwM3pmdDpN1NGGjp7lcy6wWHryhpUlkoljcBhOJMm6lyTgYDMaokCSJdVjPUprhKGxqp
+         nrng==
+X-Gm-Message-State: AOJu0YySIW2Ssdc7id024s+guUQQ8hErCCezQAnDkPxBYg/rx+sK3q6E
+	LEYTGSce7zUrMbtam/+f07/XA4sHKWfYcV69RNqWJU0bBfu9p+R9vj3TS0LJJsVSA/UJzERo18r
+	AdRb4UojfBRe0QkfhJsBY7weUPJcoDtpL5pJb
+X-Google-Smtp-Source: AGHT+IHnyTIkOdFHIvfDQnb3DdpYo/kENKzsoxJTQjNhdWhD9FR1CMXLFwKe75ZdrflWgWwKWc2sbhF4w4SE8MNPLwk=
+X-Received: by 2002:a05:6902:569:b0:dc6:bbeb:d889 with SMTP id
+ a9-20020a056902056900b00dc6bbebd889mr7861710ybt.52.1707838433767; Tue, 13 Feb
+ 2024 07:33:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b706176a-c60a-4960-ba4a-2755c612d9c8@suse.cz>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-7.00 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.90)[99.57%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -7.00
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-13-roberto.sassu@huaweicloud.com> <305cd1291a73d788c497fe8f78b574d771b8ba41.camel@linux.ibm.com>
+ <CAHC9VhQ7DgPJtNTRCYneu_XnpRmuwfPCW+FqVuS=k6U5-F6pJw@mail.gmail.com> <05ad625b0f5a0e6c095abee5507801da255b36cd.camel@huaweicloud.com>
+In-Reply-To: <05ad625b0f5a0e6c095abee5507801da255b36cd.camel@huaweicloud.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 13 Feb 2024 10:33:42 -0500
+Message-ID: <CAHC9VhR2M_MWHs34kn-WH3Wr0sgT09WKveecy7onkFhUb1-gEg@mail.gmail.com>
+Subject: Re: [PATCH v9 12/25] security: Introduce file_post_open hook
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc: Mimi Zohar <zohar@linux.ibm.com>, viro@zeniv.linux.org.uk, brauner@kernel.org, 
+	chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de, kolga@netapp.com, 
+	Dai.Ngo@oracle.com, tom@talpey.com, jmorris@namei.org, serge@hallyn.com, 
+	dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, dhowells@redhat.com, 
+	jarkko@kernel.org, stephen.smalley.work@gmail.com, eparis@parisplace.org, 
+	casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, 
+	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Roberto Sassu <roberto.sassu@huawei.com>, Stefan Berger <stefanb@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 03:25:26PM +0100, Vlastimil Babka wrote:
-> On 2/12/24 23:30, Oscar Salvador wrote:
-> > +static int stack_print(struct seq_file *m, void *v)
-> > +{
-> > +	char *buf;
-> > +	int ret = 0;
-> > +	struct stack *stack = v;
-> > +	struct stack_record *stack_record = stack->stack_record;
-> > +
-> > +	if (!stack_record->size || stack_record->size < 0 ||
-> > +	    refcount_read(&stack_record->count) < 2)
-> > +		return 0;
-> > +
-> > +	buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
-> > +
-> > +	ret += stack_trace_snprint(buf, PAGE_SIZE, stack_record->entries,
-> > +				   stack_record->size, 0);
-> > +	if (!ret)
-> > +		goto out;
-> > +
-> > +	scnprintf(buf + ret, PAGE_SIZE - ret, "stack_count: %d\n\n",
-> > +		  refcount_read(&stack_record->count));
-> > +
-> > +	seq_printf(m, buf);
-> > +	seq_puts(m, "\n\n");
-> > +out:
-> > +	kfree(buf);
-> 
-> Seems rather wasteful to do kzalloc/kfree so you can print into that buffer
-> first and then print/copy it again using seq_printf. If you give up on using
-> stack_trace_snprintf() it's not much harder to print the stack directly with
-> a loop of seq_printf. See e.g. slab_debugfs_show().
+On Tue, Feb 13, 2024 at 7:59=E2=80=AFAM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+> On Mon, 2024-02-12 at 16:16 -0500, Paul Moore wrote:
+> > On Mon, Feb 12, 2024 at 4:06=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com=
+> wrote:
+> > >
+> > > Hi Roberto,
+> > >
+> > >
+> > > > diff --git a/security/security.c b/security/security.c
+> > > > index d9d2636104db..f3d92bffd02f 100644
+> > > > --- a/security/security.c
+> > > > +++ b/security/security.c
+> > > > @@ -2972,6 +2972,23 @@ int security_file_open(struct file *file)
+> > > >       return fsnotify_perm(file, MAY_OPEN);  <=3D=3D=3D  Conflict
+> > >
+> > > Replace with "return fsnotify_open_perm(file);"
+> > >
+> > > >  }
+> > > >
+> > >
+> > > The patch set doesn't apply cleaning to 6.8-rcX without this change. =
+ Unless
+> > > there are other issues, I can make the change.
+> >
+> > I take it this means you want to pull this via the IMA/EVM tree?
+>
+> Not sure about that, but I have enough changes to do to make a v10.
 
-Well, I thought about not reinventing the wheel there, but fair enough
-than performing a kmalloc/free op on every print might be suboptimal.
-I will try to do ir with seq_printf alone.
+Sorry, I should have been more clear, the point I was trying to
+resolve was who was going to take this patchset (eventually).  There
+are other patches destined for the LSM tree that touch the LSM hooks
+in a way which will cause conflicts with this patchset, and if
+you/Mimi are going to take this via the IMA/EVM tree - which is fine
+with me - I need to take that into account when merging things in the
+LSM tree during this cycle.  It's not a big deal either way, it would
+just be nice to get an answer on that within the next week.
 
-Thanks
- 
-
--- 
-Oscar Salvador
-SUSE Labs
+--=20
+paul-moore.com
 
