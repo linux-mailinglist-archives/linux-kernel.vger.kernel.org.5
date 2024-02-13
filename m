@@ -1,229 +1,213 @@
-Return-Path: <linux-kernel+bounces-63866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF868535AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:08:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F67E85358F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B15E41C21FE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:08:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1824B216FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443CE5FB90;
-	Tue, 13 Feb 2024 16:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB52B5F56A;
+	Tue, 13 Feb 2024 16:05:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Bnx3owWj"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LB0hW0F+"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4838F5D914;
-	Tue, 13 Feb 2024 16:07:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3847D5EE87;
+	Tue, 13 Feb 2024 16:05:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707840470; cv=none; b=XJVP0tphw9I/CRwZaMwe/D1OR+gNexPsDDeh3rEeZaGjrNax7xVMX5axmWmuQzqeH+iP5dJmTjUnUIWbt7paot+y6F9vP01xfP2eyUGoPqDlZwI6tsgK7B1m+1fUogirpYQko3CXu99QFUk8la8LM/Gum8eeyBBZLYYXLOvNYP0=
+	t=1707840305; cv=none; b=ReeA1d9UOv9E6Koq8RdwkthL5h24qMNzqIp7YIbasdfdS+LPFIB9ut5ZNAB68djuGVoItK8RuR7KrrYSNHu2aGpFAt9tIR7x4BdHYBJo6kw9Vsie8gX/54qM7XcUBtdilWk61ZKNHkjXsBEznP5ArsRt3NxJb09mWzy871wkRBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707840470; c=relaxed/simple;
-	bh=Nq5NLWM8fquBBRNIIZ/z4DwyXucV/4AOy2bTNrl4gfM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FHN0i51MB+ke4/a71oJ1Te4Z1bknVCx7qWFtLv3oOe3Mo8JtxgesU7FGy+oOo5e8m1bbla/NssmTN9mKbNjf+uJGLA5304CugEI1ktCw/RyRBMichjFd9axyRNB3eynI17qmW/6U2Cfk2whwIiyueIQPrPJ6/GtL/eUeLLSA5Ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Bnx3owWj; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 93E41C000B;
-	Tue, 13 Feb 2024 16:07:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707840464;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gVnzc7OAdrtUJbFDyTTibW0hk3NfWNlLDbaHw8ta+S8=;
-	b=Bnx3owWjNw2cJ0Jza4wUrQauMZ+sFCg4yoKBcAIBj/yJBtyZtWax7yKqIPwQRn12E6tuTa
-	tH9TbpLp08NNV0UZsDFx+XXBO5ROXyCuY31lNQ05P4vvnCwOvTzlp2nSiLGDDtjUdGusLD
-	0FY0RAGiwSQAqeGMfkpGHZRc7z9IRqb7uVt/pDGYx+ZlQFBILq3pS2unj+ofv6RnskuWnU
-	ROlzfe+uAx3ERoGD6S61ZsgbdKHWNKVoa5UBD4EtEGqTcSOi2Ue/mWaobcr5lgao6nV7h7
-	kDn67fD1vkhGVsK+yS5EMGgnHmOXUV5qX6k/VF5fFMEYeIlPu0Lk0nqvAgkcYg==
-Date: Tue, 13 Feb 2024 17:07:41 +0100
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, davem@davemloft.net, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Horatiu Vultur
- <horatiu.vultur@microchip.com>, Richard Cochran <richardcochran@gmail.com>,
- UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com, =?UTF-8?B?S8O2cnk=?= Maincent
- <kory.maincent@bootlin.com>
-Subject: Re: [PATCH net-next 1/3] net: phy: Add support for inband
- extensions
-Message-ID: <20240213170741.3ffa20e8@device-28.home>
-In-Reply-To: <27644300-ff4f-4603-9338-bad4aa0e5610@lunn.ch>
-References: <20240212173307.1124120-1-maxime.chevallier@bootlin.com>
-	<20240212173307.1124120-2-maxime.chevallier@bootlin.com>
-	<27644300-ff4f-4603-9338-bad4aa0e5610@lunn.ch>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1707840305; c=relaxed/simple;
+	bh=rM3rrsxmVIGD8Xdy2RSGGo3eRi8719tCkmvzDLLsESI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=W2XWnha/8IAcS7cTni5vVofOWtAS3Nak9zDrJTh8lw6XNDWruylMLFtJSI3VMUqKMX4gJzQhUMr/AKhU1eDqsSSjasDF5vLTidmz0CxvxWO8TXMlbEL6MnFV5bRk8NGI0uWA/0+yp3Ejl5fbe5C2x7F9ahhJAhCVZIgqMSF0WNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LB0hW0F+; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3cb228b90bso228537666b.3;
+        Tue, 13 Feb 2024 08:05:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707840301; x=1708445101; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rM3rrsxmVIGD8Xdy2RSGGo3eRi8719tCkmvzDLLsESI=;
+        b=LB0hW0F+OUgI0/Gf09U3uTDEdYMPMKeLV2+q9Wd7i1YE6wMqk8aoVuuY51wWU5Ag2e
+         Q60o0nn2ZtjuJ1m04Gped8KYpouB80LWrBKX8A82XbMY1fVmpJw7tZHSLoT3AnLBaMsQ
+         7k767bYn5N4MtxrGim13m/bPeRX+Rzh3DCep8dBE4haYS4+b9Xx4kPI84s6mm+Q8SHYD
+         k0iA8NhNSapo5XlMC1W8ny5xejrrNPd2Zv68LP4qW5KJ2HgUWmcYprApT0SDwsIQn4c6
+         dlGCmju52SLJa8McINWRqaEEbLX5FNuH8Cj8QUcfncVDpoxFgPMg16cb6KgT7S9h5KoL
+         Vbfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707840301; x=1708445101;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rM3rrsxmVIGD8Xdy2RSGGo3eRi8719tCkmvzDLLsESI=;
+        b=ULNXLOTdmgpeeGS7P37xpxEzDrhgPeFpZvTn210OIXlVd9dCVjM0hoyLD5ZJu69Y+G
+         m38V9tt5MokL1AXWeRX7E8wRleulXU3IUrnxuoGwxa5BbO5mij9acXcnOVi0Wx7itgvO
+         8Fo8vz/qIPDusNiWAutRHKdcldiIwiDr6WZ5dAMRdiMphenenUq0krZ4P27eH7WBN8L3
+         WnVLNCK/jM12W6aptJl9i0Agc6AdIp1QBf6CRtLC0ZmpOun7aqjQ1lxgDjxIwHcSg2TW
+         JvLH5ZOu3e9a81TXAkgKhqaYRVEPksbdgnLS7ueRArvDvFr/BopKFjh7rGAUFBOQj5cc
+         u3SA==
+X-Forwarded-Encrypted: i=1; AJvYcCV6ayfa7sATYkj7JGnDbds5oJXi/37To3lvOFKSN5+JRTrM1EHs8x/TVbdqfaTEHTm3NBOnKfMkPbp89/h6xTrMuzfcZNaHA1C1b/NeFq3e49jZaco0fwsQKmbWgaUMo9uYNmyg2jF3umG0k3zeFisle3StwOyyTPVrP8ep/eNz2Np7
+X-Gm-Message-State: AOJu0Yw93S1Y+Z03A/j7b9aj48WEOSA2fPIg3xmTzIo/a1Gcdqmukr7I
+	eC1pzL8UgiuAucrHIJfxhpx4IPraaM2Xz3I/WpNGMulp9SvaqCIz
+X-Google-Smtp-Source: AGHT+IF0X1AhH4lpy6+KVf4MfxbDEkJ0MKQzmIDYPCoJ0rkSRG8av0+qslITqO7b5iBHSxehOS9+Lg==
+X-Received: by 2002:a17:906:80b:b0:a3c:771:a97a with SMTP id e11-20020a170906080b00b00a3c0771a97amr7821530ejd.73.1707840301135;
+        Tue, 13 Feb 2024 08:05:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUtLWfPHGLeQOMOCOpurgmOWvVQm0yGHwp2Gp+OpYptWmZush47c4TmCLi5f3fjS7IMNTsyCLXIyD0n9yv8oaWKCMUgXq6MC5CFdl1gPwHyZl7hzAuQG+zUKzQ+yq0jaT4a/012vwpBVcQZq8Z3zGDax35nhIXppxJQv9ed19HY1EdiTr1k0GQCOpxvsAqf1rSoffKNhTXO3VD5NnqAb3ebLPR55bOoYDICJwPMhap9drcriuLaRbX3VqYyZmVIIfLJHX3gmYAmhRWo5pDx5OU7GjCWlAF1+cpgW4Ae25p1arZ7fvXBmr2KFAyp4x+QZkfcxbFWGp8UdM3FexW4FQrhak67rFjsOlfXgJRcXydt6S4b9+0frLP4FptO2Kt40lsHcnnZhVq65PgPmyd+Lsjr6xLkmMZFux5ZH6I53JF0c8fm16Px/d/j9OUDoAqfkWhUrwREwWBEl44ZK+fi+OOKR6PRKs1Z1Dr1WfwZGwRXS8mRWN5LNcvv2QoCTn/galthSzaHJzSkvf0g32eKFSHaz/Ro4wI=
+Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
+        by smtp.gmail.com with ESMTPSA id ps8-20020a170906bf4800b00a3ca744438csm1407182ejb.213.2024.02.13.08.05.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 08:05:00 -0800 (PST)
+Message-ID: <e03968102b92b3711808eb532685bc9e05fc3c8d.camel@gmail.com>
+Subject: Re: [PATCH 5/5] iio: adc: ad7380: use spi_optimize_message()
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Mark Brown <broonie@kernel.org>, Martin Sperl <kernel@martin.sperl.org>,
+  David Jander <david@protonic.nl>, Jonathan Cameron <jic23@kernel.org>,
+ Michael Hennerich <michael.hennerich@analog.com>, Nuno
+ =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>,  Alain Volmat
+ <alain.volmat@foss.st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-spi@vger.kernel.org,
+  linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+ linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+Date: Tue, 13 Feb 2024 17:08:19 +0100
+In-Reply-To: <CAMknhBEU=iMzpE_P0KePL4cZZktBOGHRXaEox5a7XcVjXDT+Dg@mail.gmail.com>
+References: 
+	<20240212-mainline-spi-precook-message-v1-0-a2373cd72d36@baylibre.com>
+	 <20240212-mainline-spi-precook-message-v1-5-a2373cd72d36@baylibre.com>
+	 <c06dfa1ecf88b07ef467ad7c08667d0cab400613.camel@gmail.com>
+	 <CAMknhBEU=iMzpE_P0KePL4cZZktBOGHRXaEox5a7XcVjXDT+Dg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
 
-Hello Andrew,
+On Tue, 2024-02-13 at 09:27 -0600, David Lechner wrote:
+> On Tue, Feb 13, 2024 at 3:47=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.c=
+om> wrote:
+> >=20
+> > On Mon, 2024-02-12 at 17:26 -0600, David Lechner wrote:
+> > > This modifies the ad7380 ADC driver to use spi_optimize_message() to
+> > > optimize the SPI message for the buffered read operation. Since buffe=
+red
+> > > reads reuse the same SPI message for each read, this can improve
+> > > performance by reducing the overhead of setting up some parts the SPI
+> > > message in each spi_sync() call.
+> > >=20
+> > > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> > > ---
+> > > =C2=A0drivers/iio/adc/ad7380.c | 52 +++++++++++++++++++++++++++++++++=
+++++++++--
+> > > ----
+> > > -
+> > > =C2=A01 file changed, 45 insertions(+), 7 deletions(-)
+> > >=20
+> > > diff --git a/drivers/iio/adc/ad7380.c b/drivers/iio/adc/ad7380.c
+> > > index abd746aef868..5c5d2642a474 100644
+> > > --- a/drivers/iio/adc/ad7380.c
+> > > +++ b/drivers/iio/adc/ad7380.c
+> > > @@ -133,6 +133,7 @@ struct ad7380_state {
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct spi_device *spi;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct regulator *vref;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct regmap *regmap;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct spi_message *msg;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * DMA (thus cache coherency main=
+tenance) requires the
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * transfer buffers to live in th=
+eir own cache lines.
+> > > @@ -231,19 +232,55 @@ static int ad7380_debugfs_reg_access(struct iio=
+_dev
+> > > *indio_dev, u32 reg,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+> > > =C2=A0}
+> > >=20
+> > > +static int ad7380_buffer_preenable(struct iio_dev *indio_dev)
+> > > +{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct ad7380_state *st =3D iio_priv(indio_=
+dev);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct spi_transfer *xfer;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 st->msg =3D spi_message_alloc(1, GFP_KERNEL=
+);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!st->msg)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 return -ENOMEM;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 xfer =3D list_first_entry(&st->msg->transfe=
+rs, struct spi_transfer,
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 transfer_list);
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 xfer->bits_per_word =3D st->chip_info->chan=
+nels[0].scan_type.realbits;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 xfer->len =3D 4;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 xfer->rx_buf =3D st->scan_data.raw;
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D spi_optimize_message(st->spi, st->m=
+sg);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (ret) {
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 spi_message_free(st->msg);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 return ret;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+> > > +}
+> > > +
+> > > +static int ad7380_buffer_postdisable(struct iio_dev *indio_dev)
+> > > +{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct ad7380_state *st =3D iio_priv(indio_=
+dev);
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 spi_unoptimize_message(st->msg);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 spi_message_free(st->msg);
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+> > > +}
+> > > +
+> >=20
+> > Not such a big deal but unless I'm missing something we could have the
+> > spi_message (+ the transfer) statically allocated in struct ad7380_stat=
+e and
+> > do
+> > the optimize only once at probe (naturally with proper devm action for
+> > unoptimize). Then we would not need to this for every buffer enable +
+> > disable. I
+> > know in terms of performance it won't matter but it would be less code =
+I
+> > guess.
+> >=20
+> > Am I missing something?
+>=20
+> No, your understanding is correct for the current state of everything
+> in this series. So, we could do as you suggest, but I have a feeling
+> that future additions to this driver might require that it gets
+> changed back this way eventually.
 
-On Tue, 13 Feb 2024 15:03:01 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
+Hmm, not really sure about that as chip_info stuff is always our friend :).=
+ And
+I'm anyways of the opinion of keeping things simpler and start to evolve wh=
+en
+really needed (because often we never really need to evolve). But bah, as I
+said... this is really not a big deal.
 
-> > +Inband Extensions
-> > +=================
-> > +
-> > +The USGMII Standard allows the possibility to re-use the full-length 7-bytes
-> > +frame preamble to convey meaningful data. This is already partly used by modes
-> > +like QSGMII, which passes the port number in the preamble.
-> > +
-> > +In USGMII, we have a standardized approach to allow the MAC and PHY to pass
-> > +such data in the preamble, which looks like this :
-> > +
-> > +|  0   |  1   |  2  |  3  |  4  |  5  |  6  |  7  |  Frame data
-> > +| SoP  |      |      Extension              | CRC |
-> > +|     /        \_______________             |     |
-> > +|    /                         \            |     |
-> > +|   | type | subport | ext type |           |     |
-> > +
-> > +The preamble in that case uses the Packet Control Header (PCH) format, where
-> > +the byte 1 is used as a control field with :
-> > +
-> > +type - 2 bits :
-> > +        - 00 : Packet with PCH
-> > +        - 01 : Packet without PCH
-> > +        - 10 : Idle Packet, without data
-> > +        - 11 : Reserved
-> > +
-> > +subport - 4 bits : The subport identifier. For QUSGMII, this field ranges from
-> > +                   0 to 3, and for OUSGMII, it ranges from 0 to 7.
-> > +
-> > +ext type - 2 bits : Indicated the type of data conveyed in the extension
-> > +        - 00 : Ignore extension
-> > +        - 01 : 8 bits reserved + 32 timestamp
-> > +        - 10 : Reserved
-> > +        - 11 : Reserved  
-> 
-> Somewhat crystal ball...
-> 
-> Those two reserved values could be used in the future to indicate
-> other extensions. So we could have three in operation at once, but
-> only one selected per frame.
-> 
-> > +A PHY driver can register available modes with::
-> > +
-> > +  int phy_inband_ext_set_available(struct phy_device *phydev, enum phy_inband_ext ext);
-> > +  int phy_inband_ext_set_unavailable(struct phy_device *phydev, enum phy_inband_ext ext);  
-> 
-> enum phy_inband_ext is just an well defined, but arbitrary number? 0
-> is this time stamp value mode, 1 could be used MACSEC, 2 could be a
-> QoS indicator when doing rate adaptation? 3 could be ....
-> 
-> > +It's then up to the MAC driver to enable/disable the extension in the PHY as
-> > +needed. This was designed to fit the timestamping configuration model, as it
-> > +is the only mode supported so far.
-> > +
-> > +Enabling/Disabling an extension is done from the MAC driver through::
-> > +
-> > +  int phy_inband_ext_enable(struct phy_device *phydev, enum phy_inband_ext ext);  
-> 
-> So maybe this should return the 2 bit ext type value? The MAC can
-> request QoS marking, and the PHY replies it expects the bits to be 3 ?
-> 
-> I'm just trying to ensure we have an API which is extensible in the
-> future to make use of those two reserved values.
-
-You are right, that's a much better idea !
-
-> 
-> > diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
-> > index 3b9531143be1..4b6cf94f51d5 100644
-> > --- a/drivers/net/phy/phy.c
-> > +++ b/drivers/net/phy/phy.c
-> > @@ -1760,3 +1760,89 @@ int phy_ethtool_nway_reset(struct net_device *ndev)
-> >  	return ret;
-> >  }
-> >  EXPORT_SYMBOL(phy_ethtool_nway_reset);
-> > +
-> > +/**
-> > + * PHY modes in the USXGMII family can have extensions, with data transmitted
-> > + * in the frame preamble.
-> > + * For now, only QUSGMII is supported, but other variants like USGMII and
-> > + * OUSGMII can be added in the future.
-> > + */
-> > +static inline bool phy_interface_has_inband_ext(phy_interface_t interface)  
-> 
-> No inline functions in .c file please. Let the compiler decide.
-
-My bad this one slept through the cracks...
-
-> 
-> > +bool phy_inband_ext_available(struct phy_device *phydev, enum phy_inband_ext ext)
-> > +{
-> > +	return !!(phydev->inband_ext.available & ext);  
-> 
-> should this be BIT(ext) ?
-
-Correct indeed
-
-> 
-> > +}
-> > +EXPORT_SYMBOL(phy_inband_ext_available);  
-> 
-> If you don't mind, i would prefer EXPORT_SYMBOL_GPL().
-
-I don't mind, I'll fix that
-
-> 
-> > +static int phy_set_inband_ext(struct phy_device *phydev,
-> > +			      enum phy_inband_ext ext,
-> > +			      bool enable)
-> > +{
-> > +	int ret;
-> > +
-> > +	if (!phy_interface_has_inband_ext(phydev->interface))
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	if (!phydev->drv->set_inband_ext)
-> > +		return -EOPNOTSUPP;  
-> 
-> That is a driver bug. It should not set phydev->inband_ext.available
-> and then not have drv->set_inband_ext. So we should probably test this
-> earlier. Maybe define that phydev->inband_ext.available has to be set
-> during probe, and the core can validate this after probe and reject
-> the device if it is inconsistent?
-
-Good point, I'll add that !
-
-> 
-> > +
-> > +	mutex_lock(&phydev->lock);
-> > +	ret = phydev->drv->set_inband_ext(phydev, ext, enable);
-> > +	mutex_unlock(&phydev->lock);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (enable)
-> > +		phydev->inband_ext.enabled |= BIT(ext);
-> > +	else
-> > +		phydev->inband_ext.enabled &= ~BIT(ext);  
-> 
-> Should these be also protected by the mutex?
-
-I think you are right, it would be better making sure we serialize
-accesses to these indeed.
-
-Thanks for the review,
-
-Maxime
+- Nuno S=C3=A1
 
