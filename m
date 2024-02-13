@@ -1,137 +1,236 @@
-Return-Path: <linux-kernel+bounces-63458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 279EC852FCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:49:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07259852FD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:50:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFFEE1F23D4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:49:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BC041C22401
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A411D381A1;
-	Tue, 13 Feb 2024 11:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB1C381B8;
+	Tue, 13 Feb 2024 11:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FszU3cEU"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YTG+pM9u"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B65F376E6
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:49:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4743A376F7
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:50:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707824951; cv=none; b=ccFHosZ1R/Ysq9OTNrjSD0BXOGHOsqxOiqTMKCU76BMrY2Wd5JqAxmGjosvLaQrCuWctQxBk6U1CVVVf25DlTW9IMbzS0p2zwL9XbMB1hQzEotptlj5UZ8maeMw69HrjRfeALEDoaZ5vjRmGh509haNXJnvgJubbzuB4E2f4sPQ=
+	t=1707825050; cv=none; b=vCzkQqs//8E7PAcaOcP588vzmwYzWreScAL6GfPNnm01ssQ0gMpz1WTp1gwzSl+xq0vHRjlfEVHrJdgak0EAm2HXnaAhPoMxx7si7PaZcVPDaSnK/O5EzSW/XOI4wtgZN3vD6ecay7ltLlXxP3vB4Ois3UMdkxMxoJxLACs1VmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707824951; c=relaxed/simple;
-	bh=FYBm5VUOZNBLyP4qOZ4sPzIQloS1I0i/GF6hxRuLPW4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aGPMW45IgO7HfcPA3JdYTuhk6gt/cz4EsaVliah7EsnecqSCtm29kBczKtCTC1TdhnuDkeyiDySZBmEBA7eGYdnMTsLBMMdqk4dS1Ncv+LzlL8k5DmYBkpUT4oaX+38InuK4dhwNHJkHYEzfsI0zASxbVKwThET7Q43IwZJSS1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FszU3cEU; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3394bec856fso3109611f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:49:09 -0800 (PST)
+	s=arc-20240116; t=1707825050; c=relaxed/simple;
+	bh=q7rVo2DSodMeezMaxn9Lr3Kuuut8KZT6AFuG5/W3D28=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=MKhxLVhqo5jyOhwrrTKq2gBJcWSEnncxF80dl7M0HwecClQZJYylJbVJeivTf6bDp57o76//Ju5TmqSjevCK8Xri1sbOrrwa7MiIdCf1BrxV00AxR9l+D9S8wH9kBMQpf44ytPe4002wVBnDyXWVIZQHkzWZ47WbbpyuEIN0BYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YTG+pM9u; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6077fa2fa9bso13196477b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:50:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707824947; x=1708429747; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MLxYb8ulK3/+KD2RG1jbewIrsAiXBJRq0PO1rsmumS0=;
-        b=FszU3cEUZnMMxQUKbanRKkWWdR+V6AZBVFZkZThY/3e0Ay511rGfJyzWh3mkz3wdb4
-         kdOp780kVUs7Y/HhfOh4BVdkID864gNtPgZcH8YqzXUwP/jmC5dB3HKj7v0lWnl2GCz8
-         Mzru2qAiVcoHwaPf0SO+Xixqu9GAay3LIQwSjdJxU5aoc6/+gR6gJ46ntl4rkE8GrTMo
-         vSwLozOQHUrRVQtOR3QQ8GxbZkFzGZOyOXgzQFK4MDuT8lE3N3Naszw6MWIIHMlEU/ZC
-         dJ6Yrw+cxuEucVNGTIvFu9WtRuwMtNUbEU4V0o/2zkCU9ORyOFJXVgtVuZfUjhk8w4LE
-         mcVQ==
+        d=google.com; s=20230601; t=1707825048; x=1708429848; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VhwEbjlgus4cAtTtYuL3Yvg9paaVaIh1ewBwp/V7zco=;
+        b=YTG+pM9ugXfZWJarz0h/Hwn2Nv42z8Zsp2tmjd+qH+BSa4PD1ucj/JoXnE9MITKDBx
+         OMJ4P5Uo84/QtTMyiGiEKqKlZoqOTcbiriA8zH9atWY9BVyU8Tg9oXohNyKgpdiwyYcX
+         V9HeMF//F0fyDNTSA9l/EB6xd39ZnJS7pydN7DaK4t1al47y4/UccHtZm3iA+HZUO53x
+         CLzIO3aO3aBg46jyQ3a19z1G5jhwRMQtrs7bEwfCS50gHL9HyaH07eRxYf7Vw7C3rr0S
+         JMptwy+m72g9mRSM/trXlZsyS6rIqaxslVK4iOa8d0yB6y1YINZVWYF2QdhtueLcVGNJ
+         +IgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707824947; x=1708429747;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MLxYb8ulK3/+KD2RG1jbewIrsAiXBJRq0PO1rsmumS0=;
-        b=bAQ1XQ9fW+CLIKS1PHOxGZeNJaPCfcwFSdTIfJFXqrnBbVZ6GDt6qiSvA/pUqnBllg
-         bRlFvfoUi1BJ2/f3vGeyYexGSVe7jwL5x1fB/q5kdwqQnJy7ManxY/xYpuG+yT4JWB1q
-         s3Q8n8PE9MoRfIWZAIdtjCUi8lOja120/HkTX4YfI83Rkw8hoMRHXELhSsVCCOofVeoE
-         mVZ0CVIDL6QF1YajwhiuHW2u1VE/bo8mWP9Hy/BvPHDacySnOnDjIaErzYG4U4WWQK53
-         c5PXehbdisQwG64Q5GEBSjgb6/sa6dx2RAXfW1pY/eY8biruCLTz06YAx6Y69A1TpSra
-         F0jA==
-X-Forwarded-Encrypted: i=1; AJvYcCVVoE/DJQsIbva9hLchKEc2p7xPSj3cw4F0bL4zE6hDM2vzd6HyAqgrPzdvHey5895mhBrSpBrUCmp9H7gnizir3ly2LT2ceg42U+01
-X-Gm-Message-State: AOJu0YzLSLlKBUb5XYyTDUvP7GWsuoNaz0qviFI2bXCrT8enqIVR2Ixg
-	H+/p1EUQ/JFEG/8xUQVUuhq+lLIbVE0PvRLFu/O2x7sFfuuvRrSq/Vb8TQAS8GY=
-X-Google-Smtp-Source: AGHT+IHQGw8/XonnfpC633ywE2gwBWrQnwyRK1evZjZRcHekINMxQLs/ScJ0kylBjM6kxlH3CYkC2Q==
-X-Received: by 2002:a5d:570d:0:b0:33c:df1c:8e18 with SMTP id a13-20020a5d570d000000b0033cdf1c8e18mr879713wrv.26.1707824947610;
-        Tue, 13 Feb 2024 03:49:07 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXH49yLxdY/J4W1Z27yp6IOnBdU0EPBCFf501YQZ9g7s9fij4pchHE4EcG6saQrqzXJNKmw8N2a6bALghy7WDe1OJe89rjEkRe6QzoCoc3UPvY7bDwArtWirSnqCJBL6nbQy3CdtNwhfHfNTEko/nf3uCk2v8FDpDa+RYZIR0766q+KqWktcamx6VoR6KRG2hMdszY2s+VNKOwJ2Z8=
-Received: from [192.168.0.20] (nborisov.ddns.nbis.net. [85.187.217.136])
-        by smtp.gmail.com with ESMTPSA id bo26-20020a056000069a00b0033cd06387ddsm1920891wrb.82.2024.02.13.03.49.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 03:49:07 -0800 (PST)
-Message-ID: <6678b65c-15ab-4bbf-b3cc-a3110dca97e1@suse.com>
-Date: Tue, 13 Feb 2024 13:49:05 +0200
+        d=1e100.net; s=20230601; t=1707825048; x=1708429848;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VhwEbjlgus4cAtTtYuL3Yvg9paaVaIh1ewBwp/V7zco=;
+        b=O+KwqyO1tgr6zrcz3NXZW2cFl7NyE4hK/uU2ts1wYR3216VXrsukgkxdL/jmhU5jkg
+         nUo6RWYgHemaueOsUrsqgDFzkOGWZmK8Pu4BfyoT2JVTeoo1GI37y2VxGA9cPhre1u3K
+         8uEiEaaYBz1t/CX6dD1XgnoL3TZtmR0NCX+iyE3B5t4Qhuss4NBQrpgEDKxmSdafWKRv
+         tGyrfWoWAeqqRt8OQIwVU+dyhHrkfkPJgth/E6aXh6Zy6ngqmQJvEBuQGI72fgi+wSMO
+         0YKW3jhl6PWG4cpBh4z1dsTNP9ldtMSha+6hjzrzsOwxhGfRuX7HxoyWifRuOaSg9z/S
+         6FAg==
+X-Forwarded-Encrypted: i=1; AJvYcCW8ZJ4LF8uxRIUIxTxRob9mtzS2xoo01EOPEKs8TpiWcLMdWP9izcmVRl8pBfhxZQe305XeMcZ0BL55+SCiPon1dXNyiXdbvDj6Dohc
+X-Gm-Message-State: AOJu0YywSP0QD9wlpWJghJUBwACz01bjR0YAZ/LzMnDJV3opCE3WF9G1
+	s8VTtESLnR6+QWiq48AtlGByZzdJVHYBhMSbb2wRLCoQEJEGMRyZkP3Ceth3RUmG5cg0D5FZbZo
+	pKQMCo6qv6myN6lFXJw==
+X-Google-Smtp-Source: AGHT+IGQTH3uqdY7zkd0WzoLptet8DsRJBX2YKfahbExGkEkGenftm6HDxcB7Qj79KpI7l4aYIfY/dg943LJKe21
+X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
+ (user=vdonnefort job=sendgmr) by 2002:a05:690c:b8b:b0:604:4c5:7dc8 with SMTP
+ id ck11-20020a05690c0b8b00b0060404c57dc8mr2160949ywb.8.1707825048353; Tue, 13
+ Feb 2024 03:50:48 -0800 (PST)
+Date: Tue, 13 Feb 2024 11:49:39 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86: Improve description of
- IA32_EMULATION_DEFAULT_DISABLED
-Content-Language: en-US
-To: Borislav Petkov <bp@alien8.de>, =?UTF-8?Q?Hanno_B=C3=B6ck?=
- <hanno@hboeck.de>
-Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
- x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20240130104543.28840812.hanno@hboeck.de>
- <20240206145823.GGZcJJD8rDtPRNBkhe@fat_crate.local>
-From: Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <20240206145823.GGZcJJD8rDtPRNBkhe@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Message-ID: <20240213114945.3528801-1-vdonnefort@google.com>
+Subject: [PATCH v17 0/6] Introducing trace buffer mapping by user-space
+From: Vincent Donnefort <vdonnefort@google.com>
+To: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Cc: mathieu.desnoyers@efficios.com, kernel-team@android.com, 
+	Vincent Donnefort <vdonnefort@google.com>
+Content-Type: text/plain; charset="UTF-8"
+
+The tracing ring-buffers can be stored on disk or sent to network
+without any copy via splice. However the later doesn't allow real time
+processing of the traces. A solution is to give userspace direct access
+to the ring-buffer pages via a mapping. An application can now become a
+consumer of the ring-buffer, in a similar fashion to what trace_pipe
+offers.
+
+Support for this new feature can already be found in libtracefs from
+version 1.8, when built with EXTRA_CFLAGS=-DFORCE_MMAP_ENABLE.
+
+Vincent
+
+v16 -> v17:
+  * Documentation and comments improvements.
+  * Create get/put_snapshot_map() for clearer code.
+  * Replace kzalloc with kcalloc.
+  * Fix -ENOMEM handling in rb_alloc_meta_page().
+  * Move flush(cpu_buffer->reader_page) behind the reader lock.
+  * Move all inc/dec of cpu_buffer->mapped behind reader lock and buffer
+    mutex. (removes READ_ONCE/WRITE_ONCE accesses).
+
+v15 -> v16:
+  * Add comment for the dcache flush.
+  * Remove now unnecessary WRITE_ONCE for the meta-page.
+
+v14 -> v15:
+  * Add meta-page and reader-page flush. Intends to fix the mapping
+    for VIVT and aliasing-VIPT data caches.
+  * -EPERM on VM_EXEC.
+  * Fix build warning !CONFIG_TRACER_MAX_TRACE.
+
+v13 -> v14:
+  * All cpu_buffer->mapped readers use READ_ONCE (except for swap_cpu)
+  * on unmap, sync meta-page teardown with the reader_lock instead of
+    the synchronize_rcu.
+  * Add a dedicated spinlock for trace_array ->snapshot and ->mapped.
+    (intends to fix a lockdep issue)
+  * Add kerneldoc for flags and Reserved fields.
+  * Add kselftest for snapshot/map mutual exclusion.
+
+v12 -> v13:
+  * Swap subbufs_{touched,lost} for Reserved fields.
+  * Add a flag field in the meta-page.
+  * Fix CONFIG_TRACER_MAX_TRACE.
+  * Rebase on top of trace/urgent.
+  * Add a comment for try_unregister_trigger()
+
+v11 -> v12:
+  * Fix code sample mmap bug.
+  * Add logging in sample code.
+  * Reset tracer in selftest.
+  * Add a refcount for the snapshot users.
+  * Prevent mapping when there are snapshot users and vice versa.
+  * Refine the meta-page.
+  * Fix types in the meta-page.
+  * Collect Reviewed-by.
+
+v10 -> v11:
+  * Add Documentation and code sample.
+  * Add a selftest.
+  * Move all the update to the meta-page into a single
+    rb_update_meta_page().
+  * rb_update_meta_page() is now called from
+    ring_buffer_map_get_reader() to fix NOBLOCK callers.
+  * kerneldoc for struct trace_meta_page.
+  * Add a patch to zero all the ring-buffer allocations.
+
+v9 -> v10:
+  * Refactor rb_update_meta_page()
+  * In-loop declaration for foreach_subbuf_page()
+  * Check for cpu_buffer->mapped overflow
+
+v8 -> v9:
+  * Fix the unlock path in ring_buffer_map()
+  * Fix cpu_buffer cast with rb_work_rq->is_cpu_buffer
+  * Rebase on linux-trace/for-next (3cb3091138ca0921c4569bcf7ffa062519639b6a)
+
+v7 -> v8:
+  * Drop the subbufs renaming into bpages
+  * Use subbuf as a name when relevant
+
+v6 -> v7:
+  * Rebase onto lore.kernel.org/lkml/20231215175502.106587604@goodmis.org/
+  * Support for subbufs
+  * Rename subbufs into bpages
+
+v5 -> v6:
+  * Rebase on next-20230802.
+  * (unsigned long) -> (void *) cast for virt_to_page().
+  * Add a wait for the GET_READER_PAGE ioctl.
+  * Move writer fields update (overrun/pages_lost/entries/pages_touched)
+    in the irq_work.
+  * Rearrange id in struct buffer_page.
+  * Rearrange the meta-page.
+  * ring_buffer_meta_page -> trace_buffer_meta_page.
+  * Add meta_struct_len into the meta-page.
+
+v4 -> v5:
+  * Trivial rebase onto 6.5-rc3 (previously 6.4-rc3)
+
+v3 -> v4:
+  * Add to the meta-page:
+       - pages_lost / pages_read (allow to compute how full is the
+	 ring-buffer)
+       - read (allow to compute how many entries can be read)
+       - A reader_page struct.
+  * Rename ring_buffer_meta_header -> ring_buffer_meta
+  * Rename ring_buffer_get_reader_page -> ring_buffer_map_get_reader_page
+  * Properly consume events on ring_buffer_map_get_reader_page() with
+    rb_advance_reader().
+
+v2 -> v3:
+  * Remove data page list (for non-consuming read)
+    ** Implies removing order > 0 meta-page
+  * Add a new meta page field ->read
+  * Rename ring_buffer_meta_page_header into ring_buffer_meta_header
+
+v1 -> v2:
+  * Hide data_pages from the userspace struct
+  * Fix META_PAGE_MAX_PAGES
+  * Support for order > 0 meta-page
+  * Add missing page->mapping.
+
+Vincent Donnefort (6):
+  ring-buffer: Zero ring-buffer sub-buffers
+  ring-buffer: Introducing ring-buffer mapping functions
+  tracing: Add snapshot refcount
+  tracing: Allow user-space mapping of the ring-buffer
+  Documentation: tracing: Add ring-buffer mapping
+  ring-buffer/selftest: Add ring-buffer mapping test
+
+ Documentation/trace/index.rst                 |   1 +
+ Documentation/trace/ring-buffer-map.rst       | 106 +++++
+ include/linux/ring_buffer.h                   |   7 +
+ include/uapi/linux/trace_mmap.h               |  48 +++
+ kernel/trace/ring_buffer.c                    | 385 +++++++++++++++++-
+ kernel/trace/trace.c                          | 234 ++++++++++-
+ kernel/trace/trace.h                          |   9 +-
+ kernel/trace/trace_events_trigger.c           |  58 ++-
+ tools/testing/selftests/ring-buffer/Makefile  |   8 +
+ tools/testing/selftests/ring-buffer/config    |   2 +
+ .../testing/selftests/ring-buffer/map_test.c  | 273 +++++++++++++
+ 11 files changed, 1085 insertions(+), 46 deletions(-)
+ create mode 100644 Documentation/trace/ring-buffer-map.rst
+ create mode 100644 include/uapi/linux/trace_mmap.h
+ create mode 100644 tools/testing/selftests/ring-buffer/Makefile
+ create mode 100644 tools/testing/selftests/ring-buffer/config
+ create mode 100644 tools/testing/selftests/ring-buffer/map_test.c
 
 
+base-commit: ca185770db914869ff9fe773bac5e0e5e4165b83
+-- 
+2.43.0.687.g38aa6559b0-goog
 
-On 6.02.24 г. 16:58 ч., Borislav Petkov wrote:
-> On Tue, Jan 30, 2024 at 10:45:43AM +0100, Hanno Böck wrote:
->> The description of the option disables a default, but does not mention
->> how to change that default. To make it easier to find out, mention boot
->> parameter ia32_emulation.
->>
->> Signed-off-by: Hanno Böck <hanno@hboeck.de>
->> ---
->>
->> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->> index 5edec175b..a65ff33e0 100644
->> --- a/arch/x86/Kconfig
->> +++ b/arch/x86/Kconfig
->> @@ -3006,8 +3006,10 @@ config IA32_EMULATION_DEFAULT_DISABLED
->>   	depends on IA32_EMULATION
->>   	help
->>   	  Make IA32 emulation disabled by default. This prevents loading 32-bit
->> -	  processes and access to 32-bit syscalls. If unsure, leave it to its
->> -	  default value.
->> +	  processes and access to 32-bit syscalls. If set, IA32 emulation can be
->> +	  re-enabled with the boot parameter ia32_emulation=true.
-> 
-> That sentence should say one can enable it *dynamically* with the cmdline
-> param.
-> 
-> But this text reads weird: if I want to enable it, then I won't set
-> IA32_EMULATION_DEFAULT_DISABLED in the first place and I won't have that
-> problem.
-> 
-> So the use case must be something along the lines of, ia32 emu is
-> default-disabled at build time but for certain cases where one wants it,
-> one can still enable it per-boot with a cmdline param.
-> 
-> So what's the story here?
-
-The use case is if a distribution wants to disable ia32 emu by default 
-but at the same time wants to give users the ability to override it. 
-Which is pretty much the use case you presented.
-
-> 
-> Thx.
-> 
 
