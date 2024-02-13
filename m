@@ -1,57 +1,62 @@
-Return-Path: <linux-kernel+bounces-62742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CF1B852520
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:07:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 740F9852523
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:07:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD6212859F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:07:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65031C23EFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:07:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3559012E1F1;
-	Tue, 13 Feb 2024 00:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8C812EBDF;
+	Tue, 13 Feb 2024 00:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cQbSXo39"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="spZ9Ism1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68AA512DDBC;
-	Tue, 13 Feb 2024 00:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA8112E1FA;
+	Tue, 13 Feb 2024 00:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783863; cv=none; b=O40iH9+h7pSCIUGi9qDekwIjSyqgnzyz6CXu0I7fAGf4SgAcWa2nuBvFrHBT7RDYASL7yFptFtf0tbPDBHnMt1G2rqu5nY2Nn6HQyGBNMqhsPVn84Ozp/20sj6wzglpR/wFu60cvYBcJnpLHWNH+bSWbkwlYEwztEfQfBoRV6l0=
+	t=1707783864; cv=none; b=HaBNypjPcE8f0kjY0+3KgVbIjPlB982yqZSx1HVmLoi3EYE9ZcpH1uhJKlyzgMPu3JIpWBMEIltM9r9Vz86CTzFlpYCKr5IT/bKKotqfye2YPaaLyrOWCdrE2siJjBAYQeDTCkjeYNrMLEGTCNybd4jhmNv8ruTIKlmx+YaPZDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783863; c=relaxed/simple;
-	bh=OET/8XFZvUB+tdghlDcFDzOlcCZEeqpMgInensZwx5s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dny4NMZ4Y6z5pbCxRxecyYJ3Hc7KaHAwcflDSs6h1zh1yQsdmvOXCxeA49Vzvu9ulZ86eoF15LkgfxUuyafw3SgmvgyVqDwFMV1ePaO2WkPOPhVUROvzXXsAf5c6S2yb2MZ1yf7KbljiD+9yIkdMIJkeTHXc30ObFcC54PhoWO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cQbSXo39; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDD65C433C7;
-	Tue, 13 Feb 2024 00:24:21 +0000 (UTC)
+	s=arc-20240116; t=1707783864; c=relaxed/simple;
+	bh=BO2iAHGlSeGV+lZ4bF31NOK1cyuTN+llG3Hrw17KFmo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=U9VbhefVLLxOxaXmEiR56NU4ys+RxjbjGNS1Q5CJh0ZmYaHrSNkhMDKZe3eCA2miS+xNb+xV4w5aFXFC3tfSwwtj7Sxxc5PfcLILGcM2olq8Skq/L/hLfSXUJlFEKip3mRBUpWiEamc4wZfZZNvQNXKHnxrg52uL5vlnTo5RCOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=spZ9Ism1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54D4FC43394;
+	Tue, 13 Feb 2024 00:24:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783862;
-	bh=OET/8XFZvUB+tdghlDcFDzOlcCZEeqpMgInensZwx5s=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cQbSXo39PpPvo0LXI64p4RIFyQvwwxcv+4GYmiWxM8MJl6EHiOLs2MlNXt+WPzOOc
-	 OYbFi6CcySI6Y249I3OVlmI3cdUtpqiyd2om4tGRsCsFy5fWur2rtX2yOl7RTolz7e
-	 6ktuLyLnNdE7IVWYYu+ZJ8bxem3y4iFaBVRepQEsqASG6rYGqZ2CWDKsz6SUKv8j47
-	 23qKd9N/BERnXSAJfPqkvLYosQXupx9sFQxbV9MhdFXIWGMugjVrdBl23xAAhTek8N
-	 B9nehrAzHSrCgVQa1shoz/blawUr+U43KVp3mEPBvo27l6QPvR2M8bvwHzXQejr9F8
-	 L/6HS1FYBvDOQ==
+	s=k20201202; t=1707783864;
+	bh=BO2iAHGlSeGV+lZ4bF31NOK1cyuTN+llG3Hrw17KFmo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=spZ9Ism1joLcFFVIrfbNf2ma9my8ahDLSsNPALhl0HGr8HfYCkF9kCgX/C2RJaL4B
+	 Tgs7Q9NeB9LZn46bcFv3UPV01g+Y849cgfsyrZZmDnXGc0v/ec8RMV6kn64wi59bGO
+	 U9XFRq8ftr+iCYNl81tsdUvxBYI5JSwjjwGGO3EKLGVMpFNs84XNlNpz4UJFdhDsYP
+	 c3zX9NG8FsgrArxYJa7MsxqDty7ku092rxLc8+Er3tLzpDwgJ1GCC3cWXKloDNftMU
+	 zBQREQE5lRMycS76mmqNM7gw6Ua9+LKPzlkPxGiefR2Vb5jtpOcbqmW69TcZj0XRNO
+	 RbW2kudvhX7WQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhang Rui <rui.zhang@intel.com>,
-	Guenter Roeck <linux@roeck-us.net>,
+Cc: Hannes Reinecke <hare@suse.de>,
+	Daniel Wagner <dwagner@suse.de>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
-	fenghua.yu@intel.com,
-	jdelvare@suse.com,
-	linux-hwmon@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 1/4] hwmon: (coretemp) Enlarge per package core count limit
-Date: Mon, 12 Feb 2024 19:24:16 -0500
-Message-ID: <20240213002420.673218-1-sashal@kernel.org>
+	james.smart@broadcom.com,
+	dick.kennedy@broadcom.com,
+	jejb@linux.ibm.com,
+	linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 2/4] scsi: lpfc: Use unsigned type for num_sge
+Date: Mon, 12 Feb 2024 19:24:17 -0500
+Message-ID: <20240213002420.673218-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240213002420.673218-1-sashal@kernel.org>
+References: <20240213002420.673218-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,41 +68,78 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.268
 Content-Transfer-Encoding: 8bit
 
-From: Zhang Rui <rui.zhang@intel.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 34cf8c657cf0365791cdc658ddbca9cc907726ce ]
+[ Upstream commit d6c1b19153f92e95e5e1801d540e98771053afae ]
 
-Currently, coretemp driver supports only 128 cores per package.
-This loses some core temperature information on systems that have more
-than 128 cores per package.
- [   58.685033] coretemp coretemp.0: Adding Core 128 failed
- [   58.692009] coretemp coretemp.0: Adding Core 129 failed
- ...
+LUNs going into "failed ready running" state observed on >1T and on even
+numbers of size (2T, 4T, 6T, 8T and 10T). The issue occurs when DIF is
+enabled at the host.
 
-Enlarge the limitation to 512 because there are platforms with more than
-256 cores per package.
+The kernel logs:
 
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-Link: https://lore.kernel.org/r/20240202092144.71180-4-rui.zhang@intel.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+  Cannot setup S/G List for HBAIO segs 1/1 SGL 512 SCSI 256: 3 0
+
+The host lpfc driver is failing to setup scatter/gather list (protection
+data) for the I/Os.
+
+The return type lpfc_bg_setup_sgl()/lpfc_bg_setup_sgl_prot() causes the
+compiler to remove the most significant bit. Use an unsigned type instead.
+
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+[dwagner: added commit message]
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Link: https://lore.kernel.org/r/20231220162658.12392-1-dwagner@suse.de
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/coretemp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/lpfc/lpfc_scsi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
-index 0eabad344961..b8d5087da65b 100644
---- a/drivers/hwmon/coretemp.c
-+++ b/drivers/hwmon/coretemp.c
-@@ -40,7 +40,7 @@ MODULE_PARM_DESC(tjmax, "TjMax value in degrees Celsius");
+diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
+index cbab15d299ca..816235ccd299 100644
+--- a/drivers/scsi/lpfc/lpfc_scsi.c
++++ b/drivers/scsi/lpfc/lpfc_scsi.c
+@@ -1942,7 +1942,7 @@ lpfc_bg_setup_bpl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+  *
+  * Returns the number of SGEs added to the SGL.
+  **/
+-static int
++static uint32_t
+ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 		struct sli4_sge *sgl, int datasegcnt,
+ 		struct lpfc_io_buf *lpfc_cmd)
+@@ -1950,8 +1950,8 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 	struct scatterlist *sgde = NULL; /* s/g data entry */
+ 	struct sli4_sge_diseed *diseed = NULL;
+ 	dma_addr_t physaddr;
+-	int i = 0, num_sge = 0, status;
+-	uint32_t reftag;
++	int i = 0, status;
++	uint32_t reftag, num_sge = 0;
+ 	uint8_t txop, rxop;
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	uint32_t rc;
+@@ -2122,7 +2122,7 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+  *
+  * Returns the number of SGEs added to the SGL.
+  **/
+-static int
++static uint32_t
+ lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 		struct sli4_sge *sgl, int datacnt, int protcnt,
+ 		struct lpfc_io_buf *lpfc_cmd)
+@@ -2146,8 +2146,8 @@ lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 	uint32_t rc;
+ #endif
+ 	uint32_t checking = 1;
+-	uint32_t dma_offset = 0;
+-	int num_sge = 0, j = 2;
++	uint32_t dma_offset = 0, num_sge = 0;
++	int j = 2;
+ 	struct sli4_hybrid_sgl *sgl_xtra = NULL;
  
- #define PKG_SYSFS_ATTR_NO	1	/* Sysfs attribute for package temp */
- #define BASE_SYSFS_ATTR_NO	2	/* Sysfs Base attr no for coretemp */
--#define NUM_REAL_CORES		128	/* Number of Real cores per cpu */
-+#define NUM_REAL_CORES		512	/* Number of Real cores per cpu */
- #define CORETEMP_NAME_LENGTH	28	/* String Length of attrs */
- #define MAX_CORE_ATTRS		4	/* Maximum no of basic attrs */
- #define TOTAL_ATTRS		(MAX_CORE_ATTRS + 1)
+ 	sgpe = scsi_prot_sglist(sc);
 -- 
 2.43.0
 
