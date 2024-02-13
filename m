@@ -1,137 +1,135 @@
-Return-Path: <linux-kernel+bounces-64123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 840C4853A4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:55:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73EFE853A51
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADE541C22970
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:55:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D499FB2902F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB281119A;
-	Tue, 13 Feb 2024 18:55:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05B81CA92;
+	Tue, 13 Feb 2024 18:55:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b79rEpbe"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="P+V0Ex2r"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EB010A1A;
-	Tue, 13 Feb 2024 18:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D8BF1F618
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 18:55:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707850506; cv=none; b=QIwX63nFdJS2cbQ1gOSXQpOwY/OJHnJNdUTV81kzd5ZOMMHHG/2N1DyLxya14POiKICTlS43HwG/+6sp1RO+M3IJ/7EUC/s+7mihthOL+AKo4nwlXL4GDHzwYRHi2AZVcctu2Yvio0uqb5MKC4d7fCleuuEKbbjdUo35T/HPl3M=
+	t=1707850531; cv=none; b=j5rZ/2iQrZyIJ8qHLh8llxt8+6+QuT+b23+lim8Fs6QFdDXfDGM9IzHH4eOpo6w/rKobrCJi28iHhn1n0lfrQS4MJfPbqEnsP5Q89hYj1f/H9V2BYredIu6a2S0NxSaHZT/yFEfjGOkZW0mi6IwGMXRrT47G3kUiNU8vXcWAruI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707850506; c=relaxed/simple;
-	bh=BB95l+0BhbUBCzSMMBSz+FS9RLul9PCTuuXwE/NiX3E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UdFpkl6nU43XH8wIzZyaOsbPQK4BJ6KqAbUo9x8cAHM1lqm0v/2wY2+UZNEclMmmcUK5Ji/4oKRcJ6xikcFDn3+3vABf405GtelCbDoiBJyI/MYw81N1ZIrFyHLqVTGhltEnLOvms7HjfS+5tUI8ZhwLzhtHYIjUnigxjGwIMJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b79rEpbe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FB2BC43390;
-	Tue, 13 Feb 2024 18:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707850505;
-	bh=BB95l+0BhbUBCzSMMBSz+FS9RLul9PCTuuXwE/NiX3E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b79rEpbeOnYlLR6qA2l55tXC7SrxWaQWIlUtg/o6nJVbazaXfqA4k2C+Gbm1WjeeX
-	 0vxrS83UYCoYt79EDTAawzhwkfHJ1nF5L5pfRAuE3dF5QFYILTet9Zwcn0906ZdMT7
-	 c5zojMTKjMdv/mJh3gSooWOKFtQ+nQtcrmNhWCxW0YmhQ7DJ1QLDmEJUkPBtBkqI/b
-	 BeAPLjeV2MCb1Sho/JBcPUVBCIczdKbh6Kb2kG9fTtFxtrapLEbRK3gzxmvAzG0OpA
-	 lqwuUV4DBh8cTqdDOYoJqeySd4VjzljqPLRd5RWbh/djjJzGk+4U/M4cQJ4xJ8Tsjm
-	 /D0jQE0bW29dg==
-Date: Tue, 13 Feb 2024 18:55:00 +0000
-From: Mark Brown <broonie@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Martin Sperl <kernel@martin.sperl.org>,
-	David Jander <david@protonic.nl>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH 1/5] spi: add spi_optimize_message() APIs
-Message-ID: <54623b74-872a-41dc-992f-71a586d145ec@sirena.org.uk>
-References: <20240212-mainline-spi-precook-message-v1-0-a2373cd72d36@baylibre.com>
- <20240212-mainline-spi-precook-message-v1-1-a2373cd72d36@baylibre.com>
+	s=arc-20240116; t=1707850531; c=relaxed/simple;
+	bh=81ioBMQoFUAXfD3calqbogWeHqxzR5ypL2hOiBSpVRI=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=YcV3weRyeKeYhe7YtkH5ekWlunuDpmrmpVXMaeuJ+Qr51yFyeOoSSzuv2eM+G/cABHNqvwdJDUAShgJxDa8BspTDM7PIblmNdLIJ5CfdkTrToGowoVT9IfO/LuVsJNj17n3RWTNZieXIqPXcB4n5O2LVNyDEXiYxlhB+UNXnROA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=P+V0Ex2r; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4114e0a2978so14561965e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:55:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1707850527; x=1708455327; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pMhzu1S70tXsjq/n2IaXdigXH/qhRAWmzHR2uq8cwRE=;
+        b=P+V0Ex2r63IyKVy83Q1cz5G+SPepQWJ1IBN3Iyk5aKvkm9vKkCo/YkzGewVKOu8AB5
+         7Y2v0GOiFTRAWDOHbp0fzgiVTYPhAE37KkuO3pnQDsj+gcp7Km05nkbEAZ1WPk4Dwiyk
+         eXQ1yTHfuD3Y5GnwRayJTmCU9HxmbZWf/R672gScGpIdFgIyyrfccEVVG59vp/e5W1df
+         ky3qzpc7pze57l/lmuatJAOpTyw0CWkPEd+RyOIHfJfT0rifftLlh0btSJ50LCW+d4JA
+         Ade5FUh9AL/Og2N8zzI7/7CmKSCreHE9TwDA4PnUBQu5B0DzPkZMpANphUBnfylU+8tp
+         YAsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707850527; x=1708455327;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pMhzu1S70tXsjq/n2IaXdigXH/qhRAWmzHR2uq8cwRE=;
+        b=Ev2kWKy6gvZZJ4CoXvRuT0TMhl44k25HOgo5NPSZ+AUlHuE7BL3lZOr/kly268HFOe
+         SkE3hkwdbZB/RqFqDghwf9yYFp08K1BYp+wE1/hdDGGU9iQ9sqsyZ57fgscWX7DWwc6L
+         kxujveE3uoDawg1ESKv1ZpqL1MLeXvw52rODo5P6Rdq3U/ppzmGkZB5u+XqdRvdg6BD/
+         JDxBSo2DBkmwIG9KP2+aWJl8Q0vrO/eaFfhYX6Skz2MGykEpPZLEanJVo1B533q0RZ3k
+         t5yRheQED5pQzIqbURtCe0JmyyFRFoyhyKo4VCgtQMlaC/6DTuFY6+b3ntzCGjvXU1wP
+         s0lA==
+X-Forwarded-Encrypted: i=1; AJvYcCX8NLva+DM1+hTM2h+Mfmfo3eWEQ0PVpXtwCN6uYELfoyZCwlMmRXPZvuTVPC5gYh7KQSs6UCrRIcVfJm5hi2aSCEl4g8TROV553tob
+X-Gm-Message-State: AOJu0YzMzDoggzpUsi8Nv277a+gfYguykn9UmcKTuy4uC8jCSSwTRYrX
+	QgRIBJ81n7tN0NmRjZpk8xnvsz4WF6NOAg+mzHpEufBCA4GOYnUZk9T1beHRH6M=
+X-Google-Smtp-Source: AGHT+IHFG/RqIE1RwioshOK/wI0T4+BUE1u2eq0hHtaw4GiuFnXb6C8GBu6DM2PWTQssET9fWT4VrQ==
+X-Received: by 2002:a5d:4eca:0:b0:33c:e30e:cdbf with SMTP id s10-20020a5d4eca000000b0033ce30ecdbfmr156391wrv.32.1707850526649;
+        Tue, 13 Feb 2024 10:55:26 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVbZFjo6U0l4qHSR2B3l08IWRcDmD7J0fP1JWVlRiF7e4jEIcgogqfuF8OLdiYCme/QnUASSv/ScThqp8Bwxe4eY8uWu1931lUCgvMXPTAqHESBRBS3kLnWsV6B/fmdzPBmH0TdsgnLs3e/WvENTd8U06dUB1xdI2CYDyCTO3GjDUmdJ+8RkRehQCORmuPZ0LHX0E6xq7rwkyVk1qaO19z5P7RQfnqQkF7UFp7aKT7JCDXGQCrkp8A7ayRy4ceSxhjsygicQ7iH4euN7cLleXpi6wOluKgG1CUoLhNR5gc+bgLdJnDwZm4DIn6Pdc6cDsXWwI800FYFSHHl4MZTaUK9ejBq2k601Enu0fP+
+Received: from [192.168.50.4] ([82.78.167.20])
+        by smtp.gmail.com with ESMTPSA id p31-20020a05600c1d9f00b00411a595d56bsm4292075wms.14.2024.02.13.10.55.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 10:55:26 -0800 (PST)
+Message-ID: <81ca7397-3f00-431d-aea4-c30c363a90e6@tuxon.dev>
+Date: Tue, 13 Feb 2024 20:55:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="1x94l0akyl18zoOC"
-Content-Disposition: inline
-In-Reply-To: <20240212-mainline-spi-precook-message-v1-1-a2373cd72d36@baylibre.com>
-X-Cookie: Does not include installation.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 5/6] net: ravb: Do not apply features to
+ hardware if the interface is down
+Content-Language: en-US
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+To: Biju Das <biju.das.jz@bp.renesas.com>,
+ "s.shtylyov@omp.ru" <s.shtylyov@omp.ru>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240213094110.853155-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240213094110.853155-6-claudiu.beznea.uj@bp.renesas.com>
+ <TYCPR01MB112698DE07AAA9C535776805D864F2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <368ca0a8-a005-4371-a959-297fd4f58cb1@tuxon.dev>
+In-Reply-To: <368ca0a8-a005-4371-a959-297fd4f58cb1@tuxon.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
---1x94l0akyl18zoOC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Mon, Feb 12, 2024 at 05:26:41PM -0600, David Lechner wrote:
+On 13.02.2024 13:07, claudiu beznea wrote:
+>>> @@ -2566,15 +2566,23 @@ static int ravb_set_features(struct net_device
+>>> *ndev,  {
+>>>  	struct ravb_private *priv = netdev_priv(ndev);
+>>>  	const struct ravb_hw_info *info = priv->info;
+>>> -	int ret;
+>>> +	struct device *dev = &priv->pdev->dev;
+>>> +	int ret = 0;
+>>> +
+>>> +	pm_runtime_get_noresume(dev);
+>>> +
+>>> +	if (!pm_runtime_active(dev))
+>>> +		goto out_set_features;
+>> This can be simplified, which avoids 1 goto statement and
+>> Unnecessary ret initialization. I am leaving to you and Sergey.
+>>
+>> 	if (!pm_runtime_active(dev))
+>> 		ret = 0;
+>> 	else
+>> 		ret = info->set_feature(ndev, features);
+>>
+>> 	pm_runtime_put_noidle(dev);
+>> 	if (ret)
+>> 		goto err;
+>>
+>> 	ndev->features = features;
+>>
+>> err:
+>> 	return ret;
+>>
+> I find it a bit difficult to follow this way.
 
-> This adds a new spi_optimize_message() function that can be used to
-> optimize SPI messages that are used more than once. Peripheral drivers
-> that use the same message multiple times can use this API to perform SPI
-> message validation and controller-specific optimizations once and then
-> reuse the message while avoiding the overhead of revalidating the
-> message on each spi_(a)sync() call.
-
-This looks basically fine.  Some small comments:
-
-> +/**
-> + * __spi_unoptimize_message - shared implementation of spi_unoptimize_message()
-> + *                            and spi_maybe_unoptimize_message()
-> + * @msg: the message to unoptimize
-
-There's no need for kerneldoc for internal only functions and it can
-make the generated documentation a bit confusing for users.  Just skip
-the /** for /*.
-
-> +static int __spi_optimize_message(struct spi_device *spi,
-> +				  struct spi_message *msg,
-> +				  bool pre_optimized)
-> +{
-> +	struct spi_controller *ctlr = spi->controller;
-> +	int ret;
-> +
-> +	ret = __spi_validate(spi, msg);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (ctlr->optimize_message) {
-> +		ret = ctlr->optimize_message(msg);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	msg->pre_optimized = pre_optimized;
-
-It would probably be clearer to name the parameter pre_optimising rather
-than pre_optimized, as it is the logic is a bit confusing.  Either that
-or some comments.  A similar issue applies on the cleanup path.
-
---1x94l0akyl18zoOC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXLuwMACgkQJNaLcl1U
-h9Bnrgf/WeeHvY6OP79eR9psCOmCmEFE7LyYK3KbHMD6KHn9UrE1fMVqnbazXiT+
-/ALDeTCkov7jcu1uUMZZuSVyfv+JpM71kKEZ0L2p/Mbn6qwWfriempoqr7Jh9RiQ
-m8IH2XIEfX3/rWvRFdxK4H3i//gqVwEaf3Tf9pyBPosblP5bim2GT3h0ci0h5D+S
-zC7VK+2Zbb+S5x1uqH07Cq/ApUwUYXsIDur5pK6r0MkHjJCkq+5v0aRUUdMSx4PC
-naHKWpPHFqI4IhzU6UrpGUcOQ6Pfq/WNZ2kdm7+bjKJXDZdxkkGQ5sZbhvlUEkoM
-Xxvql0q/x39T42ahhk5bHCFqIhb2HA==
-=lAcK
------END PGP SIGNATURE-----
-
---1x94l0akyl18zoOC--
+Looking again at it, your version seems better.
 
