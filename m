@@ -1,198 +1,135 @@
-Return-Path: <linux-kernel+bounces-63795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C5D9853481
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:23:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C22D853486
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:24:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B22A11F24681
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:23:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E98F1C2106A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A3B5DF29;
-	Tue, 13 Feb 2024 15:23:26 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492095DF2F;
+	Tue, 13 Feb 2024 15:24:34 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C55E55C39
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64C75D902;
+	Tue, 13 Feb 2024 15:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707837806; cv=none; b=RwZuGQdgAB1gdQ8xFDIgftCBWTwFnK0PHeOr0aRHhLKqMIxLq57JYg2CLH3SjUq5duD2q+VzgYDdFthJoESU796n0W5yUbG3gYqxjoFflVJhPnm1QZwL2G3uX/xIw+o/wjzD3+xKaFnSMm41sDBsYixRhH17PIUtm2Zjpi6h32E=
+	t=1707837873; cv=none; b=jN1XVInVt+IDSuoqDkojjr4l8WqktzTV8rSdNCYPXhch5iZJWNB9uTHpS9rEYMEliHk4J7MFTXtK999EjSvb8l4Gsa96oFKQwALlXUVZs2QHeYvE8mOSZeFxFQNoUB7KY6EnD/xOsnSKrKU5t29QOXZdY/rD4gfdjYyE8IHQwZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707837806; c=relaxed/simple;
-	bh=w1nEHu8/7BhoNOH5imUiZwijYz+dn13e4D8t5oDhRTY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fm/k9hvIDz4RA79YJ93JylmrSliSOW4UrdZEeHfBlN7eRHLFh3f6/N6v6tY/91Hb1ArajPQRTuShig+GU8EW+gifNghRHDgPsmouPWt+TYhuldyAjUDtKO/M3+NpoNLtxDuxqFWQyYU0nNi9IdOIRhlufJ/n5ACqx6y0kfWJpQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363cef35a5eso44085555ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:23:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707837803; x=1708442603;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eapGd85XQdiWlRnkbXZfY0yyjZ9t+mu9JVAVS/ftg5M=;
-        b=qzoIlrtbQZwvFKHmKXYaXUJUAFKXaxK+YbLjkNOwS7L21aYQpoKFxYr74qnTHT3bvT
-         NONmQ6war/l5mk5WXoQzA59fTBUBhN+w5Oy22KDVTf7Q86d50YOT0z4+D0u70CNEsZQt
-         OYp88FXxKlPbc+FqzPA9f0QoEu7fiveAmsY6gwYWJDJHFPCsx/zoqn/hkREFV15K5mMz
-         Tkly5IEGjCiuLNRTKtZNByIg5vYmixsNfQE1Z8dhsLhDwyEPdy+q7hKvIguH6GlI74Wj
-         /aMRT6E0RgRxWHjgMXjd/PnseX8hXoBcCA2foL1KUDO4Vi4V1zqzziIamcn0QH7RCf3X
-         Qgyw==
-X-Forwarded-Encrypted: i=1; AJvYcCUzcwMfQNoau1pFae4qHlaT+uvROyRUR6/UlUWWFL3/sBou+gZ/ePBtis+AnkV2hRGX448oJieltSed2/eQgn5Cee3iasGDxUxoHNTZ
-X-Gm-Message-State: AOJu0YzhyiSSrx2Ak2RXL+FfoFdt6B+2N5K6pApk8Lj36l+0sua6HLkk
-	5+JyPY4I6B/CaUAORiVVR5G2AbtDSxUcMPb8BIdOoq0FvvVcwzcEIHR9Nivg/h6c7ObRHQvnh0y
-	bUOWcMYf9na6g8qawlOi4FsFEg0E9IDjzRw2v8llkseVafYKHjVl0HyY=
-X-Google-Smtp-Source: AGHT+IETxxHxna1NhDp9HAg/10qyCuxdqS5uMJEpwTr8NT/LnQAaJuOhQqt2ABrFOFWu+iFGB7jpYj7GOSTB0wtx9cTpYWaBR7Re
+	s=arc-20240116; t=1707837873; c=relaxed/simple;
+	bh=CwNvQx4cKxm4wTveQJa2fF9BF88LSILbE5saxxP+eqw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=F/iKuI7y2Tx+QDSFsr35EzvXa2uBbqET3fJGxfLlw26ZRPGh9ScS9JYaG6X++0e7BeerQmKcObFJa8O6ae4zwwXjEKERg8ULvVffvXLha3ddMxjiPWPT8rL0Vo/wyOQhyrlhLayGINkKUo5aDMjUEQMu5p1Ii1i9mU4In9298bU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 13 Feb
+ 2024 18:24:20 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 13 Feb
+ 2024 18:24:20 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: Alexander Aring <alex.aring@gmail.com>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Stefan Schmidt
+	<stefan@datenfreihafen.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	<linux-wpan@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>,
+	<syzbot+60a66d44892b66b56545@syzkaller.appspotmail.com>
+Subject: [PATCH wpan] mac802154: fix uninit-value issue in ieee802154_header_create()
+Date: Tue, 13 Feb 2024 07:24:14 -0800
+Message-ID: <20240213152414.3703-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1ca8:b0:363:c919:eec7 with SMTP id
- x8-20020a056e021ca800b00363c919eec7mr837257ill.6.1707837803797; Tue, 13 Feb
- 2024 07:23:23 -0800 (PST)
-Date: Tue, 13 Feb 2024 07:23:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a12738061144f9d1@google.com>
-Subject: [syzbot] [jfs?] kernel BUG in txEnd (2)
-From: syzbot <syzbot+776b5fc6c99745aa7860@syzkaller.appspotmail.com>
-To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-Hello,
+Syzkaller with KMSAN reported [1] a problem with uninitialized value
+access in ieee802154_header_create().
 
-syzbot found the following issue on:
+The issue arises from a weird combination of cb->secen == 1 and
+cb->secen_override == 0, while other required security parameters
+are not found enabled in mac802154_set_header_security().
 
-HEAD commit:    c664e16bb1ba Merge tag 'docs-6.8-fixes2' of git://git.lwn...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1576f862180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=25b2f1c52b0610fa
-dashboard link: https://syzkaller.appspot.com/bug?extid=776b5fc6c99745aa7860
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+Ideally such case is expected to be caught by starting check at the
+beginning of mac802154_set_header_security():
 
-Unfortunately, I don't have any reproducer for this issue yet.
+	if (!params.enabled && cb->secen_override && cb->secen)
+		return -EINVAL;
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-c664e16b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/81393e4e8960/vmlinux-c664e16b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3048b480feed/bzImage-c664e16b.xz
+However, since secen_override is zero, the function in question
+passes this check and returns with success early, without having
+set values to ieee802154_sechdr fields such as key_id_mode. This in
+turn leads to uninitialized access of such values in
+ieee802154_hdr_push_sechdr() and other places.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+776b5fc6c99745aa7860@syzkaller.appspotmail.com
+Fix this problem by only checking for secen value and presence of
+security parameters (and ignoring secen_override). Exit early with
+error if necessary requirements are not met.
 
-bread failed!
-read_mapping_page failed!
-bread failed!
-BUG at fs/jfs/jfs_txnmgr.c:528 assert(tblk->next == 0)
-------------[ cut here ]------------
-kernel BUG at fs/jfs/jfs_txnmgr.c:528!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 2 PID: 30987 Comm: syz-executor.0 Not tainted 6.8.0-rc4-syzkaller-00005-gc664e16bb1ba #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:txEnd+0x583/0x5a0 fs/jfs/jfs_txnmgr.c:528
-Code: e9 59 fb ff ff e8 dd 70 88 fe 48 c7 c1 00 ee 29 8b ba 10 02 00 00 48 c7 c6 80 e8 29 8b 48 c7 c7 c0 e8 29 8b e8 8e 83 6a fe 90 <0f> 0b 48 89 ef e8 f3 00 e3 fe e9 40 fd ff ff e8 b9 00 e3 fe e9 2e
-RSP: 0018:ffffc9000ff0fa50 EFLAGS: 00010286
-RAX: 0000000000000036 RBX: ffffc900020c7600 RCX: ffffc900065fa000
-RDX: 0000000000000000 RSI: ffffffff816e9616 RDI: 0000000000000005
-RBP: 0000000000000060 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000006 R12: ffff888021b79800
-R13: 00000000000000c0 R14: ffffffff8db27f60 R15: ffffc900020c7602
-FS:  0000000000000000(0000) GS:ffff88802c400000(0063) knlGS:00000000f5e30b40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000020ca3000 CR3: 00000000007a0000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- jfs_truncate_nolock+0x1f5/0x2f0 fs/jfs/inode.c:391
- jfs_truncate+0xeb/0x170 fs/jfs/inode.c:412
- jfs_write_failed fs/jfs/inode.c:289 [inline]
- jfs_write_begin+0xbe/0xe0 fs/jfs/inode.c:301
- generic_perform_write+0x273/0x620 mm/filemap.c:3930
- __generic_file_write_iter+0x1fd/0x240 mm/filemap.c:4025
- generic_file_write_iter+0xe7/0x350 mm/filemap.c:4051
- call_write_iter include/linux/fs.h:2085 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0x6de/0x1110 fs/read_write.c:590
- ksys_write+0x12f/0x260 fs/read_write.c:643
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0x7c/0x120 arch/x86/entry/common.c:321
- do_fast_syscall_32+0x33/0x80 arch/x86/entry/common.c:346
- entry_SYSENTER_compat_after_hwframe+0x7c/0x86
-RIP: 0023:0xf7257579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f5e305ac EFLAGS: 00000292 ORIG_RAX: 0000000000000004
-RAX: ffffffffffffffda RBX: 0000000000000008 RCX: 0000000020000100
-RDX: 00000000fffffd9d RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:txEnd+0x583/0x5a0 fs/jfs/jfs_txnmgr.c:528
-Code: e9 59 fb ff ff e8 dd 70 88 fe 48 c7 c1 00 ee 29 8b ba 10 02 00 00 48 c7 c6 80 e8 29 8b 48 c7 c7 c0 e8 29 8b e8 8e 83 6a fe 90 <0f> 0b 48 89 ef e8 f3 00 e3 fe e9 40 fd ff ff e8 b9 00 e3 fe e9 2e
-RSP: 0018:ffffc9000ff0fa50 EFLAGS: 00010286
-RAX: 0000000000000036 RBX: ffffc900020c7600 RCX: ffffc900065fa000
-RDX: 0000000000000000 RSI: ffffffff816e9616 RDI: 0000000000000005
-RBP: 0000000000000060 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000006 R12: ffff888021b79800
-R13: 00000000000000c0 R14: ffffffff8db27f60 R15: ffffc900020c7602
-FS:  0000000000000000(0000) GS:ffff88802c400000(0063) knlGS:00000000f5e30b40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000020ca3000 CR3: 00000000007a0000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+[1]
+BUG: KMSAN: uninit-value in ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
+BUG: KMSAN: uninit-value in ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
+ ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
+ ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
+ ieee802154_header_create+0x9c0/0xc00 net/mac802154/iface.c:396
+ wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
+ dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
+ ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
+ ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
+ __sys_sendmsg net/socket.c:2667 [inline]
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
+Local variable hdr created at:
+ ieee802154_header_create+0x4e/0xc00 net/mac802154/iface.c:360
+ wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
+ dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
 
+Fixes: f30be4d53cad ("mac802154: integrate llsec with wpan devices")
+Reported-and-tested-by: syzbot+60a66d44892b66b56545@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=60a66d44892b66b56545
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+P.S. Link to previous similar discussion:
+https://lore.kernel.org/all/tencent_1C04CA8D66ADC45608D89687B4020B2A8706@qq.com/
+P.P.S. This issue may affect stable versions, at least up to 6.1.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ net/mac802154/iface.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+diff --git a/net/mac802154/iface.c b/net/mac802154/iface.c
+index c0e2da5072be..ad799d349625 100644
+--- a/net/mac802154/iface.c
++++ b/net/mac802154/iface.c
+@@ -328,7 +328,7 @@ static int mac802154_set_header_security(struct ieee802154_sub_if_data *sdata,
+ 
+ 	mac802154_llsec_get_params(&sdata->sec, &params);
+ 
+-	if (!params.enabled && cb->secen_override && cb->secen)
++	if (!params.enabled && cb->secen)
+ 		return -EINVAL;
+ 	if (!params.enabled ||
+ 	    (cb->secen_override && !cb->secen) ||
 
