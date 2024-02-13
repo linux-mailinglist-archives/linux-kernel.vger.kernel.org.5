@@ -1,269 +1,131 @@
-Return-Path: <linux-kernel+bounces-63521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17BF78530B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:42:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 604EE8530B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:42:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 948401F24D51
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:42:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18A89281C34
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBD84F610;
-	Tue, 13 Feb 2024 12:42:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA39941764;
+	Tue, 13 Feb 2024 12:41:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pAmQAn5V"
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TKxIq7oi"
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EECE3FE27
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9FD12EB12;
+	Tue, 13 Feb 2024 12:41:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707828126; cv=none; b=AFi/oi8edBZR9Y2erK0j88hDAqe/iCn2v5Qn6RewElSRFxlbr6k7Nk4NOVoLA0rSq/d+WEvKuvI0zPFxeuqFZKaerxBRpjHGll8m3sGQm3XRgvn4ghVcYBe5ShB/QfL94XSTr21oTOeXhOyR+gf9kX/3gYFkJaa3QSkrh+/0r9k=
+	t=1707828118; cv=none; b=d1AzzF+tqrgrjLUkA1QWacQChTAlWlOG4FDWqo28v/W8hoNk2eLn2URbpCpVXlFuaIpUvsKGBG0dkU2pdlsVOmaYlGG5vyegcmR8s5znq3JEk3G7b/xSmNa4vG5Cd7ZMidbE5/owjoWFOtnOWvUjSge8eeKUNGbWF2A6CkPmtD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707828126; c=relaxed/simple;
-	bh=YMvF0ORfuPi3XAD0k0pDL8v73CKkqlg6+lbGX9kyTzw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=gQsPoesAssF7ZNt+Osmcglm8SHJVA0rJGbb13WZz+22CJN7sj6R5vfbgpqa987FVY07ktvMSXOTm+XhbiJ7col1QIwmp+iK0Kikh5kAxDlBA7yPchKfvo/glAQglpcxgkbLX+M1LxrRW0Zv/RKWvJnU5YDtmjK0PAurMbKcb2AQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pAmQAn5V; arc=none smtp.client-ip=209.85.128.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-40e435a606aso27287515e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:42:05 -0800 (PST)
+	s=arc-20240116; t=1707828118; c=relaxed/simple;
+	bh=7HTb1FTG0w4am0moU2ZfJ+vXyBYLytKgdVhTQ/rfeJk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nv9YI+fX98zZ9M+URataMp77lxv0CvKXXDes21hZQo/6HpmFRXlyLglGHhnGCVR4Uvf+6bCJ7j5l3RhudEtCyv6krbIfhBYiac+loSsScUK4I2Whl7IIWH0YGMwasGWOMib1XnpplBRW6PpVTVa8HA/+vK8rpHWyCgEoW0uERHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TKxIq7oi; arc=none smtp.client-ip=209.85.160.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-21d56bb3714so35037fac.2;
+        Tue, 13 Feb 2024 04:41:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707828123; x=1708432923; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IntT6izjYhpSpfiju4QdrJP91shTnHbBbhRa2UK23MU=;
-        b=pAmQAn5VoM14YoCzbhlVh1q1bcvPTbZt3lgoqXK8nnMG9szFe/AjcdWa7L/gpZQUj9
-         vxWXO6lTkT+A+KVnExB9AgrQwM0iqsRzeTSfcfLzq4Tk0IJx7wYnEzHDlYV6XCcZakvR
-         xZbwceDjSF42Z6CrQMwRu4oELsMTzUTIkFxsG+hoW0iYTIDlpLXQcJrfp9B+3yz+2ojl
-         oiLq7WeS8qPXy3l+/Dr6BA9tmGphjLdJa5IBeQiyWNl6s+5Nd4hgB+v+6ma1B4fKR82Y
-         BbtqQp3NOF9XhBm6/ezEPruQbFCQbi0f9EyJKFyIwDAPTqaU34F9LxbYLWy7sE8BLchf
-         ykNQ==
+        d=gmail.com; s=20230601; t=1707828115; x=1708432915; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3H9KUGhzPdQrreUofYKz+zO35fKsLzTBb4VkOZjhuu4=;
+        b=TKxIq7oiHw3B9Ag4537jmuSh8z0Fqkz38b0EqyzLJ/2x4qHL5pPr1VuFnUcNob0Zrk
+         iNwcxLo4o+TrEKYTpNoyXZqmeIASps7d+uER8GRCE5KKE6a+V++REvzPVUi9o6we7SBL
+         RswLJIaBEQkjEduzFYw3L1St7qjUpplt30NB1z86nd7zmlHUfGmlCS/+Hktl0dY/ItH0
+         79GunPRYh3EmYhU/ytF1ROjKc7loWhXKihWo/9yu9ReH/Y5FmiTt1VwQJbrC+5FT6g3F
+         gypWDxIZQ6weikFzLERgN7Kejjm2D1M80H7ZOkVUVsSdfSQZV9Qmp7T95tBakK5PpcHk
+         mmjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707828123; x=1708432923;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IntT6izjYhpSpfiju4QdrJP91shTnHbBbhRa2UK23MU=;
-        b=E7cBhVUMuvKJ/+rMTnouPgycs5H/qtQaCGmWiWIvorQcZHikB3T9YLGHB6Bk8awPFG
-         YNVZe84c9AwfSTnsAk8ealbejuoQ5JL9QFvS3Ols9iVdkWv8Id+EWo/jysB1IbGKHbdP
-         xfDAI+tkt42aCUQW93eoSjmKVtduOCf4VoPpWmdP66iLvOr9ynvrICWekIN03aRaHKoX
-         FDrhQw/bslaIi4biquazou2wZRNQzJcZGWNfa85KaSQhxYHeqqcpMACJbvfj02pT3SNu
-         dRoML7vRO0BYOi0d5hdVqTaiIxoUsP+SAqXE6RI7GHLQkW8nvWvccx9mvdqF1ZDUOPcy
-         ENUA==
-X-Gm-Message-State: AOJu0Yxnp10rOmsjq7/f25NOTHXaQc9TDR0WYLhTmPNPuHclCWjjxqXJ
-	QvdSmgSQVpAz7bebSUbc6mccw4BnVNtM+QpJDbjqSaoCQ94I3/vkE5yWrw9hrkdKQrwcbeOYXKZ
-	5M/7sw1gd06dechoFLGmS7mh3fn1i6h9JgCO/iyi8zFLUhOZ/C9cmWs+dKGUPueDD1vmktsysnb
-	sPHYqQ9lptOC+dXwu59Jebh63E8EAaxQ==
-X-Google-Smtp-Source: AGHT+IGO4JBfeGvnTwxmmn7JIMK9YckhUWh4H18sWfV5jiwrBdxJzdJIlnTTVHSvArGFHZiJixRxORXb
-X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a05:600c:518a:b0:411:a802:700d with SMTP id
- fa10-20020a05600c518a00b00411a802700dmr70870wmb.2.1707828123104; Tue, 13 Feb
- 2024 04:42:03 -0800 (PST)
-Date: Tue, 13 Feb 2024 13:41:45 +0100
-In-Reply-To: <20240213124143.1484862-13-ardb+git@google.com>
+        d=1e100.net; s=20230601; t=1707828115; x=1708432915;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3H9KUGhzPdQrreUofYKz+zO35fKsLzTBb4VkOZjhuu4=;
+        b=fptBnWXBpZ/grCLn+e9ET8+5r0H65P99xaNbuqVKDO8930QNi14YajKlCnJsbAz0JV
+         z5y08lu9OqDBmZzCLZVymhWpP0YERQ/hiznEDLxxXsbkEZethtLLPUmUjuUh095Hn2z7
+         W99mpwplfsdkLc68BfqX2x5gpab8dDHZ0IUTTRVrd9C5qqVPThbrBjAj+l2XnJOVs3SG
+         vEvFlmPWrq+/qpUfTi3Q/+ZoKMxL8IdZp6ZrP+G2xOJ80RFpZEYquuN1Zb0QUkPkx8Bf
+         xJOt5tojpgO39r5PCGQNlYVxit0uD8NAkPbhlRfeznhjevFPbeT+goX2DNHl5B0yXiSC
+         Xgdg==
+X-Forwarded-Encrypted: i=1; AJvYcCVdtDQ7kMAoUm2xq/BJ7nDc3mUd7hpLyNqeW9Mzz7E8/OLKuoyJVU/QnLpnbAxN72ae1gPsfgcdld9Lldl2EF4R0JYs+/4F+r6bGeuLWO78F79G3TwhWNbD502wzjlf+netKAX4xk+yFg==
+X-Gm-Message-State: AOJu0Yyl7WQ6W1aENkraz59K0KaG5VOy+JlS+yXcDCel0xDmjMENuHv0
+	PkBA1RVLR8Fnpcdr0pYC/oy33NW9MVj2WGjnrnVZSHTZh7O6I10KyqyvvqeT
+X-Google-Smtp-Source: AGHT+IFzUXvMoAAyLBJl8/bQkVkxeHRfO+AbIFfEm0xabkjcD0mmuJu/kJbcF2bRTjBvvAJepwBW8A==
+X-Received: by 2002:a05:6870:46a6:b0:218:73ae:3f24 with SMTP id a38-20020a05687046a600b0021873ae3f24mr12286829oap.13.1707828115011;
+        Tue, 13 Feb 2024 04:41:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU+IqbakiLosG4JttF1fz0dUcS7rrSYtd0FyPbqq8P6vPJ8A3E0n6ePVRfF24Fave9tXBcAbIabuIFJVvaFz50Fc8YvW8uEq4mtFH8V6fteGCBTuLr3UCOw/hB6rfZCBFroGigRoWYkCtUEFOZOk4xUwWINJblyoJ26/p3pxyqSnxDJr6cCmGquW12JXC7qwMNf29s/cfY3uO/MyCTuatNpQaTnAwmq4uJ3iueFD1ZMIJCDxgU5n5UnCS3sEojyf5g9lCS9/P5i3jI9hZ8r4wDroD6B1UGEDa44WrOpH4ODk4DnqSsi8ZKQDAptMrTz
+Received: from aford-System-Version.lan ([2601:447:d002:5be:cae3:528f:52c:80d8])
+        by smtp.gmail.com with ESMTPSA id c3-20020ac86603000000b0042dae4c1594sm483385qtp.47.2024.02.13.04.41.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 04:41:54 -0800 (PST)
+From: Adam Ford <aford173@gmail.com>
+To: linux-omap@vger.kernel.org
+Cc: aford@beaconembedded.com,
+	Adam Ford <aford173@gmail.com>,
+	=?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+	Tony Lindgren <tony@atomide.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] arm: dts: omap3:  Migrate hsmmc driver to sdhci driver
+Date: Tue, 13 Feb 2024 06:41:45 -0600
+Message-ID: <20240213124146.202391-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240213124143.1484862-13-ardb+git@google.com>
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6089; i=ardb@kernel.org;
- h=from:subject; bh=BsdoewkQfg4v5NoT6opMjWi0Vrg2mA8a392y9Jxs7FU=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIfV0cueOKzuMyz5W71o5TYp9kdW5Wa0xu5br/SkOjb++u
- +9vHS9XRykLgxgHg6yYIovA7L/vdp6eKFXrPEsWZg4rE8gQBi5OAZjIkguMDDu+bZC0ZT+Yvm5u
- Ise2zLtZBuoPpiZea4wzc1/5zzhy1XOG/2G3FvnknSyvm3xqo5Hi+U/3rS7NzF25v9om6r3Ekno 9Nx4A
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240213124143.1484862-14-ardb+git@google.com>
-Subject: [PATCH v4 01/11] x86/startup_64: Simplify global variable accesses in
- GDT/IDT programming
-From: Ard Biesheuvel <ardb+git@google.com>
-To: linux-kernel@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>, Kevin Loughlin <kevinloughlin@google.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze <dionnaglaze@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-From: Ard Biesheuvel <ardb@kernel.org>
+The sdhci driver has been around for several years, and it supports
+the OMAP3 family.  Instead of using the older driver, let's finally
+migrate to the newer one.
 
-There are two code paths in the startup code to program an IDT: one that
-runs from the 1:1 mapping and one that runs from the virtual kernel
-mapping. Currently, these are strictly separate because fixup_pointer()
-is used on the 1:1 path, which will produce the wrong value when used
-while executing from the virtual kernel mapping.
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Switch to RIP_REL_REF() so that the two code paths can be merged. Also,
-move the GDT and IDT descriptors to the stack so that they can be
-referenced directly, rather than via RIP_REL_REF().
-
-Rename startup_64_setup_env() to startup_64_setup_gdt_idt() while at it,
-to make the call from assembler self-documenting.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/x86/include/asm/setup.h |  2 +-
- arch/x86/kernel/head64.c     | 56 +++++++-------------
- arch/x86/kernel/head_64.S    |  4 +-
- 3 files changed, 22 insertions(+), 40 deletions(-)
-
-diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
-index 5c83729c8e71..e61e68d71cba 100644
---- a/arch/x86/include/asm/setup.h
-+++ b/arch/x86/include/asm/setup.h
-@@ -48,7 +48,7 @@ extern unsigned long saved_video_mode;
- extern void reserve_standard_io_resources(void);
- extern void i386_reserve_resources(void);
- extern unsigned long __startup_64(unsigned long physaddr, struct boot_params *bp);
--extern void startup_64_setup_env(unsigned long physbase);
-+extern void startup_64_setup_gdt_idt(void);
- extern void early_setup_idt(void);
- extern void __init do_early_exception(struct pt_regs *regs, int trapnr);
+diff --git a/arch/arm/boot/dts/ti/omap/omap3.dtsi b/arch/arm/boot/dts/ti/omap/omap3.dtsi
+index 92cd4c99dae7..218d7212c749 100644
+--- a/arch/arm/boot/dts/ti/omap/omap3.dtsi
++++ b/arch/arm/boot/dts/ti/omap/omap3.dtsi
+@@ -507,7 +507,7 @@ hdqw1w: 1w@480b2000 {
+ 		};
  
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index dc0956067944..9d7f12829f2d 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -22,6 +22,7 @@
- #include <linux/cc_platform.h>
- #include <linux/pgtable.h>
+ 		mmc1: mmc@4809c000 {
+-			compatible = "ti,omap3-hsmmc";
++			compatible = "ti,omap3-sdhci";
+ 			reg = <0x4809c000 0x200>;
+ 			interrupts = <83>;
+ 			ti,hwmods = "mmc1";
+@@ -518,7 +518,7 @@ mmc1: mmc@4809c000 {
+ 		};
  
-+#include <asm/asm.h>
- #include <asm/processor.h>
- #include <asm/proto.h>
- #include <asm/smp.h>
-@@ -76,15 +77,6 @@ static struct desc_struct startup_gdt[GDT_ENTRIES] __initdata = {
- 	[GDT_ENTRY_KERNEL_DS]           = GDT_ENTRY_INIT(DESC_DATA64, 0, 0xfffff),
- };
+ 		mmc2: mmc@480b4000 {
+-			compatible = "ti,omap3-hsmmc";
++			compatible = "ti,omap3-sdhci";
+ 			reg = <0x480b4000 0x200>;
+ 			interrupts = <86>;
+ 			ti,hwmods = "mmc2";
+@@ -527,7 +527,7 @@ mmc2: mmc@480b4000 {
+ 		};
  
--/*
-- * Address needs to be set at runtime because it references the startup_gdt
-- * while the kernel still uses a direct mapping.
-- */
--static struct desc_ptr startup_gdt_descr __initdata = {
--	.size = sizeof(startup_gdt)-1,
--	.address = 0,
--};
--
- static void __head *fixup_pointer(void *ptr, unsigned long physaddr)
- {
- 	return ptr - (void *)_text + (void *)physaddr;
-@@ -569,12 +561,7 @@ void __init __noreturn x86_64_start_reservations(char *real_mode_data)
-  */
- static gate_desc bringup_idt_table[NUM_EXCEPTION_VECTORS] __page_aligned_data;
- 
--static struct desc_ptr bringup_idt_descr = {
--	.size		= (NUM_EXCEPTION_VECTORS * sizeof(gate_desc)) - 1,
--	.address	= 0, /* Set at runtime */
--};
--
--static void set_bringup_idt_handler(gate_desc *idt, int n, void *handler)
-+static void __head set_bringup_idt_handler(gate_desc *idt, int n, void *handler)
- {
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- 	struct idt_data data;
-@@ -586,45 +573,42 @@ static void set_bringup_idt_handler(gate_desc *idt, int n, void *handler)
- #endif
- }
- 
--/* This runs while still in the direct mapping */
--static void __head startup_64_load_idt(unsigned long physbase)
-+/* This may run while still in the direct mapping */
-+static void __head startup_64_load_idt(void *handler)
- {
--	struct desc_ptr *desc = fixup_pointer(&bringup_idt_descr, physbase);
--	gate_desc *idt = fixup_pointer(bringup_idt_table, physbase);
--
--
--	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
--		void *handler;
-+	struct desc_ptr desc = {
-+		.address	= (unsigned long)&RIP_REL_REF(bringup_idt_table),
-+		.size		= sizeof(bringup_idt_table) - 1,
-+	};
-+	gate_desc *idt = (gate_desc *)desc.address;
- 
-+	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
- 		/* VMM Communication Exception */
--		handler = fixup_pointer(vc_no_ghcb, physbase);
- 		set_bringup_idt_handler(idt, X86_TRAP_VC, handler);
--	}
- 
--	desc->address = (unsigned long)idt;
--	native_load_idt(desc);
-+	native_load_idt(&desc);
- }
- 
- /* This is used when running on kernel addresses */
- void early_setup_idt(void)
- {
--	/* VMM Communication Exception */
--	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
-+	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
- 		setup_ghcb();
--		set_bringup_idt_handler(bringup_idt_table, X86_TRAP_VC, vc_boot_ghcb);
--	}
- 
--	bringup_idt_descr.address = (unsigned long)bringup_idt_table;
--	native_load_idt(&bringup_idt_descr);
-+	startup_64_load_idt(vc_boot_ghcb);
- }
- 
- /*
-  * Setup boot CPU state needed before kernel switches to virtual addresses.
-  */
--void __head startup_64_setup_env(unsigned long physbase)
-+void __head startup_64_setup_gdt_idt(void)
- {
-+	struct desc_ptr startup_gdt_descr = {
-+		.address	= (unsigned long)&RIP_REL_REF(startup_gdt),
-+		.size		= sizeof(startup_gdt) - 1,
-+	};
-+
- 	/* Load GDT */
--	startup_gdt_descr.address = (unsigned long)fixup_pointer(startup_gdt, physbase);
- 	native_load_gdt(&startup_gdt_descr);
- 
- 	/* New GDT is live - reload data segment registers */
-@@ -632,5 +616,5 @@ void __head startup_64_setup_env(unsigned long physbase)
- 		     "movl %%eax, %%ss\n"
- 		     "movl %%eax, %%es\n" : : "a"(__KERNEL_DS) : "memory");
- 
--	startup_64_load_idt(physbase);
-+	startup_64_load_idt(&RIP_REL_REF(vc_no_ghcb));
- }
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index d4918d03efb4..3cac98c61066 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -68,8 +68,6 @@ SYM_CODE_START_NOALIGN(startup_64)
- 	/* Set up the stack for verify_cpu() */
- 	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
- 
--	leaq	_text(%rip), %rdi
--
- 	/* Setup GSBASE to allow stack canary access for C code */
- 	movl	$MSR_GS_BASE, %ecx
- 	leaq	INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
-@@ -77,7 +75,7 @@ SYM_CODE_START_NOALIGN(startup_64)
- 	shrq	$32,  %rdx
- 	wrmsr
- 
--	call	startup_64_setup_env
-+	call	startup_64_setup_gdt_idt
- 
- 	/* Now switch to __KERNEL_CS so IRET works reliably */
- 	pushq	$__KERNEL_CS
+ 		mmc3: mmc@480ad000 {
+-			compatible = "ti,omap3-hsmmc";
++			compatible = "ti,omap3-sdhci";
+ 			reg = <0x480ad000 0x200>;
+ 			interrupts = <94>;
+ 			ti,hwmods = "mmc3";
 -- 
-2.43.0.687.g38aa6559b0-goog
+2.43.0
 
 
