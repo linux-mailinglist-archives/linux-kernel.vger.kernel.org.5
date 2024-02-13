@@ -1,88 +1,172 @@
-Return-Path: <linux-kernel+bounces-63691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF427853351
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:38:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 156FA853353
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED051C22C57
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:38:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDDAC28B469
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7121A41C60;
-	Tue, 13 Feb 2024 14:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6501143AC7;
+	Tue, 13 Feb 2024 14:38:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="x9PwzjTQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rs3vEq5j"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A3CF1DFE3;
-	Tue, 13 Feb 2024 14:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942971DFEF
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:38:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707835093; cv=none; b=ofKjNEeuzRaSke7fqqbgTY5MPokdtbt1ylX/VN2W1Xnn9H1JgDXQ+GZNdLcA+uzkNLh0VczDWctEG+f2frG2M9iHYqA1Mpd3M8K85uOc4mSXMEfiMCI8l405X0HVJFIT59Vm9eIEBH22EhsvEEbCG0m9JWdbWUTuK13hE0zMk7g=
+	t=1707835111; cv=none; b=fWQvMvhSpIKWYXpTwEQOvpMLt+1PkpP9YHLeBCEo+siKc4YbfgIR92dwADb4sP5wCjnI+PUzsUmj0BtTUZ0MZGlgqKOG1DEU6tUPq8oHWq2mEBstJCpoXleaUB2PUAalLi/kLRMKzHFEdQ6Af3E1CswlzSHYnEuqd99scj65aWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707835093; c=relaxed/simple;
-	bh=qo9f7339OiVSnIqYU8i+7TfOZV/04hMxcDASphcjwvo=;
+	s=arc-20240116; t=1707835111; c=relaxed/simple;
+	bh=HkvguROhQZsd+G1Vad6pse4NfKaAKlAN9DMRfmWV42w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ip5QFevnr+LLC2/VxPv3/UAmElmVQos1fc5gEqkiokk+zR+AH0NTaf1BEC2bK7hlIDkKdfwY55DBPqGuC3jRAnOc3DbZhwLy3GoCpGqJmF674Rf2ZUBAKndXymriFKIX9iQoVujS6M1vuuFaSxSMJBMFlzCeJaKwJZ5pungGJnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=x9PwzjTQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2F22C433C7;
-	Tue, 13 Feb 2024 14:38:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707835093;
-	bh=qo9f7339OiVSnIqYU8i+7TfOZV/04hMxcDASphcjwvo=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=SA7CKj2mF1AD0Pml4CTwVrQC8DrVJDYC9XD7o4Uzv+LOgCQ1mNG45FnMTsPQzW59Nu2adyvfCes7gMkrI83FTK465fw8DtqTzDcaNJCswrGy+gCsUDxPx16z8tMKam033u401Blirc54GBpOiBs2vMrc8OKh+VU1fNBgths1dj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rs3vEq5j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5BCAC433C7;
+	Tue, 13 Feb 2024 14:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707835111;
+	bh=HkvguROhQZsd+G1Vad6pse4NfKaAKlAN9DMRfmWV42w=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=x9PwzjTQHmrRwNH6qXXUgvU2IMSO2TXW3jguB5W6NGrwgdYAE+VZvfdYhRFniK97O
-	 g3f3g4p4nVWxkfUoGemmrji7KA8KXk5rxrbAbZ4kVc+t1IwENu0YTDFKC9zYc+lDKv
-	 TVuiCZiAiWRHf28RXC2W8q1cWR8jTnqerbkRWYvk=
-Date: Tue, 13 Feb 2024 15:38:10 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs stable updates for v6.7
-Message-ID: <2024021307-reactive-woven-8543@gregkh>
-References: <6yl6zvu2pa3mz7irsaax5ivp6kh3dae5kaslvst7yafmg6672g@mskleu2vjfp2>
+	b=rs3vEq5jaJJUcVta1XAt000rxNei7Z7El1SeVa5+xmwhCA1cWIIN+joeuftQEvAJw
+	 FffjqghKAIeCdxQz5+B0PJJ1hm0k+IKNiv5S64Ic9CyYCOABmvqOgPAFSecWUdeGSV
+	 5myfozbdyaEAlyGfkYU7PJLO5wmgBMgG/FURmPJBtsmih7oPOkEvkgnRhPfF7f7x9l
+	 jJufEe/i9jdDfOU/luwOE34KBDE5M+9y/NM6kVRNmDrc08eYbvXhNPjusFGdc0BCMY
+	 V9+KyYoEao1XB1ip7BjRgMFYQmwn+hT8aO8cw+qVQuQvkRWqiGE0ZBkzsjSo3GULvY
+	 9pXC5nuCpPoig==
+Date: Tue, 13 Feb 2024 15:38:28 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc: Lucas Stach <l.stach@pengutronix.de>, 
+	Russell King <linux+etnaviv@armlinux.org.uk>, Christian Gmeiner <christian.gmeiner@gmail.com>, 
+	David Airlie <airlied@gmail.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [etnaviv-next v13 7/7] drm/etnaviv: Add support for vivante
+ GPU cores attached via PCI(e)
+Message-ID: <7ejh5uoppa257ap64ps33wrtabn4iu6flf4fn5lqhuuhbtmpjj@25rqv7mnko5q>
+References: <20240206172759.421737-1-sui.jingfeng@linux.dev>
+ <20240206172759.421737-8-sui.jingfeng@linux.dev>
+ <ZcNO9aZwWzyYs-Rv@phenom.ffwll.local>
+ <jahydq72bqb27de2ijwwmdjh4ri326mxhfjn5pbvf7cqcpnauq@rw5hjdiroi5d>
+ <ZcYGWEG8eqAiqqai@phenom.ffwll.local>
+ <65qv24hhkmmy4haylh53muvz2xliejysc3uywq44pl3xx7rus4@ynyau4djposv>
+ <67936300-7bfb-4f5e-9b80-ee339313fd61@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="nw547t3zpoboj52w"
+Content-Disposition: inline
+In-Reply-To: <67936300-7bfb-4f5e-9b80-ee339313fd61@linux.dev>
+
+
+--nw547t3zpoboj52w
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6yl6zvu2pa3mz7irsaax5ivp6kh3dae5kaslvst7yafmg6672g@mskleu2vjfp2>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 08, 2024 at 08:14:39PM -0500, Kent Overstreet wrote:
-> Hi Greg, few stable updates for you -
-> 
-> Cheers,
-> Kent
-> 
-> The following changes since commit 0dd3ee31125508cd67f7e7172247f05b7fd1753a:
-> 
->   Linux 6.7 (2024-01-07 12:18:38 -0800)
-> 
-> are available in the Git repository at:
-> 
->   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-for-v6.7-stable-20240208
-> 
-> for you to fetch changes up to f1582f4774ac7c30c5460a8c7a6e5a82b9ce5a6a:
-> 
->   bcachefs: time_stats: Check for last_event == 0 when updating freq stats (2024-02-08 15:33:11 -0500)
+On Sat, Feb 10, 2024 at 12:25:33AM +0800, Sui Jingfeng wrote:
+> On 2024/2/9 23:15, Maxime Ripard wrote:
+> > On Fri, Feb 09, 2024 at 12:02:48PM +0100, Daniel Vetter wrote:
+> > > On Thu, Feb 08, 2024 at 04:27:02PM +0100, Maxime Ripard wrote:
+> > > > On Wed, Feb 07, 2024 at 10:35:49AM +0100, Daniel Vetter wrote:
+> > > > > On Wed, Feb 07, 2024 at 01:27:59AM +0800, Sui Jingfeng wrote:
+> > > > > > The component helper functions are the glue, which is used to b=
+ind multiple
+> > > > > > GPU cores to a virtual master platform device. Which is fine an=
+d works well
+> > > > > > for the SoCs who contains multiple GPU cores.
+> > > > > >=20
+> > > > > > The problem is that usperspace programs (such as X server and M=
+esa) will
+> > > > > > search the PCIe device to use if it is exist. In other words, u=
+sperspace
+> > > > > > programs open the PCIe device with higher priority. Creating a =
+virtual
+> > > > > > master platform device for PCI(e) GPUs is unnecessary, as the P=
+CI device
+> > > > > > has been created by the time drm/etnaviv is loaded.
+> > > > > >=20
+> > > > > > we create virtual platform devices as a representation for the =
+vivante GPU
+> > > > > > ip core. As all of subcomponent are attached via the PCIe maste=
+r device,
+> > > > > > we reflect this hardware layout by binding all of the virtual c=
+hild to the
+> > > > > > the real master.
+> > > > > >=20
+> > > > > > Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+> > > > > Uh so my understanding is that drivers really shouldn't create pl=
+atform
+> > > > > devices of their own. For this case here I think the aux-bus fram=
+ework is
+> > > > > the right thing to use. Alternatively would be some infrastructur=
+e where
+> > > > > you feed a DT tree to driver core or pci subsystem and it instant=
+iates it
+> > > > > all for you correctly, and especially with hotunplug all done rig=
+ht since
+> > > > > this is pci now, not actually part of the soc that cannot be hotu=
+nplugged.
+> > > > I don't think we need intermediate platform devices at all. We just=
+ need
+> > > > to register our GPU against the PCI device and that's it. We don't =
+need
+> > > > a platform device, we don't need the component framework.
+> > > Afaik that's what this series does. The component stuff is for the
+> > > internal structure of the gpu ip, so that the same modular approach t=
+hat
+> > > works for arm-soc also works for pci chips.
+> > But there should be a single PCI device, while we have multiple "DT"
+> > devices, right? Or is there several PCI devices too on that PCI card?
+>=20
+>=20
+> There is only a single PCI(e) device on that PCI(e) card, this single
+> PCI(e) device is selected as the component master. All other Hardware IP
+> blocks are shipped by the single PCI(e) master. It may includes Display
+> controllers, GPUs, video decoders, HDMI display bridges hardware unit etc.
+>=20
+> But all of those Hardware IP share the same MMIO registers PCI BAR, this
+> PCI BAR is a kind of PCI(e) MEM resource. It is a relative *big* chunk,
+> as large as 32MB in address ranges for the JingJia Macro dGPU. Therefore,
+> I break the whole registers memory(MMIO) resource into smaller pieces by
+> creating platform device manually, manually created platform device is
+> called as virtual child in this series.
+>=20
+> In short, we cut the whole into smaller piece, each smaller piece is a
+> single hardware IP block, thus deserve a single device driver. We will
+> have multiple platform devices if the dGPU contains multiple hardware
+> IP block. On the driver side, we bind all of the scattered driver module
+> with component.
 
-This didn't work well :(
+That's kind of my point then. If there's a single device, there's no
+need to create intermediate devices and use the component framework to
+tie them all together. You can have a simpler approach where you create
+a function that takes the memory area it operates on (and whatever
+additional resource it needs: interrupt, clocks, etc.) and call that
+directly from the PCIe device probe, and the MMIO device bind.
 
-All of the original git commit ids are gone, and for me to look them up
-and add them back by hand is a pain.  I'll do it this time, but next
-time can you please include them in the commit somewhere (cherry-pick -x
-will do it automatically for you)
+Maxime
 
-Let's see if I can figure it out...
+--nw547t3zpoboj52w
+Content-Type: application/pgp-signature; name="signature.asc"
 
-thanks,
+-----BEGIN PGP SIGNATURE-----
 
-greg k-h
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZct+4wAKCRDj7w1vZxhR
+xat4AP9e1PY52OcgTMPszeofC8fTKw5ic9bt51A2Zmj8FSz2NQEAv4IkzKOx/Ccz
+KQP5HLb6qdwAWA0qWoszs8ZWUtAdAA0=
+=WIP3
+-----END PGP SIGNATURE-----
+
+--nw547t3zpoboj52w--
 
