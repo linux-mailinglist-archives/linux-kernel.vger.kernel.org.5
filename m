@@ -1,121 +1,84 @@
-Return-Path: <linux-kernel+bounces-63540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6E058530F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:52:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2414853103
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:56:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4298B243A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:52:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E472283875
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2A44207B;
-	Tue, 13 Feb 2024 12:52:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40AC546444;
+	Tue, 13 Feb 2024 12:56:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hdU+NQfc"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="XZpp7W7g"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B5E40BFE;
-	Tue, 13 Feb 2024 12:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5E54F60B;
+	Tue, 13 Feb 2024 12:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707828745; cv=none; b=UyzqnkfKVSltd1tSk41PU+w6K42OK3LStCt/PlQiEpIkA6lKW0JDeMCcw2BpTwrRKhIBUiyRfCn5Aiy/l0MRhUOkvDRvEZY+a3fg46sbWCo/0BMH+Cw+34MFbnZceaKW3stl6Rk2XTLHgA7n6fud4nNU2eRz8384kOhKIYM5Mz8=
+	t=1707829009; cv=none; b=jzJM+iNfOodIWGu038SjIiYYC2F2KLFE0ZzafAPrzxv+cFdw/OHJd6YbnEmVFmzLF/WE5gXyTO4H3C7+ajy1w4HK1N5+7LaVEmuiz/fxahW7OCYfVHZbDNsBECGIcl+bQZxjQh5wbJZ4DOpycIAYLhXFPu6Q10dX1+j6DhN6emw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707828745; c=relaxed/simple;
-	bh=ZD1GdMXW2br6888ExGHvUmhLBqC6M5LBnwaWbeXCj6g=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=i2C7KAJqwqDCafslZl1+B5vw6x/EHzYmRhx0xcrILjS/pVm/rqPmeKeqjAtxGrMOSKBh3TrSdFIfDhj+9ArkUb0JR8TDj80bWMD3yAV+6A5yPcia0ontJbgRJ2kNSdZls+2EE7j8+ghJrUxy3DIemEsrkfORQKPeg6NhQPJpuWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hdU+NQfc; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707828744; x=1739364744;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=ZD1GdMXW2br6888ExGHvUmhLBqC6M5LBnwaWbeXCj6g=;
-  b=hdU+NQfc78lTF5SXejweSZosG9dpUwx2U84tc7oRJP6ywd0QJPCuGoK2
-   T1J/owGVjgKsBtIAwU4yXD3NHN/GPWJ/RP3UP44uecgtvu5writojxAUx
-   61XOpA6ij93KhuEOYe0BjpkySLGcpif6gOZh2R4Ea47Nk2VeL1FZfNVzT
-   Q2zWw4S6NZ9QnHIgn8Ou9ic7Akqq/e9x4yZHkUKOaKESIXZNlrRI8T6mt
-   THt7hfqUXtZbsToFNNtzcobfLH0ULaWxQucuCsTxPfy/SkYo2+CbJVrfh
-   kxxOK5nS2G2wpQwMX/4UUFPxLzpN4NPdUerCraV0EMDTK3zOmWU9F3ULs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="4796983"
-X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="4796983"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 04:52:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="911782042"
-X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="911782042"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.32.103])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 04:52:20 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 13 Feb 2024 14:52:16 +0200 (EET)
-To: Mark Pearson <mpearson-lenovo@squebb.ca>
-cc: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-    Hans de Goede <hdegoede@redhat.com>, 
-    "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] platform/x86: think-lmi: Fix password opcode ordering
- for workstations
-In-Reply-To: <c4e6d61d-d836-4a79-a89d-141f92f6b41e@app.fastmail.com>
-Message-ID: <7aa1ac00-0db4-934a-94d5-b5daacaeb863@linux.intel.com>
-References: <mpearson-lenovo@squebb.ca> <20240209152359.528919-1-mpearson-lenovo@squebb.ca> <dfb993c6-0e10-bc70-e8e9-a88651863a27@linux.intel.com> <c4e6d61d-d836-4a79-a89d-141f92f6b41e@app.fastmail.com>
+	s=arc-20240116; t=1707829009; c=relaxed/simple;
+	bh=qF7tMH7G9DibHjOZH7dai6/rsAP4RyQAquo8YwpVoc0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YKz2A47tT9jT+CNyNGgPGQz4hYt8xxxzdCa1idUVFZ13Guj/BTISfKo+d+3lJcf75k+H74UqgWAoSjgkPnxGxvFF1zi3R9qNvJ/hBC59DwJBHofORnvlYqImc+fYK3dmWEKD3iElvI4QiaZMcTHbt8qwtMlhEkH9+qcre9scrhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=XZpp7W7g; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id CC0B86033F;
+	Tue, 13 Feb 2024 12:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1707829006;
+	bh=qF7tMH7G9DibHjOZH7dai6/rsAP4RyQAquo8YwpVoc0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XZpp7W7gkKCvNQchCC9YPe/SoU7WmThjjmxwQmy3W9OpO84HYW/5tpiudNjay3nwr
+	 o6HJr0lHXT4+iCioK0ncydUOKoFf+Ur50oPZEmWZik/+wBHNcOud8syCM4A7r0wglW
+	 6EybxEPUYyhj1ldRiSooYcD2JmxptKLnMSkhvQxN2cIwwsfqDFPAQ439WP/xSQ2eDm
+	 U9SSGdSYQLyo+zuvoOPVEjdygrs2rmXX1Hj9XvrrQc+xCPIJczkBZAbV5z018ZUh3H
+	 SXHaKihsc62/hm5omTHJx9FtqsQ3irYuoCxSwmqIyisbZu8pWrd6+9QwgwsyYSoasC
+	 kGSyDHYBrXAow==
+Date: Tue, 13 Feb 2024 14:56:18 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: Adam Ford <aford173@gmail.com>
+Cc: linux-omap@vger.kernel.org, aford@beaconembedded.com,
+	=?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: dts: omap3:  Migrate hsmmc driver to sdhci driver
+Message-ID: <20240213125618.GG52537@atomide.com>
+References: <20240213124146.202391-1-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-986691078-1707828736=:9580"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213124146.202391-1-aford173@gmail.com>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+* Adam Ford <aford173@gmail.com> [240213 12:41]:
+> The sdhci driver has been around for several years, and it supports
+> the OMAP3 family.  Instead of using the older driver, let's finally
+> migrate to the newer one.
 
---8323328-986691078-1707828736=:9580
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+I think we also should do these to avoid incomplete conversion:
 
-On Fri, 9 Feb 2024, Mark Pearson wrote:
+- ti,dual-volt property can be dropped
 
-> Thanks Ilpo
->=20
-> On Fri, Feb 9, 2024, at 10:34 AM, Ilpo J=C3=A4rvinen wrote:
-> > On Fri, 9 Feb 2024, Mark Pearson wrote:
-> >
-> >> The Lenovo workstations require the password opcode to be run before
-> >> the attribute value is changed (if Admin password is enabled).
-> >>=20
-> >> Tested on some Thinkpads to confirm they are OK with this order too.
-> >>=20
-> >> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
-> >
-> > Would a Fixes tag be appropriate here?
->=20
-> Hmmm - good point, though it has been "wrong" since it was originally imp=
-lemented (where we tested on Thinkpads).
->=20
-> I guess I could use the commit ID from when I originally implemented opco=
-des?
-> Fixes: 640a5fa ("platform/x86: think-lmi: Opcode support")
+- ti,non-removable should become non-removable
 
-Yes, in that case the original commit is the correct one.
+- ti,omap3-pre-es3-hsmmc probably should not be needed with sdhci
 
-> Do you want me to push a new version with this?
+Regards,
 
-I think this is simple enough to go through fixes branch so it depends on=
-=20
-Hans.
-
-Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-
---=20
- i.
-
---8323328-986691078-1707828736=:9580--
+Tony
 
