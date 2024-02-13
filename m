@@ -1,147 +1,215 @@
-Return-Path: <linux-kernel+bounces-63586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E8D98531D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5F388531B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:24:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF7F028C3D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:26:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CD992846DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AF45646A;
-	Tue, 13 Feb 2024 13:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="a6eoaBIp";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OEHAVu57"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E003655C1D;
-	Tue, 13 Feb 2024 13:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 835BA55C15;
+	Tue, 13 Feb 2024 13:24:43 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6066A55C04
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707830751; cv=none; b=XZenOsOTEpJRdIwvVClwT9HtmwSNwJUcDUm/Zvc7PKfVLdtNTNrgi6bPbZkuljbn9n7rA6BqUOdIAjoXVewH2Uh+5h76tR984hus1So+r2p92WuO5Z1AqFRPgNW1DpLLohP+TRunogXTXQdHk/76jD6M92oIJGigywb298jTGag=
+	t=1707830683; cv=none; b=gwb9HKKVtUMWYLyrnwltKq6/NHzROfOiHokk292OFM1FAr6HRxg+a57gH1pYXXR4aSPQ3g9gO1SDSaCUX214bTiBMPjGnUoWE4SxAcKYfI+mE+1YfDOviVMKeO7g8H9LLG57+Lt8Bh8VB3QaOEbGJ+d+h/lnQ/dl6aHYjrJLCqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707830751; c=relaxed/simple;
-	bh=ibVHfFsPFcvSEZ7/yr/9ehuQbI8jeSYbWCxBJlh89tY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RsLXo1ObxOLtaIlGvtfyg7vhetpm8NTmeUNothPkKWCi7vUM9VvB6pXSEb90PMSB8/cztlz3oqdRqe89yt38Wq2NfPpCzWxlXxxTF7Vs/AhNJWRAYLU5s1iP2lzUOwmD2nk37Q/r9CZmpc1kA4jqrnw82JKS5VlagZGD/d6k8pE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=a6eoaBIp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OEHAVu57; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EE10721F9A;
-	Tue, 13 Feb 2024 13:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707830748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=UD49cq/Gzb+y6/AtUpmsq4G9cGtvq1kVLdo8fHtz7EE=;
-	b=a6eoaBIpcKAjo+ieKqHcPph35KLF6tQEL8BzTVtiBtN++TrodQa5xpkFKaOKQGEpjkkm9s
-	d+TKbZacIZbDYo+dcht7j2UYu99jHANsbHiXZ6I0S8BzlaRQAXu+hDrj6gDMeZxSJSTrHi
-	bc7WJZseuG3Vb6ClIjPWQsfC5GusLao=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707830747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=UD49cq/Gzb+y6/AtUpmsq4G9cGtvq1kVLdo8fHtz7EE=;
-	b=OEHAVu57ZvMBEUh7xTEdmdYpQDqlNb8nP+saeshxetOx4KdA4bgUHUZfrO1jwymwkZPVyJ
-	fx1fLG8h5+HfWQ6k7+/vPyMbkxgi2ByFIqGpuS8c6o+cBuR/I6OgYM7Gii3SxjLOujSajG
-	UWPRkQc3OD6zdkyH011FLisX2krvGx0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFB031370C;
-	Tue, 13 Feb 2024 13:25:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id H51pNttty2VFGAAAD6G6ig
-	(envelope-from <petr.pavlu@suse.com>); Tue, 13 Feb 2024 13:25:47 +0000
-From: Petr Pavlu <petr.pavlu@suse.com>
-To: rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mark.rutland@arm.com,
-	mathieu.desnoyers@efficios.com,
-	jolsa@kernel.org
-Cc: linux-trace-kernel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Petr Pavlu <petr.pavlu@suse.com>
-Subject: [PATCH] tracing: Fix HAVE_DYNAMIC_FTRACE_WITH_REGS ifdef
-Date: Tue, 13 Feb 2024 14:24:34 +0100
-Message-Id: <20240213132434.22537-1-petr.pavlu@suse.com>
-X-Mailer: git-send-email 2.35.3
+	s=arc-20240116; t=1707830683; c=relaxed/simple;
+	bh=gF9SlWYZzoKeXO5N0lntgur2mMdXnes++Vt7sVfrFwM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YwC+IbyF151PaxBNZa3rxq7amVNgMT3Y4rNcDZc+5qU5FSI8at13J9it/il63mr6V79+/1z4e6qwElu2IrkCs+YIHVpDuL+lKyOj0JixriVDz+KkSjozSWDkCgN9Z7Z1GW0kaulWOLtGOVctWsaj/2UEOuhvdGnz2s5LonLCEKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B29DADA7;
+	Tue, 13 Feb 2024 05:25:21 -0800 (PST)
+Received: from [10.1.36.184] (XHFQ2J9959.cambridge.arm.com [10.1.36.184])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D643C3F762;
+	Tue, 13 Feb 2024 05:24:36 -0800 (PST)
+Message-ID: <b9f7636e-61eb-40bc-bab3-2caaa5f39c57@arm.com>
+Date: Tue, 13 Feb 2024 13:24:35 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 19/25] arm64/mm: Wire up PTE_CONT for user mappings
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ James Morse <james.morse@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
+ <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+ Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+ Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, linux-arm-kernel@lists.infradead.org,
+ x86@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240202080756.1453939-1-ryan.roberts@arm.com>
+ <20240202080756.1453939-20-ryan.roberts@arm.com>
+ <ZcoIVypNwOPIX30w@FVFF77S0Q05N>
+ <c899f252-dbf3-4e7b-8342-b5a5180486cd@arm.com>
+ <aa232591-e0c8-422d-a641-fa555914c5f0@arm.com>
+ <64395ae4-3a7d-45dd-8f1d-ea6b232829c5@arm.com>
+ <d6ce951f-f83b-4a5a-a814-311f2d8b01e4@arm.com>
+ <41499621-482f-455b-9f68-b43ea8052557@redhat.com>
+ <1d302d7a-50ab-4ab4-b049-75ed4a71a87d@arm.com>
+ <99e2a92c-f2a2-4e1e-8ce2-08caae2cb7e4@redhat.com>
+ <dce5f80d-942f-439c-a549-5290666464ca@arm.com>
+ <e89a3d11-fe73-4717-b0d6-55cc4fbe16cf@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <e89a3d11-fe73-4717-b0d6-55cc4fbe16cf@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=OEHAVu57
-X-Spamd-Result: default: False [4.69 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[41.15%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 4.69
-X-Rspamd-Queue-Id: EE10721F9A
-X-Spam-Level: ****
-X-Spam-Flag: NO
-X-Spamd-Bar: ++++
 
-Commit a8b9cf62ade1 ("ftrace: Fix DIRECT_CALLS to use SAVE_REGS by
-default") attempted to fix an issue with direct trampolines on x86, see
-its description for details. However, it wrongly referenced the
-HAVE_DYNAMIC_FTRACE_WITH_REGS config option and the problem is still
-present.
+On 13/02/2024 13:22, David Hildenbrand wrote:
+> On 13.02.24 14:20, Ryan Roberts wrote:
+>> On 13/02/2024 13:13, David Hildenbrand wrote:
+>>> On 13.02.24 14:06, Ryan Roberts wrote:
+>>>> On 13/02/2024 12:19, David Hildenbrand wrote:
+>>>>> On 13.02.24 13:06, Ryan Roberts wrote:
+>>>>>> On 12/02/2024 20:38, Ryan Roberts wrote:
+>>>>>>> [...]
+>>>>>>>
+>>>>>>>>>>> +static inline bool mm_is_user(struct mm_struct *mm)
+>>>>>>>>>>> +{
+>>>>>>>>>>> +    /*
+>>>>>>>>>>> +     * Don't attempt to apply the contig bit to kernel mappings,
+>>>>>>>>>>> because
+>>>>>>>>>>> +     * dynamically adding/removing the contig bit can cause page
+>>>>>>>>>>> faults.
+>>>>>>>>>>> +     * These racing faults are ok for user space, since they get
+>>>>>>>>>>> serialized
+>>>>>>>>>>> +     * on the PTL. But kernel mappings can't tolerate faults.
+>>>>>>>>>>> +     */
+>>>>>>>>>>> +    return mm != &init_mm;
+>>>>>>>>>>> +}
+>>>>>>>>>>
+>>>>>>>>>> We also have the efi_mm as a non-user mm, though I don't think we
+>>>>>>>>>> manipulate
+>>>>>>>>>> that while it is live, and I'm not sure if that needs any special
+>>>>>>>>>> handling.
+>>>>>>>>>
+>>>>>>>>> Well we never need this function in the hot (order-0 folio) path, so I
+>>>>>>>>> think I
+>>>>>>>>> could add a check for efi_mm here with performance implication. It's
+>>>>>>>>> probably
+>>>>>>>>> safest to explicitly exclude it? What do you think?
+>>>>>>>>
+>>>>>>>> Oops: This should have read "I think I could add a check for efi_mm here
+>>>>>>>> *without* performance implication"
+>>>>>>>
+>>>>>>> It turns out that efi_mm is only defined when CONFIG_EFI is enabled. I
+>>>>>>> can do
+>>>>>>> this:
+>>>>>>>
+>>>>>>> return mm != &init_mm && (!IS_ENABLED(CONFIG_EFI) || mm != &efi_mm);
+>>>>>>>
+>>>>>>> Is that acceptable? This is my preference, but nothing else outside of efi
+>>>>>>> references this symbol currently.
+>>>>>>>
+>>>>>>> Or perhaps I can convince myself that its safe to treat efi_mm like
+>>>>>>> userspace.
+>>>>>>> There are a couple of things that need to be garanteed for it to be safe:
+>>>>>>>
+>>>>>>>      - The PFNs of present ptes either need to have an associated struct
+>>>>>>> page or
+>>>>>>>        need to have the PTE_SPECIAL bit set (either pte_mkspecial() or
+>>>>>>>        pte_mkdevmap())
+>>>>>>>
+>>>>>>>      - Live mappings must either be static (no changes that could cause
+>>>>>>> fold/unfold
+>>>>>>>        while live) or the system must be able to tolerate a temporary fault
+>>>>>>>
+>>>>>>> Mark suggests efi_mm is not manipulated while live, so that meets the latter
+>>>>>>> requirement, but I'm not sure about the former?
+>>>>>>
+>>>>>> I've gone through all the efi code, and conclude that, as Mark suggests, the
+>>>>>> mappings are indeed static. And additionally, the ptes are populated using
+>>>>>> only
+>>>>>> the _private_ ptep API, so there is no issue here. As just discussed with
+>>>>>> Mark,
+>>>>>> my prefereence is to not make any changes to code, and just add a comment
+>>>>>> describing why efi_mm is safe.
+>>>>>>
+>>>>>> Details:
+>>>>>>
+>>>>>> * Registered with ptdump
+>>>>>>        * ptep_get_lockless()
+>>>>>> * efi_create_mapping -> create_pgd_mapping … -> init_pte:
+>>>>>>        * __ptep_get()
+>>>>>>        * __set_pte()
+>>>>>> * efi_memattr_apply_permissions -> efi_set_mapping_permissions … ->
+>>>>>> set_permissions
+>>>>>>        * __ptep_get()
+>>>>>>        * __set_pte()
+>>>>>
+>>>>> Sound good. We could add some VM_WARN_ON if we ever get the efi_mm via the
+>>>>> "official" APIs.
+>>>>
+>>>> We could, but that would lead to the same linkage issue, which I'm trying to
+>>>> avoid in the first place:
+>>>>
+>>>> VM_WARN_ON(IS_ENABLED(CONFIG_EFI) && mm == efi_mm);
+>>>>
+>>>> This creates new source code dependencies, which I would rather avoid if
+>>>> possible.
+>>>
+>>> Just a thought, you could have a is_efi_mm() function that abstracts all that.
+>>>
+>>> diff --git a/include/linux/efi.h b/include/linux/efi.h
+>>> index c74f47711f0b..152f5fa66a2a 100644
+>>> --- a/include/linux/efi.h
+>>> +++ b/include/linux/efi.h
+>>> @@ -692,6 +692,15 @@ extern struct efi {
+>>>     extern struct mm_struct efi_mm;
+>>>   +static inline void is_efi_mm(struct mm_struct *mm)
+>>> +{
+>>> +#ifdef CONFIG_EFI
+>>> +       return mm == &efi_mm;
+>>> +#else
+>>> +       return false;
+>>> +#endif
+>>> +}
+>>> +
+>>>   static inline int
+>>>   efi_guidcmp (efi_guid_t left, efi_guid_t right)
+>>>   {
+>>>
+>>>
+>>
+>> That would definitely work, but in that case, I might as well just check for it
+>> in mm_is_user() (and personally I would change the name to mm_is_efi()):
+>>
+>>
+>> static inline bool mm_is_user(struct mm_struct *mm)
+>> {
+>>     return mm != &init_mm && !mm_is_efi(mm);
+>> }
+>>
+>> Any objections?
+>>
+> 
+> Nope :) Maybe slap in an "unlikely()", because efi_mm *is* unlikely to show up.
 
-Add the missing "CONFIG_" prefix for the logic to work as intended.
+Deal
 
-Fixes: a8b9cf62ade1 ("ftrace: Fix DIRECT_CALLS to use SAVE_REGS by default")
-Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
----
- kernel/trace/ftrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index c060d5b47910..83ba342aef31 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5331,7 +5331,7 @@ static int register_ftrace_function_nolock(struct ftrace_ops *ops);
-  * not support ftrace_regs_caller but direct_call, use SAVE_ARGS so that it
-  * jumps from ftrace_caller for multiple ftrace_ops.
-  */
--#ifndef HAVE_DYNAMIC_FTRACE_WITH_REGS
-+#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_REGS
- #define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_ARGS)
- #else
- #define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS)
-
-base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
--- 
-2.35.3
+> 
 
 
