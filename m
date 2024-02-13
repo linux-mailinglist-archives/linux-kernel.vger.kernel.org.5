@@ -1,365 +1,172 @@
-Return-Path: <linux-kernel+bounces-63039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15A7D8529A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:21:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27E3F8529A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:21:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FCD01F2126A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:21:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D421B282299
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:21:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4756917757;
-	Tue, 13 Feb 2024 07:21:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E2817566;
+	Tue, 13 Feb 2024 07:21:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VWux7WJ8"
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BtuWQrdQ"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB4A17562
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:21:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0EF6171AF;
+	Tue, 13 Feb 2024 07:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707808881; cv=none; b=faCisVZu1t1TQiAV4TT3PJM4VTprIU+HWj0kMgAvJhGmBbJoZZ55NeJMBKNTF5dzRomL9nGYYY7woMBnS/Ek7seQZoNXw0Ps5EfhxuQcLR9Uz/kKhSTTNe6Vbv/2eFEeL0U4OfC1XNwwziynMNjBH7OPuDF47BHEcc+5zILN8Yc=
+	t=1707808878; cv=none; b=cFZV+gkI/htiZ1elXKtb+edkzWqGpy/9v9Gh/2iWLuswIb2O7sYpS0MW1O/1JbLuYrt8M/H/x4w8SGbpIhlzJhkttV1uQatIuGsMGfnU5aUsL7icttaB/QjP0PSQPdaDVWf1IikvV3IcCdsJRWq4dkx74eC3HgV6kjbjb3daVr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707808881; c=relaxed/simple;
-	bh=HijZTEj3KI/CQu4iW7XW7T5cHXIGlEcnf2crSSbu9e8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iUld2fZ1PGEGVVRLe4enz+XYZat9uxGuzSiu+q8amiS7W5H/Q5GoCNethnibKoDGt8a5OQcBuyX+Io3ZirA6T4BPgH7F5uQ924Sxr452x+TkfQ4upsmd7qD0klbqljhp5unNg/8+74rC1NBah5LemAP8OU+mRopbuQJc47ODs4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VWux7WJ8; arc=none smtp.client-ip=209.85.222.48
+	s=arc-20240116; t=1707808878; c=relaxed/simple;
+	bh=gOBQOWJMUMfNtbxdju9G/6MPpVI+aiIiDWC+zaTV8BM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rNAndGScUsJWV1EYEKPlwYeQXEN0C0taWdAJQGuKRIfRSYdXPlH4TGnNrwHkmqmKxubGvAbyfOh03V+J5wk4YUkT+ZEqxm/QZgYeUOezm9FXGOo7gKPf4y9P9M/QOIL1boW0yERo3MsXoAJfKEAEYo0eodDT3CErclxSfZUokhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BtuWQrdQ; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7d5c890c67fso1964654241.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:21:19 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-411c863c1c6so384725e9.0;
+        Mon, 12 Feb 2024 23:21:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707808878; x=1708413678; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KN5b5QdibQC55T6xYrHdi1pJX22VxUjqLdYp4BQXde0=;
-        b=VWux7WJ8Mk/QmJANQhcjwdjVT+5OMLlf58f8uv8BGzAIvopLMXIJo913qLmZUBykeU
-         tpQgONErNDAMIwjF6cMzjIZd0X85Td8unGVkwkiZXPDyfFFMqe/z4cwKrKA6Fi2gDZFx
-         jYCn9hwZEDFYao3XQwDPBIiza7yGbq8dO8TLOOobEZ4FVoU0f73BMO7yVCCTGyiT0fau
-         cmgQZeqi7v9AM47/NsUI/eEIcu/IMAJjmMu/r84hvwzP8pO57lPwN+g3GZ2M9xwIAmpx
-         33xl7nNEbwoDkNvB9+k3H/VKX9vgBknZd3MJRis26kTGM7QHB9BEP1WRWi9qEnd6xIvy
-         U7nQ==
+        d=gmail.com; s=20230601; t=1707808875; x=1708413675; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8CoOnrmU5IgwoMjOJC9hlVJa4bE1pFzCtcl4Q05gH4k=;
+        b=BtuWQrdQBv/mULrRrvNsOPNA29bY4UF8GzI9dqQRCOnq4GfQqxK7yQ6r6ROc1AYhCd
+         KmrVhsoczleFlj0lgd/CDC/eFWOJtSVk5CUJRp2lpIoSle4EzKk3wh3cgOSVnpMTO8fu
+         dZxhIyzcZQvYOFNjHMnMQnyH99P3SUALUMqfPU8j82L3aoff2cDKidaDmBN8iGSeUND1
+         v6S8MhHhmf/NDT9rwKNW19/m1TecT1/DiGxE536J7XjtDwx//U2YqASu8ace6ApHdqgp
+         XcLa9nrTZWw8k7AT7IxNGzJBHTdpOhbSdLZqglwSvksVZYSexDmABLAwQ58wrorgQhcq
+         0kug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707808878; x=1708413678;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KN5b5QdibQC55T6xYrHdi1pJX22VxUjqLdYp4BQXde0=;
-        b=SnJ3BsQjE0bccl5UD7uPFuf2b/Ny/KCtbt9o+3oDy2rqiK4NWPOeC2l7d4brDAlSzQ
-         XIDucpF55c1w1PFH+MVSeqeke8Ro+zh20vA5bKky4rfOjHlwtat0tWPlLDsW+tOxqj7f
-         vQ4l1OwBNqdhb+czpE8EFIqhCqTpaN5d8FV6T6M2kds0eQSOEXVU+FtgcXz8Clsfey8Y
-         PZDX+JD0CHMJT5peQkIGUDdW1NzW/AE4O3PvBI/0DpI6wgfxmD/QG4RXLzA7QoYHK8ks
-         2DdxgtE4k/xSq9X76CLIj7mmJko6l2S7C5AlSSTc+a/V66FArqT0jZoZh1aR+2pnaoqv
-         U7UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWbL64z5sdRhbjIc4HxMfJIVbQQettT8T5rDPZd8Ay39aO4Brz49bITI5KHnPODtNWLpHPyp7JuOhX9+6em09txIqR7lYExRYg7XReu
-X-Gm-Message-State: AOJu0YzqRZfJmKvVt1O38Kt0zVzyaXo55zvx1y0DEhjow96pouWQRfVZ
-	5FPkXxgsFU8h3n2BcircpNy8f15KReSQBsDlYds3gCXOcRTUcir/VuuoIbIi37DDwQ+1F/MsPX2
-	Mre8oVFrozx+Uzb8bFkcYNujBpDA=
-X-Google-Smtp-Source: AGHT+IGapTWzbmkSlvS+mPaGaHuOMydLzPlQpGcs4IvTQiRvfX2gyxpag4GR0m9yV2+ziRblZmghiMlXYaDNrZPJoFc=
-X-Received: by 2002:a05:6102:2859:b0:46d:224d:9290 with SMTP id
- az25-20020a056102285900b0046d224d9290mr5439307vsb.9.1707808878017; Mon, 12
- Feb 2024 23:21:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707808875; x=1708413675;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8CoOnrmU5IgwoMjOJC9hlVJa4bE1pFzCtcl4Q05gH4k=;
+        b=qGru3aA0congFJxwI6hG4kiURztZV7IC9uaXluFm/W6WgoEqLhZRT/u9T/yZnDihK8
+         m95a0hZYc8pyZ5DVc9vgpBM9FIyyeJWdjUgxXf2YEWt2Y1+pC3zxCwj/zx1KyPDhXAsy
+         nagYnFcbs3tU98A20mUZ2uAvjPOgbcKxhRu9/FoUgNhBeCUi/n2O/MeiegjHH0d30me4
+         +BOglg5hwbgrCj57bgUucOWZ877xd11pkeGqS2dw9RIkImPJZCmRm7PDFCVkrG6zeNgE
+         p0NCAnYttp9hg5MuZrWhgGTsHiHdkSWIi/0+A4btfEABMzBI+ojW78G0qnpTZZ16hp5v
+         nEdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVLaF304pkdI1PoELRr1YXeO4RzVxcPnJ7+I9AKP++crezb6Ya1yASv8xhfO2SybnbUdlQOZo/Bm7EtlCoFUeCUx2w7O8nuCtVr1Y8vKyUr521wwsJoKsGjfp0i8oo2kQjtQEN1jhOyrFwTwYWQ/QgMCegjMbNrCNUXtf0YFNUDcq+Wxd+H4A==
+X-Gm-Message-State: AOJu0YyH5A1N1NJfTX5o1vbOciudoT9311nyL+Bg37c7qpqp0exkXTOX
+	A5OC1pNFn7g6P8EOGN+vlu4upuCoWJUDAgiNY+RjJH9BiL/Zj6Ul
+X-Google-Smtp-Source: AGHT+IEBIcujhRDn+1hfgiVtv9AVDgqqgKjFxDvFFBFMnQPxLW374rkT4yy5yy/O2btL53SNRC3jEA==
+X-Received: by 2002:a05:600c:4e4f:b0:411:b334:2ff0 with SMTP id e15-20020a05600c4e4f00b00411b3342ff0mr1033156wmq.24.1707808874828;
+        Mon, 12 Feb 2024 23:21:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXJ+mVPsRajillNQzfK5RfT4+AfUgV6U+MVBinI8U04MvPycDa2dobzqU+K0Eww377kXmD7SsZDI0t9VZdK0fT7JxBe9m6TbunNmmC0oa95bNnLw3FWCCGhMy+QH3zHQ7lxLcCeKv2nFxwRYC3DXf0oOurYkdqlpwli/hUOx2ORhWZ2yaSd+mIdnLdOty4IIjYrGN+IwT8+Iz0NNVxsQOc3o4vj68khEtLKjeLK1flXAnr/6VFdch1Bmc3tzhRUJ30Hr0SN6cDS+HqETBcItLNb+4PL2STGilGGSTQyG5pETo9pT7/pwBogHPy8/L9phG0EO1hVTotJIk7sOdsnOln3wbqlsPTnFdK/S5cK8WcDF6jpV/hKr12gSmb/Njchw7Gx3WGRpNBz6Z5m5tqj/7NI5u+qQ/PW8mTWDwum48fMgOZyMA0A0lyvoHJabNNJZN1A+U6//yTwkI691g2K9xjhdEBt1/sjaI33zglgaKjqny4u8cKsT7DUrouZUxdz5DAvCHOQWC0wReh0EwdqtCd8vNQJN+XQh6jjp8ARLqS7hLwdPsBnx83zpRdtPjZevE6oofuZVmZZ15Ce1L85EBIHdTch61FpGMIpZDlB5Sb3IVRpGX4KvyguaDAi+5FcUGqGQsH2wK07
+Received: from Red ([2a01:cb1d:3d5:a100:4a02:2aff:fe07:1efc])
+        by smtp.googlemail.com with ESMTPSA id m14-20020a05600c4f4e00b00411bff9f7cbsm695225wmq.37.2024.02.12.23.21.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 23:21:14 -0800 (PST)
+Date: Tue, 13 Feb 2024 08:21:12 +0100
+From: Corentin Labbe <clabbe.montjoie@gmail.com>
+To: Alexey Romanov <avromanov@salutedevices.com>
+Cc: neil.armstrong@linaro.org, clabbe@baylibre.com,
+	herbert@gondor.apana.org.au, davem@davemloft.net,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
+	martin.blumenstingl@googlemail.com, vadim.fedorenko@linux.dev,
+	linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, kernel@salutedevices.com
+Subject: Re: [PATCH v4 00/20] Support more Amlogic SoC families in crypto
+ driver
+Message-ID: <ZcsYaPIUrBSg8iXu@Red>
+References: <20240212135108.549755-1-avromanov@salutedevices.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240210113924.1130448-1-alexs@kernel.org> <20240210113924.1130448-5-alexs@kernel.org>
- <CAGsJ_4wh6kDs_OqOae-HocKWR9SuVY=KJR7+W1v11mE=ym0nYg@mail.gmail.com>
-In-Reply-To: <CAGsJ_4wh6kDs_OqOae-HocKWR9SuVY=KJR7+W1v11mE=ym0nYg@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 13 Feb 2024 20:21:06 +1300
-Message-ID: <CAGsJ_4yqw3GvFbKkAN02CBnUHqT1B4voWcgdvAnAUxqLmn0few@mail.gmail.com>
-Subject: Re: [PATCH v5 5/5] sched: rename SD_SHARE_PKG_RESOURCES to SD_SHARE_LLC
-To: alexs@kernel.org, Valentin Schneider <vschneid@redhat.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, "open list:SCHEDULER" <linux-kernel@vger.kernel.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
-	"open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" <linuxppc-dev@lists.ozlabs.org>, 
-	Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, Miaohe Lin <linmiaohe@huawei.com>, 
-	Barry Song <song.bao.hua@hisilicon.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>, 
-	Yicong Yang <yangyicong@hisilicon.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240212135108.549755-1-avromanov@salutedevices.com>
 
-On Tue, Feb 13, 2024 at 8:01=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
-e:
->
-> Hi Alex, Valentin,
->
->
-> On Sun, Feb 11, 2024 at 12:37=E2=80=AFAM <alexs@kernel.org> wrote:
-> >
-> > From: Alex Shi <alexs@kernel.org>
-> >
-> > SD_CLUSTER shares the CPU resources like llc tags or l2 cache, that's
-> > easy confuse with SD_SHARE_PKG_RESOURCES. So let's specifical point
-> > what the latter shares: LLC. That would reduce some confusing.
->
-> On neither JACOBSVILLE nor kunpeng920, it seems CLUSTER isn't LLC.
-> on Jacobsville, cluster is L2-cache while Jacobsville has L3; on kunpeng9=
-20,
-> cluster is L3-tag. On kunpeng920, actually 24 cpus or 32cpus share one LL=
-C,
-> the whole L3. cluster is kind of like middle-level caches.
->
-> So I feel this patch isn't precise.
+Le Mon, Feb 12, 2024 at 04:50:48PM +0300, Alexey Romanov a écrit :
+> Hello!
+> 
+> This patchset expand the funcionality of the Amlogic
+> crypto driver by adding support for more SoC families:
+> AXG, G12A, G12B, SM1, A1, S4.
+> 
+> Also specify and enable crypto node in device tree
+> for reference Amlogic devices.
+> 
+> Tested on AXG, G12A/B, SM1, A1 and S4 devices via
+> custom tests [1] and tcrypt module.
+> 
+> ---
+> 
 
-sorry for my noise, i thought you were renaming cluster to LLC. but after
-second reading, you are renaming the level after cluster, so my comment
-was wrong. Please feel free to add:
-
-Reviewed-by: Barry Song <baohua@kernel.org>
-
->
-> >
-> > Suggested-by: Valentin Schneider <vschneid@redhat.com>
-> > Signed-off-by: Alex Shi <alexs@kernel.org>
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: linuxppc-dev@lists.ozlabs.org
-> > Cc: Miaohe Lin <linmiaohe@huawei.com>
-> > Cc: Barry Song <song.bao.hua@hisilicon.com>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> > Cc: Ben Segall <bsegall@google.com>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> > Cc: Juri Lelli <juri.lelli@redhat.com>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-> > Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > Cc: "Gautham R. Shenoy" <gautham.shenoy@amd.com>
-> > Cc: Yicong Yang <yangyicong@hisilicon.com>
-> > Cc: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> > Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-> > Cc: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> > Cc: Valentin Schneider <vschneid@redhat.com>
-> > Cc: Nicholas Piggin <npiggin@gmail.com>
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Reviewed-by: Valentin Schneider <vschneid@redhat.com>
-> > Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> > ---
-> >  arch/powerpc/kernel/smp.c      |  6 +++---
-> >  include/linux/sched/sd_flags.h |  4 ++--
-> >  include/linux/sched/topology.h |  6 +++---
-> >  kernel/sched/fair.c            |  2 +-
-> >  kernel/sched/topology.c        | 28 ++++++++++++++--------------
-> >  5 files changed, 23 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> > index 693334c20d07..a60e4139214b 100644
-> > --- a/arch/powerpc/kernel/smp.c
-> > +++ b/arch/powerpc/kernel/smp.c
-> > @@ -984,7 +984,7 @@ static bool shared_caches __ro_after_init;
-> >  /* cpumask of CPUs with asymmetric SMT dependency */
-> >  static int powerpc_smt_flags(void)
-> >  {
-> > -       int flags =3D SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
-> > +       int flags =3D SD_SHARE_CPUCAPACITY | SD_SHARE_LLC;
-> >
-> >         if (cpu_has_feature(CPU_FTR_ASYM_SMT)) {
-> >                 printk_once(KERN_INFO "Enabling Asymmetric SMT scheduli=
-ng\n");
-> > @@ -1010,9 +1010,9 @@ static __ro_after_init DEFINE_STATIC_KEY_FALSE(sp=
-lpar_asym_pack);
-> >  static int powerpc_shared_cache_flags(void)
-> >  {
-> >         if (static_branch_unlikely(&splpar_asym_pack))
-> > -               return SD_SHARE_PKG_RESOURCES | SD_ASYM_PACKING;
-> > +               return SD_SHARE_LLC | SD_ASYM_PACKING;
-> >
-> > -       return SD_SHARE_PKG_RESOURCES;
-> > +       return SD_SHARE_LLC;
-> >  }
-> >
-> >  static int powerpc_shared_proc_flags(void)
-> > diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_fl=
-ags.h
-> > index a8b28647aafc..b04a5d04dee9 100644
-> > --- a/include/linux/sched/sd_flags.h
-> > +++ b/include/linux/sched/sd_flags.h
-> > @@ -117,13 +117,13 @@ SD_FLAG(SD_SHARE_CPUCAPACITY, SDF_SHARED_CHILD | =
-SDF_NEEDS_GROUPS)
-> >  SD_FLAG(SD_CLUSTER, SDF_NEEDS_GROUPS)
-> >
-> >  /*
-> > - * Domain members share CPU package resources (i.e. caches)
-> > + * Domain members share CPU Last Level Caches
-> >   *
-> >   * SHARED_CHILD: Set from the base domain up until spanned CPUs no lon=
-ger share
-> >   *               the same cache(s).
-> >   * NEEDS_GROUPS: Caches are shared between groups.
-> >   */
-> > -SD_FLAG(SD_SHARE_PKG_RESOURCES, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
-> > +SD_FLAG(SD_SHARE_LLC, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
-> >
-> >  /*
-> >   * Only a single load balancing instance
-> > diff --git a/include/linux/sched/topology.h b/include/linux/sched/topol=
-ogy.h
-> > index a6e04b4a21d7..191b122158fb 100644
-> > --- a/include/linux/sched/topology.h
-> > +++ b/include/linux/sched/topology.h
-> > @@ -38,21 +38,21 @@ extern const struct sd_flag_debug sd_flag_debug[];
-> >  #ifdef CONFIG_SCHED_SMT
-> >  static inline int cpu_smt_flags(void)
-> >  {
-> > -       return SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
-> > +       return SD_SHARE_CPUCAPACITY | SD_SHARE_LLC;
-> >  }
-> >  #endif
-> >
-> >  #ifdef CONFIG_SCHED_CLUSTER
-> >  static inline int cpu_cluster_flags(void)
-> >  {
-> > -       return SD_CLUSTER | SD_SHARE_PKG_RESOURCES;
-> > +       return SD_CLUSTER | SD_SHARE_LLC;
-> >  }
-> >  #endif
-> >
-> >  #ifdef CONFIG_SCHED_MC
-> >  static inline int cpu_core_flags(void)
-> >  {
-> > -       return SD_SHARE_PKG_RESOURCES;
-> > +       return SD_SHARE_LLC;
-> >  }
-> >  #endif
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index cd1ec57c0b7b..da6c77d05d07 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -10687,7 +10687,7 @@ static inline void calculate_imbalance(struct l=
-b_env *env, struct sd_lb_stats *s
-> >          */
-> >         if (local->group_type =3D=3D group_has_spare) {
-> >                 if ((busiest->group_type > group_fully_busy) &&
-> > -                   !(env->sd->flags & SD_SHARE_PKG_RESOURCES)) {
-> > +                   !(env->sd->flags & SD_SHARE_LLC)) {
-> >                         /*
-> >                          * If busiest is overloaded, try to fill spare
-> >                          * capacity. This might end up creating spare c=
-apacity
-> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> > index 0b33f7b05d21..99ea5986038c 100644
-> > --- a/kernel/sched/topology.c
-> > +++ b/kernel/sched/topology.c
-> > @@ -657,13 +657,13 @@ static void destroy_sched_domains(struct sched_do=
-main *sd)
-> >  }
-> >
-> >  /*
-> > - * Keep a special pointer to the highest sched_domain that has
-> > - * SD_SHARE_PKG_RESOURCE set (Last Level Cache Domain) for this
-> > - * allows us to avoid some pointer chasing select_idle_sibling().
-> > + * Keep a special pointer to the highest sched_domain that has SD_SHAR=
-E_LLC set
-> > + * (Last Level Cache Domain) for this allows us to avoid some pointer =
-chasing
-> > + * select_idle_sibling().
-> >   *
-> > - * Also keep a unique ID per domain (we use the first CPU number in
-> > - * the cpumask of the domain), this allows us to quickly tell if
-> > - * two CPUs are in the same cache domain, see cpus_share_cache().
-> > + * Also keep a unique ID per domain (we use the first CPU number in th=
-e cpumask
-> > + * of the domain), this allows us to quickly tell if two CPUs are in t=
-he same
-> > + * cache domain, see cpus_share_cache().
-> >   */
-> >  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
-> >  DEFINE_PER_CPU(int, sd_llc_size);
-> > @@ -684,7 +684,7 @@ static void update_top_cache_domain(int cpu)
-> >         int id =3D cpu;
-> >         int size =3D 1;
-> >
-> > -       sd =3D highest_flag_domain(cpu, SD_SHARE_PKG_RESOURCES);
-> > +       sd =3D highest_flag_domain(cpu, SD_SHARE_LLC);
-> >         if (sd) {
-> >                 id =3D cpumask_first(sched_domain_span(sd));
-> >                 size =3D cpumask_weight(sched_domain_span(sd));
-> > @@ -1554,7 +1554,7 @@ static struct cpumask             ***sched_domain=
-s_numa_masks;
-> >   * function. For details, see include/linux/sched/sd_flags.h.
-> >   *
-> >   *   SD_SHARE_CPUCAPACITY
-> > - *   SD_SHARE_PKG_RESOURCES
-> > + *   SD_SHARE_LLC
-> >   *   SD_CLUSTER
-> >   *   SD_NUMA
-> >   *
-> > @@ -1566,7 +1566,7 @@ static struct cpumask             ***sched_domain=
-s_numa_masks;
-> >  #define TOPOLOGY_SD_FLAGS              \
-> >         (SD_SHARE_CPUCAPACITY   |       \
-> >          SD_CLUSTER             |       \
-> > -        SD_SHARE_PKG_RESOURCES |       \
-> > +        SD_SHARE_LLC           |       \
-> >          SD_NUMA                |       \
-> >          SD_ASYM_PACKING)
-> >
-> > @@ -1609,7 +1609,7 @@ sd_init(struct sched_domain_topology_level *tl,
-> >                                         | 0*SD_BALANCE_WAKE
-> >                                         | 1*SD_WAKE_AFFINE
-> >                                         | 0*SD_SHARE_CPUCAPACITY
-> > -                                       | 0*SD_SHARE_PKG_RESOURCES
-> > +                                       | 0*SD_SHARE_LLC
-> >                                         | 0*SD_SERIALIZE
-> >                                         | 1*SD_PREFER_SIBLING
-> >                                         | 0*SD_NUMA
-> > @@ -1646,7 +1646,7 @@ sd_init(struct sched_domain_topology_level *tl,
-> >         if (sd->flags & SD_SHARE_CPUCAPACITY) {
-> >                 sd->imbalance_pct =3D 110;
-> >
-> > -       } else if (sd->flags & SD_SHARE_PKG_RESOURCES) {
-> > +       } else if (sd->flags & SD_SHARE_LLC) {
-> >                 sd->imbalance_pct =3D 117;
-> >                 sd->cache_nice_tries =3D 1;
-> >
-> > @@ -1671,7 +1671,7 @@ sd_init(struct sched_domain_topology_level *tl,
-> >          * For all levels sharing cache; connect a sched_domain_shared
-> >          * instance.
-> >          */
-> > -       if (sd->flags & SD_SHARE_PKG_RESOURCES) {
-> > +       if (sd->flags & SD_SHARE_LLC) {
-> >                 sd->shared =3D *per_cpu_ptr(sdd->sds, sd_id);
-> >                 atomic_inc(&sd->shared->ref);
-> >                 atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
-> > @@ -2446,8 +2446,8 @@ build_sched_domains(const struct cpumask *cpu_map=
-, struct sched_domain_attr *att
-> >                 for (sd =3D *per_cpu_ptr(d.sd, i); sd; sd =3D sd->paren=
-t) {
-> >                         struct sched_domain *child =3D sd->child;
-> >
-> > -                       if (!(sd->flags & SD_SHARE_PKG_RESOURCES) && ch=
-ild &&
-> > -                           (child->flags & SD_SHARE_PKG_RESOURCES)) {
-> > +                       if (!(sd->flags & SD_SHARE_LLC) && child &&
-> > +                           (child->flags & SD_SHARE_LLC)) {
-> >                                 struct sched_domain __rcu *top_p;
-> >                                 unsigned int nr_llcs;
-> >
-> > --
-> > 2.43.0
-> >
-> >
->
-> Thanks
-> Barry
+I started to test on Lepotato board and added patchs up to  "drivers: crypto: meson: process more than MAXDESCS descriptors"
+booting lead to:
+[   18.559922] gxl-crypto c883e000.crypto: will run requests pump with realtime priority
+[   18.562492] gxl-crypto c883e000.crypto: will run requests pump with realtime priority
+[   18.570328] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000028
+[   18.581135] Mem abort info:
+[   18.581354]   ESR = 0x0000000096000006
+[   18.585138]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   18.593005]   SET = 0, FnV = 0
+[   18.593334]   EA = 0, S1PTW = 0
+[   18.597329]   FSC = 0x06: level 2 translation fault
+[   18.604250] Data abort info:
+[   18.604282]   ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
+[   18.612243]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[   18.614552]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[   18.624249] user pgtable: 4k pages, 48-bit VAs, pgdp=000000007b8ab000
+[   18.626196] [0000000000000028] pgd=080000007b8ac003, p4d=080000007b8ac003, pud=080000007b8ad003, pmd=0000000000000000
+[   18.640426] Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
+[   18.642929] Modules linked in: of_mdio fixed_phy fwnode_mdio sm4_ce(-) sm4 meson_rng meson_canvas libphy rng_core meson_gxbb_wdt watchdog amlogic_gxl_crypto(+) ghash_generic gcm xctr xts cts essiv authenc cmac xcbc ccm
+[   18.662164] CPU: 3 PID: 264 Comm: cryptomgr_test Not tainted 6.8.0-rc1-00052-gf70f2b0814a0 #11
+[   18.670698] Hardware name: Libre Computer AML-S905X-CC (DT)
+[   18.676220] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[   18.683118] pc : meson_get_engine_number+0x2c/0x50 [amlogic_gxl_crypto]
+[   18.689674] lr : meson_skencrypt+0x38/0x8c [amlogic_gxl_crypto]
+[   18.695539] sp : ffff800081393790
+[   18.698816] x29: ffff800081393790 x28: 0000000000000400 x27: ffff800080874a80
+[   18.705888] x26: ffff800081393830 x25: ffff800081393bd8 x24: ffff000001aaa000
+[   18.712961] x23: 0000000000000001 x22: 0000000000000000 x21: ffff0000011b1c50
+[   18.720033] x20: ffff00007bac8248 x19: ffff0000011b1c00 x18: ffffffffffffffff
+[   18.727105] x17: 00000000000001a4 x16: ffff800078edc1f0 x15: ffff8000813938e0
+[   18.734178] x14: ffff800101393bd7 x13: 0000000000000000 x12: 0000000000000000
+[   18.741250] x11: 000000000000021c x10: fffffffff81213e0 x9 : 00000000000730d5
+[   18.748323] x8 : ffff0000011b1ca8 x7 : fefefefefefefefe x6 : fffffc000007a302
+[   18.755395] x5 : ffff800078eb4148 x4 : 0000000000000000 x3 : 0000000000000028
+[   18.762468] x2 : ffff000001aaa040 x1 : 0000000000000000 x0 : 0000000000000000
+[   18.769541] Call trace:
+[   18.771956]  meson_get_engine_number+0x2c/0x50 [amlogic_gxl_crypto]
+[   18.778167]  crypto_skcipher_encrypt+0xe0/0x124
+[   18.782651]  test_skcipher_vec_cfg+0x2a8/0x6b0
+[   18.787050]  test_skcipher_vec+0x80/0x1c4
+[   18.791017]  alg_test_skcipher+0xbc/0x1fc
+[   18.794985]  alg_test+0x140/0x628
+[   18.798262]  cryptomgr_test+0x24/0x44
+[   18.801885]  kthread+0x110/0x114
+[   18.805076]  ret_from_fork+0x10/0x20
+[   18.808617] Code: 1b008440 d65f03c0 9100a003 f9800071 (885f7c61) 
+[   18.814651] ---[ end trace 0000000000000000 ]---
+[   18.862270] meson8b-dwmac c9410000.ethernet: IRQ eth_wake_irq not found
+[   18.863897] meson8b-dwmac c9410000.ethernet: IRQ eth_lpi not found
+[   18.870349] meson8b-dwmac c9410000.ethernet: PTP uses main clock
+[   18.880548] meson8b-dwmac c9410000.ethernet: User ID: 0x11, Synopsys ID: 0x37
+[   18.882403] meson8b-dwmac c9410000.ethernet: 	DWMAC1000
+[   18.887926] meson8b-dwmac c9410000.ethernet: DMA HW capability register supported
+[   18.895215] meson8b-dwmac c9410000.ethernet: RX Checksum Offload Engine supported
+[   18.902627] meson8b-dwmac c9410000.ethernet: COE Type 2
+[   18.907756] meson8b-dwmac c9410000.ethernet: TX Checksum insertion supported
+[   18.914750] meson8b-dwmac c9410000.ethernet: Wake-Up On Lan supported
+[   18.921246] meson8b-dwmac c9410000.ethernet: Normal descriptors
+[   18.927017] meson8b-dwmac c9410000.ethernet: Ring mode enabled
+[   18.932782] meson8b-dwmac c9410000.ethernet: Enable RX Mitigation via HW Watchdog Timer
 
