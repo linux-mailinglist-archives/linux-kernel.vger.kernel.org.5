@@ -1,156 +1,252 @@
-Return-Path: <linux-kernel+bounces-63435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87DC6852F2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:27:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79472852F43
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:28:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9E4DB27070
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:26:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2AF61F2165E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 821C95479F;
-	Tue, 13 Feb 2024 11:22:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F164D374C9;
+	Tue, 13 Feb 2024 11:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pxZ9kvPh"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nWOUkteQ"
 Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F411B5466E
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:22:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F49374C1
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707823324; cv=none; b=oA0aCqM7J4Gxrb9vEVBcRFzhld0dUN9fnSBt3rqNVn/M+QLkZPyZW3e5SD4/0FNpWycAMd8RwuHw1uOw65Gmk3wY6JHQjru56l3okq0+6jiQJwm7v4Zv1E8fL5bqOGBMjsvT2oXYcwR5V8UAY+e4JYFQATdcIgb3WEiFgkSAPMU=
+	t=1707823509; cv=none; b=ZDs3q+6bfQfb5AfnJtrVSNU4aDg13d+5iTcydFnBFm3iybZClx2iQR4SZDA4V2oJSRSQwy+UnHVzz/5S/YP20NudK6uT9IOrH3mzbdEhiFmRwYm6uga9jlxmMEmMWzpD15Iblm2RY765AZJnbQ7i5DDtN19BE6YX6ZcvHjqBRjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707823324; c=relaxed/simple;
-	bh=1q7bAQxHQhZGMtiVBQm0LFBFB/VW4rFEkAOj06GXDl4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aoV4JpWaXTVY8aJKNipCrAzXBrpyLbNPuotxYqkoH56XG+8nUxV3agt7SCDCaovq8A7sdRXG0RdrWQcUNRCn2Wf9/MH6Y8wosIQEYswXxDWgYP1v1hbuzW4G+id4gd3Y1ZAv/O/uFdV808G2J+FSpHy2CsWqypciZoWc+b99xXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pxZ9kvPh; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-337cc8e72f5so3005570f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:22:02 -0800 (PST)
+	s=arc-20240116; t=1707823509; c=relaxed/simple;
+	bh=Zw8haxAapUBG44nEylJwQccZGFGgWD0ChLnhmjrvZNE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=SktGz7SnHpk1orIefYh+BNNrNRy6AGq/fKEGESvdEml/HdxD8AsZLYQXeY9/WQ6T45yuFB53PCBCKpcl1rzW/2OcATq5+haruEnvKK1K0MHPaXJzHmRTm6C7U1q5kpo7Xv7S9FeY4+jp+rPHQfkObvLK/meV0cymfCZ1YYGqbKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nWOUkteQ; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33cddf4b4b5so220466f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:25:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707823321; x=1708428121; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SjiLjqD5OULMevxuEv823FXK9KsYza3OTYosWoBshto=;
-        b=pxZ9kvPhTs3Y16FWMJ1INc14azkcpQq2e5Cu7zecyEgw6fbGC8mGgxxGm+WFQVNp6C
-         ikA+wAj7V23odQIWzkKXocT5zOc1PrYjOkrj5MYUhv8/A/o+OayS4gq4xj9EZ1yXOrkK
-         /fp2vRNe7poT2QP/YvYIatx4h9lfbOLlVAT9CE4zxu0UdcnjSVpJDtFOSKPbyllJNb7j
-         kPAACUTzDRMxm6FP8ns8SMIGV5U4s5/pJOdrMi1cWwuybXVWm+80qvt6DEaQadzRYpfu
-         WI8pTaUtb3Nky/0lrasBBjQH1cmWxiJHw6+T1fHG2jxvoelhBbw3LV86QvwfTpQvuMCL
-         4yKg==
+        d=google.com; s=20230601; t=1707823505; x=1708428305; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c7B1VdNEjxdBHUG+t3lw56dnlzhGxxWmEE0AwtlQokM=;
+        b=nWOUkteQTjFRGq8xUbJgA4b5tA7kklIZ/tVCWet1dHXNrVQJb+gUS7YOwVIa3TOosf
+         0prgb7d8lsWlmXuUI5tDovUulHiIBp4+rvRkoNOqvW/dMA07R4EH/J5Nxa2iFJhqvmKc
+         GjSFjCxXL9mfOHgirVkERoYLEO+G6tvqh5pCAsuDQZpixsGQuiOQ4PRIm6eKnwLIxFSx
+         U1vEegxGPnCRDPoKyCgd8hJC5OOrYu+BtURGK6pewwl95PmIgP6eBM9xAnxQI4W4Zhka
+         97yRPiyQxpF3Fmv2veKvOe8Y1UyhkQcfyM+dl1xvCHFYOQz9sn1bsg5n5JuIkqFxmcAs
+         9q1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707823321; x=1708428121;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SjiLjqD5OULMevxuEv823FXK9KsYza3OTYosWoBshto=;
-        b=dozuEsOzeBoqa+qg5GgP8d54kPhhCq03Y8TxImE6qX64malfsKE03ZOVIk2DxHbH7B
-         4VUnIqauLcy09MEn3y5Fy30XZ88UjxQpSRPslnZjKRMAqOTxFH/OkesersX8wr2MlwXP
-         cVCr+2h8J9mptss5/k3EleC/ADMfdo6cPRqN8wWF7npbdmKw9FNCHOhKXl6zqU58e6R2
-         ClXtEacNE9SE7qaPvyBnF4a0/cKu3KT8me7TZtXHUA9jd+U9gJvbzTdIajI8U02HaSOb
-         mi/4rrepOSpG5M37lhBzCiMq87xtq57Spx1/JMvg9pZ32svFd25QWIIrX5ToZoJitJqq
-         JVNQ==
-X-Gm-Message-State: AOJu0YzNmFAql7Cy/BCeJme1yQYGkkZ9YqRPmXOLYtfBEfLxglPUekWv
-	1fmAmgzAXCE9VySCDRofqEuJmCbOCrJDaRBfj5ggrZr7f0vlIX2uYnVbvH1mMpI=
-X-Google-Smtp-Source: AGHT+IFhn35PB6MCR2TqlKMZXsj6pkZTrujBAr4tROj+7XSj64/cNLpE4xYOPdXfCpQ291RRJcVh0Q==
-X-Received: by 2002:a5d:6a11:0:b0:33c:da5f:1781 with SMTP id m17-20020a5d6a11000000b0033cda5f1781mr949866wru.15.1707823321278;
-        Tue, 13 Feb 2024 03:22:01 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVNRPZ4dA3Ds5N3bUSGVcXySQhBoz2bVl1xnZzkEGQQYVaFilW8aPJt6/X2/0KeU16K6Jssixef4TUi4gK2IzOJR+bz9Pvsax4kp+3d05/21g5P+WxHOHIgWXkmMmsF4nhkYx2dsplnrwidTsgq6IlUL/48AC+uTIUhFioDLd0FuWrgSjtBoV/ekEs9YPsvdeGLZ2tWjXN2GapEk7AJa69pPbj8uuDILg4DMXApD4jtLAhKgsvjXo5Dzm/EMz+oliRgrXnvVb8jW5RGu2WTyj+kdeh1PhwDRlmURZj4aZZyyo5jtLC8dCDLq2s1n4sZo2oV3LPI
-Received: from [192.168.1.20] ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id bp9-20020a5d5a89000000b0033b4796641asm9435420wrb.22.2024.02.13.03.22.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 03:22:00 -0800 (PST)
-Message-ID: <811db1bd-6ef2-493c-99c0-b040721e1053@linaro.org>
-Date: Tue, 13 Feb 2024 12:22:00 +0100
+        d=1e100.net; s=20230601; t=1707823505; x=1708428305;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c7B1VdNEjxdBHUG+t3lw56dnlzhGxxWmEE0AwtlQokM=;
+        b=iKN9tzF7O+shN57y1CH7nlKX5E6ESu0sjskvF5cajos97HHZjqN5aEHExQVUyA3co8
+         H6C+I2HtIm/U/EX48UJYNpvQ3mpT0N8IqhoPHM1tK+MamIy14diLwGwoqkdJLaRKwWrj
+         /iOO8sMrnHSqrr0cZJT3DaDE2FpnaxBBqTcEJkJdtwQHabxMrvl7WLyExT7lKsitlS+O
+         pY0WwYKSmfe6YwVaM7lgm+RbV7W7fyr6CMVtqAfaRSZi4QH6aCOkUfyMSNMLqDj3rgML
+         GOE6xaP5BN8k//whs6rvMAV+cgrFYVY58Wl+tw13loqZ9EjDc6FH6YIn8J5hmgCH5X3q
+         NaVA==
+X-Forwarded-Encrypted: i=1; AJvYcCWkhqT0wIwbHDs0BYEtX5FFRRV/RUcvx8cRgRR+HnnHR4zTu5G7hsm2LvzUhyIrtLZgiXJEr9MiCtHQ3TaWbR3tQcOsszvla0plBfRn
+X-Gm-Message-State: AOJu0YzFMJYsLjsPKuMexJkrro0AWOxJ64KyfSne79F2cXeENxxhYAlY
+	DjF/Fz6HSr5xtA7iLhoiBecjEL1V78ZuNQ+ruk0FmZjONntJi7rs482b38ujjqlRCtfl6FNxy0A
+	kPVVRVCWiYD2m2llaV+otWyZDCLJtWibt+zRA
+X-Google-Smtp-Source: AGHT+IFDvKZilqGPmprSihukL2cOV+DX1TDTDe1cz5RyBlvdIbIU9j0HXFdr6eKEBuH81WUcfNsiM9yJ0Ex2CNjDRAA=
+X-Received: by 2002:adf:eec9:0:b0:33b:2281:ef32 with SMTP id
+ a9-20020adfeec9000000b0033b2281ef32mr7382022wrp.69.1707823505374; Tue, 13 Feb
+ 2024 03:25:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] ARM: dts: qcom: msm8974: Add DTS for Samsung
- Galaxy S5 China (kltechn)
-Content-Language: en-US
-To: Rong Zhang <i@rong.moe>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Icenowy Zheng <uwu@icenowy.me>
-References: <20240213110137.122737-1-i@rong.moe>
- <20240213110137.122737-5-i@rong.moe>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240213110137.122737-5-i@rong.moe>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240213001920.3551772-1-lokeshgidra@google.com>
+ <20240213001920.3551772-4-lokeshgidra@google.com> <20240213033307.zbhrpjigco7vl56z@revolver>
+In-Reply-To: <20240213033307.zbhrpjigco7vl56z@revolver>
+From: Lokesh Gidra <lokeshgidra@google.com>
+Date: Tue, 13 Feb 2024 03:24:53 -0800
+Message-ID: <CA+EESO5TNubw4vi08P6BO-4XKTLNVeNfjM92ieZJTd_oJt9Ygw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] userfaultfd: use per-vma locks in userfaultfd operations
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Lokesh Gidra <lokeshgidra@google.com>, 
+	akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, selinux@vger.kernel.org, surenb@google.com, 
+	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
+	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com, 
+	willy@infradead.org, jannh@google.com, kaleshsingh@google.com, 
+	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 13/02/2024 11:58, Rong Zhang wrote:
-> The only difference between Samsung Galaxy S5 China (kltechn) and klte
-> is the gpio pins of i2c_led_gpio. With pins corrected, the LEDs and WiFi
-> are able to work properly.
-> 
-> Signed-off-by: Rong Zhang <i@rong.moe>
-> ---
->  arch/arm/boot/dts/qcom/Makefile                  |  1 +
->  .../dts/qcom/qcom-msm8974pro-samsung-kltechn.dts | 16 ++++++++++++++++
->  2 files changed, 17 insertions(+)
->  create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-kltechn.dts
-> 
+On Mon, Feb 12, 2024 at 7:33=E2=80=AFPM Liam R. Howlett <Liam.Howlett@oracl=
+e.com> wrote:
+>
+> * Lokesh Gidra <lokeshgidra@google.com> [240212 19:19]:
+> > All userfaultfd operations, except write-protect, opportunistically use
+> > per-vma locks to lock vmas. On failure, attempt again inside mmap_lock
+> > critical section.
+> >
+> > Write-protect operation requires mmap_lock as it iterates over multiple
+> > vmas.
+> >
+> > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> > ---
+> >  fs/userfaultfd.c              |  13 +-
+> >  include/linux/userfaultfd_k.h |   5 +-
+> >  mm/userfaultfd.c              | 392 ++++++++++++++++++++++++++--------
+> >  3 files changed, 312 insertions(+), 98 deletions(-)
+> >
+> ...
+>
+> > +
+> > +static __always_inline
+> > +struct vm_area_struct *find_vma_and_prepare_anon(struct mm_struct *mm,
+> > +                                              unsigned long addr)
+> > +{
+> > +     struct vm_area_struct *vma;
+> > +
+> > +     mmap_assert_locked(mm);
+> > +     vma =3D vma_lookup(mm, addr);
+> > +     if (!vma)
+> > +             vma =3D ERR_PTR(-ENOENT);
+> > +     else if (!(vma->vm_flags & VM_SHARED) && anon_vma_prepare(vma))
+> > +             vma =3D ERR_PTR(-ENOMEM);
+>
+> Nit: I just noticed that the code below says anon_vma_prepare() is unlike=
+ly.
+>
+Thanks for catching this. I'll add it in next version.
+> ...
+>
+> > +static struct vm_area_struct *lock_mm_and_find_dst_vma(struct mm_struc=
+t *dst_mm,
+> > +                                                    unsigned long dst_=
+start,
+> > +                                                    unsigned long len)
+> > +{
+> > +     struct vm_area_struct *dst_vma;
+> > +     int err;
+> > +
+> > +     mmap_read_lock(dst_mm);
+> > +     dst_vma =3D find_vma_and_prepare_anon(dst_mm, dst_start);
+> > +     if (IS_ERR(dst_vma)) {
+> > +             err =3D PTR_ERR(dst_vma);
+>
+> It's sort of odd you decode then re-encode this error, but it's correct
+> the way you have it written.  You could just encode ENOENT instead?
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Thanks. It was an oversight. I'll fix it.
+>
+> > +             goto out_unlock;
+> > +     }
+> > +
+> > +     if (validate_dst_vma(dst_vma, dst_start + len))
+> > +             return dst_vma;
+> > +
+> > +     err =3D -ENOENT;
+> > +out_unlock:
+> > +     mmap_read_unlock(dst_mm);
+> > +     return ERR_PTR(err);
+> >  }
+> > +#endif
+> >
+> ...
+>
+> > +static __always_inline
+> > +long find_vmas_mm_locked(struct mm_struct *mm,
+>
+> int would probably do?
+> > +                      unsigned long dst_start,
+> > +                      unsigned long src_start,
+> > +                      struct vm_area_struct **dst_vmap,
+> > +                      struct vm_area_struct **src_vmap)
+> > +{
+> > +     struct vm_area_struct *vma;
+> > +
+> > +     mmap_assert_locked(mm);
+> > +     vma =3D find_vma_and_prepare_anon(mm, dst_start);
+> > +     if (IS_ERR(vma))
+> > +             return PTR_ERR(vma);
+> > +
+> > +     *dst_vmap =3D vma;
+> > +     /* Skip finding src_vma if src_start is in dst_vma */
+> > +     if (src_start >=3D vma->vm_start && src_start < vma->vm_end)
+> > +             goto out_success;
+> > +
+> > +     vma =3D vma_lookup(mm, src_start);
+> > +     if (!vma)
+> > +             return -ENOENT;
+> > +out_success:
+> > +     *src_vmap =3D vma;
+> > +     return 0;
+> > +}
+> > +
+> > +#ifdef CONFIG_PER_VMA_LOCK
+> > +static long find_and_lock_vmas(struct mm_struct *mm,
+>
+> This could also be an int return type, I must be missing something?
 
-Best regards,
-Krzysztof
+If you look at ERR_PTR() etc. macros, they all use 'long' for
+conversions. Also, this file uses long/ssize_t/int at different
+places. So I went in favor of long. I'm sure int would work just fine
+too. Let me know if you want me to change it to int.
+>
+> ...
+>
+> > +     *src_vmap =3D lock_vma_under_rcu(mm, src_start);
+> > +     if (likely(*src_vmap))
+> > +             return 0;
+> > +
+> > +     /* Undo any locking and retry in mmap_lock critical section */
+> > +     vma_end_read(*dst_vmap);
+> > +
+> > +     mmap_read_lock(mm);
+> > +     err =3D find_vmas_mm_locked(mm, dst_start, src_start, dst_vmap, s=
+rc_vmap);
+> > +     if (!err) {
+> > +             /*
+> > +              * See comment in lock_vma() as to why not using
+> > +              * vma_start_read() here.
+> > +              */
+> > +             down_read(&(*dst_vmap)->vm_lock->lock);
+> > +             if (*dst_vmap !=3D *src_vmap)
+> > +                     down_read(&(*src_vmap)->vm_lock->lock);
+> > +     }
+> > +     mmap_read_unlock(mm);
+> > +     return err;
+> > +}
+> > +#else
+> > +static long lock_mm_and_find_vmas(struct mm_struct *mm,
+> > +                               unsigned long dst_start,
+> > +                               unsigned long src_start,
+> > +                               struct vm_area_struct **dst_vmap,
+> > +                               struct vm_area_struct **src_vmap)
+> > +{
+> > +     long err;
+> > +
+> > +     mmap_read_lock(mm);
+> > +     err =3D find_vmas_mm_locked(mm, dst_start, src_start, dst_vmap, s=
+rc_vmap);
+> > +     if (err)
+> > +             mmap_read_unlock(mm);
+> > +     return err;
+> >  }
+> > +#endif
+>
+> This section is much easier to understand.  Thanks.
 
+I'm glad finally the patch is easier to follow. Thanks so much for
+your prompt reviews.
+>
+> Thanks,
+> Liam
 
