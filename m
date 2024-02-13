@@ -1,163 +1,196 @@
-Return-Path: <linux-kernel+bounces-63347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C8EC852DED
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:32:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6B2B852DF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:34:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C2991F25A0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:32:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C6C61C21129
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:34:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F1823774;
-	Tue, 13 Feb 2024 10:32:09 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7DB28E3C;
-	Tue, 13 Feb 2024 10:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82AA23754;
+	Tue, 13 Feb 2024 10:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SVivYR3z"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D87A224D4;
+	Tue, 13 Feb 2024 10:34:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707820328; cv=none; b=skavwo3GiT4L3d61nSOSMHjk2lCQqLdi3I4X3RHH5EEM5FtbSUK3NK/gMAqwflGIU9nLJ1US3/ffjcwC2ZtQEGHyQ9G9YrnrvLsSMZ5Jv2hcEk/bcZjcIErx6Kwr9xoL2LCBhqYfb9oVgn+IJeALvbb/OdxCzyNm64JUKy9x4vo=
+	t=1707820480; cv=none; b=oN8PX0VCIzBCcReLYUrvx3/FF7R+yknL0wmVTAqcSK9dXxgc/5k94H6KLR0FtTCW7L0kNi3v+5wPtiFqMWXrm/uPD6xshqsKH7u1UN9eZUZQMNtzpD/pEQwqp3WEyUa+lhN9sftrvmWEf5z53WCArDGnDXxfibqd9xTzpqofZpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707820328; c=relaxed/simple;
-	bh=cR8wz3zzvoCe1ztWtuPDRbzYlQX9EO4ihc+W26Xu7jI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=psYkR2PK1j8AO2sdz0rF4NssyFCv4j/wqAT0psiXYNy9B7meJC7aJV7Rl2e9wVMqnPk/W6NwpXQiAZlB9JWHzGK7oRiYBWZJ8cZwGgHf5sCXB/4L/czSrdThzAEs8HD6vBOTC+ydPNZ8xSKVOa+xCSH6tbHK2L4gR0YigeUR2WI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFBAADA7;
-	Tue, 13 Feb 2024 02:32:46 -0800 (PST)
-Received: from [10.57.50.4] (unknown [10.57.50.4])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 111193F5A1;
-	Tue, 13 Feb 2024 02:32:03 -0800 (PST)
-Message-ID: <39c01eae-049b-4f5b-b86e-4af22c8246c1@arm.com>
-Date: Tue, 13 Feb 2024 10:32:02 +0000
+	s=arc-20240116; t=1707820480; c=relaxed/simple;
+	bh=n+mIwM5bfg0kfua6+c13QqD9H2W99vr9IltUa71S+Jo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cRmKTJQ7X79sPqXDz608RZgyCI45BpzThGx8Z3A5W2JUwMG+jSch/muIKQLI4wwkEu9akVp0TznaHB4ii2z8FYlSuqEsn0DOqobRSZXm7480Nfsp7HYlNnFP3h7gP9iWN+AmI1DJ5tIChTisFaBJ3szwjqhE2wHMpkx+6/P/Ibk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SVivYR3z; arc=none smtp.client-ip=209.85.167.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3bd72353d9fso3088700b6e.3;
+        Tue, 13 Feb 2024 02:34:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707820478; x=1708425278; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=n+mIwM5bfg0kfua6+c13QqD9H2W99vr9IltUa71S+Jo=;
+        b=SVivYR3zfKVFft3grLE/s17s3r7zr1oIVxw/uQVsfe5VjU0whmEuZWamPF0jDEhGg2
+         5EiakX2ODgH9GtdL+2qOm2EUSIHrUfdwrXlWqErDk3ZC8FxVnCpzRj5MkUSUjTwTEd54
+         Cx8JdXsDMTy4g3Fo3clyx/ELb3dYuaAnvwnbFqMSRrVjRiMnTOiUbibC5rzAeJjCRgCG
+         w17NizM6zInB3MjLBaijDEO+TalVkrPfqkxJI2tZgvQm8H30R6laK5Qld2cjZiohn3F5
+         +94Xaf1fdXvbK89DMu3T5u6EIv6qAHqzraa7QjfobTzQ9/49ttFzF7YHL6NzNb9msIza
+         3Qdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707820478; x=1708425278;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n+mIwM5bfg0kfua6+c13QqD9H2W99vr9IltUa71S+Jo=;
+        b=YHXz+g7sFQODL1Qa26EY80NXyPsX0wERB1mG6laungxQnKcS0fDMWom8SBayucM55S
+         2mNcuuNz5snYu4v3bEzIn92DTPoXJUcRvpumjdudUm0hPAHCnpSsBm809j2Bd/O55DZI
+         FmBh28xUwo72LTlKYNuYopPhTaAUNPOca6dDuiZPMMYru49h0EyYY+nLkVs3uR7G5nRp
+         gD0KWIRkQgTPM21RioE8Lo2h5ob12TQRrT8w0CdB6QNQorN4hw2x5uNFIqErNmIvfAF1
+         J5JLbPGC+IEFsTAp9Ab2SMEQTlBtlXtnWRU5QayZ3lLkZ+UtsrAnlG8rkyhZHGAQoAZK
+         6YTA==
+X-Forwarded-Encrypted: i=1; AJvYcCVEZjH1LPo3lNHwPwgpt37AaeIhKRu7B7/fvMzNr1M/P3BI+b2MbzUK8OHOGDZCo+lud2+IY3VvhwD5P/kF5jx7FlQU7iHHoyVaEQ==
+X-Gm-Message-State: AOJu0Ywy+7S3UfOF4km2YHPQ+smoUePl0NG8JwtD6IOHOBuFYZub4BOB
+	G4QBCb78nNfgYqD/8KNKPSfjBmkWPGyVwcsQwzNcvdN6kOIKSF0V
+X-Google-Smtp-Source: AGHT+IFCZwgKrh0/FpPp+LNk8Fihikr8X/13T4IV1SXzwRmQAgU3WySrwdbv+9xrEOLIVOhYUH6cjg==
+X-Received: by 2002:a05:6358:895:b0:17a:d4c0:d59f with SMTP id m21-20020a056358089500b0017ad4c0d59fmr8590441rwj.4.1707820478348;
+        Tue, 13 Feb 2024 02:34:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWVr1VRSr3Abkn6yFoVxdeXnex6UspkJ4XFti7+v03ZZUFwQa7mbH+5An9fWSNmrIg1FHoCGS8tdcNAcC/x+Z3xj5G55SnVIHG9VAaP24Br6LvV5z8n/YOlZSPjGABL2YXREesEp6IwBf9n+QTBb/5CVrd5SApUHZfMefHnwx4eazjE1JM=
+Received: from rigel ([220.235.35.85])
+        by smtp.gmail.com with ESMTPSA id oj10-20020a17090b4d8a00b00296e04442b8sm2110081pjb.41.2024.02.13.02.34.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 02:34:37 -0800 (PST)
+Date: Tue, 13 Feb 2024 18:34:33 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, brgl@bgdev.pl,
+	linus.walleij@linaro.org, andy@kernel.org
+Subject: Re: [PATCH] gpio: uapi: clarify default_values being logical
+Message-ID: <20240213103433.GA191617@rigel>
+References: <20240211101421.166779-1-warthog618@gmail.com>
+ <CAHp75VeSLvrxMOARDBHBJ5VGVR-Jv-7saxjJiN-NOPMyTwit3Q@mail.gmail.com>
+ <20240211231321.GA4748@rigel>
+ <CAHp75VddjcLaRqugKuk+eejYx_0AHVL4SjYcdh7zUKDj8SpcQw@mail.gmail.com>
+ <CAHp75VcjsVasfaZe25fWzzV-5vv7m7O0-v4j=pcvtWQGKtY5BQ@mail.gmail.com>
+ <20240212095607.GA388487@rigel>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 03/11] coresight: tmc: Extract device properties from
- AMBA pid based table lookup
-Content-Language: en-GB
-To: Anshuman Khandual <anshuman.khandual@arm.com>,
- linux-arm-kernel@lists.infradead.org
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
- James Clark <james.clark@arm.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240123054608.1790189-1-anshuman.khandual@arm.com>
- <20240123054608.1790189-4-anshuman.khandual@arm.com>
- <44597c9a-79bd-40f8-87a7-b53582132583@arm.com>
- <0c65f3b0-a879-444c-b0a4-4af485e72166@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <0c65f3b0-a879-444c-b0a4-4af485e72166@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240212095607.GA388487@rigel>
 
-On 13/02/2024 03:13, Anshuman Khandual wrote:
-> 
-> 
-> On 2/12/24 17:43, Suzuki K Poulose wrote:
->> On 23/01/2024 05:46, Anshuman Khandual wrote:
->>> This extracts device properties from AMBA pid based table lookup. This also
->>> defers tmc_etr_setup_caps() after the coresight device has been initialized
->>> so that PID value can be read.
->>>
->>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Cc: Mike Leach <mike.leach@linaro.org>
->>> Cc: James Clark <james.clark@arm.com>
->>> Cc: coresight@lists.linaro.org
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>> ---
->>>    .../hwtracing/coresight/coresight-tmc-core.c  | 19 +++++++++++++------
->>>    1 file changed, 13 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
->>> index 7ec5365e2b64..e71db3099a29 100644
->>> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
->>> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
->>> @@ -370,16 +370,24 @@ static inline bool tmc_etr_has_non_secure_access(struct tmc_drvdata *drvdata)
->>>        return (auth & TMC_AUTH_NSID_MASK) == 0x3;
->>>    }
->>>    +#define TMC_AMBA_MASK 0xfffff
->>> +
->>> +static const struct amba_id tmc_ids[];
->>> +
->>>    /* Detect and initialise the capabilities of a TMC ETR */
->>> -static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
->>> +static int tmc_etr_setup_caps(struct device *parent, u32 devid)
->>>    {
->>>        int rc;
->>> -    u32 dma_mask = 0;
->>> +    u32 tmc_pid, dma_mask = 0;
->>>        struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
->>> +    void *dev_caps;
->>>          if (!tmc_etr_has_non_secure_access(drvdata))
->>>            return -EACCES;
->>>    +    tmc_pid = coresight_get_pid(&drvdata->csdev->access) & TMC_AMBA_MASK;
->>> +    dev_caps = coresight_get_uci_data_from_amba(tmc_ids, tmc_pid);
->>> +
->>>        /* Set the unadvertised capabilities */
->>>        tmc_etr_init_caps(drvdata, (u32)(unsigned long)dev_caps);
->>>    @@ -497,10 +505,6 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
->>>            desc.type = CORESIGHT_DEV_TYPE_SINK;
->>>            desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM;
->>>            desc.ops = &tmc_etr_cs_ops;
->>> -        ret = tmc_etr_setup_caps(dev, devid,
->>> -                     coresight_get_uci_data(id));
->>> -        if (ret)
->>> -            goto out;
->>>            idr_init(&drvdata->idr);
->>>            mutex_init(&drvdata->idr_mutex);
->>>            dev_list = &etr_devs;
->>> @@ -539,6 +543,9 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
->>>            goto out;
->>>        }
->>>    +    if (drvdata->config_type == TMC_CONFIG_TYPE_ETR)
->>> +        ret = tmc_etr_setup_caps(dev, devid);
->>> +
->>
->> With this change, we silently accept an ETR that may only have "SECURE" access only and crash later while we try to enable tracing. You could
->> pass in the "access" (which is already in 'desc.access' in the original
->> call site and deal with it ?
-> 
-> Just wondering, if something like the following will help ? A failed tmc_etr_setup_caps()
-> because of failed tmc_etr_has_non_secure_access(), will unregister the coresight device
-> before returning.
-> 
-> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> @@ -538,8 +538,13 @@ static int __tmc_probe(struct device *dev, struct resource *res)
->                  goto out;
->          }
->   
-> -       if (drvdata->config_type == TMC_CONFIG_TYPE_ETR)
-> +       if (drvdata->config_type == TMC_CONFIG_TYPE_ETR) {
->                  ret = tmc_etr_setup_caps(dev, devid);
-> +               if (ret) {
-> +                       coresight_unregister(drvdata->csdev);
-> +                       goto out;
-> +               }
-> +       }
+On Mon, Feb 12, 2024 at 05:56:07PM +0800, Kent Gibson wrote:
+> On Mon, Feb 12, 2024 at 11:44:02AM +0200, Andy Shevchenko wrote:
+> > On Mon, Feb 12, 2024 at 11:28 AM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > >
+> > > On Mon, Feb 12, 2024 at 1:13 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > > > On Sun, Feb 11, 2024 at 06:58:14PM +0200, Andy Shevchenko wrote:
+> > > > > On Sun, Feb 11, 2024 at 12:14 PM Kent Gibson <warthog618@gmail.com> wrote:
+> > > > > >
+> > > > > > The documentation for default_values mentions high/low which can be
+> > > > > > confusing, particularly when the ACTIVE_LOW flag is set.
+> > > > > >
+> > > > > > Replace high/low with active/inactive to clarify that the values are
+> > > > > > logical not physical.
+> > > > > >
+> > > > > > Similarly, clarify the interpretation of values in struct gpiohandle_data.
+> > > > >
+> > > > > I'm not against this particular change, but I want the entire GPIO
+> > > > > documentation to be aligned in the terminology aspect. Is this the
+> > > > > case after this patch? I.o.w. have we replaced all leftovers?
+> > > >
+> > > > Agreed. Those are the last remnants of the low/high terminolgy that I am
+> > > > aware of, certainly the last in gpio.h.
+> > > >
+> > > > Having a closer look to double check...
+> > > >
+> > > > Ah - it is still used in Documentation/userspace-api/gpio/sysfs.rst -
+> > > > not somewhere I go very often.
+> > > > Would you like that updated in a separate patch?
+> > >
+> > > Yes, please. For this one
+> > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> >
 
-Why do we move the tmc_etr_setup_caps() in the first place ? We could 
-retain where that was and pass "desc.access" parameter rather than 
-registering the csdev and then relying csdev->access ?
+In response after re-reading these docs:
 
-Suzuki
+> > Also
+> > "The values are boolean, zero for low, nonzero for high."
+> > https://docs.kernel.org/driver-api/gpio/consumer.html
+> >
 
->   
->          drvdata->miscdev.name = desc.name;
->          drvdata->miscdev.minor = MISC_DYNAMIC_MINOR;
+That one is logical and should be changed.
 
+> > And there as well
+> > "With this, all the gpiod_set_(array)_value_xxx() functions interpret
+> > the parameter "value" as "asserted" ("1") or "de-asserted" ("0")."
+> > So, should we use asserted-deasserted?
+> >
+
+We should use active/inactive rather than asserted/de-asserted. This is
+the only place that terminology is used - which is ironic as it is this
+section (_active_low_semantics) that explicitly describes the
+physical/logical mapping.
+
+> >
+> > On https://docs.kernel.org/driver-api/gpio/
+> > "get
+> > returns value for signal "offset", 0=low, 1=high, or negative error
+> >
+> > ...
+
+The struct gpio_chip interface is physical, not logical - the active low
+conversion is handled in gpiolib, so this (driver.h) is correct as is.
+
+> >
+> > reg_set
+> > output set register (out=high) for generic GPIO
+> >
+> > reg_clr
+> > output clear register (out=low) for generic GPIO"
+> > (Not sure about the last two, though)
+> >
+> > https://docs.kernel.org/driver-api/gpio/intro.html
+> > "Output values are writable (high=1, low=0)."
+> >
+
+I read that to be physical values, so good as is.
+
+> >
+> > A-ha, here is the section about this:
+> > https://docs.kernel.org/driver-api/gpio/intro.html#active-high-and-active-low.
+> >
+> >
+> > On https://docs.kernel.org/driver-api/gpio/drivers-on-gpio.html
+> > "ledtrig-gpio: drivers/leds/trigger/ledtrig-gpio.c will provide a LED
+> > trigger, i.e. a LED will turn on/off in response to a GPIO line going
+> > high or low (and that LED may in turn use the leds-gpio as per
+> > above)."
+> >
+
+Ditto - physical values.
+
+> > So, can you re-read all of it for high/low asserted/deasserted,
+> > active/inactive and amend accordingly?
+> >
+>
+
+So, from these, consumer.rst is the only file requiring any change.
+I'll submit a patch for that shortly.
+
+Cheers,
+Kent.
 
