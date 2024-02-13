@@ -1,111 +1,150 @@
-Return-Path: <linux-kernel+bounces-64331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2F1853D29
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:30:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A317853D2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:30:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D27651C273F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:30:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEC07B22E0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:30:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF0E61674;
-	Tue, 13 Feb 2024 21:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 729D06167C;
+	Tue, 13 Feb 2024 21:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HLBdByLU"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p7eXOBiu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A18F62144
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE4A4501B;
+	Tue, 13 Feb 2024 21:30:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707859798; cv=none; b=hD4L6i6JmgNC5alPST4gYz55z3snNt2jOuZzv3I5Jqji5/q2x/ou/lpkvjhGydMCEAxRfy8WWzVahbq8udeJUi9f8ZhNbhNg0aqHsjrbYmxcdPitwgQjLsRyITpoObFIib/kJrkkb0FNlz95ddHqMQVgZCY7g+3UUsX+8/xtFNk=
+	t=1707859841; cv=none; b=UO9MHRXroS0L+mH5TjQsqCMLy7G5pXxetMtqM++1ghN5gHGoBJZ8/SISet/PI/HQsZZf5joocfAIl3GnP36QV95a3Wakjk5E4J3I2D3+v2QALTXGTdM9Ft018w7F9z+qfYvK02qOiwD0wlaF+748rk7W28Ow43IVwdrAqRxmaSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707859798; c=relaxed/simple;
-	bh=o1itvEeV8LvxyIcYXdwYU40slMynHwwlOpApN5Ly8Kg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PJiyfXRzB1NNfPINCL/zZF0DX20zNzhIqK1v8MnKsslrGZnEfLf/z2b9Y+n/9YbY1ePXuUrqYOV0eVArhPDLBgcBxvoIw2kR0x43Y+jVr6a3GfOryynKcAt3hncrdbdlV7O0GavuxtzUc29eVNGeHOpH4BoJitZDQdyubFqIr/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HLBdByLU; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso4491330276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:29:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707859796; x=1708464596; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o1itvEeV8LvxyIcYXdwYU40slMynHwwlOpApN5Ly8Kg=;
-        b=HLBdByLUVfJKKCP+rBlx1VzhmanWNu3IYFi0/UxjnAzX9AQFRHv4rjNrt0Sl2gVUtw
-         hC7xWWesP2hKpaVh6lmbLxUWxkCkRe8TxDN7pRjVJCROuXyfvuX6v5gAZQkdfQ+X10jU
-         SDBRDMjeQxz4nF40gqBCD8ldm2r8hVpsu9hsNYQnOaQckkwYQtPzlLeD7y7ggXdzyJ0p
-         n5X3wZ4997ZZGuSgNDIohQ9SWiPN9WtYjtsGOtBADseqHSaIQXRpyMsEOzWM3IKfTNi7
-         ochLIqyNztOF+YFkBPdnt6WJbbnCvy9x42fCLuq7yzcUE5B6uzd44FG0bXUKR1nDwJ0E
-         zSZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707859796; x=1708464596;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o1itvEeV8LvxyIcYXdwYU40slMynHwwlOpApN5Ly8Kg=;
-        b=DXEbF6p3s+5s2gcoxKS+YgEXvAvERbYGqEQaZgmWzqDQLRG446Eq24u03KSt2A0o42
-         qvV/uM5OTsfaf+uUih3SW7oMHwVqUpEGzR3nothncDA4f/z6d2IAu96LmMJKmeZrDS0c
-         PPaC/VxqoCOOVFJ2XN2lfk+929K7BcMOI3wqsmr0bq+JKEnr7JXqkX+X0ieGoNKaacC5
-         vJgxWvJaHpKVd7iq3kGjZnQXN1elcmZADNJs1Ll5RwkyvV1vdKcbJVenjgWZCF2mPoQC
-         NjkHfEcpT5hGpzI2tLNd655icoYbSxX6DDWnMNeU7HsvBZoX/nMiykTKa5HzfoyNY6Np
-         8YDg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3l6qAmZzANey0Q2d5XLE6mDoc2j96NUwgPGN1reBId9iNKWOzRaud/WDliymCAcdiH99zFapU+oyhSAacvGzQ3N5cOg+qZ+HA9WYP
-X-Gm-Message-State: AOJu0YyQSYqgOisN9ovziUo0a7bIiX3TVX6YhHb7XnVD1sSX8jsZ5D9p
-	HKtunInV0B2SSyCwEt6ZHPJPZo1YqMqIF3ax3zMkRivcMB6bGA506pJmgUBrAUcwv20WqD+fVaf
-	5eWTc/5DdnF2IHAGxPxtE820KR2MBqvO4t4n7xg==
-X-Google-Smtp-Source: AGHT+IE6Hn4KEA1CCZ5bUfGs/Lvut+AenGj0UJMnAqTB0xOfHh21zeTj0SjsLn4VnQD+guWwO3Cv2/0eNjCGw69OW40=
-X-Received: by 2002:a05:6902:2082:b0:dc6:4062:1341 with SMTP id
- di2-20020a056902208200b00dc640621341mr509698ybb.16.1707859796006; Tue, 13 Feb
- 2024 13:29:56 -0800 (PST)
+	s=arc-20240116; t=1707859841; c=relaxed/simple;
+	bh=9X9GQyhvkWNmvG1Gu8mRVXEfxB+77vFWQKzoIce99lQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HXIqACJ6ev+pZPXnSDwZTCXT8fycjKmSi7iap0ZrlvLGbDd1pCiSSjzF0xNvmN/OGv8X2JeIrl0upag8PH0HNxQvLBhAs3WKWyt3ZdIW8fqyF/2PJfTZvROwgxwmp56K3Ie/Mxnaq7c0eyMgHLhEKWffw94EOgl5b3p/Y/VCPKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p7eXOBiu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21C8BC433C7;
+	Tue, 13 Feb 2024 21:30:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707859841;
+	bh=9X9GQyhvkWNmvG1Gu8mRVXEfxB+77vFWQKzoIce99lQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=p7eXOBiuggM/wGeuiUFMm3PU3dXQ+ZLqQrv6ZQn/m/9yK7QHfgK6lhTagkIPxZBq6
+	 bRlmV8vbS3wCXcSFKQeQO3MoXu0uu9s8uLiC6eEf09qYaFBybPdo9ZbcDvGT1ISe7a
+	 Ccn/2uag8Bvt60GxJhqjkPaleE9NshSYrPdF2Qi1dpW8OEgUDl1LrI4iKpm1UcpaYa
+	 oH6UglTMhfeRit7IDGYuG3wOUILzp6RrBwrXP5AVKx1N+vSlmpDfJP1pzEYZVrNRxS
+	 o0/DeMbvaCpPKCmmsq4sIMfsj0FNOkzy42gmHMJKDaIgCmSkhU7naIYnEQ1IegB34t
+	 DdxVA7WqDOJYw==
+Date: Tue, 13 Feb 2024 13:30:40 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
+	kbusch@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com,
+	linux-kernel@vger.kernel.org, hare@suse.de, willy@infradead.org,
+	linux-mm@kvack.org, david@fromorbit.com
+Subject: Re: [RFC v2 10/14] iomap: fix iomap_dio_zero() for fs bs > system
+ page size
+Message-ID: <20240213213040.GX616564@frogsfrogsfrogs>
+References: <20240213093713.1753368-1-kernel@pankajraghav.com>
+ <20240213093713.1753368-11-kernel@pankajraghav.com>
+ <20240213163037.GR6184@frogsfrogsfrogs>
+ <5kodxnrvjq5dsjgjfeps6wte774c2sl75bn3fg3hh46q3wkwk5@2tru4htvqmrq>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213093108.13922-1-brgl@bgdev.pl> <20240213093108.13922-2-brgl@bgdev.pl>
-In-Reply-To: <20240213093108.13922-2-brgl@bgdev.pl>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 13 Feb 2024 22:29:45 +0100
-Message-ID: <CACRpkdY5fVNJBhVDrCb0cbrsWAKAZBkCACUgSjWGoHqtnaJJtQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] gpio: take the SRCU read lock in gpiod_hog()
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5kodxnrvjq5dsjgjfeps6wte774c2sl75bn3fg3hh46q3wkwk5@2tru4htvqmrq>
 
-On Tue, Feb 13, 2024 at 10:31=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
+On Tue, Feb 13, 2024 at 10:27:32PM +0100, Pankaj Raghav (Samsung) wrote:
+> On Tue, Feb 13, 2024 at 08:30:37AM -0800, Darrick J. Wong wrote:
+> > On Tue, Feb 13, 2024 at 10:37:09AM +0100, Pankaj Raghav (Samsung) wrote:
+> > > From: Pankaj Raghav <p.raghav@samsung.com>
+> > > 
+> > > iomap_dio_zero() will pad a fs block with zeroes if the direct IO size
+> > > < fs block size. iomap_dio_zero() has an implicit assumption that fs block
+> > > size < page_size. This is true for most filesystems at the moment.
+> > > 
+> > > If the block size > page size, this will send the contents of the page
+> > > next to zero page(as len > PAGE_SIZE) to the underlying block device,
+> > > causing FS corruption.
+> > > 
+> > > iomap is a generic infrastructure and it should not make any assumptions
+> > > about the fs block size and the page size of the system.
+> > > 
+> > > Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> > > ---
+> > >  fs/iomap/direct-io.c | 13 +++++++++++--
+> > >  1 file changed, 11 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > > index bcd3f8cf5ea4..04f6c5548136 100644
+> > > --- a/fs/iomap/direct-io.c
+> > > +++ b/fs/iomap/direct-io.c
+> > > @@ -239,14 +239,23 @@ static void iomap_dio_zero(const struct iomap_iter *iter, struct iomap_dio *dio,
+> > >  	struct page *page = ZERO_PAGE(0);
+> > >  	struct bio *bio;
+> > >  
+> > > -	bio = iomap_dio_alloc_bio(iter, dio, 1, REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
+> > > +	WARN_ON_ONCE(len > (BIO_MAX_VECS * PAGE_SIZE));
+> > > +
+> > > +	bio = iomap_dio_alloc_bio(iter, dio, BIO_MAX_VECS,
+> > > +				  REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
+> > >  	fscrypt_set_bio_crypt_ctx(bio, inode, pos >> inode->i_blkbits,
+> > >  				  GFP_KERNEL);
+> > > +
+> > >  	bio->bi_iter.bi_sector = iomap_sector(&iter->iomap, pos);
+> > >  	bio->bi_private = dio;
+> > >  	bio->bi_end_io = iomap_dio_bio_end_io;
+> > >  
+> > > -	__bio_add_page(bio, page, len, 0);
+> > > +	while (len) {
+> > > +		unsigned int io_len = min_t(unsigned int, len, PAGE_SIZE);
+> > 
+> > What was the result of all that discussion about using the PMD-sized
+> > zero-folio the last time this patch was submitted?  Did that prove to be
+> > unwieldly, or did it require enough extra surgery to become its own
+> > series?
+> > 
+> 
+> It proved a bit unwieldly to me at least as I did not know any straight
+> forward way to do it at the time. So I thought I will keep this approach
+> as it is, and add support for the PMD-sized zero folio for later
+> improvement.
+> 
+> > (The code here looks good to me.)
+> 
+> Thanks!
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> gpiod_hog() may be called without the gpio_device SRCU read lock taken
-> so we need to do it here as well. It's alright if someone else is
-> already holding the lock as SRCU read critical sections can be nested.
->
-> Fixes: d83cee3d2bb1 ("gpio: protect the pointer to gpio_chip in gpio_devi=
-ce with SRCU")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202402122234.d85cca9b-lkp@intel.co=
-m
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+In that case I'll throw it on the testing pile and let's ask brauner to
+merge this for 6.9 if nothing blows up.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-Looking at the CLASS() stuff I see this is definitely the way to go
-with the code now that we face massive scaling. Nice work.
+--D
 
-Yours,
-Linus Walleij
+> > 
+> > --D
+> > 
+> > > +
+> > > +		__bio_add_page(bio, page, io_len, 0);
+> > > +		len -= io_len;
+> > > +	}
+> > >  	iomap_dio_submit_bio(iter, dio, bio, pos);
+> > >  }
+> > >  
+> > > -- 
+> > > 2.43.0
+> > > 
+> > > 
+> 
 
