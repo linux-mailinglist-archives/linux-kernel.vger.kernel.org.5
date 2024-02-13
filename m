@@ -1,163 +1,104 @@
-Return-Path: <linux-kernel+bounces-63584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B641A8531C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:25:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BBC98531D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:26:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E97BF1C267D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:25:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44F711F23C72
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5076B55C22;
-	Tue, 13 Feb 2024 13:25:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="h0USkYV6";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Ao4sOlJT";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="h0USkYV6";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Ao4sOlJT"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE3F55C34;
+	Tue, 13 Feb 2024 13:26:14 +0000 (UTC)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6E55731C;
-	Tue, 13 Feb 2024 13:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47B0B55794;
+	Tue, 13 Feb 2024 13:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707830707; cv=none; b=DfHbXDLXDoR32weizi/8la0BCpfQuokAL4gj8kdTEbHkh13gCNb+kCwGIiKSIA+Y89l/pEwTDAyBmYSG6N7A6l9fM7hXnEQTWKOHeiKdV+RR9jbln4Go0qwJHUa/ZOefu6znQR8+F/lIPGBPiTojP1rIK08lQhzk5fRTP5YeoEQ=
+	t=1707830774; cv=none; b=UL47pi05/OTwDEAneaaFi0wIgQZ/YJfNzbZStYa8+9o/Wa8atZ/RxufIEexhyzLF0SrSvhrCDaA/I1jje+g8snEBD5paAJst0yuFGpDx4ZrcUQd17giZwIkz9b5iQxHqnxHqK88FD8XIWOZ79hL3TRQ6I60LjSMKJoOkCCaVdxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707830707; c=relaxed/simple;
-	bh=dxV7yHCJnIxpEzKaYuqJa05MJzzLK6w5HSkoqNeVti0=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u+xJCMslnkC51J3LAGV4vkklTy1qXUdE05cFN8gRiZ2fzYEQzaMm04T5TgdNk1LJ46d2rggBxiNjQ3vVDVpglZBv8V6XrJ5gyoGQ2B4PUScOCAgrfeO2gutv6XxVXGRne4p3vsiPH/6OCx5xaHJTZEWQswu17hwJCuYern+vIEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=h0USkYV6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Ao4sOlJT; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=h0USkYV6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Ao4sOlJT; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5B3A61FCDC;
-	Tue, 13 Feb 2024 13:25:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707830704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JEb4Pp5ybhqZlBe29kJk+TL0hsuA4yQuqt0dPmfwv2w=;
-	b=h0USkYV6jS8NTxaKCmrgXueBzsy0r2NJNtekWIiwqy+Kn8fnc0EPwj/mBwflutQOdYX6pm
-	JJARrq9nonTl0UJVYfEEOV6mX3fd/YTi88blqeL3s9jshk3ZcLj3wkyUcPLeWUyiS0qDTN
-	b4k+m9T9J8hbs3lTbeUitHVY7bpsNpI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707830704;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JEb4Pp5ybhqZlBe29kJk+TL0hsuA4yQuqt0dPmfwv2w=;
-	b=Ao4sOlJTipA5MewrKL1mm1xCT2xiOuzTbe1wkY1MMFOKzpoAHV+ykGdvSxHhFr6JgYF/HI
-	ByCHgkR2OeLzxeAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707830704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JEb4Pp5ybhqZlBe29kJk+TL0hsuA4yQuqt0dPmfwv2w=;
-	b=h0USkYV6jS8NTxaKCmrgXueBzsy0r2NJNtekWIiwqy+Kn8fnc0EPwj/mBwflutQOdYX6pm
-	JJARrq9nonTl0UJVYfEEOV6mX3fd/YTi88blqeL3s9jshk3ZcLj3wkyUcPLeWUyiS0qDTN
-	b4k+m9T9J8hbs3lTbeUitHVY7bpsNpI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707830704;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JEb4Pp5ybhqZlBe29kJk+TL0hsuA4yQuqt0dPmfwv2w=;
-	b=Ao4sOlJTipA5MewrKL1mm1xCT2xiOuzTbe1wkY1MMFOKzpoAHV+ykGdvSxHhFr6JgYF/HI
-	ByCHgkR2OeLzxeAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 319571370C;
-	Tue, 13 Feb 2024 13:25:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ZK+TC7Bty2UYGAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 13 Feb 2024 13:25:04 +0000
-Date: Tue, 13 Feb 2024 14:25:03 +0100
-Message-ID: <87cyt0xzrk.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Cedric Bregardis <cedric.bregardis@free.fr>,
-	Jean-Christian Hassler <jhassler@free.fr>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH] ALSA: aw2: avoid casting function pointers
-In-Reply-To: <20240213101327.460191-1-arnd@kernel.org>
-References: <20240213101327.460191-1-arnd@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1707830774; c=relaxed/simple;
+	bh=IMVwaUMIKgLbPZtYISG0lVDxsC9q5IHxqt3EbgePkN8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GEesNIl5ii0biBkC3QQ4UonYq99LXvdQrnxMN+EyCRzyCXnJ2npRzzQ6bcyEsfG7Xw8vhBxxZ6sdOC88cFqUG7exe9tcbg+jFsE8qgqs9mLepsr4KME1F34XakTeZ0ADIYkVqr2taD561zQcgLtX7545nq/Ifolg4PDfSaWqxyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a2d7e2e7fe0so753929866b.1;
+        Tue, 13 Feb 2024 05:26:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707830770; x=1708435570;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aSWwrZ/GJcDdaONc7v+8jDSkrPt6bx1El6Fj3mB8kz8=;
+        b=dCf6WT1+T0tayAURl6c6H7uBetpxIw1iZb6RBjwHqyI44SpuZ8ac6dTQ943E8EBdKu
+         jpJDga5kJ5tYly/fujhbaGNeWXafa8MBlhXD+wM+9GrQgyqDdi9qV7KJPASZMH9CxirI
+         H/C4r7BwG2uQt5NzVsKfAmMyaKowpfrQ0kiZLM0GDViJtgrD/DkK6gdcwlO9yPUVqaFy
+         0wx8Ht6EZIycS0IygMUo5SA70v+v+YGh16xvaSXw0uBX3xrHMkNeTT3uIL+5BSnMZeWb
+         2Cgs4lNC6/UCLy/OCDB0JzNZ+yqK6d38286eGyQ6GJ80ZUFCgkpmRXvQx20DJCsCznmU
+         RZbg==
+X-Forwarded-Encrypted: i=1; AJvYcCUCcqngJq83T25Ekta9lj7z8avlRmRRewl1i8BoZrQbU2/94Vf3kYQLrNzY168jtSFlYRG4dtT2LzmbISxk5Np/d87cVZ/ezdIWzu0dDhuWweadqFKDjE0mc4wNeVSDynrYdUax
+X-Gm-Message-State: AOJu0Yxe7mhhkr3nrV1X4LLJxyF/GohQhzoJKfGwgnFGftBwG8YdJohj
+	3l5BW3q2us0m4qWBqo1305d/q/NYW6KfTOk8w9gHcik+/+gWEV8U
+X-Google-Smtp-Source: AGHT+IEhaCD72Kvg5eKMGqZBOIOG+pGQD2NizQ654e+yDwFTNOXFnygIBSBb/SwLw0XzCPTOBWRTjg==
+X-Received: by 2002:a17:906:f0d3:b0:a3c:8de7:3add with SMTP id dk19-20020a170906f0d300b00a3c8de73addmr1942016ejb.7.1707830770221;
+        Tue, 13 Feb 2024 05:26:10 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX/pXam7dF5FDnLt+I4eAlfZhyMxRQWXbe24qBP1rAwnGBKFNkvO+UnstcqyFg9rVAmV8MEHuOI+4NBuR/EjFn+oX5L2gT0ceoBynKCKPsbpb4sKwWz7G7DQxW5AoNj7OS7fZpy5VZJE0LrJpfnaGlGOc86f65sfZ+QQxNpreMWDvuh+b15JLUXDmMiaIMXUL48ci1/obTwiyS6erqgqfdoEt1mCrMSC6oM8kecU3fchVlWXAzOIE3lkXmV3KNox2WAlaAR7e/La5Guvoo46zaV1T/SeACueUgT1TFf/bMbEw==
+Received: from gmail.com (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
+        by smtp.gmail.com with ESMTPSA id tb20-20020a1709078b9400b00a3cf436af4fsm824277ejc.3.2024.02.13.05.26.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 05:26:09 -0800 (PST)
+Date: Tue, 13 Feb 2024 05:26:07 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+	edumazet@google.com, Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, horms@kernel.org
+Subject: Re: [PATCH net 6/7] net: fill in MODULE_DESCRIPTION()s for
+ mdio_devres
+Message-ID: <Zctt74KR4lZ8CeV0@gmail.com>
+References: <20240213112122.404045-1-leitao@debian.org>
+ <20240213112122.404045-7-leitao@debian.org>
+ <045f7cdb-7f99-4182-8c75-097be8a5a7d0@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-1.49 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[free.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[perex.cz,suse.com,arndb.de,kernel.org,google.com,free.fr,vger.kernel.org,lists.linux.dev];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.39)[97.21%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.49
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <045f7cdb-7f99-4182-8c75-097be8a5a7d0@lunn.ch>
 
-On Tue, 13 Feb 2024 11:13:19 +0100,
-Arnd Bergmann wrote:
+On Tue, Feb 13, 2024 at 02:19:39PM +0100, Andrew Lunn wrote:
+> On Tue, Feb 13, 2024 at 03:21:21AM -0800, Breno Leitao wrote:
+> > W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
+> > Add descriptions to the PHY MDIO helpers.
+> > 
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > ---
+> >  drivers/net/phy/mdio_devres.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/net/phy/mdio_devres.c b/drivers/net/phy/mdio_devres.c
+> > index 69b829e6ab35..8921fa22bdbd 100644
+> > --- a/drivers/net/phy/mdio_devres.c
+> > +++ b/drivers/net/phy/mdio_devres.c
+> > @@ -131,4 +131,5 @@ int __devm_of_mdiobus_register(struct device *dev, struct mii_bus *mdio,
+> >  EXPORT_SYMBOL(__devm_of_mdiobus_register);
+> >  #endif /* CONFIG_OF_MDIO */
+> >  
+> > +MODULE_DESCRIPTION("Network PHY MDIO devres helpers");
 > 
-> From: Arnd Bergmann <arnd@arndb.de>
+> "Network MDIO bus devres helpers"
 > 
-> clang-16 started warning about incompatible function pointers here:
-> 
-> sound/pci/aw2/aw2-alsa.c:363:11: error: cast from 'void (*)(struct snd_pcm_substream *)' to 'snd_aw2_saa7146_it_cb' (aka 'void (*)(void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
->   363 |                                                     (snd_aw2_saa7146_it_cb)
->       |                                                     ^~~~~~~~~~~~~~~~~~~~~~~
->   364 |                                                     snd_pcm_period_elapsed,
->       |                                                     ~~~~~~~~~~~~~~~~~~~~~~
-> sound/pci/aw2/aw2-alsa.c:392:10: error: cast from 'void (*)(struct snd_pcm_substream *)' to 'snd_aw2_saa7146_it_cb' (aka 'void (*)(void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
->   392 |                                                    (snd_aw2_saa7146_it_cb)
->       |                                                    ^~~~~~~~~~~~~~~~~~~~~~~
->   393 |                                                    snd_pcm_period_elapsed,
->       |                                                    ~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Add a forward declaration for struct snd_pcm_substrea to allow it to just
-> use the correct prototype.
-> 
-> Fixes: 98f2a97f207a ("[ALSA] Emagic Audiowerk 2 ALSA driver.")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> There is nothing PHY related in here, its all mdio bus.
 
-Thanks, applied.
-
-
-Takashi
+Thanks. I will update!
 
