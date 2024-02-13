@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-64102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83567853A24
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:47:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11F96853A25
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:48:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D7201F21DE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:47:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C816F28F13C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A60D060EDE;
-	Tue, 13 Feb 2024 18:45:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40C5612CA;
+	Tue, 13 Feb 2024 18:45:44 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6397760DFD
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 18:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3BA060EF3
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 18:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707849941; cv=none; b=gFw1tncHu2+LVInaO1ZoL4Pzu/tsYoombmw3QTJLexHTFgjEw3sqXP4lHahfsviSuYFH62GjLW1fms8jmMqizNo2D4Iu3Pqx581UEzZphfdgecVFQH5LKKGXT7XS78CNxSzedEoXWwBVPG6tyaAatSSpzN1EkGW+59NXUN962lw=
+	t=1707849944; cv=none; b=lre71dxAPShje3zi66tZTF6BKn4nnsGFzxK9BsZFMzB0ec5aiQPVQrDX8lxoMGFL0qobsE/y5EpCdG7INDcy1vh+i5Idynfj9OO1mfikIXCSJjh3Qq/0mU45AY5Cwg9faRtMTEzWH1a7InEAObYz5dOFlQw6engffUJQURLEoQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707849941; c=relaxed/simple;
-	bh=QrE8SkUDD8C7YoMMIPm2bwyYJzX8gB1Lw0s5UB0P0to=;
+	s=arc-20240116; t=1707849944; c=relaxed/simple;
+	bh=tCk5Rp6ufC7ekXhYD/3kjr90yolxWKM1koNMSXSV0dY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ouxp7WOS2BZoEs0+EE6Khq+EM3OxFG88/8XSZvIi4sC+NK59f2txR+BEgSk4RJ57TWyJCOQzbSsfIZPs/P8TBIdKmtbOyLHuesRXvAYIt+mzPTuvgAyfJu6BvuP0bipnoYDntFgwxAlIuAzcYP3yJnN2Lrpz+zojIX+gpQvy9mc=
+	 MIME-Version; b=IRUgEIplDqbvtEK9mnIt05n9Ucgc3oa64ga/CGxoOlMgTKGSeQCNy9aZJGIhfGj2PBfqXt2zoraLxUJgpgOuMm9y/8LM31xyVyEMnVRJmNtlId+uOvY6TPU1/M13bv6S9VU8uyX2do+mxUseCN4pILmhpi1AtLBZZ4B7cZxfI1U=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 228751515;
-	Tue, 13 Feb 2024 10:46:20 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B9081516;
+	Tue, 13 Feb 2024 10:46:23 -0800 (PST)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD3A33F766;
-	Tue, 13 Feb 2024 10:45:35 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0C89B3F766;
+	Tue, 13 Feb 2024 10:45:38 -0800 (PST)
 From: James Morse <james.morse@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -57,9 +57,9 @@ Cc: Fenghua Yu <fenghua.yu@intel.com>,
 	amitsinght@marvell.com,
 	David Hildenbrand <david@redhat.com>,
 	Babu Moger <babu.moger@amd.com>
-Subject: [PATCH v9 11/24] x86/resctrl: Move CLOSID/RMID matching and setting to use helpers
-Date: Tue, 13 Feb 2024 18:44:25 +0000
-Message-Id: <20240213184438.16675-12-james.morse@arm.com>
+Subject: [PATCH v9 12/24] x86/resctrl: Add cpumask_any_housekeeping() for limbo/overflow
+Date: Tue, 13 Feb 2024 18:44:26 +0000
+Message-Id: <20240213184438.16675-13-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240213184438.16675-1-james.morse@arm.com>
 References: <20240213184438.16675-1-james.morse@arm.com>
@@ -71,33 +71,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When switching tasks, the CLOSID and RMID that the new task should
-use are stored in struct task_struct. For x86 the CLOSID known by resctrl,
-the value in task_struct, and the value written to the CPU register are
-all the same thing.
+The limbo and overflow code picks a CPU to use from the domain's list
+of online CPUs. Work is then scheduled on these CPUs to maintain
+the limbo list and any counters that may overflow.
 
-MPAM's CPU interface has two different PARTID's one for data accesses
-the other for instruction fetch. Storing resctrl's CLOSID value in
-struct task_struct implies the arch code knows whether resctrl is using
-CDP.
+cpumask_any() may pick a CPU that is marked nohz_full, which will
+either penalise the work that CPU was dedicated to, or delay the
+processing of limbo list or counters that may overflow. Perhaps
+indefinitely. Delaying the overflow handling will skew the bandwidth
+values calculated by mba_sc, which expects to be called once a second.
 
-Move the matching and setting of the struct task_struct properties
-to use helpers. This allows arm64 to store the hardware format of
-the register, instead of having to convert it each time.
-
-__rdtgroup_move_task()s use of READ_ONCE()/WRITE_ONCE() ensures torn
-values aren't seen as another CPU may schedule the task being moved
-while the value is being changed. MPAM has an additional corner-case
-here as the PMG bits extend the PARTID space. If the scheduler sees a
-new-CLOSID but old-RMID, the task will dirty an RMID that the limbo code
-is not watching causing an inaccurate count. x86's RMID are independent
-values, so the limbo code will still be watching the old-RMID in this
-circumstance.
-To avoid this, arm64 needs both the CLOSID/RMID WRITE_ONCE()d together.
-Both values must be provided together.
-
-Because MPAM's RMID values are not unique, the CLOSID must be provided
-when matching the RMID.
+Add cpumask_any_housekeeping() as a replacement for cpumask_any()
+that prefers housekeeping CPUs. This helper will still return
+a nohz_full CPU if that is the only option. The CPU to use is
+re-evaluated each time the limbo/overflow work runs. This ensures
+the work will move off a nohz_full CPU once a housekeeping CPU is
+available.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
@@ -108,168 +97,130 @@ Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 Reviewed-by: Babu Moger <babu.moger@amd.com>
 ---
-Changes since v2:
- * __rdtgroup_move_task() changed to set CLOSID from different CLOSID place
-   depending on group type
----
- arch/x86/include/asm/resctrl.h         | 18 ++++++++
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 62 ++++++++++++++++----------
- 2 files changed, 56 insertions(+), 24 deletions(-)
+Changes since v3:
+ * typos fixed
 
-diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
-index db4c84dde2d5..1d274dbabc44 100644
---- a/arch/x86/include/asm/resctrl.h
-+++ b/arch/x86/include/asm/resctrl.h
-@@ -95,6 +95,24 @@ static inline unsigned int resctrl_arch_round_mon_val(unsigned int val)
- 	return val * scale;
- }
+Changes since v4:
+ * Made temporary variables unsigned
+
+Changes since v5:
+ * Restructured cpumask_any_housekeeping() to avoid later churn.
+
+Changes since v6:
+ * Update mbm_work_cpu/cqm_work_cpu when rescheduling.
+---
+ arch/x86/kernel/cpu/resctrl/internal.h | 24 ++++++++++++++++++++++++
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 20 +++++++++++++-------
+ 2 files changed, 37 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index b7b9d9230bef..81f5de916db8 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -7,6 +7,7 @@
+ #include <linux/kernfs.h>
+ #include <linux/fs_context.h>
+ #include <linux/jump_label.h>
++#include <linux/tick.h>
  
-+static inline void resctrl_arch_set_closid_rmid(struct task_struct *tsk,
-+						u32 closid, u32 rmid)
+ #include <asm/resctrl.h>
+ 
+@@ -55,6 +56,29 @@
+ /* Max event bits supported */
+ #define MAX_EVT_CONFIG_BITS		GENMASK(6, 0)
+ 
++/**
++ * cpumask_any_housekeeping() - Choose any CPU in @mask, preferring those that
++ *			        aren't marked nohz_full
++ * @mask:	The mask to pick a CPU from.
++ *
++ * Returns a CPU in @mask. If there are housekeeping CPUs that don't use
++ * nohz_full, these are preferred.
++ */
++static inline unsigned int cpumask_any_housekeeping(const struct cpumask *mask)
 +{
-+	WRITE_ONCE(tsk->closid, closid);
-+	WRITE_ONCE(tsk->rmid, rmid);
++	unsigned int cpu, hk_cpu;
++
++	cpu = cpumask_any(mask);
++	if (!tick_nohz_full_cpu(cpu))
++		return cpu;
++
++	hk_cpu = cpumask_nth_andnot(0, mask, tick_nohz_full_mask);
++	if (hk_cpu < nr_cpu_ids)
++		cpu = hk_cpu;
++
++	return cpu;
 +}
 +
-+static inline bool resctrl_arch_match_closid(struct task_struct *tsk, u32 closid)
-+{
-+	return READ_ONCE(tsk->closid) == closid;
-+}
-+
-+static inline bool resctrl_arch_match_rmid(struct task_struct *tsk, u32 ignored,
-+					   u32 rmid)
-+{
-+	return READ_ONCE(tsk->rmid) == rmid;
-+}
-+
- static inline void resctrl_sched_in(struct task_struct *tsk)
+ struct rdt_fs_context {
+ 	struct kernfs_fs_context	kfc;
+ 	bool				enable_cdpl2;
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 101f1b112d17..38f85e53ca93 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -761,7 +761,6 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d,
+ void cqm_handle_limbo(struct work_struct *work)
  {
- 	if (static_branch_likely(&rdt_enable_key))
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 8fc46204a6cc..e42cbdf8f6a3 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -102,7 +102,7 @@ void rdt_staged_configs_clear(void)
-  *
-  * Using a global CLOSID across all resources has some advantages and
-  * some drawbacks:
-- * + We can simply set "current->closid" to assign a task to a resource
-+ * + We can simply set current's closid to assign a task to a resource
-  *   group.
-  * + Context switch code can avoid extra memory references deciding which
-  *   CLOSID to load into the PQR_ASSOC MSR
-@@ -574,14 +574,26 @@ static void update_task_closid_rmid(struct task_struct *t)
- 		_update_task_closid_rmid(t);
+ 	unsigned long delay = msecs_to_jiffies(CQM_LIMBOCHECK_INTERVAL);
+-	int cpu = smp_processor_id();
+ 	struct rdt_domain *d;
+ 
+ 	mutex_lock(&rdtgroup_mutex);
+@@ -770,8 +769,11 @@ void cqm_handle_limbo(struct work_struct *work)
+ 
+ 	__check_limbo(d, false);
+ 
+-	if (has_busy_rmid(d))
+-		schedule_delayed_work_on(cpu, &d->cqm_limbo, delay);
++	if (has_busy_rmid(d)) {
++		d->cqm_work_cpu = cpumask_any_housekeeping(&d->cpu_mask);
++		schedule_delayed_work_on(d->cqm_work_cpu, &d->cqm_limbo,
++					 delay);
++	}
+ 
+ 	mutex_unlock(&rdtgroup_mutex);
  }
+@@ -781,7 +783,7 @@ void cqm_setup_limbo_handler(struct rdt_domain *dom, unsigned long delay_ms)
+ 	unsigned long delay = msecs_to_jiffies(delay_ms);
+ 	int cpu;
  
-+static bool task_in_rdtgroup(struct task_struct *tsk, struct rdtgroup *rdtgrp)
-+{
-+	u32 closid, rmid = rdtgrp->mon.rmid;
-+
-+	if (rdtgrp->type == RDTCTRL_GROUP)
-+		closid = rdtgrp->closid;
-+	else if (rdtgrp->type == RDTMON_GROUP)
-+		closid = rdtgrp->mon.parent->closid;
-+	else
-+		return false;
-+
-+	return resctrl_arch_match_closid(tsk, closid) &&
-+	       resctrl_arch_match_rmid(tsk, closid, rmid);
-+}
-+
- static int __rdtgroup_move_task(struct task_struct *tsk,
- 				struct rdtgroup *rdtgrp)
+-	cpu = cpumask_any(&dom->cpu_mask);
++	cpu = cpumask_any_housekeeping(&dom->cpu_mask);
+ 	dom->cqm_work_cpu = cpu;
+ 
+ 	schedule_delayed_work_on(cpu, &dom->cqm_limbo, delay);
+@@ -791,7 +793,6 @@ void mbm_handle_overflow(struct work_struct *work)
  {
- 	/* If the task is already in rdtgrp, no need to move the task. */
--	if ((rdtgrp->type == RDTCTRL_GROUP && tsk->closid == rdtgrp->closid &&
--	     tsk->rmid == rdtgrp->mon.rmid) ||
--	    (rdtgrp->type == RDTMON_GROUP && tsk->rmid == rdtgrp->mon.rmid &&
--	     tsk->closid == rdtgrp->mon.parent->closid))
-+	if (task_in_rdtgroup(tsk, rdtgrp))
- 		return 0;
- 
- 	/*
-@@ -592,19 +604,19 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
- 	 * For monitor groups, can move the tasks only from
- 	 * their parent CTRL group.
- 	 */
--
--	if (rdtgrp->type == RDTCTRL_GROUP) {
--		WRITE_ONCE(tsk->closid, rdtgrp->closid);
--		WRITE_ONCE(tsk->rmid, rdtgrp->mon.rmid);
--	} else if (rdtgrp->type == RDTMON_GROUP) {
--		if (rdtgrp->mon.parent->closid == tsk->closid) {
--			WRITE_ONCE(tsk->rmid, rdtgrp->mon.rmid);
--		} else {
--			rdt_last_cmd_puts("Can't move task to different control group\n");
--			return -EINVAL;
--		}
-+	if (rdtgrp->type == RDTMON_GROUP &&
-+	    !resctrl_arch_match_closid(tsk, rdtgrp->mon.parent->closid)) {
-+		rdt_last_cmd_puts("Can't move task to different control group\n");
-+		return -EINVAL;
+ 	unsigned long delay = msecs_to_jiffies(MBM_OVERFLOW_INTERVAL);
+ 	struct rdtgroup *prgrp, *crgrp;
+-	int cpu = smp_processor_id();
+ 	struct list_head *head;
+ 	struct rdt_resource *r;
+ 	struct rdt_domain *d;
+@@ -815,7 +816,12 @@ void mbm_handle_overflow(struct work_struct *work)
+ 			update_mba_bw(prgrp, d);
  	}
  
-+	if (rdtgrp->type == RDTMON_GROUP)
-+		resctrl_arch_set_closid_rmid(tsk, rdtgrp->mon.parent->closid,
-+					     rdtgrp->mon.rmid);
-+	else
-+		resctrl_arch_set_closid_rmid(tsk, rdtgrp->closid,
-+					     rdtgrp->mon.rmid);
-+
- 	/*
- 	 * Ensure the task's closid and rmid are written before determining if
- 	 * the task is current that will decide if it will be interrupted.
-@@ -626,14 +638,15 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
+-	schedule_delayed_work_on(cpu, &d->mbm_over, delay);
++	/*
++	 * Re-check for housekeeping CPUs. This allows the overflow handler to
++	 * move off a nohz_full CPU quickly.
++	 */
++	d->mbm_work_cpu = cpumask_any_housekeeping(&d->cpu_mask);
++	schedule_delayed_work_on(d->mbm_work_cpu, &d->mbm_over, delay);
  
- static bool is_closid_match(struct task_struct *t, struct rdtgroup *r)
- {
--	return (rdt_alloc_capable &&
--	       (r->type == RDTCTRL_GROUP) && (t->closid == r->closid));
-+	return (rdt_alloc_capable && (r->type == RDTCTRL_GROUP) &&
-+		resctrl_arch_match_closid(t, r->closid));
+ out_unlock:
+ 	mutex_unlock(&rdtgroup_mutex);
+@@ -828,7 +834,7 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
+ 
+ 	if (!static_branch_likely(&rdt_mon_enable_key))
+ 		return;
+-	cpu = cpumask_any(&dom->cpu_mask);
++	cpu = cpumask_any_housekeeping(&dom->cpu_mask);
+ 	dom->mbm_work_cpu = cpu;
+ 	schedule_delayed_work_on(cpu, &dom->mbm_over, delay);
  }
- 
- static bool is_rmid_match(struct task_struct *t, struct rdtgroup *r)
- {
--	return (rdt_mon_capable &&
--	       (r->type == RDTMON_GROUP) && (t->rmid == r->mon.rmid));
-+	return (rdt_mon_capable && (r->type == RDTMON_GROUP) &&
-+		resctrl_arch_match_rmid(t, r->mon.parent->closid,
-+					r->mon.rmid));
- }
- 
- /**
-@@ -884,7 +897,7 @@ int proc_resctrl_show(struct seq_file *s, struct pid_namespace *ns,
- 		    rdtg->mode != RDT_MODE_EXCLUSIVE)
- 			continue;
- 
--		if (rdtg->closid != tsk->closid)
-+		if (!resctrl_arch_match_closid(tsk, rdtg->closid))
- 			continue;
- 
- 		seq_printf(s, "res:%s%s\n", (rdtg == &rdtgroup_default) ? "/" : "",
-@@ -892,7 +905,8 @@ int proc_resctrl_show(struct seq_file *s, struct pid_namespace *ns,
- 		seq_puts(s, "mon:");
- 		list_for_each_entry(crg, &rdtg->mon.crdtgrp_list,
- 				    mon.crdtgrp_list) {
--			if (tsk->rmid != crg->mon.rmid)
-+			if (!resctrl_arch_match_rmid(tsk, crg->mon.parent->closid,
-+						     crg->mon.rmid))
- 				continue;
- 			seq_printf(s, "%s", crg->kn->name);
- 			break;
-@@ -2820,8 +2834,8 @@ static void rdt_move_group_tasks(struct rdtgroup *from, struct rdtgroup *to,
- 	for_each_process_thread(p, t) {
- 		if (!from || is_closid_match(t, from) ||
- 		    is_rmid_match(t, from)) {
--			WRITE_ONCE(t->closid, to->closid);
--			WRITE_ONCE(t->rmid, to->mon.rmid);
-+			resctrl_arch_set_closid_rmid(t, to->closid,
-+						     to->mon.rmid);
- 
- 			/*
- 			 * Order the closid/rmid stores above before the loads
 -- 
 2.39.2
 
