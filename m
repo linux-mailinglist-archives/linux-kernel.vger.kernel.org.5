@@ -1,62 +1,57 @@
-Return-Path: <linux-kernel+bounces-62745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BDDE85252D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:08:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42CB2852530
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:08:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67D2F1C23F1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:08:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E93CE1F2165B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACEC12EBD5;
-	Tue, 13 Feb 2024 00:24:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1A5112F5BF;
+	Tue, 13 Feb 2024 00:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mWwZ6cRf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nJ357KzO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F65D12F380;
-	Tue, 13 Feb 2024 00:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 068F129CEA;
+	Tue, 13 Feb 2024 00:24:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783867; cv=none; b=Hajq6SyCtxfuX5tioCSkmCMKMXWoC7Lsj1OkF0omCD/Y8W35RCOCY4tcZ7UD2zM6NVg1TU+gIJMaiyoZnjZgSSpz5nrklz1qydVbmBee+H7D/j/FjPDRz63aBJRLpyx1onYUJ3AZrxYfoWCwv71tM9HaiA9G+9PCaZK0vSmWUaI=
+	t=1707783871; cv=none; b=QtqORxJbMX1zn7zpjq+YHLQbERiQl9sBLtmDcO5YyzzyCBJvHG3ukBOTMXHZzZY4Uf6VQpgTTuOasUYbTGfc1oowkFErNtk3T9CJ7mWJAVY20wjvCSqZDiPCMOfHbY3p4ccpdL6oXg6+6vUs+8Z17oPC/fDbNAax0or3BjkgSa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783867; c=relaxed/simple;
-	bh=OhKIQUuRvOy0Ab3y4ndKW6oIXyn1TWNkCN+IvJ96nh4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=icvWtviVzPxztpgl45aW9uCS5/2FpocvgPMTZd45gBM9ZkCLX6MqT6o2pMmdSrSRA7Phdw+idlDVu6nE1VqJ14Hh29iSyw6hSZpaHyD6NLtYpLA0+KJA7l3u3Bx6H2hlZfgyrbKOkN+wxqivCEA7s/jB8RK9UICpBwP6IYFYuXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mWwZ6cRf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F9BCC433F1;
-	Tue, 13 Feb 2024 00:24:26 +0000 (UTC)
+	s=arc-20240116; t=1707783871; c=relaxed/simple;
+	bh=f+qJcnnrFfj+Tpxdck62VZq1w0HqiDFabO/FRPH/tCE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RDiHj/VDEzshFpgp7WuuMJYAZ9z4BNjLg2bI1d8ceM/zoItbNBYLDp3CSg8HRN25eT3bFCwDqAiMoULRbyGl7rJEI8lCq6e0fpMfY/ULtP3GlYsPMcNsNbrtoECmLKXIMKlObVj79osYX45djEnpUPiRhe6yoI66cV3b9JJZO38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nJ357KzO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C4A0C43390;
+	Tue, 13 Feb 2024 00:24:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783867;
-	bh=OhKIQUuRvOy0Ab3y4ndKW6oIXyn1TWNkCN+IvJ96nh4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mWwZ6cRffKbKkAsFsJWZ06ADX3HHsRcHUYJ+wriFefhM7ImOXwsCVB21dy9jF4PWs
-	 43RqLDlPXjph7MiE5vPV0ReWqz6bU9e1tONdbubeIPm+7DMdYFZP0FdcclZLKktrhD
-	 a1FtgUdHpV2IiCXM/+LFZhhOOsx9GyYT7d17n1QeMyAV5rc1bIox4An6sSYytvSfOc
-	 juursVCXbj8gKoG9xOVEEr32RPatlEmF+ckW1QEhJ2zV6nMfJEHD2lIXDhzbpXNB65
-	 zgWJjeZf5c4pNvg8r+a3KtSdnFpiHsafCW6dXuOEmPO136fdDifIUCtIH8p74k1o29
-	 fzfQkvY+AyS0w==
+	s=k20201202; t=1707783870;
+	bh=f+qJcnnrFfj+Tpxdck62VZq1w0HqiDFabO/FRPH/tCE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nJ357KzOlsDY364IRs4fifLVj2laoaH2A3GfjtJtHHWfSox4UjwE5cNa+4wZsYcsp
+	 q+4xCTP4ruR07fFBlKQ5Z4pa2O/vRrTytna7cW15Li7T97X8O3AR76zBPlcPYv5Y8z
+	 b446WaCmAUMlmYd0IgoeTLIYg4YVfU9gZsa9GYt12V1m//KBf042OGJZkeBGI+FD6K
+	 /MGxR7As1nlyKZlBPOxwuWGAoJ7JyWqwoULEmb78CacBzFePBbzwuhm2878R87jhJF
+	 9PAb9f9FD01snD89Zi05tKH3d7BDLPmopQHnxRLu/BYIle8DJEEpwJSNGlTNbI1Jql
+	 E/XCUgNkA+z4g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yi Sun <yi.sun@unisoc.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>,
-	Jens Axboe <axboe@kernel.dk>,
+Cc: Zhang Rui <rui.zhang@intel.com>,
+	Guenter Roeck <linux@roeck-us.net>,
 	Sasha Levin <sashal@kernel.org>,
-	mst@redhat.com,
-	jasowang@redhat.com,
-	virtualization@lists.linux.dev,
-	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 4/4] virtio-blk: Ensure no requests in virtqueues before deleting vqs.
-Date: Mon, 12 Feb 2024 19:24:19 -0500
-Message-ID: <20240213002420.673218-4-sashal@kernel.org>
+	fenghua.yu@intel.com,
+	jdelvare@suse.com,
+	linux-hwmon@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 1/3] hwmon: (coretemp) Enlarge per package core count limit
+Date: Mon, 12 Feb 2024 19:24:25 -0500
+Message-ID: <20240213002428.673310-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240213002420.673218-1-sashal@kernel.org>
-References: <20240213002420.673218-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,65 +60,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.268
+X-stable-base: Linux 4.19.306
 Content-Transfer-Encoding: 8bit
 
-From: Yi Sun <yi.sun@unisoc.com>
+From: Zhang Rui <rui.zhang@intel.com>
 
-[ Upstream commit 4ce6e2db00de8103a0687fb0f65fd17124a51aaa ]
+[ Upstream commit 34cf8c657cf0365791cdc658ddbca9cc907726ce ]
 
-Ensure no remaining requests in virtqueues before resetting vdev and
-deleting virtqueues. Otherwise these requests will never be completed.
-It may cause the system to become unresponsive.
+Currently, coretemp driver supports only 128 cores per package.
+This loses some core temperature information on systems that have more
+than 128 cores per package.
+ [   58.685033] coretemp coretemp.0: Adding Core 128 failed
+ [   58.692009] coretemp coretemp.0: Adding Core 129 failed
+ ...
 
-Function blk_mq_quiesce_queue() can ensure that requests have become
-in_flight status, but it cannot guarantee that requests have been
-processed by the device. Virtqueues should never be deleted before
-all requests become complete status.
+Enlarge the limitation to 512 because there are platforms with more than
+256 cores per package.
 
-Function blk_mq_freeze_queue() ensure that all requests in virtqueues
-become complete status. And no requests can enter in virtqueues.
-
-Signed-off-by: Yi Sun <yi.sun@unisoc.com>
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-Link: https://lore.kernel.org/r/20240129085250.1550594-1-yi.sun@unisoc.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+Link: https://lore.kernel.org/r/20240202092144.71180-4-rui.zhang@intel.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/virtio_blk.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/hwmon/coretemp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-index 9b3ea86c20e5..3afc07b59477 100644
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -1063,14 +1063,15 @@ static int virtblk_freeze(struct virtio_device *vdev)
- {
- 	struct virtio_blk *vblk = vdev->priv;
+diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
+index 33371f7a4c0f..e08bb28ec427 100644
+--- a/drivers/hwmon/coretemp.c
++++ b/drivers/hwmon/coretemp.c
+@@ -53,7 +53,7 @@ MODULE_PARM_DESC(tjmax, "TjMax value in degrees Celsius");
  
-+	/* Ensure no requests in virtqueues before deleting vqs. */
-+	blk_mq_freeze_queue(vblk->disk->queue);
-+
- 	/* Ensure we don't receive any more interrupts */
- 	vdev->config->reset(vdev);
- 
- 	/* Make sure no work handler is accessing the device. */
- 	flush_work(&vblk->config_work);
- 
--	blk_mq_quiesce_queue(vblk->disk->queue);
--
- 	vdev->config->del_vqs(vdev);
- 	kfree(vblk->vqs);
- 
-@@ -1088,7 +1089,7 @@ static int virtblk_restore(struct virtio_device *vdev)
- 
- 	virtio_device_ready(vdev);
- 
--	blk_mq_unquiesce_queue(vblk->disk->queue);
-+	blk_mq_unfreeze_queue(vblk->disk->queue);
- 	return 0;
- }
- #endif
+ #define PKG_SYSFS_ATTR_NO	1	/* Sysfs attribute for package temp */
+ #define BASE_SYSFS_ATTR_NO	2	/* Sysfs Base attr no for coretemp */
+-#define NUM_REAL_CORES		128	/* Number of Real cores per cpu */
++#define NUM_REAL_CORES		512	/* Number of Real cores per cpu */
+ #define CORETEMP_NAME_LENGTH	28	/* String Length of attrs */
+ #define MAX_CORE_ATTRS		4	/* Maximum no of basic attrs */
+ #define TOTAL_ATTRS		(MAX_CORE_ATTRS + 1)
 -- 
 2.43.0
 
