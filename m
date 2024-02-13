@@ -1,148 +1,94 @@
-Return-Path: <linux-kernel+bounces-64224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2604853C39
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:27:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BBEA853C3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:30:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACD172875BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:27:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9AB61F256C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:30:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5724B60BAA;
-	Tue, 13 Feb 2024 20:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0105360B9E;
+	Tue, 13 Feb 2024 20:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lPFkxYPR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="P9zMfEMf"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC8E1097D;
-	Tue, 13 Feb 2024 20:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44BD60B8D
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 20:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707856023; cv=none; b=W44FPD8nVvRomyLSYWa/sAXRLj9b3M38FXp7DeTOwmNN+up397WCkB5zsuxrGrOL+3IloghQiDwSs4IuZ45o0v61VBXQVFA2cd7Jgo+aovy9475BDCocGk3wi5SWCLxMRbJiTbAghqF2sRFaPBEQR9OT+ik4Zyw5Gd05Q+6ip9E=
+	t=1707856193; cv=none; b=Lorv5nn+d1iNHWQBKDQJIQErVnldikjgH9Zh3ryJ44DdLUqhch0xY6/KV2Bd2/kdSHK44OvFOiTH3H8GEGniG4GqXrUn7OGarTZ/t27nzik+fuk5UhyNNaT+aNunkyYPRGsmR/lR2tvydFxNaazP951/2vM5E+sXOXO1hXDiEng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707856023; c=relaxed/simple;
-	bh=wr2SPv5Ld/DSkoS5vcAzZJ9Df9CxqcjpNgsKUEXsmMg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hlJplD7J9TgmdqwIxGJcBQAJy0AOrIxN5j2YL98JZ9YGQJMVH8qNdxPhXgGUQy0gRvceaicH3Y8UIrQRAj2oXmo54V0yRS7maLxq2djwO29QmcHqjeTlPqyGs2lN9pK6AmF2fgT5O3wo7NANmMSHS1LXjNoTMgQMVpviUKC0SWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lPFkxYPR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACEE0C433F1;
-	Tue, 13 Feb 2024 20:26:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707856023;
-	bh=wr2SPv5Ld/DSkoS5vcAzZJ9Df9CxqcjpNgsKUEXsmMg=;
-	h=Date:From:To:List-Id:Cc:Subject:References:In-Reply-To:From;
-	b=lPFkxYPR0J3NXG1zdBfo423wECnKhWMgXPxCg52F3jS4QKKMEyqjBhXaUGKE3tgG6
-	 37ZF1eFh/KlF2KXEvZh8+5akK0hqsrS1FZnabOENmkW6SqKVRepSFJf7g6xxh7ojEV
-	 jnkdi6FQUiy1uKshzEZhLb5yve1bg3+EMiWyulcWid6e7LMamsxlhTvq2275lGDRVd
-	 PYq1svZG2Lc2X9dtgFRoH1KjCqQDhIoYjVbGHKXP+VJjE7rPkT9HdKzpsCs5RzEGYP
-	 ef1gd/J3wmRP/+qW2yBa+bsr9UVpRx1oatwybDxzT9Hk3Wx4NArI6+dQLf7ihqU6h7
-	 NgaQAYTbgz0rQ==
-Date: Tue, 13 Feb 2024 20:26:51 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: soc@kernel.org, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Tsahee Zidenberg <tsahee@annapurnalabs.com>,
-	Antoine Tenart <atenart@kernel.org>, Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Stefan Agner <stefan@agner.ch>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	=?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
-	Tony Lindgren <tony@atomide.com>, Chanho Min <chanho.min@lge.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Linus Walleij <linusw@kernel.org>, Imre Kaloz <kaloz@openwrt.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-	openbmc@lists.ozlabs.org, linux-tegra@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-omap@vger.kernel.org, linux-mediatek@lists.infradead.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH 0/6] dts: Fix dtc interrupt warnings
-Message-ID: <20240213-wafer-garnish-88287bc5d4a5@spud>
-References: <20240213-arm-dt-cleanups-v1-0-f2dee1292525@kernel.org>
+	s=arc-20240116; t=1707856193; c=relaxed/simple;
+	bh=UEVO0B26uhK0w0gYwAWEhrJzXFGcmP6byGGLKq+PWvM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=s/m0K4P8ZVc9dwl+cCY3svdNvu/ZhImHYRDp91ETOWGRJZl9hH1hfZ/WBeF1QBidmk0GPQTGGh8hCJXy8Snw8eOiBLXkfV46HLs8+ahguNUfzUPF4qBSDIs6qfSrd6K/4EYbrIZKFQJCqN2VJAwXW/yyWhtGZnxW/QyZmpmuuYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ericchancf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=P9zMfEMf; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ericchancf.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6078b764778so20450737b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:29:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707856191; x=1708460991; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S/4WgCQSUw1TXLBEg/cdyp6BGe+F8+Dx7OhLtWDh8xI=;
+        b=P9zMfEMfj6jppf832Q5adIVvwOD5JdPoc1IDoZG+KHvXQ9Or9td2B3fCoYfjybiJzK
+         33Wof1ZaaDkMXURv+xsWKUTMrdYonqDWc1tls658COKCtxKwJrR44qA1rboE5nQylYmn
+         JnE5AT9kJ+HWnsnqfeUETQBbFbdB1hjtN35v1IxO38mQLecDiQ08p5eOEshFmG26lU7Y
+         ceBrLC/DD04jCYnTbQxGes5besas6Y6EalJM8H+oPNXGRxgnuJWB43rej5maUyzLBy4a
+         bE9gU9jmFhuvvpsmFfgFSUHDLMnDBvpvQLFUt0320io8+NfSxzh0o2JnCYFNux3Wr3o/
+         fM1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707856191; x=1708460991;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S/4WgCQSUw1TXLBEg/cdyp6BGe+F8+Dx7OhLtWDh8xI=;
+        b=jX9dAkp42yAmTEPrPOzattaia3+qqdxB4SCfA8+WfzLoOLsdKvJMJJ3OWXfuypq+jj
+         b2F5ZocOR/TAUNS5xpWOjG9ALN1ooLXIrCZ+NCtshpuO+UoZ24HQkmJdBrmL/xDQ77bu
+         RbnpKXK6JfvJ2qAY+EU3nvkIm2eEwZHiX3kJfGa1nmasiKUTj0/faxNHwBpNY0N+ALAa
+         31KVEf2syWEq5DHoUByS41uzKN3Me2/BezAtxPnueL//jYfM1+3rDngYRmPdPydf30O7
+         WsiIP9qzKtjMDG3U7tmpbcBG/+6UCtFZ4QH12IE9F5FTyehYOu6d8qTpX3vtZSgBqGoA
+         EBDg==
+X-Forwarded-Encrypted: i=1; AJvYcCXCRev5F+zToe52sfOfmEH5JiUGjjTvygZziBMyUWNjFw2TMa79eNxatRHz8Tajt3msPnPUjKP00iOffL82W3p8arhBVgFKYGzXZevu
+X-Gm-Message-State: AOJu0YwKHB1RTVVhntGAYvCa/eCdv/kYmT6H2UpRFU64uCm05KtnyTDt
+	niplIHPjfwMa06f+el422DhRIpe6j5dV7DVbKzcqpZ9wrfbhw5XogyEN9jOZHj6kV3ZqnU/VrAT
+	EzxGx9xH6z0CJalRAlQ==
+X-Google-Smtp-Source: AGHT+IFUpetQu6KwC00uaQK/HUEiM8lKKNaIEqPcnbDpHfhpKTjtjwUKHH+Y9Xx3e3TlJKreq9z0ndGHYLkZpwPZ
+X-Received: from ericchancf.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:4139])
+ (user=ericchancf job=sendgmr) by 2002:a81:5254:0:b0:607:87cd:a94d with SMTP
+ id g81-20020a815254000000b0060787cda94dmr96969ywb.5.1707856190871; Tue, 13
+ Feb 2024 12:29:50 -0800 (PST)
+Date: Tue, 13 Feb 2024 20:29:45 +0000
+In-Reply-To: <CAJM55Z9MOoZ3A=h4uFaO2hD461U3BMDyWxXLBt0tUdOuJJ5t+g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4XczAmSSxV0XIpGO"
-Content-Disposition: inline
-In-Reply-To: <20240213-arm-dt-cleanups-v1-0-f2dee1292525@kernel.org>
+Mime-Version: 1.0
+References: <CAJM55Z9MOoZ3A=h4uFaO2hD461U3BMDyWxXLBt0tUdOuJJ5t+g@mail.gmail.com>
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Message-ID: <20240213202945.2554307-1-ericchancf@google.com>
+Subject: Re: [PATCH v3 4/4] riscv/barrier: Resolve checkpatch.pl error
+From: Eric Chan <ericchancf@google.com>
+To: emil.renner.berthing@canonical.com
+Cc: aou@eecs.berkeley.edu, ericchancf@google.com, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, palmer@dabbelt.com, paul.walmsley@sifive.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Emil,
 
---4XczAmSSxV0XIpGO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  Thank you for reviewing my patch! I appreciate the feedback.
+  I've updated patch v4 at [0].
+  Please let me know if you have any further questions or suggestions.
 
-On Tue, Feb 13, 2024 at 01:34:24PM -0600, Rob Herring wrote:
-> I had a branch with most of these changes sitting in my tree for some=20
-> time. Geert's asking about some errors not getting found prompted me to=
-=20
-> clean it up and send it out. This series fixes all* interrupt related=20
-> warnings and enables the check by default.=20
->=20
-> SoC maintainers, Can you please take this series directly.=20
->=20
-> Rob
->=20
-> *There's a few Renesas warnings still Geert said he would fix.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> Rob Herring (6):
->       arm64: dts: freescale: Disable interrupt_map check
->       arm: dts: Fix dtc interrupt_provider warnings
->       arm64: dts: Fix dtc interrupt_provider warnings
->       arm: dts: Fix dtc interrupt_map warnings
->       arm64: dts: qcom: Fix interrupt-map cell sizes
->       dtc: Enable dtc interrupt_provider check
+[0] [https://lore.kernel.org/lkml/20240213200923.2547570-1-ericchancf@google.com/]
 
-Only fixing it for arm, Sadge.
-
-Co-incidentally I noticed there was one for riscv while looking at
-Krzysztof's underscore in node name patch earlier, so I'd already
-written a patch to fix it :)
-
---4XczAmSSxV0XIpGO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcvQiwAKCRB4tDGHoIJi
-0iKoAP9EkRpfMdcQD2Rxy6EyQrFHOf9aK1XBqWvwsM+uYWZVZAD9El92XfSbd1tC
-IcCJORhtpqwWl2bRDhMSRtSpWpqRygA=
-=9Yjc
------END PGP SIGNATURE-----
-
---4XczAmSSxV0XIpGO--
+Sincerely,
+  Eric Chan
 
