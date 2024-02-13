@@ -1,181 +1,194 @@
-Return-Path: <linux-kernel+bounces-63851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F12A85357F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:00:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14B61853583
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:01:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAE622891F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:00:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 391A11C24ADE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59305F559;
-	Tue, 13 Feb 2024 15:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 824CE5F564;
+	Tue, 13 Feb 2024 16:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vENYxF3d"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="dpxQDKQg"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF9B5F840;
-	Tue, 13 Feb 2024 15:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59D758108;
+	Tue, 13 Feb 2024 16:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707839997; cv=none; b=YmbX18FDnub7k3mBz8zWGoVCSHsL9m8xtkXkaJRDUNuCCrO+okc9AyIccX3LD7nfleQEWl6ARFeeEopK+aBVZLwqoCwL8wxWFaYAzLUz+XL2nETN4uP9HItT0sWSj/7ifvfqQNShIve6je8seVEUk7yy9v0mfcPXtcNUdy3OBl8=
+	t=1707840083; cv=none; b=J3ndUyggoRnkG+1z9HVRJKAfM8/6udirL9Y7lbxraoJ40SEFXbFr4b2YxYGXYXso5gbBc+meHbLmnIhO8uP/JvlZLAGVZOI+nK1/Uq4KBiMdckWOYSXhK8we/s9Dh7c+dGuUCppEAoDeM1ctMN+j2vudL5h3trJg99sHSx3150I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707839997; c=relaxed/simple;
-	bh=IQN/0szS2m1FsfIyJtqFxZ+lzN0l5trxoCuVY6IdmG8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=WXksbVTY7LEJXrzDuEugjUKZceatQWRHuj8OmUomQr7vrz2RPTZdR0s5+XV347vWuQSb164WKZNx/g59MXs0PU2btfVrdmTLp35mmaSNoKQMaf/YEIhkpWaLrdW04gKzn6Gbxd1XSSQphGRtiRAdHEhYMcjNKbbRqsSNciU7A6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vENYxF3d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B5A3C433C7;
-	Tue, 13 Feb 2024 15:59:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707839996;
-	bh=IQN/0szS2m1FsfIyJtqFxZ+lzN0l5trxoCuVY6IdmG8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=vENYxF3dKmqGYVRNgRCZ2GNoFRkAzqdVDE5ytZFSSuLzz4PdksLfNMiVfJqAg5xit
-	 1doqBoc6kJQjOZR3DVc75ArD5max8Ox/xTRqwDINi88CjGMjY2J7JFmppxiE7Yl4on
-	 o7jXfpNhfr+0xtrwq09J5xX5tOfnzTMtGNH4851/i240HkNP051v4TIVPZSpkRlzeg
-	 x6Sv62ZCGzsvRxQuOiF/3kDLP8mxagLfnNY1IGSAu47dmN5XZTHpsrKfP3X7YnqffW
-	 8q0Zk45o7NXwz3uNvuS8LEuzMCcKSWBYn0n1jIHLg3kBD9Gnk+td+GghOpl5qH7ZlX
-	 UrG0wbbYYb3+A==
-Date: Tue, 13 Feb 2024 09:59:54 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Leon Romanovsky <leonro@nvidia.com>
-Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Jim Harris <jim.harris@samsung.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Pierre =?utf-8?Q?Cr=C3=A9gut?= <pierre.cregut@orange.com>
-Subject: Re: [PATCH v2 1/2] PCI/IOV: Revert "PCI/IOV: Serialize sysfs
- sriov_numvfs reads vs writes"
-Message-ID: <20240213155954.GA1210633@bhelgaas>
+	s=arc-20240116; t=1707840083; c=relaxed/simple;
+	bh=Rmmr5ve2QPJb9LsgoZooJA8bclacYw+Kli7QPTZIrwA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=VkGHwEIzS+UWLbOuTDd40DSiUiNbMLeo2Sra4ZYDJspTV+9jLZEaxRFEfYFveWBfzboK++yy4oE0WFouxL9ebcOcZWmEHHw1D4HpH7mdvYxG3t7jFVCfHU1YJNMAFTV4WTaNra0UncP2YDWmoOk27WClBhywHR+UhvoILVfrxEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=dpxQDKQg; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41DG0qO7018324;
+	Tue, 13 Feb 2024 10:00:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707840052;
+	bh=4A6mcITJSv/WywOIQJrp5wMO3GTMsH5C1aAFPUy40jA=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=dpxQDKQgs/LQNe3rKX922HO/KiwWoy9vxkPHl1WIb/Qq/bA2iu/+ZDuU5zvWb0JRE
+	 q4GPX2x/EInhN40kOmctGcvi1mGQdwoxbZKl8Ce/X+c8oV2pvMTH5YoMZMRifL2OSV
+	 R77xfAm61noBrO0tt02tuYEPGI+9OecRq1BKKnx4=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41DG0qAW011385
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 13 Feb 2024 10:00:52 -0600
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 13
+ Feb 2024 10:00:51 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 13 Feb 2024 10:00:51 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41DG0pnV070046;
+	Tue, 13 Feb 2024 10:00:51 -0600
+Message-ID: <ec079a72-adc7-4a33-8486-e3b624ef6ba5@ti.com>
+Date: Tue, 13 Feb 2024 10:00:50 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213073450.GA52640@unreal>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] docs: dt: Update overlay file extension
+To: Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jonathan Corbet
+	<corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
+        Yanteng Si
+	<siyanteng@loongson.cn>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: <linux-doc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <5ac79104822cdce7a4caab87f14ce02477f85820.1707819511.git.geert+renesas@glider.be>
+Content-Language: en-US
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <5ac79104822cdce7a4caab87f14ce02477f85820.1707819511.git.geert+renesas@glider.be>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Feb 13, 2024 at 09:34:50AM +0200, Leon Romanovsky wrote:
-> On Mon, Feb 12, 2024 at 02:27:14PM -0600, Bjorn Helgaas wrote:
-> > On Sun, Feb 11, 2024 at 10:48:44AM +0200, Leon Romanovsky wrote:
-> > > On Fri, Feb 09, 2024 at 07:20:28PM -0800, Kuppuswamy Sathyanarayanan wrote:
-> > > > On 2/9/24 3:52 PM, Jim Harris wrote:
-> > > > > If an SR-IOV enabled device is held by vfio, and the device
-> > > > > is removed, vfio will hold device lock and notify userspace
-> > > > > of the removal. If userspace reads the sriov_numvfs sysfs
-> > > > > entry, that thread will be blocked since sriov_numvfs_show()
-> > > > > also tries to acquire the device lock. If that same thread
-> > > > > is responsible for releasing the device to vfio, it results
-> > > > > in a deadlock.
-> > > > >
-> > > > > The proper way to detect a change to the num_VFs value is to
-> > > > > listen for a sysfs event, not to add a device_lock() on the
-> > > > > attribute _show() in the kernel.
-> > 
-> > The lock was not about detecting a change; Pierre did this:
-> > 
-> >   ip monitor dev ${DEVICE} | grep --line-buffered "^${id}:" | while read line; do \
-> >     cat ${path}/device/sriov_numvfs; \
-> > 
-> > which I assume works by listening for sysfs events.  
+On 2/13/24 4:24 AM, Geert Uytterhoeven wrote:
+> Building DTB overlays from .dts files is no longer supported.
+> Update the documentation to reflect this.
 > 
-> It is not, "ip monitor ..." listens to netlink events emitted by
-> netdev core and not sysfs events. Sysfs events are not involved in
-> this case.
+> Fixes: 81d362732bac05f6 ("kbuild: Disallow DTB overlays to built from .dts named source files")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
 
-Thanks for correcting my hasty assumption!
+Acked-by: Andrew Davis <afd@ti.com>
 
-> > The problem was that after the event occurred, the sriov_numvfs
-> > read got a stale value (see https://bugzilla.kernel.org/show_bug.cgi?id=202991).
+>   Documentation/devicetree/overlay-notes.rst           | 12 ++++++------
+>   .../translations/zh_CN/devicetree/overlay-notes.rst  | 12 ++++++------
+>   2 files changed, 12 insertions(+), 12 deletions(-)
 > 
-> Yes, and it is outcome of such cross-subsytem involvement, which
-> is racy by definition. Someone can come with even simpler example of why
-> locking sysfs read and write is not a good idea. 
-> 
-> For example, let's consider the following scenario with two CPUs and
-> locks on sysfs read and write:
-> 
->  CPU1					CPU2
->  echo 1 > ${path}/device/sriov_numvfs
-> 		 context_switch ->
->  					cat ${path}/device/sriov_numvfs
-> 					lock
-> 					return 0
-> 					unlock
-> 		context_switch <-
->  lock
->  set 1
->  unlock
-> 
->  CPU1					CPU2
->  echo 1 > ${path}/device/sriov_numvfs
->  lock
->  set 1
->  unlock
-> 		 context_switch ->
->  					cat ${path}/device/sriov_numvfs
-> 					lock
-> 					return 1
-> 					unlock
-> 
-> So same scenario will return different values if user doesn't protect
-> such case with external to the kernel lock.
-> 
-> But if we return back to Pierre report and if you want to provide
-> completely bullet proof solution to solve cross-subsystem interaction,
-> you will need to prohibit device probe till sriov_numvfs update is completed.
-> However, it is overkill for something that is not a real issue.
-
-Pierre wanted to detect the configuration change and learn the new
-num_vfs, which seems like a reasonable thing to do.  Is there a way to
-do both via netlink or some other mechanism?
-
-> > So I would drop this sentence because I don't think it accurately
-> > reflects the reason for 35ff867b7657.
-> > 
-> > > > Since you are reverting a commit that synchronizes SysFS read
-> > > > /write, please add some comments about why it is not an
-> > > > issue anymore.
-> > > 
-> > > It was never an issue, the idea that sysfs read and write should be
-> > > serialized by kernel is not correct by definition. 
-> > 
-> > I think it *was* an issue.  The behavior Pierre observed at was
-> > clearly wrong, 
-> 
-> I disagree with this sentence. 
-> 
-> > and we added 35ff867b7657 ("PCI/IOV: Serialize sysfs
-> > sriov_numvfs reads vs writes") to resolve it.
-> > 
-> > We should try to avoid reintroducing the problem, so I think we should
-> > probably squash these two patches and describe it as a deadlock fix
-> > instead of dismissing 35ff867b7657 as being based on false premises.
-> > 
-> > It would be awesome if you had time to verify that these patches also
-> > resolve the problem you saw, Pierre.
-> 
-> They won't resolve his problem, because he is not listening to sysfs
-> events, but rely on something from netdev side.
-
-I guess that means that if we apply this revert, the problem Pierre
-reported will return.  Obviously the deadlock is more important than
-the inconsistency Pierre observed, but from the user's point of view
-this will look like a regression.
-
-Maybe listening to netlink and then looking at sysfs isn't the
-"correct" way to do this, but I don't want to just casually break
-existing user code.  If we do contemplate doing the revert, at the
-very least we should include specific details about what the user code
-*should* do instead, at the level of the actual commands to use
-instead of "ip monitor dev; cat ${path}/device/sriov_numvfs".
-
-Bjorn
+> diff --git a/Documentation/devicetree/overlay-notes.rst b/Documentation/devicetree/overlay-notes.rst
+> index e139f22b363e9f36..35e79242af9a928d 100644
+> --- a/Documentation/devicetree/overlay-notes.rst
+> +++ b/Documentation/devicetree/overlay-notes.rst
+> @@ -38,10 +38,10 @@ Lets take an example where we have a foo board with the following base tree::
+>   	};
+>       ---- foo.dts ---------------------------------------------------------------
+>   
+> -The overlay bar.dts,
+> +The overlay bar.dtso,
+>   ::
+>   
+> -    ---- bar.dts - overlay target location by label ----------------------------
+> +    ---- bar.dtso - overlay target location by label ---------------------------
+>   	/dts-v1/;
+>   	/plugin/;
+>   	&ocp {
+> @@ -51,7 +51,7 @@ The overlay bar.dts,
+>   			... /* various properties and child nodes */
+>   		};
+>   	};
+> -    ---- bar.dts ---------------------------------------------------------------
+> +    ---- bar.dtso --------------------------------------------------------------
+>   
+>   when loaded (and resolved as described in [1]) should result in foo+bar.dts::
+>   
+> @@ -88,9 +88,9 @@ in the base DT. In this case, the target path can be provided. The target
+>   location by label syntax is preferred because the overlay can be applied to
+>   any base DT containing the label, no matter where the label occurs in the DT.
+>   
+> -The above bar.dts example modified to use target path syntax is::
+> +The above bar.dtso example modified to use target path syntax is::
+>   
+> -    ---- bar.dts - overlay target location by explicit path --------------------
+> +    ---- bar.dtso - overlay target location by explicit path -------------------
+>   	/dts-v1/;
+>   	/plugin/;
+>   	&{/ocp} {
+> @@ -100,7 +100,7 @@ The above bar.dts example modified to use target path syntax is::
+>   			... /* various properties and child nodes */
+>   		}
+>   	};
+> -    ---- bar.dts ---------------------------------------------------------------
+> +    ---- bar.dtso --------------------------------------------------------------
+>   
+>   
+>   Overlay in-kernel API
+> diff --git a/Documentation/translations/zh_CN/devicetree/overlay-notes.rst b/Documentation/translations/zh_CN/devicetree/overlay-notes.rst
+> index 43e3c0bc5a9f8235..ba5edd05dc1e7fd2 100644
+> --- a/Documentation/translations/zh_CN/devicetree/overlay-notes.rst
+> +++ b/Documentation/translations/zh_CN/devicetree/overlay-notes.rst
+> @@ -43,10 +43,10 @@ Documentation/devicetree/dynamic-resolution-notes.rst[1]的配套文档。
+>   	};
+>       ---- foo.dts ---------------------------------------------------------------
+>   
+> -覆盖bar.dts,
+> +覆盖bar.dtso,
+>   ::
+>   
+> -    ---- bar.dts - 按标签覆盖目标位置 ----------------------------
+> +    ---- bar.dtso - 按标签覆盖目标位置 ---------------------------
+>   	/dts-v1/;
+>   	/插件/;
+>   	&ocp {
+> @@ -56,7 +56,7 @@ Documentation/devicetree/dynamic-resolution-notes.rst[1]的配套文档。
+>   			... /* 各种属性和子节点 */
+>   		};
+>   	};
+> -    ---- bar.dts ---------------------------------------------------------------
+> +    ---- bar.dtso --------------------------------------------------------------
+>   
+>   当加载（并按照[1]中描述的方式解决）时，应该产生foo+bar.dts::
+>   
+> @@ -90,9 +90,9 @@ Documentation/devicetree/dynamic-resolution-notes.rst[1]的配套文档。
+>   DT中的适当位置。在这种情况下，可以提供目标路径。通过标签的目标位置的语法是比
+>   较好的，因为不管标签在DT中出现在哪里，覆盖都可以被应用到任何包含标签的基础DT上。
+>   
+> -上面的bar.dts例子被修改为使用目标路径语法，即为::
+> +上面的bar.dtso例子被修改为使用目标路径语法，即为::
+>   
+> -    ---- bar.dts - 通过明确的路径覆盖目标位置 --------------------
+> +    ---- bar.dtso - 通过明确的路径覆盖目标位置 -------------------
+>   	/dts-v1/;
+>   	/插件/;
+>   	&{/ocp} {
+> @@ -102,7 +102,7 @@ DT中的适当位置。在这种情况下，可以提供目标路径。通过标
+>   			... /* 各种外围设备和子节点 */
+>   		}
+>   	};
+> -    ---- bar.dts ---------------------------------------------------------------
+> +    ---- bar.dtso --------------------------------------------------------------
+>   
+>   
+>   内核中关于覆盖的API
 
