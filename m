@@ -1,109 +1,90 @@
-Return-Path: <linux-kernel+bounces-62872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5C14852725
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:55:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0340685271F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:53:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C7EFB26D93
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:53:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAFF01F25F50
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4945C28F4;
-	Tue, 13 Feb 2024 01:52:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8B3F539E;
+	Tue, 13 Feb 2024 01:52:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eDPiwvym"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="CZ5kAB/H"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B211C3D;
-	Tue, 13 Feb 2024 01:52:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC32CA47;
+	Tue, 13 Feb 2024 01:52:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707789151; cv=none; b=ecMl6ZPGg1BkfMbieriHuTdXroiZbcadTOE2anL8Lcvx2HaFn1URWdbGjgNFO0HWp89dgWoaAMIjakgnuZ29gHTRbD+0IgBFdelksqtsFcF1iUP2cDpw557f0ojsgObMUsGJ/5JOtNjoC9EC8GSF80yewdAtqsn+hqWN5pVsEeI=
+	t=1707789172; cv=none; b=OKfMs6FDi3g1EROU9CBfl1+O2XUkpcNy6kYwPKqM/dACjZDH6Tkxd+5iSa8foSNrBx9LaQCIMcsWmFbkwbEu3jbv2H3ainT82BtgKJ95nNb2FbZYN8dnntQkrUdKkqj6ri1sjlH+fIdYgIGW+rQ0L41hGIHHAeKHxkIMfkWbfk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707789151; c=relaxed/simple;
-	bh=uGuxFzDBaFp/hIBEohjAhRGcb9tqim+2jqM2pnvtGo4=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=JhOoI0bw/0W11dX2k92OQ8fy0EEwLFld3zFpvcZ9bsjW/5bTDjnfCKxxuSw8B6Fd3cTgk18HLW3bkAT7+T1PivYQkfpbo16iFBnK1r6lOvfCdPoGYK/3WhKRMAd/kLPeR28Tqb/ZTj8pLDQJY2VfO9SSz28jH1jkS2DMuJYCMGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eDPiwvym; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D323C433C7;
-	Tue, 13 Feb 2024 01:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707789150;
-	bh=uGuxFzDBaFp/hIBEohjAhRGcb9tqim+2jqM2pnvtGo4=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=eDPiwvymo5oHUt2DUOS2kOtbJ7K+J1wO6uzNETAr+HveASj7TBWCLPo0vpkjnTmJ2
-	 ccMUkNfVO98UraNQfFx1ftopzdYwFMxx/abCEaVYYIF77JyaacAJ2zKN9TwbvVOBzh
-	 fT70pastL/AOnilQY1w23dIlUVOcZ/w2dKCH6kqT49wcft0yx4KjGMtg55DevYUUkX
-	 JL7slsqaAbdy7udDnSjT2JsnSFuUQ7+AlQFRF38x8dYrAnKxgk0KQqMDbGhmEumi9I
-	 +1DkZ9mdRyBrv/6M7AEq4PWO/v2/oURpP9l1WnjmnNjp6Q/v7j3hX7ADfiJFEwE6se
-	 /wbXLzukvQ/Sw==
-Date: Mon, 12 Feb 2024 17:52:28 -0800
-From: Kees Cook <kees@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>, Kees Cook <keescook@chromium.org>
-CC: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, linux-kernel@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Qian Cai <quic_qiancai@quicinc.com>,
- mptcp@lists.linux.dev, netdev@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] configs/debug: add NET debug config
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20240212170253.77a7be7c@kernel.org>
-References: <20240212-kconfig-debug-enable-net-v1-1-fb026de8174c@kernel.org> <202402121039.E14DF37@keescook> <20240212170253.77a7be7c@kernel.org>
-Message-ID: <952DDEA7-E788-4705-B85F-6B28AD6A707A@kernel.org>
+	s=arc-20240116; t=1707789172; c=relaxed/simple;
+	bh=U6doxvDnuIY90hBori+eEiej6JWNkEdPedf5UFcbCP8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VeGT2o9RDZ7betrJIjaDERsZmEQwC4a3tzodWf7FCGvUOk8ikHDY8+FbLEkznhkzQ5t7LPFbo2AkRMZFT5Gk+kmIXXz4gBJyBE3E99YyU1NW3dc1wV+9rDtopWGFfGlH9O1u50uiuzJ2ZJX1Hlgewhlw1GIOY8VSDs1Mf9zdOZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=CZ5kAB/H; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=1SdYRn3CWEK3dxlZPaRQcNWKE6YBcI2fKjJGdbWOJRk=; b=CZ5kAB/Hf4UtFoX61xHTUDT0fJ
+	B9BqJ9om1X6C2Wq+KOHa/IsARGsafaYupQviQ+T6GZ0PvBg332qYLgT7SkL3yqGg+pNkzIA/MJRGY
+	bXhTHhBb1w0zNfMq1RMbb42QU7vdS6kX3z63JhttSAuMbclxMRNidgYFAZNGsssiQW+I=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rZhyc-007ckQ-DI; Tue, 13 Feb 2024 02:52:50 +0100
+Date: Tue, 13 Feb 2024 02:52:50 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Robert Marko <robimarko@gmail.com>
+Cc: hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	ansuelsmth@gmail.com, rmk+kernel@armlinux.org.uk,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: phy: aquantia: clear PMD Global Transmit
+ Disable bit during init
+Message-ID: <bcccaab4-fffd-43ee-ac49-8fe8a92d65a1@lunn.ch>
+References: <20240211181732.646311-1-robimarko@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240211181732.646311-1-robimarko@gmail.com>
 
+On Sun, Feb 11, 2024 at 07:16:41PM +0100, Robert Marko wrote:
+> PMD Global Transmit Disable bit should be cleared for normal operation.
+> This should be HW default, however I found that on Asus RT-AX89X that uses
+> AQR113C PHY and firmware 5.4 this bit is set by default.
+> 
+> With this bit set the AQR cannot achieve a link with its link-partner and
+> it took me multiple hours of digging through the vendor GPL source to find
+> this out, so lets always clear this bit during .config_init() to avoid a
+> situation like this in the future.
 
+This all look sensible. My only question is, should we have core c45
+code doing this?
 
-On February 12, 2024 5:02:53 PM PST, Jakub Kicinski <kuba@kernel=2Eorg> wr=
-ote:
->On Mon, 12 Feb 2024 10:39:55 -0800 Kees Cook wrote:
->> > Notes:
->> >   - It looks like this debug=2Econfig doesn't have a specific maintai=
-ner=2E
->> >     If this patch is not rejected, I don't know if this modification =
-can
->> >     go through the net tree, or if it should be handled by Andrew=2E
->> >     Probably the latter? I didn't add [net-next] in the subject for t=
-his
->> >     reason=2E =20
->>=20
->> Adding these seem reasonable=2E I touched debug=2Econfig last, so I can=
- take
->> it via the kernel hardening tree if netdev doesn't want to take it=2E
->
->I'd prefer to have it in net-next sooner rather than later, because
->when our CI hits an issue we can tell people:
->
->	make defconfig debug=2Econfig
->	make
->
->otherwise I have to explain what options to twiddle with=2E And the
->refcount options do catch bugs, I had to do this exact the explaining
->last Friday :(
->
->So I'd offer these three options:
-> - we put it on a shared branch and both pull in
-> - you send to Linus within a week and we'll get it soon that way
-> - we take it to net-next directly
->
->What's your preference?
+[Goes and looks at 802.3]
 
-Totally fine in net-next! Go for it=2E :)
+O.K, so the Marvell PHY firmware appears to be broken. The standard
+says it should have a default value of 0, i.e. the transmitter should
+be enabled by default. So this is just a workaround for broken
+behaviour.
 
--Kees
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
 
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
---=20
-Kees Cook
+    Andrew
 
