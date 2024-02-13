@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-62737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCA6085250B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:05:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37D4A85250F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D629B279DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:05:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A8001C210D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF79112C80E;
-	Tue, 13 Feb 2024 00:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEC0112C7E3;
+	Tue, 13 Feb 2024 00:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p82THCF1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MZoAEM37"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D96812C7E2;
-	Tue, 13 Feb 2024 00:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B64512C810;
+	Tue, 13 Feb 2024 00:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783854; cv=none; b=HWbJ0JcBJhNiqOI+llWhErv4oL2eeHymvo72pZl94kmUWR8SWQUBEyQz31xW5CPt+0W5aGHq6jo3w2XGgN8uGOB7hyFEmhtXYBq/wSyIyxRXlSy9LqqsNpQDaiq97+ib3ImrMMJJDa4yiw0CwujG22eUx1NYJC6Ry96YCqewqq8=
+	t=1707783855; cv=none; b=NlXq8tzbVPKJT2ugqmKGNSn4wZwczjd8J/c6xYpcIEKabkEYGmSawvkxMyM12EWmxeW8RWGttX/OjRFkbboR1QMhtfwWmVxRhfta5qwdvFRlFobsTUf3N0Woj/WIIME5TBRuea45ifeDBcgTf1hNWBNbZOgFIWsnUhgFF4Nmn04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783854; c=relaxed/simple;
-	bh=dZdi5+4wLx6MYLCZl42TFJHToe2xGLEQryVfB/WG4fQ=;
+	s=arc-20240116; t=1707783855; c=relaxed/simple;
+	bh=Ezlrsu8Cpnk9jt6VCc0qt5xWi89GOLhSDzVRUGGBsD4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ekn4d2ZuxcfrZvOOhuQ4muOYlLRpLuddIa+DBDNOJE2h7dVuQh1E/Ls2wUZU/uULgGbNIqQqhwJqLXkzRvK/0rtmjVGplE36whpyMubsWcf9NLfgvD1BtUX6uTbX6tlIOZuIW/SpmYYnniFmY2DlGIoZGJPKgEzQL/act16maAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p82THCF1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAF73C43399;
-	Tue, 13 Feb 2024 00:24:12 +0000 (UTC)
+	 MIME-Version; b=kn8y+dDMK98MPMFau7qbJ+3pQsWWBMMKZbWV668VIEvdhSA29GbNAK0rOEKGigOtDPq0OmU5HlkXtiXENvDrNjtegtsul7ewy+5Po5PFYWQ3govCPn/LPRJMzStpwc5IGUTY70/RQR7hFdnQGmP9sAtrItP8vf1hS/+yBxb//io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MZoAEM37; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAD95C433C7;
+	Tue, 13 Feb 2024 00:24:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783853;
-	bh=dZdi5+4wLx6MYLCZl42TFJHToe2xGLEQryVfB/WG4fQ=;
+	s=k20201202; t=1707783854;
+	bh=Ezlrsu8Cpnk9jt6VCc0qt5xWi89GOLhSDzVRUGGBsD4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=p82THCF1EPmHOFGyNd6AIWsMHzcKRG7YPfjz8nSvLREeQlRveEW28m4HyjrYsYGaD
-	 kpygTNtEvK2l4Y4PgWFilGHn2gT7o3hkbAxkbZ7qz3NsNkk0AxmSzkHvknQJf2wTDD
-	 o4lFsJOs5MioS1jcZNlPnS2ohJf7y4TpZmN8Q1+Y/qKMeTK9r6/dCXicj4n/fboUEV
-	 C4h33YOXmIXZMnbz/GDvH9MAIyNLIZf46EC0B71nI6mkyF5T3euoAztsxtU8q6QPQ/
-	 8seePXLl2FFqnYnHxd7QvUhhD+PXhYFjT59Ok9aAfdbLeJJ+f7az6t1LroI5mT8gqK
-	 WmY2Xla1Ir95A==
+	b=MZoAEM37rz6Grn28MiXRGAY0y2//GvRi2a6EMVWRZRlwFrGNmS9Dnv1ZIe8HT6J8Y
+	 1nJcj/I6jj2NWIyU+su5ZD65OjyZvVkJ+Mn7FQ7MU/MefzBmv7VPmhN7kRKocMi4rU
+	 +QEPt6+/UK8s+Cpy8LUWz7r1DACXX0tp333GWmG8V7eYCDpy3uMZsE+lLI/0L1PWGs
+	 l1tBj5bLsxffFUVf80ujHO6Y7FhAbJH/T3WXZNsudG1BHqz6KOF5qCXUSslT5Z/9cs
+	 1MaLKDoXP7rSu6Wi4Gl/xRiWbouNcpFUvc5jN51Eu7cCPLE8aNttU+PfTBb+BtRVSR
+	 ob6pgBrS9eLFg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrew Bresticker <abrestic@rivosinc.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
+Cc: Zhang Rui <rui.zhang@intel.com>,
+	Guenter Roeck <linux@roeck-us.net>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-efi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 2/6] efi: Don't add memblocks for soft-reserved memory
-Date: Mon, 12 Feb 2024 19:24:04 -0500
-Message-ID: <20240213002409.673084-2-sashal@kernel.org>
+	fenghua.yu@intel.com,
+	jdelvare@suse.com,
+	linux-hwmon@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 3/6] hwmon: (coretemp) Enlarge per package core count limit
+Date: Mon, 12 Feb 2024 19:24:05 -0500
+Message-ID: <20240213002409.673084-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002409.673084-1-sashal@kernel.org>
 References: <20240213002409.673084-1-sashal@kernel.org>
@@ -64,57 +66,41 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.209
 Content-Transfer-Encoding: 8bit
 
-From: Andrew Bresticker <abrestic@rivosinc.com>
+From: Zhang Rui <rui.zhang@intel.com>
 
-[ Upstream commit 0bcff59ef7a652fcdc6d535554b63278c2406c8f ]
+[ Upstream commit 34cf8c657cf0365791cdc658ddbca9cc907726ce ]
 
-Adding memblocks for soft-reserved regions prevents them from later being
-hotplugged in by dax_kmem.
+Currently, coretemp driver supports only 128 cores per package.
+This loses some core temperature information on systems that have more
+than 128 cores per package.
+ [   58.685033] coretemp coretemp.0: Adding Core 128 failed
+ [   58.692009] coretemp coretemp.0: Adding Core 129 failed
+ ...
 
-Signed-off-by: Andrew Bresticker <abrestic@rivosinc.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Enlarge the limitation to 512 because there are platforms with more than
+256 cores per package.
+
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+Link: https://lore.kernel.org/r/20240202092144.71180-4-rui.zhang@intel.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/efi-init.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/hwmon/coretemp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
-index f55a92ff12c0..86da3c7a5036 100644
---- a/drivers/firmware/efi/efi-init.c
-+++ b/drivers/firmware/efi/efi-init.c
-@@ -141,15 +141,6 @@ static __init int is_usable_memory(efi_memory_desc_t *md)
- 	case EFI_BOOT_SERVICES_DATA:
- 	case EFI_CONVENTIONAL_MEMORY:
- 	case EFI_PERSISTENT_MEMORY:
--		/*
--		 * Special purpose memory is 'soft reserved', which means it
--		 * is set aside initially, but can be hotplugged back in or
--		 * be assigned to the dax driver after boot.
--		 */
--		if (efi_soft_reserve_enabled() &&
--		    (md->attribute & EFI_MEMORY_SP))
--			return false;
--
- 		/*
- 		 * According to the spec, these regions are no longer reserved
- 		 * after calling ExitBootServices(). However, we can only use
-@@ -194,6 +185,16 @@ static __init void reserve_regions(void)
- 		size = npages << PAGE_SHIFT;
+diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
+index 5b2057ce5a59..23b1c4c0452c 100644
+--- a/drivers/hwmon/coretemp.c
++++ b/drivers/hwmon/coretemp.c
+@@ -40,7 +40,7 @@ MODULE_PARM_DESC(tjmax, "TjMax value in degrees Celsius");
  
- 		if (is_memory(md)) {
-+			/*
-+			 * Special purpose memory is 'soft reserved', which
-+			 * means it is set aside initially. Don't add a memblock
-+			 * for it now so that it can be hotplugged back in or
-+			 * be assigned to the dax driver after boot.
-+			 */
-+			if (efi_soft_reserve_enabled() &&
-+			    (md->attribute & EFI_MEMORY_SP))
-+				continue;
-+
- 			early_init_dt_add_memory_arch(paddr, size);
- 
- 			if (!is_usable_memory(md))
+ #define PKG_SYSFS_ATTR_NO	1	/* Sysfs attribute for package temp */
+ #define BASE_SYSFS_ATTR_NO	2	/* Sysfs Base attr no for coretemp */
+-#define NUM_REAL_CORES		128	/* Number of Real cores per cpu */
++#define NUM_REAL_CORES		512	/* Number of Real cores per cpu */
+ #define CORETEMP_NAME_LENGTH	28	/* String Length of attrs */
+ #define MAX_CORE_ATTRS		4	/* Maximum no of basic attrs */
+ #define TOTAL_ATTRS		(MAX_CORE_ATTRS + 1)
 -- 
 2.43.0
 
