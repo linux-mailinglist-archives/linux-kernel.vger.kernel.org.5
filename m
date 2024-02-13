@@ -1,263 +1,134 @@
-Return-Path: <linux-kernel+bounces-63921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9897D853662
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:44:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A83D4853667
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:46:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C7A8B2A5AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:44:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D41C1F270E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467495FB94;
-	Tue, 13 Feb 2024 16:44:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98CF65FBAE;
+	Tue, 13 Feb 2024 16:45:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yFOTRpEs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="C9ZCRDpn";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fYscvBW0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oJa3cnAe"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sYZ4DNPF"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47185DF05;
-	Tue, 13 Feb 2024 16:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE055DF29
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707842648; cv=none; b=AZGQgHtjDXwnNp8ygaXVbPqTFvE5Zw672XliZiKdDbH4oFAMLzj8RUsJIk0pvlnIZZmEMmCT//iqwRQhj/SNl//n9aoAg3qA8kupvMhRCefuOQSH5KxFz8cr6ikBiYDrH4DrjU5Kf0ntF79K2SuzBCCBVPS0l5VPQ6Z0skiX4q0=
+	t=1707842751; cv=none; b=iQg/GVUYkOR7X2deMMtaPUh/W0L/2jV+nVtCszuiy/RVTw5fDPGG+wTDHyijAjNQkqzLUDhCUPaiZZFNWpwIEQXKCbKpx2U7etEDa0SvnYEN72qG32Zj7QbZLK+ZRR4r8hXnDtzZfT+dmgLER/7GE0rPkPkOemSh3YyvMFUNQEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707842648; c=relaxed/simple;
-	bh=BIw4eDY+yiYJj2TXjDx68WGzcvejATb1x7mhn036r24=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TJQY/OEkJMtMbDG+ubvGmYwIwXwshHycL2WW/kD1anM8c4h/pQ5LkAKJbKTFCI/UaD6WzjbVoP4gl0phPBfPxTz/tkT95cQQ1DaTbMzfDIvrMB0bABcNVeJr6FV6lRj0PbesNKl16s4dWujyfvzge49jbcazCho9eayQhSYHjSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yFOTRpEs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=C9ZCRDpn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fYscvBW0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oJa3cnAe; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CAF5521D04;
-	Tue, 13 Feb 2024 16:44:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707842643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3UQOz75ggfLw1WB47VC2EzAGSHOnNFvfwVqTF6Fqtqs=;
-	b=yFOTRpEsQsI9W13Gb5rsvObCah43piNM8xmeZ2T7Mhy82/CPK6mQxxAdPZjPLBhTjpZqh/
-	/jluPSQpfe5lwMzL1zBMDk5IG2CIHeFhvJsFXTZY0zvI1RH05IlJB0SBXT3yyttmxgyNbI
-	IOrEvZ5YxLpqSwBZUPUcUzY/LiaGN04=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707842643;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3UQOz75ggfLw1WB47VC2EzAGSHOnNFvfwVqTF6Fqtqs=;
-	b=C9ZCRDpnM7zNu6CTb0iijZU9efSFXKs4xsT2Dpq3jcSzT+29KrNnRQMrJ+kgcvhInI+mx/
-	8dVs9pHXG/JC9JCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707842642; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3UQOz75ggfLw1WB47VC2EzAGSHOnNFvfwVqTF6Fqtqs=;
-	b=fYscvBW0UgkMswdDVGpsxrdsWFvm6T5lbhIoK3M2U7mxLNn+T4F2Vw3+3sImqfbjAYCeg/
-	X41d8X8MUgYG9k9ZpaX3EK/dsZdx0sh+5hYtLvKeCjcedzRl60aPLLDKRFkQkN2kjqQCaA
-	8eVSumy+NCnSzW45IuFSQ5qxc5h8FZE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707842642;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3UQOz75ggfLw1WB47VC2EzAGSHOnNFvfwVqTF6Fqtqs=;
-	b=oJa3cnAeSalrpjlNHcGXSvnr70yH4UmF+HojnNLB+mJn/e1mhA9Q6MjhDhUeGLj4LlJF81
-	yybHAbg5NhfpMCDw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id BC5751329E;
-	Tue, 13 Feb 2024 16:44:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id xq/1LVKcy2UdDwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 13 Feb 2024 16:44:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 65B47A0809; Tue, 13 Feb 2024 17:44:02 +0100 (CET)
-Date: Tue, 13 Feb 2024 17:44:02 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: Re: [PATCH 3/7] ext4: refactor out ext4_generic_attr_show()
-Message-ID: <20240213164402.u7pph3egnguxv7du@quack3>
-References: <20240126085716.1363019-1-libaokun1@huawei.com>
- <20240126085716.1363019-4-libaokun1@huawei.com>
+	s=arc-20240116; t=1707842751; c=relaxed/simple;
+	bh=JGKGqteG7pa9oiFGxBsFc/ypgIEdRbcL4bGYyoD5wCw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XCbtAVIzETtPWUbJDb7ct7EoQUfmESCAAKsiB7MkmUTZLcidUCIVmLBGOjtK2vBnPeHFpAtjXwAxFbi+SgAPZMZZmi2ejM0IjhWheU/5jI4ZobWp2AbFVs+FvoTjen3mYU7dmZXoUIQ5PP+XaABK9k6ruy7yGGj8sdOT38TtsbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sYZ4DNPF; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3bd72353d9fso3367786b6e.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:45:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707842749; x=1708447549; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pKaMT9k1GywCRhGtbqWLnybGL6gwpmReHhiJLpce1mY=;
+        b=sYZ4DNPFPyX6BtdAF0qJaPchJ9ZSLc2efd2ueMS5AQp0idC9CFLhIorhPy+4wNhYyN
+         rSIkNBLUHueX4tkWsqV5S3C9WyzJDKZQEyR7ICdb9q21emhAuByh7+L3eMM9/zWdZiAV
+         Cltr7xU3Kex8KbhV1VAB/IdeDX0kO1mESTGFWo5LpX0603KaBg3yhYSezW8NdlAPxzta
+         hNx0yC2NrOlVToI97OkUii2t+nJsexVxdXkg3iP5ySGKpjQRZy5UYAvw/XY1idIHxSpd
+         l0MCYzhPHMDMJgxmXkVSRQO8Su3sBWhY88GuN3tZnca5SHloQ6Ye7OcCCEIrnLCZUP+B
+         2o7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707842749; x=1708447549;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pKaMT9k1GywCRhGtbqWLnybGL6gwpmReHhiJLpce1mY=;
+        b=ogJStu+J+D4u1erce6X42sbk73dYk2jCYa8QV7sfsHCkw+LtblILGa2NHwUgB6Skqs
+         /dZCISCeAO0mZ0fdlsr0egGrOLz7oVQnb0Lmi3fezyeZUuhXhXllRxDjDZ4g1EmJ4GoW
+         95Ra+5ZQ9kRD7r8F1bqPSSs+JgKgtJaz8D/CqHKYKHO2UHN6TIGjkb7cMbxJIzV7kXwi
+         /d2lGjpEO6cljqYGmvwsoLt1BpcwsMfkKyO7DDitj0szK7XraLnkZvdi7ucTkV3kugvQ
+         YQ7Cpswdtp735ozeIMU8uS9FToZjld+99y+sZUsBxLFpMakp7pbAJp3lMQLziq0N5Q09
+         OGAQ==
+X-Gm-Message-State: AOJu0Yy3JsYbAHf0vYchGeQXgiIJuHRkna3E6KjVgmKSkubjgJTXn79r
+	12vwVZ380a6eItatzfTYWwoLlmNtSm9yMfwER/CR8Q+/jCoiwigGV8mGAsO49R0fo9PdUZ3EqmB
+	+ax+Q9zW5LJIAUJGzYrUJpFhBTKsT1g+4urlCvA==
+X-Google-Smtp-Source: AGHT+IHzgNd6UQAd8qbBbxHPgs0FRvXrbejv/hryrKRSmSp3L+KzCEQz1LTQv+93+2Qx9vvpALYUbyX44zW5hoDK1BY=
+X-Received: by 2002:a05:6808:18a9:b0:3c0:3568:8d38 with SMTP id
+ bi41-20020a05680818a900b003c035688d38mr8949729oib.47.1707842749307; Tue, 13
+ Feb 2024 08:45:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126085716.1363019-4-libaokun1@huawei.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+References: <20240210113924.1130448-1-alexs@kernel.org>
+In-Reply-To: <20240210113924.1130448-1-alexs@kernel.org>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 13 Feb 2024 17:45:37 +0100
+Message-ID: <CAKfTPtAyHHD1_4sVzZgj4w7qnU7_eqnBDoMVr1D0Kd1_1t17mw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/5] sched/topology: Remove duplicate descriptions from TOPOLOGY_SD_FLAGS
+To: alexs@kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, 
+	"open list:SCHEDULER" <linux-kernel@vger.kernel.org>, 
+	Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri 26-01-24 16:57:12, Baokun Li wrote:
-> Refactor out the function ext4_generic_attr_show() to handle the reading
-> of values of various common types, with no functional changes.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+On Sat, 10 Feb 2024 at 12:36, <alexs@kernel.org> wrote:
+>
+> From: Alex Shi <alexs@kernel.org>
+>
+> These flags are already documented in include/linux/sched/sd_flags.h.
+> Also, add missing SD_CLUSTER and keep the comment on SD_ASYM_PACKING
+> as it is a special case.
+>
+> Suggested-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> Signed-off-by: Alex Shi <alexs@kernel.org>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
 > ---
->  fs/ext4/sysfs.c | 74 +++++++++++++++++++++----------------------------
->  1 file changed, 32 insertions(+), 42 deletions(-)
-> 
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index 834f9a0eb641..a5d657fa05cb 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -366,13 +366,42 @@ static ssize_t __print_tstamp(char *buf, __le32 lo, __u8 hi)
->  #define print_tstamp(buf, es, tstamp) \
->  	__print_tstamp(buf, (es)->tstamp, (es)->tstamp ## _hi)
->  
-> +static ssize_t ext4_generic_attr_show(struct ext4_attr *a,
-> +				      struct ext4_sb_info *sbi, char *buf)
-> +{
-> +	void *ptr = calc_ptr(a, sbi);
-> +
-> +	if (!ptr)
-> +		return 0;
-> +
-> +	switch (a->attr_id) {
-> +	case attr_inode_readahead:
-> +	case attr_pointer_ui:
-> +		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> +			return sysfs_emit(buf, "%u\n", le32_to_cpup(ptr));
-> +		return sysfs_emit(buf, "%u\n", *((unsigned int *) ptr));
-> +	case attr_pointer_ul:
-> +		return sysfs_emit(buf, "%lu\n", *((unsigned long *) ptr));
-> +	case attr_pointer_u8:
-> +		return sysfs_emit(buf, "%u\n", *((unsigned char *) ptr));
-> +	case attr_pointer_u64:
-> +		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> +			return sysfs_emit(buf, "%llu\n", le64_to_cpup(ptr));
-> +		return sysfs_emit(buf, "%llu\n", *((unsigned long long *) ptr));
-> +	case attr_pointer_string:
-> +		return sysfs_emit(buf, "%.*s\n", a->attr_size, (char *) ptr);
-> +	case attr_pointer_atomic:
-> +		return sysfs_emit(buf, "%d\n", atomic_read((atomic_t *) ptr));
-> +	}
-> +	return 0;
-> +}
-> +
->  static ssize_t ext4_attr_show(struct kobject *kobj,
->  			      struct attribute *attr, char *buf)
->  {
->  	struct ext4_sb_info *sbi = container_of(kobj, struct ext4_sb_info,
->  						s_kobj);
->  	struct ext4_attr *a = container_of(attr, struct ext4_attr, attr);
-> -	void *ptr = calc_ptr(a, sbi);
->  
->  	switch (a->attr_id) {
->  	case attr_delayed_allocation_blocks:
-> @@ -391,45 +420,6 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
->  		return sysfs_emit(buf, "%llu\n",
->  				(unsigned long long)
->  			percpu_counter_sum(&sbi->s_sra_exceeded_retry_limit));
-> -	case attr_inode_readahead:
-> -	case attr_pointer_ui:
-> -		if (!ptr)
-> -			return 0;
-> -		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> -			return sysfs_emit(buf, "%u\n",
-> -					le32_to_cpup(ptr));
-> -		else
-> -			return sysfs_emit(buf, "%u\n",
-> -					*((unsigned int *) ptr));
-> -	case attr_pointer_ul:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%lu\n",
-> -				*((unsigned long *) ptr));
-> -	case attr_pointer_u8:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%u\n",
-> -				*((unsigned char *) ptr));
-> -	case attr_pointer_u64:
-> -		if (!ptr)
-> -			return 0;
-> -		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> -			return sysfs_emit(buf, "%llu\n",
-> -					le64_to_cpup(ptr));
-> -		else
-> -			return sysfs_emit(buf, "%llu\n",
-> -					*((unsigned long long *) ptr));
-> -	case attr_pointer_string:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%.*s\n", a->attr_size,
-> -				(char *) ptr);
-> -	case attr_pointer_atomic:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%d\n",
-> -				atomic_read((atomic_t *) ptr));
->  	case attr_feature:
->  		return sysfs_emit(buf, "supported\n");
->  	case attr_first_error_time:
-> @@ -438,9 +428,9 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
->  		return print_tstamp(buf, sbi->s_es, s_last_error_time);
->  	case attr_journal_task:
->  		return journal_task_show(sbi, buf);
-> +	default:
-> +		return ext4_generic_attr_show(a, sbi, buf);
->  	}
-> -
-> -	return 0;
->  }
->  
->  static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  kernel/sched/topology.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 10d1391e7416..0b33f7b05d21 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1551,11 +1551,12 @@ static struct cpumask           ***sched_domains_numa_masks;
+>   *
+>   * These flags are purely descriptive of the topology and do not prescribe
+>   * behaviour. Behaviour is artificial and mapped in the below sd_init()
+> - * function:
+> + * function. For details, see include/linux/sched/sd_flags.h.
+>   *
+> - *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
+> - *   SD_SHARE_PKG_RESOURCES - describes shared caches
+> - *   SD_NUMA                - describes NUMA topologies
+> + *   SD_SHARE_CPUCAPACITY
+> + *   SD_SHARE_PKG_RESOURCES
+> + *   SD_CLUSTER
+> + *   SD_NUMA
+>   *
+>   * Odd one out, which beside describing the topology has a quirk also
+>   * prescribes the desired behaviour that goes along with it:
+> --
+> 2.43.0
+>
 
