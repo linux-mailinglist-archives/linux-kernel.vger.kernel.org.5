@@ -1,86 +1,180 @@
-Return-Path: <linux-kernel+bounces-62759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96BE5852556
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:12:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2C8C852558
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:12:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 477211F24BDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:12:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21B921C240F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934442BB08;
-	Tue, 13 Feb 2024 00:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB7F2BB1D;
+	Tue, 13 Feb 2024 00:27:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ABBRO/lf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J5yttsII"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6DEB28F3;
-	Tue, 13 Feb 2024 00:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 973092C68A;
+	Tue, 13 Feb 2024 00:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707784038; cv=none; b=nsuRWA2bbRnTJrtziqBFTHkLZTUqzozophR+fR3MtqCEWfFthc8VQeWcb0/bws4NczCJFfcXtr46Auum6OOwDHgFT1OH4pGl17eobGoVkDZ/g2dc0aVEVW10zjJoEZvWZ6PookEVhwVjTEM0Uvkw68DfghrIwWfrDna++L4EhIY=
+	t=1707784068; cv=none; b=W7gpCJOcx1i8IxejSyd9zppSlZsQJIznaQk01DldJvn7gdlPRiWD8U9E+avb+0PFf293Sf2a8iRgJkm1UXLJjg951p1dYUjmo4eVdVDU+NliPHr2f6IEnZhXa4tXSr8Q73hyo80eJO9YNOOGsOrl3YK5a6N++GBygG7WVN0BO6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707784038; c=relaxed/simple;
-	bh=xa2oLixYH54yKOS4wx6qyOKj3uS0moEuwKs5rzbxVJk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KFz7fJul5MqcJM6Cr2psHjN8lBpZyxc4zRpnDXrFoak39M4qnJnF4oQZp4XndTcwiVXQ4okuGH1VHn6flikz4EvTCoittFWcFeEScQR4o0pw3wN6U9wgPtKj8vO95JMeHYbTd1nRvD3lRtyxBDjRMP9EG3up79HYeQKya+W7iYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ABBRO/lf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC05C433F1;
-	Tue, 13 Feb 2024 00:27:18 +0000 (UTC)
+	s=arc-20240116; t=1707784068; c=relaxed/simple;
+	bh=M66w+pWxehuYBk+Cb8hsy1oktPUqPTiWP+21qBuk88E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X8nxQxjVi5Kq+XBjFQCLxJXd4oCaPZEGqK+dmjjT5IoPDBRxlH7Tiy5hcM2jMCP+jKLrjUNfs4jvzDRGfUR5MlVswKIz6xfcDHuxhI/8f5tIz8LJJIm7FGq1GZ02bLbTTTz99ev8Ueq5M/oRXdUXnmLiGhMeXhnnv1C51iFccqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J5yttsII; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB1B0C433C7;
+	Tue, 13 Feb 2024 00:27:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707784038;
-	bh=xa2oLixYH54yKOS4wx6qyOKj3uS0moEuwKs5rzbxVJk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ABBRO/lf+/k9i2TOlc4qooYhDRcwXRi7Ka14CzL8TjCZtDzhKEUMNhFq75QCzFVGX
-	 l4c42f/jRbjPmLDblX2KoJ5ZJj51pTdm3+rK39DSckdfOq9Xf/kJ5B4FJ3AAX7Pjkd
-	 PRB9HXw7FcLjW2ozIoGRRO40Om/4saTN3TCbOg62JQpldimqRGSqWp7ayl//XJ0E0Y
-	 N7XePU+CtHkStu8zLvxCuQ925hD1cxoDm4GdKHwOeXMVZokl75icfdFb+JJ0ptBSNA
-	 BwmXL5ywJha3ezjx1TgD2HxOoUMhBvxs7UXXxgirNG/cIuQLLxjoXd071/3q5iCnj0
-	 tShUm13obv+Tw==
-Date: Mon, 12 Feb 2024 16:27:17 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc: <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
- <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Michal Swiatkowski
- <michal.swiatkowski@linux.intel.com>
-Subject: Re: [PATCH net v2] lan966x: Fix crash when adding interface under a
- lag
-Message-ID: <20240212162717.2c8cb74e@kernel.org>
-In-Reply-To: <20240212083229.tg3cabp4iee3p6tq@DEN-DL-M31836.microchip.com>
-References: <20240206123054.3052966-1-horatiu.vultur@microchip.com>
-	<20240209135220.42e670d4@kernel.org>
-	<20240212081038.cbsb2exfmcxxntzq@DEN-DL-M31836.microchip.com>
-	<20240212083229.tg3cabp4iee3p6tq@DEN-DL-M31836.microchip.com>
+	s=k20201202; t=1707784068;
+	bh=M66w+pWxehuYBk+Cb8hsy1oktPUqPTiWP+21qBuk88E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J5yttsIIDOKZHldhQet6OkDAFharrNZeoVhDnkgZKtYlpNE1XBBEEkfTSn6zhjvZJ
+	 q6qujD8hH7dl0s5SIoOgoFwxdeiZ9Rjn2wtDSsGi+kFLUPJ9jMIhzIQwEbuXVvsJBQ
+	 C5+uA0TQhiDqsJt7ub4cRTU8zhTlVZ4kyltx2CUTtUMicxBvONZ6yTVtzCkCAzY0QW
+	 2Gk3OW2JEuEneFjLbQo7G1KVx2zUuQkatNkbw5d8RYhDftYmJxznAEi6j4gEIkU746
+	 lWTSUVecHsUkUxZONZDZwl3pP1555PC1MbdGY5lOa8Obbr5lPBllYaZtewrw2goQmB
+	 Sy8mqpQD81dkw==
+Date: Mon, 12 Feb 2024 17:27:46 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Petr Pavlu <petr.pavlu@suse.com>
+Cc: masahiroy@kernel.org, nicolas@fjasle.eu, mark.rutland@arm.com,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kbuild: Use -fmin-function-alignment when available
+Message-ID: <20240213002746.GB3272429@dev-arch.thelio-3990X>
+References: <20240212145355.1050-1-petr.pavlu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212145355.1050-1-petr.pavlu@suse.com>
 
-On Mon, 12 Feb 2024 09:32:29 +0100 Horatiu Vultur wrote:
-> > You are right, the lan966x_lag_get_mask() will not set a bit for a port
-> > that doesn't exist[1]. Therefore this check is not needed.
-> > 
-> > [1] https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/microchip/lan966x/lan966x_lag.c#L354  
-> 
-> While trying to rebase on net, the next version of this patch, I have seen that
-> actually this version was accepted even though it was marked as "Changes
-> Requested".
-> The commit sha is: 15faa1f67ab405d47789d4702f587ec7df7ef03e
-> 
-> How do you prefer to go forward from here?
-> - do you want to revert this and then I will send a new version?
-> - should I send a patch that just removes this unneeded check?
-> - any other suggestion?
+Hi Petr,
 
-Sorry about that, I must have forgotten to reset the tree after viewing
-and didn't spot this between Brenos patches :S No big deal, let's leave
-it as is.
+On Mon, Feb 12, 2024 at 03:53:55PM +0100, Petr Pavlu wrote:
+> GCC recently added option -fmin-function-alignment, which should appear
+> in GCC 14. Unlike -falign-functions, this option causes all functions to
+> be aligned at the specified value, including the cold ones.
+> 
+> Detect availability of -fmin-function-alignment and use it instead of
+> -falign-functions when present. Introduce CC_HAS_SANE_FUNCTION_ALIGNMENT
+> and make the workarounds for the broken function alignment conditional
+> on this setting.
+> 
+> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+> ---
+>  Makefile                       |  7 ++++++-
+>  arch/Kconfig                   |  8 ++++++++
+>  include/linux/compiler_types.h | 10 +++++-----
+>  kernel/exit.c                  |  5 ++++-
+>  4 files changed, 23 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Makefile b/Makefile
+> index 7e0b2ad98905..9516e43f6e45 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -974,7 +974,12 @@ export CC_FLAGS_CFI
+>  endif
+>  
+>  ifneq ($(CONFIG_FUNCTION_ALIGNMENT),0)
+> -KBUILD_CFLAGS += -falign-functions=$(CONFIG_FUNCTION_ALIGNMENT)
+> +# Set the minimal function alignment. Try to use the newer GCC option
+> +# -fmin-function-alignment, or fall back to -falign-funtions. See also
+> +# CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT.
+> +KBUILD_CFLAGS += $(call cc-option, \
+> +	-fmin-function-alignment=$(CONFIG_FUNCTION_ALIGNMENT), \
+> +	-falign-functions=$(CONFIG_FUNCTION_ALIGNMENT))
+>  endif
+>  
+>  # arch Makefile may override CC so keep this after arch Makefile is included
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index a5af0edd3eb8..e2448f927fae 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -1507,4 +1507,12 @@ config FUNCTION_ALIGNMENT
+>  	default 4 if FUNCTION_ALIGNMENT_4B
+>  	default 0
+>  
+> +config CC_HAS_SANE_FUNCTION_ALIGNMENT
+> +	# Detect availability of the GCC option -fmin-function-alignment which
+> +	# guarantees minimal alignment for all functions. GCC 13 and older have
+> +	# only -falign-functions which the compiler ignores for cold functions
+> +	# and this hence requires extra care in the kernel. Clang provides
+> +	# strict alignment always when using -falign-functions.
+> +	def_bool $(cc-option, -fmin-function-alignment=8) || CC_IS_CLANG
+> +
+
+I think this configuration should be split into something like
+CONFIG_CC_HAS_MIN_FUNCTION_ALIGNMENT that has the cc-option check then
+CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT can depend on that configuration
+or Clang as you have it here, so that we can drop the cc-option check in
+the main Makefile and have it be:
+
+ifdef CONFIG_CC_HAS_MIN_FUNCTION_ALIGNMENT
+KBUILD_CFLAGS += -fmin-function-alignment=$(CONFIG_FUNCTION_ALIGNMENT)
+else
+KBUILD_CFLAGS += -falign-functions=$(CONFIG_FUNCTION_ALIGNMENT)
+endif
+
+It is wasteful to call cc-option twice in my opinion, especially if we
+are checking it in Kconfig.
+
+>  endmenu
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index 663d8791c871..f0152165e83c 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -99,17 +99,17 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
+>   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Label-Attributes.html#index-cold-label-attribute
+>   *
+>   * When -falign-functions=N is in use, we must avoid the cold attribute as
+> - * contemporary versions of GCC drop the alignment for cold functions. Worse,
+> - * GCC can implicitly mark callees of cold functions as cold themselves, so
+> - * it's not sufficient to add __function_aligned here as that will not ensure
+> - * that callees are correctly aligned.
+> + * GCC drops the alignment for cold functions. Worse, GCC can implicitly mark
+> + * callees of cold functions as cold themselves, so it's not sufficient to add
+> + * __function_aligned here as that will not ensure that callees are correctly
+> + * aligned.
+>   *
+>   * See:
+>   *
+>   *   https://lore.kernel.org/lkml/Y77%2FqVgvaJidFpYt@FVFF77S0Q05N
+>   *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c9
+>   */
+> -#if !defined(CONFIG_CC_IS_GCC) || (CONFIG_FUNCTION_ALIGNMENT == 0)
+> +#if defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) || (CONFIG_FUNCTION_ALIGNMENT == 0)
+>  #define __cold				__attribute__((__cold__))
+>  #else
+>  #define __cold
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index dfb963d2f862..5a6fed4ad3df 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -1920,7 +1920,10 @@ EXPORT_SYMBOL(thread_group_exited);
+>   *
+>   * See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c11
+>   */
+> -__weak __function_aligned void abort(void)
+> +#ifndef CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT
+> +__function_aligned
+> +#endif
+> +__weak void abort(void)
+>  {
+>  	BUG();
+>  
+> 
+> base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
+> -- 
+> 2.35.3
+> 
 
