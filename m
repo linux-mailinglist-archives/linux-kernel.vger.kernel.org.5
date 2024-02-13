@@ -1,130 +1,181 @@
-Return-Path: <linux-kernel+bounces-63850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F08CC85357C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:59:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F12A85357F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:00:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EF931C22A44
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:59:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAE622891F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EC9D5F551;
-	Tue, 13 Feb 2024 15:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59305F559;
+	Tue, 13 Feb 2024 15:59:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YA0fvuSp"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vENYxF3d"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE25C5D914
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF9B5F840;
+	Tue, 13 Feb 2024 15:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707839975; cv=none; b=IctPBpOjOsAyJsKNtNEgRQx/Pj45iy+eqltyEJQzOeZ9IQw+r4OmcCuYF5yNAXlhMsYgiO8RwbB792AWEXyam15C2dARfjsa2mV5cf7ZOrqDcmFBMagk/OEEi2ypeWdEITJk19ZvZPnn57UjT0ZQC7NhW1fHuOOYEfmaOHBLgR4=
+	t=1707839997; cv=none; b=YmbX18FDnub7k3mBz8zWGoVCSHsL9m8xtkXkaJRDUNuCCrO+okc9AyIccX3LD7nfleQEWl6ARFeeEopK+aBVZLwqoCwL8wxWFaYAzLUz+XL2nETN4uP9HItT0sWSj/7ifvfqQNShIve6je8seVEUk7yy9v0mfcPXtcNUdy3OBl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707839975; c=relaxed/simple;
-	bh=gRbVmUln/eRZrMgBtMOu95Son0kYgWZtjC+yBqqnV8o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fPO5b8FzkCv6N0CIDNJjk8iWmRYZAH+j0PJ9T2PySGUctKQK++TcwBtMY7+AOdXC4XuNnyy8fRH9n6S7b3sg/Qr+7gqrT1ODqnNBMTO17z/4TSj4o0amK3fDxAcITTKJ4nmfoaPhfdm0L5MThtg5aa3txVccFp/q8pjWC08KyGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YA0fvuSp; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707839972;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Zq4cGykM54m1GUbpNCYw0KR4tzCwjD4fijC17ReJiPw=;
-	b=YA0fvuSpWkQXsHTZYb2/6JWmV/ZdkKWSQO2dQBkXdTNdH17K05vosWwjzLsj8WqKxImPAl
-	85Di+fSqR7kP/yVapzeaXwcw/LQH8qrROrPOVAa2NSc9DoqXwo2fvcM3zb9R+Ex7pytM6Y
-	WT+22rEwcnQqjroVnZEtyS7Hcaglu6Q=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-60-YhlK7PuWODqXJ-W0DBiFjw-1; Tue, 13 Feb 2024 10:59:30 -0500
-X-MC-Unique: YhlK7PuWODqXJ-W0DBiFjw-1
-Received: by mail-yb1-f200.google.com with SMTP id 3f1490d57ef6-dcd1779adbeso817643276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:59:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707839970; x=1708444770;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zq4cGykM54m1GUbpNCYw0KR4tzCwjD4fijC17ReJiPw=;
-        b=jTWhVpLr8xwCa6jbysJMEz7k/i7M9bLNFecRzP8gZoygy2pU9oT3HWl8sTyYXWXSe9
-         btTiIGF2E/ueKFm3PNRakBGd7WbtYY3tLwfKbWHkchVIRj3jR0F9a/jbO7gmUsFRzJ04
-         rZ/pgWAVaD75ekK+q9U/o+vJwnNcPJWXfooNpoIBIA/dyZ4VnpWnKO89TIdmrSHCdAKI
-         fvBJXE2cSdCIykl9D91uzEeVK87ACX9x+0+Cts9IfIU/z+Y2Lirq3jeHLtuRHwEViwgn
-         ilK9A4wlAK2jCTnbniFJZtSAsmX01vbKkOVnPeJQqe+hOqvaPjHtKqXCNh1vCCAy5J99
-         4Rkg==
-X-Forwarded-Encrypted: i=1; AJvYcCVtRLZAjMZIOY/xpe+yl4++Dp+ku/3Zt+rztKvP0tl8//Dk481Oa/yhOWjIhFj8div7fRuO7t2WPzun7LbfpkZKDsumbCKwfsYJtvhQ
-X-Gm-Message-State: AOJu0YxUs/eg4dhvVU59dUhBnBhbYZ4EvKEmO84U4K0i3ZdtJV6fEOAX
-	YBmLxG/xooT77n5xJLpGPg7tCOlykpm4RmgFaJk+KJ6ORX47uXTBDybsbHFKW3JmXjLkOMbulgK
-	cr2u5S7SMLSElem59EOsGM/3B4W0HtZFvfGOH7UnySUfaPcyKr2Mr36mNN/pt2ORCenepfVFDRy
-	BokgLtyDni7wbbdWBC/qdrBIlkS/Dce9dCZ/ji
-X-Received: by 2002:a25:aba3:0:b0:dcb:d0cb:651e with SMTP id v32-20020a25aba3000000b00dcbd0cb651emr3678762ybi.28.1707839970283;
-        Tue, 13 Feb 2024 07:59:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF5Y9tRkT/w76lYOCEDhwuuKmO/porv8bn7dSnKt/eWOytIXYIHSKWZ8ZDNwQxpijSKYEbz5UVnSKlp6/P0++k=
-X-Received: by 2002:a25:aba3:0:b0:dcb:d0cb:651e with SMTP id
- v32-20020a25aba3000000b00dcbd0cb651emr3678746ybi.28.1707839970035; Tue, 13
- Feb 2024 07:59:30 -0800 (PST)
+	s=arc-20240116; t=1707839997; c=relaxed/simple;
+	bh=IQN/0szS2m1FsfIyJtqFxZ+lzN0l5trxoCuVY6IdmG8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=WXksbVTY7LEJXrzDuEugjUKZceatQWRHuj8OmUomQr7vrz2RPTZdR0s5+XV347vWuQSb164WKZNx/g59MXs0PU2btfVrdmTLp35mmaSNoKQMaf/YEIhkpWaLrdW04gKzn6Gbxd1XSSQphGRtiRAdHEhYMcjNKbbRqsSNciU7A6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vENYxF3d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B5A3C433C7;
+	Tue, 13 Feb 2024 15:59:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707839996;
+	bh=IQN/0szS2m1FsfIyJtqFxZ+lzN0l5trxoCuVY6IdmG8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=vENYxF3dKmqGYVRNgRCZ2GNoFRkAzqdVDE5ytZFSSuLzz4PdksLfNMiVfJqAg5xit
+	 1doqBoc6kJQjOZR3DVc75ArD5max8Ox/xTRqwDINi88CjGMjY2J7JFmppxiE7Yl4on
+	 o7jXfpNhfr+0xtrwq09J5xX5tOfnzTMtGNH4851/i240HkNP051v4TIVPZSpkRlzeg
+	 x6Sv62ZCGzsvRxQuOiF/3kDLP8mxagLfnNY1IGSAu47dmN5XZTHpsrKfP3X7YnqffW
+	 8q0Zk45o7NXwz3uNvuS8LEuzMCcKSWBYn0n1jIHLg3kBD9Gnk+td+GghOpl5qH7ZlX
+	 UrG0wbbYYb3+A==
+Date: Tue, 13 Feb 2024 09:59:54 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Leon Romanovsky <leonro@nvidia.com>
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Jim Harris <jim.harris@samsung.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Pierre =?utf-8?Q?Cr=C3=A9gut?= <pierre.cregut@orange.com>
+Subject: Re: [PATCH v2 1/2] PCI/IOV: Revert "PCI/IOV: Serialize sysfs
+ sriov_numvfs reads vs writes"
+Message-ID: <20240213155954.GA1210633@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1707758174-142161-1-git-send-email-steven.sistare@oracle.com> <1707758174-142161-2-git-send-email-steven.sistare@oracle.com>
-In-Reply-To: <1707758174-142161-2-git-send-email-steven.sistare@oracle.com>
-From: Eugenio Perez Martin <eperezma@redhat.com>
-Date: Tue, 13 Feb 2024 16:58:54 +0100
-Message-ID: <CAJaqyWdOYHA21A2JUwnTmWfSro7H0ZTTTkkH7Ot9F8hwK+TKXw@mail.gmail.com>
-Subject: Re: [PATCH V2 1/3] vhost-vdpa: flush workers on suspend
-To: Steve Sistare <steven.sistare@oracle.com>
-Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
-	Xie Yongji <xieyongji@bytedance.com>, Stefano Garzarella <sgarzare@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213073450.GA52640@unreal>
 
-On Mon, Feb 12, 2024 at 6:16=E2=80=AFPM Steve Sistare <steven.sistare@oracl=
-e.com> wrote:
->
-> Flush to guarantee no workers are running when suspend returns.
->
-> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+On Tue, Feb 13, 2024 at 09:34:50AM +0200, Leon Romanovsky wrote:
+> On Mon, Feb 12, 2024 at 02:27:14PM -0600, Bjorn Helgaas wrote:
+> > On Sun, Feb 11, 2024 at 10:48:44AM +0200, Leon Romanovsky wrote:
+> > > On Fri, Feb 09, 2024 at 07:20:28PM -0800, Kuppuswamy Sathyanarayanan wrote:
+> > > > On 2/9/24 3:52 PM, Jim Harris wrote:
+> > > > > If an SR-IOV enabled device is held by vfio, and the device
+> > > > > is removed, vfio will hold device lock and notify userspace
+> > > > > of the removal. If userspace reads the sriov_numvfs sysfs
+> > > > > entry, that thread will be blocked since sriov_numvfs_show()
+> > > > > also tries to acquire the device lock. If that same thread
+> > > > > is responsible for releasing the device to vfio, it results
+> > > > > in a deadlock.
+> > > > >
+> > > > > The proper way to detect a change to the num_VFs value is to
+> > > > > listen for a sysfs event, not to add a device_lock() on the
+> > > > > attribute _show() in the kernel.
+> > 
+> > The lock was not about detecting a change; Pierre did this:
+> > 
+> >   ip monitor dev ${DEVICE} | grep --line-buffered "^${id}:" | while read line; do \
+> >     cat ${path}/device/sriov_numvfs; \
+> > 
+> > which I assume works by listening for sysfs events.  
+> 
+> It is not, "ip monitor ..." listens to netlink events emitted by
+> netdev core and not sysfs events. Sysfs events are not involved in
+> this case.
 
-Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
+Thanks for correcting my hasty assumption!
 
-Should this have a Fixes tag?
+> > The problem was that after the event occurred, the sriov_numvfs
+> > read got a stale value (see https://bugzilla.kernel.org/show_bug.cgi?id=202991).
+> 
+> Yes, and it is outcome of such cross-subsytem involvement, which
+> is racy by definition. Someone can come with even simpler example of why
+> locking sysfs read and write is not a good idea. 
+> 
+> For example, let's consider the following scenario with two CPUs and
+> locks on sysfs read and write:
+> 
+>  CPU1					CPU2
+>  echo 1 > ${path}/device/sriov_numvfs
+> 		 context_switch ->
+>  					cat ${path}/device/sriov_numvfs
+> 					lock
+> 					return 0
+> 					unlock
+> 		context_switch <-
+>  lock
+>  set 1
+>  unlock
+> 
+>  CPU1					CPU2
+>  echo 1 > ${path}/device/sriov_numvfs
+>  lock
+>  set 1
+>  unlock
+> 		 context_switch ->
+>  					cat ${path}/device/sriov_numvfs
+> 					lock
+> 					return 1
+> 					unlock
+> 
+> So same scenario will return different values if user doesn't protect
+> such case with external to the kernel lock.
+> 
+> But if we return back to Pierre report and if you want to provide
+> completely bullet proof solution to solve cross-subsystem interaction,
+> you will need to prohibit device probe till sriov_numvfs update is completed.
+> However, it is overkill for something that is not a real issue.
 
-> ---
->  drivers/vhost/vdpa.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index bc4a51e4638b..a3b986c24805 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -594,10 +594,13 @@ static long vhost_vdpa_suspend(struct vhost_vdpa *v=
-)
->         struct vdpa_device *vdpa =3D v->vdpa;
->         const struct vdpa_config_ops *ops =3D vdpa->config;
->         int ret;
-> +       struct vhost_dev *vdev =3D &v->vdev;
->
->         if (!ops->suspend)
->                 return -EOPNOTSUPP;
->
-> +       vhost_dev_flush(vdev);
-> +
->         ret =3D ops->suspend(vdpa);
->         if (!ret)
->                 v->suspended =3D true;
-> --
-> 2.39.3
->
+Pierre wanted to detect the configuration change and learn the new
+num_vfs, which seems like a reasonable thing to do.  Is there a way to
+do both via netlink or some other mechanism?
 
+> > So I would drop this sentence because I don't think it accurately
+> > reflects the reason for 35ff867b7657.
+> > 
+> > > > Since you are reverting a commit that synchronizes SysFS read
+> > > > /write, please add some comments about why it is not an
+> > > > issue anymore.
+> > > 
+> > > It was never an issue, the idea that sysfs read and write should be
+> > > serialized by kernel is not correct by definition. 
+> > 
+> > I think it *was* an issue.  The behavior Pierre observed at was
+> > clearly wrong, 
+> 
+> I disagree with this sentence. 
+> 
+> > and we added 35ff867b7657 ("PCI/IOV: Serialize sysfs
+> > sriov_numvfs reads vs writes") to resolve it.
+> > 
+> > We should try to avoid reintroducing the problem, so I think we should
+> > probably squash these two patches and describe it as a deadlock fix
+> > instead of dismissing 35ff867b7657 as being based on false premises.
+> > 
+> > It would be awesome if you had time to verify that these patches also
+> > resolve the problem you saw, Pierre.
+> 
+> They won't resolve his problem, because he is not listening to sysfs
+> events, but rely on something from netdev side.
+
+I guess that means that if we apply this revert, the problem Pierre
+reported will return.  Obviously the deadlock is more important than
+the inconsistency Pierre observed, but from the user's point of view
+this will look like a regression.
+
+Maybe listening to netlink and then looking at sysfs isn't the
+"correct" way to do this, but I don't want to just casually break
+existing user code.  If we do contemplate doing the revert, at the
+very least we should include specific details about what the user code
+*should* do instead, at the level of the actual commands to use
+instead of "ip monitor dev; cat ${path}/device/sriov_numvfs".
+
+Bjorn
 
