@@ -1,176 +1,117 @@
-Return-Path: <linux-kernel+bounces-63612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFEAF853240
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9867F853242
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 688C9B23283
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:50:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7C99B247DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE625647F;
-	Tue, 13 Feb 2024 13:50:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C958A56740;
+	Tue, 13 Feb 2024 13:50:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y0GkEPW9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="unuQtDVq";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kBNToM04"
+Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654F35577C;
-	Tue, 13 Feb 2024 13:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACBB56469;
+	Tue, 13 Feb 2024 13:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707832207; cv=none; b=rUITkVT4/6viWtlKHZTCyyNmIa5bt514jQtNywYleyAP7shehH89+Vu8VxUWIVa23GbTLtCoub0LVSohB/EcKw8jo1tgyAFQx0mlMFBPk+8DXQyWZb4GuYdqEqVjVlUsKq33ze+scS7WK3kuahyaCiOZRae99U+S10v9+MH14WY=
+	t=1707832242; cv=none; b=no1YgM8gWTK2P+wXfeEb2djvv9WY3ZZ4b2q69BzLz5oAfX3M2tQ4FHpsjC/0I8RrPz+tiVMgbrWTJ3YME1N7Kzu332n7MDUJ5w6lin1gZ+i9q6OSF+ZZ3UdCcBCWWNxD56p3Kx9p5BKM26rYWBcBhNE4HMx79+jlAAR1+UkEjvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707832207; c=relaxed/simple;
-	bh=jebXE4S2l9VR5ky5ojZahV3h7w5E04tMbZxudpRgGSY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ro08ii1rl5uVHuRc9vcH69zwE6HEDTlQhUvjunV4hL85U/vNGi/xzc5G5tcermSa9Mc7jB+HZIw8WJ428fGYNnQi04M+H8MeyxhbUpaXu05obIL9ZE9to4y/Zv8YvwaOV5tUYRqyesdvBGo3nXI+U7wgiHF4MvkrscHqYa4BioA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y0GkEPW9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFE39C43390;
-	Tue, 13 Feb 2024 13:50:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707832206;
-	bh=jebXE4S2l9VR5ky5ojZahV3h7w5E04tMbZxudpRgGSY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Y0GkEPW9nYVaz2755BhIaDpPuFyD3qcFx46+TX74N9+5Uw6wTHUQaIXtB9ttVCAQ6
-	 69nlW8eWsC1RQWeJtsy0qlowT5JzcjMqUS3ePo5n3xR+BZ+kdWghLtutcZKWsHQdGa
-	 r0K+RTqEQvR8XsyqopBPw0TsfsziNCfoHP0a/4GKK4ybIUIxT2Wfo3SrWbAV/epZbk
-	 AfoEpgbCSlwrtcdcPFTNkbxLE274I2YIBdEhzkmc1m1o5mH+PuIB/Z9OuDQZgJiZ1v
-	 DNiRFS5+QeL2QSSodUfwRAmsxgOPg3t2IfM+1dVGcdKDfKcpDip4BfRvLAPGaNgwRh
-	 +63E9Uxj07zgA==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Russell King <linux@armlinux.org.uk>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Jussi Kivilinna <jussi.kivilinna@iki.fi>,
-	linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] [v2] ARM: crypto: fix function cast warnings
-Date: Tue, 13 Feb 2024 14:49:46 +0100
-Message-Id: <20240213135000.3400052-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707832242; c=relaxed/simple;
+	bh=hAI/RtEnxz5YO+rPHDkMMWqK1f5rZxIZeNF15xQSoXw=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=dnDAIyds1uyyqarR9yQMf350gz1NrZzSKbFcdTPNVn/BPD49myB675bRm5ycRgomFLbhWINVObLp7xKTrrE62Eg6LaihnzKU06WyxmALrRc57hL+bu5YA7HPm75oOCXl16+nLLIq1ncnSJ5NDxFr8L0WtFAoIyTiN3iBVlDmlvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=unuQtDVq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kBNToM04; arc=none smtp.client-ip=64.147.123.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 8DB8D1800159;
+	Tue, 13 Feb 2024 08:50:38 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 13 Feb 2024 08:50:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1707832238; x=1707918638; bh=ynqNOXjR8y
+	1dh2yr8HydRPsWc2KYj/UPS0GSPXcZdiU=; b=unuQtDVqNTuLd6eR2KOS9x0LUa
+	ZCnOyrORrLf47R2Tgml79t8CZkluHqTLMsw4dhk5tii8gYRUf3DEvArA3SkRWidH
+	vpR6JtHOdPP+stRDcRlNEDBwkrMrzhTD68vgbVIepwRAYRMYisKH5f66xTu8xWsD
+	GlN8ZfrNPa4mzUzVxd1yXOG5dDTPEkVfuA/0Fiqz0NQ48g4nKLfm3mLDbq6N9os5
+	ds+H8egFdKNLln1eHLr51ElJ346MN2D000wCPT5YoPFAjyum3p198FYz/1s3mFoh
+	C8RIGC8+jmI++U1iOnCQ5HMNE5lVSXv/nuGrtmST3GaLq2VQmC1OEm4xR1+g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707832238; x=1707918638; bh=ynqNOXjR8y1dh2yr8HydRPsWc2KY
+	j/UPS0GSPXcZdiU=; b=kBNToM04RVX2Ij2JpbIfoJ6QwfFpbpKWHnmUi9nd1AAV
+	s3dqGhehPGlk2GVYGaWeZsnNN60xBbtzaYcdqU3tqUGnTMNkvWaVE9VLwxRFZLm2
+	WbH2eHGoSmu8MGS9+dBpiuN3SvJEHDmTvcBMY/wIJNKYjMzqnGGKrC7kDmNIVESE
+	6MTZH4l8rp0Pf8HlgHcMBSh+Fx30zm2b/CjkEYzdRpg/tNAzEYvU0JUomweM+CXV
+	Vf8gegPYy4zit8xsi5Ilx9FkqrEKhIXZGYOK0y7NS1klbSAibus2FVaxk/E/0KMv
+	DIv+pM9Cf61JQZLqA8NwrnDaAIwTJBkfxTaO2DqIqA==
+X-ME-Sender: <xms:rXPLZTuuIJ6_uqEaURGdk9XkQn6yzrTx6IcZG8wBk_V-aVhQXPNBQg>
+    <xme:rXPLZUdNzcC6L6GQoEgRDL0G-BM7DnGJKViCAgw9urucfXZqwVONlPdR1uEHeVUu1
+    brNeeADpJQFMaAmNMI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehgdehiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:rXPLZWwJrFEthMhfx_oM0euiMJpFtXF0iPQWKZrRavmgfZ-5dMc58w>
+    <xmx:rXPLZSN3KvNojttHd3sO1J83PKScqN6hj7ZOyCTTotB82NkcO8vwBQ>
+    <xmx:rXPLZT_wpRotExbw2dy8ZYsqyZHu9OC7aOaMyPuhtAyyybkYIJc4Yg>
+    <xmx:rnPLZZdgV-r18e77g_zOU7xbwlKtxWt0K8NW36AXEJhYE9JADAZ-gYqVvC0>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 12A16B6008F; Tue, 13 Feb 2024 08:50:37 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <3370c551-f24d-4d00-999a-99c229d693a9@app.fastmail.com>
+In-Reply-To: <Zctb8QOtMuIfMvDT@gondor.apana.org.au>
+References: <20240213101356.460376-1-arnd@kernel.org>
+ <Zctb8QOtMuIfMvDT@gondor.apana.org.au>
+Date: Tue, 13 Feb 2024 14:50:15 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Herbert Xu" <herbert@gondor.apana.org.au>,
+ "Arnd Bergmann" <arnd@kernel.org>
+Cc: "David S . Miller" <davem@davemloft.net>,
+ "Russell King" <linux@armlinux.org.uk>, "Ard Biesheuvel" <ardb@kernel.org>,
+ "Nathan Chancellor" <nathan@kernel.org>,
+ "Nick Desaulniers" <ndesaulniers@google.com>,
+ "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
+ "Jussi Kivilinna" <jussi.kivilinna@iki.fi>, linux-crypto@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev
+Subject: Re: [PATCH] ARM: crypto: fix function cast warnings
+Content-Type: text/plain
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Feb 13, 2024, at 13:09, Herbert Xu wrote:
+> On Tue, Feb 13, 2024 at 11:13:44AM +0100, Arnd Bergmann wrote:
+>>
+>> Rework the sha256/sha512 code to instead go through a trivial helper
+>> function to preserve the calling conventions.
+>
+> Why not just change the assembly function prototype?
 
-clang-16 warns about casting between incompatible function types:
+Good idea, sent v2 now.
 
-arch/arm/crypto/sha256_glue.c:37:5: error: cast from 'void (*)(u32 *, const void *, unsigned int)' (aka 'void (*)(unsigned int *, const void *, unsigned int)') to 'sha256_block_fn *' (aka 'void (*)(struct sha256_state *, const unsigned char *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   37 |                                 (sha256_block_fn *)sha256_block_data_order);
-      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-arch/arm/crypto/sha512-glue.c:34:3: error: cast from 'void (*)(u64 *, const u8 *, int)' (aka 'void (*)(unsigned long long *, const unsigned char *, int)') to 'sha512_block_fn *' (aka 'void (*)(struct sha512_state *, const unsigned char *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   34 |                 (sha512_block_fn *)sha512_block_data_order);
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Fix the prototypes for the assembler functions to match the typedef.
-The code already relies on the digest being the first part of the
-state structure, so there is no change in behavior.
-
-Fixes: c80ae7ca3726 ("crypto: arm/sha512 - accelerated SHA-512 using ARM generic ASM and NEON")
-Fixes: b59e2ae3690c ("crypto: arm/sha256 - move SHA-224/256 ASM/NEON implementation to base layer")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: rewrite change as suggested by Herbert Xu.
----
- arch/arm/crypto/sha256_glue.c | 13 +++++--------
- arch/arm/crypto/sha512-glue.c | 12 +++++-------
- 2 files changed, 10 insertions(+), 15 deletions(-)
-
-diff --git a/arch/arm/crypto/sha256_glue.c b/arch/arm/crypto/sha256_glue.c
-index 433ee4ddce6c..f85933fdec75 100644
---- a/arch/arm/crypto/sha256_glue.c
-+++ b/arch/arm/crypto/sha256_glue.c
-@@ -24,8 +24,8 @@
- 
- #include "sha256_glue.h"
- 
--asmlinkage void sha256_block_data_order(u32 *digest, const void *data,
--					unsigned int num_blks);
-+asmlinkage void sha256_block_data_order(struct sha256_state *state,
-+					const u8 *data, int num_blks);
- 
- int crypto_sha256_arm_update(struct shash_desc *desc, const u8 *data,
- 			     unsigned int len)
-@@ -33,23 +33,20 @@ int crypto_sha256_arm_update(struct shash_desc *desc, const u8 *data,
- 	/* make sure casting to sha256_block_fn() is safe */
- 	BUILD_BUG_ON(offsetof(struct sha256_state, state) != 0);
- 
--	return sha256_base_do_update(desc, data, len,
--				(sha256_block_fn *)sha256_block_data_order);
-+	return sha256_base_do_update(desc, data, len, sha256_block_data_order);
- }
- EXPORT_SYMBOL(crypto_sha256_arm_update);
- 
- static int crypto_sha256_arm_final(struct shash_desc *desc, u8 *out)
- {
--	sha256_base_do_finalize(desc,
--				(sha256_block_fn *)sha256_block_data_order);
-+	sha256_base_do_finalize(desc, sha256_block_data_order);
- 	return sha256_base_finish(desc, out);
- }
- 
- int crypto_sha256_arm_finup(struct shash_desc *desc, const u8 *data,
- 			    unsigned int len, u8 *out)
- {
--	sha256_base_do_update(desc, data, len,
--			      (sha256_block_fn *)sha256_block_data_order);
-+	sha256_base_do_update(desc, data, len, sha256_block_data_order);
- 	return crypto_sha256_arm_final(desc, out);
- }
- EXPORT_SYMBOL(crypto_sha256_arm_finup);
-diff --git a/arch/arm/crypto/sha512-glue.c b/arch/arm/crypto/sha512-glue.c
-index 0635a65aa488..1be5bd498af3 100644
---- a/arch/arm/crypto/sha512-glue.c
-+++ b/arch/arm/crypto/sha512-glue.c
-@@ -25,27 +25,25 @@ MODULE_ALIAS_CRYPTO("sha512");
- MODULE_ALIAS_CRYPTO("sha384-arm");
- MODULE_ALIAS_CRYPTO("sha512-arm");
- 
--asmlinkage void sha512_block_data_order(u64 *state, u8 const *src, int blocks);
-+asmlinkage void sha512_block_data_order(struct sha512_state *state,
-+					u8 const *src, int blocks);
- 
- int sha512_arm_update(struct shash_desc *desc, const u8 *data,
- 		      unsigned int len)
- {
--	return sha512_base_do_update(desc, data, len,
--		(sha512_block_fn *)sha512_block_data_order);
-+	return sha512_base_do_update(desc, data, len, sha512_block_data_order);
- }
- 
- static int sha512_arm_final(struct shash_desc *desc, u8 *out)
- {
--	sha512_base_do_finalize(desc,
--		(sha512_block_fn *)sha512_block_data_order);
-+	sha512_base_do_finalize(desc, sha512_block_data_order);
- 	return sha512_base_finish(desc, out);
- }
- 
- int sha512_arm_finup(struct shash_desc *desc, const u8 *data,
- 		     unsigned int len, u8 *out)
- {
--	sha512_base_do_update(desc, data, len,
--		(sha512_block_fn *)sha512_block_data_order);
-+	sha512_base_do_update(desc, data, len, sha512_block_data_order);
- 	return sha512_arm_final(desc, out);
- }
- 
--- 
-2.39.2
-
+    Arnd
 
