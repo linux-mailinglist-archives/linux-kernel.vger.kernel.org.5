@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-62681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D0EC852456
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:49:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B3A3852459
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:49:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B78011F24591
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:49:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C91E1F245FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6772137E;
-	Tue, 13 Feb 2024 00:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 372AC6A33A;
+	Tue, 13 Feb 2024 00:22:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D0Av3weu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D5HvAlAu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F343669DF2;
-	Tue, 13 Feb 2024 00:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670EB219F9;
+	Tue, 13 Feb 2024 00:22:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783743; cv=none; b=aCNXiszXZc9r626171RvXhjZZrRXj3nBKh8IO51T3Ez7t7vdWpc8iiHsYKjxm2zehEuBzFTTXQ/YPKsRO4UnCYHrXnTnZoFSCipH2cjQjf4hgx48/DwIw1MWYadTEIk+RkWippzJn5YxhL1JColvggaajTBQqtAzCxLxcjbeORc=
+	t=1707783744; cv=none; b=OckLaQn/oLP1wAdv1jrCc1i+5INu1Waiu8529MvITXXfKEfDuGfQMLjF7CjGNPQthhU0EWX4ajQbuHnej1XIL2xWI1Pehtbl1Yq7sq4k/eWZ8yyV8LRSmb5puSJ0CYXYHG3mu/awd2QG54xvei8xm4d1PI46S3cNmCo4OgQDGKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783743; c=relaxed/simple;
-	bh=Cw4gxlkNs1pZ2LZIImiNweiDZ7fqOR7iCK8H3LT4E38=;
+	s=arc-20240116; t=1707783744; c=relaxed/simple;
+	bh=bdGr8hof4XTUBHuaumGWXIMIxr/Pj98CJJdAYT4Sjmk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X4d8Q7xlADUE77jPXMpqRLwOcrUNdjAlisC59I98FZN9wF+flgSSa0m7HzRA8WfkWZxKYYFbuUNHWzNe0W4yG6SVZ/qNi7ChHnfWL7gwujpNmbUba4MrCahJhWmXDRcOz/7Btr/jb8Xq1aZJXwjStT1wiSp0AG8qteV7KjVDR80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D0Av3weu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0D6DC43394;
-	Tue, 13 Feb 2024 00:22:21 +0000 (UTC)
+	 MIME-Version; b=LBM9tNkutsuYZswO0EmU6laGHoQy+wKcrHgutsbjlYp1/Vhjz82JuZ2h0AQretW9UfiPOwpDl6ZPPhDlTddzDNiHyVIgJCTgEVMLDDzgaMzRST7/3zRQm26FQJmBwg+kFSIDcToabpmAz+Sjv6RiOe+PJWipcSIhLepsSGNFppQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D5HvAlAu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 478B2C433C7;
+	Tue, 13 Feb 2024 00:22:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783742;
-	bh=Cw4gxlkNs1pZ2LZIImiNweiDZ7fqOR7iCK8H3LT4E38=;
+	s=k20201202; t=1707783744;
+	bh=bdGr8hof4XTUBHuaumGWXIMIxr/Pj98CJJdAYT4Sjmk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=D0Av3weuwxuxENXr0KeyN1SOqwwr2zdxpBpFCdwCS8Ev3gKDEPTg/VLq2jQJyo0+d
-	 71Ujd57rPn7w7a3CogmeCCCNvNUb66L5wL5WXYNXl022dIhO/KFCmCbR1SYAu2STqn
-	 GhVlqTaH8ozPE/5yw9WJeIlhncRQx3Z8Q5MXC5zSKHVxCd/TGxORNOwKi33IQtdELi
-	 A2wGXT928Q94VcW/u+h7ybUWVFNek5ohJtNY5LPkFNd5jKBK3Y5tA4MlRDVdaRaHgn
-	 a8wy9BOOj7e908M7BPkIWO+8BOxBwSX4VgAsWj9QNeyRhT1gneqZyfvbUxrPaERsp4
-	 Id6KnIo+BBW3g==
+	b=D5HvAlAu/qEKiKroJz623TmobdvJgPNz8/GRgBIAZcp/+BoZY20PrKwPC6Yq766vw
+	 qQ1WyHmb5HE01xhuBAlI40BMzNuKr3TmvvGzjbk0PtIhU8wV0K8vPa5Z+OHhZ9fDU0
+	 kE6lJ9b201alRRGtIVFMPe9iJnZz/DDEE+mqttNB9K843UkSvNSgWSKaX8XBBSMI5L
+	 /+IWU59m1sqnrnlCzNVjXk4fs7N7yk35POJyQ1kkmVRGfNU6O2iC27Kv62dTvt6G+w
+	 ijy61b0na401rqQopN+CjSUxa+fSsT9lrbgeaG1xWHQ7tej1OOE8e4JkrmmZAOzgQi
+	 BQ1gkegWHVYsg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -49,9 +49,9 @@ Cc: Shyam Prasad N <sprasad@microsoft.com>,
 	sfrench@samba.org,
 	linux-cifs@vger.kernel.org,
 	samba-technical@lists.samba.org
-Subject: [PATCH AUTOSEL 6.6 49/51] cifs: change tcon status when need_reconnect is set on it
-Date: Mon, 12 Feb 2024 19:20:26 -0500
-Message-ID: <20240213002052.670571-49-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 50/51] cifs: handle cases where multiple sessions share connection
+Date: Mon, 12 Feb 2024 19:20:27 -0500
+Message-ID: <20240213002052.670571-50-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002052.670571-1-sashal@kernel.org>
 References: <20240213002052.670571-1-sashal@kernel.org>
@@ -68,81 +68,52 @@ Content-Transfer-Encoding: 8bit
 
 From: Shyam Prasad N <sprasad@microsoft.com>
 
-[ Upstream commit c6e02eefd6ace3da3369c764f15429f5647056af ]
+[ Upstream commit a39c757bf0596b17482a507f31c3ef0af0d1d2b4 ]
 
-When a tcon is marked for need_reconnect, the intention
-is to have it reconnected.
+Based on our implementation of multichannel, it is entirely
+possible that a server struct may not be found in any channel
+of an SMB session.
 
-This change adjusts tcon->status in cifs_tree_connect
-when need_reconnect is set. Also, this change has a minor
-correction in resetting need_reconnect on success. It makes
-sure that it is done with tc_lock held.
+In such cases, we should be prepared to move on and search for
+the server struct in the next session.
 
 Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
 Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/smb/client/connect.c | 5 +++++
- fs/smb/client/dfs.c     | 7 ++++++-
- fs/smb/client/file.c    | 3 +++
- 3 files changed, 14 insertions(+), 1 deletion(-)
+ fs/smb/client/connect.c | 6 ++++++
+ fs/smb/client/sess.c    | 1 -
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/fs/smb/client/connect.c b/fs/smb/client/connect.c
-index 0ed6eb915c6a..d53e725f6be5 100644
+index d53e725f6be5..5551f73e2207 100644
 --- a/fs/smb/client/connect.c
 +++ b/fs/smb/client/connect.c
-@@ -4216,6 +4216,11 @@ int cifs_tree_connect(const unsigned int xid, struct cifs_tcon *tcon, const stru
+@@ -229,6 +229,12 @@ cifs_mark_tcp_ses_conns_for_reconnect(struct TCP_Server_Info *server,
+ 	list_for_each_entry_safe(ses, nses, &pserver->smb_ses_list, smb_ses_list) {
+ 		/* check if iface is still active */
+ 		spin_lock(&ses->chan_lock);
++		if (cifs_ses_get_chan_index(ses, server) ==
++		    CIFS_INVAL_CHAN_INDEX) {
++			spin_unlock(&ses->chan_lock);
++			continue;
++		}
++
+ 		if (!cifs_chan_is_iface_active(ses, server)) {
+ 			spin_unlock(&ses->chan_lock);
+ 			cifs_chan_update_iface(ses, server);
+diff --git a/fs/smb/client/sess.c b/fs/smb/client/sess.c
+index 62596299a396..0067712f0537 100644
+--- a/fs/smb/client/sess.c
++++ b/fs/smb/client/sess.c
+@@ -84,7 +84,6 @@ cifs_ses_get_chan_index(struct cifs_ses *ses,
+ 	if (server)
+ 		cifs_dbg(VFS, "unable to get chan index for server: 0x%llx",
+ 			 server->conn_id);
+-	WARN_ON(1);
+ 	return CIFS_INVAL_CHAN_INDEX;
+ }
  
- 	/* only send once per connect */
- 	spin_lock(&tcon->tc_lock);
-+
-+	/* if tcon is marked for needing reconnect, update state */
-+	if (tcon->need_reconnect)
-+		tcon->status = TID_NEED_TCON;
-+
- 	if (tcon->status == TID_GOOD) {
- 		spin_unlock(&tcon->tc_lock);
- 		return 0;
-diff --git a/fs/smb/client/dfs.c b/fs/smb/client/dfs.c
-index a8a1d386da65..449c59830039 100644
---- a/fs/smb/client/dfs.c
-+++ b/fs/smb/client/dfs.c
-@@ -565,6 +565,11 @@ int cifs_tree_connect(const unsigned int xid, struct cifs_tcon *tcon, const stru
- 
- 	/* only send once per connect */
- 	spin_lock(&tcon->tc_lock);
-+
-+	/* if tcon is marked for needing reconnect, update state */
-+	if (tcon->need_reconnect)
-+		tcon->status = TID_NEED_TCON;
-+
- 	if (tcon->status == TID_GOOD) {
- 		spin_unlock(&tcon->tc_lock);
- 		return 0;
-@@ -625,8 +630,8 @@ int cifs_tree_connect(const unsigned int xid, struct cifs_tcon *tcon, const stru
- 		spin_lock(&tcon->tc_lock);
- 		if (tcon->status == TID_IN_TCON)
- 			tcon->status = TID_GOOD;
--		spin_unlock(&tcon->tc_lock);
- 		tcon->need_reconnect = false;
-+		spin_unlock(&tcon->tc_lock);
- 	}
- 
- 	return rc;
-diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
-index 32a8525415d9..4cbb5487bd8d 100644
---- a/fs/smb/client/file.c
-+++ b/fs/smb/client/file.c
-@@ -175,6 +175,9 @@ cifs_mark_open_files_invalid(struct cifs_tcon *tcon)
- 
- 	/* only send once per connect */
- 	spin_lock(&tcon->tc_lock);
-+	if (tcon->need_reconnect)
-+		tcon->status = TID_NEED_RECON;
-+
- 	if (tcon->status != TID_NEED_RECON) {
- 		spin_unlock(&tcon->tc_lock);
- 		return;
 -- 
 2.43.0
 
