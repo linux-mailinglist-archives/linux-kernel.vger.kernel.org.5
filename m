@@ -1,267 +1,123 @@
-Return-Path: <linux-kernel+bounces-62560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB31B8522EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:09:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C26ED8522F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:10:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE29B1C227D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:09:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63B39B254AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A41B5CBD;
-	Tue, 13 Feb 2024 00:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278B128E3;
+	Tue, 13 Feb 2024 00:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Dqem6BUr"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="T25wJcfY"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431CF4439
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A81781FAB
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707782979; cv=none; b=sHQQWu+7EkrUVLAYCIFrQ61aC5H5PjTbbr1oyRzJ8I3BGnfsTLDV1pRvPytXYfynDXHMhCX4QIVpyJuUOMQq+KzpNnl/BHWx8p2JQZEzayuGfPEkyWoijxA9VD0F0sRRKYWCT3SLSPvAO5FuCIokJKCyeVzh5MzvMZG3fu+NFL8=
+	t=1707783015; cv=none; b=bF7zFMu+kryNUw1E3hKLWML+1TMoskG7cAiZg2Tuk+SbXMGsfkqeG/ncmwEb6fpJf9/iUHgJJZaQ6Ks9lAXCFAF3t2Qd56GbYJaDsTy5cnzQUyCD/mn4jYHS1c2zsY48gIIpJ4qRaPTN444OeuSvOXyCJzDIxru2YWB14AdipKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707782979; c=relaxed/simple;
-	bh=XuwWJ5Dw+8x+0dOrRRNuv+dH3uOAg+IXu71lodinJZc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TXOkR1wk1VVrpHDMl1eCp8w+kfkEtIEB4m42NOShrd+LNqOoIImgXrh9itCxMW0hGgSIBAXbJYJ6fdgAYe+yzlacGM08U8wmnLKfwOCzrlJ0GCfMXr/z/2fGOjbOghFte4dnDPTSXI8I0MfduUswm9B0fMRbIpLGJ7l6oNXOOzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Dqem6BUr; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc7472aa206so3211271276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:09:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707782976; x=1708387776; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gLK7xEb3jxgpuysPUzwq60xsYYfX0bEwBasjsp6nC7A=;
-        b=Dqem6BUrpUFhDF+tudKwN9UlsKgkco3lToizzpx8jxBLDRjnA55NCEnitkMSxPbskb
-         nPfP5QPSCbA4aajaOVf+p47nTdmNttlquCMyop+WTSCJPsIvJEv+mETX2DQ8rJXaSMSL
-         2b7MyIpJjaPBx+3z5aiS4RtwjlR4JVvH1XRLYyBtl4mvpsme/S6H9dSw4PsopMVaJwRS
-         0sfv6TDLvalqOM1QpihoXEB+QIYnNK3vpIOWcGvDDnxSdVJLBY8gm6FCO4xsoNrQltoy
-         1cGB1NgOLXyHdKn+11hsJB2hq+ddhFMDcy3fYzcufKFnKqHkTRAFmSKyZufHX8sQe1Sg
-         5dSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707782976; x=1708387776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gLK7xEb3jxgpuysPUzwq60xsYYfX0bEwBasjsp6nC7A=;
-        b=H3w1uTeENLdgdzaXoH6AlBUBn6By5/blkwV24gZy3fau/gy9VxWdh85QGHrHeeKUO1
-         mi+ErOsPM5UEd4tl7+S1nhXlpXBSNcBCJpvnAtBqggBe+Uk6x+VGpDj1VNlAlYb/TXIO
-         vD8BfMNtsddLZq10d/62tpQyhG2uwRH528NsfADyOfXmr2LkxOWghjJnJeGsPx8v5UIM
-         Cz6+09XoTbpl3zS/DXHih3d5QtxFQLNAPbbsPyTm3byBlWZHmaLoAyzDh+y4MeWFj70a
-         VcW8RLngocayFPvIPqoYaKYm6/D4+lwRYcoCI5YRK8H6qOzBqJQNo6JF1KC3djELvjU3
-         kb9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWAI8feS1sCeqj6oDe/OXkgUiuti6GHyzV7HdtHElS6xwJrzZVVkkVwWdmY6VfM1sh/PVbpRQWxNV+FvntoTbx/Zq3Bfeee8ZdqrXIM
-X-Gm-Message-State: AOJu0YzHtJjAWNjgNdDxyHdCYC30gxCQymJ5+1NljBy2d22FR5aP/9G0
-	8F9zotuTBlVQIzRmpnBEjG/9lU4iWBVbW9NZG67ujYuqkGTz+zGQjkwMeA/AWU+mecb1UOsYQ21
-	qkWA7/B9pswjOCebTuv7mw6lpbgM/X6z4SPMv
-X-Google-Smtp-Source: AGHT+IFcIoxxZ/at1Ut37e+obqddPjXFDoTfSw2W9xlVFGkbEDUuUmXcmdD9+Fz3EgwVz//7/lLpGbCXr+gCQA4ZbLI=
-X-Received: by 2002:a25:8241:0:b0:dcc:623d:e475 with SMTP id
- d1-20020a258241000000b00dcc623de475mr508725ybn.30.1707782975978; Mon, 12 Feb
- 2024 16:09:35 -0800 (PST)
+	s=arc-20240116; t=1707783015; c=relaxed/simple;
+	bh=J7FejEFnbMm74uZsExP5QWA3ZxhT4NbGZP6EJnx295g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ItwcSKhq5+XFaD0CTFC30MSrlVkrtW9zxg301CBiaqO20fJ1c5FuId+4Hp29FWIu5MlJ52hb1bCAGY1qGjgHVIWkTsybWzHkWXxTexgnqqtsNhjEFuiN3H4CAzP2yZRmBP/61ctWJlmMmhhjAr+YWsSuObm3XVU3opnYzt1Xg8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=T25wJcfY; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41CNNWC9002327;
+	Tue, 13 Feb 2024 00:09:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=SKTZ/3gDrjTrmPt81XU/FfX33drgx94XxgkNqX5kp7Y=; b=T2
+	5wJcfYBq8HUo5ZGxsokAPOP8K9BC2QvE3Iz8ZTy/DCE2WQ1eRui+5C/9cXtsAghE
+	QSNETroOGAfpQ6aPqx3GfXel40SyCKBP9FzmHNJELPk5o1xuJJgmUFTxZF5pFDf/
+	3TaeuDikn35hJ1BnViB4fQ5buOj5uiFjQfXBJnywCEW0q0izkeSPTsOj5WIwuntQ
+	Ox1b3z8sgTJBtWSDhuCfRpZttQ6sIOgS+IhfAwuKHBUv29kL5iD64Tb29GfEiQJR
+	0ctWmM4Nnchg6jcYpqc68DAxLNU9OZC08uqHy5IY4+UfQ8Otb6EVgo4el2ORsc0h
+	kXui0XdyyNup2vXQYylw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7gvjhsv4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 00:09:53 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D09qgn001486
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 00:09:52 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 12 Feb
+ 2024 16:09:51 -0800
+Message-ID: <e5dd6d92-0d9d-fcfe-2aac-8302b421c0a0@quicinc.com>
+Date: Mon, 12 Feb 2024 16:09:50 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-35-surenb@google.com>
- <202402121448.AF0AA8E@keescook>
-In-Reply-To: <202402121448.AF0AA8E@keescook>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 12 Feb 2024 16:09:21 -0800
-Message-ID: <CAJuCfpEUQ+KctApss1upC4pWLvnU2bWVopbL5EsBzhsF0JzrPA@mail.gmail.com>
-Subject: Re: [PATCH v3 34/35] codetag: debug: introduce OBJEXTS_ALLOC_FAIL to
- mark failed slab_ext allocations
-To: Kees Cook <keescook@chromium.org>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com, 
-	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
-	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
-	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/crtc: fix uninitialized variable use even harder
+Content-Language: en-US
+To: Rob Clark <robdclark@gmail.com>, <dri-devel@lists.freedesktop.org>
+CC: Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@intel.com>,
+        open
+ list <linux-kernel@vger.kernel.org>
+References: <20240212215534.190682-1-robdclark@gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20240212215534.190682-1-robdclark@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Z6k0dI9SZ8x1JhC7HruQaOgew-bmVxBU
+X-Proofpoint-ORIG-GUID: Z6k0dI9SZ8x1JhC7HruQaOgew-bmVxBU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_19,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ suspectscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=881 adultscore=0
+ bulkscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402120186
 
-On Mon, Feb 12, 2024 at 2:49=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> On Mon, Feb 12, 2024 at 01:39:20PM -0800, Suren Baghdasaryan wrote:
-> > If slabobj_ext vector allocation for a slab object fails and later on i=
-t
-> > succeeds for another object in the same slab, the slabobj_ext for the
-> > original object will be NULL and will be flagged in case when
-> > CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled.
-> > Mark failed slabobj_ext vector allocations using a new objext_flags fla=
-g
-> > stored in the lower bits of slab->obj_exts. When new allocation succeed=
-s
-> > it marks all tag references in the same slabobj_ext vector as empty to
-> > avoid warnings implemented by CONFIG_MEM_ALLOC_PROFILING_DEBUG checks.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > ---
-> >  include/linux/memcontrol.h |  4 +++-
-> >  mm/slab.h                  | 25 +++++++++++++++++++++++++
-> >  mm/slab_common.c           | 22 +++++++++++++++-------
-> >  3 files changed, 43 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 2b010316016c..f95241ca9052 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -365,8 +365,10 @@ enum page_memcg_data_flags {
-> >  #endif /* CONFIG_MEMCG */
-> >
-> >  enum objext_flags {
-> > +     /* slabobj_ext vector failed to allocate */
-> > +     OBJEXTS_ALLOC_FAIL =3D __FIRST_OBJEXT_FLAG,
-> >       /* the next bit after the last actual flag */
-> > -     __NR_OBJEXTS_FLAGS  =3D __FIRST_OBJEXT_FLAG,
-> > +     __NR_OBJEXTS_FLAGS  =3D (__FIRST_OBJEXT_FLAG << 1),
-> >  };
-> >
-> >  #define OBJEXTS_FLAGS_MASK (__NR_OBJEXTS_FLAGS - 1)
-> > diff --git a/mm/slab.h b/mm/slab.h
-> > index cf332a839bf4..7bb3900f83ef 100644
-> > --- a/mm/slab.h
-> > +++ b/mm/slab.h
-> > @@ -586,9 +586,34 @@ static inline void mark_objexts_empty(struct slabo=
-bj_ext *obj_exts)
-> >       }
-> >  }
-> >
-> > +static inline void mark_failed_objexts_alloc(struct slab *slab)
-> > +{
-> > +     slab->obj_exts =3D OBJEXTS_ALLOC_FAIL;
->
-> Uh, does this mean slab->obj_exts is suddenly non-NULL? Is everything
-> that accesses obj_exts expecting this?
 
-Hi Kees,
-Thank you for the reviews!
-Yes, I believe everything that accesses slab->obj_exts directly
-(currently alloc_slab_obj_exts() and free_slab_obj_exts()) handle this
-special non-NULL case. kfence_init_pool() initialized slab->obj_exts
-directly, but since it's setting it and not accessing it, it does not
-need to handle OBJEXTS_ALLOC_FAIL. All other slab->obj_exts users use
-slab_obj_exts() which applies OBJEXTS_FLAGS_MASK and masks out any
-special bits.
-Thanks,
-Suren.
 
->
-> -Kees
->
-> > +}
-> > +
-> > +static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
-> > +                     struct slabobj_ext *vec, unsigned int objects)
-> > +{
-> > +     /*
-> > +      * If vector previously failed to allocate then we have live
-> > +      * objects with no tag reference. Mark all references in this
-> > +      * vector as empty to avoid warnings later on.
-> > +      */
-> > +     if (obj_exts & OBJEXTS_ALLOC_FAIL) {
-> > +             unsigned int i;
-> > +
-> > +             for (i =3D 0; i < objects; i++)
-> > +                     set_codetag_empty(&vec[i].ref);
-> > +     }
-> > +}
-> > +
-> > +
-> >  #else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
-> >
-> >  static inline void mark_objexts_empty(struct slabobj_ext *obj_exts) {}
-> > +static inline void mark_failed_objexts_alloc(struct slab *slab) {}
-> > +static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
-> > +                     struct slabobj_ext *vec, unsigned int objects) {}
-> >
-> >  #endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
-> >
-> > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> > index d5f75d04ced2..489c7a8ba8f1 100644
-> > --- a/mm/slab_common.c
-> > +++ b/mm/slab_common.c
-> > @@ -214,29 +214,37 @@ int alloc_slab_obj_exts(struct slab *slab, struct=
- kmem_cache *s,
-> >                       gfp_t gfp, bool new_slab)
-> >  {
-> >       unsigned int objects =3D objs_per_slab(s, slab);
-> > -     unsigned long obj_exts;
-> > -     void *vec;
-> > +     unsigned long new_exts;
-> > +     unsigned long old_exts;
-> > +     struct slabobj_ext *vec;
-> >
-> >       gfp &=3D ~OBJCGS_CLEAR_MASK;
-> >       /* Prevent recursive extension vector allocation */
-> >       gfp |=3D __GFP_NO_OBJ_EXT;
-> >       vec =3D kcalloc_node(objects, sizeof(struct slabobj_ext), gfp,
-> >                          slab_nid(slab));
-> > -     if (!vec)
-> > +     if (!vec) {
-> > +             /* Mark vectors which failed to allocate */
-> > +             if (new_slab)
-> > +                     mark_failed_objexts_alloc(slab);
-> > +
-> >               return -ENOMEM;
-> > +     }
-> >
-> > -     obj_exts =3D (unsigned long)vec;
-> > +     new_exts =3D (unsigned long)vec;
-> >  #ifdef CONFIG_MEMCG
-> > -     obj_exts |=3D MEMCG_DATA_OBJEXTS;
-> > +     new_exts |=3D MEMCG_DATA_OBJEXTS;
-> >  #endif
-> > +     old_exts =3D slab->obj_exts;
-> > +     handle_failed_objexts_alloc(old_exts, vec, objects);
-> >       if (new_slab) {
-> >               /*
-> >                * If the slab is brand new and nobody can yet access its
-> >                * obj_exts, no synchronization is required and obj_exts =
-can
-> >                * be simply assigned.
-> >                */
-> > -             slab->obj_exts =3D obj_exts;
-> > -     } else if (cmpxchg(&slab->obj_exts, 0, obj_exts)) {
-> > +             slab->obj_exts =3D new_exts;
-> > +     } else if (cmpxchg(&slab->obj_exts, old_exts, new_exts) !=3D old_=
-exts) {
-> >               /*
-> >                * If the slab is already in use, somebody can allocate a=
-nd
-> >                * assign slabobj_exts in parallel. In this case the exis=
-ting
-> > --
-> > 2.43.0.687.g38aa6559b0-goog
-> >
->
-> --
-> Kees Cook
+On 2/12/2024 1:55 PM, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> DRM_MODESET_LOCK_ALL_BEGIN() has a hidden trap-door (aka retry loop),
+> which means we can't rely too much on variable initializers.
+> 
+> Fixes: 6e455f5dcdd1 ("drm/crtc: fix uninitialized variable use")
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+> I have mixed feelings about DRM_MODESET_LOCK_ALL_BEGIN() (and friends)
+> magic.  On one hand it simplifies the deadlock/back dance.  OTOH it
+> conceals a nasty sharp edge.  Maybe it is better to have the complicated
+> restart path a bit more explicit, like it was originally.
+> 
+>   drivers/gpu/drm/drm_crtc.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+
+Nice catch !!
+
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
