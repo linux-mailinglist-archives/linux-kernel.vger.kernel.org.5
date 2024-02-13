@@ -1,126 +1,169 @@
-Return-Path: <linux-kernel+bounces-63714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10BE385338C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AB0A853391
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:51:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5521B233DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:50:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF6BEB27CDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49DC558122;
-	Tue, 13 Feb 2024 14:50:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013855812A;
+	Tue, 13 Feb 2024 14:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="w8bAWb1u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=mwa.re header.i=@mwa.re header.b="XltMvdij"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7817D58105;
-	Tue, 13 Feb 2024 14:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D855EE69
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707835803; cv=none; b=Bnc0QRdNNNsLrxE/Dq+1P7MnQfkDHYaYIqZt6PPiuWAdyrf5hki7vY2qld4wlSp3hAW27Im9k6NlCWNgjdMdia5m+cbotQXCmA12kRHQ/hVNzHv3CIttcjXLtr7K/XBHp0QhjRurvTVaoNwMYr2AjRR4deIEdiG8NMx+YHxE65Q=
+	t=1707835837; cv=none; b=UMvgz2oYagMY6yw3pl8VdObLcqybaWcegCBULoGJhpj9N3W6YH8nZ8LDaI4ktnQa+orYh8RiB27rWiWRW86cXBAenZNce03SoBGUiukkwc7TasUBT/XUlBsqIRBq4MfB5mq3alypglwNxz8n9nzG3S0rC7YwfKpCJHeVV8t1FR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707835803; c=relaxed/simple;
-	bh=AfXNvoDPfGxO4Tl8E8xiaQRy/lU+RIhza61C8gLWqgw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tU8I8nUbyIyf14Zc9RU6xhyiIiIlVRxlI6ykoGpZvBkYKktfvwnyPZd7tECjX+gFhta4hT+J32mV68mSSVKR2aMKxDL1x78dgaMbpFFLy4TnKJZT0zs8XkGij35uS8nmLJHMEsQ79BZyLMljftUdnjeLGLSv53Cx3HO052YBWuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=w8bAWb1u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0B44C43390;
-	Tue, 13 Feb 2024 14:50:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707835803;
-	bh=AfXNvoDPfGxO4Tl8E8xiaQRy/lU+RIhza61C8gLWqgw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=w8bAWb1ukEFNJfV6I2vn9aEwQWg/6XlUcLZXRxIfEHyaq/vDunwdWzBzqwvRy2JZC
-	 5YZNHPpJJMmkwg/F54tsVm13wCIJAwJPBcZYFLnyle0g6oRhilqmDU6qfC5DAda5Tz
-	 GmSKMn1lNhq5em/cXN5EWFt7A+5ctRgLZtbzHI7g=
-Date: Tue, 13 Feb 2024 15:50:00 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Sasha Levin <sashal@kernel.org>, David Laight <David.Laight@aculab.com>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [regression] linux-6.6.y, minmax: virtual memory exhausted in
- i586 chroot during kernel compilation
-Message-ID: <2024021318-shifty-daybed-fca8@gregkh>
-References: <f9f89284-0f48-4971-ad8d-86938a82fafc@leemhuis.info>
+	s=arc-20240116; t=1707835837; c=relaxed/simple;
+	bh=CZoN3i7XJzre4jd4qikn3fslxobuEEEJDNql/BAQ0/Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aAbeqZNGsPBi36Qy7aKl6rSsmhFjJENw9sZBDU3XG/qOH/QcmqGtj2AQ39V47/rttLE4HQizVtzgdvk3dZxtndoI5etOhDuA0Wf6Tlpi8oLm8zUmK4JLRAN5Tpig4fiflniynp6qyvWa+SZsEoAv9lxctJFup+gupuTZfQVx21E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mwa.re; spf=pass smtp.mailfrom=mwa.re; dkim=pass (2048-bit key) header.d=mwa.re header.i=@mwa.re header.b=XltMvdij; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mwa.re
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mwa.re
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5114c05806eso7103102e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:50:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mwa.re; s=google; t=1707835833; x=1708440633; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DIriFNrO5RwDl0i8OFgd8O5e6yhYA4cnaSts661zHg4=;
+        b=XltMvdijGPwlIJbJKI9asq1MbMVkCeNT6bgaLoL9drYtnRSDorpL62fRPTcdXFMK1y
+         ZcGbuaEjW/qqnhxKkWYmU6agO9KzyE14mcAYP8tXhaXytqzeHg1r/YTRAmP4zFd9w1Zf
+         CD9gpTpQ2f72nqCWfoKpO7tQ7j4ly7KQDixtgCkPIdavEpTlaRKCJaYpS8dRs4J+o97B
+         eFXpFVE9SBB7H1L7dp6peC6RpT/CIdfZUDJPu9fRpJqj54V7nPObg2COnUx/w4lbozs1
+         OU2s9Pl2s+iMeVUA5uLIJE9iNqy0Gc2If3aERiSIyJ0biLuVQ72Ir/AODdmb47T29hJI
+         vRHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707835833; x=1708440633;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DIriFNrO5RwDl0i8OFgd8O5e6yhYA4cnaSts661zHg4=;
+        b=pDrok7hi0dLvQpUwTDHSTE5Phv7O2826kojYlAl9f8jOsHOJkcuvAKAxto6S05Vcli
+         7WztGPyCuxOogDQmBxA3EPK+y+FgslcntH5qVXkjdbtbMyf7lB1Y3/x3gnL2dhT93JLG
+         txYe5muhQyeUjpNgYbvpza7NlVMP2XXdifBbugcmC2N5pUiZYYOc7OYPEJOD6Pw3/dXs
+         4rejvtbNw+FGu5PTaN2LB1PrzHxcE7mcuU5EwvTcdgIlnAtbQp4bnuTQRdAaxFWn+IGd
+         WmELZxwtSxyd+shSDyd1ULtKNaKtdpvM9sk+/4uVbXhwwF1yS4EfM+hesREJECT2mKCK
+         +qvg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHBjIvBGKdCKudRGzSgYG5a2DO4pzoTkvzFWkXJE+TSdzirJftIDnaJ5mVURWmFq6B2oM+7mt4riEnhGNWBoE8N9g0kWDWnDX+QM/4
+X-Gm-Message-State: AOJu0Yx5py3xSVSfvIDnfeVLa916azCCGEEnlWrCac+okxnPDgiL2HfC
+	FPL4IItab6CMwLbImUohFELr67AeS+JmcM7NRn7vqSHZGyk5t9PT8gWpuLLDUrnE+vmMPhsy32u
+	3bdTuqDVQ4UDAcql6t7nqsgofhHzAH/TbkDiiPw==
+X-Google-Smtp-Source: AGHT+IHxYSwVhZhFR6FRJarX3HSiuN0jewWaPBZ+hlua2hMm5m6FSUCCwcoPApsKWpjN0PEEMuG0WfXqcLCGiOPO4pg=
+X-Received: by 2002:ac2:41ca:0:b0:511:1ed7:61b8 with SMTP id
+ d10-20020ac241ca000000b005111ed761b8mr6948902lfi.30.1707835833350; Tue, 13
+ Feb 2024 06:50:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f9f89284-0f48-4971-ad8d-86938a82fafc@leemhuis.info>
+References: <CANi1PHh4W7KPagKkvZW6cNAQqgAeG3zxaaTJKkg3KiTbsFRMdg@mail.gmail.com>
+ <1b2558f7-94ea-123e-dd3f-b43ecd85c2ef@linux.intel.com>
+In-Reply-To: <1b2558f7-94ea-123e-dd3f-b43ecd85c2ef@linux.intel.com>
+From: Jan Henrik Weinstock <jan@mwa.re>
+Date: Tue, 13 Feb 2024 15:50:22 +0100
+Message-ID: <CANi1PHhY67HZxivA9mCoNXfM4YUOjm=tCZsnhrrcu4E6dqDYUQ@mail.gmail.com>
+Subject: Re: XHCI without USB2 ports
+To: Mathias Nyman <mathias.nyman@linux.intel.com>, mathias.nyman@intel.com, 
+	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?Q?Lukas_J=C3=BCnger?= <lukas@mwa.re>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 05:16:58PM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
-> Hi Greg, Sasha, and David,
-> 
-> I noticed a regression report in bugzilla.kernel.org that seems to be
-> specific to the linux-6.6.y series:
-> 
-> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218484 :
-> 
-> > After upgrading to version 6.6.16, the kernel compilation on a i586
-> > arch (on a 32bit chroot in a 64bit host) fails with a message:
-> > 
-> > virtual memory exhausted: Cannot allocate memory
-> > 
-> > this happens even lowering the number of parallel compilation
-> > threads. On a x86_64 arch the same problem doesn't occur. It's not
-> > clear whether some weird recursion is triggered that exhausts the
-> > memory, but it seems that the problem is caused by the patchset
-> > 'minmax' added to the 6.6.16 version, in particular it seems caused
-> > by these patches:
-> > 
-> > - minmax-allow-min-max-clamp-if-the-arguments-have-the-same-signedness.patch
-> > - minmax-fix-indentation-of-__cmp_once-and-__clamp_once.patch
-> > - minmax-allow-comparisons-of-int-against-unsigned-char-short.patch
-> > - minmax-relax-check-to-allow-comparison-between-unsigned-arguments-and-signed-constants.patch
-> > 
-> > Reverting those patches fixes the memory exhaustion problem during compilation.
-> 
-> The reporter later added:
-> 
-> > From a quick test the same problem doesn't occur in 6.8-rc4.
-> See the ticket for more details.
-> 
-> Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
-> not CCed them in mails like this.
-> 
-> [TLDR for the rest of this mail: I'm adding this report to the list of
-> tracked Linux kernel regressions; the text you find below is based on a
-> few templates paragraphs you might have encountered already in similar
-> form.]
-> 
-> BTW, let me use this mail to also add the report to the list of tracked
-> regressions to ensure it's doesn't fall through the cracks:
-> 
-> #regzbot introduced: 204c653d5d0c79940..9487d93f172acef
-> https://bugzilla.kernel.org/show_bug.cgi?id=218484
-> #regzbot title: minmax: virtual memory exhausted in 6.6.16 with i586 chroot
-> #regzbot ignore-activity
-> 
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> If I did something stupid, please tell me, as explained on that page.
-> 
-> [1] because bugzilla.kernel.org tells users upon registration their
-> "email address will never be displayed to logged out users"
+Am Di., 13. Feb. 2024 um 10:58 Uhr schrieb Mathias Nyman
+<mathias.nyman@linux.intel.com>:
+>
+> On 12.2.2024 20.39, Jan Henrik Weinstock wrote:
+> > Hi all,
+> >
+> > I am currently working on an XHCI platform device simulation model. I
+> > noticed that the Linux driver (Linux 6.5.6 xhci-hcd) stops working
+> > when I configure the model without any USB2 ports. During an interrupt
+> > (TRB_PORT_STATUS), I only get "xhci-hcd 12100000.usb: ignore port
+> > event for removed USB3 hcd."
+> >
+> > During xhci_irq, in handle_port_status, xhci->shared_hcd is NULL [1],
+> > so the interrupt gets ignored. However, shared_hcd would only ever be
+> > allocated during xhci_plat_probe [2], if the device has both USB2 and
+> > USB3 ports, i.e. xhci_has_one_roothub returns false [3].
+> >
+> > Without any USB2 ports, a shared_hcd will never be allocated in the
+> > first place, and handle_port_status will always exit early.
+>
+> This is true.
+> That port handling code is from a time before xhci driver supported singl=
+e
+> roothub setups.
+>
+> I think all single roothub cases so far have been xHC hosts with only USB=
+2
+> ports. This is probably the first one with only USB3 ports.
+>
+> I have a vague memory that USB3 specification would require USB3 ports to
+> be backwards compatible, and support USB2.
+>
+> But xhci driver could still support it, does this change help:
+>
+> diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+> index f0d8a607ff21..6ef081f5ef05 100644
+> --- a/drivers/usb/host/xhci-ring.c
+> +++ b/drivers/usb/host/xhci-ring.c
+> @@ -1893,7 +1893,8 @@ static void handle_port_status(struct xhci_hcd *xhc=
+i,
+>          }
+>
+>          /* We might get interrupts after shared_hcd is removed */
+> -       if (port->rhub =3D=3D &xhci->usb3_rhub && xhci->shared_hcd =3D=3D=
+ NULL) {
+> +       if (!xhci_has_one_roothub(xhci) && xhci->shared_hcd =3D=3D NULL &=
+&
+> +           port->rhub =3D=3D &xhci->usb3_rhub) {
+>                  xhci_dbg(xhci, "ignore port event for removed USB3 hcd\n=
+");
+>                  bogus_port_status =3D true;
+>                  goto cleanup;
+>
+> Thanks
+> Mathias
+>
 
-I think this was already fixed in 6.7 or Linus's tree, but I can't seem
-to find the commit at the moment.
+Yes, this patch fixes the problem for me. Thanks!
 
-What file is causing the compiler to crash?  Is it some video or media
-driver?
+Is it so unusual to have an XHCI that has only USB3 ports?
 
-thanks,
+My understanding was that a port can either be USB3 or USB2 (assigned
+via the Supported Protocol Capability).
 
-greg k-h
+This would mean that in order to work correctly with Linux, all XHCIs
+right now would have to support at least one USB2 port in addition to
+their USB3 ports.
+
+Best regards
+Jan
+
+--=20
+Dr.-Ing. Jan Henrik Weinstock
+Managing Director
+
+MachineWare GmbH | www.machineware.de
+H=C3=BChnermarkt 19, 52062 Aachen, Germany
+Amtsgericht Aachen HRB25734
+
+Gesch=C3=A4ftsf=C3=BChrung
+Lukas J=C3=BCnger
+Dr.-Ing. Jan Henrik Weinstock
 
