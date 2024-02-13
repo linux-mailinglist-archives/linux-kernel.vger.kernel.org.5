@@ -1,71 +1,66 @@
-Return-Path: <linux-kernel+bounces-62662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F1CA852422
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83F12852426
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:44:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59589283463
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:43:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E6D82835B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D71627F2;
-	Tue, 13 Feb 2024 00:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882BC627FD;
+	Tue, 13 Feb 2024 00:21:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DLwVkvXd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PTXRAIJ0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8EF626A7;
-	Tue, 13 Feb 2024 00:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1EE3C04;
+	Tue, 13 Feb 2024 00:21:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783696; cv=none; b=rdd0mB287HV7eL4G3Py45fwOaCEyB8ryfKaoQvX6QV66iNAU4MKw0qHd47UqAv4L4CptuDXebit6TWEKamgXS5MBu3kMsL8gdRlPDR74IuB7mujnS8vY5Gql0B1aHFwCz6pvydImf1n6cYIZ5W/2+A6vtj4gmMBFzZfXy6OoTzg=
+	t=1707783699; cv=none; b=IKFmXUvPsylVu1ES9dQ5GzOL1CNt6D6Wmzgz8M5MoKoOGGm3yS+R9gtIjB66iuBX05oxq53mzIHSBKj4Nds3hs6pBkAv54MwZc6UGYqDa+Xg3oVRRD9U9wm0jt6qBvTatwRWmop/jQNibyIKbKNgHqYQvWTWfBZSB5V24EiGJAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783696; c=relaxed/simple;
-	bh=g2u1j3aPbsPh2d5A6m5TpM+/8oeyM+LqEmkbciEdN4A=;
+	s=arc-20240116; t=1707783699; c=relaxed/simple;
+	bh=DYeiIubZ4iv+q7pKdscTLj4mu7XgMjTusGySAbsAPGY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nBxDZej6M6K00FtmnzhoDTh1zFr3cqjF8o7sErs0lEuRuk7tuPs93bSi/mljOxEe2LAHQCSCyObAfEBwaCdWdvAWDUXABugkdBbtHirtw0GHy94Nzyhgkp3F+vUsUClW5IGYC5nu0YYzSaUwIjbsqksJQn1Ock9pASxcpTCFOQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DLwVkvXd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 694A9C433F1;
-	Tue, 13 Feb 2024 00:21:33 +0000 (UTC)
+	 MIME-Version; b=WUKWqgaV5OBQzDqwHHSlO83UG9MnOKkHTzVezgF90dpkCsKXLd5HXARrxDyA16Z15z1u7Q8ZYCti2JqTs4Yz54+Te2T0+DEmpkn+0XZVIIWXN++/jcd4YAKAvNvPAk6/BkoItM+0WUWH6YC1YR8OZsbvtkJrRnuA0YtGCFe9BR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PTXRAIJ0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 980C5C433F1;
+	Tue, 13 Feb 2024 00:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783695;
-	bh=g2u1j3aPbsPh2d5A6m5TpM+/8oeyM+LqEmkbciEdN4A=;
+	s=k20201202; t=1707783699;
+	bh=DYeiIubZ4iv+q7pKdscTLj4mu7XgMjTusGySAbsAPGY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DLwVkvXdshJA++ULZAs+bWFdHGzN8rP9AyCYVFD6DPoPB2qY76GhZP5MYpadTPv4p
-	 D1758UrhWNzU3hyiqvvPyF0StSwc2NhgG3MPla7ug4xtIUwxlfjt53EM4AhKxEeYuj
-	 WZwU91sVqqbs/JBjdSAfPEdeC3fBduqw1lxLYUIfGYN6hzXwelwDecmIt6tF3Yq/WP
-	 0+sIPYqfQcOjPpScPOI7ysnaK5Oi/HVU1ngrFp9rkvuhvlyawSseoLbQm3mvSkQSYm
-	 r89wEyLTNs1uNItlN/90R/XEW22GGFa4dViGiYrG9N2xJToLalQDpBPpzZkDyhr2zt
-	 EnNoESKu7Ln6A==
+	b=PTXRAIJ0qW00ikhm799ktxCoCag5sEJKcesOyt6bSKcq8TrUI5i5EOSx+K+5yGf40
+	 rMm36CpFLGCKXeEkU1bmFXOq0AOa4OYjiPAd0TksSac/oKovwOsDc7thDRoyHGMyqt
+	 wRfJ3qhvtQGez/0e+ZNv8hX5l/Ppl8LkkFzvtL37Rf0hbsG7kbsK943BB6CKGy/S00
+	 Ka4RDsy3MyAuD+lTM7YCvzAiwZH1a0zdFsA11m1m1Die0YVGhYVeMxrgtgDaqCPnYX
+	 sIj3dWNtc5VGSvZo0mogy0CbQFmyRQrW2d2y5TmfQFPqtB32IqvMPE8xyJMWh0v/8R
+	 EI84v85vsWwtw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alice Chao <alice.chao@mediatek.com>,
-	Stanley Jhu <chu.stanley@gmail.com>,
+Cc: SEO HOYOUNG <hy50.seo@samsung.com>,
 	Bart Van Assche <bvanassche@acm.org>,
+	Can Guo <quic_cang@quicinc.com>,
 	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
 	jejb@linux.ibm.com,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
 	stanley.chu@mediatek.com,
 	avri.altman@wdc.com,
-	quic_cang@quicinc.com,
 	quic_nguyenb@quicinc.com,
 	peter.wang@mediatek.com,
-	beanhuo@micron.com,
 	manivannan.sadhasivam@linaro.org,
+	beanhuo@micron.com,
 	quic_ziqichen@quicinc.com,
 	athierry@redhat.com,
-	linux-scsi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 31/51] scsi: ufs: core: Fix shift issue in ufshcd_clear_cmd()
-Date: Mon, 12 Feb 2024 19:20:08 -0500
-Message-ID: <20240213002052.670571-31-sashal@kernel.org>
+	linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 32/51] scsi: ufs: core: Remove the ufshcd_release() in ufshcd_err_handling_prepare()
+Date: Mon, 12 Feb 2024 19:20:09 -0500
+Message-ID: <20240213002052.670571-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002052.670571-1-sashal@kernel.org>
 References: <20240213002052.670571-1-sashal@kernel.org>
@@ -80,84 +75,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.16
 Content-Transfer-Encoding: 8bit
 
-From: Alice Chao <alice.chao@mediatek.com>
+From: SEO HOYOUNG <hy50.seo@samsung.com>
 
-[ Upstream commit b513d30d59bb383a6a5d6b533afcab2cee99a8f8 ]
+[ Upstream commit 17e94b2585417e04dabc2f13bc03b4665ae687f3 ]
 
-When task_tag >= 32 (in MCQ mode) and sizeof(unsigned int) == 4, 1U <<
-task_tag will out of bounds for a u32 mask. Fix this up to prevent
-SHIFT_ISSUE (bitwise shifts that are out of bounds for their data type).
+If ufshcd_err_handler() is called in a suspend/resume situation,
+ufs_release() can be called twice and active_reqs end up going negative.
+This is because ufshcd_err_handling_prepare() and
+ufshcd_err_handling_unprepare() both call ufshcd_release().
 
-[name:debug_monitors&]Unexpected kernel BRK exception at EL1
-[name:traps&]Internal error: BRK handler: 00000000f2005514 [#1] PREEMPT SMP
-[name:mediatek_cpufreq_hw&]cpufreq stop DVFS log done
-[name:mrdump&]Kernel Offset: 0x1ba5800000 from 0xffffffc008000000
-[name:mrdump&]PHYS_OFFSET: 0x80000000
-[name:mrdump&]pstate: 22400005 (nzCv daif +PAN -UAO)
-[name:mrdump&]pc : [0xffffffdbaf52bb2c] ufshcd_clear_cmd+0x280/0x288
-[name:mrdump&]lr : [0xffffffdbaf52a774] ufshcd_wait_for_dev_cmd+0x3e4/0x82c
-[name:mrdump&]sp : ffffffc0081471b0
-<snip>
-Workqueue: ufs_eh_wq_0 ufshcd_err_handler
-Call trace:
- dump_backtrace+0xf8/0x144
- show_stack+0x18/0x24
- dump_stack_lvl+0x78/0x9c
- dump_stack+0x18/0x44
- mrdump_common_die+0x254/0x480 [mrdump]
- ipanic_die+0x20/0x30 [mrdump]
- notify_die+0x15c/0x204
- die+0x10c/0x5f8
- arm64_notify_die+0x74/0x13c
- do_debug_exception+0x164/0x26c
- el1_dbg+0x64/0x80
- el1h_64_sync_handler+0x3c/0x90
- el1h_64_sync+0x68/0x6c
- ufshcd_clear_cmd+0x280/0x288
- ufshcd_wait_for_dev_cmd+0x3e4/0x82c
- ufshcd_exec_dev_cmd+0x5bc/0x9ac
- ufshcd_verify_dev_init+0x84/0x1c8
- ufshcd_probe_hba+0x724/0x1ce0
- ufshcd_host_reset_and_restore+0x260/0x574
- ufshcd_reset_and_restore+0x138/0xbd0
- ufshcd_err_handler+0x1218/0x2f28
- process_one_work+0x5fc/0x1140
- worker_thread+0x7d8/0xe20
- kthread+0x25c/0x468
- ret_from_fork+0x10/0x20
+Remove superfluous call to ufshcd_release().
 
-Signed-off-by: Alice Chao <alice.chao@mediatek.com>
-Link: https://lore.kernel.org/r/20240205104905.24929-1-alice.chao@mediatek.com
-Reviewed-by: Stanley Jhu <chu.stanley@gmail.com>
+Signed-off-by: SEO HOYOUNG <hy50.seo@samsung.com>
+Link: https://lore.kernel.org/r/20240122083324.11797-1-hy50.seo@samsung.com
 Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Can Guo <quic_cang@quicinc.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ufs/core/ufshcd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/ufs/core/ufshcd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 44e0437bd19d..f6c83dcff8a8 100644
+index f6c83dcff8a8..ee9119b708f0 100644
 --- a/drivers/ufs/core/ufshcd.c
 +++ b/drivers/ufs/core/ufshcd.c
-@@ -2949,7 +2949,7 @@ bool ufshcd_cmd_inflight(struct scsi_cmnd *cmd)
-  */
- static int ufshcd_clear_cmd(struct ufs_hba *hba, u32 task_tag)
- {
--	u32 mask = 1U << task_tag;
-+	u32 mask;
- 	unsigned long flags;
- 	int err;
- 
-@@ -2967,6 +2967,8 @@ static int ufshcd_clear_cmd(struct ufs_hba *hba, u32 task_tag)
- 		return 0;
- 	}
- 
-+	mask = 1U << task_tag;
-+
- 	/* clear outstanding transaction before retry */
- 	spin_lock_irqsave(hba->host->host_lock, flags);
- 	ufshcd_utrl_clear(hba, mask);
+@@ -6253,7 +6253,6 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+ 		ufshcd_hold(hba);
+ 		if (!ufshcd_is_clkgating_allowed(hba))
+ 			ufshcd_setup_clocks(hba, true);
+-		ufshcd_release(hba);
+ 		pm_op = hba->is_sys_suspended ? UFS_SYSTEM_PM : UFS_RUNTIME_PM;
+ 		ufshcd_vops_resume(hba, pm_op);
+ 	} else {
 -- 
 2.43.0
 
