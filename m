@@ -1,39 +1,74 @@
-Return-Path: <linux-kernel+bounces-63981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEF8785378F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:26:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B7D853795
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:27:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D8B71C27CD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:26:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D738AB2860A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F865FF18;
-	Tue, 13 Feb 2024 17:26:37 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1035F54E;
-	Tue, 13 Feb 2024 17:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6BF05FF0D;
+	Tue, 13 Feb 2024 17:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dZ24iwdj"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC3A15FF0E;
+	Tue, 13 Feb 2024 17:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707845197; cv=none; b=R1bYXXkVa4eSjI5bzrWNcIqyHTGQ7e5foFalkIsNMZLrsAbs1RpzkqLm2DcpwV3EbmMTRUQIIbK4tp+kFybwcvXJ+GDnNJHlbG3QjLbafVbjNFjtfzmxqnK6W/kt+dkTy4hYGkHi2Dx0Zs1o1BF8Y/RZHBhl8U7j6M5PmDwuNMA=
+	t=1707845217; cv=none; b=Fu4MslixfC5g3ZhsoJ/l4u/Wu9pMmIeEHIViBbtWZV8X+I1l7moKalsbPTFbB3CBxNNTxMSBrPQ+tW+yt+wGfhDmmD/tRj5BwpnmY3lsFIWepDuZ9UYfBJMK8hPq4KfnI9SGaql0jsH3GKxESnHcehZVsYaW6ugT6/KQ//RcY4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707845197; c=relaxed/simple;
-	bh=R4W/x6sdikq9L5mixsfBJrQlDgWaZ0hlbKehGewQpgE=;
+	s=arc-20240116; t=1707845217; c=relaxed/simple;
+	bh=cXAiw2/ErygoIn+3eefIlRIrjT9PezbE5l1VLyyKrLI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bpv+ETvxc3uxOp4XmDz1Cw1ZpprtDQkn21HxeeumLOTto2Pwqc4ZcK9AdTuuAt1RoKaCGiTYqnsIVqcm1sTphAFRNZOgFzk8+0q3Tp/T7m2zYuNFIB+FzecHVP5kv7kvriGoBM9WcbuUF/jrm+6O2B42GsQCL+MpSZroLNydico=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 724E71FB;
-	Tue, 13 Feb 2024 09:27:15 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 155943F5A1;
-	Tue, 13 Feb 2024 09:26:27 -0800 (PST)
-Message-ID: <b008bd2d-a189-481f-917d-bb045c43cb07@arm.com>
-Date: Tue, 13 Feb 2024 17:26:26 +0000
+	 In-Reply-To:Content-Type; b=Ivx/SpYB7m/hgL+JOSrJMWUSvr5wRH/Mb2Zmok6aNaqFsgvk1QKmUAqiTkS1m4nUcdutFrFBRxkfNMQdoqM7N8O03y7kFibWooaQOwXizCcY+RQwp+DyJ/Tx0dgkYUsWypVm19LAtCH4fm4aumhHY/KFj03ZN6s2kWPHwBqRBkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dZ24iwdj; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e0f9bcdcc2so615357b3a.1;
+        Tue, 13 Feb 2024 09:26:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707845215; x=1708450015; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ur/fikUr2Th+pgU1bKll5nq0sy1jOzuFD3bGp+B8a28=;
+        b=dZ24iwdjHsMB6+f95y/yyLmf4cChtfDpIRK3gYeoiJZjWKKccBy1Wg/DJpuodrW7mF
+         4Y4nZJIwu9NKQH0s2crw5ZiBVFdFeVTY6fhv4B0q5WIM2Dc53qHBztUPMrAutHPiIGRR
+         kp6EiCu8aH+rmCWyfs6KZf01/EvZ+EszWG7V6tGU37DDcVA7xhu957KcYebvGjVqzTQj
+         gJERmpjUh7YkIjs4dPVaM1shxRno33SpANpoaUVkmt6j+0EoMLqpxgighab0vAYY3kL5
+         pQxtncJhGWvSin9iawhHjeGJbIdwivDX3hNaxZNUpzViu/Ny3wSwkNNpTbGD+8jE73g3
+         Jd+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707845215; x=1708450015;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ur/fikUr2Th+pgU1bKll5nq0sy1jOzuFD3bGp+B8a28=;
+        b=HMPA2Qfr0XqYgqTJ/+qOybkzQNglBnyCkv0sHtr/J4gENo56Qzpgbqct+BFmfouzAB
+         gJKoYZ19Ovix0aKQ3iHuaBCfuYOZvQOoyLhiKksdus+Uw/9ZIVmUgU1zn9OR+7dW+dUZ
+         /AkNSF3A5pbOlelPuyOxF2KFdeZAElvvzpn42E7UATVorJMCphRqmlUtg3xrH0AhxYbU
+         pSavFyy3ZTMlKJJiDp5770pHI4eW6kdpZOOkL3Kr4eW0kqguRCuQbVwodWfCoSdTNPTR
+         oCULtQKT1JYuETUmMdx9adyKQhNBb8M2VVfkbIEG+Awa3AGHw2rOz06q1UcSbZR8I/ML
+         JRag==
+X-Forwarded-Encrypted: i=1; AJvYcCXP1PYdYEj2CdrXd50X8GhZvmWfB5rmX6JG/qrVZumsVNRgiJxEmwTDjhAN83m+gcDvuqvuLg3ohSqw9xy3h7A9sVmwcVx2qEXopk+MY4f3g/ejX0RW3Ql0W+Y0eBauOPY6ryUv
+X-Gm-Message-State: AOJu0YzoYpGg8RSLZwuWT3PSm1Gc42EeAweHkSd6Sq0LrRZdLaxrxlUK
+	OE8EWM1J+4XSV+y4CWPAghPfNKijlaQGue2NHY2drPOVN94ljlpU
+X-Google-Smtp-Source: AGHT+IGLkrGX+GDNIrDIKUcQTw2faJG15C2F4UP4Ra5/Rxcu7VpskBw32dXIF3UehOfAfAyTm2qTgQ==
+X-Received: by 2002:a05:6a20:9f08:b0:19e:3709:f3f9 with SMTP id mk8-20020a056a209f0800b0019e3709f3f9mr355256pzb.2.1707845215134;
+        Tue, 13 Feb 2024 09:26:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVuNkxsDVZLSwhX7WpOQ/oeBkyqkgqrUbKFd9XNTP8uLtCVXGHukF76N3+Kahxdpwgo9z7nZaipU6uq7P8ZXeqBDN0nAL25hwWMtU1s9FfE15mnxuXWjsc6cMM4KMfBTbiliJ/D47fLzGcWxqDv8UySkkNlyhjJDhKSQ0EgXa55V8oTTE8ETORBOU2XtMejJcbVqUwcLk6nZg7G6kPif3icIOi3UKqA1K8pkFnTpqdRhFIThoKN7LPYGkjaByWPotIURgTAvxOwglNYKKATt3sLSlNcfEmXkE4oXl/mzn/B7iB1jZPHixM3gyWGJcR6libMcxJcYrh72U4YzL2WO6SeAqJespSMWn5o9Nwa4SxCpiqp0JTUqWIGLsheWsPRB6iTT28HzG9qquygWdVw2I46vC9+7drQFMDCoSi+UiWvdmFOyEEs0bNsVv0Hz3hcwScl7Y3G8QR/BoCHyNOE3Nz27ONbL+KT5FnEjiRAVzfqkX2Eu5j9Ri2t7G93vTeSwSvNNkF06yRdnOMBP1PnW9gIGN1itZbQunW/guSbMM3xdPcrHmkpa1SkAMVs8dTMVor52kU=
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id m63-20020a633f42000000b005d7b18bb7e2sm2643192pga.45.2024.02.13.09.26.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 09:26:54 -0800 (PST)
+Message-ID: <5476743f-3648-4038-97f8-a9df22c0f507@gmail.com>
+Date: Tue, 13 Feb 2024 09:26:45 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,95 +76,43 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 01/10] iommu/vt-d: add wrapper functions for page
- allocations
-Content-Language: en-GB
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io,
- asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com,
- cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
- dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
- iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com,
- joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
- linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st,
- mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org,
- rdunlap@infradead.org, samuel@sholland.org, suravee.suthikulpanit@amd.com,
- sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
- tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, will@kernel.org,
- yu-cheng.yu@intel.com, rientjes@google.com, bagasdotme@gmail.com,
- mkoutny@suse.com
-References: <20240207174102.1486130-1-pasha.tatashin@soleen.com>
- <20240207174102.1486130-2-pasha.tatashin@soleen.com>
- <8ce2cd7b-7702-45aa-b4c8-25a01c27ed83@arm.com>
- <CA+CK2bC=XyUhoSP9f0XBqEnQ-P5mMT2U=5dfzRSc9C=2b+bstQ@mail.gmail.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <CA+CK2bC=XyUhoSP9f0XBqEnQ-P5mMT2U=5dfzRSc9C=2b+bstQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: sparx5: Add spinlock for frame transmission
+ from CPU
+Content-Language: en-US
+To: Horatiu Vultur <horatiu.vultur@microchip.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ lars.povlsen@microchip.com, Steen.Hegelund@microchip.com,
+ daniel.machon@microchip.com, UNGLinuxDriver@microchip.com
+Cc: u.kleine-koenig@pengutronix.de, rmk+kernel@armlinux.org.uk,
+ vladimir.oltean@nxp.com, jacob.e.keller@intel.com, yuehaibing@huawei.com,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240213121705.4070598-1-horatiu.vultur@microchip.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240213121705.4070598-1-horatiu.vultur@microchip.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 10/02/2024 2:21 am, Pasha Tatashin wrote:
-[...]
->>> +/**
->>> + * iommu_alloc_pages_node - allocate a zeroed page of a given order from
->>> + * specific NUMA node.
->>> + * @nid: memory NUMA node id
->>> + * @gfp: buddy allocator flags
->>> + * @order: page order
->>> + *
->>> + * returns the virtual address of the allocated page
->>> + */
->>> +static inline void *iommu_alloc_pages_node(int nid, gfp_t gfp, int order)
->>> +{
->>> +     struct page *page = __iommu_alloc_pages_node(nid, gfp, order);
->>> +
->>> +     if (unlikely(!page))
->>> +             return NULL;
->>
->> As a general point I'd prefer to fold these checks into the accounting
->> function itself rather than repeat them all over.
+On 2/13/24 04:17, Horatiu Vultur wrote:
+> Both registers used when doing manual injection or fdma injection are
+> shared between all the net devices of the switch. It was noticed that
+> when having two process which each of them trying to inject frames on
+> different ethernet ports, that the HW started to behave strange, by
+> sending out more frames then expected. When doing fdma injection it is
+> required to set the frame in the DCB and then make sure that the next
+> pointer of the last DCB is invalid. But because there is no locks for
+> this, then easily this pointer between the DCB can be broken and then it
+> would create a loop of DCBs. And that means that the HW will
+> continuously transmit these frames in a loop. Until the SW will break
+> this loop.
+> Therefore to fix this issue, add a spin lock for when accessing the
+> registers for manual or fdma injection.
 > 
-> For the free functions this saves a few cycles by not repeating this
-> check again inside __free_pages(), to keep things symmetrical it makes
-> sense to keep __iomu_free_account and __iomu_alloc_account the same.
-> With the other clean-up there are not that many of these checks left.
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-__free_pages() doesn't accept NULL, so __iommu_free_pages() shouldn't 
-need a check; free_pages() does, but correspondingly iommu_free_pages() 
-needs its own check up-front to avoid virt_to_page(NULL); either way it 
-means there are no callers of iommu_free_account() who should be passing 
-NULL.
+Any reason you targeted 'net-next' rather than 'net', as this appears to 
+be clearly a bug fix here?
+-- 
+Florian
 
-The VA-returning allocators of course need to avoid page_address(NULL), 
-so I clearly made this comment in the wrong place to begin with, oops. 
-In the end I guess that will leave __iommu_alloc_pages() as the only 
-caller of iommu_alloc_account() who doesn't already need to handle their 
-own NULL. OK, I'm convinced, apologies for having to bounce it off you 
-to work it through :)
-
->>> + */
->>> +static inline void *iommu_alloc_page_node(int nid, gfp_t gfp)
->>> +{
->>> +     return iommu_alloc_pages_node(nid, gfp, 0);
->>> +}
->>
->> TBH I'm not entirely convinced that saving 4 characters per invocation
->> times 11 invocations makes this wrapper worthwhile :/
-> 
-> Let's keep them. After the clean-up that you suggested, there are
-> fewer functions left in this file, but I think that it is cleaner to
-> keep these remaining, as it is beneficial to easily distinguish when
-> exactly one page is allocated vs when multiple are allocated via code
-> search.
-
-But is it, really? It's not at all obvious to me *why* it would be 
-significantly interesting to distinguish fixed order-0 allocations from 
-higher-order or variable-order (which may still be 0) ones. After all, 
-there's no regular alloc_page_node() wrapper, yet plenty more callers of 
-alloc_pages_node(..., 0) :/
-
-Thanks,
-Robin.
 
