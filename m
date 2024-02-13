@@ -1,164 +1,221 @@
-Return-Path: <linux-kernel+bounces-63634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0863853290
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:04:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69315853293
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C47451C22D6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:04:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26405288C2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4162656B68;
-	Tue, 13 Feb 2024 14:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5957E5733D;
+	Tue, 13 Feb 2024 14:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VGtvro8G"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B6oTbLcX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A19456764
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C5C57300;
+	Tue, 13 Feb 2024 14:04:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707833049; cv=none; b=N2VPVtGJhAcXv17bU3qwDdjXMlONEQIv0eyNhBcf8ggSjNcyinPKmDyApC+4PDExD1mJXHOKwukC7FQhWNPGwlCh01+9yhgb/2NtdIuL8bqJnXyewDpTyA9rZpCC7+igo6NenOJfDOk/7fyApFn3DnbBeCd6pD4WxUuEnhlGTkg=
+	t=1707833050; cv=none; b=XpXluRiveYQ5sR68wIJxZoWfvEbr0ACHb5j8YWcF8zLsBTCIPnNvBb7MbcMUR0/i0Ww7LHNUZ78x4FiaqIj7S7quRGJkflsT3rwLNNQCfQV7jB0YACYD+GTVF7zDvFVMvtp3PhPf7iGQXLpDcp0CbYxkApfgpIJ0YmYO6mc/XWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707833049; c=relaxed/simple;
-	bh=fHDodVGPfXKeK3nBhaERyTWy/HaZE3D2dDXvGBeZbT8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gtQx0JQPmkSpzCvsQMoAMXFApEwrJqKK4X+yPiSJpnYjCfJ2EcZLevqVUDiwOAN00ztAToNMKTRyGjyEE8yeUJ3luno10DSgZEz43BMFiTGXOmKqOFIjSg9EPhNrwF/Y9ZM2RUZriAu9Qfoih3MUAhEz8oxnAjOtsbAJobYWLR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VGtvro8G; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56001b47285so1345060a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:04:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707833044; x=1708437844; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NBSidf4kq5A+Hopib0XOHnFPn3FmlvSKgt3Ygv93O/c=;
-        b=VGtvro8GSxVQ8jeUN+FOclhfS4JHzLmyQcwrwfGulUvfLUNSAXbFicbsv5fX40X7l+
-         bd9L5yDgxLYbNxRaKzCTvRZXrsE7rr5ID150n3tmb0+qltzFqTuVtIZms8IWgva46ftZ
-         /55Vz+SvOG7/Ms4taFix9sSh+pOB1AAIZkeni0yRWuumqHUVBZ2xV8I49sSaUbWwLxqk
-         wNv08H+HJTdC2TJEHO2IZpJBDyGUQnIS3iwoLHMnhMX5jrdNWO8kfz4EiNXFnUr9W+Xb
-         mGnXzFafc+M6dmX8xmx/iS4OJxMqo7V0BzB9Kc/7reuTFRWl8616ebXpKR7G9+192ZlN
-         EQqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707833044; x=1708437844;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NBSidf4kq5A+Hopib0XOHnFPn3FmlvSKgt3Ygv93O/c=;
-        b=LAj3p5x8M3VMO1dVUIKYbsX1nm50BaG5IC+QN8LSs4rduchDCfIkRrJ7WMKjNcUx82
-         2ntXylu+eqxLlL4Ol2AACOv0g8p0qjy27C2kaFm/HUAlvLU0FLtTtgZbGKsLgyRMH8yX
-         AB/B/V2y/dkmBnkSEM1+hywWkvwWuLWRhC/07zWQvqMZsAltPLEGO6M95y91ZuYkGQxg
-         h+oIrf2RciGDOGhENTM86pCLm5TLoOis2q60HHVKbSaDjshpVHo+M/Rq4A3KZHQuCzlD
-         iJkRmvLRN9zjkKl2EFsAL59iynLqpCMxBE9ydLgDyVzWP4QmsYjTtEgUux2OWgdFDsLL
-         WvyQ==
-X-Gm-Message-State: AOJu0YxQvbYl5mnVZ3GMfEI77bX3DZVjH1cOtwN8VfjxgB/Nt+yTyfyH
-	pyh/1HHkJmbIKWLXB8iTK0+R6iO29e1xEqKadYWbmHqvVKg2JyxHO5z+YxaId94=
-X-Google-Smtp-Source: AGHT+IEhcvnsV2fI+C7lmzhyj6k7OS1JNG3wZTTmz/N2MNxpuUn3fmaSdMAvwlpBHUuRHH6MO/iU9Q==
-X-Received: by 2002:a05:6402:69a:b0:562:1059:b27a with SMTP id f26-20020a056402069a00b005621059b27amr347392edy.29.1707833044139;
-        Tue, 13 Feb 2024 06:04:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVFGg0R9XXbtCrpYCljgYwJRYZRoWb/t/oAWecu45+8xD5IGd63m/3RXDKiaGk4l1+kF/CZedAfW/sPq2Zgcj8DTIKrFIBXOftErEmEZWknL7WmHerd6o5NgEcUR22qa4Ch1zbVQc5jKN5s2p4uDYe8iWRtT1fYJ3D73Vvrqe/Sc/tkjlBjxYzCBbl26LnFI7Zo7/A=
-Received: from [10.100.51.161] (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id f19-20020a056402151300b005611fc0cc11sm3770841edw.43.2024.02.13.06.04.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 06:04:03 -0800 (PST)
-Message-ID: <23fcc355-c649-430a-b613-e62d71f681c3@suse.com>
-Date: Tue, 13 Feb 2024 15:04:03 +0100
+	s=arc-20240116; t=1707833050; c=relaxed/simple;
+	bh=o78OnlwnYhWQz6fK1xJE8KAH3CBYnt55b482qC2CxzQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m49IkVrV3787XMNLcJSNWGW/exOr4vkI8A5rboCkDvwwo79N7kO2zbvou6z82LNZC0DNUBDinJsOBTvH/NscQP3ElHCS96097IYn93DW/WM8tUqYMIrAZnlDfgkpykfgiuQR/y1nbja7IilrNpsqjkjy4biWXIzt5oaRBCvQuec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B6oTbLcX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57EDDC43394;
+	Tue, 13 Feb 2024 14:04:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707833048;
+	bh=o78OnlwnYhWQz6fK1xJE8KAH3CBYnt55b482qC2CxzQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B6oTbLcX65Y1yPWcSU+wVK7zfQGji1w9jUe8wedMA4beE5xu2JlKWtb841Mm2uZlR
+	 qm8k5laoWPsXPw4ryiS8fTANTWrMjf30gHsSCH2I8aK+07eoAl9jgDMGFoFqkxizKw
+	 lEhdjYWZjQIhvFLpvKaC0w+1jaKL+ci5AIKKu33Gvn82+DYRn6GOJJsGoj2C6nO9Do
+	 gBdWxw/o1AEn7cyMVOUQPhIJ15i+5/dw6ibKJSmn6ReKLIwT/B6+oDV1uDRKvW7aEt
+	 H/Rb4FxyqDzBgLmPMVfUxwefcL1WC0N4/+YZWMPRTGwXINjfYrdjfvZ225gPyi16ei
+	 df6V4Jxq1hEOw==
+Date: Tue, 13 Feb 2024 15:04:05 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Devarsh Thakkar <devarsht@ti.com>
+Cc: jyri.sarha@iki.fi, tomi.valkeinen@ideasonboard.com, airlied@gmail.com, 
+	daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, nm@ti.com, vigneshr@ti.com, kristo@kernel.org, praneeth@ti.com, 
+	a-bhatia1@ti.com, j-luthra@ti.com
+Subject: Re: Re: [RFC PATCH 2/3] drm/tidss: Add support for display sharing
+Message-ID: <qiqrhpqtnox47wj6az7t3fjp4vc6k32fw42tp5slqggrhe6utb@i7lkpaf3v3od>
+References: <20240116134142.2092483-1-devarsht@ti.com>
+ <20240116134142.2092483-3-devarsht@ti.com>
+ <vgfzhamtiwkpdyk5ndagsb63subclinotoe6tsi3wu6z7454ec@igxfzjc5gyqm>
+ <88018f5f-a7db-7278-e5c3-bb1dbf0e3f14@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kbuild: Use -fmin-function-alignment when available
-Content-Language: en-US
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: masahiroy@kernel.org, nicolas@fjasle.eu, mark.rutland@arm.com,
- linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240212145355.1050-1-petr.pavlu@suse.com>
- <20240213002746.GB3272429@dev-arch.thelio-3990X>
-From: Petr Pavlu <petr.pavlu@suse.com>
-In-Reply-To: <20240213002746.GB3272429@dev-arch.thelio-3990X>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mec2gkni2rkjd75q"
+Content-Disposition: inline
+In-Reply-To: <88018f5f-a7db-7278-e5c3-bb1dbf0e3f14@ti.com>
 
-On 2/13/24 01:27, Nathan Chancellor wrote:
-> Hi Petr,
-> 
-> On Mon, Feb 12, 2024 at 03:53:55PM +0100, Petr Pavlu wrote:
->> GCC recently added option -fmin-function-alignment, which should appear
->> in GCC 14. Unlike -falign-functions, this option causes all functions to
->> be aligned at the specified value, including the cold ones.
->>
->> Detect availability of -fmin-function-alignment and use it instead of
->> -falign-functions when present. Introduce CC_HAS_SANE_FUNCTION_ALIGNMENT
->> and make the workarounds for the broken function alignment conditional
->> on this setting.
->>
->> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
->> ---
->>  Makefile                       |  7 ++++++-
->>  arch/Kconfig                   |  8 ++++++++
->>  include/linux/compiler_types.h | 10 +++++-----
->>  kernel/exit.c                  |  5 ++++-
->>  4 files changed, 23 insertions(+), 7 deletions(-)
->>
->> diff --git a/Makefile b/Makefile
->> index 7e0b2ad98905..9516e43f6e45 100644
->> --- a/Makefile
->> +++ b/Makefile
->> @@ -974,7 +974,12 @@ export CC_FLAGS_CFI
->>  endif
->>  
->>  ifneq ($(CONFIG_FUNCTION_ALIGNMENT),0)
->> -KBUILD_CFLAGS += -falign-functions=$(CONFIG_FUNCTION_ALIGNMENT)
->> +# Set the minimal function alignment. Try to use the newer GCC option
->> +# -fmin-function-alignment, or fall back to -falign-funtions. See also
->> +# CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT.
->> +KBUILD_CFLAGS += $(call cc-option, \
->> +	-fmin-function-alignment=$(CONFIG_FUNCTION_ALIGNMENT), \
->> +	-falign-functions=$(CONFIG_FUNCTION_ALIGNMENT))
->>  endif
->>  
->>  # arch Makefile may override CC so keep this after arch Makefile is included
->> diff --git a/arch/Kconfig b/arch/Kconfig
->> index a5af0edd3eb8..e2448f927fae 100644
->> --- a/arch/Kconfig
->> +++ b/arch/Kconfig
->> @@ -1507,4 +1507,12 @@ config FUNCTION_ALIGNMENT
->>  	default 4 if FUNCTION_ALIGNMENT_4B
->>  	default 0
->>  
->> +config CC_HAS_SANE_FUNCTION_ALIGNMENT
->> +	# Detect availability of the GCC option -fmin-function-alignment which
->> +	# guarantees minimal alignment for all functions. GCC 13 and older have
->> +	# only -falign-functions which the compiler ignores for cold functions
->> +	# and this hence requires extra care in the kernel. Clang provides
->> +	# strict alignment always when using -falign-functions.
->> +	def_bool $(cc-option, -fmin-function-alignment=8) || CC_IS_CLANG
->> +
-> 
-> I think this configuration should be split into something like
-> CONFIG_CC_HAS_MIN_FUNCTION_ALIGNMENT that has the cc-option check then
-> CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT can depend on that configuration
-> or Clang as you have it here, so that we can drop the cc-option check in
-> the main Makefile and have it be:
-> 
-> ifdef CONFIG_CC_HAS_MIN_FUNCTION_ALIGNMENT
-> KBUILD_CFLAGS += -fmin-function-alignment=$(CONFIG_FUNCTION_ALIGNMENT)
-> else
-> KBUILD_CFLAGS += -falign-functions=$(CONFIG_FUNCTION_ALIGNMENT)
-> endif
-> 
-> It is wasteful to call cc-option twice in my opinion, especially if we
-> are checking it in Kconfig.
 
-Makes sense, thanks.
+--mec2gkni2rkjd75q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- Petr
+Hi Devarsh,
+
+On Thu, Feb 08, 2024 at 06:26:17PM +0530, Devarsh Thakkar wrote:
+> Hi Maxime,
+>=20
+> Thanks a lot for checking on this.
+>=20
+> On 26/01/24 17:45, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > Thanks a lot for working on that.
+> >=20
+> > On Tue, Jan 16, 2024 at 07:11:41PM +0530, Devarsh Thakkar wrote:
+> >> Display subsystem present in TI Keystone family of devices supports sh=
+aring
+> >> of display between multiple hosts as it provides separate register spa=
+ce
+> >> (common* region) for each host to programming display controller and a=
+lso a
+> >> unique interrupt line for each host.
+> >>
+> >> This adds support for display sharing, by allowing partitioning of
+> >> resources either at video port level or at video plane level as
+> >> described below :
+> >>
+> >> 1) Linux can own (i.e have write access) completely one or more of vid=
+eo
+> >> ports along with corresponding resources (viz. overlay managers,
+> >> video planes) used by Linux in context of those video ports.
+> >> Even if Linux is owning
+> >> these video ports it can still share this video port with a remote core
+> >> which can own one or more video planes associated with this video port.
+> >>
+> >> 2) Linux owns one or more of the video planes with video port
+> >> (along with corresponding overlay manager) associated with these planes
+> >> being owned and controlled by a remote core. Linux still has read-only
+> >> access to the associated video port and overlay managers so that it can
+> >> parse the settings made by remote core.
+> >=20
+> > So, just to make sure we're on the same page. 1) means Linux drives the
+> > whole display engine, but can lend planes to the R5? How does that work,
+> > is Linux aware of the workload being there (plane size, format, etc) ?
+> >=20
+>=20
+> Well, there is no dynamic procedure being followed for lending. The
+> partitioning scheme is decided and known before hand, and the remote
+> core firmware updated and compiled accordingly, and similarly the
+> device-tree overlay for Linux is also updated with partitioning
+> information before bootup.
+>=20
+> What would happen here is that Linux will know before-hand this
+> partitioning information via device-tree properties and won't enumerate
+> the plane owned by RTOS, but it will enumerate the rest of the display
+> components and initialize the DSS, after which user can load the DSS
+> firmware on remote core and this firmware will only have control of
+> plane as it was compiled with that configuration.
+
+Right. If the RTOS is in control of a single plane, how it is expected
+to deal with Linux shutting the CRTC down, or enforcing a configuration
+that isn't compatible with what the RTOS expects (like a plane with a
+higher zpos masking its plane), what is the mechanism to reconcile it?
+
+> > And 2) would mean that the display engine is under the R5 control and
+> > Linux only gets to fill the plane and let the firmware know of what it
+> > wants?
+> >=20
+>=20
+> Here too the partitioning information is pre-decided and remote core
+> firmware and device-tree overlay for Linux updated accordingly. But in
+> this case as remote core firmware owns the display (minus the plane
+> owned by Linux) it is started and initialized during the bootloader
+> phase itself where it initializes the DSS and starts rendering using the
+> plane owned by it and Linux just latches to the DSS without
+> re-initializing it, with write access only to the plane that is owned by
+> Linux. You can refer [1] for more details on this.
+>
+> > If so, do we even need the tidss driver in the second case? We could
+> > just write a fwkms driver of some sorts that could be used by multiple
+> > implementations of the same "defer to firmware" logic.
+> >=20
+>=20
+> This feature of static partitioning of DSS resources is specific to DSS7
+> hardware (which is controlled by tidss driver) which supports dedicated
+> register space and interrupt line for each of the hosts [0], so that
+> multiple hosts can drive the display controller simultaneously as  per
+> the desired static partitioning of resources, and so I don't think a
+> separate driver is required here and tidss seems the right place to
+> support this, where using this device-tree approach different resource
+> partitioning schemas can be achieved as described here [1]. This was
+> also aligned with Tomi too where we discussed that tidss is the right
+> place to support this as we are simply leveraging the DSS hardware
+> capabilities of static partitioning here.
+
+If the only thing tidss does in the "owned by RTOS" is forwarding KMS
+atomic states to the RTOS, then I'm still not sure why we need to
+involve tidss at all.
+
+It's not just about interrupts, it's also about how your arbitrate
+between what Linux wants and what the RTOS wants. Like if the RTOS still
+wants to output something but Linux wants to disable it, how do you
+reconcile the two?
+
+You have to have something that reconciles both, and typically for
+firmware-based setup this will be the firmware's job.
+
+That's very similar to what the RaspberryPi did with fkms, and I believe
+that having a generic KMS-on-remoteproc driver when the firmware has
+control over the display is the path forward.
+
+> >> For both the cases, the resources used in context of processing core
+> >> running Linux along with ownership information are exposed by user as
+> >> part of device-tree blob and driver uses an updated feature list tailo=
+red
+> >> for this shared mode accordingly. The driver also auto-populates
+> >> matching overlay managers and output types from shared video
+> >> port list provided in device-tree blob.
+> >> In dispc_feature struct remove const access specfier for output_type
+> >> array as it is required to be updated dynamically in run-time for shar=
+ed
+> >> mode.
+> >=20
+> > I'm also not entirely sure that the device tree is the right path there.
+> > Surely the firmware capabilities will evolve over time, while the device
+> > tree won't. Is there some way to make it discoverable at probe time by
+> > the driver?
+>
+> I think the main highlight of the sharing feature is the hardware
+> capability where each host is provided separate irq and register space
+> to program display for their display context independently
+
+Wait, what do you mean by display context here?
+
+Maxime
+
+--mec2gkni2rkjd75q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZct21QAKCRDj7w1vZxhR
+xcvHAP40dv4AWr1xUiTUL1KMGGWshZE0Hu8pf/vQPrlh7aA+MwEA5FZHpV8kiImZ
+cTaxg1C63wAZkBpkb/jDEQI5vhL6ZAI=
+=wSAc
+-----END PGP SIGNATURE-----
+
+--mec2gkni2rkjd75q--
 
