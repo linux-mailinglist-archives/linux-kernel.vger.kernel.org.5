@@ -1,57 +1,58 @@
-Return-Path: <linux-kernel+bounces-63888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 426B38535FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:29:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D1BE853606
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:30:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A29C28B247
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:29:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 756B5B26BD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36795F878;
-	Tue, 13 Feb 2024 16:29:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5B8321AA;
+	Tue, 13 Feb 2024 16:30:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GZTwqKcD"
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YskmkGD7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6245D91C
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:29:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1895EBA2D;
+	Tue, 13 Feb 2024 16:30:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707841791; cv=none; b=YZT7JKnNesOlAgbgk0O4G5iJCnaao2KNb1V70Ye8poCxHxyk/4qWFXh4eYwbOOysT5Ea8LNpKoXH7seTIduSflXuiHAxXzajjrbWYyQZYNoJaduN6YN62sujeKk+zUrSrerVzP7nJuViRYTiJHvkakYsHzR8SjsoZ9r6Xc/RnAU=
+	t=1707841839; cv=none; b=RBo5oMPY3pLb7+OzwXcapXPaHayykD5+LtzmrggOjlaMXFk9ZqoKv91sQWoHg7StLUrtd9icEC6qzDH5uOELYqlVN+ceVE9rNTH/2Ej/lWlf+u/TcMP0AGwZH1woxcB+J/j0/dZ7eeY+b4n55evTOWg4gpkOqFvtNerIR2jqd+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707841791; c=relaxed/simple;
-	bh=pwq/fcA6g9rlxCQRDTT5fhtljDd9PZwU2WOBG2ktlBs=;
+	s=arc-20240116; t=1707841839; c=relaxed/simple;
+	bh=hMxkyWbU9VziSWd2szBRjdbMM8H6CHlLIrWJd+iY0Yo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pHUj/JOiAIp5gK9QFEjv+Bq2DgOyv2Smrn/+ZooTGgfHPB4Oroq+nW0dNWAZzUgnmyPRSBgfhc3mJoZO6DyDRxJ0WH7PP5Q0P5tYdV0q8YqQ9jKezpoBuzHd786H0D1R8RNFC1XXDemxxLuexAC+SoC+Wo8uZBlx/8IINMke/TI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GZTwqKcD; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 13 Feb 2024 16:29:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707841787;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mF7J0g2Nxf+VBOHYwoPE53ZcMPEVUheZGZS5pd1pQoU=;
-	b=GZTwqKcD2J+jk67hFJUI3xSvi3EfxyJevFW4Mm24S4k7iXdUVJDaHRgP+ME3UCJML/Srlw
-	mz9++W2jHHizB72MeD3m/8UTo9wxGeZFTjbl4O28g8kSfkXpLD0yjGCESVeW9t/In3J4jm
-	1Yds7/qCgTwuF5j0aeLIT+dHrfTQyaA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Will Deacon <will@kernel.org>, kvmarm@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Ricardo Koller <ricarkol@google.com>
-Subject: Re: [RFC PATCH] KVM: arm64: Fix double-free following
- kvm_pgtable_stage2_free_unlinked()
-Message-ID: <ZcuY9rdvGaJ66edx@linux.dev>
-References: <20240212193052.27765-1-will@kernel.org>
- <Zcp8LcvsZiZVkNKe@linux.dev>
- <86cyt062jh.wl-maz@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cFK9KvYIYLVCFP1SMg8Sfc+T0bKNNQgSAf6yQ2V7ia8D88zdFTcoJuijgq5EB3xjpqUyxGcIh+18hauEYh9qAneO2W0F1l78JDnUUghm2S7752GOTfUuB29RwrqBkwxaZ7aIELXM4J6N1X8Ifn1g8qo+rJf16ZxvgPZe9mA+0lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YskmkGD7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85CA5C433C7;
+	Tue, 13 Feb 2024 16:30:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707841838;
+	bh=hMxkyWbU9VziSWd2szBRjdbMM8H6CHlLIrWJd+iY0Yo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YskmkGD7Xmy8wrH9BYZ8OAidJ3RZKciXSWaiiJlpmFlBevuKSQxq96FFEABloZzrT
+	 mnVmrf7tMi4wB1+qAuP3Ygs6DOqwaePDcHJ05v0hC65Q/p9Uz+eekZrBapEqWU5/8+
+	 hHkRMTJvaFK7rWs3VaKssashfMq4kzsMksFlRrc0yUZd2LdHY4VEqHzxA1KL84j7N4
+	 d7l3lbEuKapaoQNS7IFdMO05XItoZF6o/wpMmJoFVVfpHIftP0lmxY/itQFq2AJDQ4
+	 5+ZLccg8Xw6RKTF2alntVOML74AHDV34irK/Oj0bs4+vyUxwrZl9GpRnAYi3kohV/Y
+	 /gGgI1ys/2G2g==
+Date: Tue, 13 Feb 2024 08:30:37 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
+	kbusch@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com,
+	linux-kernel@vger.kernel.org, hare@suse.de, willy@infradead.org,
+	linux-mm@kvack.org, david@fromorbit.com
+Subject: Re: [RFC v2 10/14] iomap: fix iomap_dio_zero() for fs bs > system
+ page size
+Message-ID: <20240213163037.GR6184@frogsfrogsfrogs>
+References: <20240213093713.1753368-1-kernel@pankajraghav.com>
+ <20240213093713.1753368-11-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,103 +61,69 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <86cyt062jh.wl-maz@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240213093713.1753368-11-kernel@pankajraghav.com>
 
-On Tue, Feb 13, 2024 at 11:12:34AM +0000, Marc Zyngier wrote:
-> On Mon, 12 Feb 2024 20:14:37 +0000,
-> Oliver Upton <oliver.upton@linux.dev> wrote:
-> > 
-> > On Mon, Feb 12, 2024 at 07:30:52PM +0000, Will Deacon wrote:
-> > > kvm_pgtable_stage2_free_unlinked() does the final put_page() on the
-> > > root page of the sub-tree before returning, so remove the additional
-> > > put_page() invocations in the callers.
-> > > 
-> > > Cc: Marc Zyngier <maz@kernel.org>
-> > > Cc: Oliver Upton <oliver.upton@linux.dev>
-> > > Cc: Ricardo Koller <ricarkol@google.com>
-> > > Signed-off-by: Will Deacon <will@kernel.org>
-> > > ---
-> > > 
-> > > Hi folks,
-> > > 
-> > > Sending this as an RFC as I only spotted it from code inspection and I'm
-> > > surprised others aren't seeing fireworks if it's a genuine bug. I also
-> > > couldn't come up with a sensible Fixes tag, as all of:
-> > > 
-> > >  e7c05540c694b ("KVM: arm64: Add helper for creating unlinked stage2 subtrees")
-> > >  8f5a3eb7513fc ("KVM: arm64: Add kvm_pgtable_stage2_split()")
-> > >  f6a27d6dc51b2 ("KVM: arm64: Drop last page ref in kvm_pgtable_stage2_free_removed()")
+On Tue, Feb 13, 2024 at 10:37:09AM +0100, Pankaj Raghav (Samsung) wrote:
+> From: Pankaj Raghav <p.raghav@samsung.com>
 > 
-> I'd blame it on the last commit, as we really ought to have it if we
-> have the others.
+> iomap_dio_zero() will pad a fs block with zeroes if the direct IO size
+> < fs block size. iomap_dio_zero() has an implicit assumption that fs block
+> size < page_size. This is true for most filesystems at the moment.
 > 
-> > >
-> > > are actually ok in isolation. Hrm. Please tell me I'm wrong?
-> > > 
-> > >  arch/arm64/kvm/hyp/pgtable.c | 2 --
-> > >  1 file changed, 2 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> > > index c651df904fe3..ab9d05fcf98b 100644
-> > > --- a/arch/arm64/kvm/hyp/pgtable.c
-> > > +++ b/arch/arm64/kvm/hyp/pgtable.c
-> > > @@ -1419,7 +1419,6 @@ kvm_pte_t *kvm_pgtable_stage2_create_unlinked(struct kvm_pgtable *pgt,
-> > >  				 level + 1);
-> > >  	if (ret) {
-> > >  		kvm_pgtable_stage2_free_unlinked(mm_ops, pgtable, level);
-> > > -		mm_ops->put_page(pgtable);
-> > >  		return ERR_PTR(ret);
-> > >  	}
-> > 
-> > AFAICT, this entire branch is effectively dead code, unless there's a
-> > KVM bug lurking behind the page table walk. The sub-tree isn't visible
-> > to other software or hardware walkers yet, so none of the PTE races
-> > could cause this to pop.
-> > 
-> > So while this is very obviously a bug, it might be pure luck that folks
-> > haven't seen smoke here. Perhaps while fixing the bug we should take the
-> > opportunity to promote the condition to WARN_ON_ONCE().
+> If the block size > page size, this will send the contents of the page
+> next to zero page(as len > PAGE_SIZE) to the underlying block device,
+> causing FS corruption.
 > 
-> Can't you construct a case where an allocation fails during the walk
-> (memcache empty), and we end up on this exact path?
-
-Possibly, but AFAICT that can only happen if there was a bug in KVM. We
-don't start the walk at all if userspace set the split chunk size to 0,
-and otherwise we expect it to be at least PMD_SIZE, which will top up
-the cache to 1 every pass. stage2_split_walker() will 'do the right
-thing' if there aren't enough preallocated pages to get down to level 3.
-
-It really doesn't matter either way, I'm just trying to convince myself
-of the reasons why we haven't seen this explode yet :)
-
-> > 
-> > > @@ -1502,7 +1501,6 @@ static int stage2_split_walker(const struct kvm_pgtable_visit_ctx *ctx,
-> > >  
-> > >  	if (!stage2_try_break_pte(ctx, mmu)) {
-> > >  		kvm_pgtable_stage2_free_unlinked(mm_ops, childp, level);
-> > > -		mm_ops->put_page(childp);
-> > >  		return -EAGAIN;
-> > >  	}
-> > 
-> > This, on the other hand, seems possible. There exists a race where an
-> > old block PTE could have the AF set on it and the underlying cmpxchg()
-> > could fail. There shouldn't be a race with any software walkers, as we
-> > hold the MMU lock for write here.
+> iomap is a generic infrastructure and it should not make any assumptions
+> about the fs block size and the page size of the system.
 > 
-> AF update is indeed a likely candidate.
+> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> ---
+>  fs/iomap/direct-io.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
 > 
-> In any case, this patch looks good to me as it is, and we can always
-> have a separate tweak to adjust the severity of the first case as
-> required. Unless anyone objects, I'd like to queue it shortly.
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index bcd3f8cf5ea4..04f6c5548136 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -239,14 +239,23 @@ static void iomap_dio_zero(const struct iomap_iter *iter, struct iomap_dio *dio,
+>  	struct page *page = ZERO_PAGE(0);
+>  	struct bio *bio;
+>  
+> -	bio = iomap_dio_alloc_bio(iter, dio, 1, REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
+> +	WARN_ON_ONCE(len > (BIO_MAX_VECS * PAGE_SIZE));
+> +
+> +	bio = iomap_dio_alloc_bio(iter, dio, BIO_MAX_VECS,
+> +				  REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
+>  	fscrypt_set_bio_crypt_ctx(bio, inode, pos >> inode->i_blkbits,
+>  				  GFP_KERNEL);
+> +
+>  	bio->bi_iter.bi_sector = iomap_sector(&iter->iomap, pos);
+>  	bio->bi_private = dio;
+>  	bio->bi_end_io = iomap_dio_bio_end_io;
+>  
+> -	__bio_add_page(bio, page, len, 0);
+> +	while (len) {
+> +		unsigned int io_len = min_t(unsigned int, len, PAGE_SIZE);
 
-Agreed, happy with the way this looks and should've added:
+What was the result of all that discussion about using the PMD-sized
+zero-folio the last time this patch was submitted?  Did that prove to be
+unwieldly, or did it require enough extra surgery to become its own
+series?
 
-Reviewed-by: Oliver Upton <oliver.upton@linux.dev>
+(The code here looks good to me.)
 
-the first time around.
+--D
 
--- 
-Thanks,
-Oliver
+> +
+> +		__bio_add_page(bio, page, io_len, 0);
+> +		len -= io_len;
+> +	}
+>  	iomap_dio_submit_bio(iter, dio, bio, pos);
+>  }
+>  
+> -- 
+> 2.43.0
+> 
+> 
 
