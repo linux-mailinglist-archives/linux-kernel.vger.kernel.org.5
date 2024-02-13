@@ -1,89 +1,76 @@
-Return-Path: <linux-kernel+bounces-63620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBA4F85325F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:54:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB170853262
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:54:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61EB01F23D35
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:54:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D01E81C22839
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A422356B68;
-	Tue, 13 Feb 2024 13:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D065786A;
+	Tue, 13 Feb 2024 13:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RmEer6nz";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="QjwKP+KB";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RmEer6nz";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="QjwKP+KB"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com header.b="b4nLP7o2"
+Received: from refb01.tmes.trendmicro.eu (refb01.tmes.trendmicro.eu [18.185.115.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A0C656769;
-	Tue, 13 Feb 2024 13:53:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707832429; cv=none; b=tJz5mpjysipcy50I3llm8DBZOIWsTpOnwCytwTlnkwBO87RGgxVBWik+BppCFTLLf0DFKJY+WnB6rs+IYmDF8zI8iUzLnRZPhxwU59f9A1ZUksxuAwb/d1kyElSeyjrEib+RsJj43MSe3+ktRnI2+6EQDC8AIGmY0PkBaQ3Dju4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707832429; c=relaxed/simple;
-	bh=qT7rHicdtc4WdDDNnByPVJtgj/EFMHXfSeHcA/PlnBs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=M4PpE0qf4qPAKX14ZK9R/YpVi7jFr9zuuehCDcsDDGzE2t5dmoWMmJmD777vgkWzcMmRPCaox/I+xotdj/wHqhKSowvPacjabkgtfal8DFsbXX0Um9hiztDHjEHPaBkY9yB3c9emwoikuLDBOGrn5PEb9n+FclYgrGA6YZNVmGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=RmEer6nz; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=QjwKP+KB; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=RmEer6nz; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=QjwKP+KB; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 581851F7E0;
-	Tue, 13 Feb 2024 13:53:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707832425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=lqGnkWNffnK1QfHQP/tkrG31UipTum3bXY+Egr3HCiw=;
-	b=RmEer6nz53QSJME1/f2p/cO39+BRocao5zdxL5yKudGPAFCbCq7LKjaEeNn1K1JRU8WnIk
-	FCGBJ2WjjD3grajG/uVsTmgIf7dYdKuxYVXNQLQ1dGKlPPMM7uzu7Dv/0DX546vP7BkxzB
-	Du4Y1UI3lxvEhpPi6zqJdLEFIdcsUio=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707832425;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=lqGnkWNffnK1QfHQP/tkrG31UipTum3bXY+Egr3HCiw=;
-	b=QjwKP+KBusj9Xvmb6AxB4gmGAjF5nXKDId35HajqJxWmhFdsCKcFGOVzntE+izRkoAM8w0
-	eUP2Uq0vOBGj3TCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707832425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=lqGnkWNffnK1QfHQP/tkrG31UipTum3bXY+Egr3HCiw=;
-	b=RmEer6nz53QSJME1/f2p/cO39+BRocao5zdxL5yKudGPAFCbCq7LKjaEeNn1K1JRU8WnIk
-	FCGBJ2WjjD3grajG/uVsTmgIf7dYdKuxYVXNQLQ1dGKlPPMM7uzu7Dv/0DX546vP7BkxzB
-	Du4Y1UI3lxvEhpPi6zqJdLEFIdcsUio=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707832425;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=lqGnkWNffnK1QfHQP/tkrG31UipTum3bXY+Egr3HCiw=;
-	b=QjwKP+KBusj9Xvmb6AxB4gmGAjF5nXKDId35HajqJxWmhFdsCKcFGOVzntE+izRkoAM8w0
-	eUP2Uq0vOBGj3TCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 458191370C;
-	Tue, 13 Feb 2024 13:53:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XyR9EGl0y2WhHwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 13 Feb 2024 13:53:45 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: linux-sound@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ALSA: seq: fix function cast warnings
-Date: Tue, 13 Feb 2024 14:53:43 +0100
-Message-Id: <20240213135343.16411-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA92154FBB
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:54:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=18.185.115.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707832453; cv=fail; b=IOZ6DoiQAMz5uXnn3mI2ee2jlTIG0Ymmq27xDBw4fPYkXJsqcXlhylD5AYORPbQA9ytIz/17f1FXKaQVv9fvBiITjwNDzc/Uov4NEGJH99ButYO7rP9wrY+tzm2RrvI37KPcq1ae0+E0RMWylqPPhUuNKKkcO7P4hLkWlw7BvRk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707832453; c=relaxed/simple;
+	bh=Y34A0SU8Ez+v7OqZc/3s2NaEXRAOz6Qdm8Yk5vyeiUY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=SCGpX29JvjWhX9ESLjErcQakNE/TIY5R6vzAtYfxXbbe9UsBz9IORVbLveEItsmG+ph9mhHyJu2Bh1+5GTwuAdAQ4z7K+LTbHdFYRpvQOcVsbOVHQ5GL6sQpyLuVI5n9xudFpiatxjj9nv0XdeKasvepNai/LEKjFZpsKi3GdT8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensynergy.com; spf=pass smtp.mailfrom=opensynergy.com; dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com header.b=b4nLP7o2; arc=fail smtp.client-ip=18.185.115.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensynergy.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensynergy.com
+Received: from 104.47.11.168_.trendmicro.com (unknown [172.21.9.90])
+	by refb01.tmes.trendmicro.eu (Postfix) with ESMTPS id 576AA10036A19
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:54:09 +0000 (UTC)
+Received: from 104.47.11.168_.trendmicro.com (unknown [172.21.193.99])
+	by repost01.tmes.trendmicro.eu (Postfix) with SMTP id C935F100004FE;
+	Tue, 13 Feb 2024 13:54:01 +0000 (UTC)
+X-TM-MAIL-RECEIVED-TIME: 1707832441.348000
+X-TM-MAIL-UUID: cf0b964b-b42e-4d70-9522-b667015f844d
+Received: from DEU01-FR2-obe.outbound.protection.outlook.com (unknown [104.47.11.168])
+	by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id 5529F1000150E;
+	Tue, 13 Feb 2024 13:54:01 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GmzwLLJvfmRrenrtIuMs/oCdFHftLbXalsH0Lpcg6dH50wDZH4JLlPoD8LpPBTUM5xXCtyISCiQOjgxwsUuv6wnd4kkqVueTVcqiSK4CsXqyfgCn7dWvMZ3wZA2HWXLFd+zuYPw1rMWfN1N/esNZR7bjat8Wfv7ksdOrPtA9wJwYcYDEIdym7gfcLGaVMtGCubk4Ag37djtkYzW7XcWJ8o8zD7reKpt+Bh/G/tACmQc0crGPv5Gl6/R5hZGLJKAmpEXGresGCn/M3bHgs2YWQVk5/cSK+t+qgfKGhSYCtY61YoekS1k+EsoTXzHBkgqDaSWqb7lP8uDAK3x+4TgW5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=proSnUgtUD10020MrtctP+WI80/HVxHOU75cYNcKQiI=;
+ b=nZSXTvZ3TCCpuqPiKkaJyysxY4mfR+DtBJhsWWEDsjWCqw/8xIxPYpsasd0kAxqOvRR1Z7LJojC1A2yhbxBGJYgHBGOcnf/b9S2c41twEHSl2126LyrWiYsQMAfWy/HUkgi3AZmi7MeY1+LJ4wzLB4nm/t1feUdJGnLLW9hDd3DSis5VBABnDgORQUUEl37UhllCuQRxwQNVDfrFT6vesJUXgGODaqZLbi7EUfpMI4zMwIehRUtNdypTHrg/LBlZ8z2llFE1BfTjgUSJp6Fvcg2/lfreZyjKJQFzaQNCwGhWEmoKxyPdPwBvn1xrkpBq/PLHsVFEG2KwUhMsUQKiKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 217.66.60.4) smtp.rcpttodomain=kernel.org smtp.mailfrom=opensynergy.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=opensynergy.com; dkim=none (message not signed); arc=none (0)
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 217.66.60.4)
+ smtp.mailfrom=opensynergy.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=opensynergy.com;
+Received-SPF: Pass (protection.outlook.com: domain of opensynergy.com
+ designates 217.66.60.4 as permitted sender) receiver=protection.outlook.com;
+ client-ip=217.66.60.4; helo=SR-MAIL-03.open-synergy.com; pr=C
+From: Harald Mommer <Harald.Mommer@opensynergy.com>
+To: virtio-dev@lists.oasis-open.org,
+	Haixu Cui <quic_haixcui@quicinc.com>,
+	Mark Brown <broonie@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: quic_ztu@quicinc.com,
+	Matti Moell <Matti.Moell@opensynergy.com>,
+	Mikhail Golubev <Mikhail.Golubev@opensynergy.com>
+Subject: [RFC PATCH v3 0/3] Virtio SPI Linux driver compliant to draft spec V10
+Date: Tue, 13 Feb 2024 14:53:47 +0100
+Message-Id: <20240213135350.5878-1-Harald.Mommer@opensynergy.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,114 +78,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM3PEPF00009B9B:EE_|BEZP281MB3063:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 9861efdb-492e-44a4-b8c8-08dc2c9b3a9e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	d2Lxy4lbP3FD8X0sq8NZeOZTeuzqEskkgf2zbPlgghtvOls084L4Evu6q3ezRjmlW0KW2Z4tpKYGsDe4Iq2qXMSrkyv19cT5eqRNN5hk2Seznc++HgltVuv/jJSwoSSCS/FBliLz20NfeONUfxNriAMibzGC+4dc9LDDcr5c05aiaE9+QpDqKsKlc3hM4EQnKSo3Y++vLU3eVP6yWoC8kifovXhOI8c3YErJYNrLKFTTM/8mImDka9GVVQ/9dECKoPP7Lu8CBkTgbk1xuTDkAFIETwc3ukphbmeyjbYv7rOZMfK1Lqibu6e8P+ASwOcNPuL5sbNMfgV/UB8d3PNgeLVBBL6nxLIkrqgAyWhnRKsfBZ4ZB9BQ7r4ClPHSm2vDuvoWkSi54m97Xl4hi/bItwBugaKXcD64tnsZU0pl4ZQieSpofqV1S4RYKIgWS5AHqzqipSB9JkwdEhGTUMtmqsFFyOYLW4Ej2Tg/WNLxsfYvkfN1Q1T9KPgSmzzLbYS2hblIXivUUC4mQb9PQh2moNxFu6ugMVkOJ8WorhcMOPBMNiKpPwGlSrPsT2ll0gPVbns4sGZmoYPvEeoM6VjELPKIJAV12FmRBcfSfSue3tc=
+X-Forefront-Antispam-Report:
+	CIP:217.66.60.4;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SR-MAIL-03.open-synergy.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(136003)(39840400004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(82310400011)(46966006)(36840700001)(41300700001)(478600001)(2906002)(42186006)(5660300002)(54906003)(70206006)(110136005)(2616005)(107886003)(83380400001)(336012)(70586007)(26005)(1076003)(36756003)(4326008)(8676002)(316002)(8936002)(86362001)(81166007);DIR:OUT;SFP:1102;
+X-OriginatorOrg: opensynergy.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 13:53:59.2145
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9861efdb-492e-44a4-b8c8-08dc2c9b3a9e
+X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=800fae25-9b1b-4edc-993d-c939c4e84a64;Ip=[217.66.60.4];Helo=[SR-MAIL-03.open-synergy.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	AM3PEPF00009B9B.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BEZP281MB3063
+X-TM-AS-ERS: 104.47.11.168-0.0.0.0
+X-TMASE-Version: StarCloud-1.3-9.1.1015-28190.000
+X-TMASE-Result: 10--5.807400-4.000000
+X-TMASE-MatchedRID: UdxqiKKFAzhFXrD9KUuNErIyl8KAIcW/3B1hSgpgA3P7Bamin45J3DM+
+	jPWs1TwyCRyXfdSvdmw8BVvUwtAJs+Lm8FY5k1yNOPwPJT+A+aJCKdqcEPNeC5GeN+9dVIq31/6
+	WTCeqY2shPCzXmn9t9DHH90MCQqpzbsT0kBZNrmUhPK2mn+OsTMOr2HNR+yxjt1CSfPp/+EWDCS
+	dOycy8kxcgNH4AIUmJYReXSC3dfpnsocQd7WY5yEI9AEPfED/dqvJX/aNGr9cSCDdzAMeX/RLdY
+	zv1bejiZrfFxrTdHozfY76xzK50wKg7Zo5UOBRpoli4ZoiOHT9+ICquNi0WJN1LCC9OQK7stqzv
+	3rgvk8i2lmxaf3h8xnut0zlWRjtHftwZ3X11IV0=
+X-TMASE-XGENCLOUD: bdd947d4-acd2-4538-b8de-d770f9c568cb-0-0-200-0
+X-TM-Deliver-Signature: F30FAC9FBD3025F9E66A07FBABF5CACE
+X-TM-Addin-Auth: ioXJIzpebPhoei7p2a6mK7aAvKIf+Diyc4q/syAJMB0QOJCnmzn+ct7ZhvV
+	DegpBrODSu4XuKGhJYWZPsYZ7oNfyvBKiSz8LPUY576W4Eo+uUp0ilAqyikLlP/9RjIPAt5ZO5g
+	g/t6IwjEzyGeCHIqW0WHQPHlIEV3mCGXwhTTY+xItCOWLYVJJ33NSNV7I/HTEMKkNqlxPYILN4o
+	C2ZnhHVnqupzAbfd+NJqdGuuenpsoyYyUWJ3zoigpO33D+V+1jGvvaw0fPXxrYiW4nhrTA0Op0C
+	G6JUBU8chUGKxrc=.htgGgIQhvmhLb3UL5g6Pc+D+rxgN4y7M+x4HYQpngQSzJfPEO6h5aMuedo
+	qf8JNrjo3D0x9UmtuJW/JxgBsgEQgaExqnFKoPDsWNLeyyNwVpljPR2dSFQZPJO6ezJZ6W33rDe
+	ytqYeOYA62meizKRPZmBGybbIx4TPQ8vfuVAJsFW5x3cUF32IADoRlDwT2UFxJuou5pDqbpxaoC
+	4k9yCGUWspd/Z/F8SzMOWNAXhQDoJ3xMS0wl2wdPi6fGmWRdEF3AzCV+2dIBHmGRyD/nORaIApP
+	4VmAJxZUMANGvaDsUwfovjmVbvmDJJcAl70MMxAAqx4BGa3KxhqaYEfLWEA==
+X-TM-Addin-ProductCode: EMS
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=opensynergy.com;
+	s=TM-DKIM-20210503141657; t=1707832441;
+	bh=Y34A0SU8Ez+v7OqZc/3s2NaEXRAOz6Qdm8Yk5vyeiUY=; l=1506;
+	h=From:To:Date;
+	b=b4nLP7o2BuRnJI6VcWP5lDwjj+y84NnSSSjWxqtbChrpUZoSjD0yiMWEd81EA2E03
+	 UiO4zAMpMETOe3RkmeBGRJQGCjieeY9wbvARGcCu4TR41N9bc1gybZQkpvHCEZtxf1
+	 +MW34T5lJjXc/IvzcGLCLrUVHS1HwV/A49Q3BQ+sXKV1rK8JY3Q/Vh8LwhjHxZ5NxZ
+	 P3rdgFU3/1YS+EDOhdWeHKwurCFop/D7oHgCoMANl77IVt0y2VNQ1bksSX2bbjHOyg
+	 mHG2EM4tIKR+tsiwC1jWXOlR0dQ1z3gb/JwujrF+GElYv2QHG3+7qRd6zqGrm8jH8g
+	 TfNNgLn7s3+mA==
 
-clang-16 points out a control flow integrity (kcfi) issue when event
-callbacks get converted to incompatible types:
+This is the 3rd RFC version of a virtio SPI Linux driver which is
+intended to be compliant with the proposed virtio SPI draft
+specification V10.
 
-sound/core/seq/seq_midi.c:135:30: error: cast from 'int (*)(struct snd_rawmidi_substream *, const char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-  135 |                 snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
-      |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/core/seq/seq_virmidi.c:83:31: error: cast from 'int (*)(struct snd_rawmidi_substream *, const unsigned char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   83 |                         snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
-      |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Changes between 1st and 2nd virtio SPI driver RFC:
 
-For addressing those errors, introduce wrapper functions that are used
-for callbacks and bridge to the actual function call with pointer
-cast.
+- Update from virtio SPI draft specification V4 to V10.
 
-The code was originally added with the initial ALSA merge in linux-2.5.4.
+- Incorporate review comments gotten from the community.
 
-[ the patch description shamelessly copied from Arnd's original patch
-  -- tiwai ]
+A proposal for a performance enhancement having more than only one SPI
+message in flight had to be kept out. The more complicated code would
+have caused an unacceptable project risk now.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20240213101020.459183-1-arnd@kernel.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/seq/seq_midi.c    | 8 +++++++-
- sound/core/seq/seq_virmidi.c | 9 ++++++++-
- 2 files changed, 15 insertions(+), 2 deletions(-)
+Changes between 2nd and 3rd virtio SPI driver RFC:
 
-diff --git a/sound/core/seq/seq_midi.c b/sound/core/seq/seq_midi.c
-index 18320a248aa7..78dcb0ea1558 100644
---- a/sound/core/seq/seq_midi.c
-+++ b/sound/core/seq/seq_midi.c
-@@ -113,6 +113,12 @@ static int dump_midi(struct snd_rawmidi_substream *substream, const char *buf, i
- 	return 0;
- }
- 
-+/* callback for snd_seq_dump_var_event(), bridging to dump_midi() */
-+static int __dump_midi(void *ptr, void *buf, int count)
-+{
-+	return dump_midi(ptr, buf, count);
-+}
-+
- static int event_process_midi(struct snd_seq_event *ev, int direct,
- 			      void *private_data, int atomic, int hop)
- {
-@@ -132,7 +138,7 @@ static int event_process_midi(struct snd_seq_event *ev, int direct,
- 			pr_debug("ALSA: seq_midi: invalid sysex event flags = 0x%x\n", ev->flags);
- 			return 0;
- 		}
--		snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
-+		snd_seq_dump_var_event(ev, __dump_midi, substream);
- 		snd_midi_event_reset_decode(msynth->parser);
- 	} else {
- 		if (msynth->parser == NULL)
-diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-index 1b9260108e48..1678737f11be 100644
---- a/sound/core/seq/seq_virmidi.c
-+++ b/sound/core/seq/seq_virmidi.c
-@@ -62,6 +62,13 @@ static void snd_virmidi_init_event(struct snd_virmidi *vmidi,
- /*
-  * decode input event and put to read buffer of each opened file
-  */
-+
-+/* callback for snd_seq_dump_var_event(), bridging to snd_rawmidi_receive() */
-+static int dump_to_rawmidi(void *ptr, void *buf, int count)
-+{
-+	return snd_rawmidi_receive(ptr, buf, count);
-+}
-+
- static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
- 					 struct snd_seq_event *ev,
- 					 bool atomic)
-@@ -80,7 +87,7 @@ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
- 		if (ev->type == SNDRV_SEQ_EVENT_SYSEX) {
- 			if ((ev->flags & SNDRV_SEQ_EVENT_LENGTH_MASK) != SNDRV_SEQ_EVENT_LENGTH_VARIABLE)
- 				continue;
--			snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
-+			snd_seq_dump_var_event(ev, dump_to_rawmidi, vmidi->substream);
- 			snd_midi_event_reset_decode(vmidi->parser);
- 		} else {
- 			len = snd_midi_event_decode(vmidi->parser, msg, sizeof(msg), ev);
--- 
-2.35.3
+- Order header inclusion alphabetically
+
+- Add Viresh Kumar's "signed-off" to the header files
+
+- Rework virtio_spi_one_transfer()
+  - Rework the delays according to Haixu Cui's advise. Delays are now
+    handled in a new sub-function virtio_spi_set_delays()
+  - Minor change: Re-formulate arguments of sg_init_one()
+
+- Rework virtio_spi_probe()
+  - Replace some goto in error paths by return
+  - Add spi_unregister_controller() to an error path. Abstained from
+    using devm_spi_register_controller() to keep order of
+    de-initialization in virtio_spi_remove().
+  - Add deletion of vqueue to all error paths taken after the virtqueues
+    have been initialized
+
+The virtio SPI driver was smoke tested on qemu using OpenSynergy's
+proprietary virtio SPI device doing a SPI backend simulation on top of
+next-20240213 and an adapted version on Linux 6.5 with target hardware
+providing a physical SPI backend device.
 
 
