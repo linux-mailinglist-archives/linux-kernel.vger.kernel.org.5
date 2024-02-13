@@ -1,87 +1,146 @@
-Return-Path: <linux-kernel+bounces-64328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEF2E853D1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:26:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 044FC853D22
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:27:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C0B528E506
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:26:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36DB91C26F99
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61F561679;
-	Tue, 13 Feb 2024 21:23:26 +0000 (UTC)
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E37861678;
+	Tue, 13 Feb 2024 21:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="l2Rj7DFF"
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CAE612F1;
-	Tue, 13 Feb 2024 21:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD4260866;
+	Tue, 13 Feb 2024 21:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707859406; cv=none; b=DUvafV/kmoaRlQHO9N4a7CPBes54wbzbSrxWarlWO1NqhIdhVsxibk5d9gcNXHeWsnW3UYVw3Wy9ouvlrnDGvibU273LyXattuTkzhFk+GbH+a5v2V5xDjq8TtZ4MQq2Hnsg75BjOBEER7R2gJgKwPNmBqa3wVAU64WWVs2pavQ=
+	t=1707859661; cv=none; b=W09AgmPCaTpUsNfmjnGFPdbttyRgBA8XbbOOVkXivDQvLag0g+0XzT0N3vrMiQFAgC0H2bUjaYJ3KC6rtyZRUnZZYIjaeBmxQmwd4yCZOgv/EXlsasvhl7LD2wvvNFCaowHsyQGplWU5moZBy++YJn7pJ4NR1ouMJBwxTPWMXRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707859406; c=relaxed/simple;
-	bh=zNdS4IWShzPCUtyQvVJ2Xx9JgtTnB6R56d3FqU5q/zY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T1EZIWqM43zb+N67zOtLLF9M2vXECYIjv/exrAZMvXzsgyP2BPslZZSwUcZDK9wvwoQrA4ggxayxWGT6Ui9HCOxEieGKmzKnyR/jytHqFJanoUGbsMWi1BR2wWryiqdc4Rt5enNBgGYhWTpS8lTK7gFcgxjvfQTR0la9bNPdTA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6e2dbf54b2eso2084804a34.0;
-        Tue, 13 Feb 2024 13:23:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707859404; x=1708464204;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zNdS4IWShzPCUtyQvVJ2Xx9JgtTnB6R56d3FqU5q/zY=;
-        b=M4K3QshxJADKxPYVVVXoii3VlZ/TMWo6k4EGTLYkG17T/o6Iv8xG1o8oxnDLTUMA2F
-         fbMLSzMDb3XgQRsb1zbTvXh6Qy9R7nLUm3FnGnvZD79dzd3H+YV30N7rdHbn7Yk/lMFn
-         SlMpsqHWOA35W6Tk7hIUa5VLNpdUjNOS71oBux4+D3QwFuPcRpLmzmkbYB6PAEgWa5hd
-         +2ZouuFQwslgiShheB1VI7HSNE4PreVYL60EJzc7pfcZbfOGvYfkGWJHgq0OINAKSDmd
-         +0QRIy21SIYZlpaGyz53kD+1YIec3kDYMfdbmNRh4x2iPDyTlYoZIu8GFHySqG5Skyc4
-         whzg==
-X-Forwarded-Encrypted: i=1; AJvYcCV9AGoBDA1vn5PPoHyVcDFnjwWhlW+YXyMQHxBUflZzs5udANT9naPskzXFbR/tZ/Xegbo0tBY5q71cN7MlXJ7Q6e6FHw11JoN21jN2+TvAU8Lv0EPON+JtmmzF4ShJ5yVC2HowbLpgXZX5Jy/0C4xoHAE7qx+5RZ4eTXNr8DOgtXJTsu58DQ==
-X-Gm-Message-State: AOJu0YxjT2BwwS0T0dxFmgQFTNtNQapWTYS5R1X7xGrHcL62+gUz8I1m
-	EZADYZZTytPBL16JyLlBKHYcFX2+V112fui/18oZhoo+9nW3n+1py3JydSZK
-X-Google-Smtp-Source: AGHT+IHSDIYCiEJpbXHnj72htnQIqjs5Lx58sxhFgYYn/5FXG4QscL6nnfHbAv96HqavqpSaRjzCJA==
-X-Received: by 2002:a05:6358:7e04:b0:175:fc1a:c7df with SMTP id o4-20020a0563587e0400b00175fc1ac7dfmr640257rwm.15.1707859403771;
-        Tue, 13 Feb 2024 13:23:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV61jh8io2cFzHOQgPagQZn/vyQ6eElRDhB+kdJW6BQZDslFrF/G7qFWxOGH2UzodF4/8ggMaC1eIMspdGi9g0+IBKm2h1e7ulOUxa8rrn/SZhL7Ayht/Cwqcs+odOmGhD6QrC4RRFAFTk90qjQ8c8aIT/zuTnfsYYqcYba9inyTQrQjyK0Xiqri7/DBu6XYIuT9075Fr/mOgs7g6P2wFa15VKhsL0zGf6CYvdKHgcgBWOpq5oxQOGYBU+iJtoRvYsAnoYIlemAfbtCiW7duJoBMi/E9V+GJ174g9NrJnbIlg62cte7ddi36lKInbKyoykWB82faiS/ekfmBawnaGj3enVt0uf6oe3BBEshpEBaI461GeW9o7s3wU5+BNAlfxB/SYw2nvoIEuvQxDWXAfT4bS+CHQirAR7gxv18EmFIG+rOvLQBOwWV
-Received: from ?IPV6:2620:0:1000:8411:85a5:575d:be51:8037? ([2620:0:1000:8411:85a5:575d:be51:8037])
-        by smtp.gmail.com with ESMTPSA id r16-20020aa78b90000000b006e0dd50b0d0sm4421634pfd.8.2024.02.13.13.23.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 13:23:23 -0800 (PST)
-Message-ID: <3945a1c1-16b8-4c72-9ff9-3a3f67a6c4b9@acm.org>
-Date: Tue, 13 Feb 2024 13:23:21 -0800
+	s=arc-20240116; t=1707859661; c=relaxed/simple;
+	bh=iQss9ct+4twg7GFbDG7JJx8trexhGHAAqudZp8H8iMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TSlA9XYLF53UuaTZxmdasRDWINERC5x7DBF1VqwCUf/imrGFydGUSt1RGqACdGIFACUBmtbo2ESsoEbjDje+j6OM9C5IqUSIC2Kf3mRzhuEsrpAviiEBNUbUdVdImyBKj+nZDuPbd7Oeei5Vy5O+D6fJ9i4+TYc5A3V/UYzc+IE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=l2Rj7DFF; arc=none smtp.client-ip=80.241.56.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TZDtw0hKTz9stm;
+	Tue, 13 Feb 2024 22:27:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1707859656;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Mh3OjUTOfcYW8zRUtE1UxIazXj8XXK2Ld1abdP7LWMU=;
+	b=l2Rj7DFF8BtL1ntuFgQ9i5ScpOASIaaFA5ar8kj490Zv3SkIEd9AH/eEM1E78dlbSlGSGQ
+	sd+OyvOwurdpsV7420vYWp0WQ1KQyzbmS8dGj7vkBLGr5fdVHdOcHDySp1mvCxGfT5/6Ik
+	ja0uxapoErU/J5zC4gAsNQYhmiSoLpxBUyB1RAlJkDRlIjVQoNNVHlsdGwSn0IZXdYPdXn
+	zG6U1SzzOdF5Jgsnh1tx2U6CIghm2WterEHaSiWqTcAbXo8U1Z8UzaMxGkEDeTVWfkjN+b
+	jnJSAfPoBqpWU4lx6ZYe4Rd7AnBxIGoDkJU+vl8CAFiAoHypUpzqv6IY9/EPJA==
+Date: Tue, 13 Feb 2024 22:27:32 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org, 
+	kbusch@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com, 
+	linux-kernel@vger.kernel.org, hare@suse.de, willy@infradead.org, linux-mm@kvack.org, 
+	david@fromorbit.com
+Subject: Re: [RFC v2 10/14] iomap: fix iomap_dio_zero() for fs bs > system
+ page size
+Message-ID: <5kodxnrvjq5dsjgjfeps6wte774c2sl75bn3fg3hh46q3wkwk5@2tru4htvqmrq>
+References: <20240213093713.1753368-1-kernel@pankajraghav.com>
+ <20240213093713.1753368-11-kernel@pankajraghav.com>
+ <20240213163037.GR6184@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/srpt: fix function pointer cast warnings
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- "Nicholas A. Bellinger" <nab@risingtidesystems.com>,
- linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <20240213100728.458348-1-arnd@kernel.org>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240213100728.458348-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213163037.GR6184@frogsfrogsfrogs>
 
-On 2/13/24 02:07, Arnd Bergmann wrote:
-> Change srpt_qp_event() to use the correct prototype and adjust the
-> argument inside of it.
+On Tue, Feb 13, 2024 at 08:30:37AM -0800, Darrick J. Wong wrote:
+> On Tue, Feb 13, 2024 at 10:37:09AM +0100, Pankaj Raghav (Samsung) wrote:
+> > From: Pankaj Raghav <p.raghav@samsung.com>
+> > 
+> > iomap_dio_zero() will pad a fs block with zeroes if the direct IO size
+> > < fs block size. iomap_dio_zero() has an implicit assumption that fs block
+> > size < page_size. This is true for most filesystems at the moment.
+> > 
+> > If the block size > page size, this will send the contents of the page
+> > next to zero page(as len > PAGE_SIZE) to the underlying block device,
+> > causing FS corruption.
+> > 
+> > iomap is a generic infrastructure and it should not make any assumptions
+> > about the fs block size and the page size of the system.
+> > 
+> > Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> > ---
+> >  fs/iomap/direct-io.c | 13 +++++++++++--
+> >  1 file changed, 11 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > index bcd3f8cf5ea4..04f6c5548136 100644
+> > --- a/fs/iomap/direct-io.c
+> > +++ b/fs/iomap/direct-io.c
+> > @@ -239,14 +239,23 @@ static void iomap_dio_zero(const struct iomap_iter *iter, struct iomap_dio *dio,
+> >  	struct page *page = ZERO_PAGE(0);
+> >  	struct bio *bio;
+> >  
+> > -	bio = iomap_dio_alloc_bio(iter, dio, 1, REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
+> > +	WARN_ON_ONCE(len > (BIO_MAX_VECS * PAGE_SIZE));
+> > +
+> > +	bio = iomap_dio_alloc_bio(iter, dio, BIO_MAX_VECS,
+> > +				  REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
+> >  	fscrypt_set_bio_crypt_ctx(bio, inode, pos >> inode->i_blkbits,
+> >  				  GFP_KERNEL);
+> > +
+> >  	bio->bi_iter.bi_sector = iomap_sector(&iter->iomap, pos);
+> >  	bio->bi_private = dio;
+> >  	bio->bi_end_io = iomap_dio_bio_end_io;
+> >  
+> > -	__bio_add_page(bio, page, len, 0);
+> > +	while (len) {
+> > +		unsigned int io_len = min_t(unsigned int, len, PAGE_SIZE);
+> 
+> What was the result of all that discussion about using the PMD-sized
+> zero-folio the last time this patch was submitted?  Did that prove to be
+> unwieldly, or did it require enough extra surgery to become its own
+> series?
+> 
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+It proved a bit unwieldly to me at least as I did not know any straight
+forward way to do it at the time. So I thought I will keep this approach
+as it is, and add support for the PMD-sized zero folio for later
+improvement.
+
+> (The code here looks good to me.)
+
+Thanks!
+> 
+> --D
+> 
+> > +
+> > +		__bio_add_page(bio, page, io_len, 0);
+> > +		len -= io_len;
+> > +	}
+> >  	iomap_dio_submit_bio(iter, dio, bio, pos);
+> >  }
+> >  
+> > -- 
+> > 2.43.0
+> > 
+> > 
 
