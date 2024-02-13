@@ -1,169 +1,89 @@
-Return-Path: <linux-kernel+bounces-63555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36330853134
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 86BBF85312C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:02:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B56CB24D80
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:03:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E70F6B2620E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20649524A9;
-	Tue, 13 Feb 2024 13:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6894CE18;
+	Tue, 13 Feb 2024 13:02:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YcW+hVLs"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="tE8B0o6o"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E4151C21;
-	Tue, 13 Feb 2024 13:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B410D4F1EF;
+	Tue, 13 Feb 2024 13:02:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707829369; cv=none; b=PG5JpUVpfELSftoqeJ1V7zFD9lHkmy8Y69bs+jP2EvpAKSAihXAxqRoaZlXKSd4BUd7n2I33aMOkRpQY8vOihkAOdz2vJZN9ko6YAn+vSBVFzs+S0b72Y0ipDr9sHOxVH3YuUDfC3ELocxeoU/7Xm2aCTemF7kyoMELT9ITOlZQ=
+	t=1707829352; cv=none; b=KunrzKl6bVfdwiR9c3kPQqwwcfXCY9EeCOZzM/F4xypFC1uRZyoqFxHgnTsl92agcM51uCGagh/hBwguQM5mdCmE1OmJmgndF5p5vg1DfQFYciuD220NVLjfvSbTPQHjk61OulhUCoq99mzlzpj7NJRcwfSi1NwbzuAlB+PAbMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707829369; c=relaxed/simple;
-	bh=28DdTYEVF+5wxUwB+sr99no14Iop58sGq02oHT+28+I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tMIVsNO7LS4mP/eefOrSIQCmy0Rg2NtVm+E/dPQtLyyIp/B0v/9M8qqqCZOzbBGjB/Kujk2LX2ppaKzcGB8rTgKQ/mnb1okeGzZkweM0A9YPcymNcsl8Iu9dazM1ckx4yTKoYOIMDV8tGwWZViVUvcYlBbZ+oLd7eJdrc6Ueq2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YcW+hVLs; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5610cc8cc1aso4762187a12.1;
-        Tue, 13 Feb 2024 05:02:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707829366; x=1708434166; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9Cq+iI48CDe+5VO7sSMk/e7qj86AX8EMGUWgbiDs5Ns=;
-        b=YcW+hVLsjGCOpGmrlia+QuAiTdsNOHUKbQskDh2z3F2jgxasPMgylT5v7SpnxDn1nS
-         gTegyldYwRKf336Gkc/cFTSi9NWMZdGr6eBwkrLjdZxzk4Mhg6R8c7+YVDT8fsNXK1Dn
-         W9f/EowMLVKtjl0fzRVIAjCa4DMtUWcpCsdN8aHwZ/DOlT6XJaPaAl2PqbbvyzkIbj2U
-         2AVLDtpBgasRv/M3L2TeOVQLyTB9GeabdqyC1AqE3Lc92wRI5Kb2+6LTpyVvieT3CbqM
-         J8fmR7X4iuFNRlA0vbQowMZwYX3vfyr2Uz1tflIBNvPfIhbPoW18CH2ksyWt48Et2gyN
-         6Kew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707829366; x=1708434166;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9Cq+iI48CDe+5VO7sSMk/e7qj86AX8EMGUWgbiDs5Ns=;
-        b=CQoN+z5XE7+wwFmfhgsj/IBGdYmfcuWXXa4majYig0d58WgJdNTpiR6gTTS6llT9OE
-         udV102iPNwMhl8a8+g/K5eLXLc6fF7KECzuHfBzdCdGGhOSZ720FHFwkPR+3+Sss0XCh
-         Tt1mmD7KYFG/gCGuXs9ubaQ5OpDUP/Ot36Fqemdr/ys4o1a2+Wx0f2fICRzI3d7/sEnd
-         Wjm7bjO+dn+tq+BrxnsOMQg5cwwh8yEdqYZDoAPfCRXr5X5btwA290PPpMFeVOXVh4Iz
-         oMmBa+k5ZbB+fHuirYP3bb6lwBD0Ycyp1gsr/z59fzKfpywvT08uBKK67fUBRsFvNwxT
-         pHRw==
-X-Forwarded-Encrypted: i=1; AJvYcCUYS0Y5ZIldHC4bEtnVpz8+luD1eY/EjTEy74vH+buPUqMSritsWdWgM8we33drA8Nt3x0hqmUdXUKHzlMhdl8EWB5PS7PFn0rmyvyS99SwJgUn4dxMM3GsSf1a5VPuUaLJwBaLBvIUeCsqLDV3viHt6FlfyIbPEFdmYOQa6a05uE0/RA==
-X-Gm-Message-State: AOJu0Yw9yLI5/wyivlO+q8BecidIXyVrzekoS7nHbupYVQF08oVP9Dos
-	K79cfGQRmjd/kAMMhnJ88hOvsd4QuZ0TisaVUlXp9xqkv7bCakqX
-X-Google-Smtp-Source: AGHT+IGwFZ/B7NIFFcOnp2yFup95b+UeJUZ6E+6zkb73wGvSwm0cn063bkqvcUbgz2zWlqx3KDTONA==
-X-Received: by 2002:a17:906:f88c:b0:a3c:8770:3795 with SMTP id lg12-20020a170906f88c00b00a3c87703795mr4365644ejb.15.1707829365845;
-        Tue, 13 Feb 2024 05:02:45 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUQd7FhW+1Uji0/Kw8nyU5iosaUylTYW21ZHKoUoT9ZyjzXWSFkwAIhE6Op8Ai/8id8BMsPSYCUjv/0QPqvImddI3pTh5U3rNX76vbsxis4r65rvE9S4ka4TixwJvOdwq94CbIxE7qh+NgiRyva159qE7FTL0xCmmLMleU7R1sknZS/ZZatTKaJGqqo+iI6b657bbo6hBx/G/cAGOzfGRxZcGNxoXZ2t0i2uxmQ7TpiLASQJxbBX9BJ599Ksk2UCqJZrbtQDsuIlDmw943oOQDrMfaRxHTGsJAgC8dAN3c7bLNZwIfp5udFq1Qmc4PGKcO7RbRvzRbUy5DaRcujhAcakboeIaiUrBnCcE9Is7TEn2KGwALWXK1Ao7e98mNC3rH6mbNiyequTN/yiFmfDmE5KbLBgjO44/c1JDuGj2YuLx3wlwbOSSeLDEC4WwjutfpiTecOlOZKeCAA2hWGinRelblNGFcmaFlTLfRaUpH0ifPBICKQgcAm87xGbrGjhILR+66YG2HkRzR20wBYbFwmRI2pATXlTDvdBISYEnxyBQ==
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id cw15-20020a170907160f00b00a3d004237ebsm633078ejd.212.2024.02.13.05.02.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 05:02:45 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	s=arc-20240116; t=1707829352; c=relaxed/simple;
+	bh=dlM175U+C8aayNuvUs0Vo/+s/Ov3qYpSkK3PAw6G+Dk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qv+j5Ygg6Uc85U3FNnCBGtTtF480Hifo1uDJb/kCHvMGkQSXczUaGpmGprX5pXlCFTAvxIGPLuulMCZ4SpqAsmWXkIMIYBcaq8Tzrjv1pIvLsCjUcdFzcNgv2o7VrttyWoV8MSzElgOnbqtogAqI5Lo03jjLbvTd0RIunxLlues=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=tE8B0o6o; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id D1C636033F;
+	Tue, 13 Feb 2024 13:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1707829349;
+	bh=dlM175U+C8aayNuvUs0Vo/+s/Ov3qYpSkK3PAw6G+Dk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tE8B0o6o5jHRphzAzKu8FMc0/MbVtbhFI8+pdHsrMCON3bbMzKlg1Fpp4yxQ7exFG
+	 09NUYOa7d+9EcirZ+2WtO/yCpbKtSTXnVCx0n6NjHHI0wdK5e2rhdXdu+983nrwqcx
+	 KDMYSS9wOjCCJHrP5HwQQBUfb2LSoQ9unp0xGsTzFgAqcRCdsKUqSQ8baK4kyqgvNE
+	 ZpENHNmThNIjFVE+6o165hRFhJV919ZZ/DY79mYrO6pq2plO5oK0zBDT8CbV3Rd0kk
+	 3eQD/5EsHQUxTtrCmoT7uVhciKQ3PydeQ5gACFw7HX2jPal8HrWAZxtuoayJK0JXjp
+	 Nd9sC7eoVTVfw==
+Date: Tue, 13 Feb 2024 15:02:08 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: Adam Ford <aford173@gmail.com>
+Cc: linux-omap@vger.kernel.org, aford@beaconembedded.com,
+	=?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
 	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Chunfeng Yun <chunfeng.yun@mediatek.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Daniel Golle <daniel@makrotopia.org>,
-	linux-usb@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 2/2] arm64: dts: mediatek: mt7988: add XHCI controllers
-Date: Tue, 13 Feb 2024 14:00:44 +0100
-Message-Id: <20240213130044.1976-2-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240213130044.1976-1-zajec5@gmail.com>
-References: <20240213130044.1976-1-zajec5@gmail.com>
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: dts: omap3:  Migrate hsmmc driver to sdhci driver
+Message-ID: <20240213130208.GI52537@atomide.com>
+References: <20240213124146.202391-1-aford173@gmail.com>
+ <20240213125618.GG52537@atomide.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213125618.GG52537@atomide.com>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+* Tony Lindgren <tony@atomide.com> [240213 12:56]:
+> * Adam Ford <aford173@gmail.com> [240213 12:41]:
+> > The sdhci driver has been around for several years, and it supports
+> > the OMAP3 family.  Instead of using the older driver, let's finally
+> > migrate to the newer one.
+> 
+> I think we also should do these to avoid incomplete conversion:
+> 
+> - ti,dual-volt property can be dropped
+> 
+> - ti,non-removable should become non-removable
+> 
+> - ti,omap3-pre-es3-hsmmc probably should not be needed with sdhci
 
-Add bindings of two on-SoC XHCI controllers.
+Hmm actually we may need to set SDHCI_QUIRK_NO_MULTIBLOCK for
+compatible ti,omap3-pre-es3-hsmmc.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- arch/arm64/boot/dts/mediatek/mt7988a.dtsi | 32 ++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+Regards,
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt7988a.dtsi b/arch/arm64/boot/dts/mediatek/mt7988a.dtsi
-index bba97de4fb44..3eb5396dea22 100644
---- a/arch/arm64/boot/dts/mediatek/mt7988a.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7988a.dtsi
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0-only OR MIT
- 
-+#include <dt-bindings/clock/mediatek,mt7988-clk.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/phy/phy.h>
- 
- / {
- 	compatible = "mediatek,mt7988a";
-@@ -78,7 +80,7 @@ gic: interrupt-controller@c000000 {
- 			#interrupt-cells = <3>;
- 		};
- 
--		clock-controller@10001000 {
-+		infracfg: clock-controller@10001000 {
- 			compatible = "mediatek,mt7988-infracfg", "syscon";
- 			reg = <0 0x10001000 0 0x1000>;
- 			#clock-cells = <1>;
-@@ -103,6 +105,34 @@ clock-controller@1001e000 {
- 			#clock-cells = <1>;
- 		};
- 
-+		usb@11190000 {
-+			compatible = "mediatek,mt7988-xhci", "mediatek,mtk-xhci";
-+			reg = <0 0x11190000 0 0x2e00>,
-+			      <0 0x11193e00 0 0x0100>;
-+			reg-names = "mac", "ippc";
-+			interrupts = <GIC_SPI 173 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&infracfg CLK_INFRA_USB_SYS>,
-+				 <&infracfg CLK_INFRA_USB_REF>,
-+				 <&infracfg CLK_INFRA_66M_USB_HCK>,
-+				 <&infracfg CLK_INFRA_133M_USB_HCK>,
-+				 <&infracfg CLK_INFRA_USB_XHCI>;
-+			clock-names = "sys_ck", "ref_ck", "mcu_ck", "dma_ck", "xhci_ck";
-+		};
-+
-+		usb@11200000 {
-+			compatible = "mediatek,mt7988-xhci", "mediatek,mtk-xhci";
-+			reg = <0 0x11200000 0 0x2e00>,
-+			      <0 0x11203e00 0 0x0100>;
-+			reg-names = "mac", "ippc";
-+			interrupts = <GIC_SPI 172 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&infracfg CLK_INFRA_USB_SYS_CK_P1>,
-+				 <&infracfg CLK_INFRA_USB_CK_P1>,
-+				 <&infracfg CLK_INFRA_66M_USB_HCK_CK_P1>,
-+				 <&infracfg CLK_INFRA_133M_USB_HCK_CK_P1>,
-+				 <&infracfg CLK_INFRA_USB_XHCI_CK_P1>;
-+			clock-names = "sys_ck", "ref_ck", "mcu_ck", "dma_ck", "xhci_ck";
-+		};
-+
- 		clock-controller@11f40000 {
- 			compatible = "mediatek,mt7988-xfi-pll";
- 			reg = <0 0x11f40000 0 0x1000>;
--- 
-2.35.3
-
+Tony
 
