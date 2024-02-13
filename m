@@ -1,233 +1,329 @@
-Return-Path: <linux-kernel+bounces-64231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEB53853C67
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:49:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1524853C7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:53:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFCB31C23AA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:49:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C63C01C219C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B4461667;
-	Tue, 13 Feb 2024 20:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KXYYtyMZ"
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41CF6627F2;
+	Tue, 13 Feb 2024 20:52:50 +0000 (UTC)
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CAC612D2;
-	Tue, 13 Feb 2024 20:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E786B627E7;
+	Tue, 13 Feb 2024 20:52:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707857342; cv=none; b=JXnhzyMyYRITKgLbIZIoRm7of+M6lHg9WuSAGRYkB6wErm8LOHX85e1qcbK2aLnZokl22cUtCKIJqC0uQDgmPSlxGWz3u04IchLWWtQfhRJay9x3Mf3p6JQAAfUYYDbjlSq7KU5WFbKnfOiLtqFlp40LbrdNocK6GK6kxz2eCcM=
+	t=1707857569; cv=none; b=Xs9yHs7SRkXLhJyEQ4RwVHlWDQNBaS2I10opJlq+fkIFBnlKy3Yky86Pdviatj932wdHrHN4MA1ohR39PUfTCkZmcJdlx9GRkXsRs40CyNimG2dT7DuT7iTwzaajS+Gr/afizEFVRDstaqDxZzA3CxwN2vQeIbV/jfEEiAvHzfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707857342; c=relaxed/simple;
-	bh=g+d4sbZEKg/bFb5cr+DKe3rjFLQhm4930PpRaVtJO/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WsbUMRsJ/nU2eZYRG5eUYuGofEe6iImxRsddkR0hu2JRFAoM5gjl07ZcScaksXqmNB0dJd/NIdkR6iWWU7hze2+a8Lbu6ltkQnIqTIC9tJIYXGbdIN8kEcwnjhl1Wlx4Ryifh17uqtqT1Q/fBaqOOtr+TbCDaIZvERqDVQfGq48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KXYYtyMZ; arc=none smtp.client-ip=209.85.166.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-36423c819a3so2199645ab.0;
-        Tue, 13 Feb 2024 12:49:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707857340; x=1708462140; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+fpHR+QUQmyea//lUFv/vIwu0kcaelqAMzTc7aVo48o=;
-        b=KXYYtyMZoz2SxzCYJTllM7CzejU4b9YKOcmBkX+seYDr0LkUPZGvB10q70FRNvU1i/
-         SCE/I0LjeLiO/j57EJiUNYj3ORmPQqlbw8eXDzgjCXBc86WhrVN9piugjPJzVE2VhBPy
-         mGTuD48U5rAhxcwjHtOtzhUfPnK/ksTqSUxp7HqwhjhCludLr5HWI4vU1R8ZViHjapXx
-         V3BbGea8+4XQsDzqDPCqWqPPSdHw1kxMkBxod5YleQhIuwzyjUVx/EYRo8sQSXmn/qnY
-         aYrJpvcABCQWhISpXW0xiz+XbuXmxPCzpzqT0sZl/lSxAeMzYBAJwewQM1HG9Deaecpx
-         2M1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707857340; x=1708462140;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+fpHR+QUQmyea//lUFv/vIwu0kcaelqAMzTc7aVo48o=;
-        b=I+8RbrWjEjnFa/3fX512I7wE009io1rM397Olx7+VmtXtmbYOOZcfODeoLkskpcF5M
-         a2K5jUJqx0p5XhLLX+WUH23G3MxNabXV0pnHumj5ndnGFxqZ2wPmo9+zStXNpvJGKefu
-         9fodUkE/C+00D9NCr8UjIivSXoFm12X1OPDnMu8MhkM+HyemQWHNylFCXyYZSfsWE/Tx
-         xPqYPT2FJ6kaL8jNS0KaKagc/lju9eEtxBdYqC4d8qcs8skMqK9sMZuMsOtix4K0rIhr
-         BeRrRyDtyginC/sM/T4aoGr88CInF2nlZ9LA4M7w/WMmfPkUhcvRZMFopZ1UoO/+DfKM
-         Q8dw==
-X-Forwarded-Encrypted: i=1; AJvYcCXLsrDjdwZXZCTLWgN3G9BYKs7uoVXoB9skYZSbsVnSz2JmZbQvdFSLXNXTWe/MvUf4PP+cHw0FsuRxrdAmztZbe2np0M3sgvPXQ6pZFzXPsv53hUPpoJkJWbDP+0jAcgcSxV1iIvYDgWpx/+cTTmpVGGh96z1Zds2oixtXkPn/8vVv21rxbuNV9DBdoNBuZxE1zyUzn6Ra7vVqj773etmwsW39lipMBBpspeJWK4vEbI0akEiC2AJRh9M=
-X-Gm-Message-State: AOJu0YzLULLBbveE68EKyTUVJIY1SmOA7RhqTbzRVqksltuBcRNDX7dj
-	QF2tF3PCvCxCTY4KIfWbCMRSJ3vhPd7KjuAHzqqqAJMt26Qx568i
-X-Google-Smtp-Source: AGHT+IEVpY8npm/c+8s3uUCOpxgYULeEO6wIpsnGdNM5YNXf8Whg2kP3OqBkxfELPfdgDx8RMuaIGg==
-X-Received: by 2002:a92:d6c6:0:b0:364:6ae:b5d1 with SMTP id z6-20020a92d6c6000000b0036406aeb5d1mr838572ilp.2.1707857339728;
-        Tue, 13 Feb 2024 12:48:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVac0ziro3D+ZTzbw7T3uhMa4Czk5UuDYoXayso7E3Fn3hMqFXP4ya6m+v6zZ5fNa18IkVdnqoPxGNJrXKmqEEoHxKrxQ2Al27nd6BuUo/wjN1m/+yVB5lrLlGaV9i6W4NRZX12+QKUPG3zng4zCmjV5Y0GY0CGZchJMs+HSShZWp2TVNiknjvVyva1J38j7GJNxgN6ffw51O0lmUxB24oDci0k55aRYC+nBQaLotfsVqlpVZ390kwqn7bLkWcCxJt6PUGZkECJXB1GLYfyVP2zFst5E++i+CBFL7VyTjLq0l9nLuOU4wbLY+wdYU3Sj7b7z6DcBR5+BT7x/h1rwHc8jT3G3tUVRtQFfPVH+gSobcC2xNizo1P47wk3IIrdMhdVepyn2O9Tl6Mk6biUI6AShKMLdEcDY2hGIN5AMYmXEB/PgzjB12X3v4iPlYtZaEoYisRVwENizF/7hondDZWlW7O9QewuN7G/kVto+dvN78x0l/cSo20ugC85UsLsFdGkh1PEi7OoMq6EJo+vmgRYoQ/j2uSLNhNRJmHXbh772Qbg7fMwEZxPS2Z+yw9HD/DbzD4vmEebizbkCRsb4GrL9HGErSVvDLsK9e8+DcgSNmff/xYgDJqmLmZ+CIrl90Hnf71y+Q4EdS6JmMB4p7QnwmgQE4dWf5IrP/KLBmnJMJWdatT/VdUDM0m+xFA=
-Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:500::6:7312])
-        by smtp.gmail.com with ESMTPSA id bx41-20020a056a02052900b005d67862799asm2472534pgb.44.2024.02.13.12.48.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 12:48:59 -0800 (PST)
-Date: Tue, 13 Feb 2024 12:48:55 -0800
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
-Message-ID: <ztou4yyrsdfmmhdwgu2f2noartpqklhvtbw7vj2ptk54eqohvb@qci7bcnbd56q>
-References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
- <87bk8pve2z.fsf@toke.dk>
- <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
- <875xyxva9u.fsf@toke.dk>
- <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
- <87r0hhfudh.fsf@toke.dk>
- <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
- <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
- <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
- <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
+	s=arc-20240116; t=1707857569; c=relaxed/simple;
+	bh=pNLjfATizxDfzKBpwbo33+bigWKUwEcoBZaEGdtP0VQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=WO3hhjrif+PUXxKt0hfD8Al19VeTRA4fIgWynJ1UYXo/BtYE8gjgLeEzWCWASOXx+SDf8vPkQqEf5APj0I2kSdIvWZZASKKPXe+6mzV0yV10UZZr1MKu6MbvrhNwaxkKO3cxAqj6v6OnR9y9VeIcDrcK1OW7EzftT1oAF0B5ZlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.97)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1rZzla-00000002PLI-4Bog; Tue, 13 Feb 2024 21:52:35 +0100
+Received: from dynamic-077-183-140-215.77.183.pool.telefonica.de ([77.183.140.215] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.97)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1rZzla-00000001fwb-39u4; Tue, 13 Feb 2024 21:52:34 +0100
+Message-ID: <51eb2eb0845ae986209ba1ecda315dd27519a087.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH 6/6] mfd: tmio: move header to platform_data
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	linux-renesas-soc@vger.kernel.org
+Cc: Lee Jones <lee@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>,
+  Rich Felker <dalias@libc.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>,  linux-kernel@vger.kernel.org,
+ linux-sh@vger.kernel.org,  linux-mmc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 13 Feb 2024 21:52:33 +0100
+In-Reply-To: <20240209015817.14627-14-wsa+renesas@sang-engineering.com>
+References: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
+	 <20240209015817.14627-14-wsa+renesas@sang-engineering.com>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-On Tue, Feb 13, 2024 at 08:23:17PM +0100, Kumar Kartikeya Dwivedi wrote:
-> On Tue, 13 Feb 2024 at 18:46, Benjamin Tissoires <bentiss@kernel.org> wrote:
-> >
-> > On Feb 12 2024, Alexei Starovoitov wrote:
-> > > On Mon, Feb 12, 2024 at 10:21 AM Benjamin Tissoires
-> > > <benjamin.tissoires@redhat.com> wrote:
-> > > >
-> > > > On Mon, Feb 12, 2024 at 6:46 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> > > > >
-> > > > > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
-> > > > >
-> > [...]
-> > > I agree that workqueue delegation fits into the bpf_timer concept and
-> > > a lot of code can and should be shared.
-> >
-> > Thanks Alexei for the detailed answer. I've given it an attempt but still can not
-> > figure it out entirely.
-> >
-> > > All the lessons(bugs) learned with bpf_timer don't need to be re-discovered :)
-> > > Too bad, bpf_timer_set_callback() doesn't have a flag argument,
-> > > so we need a new kfunc to set a sleepable callback.
-> > > Maybe
-> > > bpf_timer_set_sleepable_cb() ?
-> >
-> > OK. So I guess I should drop Toke's suggestion with the bpf_timer_ini() flag?
+On Fri, 2024-02-09 at 02:58 +0100, Wolfram Sang wrote:
+> All the MFD components are gone from the header meanwhile. Only the MMC
+> relevant data is left which makes it a platform_data for the MMC
+> controller. Move the header to the now fitting directory.
+>=20
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  MAINTAINERS                                   | 2 +-
+>  arch/sh/boards/board-sh7757lcr.c              | 2 +-
+>  arch/sh/boards/mach-ap325rxa/setup.c          | 2 +-
+>  arch/sh/boards/mach-ecovec24/setup.c          | 2 +-
+>  arch/sh/boards/mach-kfr2r09/setup.c           | 2 +-
+>  arch/sh/boards/mach-migor/setup.c             | 2 +-
+>  arch/sh/boards/mach-se/7724/setup.c           | 2 +-
+>  drivers/mmc/host/renesas_sdhi_core.c          | 2 +-
+>  drivers/mmc/host/renesas_sdhi_internal_dmac.c | 2 +-
+>  drivers/mmc/host/renesas_sdhi_sys_dmac.c      | 2 +-
+>  drivers/mmc/host/tmio_mmc_core.c              | 2 +-
+>  drivers/mmc/host/uniphier-sd.c                | 2 +-
+>  include/linux/{mfd =3D> platform_data}/tmio.h   | 0
+>  13 files changed, 12 insertions(+), 12 deletions(-)
+>  rename include/linux/{mfd =3D> platform_data}/tmio.h (100%)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 960512bec428..c4e20abd177b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -22154,7 +22154,7 @@ L:	linux-renesas-soc@vger.kernel.org
+>  S:	Supported
+>  F:	drivers/mmc/host/renesas_sdhi*
+>  F:	drivers/mmc/host/tmio_mmc*
+> -F:	include/linux/mfd/tmio.h
+> +F:	include/linux/platform_data/tmio.h
+> =20
+>  TMP401 HARDWARE MONITOR DRIVER
+>  M:	Guenter Roeck <linux@roeck-us.net>
+> diff --git a/arch/sh/boards/board-sh7757lcr.c b/arch/sh/boards/board-sh77=
+57lcr.c
+> index f39c8196efdf..4014c042d2a5 100644
+> --- a/arch/sh/boards/board-sh7757lcr.c
+> +++ b/arch/sh/boards/board-sh7757lcr.c
+> @@ -14,9 +14,9 @@
+>  #include <linux/spi/spi.h>
+>  #include <linux/spi/flash.h>
+>  #include <linux/io.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/platform_data/sh_mmcif.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/sh_eth.h>
+>  #include <linux/sh_intc.h>
+>  #include <linux/usb/renesas_usbhs.h>
+> diff --git a/arch/sh/boards/mach-ap325rxa/setup.c b/arch/sh/boards/mach-a=
+p325rxa/setup.c
+> index 645cccf3da88..bb5004a8ac02 100644
+> --- a/arch/sh/boards/mach-ap325rxa/setup.c
+> +++ b/arch/sh/boards/mach-ap325rxa/setup.c
+> @@ -24,10 +24,10 @@
+>  #include <linux/init.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/memblock.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/mtd/physmap.h>
+>  #include <linux/mtd/sh_flctl.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regulator/fixed.h>
+>  #include <linux/regulator/machine.h>
+> diff --git a/arch/sh/boards/mach-ecovec24/setup.c b/arch/sh/boards/mach-e=
+covec24/setup.c
+> index 30d117f9ad7e..6f13557eecd6 100644
+> --- a/arch/sh/boards/mach-ecovec24/setup.c
+> +++ b/arch/sh/boards/mach-ecovec24/setup.c
+> @@ -17,13 +17,13 @@
+>  #include <linux/input/sh_keysc.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/memblock.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/platform_data/sh_mmcif.h>
+>  #include <linux/mtd/physmap.h>
+>  #include <linux/gpio.h>
+>  #include <linux/gpio/machine.h>
+>  #include <linux/platform_data/gpio_backlight.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/platform_data/tsc2007.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regulator/fixed.h>
+> diff --git a/arch/sh/boards/mach-kfr2r09/setup.c b/arch/sh/boards/mach-kf=
+r2r09/setup.c
+> index 6b775eae85c0..70236859919d 100644
+> --- a/arch/sh/boards/mach-kfr2r09/setup.c
+> +++ b/arch/sh/boards/mach-kfr2r09/setup.c
+> @@ -22,10 +22,10 @@
+>  #include <linux/input/sh_keysc.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/memblock.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/mtd/physmap.h>
+>  #include <linux/platform_data/lv5207lp.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regulator/fixed.h>
+>  #include <linux/regulator/machine.h>
+> diff --git a/arch/sh/boards/mach-migor/setup.c b/arch/sh/boards/mach-migo=
+r/setup.c
+> index 773ee767d0c4..1853e6319a66 100644
+> --- a/arch/sh/boards/mach-migor/setup.c
+> +++ b/arch/sh/boards/mach-migor/setup.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/clkdev.h>
+>  #include <linux/dma-map-ops.h>
+>  #include <linux/init.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/input.h>
+> @@ -14,7 +15,6 @@
+>  #include <linux/memblock.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/mtd/physmap.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mtd/platnand.h>
+>  #include <linux/i2c.h>
+>  #include <linux/regulator/fixed.h>
+> diff --git a/arch/sh/boards/mach-se/7724/setup.c b/arch/sh/boards/mach-se=
+/7724/setup.c
+> index 787ddd3c627a..e500feb91053 100644
+> --- a/arch/sh/boards/mach-se/7724/setup.c
+> +++ b/arch/sh/boards/mach-se/7724/setup.c
+> @@ -21,9 +21,9 @@
+>  #include <linux/input/sh_keysc.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/memblock.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/mtd/physmap.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regulator/fixed.h>
+>  #include <linux/regulator/machine.h>
+> diff --git a/drivers/mmc/host/renesas_sdhi_core.c b/drivers/mmc/host/rene=
+sas_sdhi_core.c
+> index c675dec587ef..f84f60139bcf 100644
+> --- a/drivers/mmc/host/renesas_sdhi_core.c
+> +++ b/drivers/mmc/host/renesas_sdhi_core.c
+> @@ -22,13 +22,13 @@
+>  #include <linux/delay.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/kernel.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/mmc/mmc.h>
+>  #include <linux/mmc/slot-gpio.h>
+>  #include <linux/module.h>
+>  #include <linux/pinctrl/consumer.h>
+>  #include <linux/pinctrl/pinctrl-state.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_domain.h>
+>  #include <linux/regulator/consumer.h>
+> diff --git a/drivers/mmc/host/renesas_sdhi_internal_dmac.c b/drivers/mmc/=
+host/renesas_sdhi_internal_dmac.c
+> index 24e1c17908d7..97cd55fec0bf 100644
+> --- a/drivers/mmc/host/renesas_sdhi_internal_dmac.c
+> +++ b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
+> @@ -11,12 +11,12 @@
+>  #include <linux/device.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/io-64-nonatomic-hi-lo.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/mod_devicetable.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/pagemap.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/scatterlist.h>
+> diff --git a/drivers/mmc/host/renesas_sdhi_sys_dmac.c b/drivers/mmc/host/=
+renesas_sdhi_sys_dmac.c
+> index c18581897f8a..68e31c37cce6 100644
+> --- a/drivers/mmc/host/renesas_sdhi_sys_dmac.c
+> +++ b/drivers/mmc/host/renesas_sdhi_sys_dmac.c
+> @@ -11,12 +11,12 @@
+>  #include <linux/device.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/dmaengine.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/mod_devicetable.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/pagemap.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/scatterlist.h>
+> diff --git a/drivers/mmc/host/tmio_mmc_core.c b/drivers/mmc/host/tmio_mmc=
+_core.c
+> index c39141a5bd23..0c4397b3cffd 100644
+> --- a/drivers/mmc/host/tmio_mmc_core.c
+> +++ b/drivers/mmc/host/tmio_mmc_core.c
+> @@ -31,7 +31,6 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/irq.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mmc/card.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/mmc/mmc.h>
+> @@ -39,6 +38,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/pagemap.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_qos.h>
+>  #include <linux/pm_runtime.h>
+> diff --git a/drivers/mmc/host/uniphier-sd.c b/drivers/mmc/host/uniphier-s=
+d.c
+> index 1404989e6151..bd231dbe90ba 100644
+> --- a/drivers/mmc/host/uniphier-sd.c
+> +++ b/drivers/mmc/host/uniphier-sd.c
+> @@ -9,11 +9,11 @@
+>  #include <linux/delay.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/mfd/syscon.h>
+> -#include <linux/mfd/tmio.h>
+>  #include <linux/mmc/host.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/pinctrl/consumer.h>
+> +#include <linux/platform_data/tmio.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+>  #include <linux/reset.h>
+> diff --git a/include/linux/mfd/tmio.h b/include/linux/platform_data/tmio.=
+h
+> similarity index 100%
+> rename from include/linux/mfd/tmio.h
+> rename to include/linux/platform_data/tmio.h
 
-I think the flag for bpf_timer_init() is still needed.
-Since we probably shouldn't combine hrtimer with workqueue.
-bpf_timer_start() should do schedule_work() directly.
-The latency matters in some cases.
-We will use flags to specify which workqueue strategy to use.
-Fingers crossed, WQ_BH will be merged in the next merge window and we'd need to expose it
-as an option to bpf progs.
+Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
-> >
-> > > The verifier will set is_async_cb = true for it (like it does for regular cb-s).
-> > > And since prog->aux->sleepable is kinda "global" we need another
-> > > per subprog flag:
-> > > bool is_sleepable: 1;
-> >
-> > done (in push_callback_call())
-> >
-> > >
-> > > We can factor out a check "if (prog->aux->sleepable)" into a helper
-> > > that will check that "global" flag and another env->cur_state->in_sleepable
-> > > flag that will work similar to active_rcu_lock.
-> >
-> > done (I think), cf patch 2 below
-> >
-> > > Once the verifier starts processing subprog->is_sleepable
-> > > it will set cur_state->in_sleepable = true;
-> > > to make all subprogs called from that cb to be recognized as sleepable too.
-> >
-> > That's the point I don't know where to put the new code.
-> >
-> 
-> I think that would go in the already existing special case for
-> push_async_cb where you get the verifier state of the async callback.
-> You can make setting the boolean in that verifier state conditional on
-> whether it's your kfunc/helper you're processing taking a sleepable
-> callback.
-> 
-> > It seems the best place would be in do_check(), but I am under the impression
-> > that the code of the callback is added at the end of the instruction list, meaning
-> > that I do not know where it starts, and which subprog index it corresponds to.
-> >
-> > >
-> > > A bit of a challenge is what to do with global subprogs,
-> > > since they're verified lazily. They can be called from
-> > > sleepable and non-sleepable contex. Should be solvable.
-> >
-> > I must confess this is way over me (and given that I didn't even managed to make
-> > the "easy" case working, that might explain things a little :-P )
-> >
-> 
-> I think it will be solvable but made somewhat difficult by the fact
-> that even if we mark subprog_info of some global_func A as
-> in_sleepable, so that we explore it as sleepable during its
-> verification, we might encounter later another global_func that calls
-> a global func, already explored as non-sleepable, in sleepable
-> context. In this case I think we need to redo the verification of that
-> global func as sleepable once again. It could be that it is called
-> from both non-sleepable and sleepable contexts, so both paths
-> (in_sleepable = true, and in_sleepable = false) need to be explored,
-> or we could reject such cases, but it might be a little restrictive.
-> 
-> Some common helper global func unrelated to caller context doing some
-> auxiliary work, called from sleepable timer callback and normal main
-> subprog might be an example where rejection will be prohibitive.
-> 
-> An approach might be to explore main and global subprogs once as we do
-> now, and then keep a list of global subprogs that need to be revisited
-> as in_sleepable (due to being called from a sleepable context) and
-> trigger do_check_common for them again, this might have to be repeated
-> as the list grows on each iteration, but eventually we will have
-> explored all of them as in_sleepable if need be, and the loop will
-> end. Surely, this trades off logical simplicity of verifier code with
-> redoing verification of global subprogs again.
-> 
-> To add items to such a list, for each global subprog we encounter that
-> needs to be analyzed as in_sleepable, we will also collect all its
-> callee global subprogs by walking its instructions (a bit like
-> check_max_stack_depth does).
-
-imo that would be a serious increase in the verifier complexity.
-It's not clear whether this is needed at this point.
-For now I would drop cur_state->in_sleepable to false before verifying global subprogs.
-
-> > >
-> > > Overall I think this feature is needed urgently,
-> > > so if you don't have cycles to work on this soon,
-> > > I can prioritize it right after bpf_arena work.
-> >
-> > I can try to spare a few cycles on it. Even if your instructions were on
-> > spot, I still can't make the subprogs recognized as sleepable.
-> >
-> > For reference, this is where I am (probably bogus, but seems to be
-> > working when timer_set_sleepable_cb() is called from a sleepable context
-> > as mentioned by Toke):
-> >
-> 
-> I just skimmed the patch but I think it's already 90% there. The only
-> other change I would suggest is switching from helper to kfunc, as
-> originally proposed by Alexei.
-
-+1. I quickly looked through the patches and it does look like 90% there.
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
