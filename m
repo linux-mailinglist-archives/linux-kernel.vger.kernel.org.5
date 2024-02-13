@@ -1,116 +1,105 @@
-Return-Path: <linux-kernel+bounces-64212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7135853C03
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:09:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE42B853C09
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:10:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F740B21192
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:09:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE6B61C26B2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACE8B60B8C;
-	Tue, 13 Feb 2024 20:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD2760DEB;
+	Tue, 13 Feb 2024 20:09:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SGfjvW1/"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dUF4h4Eg"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88140608FD
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 20:09:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949E260DC7
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 20:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707854978; cv=none; b=lfVWjqvWZughxb5NvvepL1Q4HdEcUKIBoVN8/3jqTYNv40ExXkexkdaCjC0f8WACPjRuyUvKvb3Ae4XMWyjPqOlSWC3MS9I2eP8FqizGgHhOv7S6YSf0n3MYfbUftzhr7D5p8Yk7Fy8kXAqdPg+D4nsFQieBkJb+lDv75aANKuw=
+	t=1707854993; cv=none; b=N29rC/f4egZrCi0+6oXHbdlQPRgzQyVTGr/IVDfNFFX0BrWeebEQB0vpP0c9dJld8i0DcO6NJJW6RKI3Tkp7mExH4ioo7GEPkOi4eUkomX8USbYTBuaozCY4K7tsBxZnN+RdeDns/lW3jByJ6v/Bca6iPpm7UFKCHgZFuuArtto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707854978; c=relaxed/simple;
-	bh=tR3NgE9ir76bUwsYLYYZO/xphqnsujP3SZS+UmWN33s=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=BpQxJxoV2cwMCgbmnLIiUHGNoVF70xFEku1PfNMEqyAtvfZKLUhpc9t0ffWJdOfXXWx2N4Ibh8BGBzD3kRZMWN6j+ZPiS3AxMNZP1VLuNae4XWd81HkBLpJC1So1YOZPfnLnWPUWAXcpsmmDdh8sjBomCn3M8SrTQEupmezYHzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ericchancf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SGfjvW1/; arc=none smtp.client-ip=209.85.128.201
+	s=arc-20240116; t=1707854993; c=relaxed/simple;
+	bh=mrszqc2bupU+EBqHPBjyleYP7nZ04WmF+Acwr+mRjOg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZfMi6kSibakSwEaswmgbNKAnQuAhYT9LqlMimq2O8kVVr84iixtV7GKa2iuoMBKCNROHbFOxmFTG5FH4bHuy2RM24tLL6lNPlkVYcnnhj0tIZSbiVaFXiT/wkC2P8SUIDT9dNnetQBk44dSwF7D8V10AZ9Ta85P39jOMas5dehQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dUF4h4Eg; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ericchancf.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6077ca6e1e1so22563297b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:09:36 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a38271c0bd5so602516966b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:09:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707854975; x=1708459775; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VsrsF04rZWOWiU7r9GjRkleDZT0Ht16PcSvn8OkPl5Q=;
-        b=SGfjvW1/gd3e1Oafga8mxoPO+loRcpRK72SUcbn59dSWEsmAfACwZeN1u9YoXYXAmd
-         Us2t9PYclrqnMXWtGAuLNHnjwatn9FG+JdwkAACzaYnGHBeoTQnoKrffNuU+Ab6MA8eV
-         7mCKtf6OEKLeRukX+g2jY1Dhg8uy7JwlAD+t5xl0BIgDHokjplwZSPCdX0syKfrqOOdd
-         ksKIKH/tRqtZJdjanDYOl0YC4cIEeYyuVhjgPmcSrfbyEoVCR5XOYmxZXp0FBv8fZWAF
-         Mjjh87plPhY9fVDntTPDbwAkeUvL0SM4SAHq7Off7ODC+msUxWt/YGhNbBjoF+C6xHrH
-         CLew==
+        d=google.com; s=20230601; t=1707854990; x=1708459790; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mrszqc2bupU+EBqHPBjyleYP7nZ04WmF+Acwr+mRjOg=;
+        b=dUF4h4Egfv0cNnk+/V1+piZD5cIB4AM+purEoXQezUv8P8WbzXHbe/5GPtYm/RQYIZ
+         N2v/AqFzWcdJiXQKoY+hfKpfKesMhxZdIe0ext9bQKYnvCfZOaTJ6cLDbapgu7Vp9fqo
+         nHzORuHZXCg+MUei6pTr83sAAM6d43da+p9Z2QsLhWDwA2Gvq4yXabn0mb1z8uve4cSs
+         p8gZrYY8y5qSavRGABBZEmP9sQysYsMMgZr9CY2wlzu2LKS538V5lnshFGAxt2Gv+500
+         6zAWNUpcQhHTnbUPK1Evwm0oaWc8oEIN6rrN1z6vtxduZacbPZdJ7O2qh5cb0L7AiqKF
+         GGlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707854975; x=1708459775;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VsrsF04rZWOWiU7r9GjRkleDZT0Ht16PcSvn8OkPl5Q=;
-        b=bimklq0zBGgcfkNCBAToQ4tZg5c5LuA0exGywKAgOVxwlWtMeiHp5kKZuKnUimBPDz
-         41Eu/H6XOQmO54gnLnVm6VVT9xWd0qMHi7vTkfauQw2PD0/f8bUiawS6i3h30ctNjoqr
-         zzUZWCvht9i6jUVI/hPTDvVhvTRohJNbFLadrKWzDgDR1hh8LppTXn0lSGLXagNb4NLJ
-         qD0Ba84I1n9eU0ATNU9iyihvW4IzzHQQA/ac9Z1sWnVaG2D55VZVJcLLCqCasZr6H6Wi
-         YxdaOoRod0S0jMr7KWa31q+kUAMGL0N9/iuP//ruMvEJWqMx9tkxS2gjtwkYH0O3v2/D
-         Yr6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWuCk730N3NgV/6ybxpFLxoL6e02uzl4kNkGU0rtOpqL9bJr//gWvtTGMtqcgHRiBqzCsN4C9MMXOeSFfHNX/dN3W2UaGua1v3WgBOd
-X-Gm-Message-State: AOJu0YxMUxsDWvr/EHptow3nm3LKwLmTMCmi47m+O2bUlDe6/QFRFz17
-	REVupraCXyXZbSTiU+tjWArkn/nNOg3PP76s5BoG8UppIH4Ca61TIQMxtVMoB+P5eNTHSxk7ipW
-	A4n+DYLy7ogeaWQTDFA==
-X-Google-Smtp-Source: AGHT+IHYJQSvG5V17xi8OnffS/v8heCb56A8nRdMQGEL32SIQ2AAcEiLmEEuizQgumtk+EffvkX2mZJfR96OSh5S
-X-Received: from ericchancf.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:4139])
- (user=ericchancf job=sendgmr) by 2002:a0d:cc4b:0:b0:607:814d:710 with SMTP id
- o72-20020a0dcc4b000000b00607814d0710mr76740ywd.4.1707854975517; Tue, 13 Feb
- 2024 12:09:35 -0800 (PST)
-Date: Tue, 13 Feb 2024 20:09:22 +0000
+        d=1e100.net; s=20230601; t=1707854990; x=1708459790;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mrszqc2bupU+EBqHPBjyleYP7nZ04WmF+Acwr+mRjOg=;
+        b=JGSQ7UID+ScJN2ejFeGrJivV/KlJpKk6W7qmM/c7VeYx9GbhxaMTh3GdeuQkhCUFW6
+         obXc74QqRpxIEgSsSAiowwwfeFL+fELO7yw2mOjIECfUMNBUEWEawVajznyLQyENh1ks
+         FvCsn+UBcpuNJWXp/F9gXIlk2f3GNZ0eCZ5L+VCvPJTVpI0XUaPmGaWyw0x/JOF5LeeJ
+         VGN1lL5VLCBYoMl0jRFMRdHnbMet0ked9CxwSzH0J5j8JjnGl0lntHxLmCqw2Jx5zoFU
+         iXhRdZ9C/VW7yMvX6RSGEsCC9pCFRuVEGncskmU/46T6XZXOUoT+EWEHI9cpYEUzKuKn
+         6sZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVH4ZPwfY3gQS4zIUWK19DCLYjfgjv7tDtD+56g+MOKiUDbqSenYGIbACAPL7sQYFLg6pVcno9qFThAedeEYuLpX5DK1D02Kho4zoG/
+X-Gm-Message-State: AOJu0YwmZBWNMpPUyICEjilUTS/Qd2hzvES5CBhRYbWV4PNRQw+lfiz1
+	AylgcmJtIwbDOLcy94x1u5SPfKAaNTaZwBMqePUsITBrYGFXoKmDhMzSaqYpDcjWpUNjMK4HOe+
+	raon+S1OQm4SkMh6+zb1zSBDouje72peQ2b7r
+X-Google-Smtp-Source: AGHT+IE3mwMUqJ6DN5geO/x5V71y1Lpt/nQ2yo0uSXGvjLFjxROjLwld/5P5gl5jWXzv7R3BaPdR8dxplGGxRT2ITjo=
+X-Received: by 2002:a17:906:b34c:b0:a3d:3781:6eeb with SMTP id
+ cd12-20020a170906b34c00b00a3d37816eebmr70496ejb.34.1707854989739; Tue, 13 Feb
+ 2024 12:09:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240213200923.2547570-1-ericchancf@google.com>
-Subject: [PATCH v4 0/4] riscv/barrier: tidying up barrier-related macro
-From: Eric Chan <ericchancf@google.com>
-To: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	ericchancf@google.com
+MIME-Version: 1.0
+References: <CANiq72k7n0aZrifRRU08N8qLkNe+2EZwijZy5sM7M56n2xYHgQ@mail.gmail.com>
+ <20240125-lazy-thrower-744aacc6632a@wendy> <CANiq72kb+_utZrYHtoKZQtQazikmkjpVUHpTBcaANizduMF5QQ@mail.gmail.com>
+ <20240126-eccentric-jaywalker-3560e2151a92@spud> <CANiq72nu2NXUWYanHZd5EXgX4P_v673EWn6SCRW60Es9naraQQ@mail.gmail.com>
+ <20240209-rage-keg-1b2982cd17d9@spud> <CALNs47sRqAbE=u3=_ciO2oge7Afz-6GBBhW+BwcLRET-TsuxTg@mail.gmail.com>
+ <CAOcBZORDaHHH3jTL3GO7OsDubhhyQE0Uy2uAjJpiRzrKBgqaOw@mail.gmail.com>
+ <CANiq72=VBFvB9O9c84YxpBBftpfNnnXx-+Xes0h8h6rN3EN5pA@mail.gmail.com>
+ <20240212-demotion-blitz-1c9ab85dbc73@spud> <20240212-outdoors-french-a40d57e38c71@spud>
+In-Reply-To: <20240212-outdoors-french-a40d57e38c71@spud>
+From: Ramon de C Valle <rcvalle@google.com>
+Date: Tue, 13 Feb 2024 12:09:38 -0800
+Message-ID: <CAOcBZOTLBaik5kwHhvCoJ4Q4PQMDjBk3TJsaa5u-vxR72A8jFA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] RISC-V: enable rust
+To: Conor Dooley <conor@kernel.org>
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Trevor Gross <tmgross@umich.edu>, 
+	Conor Dooley <conor.dooley@microchip.com>, linux-riscv@lists.infradead.org, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
+	rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+	Matthew Maurer <mmaurer@google.com>, Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-This series makes barrier-related macro more neat and clear.
-This is a follow-up to [0](v1 and v2) and [0](v3), change to multiple patches,
-for readability, create new message thread.
+> I realise I was not clear either. What I meant was that this talks about
+> rustc and not kbuild, so what is meant by "the new target" is not clear.
+> Do arm64 and x86_64 have functional support, so adding RISC-V in rustc
+> is needed, or did you mean for the new target in the kernel?
 
-v3 -> v4: fix [PATCH 1/4] commit message weird line breaks and let [PATCH 3/4]
-fix the form that can pass the checking of checkpatch.pl.
-
-v2 -> v3: split the patch into multiple patches for one problem per patch.
-Also review the changelog to make the description more precise.
-
-v1 -> v2: makes compilation pass with allyesconfig instead of
-defconfig only, also satisfy scripts/checkpatch.pl.
-- (__asm__ __volatile__ (RISCV_FENCE_ASM(p, s) : : : "memory"))
-+ ({ __asm__ __volatile__ (RISCV_FENCE_ASM(p, s) : : : "memory"); })
-
-[0] https://lore.kernel.org/lkml/20240209125048.4078639-1-ericchancf@google.com/
-[1] https://lore.kernel.org/lkml/20240213142856.2416073-1-ericchancf@google.com/
-
-Eric Chan (4):
-  riscv/barrier: Define __{mb,rmb,wmb}
-  riscv/barrier: Define RISCV_FULL_BARRIER
-  riscv/barrier: Consolidate fence definitions
-  riscv/barrier: Resolve checkpatch.pl error
-
- arch/riscv/include/asm/atomic.h  | 24 ++++++++++--------------
- arch/riscv/include/asm/barrier.h | 21 ++++++++++-----------
- arch/riscv/include/asm/cmpxchg.h |  5 ++---
- arch/riscv/include/asm/fence.h   | 10 ++++++++--
- arch/riscv/include/asm/io.h      |  8 ++++----
- arch/riscv/include/asm/mmio.h    |  5 +++--
- arch/riscv/include/asm/mmiowb.h  |  2 +-
- 7 files changed, 38 insertions(+), 37 deletions(-)
-
---
-2.43.0.687.g38aa6559b0-goog
+Sorry, I was referring to the targets at:
+https://github.com/rust-lang/rust/tree/master/compiler/rustc_target/src/spec/targets
 
