@@ -1,152 +1,225 @@
-Return-Path: <linux-kernel+bounces-64500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 890F5853F4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:59:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B182853F53
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:59:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE2101C27477
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:59:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02F4D286209
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B352F629EE;
-	Tue, 13 Feb 2024 22:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093E362807;
+	Tue, 13 Feb 2024 22:59:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="DbTtKKru"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R3/2bRPD"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B999627EA;
-	Tue, 13 Feb 2024 22:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301C06280D
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707865147; cv=none; b=fObLvVW1DlbXwj3heH/fCNmKrrgy+EU2j5dRv97cQE34PJ9urv3cyhDJGG08u8DIvzgVJbwXxoeoEtDnkRuaLQoZrjHa5Phun9M/hAWAlmjTB5Un5pzNmpJUO2I8HYLivCJcc5KuD/E3bLoxnidIjZIUK27bEqEiZ4ARP9s/Hno=
+	t=1707865166; cv=none; b=pgU3Q69eA0jW/J+zRDSZT4l1LKwTjvnoDZx1PcjPZiKO8Gw0iw+oke7mugqMSwTj7nHUk6yh4Gh/+DbIBasfovzNrs1MBeCoC+ZseQrfWSGVurxKER3m/wNL85mWWxH5GZEGWocT1PgQhqKU8HJS+z54pR2BLT/xTrFvwY3TK+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707865147; c=relaxed/simple;
-	bh=5GZjg5DkIYbt13jrl4mBTCYCb0dRu3ZBmp2agCG9D2k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=i8xWHh5fKkD9+MPGXhAPI2Pr6411d3l2rtMG7c0i0vNVHcHu4YuMBLnYdPBM4lqt8YSI2Wr0tzP1quAhXrZLKXN7lNUYe8yw7INcH1+NfJFBpIkTBNyoRQqhhlgjYcooHKl7zYh9LRPZtMUfPRVGN/UNf/WQ/dojZ+cu/J446do=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=DbTtKKru; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41DK9qi9014988;
-	Tue, 13 Feb 2024 22:58:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=6EmYNtRmbGEYRyUXFF7l3ex2WkY1Ic6WX4gLszPjpLM=; b=Db
-	TtKKruMCpWe0Wa0h3biQsBw0j1apSzb6VjG+VXXpr8Eo51b7jFOai58wY4o/+dEL
-	3fkso2QAwrRpphdGJAWaF2ig9kpGY70ogk11tNMnkkdC32logT82XGyLD0PbC8dG
-	bHvR/1/5m3OVEVNUe3za2JC5rzBaxZ/1V5OKwosmrfritWqWOSpHMNzAWn0e4Q/M
-	rhZXm+2cv7AEiWiZVxBfAZApt+FW+IGWknk3RFAmy+tFoQ9D7RosP9hIX9WLTLKC
-	iUqJ8HEdQ2T+lVmUBWYKzhcKWjJ2YQMKa2uL78ViPVa97K0VjZgk7VGlBFtbi76i
-	RVV+x/fSQLQaCm+xTPwA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7gse45hs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 22:58:43 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41DMwgYg021602
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 22:58:42 GMT
-Received: from [10.110.76.255] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 13 Feb
- 2024 14:58:41 -0800
-Message-ID: <5b7af169-1fc0-265c-5253-c82010388e82@quicinc.com>
-Date: Tue, 13 Feb 2024 14:58:40 -0800
+	s=arc-20240116; t=1707865166; c=relaxed/simple;
+	bh=844WXX5yd15NBvKyBWDdzovUDDmAUcOrqOuOYCpCKD8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BQyEjla78VU1YTONgpcSpU42AS46OAK6klD6goXKFJhjSUDS+nJcki/eGBqC+iY3m9yRVfZg1K7jygcWyy3qPVC0XSTJO0+5tK2osweenboeLlRZrTigbBqy56+NId0uZRBOL6MYDKI0XcXw4ZHCa7oI+KZMZ18yvcqqeD6NXmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R3/2bRPD; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so4683677276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:59:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707865163; x=1708469963; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=844WXX5yd15NBvKyBWDdzovUDDmAUcOrqOuOYCpCKD8=;
+        b=R3/2bRPDEVBwjRU7D9sTgip5eUff4Ff3xyuNTbD8vkI0ntoJ7XeikCusWklcJqaNxZ
+         9Fm4i+B1BNwf0ViG66HrkyPdKIXUyzaA0sxcIYRQcSG8ER5AomjkYQVJZnwF6lkMTATJ
+         L7poNaxetWkGIS7q8b39xWaQJHbUtEFLLrDLqFVjUWFljIv828b3LZ+iBeKRRbBlfBve
+         okHGMq8IQ+QT+qbRv/fK7cxinVpjPdJRBS5tLuQAesFmhvRxyZxRGFbj+RIjLCVJCK5C
+         nHV3m8AubiA7tXlQQxiqUoosOoJv2EF2wJf+Fc5UUZJP7EjHpEJsS0fqyvK+YKXjCaSG
+         s0Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707865163; x=1708469963;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=844WXX5yd15NBvKyBWDdzovUDDmAUcOrqOuOYCpCKD8=;
+        b=XuFDg8T/l+dvNA5U8ALTLrVql4eKC4o29kjOUNHeFhqM4E5Ct8e9ErReA5A+4JHrE+
+         GQoFHOUTKIbaDWcX1T4NiCN7aT1lM6eqcC3lG+k0L0SQ9L2wRPs1toTbQ7rzmLTnxvr2
+         MLhkS3bBWngtZrKLOvYgtrktYzO587h+sGkg6Fv6n8XjhkNhPSfMqZXzLNcVXbmeCLBk
+         XSmsckX4ks4DViyFzYqUxVbqWUstb8VNqONK31tPxtrSsyFBcg6rCW8QlnvWenamqsPw
+         mGGWWnNhpaIypxfzaZcru/W8V53RuSi9BpWYKwvsT748lL3lXRDKVgAd9YsL1itS0w2s
+         tKCg==
+X-Forwarded-Encrypted: i=1; AJvYcCWeh4+Rp3Tb9oryu/8NUf1MEOtYGSuOIBROc5in21IxWDwuHxEr7BhhG+yz9/Z1aK9DlPj1crKofayQGS1q/e/vAf4RAEjBbq2fAW6q
+X-Gm-Message-State: AOJu0YwmbEuprD/GZ1yZNIFRZlNdf2KyV2piYeRC96YH+EK771JC+0hX
+	YtCcePbeaNHOFCL7qzKQLSsYnLFGfJcViI/0/Lv30TDCYiH6xsz0okzMgc9grqMPFJTt6+bMdNH
+	vNvW3P2EetfiCLNqplT8FKpuYhTgjxeUMUZQI
+X-Google-Smtp-Source: AGHT+IEsak8qaWENuvHfc4VIgP7AWv/5RJ7avJuNvMpPoMXa//p1aEVkERJbZdcyqEU4FQCBMSTUEaA/SBMrUpfRqEg=
+X-Received: by 2002:a25:8691:0:b0:dc6:1869:9919 with SMTP id
+ z17-20020a258691000000b00dc618699919mr694753ybk.41.1707865162739; Tue, 13 Feb
+ 2024 14:59:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v15 41/50] ASoC: Add SND kcontrol for fetching USB offload
- status
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
-        <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
-References: <20240213005422.3121-1-quic_wcheng@quicinc.com>
- <20240213005422.3121-42-quic_wcheng@quicinc.com>
- <87plx0y37z.wl-tiwai@suse.de>
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <87plx0y37z.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 4LQsJgrgUhNL98vd3cVNsTKE56avszOU
-X-Proofpoint-ORIG-GUID: 4LQsJgrgUhNL98vd3cVNsTKE56avszOU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_14,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 adultscore=0 spamscore=0 clxscore=1015 phishscore=0
- malwarescore=0 mlxscore=0 bulkscore=0 mlxlogscore=939 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402130181
+References: <20240212213922.783301-1-surenb@google.com> <Zctfa2DvmlTYSfe8@tiehlicka>
+ <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com> <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com> <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com> <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+In-Reply-To: <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 13 Feb 2024 14:59:11 -0800
+Message-ID: <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: David Hildenbrand <david@redhat.com>, Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, 
+	dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, 
+	paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com, 
+	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
+	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
+	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
+	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
+	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Takashi,
+On Tue, Feb 13, 2024 at 2:50=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Tue, Feb 13, 2024 at 11:48:41PM +0100, David Hildenbrand wrote:
+> > On 13.02.24 23:30, Suren Baghdasaryan wrote:
+> > > On Tue, Feb 13, 2024 at 2:17=E2=80=AFPM David Hildenbrand <david@redh=
+at.com> wrote:
+> > > >
+> > > > On 13.02.24 23:09, Kent Overstreet wrote:
+> > > > > On Tue, Feb 13, 2024 at 11:04:58PM +0100, David Hildenbrand wrote=
+:
+> > > > > > On 13.02.24 22:58, Suren Baghdasaryan wrote:
+> > > > > > > On Tue, Feb 13, 2024 at 4:24=E2=80=AFAM Michal Hocko <mhocko@=
+suse.com> wrote:
+> > > > > > > >
+> > > > > > > > On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
+> > > > > > > > [...]
+> > > > > > > > > We're aiming to get this in the next merge window, for 6.=
+9. The feedback
+> > > > > > > > > we've gotten has been that even out of tree this patchset=
+ has already
+> > > > > > > > > been useful, and there's a significant amount of other wo=
+rk gated on the
+> > > > > > > > > code tagging functionality included in this patchset [2].
+> > > > > > > >
+> > > > > > > > I suspect it will not come as a surprise that I really disl=
+ike the
+> > > > > > > > implementation proposed here. I will not repeat my argument=
+s, I have
+> > > > > > > > done so on several occasions already.
+> > > > > > > >
+> > > > > > > > Anyway, I didn't go as far as to nak it even though I _stro=
+ngly_ believe
+> > > > > > > > this debugging feature will add a maintenance overhead for =
+a very long
+> > > > > > > > time. I can live with all the downsides of the proposed imp=
+lementation
+> > > > > > > > _as long as_ there is a wider agreement from the MM communi=
+ty as this is
+> > > > > > > > where the maintenance cost will be payed. So far I have not=
+ seen (m)any
+> > > > > > > > acks by MM developers so aiming into the next merge window =
+is more than
+> > > > > > > > little rushed.
+> > > > > > >
+> > > > > > > We tried other previously proposed approaches and all have th=
+eir
+> > > > > > > downsides without making maintenance much easier. Your positi=
+on is
+> > > > > > > understandable and I think it's fair. Let's see if others see=
+ more
+> > > > > > > benefit than cost here.
+> > > > > >
+> > > > > > Would it make sense to discuss that at LSF/MM once again, espec=
+ially
+> > > > > > covering why proposed alternatives did not work out? LSF/MM is =
+not "too far"
+> > > > > > away (May).
+> > > > > >
+> > > > > > I recall that the last LSF/MM session on this topic was a bit u=
+nfortunate
+> > > > > > (IMHO not as productive as it could have been). Maybe we can fi=
+nally reach a
+> > > > > > consensus on this.
+> > > > >
+> > > > > I'd rather not delay for more bikeshedding. Before agreeing to LS=
+F I'd
+> > > > > need to see a serious proposl - what we had at the last LSF was p=
+eople
+> > > > > jumping in with half baked alternative proposals that very much h=
+adn't
+> > > > > been thought through, and I see no need to repeat that.
+> > > > >
+> > > > > Like I mentioned, there's other work gated on this patchset; if p=
+eople
+> > > > > want to hold this up for more discussion they better be putting f=
+orth
+> > > > > something to discuss.
+> > > >
+> > > > I'm thinking of ways on how to achieve Michal's request: "as long a=
+s
+> > > > there is a wider agreement from the MM community". If we can achiev=
+e
+> > > > that without LSF, great! (a bi-weekly MM meeting might also be an o=
+ption)
+> > >
+> > > There will be a maintenance burden even with the cleanest proposed
+> > > approach.
+> >
+> > Yes.
+> >
+> > > We worked hard to make the patchset as clean as possible and
+> > > if benefits still don't outweigh the maintenance cost then we should
+> > > probably stop trying.
+> >
+> > Indeed.
+> >
+> > > At LSF/MM I would rather discuss functonal
+> > > issues/requirements/improvements than alternative approaches to
+> > > instrument allocators.
+> > > I'm happy to arrange a separate meeting with MM folks if that would
+> > > help to progress on the cost/benefit decision.
+> > Note that I am only proposing ways forward.
+> >
+> > If you think you can easily achieve what Michal requested without all t=
+hat,
+> > good.
+>
+> He requested something?
 
-On 2/13/2024 4:10 AM, Takashi Iwai wrote:
-> On Tue, 13 Feb 2024 01:54:13 +0100,
-> Wesley Cheng wrote:
->>
->> Add a kcontrol to the platform sound card to fetch the current offload
->> status.  This can allow for userspace to ensure/check which USB SND
->> resources are actually busy versus having to attempt opening the USB SND
->> devices, which will result in an error if offloading is active.
->>
->> An example of fetching the USB offloading status would look like:
->> tinymix -D 0 get 'USB Offload Playback Route Status'
->> -1, -1 (range -1->32) --> [Offload is idle]
->>
->> tinymix -D 0 get 'USB Offload Playback Route Status'
->> 1, 0 (range -1->32)  --> [Offload active on card#1 pcm#0]
-> 
-> Ah, I didn't notice until now that the second value is the PCM index.
-> 
->> +static int snd_soc_usb_offload_status_info(struct snd_kcontrol *kcontrol,
->> +			      struct snd_ctl_elem_info *uinfo)
->> +{
->> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
->> +	struct snd_soc_usb *ctx = snd_soc_find_usb_ctx(component->dev->of_node);
->> +
->> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
->> +	uinfo->count = 2*ctx->num_supported_streams;
->> +	uinfo->value.integer.min = -1;
->> +	uinfo->value.integer.max = SNDRV_CARDS;
-> 
-> Then it's bogus to set SNDRV_CARDS as max.  The PCM index number is
-> independent from the card number.  In theory, it can be even more than
-> the card max (very unlikely, though).
-> 
-
-I don't think its technically capped anywhere :).  I just used 
-SNDRV_CARDS to cap the sound card number.  If I split this as a separate 
-entity, then I'll need to change the max value for the PCM dev.
-
-> Wouldn't it be more intuitive to provide two different controls, one
-> for card number and one for PCM index number?
-> 
-
-Sure, I can split this up.
-
-Thanks
-Wesley Cheng
+Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
+possible until the compiler feature is developed and deployed. And it
+still would require changes to the headers, so don't think it's worth
+delaying the feature for years.
 
