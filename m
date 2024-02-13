@@ -1,149 +1,250 @@
-Return-Path: <linux-kernel+bounces-63628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85CBC853277
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:01:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BABF385327A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:02:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41801286D8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:01:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF3491C21BFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5181B56770;
-	Tue, 13 Feb 2024 14:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AerJqCAg"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 394FB41C75;
-	Tue, 13 Feb 2024 14:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F1C56767;
+	Tue, 13 Feb 2024 14:02:11 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899F056473
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707832859; cv=none; b=ljnPxaxWhX8+5pMkFKgq7St1sECRzLH5KWUDuQBsPpkXbgW6GvPRRBHxJUUf468+fELJoWdrHM0Uhsq50jStoeM6hm4UntT9HksfjtlMYdhU/sPhFqx2o8yOq23wjT9HZxhsbdTJovUW7G9FXiopBSzEYoQu2tB2nPSsrp83r5c=
+	t=1707832930; cv=none; b=gr3LvzwSPLK5xvEQQBMIHdXZVCtdDJxEGlprhk40c88qkxcKFvNr/ODQj/8QCImEjiFWzFhfCW2EVEqA+pRXVsLG3oHj+7Lk0cpD27wc1KLkSzM09YqUwhcle8kaQzJ8iAsgXbwxRcXFa/aoh1AseNZ/J02az7QYk96vnnZwLSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707832859; c=relaxed/simple;
-	bh=KXEPGwOdDv4uxjcbbuUkZBm2YCwzs+IBe0V0odvfHcE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FPabb8L9ewrfZXO1itJeawQ5osXRL8pX8QkkMxVozMODW+FFRmcjA7/XHjZ/pGYlBwcjazfCwW7OeHyTSzZ5HXV8DGmwaZwblcZvzqvhYCO5wX3NmwsH0MT5Q67+b/S+w2V+GjI4Pk+PPP8MfAGbjlKnTegb2T4oierMHBqGxjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AerJqCAg; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2906773c7e9so2485501a91.1;
-        Tue, 13 Feb 2024 06:00:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707832857; x=1708437657; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BvMVRf/8Qh4AP3Li64P70szRaFtg/YOxyS+pIDeY3+U=;
-        b=AerJqCAg6cx9ro9S8Cmti9Op/HopmqjdJpbstMqXAQayxpK3xPyZfuhZ7vq1xR57wi
-         oja+2ZIvh8QnL9ZdesO01kUjXmWhTZNcseTBGLNkR6m93P4WcZvVlrPHcvG/IQdP+APN
-         JdSb6soCIFJly4YybP9ofh5F8QhzcSo1jxSkME6Pz4qokut++oSzNm0DWglw5TRYkBZY
-         D6EWd4tP0Udh2PWsQS6J5EBYnAp21R1rQIi3rZoE03Sbdk9QrAgq140W/VWpuZA0jb3y
-         OU1xl5kx3QnYBBnUlawrVk3gCzDdkUHvjz+Ar3txozR0qquTI6TS05zl0WxZBRIaOYyb
-         DD6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707832857; x=1708437657;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BvMVRf/8Qh4AP3Li64P70szRaFtg/YOxyS+pIDeY3+U=;
-        b=cf0RW+PBLYM5ShiJWHhlR6LMde3QnbaXVWKvNBuX5VGQQB/D60qwe93KJOvkm4Ru4P
-         rjuiAhsbk6xMgOMtEktnlgoyZKoOb7DVYUHIX7gUTQBqWM07VryrfY2UKa+oGhVkyIUo
-         uMhNevdxi9WJYtvEFCclNxivnDyEjYTKFig6tHQhsyA/CBu+QzKjCuSMBSxc9nPmy347
-         gWxH7dB8gYKAN64TqEiKGvFSjkF87ZGWIV264O/LdyiNtLRde+1TqmyxGlq0Fxj1N/sg
-         I4C86t0EHk4GLue9+G/e/u/OqL7UWyJ9MzhsoMHh+Lvp4XxWwj7L90E4/3f6fDboPCTL
-         V2sg==
-X-Gm-Message-State: AOJu0YzW0OJCTlPiTiUuoChTqYAUo5g/9vcDFpVudYMe4mdxA+Ajr9xy
-	fPmKG4US6/HRqVkC8XAEWEQdMKVa/bYVNW2tqueQEC53PNz5JuZLQDqPJtzcut1eGpWt9onnLOd
-	SoI7zfgfegcfoRHBP7V9v52DkD2s=
-X-Google-Smtp-Source: AGHT+IHNJckNa5UDJY8D/GWcd8q+DY7pYSL8guGaVEGlmTmyqmqIna8Hm2NDgUtcz5Q2MjyxWtL1iulX0awEbY5Au3c=
-X-Received: by 2002:a17:90b:1015:b0:297:2f49:7aa with SMTP id
- gm21-20020a17090b101500b002972f4907aamr4141526pjb.43.1707832857248; Tue, 13
- Feb 2024 06:00:57 -0800 (PST)
+	s=arc-20240116; t=1707832930; c=relaxed/simple;
+	bh=vxFVD4NN2SHVvYOBr+DD2O4CZVXIBKJXkB3cdNZt8hQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qchCWHz8FzwJBFq3+sN5HQUogQ0OjAeZnx6XpgMWsvpzFd31ZXPpqc8mI5PcNEuipVNzdCz5ZAP110OWWFZ4/vwj+QxsY8cQeSnGmWzZTcVf4nIXZWmINVvhjbkB7TDIq/ghfffNerqy1diRPIiL2AYDgZcHEAHN940jqYtiRao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18234DA7;
+	Tue, 13 Feb 2024 06:02:48 -0800 (PST)
+Received: from [10.1.36.184] (XHFQ2J9959.cambridge.arm.com [10.1.36.184])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D7B53F762;
+	Tue, 13 Feb 2024 06:02:03 -0800 (PST)
+Message-ID: <3de2130b-9f0f-4a11-ac06-7bf814de641c@arm.com>
+Date: Tue, 13 Feb 2024 14:02:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213150050.083de445@canb.auug.org.au>
-In-Reply-To: <20240213150050.083de445@canb.auug.org.au>
-From: Alex Deucher <alexdeucher@gmail.com>
-Date: Tue, 13 Feb 2024 09:00:44 -0500
-Message-ID: <CADnq5_M4sE4K9OCGVSDU=na_eQTV3YyifPHoERam_zJHM_nqpA@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Alex Deucher <alexander.deucher@amd.com>, 
-	Mario Limonciello <mario.limonciello@amd.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 19/25] arm64/mm: Wire up PTE_CONT for user mappings
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, Ard Biesheuvel <ardb@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+ Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
+ <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+ Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+ Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, linux-arm-kernel@lists.infradead.org,
+ x86@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240202080756.1453939-1-ryan.roberts@arm.com>
+ <20240202080756.1453939-20-ryan.roberts@arm.com>
+ <ZcoIVypNwOPIX30w@FVFF77S0Q05N>
+ <c899f252-dbf3-4e7b-8342-b5a5180486cd@arm.com>
+ <aa232591-e0c8-422d-a641-fa555914c5f0@arm.com>
+ <64395ae4-3a7d-45dd-8f1d-ea6b232829c5@arm.com>
+ <d6ce951f-f83b-4a5a-a814-311f2d8b01e4@arm.com>
+ <41499621-482f-455b-9f68-b43ea8052557@redhat.com>
+ <1d302d7a-50ab-4ab4-b049-75ed4a71a87d@arm.com>
+ <99e2a92c-f2a2-4e1e-8ce2-08caae2cb7e4@redhat.com>
+ <dce5f80d-942f-439c-a549-5290666464ca@arm.com>
+ <CAMj1kXEVf1m4hVXORc6t9ytAOb75KZLcW-OJ6999VaKbkVdQ3A@mail.gmail.com>
+ <64b872bd-4b12-4dbd-b043-1ad11aeaa19a@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <64b872bd-4b12-4dbd-b043-1ad11aeaa19a@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Thanks.  I've squashed the fix in.
+On 13/02/2024 13:45, David Hildenbrand wrote:
+> On 13.02.24 14:33, Ard Biesheuvel wrote:
+>> On Tue, 13 Feb 2024 at 14:21, Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>
+>>> On 13/02/2024 13:13, David Hildenbrand wrote:
+>>>> On 13.02.24 14:06, Ryan Roberts wrote:
+>>>>> On 13/02/2024 12:19, David Hildenbrand wrote:
+>>>>>> On 13.02.24 13:06, Ryan Roberts wrote:
+>>>>>>> On 12/02/2024 20:38, Ryan Roberts wrote:
+>>>>>>>> [...]
+>>>>>>>>
+>>>>>>>>>>>> +static inline bool mm_is_user(struct mm_struct *mm)
+>>>>>>>>>>>> +{
+>>>>>>>>>>>> +    /*
+>>>>>>>>>>>> +     * Don't attempt to apply the contig bit to kernel mappings,
+>>>>>>>>>>>> because
+>>>>>>>>>>>> +     * dynamically adding/removing the contig bit can cause page
+>>>>>>>>>>>> faults.
+>>>>>>>>>>>> +     * These racing faults are ok for user space, since they get
+>>>>>>>>>>>> serialized
+>>>>>>>>>>>> +     * on the PTL. But kernel mappings can't tolerate faults.
+>>>>>>>>>>>> +     */
+>>>>>>>>>>>> +    return mm != &init_mm;
+>>>>>>>>>>>> +}
+>>>>>>>>>>>
+>>>>>>>>>>> We also have the efi_mm as a non-user mm, though I don't think we
+>>>>>>>>>>> manipulate
+>>>>>>>>>>> that while it is live, and I'm not sure if that needs any special
+>>>>>>>>>>> handling.
+>>>>>>>>>>
+>>>>>>>>>> Well we never need this function in the hot (order-0 folio) path, so I
+>>>>>>>>>> think I
+>>>>>>>>>> could add a check for efi_mm here with performance implication. It's
+>>>>>>>>>> probably
+>>>>>>>>>> safest to explicitly exclude it? What do you think?
+>>>>>>>>>
+>>>>>>>>> Oops: This should have read "I think I could add a check for efi_mm here
+>>>>>>>>> *without* performance implication"
+>>>>>>>>
+>>>>>>>> It turns out that efi_mm is only defined when CONFIG_EFI is enabled I
+>>>>>>>> can do
+>>>>>>>> this:
+>>>>>>>>
+>>>>>>>> return mm != &init_mm && (!IS_ENABLED(CONFIG_EFI) || mm != &efi_mm);
+>>>>>>>>
+>>>>>>>> Is that acceptable? This is my preference, but nothing else outside of efi
+>>>>>>>> references this symbol currently.
+>>>>>>>>
+>>>>>>>> Or perhaps I can convince myself that its safe to treat efi_mm like
+>>>>>>>> userspace.
+>>>>>>>> There are a couple of things that need to be garanteed for it to be safe:
+>>>>>>>>
+>>>>>>>>      - The PFNs of present ptes either need to have an associated struct
+>>>>>>>> page or
+>>>>>>>>        need to have the PTE_SPECIAL bit set (either pte_mkspecial() or
+>>>>>>>>        pte_mkdevmap())
+>>>>>>>>
+>>>>>>>>      - Live mappings must either be static (no changes that could cause
+>>>>>>>> fold/unfold
+>>>>>>>>        while live) or the system must be able to tolerate a temporary fault
+>>>>>>>>
+>>>>>>>> Mark suggests efi_mm is not manipulated while live, so that meets the
+>>>>>>>> latter
+>>>>>>>> requirement, but I'm not sure about the former?
+>>>>>>>
+>>>>>>> I've gone through all the efi code, and conclude that, as Mark suggests, the
+>>>>>>> mappings are indeed static. And additionally, the ptes are populated
+>>>>>>> using only
+>>>>>>> the _private_ ptep API, so there is no issue here. As just discussed with
+>>>>>>> Mark,
+>>>>>>> my prefereence is to not make any changes to code, and just add a comment
+>>>>>>> describing why efi_mm is safe.
+>>>>>>>
+>>>>>>> Details:
+>>>>>>>
+>>>>>>> * Registered with ptdump
+>>>>>>>        * ptep_get_lockless()
+>>>>>>> * efi_create_mapping -> create_pgd_mapping … -> init_pte:
+>>>>>>>        * __ptep_get()
+>>>>>>>        * __set_pte()
+>>>>>>> * efi_memattr_apply_permissions -> efi_set_mapping_permissions … ->
+>>>>>>> set_permissions
+>>>>>>>        * __ptep_get()
+>>>>>>>        * __set_pte()
+>>>>>>
+>>>>>> Sound good. We could add some VM_WARN_ON if we ever get the efi_mm via the
+>>>>>> "official" APIs.
+>>>>>
+>>>>> We could, but that would lead to the same linkage issue, which I'm trying to
+>>>>> avoid in the first place:
+>>>>>
+>>>>> VM_WARN_ON(IS_ENABLED(CONFIG_EFI) && mm == efi_mm);
+>>>>>
+>>>>> This creates new source code dependencies, which I would rather avoid if
+>>>>> possible.
+>>>>
+>>>> Just a thought, you could have a is_efi_mm() function that abstracts all that.
+>>>>
+>>>> diff --git a/include/linux/efi.h b/include/linux/efi.h
+>>>> index c74f47711f0b..152f5fa66a2a 100644
+>>>> --- a/include/linux/efi.h
+>>>> +++ b/include/linux/efi.h
+>>>> @@ -692,6 +692,15 @@ extern struct efi {
+>>>>
+>>>>   extern struct mm_struct efi_mm;
+>>>>
+>>>> +static inline void is_efi_mm(struct mm_struct *mm)
+>>>> +{
+>>>> +#ifdef CONFIG_EFI
+>>>> +       return mm == &efi_mm;
+>>>> +#else
+>>>> +       return false;
+>>>> +#endif
+>>>> +}
+>>>> +
+>>>>   static inline int
+>>>>   efi_guidcmp (efi_guid_t left, efi_guid_t right)
+>>>>   {
+>>>>
+>>>>
+>>>
+>>> That would definitely work, but in that case, I might as well just check for it
+>>> in mm_is_user() (and personally I would change the name to mm_is_efi()):
+>>>
+>>>
+>>> static inline bool mm_is_user(struct mm_struct *mm)
+>>> {
+>>>          return mm != &init_mm && !mm_is_efi(mm);
+>>> }
+>>>
+>>> Any objections?
+>>>
+>>
+>> Any reason not to use IS_ENABLED(CONFIG_EFI) in the above? The extern
+>> declaration is visible to the compiler, and any references should
+>> disappear before the linker could notice that efi_mm does not exist.
+>>
+> 
+> Sure, as long as the linker is happy why not. I'll let Ryan mess with that :)
 
-Alex
+I'm not sure if you are suggesting dropping the mm_is_efi() helper and just use
+IS_ENABLED(CONFIG_EFI) in mm_is_user() to guard efi_mm, or if you are suggesting
+using IS_ENABLED(CONFIG_EFI) in mm_is_efi() instead of the ifdefery?
 
-On Mon, Feb 12, 2024 at 11:00=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.or=
-g.au> wrote:
->
-> Hi all,
->
-> After merging the amdgpu tree, today's linux-next build (powerpc
-> allyesconfig) failed like this:
->
-> In file included from drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c:42:
-> drivers/gpu/drm/amd/amdgpu/amdgpu.h:1559:13: error: 'amdgpu_choose_low_po=
-wer_state' defined but not used [-Werror=3Dunused-function]
->  1559 | static void amdgpu_choose_low_power_state(struct amdgpu_device *a=
-dev) { }
->       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> cc1: all warnings being treated as errors
->
-> (and many, many more)
->
-> Caused by commit
->
->   c77536b15b7a ("drm/amd: Stop evicting resources on APUs in suspend")
->
-> I have applied the following patch for today.
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 13 Feb 2024 14:41:05 +1100
-> Subject: [PATCH] fixup for "drm/amd: Stop evicting resources on APUs in s=
-uspend"
->
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/am=
-dgpu/amdgpu.h
-> index 2a3f12bae823..2cf4fb3f7751 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> @@ -1556,7 +1556,7 @@ void amdgpu_choose_low_power_state(struct amdgpu_de=
-vice *adev);
->  #else
->  static inline bool amdgpu_acpi_is_s0ix_active(struct amdgpu_device *adev=
-) { return false; }
->  static inline bool amdgpu_acpi_is_s3_active(struct amdgpu_device *adev) =
-{ return false; }
-> -static void amdgpu_choose_low_power_state(struct amdgpu_device *adev) { =
-}
-> +static inline void amdgpu_choose_low_power_state(struct amdgpu_device *a=
-dev) { }
->  #endif
->
->  #if defined(CONFIG_DRM_AMD_DC)
-> --
-> 2.43.0
->
-> --
-> Cheers,
-> Stephen Rothwell
+The former was what I did initially; It works great, but I didn't like that I
+was introducing a new code dependecy between efi and arm64 (nothing else outside
+of efi references efi_mm).
+
+So then concluded that it is safe to not worry about efi_mm (thanks for your
+confirmation). But then David wanted a VM_WARN check, which reintroduces the
+code dependency. So he suggested the mm_is_efi() helper to hide that... This is
+all starting to feel circular...
+
+Since I've jsut updated the code to do it David's way, I propose leaving it as
+is since nobody has strong feelings.
+
+> 
+>> In any case, feel free to add
+>>
+>> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+Great thanks!
+
+> 
+> Thanks for the review.
+> 
+
 
