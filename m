@@ -1,221 +1,280 @@
-Return-Path: <linux-kernel+bounces-64541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97301854017
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28BBF85401F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F25028FCB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:29:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D452128AA49
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:29:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B51C63064;
-	Tue, 13 Feb 2024 23:28:26 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3E663111;
+	Tue, 13 Feb 2024 23:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Y+eIh+Pf"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E758363101
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:28:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A586A62800
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707866905; cv=none; b=IIOllSbt7gwsDJT3rDiz50HxNV2R7tkMMc6MCfG8v/4FxpWGib4Hw4rLKiHMgDUpcUssClq7HHheKkKoS3bvm6UBPYbL+H6x2QXxGiXJpaNUZensQbYRNFqokPIEpd2v6Qp8tG+dLDHII1drsbCnAMa8lelSRpDxgcL7Ylzm/pY=
+	t=1707866925; cv=none; b=YABhTY9EnS/qp0PdXAJJGj8WuCywq0U4G39AmtaXiht7bHVKLW3GvGKol9mFMAaq6G4tobjWNlWgN1lxYbYWI8eTww6t1P0iN5b32wO4BDNV2jDRHKYse2aJlmCYnbCNvCUPGJC5TJ/Ec4NKgmEJh8ol9Qrh+F3tS9udhkoGXoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707866905; c=relaxed/simple;
-	bh=IQ3Y/e/zPuJO66WvMrusL0LrQcoWvCq272yYuoXcg8I=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SnUq4at8De0kbww9/Ghi9c30r3D48iVo5DfeROrDuYdioSVEgDm2+Q0Ic7B59pqBn5mjFcZGZg+8N94nlbpTHED0NbGZ9j6Bi1Jo5leM6MxCGyZ63+jDgUADajV92Ve6SpVNyYpKaT1+je8eGUD2Ekt8LgTcGD4zn0TJu3qxkR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1ra2CI-0000eU-Ih; Wed, 14 Feb 2024 00:28:18 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1ra2CH-000Zcq-V8; Wed, 14 Feb 2024 00:28:17 +0100
-Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
-	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1ra2CH-002uYW-2u;
-	Wed, 14 Feb 2024 00:28:17 +0100
-From: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Date: Wed, 14 Feb 2024 00:28:02 +0100
-Subject: [PATCH 3/3] usb: gadget: uvc: rework complete handler
+	s=arc-20240116; t=1707866925; c=relaxed/simple;
+	bh=Fh7ErxUCpzMchpW5XvBpyJH6+JOUDYjAM9H3p1A49z8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z9sC7ykHwlFIFbahDIFN+Tnbko/VTDaDGPCLS48l228uPsXlxSQSTN8rg8PeRtNSKaW7I2Y4L6672Cf8fUVYFo3Du92IQRVX1ElmnToAhjedhq41k123wxSynvrGAmTOdlpNWPHOpQFNvrUNy8U0v+rsrkqw9fTcwdYx0UT43TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Y+eIh+Pf; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so4533462276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:28:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707866922; x=1708471722; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fh7ErxUCpzMchpW5XvBpyJH6+JOUDYjAM9H3p1A49z8=;
+        b=Y+eIh+PfzekHyDxlBTBK2q6zRDs/sxfUKXOLpAcUocxRXX2VO9E1pNbjQLlnW/TOhT
+         KpPh0ON5ge9Qr4oxa7f3Y471vujgzH7lkicB1EuFt4qyDG0yeqBBCFP/uHaau5LbwXya
+         gTk4C7Epj7N/DDLcCtfb3FFlNWOuwDSvhiPKza5+M3/gP8bb6B6r815esNNv8sUzwE7+
+         XApu2XC9IR3Cvo36gxjdIIxmsPr4pK7rM/kBuZlnjLNs3pbrXz9oNcF5BkhxUH2tD1ys
+         uiCukottR2GXWSD6CLW0Aej+u1dgAvtRIFE9wjLB1Qj4oN4wxL6KYbSisROvnmRjPYXM
+         f6mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707866922; x=1708471722;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fh7ErxUCpzMchpW5XvBpyJH6+JOUDYjAM9H3p1A49z8=;
+        b=BAMA0VB9WnQUUMV3HxmfrpbcEEm0K3LNgwI1ANrBuFIafLo4GOhHrQ3A2wkHrWvcsF
+         +yDOeGXRVWtwPZP8FMrzIeSlVn6ZtPt97L9mFWXXKy48NcOkDPcFGLrH049aT6jwckuf
+         slQjEUyrK9a06vHMK3amzfXTkKsHpeCJdqEw+s21hN/i0pDAqzkO2NuCAqtjXZRtb06F
+         JiJGXNejLUzDPl2ORGweXeLxO1HdCwOPYQrPCtYZuY4rjDlAeaNx0DNXXSgvsxoA8Zdt
+         ONKmuYN1F27YnTDieJacDUx/7SBwIF64ruDzey6K2L9RTgVld81qnGgey8SuCk+gI9J7
+         WSdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWTh7c5MH+6mdDSqzS9a509EiQ3/lFF97jM6NnuDdGuNjjDjCLo3NinXyeyPXA448NbfYDt2bEH/avFiYD4wZaymVIa16mpu4B6NTfs
+X-Gm-Message-State: AOJu0Yy7+N71j2OIjXVJW5ETRCGvA1uGh/kRIDUF7yVSKqHPjjU0hQmd
+	AJ/b6EEkz4by1ZsmxaUwmPGMnvSMDEhfQt4BwXy0BZ6Usyrcv/OGIV6dQRnZYnOFqKMdUAmDB/P
+	3SGVr5C3/gPkVQaJ/X4SkMEL4sc0LVHJYtWfs
+X-Google-Smtp-Source: AGHT+IH1cx91N1JNhTYTGrGxO4dPJb5P83emWz32j1FEf6NDT97WWgdnPVQTmEze6DwfHHV7j4kW4vXwyGP73AwNRVA=
+X-Received: by 2002:a25:84d2:0:b0:dcd:6a02:c111 with SMTP id
+ x18-20020a2584d2000000b00dcd6a02c111mr818389ybm.11.1707866922283; Tue, 13 Feb
+ 2024 15:28:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240214-uvc-gadget-cleanup-v1-3-de6d78780459@pengutronix.de>
-References: <20240214-uvc-gadget-cleanup-v1-0-de6d78780459@pengutronix.de>
-In-Reply-To: <20240214-uvc-gadget-cleanup-v1-0-de6d78780459@pengutronix.de>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Daniel Scally <dan.scally@ideasonboard.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Michael Grzeschik <m.grzeschik@pengutronix.de>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5140;
- i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
- bh=IQ3Y/e/zPuJO66WvMrusL0LrQcoWvCq272yYuoXcg8I=;
- b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBly/sRqPjQgnXhsPN6K1krJXPbN4oO0gMIjSHDh
- ODyESfaFlCJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZcv7EQAKCRC/aVhE+XH0
- q/CaEACMk8xx1roCJwuAZ81Qtu6o3wB2rl5GyAJ4TGAKUYLFtMwIMvqir785IWJBD5ddVQqosrW
- 9AmHSNjTDXGpvYDLg5QjBwffQ/49LmMYf+Mrlsk/In1oRHlnFCIdN9geB4tFvClyzHf0H315nQa
- SjCyO62cqg/XRccWR+iJTyiD76bvAxHhWQDYr/UAWy4uei2gM48q2qYK4V3fVtMsfGqpihMBkjM
- VL+aOLY7UEPz3AG2l2CtdKF3/BrVROox+N3BMnuREWleGZua1UXL0YAuHoxwW66GVZbBYWSlbJr
- JsjkX4cnVOFb5bIdQZP1ljgCss2dFsYoI/QAv+gbWDLCRIfKKRNGE+uYIJ7D7eDMt/nmCr1nS6h
- DjjkpfqWil5Hxr6N9L21BBWmPSV6lTG7OAE7tF4+zyvAL802Bj1tbJQFr0lJ48D5dlklKS93+X2
- HGA44nijWDtmAiL43lHs4CDVMMA3juRa4rQazbVo9KsWP3m2PORNs1aktfGlMjZbFbGlhqS77NZ
- imRt0DdYrCsK+dISSMAR+Di2DXMiVsrlsxmAq7UWZw74yo49LkFclNVjGTMaU5zGe6sDAL/QkfA
- kEAgkORQJe3uR9ZdEgblKvQQprgjcFvIhTCOwlP8z8VpbhZ4MAanquiH1+ZCGyXuElIo2xzYhE9
- 0y7ceOz4sHl6/gA==
-X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
- fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <Zctfa2DvmlTYSfe8@tiehlicka> <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com> <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com> <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com> <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+ <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+ <a9b0440b-844e-4e45-a546-315d53322aad@redhat.com> <xbehqbtjp5wi4z2ppzrbmlj6vfazd2w5flz3tgjbo37tlisexa@caq633gciggt>
+ <c842347d-5794-4925-9b95-e9966795b7e1@redhat.com>
+In-Reply-To: <c842347d-5794-4925-9b95-e9966795b7e1@redhat.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 13 Feb 2024 15:28:28 -0800
+Message-ID: <CAJuCfpFB-WimQoC1s-ZoiAx+t31KRu1Hd9HgH3JTMssnskdvNw@mail.gmail.com>
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+To: David Hildenbrand <david@redhat.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, Michal Hocko <mhocko@suse.com>, 
+	akpm@linux-foundation.org, vbabka@suse.cz, hannes@cmpxchg.org, 
+	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
+	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
+	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
+	peterx@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We refactor the complete handler since the return path with the
-locking are really difficult to follow. Just simplify the function by
-switching the logic return it on an disabled endpoint early. This way
-the second level of indentation can be removed.
+On Tue, Feb 13, 2024 at 3:22=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 14.02.24 00:12, Kent Overstreet wrote:
+> > On Wed, Feb 14, 2024 at 12:02:30AM +0100, David Hildenbrand wrote:
+> >> On 13.02.24 23:59, Suren Baghdasaryan wrote:
+> >>> On Tue, Feb 13, 2024 at 2:50=E2=80=AFPM Kent Overstreet
+> >>> <kent.overstreet@linux.dev> wrote:
+> >>>>
+> >>>> On Tue, Feb 13, 2024 at 11:48:41PM +0100, David Hildenbrand wrote:
+> >>>>> On 13.02.24 23:30, Suren Baghdasaryan wrote:
+> >>>>>> On Tue, Feb 13, 2024 at 2:17=E2=80=AFPM David Hildenbrand <david@r=
+edhat.com> wrote:
+> >>>>>>>
+> >>>>>>> On 13.02.24 23:09, Kent Overstreet wrote:
+> >>>>>>>> On Tue, Feb 13, 2024 at 11:04:58PM +0100, David Hildenbrand wrot=
+e:
+> >>>>>>>>> On 13.02.24 22:58, Suren Baghdasaryan wrote:
+> >>>>>>>>>> On Tue, Feb 13, 2024 at 4:24=E2=80=AFAM Michal Hocko <mhocko@s=
+use.com> wrote:
+> >>>>>>>>>>>
+> >>>>>>>>>>> On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
+> >>>>>>>>>>> [...]
+> >>>>>>>>>>>> We're aiming to get this in the next merge window, for 6.9. =
+The feedback
+> >>>>>>>>>>>> we've gotten has been that even out of tree this patchset ha=
+s already
+> >>>>>>>>>>>> been useful, and there's a significant amount of other work =
+gated on the
+> >>>>>>>>>>>> code tagging functionality included in this patchset [2].
+> >>>>>>>>>>>
+> >>>>>>>>>>> I suspect it will not come as a surprise that I really dislik=
+e the
+> >>>>>>>>>>> implementation proposed here. I will not repeat my arguments,=
+ I have
+> >>>>>>>>>>> done so on several occasions already.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Anyway, I didn't go as far as to nak it even though I _strong=
+ly_ believe
+> >>>>>>>>>>> this debugging feature will add a maintenance overhead for a =
+very long
+> >>>>>>>>>>> time. I can live with all the downsides of the proposed imple=
+mentation
+> >>>>>>>>>>> _as long as_ there is a wider agreement from the MM community=
+ as this is
+> >>>>>>>>>>> where the maintenance cost will be payed. So far I have not s=
+een (m)any
+> >>>>>>>>>>> acks by MM developers so aiming into the next merge window is=
+ more than
+> >>>>>>>>>>> little rushed.
+> >>>>>>>>>>
+> >>>>>>>>>> We tried other previously proposed approaches and all have the=
+ir
+> >>>>>>>>>> downsides without making maintenance much easier. Your positio=
+n is
+> >>>>>>>>>> understandable and I think it's fair. Let's see if others see =
+more
+> >>>>>>>>>> benefit than cost here.
+> >>>>>>>>>
+> >>>>>>>>> Would it make sense to discuss that at LSF/MM once again, espec=
+ially
+> >>>>>>>>> covering why proposed alternatives did not work out? LSF/MM is =
+not "too far"
+> >>>>>>>>> away (May).
+> >>>>>>>>>
+> >>>>>>>>> I recall that the last LSF/MM session on this topic was a bit u=
+nfortunate
+> >>>>>>>>> (IMHO not as productive as it could have been). Maybe we can fi=
+nally reach a
+> >>>>>>>>> consensus on this.
+> >>>>>>>>
+> >>>>>>>> I'd rather not delay for more bikeshedding. Before agreeing to L=
+SF I'd
+> >>>>>>>> need to see a serious proposl - what we had at the last LSF was =
+people
+> >>>>>>>> jumping in with half baked alternative proposals that very much =
+hadn't
+> >>>>>>>> been thought through, and I see no need to repeat that.
+> >>>>>>>>
+> >>>>>>>> Like I mentioned, there's other work gated on this patchset; if =
+people
+> >>>>>>>> want to hold this up for more discussion they better be putting =
+forth
+> >>>>>>>> something to discuss.
+> >>>>>>>
+> >>>>>>> I'm thinking of ways on how to achieve Michal's request: "as long=
+ as
+> >>>>>>> there is a wider agreement from the MM community". If we can achi=
+eve
+> >>>>>>> that without LSF, great! (a bi-weekly MM meeting might also be an=
+ option)
+> >>>>>>
+> >>>>>> There will be a maintenance burden even with the cleanest proposed
+> >>>>>> approach.
+> >>>>>
+> >>>>> Yes.
+> >>>>>
+> >>>>>> We worked hard to make the patchset as clean as possible and
+> >>>>>> if benefits still don't outweigh the maintenance cost then we shou=
+ld
+> >>>>>> probably stop trying.
+> >>>>>
+> >>>>> Indeed.
+> >>>>>
+> >>>>>> At LSF/MM I would rather discuss functonal
+> >>>>>> issues/requirements/improvements than alternative approaches to
+> >>>>>> instrument allocators.
+> >>>>>> I'm happy to arrange a separate meeting with MM folks if that woul=
+d
+> >>>>>> help to progress on the cost/benefit decision.
+> >>>>> Note that I am only proposing ways forward.
+> >>>>>
+> >>>>> If you think you can easily achieve what Michal requested without a=
+ll that,
+> >>>>> good.
+> >>>>
+> >>>> He requested something?
+> >>>
+> >>> Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
+> >>> possible until the compiler feature is developed and deployed. And it
+> >>> still would require changes to the headers, so don't think it's worth
+> >>> delaying the feature for years.
+> >>>
+> >>
+> >> I was talking about this: "I can live with all the downsides of the pr=
+oposed
+> >> implementationas long as there is a wider agreement from the MM commun=
+ity as
+> >> this is where the maintenance cost will be payed. So far I have not se=
+en
+> >> (m)any acks by MM developers".
+> >>
+> >> I certainly cannot be motivated at this point to review and ack this,
+> >> unfortunately too much negative energy around here.
+> >
+> > David, this kind of reaction is exactly why I was telling Andrew I was
+> > going to submit this as a direct pull request to Linus.
+> >
+> > This is an important feature; if we can't stay focused ot the technical
+> > and get it done that's what I'll do.
+>
+> Kent, I started this with "Would it make sense" in an attempt to help
+> Suren and you to finally make progress with this, one way or the other.
+> I know that there were ways in the past to get the MM community to agree
+> on such things.
+>
+> I tried to be helpful, finding ways *not having to* bypass the MM
+> community to get MM stuff merged.
+>
+> The reply I got is mostly negative energy.
+>
+> So you don't need my help here, understood.
+>
+> But I will fight against any attempts to bypass the MM community.
 
-Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
----
- drivers/usb/gadget/function/uvc_video.c | 95 +++++++++++++++++----------------
- 1 file changed, 48 insertions(+), 47 deletions(-)
+Well, I'm definitely not trying to bypass the MM community, that's why
+this patchset is posted. Not sure why people can't voice their opinion
+on the benefit/cost balance of the patchset over the email... But if a
+meeting would be more productive I'm happy to set it up.
 
-diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-index b4f3b3c784218..ff7c1fa5c48f3 100644
---- a/drivers/usb/gadget/function/uvc_video.c
-+++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -370,6 +370,7 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
- 	struct uvc_video *video = ureq->video;
- 	struct uvc_video_queue *queue = &video->queue;
- 	struct uvc_buffer *last_buf;
-+	struct usb_request *to_queue = req;
- 	unsigned long flags;
- 	bool is_bulk = video->max_payload_size;
- 	int ret = 0;
-@@ -425,59 +426,59 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
- 	 * we're still streaming before queueing the usb_request
- 	 * back to req_free
- 	 */
--	if (video->is_enabled) {
-+	if (!video->is_enabled) {
-+		uvc_video_free_request(ureq, ep);
-+		spin_unlock_irqrestore(&video->req_lock, flags);
-+		uvcg_queue_cancel(queue, 0);
-+
-+		return;
-+	}
-+
-+	/*
-+	 * Here we check whether any request is available in the ready
-+	 * list. If it is, queue it to the ep and add the current
-+	 * usb_request to the req_free list - for video_pump to fill in.
-+	 * Otherwise, just use the current usb_request to queue a 0
-+	 * length request to the ep. Since we always add to the req_free
-+	 * list if we dequeue from the ready list, there will never
-+	 * be a situation where the req_free list is completely out of
-+	 * requests and cannot recover.
-+	 */
-+	to_queue->length = 0;
-+	if (!list_empty(&video->req_ready)) {
-+		to_queue = list_first_entry(&video->req_ready,
-+			struct usb_request, list);
-+		list_del(&to_queue->list);
-+		list_add_tail(&req->list, &video->req_free);
- 		/*
--		 * Here we check whether any request is available in the ready
--		 * list. If it is, queue it to the ep and add the current
--		 * usb_request to the req_free list - for video_pump to fill in.
--		 * Otherwise, just use the current usb_request to queue a 0
--		 * length request to the ep. Since we always add to the req_free
--		 * list if we dequeue from the ready list, there will never
--		 * be a situation where the req_free list is completely out of
--		 * requests and cannot recover.
-+		 * Queue work to the wq as well since it is possible that a
-+		 * buffer may not have been completely encoded with the set of
-+		 * in-flight usb requests for whih the complete callbacks are
-+		 * firing.
-+		 * In that case, if we do not queue work to the worker thread,
-+		 * the buffer will never be marked as complete - and therefore
-+		 * not be returned to userpsace. As a result,
-+		 * dequeue -> queue -> dequeue flow of uvc buffers will not
-+		 * happen.
- 		 */
--		struct usb_request *to_queue = req;
--
--		to_queue->length = 0;
--		if (!list_empty(&video->req_ready)) {
--			to_queue = list_first_entry(&video->req_ready,
--				struct usb_request, list);
--			list_del(&to_queue->list);
--			list_add_tail(&req->list, &video->req_free);
--			/*
--			 * Queue work to the wq as well since it is possible that a
--			 * buffer may not have been completely encoded with the set of
--			 * in-flight usb requests for whih the complete callbacks are
--			 * firing.
--			 * In that case, if we do not queue work to the worker thread,
--			 * the buffer will never be marked as complete - and therefore
--			 * not be returned to userpsace. As a result,
--			 * dequeue -> queue -> dequeue flow of uvc buffers will not
--			 * happen.
--			 */
--			queue_work(video->async_wq, &video->pump);
--		}
-+		queue_work(video->async_wq, &video->pump);
-+	}
-+	/*
-+	 * Queue to the endpoint. The actual queueing to ep will
-+	 * only happen on one thread - the async_wq for bulk endpoints
-+	 * and this thread for isoc endpoints.
-+	 */
-+	ret = uvcg_video_usb_req_queue(video, to_queue, !is_bulk);
-+	if (ret < 0) {
- 		/*
--		 * Queue to the endpoint. The actual queueing to ep will
--		 * only happen on one thread - the async_wq for bulk endpoints
--		 * and this thread for isoc endpoints.
-+		 * Endpoint error, but the stream is still enabled.
-+		 * Put request back in req_free for it to be cleaned
-+		 * up later.
- 		 */
--		ret = uvcg_video_usb_req_queue(video, to_queue, !is_bulk);
--		if (ret < 0) {
--			/*
--			 * Endpoint error, but the stream is still enabled.
--			 * Put request back in req_free for it to be cleaned
--			 * up later.
--			 */
--			list_add_tail(&to_queue->list, &video->req_free);
--		}
--	} else {
--		uvc_video_free_request(ureq, ep);
--		ret = 0;
-+		list_add_tail(&to_queue->list, &video->req_free);
- 	}
-+
- 	spin_unlock_irqrestore(&video->req_lock, flags);
--	if (ret < 0)
--		uvcg_queue_cancel(queue, 0);
- }
- 
- static int
-
--- 
-2.39.2
-
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
