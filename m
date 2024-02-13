@@ -1,59 +1,67 @@
-Return-Path: <linux-kernel+bounces-62610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 757D885239F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:29:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9F228523A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A2FC1C2351A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:29:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79DEE1F22D96
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 969585579D;
-	Tue, 13 Feb 2024 00:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE7855E71;
+	Tue, 13 Feb 2024 00:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fovhIj7p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TLK7uGDz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3C555C0B;
-	Tue, 13 Feb 2024 00:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913C855E4D;
+	Tue, 13 Feb 2024 00:19:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783585; cv=none; b=SYAut1giHxUq6VBEtrflTd0fzrfJRB3IFQIS+xzGqWxVsEp2q6SrYGt5gJ0NKAnLECGCU62rhojmy+SJ1j6RQ6Mc08XCB5n37bClYntnHYdgxofyx0bOKRdC3dfCFbjCIbC3HCG/ZZgCqdxpoYvEI3SikWwQrT50y9THghZGkNw=
+	t=1707783588; cv=none; b=oGCgk8FyFfkgQG3+p3YEBf9d97UQOvn53O4W20RPMkjFDtMex04xjxcca2MJ02E/5TtGDK2nhtJk6Si3zPYydVuglZiBwncJzkgOm88CxTfiHOESJGN9827QwR0d8fwQs/OOeyHfvaBKZQtkmW+7F6FAY0Ry3nd85YR3np6z8nQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783585; c=relaxed/simple;
-	bh=DWkePK0Xam2qaULRVXpWh2OPl3w9W9RNKkmK0YBdDqY=;
+	s=arc-20240116; t=1707783588; c=relaxed/simple;
+	bh=9PvseMVXZBtb/cwZqzTiH66r08HVA91dkLfACeiIZu4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vz/4QYkG1+I2pwyfQeCeWHdY3WDfB/x36eJ217YHqYPFkZjiiHUM8VxmNw0MNYScolU7+3RvjqygFjCOG6pXlBy44XqHhg61cFvRgK+d/w6pamy88sUvLg3TGRRAABxYzgMFVbNu2rfqWhNpvLQWUaPr/szr7kNOBEbKnVTfbgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fovhIj7p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 090D9C433C7;
-	Tue, 13 Feb 2024 00:19:43 +0000 (UTC)
+	 MIME-Version; b=Vjys16Wnke6zA93Uh2ptq38Maj1nkXDZ/fQ8Py7OjPrmvsl9yfkKc7bdq3+q47lkSZepKn/mr5n47BpB1yP6qVq4EvcFk635baE7WXxpbbzxOimP1rCS2aK3MApvAAJshfHQr7LxdQWY52WyIV9OeruQFLRyu1SdI6hH+6avm/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TLK7uGDz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51E9BC43390;
+	Tue, 13 Feb 2024 00:19:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783585;
-	bh=DWkePK0Xam2qaULRVXpWh2OPl3w9W9RNKkmK0YBdDqY=;
+	s=k20201202; t=1707783588;
+	bh=9PvseMVXZBtb/cwZqzTiH66r08HVA91dkLfACeiIZu4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fovhIj7phL0Jm1ZCcflf76rSU9qUHO+/CeRVhonhjGwT+RGZghoUxwG2cPz76mtd6
-	 89Ro0WYW6dzP0dzYcMXii+iP/JdvWrUdyuLsO3JAH18ValDGu9RKg6By9Wwbve/Jqd
-	 62jE/hgkNfwqWowY/CnZj64xPWqld/gBWyeNxfckoVO1ph+HCqJl5uU0k/XaACykvt
-	 B8BrUXa3a96e8fcUElawbzDIhIrRbAPAiPGqXP7IXN5RnbXw3yPua8aZ/JlC1aLS5m
-	 m/+2ihhZf0hT/z3kcS8JlU6i/N8AdllGurRmoIJu27y/fgu8TEEZkdHMDzELceqdKL
-	 +miuBFAjJr8Bg==
+	b=TLK7uGDzQHV33+jP9uo3eeoHEXTbXb71kibUA3QBHdxiv+oMF/w0L4rGSFpSMM+3i
+	 3HMe1k2V+gpm65dOY52JOi8iuwkIkH94ObMxSplIirprQhSP363MWmTlh21KufHqlM
+	 Pro+UHbHbYecS8c1ibMjBqni3B3AVzzwMoz2NZpMGDb2GsbADpDOLafN13bwgEH7k5
+	 5Z6U0SVczMEmWmLOn646G02Q+9IYX3NGCnTVEChBoGPG3+iwSttfswWATIehV+a5O5
+	 A0jQufN+Ok3EEURtrrW0Ci7ENfxQd6ioELJPK8S6vrWQtd7jozW5GP2Eu3P2vRcID7
+	 +L2Gt9HU5ejTA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Huacai Chen <chenhuacai@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>,
+Cc: Kees Cook <keescook@chromium.org>,
+	kernel test robot <lkp@intel.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Fangrui Song <maskray@google.com>,
+	loongarch@lists.linux.dev,
+	Huacai Chen <chenhuacai@loongson.cn>,
 	Sasha Levin <sashal@kernel.org>,
-	chenhuacai@kernel.org,
-	wangliupu@loongson.cn,
-	zhuyinbo@loongson.cn,
 	git@xen0n.name,
-	loongarch@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.7 41/58] LoongArch: Change acpi_core_pic[NR_CPUS] to acpi_core_pic[MAX_CORE_PIC]
-Date: Mon, 12 Feb 2024 19:17:47 -0500
-Message-ID: <20240213001837.668862-41-sashal@kernel.org>
+	deller@gmx.de,
+	svens@linux.ibm.com,
+	chenfeiyang@loongson.cn,
+	zhangqing@loongson.cn
+Subject: [PATCH AUTOSEL 6.7 42/58] LoongArch: vDSO: Disable UBSAN instrumentation
+Date: Mon, 12 Feb 2024 19:17:48 -0500
+Message-ID: <20240213001837.668862-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213001837.668862-1-sashal@kernel.org>
 References: <20240213001837.668862-1-sashal@kernel.org>
@@ -68,107 +76,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.4
 Content-Transfer-Encoding: 8bit
 
-From: Huacai Chen <chenhuacai@loongson.cn>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 4551b30525cf3d2f026b92401ffe241eb04dfebe ]
+[ Upstream commit cca5efe77a6a2d02b3da4960f799fa233e460ab1 ]
 
-With default config, the value of NR_CPUS is 64. When HW platform has
-more then 64 cpus, system will crash on these platforms. MAX_CORE_PIC
-is the maximum cpu number in MADT table (max physical number) which can
-exceed the supported maximum cpu number (NR_CPUS, max logical number),
-but kernel should not crash. Kernel should boot cpus with NR_CPUS, let
-the remainder cpus stay in BIOS.
+The vDSO executes in userspace, so the kernel's UBSAN should not
+instrument it. Solves these kind of build errors:
 
-The potential crash reason is that the array acpi_core_pic[NR_CPUS] can
-be overflowed when parsing MADT table, and it is obvious that CORE_PIC
-should be corresponding to physical core rather than logical core, so it
-is better to define the array as acpi_core_pic[MAX_CORE_PIC].
+  loongarch64-linux-ld: arch/loongarch/vdso/vgettimeofday.o: in function `vdso_shift_ns':
+  lib/vdso/gettimeofday.c:23:(.text+0x3f8): undefined reference to `__ubsan_handle_shift_out_of_bounds'
 
-With the patch, system can boot up 64 vcpus with qemu parameter -smp 128,
-otherwise system will crash with the following message.
-
-[    0.000000] CPU 0 Unable to handle kernel paging request at virtual address 0000420000004259, era == 90000000037a5f0c, ra == 90000000037a46ec
-[    0.000000] Oops[#1]:
-[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-rc2+ #192
-[    0.000000] Hardware name: QEMU QEMU Virtual Machine, BIOS unknown 2/2/2022
-[    0.000000] pc 90000000037a5f0c ra 90000000037a46ec tp 9000000003c90000 sp 9000000003c93d60
-[    0.000000] a0 0000000000000019 a1 9000000003d93bc0 a2 0000000000000000 a3 9000000003c93bd8
-[    0.000000] a4 9000000003c93a74 a5 9000000083c93a67 a6 9000000003c938f0 a7 0000000000000005
-[    0.000000] t0 0000420000004201 t1 0000000000000000 t2 0000000000000001 t3 0000000000000001
-[    0.000000] t4 0000000000000003 t5 0000000000000000 t6 0000000000000030 t7 0000000000000063
-[    0.000000] t8 0000000000000014 u0 ffffffffffffffff s9 0000000000000000 s0 9000000003caee98
-[    0.000000] s1 90000000041b0480 s2 9000000003c93da0 s3 9000000003c93d98 s4 9000000003c93d90
-[    0.000000] s5 9000000003caa000 s6 000000000a7fd000 s7 000000000f556b60 s8 000000000e0a4330
-[    0.000000]    ra: 90000000037a46ec platform_init+0x214/0x250
-[    0.000000]   ERA: 90000000037a5f0c efi_runtime_init+0x30/0x94
-[    0.000000]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
-[    0.000000]  PRMD: 00000000 (PPLV0 -PIE -PWE)
-[    0.000000]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
-[    0.000000]  ECFG: 00070800 (LIE=11 VS=7)
-[    0.000000] ESTAT: 00010000 [PIL] (IS= ECode=1 EsubCode=0)
-[    0.000000]  BADV: 0000420000004259
-[    0.000000]  PRID: 0014c010 (Loongson-64bit, Loongson-3A5000)
-[    0.000000] Modules linked in:
-[    0.000000] Process swapper (pid: 0, threadinfo=(____ptrval____), task=(____ptrval____))
-[    0.000000] Stack : 9000000003c93a14 9000000003800898 90000000041844f8 90000000037a46ec
-[    0.000000]         000000000a7fd000 0000000008290000 0000000000000000 0000000000000000
-[    0.000000]         0000000000000000 0000000000000000 00000000019d8000 000000000f556b60
-[    0.000000]         000000000a7fd000 000000000f556b08 9000000003ca7700 9000000003800000
-[    0.000000]         9000000003c93e50 9000000003800898 9000000003800108 90000000037a484c
-[    0.000000]         000000000e0a4330 000000000f556b60 000000000a7fd000 000000000f556b08
-[    0.000000]         9000000003ca7700 9000000004184000 0000000000200000 000000000e02b018
-[    0.000000]         000000000a7fd000 90000000037a0790 9000000003800108 0000000000000000
-[    0.000000]         0000000000000000 000000000e0a4330 000000000f556b60 000000000a7fd000
-[    0.000000]         000000000f556b08 000000000eaae298 000000000eaa5040 0000000000200000
-[    0.000000]         ...
-[    0.000000] Call Trace:
-[    0.000000] [<90000000037a5f0c>] efi_runtime_init+0x30/0x94
-[    0.000000] [<90000000037a46ec>] platform_init+0x214/0x250
-[    0.000000] [<90000000037a484c>] setup_arch+0x124/0x45c
-[    0.000000] [<90000000037a0790>] start_kernel+0x90/0x670
-[    0.000000] [<900000000378b0d8>] kernel_entry+0xd8/0xdc
-
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401310530.lZHCj1Zl-lkp@intel.com/
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Fangrui Song <maskray@google.com>
+Cc: loongarch@lists.linux.dev
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/loongarch/include/asm/acpi.h | 4 +++-
- arch/loongarch/kernel/acpi.c      | 4 +---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ arch/loongarch/vdso/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/loongarch/include/asm/acpi.h b/arch/loongarch/include/asm/acpi.h
-index 8de6c4b83a61..49e29b29996f 100644
---- a/arch/loongarch/include/asm/acpi.h
-+++ b/arch/loongarch/include/asm/acpi.h
-@@ -32,8 +32,10 @@ static inline bool acpi_has_cpu_in_madt(void)
- 	return true;
- }
+diff --git a/arch/loongarch/vdso/Makefile b/arch/loongarch/vdso/Makefile
+index c74c9921304f..f597cd08a96b 100644
+--- a/arch/loongarch/vdso/Makefile
++++ b/arch/loongarch/vdso/Makefile
+@@ -2,6 +2,7 @@
+ # Objects to go into the VDSO.
  
-+#define MAX_CORE_PIC 256
-+
- extern struct list_head acpi_wakeup_device_list;
--extern struct acpi_madt_core_pic acpi_core_pic[NR_CPUS];
-+extern struct acpi_madt_core_pic acpi_core_pic[MAX_CORE_PIC];
+ KASAN_SANITIZE := n
++UBSAN_SANITIZE := n
+ KCOV_INSTRUMENT := n
  
- extern int __init parse_acpi_topology(void);
- 
-diff --git a/arch/loongarch/kernel/acpi.c b/arch/loongarch/kernel/acpi.c
-index 8e00a754e548..55d6a48c76a8 100644
---- a/arch/loongarch/kernel/acpi.c
-+++ b/arch/loongarch/kernel/acpi.c
-@@ -29,11 +29,9 @@ int disabled_cpus;
- 
- u64 acpi_saved_sp;
- 
--#define MAX_CORE_PIC 256
--
- #define PREFIX			"ACPI: "
- 
--struct acpi_madt_core_pic acpi_core_pic[NR_CPUS];
-+struct acpi_madt_core_pic acpi_core_pic[MAX_CORE_PIC];
- 
- void __init __iomem * __acpi_map_table(unsigned long phys, unsigned long size)
- {
+ # Include the generic Makefile to check the built vdso.
 -- 
 2.43.0
 
