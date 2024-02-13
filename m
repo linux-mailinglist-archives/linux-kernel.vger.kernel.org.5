@@ -1,109 +1,154 @@
-Return-Path: <linux-kernel+bounces-62568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA0D985230E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B27D852310
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:16:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EB05B2225C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:16:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBBE8B24AE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8081F79DE;
-	Tue, 13 Feb 2024 00:15:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E9DC1FCC;
+	Tue, 13 Feb 2024 00:15:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WS6pgQjB"
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HRu7Kq5N"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECBB7475
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A1A8F4D;
+	Tue, 13 Feb 2024 00:15:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783343; cv=none; b=nNrZ6qHF0wo/bKet5LfWCSYjQCf4K/qUqX/A0UjowSJoReYbLkN+hCdxzOa2uQVJgnkL97G3TRvC5Cwl6rMiwb1X8Pmfq9WrdzfQl3zdqHi4CRWgtY4TEy93upOFq6LwCKZ1ixWUb+FEq4gp5lg1wmMD7t/tV7IzY0k25T2n+FA=
+	t=1707783351; cv=none; b=QMqStliUnZ9FNemRheOolVdzBYxE9TWPk/BYUEIhQd+gfydM+KnKn0UmclDv2Ur/iPKknojuC2spg/H5MLealwEvPaHnVUMGxwes8Uk4duBhpcB0hYLQmT7772wnr2cgiIon4Er0s0UYj2Adu2CMSiUZ4d/JQa+TqZl+U7+YaLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783343; c=relaxed/simple;
-	bh=ZcFoY5ZEo7lqTmg/W+sT9Io+9hDMm4y9c26cYdg4Zto=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=TWUSkFr43Kye3rQDx7Xzq4kUXsm3wGy7dQ7VS1KDT4mBvCKqVpyohnZgryEaGEHvfPuU9vYSdms5uKKwlNvYFRra77gncYnDABPiZFQyr8QkxfoBi2RqnldE1F7IGc/GyBZzqEkBz0yhHf25e7BACOmWecTy5bs6iw23ZXmbvD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WS6pgQjB; arc=none smtp.client-ip=209.85.214.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1da1559d20fso27718675ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:15:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707783342; x=1708388142; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F8m/Uv544GTXUPDpKb9f2WygW9/WqUJcSV7kQLbjOvw=;
-        b=WS6pgQjBHDFUCcXt2Co04SNDqpcify7J6JI95vmxU40WDCnJmCKYE6Ajetqf5bt/LT
-         baizBb/rHyqealT88waRAwTfEYATN5AdJVw4xe3rPvZzgrV/CP0M0IWv+AoWNhBVkWbu
-         EXL9PjL0bV0djI+LiVx0OOZJDpYZ1yBsZokGBjj0qowjyRVsdX0E82doGaay5UcMIWzq
-         Ee/bXgvbm9IKK2mhcBEu5tRF15QwZaiFJNGNlld2Q76IUMJ9N4cC0Zmf8O/sY9Ol9RtF
-         77eS/2+Yh9qGPwGFk+Fs1hq1njGCFv1OWXBHlEdD0kZGt/nV47KwW6f8u6dBfxkauepr
-         COgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707783342; x=1708388142;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F8m/Uv544GTXUPDpKb9f2WygW9/WqUJcSV7kQLbjOvw=;
-        b=S1Y++W8dpi1DrUWk0CXuUEmWlEs+du1URhKntppb1XLEmNK5IOPn+NRXgqcQbpa5K9
-         0H5ziQvKgTGXWzdK+byMZCq87hgr7Tnh8YpSAG4cfJUVhuOj7/0li1xmEOzOMxlD5Osr
-         q0OD6+w6OkO+smFtOjA4LAP/StoJa6VYMgPBg05Is027/9jIAN4thWwt8kcx5FXwvUpo
-         OzWi/GmNHggMg005j2ggwbInP1Gkboia8n2F0hMmfmfzj8hH7w5cACpu+fm7jrdjeFAx
-         HImoETolNb76IDiC0cQRYvt01vKuBsDph/yHugqySSYO8nXTlLeRayffWUcWjJXCkBf7
-         9CWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUlYMLvkrp1JbHZv6YrmhwTxxw0P+AXQOGmuB8Y+5Lbmyas3ZBPsSwDcRHzN5qltiGdJc8aRZer0QXACDrmGQI2AlpDVcY6JfhbUL2Y
-X-Gm-Message-State: AOJu0YwdBeVPjYbhYH5K5OEUwECx8tYAEh98lXV0wzYRfDORCwyCbFES
-	/UX6AKP3Ib1Z1ILJ1JS+GJQEbhl3Bue7ejMQsV24iyYwCKsqu7nAPt5i7Oa1C+XX7h6tzbG4NuH
-	jUg==
-X-Google-Smtp-Source: AGHT+IGyUzAwDS4yq3Uo4MVsgMTl9VONsf9vw6/dk7qFnwfDtow8fZ0mh45RNp2sB4nj9qB1af5Uk1i8dA8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:27c3:b0:1d9:f491:7732 with SMTP id
- km3-20020a17090327c300b001d9f4917732mr2818plb.6.1707783341588; Mon, 12 Feb
- 2024 16:15:41 -0800 (PST)
-Date: Mon, 12 Feb 2024 16:15:39 -0800
-In-Reply-To: <CAHk-=wiKq0bNqGDsh2dmYOeKub9dm8HaMHEJj-0XDvG-9m4JQQ@mail.gmail.com>
+	s=arc-20240116; t=1707783351; c=relaxed/simple;
+	bh=pGauPJe3pc7ZiPndNvLC3iAdr8bnuuyJx3XLyQ1nH+w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SbEb/2IKfxuZi/U/wStm/6irA3oNrvghU+I82kB9OVEqOOgjVIarOQuGQqDExE9NUQK7bd24YAVb8X9BB2S9JuUgEplyGL7etbhSAp2Qa+6pLaIbopMki4IJ/5p0+i0HNgLzxTmXwqo9DaPCdSY0eYinuMK4YwhUMKKnE1VrKbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HRu7Kq5N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF56C433C7;
+	Tue, 13 Feb 2024 00:15:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707783350;
+	bh=pGauPJe3pc7ZiPndNvLC3iAdr8bnuuyJx3XLyQ1nH+w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HRu7Kq5N/r4Q6jC40gbj2fXRkIiJyYdybBD3jAEG3u44DQawDKCCRf+OriNIkmHaM
+	 O3xoK/t+u2mlk2oGrPlWC1AVzhoCdxc4H/vMthGgbSyd2JPogTpSca5HWd1ojKQ+Hu
+	 /I0MMY0o/MgkV63FyVi9cNFSYbRPOIURWXvlLAUpTxLJzeO6/LGRxtHp3q4jOh0tf3
+	 kFviHv6324k/eNaAEuPr5p815McbZcv53aZhuxFNiZwumJpmJiH/e2/hT+y/Cj1od2
+	 uI4ynLfy+l2Uv8xkpD76mgu2SIMTCWDt1l2CkMICuGW4EHWSEaGv/DuvHsMH5z4oeL
+	 kFMgaFSlAMBMA==
+Date: Mon, 12 Feb 2024 17:15:48 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+	svens@linux.ibm.com, maskray@google.com, ndesaulniers@google.com,
+	linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, patches@lists.linux.dev
+Subject: Re: [PATCH 04/11] s390: vmlinux.lds.S: Discard unnecessary sections
+Message-ID: <20240213001548.GA3272429@dev-arch.thelio-3990X>
+References: <20240207-s390-lld-and-orphan-warn-v1-0-8a665b3346ab@kernel.org>
+ <20240207-s390-lld-and-orphan-warn-v1-4-8a665b3346ab@kernel.org>
+ <20240212135511.65142-A-hca@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240208220604.140859-1-seanjc@google.com> <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
- <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
- <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
- <ZcZyWrawr1NUCiQZ@google.com> <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
- <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
- <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com>
- <CAFULd4ZUa56KDLXSoYjoQkX0BcJwaipy3ZrEW+0tbi_Lz3FYAw@mail.gmail.com> <CAHk-=wiKq0bNqGDsh2dmYOeKub9dm8HaMHEJj-0XDvG-9m4JQQ@mail.gmail.com>
-Message-ID: <Zcq0qwfjrOYPeR1h@google.com>
-Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on gcc-11
- (and earlier)
-From: Sean Christopherson <seanjc@google.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Uros Bizjak <ubizjak@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Jakub Jelinek <jakub@redhat.com>, "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212135511.65142-A-hca@linux.ibm.com>
 
-On Sun, Feb 11, 2024, Linus Torvalds wrote:
-> On Sun, 11 Feb 2024 at 03:12, Uros Bizjak <ubizjak@gmail.com> wrote:
-> >
-> > I'd suggest the original poster to file a bug report in the GCC
-> > bugzilla. This way, the bug can be properly analysed and eventually
-> > fixed. The detailed instructions are available at
-> > https://gcc.gnu.org/bugs/
+On Mon, Feb 12, 2024 at 02:55:11PM +0100, Heiko Carstens wrote:
+> On Wed, Feb 07, 2024 at 05:14:56PM -0700, Nathan Chancellor wrote:
+> > When building with CONFIG_LD_ORPHAN_WARN after selecting
+> > CONFIG_ARCH_HAS_LD_ORPHAN_WARN, there are some warnings around certain
+> > ELF sections that are unnecessary for the kernel's purposes.
+> > 
+> >   s390-linux-ld: warning: orphan section `.dynstr' from `arch/s390/kernel/head64.o' being placed in section `.dynstr'
+> >   s390-linux-ld: warning: orphan section `.dynamic' from `arch/s390/kernel/head64.o' being placed in section `.dynamic'
+> >   s390-linux-ld: warning: orphan section `.hash' from `arch/s390/kernel/head64.o' being placed in section `.hash'
+> >   s390-linux-ld: warning: orphan section `.gnu.hash' from `arch/s390/kernel/head64.o' being placed in section `.gnu.hash'
+> > 
+> > Add them to the discards to clear up the warnings, which matches other
+> > architectures.
+> > 
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> > ---
+> >  arch/s390/kernel/vmlinux.lds.S | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> ...
+> > -		*(.interp)
+> > +		*(.interp .dynamic)
+> > +		*(.dynstr .hash .gnu.hash)
 > 
-> Yes, please. Sean?
+> This seems to be wrong, since it leads to 1000s of error messages when
+> using the "crash" utility e.g. when looking into a live dump of system
+> with the generated debug info:
 > 
-> In order to *not* confuse it with the "asm goto with output doesn't
-> imply volatile" bugs, could you make a bug report that talks purely
-> about the code generation issue that happens even with a manually
-> added volatile (your third code sequence in your original email)?
+> BFD: /usr/lib/debug/usr/lib/modules/6.8.0-20240211.rc3.git0.bdca9b8dcf3f.300.fc39.s390x/vmlinux: attempt to load strings from a non-string section (number 0)
+> 
+> I will change this commit to the below; it seems to work and is in
+> line with other architectures:
 
-Will do.  Got a bug report ready, just waiting for a GCC Bugzilla account to be
-created for me so I can file it...
+Thanks a lot for catching that, your final change seems good to me.
+Here's to hoping I did not get anything else wrong :)
+
+Cheers,
+Nathan
+
+> -----
+> 
+> When building with CONFIG_LD_ORPHAN_WARN after selecting
+> CONFIG_ARCH_HAS_LD_ORPHAN_WARN, there are some warnings around certain
+> ELF sections:
+> 
+>   s390-linux-ld: warning: orphan section `.dynstr' from `arch/s390/kernel/head64.o' being placed in section `.dynstr'
+>   s390-linux-ld: warning: orphan section `.dynamic' from `arch/s390/kernel/head64.o' being placed in section `.dynamic'
+>   s390-linux-ld: warning: orphan section `.hash' from `arch/s390/kernel/head64.o' being placed in section `.hash'
+>   s390-linux-ld: warning: orphan section `.gnu.hash' from `arch/s390/kernel/head64.o' being placed in section `.gnu.hash'
+> 
+> Explicitly keep those sections like other architectures when
+> CONFIG_RELOCATABLE is enabled, which is always true for s390.
+> 
+> [hca@linux.ibm.com: keep sections instead of discarding]
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> Link: https://lore.kernel.org/r/20240207-s390-lld-and-orphan-warn-v1-4-8a665b3346ab@kernel.org
+> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+> ---
+>  arch/s390/kernel/vmlinux.lds.S | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/arch/s390/kernel/vmlinux.lds.S b/arch/s390/kernel/vmlinux.lds.S
+> index 661a487a3048..d46e3c383952 100644
+> --- a/arch/s390/kernel/vmlinux.lds.S
+> +++ b/arch/s390/kernel/vmlinux.lds.S
+> @@ -200,6 +200,21 @@ SECTIONS
+>  		*(.rela*)
+>  		__rela_dyn_end = .;
+>  	}
+> +	.dynamic ALIGN(8) : {
+> +		*(.dynamic)
+> +	}
+> +	.dynsym ALIGN(8) : {
+> +		*(.dynsym)
+> +	}
+> +	.dynstr ALIGN(8) : {
+> +		*(.dynstr)
+> +	}
+> +	.hash ALIGN(8) : {
+> +		*(.hash)
+> +	}
+> +	.gnu.hash ALIGN(8) : {
+> +		*(.gnu.hash)
+> +	}
+>  
+>  	. = ALIGN(PAGE_SIZE);
+>  	__init_end = .;		/* freed after init ends here */
+> -- 
+> 2.40.1
+> 
 
