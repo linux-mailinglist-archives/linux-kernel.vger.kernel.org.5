@@ -1,147 +1,197 @@
-Return-Path: <linux-kernel+bounces-63021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FA41852964
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:50:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29F9A85296A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:53:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFB18B23251
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:50:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D31E12871FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228A9168D8;
-	Tue, 13 Feb 2024 06:50:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE73717562;
+	Tue, 13 Feb 2024 06:53:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VVVoGnXs"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="S74kmW2d"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A2C1428D;
-	Tue, 13 Feb 2024 06:50:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00AB31428D;
+	Tue, 13 Feb 2024 06:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707807011; cv=none; b=u+0uxO8/72Zz0mUBTEuw/zcTPUx8ZlU6SwGtlqGMbUfUchoFGb9ej5RzzHLBGQli4UmlLEip7yzLkA8a9IH19vyNARGxw5chJTsq/Dygvp3I9/a7X2XRKjRXr+rhCfyRJFc3aXgLu2vU8IG08zjpeSXFmBnsZM1xnZ7cfB49D2Y=
+	t=1707807213; cv=none; b=r4rmxSxIm6tb9iNAZXCqBUaT7XorqSdSnq8LA8/hWMCa4w1TFd+0pQmzwyejJpW1B0sMK8v+8//2nH80ZZNLOPr/lIysZ887N1FfNmMuZ4fmnQRqMJ2y/MSqOcUgsIMyC8K53q6+IrEnPZcO4zAd8LpYhVBBV+9RgQRLoOYvKMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707807011; c=relaxed/simple;
-	bh=B3x02Xpf9S26q357o9JhiQnLT64YR8Qkpv/NCHz22so=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IHpZC8pKonAY+Feyq28HnBjSc0n35XA2XnsAsPBSORk6t/LBCZNZkpzJ5Mdi+KJZA61+8VVX7w0Dmsuck7ywGbwBNOMb1mVjeCzTR7bshfPvbbfwhWjK+ndgeghZMc9dcu+WwjNk0Gd+0dna+hB8RngTgC5W+1F+3gvHk9d0HMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VVVoGnXs; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41D6lNVA019673;
-	Tue, 13 Feb 2024 06:50:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=LpOhiBrh/zs4PN1wepzjQXP0dXZc4CPGbLFdgUY+jK4=; b=VV
-	VoGnXsFHAe+N6Yvf/kic/WnRbRYoUI3Q2AL9DQOXjgbv/kdzDZV0SBDhqelZgPLN
-	v2630P9WQNDQx2NMZEAhI1sOe0hi9RvcmqN7CMUkW94qANiU25gB30PS3dwpbUpv
-	pSXP2lTaea+HEJBF/w96Q809VfBF8FRDi/AmcXfgU1jixVYobHWFnBlStXnBBoJ5
-	f/6DDcGIaZSoMIBHjob9UbkEU43HevmTpPbUZiBQ/c2XBKea2CVaOKV8NqjEV+6B
-	vVruEdSRl3tZqNbsAHkL8FjY5XAFhdIfGEGoSXUWfyZaKX94tR/i/7SFcyy7IQ2t
-	dZDfX2zOZzrCpdXzkakA==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7gs1jau2-1
+	s=arc-20240116; t=1707807213; c=relaxed/simple;
+	bh=ITCyrLghQ30aRAorX9qB6Sajy1pj+WJa1/6sGk5iABA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j6iYEpackaG53PqGAi+2qAFVoo0hn13dl2NVb1m//AMulKOFxz6k8HaHwWcQ6YoamNkbP4+uRx3YqFMRSupaCPv7xzyjEba1DULgTLTBUbIOSl0qE3gpyJysKLGaX3s5PImMQs9P4e91KTQUhH7hJuRVIycqDuplrVYaBi0th+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=S74kmW2d; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41D6HNoH025985;
+	Tue, 13 Feb 2024 06:53:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=4NKSIh+Fr8WTVMUu4ha6UjzCuFYZLVL2fWiORrY97GU=;
+ b=S74kmW2d80x+hFC5/TxZKlmfG7tAde7IhH4F71YI8/UuQkebWKd9W11mUixEgpj+hZz5
+ rNwjYSo88ST8ocy8BvYsXIdlHNzir5YFMf5Ijoc5WN9qTQHySxNMSaQgaHGg17hMiMBy
+ 3pSOyxlvTyjFdtVEfWw++ykuJTJk6WBKGO8z2YDjhg8Gm1H2PVCwJbD9XGvNth8AvHoG
+ m/WWtf2uTePFI+T8Uoax2DWsf0RmwXHBqhAdc7audRu16xyIHw+IlcrShp2JM9x9qX8t
+ P3FH8W23S6CE5Vtr2tdA/112ljGvHXNfzF+/H8wS/bMXfjbC8y9mThYUom0VcULqYbAM ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w83160nae-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 06:50:06 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D6o6k4027509
+	Tue, 13 Feb 2024 06:53:01 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41D6k86N003140;
+	Tue, 13 Feb 2024 06:53:01 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w83160n9y-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 06:50:06 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 12 Feb
- 2024 22:50:00 -0800
-Message-ID: <37f32468-b06c-05d7-eee0-cad87c4e656b@quicinc.com>
-Date: Tue, 13 Feb 2024 12:19:56 +0530
+	Tue, 13 Feb 2024 06:53:01 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41D63fs3010083;
+	Tue, 13 Feb 2024 06:53:00 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6npkndw9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 06:53:00 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41D6quVH22872716
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 13 Feb 2024 06:52:58 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BEBD458063;
+	Tue, 13 Feb 2024 06:52:56 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4EFEA5805D;
+	Tue, 13 Feb 2024 06:52:50 +0000 (GMT)
+Received: from [9.109.198.187] (unknown [9.109.198.187])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 13 Feb 2024 06:52:49 +0000 (GMT)
+Message-ID: <8ce0068d-aaff-46e0-9fec-f09206938106@linux.ibm.com>
+Date: Tue, 13 Feb 2024 12:22:48 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3] soc: qcom: llcc: Check return value on Broadcast_OR
- reg read
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 09/15] block: Add checks to merging of atomic writes
 Content-Language: en-US
-To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Abel Vesa
-	<abel.vesa@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, Elliot Berman <quic_eberman@quicinc.com>
-References: <20240212183515.433873-1-quic_uchalich@quicinc.com>
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20240212183515.433873-1-quic_uchalich@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, brauner@kernel.org, bvanassche@acm.org,
+        dchinner@redhat.com, djwong@kernel.org, hch@lst.de, jack@suse.cz,
+        jbongio@google.com, jejb@linux.ibm.com, kbusch@kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
+        martin.petersen@oracle.com, ming.lei@redhat.com, ojaswin@linux.ibm.com,
+        sagi@grimberg.me, tytso@mit.edu, viro@zeniv.linux.org.uk
+References: <20240124113841.31824-10-john.g.garry@oracle.com>
+ <20240212105444.43262-1-nilay@linux.ibm.com>
+ <b3ce860d-4a1e-4980-97d9-0e8ad381c689@oracle.com>
+From: Nilay Shroff <nilay@linux.ibm.com>
+In-Reply-To: <b3ce860d-4a1e-4980-97d9-0e8ad381c689@oracle.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: S5C2IbKUsGQsO1VBJI4imHSiSLE6uFy5
-X-Proofpoint-ORIG-GUID: S5C2IbKUsGQsO1VBJI4imHSiSLE6uFy5
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NEMKpa3nLFWJoO5v4hM9IsmvrbmlpotD
+X-Proofpoint-GUID: PrYV3wPBZoaTkpgDGCYdZ-6A1zflaRBR
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-13_03,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=0 adultscore=0 clxscore=1015 impostorscore=0 mlxscore=0
- malwarescore=0 spamscore=0 phishscore=0 priorityscore=1501 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402130051
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0 suspectscore=0
+ mlxlogscore=999 clxscore=1015 phishscore=0 mlxscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402130051
 
 
 
-On 2/13/2024 12:05 AM, Unnathi Chalicheemala wrote:
-> Commit c72ca343f911 ("soc: qcom: llcc: Add v4.1 HW version support")
-> introduced a new 4.1 if statement in llcc_update_act_ctrl() without
-> considering that ret might be overwritten. So, add return value check
-> after Broadcast_OR register read in llcc_update_act_ctrl().
+On 2/12/24 17:39, John Garry wrote:
+> On 12/02/2024 10:54, Nilay Shroff wrote:
+>>
+>> Shall we ensure here that we don't cross max limit of atomic write supported by
+>>
+>> device? It seems that if the boundary size is not advertized by the device
+>>
+>> (in fact, I have one NVMe drive which has boundary size zero i.e. nabo/nabspf/
+>>
+>> nawupf are all zero but awupf is non-zero) then we (unconditionally) allow
+>>
+>> merging.
 > 
-> Fixes: c72ca343f911 ("soc: qcom: llcc: Add v4.1 HW version support")
-> Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-> Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
+> BTW, if you don't mind, can you share awupf value and device model? I have been on the search for NVMe devices which support atomic writes (with non-zero PF reported value). All I have is a M.2 card which has a 4KB PF atomic write value.
 > 
-> ---
-> Changes in v3:
-> - Bunched Fixes tag with other tags.
-> - Modified commit message.
-> - Link to v2: https://lore.kernel.org/all/20240210011415.3440236-1-quic_uchalich@quicinc.com/
+> But if this is private info, then ok.
 > 
-> Changes in v2:
-> - Referenced right commit to be fixed in the commit message.
-> - Added Elliot's R-B tag.
-> - Modified commit message to better explain problem statement.
-> - Link to v1: https://lore.kernel.org/all/20240202-fix_llcc_update_act_ctrl-v1-1-d36df95c8bd5@quicinc.com/
-> 
-> ---
->   drivers/soc/qcom/llcc-qcom.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-> index 4ca88eaebf06..cbef0dea1d5d 100644
-> --- a/drivers/soc/qcom/llcc-qcom.c
-> +++ b/drivers/soc/qcom/llcc-qcom.c
-> @@ -859,6 +859,8 @@ static int llcc_update_act_ctrl(u32 sid,
->   	ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
->   				      slice_status, !(slice_status & status),
->   				      0, LLCC_STATUS_READ_DELAY);
-> +	if (ret)
-> +		return ret;
+> Thanks,
+> John
+
+Yeah sure. Below are the details about NVMe:
+
+# lspci 
+0040:01:00.0 Non-Volatile memory controller: KIOXIA Corporation Device 0025 (rev 01)
+
+# nvme id-ctrl /dev/nvme0 -H 
+NVME Identify Controller:
+vid       : 0x1e0f
+ssvid     : 0x1014
+sn        : Z130A00LTGZ8        
+mn        : 800GB NVMe Gen4 U.2 SSD                 
+fr        : REV.C9S2
+[...]
+awun      : 65535
+awupf     : 63
+[...]
+
+# nvme id-ns /dev/nvme0n1 -H 
+NVME Identify Namespace 1:
+nsze    : 0x18ffff3
+ncap    : 0x18ffff3
+nuse    : 0
+nsfeat  : 0x14
+  [4:4] : 0x1	NPWG, NPWA, NPDG, NPDA, and NOWS are Supported
+  [3:3] : 0	NGUID and EUI64 fields if non-zero, Reused
+  [2:2] : 0x1	Deallocated or Unwritten Logical Block error Supported
+  [1:1] : 0	Namespace uses AWUN, AWUPF, and ACWU
+  [0:0] : 0	Thin Provisioning Not Supported
+
+[...]
+
+nawun   : 0
+nawupf  : 0
+nacwu   : 0
+nabsn   : 0
+nabo    : 0
+nabspf  : 0
+
+[...]
+
+LBA Format  0 : Metadata Size: 0   bytes - Data Size: 4096 bytes - Relative Performance: 0 Best (in use)
+LBA Format  1 : Metadata Size: 8   bytes - Data Size: 4096 bytes - Relative Performance: 0 Best 
+LBA Format  2 : Metadata Size: 0   bytes - Data Size: 512 bytes - Relative Performance: 0 Best 
+LBA Format  3 : Metadata Size: 8   bytes - Data Size: 512 bytes - Relative Performance: 0 Best 
+LBA Format  4 : Metadata Size: 64  bytes - Data Size: 4096 bytes - Relative Performance: 0 Best 
+LBA Format  5 : Metadata Size: 8   bytes - Data Size: 512 bytes - Relative Performance: 0 Best 
 
 
-Nice catch, Thanks.
-Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+As shown above, I am using KIOXIA NVMe. This NVMe has one namespace created(nvme0n1). 
+The nsfeat reports that this namespace uses AWUN, AWUPF, and ACWU.The awupf for this NVMe is 63. 
+As awupf is 0's based value, it's actually 64. The configured LBA for the namespace (in use) is 4096 
+bytes and so that means that this NVMe supports writing 262144 (64*4096) bytes of data atomically 
+during power failure. Further, please note that on this NVMe we have nawupf/nabspf/nabo all set
+to zero. 
 
--Mukesh
+Let me know if you need any other details. And BTW, if you want I could help you with anything 
+you'd like to test on this NVMe. 
 
->   
->   	if (drv_data->version >= LLCC_VERSION_4_1_0_0)
->   		ret = regmap_write(drv_data->bcast_regmap, act_clear_reg,
+Thanks,
+--Nilay
 
