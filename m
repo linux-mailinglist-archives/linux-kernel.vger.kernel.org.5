@@ -1,160 +1,114 @@
-Return-Path: <linux-kernel+bounces-62994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE08785289F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:13:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B8378528A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:14:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45B99B22A80
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:13:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4CDB1F22ED7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:14:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29382134C9;
-	Tue, 13 Feb 2024 06:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F327412E59;
+	Tue, 13 Feb 2024 06:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Dtrye5rG"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RkRlrIVt"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC51B1428E;
-	Tue, 13 Feb 2024 06:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0616171A1
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:14:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707804813; cv=none; b=kq9ahtP/QVZT34/4j9pjAUJ/TRYSc4oFX7s85dD+/z2hbmI0JiSqojXxMeJYT7SnE7/1Cz2P1sG4gY3BBkxoA+QS4CcUyXEN6si20KYe5W06A79LqhFfAehHqwEBphpRVPc+Ek5JcWoFG7hVSp2K9+cvNDF1m1h9d91IpWXo0tI=
+	t=1707804850; cv=none; b=j8bfK5LXS7tvdgcVyqXVCb/KvJ8r4aTZR7TIo4x3+nMd2LUrjUSMHlZENoZo19dpJzOdsdWNd5FxWznlh5HimjWVd2XXeWNc22aKE/X2JJ4SrZjZXdkhP/izjqeSX1Qv3lRxvg4ShPyN0QxEbJk6tz/BNPww7wKJQtAfe7atqYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707804813; c=relaxed/simple;
-	bh=+OluaC2nfCC3QuXSPU0HcOwT7ap3mPRpLCz86/Gs6DA=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=CpM1Bcn5RlEnIhubDnSXUfiPHcdLyTL3hypTLU9Nde4z93jayy+n8y57zht1PtdetIRnsV+1j838Qjxi4biewGUy2Lcm0xGRCUdPwCectsp4a5k9Ca26ceW2kjOlFG3NWklM4WOkJoPIBYkLVzGpNa8B/2PhrJ49dD+ZuaIgMwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Dtrye5rG; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41D6DMbg023971;
-	Tue, 13 Feb 2024 00:13:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707804802;
-	bh=Rv/j7HNyUc7U+67Hp/SX9I0XSishaJ1nAKVKGyANHvI=;
-	h=Date:CC:Subject:To:References:From:In-Reply-To;
-	b=Dtrye5rGo1nQPIp3HoTylynJzEGI+L3lO8Gfjyt213nQferSwJjmsg1CfsE6vhSyM
-	 H/kxPTGg8VRKQQcbcAUjP672UCUcUkRmz/DzCAX9p9tAmEf7qrnHxmWtupHyOFEYgP
-	 dPOLz2162GUNkB/KKLvYnetC3kJ7Kj4kunTzP6Ic=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41D6DMSe013493
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 13 Feb 2024 00:13:22 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 13
- Feb 2024 00:13:22 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 13 Feb 2024 00:13:21 -0600
-Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41D6DHkN050952;
-	Tue, 13 Feb 2024 00:13:18 -0600
-Message-ID: <619dd947-a3da-49ee-9bee-8b21c7e7ca1a@ti.com>
-Date: Tue, 13 Feb 2024 11:43:17 +0530
+	s=arc-20240116; t=1707804850; c=relaxed/simple;
+	bh=WSI8jGoehl7pEfJRdnqy5FfnvloMDdkYnJeeNSAa+7g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SwAmUd5y1+bDYmrD9Lfb4I3XkTVxxFx3n4cgxmNoyalhEkL8PgtvZmgLO0iQTovWeAbeawdt/WZEzbtHlMXx1ZyzGM54rW58utug+kYBHnfktq8Jb9K1ZHBrucCAKls28z26gDi4Cp2M/YbbakU8qhsaDv/XmBAxFhFQTU9H97U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RkRlrIVt; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bbbc6e51d0so2880993b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 22:14:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707804848; x=1708409648; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ur4VuvuIiaAwMddxcZFRFhOdWSxGyrzbMVOGTTJmylk=;
+        b=RkRlrIVtvFWaV6M3Zrjmr2Yqi+eA3QjqrqIDa5SzepyDiu8svTjWicqxRhrGTfdrA0
+         kAgqBAYLe3ZgD09cgCkZ2BX/N3c7r12KzBTPhH/cQ4THfetcozNILefdVh/aAiTQXg4d
+         hsAm9eDx98G4nd3Em1WaRefzJlB3doq/vrSwQ4X40+xWa2F2A2SYaWMFqBAI8fsIvtz1
+         InTlagq/GOtAUe5gGrOK0XMnPn6NdaEF9FAri3tfyPkDzb0TolPA6KTUtHbene5ONIBp
+         X/6k5JZPH6t71SoY0Nw0nUVn+45WVt+QG7HKv24AFlTE0M3b+V+Vv0pzhGKvDHn0F1/u
+         gugw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707804848; x=1708409648;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ur4VuvuIiaAwMddxcZFRFhOdWSxGyrzbMVOGTTJmylk=;
+        b=DnzGT+d86hM3P/Saswktac5vtX50mWELqfIELslXrCmhxdlfQ6XbCiICQtdtwr6LHz
+         MYIPpZu5whZe8FylLPTVkYnIoIE4bJpKPPi4P1zcj8wLFAHB1eWEwatUu6GqQblcUVTH
+         EV1PaWrr3lkkElCxeU+Qbp+HUPox2j6oyqHFVvCnqPPkYE5hjsK56VN3ERCjN+nH3XhH
+         HMZ3DwAR2vp6R9K7RQCA8s8CHGqOmLQCOx+yqidMVPawW8dUHRXzJDtmsQ18CXsMrhsn
+         9QYLScIBFr7dcNflY4JxyQ9G6v54SVInAvbYQu5puEf1iPyFFm1q3BpmvEzjU7iCV0XD
+         ECMg==
+X-Forwarded-Encrypted: i=1; AJvYcCXQaSJ/vF/Tm7MQ66rajUtpQS/ULSMx5CZi1qLceDgb4gX1TlZMJMb/ym2r3oe6XarR5Q/D/ag4ffBpqLwsSqon9leYYq3F7hPVuz9W
+X-Gm-Message-State: AOJu0YyxBHXFcwAgTOyK9SX02v48ibPcv1zTwpsJ8tCZA4X3h/DlI6Fv
+	nKo3U0+9hXBEviNd7qKgGKg30L3tEZr8q+iZrBv5d4kix5p8fY/aaYLhgbGv99Q=
+X-Google-Smtp-Source: AGHT+IEGOmUGwnD8hUfKM+YyablrKp+JD65rIInkFFmTHlzSJeYRJ9LrnF0X/VGLS3YQf1mZMIo1eg==
+X-Received: by 2002:a05:6808:1642:b0:3bf:f547:dc80 with SMTP id az2-20020a056808164200b003bff547dc80mr8593440oib.21.1707804847757;
+        Mon, 12 Feb 2024 22:14:07 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUzzeuHzK+n1FavnH8wYNScOfOgLIWwbXOsVQE7ANP8BrcNTf11Q+pyalY0v/Oty8c6ah34H8wUDPjZfrjBH4eSlhaElW7Sov+6egABvS0m/18JR4xAx7R2638x6XniDFKNR2EtX36qwlS6fRMPXSbRL/ZYm9RnIonaKf8FiwkLK6181n+Uof1teKm7pyhuDtasyWDl+XbVJ4rF55SLQdYmIocszKHZ2HZfFEZjy9ZK9RyQFeZpPHOsQxDhxbe3dgpsiLdOockOnNmPdHeyeBSjg1GwEVdWDdurEeC6UPaeyRLxyWyy6o7P8bFTTo6Vjd7EbUHx+XPu3Ek+OYOtSpePxQZdjO84f4vSfZB8s+AGbJr0BmZLtwk4Sd5XAUgo6EcMz3MFdaB+Rb456LGnCvou4Cbc8WXaRmfA7j1zFViZ+wMn3IUBqY1p80ogkg8=
+Received: from localhost ([122.172.83.95])
+        by smtp.gmail.com with ESMTPSA id du17-20020a056a002b5100b006ddcf5d5b0bsm6521173pfb.153.2024.02.12.22.14.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 22:14:07 -0800 (PST)
+Date: Tue, 13 Feb 2024 11:44:05 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Anup Patel <apatel@ventanamicro.com>
+Subject: Re: [PATCH v1 -next 2/3] cpufreq: Move CPPC configs to common
+ Kconfig and add RISC-V
+Message-ID: <20240213061405.ictoxql2oh5jtg5b@vireshk-i7>
+References: <20240208034414.22579-1-sunilvl@ventanamicro.com>
+ <20240208034414.22579-3-sunilvl@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <vigneshr@ti.com>, <afd@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH v3] dt-bindings: PCI: ti,j721e-pci-host: Add support for
- J722S SoC
-To: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, Conor Dooley <conor@kernel.org>
-References: <20240124122936.816142-1-s-vadapalli@ti.com>
- <20240124-unmatched-plating-019a3055cf5e@spud>
-Content-Language: en-US
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <20240124-unmatched-plating-019a3055cf5e@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240208034414.22579-3-sunilvl@ventanamicro.com>
 
-
-
-On 24/01/24 21:40, Conor Dooley wrote:
-> On Wed, Jan 24, 2024 at 05:59:36PM +0530, Siddharth Vadapalli wrote:
->> TI's J722S SoC has one instance of a Gen3 Single-Lane PCIe controller.
->> The controller on J722S SoC is similar to the one present on TI's AM64
->> SoC, with the difference being that the controller on AM64 SoC supports
->> up to Gen2 link speed while the one on J722S SoC supports Gen3 link speed.
->>
->> Update the bindings with a new compatible for J722S SoC.
->>
->> Technical Reference Manual of J722S SoC: https://www.ti.com/lit/zip/sprujb3
->>
->> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+On 08-02-24, 09:14, Sunil V L wrote:
+> CPPC related config options are currently defined only in ARM specific
+> file. However, they are required for RISC-V as well. Instead of creating
+> a new Kconfig.riscv file and duplicating them, move them to the common
+> Kconfig file and enable RISC-V too.
 > 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
+> ---
+>  drivers/cpufreq/Kconfig     | 29 +++++++++++++++++++++++++++++
+>  drivers/cpufreq/Kconfig.arm | 26 --------------------------
+>  2 files changed, 29 insertions(+), 26 deletions(-)
 
-Bjorn, Rob,
-
-Could you please merge this patch? This patch applies cleanly on the latest
-linux-next tagged next-20240213.
-
-> 
-> Cheers,
-> Conor.
-> 
->> ---
->>
->> Hello,
->>
->> This patch is based on linux-next tagged next-20240124.
->>
->> v2:
->> https://lore.kernel.org/r/20240122064457.664542-1-s-vadapalli@ti.com/
->> Changes since v2:
->> - Added fallback compatible for "ti,j722s-pcie-host" as
->>   "ti,j721e-pcie-host" based on Conor's suggestion at:
->>   https://lore.kernel.org/r/20240122-getting-drippy-bb22a0634092@spud/#t
->>
->> v1:
->> https://lore.kernel.org/r/20240117102526.557006-1-s-vadapalli@ti.com/
->> Changes since v1:
->> - Dropped patches 1/3 and 2/3 of the v1 series as discussed in the v1
->>   thread.
->> - Updated patch 3/3 which is the v1 for this patch by dropping the checks
->>   for the "num-lanes" property and "max-link-speed" property since the PCI
->>   driver already validates the "num-lanes" property.
->>
->> Regards,
->> Siddharth.
->>
->>  Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
->> index b7a534cef24d..ac69deeaf1ee 100644
->> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
->> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
->> @@ -23,6 +23,10 @@ properties:
->>          items:
->>            - const: ti,j7200-pcie-host
->>            - const: ti,j721e-pcie-host
->> +      - description: PCIe controller in J722S
->> +        items:
->> +          - const: ti,j722s-pcie-host
->> +          - const: ti,j721e-pcie-host
->>  
->>    reg:
->>      maxItems: 4
->> -- 
->> 2.34.1
->>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
 -- 
-Regards,
-Siddharth.
+viresh
 
