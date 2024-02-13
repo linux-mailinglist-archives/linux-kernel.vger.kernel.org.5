@@ -1,93 +1,109 @@
-Return-Path: <linux-kernel+bounces-64151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB31F853AC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:20:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F094853B38
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6A45285FCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:20:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 029762898E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3818376FA;
-	Tue, 13 Feb 2024 19:20:07 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C3D60B94;
+	Tue, 13 Feb 2024 19:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="n2tBm63M"
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [178.238.236.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66C110A3A;
-	Tue, 13 Feb 2024 19:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01F860263;
+	Tue, 13 Feb 2024 19:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.238.236.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707852007; cv=none; b=pfbTCCWW7j6Ak8lq1gSbA4XhoEVvIfzUzjJGozjaiD9/ZfWofb/OImoT2r3mDxu1ryvspr2FdrE2sTZFPoYSobSNICbRdgpKiGJe56yhU/ibMdzeHqUrlVcYA5tJJuUAE5XusMRdk0+/D/5LrJDBqart5LJ0kmwnvWixoBtAXzA=
+	t=1707852978; cv=none; b=bg7Ip6XIdYRo7dfou0uOrZM5KIA5k/vnKjSa7NgEsRR/a6CXkK6QbRgMswkvgFVFuHVHKWw3adwFTy06zEHoxqYlwqaV3yI0R63ezpqSCXkEVvitH0okex/21bwipIQLKBJyNoKRPSVfceLAsf1Ex+zxFfyX0w+wG9lNuGnzIyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707852007; c=relaxed/simple;
-	bh=L6CFmHzcsf+jEGi+d8zlHyKMcEu6Clt494lEjZjuXkw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Zphjq+hoR3T0ZXY5fbKdPaGC6WXtIDT9KssgPmxWxR8/w/of9j22OzZNk552xBZlijutx6Nlv2482mNiu9qI+aLGUZRYPKcbRGTwKsBUxoJ6qbTPJOm1FreVmdVO2MPdaZsxPj/r9+gdBQ+rapefkVKzDkuLsnD/SrjaD5SxzkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from [194.95.143.137] (helo=phil.dip.tu-dresden.de)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	s=arc-20240116; t=1707852978; c=relaxed/simple;
+	bh=d7K2JQulCuhpnm56OWHlm77lVRR8659PaC63yui03SU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=umfTJCdi7n9OFUsAStcxCCGVK0emlNqTv2pvBFHbmGu4AsjI+m2iqnKEivDxna9WiGaNcmy5CM3UAwlJgUEltPZ6UNbP8x/Zxn0tad/OWc9hBbkeBeSGi6bD07iPG1wX/XpN4mBbyzatt3NyWH5HT7X4EUZ/WrH3eQ47UvvnqKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=n2tBm63M; arc=none smtp.client-ip=178.238.236.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=eT8/BFgimu3HSsjaK7aAfhbdMsoZx19Yyb187hpoUJ8=; b=n2tBm63M5QFHlcpMTWOGDXk9Cp
+	fDFJHXpK8edY+o4kBSSuO00IculrrCK2RwfVcWoSzvmkgEimLrIwP6Q8oq3lC6QRLVVYtors1gdaS
+	hRcbGxPOp1SfSwebpbbPp07UHm8XCUyKezklGKguD0P+WKY+btE7BCDcf+N4+FoP8jNb3IGV7cf0u
+	5r9nlv+Dhlf0e0x8d9iXyh3NsA8ySt2VO4GEG+oN6hy4k6JBTzqNCocuz/Re7PGs9/3Ex2MKAHmYK
+	6OTMOVANrOeakpoEc1QyHFet1ZyOf3IggRDAJZZ8QCMvdeg/njmVTEJVkvkrVn7edBGirjb0UXw9V
+	4MolsIQA==;
+Received: from p2003010777002c001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7700:2c00:1a3d:a2ff:febf:d33a] helo=aktux)
+	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rZyK2-0008K1-KX; Tue, 13 Feb 2024 20:20:02 +0100
-From: Heiko Stuebner <heiko@sntech.de>
-To: robh+dt@kernel.org,
-	Johan Jonker <jbx6244@gmail.com>
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	linux-arm-kernel@lists.infradead.org,
-	daniel@ffwll.ch,
-	linux-kernel@vger.kernel.org,
-	markyao0591@gmail.com,
-	devicetree@vger.kernel.org,
-	maarten.lankhorst@linux.intel.com,
-	dri-devel@lists.freedesktop.org,
-	conor+dt@kernel.org,
-	hjc@rock-chips.com,
-	linux-rockchip@lists.infradead.org,
-	airlied@gmail.com,
-	andy.yan@rock-chips.com,
-	mripard@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	tzimmermann@suse.de
-Subject: Re: (subset) [PATCH v2 1/6] dt-bindings: display: rockchip: rockchip,dw-hdmi: remove port property
-Date: Tue, 13 Feb 2024 20:20:01 +0100
-Message-Id: <170785199080.3350387.14199175297568955666.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <a493c65e-7cf9-455f-95d5-8c98cad35710@gmail.com>
-References: <a493c65e-7cf9-455f-95d5-8c98cad35710@gmail.com>
+	(envelope-from <andreas@kemnade.info>)
+	id 1rZyKH-009PSB-H1; Tue, 13 Feb 2024 20:20:17 +0100
+Date: Tue, 13 Feb 2024 20:20:15 +0100
+From: Andreas Kemnade <andreas@kemnade.info>
+To: Adam Ford <aford173@gmail.com>
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+ johan@kernel.org, jirislaby@kernel.org, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, Tony
+ Lindgren <tony@atomide.com>, tomi.valkeinen@ideasonboard.com,
+ =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>, robh@kernel.org,
+ hns@goldelico.com
+Subject: Re: [RFC PATCH v2 3/3] gnss: Add driver for AI2 protocol
+Message-ID: <20240213202015.08a0a3ad@aktux>
+In-Reply-To: <CAHCN7x+rfwNeb+xOnLmQR78MQVDwGOOEHqnEceJcDkMrRJtE5Q@mail.gmail.com>
+References: <20240128173352.2714442-1-andreas@kemnade.info>
+	<20240128173352.2714442-4-andreas@kemnade.info>
+	<CAHCN7x+rfwNeb+xOnLmQR78MQVDwGOOEHqnEceJcDkMrRJtE5Q@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 31 Jan 2024 22:14:29 +0100, Johan Jonker wrote:
-> The hdmi-connector nodes are now functional and the new way to model
-> hdmi ports nodes with both in and output port subnodes. Unfortunately
-> with the conversion to YAML the old method with only an input port node
-> was used. Later the new method was also added to the binding.
-> A binding must be unambiguously, so remove the old port property
-> entirely and make port@0 and port@1 a requirement as all
-> upstream dts files are updated as well and because checking
-> deprecated stuff is a bit pointless.
-> Update the example to avoid use of the removed property.
-> 
-> [...]
+On Tue, 13 Feb 2024 07:57:10 -0600
+Adam Ford <aford173@gmail.com> wrote:
 
-Applied, thanks!
+> On Sun, Jan 28, 2024 at 11:34=E2=80=AFAM Andreas Kemnade <andreas@kemnade=
+info> wrote:
+> >
+> > Add a driver for the Air Independent Interface protocol used by some TI
+> > Wilink combo chips. Per default, send out just NMEA to userspace and tu=
+rn
+> > on/off things at open()/close() but keep the door open for any
+> > sophisticated development regarding the AI2 protocol by having a kernel
+> > parameter to turn it into raw mode resembling /dev/tigps provided by so=
+me
+> > TI vendor kernels.
+> >
+> > Signed-off-by: Andreas Kemnade <andreas@kemnade.info> =20
+>=20
+> I am still trying to find a GPS antenna for the Logic PD board I have,
+> but it occurred to me that the kit that I have used may require
+> special GPS firmware.  Are you using any special firmware in the radio
+> in conjunction with these driver patches or are you using the standard
+> bts files?
+>=20
+Just
+https://github.com/TI-ECS/bt-firmware/raw/master/TIInit_10.6.15.bts
 
-[1/6] dt-bindings: display: rockchip: rockchip,dw-hdmi: remove port property
-      commit: 0d192c4c72ce00ab07a6b27f068607e21f754a46
-[2/6] dt-bindings: display: rockchip,dw-hdmi: add power-domains property
-      commit: 6b1f93ea345947c94bf3a7a6e668a2acfd310918
+I removed one command (by setting type to commment) regarding some clock
+configuration.
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+Well, maybe you see NMEA without antenna, maybe you get an error message
+because the module "feels" the absence of an antenna...
+
+Regards,
+Andreas
 
