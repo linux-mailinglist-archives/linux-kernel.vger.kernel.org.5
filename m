@@ -1,143 +1,126 @@
-Return-Path: <linux-kernel+bounces-63338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67749852DD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:26:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB5D3852DD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:27:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 247C7288AE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:26:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E9AC1F21B9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AD822638;
-	Tue, 13 Feb 2024 10:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB86022F0A;
+	Tue, 13 Feb 2024 10:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GwkPBvLE";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="FTIkVehm"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="YIcJJkru";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Q44GQUQD"
+Received: from wfhigh7-smtp.messagingengine.com (wfhigh7-smtp.messagingengine.com [64.147.123.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04308225CE;
-	Tue, 13 Feb 2024 10:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0074222626
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707820004; cv=none; b=Yyb4xzoZIaFkgfmItnJAf/URA4B73uf1k4p2ahxCb/YdYvG1zeEuJAc7X2x2TLaLAUbot4eVg9kv0kgAjX9DJASgbBxyTb99lbhCpLh+wH+G4SBZY45YLv8hWA49mTYGi0etingxREW71H0lecNt9x8PyiSpiIxaNtjpTwU17G8=
+	t=1707820041; cv=none; b=XtUMMuEsn1x61k7lHOR4laPnrcQW+SvlJ4u0yA43yQa/IiCA069qcjtMWx7tmfoeJVTiK0REyM5yuTgXGWWpSPxrYTtS5qFvSD28lxJf4GE7oNK0kHrJbVGnclBbN9LRxYR+jfjSrs1fqx9VcWuPBTSmJozXfpnqWd07E990BKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707820004; c=relaxed/simple;
-	bh=aBnhq06nlMMvbU7IDlpipxtNtoUmHZ45y8K4GgkpUWs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Zxil/62HoUGi1RceahtHa18EnjErE2kcV21abwz1qTGp6FYQnSArIH1TAybzu1LIHmgPJ45WP/q2jprxmSxaG1vqj6mmvHWAFSRUx1vDpVKTTrJOaVmDcT4n5gp1rvI5YS50Cp5/skl71JMNQbfWVDLKPrQ8EWe0vjQi3OpWIuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GwkPBvLE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=FTIkVehm; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707820001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OirENwRVffLhqg4vLQeXmmc6qTeG6AWtBgzm4/Fep7o=;
-	b=GwkPBvLE/NQAAT43xtyROcGSWgUiucZZB2ec2g3VMikr5ObnhcXmo+RS5IDSmyM1OUGiEd
-	7xS8uBH10ljyxTHAf0TgsO0vUhc8J3cUumyVjdF+tArJNZ5Cb6qbN81/2L4SUuNb1n+xeM
-	lTUKLPRc+bLsZCgPNl5jfAbi8uQEAR9a7o0M/zk8iHPMQOA0sGKzpV8m4ycyLpvhMqIrTG
-	BzH2/fE2hX0EICezQmdB7T4kOaTHuSMg8g41lIojVhpEATsMu34Fr+weMIBkrFDgJ1m7zJ
-	smGA9OsZA5tjREuhcauzD90erNoGucb+l9Ok3++FJGDwNXwNBXF9bmy5HX/vxA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707820001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OirENwRVffLhqg4vLQeXmmc6qTeG6AWtBgzm4/Fep7o=;
-	b=FTIkVehmdBJJQ8PbMU0GBBiXWHp+VmaePW7Fc9q0HvKZTnjeSpYgSUQrZkAOitKr3WDpHK
-	rs9WULSDRQ3oSFCA==
-To: Nam Cao <namcao@linutronix.de>, Palmer Dabbelt <palmer@dabbelt.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Samuel Holland
- <samuel@sholland.org>, Marc Zyngier <maz@kernel.org>, Guo Ren
- <guoren@kernel.org>, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org
-Cc: Nam Cao <namcao@linutronix.de>, stable@vger.kernel.org
-Subject: Re: [PATCH v2] irqchip/sifive-plic: enable interrupt if needed
- before EOI
-In-Reply-To: <20240131081933.144512-1-namcao@linutronix.de>
-References: <20240131081933.144512-1-namcao@linutronix.de>
-Date: Tue, 13 Feb 2024 11:26:40 +0100
-Message-ID: <87wmr8hd7j.ffs@tglx>
+	s=arc-20240116; t=1707820041; c=relaxed/simple;
+	bh=A+IPxMsDDumipnPJZLNtkthokaGfLGk97Mz9Ox7uIiA=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=SEvHVoMkCoBSBtcqhmxdTEiuaWBiz/kWjmqnGuT2T/w6zFj3VVOXqV3KN45g0vwxOSYgkRMe8GW6DcgFD713gSMEUyu7Zi01F4KuTkKWjcciXOebhdDCIciysoTCN/YWjJo+ncVexsUtm5weyCXgXJYJXI5kGsrZRuzHg0/BxW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=YIcJJkru; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Q44GQUQD; arc=none smtp.client-ip=64.147.123.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id C25E91800087;
+	Tue, 13 Feb 2024 05:27:18 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 13 Feb 2024 05:27:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1707820038; x=1707906438; bh=mA+uWCPKsW
+	Nzn6w+caTmw+9idey2YfNF4ai4GleOvOo=; b=YIcJJkruoWMHvFQqtEX01hfHeO
+	Tzf07A2oG+/+fhDhXLSl3/9xV1uSKNxtOFSBDkDCDKId/ZbibmB24EqT3fuhXaXA
+	3UfG7ZwiRXOylW7nPJz0qo+KcIbGesZ0GWWTQtGB8/5Fhst0s4ng++RJC9OuUTwj
+	rGoJIJBz05R7oxhOXNugfFFwf0SjeIYUIN3lGgmjb8bQTC4l18CfZStz5Z8F6qCX
+	gPEOhY4izP6MNO8EJDproFdcpqKOAvLl6Dky96HT0LEXjTp6uYgAZjKjuF+NExxx
+	yeQpD/CssdxAJ+7PUGFcUHWWDagEkekQm7N5zFxQYbpv3m+L4yQyreZh8Mrw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707820038; x=1707906438; bh=mA+uWCPKsWNzn6w+caTmw+9idey2
+	YfNF4ai4GleOvOo=; b=Q44GQUQDZMBIGLjd/2iqMgQLa9EPm8FvUOEOf24eE0q7
+	BczOnXPoT3WqD0N02W1KcyJXsiJbXZI3oZiZuktBaWyym1jYeOtl7VlREwLdM/8Z
+	FPX1vZFee97Tu84eF5wrG90IwKSSCPy1RbEnYvXyTMnXvluPvNDKOol3Tvi9Z7eL
+	IFH3TgDmiZk/TfBL1fPvnUUs3g3RUsfobiiCdU8orxjoAMRKPCFrd8gjCI5RcnB6
+	AeODb+9WgbdfiJ1n/yr0AprjTE8YZkIqvIYPyuUS6Nfwz0LY6t1VGAAvvUkzkmu6
+	7eVBQYZiHrwH3laJWCDyr4yV2sT3AQywCD9kL7Ii+w==
+X-ME-Sender: <xms:BkTLZR-kmqzY5ZOIzgr_6jVw4-mvbx-2bqVbqUgSZ_c2UwdiLgTF5g>
+    <xme:BkTLZVvX1eNOGmuCh737VAvU3VVOQMVd7x0ILNo7eSzbb2nAm7ZOkWN7pSUaL_JKS
+    4f8Ce7uyerUGjKLzcc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehgddugecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepofgfggfkjghffffhvfevufgtsehttd
+    ertderredtnecuhfhrohhmpedftehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegr
+    rhhnuggsrdguvgeqnecuggftrfgrthhtvghrnhepffehueegteeihfegtefhjefgtdeugf
+    egjeelheejueethfefgeeghfektdekteffnecuvehluhhsthgvrhfuihiivgeptdenucfr
+    rghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:BkTLZfDLzIrTd0erV5Kjoim08XyWGniRlZxIQdOJqfIxprsXHezYgA>
+    <xmx:BkTLZVfhj34ni1fiGLdgSjb694_AEndGk9aP4cqCvaB0TiHdwuV1SQ>
+    <xmx:BkTLZWPgLpKBJw0UZul2XBkM-9vW-pZ37_8IYtUsQMGNaux0CfB_sg>
+    <xmx:BkTLZTq0NFWtNRX7wCrcMrQRsf4B3xWmUz7sWQk4dcFjY5DZHg93K9Z3daA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id E8FFEB6008D; Tue, 13 Feb 2024 05:27:17 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Message-Id: <3c76ba23-e4d7-49b0-b53c-b60772a25891@app.fastmail.com>
+In-Reply-To: <20240213102139.gnfh5sq24rwu7wnp@quack3>
+References: <20240213101733.461544-1-arnd@kernel.org>
+ <20240213102139.gnfh5sq24rwu7wnp@quack3>
+Date: Tue, 13 Feb 2024 11:26:57 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Jan Kara" <jack@suse.cz>, "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Jan Kara" <jack@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] quota: avoid printing an uninitialized blk number
 Content-Type: text/plain
 
-Nam!
-
-On Wed, Jan 31 2024 at 09:19, Nam Cao wrote:
-> RISC-V PLIC cannot "end-of-interrupt" (EOI) disabled interrupts, as
-> explained in the description of Interrupt Completion in the PLIC spec:
+On Tue, Feb 13, 2024, at 11:21, Jan Kara wrote:
+> On Tue 13-02-24 11:17:28, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> The error path of find_tree_dqentry() now prints a variable that is
+>> never initialized:
+>> 
+>> fs/quota/quota_tree.c:674:8: error: variable 'blk' is uninitialized when used here [-Werror,-Wuninitialized]
+>>                             blk);
+>>                             ^~~
+>> include/linux/quotaops.h:34:41: note: expanded from macro 'quota_error'
+>>         __quota_error((sb), __func__, fmt , ## args)
+>>                                                ^~~~
+>> 
+>> Move the calculation of the block number slightly up to make it
+>> show a sensible number.
+>> 
+>> Fixes: 223bfb57631b ("quota: Detect loops in quota tree")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 >
-> "The PLIC signals it has completed executing an interrupt handler by
-> writing the interrupt ID it received from the claim to the claim/complete
-> register. The PLIC does not check whether the completion ID is the same
-> as the last claim ID for that target. If the completion ID does not match
-> an interrupt source that *is currently enabled* for the target, the
-> completion is silently ignored."
->
-> Commit 69ea463021be ("irqchip/sifive-plic: Fixup EOI failed when masked")
-> ensured that EOI is successful by enabling interrupt first, before EOI.
->
-> Commit a1706a1c5062 ("irqchip/sifive-plic: Separate the enable and mask
-> operations") removed the interrupt enabling code from the previous
-> commit, because it assumes that interrupt should already be enabled at the
-> point of EOI. However, this is incorrect: there is a window after a hart
-> claiming an interrupt and before irq_desc->lock getting acquired,
-> interrupt can be disabled during this window. Thus, EOI can be invoked
-> while the interrupt is disabled, effectively nullify this EOI. This
-> results in the interrupt never gets asserted again, and the device who
-> uses this interrupt appears frozen.
+> Arnd, this should be fixed in my tree as of yesterday and I can see that
+> you've even based your patch on a fixed kernel :)
 
-Nice detective work!
+Right, sorry about that. I did a lot of fixes yesterday and
+sent them out after making sure they did not cause any new
+failures in an overnight test build, but did not check carefully
+during rebasing.
 
-> Make sure that interrupt is really enabled before EOI.
->
-> Fixes: a1706a1c5062 ("irqchip/sifive-plic: Separate the enable and mask operations")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Nam Cao <namcao@linutronix.de>
-> ---
-> v2:
->   - add unlikely() for optimization
->   - re-word commit message to make it clearer
->
->  drivers/irqchip/irq-sifive-plic.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> index e1484905b7bd..0a233e9d9607 100644
-> --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -148,7 +148,13 @@ static void plic_irq_eoi(struct irq_data *d)
->  {
->  	struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
->  
-> -	writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +	if (unlikely(irqd_irq_disabled(d))) {
-> +		plic_toggle(handler, d->hwirq, 1);
-> +		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +		plic_toggle(handler, d->hwirq, 0);
-
-It's unfortunate to have this condition in the hotpath, though it should
-be cache hot, easy to predict and compared to the writel() completely in
-the noise.
-
-> +	} else {
-> +		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> +	}
->  }
-
-Can the RISCV folks please have a look at this?
-
-Thanks,
-
-        tglx
+     Arnd
 
