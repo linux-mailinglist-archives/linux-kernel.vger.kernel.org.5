@@ -1,77 +1,79 @@
-Return-Path: <linux-kernel+bounces-62611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B81C8523A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:30:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA9BC8523A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:30:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC31C281FCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:30:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D5ACB26390
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95AAC55C32;
-	Tue, 13 Feb 2024 00:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CEA455E78;
+	Tue, 13 Feb 2024 00:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wQRjbjOy"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g52v5K/R"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA9655799
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:19:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193D654FA5
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:19:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783586; cv=none; b=p596j6TIXuuZQugYqAu7PYks7Trst2FFWD2ul6zvDS6RQEAxRA+DJq2+0A7CPUrmGjkGa+WRBya1fLSU1hWHLpvXx0rA7gkuB7AqtEDwERoXJdMAzeTC7XUZC/E0edob1x9AUmjhFcW49JouxCYfzgb0QylCHOOt1AeEPtFgk10=
+	t=1707783588; cv=none; b=SLYK04QuKZmfMasKlnkFp6GlDTNAxIiCt6M60b0QIz1bnQqFH3iagcg7XFbjCZEkSFmGe7JDpEGEhds6CLy8BKSVSPd4Dn7OMSSigqCtGNrAzegpTq0nldDf/X2AXsD/2v9t94Vwn8e6G8Rhm1pouQ/VsNmmTF2VMwkpzPnj4T0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783586; c=relaxed/simple;
-	bh=vIwOtGsDzqC6GvHsB1Ywa4a3VYOkSPAQAcBcMttGK5E=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=tNrlB7B0rP6O0RalUg1SQ+XAQr2qKkNDHjtsIK44V1ty38qPAw+eNmPOgJZOAktTFFaEuQS0NaM/wWANcUHDJuOQiTwZPqBMDHwwUYbKMOoM0C3jjr5QgbbJQnXg8Al3eOiXUq1pirl4Dua2h8jnxcXhMdBGHdvVT+/PKU6VLXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wQRjbjOy; arc=none smtp.client-ip=209.85.128.201
+	s=arc-20240116; t=1707783588; c=relaxed/simple;
+	bh=z41+dvNtRXeKCs53H9ygm12hU6JxKhETApVU+NXe4U4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=PaSnUBgVYgX8/o+ZFTTIhmnwLwxNakigz1GEEY7sL2mQPBJ2El2tknjIr/+ed8C4Z0B9aHi+Cl0HSP1cu07zRZJq2An+jqG52SOgLQ8wwQGKgJl1NTYTZkdF3f+QhSGKvJx1V4o86Eg0ryYBZz8oeVhU/+M91paZrT1SmwKkXS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g52v5K/R; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60784cf4109so2064557b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:19:44 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc4563611cso576291276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:19:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707783583; x=1708388383; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wYp0cW/LgWI9ONT8F6R5Ej86mgi7Qlg0RXGsGKtpVus=;
-        b=wQRjbjOyJfTEUsqjAXLbp1F3qm8rGErGNXUpRjjc9JLWYgwjx7dfqxMIzEpzAXJera
-         wKUV3jipe4utWjwAg3ZGXPkRCnKjne39/B89hOUzLZw5EZsiAMcZVLs5D/8jdN7TdngO
-         rM7RLQJpXLtRO3EjEIZP/YKb3dFVEiohyXPqVdkOvFg0wpWxPnM+WH6vTmEPbYacS8CV
-         wYPhBjTmIBhQxKOx5rX7NYzsnM4prxsL0R5i0GXO3hqQqePbO4xFtGPkNxjgA+Fg1+0l
-         1vMJbnyU8KgqElowPmYrB/4XvA00ocTVw+bWXbNc1M7/HJykq64FEyp3zp+DhfpytXqh
-         fvDw==
+        d=google.com; s=20230601; t=1707783585; x=1708388385; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FeTp34JzZtDcGzw26Xy4JuyVdUXeLDl6wgD9/498E4U=;
+        b=g52v5K/RGyVGjMvU9YqeKBjkNahzo5eqSpoHrWByHxcBSyJ7vBCWUIMWjYXjWNKdjR
+         H7yDKG7ki0iVR4Jfgc6e+gGlNNzQPGaZcEWlSjC2pvvbLhsuQmZD4dkaEoMbcrDfbZRF
+         wiW7IzKRAOJKg8mGObhMLWPb80z3UbOjRmmUWps+EOJvG+V/aPTRWA8yggof2FI0SiR/
+         cEzPXtdPTQNH78lXR634/EEXuUxHVmzmEmUk3C8dw2tTWaUUg+Ri4GDJ+A/6UJS31pX/
+         KI8cfUPgHneiCH85qFGA3iaN5iPYUhE7x+E3PRhJqbiQYE6ps5ObN9g9Cv0/IY69SKDE
+         NhnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707783583; x=1708388383;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wYp0cW/LgWI9ONT8F6R5Ej86mgi7Qlg0RXGsGKtpVus=;
-        b=bCiOjgbkyezBgDuU4mBcRzbks9qOtWT3qc1gjOyMzmVsUvPhqalbIbOAl9xIouqjcM
-         qOGatdsc8OTYon68YHsBXd1BLIhtNJHr44PwpTh5ZndAbILpF9Zl/NMSA9OydsehYEgB
-         a9PPZ4Z6a0bD7Pwz5mp1ty7nG/MmaZm8iWpCByk+xf1JZtJXT9mgb7Hvqo+GR34Z33CQ
-         r/jGMbhK6q0o1WL1/rhXav+A48/MsdD3kLX+Il93DB49N6FMHGlJh8Mgrjt/T/I7irvn
-         xAXUA8YY0B7kUwuS/IRnd2wpdTt57R5hoD2QUrpLphklkKqIPv5vCofmT7BvZ6Acjgeb
-         cALA==
-X-Forwarded-Encrypted: i=1; AJvYcCUwVDbvrwxZsvrD8dix2O/GzOAdZWFAgAjcaYIj0nBwpJ0/rRI0auq+y4N6aA/dFhfy3Igsn2TdnqMxAduLZuYEA+uR4RQx6SYH13ms
-X-Gm-Message-State: AOJu0YzDcRlpm4CtpGp0VTjM282dQ4ecvgqrUqYVs49jRRnTvbJaFNk9
-	jKBZ1HLEfvjvLlJmlcRLocCht4aRDVgaEEbI6wHV9oso8hfyhDVWOInO9SIqnA7kuGE59wO7jo8
-	KwL7EL1IyF5+eCyElAzA3vg==
-X-Google-Smtp-Source: AGHT+IETpVKlK4W4ES+O6uH9bAYT9eFgcT5Mcr7AWYf1RXBnBN+OIklD/nT02bdob/BzELYAfud81u94YEZ4Zw50uQ==
+        d=1e100.net; s=20230601; t=1707783585; x=1708388385;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FeTp34JzZtDcGzw26Xy4JuyVdUXeLDl6wgD9/498E4U=;
+        b=pB1iloxBpJO5iUN64e+qSvStRyHNb3GRMRnC6CxitGikFRts/1rCLXWSTCgc4VKKAB
+         I5T7Dr1NclLAXEKL4GmjqCmeJuVhrGVCNJIXsJyGQuWcXEc6Fqbvdfe9RlPA1qjZQGy9
+         WKAQOq5NNOd195K5grgT81cDnbwPnJnp+R3RKJGZoM9UJU2nPHQfnvlCfYOh4lepq42n
+         U1RQ46F3mxKGyoj4X/lLpcCJWDEPZ0YHRsc44e5V411Ay3HyBh5wS2tx0dxRLS+5bo6A
+         j5pVRg60bqAGYALQP3QCiYBnKfnfGjwigcRdsVTC+0PWdbf1bDy9ByIGDQ9AbNUA3TkL
+         sSAQ==
+X-Gm-Message-State: AOJu0YzsdJOsIk15piOyhjJUCOYPc83OewUhAsNv+ylN4EuVg+geaT5Y
+	RAi8ppl8TYcv2V/ouUXmjzpVlzReORA31UVwqq7adSnJjaTXejBH44ziQiMatz2/CXIAFnGLJal
+	GVqFwyEVG+UI+TtnFB2P4jg==
+X-Google-Smtp-Source: AGHT+IHHF8psOCpR3jPtRIweQhip+WhYFn+NGs+b1/7N2Bm+HUMlIaS9Pt1A9QzZr7uT4pBB5l5vrCPMXQlp/u7k7Q==
 X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:fd80:ef0f:6359:fc4c])
- (user=lokeshgidra job=sendgmr) by 2002:a81:a107:0:b0:604:228:7e with SMTP id
- y7-20020a81a107000000b006040228007emr2397004ywg.8.1707783583386; Mon, 12 Feb
- 2024 16:19:43 -0800 (PST)
-Date: Mon, 12 Feb 2024 16:19:17 -0800
+ (user=lokeshgidra job=sendgmr) by 2002:a05:6902:10c2:b0:dc6:d2c8:6e50 with
+ SMTP id w2-20020a05690210c200b00dc6d2c86e50mr1289834ybu.7.1707783585214; Mon,
+ 12 Feb 2024 16:19:45 -0800 (PST)
+Date: Mon, 12 Feb 2024 16:19:18 -0800
+In-Reply-To: <20240213001920.3551772-1-lokeshgidra@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240213001920.3551772-1-lokeshgidra@google.com>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240213001920.3551772-1-lokeshgidra@google.com>
-Subject: [PATCH v5 0/3] per-vma locks in userfaultfd
+Message-ID: <20240213001920.3551772-2-lokeshgidra@google.com>
+Subject: [PATCH v5 1/3] userfaultfd: move userfaultfd_ctx struct to header file
 From: Lokesh Gidra <lokeshgidra@google.com>
 To: akpm@linux-foundation.org
 Cc: lokeshgidra@google.com, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
@@ -83,63 +85,119 @@ Cc: lokeshgidra@google.com, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
 	Liam.Howlett@oracle.com
 Content-Type: text/plain; charset="UTF-8"
 
-Performing userfaultfd operations (like copy/move etc.) in critical
-section of mmap_lock (read-mode) causes significant contention on the
-lock when operations requiring the lock in write-mode are taking place
-concurrently. We can use per-vma locks instead to significantly reduce
-the contention issue.
+Moving the struct to userfaultfd_k.h to be accessible from
+mm/userfaultfd.c. There are no other changes in the struct.
 
-Android runtime's Garbage Collector uses userfaultfd for concurrent
-compaction. mmap-lock contention during compaction potentially causes
-jittery experience for the user. During one such reproducible scenario,
-we observed the following improvements with this patch-set:
+This is required to prepare for using per-vma locks in userfaultfd
+operations.
 
-- Wall clock time of compaction phase came down from ~3s to <500ms
-- Uninterruptible sleep time (across all threads in the process) was
-  ~10ms (none in mmap_lock) during compaction, instead of >20s
+Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+---
+ fs/userfaultfd.c              | 39 -----------------------------------
+ include/linux/userfaultfd_k.h | 39 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+), 39 deletions(-)
 
-Changes since v4 [4]:
-- Fix possible deadlock in find_and_lock_vmas() which may arise if
-  lock_vma() is used for both src and dst vmas.
-- Ensure we lock vma only once if src and dst vmas are same.
-- Fix error handling in move_pages() after successfully locking vmas.
-- Introduce helper function for finding dst vma and preparing its
-  anon_vma when done in mmap_lock critical section, per Liam Howlett.
-- Introduce helper function for finding dst and src vmas when done in
-  mmap_lock critical section.
-
-Changes since v3 [3]:
-- Rename function names to clearly reflect which lock is being taken,
-  per Liam Howlett.
-- Have separate functions and abstractions in mm/userfaultfd.c to avoid
-  confusion around which lock is being acquired/released, per Liam Howlett.
-- Prepare anon_vma for all private vmas, anonymous or file-backed,
-  per Jann Horn.
-
-Changes since v2 [2]:
-- Implement and use lock_vma() which uses mmap_lock critical section
-  to lock the VMA using per-vma lock if lock_vma_under_rcu() fails,
-  per Liam R. Howlett. This helps simplify the code and also avoids
-  performing the entire userfaultfd operation under mmap_lock.
-
-Changes since v1 [1]:
-- rebase patches on 'mm-unstable' branch
-
-[1] https://lore.kernel.org/all/20240126182647.2748949-1-lokeshgidra@google.com/
-[2] https://lore.kernel.org/all/20240129193512.123145-1-lokeshgidra@google.com/
-[3] https://lore.kernel.org/all/20240206010919.1109005-1-lokeshgidra@google.com/
-[4] https://lore.kernel.org/all/20240208212204.2043140-1-lokeshgidra@google.com/
-
-Lokesh Gidra (3):
-  userfaultfd: move userfaultfd_ctx struct to header file
-  userfaultfd: protect mmap_changing with rw_sem in userfaulfd_ctx
-  userfaultfd: use per-vma locks in userfaultfd operations
-
- fs/userfaultfd.c              |  86 ++-----
- include/linux/userfaultfd_k.h |  75 ++++--
- mm/userfaultfd.c              | 450 ++++++++++++++++++++++++++--------
- 3 files changed, 421 insertions(+), 190 deletions(-)
-
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 05c8e8a05427..58331b83d648 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -50,45 +50,6 @@ static struct ctl_table vm_userfaultfd_table[] = {
+ 
+ static struct kmem_cache *userfaultfd_ctx_cachep __ro_after_init;
+ 
+-/*
+- * Start with fault_pending_wqh and fault_wqh so they're more likely
+- * to be in the same cacheline.
+- *
+- * Locking order:
+- *	fd_wqh.lock
+- *		fault_pending_wqh.lock
+- *			fault_wqh.lock
+- *		event_wqh.lock
+- *
+- * To avoid deadlocks, IRQs must be disabled when taking any of the above locks,
+- * since fd_wqh.lock is taken by aio_poll() while it's holding a lock that's
+- * also taken in IRQ context.
+- */
+-struct userfaultfd_ctx {
+-	/* waitqueue head for the pending (i.e. not read) userfaults */
+-	wait_queue_head_t fault_pending_wqh;
+-	/* waitqueue head for the userfaults */
+-	wait_queue_head_t fault_wqh;
+-	/* waitqueue head for the pseudo fd to wakeup poll/read */
+-	wait_queue_head_t fd_wqh;
+-	/* waitqueue head for events */
+-	wait_queue_head_t event_wqh;
+-	/* a refile sequence protected by fault_pending_wqh lock */
+-	seqcount_spinlock_t refile_seq;
+-	/* pseudo fd refcounting */
+-	refcount_t refcount;
+-	/* userfaultfd syscall flags */
+-	unsigned int flags;
+-	/* features requested from the userspace */
+-	unsigned int features;
+-	/* released */
+-	bool released;
+-	/* memory mappings are changing because of non-cooperative event */
+-	atomic_t mmap_changing;
+-	/* mm with one ore more vmas attached to this userfaultfd_ctx */
+-	struct mm_struct *mm;
+-};
+-
+ struct userfaultfd_fork_ctx {
+ 	struct userfaultfd_ctx *orig;
+ 	struct userfaultfd_ctx *new;
+diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+index e4056547fbe6..691d928ee864 100644
+--- a/include/linux/userfaultfd_k.h
++++ b/include/linux/userfaultfd_k.h
+@@ -36,6 +36,45 @@
+ #define UFFD_SHARED_FCNTL_FLAGS (O_CLOEXEC | O_NONBLOCK)
+ #define UFFD_FLAGS_SET (EFD_SHARED_FCNTL_FLAGS)
+ 
++/*
++ * Start with fault_pending_wqh and fault_wqh so they're more likely
++ * to be in the same cacheline.
++ *
++ * Locking order:
++ *	fd_wqh.lock
++ *		fault_pending_wqh.lock
++ *			fault_wqh.lock
++ *		event_wqh.lock
++ *
++ * To avoid deadlocks, IRQs must be disabled when taking any of the above locks,
++ * since fd_wqh.lock is taken by aio_poll() while it's holding a lock that's
++ * also taken in IRQ context.
++ */
++struct userfaultfd_ctx {
++	/* waitqueue head for the pending (i.e. not read) userfaults */
++	wait_queue_head_t fault_pending_wqh;
++	/* waitqueue head for the userfaults */
++	wait_queue_head_t fault_wqh;
++	/* waitqueue head for the pseudo fd to wakeup poll/read */
++	wait_queue_head_t fd_wqh;
++	/* waitqueue head for events */
++	wait_queue_head_t event_wqh;
++	/* a refile sequence protected by fault_pending_wqh lock */
++	seqcount_spinlock_t refile_seq;
++	/* pseudo fd refcounting */
++	refcount_t refcount;
++	/* userfaultfd syscall flags */
++	unsigned int flags;
++	/* features requested from the userspace */
++	unsigned int features;
++	/* released */
++	bool released;
++	/* memory mappings are changing because of non-cooperative event */
++	atomic_t mmap_changing;
++	/* mm with one ore more vmas attached to this userfaultfd_ctx */
++	struct mm_struct *mm;
++};
++
+ extern vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason);
+ 
+ /* A combined operation mode + behavior flags. */
 -- 
 2.43.0.687.g38aa6559b0-goog
 
