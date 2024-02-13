@@ -1,298 +1,159 @@
-Return-Path: <linux-kernel+bounces-63891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9300185360D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:31:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C793985362F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:36:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50A1C286C92
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:31:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 661FA1F2819A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B032BA2D;
-	Tue, 13 Feb 2024 16:31:51 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD4902919
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C16ABBA2D;
+	Tue, 13 Feb 2024 16:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="BLSffZfU"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2401C182C5;
+	Tue, 13 Feb 2024 16:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707841910; cv=none; b=ry4Ai4pJz3WYkanYqnUxF1nS9jDT9LB/yrpCKBRAW50pLs0KZLvyDakIPE7R2bleY1tzDp7M8zdJlLL16P+GdQqZlOv6N7S/HtdVyHH+imRDN7TPH7oz89nT2/wc98cvDnx3ea5V8Lt+B9WVn2BIkDvLdenGj1QdPCQr7Y51ezo=
+	t=1707842176; cv=none; b=O7LsrfCtQZ1kcgYbpkWSYoVXcD7SIE83ZNb3V564eVhBmFW/pW+ukmJRKE/bpgn4tHaJ6xZNIwKZt79sWI3Vh37odhrapo2kVn/31FY7mlLk9uFsg4BU6hgCqNlJz9MiDcTx5ptsgYoFQzI18GiuQkXdkJKKN5m6Laz0p724Lts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707841910; c=relaxed/simple;
-	bh=/kkLoYdzhCdq3WELOZKd9MgucjRXD6NUBDgH9zSLoyw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XvPqi4wb4yN9pFUsofoV+1VsUgJ16ybMJsAprc0L/CxfTF2QYW2WH93bvhxNsDaPj/N1N3t9CtdK5QdGlaA92zrvrSGCm5kEH8+cM91LweQ7c03vxoUWy+Fzwccb6yh9S4GEiVg1hJEgHSIYe72740RxNdFlvF4AzhUCLUxujfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09511DA7;
-	Tue, 13 Feb 2024 08:32:27 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.130])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1051A3F5A1;
-	Tue, 13 Feb 2024 08:31:41 -0800 (PST)
-Date: Tue, 13 Feb 2024 16:31:36 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	David Hildenbrand <david@redhat.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-	Barry Song <21cnbao@gmail.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 20/25] arm64/mm: Implement new wrprotect_ptes() batch
- API
-Message-ID: <ZcuZaO8pars3aFtu@FVFF77S0Q05N.cambridge.arm.com>
-References: <20240202080756.1453939-1-ryan.roberts@arm.com>
- <20240202080756.1453939-21-ryan.roberts@arm.com>
+	s=arc-20240116; t=1707842176; c=relaxed/simple;
+	bh=tTsD+mIweRSyvF3kzqeplej243uAAw1oTRST1KUyAAM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=njiP/R1/SwdQgtcchPLfjhwijwhLp85CrjleLuWq6eRK2y74Z51FVjc/k65BdXVs+uXKT5dAFCOXFqgPJC+Wt7roP/wgny0c1bCJykE/wiga0L69VIuGZ7PG3iG9pLkxlmHsELCAoNTEQ5twRelIhtGV2vaOZhDQRYuA+XmBojQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=BLSffZfU; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707842171;
+	bh=tTsD+mIweRSyvF3kzqeplej243uAAw1oTRST1KUyAAM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BLSffZfUMwr5EAZR9bLqh9WTEEwDcB1Ls7ivzoKaHDerfIirHx75fG5uCvV2JPAyA
+	 P4XfijvVIefyrhRXzMG0sAveluchRmBSOk03uFu6WmTP3adQg+SJLnY6t1waEgTbos
+	 tQ0/QAMf8Eqx1VFGCYAuxrieWWgQUgz2rBvBqlLMyjwXsECIfo4BsTzJ6QW4xOGm3p
+	 hjxga92jzqn7w4GMMmEc44qfX6H1g8wtttM1lR0S0lyc/0DqeBOag7ke4q6wqtn+Xl
+	 b1f7LDSD1hpLK1dSf0dVfRwaGt7kcVLNe0eW017WgBZ/4ZLAE7oFsonN7DpduIIgiz
+	 kQTZeF8z7dbew==
+Received: from jupiter.universe (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 55BF83781123;
+	Tue, 13 Feb 2024 16:36:11 +0000 (UTC)
+Received: by jupiter.universe (Postfix, from userid 1000)
+	id EE76E4800CE; Tue, 13 Feb 2024 17:36:10 +0100 (CET)
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Heiko Stuebner <heiko@sntech.de>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-rockchip@lists.infradead.org,
+	linux-phy@lists.infradead.org
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Frank Wang <frank.wang@rock-chips.com>,
+	Kever Yang <kever.yang@rock-chips.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	kernel@collabora.com
+Subject: [PATCH v2 00/12] RK3588 USBDP support
+Date: Tue, 13 Feb 2024 17:32:34 +0100
+Message-ID: <20240213163609.44930-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202080756.1453939-21-ryan.roberts@arm.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 02, 2024 at 08:07:51AM +0000, Ryan Roberts wrote:
-> Optimize the contpte implementation to fix some of the fork performance
-> regression introduced by the initial contpte commit. Subsequent patches
-> will solve it entirely.
-> 
-> During fork(), any private memory in the parent must be write-protected.
-> Previously this was done 1 PTE at a time. But the core-mm supports
-> batched wrprotect via the new wrprotect_ptes() API. So let's implement
-> that API and for fully covered contpte mappings, we no longer need to
-> unfold the contpte. This has 2 benefits:
-> 
->   - reduced unfolding, reduces the number of tlbis that must be issued.
->   - The memory remains contpte-mapped ("folded") in the parent, so it
->     continues to benefit from the more efficient use of the TLB after
->     the fork.
-> 
-> The optimization to wrprotect a whole contpte block without unfolding is
-> possible thanks to the tightening of the Arm ARM in respect to the
-> definition and behaviour when 'Misprogramming the Contiguous bit'. See
-> section D21194 at https://developer.arm.com/documentation/102105/latest/
+Hi,
 
-Minor nit, but it'd be better to refer to a specific revision of the document,
-e.g.
+This adds Rockchip RK3588 USBDP PHY support, which is used for two of the three
+USB3 controllers in the RK3588 (the third one uses a different PHY, which is
+already supported). The USBDP PHY offers USB3 dual-role and DisplayPort. The
+driver and bindings being upstreamed contains the DP parts, but only USB3 has
+been tested by me (upstream does not yet have a DRM DP bridge driver for this
+platform).
 
-  https://developer.arm.com/documentation/102105/ja-07/
+What has been tested by me:
+ - USB3 Type A ports on Rock 5A, Rock 5B, EVB1
+ - USB Type C port on EVB1 in Host mode
 
-That way people can see the specific version of the text you were referring to
-even if that changes later, and it means the link is still useful when D21194
-gets merged into the ARM ARM and dropped from the known issues doc.
+I did not yet include a patch to enable the Type-C from the Rock 5B, since that
+requires enabling proper support for the fusb302. Since the system is usually
+supplied via USB-C and without any battery backup, this easily results in
+system reset when the power-delivery negotiation happens. As this issue is
+independent from the USBDP PHY, I skipped enabling that port on Rock 5B for
+now.
 
-> 
-> Tested-by: John Hubbard <jhubbard@nvidia.com>
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  arch/arm64/include/asm/pgtable.h | 61 ++++++++++++++++++++++++++------
->  arch/arm64/mm/contpte.c          | 35 ++++++++++++++++++
->  2 files changed, 86 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 34892a95403d..c07f0d563733 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -978,16 +978,12 @@ static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
->  }
->  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->  
-> -/*
-> - * __ptep_set_wrprotect - mark read-only while trasferring potential hardware
-> - * dirty status (PTE_DBM && !PTE_RDONLY) to the software PTE_DIRTY bit.
-> - */
-> -static inline void __ptep_set_wrprotect(struct mm_struct *mm,
-> -					unsigned long address, pte_t *ptep)
-> +static inline void ___ptep_set_wrprotect(struct mm_struct *mm,
-> +					unsigned long address, pte_t *ptep,
-> +					pte_t pte)
->  {
-> -	pte_t old_pte, pte;
-> +	pte_t old_pte;
->  
-> -	pte = __ptep_get(ptep);
->  	do {
->  		old_pte = pte;
->  		pte = pte_wrprotect(pte);
-> @@ -996,6 +992,25 @@ static inline void __ptep_set_wrprotect(struct mm_struct *mm,
->  	} while (pte_val(pte) != pte_val(old_pte));
->  }
->  
-> +/*
-> + * __ptep_set_wrprotect - mark read-only while trasferring potential hardware
-> + * dirty status (PTE_DBM && !PTE_RDONLY) to the software PTE_DIRTY bit.
-> + */
-> +static inline void __ptep_set_wrprotect(struct mm_struct *mm,
-> +					unsigned long address, pte_t *ptep)
-> +{
-> +	___ptep_set_wrprotect(mm, address, ptep, __ptep_get(ptep));
-> +}
-> +
-> +static inline void __wrprotect_ptes(struct mm_struct *mm, unsigned long address,
-> +				pte_t *ptep, unsigned int nr)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
-> +		__ptep_set_wrprotect(mm, address, ptep);
-> +}
-> +
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  #define __HAVE_ARCH_PMDP_SET_WRPROTECT
->  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
-> @@ -1156,6 +1171,8 @@ extern int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
->  				unsigned long addr, pte_t *ptep);
->  extern int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
->  				unsigned long addr, pte_t *ptep);
-> +extern void contpte_wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
-> +				pte_t *ptep, unsigned int nr);
->  extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
->  				unsigned long addr, pte_t *ptep,
->  				pte_t entry, int dirty);
-> @@ -1269,12 +1286,35 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
->  	return contpte_ptep_clear_flush_young(vma, addr, ptep);
->  }
->  
-> +#define wrprotect_ptes wrprotect_ptes
-> +static inline void wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
-> +				pte_t *ptep, unsigned int nr)
-> +{
-> +	if (likely(nr == 1)) {
-> +		/*
-> +		 * Optimization: wrprotect_ptes() can only be called for present
-> +		 * ptes so we only need to check contig bit as condition for
-> +		 * unfold, and we can remove the contig bit from the pte we read
-> +		 * to avoid re-reading. This speeds up fork() which is sensitive
-> +		 * for order-0 folios. Equivalent to contpte_try_unfold().
-> +		 */
-> +		pte_t orig_pte = __ptep_get(ptep);
-> +
-> +		if (unlikely(pte_cont(orig_pte))) {
-> +			__contpte_try_unfold(mm, addr, ptep, orig_pte);
-> +			orig_pte = pte_mknoncont(orig_pte);
-> +		}
-> +		___ptep_set_wrprotect(mm, addr, ptep, orig_pte);
-> +	} else {
-> +		contpte_wrprotect_ptes(mm, addr, ptep, nr);
-> +	}
-> +}
-> +
->  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
->  static inline void ptep_set_wrprotect(struct mm_struct *mm,
->  				unsigned long addr, pte_t *ptep)
->  {
-> -	contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
-> -	__ptep_set_wrprotect(mm, addr, ptep);
-> +	wrprotect_ptes(mm, addr, ptep, 1);
->  }
->  
->  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
-> @@ -1306,6 +1346,7 @@ static inline int ptep_set_access_flags(struct vm_area_struct *vma,
->  #define ptep_clear_flush_young			__ptep_clear_flush_young
->  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
->  #define ptep_set_wrprotect			__ptep_set_wrprotect
-> +#define wrprotect_ptes				__wrprotect_ptes
->  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
->  #define ptep_set_access_flags			__ptep_set_access_flags
->  
-> diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
-> index bfb50e6b44c7..c85e64baf03b 100644
-> --- a/arch/arm64/mm/contpte.c
-> +++ b/arch/arm64/mm/contpte.c
-> @@ -23,6 +23,23 @@ static inline pte_t *contpte_align_down(pte_t *ptep)
->  	return (pte_t *)(ALIGN_DOWN((unsigned long)ptep >> 3, CONT_PTES) << 3);
->  }
->  
-> +static void contpte_try_unfold_partial(struct mm_struct *mm, unsigned long addr,
-> +					pte_t *ptep, unsigned int nr)
-> +{
-> +	/*
-> +	 * Unfold any partially covered contpte block at the beginning and end
-> +	 * of the range.
-> +	 */
-> +
-> +	if (ptep != contpte_align_down(ptep) || nr < CONT_PTES)
-> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
-> +
-> +	if (ptep + nr != contpte_align_down(ptep + nr))
-> +		contpte_try_unfold(mm, addr + PAGE_SIZE * (nr - 1),
-> +				ptep + nr - 1,
-> +				__ptep_get(ptep + nr - 1));
+You can find a branch with these patches here:
 
-Nit: we should use braces for this 'if' block since it covers multiple lines
-(even though the function call is a single statement).
+https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/commits/rk3588-usbdp
 
-It *might* be worth using temporaries for the last ptep and addr, e.g.
+The binding updates introduces one DT warning, for vo1 grf, which is already
+upstream and does not describe its clock. Fixing that requires this series,
+which adds the necessary clock ID for vo1:
 
-	if (ptep + nr != contpte_align_down(ptep + nr)) {
-		unsigned long last_addr = addr + PAGE_SIZE * (nr - 1);
-		pte_t *last_ptep = ptep + nr - 1;
-		contpte_try_unfold(mm, last_addr, last_ptep,
-				   __ptep_get(last_ptep));
-	}
+https://lore.kernel.org/linux-rockchip/20240126182919.48402-1-sebastian.reichel@collabora.com/T/#mbc27d87270f7f182fb85bf1ceaf03b902688cbb8
 
-.. but I'm happy without the temporaries so long as we have braces.
+Changes since PATCHv1:
+ * https://lore.kernel.org/all/20240209181831.104687-1-sebastian.reichel@collabora.com/
+ * VO GRF DT binding: Collect Acked-by from Conor Dooley
+ * USB3 syscon DT binding: Collect Acked-by from Conor Dooley
+ * USBDP PHY DT binding: fix spelling
+ * USBDP PHY DT binding: add maxItems: 1 to gpios
+ * USBDP PHY driver: use rk_udphy_ prefix everywhere
+ * USBDP PHY DT addition: fix nodenames and property order
+ * USBDP PHY DT addition: fix position of the GRF nodes
+ * add new patches fixing existing USB2 PHY nodenames/property order
 
-> +}
-> +
->  static void contpte_convert(struct mm_struct *mm, unsigned long addr,
->  			    pte_t *ptep, pte_t pte)
->  {
-> @@ -236,6 +253,24 @@ int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
->  }
->  EXPORT_SYMBOL(contpte_ptep_clear_flush_young);
->  
-> +void contpte_wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
-> +					pte_t *ptep, unsigned int nr)
-> +{
-> +	/*
-> +	 * If wrprotecting an entire contig range, we can avoid unfolding. Just
-> +	 * set wrprotect and wait for the later mmu_gather flush to invalidate
-> +	 * the tlb. Until the flush, the page may or may not be wrprotected.
-> +	 * After the flush, it is guarranteed wrprotected. If its a partial
+Not changed:
+ * rockchip,dp-lane-mux: Why "mux" and not "map"?
+  - This is about muxing DP lanes vs USB3 lanes. I kept mux instead
+    of map, since that's used downstream and there does not seem to
+    be a good reason to diverge?
 
-Typo: s/guarranteed/guaranteed/
-Typo: s/its/it's/ (or s/its/it is/)
+-- Sebastian
 
-Other than the above this looks good to me.
+Sebastian Reichel (12):
+  dt-bindings: soc: rockchip: add clock to RK3588 VO grf
+  dt-bindings: soc: rockchip: add rk3588 USB3 syscon
+  dt-bindings: phy: add rockchip usbdp combo phy document
+  phy: rockchip: add usbdp combo phy driver
+  arm64: defconfig: enable Rockchip Samsung USBDP PHY
+  arm64: dts: rockchip: Fix usb2phy nodename for rk3588
+  arm64: dts: rockchip: reorder usb2phy properties for rk3588
+  arm64: dts: rockchip: add USBDP phys on rk3588
+  arm64: dts: rockchip: add USB3 DRD controllers on rk3588
+  arm64: dts: rockchip: add USB3 to rk3588-evb1
+  arm64: dts: rockchip: add upper USB3 port to rock-5a
+  arm64: dts: rockchip: add lower USB3 port to rock-5b
 
-Mark.
+ .../bindings/phy/phy-rockchip-usbdp.yaml      |  169 ++
+ .../devicetree/bindings/soc/rockchip/grf.yaml |   21 +
+ .../boot/dts/rockchip/rk3588-evb1-v10.dts     |  151 ++
+ .../boot/dts/rockchip/rk3588-rock-5b.dts      |   21 +
+ arch/arm64/boot/dts/rockchip/rk3588.dtsi      |   81 +
+ .../boot/dts/rockchip/rk3588s-rock-5a.dts     |   22 +
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi     |  114 +-
+ arch/arm64/configs/defconfig                  |    1 +
+ drivers/phy/rockchip/Kconfig                  |   12 +
+ drivers/phy/rockchip/Makefile                 |    1 +
+ drivers/phy/rockchip/phy-rockchip-usbdp.c     | 1639 +++++++++++++++++
+ 11 files changed, 2222 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/phy-rockchip-usbdp.yaml
+ create mode 100644 drivers/phy/rockchip/phy-rockchip-usbdp.c
 
-> +	 * range though, we must unfold, because we can't have a case where
-> +	 * CONT_PTE is set but wrprotect applies to a subset of the PTEs; this
-> +	 * would cause it to continue to be unpredictable after the flush.
-> +	 */
-> +
-> +	contpte_try_unfold_partial(mm, addr, ptep, nr);
-> +	__wrprotect_ptes(mm, addr, ptep, nr);
-> +}
-> +EXPORT_SYMBOL(contpte_wrprotect_ptes);
-> +
->  int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
->  					unsigned long addr, pte_t *ptep,
->  					pte_t entry, int dirty)
-> -- 
-> 2.25.1
-> 
+-- 
+2.43.0
+
 
