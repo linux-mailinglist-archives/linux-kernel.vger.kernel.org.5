@@ -1,186 +1,144 @@
-Return-Path: <linux-kernel+bounces-63071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87177852A7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:05:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34F76852A87
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:07:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 089BDB22668
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:05:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D93B31F22461
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D2F17998;
-	Tue, 13 Feb 2024 08:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C2A179A8;
+	Tue, 13 Feb 2024 08:07:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="P9YGBBLm"
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2104.outbound.protection.outlook.com [40.107.9.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y1tfD3wY"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F380917983
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.9.104
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707811514; cv=fail; b=ApQWodao4DKRfK7xoba1XZpkruQnDIpI8QUTYn+Qzwq6NMgaSnb6Fn8oqj0WYNUb2Tfa3b/PWxgranAGftmyThr0zahPNI0dNPYOu0Ut7vNqlRHgVaDiUSNHG0ZcuvcRkvoY1jXxmruw8i919GbZlvs/wMs9P37mAp6Yv5GJ6K8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707811514; c=relaxed/simple;
-	bh=DJL5oZXN8qA/KmKcSwLKlTiVDjv+roHps6EDhcBLAm0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=tWJjvl1ApIInkL95rp80fMcLBsBxuwVrdk8BgRBaR0W5rKL1XCLpEp46NN36F3RUcTP6+lOfBnFhjJbW7QkS7D5OCzqxN0M58S19bDbXjyNw8f+TAbBJVZP2JOvNJiEOOM3vSMNOKS6xNxesZ+UEPeCpJw2wQc1vcjE7VzHGeek=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=P9YGBBLm; arc=fail smtp.client-ip=40.107.9.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qo/WL2r22Dxm7+ddKbqigLyBsPdZverYYVUzDh0qItzsD1Oi/wtGz2JB/KAiXWoZWbhLqHDurBLfMA7gbIHzhnmY6NIuopqZTgZX0AL76qi0FFWKJ2rN403aBVzCyaS7svMuYKItlrAeSaH8WnXgEAhPHi8JZPaCSVH+3IyG5txRAeERBCu0uYKD/avZogZapdaSBC07F7sowP0UkvKhDI+7SGcjiXiJuaiFqRHC9bQj6ihsYx/vEiptWLcm0c4z58Tlp4KTaJcYLpA9jN4TK0faFz4hd8Pb4PVyviVd+blG7Yyaf8UsJjOxktP1qKoWJQG/JSCemUmugwODjyMRYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DJL5oZXN8qA/KmKcSwLKlTiVDjv+roHps6EDhcBLAm0=;
- b=OFXE7GbUGowpE9MCMTenqGvWIJQ4v11tVabrCmOebXpGzgv2y26ZoP33Pbvt/BprG2bu0jJqsncf7zksn4pRKiK3XCY/k0c4smwC+QMvUeFR2kvig7mpamFaS9SM+esdB6Je1nUCBkaQEv+LU229eoFiab3Y3NPLwcau9UZNT/h7y7yCzc0P7gEYp+pQBHNbwGLJAN6ic0ClwGhVDAsZP1NzPSeHJuJ0LqFL+sJtM98hvq+EKni46Hues7us8NCWokzLpL+X6214EzvsC5ZdoX57c0sAL+Ymtcy9txPpSRIrAqE2SXjxZuIVmi2nO+5ZoG6h8enhWWPyDolY2CGxJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DJL5oZXN8qA/KmKcSwLKlTiVDjv+roHps6EDhcBLAm0=;
- b=P9YGBBLmbUk0gnWME4rwddP+lDAYW8plL6M/o/4mQ+poa1sBdx8qJ63bCsJ10nCif3iUIobRiHg6oczxB+FDk9WyzhfcgHtBQdPpfskoL3NXFfqYyTdkBzhhhB01MxkERoWqMsQxLbLQHcT5XUnygFRypP29wjBRD8gfjBVSB/axZqiOxU35X61oGeGpkOomfVsITxJ/JW6yALG3m9wQDzA2GMir5Kjk+VCK1Vl64KbHv+ZMA+oHnxEZpt6fs6GObS2lBmTmWqnaqhHRSPIh6nBzCT+kF3RJieJbC7oZ4oSXXgfsu7Iasx2iqMAlZwASUHSufjlupfWMoQ+ij92bsg==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MRZP264MB3100.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.38; Tue, 13 Feb
- 2024 08:05:09 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::64a9:9a73:652c:1589]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::64a9:9a73:652c:1589%6]) with mapi id 15.20.7270.036; Tue, 13 Feb 2024
- 08:05:09 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>, Michael Ellerman
-	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Aneesh Kumar K.V
-	<aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-CC: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2 0/5] powerpc: struct bus_type cleanup
-Thread-Topic: [PATCH v2 0/5] powerpc: struct bus_type cleanup
-Thread-Index: AQHaXe6we02zXLjMSkCnOQDqmU40+rEH6toA
-Date: Tue, 13 Feb 2024 08:05:09 +0000
-Message-ID: <417a6531-b298-4d5c-aa4d-755bcef2f414@csgroup.eu>
-References: <20240212-bus_cleanup-powerpc2-v2-0-8441b3f77827@marliere.net>
-In-Reply-To: <20240212-bus_cleanup-powerpc2-v2-0-8441b3f77827@marliere.net>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB3100:EE_
-x-ms-office365-filtering-correlation-id: c097e738-e101-4fc2-4bed-08dc2c6a7f95
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- KouynjK15o+Yi39NqFq8RHfVzqWH2nQXdNcAZFEtiNCxdpAL1jnWZi4s1UYKWTfPguF8aV8gsHFjtgFvJWMVod2FsWcjxUZdw2wQTPiOwI73oKkr5S5YzNp39d4l72Z9bjmAzUyPKaQsBgILPYG7lMF/L/7HcPxIz2fNzGRL3ACWqvozn+PAsc07SbHm3HuOMo/pth0D9CngqGccylI8vqfHctIPAvJchX83wnsj4Qicg78YWlU9jf9waEC4VIxV24gncEpaNZAFgCxRzAN7h4qkPmnUAzftOGe5WKzKsMMBHU09gWFECbhstBJZ+kRf10Ui8/VDWZ80iP1D0jubn1LldlO7BG6dsC3KtCY3La5MJseITf+EBbv6hqc7r6uCU/ROATYyszSAd8DbRaB4Ut5fTjstUuVsO3QbyAeFlnbffWTfJjFOU7Z10qqkZmDnPsbhWxFhBLeiH9L5+fGjKisnSdnkW5apA0jjRI0GVn0HhHB2S+8wq3RoXnYRYWTHib0k1iox9jFIIYuwgQiy7gqW7eu4jzX4ec2lyft30T2L+WxgBxTUtZ19k8yYEMpNuNfYwGyX1ThUViKYVmWAjZ/xlo6fIiqTGkfnYfEQ8yc=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(366004)(376002)(396003)(136003)(346002)(230922051799003)(230273577357003)(1800799012)(186009)(64100799003)(451199024)(36756003)(4326008)(478600001)(2616005)(64756008)(26005)(41300700001)(8676002)(66946007)(66446008)(76116006)(83380400001)(66556008)(66476007)(8936002)(71200400001)(5660300002)(91956017)(38070700009)(110136005)(54906003)(6506007)(6486002)(31696002)(316002)(86362001)(966005)(38100700002)(122000001)(6512007)(2906002)(44832011)(31686004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?UXB0YWFPdFBiM0pScEtvbXBwS0IxQ0R4cHliY2p0OWcvN3JIbjI4czVBanRR?=
- =?utf-8?B?bjNTVitBQVJadCtuZlV1RUlpR1pBYWxKYk5ORXpCVWZsNGE0cngrRytEK2tq?=
- =?utf-8?B?QnhXL2dvUXZqdU15VHlKZGIzdklYZWNUU1ErOWNHNGpnN2NlQTFKR0wzR1FR?=
- =?utf-8?B?VWtaL0hRbHBNNHhHZm9YNDVCclZKTGZkeDVqUzM2RmVVeXR2N1ZGZW5jN2Fh?=
- =?utf-8?B?SFpxK08xOUpwOWIzSVN4U2RPRS84eG1oc3BRcVNTL1k1RDdMZW44S3kyaU83?=
- =?utf-8?B?ZTFCSlFEaE1lTENtNmNsbkltcEcvZWY1QTVzRlE2bkk3eDVjS0NnK1ZjQ0JP?=
- =?utf-8?B?U0Vsb0l0ai9zTUxMOWsyR2lFQVJSQVI5TVlPZUF6M2dXdVhpelVGNTJIV1Vz?=
- =?utf-8?B?ZUYrcXNyajBYSE1zSzAwMXlybE5sbHdsc0VIdmE1Z3NLL0E4NzBraitxcWdl?=
- =?utf-8?B?MkdMWTJGWWFXV0ROVmh2UDltNktsdllFdmJlbXB6WTZPRnRSVS9sQkt5S1ht?=
- =?utf-8?B?Qm42SlEwUVV2SXY2YWNuSmhzY3FjS1k2S2VBS3VxMi9HLytFSkVQeVpPL2Za?=
- =?utf-8?B?aGNYT2EzSEFROVEvTUlRUlN1cVVaeGloL1NHTFBha3Zkay9hTmU1Wm52Nk9i?=
- =?utf-8?B?SXBOTWVydGM5RmxSTU1Vd0g3VUx3eHE4cXZ3WlQvUHBrUnErbklNSW1sRXVq?=
- =?utf-8?B?blhhMFc1RURUc1hWUWJ2N2txck51cGtvUGUzMFVibkJVd0RaVExSS2xIRlQ4?=
- =?utf-8?B?SUl0bVBvMzhuSnduYjZ5emlTVEhnN1Q5YzFtS0JqanhJajNJMHVjNnZsNHYw?=
- =?utf-8?B?Y296WE1GMXpxS05rNTBKMHE4QUpZMVdOSUNzOERVMy9Ic1UvSyt3NEJkVmdM?=
- =?utf-8?B?b0g3cUtwYkVnSTFhMDdWVmVvUXBzWUlUb0F6RGFKV1FJcW5RNENJRHNWb0Fp?=
- =?utf-8?B?MVdJM2lyQjFCT0JEM0VRa3BNdDRCM3Y1V2N1dml5Vjl2MVRjUTVHODBUT2xK?=
- =?utf-8?B?UjJ0SEI5aUV0V3k3OXA1dnBvdW9vei8rb1NWZGhPSjUyTGYzNVRQV2RmZ0c4?=
- =?utf-8?B?SEV3ZitiamxFNmczUWVhVDlEQ2VxMGtWaVJDU1VlRUlTZWl2bFM5RFlHb2sw?=
- =?utf-8?B?MndnRzI4VFZKUVY1bjhmd1BjR2lYNlNCTURrYVA4LzBQVjczR0pyNVduRlhu?=
- =?utf-8?B?VkVpUDJXZUFSdzBMTkFGM3dOY0V5aXRQSW03QURYb3luNFFUT1p1VzNoNHl4?=
- =?utf-8?B?VjNHTTRQampSbXZpWnZHeXhmaFowQmdJTlpORzYyWndKaVJvUitRVVdkcDJK?=
- =?utf-8?B?MmQrcXMrQkRZQTEwemlmY1JJQzV4QnZtKytjWmltTFFKemdtZUFlNFZKSEt5?=
- =?utf-8?B?WldoMmZzOU9FOHRBMkVsbnhmRE9OLzJUSUFBWlNjUmgzQVh0SjhJOFN0Tldv?=
- =?utf-8?B?N2RRMXlNUkhoMk5UWi9zalpROUYwd2JJU2F4WTdrdzZlOTFJWG9OR1dJOGlC?=
- =?utf-8?B?UTNYMkFBdzVjemVBNWMxM3JrclQxZ2wwQndrRDNBTmNXQklsaEhDc2NJOWFy?=
- =?utf-8?B?SXcwNlR5cm9ITUxrbUY4ajM0SFVGSlJPeEJhSnVwMmZvbEgva0M4ZDAzMDRH?=
- =?utf-8?B?Y2tVckZCeDkwd1J3WFNwQVdtSWRmelRiQ2gwMlByWXhBbUlKaGpkUkw0S3B3?=
- =?utf-8?B?MHdiWWpGalFRSWoybmZySUF2VEZUVUFVbzJ1K0xQbWpxMUwvV1pmUlhuR01K?=
- =?utf-8?B?SXhUdVNXRDUzcHgyajU0ZWVuaFlkdjNPbXFPVDBIaXgvelJJVzRoUFNYY2Rt?=
- =?utf-8?B?UlpTdVVzbGs0b2ZGNGVjempzY2pkYk5oWlFlZlRWbk5Ia0VEdGNsZXEvdGVT?=
- =?utf-8?B?aTBXTkJjUGdLV0dVZXpaZU83dVBRWEFKclVOLzA5anNJcGpQVUMyT2hTNXF4?=
- =?utf-8?B?OXFZOFhqNkU2d2p0c1lPdmZSQnpzR0tHeEpBYVJiNG5sc215ZUFRc3kzeXZn?=
- =?utf-8?B?UTJMNnFQWTNnRnZYdThvTVRycXUvTVpqTGJka3I4emJhVDlBOXduM2cwTE5k?=
- =?utf-8?B?OWNYeXVWWXRvV1AxcVRTVkdJWEVpcWR6NFJ4RVRjWEltOGNISW5RdVdBajhS?=
- =?utf-8?B?YnVPbjZIRDhTdVgrQmN4Y3JxditIeFJCSE9hYTdzVHJDMERKdzJHNWdhQlI0?=
- =?utf-8?B?a3c9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <76EBDD58272F224495C4807328A9372D@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE2417995
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:07:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707811626; cv=none; b=NSmtiYoF/DSBU8MQP0HUpTJNMXSCJzeUG2Z+jVjvXSFbD6UKzhpXAJGits3YoUXM3ymPnFcWNi7L009BJRUx6mWGBUFPHplrhaor+NtDPIdc/YvCfH09wRICQdg24DbgLIKdy2i5iF+yZcFVxW+dU++iXVeLEs1dHGGeZ6ogsms=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707811626; c=relaxed/simple;
+	bh=TMO98LmTeFWaooCAosxSAV4g4gfDcC8Mxcbv1f1b7yQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PX+DiciJzdlKsvf7oIZWybgKbhApOjvrve3Bj29DrG6BEuGUbrw2QowF3MYm0TGjGENUYbYB3vSFfYonHZgz5YAa4cqh+ApMpP0oDFjcqEP0rP/w7eHPZKJ7CuJy06FqhBqjKziclB+yHcsIO0Skmck8eFRaD5JjBv9gW+DTGrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y1tfD3wY; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6002317a427so36430517b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:07:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707811622; x=1708416422; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LoE7SaCuCYZTXnO1AQekF/KrLmOVDpMhP6b6ysce880=;
+        b=y1tfD3wY2/hrNKHO3F/fV9zQbVXvkYUIbduNATxjmH3RH7gZppYd6YnuPMmcmoK1Yo
+         l44MlCxAGlfZkCmIrYw786Xm5iC2OtZYAYCc4qUJVU+oRrzVXPh2h5X7DvBeHoToIv6n
+         Dg84ugm+czi7TID1wVCNLhBpXRXrrb9viHiQeWkoAciQjqSi0C24RnOCNF6mXIP0t2zN
+         eUO7cL2MvYYMyY10D/dDmWwKmzcDxenqUS9MmXAuNKkBsSfszc8kthsJ0Ul9t71L5ZEf
+         S0G0rBp7yh5H7yMCy2/C/GSxqHRRckj1VVYHLCayjgurKzOCLAIqB/cI+piB0QBc1A/m
+         TRVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707811622; x=1708416422;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LoE7SaCuCYZTXnO1AQekF/KrLmOVDpMhP6b6ysce880=;
+        b=c3a4ZBFWKgCU3OOH2XbqbTlVTSstEQHXqcthves+54ZKujlfRJ4Ndc03H6vHbIv0ss
+         Q6iIksoy7Y6zlPxpbHGH/5JmHLii8Ri5fcZzVXS9FDpMFlWjSEHxmtz56MNy+9M5RTVL
+         8iuD8cWYfK9Er/VJWSmqEVzzKgow1CuSFIAWadWrx7MFEncChvyqqP4dEbNKXrM56Wts
+         V79X//Jc+n1XXg6shx3JtMfXV+Vl6fvmlW72CpuAXC6eostn0I2lSgZOqn3H6QraIyY1
+         hUFSFMGZhdWR8p+aytd/PD+EkJ0E0QSolBiQRt8eTP/qm/cZH5hsbjIv28Ywlkzv8wtU
+         hUbw==
+X-Forwarded-Encrypted: i=1; AJvYcCWudV94CqtF5drkALUy7c4NbLtRfScWh/0ZhxftcshfLgLh816WpHfAQqzc8d09NvaxBi1+HSbc7GrSMHwa26vQVXHaM0EInR/dM8sp
+X-Gm-Message-State: AOJu0Yz/pe5CXSmi0db20qoMwsUUe6bt7TnTeoB7zQhZIibV2whiHbwH
+	31eE7d7B17axQkxxrpbTX7mAM1kFwt+VQ/vdFjtJbS+M9ufc+xPjHN6KZLBm/Xo0YTY7pm3tsTn
+	chXQxBk3p6uHOIvXCt5S4cJ1NL0BXNWkdU5joNw==
+X-Google-Smtp-Source: AGHT+IFJmNGwqkSI7VGiPpEbPYK61g9bG8fKHxYPKHEEFuP3n+/ab1e0w0YV5rg3cP19wA3QJhBHdbAVAxvLdL0n29I=
+X-Received: by 2002:a5b:18e:0:b0:dc7:4564:fe6b with SMTP id
+ r14-20020a5b018e000000b00dc74564fe6bmr6581471ybl.60.1707811621907; Tue, 13
+ Feb 2024 00:07:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: c097e738-e101-4fc2-4bed-08dc2c6a7f95
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Feb 2024 08:05:09.7993
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SGyawk3X2iSG+g0PyoEQJsxEOttCZ8CxGEL7Y/TrO8aIlLpoFltEJ2Wv9cgXA0Y2KOXFZQ3f1myQt7cQ71A9Yml5QrZ5YVqEOuNcMl1vf1Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB3100
+References: <20240201210529.7728-4-quic_c_gdjako@quicinc.com> <20240213062608.13018-1-quic_pbrahma@quicinc.com>
+In-Reply-To: <20240213062608.13018-1-quic_pbrahma@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 13 Feb 2024 10:06:51 +0200
+Message-ID: <CAA8EJpoh-m_fzt9WcUXOkTxVZRQMDf-WrgqqoM0C_-qzjgDm1w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] iommu/arm-smmu-qcom: Fix use-after-free issue in qcom_smmu_create()
+To: Pratyush Brahma <quic_pbrahma@quicinc.com>
+Cc: quic_c_gdjako@quicinc.com, andersson@kernel.org, conor+dt@kernel.org, 
+	devicetree@vger.kernel.org, djakov@kernel.org, iommu@lists.linux.dev, 
+	joro@8bytes.org, konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org, 
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, quic_cgoldswo@quicinc.com, 
+	quic_pdaly@quicinc.com, quic_sudaraja@quicinc.com, quic_sukadev@quicinc.com, 
+	robdclark@gmail.com, robh+dt@kernel.org, robin.murphy@arm.com, 
+	will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-SGkNCg0KTGUgMTIvMDIvMjAyNCDDoCAyMTowNCwgUmljYXJkbyBCLiBNYXJsaWVyZSBhIMOpY3Jp
-dMKgOg0KPiBUaGlzIHNlcmllcyBpcyBwYXJ0IG9mIGFuIGVmZm9ydCB0byBjbGVhbnVwIHRoZSB1
-c2VycyBvZiB0aGUgZHJpdmVyDQo+IGNvcmUsIGFzIGNhbiBiZSBzZWVuIGluIG1hbnkgcmVjZW50
-IHBhdGNoZXMgYXV0aG9yZWQgYnkgR3JlZyBhY3Jvc3MgdGhlDQo+IHRyZWUgKGUuZy4gWzFdKS4g
-UGF0Y2ggMS81IGlzIGEgcHJlcmVxdWlzaXRlIHRvIDIvNSwgYnV0IHRoZSBvdGhlcnMgaGF2ZQ0K
-PiBubyBkZXBlbmRlbmN5LiBUaGV5IHdlcmUgYnVpbHQgdXNpbmcgYm9vdGxpbidzIHdpdGhvdXQg
-d2FybmluZ3MgdXNpbmcNCj4gcG93ZXJwYzY0bGUtcG93ZXI4LS1nbGliYy0tc3RhYmxlLTIwMjMu
-MTEtMSB0b29sY2hhaW4uDQo+IA0KPiAtLS0NCj4gWzFdOiBodHRwczovL2xvcmUua2VybmVsLm9y
-Zy9sa21sLz9xPWYlM0FncmVna2glNDBsaW51eGZvdW5kYXRpb24ub3JnK3MlM0ElMjJtYWtlJTIy
-K2FuZCtzJTNBJTIyY29uc3QlMjINCj4gDQo+IENjOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdr
-aEBsaW51eGZvdW5kYXRpb24ub3JnPg0KPiBTaWduZWQtb2ZmLWJ5OiBSaWNhcmRvIEIuIE1hcmxp
-ZXJlIDxyaWNhcmRvQG1hcmxpZXJlLm5ldD4NCj4gDQo+IC0tLQ0KPiBDaGFuZ2VzIGluIHYyOg0K
-PiAtIEFkZGVkIGEgbmV3IHBhdGNoIHRvIG1ha2UgbWFjaW9fYnVzX3R5cGUgY29uc3QuDQo+IC0g
-SW1wcm92ZWQgY2hhbmdlbG9ncyB0byByZW1vdmUgdGhlIHdvcmQgIk5vdyIuDQo+IC0gRml4ZWQg
-YSBidWlsZCBlcnJvcjogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvb2Uta2J1aWxkLWFsbC8yMDI0
-MDIxMDIxNDIudXBoaUtlcXctbGtwQGludGVsLmNvbS8NCj4gLSBMaW5rIHRvIHYxOiBodHRwczov
-L2xvcmUua2VybmVsLm9yZy9yLzIwMjQwMjA5LWJ1c19jbGVhbnVwLXBvd2VycGMyLXYxLTAtNzlh
-NTZkY2FlYmIxQG1hcmxpZXJlLm5ldA0KDQpJIHNlZSBhbm90aGVyIHNlcmllcyB3aXRoIHRoZSBz
-YW1lIG5hbWUsIGRvZXMgdGhpcyB2MiBhbHNvIHN1cGVyc2VlZHMgaXQgDQo/IGh0dHBzOi8vcGF0
-Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9saW51eHBwYy1kZXYvbGlzdC8/c2VyaWVzPTM5MzU3
-MA0KDQpDaHJpc3RvcGhlDQoNCj4gDQo+IC0tLQ0KPiBSaWNhcmRvIEIuIE1hcmxpZXJlICg1KToN
-Cj4gICAgICAgIHBvd2VycGM6IHZpbzogbW92ZSBkZXZpY2UgYXR0cmlidXRlcyBpbnRvIGEgbmV3
-IGlmZGVmDQo+ICAgICAgICBwb3dlcnBjOiB2aW86IG1ha2UgdmlvX2J1c190eXBlIGNvbnN0DQo+
-ICAgICAgICBwb3dlcnBjOiBtcGljOiBtYWtlIG1waWNfc3Vic3lzIGNvbnN0DQo+ICAgICAgICBw
-b3dlcnBjOiBwbWFjOiBtYWtlIG1hY2lvX2J1c190eXBlIGNvbnN0DQo+ICAgICAgICBwb3dlcnBj
-OiBpYm1lYnVzOiBtYWtlIGlibWVidXNfYnVzX3R5cGUgY29uc3QNCj4gDQo+ICAgYXJjaC9wb3dl
-cnBjL2luY2x1ZGUvYXNtL2libWVidXMuaCAgICAgICB8ICAyICstDQo+ICAgYXJjaC9wb3dlcnBj
-L2luY2x1ZGUvYXNtL21hY2lvLmggICAgICAgICB8ICAyICstDQo+ICAgYXJjaC9wb3dlcnBjL2lu
-Y2x1ZGUvYXNtL21waWMuaCAgICAgICAgICB8ICAyICstDQo+ICAgYXJjaC9wb3dlcnBjL2luY2x1
-ZGUvYXNtL3Zpby5oICAgICAgICAgICB8ICAyICstDQo+ICAgYXJjaC9wb3dlcnBjL3BsYXRmb3Jt
-cy9wc2VyaWVzL2libWVidXMuYyB8ICA0ICstLQ0KPiAgIGFyY2gvcG93ZXJwYy9wbGF0Zm9ybXMv
-cHNlcmllcy92aW8uYyAgICAgfCA2MSArKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLQ0K
-PiAgIGFyY2gvcG93ZXJwYy9zeXNkZXYvbXBpYy5jICAgICAgICAgICAgICAgfCAgMiArLQ0KPiAg
-IGRyaXZlcnMvbWFjaW50b3NoL21hY2lvX2FzaWMuYyAgICAgICAgICAgfCAgMiArLQ0KPiAgIDgg
-ZmlsZXMgY2hhbmdlZCwgNDMgaW5zZXJ0aW9ucygrKSwgMzQgZGVsZXRpb25zKC0pDQo+IC0tLQ0K
-PiBiYXNlLWNvbW1pdDogNDFiY2NjOThmYjc5MzFkNjNkMDNmMzI2YTc0NmFjNGQ0MjljMWRkMw0K
-PiBjaGFuZ2UtaWQ6IDIwMjQwMjA5LWJ1c19jbGVhbnVwLXBvd2VycGMyLTQ5ODQyNmZjY2I5OA0K
-PiANCj4gQmVzdCByZWdhcmRzLA0K
+On Tue, 13 Feb 2024 at 08:27, Pratyush Brahma <quic_pbrahma@quicinc.com> wrote:
+>
+> Currently, during arm smmu probe, struct arm_smmu_device pointer
+> is allocated. The pointer is reallocated to a new struct qcom_smmu in
+> qcom_smmu_create() with devm_krealloc() which frees the smmu device
+> after copying the data into the new pointer.
+>
+> The freed pointer is then passed again in devm_of_platform_populate()
+> inside qcom_smmu_create() which causes a use-after-free issue.
+>
+> Fix the use-after-free issue by reassigning the old pointer to
+> the new pointer where the struct was copied by devm_krealloc().
+>
+> Signed-off-by: Pratyush Brahma <quic_pbrahma@quicinc.com>
+
+Missing Fixes tag.
+
+> ---
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index ed5ed5da7740..49eaeed6a91c 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -710,6 +710,7 @@ static struct arm_smmu_device *qcom_smmu_create(struct arm_smmu_device *smmu,
+>         qsmmu = devm_krealloc(smmu->dev, smmu, sizeof(*qsmmu), GFP_KERNEL);
+>         if (!qsmmu)
+>                 return ERR_PTR(-ENOMEM);
+> +       smmu = &qsmmu->smmu;
+>
+>         qsmmu->smmu.impl = impl;
+>         qsmmu->data = data;
+> @@ -719,7 +720,7 @@ static struct arm_smmu_device *qcom_smmu_create(struct arm_smmu_device *smmu,
+>         if (ret)
+>                 return ERR_PTR(ret);
+
+What is the tree that you have been developing this against? I don't
+see this part of the code in the linux-next.
+
+>
+> -       return &qsmmu->smmu;
+> +       return smmu;
+>  }
+>
+>  /* Implementation Defined Register Space 0 register offsets */
+> --
+> 2.17.1
+>
+>
+
+
+-- 
+With best wishes
+Dmitry
 
