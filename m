@@ -1,137 +1,93 @@
-Return-Path: <linux-kernel+bounces-64150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF8C2853ABA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:18:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB31F853AC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:20:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C335282E0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:18:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6A45285FCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814C46087D;
-	Tue, 13 Feb 2024 19:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fFaBL40j"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3818376FA;
+	Tue, 13 Feb 2024 19:20:07 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE1FC6087A;
-	Tue, 13 Feb 2024 19:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66C110A3A;
+	Tue, 13 Feb 2024 19:20:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707851932; cv=none; b=m3Zcq7OSVRDNJwU7CVCWDu/6XcGGGae8DHZu1J+mWhrIibylhD7OI81BNdcItfZJRVIo0yMjskPi7X7vwplwG3KGrBOYuOlBINTVXrIr8Q4tM9oSpniR7Wlm+fe167jYGqivSrpWIowokYCD8GXEp87He+ka4FEWMI9BS3SGts8=
+	t=1707852007; cv=none; b=pfbTCCWW7j6Ak8lq1gSbA4XhoEVvIfzUzjJGozjaiD9/ZfWofb/OImoT2r3mDxu1ryvspr2FdrE2sTZFPoYSobSNICbRdgpKiGJe56yhU/ibMdzeHqUrlVcYA5tJJuUAE5XusMRdk0+/D/5LrJDBqart5LJ0kmwnvWixoBtAXzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707851932; c=relaxed/simple;
-	bh=LNkRcqZzqWUlcmMLEyiRGpW2jfqARCsrz7SFPIcor6U=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Qo1N3o1OJdn3kAbtZzz/5BLncJDf419ZGNcjEMom0T3iyBRppy6t7/KMoT4u47lqAX4+Rmtp7x82D51uVTdmzN6oXaqyKhmb4mLqQglr9cQlHovj2+sSTuwuUP3mWS8XAabINIGEXHp6yrzAC3A4pB3biicOB42rYcmhqZyBZTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fFaBL40j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8728BC433F1;
-	Tue, 13 Feb 2024 19:18:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707851932;
-	bh=LNkRcqZzqWUlcmMLEyiRGpW2jfqARCsrz7SFPIcor6U=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fFaBL40jCaGdcY8hxkqXjlB/TY1qX0NYZwb34PBBvfzZ0qe528UtCZzRxjHQtqALJ
-	 pmyR4WGnEzzHjAta4GM1jXK7CeS2jvARKpIG9Gs0BxDSF64uQ1Rjb8cxZIXy3e+A2O
-	 uEpycNEw3g0rUk6O++Af/C6/Tox2204+5rU/E2BCUsKYIKrU3/Ljhy+jgPhp6m1Mjw
-	 V/NI054dDLBNuhJIAAM3iYNAqUnp1ft+ImmNi7chu3vGmnDCnnqVJxVL1VkC501x3Z
-	 KwU4f/yP7SZ7LZSB+dun394MJiRD/teSNZJQ23mfEEngOI6qA1aIqPldy7DcJKywm/
-	 5/gkpdyyceW2Q==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rZyIq-002tFi-HZ;
-	Tue, 13 Feb 2024 19:18:50 +0000
-Date: Tue, 13 Feb 2024 19:18:48 +0000
-Message-ID: <87il2sw4tj.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	Linux Regressions <regressions@lists.linux.dev>,
-	open list <linux-kernel@vger.kernel.org>,
-	lkft-triage@lists.linaro.org,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: WARNING: arch/arm64/kernel/cpufeature.c:3369 this_cpu_has_cap
-In-Reply-To: <CA+G9fYuVJ3DfmOR2GxbVmLqh_d=3y_wTXX-vQOUgp86uX-3oGg@mail.gmail.com>
-References: <CA+G9fYuVJ3DfmOR2GxbVmLqh_d=3y_wTXX-vQOUgp86uX-3oGg@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1707852007; c=relaxed/simple;
+	bh=L6CFmHzcsf+jEGi+d8zlHyKMcEu6Clt494lEjZjuXkw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Zphjq+hoR3T0ZXY5fbKdPaGC6WXtIDT9KssgPmxWxR8/w/of9j22OzZNk552xBZlijutx6Nlv2482mNiu9qI+aLGUZRYPKcbRGTwKsBUxoJ6qbTPJOm1FreVmdVO2MPdaZsxPj/r9+gdBQ+rapefkVKzDkuLsnD/SrjaD5SxzkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from [194.95.143.137] (helo=phil.dip.tu-dresden.de)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rZyK2-0008K1-KX; Tue, 13 Feb 2024 20:20:02 +0100
+From: Heiko Stuebner <heiko@sntech.de>
+To: robh+dt@kernel.org,
+	Johan Jonker <jbx6244@gmail.com>
+Cc: Heiko Stuebner <heiko@sntech.de>,
+	linux-arm-kernel@lists.infradead.org,
+	daniel@ffwll.ch,
+	linux-kernel@vger.kernel.org,
+	markyao0591@gmail.com,
+	devicetree@vger.kernel.org,
+	maarten.lankhorst@linux.intel.com,
+	dri-devel@lists.freedesktop.org,
+	conor+dt@kernel.org,
+	hjc@rock-chips.com,
+	linux-rockchip@lists.infradead.org,
+	airlied@gmail.com,
+	andy.yan@rock-chips.com,
+	mripard@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	tzimmermann@suse.de
+Subject: Re: (subset) [PATCH v2 1/6] dt-bindings: display: rockchip: rockchip,dw-hdmi: remove port property
+Date: Tue, 13 Feb 2024 20:20:01 +0100
+Message-Id: <170785199080.3350387.14199175297568955666.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <a493c65e-7cf9-455f-95d5-8c98cad35710@gmail.com>
+References: <a493c65e-7cf9-455f-95d5-8c98cad35710@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: naresh.kamboju@linaro.org, linux-arm-kernel@lists.infradead.org, regressions@lists.linux.dev, linux-kernel@vger.kernel.org, lkft-triage@lists.linaro.org, suzuki.poulose@arm.com, m.szyprowski@samsung.com, catalin.marinas@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 13 Feb 2024 18:21:23 +0000,
-Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+On Wed, 31 Jan 2024 22:14:29 +0100, Johan Jonker wrote:
+> The hdmi-connector nodes are now functional and the new way to model
+> hdmi ports nodes with both in and output port subnodes. Unfortunately
+> with the conversion to YAML the old method with only an input port node
+> was used. Later the new method was also added to the binding.
+> A binding must be unambiguously, so remove the old port property
+> entirely and make port@0 and port@1 a requirement as all
+> upstream dts files are updated as well and because checking
+> deprecated stuff is a bit pointless.
+> Update the example to avoid use of the removed property.
 > 
-> Following kernel warning notices on all arm64 devices on today's Linux
-> next-20240213 tag.
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> [...]
 
-What is the sense of this tag, and even of this email, for an issue
-that has already been reported, as outlined below?
+Applied, thanks!
 
-> 
-> [    0.038524] SMP: Total of 6 processors activated.
-> [    0.038539] CPU: All CPU(s) started at EL2
-> [    0.038588] CPU features: detected: 32-bit EL0 Support
-> [    0.038602] CPU features: detected: 32-bit EL1 Support
-> [    0.038620] CPU features: detected: CRC32 instructions
-> [    0.038650] ------------[ cut here ]------------
-> [    0.038656] WARNING: CPU: 0 PID: 1 at
-> arch/arm64/kernel/cpufeature.c:3369 this_cpu_has_cap+0x1c/0x70
-> [    0.038691] Modules linked in:
-> [    0.038707] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
-> 6.8.0-rc4-next-20240213 #1
-> [    0.038721] Hardware name: Radxa ROCK Pi 4B (DT)
-> [    0.038729] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [    0.038744] pc : this_cpu_has_cap+0x1c/0x70
-> [    0.038761] lr : has_nv1+0x28/0xe8
-> ..
-> [    0.039008] Call trace:
-> [    0.039014]  this_cpu_has_cap+0x1c/0x70
-> [    0.039031]  update_cpu_capabilities+0xd4/0x138
-> [    0.039048]  setup_system_features+0x38/0x130
-> [    0.039075]  smp_cpus_done+0x50/0xc8
-> [    0.039094]  smp_init+0x84/0xa0
-> [    0.039109]  kernel_init_freeable+0x11c/0x400
-> [    0.039126]  kernel_init+0x28/0x1f0
-> [    0.039148]  ret_from_fork+0x10/0x20
-> [    0.039167] ---[ end trace 0000000000000000 ]---
-> 
-> 
-> Links:
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240213/testrun/22596318/suite/log-parser-boot/test/check-kernel-exception/log
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240213/testrun/22596318/suite/log-parser-boot/tests/
-> 
-> This issue has been addressed in the relevant email thread,
-> https://lore.kernel.org/all/0593516b-2419-49b7-83aa-fe189ffad0c2@arm.com/
+[1/6] dt-bindings: display: rockchip: rockchip,dw-hdmi: remove port property
+      commit: 0d192c4c72ce00ab07a6b27f068607e21f754a46
+[2/6] dt-bindings: display: rockchip,dw-hdmi: add power-domains property
+      commit: 6b1f93ea345947c94bf3a7a6e668a2acfd310918
 
-Correct link:
-
-https://lore.kernel.org/all/86bk8k5ts3.wl-maz@kernel.org/
-
-> I will test the corresponding fix patch and get back to you.
-
-Thanks,
-
-	M.
-
+Best regards,
 -- 
-Without deviation from the norm, progress is not possible.
+Heiko Stuebner <heiko@sntech.de>
 
