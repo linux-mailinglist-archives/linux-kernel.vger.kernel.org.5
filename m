@@ -1,135 +1,113 @@
-Return-Path: <linux-kernel+bounces-63796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C22D853486
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4689C85348D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:26:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E98F1C2106A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:24:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7414D1C22BB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:26:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492095DF2F;
-	Tue, 13 Feb 2024 15:24:34 +0000 (UTC)
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF245DF29;
+	Tue, 13 Feb 2024 15:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ntbnK60A"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64C75D902;
-	Tue, 13 Feb 2024 15:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD2022066;
+	Tue, 13 Feb 2024 15:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707837873; cv=none; b=jN1XVInVt+IDSuoqDkojjr4l8WqktzTV8rSdNCYPXhch5iZJWNB9uTHpS9rEYMEliHk4J7MFTXtK999EjSvb8l4Gsa96oFKQwALlXUVZs2QHeYvE8mOSZeFxFQNoUB7KY6EnD/xOsnSKrKU5t29QOXZdY/rD4gfdjYyE8IHQwZg=
+	t=1707837952; cv=none; b=cttg1jNB7DA7ByiCj/E1WQTQFmrOI/J71tijR0cpqkaIQxCwmjOgdsL2TAgxjjKX86K+ThYHixb35UHGEvueHR130gCxX0Zl52/4nEjmBHhyCdGAjGy7pgR/h6eMkOU9plRL57Qk6IDhi1QvwFXgVPU2n/ZkH01oTj6zm2Ea2Zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707837873; c=relaxed/simple;
-	bh=CwNvQx4cKxm4wTveQJa2fF9BF88LSILbE5saxxP+eqw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=F/iKuI7y2Tx+QDSFsr35EzvXa2uBbqET3fJGxfLlw26ZRPGh9ScS9JYaG6X++0e7BeerQmKcObFJa8O6ae4zwwXjEKERg8ULvVffvXLha3ddMxjiPWPT8rL0Vo/wyOQhyrlhLayGINkKUo5aDMjUEQMu5p1Ii1i9mU4In9298bU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 13 Feb
- 2024 18:24:20 +0300
-Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 13 Feb
- 2024 18:24:20 +0300
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-To: Alexander Aring <alex.aring@gmail.com>
-CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Stefan Schmidt
-	<stefan@datenfreihafen.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	<linux-wpan@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>,
-	<syzbot+60a66d44892b66b56545@syzkaller.appspotmail.com>
-Subject: [PATCH wpan] mac802154: fix uninit-value issue in ieee802154_header_create()
-Date: Tue, 13 Feb 2024 07:24:14 -0800
-Message-ID: <20240213152414.3703-1-n.zhandarovich@fintech.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1707837952; c=relaxed/simple;
+	bh=qpzDUE/WnqOWRwlD7R38lMAxQ4FjMR1jKtXHDzKvwvc=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ruV4TGIb08BXDmXmuapO+0F7BxpvdD+xoshPAR5rIx262HZcTFLDdJyZvFjKfPKu28meN6wNK9ylSG9iZidxHJyTMecThPvYSAPGnYkI6rh8pPiz30qmBR8cMxNDufBiwDDxKtVD4t4YWmB7Vd22gxq3xu8Eke19FJ7Bj7yclm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ntbnK60A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5077C433C7;
+	Tue, 13 Feb 2024 15:25:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707837952;
+	bh=qpzDUE/WnqOWRwlD7R38lMAxQ4FjMR1jKtXHDzKvwvc=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=ntbnK60Ax4peARXCPzagCcjzTuMAisSQBwieoZZzpUFvY3gj3YQdSdNVxbrB/fQas
+	 5U5SJdhwsrqqB4VmQOOmOAypOGxPYC71V7EopjlO53mRGCWvaOaJoX4nRunytPwTja
+	 3gRseXS1HpH4tAlUIg04wxoWQ7ALCrFIj44R42NQNiCNgShuZywokcNDOaKoSFFrSM
+	 u4gaoUTzCFno+MZ1qcNbWjc0KGsy8ZIQ/ubfrdYXWI9fjlxImx1fJj7LDKFKQZlxot
+	 jIWzn7gKJmRX9LdmgYs3MPbraMWM0CEEF4FQHa7BpUcIW0jnae02Y+GEp9jopL6ac3
+	 Rgq7M2DZQ40xw==
+Date: Tue, 13 Feb 2024 16:25:52 +0100 (CET)
+From: Jiri Kosina <jikos@kernel.org>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+cc: djogorchock@gmail.com, benjamin.tissoires@redhat.com, 
+    linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    Abaci Robot <abaci@linux.alibaba.com>, 
+    Ryan McClelland <rymcclel@gmail.com>
+Subject: Re: [PATCH] HID: nintendo: Remove some unused functions
+In-Reply-To: <20240126075445.15495-1-jiapeng.chong@linux.alibaba.com>
+Message-ID: <nycvar.YFH.7.76.2402131625090.21798@cbobk.fhfr.pm>
+References: <20240126075445.15495-1-jiapeng.chong@linux.alibaba.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
+Content-Type: text/plain; charset=US-ASCII
 
-Syzkaller with KMSAN reported [1] a problem with uninitialized value
-access in ieee802154_header_create().
+On Fri, 26 Jan 2024, Jiapeng Chong wrote:
 
-The issue arises from a weird combination of cb->secen == 1 and
-cb->secen_override == 0, while other required security parameters
-are not found enabled in mac802154_set_header_security().
+> These functions are defined in the hid-nintendo.c file, but not called
+> elsewhere, so delete these unused functions.
+> 
+> drivers/hid/hid-nintendo.c:757:20: warning: unused function 'joycon_type_has_left_controls'.
+> drivers/hid/hid-nintendo.c:763:20: warning: unused function 'joycon_type_has_right_controls'.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8060
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Ideally such case is expected to be caught by starting check at the
-beginning of mac802154_set_header_security():
+No idea why those were added, CCing Ryan, who added those in 94f18bb1994. 
+I've added a Fixes: tag and applied, thanks.
 
-	if (!params.enabled && cb->secen_override && cb->secen)
-		return -EINVAL;
+> ---
+>  drivers/hid/hid-nintendo.c | 12 ------------
+>  1 file changed, 12 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
+> index 7ce6be0a8dee..ab5953fc2436 100644
+> --- a/drivers/hid/hid-nintendo.c
+> +++ b/drivers/hid/hid-nintendo.c
+> @@ -754,18 +754,6 @@ static inline bool joycon_type_is_right_nescon(struct joycon_ctlr *ctlr)
+>  	return ctlr->ctlr_type == JOYCON_CTLR_TYPE_NESR;
+>  }
+>  
+> -static inline bool joycon_type_has_left_controls(struct joycon_ctlr *ctlr)
+> -{
+> -	return joycon_type_is_left_joycon(ctlr) ||
+> -	       joycon_type_is_procon(ctlr);
+> -}
+> -
+> -static inline bool joycon_type_has_right_controls(struct joycon_ctlr *ctlr)
+> -{
+> -	return joycon_type_is_right_joycon(ctlr) ||
+> -	       joycon_type_is_procon(ctlr);
+> -}
+> -
+>  static inline bool joycon_type_is_any_joycon(struct joycon_ctlr *ctlr)
+>  {
+>  	return joycon_type_is_left_joycon(ctlr) ||
+> -- 
+> 2.20.1.7.g153144c
+> 
 
-However, since secen_override is zero, the function in question
-passes this check and returns with success early, without having
-set values to ieee802154_sechdr fields such as key_id_mode. This in
-turn leads to uninitialized access of such values in
-ieee802154_hdr_push_sechdr() and other places.
+-- 
+Jiri Kosina
+SUSE Labs
 
-Fix this problem by only checking for secen value and presence of
-security parameters (and ignoring secen_override). Exit early with
-error if necessary requirements are not met.
-
-[1]
-BUG: KMSAN: uninit-value in ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
-BUG: KMSAN: uninit-value in ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
- ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
- ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
- ieee802154_header_create+0x9c0/0xc00 net/mac802154/iface.c:396
- wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
- dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
- ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
- ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
- __sys_sendmsg net/socket.c:2667 [inline]
- __do_sys_sendmsg net/socket.c:2676 [inline]
- __se_sys_sendmsg net/socket.c:2674 [inline]
- __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Local variable hdr created at:
- ieee802154_header_create+0x4e/0xc00 net/mac802154/iface.c:360
- wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
- dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
-
-Fixes: f30be4d53cad ("mac802154: integrate llsec with wpan devices")
-Reported-and-tested-by: syzbot+60a66d44892b66b56545@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=60a66d44892b66b56545
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
----
-P.S. Link to previous similar discussion:
-https://lore.kernel.org/all/tencent_1C04CA8D66ADC45608D89687B4020B2A8706@qq.com/
-P.P.S. This issue may affect stable versions, at least up to 6.1.
-
- net/mac802154/iface.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/mac802154/iface.c b/net/mac802154/iface.c
-index c0e2da5072be..ad799d349625 100644
---- a/net/mac802154/iface.c
-+++ b/net/mac802154/iface.c
-@@ -328,7 +328,7 @@ static int mac802154_set_header_security(struct ieee802154_sub_if_data *sdata,
- 
- 	mac802154_llsec_get_params(&sdata->sec, &params);
- 
--	if (!params.enabled && cb->secen_override && cb->secen)
-+	if (!params.enabled && cb->secen)
- 		return -EINVAL;
- 	if (!params.enabled ||
- 	    (cb->secen_override && !cb->secen) ||
 
