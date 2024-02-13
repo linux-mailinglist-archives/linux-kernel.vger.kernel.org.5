@@ -1,166 +1,168 @@
-Return-Path: <linux-kernel+bounces-63475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAEE5853014
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:03:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 119BD853018
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19EF11C22448
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:03:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB5C428A59F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F259539FE2;
-	Tue, 13 Feb 2024 12:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E18BB3FB28;
+	Tue, 13 Feb 2024 12:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I33xxnbf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="2WsDMIBX";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="QrwIy2M6";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="2WsDMIBX";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="QrwIy2M6"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43326383BC;
-	Tue, 13 Feb 2024 12:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D2F3D54D;
+	Tue, 13 Feb 2024 12:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707825823; cv=none; b=N/9I4PeIWTDsysqQU0zeYliA8P+5G5HMv+IDJiaShmnR2ALunXSeivNlvAjBxeJa3bu+Ep9D1Yl4Ls0iaxOBccaPMa5TKSq4rKI/fysULERVozGfR3D2qzFLM/4Mw01LZegBUYh8/ei47AuyQYNN/lKlMju8VG98OpkZdQSx8pQ=
+	t=1707825833; cv=none; b=aG3z2ebj3BskDN/Y27TvCX9J0HPUBPlAoLZzdCoSjnM2UJtb/6t+j7tnKO7HQcDxsHfHTTDdhCoAZa5ozQf8VSBnLE4uIbvMceENg6tXZidIWUMv9XYNEWyLwGCSYevlY6pQANzqeetWCXdOyxy0qCD2fcd1CII/bBMZ6GOiFHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707825823; c=relaxed/simple;
-	bh=CviYwbRqpFGS88D0mkTG3roQKE+pXGZbNiNrRVAM/SU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gJKvSU1noxpJP9o7MY1w0aFT66SFP8GjBwJj813hezpfVexFNtr0+hi6rpAsvzKrAm90ypOuRUtx1NRwAh0WSNesjhk0rivIENFzXBuF0lSE8JMIWc7eVp9sgHSMzBO06j3z3WRA07t2uXZCZ0yT5vjen23XKreJgXWjMDg0dTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I33xxnbf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1CCCC43390;
-	Tue, 13 Feb 2024 12:03:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707825822;
-	bh=CviYwbRqpFGS88D0mkTG3roQKE+pXGZbNiNrRVAM/SU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=I33xxnbf451rGaMq5BPH8ksyNTK4xGmrl+GWF4q+rsAqgntLcSrAxiFmAyoSKZEDu
-	 MPj8Me1DjI3mqaRV0cG7tcH7m+pTk4rr0APRZN/2h4wt6JWAD/h4IlJFwlNH0fE9NE
-	 zwyJbj8MP2EJvZjGJIG8dAn81ZkJmWUXdjUbDAueRUwV/Mc5sDxoyeB4gfrVqa/SDO
-	 idwAgdNiIo3Pu+b5ZyaefHtRvZxq617AnDp26cwrLBjOSVlywyUfoEAywccrWY106c
-	 lyGTFHb3C9v6uI69SVwuW+VuyLQJzuMSviojw2rk7YR1C7lGAmw78xhI0Fd85MF5zj
-	 QoWJvgyu92FsQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 577C4CE0FF5; Tue, 13 Feb 2024 04:03:42 -0800 (PST)
-Date: Tue, 13 Feb 2024 04:03:42 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH 3/3] gpio: use rcu_dereference_protected() to make
- lockdep happy
-Message-ID: <6139b738-3013-45fa-a192-92b9abaa4b78@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240213093108.13922-1-brgl@bgdev.pl>
- <20240213093108.13922-4-brgl@bgdev.pl>
+	s=arc-20240116; t=1707825833; c=relaxed/simple;
+	bh=ZQGIvuDW2PzlvfVtNwW97RRS/KfxyRx7c3ZCYNtGKpg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CFq7EH0AsB00DgE54/tn+/dc6g/1pRQ095WA3iRETQEpD1pST2gNPT4rFIEOun68dly0fjTonJc9WWPz8PUArEQ/kKeMYlqwQXVKETSvOq8HQ5JQN8VNXjvGkdN8JpYv4nVTaaQgqf8iyMo12rFCgqTGQu/iIt89utK1ebVNpqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=2WsDMIBX; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=QrwIy2M6; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=2WsDMIBX; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=QrwIy2M6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B2C511FCA1;
+	Tue, 13 Feb 2024 12:03:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707825829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qsfW3I5huasgV2mNQM+r3xHRCdlw2wFSt6VvbZswGG4=;
+	b=2WsDMIBXvtsqH6KGQlwapWf5RNnSUZ+RFXAS0nUO1iipfNsaArd9QqoPyZeL+pa0uIedQr
+	HYKDsvaE8cN3hnY1EEZBLn3hdC1AfpDzyge9j5H28BQ/vGLut47IAjpB8KANhTQOwcNqSU
+	zv9i/qvbDZ00bVTfvGbAOtb4nH0Ufaw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707825829;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qsfW3I5huasgV2mNQM+r3xHRCdlw2wFSt6VvbZswGG4=;
+	b=QrwIy2M6Sc72TPCbyBsseK/Y2NdBUglwhDnlOFY13HwT18VPaSmDpBZWOSGtzrxWZ9jdma
+	/WP/bWOqOZnJ7ABQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707825829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qsfW3I5huasgV2mNQM+r3xHRCdlw2wFSt6VvbZswGG4=;
+	b=2WsDMIBXvtsqH6KGQlwapWf5RNnSUZ+RFXAS0nUO1iipfNsaArd9QqoPyZeL+pa0uIedQr
+	HYKDsvaE8cN3hnY1EEZBLn3hdC1AfpDzyge9j5H28BQ/vGLut47IAjpB8KANhTQOwcNqSU
+	zv9i/qvbDZ00bVTfvGbAOtb4nH0Ufaw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707825829;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qsfW3I5huasgV2mNQM+r3xHRCdlw2wFSt6VvbZswGG4=;
+	b=QrwIy2M6Sc72TPCbyBsseK/Y2NdBUglwhDnlOFY13HwT18VPaSmDpBZWOSGtzrxWZ9jdma
+	/WP/bWOqOZnJ7ABQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8EB6E1370C;
+	Tue, 13 Feb 2024 12:03:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qRFQIqVay2X+AgAAD6G6ig
+	(envelope-from <hare@suse.de>); Tue, 13 Feb 2024 12:03:49 +0000
+Message-ID: <30d805b3-4ee4-45ad-b619-b25fd0c5bb78@suse.de>
+Date: Tue, 13 Feb 2024 13:03:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213093108.13922-4-brgl@bgdev.pl>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC v2 01/14] fs: Allow fine-grained control of folio sizes
+Content-Language: en-US
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
+ linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc: mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
+ kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com,
+ p.raghav@samsung.com, linux-kernel@vger.kernel.org, willy@infradead.org,
+ linux-mm@kvack.org, david@fromorbit.com
+References: <20240213093713.1753368-1-kernel@pankajraghav.com>
+ <20240213093713.1753368-2-kernel@pankajraghav.com>
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20240213093713.1753368-2-kernel@pankajraghav.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=2WsDMIBX;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=QrwIy2M6
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-5.72 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-2.22)[96.30%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email,infradead.org:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Score: -5.72
+X-Rspamd-Queue-Id: B2C511FCA1
+X-Spam-Flag: NO
 
-On Tue, Feb 13, 2024 at 10:31:08AM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 2/13/24 10:37, Pankaj Raghav (Samsung) wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > 
-> Lockdep with CONFIG_PROVE_RCU enabled reports false positives about
-> suspicious rcu_dereference() usage. Let's silence it by using
-> rcu_dereference_protected().
+> Some filesystems want to be able to limit the maximum size of folios,
+> and some want to be able to ensure that folios are at least a certain
+> size.  Add mapping_set_folio_orders() to allow this level of control.
+> The max folio order parameter is ignored and it is always set to
+> MAX_PAGECACHE_ORDER.
 > 
-> Fixes: d83cee3d2bb1 ("gpio: protect the pointer to gpio_chip in gpio_device with SRCU")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202402122234.d85cca9b-lkp@intel.com
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 > ---
->  drivers/gpio/gpiolib.c | 12 ++++++++----
->  drivers/gpio/gpiolib.h |  4 +++-
->  2 files changed, 11 insertions(+), 5 deletions(-)
+>   include/linux/pagemap.h | 92 ++++++++++++++++++++++++++++++++---------
+>   1 file changed, 73 insertions(+), 19 deletions(-)
 > 
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index c1391a9a0af6..d7503376b918 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -109,7 +109,8 @@ const char *gpiod_get_label(struct gpio_desc *desc)
->  		return "interrupt";
->  
->  	return test_bit(FLAG_REQUESTED, &flags) ?
-> -			rcu_dereference(desc->label) : NULL;
-> +			rcu_dereference_protected(desc->label,
-> +					lockdep_is_held(&desc->srcu)) : NULL;
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Why not this instead?
+Cheers,
 
-> +			srcu_dereference(desc->label, &desc->srcu) : NULL;
+Hannes
 
-And similarly for the rest of the changes.
 
-							Thanx, Paul
-
->  }
->  
->  static int desc_set_label(struct gpio_desc *desc, const char *label)
-> @@ -2978,7 +2979,8 @@ static int gpiod_get_raw_value_commit(const struct gpio_desc *desc)
->  
->  	guard(srcu)(&gdev->srcu);
->  
-> -	gc = rcu_dereference(gdev->chip);
-> +	gc = rcu_dereference_protected(gdev->chip,
-> +				       lockdep_is_held(&gdev->srcu));
->  	if (!gc)
->  		return -ENODEV;
->  
-> @@ -3012,7 +3014,8 @@ static bool gpio_device_chip_cmp(struct gpio_device *gdev, struct gpio_chip *gc)
->  {
->  	guard(srcu)(&gdev->srcu);
->  
-> -	return gc == rcu_dereference(gdev->chip);
-> +	return gc == rcu_dereference_protected(gdev->chip,
-> +					       lockdep_is_held(&gdev->srcu));
->  }
->  
->  int gpiod_get_array_value_complex(bool raw, bool can_sleep,
-> @@ -3593,7 +3596,8 @@ int gpiod_to_irq(const struct gpio_desc *desc)
->  	gdev = desc->gdev;
->  	/* FIXME Cannot use gpio_chip_guard due to const desc. */
->  	guard(srcu)(&gdev->srcu);
-> -	gc = rcu_dereference(gdev->chip);
-> +	gc = rcu_dereference_protected(gdev->chip,
-> +				       lockdep_is_held(&gdev->srcu));
->  	if (!gc)
->  		return -ENODEV;
->  
-> diff --git a/drivers/gpio/gpiolib.h b/drivers/gpio/gpiolib.h
-> index 07443d26cbca..a857848b8955 100644
-> --- a/drivers/gpio/gpiolib.h
-> +++ b/drivers/gpio/gpiolib.h
-> @@ -14,6 +14,7 @@
->  #include <linux/err.h>
->  #include <linux/gpio/consumer.h> /* for enum gpiod_flags */
->  #include <linux/gpio/driver.h>
-> +#include <linux/lockdep.h>
->  #include <linux/module.h>
->  #include <linux/notifier.h>
->  #include <linux/srcu.h>
-> @@ -202,7 +203,8 @@ DEFINE_CLASS(gpio_chip_guard,
->  
->  		_guard.gdev = desc->gdev;
->  		_guard.idx = srcu_read_lock(&_guard.gdev->srcu);
-> -		_guard.gc = rcu_dereference(_guard.gdev->chip);
-> +		_guard.gc = rcu_dereference_protected(_guard.gdev->chip,
-> +					lockdep_is_held(&_guard.gdev->srcu));
->  
->  		_guard;
->  	     }),
-> -- 
-> 2.40.1
-> 
 
