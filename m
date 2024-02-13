@@ -1,133 +1,104 @@
-Return-Path: <linux-kernel+bounces-62903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC9038527B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:18:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 871818527B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:19:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B75B1C234A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:18:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A50F1F23374
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87FB58F65;
-	Tue, 13 Feb 2024 03:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B2FB676;
+	Tue, 13 Feb 2024 03:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kxH3tWNw"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UqFlV27b"
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7944711C87
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893BAB647;
+	Tue, 13 Feb 2024 03:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707794245; cv=none; b=KWUgY/ebXIGYOjQyCskQ4EICKSDqGQBBCj5DKu3a15ODQdw2vn+WEJIbBtYZQjC7lVdFVXJqJ2HFTFooH+BzerfyWllBRJcAXg8/6ZoN3POHH3t4w7+fVX7vFY52tau3EnYFzScAcZGjf6MxqY7/edclPQk3+9aNsoRw3Gr5ifM=
+	t=1707794290; cv=none; b=ARTnbuQRc6+hKfGI+TCm/yMm/H+V/kQpA2M7NTO+whKj1XcBDS5cNBqID2e6UVkQNhd85idBk+lN59lBHIkmLqAADg/yxDmp+HjDriIU231Spg+9y5OUlxYputzBzeYXg0wsqkoO0GLKKcUEAyKofn+kj9I3Ci0bWJaB5VgwIz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707794245; c=relaxed/simple;
-	bh=yaFwwuILjODPQCHNexeJRgI7TYDh6uFcXGGTgisJfRQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=JIPcKiNb+R4J77vcyJFDHBP4RwVZI+MXNygIhkMF/EKof0ilhf3MlT7CMTDhim68kwUONo+S9Zuy9/N3LrsrpdFYpT+6bydDNr3VfsbPPomiSLaMFigjmE53aX5N9mhUFyadJzGy5DPN/aGoKRdFOeD3WVglEpm9E/OrBuJBB+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kxH3tWNw; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6da57e2d2b9so4562476b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 19:17:24 -0800 (PST)
+	s=arc-20240116; t=1707794290; c=relaxed/simple;
+	bh=fP0PaPIcWn8pLdYBqnWeRtv2zxUoAB49A4nEIgjq7R4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GWlv6tl3VQ+sdYdJYJMobw+CNy8CyV1llt4Y01w4vXfn4qKumE8ONYg1xPdUNeCX47MTp8mMF1AHNc6nvDlL3p6ZerPpYD64kNq/LWsH2tDCTMbsW17lH3Ovu5vchJjV2aKqXGFnl3r3tyY7OaJOdy6z5U7xtbQWvPH01+/c9F0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UqFlV27b; arc=none smtp.client-ip=209.85.210.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6ddca59e336so2156011a34.0;
+        Mon, 12 Feb 2024 19:18:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707794244; x=1708399044; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xVm2qt6PZQcz0utE4Akn0WypHrSjA1Wf8uiop5Zn5yU=;
-        b=kxH3tWNwpZe9XJwwsw8Y169BnKonISo6JEkCD5IhnfjzzUJOLfRUS79XyAQuOZXrHy
-         aHJDE2QaD5+Pzu/KUIKzVRLZc3tx7aXX23Ls9WR1mELeM8hArQFH62Ks4hRqPj3oWrMj
-         AO+FsE9EpQudYmtHetcDdk7LeKvbn0u55TzbmBSbXvtuk+AUWV+70rqwyBXRGGkQKyjw
-         39WySEaJVjzBecl827NXLE6+SRDM5uGqaRgds9aZo0DDW3ykvLugzlyUcvvDl33T64wq
-         cmuu7MdzoQuJysHmIY87TXN/yFJeLFxvoTgSc7J0gL7Nmof18Wg1sLUemk2blQH9XScl
-         eBbQ==
+        d=gmail.com; s=20230601; t=1707794287; x=1708399087; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=buWiuQLtEG0HusXViotHeqASAJmkJh5K8Fj/0Hr7F7E=;
+        b=UqFlV27bbwwFLi+6Phu0z0iq8hsuWMAn21ctkl+tuFuUPf6meBDHxwIVjItXPFKIVQ
+         4slIH/kgEq9kvIxcdnzm5nwJuJ47X0qcVNDbnCKrFiS1ToNEh0eyAJzjwzpk6QZFKL+f
+         ys7WgM5/8dGdKomDb+noOZOap7+F2kvXTlbnwoCgYBq64x08th/5+33XzVILdJfUmvp+
+         d/uiszOAFMGPcUpA3AXjs5wUMLtkMPyX0IVwDCu8A47VVAnJaOheHlm/IoJdEHukQBms
+         5tUD0ZdwBqdyz6QpmpmwgR6WUfSZalz/UipnA4FpZbm3iljSH7iCnhtZNM7uo+51a2vh
+         wqQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707794244; x=1708399044;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xVm2qt6PZQcz0utE4Akn0WypHrSjA1Wf8uiop5Zn5yU=;
-        b=ebuUsmI47GzzNSx++2ZRNnh6uQOofWMQjNmtlXsZ5o8PPc7bcUg/t4RwCDbY/gqaNT
-         OHNM9eVCHTtYm1dyzKqzSGiA+xoRXNeexs9uM5GTHlCanmuzhn6+cGSAecddVUTMquPt
-         baPZyN7fU84Xsd4JqGLyds9gb0o3nPfgv32VGinQM4TiZRAfgwrRXinoXEz3rHVdDslf
-         3kudGOOFm/yEFIO3IlqQwpvI5xZMEqI0tdOm0te18sOZ30riN6BM2VkHyKkJoMOrckjq
-         0C2KfOjC6jh/mnT9IWTtiZjsOeocp4yVquV7N2XI70ueAixv58W7BykQR/VKbRutKPEG
-         Ymzw==
-X-Forwarded-Encrypted: i=1; AJvYcCVJLO1e2BXt8/yhkI2Gw0R0wzDpQKSOSWf1NSrhA7uVcnSrXuuUq57PdlEiiA+LVIXRvd+xf859H4WFsIt8VcEM5KRd65Hkekh82Nl4
-X-Gm-Message-State: AOJu0YyvG9dvZTxzVoxwQDZhDXBHaCeaoiGjBtU0ZhLgMF6hQ+Ds7Udu
-	Bncd79JrdJ6tJswU6ADHcjofMwy3BKN9xiKgc5i66dAXS68C1G7kxI/+AezcDKbjuwWA8TsvwWK
-	5KA==
-X-Google-Smtp-Source: AGHT+IGkpD6RdniIDh260A6OxDHEWqMXuQHS+eBuq/fo4zQ0+WcsNYS5eDYc+e0o5cV18GY88+G49qabbao=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1898:b0:6e0:fdf6:971c with SMTP id
- x24-20020a056a00189800b006e0fdf6971cmr3911pfh.1.1707794243564; Mon, 12 Feb
- 2024 19:17:23 -0800 (PST)
-Date: Mon, 12 Feb 2024 19:17:21 -0800
-In-Reply-To: <20240103084424.20014-1-yan.y.zhao@intel.com>
+        d=1e100.net; s=20230601; t=1707794287; x=1708399087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=buWiuQLtEG0HusXViotHeqASAJmkJh5K8Fj/0Hr7F7E=;
+        b=gjEurq28AoDcPbtpaDe29bJ0L5NCf8qdnQomNnHn+lhWF4bBojU4bLMZVKq6AYCHsO
+         YFOYYwOpGw0O0gZW8P79r4mik/MIo0VkxEM8JSmXjnXev11tDuonEuEYsmEVivsafUtL
+         GsItjynenWsS85VWh/5UzFVwZDuyskgCPrPQ+/XM9uFTrDW2Ikr7xU2NSzMgMVDnPdAB
+         V4xmIRG/go7qTCwqqkue0XxjRq5+fz2ccvIG8bsbkRHRjaWKCM0HYm7Eq5fVX2YX2jqx
+         8RxVCjJjoLzYFEws1BGLBvpN0k+meRd+pC1F4FuyUH+Dwrf56PYjmG65PsRLIKvKwOe0
+         oQEg==
+X-Forwarded-Encrypted: i=1; AJvYcCUmmkALdSdOnTGEst3q2QGlhhe7fPe3uRbRgvQCblcY5yqIRdqjscpR6olNKRZ7Gepl5snanNcrNnFuX+E17+n2fAASUANSTTv9dVuR1ZZMidEoqwBouoQAx7tlpPLKJ1kJ/n67
+X-Gm-Message-State: AOJu0YzdE7u4STQ26EAZob+M3cqMGavEEtjyi/EUxC9JyYru2LG+0Bf1
+	EtYd+DLOjiuW9EE2FHF8gwjQ2QP0aXyl4ZmKF69hchsoMSA4zzaYdvX/LNVa2FeJBI+Svi0j8WO
+	sxfKO6WFxMEWBu2jb7GlPIHD9Yao=
+X-Google-Smtp-Source: AGHT+IFsDCKIZ/Mghgl62IGADaTeYUyjJq1JBce3qr399uzR/EZBz9gmmVRMmPf+GgDbZZVP5nRV6vGMfv3k+Qg7pYA=
+X-Received: by 2002:a9d:6185:0:b0:6e2:e35b:549a with SMTP id
+ g5-20020a9d6185000000b006e2e35b549amr516005otk.8.1707794287613; Mon, 12 Feb
+ 2024 19:18:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240103084327.19955-1-yan.y.zhao@intel.com> <20240103084424.20014-1-yan.y.zhao@intel.com>
-Message-ID: <ZcrfQS883NfOso4r@google.com>
-Subject: Re: [RFC PATCH v2 1/3] KVM: allow mapping of compound tail pages for
- IO or PFNMAP mapping
-From: Sean Christopherson <seanjc@google.com>
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, pbonzini@redhat.com, shuah@kernel.org, 
-	stevensd@chromium.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240208221802.131087-1-jmaxwell37@gmail.com> <135d4123-29f5-46dd-b06e-d5a66bd7f598@lunn.ch>
+In-Reply-To: <135d4123-29f5-46dd-b06e-d5a66bd7f598@lunn.ch>
+From: Jonathan Maxwell <jmaxwell37@gmail.com>
+Date: Tue, 13 Feb 2024 14:17:31 +1100
+Message-ID: <CAGHK07BT5z+iEGMG+vdBAi24B5UwE7nTh1ZfrbM5u092jEPAJg@mail.gmail.com>
+Subject: Re: [net-next v2] intel: make module parameters readable in sys filesystem
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 03, 2024, Yan Zhao wrote:
-> Allow mapping of tail pages of compound pages for IO or PFNMAP mapping
-> by trying and getting ref count of its head page.
-> 
-> For IO or PFNMAP mapping, sometimes it's backed by compound pages.
-> KVM will just return error on mapping of tail pages of the compound pages,
-> as ref count of the tail pages are always 0.
-> 
-> So, rather than check and add ref count of a tail page, check and add ref
-> count of its folio (head page) to allow mapping of the compound tail pages.
+On Sat, Feb 10, 2024 at 4:19=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Fri, Feb 09, 2024 at 09:18:02AM +1100, Jon Maxwell wrote:
+> > v2: Remove the "debug" module parameter as per Andrew Lunns suggestion.
+> >     It's not really needed as ethtool msglvl can control that.
+>
+> It is normal to places comments like the above under the ---. In its
+> current place, it will be part of the commit message. Under the --- it
+> gets dropped when the patch is applied.
+>
 
-Can you add a blurb to call out that this is effectively what gup() does in
-try_get_folio()?  That knowledge give me a _lot_ more confidence that this is
-correct (I didn't think too deeply about what this patch was doing when I looked
-at v1).
+Thanks Andrew I will resubmit tomorrow with that change.
 
-> This will not break the origial intention to disallow mapping of tail pages
-> of non-compound higher order allocations as the folio of a non-compound
-> tail page is the same as the page itself.
-> 
-> On the other side, put_page() has already converted page to folio before
-> putting page ref.
-> 
-> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+>     Andrew
+>
 > ---
->  virt/kvm/kvm_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index acd67fb40183..f53b58446ac7 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -2892,7 +2892,7 @@ static int kvm_try_get_pfn(kvm_pfn_t pfn)
->  	if (!page)
->  		return 1;
->  
-> -	return get_page_unless_zero(page);
-> +	return folio_try_get(page_folio(page));
-
-This seems like it needs retry logic, a la try_get_folio(), to guard against a
-race with the folio being split.  From page_folio():
-  
- If the caller* does not hold a reference, this call may race with a folio split,
- so it should re-check the folio still contains this page after gaining a
- reference on the folio.
-
-I assume that splitting one of these folios is extremely unlikely, but I don't
-see any harm in being paranoid (unless this really truly cannot race).
+> pw-bot: cr
 
