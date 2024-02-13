@@ -1,141 +1,155 @@
-Return-Path: <linux-kernel+bounces-63264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2647D852D06
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DAE19852C6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:38:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D527A28791D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:52:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92EB92835F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:38:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98B72BB11;
-	Tue, 13 Feb 2024 09:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D392231A;
+	Tue, 13 Feb 2024 09:36:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tbmsOADy"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="pJ73C4Oi"
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA5424215;
-	Tue, 13 Feb 2024 09:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08F622EF2
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707817712; cv=none; b=M0PyuvCoALedSxJbbPdvDqEfOltcNa/X620RtJVDYFk7AXqtoxiLQ4Naw5gkDTMUN8u82n6CB6DHnB3v275nIyzBp97J9xE3VTqqHc5ZqShbtvbnSXwfm01HTKH/gtfrM+WaN4KfjQlSq8LXCfCzsoIN9g9Rw9idYZOBQP4htuc=
+	t=1707816964; cv=none; b=FKV6C74kOhj1oOfFOJGuSZRFE5J9zZAQejyMEXHte7YQAKjrXDcvv4hqwcoAd0dgaCfMYN8vV06CcfJfcL7YySOTWKw+MSE8bfyU4syByin5hhXNJSOGSlt/AWgt+Fr1cgtAxzpvQ7Tu7EkVYnZ2ZXN35DmwT2T6liUrt4GArxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707817712; c=relaxed/simple;
-	bh=+jlu/AYL7Pn+riEIViebhkB7TWBJwXJgw9NTINuKLcs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qh/6u+BlGZFRS1MQwOQsZByVsvnX/UmGn/dx7kXCpfqF82FM6EyW4N8Lj0gp6O/OWmiS6Rem6l0gUeRTXA/vrsBRdfXExPf6Nm4HXzEtX5fVyX/kPr7mmEkLfkHzbGGT5hNGsZzBwENxZ3VWHNxprqqvCEkVFQjrMRvCPKpqLLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tbmsOADy; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41D9bvfX002328;
-	Tue, 13 Feb 2024 09:48:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=dT3athFFB1S90PGKQU187mvJ77v2TNl0tjUJCAHu78Q=;
- b=tbmsOADyQroCb2P3YSOtaq9OGEEPInlOGFMIr4tf8vayEG0/u5BV3S896OqzcacZCt6N
- nzuikdevQyfoWuU88iPHvKPL/ZMP0xGi96xJywauO0x0jh86pmFNhSku5cALaxQpmutN
- kBBvVRJAWZP95F5Oasi2XrWSPnDOQrmz9VJMpAJHxo18S7lnaxXozq8DJ247ug3DEVhI
- 7uKQ1k5XxY1Gqfj/Kw0wLb6KtnOEIdKXNlUqld70iARDf0RoHk0sNlSxkDPCnQgjvGCn
- MAcHKqj7PB0EtG1rG5/CYKgSbW5rVq1gcyI4Qp4qKmrrsN7j+zMFfEyhXftAYSVdX+i6 Mw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w85y4gbr6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 09:48:11 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41D9eKse010951;
-	Tue, 13 Feb 2024 09:48:11 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w85y4gbqm-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 09:48:10 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41D8bokT016184;
-	Tue, 13 Feb 2024 09:36:30 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mymecq5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 09:36:30 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41D9aPsl13501118
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 09:36:27 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9E59A2004B;
-	Tue, 13 Feb 2024 09:36:25 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8A6AA2004E;
-	Tue, 13 Feb 2024 09:36:20 +0000 (GMT)
-Received: from li-c9696b4c-3419-11b2-a85c-f9edc3bf8a84.in.ibm.com (unknown [9.109.198.187])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 13 Feb 2024 09:36:20 +0000 (GMT)
-From: Nilay Shroff <nilay@linux.ibm.com>
-To: john.g.garry@oracle.com
-Cc: axboe@kernel.dk, brauner@kernel.org, bvanassche@acm.org,
-        dchinner@redhat.com, djwong@kernel.org, hch@lst.de, jack@suse.cz,
-        jbongio@google.com, jejb@linux.ibm.com, kbusch@kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
-        martin.petersen@oracle.com, ming.lei@redhat.com, ojaswin@linux.ibm.com,
-        sagi@grimberg.me, tytso@mit.edu, viro@zeniv.linux.org.uk
-Subject: Re:[PATCH v3 10/15] block: Add fops atomic write support
-Date: Tue, 13 Feb 2024 15:06:19 +0530
-Message-ID: <20240213093619.106770-1-nilay@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124113841.31824-11-john.g.garry@oracle.com>
-References: <20240124113841.31824-11-john.g.garry@oracle.com>
+	s=arc-20240116; t=1707816964; c=relaxed/simple;
+	bh=B6PIRF1YW9xcHfchIY+ftgkmT8yekQiVqKxqKwejxNo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EMj9F5rNunJVZFXKhG+OQ+r6XE5XYl78aXQOe8NZnARRiUjkZ45tMTFpa4tSpyEk07UGVXgwpKlD+O5qQ7O+Qn1DMARP6M442evj+ayqZLLzhLYXMkbUODkYy1cR1UKPLltL8zZdhZuFMrOs2nvXlB+h4v5GGMWSrS5I4wfhHE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=pJ73C4Oi; arc=none smtp.client-ip=209.85.160.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-21432e87455so2635629fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 01:36:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707816962; x=1708421762;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from
+         :dkim-signature:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yV0A0nmKsy8PYCSYjFf9mPfVvhSNUYlYMjymmNOi59E=;
+        b=KQFkPh/6E8licvd2q1x39PJCPGaCbHRcxkH71ik3To6czBLpUoy91SJLbL1XqKnMAr
+         BlGsxswAi7I2lyrg8HMU6oBVORHZIFm78tOc/4MaFdNPwUc0rvJm1Cdo+MWNdPTN0u3e
+         g4h+J6C856m5RaGRFFyyMeR88bQBftos2eafWE7NKIiv8M2WD/f6KO8AbHvJNY7JyMqj
+         OM5zfgJkDtIIiU31OBwlx2yr4ziV0rybTx/Y8K3Gl0vOHxx3+Y2afVRwphS+LOq46sMd
+         wbunfXztpFfpWgYjaOAo8ECR6Imn2ajSIwRKQjDyURUvp3d6CpFidyWsdFHBgodG3nIf
+         pNPw==
+X-Forwarded-Encrypted: i=1; AJvYcCX8kbQLzV8JKlQpbDgbwJ1RNNln9vwImveYF5aLcMf0GGfuLucJGgS1bbCaP8grIuAUOhnuka6LINqhKdto1s9eYi3OB3mzdSjQTE2V
+X-Gm-Message-State: AOJu0Yx7He5ryBVcfr1wP/I2u0vDfpDwA+snOrEGmlasCXhbZaRdqdU5
+	1BMG01uDpCo2caQwFOPQEGReom0t2VGAdxRGLXQcLhK0uaJDNdIE
+X-Google-Smtp-Source: AGHT+IEV0juLyM72w0UTnpWw30aYu6RizsUl1I3jQAYodBCs15ZM0PcZkyrB9zcbfuSWzeJAe2rFKA==
+X-Received: by 2002:a05:6870:f151:b0:214:dc31:a7b7 with SMTP id l17-20020a056870f15100b00214dc31a7b7mr9928943oac.53.1707816961694;
+        Tue, 13 Feb 2024 01:36:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU0i4xtDncFjiaK7ebXWKtgp4ly9pKcF9fdePIPWgOogcoPEm2clZQ0NtfYqe4a8vffssieCSQ8RvoDAONhD6sSlwTxuKxAU8ldG4JrYR95dwjogEOz+b2C3EADwJW3y+kRVcPvxltcouBB5yV+/u4xWt9UVwSAVR7Rew0Ai9hcL1+YD1yIdG9AkZDT7mVB6MZ/sDs1VNxi/7HtJfMHRAIpKqvhW2c9GtRA9QD683CDPjcdFB4mk3N9jVMSucsE/88/1ZKnsxd1nXOZmoVYgpU=
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id 75-20020a63004e000000b005cd835182c5sm1900121pga.79.2024.02.13.01.36.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 01:36:01 -0800 (PST)
+Date: Tue, 13 Feb 2024 06:36:32 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707816959;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yV0A0nmKsy8PYCSYjFf9mPfVvhSNUYlYMjymmNOi59E=;
+	b=pJ73C4OixTpldSUovTEuAHoBhghosBc1RxXObdohFcUEXsZzdeug1EOAqXziyMfbmqfK3k
+	5PZxFCWzoIphrEHAe0vFzIB2aVyaBtWYBgHAiRXRxMdirgLSdJxN9oLRVGTmhCYTolPHxj
+	HxkfzdQ3x0v2ve+pDbt4/ounJ48m76fv+X5drcqoVgh4YenV585mcYLPIV+W8WMS4UIy1p
+	m+B4mZIHGhNk/MKo4kPnN/1KZjwH2yRkBf6i7XrUk+sAIE0AhpmTREGlg4sdR7ZcNK5wzf
+	m3tu0bq1uzX7DUIsHQdD+wONmsWHm81pBj0LYpOuZ9VA1xaDQbqm0siKHvhCxA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 0/5] powerpc: struct bus_type cleanup
+Message-ID: <h5f4bo5awkidvp75yusn4fkjybdrxdaz3d366zhd4xsu45cska@nxm362wm33g3>
+References: <20240212-bus_cleanup-powerpc2-v2-0-8441b3f77827@marliere.net>
+ <417a6531-b298-4d5c-aa4d-755bcef2f414@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9Y3xpgl7YZgmt7bLwj052NiHim_kCSSt
-X-Proofpoint-ORIG-GUID: wcW_-f-Ig0-0IoXex2Lkk7VjzuJEeuiu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_04,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- clxscore=1015 priorityscore=1501 spamscore=0 suspectscore=0 malwarescore=0
- mlxlogscore=998 bulkscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402130076
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <417a6531-b298-4d5c-aa4d-755bcef2f414@csgroup.eu>
 
->+static bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t p=
-os,=0D
->+				      struct iov_iter *iter)=0D
->+{=0D
->+	struct request_queue *q =3D bdev_get_queue(bdev);=0D
->+	unsigned int min_bytes =3D queue_atomic_write_unit_min_bytes(q);=0D
->+	unsigned int max_bytes =3D queue_atomic_write_unit_max_bytes(q);=0D
->+=0D
->+	if (!iter_is_ubuf(iter))=0D
->+		return false;=0D
->+	if (iov_iter_count(iter) & (min_bytes - 1))=0D
->+		return false;=0D
->+	if (!is_power_of_2(iov_iter_count(iter)))=0D
->+		return false;=0D
->+	if (pos & (iov_iter_count(iter) - 1))=0D
->+		return false;=0D
->+	if (iov_iter_count(iter) > max_bytes)=0D
->+		return false;=0D
->+	return true;=0D
->+}=0D
-=0D
-Here do we need to also validate whether the IO doesn't straddle =0D
-the atmic bondary limit (if it's non-zero)? We do check that IO =0D
-doesn't straddle the atomic boundary limit but that happens very =0D
-late in the IO code path either during blk-merge or in NVMe driver =0D
-code.=0D
-=0D
-Thanks,=0D
---Nilay=0D
-=0D
+Hi Christophe,
+
+On 13 Feb 08:05, Christophe Leroy wrote:
+> Hi
+> 
+> Le 12/02/2024 à 21:04, Ricardo B. Marliere a écrit :
+> > This series is part of an effort to cleanup the users of the driver
+> > core, as can be seen in many recent patches authored by Greg across the
+> > tree (e.g. [1]). Patch 1/5 is a prerequisite to 2/5, but the others have
+> > no dependency. They were built using bootlin's without warnings using
+> > powerpc64le-power8--glibc--stable-2023.11-1 toolchain.
+> > 
+> > ---
+> > [1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
+> > 
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> > 
+> > ---
+> > Changes in v2:
+> > - Added a new patch to make macio_bus_type const.
+> > - Improved changelogs to remove the word "Now".
+> > - Fixed a build error: https://lore.kernel.org/oe-kbuild-all/202402102142.uphiKeqw-lkp@intel.com/
+> > - Link to v1: https://lore.kernel.org/r/20240209-bus_cleanup-powerpc2-v1-0-79a56dcaebb1@marliere.net
+> 
+> I see another series with the same name, does this v2 also superseeds it 
+> ? https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=393570
+
+Yes, please disregard the other one!
+
+Thank you,
+-	Ricardo.
+
+
+> 
+> Christophe
+> 
+> > 
+> > ---
+> > Ricardo B. Marliere (5):
+> >        powerpc: vio: move device attributes into a new ifdef
+> >        powerpc: vio: make vio_bus_type const
+> >        powerpc: mpic: make mpic_subsys const
+> >        powerpc: pmac: make macio_bus_type const
+> >        powerpc: ibmebus: make ibmebus_bus_type const
+> > 
+> >   arch/powerpc/include/asm/ibmebus.h       |  2 +-
+> >   arch/powerpc/include/asm/macio.h         |  2 +-
+> >   arch/powerpc/include/asm/mpic.h          |  2 +-
+> >   arch/powerpc/include/asm/vio.h           |  2 +-
+> >   arch/powerpc/platforms/pseries/ibmebus.c |  4 +--
+> >   arch/powerpc/platforms/pseries/vio.c     | 61 ++++++++++++++++++--------------
+> >   arch/powerpc/sysdev/mpic.c               |  2 +-
+> >   drivers/macintosh/macio_asic.c           |  2 +-
+> >   8 files changed, 43 insertions(+), 34 deletions(-)
+> > ---
+> > base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+> > change-id: 20240209-bus_cleanup-powerpc2-498426fccb98
+> > 
+> > Best regards,
 
