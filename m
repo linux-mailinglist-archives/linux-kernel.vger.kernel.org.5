@@ -1,141 +1,266 @@
-Return-Path: <linux-kernel+bounces-64235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC272853C8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:56:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B580853C8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:57:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F14C1F2848F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:56:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5DDDB2455E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2937061673;
-	Tue, 13 Feb 2024 20:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E462B6166D;
+	Tue, 13 Feb 2024 20:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h8z167fI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="KCMcwyn9"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4487B60872;
-	Tue, 13 Feb 2024 20:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F131861663;
+	Tue, 13 Feb 2024 20:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707857799; cv=none; b=fo1cv/fGj81U9bevWoFhYckXFrF6N9lHwTNLWUXiPexX9gmPAruhVWmtWWmRmY5THhwtSlocjnKkH8F1ovOMARBDY4NJsm2qM4fyuCLmb+g8onAsA01GCtwc0tar7+7fyfEvj6g8npr6lC8o5us1Mh0My9d7N0JTAtJhJzosKr0=
+	t=1707857817; cv=none; b=XUfF+MpMRCjeKjgtTmqN3yEqlO4wx31IMDSRDXeJnNFgb6aORHLL4HWWLPqISdf8JX/dQ7CfTxgradjZkZDeWMtJ2ghxfWGdCZCYrdCgMco7pB1Fck1Vkjn3f6GpOhX5qJ/H/E9Qa62iIbbYMTV2BYauU8MIq/6dyMUWbCZwPQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707857799; c=relaxed/simple;
-	bh=D4LSaj+s1Zug+tnZej27exr9mIRN2BETmj/yUE3GRW0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gxZNvpX7MZqxVJmddaKS/aQuyAWfcVTDSK26tOaflWI7lFVEJZATT7oTbGpCPbiJryUIdHR0wRK4jSHpCgdLcgTE/d7yWsGcNNKZoUjoKRwXMy/k2uToCjTeqFsb8iLYZjXcH8pDx+WY8SQxn4cN6OERIcR0K6Wwx3nT1gNzZvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h8z167fI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15F96C43394;
-	Tue, 13 Feb 2024 20:56:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707857799;
-	bh=D4LSaj+s1Zug+tnZej27exr9mIRN2BETmj/yUE3GRW0=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
-	b=h8z167fI+5EvVkodKTckqmfSIQBf8bdxud3DuPAkVZ5nSxa6AgTf5i7nXqeViSnpi
-	 NzO6i/FEKZSrNSaZhsZiu2isfEu9pYLf9ncp9DW53jt4N2LykEt8h44nUoOhqQ6wzq
-	 Ggcsv4u6mzWx2wdqmvlX28t9zk2NlXqOWy5t5t4fQeo+oWFyEFkOS0xLVSr/qesP2L
-	 fwdUdRaFtwEmZNvFvliwu+RdNbxIx3QOILsH4x+QzGQ1ZxuRAimv1Lf9dytp6XdUoL
-	 Ta4KKLP5W5oz3ppD6qfiudZEwLy9x5gy5g8BMoIVZOsaUuW10i9gm2Sv5wKnvMmJkQ
-	 aanImS7s/f5Fg==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-511831801f3so3675805e87.2;
-        Tue, 13 Feb 2024 12:56:39 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXA8wu8fK8fTvxPEq9xriH32femcjagzaIPCBUwIfKksWPkLCvTl584fUnYLejXqQHi4WITcKk/wnWXd6cEQPN8npK9cPlIDYytrFAYvXy2ZTexJ47GN6kslCwG+IOz74yxdAaHyIA87iM/mEb5IWjXJd7UifhphWCSmrMMsQ3w1h1tNR+wHcle661K3TBeSIn5o+Y8NyKYHfHBZw5CtJLwIfyaiTba96PhZiQF3xBblKiWC53n7UcwWGCzmP9Xczhx1SDoQl8/mVyMbSVotddIaJhulLJyXnRpcb8cRMX7iQpYH+qa+AZzeXIHn+anprL9j+TTnHN0/6nF7K1fjx3I3w==
-X-Gm-Message-State: AOJu0YwXH0G2Okbc2oV2YVFjnP4M/CAkWe517YSbeLiG6WZ8lMG+AGb3
-	SUbxv3Lf38Rcnrcfa2C77dfM7zFCLcrp+XyC69Kgc8suVAcylnqZ9NKi74P6x4xLBOtmsbBtmve
-	Jw4nXqb2rVHQ+JlxYg3oiWRoXlQ==
-X-Google-Smtp-Source: AGHT+IHaVnixOZOBNn0WypWTPscuLN4ELDvcVIU+BZ+gCn9OLEVbEJc+WSHECitxZrPyjoAQls55JHpdFFIbqmURVBc=
-X-Received: by 2002:a2e:9bc7:0:b0:2d1:107b:3bbd with SMTP id
- w7-20020a2e9bc7000000b002d1107b3bbdmr506655ljj.9.1707857776326; Tue, 13 Feb
- 2024 12:56:16 -0800 (PST)
+	s=arc-20240116; t=1707857817; c=relaxed/simple;
+	bh=s4dsyZ1XWIDQWZasD2OU3k15wJD0U+VB4hlf35/z0s0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tMsMEpNCW5fU9HNc4WJFXAXKpj85Q+KrF+kNaxae9YOIq8w9KxyThjHgK4v3rEf9Ven/OgemedA8J9gQjAhGqNdMSRxDwBvEpZpyx2U0TOJpsTvHcXrl4Ds5HY0F//diioxOoQupAILJvrgEivIh7LazAyaJcv2BswgXPeGdUNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=KCMcwyn9; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1707857813;
+	bh=s4dsyZ1XWIDQWZasD2OU3k15wJD0U+VB4hlf35/z0s0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=KCMcwyn9tnID/uN9Cb3iLxUReMOTf6DWHx/J+6yd8cdH8futxZRWbENhIfuw0zJ+5
+	 Pco0EmmCyd5hXetQMoHLjNsA7K8uNpzxphj8wCUMyYQB7moiRGiYGCaNM/GA8EZ+Ss
+	 58nq0OSn/6nrLQsbYhdzOG5WkCG8Mn7EvI4zZNt07Dat68+FkISedQf42AQWcnK9Rk
+	 Y5+zSFrt5HjS3s/0LX068gIYFEIRCrH23kl1VpHTmZWJ9jvZsSDjbTaAWxjquxJzZ2
+	 N1ot4TFIl5FZhteLCD2ZKUuNGpgbG9NLmZOLL4OUp4jAUnNvIW3PRxPpwJrp5tqQ9a
+	 qSxxAXLPZZDtw==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TZDCT5BjdzYqK;
+	Tue, 13 Feb 2024 15:56:53 -0500 (EST)
+Message-ID: <f6067e3e-a2bc-483d-b214-6e3fe6691279@efficios.com>
+Date: Tue, 13 Feb 2024 15:56:53 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213-arm-dt-cleanups-v1-0-f2dee1292525@kernel.org> <20240213-wafer-garnish-88287bc5d4a5@spud>
-In-Reply-To: <20240213-wafer-garnish-88287bc5d4a5@spud>
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 13 Feb 2024 20:56:03 +0000
-X-Gmail-Original-Message-ID: <CAL_Jsq+9BwYyV9Vu1gfCnK_QjdRHvw2anM==Z6fsJvjyqLYFLw@mail.gmail.com>
-Message-ID: <CAL_Jsq+9BwYyV9Vu1gfCnK_QjdRHvw2anM==Z6fsJvjyqLYFLw@mail.gmail.com>
-Subject: Re: [PATCH 0/6] dts: Fix dtc interrupt warnings
-To: Conor Dooley <conor@kernel.org>
-Cc: soc@kernel.org, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Tsahee Zidenberg <tsahee@annapurnalabs.com>, Antoine Tenart <atenart@kernel.org>, 
-	Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@codeconstruct.com.au>, 
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>, 
-	Gregory Clement <gregory.clement@bootlin.com>, 
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
-	=?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, 
-	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
-	Stefan Agner <stefan@agner.ch>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>, 
-	Tony Lindgren <tony@atomide.com>, Chanho Min <chanho.min@lge.com>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Linus Walleij <linusw@kernel.org>, Imre Kaloz <kaloz@openwrt.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, linux-arm-kernel@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org, 
-	linux-tegra@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-omap@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: CPU data cache across reboot/kexec for pmem/dax devices
+Content-Language: en-US
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>, linux-cxl@vger.kernel.org,
+ nvdimm@lists.linux.dev, Vishal Verma <vishal.l.verma@intel.com>,
+ Dave Jiang <dave.jiang@intel.com>, rostedt <rostedt@goodmis.org>,
+ "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+References: <bc925b57-4814-4788-b369-cd2d135a7381@efficios.com>
+ <65c687fd30cf2_afa4294bc@dwillia2-xfh.jf.intel.com.notmuch>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <65c687fd30cf2_afa4294bc@dwillia2-xfh.jf.intel.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 13, 2024 at 2:27=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Tue, Feb 13, 2024 at 01:34:24PM -0600, Rob Herring wrote:
-> > I had a branch with most of these changes sitting in my tree for some
-> > time. Geert's asking about some errors not getting found prompted me to
-> > clean it up and send it out. This series fixes all* interrupt related
-> > warnings and enables the check by default.
-> >
-> > SoC maintainers, Can you please take this series directly.
-> >
-> > Rob
-> >
-> > *There's a few Renesas warnings still Geert said he would fix.
-> >
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> > Rob Herring (6):
-> >       arm64: dts: freescale: Disable interrupt_map check
-> >       arm: dts: Fix dtc interrupt_provider warnings
-> >       arm64: dts: Fix dtc interrupt_provider warnings
-> >       arm: dts: Fix dtc interrupt_map warnings
-> >       arm64: dts: qcom: Fix interrupt-map cell sizes
-> >       dtc: Enable dtc interrupt_provider check
->
-> Only fixing it for arm, Sadge.
+On 2024-02-09 15:15, Dan Williams wrote:
+> Mathieu Desnoyers wrote:
+>> Hi Dan,
+>>
+>> In the context of extracting user-space trace data when the kernel crashes,
+>> the LTTng user-space tracer recommends using nvdimm/pmem to reserve an area
+>> of physical (volatile) RAM at boot (memmap=nn[KMG]!ss[KMG]), and use the
+>> resulting device to create/mount a dax-enabled fs (e.g. ext4).
+>>
+>> We then use this filesystem to mmap() the shared memory files for the tracer.
+>>
+>> I want to make sure that the very last events from the userspace tracer written
+>> to the memory mapped buffers (mmap()) by userspace are present after a
+>> warm-reboot (or kexec/kdump).
+>>
+>> Note that the LTTng user-space tracer (LTTng-UST) does *not* issue any clflush
+>> (or equivalent pmem_persist() from libpmem) for performance reasons: ring buffer
+>> data is usually overwritten many times before the system actually crashes, and
+>> the only thing we really need to make sure is that the cache lines are not
+>> invalidated without write back.
+>>
+>> So I understand that the main use-case for pmem is nvdimm, and that in order to
+>> guarantee persistence of the data on power off an explicit pmem_persist() is
+>> needed after each "transaction", but for the needs of tracing, is there some
+>> kind of architectural guarantee that the data present in the cpu data cache
+>> is not invalidated prior to write back in each of those scenarios ?
+>>
+>> - reboot with bios explicitly not clearing memory,
+> 
+> This one gives me pause, because a trip through the BIOS typically means
+> lots of resets and other low level magic, so this would likely require
+> pushing dirty data out of CPU caches prior to entering the BIOS code
+> paths.
+> 
+> So this either needs explicit cache flushing or mapping the memory with
+> write-through semantics. That latter one is not supported in the stack
+> today.
 
-I was assuming you had things in order. ;)
+I would favor the explicit cache flushing approach over write-through semantics
+for performance reasons: typically the ring buffers are overwritten, so always
+storing the data to memory would be wasteful.
 
-> Co-incidentally I noticed there was one for riscv while looking at
-> Krzysztof's underscore in node name patch earlier, so I'd already
-> written a patch to fix it :)
+But I would rather do the cache flushing only on crash (die oops/panic notifiers)
+rather than require the tracer to flush cache lines immediately after each event
+is produced, again for performance reasons.
 
-See, I was right.
+I have done a crude attempt at registering die oops/panic notifiers from the pmem
+driver, and flush all pmem areas to memory when die oops/panic notifiers are
+called (see the untested patch below). I wonder if this is something that would be
+generally useful ?
 
-Actually, I did remember to check right after I sent this and noticed the s=
-ame.
+> 
+>> - kexec/kdump.
+> 
+> This should maintain the state of CPU caches. As far as the CPU is
+> concerned it is just long jumping into a new kernel in memory without
+> resetting any CPU cache state.
 
-For powerpc, no one else can be bothered to care, so neither do I. I
-think powerpc has been spewing dtc warnings by default for some time
-now.
+Good to know that this scenario is expected to "Just Work".
 
-Rob
+Thanks,
+
+Mathieu
+
+
+diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+index e9898457a7bd..b92f18607d39 100644
+--- a/drivers/nvdimm/pmem.c
++++ b/drivers/nvdimm/pmem.c
+@@ -26,12 +26,18 @@
+  #include <linux/dax.h>
+  #include <linux/nd.h>
+  #include <linux/mm.h>
++#include <linux/panic_notifier.h>
+  #include <asm/cacheflush.h>
+  #include "pmem.h"
+  #include "btt.h"
+  #include "pfn.h"
+  #include "nd.h"
+  
++static int pmem_die_handler(struct notifier_block *self,
++		unsigned long ev, void *unused);
++static int pmem_panic_handler(struct notifier_block *self,
++		unsigned long ev, void *unused);
++
+  static struct device *to_dev(struct pmem_device *pmem)
+  {
+  	/*
+@@ -423,6 +429,9 @@ static void pmem_release_disk(void *__pmem)
+  {
+  	struct pmem_device *pmem = __pmem;
+  
++	atomic_notifier_chain_unregister(&panic_notifier_list,
++			&pmem->panic_notifier);
++	unregister_die_notifier(&pmem->die_notifier);
+  	dax_remove_host(pmem->disk);
+  	kill_dax(pmem->dax_dev);
+  	put_dax(pmem->dax_dev);
+@@ -573,9 +582,20 @@ static int pmem_attach_disk(struct device *dev,
+  			goto out_cleanup_dax;
+  		dax_write_cache(dax_dev, nvdimm_has_cache(nd_region));
+  	}
+-	rc = device_add_disk(dev, disk, pmem_attribute_groups);
++	pmem->die_notifier.notifier_call = pmem_die_handler;
++	pmem->die_notifier.priority = -INT_MAX;
++	rc = register_die_notifier(&pmem->die_notifier);
+  	if (rc)
+  		goto out_remove_host;
++	pmem->panic_notifier.notifier_call = pmem_panic_handler;
++	pmem->panic_notifier.priority = -INT_MAX;
++	rc = atomic_notifier_chain_register(&panic_notifier_list,
++			&pmem->panic_notifier);
++	if (rc)
++		goto out_unregister_die;
++	rc = device_add_disk(dev, disk, pmem_attribute_groups);
++	if (rc)
++		goto out_unregister_panic;
+  	if (devm_add_action_or_reset(dev, pmem_release_disk, pmem))
+  		return -ENOMEM;
+  
+@@ -587,6 +607,11 @@ static int pmem_attach_disk(struct device *dev,
+  		dev_warn(dev, "'badblocks' notification disabled\n");
+  	return 0;
+  
++out_unregister_panic:
++	atomic_notifier_chain_unregister(&panic_notifier_list,
++			&pmem->panic_notifier);
++out_unregister_die:
++	unregister_die_notifier(&pmem->die_notifier);
+  out_remove_host:
+  	dax_remove_host(pmem->disk);
+  out_cleanup_dax:
+@@ -749,6 +774,35 @@ static void nd_pmem_notify(struct device *dev, enum nvdimm_event event)
+  	}
+  }
+  
++/*
++ * For volatile memory use-cases where explicit flushing of the data
++ * cache is not useful after stores, the pmem panic notifier is called
++ * on die/panic to make sure the content of the pmem memory area is
++ * flushed from data cache to memory, so it can be preserved across
++ * warm reboot. Use a low notifier priority to flush to memory stores
++ * that are performed from other die notifiers.
++ */
++static int pmem_die_handler(struct notifier_block *self,
++		unsigned long ev, void *unused)
++{
++	struct pmem_device *pmem = container_of(self, struct pmem_device, die_notifier);
++
++	/* Only trigger on DIE_OOPS for the die notifier. */
++	if (ev != DIE_OOPS)
++		return NOTIFY_DONE;
++	arch_wb_cache_pmem(pmem->virt_addr, pmem->size);
++	return NOTIFY_DONE;
++}
++
++static int pmem_panic_handler(struct notifier_block *self,
++		unsigned long ev, void *unused)
++{
++	struct pmem_device *pmem = container_of(self, struct pmem_device, panic_notifier);
++
++	arch_wb_cache_pmem(pmem->virt_addr, pmem->size);
++	return NOTIFY_DONE;
++}
++
+  MODULE_ALIAS("pmem");
+  MODULE_ALIAS_ND_DEVICE(ND_DEVICE_NAMESPACE_IO);
+  MODULE_ALIAS_ND_DEVICE(ND_DEVICE_NAMESPACE_PMEM);
+diff --git a/drivers/nvdimm/pmem.h b/drivers/nvdimm/pmem.h
+index 392b0b38acb9..6c5661a3d37b 100644
+--- a/drivers/nvdimm/pmem.h
++++ b/drivers/nvdimm/pmem.h
+@@ -4,6 +4,7 @@
+  #include <linux/page-flags.h>
+  #include <linux/badblocks.h>
+  #include <linux/memremap.h>
++#include <linux/notifier.h>
+  #include <linux/types.h>
+  #include <linux/pfn_t.h>
+  #include <linux/fs.h>
+@@ -27,6 +28,8 @@ struct pmem_device {
+  	struct dax_device	*dax_dev;
+  	struct gendisk		*disk;
+  	struct dev_pagemap	pgmap;
++	struct notifier_block	die_notifier;
++	struct notifier_block	panic_notifier;
+  };
+  
+  long __pmem_direct_access(struct pmem_device *pmem, pgoff_t pgoff,
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
