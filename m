@@ -1,125 +1,125 @@
-Return-Path: <linux-kernel+bounces-64580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7825854083
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45A2C85408A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:59:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0661F1C229EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:59:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 786951C263AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FA6634EE;
-	Tue, 13 Feb 2024 23:57:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7008365BD5;
+	Tue, 13 Feb 2024 23:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="UTxQcBy1"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LRCWghsB"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A3265BD4;
-	Tue, 13 Feb 2024 23:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBAE965BDA;
+	Tue, 13 Feb 2024 23:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707868664; cv=none; b=PLELar1/reRtivim9cpfzSA4GI8jy0PhWslgFti/UnEP2Tkx6VGX6vPdIBmfRLTOThblfqU6gafrZmbpaQVScGuqGmF00pCa7OOA34Fx/JxnXxCanK0ZN8iTubJs+8mZ78p4FD+txsw74ing+kfjsYhitQ1uWrdWixELPBPiYUg=
+	t=1707868667; cv=none; b=pt4V90ptRADKAZb8/vmzPmSrBXQj1D+icfN3/pO1sJBsiWa4Ug99IlUL/YUODYDOXGvkAiLIFw5Kk1uhMDREljU7mrm4UKltoCElJOkli83barGiXhRigHydIUkiMC4OIg6iv/7D7IEn6SJBBo9Nulo2WTDcGcifXQ6Tt9jBu/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707868664; c=relaxed/simple;
-	bh=DLuD00elz6J706PlkFBdFJvLZ8aecBLu2OUTCYgcfkE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Uhs0fQQtGQ5lbiAPzz9JnLTbD7c/Q2Box85OZSIp2D+cHgXRSBPTRAP/DmCM/6zyAezkYibnMmLTZk25MjL7TudTTHgvCcm4azF7V7C+I1dj8EYEG6kZ1GVihYzmG0ICjkrdOFacmdIoMyM+Q01TQ1hWkVnswVFvilTPuKfLkg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=UTxQcBy1; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41DNv2Hl011595;
-	Tue, 13 Feb 2024 17:57:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707868622;
-	bh=8xvNLvQL3ZxIYrY2d7H3ZWrBT6cp2lIEgWD6dDQ8W1Q=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=UTxQcBy1Ey+5WfP5ptvulwF8giZ6opuoExKR7RG0dYiekSbzw0xZbKmzaPdXoqmIs
-	 1f9QqeM4KjBDkVW5wWmW9RpikCS3CkkKwijQBurWDkPq8hWj2BTKfTIY20bcG9woxi
-	 6/gKkoKAU6xhEZ2rZWiSIL9ib88N08bJhFL7YWqs=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41DNv2Fc074667
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 13 Feb 2024 17:57:02 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 13
- Feb 2024 17:57:01 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 13 Feb 2024 17:57:01 -0600
-Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41DNv1RD091761;
-	Tue, 13 Feb 2024 17:57:01 -0600
-From: Judith Mendez <jm@ti.com>
-To: Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero
- Kristo <kristo@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Wadim Egorov
-	<w.egorov@phytec.de>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: [PATCH v3 9/9] arm64: dts: ti: k3-am6*: Add bootph-all property in MMC node
-Date: Tue, 13 Feb 2024 17:57:01 -0600
-Message-ID: <20240213235701.2438513-10-jm@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240213235701.2438513-1-jm@ti.com>
-References: <20240213235701.2438513-1-jm@ti.com>
+	s=arc-20240116; t=1707868667; c=relaxed/simple;
+	bh=fhrVSMq7W/qM+dE3xiVk7RqwqKuIwqDKLHiYuclambg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=PEZqnC/NSKNDC/rVw1PpYW+oHLoPwi6v58D8AzLlhCog7HFSHJ3sPfIrbQ9gIh9ns866b28XMn/tAeT7gvieXp7NSBpzxuK8HJqK40bPc+y3oequkNGAd91FRw6PAWGF5dpe03gKNfW3H1prQcXuFS/wF3dNBRNUX4YvFHyit/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LRCWghsB; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-562117d3dbfso445120a12.1;
+        Tue, 13 Feb 2024 15:57:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707868664; x=1708473464; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=u4gpiGn9ejifW2W661b3tHT38q/IiDuz5CtzD82Voig=;
+        b=LRCWghsB8lQfhcbd8BSYOKyumRo7IIV3E7wRC5U4TeljM3BN/d3cMHtly21jijWajC
+         67VurStYYNRT59mkSTJl37hr15/t2F3A9AVg1kOHx8DpadOy7a3FDwtYvi3LyFSfeXpw
+         47Xj7QZNIGSJ+4sxQF3XFXz6iezkm2VJ5vFedIjVrONn89Mn6hGb9DQuk0RtLFSvrVLk
+         qdsuti0ULT+GH5Mo6E/cFDtJ3svvvkDyLbxXOQaG4dUf6uaX92ifFHs6JTFzBLaIVtw7
+         HFYgqWUuvbC0P2eJjF32NojSGlD+VBDghU6JFQTLhBV3TlTs2d+/VRnkDpItpbRLD8oR
+         5iMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707868664; x=1708473464;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u4gpiGn9ejifW2W661b3tHT38q/IiDuz5CtzD82Voig=;
+        b=BUoPiXToWi6rfu/kvrslUb/DwpoPAlPHfUdAL5K/0G8BuFKW3RgSPJzs4Hc08IOE26
+         1StGCf0KFl/gQ43J0jfsgkoqFWo4gB2Gb6Nemvc2qYCN+8Mb9Ov34ka5FtvRbhSp/hLl
+         zXOBeHfDAPuvVsl4GAA5h4d0fQ3FjRD45eVHemDIMjlinVQSLH0d12LT2KQ6zEizYaIM
+         avVEUW0t9RxUmsz6s8MCCT4MB5qGOtZoGPmGpYQFU8s7qn+dpAV9NJD6IqL3uQnRx0lc
+         n+Pa0ima7MuInWmfs1f/7bK21e9bmJ47MppCu/S1UWGXc/C+KVDH48dSLl7K+M7SybKt
+         amTw==
+X-Forwarded-Encrypted: i=1; AJvYcCUWy6QlGp27ZfN+Ouapf2GoS6SpOoBO+srlfBugRBDCqWVvTkpIjbq9rqH5U2wBsrXMjMYpfllijLWyBY+PKt0qAsWIHILUxinRb5JXI+pQ8m9vIXCT3F1JJUdrFh6io73Vv8W8FgyS6fTrp1mz
+X-Gm-Message-State: AOJu0YyF2aBSGTeLrXCXy3r1vntldll+uRasKWnrufT6RhI5w66VI1E2
+	vc248gJayjSuPXMVTCtWHNmtpndAItNqQE8zuHquhcIeEEHVENna
+X-Google-Smtp-Source: AGHT+IGlQQQDH+S4iZPiaQ5jrgBJd+pIGXAEKivUjK99BY+4/U3qXLl8iwV+vtsUcBLFAeWJ32kk/g==
+X-Received: by 2002:a17:906:5a8b:b0:a3c:2fcb:97e1 with SMTP id l11-20020a1709065a8b00b00a3c2fcb97e1mr296391ejq.13.1707868664289;
+        Tue, 13 Feb 2024 15:57:44 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVnMdPyVZ1LmJ1rv06or4UJxNCK0LNyfd3bVwoXP9Nym3o9iOZKS6SdbT18B9B2Bcmej9Dg9DckYSxYqP9bQagdNWp4+q0o0KPeU93M+bclwD9rKeT+cH13Smx5sxpDoezzkZoDYs2FhkZN5kUO+UjOtvdywdiMPrVC6IACKHqJR5nqhCyeeWN+7GB5PuQzAhQ43/AbOygtcED9ZsJaD1rE/MnYmTFlbH/H48116GT9lvqW/Pxes9byamsk4aMpjsmOCi8McNj25Amw+eFwnQ==
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-68a7-7041-4298-e66b.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:68a7:7041:4298:e66b])
+        by smtp.gmail.com with ESMTPSA id hg9-20020a170906f34900b00a3d4305a105sm63190ejb.215.2024.02.13.15.57.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 15:57:43 -0800 (PST)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date: Wed, 14 Feb 2024 00:57:41 +0100
+Subject: [PATCH] selftests: damon: add access_memory to .gitignore
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240214-damon_selftest_gitignore-v1-1-f517d0f9f783@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAPQBzGUC/x3MQQqAIBBA0avErBNSKqKrRITkjA2UhiMRRHdPW
+ r7F/w8IJkaBsXog4cXCMRTouoJ1s8GjYlcMpjFtY3SrnD1iWAR3yih58ZzZh5hQOd0NvTPUDUR
+ Q8jMh8f2vp/l9P1Ply9pqAAAA
+To: SeongJae Park <sj@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+ Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc: damon@lists.linux.dev, linux-mm@kvack.org, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.13-dev-0434a
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707868663; l=1010;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=fhrVSMq7W/qM+dE3xiVk7RqwqKuIwqDKLHiYuclambg=;
+ b=CyfQLLd1lVsqKj7HYORRBa3nb0qwpRuYqFeHXxSnz5DoaEivTccJJ7MPxRtJ6cTYndaFZmXlB
+ MRA47POfSk8CUB641MYESMHtNzl/DIBHgqsFOKLe1WplkdcJYsjpIm0
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 
-Add missing bootph-all property for AM62p MMC0 and AM64x
-MMC0 nodes.
+This binary is missing in the .gitignore and stays as an untracked file.
 
-Signed-off-by: Judith Mendez <jm@ti.com>
+Reported-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
+Closes: https://lore.kernel.org/all/AS8P193MB1285C963658008F1B2702AF7E4792@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM/
+Reviewed-by: SeongJae Park <sj@kernel.org>
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
-Changes since V3:
-- No change
----
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts | 1 +
- arch/arm64/boot/dts/ti/k3-am642-evm.dts | 1 +
- 2 files changed, 2 insertions(+)
+ tools/testing/selftests/damon/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-index 5c9b73726ebd..e86f34e835c1 100644
---- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-@@ -413,6 +413,7 @@ &sdhci0 {
- 	status = "okay";
- 	ti,driver-strength-ohm = <50>;
- 	disable-wp;
-+	bootph-all;
- };
- 
- &sdhci1 {
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 83f2b00726b5..fcadfb7a353c 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -497,6 +497,7 @@ &sdhci0 {
- 	non-removable;
- 	ti,driver-strength-ohm = <50>;
- 	disable-wp;
-+	bootph-all;
- };
- 
- /* SD/MMC */
+diff --git a/tools/testing/selftests/damon/.gitignore b/tools/testing/selftests/damon/.gitignore
+index d861701f0327..e65ef9d9cedc 100644
+--- a/tools/testing/selftests/damon/.gitignore
++++ b/tools/testing/selftests/damon/.gitignore
+@@ -2,3 +2,4 @@
+ huge_count_read_write
+ debugfs_target_ids_read_before_terminate_race
+ debugfs_target_ids_pid_leak
++access_memory
+
+---
+base-commit: 7e56cf9a7f108e8129d75cea0dabc9488fb4defa
+change-id: 20240214-damon_selftest_gitignore-d1586d2f58ff
+
+Best regards,
 -- 
-2.43.0
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
 
