@@ -1,180 +1,181 @@
-Return-Path: <linux-kernel+bounces-62760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2C8C852558
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:12:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4A1C85255C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:13:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21B921C240F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:12:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DDB5B27E40
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB7F2BB1D;
-	Tue, 13 Feb 2024 00:27:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J5yttsII"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34E68610E;
+	Tue, 13 Feb 2024 00:29:38 +0000 (UTC)
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 973092C68A;
-	Tue, 13 Feb 2024 00:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C495660;
+	Tue, 13 Feb 2024 00:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707784068; cv=none; b=W7gpCJOcx1i8IxejSyd9zppSlZsQJIznaQk01DldJvn7gdlPRiWD8U9E+avb+0PFf293Sf2a8iRgJkm1UXLJjg951p1dYUjmo4eVdVDU+NliPHr2f6IEnZhXa4tXSr8Q73hyo80eJO9YNOOGsOrl3YK5a6N++GBygG7WVN0BO6A=
+	t=1707784177; cv=none; b=uGwhXtraNkZAObnAZNgi3c4/nD8R2Nt87ltFPtDjovGOCzSD3nqPxctN41IoXjgP3dbUeY6oDZ65tIl0ow9kq0Z2ZVBMNydErwjmq8FDizir7FMDFairS19vyMnh1MO3NHzsj8Guh/I6xiT2O0+J4CJsK2whjSX8f08NZEuH1Ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707784068; c=relaxed/simple;
-	bh=M66w+pWxehuYBk+Cb8hsy1oktPUqPTiWP+21qBuk88E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X8nxQxjVi5Kq+XBjFQCLxJXd4oCaPZEGqK+dmjjT5IoPDBRxlH7Tiy5hcM2jMCP+jKLrjUNfs4jvzDRGfUR5MlVswKIz6xfcDHuxhI/8f5tIz8LJJIm7FGq1GZ02bLbTTTz99ev8Ueq5M/oRXdUXnmLiGhMeXhnnv1C51iFccqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J5yttsII; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB1B0C433C7;
-	Tue, 13 Feb 2024 00:27:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707784068;
-	bh=M66w+pWxehuYBk+Cb8hsy1oktPUqPTiWP+21qBuk88E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J5yttsIIDOKZHldhQet6OkDAFharrNZeoVhDnkgZKtYlpNE1XBBEEkfTSn6zhjvZJ
-	 q6qujD8hH7dl0s5SIoOgoFwxdeiZ9Rjn2wtDSsGi+kFLUPJ9jMIhzIQwEbuXVvsJBQ
-	 C5+uA0TQhiDqsJt7ub4cRTU8zhTlVZ4kyltx2CUTtUMicxBvONZ6yTVtzCkCAzY0QW
-	 2Gk3OW2JEuEneFjLbQo7G1KVx2zUuQkatNkbw5d8RYhDftYmJxznAEi6j4gEIkU746
-	 lWTSUVecHsUkUxZONZDZwl3pP1555PC1MbdGY5lOa8Obbr5lPBllYaZtewrw2goQmB
-	 Sy8mqpQD81dkw==
-Date: Mon, 12 Feb 2024 17:27:46 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Petr Pavlu <petr.pavlu@suse.com>
-Cc: masahiroy@kernel.org, nicolas@fjasle.eu, mark.rutland@arm.com,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: Use -fmin-function-alignment when available
-Message-ID: <20240213002746.GB3272429@dev-arch.thelio-3990X>
-References: <20240212145355.1050-1-petr.pavlu@suse.com>
+	s=arc-20240116; t=1707784177; c=relaxed/simple;
+	bh=DdLxDUXmiPLoqyv4u8dN4wHTSmvIBPFzXDc8ayrmZ4Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W5laEbXhjoHstQccWCOob+g9Kx0bQHyRdnWL2d/1XtpnhyS+5T8ZaTNygIrAlcs8wKL1LrupHOr8q0dpNdGcAdq5BZD3rZdcxD8T/NiO1VgcOllphWuF5xcS+59/YLpOaGLj3f5jwDXMEykfwIpSKaxR0c9K4km/tA0SYGSi+qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl; spf=pass smtp.mailfrom=v0yd.nl; arc=none smtp.client-ip=80.241.56.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=v0yd.nl
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TYhz92DX2z9sHY;
+	Tue, 13 Feb 2024 01:29:25 +0100 (CET)
+Message-ID: <bbd64fd9-395b-441e-be04-39440359b035@v0yd.nl>
+Date: Tue, 13 Feb 2024 01:29:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212145355.1050-1-petr.pavlu@suse.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in
+ __hci_acl_create_connection_sync
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: syzbot <syzbot+3f0a39be7a2035700868@syzkaller.appspotmail.com>,
+ davem@davemloft.net, edumazet@google.com, johan.hedberg@gmail.com,
+ kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-kernel@vger.kernel.org, luiz.von.dentz@intel.com, marcel@holtmann.org,
+ netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+References: <0000000000007cea730610e083e8@google.com>
+ <216c95d9-db1f-487a-bf3d-17a496422485@v0yd.nl>
+ <CABBYNZKPaMLK5+HnsRWR9jwpdZWvbbai6p9XbePhMYdKSYUPPg@mail.gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+In-Reply-To: <CABBYNZKPaMLK5+HnsRWR9jwpdZWvbbai6p9XbePhMYdKSYUPPg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4TYhz92DX2z9sHY
 
-Hi Petr,
+Hi Luiz,
 
-On Mon, Feb 12, 2024 at 03:53:55PM +0100, Petr Pavlu wrote:
-> GCC recently added option -fmin-function-alignment, which should appear
-> in GCC 14. Unlike -falign-functions, this option causes all functions to
-> be aligned at the specified value, including the cold ones.
+On 09.02.24 14:36, Luiz Augusto von Dentz wrote:
+> Hi Jonas,
 > 
-> Detect availability of -fmin-function-alignment and use it instead of
-> -falign-functions when present. Introduce CC_HAS_SANE_FUNCTION_ALIGNMENT
-> and make the workarounds for the broken function alignment conditional
-> on this setting.
+> On Fri, Feb 9, 2024 at 7:37 AM Jonas Dreßler <verdre@v0yd.nl> wrote:
+>>
+>> Hi everyone!
+>>
+>> On 08.02.24 16:32, syzbot wrote:
+>>> syzbot has bisected this issue to:
+>>>
+>>> commit 456561ba8e495e9320c1f304bf1cd3d1043cbe7b
+>>> Author: Jonas Dreßler <verdre@v0yd.nl>
+>>> Date:   Tue Feb 6 11:08:13 2024 +0000
+>>>
+>>>       Bluetooth: hci_conn: Only do ACL connections sequentially
+>>>
+>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=154f8550180000
+>>> start commit:   b1d3a0e70c38 Add linux-next specific files for 20240208
+>>> git tree:       linux-next
+>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=174f8550180000
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=134f8550180000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=bb693ba195662a06
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=3f0a39be7a2035700868
+>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d95147e80000
+>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107c2d8fe80000
+>>>
+>>> Reported-by: syzbot+3f0a39be7a2035700868@syzkaller.appspotmail.com
+>>> Fixes: 456561ba8e49 ("Bluetooth: hci_conn: Only do ACL connections sequentially")
+>>>
+>>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>>
+>> Hmm, looking at the backtraces, I think the issue that the introduction of the
+>> sequential connect has introduced another async case: In hci_connect_acl(), when
+>> we call hci_acl_create_connection_sync(), the conn state no longer immediately
+>> gets set to BT_CONNECT, but remains in BT_OPEN or BT_CLOSED until the hci_sync
+>> queue actually executes __hci_acl_create_connection_sync().
 > 
-> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-> ---
->  Makefile                       |  7 ++++++-
->  arch/Kconfig                   |  8 ++++++++
->  include/linux/compiler_types.h | 10 +++++-----
->  kernel/exit.c                  |  5 ++++-
->  4 files changed, 23 insertions(+), 7 deletions(-)
+> Need to double check but I think we do set BT_CONNECT in case of LE
+> when it is queued so which shall prevent it to be queued multiple
+> times.
+
+Nope, we set it only from within the hci_sync callback, see
+hci_connect_le_sync(). IMO that makes sense, because in
+hci_abort_conn_sync(), we send a  HCI_OP_CREATE_CONN_CANCEL in case
+of conn->state == BT_CONNECT, and this OP we wouldn't want to send
+while the command is still waiting in the queue.
+
 > 
-> diff --git a/Makefile b/Makefile
-> index 7e0b2ad98905..9516e43f6e45 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -974,7 +974,12 @@ export CC_FLAGS_CFI
->  endif
->  
->  ifneq ($(CONFIG_FUNCTION_ALIGNMENT),0)
-> -KBUILD_CFLAGS += -falign-functions=$(CONFIG_FUNCTION_ALIGNMENT)
-> +# Set the minimal function alignment. Try to use the newer GCC option
-> +# -fmin-function-alignment, or fall back to -falign-funtions. See also
-> +# CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT.
-> +KBUILD_CFLAGS += $(call cc-option, \
-> +	-fmin-function-alignment=$(CONFIG_FUNCTION_ALIGNMENT), \
-> +	-falign-functions=$(CONFIG_FUNCTION_ALIGNMENT))
->  endif
->  
->  # arch Makefile may override CC so keep this after arch Makefile is included
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index a5af0edd3eb8..e2448f927fae 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -1507,4 +1507,12 @@ config FUNCTION_ALIGNMENT
->  	default 4 if FUNCTION_ALIGNMENT_4B
->  	default 0
->  
-> +config CC_HAS_SANE_FUNCTION_ALIGNMENT
-> +	# Detect availability of the GCC option -fmin-function-alignment which
-> +	# guarantees minimal alignment for all functions. GCC 13 and older have
-> +	# only -falign-functions which the compiler ignores for cold functions
-> +	# and this hence requires extra care in the kernel. Clang provides
-> +	# strict alignment always when using -falign-functions.
-> +	def_bool $(cc-option, -fmin-function-alignment=8) || CC_IS_CLANG
-> +
-
-I think this configuration should be split into something like
-CONFIG_CC_HAS_MIN_FUNCTION_ALIGNMENT that has the cc-option check then
-CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT can depend on that configuration
-or Clang as you have it here, so that we can drop the cc-option check in
-the main Makefile and have it be:
-
-ifdef CONFIG_CC_HAS_MIN_FUNCTION_ALIGNMENT
-KBUILD_CFLAGS += -fmin-function-alignment=$(CONFIG_FUNCTION_ALIGNMENT)
-else
-KBUILD_CFLAGS += -falign-functions=$(CONFIG_FUNCTION_ALIGNMENT)
-endif
-
-It is wasteful to call cc-option twice in my opinion, especially if we
-are checking it in Kconfig.
-
->  endmenu
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index 663d8791c871..f0152165e83c 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -99,17 +99,17 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
->   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Label-Attributes.html#index-cold-label-attribute
->   *
->   * When -falign-functions=N is in use, we must avoid the cold attribute as
-> - * contemporary versions of GCC drop the alignment for cold functions. Worse,
-> - * GCC can implicitly mark callees of cold functions as cold themselves, so
-> - * it's not sufficient to add __function_aligned here as that will not ensure
-> - * that callees are correctly aligned.
-> + * GCC drops the alignment for cold functions. Worse, GCC can implicitly mark
-> + * callees of cold functions as cold themselves, so it's not sufficient to add
-> + * __function_aligned here as that will not ensure that callees are correctly
-> + * aligned.
->   *
->   * See:
->   *
->   *   https://lore.kernel.org/lkml/Y77%2FqVgvaJidFpYt@FVFF77S0Q05N
->   *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c9
->   */
-> -#if !defined(CONFIG_CC_IS_GCC) || (CONFIG_FUNCTION_ALIGNMENT == 0)
-> +#if defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) || (CONFIG_FUNCTION_ALIGNMENT == 0)
->  #define __cold				__attribute__((__cold__))
->  #else
->  #define __cold
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index dfb963d2f862..5a6fed4ad3df 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -1920,7 +1920,10 @@ EXPORT_SYMBOL(thread_group_exited);
->   *
->   * See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c11
->   */
-> -__weak __function_aligned void abort(void)
-> +#ifndef CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT
-> +__function_aligned
-> +#endif
-> +__weak void abort(void)
->  {
->  	BUG();
->  
+>> This means that now hci_connect_acl() is happy to do multiple
+>> hci_acl_create_connection_sync calls, and the hci_sync machinery will happily
+>> execute them right after each other. Then the newly introduced hci_abort_conn_sync()
+>> in __hci_acl_create_connection_sync() calls hci_conn_del() and frees the conn
+>> object, so the second time we enter __hci_acl_create_connection_sync(),
+>> things blow up.
+>>
+>> It looks to me like in theory the hci_connect_le_sync() logic is prone to a
+>> similar issue, but in practice that's prohibited because in hci_connect_le_sync()
+>> we lookup whether the conn object still exists and bail out if it doesn't.
+>>
+>> Even for LE though I think we can queue multiple hci_connect_le_sync() calls
+>> and those will happily send HCI_OP_LE_CREATE_CONN no matter what the connection
+>> state actually is?
+>>
+>> So assuming this analysis is correct, what do we do to fix this? It seems to me
+>> that
+>>
+>> 1) we want a BT_CONNECT_QUEUED state for connections, so that the state
+>> machine covers this additional stage that we have for ACL and LE connections now.
 > 
-> base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
-> -- 
-> 2.35.3
+> BT_CONNECT already indicates that connection procedure is in progress.
+
+I still think an additional state is necessary. Alternatively (and maybe
+a lot nicer than the extra state) would be to add some functions to hci_sync
+to check for and remove queued/ongoing commands, I'm thinking of a new
+
+bool hci_cmd_sync_has(struct hci_dev *hdev, hci_cmd_sync_work_func_t func, void *data);
+void hci_cmd_sync_cancel(struct hci_dev *hdev, hci_cmd_sync_work_func_t func, void *data);
+
+I think if we had those, in addition to not needing the additional state,
+we could also simplify the hci_abort_conn() code quite a bit and possibly
+get rid of the passing of connection handles to hci_connect_le_sync().
+
+I'll give that a try and propose a small patch tomorrow.
+
+Cheers,
+Jonas
+
+> 
+>> 2) the conn object can still disappear while the __hci_acl_create_connection_sync()
+>> is queued, so we need something like the "if conn doesn't exist anymore, bail out"
+>> check from hci_connect_le_sync() in __hci_acl_create_connection_sync(), too.
+> 
+> Btw, I'd probably clean up the connect function and create something
+> like hci_connect/hci_connect_sync which takes care of the details
+> internally like it was done to abort.
+> 
+>> That said, the current check in hci_connect_le_sync() that's using the connection
+>> handle to lookup the conn does not seem great, aren't these handles re-used
+>> after connections are torn down?
+> 
+> Well we could perhaps do a lookup by pointer to see if the connection
+> hasn't been removed in the meantime, that said to force a clash on the
+> handles it need to happen in between abort, which frees the handle,
+> and connect, anyway the real culprit here is that we should be able to
+> abort the cmd_sync callback like we do in LE:
+> 
+> https://github.com/bluez/bluetooth-next/blob/master/net/bluetooth/hci_conn.c#L2943
+> 
+> That way we stop the connect callback to run and don't have to worry
+> about handle re-use.
+> 
+>> Cheers,
+>> Jonas
+> 
+> 
 > 
 
