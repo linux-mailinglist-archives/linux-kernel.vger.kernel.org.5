@@ -1,234 +1,239 @@
-Return-Path: <linux-kernel+bounces-64016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 454DD853905
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:53:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0904C85392D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F17BD28FC17
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:53:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E2661C21D83
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F7D604DF;
-	Tue, 13 Feb 2024 17:53:36 +0000 (UTC)
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8ED860898;
+	Tue, 13 Feb 2024 17:55:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="aSNtqpdh"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2071.outbound.protection.outlook.com [40.107.94.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11F15FF1A;
-	Tue, 13 Feb 2024 17:53:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707846816; cv=none; b=CmyehDEm0Iyivi0RaJoSpi7FPMJr1qovghkDHICniYCfSDb0Vnx31EPhPqXq095Vx9z7STIa+1xvnaCEJ82eJiXaBMKN68i36dYa9lS+OkHEI159mT7ayiNFiAYCrSzfTKhcgnabLShQVspt8441zkO1VqTdqFrHNRVHv4tBOXw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707846816; c=relaxed/simple;
-	bh=7WcguzORNUncVMI8yVHuEyVH6gHiNRJ99ytpWlcFL3k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VFPulARuy5GG+2UZfnnTrY2phOCEqMJpJCPIPijJI1mFkHFIqdSUsa3NpJmDZI4kzngTrXt55TB+kJpEP/NJtC8vsJ4CeG6YEl+ecW0v7/cQFXJe7ae8pYICeeQJNLbgBLZq2CVrwWF6fC2Q5QbOnhZRLyENeM1uStXNsE56yeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso3560604a12.2;
-        Tue, 13 Feb 2024 09:53:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707846814; x=1708451614;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jIAYX2by5VkQGQHZUnXlAIcJ91jHMtAdkIYxHslLShk=;
-        b=GIOl3Sa7sIotJN2x0eqwE3AVPICmLFiM3IuAHdp0szAgWJybgpKNwLtzpCX2nBT/jk
-         hTDJLZnuypxczgjgbDSorE2fRP1CMKQCDZ07gp/FqMbSCxfLW/Mwvf3crGP8lX+VuzLS
-         +KWbJORmtQJe5ksx4GEUja99NXESkNTJPxSCUxunyAhEIKPemdUB10Ve3YNssZl3Guy7
-         dZvqifJA4aPr6vuQf7hi5CUWT7uMPQi2IVCbZAv6REvKGZn+Zv1Uj8xZ40H5dnLLmVAk
-         A6VMl50K50rC7FVBEV79KUeQAj0pXrOFcpSoQAVZXYKPG7vmTeeOz2YxTJZVTk/+mUTW
-         8RlA==
-X-Forwarded-Encrypted: i=1; AJvYcCUxVtfvAvV2MVOU4+TaJvC9BNjlSSzlN2uOdyqe0yKVT6XeOkXLapZ/npd0mq3Sw/8xAx5oTfShJLeiEWHKF1AUpivj4MmLCZY9O79JxzYKXk7UnTV5Pw6ejLSpZ0ibrI1rfFLLoccb89UfgjH0pXjjD1JmbnbLPDnuK8lNuxrpv032XA==
-X-Gm-Message-State: AOJu0YzbsdCjDU4kRq5WbCWkbGvjys1rxzzc/4bieu9fa72P5tGAu6TE
-	nj70df0MZOwFHTdENEViRwlVkEfXRdBzszyhPe1pebZZtbfk4hMQwgj9m4qQT6/prY34OkRMQHM
-	P8kKOnM4GYL4fjoG635uXU7Og2Lw=
-X-Google-Smtp-Source: AGHT+IG/7yPnHipxkvG4GDwHRmNgX66LCK7NFEi9SYooQTwor/KSzpLbexwipqs0oK/vZHTUoy/+Fp9QbVLRF1qnt4I=
-X-Received: by 2002:a05:6a20:21ca:b0:19e:a9bf:d51a with SMTP id
- p10-20020a056a2021ca00b0019ea9bfd51amr272928pzb.32.1707846813997; Tue, 13 Feb
- 2024 09:53:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B29605B5;
+	Tue, 13 Feb 2024 17:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707846929; cv=fail; b=ej0qUxksT68tpQrvHhs6fbz54Bt1S4E359sv6ly3f939j5S2EoG/HUKih8MMx4yDVCEXX2jsUMtwv4VTU3hBQHe5wEd/+EqVQOpRtqML5HzTttFu1yX91CndlmgE8R3B6OY9YEHw/k9zOLpdVnn7sZyMbSmtym6/ZzmEfWLV8uU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707846929; c=relaxed/simple;
+	bh=QOr2BJj9OXdb/g4wIAZS7GXPICMdfr6kQCGrE3X/nGU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Yb04v6sZV6TuPC5dter9w2pOJoltx9ePgl6iqjx0a9o3+P6S+j881JPkHx0u8sDR1dIc1flmVBwln6whdx54P1WAGNnVrRSjpkK+FNti3lmb+i9jCW++PXy/dZrrvCLfpVhaRgzd6832ypiDHpfxEwIihe+nuxd+7EQM0Oh9eS4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=aSNtqpdh; arc=fail smtp.client-ip=40.107.94.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LI8tFASyOIWE5v71LNP1eaB7Ynh2Km8sQhz6JrZew0D0uV6TmbT0BWm8uhZJuCQl6Pvb1YLFIl8UUXrNLYCR1iKcL3N8uevV6/Sh1pMdMz0eSvU+GAQpXSbpUMcpHQVvM8VQqEbg9qyp89FBNVobAsK6aALAMXB6WWM+o5Ozdl3OOeBPQ53/4EPdyO99n9mZ4m6c1q0WLHM5PXvn9oJkhsY0f9AGFxswKhIaW+ICj1JJQROMyTFiEgGFv3qPBqs5qgBQlGk4kPllDmDMC2Q2/cvx4AcG60Y94frufF/rOKyyoMkO2YvOwsnjVsnlhnSEqbqlw9chkz/9gPABN7LLIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ww9Gd6o01kql4YP1er9AotGEX+siTSj76/6GGfHgdUs=;
+ b=NpS02ZOwUe4UsYkTmqoXvvD6d1MqK/rLdA5EvgJIxJJDlvy5WPnHnB6eVzMXYBl5odLxSnOtulB3/UGBe4nK5ZCHlKbf6GTHypa0Gh7+A+tXkvG33WvVQozUD6hatYMCdDLB1FIMHsGHLPMEWG2jjotTQbHdB4ylYykNw0UUoV/6jN68er7haxjdPsI8hhGGWsj4zdrbg9hHQAkh3DC0zfuHVvSbntIcJc7UDeglyybUV3SCsLaz7MrBf3tLyqlXFFRM2NuF71757H5kWxva74VmMKtPxrtiiwBgbdCjs3FjdmUieS5XDggv4enWtIA69gzV8fKUwZUsyN6Pl0Xh0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ww9Gd6o01kql4YP1er9AotGEX+siTSj76/6GGfHgdUs=;
+ b=aSNtqpdh5tizlmsLS9gs0DqxzLnAK8KA1kCIwmzI6GduRL9gEXw41J1Pf/4UfAg1mkt3GrpvPBACUz06o6NgXdAD3mLsX+wHkKDCTqP8E/EJU7YVAZPxZjv3K4tE4QknQLLNXLR8+mOAbz9SJRKJlp6JPCvUNnPaPuQOUJLbAiU=
+Received: from BN9PR03CA0101.namprd03.prod.outlook.com (2603:10b6:408:fd::16)
+ by DS7PR12MB8419.namprd12.prod.outlook.com (2603:10b6:8:e9::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Tue, 13 Feb
+ 2024 17:55:22 +0000
+Received: from BN2PEPF000044AA.namprd04.prod.outlook.com
+ (2603:10b6:408:fd:cafe::3b) by BN9PR03CA0101.outlook.office365.com
+ (2603:10b6:408:fd::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39 via Frontend
+ Transport; Tue, 13 Feb 2024 17:55:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN2PEPF000044AA.mail.protection.outlook.com (10.167.243.105) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Tue, 13 Feb 2024 17:55:22 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 13 Feb
+ 2024 11:55:22 -0600
+Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Tue, 13 Feb 2024 11:55:21 -0600
+From: Tanmay Shah <tanmay.shah@amd.com>
+To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
+	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <michal.simek@amd.com>, <ben.levinsky@amd.com>,
+	<tanmay.shah@amd.com>
+CC: <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v10 0/4] add zynqmp TCM bindings
+Date: Tue, 13 Feb 2024 09:54:46 -0800
+Message-ID: <20240213175450.3097308-1-tanmay.shah@amd.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207223639.3139601-1-irogers@google.com> <CAM9d7chBixXozCQztM2WKGbfs_8C70vy6ROzKpwLSqq-upz5iQ@mail.gmail.com>
- <CAP-5=fUVkaq3dDoeMYYEN1N-ghnL-GiP8PV3N3pWpjQKpDTCHw@mail.gmail.com>
- <CAP-5=fXs8=HvjGpkLwuZBi0Hh8jtmz7=0Tp7HRgU8FOFN0GZvg@mail.gmail.com>
- <CAM9d7choe-CruqcdkLMPC1Eu4Oca0CBaaq-uiCd=csiLY60NBw@mail.gmail.com> <CAP-5=fXAkbnpKpkCM8soy7pHzCZZJ8VWYrd9ewFtZoaoA6vZnQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fXAkbnpKpkCM8soy7pHzCZZJ8VWYrd9ewFtZoaoA6vZnQ@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 13 Feb 2024 09:53:21 -0800
-Message-ID: <CAM9d7cgGGw20t+VqzCd31CDUqo4roihknyH=2+_7CHuFhHh5fQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] maps memory improvements and fixes
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Miguel Ojeda <ojeda@kernel.org>, Liam Howlett <liam.howlett@oracle.com>, 
-	Colin Ian King <colin.i.king@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Artem Savkov <asavkov@redhat.com>, Changbin Du <changbin.du@huawei.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN2PEPF000044AA:EE_|DS7PR12MB8419:EE_
+X-MS-Office365-Filtering-Correlation-Id: 633f46b5-3718-4d6d-216a-08dc2cbcf332
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	fW5Ua8V1SYcmW+QfFCY3WH42XMW3cj22miO96m+oyg0vjZA1qTRIOId9wZ1zrVrZjEUNpqLM0aBxT+yhvBomUWVuszx1oTyejytzALlUuOFvPi2AWWbNdzbDkk/xv93ewgNgkXyNduy3GGTS/IJRtFfu9mrwAIQi03b8OmrW9StkSMc7lcaCeup9Y7RwOirV6AVnyslRWJ87DEeMWK9nMb/8ukeVfWWl1gqpHWhi2t5ddXexJgNVzVVANoP5CFg/V/bLmLCCiEyqsXsNnA5ZkdAAVvnHFq2yJ4AlAPaGqH/MHJDChqgk9sLRZfT9I8vS/WKsWlNqtHzSYF+4HHJd5wzzzQCRPNqMrlObTHaUqXYa6r6MdPVuZjPm1frUbur/C/up/PgClz2L0fi2AOhRfQKNXsrBtrQqrl/uUA23ikYiJ7y1GWffBGKjkz6yKl32AlQzoKg0RyZWyolQwa71itkMR7QLbg12hDJ5aSt842FRAHstnNrzpPjYGlyfYcutuqDaYSsIshsZ9fka6XetFSDU5FWqwec6exKqcOr5x/5NbvsPgA0I5QFjV83xaV1zBPOIUXKhQvMJ5on6cM0BdA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(136003)(376002)(230922051799003)(451199024)(186009)(82310400011)(1800799012)(64100799003)(40470700004)(36840700001)(46966006)(8936002)(26005)(4326008)(7049001)(8676002)(36756003)(41300700001)(356005)(86362001)(83380400001)(336012)(81166007)(2906002)(44832011)(426003)(5660300002)(1076003)(316002)(70586007)(54906003)(70206006)(2616005)(110136005)(966005)(478600001)(82740400003)(6666004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 17:55:22.4921
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 633f46b5-3718-4d6d-216a-08dc2cbcf332
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN2PEPF000044AA.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8419
 
-On Mon, Feb 12, 2024 at 12:22=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> On Mon, Feb 12, 2024 at 12:10=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> >
-> > On Sat, Feb 10, 2024 at 10:08=E2=80=AFAM Ian Rogers <irogers@google.com=
-> wrote:
-> > >
-> > > On Fri, Feb 9, 2024 at 6:46=E2=80=AFPM Ian Rogers <irogers@google.com=
-> wrote:
-> > > >
-> > > > On Thu, Feb 8, 2024 at 9:44=E2=80=AFAM Namhyung Kim <namhyung@kerne=
-l.org> wrote:
-> > > > >
-> > > > > Hi Ian,
-> > > > >
-> > > > > On Wed, Feb 7, 2024 at 2:37=E2=80=AFPM Ian Rogers <irogers@google=
-com> wrote:
-> > > > > >
-> > > > > > First 6 patches from:
-> > > > > > https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@g=
-oogle.com/
-> > > > > >
-> > > > > > v2. Fix NO_LIBUNWIND=3D1 build issue.
-> > > > > >
-> > > > > > Ian Rogers (6):
-> > > > > >   perf maps: Switch from rbtree to lazily sorted array for addr=
-esses
-> > > > > >   perf maps: Get map before returning in maps__find
-> > > > > >   perf maps: Get map before returning in maps__find_by_name
-> > > > > >   perf maps: Get map before returning in maps__find_next_entry
-> > > > > >   perf maps: Hide maps internals
-> > > > > >   perf maps: Locking tidy up of nr_maps
-> > > > >
-> > > > > Now I see a perf test failure on the vmlinux test:
-> > > > >
-> > > > > $ sudo ./perf test -v vmlinux
-> > > > >   1: vmlinux symtab matches kallsyms                             =
-    :
-> > > > > --- start ---
-> > > > > test child forked, pid 4164115
-> > > > > /proc/{kallsyms,modules} inconsistency while looking for
-> > > > > "[__builtin__kprobes]" module!
-> > > > > /proc/{kallsyms,modules} inconsistency while looking for
-> > > > > "[__builtin__kprobes]" module!
-> > > > > /proc/{kallsyms,modules} inconsistency while looking for
-> > > > > "[__builtin__ftrace]" module!
-> > > > > Looking at the vmlinux_path (8 entries long)
-> > > > > Using /usr/lib/debug/boot/vmlinux-6.5.13-1rodete2-amd64 for symbo=
-ls
-> > > > > perf: Segmentation fault
-> > > > > Obtained 16 stack frames.
-> > > > > ./perf(+0x1b7dcd) [0x55c40be97dcd]
-> > > > > ./perf(+0x1b7eb7) [0x55c40be97eb7]
-> > > > > /lib/x86_64-linux-gnu/libc.so.6(+0x3c510) [0x7f33d7a5a510]
-> > > > > ./perf(+0x1c2e9c) [0x55c40bea2e9c]
-> > > > > ./perf(+0x1c43f6) [0x55c40bea43f6]
-> > > > > ./perf(+0x1c4649) [0x55c40bea4649]
-> > > > > ./perf(+0x1c46d3) [0x55c40bea46d3]
-> > > > > ./perf(+0x1c7303) [0x55c40bea7303]
-> > > > > ./perf(+0x1c70b5) [0x55c40bea70b5]
-> > > > > ./perf(+0x1c73e6) [0x55c40bea73e6]
-> > > > > ./perf(+0x11833e) [0x55c40bdf833e]
-> > > > > ./perf(+0x118f78) [0x55c40bdf8f78]
-> > > > > ./perf(+0x103d49) [0x55c40bde3d49]
-> > > > > ./perf(+0x103e75) [0x55c40bde3e75]
-> > > > > ./perf(+0x1044c0) [0x55c40bde44c0]
-> > > > > ./perf(+0x104de0) [0x55c40bde4de0]
-> > > > > test child interrupted
-> > > > > ---- end ----
-> > > > > vmlinux symtab matches kallsyms: FAILED!
-> > > >
-> > > > Ah, tripped over a latent bug summarized in this part of an asan st=
-ack trace:
-> > > > ```
-> > > > freed by thread T0 here:
-> > > >    #0 0x7fa13bcd74b5 in __interceptor_realloc
-> > > > ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:85
-> > > >    #1 0x561d66377713 in __maps__insert util/maps.c:353
-> > > >    #2 0x561d66377b89 in maps__insert util/maps.c:413
-> > > >    #3 0x561d6652911d in dso__process_kernel_symbol util/symbol-elf.=
-c:1460
-> > > >    #4 0x561d6652aaae in dso__load_sym_internal util/symbol-elf.c:16=
-75
-> > > >    #5 0x561d6652b6dc in dso__load_sym util/symbol-elf.c:1771
-> > > >    #6 0x561d66321a4e in dso__load util/symbol.c:1914
-> > > >    #7 0x561d66372cd9 in map__load util/map.c:353
-> > > >    #8 0x561d663730e7 in map__find_symbol_by_name_idx util/map.c:397
-> > > >    #9 0x561d663731e7 in map__find_symbol_by_name util/map.c:410
-> > > >    #10 0x561d66378208 in maps__find_symbol_by_name_cb util/maps.c:5=
-24
-> > > >    #11 0x561d66377f49 in maps__for_each_map util/maps.c:471
-> > > >    #12 0x561d663784a0 in maps__find_symbol_by_name util/maps.c:546
-> > > >    #13 0x561d662093e8 in machine__find_kernel_symbol_by_name util/m=
-achine.h:243
-> > > >    #14 0x561d6620abbd in test__vmlinux_matches_kallsyms
-> > > > tests/vmlinux-kallsyms.c:330
-> > > > ...
-> > > > ```
-> > > > dso__process_kernel_symbol rewrites the kernel maps here:
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-nex=
-t.git/tree/tools/perf/util/symbol-elf.c#n1378
-> > > > which resizes the maps_by_address array causing the maps__for_each_=
-map
-> > > > iteration in frame 11 to be iterating over a stale/freed value.
-> > > >
-> > > > The most correct solutions would be to clone the maps_by_address ar=
-ray
-> > > > prior to iteration, or reference count maps_by_address and its size=
-.
-> > > > Neither of these solutions particularly appeal, so just reloading t=
-he
-> > > > maps_by_address and size on each iteration also fixes the problem, =
-but
-> > > > possibly causes some maps to be skipped/repeated. I think this is
-> > > > acceptable correctness for the performance.
-> >
-> > Can we move map__load() out of maps__for_each_map() ?
-> > I think the callback should just return the map and break the loop.
-> > And it can call the map__load() out of the read lock.
->
-> It would need a rewrite of map__find_symbol_by_name which is being
-> called by a callback from maps__find_symbol_by_name. Perhaps an
-> initial pass to ensure everything is loaded and a safe version of the
-> loop that copies the maps_by_address ahead of copying it. It'd be of a
-> scope that'd be worth its own patch set.
+Tightly-Coupled Memories(TCMs) are low-latency memory that provides
+predictable instruction execution and predictable data load/store
+timing. Each Cortex-R5F processor contains exclusive two 64 KB memory
+banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
+In lockstep mode, both 128KB memory is accessible to the cluster.
 
-Right, let's do it in a separate work.
+As per ZynqMP Ultrascale+ Technical Reference Manual UG1085, following
+is address space of TCM memory. The bindings in this patch series
+introduces properties to accommodate following address space with
+address translation between Linux and Cortex-R5 views.
 
->
-> > >
-> > > An aside, shouldn't taking a write lock to modify the maps deadlock
-> > > with holding the read lock for iteration? Well no because
-> > > perf_singlethreaded is true for the test:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.=
-git/tree/tools/perf/util/rwsem.c#n17
-> > > Another perf_singlethreaded considered evil :-) Note, just getting ri=
-d
-> > > of perf_singlethreaded means latent bugs like this will pop up and
-> > > will need resolution.
-> >
-> > Yeah, maybe.  How about turning it on in the test code?
->
-> Agreed, but I think it should be a follow up.
+|     |     |     |
+| --- | --- | --- |
+|      *Mode*        |   *R5 View* | *Linux view* |  Notes               |
+| *Split Mode*       | *start addr*| *start addr* |                      |
+| R5_0 ATCM (64 KB)  | 0x0000_0000 | 0xFFE0_0000  |                      |
+| R5_0 BTCM (64 KB)  | 0x0002_0000 | 0xFFE2_0000  |                      |
+| R5_1 ATCM (64 KB)  | 0x0000_0000 | 0xFFE9_0000  | alias of 0xFFE1_0000 |
+| R5_1 BTCM (64 KB)  | 0x0002_0000 | 0xFFEB_0000  | alias of 0xFFE3_0000 |
+|  ___               |     ___     |    ___       |                      |
+| *Lockstep Mode*    |             |              |                      |
+| R5_0 ATCM (128 KB) | 0x0000_0000 | 0xFFE0_0000  |                      |
+| R5_0 BTCM (128 KB) | 0x0002_0000 | 0xFFE2_0000  |                      |
 
-Sounds good.
+References:
+UG1085 TCM address space:
+https://docs.xilinx.com/r/en-US/ug1085-zynq-ultrascale-trm/Tightly-Coupled-Memory-Address-Map
 
-Thanks,
-Namhyung
+Changs in v10:
+  - Add new patch (1/4) to series that changes hardcode TCM addresses in
+    lockstep mode and removes separate handling of TCM in lockstep and
+    split mode
+  - modify number of "reg", "reg-names" and "power-domains" entries
+    based on cluster mode
+  - Add extra optional atcm and btcm in "reg" property for lockstep mode
+  - Add "reg-names" for extra optional atcm and btcm for lockstep mode
+  - Drop previous Ack as bindings has new change
+  - Add individual tcm regions via "reg" and "reg-names" for lockstep mode
+  - Add each tcm's power-domains in lockstep mode
+  - Drop previous Ack as new change in dts patchset
+  - Remove redundant changes in driver to handle TCM in lockstep mode
+
+Changes in v9:
+  - Fix rproc lockstep dts
+  - Introduce new API to request and release core1 TCM power-domains in
+    lockstep mode. This will be used during prepare -> add_tcm_banks
+    callback to enable TCM in lockstep mode.
+  - Parse TCM from device-tree in lockstep mode and split mode in
+    uniform way.
+  - Fix TCM representation in device-tree in lockstep mode.
+  - Fix comments as suggested
+
+Changes in v8:
+  - Remove use of pm_domains framework
+  - Remove checking of pm_domain_id validation to power on/off tcm
+  - Remove spurious change
+  - parse power-domains property from device-tree and use EEMI calls
+    to power on/off TCM instead of using pm domains framework
+
+Changes in v7:
+  - %s/pm_dev1/pm_dev_core0/r
+  - %s/pm_dev_link1/pm_dev_core0_link/r
+  - %s/pm_dev2/pm_dev_core1/r
+  - %s/pm_dev_link2/pm_dev_core1_link/r
+  - remove pm_domain_id check to move next patch
+  - add comment about how 1st entry in pm domain list is used
+  - fix loop when jump to fail_add_pm_domains loop
+  - move checking of pm_domain_id from previous patch
+  - fix mem_bank_data memory allocation
+
+Changes in v6:
+  - Introduce new node entry for r5f cluster split mode dts and
+    keep it disabled by default.
+  - Keep remoteproc lockstep mode enabled by default to maintian
+    back compatibility.
+  - Enable split mode only for zcu102 board to demo split mode use
+  - Remove spurious change
+  - Handle errors in add_pm_domains function
+  - Remove redundant code to handle errors from remove_pm_domains
+  - Missing . at the end of the commit message
+  - remove redundant initialization of variables
+  - remove fail_tcm label and relevant code to free memory
+    acquired using devm_* API. As this will be freed when device free it
+  - add extra check to see if "reg" property is supported or not
+
+Changes in v5:
+  - maintain Rob's Ack on bindings patch as no changes in bindings
+  - split previous patch into multiple patches
+  - Use pm domain framework to turn on/off TCM
+  - Add support of parsing TCM information from device-tree
+  - maintain backward compatibility with previous bindings without
+    TCM information available in device-tree
+
+This patch series continues previous effort to upstream ZynqMP
+TCM bindings:
+Previous v4 version link:
+https://lore.kernel.org/all/20230829181900.2561194-1-tanmay.shah@amd.com/
+
+Previous v3 version link:
+https://lore.kernel.org/all/1689964908-22371-1-git-send-email-radhey.shyam.pandey@amd.com/
+Radhey Shyam Pandey (1):
+  dt-bindings: remoteproc: add Tightly Coupled Memory (TCM) bindings
+
+
+Radhey Shyam Pandey (1):
+  dt-bindings: remoteproc: add Tightly Coupled Memory (TCM) bindings
+
+Tanmay Shah (3):
+  remoteproc: zynqmp: fix lockstep mode memory region
+  dts: zynqmp: add properties for TCM in remoteproc
+  remoteproc: zynqmp: parse TCM from device tree
+
+ .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 192 +++++++++++--
+ .../boot/dts/xilinx/zynqmp-zcu102-rev1.0.dts  |   8 +
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi        |  65 ++++-
+ drivers/remoteproc/xlnx_r5_remoteproc.c       | 257 ++++++++----------
+ 4 files changed, 357 insertions(+), 165 deletions(-)
+
+
+base-commit: 929654e8f1add50b01d5a56171a31c311b0a739a
+-- 
+2.25.1
+
 
