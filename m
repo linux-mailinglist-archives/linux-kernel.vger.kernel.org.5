@@ -1,60 +1,59 @@
-Return-Path: <linux-kernel+bounces-62725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE7BE8524DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C30558524DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:02:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EE0DB2888D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:01:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6385AB2564F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F7BC12837A;
-	Tue, 13 Feb 2024 00:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E07F24A1B;
+	Tue, 13 Feb 2024 00:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dnSwQ2Cn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MU5bHa6i"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4695812836B;
-	Tue, 13 Feb 2024 00:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C68129A60;
+	Tue, 13 Feb 2024 00:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783828; cv=none; b=AkTqNrgNzRzMAlFbjDlnb94NIG1kecNsvP33dwIZsAgwYQGT18uqVZgZZWUe9mEtOG1BOVmRzOGhNEmGST4rkiMC5UiztQUpLhVGjkNyzpyYGIIE+rK+yIZSKS9gmzmY1Q/IQWaE62sL3UzHzU223FO9k/ys2yh5z84mTCSkSJ0=
+	t=1707783830; cv=none; b=UGTP/V+YjqT3WnsqICE5bDeuDsHSxIWDWBVQOPSE2Jt7TE42eiwNTeIsrzy4RHWVuVxqCv16A96fGuWUi2/BgTL4oN0rtmMR085TMKRySvp2pEx5jU+Jeue7Cb2av90eHoDp4b2dQCsECCygqv/GFZHdyoXDF9TXophxd/YqT3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783828; c=relaxed/simple;
-	bh=cBm2UBuJTG5yTg3NrSywZMdNfQKwSwm2BxLFtbcWarI=;
+	s=arc-20240116; t=1707783830; c=relaxed/simple;
+	bh=Pn07thD0aJ/gRCqlLhA7LBD8t5v3filXzrlPtc3D2NY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BS7M6I5mjDjqdS/LJCYcgXylrUZoXTHWTy999eK15ToVEhS6BnhKnLZzGAYpI4gkZr/VZ07lo/rDHQBOuJvXMoCxgZcIFNYoeJXiuKrDL40v/uqWem40sG/VJBZbjt6lZg24ors5DJmqwQ1u/2UnCysG5WhQK4GF/lBvGhhkeD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dnSwQ2Cn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D503BC43399;
-	Tue, 13 Feb 2024 00:23:46 +0000 (UTC)
+	 MIME-Version; b=f73bjtP5XUAezYTP2iAw4uZbaSvlJcFryMdA2SBC2wEKrP2XLYEcM2v7okIrHZNx4ZnXEFB9h0cE4Nijur2gJ6K9GvG0+P7zcRgDZl70TgvdKEu7Dr8osrzUNigB3PTJRh1vupxZbSY9+eh14ayrIOyVxQBsq+nVLVnU31x8keM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MU5bHa6i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 907CEC43394;
+	Tue, 13 Feb 2024 00:23:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783828;
-	bh=cBm2UBuJTG5yTg3NrSywZMdNfQKwSwm2BxLFtbcWarI=;
+	s=k20201202; t=1707783829;
+	bh=Pn07thD0aJ/gRCqlLhA7LBD8t5v3filXzrlPtc3D2NY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dnSwQ2CnRctiX1f7chLSG239QZHL18Xt6eoqc8FIBOaathpaX/2NeJtTkVVOs5YH3
-	 nmFjlQ3DtOwaLsfCnB7hSiSk2/4O7CtxOrEfgFmM1a8Mu0PDcQKM4ngFQQLUjlwOgZ
-	 gHHblCvtWgkje/nW5igsCaiL61uzjRF5CewHg+Ulkr135/GOotGxRB/LhM+Kcw9whz
-	 H1WTFKpi1Cx8+pXIBtnYsSlDVPKkVu8UrQ4X2sE9/1mhPP+9nmhU66gDJ38/ZG/H0e
-	 dI+Fssw8e7n73Wc35G1Ot7ihNgZymg1Kx6Pg4zAY9h5y/RUefHos0JrH/T16rtaVzU
-	 BjcVq+rdHQ2Bg==
+	b=MU5bHa6iYrRu+3fJSjNoiHqTiQGQ0lBMi4PriHx/IFoogBas4y0Se0G8wkX3yyoUb
+	 V8XRN24wP5ndF6ha64rk1USUWu3CDrrI6WVDKgJAV9Z6dbZkUrEbWHzvzZ7QvVa/ib
+	 xDHpzas8Hl3PSkSvNy9iM+4muWQKjeASNEt3X01huWyI55DVoqs+sBkAIICUrm0EFG
+	 /KjR7j8Vsw59dJtUeKjnO8R2WY9PtDkEz1NDJnhAG4v7PNi1XrVXrUeGI9zMQUX8iH
+	 V7ej8WJ1J/NF0xQ9c6s15+yhO39KMOtC1VsZuTWZppu+yMBOeMAEsdszlGpWTklcve
+	 WHnJG8F9Fsvvw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
+Cc: Andrew Bresticker <abrestic@rivosinc.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	johannes@sipsolutions.net,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 13/22] wifi: mac80211: adding missing drv_mgd_complete_tx() call
-Date: Mon, 12 Feb 2024 19:23:15 -0500
-Message-ID: <20240213002331.672583-13-sashal@kernel.org>
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	linux-efi@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.15 14/22] efi: runtime: Fix potential overflow of soft-reserved region size
+Date: Mon, 12 Feb 2024 19:23:16 -0500
+Message-ID: <20240213002331.672583-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002331.672583-1-sashal@kernel.org>
 References: <20240213002331.672583-1-sashal@kernel.org>
@@ -69,33 +68,47 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.148
 Content-Transfer-Encoding: 8bit
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Andrew Bresticker <abrestic@rivosinc.com>
 
-[ Upstream commit c042600c17d8c490279f0ae2baee29475fe8047d ]
+[ Upstream commit de1034b38a346ef6be25fe8792f5d1e0684d5ff4 ]
 
-There's a call to drv_mgd_prepare_tx() and so there should
-be one to drv_mgd_complete_tx(), but on this path it's not.
-Add it.
+md_size will have been narrowed if we have >= 4GB worth of pages in a
+soft-reserved region.
 
-Link: https://msgid.link/20240131164824.2f0922a514e1.I5aac89b93bcead88c374187d70cad0599d29d2c8@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Andrew Bresticker <abrestic@rivosinc.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mlme.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/firmware/efi/arm-runtime.c   | 2 +-
+ drivers/firmware/efi/riscv-runtime.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
-index cc6d38a2e6d5..5da0c2a2e293 100644
---- a/net/mac80211/mlme.c
-+++ b/net/mac80211/mlme.c
-@@ -5923,6 +5923,7 @@ int ieee80211_mgd_deauth(struct ieee80211_sub_if_data *sdata,
- 		ieee80211_report_disconnect(sdata, frame_buf,
- 					    sizeof(frame_buf), true,
- 					    req->reason_code, false);
-+		drv_mgd_complete_tx(sdata->local, sdata, &info);
- 		return 0;
- 	}
+diff --git a/drivers/firmware/efi/arm-runtime.c b/drivers/firmware/efi/arm-runtime.c
+index 3359ae2adf24..9054c2852580 100644
+--- a/drivers/firmware/efi/arm-runtime.c
++++ b/drivers/firmware/efi/arm-runtime.c
+@@ -107,7 +107,7 @@ static int __init arm_enable_runtime_services(void)
+ 		efi_memory_desc_t *md;
  
+ 		for_each_efi_memory_desc(md) {
+-			int md_size = md->num_pages << EFI_PAGE_SHIFT;
++			u64 md_size = md->num_pages << EFI_PAGE_SHIFT;
+ 			struct resource *res;
+ 
+ 			if (!(md->attribute & EFI_MEMORY_SP))
+diff --git a/drivers/firmware/efi/riscv-runtime.c b/drivers/firmware/efi/riscv-runtime.c
+index d28e715d2bcc..6711e64eb0b1 100644
+--- a/drivers/firmware/efi/riscv-runtime.c
++++ b/drivers/firmware/efi/riscv-runtime.c
+@@ -85,7 +85,7 @@ static int __init riscv_enable_runtime_services(void)
+ 		efi_memory_desc_t *md;
+ 
+ 		for_each_efi_memory_desc(md) {
+-			int md_size = md->num_pages << EFI_PAGE_SHIFT;
++			u64 md_size = md->num_pages << EFI_PAGE_SHIFT;
+ 			struct resource *res;
+ 
+ 			if (!(md->attribute & EFI_MEMORY_SP))
 -- 
 2.43.0
 
