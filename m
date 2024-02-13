@@ -1,102 +1,108 @@
-Return-Path: <linux-kernel+bounces-64080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89E2D8539E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5853A8539F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27F631F23CAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:27:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAB141F22EE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364D260861;
-	Tue, 13 Feb 2024 18:27:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DF31DDA6;
+	Tue, 13 Feb 2024 18:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t9har22V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dY8DxBxj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A34C605C8;
-	Tue, 13 Feb 2024 18:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F258B658;
+	Tue, 13 Feb 2024 18:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707848835; cv=none; b=VXGvJk6KfU/pGYxPFl4YWxxmJCDEQakDIwIbIQRujGnOnMp/547X9Jt1f+vDVbOR+72wdgAHSWwIL/cEHNmqvpFFtCGR7OSpfKtqV3PT2Zz4yvEx0lt3e/ou8F7LeY9pFTd+Rn3AQxdirFDXnKqkxXybpNoVq3/7TIpvnfOZ+uw=
+	t=1707849094; cv=none; b=SEHr8xxUNosb5/G9gs5vbHbivdjiJeiys867YgwTRipLqKUBuZJKGq1A8EDifbg6FDMlD5s9+Ug0jIwvibYsZf2pP8REofzwpTlZ0z9yWHjwkY6TAD/sRJJ2hqe79uJJW/lktVJgII5uaNfw0lU3BUfxLmvIm54+csVUgmz1Aqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707848835; c=relaxed/simple;
-	bh=EEomQul/5eCObV/qD4WM2mcnanKsiiwtICoSctvTsiI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ggqap09S/wGYPXBN4uZs23QsD0UQLOyWK09CY8Y9CBEbpRB1m5jDMPAsdMUBZ4Qv5gFyQzIYjlawDUY+K3lBxt93ZaHcnZY3xaNf9sQQKoTVap/OIpUfvkjx64xVEKPk/oFG+Vi+hpvWfaJmaynwfuAwLjvEBdUEP+J7f6hsOxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t9har22V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0996C433F1;
-	Tue, 13 Feb 2024 18:27:11 +0000 (UTC)
+	s=arc-20240116; t=1707849094; c=relaxed/simple;
+	bh=Ab8fxxdy291RfR+OBopZ6Cc/GzwuF9lMaVqa+RwJDiA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=airfyOwedP3DdF3LoED3A0g6CHXEcIDr1M+Mmm/wfMyBmbLbdxif7cTV1Wbgyy1J4kH8E64SEV7yPWXOyiDoyu7RAlXKBKQlbmcgZqw9MF2N0rSmlOIJchB8KYBv8Wh3UBm4ifpFMyymSDwgzEVKCFFPrPUDxPL1z5qWUSRbBPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dY8DxBxj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11013C433F1;
+	Tue, 13 Feb 2024 18:31:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707848834;
-	bh=EEomQul/5eCObV/qD4WM2mcnanKsiiwtICoSctvTsiI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=t9har22VlNjrYsAPs23QWx5F8JakOzwdFC/1lruS/tKrJ6yCdOKacC/pvKcHDz4Xz
-	 6a547DH5vES8zAB0+Ko3c4DV1ft+UNzaCM4D6spIfaDUQ1h/aPuGS8GYeyPgk6tg32
-	 rlR7/TpUrkBx0FKXGTeMjckIYwUa9s7YsPM6COPcWvtlCKj/ubPqjXtDePdZsirvde
-	 mY/lo93ZMjgCRU+pvuqePeywS2cVeHqY+3ji+wb/9rlI0a/fpehdZilUY0UnO3aIfp
-	 lzFcAhNF5MWxuBrSqHW2vyp6dJAmALqiOt1eVe140g3DjeiKBJV5ijVytal/2mA1AJ
-	 yeT1Lu9qurpqw==
-Date: Tue, 13 Feb 2024 18:27:09 +0000
-From: Conor Dooley <conor@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chunfeng Yun <chunfeng.yun@mediatek.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Daniel Golle <daniel@makrotopia.org>, linux-usb@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH 1/2] dt-bindings: usb: mtk-xhci: add compatible for MT7988
-Message-ID: <20240213-shortlist-unhook-7e7cc4e66c0a@spud>
-References: <20240213130044.1976-1-zajec5@gmail.com>
+	s=k20201202; t=1707849093;
+	bh=Ab8fxxdy291RfR+OBopZ6Cc/GzwuF9lMaVqa+RwJDiA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=dY8DxBxjfJNMd1QRmcVNxD7LbIByw9EBGh51gAiUFT/IYlJR3fekzyBQaC85Abm+I
+	 2rdzxvVjWSJNWPBtYPdoFgIp+DCkdJRxK1ZjgALs+ul9n4Zi6ciqM09pGkx9y/bMVK
+	 ZKEblLt2DzKaTcdhOwn6VL912rbNVxYAF/l0qF1U0wsmf8/tIlzsJSuOgxidbGiMSG
+	 AlAg4BWyj0OEvdk/dy3fc2SbZEPcpkLCuthKhsPCj1qwKwAYZffcBPmpIPPI/6gcGy
+	 IQiafICqxTJLV+k4rPbpHmQo92gTf3PipaALQqqnpbiUFCZeQBw7DRcjDRrlHfSn0M
+	 pEbF1c7DTij0A==
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ NXP Linux Team <linux-imx@nxp.com>, Sebastian Reichel <sre@kernel.org>
+Cc: Dong Aisheng <aisheng.dong@nxp.com>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240213010347.1075251-1-sre@kernel.org>
+References: <20240213010347.1075251-1-sre@kernel.org>
+Subject: Re: (subset) [PATCH v2 00/17] UNI-T UTi260B support
+Message-Id: <170784909076.647645.11591150150653881447.b4-ty@kernel.org>
+Date: Tue, 13 Feb 2024 18:31:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pHlTLsj5De7/cwug"
-Content-Disposition: inline
-In-Reply-To: <20240213130044.1976-1-zajec5@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
+On Tue, 13 Feb 2024 02:00:49 +0100, Sebastian Reichel wrote:
+> This adds adds support for the UNI-T UTi260B thermal camera, which is based
+> on i.MX6ULL. Patches 1-14 clean up all warnings reported by CHECK_DTBS for
+> i.MX6ULL (i.e. for an empty board). They are not specific to the UTi260B and
+> in fact that machine has most of the IP handled by these patches marked as
+> disabled. Then patches 15+16 introduce the vendor and board compatible DT
+> bindings. Finally the last patches adds support for the thermal camera itself.
+> 
+> [...]
 
---pHlTLsj5De7/cwug
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Tue, Feb 13, 2024 at 02:00:43PM +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->=20
-> MT7988 SoC contains two on-SoC XHCI controllers. Add proper binding.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Thanks!
 
-Cheers,
-Conor.
+[03/17] ASoC: dt-bindings: fsl,imx-asrc: convert to YAML
+        commit: 20c0c9b352df1ab7915c827cb1d182bfc32f9f46
 
---pHlTLsj5De7/cwug
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcu0fQAKCRB4tDGHoIJi
-0rlwAP4zf4fOz8BYPdkqy1M5Qin5dK9+hRmGcVhgbwy2Ggv7jQD/V8NfIOo4BDHi
-iI7P2IJcaXKvELYNAQLya8Fj3+maVAQ=
-=fc+4
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---pHlTLsj5De7/cwug--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
