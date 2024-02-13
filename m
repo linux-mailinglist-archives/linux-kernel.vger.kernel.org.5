@@ -1,160 +1,255 @@
-Return-Path: <linux-kernel+bounces-63596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A924853201
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:33:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41DE4853203
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:33:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF8E01C21D19
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:33:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF3B2282357
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:33:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549685644D;
-	Tue, 13 Feb 2024 13:33:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A47E5644C;
+	Tue, 13 Feb 2024 13:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kslz+AqL"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NjW66I/R"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F0C55E6D
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:33:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506C855E71
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707831198; cv=none; b=V958i1bObapRN86L8HC0/indL1z4MDcO7ENem5hyoqIy14ZkRyuVnsCBgGVaeupMbY63bYIAbAsoTHIiNMBhzGeluvSIeyFhtyhf36K12/ibw0qMl7x+PsKcfQoq/D8KuqHURxStu5ADlXeaBp6K7O92jb1M+SaD0nA0EFIj9Lo=
+	t=1707831228; cv=none; b=MuJl6MYATDzmQ6KTkK/KlOkze6LYvBeA68jAbZxjxHwCmQ/eRci1HaPa8TEZ79gWznLDT1EviQKh93u5lC21l1y+MxmIN3ZcZu8ouqS6w5muA6CxcJykP9mFGbJakFUFtYSOh8D8oEciTaEWQK/uqxMcDUdpJJhv/2A6p/LEeQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707831198; c=relaxed/simple;
-	bh=h01ngBOlSGw4F8wlO81TU9/G6JRx5OX8UHYwBeWAvMk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tVIeMA0AF1QYpn9uT7kZzQcD8lUfbGV7xIK6sjZwbVcavpxGML9qoHwU247Ywad6uXyl7M5aq6SnhrY6p9Y2GIumYoHOxwr0bQT1QOxz2lsFhn37H1R5Jpvsc3aaHGp4sfcpC7v+ekXxDAT2k8/I0WN4eMiT1sHiTUvIxpxGEtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kslz+AqL; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-411d1fe61c2so1033325e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 05:33:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707831195; x=1708435995; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OaD0B1TuLNeYNpMlA6iizr8UK6j9fkAx97a/7QghzcU=;
-        b=kslz+AqLeIaRhtJM134sVP6omXFrWGHF+BtkDWF7pVjUBkBmNl2US66F5vc0orrTg8
-         z8OVSKWyQcT3F6Nl5nKdK+bsrXL/OFcXSSPGY7QT/ES2nVVxl04wJc0ws1N3PRXFMdr3
-         AoGbN3bfaUGHi0o30xUIGnamJdh5gWojbu4sOR48nF+0uOkST2UpAeeczRZHF0hycZ9o
-         iqHBkDkOewgrU6Bgchq2s6CuL05//18LdlCiMG0n15Ap6fhDATt8ANLMExIDIia4LKDN
-         Q3o0sYgRhYJjzxYNsFopdkvoWIvAf1Ler82aVFWIGO81yBzIUXVguPDb4MBfpvVyQpNF
-         yPrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707831195; x=1708435995;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OaD0B1TuLNeYNpMlA6iizr8UK6j9fkAx97a/7QghzcU=;
-        b=AyXoZ0YBSriHpPiw4fhETFm4Q2/MLXO//U1euJ60UiSGJfGTuQtHnlu2SLO/5sj4YP
-         bW22nl00Ujogr7e5abcHyaYsk+AuzX3KBoAjc02TRgXfVOiSx+tCFyjStJl1XEJKGMY4
-         7DEgZakkdfYO+3IoT/Ortg+qfz3wAZHctjqagA8BGUVH90fWCXlbBqY/C6K96SgCMbtA
-         PB/EEXCZDTO3DmZHkeRMbR68T0ZLi5DMQBFbGJfVWfhhRbqKJb/h9Mi1otQWsAWzDh+h
-         //yFxFyEiPn+BJoQhu9JFx20vLMp+Awp3u/5PlcGsv82Ys367+urVOpIgT6RLbA6An1U
-         3Pcw==
-X-Forwarded-Encrypted: i=1; AJvYcCXuRQcM2FCYeTDxuiPy9XrVXzvW6pXJHQyFVQ1wNAS2RVYHcoD0DowWDZgLc6kNmipSJejQ3Zi1/FVlKqaMCl9mRjVSQNU+9NSen9wu
-X-Gm-Message-State: AOJu0Yy8jJV6mKKs7aEnQ1Vr7kAQ0lecmIU05vdrAOITQexQpGaz79Z3
-	gc/GLlXEva3jeQfoFqpslH32AwaHgCxFmOSvgbPc81FPgm2DVyga2qCt2mA3dGs=
-X-Google-Smtp-Source: AGHT+IHf84yuxchXNd+daOoZKvcoUdxbsSzE2sC1WIC2WiFbCPCP1Jc4oNFQ0WYs9GkQaBZ4ckhwKw==
-X-Received: by 2002:a05:6000:1182:b0:33c:e2d0:a9a2 with SMTP id g2-20020a056000118200b0033ce2d0a9a2mr318308wrx.18.1707831195090;
-        Tue, 13 Feb 2024 05:33:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVWP0egO+6Qsein9lR2MZnxdm93iqghiryO5SosoaIxdRXjlBM+nu0fWgBvZq6SWht1fYQVyi/u8y8hYihS4+nOxVoPf1HcCFYHxlhcxYjzLYPzTi0pt+hpsYVIMKZ1YYLLn2GjzdriY/RDzPqfSUmcJD5151l+7bx79nrpjK6TZ8sl0HpdLmfLZkNpmJ9aD2p52o1MQVYdcj1Wnvn4Lfe5i/hnmNIY6UH1jduzv6LTiPwKOb5571pVxyeufSekwJbGFIcwnvyZlCfhz6bUnLNGK0YF3+hplPEbE8g5oF4wnjfBu0L4Tz3GO2aSFCkn9DImgl7ZwxIe7VQt/c7H3UUaQXTi3AZjyguK2FcHOuwPVtcaAW/ReBkuRE0=
-Received: from [192.168.1.20] ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id bh2-20020a05600005c200b0033b7fb4d7dbsm6735150wrb.34.2024.02.13.05.33.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 05:33:14 -0800 (PST)
-Message-ID: <681368b9-4c28-4611-a555-d7287a0eb209@linaro.org>
-Date: Tue, 13 Feb 2024 14:33:13 +0100
+	s=arc-20240116; t=1707831228; c=relaxed/simple;
+	bh=19Y5ahn44aBoKaRpMWdk3LKXXQE0FO77x5Y2b3wdKaw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DMlepuGIgFfiBRJRyH7o9uUASLH8xa+birzAVtIDf6CtXxXsbTI7BKqQU1D649CzNvDf2qfXL5SruNXp6q5vPK88x+ajvlAv7T4+M6gdaAfejfJXv64eQvHp1YPMOPDTuUnYp1i/5g5DYcQzo9j6Tw2nTakm3C7yd+XCp0RVIes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NjW66I/R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2503FC43399
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:33:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707831228;
+	bh=19Y5ahn44aBoKaRpMWdk3LKXXQE0FO77x5Y2b3wdKaw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NjW66I/RyK5Frul2lsV16RtBUelOEL2efXL0HqOYl4F16m7wLEGAHyV4kBDhXEsiT
+	 gAM9cdHcPSKpwelVKU8x0KBBx3UsrmVTKSa1jgCnIy87XFxBbUd0jdRBp85YdpUu0X
+	 0MyUq2MKRjgo4BqRtwj16TRwyGe8EifSBGdTKzooV6APrXmVrhhG8N/8SsZL5S2Hk7
+	 pCHfsKiZmZJBgKaNtdny7oGew3cHzeUe3G9H32susD2FhAS1sro8Ox9Hfa1B6eBDiL
+	 DJ4SXJmH97QizhHKLRswJkmfT482ugHVyyLl8iQxEI+0+bdR+MlxIIUxAFDU9LUL8v
+	 1NVgpw3xO/rww==
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51181d8f52fso1160792e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 05:33:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVhGftbBrQaIt+mWCx5XoVKsM01UkgbS7YtErvqkh1mE+k7qph0TFqyAc2+cEUmPcQutQSJFLPU32U7C4co0wk31Zjhcs7sViFvACkR
+X-Gm-Message-State: AOJu0Yw+nvq8Tou/81av9ppJwQAk++RFYs6wpE5Xmo2itBjrxKGL8d31
+	6ZPWkuBV9o0IgESKusVtuqlleOXz+KGHhRwXccKp3f1ZAzZRGG5b3bRlZUVgX3o9Icl3uGPLNig
+	dNW/Ju4WDVO77kCQk9frI2Wh9xv8=
+X-Google-Smtp-Source: AGHT+IG4e5NfncV3RTrOH8gQhvaJJElu+/4o3kIRvOaccoBXLTJkqtjEBr950PGwXa4lfyB9fWPqF6zsh0CZ/o4MARQ=
+X-Received: by 2002:ac2:4318:0:b0:511:7b36:933e with SMTP id
+ l24-20020ac24318000000b005117b36933emr5957570lfh.58.1707831226284; Tue, 13
+ Feb 2024 05:33:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/12] memory: stm32-fmc2-ebi: add runtime PM support
-Content-Language: en-US
-To: Christophe Kerello <christophe.kerello@foss.st.com>,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, devicetree@vger.kernel.org
-References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
- <20240212174822.77734-8-christophe.kerello@foss.st.com>
- <7cb51fed-66fc-4ab1-be09-85a00d94514b@linaro.org>
- <ebd4b93a-80c5-4f22-974b-eb91e896e510@foss.st.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ebd4b93a-80c5-4f22-974b-eb91e896e510@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240202080756.1453939-1-ryan.roberts@arm.com>
+ <20240202080756.1453939-20-ryan.roberts@arm.com> <ZcoIVypNwOPIX30w@FVFF77S0Q05N>
+ <c899f252-dbf3-4e7b-8342-b5a5180486cd@arm.com> <aa232591-e0c8-422d-a641-fa555914c5f0@arm.com>
+ <64395ae4-3a7d-45dd-8f1d-ea6b232829c5@arm.com> <d6ce951f-f83b-4a5a-a814-311f2d8b01e4@arm.com>
+ <41499621-482f-455b-9f68-b43ea8052557@redhat.com> <1d302d7a-50ab-4ab4-b049-75ed4a71a87d@arm.com>
+ <99e2a92c-f2a2-4e1e-8ce2-08caae2cb7e4@redhat.com> <dce5f80d-942f-439c-a549-5290666464ca@arm.com>
+In-Reply-To: <dce5f80d-942f-439c-a549-5290666464ca@arm.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Tue, 13 Feb 2024 14:33:34 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEVf1m4hVXORc6t9ytAOb75KZLcW-OJ6999VaKbkVdQ3A@mail.gmail.com>
+Message-ID: <CAMj1kXEVf1m4hVXORc6t9ytAOb75KZLcW-OJ6999VaKbkVdQ3A@mail.gmail.com>
+Subject: Re: [PATCH v5 19/25] arm64/mm: Wire up PTE_CONT for user mappings
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: David Hildenbrand <david@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>, 
+	James Morse <james.morse@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard <jhubbard@nvidia.com>, 
+	Zi Yan <ziy@nvidia.com>, Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>, 
+	Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	linux-arm-kernel@lists.infradead.org, x86@kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 13/02/2024 14:31, Christophe Kerello wrote:
->>>   
->>> @@ -1381,6 +1382,7 @@ static int stm32_fmc2_ebi_probe(struct platform_device *pdev)
->>>   		return -ENOMEM;
->>>   
->>>   	ebi->dev = dev;
->>> +	platform_set_drvdata(pdev, ebi);
->>
->> Does not look related.
->>
-> 
-> With pm_runtime_resume_and_get API now called, 
-> stm32_fmc2_ebi_runtime_resume needs ebi data to enable the clock. It
-> means that the platform data has to be set before this call.
-> 
+On Tue, 13 Feb 2024 at 14:21, Ryan Roberts <ryan.roberts@arm.com> wrote:
+>
+> On 13/02/2024 13:13, David Hildenbrand wrote:
+> > On 13.02.24 14:06, Ryan Roberts wrote:
+> >> On 13/02/2024 12:19, David Hildenbrand wrote:
+> >>> On 13.02.24 13:06, Ryan Roberts wrote:
+> >>>> On 12/02/2024 20:38, Ryan Roberts wrote:
+> >>>>> [...]
+> >>>>>
+> >>>>>>>>> +static inline bool mm_is_user(struct mm_struct *mm)
+> >>>>>>>>> +{
+> >>>>>>>>> +    /*
+> >>>>>>>>> +     * Don't attempt to apply the contig bit to kernel mapping=
+s, because
+> >>>>>>>>> +     * dynamically adding/removing the contig bit can cause pa=
+ge faults.
+> >>>>>>>>> +     * These racing faults are ok for user space, since they g=
+et
+> >>>>>>>>> serialized
+> >>>>>>>>> +     * on the PTL. But kernel mappings can't tolerate faults.
+> >>>>>>>>> +     */
+> >>>>>>>>> +    return mm !=3D &init_mm;
+> >>>>>>>>> +}
+> >>>>>>>>
+> >>>>>>>> We also have the efi_mm as a non-user mm, though I don't think w=
+e
+> >>>>>>>> manipulate
+> >>>>>>>> that while it is live, and I'm not sure if that needs any specia=
+l handling.
+> >>>>>>>
+> >>>>>>> Well we never need this function in the hot (order-0 folio) path,=
+ so I
+> >>>>>>> think I
+> >>>>>>> could add a check for efi_mm here with performance implication. I=
+t's
+> >>>>>>> probably
+> >>>>>>> safest to explicitly exclude it? What do you think?
+> >>>>>>
+> >>>>>> Oops: This should have read "I think I could add a check for efi_m=
+m here
+> >>>>>> *without* performance implication"
+> >>>>>
+> >>>>> It turns out that efi_mm is only defined when CONFIG_EFI is enabled=
+ I can do
+> >>>>> this:
+> >>>>>
+> >>>>> return mm !=3D &init_mm && (!IS_ENABLED(CONFIG_EFI) || mm !=3D &efi=
+_mm);
+> >>>>>
+> >>>>> Is that acceptable? This is my preference, but nothing else outside=
+ of efi
+> >>>>> references this symbol currently.
+> >>>>>
+> >>>>> Or perhaps I can convince myself that its safe to treat efi_mm like=
+ userspace.
+> >>>>> There are a couple of things that need to be garanteed for it to be=
+ safe:
+> >>>>>
+> >>>>>     - The PFNs of present ptes either need to have an associated st=
+ruct
+> >>>>> page or
+> >>>>>       need to have the PTE_SPECIAL bit set (either pte_mkspecial() =
+or
+> >>>>>       pte_mkdevmap())
+> >>>>>
+> >>>>>     - Live mappings must either be static (no changes that could ca=
+use
+> >>>>> fold/unfold
+> >>>>>       while live) or the system must be able to tolerate a temporar=
+y fault
+> >>>>>
+> >>>>> Mark suggests efi_mm is not manipulated while live, so that meets t=
+he latter
+> >>>>> requirement, but I'm not sure about the former?
+> >>>>
+> >>>> I've gone through all the efi code, and conclude that, as Mark sugge=
+sts, the
+> >>>> mappings are indeed static. And additionally, the ptes are populated=
+ using only
+> >>>> the _private_ ptep API, so there is no issue here. As just discussed=
+ with Mark,
+> >>>> my prefereence is to not make any changes to code, and just add a co=
+mment
+> >>>> describing why efi_mm is safe.
+> >>>>
+> >>>> Details:
+> >>>>
+> >>>> * Registered with ptdump
+> >>>>       * ptep_get_lockless()
+> >>>> * efi_create_mapping -> create_pgd_mapping =E2=80=A6 -> init_pte:
+> >>>>       * __ptep_get()
+> >>>>       * __set_pte()
+> >>>> * efi_memattr_apply_permissions -> efi_set_mapping_permissions =E2=
+=80=A6 ->
+> >>>> set_permissions
+> >>>>       * __ptep_get()
+> >>>>       * __set_pte()
+> >>>
+> >>> Sound good. We could add some VM_WARN_ON if we ever get the efi_mm vi=
+a the
+> >>> "official" APIs.
+> >>
+> >> We could, but that would lead to the same linkage issue, which I'm try=
+ing to
+> >> avoid in the first place:
+> >>
+> >> VM_WARN_ON(IS_ENABLED(CONFIG_EFI) && mm =3D=3D efi_mm);
+> >>
+> >> This creates new source code dependencies, which I would rather avoid =
+if
+> >> possible.
+> >
+> > Just a thought, you could have a is_efi_mm() function that abstracts al=
+l that.
+> >
+> > diff --git a/include/linux/efi.h b/include/linux/efi.h
+> > index c74f47711f0b..152f5fa66a2a 100644
+> > --- a/include/linux/efi.h
+> > +++ b/include/linux/efi.h
+> > @@ -692,6 +692,15 @@ extern struct efi {
+> >
+> >  extern struct mm_struct efi_mm;
+> >
+> > +static inline void is_efi_mm(struct mm_struct *mm)
+> > +{
+> > +#ifdef CONFIG_EFI
+> > +       return mm =3D=3D &efi_mm;
+> > +#else
+> > +       return false;
+> > +#endif
+> > +}
+> > +
+> >  static inline int
+> >  efi_guidcmp (efi_guid_t left, efi_guid_t right)
+> >  {
+> >
+> >
+>
+> That would definitely work, but in that case, I might as well just check =
+for it
+> in mm_is_user() (and personally I would change the name to mm_is_efi()):
+>
+>
+> static inline bool mm_is_user(struct mm_struct *mm)
+> {
+>         return mm !=3D &init_mm && !mm_is_efi(mm);
+> }
+>
+> Any objections?
+>
 
-Ah, OK.
+Any reason not to use IS_ENABLED(CONFIG_EFI) in the above? The extern
+declaration is visible to the compiler, and any references should
+disappear before the linker could notice that efi_mm does not exist.
 
-Best regards,
-Krzysztof
+In any case, feel free to add
 
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+when you roll a patch based on the above, with or without IS_ENABLED().
+
+And as you concluded, efi_mm is indeed set in stone once the runtime
+regions described by the firmware have been mapped, although this may
+happen in two passes depending on how the runtime regions are
+described. But by the time user MMs might exist, efi_mm should
+effectively be immutable.
 
