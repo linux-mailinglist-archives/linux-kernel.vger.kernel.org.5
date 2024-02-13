@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-63239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAF99852CB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:44:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83C11852CBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:45:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A3F51C268E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:44:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 402B528AAB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72E522F02;
-	Tue, 13 Feb 2024 09:40:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75C50249F5;
+	Tue, 13 Feb 2024 09:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tspZWTRQ"
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="A9/0Pdap"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDA1224E7
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591361E4A2
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707817208; cv=none; b=toJQPLY64OXzYRql+Qbgm/z0HARN+CJHM7SoF4RAgwFizB7zPjbzdvfAQOq0FlqQkWOPwLGNvizDoZ/pXEcuoPHSX3Wa4RxKT27MU+ThYzTcq3kckgsSrllPNatHpQ5vNcxRijl+dG1P3JhBOTIIbj3zVZkCIcd+S9v5GXn8h0Y=
+	t=1707817224; cv=none; b=eXC8o1sKJp3j1+h3EHAzFi5vihfgD27Yg/5e3sRH8ahjPmeicWtRKUvpT2YuNePOx7s9QjwM26iUZ4GIhFr1fkrhsbR1Ym7/26qEM4i9VueezdPYOV3HCaKLRaq25gMkMsMegrD8ZWM16W6EWIdsH2ttmogYr9OATSfwVBHBBfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707817208; c=relaxed/simple;
-	bh=1X3y/+7kwIA1bPfJOn0Y/WTdRQy52Y2ta/su6GXyAHE=;
+	s=arc-20240116; t=1707817224; c=relaxed/simple;
+	bh=Hw7vNI2Kb24vC0nkaK7/5I/kAuFRQ3NHTOq4CoOcbhQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L4rYMITm10FpKs/GPx5JVnDVK0T7r1t0e/2ocCBGrQSjWSqnc1goP7xgNqzx8hDkD29JHH3JGPsflWHV10lmLQT01FjU7SbZKR8EYPz8d4JFhwvECRt1VFwRrLR+q+c7T/xE/CMESdvbO1yR0jCV7KdzxVHMOs+sgDI3O81rzCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tspZWTRQ; arc=none smtp.client-ip=91.218.175.177
+	 MIME-Version; b=SRcsZD2IKNWwjzUeFb6So1dU5+RjAEsoqBvuz2Rzm12bITGpajaqHA7tlgMsNsb/ooBy+R2CaVkS/XhpJyGiHZ9vOqH9Tf6jEdTZI9HBmGiuACD60jQqf1djZ38IUA1RiUgO8nQGU7q/8/+zJlO+JgvEZQEHl1XIfqv6hrc9FFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=A9/0Pdap; arc=none smtp.client-ip=91.218.175.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707817203;
+	t=1707817221;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=iVvQT5/XmikRWyk9sSNpoveNMbrL0Bk4ezrgyqLcu50=;
-	b=tspZWTRQsY42Ipgi4nXkPCl77D6pxRdd0dv7qUb22qs3s6nvFQYwES8NqQumcyZj8EpM7d
-	iKxxt1GENHJpHFumHr5BW/iasdQ/dj3jNfR6WStKJNTjpZOCt6a9eSUX5s+CGWxAk4tptc
-	2LrvdkzycAeYPES6xrPyBLmIlqc7/4c=
+	bh=OvMkuTAmZ2Y4I5mIeurgoX7p1vggpBUJZeCNdIuhqjI=;
+	b=A9/0Pdapfde4UMXWBuOSYEnsYs3XzXeTFT8/HtvInZYMXQGfoyHtP9GTyIEbV2KV6N5ZJf
+	1GzoPWM9GzgXptD4kKnxk5qSHY2zanY52NPwmDaJzKgsZSISUa26dRM3mo7RTWUFOcRMKa
+	pXPEbI09FCmKKPQNM2lUj+U/uXTIovE=
 From: Oliver Upton <oliver.upton@linux.dev>
 To: kvmarm@lists.linux.dev
 Cc: kvm@vger.kernel.org,
@@ -50,9 +50,9 @@ Cc: kvm@vger.kernel.org,
 	Zenghui Yu <yuzenghui@huawei.com>,
 	linux-kernel@vger.kernel.org,
 	Oliver Upton <oliver.upton@linux.dev>
-Subject: [PATCH v2 15/23] KVM: arm64: vgic-its: Treat the LPI translation cache as an rculist
-Date: Tue, 13 Feb 2024 09:39:54 +0000
-Message-ID: <20240213093954.3961389-1-oliver.upton@linux.dev>
+Subject: [PATCH v2 16/23] KVM: arm64: vgic-its: Rely on RCU to protect translation cache reads
+Date: Tue, 13 Feb 2024 09:40:12 +0000
+Message-ID: <20240213094012.3961447-1-oliver.upton@linux.dev>
 In-Reply-To: <20240213093250.3960069-1-oliver.upton@linux.dev>
 References: <20240213093250.3960069-1-oliver.upton@linux.dev>
 Precedence: bulk
@@ -64,71 +64,34 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Convert the LPI translation cache to an rculist such that readers can
-walk it while only holding the RCU read lock.
+Stop taking the lpi_list_lock when reading the LPI translation cache.
 
 Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
 ---
- arch/arm64/kvm/vgic/vgic-its.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/arm64/kvm/vgic/vgic-its.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-index 99042ecc9c85..55463eb84763 100644
+index 55463eb84763..0e449f8c1f01 100644
 --- a/arch/arm64/kvm/vgic/vgic-its.c
 +++ b/arch/arm64/kvm/vgic/vgic-its.c
-@@ -569,7 +569,7 @@ static struct vgic_irq *__vgic_its_check_cache(struct vgic_dist *dist,
+@@ -593,15 +593,14 @@ static struct vgic_irq *vgic_its_check_cache(struct kvm *kvm, phys_addr_t db,
  {
- 	struct vgic_translation_cache_entry *cte;
+ 	struct vgic_dist *dist = &kvm->arch.vgic;
+ 	struct vgic_irq *irq;
+-	unsigned long flags;
  
--	list_for_each_entry(cte, &dist->lpi_translation_cache, entry) {
-+	list_for_each_entry_rcu(cte, &dist->lpi_translation_cache, entry) {
- 		/*
- 		 * If we hit a NULL entry, there is nothing after this
- 		 * point.
-@@ -625,7 +625,7 @@ static struct vgic_translation_cache_entry *vgic_its_cache_victim(struct vgic_di
- 	 * older entries in the case of a tie. Return the max usage count seen
- 	 * during the scan to initialize the new cache entry.
- 	 */
--	list_for_each_entry(cte, &dist->lpi_translation_cache, entry) {
-+	list_for_each_entry_rcu(cte, &dist->lpi_translation_cache, entry) {
- 		tmp = atomic64_read(&cte->usage_count);
- 		max = max(max, tmp);
+-	raw_spin_lock_irqsave(&dist->lpi_list_lock, flags);
++	rcu_read_lock();
  
-@@ -679,7 +679,7 @@ static void vgic_its_cache_translation(struct kvm *kvm, struct vgic_its *its,
- 	if (dist->lpi_cache_count >= vgic_its_max_cache_size(kvm)) {
- 		victim = vgic_its_cache_victim(dist, &usage);
+ 	irq = __vgic_its_check_cache(dist, db, devid, eventid);
+ 	if (!vgic_try_get_irq_kref(irq))
+ 		irq = NULL;
  
--		list_del(&victim->entry);
-+		list_del_rcu(&victim->entry);
- 		dist->lpi_cache_count--;
- 	}
+-	raw_spin_unlock_irqrestore(&dist->lpi_list_lock, flags);
++	rcu_read_unlock();
  
-@@ -697,7 +697,7 @@ static void vgic_its_cache_translation(struct kvm *kvm, struct vgic_its *its,
- 	rcu_assign_pointer(new->irq, irq);
- 
- 	/* Move the new translation to the head of the list */
--	list_add(&new->entry, &dist->lpi_translation_cache);
-+	list_add_rcu(&new->entry, &dist->lpi_translation_cache);
- 	dist->lpi_cache_count++;
- 
- out:
-@@ -734,7 +734,7 @@ void vgic_its_invalidate_cache(struct kvm *kvm)
- 	raw_spin_lock_irqsave(&dist->lpi_list_lock, flags);
- 	rcu_read_lock();
- 
--	list_for_each_entry(cte, &dist->lpi_translation_cache, entry) {
-+	list_for_each_entry_rcu(cte, &dist->lpi_translation_cache, entry) {
- 		/*
- 		 * If we hit a NULL entry, there is nothing after this
- 		 * point.
-@@ -1981,7 +1981,7 @@ void vgic_lpi_translation_cache_destroy(struct kvm *kvm)
- 
- 	list_for_each_entry_safe(cte, tmp,
- 				 &dist->lpi_translation_cache, entry) {
--		list_del(&cte->entry);
-+		list_del_rcu(&cte->entry);
- 		kfree(cte);
- 	}
+ 	return irq;
  }
 -- 
 2.43.0.687.g38aa6559b0-goog
