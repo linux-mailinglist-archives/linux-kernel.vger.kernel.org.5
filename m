@@ -1,130 +1,120 @@
-Return-Path: <linux-kernel+bounces-63466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25426852FE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:53:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A999852FED
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:54:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58DF81C22896
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:53:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAB5428455F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441AD383BD;
-	Tue, 13 Feb 2024 11:53:11 +0000 (UTC)
-Received: from sonata.ens-lyon.org (sonata.ens-lyon.org [140.77.166.138])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBFDE38FA9;
+	Tue, 13 Feb 2024 11:54:35 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE45A38DCD;
-	Tue, 13 Feb 2024 11:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.77.166.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF6F38DD5
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707825190; cv=none; b=E6NYLH9QyheUMFfyrdSzAxQ55hD1qzbBMweRxiRltOzY3svEhnZSTF6c/xOYS62XrhloiTzUABjFAnDRdqVT/VbB36SzwuQy1Ed4yCDYnLY9Rd5h3Xb3WpQ9w71di2+fZbHerVxfFPenAoxm4UG84057rXCff4lrKZ0uuBtpex4=
+	t=1707825275; cv=none; b=k2xDk36krfMkTe5yQQiPLM2tfXXdnn6yxPjHIdRTGuqqaajTYFQmtbqjfgZBEY7PnkzUt4Rlir8+M+W0cH1a/wVMObDDangXnhUIWeuAlyNT18OJR3SMYKI5QJa5DTcezdC+2c01laECwytQ4w3RHG2qUVccMFZdd11cnbrwRl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707825190; c=relaxed/simple;
-	bh=fkBcdfRB38Ddw/ZwR2iHOK6nOHVyppNnyNGJz41GirY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wbo7oZmVIm61VtyMsZsoD8htHO4LFKnCsn+s8WbGEUYh0WkN8YD8N5ZecjKjhG07CMEL5l0ZTA3zeWo7mCMeSkkM7DXAuL+Szl1BqT/0CvMDR3LvoIGhJjvrH3xmwEpFx7i8xqqts9j0Mgq0Aj2uVm59qgcp3JlN2wiGpCgH190=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org; arc=none smtp.client-ip=140.77.166.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org
-Received: from localhost (localhost [127.0.0.1])
-	by sonata.ens-lyon.org (Postfix) with ESMTP id 7CFBEA01AB;
-	Tue, 13 Feb 2024 12:53:05 +0100 (CET)
-Received: from sonata.ens-lyon.org ([127.0.0.1])
-	by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id IUruqtVTJVN6; Tue, 13 Feb 2024 12:53:05 +0100 (CET)
-Received: from begin (nat-inria-interne-52-gw-01-bso.bordeaux.inria.fr [194.199.1.52])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by sonata.ens-lyon.org (Postfix) with ESMTPSA id ED475A01A6;
-	Tue, 13 Feb 2024 12:53:04 +0100 (CET)
-Received: from samy by begin with local (Exim 4.97)
-	(envelope-from <samuel.thibault@ens-lyon.org>)
-	id 1rZrLU-00000007DiE-2ER6;
-	Tue, 13 Feb 2024 12:53:04 +0100
-Date: Tue, 13 Feb 2024 12:53:04 +0100
-From: Samuel Thibault <samuel.thibault@ens-lyon.org>
-To: Tom Parkin <tparkin@katalix.com>
-Cc: James Chapman <jchapman@katalix.com>, edumazet@google.com,
-	gnault@redhat.com, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, corbet@lwn.net, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv4] PPPoL2TP: Add more code snippets
-Message-ID: <20240213115304.3oyqkvkb3oqkauwd@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-	Tom Parkin <tparkin@katalix.com>,
-	James Chapman <jchapman@katalix.com>, edumazet@google.com,
-	gnault@redhat.com, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, corbet@lwn.net, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240212222344.xtv233r5sixme32h@begin>
- <ZctJnCeUCANJvxGj@katalix.com>
+	s=arc-20240116; t=1707825275; c=relaxed/simple;
+	bh=Ni7xNNrORfQyk4//WfrA8+aD1m/BPMiC7sdc0udhltU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MMyhJ4ajQAtAmWpJwDx/mim+pOw4c3Eo0BbTqSlQmCpPNpazz6y6EfpNF84t7CoZd90PG4YiwTfDMW0sjBHdmGsrtmzuV1Q8dv9x1tEy8fZwggxii6megPnFndG/kLYcwNgXkU30TOlNioYruOS5Q0fI/HUNzCLvPtIfwxoUsIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rZrMc-0004OR-HU; Tue, 13 Feb 2024 12:54:14 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rZrMa-000TeD-46; Tue, 13 Feb 2024 12:54:12 +0100
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rZrMa-001k76-0B;
+	Tue, 13 Feb 2024 12:54:12 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net v1 1/1] igb: extend PTP timestamp adjustments to i211
+Date: Tue, 13 Feb 2024 12:54:10 +0100
+Message-Id: <20240213115410.415573-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZctJnCeUCANJvxGj@katalix.com>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Tom Parkin, le mar. 13 févr. 2024 10:51:08 +0000, a ecrit:
-> > +        ret = ioctl(session_fd1, PPPIOCGCHAN, &chindx1);
-> > +        if (ret < 0)
-> > +                return -errno;
-> > +
-> > +        ret = ioctl(session_fd2, PPPIOCGCHAN, &chindx2);
-> > +        if (ret < 0)
-> > +                return -errno;
-> > +
-> > +        ppp_chan_fd = open("/dev/ppp", O_RDWR);
-> > +        if (ppp_chan_fd < 0) {
-> > +                return -errno;
-> > +        }
-> > +
-> > +        ret = ioctl(ppp_chan_fd, PPPIOCATTCHAN, &chindx1);
-> > +        if (ret < 0) {
-> > +                close(ppp_chan_fd);
-> > +                return -errno;
-> > +        }
-> 
-> I think we should drop the PPPIOCATTCHAN ioctl call here.
-> 
-> The input file descriptors are called out as being PPPoX sockets
-> created as described earlier, in which case they should both
-> already be attached to a channel.
-> 
-> It would make more sense IMO to call out the two ppp_chan_fd file
-> descriptors as being input parameters alongside the PPPoX session file
-> descriptors.
-> 
-> > +
-> > +        ret = ioctl(ppp_chan_fd, PPPIOCBRIDGECHAN, &chindx2);
-> > +        close(ppp_chan_fd);
-> > +        if (ret < 0)
-> > +                return -errno;
-> > +
-> > +It can be noted that in this case no PPP interface is needed, and the PPP
-> > +channel does not need to be kept open.  Only the session PPPoX data sockets need
-> > +to be kept open.
-> 
-> Is it true to say that the PPP channel file descriptors can be closed
-> by userspace?
+The i211 requires the same PTP timestamp adjustments as the i210,
+according to its datasheet. To ensure consistent timestamping across
+different platforms, this change extends the existing adjustments to
+include the i211.
 
-In our code we do it
-https://code.ffdn.org/sthibaul/l2tpns/-/blob/kernel/l2tpns.c?ref_type=heads#L1295
-and it works all fine indeed (and avoids that fd per session).
+The adjustment result are tested and comparable for i210 and i211 based
+systems.
 
-That's actually one of the reason why I made the snipped only take the
-pppox sockets, and make it create the ppp chan fd only temporarily. AIUI
-the pppox socket already has a ppp chan (returned by PPPIOCGCHAN), and
-the ppp chan fd is there only for performing the bridging ioctl.
+Fixes: 3f544d2a4d5c ("igb: adjust PTP timestamps for Tx/Rx latency")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/ethernet/intel/igb/igb_ptp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Samuel
+diff --git a/drivers/net/ethernet/intel/igb/igb_ptp.c b/drivers/net/ethernet/intel/igb/igb_ptp.c
+index 319c544b9f04..f94570556120 100644
+--- a/drivers/net/ethernet/intel/igb/igb_ptp.c
++++ b/drivers/net/ethernet/intel/igb/igb_ptp.c
+@@ -957,7 +957,7 @@ static void igb_ptp_tx_hwtstamp(struct igb_adapter *adapter)
+ 
+ 	igb_ptp_systim_to_hwtstamp(adapter, &shhwtstamps, regval);
+ 	/* adjust timestamp for the TX latency based on link speed */
+-	if (adapter->hw.mac.type == e1000_i210) {
++	if (hw->mac.type == e1000_i210 || hw->mac.type == e1000_i211) {
+ 		switch (adapter->link_speed) {
+ 		case SPEED_10:
+ 			adjust = IGB_I210_TX_LATENCY_10;
+@@ -1003,6 +1003,7 @@ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+ 			ktime_t *timestamp)
+ {
+ 	struct igb_adapter *adapter = q_vector->adapter;
++	struct e1000_hw *hw = &adapter->hw;
+ 	struct skb_shared_hwtstamps ts;
+ 	__le64 *regval = (__le64 *)va;
+ 	int adjust = 0;
+@@ -1022,7 +1023,7 @@ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+ 	igb_ptp_systim_to_hwtstamp(adapter, &ts, le64_to_cpu(regval[1]));
+ 
+ 	/* adjust timestamp for the RX latency based on link speed */
+-	if (adapter->hw.mac.type == e1000_i210) {
++	if (hw->mac.type == e1000_i210 || hw->mac.type == e1000_i211) {
+ 		switch (adapter->link_speed) {
+ 		case SPEED_10:
+ 			adjust = IGB_I210_RX_LATENCY_10;
+-- 
+2.39.2
+
 
