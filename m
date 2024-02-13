@@ -1,80 +1,78 @@
-Return-Path: <linux-kernel+bounces-63282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B595852D3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:58:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8473D852D40
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:58:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58288282C6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:58:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6F8E1C22316
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35365364BD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B6037179;
 	Tue, 13 Feb 2024 09:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="C0FgHTg+";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YW9SSPF1"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="c9WEYjzL";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="udrctsrV"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C647A2C689;
-	Tue, 13 Feb 2024 09:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E862C69A;
+	Tue, 13 Feb 2024 09:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707818223; cv=none; b=Y/Vs7T59cjPaN4+YmAFM43iivsRMcCVnQFm0mz54WupRjoZyAsQEcXJcGoBstEvi4rRuk2/WvuTL6C97STMH56QWdW1ntd7hAabWoBZNE8kfnHEXUfwnNj1vPk8lvT0rf5X0nT3nYPfmbVHpNBHky7JrZpsO+G/4yni4LUNNppg=
+	t=1707818224; cv=none; b=AqyLV/4NypOBYvf+7o+rBj7y1+ev1W7hDmw10YLOqubNMhyTCOAtJxgcaugnROelND0sJFH5jCvd644+TDCyA4ZA+oC4lZ2+3W/ZoptxcY1i4jI6XZ4UZbiE9zUP+B4N0pXzGbqEGuBuP5BtKXQQTXXBN6fKJ1sCCzE0IIVPNNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707818223; c=relaxed/simple;
-	bh=mTaDyVMtRZwxa9j2lHhhogsZ7zwCVB9IpyeNRMzoUr0=;
+	s=arc-20240116; t=1707818224; c=relaxed/simple;
+	bh=DT5Oz0ddq0A6814n/Id9rTOGVREUufiivj3OBaXGdwg=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=txnrAmDG3nbA4bWPvrq6nuLxgWcRUTQdgBOLgkJOSNX1028nNZ0oZkHJApsJ0JldEbikBmL4S1qhRXyFp9W3/mgMTVxgxhnJ3TtUWbpc0SnYsNl5r/T/Lm9sEdvhDfZgRD7mLKmjxjCnO6L14lM4LNaQHC1FoAGP1VFRLSZWrwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=C0FgHTg+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YW9SSPF1; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=C54+0n9Y3zq+HnkUAfN4ZZKAKm43mcf8AcymES1JSdZFFek2gXLvrSpH6qQRX9VVtJGDSRXAbdB2eDHuQyIr7StQS8twuBIqUjLGLB4gvis3ZKtWKd/HKwEsX0Pip7MTV02Z60qXrrw+F2BrubBcALGA8KwUT83K0biFt8xqsXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=c9WEYjzL; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=udrctsrV; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 13 Feb 2024 09:56:59 -0000
+Date: Tue, 13 Feb 2024 09:57:00 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707818219;
+	s=2020; t=1707818221;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KTerp5HT+idSBqJrLaS8vYAD0Y7JjuxhMyXb9HEVw28=;
-	b=C0FgHTg+ZP+8PYYc4GGQUku5NsLqQHER8qUANLJn3IyRFSf1RjqkGLy33sg+wcwQ8FO75M
-	7FjF7al0g2vOJe/sv3UqZ1pts8LoAyPsViNt6zq17QiJfZ2uRkbOwwRlj+upivY3INgxVw
-	d7UTrBM0LmSchEMn9w41na9rQaeP7CP6ovPP4OFD1Ur7E6GjWPAOJdjn2qzkCyn0ftL05h
-	7MGy9bCWEg6JOHHlN2hSPUgntvFhdKg056VY+Goqesf3T+hS0Iv1J7WUdhzQtBlUmGuRnp
-	sXpc5VIVB67GKkQMNFPJHeb7yEIqmvupPas+3LHKb035+UIzkl46VyR0kvgdRg==
+	bh=ViPAHRtvPOjXBMZBHTrl44RxxnL8Z+bRUcZYuXKYh3c=;
+	b=c9WEYjzLrW1EhVSnslpl+dsZC6Gf5bFH0ZlVCgeUcv0CPQVzgbnVu7eHiYePIuNoJIF+bF
+	FHoVhpAtbe/PZski91pHMUOdCYnU/Z30EhFtTmv+SJqN85U0eF0KiROHrPiGcWZ8ibOGJ7
+	YvEZS1h5STnAfjsCUkotDZ69yqLgtfI/Xgvs9Dacj07xOXsfhf3/++TuvZUJWqneWSPh8Z
+	mfyF6RAVfYu9Tc7p4czcbm6kRbmSkuylQgPn5Vl722HPdB25aJ5eRzWlp6WVnBrUwTms03
+	w9wrLhDWfSLuneBYQ2e8JSewK/0qUj7io9wG0V1sbwH6W6YSsem/RCi3ioN6Qw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707818219;
+	s=2020e; t=1707818221;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KTerp5HT+idSBqJrLaS8vYAD0Y7JjuxhMyXb9HEVw28=;
-	b=YW9SSPF1RC56iIkZdLFgFAU7OqFgqqLXyiu7QElYyh+J3mx3l04Q1CNS+RqGG8A7de3t79
-	IxrelQzehv4QpuDw==
-From: "tip-bot2 for Erick Archer" <tip-bot2@linutronix.de>
+	bh=ViPAHRtvPOjXBMZBHTrl44RxxnL8Z+bRUcZYuXKYh3c=;
+	b=udrctsrVdbozIsKP3X2QbVvKvoY/FiDCL4uP9e5NcKPwFeJN4qwJxADXN6+FTZLXgKqmaY
+	bua9M08B+udNuEBw==
+From: "tip-bot2 for Bibo Mao" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/bcm-6345-l1: Prefer struct_size)_ over open
- coded arithmetic
-Cc: Erick Archer <erick.archer@gmx.com>, Thomas Gleixner <tglx@linutronix.de>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Kees Cook <keescook@chromium.org>,
- Florian Fainelli <florian.fainelli@broadcom.com>, x86@kernel.org,
+Subject: [tip: irq/core] irqchip/loongson-eiointc: Skip handling if there is
+ no pending interrupt
+Cc: Bibo Mao <maobibo@loongson.cn>, Thomas Gleixner <tglx@linutronix.de>,
+ Huacai Chen <chenhuacai@loongson.cn>, x86@kernel.org,
  linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20240209181600.9472-1-erick.archer@gmx.com>
-References: <20240209181600.9472-1-erick.archer@gmx.com>
+In-Reply-To: <20240130082722.2912576-3-maobibo@loongson.cn>
+References: <20240130082722.2912576-3-maobibo@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170781821908.398.371290728146239013.tip-bot2@tip-bot2>
+Message-ID: <170781822030.398.1776508583120983829.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -84,56 +82,48 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     004c7a6bf43edbd4b092fb6ebba8991d56bc3428
-Gitweb:        https://git.kernel.org/tip/004c7a6bf43edbd4b092fb6ebba8991d56bc3428
-Author:        Erick Archer <erick.archer@gmx.com>
-AuthorDate:    Fri, 09 Feb 2024 19:16:00 +01:00
+Commit-ID:     3eece72ded7f67776731709702f3d1b9893b6a4f
+Gitweb:        https://git.kernel.org/tip/3eece72ded7f67776731709702f3d1b9893b6a4f
+Author:        Bibo Mao <maobibo@loongson.cn>
+AuthorDate:    Tue, 30 Jan 2024 16:27:21 +08:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 13 Feb 2024 10:53:15 +01:00
+CommitterDate: Tue, 13 Feb 2024 10:53:14 +01:00
 
-irqchip/bcm-6345-l1: Prefer struct_size)_ over open coded arithmetic
+irqchip/loongson-eiointc: Skip handling if there is no pending interrupt
 
-This is an effort to get rid of all multiplications from allocation
-functions in order to prevent integer overflows.
+eiointc_irq_dispatch() iterates over the pending bit registers of the
+interrupt controller and evaluates the result even if there is no interrupt
+pending in a particular 64bit chunk.
 
-The cpu variable is a pointer to "struct bcm6345_l1_cpu" and this structure
-ends in a flexible array:
+Skip handling and especially the pointless write back for clearing the
+non-pending bits if a chunk is empty.
 
-struct bcm6345_l1_cpu {
-	[...]
-	u32	enable_cache[];
-};
+[ tglx: Massaged changelog ]
 
-The preferred way in the kernel is to use the struct_size() helper to do
-the arithmetic instead of the argument "size + count * size" in the
-kzalloc() function.
-
-This way, the code is more readable and safer.
-
-Signed-off-by: Erick Archer <erick.archer@gmx.com>
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Link: https://lore.kernel.org/r/20240209181600.9472-1-erick.archer@gmx.com
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-Link: https://github.com/KSPP/linux/issues/162 [2]
+Acked-by: Huacai Chen <chenhuacai@loongson.cn>
+Link: https://lore.kernel.org/r/20240130082722.2912576-3-maobibo@loongson.cn
 
 ---
- drivers/irqchip/irq-bcm6345-l1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/irqchip/irq-loongson-eiointc.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l1.c
-index 9745a11..eb02d20 100644
---- a/drivers/irqchip/irq-bcm6345-l1.c
-+++ b/drivers/irqchip/irq-bcm6345-l1.c
-@@ -242,7 +242,7 @@ static int __init bcm6345_l1_init_one(struct device_node *dn,
- 	else if (intc->n_words != n_words)
- 		return -EINVAL;
+diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
+index 1623cd7..fad22e2 100644
+--- a/drivers/irqchip/irq-loongson-eiointc.c
++++ b/drivers/irqchip/irq-loongson-eiointc.c
+@@ -198,6 +198,12 @@ static void eiointc_irq_dispatch(struct irq_desc *desc)
  
--	cpu = intc->cpus[idx] = kzalloc(sizeof(*cpu) + n_words * sizeof(u32),
-+	cpu = intc->cpus[idx] = kzalloc(struct_size(cpu, enable_cache, n_words),
- 					GFP_KERNEL);
- 	if (!cpu)
- 		return -ENOMEM;
+ 	for (i = 0; i < eiointc_priv[0]->vec_count / VEC_COUNT_PER_REG; i++) {
+ 		pending = iocsr_read64(EIOINTC_REG_ISR + (i << 3));
++
++		/* Skip handling if pending bitmap is zero */
++		if (!pending)
++			continue;
++
++		/* Clear the IRQs */
+ 		iocsr_write64(pending, EIOINTC_REG_ISR + (i << 3));
+ 		while (pending) {
+ 			int bit = __ffs(pending);
 
