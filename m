@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-64291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A078853CD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:16:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92B7B853CD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:16:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 448EF2863C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:16:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CB891F21A84
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5017C6DF;
-	Tue, 13 Feb 2024 21:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5107E0EA;
+	Tue, 13 Feb 2024 21:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PmjxtYAv";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="of649M5e"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YMa/4oRs";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IilBDjYa"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026C17C09E
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A51097A715
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:05:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707858345; cv=none; b=bMcaWqVNuV41pt2XWg0if/9CBHoCFm5VorTyRYG9xizvF9JVp005L/TzvDlJlacj15VeomIybp1eZN9ua1OEovHrlYpQh+yqV6gqcMxReOK7vFbVsWI/evgkpU+voHj8miOngx3LpLuFNc90o/lwdMFoWaAFIAdC7QkMACwO2X8=
+	t=1707858348; cv=none; b=IOjEUPXk5A10LWJ0u71SpVHXdYm0mhwnvdQdBR7/RO18RxoJgXCNbuW9aavcsuPd+9MiuQRc1ueDldzos3tOvmGW32t1yRpaSf1kop7VQIQeHdMKZQZk8sTKIqS+3hKJ5lyO3TuVubyxL36ebOFlDVp+7IUB+41V7KaolB5BpoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707858345; c=relaxed/simple;
-	bh=2f2NQCXjq+Qw8tOS36sojhoEEm2F5eey1xvfWfOcfQA=;
+	s=arc-20240116; t=1707858348; c=relaxed/simple;
+	bh=mSWHUsAxY2vmF0UO1GwGRNnmjm20vOkVOPe+MQZCqus=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=jCNC318lNlRCWYc1ROWVRUnoZB0drAB/N35RLtf7JpM3SaeYWa50c/T3IXmyrh5W9edWJ8PNjVwgVHHMYwFWnI+MQrwdQEnuKAjWgYr1qKWmwi93VUGC5+0+43ifdFv0VKryWY4MR48foZ7UtXukwrW5znR/6+ziPe6ZI4EPhK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PmjxtYAv; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=of649M5e; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=dJU7EijMsP+AHsITCE5QVNrLlHGPxe8prZjNhYvG35K66eY/62A9Krr+45hZBSpgcz6lDTKUSyeatb+B09hYb9yXCId0DNRPVAuC25wWVmdJrKrXdQEYhMdDoexd5Q2OnGCS9gHs4kE341RXDqjHAC/pcF+BzqyqWvVeVFTHLEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YMa/4oRs; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IilBDjYa; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240213210251.830955273@linutronix.de>
+Message-ID: <20240213210251.885489468@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707858342;
+	s=2020; t=1707858343;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=QKxEGyGg+k5hdg4U9ew42w42evdPmIVY0idUHE//9Eo=;
-	b=PmjxtYAv/KDE7FBsI2oGtSa/LXG7fn32Z0EncKnxIjzchDGpDv8SvNcpgg2Dn22KGvvSZY
-	ZY65lMjWRx1CoEwScUSRVRGnTxeCTYbxy0WLxenC7Pwu2fG0CI19GtNA5hWW+XfO/DHBRk
-	WfZny675wTx6m4CL+nMBOdRQSJG0/j+CVuzUsdWX5ZmxTyWLuEKZzivGFu3A5fqEdeSN6c
-	5iUGY1bS22MFJTNyW1F+IYFSooyfhLummo57bn4q8AnFmVBJznFlN0/XO2XpNCQa/cmX//
-	i4naTJok4iWC24E8zKkL9vritlJfqjFxDUA7oKj0WSzCXgZvpQcRHlPCz77iUw==
+	 references:references; bh=zfzAs64wbbWdEGs0dn8m5hF5zCfLwYbKo95JpIfEf0U=;
+	b=YMa/4oRsy0Pii4k/xjdkMaYv4i3IMWaYiTXJC3ucB6Sekc/vkVV4XYDv6hyTkrdaD9o/FI
+	LqzC7mu/f23ZXt6llYj6xU2faiLibcl4sM0wS1H1caH4bu/8P++VMOp5VcXls5HjREYSMl
+	umdZ7PqfWilYj2EdQPd4G3F11d3XrAIu0PbiP8BAkdqnPsb6vBQwCONyQ03fqURXStuojh
+	s0TY6exnOd/ETrIIe/lo3rZzCx19DdQOPTiZTrGsSCgjndZr750/T0YSYjuflLjxRky/PE
+	0xTiJ4VdgxnTEK0KXIwEfiUvegP4ExN7uw454Wm5aaCuYKKYTBxjQ2HjmnVaCw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707858342;
+	s=2020e; t=1707858343;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=QKxEGyGg+k5hdg4U9ew42w42evdPmIVY0idUHE//9Eo=;
-	b=of649M5eUBoq4aB75ZUOHpRFlz8D3kS17KTcuLtDTpVBmcyrQs4OHxaw85lThZhXODeuXD
-	oOiwq5eU5mMKJJDg==
+	 references:references; bh=zfzAs64wbbWdEGs0dn8m5hF5zCfLwYbKo95JpIfEf0U=;
+	b=IilBDjYa2CMXByjzWh8M66Rwa6nYypEhsd1xMTUvOTrb8HisiDeKEb/twy+tfW6m0zOmYv
+	qbQ82LK9C+jdGdDA==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -67,7 +67,8 @@ Cc: x86@kernel.org,
  Andy Shevchenko <andy@infradead.org>,
  Michael Kelley <mhklinux@outlook.com>,
  "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch 06/30] x86/mpparse: Use new APIC registration function
+Subject: [patch 07/30] x86/acpi: Dont invoke topology_register_apic() for XEN
+ PV
 References: <20240213205415.307029033@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -76,102 +77,60 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 13 Feb 2024 22:05:42 +0100 (CET)
+Date: Tue, 13 Feb 2024 22:05:43 +0100 (CET)
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Aside of switching over to the new interface, record the number of
-registered CPUs locally, which allows to make num_processors and
-disabled_cpus confined to the topology code.
+The MADT table for XEN/PV dom0 is not really useful and registering the
+APICs is momentarily a pointless exercise because XENPV does not use an
+APIC at all.
 
-No functional change intended.
+It overrides the x86_init.mpparse.parse_smp_config() callback, resets
+num_processors and counts how many of them are provided by the hypervisor.
+
+This is in the way of cleaning up the APIC registration. Prevent MADT
+registration for XEN/PV temporarily until the rework is completed and
+XEN/PV can use the MADT again.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 
 ---
- arch/x86/include/asm/mpspec.h  |    2 --
- arch/x86/kernel/cpu/topology.c |    2 +-
- arch/x86/kernel/mpparse.c      |   17 +++++++++--------
- 3 files changed, 10 insertions(+), 11 deletions(-)
+ arch/x86/kernel/acpi/boot.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 ---
 
---- a/arch/x86/include/asm/mpspec.h
-+++ b/arch/x86/include/asm/mpspec.h
-@@ -61,8 +61,6 @@ static inline void e820__memblock_alloc_
- #define mpparse_parse_smp_config	x86_init_noop
- #endif
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -23,6 +23,8 @@
+ #include <linux/serial_core.h>
+ #include <linux/pgtable.h>
  
--int generic_processor_info(int apicid);
--
- extern DECLARE_BITMAP(phys_cpu_present_map, MAX_LOCAL_APIC);
- 
- static inline void reset_phys_cpu_present_map(u32 apicid)
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -133,7 +133,7 @@ static void cpu_update_apic(int cpu, u32
- 		cpu_mark_primary_thread(cpu, apicid);
- }
- 
--int generic_processor_info(int apicid)
-+static int generic_processor_info(int apicid)
- {
- 	int cpu, max = nr_cpu_ids;
- 
---- a/arch/x86/kernel/mpparse.c
-+++ b/arch/x86/kernel/mpparse.c
-@@ -36,6 +36,8 @@
-  * Checksum an MP configuration block.
-  */
- 
-+static unsigned int num_procs __initdata;
++#include <xen/xen.h>
 +
- static int __init mpf_checksum(unsigned char *mp, int len)
+ #include <asm/e820/api.h>
+ #include <asm/irqdomain.h>
+ #include <asm/pci_x86.h>
+@@ -166,7 +168,8 @@ static int __init acpi_parse_madt(struct
+ 
+ static __init void acpi_register_lapic(u32 apic_id, u32 acpi_id, bool present)
  {
- 	int sum = 0;
-@@ -50,16 +52,15 @@ static void __init MP_processor_info(str
- {
- 	char *bootup_cpu = "";
- 
--	if (!(m->cpuflag & CPU_ENABLED)) {
--		disabled_cpus++;
-+	topology_register_apic(m->apicid, CPU_ACPIID_INVALID, m->cpuflag & CPU_ENABLED);
-+	if (!(m->cpuflag & CPU_ENABLED))
- 		return;
--	}
- 
- 	if (m->cpuflag & CPU_BOOTPROCESSOR)
- 		bootup_cpu = " (Bootup-CPU)";
- 
- 	pr_info("Processor #%d%s\n", m->apicid, bootup_cpu);
--	generic_processor_info(m->apicid);
-+	num_procs++;
+-	topology_register_apic(apic_id, acpi_id, present);
++	if (!xen_pv_domain())
++		topology_register_apic(apic_id, acpi_id, present);
  }
  
- #ifdef CONFIG_X86_IO_APIC
-@@ -236,9 +237,9 @@ static int __init smp_read_mpc(struct mp
- 		}
+ static bool __init acpi_is_processor_usable(u32 lapic_flags)
+@@ -1087,7 +1090,8 @@ static int __init early_acpi_parse_madt_
+ 		return count;
  	}
  
--	if (!num_processors)
-+	if (!num_procs && !acpi_lapic)
- 		pr_err("MPTABLE: no processors registered!\n");
--	return num_processors;
-+	return num_procs || acpi_lapic;
+-	register_lapic_address(acpi_lapic_addr);
++	if (!xen_pv_domain())
++		register_lapic_address(acpi_lapic_addr);
+ 
+ 	return count;
  }
- 
- #ifdef CONFIG_X86_IO_APIC
-@@ -529,8 +530,8 @@ static __init void mpparse_get_smp_confi
- 	} else
- 		BUG();
- 
--	if (!early)
--		pr_info("Processors: %d\n", num_processors);
-+	if (!early && !acpi_lapic)
-+		pr_info("Processors: %d\n", num_procs);
- 	/*
- 	 * Only use the first configuration found.
- 	 */
 
 
 
