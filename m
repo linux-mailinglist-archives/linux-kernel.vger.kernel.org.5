@@ -1,184 +1,97 @@
-Return-Path: <linux-kernel+bounces-64336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A3C6853D3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:34:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F127F853D3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:35:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E4DC1C27B9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:34:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADA6628E714
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:35:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CAE62141;
-	Tue, 13 Feb 2024 21:34:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B32561684;
+	Tue, 13 Feb 2024 21:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="mT4kZqkR"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rQOZs+pj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B46461676
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:34:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B461361669;
+	Tue, 13 Feb 2024 21:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707860046; cv=none; b=jkxmOdqd3HddKFnT/c9Lv1+Vm9R0DS+a43y/WyDwrIOx+5KCaoXm5UGafUNOsBua2CTKODY+2Er3UqSAcXZgHLBKLj2aO/M+I/bkijg37Cr4aDVKf33CqRvnBFhTTLwH0p4WxF/DFBXtBgjwiIwpUmav1lszdSBeoJobKY+N/oM=
+	t=1707860137; cv=none; b=a8xGelF6gpmn4ytmFaBmpysVcDDBNmOcNZd4crcTS7N4nsvkBl4OCkNKQAvzbL0IPKuKMD+Lgn9pIC9eRpObN6+STe+mDKUdGgoEFK9oBv1aa/10LL+tmRAM2fg4UosY+sZuchjEJMEoeLVKXHHASTpPf0ufcu1JCORHHAbP69s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707860046; c=relaxed/simple;
-	bh=tczYnlV7Pr8X3MlzIngKo1f157AZrBw0PbLNu1TEpug=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nlMnhvxLzBHp/eFfeaKnFp1weVD81WsEDU4ETH798YFtaUO/pr7/T415u7/kIY3Cft5gIzTQieQXubHfstQzONrhbeSz7Njq9lcZki8bReIiU4vabUTZ54VOl3Kq1UIhBx2XOtl6X1HGYJQBk1bLN5bE4rQOojKJcISEwnCbdM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=mT4kZqkR; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d94b222a3aso40147595ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:34:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707860044; x=1708464844; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X3Dh7id3ipnoR2TxmXquXUcK+gi6YFcV7mpm+5XHZi8=;
-        b=mT4kZqkRysOVCDZaWeggYO8ymCIjeOHvAaujfE9WxcjeXUYStM3F9A2RpGl3Ltrstg
-         FZEfEw+SGhGUaJUyMib9ZMxchoq1vtvIBet0+e+DA3BJccFV/jdUmox4JB2r9ZlYHk5s
-         EaBik5M0y2cWNbP2NsRXOyVisO5dJrEA+R00x9NRLsip50UOPthpLNykr/QyJjmD2gt9
-         t2yai3NPjvFUbSbUKyunyj9NYGm/JvEyGV87hyoGNPImFFmyp7hb5xl8bLNexliiYuOa
-         2gnPV0iq8XBaPHgScmNpBf0cE5SN+wt+GIroLtTiVW9Y4oqpIhH8RxqY54r+GupFGHoI
-         AJfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707860044; x=1708464844;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X3Dh7id3ipnoR2TxmXquXUcK+gi6YFcV7mpm+5XHZi8=;
-        b=FzUWoa0HZu92TLESJ4xQJlDX01cyikxFTQ389nfql6KZHe65zM2ALBFVqnPmkH2/os
-         qen3hiGY4BYT+4Ev6wIj02iDkJrR7xg9FW+W2g0YTpIG0JhKPPaSsbFEW7YXrWVdbZiN
-         HFyGxZXByyQ29nfqA6hlL2Xq+it3+RA7BMZzDx0HDjzYeBclGzZNPcRYdiBsdGMS9Yy7
-         eyOPf/yZyXz7bVkINOK0pMDoEpyNLqDFVEJONqqN7Av9zKZpCBF4IcbacL6n66pqhJP+
-         ADLk5v0iHG8o1721E+/7eSJ3QcUFCtBUNG7Or2yRS3Y6YGxg/SqWzii6q8xrow6GDqw1
-         9cdw==
-X-Forwarded-Encrypted: i=1; AJvYcCWd/QY8q5ojzIRgNFQVBxPmWARYOKZ9lu+690EJJITAyLddbPC5W7FwB9v0ewPUp9ecFzBKdqa2t42agLx1hp3tJJlODmY15gBnZMZ0
-X-Gm-Message-State: AOJu0YzbnpkKcJjJd48O+xwWSGDBSUDzFqduhXrcTTD99NhcppiaMRCU
-	v28YlXFf1y4fEXl0xBF2gRmlGcWHZDfb59HVp5G3zGWf6k+icAoq3l1OTIkXMXo=
-X-Google-Smtp-Source: AGHT+IHbs+SB1OAwKdQv4FKE5O0WNqesf8jQbsn5a+dVy174Ibcc6He4LWUJox+5v9FAkWcAj7o37A==
-X-Received: by 2002:a17:903:245:b0:1d9:b749:d279 with SMTP id j5-20020a170903024500b001d9b749d279mr898647plh.50.1707860044272;
-        Tue, 13 Feb 2024 13:34:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXWlnI3L91uv5pob/Jz5WI+4ura4qD1cse3IW1Up+u1tb0s52riHCk7ERx4gpDtQGkKH+iy+wzE4fteO+0hNQZLlUvxe6yq62f9R4dWECVk3zq7w1BAXIYVUqDNngHjANkxT4IoypDfmUYXQRVnnxLnZx4MqoXaOHddJuTATZ0H6sQDkIo1195KoZFyTqQ1V6QasL3XGfL7yZq8DevcRsajIornkiMKQinjM90biJMDTZ5C1PJw4it5PUylz09PHHoNJIdSVXjjSNer5kuk4clcdqzTZfQ2z5wLZGg0MyLuJYUxmO9ex/Oh+I31pWnrNMeqZNtINhLwZezh0l/WhWL17HtSKai7VgBvGDalE/sSF1mZZKnBotGpdAc8P6Iy8U8PW/IIV+gT60+Yuf/tDQ0eAM/wysKhMpZG4hA=
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id e12-20020a170902f1cc00b001db474154d1sm957268plc.87.2024.02.13.13.34.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 13:34:03 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1ra0Ph-00671z-0j;
-	Wed, 14 Feb 2024 08:34:01 +1100
-Date: Wed, 14 Feb 2024 08:34:01 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
-	kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com,
-	p.raghav@samsung.com, linux-kernel@vger.kernel.org, hare@suse.de,
-	willy@infradead.org, linux-mm@kvack.org
-Subject: Re: [RFC v2 14/14] xfs: enable block size larger than page size
- support
-Message-ID: <ZcvgSSbIqm4N6TVJ@dread.disaster.area>
-References: <20240213093713.1753368-1-kernel@pankajraghav.com>
- <20240213093713.1753368-15-kernel@pankajraghav.com>
+	s=arc-20240116; t=1707860137; c=relaxed/simple;
+	bh=v+7iuZKyFjMWBHC+thRv8pe5Npu+QdHBNo3PGFOhzmM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=p1fYAQg5bz9uf9abn2+Kl/p8Q+qNG8ukCMDw7f3RjE44tfRimlbWhAaIQLqUEtbAWWtq2vcWceK2KortNYe/mlnKHTtxozmnfFlVAiPhHlQ+XfK30wL+4Hl1PzIO3j01ryuoofigWZePcG6GJYtdC01KCaxqXKaNdhtqezxBzAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rQOZs+pj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EA22C433C7;
+	Tue, 13 Feb 2024 21:35:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707860137;
+	bh=v+7iuZKyFjMWBHC+thRv8pe5Npu+QdHBNo3PGFOhzmM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=rQOZs+pjpiJ6wgYMK/mF/mh3n2al/B4er7XnuGfrsG/1xaWBTS75kKGjKwJjYzfdd
+	 Meh/Bh6qNKil5QwEqJxyf8G7l2l9u5EaQ1HqDc9ZZ/EfYcw6alzrdzEQT2n1BPwfh6
+	 9Syr6dKYLKpc3Gebi4nKWVU/ENyNzaNJ1aCnD93Cf1ymKPEnmdgfGLCpkDA/Uh8UtS
+	 wsjJ8OcgjQlckCPJZwQpqSWCglBvqp4l5t/oWKvQbyOuyt8cc94l2e0Pz7PblSVvxI
+	 UutfQg+lDBOoc01hsV368XVUvsVtRVuOaJZrXtR1kmL3gBouZQtgLMuVKxvgUPdk5Z
+	 qTRs3T1Yf44nQ==
+From: Mark Brown <broonie@kernel.org>
+To: Thangaraj Samynathan <thangaraj.s@microchip.com>, 
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ kernel-janitors@vger.kernel.org
+In-Reply-To: <efc92197-4023-4bfe-bc63-452e7ed112e8@moroto.mountain>
+References: <efc92197-4023-4bfe-bc63-452e7ed112e8@moroto.mountain>
+Subject: Re: [PATCH] spi: mchp-pci1xxxx: release resources on error in
+ probe()
+Message-Id: <170786013490.1060731.9553383767510166601.b4-ty@kernel.org>
+Date: Tue, 13 Feb 2024 21:35:34 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213093713.1753368-15-kernel@pankajraghav.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
-On Tue, Feb 13, 2024 at 10:37:13AM +0100, Pankaj Raghav (Samsung) wrote:
-> From: Pankaj Raghav <p.raghav@samsung.com>
+On Tue, 13 Feb 2024 21:07:45 +0300, Dan Carpenter wrote:
+> Call pci_release_regions(pdev) before returning on this error path.
 > 
-> Page cache now has the ability to have a minimum order when allocating
-> a folio which is a prerequisite to add support for block size > page
-> size. Enable it in XFS under CONFIG_XFS_LBS.
 > 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
-> ---
->  fs/xfs/xfs_icache.c | 8 ++++++--
->  fs/xfs/xfs_super.c  | 8 +++-----
->  2 files changed, 9 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-> index dba514a2c84d..9de81caf7ad4 100644
-> --- a/fs/xfs/xfs_icache.c
-> +++ b/fs/xfs/xfs_icache.c
-> @@ -73,6 +73,7 @@ xfs_inode_alloc(
->  	xfs_ino_t		ino)
->  {
->  	struct xfs_inode	*ip;
-> +	int			min_order = 0;
->  
->  	/*
->  	 * XXX: If this didn't occur in transactions, we could drop GFP_NOFAIL
-> @@ -88,7 +89,8 @@ xfs_inode_alloc(
->  	/* VFS doesn't initialise i_mode or i_state! */
->  	VFS_I(ip)->i_mode = 0;
->  	VFS_I(ip)->i_state = 0;
-> -	mapping_set_large_folios(VFS_I(ip)->i_mapping);
-> +	min_order = max(min_order, ilog2(mp->m_sb.sb_blocksize) - PAGE_SHIFT);
-> +	mapping_set_folio_orders(VFS_I(ip)->i_mapping, min_order, MAX_PAGECACHE_ORDER);
 
-That's pretty nasty. You're using max() to hide underflow in the
-subtraction to clamp the value to zero. And you don't need ilog2()
-because we have the log of the block size in the superblock already.
+Applied to
 
-	int			min_order = 0;
-	.....
-	if (mp->m_sb.sb_blocksize > PAGE_SIZE)
-		min_order = mp->m_sb.sb_blocklog - PAGE_SHIFT;
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-But, really why recalculate this -constant- on every inode
-allocation?  That's a very hot path, so this should be set in the
-M_IGEO(mp) structure (mp->m_ino_geo) at mount time and then the code
-is simply:
+Thanks!
 
-	mapping_set_folio_orders(VFS_I(ip)->i_mapping,
-			M_IGEO(mp)->min_folio_order, MAX_PAGECACHE_ORDER);
+[1/1] spi: mchp-pci1xxxx: release resources on error in probe()
+      commit: df20385302eb01cb610b9edc71611a63d1683923
 
-We already access the M_IGEO(mp) structure every inode allocation,
-so there's little in way of additional cost here....
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index 5a2512d20bd0..6a3f0f6727eb 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -1625,13 +1625,11 @@ xfs_fs_fill_super(
->  		goto out_free_sb;
->  	}
->  
-> -	/*
-> -	 * Until this is fixed only page-sized or smaller data blocks work.
-> -	 */
-> -	if (mp->m_sb.sb_blocksize > PAGE_SIZE) {
-> +	if (!IS_ENABLED(CONFIG_XFS_LBS) && mp->m_sb.sb_blocksize > PAGE_SIZE) {
->  		xfs_warn(mp,
->  		"File system with blocksize %d bytes. "
-> -		"Only pagesize (%ld) or less will currently work.",
-> +		"Only pagesize (%ld) or less will currently work. "
-> +		"Enable Experimental CONFIG_XFS_LBS for this support",
->  				mp->m_sb.sb_blocksize, PAGE_SIZE);
->  		error = -ENOSYS;
->  		goto out_free_sb;
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This should just issue a warning if bs > ps.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-	if (mp->m_sb.sb_blocksize > PAGE_SIZE) {
-  		xfs_warn(mp,
-"EXPERIMENTAL: Filesystem with Large Block Size (%d bytes) enabled.",
-			mp->m_sb.sb_blocksize);
-	}
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks,
+Mark
+
 
