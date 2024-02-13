@@ -1,149 +1,190 @@
-Return-Path: <linux-kernel+bounces-62753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67BFB852548
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:10:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B49DC852516
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:06:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 717C21C23AB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:10:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BD0E282233
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBDB912FB00;
-	Tue, 13 Feb 2024 00:24:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24AE412D752;
+	Tue, 13 Feb 2024 00:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pmkqNOwY"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YI+XQ5B0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B95B130ACD;
-	Tue, 13 Feb 2024 00:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38EF412D171;
+	Tue, 13 Feb 2024 00:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783876; cv=none; b=HLBCGj/vHIs+9ghGmVPCCQMtKZWKZpubUIub0b5X+PVfM0DEUCoVYBgmves14KUM2+R/RkcqnBgOapmq/VT+Fb9WAaq9YaKnng+CLs++ozBC4xcuTlkbJDijru9vaeL7egvQlY3ekwZZJx01qZkBsoSu2WKIIQgm3dho+S8+45w=
+	t=1707783858; cv=none; b=tRdhPejF9cS+o8LFLh0dy5lC64NS4gffpxRYlgM2GJD1kaLj73ngDYmQoxp78ajH2Nz1Av7gb+I+PaFalkfzLVDAJVcIHdDCQrY5zBmcHhZLK5zhYpSaLUdXVJI8ylfh2o4rT9Nk624eWkR8mZKiJar8RT7FWA2H3kBwmA8LYgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783876; c=relaxed/simple;
-	bh=FXhH1wQzbIwGCvQrq8FSKOMRbxbkr/ACCqi97KWWZDE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IbTC3I7bCYFvfnVjK6VVcXkbr4gNfBs+NMUTYZbgX8sMyjPWo+YcsumQiSrP+AXYo9HwSTcYzxHnJA3OM1BE6Gw1UFwzXNJ3LxlgCBIQmvDEnWDF9r1tpF7NW8HR2f156yR1I1ckndYq5SBewT8w2LNuWMXDNDJO7+gMrrt7UpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=pmkqNOwY; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41D0OHXV061424;
-	Mon, 12 Feb 2024 18:24:17 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707783857;
-	bh=KRdHsmmSf+DstTGqo1ZdeTIDrC/r9iMRVkf72BFbhHw=;
-	h=From:To:CC:Subject:Date;
-	b=pmkqNOwYTyofL1GUOwxJhCqYLKrdLszZK2e5mWmLXapselbh6LxxRcFiJhpTD7dEU
-	 W+qC3W7O/dzO1aMumGqN4Mw8bq22x3LGTeNbOtajDImyhjLMY1rHLgCr0SG7aQhreQ
-	 7BuIctNvoBHth/il1wTtMNMtb5vIkmViyFXXM7WI=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41D0OHLH031528
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 12 Feb 2024 18:24:17 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
- Feb 2024 18:24:16 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 12 Feb 2024 18:24:16 -0600
-Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41D0OGXe119810;
-	Mon, 12 Feb 2024 18:24:16 -0600
-From: Judith Mendez <jm@ti.com>
-To: Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero
- Kristo <kristo@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Wadim Egorov
-	<w.egorov@phytec.de>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: [PATCH v2 0/9] Fix MMC properties on Sitara devices
-Date: Mon, 12 Feb 2024 18:24:07 -0600
-Message-ID: <20240213002416.1560357-1-jm@ti.com>
+	s=arc-20240116; t=1707783858; c=relaxed/simple;
+	bh=S0mMfKXigx7f6DISkxf+JY6NEQjnY27vHhBKlmYdRL0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=GovpU4TXmfHi/Lq5tNDaHPYz4pIzsbZbOnKxlHbYNNSPMZqOSVwmjxUqg/+ljVcO6hppDnoR7hNklmnEkT8PnL/tyaHnNDGmpiZqwwkszKLkz2BYLbeGyB3Y43ztgIzYVMMPMQtf6HKXZaETtF6txsDve96UAvW2FpWmYdYusIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YI+XQ5B0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 027DDC433C7;
+	Tue, 13 Feb 2024 00:24:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707783857;
+	bh=S0mMfKXigx7f6DISkxf+JY6NEQjnY27vHhBKlmYdRL0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YI+XQ5B0JMM5rrukiUsiE9xgZpR1Tmqa0tUyT+J9E5LFU0gIurz0nVUBnSulhn+eF
+	 StwCZVT9tgmb/qonwVH1ZCmHsVTOBxt6PRPB40vpgLXjVJdTD7BDu2YGA1Y+VTfoyl
+	 x5arwgY/FhIqjsh6gDYIMGRE5KtFLVnH1zQ5CtHSuzsyDLOxOWnK+Vng8AYKX5vGrz
+	 Be7hpD7TIio0BE7zl0kfc+SMcYZki1MvBQ6oL86WDGc7ivR0oceBiBKCJZClohP0Lq
+	 MOczCDRsgx3LLPMay4IkPZdsJaQ1oOeJgxrYwLhOEJQf7LLXfwvk9Vk2Sj2NHly1yJ
+	 e0qhmQCcUHSwQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+	Adam Goldman <adamg@pobox.com>,
+	Sasha Levin <sashal@kernel.org>,
+	linux1394-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.10 5/6] firewire: core: send bus reset promptly on gap count error
+Date: Mon, 12 Feb 2024 19:24:07 -0500
+Message-ID: <20240213002409.673084-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240213002409.673084-1-sashal@kernel.org>
+References: <20240213002409.673084-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.10.209
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-This patch series aims to update MMC nodes for TI 
-K3 Sitara devices.
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-The series introduces MMC0 and MMC2 nodes and enables
-eMMC for AM62ax platform.
+[ Upstream commit 7ed4380009e96d9e9c605e12822e987b35b05648 ]
 
-Also introduce fixes for MMC ITAP/OTAP values for AM64x
-platform according to device datasheet [0], and add ITAP/
-OTAP values for AM62p to enable the highest timing possible
-for MMC0 and MMC1, according to device datasheet [1].
+If we are bus manager and the bus has inconsistent gap counts, send a
+bus reset immediately instead of trying to read the root node's config
+ROM first. Otherwise, we could spend a lot of time trying to read the
+config ROM but never succeeding.
 
-The DLL properties ti,trm-icp and ti,driver-strength-ohm
-should be removed for devices with soft PHYs since drive
-strength cannot be changed, so remove these properties when
-not applicable. Since this fix touches non-TI boards and
-therefore cannot be tested, all tested-by's are welcome.
+This eliminates a 50+ second delay before the FireWire bus is usable after
+a newly connected device is powered on in certain circumstances.
 
-Also include a few fixes for ti,clkbuf-sel, bus-width,
-and bootph-all device tree properties in MMC nodes.
+The delay occurs if a gap count inconsistency occurs, we are not the root
+node, and we become bus manager. One scenario that causes this is with a TI
+XIO2213B OHCI, the first time a Sony DSR-25 is powered on after being
+connected to the FireWire cable. In this configuration, the Linux box will
+not receive the initial PHY configuration packet sent by the DSR-25 as IRM,
+resulting in the DSR-25 having a gap count of 44 while the Linux box has a
+gap count of 63.
 
-This series was tested on:
-- AM62a SK
-- AM62x SK
-- AM62p SK
-- AM64x GP EVM
-- AM64x SK EVM
-- Beagleplay
+FireWire devices have a gap count parameter, which is set to 63 on power-up
+and can be changed with a PHY configuration packet. This determines the
+duration of the subaction and arbitration gaps. For reliable communication,
+all nodes on a FireWire bus must have the same gap count.
 
-[0] https://www.ti.com/lit/ds/symlink/am6442.pdf
-[1] https://www.ti.com/lit/ds/symlink/am62p.pdf
+A node may have zero or more of the following roles: root node, bus manager
+(BM), isochronous resource manager (IRM), and cycle master. Unless a root
+node was forced with a PHY configuration packet, any node might become root
+node after a bus reset. Only the root node can become cycle master. If the
+root node is not cycle master capable, the BM or IRM should force a change
+of root node.
 
-Judith Mendez (7):
-  arm64: dts: ti: k3-am62a-main: Add sdhci2 instance
-  arm64: dts: ti: k3-am64-main: Fix ITAP/OTAP values for MMC
-  arm64: dts: ti: k3-am62p: Add ITAP/OTAP values for MMC
-  arm64: dts: ti: k3-am6*: Remove DLL properties for soft PHYs
-  arm64: dts: ti: k3-am6*: Fix ti,clkbuf-sel property in MMC nodes
-  arm64: dts: ti: k3-am6*: Fix bus-width property in MMC nodes
-  arm64: dts: ti: k3-am6*: Add bootph-all property in MMC node
+After a bus reset, each node sends a self-ID packet, which contains its
+current gap count. A single bus reset does not change the gap count, but
+two bus resets in a row will set the gap count to 63. Because a consistent
+gap count is required for reliable communication, IEEE 1394a-2000 requires
+that the bus manager generate a bus reset if it detects that the gap count
+is inconsistent.
 
-Nitin Yadav (2):
-  arm64: dts: ti: k3-am62a-main: Add sdhci0 instance
-  arm64: dts: ti: k3-am62a7-sk: Enable eMMC support
+When the gap count is inconsistent, build_tree() will notice this after the
+self identification process. It will set card->gap_count to the invalid
+value 0. If we become bus master, this will force bm_work() to send a bus
+reset when it performs gap count optimization.
 
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi      | 12 +++--
- .../boot/dts/ti/k3-am62-phycore-som.dtsi      |  1 -
- .../boot/dts/ti/k3-am62-verdin-dahlia.dtsi    |  1 -
- .../arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi |  1 -
- .../boot/dts/ti/k3-am62-verdin-wifi.dtsi      |  1 -
- arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi    |  2 -
- .../arm64/boot/dts/ti/k3-am625-beagleplay.dts |  4 --
- .../dts/ti/k3-am625-phyboard-lyra-rdk.dts     |  1 -
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi     | 45 ++++++++++++++++++-
- arch/arm64/boot/dts/ti/k3-am62a7-sk.dts       | 27 ++++++++++-
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     | 44 ++++++++++++++++--
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |  3 +-
- .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi |  2 -
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi      | 15 +++++--
- arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  4 +-
- arch/arm64/boot/dts/ti/k3-am642-sk.dts        |  2 -
- 16 files changed, 129 insertions(+), 36 deletions(-)
+After a bus reset, there is no bus manager. We will almost always try to
+become bus manager. Once we become bus manager, we will first determine
+whether the root node is cycle master capable. Then, we will determine if
+the gap count should be changed. If either the root node or the gap count
+should be changed, we will generate a bus reset.
 
+To determine if the root node is cycle master capable, we read its
+configuration ROM. bm_work() will wait until we have finished trying to
+read the configuration ROM.
 
-base-commit: 1e6bbc5185bcd113c8d2f7aa0a02f588a6bdbe5d
+However, an inconsistent gap count can make this take a long time.
+read_config_rom() will read the first few quadlets from the config ROM. Due
+to the gap count inconsistency, eventually one of the reads will time out.
+When read_config_rom() fails, fw_device_init() calls it again until
+MAX_RETRIES is reached. This takes 50+ seconds.
+
+Once we give up trying to read the configuration ROM, bm_work() will wake
+up, assume that the root node is not cycle master capable, and do a bus
+reset. Hopefully, this will resolve the gap count inconsistency.
+
+This change makes bm_work() check for an inconsistent gap count before
+waiting for the root node's configuration ROM. If the gap count is
+inconsistent, bm_work() will immediately do a bus reset. This eliminates
+the 50+ second delay and rapidly brings the bus to a working state.
+
+I considered that if the gap count is inconsistent, a PHY configuration
+packet might not be successful, so it could be desirable to skip the PHY
+configuration packet before the bus reset in this case. However, IEEE
+1394a-2000 and IEEE 1394-2008 say that the bus manager may transmit a PHY
+configuration packet before a bus reset when correcting a gap count error.
+Since the standard endorses this, I decided it's safe to retain the PHY
+configuration packet transmission.
+
+Normally, after a topology change, we will reset the bus a maximum of 5
+times to change the root node and perform gap count optimization. However,
+if there is a gap count inconsistency, we must always generate a bus reset.
+Otherwise the gap count inconsistency will persist and communication will
+be unreliable. For that reason, if there is a gap count inconstency, we
+generate a bus reset even if we already reached the 5 reset limit.
+
+Signed-off-by: Adam Goldman <adamg@pobox.com>
+Reference: https://sourceforge.net/p/linux1394/mailman/message/58727806/
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/firewire/core-card.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/firewire/core-card.c b/drivers/firewire/core-card.c
+index f3b3953cac83..be195ba83463 100644
+--- a/drivers/firewire/core-card.c
++++ b/drivers/firewire/core-card.c
+@@ -429,7 +429,23 @@ static void bm_work(struct work_struct *work)
+ 	 */
+ 	card->bm_generation = generation;
+ 
+-	if (root_device == NULL) {
++	if (card->gap_count == 0) {
++		/*
++		 * If self IDs have inconsistent gap counts, do a
++		 * bus reset ASAP. The config rom read might never
++		 * complete, so don't wait for it. However, still
++		 * send a PHY configuration packet prior to the
++		 * bus reset. The PHY configuration packet might
++		 * fail, but 1394-2008 8.4.5.2 explicitly permits
++		 * it in this case, so it should be safe to try.
++		 */
++		new_root_id = local_id;
++		/*
++		 * We must always send a bus reset if the gap count
++		 * is inconsistent, so bypass the 5-reset limit.
++		 */
++		card->bm_retries = 0;
++	} else if (root_device == NULL) {
+ 		/*
+ 		 * Either link_on is false, or we failed to read the
+ 		 * config rom.  In either case, pick another root.
 -- 
 2.43.0
 
