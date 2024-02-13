@@ -1,144 +1,125 @@
-Return-Path: <linux-kernel+bounces-64407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91997853DF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:03:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76858853E62
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E35F1F2A636
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:03:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C408AB2934F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:04:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D5C63419;
-	Tue, 13 Feb 2024 21:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9321F634EB;
+	Tue, 13 Feb 2024 21:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Rxb8wS3o"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="hFwIPqHd"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A7669940
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9FD69D00;
+	Tue, 13 Feb 2024 21:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707861535; cv=none; b=NjAO3zuYUqfEHoIkIVicfZVgcHFEO02/O1x67RA+9mvbi5OPERxrtnbCCErYKeIRqSX4OrrKJOey0GJIjjKUWwsiXVkb8ADB9UrWMne59ddxEdJlpqmEDO0AZOFtWjUijbYfUxLBVZollFfhyfog6IIXXK5vqSyw40FxT8uDTpg=
+	t=1707861550; cv=none; b=f6LkcAkr73xXd7di63hR+uJ2zhE3x6zi0LhBlegOjasuYjfN9YWac2aRMygkXnb+wvniEI0LjJN1BSp7RWBuJN6nAHOTMn7oTbd2O6eHMQxFJ5FWcdcLgR8WVWAqsOiJ4GHKovTTEsL0pCFGcXYS+Lfeief2wVvcWiAsxORIzYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707861535; c=relaxed/simple;
-	bh=y3mhTelgi0cx53H62n2OpwC2+wJXIbkyAT/UHHyybvM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RkI2Y5rn77E+gQxeYooRsximxGiGSsbnLvj/12Y4TJIVdo2ax/byApFpY1oh+tQqvz+Xz3FKm2ohi220qaajFkATgYCc1OuaqAOO1UWyNaGAIklUPs2NhLWrfVrJ82eJJQ68Xg5Bz1LVcEkGjx9NcfI9e2FjtgvPyQGbloOrw88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Rxb8wS3o; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso194408276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:58:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707861533; x=1708466333; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sj6FkWt0IHINoPp252M2H78r73QaJ+UAYuAK2lRmHyc=;
-        b=Rxb8wS3oMHnLIb34yoTtwMfqoD4BcyVNuvNgGPdVHWPCpCIa6nEGYA5xvYOo5c/pvz
-         J2+OGg5pEfmE2ho3y5XIHT7lyPc4URII+matfJ1wGhF8/rZuDswE4lvq0eGNeHmc4d6i
-         1TslSmbu7/OW47V4jOiZ5LOcxgKzmPryQ4zK+pmespbb8vXgJxMG8uIdRMZx91X4F4MZ
-         GLPJ/mSUpVJkzmEWH8AhXqdx7DmmTZO/C6XQK33qFlrmwPlyjLWoDnxwx87d60SE9xih
-         +mW7UIlKhjY11M0oWGgX7klJ3vobUHc6ZLro1BWt6iAV7lHw8VKFBSbHNeQIPKHeeCWG
-         zK8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707861533; x=1708466333;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sj6FkWt0IHINoPp252M2H78r73QaJ+UAYuAK2lRmHyc=;
-        b=IvB6RqJPBzRF0EJY0disLx+ARrv3IFANWytnyuwZCjjon5LWR3n62E5lCntTfZExnE
-         mZmFmbCPXaSOVx6fTOC7FzqxAtmqnie85vZNADX8+wEnb219ZR0xl+1I2I7ZaaR99+f3
-         2/dXgVOyzAPXrCfjqJNH52WN0PT5wFUGwvbGoF9KDZ1j/ODbRBCRRp8I6UW1NysXP3Lh
-         oGfNqzuZKF3fnWxyUVIO+cKxkKexEOmgVFZb6klHDWQJxW5/dJGYDq0EMfib+UsCUbIQ
-         ZClMEEWEFO61NMfiZGcYi7lJnBxhNDhvvDZEgksijV/jeMr5tBuvVUZIBdDftnEuidwR
-         OCBA==
-X-Forwarded-Encrypted: i=1; AJvYcCVCKYdV+7yyzYTh2bVdMsXJT08iOEsgejI8db0fxStdKfv7t+iIdZVcHYhn4hSKqINtCIYhTZpvdob1dhIIKLn7CuH7H61QJrSLoUaC
-X-Gm-Message-State: AOJu0YxWkyeFiw6cRNwk+aBozMpgVhMfuzlQCJBtOwEJIlxOF7nhYwUo
-	PXRekLhxWYSofCeK6Tx4uwJAj6xQ+rx9U67j8MyiUA0dcImRqEwdTRM2jdeqN+MCjsjb+Hw+uGx
-	mBnA3NswdjUMXj2cFXEcIJez7C3d5rHNjeCrf
-X-Google-Smtp-Source: AGHT+IG6l4h8KgCu1mcr/ZMWQbdEFueKYTFVYNMwYlVMCYSQKnQPu8RzycqvNzeYz47HXL5wboAvOGkSQgCimZvCNdM=
-X-Received: by 2002:a25:d815:0:b0:dc6:e7f6:254a with SMTP id
- p21-20020a25d815000000b00dc6e7f6254amr127954ybg.8.1707861532899; Tue, 13 Feb
- 2024 13:58:52 -0800 (PST)
+	s=arc-20240116; t=1707861550; c=relaxed/simple;
+	bh=JJZKe2t0kamyMzVROuPedbDxFm+zHMjxwqHfKjv86Vs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hNNx/AKoi6sNludGWLhIl+rJF7ZEZIkprNKtEAd3LJJvsCHg7Rb4ZSPKAZ0C6m9b9I2Qiuy8Q3ty2gGtoegGsrkkdFVSUaRrjSgpIX+WRC6IkDAoiAxttn98ei4rE5+k7y12cbbeyxsa0Lnm+CsjYeheuRA9FakQLOvp60SRxuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=hFwIPqHd; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41DL4fIu001929;
+	Tue, 13 Feb 2024 21:59:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=ukCGGXI9Jxb1GstaggI2PMFSAmqWV+ZT0DPIrBgA8Ns=;
+ b=hFwIPqHdkoDZYsVMHJ8zXgJ+TLgjlWOfxhztM+UJgYDB/AWOR/3a984ul5nwA8gnexMD
+ i2V7x9UOLzu2YlSdaCrIH9yAZYVhuetntb8L1SNgT0bRzg9aLZ6Mwr5D0guvTNOudA+x
+ KLXRDsLvFFFnEsrHxvZ5LGr6B4+jFRUu/i2Cd3rwZ/NskzqDODb5HID+pXZL7ryJ4m9f
+ VVixqT6zm3xj70AINFvCMrEjhDlRvMkXBtLayIl7LXq1EX5gk+fG9NBUmer1bF3WPTrS
+ kF3fRfvr/fZeyerU0eCJZO+rqqbCZL/2B8iGMaTBVKg+oDziNTRRhbiMtBRgtlApHTud Cg== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w8cxr8p2w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 13 Feb 2024 21:58:59 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41DLFAtr015276;
+	Tue, 13 Feb 2024 21:58:59 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w5yk80tj9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 13 Feb 2024 21:58:59 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41DLwwaX037838;
+	Tue, 13 Feb 2024 21:58:58 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w5yk80thj-1;
+	Tue, 13 Feb 2024 21:58:58 +0000
+From: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
+To: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        namhyung@kernel.org, jolsa@kernel.org
+Cc: samasth.norway.ananda@oracle.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH ] perf daemon: Fix file leak in daemon_session__control
+Date: Tue, 13 Feb 2024 13:58:57 -0800
+Message-ID: <20240213215857.3081841-1-samasth.norway.ananda@oracle.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <Zctfa2DvmlTYSfe8@tiehlicka>
-In-Reply-To: <Zctfa2DvmlTYSfe8@tiehlicka>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 13 Feb 2024 13:58:39 -0800
-Message-ID: <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-To: Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, vbabka@suse.cz, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-13_14,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 adultscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402130173
+X-Proofpoint-GUID: UmyLGXzZ-iwIc4jmZcmbUW1efb5iKuvz
+X-Proofpoint-ORIG-GUID: UmyLGXzZ-iwIc4jmZcmbUW1efb5iKuvz
 
-On Tue, Feb 13, 2024 at 4:24=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
-> [...]
-> > We're aiming to get this in the next merge window, for 6.9. The feedbac=
-k
-> > we've gotten has been that even out of tree this patchset has already
-> > been useful, and there's a significant amount of other work gated on th=
-e
-> > code tagging functionality included in this patchset [2].
->
-> I suspect it will not come as a surprise that I really dislike the
-> implementation proposed here. I will not repeat my arguments, I have
-> done so on several occasions already.
->
-> Anyway, I didn't go as far as to nak it even though I _strongly_ believe
-> this debugging feature will add a maintenance overhead for a very long
-> time. I can live with all the downsides of the proposed implementation
-> _as long as_ there is a wider agreement from the MM community as this is
-> where the maintenance cost will be payed. So far I have not seen (m)any
-> acks by MM developers so aiming into the next merge window is more than
-> little rushed.
+The open() function returns -1 on error.
+'control' and 'ack' both initialized with open() and further
+validated with 'if' statement. 'if (!control)' would evaluate
+to 'true' if returned value on error were '0' but it is actually '-1'.
 
-We tried other previously proposed approaches and all have their
-downsides without making maintenance much easier. Your position is
-understandable and I think it's fair. Let's see if others see more
-benefit than cost here.
-Thanks,
-Suren.
+Fixes: edcaa47958c7 ("perf daemon: Add 'ping' command")
+Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
+---
+Found this error through static analysis. This has only been compile
+tested.
+---
+ tools/perf/builtin-daemon.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->
-> >  81 files changed, 2126 insertions(+), 695 deletions(-)
-> --
-> Michal Hocko
-> SUSE Labs
+diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+index 83954af36753..de76bbc50bfb 100644
+--- a/tools/perf/builtin-daemon.c
++++ b/tools/perf/builtin-daemon.c
+@@ -523,7 +523,7 @@ static int daemon_session__control(struct daemon_session *session,
+ 		  session->base, SESSION_CONTROL);
+ 
+ 	control = open(control_path, O_WRONLY|O_NONBLOCK);
+-	if (!control)
++	if (control < 0)
+ 		return -1;
+ 
+ 	if (do_ack) {
+@@ -532,7 +532,7 @@ static int daemon_session__control(struct daemon_session *session,
+ 			  session->base, SESSION_ACK);
+ 
+ 		ack = open(ack_path, O_RDONLY, O_NONBLOCK);
+-		if (!ack) {
++		if (ack < 0) {
+ 			close(control);
+ 			return -1;
+ 		}
+-- 
+2.42.0
+
 
