@@ -1,156 +1,175 @@
-Return-Path: <linux-kernel+bounces-62566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F7E2852306
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:15:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8615E8522FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:14:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAB3E28404E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:15:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB17D1C233B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CD744A18;
-	Tue, 13 Feb 2024 00:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0CD7FB;
+	Tue, 13 Feb 2024 00:14:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=soleen.com header.i=@soleen.com header.b="hRFx8OzL"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="NjP2e1V4"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1804A637
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A168628;
+	Tue, 13 Feb 2024 00:14:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783300; cv=none; b=QAcNtjuQMfURNFIqn/BhHJKrYCyeS7/7Mc3YJVUxexyFKP/sV7QrYeh9qIZFOx+6n6NtBDYrge6kH5m5JStG82scyL+lvH1Hzhi0CanD0y0BPlVz2hJ+2WTUH0kx5dtfVifWJCUvEFbXAqH1q9fFJoD5S0hrmbN/0zWtpwpHTTU=
+	t=1707783289; cv=none; b=RN+QfWMPPGX9gRBtKEMwF1UarhS0+WGC6FKbP3/S/KRP/XFnja0H0BK6X+kYUb3c9jVpi3nN7JuHpWpaJY4akvgAtGtpeT84jZ5vSgo3a2tq0mQE634maMQ4gB3YCpfJ5s4Hx5LRzbBcXW9xt4sqBmUqiHDn2GE+zAqFJXJDX/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783300; c=relaxed/simple;
-	bh=p+IVeRU3f9COk3wBMTH0iIf+8fVqKG0n9hzN9kdq2Xc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YB5DXj90Qked2+wfjhHp69Mddw1eCHR0Lq83hZKDb3wuxmbzLny2cdfFdQQNV7BOCCO5gqVeWaqXJRu+dQkSUEKgNtjHCJVsAr9aZn6+NjUL+2vF7RNDppTuJe5dtek6Cz8ztJWsHHrS16SN3Rb5J5imMVwBE2xhHkI2VeRGlvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com; spf=none smtp.mailfrom=soleen.com; dkim=fail (0-bit key) header.d=soleen.com header.i=@soleen.com header.b=hRFx8OzL reason="key not found in DNS"; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=soleen.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e2e096e2ccso927151a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:14:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1707783298; x=1708388098; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zpkbch4s+SL6zR3ce+cP/IOGuaScUrbATNvaMsX6gQU=;
-        b=hRFx8OzLpzZfkX2KYjLz4MEK93nwhIERYV36+ueQxJxoEiHKMQL/1nEjdZ+7VSdbnf
-         siT39azOSxjFsh9kTAOIuasSKEjL0EFsOsuZ1OEiypY/Q3hVEUMNHWJWjqyTUj/IyQFT
-         tLV1wc7OS5h52ntKwWemX0veu7L2EfUlY9A7hdSorOd5CLoGWAIZ7u6C3IDp4GDa1eqD
-         epkpLwBxzRsy+dYvA+NpDHfSpCTF+zyOMqrG10Sb+ySK6Cm1hzKZ5DHceUiz02THdlF9
-         aF33k3ujEKG2VjS0Cn7Yf/4/qpOuWXFxZJbKA+6dw8lTQE4hLZDefHslyXT+60uZCqLy
-         eXnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707783298; x=1708388098;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zpkbch4s+SL6zR3ce+cP/IOGuaScUrbATNvaMsX6gQU=;
-        b=Zs82PSnaO2y65qZzNNwgdIExbYHjjh05y9Q9WionjcHKqCCIOTIpNkPzMhKA6jtUpp
-         MEaYOIN8QRfe1W3aiH/8mh215ojrZbUGcIbSmNXoexegUPEccPY1GP0w6icEh9zXIMhH
-         hE2h5HH3yxguJNw/LlMQd3MwHIhW7l02tXzVcDKHWkgAsF4ITAEbIFHAhq6PBRHZFg8X
-         61AVulmgifF5009gEnirzdxkTF6KwjDQ5a0G/JlW75ygnUFx24blGcXrBoO8bzf95ByU
-         vuj8JBg1zI/uQiv0x2hgYeSeOzliorSAPkE6Sj9W7U8P3i5kGnZdLUTyBqqGaMdRvVCc
-         G5Vg==
-X-Forwarded-Encrypted: i=1; AJvYcCX8ay8BhWe4/5S6JGEG1JrRCjTd43GnMpxrzPvju5Aqbv9XuXPatt6jvkyH1j3zMko9tgLaBHcLZzs3xzx6MgosNLxyI5PuEKS2FD6G
-X-Gm-Message-State: AOJu0Ywdnsgk1jAEKdDiL/BvB68Pz50g9qu6gCAq3afs8tI5Z799gZAo
-	VC/0Drr/Xc0tIsguxGjq23p9Sw1jZJbcorOv1uTIEWXyW0/U/9WO8sYBiOlOPizInZxWUAuqPvX
-	IytAwM9nfaJ+qQXLm2zfZjogCt/N3HMrxwRZTFA==
-X-Google-Smtp-Source: AGHT+IENA2I2vQZTmviXZDRj9zPa9m0qm240EbRNcQEFbOk5GS9Qd9oHISJT+KIV/8e+A1RHV9ji5tIu3nuHQqetP/o=
-X-Received: by 2002:a05:6830:12c2:b0:6e2:e953:6fee with SMTP id
- a2-20020a05683012c200b006e2e9536feemr3152110otq.24.1707783298148; Mon, 12 Feb
- 2024 16:14:58 -0800 (PST)
+	s=arc-20240116; t=1707783289; c=relaxed/simple;
+	bh=aEawAT3wU7Rm0ZiO8fQ4ML+8Ogb/aFNPqB6Uumu421I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=oUPVaimz0gI1tkMHlyz6I0PB3FyW67uEEYhriHcnMo6DRm8g8g8/8u3EYfagZx5eeBUWsJpQI/BexR2Yb35wD5S+GRIs953L+VTyhz9yVqJD9fYyVd0rSU1pOu4V+ay/M//Sup0qA7xcFlatVeh4SAvXjSfKPVfyP1yjaoSuwiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=NjP2e1V4; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id DA7FC100016;
+	Tue, 13 Feb 2024 03:14:36 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru DA7FC100016
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1707783276;
+	bh=4hkxeFa6wRCl0c/3++2QM2qUDLDDWcbbOLHqPT/4zyk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=NjP2e1V49ruuYRC6XM+6YfN1fe1hjFpar9MTcX/F1Ix6Yyxekzn66cEEwiB1nCDxJ
+	 UUl/uZmn0X9qF7HfZ8ObPiRZWmBfLG5MhsZd+WJmsbNJhsMegBt7sMQqPiZyTXf0uH
+	 OV5KqHdPuvhpwBS8vfxHhLZb2UDEEPua6NG55IetEldGh7OJxwTTQS8NzurrDzn1cR
+	 lCm6yOCBpfARxFcmCyjPXcHZjCgJa8msyhjLIYqdSWYEOqqFDH4dmzwxRa1Qvbz57D
+	 WI7aUcQg9LkBwEzRo/TDB2lc03SAdhwnNLw1NmTCMOLCIhf1eEonX/+PKWBw/QbT6C
+	 5vySnM7+uePxw==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue, 13 Feb 2024 03:14:36 +0300 (MSK)
+Received: from [172.28.64.40] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 13 Feb 2024 03:14:36 +0300
+Message-ID: <ae5bf6bc-5f7f-4fe9-a833-c1bfa31ff534@salutedevices.com>
+Date: Tue, 13 Feb 2024 03:14:35 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com>
-In-Reply-To: <20240212213922.783301-1-surenb@google.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Mon, 12 Feb 2024 19:14:20 -0500
-Message-ID: <CA+CK2bBLD-mZ4ne56Awxbiy0EGpJq69k5qUKZwcXVB1Rt581TQ@mail.gmail.com>
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [DMARC error][SPF error] Re: [PATCH v4 00/10]
+ devm_led_classdev_register() usage problem
+Content-Language: en-US
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+CC: <pavel@ucw.cz>, <vadimp@nvidia.com>, <mpe@ellerman.id.au>,
+	<npiggin@gmail.com>, <christophe.leroy@csgroup.eu>, <hdegoede@redhat.com>,
+	<mazziesaccount@gmail.com>, <peterz@infradead.org>, <mingo@redhat.com>,
+	<will@kernel.org>, <longman@redhat.com>, <boqun.feng@gmail.com>,
+	<nikitos.tr@gmail.com>, <linux-leds@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>, Lee Jones
+	<lee@kernel.org>, <kernel@salutedevices.com>, Waiman Long
+	<longman@redhat.com>, "peterz@infradead.org" <peterz@infradead.org>,
+	"boqun.feng@gmail.com" <boqun.feng@gmail.com>, "will@kernel.org"
+	<will@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, Andrew Morton
+	<akpm@linux-foundation.org>
+References: <20231214173614.2820929-1-gnstark@salutedevices.com>
+ <20231221151111.GJ10102@google.com> <ZcZcpUHygltD2ETa@smile.fi.intel.com>
+ <d844862e-1d1c-4c9a-b7fe-e0ac44f4126e@salutedevices.com>
+ <CAHp75VfQd9e4fLAYkYrMajnJfPQqno6s_aiTarErPiqP-Z6ydg@mail.gmail.com>
+From: George Stark <gnstark@salutedevices.com>
+In-Reply-To: <CAHp75VfQd9e4fLAYkYrMajnJfPQqno6s_aiTarErPiqP-Z6ydg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183376 [Feb 12 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_uf_ne_domains}, {Tracking_urls_end_caps}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;lore.kernel.org:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/02/12 23:28:00
+X-KSMG-LinksScanning: Clean, bases: 2024/02/12 23:28:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/12 22:37:00 #23571721
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Mon, Feb 12, 2024 at 4:39=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> Memory allocation, v3 and final:
->
-> Overview:
-> Low overhead [1] per-callsite memory allocation profiling. Not just for d=
-ebug
-> kernels, overhead low enough to be deployed in production.
->
-> We're aiming to get this in the next merge window, for 6.9. The feedback
-> we've gotten has been that even out of tree this patchset has already
-> been useful, and there's a significant amount of other work gated on the
-> code tagging functionality included in this patchset [2].
->
-> Example output:
->   root@moria-kvm:~# sort -h /proc/allocinfo|tail
->    3.11MiB     2850 fs/ext4/super.c:1408 module:ext4 func:ext4_alloc_inod=
-e
->    3.52MiB      225 kernel/fork.c:356 module:fork func:alloc_thread_stack=
-_node
->    3.75MiB      960 mm/page_ext.c:270 module:page_ext func:alloc_page_ext
->    4.00MiB        2 mm/khugepaged.c:893 module:khugepaged func:hpage_coll=
-apse_alloc_folio
->    10.5MiB      168 block/blk-mq.c:3421 module:blk_mq func:blk_mq_alloc_r=
-qs
->    14.0MiB     3594 include/linux/gfp.h:295 module:filemap func:folio_all=
-oc_noprof
->    26.8MiB     6856 include/linux/gfp.h:295 module:memory func:folio_allo=
-c_noprof
->    64.5MiB    98315 fs/xfs/xfs_rmap_item.c:147 module:xfs func:xfs_rui_in=
-it
->    98.7MiB    25264 include/linux/gfp.h:295 module:readahead func:folio_a=
-lloc_noprof
->     125MiB     7357 mm/slub.c:2201 module:slub func:alloc_slab_page
+Hello Andy
 
-This kind of memory profiling would be an incredible asset in cloud
-environments.
+On 2/12/24 12:53, Andy Shevchenko wrote:
+> On Mon, Feb 12, 2024 at 1:52 AM George Stark <gnstark@salutedevices.com> wrote:
+>> I haven't lose hope for the devm_mutex thing and keep pinging those guys
+>> from time to time.
+> 
+> I don't understand. According to v4 thread Christophe proposed on how
+> the patch should look like. What you need is to incorporate an updated
+> version into your series. Am I wrong?
 
-Over the past year, we've encountered several kernel memory overhead
-issues. Two particularly severe cases involved excessively large IOMMU
-page tables (20GB per machine) and IOVA magazines (up to 8GB).
-Considering thousands of machines were affected, the cumulative memory
-waste was huge.
+We agreed that the effective way of implementing devm_mutex_init() is in 
+mutex.h using forward declaration of struct device.
+The only inconvenient thing is that in the mutex.h mutex_init() declared 
+after mutex_destroy() so we'll have to use condition #ifdef 
+CONFIG_DEBUG_MUTEXES twice. Waiman Long proposed great cleanup patch [1] 
+that eliminates the need of doubling #ifdef. That patch was reviewed a 
+bit but it's still unapplied (near 2 months). I'm still trying to 
+contact mutex.h guys but there're no any feedback yet.
 
-While we eventually resolved these issues with custom kernel profiling
-hacks (some based on this series) and kdump analysis, comprehensive
-memory profiling would have significantly accelerated the diagnostic
-process, pinpointing the precise source of the allocations.
+[1] 
+https://lore.kernel.org/lkml/20231216013656.1382213-2-longman@redhat.com/T/#m795b230d662c1debb28463ad721ddba5b384340a
+
+
+> 
+>> Sure I can single out the fix-only patch I'll do it tomorrow.
+> 
+> I believe it can be handled without issuing it separately. `b4` tool
+> is capable of selective choices. It was rather Q to Lee if he can/want
+> to apply it right away.
+
+Oh ok, that would be great.
+
+> 
+>> On 2/9/24 20:11, Andy Shevchenko wrote:
+>>> On Thu, Dec 21, 2023 at 03:11:11PM +0000, Lee Jones wrote:
+>>>> On Thu, 14 Dec 2023, George Stark wrote:
+>>>>
+>>>>> This patch series fixes the problem of devm_led_classdev_register misusing.
+>>>>>
+>>>>> The basic problem is described in [1]. Shortly when devm_led_classdev_register()
+>>>>> is used then led_classdev_unregister() called after driver's remove() callback.
+>>>>> led_classdev_unregister() calls driver's brightness_set callback and that callback
+>>>>> may use resources which were destroyed already in driver's remove().
+>>>>>
+>>>>> After discussion with maintainers [2] [3] we decided:
+>>>>> 1) don't touch led subsytem core code and don't remove led_set_brightness() from it
+>>>>> but fix drivers
+>>>>> 2) don't use devm_led_classdev_unregister
+>>>>>
+>>>>> So the solution is to use devm wrappers for all resources
+>>>>> driver's brightness_set() depends on. And introduce dedicated devm wrapper
+>>>>> for mutex as it's often used resource.
+>>>>>
+>>>>> [1] https://lore.kernel.org/lkml/8704539b-ed3b-44e6-aa82-586e2f895e2b@salutedevices.com/T/
+>>>>> [2] https://lore.kernel.org/lkml/8704539b-ed3b-44e6-aa82-586e2f895e2b@salutedevices.com/T/#mc132b9b350fa51931b4fcfe14705d9f06e91421f
+>>>>> [3] https://lore.kernel.org/lkml/8704539b-ed3b-44e6-aa82-586e2f895e2b@salutedevices.com/T/#mdbf572a85c33f869a553caf986b6228bb65c8383
+>>>
+>>> ...
+>>>
+>>>> FYI: I'll conduct my review once the locking side is settled.
+>>>
+>>> To reduce burden can you apply the first one? It's a fix.
+> 
+
+-- 
+Best regards
+George
 
