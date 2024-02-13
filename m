@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-64271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9314853CBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:11:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAE89853CBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:11:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E30B1F2847A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:11:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9BB91C2212D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:11:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0086A353;
-	Tue, 13 Feb 2024 21:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F4D6E2A2;
+	Tue, 13 Feb 2024 21:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lIfrOJs1";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/69QRnWv"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iLHrOvBh";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NuecDBnh"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BDD62143
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:05:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3036869DF6
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707858308; cv=none; b=nwatnXvbIggOCT8mHiIoBFDBtKt/JE3wyuIl7O3Gzw+SFKihPIkOob+BC6ao1pP3g94wNgH3NWgSYsiTOyagbnTsHkkLTcugnvLDtyzgBj7qj9m1/qMYhiQAj15k6os9EMnUSRHx6PKj7mktrUu78weTsPS+8kIU8tLNom8vTCk=
+	t=1707858309; cv=none; b=bFmg4xZj7q1kQRrGYAfKbNpgJYRfyzGc6z1vyJ+j5Q/8z18S2Je5w0nPkxmb1fb+ptdBCtp+6hnNDerwerduABCZpgBDO1JUW14ekHHHWvEAOgSdfVje8PO/PX+Dsx/rHhQor5p9XwZlBGmlasK5UbFl5oW3HjrHtbH/zq7HubI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707858308; c=relaxed/simple;
-	bh=OH9i/6sHljeMHBBOlfRzZZbmmIB9/VmPJS89M329bvY=;
+	s=arc-20240116; t=1707858309; c=relaxed/simple;
+	bh=/py/Xwe4fVOjWrl4DdrzzF4uh9lZ5bJilDGGPUdzVcE=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=MYFvXQxBDqzhifk5lfOpFT7xW7AZU7RD8PiSii4d89dsLODr5FHTBldigMYvg7PWwZTD61bokVJgkGpJp+a5/PvZTJhVzZ5YVONT4w25+secwFvZNgs80GPqPi2iLHF4hkTeL+OaPLKHZVYO8jXVkZEr9emrixerOHHSvTQaKOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lIfrOJs1; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/69QRnWv; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=rWswpz+Ulen6SmEFHxuJ1pndNHqCdL4ex8DTLj+6QhNfybETxcOq+vSsbWNkYt5tFsyCsTXyZMV7cmZ0ZOhCNaiAS8rD8hBf5iYYFMcpprYCIy0nISmop8TRyKbUgITQX6BI7bldvvUP+irXsVVplc6I7scbdCk45cm2edPSkeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iLHrOvBh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=NuecDBnh; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240212154639.433811243@linutronix.de>
+Message-ID: <20240212154639.495992801@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707858305;
+	s=2020; t=1707858306;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=gVhd+douULzCtgDBreFZyPvTMBxpG3zFTSdanDfkXCw=;
-	b=lIfrOJs1mYiD0f7xk4erYC8zZXa3nvgau6DI0WgquZB6VVevUSmoxCgstkIf92ixFVfLmn
-	dNbgj+ulm5BOn6+j4J+7+HTQzbPA0r5y3O2k8zOMAmaHHZ4OSPVtb+mRLGUpO69XT5ghsl
-	SzA653RUzahP4xb3Cy4tbCuUjLhEH0Rip+dw3fVh/aWcWzY9S2i9p3CGHnYR1ML6a4Pi2C
-	o9MU1lgJDFg0CCioSgHAhyoJvv9mrWlrOmEodk+Sk+pUNFKetbX02wDIgSRhQkdLjkQDiB
-	QDFC0cxYmaTc6lsHwplnhbCppjuK0KcMVKixeyHfn7yhwRhjRc+wpoNKPFyJ6w==
+	 references:references; bh=WKnV8cmjnyf4puxHx+D7XpKpE60kVjCp3v5e0THf4uQ=;
+	b=iLHrOvBhUiVQ+lAlywu1m0FNEbSHk9En+wXJu3GH8iICNq8mVmYmI6QITL5uXwGSnhTH4q
+	LDg2C3mBlce6TI57o42y563bZiYt0oa9/1PSQgNRi6GItM8tiEWmZfAZb/ELr1Y32mffez
+	TgqiAplPymAa3cgXb3uLu6ReZ06mjlvG0VAp3wmzIKU1jB09Dbn3FgMakR8N9oox/q6ECh
+	zqIRB+wjh28yA2Z6ccE1E8TC1/iOvzjpPNM+5QdLSD6nwdhNdsNh0npSg/O7hyz5YEhbNv
+	mudmSCXofygbH/vCSug8j0e0dZ2gtOjxvMs5h/18jji6H2aTs52h5qYtclFRiA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707858305;
+	s=2020e; t=1707858306;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=gVhd+douULzCtgDBreFZyPvTMBxpG3zFTSdanDfkXCw=;
-	b=/69QRnWvZHeR8yS1mghJRl3Asd6oA9tmlsPitBukwFEdJajmPpQdYZNRjRq7kJB3/fqyjl
-	PK5ab7O1JJ0MWxCA==
+	 references:references; bh=WKnV8cmjnyf4puxHx+D7XpKpE60kVjCp3v5e0THf4uQ=;
+	b=NuecDBnhFy9QlNmopDT55NyFKeD2nW5Bg1stDtJce9OjL3VpgOk2RLCJdy2p9ng+WMKtlx
+	GmuBK4xR0HYq1WDA==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -69,7 +69,7 @@ Cc: x86@kernel.org,
  "Peter Zijlstra (Intel)" <peterz@infradead.org>,
  Andy Shevchenko <andy.shevchenko@gmail.com>,
  Wei Liu <wei.liu@kernel.org>
-Subject: [patch V3 10/22] x86/mpparse: Prepare for callback separation
+Subject: [patch V3 11/22] x86/dtb: Rename x86_dtb_init()
 References: <20240212154529.402604963@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -78,87 +78,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 13 Feb 2024 22:05:04 +0100 (CET)
+Date: Tue, 13 Feb 2024 22:05:06 +0100 (CET)
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-In preparation of splitting the get_smp_config() callback, rename
-default_get_smp_config() to mpparse_get_smp_config() and provide an early
-and late wrapper.
+x86_dtb_init() is a misnomer and it really should be used as a SMP
+configuration parser which is selected by the platform via
+x86_init::mpparse:parse_smp_config().
+
+Rename it to x86_dtb_parse_smp_config() in preparation for that.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 
 ---
- arch/x86/include/asm/mpspec.h |   12 ++++++++----
- arch/x86/kernel/mpparse.c     |   12 +++++++++++-
- arch/x86/kernel/x86_init.c    |    2 +-
- 3 files changed, 20 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/prom.h  |    4 ++--
+ arch/x86/kernel/devicetree.c |    2 +-
+ arch/x86/kernel/setup.c      |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 ---
 
---- a/arch/x86/include/asm/mpspec.h
-+++ b/arch/x86/include/asm/mpspec.h
-@@ -60,12 +60,16 @@ static inline void early_get_smp_config(
- extern void e820__memblock_alloc_reserved_mpc_new(void);
- extern int enable_update_mptable;
- extern void mpparse_find_mptable(void);
--extern void default_get_smp_config(unsigned int early);
-+extern void mpparse_parse_early_smp_config(void);
-+extern void mpparse_parse_smp_config(void);
-+extern void mpparse_get_smp_config(unsigned int early);
+--- a/arch/x86/include/asm/prom.h
++++ b/arch/x86/include/asm/prom.h
+@@ -23,11 +23,11 @@ extern int of_ioapic;
+ extern u64 initial_dtb;
+ extern void add_dtb(u64 data);
+ void x86_of_pci_init(void);
+-void x86_dtb_init(void);
++void x86_dtb_parse_smp_config(void);
  #else
- static inline void e820__memblock_alloc_reserved_mpc_new(void) { }
--#define enable_update_mptable	0
--#define mpparse_find_mptable	x86_init_noop
--#define default_get_smp_config	x86_init_uint_noop
-+#define enable_update_mptable		0
-+#define mpparse_find_mptable		x86_init_noop
-+#define mpparse_parse_early_smp_config	x86_init_noop
-+#define mpparse_parse_smp_config	x86_init_noop
-+#define mpparse_get_smp_config		x86_init_uint_noop
+ static inline void add_dtb(u64 data) { }
+ static inline void x86_of_pci_init(void) { }
+-static inline void x86_dtb_init(void) { }
++static inline void x86_dtb_parse_smp_config(void) { }
+ #define of_ioapic 0
  #endif
  
- int generic_processor_info(int apicid);
---- a/arch/x86/kernel/mpparse.c
-+++ b/arch/x86/kernel/mpparse.c
-@@ -473,7 +473,7 @@ static int __init check_physptr(struct m
- /*
-  * Scan the memory blocks for an SMP configuration block.
-  */
--void __init default_get_smp_config(unsigned int early)
-+void __init mpparse_get_smp_config(unsigned int early)
- {
- 	struct mpf_intel *mpf;
- 
-@@ -538,6 +538,16 @@ void __init default_get_smp_config(unsig
- 	early_memunmap(mpf, sizeof(*mpf));
+--- a/arch/x86/kernel/devicetree.c
++++ b/arch/x86/kernel/devicetree.c
+@@ -302,7 +302,7 @@ void __init x86_flattree_get_config(void
  }
+ #endif
  
-+void __init mpparse_parse_early_smp_config(void)
-+{
-+	mpparse_get_smp_config(true);
-+}
-+
-+void __init mpparse_parse_smp_config(void)
-+{
-+	mpparse_get_smp_config(false);
-+}
-+
- static void __init smp_reserve_memory(struct mpf_intel *mpf)
+-void __init x86_dtb_init(void)
++void __init x86_dtb_parse_smp_config(void)
  {
- 	memblock_reserve(mpf->physptr, get_mpc_size(mpf->physptr));
---- a/arch/x86/kernel/x86_init.c
-+++ b/arch/x86/kernel/x86_init.c
-@@ -71,7 +71,7 @@ struct x86_init_ops x86_init __initdata
- 	.mpparse = {
- 		.setup_ioapic_ids	= x86_init_noop,
- 		.find_mptable		= mpparse_find_mptable,
--		.get_smp_config		= default_get_smp_config,
-+		.get_smp_config		= mpparse_get_smp_config,
- 	},
+ 	if (!of_have_populated_dt())
+ 		return;
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1131,7 +1131,7 @@ void __init setup_arch(char **cmdline_p)
+ 	 * Read APIC and some other early information from ACPI tables.
+ 	 */
+ 	acpi_boot_init();
+-	x86_dtb_init();
++	x86_dtb_parse_smp_config();
  
- 	.irqs = {
-
+ 	/*
+ 	 * get boot-time SMP configuration:
 
 
 
