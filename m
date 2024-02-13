@@ -1,116 +1,122 @@
-Return-Path: <linux-kernel+bounces-63548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A96A85311B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:00:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7083985311E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:00:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 485581F2505A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:00:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56A831C26737
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B4B4B5AE;
-	Tue, 13 Feb 2024 12:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E9E4CB22;
+	Tue, 13 Feb 2024 13:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uVEK7X9K"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RMeYLfGS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A49AB4B5A6
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD8543AD1;
+	Tue, 13 Feb 2024 13:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707829196; cv=none; b=QfHuG40dCk+cKfB5FtaRjB5e9ZFguZGa3ULzedoBcufuT16j0stXqDbvsY4gDJN4l9nj03iOeFsGFFroojiBXs7FnVPFJLaSp+mulwr/6383VK7y3dLFlgBq7b4B5BEUo4IfxM1216FvH7CLrgssshYqECKXthsFwMUcSh09rCw=
+	t=1707829226; cv=none; b=l1V7llH0aCnQ+0a/iw6qhRhzOh6vbSO7XXfDiQUkeX+boAcnBFhDgvfgOel1uWf/h/9hcVWti+r6yAqgFGeqdF+AC2e8r+nDR7X7OiJkIpIVIbc9IzQUdyDSlmau5ptZdqSlI5IWXcGHyXTgqCxN/HZV2rrXyTsS92kzsGkxo0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707829196; c=relaxed/simple;
-	bh=5h2ZHudUYG0aRlP8LrUzwYh+NTZg/hiCObK0OUfwSeE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=HUFuk4UxEXs93qFq4pDQS1coN4pBEhHFNk7HXx9KYB7W8ynlO4xEoFckCl6WzATW4xOo+vPvX1bOg6/OWoaD8f+vN9XI7K9B02LVokOm2ryFgGWIAVpqmvgXOsgV+9oRoF2FkiwA3geBRjFtQBGAxRxsNYwEupFNt/Y3xkqyrT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uVEK7X9K; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5119cfaeb9bso514728e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:59:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707829193; x=1708433993; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d/hFeaopGsy2QD6T9Q8c1qD2utQU+AfoTyT77QFxVS8=;
-        b=uVEK7X9Kr+B39g5Q9KXHSq6ctaRsNKOwPs/5L+lqQJgp61OerGQ3CdN/y7dV51muTT
-         gSUI/No6whZOF+jh8IjHP0obaW20Dfb6CFqUyviolTgBkiu/V3Sy2Anlr3KEas4pSIVu
-         WSpirxL3W1ykNfbUVGNsYLtAuG+R2a5nR9NMudTycBiAC//0iTaRvSaduID+akWDR4gx
-         KN2iZdzfUcW/Q/z9BI+gMPvZAikdF9kV6iS0wplBScEIGvXnFpn1NqXMiWeAhVLNBpMv
-         YEC4rkwibmisou0mP+JGpqPYc/Ave4kfnjQhXMMqAD77pbAbdR4NQAw9/eAUeuTw11D8
-         9eaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707829193; x=1708433993;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d/hFeaopGsy2QD6T9Q8c1qD2utQU+AfoTyT77QFxVS8=;
-        b=Aww7TQb4/n0J1f2IIsjaKlOX64lRN6xeWJ8suBQTWNfL8HqptQ1SBPUPbDhy+FVY7L
-         ZR88vN1MqXkd/ZddeyK5r770Su7Dv3HFtklmFj+SEO36MqR5j/6fJONFwh9X87tH40+r
-         BPfPzf5uKPJvQYZMZafMpW+bOprObdrve9hJ31KazPWJyyusxJYMq8IlXzAld7fJ89ka
-         F7NeYgxq1UcySnAexxWkRWmefqPNTM1rwrUmQA9TtpXOGbwu0Zyvwaj5VLKgMeNHiM6l
-         Byz+Vxnau2nDXPshJqRwj8KzEkcARzD0FusmNzjoYRADQYOJCwoXjAnH8n4skYdgEj9k
-         6FwQ==
-X-Gm-Message-State: AOJu0YzGXhmNl6jpAFyxU4vxdtjG++O7L+0c85wSDhUIFcya3VajL3q7
-	Ual1/vfCXwAJcMliLyTswiuGBxWxYFqP7C62Ssq9Qc3Prw44tWs/UkZ1peAISgFQ/56MFdnh2rZ
-	9
-X-Google-Smtp-Source: AGHT+IEAVWAlLetgl1C1aVca3/OVjmDF6ZOlYPFVFx0pw0FlZfSfHISIiN02thQWlrB661yF/BOlWg==
-X-Received: by 2002:a05:6512:3d11:b0:511:5237:a357 with SMTP id d17-20020a0565123d1100b005115237a357mr7811021lfv.48.1707829192713;
-        Tue, 13 Feb 2024 04:59:52 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWJ6HvLLkXVqanJYxEXVaBwYut4tG24Q3antYYU2rXXeixvCMRSvCg1mA5H2YlsHr8qv08IPTT9b3m43YoN5aP63GLjbfl6nixytaoZoKb8+nbGGGkFgI6HQO8Io10tzs/vlUWD0iXt/ibuV3riDFPVWjElaKP6NOi6EbeAHAR9KSIO9dGOsJpkprkMnWnzwIlBm9x6t8gEKispehLIfWyCH5NttdwNDw==
-Received: from srini-hackbase.lan ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id xo7-20020a170907bb8700b00a37116e2885sm1268426ejc.84.2024.02.13.04.59.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 04:59:52 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: michal.simek@amd.com, kalyani.akula@amd.com, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, 
- Praveen Teja Kundanala <praveen.teja.kundanala@amd.com>
-Cc: linux-kernel@vger.kernel.org
-In-Reply-To: <20240202113843.17999-1-praveen.teja.kundanala@amd.com>
-References: <20240202113843.17999-1-praveen.teja.kundanala@amd.com>
-Subject: Re: [PATCH V4 0/4] Add ZynqMP efuse access support
-Message-Id: <170782919184.32030.17868326404218700363.b4-ty@linaro.org>
-Date: Tue, 13 Feb 2024 12:59:51 +0000
+	s=arc-20240116; t=1707829226; c=relaxed/simple;
+	bh=iLASq6PGk0pCcLZpQwuo3+UhK6BRy553sU7kvPf0prQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dn9xLyphTKgOIPHjDpMSACpTGFRGGoX0sYcK/N6pK5oKh1+5c9pYZAM6XeByoRSEtyhiiqDi9Js8ae+09YuDLHaAi3DOO2OSUwF0mYlt0Mr47qeeuASjdNAsywLFNGV+a6EB79h+wGayuHH2jDFUR7XjjxBQ5uRYhKNrtbVDiwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RMeYLfGS; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707829224; x=1739365224;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=iLASq6PGk0pCcLZpQwuo3+UhK6BRy553sU7kvPf0prQ=;
+  b=RMeYLfGSuRDA0YtGikwwQgI/QB5RyZV8XQhfwD0kzVAHESzderioDCqC
+   EydDLDWoNJ/q+pH18rTBDgUG0hfRE6gvZk82mdKC52zdPsT5hGFJaJa4Q
+   EKwkDSSGRjfomhqcVbaI4w/Bx3p7swSGKE9KGHkOdxyxfkhzSnP8Wc7lm
+   xltZAoYMf5X4PIt6Qmn7jYDqJ/JuEmJdddrhQ0E0tp0zOZjUi3TvWw7hJ
+   /glbQr7DmDdLqDcDUjcM13QWseq9zYA9rQf4UHbCbToxbsmmUL/UUjlA0
+   CtkRCisv0sIBBCsm4lTbSsOTsn2BzMcGuynndk0ow2Vbfm1QmXeDqSz8Y
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1708879"
+X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
+   d="scan'208";a="1708879"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 05:00:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935348366"
+X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
+   d="scan'208";a="935348366"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Feb 2024 05:00:19 -0800
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Prashant Malani <pmalani@chromium.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Benson Leung <bleung@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	Emilie Roberts <hadrosaur@google.com>,
+	"Nyman, Mathias" <mathias.nyman@intel.com>,
+	"Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
+	"Radjacoumar, Shyam Sundar" <ssradjacoumar@google.com>,
+	Samuel Jacob <samjaco@google.com>,
+	Uday Bhat <uday.m.bhat@intel.com>,
+	linux-usb@vger.kernel.org,
+	chrome-platform@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] platform/chrome: typec: xHCI DbC
+Date: Tue, 13 Feb 2024 15:00:16 +0200
+Message-ID: <20240213130018.3029991-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.2
+Content-Transfer-Encoding: 8bit
+
+Hi,
+
+Changed in v2:
+
+The quirk is now wrapped inside an ugly ifdef CONFIG_ACPI :(
+I don't have better ideas better ideas for this I'm afraid.
+
+Side note! I will be away for the next three weeks (plus a few days)
+starting from Friday (Feb 16).
 
 
-On Fri, 02 Feb 2024 17:08:39 +0530, Praveen Teja Kundanala wrote:
->  - Add ZynqMP efuse firmware API for efuse access
->  - zynqmp_nvmem_probe cleanup
->  - Add support to read/write ZynqMP efuse memory
-> 
-> The first patch depends on
-> https://lore.kernel.org/linux-arm-kernel/20231004094116.27128-2-jay.buddhabhatti@amd.com/
-> 
-> [...]
+The original message:
 
-Applied, thanks!
+In order to use xHCI DbC we need to allow the USB to be muxed to xHCI
+even when the connector is in device role. That's because in DbC mode
+the xHCI is the USB device controller.
 
-[1/4] firmware: xilinx: Add ZynqMP efuse access API
-      commit: 88f70b7f94747e8e52930a57d6d11d1bd83224c4
-[2/4] nvmem: zynqmp_nvmem: zynqmp_nvmem_probe cleanup
-      commit: 71e2473b51515f61c4edd50aa8e841526a2963ae
-[3/4] nvmem: zynqmp_nvmem: Add support to access efuse
-      commit: fcb1413edbd8b3da53081735b1b1585cbce0e23e
-[4/4] MAINTAINERS: Add maintainers for ZynqMP NVMEM driver
-      commit: 81ef75cac58fe75554a01db5f34b9c093241c05d
+In the first patch I'm just adding symlinks between the USB role
+switches and their USB Type-C connectors. That way the user space can
+find the correct role switch simply by following the symlink.
 
-Best regards,
+The second patch modifies cros_ec_typec.c. I'm assigning the PLD
+(Physical Location of Device) hash of the port to the USB role switch
+when it's missing from the ACPI tables. That should make sure the
+first patch always works.
+
+
+Heikki Krogerus (2):
+  usb: roles: Link the switch to its connector
+  platform/chrome: cros_ec_typec: Make sure the USB role switch has PLD
+
+ .../ABI/testing/sysfs-class-usb_role          |  6 +++
+ drivers/platform/chrome/cros_ec_typec.c       | 19 +++++++++
+ drivers/usb/roles/class.c                     | 40 ++++++++++++++++++-
+ 3 files changed, 63 insertions(+), 2 deletions(-)
+
 -- 
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+2.43.0
 
 
