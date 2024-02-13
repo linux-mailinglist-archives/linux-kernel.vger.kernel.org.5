@@ -1,224 +1,147 @@
-Return-Path: <linux-kernel+bounces-63580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16B668531B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:24:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E8D98531D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:26:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0E432841B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:24:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF7F028C3D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:26:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392E455C22;
-	Tue, 13 Feb 2024 13:23:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FCA5579B;
-	Tue, 13 Feb 2024 13:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AF45646A;
+	Tue, 13 Feb 2024 13:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="a6eoaBIp";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OEHAVu57"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E003655C1D;
+	Tue, 13 Feb 2024 13:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707830632; cv=none; b=tzl/2b6omMWq5jwL6wVjjJc+g+0vo4tBgxoW1xs7P04joZ8jdW/W1V3RHLP3UoVOLUg4I/rbpCp4im0cD6AxxqaCyc891sTq34G68NtedySMst2SdL9LCtf+hh26/YBpnxVrCwryww2pntkK2fG0nXWahTm+9WarVZNienILB84=
+	t=1707830751; cv=none; b=XZenOsOTEpJRdIwvVClwT9HtmwSNwJUcDUm/Zvc7PKfVLdtNTNrgi6bPbZkuljbn9n7rA6BqUOdIAjoXVewH2Uh+5h76tR984hus1So+r2p92WuO5Z1AqFRPgNW1DpLLohP+TRunogXTXQdHk/76jD6M92oIJGigywb298jTGag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707830632; c=relaxed/simple;
-	bh=JYrClqaEUE94mLKu/RA3Zkg2J0lsGtHcSiCxxiT7H8k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=syL/SwEdx3MOHZKbqNx+fitEwBMD0HK+DDSUz1RnV4uimmIUr8HuAP2xdenYoAikRBn77Fo2G+bhSUWbbECIk3ijhdn1kxbaMAQNK6gKIhuDsudhlaC+QHGJXu9Kr5Ql7BrTGEkoiq2HrksPyGMhRTSLXBpvic2UDUATrSml13s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED13CDA7;
-	Tue, 13 Feb 2024 05:24:30 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E8A23F762;
-	Tue, 13 Feb 2024 05:23:47 -0800 (PST)
-Message-ID: <f1b8c49b-0d13-4a3e-9696-75a370ac0e59@arm.com>
-Date: Tue, 13 Feb 2024 13:23:45 +0000
+	s=arc-20240116; t=1707830751; c=relaxed/simple;
+	bh=ibVHfFsPFcvSEZ7/yr/9ehuQbI8jeSYbWCxBJlh89tY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RsLXo1ObxOLtaIlGvtfyg7vhetpm8NTmeUNothPkKWCi7vUM9VvB6pXSEb90PMSB8/cztlz3oqdRqe89yt38Wq2NfPpCzWxlXxxTF7Vs/AhNJWRAYLU5s1iP2lzUOwmD2nk37Q/r9CZmpc1kA4jqrnw82JKS5VlagZGD/d6k8pE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=a6eoaBIp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OEHAVu57; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EE10721F9A;
+	Tue, 13 Feb 2024 13:25:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707830748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=UD49cq/Gzb+y6/AtUpmsq4G9cGtvq1kVLdo8fHtz7EE=;
+	b=a6eoaBIpcKAjo+ieKqHcPph35KLF6tQEL8BzTVtiBtN++TrodQa5xpkFKaOKQGEpjkkm9s
+	d+TKbZacIZbDYo+dcht7j2UYu99jHANsbHiXZ6I0S8BzlaRQAXu+hDrj6gDMeZxSJSTrHi
+	bc7WJZseuG3Vb6ClIjPWQsfC5GusLao=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707830747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=UD49cq/Gzb+y6/AtUpmsq4G9cGtvq1kVLdo8fHtz7EE=;
+	b=OEHAVu57ZvMBEUh7xTEdmdYpQDqlNb8nP+saeshxetOx4KdA4bgUHUZfrO1jwymwkZPVyJ
+	fx1fLG8h5+HfWQ6k7+/vPyMbkxgi2ByFIqGpuS8c6o+cBuR/I6OgYM7Gii3SxjLOujSajG
+	UWPRkQc3OD6zdkyH011FLisX2krvGx0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFB031370C;
+	Tue, 13 Feb 2024 13:25:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id H51pNttty2VFGAAAD6G6ig
+	(envelope-from <petr.pavlu@suse.com>); Tue, 13 Feb 2024 13:25:47 +0000
+From: Petr Pavlu <petr.pavlu@suse.com>
+To: rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mark.rutland@arm.com,
+	mathieu.desnoyers@efficios.com,
+	jolsa@kernel.org
+Cc: linux-trace-kernel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Petr Pavlu <petr.pavlu@suse.com>
+Subject: [PATCH] tracing: Fix HAVE_DYNAMIC_FTRACE_WITH_REGS ifdef
+Date: Tue, 13 Feb 2024 14:24:34 +0100
+Message-Id: <20240213132434.22537-1-petr.pavlu@suse.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 16/16] PCI: imx6: Add iMX95 Endpoint (EP) support
-Content-Language: en-GB
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>, Frank Li <Frank.Li@nxp.com>
-Cc: manivannan.sadhasivam@linaro.org, bhelgaas@google.com,
- conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
- helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
- kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
- krzysztof.kozlowski@linaro.org, kw@linux.com, l.stach@pengutronix.de,
- linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
- linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, robh@kernel.org,
- s.hauer@pengutronix.de, shawnguo@kernel.org, hch@lst.de
-References: <20240119171122.3057511-1-Frank.Li@nxp.com>
- <20240119171122.3057511-17-Frank.Li@nxp.com> <ZctGs2d9ccnmYysL@lpieralisi>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ZctGs2d9ccnmYysL@lpieralisi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=OEHAVu57
+X-Spamd-Result: default: False [4.69 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[41.15%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 4.69
+X-Rspamd-Queue-Id: EE10721F9A
+X-Spam-Level: ****
+X-Spam-Flag: NO
+X-Spamd-Bar: ++++
 
-On 13/02/2024 10:38 am, Lorenzo Pieralisi wrote:
-> [+Christoph, Robin - just checking with you if the DMA mask handling is
-> what you expect from drivers, don't want to merge code that breaks your
-> expectations]
+Commit a8b9cf62ade1 ("ftrace: Fix DIRECT_CALLS to use SAVE_REGS by
+default") attempted to fix an issue with direct trampolines on x86, see
+its description for details. However, it wrongly referenced the
+HAVE_DYNAMIC_FTRACE_WITH_REGS config option and the problem is still
+present.
 
-I don't really understand how all the endpoint stuff fits together, but 
-my hunch would be that setting the DMA masks in imx6_add_pcie_ep() might 
-be more sensible, unless perhaps there's an implied intent to account 
-for eDMA channels in root complex mode as well (and so assuming that 
-eDMA and endpoint mode play nicely together sharing the same platform 
-device) - as we've discussed before across various threads, setting DMA 
-masks for a host bridge itself doesn't really make sense (and hence it 
-leaves the gap where we can get away with co-opting them for the MSI 
-address hack); it's any additional DMA-initiating functionality within a 
-root complex which should own that responsibility.
+Add the missing "CONFIG_" prefix for the logic to work as intended.
 
-FWIW it looks like the equivalent change for Layerscape *is* specific to 
-endpoint mode, but I don't know how relevant that is to i.MX given that 
-they're unrelated hardware configurations.
+Fixes: a8b9cf62ade1 ("ftrace: Fix DIRECT_CALLS to use SAVE_REGS by default")
+Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+---
+ kernel/trace/ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Robin.
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index c060d5b47910..83ba342aef31 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -5331,7 +5331,7 @@ static int register_ftrace_function_nolock(struct ftrace_ops *ops);
+  * not support ftrace_regs_caller but direct_call, use SAVE_ARGS so that it
+  * jumps from ftrace_caller for multiple ftrace_ops.
+  */
+-#ifndef HAVE_DYNAMIC_FTRACE_WITH_REGS
++#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_REGS
+ #define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_ARGS)
+ #else
+ #define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS)
 
-> On Fri, Jan 19, 2024 at 12:11:22PM -0500, Frank Li wrote:
->> Add iMX95 EP support and add 64bit address support. Internal bus bridge for
->> PCI support 64bit dma address in iMX95. Hence, call
->> dma_set_mask_and_coherent() to set 64 bit DMA mask.
->>
->> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->> Signed-off-by: Frank Li <Frank.Li@nxp.com>
->> ---
->>
->> Notes:
->>      Change from v8 to v9
->>      - update fixme comments
->>      - update BAR1 comments
->>      - Add mani's review tag
->>      Change from v7 to v8
->>      - Update commit message
->>      - Using Fixme
->>      - Update clks_cnts by ARRAY_SIZE
->>      
->>      Change from v4 to v7
->>      - none
->>      Change from v3 to v4
->>      - change align to 4k for imx95
->>      Change from v1 to v3
->>      - new patches at v3
->>
->>   drivers/pci/controller/dwc/pci-imx6.c | 47 +++++++++++++++++++++++++++
->>   1 file changed, 47 insertions(+)
->>
->> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
->> index bbaa45c08323b..7889318f6555a 100644
->> --- a/drivers/pci/controller/dwc/pci-imx6.c
->> +++ b/drivers/pci/controller/dwc/pci-imx6.c
->> @@ -75,6 +75,7 @@ enum imx6_pcie_variants {
->>   	IMX8MQ_EP,
->>   	IMX8MM_EP,
->>   	IMX8MP_EP,
->> +	IMX95_EP,
->>   };
->>   
->>   #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
->> @@ -84,6 +85,7 @@ enum imx6_pcie_variants {
->>   #define IMX6_PCIE_FLAG_HAS_APP_RESET		BIT(4)
->>   #define IMX6_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
->>   #define IMX6_PCIE_FLAG_HAS_SERDES		BIT(6)
->> +#define IMX6_PCIE_FLAG_SUPPORT_64BIT		BIT(7)
->>   
->>   #define imx6_check_flag(pci, val)     (pci->drvdata->flags & val)
->>   
->> @@ -616,6 +618,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
->>   		break;
->>   	case IMX7D:
->>   	case IMX95:
->> +	case IMX95_EP:
->>   		break;
->>   	case IMX8MM:
->>   	case IMX8MM_EP:
->> @@ -1050,6 +1053,23 @@ static const struct pci_epc_features imx8m_pcie_epc_features = {
->>   	.align = SZ_64K,
->>   };
->>   
->> +/*
->> + * BAR#	| Default BAR enable	| Default BAR Type	| Default BAR Size	| BAR Sizing Scheme
->> + * ================================================================================================
->> + * BAR0	| Enable		| 64-bit		| 1 MB			| Programmable Size
->> + * BAR1	| Disable		| 32-bit		| 64 KB			| Fixed Size
->> + *        BAR1 should be disabled if BAR0 is 64bit.
->> + * BAR2	| Enable		| 32-bit		| 1 MB			| Programmable Size
->> + * BAR3	| Enable		| 32-bit		| 64 KB			| Programmable Size
->> + * BAR4	| Enable		| 32-bit		| 1M			| Programmable Size
->> + * BAR5	| Enable		| 32-bit		| 64 KB			| Programmable Size
->> + */
->> +static const struct pci_epc_features imx95_pcie_epc_features = {
->> +	.msi_capable = true,
->> +	.bar_fixed_size[1] = SZ_64K,
->> +	.align = SZ_4K,
->> +};
->> +
->>   static const struct pci_epc_features*
->>   imx6_pcie_ep_get_features(struct dw_pcie_ep *ep)
->>   {
->> @@ -1092,6 +1112,15 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
->>   
->>   	pci->dbi_base2 = pci->dbi_base + pcie_dbi2_offset;
->>   
->> +	/*
->> +	 * FIXME: Ideally, dbi2 base address should come from DT. But since only IMX95 is defining
->> +	 * "dbi2" in DT, "dbi_base2" is set to NULL here for that platform alone so that the DWC
->> +	 * core code can fetch that from DT. But once all platform DTs were fixed, this and the
->> +	 * above "dbi_base2" setting should be removed.
->> +	 */
->> +	if (imx6_pcie->drvdata->variant == IMX95_EP)
->> +		pci->dbi_base2 = NULL;
->> +
->>   	ret = dw_pcie_ep_init(ep);
->>   	if (ret) {
->>   		dev_err(dev, "failed to initialize endpoint\n");
->> @@ -1345,6 +1374,9 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->>   					     "unable to find iomuxc registers\n");
->>   	}
->>   
->> +	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_SUPPORT_64BIT))
->> +		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
->> +
->>   	/* Grab PCIe PHY Tx Settings */
->>   	if (of_property_read_u32(node, "fsl,tx-deemph-gen1",
->>   				 &imx6_pcie->tx_deemph_gen1))
->> @@ -1563,6 +1595,20 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->>   		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
->>   		.epc_features = &imx8m_pcie_epc_features,
->>   	},
->> +	[IMX95_EP] = {
->> +		.variant = IMX95_EP,
->> +		.flags = IMX6_PCIE_FLAG_HAS_SERDES |
->> +			 IMX6_PCIE_FLAG_SUPPORT_64BIT,
->> +		.clk_names = imx8mq_clks,
->> +		.clks_cnt = ARRAY_SIZE(imx8mq_clks),
->> +		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
->> +		.ltssm_mask = IMX95_PCIE_LTSSM_EN,
->> +		.mode_off[0]  = IMX95_PE0_GEN_CTRL_1,
->> +		.mode_mask[0] = IMX95_PCIE_DEVICE_TYPE,
->> +		.init_phy = imx95_pcie_init_phy,
->> +		.epc_features = &imx95_pcie_epc_features,
->> +		.mode = DW_PCIE_EP_TYPE,
->> +	},
->>   };
->>   
->>   static const struct of_device_id imx6_pcie_of_match[] = {
->> @@ -1577,6 +1623,7 @@ static const struct of_device_id imx6_pcie_of_match[] = {
->>   	{ .compatible = "fsl,imx8mq-pcie-ep", .data = &drvdata[IMX8MQ_EP], },
->>   	{ .compatible = "fsl,imx8mm-pcie-ep", .data = &drvdata[IMX8MM_EP], },
->>   	{ .compatible = "fsl,imx8mp-pcie-ep", .data = &drvdata[IMX8MP_EP], },
->> +	{ .compatible = "fsl,imx95-pcie-ep", .data = &drvdata[IMX95_EP], },
->>   	{},
->>   };
->>   
->> -- 
->> 2.34.1
->>
+base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
+-- 
+2.35.3
+
 
