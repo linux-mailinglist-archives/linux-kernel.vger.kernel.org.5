@@ -1,116 +1,179 @@
-Return-Path: <linux-kernel+bounces-63533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CA3B8530D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:45:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 084FA8530D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:46:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7EF828A336
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:45:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C9261C26A26
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:46:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F2B43ADC;
-	Tue, 13 Feb 2024 12:44:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A0874DA01;
+	Tue, 13 Feb 2024 12:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TKISP3I7"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=vaisala.com header.i=@vaisala.com header.b="NLmkG9rW"
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2092.outbound.protection.outlook.com [40.107.249.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CC442078
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:44:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707828245; cv=none; b=gi+C2PhPfbrXvamObU1v+TE85UcG2z0GOKavCnvYfDtAKGTeFJDX8GUYGk1H7zRfTvt9wyQXSZH34/7ryTjv9GRqWD05taiA3tl5nzlWWAcPmE8N/6vnnyXojn1+9mM4L7weY7V6rUq8WznMubKsxNujbsLiFd59wpc8WygiyJQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707828245; c=relaxed/simple;
-	bh=WV7AenzBHwCuHxdRZfJJV1Su4NK7r2UNcztOBHaZti4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nSmxVhhMXJ/kYIezU4uaaS9+T6XNgmHRY+bFD6PLBKyTdTX7UGtt8vRyGxXAKBilvQkduWAeXZCnev1FFrOfqd8gZzoIyWrI77gLcK86q3hTtwh7816qnMhO/qXE2wlj9AhT0kFLvrKi4lpH/btWzOo45KgZxzOdKtocMcSINl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TKISP3I7; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707828242;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=WV7AenzBHwCuHxdRZfJJV1Su4NK7r2UNcztOBHaZti4=;
-	b=TKISP3I7MUK3HuDX3U2EDaLqqsN2c4y5S12GEjrqzPQf0WO+tbgpbueQjwscmxY5+bY/YY
-	5tVOgFres71cR9dLBB6c9pM9BzEjpsu62u2Fu8fztADrTTNqcTIFD+4F1bF07MrgLoWK3+
-	bqBxnLB4XY5JhgfCFG/BIuwPuO0iVk4=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-548-3NXjC1NMOg2oYWlzBU9twQ-1; Tue, 13 Feb 2024 07:44:01 -0500
-X-MC-Unique: 3NXjC1NMOg2oYWlzBU9twQ-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-78356ddf3cfso265668485a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:44:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707828241; x=1708433041;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WV7AenzBHwCuHxdRZfJJV1Su4NK7r2UNcztOBHaZti4=;
-        b=AjdwXFP6fv+uf7gVWODkJWs/+oITF/F19uML/EsA7OzN2SnvGI5bP7lsc11FBvYbSd
-         2OzQdShpv6S9/6A3xZ3zQA1zQxnXeQ4jGvJs6z2YiKh3Q8s1c+7kpmU/IbWkjQp+P68z
-         lRjgu5Yksi5ALPXbxFNTiZ28p8MSIM3OoyJRBAd7SakXOedsFxiZH3iJONZnZBrC6EvH
-         +y3H27qgbq8rSke6freHynpzimH8WTGyCKdOx68CADtN200xunJYZChDUjV/JjaynVvH
-         MEHZkTkabZ6EcEiesNiFouuAWfshtZonKjFUQzhVXhVNxQkqvDkSnINiXob6uJu8RTV0
-         sLKA==
-X-Forwarded-Encrypted: i=1; AJvYcCXOtyRa1UDsvx4kZ4l28iAy733tNTUg5SkWyAzMjLVu1AAE0msseeZD1bx8KGl2Rrw0wIftj6brswz1J7iaNmGGeFu5RO2QJDOCLR3u
-X-Gm-Message-State: AOJu0Yy6CnCtdKJus5GZCn+fKW6tUsQrOEEeDTHJyiLwQCQgW4ycAko4
-	ns7RM84Co5tnyBUINTwLDkySxIg8FKCu9MuFGo3hBeJJyRZeCVT9FHlz+1cN/59Hoa7tTQ4WLlA
-	4+6LPEHLppLgtiJjRmNLi+MknFF3RYcZSqRE4+MYxHmR/j409QQ6d/ZH3jIl7zQ==
-X-Received: by 2002:a05:620a:6845:b0:787:2405:cb36 with SMTP id ru5-20020a05620a684500b007872405cb36mr469527qkn.0.1707828240990;
-        Tue, 13 Feb 2024 04:44:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHY8En9uvrMO7VPW6XxTnCs4He7ajvEA/No4uUFAjtgQfXLlH+j26/mV9Rjv9vwYBYKLnNr0A==
-X-Received: by 2002:a05:620a:6845:b0:787:2405:cb36 with SMTP id ru5-20020a05620a684500b007872405cb36mr469504qkn.0.1707828240663;
-        Tue, 13 Feb 2024 04:44:00 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVFuieTSL2coOJKkA1OZuMzEQbiRNM1dhaDF2cbOSUm6S27jDJmwJ4T0WJYb97xL08ONSfKyphmXz6rSIAwwXEIA6MrLQDY7lIGCtO8u7NTtnENy3e+2keE3msT0sPnxrZAh/qZx4SXtutGfWP2e2KGlHaToA/DAcKiXjfjKGOnnxKW9KQc1XsGPuOW3wqWGUY6M3qvjCq+jby2aIPHjATQq9sm90869rELCSIE1H54ZVmVsEUiToCbJzZPOXyx6+QStL01Q5Lga9MU6KLGeX9Uabfyi5E=
-Received: from gerbillo.redhat.com (146-241-230-54.dyn.eolo.it. [146.241.230.54])
-        by smtp.gmail.com with ESMTPSA id xr18-20020a05620a5cd200b00783f8693df1sm2918757qkn.37.2024.02.13.04.43.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 04:44:00 -0800 (PST)
-Message-ID: <cae5b4d55770da3a1dc9678ffa55c9afb9c81723.camel@redhat.com>
-Subject: Re: [PATCH] net: sfp: remove redundant NULL check
-From: Paolo Abeni <pabeni@redhat.com>
-To: Daniil Dulov <d.dulov@aladdin.ru>, Russell King <linux@armlinux.org.uk>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- netdev@vger.kernel.org,  linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org
-Date: Tue, 13 Feb 2024 13:43:57 +0100
-In-Reply-To: <20240211150824.3947-1-d.dulov@aladdin.ru>
-References: <20240211150824.3947-1-d.dulov@aladdin.ru>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A608A4EB20;
+	Tue, 13 Feb 2024 12:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.92
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707828355; cv=fail; b=a4SvPouk7fVgknMqlCC1jMV6kepTfJwlwJ5yPztIth0cJe8+UquJ+764umYpbO6pt+sfxT/j/gxPHjU7P3i87B9SD8RPmYjJbyMqeYu52+J9CnXZxyg9AdXjQj/G6xv/KgeXQYE4kNiRVeQp2bV/s7V9YwPztIgSf1AebX44lw4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707828355; c=relaxed/simple;
+	bh=us+BUkNVcc5WAPRpDxMwjmjf8a/FF1kxb6OC5y4LrLE=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=thcrBhSmAE0RqgOqUxBp1HTx2+PitNdQJaIo7N4JXsmCJE8tPqxqin5c0tmW1vsO7+xeu1LLHmJoTNPFw94MlnE6IngGGN85AT5m7d55FZUZ++pD2ssEYjfgOV8nPRzH9DZa2wnWGdWfuqZrsyTlZNEeQ9bTsIqInFp4IQEPdH8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vaisala.com; spf=pass smtp.mailfrom=vaisala.com; dkim=pass (2048-bit key) header.d=vaisala.com header.i=@vaisala.com header.b=NLmkG9rW; arc=fail smtp.client-ip=40.107.249.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vaisala.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vaisala.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DPYQC4fPIwFFNWBvf37ZaWEmS8pmH87TWfJTiFd9UFWPjNwhVVicSXzOI1LE33TDd5EMsx7WwqxbEYfTeZ2turmpuJYWNDz/BXuWqOMa19mZ7kKrscWUb0zqFohtCLFWrRgq5I2DyBWMq97LJqLq4Wv/c7uC6Ve2aNzggXvrwpL79VrxMqpTBWLcNK6bECzCKb/Wysg+hn4B59I3UoyZ59oBeDGr3O1ASfezhUEq+oN74TT3eZECyQKQG4nkl26DCXdtBRcCsNFh9rVHtqia+J9beGr+3rwoEq/nQPmqhk+kfwg3uLcnEtSFI0iODhtPKCfjAlz/GVsLPUL24aRFwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GzJ8/X8FpytL3jJzosCG7gaTwOwA8zcEUgZ5mj7NTDw=;
+ b=RA/BlCeR39MhapqyVeXfG7rNwMFk9K7dzsJs9hKtbI1cjMXYDdxSfOz7/U5axIFuTrQIVq7TYAhYWN8Y1t/NqRlmrALl1Ersu3rNfDaN7h+gGoG82xVc/faNd7haSyoLtCwIDbA5WIrV/iBny2q8dkQ7AwSI06PTxQsIQMeI1SSAvRWSPctJUvijo8jKXovmBogvhdoSsw1Gbb/hqbZ07p0x6OXXMAOHYYQfw8oKkb2xP1BmP9QFRae6gvpAKV6BTTnaZ0J21bJ8MzOCKReL0RUvpNNZr43GhFgorqqAGc+VyBeuRukAUPU3B53AW5igEtK1XjC0hx/OB4jboRF+CA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vaisala.com; dmarc=pass action=none header.from=vaisala.com;
+ dkim=pass header.d=vaisala.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vaisala.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GzJ8/X8FpytL3jJzosCG7gaTwOwA8zcEUgZ5mj7NTDw=;
+ b=NLmkG9rWhbWx18IgQT19tFjhko8YG6P2GZvsD+45+3lMcO+guP438BR2ATHu0slSzw6gwty+2gTxvtYTgZdmg9k6/4/g2ffo5vUBSQ8iBxmIGB9MrwM19hYJWHKe7im1MTS+bawy4jggm9Uk5e80IL34+R6HP9L7RPSItsAmgWPLKygRHO0SSVdcxbsN/8VomJhPwf3O1R0MJ+YHCVVZRgKdM3y67c0Qtx8zMVyzEHHSdZ7Ura4Wg+VvVlagbhNjZ3aAoVucAZqdclW3VklJRfL2HKr6Tkhre514409/8IKBvtIidV1KgeOM0yfIfw/PsGrXelIW+RhMr2i9+PgN4A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vaisala.com;
+Received: from AS4PR06MB8447.eurprd06.prod.outlook.com (2603:10a6:20b:4e2::11)
+ by AS8PR06MB8330.eurprd06.prod.outlook.com (2603:10a6:20b:441::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Tue, 13 Feb
+ 2024 12:45:46 +0000
+Received: from AS4PR06MB8447.eurprd06.prod.outlook.com
+ ([fe80::b5ae:8355:acaf:29e0]) by AS4PR06MB8447.eurprd06.prod.outlook.com
+ ([fe80::b5ae:8355:acaf:29e0%4]) with mapi id 15.20.7270.036; Tue, 13 Feb 2024
+ 12:45:46 +0000
+From: niko.mauno@vaisala.com
+To: gregkh@linuxfoundation.org
+Cc: linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	vesa.jaaskelainen@vaisala.com,
+	geert@linux-m68k.org,
+	Niko Mauno <niko.mauno@vaisala.com>
+Subject: [PATCH v2] usb: core: Kconfig: Improve USB authorization mode help
+Date: Tue, 13 Feb 2024 14:45:18 +0200
+Message-Id: <20240213124518.20231-1-niko.mauno@vaisala.com>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: GVX0EPF00011B5B.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:144:1:0:8:0:11) To AS4PR06MB8447.eurprd06.prod.outlook.com
+ (2603:10a6:20b:4e2::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS4PR06MB8447:EE_|AS8PR06MB8330:EE_
+X-MS-Office365-Filtering-Correlation-Id: 454384b3-4b54-48e4-7375-08dc2c91b304
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	2NgihREqnRog3lFtDlKswvkccFwRHaTxygAMpsNY5Uy2DX/4CpVvIdvb62Iwh/RBT+gNUNWsn4PUNuDGp+zUcbf45uFupzE0/V6hZ9uiD3uBr3iRtHlvh/yVM5IalYxLiy5euROn6vIti8/fohVqWS1W+IZ8hVXUC/25hYZ4q/xy3/ygW64rgNLOCHZQaHprbjXFBFgsK6vpTNYokAHtpGp73X99AcotVmImsJ9YjlBkN9Xkq301ndepwFVK9SerlBIhNK0bpJPWtItwobqnOSAKrZTVmJUNlSF3jG9tJgaMBu9zU2fy79zAepT1CWhIB7j6/Uw0Ihc38TR+ub47W8Qi7bQjebNW1jF6Jb5RBnfXHPTXmVOsyeyxJOxDwnjF589jPZoWtOWpza1XLDLS6kYJ/0OR4cMs8K5bkw9qpN/GqD1soH1Vo/TPStdy1j/EYzGkwe2XOlyE/doTKKDb4OknjE0kVmX/65wmv35+lXLzmxQBPpjNoXV2XPwx3Fwvx5GuecdtvLsUjb/F17QGRPNAsbN2ho7vTG3NaLe65RifUpmVBNshWSX2Fpr3MBF40wgjGNeg+Pus0B1Kg/Fs+kGwiX7ZZVVxa/mMrSS+zVo=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR06MB8447.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(366004)(376002)(396003)(136003)(346002)(230273577357003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(2906002)(5660300002)(26005)(9686003)(52116002)(6512007)(6506007)(107886003)(2616005)(36756003)(478600001)(38350700005)(6666004)(1076003)(38100700002)(86362001)(66476007)(6916009)(66556008)(4326008)(8936002)(316002)(83380400001)(8676002)(66946007)(966005)(6486002)(41300700001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?z9v/U/bvvkTqi+Seqwqw99m1hrUtlUduz72G7g1UuoDVUH9Nv1ESPk1pBo3q?=
+ =?us-ascii?Q?SMtuv/WeX3hIx5OBB+LboloIYsFcnql7VHnab63OUzxzRC1LUKNlH0PZxHm8?=
+ =?us-ascii?Q?dUhnzESdkO+Phd9N2U+kbr5Te2+n4AtS8AXlRBbpD7ztYLYQ0Q3vUdbwOkGG?=
+ =?us-ascii?Q?ttJReMfELMCOUAGKr0pI0UDqSrxK0oAAJ5cYL6UHsZ4nZoKv9Dquwn+ElQ72?=
+ =?us-ascii?Q?w6POEuZJq7yx8gj9A44g7C2KOJkM5gR0zlxejIJJW5qEh6jsCf5AGbYAfKQ5?=
+ =?us-ascii?Q?z8vd0esg9SeUKt8gfoDlfRuG8jIJ2cbZsA6I80YJA38+VTw1CXJCW1wTbWSZ?=
+ =?us-ascii?Q?9b3o8+qUYcgmJ3YdZ/ddCJFTFoOlu06DMVPwhoGe2KAADp00ZLHcCg4xLSyj?=
+ =?us-ascii?Q?D/sJ7btfyGss4q9dX23hUm8hw7ssIhTFChvswvAMBbxULJNeTuTlHJWii7qZ?=
+ =?us-ascii?Q?i/thFy8Tlzd+z6eaONSzNeXriAJrHI6nm0GLOhZkpcVcOXTriDRnD3HVR+aJ?=
+ =?us-ascii?Q?MgyfFBuV9CUE2yjW9Jueam+SRGe+s1Sw2w+Yxp0BBrjaZe3/MO+dT9SJFXO7?=
+ =?us-ascii?Q?fzZi+5yC3OQdP3YgiiGSCT5kNzjVD3mbzzQYoqSghrEbQvV0oygP9d0ZtIAo?=
+ =?us-ascii?Q?U9Kh70qPGaxrS69+kgkBpVJZW5mQ813Vt98IMaWOV8hvF7HaHCXH51RyvjO3?=
+ =?us-ascii?Q?1uG5Ogf95/wa+q956K0lTDqTcucJxFBfYr/NsfNCP6G0g2vTgwIUCKwsuGvI?=
+ =?us-ascii?Q?fux5+Pzjx8WkAx28U6vl9lNSJUUSaf3PN3515GbEJZs+r/ZktdbDxL4mG9MX?=
+ =?us-ascii?Q?fcM3Plnql9AseqLxtn6zMe9nCHvCXyUuEttULR5CsSdp9IwwGvGER/pKhz0c?=
+ =?us-ascii?Q?zshmQZKX9qgOtpqxRZnk1bsZjOvHzL98SbRtbnnutZhFYcjJBZrq0WY8XKjC?=
+ =?us-ascii?Q?mFLruAOJsmHjk6GKDoytpyh0s0Vnp47DWxpy82N6L8rVqXw2c12XTnVGpkl+?=
+ =?us-ascii?Q?0Fv9UbWaSmHTbhrTMCTO4yh+as0O32ZvDBAa01/0k9ZoZ0OseCvgRwJ7ErOX?=
+ =?us-ascii?Q?SFv7ztItZ7/3mlzzPUoLDDTQe6NcW0inw26jooIkqO/aiudRyVpTX2Wq+pYv?=
+ =?us-ascii?Q?ZuR7MTbCh3In2obySWyoTenKCqg5sJx6WfVhu2+fBWS0vfAnnk3D9EMeEmA4?=
+ =?us-ascii?Q?m+EZDupJNSUF9Nu+QJn6cIG5OpyQF1FtKQgoqhAmEjmvwF9UiNW7sn0AuFB5?=
+ =?us-ascii?Q?JdRlxIa0KVW48hR4Bj5g54FebqN9Ffcio5eDf/WWx1LnLWuRCGmm8R/WsPg6?=
+ =?us-ascii?Q?rYbCaBCh+H4n4/72ns2O0RvuWBMMF6NHm7Dz2EGtxRikPGWXbSKq4PcNqEoB?=
+ =?us-ascii?Q?AW927bNZwTSXfOMhfvC843nmDV3di3ZmXGVG9pG2io9JAo33nye5QbvXOPvf?=
+ =?us-ascii?Q?u1LzYoJXfjopDkirEaH+xryMAgpzZwKLSD7mC/nOYL/nnd2JXbH0YZZlxX92?=
+ =?us-ascii?Q?e2eKDg9j1qjUi9ITGksVCt1fCAtGro1TiyV4JV2Zua8yS0V+RQ/a6Ra3Lv5w?=
+ =?us-ascii?Q?jRlBDNyYGfSyim5rpx+nB8zYoRQt9KeMfds7idJMGkGHFmtModfd2itPRSK+?=
+ =?us-ascii?Q?aw=3D=3D?=
+X-OriginatorOrg: vaisala.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 454384b3-4b54-48e4-7375-08dc2c91b304
+X-MS-Exchange-CrossTenant-AuthSource: AS4PR06MB8447.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 12:45:46.6079
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 6d7393e0-41f5-4c2e-9b12-4c2be5da5c57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YuLX7Px8F+hTE+ifJos/7Cxm6X1eLUDYQcqLqHo+P1d354wHI64P/Mef4/Wz1PtYjsWabLy9CTreDwTgoRESVQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR06MB8330
 
-On Sun, 2024-02-11 at 07:08 -0800, Daniil Dulov wrote:
-> bus->upstream_ops in sfp_register_bus() cannot be NULL. So remove
-> redundant NULL check.
+From: Niko Mauno <niko.mauno@vaisala.com>
 
-I'm unsure about that?!? in theory drivers could call
-sfp_bus_add_upstream()/phy_sfp_probe() with NULL ops, even it that very
-likely doesn't make any sense.
+Update the default USB device authorization mode help text so that the
+meaning of the option and it's available values are described more
+accurately.
 
-@Russel, @Andrew: WDYT?
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Closes: https://lore.kernel.org/linux-usb/CAMuHMdUy793gzDVR0jfNnx5TUdJ_2MKH5NPGSgHkytAhArtqmw@mail.gmail.com/
+Signed-off-by: Niko Mauno <niko.mauno@vaisala.com>
+---
+ drivers/usb/core/Kconfig | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-Thanks,
-
-Paolo
-
+diff --git a/drivers/usb/core/Kconfig b/drivers/usb/core/Kconfig
+index f337aaea7604..58e3ca7e4793 100644
+--- a/drivers/usb/core/Kconfig
++++ b/drivers/usb/core/Kconfig
+@@ -126,10 +126,20 @@ config USB_DEFAULT_AUTHORIZATION_MODE
+ 	  Select the default USB device authorization mode. Can be overridden
+ 	  with usbcore.authorized_default command line or module parameter.
+ 
+-	  The available values have the following meanings:
+-		0 is unauthorized for all devices
+-		1 is authorized for all devices (default)
+-		2 is authorized for internal devices
++	  This option allows you to choose whether USB devices that are
++	  connected to the system can be used by default, or if they are
++	  locked down.
+ 
+-	  If the default value is too permissive but you are unsure which mode
+-	  to use, say 2.
++	  With value 0 all connected USB devices with the exception of root
++	  hub require user space authorization before they can be used.
++
++	  With value 1 (default) no user space authorization is required to
++	  use connected USB devices.
++
++	  With value 2 all connected USB devices with exception of internal
++	  USB devices require user space authorization before they can be
++	  used. Note that in this mode the differentiation between internal
++	  and external USB devices relies on ACPI, and on systems without
++	  ACPI selecting value 2 is analogous to selecting value 0.
++
++	  If unsure, keep the default value.
+-- 
+2.39.2
 
 
