@@ -1,117 +1,102 @@
-Return-Path: <linux-kernel+bounces-62932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D02C85280A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 05:44:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F27AD85280F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 05:49:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51D541F23E03
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:44:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3163E1C23154
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F23111C8B;
-	Tue, 13 Feb 2024 04:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5962911723;
+	Tue, 13 Feb 2024 04:49:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FO3zXqG/"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="pK0tkVky"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386AD1119F;
-	Tue, 13 Feb 2024 04:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0C6C111A8;
+	Tue, 13 Feb 2024 04:49:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707799474; cv=none; b=t1RzCbmgjwnajJgSeqBEgI+3ONDIEn6vXLVYSUiqBAOblZZH0Ez9T3XdbFsAGUFVCrD4LLcyhQcYlBGjcviK6u8ZfCtIxNRGeraHMWYIkAHm2MOFw5DTVH4s1Thuas6xCtiSY9NLlrzTxYuvKxx04zfJX2wmppBqbbIA1ZUxBKE=
+	t=1707799765; cv=none; b=lSwaq1+8KOXyGMNrxObaFXIyxo5UQqfnJ3gA7xLKF8vzehTodNHS1t9aglEsU+5d/dzVF2G0QNJZJjoDAUIGJGhLgHuNMXgva4NPBGT4DdRmM1Q+QA8ighL5KgR+cAVOF/5E3C6bGOjkPF88eWmoA1s6Erfu4sQuMiEpQLPV9ZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707799474; c=relaxed/simple;
-	bh=gnalbakfUEoOVuduLGkajwEg9F3QSmxtaFgbnbfzLCg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JCkJDkPCh5y7CeBoLYP8MGsUvy44QwfDyk2GyRuyVoHUk9xIOQ40aCi7QVciWHce74UizGgUCwBG+/6L4j1nrSKqBlPGrrLi4qOLLnt04rqCKH4HHL1GHBuY7szOTKZw21YJOzko9Odj3kY6KxmXoUGg+DEL5Ru8QUvWh+TFXZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FO3zXqG/; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707799465;
-	bh=gnalbakfUEoOVuduLGkajwEg9F3QSmxtaFgbnbfzLCg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FO3zXqG/u0XUNzD7u/XRn6hsYQgbLHIKn7VBtzv1ogBR6c1s7hpxxn8ePE0/FcXzy
-	 svO99ZISnkx8X5b2W7WUDPDd/lrLIm+wMAouCKv2rf2dZIhHrJxqRcS3jlRxUIU/Tq
-	 L5XEKFCNde8m/eP4QyRKASXFVjF2PdTWXBCkqws4lpLUOff1GFaGHQfYZNXg0j85i8
-	 cYIgYlM6BEbDBZZWo+CD/pfsj7yeAvWI/DlBJYmwJ+Y7uvLCwDcCgzzSzIPr6RfigF
-	 S2o12acOiDEHMtfdtnAzZgyHR+lAB/0UutA1i+4CmUKFIXiwjNvspFJUFgJgQLrTQG
-	 0ofxPSOZUnOjA==
-Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	s=arc-20240116; t=1707799765; c=relaxed/simple;
+	bh=TALgT7aSoIQP78sl0GtaQ1oWhVItTFTc+ox6sTQD41o=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Mm0zTmDOozWdXFFlGUmioiQdbS2NlJHwGxYcZC/Tsev3hDaHZ7fWeXka3/X9t+sOdO1r3JdkQ4g+MKLdaB9fd3TJaMQbsqWGdQsendfX+tfTJzSXuEUKYh6PhJgXxsFNYaBmu7INZtcYwrWt+wzDxBha3cPHJlfnxfG1RDqMWKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=pK0tkVky; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707799758;
+	bh=IHYwzgJ2UeK0c9Ln15n91swWkHRee7UO8KszCl6sh+k=;
+	h=Date:From:To:Cc:Subject:From;
+	b=pK0tkVkyY4SwmF6xgxwzW1Ay0dYLB/B6uavUkqAAN2O0GC1r1A6UR8/OJDfyk56OQ
+	 G32wM0+K20BAx3xlIYRV6+WzT2AsLl0KQ9Tricjidmc83Y04Fg+6zYqo7BIpxaqRgR
+	 EA529SxCo8Mxoa/GQI+G1ScyiVbDM1MDVQP6zpp2d65rGIISp0koShKz84im6b8+jb
+	 YVMIXr61ETM3denAdal/kwVrq0D811bZN3uC92iVf3iuNhMb40wQc5Vx/Z1TrfscpO
+	 /QcXK+Q3seoopNPJnfo8DDFrltPjWQyvhI9OwXM6CIABVXdyanv/eNnNfcsaowsN7T
+	 CI4m7Yt1zWWfw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B67EF378203B;
-	Tue, 13 Feb 2024 04:44:20 +0000 (UTC)
-Message-ID: <1b7d51df-4995-4a4a-8ec4-f1ea4975e44c@collabora.com>
-Date: Tue, 13 Feb 2024 06:44:16 +0200
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TYpl20Xh5z4wcH;
+	Tue, 13 Feb 2024 15:49:17 +1100 (AEDT)
+Date: Tue, 13 Feb 2024 15:49:16 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the jc_docs tree
+Message-ID: <20240213154916.39f70814@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v9 1/3] libfs: Introduce case-insensitive string
- comparison helper
-To: Gabriel Krisman Bertazi <krisman@suse.de>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
- chao@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- jack@suse.cz, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- kernel@collabora.com, Gabriel Krisman Bertazi <krisman@collabora.com>,
- Eric Biggers <ebiggers@google.com>
-References: <20240208064334.268216-1-eugen.hristev@collabora.com>
- <20240208064334.268216-2-eugen.hristev@collabora.com>
- <87ttmivm1i.fsf@mailhost.krisman.be>
- <ff492e0f-3760-430e-968a-8b2adab13f3f@collabora.com>
- <87plx5u2do.fsf@mailhost.krisman.be>
-Content-Language: en-US
-From: Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <87plx5u2do.fsf@mailhost.krisman.be>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/T1_U8_AvpOqvZU35jbTwUGx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 2/9/24 16:40, Gabriel Krisman Bertazi wrote:
-> Eugen Hristev <eugen.hristev@collabora.com> writes:
-> 
->> On 2/8/24 20:38, Gabriel Krisman Bertazi wrote:
-> 
->>> (untested)
->>
->> I implemented your suggestion, but any idea about testing ? I ran smoke on xfstests
->> and it appears to be fine, but maybe some specific test case might try the
->> different paths here ?
-> 
-> Other than running the fstests quick group for each affected filesystems
-> looking for regressions, the way I'd do it is create a few files and
-> look them up with exact and inexact name matches.  While doing that,
-> observe through bpftrace which functions got called and what they
-> returned.
-> 
-> Here, since you are testing the uncached lookup, you want to make sure
-> to drop the cached version prior to each lookup.
-> 
+--Sig_/T1_U8_AvpOqvZU35jbTwUGx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-Hello Gabriel,
+The following commit is also in Linus Torvalds' tree as a different commit
+(but the same patch):
 
-With the changes you suggested, I get these errors now :
+  b37c416b28ed ("docs: kernel_feat.py: fix build error for missing files")
 
-[  107.409410] EXT4-fs error (device sda1): ext4_lookup:1816: inode #521217: comm
-ls: 'CUC' linked to parent dir
-ls: cannot access '/media/CI_dir/CUC': Structure needs cleaning
-total 8
-drwxr-xr-x 2 root root 4096 Feb 12 11:51 .
-drwxr-xr-x 4 root root 4096 Feb 12 11:47 ..
--????????? ? ?    ?       ?            ? CUC
+This is commit
 
-Do you have any idea about what is wrong ?
+  c23de7ceae59 ("docs: kernel_feat.py: fix build error for missing files")
 
-Thanks,
-Eugen
+in Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/T1_U8_AvpOqvZU35jbTwUGx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXK9MwACgkQAVBC80lX
+0GyiKgf/UwrXZl0tjD22C6dJQhzBvNdR5RgkecVFmN8rlOwTjiVn/22/0L06H4lL
+0hsMVJYgbUEyhaYpOMtBgur0vanXA+QWsx/UJAsgaWchJr7uijpFJnUzHVrb9tvL
+PFv8qt0dhby9bVROO6/rq2qZvKwrLORNKjl5hMar0HGMgfjs/OasTIACVnHoAFkM
+QuZKvKCP7MZCpxAImhCQL2p5TIpOhHNUWdxCxCCX/rZsrfCrHXq2U7UcyhQ5yzgI
+sKrIRBPccIrISbFRNAP73cEEdDDAx9XcvYce/o7ZMQEyAmYld1J7AR6E7VVZByHK
+urVxXR+B0bxnW1CFIos73SACMJ7TkQ==
+=4nOx
+-----END PGP SIGNATURE-----
+
+--Sig_/T1_U8_AvpOqvZU35jbTwUGx--
 
