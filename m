@@ -1,64 +1,78 @@
-Return-Path: <linux-kernel+bounces-63695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D14485335E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:41:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 763EB853369
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:43:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DC11B21B5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:41:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30BED287005
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:43:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E2957897;
-	Tue, 13 Feb 2024 14:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010E357898;
+	Tue, 13 Feb 2024 14:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KTbqkkuS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QW+u9o2N"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19041E529;
-	Tue, 13 Feb 2024 14:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E0B5647F;
+	Tue, 13 Feb 2024 14:43:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707835300; cv=none; b=NVkuh6KrWJwBE9CWApg/BmeAkZ/4ZSJ904gmDNfOI8ReVF83DkgAvFcwGbqpgAXwiUf1hVLiOHV7LAavkVfGJXgGJfcHGquVTPHYHnBBs/O6SfCi93egNBS3gMQWzs5cof8XZ03M6k5l4nDzkaWUQAkGXnwoIJbB8Kefs7XkdG0=
+	t=1707835383; cv=none; b=gxbWFSTrR8crvSTZwhb8sp1ZBunLx2f1oDeybS9dzWVm3iQTcS2gHgzlextWIK/GI1VSM6T60McXL3BXnoEJuSeFutpfPfa9HVWcOTwYHGjfkDmfk74N/GDibc/08YlP9mVaHq0tEtUVHJn1WWV9E49tHZj2p8CLy+0KF/7VSQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707835300; c=relaxed/simple;
-	bh=3FaIpb2tO3xwMxqfhDPf3xKwredvzh+qclLg9QTU2Aw=;
+	s=arc-20240116; t=1707835383; c=relaxed/simple;
+	bh=hBY4Przzr9r9vbICCXsAtnHmOm199MIsVifivtT0k6g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uf017AHrt1/O4mNGHLDK/bp6Xq1jQiMGbvRvusciXrmi1m6o/jlA0XOf/eEqjNxEv4cjjGur2XsdKW737kdvstJo8cTeMI4Q4ZnIYIRhJf82Lx0CqgRd/jKE0YAcTqSeCZGObA6edCIBKoHzW9O/9EVI0SmGs72VqFaw/9qOz9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KTbqkkuS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CF6BC433C7;
-	Tue, 13 Feb 2024 14:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707835300;
-	bh=3FaIpb2tO3xwMxqfhDPf3xKwredvzh+qclLg9QTU2Aw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KTbqkkuSVWxD8Cd4KI8EMEQ6uSh8NP9kXnjOSwweuPSp7MvKyEujKabSjlCt89RrA
-	 +Xrg7orBllVYqODtOxgj81S14b4FSJiQ9tNl/uezVYeRGk1m1Fyg1j0bI41KW669TX
-	 rCtaJ3mSQSNP+JTg8T3Jt5cjxpUji0CjtusWsctr0TU1RaeTkgkAlCb8Uc21qrMKtO
-	 QBCZWUCiEsaphO3Cg9sCrQ2MDtpDLlfuaWlsYWlQG/6PuEpaSeLB8bWM6lpfuc6H+Y
-	 5ZNWxqMUH4DQaSOVoZFroExonN6SRn1SlcgvmkcaZvuL2JLO3uUC6NKUX8Oj9sP1kF
-	 UNoVtem33Ot5g==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rZtyu-000000000KV-05UP;
-	Tue, 13 Feb 2024 15:41:56 +0100
-Date: Tue, 13 Feb 2024 15:41:56 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
-	Matthias Kaehlcke <mka@chromium.org>,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: Re: [PATCH] Bluetooth: qca: fix device-address endianness
-Message-ID: <Zct_tB-y7HbZU1dp@hovoldconsulting.com>
-References: <20231227180306.6319-1-johan+linaro@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FbwPAhpf2RSgBlnyBXQDLvDH1QdSMGR/yFaUbjLuk1yga/B3384OzEwDUMfBtKxTr6vwiFL0Z6x3BhGAa5eNlEGMcWu9OVHSQA5d1LB0dfaVpgvPcbuYavIbURjaOjJjMetqjS/UlZQqjWQpTARibnFdbthS3ATd63llpKUTyAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QW+u9o2N; arc=none smtp.client-ip=134.134.136.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707835381; x=1739371381;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hBY4Przzr9r9vbICCXsAtnHmOm199MIsVifivtT0k6g=;
+  b=QW+u9o2NCmFpJbLt4TDLq9mpaR3AMrmzj+XHYdU654K+pC1FS4lCDuLA
+   Z9wVETTsqK0FLb23/11xfnP3bXmylNDBdLuYl/IFnKdGwwc5JThTgHp+1
+   FcdLVTNSrOUUHSG6HoHXObt6JVs3oviKBYmRvqRz1G8QTMeiSjbOAC8pj
+   f40ksGlF0QaXUg9KggAsc1F6pkIWBau4a544ihyVr9n3WbwUDZwqsD/5/
+   DXF7/qPaJL1hQ0o4snvxR8i/haVPY0Q0yLtP20JoqYUs32rB6l9qBgI8g
+   aAjRO29tAStQW7ARZ0B0+eDiUwWs8ePo2OR/3eWtOqDBj5n8EipEGZyIa
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="396278108"
+X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
+   d="scan'208";a="396278108"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 06:43:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="911802315"
+X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
+   d="scan'208";a="911802315"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 06:42:57 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rZtzq-00000004F4c-15OT;
+	Tue, 13 Feb 2024 16:42:54 +0200
+Date: Tue, 13 Feb 2024 16:42:53 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] gpio: initialize descriptor SRCU structure before adding
+ OF-based chips
+Message-ID: <Zct_7YcJk5-sg2pT@smile.fi.intel.com>
+References: <20240212213920.49796-1-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,40 +81,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231227180306.6319-1-johan+linaro@kernel.org>
+In-Reply-To: <20240212213920.49796-1-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi Luiz,
-
-On Wed, Dec 27, 2023 at 07:03:06PM +0100, Johan Hovold wrote:
-> The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
-> device address in MSB order when setting it using the
-> EDL_WRITE_BD_ADDR_OPCODE command.
+On Mon, Feb 12, 2024 at 10:39:20PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Presumably, this is the case for all non-ROME devices which all use the
-> EDL_WRITE_BD_ADDR_OPCODE command for this (unlike the ROME devices which
-> use a different command and expect the address in LSB order).
-> 
-> Reverse the little-endian address before setting it to make sure that
-> the address can be configured using tools like btmgmt or using the
-> 'local-bd-address' devicetree property.
-> 
-> Note that this can potentially break systems with boot firmware which
-> has started relying on the broken behaviour and is incorrectly passing
-> the address via devicetree in MSB order.
-> 
-> Fixes: 5c0a1001c8be ("Bluetooth: hci_qca: Add helper to set device address")
-> Cc: stable@vger.kernel.org      # 5.1
-> Cc: Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> In certain situations we may end up taking the GPIO descriptor SRCU read
+> lock in of_gpiochip_add() before the SRCU struct is initialized. Move
+> the initialization before the call to of_gpiochip_add().
 
-Can we go ahead and merge this one to get this fixed in 6.8?
+..
 
-I've spoken to Bjorn Andersson at Qualcomm about this and he is in
-favour of doing so. The only people actually using the devicetree
-property should be the Chromium team and they control their own boot
-firmware and should be able to update it in lockstep (and Android uses
-some custom hacks to set the address that are not in mainline).
+This is a bit unclear why you moved to that place and how it had been tested.
 
-Johan
+> @@ -991,10 +991,6 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+>  	if (ret)
+>  		goto err_cleanup_gdev_srcu;
+>  
+> -	ret = of_gpiochip_add(gc);
+> -	if (ret)
+> -		goto err_free_gpiochip_mask;
+> -
+>  	for (i = 0; i < gc->ngpio; i++) {
+>  		struct gpio_desc *desc = &gdev->descs[i];
+>  
+
+>  		if (ret) {
+>  			for (j = 0; j < i; j++)
+>  				cleanup_srcu_struct(&gdev->descs[j].srcu);
+> -			goto err_remove_of_chip;
+> +			goto err_free_gpiochip_mask;
+>  		}
+>  
+>  		if (gc->get_direction && gpiochip_line_is_valid(gc, i)) {
+
+>  		}
+>  	}
+>  
+> -	ret = gpiochip_add_pin_ranges(gc);
+> +	ret = of_gpiochip_add(gc);
+>  	if (ret)
+>  		goto err_cleanup_desc_srcu;
+>  
+> +	ret = gpiochip_add_pin_ranges(gc);
+> +	if (ret)
+> +		goto err_remove_of_chip;
+> +
+>  	acpi_gpiochip_add(gc);
+
+My logic tells me that if you need to call gpiochip_add_pin_ranges() before
+calling of_gpiochip_add(). It won't collide right now, but allows to cleanup
+further (with the gpio-ranges parser be generalized for fwnodes and be moved
+to gpiolib.c from gpiolib-of.c).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
