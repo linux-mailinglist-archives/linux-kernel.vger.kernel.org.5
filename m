@@ -1,224 +1,239 @@
-Return-Path: <linux-kernel+bounces-64159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10C06853ADC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AEC71853AD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:24:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6096EB28882
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:24:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FD68B26C6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209A460873;
-	Tue, 13 Feb 2024 19:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC2560879;
+	Tue, 13 Feb 2024 19:23:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vtrd7/o0"
-Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Xtfk4dyZ"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EF7C6086A;
-	Tue, 13 Feb 2024 19:23:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D509605C2
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 19:23:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707852238; cv=none; b=UqtTi6N+xsMaonvTnk/+INDSXreRLQoSbaYxRJVQw+NVd+O8c1hW4evHCqSehRLA9+CHglPN4n1WKFdNk5YHWuOR0HOw/dfLYPPhD2rQoh2rsKr3YRNJqmiDseNtMY1W1roaoMrD+YGdvxHVMMA7q7SmjslDBqUd74KJMRZ69z8=
+	t=1707852227; cv=none; b=WVMz2BrpzuLaW+q8+l8FkvA14XFQHSyTn2a/phVvZJiOQDxUCUJQozjYLPVwZM1rJEpcIImaxedaRVuOnbeYtZLerJTSnIChi1saskPYMpm3R7+63Ef5tbWx2PiLwaOxXcQ4LDIlZECth994wTFSdMxq7xTnZThaP4PJmR6fj3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707852238; c=relaxed/simple;
-	bh=0B3uRJhmyT1XuLMISGiYjXxLVeAFL5LNdwOdq4xlDX4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n2pc8JAiT8bSpfTcWWuUVlwQtmNNdUCuPa02JLCiEPBcwiH+C7XgTA/9yPPYIB2y03K940WWvhNp0To8CqJP7y8EBmX2ARahN97RiHRDDHrSFKVwOaGESKwZwV4U5eqagmFn1FN6kIt5sqbRYa0cMWbRomGdv9yC7gEvjrBxerM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vtrd7/o0; arc=none smtp.client-ip=209.85.208.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-55f50cf2021so6256457a12.1;
-        Tue, 13 Feb 2024 11:23:56 -0800 (PST)
+	s=arc-20240116; t=1707852227; c=relaxed/simple;
+	bh=EOHvK7uHwUOOmi6bfq5xmfA3oU4UQjOOq5ueZxiclP4=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=CJ2Jlv92JBUozOTeYVpNZw+VqhMreJcmZ9rcC1mTAZuVhihwHAK1EZh7fX0mY8aY1f6D2s/kiq35Oaakgb9D5b+J6EAdtiheHhnlHmIocGL5g6Gb+5vA9KxX+4+z7/2VJnkXdTPSrUCJm5GRFVaDMafcLxw1aslT0vdm+E4qhmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--avagin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Xtfk4dyZ; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--avagin.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5cf2714e392so73643a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:23:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707852234; x=1708457034; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0B3uRJhmyT1XuLMISGiYjXxLVeAFL5LNdwOdq4xlDX4=;
-        b=Vtrd7/o0MHexn+sVI9y4b7W1DOy41qDcgXz8TtOEU8F/zSjkBQ0WdS827M+l6tt5iz
-         /yh3fBBDHWpAJJr6polkJJmDOlE0pprPg9GDx0RrsU6gpWoF0tRmALOkWSCjTAb/rmPq
-         HEf61L1TQhbKjFnXdUkFEkuWyBEdhDMXLvoyPoKVxxRljQOrmHl9z0TjxEeWmCC3EYfR
-         jrhgB+mt6Cjj4vzIaXUSrWiiSeBXr8rYo5WfBWhbCsS9v8c5QzVBUZEl8H9U4OWwhow4
-         YbxwJVBqDIMezyBdMCP6Q/8uwZ7tYInc0x9RX3JzCmNltU4/IFvzZnvf0j4P22l/X9aV
-         WA8Q==
+        d=google.com; s=20230601; t=1707852225; x=1708457025; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ExCkZDXy1AVqJwQCfKejHjr8UJa3r0tbqmV1p94ofSE=;
+        b=Xtfk4dyZhI0vBzCcdIXjEIN10AxO9dOvPwC+1GDbYeiIAXciPS0dX6SciiLHTZjhz7
+         ZQITVfo4d9bk2YDA4gV6QjXH3wg1VmCks8J4WFzO0IL4CK9BUumN8T0B2JfD4BHbbm9H
+         UxyCBwzNUDeRvrupekPFkDlaV4p0CztMhSNC4pXWZ4OWjZj5Gjny0dym0uVg5eXYcLal
+         Mt8MAgrtpKkHweniXcrGRRa7CCaD8Mvo0mkxVapek+HfmJBXfr3vUHkpiY30aBFWKbBk
+         y1OgtNs0tvY7JcG2TUpLSCx33CQ9s7bztJkGUQA6XRTIaza2P0g6lQF7Wnseoj3eSe9w
+         tX2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707852234; x=1708457034;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0B3uRJhmyT1XuLMISGiYjXxLVeAFL5LNdwOdq4xlDX4=;
-        b=O7SHAgAl5wgOKH18AYNvGnREaz1q4Gaw4eSX9OZpqZb5JcZmfx7sQRG6SF8m5hCVbQ
-         YtmAOrYanPyUAR6+073Hff+wXFQ7JeQEjCDUjZVb4O+tQprPwo8sVCpRIwQHhxLMYQju
-         4pKxX0zpOUoGc0MPIv/T9f6TcZzQHC5sogs3fVhPEDd8zOYU2plpbeRKW0MCgED6GMDi
-         i+Txhuqv7Xj9cNqPRJfY94dSSC7VnWNLhHEiu1JdgNcmdhfvZQU6vVKfRAvmP3ystVuN
-         r8J8SnMnIWXhzwqaCNR+KR3NSF5H6sg6rXQ5UbIZ4pT0Iek8FbwjzlZ5Yplxc+TVJE/z
-         Se5g==
-X-Forwarded-Encrypted: i=1; AJvYcCVUIUzBe3f9e6VMcrM3u09GS8YnhWCcxWCtbx/S7f+PvNqYQsPPFH57LHGdIXHxxGuoVRmzQ3Ve0qrnK6G3+RYcEv7YD31AU1ydesBEUT2JsDvxan9nER0gJNvV2f2b9I09VZzW5VxGLarFPcvxOVinSKLQmttlUXBVLNHUywoFFC+Yy3Y2zUdEXyzAftoPdYV7FADlPWADo+4KMLD/MDn5SFJkQMAD4X+CQr9dgJM6d0ECMn3hTKFhWOw=
-X-Gm-Message-State: AOJu0YzwNQCQUSPHzfAIO5Sr3ZcKFEf+uXNvNgzu8tJ2WwIgzJoZbXBl
-	iPPfcGFM44bHpU6xkqniKQI0AnU+MJLLjCCyK50l4hg8r9Q2LzOhAdexIm4hh8SzXsJzowFioFN
-	RymorSENgnirFuzWHsYYjVfwHXqY=
-X-Google-Smtp-Source: AGHT+IHNWC5dzy02TygLZzR+lN/Pi5k41JXMUom8PqU9BAxHkbw6tqD9WrKBNP04934vbG+r6JwgS+Mw7fhMEQnLQxg=
-X-Received: by 2002:a17:906:aad6:b0:a3c:a655:3a3c with SMTP id
- kt22-20020a170906aad600b00a3ca6553a3cmr210638ejb.16.1707852234355; Tue, 13
- Feb 2024 11:23:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707852225; x=1708457025;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ExCkZDXy1AVqJwQCfKejHjr8UJa3r0tbqmV1p94ofSE=;
+        b=i6YGVQCoLFKKLgMXLN+SLh0k+RPU0BN/NMphXBiy+RPqdjkng+xmZ5qwCStCDWa54P
+         h0v68GgKoWlOU6GvLKFI1JtR94gP7C8sp5L95HqN1j7N0ZNUTa8yjpSgIaZxrqDV3Cwm
+         B6wcjp8/BIJor1JXJRdSBH/gDlRhUv4xAgoC1GJQhJewR8AmoA/G+xcpgyOkqLYgVASr
+         hPcroaDBo28+j4ZBrFVb+07udjO+Wkb59c6Y/gktW972GAKETv4oqTOePGO+xL4Ye/uH
+         byYH4fN+HhNpaZvKZV9NCIPdgh+8MbO9b6ru2lYI5y5P2yu/XdTlrXwgZF2Bgg6zBSjf
+         2t6w==
+X-Gm-Message-State: AOJu0Yw8mrI8/LSPRMAH85rmpQ2n9eLxbs+dUlISR0huM+X2KJL9QkGe
+	hovC08/iPkcg+5tkTl0F0YmXI/lU5T2traTtZv5cxkkUF3h7DIhYCTxDyyXg2idTaXQ2Y0S3NhG
+	4sQ==
+X-Google-Smtp-Source: AGHT+IGWi17+EWwj8QqOfMRs/2jzz/wVTn/vSsPpoGbcqSiLu03AJPhqfVkvu4BORpV18AnDW+7qh37OIBA=
+X-Received: from avagin.kir.corp.google.com ([2620:0:1008:10:4c28:d6b4:a5c2:fc22])
+ (user=avagin job=sendgmr) by 2002:a05:6a02:a09:b0:5dc:8203:7285 with SMTP id
+ cm9-20020a056a020a0900b005dc82037285mr1275pgb.0.1707852225590; Tue, 13 Feb
+ 2024 11:23:45 -0800 (PST)
+Date: Tue, 13 Feb 2024 11:23:40 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
- <87bk8pve2z.fsf@toke.dk> <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
- <875xyxva9u.fsf@toke.dk> <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
- <87r0hhfudh.fsf@toke.dk> <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
- <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com> <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
-In-Reply-To: <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 13 Feb 2024 20:23:17 +0100
-Message-ID: <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Message-ID: <20240213192340.2023366-1-avagin@google.com>
+Subject: [PATCH v3] kvm/x86: allocate the write-tracking metadata on-demand
+From: Andrei Vagin <avagin@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org, 
+	Andrei Vagin <avagin@google.com>, Zhenyu Wang <zhenyuw@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, 13 Feb 2024 at 18:46, Benjamin Tissoires <bentiss@kernel.org> wrote=
-:
->
-> On Feb 12 2024, Alexei Starovoitov wrote:
-> > On Mon, Feb 12, 2024 at 10:21=E2=80=AFAM Benjamin Tissoires
-> > <benjamin.tissoires@redhat.com> wrote:
-> > >
-> > > On Mon, Feb 12, 2024 at 6:46=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgen=
-sen <toke@redhat.com> wrote:
-> > > >
-> > > > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
-> > > >
-> [...]
-> > I agree that workqueue delegation fits into the bpf_timer concept and
-> > a lot of code can and should be shared.
->
-> Thanks Alexei for the detailed answer. I've given it an attempt but still=
- can not
-> figure it out entirely.
->
-> > All the lessons(bugs) learned with bpf_timer don't need to be re-discov=
-ered :)
-> > Too bad, bpf_timer_set_callback() doesn't have a flag argument,
-> > so we need a new kfunc to set a sleepable callback.
-> > Maybe
-> > bpf_timer_set_sleepable_cb() ?
->
-> OK. So I guess I should drop Toke's suggestion with the bpf_timer_ini() f=
-lag?
->
-> > The verifier will set is_async_cb =3D true for it (like it does for reg=
-ular cb-s).
-> > And since prog->aux->sleepable is kinda "global" we need another
-> > per subprog flag:
-> > bool is_sleepable: 1;
->
-> done (in push_callback_call())
->
-> >
-> > We can factor out a check "if (prog->aux->sleepable)" into a helper
-> > that will check that "global" flag and another env->cur_state->in_sleep=
-able
-> > flag that will work similar to active_rcu_lock.
->
-> done (I think), cf patch 2 below
->
-> > Once the verifier starts processing subprog->is_sleepable
-> > it will set cur_state->in_sleepable =3D true;
-> > to make all subprogs called from that cb to be recognized as sleepable =
-too.
->
-> That's the point I don't know where to put the new code.
->
+The write-track is used externally only by the gpu/drm/i915 driver.
+Currently, it is always enabled, if a kernel has been compiled with this
+driver.
 
-I think that would go in the already existing special case for
-push_async_cb where you get the verifier state of the async callback.
-You can make setting the boolean in that verifier state conditional on
-whether it's your kfunc/helper you're processing taking a sleepable
-callback.
+Enabling the write-track mechanism adds a two-byte overhead per page across
+all memory slots. It isn't significant for regular VMs. However in gVisor,
+where the entire process virtual address space is mapped into the VM, even
+with a 39-bit address space, the overhead amounts to 256MB.
 
-> It seems the best place would be in do_check(), but I am under the impres=
-sion
-> that the code of the callback is added at the end of the instruction list=
-, meaning
-> that I do not know where it starts, and which subprog index it correspond=
-s to.
->
-> >
-> > A bit of a challenge is what to do with global subprogs,
-> > since they're verified lazily. They can be called from
-> > sleepable and non-sleepable contex. Should be solvable.
->
-> I must confess this is way over me (and given that I didn't even managed =
-to make
-> the "easy" case working, that might explain things a little :-P )
->
+Rework the write-tracking mechanism to enable it on-demand in
+kvm_page_track_register_notifier.
 
-I think it will be solvable but made somewhat difficult by the fact
-that even if we mark subprog_info of some global_func A as
-in_sleepable, so that we explore it as sleepable during its
-verification, we might encounter later another global_func that calls
-a global func, already explored as non-sleepable, in sleepable
-context. In this case I think we need to redo the verification of that
-global func as sleepable once again. It could be that it is called
-from both non-sleepable and sleepable contexts, so both paths
-(in_sleepable =3D true, and in_sleepable =3D false) need to be explored,
-or we could reject such cases, but it might be a little restrictive.
+Here is Sean's comment about the locking scheme:
 
-Some common helper global func unrelated to caller context doing some
-auxiliary work, called from sleepable timer callback and normal main
-subprog might be an example where rejection will be prohibitive.
+The only potential hiccup would be if taking slots_arch_lock would
+deadlock, but it should be impossible for slots_arch_lock to be taken in
+any other path that involves VFIO and/or KVMGT *and* can be coincident.
+Except for kvm_arch_destroy_vm() (which deletes KVM's internal
+memslots), slots_arch_lock is taken only through KVM ioctls(), and the
+caller of kvm_page_track_register_notifier() *must* hold a reference to
+the VM.
 
-An approach might be to explore main and global subprogs once as we do
-now, and then keep a list of global subprogs that need to be revisited
-as in_sleepable (due to being called from a sleepable context) and
-trigger do_check_common for them again, this might have to be repeated
-as the list grows on each iteration, but eventually we will have
-explored all of them as in_sleepable if need be, and the loop will
-end. Surely, this trades off logical simplicity of verifier code with
-redoing verification of global subprogs again.
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Andrei Vagin <avagin@google.com>
+---
+v1: https://lore.kernel.org/lkml/ZcErs9rPqT09nNge@google.com/T/
+v2: allocate the write-tracking metadata on-demand
+    https://lore.kernel.org/kvm/20240206153405.489531-1-avagin@google.com/
+v3: explicitly track if there are *external* write tracking users.
 
-To add items to such a list, for each global subprog we encounter that
-needs to be analyzed as in_sleepable, we will also collect all its
-callee global subprogs by walking its instructions (a bit like
-check_max_stack_depth does).
+ arch/x86/include/asm/kvm_host.h |  9 +++++
+ arch/x86/kvm/mmu/page_track.c   | 68 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 75 insertions(+), 2 deletions(-)
 
-> >
-> > Overall I think this feature is needed urgently,
-> > so if you don't have cycles to work on this soon,
-> > I can prioritize it right after bpf_arena work.
->
-> I can try to spare a few cycles on it. Even if your instructions were on
-> spot, I still can't make the subprogs recognized as sleepable.
->
-> For reference, this is where I am (probably bogus, but seems to be
-> working when timer_set_sleepable_cb() is called from a sleepable context
-> as mentioned by Toke):
->
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index d271ba20a0b2..a777ac77b3ea 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1468,6 +1468,15 @@ struct kvm_arch {
+ 	 */
+ 	bool shadow_root_allocated;
+ 
++#ifdef CONFIG_KVM_EXTERNAL_WRITE_TRACKING
++	/*
++	 * If set, the VM has (or had) an external write tracking user, and
++	 * thus all write tracking metadata has been allocated, even if KVM
++	 * itself isn't using write tracking.
++	 */
++	bool external_write_tracking_enabled;
++#endif
++
+ #if IS_ENABLED(CONFIG_HYPERV)
+ 	hpa_t	hv_root_tdp;
+ 	spinlock_t hv_root_tdp_lock;
+diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+index c87da11f3a04..f6448284c18e 100644
+--- a/arch/x86/kvm/mmu/page_track.c
++++ b/arch/x86/kvm/mmu/page_track.c
+@@ -20,10 +20,23 @@
+ #include "mmu_internal.h"
+ #include "page_track.h"
+ 
++static bool kvm_external_write_tracking_enabled(struct kvm *kvm)
++{
++#ifdef CONFIG_KVM_EXTERNAL_WRITE_TRACKING
++	/*
++	 * Read external_write_tracking_enabled before related pointers.  Pairs
++	 * with the smp_store_release in kvm_page_track_write_tracking_enable().
++	 */
++	return smp_load_acquire(&kvm->arch.external_write_tracking_enabled);
++#else
++	return false;
++#endif
++}
++
+ bool kvm_page_track_write_tracking_enabled(struct kvm *kvm)
+ {
+-	return IS_ENABLED(CONFIG_KVM_EXTERNAL_WRITE_TRACKING) ||
+-	       !tdp_enabled || kvm_shadow_root_allocated(kvm);
++	return kvm_external_write_tracking_enabled(kvm) ||
++	       kvm_shadow_root_allocated(kvm) || !tdp_enabled;
+ }
+ 
+ void kvm_page_track_free_memslot(struct kvm_memory_slot *slot)
+@@ -153,6 +166,50 @@ int kvm_page_track_init(struct kvm *kvm)
+ 	return init_srcu_struct(&head->track_srcu);
+ }
+ 
++static int kvm_enable_external_write_tracking(struct kvm *kvm)
++{
++	struct kvm_memslots *slots;
++	struct kvm_memory_slot *slot;
++	int r = 0, i, bkt;
++
++	mutex_lock(&kvm->slots_arch_lock);
++
++	/*
++	 * Check for *any* write tracking user (not just external users) under
++	 * lock.  This avoids unnecessary work, e.g. if KVM itself is using
++	 * write tracking, or if two external users raced when registering.
++	 */
++	if (kvm_page_track_write_tracking_enabled(kvm))
++		goto out_success;
++
++	for (i = 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
++		slots = __kvm_memslots(kvm, i);
++		kvm_for_each_memslot(slot, bkt, slots) {
++			/*
++			 * Intentionally do NOT free allocations on failure to
++			 * avoid having to track which allocations were made
++			 * now versus when the memslot was created.  The
++			 * metadata is guaranteed to be freed when the slot is
++			 * freed, and will be kept/used if userspace retries
++			 * the failed ioctl() instead of killing the VM.
++			 */
++			r = kvm_page_track_write_tracking_alloc(slot);
++			if (r)
++				goto out_unlock;
++		}
++	}
++
++out_success:
++	/*
++	 * Ensure that external_write_tracking_enabled becomes true strictly
++	 * after all the related pointers are set.
++	 */
++	smp_store_release(&kvm->arch.external_write_tracking_enabled, true);
++out_unlock:
++	mutex_unlock(&kvm->slots_arch_lock);
++	return r;
++}
++
+ /*
+  * register the notifier so that event interception for the tracked guest
+  * pages can be received.
+@@ -161,10 +218,17 @@ int kvm_page_track_register_notifier(struct kvm *kvm,
+ 				     struct kvm_page_track_notifier_node *n)
+ {
+ 	struct kvm_page_track_notifier_head *head;
++	int r;
+ 
+ 	if (!kvm || kvm->mm != current->mm)
+ 		return -ESRCH;
+ 
++	if (!kvm_external_write_tracking_enabled(kvm)) {
++		r = kvm_enable_external_write_tracking(kvm);
++		if (r)
++			return r;
++	}
++
+ 	kvm_get_kvm(kvm);
+ 
+ 	head = &kvm->arch.track_notifier_head;
+-- 
+2.43.0.687.g38aa6559b0-goog
 
-I just skimmed the patch but I think it's already 90% there. The only
-other change I would suggest is switching from helper to kfunc, as
-originally proposed by Alexei.
-
-> [...]
 
