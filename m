@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-64293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCDF1853CD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:16:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D906853CD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:17:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF4801C22B1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:16:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 830AFB27E99
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:16:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 160B67E0EB;
-	Tue, 13 Feb 2024 21:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3813B7E11E;
+	Tue, 13 Feb 2024 21:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YKRWzRM5";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="C0/07zds"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BFGcof8a";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="9MYtQQII"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28E57CF06
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61FE67D41D
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707858348; cv=none; b=Yc2OTmmwfhKbHNT3i6225yojbFZEAJQMITr3nxrl8yaMAQlvVIe8V7Wuk0o2iyEvUdHT/JQ341qCW4Ah5nEv/O4QapaZ20mYq3qwN8yi6nRfVFHEs5A27r2YHyJFlfFKKCnMGM7kDIvW7mgqpHuANYTpbIUNENXXX58vq9X2rSE=
+	t=1707858350; cv=none; b=Y3irA3RT68Gg8pqVtZnB9apxjqAttNRcn+v9BlE+3F35aYCQxnkF9wfYkmIZtNvvOGNqWmBTkALsGl1C2ERVGaW6FuwaxYWsdyuT1WkuGoMPkt8uGsy0HntpN1rWSG/TGe+egX1fabhYoz+rmXOlkaSuAM+xBQ+9DdFv3+27VWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707858348; c=relaxed/simple;
-	bh=BKWYJny06EjSOf0YcTioblR9k858pQD/ggIOMn3ec8U=;
+	s=arc-20240116; t=1707858350; c=relaxed/simple;
+	bh=o725dqFIOZr2sPbP/ZZcIuYm0Aik+XXCE4cbMGhjbD8=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=bSgaNqgkHMuUqTm5WFPNnyzKkhvdd/xqtom5NWdC64NW0CR6hB3zOKYbGc7DEGU0iqxhG6NENTq8ZuZFJAd2j12I9a+jdvBY1uCT4EE9t6ys5i+u1QerGesXDhvpvsbdBFHfo5x/98pKneoUhOloIcqZafEiz1V1Ezd9hGu3H1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YKRWzRM5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=C0/07zds; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=N4Ev9cj09/yDf6FJT4ZZ708c8Kg2HpY4zQFlLPFd+vcjhEGL01cwRHSy0aEXdFE9GH9TtiEFnYFQmfaWQ47p9E2YgS1W1cd5mxDeqbQxonaXCu1PAXMTYnTmoU4lDNwqu8VHFrUw6fpyahfOkzZ1NcunU2kvLneAgfR2iwnvwmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BFGcof8a; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=9MYtQQII; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240213210251.940043512@linutronix.de>
+Message-ID: <20240213210251.994756960@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707858345;
+	s=2020; t=1707858346;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=0wXS/SNETV4wAhaE3jXhuw2f33pvJhCIS1T6dH7Hlc0=;
-	b=YKRWzRM5Vv6CatVZE6GJiZky0y16vUHRoIYSHeK8wbCLpCApmGLZfJqYZtakDblItvwW2K
-	MM8btWamh1bYtiZcQH43neQ6gLlt7bt92nlfDmlmVn1oP8Dd5GHGHXAFPFQhUufndu78MZ
-	XYkUGMHXXhytlM/qwZckx0MNXBp0QsyTpGqvtH9wH7heTQ40Hni9xWjNqE5xwyA3DgL8S6
-	o8v9gdfYTd1/IwPev+tvMozhOK+J/vmaQHecRJoJr+5rPy2HoG4ZOWuoRTCeElbTeOAKdc
-	ouhiaScok+OWArebdDi42xmSK0XFlsxBaiPJILnv0M3whTAtPNzXKDEtTZ7wjg==
+	 references:references; bh=3hjSQJVEGCG5vViUjmCCOY+diMogglZD/H0kl7y0KTM=;
+	b=BFGcof8aocKwVc2WSG9Utw44bpX01HqYuvWLIHdLjbONSKS27YbbYMFu9QRdGpCPeeS211
+	8UnEvsJ2JVPwjEykrF8S7xsMyjKshvJQB1HUI+2w+IAcsxWOWAC44dqi+5dwm6OcREYaP2
+	Uu6kyej3rTn2U1gWowYCPce8sm7dycYAFNLaathg2jlcQMOQuugKIe2P9tdeh/Nrwkd1GB
+	oOVP09RXxiJzgISRon7V7A91yw/SHYcczFaE5JZjG9/QJXnFF7Y9xcxCrZg9DKbuz5yXVr
+	bhDsqlZV8zyLsAx9kKzRPQU/290e81vLDznfCYjcVaf/DgbCSA1EE7Ls2b0d3Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707858345;
+	s=2020e; t=1707858346;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=0wXS/SNETV4wAhaE3jXhuw2f33pvJhCIS1T6dH7Hlc0=;
-	b=C0/07zds2qQFcd9P54O4n2UDteJPiyDNftbhN9DwthLlfW7OTpHNfd2/Ops/AHMD70zoUi
-	cbjz9ZzK+cd34QDw==
+	 references:references; bh=3hjSQJVEGCG5vViUjmCCOY+diMogglZD/H0kl7y0KTM=;
+	b=9MYtQQIIpJZ4zASSPb0mzdEyZWq6TtzJwgVz11sUg4joCcaLWBpYdF9htmXaCYdq7mkT/a
+	6mjx1yEEIcV9gHCg==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -67,7 +67,7 @@ Cc: x86@kernel.org,
  Andy Shevchenko <andy@infradead.org>,
  Michael Kelley <mhklinux@outlook.com>,
  "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch 08/30] x86/xen/smp_pv: Register fake APICs
+Subject: [patch 09/30] x86/cpu/topology: Confine topology information
 References: <20240213205415.307029033@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -76,78 +76,234 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 13 Feb 2024 22:05:44 +0100 (CET)
+Date: Tue, 13 Feb 2024 22:05:46 +0100 (CET)
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-XENPV does not use the APIC. It's just piggy packing on the infrastructure
-and fiddles with global variables as it sees fit.
-
-These global variables are going away, so let XENPV register pseudo APIC
-IDs to keep the accounting correct and keep up the illusion that XEN/PV is
-something sane.
+Now that all external fiddling with num_processors and disabled_cpus is
+gone, move the last user prefill_possible_map() into the topology code too
+and remove the global visibility of these variables.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 
 ---
- arch/x86/xen/smp_pv.c |   35 +++++++++--------------------------
- 1 file changed, 9 insertions(+), 26 deletions(-)
+ arch/x86/include/asm/smp.h     |    3 -
+ arch/x86/kernel/apic/apic.c    |    1 
+ arch/x86/kernel/cpu/topology.c |   76 +++++++++++++++++++++++++++++++++++++++--
+ arch/x86/kernel/smpboot.c      |   72 --------------------------------------
+ 4 files changed, 74 insertions(+), 78 deletions(-)
 ---
 
---- a/arch/x86/xen/smp_pv.c
-+++ b/arch/x86/xen/smp_pv.c
-@@ -29,6 +29,7 @@
- #include <asm/idtentry.h>
- #include <asm/desc.h>
- #include <asm/cpu.h>
-+#include <asm/apic.h>
- #include <asm/io_apic.h>
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -9,7 +9,6 @@
+ #include <asm/thread_info.h>
  
- #include <xen/interface/xen.h>
-@@ -150,34 +151,16 @@ int xen_smp_intr_init_pv(unsigned int cp
+ extern int smp_num_siblings;
+-extern unsigned int num_processors;
  
- static void __init xen_pv_smp_config(void)
- {
--	int i, rc;
--	unsigned int subtract = 0;
-+	u32 apicid = 0;
-+	int i;
- 
--	num_processors = 0;
--	disabled_cpus = 0;
--	for (i = 0; i < nr_cpu_ids; i++) {
--		rc = HYPERVISOR_vcpu_op(VCPUOP_is_up, i, NULL);
--		if (rc >= 0) {
--			num_processors++;
--			set_cpu_possible(i, true);
--		} else {
--			set_cpu_possible(i, false);
--			set_cpu_present(i, false);
--			subtract++;
--		}
-+	topology_register_boot_apic(apicid++);
-+
-+	for (i = 1; i < nr_cpu_ids; i++) {
-+		if (HYPERVISOR_vcpu_op(VCPUOP_is_up, i, NULL) < 0)
-+			break;
-+		topology_register_apic(apicid++, CPU_ACPIID_INVALID, true);
- 	}
--#ifdef CONFIG_HOTPLUG_CPU
--	/* This is akin to using 'nr_cpus' on the Linux command line.
--	 * Which is OK as when we use 'dom0_max_vcpus=X' we can only
--	 * have up to X, while nr_cpu_ids is greater than X. This
--	 * normally is not a problem, except when CPU hotplugging
--	 * is involved and then there might be more than X CPUs
--	 * in the guest - which will not work as there is no
--	 * hypercall to expand the max number of VCPUs an already
--	 * running guest has. So cap it up to X. */
--	if (subtract)
--		set_nr_cpu_ids(nr_cpu_ids - subtract);
--#endif
- 	/* Pretend to be a proper enumerated system */
- 	smp_found_config = 1;
+ DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
+ DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_core_map);
+@@ -174,8 +173,6 @@ static inline struct cpumask *cpu_llc_sh
  }
+ #endif /* CONFIG_SMP */
+ 
+-extern unsigned disabled_cpus;
+-
+ #ifdef CONFIG_DEBUG_NMI_SELFTEST
+ extern void nmi_selftest(void);
+ #else
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2054,7 +2054,6 @@ void __init init_apic_mappings(void)
+ 			pr_info("APIC: disable apic facility\n");
+ 			apic_disable();
+ 		}
+-		num_processors = 1;
+ 	}
+ }
+ 
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -29,8 +29,8 @@ u32 cpuid_to_apicid[] __read_mostly = {
+  */
+ static u32 disabled_cpu_apicid __ro_after_init = BAD_APICID;
+ 
+-unsigned int num_processors;
+-unsigned disabled_cpus;
++static unsigned int num_processors;
++static unsigned int disabled_cpus;
+ 
+ /*
+  * The number of allocated logical CPU IDs. Since logical CPU IDs are allocated
+@@ -174,6 +174,71 @@ static int generic_processor_info(int ap
+ 	return cpu;
+ }
+ 
++static int __initdata setup_possible_cpus = -1;
++
++/*
++ * cpu_possible_mask should be static, it cannot change as cpu's
++ * are onlined, or offlined. The reason is per-cpu data-structures
++ * are allocated by some modules at init time, and don't expect to
++ * do this dynamically on cpu arrival/departure.
++ * cpu_present_mask on the other hand can change dynamically.
++ * In case when cpu_hotplug is not compiled, then we resort to current
++ * behaviour, which is cpu_possible == cpu_present.
++ * - Ashok Raj
++ *
++ * Three ways to find out the number of additional hotplug CPUs:
++ * - If the BIOS specified disabled CPUs in ACPI/mptables use that.
++ * - The user can overwrite it with possible_cpus=NUM
++ * - Otherwise don't reserve additional CPUs.
++ * We do this because additional CPUs waste a lot of memory.
++ * -AK
++ */
++__init void prefill_possible_map(void)
++{
++	int i, possible;
++
++	i = setup_max_cpus ?: 1;
++	if (setup_possible_cpus == -1) {
++		possible = num_processors;
++#ifdef CONFIG_HOTPLUG_CPU
++		if (setup_max_cpus)
++			possible += disabled_cpus;
++#else
++		if (possible > i)
++			possible = i;
++#endif
++	} else
++		possible = setup_possible_cpus;
++
++	total_cpus = max_t(int, possible, num_processors + disabled_cpus);
++
++	/* nr_cpu_ids could be reduced via nr_cpus= */
++	if (possible > nr_cpu_ids) {
++		pr_warn("%d Processors exceeds NR_CPUS limit of %u\n",
++			possible, nr_cpu_ids);
++		possible = nr_cpu_ids;
++	}
++
++#ifdef CONFIG_HOTPLUG_CPU
++	if (!setup_max_cpus)
++#endif
++	if (possible > i) {
++		pr_warn("%d Processors exceeds max_cpus limit of %u\n",
++			possible, setup_max_cpus);
++		possible = i;
++	}
++
++	set_nr_cpu_ids(possible);
++
++	pr_info("Allowing %d CPUs, %d hotplug CPUs\n",
++		possible, max_t(int, possible - num_processors, 0));
++
++	reset_cpu_possible_mask();
++
++	for (i = 0; i < possible; i++)
++		set_cpu_possible(i, true);
++}
++
+ /**
+  * topology_register_apic - Register an APIC in early topology maps
+  * @apic_id:	The APIC ID to set up
+@@ -251,6 +316,13 @@ void topology_hotunplug_apic(unsigned in
+ }
+ #endif
+ 
++static int __init _setup_possible_cpus(char *str)
++{
++	get_option(&str, &setup_possible_cpus);
++	return 0;
++}
++early_param("possible_cpus", _setup_possible_cpus);
++
+ static int __init apic_set_disabled_cpu_apicid(char *arg)
+ {
+ 	if (!arg || !get_option(&arg, &disabled_cpu_apicid))
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1291,78 +1291,6 @@ void __init native_smp_cpus_done(unsigne
+ 	cache_aps_init();
+ }
+ 
+-static int __initdata setup_possible_cpus = -1;
+-static int __init _setup_possible_cpus(char *str)
+-{
+-	get_option(&str, &setup_possible_cpus);
+-	return 0;
+-}
+-early_param("possible_cpus", _setup_possible_cpus);
+-
+-
+-/*
+- * cpu_possible_mask should be static, it cannot change as cpu's
+- * are onlined, or offlined. The reason is per-cpu data-structures
+- * are allocated by some modules at init time, and don't expect to
+- * do this dynamically on cpu arrival/departure.
+- * cpu_present_mask on the other hand can change dynamically.
+- * In case when cpu_hotplug is not compiled, then we resort to current
+- * behaviour, which is cpu_possible == cpu_present.
+- * - Ashok Raj
+- *
+- * Three ways to find out the number of additional hotplug CPUs:
+- * - If the BIOS specified disabled CPUs in ACPI/mptables use that.
+- * - The user can overwrite it with possible_cpus=NUM
+- * - Otherwise don't reserve additional CPUs.
+- * We do this because additional CPUs waste a lot of memory.
+- * -AK
+- */
+-__init void prefill_possible_map(void)
+-{
+-	int i, possible;
+-
+-	i = setup_max_cpus ?: 1;
+-	if (setup_possible_cpus == -1) {
+-		possible = num_processors;
+-#ifdef CONFIG_HOTPLUG_CPU
+-		if (setup_max_cpus)
+-			possible += disabled_cpus;
+-#else
+-		if (possible > i)
+-			possible = i;
+-#endif
+-	} else
+-		possible = setup_possible_cpus;
+-
+-	total_cpus = max_t(int, possible, num_processors + disabled_cpus);
+-
+-	/* nr_cpu_ids could be reduced via nr_cpus= */
+-	if (possible > nr_cpu_ids) {
+-		pr_warn("%d Processors exceeds NR_CPUS limit of %u\n",
+-			possible, nr_cpu_ids);
+-		possible = nr_cpu_ids;
+-	}
+-
+-#ifdef CONFIG_HOTPLUG_CPU
+-	if (!setup_max_cpus)
+-#endif
+-	if (possible > i) {
+-		pr_warn("%d Processors exceeds max_cpus limit of %u\n",
+-			possible, setup_max_cpus);
+-		possible = i;
+-	}
+-
+-	set_nr_cpu_ids(possible);
+-
+-	pr_info("Allowing %d CPUs, %d hotplug CPUs\n",
+-		possible, max_t(int, possible - num_processors, 0));
+-
+-	reset_cpu_possible_mask();
+-
+-	for (i = 0; i < possible; i++)
+-		set_cpu_possible(i, true);
+-}
+-
+ /* correctly size the local cpu masks */
+ void __init setup_cpu_local_masks(void)
+ {
 
 
 
