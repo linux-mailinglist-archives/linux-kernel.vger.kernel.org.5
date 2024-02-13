@@ -1,236 +1,128 @@
-Return-Path: <linux-kernel+bounces-64535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D4D4854008
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:24:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA8785400B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:24:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9729628F3C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:24:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2C381C20E0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8CF63123;
-	Tue, 13 Feb 2024 23:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6651633F9;
+	Tue, 13 Feb 2024 23:24:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c32gpRAo"
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TPspMKOs"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B4963105
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:24:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C15F63103
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707866658; cv=none; b=hglNmVXBpSiRg5UY9mxnyQV52DMmNIvINzGW8Mn6kj85VOkUDHCqQ09MbWudctSDtm5kh7gCEQtlQVeJzOO76mZAn0kRKsfUFHmJ3uEnSB3rgexv8BtpuAW6jGPa8vKnQl2OrM6YjubESiZ9leMfFosRAywnCRrtogIT70bm6ds=
+	t=1707866669; cv=none; b=QhndgOzfGI0mZP8WtKpqzBmJbSIF1q4134h0DMCpV2O6pJ3A7g4aQYe8HYpmEkuBOpLNfC/imKi5YeXF0M88riZJXneGEDmJu+ZjUXOL2mmvovYvMlNfhQe8/2IdwpuZ52pebtOORfvKxbC+QvuWT2t5jpTyyy0jvP9lt3hItmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707866658; c=relaxed/simple;
-	bh=xIizX9hn9H7P4Qd1S3ByJZRil7O6yirntX5vI1pah/Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y3EfsBheSQq6dfAcJMSazaMRLJzf4uZAvnVgkKy4KUGW9ktpWSVPkr4GzeSDquSjeZftOYDuinEVOdsbvtJzQwqc4AdkVpcO2rDym0mFf2V2+/ZyFrGxXJkY4SqkuaBLSwnvPNe36tbdjZpFjWDsFYhXb+VV0s+uwNXy5m7vGXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c32gpRAo; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 13 Feb 2024 18:24:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707866654;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IQNc5sF3dDkI4DLDAhoYo17ANIh5r48U4JW8o4GQNhc=;
-	b=c32gpRAodKvVWo/dAGE7p0OKZvQsg2a1GAjZJKaKoPfPgt/c0QgWj0DzjKFTBELehY1nCG
-	a4JOjQxa7unZ1UtEicdIDQHsS8YcmUoqe+A+4fh0TNMzc/i3PX4pCZ0c/DY3/q7x1FVmjP
-	BpCIJi0jKmMyPh6iHQyV213S+IzwS28=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: David Hildenbrand <david@redhat.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, 
-	dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, 
-	paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com, 
-	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
-	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Message-ID: <vxsk7w7z57rgwqgreeq2j4xq5klxeorfhjfysu3re3i6bomh5z@36p2iqhzxjfd>
-References: <20240212213922.783301-1-surenb@google.com>
- <Zctfa2DvmlTYSfe8@tiehlicka>
- <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
- <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
- <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
- <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
- <huysjw5jiyd7m7ouf6g5n2yptg7slxk3am457x2x4ecz277k4o@gjfy2lu7ntos>
- <20240213231115.GF6184@frogsfrogsfrogs>
+	s=arc-20240116; t=1707866669; c=relaxed/simple;
+	bh=SNOVFhian0wSmfjQUWbhIZH1oLKhGuatN3RQQaM/zI4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MMxXygmXfKpY8mQO5EoqRr2gzL+eJpGNm/Vm8u90YgqgddH2vgofxg8OdSu2jJ5EAQY/E1CFZNXmRdi41oGjNovsHR3orufI9H//gq3OdummvTzOZ1bGJVnW1BIu+jKEObxNpu4SKW/b3nnXKcKh/6q0pZKsxEh2Rofr2wD1xdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TPspMKOs; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a3d2cce1126so60954766b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:24:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707866662; x=1708471462; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qyzkdDn36VkqM4HUW3/5Yc8FfYXf+Vgri3xwPCVSUsQ=;
+        b=TPspMKOsrV8aSUQARaHs7Jl2xx5/lqXWOuMBls7HyH2hBMi11g7yOXbtll5xYDuQtk
+         LW4aFr8+R284ZjI5XS59L7yWXwmMG2yJvHh/SvI+iwDlZGgWIx2x8n/x+hOckH8VutX4
+         68nand1erw/FU60tAKKQaLMKz01fuA56FWr44=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707866662; x=1708471462;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qyzkdDn36VkqM4HUW3/5Yc8FfYXf+Vgri3xwPCVSUsQ=;
+        b=F4zWkZF52zqBlODn+3t2MGRi6/v/mV0OhFv3829UkW/h5LsVkzMQjiFSxakNYiB9nY
+         hhqFBV8JLs2/kWF7SKAC+0du6nvcdhG0bb4plu80sjUKg5fgNd42GsdhOWD28/mPp0z1
+         g4oFXF1XAVwsNLPyslAP5ZVo5ElN8/d6XiqbT1JAwXEv22odTmKleI57JcYlsb1L3e4O
+         Xe1ORFjdXvuMLjhkOCWjsHmGT9qouyeC1B+AYKfLaObjg5sRUS5ohOotOX6maLehh8GO
+         twSPC6EHQf2sCoICyeT1NiH4/yXxOvUGLVtzvqC25nFwKd8GpDMQZXzsZb0c6S3bk4Kz
+         iIKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUDOVbjyWwwCwmIE4vndZj7xoehactqiDveWRlzS2m8yZke6Y6FdQKV7m5aF5Z5RbkStsb+7Xybhs4guTuIeCADpJMVzO//HMj0vCIt
+X-Gm-Message-State: AOJu0YwFhS1Smn5CtTgh3ketH5RtTGDRwQuEqmMg9p4MwvgysdorHDjE
+	2sCF8JBwUpVPp1oJC2al3w4gM1xwtUfTyVDHlDUghsx8qwqg53d803PFn7OUFhyVvcnZ2Ckqulz
+	PymNR
+X-Google-Smtp-Source: AGHT+IGnYFPL11a9eocVVWJws5KRPonrvlMynQjnoJgqmrouD3Xd5t2MKIA1WtX/JCMgFKv6Upk6IA==
+X-Received: by 2002:a17:906:6812:b0:a3c:a4ba:7917 with SMTP id k18-20020a170906681200b00a3ca4ba7917mr548163ejr.0.1707866662279;
+        Tue, 13 Feb 2024 15:24:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWRJ/XbHTVGcDw5ZbzpBQAFb88uDKozd9mK+yK1DHbMWwX/VDr5vnHLqcwfEWtmYKyHGIlCdRaOnK4PJHfvCf5GX1/CRVEBCQxJpuFV
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
+        by smtp.gmail.com with ESMTPSA id g7-20020a170906594700b00a3d35017d77sm202241ejr.205.2024.02.13.15.24.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 15:24:21 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-410cf70a057so97365e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:24:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUqX1uIdmf2QEcjX/T8TN+UMzS/mUYScLRb0D0t0kJ98mfldj6KhCcxhO64i+3/nXR0XH3BRGmmKFi8xQWXSV/hsuLwMDCCfn83zGUH
+X-Received: by 2002:a05:600c:a16:b0:411:cf85:9549 with SMTP id
+ z22-20020a05600c0a1600b00411cf859549mr57493wmp.3.1707866660353; Tue, 13 Feb
+ 2024 15:24:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240213231115.GF6184@frogsfrogsfrogs>
-X-Migadu-Flow: FLOW_OUT
+References: <20240210070934.2549994-1-swboyd@chromium.org> <20240210070934.2549994-20-swboyd@chromium.org>
+In-Reply-To: <20240210070934.2549994-20-swboyd@chromium.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Tue, 13 Feb 2024 15:24:03 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=XxX9wqZdwf9Wtq2=KOKgTr5FhyJJWp8S9W1xFW3cY80Q@mail.gmail.com>
+Message-ID: <CAD=FV=XxX9wqZdwf9Wtq2=KOKgTr5FhyJJWp8S9W1xFW3cY80Q@mail.gmail.com>
+Subject: Re: [PATCH 19/22] arm64: dts: qcom: sc7180: quackingstick: Disable
+ instead of delete usb_c1
+To: Stephen Boyd <swboyd@chromium.org>
+Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	patches@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	Pin-yen Lin <treapking@chromium.org>, cros-qcom-dts-watchers@chromium.org, 
+	Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 03:11:15PM -0800, Darrick J. Wong wrote:
-> On Tue, Feb 13, 2024 at 05:29:03PM -0500, Kent Overstreet wrote:
-> > On Tue, Feb 13, 2024 at 11:17:32PM +0100, David Hildenbrand wrote:
-> > > On 13.02.24 23:09, Kent Overstreet wrote:
-> > > > On Tue, Feb 13, 2024 at 11:04:58PM +0100, David Hildenbrand wrote:
-> > > > > On 13.02.24 22:58, Suren Baghdasaryan wrote:
-> > > > > > On Tue, Feb 13, 2024 at 4:24 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > > 
-> > > > > > > On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
-> > > > > > > [...]
-> > > > > > > > We're aiming to get this in the next merge window, for 6.9. The feedback
-> > > > > > > > we've gotten has been that even out of tree this patchset has already
-> > > > > > > > been useful, and there's a significant amount of other work gated on the
-> > > > > > > > code tagging functionality included in this patchset [2].
-> > > > > > > 
-> > > > > > > I suspect it will not come as a surprise that I really dislike the
-> > > > > > > implementation proposed here. I will not repeat my arguments, I have
-> > > > > > > done so on several occasions already.
-> > > > > > > 
-> > > > > > > Anyway, I didn't go as far as to nak it even though I _strongly_ believe
-> > > > > > > this debugging feature will add a maintenance overhead for a very long
-> > > > > > > time. I can live with all the downsides of the proposed implementation
-> > > > > > > _as long as_ there is a wider agreement from the MM community as this is
-> > > > > > > where the maintenance cost will be payed. So far I have not seen (m)any
-> > > > > > > acks by MM developers so aiming into the next merge window is more than
-> > > > > > > little rushed.
-> > > > > >
-> > > > > > We tried other previously proposed approaches and all have their
-> > > > > > downsides without making maintenance much easier. Your position is
-> > > > > > understandable and I think it's fair. Let's see if others see more
-> > > > > > benefit than cost here.
-> > > > > 
-> > > > > Would it make sense to discuss that at LSF/MM once again, especially
-> > > > > covering why proposed alternatives did not work out? LSF/MM is not "too far"
-> > > > > away (May).
-> 
-> You want to stall this effort for *three months* to schedule a meeting?
-> 
-> I would love to have better profiling of memory allocations inside XFS
-> so that we can answer questions like "What's going on with these
-> allocation stalls?" or "What memory is getting used, and where?" more
-> quickly than we can now.
-> 
-> Right now I get to stare at tracepoints and printk crap until my eyes
-> bleed, and maybe dchinner comes to my rescue and figures out what's
-> going on sooner than I do.  More often we just never figure it out
-> because only the customer can reproduce the problem, the reams of data
-> produced by ftrace is unmanageable, and BPF isn't always available.
-> 
-> I'm not thrilled by the large increase in macro crap in the allocation
-> paths, but I don't know of a better way to instrument things.  Our
-> attempts to use _RET_IP in XFS to instrument its code paths have never
-> worked quite right w.r.t. inlined functions and whatnot.
-> 
-> > > > > I recall that the last LSF/MM session on this topic was a bit unfortunate
-> > > > > (IMHO not as productive as it could have been). Maybe we can finally reach a
-> > > > > consensus on this.
-> 
-> From my outsider's perspective, nine months have gone by since the last
-> LSF.  Who has come up with a cleaner/better/faster way to do what Suren
-> and Kent have done?  Were those code changes integrated into this
-> patchset?  Or why not?
-> 
-> Most of what I saw in 2023 involved compiler changes (great; now I have
-> to wait until RHEL 11/Debian 14 to use it) and/or still utilize fugly
-> macros.
-> 
-> Recalling all the way back to suggestions made in 2022, who wrote the
-> prototype for doing this via ftrace?  Or BPF?  How well did that go for
-> counting allocation events and the like?  I saw Tejun saying something
-> about how they use BPF aggressively inside Meta, but that was about it.
-> 
-> Were any of those solutions significantly better than what's in front of
-> us here?
-> 
-> I get it, a giant patch forcing everyone to know the difference between
-> alloc_foo and alloc_foo_noperf offends my (yours?) stylistic
-> sensibilities.  On the other side, making analysis easier during
-> customer escalations means we kernel people get data, answers, and
-> solutions sooner instead of watching all our time get eaten up on L4
-> support and backporting hell.
-> 
-> > > > I'd rather not delay for more bikeshedding. Before agreeing to LSF I'd
-> > > > need to see a serious proposl - what we had at the last LSF was people
-> > > > jumping in with half baked alternative proposals that very much hadn't
-> > > > been thought through, and I see no need to repeat that.
-> > > > 
-> > > > Like I mentioned, there's other work gated on this patchset; if people
-> > > > want to hold this up for more discussion they better be putting forth
-> > > > something to discuss.
-> > > 
-> > > I'm thinking of ways on how to achieve Michal's request: "as long as there
-> > > is a wider agreement from the MM community". If we can achieve that without
-> > > LSF, great! (a bi-weekly MM meeting might also be an option)
-> > 
-> > A meeting wouldn't be out of the question, _if_ there is an agenda, but:
-> > 
-> > What's that coffeee mug say? I just survived another meeting that
-> > could've been an email?
-> 
-> I congratulate you on your memory of my kitchen mug.  Yes, that's what
-> it says.
-> 
-> > What exactly is the outcome we're looking for?
-> > 
-> > Is there info that people are looking for? I think we summed things up
-> > pretty well in the cover letter; if there are specifics that people
-> > want to discuss, that's why we emailed the series out.
-> > 
-> > There's people in this thread who've used this patchset in production
-> > and diagnosed real issues (gigabytes of memory gone missing, I heard the
-> > other day); I'm personally looking for them to chime in on this thread
-> > (Johannes, Pasha).
-> > 
-> > If it's just grumbling about "maintenance overhead" we need to get past
-> > - well, people are going to have to accept that we can't deliver
-> > features without writing code, and I'm confident that the hooking in
-> > particular is about as clean as it's going to get, _regardless_ of
-> > toolchain support; and moreover it addresses what's been historically a
-> > pretty gaping hole in our ability to profile and understand the code we
-> > write.
-> 
-> Are you and Suren willing to pay whatever maintenance overhead there is?
+Hi,
 
-I'm still wondering what this supposed "maintenance overhead" is going
-to be...
+On Fri, Feb 9, 2024 at 11:10=E2=80=AFPM Stephen Boyd <swboyd@chromium.org> =
+wrote:
+>
+> It's simpler to reason about things if we disable nodes instead of
+> deleting them. Disable the second usb type-c connector node on
+> quackingstick instead of deleting it so that we can reason about ports
+> more easily.
+>
+> Cc: <cros-qcom-dts-watchers@chromium.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <andersson@kernel.org>
+> Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> Cc: Conor Dooley <conor+dt@kernel.org>
+> Cc: <linux-arm-msm@vger.kernel.org>
+> Cc: <devicetree@vger.kernel.org>
+> Cc: Pin-yen Lin <treapking@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  .../arm64/boot/dts/qcom/sc7180-trogdor-quackingstick.dtsi | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 
-As I use this patch series I occasionally notice places where a bunch of
-memory is being accounted to one line of code, and it would better be
-accounted to a caller - but then it's just a couple lines of code to fix
-that. You switch that callsite to the _noprof() version of whatever
-allocation it's doing, then add an alloc_hooks() wrapper at the place
-you do want it accounted.
+Bjorn: happy to see this landed any time to shorten Stephen's series.
 
-That doesn't really feel like overhead to me, just the normal tweaking
-your tools to get the most out of them.
-
-I will continue to do that for the code I'm looking at, yes.
-
-If other people are doing that too, it'll be because they're also using
-memory allocation profiling and finding it valuable.
-
-I did notice earlier that we're still lacking documentation in the
-Documentation/ directory; the workflow for "how you shift accounting to
-the right spot" is something that should go in there.
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
