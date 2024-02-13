@@ -1,129 +1,97 @@
-Return-Path: <linux-kernel+bounces-62851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EEC78526D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:44:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DF138526DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:45:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4227B24D68
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:44:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED1911F259BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:45:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86FA625565;
-	Tue, 13 Feb 2024 01:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD7A7AE66;
+	Tue, 13 Feb 2024 01:07:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="A8Uxo6+I"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jk61vhMv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184E3250F8;
-	Tue, 13 Feb 2024 01:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5131428DB7;
+	Tue, 13 Feb 2024 01:07:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707786258; cv=none; b=a0MQx1oZ0VFmtOGCmsII/BbSzsKH2lyIC7naFWZy7Z1u2vIWofyP68Vxh8/t3+/eKi8mZG0Fo7aLkyDHYRKzAYuJLFktnzvVDxMQ5DMsqN8tAZCUUuaeITmfPz5L3ZRF6O9LSRYcxdlsQvDPG4XINPybBc6Q7f/I9eapJ/zi9/8=
+	t=1707786424; cv=none; b=BLVxx/QzblCrBIU3iv3sw0cMdxmCj4wlpXF0oMjb9li8wgqOaBkT1AnOI/DI1MiFuxQfO0cL1QAGhg+w7ipwHNkU7kjJfzw6LNN+OMSTuV8tflxemeB+0NzDnn8EP2h5zrz44oCk5G0u9fHhtKKAtO8VpzgIusVRZztG3bTYa2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707786258; c=relaxed/simple;
-	bh=giwJ46mPDfIHm6ENmysvTYdlLWa93FRQ2pBpII0aImw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=jPLI/YBggCW6HGKt3G+1lJq/dnPsJYGu6jJPv00nc4oXgd8FYIT6j5Oy7iJ4A2nvSZAQit7TJJ16P3iMHHH9VscM92o+ElglK3YnZZfI0vjXcT9bzljtx/DmlSqgWG5YgwBPMHBUP4t4YE/nij2UdM0dmGguZvSmzY4K1PL1KmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=A8Uxo6+I; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707786253;
-	bh=o5Tlbx4aE/Gpku6F/ewBl1HwifS1BiiLHPWkcYc/+es=;
-	h=Date:From:To:Cc:Subject:From;
-	b=A8Uxo6+ID6vcWIeRXHjyS097+pbzW3PIK5/sJBHSBncpF3pmDwK7qEFN5tniyQhml
-	 h9o4ZgcdefHlT4N72XruRKnzF66ts/ejMZQfsYz6oCwdwXEWJuljDrTKKN9z8hIkpp
-	 HPkQS7KZyRoqLbHsbFJQzySflfka+CWYhHXSW58e11CXAxvxPNzQtK1qBm6gPQfzeV
-	 vaORi25N2/3T6fHkgQ1NDPIkGKvvUEpl9dNgbDo9U7a6uGx3vGIiONqpIYX1jzUwWK
-	 lcz3buhllt8XYCR6fmrPNeYxFa2WVrmyB2is5IF81FX8Xv1pwNq1s3RxuqM+6+QT5e
-	 sW4ib29l1nL9g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TYjlJ2q6jz4wcl;
-	Tue, 13 Feb 2024 12:04:12 +1100 (AEDT)
-Date: Tue, 13 Feb 2024 12:04:10 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Jani Nikula <jani.nikula@intel.com>, Intel Graphics
- <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20240213120410.75c45763@canb.auug.org.au>
+	s=arc-20240116; t=1707786424; c=relaxed/simple;
+	bh=peoO574K4wfwc8JzNW3ZPwHb5yzWC0yTYMUNPjNzFMk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tu2zv0L6VDaPjZ9wsjb5WmAhzknAskgyCUxuxjpw5cNkjBpgWAJOzFt2pfja/rHVHQ58VVg+CX3FW6gjb6XXgtWvJ3n4Rz9xOVSv6v+YH+LFKfdBm2433+ps9pWBN8R5mB2f8YAvrBsKUnmLiaQ47UKY9kx+3zwBvvZ/5WI1SbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jk61vhMv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6431C43390;
+	Tue, 13 Feb 2024 01:07:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707786423;
+	bh=peoO574K4wfwc8JzNW3ZPwHb5yzWC0yTYMUNPjNzFMk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=jk61vhMv0DpQERHjsyFWEND7ONl8w1aGspJ5NqBje076fszXvrnzoPAuiqTnAcEai
+	 YzmqtNKBXKGGUFX03135Pb5OjN0AU+IuiZs5ZMLvwm62PnkFBipnYXhfu2416GlpW4
+	 qh6sNYFvrDfXNAR28Ec4uIY1Z+P0/KI1Zr9zb3ls6arDTJlxcSqeaOGIVNfpqnnXsP
+	 KA+4BvC3a1S8ZRDFa5gvikE1rd1N03O4iR1kKVbqD8IprCnFhtVuEfljDKWFNqMBUA
+	 iwQAuf/S6WxTOLFyEEA+NNYOVSZbMYMZFDfdtMBTi0yMpZmZ3Ubu/emiFFDD8PB110
+	 2qsCEvfDnoE4g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 575BCCE0C4C; Mon, 12 Feb 2024 17:07:03 -0800 (PST)
+Date: Mon, 12 Feb 2024 17:07:03 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: "Luck, Tony" <tony.luck@intel.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>,
+	"Naik, Avadhut" <avadnaik@amd.com>,
+	"Mehta, Sohil" <sohil.mehta@intel.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Avadhut Naik <avadhut.naik@amd.com>
+Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
+ Records pool
+Message-ID: <c72b9c44-1908-4934-a890-3a3e9a39ef9d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240211111455.GAZcisL09LeFPWa2EI@fat_crate.local>
+ <b5904910-ed58-405f-9425-566383b48068@amd.com>
+ <SJ1PR11MB6083CF3400AD2F2047D65E17FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <34b19db5-bd72-457c-9b6a-c2089f6be83c@amd.com>
+ <SJ1PR11MB6083E7E11F6C7BCC8C6C7F21FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240212201038.GNZcp7PuIqIJndpDM9@fat_crate.local>
+ <47901422-ac07-47db-bf44-3f4353e92b1d@paulmck-laptop>
+ <20240212212741.GPZcqNTXfU2OX7uRtx@fat_crate.local>
+ <2d8b17f2-c22f-478f-b407-9d2dfd2064f7@paulmck-laptop>
+ <20240212231009.GAZcqlUVY8U2hzOaF4@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6SNLxr7Gj4oO+.6T.Mf7CrA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212231009.GAZcqlUVY8U2hzOaF4@fat_crate.local>
 
---Sig_/6SNLxr7Gj4oO+.6T.Mf7CrA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Feb 13, 2024 at 12:10:09AM +0100, Borislav Petkov wrote:
+> On Mon, Feb 12, 2024 at 02:46:57PM -0800, Paul E. McKenney wrote:
+> > The usual reason is to exclude other CPUs also doing list_add_rcu()
+> > on the same list. 
+> 
+> Doh, it even says so in the comment above list_add_rcu().
+> 
+> And the traversal which is happening in NMI-like context is fine.
+> 
+> So phew, I think we should be fine here. Thanks!
+> 
+> And as it turns out, we're not going to need any of that after all as
+> it looks like we can allocate the proper size from the very beginning...
 
-Hi all,
+Sounds even better!  ;-)
 
-After merging the drm-misc tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-drivers/gpu/drm/xe/xe_guc_submit.c: In function 'simple_error_capture':
-drivers/gpu/drm/xe/xe_guc_submit.c:814:48: error: passing argument 1 of 'dr=
-m_err_printer' from incompatible pointer type [-Werror=3Dincompatible-point=
-er-types]
-  814 |         struct drm_printer p =3D drm_err_printer("");
-      |                                                ^~
-      |                                                |
-      |                                                char *
-In file included from drivers/gpu/drm/xe/xe_assert.h:11,
-                 from drivers/gpu/drm/xe/xe_guc_submit.c:19:
-include/drm/drm_print.h:349:69: note: expected 'struct drm_device *' but ar=
-gument is of type 'char *'
-  349 | static inline struct drm_printer drm_err_printer(struct drm_device =
-*drm,
-      |                                                  ~~~~~~~~~~~~~~~~~~=
-~^~~
-drivers/gpu/drm/xe/xe_guc_submit.c:814:32: error: too few arguments to func=
-tion 'drm_err_printer'
-  814 |         struct drm_printer p =3D drm_err_printer("");
-      |                                ^~~~~~~~~~~~~~~
-include/drm/drm_print.h:349:34: note: declared here
-  349 | static inline struct drm_printer drm_err_printer(struct drm_device =
-*drm,
-      |                                  ^~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
-
-Caused by commit
-
-  5e0c04c8c40b ("drm/print: make drm_err_printer() device specific by using=
- drm_err()")
-
-I have used the drm-misc tree from next-20240209 again today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6SNLxr7Gj4oO+.6T.Mf7CrA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXKwAoACgkQAVBC80lX
-0Gy6xwf+OZxIVBmEY/rj22JngdZj1fuLWrpqgw7hAF9Krd0UuevXsW9OYC5BbOjg
-iQCHdt7epxWxRL6lVYIjfgxDeS3IcitHn+EA/K4FyWEJ+0ZpaIyJuH24N/IKiEqw
-EsyYFWSaeYzzLE6z/Z+u/T9J/pXulyHS90cFkqU7zNTKdefyaMZ5NfU8RE+FtQY+
-6XR8XQXHSZW87DZ7NsVEWx+IygxF93ayG61q6B0rR8nTmp7eR6mJZ4ZxJgNxMCS2
-dksH50v3Jo1Dakw4IP73LY5WnnJXARBUHw80OlBnikD/J4GI8mKEw+emRvcUfVZQ
-QpddlqwTobavbULIN1nVd54eZMYlkg==
-=gzZk
------END PGP SIGNATURE-----
-
---Sig_/6SNLxr7Gj4oO+.6T.Mf7CrA--
+							Thanx, Paul
 
