@@ -1,130 +1,93 @@
-Return-Path: <linux-kernel+bounces-62735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7EC8852503
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:05:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C13F8524F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:04:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D31F21C23E33
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:05:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 475AB282E2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A4712C540;
-	Tue, 13 Feb 2024 00:24:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Svvesnbf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1C712C528;
-	Tue, 13 Feb 2024 00:24:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783848; cv=none; b=YemaQ1hXqja5BtlWR6qEgvnAPbUOfB1Zowlat37vMQokZLa0p+dv0w1uHF3TG4gvpBB5D0WU0IUTwZUxDYGZaYhh0OYsmAET3GflHAVqYhAtM7wY4QLUI7Lwx+OljBdZ49jBmM2SnkDqsjhZVXYrjwXDDizqFVbjOQknPzjPAIQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783848; c=relaxed/simple;
-	bh=P6IiayZnxUnVu8pDJ9fjn9U6XBed8UgSmuM/5zP5ywo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d/zl8x7KZOS/BcNxBslVIh67BVge8iBfI+G4Gzp25z2HpDZ0WAdiR9POg/fdH2g/kTuYaGYTzxiYJDYRub02Qx2+6TbmdesWDoftHcYZ52TSr4zEV7RYksjC8p7WK7ldb7vvZvNCL79fwib1TGt5udiianSP2wxPJfciDZl8FZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Svvesnbf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E246C433C7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B5312BF1D;
 	Tue, 13 Feb 2024 00:24:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783848;
-	bh=P6IiayZnxUnVu8pDJ9fjn9U6XBed8UgSmuM/5zP5ywo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SvvesnbfYucybKQxD2uB0FcQlozlhd0CW+lBC3Fmk5nP/5JRluo5zrfSY9aykpC/O
-	 EMxlrdlDYPU5peq4EhB5HSEzV/1Tpn2kS18xXEn/wMmuMWwgVOebyLd7kOtIan02Lz
-	 pZjO5shd3+YYl5vQGbnLTxyoatT9RYbZdMhudmMG17OG5sn5lSJe86+jVNpZ4u+8E6
-	 MattQ6Gl9q1Tttm8wPt2E/H/P7Re4swrMAO0xVkGBYgI/Lg2t/XJXExJkvkoyUf1YZ
-	 cy7Vn/zSIwViNaO2GqRL7YPC6nfg+jop/wphLjU4V4MHrDYwqgY7yCPj6puiyqwiny
-	 eRxXSrq8I5klQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Yi Sun <yi.sun@unisoc.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Sasha Levin <sashal@kernel.org>,
-	mst@redhat.com,
-	jasowang@redhat.com,
-	virtualization@lists.linux.dev,
-	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 22/22] virtio-blk: Ensure no requests in virtqueues before deleting vqs.
-Date: Mon, 12 Feb 2024 19:23:24 -0500
-Message-ID: <20240213002331.672583-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240213002331.672583-1-sashal@kernel.org>
-References: <20240213002331.672583-1-sashal@kernel.org>
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C845512BEAF
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707783846; cv=none; b=npQxVNVpwVGxnE3aAqTcX+GbX1fHUDfvhFOWIjFyw4RAEui+0HF1J/5YPxyzgH+FxBNZ9s2WjJMaLkGd0ZPwEGTNEPX8eawZg7Z0FZeynjf9+LW9fY2foo73CGvQq0NI5yHxFqJiuYsUAUSqLSjsfZ6bBJRtDxV3+d1E0DXyIpQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707783846; c=relaxed/simple;
+	bh=dqTQI63+ZqDNKjpAbbZCxeV49nIfSpoeFvQR60x/Qw4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=IEISpU858jztWHTvMVqNMHqNHMvoFlPk5EP/PqYRTaEO5n63DlegzK05h5POR0B/Jt+XNoMtt6Zg7NsXYMtwzLiY9Gd/DwjPF4gxtTDR958AbjzWEn6gzh9g6wKFzW0GWwjQpyGmdFMreA9vjmOF/vhuCo5x9zBifSgHu2sd01E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36414a7850aso5624095ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:24:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707783844; x=1708388644;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qiXaK9TFzZAPYPnTyw0VSmUtJHPDIyF9ZuwGBaLUHN4=;
+        b=WLy8KnSvk8STsYkM1xuG+PwAWb23xftVHmfAk08qYeWnGoq6ZaUviFNitSIiKuUVug
+         STriwo9ijwriX5LruMLmthEHiIPgJ9TT4PSTEOXV+x0ePkqo+/0xWNnLGXO+LW7a+nl3
+         HK+19QIQeg0qUu4W94SE/y536c3rI3GcLnpofuUMXZh6vN9H1uYWMN2Op12qjA+6d2+T
+         DlwPMu4kCS+RvfMTaGSjiskF0Vf9zpfdaRPo30T5tfHWNbrGs69eZjDvi8Qc1r4MOMC1
+         //TdpIrvVAPgKygxj1Kcl9r6122lW0zaI/XKzhPkYiMHbyV0GOPmFg6lz5sBA4oohinV
+         p59g==
+X-Forwarded-Encrypted: i=1; AJvYcCXBMkcTva7RpHa8BFMaaiOPcwFlYPWUg+AO9IbMdko6tKGN562OtEH7VwZ6xCGMMmSmdYGuy5slbB2SDeF2ec2P0F2PBAKmVJ6vVOWf
+X-Gm-Message-State: AOJu0Yx2G79XSH75Jx4qdzldO+vgAtSkIvNaNYL/YInH+JjRwzFkhI+z
+	x548x/Et2Z+BqRP//g9vG1iAGEkcZNBO8X+MEi+L4gHqVwTx2cXLo45DB6+L8sOfOCkoTNW8v1P
+	X12av57fFLctNp12asILa2yDYwzB2q9nA32MTS2wD4iiPIKYvlQELA5M=
+X-Google-Smtp-Source: AGHT+IF6MxRdyVnerz3TZh0IMvFhTsYoobPC91qocz9bxduYTKyDy5vR6SC+Hzhdc924TduO/JMxFxAP1kD/Km0bsBVcWg9yuwkk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.148
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1789:b0:363:8b04:6df7 with SMTP id
+ y9-20020a056e02178900b003638b046df7mr80908ilu.0.1707783844004; Mon, 12 Feb
+ 2024 16:24:04 -0800 (PST)
+Date: Mon, 12 Feb 2024 16:24:03 -0800
+In-Reply-To: <0000000000001f0b970605c39a7e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000600b5d06113869f0@google.com>
+Subject: Re: [syzbot] [ext4?] general protection fault in utf8nlookup
+From: syzbot <syzbot+9cf75dc581fb4307d6dd@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
+	ebiggers@google.com, ebiggers@kernel.org, jack@suse.cz, krisman@collabora.com, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	twuufnxlz@gmail.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-From: Yi Sun <yi.sun@unisoc.com>
+syzbot suspects this issue was fixed by commit:
 
-[ Upstream commit 4ce6e2db00de8103a0687fb0f65fd17124a51aaa ]
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Ensure no remaining requests in virtqueues before resetting vdev and
-deleting virtqueues. Otherwise these requests will never be completed.
-It may cause the system to become unresponsive.
+    fs: Block writes to mounted block devices
 
-Function blk_mq_quiesce_queue() can ensure that requests have become
-in_flight status, but it cannot guarantee that requests have been
-processed by the device. Virtqueues should never be deleted before
-all requests become complete status.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17547fd4180000
+start commit:   e42bebf6db29 Merge tag 'efi-fixes-for-v6.6-1' of git://git..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
+dashboard link: https://syzkaller.appspot.com/bug?extid=9cf75dc581fb4307d6dd
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1374a174680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12b12928680000
 
-Function blk_mq_freeze_queue() ensure that all requests in virtqueues
-become complete status. And no requests can enter in virtqueues.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Signed-off-by: Yi Sun <yi.sun@unisoc.com>
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-Link: https://lore.kernel.org/r/20240129085250.1550594-1-yi.sun@unisoc.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/block/virtio_blk.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+#syz fix: fs: Block writes to mounted block devices
 
-diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-index affeca0dbc7e..7f73e7447ecb 100644
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -989,14 +989,15 @@ static int virtblk_freeze(struct virtio_device *vdev)
- {
- 	struct virtio_blk *vblk = vdev->priv;
- 
-+	/* Ensure no requests in virtqueues before deleting vqs. */
-+	blk_mq_freeze_queue(vblk->disk->queue);
-+
- 	/* Ensure we don't receive any more interrupts */
- 	vdev->config->reset(vdev);
- 
- 	/* Make sure no work handler is accessing the device. */
- 	flush_work(&vblk->config_work);
- 
--	blk_mq_quiesce_queue(vblk->disk->queue);
--
- 	vdev->config->del_vqs(vdev);
- 	kfree(vblk->vqs);
- 
-@@ -1014,7 +1015,7 @@ static int virtblk_restore(struct virtio_device *vdev)
- 
- 	virtio_device_ready(vdev);
- 
--	blk_mq_unquiesce_queue(vblk->disk->queue);
-+	blk_mq_unfreeze_queue(vblk->disk->queue);
- 	return 0;
- }
- #endif
--- 
-2.43.0
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
