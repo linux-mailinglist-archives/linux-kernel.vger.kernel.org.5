@@ -1,72 +1,70 @@
-Return-Path: <linux-kernel+bounces-63433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 322D4852F26
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:26:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9956E852F28
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:26:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3B021F22149
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:26:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F0F628334D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690A853810;
-	Tue, 13 Feb 2024 11:21:59 +0000 (UTC)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D5E39FF0;
+	Tue, 13 Feb 2024 11:22:02 +0000 (UTC)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1675338F;
-	Tue, 13 Feb 2024 11:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2884353E1E;
+	Tue, 13 Feb 2024 11:22:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707823318; cv=none; b=NHRrMY3Wxu/36HKr7iozGwqW4pgxNcdQw0M6EkG4BK0io5Qy4gFrFBWIxmb32C7WbEMFbybBDU/VE1ECd0JTUaHM0sUo8ZEeMtKptrI7BfUSnAyAMPn79d3Z7l0vtgiK16ckMx+kxbU3Ktn/FPxlw4P6TaphsxbF6QilWlAjwag=
+	t=1707823321; cv=none; b=KeggKJK6Yin4pXGgzzM/nUO0SHVYE5RhLaQZQJpWo8tI1pQ6Wcrj7kRBTgW03tBHi6WNiRckRsHxGBeKF3KbTsv5kpAB7r+XuTE8xFgXs3/2Ky2tqMstloMaYSOylC22JdjWWQPqDlgYgpUBnwyxIuW023uP3JOSsquhr4ICZEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707823318; c=relaxed/simple;
-	bh=j3qKprD+fMsQhXp7tEeiTdybA6mXfyPsjc+jB0nL/M8=;
+	s=arc-20240116; t=1707823321; c=relaxed/simple;
+	bh=s6T/zSMMEHZIFTOkc0e0h1ky/C0Y56wV6iDS5Nk+ook=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kO4qJIT17sakWutguvo4WTabwyoAKNvsFtlxa/dfHPBj4IZoeaacp+oblxKpYSsUX/yvWMFiYht0OHM7QhDR87sEfVEkhkVKd/PYgkYCWRuftxF7avA6Yus5GMHEbMUcnEqu7mMq+qjvDunQ+rPmS5hq0ocx41EDsXjBLRe+/8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.50
+	 MIME-Version; b=UitV3urVNykJNLn2Qrtnb3S5k6sgph0QxPQEVKsWbAcqJzyiEMbL31Q+yTVs0rP54vXBq3BJem/br5WA/1O/XlRHyMubDDG8qDshA0ALVkii/KPyhlGEKuEsmdhecQKvlECX0zRP0aZzusK3b5LR7rhbNJaRGj+uSpXxR07VSaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55ad2a47b7aso1163829a12.3;
-        Tue, 13 Feb 2024 03:21:57 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a38271c0bd5so528262766b.0;
+        Tue, 13 Feb 2024 03:21:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707823315; x=1708428115;
+        d=1e100.net; s=20230601; t=1707823318; x=1708428118;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Yhx/bVRufzZxSAFHgLOiIo43Fsj0F9aHAkrryCfBPhk=;
-        b=UJzKSVov75XwvDMMKgkO+9M0hkVY0e5u1+395N/GPrfVAnFq/pL3MpYUvjV0Qpt/Vx
-         JyBlIxq3q9o+ieknxXQe81tRM3A7AFPXRHXMXsHP8urE4u2AJEh1p87VrHeLChlLffwg
-         EHxvNaxPYgyQTlaTE1d5N3FcmL9pHGqib8DqWj/rxRzV4kv3A8XHzgJWNpUgRqulFU0s
-         EoT8X6wdnO6KhWNII6ArL1l7AMDvD032SvKptsTlV8S+CanZGbXafXrVtz2oSAdrpUvB
-         p1F1ATAVaCeu29ruqFeBIECYrcmqe5kIHFl3og+wYj0XH/WvblAqyuFBfkMqWXAn8ukd
-         fabQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVlgZMOJGW7s2h4frh7aKcUtobVoidhIhYlobnqC8l6FMWEzHywWQUllthNTCOpKooRWHk2S8x9I22tc7++r2AZLwhWVe9iAue1VNrN
-X-Gm-Message-State: AOJu0YxLgbUuzte8gSDzAtdIltXt2QIZLT/wZz79wV5Apjuo3QRuLlyB
-	9CfBc7PBcHRoZ1jwWHAdUt7IWEO8ffDcMP5hBUixqU5mW6KzwnZv
-X-Google-Smtp-Source: AGHT+IFyUrAvg4MoDBC4vcKMopdUBwINIvx8BKpiwRLyiww9G2xWN0p5Iwx52RZDvke46SOf4bSzGQ==
-X-Received: by 2002:a17:906:d144:b0:a3c:ffbb:b47c with SMTP id br4-20020a170906d14400b00a3cffbbb47cmr1027385ejb.72.1707823315623;
-        Tue, 13 Feb 2024 03:21:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUdGlNzat68BukqqwTNj9Ugva7hGZR0R7AYxNyraA/87qVSVeeLRoR0Kr64QHvNE8uLePDgsel1hioQjeTboSMHMJK3c5utyh8PxdT47hAdLYD8UvvEvf+Sbm123ZzT920vhypL4kjgLNSEHbUCSsYu1XqU4OIbbZbhspztIDWdNHUUmlXVBv9iHdl7TyuAK+NpRekU7qDCB4G/thW6pK7B2Lyii6dIZv25AyQEX24Qk91QGA4DjiDsJlkiMjZ74U93NpDZDyudtuIIceKGNIkmZ25wOq5UEBo=
-Received: from localhost (fwdproxy-lla-006.fbsv.net. [2a03:2880:30ff:6::face:b00c])
-        by smtp.gmail.com with ESMTPSA id ps7-20020a170906bf4700b00a3c7fb8cc74sm1176585ejb.154.2024.02.13.03.21.54
+        bh=qF5tSCyO28Quew0M8TTq2zPTAoVa+RqiCLspA3/IxPI=;
+        b=U/5KVSO+d3vaUt7PJd8JziiRlXArj0DXbz/W28Iw66VE2sgdmlinzYDyF7/dBC8bhf
+         8SVxyAybWn7ePW7fJaq7YjAP/iPAzo40SnBL6SoRKDiug4kQJMtwsdA7WMMTVkNXgo5o
+         Kv5u2JVJVHEL4kjLs/hmV5X7V7xQ0Cd6d9vcaLOxu5cel/ohXow7rjMJcKgKA3jplnAV
+         OPfrnZBOFhiq1809nFwu2ZNKbsn6BG3CZszoHzzyjwqTKlnhYnQO1YPvvzCdp7gq+kss
+         Sgbss9O3AsmQQSzl4gA+ORLNdFqWIrQIIdcdr522Ct64xesWj4Vb2b6ONYVXCBWHJhvj
+         UBkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWb7sNh9zDjYlNH4fRByifdX9azqCiqB60Q6fIR3bzrWVyaLVK9K7H3zMCkvutZrlLDFVU8cC/vDiL7l8GeatcG+XfWjc4SpSZ3UJVV
+X-Gm-Message-State: AOJu0YzL1/GaQYCa/gQK1/tqSeBMG3LP0elBV4Z1IZM9e/67KHeTwdFg
+	lthXHaGL+XMSIylGrZxB/8+5wLqgRY6KjQe9qxj+nQvFLGIdMdAjmuDnoTmN
+X-Google-Smtp-Source: AGHT+IEvHALJxeyXK/tOIwb7oXhE3xreT25ZdIXweBKkiFCqFUOmFVDPs2F1tjxtyzKgN7X+sp6P6Q==
+X-Received: by 2002:a17:906:cec4:b0:a3c:e2ba:3820 with SMTP id si4-20020a170906cec400b00a3ce2ba3820mr1973376ejb.41.1707823318482;
+        Tue, 13 Feb 2024 03:21:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUW4uOf9PixhUed3X1XpcyMKUkKmzKYY7i+CbkDEHBVHOSJq+IfDkrUkVSOpi1NR0IU11belvfuKjN01SiS67E5sBsy+y8kh3efGvpx2MIpX1g02GgInBbjyPIVo0y+CgmvxpGo9Q2MJIOH43BiakiTf+5mOYFw/qEbKB95yl451mIAocil8NSIQfAB3aH1OZ5lYuXuf15SKtgrIsH+I+vfTIxtGZoXlhUlC+Dp4xYM79tN5Xj3CYg=
+Received: from localhost (fwdproxy-lla-113.fbsv.net. [2a03:2880:30ff:71::face:b00c])
+        by smtp.gmail.com with ESMTPSA id li14-20020a170907198e00b00a3c488d79b1sm1194580ejc.223.2024.02.13.03.21.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 03:21:55 -0800 (PST)
+        Tue, 13 Feb 2024 03:21:58 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>
+	Michael Grzeschik <m.grzeschik@pengutronix.de>
 Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	horms@kernel.org
-Subject: [PATCH net 6/7] net: fill in MODULE_DESCRIPTION()s for mdio_devres
-Date: Tue, 13 Feb 2024 03:21:21 -0800
-Message-Id: <20240213112122.404045-7-leitao@debian.org>
+Subject: [PATCH net 7/7] net: fill in MODULE_DESCRIPTION()s for missing arcnet
+Date: Tue, 13 Feb 2024 03:21:22 -0800
+Message-Id: <20240213112122.404045-8-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240213112122.404045-1-leitao@debian.org>
 References: <20240213112122.404045-1-leitao@debian.org>
@@ -79,23 +77,138 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the PHY MDIO helpers.
+Add descriptions to the ARC modules.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/phy/mdio_devres.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/arcnet/arc-rawmode.c  | 1 +
+ drivers/net/arcnet/arc-rimi.c     | 1 +
+ drivers/net/arcnet/capmode.c      | 1 +
+ drivers/net/arcnet/com20020-pci.c | 1 +
+ drivers/net/arcnet/com20020.c     | 1 +
+ drivers/net/arcnet/com20020_cs.c  | 1 +
+ drivers/net/arcnet/com90io.c      | 1 +
+ drivers/net/arcnet/com90xx.c      | 1 +
+ drivers/net/arcnet/rfc1051.c      | 1 +
+ drivers/net/arcnet/rfc1201.c      | 1 +
+ 10 files changed, 10 insertions(+)
 
-diff --git a/drivers/net/phy/mdio_devres.c b/drivers/net/phy/mdio_devres.c
-index 69b829e6ab35..8921fa22bdbd 100644
---- a/drivers/net/phy/mdio_devres.c
-+++ b/drivers/net/phy/mdio_devres.c
-@@ -131,4 +131,5 @@ int __devm_of_mdiobus_register(struct device *dev, struct mii_bus *mdio,
- EXPORT_SYMBOL(__devm_of_mdiobus_register);
- #endif /* CONFIG_OF_MDIO */
+diff --git a/drivers/net/arcnet/arc-rawmode.c b/drivers/net/arcnet/arc-rawmode.c
+index 8c651fdee039..57f1729066f2 100644
+--- a/drivers/net/arcnet/arc-rawmode.c
++++ b/drivers/net/arcnet/arc-rawmode.c
+@@ -186,4 +186,5 @@ static void __exit arcnet_raw_exit(void)
+ module_init(arcnet_raw_init);
+ module_exit(arcnet_raw_exit);
  
-+MODULE_DESCRIPTION("Network PHY MDIO devres helpers");
++MODULE_DESCRIPTION("ARCnet raw mode packet interface module");
  MODULE_LICENSE("GPL");
+diff --git a/drivers/net/arcnet/arc-rimi.c b/drivers/net/arcnet/arc-rimi.c
+index 8c3ccc7c83cd..53d10a04d1bd 100644
+--- a/drivers/net/arcnet/arc-rimi.c
++++ b/drivers/net/arcnet/arc-rimi.c
+@@ -312,6 +312,7 @@ module_param(node, int, 0);
+ module_param(io, int, 0);
+ module_param(irq, int, 0);
+ module_param_string(device, device, sizeof(device), 0);
++MODULE_DESCRIPTION("ARCnet COM90xx RIM I chipset driver");
+ MODULE_LICENSE("GPL");
+ 
+ static struct net_device *my_dev;
+diff --git a/drivers/net/arcnet/capmode.c b/drivers/net/arcnet/capmode.c
+index c09b567845e1..7a0a79973769 100644
+--- a/drivers/net/arcnet/capmode.c
++++ b/drivers/net/arcnet/capmode.c
+@@ -265,4 +265,5 @@ static void __exit capmode_module_exit(void)
+ module_init(capmode_module_init);
+ module_exit(capmode_module_exit);
+ 
++MODULE_DESCRIPTION("ARCnet CAP mode packet interface module");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/net/arcnet/com20020-pci.c b/drivers/net/arcnet/com20020-pci.c
+index 7b5c8bb02f11..c5e571ec94c9 100644
+--- a/drivers/net/arcnet/com20020-pci.c
++++ b/drivers/net/arcnet/com20020-pci.c
+@@ -61,6 +61,7 @@ module_param(timeout, int, 0);
+ module_param(backplane, int, 0);
+ module_param(clockp, int, 0);
+ module_param(clockm, int, 0);
++MODULE_DESCRIPTION("ARCnet COM20020 chipset PCI driver");
+ MODULE_LICENSE("GPL");
+ 
+ static void led_tx_set(struct led_classdev *led_cdev,
+diff --git a/drivers/net/arcnet/com20020.c b/drivers/net/arcnet/com20020.c
+index 06e1651b594b..a0053e3992a3 100644
+--- a/drivers/net/arcnet/com20020.c
++++ b/drivers/net/arcnet/com20020.c
+@@ -399,6 +399,7 @@ EXPORT_SYMBOL(com20020_found);
+ EXPORT_SYMBOL(com20020_netdev_ops);
+ #endif
+ 
++MODULE_DESCRIPTION("ARCnet COM20020 chipset core driver");
+ MODULE_LICENSE("GPL");
+ 
+ #ifdef MODULE
+diff --git a/drivers/net/arcnet/com20020_cs.c b/drivers/net/arcnet/com20020_cs.c
+index dc3253b318da..38b72eb2e89c 100644
+--- a/drivers/net/arcnet/com20020_cs.c
++++ b/drivers/net/arcnet/com20020_cs.c
+@@ -97,6 +97,7 @@ module_param(backplane, int, 0);
+ module_param(clockp, int, 0);
+ module_param(clockm, int, 0);
+ 
++MODULE_DESCRIPTION("ARCnet COM20020 chipset PCMCIA driver");
+ MODULE_LICENSE("GPL");
+ 
+ /*====================================================================*/
+diff --git a/drivers/net/arcnet/com90io.c b/drivers/net/arcnet/com90io.c
+index 37b47749fc8b..3b463fbc6402 100644
+--- a/drivers/net/arcnet/com90io.c
++++ b/drivers/net/arcnet/com90io.c
+@@ -350,6 +350,7 @@ static char device[9];		/* use eg. device=arc1 to change name */
+ module_param_hw(io, int, ioport, 0);
+ module_param_hw(irq, int, irq, 0);
+ module_param_string(device, device, sizeof(device), 0);
++MODULE_DESCRIPTION("ARCnet COM90xx IO mapped chipset driver");
+ MODULE_LICENSE("GPL");
+ 
+ #ifndef MODULE
+diff --git a/drivers/net/arcnet/com90xx.c b/drivers/net/arcnet/com90xx.c
+index f49dae194284..b3b287c16561 100644
+--- a/drivers/net/arcnet/com90xx.c
++++ b/drivers/net/arcnet/com90xx.c
+@@ -645,6 +645,7 @@ static void com90xx_copy_from_card(struct net_device *dev, int bufnum,
+ 	TIME(dev, "memcpy_fromio", count, memcpy_fromio(buf, memaddr, count));
+ }
+ 
++MODULE_DESCRIPTION("ARCnet COM90xx normal chipset driver");
+ MODULE_LICENSE("GPL");
+ 
+ static int __init com90xx_init(void)
+diff --git a/drivers/net/arcnet/rfc1051.c b/drivers/net/arcnet/rfc1051.c
+index a7752a5b647f..46519ca63a0a 100644
+--- a/drivers/net/arcnet/rfc1051.c
++++ b/drivers/net/arcnet/rfc1051.c
+@@ -78,6 +78,7 @@ static void __exit arcnet_rfc1051_exit(void)
+ module_init(arcnet_rfc1051_init);
+ module_exit(arcnet_rfc1051_exit);
+ 
++MODULE_DESCRIPTION("ARCNet packet format (RFC 1051) module");
+ MODULE_LICENSE("GPL");
+ 
+ /* Determine a packet's protocol ID.
+diff --git a/drivers/net/arcnet/rfc1201.c b/drivers/net/arcnet/rfc1201.c
+index a4c856282674..0edf35d971c5 100644
+--- a/drivers/net/arcnet/rfc1201.c
++++ b/drivers/net/arcnet/rfc1201.c
+@@ -35,6 +35,7 @@
+ 
+ #include "arcdevice.h"
+ 
++MODULE_DESCRIPTION("ARCNet packet format (RFC 1201) module");
+ MODULE_LICENSE("GPL");
+ 
+ static __be16 type_trans(struct sk_buff *skb, struct net_device *dev);
 -- 
 2.39.3
 
