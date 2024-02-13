@@ -1,205 +1,121 @@
-Return-Path: <linux-kernel+bounces-63539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14D2E8530F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:51:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6E058530F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:52:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93EAD1F24CE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:51:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4298B243A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A6714207B;
-	Tue, 13 Feb 2024 12:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2A44207B;
+	Tue, 13 Feb 2024 12:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hvtyyZJ7"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hdU+NQfc"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30550405D8;
-	Tue, 13 Feb 2024 12:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B5E40BFE;
+	Tue, 13 Feb 2024 12:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707828668; cv=none; b=iUL3l9ctyOzIn1pwTi+nfZlsY10RWdiYG8jHE8fD9+mwZQXZ6UTVmsrQgMtB7ZIUyWnMQiUuLKaTkag4Z31WuCr8K0cYJi5NTqDfe1/5wGfmWLDeEM98jyS05S75i1h8nojxqhdU36dPbQmHkpkHhAHpwuj/w7KKfa8oXqp8jmQ=
+	t=1707828745; cv=none; b=UyzqnkfKVSltd1tSk41PU+w6K42OK3LStCt/PlQiEpIkA6lKW0JDeMCcw2BpTwrRKhIBUiyRfCn5Aiy/l0MRhUOkvDRvEZY+a3fg46sbWCo/0BMH+Cw+34MFbnZceaKW3stl6Rk2XTLHgA7n6fud4nNU2eRz8384kOhKIYM5Mz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707828668; c=relaxed/simple;
-	bh=cgc6WEo6KiUkTPoF8lda8b4oPP94RffhPHS5Dx9J9go=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JZzyC82AIVBTTBMiXswI9JQEJwn8xf8pY0Mg7S/7Kxfvlq+tbDeRizmGOtCvWxQ6FmhtafcbYGFUL9vincsvDKzD+/Ecov3gHBnzMSIAujcXtwPMcyfM5oK+GIP2+94CI0zA1pCR4GnLGTtm1W7xZG7Wn6XPVv2jDPn/3bXWPn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hvtyyZJ7; arc=none smtp.client-ip=198.175.65.14
+	s=arc-20240116; t=1707828745; c=relaxed/simple;
+	bh=ZD1GdMXW2br6888ExGHvUmhLBqC6M5LBnwaWbeXCj6g=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=i2C7KAJqwqDCafslZl1+B5vw6x/EHzYmRhx0xcrILjS/pVm/rqPmeKeqjAtxGrMOSKBh3TrSdFIfDhj+9ArkUb0JR8TDj80bWMD3yAV+6A5yPcia0ontJbgRJ2kNSdZls+2EE7j8+ghJrUxy3DIemEsrkfORQKPeg6NhQPJpuWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hdU+NQfc; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707828667; x=1739364667;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cgc6WEo6KiUkTPoF8lda8b4oPP94RffhPHS5Dx9J9go=;
-  b=hvtyyZJ7kyyDGuQ2e9he86CgmHj59pL0nQ9DwQ5Dlm7iK8fwZSuDKLAK
-   EltcLMDJ3AkkaSzuAw2P9S5JYc77leigUYisFqTP9No5HIkLXCVXIjLSI
-   /Fdv7EgjTji/UhPNe4YfITWmVw+kAr4eKm77oG+5sjYAxgKnAEG6mAQe8
-   f0bfFn0AT3FzfarWjGYKWwxvIVhgAYh7EvCcvjdSqPaupeBo4Ieblm2qA
-   fB8ikb+xZmlKFhstEaasjzkG79LYdQx5mVzIDT9oWoziD/FOyfIr01PVx
-   LjHvO5YSzwiPW17cjvD/LfQlt2U3a9h5RUFQu1SgHeL601OqJELSHMru4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="5650567"
+  t=1707828744; x=1739364744;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=ZD1GdMXW2br6888ExGHvUmhLBqC6M5LBnwaWbeXCj6g=;
+  b=hdU+NQfc78lTF5SXejweSZosG9dpUwx2U84tc7oRJP6ywd0QJPCuGoK2
+   T1J/owGVjgKsBtIAwU4yXD3NHN/GPWJ/RP3UP44uecgtvu5writojxAUx
+   61XOpA6ij93KhuEOYe0BjpkySLGcpif6gOZh2R4Ea47Nk2VeL1FZfNVzT
+   Q2zWw4S6NZ9QnHIgn8Ou9ic7Akqq/e9x4yZHkUKOaKESIXZNlrRI8T6mt
+   THt7hfqUXtZbsToFNNtzcobfLH0ULaWxQucuCsTxPfy/SkYo2+CbJVrfh
+   kxxOK5nS2G2wpQwMX/4UUFPxLzpN4NPdUerCraV0EMDTK3zOmWU9F3ULs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="4796983"
 X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="5650567"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 04:51:07 -0800
+   d="scan'208";a="4796983"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 04:52:23 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="911782042"
 X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="2832183"
-Received: from unknown (HELO mev-dev) ([10.237.112.144])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 04:51:03 -0800
-Date: Tue, 13 Feb 2024 13:50:59 +0100
-From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To: Karthik Sundaravel <ksundara@redhat.com>
-Cc: jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	pmenzel@molgen.mpg.de, jiri@resnulli.us, rjarry@redhat.com,
-	aharivel@redhat.com, vchundur@redhat.com, cfontain@redhat.com,
-	jacob.e.keller@intel.com
-Subject: Re: [PATCH v3] ice: Add get/set hw address for VFs using devlink
- commands
-Message-ID: <ZctlswYbV1RHU2ip@mev-dev>
-References: <20240209100912.82473-1-ksundara@redhat.com>
+   d="scan'208";a="911782042"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.32.103])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 04:52:20 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 13 Feb 2024 14:52:16 +0200 (EET)
+To: Mark Pearson <mpearson-lenovo@squebb.ca>
+cc: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+    Hans de Goede <hdegoede@redhat.com>, 
+    "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] platform/x86: think-lmi: Fix password opcode ordering
+ for workstations
+In-Reply-To: <c4e6d61d-d836-4a79-a89d-141f92f6b41e@app.fastmail.com>
+Message-ID: <7aa1ac00-0db4-934a-94d5-b5daacaeb863@linux.intel.com>
+References: <mpearson-lenovo@squebb.ca> <20240209152359.528919-1-mpearson-lenovo@squebb.ca> <dfb993c6-0e10-bc70-e8e9-a88651863a27@linux.intel.com> <c4e6d61d-d836-4a79-a89d-141f92f6b41e@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240209100912.82473-1-ksundara@redhat.com>
+Content-Type: multipart/mixed; boundary="8323328-986691078-1707828736=:9580"
 
-On Fri, Feb 09, 2024 at 03:39:12PM +0530, Karthik Sundaravel wrote:
-> Changing the MAC address of the VFs are not available
-> via devlink. Add the function handlers to set and get
-> the HW address for the VFs.
-> 
-> Signed-off-by: Karthik Sundaravel <ksundara@redhat.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_devlink.c | 86 +++++++++++++++++++-
->  1 file changed, 85 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
-> index 80dc5445b50d..7ed61b10312c 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_devlink.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
-> @@ -1576,6 +1576,89 @@ void ice_devlink_destroy_pf_port(struct ice_pf *pf)
->  	devlink_port_unregister(&pf->devlink_port);
->  }
->  
-> +/**
-> + * ice_devlink_port_get_vf_mac_address - .port_fn_hw_addr_get devlink handler
-> + * @port: devlink port structure
-> + * @hw_addr: MAC address of the port
-> + * @hw_addr_len: length of MAC address
-> + * @extack: extended netdev ack structure
-> + *
-> + * Callback for the devlink .port_fn_hw_addr_get operation
-> + * Return: zero on success or an error code on failure.
-> + */
-> +
-> +static int ice_devlink_port_get_vf_mac_address(struct devlink_port *port,
-> +					       u8 *hw_addr, int *hw_addr_len,
-> +					       struct netlink_ext_ack *extack)
-> +{
-> +	struct devlink_port_attrs *attrs = &port->attrs;
-> +	struct devlink_port_pci_vf_attrs *pci_vf;
-> +	struct devlink *devlink = port->devlink;
-> +	struct ice_pf *pf;
-> +	struct ice_vf *vf;
-> +	int vf_id;
-> +
-> +	pf = devlink_priv(devlink);
-> +	if (attrs->flavour == DEVLINK_PORT_FLAVOUR_PCI_VF) {
-> +		pci_vf = &attrs->pci_vf;
-> +		vf_id = pci_vf->vf;
-> +	} else {
-> +		NL_SET_ERR_MSG_MOD(extack, "Unable to get the vf id");
-> +		return -EADDRNOTAVAIL;
-> +	}
-> +	vf = ice_get_vf_by_id(pf, vf_id);
-You need to call ice_put_vf(vf); when you finish with vf.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-This way to get vf pointer is fine, I wonder if it can be done using
-container_of on port variable. Jake, what do you think?
-CC: Jacob Keller
+--8323328-986691078-1707828736=:9580
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-> +	if (!vf) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Unable to get the vf");
-> +		return -EINVAL;
-> +	}
-> +	ether_addr_copy(hw_addr, vf->dev_lan_addr);
-> +	*hw_addr_len = ETH_ALEN;
-> +	return 0;
-> +}
-> +
-> +/**
-> + * ice_devlink_port_set_vf_mac_address - .port_fn_hw_addr_set devlink handler
-> + * @port: devlink port structure
-> + * @hw_addr: MAC address of the port
-> + * @hw_addr_len: length of MAC address
-> + * @extack: extended netdev ack structure
-> + *
-> + * Callback for the devlink .port_fn_hw_addr_set operation
-> + * Return: zero on success or an error code on failure.
-> + */
-> +static int ice_devlink_port_set_vf_mac_address(struct devlink_port *port,
-> +					       const u8 *hw_addr,
-> +					       int hw_addr_len,
-> +					       struct netlink_ext_ack *extack)
-> +{
-> +	struct net_device *netdev = port->type_eth.netdev;
-Is it PF netdev?
+On Fri, 9 Feb 2024, Mark Pearson wrote:
 
-> +	struct devlink_port_attrs *attrs = &port->attrs;
-> +	struct devlink_port_pci_vf_attrs *pci_vf;
-> +	u8 mac[ETH_ALEN];
-> +	int vf_id;
-> +
-> +	if (attrs->flavour == DEVLINK_PORT_FLAVOUR_PCI_VF) {
-> +		pci_vf = &attrs->pci_vf;
-> +		vf_id = pci_vf->vf;
-> +	} else {
-> +		NL_SET_ERR_MSG_MOD(extack, "Unable to get the vf id");
-> +		return -EADDRNOTAVAIL;
-> +	}
-> +
-> +	if (!netdev) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Unable to get the netdev");
-> +		return -EADDRNOTAVAIL;
-> +	}
-> +	ether_addr_copy(mac, hw_addr);
-> +
-> +	return ice_set_vf_mac(netdev, vf_id, mac);
-> +}
-> +
-> +static const struct devlink_port_ops ice_devlink_vf_port_ops = {
-> +	.port_fn_hw_addr_get = ice_devlink_port_get_vf_mac_address,
-> +	.port_fn_hw_addr_set = ice_devlink_port_set_vf_mac_address,
-> +};
-> +
->  /**
->   * ice_devlink_create_vf_port - Create a devlink port for this VF
->   * @vf: the VF to create a port for
-> @@ -1611,7 +1694,8 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
->  	devlink_port_attrs_set(devlink_port, &attrs);
->  	devlink = priv_to_devlink(pf);
->  
-> -	err = devlink_port_register(devlink, devlink_port, vsi->idx);
-> +	err = devlink_port_register_with_ops(devlink, devlink_port,
-> +					     vsi->idx, &ice_devlink_vf_port_ops);
->  	if (err) {
->  		dev_err(dev, "Failed to create devlink port for VF %d, error %d\n",
->  			vf->vf_id, err);
-> -- 
-> 2.39.3 (Apple Git-145)
-> 
+> Thanks Ilpo
+>=20
+> On Fri, Feb 9, 2024, at 10:34 AM, Ilpo J=C3=A4rvinen wrote:
+> > On Fri, 9 Feb 2024, Mark Pearson wrote:
+> >
+> >> The Lenovo workstations require the password opcode to be run before
+> >> the attribute value is changed (if Admin password is enabled).
+> >>=20
+> >> Tested on some Thinkpads to confirm they are OK with this order too.
+> >>=20
+> >> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
+> >
+> > Would a Fixes tag be appropriate here?
+>=20
+> Hmmm - good point, though it has been "wrong" since it was originally imp=
+lemented (where we tested on Thinkpads).
+>=20
+> I guess I could use the commit ID from when I originally implemented opco=
+des?
+> Fixes: 640a5fa ("platform/x86: think-lmi: Opcode support")
+
+Yes, in that case the original commit is the correct one.
+
+> Do you want me to push a new version with this?
+
+I think this is simple enough to go through fixes branch so it depends on=
+=20
+Hans.
+
+Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+
+--=20
+ i.
+
+--8323328-986691078-1707828736=:9580--
 
