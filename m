@@ -1,121 +1,144 @@
-Return-Path: <linux-kernel+bounces-63263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B6B2852D00
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:52:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E92C852D33
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:57:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1EADB272A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:52:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A46F1B28592
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119E2250F6;
-	Tue, 13 Feb 2024 09:48:13 +0000 (UTC)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080B2250FE;
+	Tue, 13 Feb 2024 09:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me header.b="tHSpq6lL"
+Received: from forward500b.mail.yandex.net (forward500b.mail.yandex.net [178.154.239.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9162375F
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD0924B23;
+	Tue, 13 Feb 2024 09:56:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707817692; cv=none; b=SLe6AbSgdRC4A1YY8hkcQtHdbNfS1fWq5fIFHSDi8wldzhThF6DO7sEzkfzjuEaiP6jApbRP1nMmTiKIyqfQczwjxuC3YMEZQw5gwjfSGAVUg4EPKiJmW3Oj5dFfXeFylHnNPhOCnqJf2EHtIgDq+0Q31fVu3zHwIGG+IFszSCg=
+	t=1707818186; cv=none; b=QI7nBdzTdNc4W0bA9jmM5hHsnvmhg/HKtoT/6Mk+y/tZUirFBIeCclB//pfVQ611ADmfF7v6xH9FzT8c58o77YDIlvvwYWCrkLXTnt6FAZ74wFdfDMe8h/q/aE3diqXcuKWLcwh26l9aMUT/sBRi8udWRZEXGW67LNluUaYk9tM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707817692; c=relaxed/simple;
-	bh=8AK3cgx3MUVUYDzTDSdES6qOJwGDLNZ5wrsqdVzP8Ac=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IuPnusP9s8kdQkkxkJyHR0uRN/6VTscw46UwKrmpLnb9/+0GZSzhmof5D1O2LAHNT65bRuJDA0aRdP7Goulbw+toQXpXQonMYOtXLQm54XfBrxMbnfWXn0HWyqxuSwFbAFz6abQ3H+m013ADArJ9iftVnSX/vDzWIeEVUljAesg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60778d7b02bso12106807b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 01:48:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707817687; x=1708422487;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y1CaRShlNFED4/8VznKN1KNzTk/U5YKiI8Uuiz6aLE4=;
-        b=e+EG26xzvqbIkcGJQgB+ZF20DjuN3NHZcwmVYSq8iLItW6ulcCM0G1bdModP3mK6oK
-         bG2Kq5F0UlRI8ggrMBCSBvzLAMMve74zhm9CYrYD/cvcLQCBtxBD6ARitm5jI320Wtvc
-         8qAmCp5EB8XqI2D/XjRo6H/DRVKozLh3inMYkzOnAt3Bj1n+foCakIFYOLN5BtgJ/ins
-         9eWyVfmvnB8al15Vc3OUyqNILY+8rp/Ms6ufKFmfjBu76RyVPr1WZZvAve75ytEt+qxI
-         PIWRkyDlzMp/GBtrEArcTOu8LzzpaIMKXXpWh7OjQ5MYkZxkq+WpZpyaLTNR9HXaaE1w
-         sdUQ==
-X-Gm-Message-State: AOJu0Yzua8wyjnQ//t0bvGfhhEzcsiai38n1yyX/GqNk3U6SQeBM4HUx
-	7dOaqlev9DbM77kP0P/RpSk++JfWOCSzc2Ek1kAXguOm99IP8lParG+Rk+eBKHA=
-X-Google-Smtp-Source: AGHT+IHUuGIk9MDPzGstYLK1zpkt2QbjTfRrwv2RqiahCvh88IzUqgJcWfJL52ufKQ1RpV3Cg6uZUg==
-X-Received: by 2002:a81:4fcc:0:b0:607:8472:f33d with SMTP id d195-20020a814fcc000000b006078472f33dmr1104920ywb.25.1707817687672;
-        Tue, 13 Feb 2024 01:48:07 -0800 (PST)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id w184-20020a817bc1000000b0060493d50392sm1640828ywc.103.2024.02.13.01.48.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 01:48:07 -0800 (PST)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso1310685276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 01:48:07 -0800 (PST)
-X-Received: by 2002:a25:6606:0:b0:dc6:b779:7887 with SMTP id
- a6-20020a256606000000b00dc6b7797887mr6918280ybc.20.1707817686859; Tue, 13 Feb
- 2024 01:48:06 -0800 (PST)
+	s=arc-20240116; t=1707818186; c=relaxed/simple;
+	bh=BNSX9WQo4fdZixPgrChnndimSE1LeUip7SbHQG3EiRk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lnVHOfnO/tsUVI4Dqx9fzVPhFcYxDlxJLDe7xuZgHe1Ld7yh54uLGNwD6EeINwBugvtkNZw1W36Tt2BL9uErg9apphFAj82+QqqWfQ50RFTi9oTJYxTD/7iT7t31xoNP/L1/fI9zk6scWUsKoD/hRAkc1QDXr2UYPgfZ6FdX6Yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me; spf=pass smtp.mailfrom=maquefel.me; dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me header.b=tHSpq6lL; arc=none smtp.client-ip=178.154.239.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maquefel.me
+Received: from mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:3019:0:640:a0d4:0])
+	by forward500b.mail.yandex.net (Yandex) with ESMTPS id 9CCD561154;
+	Tue, 13 Feb 2024 12:48:16 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id Amja449YvOs0-Ohe7AJJt;
+	Tue, 13 Feb 2024 12:48:14 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
+	t=1707817694; bh=BNSX9WQo4fdZixPgrChnndimSE1LeUip7SbHQG3EiRk=;
+	h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
+	b=tHSpq6lLbJRzMUl5S+AQdH+yFWqgLs5dAvYesqMe255xcZfmaDSgVPRqcA1r0bzrw
+	 TkfIPDSLR62NkdUlPI+s/lCQcEhokM08txNkwukmx6USimZGbDh66EHaLNxEHxEu27
+	 3BeQU0snEq2nQPzdmEknsfQ0A1hkYVGjcAylct3Y=
+Authentication-Results: mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+Message-ID: <84444657b86c7a25ea2e6031ea85978917f33342.camel@maquefel.me>
+Subject: Re: [PATCH v7 00/39] ep93xx device tree conversion
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+To: andy.shevchenko@gmail.com, Vinod Koul <vkoul@kernel.org>, Stephen Boyd
+	 <sboyd@kernel.org>
+Cc: Hartley Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin
+ <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Sebastian Reichel <sre@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>, Thierry Reding
+ <thierry.reding@gmail.com>, Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
+ <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>, Sergey
+ Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Ralf Baechle <ralf@linux-mips.org>,  "Wu,
+ Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, Olof Johansson
+ <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-pm@vger.kernel.org,  devicetree@vger.kernel.org,
+ dmaengine@vger.kernel.org,  linux-watchdog@vger.kernel.org,
+ linux-pwm@vger.kernel.org,  linux-spi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-ide@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-sound@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko
+ <andriy.shevchenko@intel.com>, Bartosz Golaszewski
+ <bartosz.golaszewski@linaro.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>
+Date: Tue, 13 Feb 2024 12:48:11 +0300
+In-Reply-To: <Zb_DfISgoNyTKWMp@surfacebook.localdomain>
+References: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
+	 <Zb_DfISgoNyTKWMp@surfacebook.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
-In-Reply-To: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 13 Feb 2024 10:47:54 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV-JXjXmd5yan0-on52oH1dbRg1=N9OL2C7FAhLaOsTgQ@mail.gmail.com>
-Message-ID: <CAMuHMdV-JXjXmd5yan0-on52oH1dbRg1=N9OL2C7FAhLaOsTgQ@mail.gmail.com>
-Subject: Re: [PATCH 00/30] PREEMPT_AUTO: support lazy rescheduling
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, peterz@infradead.org, 
-	torvalds@linux-foundation.org, paulmck@kernel.org, akpm@linux-foundation.org, 
-	luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, 
-	mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org, 
-	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org, 
-	mark.rutland@arm.com, jgross@suse.com, andrew.cooper3@citrix.com, 
-	bristot@kernel.org, mathieu.desnoyers@efficios.com, 
-	glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com, 
-	mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org, 
-	David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com, jon.grimm@amd.com, 
-	bharata@amd.com, raghavendra.kt@amd.com, boris.ostrovsky@oracle.com, 
-	konrad.wilk@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Ankur,
+On Sun, 2024-02-04 at 19:03 +0200, andy.shevchenko@gmail.com wrote:
+> Thu, Jan 18, 2024 at 11:20:43AM +0300, Nikita Shubin kirjoitti:
+> > The goal is to recieve ACKs for all patches in series to merge it
+> > via Arnd branch.
+> >=20
+> > No major changes since last version (v6) all changes are cometic.
+> >=20
+> > Following patches require attention from Stephen Boyd, as they were
+> > converted to aux_dev as suggested:
+> >=20
+> > - ARM: ep93xx: add regmap aux_dev
+> > - clk: ep93xx: add DT support for Cirrus EP93xx
+> >=20
+> > Following patches require attention from Vinod Koul:
+> >=20
+> > - dma: cirrus: Convert to DT for Cirrus EP93xx
+> > - dma: cirrus: remove platform code
+> >=20
+> > Following patches are dropped:
+> > - dt-bindings: wdt: Add ts72xx (pulled requested by Wim Van
+> > Sebroeck)
+> >=20
+> > Big Thanks to Andy Shevchenko once again.
+>=20
+> You're welcome!
+>=20
 
-On Tue, Feb 13, 2024 at 6:56=E2=80=AFAM Ankur Arora <ankur.a.arora@oracle.c=
-om> wrote:
-> This series adds a new scheduling model PREEMPT_AUTO, which like
-> PREEMPT_DYNAMIC allows dynamic switching between a none/voluntary/full
-> preemption model. However, unlike PREEMPT_DYNAMIC, it doesn't depend
-> on explicit preemption points for the voluntary models.
+Thank you Andy!
 
-Thanks for your series!
+> I have a few minor comments, I believe if you send a new version it
+> will be
+> final (at least from my p.o.v.).
+>=20
 
-Can you please reduce the CC list for future submissions?
-It is always a good idea to have a closer look at the output of
-scripts/get_maintainer.pl, and edit it manually. There is usually no
-need to include everyone who ever contributed a tiny change to one of
-the affected files.
+Still waiting for some comment from Stephen Boyd and Vinod Koul on:
 
-Thanks again!
+- ARM: ep93xx: add regmap aux_dev
+- clk: ep93xx: add DT support for Cirrus EP93xx
 
-Gr{oetje,eeting}s,
+- dma: cirrus: Convert to DT for Cirrus EP93xx
+- dma: cirrus: remove platform code
 
-                        Geert
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+
+
 
