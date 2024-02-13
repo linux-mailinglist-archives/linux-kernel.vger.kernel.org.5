@@ -1,162 +1,170 @@
-Return-Path: <linux-kernel+bounces-62770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C0F8852581
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:16:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D32485258B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:17:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E31CB2709F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:16:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D77DC1F250F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:17:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB6D1775F;
-	Tue, 13 Feb 2024 00:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80F41B7E2;
+	Tue, 13 Feb 2024 00:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="TMfT4LRP"
-Received: from out203-205-251-72.mail.qq.com (out203-205-251-72.mail.qq.com [203.205.251.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fyfumgKA"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866E41772F;
-	Tue, 13 Feb 2024 00:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF9118EC0
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707785019; cv=none; b=R+h8ppM4AR/1zWpqkeSRUUmlz+onjUNRIe6S1EudutJ/VxFXVNpgH62XJpQXUlU0GfKmalwndlHs9STjU6W2iT79GxH6jdjldG60In4BBprWnGmYvhywjDs/ZMKcPD2dR99AgVTv0T9NwMotkKITs6cAiWJ8I0mRDhLVNEC8pEU=
+	t=1707785239; cv=none; b=n9zgrejiL+9z8S2cXWZc8VyNdSKRiz8bsDXq0iAghp5mvxI1MUisHf/Zd1AjX/k6/M6t4vwma5H3H7kjU62YAvnU5jMyqu4xzQEJGxgRW4I7QVY+Gge3VnIc+KuvG+SKzS+hSrkfAW571kHDQQcr0ZqL7VrRdKIzpiId8ar21aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707785019; c=relaxed/simple;
-	bh=F7fpg2CdE0Wy2uPhD166DyADD4Ox3yGxvUgrFRhaQS8=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=P5Mz0531/1v1HC617XetLO88zrAY5Q+f1InNgkBV2uFY2FCrwlLHjXS97p25hE8FaPegnOfdctFNlap5ZagJaSUg0QS/wDXiUwjM1w6cqEC0uWvaCE9GPMJMm9G5XegK1u+x7LdPv1RZkroIu1oulIEmjLfMNhxYipIiYl8shUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=TMfT4LRP; arc=none smtp.client-ip=203.205.251.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1707785014; bh=wiPSfuRqZnFsMPwUv5OCFPjP7dEarDAicP/Tc9X1eiQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=TMfT4LRP723MraUT+zeDVSZmPCpoKYyto74wxMY2nFnrpqhhEQgxK7tfeE7O1GJnD
-	 SgikGKDTcTTB96Ekq7ISnRe8WMn0EiDzRWHFA4vDc/zsRD3M4dB4MGlI3o/IiTcyQB
-	 l5JzBb0SONSLqHxuGqPi6Ilzu1IJU4deYTO2hUB4=
-Received: from pek-lxu-l1.wrs.com ([36.129.58.158])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id ADEAEAC9; Tue, 13 Feb 2024 08:43:30 +0800
-X-QQ-mid: xmsmtpt1707785010tdv1gnwzi
-Message-ID: <tencent_DDCFB377C3642974A3A3A44D176B776DA605@qq.com>
-X-QQ-XMAILINFO: NYqi3QrBgYD/lt5S161oxaFNxO1cjhRBqMoSxSpD2ZO9EBHtwOA/GjZsHF+gY7
-	 cFEyXy2Qj/MoXLpeC8VlNIVt39aTWzMEiOq/QRE9PW4znfioaIQ1fRfAsoeOn7ZpSdlm0/XCS6Zk
-	 QnA3kE1+sfeAk/yXaqpZdRtMJJJlzItwLkllhn0Xt5DhSXJGhZ5Ok64Gl22GTKqDVGWkREiFd7eK
-	 nbYtLBEQMqdDzUMUOquukGX9FTwNsE9rSrtyvCbWrMWHGxlTDhAZV51AOCIMVVTnmXSgNaBxivdE
-	 CUCHHlKK+YeTddMabu/P36lsmD0sKgXykDSblxU5xdornsoLVB6jqeAuTGIHJtxAKui8bSiWJQTC
-	 72xExYCgnDSYK5q6JAQdhWRqayqmz+TJ2cuNEaldM+2wIBFzUn+GvyqnhnMv6FIhc550Bpm4vRS1
-	 rkGlkogIeqRa5G7RGCfIU3UoamLK0I1OTUb5O9g5FhDdFpJldEbfZ6Et2iwK+wing6q1pQGWY2aU
-	 DMQo0qOg5sX6NeQ/viAe5ovP0cAdKo3eS6TR4WYvrx68BtWZdPIrl31u//aMnHkj68erRTClxocv
-	 cVvOSauFMtZ7jyG0ExBl9qo7jVjunKk7f6OdIFoi1CTlmCwi2EopoTBk45OOR59lg1ingdDARITL
-	 yIvJ6rMSV45kMqyc10SXWDIdSK3VT0DKAkYLOo2ytLXkiq2CyBkQQNtvnB39JuV7vY1yYwa15gDV
-	 6nwpqEO0UflBlZodEh4Q0B3DlR55DuiOcuNlvOP8f4aar4UH1D/vhT79RoIys60Vlvmd8PRs/z4i
-	 HtMxIzUg4evzAsAX5xE1XojmI6E06Nt3aVVh7Kt9GlcKsJ0BOIX4mB91p2Mx1kNn4heT/73uXeDq
-	 vSKQM+oCsh06zS7rrM1gGiggB9mq7GpY7U5SYJ3uiKVYoTFifJSYiNinGGp4Dn7w594hubAIJD
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From: Edward Adam Davis <eadavis@qq.com>
-To: gregkh@linuxfoundation.org
-Cc: eadavis@qq.com,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	rafael@kernel.org,
-	syzbot+8e41bb0c055b209ebbf4@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH riscv64] kobject: fix WARNING in input_register_device
-Date: Tue, 13 Feb 2024 08:43:26 +0800
-X-OQ-MSGID: <20240213004330.285237-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <2024020836-flypaper-relapse-5c97@gregkh>
-References: <2024020836-flypaper-relapse-5c97@gregkh>
+	s=arc-20240116; t=1707785239; c=relaxed/simple;
+	bh=vhshgUQEMVOYmzGB73Sv6P0idtfPu8TvDbWS2Ao2ViM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FRzOG5xl5S4p4KAjSnOB1ib7EOAhBZkG6P3gXC+wxsgwud6Nz/XfZUvu0dGOm9kdFPN3ypW436r/0g4QqgvKlfY+ZtC167/UwrH6NeHwnn+va00vRorrxxhRT9vSZX3MPW1Jpry/JQ2z1Ji/8QOVxgDWHCY4WOeptb6p/loG/bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fyfumgKA; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcc80d6004bso125223276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:47:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707785237; x=1708390037; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6sfE4CKDsYgzSNtG/2Z/eISWKsnaJqJipJlJ0mll8gM=;
+        b=fyfumgKA94Kgr5KyPD1Vrqt0YbS0rqT8sOp1pFHm9s8Pxeq4CntxOuztXKMBlSddTe
+         9w9NRxkP/t724Ws90+hC9Ec2T56g3ZCmgr+/M+7a8i+a3+basEH7KIZfrooeNBQbkztP
+         W9cmzqhXfhcDQSgcO8Ht52/qdDmpQAraZqqZexkKMINS06ryY2yf8SfbRmTSqfTogAZt
+         R8Eq414Pt7FHMMQDSBLVL07sNjXU1xBuCVTWm2bFuxiiphDwenEE3+FKpP4D+q6oGTWU
+         Vrbp5OU656s710gCp+2yaZTU2NCVsDVRqEV9VPdHFDT8k66AbHrYx6MDnM8tqqrjeolD
+         WvdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707785237; x=1708390037;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6sfE4CKDsYgzSNtG/2Z/eISWKsnaJqJipJlJ0mll8gM=;
+        b=mokk5VmZKulpv1mqPuOzuwedQVvlS0Et0k87/JdTFwXJipZk9cGY3uB/NOkTPdaVqu
+         jUUP0fhMhaRTtK1B/sZPNCw3LEyh3rt6F+sg14bxp0TR9nbhHC8erHkVoairjFbSACaf
+         O1HNR+0hKGTEgAgR5v46TaoYMpUzkN11R3lhyw7oKNhk7AFd4KeYXYE74ZOhq9Xc0Wcc
+         f/5CCN9u8PjQKoNGntm0l9BLjuNMfakUtMLF8xSt1aZmwp3HTKFga2AANcGPyA4ggwE8
+         RjhPgzRAT/N6oSRypTghl21xfnlfR7pyMBpwzY7huYHGFcrKgQcuHMgLFNjTgpDPsqFe
+         v5yA==
+X-Forwarded-Encrypted: i=1; AJvYcCUxSgdl4O3A9/nObtayAyPlX6qleDQNUw1henqqTKVcc5bQ/4fpRkf1HPwLghn3lO28MJCk3NCdM8gyZ7X6mFSvUWp7+dScZO+eZUqf
+X-Gm-Message-State: AOJu0Yz2PCDglFxDJPvmevRXIe+iVjVtdVcc+aodQ8LK2UUrn5hbUhOX
+	lL1cf+y5e7saXw1oz2r8/pdSmmk5QNDsdivF27sEwTVkNCi51lGe0rREiJKzJrTsR60Of/EkooR
+	1hyk+xhI7iLG77lG5Ty1P9yYuogK+pFQEZ/F9
+X-Google-Smtp-Source: AGHT+IEd+FNtHN/ZZbzmP1f2A4KejGHdBoOnJaz/mv/ay/4vdGzg6uBQFsFNAQAmwG2iUWNQFb7fDd1J4oxNlZWT4bQ=
+X-Received: by 2002:a25:848d:0:b0:dc2:50ca:7d03 with SMTP id
+ v13-20020a25848d000000b00dc250ca7d03mr6944337ybk.1.1707785236496; Mon, 12 Feb
+ 2024 16:47:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240212213922.783301-1-surenb@google.com> <202402121602.CC62228@keescook>
+In-Reply-To: <202402121602.CC62228@keescook>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 12 Feb 2024 16:47:05 -0800
+Message-ID: <CAJuCfpF677Fu152GQAgD-GW=eFPsRMXfXzyXtnc5p6kPsxeQJA@mail.gmail.com>
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+To: Kees Cook <keescook@chromium.org>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com, 
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
+	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
+	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
+	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 8 Feb 2024 12:25:10 +0000, Greg KH wrote:
-> On Thu, Feb 08, 2024 at 07:37:56PM +0800, Edward Adam Davis wrote:
-> > On Thu, 8 Feb 2024 10:56:00, Greg KH wrote:
-> > > > The input_add_uevent_modalias_var()->input_print_modalias() will add 1684 bytes
-> > > > of data to env, which will result in insufficient memory allocated to the buf
-> > > > members of env.
-> > >
-> > > What is "env"?  And can you wrap your lines at 72 columns please?
-> > env is an instance of struct kobj_uevent_env.
-> 
-> Ok, be specific please in your changelog text, otherwise we can't really
-> understand what is happening.
-> 
-> > > > Reported-and-tested-by: syzbot+8e41bb0c055b209ebbf4@syzkaller.appspotmail.com
-> > > > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> > > > ---
-> > > >  include/linux/kobject.h | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/include/linux/kobject.h b/include/linux/kobject.h
-> > > > index c30affcc43b4..74b37b6459cd 100644
-> > > > --- a/include/linux/kobject.h
-> > > > +++ b/include/linux/kobject.h
-> > > > @@ -30,7 +30,7 @@
-> > > >
-> > > >  #define UEVENT_HELPER_PATH_LEN		256
-> > > >  #define UEVENT_NUM_ENVP			64	/* number of env pointers */
-> > > > -#define UEVENT_BUFFER_SIZE		2048	/* buffer for the variables */
-> > > > +#define UEVENT_BUFFER_SIZE		2560	/* buffer for the variables */
-> > >
-> > > That's an odd number, why that?  Why not just a page?  What happens if
-> > > some other path wants more?
-> > An increase of 512 bytes is sufficient for the current issue. Do not consider
-> > the problem of hypothetical existence.
-> 
-> Why is this 512 bytes sufficient now?  What changed to cause this?
-There is the following code in input_print_modalias():
+On Mon, Feb 12, 2024 at 4:29=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Mon, Feb 12, 2024 at 01:38:46PM -0800, Suren Baghdasaryan wrote:
+> > Low overhead [1] per-callsite memory allocation profiling. Not just for=
+ debug
+> > kernels, overhead low enough to be deployed in production.
+>
+> What's the plan for things like devm_kmalloc() and similar relatively
+> simple wrappers? I was thinking it would be possible to reimplement at
+> least devm_kmalloc() with size and flags changing helper a while back:
+>
+> https://lore.kernel.org/all/202309111428.6F36672F57@keescook/
+>
+> I suspect it could be possible to adapt the alloc_hooks wrapper in this
+> series similarly:
+>
+> #define alloc_hooks_prep(_do_alloc, _do_prepare, _do_finish,            \
+>                           ctx, size, flags)                             \
+> ({                                                                      \
+>         typeof(_do_alloc) _res;                                         \
+>         DEFINE_ALLOC_TAG(_alloc_tag, _old);                             \
+>         ssize_t _size =3D (size);                                        =
+ \
+>         size_t _usable =3D _size;                                        =
+ \
+>         gfp_t _flags =3D (flags);                                        =
+ \
+>                                                                         \
+>         _res =3D _do_prepare(ctx, &_size, &_flags);                      =
+ \
+>         if (!IS_ERR_OR_NULL(_res)                                       \
+>                 _res =3D _do_alloc(_size, _flags);                       =
+ \
+>         if (!IS_ERR_OR_NULL(_res)                                       \
+>                 _res =3D _do_finish(ctx, _usable, _size, _flags, _res);  =
+ \
+>         _res;                                                           \
+> })
+>
+> #define devm_kmalloc(dev, size, flags)                                  \
+>         alloc_hooks_prep(kmalloc, devm_alloc_prep, devm_alloc_finish,   \
+>                          dev, size, flags)
+>
+> And devm_alloc_prep() and devm_alloc_finish() adapted from the URL
+> above.
+>
+> And _do_finish instances could be marked with __realloc_size(2)
 
-drivers/input/input.c
-   1         len += input_print_modalias_bits(buf + len, size - len,
-1403                                 'k', id->keybit, KEY_MIN_INTERESTING, KEY_MAX);
-This code will add up to 2608 bytes of data to env at most.
-(KEY_MAX - KEY_MIN_INTERESTING) * 4 = (256 * 3 - 1 - 113 ) * 4 = (765 - 113) * 4 = 652 * 4 = 2608 bytes。
-Note: In the expression, 4 represents 3 bytes of hexadecimal data and 1 byte of comma.
+devm_kmalloc() is definitely a great candidate to account separately.
+Looks like it's currently using
+alloc_dr()->kmalloc_node_track_caller(), so this series will account
+the internal kmalloc_node_track_caller() allocation. We can easily
+apply alloc_hook to devm_kmalloc() and friends and replace the
+kmalloc_node_track_caller() call inside alloc_dr() with
+kmalloc_node_track_caller_noprof(). That will move accounting directly
+to devm_kmalloc().
 
-include/uapi/linux/input-event-codes.h
-188 #define KEY_MUTE                113
-807 #define KEY_MIN_INTERESTING     KEY_MUTE
-808 #define KEY_MAX                 0x2ff
-During my actual testing process, I found that a total of 1684 bytes were
-contributed in input_print_modalias().
-> 
-> And how can we detect this automatically in the future?  Shouldn't we
-> just be truncating the buffer instead of having an overflow?
-> 
-> > > And what's causing the input stack to have so many variables all of a
-> > > sudden, what changed to cause this?  Is this a bugfix for a specific
-> > > commit that needs to be backported to older kernels?  Why did this
-> > > buffer size all of a sudden be too small?
-> > The result of my analysis is that several members of struct input_dev are too
-> > large, such as its member keybit.
-> 
-> And when did that change?  What commit id?  What prevents it from
-> growing again and us needing to change this again?
-The code that caused this issue has been introduced for a long time, and it is
-speculated that it was due to the fact that the warning in add_uevent_var() was
-returned directly to ENOMEM without being taken seriously.
-
-lib/kobject_uevent.c
-  2         if (len >= (sizeof(env->buf) - env->buflen)) { 
-  1                 WARN(1, KERN_ERR "add_uevent_var: buffer size too small\n");
-672                 return -ENOMEM;                                                                                                                                                                        
-  1         }
-
-I believe that this issue was introduced by:
-7eff2e7a8b65 - Driver core: change add_ueventvar to use a struct.
-
-thanks,
-edward.
-
+>
+> -Kees
+>
+> --
+> Kees Cook
 
