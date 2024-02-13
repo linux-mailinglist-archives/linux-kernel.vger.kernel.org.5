@@ -1,151 +1,253 @@
-Return-Path: <linux-kernel+bounces-63050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C72852A28
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:36:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C45CF852A2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:37:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D051F284676
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:36:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A5E02846F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C39D1774C;
-	Tue, 13 Feb 2024 07:36:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A3B1774A;
+	Tue, 13 Feb 2024 07:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="U3hJRt3y"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dk6OjSQX"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2071.outbound.protection.outlook.com [40.107.243.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81E1225A4
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707809797; cv=none; b=CM463+eZNXU9KydsV6HKucik2jL2i3cCfJnEEMqWlU2S6h5F7RItLy6Nx35dXpPJhE+MMyEHmOeYrvEmxrBq8wJ6L3wplrE9RM36BOdHwHweKygNgCPJhOSO2zEl7dJsD0DzarVXWmwB5axk4Jvs58Wh4AlM4ktoRHxbk2KxxKg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707809797; c=relaxed/simple;
-	bh=utUsPfEy/QzMITjmNseVIXiTQkZm9F74xDsOkidIx6k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G/2iYz0Cujuj28aVQhlU/E3Ta/3VMOtMee1L2YxlGhv8FcaBV8nov9zJahAtpabLXuM4dn2Mq2wCQQFoKKCTY2eARMCxp6lVuBBy+odax5M0/UwSn7su+RtY5TtbxqGZ1697waZbkIVk+loTC96zuIht45rL1goNvXN15/CotMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=U3hJRt3y; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4116650a345so9823015e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:36:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707809794; x=1708414594; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3qKO6w6id7IchIagMH9q3ni7wU4UnSKJ2g30c/IBubE=;
-        b=U3hJRt3y0xr8ImXtIenrHV1IK+VXNBn4qqO5pSZId/do+aCJ7cvjGSo9nPYWMTUDBj
-         /p0t2wP5v81wxrsQ8xM5aUKF6Q5qfWiBHR1o9O7ejjbIc5giB8wT63jhwrmK7ES9Bz2F
-         v/D0TY8ioHfnr+ZBeZGmD2xett49Yj9fVexQYw2m1EFZlK76Ht17uLqcyingdYqNZ7RW
-         DAD3WyeTzhIv5Yi9MWiQOe+Yh2GyWyGShZLpIEtg7BCMEeJZt8azDGHRXHCFxxYp4kEm
-         /3gYLxnhatXX2apv1vVgwO2O/lXJQazw+KvFYIVsQxeRFft/6yXiQl+L25zulFqHpVcX
-         sk7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707809794; x=1708414594;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3qKO6w6id7IchIagMH9q3ni7wU4UnSKJ2g30c/IBubE=;
-        b=bDwHnzXnHJWPQzNWN6pU1p1DCdIKjEd9T6kNJMyOchWDK//jztNLOcbYephFmucOjW
-         CxjJwoNCYXfITYSx6HVpHTk80KHRAvVJBZAIzrOdzmBHbt3K9SOU87J2vhNDw4/PgnlW
-         wXH+w6sYgkDe5cHfh3/I4Wj+9m0zoXpZV3xzDTz/U62WgCBldAPnrRe3OqBoHTyrYOLH
-         8brMoXPvekgnoJH3AYw6RsDoyJVgbxFzFC/YTnDbh4nX0sVNdFB2XXFiJTI2TdwEpay5
-         KoTyWKEVtVEnL1MR45zJWEAcjmcW9rbdUnfEvfsN3xcoatvV0yv9Ce0+G37I992+XSu2
-         sPmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUxjMSpqu3bWjI1K95pro9mWeFUW3RTlYovUik+prGkOt8/bR8KnIRBw8xQLjiOQU8enXt03YFBcoOA0pOvB1+RWLJCeIUYDo/hFMVx
-X-Gm-Message-State: AOJu0YyT3wx8MWcYYzNKcPg9Dv8OeIxvkXZkMJG6H8YfGEekzK3jj9Z2
-	YClCOajZVuj5CXhazmKH48+1paYJhwkJ3gmiOKtZB5SMFzqRgRZLb31kANQeITM=
-X-Google-Smtp-Source: AGHT+IF5GmEHNdHwgIu9hH7ZeYF20sFP8fOT/5Qbg7HmVeORoi87obfIJFBFeiyqu+vM0n2qpQhjzQ==
-X-Received: by 2002:a05:600c:a386:b0:410:bfc1:d994 with SMTP id hn6-20020a05600ca38600b00410bfc1d994mr4916531wmb.21.1707809794039;
-        Mon, 12 Feb 2024 23:36:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW74wNdLQhyMEW2twzcJU2CJ2I31uAb83QnFCX9k38I30UtMTOr6Kywtm8DY0H4S/df1ZiOSSBHqDJTi8h/mb8/lo6xx1PTAC8CelXzJyfCvSH0Mj0iqD5PBGoIuyi/a/hFwd+ZEbxEHoqd21GAHJKdfno0VGishU4y0xnp3+wc3WR/sYj0RMvXxc61/FytAWwy0uLuz3TbF5uXR9+H8d2vaN83BFiy8XKc7zKUBiXRe4HEeN9Gf1uW9lK/Qdaw/NjLkAqdcWg8Jo20jtQeCmH+QbV3ohUaYy1/VI1y+OcX1vQPCumpZPrNo7Tpu8qr9yhKc/di5DTaZ/bzLEnDUe2azATDLx3kFQ0P4+odwYiz3xzjMAlhF6QEsZo=
-Received: from [192.168.1.20] ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id f7-20020a05600c4e8700b00410709fa0d3sm10967698wmq.33.2024.02.12.23.36.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 23:36:33 -0800 (PST)
-Message-ID: <afb4bd72-aa22-4d74-aeb8-d3875c6d07ca@linaro.org>
-Date: Tue, 13 Feb 2024 08:36:32 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C6A1B273;
+	Tue, 13 Feb 2024 07:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707809851; cv=fail; b=peMwbSvFT0PIvg6wOtWsyhmLDoHXLnlpRxw1NBQnmqQgxNgUxpauQimKIMibKGlbsbnEoVD+Fy0e6Mwlx72H2rf5dMnk8RiI7WJUyI1CpOlJ6Hp/1Ho+NOCXmrUJImC/wJ+o6ECOxwEyJWHYAEVOC4oCnh937Ou4+wIfP1CO2mY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707809851; c=relaxed/simple;
+	bh=Kme8aidH6A3t+soUtbe14Wa/gaE/Ui8i4OzrPIPT0SQ=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O7xxmW9GjGGW78awyrrkzA9OxAQ6vMKtxAc0iGjtty62PbuOYyi14LrdyVhhC5iLJbX99Hp/yHz0UYnvAZS4KJo0S6NdU92RWqV1DmQRjrNXGcGXDwBH71tG8miW722aXSU1qrASLLsf95BLsigA3g1zZiuoseM9tCU+wYVklrs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dk6OjSQX; arc=fail smtp.client-ip=40.107.243.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CeMeePzcXLoDwveem+kTU0AefGbtNzjsBG+9zNS9TipskO/pqeZZKweexjN6EbHaRExtHewLj4Kne6s4Zx49F+W/etrKTrV9DX1ySycLSMeAZT2i7fEnO1WG59DftmJXofIJGBFL0D0z0fVfqwWZx3sVy/6E9XU7B0TARIiwwxsE/vEW4Xc7JEEDP2x/toNrOIL2KkBbz6eICoc2a+bwnj+mKicImO6j6X02l6PNle5ku6Wza2ghK4rUYj2olrDGw9OA5NT95+bbosZrWxn9bzvHy6ykk68pezsC906g9N9XOurd2fRWRYTcM/R+hcwTvrowBkwAwJIpN8rJrtWuOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gJYFO1abpJ3r5GHADZ0UfiffW8DMBHrupKJS8+PyB+M=;
+ b=TuWOXkNeLytXqh3KkAvRuUI53AO3MUb4z4Tbq8U7ue/yz/OS44AWJDFy5d8FCCNeSZ+HPgwLvX5uRQuc3+b882T39FGlyQsoIzOohxeHcU7OpeRX0s3ljjv2WWITbIxibhPsBFoHRFAL6ULaqbATLB/WXqvzC0cHQ9dAic+7QevadA8I4/uDQyi9Og+0Bn9xMVZw7BU71F0P/5Cqr+P+fS6WM4fMpf+f0bB8d+wY3vkQd4Fyc+xHzy/mLJItunVsGZ+8RuLTzMOrAMxLiv4Y0dcqFOJ3nqalHahNhY2Tm8nqhc9b+9XTWqqaqWvrpxJmYlOfuJpnMJmXWzsAl9A9cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=samsung.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gJYFO1abpJ3r5GHADZ0UfiffW8DMBHrupKJS8+PyB+M=;
+ b=dk6OjSQXjflCnHFQpOfryW817uehNnVGd7f3v3twX+TBQyzDhdpuURlBE0TsGVgPXvjUClKEYwdM04fuR7eemuvUR2uujLFfcbt2/DcVSo3/qvLe8qNhkIKU7cr2Xmi4Y4yHOsl1pH5DssFCbq3QU2GvT6eea+7AlczjwJzDkwv/5DTcy4g+C47DBrUyETKh2Bh5hiPwD4jxBRRwVMewcIxuIYJMYuEUnSPBbPHKCF9fcsuKOC0xW6mCYi746t8m5BwuhrtJ8yHsISiueCdMqMhuptsMb0AOb7w2YMvbMHzYNAOjB5yWnYh9s5cTU0vJw4ZTvymy9cNMcVKW2QN5bQ==
+Received: from PH7PR10CA0013.namprd10.prod.outlook.com (2603:10b6:510:23d::9)
+ by LV2PR12MB6013.namprd12.prod.outlook.com (2603:10b6:408:171::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Tue, 13 Feb
+ 2024 07:37:26 +0000
+Received: from SN1PEPF000252A2.namprd05.prod.outlook.com
+ (2603:10b6:510:23d:cafe::c) by PH7PR10CA0013.outlook.office365.com
+ (2603:10b6:510:23d::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39 via Frontend
+ Transport; Tue, 13 Feb 2024 07:37:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SN1PEPF000252A2.mail.protection.outlook.com (10.167.242.9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.25 via Frontend Transport; Tue, 13 Feb 2024 07:37:26 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 12 Feb
+ 2024 23:37:15 -0800
+Received: from localhost (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Mon, 12 Feb
+ 2024 23:37:14 -0800
+Date: Tue, 13 Feb 2024 09:37:10 +0200
+From: Leon Romanovsky <leonro@nvidia.com>
+To: Jim Harris <jim.harris@samsung.com>
+CC: Bjorn Helgaas <helgaas@kernel.org>, Kuppuswamy Sathyanarayanan
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, Bjorn Helgaas
+	<bhelgaas@google.com>, "linux-pci@vger.kernel.org"
+	<linux-pci@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Jason Gunthorpe <jgg@nvidia.com>, "Alex
+ Williamson" <alex.williamson@redhat.com>, Pierre =?iso-8859-1?Q?Cr=E9gut?=
+	<pierre.cregut@orange.com>
+Subject: Re: [PATCH v2 1/2] PCI/IOV: Revert "PCI/IOV: Serialize sysfs
+ sriov_numvfs reads vs writes"
+Message-ID: <20240213073710.GB52640@unreal>
+References: <20240211084844.GA805332@unreal>
+ <20240212202714.GA1142983@bhelgaas>
+ <CGME20240212225904uscas1p19a3d7743607a0abe3627fb8c4829f27b@uscas1p1.samsung.com>
+ <ZcqitnWTh+zQ+H4p@ubuntu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/12] memory: stm32-fmc2-ebi: add MP25 support
-Content-Language: en-US
-To: Christophe Kerello <christophe.kerello@foss.st.com>,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, devicetree@vger.kernel.org
-References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
- <20240212174822.77734-5-christophe.kerello@foss.st.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240212174822.77734-5-christophe.kerello@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZcqitnWTh+zQ+H4p@ubuntu>
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF000252A2:EE_|LV2PR12MB6013:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1790257f-4982-4586-e115-08dc2c66a02f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	isb5+qX+FBo6bhlTk3KwJOnXb/rBrQmvn4L/HWE65DlhbjX9Yo6u0kjBeCl4sMZDM6Gb3CrtcX8x+ia99dPyOM4svrOEL0uacclZtuU1J23rS1J1F7fO0lB7E3YF8IJrLU/ESYEmdax44ZGO5lpSqOAk1gqi4SE+G2cfQ3AURkofNsUxq0YjCHX3hDsXNc1XfxG5Otr7GOnxEa3GYi9KnkIbIvF+/EjgoIeyH8uzRIy29MhDmDeAp5IJhL97fwE0M/sNnWOusg6KhSOngfVczloX5LRJSM6T7H+KOMAO67hrjh8shJaD/wx6CpwDpT/ADEU5nLdgAO516idfYDQSO1bd7IvdSJNUJgRkwqmOeqqXA857WC6pypkw2AiccMTPWoQknEnUgU3gwzfU0WOUtyx4OtHAZ9pDdNWGbhU88o+15bxeedv2Jw4dwtXgSPFSCs/9ngtf+RkCO7bS5moMILmdxBB3SSXwkqNgcpcHosaTQbkXprIa83Nep/tbOGE4puby0sfVhGXVPTDETJCwv5SLNS2HLVC+yFioVG9BSYnw9vrQiqlx1ZZiGaDp6Be6ssoPzePcVXGxoYuh1x8aZleWw2lYRjFOLQty8Cp/pxpd3VsyKn8Of72kKhccJkqP1XdVi1kzG3aYYwtXgdaNhIPQLEdPEVlEQLr6+FBz+26T235V3mN6EEBFpyUQPe6q
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(7916004)(396003)(136003)(39860400002)(346002)(376002)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(82310400011)(46966006)(36840700001)(40470700004)(82740400003)(7636003)(356005)(16526019)(41300700001)(86362001)(33716001)(83380400001)(5660300002)(2906002)(70206006)(426003)(336012)(54906003)(8936002)(4326008)(8676002)(70586007)(6916009)(1076003)(316002)(478600001)(966005)(53546011)(9686003)(6666004)(26005)(33656002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 07:37:26.3984
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1790257f-4982-4586-e115-08dc2c66a02f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF000252A2.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB6013
 
-On 12/02/2024 18:48, Christophe Kerello wrote:
-> Add MP25 SOC support. RNB and NWAIT signals are differentiated.
+On Mon, Feb 12, 2024 at 10:59:03PM +0000, Jim Harris wrote:
+> On Mon, Feb 12, 2024 at 02:27:14PM -0600, Bjorn Helgaas wrote:
+> > On Sun, Feb 11, 2024 at 10:48:44AM +0200, Leon Romanovsky wrote:
+> > > On Fri, Feb 09, 2024 at 07:20:28PM -0800, Kuppuswamy Sathyanarayanan wrote:
+> > > > On 2/9/24 3:52 PM, Jim Harris wrote:
+> > > > > If an SR-IOV enabled device is held by vfio, and the device is removed,
+> > > > > vfio will hold device lock and notify userspace of the removal. If
+> > > > > userspace reads the sriov_numvfs sysfs entry, that thread will be blocked
+> > > > > since sriov_numvfs_show() also tries to acquire the device lock. If that
+> > > > > same thread is responsible for releasing the device to vfio, it results in
+> > > > > a deadlock.
+> > > > >
+> > > > > The proper way to detect a change to the num_VFs value is to listen for a
+> > > > > sysfs event, not to add a device_lock() on the attribute _show() in the
+> > > > > kernel.
+> > 
+> > The lock was not about detecting a change; Pierre did this:
+> > 
+> >   ip monitor dev ${DEVICE} | grep --line-buffered "^${id}:" | while read line; do \
+> >     cat ${path}/device/sriov_numvfs; \
+> > 
+> > which I assume works by listening for sysfs events.  The problem was
+> > that after the event occurred, the sriov_numvfs read got a stale value
+> > (see https://bugzilla.kernel.org/show_bug.cgi?id=202991).
+> 
+> I don't think 'ip monitor dev' listens for any sysfs events. Or at least if
+> I have this running and write values to sriov_numvfs, I don't see any
+> output.
+> 
+> It looks like the original bug report was against v5.0 (matching by dates
+> and the patch file attached). In that code, we have:
+> 
+>     kobject_uevent(&dev->dev.kobj, KOBJ_CHANGE);
+>     iov->num_VFs = nr_virtfn;
+> 
+> which is identical to how the code looks today. Is it possible that
+> userspace could react to this uevent and read the stale num_VFs before
+> iov->num_VFs gets written here? I mean, theoretically it's possible, but
+> from the bug report it seems like the scenario Pierre was facing was
+> 100% reproducible.
+> 
+> It would be great if we could get input from Pierre on this. It isn't clear
+> to me from the bug report what exactly is updating the sriov_numvfs sysfs
+> entry, and what is triggering that update.
+> 
+> We could also revisit my original suggestion, which was to use a
+> discrete lock just for this sysfs entry, rather than overloading the
+> device lock. That probably has lower risk of introducing an unintended
+> regression.
 
-s/SOC/SoC/
-everywhere
+The idea that lock issues are need to be solved by adding more locks
+doesn't sound good to me.
+
+Thanks
 
 > 
-
-The way you split patches is a bit odd. Shall we understand that this
-patch is the complete MP25 SoC support?
-
-Best regards,
-Krzysztof
-
+> https://lore.kernel.org/linux-pci/ZXNNQkXzluoyeguu@bgt-140510-bm01.eng.stellus.in/
+> 
+> > 
+> > So I would drop this sentence because I don't think it accurately
+> > reflects the reason for 35ff867b7657.
+> > 
+> > > > Since you are reverting a commit that synchronizes SysFS read
+> > > > /write, please add some comments about why it is not an
+> > > > issue anymore.
+> > > 
+> > > It was never an issue, the idea that sysfs read and write should be
+> > > serialized by kernel is not correct by definition. 
+> > 
+> > I think it *was* an issue.  The behavior Pierre observed at was
+> > clearly wrong, and we added 35ff867b7657 ("PCI/IOV: Serialize sysfs
+> > sriov_numvfs reads vs writes") to resolve it.
+> > 
+> > We should try to avoid reintroducing the problem, so I think we should
+> > probably squash these two patches and describe it as a deadlock fix
+> > instead of dismissing 35ff867b7657 as being based on false premises.
+> > 
+> > It would be awesome if you had time to verify that these patches also
+> > resolve the problem you saw, Pierre.
+> > 
+> > I think we should also add:
+> > 
+> >   Fixes: 35ff867b7657 ("PCI/IOV: Serialize sysfs sriov_numvfs reads vs writes")
+> > 
+> > as a trigger for backporting this to kernels that include
+> > 35ff867b7657.
+> > 
+> > Bjorn
+> > 
+> > > > > This reverts commit 35ff867b76576e32f34c698ccd11343f7d616204.
+> > > > > Revert had a small conflict, the sprintf() is now changed to sysfs_emit().
+> > > > >
+> > > > > Link: https://lore.kernel.org/linux-pci/ZXJI5+f8bUelVXqu@ubuntu/
+> > > > > Suggested-by: Leon Romanovsky <leonro@nvidia.com>
+> > > > > Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> > > > > Signed-off-by: Jim Harris <jim.harris@samsung.com>
+> > > > > ---
+> > > > >  drivers/pci/iov.c |    8 +-------
+> > > > >  1 file changed, 1 insertion(+), 7 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> > > > > index aaa33e8dc4c9..0ca20cd518d5 100644
+> > > > > --- a/drivers/pci/iov.c
+> > > > > +++ b/drivers/pci/iov.c
+> > > > > @@ -395,14 +395,8 @@ static ssize_t sriov_numvfs_show(struct device *dev,
+> > > > >  				 char *buf)
+> > > > >  {
+> > > > >  	struct pci_dev *pdev = to_pci_dev(dev);
+> > > > > -	u16 num_vfs;
+> > > > > -
+> > > > > -	/* Serialize vs sriov_numvfs_store() so readers see valid num_VFs */
+> > > > > -	device_lock(&pdev->dev);
+> > > > > -	num_vfs = pdev->sriov->num_VFs;
+> > > > > -	device_unlock(&pdev->dev);
+> > > > >  
+> > > > > -	return sysfs_emit(buf, "%u\n", num_vfs);
+> > > > > +	return sysfs_emit(buf, "%u\n", pdev->sriov->num_VFs);
+> > > > >  }
+> > > > >  
+> > > > >  /*
+> > > > >
+> > > > -- 
+> > > > Sathyanarayanan Kuppuswamy
+> > > > Linux Kernel Developer
+> > > > 
 
