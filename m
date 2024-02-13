@@ -1,151 +1,194 @@
-Return-Path: <linux-kernel+bounces-64201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04047853BBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:00:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76782853BCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:02:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35B4D1C26796
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:00:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1CEB1F247C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5654B60B85;
-	Tue, 13 Feb 2024 20:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D7A60BAE;
+	Tue, 13 Feb 2024 20:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="a/I+3k8N"
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WPBQthgA"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB4F60894;
-	Tue, 13 Feb 2024 20:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64C6260872
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 20:01:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707854433; cv=none; b=Pnz3ccB10Idx/y7SxOUpYjR/edDSEWgGywF2wjnabFVnQwI9dbtINxoYdJxrh9I6f3P+fefXkx8m9rVjCGvYhNveosLEeavwATjDsiIyRI5yAEfiOJH+AoPO4rxXIDD43W5C/d7fxcSZPRtSMnSxsotavaIbYzcBrKqxus+JvP4=
+	t=1707854517; cv=none; b=Oea6c+TkNQIUMwSVORSwpINJJgz/488RzagOgdYE41c14OJINJPni4ZUHvpPlZzxiSAmnlQEqkLYCu1Ryl6l7JEXTJwpMgeowJLg+ecVtybMqagkG5i6f8KCCO+yzRpy4J/+q/ng0eWqSueCsMoVStIOMTUp6CNhkMq1gr8/0Us=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707854433; c=relaxed/simple;
-	bh=o+UtUBoWIBnLq7hS5tRy94VdJqWGzZdtZhxoTJc/hNY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JeDBiG1PX5Rdam9fs8LWbzOmjRU30lhSNTDoT85g+95l1F5/BSEkTt5wkZFOaJlSQZUkR/0Tox7xSgS3cQqtTMNrNFUTVnHp6CZB9T6XpcIX5heACyJ56n1OLAhDiPhSOMHEnwHwM+B1Dr6y3pfGTPjG6ts/oVaPwMHQb+BxWEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=fjasle.eu; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=a/I+3k8N; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fjasle.eu
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fjasle.eu;
-	s=ds202307; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=ud9kP134wBy3ssKtmURanYc0oXG48zbkDyfGvOLR8gw=; b=a/I+3k8NEdqqDpeonjGZJj82yW
-	5oS3rePXR9zZccQV6iiBFON5q9h+sazljs400x3igksipq5KCdVPTw8us9MH3TjlGczKzWFt2511S
-	VSmvmEtZTzAvakf8Vu+TWADcwq6ABP+tAdCdW9s+czq2wUrOVYc6CB8tbAkf1YJuSnWyfqP57uteK
-	lcEleXlYSx0GVhmMFf5rwbth+FPVLI76D5gL19Ohuljnw3S1RKGblvWAC2arACs5wVZRqYALvScLO
-	V0vCrwtCIlAUqeIgiVqRBYcYse6rTm1rHQ2+DQI5S0csqBOT7a1eEM3SXTL64COOpTzQEc8x1HgTu
-	eOt60Ggw==;
-Received: from [2001:9e8:9d1:8401:6f0:21ff:fe91:394] (port=48586 helo=bergen.fjasle.eu)
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <nicolas@fjasle.eu>)
-	id 1rZyws-00HFHx-9G;
-	Tue, 13 Feb 2024 21:00:11 +0100
-Date: Tue, 13 Feb 2024 21:00:03 +0100
-From: Nicolas Schier <nicolas@fjasle.eu>
-To: Andrew Ballance <andrewjballance@gmail.com>
-Cc: masahiroy@kernel.org, justinstitt@google.com,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	morbo@google.com, nathan@kernel.org, ndesaulniers@google.com,
-	skhan@linuxfoundation.org
-Subject: Re: [PATCH v2] gen_compile_commands: fix invalid escape sequence
- warning
-Message-ID: <ZcvKQ3SpLNR9RfIe@bergen.fjasle.eu>
-References: <CAK7LNARaW1V5X79BFW5_YTKY+n+OSp+_ACpRxpiw+VOJ+2hf=g@mail.gmail.com>
- <20240213022552.754830-1-andrewjballance@gmail.com>
+	s=arc-20240116; t=1707854517; c=relaxed/simple;
+	bh=V8RWr3buxdjWtLSDsasgQvCqzQOEr/31YvPitYMfD9M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n2MFXETX5xNUt2shnP0/niMvwtN/kDNS/KeuxmzWs8cygIEZTB4OHXOYT3ekczMmDWh1RD2Y+fqnrTFWdO3mrLXRyRz5YWFXSstQ1SQ8dWGOsx/YRdsOk6ScNOZBZegZb5Zxf9lwqRmox51XDDljksZGfueK55V18zuvMgded1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WPBQthgA; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a30e445602cso21248266b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:01:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707854514; x=1708459314; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aeZw1WsdK0ILhztiGUDCvc9s83gleGWTx/2AVhzfBto=;
+        b=WPBQthgAOycku3bjtIr8wr5K9WkkXBqS3RMi2CMmfA/JK/iM2xslGlJ4FgFCrPGknW
+         s27Am8uuZudDluiIg6pUGym9f6z+KCTCa90ZgJqusRWjdacMKwKCCDriV5/Fr/Gfa/RR
+         p9Fsloiz3r2Zw4HDKdd29w4gxRuQk7zF+e710D4u+llV4yzIH4yZGpbzEOtJWpfpPBea
+         DsbZ6TVLmfih1YwjJK3K4v6b25pYn4z/2V5kJy1aaVF7eS2oJ4r37KDW1qIFGZylZbnI
+         A5HuiMxjEE/K39JjADBKHxu4AjRzKlKvGyKprrOtNYpyQxazACYo/Z3aSBckFB02Muna
+         K24w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707854514; x=1708459314;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aeZw1WsdK0ILhztiGUDCvc9s83gleGWTx/2AVhzfBto=;
+        b=l43qUr8UvWdIjFNHyFYijPyB75CvRDPo23xO+auijP9KTTMiwVRiHb6ZnCg6VfOh1e
+         shFiIHY0R2UVzI4PrI2mCAT2QYn6PqB5dBOoooqrJdPRHTNMNgnS1LC2/wD9koJaJlYt
+         4IgKM/xexw1PekjIa/8rN3dYCFeEnqCn9De9ON5a/5zRqN1dzScJe7z+uz6jUc7+ke1K
+         S12Hju3YgurcTeKhTIt8JGz4S0600eunHHTnxxM/u+ays+f8R322qLwaa+z1ON2NpcGW
+         L3j2YXJSzgBp/ePfq4eMv6sPBODOzK4xpD/dG3ELl353UzDqZvPL7oPs/iXt0UVc2hK+
+         gGtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNxc8/7dfGFiOyJvwjVlGFmDAdoqnq3CpmFmM/J9hPmEAsX+0HpSDpEhRjN2wIm9mzpQtd14t0ZLAY1UWPxm6DELrXt2ssmAx/PnBF
+X-Gm-Message-State: AOJu0Yy//MM0A7I8aYsAxjJY07pGPxe0abRE2HAqf4+TwAZ0SG0skrPA
+	IqYwX5QMmK3qPkwlmDlBnYZfPhdYgZ91esD2GJ1P15nLrokyYrf2LdH6YkASn09irp3E3tIa/fV
+	LLhuGTN4PhVe2WSG2MVmj+3mn19HCBc4JHT0D
+X-Google-Smtp-Source: AGHT+IEoAl64de8zNKAQZ6ETW1N1MxR2kab9dSI7Hv2FnuBLL+jAe6glKg5e1u5UvR1ALTVOEk3lvhQA2UzDwTmO1zE=
+X-Received: by 2002:a17:906:6555:b0:a3c:e99f:be1d with SMTP id
+ u21-20020a170906655500b00a3ce99fbe1dmr3141450ejn.18.1707854513537; Tue, 13
+ Feb 2024 12:01:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4fCuJxvhdgZQ0EhT"
-Content-Disposition: inline
-In-Reply-To: <20240213022552.754830-1-andrewjballance@gmail.com>
-X-Operating-System: Debian GNU/Linux trixie/sid
-Jabber-ID: nicolas@jabber.no
-
-
---4fCuJxvhdgZQ0EhT
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20231218024024.3516870-1-almasrymina@google.com>
+ <20231218024024.3516870-6-almasrymina@google.com> <94ff0733-5987-4bf5-a53c-011e03aa6323@gmail.com>
+In-Reply-To: <94ff0733-5987-4bf5-a53c-011e03aa6323@gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 13 Feb 2024 12:01:38 -0800
+Message-ID: <CAHS8izOJMEtC1a26yJGMzV9jsX9TtE2xWXzWQ6qSi4ynXnr2Wg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v5 05/14] netdev: netdevice devmem allocator
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeelb@google.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon 12 Feb 2024 20:25:52 GMT, Andrew Ballance wrote:
-> with python 12.1 '\#' results in this warning
+On Tue, Feb 13, 2024 at 5:24=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.=
+com> wrote:
+>
+> On 12/18/23 02:40, Mina Almasry wrote:
+> > Implement netdev devmem allocator. The allocator takes a given struct
+> > netdev_dmabuf_binding as input and allocates net_iov from that
+> > binding.
+> >
+> > The allocation simply delegates to the binding's genpool for the
+> > allocation logic and wraps the returned memory region in a net_iov
+> > struct.
+> >
+> > Signed-off-by: Willem de Bruijn <willemb@google.com>
+> > Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> > ---
+> >
+> > v1:
+> > - Rename devmem -> dmabuf (David).
+> >
+> > ---
+> >   include/net/devmem.h | 12 ++++++++++++
+> >   include/net/netmem.h | 26 ++++++++++++++++++++++++++
+> >   net/core/dev.c       | 38 ++++++++++++++++++++++++++++++++++++++
+> >   3 files changed, 76 insertions(+)
+> >
+> ...
+> > diff --git a/include/net/netmem.h b/include/net/netmem.h
+> > index 45eb42d9990b..7fce2efc8707 100644
+> > --- a/include/net/netmem.h
+> > +++ b/include/net/netmem.h
+> > @@ -14,8 +14,34 @@
+> >
+> >   struct net_iov {
+> >       struct dmabuf_genpool_chunk_owner *owner;
+> > +     unsigned long dma_addr;
+> >   };
+> >
+> > +static inline struct dmabuf_genpool_chunk_owner *
+> > +net_iov_owner(const struct net_iov *niov)
+> > +{
+> > +     return niov->owner;
+> > +}
+> > +
+> > +static inline unsigned int net_iov_idx(const struct net_iov *niov)
+> > +{
+> > +     return niov - net_iov_owner(niov)->niovs;
+> > +}
+> > +
+> > +static inline dma_addr_t net_iov_dma_addr(const struct net_iov *niov)
+> > +{
+> > +     struct dmabuf_genpool_chunk_owner *owner =3D net_iov_owner(niov);
+> > +
+> > +     return owner->base_dma_addr +
+> > +            ((dma_addr_t)net_iov_idx(niov) << PAGE_SHIFT);
+>
+> Looks like it should have been niov->dma_addr
+>
 
-funny typo: it's Python 3.12 :)
+Yes, indeed. Thanks for catching.
 
-Kind regards,
-Nicolas
+> > +}
+> > +
+> > +static inline struct netdev_dmabuf_binding *
+> > +net_iov_binding(const struct net_iov *niov)
+> > +{
+> > +     return net_iov_owner(niov)->binding;
+> > +}
+> > +
+> >   /* netmem */
+> >
+> >   struct netmem {
+> ...
+>
+> --
+> Pavel Begunkov
 
 
->     SyntaxWarning: invalid escape sequence '\#'
->=20
-> Signed-off-by: Andrew Ballance <andrewjballance@gmail.com>
-> ---
->  scripts/clang-tools/gen_compile_commands.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-=
-tools/gen_compile_commands.py
-> index 5dea4479240b..93f64095fda9 100755
-> --- a/scripts/clang-tools/gen_compile_commands.py
-> +++ b/scripts/clang-tools/gen_compile_commands.py
-> @@ -170,7 +170,7 @@ def process_line(root_directory, command_prefix, file=
-_path):
->      # escape the pound sign '#', either as '\#' or '$(pound)' (depending=
- on the
->      # kernel version). The compile_commands.json file is not interepreted
->      # by Make, so this code replaces the escaped version with '#'.
-> -    prefix =3D command_prefix.replace('\#', '#').replace('$(pound)', '#')
-> +    prefix =3D command_prefix.replace('\\#', '#').replace('$(pound)', '#=
-')
-> =20
->      # Return the canonical path, eliminating any symbolic links encounte=
-red in the path.
->      abs_path =3D os.path.realpath(os.path.join(root_directory, file_path=
-))
-> --=20
-> 2.43.0
->=20
 
 --=20
-Nicolas Schier
-=20
-epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
-=E2=86=B3 gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
-     -- frykten for herren er opphav til kunnskap --
-
---4fCuJxvhdgZQ0EhT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmXLykMACgkQB1IKcBYm
-Emn2WhAAr/uP7ONWF6OazqnaFTX1stVYRqCALkxE77ELcU/9Fwa7+SRBbZHsHoi9
-Qxt5pjUssHWVnEtPDfWbr6lrcFlharkhAXkyBr2AN7Se6qrnRIQGVKn9QR8L6q7k
-nZprjuStF7beixYrlKtFasfnj9u6XQlwiJ87zF5Cl9usJfDHIf3KOEMrZQHKTUzQ
-thAyzIwXXM+q/nSCUk0ot/evURyVjvHqlXS+qeNmUO2qYB8GTKTqXU2QyT/eS6bm
-7kXvuMXHeaCoDNPfYWI7qvKvSzs//bjJVvmhCLbRaoF9kaA6e8ppSuPIEDbmYO7A
-BPlC6wQAMFCqFLJu8O6miyf6YYXDLth4PTzV+LbI2fTcdowyjgPGMXah3EanDrp/
-lnhBx+gUoGKO4pvUHIe6O+KVzSPF2QUjsL716pbeHc+yFF/kJmpP+8aTRmdZb5Vq
-OWSNEmzN79/RsnaaAhk2wZQnT9/62han7+N8DZZ2KYOezeSRzcrrAd+UNKlfPLE8
-HB+PJ+T4C0EcK2YIhcHVgRiKw3wWcdfVYj6P67rF7TK620hSvomo+mvAQVXUSiDy
-2z1mHlz71LEJyyCKwQY15AXRZJF7q01m8Zy8NJcR3aPZAZ3nK35YCElXxpPOrvYh
-iWylrp89sQAZ+om9VxwLX4bxbDp1l5Ce5zRI34uLGhWXpuWEF6k=
-=EmZL
------END PGP SIGNATURE-----
-
---4fCuJxvhdgZQ0EhT--
+Thanks,
+Mina
 
