@@ -1,105 +1,163 @@
-Return-Path: <linux-kernel+bounces-63990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F6E8853842
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:35:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02673853849
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:35:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 953F3B293B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:35:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2716F1C21976
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2942604AF;
-	Tue, 13 Feb 2024 17:34:40 +0000 (UTC)
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5406DAD55;
+	Tue, 13 Feb 2024 17:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="zt9Isu3j"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CC0F60279;
-	Tue, 13 Feb 2024 17:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707845680; cv=none; b=Af73xbG1F6q3XRDCWsVIEUQvUMKYojNfYpCx4pEKa+o4+Io1ZruG3dnULTxaKw61tkacWT0kAvdJaaZmebtuoMJP4V9cSNKDpV1pgpzTGwKHTR9voWZFfWF84fkkhGRphaRCThyqMtB9eSyY4VIwB3jcm2r1jp6qpdmA/VF7A8E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707845680; c=relaxed/simple;
-	bh=c/Wt2cl1adrqn+y+VTiixGgANJnxyMDGcXhZX+95cxc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EVqjHL2zZjJorn64Zv/Mi38PDZQU/zITy4OKYQHKx6JUEryMYelq/n/mZwP9l9e4cd8oaC8728mfQTlOkzwFJC4J+t29SjWwUkVX3O3oMb8WKWGVtrI+3IcPF2Jr+J1T10PWjBcg/5vs68o1Mw9ol8Yc/HUBxMRgW2pvEL6uljI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6e2f3e863fbso140378a34.0;
-        Tue, 13 Feb 2024 09:34:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707845677; x=1708450477;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PYZycCqXO/IvtV9fFldFSK4bZ9WbpBQtgeMSSvaaULI=;
-        b=rv94fFZxiK+htj67bp7uv9vtyDs/MTr2WSfxH3lEoUWqeuHnqtq8JBFZx1fKnHidZN
-         WdHN2m+UlW+Z3XX6tcassRjFM7AmlOZvPyCfmrVdrvClpowDd6DR/Vg+nOdov+ajrURn
-         oV2HjE493qwtnzKFWGYB07Ec7TPvOxrJuFIQJr7pyKwAJLGJVgA3nDeKly0Vt6AgTKD3
-         FwRh2pTU5kyMMPotNj/RpxcK6DDhb1rFRSAQhM3L/dfQTtIqCW37MHIyg3vHAa+QZkad
-         AXTjvbna+FHWtPhrdxmv3VXyqqUGXR58AzS/xZG2iC5xiuEQ56t1dbm3wwAr7vPmx+yC
-         aMyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUyi9UGMp1eWa6dXCQg5Dii0eIa+nKKrfrgYkgLC7QGgquJVM2yQ2XYRO/eV6x3UF0YEPeNj2yQ/SZZp8kDeJatrEH8guhBEWn27avoH96NMIbL7UAYil6wcTzx9HGMeeYNyVTCQwy0oSPqJnjqxvaBtJ05GfD7QvkdlTG42JshcNs1ybUyjbvi
-X-Gm-Message-State: AOJu0YxnS7ZVGOEls2A1oajkSeudpkJstdxXGbBjor0Z2cumSa+LRuIa
-	L2wkzy7yYIviLlbiZ2Wj1mCMX/9ta8oDHbyWV+FoWlzZ6NfJK2ppYHozPAnlu7hXYTrmRziLK2I
-	W+lWnPDkMhudSW7q4FIcwS+mPlgk=
-X-Google-Smtp-Source: AGHT+IE7YPlABGYgUznc1VZQ7aeKs1A0NW+/lpUob1WKX1anoeFXMQ8UT1MjF+3O5wIEcr4FfxzxODOCqbuAiFyMh10=
-X-Received: by 2002:a4a:e9ba:0:b0:599:fbcc:1c75 with SMTP id
- t26-20020a4ae9ba000000b00599fbcc1c75mr376859ood.0.1707845677204; Tue, 13 Feb
- 2024 09:34:37 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B964660273;
+	Tue, 13 Feb 2024 17:34:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707845697; cv=fail; b=ieNc7lJBYQ1JredJKtSPs2R7ESE3G67/cTiLQtyYi8zqD1G3ktDd5y4py6iYkhX00EnGYS4LzoOC2n3QzyOy8vFztPCRFHcv6M5i6n+PmjfFNilz08xKGBaJPN8fwyki3SmAPXirzWbTg9G73E6QofaQ3e6Elr/tJxxfmHg3RiI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707845697; c=relaxed/simple;
+	bh=DQXS6tLUlxjGfgFOIRduZ6eoZcmROQvI73UKGex59QQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=C9y936BWJfXxfRYT7ncGcNznNkfHhL5g/NKlwncNhXL54jTld91WOzA6V01dxmUhs4k/59uiVYnEVkdqNlnoSZQzYMhEPhjX7c7tSG2KaMgy38qTRMW7vxLl8xmZrN7lm5B7zSQqqUHpBv38uQSzZcprvgXd8UOclV8udq62IhM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=zt9Isu3j; arc=fail smtp.client-ip=40.107.236.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CnhyQQUs/GThTBLQF1P05H6k24d5mkL8hTTlWoox+M9wyQklVKlq5I5Z0w7LzOs2ZPaCPzF98onE4FSnp2czEfbysI/1Nh/Bwa7dLJbSzH4Pa5oDXYCSIDQSrGTDRQtkNlC9BWhJjF/uhzz/kqwf7cNS5dzB9QGB5v0ANhJN2zJgjMNd9AA2gGniWO6YJojLFwD0iM5oDpj8UqaYEGiQrUeoCwyp4eRXaJ/mcxE7WAVXNEMIIuY19EU2AjLnGBu0vdJ9L5bEEDCm3RzJClhaLMBxB5EmM6wrLJCejqVyTV4l6RUbHHs87WcyySnFYz3pvPA+MQERgGgZ2UNMYpso5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Mnof79B9tpM2EMXHBlSOaE61DrpyVkqMA9YxAksA6uM=;
+ b=GyFln13S1zi2JNYh04qJZcRqqGmaorO5RoO+69GNX0u1S48aEFVuoOFOR87jEV4nTGIZmiJMWpSeYvbyLzMMsCWuD2FCboS35kDD6bnCN0Auske2LHiOTSEqH17I4BpvUxEEgEX14eTtw/Sr9fy49LUG76l+VTHGbBbhD/SGl50+xFmWCqgId1FUWT+gs+x1SK8kEx+GP6tYlSzmeiCcGTIWjWCkcmXmsHeP3nyPEfQgT91iceZBJqX3scYt2vrG/dO9IhIRmxmBBhq0HIpNjJuLtpzHCu27S7R0eFvlxb2Zgl0H+ZK0dTGqP54xArjz/w8AAAFxcuk8STVCKnWsbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mnof79B9tpM2EMXHBlSOaE61DrpyVkqMA9YxAksA6uM=;
+ b=zt9Isu3jwJWsOLw56zbE6ciryCrubqsO43+yp86jB3VcdIPfZ85vtUyktNZa/0NA3T1+RpDPjMYBeLcFneYT5LxoYvbwASkYVi+Q3qrXyV0IMR2R0MAcMYjEtWJSVQhJ0MT2xgOWP7pePsQ0opTBXf7WNm/RpTjYATGHC+Vkstw=
+Received: from MN2PR19CA0038.namprd19.prod.outlook.com (2603:10b6:208:19b::15)
+ by DM4PR12MB5246.namprd12.prod.outlook.com (2603:10b6:5:399::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Tue, 13 Feb
+ 2024 17:34:52 +0000
+Received: from BL6PEPF0001AB78.namprd02.prod.outlook.com
+ (2603:10b6:208:19b:cafe::a9) by MN2PR19CA0038.outlook.office365.com
+ (2603:10b6:208:19b::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.38 via Frontend
+ Transport; Tue, 13 Feb 2024 17:34:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB78.mail.protection.outlook.com (10.167.242.171) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Tue, 13 Feb 2024 17:34:51 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 13 Feb
+ 2024 11:34:49 -0600
+From: Mario Limonciello <mario.limonciello@amd.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+CC: Mario Limonciello <mario.limonciello@amd.com>, Tom Lendacky
+	<thomas.lendacky@amd.com>, John Allen <john.allen@amd.com>, "open list:AMD
+ CRYPTOGRAPHIC COPROCESSOR (CCP) DRIVER - DB..."
+	<linux-crypto@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+	"Tim Van Patten" <timvp@google.com>
+Subject: [PATCH v2 1/2] crypto: ccp: Avoid discarding errors in psp_send_platform_access_msg()
+Date: Tue, 13 Feb 2024 11:34:28 -0600
+Message-ID: <20240213173429.43748-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213110852.51524899@canb.auug.org.au> <4044e07e87af766f643f89f839b332973819e048.camel@sipsolutions.net>
- <e15b25c2-2ced-4f79-b541-61980a31f947@intel.com> <82e78ebf5f84314e3fc1e6b8b1a76f948c9aeb22.camel@sipsolutions.net>
-In-Reply-To: <82e78ebf5f84314e3fc1e6b8b1a76f948c9aeb22.camel@sipsolutions.net>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 13 Feb 2024 18:34:25 +0100
-Message-ID: <CAJZ5v0iQvOnO0FffGHVzTOrTVdfAB6jaFYgsKL1ep7BnOz0m9A@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the wireless-next tree with the pm tree
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Kalle Valo <kvalo@kernel.org>, Wireless <linux-wireless@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, 
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB78:EE_|DM4PR12MB5246:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8ae68164-66a0-4595-08bd-08dc2cba155f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	+Cx+9gjyw4L//yvPGp2uXntCRVs9Dm6UUJtZct1z7CBePrMvfZkfn2uZYDg4dEX4cXlGNrYotZEgWRd5scZoK/N5RUEQjk7+0Oug/lR26mETLkZG2qxvvicLwUsKmbbxnHm400NH/nBe9LwE/wpNAM6vgW9BtjPN2OhATOp7v3ShvG9N+HI/Wpn1slq1Tlzg5ta242Z6yUHtSXU9cHCkOKX17NKSZ6hOemCN9XVDDhjzssXUFg05+qrXkheXMIEw82ZJLJ1gMvZA0iX6JqtwKj21fL8YIGV0qmT27TBmUi9GSEy3zuwDcOBE1+0GxKQUPCND55cqgkEDFePYgdooLb6vb6P2ubnZxXvfLPliC1SrIeoI2udP4XLe+kzXQrCtOoF3HGwJM6POAPS8fN2b9/Nv54e3FhxOKW6V8iDfT3Fo9N0rqqeJrNuTjkLx05PFiRNfk/rl+A/Jnoo0UuSfxrj3V9mkChlA+YihC3sszUDmI1oYEXXF+wlu3wMZRyIMhkGjiNZjBP47hOUt3PKuxmdWYAXNRYFqmsnai5AsZjkboxbqXfTfpqpPvqweimReyhtPHg90X+XiuLb6MdFnLS0iO53pnO710061rCcy3/A=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(396003)(346002)(39860400002)(230922051799003)(1800799012)(82310400011)(186009)(64100799003)(451199024)(36840700001)(46966006)(40470700004)(54906003)(6666004)(316002)(2906002)(44832011)(5660300002)(70586007)(70206006)(86362001)(8676002)(6916009)(8936002)(4326008)(478600001)(41300700001)(2616005)(1076003)(26005)(36756003)(356005)(426003)(81166007)(336012)(83380400001)(16526019)(82740400003)(7696005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 17:34:51.3544
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ae68164-66a0-4595-08bd-08dc2cba155f
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB78.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5246
 
-On Tue, Feb 13, 2024 at 6:14=E2=80=AFPM Johannes Berg <johannes@sipsolution=
-s.net> wrote:
->
-> On Tue, 2024-02-13 at 18:03 +0100, Wysocki, Rafael J wrote:
-> > > >
-> > > >    2e171a57c312 ("iwlwifi: mvm: Drop unused fw_trips_index[] from i=
-wl_mvm_thermal_device")
-> > > >
-> > > > from the pm tree
->
-> > > I guess we'll have to live with this conflict, unless Rafael you have=
- a
-> > > feature branch for this I could pull in and resolve?
-> >
-> > Well, not yet, but I can add one if that helps.
-> >
->
-> Well if you have a branch that has the above commit and not too much
-> else, then I could pull it into wireless ... but chances are the common
-> base that we have is divergent enough that'd pull a whole bunch of other
-> things into the tree so that'd not be great.
+Errors can potentially occur in the "processing" of PSP commands or
+commands can be processed successfully but still return an error code in
+the header.
 
-On top of 6.8-rc2, there are 3 unrelated commits that you'd need to
-merge along with the wireless ones.  Your call. :-)
+This second case was being discarded because PSP communication worked but
+the command returned an error code in the payload header.
 
-> Pretty sure even if the conflict survives to the end Linus could figure
-> it out? :)
+Capture both cases and return them to the caller as -EIO for the caller
+to investigate. The caller can detect the latter by looking at
+`req->header->status`.
 
-Agreed.
+Reported-and-tested-by: Tim Van Patten <timvp@google.com>
+Fixes: 7ccc4f4e2e50 ("crypto: ccp - Add support for an interface for platform features")
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+v1->v2:
+ * Update tag for Tim
+ * Reword commit message
+---
+ drivers/crypto/ccp/platform-access.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/ccp/platform-access.c b/drivers/crypto/ccp/platform-access.c
+index 94367bc49e35..1b8ed3389733 100644
+--- a/drivers/crypto/ccp/platform-access.c
++++ b/drivers/crypto/ccp/platform-access.c
+@@ -118,9 +118,16 @@ int psp_send_platform_access_msg(enum psp_platform_access_msg msg,
+ 		goto unlock;
+ 	}
+ 
+-	/* Store the status in request header for caller to investigate */
++	/*
++	 * Read status from PSP. If status is non-zero, it indicates an error
++	 * occurred during "processing" of the command.
++	 * If status is zero, it indicates the command was "processed"
++	 * successfully, but the result of the command is in the payload.
++	 * Return both cases to the caller as -EIO to investigate.
++	 */
+ 	cmd_reg = ioread32(cmd);
+-	req->header.status = FIELD_GET(PSP_CMDRESP_STS, cmd_reg);
++	if (FIELD_GET(PSP_CMDRESP_STS, cmd_reg))
++		req->header.status = FIELD_GET(PSP_CMDRESP_STS, cmd_reg);
+ 	if (req->header.status) {
+ 		ret = -EIO;
+ 		goto unlock;
+-- 
+2.34.1
+
 
