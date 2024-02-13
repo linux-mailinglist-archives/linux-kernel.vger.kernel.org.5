@@ -1,164 +1,137 @@
-Return-Path: <linux-kernel+bounces-64122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 515FD853A4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:54:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 840C4853A4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:55:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A14ECB28CF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:54:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADE541C22970
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:55:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27521118E;
-	Tue, 13 Feb 2024 18:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB281119A;
+	Tue, 13 Feb 2024 18:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D0Y27dxX"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b79rEpbe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E75AF9CE;
-	Tue, 13 Feb 2024 18:54:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EB010A1A;
+	Tue, 13 Feb 2024 18:55:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707850447; cv=none; b=akRYKpgYNQ+t3qCmFw0M/oW/GlXGTjHmoN9Sg1BiYvGJyETVnVJyOUP58CueOxUyv934Viz3zDTF7v8d/8st9bZQ7a6cTK2WnH0RB1y87UhwRoP1iSwf81fNCEQ4j9lm8sqFgoikNbcqkP/RyQvCfhGqq6Uyj+IprqbRMEAZLXA=
+	t=1707850506; cv=none; b=QIwX63nFdJS2cbQ1gOSXQpOwY/OJHnJNdUTV81kzd5ZOMMHHG/2N1DyLxya14POiKICTlS43HwG/+6sp1RO+M3IJ/7EUC/s+7mihthOL+AKo4nwlXL4GDHzwYRHi2AZVcctu2Yvio0uqb5MKC4d7fCleuuEKbbjdUo35T/HPl3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707850447; c=relaxed/simple;
-	bh=Pc0Uz7ZvGZAiMsnw79hmI3/pLFuibu1zlCY04CWwfqI=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XA1u1RFgOxa4/xIECtnWDwqxJEvtZzqhW/S2ey5SV6BMl/Ym5jwySev1bC8ChfdJ6P2DVx/8r+dvkhSbdaZEBo72et/ZMRkhqOtaqwhucGsPtIVGMhccuyhVDRixWup/x3qvN4ZN1Y00V2GjmBR6tlWQnIyPobgbaf6soCgI1YE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D0Y27dxX; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33ce58eebe4so50213f8f.1;
-        Tue, 13 Feb 2024 10:54:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707850444; x=1708455244; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=H+dGVs9NnswSaixQthi1rDV1QFJqXgmXn+44KoHCVtM=;
-        b=D0Y27dxXWvXX3BikwVOwIcARuIN1TSTnwELh2mVwOeIX4rYheZrPCstI5xymPl/ZeO
-         0GIQwn7B+DuN31W1wp5qKQmLF1Qe9ZcWKn7LAFtQBmoMLY9VYWhXx/1fGGMHi6Tn9Zxx
-         k1liOT5IOJZ+7dhjAFgYZrUtDrzC5sm+TEDIWVYPaRWRMLc4CvqvcJEWt8PPQxf/p0tZ
-         1CLiB0mbLZGaZp0khQnoVFKto6eXB2tmNEaIHlbapUd7/kZA73RCPxt5FN8SJMH7+Ld6
-         0GwCCx7y74bqHh/x1yvaEvhCE3F8BWMhVrx1ccWvHCnYOKkShor5NtY1kNWuRB3Atj4A
-         ZYzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707850444; x=1708455244;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H+dGVs9NnswSaixQthi1rDV1QFJqXgmXn+44KoHCVtM=;
-        b=DKkPmR2aJOCmlQfw67HS9eXzZNWuyPr214bCiVQDFn41LuSlBPgE3ciGIqJgjyxQvJ
-         0cZWwqguwTTtC9y0VA8uFMzAVwzCH9nZ8Wl13Qpr4cDooIvb1Py+0Ia1yNtSA/zKWvOO
-         2MeWuB6CitOSJKs1px4yVMh9QlYTFkk/KVUPwP0g+nXAIvZQqCf2bMErRRSuyd2DeXFi
-         Sq5b8vpAB54Umq6FMmwNTDVAlq1B5tnd6QwTHPbG4hKpfr70q8uVkP1ZElrsbmhVS+2O
-         k66IUeclRG8zhGkNTPXgB0CiEWHitNt1+Zn90NxjbSn0P1Imb8GTj+mwSJzJQnU7fnPd
-         NC6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV+eWbKKr2kKwreVhLD9l/8LkxUNwG5wQDGxNUxmZD/1yM69eP1jOWNEMplncBQOoa8GmGVNsGgUwiCPSKihBs+dznCCNr5lzx4VFXIfFSt7xskfB2EGf9KvibDFGM0QLeAzNsi
-X-Gm-Message-State: AOJu0Ywcq72a2iwj2p+ea1qxdRXlPjiWpXrSp2AqbbzZpypldrg60pgF
-	4kJAJIKKwfkbk00H4a1a7PGkDdUA/UBatdn16GJH+RJZVQl4Ba4q
-X-Google-Smtp-Source: AGHT+IGMMCWuXq1XZcrPQ1EiFcPPPej/HSXL6sjzEWIJaIXAfRFJTmfrTFNETJ/ER3qKIOvYbztQPw==
-X-Received: by 2002:a05:6000:1247:b0:33b:69ee:981c with SMTP id j7-20020a056000124700b0033b69ee981cmr106399wrx.39.1707850443569;
-        Tue, 13 Feb 2024 10:54:03 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXaY1x2sBPwRiKIg3cQcsoW7970/cAS7G9IV23i6AC0XlH0ShC4BuzWXNRGV2SUbDJMZ7+zOM8DbK4wUQpOqYqu0rIfVIu67xbcQSPNxFghgBg2GvLqjhT2UU9j4Qzavli/9cAgG/b1CqykNVI+4SHHzvub+9/Dl2180Ugp5t7TzyIMewBBJGAMlkVm+fZGlilCmH+nhZwnMIqMMKgL7G7LZw/hLA50e/urfo3oAH2QyayXQNnQ3oOUimTwUQXdApMBu4kAOBL6MwvFlX/70blHykazh/6A9b6sJX9T8cvDmLBf1sS6g8X6x2QfP9uXVOEkOCZ3/n6MhbTn
-Received: from Ansuel-XPS. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id v7-20020a05600c470700b0040fb44a9288sm12448929wmo.48.2024.02.13.10.54.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 10:54:03 -0800 (PST)
-Message-ID: <65cbbacb.050a0220.b81d1.eb5b@mx.google.com>
-X-Google-Original-Message-ID: <Zcu6xo67smLk3wy0@Ansuel-XPS.>
-Date: Tue, 13 Feb 2024 19:53:58 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Robert Marko <robimarko@gmail.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next RFC PATCH 0/2] net: phy: aquantia: fix system
- interface provision
-References: <20240213182415.17223-1-ansuelsmth@gmail.com>
- <ee00b11a-4679-4ba4-be42-10f15d5e9f65@lunn.ch>
+	s=arc-20240116; t=1707850506; c=relaxed/simple;
+	bh=BB95l+0BhbUBCzSMMBSz+FS9RLul9PCTuuXwE/NiX3E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UdFpkl6nU43XH8wIzZyaOsbPQK4BJ6KqAbUo9x8cAHM1lqm0v/2wY2+UZNEclMmmcUK5Ji/4oKRcJ6xikcFDn3+3vABf405GtelCbDoiBJyI/MYw81N1ZIrFyHLqVTGhltEnLOvms7HjfS+5tUI8ZhwLzhtHYIjUnigxjGwIMJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b79rEpbe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FB2BC43390;
+	Tue, 13 Feb 2024 18:55:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707850505;
+	bh=BB95l+0BhbUBCzSMMBSz+FS9RLul9PCTuuXwE/NiX3E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=b79rEpbeOnYlLR6qA2l55tXC7SrxWaQWIlUtg/o6nJVbazaXfqA4k2C+Gbm1WjeeX
+	 0vxrS83UYCoYt79EDTAawzhwkfHJ1nF5L5pfRAuE3dF5QFYILTet9Zwcn0906ZdMT7
+	 c5zojMTKjMdv/mJh3gSooWOKFtQ+nQtcrmNhWCxW0YmhQ7DJ1QLDmEJUkPBtBkqI/b
+	 BeAPLjeV2MCb1Sho/JBcPUVBCIczdKbh6Kb2kG9fTtFxtrapLEbRK3gzxmvAzG0OpA
+	 lqwuUV4DBh8cTqdDOYoJqeySd4VjzljqPLRd5RWbh/djjJzGk+4U/M4cQJ4xJ8Tsjm
+	 /D0jQE0bW29dg==
+Date: Tue, 13 Feb 2024 18:55:00 +0000
+From: Mark Brown <broonie@kernel.org>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Martin Sperl <kernel@martin.sperl.org>,
+	David Jander <david@protonic.nl>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 1/5] spi: add spi_optimize_message() APIs
+Message-ID: <54623b74-872a-41dc-992f-71a586d145ec@sirena.org.uk>
+References: <20240212-mainline-spi-precook-message-v1-0-a2373cd72d36@baylibre.com>
+ <20240212-mainline-spi-precook-message-v1-1-a2373cd72d36@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="1x94l0akyl18zoOC"
+Content-Disposition: inline
+In-Reply-To: <20240212-mainline-spi-precook-message-v1-1-a2373cd72d36@baylibre.com>
+X-Cookie: Does not include installation.
+
+
+--1x94l0akyl18zoOC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ee00b11a-4679-4ba4-be42-10f15d5e9f65@lunn.ch>
 
-On Tue, Feb 13, 2024 at 07:46:45PM +0100, Andrew Lunn wrote:
-> On Tue, Feb 13, 2024 at 07:24:10PM +0100, Christian Marangi wrote:
-> > Posting this as RFC as I think this require some discussion on the topic.
-> > 
-> > There is currently a problem. OEM multiple time provision Aquantia FW
-> > with random and wrong data that may apply for one board but doesn't for
-> > another. And at the same time OEM use the same broken FW for multiple
-> > board and apply fixup at runtime.
-> > 
-> > This is the common case for AQR112 where downstream (uboot, OEM sdk,
-> > openwrt to have the port correctly working) hack patch are used to fixup
-> > broken system interface provision from the FW.
-> > 
-> > The downstream patch do one simple thing, they setup the SERDES startup
-> > rate (that the FW may wrongly not init) and overwrite the
-> > global system config for each rate to default values for the rwquested PHY
-> > interface.
-> > 
-> > Now setting the SERDES startup value is SAFE, and this can be implemented
-> > right away.
-> > 
-> > Overwriting the SERDES modes for each rate tho might pose some question
-> > on how this is correct or wrong.
-> > 
-> > Reality is that probably every user an Aquantia PHY in one way or another
-> > makes use of the SDK and have this patch in use making any kind of
-> > provision on the FW ignored, (since the default values are always applied
-> > at runtime) making the introduction of this change safe and restoring
-> > correct functionality of AQR112 in the case of a broken FW loaded.
-> 
-> This is part of the discussion i had with Aquantia about
-> provisioning. Basically, you cannot trust any register to contain a
-> known value, e.g the value the data sheet indicates the reset value
-> should be, or that the 802.3 standard says it should be.
-> 
-> So in effect, the driver needs to write every single register it
-> depends on.
->
+On Mon, Feb 12, 2024 at 05:26:41PM -0600, David Lechner wrote:
 
-Well if that's the case then this RFC patch is a must. With a
-misconfigured System Interface configuration, the PHY can't comunicate
-with the MAC.
+> This adds a new spi_optimize_message() function that can be used to
+> optimize SPI messages that are used more than once. Peripheral drivers
+> that use the same message multiple times can use this API to perform SPI
+> message validation and controller-specific optimizations once and then
+> reuse the message while avoiding the overhead of revalidating the
+> message on each spi_(a)sync() call.
 
-> > This might be the safest change but again would not give us 100% idea that
-> > the thing provision by the FW are correct.
-> 
-> I would say, we have to assume provision is 100% wrong. Write every
-> single register with the needed value.
-> 
-> Is the provisioning information available? Can it be read from the
-> flash? Can it be dumped from firmware we have on disk? Dumping it for
-> a number of devices could give a list of register values which are
-> highly suspect, ones that OEMs typically mess with. We could start by
-> always setting those registers.
->
+This looks basically fine.  Some small comments:
 
-We know where they are stored in the FW but it's not documented how the
-provision values are stored in the FW. (the format, how they are
-organized...) I can waste some time trying to reverse it and produce a
-tool to parse them if needed.
+> +/**
+> + * __spi_unoptimize_message - shared implementation of spi_unoptimize_message()
+> + *                            and spi_maybe_unoptimize_message()
+> + * @msg: the message to unoptimize
 
-Would love also some comments by Russell about this, there was a patch
-adding support for WoL where another user was messing with these regs
-and he was with the idea of being careful with overwriting the provision
-values.
+There's no need for kerneldoc for internal only functions and it can
+make the generated documentation a bit confusing for users.  Just skip
+the /** for /*.
 
--- 
-	Ansuel
+> +static int __spi_optimize_message(struct spi_device *spi,
+> +				  struct spi_message *msg,
+> +				  bool pre_optimized)
+> +{
+> +	struct spi_controller *ctlr = spi->controller;
+> +	int ret;
+> +
+> +	ret = __spi_validate(spi, msg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (ctlr->optimize_message) {
+> +		ret = ctlr->optimize_message(msg);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	msg->pre_optimized = pre_optimized;
+
+It would probably be clearer to name the parameter pre_optimising rather
+than pre_optimized, as it is the logic is a bit confusing.  Either that
+or some comments.  A similar issue applies on the cleanup path.
+
+--1x94l0akyl18zoOC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXLuwMACgkQJNaLcl1U
+h9Bnrgf/WeeHvY6OP79eR9psCOmCmEFE7LyYK3KbHMD6KHn9UrE1fMVqnbazXiT+
+/ALDeTCkov7jcu1uUMZZuSVyfv+JpM71kKEZ0L2p/Mbn6qwWfriempoqr7Jh9RiQ
+m8IH2XIEfX3/rWvRFdxK4H3i//gqVwEaf3Tf9pyBPosblP5bim2GT3h0ci0h5D+S
+zC7VK+2Zbb+S5x1uqH07Cq/ApUwUYXsIDur5pK6r0MkHjJCkq+5v0aRUUdMSx4PC
+naHKWpPHFqI4IhzU6UrpGUcOQ6Pfq/WNZ2kdm7+bjKJXDZdxkkGQ5sZbhvlUEkoM
+Xxvql0q/x39T42ahhk5bHCFqIhb2HA==
+=lAcK
+-----END PGP SIGNATURE-----
+
+--1x94l0akyl18zoOC--
 
