@@ -1,146 +1,95 @@
-Return-Path: <linux-kernel+bounces-62895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E4378527A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:59:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 736818527A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:07:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DD57B240D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:59:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E6B11F23B46
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:07:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50F58C1B;
-	Tue, 13 Feb 2024 02:59:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71CD8F77;
+	Tue, 13 Feb 2024 03:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JXFLQ4oB"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kIXNrED1"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0355A8BEB
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 02:59:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15378BF3
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707793156; cv=none; b=b+NYLSEK2j4c00RWsXcqoLAIuqZreOXKNTz98/ajNHzDAjnk3+5wjcoMKiV/Ibl4GDo0bWjULGZUpuuwNZ4PYdRZl7EaCAZiKfAZ3GwAgfHc1nDQRJBab8Y6DCwMNJtxPfi28Oo5KfwBKTQPcl5MFPcwnXhLYrx+uNmWaRMc4Xo=
+	t=1707793649; cv=none; b=B+3i4I8X6OSflJkHViBgfMqDgDISGiN/G0R7PO4l+AyZhUktP6z965dJw/JLxYcU7XVXG6H7PSMEIdbSshtV+qZyzlAXRiyUOvNc2GaEqMB7/4480W0NH4M3vN1bbdjj2AehpR+qbIV3t/c2HaTGoBEiMfBD0VOSNqwKv7E3ORI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707793156; c=relaxed/simple;
-	bh=gQ46DN6D1yvoNqoRdUsU1YbJhGgGueJQzMWJCt/g+dE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RSOQMo2TjxwPUDXNnU0Sb/2ki63/Qlpy632RMmtuENgU0expd/cr5/Ns7Dxzcz60WrnsdBbyrFDj3+dgRGGjGSuR3Ry4ha/s8gb4YDm4uJ4VBSxzbuROSZq5ygBvo8+sEqmmFHg8pZ5lv7bQ8+z2h2TGWH9HHPfLjLLZR7CQ5fM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JXFLQ4oB; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707793155; x=1739329155;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gQ46DN6D1yvoNqoRdUsU1YbJhGgGueJQzMWJCt/g+dE=;
-  b=JXFLQ4oBL2FVcDd3uFMpuz0aqONiUVDzYqo/wlfNIwXB0RwhsRbRW0Hm
-   iFzGWHVUpEsO3hvS01nbPy4A/ASgdTzsU/XqYxnPEURwzzSCZ5ylfXHvO
-   oiLTFjGWjS28cHGKEZuFwolmrL7VppZfXEff8uoXWMmQ52m3hE2p4jYVv
-   fFkmF3c5xPs7sI9UlXnBwjk6tGdFs6m8wqdnFOUdPfGK1ukKUYCWYq1Ui
-   3T/D2jn487+vYyBvG1iFNZEOf9IFRdT773XWWhV+L82EnfO/82KvP18dl
-   eI5iODEp9jz5v1VH2iTswNTiP/QZH98ggeV2CaC3urorPB5iuVMdKddy+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="12882611"
-X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
-   d="scan'208";a="12882611"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 18:59:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
-   d="scan'208";a="2809521"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 12 Feb 2024 18:59:12 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rZj0n-0007Tq-0O;
-	Tue, 13 Feb 2024 02:59:09 +0000
-Date: Tue, 13 Feb 2024 10:58:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Cristian Marussi <cristian.marussi@arm.com>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	sudeep.holla@arm.com, vincent.guittot@linaro.org,
-	peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com,
-	quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
-	Cristian Marussi <cristian.marussi@arm.com>
-Subject: Re: [PATCH 06/11] firmware: arm_scmi: Implement Clock
- .is_notify_supported callback
-Message-ID: <202402131047.2NVZWHma-lkp@intel.com>
-References: <20240212123233.1230090-7-cristian.marussi@arm.com>
+	s=arc-20240116; t=1707793649; c=relaxed/simple;
+	bh=m1/doowd5GK+v7WOSqX7sG6jJ9oDJl0r5asumkU4VaM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=DaDCHBTNeNKXeQHAvgxh4e4PAvGMQcd/KZsHIoVCaM3GWm01olPZIj+KkxXeKH/EJ8ADPTYTz/vq0G9/XIBSNg0HjdcNYlqcIaZ4b2N1NMeynWEL6yKKGHx0c8dR664w2GgW7bZCOerAgujoz4oajW23i9+l2tIOIW3k95nzm1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kIXNrED1; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dccc49ef73eso65143276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 19:07:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707793646; x=1708398446; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EDyGRPlFXhZbZuymw2eh2GCe/IMO4/k7iwoMfqLh98I=;
+        b=kIXNrED1UDUnOJU6YRZzdTHOzmoS1ZuwPfb4UAxiwzgRt93NpdO5GFtQ4rh8MzDO7O
+         UJBVkFW4jqMzHHlx9CLIkZrguCEuvHQx/0ZbRzSBb1fdmnESnCF/lEtbePkvfkxRMN6T
+         xRj0RLoCuDbm713uuEA64ezEU1yKmbg0eOxCa/nl2CPt55cZNtDCEtxm42WfGZ6CmgOQ
+         Qmgs6mbo74aef1R/X39FYM95rjF9smizRwu+S/DrRjE2Dk87JORaPqtDnUKrsrF6fV+l
+         wLifwMv9cVWoBgtLiCJM5FJJLwSN0hdpxZu/UrvKwpRGzcedPdI8XFJQJ5SVX0Ey7xfR
+         YaSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707793646; x=1708398446;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EDyGRPlFXhZbZuymw2eh2GCe/IMO4/k7iwoMfqLh98I=;
+        b=E6fknxDcJN62mrbSrBTu8vgaI3hV7uv3rKRoqrtYLUaGlSMVD1ZXWRxhvuNVVTRIoQ
+         N8jAmwhfmf9kJHuLXWSovPXH6uQKanDbb5H0d4B6fGBAKDWP8OZYl2kUTSowInx8WFjW
+         AttJMK7UHayZuqlp7fzkidPSnOvo4RJ4hmmzTwqUNK8kTXULE7i35+6vTJfcEgs26zsl
+         iC40ZOmdkZhssDfZhPSA6QTE8UKEudOCBvKnws1FSAsZFMO4rucQQac9PrRhGjxXjaCQ
+         XFyQqXexwkoxw9/4FtDXNDrjZFZi4bmzbxN066ONWvTGWgOXZQaDHsPSjYOpj9seprJj
+         +UcQ==
+X-Gm-Message-State: AOJu0Yx3zQPhrkaSLQZB2SAq/IRj8vn0ElHnzweDAn5egmmBEKTB0Znt
+	8rL9e7pLd+BA/TgWEAjXWhJNo8qUV0xp4L3hoyAtclEzrI9VshYdmKKefKvCUequU43Al6/mqdG
+	mLw==
+X-Google-Smtp-Source: AGHT+IFx8TR/MIxlLVsYexKB/j+RGg6asZ6+QdHFN/AKxH1qPhN1E0yuDVwBXitEVuZTu0mnkbf32YdKgAI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:709:b0:dbd:73bd:e55a with SMTP id
+ k9-20020a056902070900b00dbd73bde55amr389575ybt.4.1707793646745; Mon, 12 Feb
+ 2024 19:07:26 -0800 (PST)
+Date: Mon, 12 Feb 2024 19:07:25 -0800
+In-Reply-To: <20240103084327.19955-1-yan.y.zhao@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212123233.1230090-7-cristian.marussi@arm.com>
+Mime-Version: 1.0
+References: <20240103084327.19955-1-yan.y.zhao@intel.com>
+Message-ID: <Zcrc7UxSO3-Cncjm@google.com>
+Subject: Re: [RFC PATCH v2 0/3] KVM: allow mapping of compound tail pages for
+ IO or PFNMAP mapping
+From: Sean Christopherson <seanjc@google.com>
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, pbonzini@redhat.com, shuah@kernel.org, 
+	stevensd@chromium.org
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Cristian,
+On Wed, Jan 03, 2024, Yan Zhao wrote:
+> This is a v2 for previous series [1] to allow mapping for compound tail
+> pages for IO or PFNMAP mapping.
+> 
+> Compared to v1, this version provides selftest to check functionality in
+> KVM to map memslots for MMIO BARs (VMAs with flag VM_IO | VM_PFNMAP), as
+> requested by Sean in [1].
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on soc/for-next]
-[also build test ERROR on linus/master v6.8-rc4 next-20240212]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Cristian-Marussi/firmware-arm_scmi-Check-for-notification-support/20240212-203727
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-patch link:    https://lore.kernel.org/r/20240212123233.1230090-7-cristian.marussi%40arm.com
-patch subject: [PATCH 06/11] firmware: arm_scmi: Implement Clock .is_notify_supported callback
-config: hexagon-allmodconfig (https://download.01.org/0day-ci/archive/20240213/202402131047.2NVZWHma-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project c08b90c50bcac9f3f563c79491c8dbcbe7c3b574)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240213/202402131047.2NVZWHma-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402131047.2NVZWHma-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/firmware/arm_scmi/clock.c:853:8: error: call to undeclared function 'scmi_clock_domain_lookup'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     853 |         clk = scmi_clock_domain_lookup(ci, src_id);
-         |               ^
->> drivers/firmware/arm_scmi/clock.c:853:6: error: incompatible integer to pointer conversion assigning to 'struct scmi_clock_info *' from 'int' [-Wint-conversion]
-     853 |         clk = scmi_clock_domain_lookup(ci, src_id);
-         |             ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   2 errors generated.
-
-
-vim +/scmi_clock_domain_lookup +853 drivers/firmware/arm_scmi/clock.c
-
-   842	
-   843	static bool scmi_clk_notify_supported(const struct scmi_protocol_handle *ph,
-   844					      u8 evt_id, u32 src_id)
-   845	{
-   846		bool supported;
-   847		struct scmi_clock_info *clk;
-   848		struct clock_info *ci = ph->get_priv(ph);
-   849	
-   850		if (evt_id >= ARRAY_SIZE(evt_2_cmd))
-   851			return false;
-   852	
- > 853		clk = scmi_clock_domain_lookup(ci, src_id);
-   854		if (IS_ERR(clk))
-   855			return false;
-   856	
-   857		if (evt_id == SCMI_EVENT_CLOCK_RATE_CHANGED)
-   858			supported = clk->rate_changed_notifications;
-   859		else
-   860			supported = clk->rate_change_requested_notifications;
-   861	
-   862		return supported;
-   863	}
-   864	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Doh.  So I didn't intend for you to have to create a mock device just to be able
+to run a selftest.  I assumed it would be easy-ish to utilize an existing generic
+device.  I take it that's not the case?
 
