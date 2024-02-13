@@ -1,162 +1,117 @@
-Return-Path: <linux-kernel+bounces-62931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CF96852801
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 05:34:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D02C85280A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 05:44:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9F211C2315F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:34:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51D541F23E03
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52D0314A8F;
-	Tue, 13 Feb 2024 04:34:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F23111C8B;
+	Tue, 13 Feb 2024 04:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YGUGC3e7"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FO3zXqG/"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9F1134CB;
-	Tue, 13 Feb 2024 04:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386AD1119F;
+	Tue, 13 Feb 2024 04:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707798853; cv=none; b=L24c9HDA+eKYOEOFyzMmhRRVANXgoOoDyzQnbb0Kj4C/7BwROxh1+0f11kJB57/nvmPEG/zU2+aYQha6ZKP4rDeeSGhuhbuPlutgNENkGO1h40xhkpkSCU42fORy/WzDGHykuWwG+MBtZZhN7Yllnm69IQw7afz6UdIs4DQUoe0=
+	t=1707799474; cv=none; b=t1RzCbmgjwnajJgSeqBEgI+3ONDIEn6vXLVYSUiqBAOblZZH0Ez9T3XdbFsAGUFVCrD4LLcyhQcYlBGjcviK6u8ZfCtIxNRGeraHMWYIkAHm2MOFw5DTVH4s1Thuas6xCtiSY9NLlrzTxYuvKxx04zfJX2wmppBqbbIA1ZUxBKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707798853; c=relaxed/simple;
-	bh=KIbzSD+oc/jZIR4jbZWetsO+W0RFfMXzXcK9r5ePxZM=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=chXi7uSKdGpOPUZXXOaPq6mUMliVtejl84XQmwxzZ7dAN4JJhT6kAZ3ZegtPRrZ+A2rZjSfF5vp9fKcapbPpdF6WJF3XpiZwgbi0qEF80Hk+DuRwly5trg89ZOjSXdS5RdyWpiZFViWp7O/JlieEpgoFECxP5ONNwV6ji4kWIDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YGUGC3e7; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6de3141f041so414439b3a.0;
-        Mon, 12 Feb 2024 20:34:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707798851; x=1708403651; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vh4C2jib+iFDULM0386egKcjhLxfCpsjoM1ZbGOsfWA=;
-        b=YGUGC3e7gHJi453vF63ASpDBgZnQ8VkznsCAeTTe4r8FIJIY1O97zoJHUfZcyyBOll
-         moLILL5fTExbOEGxwED3ABhGxEms3WANvJkh8OuuxF7rN3hVRSFfE2oj22Iz1WGMz4i7
-         auNwXG8Z/QgtlxWQPVzdYYft37zYxOlwMwlX8Xcc45NkM8cdmhnVmnrdvXU+nm5shhDj
-         zzcgkuwoP0GXPgnXQTt9VDbNNARnfY9lCGAZthohBad8wXBjoGp6KzgZEc6kaAyudEcX
-         5lpfOcr19+X1rwCZT5odiiPtbBF+uPET1oqlmNA9yatxkgHMwv4sUEPTV3MUMMMbn6L/
-         3clA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707798851; x=1708403651;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vh4C2jib+iFDULM0386egKcjhLxfCpsjoM1ZbGOsfWA=;
-        b=mhkOUjj3ZrPWB+jKXN/tWUu0136m+Y4pYHaiR9Umna1uqv8t+DlQi/2m04rpgRxpIo
-         un9g9/gnO62UCC+rU9wuzk7jcjZBJRrBEGjj1kMUfnzv0VUaLXKYDcX37gLU0XY0Bayi
-         0VRvCLkYJW8yj3TRehcs30gNXaL+8dNdk9xNMMcW/0myAzx4RocSqoyjSn49PgvPQXyx
-         PlsOx8HUBCeOoaZN/oriM8jXXV2At5rmbJ9ViykA2PqGoI84xJlrj+qL7nHGHr16AcnO
-         NMB8fYMziyaLt7aRfZ6nqIFTa+QICHBMbuvMFFhVxBx/Cph4Jvl0NI6DXvnX7VX7YSrQ
-         ErYg==
-X-Gm-Message-State: AOJu0Yy0N7M4mxlEIqv1s5CMd54oSn4+m0IAFHfzzan3d/P+rE5uaat7
-	o0hvTQRAiIxv1k8JIQoqsGklLBxQKtJCPN+tXAYF36syQPlH3C3XfWwW9T04
-X-Google-Smtp-Source: AGHT+IEadwOvNzG1cYp2wrNwMifgYz/Nkf//UbAYKYK0dIw3gZ4koF9PqsM8/TaMWNQgSlkRINCZ5Q==
-X-Received: by 2002:a62:cd89:0:b0:6e0:9e90:c952 with SMTP id o131-20020a62cd89000000b006e09e90c952mr7886741pfg.15.1707798851203;
-        Mon, 12 Feb 2024 20:34:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUU0RRdBzarrpVcyDWdb8qRYiHJCCqDXh7A8EViKwnWbqKgn+cBFmAQ4jjKcD0C28Sum5Pyuou3F5mqUG+7Qq4/RYaZn+oZSZua89jrFTzI5/T0etWXq1UpNMje6CuIZpqf1Mw+guISstQ1gwZtrvK/HmrCYTnhTVUX4XZCdNvByS5VDb+JVZ+oQxRYP1muyGziTpF+SGVhnleo01PiJ8JMIAYm3oM0mzPLN7t1cpS47Pd7bi1LwAsP2Tyw+6xk9EfHo3AsfkpFjmmIzXp2kEJHuMASP0J7sh0gvlkFXxYqD72Z5ilbkNVc6RReAhLondBt7JaD/PHpDqKLFP/zWYjk/NJK4+ICX1pxJZLVw85gIo74OjUr54nWasmb7lUh5xRM/NOEFUNqKPX5DjvJBzKc3rvhtUPHnqVFLQlOPAkdl2PXMp5lpUK50d8y/NQ+XWHhIqJLOH77s3jlswpsTaPK7tZ6X3cCk9cvtwFLxQT7sV9mvf8Bl7G3U2pJnwOVW6tUmYs/CXoCGk/XPk/G/DO6kQx4Pot8TWso71UrckumNkRwjZRxonNl8EFQy9dg+rGOltEj7tTV417ThWduaqjOwooBCyH7crro+AoUuSvSLfnxl229YnqoYF0nmlV5xlnD+eQXx7QC48wS9P+ccOaecRsP6vvd/xvfaA==
-Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id s23-20020a632c17000000b005dc816b2369sm605121pgs.28.2024.02.12.20.34.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 20:34:10 -0800 (PST)
-Date: Tue, 13 Feb 2024 10:03:58 +0530
-Message-Id: <87h6idugnd.fsf@doe.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com, jack@suse.cz
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org, ming.lei@redhat.com, ojaswin@linux.ibm.com, bvanassche@acm.org, John Garry <john.g.garry@oracle.com>
-Subject: Re: [PATCH v3 02/15] block: Limit atomic writes according to bio and queue limits
-In-Reply-To: <20240124113841.31824-3-john.g.garry@oracle.com>
+	s=arc-20240116; t=1707799474; c=relaxed/simple;
+	bh=gnalbakfUEoOVuduLGkajwEg9F3QSmxtaFgbnbfzLCg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JCkJDkPCh5y7CeBoLYP8MGsUvy44QwfDyk2GyRuyVoHUk9xIOQ40aCi7QVciWHce74UizGgUCwBG+/6L4j1nrSKqBlPGrrLi4qOLLnt04rqCKH4HHL1GHBuY7szOTKZw21YJOzko9Odj3kY6KxmXoUGg+DEL5Ru8QUvWh+TFXZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FO3zXqG/; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707799465;
+	bh=gnalbakfUEoOVuduLGkajwEg9F3QSmxtaFgbnbfzLCg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=FO3zXqG/u0XUNzD7u/XRn6hsYQgbLHIKn7VBtzv1ogBR6c1s7hpxxn8ePE0/FcXzy
+	 svO99ZISnkx8X5b2W7WUDPDd/lrLIm+wMAouCKv2rf2dZIhHrJxqRcS3jlRxUIU/Tq
+	 L5XEKFCNde8m/eP4QyRKASXFVjF2PdTWXBCkqws4lpLUOff1GFaGHQfYZNXg0j85i8
+	 cYIgYlM6BEbDBZZWo+CD/pfsj7yeAvWI/DlBJYmwJ+Y7uvLCwDcCgzzSzIPr6RfigF
+	 S2o12acOiDEHMtfdtnAzZgyHR+lAB/0UutA1i+4CmUKFIXiwjNvspFJUFgJgQLrTQG
+	 0ofxPSOZUnOjA==
+Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B67EF378203B;
+	Tue, 13 Feb 2024 04:44:20 +0000 (UTC)
+Message-ID: <1b7d51df-4995-4a4a-8ec4-f1ea4975e44c@collabora.com>
+Date: Tue, 13 Feb 2024 06:44:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v9 1/3] libfs: Introduce case-insensitive string
+ comparison helper
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+ chao@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ jack@suse.cz, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ kernel@collabora.com, Gabriel Krisman Bertazi <krisman@collabora.com>,
+ Eric Biggers <ebiggers@google.com>
+References: <20240208064334.268216-1-eugen.hristev@collabora.com>
+ <20240208064334.268216-2-eugen.hristev@collabora.com>
+ <87ttmivm1i.fsf@mailhost.krisman.be>
+ <ff492e0f-3760-430e-968a-8b2adab13f3f@collabora.com>
+ <87plx5u2do.fsf@mailhost.krisman.be>
+Content-Language: en-US
+From: Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <87plx5u2do.fsf@mailhost.krisman.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-John Garry <john.g.garry@oracle.com> writes:
-
-> We rely the block layer always being able to send a bio of size
-> atomic_write_unit_max without being required to split it due to request
-> queue or other bio limits.
->
-> A bio may contain min(BIO_MAX_VECS, limits->max_segments) vectors on the
-> relevant submission paths for atomic writes and each vector contains at
-> least a PAGE_SIZE, apart from the first and last vectors.
->
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->  block/blk-settings.c | 28 ++++++++++++++++++++++++++--
->  1 file changed, 26 insertions(+), 2 deletions(-)
->
-> diff --git a/block/blk-settings.c b/block/blk-settings.c
-> index 11c0361c2313..176f26374abc 100644
-> --- a/block/blk-settings.c
-> +++ b/block/blk-settings.c
-> @@ -108,18 +108,42 @@ void blk_queue_bounce_limit(struct request_queue *q, enum blk_bounce bounce)
->  }
->  EXPORT_SYMBOL(blk_queue_bounce_limit);
->  
-> +
-> +/*
-> + * Returns max guaranteed sectors which we can fit in a bio. For convenience of
-> + * users, rounddown_pow_of_two() the return value.
-> + *
-> + * We always assume that we can fit in at least PAGE_SIZE in a segment, apart
-> + * from first and last segments.
-> + */
-
-It took sometime to really understand what is special about the first
-and the last vector. Looks like what we are discussing here is the
-I/O covering a partial page, i.e. the starting offset and the end
-boundary might not cover the whole page. 
-
-It still isn't very clear that why do we need to consider
-queue_logical_block_size(q) and not the PAGE_SIZE for those 2 vectors
-(1. given atomic writes starting offset and length has alignment
-restrictions? 
-2. So maybe there are devices with starting offset alignment
-to be as low as sector size?)
-
-But either ways, my point is it would be good to have a comment above
-this function to help understand what is going on here. 
+On 2/9/24 16:40, Gabriel Krisman Bertazi wrote:
+> Eugen Hristev <eugen.hristev@collabora.com> writes:
+> 
+>> On 2/8/24 20:38, Gabriel Krisman Bertazi wrote:
+> 
+>>> (untested)
+>>
+>> I implemented your suggestion, but any idea about testing ? I ran smoke on xfstests
+>> and it appears to be fine, but maybe some specific test case might try the
+>> different paths here ?
+> 
+> Other than running the fstests quick group for each affected filesystems
+> looking for regressions, the way I'd do it is create a few files and
+> look them up with exact and inexact name matches.  While doing that,
+> observe through bpftrace which functions got called and what they
+> returned.
+> 
+> Here, since you are testing the uncached lookup, you want to make sure
+> to drop the cached version prior to each lookup.
+> 
 
 
-> +static unsigned int blk_queue_max_guaranteed_bio_sectors(
-> +					struct queue_limits *limits,
-> +					struct request_queue *q)
-> +{
-> +	unsigned int max_segments = min(BIO_MAX_VECS, limits->max_segments);
-> +	unsigned int length;
-> +
-> +	length = min(max_segments, 2) * queue_logical_block_size(q);
-> +	if (max_segments > 2)
-> +		length += (max_segments - 2) * PAGE_SIZE;
-> +
-> +	return rounddown_pow_of_two(length >> SECTOR_SHIFT);
-> +}
-> +
->  static void blk_atomic_writes_update_limits(struct request_queue *q)
->  {
->  	struct queue_limits *limits = &q->limits;
->  	unsigned int max_hw_sectors =
->  		rounddown_pow_of_two(limits->max_hw_sectors);
-> +	unsigned int unit_limit = min(max_hw_sectors,
-> +		blk_queue_max_guaranteed_bio_sectors(limits, q));
->  
->  	limits->atomic_write_max_sectors =
->  		min(limits->atomic_write_hw_max_sectors, max_hw_sectors);
->  	limits->atomic_write_unit_min_sectors =
-> -		min(limits->atomic_write_hw_unit_min_sectors, max_hw_sectors);
-> +		min(limits->atomic_write_hw_unit_min_sectors, unit_limit);
->  	limits->atomic_write_unit_max_sectors =
-> -		min(limits->atomic_write_hw_unit_max_sectors, max_hw_sectors);
-> +		min(limits->atomic_write_hw_unit_max_sectors, unit_limit);
->  }
->  
->  /**
-> -- 
-> 2.31.1
+Hello Gabriel,
+
+With the changes you suggested, I get these errors now :
+
+[  107.409410] EXT4-fs error (device sda1): ext4_lookup:1816: inode #521217: comm
+ls: 'CUC' linked to parent dir
+ls: cannot access '/media/CI_dir/CUC': Structure needs cleaning
+total 8
+drwxr-xr-x 2 root root 4096 Feb 12 11:51 .
+drwxr-xr-x 4 root root 4096 Feb 12 11:47 ..
+-????????? ? ?    ?       ?            ? CUC
+
+Do you have any idea about what is wrong ?
+
+Thanks,
+Eugen
 
