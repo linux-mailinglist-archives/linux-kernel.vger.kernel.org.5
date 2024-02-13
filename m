@@ -1,99 +1,121 @@
-Return-Path: <linux-kernel+bounces-64466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16D07853EDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:38:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7758B853EDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:38:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43EB6B217B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:38:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2CC328633E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1DC16217C;
-	Tue, 13 Feb 2024 22:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54107627F2;
+	Tue, 13 Feb 2024 22:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="W+P7yzee"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NkWdNEBm"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C078612E59
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:37:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF5E12E59
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707863878; cv=none; b=EuDIA/4ZyJdKzXiRRf7ZHZmMH+GxWWssOsSI0DIW4R4lJdAZnb2QjG3X92BtEIgWeEihSjDYNjxdE6WtwrnYkPPR9kIIi5NLOIBa+a7hPE6KqtvloNiQLERhum0twAPuhB4Q8RptAGEzypnEtkIVsXIaGNG5J6jQSl+Xez+ax1c=
+	t=1707863899; cv=none; b=QfJZe524UILatJCrdmrz+tKHwQLL8+CUSKDCuOloGa58bbrq4V0OA+EQuuG3rW8H7SAtJY8jAxYPdx12dJd9qg/oU2JTFXQLg/jSAX5AHyJF09QvnSKQExfS4EIb+fZTGvBctfnOwLDq3iBD4g4iLMdVL9/in54kEYtiAFp57Z4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707863878; c=relaxed/simple;
-	bh=erK6GWFY7xEm2lYTQd3vIvBXye4Meuq1JC5KAD5dx2c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BbLuIqsSC+DYIpVJnMmYlraUUMnZK259zDYlSVZIS+9przI4lUkdYtDKYSHMJc65/bZh7Hy4zzaG2qhSYnXyCnU0yHfBT53QglzQ8WG/3DZ0UnJPv2dUbWiUOt0lXEAjYIuC7EVqfnTsjD8KkbRvgurKaN+t5IWM03UkUeLPTPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=W+P7yzee; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=AWuogxr7Ulz+Dcz/mwmjE3NbKxkvlrjdQKwO2hx8vd4=; b=W+P7yzeeExx5y9d7dWx2JJDp7p
-	b3sSChkLCoxQRLv5wT5Zdz9TbK20qSgVVtRgTIL1eGoS/gmj84m41kqirwUk10SrRewTKfODukafN
-	zM8rXBty38iRvOOxFn7aZ6qpMjy4JPAAGLfUwUu/T+vvwx0L+FHSFtwFW8aN+EUfi6egEN0vDXOKt
-	EcL1iiYRYdWh30FZLklhZhQwAJNwgzuB0jiXiEn9QBM61pjDkHv0jIZQ0bhQXeeyXkVf0u5GbG54Z
-	zz/WoKl99f9Q+3lM50P4x5t1YLMG9uSYGQ8tMGcjjr3KCnmBSPEzAr5+AJVI4DcO/a2Uwlgaut/73
-	H9Z414Yg==;
-Received: from [50.53.50.0] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ra1PX-0000000B663-3dZE;
-	Tue, 13 Feb 2024 22:37:55 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	Sohil Mehta <sohil.mehta@intel.com>
-Subject: [PATCH v3] x86/usercopy: fix kernel-doc function param name
-Date: Tue, 13 Feb 2024 14:37:55 -0800
-Message-ID: <20240213223755.9872-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707863899; c=relaxed/simple;
+	bh=oETUawuU8yy1VJ9yIj8p2lHOiphBiJDo5LBjLpJt1UY=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=JJwICBhNMdtvEH/G02rTPpfogyh2MuWDAo4kzFOh/39pGyZtkQ0sUPGYYAchvXtK9V42oqFTG0zWN39vNScYwS17P6D9thPfoMTVcbGpZQmZbJunJmDZcdO2099adXlwQ2ArKlkQVvXx7rGqlQMGu45kStqqtXqZgKbBEaLOeEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ericchancf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NkWdNEBm; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ericchancf.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcbfe1a42a4so3920889276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:38:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707863897; x=1708468697; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CfHqPDKZSILy8wF93jY+PBQlYR8jUuDqYcw6uvluZVk=;
+        b=NkWdNEBmy7OYy/QwFHIc8dAJn3I96dcGV6I7JCvl359xNNpUDKFxliZ90yklDS2CM8
+         tfeAbG6pK3YwW45vloipkKJEGV1ifmkDzozwr7H5rTIpMm639aSuNKLd+/KpwA7yfW3X
+         cy4LrAybGUjee0ZxUo9nKgZ8IuRYIWa3g+OconjwG03LY4rzO28APtStyJafilJWyJum
+         pRu6ZbXPeDpxE6xLrh9dyg3whyS3S+9+gk5glQCtpFEUwtsi76O6My+ivBXEcwYTijl2
+         SWCdE57LLXiZk64K3n3UFEzhZdAd0VyoftWG8NWoaEQLh5v2zWlATBFHzqpiN1RTw/Uq
+         v1Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707863897; x=1708468697;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CfHqPDKZSILy8wF93jY+PBQlYR8jUuDqYcw6uvluZVk=;
+        b=WKbzuWB411H0/3OLyDhXO70gXaJc2FZ+5DXhfEOn16xRa0YggjSr70sGAHO9DrXW7c
+         UA1tlkjIcEr1RIEO1CIxov2fOVSUVqX8x3HZ00R6dViccEPM326a1ubwD3CsSc57bibN
+         bFyEF8eoh0uJ4PsIpC1p7jlC7ax3fQGgzuaSwhuZG9As9OJ1cfY7cr6jzaHbseXyjW1x
+         yYIBC7HBPpdtOCFOndIR01YE5i8yzYllCo6KDvvgH7cMu9n74TWoCviKrjipHrCVDGjf
+         8qE62ooI0CKuz+1ubzceu0GKXX8ejpUcP1s8iT2Fy7ZPiLDVtCi3GQGAPBotLfWglc+/
+         Y2Xw==
+X-Forwarded-Encrypted: i=1; AJvYcCV+JNDIEqIo4wyyZ1wqvmIxjpERpksYhD6CfxU4UEqn7EK3I2l8ms76p1SH3Uj3XjO96kjqQpqexHPXiKcJIH33mhMuxBCKFyxnP7Um
+X-Gm-Message-State: AOJu0YxlFhYN/QRjUfJP1DDFPiCfs6o5J1Hi3r23vzFuz5t4onDqIRTE
+	n0yjXMzNpPTuzSpme/rGyUkRsMb2PNB3niFIHWERPQTsOdvupWs5cCBeWlzKJz3hdQiaTfgwG6I
+	qDouM3ttm1Bf494e7Ng==
+X-Google-Smtp-Source: AGHT+IGYHWVD+M6IZDD5yA/7KbHciMkZjoVTii4uO+v/Mq8hqyWAFUVfE50fvfODJp7k/KiJOvBIsrCx/lHz03WK
+X-Received: from ericchancf.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:4139])
+ (user=ericchancf job=sendgmr) by 2002:a05:6902:1007:b0:dc9:5ef8:2b2d with
+ SMTP id w7-20020a056902100700b00dc95ef82b2dmr175464ybt.4.1707863897101; Tue,
+ 13 Feb 2024 14:38:17 -0800 (PST)
+Date: Tue, 13 Feb 2024 22:38:09 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Message-ID: <20240213223810.2595804-1-ericchancf@google.com>
+Subject: [PATCH v5 0/4] riscv/barrier: tidying up barrier-related macro
+From: Eric Chan <ericchancf@google.com>
+To: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	ericchancf@google.com
+Content-Type: text/plain; charset="UTF-8"
 
-Correct the function parameter name in clean_cache_range() to prevent
-kernel-doc warnings:
+This series makes barrier-related macro more neat and clear.
+This is a follow-up to [0-2], change to multiple patches,
+for readability, create new message thread.
 
-usercopy_64.c:29: warning: Function parameter or member 'addr' not described in 'clean_cache_range'
-usercopy_64.c:29: warning: Excess function parameter 'vaddr' description in 'clean_cache_range'
+v4 -> v5: [PATCH 3/4] __atomic_acquire_fence and __atomic_release_fence
+omit-the-fence-on-uniprocessor optimization, and fix the typo of RISCV_RELEASE_BARRIER
+when spliting the patch in v3.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org
-Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
----
-v2: add Rev-by: Sohil Mehta
-v3: fix duplication (!?) of patch description and patch diff
+v3 -> v4: fix [PATCH 1/4] commit message weird line breaks and let [PATCH 3/4]
+fix the form that can pass the checking of checkpatch.pl.
 
- arch/x86/lib/usercopy_64.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2 -> v3: split the patch into multiple patches for one problem per patch.
+Also review the changelog to make the description more precise.
 
-diff -- a/arch/x86/lib/usercopy_64.c b/arch/x86/lib/usercopy_64.c
---- a/arch/x86/lib/usercopy_64.c
-+++ b/arch/x86/lib/usercopy_64.c
-@@ -18,7 +18,7 @@
- #ifdef CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE
- /**
-  * clean_cache_range - write back a cache range with CLWB
-- * @vaddr:	virtual start address
-+ * @addr:	virtual start address
-  * @size:	number of bytes to write back
-  *
-  * Write back a cache range using the CLWB (cache line write back)
+v1 -> v2: makes compilation pass with allyesconfig instead of
+defconfig only, also satisfy scripts/checkpatch.pl.
+- (__asm__ __volatile__ (RISCV_FENCE_ASM(p, s) : : : "memory"))
++ ({ __asm__ __volatile__ (RISCV_FENCE_ASM(p, s) : : : "memory"); })
+
+[0](v1/v2) https://lore.kernel.org/lkml/20240209125048.4078639-1-ericchancf@google.com/
+[1] (v3) https://lore.kernel.org/lkml/20240213142856.2416073-1-ericchancf@google.com/
+[2] (v4) https://lore.kernel.org/lkml/20240213200923.2547570-1-ericchancf@google.com/
+
+Eric Chan (4):
+  riscv/barrier: Define __{mb,rmb,wmb}
+  riscv/barrier: Define RISCV_FULL_BARRIER
+  riscv/barrier: Consolidate fence definitions
+  riscv/barrier: Resolve checkpatch.pl error
+
+ arch/riscv/include/asm/atomic.h  | 17 ++++++++---------
+ arch/riscv/include/asm/barrier.h | 21 ++++++++++-----------
+ arch/riscv/include/asm/cmpxchg.h |  5 ++---
+ arch/riscv/include/asm/fence.h   | 10 ++++++++--
+ arch/riscv/include/asm/io.h      |  8 ++++----
+ arch/riscv/include/asm/mmio.h    |  5 +++--
+ arch/riscv/include/asm/mmiowb.h  |  2 +-
+ 7 files changed, 36 insertions(+), 32 deletions(-)
+
+--
+2.43.0.687.g38aa6559b0-goog
 
