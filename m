@@ -1,90 +1,123 @@
-Return-Path: <linux-kernel+bounces-62921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9A268527DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:45:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3423D8527E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5338DB22EDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:45:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAB0A1F2325E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430B310A23;
-	Tue, 13 Feb 2024 03:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D56CA94F;
+	Tue, 13 Feb 2024 03:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="s7GRHvgW"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kfEOYefG"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401FA10A0A
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:44:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B8233F2;
+	Tue, 13 Feb 2024 03:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707795898; cv=none; b=r7mJqifXbZ98e4se8eEYYWQFDIGXCkBQOJTkMFbSrJWIXJb5lovJF8+5r+NU2lvU9JK7cz+FRFIVyiAUlFvuBSF5FN1v6W9Lq/TnkBEc9sHqznrro5/RQmupoljlHPmvS0DYdZ2k7Cj+E9TqU+NGKODxgirNROnCSTt4zI4iKW4=
+	t=1707796390; cv=none; b=XrNap9e4HCmuNdM9bN2DUZKGVSErcTCFtPC7H2aTZa7su5Xs0NhCrsqmZL19J2p+oKFRAY0biiZlfMKYkrxEC1Usjq73xyPZhLhW0c9XKdf/PWqJubowvMLkX9r+c3JW7Iyoli28vqpHPEWNeku24o1lGyBn+9RUkO7uAkvznss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707795898; c=relaxed/simple;
-	bh=JwAyQWe7miwq6SVX7IfW52aLND0+2gi89T9lvHbisTo=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=n2qIpUPlioCj7qFWWwVho0wrXmVSuf55xnF0lDeG0ltYTG4b3QHEzllQHuQYoQQ6uKjW27thQXs3xjkCOmzYtWF+EK/HpU36S7C/5ATYRJRxzAaNm+Hp3/Hf8QnZ49QEMAau6INOhBh2hq7cBO758MfY48hQlXSa2Jeu3oxnS1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=s7GRHvgW; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5d8dd488e09so5013602a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 19:44:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707795896; x=1708400696; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gp/byxLraC807sITtGRawodDTA1fNMfQwGWNUUbWF5s=;
-        b=s7GRHvgWhCXh14WRSKXFW/ByH0AZyJHehzuN41gbqTqM+QaSYhCs9SJN6oFWV14fkb
-         CKCXiQIitezUvS7U46oQoEDJECdXGdH6cOec6pI+aFjh3t2RcyuUFSa5piVNJQbIQ24/
-         6DriUNx7l5khhjekPoUQug4hbu+CBHC0oc2E86+qCDR2i3BG8q+10r0kPZ7PZXRZtn+c
-         JarO4139iLUcdsEF3mcBg+1uoBgZWHmkEmDjYUn6cjzZHQV+D5e/WRw2V4nh5nhVZkg1
-         2c2F3RODZZipczIls7LnutyI6SD7Kb7pl2a1Vyfw1hjoGjXxXIELa+/iIzsFQtKZUxj9
-         nv+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707795896; x=1708400696;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gp/byxLraC807sITtGRawodDTA1fNMfQwGWNUUbWF5s=;
-        b=u6WcpfKHkvZjOeiUrKjcLTlzVcJAwIKehe3zPAnbkTGesvHdqqpxBTnsEoypn88RA/
-         Tvgp/aVYegv/ALkQEcB42pA86SdilgUVIqRsgy+kY5+I0NjdfVjVJqS/AKpf0ZurceQL
-         wM95xdD6iAp44/nRP4ZbrhysBbvzd+Z+7PDO19Qqp8BYDh8DMKN1gikstT5efi8mqwy3
-         ns587Fs2eUvK1U2fsValsVzRpd3Y1onPD9Y+u0CFKQ66TTNJAi99hCbIVlvdXlEMzTSz
-         eyKXnY1zm0qCRmN3CAqbINVrXlVUXD9gUcoyQgoWwD58/xMAPhAkO8VfZzS0mBWQEUmI
-         4N7w==
-X-Forwarded-Encrypted: i=1; AJvYcCX+idw7Z/0CYgOvb4i5IQGfEsoKNTQVyNEZrp1fDebr7sQjjB3zZLj3iAttf9aIcfYOg5SHq3yf+5Rq/drAWIrRMmRmfcb56oavnq+1
-X-Gm-Message-State: AOJu0YyGJ2QKP2BBdCQQZmeLiz+kdcpmv1LLaB4lNm9n20MAzfpXkg7H
-	/wnd67ENY36k9ejNLwSa/4RAsfFgxWkNF64EivF1Xik2cyiR1dIlz9C60aezbsgAZvl6YfezSj0
-	VAg==
-X-Google-Smtp-Source: AGHT+IGGI8Fty4SnswScI0YALjv0to7a7pfcE8bH+CFvNEGLJ/DcJmrEz5SnXPWzfMn3EDSiz3p6QME0aDg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a65:6e85:0:b0:5d8:af18:eee0 with SMTP id
- bm5-20020a656e85000000b005d8af18eee0mr107250pgb.12.1707795896559; Mon, 12 Feb
- 2024 19:44:56 -0800 (PST)
-Date: Mon, 12 Feb 2024 19:44:55 -0800
-In-Reply-To: <20230911021637.1941096-3-stevensd@google.com>
+	s=arc-20240116; t=1707796390; c=relaxed/simple;
+	bh=0vaubSGu7gCAoSqrp4lajT42MHYD3qmoQox23k+o7mM=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JgTdCPMoTh3Kj0JuYqf0r0EMfQ5rK9RjtpwWXSJUb3/jOL+TIL1VEg6eb81q5o7fvnszECzGfr1KEOoaW3yguCUs4SaXKDkYEDOqCwze879BrcUOVrqe4TUzfFao4YDZcOo7qBle2FnecMPryJcqLhTvQBJn00Q7aILE5OlINzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kfEOYefG; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41D2w0IX000471;
+	Tue, 13 Feb 2024 03:52:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=9l07FK8iA3FHEksQiWuc9dxFREf//NDwM0FUVNltkCo=; b=kf
+	EOYefGbMFPyGF5PlzUHT4wpxq6T7Hy5P6MJJ9YJzmjDft0sEZN9Euhe7Irth1vdh
+	Yb/ghLJdCKbu9b30asfvVNWw/do6BVt8qDlC9sj20AS7lPsRfZPJdRaIg6FTrRIu
+	FI3FZrbemHv+oocCO1kNmXaerPO3vqhg/BMY64kaOnQJBijjkLvVzd6cJe0rjMRt
+	yd9yYCoxjUxDZHiS0LMBisKek636FJTqqkMU/QSeTf4+n1DOdpyD/pwVuXnIypoY
+	w5BPhVpcRBljRmG4sayryfQ9h6fOJgZHTDW/+jG5tk/sEo27zxa6X09CzlpuE2F1
+	YOjkP7+IfJyIweSd3xbg==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7ww5r8r4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 03:52:53 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D3qDo0032663
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 03:52:13 GMT
+Received: from hu-subbaram-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 12 Feb 2024 19:52:12 -0800
+From: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
+To: <quic_mkshah@quicinc.com>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_collinsd@quicinc.com>, <quic_eberman@quicinc.com>,
+        <quic_lsrao@quicinc.com>, <stable@vger.kernel.org>
+Subject: Re: [PATCH v3] soc: qcom: rpmh-rsc: Enhance check for VRM in-flight request
+Date: Mon, 12 Feb 2024 19:52:03 -0800
+Message-ID: <20240213035203.2492516-1-quic_subbaram@quicinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240212-rpmh-rsc-fixes-v3-1-1be0d705dbb5@quicinc.com>
+References: <20240212-rpmh-rsc-fixes-v3-1-1be0d705dbb5@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230911021637.1941096-1-stevensd@google.com> <20230911021637.1941096-3-stevensd@google.com>
-Message-ID: <Zcrlt0xHdRubEDLJ@google.com>
-Subject: Re: [PATCH v9 2/6] KVM: mmu: Introduce __kvm_follow_pfn function
-From: Sean Christopherson <seanjc@google.com>
-To: David Stevens <stevensd@chromium.org>
-Cc: Yu Zhang <yu.c.zhang@linux.intel.com>, Isaku Yamahata <isaku.yamahata@gmail.com>, 
-	Zhi Wang <zhi.wang.linux@gmail.com>, kvmarm@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: n8nnk09KEUI1r4MUoFc9KOOQmLitkdWT
+X-Proofpoint-ORIG-GUID: n8nnk09KEUI1r4MUoFc9KOOQmLitkdWT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-12_20,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 mlxscore=0 phishscore=0 mlxlogscore=322 bulkscore=0
+ spamscore=0 adultscore=0 clxscore=1011 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402130027
 
-On Mon, Sep 11, 2023, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
-> 
-> Introduce __kvm_follow_pfn, which will replace __gfn_to_pfn_memslot.
+Hi Maulik,
 
-Belated question: why is there no kvm_follow_pfn()?
+> +bool cmd_db_match_resource_addr(u32 addr1, u32 addr2)
+> +{
+
+<snip>
+
+> +	if (SLAVE_ID(addr1) == CMD_DB_HW_VRM
+> +	    && VRM_ADDR(addr1) == VRM_ADDR(addr2))
+> +		return true;
+> +	else if (addr1 == addr2)
+> +		return true;
+> +	else
+> +		return false;
+
+Minor..it would be better if you modify it as following.
+
++	if (addr1 == addr2)
++		return true;
++	else if (SLAVE_ID(addr1) == CMD_DB_HW_VRM
++	    && VRM_ADDR(addr1) == VRM_ADDR(addr2))
++		return true;
++
++	return false;
+
+-Subbaraman
+
+--
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
 
