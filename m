@@ -1,170 +1,118 @@
-Return-Path: <linux-kernel+bounces-63544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70E09853109
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:58:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AA44853115
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:59:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D193EB24A61
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:58:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D74C1C26512
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3684C482FB;
-	Tue, 13 Feb 2024 12:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=katalix.com header.i=@katalix.com header.b="PC2o7VK+"
-Received: from mail.katalix.com (mail.katalix.com [3.9.82.81])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E633C490;
-	Tue, 13 Feb 2024 12:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.9.82.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6DB5101E;
+	Tue, 13 Feb 2024 12:59:14 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A4D4E1D7;
+	Tue, 13 Feb 2024 12:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707829123; cv=none; b=DGop41xxoSyjLUpQ08XiigcijyOXf3AuccJJfPNONse6QeMCWlJq5euedc4mmemEdhcxfni0tMrViUYAf2ifh/sTporE9mifavgBgata4d0H6uZudoLf9DdrKVw482LszkL+C5fFq3dSMHnIj5INTM98fd5D4VEnnOheEdF03eQ=
+	t=1707829153; cv=none; b=tLtKstzmfck0y7CB04LXKJOWfKiF3FiK5iGm1H0IKuik6Ag+dtciA3cD2YtKIyVb9vkqN5BDXgsOyaCnkuSFjWfbjQGdIeQva7ZwuuWhoBlOHUbDtdKj6EglOJHapBaIF0ALTvKPeAjJqpaURoKqTOcN0CN+HAeqi4KYMezhoHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707829123; c=relaxed/simple;
-	bh=8aKCQmHWe7W7w4cdBjfprF7BEjuAl+nGvi4s02wY+14=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mK321rivEIN3QWHnppUqXcfFBcT6S6OeKmncIj3A5t/rfS5WIXe5kp30G6lfw8QDCBfjhS54a3acfyLjGjuO6kI8WmgNtpjbRr1JQzilAen2F4lo8yYPlJWnOpd3tpjY7rou/dhk2ql1LhXIPqBHqf2177qY6AxOZkZvq/BfvUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=katalix.com; spf=pass smtp.mailfrom=katalix.com; dkim=pass (2048-bit key) header.d=katalix.com header.i=@katalix.com header.b=PC2o7VK+; arc=none smtp.client-ip=3.9.82.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=katalix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=katalix.com
-Received: from localhost (unknown [IPv6:2a02:8012:909b:0:eaae:9bde:cb7b:6924])
-	(Authenticated sender: tom)
-	by mail.katalix.com (Postfix) with ESMTPSA id B20027D5C1;
-	Tue, 13 Feb 2024 12:58:40 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=katalix.com; s=mail;
-	t=1707829120; bh=8aKCQmHWe7W7w4cdBjfprF7BEjuAl+nGvi4s02wY+14=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Disposition:In-Reply-To:From;
-	z=Date:=20Tue,=2013=20Feb=202024=2012:58:40=20+0000|From:=20Tom=20P
-	 arkin=20<tparkin@katalix.com>|To:=20Samuel=20Thibault=20<samuel.th
-	 ibault@ens-lyon.org>,=0D=0A=09James=20Chapman=20<jchapman@katalix.
-	 com>,=20edumazet@google.com,=0D=0A=09gnault@redhat.com,=20davem@da
-	 vemloft.net,=20kuba@kernel.org,=0D=0A=09pabeni@redhat.com,=20corbe
-	 t@lwn.net,=20netdev@vger.kernel.org,=0D=0A=09linux-doc@vger.kernel
-	 .org,=20linux-kernel@vger.kernel.org|Subject:=20Re:=20[PATCHv4]=20
-	 PPPoL2TP:=20Add=20more=20code=20snippets|Message-ID:=20<ZctngNzLYe
-	 /+Iman@katalix.com>|References:=20<20240212222344.xtv233r5sixme32h
-	 @begin>=0D=0A=20<ZctJnCeUCANJvxGj@katalix.com>=0D=0A=20<2024021311
-	 5304.3oyqkvkb3oqkauwd@begin>|MIME-Version:=201.0|Content-Dispositi
-	 on:=20inline|In-Reply-To:=20<20240213115304.3oyqkvkb3oqkauwd@begin
-	 >;
-	b=PC2o7VK+pdQcwYecedvvUXAqJZqbT1Wyw9PKS4f0OmBIKD3C7N9R35HH7t49gQ3TU
-	 NLMHjXHfYjIIm1YCRVW/wsW8flkgJ0hVUMF4bUTyCGQ9I9DSR4Wtw1zHEOXGCoqhuQ
-	 vzBQAr9FtNFrLQkSHydEFMam5O2Q9xvRWUbazeGk6GpV6c2SNG0+w9WmDpZPJlBtNG
-	 vXa0l5930XvXIC04ii8Nir67n2h5sE6FrR86GusTELOD1ofTCsYz365csyKsKwTz8e
-	 pK2x9mTlxCtcdH9i3zsfCG0DR6tGeU7jPyn9Sh9gyhgo/ft3lyOrVrsi0gDdW+xyfz
-	 Dzf2FbwYktyeA==
-Date: Tue, 13 Feb 2024 12:58:40 +0000
-From: Tom Parkin <tparkin@katalix.com>
-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-	James Chapman <jchapman@katalix.com>, edumazet@google.com,
-	gnault@redhat.com, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, corbet@lwn.net, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv4] PPPoL2TP: Add more code snippets
-Message-ID: <ZctngNzLYe/+Iman@katalix.com>
-References: <20240212222344.xtv233r5sixme32h@begin>
- <ZctJnCeUCANJvxGj@katalix.com>
- <20240213115304.3oyqkvkb3oqkauwd@begin>
+	s=arc-20240116; t=1707829153; c=relaxed/simple;
+	bh=RM51wWriDMRxA4AuvhOUrEAbEnWZNqSpiSOaePt63sc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=vBs5OPN1360osxLSegdEclHMHiAAQv4eAhR8byPhrJD98oJNlKVUwCYlwVNKUu5QikDeAjDxawdrMw2CQOXeBFlgCXPWP6BoY1c+a56BuZOf935QBmeBQF3l1kHgFxitqrr/9OrvrcPhCstMGfji91RxxHN5dfq/j6ZKhnyKKWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TZ1Gc3VDyz9xvh1;
+	Tue, 13 Feb 2024 20:43:52 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 2A8F614065B;
+	Tue, 13 Feb 2024 20:59:01 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwB3sCSFZ8tliwppAg--.56469S2;
+	Tue, 13 Feb 2024 13:59:00 +0100 (CET)
+Message-ID: <05ad625b0f5a0e6c095abee5507801da255b36cd.camel@huaweicloud.com>
+Subject: Re: [PATCH v9 12/25] security: Introduce file_post_open hook
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Paul Moore <paul@paul-moore.com>, Mimi Zohar <zohar@linux.ibm.com>
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, chuck.lever@oracle.com, 
+ jlayton@kernel.org, neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, 
+ tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
+ dmitry.kasatkin@gmail.com,  eric.snowberg@oracle.com, dhowells@redhat.com,
+ jarkko@kernel.org,  stephen.smalley.work@gmail.com, eparis@parisplace.org,
+ casey@schaufler-ca.com,  shuah@kernel.org, mic@digikod.net,
+ linux-kernel@vger.kernel.org,  linux-fsdevel@vger.kernel.org,
+ linux-nfs@vger.kernel.org,  linux-security-module@vger.kernel.org,
+ linux-integrity@vger.kernel.org,  keyrings@vger.kernel.org,
+ selinux@vger.kernel.org,  linux-kselftest@vger.kernel.org, Roberto Sassu
+ <roberto.sassu@huawei.com>,  Stefan Berger <stefanb@linux.ibm.com>
+Date: Tue, 13 Feb 2024 13:58:43 +0100
+In-Reply-To: <CAHC9VhQ7DgPJtNTRCYneu_XnpRmuwfPCW+FqVuS=k6U5-F6pJw@mail.gmail.com>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+	 <20240115181809.885385-13-roberto.sassu@huaweicloud.com>
+	 <305cd1291a73d788c497fe8f78b574d771b8ba41.camel@linux.ibm.com>
+	 <CAHC9VhQ7DgPJtNTRCYneu_XnpRmuwfPCW+FqVuS=k6U5-F6pJw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="G2qaJ+yw4/XCnyb6"
-Content-Disposition: inline
-In-Reply-To: <20240213115304.3oyqkvkb3oqkauwd@begin>
+X-CM-TRANSID:GxC2BwB3sCSFZ8tliwppAg--.56469S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKw47Ar17Ar1UCFWfuFyrtFb_yoW3ZrgEgr
+	yqvwn7Grs8Z3WrAanxAF1rAFWqg3W8Jr4rC395Xr1UZ3sxXay8WF4kJrnaqw4fGF40yFsI
+	93Z5WFyfAwnrXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbzAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267
+	AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0E
+	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0
+	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
+	k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOlksDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAMBF1jj5pP-AABsQ
 
-
---G2qaJ+yw4/XCnyb6
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On  Tue, Feb 13, 2024 at 12:53:04 +0100, Samuel Thibault wrote:
-> Tom Parkin, le mar. 13 f=E9vr. 2024 10:51:08 +0000, a ecrit:
-> > > +        ret =3D ioctl(session_fd1, PPPIOCGCHAN, &chindx1);
-> > > +        if (ret < 0)
-> > > +                return -errno;
-> > > +
-> > > +        ret =3D ioctl(session_fd2, PPPIOCGCHAN, &chindx2);
-> > > +        if (ret < 0)
-> > > +                return -errno;
-> > > +
-> > > +        ppp_chan_fd =3D open("/dev/ppp", O_RDWR);
-> > > +        if (ppp_chan_fd < 0) {
-> > > +                return -errno;
-> > > +        }
-> > > +
-> > > +        ret =3D ioctl(ppp_chan_fd, PPPIOCATTCHAN, &chindx1);
-> > > +        if (ret < 0) {
-> > > +                close(ppp_chan_fd);
-> > > +                return -errno;
-> > > +        }
+On Mon, 2024-02-12 at 16:16 -0500, Paul Moore wrote:
+> On Mon, Feb 12, 2024 at 4:06=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com> =
+wrote:
 > >=20
-> > I think we should drop the PPPIOCATTCHAN ioctl call here.
+> > Hi Roberto,
 > >=20
-> > The input file descriptors are called out as being PPPoX sockets
-> > created as described earlier, in which case they should both
-> > already be attached to a channel.
 > >=20
-> > It would make more sense IMO to call out the two ppp_chan_fd file
-> > descriptors as being input parameters alongside the PPPoX session file
-> > descriptors.
+> > > diff --git a/security/security.c b/security/security.c
+> > > index d9d2636104db..f3d92bffd02f 100644
+> > > --- a/security/security.c
+> > > +++ b/security/security.c
+> > > @@ -2972,6 +2972,23 @@ int security_file_open(struct file *file)
+> > >       return fsnotify_perm(file, MAY_OPEN);  <=3D=3D=3D  Conflict
 > >=20
-> > > +
-> > > +        ret =3D ioctl(ppp_chan_fd, PPPIOCBRIDGECHAN, &chindx2);
-> > > +        close(ppp_chan_fd);
-> > > +        if (ret < 0)
-> > > +                return -errno;
-> > > +
-> > > +It can be noted that in this case no PPP interface is needed, and th=
-e PPP
-> > > +channel does not need to be kept open.  Only the session PPPoX data =
-sockets need
-> > > +to be kept open.
+> > Replace with "return fsnotify_open_perm(file);"
 > >=20
-> > Is it true to say that the PPP channel file descriptors can be closed
-> > by userspace?
+> > >  }
+> > >=20
+> >=20
+> > The patch set doesn't apply cleaning to 6.8-rcX without this change.  U=
+nless
+> > there are other issues, I can make the change.
 >=20
-> In our code we do it
-> https://code.ffdn.org/sthibaul/l2tpns/-/blob/kernel/l2tpns.c?ref_type=3Dh=
-eads#L1295
-> and it works all fine indeed (and avoids that fd per session).
->=20
-> That's actually one of the reason why I made the snipped only take the
-> pppox sockets, and make it create the ppp chan fd only temporarily. AIUI
-> the pppox socket already has a ppp chan (returned by PPPIOCGCHAN), and
-> the ppp chan fd is there only for performing the bridging ioctl.
+> I take it this means you want to pull this via the IMA/EVM tree?
 
-Thanks for the code reference -- that makes it clearer.  And I'm glad
-someone (else) is using PPPIOCBRIDGECHAN :-)
+Not sure about that, but I have enough changes to do to make a v10.
 
-It's a while since I was looking in ppp_generic.c and you're right
-about the ppp channel fd.
---=20
-Tom Parkin
-Katalix Systems Ltd
-https://katalix.com
-Catalysts for your Embedded Linux software development
+Roberto
 
---G2qaJ+yw4/XCnyb6
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEsUkgyDzMwrj81nq0lIwGZQq6i9AFAmXLZ30ACgkQlIwGZQq6
-i9DYkAf9GOhgqPlIofeqsI0xOlcmwUwi/8tE99f4HV85ghT242yIB66IYVCyGijG
-L5llsSOJ+d3cjw1/FrDAOFWuPira89FijTidj5ZgXApkGpHZo6Uomq/jYjNLXMh/
-cWqbMo53t2EMrwUgl804vkGAXQ5H9mIkuDGMegjO/Ld3pTDWstwwQWcZZBmUb33f
-116FyZcPNDzXmLvSDi7EBQBoXdZOXcXEaJl9XZZXgGjWrBzcKvs2Ed/emRKUUGRI
-ItlC1udf1eJ4RijloRzOUykwwigd/DdNEqb2xocrhQPnhFLBc2/Qj1iHYJYsMj24
-+U6BGaqqzeVjSqLucUAjj0zKFsOeOg==
-=+am9
------END PGP SIGNATURE-----
-
---G2qaJ+yw4/XCnyb6--
 
