@@ -1,205 +1,161 @@
-Return-Path: <linux-kernel+bounces-64462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 486B2853EB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E9C11853EBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:31:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DB861C28B91
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:31:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 285851C243A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECDA62818;
-	Tue, 13 Feb 2024 22:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA90D626B2;
+	Tue, 13 Feb 2024 22:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PdFdiQQH"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2079.outbound.protection.outlook.com [40.107.237.79])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kj9Ww9VM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58DE064F;
-	Tue, 13 Feb 2024 22:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707863469; cv=fail; b=c9KfpyE43XA0oLwTrRNSjXI+u33K18p7rFTwLlHh1yTvlON1zFIjouCDnt6gFG2JdnRpZD8KQKGjnfgRDZ7EDPaJchR5QE/IQqJRSu8T/H8m43iexYNdQZ5h1SAOLKzn/q2JEjQbW9Blyc9PiPUSgDQNWsWJLHraF/etoZsuczw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707863469; c=relaxed/simple;
-	bh=cEB9bSn7ipaDs2dQQ9H8ZavraOkM83RryC0qk3Up83M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aw1G0VQmEV1O0SZS7OWn2S5EUt5fHS/Rznfy8KUq8MQJs/rIr055e0IoAfLZdr6cpDiziO+gYAeZzgP+ikThGKsDOumaPlbiKsQreDS+4p+LAi7HwIipNskSvtgE+hAwBfmXF5I7wb4lOy2hbP2Ob96w+xn/4/jzqzlIM61mQgY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PdFdiQQH; arc=fail smtp.client-ip=40.107.237.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZUqd/s1bdhrvwmc/Y/8zhj4EGo/a1idponEm0NTMyxm0jT2HZzYXWTzkc+4KL5NQxsQXFzYrwhx0UED7rq5a+kEKNpcgBC6gzeUPDsYxpAoayiQqSaIhe2no6Nk4m+Xjx8S4Cfjm34urHKZVpY47M5VHpvh44Hf4MWRd35vMz6+t6hl42Qz7o2BETZQEffSIQndef215BIVXU6sWjMDkcURBhEQPiXJbSbd0Nt4n7Fok3LSLtCAbZE5pOGgt5NlZpM/fI6K10jPlckkt2wRfF/xCn+nH4Htj5UdIGRLxfgHY9ovD+OU5mvnxdx7fJ1IWc4EjsChDAP4EQFY8t7rThg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cEB9bSn7ipaDs2dQQ9H8ZavraOkM83RryC0qk3Up83M=;
- b=Ed6LMuE5LF89BbYDOxbZrXzZxOdqQwc1atGWRmblryz5bhVGOjHaUU6uvsAud08hirtpO01LYylHw0oJC7JudmAE71TpOhmDhVZWnCNhAt97JX7Lbqzw6oaXQ5cXa0JHoHzoOUMgqog0AfmxVeBIFRkaVBe/zsyvNvqQ+YHpuYV1nioOcnBGy69X6X3ECQUh8HFQvIqycE3+0p8IgWP6hR466H3tWfE8101YMI2ffUozHvBr5Q+goPYEDGrIXWIGQz/xlM2SwjsGR430PXCzZ7pDk1kBfRKEKY49P2bwXRmnTiPevwvXZ/Ials0Jcc8y4Gy2sphHyoQ1yHsLmKghVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cEB9bSn7ipaDs2dQQ9H8ZavraOkM83RryC0qk3Up83M=;
- b=PdFdiQQHWeh7sDyHmecn745R3S/Ni4x8YW2yUuUKDjmK5lBm/SDCwkSzRO0EWvP7eFzN52kLRqzVVSvSKB4Jlg3h6tfkJBHYN5PAFn5S+PSCJn7eGImucX44MvhkDv6yn3zVRldWvYnJE5ig2q3ZsHokfvnE/YotA/vETlrVurrVxqI7U+dEG7vAPRpk4nqIz0NptWmYxpdGM4sfnOX2Bc8VXwE8VuHQLvGoODE0Neh9PW66D3cc1j5UZFnxPOpOfW5uGG7eQLYeCjQw2xpeV8ZDzPEe3D/t8tVnJNEvi3fHZMP+krbP6oux8MG3bz9yEwP9SRL4W0sVN5QjGekF1w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- PH7PR12MB5879.namprd12.prod.outlook.com (2603:10b6:510:1d7::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25; Tue, 13 Feb 2024 22:31:04 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::db3e:28df:adc1:9c15]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::db3e:28df:adc1:9c15%5]) with mapi id 15.20.7292.013; Tue, 13 Feb 2024
- 22:31:03 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: "\"Pankaj Raghav (Samsung)\"" <kernel@pankajraghav.com>,
- linux-mm@kvack.org, "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
- Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
- "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>,
- =?utf-8?q?=22Michal_Koutn=C3=BD=22?= <mkoutny@suse.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- "\"Zach O'Keefe\"" <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Mcgrof Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] Split a folio to any lower order folios
-Date: Tue, 13 Feb 2024 17:31:00 -0500
-X-Mailer: MailMate (1.14r6018)
-Message-ID: <F4470D3A-DC2C-4A6A-B65C-1C94D732A60E@nvidia.com>
-In-Reply-To: <659e1abb-40d0-42ba-ba0a-8256d7eb1c5a@redhat.com>
-References: <20240213215520.1048625-1-zi.yan@sent.com>
- <659e1abb-40d0-42ba-ba0a-8256d7eb1c5a@redhat.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_13390F71-957B-4974-917E-22BA13AE02CE_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL0PR02CA0123.namprd02.prod.outlook.com
- (2603:10b6:208:35::28) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FDE1433AB;
+	Tue, 13 Feb 2024 22:31:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707863493; cv=none; b=MIuZZ56VZ/IyOCwlzLi9Fa7SU/383R8Hhot46u8bTLuZhR1Frlx4vEyqSmiFs4UzYVN83BmJ9kdcvkgZOB6GjtppeLy/gBITTUhVWlRHVE8c7jtc1EhA7uVfapDOVO0a601i77UfY7A/Y5hsi7MbpZ1sviiHyGL/kjac+90JIPg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707863493; c=relaxed/simple;
+	bh=tUMsXY/XfFkqr7u0iiEPY04YFBGnHpoUhaqNlD4VLF4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fs0fNf3Hx5aO3O6560I7DJceLfJ6jq6eOZCWS8o3z/hZ5sxzxKpRwoHQ7rrW4Ea97NdAebLGN30NDBS7q3ZarBkCT754jAz6pSPtg36MdPMGf/ZnKJrkVHmbiRcdfFme3aQ4sCFJTwcshKogwWd5iTQV/xzCgGhi/oc0YeGr7wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kj9Ww9VM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D7F7C433F1;
+	Tue, 13 Feb 2024 22:31:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707863492;
+	bh=tUMsXY/XfFkqr7u0iiEPY04YFBGnHpoUhaqNlD4VLF4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kj9Ww9VMf2s40wjwtHIk/4onEZen6N4x8brxw8zIQYpWt9ckJpLD0s1PsT1D7Ia4b
+	 rr2biX+69XirmVQ1ZHWV7XJ9mxseJb1hE58+/+s8cwIBW5dBHX+PexEUR3sGzke4rZ
+	 5m5gzjxGgFtIZ5SssmS9sjsAjZDSIz77/F0zzHUbpK5uHdFlzlge/QvRan4fgWux6N
+	 gLyH70dAC1VOq5bTjKC60y4/PcpqjtK8rKpSz9hy3y67IEX7NhDqNy/GzlnJ3sXT2y
+	 J/1vuXMajieuCWoMVIgh7QSHrLpk+Kgbqc1Rpd0Z5dxLiCzoeCkFOgO3j0g76rHU5U
+	 9W+cutZzWdbBw==
+Date: Tue, 13 Feb 2024 16:31:30 -0600
+From: Rob Herring <robh@kernel.org>
+To: Tanmay Shah <tanmay.shah@amd.com>
+Cc: andersson@kernel.org, devicetree@vger.kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, linux-remoteproc@vger.kernel.org,
+	michal.simek@amd.com,
+	Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+	ben.levinsky@amd.com, linux-kernel@vger.kernel.org,
+	mathieu.poirier@linaro.org, conor+dt@kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v10 2/4] dt-bindings: remoteproc: add Tightly Coupled
+ Memory (TCM) bindings
+Message-ID: <20240213223130.GA2504650-robh@kernel.org>
+References: <20240213175450.3097308-1-tanmay.shah@amd.com>
+ <20240213175450.3097308-3-tanmay.shah@amd.com>
+ <170785205177.2155555.1311787541370066483.robh@kernel.org>
+ <b931a24c-f676-4ddb-bb7c-e7a509d5dd4b@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|PH7PR12MB5879:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8493b2a8-e25d-4f15-1a78-08dc2ce37681
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	FrGqSgo8+fdHk5yGN6ZQHtICgd3kTAUwjzfjb8ZcfQvOjeRSMw/lXjET1+c5O4w0pNLcuX2EyadATlt9YtJvTNNVvIdLPTMvnXmtGMUSZMCjEECo02M6kdUsnScIWMZmm7JLlG2hwI6Xn9bCCK7Sc3xPong/36tM0fM62oNp4eBj8iNnFOBZTsaR1kQALapItpXDKNIVO2yElahdS0vUBCf7hdpMQvZKWCM29ql2cl86fH03PwW9gXBqJhK5tnFpB35ArJcBSnE4rRe2z51PJQKoB/jeXmXt2ZuG2D9w45/mLXVk+lzSypWCmPjw0CD411uQ5wFkuzf3DPE+g+suxopw0/wGupegirafFGLhCFyY6VeSIR0+Wz8I5UZq+rHGovB54La3hlW454njkeHt7dd8K2ygKw4wHH2o9EQrjASoe3qQMBYwzBQnv7VKOVzzVrchKe8UWiqh2bhhdNwQgl7zHRx18pUWqhtVjOAHYABDFcv43uNK2esdnXXg7DZ3JmtQP40zfoIPe2xLCjw/89RIG36Lg1LRuJdhsT1Y3Ip56RpdPAODU+m4zf/NZinJ
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(376002)(136003)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(2906002)(5660300002)(7416002)(235185007)(2616005)(26005)(41300700001)(4326008)(8936002)(6916009)(66946007)(6506007)(53546011)(66556008)(66476007)(8676002)(6486002)(83380400001)(6512007)(33656002)(478600001)(54906003)(316002)(86362001)(36756003)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?vsl03gJ+pL2Xh7Hdb/heTWcLxed4dq++Jh8KLuGcGgd5ZpKsPp2L4Oe1xEYH?=
- =?us-ascii?Q?RKUkBNwinnP/XtFCEZTLeSpJZTnaoDuj0aqfUHmMc0EoLw9mg/nzZe6zNUIq?=
- =?us-ascii?Q?y65o1453cNWOBF2voeY/AE5arF+WfYwC7qx4sL7FafAsEELDHEsGUacJLsOh?=
- =?us-ascii?Q?cz+GjhQr2beuoEySjpEWgU9VLhJMPVA0zW9nU4e8M52O9eHpYn1R/Ab/eLjH?=
- =?us-ascii?Q?RpLNvl8mAyS9v4N6F4RDIre7L2fpGj7t9rquOQIn7mVwLrASw5/+V4Alf/Lh?=
- =?us-ascii?Q?JTX4rPbHa6yWxQRa4mj9RUl86rBbMM4HKDxZh670MKVkc9bZ4RgOhGxOQiFM?=
- =?us-ascii?Q?GM2CpxbC/u2T0WbOXYGWVUxgRnyFmPTj9m5JHMDXF40d0ZP6mUtQQz+7XSkn?=
- =?us-ascii?Q?UylV1mmoQJn0aA8KMysa5CCq/3N7BWyMa38ZHD/mCGJMlyHXebgwv4aHCxOC?=
- =?us-ascii?Q?kRiFIoEl3epoX0KK6jP0j0hNmWYWtOe/wWxNkhqXfZsLg+/Oq02HMufRB+s7?=
- =?us-ascii?Q?awfXlNmVJ8mHiTsbP+qhOZexZLiV00O6fHi/A6Zvhr2C0dDQxekYrfsHNYJZ?=
- =?us-ascii?Q?k11l74dMM2nKdHwna+pywUYEbXalFdpsxHJMZZZxQ0rsSP6kGy9fBxUg1tMD?=
- =?us-ascii?Q?8dFptufYpCVt+I+qe8MhRVSLAHfZZBGzYa76Sh+fwDyXBdF55pY6BXvgOUSl?=
- =?us-ascii?Q?wbWh1l/+wsCvG3o25i6027qozxHaRLerCDA2QUNAGjuwgm3KbRyaaIx2TFyH?=
- =?us-ascii?Q?F5MmTbljUtoAI/rq3nBmKU/TmRV7ESjubLX9LdE70tOJSjzd8+H02W4QLF3H?=
- =?us-ascii?Q?6EREWpfMzGVKbU/1MeaDnybPDBsKYIgTFOZ0kdJRpEOiEALQIT2He4ctLenT?=
- =?us-ascii?Q?L/TZsrw0eZ8NGF+GVVrjSK6xO+cNVRLziAnKGNLYzyEUrqHmxEM30+tINhi4?=
- =?us-ascii?Q?GMBgJ1lGAvdqvnDX9W6yEGoYQqKt7AsldTDIrk6rAgWYTpcSgtrbxhERblxY?=
- =?us-ascii?Q?He2HMJOR4GF3c3TJMrPHboQV8acfFaFZZWXCAK0Uaz88OwrzhpJVrTVZ3hmp?=
- =?us-ascii?Q?P1gnFLUnNNLufX4X0zFLxZz3VH8yRAIzcHADOzYT2ZuKSjxrIXXu+gfg8f/4?=
- =?us-ascii?Q?52K3CaBb5BN7/SKhGiEAwy4RhUwFFSsz0UeVBPa3cAtXltlIpFyHCUxv9b9B?=
- =?us-ascii?Q?Iw58JKwzmD4/qQ5JEpFIioJ0+D24OV45Z0Dq+A5kObYzWEKfFwUq6xIFGutr?=
- =?us-ascii?Q?N+HVnYqhuUM3EKPfP7sUCnjK1X0RALRW5YIh+3FfOr328mUOjIOw9aPZl0dA?=
- =?us-ascii?Q?I2rLgpOv4g3l+ZSiz43iVDAUEjlxDH/CQAzYZv0pdFRPkwEp1uQixzFJVdVn?=
- =?us-ascii?Q?RnRPouApvn3xJbNudYPRyM8zvnISPcuV5dTooc7c1Tw+Lw5IUhgIdlHAVvUd?=
- =?us-ascii?Q?NRO2vM4047tUSXgnPvRov44LIqczwmp3z4+OJrNvJ3jdABP4llLQOzdSOQ1m?=
- =?us-ascii?Q?YxAbCVMdzJQEhtkIUKHIHh52BEICmUV1fDRgKtO0imHjViLiWWfgTnyssj5Z?=
- =?us-ascii?Q?+NfI8E42i3Azf0F011DZT2U6DIVc/G2sX8JN31Ox?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8493b2a8-e25d-4f15-1a78-08dc2ce37681
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 22:31:03.8212
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rZLe1NDUgfQfXW79CVvTeans8itLZuZjTWdFWMTiaPp14yNFBaVoY1ntHOI/GkzE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5879
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b931a24c-f676-4ddb-bb7c-e7a509d5dd4b@amd.com>
 
---=_MailMate_13390F71-957B-4974-917E-22BA13AE02CE_=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Tue, Feb 13, 2024 at 02:37:49PM -0600, Tanmay Shah wrote:
+> Hello,
+> 
+> Thanks for reviews please find my comments below.
+> 
+> On 2/13/24 1:20 PM, Rob Herring wrote:
+> > On Tue, 13 Feb 2024 09:54:48 -0800, Tanmay Shah wrote:
+> > > From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> > > 
+> > > Introduce bindings for TCM memory address space on AMD-xilinx Zynq
+> > > UltraScale+ platform. It will help in defining TCM in device-tree
+> > > and make it's access platform agnostic and data-driven.
+> > > 
+> > > Tightly-coupled memories(TCMs) are low-latency memory that provides
+> > > predictable instruction execution and predictable data load/store
+> > > timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
+> > > banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
+> > > 
+> > > The TCM resources(reg, reg-names and power-domain) are documented for
+> > > each TCM in the R5 node. The reg and reg-names are made as required
+> > > properties as we don't want to hardcode TCM addresses for future
+> > > platforms and for zu+ legacy implementation will ensure that the
+> > > old dts w/o reg/reg-names works and stable ABI is maintained.
+> > > 
+> > > It also extends the examples for TCM split and lockstep modes.
+> > > 
+> > > Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> > > Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+> > > ---
+> > > 
+> > > Changes in v10:
+> > >   - modify number of "reg", "reg-names" and "power-domains" entries
+> > >     based on cluster mode
+> > >   - Add extra optional atcm and btcm in "reg" property for lockstep mode
+> > >   - Add "reg-names" for extra optional atcm and btcm for lockstep mode
+> > >   - Drop previous Ack as bindings has new change
+> > > 
+> > > Changes in v9:
+> > >   - None
+> > > Changes in v8:
+> > >   - None
+> > > Changes in v7:
+> > >   - None
+> > > Changes in v6:
+> > >   - None
+> > > Changes in v5:
+> > >   - None
+> > > 
+> > > Changes in v4:
+> > >   - Use address-cells and size-cells value 2
+> > >   - Modify ranges property as per new value of address-cells
+> > >     and size-cells
+> > >   - Modify child node "reg" property accordingly
+> > >   - Remove previous ack for further review
+> > > 
+> > > v4 link: https://lore.kernel.org/all/20230829181900.2561194-2-tanmay.shah@amd.com/
+> > > 
+> > >  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 192 ++++++++++++++++--
+> > >  1 file changed, 170 insertions(+), 22 deletions(-)
+> > > 
+> >
+> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> >
+> > yamllint warnings/errors:
+> > ./Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml:118:13: [warning] wrong indentation: expected 10 but found 12 (indentation)
+> Ack. I will fix this.
+> 
+> However, can I still get reviews on patch itself so if something else needs to be fixed I can fix in next revision as well.
+> 
+> Also, I tried to run yamllint with following command:
+> 
+> make DT_CHECKER_FLAGS=-m dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml O=../build/zynqmp/linux-next/
+> 
+> 
+> However, I see following logs without any error on bindings:
+> 
+>   LINT    Documentation/devicetree/bindings
+> invalid config: unknown option "required" for rule "quoted-strings"
+> *xargs: /usr/bin/yamllint: exited with status 255; aborting*
+>   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+>   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+>   DTEX    Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.example.dts
+>   DTC_CHK Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.example.dtb
+> 
+> I am not sure if my system is missing something but, yamllint tool is failing.
 
-On 13 Feb 2024, at 17:21, David Hildenbrand wrote:
+"unknown option" means old version of yamllint.
 
-> On 13.02.24 22:55, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> Hi all,
->>
->> File folio supports any order and multi-size THP is upstreamed[1], so =
-both
->> file and anonymous folios can be >0 order. Currently, split_huge_page(=
-)
->> only splits a huge page to order-0 pages, but splitting to orders high=
-er than
->> 0 is going to better utilize large folios. In addition, Large Block
->> Sizes in XFS support would benefit from it[2]. This patchset adds supp=
-ort for
->> splitting a large folio to any lower order folios and uses it during f=
-ile
->> folio truncate operations.
->>
->> For Patch 6, Hugh did not like my approach to minimize the number of
->> folios for truncate[3]. I would like to get more feedback, especially
->> from FS people, on it to decide whether to keep it or not.
->
-> I'm curious, would it make sense to exclude the "more" controversial pa=
-rts (i.e., patch #6) for now, and focus on the XFS use case only?
-
-Sure. Patch 6 was there to make use of split_huge_page_to_list_to_order()=
-=2E
-Now we have multi-size THP and XFS use cases, it can be dropped.
-
---
-Best Regards,
-Yan, Zi
-
---=_MailMate_13390F71-957B-4974-917E-22BA13AE02CE_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmXL7aUPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUeQwP/RMkvJ3oGo5mYQVh6hBkj0FlEK/gFyX8fcRt
-rFIYgrthGL0H3efj6259sLXczM4YRzvfZKyu2bAFLphQOwtgIa++Lez3lPMXRhbw
-8rz4ni/uDhYmeQyNR78piZ6Zruyl3iuIAR/zfTWzhZtcv4nTsTdpvaLyDkL4Jpay
-U7AnpJggZrRfkVmfXK9l40Y8rHqtFoRKFxzy8ZfYj/cNC+IDTxxXu08f1XoStunQ
-VQAbMC0ycxQchZFC19GV20HlyxmIKX3Oq6AYUt3q1WMHiZ0yh6FEMTs5HXh2oZHU
-UTWjAeK2txDkVhm+EJyrmjKYSHaPvIDME/nEVdSOBMUVtSoKB5xiEObsgGoCCdPw
-UKnFafcsU65DtYvFQB7lvQ8uUtl8DGTDY8U451q4Z+BHErne9Iy6yCGv+Xb0+Ws6
-JMrSlhfCyxnpSANDtvGUJOUOH+MUpKzScacl1M+M/0LBD8eXYfWVron9tVy57r4+
-9sc3IDq2hr/DsuFD65MfTFzyP9wj56CxrF1HXIVahO5Vb9eTACNM06Vo3Jk38AOX
-oA8z2PTdPytQMMmh/rQIoOv/lkQUOV+eYY0pi0Q86ui/gO+nyjJFUvTa5AfRqT3m
-kObA5KBQF9yaBllmOU32zGadXyYSQaO3gTksr/ENk55wFUGNd7VNuQl/cJBz8GjW
-wt3yFp4s
-=UQBV
------END PGP SIGNATURE-----
-
---=_MailMate_13390F71-957B-4974-917E-22BA13AE02CE_=--
+Rob
 
