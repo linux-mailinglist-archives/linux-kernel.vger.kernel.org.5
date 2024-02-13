@@ -1,103 +1,85 @@
-Return-Path: <linux-kernel+bounces-62763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1D6F852568
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:14:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 975C1852569
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:14:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80F4E1F24EE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:14:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44CB01F24F2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:14:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CB910A23;
-	Tue, 13 Feb 2024 00:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB028827;
+	Tue, 13 Feb 2024 00:32:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IjXhgRtM"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="HiGWLyrv"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E7D79EF
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:31:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC8A111A6
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:32:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707784279; cv=none; b=GsfR44rHc7LUE6dlv/i02Ecg55PJaJ+YSiPqLd6ixG8CUIaTsUTk3EDmrhEKno/1WMNGQ/f/y2pk2AWgfi5dI03pXj59nIAMFyG7sN4XzODMnU7B68kuXZYw0JS3JabEF6NNVxEE3xg6hK/MzH/NR/yWEaGKbzBoacdeWSmrncE=
+	t=1707784339; cv=none; b=N206dwAyCZ56uav9qi+TNpmCG/J3t1TLSl8TU9v/5sZyx3m26b+hOThM6p9iVFoo8J7GU2AgAGD74SuRAoL5VlN3VEkjKIV26DfV783/l1hCPE7xBf/nTsvU+ecnHWbTgGZkggEI5EgfkaLGRNcr13yyp2/Je09zOfVswtnDyyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707784279; c=relaxed/simple;
-	bh=mNvkRhiyjJq1dsRwNB7SCDE/0DcmbqdFX7FIWlgw6qo=;
+	s=arc-20240116; t=1707784339; c=relaxed/simple;
+	bh=pjSDymu5K+8xXQxE/9lump8Jd8SaRcQkICx1lFhQJks=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rQxXIWscj5W2Hg7uKUNb/zA63OoGgyRZpn5H2ISyKXfpw8aELrj3vScKgubB4wvmdwoZWPPsiQd/7VrkPzNO8w0Zpx7rzJkFwNSzu4bUjC7PnvMJdcfwB3WdI7nCY4q9GnUAvYqsF49xiVIZC6qjF0zoJTbUFMOhjLORhABMvrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IjXhgRtM; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e06d2180b0so3089399b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:31:15 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=uOgfl5cDxR0oFNjQKYmQEPP2tS/ib9N/XcSzbe0f+xBxBl0vmiFsLnT/FFnYMZRrsiOoh6f7XC/T+IOaVobFl57nkRVZc6HlfO63PkWWNfhVZ31FO//LB2EZxQMgqrh0sE8x/nHF1BEEftDOu/E27gGx7OU32c45TnJdkaUy1Oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=HiGWLyrv; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-607815b5772so2404547b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:32:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707784275; x=1708389075; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707784336; x=1708389136; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=flZnqd6/OOEmgqviJI0+73E/bOCz1vKp47Qn2/+ubUU=;
-        b=IjXhgRtMIyUa1NFnp+Vp8P0i7g6V44gTGf6f9691xvdCR0dPBM2YGTq0ybNhVsEzpc
-         vhBDTK8bjhYwZmff/R8zsp7hVx5Wv02lzlOT0WauPFcM6UBzr/m3F5uE4uZbQdFHmG6c
-         BjMhYLlBgaqfSGw9AqTYS4SU1KGIDXVz4HARc=
+        bh=vZ4fwhfm6Ayw4wyRYx2scdFCzTa2TYM0p4hdVX9g/H4=;
+        b=HiGWLyrvB8mwWuzTZV0H4XT8Ytw0uMUbTJJ10Bzrjr4RizIK7bX1RcQI0DJsbShjdZ
+         mHX7J2k5N5BNhMJS5aBf90SzP+1YcryrTpQFOD2ZwWhXB5kSGIfxjTnLSY/gbCZkkA7X
+         pr0SbRrrocc+Sqx3jru8veg0SgVtqENaPzoJU0fHjEGjbgkVkXFUWwYkzJuRhV8lvpc5
+         FLhTzCskIsjv/HcpEEw7GLrp3JkAEhTCXyeV0IP1gGxmXNfkUcQlbjArWXyuZe3m7Km0
+         LritTSAgZvPyasUukw1NZYLCuozmVubPYuUxs9A2/SKbAxfKXTA5/tsIGjreuBFWYQo3
+         V5+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707784275; x=1708389075;
+        d=1e100.net; s=20230601; t=1707784336; x=1708389136;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=flZnqd6/OOEmgqviJI0+73E/bOCz1vKp47Qn2/+ubUU=;
-        b=EGZ5USCwPFw//ni32WLHNP5J8con5s7OXODvlZ0+/WFtXHWE3lN+WtNwiXmJSmULC5
-         3/5wdpaGEhyaEK4oeIlkY76ByyMiaG6H50ZJefBGcmIR9KF0tZBrD8rzMpTbf1lblXTf
-         xoUJp5QLKAcnHbihABVahnyX6tWsd+To80FQ37A8O2WmhysT/QS9/5UmSAdIHF+4qYx8
-         fFSAX9dNBN1SuRONYShZDJ4cmIgUUhMIFnBZJQnXHXOd3tQXMBNaS+JY9Tqo28rSjuEs
-         SOXbBMi6Nf7/Y4JNRhQhBdWdjntPuO86zFAgY3JwQrfMIkZmJDkOK103FglntDZUZQiX
-         DB1g==
-X-Forwarded-Encrypted: i=1; AJvYcCXWoPig0X8maTsCl4yHChcKHH/5x5S4Cthuw8ZlMmuoddk0R/2hlcr2cYA6/lwA1hiw9jT/ka31BQo/KNf6Qpyq4E02hQkWyFPPehlT
-X-Gm-Message-State: AOJu0Yy04QlSurt7xSipcEgXkx0Jp84qn10DOl+LYz91b+CSw4NGzM0E
-	bHW/nNsWPDtsQn23cYvVf9ZP/UqurSt/f4KrON+JCobittqyH9AtsQ+q+gdJ7w==
-X-Google-Smtp-Source: AGHT+IHsEPTpCmxVYDDW4VNRs2b8vcpDA5pedBCL8vEwt1Ggt87wDXOPZix8VtuDgH+3BmZUWUlZIg==
-X-Received: by 2002:aa7:82cf:0:b0:6e0:532a:d5f4 with SMTP id f15-20020aa782cf000000b006e0532ad5f4mr8655990pfn.27.1707784275520;
-        Mon, 12 Feb 2024 16:31:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVin3ur0Lo35hIyXtrtSV/cxI4vE5dmFtYD7ma+HtymCNeVZ2kkanG/e5r7jRI36pyWBjot8aUQYx6+p6LxLQnTNSm6weM6lZK91Z+2GZNgFWSN1ZeGPUdII18cHDDsVeHwP11mF9V5Cx7kzsoj1L4MeBLF1x4j/5G3iuwVW/cTP1lf4+jBzT6BusTtY+yb9OGjtgQsofJ3OkNeTsayYI6YnYoZKrbYP+SHJhtSllHfModJO/AP/ecndTCmiLycnsruuY+Z40gfK+ULp/KuzCJadwMupixtnYmRy1qpaieFOXGBmUxKVebYBQ0gaBO4gCxV5LZFueIZuKXFN1hKsPJNUcqwQAcizpIU/tBevp8sdiOcfLOYzHw+qiVJ5y0NJXKlMkVOcYTz8gNCo2Trtk3ICusgR7eUFM9ClFTEXbX5b6LW+RJ/ig/7J0FeSsOgfn3w7cYxkYi1mdkcSJqxdN9sljTmLw1cIEQpfmCmqGt7ZJwcUfz23XgPMMkH71ZPnZetjfaB08ugB7risf0yWGIFil3W8xnDYSDsWINLekmP/5pikpXr/SqTlI/kZtFx+R/Y7TJBg8XH8Khjudt2EkinnfvJOM9iaWgaRsupKFap50ol2vCniI0xkB+mMpzAvI1TnOxHZV03YgDwM1rGiJW/RCt7Rwyl0PU01O+eYaViHIiyZq9bR2CK5gDad7BWj2SfRdv7IqqyEtq4V00x9ZYyIPD3WstNoZqvyyTnQ8AXIH01cMXd3g==
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id r16-20020aa78b90000000b006e0dd50b0d0sm2678139pfd.8.2024.02.12.16.31.14
+        bh=vZ4fwhfm6Ayw4wyRYx2scdFCzTa2TYM0p4hdVX9g/H4=;
+        b=H9VjIqMaRmf5qtFwYmyOMyIdF1nZywuU9zf+z/ztsyhPlTdRn70cEvu8gMpLxn9xjX
+         e/QAoCuKyxJLkPkHRjbYXKjDExLDFzSy83bNFsbJlf3sYna+NQNOduQxrimSUlYxQA4K
+         fhhgBIUlcbRGBV/uG4z/D/8uN81OQPkabuv1Naja0aQZSKNIu9gsK6ERgrqOGTzSndrC
+         ROX2n0uJX5XcYPaFAnf4CLIrqSxKxAOLEP/9mfrv3UL56V82/s5OAecmOAxHtouMPz43
+         QdXU403i/C9fS34Bji5cj89SUWrpQxgwcQoKhVP7Ix22AtyB+hXjEstwbkTYWoYeCNbD
+         r6FQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV9LH7Ga4K9ME5ZwtS4kyHgOUwJ9WNmOlVdAPh2XEKb2d+L666LNonlLet3Bi1g8Tmm7CzVjT4euYXRA8NE7tPmAgeNgqQY4y5I88Fl
+X-Gm-Message-State: AOJu0YxPOyhVs7j1Vprmoj65QPZ3FqZ4oxp9NMNd2Vh+GQ3yeE10gC3y
+	9U2dUAXXVpHdPMXsIpjm3+oE+F0sQ21yFmR8FeC1weZ6zJfRTzquOEr7TH6g8onam3CA45rKQtk
+	2e20=
+X-Google-Smtp-Source: AGHT+IExEAYP5uIncN5jBuz4niE1/YifR/DAiVbwFSCYi19ETAYFSKTmKgH22y2nXLQvAyzTKZ/6eQ==
+X-Received: by 2002:a05:690c:2c0b:b0:607:7bce:fe28 with SMTP id eo11-20020a05690c2c0b00b006077bcefe28mr741871ywb.13.1707784336320;
+        Mon, 12 Feb 2024 16:32:16 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU1gTH1Jf44lpMZibLYSwubdAsXgCBWGTvzB01EBJLBLpkM0VTaDk8kYeKQVaQhzabBqQC9N340vK8eezWtCGWZsUyuI+Yy9rAeeP27+7Yg5sTiQKsWgyEb5b6lBhb+0+qfsq7D1tqbkszkz4aOwO+l5TRT14XEj1hwF+9b6fknZemfAIH+lhqfJyS5p8vqfyW7LzFB
+Received: from ghost ([50.146.0.2])
+        by smtp.gmail.com with ESMTPSA id s203-20020a815ed4000000b0060410ee94a7sm1396031ywb.143.2024.02.12.16.32.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 16:31:15 -0800 (PST)
-Date: Mon, 12 Feb 2024 16:31:14 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
-	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, peterx@redhat.com, david@redhat.com,
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
-	ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, shakeelb@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 23/35] mm/slub: Mark slab_free_freelist_hook()
- __always_inline
-Message-ID: <202402121631.5954CFB@keescook>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-24-surenb@google.com>
+        Mon, 12 Feb 2024 16:32:15 -0800 (PST)
+Date: Mon, 12 Feb 2024 19:32:14 -0500
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: David Laight <David.Laight@aculab.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Message-ID: <Zcq4jj3vsVtqQIHr@ghost>
+References: <20240212-fix_sparse_errors_checksum_tests-v7-0-bbd3b8f64746@rivosinc.com>
+ <20240212-fix_sparse_errors_checksum_tests-v7-2-bbd3b8f64746@rivosinc.com>
+ <dc352315-0b7b-407a-8704-e424934a922d@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -106,20 +88,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240212213922.783301-24-surenb@google.com>
+In-Reply-To: <dc352315-0b7b-407a-8704-e424934a922d@roeck-us.net>
 
-On Mon, Feb 12, 2024 at 01:39:09PM -0800, Suren Baghdasaryan wrote:
-> From: Kent Overstreet <kent.overstreet@linux.dev>
+On Mon, Feb 12, 2024 at 04:14:49PM -0800, Guenter Roeck wrote:
+> On 2/12/24 12:33, Charlie Jenkins wrote:
+> > The test cases for ip_fast_csum and csum_ipv6_magic were failing on a
+> > variety of architectures that are big endian or do not support
+> > misalgined accesses. Both of these test cases are changed to support big
+> > and little endian architectures.
+> > 
+> > The test for ip_fast_csum is changed to align the data along (14 +
+> > NET_IP_ALIGN) bytes which is the alignment of an IP header. The test for
+> > csum_ipv6_magic aligns the data using a struct. An extra padding field
+> > is added to the struct to ensure that the size of the struct is the same
+> > on all architectures (44 bytes).
+> > 
+> > Fixes: 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and ip_fast_csum")
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 > 
-> It seems we need to be more forceful with the compiler on this one.
-
-Sure, but why?
-
+> This thing really wants to annoy me. Now I get:
 > 
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+>      # test_csum_ipv6_magic: ASSERTION FAILED at lib/checksum_kunit.c:494
+>      Expected ( u64)csum_result == ( u64)expected, but
+>          ( u64)csum_result == 46543 (0xb5cf)
+>          ( u64)expected == 46544 (0xb5d0)
+>      not ok 5 test_csum_ipv6_magic
+> 
+> with the parisc64 tests. All other architectures / platforms work fine
+> after applying the various pending fixes. It looks like a carry gets
+> lost somewhere, but I have not been able to figure out where exactly
+> that happens. This only happens with the 64-bit hppa assembler code.
+> 
+> Guenter
+> 
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+How do you test parisc64? It's not in buildroot which I have been using
+to test the other architectures.
 
--- 
-Kees Cook
+- Charlie
+
 
