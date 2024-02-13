@@ -1,199 +1,137 @@
-Return-Path: <linux-kernel+bounces-64136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 118A3853A8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:09:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 545F9853A91
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9393D283F82
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:08:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86F3F1C24E38
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEBEB1CD25;
-	Tue, 13 Feb 2024 19:08:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D98B31CD33;
+	Tue, 13 Feb 2024 19:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a4fa749n"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="guqeijv6"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5655C171A5
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 19:08:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D416E5FEE5;
+	Tue, 13 Feb 2024 19:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707851334; cv=none; b=cjt68KSqPjRYzht/VjzvYQWBAy+J2TT3qHAXdVNS9Bu4ydOImm/yN1PyT9c2D7KA/bZfm44ebHDJbbvhnCP12k+tjdhRuD27Ven2IKkdSODBCffMR1kMz3eTej5naTie5/MyiSINQ46Y/noLVlyqTNPyJsGa6/wkQsMepW7K+m8=
+	t=1707851383; cv=none; b=VFMGR9dIz301poeZneucNZbR25Qdgof9GNp4vEH9Tw/Qg1LSRaitEe+qNXcxXOz+9p6tGqKoPvwCYhs3tcJn+U3zPdPtlPnvzblG9/jAua7P8/msw3IVB5VMCntDJarW4SxZrfBZ+Ie9a/PME4GfaUF+6M6Cq0ItGfxhsSbVAGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707851334; c=relaxed/simple;
-	bh=/xs67GjoWjNpppH4ZqnqiXX+eRRoA8e7888FZZETit0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=UGO9DOmy5cmXI8Ix75zTQ7RRgUas8nHfT5Lskw3SDZN8RIblPexzpt6S6UOMOFthoxTK/IH5wFXWXd+20sTLeauJ08Jg4M2zPfN4aG/PsKdQBUlDhrd8IS53UdhDpiyKIrJuSsQ9CKzprXb8cfDkzaJwRECNmCklZalx0y/vQUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a4fa749n; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707851331;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uG0EcQlsaL04DAVBIoEXlOU2Qc1NYUIqNKPW84nzM6w=;
-	b=a4fa749nWM2uaFuFWlgIDqqqySqsRW4Zd+7iUvVhyyiWEBFDyvA5e/YrUE8C5Ja9w0rI/A
-	h3t9CA/HH6XrxBm4+jeEzzIN6NrzU7AGns9WtVsIEtdaD24k12Xb6wtZJPB5vwokQlv/XS
-	7zPbpLbypwAcwnz0WlNvuKUa3whp7DY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-377-tEanHhmTM4umRUxhV5WVcg-1; Tue,
- 13 Feb 2024 14:08:47 -0500
-X-MC-Unique: tEanHhmTM4umRUxhV5WVcg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2E6041C09836;
-	Tue, 13 Feb 2024 19:08:47 +0000 (UTC)
-Received: from [10.22.10.18] (unknown [10.22.10.18])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id CFEE2492BC6;
-	Tue, 13 Feb 2024 19:08:46 +0000 (UTC)
-Message-ID: <e3a7daa9-d690-4ef2-8f6a-0641a14a6cb9@redhat.com>
-Date: Tue, 13 Feb 2024 14:08:46 -0500
+	s=arc-20240116; t=1707851383; c=relaxed/simple;
+	bh=0Sm0s4Jm6aoUjproFL7WupviqfKH/hZAqv9IO+XvGAE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rPOOylXYrOLNHKcVjGtwLWlWLsWbYYYJ3JMziHsPsehm6OQ23StzANnFAuDeW9DIFgg1RC5B8i5j+BoKTkPWyuVJ2UP/ZstgQa8ohr7GHJOQAFvqkxGeUHPvH+rh5rtcEXuEOeVG5fo1+BdfV+Tf9tdMiCVgHnb0GpiKvoUI4wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=guqeijv6; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e10614c276so294526b3a.3;
+        Tue, 13 Feb 2024 11:09:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707851381; x=1708456181; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8XH0yWsNKcUVsDPXca62EDjD6I/EfUDEuNnbhuflgzU=;
+        b=guqeijv6HVF66yiJ+xpRPALOitiZXTqt2g27B9tdsHgDnfZVUzr3jExtv/wwE2PH3L
+         mZ2fM0pwsmAFQbQecZMGaxWAtoXTpyeZhLv59fsEweerXYTcHALNldAmV0WAypMX2iQQ
+         kd1jV6soC9EWR9JbgEbgUmt877obUwId6A2t9hETr//dV3h66Gpp3ruzw1NVj8xL9rrM
+         pv2iV881o0isIvfuXBXacWQ2PTYTIU1RuCvPDcpvGMm46/o/d5nUg5Rwj7JwaeGB1F3Y
+         kAtGxfEfwDqdvKCBfpLkSiNoAvVePyv47E0vm0Y/TgiPyX9U2Aoj62ylUPyMduwVVYs5
+         IWww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707851381; x=1708456181;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8XH0yWsNKcUVsDPXca62EDjD6I/EfUDEuNnbhuflgzU=;
+        b=kTGodVtnXWf7FMv2az4Jpp9TaZbXb97zQNwx5HCTdZMICxR2a/ux/2hiEUKfmcUHJq
+         /8wAiChtFvr+QJpOCrWEjAhmQP42Ep7mBcVvkdIT/6sAn1ONzlwCvITGZ7J5FkHRN0l1
+         P6bVIGhDCyHQetJ+uFZNXSJMcJq9lqxpqok6FtM1fKGvn8ibwbNozs3qCmx4R7TiI2lm
+         K5Q0Gz99uJLCWOKVzB2/N3kbsKj+NJLDwNkl8GLRcA1cyEzJSnfWyeS1Y+mSR/lscxs+
+         6MyCzMDJ/0Gq8CaZ02qqb2ZkmB/0f4jP0PcXqDlLg/L8a/IGZlP8uES6r8FsRSPbpF/p
+         MNWA==
+X-Forwarded-Encrypted: i=1; AJvYcCXR2/hoUkTN5er7SS+fJJD6MYdnHkSjjwWHqLiQBKdIY9x8pCwaab21tKRvO1TSYdXFzTbucqVTTuOu07YJ8YuRhvIwza/cXvucVpXU
+X-Gm-Message-State: AOJu0YzlDwrPNr+5fBH2vbJBm35NlW5k9wIrNv61GeFN/NZKBKf9i316
+	o9tcO/iym45Y3TQBluoT9yaXNqJXaWbxyXLzBUKMt17OV+yBbYht+VRm6n8JiXxQwbyCD+mIhUZ
+	//JLUvgYOauIT9zUjsdzV95B4gqQ=
+X-Google-Smtp-Source: AGHT+IFoP36OoKRJ9zVIbwlja3EPSDz0aNF9S7fwol5OkJSErlvgmvH7jEEoLq/DswQV4s3syh3p23ft08bfSscIAc4=
+X-Received: by 2002:a05:6a21:1c87:b0:19e:b95e:16f2 with SMTP id
+ sf7-20020a056a211c8700b0019eb95e16f2mr479511pzb.25.1707851381017; Tue, 13 Feb
+ 2024 11:09:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] cgroup2: New memory.max.effective like cgroup1
- hierarchical_memory_limit
-Content-Language: en-US
-To: "Jan Kratochvil (Azul)" <jkratochvil@azul.com>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Michal Koutny <mkoutny@suse.com>
-References: <ZctiM5RintD_D0Lt@host1.jankratochvil.net>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZctiM5RintD_D0Lt@host1.jankratochvil.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+References: <cover.1707080349.git.dxu@dxuuu.xyz>
+In-Reply-To: <cover.1707080349.git.dxu@dxuuu.xyz>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 13 Feb 2024 11:09:29 -0800
+Message-ID: <CAEf4Bzb8dvboBVe-qN4+KEG_=phcMxCL25dr0ysjdVx5-MentQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/2] bpf, bpftool: Support dumping kfunc
+ prototypes from BTF
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, andrii@kernel.org, 
+	olsajiri@gmail.com, quentin@isovalent.com, alan.maguire@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/13/24 07:36, Jan Kratochvil (Azul) wrote:
-> Hello,
+On Sun, Feb 4, 2024 at 1:06=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> cgroup1 (by function memcg1_stat_format) contains two lines
-> 	hierarchical_memory_limit %llu
-> 	hierarchical_memsw_limit %llu
+> This patchset enables dumping kfunc prototypes from bpftool. This is
+> useful b/c with this patchset, end users will no longer have to manually
+> define kfunc prototypes. For the kernel tree, this also means we can
+> drop kfunc prototypes from:
 >
-> which are useful for userland to easily and performance-wise find out the
-> effective cgroup limits being applied. Otherwise userland has to
-> open+read+close the file "memory.max" and/or "memory.swap.max" in multiple
-> parent directories of a nested cgroup.
+>         tools/testing/selftests/bpf/bpf_kfuncs.h
+>         tools/testing/selftests/bpf/bpf_experimental.h
 >
-> For cgroup1 it was implemented by:
-> 	memcg: show real limit under hierarchy mode
-> 	https://github.com/torvalds/linux/commit/fee7b548e6f2bd4bfd03a1a45d3afd593de7d5e9
-> 	Date:   Wed Jan 7 18:08:26 2009 -0800
+> Example usage:
 >
-> But for cgroup2 it has been missing so far. Based on Michal Koutny's idea this
-> patch now implements "memory.max.effective" and "memory.swap.max.effective"
-> files similar to existing "cpuset.cpus.effective".
+>         $ make PAHOLE=3D/home/dxu/dev/pahole/build/pahole -j30 vmlinux
 >
+>         $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | =
+rg "__ksym;" | head -3
+>         extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __=
+weak __ksym;
+>         extern void cgroup_rstat_flush(struct cgroup *cgrp) __weak __ksym=
+;
+>         extern struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags)=
+ __weak __ksym;
 >
-> Jan Kratochvil
+> Note that this patchset is only effective after the enabling pahole [0]
+> change is merged and the resulting feature enabled with
+> --btf_features=3Ddecl_tag_kfuncs.
 >
+> [0]: https://lore.kernel.org/bpf/cover.1707071969.git.dxu@dxuuu.xyz/
 >
-> v3:
-> memory.stat fields -> *.max.effective separate files suggested by Michal Koutny
-> v2:
-> hierarchical_memsw_limit -> hierarchical_swap_limit fix found by Waiman Long
-> v1:
-> hierarchical_memory_limit && hierarchical_memsw_limit in memory.stat
+> =3D=3D=3D Changelog =3D=3D=3D
 >
+> From v1:
+> * Add __weak annotation
+> * Use btf_dump for kfunc prototypes
+> * Update kernel bpf_rdonly_cast() signature
 >
-> Signed-off-by: Jan Kratochvil (Azul) <jkratochvil@azul.com>
+> Daniel Xu (2):
+>   bpf: Have bpf_rdonly_cast() take a const pointer
+>   bpftool: Support dumping kfunc prototypes from BTF
 
-The code changes look good to me. However, your commit log isn't of the 
-right format. We don't start the commit log with "Hello". See
-
-https://www.kernel.org/doc/Documentation/process/submitting-patches.rst
-
-You can also do a "git log" of a linux git tree and see how other people 
-write their commit logs.
-
-Cheers,
-Longman
+I've applied patch #1 as it's a good change regardless. Please send v2
+for patch #2.
 
 >
->   mm/memcontrol.c | 36 ++++++++++++++++++++++++++++++++++++
->   1 file changed, 36 insertions(+)
+>  kernel/bpf/helpers.c    |  4 ++--
+>  tools/bpf/bpftool/btf.c | 45 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 47 insertions(+), 2 deletions(-)
 >
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 1ed40f9d3..8c4cb5f60 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6845,6 +6845,19 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
->   	return nbytes;
->   }
->   
-> +static int memory_max_effective_show(struct seq_file *m, void *v)
-> +{
-> +	unsigned long memory;
-> +	struct mem_cgroup *mi;
-> +
-> +	/* Hierarchical information */
-> +	memory = PAGE_COUNTER_MAX;
-> +	for (mi = mem_cgroup_from_seq(m); mi; mi = parent_mem_cgroup(mi))
-> +		memory = min(memory, READ_ONCE(mi->memory.max));
-> +
-> +	return seq_puts_memcg_tunable(m, memory);
-> +}
-> +
->   /*
->    * Note: don't forget to update the 'samples/cgroup/memcg_event_listener'
->    * if any new events become available.
-> @@ -7038,6 +7051,11 @@ static struct cftype memory_files[] = {
->   		.seq_show = memory_max_show,
->   		.write = memory_max_write,
->   	},
-> +	{
-> +		.name = "max.effective",
-> +		.flags = CFTYPE_NOT_ON_ROOT,
-> +		.seq_show = memory_max_effective_show,
-> +	},
->   	{
->   		.name = "events",
->   		.flags = CFTYPE_NOT_ON_ROOT,
-> @@ -8040,6 +8058,19 @@ static ssize_t swap_max_write(struct kernfs_open_file *of,
->   	return nbytes;
->   }
->   
-> +static int swap_max_effective_show(struct seq_file *m, void *v)
-> +{
-> +	unsigned long swap;
-> +	struct mem_cgroup *mi;
-> +
-> +	/* Hierarchical information */
-> +	swap = PAGE_COUNTER_MAX;
-> +	for (mi = mem_cgroup_from_seq(m); mi; mi = parent_mem_cgroup(mi))
-> +		swap = min(swap, READ_ONCE(mi->swap.max));
-> +
-> +	return seq_puts_memcg_tunable(m, swap);
-> +}
-> +
->   static int swap_events_show(struct seq_file *m, void *v)
->   {
->   	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-> @@ -8072,6 +8103,11 @@ static struct cftype swap_files[] = {
->   		.seq_show = swap_max_show,
->   		.write = swap_max_write,
->   	},
-> +	{
-> +		.name = "swap.max.effective",
-> +		.flags = CFTYPE_NOT_ON_ROOT,
-> +		.seq_show = swap_max_effective_show,
-> +	},
->   	{
->   		.name = "swap.peak",
->   		.flags = CFTYPE_NOT_ON_ROOT,
+> --
+> 2.42.1
 >
-
 
