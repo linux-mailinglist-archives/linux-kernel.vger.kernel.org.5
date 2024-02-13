@@ -1,77 +1,101 @@
-Return-Path: <linux-kernel+bounces-64544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A84E9854025
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:31:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71C50854027
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:32:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D8331F239A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:31:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4BEA1C22206
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E28A6310A;
-	Tue, 13 Feb 2024 23:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB3763105;
+	Tue, 13 Feb 2024 23:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s9YUNyUn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Buqv5oDt";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DrTzMJIu"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B0F63103;
-	Tue, 13 Feb 2024 23:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38B963103
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707867068; cv=none; b=R9S181TncO7Qcb1wlNx95ZIqsQy3UjepynCU2leFSr0KYpZN7SYRMUPMamTQ300yRfl/g2DxQl0qBFARrTwX2Izw6IJL1cj4RjogCZSLBUGiC+6CDkG2+olOZ7wrZdFhwEKaha7gFjev+IR7m5v+n5gJEkS0DeRgmbF3v2HuXMo=
+	t=1707867129; cv=none; b=j0OOFETEy+E00MfDrCVN2Y4gD4iZeDH8BBG5ycU34YR2LFuxdLOxLz+hTG2GNUFMFXijR7oFdWreFDmjhOH0HIfCXLYd3a4DCDLAUrKzh2gtdsjjLJtP7HPkByg6xmARlePxIeyzbZ/jnWFntjMs27iVBJpX4LYaw9UfK6M7CHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707867068; c=relaxed/simple;
-	bh=+1XO1udNmWXaAaAH+rF9p1f8AZwXVEeDmta7ROf/3XY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kjg6hqPFSYT96uIk7sPosAuqJp1ZGs7ygk2b1NLKLJJ9H/lFWsL9AysQ3zdySposUhprfd+2Fk5XwwmalX4ZbeIo3g6arTUa2HIY4a+kDpfbBy3qcLBAnc6pT+Le3qUeWpLUJSPhhEPQxCnKy4t32DVUIkWih5EfETRSMP86jk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s9YUNyUn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC4B0C433C7;
-	Tue, 13 Feb 2024 23:31:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707867068;
-	bh=+1XO1udNmWXaAaAH+rF9p1f8AZwXVEeDmta7ROf/3XY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s9YUNyUn0t7j5CNHgYBkSAnYHa0C6gVdTD9py7ZxdxGyeK94mU494TH7GrLxx2swf
-	 gTg+oaApSBgHuPbZ3VQVQ2fJwsGShy/HHQD8LGP/dy4NdeVnuRwY3X18ntO8FIuJ3L
-	 sOAh3UAefrnDqRzqD0z3kZNtZpOrFUjv4k+0i4jkdSi97N/lceDsj7Z2h2ECR0wLQ9
-	 9kyJRk81RrB5Wtxm8qVAxGiqYYCrz5WspPCBZp8RhTcCeR5D5y1PiqSgPj50z5pRvQ
-	 3VNuJHmd0KXNJyID1bcgSGNftoRjUkrMPcyBrZ09dxUJDXgvny61k2fTM5z751JJGy
-	 eEietQT1NiWtA==
-Date: Tue, 13 Feb 2024 16:31:04 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: Nicolin Chen <nicolinc@nvidia.com>
-Cc: sagi@grimberg.me, hch@lst.de, axboe@kernel.dk, will@kernel.org,
-	joro@8bytes.org, robin.murphy@arm.com, jgg@nvidia.com,
-	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, murphyt7@tcd.ie, baolu.lu@linux.intel.com
-Subject: Re: [PATCH v1 2/2] nvme-pci: Fix iommu map (via swiotlb) failures
- when PAGE_SIZE=64KB
-Message-ID: <Zcv7uI6VrMc2EuGT@kbusch-mbp>
-References: <cover.1707851466.git.nicolinc@nvidia.com>
- <60bdcc29a2bcf12c6ab95cf0ea480d67c41c51e7.1707851466.git.nicolinc@nvidia.com>
+	s=arc-20240116; t=1707867129; c=relaxed/simple;
+	bh=FXv/Vo1WmMGv7AFSR6AVe33vs054JP6t/z3Pasq2Av4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=e5QkiBs5PnRElJEGi9lISxV3Fa6QpitQaz2ZhfV92jB4bIcEvNz0/R0GkB53icSDQboN6a1GEVuorEQnK1m6t0xM+d/PKzduyx0FW6ZvYECESK+UCC8XxkFcTRroUYu4LEaBUxJrtg5NtIuyXBNSRZJQCE+JIWyvEuylTN74g7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Buqv5oDt; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DrTzMJIu; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707867125;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rU1FgLsKHAJWf7CpAomdWuiPOAofXzn8IOSddAMdtG8=;
+	b=Buqv5oDtIzARJ+pHYK5j1F/pjwRYnFB0SQEsFR/fcGXtcPuiNOUur5fkFcXvFmspx24SkH
+	7C8cR/Ums7FFjC3axtlc9jT34096Ul3rb4PhooOEQjMJm6k6ayMndGoSUP4Fo9EL2HMH5u
+	4N/FQJTSRhwNljeF6x2XEOUwJk5gAoAxtJBTtnRmp+m4b2EqZoLpals+KBjN6XuodJtCMT
+	gxZb7PCwPJRK8Rx+DBGonH+MKdUs6LhKAxFqHIL25ZZoKTKdmo/E/IeJjn949ejTXW6zND
+	NOJRmP6Kq+lmjKexKpqdsBcVYE10rG3NHTDDPoLMJh+uBsHMPKZi8sEZkjvqcA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707867125;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rU1FgLsKHAJWf7CpAomdWuiPOAofXzn8IOSddAMdtG8=;
+	b=DrTzMJIuT/de4iUpRBFmLXj1J29CdpEOLZz06FYaNFW4L3ep2tEofYYDzdMIyH16hDd4nV
+	YCfhqP4307rJO3Dg==
+To: Borislav Petkov <bp@alien8.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org, Tom Lendacky
+ <thomas.lendacky@amd.com>, Andrew Cooper <andrew.cooper3@citrix.com>,
+ Arjan van de Ven <arjan@linux.intel.com>, Huang Rui <ray.huang@amd.com>,
+ Juergen Gross <jgross@suse.com>, Dimitri Sivanich
+ <dimitri.sivanich@hpe.com>, Sohil Mehta <sohil.mehta@intel.com>, K Prateek
+ Nayak <kprateek.nayak@amd.com>, Kan Liang <kan.liang@linux.intel.com>,
+ Zhang Rui <rui.zhang@intel.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Feng Tang <feng.tang@intel.com>, Andy Shevchenko <andy@infradead.org>,
+ Michael Kelley <mhklinux@outlook.com>, "Peter Zijlstra (Intel)"
+ <peterz@infradead.org>, Wang Wendy <wendy.wang@intel.com>
+Subject: Re: [patch V6 01/19] x86/cpu: Provide cpuid_read() et al.
+In-Reply-To: <20240213213650.GEZcvg8uvjPXTVhmHv@fat_crate.local>
+References: <20240212153109.330805450@linutronix.de>
+ <20240212153624.516965279@linutronix.de>
+ <20240213213650.GEZcvg8uvjPXTVhmHv@fat_crate.local>
+Date: Wed, 14 Feb 2024 00:32:05 +0100
+Message-ID: <87v86seya2.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60bdcc29a2bcf12c6ab95cf0ea480d67c41c51e7.1707851466.git.nicolinc@nvidia.com>
+Content-Type: text/plain
 
-On Tue, Feb 13, 2024 at 01:53:57PM -0800, Nicolin Chen wrote:
-> @@ -2967,7 +2967,7 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
->  		dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
->  	else
->  		dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
-> -	dma_set_min_align_mask(&pdev->dev, NVME_CTRL_PAGE_SIZE - 1);
-> +	dma_set_min_align_mask(&pdev->dev, PAGE_SIZE - 1);
->  	dma_set_max_seg_size(&pdev->dev, 0xffffffff);
+On Tue, Feb 13 2024 at 22:36, Borislav Petkov wrote:
 
-I recall we had to do this for POWER because they have 64k pages, but
-page aligned addresses IOMMU map to 4k, so we needed to allow the lower
-dma alignment to efficiently use it.
+> On Tue, Feb 13, 2024 at 10:04:00PM +0100, Thomas Gleixner wrote:
+>> +static inline void __cpuid_read(unsigned int leaf, unsigned int subleaf, u32 *regs)
+>> +{
+>> +	regs[CPUID_EAX] = leaf;
+>> +	regs[CPUID_ECX] = subleaf;
+>> +	__cpuid(regs, regs + 1, regs + 2, regs + 3);
+>
+> Yeah, 
+>
+> 	__cpuid(regs, regs + CPUID_EBX, regs + CPUID_ECX, regs + CPUID_EDX);
+>
+> explains what those numbers are.
+
+Oops. Sorry, I missed that part of your previous reply and just
+responded to the u32 *regs part. I'll send an update tomorrow.
+
+Thanks,
+
+        tglx
 
