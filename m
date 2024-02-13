@@ -1,221 +1,126 @@
-Return-Path: <linux-kernel+bounces-63635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69315853293
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:04:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8C9C8532A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:07:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26405288C2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:04:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74077281BAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5957E5733D;
-	Tue, 13 Feb 2024 14:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93F7457310;
+	Tue, 13 Feb 2024 14:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B6oTbLcX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="YvFTgYPY"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C5C57300;
-	Tue, 13 Feb 2024 14:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A0A84C73
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707833050; cv=none; b=XpXluRiveYQ5sR68wIJxZoWfvEbr0ACHb5j8YWcF8zLsBTCIPnNvBb7MbcMUR0/i0Ww7LHNUZ78x4FiaqIj7S7quRGJkflsT3rwLNNQCfQV7jB0YACYD+GTVF7zDvFVMvtp3PhPf7iGQXLpDcp0CbYxkApfgpIJ0YmYO6mc/XWU=
+	t=1707833227; cv=none; b=Z1HywvavX6438GCR8uIArAJz9UlF1MKIkW9wGkKfAswroxkhVieHC9tKpAqhQjzqF5MJjcMWZvzU1Iykb3n3AsqiTJwyeJ8ViLov1bbQSXkL325vj2pg1cZT5dHhrATE+1Xba0tQUp8rvmJfqVE4boYsi3Yho/ILhqIjPV5Fe/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707833050; c=relaxed/simple;
-	bh=o78OnlwnYhWQz6fK1xJE8KAH3CBYnt55b482qC2CxzQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m49IkVrV3787XMNLcJSNWGW/exOr4vkI8A5rboCkDvwwo79N7kO2zbvou6z82LNZC0DNUBDinJsOBTvH/NscQP3ElHCS96097IYn93DW/WM8tUqYMIrAZnlDfgkpykfgiuQR/y1nbja7IilrNpsqjkjy4biWXIzt5oaRBCvQuec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B6oTbLcX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57EDDC43394;
-	Tue, 13 Feb 2024 14:04:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707833048;
-	bh=o78OnlwnYhWQz6fK1xJE8KAH3CBYnt55b482qC2CxzQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B6oTbLcX65Y1yPWcSU+wVK7zfQGji1w9jUe8wedMA4beE5xu2JlKWtb841Mm2uZlR
-	 qm8k5laoWPsXPw4ryiS8fTANTWrMjf30gHsSCH2I8aK+07eoAl9jgDMGFoFqkxizKw
-	 lEhdjYWZjQIhvFLpvKaC0w+1jaKL+ci5AIKKu33Gvn82+DYRn6GOJJsGoj2C6nO9Do
-	 gBdWxw/o1AEn7cyMVOUQPhIJ15i+5/dw6ibKJSmn6ReKLIwT/B6+oDV1uDRKvW7aEt
-	 H/Rb4FxyqDzBgLmPMVfUxwefcL1WC0N4/+YZWMPRTGwXINjfYrdjfvZ225gPyi16ei
-	 df6V4Jxq1hEOw==
-Date: Tue, 13 Feb 2024 15:04:05 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Devarsh Thakkar <devarsht@ti.com>
-Cc: jyri.sarha@iki.fi, tomi.valkeinen@ideasonboard.com, airlied@gmail.com, 
-	daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, nm@ti.com, vigneshr@ti.com, kristo@kernel.org, praneeth@ti.com, 
-	a-bhatia1@ti.com, j-luthra@ti.com
-Subject: Re: Re: [RFC PATCH 2/3] drm/tidss: Add support for display sharing
-Message-ID: <qiqrhpqtnox47wj6az7t3fjp4vc6k32fw42tp5slqggrhe6utb@i7lkpaf3v3od>
-References: <20240116134142.2092483-1-devarsht@ti.com>
- <20240116134142.2092483-3-devarsht@ti.com>
- <vgfzhamtiwkpdyk5ndagsb63subclinotoe6tsi3wu6z7454ec@igxfzjc5gyqm>
- <88018f5f-a7db-7278-e5c3-bb1dbf0e3f14@ti.com>
+	s=arc-20240116; t=1707833227; c=relaxed/simple;
+	bh=+s/OfGNMXB58P7TxwiDwAEhQ+GBlUKjDVwC55toeJVc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fDIe8ugngclywUlsgicRKGJAUX4oQ8/pidOFYhGN52F2hvPX5u/jONJH6PzyzjAxJ9hobRInRxoySAihzFs1hEVmgA7W3nbtLz9to40xVRGTGmIsdLWs+NHshdKSpISPSkmDoaNBQ3nCd9ZGCyHuLKYMTgOcu8QE01QMDfNt9gE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=YvFTgYPY; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-410db155e57so14596595e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:07:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1707833224; x=1708438024; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OznreBbGn8I8qErYNCh7MV7tKWfbq+5twYL5yapVuHA=;
+        b=YvFTgYPYeSpNbdCxOjklcltk58yg2oZROYr/l5C+nIz2X8Hgu4B9aRRlvh6JTvQVqN
+         hiYGFHSWtsqFITWZ0B0oUy43NTU6PZgoY6aO/DQdkjch48NbKDtUHqb0R90CI6N4uD8O
+         Du/Ji6c0IoELV/VN/aRI4zWwvoiEvzoIfIixGgLDeo1+pqK+bLCN5KtOv7qGvdxuSQB8
+         Hg54V1Fzi/TFWW+9Uwa53OIAu1TGmsui8Fe8xRMykXCrZUTtUWglBoDInWYmcDFL5vhi
+         90eUObiU3HFzUciPhj3y2wuGTEJY50zVOypf0Eg0d6vJy9thB90VTDXJ+Hx3j7Ia6ZkS
+         afOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707833224; x=1708438024;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OznreBbGn8I8qErYNCh7MV7tKWfbq+5twYL5yapVuHA=;
+        b=aQDq7WmkM4v0/bkg/yewSu+xzWuJ7Vqs8Er84330uCG0cIzYrlssF0PE92mlB23h4N
+         N735RC4LxTdgW+N4aoVRSDMIQUqbv5bdaU2v7JIHYXljSEgEdLaWZ3ycXCJ5E9TsnTuK
+         G9xvPSjHKtv6poO5pycpxgQqLelYUMGPBkwaWhci3FpORtfp7rBhfe6joZn5YrBpyugv
+         tlZ6vaGV2RguWjlJMB027AHcb8G3/MYIJSSrrs9i+JTAO7iaU+o/4AOmM1FNtURs0lPW
+         XaEtLVekA73jfGMVRoIF//3S4OYR5cQ8J3fEFztIw650DMud7fu0xZAMu9lbrEtroD3M
+         ccOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUATQqNmr3vYbc8VNtiHndOJWTzEbYhvDtGsFJcG8nT95qbXd8p/iMHzjDAYaJCuPu8X2M4k/dBmdlXYJQGToMlEgjIrdliAXQQC2KZ
+X-Gm-Message-State: AOJu0YzCgz4lMZaJJQyy1a60M6LXK2ax4b7onwfv5v7wc+wYQQu85Epe
+	MeStyCQSfo2GrUHD8WosO60ARTu2F7+qpMWkV3GNA/GgVFf7jYGHnLjxjWu7DiKb6p6TyyB/2gh
+	Mgg/T+w==
+X-Google-Smtp-Source: AGHT+IHgaCsw+bI3YnMtmRZRxOhZhIBpjtyhecfn4YghOjw9O5dxyxlKSEdfcJ9dLFmj9HUOdbCPFA==
+X-Received: by 2002:a05:600c:1c98:b0:410:1587:7c0 with SMTP id k24-20020a05600c1c9800b00410158707c0mr8585573wms.31.1707833224356;
+        Tue, 13 Feb 2024 06:07:04 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXPlTlgcRhS132bjJpvP127vmj2lPugovqokaqg0rSgIYimGTm7LoF/kfRoriLQM2mmmzfw93YScwoshSD8YO0n/srrSuAnufpdYFdq55rAiqi2z8k4zctqQ++Z/VQxn8wANY36BXIaAxJlBh9Hzw3jtYQdFCD4k7D4KfmNY0M8czaEcVuZO8MT0H9F0AXQgR1sJTpc74Sxq5ZJhwOVvlm+
+Received: from fedora.fritz.box (aftr-82-135-80-242.dynamic.mnet-online.de. [82.135.80.242])
+        by smtp.gmail.com with ESMTPSA id f13-20020a05600c154d00b0040fb783ad93sm11744683wmg.48.2024.02.13.06.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 06:07:02 -0800 (PST)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Nas Chung <nas.chung@chipsnmedia.com>,
+	Jackson Lee <jackson.lee@chipsnmedia.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] drivers: wave5: Remove unnecessary semicolons
+Date: Tue, 13 Feb 2024 15:04:41 +0100
+Message-ID: <20240213140441.8640-1-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mec2gkni2rkjd75q"
-Content-Disposition: inline
-In-Reply-To: <88018f5f-a7db-7278-e5c3-bb1dbf0e3f14@ti.com>
+Content-Transfer-Encoding: 8bit
 
+Remove unnecessary semicolons reported by Coccinelle/coccicheck and the
+semantic patch at scripts/coccinelle/misc/semicolon.cocci.
 
---mec2gkni2rkjd75q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ drivers/media/platform/chips-media/wave5/wave5-hw.c      | 2 +-
+ drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Hi Devarsh,
+diff --git a/drivers/media/platform/chips-media/wave5/wave5-hw.c b/drivers/media/platform/chips-media/wave5/wave5-hw.c
+index f1e022fb148e..2d82791f575e 100644
+--- a/drivers/media/platform/chips-media/wave5/wave5-hw.c
++++ b/drivers/media/platform/chips-media/wave5/wave5-hw.c
+@@ -2315,7 +2315,7 @@ static bool wave5_vpu_enc_check_common_param_valid(struct vpu_instance *inst,
+ 				param->intra_refresh_mode);
+ 			return false;
+ 		}
+-	};
++	}
+ 	return true;
+ 
+ invalid_refresh_argument:
+diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+index f29cfa3af94a..8bbf9d10b467 100644
+--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
++++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+@@ -92,7 +92,7 @@ static int switch_state(struct vpu_instance *inst, enum vpu_instance_state state
+ 		break;
+ 	case VPU_INST_STATE_STOP:
+ 		break;
+-	};
++	}
+ 
+ 	dev_dbg(inst->dev->dev, "Switch state from %s to %s.\n",
+ 		state_to_str(inst->state), state_to_str(state));
+-- 
+2.43.0
 
-On Thu, Feb 08, 2024 at 06:26:17PM +0530, Devarsh Thakkar wrote:
-> Hi Maxime,
->=20
-> Thanks a lot for checking on this.
->=20
-> On 26/01/24 17:45, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > Thanks a lot for working on that.
-> >=20
-> > On Tue, Jan 16, 2024 at 07:11:41PM +0530, Devarsh Thakkar wrote:
-> >> Display subsystem present in TI Keystone family of devices supports sh=
-aring
-> >> of display between multiple hosts as it provides separate register spa=
-ce
-> >> (common* region) for each host to programming display controller and a=
-lso a
-> >> unique interrupt line for each host.
-> >>
-> >> This adds support for display sharing, by allowing partitioning of
-> >> resources either at video port level or at video plane level as
-> >> described below :
-> >>
-> >> 1) Linux can own (i.e have write access) completely one or more of vid=
-eo
-> >> ports along with corresponding resources (viz. overlay managers,
-> >> video planes) used by Linux in context of those video ports.
-> >> Even if Linux is owning
-> >> these video ports it can still share this video port with a remote core
-> >> which can own one or more video planes associated with this video port.
-> >>
-> >> 2) Linux owns one or more of the video planes with video port
-> >> (along with corresponding overlay manager) associated with these planes
-> >> being owned and controlled by a remote core. Linux still has read-only
-> >> access to the associated video port and overlay managers so that it can
-> >> parse the settings made by remote core.
-> >=20
-> > So, just to make sure we're on the same page. 1) means Linux drives the
-> > whole display engine, but can lend planes to the R5? How does that work,
-> > is Linux aware of the workload being there (plane size, format, etc) ?
-> >=20
->=20
-> Well, there is no dynamic procedure being followed for lending. The
-> partitioning scheme is decided and known before hand, and the remote
-> core firmware updated and compiled accordingly, and similarly the
-> device-tree overlay for Linux is also updated with partitioning
-> information before bootup.
->=20
-> What would happen here is that Linux will know before-hand this
-> partitioning information via device-tree properties and won't enumerate
-> the plane owned by RTOS, but it will enumerate the rest of the display
-> components and initialize the DSS, after which user can load the DSS
-> firmware on remote core and this firmware will only have control of
-> plane as it was compiled with that configuration.
-
-Right. If the RTOS is in control of a single plane, how it is expected
-to deal with Linux shutting the CRTC down, or enforcing a configuration
-that isn't compatible with what the RTOS expects (like a plane with a
-higher zpos masking its plane), what is the mechanism to reconcile it?
-
-> > And 2) would mean that the display engine is under the R5 control and
-> > Linux only gets to fill the plane and let the firmware know of what it
-> > wants?
-> >=20
->=20
-> Here too the partitioning information is pre-decided and remote core
-> firmware and device-tree overlay for Linux updated accordingly. But in
-> this case as remote core firmware owns the display (minus the plane
-> owned by Linux) it is started and initialized during the bootloader
-> phase itself where it initializes the DSS and starts rendering using the
-> plane owned by it and Linux just latches to the DSS without
-> re-initializing it, with write access only to the plane that is owned by
-> Linux. You can refer [1] for more details on this.
->
-> > If so, do we even need the tidss driver in the second case? We could
-> > just write a fwkms driver of some sorts that could be used by multiple
-> > implementations of the same "defer to firmware" logic.
-> >=20
->=20
-> This feature of static partitioning of DSS resources is specific to DSS7
-> hardware (which is controlled by tidss driver) which supports dedicated
-> register space and interrupt line for each of the hosts [0], so that
-> multiple hosts can drive the display controller simultaneously as  per
-> the desired static partitioning of resources, and so I don't think a
-> separate driver is required here and tidss seems the right place to
-> support this, where using this device-tree approach different resource
-> partitioning schemas can be achieved as described here [1]. This was
-> also aligned with Tomi too where we discussed that tidss is the right
-> place to support this as we are simply leveraging the DSS hardware
-> capabilities of static partitioning here.
-
-If the only thing tidss does in the "owned by RTOS" is forwarding KMS
-atomic states to the RTOS, then I'm still not sure why we need to
-involve tidss at all.
-
-It's not just about interrupts, it's also about how your arbitrate
-between what Linux wants and what the RTOS wants. Like if the RTOS still
-wants to output something but Linux wants to disable it, how do you
-reconcile the two?
-
-You have to have something that reconciles both, and typically for
-firmware-based setup this will be the firmware's job.
-
-That's very similar to what the RaspberryPi did with fkms, and I believe
-that having a generic KMS-on-remoteproc driver when the firmware has
-control over the display is the path forward.
-
-> >> For both the cases, the resources used in context of processing core
-> >> running Linux along with ownership information are exposed by user as
-> >> part of device-tree blob and driver uses an updated feature list tailo=
-red
-> >> for this shared mode accordingly. The driver also auto-populates
-> >> matching overlay managers and output types from shared video
-> >> port list provided in device-tree blob.
-> >> In dispc_feature struct remove const access specfier for output_type
-> >> array as it is required to be updated dynamically in run-time for shar=
-ed
-> >> mode.
-> >=20
-> > I'm also not entirely sure that the device tree is the right path there.
-> > Surely the firmware capabilities will evolve over time, while the device
-> > tree won't. Is there some way to make it discoverable at probe time by
-> > the driver?
->
-> I think the main highlight of the sharing feature is the hardware
-> capability where each host is provided separate irq and register space
-> to program display for their display context independently
-
-Wait, what do you mean by display context here?
-
-Maxime
-
---mec2gkni2rkjd75q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZct21QAKCRDj7w1vZxhR
-xcvHAP40dv4AWr1xUiTUL1KMGGWshZE0Hu8pf/vQPrlh7aA+MwEA5FZHpV8kiImZ
-cTaxg1C63wAZkBpkb/jDEQI5vhL6ZAI=
-=wSAc
------END PGP SIGNATURE-----
-
---mec2gkni2rkjd75q--
 
