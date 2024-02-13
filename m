@@ -1,174 +1,77 @@
-Return-Path: <linux-kernel+bounces-64543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EFED854021
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:30:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A84E9854025
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:31:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3538628DF11
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:30:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D8331F239A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92B663110;
-	Tue, 13 Feb 2024 23:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E28A6310A;
+	Tue, 13 Feb 2024 23:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="pCbF0zTK"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s9YUNyUn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326C562A02;
-	Tue, 13 Feb 2024 23:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B0F63103;
+	Tue, 13 Feb 2024 23:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707867025; cv=none; b=Zl6AmSeRwiXEWw9xLKUr4h5OVHyJnSFLnqxyqIT8nLO6BNDOb26GK1PiwLyUgrpLsEhgahG9PlrOA9l1jFHOuce0cyeEwD1bGLzShjY+DAcMgughYNLgUtRIEaSXIQu2YRvk42Ase2n3lm/Ix7FqS42TrXYdNpWqNHvbZPWmDE0=
+	t=1707867068; cv=none; b=R9S181TncO7Qcb1wlNx95ZIqsQy3UjepynCU2leFSr0KYpZN7SYRMUPMamTQ300yRfl/g2DxQl0qBFARrTwX2Izw6IJL1cj4RjogCZSLBUGiC+6CDkG2+olOZ7wrZdFhwEKaha7gFjev+IR7m5v+n5gJEkS0DeRgmbF3v2HuXMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707867025; c=relaxed/simple;
-	bh=tBCl0jWLRkN/MadVKH56rgtBZN2CTSGsYrQR/Y5aZA8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Tq0A+0wOIFzzJTWZFXeG0HG0Jok5uNtPbvct3gMDGiwS79kjy9oMsfTnXTEGSmeKkdcXaghd6DtB12UTtWrT03P/a6LIThf0THc+jLDxSDmzWploioTnnOEFpyEX20S9KRHhs2xCwSJSLYme0TBPZG6EczcHKdUr/WgXwLY3UXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=pCbF0zTK; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707867012;
-	bh=KUZSxNr3xB4zN0904cbczi0hkdWBqZu7Pp/ST+wPnRw=;
-	h=Date:From:To:Cc:Subject:From;
-	b=pCbF0zTKq3BOWUaFMJfoFD4F7IGO0XytcU9m3dSSHRz/wZd71mY52f1KUvQACQFal
-	 7pnG2xhptNVVBk+m2030LRTzKHspZL5jBmLYcce7d2xk++wSvLTMKe2fK9/bh1gebI
-	 YdbSvxjrRNh8R0dDGndNF4g24xESjQ+luwcpRTpmF7ak8NHKV6eMY5oFCnkeRHt8hI
-	 lJChcqalG5FZk4l1mkKXpyK9WeOkXo9Z4Mkvga4h163Q5Fz2bHWzzOTOzC/Fhn7aq7
-	 exXG5ROBfm7a6mI0vqtLBs4V/Gi+74CMv3LXwxQQ9pbHW1BFcQD/AkpGNQP1pqyFe7
-	 r/8kU4So73dlA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TZHcM1GQlz4wc4;
-	Wed, 14 Feb 2024 10:30:10 +1100 (AEDT)
-Date: Wed, 14 Feb 2024 10:30:08 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Bjorn Helgaas
- <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Krzysztof
- =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>
-Cc: Alex Williamson <alex.williamson@redhat.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, "Rafael J. Wysocki"
- <rafael.j.wysocki@intel.com>, Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: linux-next: manual merge of the pm tree with the pci-current tree
-Message-ID: <20240214103008.0bb12069@canb.auug.org.au>
+	s=arc-20240116; t=1707867068; c=relaxed/simple;
+	bh=+1XO1udNmWXaAaAH+rF9p1f8AZwXVEeDmta7ROf/3XY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kjg6hqPFSYT96uIk7sPosAuqJp1ZGs7ygk2b1NLKLJJ9H/lFWsL9AysQ3zdySposUhprfd+2Fk5XwwmalX4ZbeIo3g6arTUa2HIY4a+kDpfbBy3qcLBAnc6pT+Le3qUeWpLUJSPhhEPQxCnKy4t32DVUIkWih5EfETRSMP86jk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s9YUNyUn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC4B0C433C7;
+	Tue, 13 Feb 2024 23:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707867068;
+	bh=+1XO1udNmWXaAaAH+rF9p1f8AZwXVEeDmta7ROf/3XY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s9YUNyUn0t7j5CNHgYBkSAnYHa0C6gVdTD9py7ZxdxGyeK94mU494TH7GrLxx2swf
+	 gTg+oaApSBgHuPbZ3VQVQ2fJwsGShy/HHQD8LGP/dy4NdeVnuRwY3X18ntO8FIuJ3L
+	 sOAh3UAefrnDqRzqD0z3kZNtZpOrFUjv4k+0i4jkdSi97N/lceDsj7Z2h2ECR0wLQ9
+	 9kyJRk81RrB5Wtxm8qVAxGiqYYCrz5WspPCBZp8RhTcCeR5D5y1PiqSgPj50z5pRvQ
+	 3VNuJHmd0KXNJyID1bcgSGNftoRjUkrMPcyBrZ09dxUJDXgvny61k2fTM5z751JJGy
+	 eEietQT1NiWtA==
+Date: Tue, 13 Feb 2024 16:31:04 -0700
+From: Keith Busch <kbusch@kernel.org>
+To: Nicolin Chen <nicolinc@nvidia.com>
+Cc: sagi@grimberg.me, hch@lst.de, axboe@kernel.dk, will@kernel.org,
+	joro@8bytes.org, robin.murphy@arm.com, jgg@nvidia.com,
+	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, murphyt7@tcd.ie, baolu.lu@linux.intel.com
+Subject: Re: [PATCH v1 2/2] nvme-pci: Fix iommu map (via swiotlb) failures
+ when PAGE_SIZE=64KB
+Message-ID: <Zcv7uI6VrMc2EuGT@kbusch-mbp>
+References: <cover.1707851466.git.nicolinc@nvidia.com>
+ <60bdcc29a2bcf12c6ab95cf0ea480d67c41c51e7.1707851466.git.nicolinc@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/CjylUucKiAPUPy98I.Dpp4t";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60bdcc29a2bcf12c6ab95cf0ea480d67c41c51e7.1707851466.git.nicolinc@nvidia.com>
 
---Sig_/CjylUucKiAPUPy98I.Dpp4t
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Feb 13, 2024 at 01:53:57PM -0800, Nicolin Chen wrote:
+> @@ -2967,7 +2967,7 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
+>  		dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
+>  	else
+>  		dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+> -	dma_set_min_align_mask(&pdev->dev, NVME_CTRL_PAGE_SIZE - 1);
+> +	dma_set_min_align_mask(&pdev->dev, PAGE_SIZE - 1);
+>  	dma_set_max_seg_size(&pdev->dev, 0xffffffff);
 
-Hi all,
-
-Today's linux-next merge of the pm tree got a conflict in:
-
-  drivers/pci/pci.c
-
-between commit:
-
-  41044d536068 ("PCI: Fix active state requirement in PME polling")
-
-from the pci-current tree and commit:
-
-  c0ef3df8dbae ("PM: runtime: Simplify pm_runtime_get_if_active() usage")
-
-from the pm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/pci/pci.c
-index a532bf597e57,cb51c4079013..000000000000
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@@ -2361,36 -2522,29 +2361,36 @@@ static void pci_pme_list_scan(struct wo
-  		if (pdev->pme_poll) {
-  			struct pci_dev *bridge =3D pdev->bus->self;
-  			struct device *dev =3D &pdev->dev;
- -			int pm_status;
- +			struct device *bdev =3D bridge ? &bridge->dev : NULL;
- +			int bref =3D 0;
- =20
-  			/*
- -			 * If bridge is in low power state, the
- -			 * configuration space of subordinate devices
- -			 * may be not accessible
- +			 * If we have a bridge, it should be in an active/D0
- +			 * state or the configuration space of subordinate
- +			 * devices may not be accessible or stable over the
- +			 * course of the call.
-  			 */
- -			if (bridge && bridge->current_state !=3D PCI_D0)
- -				continue;
- +			if (bdev) {
-- 				bref =3D pm_runtime_get_if_active(bdev, true);
-++				bref =3D pm_runtime_get_if_active(bdev);
- +				if (!bref)
- +					continue;
- +
- +				if (bridge->current_state !=3D PCI_D0)
- +					goto put_bridge;
- +			}
- =20
-  			/*
- -			 * If the device is in a low power state it
- -			 * should not be polled either.
- +			 * The device itself should be suspended but config
- +			 * space must be accessible, therefore it cannot be in
- +			 * D3cold.
-  			 */
- -			pm_status =3D pm_runtime_get_if_active(dev);
- -			if (!pm_status)
- -				continue;
- -
- -			if (pdev->current_state !=3D PCI_D3cold)
- +			if (pm_runtime_suspended(dev) &&
- +			    pdev->current_state !=3D PCI_D3cold)
-  				pci_pme_wakeup(pdev, NULL);
- =20
- -			if (pm_status > 0)
- -				pm_runtime_put(dev);
- +put_bridge:
- +			if (bref > 0)
- +				pm_runtime_put(bdev);
-  		} else {
-  			list_del(&pme_dev->list);
-  			kfree(pme_dev);
-
---Sig_/CjylUucKiAPUPy98I.Dpp4t
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXL+4AACgkQAVBC80lX
-0GxorAf9EfEqMCVJVb8TqWHS5bC2IMANFydH3wDCtEx3H181jUlGPm5/ILxIn3+f
-ONcRv8FVGwEJWSiVDkPS/dLg/q0gcbz46khaxpC1GN3n+1+BJCmJPNuVIftSL3bh
-j7si/FsmxUVsa0Ji3ySIf40JvJwyD3dVOVJRAjK60E/TOz4dQ2hAzuJGAg1VSNMF
-e5RxDK0QaagWrGrw02vVydvfKiXxX1XjnEb8KeCR0KB5QVG9VrEkhENB+vdxWvr0
-s6DABfEKsZzOrrNTDxMoxJmc3SSeyrWmHqzUz8P79LFOA24hEcbjRsp9YAjKShXu
-sxjfT5eJlpax6C3pjqfkUInLiFWcNw==
-=a//M
------END PGP SIGNATURE-----
-
---Sig_/CjylUucKiAPUPy98I.Dpp4t--
+I recall we had to do this for POWER because they have 64k pages, but
+page aligned addresses IOMMU map to 4k, so we needed to allow the lower
+dma alignment to efficiently use it.
 
