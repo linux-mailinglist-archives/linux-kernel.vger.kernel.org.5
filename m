@@ -1,161 +1,104 @@
-Return-Path: <linux-kernel+bounces-64463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9C11853EBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:31:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE1D8853ECE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:35:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 285851C243A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:31:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4751CB2110B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:35:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA90D626B2;
-	Tue, 13 Feb 2024 22:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83451626A1;
+	Tue, 13 Feb 2024 22:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kj9Ww9VM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WZsBs4ED"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FDE1433AB;
-	Tue, 13 Feb 2024 22:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA3B433AB
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:35:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707863493; cv=none; b=MIuZZ56VZ/IyOCwlzLi9Fa7SU/383R8Hhot46u8bTLuZhR1Frlx4vEyqSmiFs4UzYVN83BmJ9kdcvkgZOB6GjtppeLy/gBITTUhVWlRHVE8c7jtc1EhA7uVfapDOVO0a601i77UfY7A/Y5hsi7MbpZ1sviiHyGL/kjac+90JIPg=
+	t=1707863727; cv=none; b=Vqf2yKmyg/uoeqc4AAJyLpidXBYAe1bPOOoHqRBvsYRoWD6D3zf1eVmaNzPja6jYcujmE6KLy4kHCe3PH2EMnvYgRQCJjcp1GQ2abD/Nz4xAzVpoZUIyxJTulxjApBurP4JNRjuPBQj3NWFxE1mES4Ypst7NEFXnz21ZkXc+hTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707863493; c=relaxed/simple;
-	bh=tUMsXY/XfFkqr7u0iiEPY04YFBGnHpoUhaqNlD4VLF4=;
+	s=arc-20240116; t=1707863727; c=relaxed/simple;
+	bh=tipJi+U9GDj0CkiqDhKdK1o65riVM70ZqCF20enCo9U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fs0fNf3Hx5aO3O6560I7DJceLfJ6jq6eOZCWS8o3z/hZ5sxzxKpRwoHQ7rrW4Ea97NdAebLGN30NDBS7q3ZarBkCT754jAz6pSPtg36MdPMGf/ZnKJrkVHmbiRcdfFme3aQ4sCFJTwcshKogwWd5iTQV/xzCgGhi/oc0YeGr7wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kj9Ww9VM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D7F7C433F1;
-	Tue, 13 Feb 2024 22:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707863492;
-	bh=tUMsXY/XfFkqr7u0iiEPY04YFBGnHpoUhaqNlD4VLF4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kj9Ww9VMf2s40wjwtHIk/4onEZen6N4x8brxw8zIQYpWt9ckJpLD0s1PsT1D7Ia4b
-	 rr2biX+69XirmVQ1ZHWV7XJ9mxseJb1hE58+/+s8cwIBW5dBHX+PexEUR3sGzke4rZ
-	 5m5gzjxGgFtIZ5SssmS9sjsAjZDSIz77/F0zzHUbpK5uHdFlzlge/QvRan4fgWux6N
-	 gLyH70dAC1VOq5bTjKC60y4/PcpqjtK8rKpSz9hy3y67IEX7NhDqNy/GzlnJ3sXT2y
-	 J/1vuXMajieuCWoMVIgh7QSHrLpk+Kgbqc1Rpd0Z5dxLiCzoeCkFOgO3j0g76rHU5U
-	 9W+cutZzWdbBw==
-Date: Tue, 13 Feb 2024 16:31:30 -0600
-From: Rob Herring <robh@kernel.org>
-To: Tanmay Shah <tanmay.shah@amd.com>
-Cc: andersson@kernel.org, devicetree@vger.kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, linux-remoteproc@vger.kernel.org,
-	michal.simek@amd.com,
-	Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
-	ben.levinsky@amd.com, linux-kernel@vger.kernel.org,
-	mathieu.poirier@linaro.org, conor+dt@kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v10 2/4] dt-bindings: remoteproc: add Tightly Coupled
- Memory (TCM) bindings
-Message-ID: <20240213223130.GA2504650-robh@kernel.org>
-References: <20240213175450.3097308-1-tanmay.shah@amd.com>
- <20240213175450.3097308-3-tanmay.shah@amd.com>
- <170785205177.2155555.1311787541370066483.robh@kernel.org>
- <b931a24c-f676-4ddb-bb7c-e7a509d5dd4b@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SHTC8p6vPVsiin379MluGFkcj9ACma+grfj4fM6Bf/YEikxresv0aKYpRR8/n6vS1u3Gw71JbKFIlPIZdi6wi/8i+1iv4405IAg9St+O6PZ5HDlriLK6UpxkgV6BWQ0wHJQMVyM9U4ijggdt4Hd5ex00GvBWtunTm/MK0/ep0CA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WZsBs4ED; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e10ac45684so21099b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:35:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707863726; x=1708468526; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yHb/YYBc6pIFNIEe2DPG7rOnAuRcX3ih2CyzFyZ/wSE=;
+        b=WZsBs4EDBlVYYS0mMOZjPQWdvecHXsC/Q7akLJ6IV7/e/VsM3c9LIWA4dmx6oVsimL
+         QcZKQxHCQhFhuJ2sGQpZuQNPNak/tFZ7Z+qUD7axAFzMKLw2DEjRlzPWZQoKCEbQ+WIo
+         5BG2k6rLjREpwuQn9BSaYkm7wCQ8i2ksHWlfM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707863726; x=1708468526;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yHb/YYBc6pIFNIEe2DPG7rOnAuRcX3ih2CyzFyZ/wSE=;
+        b=PSUolB4St5yVM32HkRx+bsA606/oRsVj/S5gBqZ5gbJ475L86snSLQQquTH2NLN7Uq
+         G9H/3FlgpQtc56toxHyG2NLWoeW+MqdacO2mRyUrOyPe/bLKjMZ06Rxpm8cE1dQvpOFa
+         aVDLCm/NibFYhbnzP3S7y8SGuK1npJ8WTs/K9KKUexgU57HK5feLbl/MvPFnqE88N0lv
+         LbdUeD3Wr9RykqLdKx772RXbiQ9BJEQ0zxIXTsyvEMzGYgWYTNlUrDdLRIxmpFfwZOcK
+         6dmmsCMAf+OK9yXCoyTybTmMMdg96zYj/k7cDHkR+5AOg9Umo6VYUZ9yTYZGW/F3ST4H
+         5TTw==
+X-Forwarded-Encrypted: i=1; AJvYcCWUygb3ME7OPtLK5yu9GSVYol6jSdiLLtMoBhPhWQiSJ1FSe323EZ5oOuGVDC9Z9+vdKykk+FoPgYmRO5uBdQNqkriPtAZy7d/CmXx+
+X-Gm-Message-State: AOJu0YzTOguf6YB0KjvfFXIqDqxb7QitHVDAQcooHdN06pD1b7QLe8A3
+	IpBa1PIb7BquuHHtdl66KCpy9GsOz5+ReqrRp/RO88Hm7wMIFEPBS3SrYGuEaw==
+X-Google-Smtp-Source: AGHT+IFl+ixrff+OQKZ4hGvka+YzZ2Fu4NyTeH+/fRphqNrwSiUKZgybbR/ivq1vpF2UfFHuYi3UmA==
+X-Received: by 2002:a05:6a00:26c7:b0:6e0:8ccc:3978 with SMTP id p7-20020a056a0026c700b006e08ccc3978mr568946pfw.11.1707863725782;
+        Tue, 13 Feb 2024 14:35:25 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXIHdkdxxey73LnmlkLOMQg7I1B9rH6TUWFTQN98YHugPGy24HS2haJws/2J6qK1ImHjz/r5apOEDJcyR8nUcJY7APZ8vwwVdJ0mWg2yVKgbD30bCK/OsN82PBBpQ5Q6fUhUTHXM7zpl5FsR1h0E/V1xvQ+tTcBtY6nx8p1D/S7Fp2IMLhc8lQfBABjy/782CW4MzZ6qzGj1QpJgHZSKLGB1LP8XPnfIhY/0IV4TLpJrACV6YKzQutFf0w=
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d5-20020a056a00198500b006dbdb5946d7sm7948181pfl.6.2024.02.13.14.35.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 14:35:25 -0800 (PST)
+Date: Tue, 13 Feb 2024 14:35:24 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, security@kernel.org,
+	Sasha Levin <sashal@kernel.org>, Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH] Documentation: Document the Linux Kernel CVE process
+Message-ID: <202402131429.A604440C6@keescook>
+References: <2024021314-unwelcome-shrill-690e@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b931a24c-f676-4ddb-bb7c-e7a509d5dd4b@amd.com>
+In-Reply-To: <2024021314-unwelcome-shrill-690e@gregkh>
 
-On Tue, Feb 13, 2024 at 02:37:49PM -0600, Tanmay Shah wrote:
-> Hello,
-> 
-> Thanks for reviews please find my comments below.
-> 
-> On 2/13/24 1:20 PM, Rob Herring wrote:
-> > On Tue, 13 Feb 2024 09:54:48 -0800, Tanmay Shah wrote:
-> > > From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-> > > 
-> > > Introduce bindings for TCM memory address space on AMD-xilinx Zynq
-> > > UltraScale+ platform. It will help in defining TCM in device-tree
-> > > and make it's access platform agnostic and data-driven.
-> > > 
-> > > Tightly-coupled memories(TCMs) are low-latency memory that provides
-> > > predictable instruction execution and predictable data load/store
-> > > timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
-> > > banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
-> > > 
-> > > The TCM resources(reg, reg-names and power-domain) are documented for
-> > > each TCM in the R5 node. The reg and reg-names are made as required
-> > > properties as we don't want to hardcode TCM addresses for future
-> > > platforms and for zu+ legacy implementation will ensure that the
-> > > old dts w/o reg/reg-names works and stable ABI is maintained.
-> > > 
-> > > It also extends the examples for TCM split and lockstep modes.
-> > > 
-> > > Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-> > > Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
-> > > ---
-> > > 
-> > > Changes in v10:
-> > >   - modify number of "reg", "reg-names" and "power-domains" entries
-> > >     based on cluster mode
-> > >   - Add extra optional atcm and btcm in "reg" property for lockstep mode
-> > >   - Add "reg-names" for extra optional atcm and btcm for lockstep mode
-> > >   - Drop previous Ack as bindings has new change
-> > > 
-> > > Changes in v9:
-> > >   - None
-> > > Changes in v8:
-> > >   - None
-> > > Changes in v7:
-> > >   - None
-> > > Changes in v6:
-> > >   - None
-> > > Changes in v5:
-> > >   - None
-> > > 
-> > > Changes in v4:
-> > >   - Use address-cells and size-cells value 2
-> > >   - Modify ranges property as per new value of address-cells
-> > >     and size-cells
-> > >   - Modify child node "reg" property accordingly
-> > >   - Remove previous ack for further review
-> > > 
-> > > v4 link: https://lore.kernel.org/all/20230829181900.2561194-2-tanmay.shah@amd.com/
-> > > 
-> > >  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 192 ++++++++++++++++--
-> > >  1 file changed, 170 insertions(+), 22 deletions(-)
-> > > 
-> >
-> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> >
-> > yamllint warnings/errors:
-> > ./Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml:118:13: [warning] wrong indentation: expected 10 but found 12 (indentation)
-> Ack. I will fix this.
-> 
-> However, can I still get reviews on patch itself so if something else needs to be fixed I can fix in next revision as well.
-> 
-> Also, I tried to run yamllint with following command:
-> 
-> make DT_CHECKER_FLAGS=-m dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml O=../build/zynqmp/linux-next/
-> 
-> 
-> However, I see following logs without any error on bindings:
-> 
->   LINT    Documentation/devicetree/bindings
-> invalid config: unknown option "required" for rule "quoted-strings"
-> *xargs: /usr/bin/yamllint: exited with status 255; aborting*
->   CHKDT   Documentation/devicetree/bindings/processed-schema.json
->   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->   DTEX    Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.example.dts
->   DTC_CHK Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.example.dtb
-> 
-> I am not sure if my system is missing something but, yamllint tool is failing.
+On Tue, Feb 13, 2024 at 07:48:12PM +0100, Greg Kroah-Hartman wrote:
+> +No CVEs will be assigned for unfixed security issues in the Linux
+> +kernel, assignment will only happen after a fix is available as it can
+> +be properly tracked that way by the git commit id of the original fix.
 
-"unknown option" means old version of yamllint.
+This seems at odds with the literal definition of what CVEs are:
+_vulnerability_ enumeration. This is used especially during the
+coordination of fixes; how is this meant to interact with embargoed
+vulnerability fixing?
 
-Rob
+Outside of that, I welcome the fire-hose of coming identifiers! I think
+this will more accurately represent the number of fixes landing in
+stable trees and how important it is for end users to stay current on
+a stable kernel.
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
 
