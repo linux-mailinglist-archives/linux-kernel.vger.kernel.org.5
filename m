@@ -1,93 +1,119 @@
-Return-Path: <linux-kernel+bounces-62856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE9DF8526F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:49:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 294A48526EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:47:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4397EB27A54
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:47:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BDB61C25579
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14457475;
-	Tue, 13 Feb 2024 01:19:36 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95D86FB5
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 01:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 837B18C1B;
+	Tue, 13 Feb 2024 01:21:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gJHokumy"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD338BED;
+	Tue, 13 Feb 2024 01:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707787176; cv=none; b=dyQ2QGKR231d0ppIQa2qzCuxhpLQ53e4J03dHOL+sw0ikTF3kj64z51hFushNjhUnLFH1CHas1oGhTKXaFYqMAG7f0bQtqDJ3mQuXjjtfcfVbzmUxr8aKqbnPM7AWEl+BLIpffOcYl29KgBcEG7RYl95/NXF2vim3K5B0Nw+1LA=
+	t=1707787273; cv=none; b=owIeFViH621ROxJpUwH4Q8epMBPk2VhZMeMX3hAQidcGKm61KpfZzEHLH+KHSVdyJmbxOpdkNkw4exXbm56T+ON3qMONHqDbmSxLHqrINgkxxe69sF3yOJSgBxzkddVkrFVfL/XfR3tEH0j9OqrjZ6j34CEv46nT4PlSZyaVtbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707787176; c=relaxed/simple;
-	bh=mFss4D680cCUxXGTFlhC9SCYicp7MiRQJezYyg6mG08=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tiuf6ZSsj5j24DnzMLf2HtXic+HVA8YY9jqc3MoMkkjDcoCE2tFcCZQK4LRFL611QJdeSw0kW1OCBvyoS3zW7QcS+KFHwNMp6rI5W+FxmX58xoeio/h3f9HpHVUXyGDbq13H/0K/bN5aqie5N5RIbtfCRSIbouXhrXRLP0w2b3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-38-65cac3a2ee15
-Date: Tue, 13 Feb 2024 10:19:24 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, ying.huang@intel.com, namit@vmware.com,
-	vernhao@tencent.com, mgorman@techsingularity.net, hughd@google.com,
-	willy@infradead.org, david@redhat.com, peterz@infradead.org,
-	luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, rjgolo@gmail.com
-Subject: Re: [RESEND PATCH v7 7/8] mm: Defer TLB flush by keeping both src
- and dst folios at migration
-Message-ID: <20240213011924.GB4147@system.software.com>
-References: <20240208062608.44351-1-byungchul@sk.com>
- <20240208062608.44351-8-byungchul@sk.com>
- <20240208125409.28d5aa60d88657405f5c8e1b@linux-foundation.org>
+	s=arc-20240116; t=1707787273; c=relaxed/simple;
+	bh=MLa4lf5uOURASMI9xTK+nE7rsYG01Lm5JO7kjMN3Hug=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FifO9poytpScWhhC4rYEM3oZFuv6hRspcP9QjhkAiY8m3V3t3JBxuHfck6I4Q1jxACkDm+Oy036Zfn1wQLpOMa1LZvc/hKhhQ5XF34h05kP9NWbN0XWXmuYhpBZKJLCZGbVKlwelcWGdgc/Xkl8iYNh+wf9H+9WmC585fTpQG88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gJHokumy; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bbbc6e51d0so2781862b6e.3;
+        Mon, 12 Feb 2024 17:21:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707787271; x=1708392071; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OIo9+CGA3o+sMvcBIMz3KkHVBSc3Wr6nRUoyuv+/nR8=;
+        b=gJHokumyhpWG3YmpviFp5WJgnc9WvW9f3fX28VrYZATK5WHZ5oy/DzrsTXXOuj3Ulm
+         upj3oLH1o6H6zoveYlTL/yME7wOoUsPmRJUABgEr1SEEkbF5ZUlqQapG+hAE420atv6J
+         vZSJ8flrq6BCPoZ9/dSHT9yZYLRX851Fk9Fo0/3VQB3B6S/ydXE1Ld/lu5OK5icnbBl1
+         Zt/LHreWpJeEzLD55WglGeusMp67lG4NXKbSD0D8PqXrkWr6godGJVUFMhSAq61fpSGI
+         6jGzcHREZASjl2Etvu5634OvBkdyezVqEEND5qyaPXMJzwKtCiURu5Vb4AbPLrd6fJNS
+         Yzkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707787271; x=1708392071;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OIo9+CGA3o+sMvcBIMz3KkHVBSc3Wr6nRUoyuv+/nR8=;
+        b=jar5fnmYBaP4BYOX5dqncmbDejEISheiKE5vyBevS67RsEEEn4Dhk/HXvKSl5cIDsJ
+         Xa6whsaZtIVrl8W/uFNxZv0v9GZVD+RNp9+DbElW05c/6tVNVI96CismNIsQc8hHguVw
+         tj3FQgMLDsEfDpddWB2V3QMqXo76vB1oKkuGMOMBTjondncW4gXSJYiZsrW0rVMsUUfZ
+         sQN+zn/EX0n2+Q1M14YfcPQfzN6043n3wGvCBR7bccRhecvA9fHnxw2/NhhLyWi0ctI0
+         H8ReDKnimQLBz2IsRw9cxvKMksjnJgLGyaAl/nSm2GjRZouX4qtbu6SZujCUNWgFRjJQ
+         ZtHA==
+X-Forwarded-Encrypted: i=1; AJvYcCX9MFpf8i+dWvCWdXHColzdjKZpWw9TTvTIN/8E/7mlLwf68KbMdVyLPg/raJh+tjQT65f1Oxxrnc2j+BurG8DvK3VAbMO5o2b3KFZO
+X-Gm-Message-State: AOJu0YxmrB3IPyKtl8aF24R1qZGSVnHp6d03Xo+os6yrlIh89ox0G8P8
+	YZs5sgoNa4NDGGmeHxDLeMGUT7jrrL+KyZL2qylTIBYGo7lHE15dryKw0EZQdhE=
+X-Google-Smtp-Source: AGHT+IGjp+ccfroJZ3LNYqvyf6Zlsgxk1ZaLug+4zFgnhDGKHley2D321KNOkNQyZiRxP83AMZcHrg==
+X-Received: by 2002:a05:6808:10c4:b0:3c0:34d9:4d7a with SMTP id s4-20020a05680810c400b003c034d94d7amr6265831ois.18.1707787271258;
+        Mon, 12 Feb 2024 17:21:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVnosEBHMfhXLylxB4Sd2Ldd2A9Q8ewSUvpAgHc62FKI/C23e856L052Hw6hUbM3KAgZE6n9p1UWawNKbVUE3sQfRjeGKBGiXBCkGbohcOsXDQp6T1hAQ0PdbOGLG1pvF1dC9JkCbe6JjZaWbXeaQqcLti2l6Ofthy7oTKVIrUGbpQhGCvr+oaB1BcF2jP+IxyzJmc44YIYcVULUtimTKQXO3KLR1roFU+/cVxPl+689lIndzRTtZqW/Q7agREhmuDKCbVYMGrbdsiq4p1hEguZAis1OTJunv/+20VabCeCDHv5dQWaGJqHuHtMamai6zlKmpYNoj0f5X1o82JGVrP0hIroCIfaJoILcz8TFFQ0S1axztVuD222/fARm8P5OfAoXW8PKDb3YS6tk45Vq2vA6g==
+Received: from my-computer.uh.edu ([129.7.0.170])
+        by smtp.googlemail.com with ESMTPSA id k18-20020a0568080e9200b003bfe05691f3sm277684oil.9.2024.02.12.17.21.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 17:21:11 -0800 (PST)
+From: Andrew Ballance <andrewjballance@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: masahiroy@kernel.org,
+	nathan@kernel.org,
+	nicolas@fjasle.eu,
+	ndesaulniers@google.com,
+	morbo@google.com,
+	justinstitt@google.com,
+	linux-kbuild@vger.kernel.org,
+	llvm@lists.linux.dev,
+	skhan@linuxfoundation.org,
+	linux-kernel-mentees@lists.linuxfoundation.org,
+	Andrew Ballance <andrewjballance@gmail.com>
+Subject: [PATCH] gen_compile_commands: fix invalid escape sequence
+Date: Mon, 12 Feb 2024 19:20:33 -0600
+Message-ID: <20240213012035.750928-1-andrewjballance@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208125409.28d5aa60d88657405f5c8e1b@linux-foundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsXC9ZZnoe6iw6dSDZpn8FnMWb+GzeLzhn9s
-	Fi82tDNafF3/i9ni6ac+FovLu+awWdxb85/V4vyutawWO5buY7K4dGABk8X1XQ8ZLY73HmCy
-	mH/vM5vF5k1TmS2OT5nKaPH7B1DHyVmTWRwEPb639rF47Jx1l91jwaZSj80rtDwW73nJ5LFp
-	VSebx6ZPk9g93p07x+5xYsZvFo95JwM93u+7yuax9ZedR+PUa2wenzfJebyb/5YtgD+KyyYl
-	NSezLLVI3y6BK2PWo0XsBW+ZKo78Xs3ewDifqYuRk0NCwETi4tMmNhj7/Kc1QHEODhYBVYnX
-	93RAwmwC6hI3bvxkBrFFBHQlVj3fBWRzcTALfGGSuHDrOFhCWCBD4nn7MxYQm1fAXOLHqoes
-	IEVCAosYJR5+mQmVEJQ4OfMJmM0soCVx499LsGXMAtISy/9xgJicAt4Ss0+qglSICihLHNh2
-	HOrMXewSe19LQNiSEgdX3GCZwCgwC8nQWUiGzkIYuoCReRWjUGZeWW5iZo6JXkZlXmaFXnJ+
-	7iZGYGQuq/0TvYPx04XgQ4wCHIxKPLwJKqdShVgTy4orcw8xSnAwK4nwXppxIlWINyWxsiq1
-	KD++qDQntfgQozQHi5I4r9G38hQhgfTEktTs1NSC1CKYLBMHp1QDY4ixe97dhMp9N+v/W7tH
-	Z6yOOMaysGJP/k651bYm/0JYNzzqZ5sjFnzoRMo75cKLBdNy81/rq+wXr94ntGfbQ6Xlk7bs
-	6Jhr2Njup9A2k3WOQdeZFMGw1ik53tcPhx8Lyn7nyt/JfHrmXh3Lw3/E85o1VYPeykw3Wbh4
-	X4OugmtAYqJyzJ0oJZbijERDLeai4kQAZSHmucgCAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsXC5WfdrLvo8KlUg9MtzBZz1q9hs/i84R+b
-	xYsN7YwWX9f/YrZ4+qmPxeLw3JOsFpd3zWGzuLfmP6vF+V1rWS12LN3HZHHpwAImi+u7HjJa
-	HO89wGQx/95nNovNm6YyWxyfMpXR4vcPoI6TsyazOAh5fG/tY/HYOesuu8eCTaUem1doeSze
-	85LJY9OqTjaPTZ8msXu8O3eO3ePEjN8sHvNOBnq833eVzWPxiw9MHlt/2Xk0Tr3G5vF5k5zH
-	u/lv2QIEorhsUlJzMstSi/TtErgyZj1axF7wlqniyO/V7A2M85m6GDk5JARMJM5/WgNkc3Cw
-	CKhKvL6nAxJmE1CXuHHjJzOILSKgK7Hq+S4gm4uDWeALk8SFW8fBEsICGRLP25+xgNi8AuYS
-	P1Y9ZAUpEhJYxCjx8MtMqISgxMmZT8BsZgEtiRv/XoItYxaQllj+jwPE5BTwlph9UhWkQlRA
-	WeLAtuNMExh5ZyFpnoWkeRZC8wJG5lWMIpl5ZbmJmTmmesXZGZV5mRV6yfm5mxiBkbas9s/E
-	HYxfLrsfYhTgYFTi4U1QOZUqxJpYVlyZe4hRgoNZSYT30owTqUK8KYmVValF+fFFpTmpxYcY
-	pTlYlMR5vcJTE4QE0hNLUrNTUwtSi2CyTBycUg2MRx0fWs+/7qupePW/VnGl6/Sl/1Wl5Bem
-	NlxR9pkutPDUrVjBwAV2IrHhEp2yzpmr5YxW8U0TUv7x2cUr/u33vBPVW1dZyO/ewCZ6LM1+
-	k07h/1P/xILPJ2hm/52xQ+1ZRP5JsY0iG+x7BM1kzqeZJ4jWHFINLf4yafPex/G6V1lTM64u
-	M3FVYinOSDTUYi4qTgQA6QpBnrACAAA=
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 08, 2024 at 12:54:09PM -0800, Andrew Morton wrote:
-> On Thu,  8 Feb 2024 15:26:07 +0900 Byungchul Park <byungchul@sk.com> wrote:
-> 
-> > Implementation of MIGRC mechanism that stands for 'Migration Read Copy'.
-> 
-> Oh there is it.  Please put this in the [0/N] cover letter?
+this fixes the error, "SyntaxWarning: invalid escape sequence '\#'"
 
-Sure. I should've put this in the cover letter. Thanks.
+the error can be recreated by running
+    make CC=clang compile_commands.json
 
-	Byungchul
+Signed-off-by: Andrew Ballance <andrewjballance@gmail.com>
+---
+ scripts/clang-tools/gen_compile_commands.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+index 5dea4479240b..93f64095fda9 100755
+--- a/scripts/clang-tools/gen_compile_commands.py
++++ b/scripts/clang-tools/gen_compile_commands.py
+@@ -170,7 +170,7 @@ def process_line(root_directory, command_prefix, file_path):
+     # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
+     # kernel version). The compile_commands.json file is not interepreted
+     # by Make, so this code replaces the escaped version with '#'.
+-    prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
++    prefix = command_prefix.replace('\\#', '#').replace('$(pound)', '#')
+ 
+     # Return the canonical path, eliminating any symbolic links encountered in the path.
+     abs_path = os.path.realpath(os.path.join(root_directory, file_path))
+-- 
+2.43.0
+
 
