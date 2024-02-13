@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-62993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D98085289C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE08785289F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:13:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 476A1B222D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:13:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45B99B22A80
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:13:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D7B134A7;
-	Tue, 13 Feb 2024 06:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29382134C9;
+	Tue, 13 Feb 2024 06:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bCilPB5n"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Dtrye5rG"
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E8D12E48;
-	Tue, 13 Feb 2024 06:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC51B1428E;
+	Tue, 13 Feb 2024 06:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707804794; cv=none; b=XoRlB0takfs7thBjQiY9AYMcpdEUqa0zJ+b0ujxnqbvryItWfca2YrcBF/EM6/x5eXKbFXQmu99rKNUMER7IZ1fSVtc+qvs7TcrsVMgT0nImZzzcL9nqV7zMDpKnnAZLf2Nx9TFJXltXNi8W+cZzB8DpMgmC1AHA8uJfr02RxNc=
+	t=1707804813; cv=none; b=kq9ahtP/QVZT34/4j9pjAUJ/TRYSc4oFX7s85dD+/z2hbmI0JiSqojXxMeJYT7SnE7/1Cz2P1sG4gY3BBkxoA+QS4CcUyXEN6si20KYe5W06A79LqhFfAehHqwEBphpRVPc+Ek5JcWoFG7hVSp2K9+cvNDF1m1h9d91IpWXo0tI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707804794; c=relaxed/simple;
-	bh=01O6va/IhWdV2WPIij2S2wkwp/nopmx39uYTcW8swao=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=WKDBFkspn+JZC2EmEfEd5Vwnd2zzSszWtL3bX1d+AxQib5FLEIRrOcMk28zm5z4UrsU3gEdunGJDa+cg0ooryUG6hlo43Cfq1CWcVqh3LSmvKH/WEVyIEdBjJqkmJCpgFGtR8c94r6KFuVx/Gf/fBOYljAngLjxfDP+wrRr1Hy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=bCilPB5n; arc=none smtp.client-ip=198.47.19.142
+	s=arc-20240116; t=1707804813; c=relaxed/simple;
+	bh=+OluaC2nfCC3QuXSPU0HcOwT7ap3mPRpLCz86/Gs6DA=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=CpM1Bcn5RlEnIhubDnSXUfiPHcdLyTL3hypTLU9Nde4z93jayy+n8y57zht1PtdetIRnsV+1j838Qjxi4biewGUy2Lcm0xGRCUdPwCectsp4a5k9Ca26ceW2kjOlFG3NWklM4WOkJoPIBYkLVzGpNa8B/2PhrJ49dD+ZuaIgMwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Dtrye5rG; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41D6CbwF023894;
-	Tue, 13 Feb 2024 00:12:37 -0600
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41D6DMbg023971;
+	Tue, 13 Feb 2024 00:13:22 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707804757;
-	bh=dxRhWa+Vi5AUowqvCvK+WY/xzf1fihE7v0jwRRrlRrM=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=bCilPB5nlv6hi+wJbbJvhgbgmmo/hLRYbkOj/9cIhQiJmg5u9yNC9tVrcjA5pukBi
-	 7+RDi/SoT6xyeuctdGahvk8444zZQu/yifwmC9U5lIIKHSDm0yLQ0Bpqsk0rVtUXdg
-	 dR+SYMX66ZoMpGobpP1b0NFaJyogr9l2hqNLyjH8=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41D6Cb8I012775
+	s=ti-com-17Q1; t=1707804802;
+	bh=Rv/j7HNyUc7U+67Hp/SX9I0XSishaJ1nAKVKGyANHvI=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=Dtrye5rGo1nQPIp3HoTylynJzEGI+L3lO8Gfjyt213nQferSwJjmsg1CfsE6vhSyM
+	 H/kxPTGg8VRKQQcbcAUjP672UCUcUkRmz/DzCAX9p9tAmEf7qrnHxmWtupHyOFEYgP
+	 dPOLz2162GUNkB/KKLvYnetC3kJ7Kj4kunTzP6Ic=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41D6DMSe013493
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 13 Feb 2024 00:12:37 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+	Tue, 13 Feb 2024 00:13:22 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 13
- Feb 2024 00:12:37 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2024 00:13:22 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 13 Feb 2024 00:12:37 -0600
-Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41D6CVPo050043;
-	Tue, 13 Feb 2024 00:12:32 -0600
-Message-ID: <8aa96c66-d054-4b33-8972-f9faf2e84482@ti.com>
-Date: Tue, 13 Feb 2024 11:42:31 +0530
+ Frontend Transport; Tue, 13 Feb 2024 00:13:21 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41D6DHkN050952;
+	Tue, 13 Feb 2024 00:13:18 -0600
+Message-ID: <619dd947-a3da-49ee-9bee-8b21c7e7ca1a@ti.com>
+Date: Tue, 13 Feb 2024 11:43:17 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,75 +64,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/5] arm64: dts: add description for solidrun am642 som
- and hummingboard evb
+CC: <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <vigneshr@ti.com>, <afd@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [PATCH v3] dt-bindings: PCI: ti,j721e-pci-host: Add support for
+ J722S SoC
+To: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
+        <robh@kernel.org>, Conor Dooley <conor@kernel.org>
+References: <20240124122936.816142-1-s-vadapalli@ti.com>
+ <20240124-unmatched-plating-019a3055cf5e@spud>
 Content-Language: en-US
-To: Josua Mayer <josua@solid-run.com>, Nishanth Menon <nm@ti.com>,
-        Tero Kristo
-	<kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni
-	<alexandre.belloni@bootlin.com>
-CC: Yazan Shhady <yazan.shhady@solid-run.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski@linaro.org>,
-        Suman Anna <s-anna@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        MD Danish Anwar
-	<danishanwar@ti.com>, Andrew Davis <afd@ti.com>
-References: <20240211-add-am64-som-v5-0-790ed7121249@solid-run.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20240211-add-am64-som-v5-0-790ed7121249@solid-run.com>
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <20240124-unmatched-plating-019a3055cf5e@spud>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi
-
-[...]
-
-On 11/02/24 20:37, Josua Mayer wrote:
-> ---
-> Josua Mayer (4):
->       dt-bindings: arm: ti: Add bindings for SolidRun AM642 HummingBoard-T
 
 
->       dt-bindings: rtc: abx80x: convert to yaml
-
-2/5 needs to go via RTC subsystem tree. Could you split it out into its
-own series when you respin
-
-Rest will go via TI K3 arch tree.
-
-
->       arm64: dts: add description for solidrun am642 som and evaluation board
->       arm64: dts: ti: hummingboard-t: add overlays for m.2 pci-e and usb-3
+On 24/01/24 21:40, Conor Dooley wrote:
+> On Wed, Jan 24, 2024 at 05:59:36PM +0530, Siddharth Vadapalli wrote:
+>> TI's J722S SoC has one instance of a Gen3 Single-Lane PCIe controller.
+>> The controller on J722S SoC is similar to the one present on TI's AM64
+>> SoC, with the difference being that the controller on AM64 SoC supports
+>> up to Gen2 link speed while the one on J722S SoC supports Gen3 link speed.
+>>
+>> Update the bindings with a new compatible for J722S SoC.
+>>
+>> Technical Reference Manual of J722S SoC: https://www.ti.com/lit/zip/sprujb3
+>>
+>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
 > 
-> Suman Anna (1):
->       arm64: dts: ti: k3-am64-main: Add ICSSG IEP nodes
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Bjorn, Rob,
+
+Could you please merge this patch? This patch applies cleanly on the latest
+linux-next tagged next-20240213.
+
 > 
->  Documentation/devicetree/bindings/arm/ti/k3.yaml   |   7 +
->  .../devicetree/bindings/rtc/abracon,abx80x.txt     |  31 --
->  .../devicetree/bindings/rtc/abracon,abx80x.yaml    |  79 +++
->  arch/arm64/boot/dts/ti/Makefile                    |   7 +
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi           |  24 +
->  .../boot/dts/ti/k3-am642-hummingboard-t-pcie.dtso  |  45 ++
->  .../boot/dts/ti/k3-am642-hummingboard-t-usb3.dtso  |  44 ++
->  arch/arm64/boot/dts/ti/k3-am642-hummingboard-t.dts | 292 ++++++++++
->  arch/arm64/boot/dts/ti/k3-am642-sr-som.dtsi        | 594 +++++++++++++++++++++
->  9 files changed, 1092 insertions(+), 31 deletions(-)
-> ---
-> base-commit: 798d1ee1675be84d5c7eb639480aab33f2c8791e
-> change-id: 20240101-add-am64-som-51a1ca47edf3
+> Cheers,
+> Conor.
 > 
-> Sincerely,
+>> ---
+>>
+>> Hello,
+>>
+>> This patch is based on linux-next tagged next-20240124.
+>>
+>> v2:
+>> https://lore.kernel.org/r/20240122064457.664542-1-s-vadapalli@ti.com/
+>> Changes since v2:
+>> - Added fallback compatible for "ti,j722s-pcie-host" as
+>>   "ti,j721e-pcie-host" based on Conor's suggestion at:
+>>   https://lore.kernel.org/r/20240122-getting-drippy-bb22a0634092@spud/#t
+>>
+>> v1:
+>> https://lore.kernel.org/r/20240117102526.557006-1-s-vadapalli@ti.com/
+>> Changes since v1:
+>> - Dropped patches 1/3 and 2/3 of the v1 series as discussed in the v1
+>>   thread.
+>> - Updated patch 3/3 which is the v1 for this patch by dropping the checks
+>>   for the "num-lanes" property and "max-link-speed" property since the PCI
+>>   driver already validates the "num-lanes" property.
+>>
+>> Regards,
+>> Siddharth.
+>>
+>>  Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+>> index b7a534cef24d..ac69deeaf1ee 100644
+>> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+>> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+>> @@ -23,6 +23,10 @@ properties:
+>>          items:
+>>            - const: ti,j7200-pcie-host
+>>            - const: ti,j721e-pcie-host
+>> +      - description: PCIe controller in J722S
+>> +        items:
+>> +          - const: ti,j722s-pcie-host
+>> +          - const: ti,j721e-pcie-host
+>>  
+>>    reg:
+>>      maxItems: 4
+>> -- 
+>> 2.34.1
+>>
 
 -- 
-Regards
-Vignesh
+Regards,
+Siddharth.
 
