@@ -1,103 +1,98 @@
-Return-Path: <linux-kernel+bounces-64339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC222853D43
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:37:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39301853D45
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:37:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96E8F28EE32
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:37:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E17051F25394
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:37:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD7A61681;
-	Tue, 13 Feb 2024 21:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408666169B;
+	Tue, 13 Feb 2024 21:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mPLvwzG+"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OWJepqos"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB63612F9
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:37:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8008D612F9;
+	Tue, 13 Feb 2024 21:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707860232; cv=none; b=cGeHFLSs+FbBCEWoO4ohnezZ1ZT+vkfHKbjR3s8qPlXFCJOmVuZg7EAvaRDO7ewcSvRPY+NtEUvZZCJpgkhcoI0wzQqSu1urWny7P1Cek4uoJYBUzedPpXQ5ZENgy6S80SGPb4izrk8jej/hPT/PItGt1OhpTjVz3ttQHVdmmvs=
+	t=1707860240; cv=none; b=qJZxCh7Q0JhxpjygxmOiFDkHVXqVVzLTQGoqwhSlxJUSYEYEq2qsD38lHktCLk7sw3T23m19gd+glu5zV3KeiUenjy2y4KhvKSGOVzGHNoikaN26aAHSW1FG9n7oAJ5Hw5Rt7uAkqG8P4WzPs4YPp4m7Lz5Xcb+JRkWzF5mJfQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707860232; c=relaxed/simple;
-	bh=hPKvVthMBWAzdAWbIPUJR/Iy8plEfEcAcGfAR1gE6mA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WXcuoTEPPDswCHhAhmaXt2749KGcBmHw4yh2ds50O8nFvtJss1K1n18qghZqqmgfUTUBafZH26Io1nMI4nfllsv78NnUopIzeWHbtveeAp6NmjG6rm07HFqL8J0/QGNB/zJB9Nt5EA/9969f04zkoV77zFRQ4P1i+bFKyKL91kA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mPLvwzG+; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso1322202276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:37:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707860230; x=1708465030; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hPKvVthMBWAzdAWbIPUJR/Iy8plEfEcAcGfAR1gE6mA=;
-        b=mPLvwzG+dAg/ZrBSskb2yaAqP1pj/EP61lY1fsx/EM7lL4aK4EbFHBRiFliToUaK1h
-         QhVPYIXILxhPmDWiibFPnqRczQrNzyZbUfpYpIhnQnBiEPqHk7UAbNh+JEY1I8CCAYe0
-         sbs5fMT29hx1ng9/0rstitr6Xi451W7KSWg8gc2ac4MlSdINbROvsKZKHh0YAOgmn3i4
-         hqIlb9EpBkFgP34FOF17rRMhpYHDKyYl276TledgapAs/3KuZkhnxMdOPkxLWx8oHqB0
-         ib1dWPIFRVrRxnpcIY7rWH+/O8CvgCKU6Dbz9mPTDxf/XDvax6y/OJ7gNfDwWHszZRrJ
-         HKpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707860230; x=1708465030;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hPKvVthMBWAzdAWbIPUJR/Iy8plEfEcAcGfAR1gE6mA=;
-        b=YyZ6iSahJaf7WNxJ/risoQ6DOHgv7wq3JC6Ag0cI3ilSHDpLbo1pIW+L5uCuCiQPh4
-         rHGpitnaeAkjl6Jio1kuqm1WzddSjo3dGlOEfqW+9Glk9445/bJM1Y4GSTdP191mdil+
-         ZkEgfhKkQLH7d3bxadcwI0FMYV/Z1aSUMVfxCgvmbWVs8vNP0olnzYwe+b36UxvOl7pK
-         DegHs7fEem5j0FZNnDL00KpDf5cxP6KQDrbkYGS1aP8HEagpxPJeYJGeDc6yrNwQr5HE
-         3ZPJBpJMxX7F9vYqkclfLm9gbNV7piVAvq1JurabsnmXX6cyfALwQlLqzBUKn863DF+1
-         vdaA==
-X-Gm-Message-State: AOJu0Yx+AzT7JuAVNbkiefN/dKBsEp5+mp7LCmUG+O5LxeS8z3ZRbkXV
-	16SXZSrxtRxaoUAnk1DxBjUdDwFV5frIP86K59h9vDWQQu/bz3c+4EZIrik5qrCc0+24b3AAOBv
-	v3l1RGm5nHR85tSeVcSu3wfSOd/aJegbWvoQzrw==
-X-Google-Smtp-Source: AGHT+IGvYycVOdI6CpAMfmqVx3TyTpHq47iLCCyvfSu+9n4B1EJovMa/1p5n1RWt0xmytAfy456aC9UfVc+QwLV2GdY=
-X-Received: by 2002:a25:210:0:b0:dcd:65fa:ea06 with SMTP id
- 16-20020a250210000000b00dcd65faea06mr383635ybc.24.1707860229766; Tue, 13 Feb
- 2024 13:37:09 -0800 (PST)
+	s=arc-20240116; t=1707860240; c=relaxed/simple;
+	bh=iZuJJf2L4A/9BC89nmeB2uDzQCKPBrFKPnqEznO8JRo=;
+	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=e8TN/afQsszFgPyntHfjOSSPeKLr2evpqyiY5cVKRy3Fo39zxJpHbcMOHdQELNd2jipQffr7dANTpEiGPIxo1JB6N2QhCP8n1nQHPur4ckgYYzo6bHbkjdZX4qp0np7V3peDC3+QxRcEpps4uAkTX9FmfACClQoQS7lMm2CsXXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OWJepqos; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F12E5C433C7;
+	Tue, 13 Feb 2024 21:37:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707860240;
+	bh=iZuJJf2L4A/9BC89nmeB2uDzQCKPBrFKPnqEznO8JRo=;
+	h=Subject:From:To:Cc:Date:From;
+	b=OWJepqosehGJPEZO9d/bePFqq3qbGgUjY6fPdj83QbSZf8s2XoJbVbgneG20oEQAz
+	 GxrRDaga5RZZ+TC0H73HccGqy8D4/HeGvSDSXa7ziV7gJpNk5HsxiunstM6tJZwErf
+	 y8U4X+oboJmNthftzoEtEFU3UUu9K+8eFqsNV5lp/ApXH58N+h7hUYBN07bQHJyqNz
+	 NbYCkRe5fJ2B0ILcMqPjmuAeNVlEORLvikJXZcyf0/eRVMS2VMjzQM75r50SY7rcTx
+	 ISJfFK+/0E2ob1Tt+Z8zCOTYh5iFXWRMoW8JJLll9Qa6RZDM91txTIfemPmv4EAFpg
+	 ncWwNqsHnQnKA==
+Subject: [PATCH RFC 0/7] Use Maple Trees for simple_offset utilities
+From: Chuck Lever <cel@kernel.org>
+To: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+ hughd@google.com, akpm@linux-foundation.org, Liam.Howlett@oracle.com,
+ oliver.sang@intel.com, feng.tang@intel.com
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ maple-tree@lists.infradead.org, linux-mm@kvack.org, lkp@intel.com
+Date: Tue, 13 Feb 2024 16:37:17 -0500
+Message-ID: 
+ <170785993027.11135.8830043889278631735.stgit@91.116.238.104.host.secureserver.net>
+User-Agent: StGit/1.5
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240211101421.166779-1-warthog618@gmail.com>
-In-Reply-To: <20240211101421.166779-1-warthog618@gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 13 Feb 2024 22:36:58 +0100
-Message-ID: <CACRpkdYYyBTmiYF16NF3+nFDsqyqXcXBU=AvrxDy+h32eB-0hg@mail.gmail.com>
-Subject: Re: [PATCH] gpio: uapi: clarify default_values being logical
-To: Kent Gibson <warthog618@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, brgl@bgdev.pl, 
-	andy@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Sun, Feb 11, 2024 at 11:14=E2=80=AFAM Kent Gibson <warthog618@gmail.com>=
- wrote:
+In an effort to address slab fragmentation issues reported a few
+months ago, I've replaced the use of xarrays for the directory
+offset map in "simple" file systems (including tmpfs).
 
-> The documentation for default_values mentions high/low which can be
-> confusing, particularly when the ACTIVE_LOW flag is set.
->
-> Replace high/low with active/inactive to clarify that the values are
-> logical not physical.
->
-> Similarly, clarify the interpretation of values in struct gpiohandle_data=
-.
->
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+This patch set passes functional testing and is ready for code
+review. But I don't have the facilities to re-run the performance
+tests that identified the regression. We expect the performance of
+this implementation will need additional improvement.
 
-After the fixes pointed out by others:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Thanks to Liam Howlett for helping me get this working.
 
-Yours,
-Linus Walleij
+---
+
+Chuck Lever (6):
+      libfs: Rename "so_ctx"
+      libfs: Define a minimum directory offset
+      libfs: Add simple_offset_empty()
+      maple_tree: Add mtree_alloc_cyclic()
+      libfs: Convert simple directory offsets to use a Maple Tree
+      libfs: Re-arrange locking in offset_iterate_dir()
+
+Liam R. Howlett (1):
+      test_maple_tree: testing the cyclic allocation
+
+
+ fs/libfs.c                 | 125 +++++++++++++++++++++++--------------
+ include/linux/fs.h         |   6 +-
+ include/linux/maple_tree.h |   7 +++
+ lib/maple_tree.c           |  93 +++++++++++++++++++++++++++
+ lib/test_maple_tree.c      |  44 +++++++++++++
+ mm/shmem.c                 |   4 +-
+ 6 files changed, 227 insertions(+), 52 deletions(-)
+
+--
+Chuck Lever
+
 
