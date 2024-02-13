@@ -1,199 +1,173 @@
-Return-Path: <linux-kernel+bounces-64349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E013853D5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:40:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFBE7853D5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:40:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E8761F26131
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:40:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA7541C27E1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD2461698;
-	Tue, 13 Feb 2024 21:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C8762157;
+	Tue, 13 Feb 2024 21:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CG5OjAY8";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="3eI7Vgg9";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Jh56rXSt";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="T7+nWStY"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="emH4ojZ1"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9776E61669;
-	Tue, 13 Feb 2024 21:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA87C60BA6;
+	Tue, 13 Feb 2024 21:40:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707860358; cv=none; b=R/YMmEqRPKduJNw9KNt1Vv4+Nhke45vICGMrJ2b8rOHZ39ulA4tu/1K/L0rZCTwPAUJ6E7oK858UEQhX2Md+9eJvjqWddbiAmWjZPVy87Dl91Y18wmNIDXte9x0yWL34y4lhtSna7C5pL2wJDI1JyFLvPtDMD+zq/pQkI7hADpo=
+	t=1707860414; cv=none; b=TOXpZ2BZpbtkO/S0d8xzm5LMza+J71VAo8FV1xJ03XVqZERroS5rvnL63kp1eO+qGDJzVIArmzceLrGFj21jmuvsE0GmYsR+O6flYNyJL2urb6UbJZpdVulGDiy564c5SckgK3o8r0rg9YeqQJnW06f08LlqEIbjFsV0opB0enk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707860358; c=relaxed/simple;
-	bh=BUAr3sBqzq/mIhmYqhWP/6DEipOWW5FMJ0P2Le+dOos=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DHxK3Mud+qpha+MB+/9IOWR8mr/ra3OrewXWRV7Zxv3lUSSLJ2WMWbpYKTSn32B+bI63SAwS03SVic4TeoR9SMnCdKQbkyR2Qgzr4MXi1shSZ6OmkfjNdgtsD5t+FqQQojydUfd0lQinmQyTJrUppg1hRbkBSRdjr8Ex0rbqo9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CG5OjAY8; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=3eI7Vgg9; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Jh56rXSt; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=T7+nWStY; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7A9E92212F;
-	Tue, 13 Feb 2024 21:39:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707860354; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dTiPPmHDw2aZAXgldAitJ1VDBOydclpHipfi4Efd+uU=;
-	b=CG5OjAY81AO9CnJJAtnesw5zPIc79sj4Fe8+R8Yo3Gwe95bWPbcOvTWooQvAG3Gw7283f6
-	AD8LWr1cjrfySghnGvLknGePBFgx1GXwquDVFWWw3KzV1UexbmAzFAqsG9ag3NmfvBDas/
-	z66wPZHaN7MVRuPEy7js0VPAGRKa2f8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707860354;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dTiPPmHDw2aZAXgldAitJ1VDBOydclpHipfi4Efd+uU=;
-	b=3eI7Vgg9TOCwpoU123vWAup+/YF9/lGDVBVSiMJHXH7SC/KLKaASnd/2cr5V1zKJpRg+iK
-	02gjDHGZ8qCE5dBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707860353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dTiPPmHDw2aZAXgldAitJ1VDBOydclpHipfi4Efd+uU=;
-	b=Jh56rXStMSm4uiLr+Ly4+66CE77knqnOzeFbyC6SfD5CDcfRODrUN6GeXDfJcQUXcB2U74
-	Pz20djMRl7FeoWBMgx+xU8ETDu3Sxr7NNu13J5dsbpa2+R4G7+Spm3oFo0IyXhBDL+7gz8
-	Y/adp1HkkIBKm+ZBefiHXUMNXj9EZMM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707860353;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dTiPPmHDw2aZAXgldAitJ1VDBOydclpHipfi4Efd+uU=;
-	b=T7+nWStY/NnsxwQHVTBCTEU5mF/3aKc/5vfsfvbZNkdUdXrFF/dQ/qLkV06/c6+y9mCVwA
-	m419U2pMxk64p3Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 352E3136F5;
-	Tue, 13 Feb 2024 21:39:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8Ao0BoDhy2XzGwAAD6G6ig
-	(envelope-from <jdelvare@suse.de>); Tue, 13 Feb 2024 21:39:12 +0000
-Date: Tue, 13 Feb 2024 22:39:08 +0100
-From: Jean Delvare <jdelvare@suse.de>
-To: Mateusz =?UTF-8?B?Sm/FhGN6eWs=?= <mat.jonczyk@o2.pl>
-Cc: linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, Bjorn Helgaas
- <bhelgaas@google.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown
- <lenb@kernel.org>, Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH v4] acpi,pci: warn about duplicate IRQ routing entries
- returned from _PRT
-Message-ID: <20240213223908.435aec7b@endymion.delvare>
-In-Reply-To: <20231226124254.66102-1-mat.jonczyk@o2.pl>
-References: <20231226124254.66102-1-mat.jonczyk@o2.pl>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1707860414; c=relaxed/simple;
+	bh=LkL2QMQiyyNde39vRKxk+dgt9HEbxB8lTPoOaWAPo8k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BUQ8vqqD0UChCnZWe669t4IqjA360ZxLboPayMkWoZQvBC9iMMdHQQldTPPLigF9CglmEShTnHkLPC7ubXgC+Du0JYEkNuhvh7u8VRcDTdk4vFIHvVXqePTFf+JJowK1FRzsl+O/ztVYA7P6KRlMz7f+Va7SlzkhRhgR0k4yPiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=emH4ojZ1; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d1094b5568so14068471fa.1;
+        Tue, 13 Feb 2024 13:40:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707860411; x=1708465211; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5xgi+WYpzjICsbXZzOuF2PrstHj2bvLsoG7REleosZE=;
+        b=emH4ojZ18gRJ/YabiquJqYOe4qtP1G3Y4GL2SZnC/Xs5YkUT9iOa8R5jr9A7TscomP
+         t0KqJTeNMsWNT4rKza7xOIVVRMYjxbJ7s9Q7S1uZaeTg3igRc6pSYb1lbvsjCvU5uNYM
+         GvRzte+V5EAH5nOX+eNrB7jGQ8Ejs1BmIUYOxvOGWe+IuP0Y89TTNlFbMxTMjL7YioGw
+         5FBlhGcCdyZRvW5RdxaHlzvcdUUYWGAbklaLxJULbRMuwNUP27UZyPgn5MvumU1to7k3
+         XHHo5nG5QQa5QH85P3glW1BPkq5Vy1hcNHtHzHiGKaauucW4Ys2J2vlfGHDizzil/yr6
+         gIgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707860411; x=1708465211;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5xgi+WYpzjICsbXZzOuF2PrstHj2bvLsoG7REleosZE=;
+        b=u6b+49QPJCMb8lgtg7RetXCJEOQfeDEK9RsuwRsvOZw77qISswUecOfUHBhzxSN4HD
+         RZTsO3UJnMFeEUxlEWAsnisU92Uu3BPS72Ao7GAkCTUEWZ3amvU/fYtBzOh5KKx3fJAN
+         mXs10dIOSAzwBRtHXDa+Ki84/karBM7mJ6cOmPcg4m5xBnodwaiquFCHc3uEY2g8KaGe
+         a5GQdOUiJnclBYAzsZVWD/JqWyz6weKDB1xXTaF8/mzerAnTVGfxAVC9iAQ1knyOMwub
+         zRWhTZcSGp9oGyiRn17jo1tHZTpIiabAzt8+ZcTUdEJV7BiLgIc/MueRTfsSGaanWx8R
+         5rUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWkkPu7dIuu3X9Uf4qn2xCgaWijSXRoXWR+5lbdhyG8jTgVYwc0A2hoS74xTOwzfdGyHiKamR7iCWZ+49N+/YoEcI9xl0KXefg9II448s1hK7GEuFA26+4EQ4SUTp1i3VL74d85
+X-Gm-Message-State: AOJu0Yymt0LvtZT0j7cQ5dQweWPN0YVKwoIpL3MhZyN3pc5fAt7W5Y/5
+	fbL1MD6TBS8dG/7gnKNeybf2gVszRgKFDIeM3LWX6tzXi5Feyemm
+X-Google-Smtp-Source: AGHT+IGOmnaHBOwP1iSu4U6sJK/sdqgVMs1njrcbnR1vZCjaZOsUsiEYgMEG/WmfEhN9NLq7naZrlQ==
+X-Received: by 2002:a2e:b047:0:b0:2d0:d011:259e with SMTP id d7-20020a2eb047000000b002d0d011259emr692572ljl.18.1707860410635;
+        Tue, 13 Feb 2024 13:40:10 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXytDIkNuibQr5jz3xMB+bu1nnzrTrku0T7xvLTbI2AqG10Y1IcVD4Lnfz8I4tGnkHz1bZaQj8mj/WJNHvO0FJ9D53TwDex1hm3dalFfntHbjl9Y9LX6wqXYmVayTrxN3xQ58n8vmRXt3zZrdVhcH6yabRxCEPNkrcnHhG9kGo8cm6Kl83fuTNdMyDPwFE1nCGQy4wC3Ga88JO3dRu83GcemTMdf0VoY+CE6axUUlN2vX2BsdDq/GhOjq9cV6YVpo5VogVV12DzyVqTrmd25lOdFfI0yglRIiCG6OXyr2ntjfWJXrDHLRZqsF3BvE6hf2BP1X1R3woNc0XGO2V2lRSUbuI=
+Received: from debian.fritz.box ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id k23-20020a05640212d700b005612987a525sm4003913edx.89.2024.02.13.13.40.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 13:40:10 -0800 (PST)
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: 
+Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Stefan Eichenberger <eichest@gmail.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v6 net-next 00/14] net: phy: marvell-88q2xxx: add driver for the Marvell 88Q2220 PHY
+Date: Tue, 13 Feb 2024 22:39:39 +0100
+Message-Id: <20240213213955.178762-1-dima.fedrau@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Jh56rXSt;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=T7+nWStY
-X-Spamd-Result: default: False [-3.31 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 HAS_ORG_HEADER(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:url,suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 7A9E92212F
-X-Spam-Level: 
-X-Spam-Score: -3.31
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-Hi Mateusz,
+Changes in v2:
+	- used defines MDIO_CTRL1_LPOWER and MDIO_PMA_CTRL1_SPEED1000
+	  in mv88q222x_config_aneg_preinit
+	- use genphy_c45_loopback
+	- mv88q2xxx_read_status reads speed, master or slave state when
+	  autonegotiation is enabled
+	- added defines for magic values in mv88q222x_get_sqi
 
-On Tue, 26 Dec 2023 13:42:54 +0100, Mateusz Jo=C5=84czyk wrote:
-> On some platforms, the ACPI _PRT function returns duplicate interrupt
-> routing entries. Linux uses the first matching entry, but sometimes the
-> second matching entry contains the correct interrupt vector.
->=20
-> As a debugging aid, print a warning to dmesg if duplicate interrupt
-> routing entries are present. This way, we could check how many models
-> are affected.
->=20
-> This happens on a Dell Latitude E6500 laptop with the i2c-i801 Intel
-> SMBus controller. This controller is nonfunctional unless its interrupt
-> usage is disabled (using the "disable_features=3D0x10" module parameter).
->=20
-> After investigation, it turned out that the driver was using an
-> incorrect interrupt vector: in lspci output for this device there was:
->         Interrupt: pin B routed to IRQ 19
-> but after running i2cdetect (without using any i2c-i801 module
-> parameters) the following was logged to dmesg:
->=20
->         [...]
->         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
->         i801_smbus 0000:00:1f.3: Transaction timeout
->         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
->         i801_smbus 0000:00:1f.3: Transaction timeout
->         irq 17: nobody cared (try booting with the "irqpoll" option)
->=20
-> Existence of duplicate entries in a table returned by the _PRT method
-> was confirmed by disassembling the ACPI DSDT table.
->=20
-> Windows XP is using IRQ3 (as reported by HWiNFO32 and in the Device
-> Manager), which is neither of the two vectors returned by _PRT.
-> As HWiNFO32 decoded contents of the SPD EEPROMs, the i2c-i801 device is
-> working under Windows. It appears that Windows has reconfigured the
-> chipset independently to use another interrupt vector for the device.
-> This is possible, according to the chipset datasheet [1], page 436 for
-> example (PIRQ[n]_ROUT=E2=80=94PIRQ[A,B,C,D] Routing Control Register).
->=20
-> [1] https://www.intel.com/content/dam/doc/datasheet/io-controller-hub-9-d=
-atasheet.pdf
->=20
-> Signed-off-by: Mateusz Jo=C5=84czyk <mat.jonczyk@o2.pl>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Len Brown <lenb@kernel.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Jean Delvare <jdelvare@suse.de>
-> Previously-reviewed-by: Jean Delvare <jdelvare@suse.de>
-> Previously-tested-by: Jean Delvare <jdelvare@suse.de>
+Changes in v3:
+	- mv88q2xxx_read_status includes autonegotiation case
+	- add support for 100BT1 and 1000BT1 linkmode advertisement
+	- use mv88q2xxx_get_sqi and mv88q2xxx_get_sqi_max, remove
+	  mv88q222x_get_sqi and mv88q222x_get_sqi_max
+	- fix typo: rename mv88q2xxxx_get_sqi and mv88q2xxxx_get_sqi_max to
+	  mv88q2xxx_get_sqi and mv88q2xxx_get_sqi
+	- add define MDIO_MMD_PCS_MV_RX_STAT for magic value 0x8230, documented
+	  in latest datasheets for both PHYs
 
-I'm still happy with this patch, so you can change that back to:
+Changes in V4:
+	- clean up init sequence
+	- separate patch for fixing typos in upstreamed code
 
-Reviewed-by: Jean Delvare <jdelvare@suse.de>
-Tested-by: Jean Delvare <jdelvare@suse.de>
+Changes in V5:
+	- add missing statics for mv88q222x_revb0_init_seq0 and
+	  mv88q222x_revb0_init_seq1
+	- fix typo in commit message: autonegotiation
+	- fix ordering of Signed-off-by and Reviewed-by in commit messages
+	- add interrupt support for link detection
+	- add suspend / resume ops
+	- add support for internal temperature sensor
+	- add cable test support
+	- call .soft_reset in mv88q2xxx_config_aneg, this makes
+	  mv88q2xxx_config_aneg compatible for Marvell88Q222x devices and
+	  remove mv88q222x_config_aneg which is then just duplicated code
+	- cleanup mv88q2xxx_config_init and make it compatible with
+	  Marvell88Q222x devices
+	- move parts from mv88q222x_config_init to mv88q2xxx_config_init
+	  that are applicable for all Marvell88Q2xxx devices.
 
-Thanks,
---=20
-Jean Delvare
-SUSE L3 Support
+Changes in V6:
+	- add copyright and where the code is derived from (patch 5). Sorry
+	  Andrew. It is already reviewed, but I think it is the right place.
+	  Didn't remove the Reviewed-by because the changes doesn't touch any
+	  code that is getting executed.
+	- add HWMON dependeny in Kconfig (patch 8)
+	- use IS_ENABLED(CONFIG_HWMON) instead of ifdef CONFIG_HWMON to support
+	  hwmon built as module (patch 8)
+	- drop shift constant MDIO_MMD_PCS_MV_TEMP_SENSOR3_INT_THRESH_SHIFT
+	  and use FIELD_GET and FIELD_PREP instead(patch 8)
+	- drop shift constant MDIO_MMD_PCS_MV_TDR_STATUS_DIST_SHIFT and use
+	  FIELD_GET and FIELD_PREP instead (patch 9)
+	- split previous patch 13 into two patches.
+
+Dimitri Fedrau (14):
+  net: phy: Add BaseT1 auto-negotiation constants
+  net: phy: Support 100/1000BT1 linkmode advertisements
+  net: phy: c45: detect 100/1000BASE-T1 linkmode advertisements
+  net: phy: marvell-88q2xxx: fix typos
+  net: phy: marvell-88q2xxx: add driver for the Marvell 88Q2220 PHY
+  net: phy: marvell-88q2xxx: add interrupt support for link detection
+  net: phy: marvell-88q2xxx: add suspend / resume ops
+  net: phy: marvell-88q2xxx: add support for temperature sensor
+  net: phy: marvell-88q2xxx: add cable test support
+  net: phy: marvell-88q2xxx: make mv88q2xxx_config_aneg generic
+  net: phy: marvell-88q2xxx: switch to mv88q2xxx_config_aneg
+  net: phy: marvell-88q2xxx: cleanup mv88q2xxx_config_init
+  net: phy: marvell-88q2xxx: remove duplicated assignment of pma_extable
+  net: phy: marvell-88q2xxx: move interrupt configuration
+
+ drivers/net/phy/Kconfig           |   1 +
+ drivers/net/phy/marvell-88q2xxx.c | 630 ++++++++++++++++++++++++++++--
+ drivers/net/phy/phy-c45.c         |   3 +-
+ include/linux/marvell_phy.h       |   1 +
+ include/linux/mdio.h              |   8 +
+ include/uapi/linux/mdio.h         |   2 +
+ 6 files changed, 615 insertions(+), 30 deletions(-)
+
+-- 
+2.39.2
+
 
