@@ -1,93 +1,166 @@
-Return-Path: <linux-kernel+bounces-63366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F23D4852E3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 79A9B852E20
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:38:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD3852836FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:44:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33E1C282EA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:38:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 666E4286A6;
-	Tue, 13 Feb 2024 10:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8764624B54;
+	Tue, 13 Feb 2024 10:38:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="X59T67pM"
-Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4TqKEk3C";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JrIAE2bT"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205A424B23
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB8C249E8;
+	Tue, 13 Feb 2024 10:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707821038; cv=none; b=DfiMU/2wOeOVafHtdq9qF6dPlHpP5KJMxK4NSedH4FmODsD3GYKeCTrScOVkCKq4mLayyUhODjohDDQPNOuI9+33uOU22JhQSNOGTzn6dM50vU2KXsDYmZKY9oizqc4yCTuMwaml+NU1Fs/us1MT0AJGZl6kaJmbfHMzWsjUiMY=
+	t=1707820726; cv=none; b=U5P9aRTAS/k6tJMbW32NFz8qx1nMC0IkeDlTPh/F5D4LmxycfCrP3rmZPWgM1BKpU8NhyqAHRq4tRvglTv8SqVYcSFEj169pX+4jXm66LCoZJqRKS4L72ToLaEGB91OuXOr9cTkMpRvWWZHCe81H3US9J9ZghR+CMWtf4+QAW+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707821038; c=relaxed/simple;
-	bh=h3vHrYD7hhov7txanSMDe7pCpaatJhH7Xwj2ojnf8Rg=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=BXuM/AlzXJ768B5qXSHRjUWYr7YREZX7RhyQVLjkXggZhpOeswouIcaglgwvaZsVoZ6YvmdB3MjJ7Rt6KYFBltRBSeCBMvab7LEfKFtxQ4RKtrzL5Cp7uKoVrs4G8Ynd7hbQGQbI4n0HvZLTPoOoi0E1Sr2vOYSCaDM6/6jL5gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=X59T67pM; arc=none smtp.client-ip=203.205.221.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1707821027; bh=sEZ6YMGniVm+AtqGa4bZU5AbsOVmzpZP7amUT7bfhUo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=X59T67pMbYsdeIQ2s35KjiKzNz96km9WTfhgnl5Bz4b5n8iR04Y4vQY1Olg1EvJpZ
-	 fzHf9FT9sf0HRkEyRjkDHg7jwCD256Pgr2/8//uYdQXyJtMs0Jq3akXFCrEbjWylis
-	 mSdOgvcNOFGeHVSYATvm2imKQ4LHnMJVufvSZrGM=
-Received: from pek-lxu-l1.wrs.com ([36.129.58.158])
-	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
-	id 961908ED; Tue, 13 Feb 2024 18:37:33 +0800
-X-QQ-mid: xmsmtpt1707820653tv66kw34l
-Message-ID: <tencent_E2FE25978DA612195DF45DCD191D4FAF8D07@qq.com>
-X-QQ-XMAILINFO: NyTsQ4JOu2J2lMdCi18gEdOs0z7aETiwKrih2512wr3PfbM2scpmQRortbAmgR
-	 RAH/flE3RMECRy4iV0ookU809CcnopizHysyNuPqhNZ1birOD/82ycS2khAhqNoFsuFPiIgGU07f
-	 SZ4b+RaygMakxnHsfeUSRxuWGvp5O6fj3bjU98TWzuFAahFGyh/gngb2oilRB8/Ml8qXKCCYOW/a
-	 mKfxE4ZXPCaqzhk0ZhrpQ1DdhqECtyQhb9izj+2Wg4s9Zy10Cq+qLBm1NEBzqUZnJNOoiuylGLI6
-	 +CtUVTcV/AWfEphp9fs0JiVOXO0VKL2B7G+bgekbIn+DUVhd5cJfXsN325ubSTwhBcOC5nYojgH0
-	 Wssb59LhM+08nwOms2FHVQ1Z4iKl9/b1s1WZ8p5KPryDUuqLDK9XTG8WMzYzl8iR6p7HZly/2jE5
-	 7EgJLCYC5W4A06FFpLA5elwv9ApBn3qwHZmIKFKU7zP2r/yrTLfIFbsUjvEl6o9OlTOn2aWl1F3a
-	 jAQGHZdF6w3OeX/KCqU+2Hp7oJbqRep82Km5UZYyev3RyU4wqD5GZSq1xOc4UuywQKabmrXVXWhE
-	 hElCrD1PGf1E+KHS70c/1HQzZxZgnRWB24/WK1A3L23x2GXYMkdpy4OAZ9vnlUcnYoKDU9zHD3pV
-	 NBvUKNWEX0cVQO5pCv2h+UAXu/+jfaI7vZwRq1IP7L0vhJUTdwHzeRgkkc1bQsm+QL4b8+/WESVy
-	 RKJGklchCTkGL/6SacOp+nFNEIop8eo7dkWXxVyUKQDg54RFIGidaTPmb0tkqS2Kt1/3X+vuiYxD
-	 SbTx/RipNaG8Cxbd2IeUWq4Vf7b1eJrHZuF1/ORmrjmX2y+IQniQFdEvD7JAQNEfiwZMZdB+nCQ8
-	 bYYoZ9C5Xd7StO6L74h8XlT3chC6s8wyO1aL2s6VBFbI9M4cputIFicP+VuuXuUQ==
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+c2ada45c23d98d646118@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ntfs3?] possible deadlock in ntfs_set_state (2)
-Date: Tue, 13 Feb 2024 18:37:34 +0800
-X-OQ-MSGID: <20240213103733.997747-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000998cff06113e1d91@google.com>
-References: <000000000000998cff06113e1d91@google.com>
+	s=arc-20240116; t=1707820726; c=relaxed/simple;
+	bh=w1V92yhJ7znW5mCLg9cJb/2PDW8YuAua0bO8eBGqGoE=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=aUDiFVK50WiOzFapZPjwbarxqxuByJHtauj3zWnJr3gkqsrdGVrqcTa1jAbnBQuDArKevaFSdnR2xCl6u+esHR52RWO3mE9D3foUzqaur0L52Ybz6c0fYNvn3Hr4Rgdrqi/tHuaktaXzjOAOUYUAus0XC2UculZwhkSpkDi3HAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4TqKEk3C; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JrIAE2bT; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 13 Feb 2024 10:38:42 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707820723;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i0Y8LXuXM+2quXl6GjfVoen1w/ZUhO5D8VOBXlYzfXc=;
+	b=4TqKEk3CzHdi5cGbHGNfpMgWHKs0/J7t8ttDMHNvHJAh2Dk6oqmDJVMlR6z/uvB5n9Z+Jx
+	+ZytB+2ZCcq0kNyZOMf6V8zSPfmlZh+YE8nzLz40G2wCVj1oKxtJlCCPDQbQo8tNHtqde0
+	ilT6zwu0AS8JbpnnUZmITruYtukdPnyPbsDvHiJtmu1aMqfBZrwol4Eku0LfSwZITZCAnl
+	vcijPP4N4f2XIr5lz9yFDFPwYhhEf+P2GeNFfPEh6I1CL7oz4yQpi01UUV74JWL2bZnkJ+
+	EAtIpB0QQYjnqHjjEwduU3ttKfOPyKDPrDN+oJs/TcMLThiJBterTHgbFsxcmw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707820723;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i0Y8LXuXM+2quXl6GjfVoen1w/ZUhO5D8VOBXlYzfXc=;
+	b=JrIAE2bTwKYGzr9MGVPvm4L9co2hzupV5jlLbTy1D6Q3VT1kv407Rvs6NTmvh1XSFtV8Sa
+	vtjZc8Nn2HxjlVBA==
+From: "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] irqchip/gic-v3-its: Fix GICv4.1 VPE affinity update
+Cc: Kunkun Jiang <jiangkunkun@huawei.com>, Marc Zyngier <maz@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240213101206.2137483-4-maz@kernel.org>
+References: <20240213101206.2137483-4-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <170782072242.398.18224261385789305537.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-please test deadlock in ntfs_set_state 
+The following commit has been merged into the irq/urgent branch of tip:
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+Commit-ID:     af9acbfc2c4b72c378d0b9a2ee023ed01055d3e2
+Gitweb:        https://git.kernel.org/tip/af9acbfc2c4b72c378d0b9a2ee023ed01055d3e2
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Tue, 13 Feb 2024 10:12:06 
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 13 Feb 2024 11:29:52 +01:00
 
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index 3b42938a9d3b..1dfc933b58ad 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -3210,7 +3210,6 @@ static bool ni_update_parent(struct ntfs_inode *ni, struct NTFS_DUP_INFO *dup,
+irqchip/gic-v3-its: Fix GICv4.1 VPE affinity update
+
+When updating the affinity of a VPE, the VMOVP command is currently skipped
+if the two CPUs are part of the same VPE affinity.
+
+But this is wrong, as the doorbell corresponding to this VPE is still
+delivered on the 'old' CPU, which screws up the balancing.  Furthermore,
+offlining that 'old' CPU results in doorbell interrupts generated for this
+VPE being discarded.
+
+The harsh reality is that VMOVP cannot be elided when a set_affinity()
+request occurs. It needs to be obeyed, and if an optimisation is to be
+made, it is at the point where the affinity change request is made (such as
+in KVM).
+
+Drop the VMOVP elision altogether, and only use the vpe_table_mask
+to try and stay within the same ITS affinity group if at all possible.
+
+Fixes: dd3f050a216e (irqchip/gic-v4.1: Implement the v4.1 flavour of VMOVP)
+Reported-by: Kunkun Jiang <jiangkunkun@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20240213101206.2137483-4-maz@kernel.org
+
+---
+ drivers/irqchip/irq-gic-v3-its.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 250b456..53abd47 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -3826,8 +3826,9 @@ static int its_vpe_set_affinity(struct irq_data *d,
+ 				bool force)
+ {
+ 	struct its_vpe *vpe = irq_data_get_irq_chip_data(d);
+-	int from, cpu = cpumask_first(mask_val);
++	struct cpumask common, *table_mask;
+ 	unsigned long flags;
++	int from, cpu;
  
- 		/* Check simple case when parent inode equals current inode. */
- 		if (ino_get(&fname->home) == ni->vfs_inode.i_ino) {
--			ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
- 			continue;
- 		}
+ 	/*
+ 	 * Changing affinity is mega expensive, so let's be as lazy as
+@@ -3843,19 +3844,22 @@ static int its_vpe_set_affinity(struct irq_data *d,
+ 	 * taken on any vLPI handling path that evaluates vpe->col_idx.
+ 	 */
+ 	from = vpe_to_cpuid_lock(vpe, &flags);
+-	if (from == cpu)
+-		goto out;
+-
+-	vpe->col_idx = cpu;
++	table_mask = gic_data_rdist_cpu(from)->vpe_table_mask;
  
-
+ 	/*
+-	 * GICv4.1 allows us to skip VMOVP if moving to a cpu whose RD
+-	 * is sharing its VPE table with the current one.
++	 * If we are offered another CPU in the same GICv4.1 ITS
++	 * affinity, pick this one. Otherwise, any CPU will do.
+ 	 */
+-	if (gic_data_rdist_cpu(cpu)->vpe_table_mask &&
+-	    cpumask_test_cpu(from, gic_data_rdist_cpu(cpu)->vpe_table_mask))
++	if (table_mask && cpumask_and(&common, mask_val, table_mask))
++		cpu = cpumask_test_cpu(from, &common) ? from : cpumask_first(&common);
++	else
++		cpu = cpumask_first(mask_val);
++
++	if (from == cpu)
+ 		goto out;
+ 
++	vpe->col_idx = cpu;
++
+ 	its_send_vmovp(vpe);
+ 	its_vpe_db_proxy_move(vpe, from, cpu);
+ 
 
