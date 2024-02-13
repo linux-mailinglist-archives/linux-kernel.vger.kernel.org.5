@@ -1,118 +1,565 @@
-Return-Path: <linux-kernel+bounces-63491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D53A6853051
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:14:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0829853054
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:16:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 527F91F29EED
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:14:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B5ED1F242BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26BD93B19E;
-	Tue, 13 Feb 2024 12:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 515053C486;
+	Tue, 13 Feb 2024 12:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZdS4mjio"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T5Tdd+aB"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2D037706
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:14:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0608737715
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:16:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707826483; cv=none; b=P1ByKlip27jR4qMiqMsypMepdz57AM7NG5LO41RJsDtkO+bEQW6/XSsedwJYXG1WWv9T3hR727zlL/r12VAZOSAlikbrdFmOo7Ud8dQI7jOpbVxPOZTNjJY4iKCDNtuFKbuhGSjlAevQmzZPOriX+YMpmGV0vgLRh0dM9u0Wa94=
+	t=1707826604; cv=none; b=p3M5M+pyH7mnhyyMYixwT0qFkdHXc+mf+IBeMgG+3UMtZW3lWJU5cBQQi9rtCkuz2zQFQyKIwj+R+JyfJD7tv0HBCtgzPhRSVUrB7mYZD1l/0t53ZgFqtqkUV+dNzH3BSVU/YveMkcbHFDbypvNpQT0c7O1wYNPChRD6TpfkINE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707826483; c=relaxed/simple;
-	bh=PV/2CH8eMrpfZzKtcV9grh3JUO5lmB/8PaohWZVhuG0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gmaSkhYDNSaOM007mWSuY+1xncaq+gPPLJ6B50FbI0eV6PTm+Ib8e2Q8XwVph1185bSHuYVy1HMdTYBaMq6i0OkSRzS9LQUMR/3G0+EaM93GeBTsDVJmMnRznSnZqSboxxFs3y08HvHwQcDdF01b8Qima2MkOdZM9/+Clnqy4tA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZdS4mjio; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707826480;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=PV/2CH8eMrpfZzKtcV9grh3JUO5lmB/8PaohWZVhuG0=;
-	b=ZdS4mjiotGAIUK6KiA7Zv6/2F6qboPg+vp3RJ0On11AFfBUvozEZYXRt5BPa6dAGxOBiQ2
-	VW8EUC5JAOVaZ6Ar9EZIKY+zLDpK42jQSnwgm59kQm2lQo9ZSdscxIJ1/Zjx3n3Z0d7Hba
-	3X4c03/z2BXeQbTr+P9d26H2dbhytGI=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-125-XZwEKrBUNfaZFQM2VLgJeA-1; Tue, 13 Feb 2024 07:14:39 -0500
-X-MC-Unique: XZwEKrBUNfaZFQM2VLgJeA-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6818b8cb840so16923086d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:14:39 -0800 (PST)
+	s=arc-20240116; t=1707826604; c=relaxed/simple;
+	bh=eQKcWv8ehomvZXrP5QdQtoxuR9kXHOHCFhwzoLoKSiM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WleqcLutkTUdfGCvu3dq3pDxYUk/gFNbi79IrlAFvXRhG/+7obgkXmcUOzdg/Qa5pOlXrvyjpvSFWqBeKWuLYUQ8xPcwgtKYE/00NaDKTG3JJX12ZXmm+5H1ZCPQ9zlGUE5kE34xPzbjvyMLUmB4LzZzKjPBfoRen4Pis44eeLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T5Tdd+aB; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-411bf7e5c6bso3451815e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:16:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707826600; x=1708431400; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XvutVI4vhckb36wRv9xQ3G85CklqzEdmIVWxR5pe3EM=;
+        b=T5Tdd+aBgV7PDEPUUivUXEJwLN6joe58TZWugAiqNFKTuf7WjaxgA+eZrScbGzgtKW
+         bLEAbgw/zeY5+C/9LWNqS0ZMxWlqayxxFnGGlQpSqRyF06NMgA17pg6AsHHYBGqXTKK8
+         5yPDBGP0FqY+QulGWR//iA9jzn2y0gDSvUci4PHZx1TohRlmuDouOWFN75WVdRr/l2Xa
+         rINAJJ+N9fugxvDTlyCD+K89p/wHAqin+o1InXb89ddxr88NSR64bahYlHp9zjMZA7Yf
+         GHoU6isioriws34HpeOSi8cySL9BhQZRj9dkzOCbMXVltYFmqv8Kxs/0uiJEcc785TTS
+         nrgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707826479; x=1708431279;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
+        d=1e100.net; s=20230601; t=1707826600; x=1708431400;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PV/2CH8eMrpfZzKtcV9grh3JUO5lmB/8PaohWZVhuG0=;
-        b=xO7ZJqOOsrm/beGsg1ZK112bjX3xCPWTkJbSmvUfXaBBa3v1FP9eE7SAD2Gl2bRVoQ
-         StSbzGEhL6kaPe54iF33uNMN2o5UUWe3W1TAEdp7hee76IY1Rrd0GbPu5o8Y79WQuIpK
-         POe4Ng8NALezyAfuRZ5pOYQ1QU6BKif8BXh8POD2UlJwuBhohTuOs91j69aE4DREhhrN
-         OhvAtCXhxj3QInx2bstlIInZj4HsAUHdZ52AX3lCmqyzPp7MDF74z2q1ebFvXrfB4yeU
-         7SASehzAtEuxqh5PnPff4HXucT/0cCD3xYvLtyFD7FciF3O6OS1DS0X2kjl//dVBQ+sq
-         CJrA==
-X-Forwarded-Encrypted: i=1; AJvYcCUThULblh1R7YtS4zV3/N1lwRLjbreUyPl9bKRTjuwZIHYHRyAIBT//Twjxb8I9a7z+xwJDH85HNbAanv3022+t0RtWoAmS8ow224hi
-X-Gm-Message-State: AOJu0YzScTObmhobJ8w2rATxaK+wu8jJ4a74nuHEKp1E4uugFwByeicf
-	QVVIbf22WK1OPaZNDb5LPy7KvwfU+6sCq2vdu725/SN05p3y7aZd77tXT4QpsU/vyzyua+27/d/
-	z2KSMNkZ2s5S5VhssR6SVopFMgHLv2zJr6l9sssJpcmKlpxt2VwzjTy+CGRvofQ==
-X-Received: by 2002:ad4:4ea4:0:b0:68e:f8b6:1e2a with SMTP id ed4-20020ad44ea4000000b0068ef8b61e2amr203089qvb.2.1707826479191;
-        Tue, 13 Feb 2024 04:14:39 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGswwHbb1rCwPJLSk4gzJYYn9PIlHqXcuRECFHVi6AMtML9HJBPAxRWT9wp3UvywjHx97czLw==
-X-Received: by 2002:ad4:4ea4:0:b0:68e:f8b6:1e2a with SMTP id ed4-20020ad44ea4000000b0068ef8b61e2amr203068qvb.2.1707826478860;
-        Tue, 13 Feb 2024 04:14:38 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU9mfZbvt3+FfOAGT/M7JqCNSdHF2CynGGfILKrq2b7nPXx9N/eDrWWrtOMP7TdG6LxPgnwTCjHjckqdcvBthh/f6k1ujGqgw848LfyKDWsKJZFL/MdHcwdzA3x1uJLngC+DNV3XWRtd2AzBURsSXNulLcZA3kzB/DKeRWfT9lC1lKKIknbMWAE3GQD35cBoMps7ZAhlBDb6y3Fo6o=
-Received: from gerbillo.redhat.com (146-241-230-54.dyn.eolo.it. [146.241.230.54])
-        by smtp.gmail.com with ESMTPSA id bt8-20020ad455c8000000b0068cc1bba1d6sm1182606qvb.145.2024.02.13.04.14.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 04:14:38 -0800 (PST)
-Message-ID: <d64c2e241688f77a7a063b3f871f375ebc02be57.camel@redhat.com>
-Subject: Re: [PATCH 2/2] phonet/pep: fix racy skb_queue_empty() use
-From: Paolo Abeni <pabeni@redhat.com>
-To: =?ISO-8859-1?Q?R=E9mi?= Denis-Courmont <remi@remlab.net>, 
- courmisch@gmail.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Tue, 13 Feb 2024 13:14:36 +0100
-In-Reply-To: <20240210125054.71391-2-remi@remlab.net>
-References: <20240210125054.71391-1-remi@remlab.net>
-	 <20240210125054.71391-2-remi@remlab.net>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+        bh=XvutVI4vhckb36wRv9xQ3G85CklqzEdmIVWxR5pe3EM=;
+        b=bR2pw9Iljj5bjRt9gJTlfA9VUsOpPcfj4I/SbeVyLNOSMYTTJMoSNMzTDlnjS2SvwK
+         ATvo72+Jf7Xf6WOOvGmBkxMHSbsYFem4hr3PtrNdXIaNSOL7HJAPlxL3Zc+JRyWtuALJ
+         vYR44lSkC5C8+IMKa6S5DiXyLoQEPiTVQsV0H5IcN52B1I8qP0xfao6JdMSpeVWtYDfp
+         ZOTmcqU746eYQ92T1EcqMLLtb7J7VceGjKLNg0RsIq5n/mcfKf2Q3a+OgCy+moMEm68O
+         F7nd+dgFQWtHvJsxQLhJratJ37oSBLuhUBtabZSV3YmX+NqrIAnJXGPcvWR/yWKh/Bh8
+         jb4Q==
+X-Gm-Message-State: AOJu0YzAdZ7FrneUNLpHiFAxFxQnExot6GwNpTPlvflpFEyRfnesh4lZ
+	SklewcKHI+nDZa0O9avpR/JR18fb2dkzFhNxpdKtbi4KM0OXc4FZmCsTXPkTilQ=
+X-Google-Smtp-Source: AGHT+IEtHfBXMOT9CM9N7oyWHcsHOKqjjg//DUpPNnRVSpiHzVrxZ1PrkDoSJkMd+7Z1+eVvtutukQ==
+X-Received: by 2002:a05:600c:474d:b0:40e:55ca:5a48 with SMTP id w13-20020a05600c474d00b0040e55ca5a48mr7875172wmo.16.1707826600210;
+        Tue, 13 Feb 2024 04:16:40 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUyRO2lA00i33UiEjlwdueBFo8tkoN7ppioYMbPi4QR8dt3QSQdQl5NIU0j6eDZ/7RcTnZD1LUH7vaLHfwpCvSpvRjVCvN3rdsS1ISEgJoimoyd5V8rHa7KYW68QlJ6O711+ar2Nu9kw/z8iBz5rWjrHVWPZMDcBjK0NcRVGcMLQj+CxrHYJC0DGMYh+S7m+7WjlR5nKIgF6SUZyhohhcZWtbZDLtmQ3y+W3PwBo7Apwf1nTc4N8YwM5N0qKForrwYUNTegBObGNppFsBxvhaqXOY/OtaYxlsLcLuZpPItDu8JapHUVIXhyGcdtKtEWuwATIKsrx0wpZ6vQXBHl0Onx4ZNXFbfO8D5/wnadezMvxYnXexD7zlQWV5TY0G9l+BygwvaXx5qFHEJ4uM6pKAlSrrlp78KgeRIvAbLLNgIWyZuPtM2766o1
+Received: from [192.168.1.20] ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id f7-20020a05600c4e8700b00410709fa0d3sm11781414wmq.33.2024.02.13.04.16.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 04:16:39 -0800 (PST)
+Message-ID: <1895b682-288c-4645-bc8e-2e4c364e7de1@linaro.org>
+Date: Tue, 13 Feb 2024 13:16:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] ARM: dts: microchip: sama7g54_curiosity: Add initial
+ device tree of the board
+Content-Language: en-US
+To: Mihai Sain <mihai.sain@microchip.com>, claudiu.beznea@tuxon.dev,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+ andre.przywara@arm.com, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: cristian.birsan@microchip.com
+References: <20240213085614.26804-1-mihai.sain@microchip.com>
+ <20240213085614.26804-4-mihai.sain@microchip.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240213085614.26804-4-mihai.sain@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, 2024-02-10 at 14:50 +0200, R=C3=A9mi Denis-Courmont wrote:
-> From: R=C3=A9mi Denis-Courmont <courmisch@gmail.com>
->=20
-> The receive queues are protected by their respective spin-lock, not
-> the socket lock. This could lead to skb_peek() unexpectedly
-> returning NULL or a pointer to an already dequeued socket buffer.
->=20
-> Signed-off-by: R=C3=A9mi Denis-Courmont <courmisch@gmail.com>
+On 13/02/2024 09:56, Mihai Sain wrote:
+> Add initial device tree of the SAMA7G54 Curiosity board.
+> 
+> Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
+> ---
+>  arch/arm/boot/dts/microchip/Makefile          |   4 +-
+>  .../dts/microchip/at91-sama7g54_curiosity.dts | 491 ++++++++++++++++++
+>  2 files changed, 494 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts
+> 
+> diff --git a/arch/arm/boot/dts/microchip/Makefile b/arch/arm/boot/dts/microchip/Makefile
+> index efde9546c8f4..29b2a788748f 100644
+> --- a/arch/arm/boot/dts/microchip/Makefile
+> +++ b/arch/arm/boot/dts/microchip/Makefile
+> @@ -12,6 +12,7 @@ DTC_FLAGS_at91-sama5d3_eds := -@
+>  DTC_FLAGS_at91-sama5d3_xplained := -@
+>  DTC_FLAGS_at91-sama5d4_xplained := -@
+>  DTC_FLAGS_at91-sama7g5ek := -@
+> +DTC_FLAGS_at91-sama7g54_curiosity := -@
+>  dtb-$(CONFIG_SOC_AT91RM9200) += \
+>  	at91rm9200ek.dtb \
+>  	mpa1600.dtb
+> @@ -87,7 +88,8 @@ dtb-$(CONFIG_SOC_SAM_V7) += \
+>  	at91-sama5d4ek.dtb \
+>  	at91-vinco.dtb
+>  dtb-$(CONFIG_SOC_SAMA7G5) += \
+> -	at91-sama7g5ek.dtb
+> +	at91-sama7g5ek.dtb \
+> +	at91-sama7g54_curiosity.dtb
+>  
+>  dtb-$(CONFIG_SOC_LAN966) += \
+>  	lan966x-kontron-kswitch-d10-mmt-6g-2gs.dtb \
+> diff --git a/arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts b/arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts
+> new file mode 100644
+> index 000000000000..c2955a170658
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts
+> @@ -0,0 +1,491 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * at91-sama7g54_curiosity.dts - Device Tree file for SAMA7G54 Curiosity Board
+> + *
+> + * Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries
+> + *
+> + * Author: Mihai Sain <mihai.sain@microchip.com>
+> + *
+> + */
+> +/dts-v1/;
+> +#include "sama7g5-pinfunc.h"
+> +#include "sama7g5.dtsi"
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/mfd/atmel-flexcom.h>
+> +#include <dt-bindings/pinctrl/at91.h>
+> +
+> +/ {
+> +	model = "Microchip SAMA7G54 Curiosity";
+> +	compatible = "microchip,sama7g54-curiosity", "microchip,sama7g5", "microchip,sama7";
+> +
+> +	chosen {
+> +		bootargs = "console=ttyS0,115200 root=/dev/mmcblk1p2 rw rootwait";
 
-Please provide a suitable fixes tag here.
+What if user wants root from other place? What if mmc number changes,
+which is actually happening all the time (hint: use partuuid)? Drop
+root, it's not that helpful.
 
-Also include the target tree into the subj prefix when you post the v2.
+You also do not need console, so drop entire bootargs.
 
-Thank,
 
-Paolo
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	aliases {
+> +		serial0 = &uart3;
+> +		i2c0 = &i2c10;
+> +	};
+> +
+> +	clocks {
+> +		slow_xtal {
+
+No underscores in node names. Generic node names, so at least generic
+prefix or suffix. Anyway you should override your properties via
+phandle/label style.
+
+
+> +			clock-frequency = <32768>;
+> +		};
+> +
+> +		main_xtal {
+> +			clock-frequency = <24000000>;
+> +		};
+> +	};
+> +
+> +	gpio-keys {
+> +		compatible = "gpio-keys";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_key_gpio_default>;
+> +
+> +		button-user {
+> +			label = "user-button";
+> +			gpios = <&pioA PIN_PD19 GPIO_ACTIVE_LOW>;
+> +			linux,code = <KEY_PROG1>;
+> +			wakeup-source;
+> +		};
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_led_gpio_default>;
+> +		status = "okay";
+
+Why do you need it? Was it disabled anywhere?
+
+> +
+> +		led-red {
+> +			label = "red";
+
+Use color and function instead.
+
+> +			gpios = <&pioA PIN_PD13 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		led-green {
+> +			label = "green";
+
+Use color and function instead.
+
+> +			gpios = <&pioA PIN_PD14 GPIO_ACTIVE_HIGH>;
+> +			default-state = "off";
+> +		};
+> +
+> +		led-blue {
+> +			label = "blue";
+
+Use color and function instead.
+
+> +			gpios = <&pioA PIN_PB15 GPIO_ACTIVE_HIGH>;
+> +			linux,default-trigger = "heartbeat";
+> +		};
+> +	};
+> +
+> +	memory@60000000 {
+> +		device_type = "memory";
+> +		reg = <0x60000000 0x10000000>; // 256 MiB DDR3L-1066 16-bit
+> +	};
+> +};
+> +
+> +&adc {
+> +	vddana-supply = <&vddout25>;
+> +	vref-supply = <&vddout25>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_mikrobus1_an_default &pinctrl_mikrobus2_an_default>;
+> +	status = "okay";
+> +};
+> +
+> +&cpu0 {
+> +	cpu-supply = <&vddcpu>;
+> +};
+> +
+> +&dma0 {
+> +	status = "okay";
+> +};
+> +
+> +&dma1 {
+> +	status = "okay";
+> +};
+> +
+> +&dma2 {
+> +	status = "okay";
+> +};
+> +
+> +&ebi {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_nand_default>;
+> +	status = "okay";
+> +
+> +	nand_controller: nand-controller {
+> +		status = "okay";
+> +
+> +		nand@3 {
+> +			reg = <0x3 0x0 0x800000>;
+> +			atmel,rb = <0>;
+> +			nand-bus-width = <8>;
+> +			nand-ecc-mode = "hw";
+> +			nand-ecc-strength = <8>;
+> +			nand-ecc-step-size = <512>;
+> +			nand-on-flash-bbt;
+> +			label = "nand";
+> +			status = "okay";
+
+Was it disabled anywhere?
+
+> +
+> +			partitions {
+> +				compatible = "fixed-partitions";
+> +				#address-cells = <1>;
+> +				#size-cells = <1>;
+> +
+> +				at91bootstrap@0 {
+> +					label = "nand: at91bootstrap";
+> +					reg = <0x0 0x40000>;
+> +				};
+> +
+> +				bootloader@40000 {
+> +					label = "nand: u-boot";
+> +					reg = <0x40000 0x100000>;
+> +				};
+> +
+> +				bootloaderenv@140000 {
+> +					label = "nand: u-boot env";
+> +					reg = <0x140000 0x40000>;
+> +				};
+> +
+> +				dtb@180000 {
+> +					label = "nand: device tree";
+> +					reg = <0x180000 0x80000>;
+> +				};
+> +
+> +				kernel@200000 {
+> +					label = "nand: kernel";
+> +					reg = <0x200000 0x600000>;
+> +				};
+> +
+> +				rootfs@800000 {
+> +					label = "nand: rootfs";
+> +					reg = <0x800000 0x1f800000>;
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&flx3 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_USART>;
+> +	status = "okay";
+> +
+> +	uart3: serial@200 {
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flx3_default>;
+> +		status = "okay";
+> +	};
+> +};
+> +
+> +&flx10 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
+> +	status = "okay";
+> +
+> +	i2c10: i2c@600 {
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flx10_default>;
+> +		i2c-analog-filter;
+> +		i2c-digital-filter;
+> +		i2c-digital-filter-width-ns = <35>;
+> +		status = "okay";
+> +
+> +		adc@1f {
+> +			compatible = "microchip,pac1934";
+> +			reg = <0x1f>;
+> +		};
+> +
+> +		eeprom@51 {
+> +			compatible = "atmel,24c02";
+> +			reg = <0x51>;
+> +			pagesize = <16>;
+> +			size = <256>;
+> +			status = "okay";
+
+Was it disabled anywhere?
+
+> +		};
+> +
+> +		mcp16502@5b {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+
+> +			compatible = "microchip,mcp16502";
+> +			reg = <0x5b>;
+> +			status = "okay";
+
+Was it disabled anywhere?
+
+> +
+> +			regulators {
+> +				vdd_3v3: VDD_IO {
+> +					regulator-name = "VDD_IO";
+> +					regulator-min-microvolt = <3300000>;
+> +					regulator-max-microvolt = <3300000>;
+> +					regulator-initial-mode = <2>;
+> +					regulator-allowed-modes = <2>, <4>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-on-in-suspend;
+> +						regulator-suspend-microvolt = <3300000>;
+> +						regulator-mode = <4>;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-off-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +				};
+> +
+> +				vddioddr: VDD_DDR {
+> +					regulator-name = "VDD_DDR";
+> +					regulator-min-microvolt = <1350000>;
+> +					regulator-max-microvolt = <1350000>;
+> +					regulator-initial-mode = <2>;
+> +					regulator-allowed-modes = <2>, <4>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-on-in-suspend;
+> +						regulator-suspend-microvolt = <1350000>;
+> +						regulator-mode = <4>;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-on-in-suspend;
+> +						regulator-suspend-microvolt = <1350000>;
+> +						regulator-mode = <4>;
+> +					};
+> +				};
+> +
+> +				vddcore: VDD_CORE {
+> +					regulator-name = "VDD_CORE";
+> +					regulator-min-microvolt = <1150000>;
+> +					regulator-max-microvolt = <1150000>;
+> +					regulator-initial-mode = <2>;
+> +					regulator-allowed-modes = <2>, <4>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-on-in-suspend;
+> +						regulator-suspend-voltage = <1150000>;
+> +						regulator-mode = <4>;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-off-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +				};
+> +
+> +				vddcpu: VDD_OTHER {
+> +					regulator-name = "VDD_OTHER";
+> +					regulator-min-microvolt = <1050000>;
+> +					regulator-max-microvolt = <1250000>;
+> +					regulator-initial-mode = <2>;
+> +					regulator-allowed-modes = <2>, <4>;
+> +					regulator-ramp-delay = <3125>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-on-in-suspend;
+> +						regulator-suspend-voltage = <1050000>;
+> +						regulator-mode = <4>;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-off-in-suspend;
+> +						regulator-mode = <4>;
+> +					};
+> +				};
+> +
+> +				vldo1: LDO1 {
+> +					regulator-name = "LDO1";
+> +					regulator-min-microvolt = <1800000>;
+> +					regulator-max-microvolt = <1800000>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-suspend-voltage = <1800000>;
+> +						regulator-on-in-suspend;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-off-in-suspend;
+> +					};
+> +				};
+> +
+> +				vldo2: LDO2 {
+> +					regulator-name = "LDO2";
+> +					regulator-min-microvolt = <3300000>;
+> +					regulator-max-microvolt = <3300000>;
+> +					regulator-always-on;
+> +
+> +					regulator-state-standby {
+> +						regulator-suspend-voltage = <3300000>;
+> +						regulator-on-in-suspend;
+> +					};
+> +
+> +					regulator-state-mem {
+> +						regulator-off-in-suspend;
+> +					};
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&qspi1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_qspi1_default>;
+> +	status = "okay";
+> +
+> +	flash@0 {
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0x0>;
+> +		spi-max-frequency = <100000000>;
+> +		spi-tx-bus-width = <4>;
+> +		spi-rx-bus-width = <4>;
+> +		m25p,fast-read;
+> +		status = "okay";
+
+Was it disabled anywhere?
+
+
+
+Best regards,
+Krzysztof
 
 
