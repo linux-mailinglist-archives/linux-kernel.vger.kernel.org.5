@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-64174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7848853B2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:37:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00BFB853B35
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 574EEB269A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:37:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1CD528D80D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E7C60EE5;
-	Tue, 13 Feb 2024 19:35:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 008F260892;
+	Tue, 13 Feb 2024 19:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DKizwqxc"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nC5yv0wT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D0A560EFE;
-	Tue, 13 Feb 2024 19:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18636612DD;
+	Tue, 13 Feb 2024 19:35:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707852922; cv=none; b=VotKNZvNfAEBb4UhgFGvFKoGHommJzVfTteSWGScrZ++aaoXgHR3HSc3nQbIgWv0mbKIL0cIfC6CSvDaUdLER9oVpFeflUbCYY1aPbUds9EEkO8RD0bmtr8k/2FMQsa64T0j+4CECAQvFwKuyKm58AbVCrnBwQiibGDrdCxTRio=
+	t=1707852924; cv=none; b=EAomfMVohFx9j0iQ1Q+bxG4nWjIzwWjL1wIFbaoPz+LLp84SYEk6sKXkBLoatAMb79XDSZkcIaWUaZEulBdb9j9YTc2lY9ncFhpwmN0+UPbkw6L7UnGd40X9yCQ6XOlT58PIowyI7CylTJ/VOrNIyBy0aH1Tmqg8mkssA1rIVuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707852922; c=relaxed/simple;
-	bh=sv88IujBpfHMPhVsbD/uX3vDJVDPR81+Zt14idlIRkk=;
+	s=arc-20240116; t=1707852924; c=relaxed/simple;
+	bh=io3IHUz4w8uho1fRTkKUDdRHdXN+FkOTbGUXes+HSwM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=d/uT4jKE9pyX017dYds1qb3FBkMDg9nTtAIwXDEkWfVtONfQzESzJ4/OoJ3ZRrLgEwPJAtM2L1sTRL3MVH+o5DcYZyFTpoxAVecGpE8/W/tPFBrzsf8j2tFh5Xh4Wilo7LsYP9RGg6RVnmKhC1YoJHzE3+rEjrqqDeoz+ZaBLNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DKizwqxc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50698C43390;
-	Tue, 13 Feb 2024 19:35:21 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=X2kNt6sRgG/Bkbo8Soy8Yzb8LbVnd4UMb67JpROlze/Z6NfsSLckN9wo3c9hwEIXlF+WFYct55dm8i7I4Oi8OGZQ9XhV6dSFp+dpKKhmkPa16WIDjxbYFGcGDyH0ZyL1FV/Cd7xBuJQy/4uqaLhlYjSjEENo73Tiw5T8pZ+D8hY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nC5yv0wT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3659C43390;
+	Tue, 13 Feb 2024 19:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707852921;
-	bh=sv88IujBpfHMPhVsbD/uX3vDJVDPR81+Zt14idlIRkk=;
+	s=k20201202; t=1707852923;
+	bh=io3IHUz4w8uho1fRTkKUDdRHdXN+FkOTbGUXes+HSwM=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:From;
-	b=DKizwqxcC7J4JqkJOz4xypNY2XQ16Bx9so9xQEHWNUmuyim/ksbKFT7GeurlKn61U
-	 ZhGBSZdZAmSA/oBYfhps5ZFr4FS3kJ8OcftkByrKfpB88DPxA1AKzh2leBwnhnOEbO
-	 FOEmlLg/SfKOaHw2WFs1vzRvUFS8y9YsPKjIpQaBZzGzbvPSPCyWpO9FjrD9Xnjae1
-	 xi3TkDKf+5JQfXIUkgIKtNwyTkWAoxNoax0phwZ0JXxlCqVV7s5V7CZrQJYasNI8Ji
-	 yRF+e1AKmXKJGQIKhoLY81kKst4bNdgbB7MmCC3TK1YxnOUsgpZGsm/+Ro5Yrj0EiJ
-	 0GeTkg36Zfucg==
+	b=nC5yv0wT3DgPAYxk67YpeyMCOPQkCYoByAe0P20ibCZ2ZwpRXd+xIv5AqQOnkRr62
+	 cxdPJbNSI9jT3FXpYwVYIOXR0ouq46nNz4TLHhI8H+vMT3ps6nVXceSfGHHKwtREYx
+	 Sbg3UPfGR/V5C3yWrSox+lIgE9ejNmJT1TANOBTxvAUGXTTudhW4ND1OOaXvjablDm
+	 Pq1vKqjSz6KCFP5XAlEcDdsbF21T3QakjhMnzYri2o5fnkDrsWQ6GuLtLe9bTHjiVY
+	 BZU+xASTGTnd1z8TXb/DlPot58ZDRaKwIT9h2dNK+T45l/LYEdnroleltXx5US+sPV
+	 GKvPP5SxiGlCg==
 From: Rob Herring <robh@kernel.org>
-Date: Tue, 13 Feb 2024 13:34:29 -0600
-Subject: [PATCH 5/6] arm64: dts: qcom: Fix interrupt-map cell sizes
+Date: Tue, 13 Feb 2024 13:34:30 -0600
+Subject: [PATCH 6/6] dtc: Enable dtc interrupt_provider check
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240213-arm-dt-cleanups-v1-5-f2dee1292525@kernel.org>
+Message-Id: <20240213-arm-dt-cleanups-v1-6-f2dee1292525@kernel.org>
 References: <20240213-arm-dt-cleanups-v1-0-f2dee1292525@kernel.org>
 In-Reply-To: <20240213-arm-dt-cleanups-v1-0-f2dee1292525@kernel.org>
 To: soc@kernel.org, Shawn Guo <shawnguo@kernel.org>, 
@@ -91,77 +91,36 @@ Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, linux-kbuild@vger.kernel.org
 X-Mailer: b4 0.13-dev
 
-The PCI node interrupt-map properties have the wrong size as #address-cells
-in the interrupt parent are not accounted for.
-
-The dtc interrupt_map check catches this, but the warning is off because
-its dependency, interrupt_provider, is off by default.
+Now that all the interrupt warnings have been fixed, enable
+'interrupt_provider' check by default. This will also enable
+'interrupt_map' check.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/ipq6018.dtsi |  8 ++++----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 16 ++++++++--------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ scripts/Makefile.lib | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-index 5e1277fea725..61c8fd49c966 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-@@ -830,10 +830,10 @@ pcie0: pcie@20000000 {
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index cd5b181060f1..fce35e4657f5 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -340,7 +340,7 @@ quiet_cmd_gzip = GZIP    $@
+ # DTC
+ # ---------------------------------------------------------------------------
+ DTC ?= $(objtree)/scripts/dtc/dtc
+-DTC_FLAGS += -Wno-interrupt_provider \
++DTC_FLAGS += \
+ 	-Wno-unique_unit_address
  
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0x7>;
--			interrupt-map = <0 0 0 1 &intc 0 75 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
--					<0 0 0 2 &intc 0 78 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
--					<0 0 0 3 &intc 0 79 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
--					<0 0 0 4 &intc 0 83 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
-+			interrupt-map = <0 0 0 1 &intc 0 0 0 75 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
-+					<0 0 0 2 &intc 0 0 0 78 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
-+					<0 0 0 3 &intc 0 0 0 79 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
-+					<0 0 0 4 &intc 0 0 0 83 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
+ # Disable noisy checks by default
+@@ -358,7 +358,6 @@ endif
+ ifneq ($(findstring 2,$(KBUILD_EXTRA_WARN)),)
+ DTC_FLAGS += -Wnode_name_chars_strict \
+ 	-Wproperty_name_chars_strict \
+-	-Winterrupt_provider \
+ 	-Wunique_unit_address
+ endif
  
- 			clocks = <&gcc GCC_SYS_NOC_PCIE0_AXI_CLK>,
- 				 <&gcc GCC_PCIE0_AXI_M_CLK>,
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index cf295bed3299..26441447c866 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -814,13 +814,13 @@ pcie1: pcie@10000000 {
- 			interrupt-names = "msi";
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0x7>;
--			interrupt-map = <0 0 0 1 &intc 0 142
-+			interrupt-map = <0 0 0 1 &intc 0 0 142
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
--					<0 0 0 2 &intc 0 143
-+					<0 0 0 2 &intc 0 0 143
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
--					<0 0 0 3 &intc 0 144
-+					<0 0 0 3 &intc 0 0 144
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
--					<0 0 0 4 &intc 0 145
-+					<0 0 0 4 &intc 0 0 145
- 					 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
- 
- 			clocks = <&gcc GCC_SYS_NOC_PCIE1_AXI_CLK>,
-@@ -876,13 +876,13 @@ pcie0: pcie@20000000 {
- 			interrupt-names = "msi";
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0x7>;
--			interrupt-map = <0 0 0 1 &intc 0 75
-+			interrupt-map = <0 0 0 1 &intc 0 0 75
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
--					<0 0 0 2 &intc 0 78
-+					<0 0 0 2 &intc 0 0 78
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
--					<0 0 0 3 &intc 0 79
-+					<0 0 0 3 &intc 0 0 79
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
--					<0 0 0 4 &intc 0 83
-+					<0 0 0 4 &intc 0 0 83
- 					 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
- 
- 			clocks = <&gcc GCC_SYS_NOC_PCIE0_AXI_CLK>,
 
 -- 
 2.43.0
