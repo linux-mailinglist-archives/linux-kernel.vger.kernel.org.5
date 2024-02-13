@@ -1,100 +1,210 @@
-Return-Path: <linux-kernel+bounces-64011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5F848538F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:50:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF77E8538F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0432C1C267C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:50:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7662328F43F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53FB3604D1;
-	Tue, 13 Feb 2024 17:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFD5605AE;
+	Tue, 13 Feb 2024 17:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="o8Nj47xp"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e7tP/T9i"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C0F5FF08;
-	Tue, 13 Feb 2024 17:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82E8604D4;
+	Tue, 13 Feb 2024 17:50:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707846630; cv=none; b=FtfTQq/ZGMgcz2OIcU8JboQdYKPAtxHMcc84MJj0de6gtCqYA7Nt0Dn88zoWI3Vfr55eJSqQ6cghFsHwe1zPrTCCbZiOU7da1n5ZxtnuqBDAovFfr9zPk9peKeSAR4oy6L/qqB8ZewmES50rHW6V3YPIuz0xt2Id+K4/lX9BS2E=
+	t=1707846631; cv=none; b=LtNxrhs3j1Z8Bs8cmg8bJYdIaztTZrNBRt7WowtRaP+1nxshYr6g7obQjQptwEKnF4PSv/i9BZc50dzCr+enBC+Qawd5g8ZAF8YwwFsZz8Q65HqLnGMcY7rl9R9k3HMqpm4FkQxZm4HjviRpFPAcDpmytrkRqiFDsTEJJ5y7zfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707846630; c=relaxed/simple;
-	bh=Z2v6JGqCm50Cs7heCO5mmVfihgm9IBUemPTwI+gQtHc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jMFzmfgayOy6iKPiuTma29dw1ksCclz5PzQWQwViMaZgHlQ7Uv/IRcf1SH3R/NJiBU1GwLdNQLMX7fw4Soqe6S1K2JOQ3Hr/zDp7bq3d9rdbsGgSuWl7f1J81pp1Cx1Qyp+9CPXcqiCItX7vBhFEnKvY1bMdiXluCG/iG46qAdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=o8Nj47xp; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1707846616; x=1708451416; i=wahrenst@gmx.net;
-	bh=Z2v6JGqCm50Cs7heCO5mmVfihgm9IBUemPTwI+gQtHc=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=o8Nj47xprO7JzvNpFp8Qh/Tt/2xD29REfdkhcLW3LglxPNdDQkYKqxmSAxNnNXfx
-	 yq7cZP2TtpXoaaOBvdowQUYNmGdffC7qa5fHwX8a6zaZ5HxxRBbKAz+a8PEb0EyH3
-	 1VHNVZsXy2QX98WDDwlhxHzE7RiP6oUCXqf0mWtt/dCKjt2NSoc93DkzfK8UE/+vK
-	 MVadMoHPf3gHE2bP0x4vkvhTIsCQDqnxDxKuH5LW15A11yc02/0SGLGyUd6+VKASg
-	 XTKEqy4IZs+3OCjpDp5DT1UvGZSCRrhuoGawq39VujQGy/1AlkubINmbGq3MdjsDc
-	 OCMDB7w2zHdM7hF9gQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MsHru-1qgK453Hhq-00tier; Tue, 13
- Feb 2024 18:50:15 +0100
-Message-ID: <95d56903-7893-4a12-a451-f1bcc1d5316e@gmx.net>
-Date: Tue, 13 Feb 2024 18:50:11 +0100
+	s=arc-20240116; t=1707846631; c=relaxed/simple;
+	bh=5C6J2AoGti6fVk51X5hb7PlrcA7riKG8jWDj230jXh8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ROXTUwYoMxFfYSXrT833LsWufV4Fk3V7BCQUGSrdcoHOvTBk4bM+wrT2gnytxe9Yr22zOgMsnGNvRclB7LiBKq8tQdD9O7B3gYxet7i+40BGgKReYFwnAO2JQgit/ahIVP5NEzr6SnQk8KVzU3tlVkAe4poxbdiUm0KgGqCgiz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e7tP/T9i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49AE4C433A6;
+	Tue, 13 Feb 2024 17:50:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707846631;
+	bh=5C6J2AoGti6fVk51X5hb7PlrcA7riKG8jWDj230jXh8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e7tP/T9iMSHjzKBiYtzmws53ZK7Z+90BzS76f/jbm7+5+7hJps4zsT41q7KJaDAS5
+	 loE3MzRwneIsuAvoiTBguhrmMK5rots642mz0UaK89wWIt9RPsyOkb1zHhKelntdW1
+	 oDKUyvWXMOGY4MjZeaQfl9QdWY6PmvFmMKhbkO93GdJIqqgpp+9KNUEHF0VHNBu9hH
+	 eo2R49cMH048iwhFuhuW7iynhDkCj3f52bZzBjnSkDb9gZgInyB8VcSQXJSq37oFd4
+	 MP0sp0Wvk1jnE9gJ5DiSZD8xWWg7vlKiH/nuos+6Vn57F6PnOe+bL/ZOzLY07pG/1p
+	 yJwJZWp+13smw==
+Date: Tue, 13 Feb 2024 09:50:30 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
+	martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com
+Subject: Re: [PATCH RFC 5/6] fs: xfs: iomap atomic write support
+Message-ID: <20240213175030.GC6184@frogsfrogsfrogs>
+References: <20240124142645.9334-1-john.g.garry@oracle.com>
+ <20240124142645.9334-6-john.g.garry@oracle.com>
+ <20240202184758.GA6226@frogsfrogsfrogs>
+ <e61cf382-66bd-4091-b49c-afbb5ce67d8f@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 17/17] ARM: dts: imx6ull-uti260b: Add board
-Content-Language: en-US
-To: Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- NXP Linux Team <linux-imx@nxp.com>
-Cc: Dong Aisheng <aisheng.dong@nxp.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Mark Brown
- <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240213010347.1075251-1-sre@kernel.org>
- <20240213010347.1075251-18-sre@kernel.org>
-From: Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <20240213010347.1075251-18-sre@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:nGPV/9A2970hb7rXmUZE6Jp+por/U2rqq2yjDR+mGXU9TOetXzV
- RRBdu07Ao5WXVF2gtPstOXmaiGRmHKF29VNw4e+Ww0RxfDOikuDs1Tp0ZPP38s9xfU3m1GX
- J+rMa50409QHCfoDWNn75E+g2Fhs5/mB722Uw+scyp3VrEwWvNx4y56ND15WvYu2lt/UDTE
- zqkWjkPUggtwalYOEtJEw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:AidHz1kBfT4=;rmh//cTf7dE7bIkfBFcQuoiMUuz
- odC7hu9oKns99OULhgQvW6nJ085KGGuobhxEE/c37TqAH89BjDOBbFjSDA9Grv4UDR+y3yiWq
- 9PSVuPwXrIC264CJxqsQZHCaJmt1+/p8STmMvewUKRXtesO6XfGdTHUXbFw27nj3+/H3rmSLi
- GN390NI+s3ShGEIEXVkLlLuE1szWm8znesZSp2d3OJpzzS5u/RSPPD2V5yI6ItVX/Xqh3Va5t
- 1K+CdF/eoLCgfAMu5hyA/WFQ1bDBPlS1hrv8OulNGi+aaFLhWe2W3K0+ODlqyLWsLjTRXW6AK
- vUIxwjJS44RgcLwTxGerzf4ReXlJ1Hc7gVVhwoJygMR0/wgLO9mmN+TIB16cFzj63uJs8hvyh
- FlxqKEn3VstidSgRlzjufAnNGkCXwvWhpRTzERR6uECjhuWh+ZCsorUq2yUxvDG5MCpiOGIAm
- x9q5G95RzpPDTexjMiU8S4c/WiyA5+UCa9XjWRiAcLezSQdkGnd9vDZzuoDS42VZgwf4S0/Se
- l/jtJmf3LgPDO4v4WmZPiTa3qjd+ssa25PhrR0kVs4UFiieYBbPGVFnROngXcSLEVx6NgONXA
- RgTlF45RbDHBLsQZuPv0a4WY3aNL/jx6TBnF8djVTh2agVIPLoSurhXdlahpvybAT2g8jY8uD
- RJTNjq8mX6SBlPjEmRDnfCyOASFUCR5ubdM5e1H990ZWSgSQt7d1980Hn+S2+aO6NiMrTjYMG
- kXAi5FyWNuqJ6P3C+bBEE0ZClPESkfXYjy/AxMqMry8Tk5Vw1PzS3rASPw0PgepMNp+gt9Sov
- im6hzTJCKtnsUafDHqehf2qDDMRJErTNuILNvjBztehPQ=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e61cf382-66bd-4091-b49c-afbb5ce67d8f@oracle.com>
 
-Am 13.02.24 um 02:01 schrieb Sebastian Reichel:
-> Add UNI-T UTi260b thermal camera board.
->
-> Signed-off-by: Sebastian Reichel <sre@kernel.org>
-Reviewed-by: Stefan Wahren <wahrenst@gmx.net>
+On Mon, Feb 05, 2024 at 01:36:03PM +0000, John Garry wrote:
+> On 02/02/2024 18:47, Darrick J. Wong wrote:
+> > On Wed, Jan 24, 2024 at 02:26:44PM +0000, John Garry wrote:
+> > > Ensure that when creating a mapping that we adhere to all the atomic
+> > > write rules.
+> > > 
+> > > We check that the mapping covers the complete range of the write to ensure
+> > > that we'll be just creating a single mapping.
+> > > 
+> > > Currently minimum granularity is the FS block size, but it should be
+> > > possibly to support lower in future.
+> > > 
+> > > Signed-off-by: John Garry <john.g.garry@oracle.com>
+> > > ---
+> > > I am setting this as an RFC as I am not sure on the change in
+> > > xfs_iomap_write_direct() - it gives the desired result AFAICS.
+> > > 
+> > >   fs/xfs/xfs_iomap.c | 41 +++++++++++++++++++++++++++++++++++++++++
+> > >   1 file changed, 41 insertions(+)
+> > > 
+> > > diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> > > index 18c8f168b153..758dc1c90a42 100644
+> > > --- a/fs/xfs/xfs_iomap.c
+> > > +++ b/fs/xfs/xfs_iomap.c
+> > > @@ -289,6 +289,9 @@ xfs_iomap_write_direct(
+> > >   		}
+> > >   	}
+> > > +	if (xfs_inode_atomicwrites(ip))
+> > > +		bmapi_flags = XFS_BMAPI_ZERO;
+> > 
+> > Why do we want to write zeroes to the disk if we're allocating space
+> > even if we're not sending an atomic write?
+> > 
+> > (This might want an explanation for why we're doing this at all -- it's
+> > to avoid unwritten extent conversion, which defeats hardware untorn
+> > writes.)
+> 
+> It's to handle the scenario where we have a partially written extent, and
+> then try to issue an atomic write which covers the complete extent. In this
+> scenario, the iomap code will issue 2x IOs, which is unacceptable. So we
+> ensure that the extent is completely written whenever we allocate it. At
+> least that is my idea.
+> 
+> > 
+> > I think we should support IOCB_ATOMIC when the mapping is unwritten --
+> > the data will land on disk in an untorn fashion, the unwritten extent
+> > conversion on IO completion is itself atomic, and callers still have to
+> > set O_DSYNC to persist anything.
+> 
+> But does this work for the scenario above?
+> 
+> > Then we can avoid the cost of
+> > BMAPI_ZERO, because double-writes aren't free.
+> 
+> About double-writes not being free, I thought that this was acceptable to
+> just have this write zero when initially allocating the extent as it should
+> not add too much overhead in practice, i.e. it's one off.
+> 
+> > 
+> > > +
+> > >   	error = xfs_trans_alloc_inode(ip, &M_RES(mp)->tr_write, dblocks,
+> > >   			rblocks, force, &tp);
+> > >   	if (error)
+> > > @@ -812,6 +815,44 @@ xfs_direct_write_iomap_begin(
+> > >   	if (error)
+> > >   		goto out_unlock;
+> > > +	if (flags & IOMAP_ATOMIC) {
+> > > +		xfs_filblks_t unit_min_fsb, unit_max_fsb;
+> > > +		unsigned int unit_min, unit_max;
+> > > +
+> > > +		xfs_get_atomic_write_attr(ip, &unit_min, &unit_max);
+> > > +		unit_min_fsb = XFS_B_TO_FSBT(mp, unit_min);
+> > > +		unit_max_fsb = XFS_B_TO_FSBT(mp, unit_max);
+> > > +
+> > > +		if (!imap_spans_range(&imap, offset_fsb, end_fsb)) {
+> > > +			error = -EINVAL;
+> > > +			goto out_unlock;
+> > > +		}
+> > > +
+> > > +		if ((offset & mp->m_blockmask) ||
+> > > +		    (length & mp->m_blockmask)) {
+> > > +			error = -EINVAL;
+> > > +			goto out_unlock;
+> > > +		}
+> > > +
+> > > +		if (imap.br_blockcount == unit_min_fsb ||
+> > > +		    imap.br_blockcount == unit_max_fsb) {
+> > > +			/* ok if exactly min or max */
+> > > +		} else if (imap.br_blockcount < unit_min_fsb ||
+> > > +			   imap.br_blockcount > unit_max_fsb) {
+> > > +			error = -EINVAL;
+> > > +			goto out_unlock;
+> > > +		} else if (!is_power_of_2(imap.br_blockcount)) {
+> > > +			error = -EINVAL;
+> > > +			goto out_unlock;
+> > > +		}
+> > > +
+> > > +		if (imap.br_startoff &&
+> > > +		    imap.br_startoff & (imap.br_blockcount - 1)) {
+> > 
+> > Not sure why we care about the file position, it's br_startblock that
+> > gets passed into the bio, not br_startoff.
+> 
+> We just want to ensure that the length of the write is valid w.r.t. to the
+> offset within the extent, and br_startoff would be the offset within the
+> aligned extent.
+
+Yes, I understand what br_startoff is, but this doesn't help me
+understand why this code is necessary.  Let's say you have a device that
+supports untorn writes of 16k in length provided the LBA of the write
+command is also aligned to 16k, and the fs has 4k blocks.
+
+Userspace issues an 16k untorn write at offset 13k in the file, and gets
+this mapping:
+
+[startoff: 13k, startblock: 16k, blockcount: 16k]
+
+Why should this IO be rejected?  The physical space extent satisfies the
+alignment requirements of the underlying device, and the logical file
+space extent does not need aligning at all.
+
+> > I'm also still not convinced that any of this validation is useful here.
+> > The block device stack underneath the filesystem can change at any time
+> > without any particular notice to the fs, so the only way to find out if
+> > the proposed IO would meet the alignment constraints is to submit_bio
+> > and see what happens.
+> 
+> I am not sure what submit_bio() would do differently. If the block device is
+> changing underneath the block layer, then there is where these things need
+> to be checked.
+
+Agreed.
+
+> > 
+> > (The "one bio per untorn write request" thing in the direct-io.c patch
+> > sound sane to me though.)
+> > 
+> 
+> ok
+> 
+> Thanks,
+> John
+> 
 
