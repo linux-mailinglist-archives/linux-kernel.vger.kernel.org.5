@@ -1,203 +1,199 @@
-Return-Path: <linux-kernel+bounces-63481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0991E853030
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62CF9853036
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:09:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6810C1F25228
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:07:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C94711F26A38
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDAA638DFC;
-	Tue, 13 Feb 2024 12:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7A539FDA;
+	Tue, 13 Feb 2024 12:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="Oljei40v"
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="VLdxOGll"
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4508E2BB0A
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:07:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841A836AFD
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707826028; cv=none; b=ridrrE9f+78P3CDeM8BkCR/8Vv5DTHKfu0LyJrbw+fntVBoHx2ElyV3PDgGo4ua/rpyu/dd7gBtJ619q/z1NsARyQykmBsrtX8nSjF6v6eJoubdFyX4nbWxBluW8rCJhKmQ+o1gBz9NTRnWdROSfkCLKrQqjNEd6l+IH6NNCi6w=
+	t=1707826131; cv=none; b=OLixJpyxvIcojvVnBGIdaks85q/tpYXeNjG+a88Y/NC5dH9veZkl9j2Ejiogmz3fF6l+PgFAqnEXeA7SfyLbKuuLHRl9gDjVzR3FO8vw3CXwZjyONrUkTLSDNwn7FBmxuLpTGk4VdCscXpiEPxlWZ7wWGZmv1pagLHV1b0AP4gM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707826028; c=relaxed/simple;
-	bh=Qacbe6nnq42TjOQZ8W75zFXquUf5Ax5AzQtqrUDIzDs=;
+	s=arc-20240116; t=1707826131; c=relaxed/simple;
+	bh=RD2gOE43WjYVxdi1ngCyfW/4evEA9UOVCJgWZA9RArA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qWv8VIjCsCmapm5snOqg4wQZ5t7EmaCl1xSgyfPx0WPoaFuQISyrifO/H8siv8M1DIpzBIuLe3DmR290Je/kidZcV9Qu0SFqT6/yOH4+JZQwvlDVgwAsUCbME6BxF9R/KTobDdX8TdNqMG4CQ8zJVp7vwPkdWtpihs+Ukk0dZIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=Oljei40v; arc=none smtp.client-ip=209.85.222.49
+	 To:Cc:Content-Type; b=dkdop5+/uKpYoefUIk9DKJKcKsZlrNqHxhuQa1JqqOvGf8vWL0BILcL5gUOYATV2PwD8O+IQ4YOQk4SBE3eewZSqbOO2slYupnLBwEdFR7eKvyFueXlFFa+JW1DELM6XfAyNR+NNACVSPJz/Z4b+sP5SZtABnYzMRxSv7cMbR6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=VLdxOGll; arc=none smtp.client-ip=209.85.221.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7d6a85586e3so1764638241.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:07:06 -0800 (PST)
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4c02bdc2892so2180938e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:08:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707826025; x=1708430825; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707826128; x=1708430928; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5xSZkssqdpw0zwkJS9ZRDE+eT6ZfWXMlKeiZHUnJryQ=;
-        b=Oljei40viU/J36pXVVuh7rsjzIuQcxE0tDZzV3VpLJxa3VwxL2UWVhzrpZ/haDt9E8
-         JJYz6wBi9R4TdgtaPU8w3Z2sbv/ytSjhU7UOv6SgM3NKXlt7iJcuxhrodudHPOqk7Ewm
-         zh28jO4qXpbSka/BDzoHD0V+AiwtFlFQgGw+tvzwSJnnNn8dnL3b5FSnYmQNwksIKvAP
-         viTnyqjsDcVEswyab1D5RS3S2NUokvf0phowlpibCLJ8aWT0KYOsiy4/XqZB0gj7n6uN
-         T9/f7AU/DfshlqqOwJdpXEk17xMcjuzrxBJzN5zVKZmttuIfCLcdygO+TA2aL52WYSNl
-         te7g==
+        bh=RD2gOE43WjYVxdi1ngCyfW/4evEA9UOVCJgWZA9RArA=;
+        b=VLdxOGll2aXINr6xr0F90BKX8l56IcVS7Rtxl0Lk91kxpM8gccBgLH0vx3s4NNtszF
+         lsdTX28Iqmcv+HsCQ1aEJQzbS2uByIHP3v5rf6di84+BqrEbjSZzGhtKS3kuzYMNxUv7
+         iHm6NQ0clQzjH7xvNV7mLv8002zC4fRdAXXWJwb0dKkQBMzNRHv1Z5zOiL/B7e6HPHPl
+         vbYNUnYxBOOvzrp1f4pNMd29GmH2Ri7k1hB3jpYnezJdoAKPpTz1Yv3ixeatKLlvJG68
+         ATDatEpUmRq8uSwZ/oMW+uqKjz4DkCcUn0f9I/BhNXsKZ/+YrTITOASh+hVwfMth/hCn
+         Tusw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707826025; x=1708430825;
+        d=1e100.net; s=20230601; t=1707826128; x=1708430928;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5xSZkssqdpw0zwkJS9ZRDE+eT6ZfWXMlKeiZHUnJryQ=;
-        b=xG+ZdXDK0FBTsTXyh9mS6tTw8K43IznsEDIJ/dB0a7ev4QdtdPCuo8Maqb75jxEWRw
-         hs8ueSdf/3Z3InisED4e0JMNG3yRnH09H35UaB1nzEbt6bYBvqv/T/IvdOrDkwiFxA/m
-         cNsKpZCodAAj+Gh6ZbEHYZgHHKhcamZc6CNDmxPbKHzjONXlhH4Df/jN6i4OOkLeakXW
-         Te8cjWpAj5BrVNjBQu1KQLK+zuzJij7qBndnqhO+1hOynyQHJX1fqPjddmHmkoPUeCFY
-         mLM/8jzG+tUA7Wu7XpS3KXdeQB82AOHkptGYIIc1SbJRoz3xZ3rROwmxW8LuAIhiFxWZ
-         K2yg==
-X-Gm-Message-State: AOJu0Yx3R4FNAxAy6JLrCKY7U5DtSnYGeOA3UDBzrwu86C8NMlhGcyMT
-	L0EGe5kJHP823tHTaNyNr4A7sFm7edmYRBLVUSMrltKIRCLkEKvij7YKtt9JCT4H18/mY2FIFAf
-	We+y038jObAGuT227klFrafm0kW2cyalCtLXhPw==
-X-Google-Smtp-Source: AGHT+IGvrl0RhX+KlbLySmGyh3kISik7DnEHSduuYrE3AFZ92atwN4H0Xb/pAigL3W4OFk/oNaCSQM5DWsnD6RtLZhc=
-X-Received: by 2002:a1f:6602:0:b0:4c0:23bd:1f0d with SMTP id
- a2-20020a1f6602000000b004c023bd1f0dmr5468056vkc.15.1707826024544; Tue, 13 Feb
- 2024 04:07:04 -0800 (PST)
+        bh=RD2gOE43WjYVxdi1ngCyfW/4evEA9UOVCJgWZA9RArA=;
+        b=sabI+u9h/lEnmjFMtN19mTGj3/YRLCfz1V58qxr41M2BhD//pzWU0thiMjgs9X7sQt
+         CWPScdt+jcYhXgfmn1doyQbTxlsAnrdCwuNKQ4nsyanhFC+AG2gdI/UcaWgb3r/QKyGW
+         PYdVz3u6mAFMHxtxl3GMX4xRsBdfA1GhD2GMJeKlzVDjAw2ptpzELUoeLqFzuX/IMQ8w
+         2Kc0pRZ1Vkt4f4dD6RzM2f/0n1Sfo0Etx2InZ2lMZFRqxgCx7uVUaIwfqqCoPJWJaumy
+         UM4S1A5EFKrnVo087g+2Lb2Z+fY0/RrZF8A7sca85M012bIHnwFVYn6bvNV/i7X/aeRc
+         +P9g==
+X-Gm-Message-State: AOJu0YzrwgNWJlamByh4N6+KVArFMI7ej5XfrQTV9jq7h0I03Iy+elPn
+	MlBM8b2f43mj+i8H3zKRJZbbGdbLS97WMP/mGAKL6NVHXTxvwJe1MwtstM8Bf+A3dMW0inQOm8E
+	Gzt/H0QyUQK2U4+J7VeP9hWtjRmvA6pbY0ZgBfg==
+X-Google-Smtp-Source: AGHT+IGlnW4jJFYXgcuBWKQX+kpeByQrzmcNz+1+GaJF6Zm0adomc/SghGDfF//5mW2qfRM2I1XGer2HTXyrIynQ7ck=
+X-Received: by 2002:a1f:6281:0:b0:4bd:54d0:e6df with SMTP id
+ w123-20020a1f6281000000b004bd54d0e6dfmr1945875vkb.1.1707826128494; Tue, 13
+ Feb 2024 04:08:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213093108.13922-1-brgl@bgdev.pl> <20240213093108.13922-4-brgl@bgdev.pl>
- <6139b738-3013-45fa-a192-92b9abaa4b78@paulmck-laptop>
-In-Reply-To: <6139b738-3013-45fa-a192-92b9abaa4b78@paulmck-laptop>
+References: <CGME20240213120518eucas1p2d514aac6e6d1e29bbae05f32db6724db@eucas1p2.samsung.com>
+ <20240208095920.8035-1-brgl@bgdev.pl> <a8dddd27-f361-4e0d-be6f-7d6684007acd@samsung.com>
+In-Reply-To: <a8dddd27-f361-4e0d-be6f-7d6684007acd@samsung.com>
 From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 13 Feb 2024 13:06:53 +0100
-Message-ID: <CAMRc=MfS90PjZAgO4W_ia77LbNoPqB5npf-C+Gze=xOjuEctBw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] gpio: use rcu_dereference_protected() to make lockdep happy
-To: paulmck@kernel.org
+Date: Tue, 13 Feb 2024 13:08:37 +0100
+Message-ID: <CAMRc=MeNiTGWh2f4iivvR75F4TpmuNa-xExc4G7HssWS5Tch1w@mail.gmail.com>
+Subject: Re: [PATCH v3 00/24] gpio: rework locking and object life-time control
+To: Marek Szyprowski <m.szyprowski@samsung.com>
 Cc: Linus Walleij <linus.walleij@linaro.org>, Kent Gibson <warthog618@gmail.com>, 
 	Alex Elder <elder@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, kernel test robot <oliver.sang@intel.com>
+	"Paul E . McKenney" <paulmck@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 1:03=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
+On Tue, Feb 13, 2024 at 1:05=E2=80=AFPM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
 >
-> On Tue, Feb 13, 2024 at 10:31:08AM +0100, Bartosz Golaszewski wrote:
+> On 08.02.2024 10:58, Bartosz Golaszewski wrote:
 > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > >
-> > Lockdep with CONFIG_PROVE_RCU enabled reports false positives about
-> > suspicious rcu_dereference() usage. Let's silence it by using
-> > rcu_dereference_protected().
+> > This is a big rework of locking in GPIOLIB. The current serialization i=
+s
+> > pretty much useless. There is one big spinlock (gpio_lock) that "protec=
+ts"
+> > both the GPIO device list, GPIO descriptor access and who knows what el=
+se.
 > >
-> > Fixes: d83cee3d2bb1 ("gpio: protect the pointer to gpio_chip in gpio_de=
-vice with SRCU")
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Closes: https://lore.kernel.org/oe-lkp/202402122234.d85cca9b-lkp@intel.=
-com
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > ---
-> >  drivers/gpio/gpiolib.c | 12 ++++++++----
-> >  drivers/gpio/gpiolib.h |  4 +++-
-> >  2 files changed, 11 insertions(+), 5 deletions(-)
+> > I'm putting "protects" in quotes as in several places the lock is
+> > taken, released whenever a sleeping function is called and re-taken
+> > without regards for the "protected" state that may have changed.
 > >
-> > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> > index c1391a9a0af6..d7503376b918 100644
-> > --- a/drivers/gpio/gpiolib.c
-> > +++ b/drivers/gpio/gpiolib.c
-> > @@ -109,7 +109,8 @@ const char *gpiod_get_label(struct gpio_desc *desc)
-> >               return "interrupt";
+> > First a little background on what we're dealing with in GPIOLIB. We hav=
+e
+> > consumer API functions that can be called from any context explicitly
+> > (get/set value, set direction) as well as many others which will get
+> > called in atomic context implicitly (e.g. set config called in certain
+> > situations from gpiod_direction_output()).
 > >
-> >       return test_bit(FLAG_REQUESTED, &flags) ?
-> > -                     rcu_dereference(desc->label) : NULL;
-> > +                     rcu_dereference_protected(desc->label,
-> > +                                     lockdep_is_held(&desc->srcu)) : N=
-ULL;
+> > On the other side: we have GPIO provider drivers whose callbacks may or
+> > may not sleep depending on the underlying protocol.
+> >
+> > This makes any attempts at serialization quite complex. We typically
+> > cannot use sleeping locks - we may be called from atomic - but we also
+> > often cannot use spinlocks - provider callbacks may sleep. Moreover: we
+> > have close ties with the interrupt and pinctrl subsystems, often either
+> > calling into them or getting called from them. They use their own locki=
+ng
+> > schemes which are at odds with ours (pinctrl uses mutexes, the interrup=
+t
+> > subsystem can call GPIO helpers with spinlock taken).
+> >
+> > There is also another significant issue: the GPIO device object contain=
+s
+> > a pointer to gpio_chip which is the implementation of the GPIO provider=
+.
+> > This object can be removed at any point - as GPIOLIB officially support=
+s
+> > hotplugging with all the dynamic expanders that we provide drivers for =
+-
+> > and leave the GPIO API callbacks with a suddenly NULL pointer. This is
+> > a problem that allowed user-space processes to easily crash the kernel
+> > until we patched it with a read-write semaphore in the user-space facin=
+g
+> > code (but the problem still exists for in-kernel users). This was
+> > recognized before as evidenced by the implementation of validate_desc()
+> > but without proper serialization, simple checking for a NULL pointer is
+> > pointless and we do need a generic solution for that issue as well.
+> >
+> > If we want to get it right - the more lockless we go, the better. This =
+is
+> > why SRCU seems to be the right candidate for the mechanism to use. In f=
+act
+> > it's the only mechanism we can use our read-only critical sections to b=
+e
+> > called from atomic and protecc contexts as well as call driver callback=
+s
+> > that may sleep (for the latter case).
+> >
+> > We're going to use it in three places: to protect the global list of GP=
+IO
+> > devices, to ensure consistency when dereferencing the chip pointer in G=
+PIO
+> > device struct and finally to ensure that users can access GPIO descript=
+ors
+> > and always see a consistent state.
+> >
+> > We do NOT serialize all API callbacks. This means that provider callbac=
+ks
+> > may be called simultaneously and GPIO drivers need to provide their own
+> > locking if needed. This is on purpose. First: we only support exclusive
+> > GPIO usage* so there's no risk of two drivers getting in each other's w=
+ay
+> > over the same GPIO. Second: with this series, we ensure enough consiste=
+ncy
+> > to limit the chance of drivers or user-space users crashing the kernel.
+> > With additional improvements in handling the flags field in GPIO
+> > descriptors there's very little to gain, while bitbanging drivers may c=
+are
+> > about the increased performance of going lockless.
+> >
+> > This series brings in one somewhat significant functional change for
+> > in-kernel users, namely: GPIO API calls, for which the underlying GPIO
+> > chip is gone, will no longer return 0 and emit a log message but instea=
+d
+> > will return -ENODEV.
+> >
+> > I know this is a lot of code to go through but the more eyes we get on =
+it
+> > the better.
 >
-> Why not this instead?
->
-> > +                     srcu_dereference(desc->label, &desc->srcu) : NULL=
-;
->
-> And similarly for the rest of the changes.
+> I've noticed that this patchset landed in today's linux-next. It causes
+> a lots of warning during boot on my test boards when LOCKDEP is enabled
+> in kernel configs. Do you want me to report all of them? Some can be
+> easily reproduced even with QEMU's virt ARM and ARM64 machines.
 >
 
-Ah, I missed this one. Thanks, I'll use it.
+Marek,
 
-For patch 1/3 in this series - should I stick with
-rcu_access_pointer() or is it better to use srcu_dereference here as
-well?
+Thanks for the report. I've already sent out patches that fix these
+problems. Sorry for this.
 
-Bart
+Bartosz
 
->                                                         Thanx, Paul
->
-> >  }
-> >
-> >  static int desc_set_label(struct gpio_desc *desc, const char *label)
-> > @@ -2978,7 +2979,8 @@ static int gpiod_get_raw_value_commit(const struc=
-t gpio_desc *desc)
-> >
-> >       guard(srcu)(&gdev->srcu);
-> >
-> > -     gc =3D rcu_dereference(gdev->chip);
-> > +     gc =3D rcu_dereference_protected(gdev->chip,
-> > +                                    lockdep_is_held(&gdev->srcu));
-> >       if (!gc)
-> >               return -ENODEV;
-> >
-> > @@ -3012,7 +3014,8 @@ static bool gpio_device_chip_cmp(struct gpio_devi=
-ce *gdev, struct gpio_chip *gc)
-> >  {
-> >       guard(srcu)(&gdev->srcu);
-> >
-> > -     return gc =3D=3D rcu_dereference(gdev->chip);
-> > +     return gc =3D=3D rcu_dereference_protected(gdev->chip,
-> > +                                            lockdep_is_held(&gdev->src=
-u));
-> >  }
-> >
-> >  int gpiod_get_array_value_complex(bool raw, bool can_sleep,
-> > @@ -3593,7 +3596,8 @@ int gpiod_to_irq(const struct gpio_desc *desc)
-> >       gdev =3D desc->gdev;
-> >       /* FIXME Cannot use gpio_chip_guard due to const desc. */
-> >       guard(srcu)(&gdev->srcu);
-> > -     gc =3D rcu_dereference(gdev->chip);
-> > +     gc =3D rcu_dereference_protected(gdev->chip,
-> > +                                    lockdep_is_held(&gdev->srcu));
-> >       if (!gc)
-> >               return -ENODEV;
-> >
-> > diff --git a/drivers/gpio/gpiolib.h b/drivers/gpio/gpiolib.h
-> > index 07443d26cbca..a857848b8955 100644
-> > --- a/drivers/gpio/gpiolib.h
-> > +++ b/drivers/gpio/gpiolib.h
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/err.h>
-> >  #include <linux/gpio/consumer.h> /* for enum gpiod_flags */
-> >  #include <linux/gpio/driver.h>
-> > +#include <linux/lockdep.h>
-> >  #include <linux/module.h>
-> >  #include <linux/notifier.h>
-> >  #include <linux/srcu.h>
-> > @@ -202,7 +203,8 @@ DEFINE_CLASS(gpio_chip_guard,
-> >
-> >               _guard.gdev =3D desc->gdev;
-> >               _guard.idx =3D srcu_read_lock(&_guard.gdev->srcu);
-> > -             _guard.gc =3D rcu_dereference(_guard.gdev->chip);
-> > +             _guard.gc =3D rcu_dereference_protected(_guard.gdev->chip=
-,
-> > +                                     lockdep_is_held(&_guard.gdev->src=
-u));
-> >
-> >               _guard;
-> >            }),
-> > --
-> > 2.40.1
-> >
+[snip]
 
