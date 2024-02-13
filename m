@@ -1,160 +1,158 @@
-Return-Path: <linux-kernel+bounces-63705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A767853379
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:45:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF5D985336F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:44:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 471F128C1DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:45:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FFC91C2339D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E00555EE7E;
-	Tue, 13 Feb 2024 14:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B004E57895;
+	Tue, 13 Feb 2024 14:44:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Sot3SLui"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="VTk1MIcw"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689A35DF25
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958291E88F;
+	Tue, 13 Feb 2024 14:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707835495; cv=none; b=H2pDqTQ0ismglAA4zpO0/lGl4q0d05jlemAIxdMoSH5h3Rg5S+s02YaRbgUp6DtZz1lkKdZRY0emOimt7rhs2Cf+tzfnYygjfIV8AtxRnZ2br0+MelLbu+Cgj7oqkstoBkyi4PXJzoEluslBI0rD/UG1jjOnZUJNxlkioihQWLo=
+	t=1707835447; cv=none; b=mIVrBUXTKG5DbkLbChw/0PjJvuWEGbP3nbvedjBsLqqwq6BbiWB1O/sfYD8HzyWGHx3W9cTK449jqEHDLWD6JImDyW6H+E7Ou2dkmpd4+fuSilBAMwoybkGeBr9aemEZNYZzgWaXBIgsCxdlSAquQesPLnDTGuMuh2dFJcbJYEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707835495; c=relaxed/simple;
-	bh=zrp1jYmeufkgvEJ++dKa30QKIP/asFvdIN1B35Li7yY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gRXnn7oS9/KIqVgViTJOE2uXeLhVS0yocMpYciSkydX3pJwMibGuxONJ5p8JFFLdo4LzEh+lAs/Vtx5e7B0s6wGMtpSanS42WLbrKtUGOJW6RnjBQPF//mKDuMwAzGCOg7xY2ABquPR3KSbmnNN1IuMYe0VpYdCD2jOTf236j+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Sot3SLui; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707835492;
+	s=arc-20240116; t=1707835447; c=relaxed/simple;
+	bh=crbHlNdRuniw2NTMAltR/X7KbWQ8GebDd/koBr7yWkk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=cKpd3frjPnS0zfpqX1oW5B5VIlWOrnXwSpZqwkNuaXLLPsz82K46HzEZ4Xs4dIHm91aWmVL4ch6T4biJXzPvYRiGWPHEJeDsHFeZ8PPvrTx35s1KrNtlCrcpELXnxvA8nzsrrcMnWgdAUpywI93cej5b8PKxdoISuAAAgTcTg2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=VTk1MIcw; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5dc816e4affso790069a12.2;
+        Tue, 13 Feb 2024 06:44:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707835445; x=1708440245;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yDRCf7ye9xUGIdI7KZ1wE8lwvkdkrKbfelIrWiQUH+M=;
+        b=TNB7JJiTc6DUCpx3Mp7zWfTt0srU8c+jfxyOJHBtGMcS+sgZo/jpaXKeGXlv0SO23t
+         AYSCLJkSFJlR3gTxvzZVMZ5BMwsI4t96Pwzpx5QepLfr0O8o9agNzijUeAEyI3XBKEnB
+         xlC5tKRoZg4rR4e3uUcK5ztJ4CjUumJ6kk1Hlpi7VMiXjK089MDkr4nIq78fsKabY3ZN
+         DhMw2zXIPK9tXVtGALL3AwlGrRUx7VIy8ID7jUZ6ILU/PZKb74z1d9G5eINfAFlueXcW
+         INTgrEgky2O1uofyhQCm2+o7elkUiHLua7+yxwKFmKT0NrLF0OSRILzCz4RTW4BNINLn
+         /fsw==
+X-Forwarded-Encrypted: i=1; AJvYcCWaZT/CUVdnYvCmJLzWbDXd8M4tSfMABL6jRJHQ59oJH4SHPUbggt9quXrAaS2oMCdtaZPZVLNaTPHmM6HTnl+jGEhDbHq2recerBmqLZBNDtj6kVPIXnv0fZcMlAlC2C6R59y3HuFW9rY=
+X-Gm-Message-State: AOJu0YwktO1+wuABXCwb9KbFQdVky7DdBJGulTcP4XV7QN/mip6zC86S
+	Qg0ZbIDyzdWOaxoNo0hr6gkt6WzEu3/THfCBh63pwR5EJCjKcFVpMNR7GD2SysF7Vw==
+X-Google-Smtp-Source: AGHT+IECKRQ10VVWIfTc7i8RGgPeMMQjZe6ON9CKBQ5AHK2U/7V0yqbkv1diwDwHiBighxb5JpNBwQ==
+X-Received: by 2002:a05:6a20:ac44:b0:19e:cf31:6a0e with SMTP id dh4-20020a056a20ac4400b0019ecf316a0emr4865642pzb.21.1707835444800;
+        Tue, 13 Feb 2024 06:44:04 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVyfbOB2X0I0PrSw+QrU98DWPh1l0diw2Aa3gK/TLI+rgap1TDwsM2KNfZEVtHr+VcuXMRrCBjV9NM0drF8i+uY+C/ieENiWrbp+vu6aAN+OoN139QFol72Ar+sRJk5BQRy790BF/vJGhG81F9mUPksm1TLhPSUx4TS+NtLuNVfWwSnTSITX6vgH3qAiouGk7kjEkr/cfp5v50alDJ5VoyRqdO0bF3n1S7hynBqsb56fQ/vS1rSgc5Eh3iZMoo619E=
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id m8-20020aa78a08000000b006e05cb7fd1fsm7432886pfa.164.2024.02.13.06.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 06:44:03 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707835443;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4DLK0DUt5g/OoNKxvjhPb6fsxTrNbXXf8Ovb5F/JdWE=;
-	b=Sot3SLuiWNJo6QA4C9e9KvytgrWMtOTVtXX0VWyix91dhLxbYKZXyZft/uJaJVekY6YVOl
-	fwzujXe48CpkpnYDgoVpdr2hR5h1DUrY9iGURIU4IWsjVflF6Un25FQahsaPT6etELTW29
-	dzDYNTI9tlL053eagJwHli/6DIxD5Tw=
-Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
- [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-671-m5IDqi6GN-KWt7PpLqrtJQ-1; Tue, 13 Feb 2024 09:44:50 -0500
-X-MC-Unique: m5IDqi6GN-KWt7PpLqrtJQ-1
-Received: by mail-ua1-f71.google.com with SMTP id a1e0cc1a2514c-7d302c6a708so3747885241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:44:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707835490; x=1708440290;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4DLK0DUt5g/OoNKxvjhPb6fsxTrNbXXf8Ovb5F/JdWE=;
-        b=rDsbDUxv0ue3x130uXXf2qIF2aI8kkVb37wYYAqdvGYQvHtNdNz1fbgXVRKjKmzwE1
-         0HFcjLxHDIQSV6P24YC30tqV/kuYau1qc/Zg3BaLTIrvvwxt3xQrGuPLTQsxH8MDPqeJ
-         cBNuARDagv1fZKcchDJlbODdjbkECVcU3Q7FJTbeRJtQMXzVrQQ4/uSBtQTW2DadZDA4
-         xqDOAnRmtgSpxrjLC7MSyFVLS3V2QY9NZqs6rNpEps1kRO+vAE383JS7kG2bU/BaERF/
-         Jc260sBbyl+nslnbO2QACqKIKhtIgM5BHDlfu47BypSs6M8vlNq+G01iY1oqfTkf5fKf
-         LIEw==
-X-Gm-Message-State: AOJu0Yze4VG7woo+kfY7sKRqUCcuLwEpYJai7DfTsxuSuGVFyJ8tZdt/
-	n9iU+w2YQRNF6XyIl0Ym0JuCKhmI7yuPBjdSlUidYgMMFqQ0VPcMLzebdJV0TWxGSX0qmHwlqg5
-	/eQ3+GssQ525ugbaxIv8nJnjIMdS3D04zps2XAZAzLVWMy/Xtc51x5M+AdX0L4vQdAFLZ3id4bU
-	tuQgFVqeHU52Ge1qzVzWDTbmUuAlWwfRzmP5l3
-X-Received: by 2002:a05:6102:2c4:b0:46d:6e11:c0fd with SMTP id h4-20020a05610202c400b0046d6e11c0fdmr8106177vsh.30.1707835489555;
-        Tue, 13 Feb 2024 06:44:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEpLqH2ZnuQY8Xy72ouPWk8IrE0MHvEY8tBhHWMixdHCeUQ+OlENP0m40KanyJY0c/J8dOR5ljyqX+pphnSBUU=
-X-Received: by 2002:a05:6102:2c4:b0:46d:6e11:c0fd with SMTP id
- h4-20020a05610202c400b0046d6e11c0fdmr8106166vsh.30.1707835489264; Tue, 13 Feb
- 2024 06:44:49 -0800 (PST)
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=yDRCf7ye9xUGIdI7KZ1wE8lwvkdkrKbfelIrWiQUH+M=;
+	b=VTk1MIcw2cz8FjyYdu7eW21tm3izS9RYkPAtNDSYGsZzuYjtys9Dx4eYxi6On766QmoSQO
+	mXmUI4CAq6zxqd8sCmtFmjfVmJaMkINzvxHf3/ZNXHBEVMmUAq5VZ3HRAsZ/HZPJ5T+UA2
+	/cuOGIRSjgIWVoJTXOY4ZoXX/UYrTUSZnQAVcHTwOKTgTKlLWZgHY6ZF96+ogFesuaUU5j
+	42yazbDPpTPY+x45n8ilg27uwNRvCanMXemV0eF+HCbQ7VvckdI+/4S0jIwkzlojPqBADk
+	b3kez1O4G63VlnkO9jxmPkh+6a0K7SzD0u/Hrwsa326jPgxQAPUkAgsnpUANOA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Tue, 13 Feb 2024 11:44:40 -0300
+Subject: [PATCH] gpu: host1x: bus: make host1x_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209183743.22030-1-pbonzini@redhat.com> <ZcZ_m5By49jsKNXn@google.com>
- <CABgObfaum2=MpXE2kJsETe31RqWnXJQWBQ2iCMvFUoJXJkhF+w@mail.gmail.com> <ZcrX_4vbXNxiQYtM@google.com>
-In-Reply-To: <ZcrX_4vbXNxiQYtM@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Tue, 13 Feb 2024 15:44:37 +0100
-Message-ID: <CABgObfY=aGJNMk4CYb7nvauBWLJVbwVaA69bOK4bLteH7YyBNA@mail.gmail.com>
-Subject: Re: [PATCH 00/10] KVM: SEV: allow customizing VMSA features
-To: Sean Christopherson <seanjc@google.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	aik@amd.com, isaku.yamahata@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240213-bus_cleanup-host1x-v1-1-54ec51b5d14f@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAFeAy2UC/x3MTQqAIBBA4avErBPU/qirRITWWANh4VQI0d2Tl
+ t/ivQcYAyFDlz0Q8Cam3SeoPINpNX5BQXMyaKlLqVUh7MXjtKHx1yHWnU8VhWxd42RdV9q2kMI
+ joKP4T/vhfT8z1m2nZAAAAA==
+To: Thierry Reding <thierry.reding@gmail.com>, 
+ Mikko Perttunen <mperttunen@nvidia.com>, David Airlie <airlied@gmail.com>, 
+ Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1654; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=crbHlNdRuniw2NTMAltR/X7KbWQ8GebDd/koBr7yWkk=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBly4BaVcxkCof6n/WVt9Egdz342JxvMV9lxVyXp
+ DTWuj8m8xCJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcuAWgAKCRDJC4p8Y4ZY
+ pjF/D/9gmXE6O1HQMJGkb2GijzxXRF2Av0KO1ZnvItTkGhzuNS65CBGLsNlk7fzs6DJPl9CgQV1
+ dYegZBcRf4a2A0Tdk1kBn0PUES0I7ZDXhmZLbPPZJzdzOc42wQy8aUzlbejQxVPI0CF1etv7+ps
+ dJfK8CrA29vFlLXX8urUg+rvlpH4AtQX6E/gzGGm3QZCCegGcnyIoFzt27e9+I3DWUABlYWR7GZ
+ AHOPkPSrKdDJfb+tFcQom6coxe25TRKVrCFKUH2vIj9xeczw3ObdEZzztiXGZpNpFkYRTSif88K
+ 5OyNlB3q/kDp8Hz8aftr2RzFFvKF6y9sBZg+IwbsLVtsjBze7zWm0VFoQlQz9lCg1LbfPGc1GfV
+ DiGUlMy+b99qnYwjJH5SnsmZjNO2viDwcAEF05PtfZBJf7Dj7uyVXP90WxQrTgZJg8zde6A+wKi
+ m+vzkssHF3thQaBU+6CvzG9qqEr5eXZjT9D7KBnWRyxgdyHgTUcLB81yx96oXqoPENQQlkfMD8N
+ yooGBuz5RAtUVbmysQBPW519pWdJx2yd9pkOPS0hAR2CIHxvb7cxYnJoF0EM5LCSIWbi5xi2KVv
+ yz/d11vtdtluE4PLiwcjn+V5eKZylxhU4NO3lurksEp4mlOnNg0Wd7SC4qmkZIO3CIL6wBoU2t4
+ h49Vh+/yY4TNwag==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On Tue, Feb 13, 2024 at 3:46=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
->   __u32 flags;
->   __u32 vm_type;
->   union {
->         struct tdx;
->         struct sev;
->         struct sev_es;
->         struct sev_snp;
->         __u8 pad[<big size>]
->   };
->
-> Rinse and repeat for APIs that have a common purpose, but different paylo=
-ads.
->
-> Similar to KVM_{SET,GET}_NESTED_STATE, where the data is wildly different=
-, and
-> there's very little overlap between {svm,vmx}_set_nested_state(), I find =
-it quite
-> valuable to have a single set of APIs.  E.g. I don't have to translate be=
-tween
-> VMX and SVM terminology when thinking about the APIs, when discussing the=
-m, etc.
->
-> That's especially true for all this CoCo goo, where the names are ridicul=
-ously
-> divergent, and often not exactly intuitive.  E.g. LAUNCH_MEASURE reads li=
-ke
-> "measure the launch", but surprise, it's "get the measurement".
+Since commit d492cc2573a0 ("driver core: device.h: make struct
+bus_type a const *"), the driver core can properly handle constant
+struct bus_type, move the host1x_bus_type variable to be a constant
+structure as well, placing it into read-only memory which can not be
+modified at runtime.
 
-I agree, but then you'd have to do things like "CPUID data is passed
-via UPDATE_DATA for SEV and INIT_VM for TDX (and probably not at all
-for pKVM)". And in one case the firmware may prefer to encrypt in
-place, in the other you cannot do that at all.
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/gpu/host1x/bus.c | 2 +-
+ drivers/gpu/host1x/bus.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-There was a reason why SVM support was not added from the beginning.
-Before adding nested get/set support for SVM, the whole nested
-virtualization was made as similar as possible in design and
-functionality to VMX. Of course it cannot be entirely the same, but
-for example they share the overall idea that pending events and L2
-state are taken from vCPU state; kvm_nested_state only stores global
-processor state (VMXON/VMCS pointers on VMX, and GIF on SVM) and,
-while in guest mode, L1 state and control bits. This ensures that the
-same userspace flow can work for both VMX and SVM. However, in this
-case we can't really control what is done in firmware.
+diff --git a/drivers/gpu/host1x/bus.c b/drivers/gpu/host1x/bus.c
+index 4d16a3396c4a..a20dad7f0333 100644
+--- a/drivers/gpu/host1x/bus.c
++++ b/drivers/gpu/host1x/bus.c
+@@ -382,7 +382,7 @@ static const struct dev_pm_ops host1x_device_pm_ops = {
+ 	.restore = pm_generic_restore,
+ };
+ 
+-struct bus_type host1x_bus_type = {
++const struct bus_type host1x_bus_type = {
+ 	.name = "host1x",
+ 	.match = host1x_device_match,
+ 	.uevent = host1x_device_uevent,
+diff --git a/drivers/gpu/host1x/bus.h b/drivers/gpu/host1x/bus.h
+index a4adf9abc3b4..a80ceadfeb34 100644
+--- a/drivers/gpu/host1x/bus.h
++++ b/drivers/gpu/host1x/bus.h
+@@ -10,7 +10,7 @@
+ struct bus_type;
+ struct host1x;
+ 
+-extern struct bus_type host1x_bus_type;
++extern const struct bus_type host1x_bus_type;
+ 
+ int host1x_register(struct host1x *host1x);
+ int host1x_unregister(struct host1x *host1x);
 
-> The effort doesn't seem huge, so long as we don't try to make the paramet=
-ers
-> common across vendor code.  The list of APIs doesn't seem insurmountable =
-(note,
-> I'm not entirely sure these are correct mappings):
+---
+base-commit: 2429b3c529da29d4277d519bd66d034842dcd70c
+change-id: 20240213-bus_cleanup-host1x-09f7f06652b9
 
-While the effort isn't huge, the benefit is also pretty small, which
-comes to a second big difference with GET/SET_NESTED_STATE: because
-there is a GET ioctl, we have the possibility of retrieving the "black
-box" and passing it back. With CoCo it's anyway userspace's task to
-fill in the parameter structs. I just don't see the possibility of
-sharing any code except the final ioctl, which to be honest is not
-much to show. And the higher price might be in re-reviewing code that
-has already been reviewed, both in KVM and in userspace.
-
-Paolo
-
->   create
->   init VM   (LAUNCH_START / TDH.MNG.INIT)
->   update    (LAUNCH_UPDATE_DATA / TDH.MEM.PAGE.ADD+TDH.MR.EXTEND)
->   init vCPU (LAUNCH_UPDATE_VMSA / TDH.VP.INIT)
->   finalize  (LAUNCH_FINISH / TDH.MR.FINALIZE)
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
