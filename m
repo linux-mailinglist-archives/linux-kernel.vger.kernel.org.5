@@ -1,40 +1,74 @@
-Return-Path: <linux-kernel+bounces-63395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 824BF852EC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:07:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73FEF852EC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:07:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B52C41C21C11
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:07:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2AC71F2352A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58036134D8;
-	Tue, 13 Feb 2024 11:07:00 +0000 (UTC)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D46152BD1F
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:06:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EABF2C840;
+	Tue, 13 Feb 2024 11:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="hv8ICW/N"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309562C696
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707822419; cv=none; b=Qi+FOoKKrsbT4PKvJiIUfnD1+FuVLbc0XseY0akk1wfrkJJedHFgRMs/1rvoTXlDcZBr1ce8/rADT9UsSgSVIaMqNhqEywpx/7gC81JNMtSUtaNNdi7Opa4WEwQ9Yv1hs/iu2Mx5rC6Xc13znXY34CKMFx+EHoI/UyYzY2a1KUw=
+	t=1707822438; cv=none; b=HPHdiQ1euAn4KiHX3jVAEHcVyz+8uIhS+8O6pw23W9Yx1Dw+sAIbTM7igqGS7/Z2qdJ2fEWWFRwjd/LlzNKIjAS/c7lxeWfYQtyrGNSWJc0K0DYH8a3QL0TsILM2CH/5Bi3qHDAl05SePoWf4HUzJTepO5A+/2j6mxv7HC3KyOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707822419; c=relaxed/simple;
-	bh=94XJeaWhB7dyyumP6r7MDS8ivTHh9bsXbNivbbvfixQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=DrqrzR0E/2ZYkV3voohlc7ozLC4fsLagXHAVni2J9JMgB5XNBLXQPdqelo6sHK/hIU+9wxQ4fcLIH96GMxYRTgVBw76t4e3F1HYBXjd0mpE78YzRV9GRllMunqwEw2TR2tqjPPcNmRVtIGqThkIwHAVtD+ZzVx6rXU5nJGUGfRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-X-IronPort-AV: E=Sophos;i="6.06,156,1705330800"; 
-   d="asc'?scan'208";a="193770203"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 13 Feb 2024 20:06:55 +0900
-Received: from [10.226.92.192] (unknown [10.226.92.192])
-	by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7797F41D8794;
-	Tue, 13 Feb 2024 20:06:50 +0900 (JST)
-Message-ID: <8108129e-d7b8-4540-bf53-ed29cd4bbff9@bp.renesas.com>
-Date: Tue, 13 Feb 2024 11:06:48 +0000
+	s=arc-20240116; t=1707822438; c=relaxed/simple;
+	bh=EJiq/3eOMVN/mwk/1pTsOgbMPj5bpFavWkPJ5KumQS4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LPHZuj7qJisiXKDhejeKC0RAdoWZHQzKJm+g9B3gDAhPlbqbx6jCQK47L2iWnzVwMcBvLG80agbqrfiPvM7A6iG+L/f1bhCoI+VsLZqbLZkkcYVw234SKSWbf1UIw6/VPzLAP2mEpbL8HBscK9pVZMDDxmElUPFKFVBO0f/KRvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=hv8ICW/N; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d0512f6e32so59461251fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:07:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1707822434; x=1708427234; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N/zKT384EV3fgGJG3dzF/8UMaxshsisXRkr2qLul78o=;
+        b=hv8ICW/NkIjx3qpUNI1cRRb0AGtQ+v+ax2yEqx+CQvICQHbQPGGy4XJ8l5fiZooF1J
+         i9cf25jXCM5Aygn0WIvcZ1msCZRMFccHNOfz+pGSWeRtedthqyYrYU+fN9MnlF3f22El
+         SRqGfzlGaYkrl2L+UqJVRz0rZ4/xpyrlYaQQsN2UvmHvhTxopiWv3JUMEudD3XZbyBua
+         5hcg+8HiED9dZ4MBDRwYUpx5MKDtWRwzzEva0v7MR/RAiToWxVo3+ijEal6DYznKb/cP
+         XTuC5VKQtVxSG4y9Fsr8RdpXQdKDOBEatQ1ULkkahoHtRfJMUx20oCZz11tPOsC/gq6h
+         FONg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707822434; x=1708427234;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N/zKT384EV3fgGJG3dzF/8UMaxshsisXRkr2qLul78o=;
+        b=JcFqw0z7vbSNVCNllVCCufYa4tLXJID96vKAI6Jn7O+klC0RXJUnVF27og79T6Mndn
+         zpFtnMtkXEQ8rnSMteF5NLywUNOLRcKuVenhspUy4bYBC7MFi2htPhGLv0Oh1D034v9I
+         aLhpo6sYZ0xbxIHYFGNECryuAF/ALsKuBmXEjcZLlglZHH84hj50pzGEjMoBpeIQzyFU
+         4OJqKsfhUiAOycuLcqRcCa0eqKjj1aW+l0sPizGX6f4T6xsHE/rQwsN3raYA2a7xV8Np
+         W3bkG6lyflMeVj0xqwmkdOFAxoxFhIohExIpav7R2Q2UipMawSF7Zcfdb+4yCVOVg/Ez
+         uqUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVnsTED+6VqOiPcqINgA6Uc0AoesH+m9A1DbTkaiWDjv7H4C003H9LcWTw3ct8mWMnQR4G3o7ZGm8bXpHvOTMl3b0Y5JEOpFxvnEjoW
+X-Gm-Message-State: AOJu0YzwuuLN6YVa2z6n2XpqoBgDGj/mFW2CnBASBAxEwENr2FSBiB2a
+	rjlC6NNtHUDfSmxXGmiAGOa7/zw/V27zjp4PCuaC5gL0nQYhLawmN1aTfXBbXQI=
+X-Google-Smtp-Source: AGHT+IG0S4ixvhFXmER+Y/YPFJEb/yoR1U28DDXY6FkIvHyLcTy6vY+4OwPue/AvNfLYEznZB11r5A==
+X-Received: by 2002:a2e:b176:0:b0:2d0:cd7c:92d0 with SMTP id a22-20020a2eb176000000b002d0cd7c92d0mr5990321ljm.32.1707822433893;
+        Tue, 13 Feb 2024 03:07:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUF6qG0rasGj9YvQl8TQEiGJwqjhnKyjTN8fknuY3sWhfCxGwjN0QTQRBgDPHA2XxaA5+jUYqowur3AzwFHCekwihPAkb4rQEWUSlNQkeKZuyltktVsFSvIpE2nJWFIJ2a10HU75CfUIkmATpuMPJKh447aZXGLtjUhh6ZSHwa2WjzJ8Vk5AnxpJ6Mq9Yh47NaWj9XK4P4nGiuUOMFhe61oHfMI2xb2B0m0NejKYecd+e+fFPMNIpOvude+NGvQvhtJ3U6kd+fdjnb7vBYKjT4HnP9tf6nMRK0i2qqdxxhz3qI6e6cHxmsNmZyZ4TrnPLaPRUmLKeLiarkVN8FYIMVHSkxWqwkOaSVPHvaZ
+Received: from [192.168.50.4] ([82.78.167.20])
+        by smtp.gmail.com with ESMTPSA id c8-20020adfef48000000b0033b47ee01f1sm9199341wrp.49.2024.02.13.03.07.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 03:07:13 -0800 (PST)
+Message-ID: <368ca0a8-a005-4371-a959-297fd4f58cb1@tuxon.dev>
+Date: Tue, 13 Feb 2024 13:07:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -42,175 +76,146 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Resend PATCH] topology: Set capacity_freq_ref in all cases
-Content-Language: en-GB
-From: Paul Barker <paul.barker.ct@bp.renesas.com>
-To: gregkh@linuxfoundation.org
-Cc: sudeep.holla@arm.com, rafael@kernel.org, vschneid@redhat.com,
- bristot@redhat.com, mgorman@suse.de, bsegall@google.com,
- rostedt@goodmis.org, dietmar.eggemann@arm.com, juri.lelli@redhat.com,
- peterz@infradead.org, mingo@redhat.com, lukasz.luba@arm.com,
- ionela.voinescu@arm.com, linux-kernel@vger.kernel.org,
- Vincent Guittot <vincent.guittot@linaro.org>
-References: <20240117190545.596057-1-vincent.guittot@linaro.org>
- <75f0bfc7-fb95-409a-a5d9-b00732e892f0@bp.renesas.com>
-In-Reply-To: <75f0bfc7-fb95-409a-a5d9-b00732e892f0@bp.renesas.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------3fXwI6RYO7tEfg0YYtoyZoG8"
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------3fXwI6RYO7tEfg0YYtoyZoG8
-Content-Type: multipart/mixed; boundary="------------E78KgTxAqW7Ub6NWqyYxV0xK";
- protected-headers="v1"
-From: Paul Barker <paul.barker.ct@bp.renesas.com>
-To: gregkh@linuxfoundation.org
-Cc: sudeep.holla@arm.com, rafael@kernel.org, vschneid@redhat.com,
- bristot@redhat.com, mgorman@suse.de, bsegall@google.com,
- rostedt@goodmis.org, dietmar.eggemann@arm.com, juri.lelli@redhat.com,
- peterz@infradead.org, mingo@redhat.com, lukasz.luba@arm.com,
- ionela.voinescu@arm.com, linux-kernel@vger.kernel.org,
- Vincent Guittot <vincent.guittot@linaro.org>
-Message-ID: <8108129e-d7b8-4540-bf53-ed29cd4bbff9@bp.renesas.com>
-Subject: Re: [Resend PATCH] topology: Set capacity_freq_ref in all cases
-References: <20240117190545.596057-1-vincent.guittot@linaro.org>
- <75f0bfc7-fb95-409a-a5d9-b00732e892f0@bp.renesas.com>
-In-Reply-To: <75f0bfc7-fb95-409a-a5d9-b00732e892f0@bp.renesas.com>
-
---------------E78KgTxAqW7Ub6NWqyYxV0xK
-Content-Type: multipart/mixed; boundary="------------F7EcPpQ0OPDvRhMV1b0TNxMs"
-
---------------F7EcPpQ0OPDvRhMV1b0TNxMs
+Subject: Re: [PATCH net-next v3 5/6] net: ravb: Do not apply features to
+ hardware if the interface is down
+Content-Language: en-US
+To: Biju Das <biju.das.jz@bp.renesas.com>,
+ "s.shtylyov@omp.ru" <s.shtylyov@omp.ru>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240213094110.853155-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240213094110.853155-6-claudiu.beznea.uj@bp.renesas.com>
+ <TYCPR01MB112698DE07AAA9C535776805D864F2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <TYCPR01MB112698DE07AAA9C535776805D864F2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-Hi Greg,
+Hi, Biju,
 
-On 23/01/2024 16:23, Paul Barker wrote:
-> On 17/01/2024 19:05, Vincent Guittot wrote:
->> If "capacity-dmips-mhz" is not set, raw_capacity is null and we skip t=
-he
->> normalization step which includes setting per_cpu capacity_freq_ref.
->> Always register the notifier but skip the capacity normalization if
->> raw_capacity is null.
+On 13.02.2024 12:13, Biju Das wrote:
+> 
+> Hi Claudiu,
+> 
+>> -----Original Message-----
+>> From: Claudiu <claudiu.beznea@tuxon.dev>
+>> Sent: Tuesday, February 13, 2024 9:41 AM
+>> Subject: [PATCH net-next v3 5/6] net: ravb: Do not apply features to
+>> hardware if the interface is down
 >>
->> Fixes: 9942cb22ea45 ("sched/topology: Add a new arch_scale_freq_ref() =
-method")
->> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
->=20
-> We've had some Ethernet performance issues with linux-next and v6.8-rc1=
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Do not apply features to hardware if the interface is down. In case
+>> runtime PM is enabled, and while the interface is down, the IP will be in
+>> reset mode (as for some platforms disabling the clocks will switch the IP
+>> to reset mode, which will lead to losing register contents) and applying
+>> settings in reset mode is not an option. Instead, cache the features and
+>> apply them in ravb_open() through ravb_emac_init().
+>>
+>> To avoid accessing the hardware while the interface is down
+>> pm_runtime_active() check was introduced. Along with it the device runtime
+>> PM usage counter has been incremented to avoid disabling the device clocks
+>> while the check is in progress (if any).
+>>
+>> Commit prepares for the addition of runtime PM.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>
+>> Changes in v3:
+>> - updated patch title and description
+>> - updated patch content due to patch 4/6
+>>
+>> Changes in v2:
+>> - fixed typo in patch description
+>> - adjusted ravb_set_features_gbeth(); didn't collect the Sergey's Rb
+>>   tag due to this
+>>
+>> Changes since [2]:
+>> - use pm_runtime_get_noresume() and pm_runtime_active() and updated the
+>>   commit message to describe that
+>> - fixed typos
+>> - s/CSUM/checksum in patch title and description
+>>
+>> Changes in v3 of [2]:
+>> - this was patch 20/21 in v2
+>> - fixed typos in patch description
+>> - removed code from ravb_open()
+>> - use ndev->flags & IFF_UP checks instead of netif_running()
+>>
+>> Changes in v2 of [2]:
+>> - none; this patch is new
+>>
+>>
+>>  drivers/net/ethernet/renesas/ravb_main.c | 16 ++++++++++++----
+>>  1 file changed, 12 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c
+>> b/drivers/net/ethernet/renesas/ravb_main.c
+>> index b3b91783bb7a..4dd0520dea90 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>> @@ -2566,15 +2566,23 @@ static int ravb_set_features(struct net_device
+>> *ndev,  {
+>>  	struct ravb_private *priv = netdev_priv(ndev);
+>>  	const struct ravb_hw_info *info = priv->info;
+>> -	int ret;
+>> +	struct device *dev = &priv->pdev->dev;
+>> +	int ret = 0;
+>> +
+>> +	pm_runtime_get_noresume(dev);
+>> +
+>> +	if (!pm_runtime_active(dev))
+>> +		goto out_set_features;
+> 
+> This can be simplified, which avoids 1 goto statement and
+> Unnecessary ret initialization. I am leaving to you and Sergey.
+> 
+> 	if (!pm_runtime_active(dev))
+> 		ret = 0;
+> 	else
+> 		ret = info->set_feature(ndev, features);
+> 
+> 	pm_runtime_put_noidle(dev);
+> 	if (ret)
+> 		goto err;
+> 
+> 	ndev->features = features;
+> 
+> err:
+> 	return ret;
+> 
 
-> on the Renesas RZ/G2L and RZ/G2UL arm64 SoCs. I've confirmed that the
-> CPU frequency is stuck at the minimum (150MHz) in v6.8-rc1, even when
-> running iperf3. Applying this patch allows the SoC to switch up the the=
+I find it a bit difficult to follow this way.
 
-> maximum frequency (1200MHz) when needed and fixes our Ethernet
-> performance.
->=20
-> iperf3 results in Mbps for RZ/G2L SMARC evaluation board:
->                 TCP TX    TCP RX    UDP TX    UDP RX
-> v6.8-rc1        255       175       102       (*)
-> +this patch     874       650       802       948
->=20
-> (*) Testing UDP RX in v6.8-rc1 with a server sending traffic at 1Gbps
-> locks up our NFS rootfs mount so we don't get any result at all.
->=20
-> Results with v6.8-rc1 + this patch are in line with what we see in v6.7=
-=2E
->=20
-> Tested-by: Paul Barker <paul.barker.ct@bp.renesas.com>
+Thank you,
+Claudiu Beznea
 
-I see this patch landed in the 'driver-core-linus' branch of
-https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
-on 2024-01-30 as commit 98323e9d7017, however it looks like that hasn't
-been merged to Linus' tree yet. In v6.8-rc4 I see the same issue on the
-RZ/G2L with the CPU frequency stuck at 150MHz.
-
-Is there anything I need to do to help get this patch merged before v6.8
-is released?
-
-Thanks,
-Paul
---------------F7EcPpQ0OPDvRhMV1b0TNxMs
-Content-Type: application/pgp-keys; name="OpenPGP_0x27F4B3459F002257.asc"
-Content-Disposition: attachment; filename="OpenPGP_0x27F4B3459F002257.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-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3D
-=3DsIIN
------END PGP PUBLIC KEY BLOCK-----
-
---------------F7EcPpQ0OPDvRhMV1b0TNxMs--
-
---------------E78KgTxAqW7Ub6NWqyYxV0xK--
-
---------------3fXwI6RYO7tEfg0YYtoyZoG8
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wnsEABYIACMWIQSiu8gv1Xr0fIw/aoLbaV4Vf/JGvQUCZctNSQUDAAAAAAAKCRDbaV4Vf/JGvXHp
-AP0Ye4vrWPwIYLjxvIRoB7y1ZK7Qrn/svVYbDQKHN4NRTQD9FvT4DPM2kfgcYhJFayun0MRkLgH/
-Jq+jAlimfzAS4gg=
-=BUn4
------END PGP SIGNATURE-----
-
---------------3fXwI6RYO7tEfg0YYtoyZoG8--
+> Cheers,
+> Biju
+> 
+>>
+>>  	ret = info->set_feature(ndev, features);
+>>  	if (ret)
+>> -		return ret;
+>> +		goto out_rpm_put;
+>>
+>> +out_set_features:
+>>  	ndev->features = features;
+>> -
+>> -	return 0;
+>> +out_rpm_put:
+>> +	pm_runtime_put_noidle(dev);
+>> +	return ret;
+>>  }
+>>
+>>  static const struct net_device_ops ravb_netdev_ops = {
+>> --
+>> 2.39.2
+> 
 
