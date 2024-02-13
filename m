@@ -1,187 +1,136 @@
-Return-Path: <linux-kernel+bounces-63399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4AEF852ECF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:09:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B1CC852FC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15A6B1C21443
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:09:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5846A28AD2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D298836AEB;
-	Tue, 13 Feb 2024 11:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD9F37710;
+	Tue, 13 Feb 2024 11:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BG9E8ZDA"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="MvhAkUC9"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469612C69A;
-	Tue, 13 Feb 2024 11:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16FD3364C1
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707822555; cv=none; b=Jo99At/ZHF47pTbi7vonm1c513bolscBEYH3li0vERJ6Qx4q59QHgarsILvxrM7YONn8msMyvyEoeHYjfzOsCTQJJQmxL9m3W1exGEVClo406dYtRuYmFii56pwn1a1qCEvWS4yqmGlU4/UnzQJwViLMD710woOnlXIvGmV0azQ=
+	t=1707824614; cv=none; b=jPe5GSt0TXiDaqBPxGVexAW9Io2y8+TXBDamOyiFgrotIdcJqcB+begOIQmQ3EsxQXMmb1GQE66ofj8NyzLotmjbUksObJTEDgGXOdJtPbI5h8iQwIHpOkfMRtIGjW/0sM9RXdB+ByOKAJbkTge5B7QeYth2fdex4KpBguj4qbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707822555; c=relaxed/simple;
-	bh=BxkpbCWHI5A/EVO4cHovB3iWEf/1RW3L/ybUBeIgCjw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fy8nCbhHtocSstHuiCF2Fur8/gW8SgAHOxCdGIwnZ/aBkMWvYSNFXc7ij/lpBPntZHnBzO0I+W6WZEQehc0Ec06G6rH/EW9gwPeKCZ+oDaVFPPxKKIB3jkBu37yOeRuoVJzI55TweVS8luC5YgAvrQijKTkDX+bZ5yotT9hKlj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=BG9E8ZDA; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41DB6NSF008529;
-	Tue, 13 Feb 2024 11:08:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=y6gcA0FwwLcQ+USrtr82gM+J0plPqQJrcFFJlFssEvQ=;
- b=BG9E8ZDACdcTX9tYoHQKTk06X9gRTLYsD3U+Q3JMytOmcf8MGvxAqEJeMt22/cCm60xe
- Te02bOTOLk8DvLdvtDuIDofoMjRovuyozvc3L6yHM00ptHBOpOGVx2QawAsst5/0pxuh
- vkmhGEDCzB5VLy9wsNR/lQ6srBqfYkXrs27yu5jmpJG5vHDgW7Lc/O4d6ahINuI0joOz
- eE3nOAsUfXIac88qF82J29MbM0hgrRWZ9InuuQZpHXpgCPUC2q55xLIZ/c4xIZIgriV8
- anMhj1xBPR4costNDfUrIXsvZNY2JEp/SoeVFnlazf7ZGS24nhE7fKo8XJPvXfH4gONL 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w86s0gp6a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 11:08:45 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41DB8iMC020351;
-	Tue, 13 Feb 2024 11:08:45 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w86s0gp5g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 11:08:44 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41DB6tfs024888;
-	Tue, 13 Feb 2024 11:08:42 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mfp6wr5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 11:08:42 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41DB8d4A13500960
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 11:08:41 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8ADF9582C0;
-	Tue, 13 Feb 2024 11:08:39 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 77120582B1;
-	Tue, 13 Feb 2024 11:08:32 +0000 (GMT)
-Received: from [9.109.198.187] (unknown [9.109.198.187])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 13 Feb 2024 11:08:32 +0000 (GMT)
-Message-ID: <e99cf4ef-40ec-4e66-956f-c9e2aebb4621@linux.ibm.com>
-Date: Tue, 13 Feb 2024 16:38:31 +0530
+	s=arc-20240116; t=1707824614; c=relaxed/simple;
+	bh=j0EcmW86LVwxDZD8jjvR3IIBsMo9Vd5fN53o5Q4wNco=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=ZqVRiGLElzwS1o7TPcXHSJGEfw4TA/9oDAy5T5gRSB/hYWSz5d0NRsuDzwd1x1QTkWkquS8Yg2BTqSB9Nh9d64bsVOQG2phVhY4Ojaogq+3TNZ7pcYTxREzAXsDnvXa5sMPP2eotLRs3gY3k2bDD7SEEj39/cjWompGEShAekLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=MvhAkUC9; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33b2960ff60so3002900f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:43:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707824610; x=1708429410; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=E9Sow8wf4cLhsoNjPkxy+Vy7mK54b8EsDuIPycqqMjY=;
+        b=MvhAkUC9tng24+xCuIdEMwNnVoqKqTUqsjzOwfRCIUcBsenLYgP3AnbEHrYA+o85u4
+         tqFGfknQAezY3HaXNJL+W2xiWpXr1vsT814jBr5jVxCZnDBubbJJhsiXGGciPAxM2A1b
+         BL131n7PmYd4ypfP0BZKhryTh/1j5RizR9BS1lRllGOwBaDum1LOJE1VLiVMD20edl2H
+         URiNK1t9b3nNGfBpvu1hIqH1O1O6BjzkUeiBHvcsOahvX+mpgRtYL8XowyIPB+4Yy4gR
+         muptTIiHU3464FcEeY3OxWuTCdFV4IccwREG/StJ2tVKMJUxqtk3PZ+rRchb1Ntua7XJ
+         Wc6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707824610; x=1708429410;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E9Sow8wf4cLhsoNjPkxy+Vy7mK54b8EsDuIPycqqMjY=;
+        b=qdLU95zfRwyEGYmrGi26iKouguF8uJ60HB+QC3apdojiscuIPNliZ5e/PTok0YVilg
+         MLJkacTe9veKEKFHX3u6OmStYouW2aT9H6mZ36rFVOpyXpiGiqSa8KB+8FALCBjVtxMV
+         g2F62pEAZF16dsf+g4DYHl0YHjk59ywBjF4JTjaSqfhdraQbhJveRHDStjmKbUtM41OH
+         xt7IwjVrOjbZSZY7SZ/s3huTyi/hHKvPFR1QlfVXgYSIDWW5H/4eIDrqJLxXUeE5rydo
+         rniUoHKSw2cwLy65KllMZDQ8XWN5vte18cl9qkOGcRfhQHc2DkxeKBbvvPQ059I5EXjl
+         2ZfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxde7d/XYlweHBT/m2x48PQbNgyZWQxyvYl0izm//hyQqgI7gwn8ytG1RSLSginCM+njvKZOOQu5OvQ8pzlfiEaag9qB9Xg3DoFH3h
+X-Gm-Message-State: AOJu0Yzn7PtT1w65hGj7i9AXnkCkkWfsObvvbXY1zR2s/h6DrfNBZtew
+	dTmDNHcCO3IFUFMkZn5ECMu7GECRylhoBU9XFeL+4QQDZHNFoXRvZsoFYcLHoag=
+X-Google-Smtp-Source: AGHT+IG5/46zhd1eOGmh0ra4YTAm6cqkOsrOZ3nHpxyZmRoQkb4L9iG9KRCKL7XD6RvIzjKFdLIpsQ==
+X-Received: by 2002:adf:e501:0:b0:33c:ddf1:4e70 with SMTP id j1-20020adfe501000000b0033cddf14e70mr954874wrm.32.1707824610355;
+        Tue, 13 Feb 2024 03:43:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV7XrcP98bixIaJaWBm55q3RGYgSAE7tBhAYxKCoTsFS3k+4Ze4N9ov5S7jgh/2kJS+irBO7hxgVQEv5sDqQLLxPDbHWC/Gs9TNJlYjDEdufmt8KqWgoLUap5P3RpuWSetm000MWsh8TG+RUnCiXYaeMS5P0KNR3vebzw4AK/Q7JSo2GChThL92QnUXlhhiqm3T+6Rm3bvBKFEBzRlNWsZ+oOtKvz4oZ5nrlk648f3KJ2YpB/AX8hYJ587hDFDHo7r1dZijD51CXUPKlm5Vvhyal5Vcu8pdKF6uRZUApCiCyWoYNna6+r1jeyiDnM+GrXyNfiI2jbQ39aZMPjTPS8Zd3pV6gPE6Q7iU5e+r5dq5ve8rVNhCu75nGRzfJSoMnFhhSRik6L03/9iH7StxCOiMjhlgvJXp0QLxcfnI7mQfyKBVWxmvK2n71BqvpzozyhkCuO8AO5J3tR81TAvxXYjA7ctciW/JxNy+0RD/Pu/DIgB3TrohH6Ieb4EtEjvFx//s0BbxRWmV5YdUNG0mEtgvFkabj7dgVuJmSkIyba37uRJ9Nj4vceMwV61cZXHq4Bloh/1m9MdaDSFr4L6+ysW0lgb2UhEH255fGSjDzoKUuGFhCI24w+H3rJL0zLOVpS/KYYbMSbqL1GxJsA+mmbtlzt0e6TZAQ/d1Iwa3
+Received: from localhost ([2a01:e0a:3c5:5fb1:509b:4241:48a3:e3e0])
+        by smtp.gmail.com with ESMTPSA id m18-20020a5d56d2000000b0033b60bad2fcsm9261852wrw.113.2024.02.13.03.43.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 03:43:29 -0800 (PST)
+References: <20240213101220.459641-1-arnd@kernel.org>
+ <1jbk8kk5pk.fsf@starbuckisacylon.baylibre.com>
+ <c61d7daf-1b13-4ff8-aeae-7dcd8dd02131@app.fastmail.com>
+User-agent: mu4e 1.10.8; emacs 29.1
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, Arnd Bergmann <arnd@kernel.org>,
+ Stephen Boyd <sboyd@kernel.org>, Mark Brown <broonie@kernel.org>, Liam
+ Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
+ Iwai <tiwai@suse.com>, Neil Armstrong <neil.armstrong@linaro.org>, Kevin
+ Hilman <khilman@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Nathan Chancellor
+ <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Bill
+ Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] ASoC: meson: add helpers for clk_disable_unprepare
+Date: Tue, 13 Feb 2024 12:09:52 +0100
+In-reply-to: <c61d7daf-1b13-4ff8-aeae-7dcd8dd02131@app.fastmail.com>
+Message-ID: <1j7cj8k2se.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 10/15] block: Add fops atomic write support
-Content-Language: en-US
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, bvanassche@acm.org,
-        dchinner@redhat.com, djwong@kernel.org, hch@lst.de, jack@suse.cz,
-        jbongio@google.com, jejb@linux.ibm.com, kbusch@kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
-        martin.petersen@oracle.com, ming.lei@redhat.com, ojaswin@linux.ibm.com,
-        sagi@grimberg.me, tytso@mit.edu, viro@zeniv.linux.org.uk
-References: <20240124113841.31824-11-john.g.garry@oracle.com>
- <20240213093619.106770-1-nilay@linux.ibm.com>
- <9ffc3102-2936-4f83-b69d-bbf64793b9ca@oracle.com>
-From: Nilay Shroff <nilay@linux.ibm.com>
-In-Reply-To: <9ffc3102-2936-4f83-b69d-bbf64793b9ca@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: wgYyCpTyGo1nKNUZEvPPGbkeV49XjQVm
-X-Proofpoint-GUID: x8JhR4pjGebwkn0QUFWqvWDNH0parMX8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_06,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 adultscore=0
- impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402130087
+Content-Type: text/plain
 
 
+On Tue 13 Feb 2024 at 11:52, "Arnd Bergmann" <arnd@arndb.de> wrote:
 
-On 2/13/24 15:28, John Garry wrote:
-> On 13/02/2024 09:36, Nilay Shroff wrote:
->>> +static bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos,
->>
->>> +                      struct iov_iter *iter)
->>
->>> +{
->>
->>> +    struct request_queue *q = bdev_get_queue(bdev);
->>
->>> +    unsigned int min_bytes = queue_atomic_write_unit_min_bytes(q);
->>
->>> +    unsigned int max_bytes = queue_atomic_write_unit_max_bytes(q);
->>
->>> +
->>
->>> +    if (!iter_is_ubuf(iter))
->>
->>> +        return false;
->>
->>> +    if (iov_iter_count(iter) & (min_bytes - 1))
->>
->>> +        return false;
->>
->>> +    if (!is_power_of_2(iov_iter_count(iter)))
->>
->>> +        return false;
->>
->>> +    if (pos & (iov_iter_count(iter) - 1))
->>
->>> +        return false;
->>
->>> +    if (iov_iter_count(iter) > max_bytes)
->>
->>> +        return false;
->>
->>> +    return true;
->>
->>> +}
->>
->>
->>
->> Here do we need to also validate whether the IO doesn't straddle
->>
->> the atmic bondary limit (if it's non-zero)? We do check that IO
->>
->> doesn't straddle the atomic boundary limit but that happens very
->>
->> late in the IO code path either during blk-merge or in NVMe driver
->>
->> code.
-> 
-> It's relied that atomic_write_unit_max is <= atomic_write_boundary and both are a power-of-2. Please see the NVMe patch, which this is checked. Indeed, it would not make sense if atomic_write_unit_max > atomic_write_boundary (when non-zero).
-> 
-> So if the write is naturally aligned and its size is <= atomic_write_unit_max, then it cannot be straddling a boundary.
+> On Tue, Feb 13, 2024, at 11:36, Jerome Brunet wrote:
+>> On Tue 13 Feb 2024 at 11:11, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+>> This probably pre-dates the introduction of devm_clk_get_enabled()
+>> It would probably be better to use that instead of duplicating helper
+>> functions which do the same thing.
+>
+> Ah, I had not thought of that interface either, so you are probably
+> right that this is the best way to do it.
+> Can you send a replacement patch then and add my Reported-by?
 
-Ok fine but in case the device doesn't support namespace atomic boundary size (i.e. NABSPF is zero) then still do we need 
-to restrict IO which crosses the atomic boundary? 
+Sure.
 
-I am quoting this from NVMe spec (Command Set Specification, revision 1.0a, Section 2.1.4.3) : 
-"To ensure backwards compatibility, the values reported for AWUN, AWUPF, and ACWU shall be set such that 
-they  are  supported  even  if  a  write  crosses  an  atomic  boundary.  If  a  controller  does  not  
-guarantee atomicity across atomic boundaries, the controller shall set AWUN, AWUPF, and ACWU to 0h (1 LBA)." 
+How may I reproduce the problem ?
+Just tried with 'Debian clang version 16.0.6 (19)', no warning.
 
-Thanks,
---Nilay
+I suppose I need to add something ?
+
+>
+> I also sent the same patch for drivers/nvmem/meson-efuse.c, which
+> I guess will also need the same treatment. I also checked and saw
+> that all three files already had this code in linux-6.0 when
+> devm_clk_get_enabled() got added.
+>
+>> If for any reason it is not possible, a common helper in clk.h would
+>> preferable I think.
+>
+> I can't think of anything that prevents us from using
+> devm_clk_get_enabled() here.
+>
+>     Arnd
 
 
-  
-
+-- 
+Jerome
 
