@@ -1,191 +1,109 @@
-Return-Path: <linux-kernel+bounces-62871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8458885271A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:53:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5C14852725
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:55:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6DFF1C25B22
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:53:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C7EFB26D93
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D70CAD2C;
-	Tue, 13 Feb 2024 01:52:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4945C28F4;
+	Tue, 13 Feb 2024 01:52:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b="cm+vuK/f"
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eDPiwvym"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19DFA937;
-	Tue, 13 Feb 2024 01:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.156.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B211C3D;
+	Tue, 13 Feb 2024 01:52:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707789123; cv=none; b=f8d4w/XTKaKSYSZ4zn6Z4r0zE3F3verk3zuJdoZuLX6N4A+1cfQskkFgFLugVK76aTd3rHy2wuoeImkTa9xVno/TWfoHMV5MAm6rc4CFIbPC8dzjSy/KV0d8ecXypm/lFepzAhlHrZ5GUh+E+LkgTCSHKfwmicijA4rFQsKThaA=
+	t=1707789151; cv=none; b=ecMl6ZPGg1BkfMbieriHuTdXroiZbcadTOE2anL8Lcvx2HaFn1URWdbGjgNFO0HWp89dgWoaAMIjakgnuZ29gHTRbD+0IgBFdelksqtsFcF1iUP2cDpw557f0ojsgObMUsGJ/5JOtNjoC9EC8GSF80yewdAtqsn+hqWN5pVsEeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707789123; c=relaxed/simple;
-	bh=TWXO2hZBdIqovo/18+auLeZhmPNeyNftRZkYDtp07Kw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MbCCurC73vtgZ5w4N5T6hMsMZ1KTV2LJTsg8oFTXm3BYfXsph26SENjBfbpCxmTfBexMqsZbbA4pAaAnHm2yVH1fmVxqW998RcbS6zAyc1lNI3moXEVBS9TgvgbQK4IYQQHERer9IYz+OqrQ4w587KErq30ZuJbHUVidfWmhts8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net; spf=pass smtp.mailfrom=bewilderbeest.net; dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b=cm+vuK/f; arc=none smtp.client-ip=71.19.156.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bewilderbeest.net
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:712b:6300::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: zev)
-	by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 07BABA15;
-	Mon, 12 Feb 2024 17:51:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-	s=thorn; t=1707789115;
-	bh=EU+GYVFoVSrVPFH+I5Rq0CxlWwOPwFjuP4K4HYrpXM4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cm+vuK/fGnBwBPyf2B1dtsj6Fmbr2traTegxGV8HfYLApU+8uRoVk+CP30oURWfcS
-	 LPkpSr8LYDvy8geca9x+pCT47R8ELbeZVUASM2AktntmXpnVDJ1fyg9McwLcVPw7US
-	 TavtV6qXQn+rSnvkc32hJBHfDlsT7lnRJXRNgE/4=
-From: Zev Weiss <zev@bewilderbeest.net>
-To: Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	linux-aspeed@lists.ozlabs.org
-Cc: Zev Weiss <zev@bewilderbeest.net>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	openbmc@lists.ozlabs.org
-Subject: [PATCH] ARM: dts: aspeed: asrock: Add BIOS SPI flash chips
-Date: Mon, 12 Feb 2024 17:51:36 -0800
-Message-ID: <20240213015138.12452-2-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707789151; c=relaxed/simple;
+	bh=uGuxFzDBaFp/hIBEohjAhRGcb9tqim+2jqM2pnvtGo4=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=JhOoI0bw/0W11dX2k92OQ8fy0EEwLFld3zFpvcZ9bsjW/5bTDjnfCKxxuSw8B6Fd3cTgk18HLW3bkAT7+T1PivYQkfpbo16iFBnK1r6lOvfCdPoGYK/3WhKRMAd/kLPeR28Tqb/ZTj8pLDQJY2VfO9SSz28jH1jkS2DMuJYCMGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eDPiwvym; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D323C433C7;
+	Tue, 13 Feb 2024 01:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707789150;
+	bh=uGuxFzDBaFp/hIBEohjAhRGcb9tqim+2jqM2pnvtGo4=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=eDPiwvymo5oHUt2DUOS2kOtbJ7K+J1wO6uzNETAr+HveASj7TBWCLPo0vpkjnTmJ2
+	 ccMUkNfVO98UraNQfFx1ftopzdYwFMxx/abCEaVYYIF77JyaacAJ2zKN9TwbvVOBzh
+	 fT70pastL/AOnilQY1w23dIlUVOcZ/w2dKCH6kqT49wcft0yx4KjGMtg55DevYUUkX
+	 JL7slsqaAbdy7udDnSjT2JsnSFuUQ7+AlQFRF38x8dYrAnKxgk0KQqMDbGhmEumi9I
+	 +1DkZ9mdRyBrv/6M7AEq4PWO/v2/oURpP9l1WnjmnNjp6Q/v7j3hX7ADfiJFEwE6se
+	 /wbXLzukvQ/Sw==
+Date: Mon, 12 Feb 2024 17:52:28 -0800
+From: Kees Cook <kees@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>, Kees Cook <keescook@chromium.org>
+CC: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, linux-kernel@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Qian Cai <quic_qiancai@quicinc.com>,
+ mptcp@lists.linux.dev, netdev@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] configs/debug: add NET debug config
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20240212170253.77a7be7c@kernel.org>
+References: <20240212-kconfig-debug-enable-net-v1-1-fb026de8174c@kernel.org> <202402121039.E14DF37@keescook> <20240212170253.77a7be7c@kernel.org>
+Message-ID: <952DDEA7-E788-4705-B85F-6B28AD6A707A@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On e3c246d4i, e3c256d4i, romed8hm3, and spc621d8hm3 the host firmware
-flash is accessible to the BMC via the AST2500 SPI1 interface with an
-external GPIO-controlled mux switching the flash chip between the host
-and the BMC.
 
-The default state of the mux GPIO leaves it connected to the host, so
-the BMC's attempt to bind a driver to it during its boot sequence will
-fail, but a write to a sysfs 'bind' file after toggling the mux GPIO
-(along with whatever other preparatory steps are required) can later
-allow it to be attached and accessed by the BMC.  It's not an ideal
-arrangement, but in the absence of DT overlays or any other
-alternative it is at least a functional one, if somewhat clumsily so.
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
----
+On February 12, 2024 5:02:53 PM PST, Jakub Kicinski <kuba@kernel=2Eorg> wr=
+ote:
+>On Mon, 12 Feb 2024 10:39:55 -0800 Kees Cook wrote:
+>> > Notes:
+>> >   - It looks like this debug=2Econfig doesn't have a specific maintai=
+ner=2E
+>> >     If this patch is not rejected, I don't know if this modification =
+can
+>> >     go through the net tree, or if it should be handled by Andrew=2E
+>> >     Probably the latter? I didn't add [net-next] in the subject for t=
+his
+>> >     reason=2E =20
+>>=20
+>> Adding these seem reasonable=2E I touched debug=2Econfig last, so I can=
+ take
+>> it via the kernel hardening tree if netdev doesn't want to take it=2E
+>
+>I'd prefer to have it in net-next sooner rather than later, because
+>when our CI hits an issue we can tell people:
+>
+>	make defconfig debug=2Econfig
+>	make
+>
+>otherwise I have to explain what options to twiddle with=2E And the
+>refcount options do catch bugs, I had to do this exact the explaining
+>last Friday :(
+>
+>So I'd offer these three options:
+> - we put it on a shared branch and both pull in
+> - you send to Linus within a week and we'll get it soon that way
+> - we take it to net-next directly
+>
+>What's your preference?
 
-Note that this patch is based on Joel's for-next tree, since the
-e3c256d4i and spc621d8hm3 device-trees haven't been merged in mainline
-yet.
+Totally fine in net-next! Go for it=2E :)
 
- .../boot/dts/aspeed/aspeed-bmc-asrock-e3c246d4i.dts  | 12 ++++++++++++
- .../boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts  | 12 ++++++++++++
- .../boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts  | 12 ++++++++++++
- .../dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts     | 12 ++++++++++++
- 4 files changed, 48 insertions(+)
+-Kees
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c246d4i.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c246d4i.dts
-index c4b2efbfdf56..557ce20e305d 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c246d4i.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c246d4i.dts
-@@ -68,6 +68,18 @@ flash@0 {
- 	};
- };
- 
-+&spi1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi1_default>;
-+	flash@0 {
-+		status = "okay";
-+		label = "bios";
-+		m25p,fast-read;
-+		spi-max-frequency = <25000000>; /* 25 MHz */
-+	};
-+};
-+
- &uart5 {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts
-index 263fcc8106ff..bf752ff8204f 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts
-@@ -69,6 +69,18 @@ flash@0 {
- 	};
- };
- 
-+&spi1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi1_default>;
-+	flash@0 {
-+		status = "okay";
-+		label = "bios";
-+		m25p,fast-read;
-+		spi-max-frequency = <25000000>; /* 25 MHz */
-+	};
-+};
-+
- &uart1 {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts
-index 4554abf0c7cd..8dff2cbf042b 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-romed8hm3.dts
-@@ -56,6 +56,18 @@ flash@0 {
- 	};
- };
- 
-+&spi1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi1_default>;
-+	flash@0 {
-+		status = "okay";
-+		label = "bios";
-+		m25p,fast-read;
-+		spi-max-frequency = <33000000>; /* 33 MHz */
-+	};
-+};
-+
- &uart5 {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
-index 555485871e7a..54b40776c7e3 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
-@@ -66,6 +66,18 @@ flash@0 {
- 	};
- };
- 
-+&spi1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi1_default>;
-+	flash@0 {
-+		status = "okay";
-+		label = "bios";
-+		m25p,fast-read;
-+		spi-max-frequency = <17000000>; /* 17 MHz */
-+	};
-+};
-+
- &uart5 {
- 	status = "okay";
- };
--- 
-2.43.0
 
+--=20
+Kees Cook
 
