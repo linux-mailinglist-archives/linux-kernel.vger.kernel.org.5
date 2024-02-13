@@ -1,141 +1,149 @@
-Return-Path: <linux-kernel+bounces-64196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF642853BA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC4D0853BAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:52:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1774E1C26735
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:52:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B73A1C26836
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F2360DD4;
-	Tue, 13 Feb 2024 19:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="sbnnkpDW"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F656608F1;
+	Tue, 13 Feb 2024 19:52:31 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA0060DC0
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 19:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E4860ECB;
+	Tue, 13 Feb 2024 19:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707853932; cv=none; b=EykWIU463Ir4QVTfrUWdHpPShOg/lvrsdlrASJCIMJB/u94u3mMP+2oHlyoSbfTjecGbNv10U1nnDgAE+VHNt982fsbKx3eOw38Rjhdl8mOZukuBJOlMQLjmwjD61B6T3sXMrt+k5EuRcjBAZ4L8IXTe7uPDK+Idv88OYMx8aYs=
+	t=1707853950; cv=none; b=diOnD79lhd9G2qfX4txMoqmxezFLlu0+XTMKV0vm4zejeOQsabN4UFle3Ma1jxI+2Yk0dqmsVzSF/uPEJDAe4mbRhrnVrLvS9MKS5PCakCaqdeLpIJMz9jAgFn1IDSQvP5Cir2ulfOaQcLkJMtbgE2CGJodiN8VBVsdkKgeHDHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707853932; c=relaxed/simple;
-	bh=X2QnHRQefkn7feHFSgOFU2grkx1Xss++PwPzwoeNB1s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GoIEGlGF4Are09PsakH8iC18eR9KmRNuF7Zg8k6IWeJtylD6tfIuQoDDg60T9sueuMhohkSMF+MCTtfp+3ZGHy80M/CJnNuJJ/h+VYm7DI+9tVvalZ/W6juQ7bT34xg5wAQtyCXVxMj1dSUNl1yo5GvjmeZ4ZuAR++pm8f9n4cM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=sbnnkpDW; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 3D20712002A;
-	Tue, 13 Feb 2024 22:51:59 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 3D20712002A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1707853919;
-	bh=fRH4VSjfvrHyW5aEuTbUTtPuR9qt0PHqLCQ18q0dLno=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=sbnnkpDWoy6eaeomF3lDFPKO1xz94j+zfnwMIOO8DnK8QtCIbodJSOvD145/U7UHm
-	 xQ3Rxs2vQdDI/j4uXUADJY9gUvEylW8OJAuLV8me49ntfOJ/QGRR0IN1+NmmIhdnNc
-	 uT9it3QTSjhHzDiweGkofcfJkCwgxyWWnv6iIYSYM95+nKzyAAwORZlmS56WP/rFKg
-	 u0xywApbfRsMwG2ioEO53lnDfUA2/ckhT8MAgIg9SR9HkS/KRqEPBMKRv+xYCciA15
-	 MjpUmpTwbhhYawTB/Rx96NnPyZWs4ZQpqmdM3NJLl9LudpVW7w0Rl8c6eiZuzPcJ3e
-	 ZOaTtPjD2HcGg==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 13 Feb 2024 22:51:59 +0300 (MSK)
-Received: from [172.28.160.241] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 13 Feb 2024 22:51:58 +0300
-Message-ID: <63e0d41a-92b6-4596-ae54-d6bc2624e63d@salutedevices.com>
-Date: Tue, 13 Feb 2024 22:51:53 +0300
+	s=arc-20240116; t=1707853950; c=relaxed/simple;
+	bh=B/Zh10xQbdlld19xfJvnSNoL4PD7RYqchRBmmWzUX6Q=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=vEIaQL0ck/wgdjb4sjUOCNJhXCqE25iKcIDkcoSptxm9IkOw2tJtap+XIjFigaOj/dwotRecLUpQT4cRY82PfH6nG+lc+goBWPFXTYMZtOVHziliz1pfTFKGv7PAhlU4ezTLW/Uc9yE1A8WY6PyMDlwHfsLc11W225GXg027f8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (178.176.75.253) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 13 Feb
+ 2024 22:52:25 +0300
+Subject: Re: [PATCH net-next v3 4/6] net: ravb: Move the update of
+ ndev->features to ravb_set_features()
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<biju.das.jz@bp.renesas.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240213094110.853155-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240213094110.853155-5-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <3747ad9a-217a-2f43-835a-7c23f6a710d2@omp.ru>
+Date: Tue, 13 Feb 2024 22:52:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] locking/mutex: Clean up mutex.h
+In-Reply-To: <20240213094110.853155-5-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To: Waiman Long <longman@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Will Deacon <will@kernel.org>, Ingo Molnar
-	<mingo@redhat.com>, Andrew Morton <akpm@linux-foundation.org>
-CC: <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "kernel@salutedevices.com"
-	<kernel@salutedevices.com>
-References: <20231216013656.1382213-1-longman@redhat.com>
- <8be5bc9d-9505-41c6-b2ca-654bfe1d809f@salutedevices.com>
- <22c625f9-1750-4ade-b9c7-27b608c7f653@salutedevices.com>
- <a8313e5d-c4f2-4f4c-a05e-b87b2d694901@redhat.com>
-From: George Stark <gnstark@salutedevices.com>
-In-Reply-To: <a8313e5d-c4f2-4f4c-a05e-b87b2d694901@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183416 [Feb 13 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;lore.kernel.org:7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/02/13 18:14:00
-X-KSMG-LinksScanning: Clean, bases: 2024/02/13 18:15:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/13 16:15:00 #23586885
-X-KSMG-AntiVirus-Status: Clean, skipped
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/13/2024 19:36:27
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 183416 [Feb 13 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;178.176.75.253:7.4.1,7.7.3;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: {cloud_iprep_silent}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.253
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/13/2024 19:40:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 2/13/2024 4:21:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
+On 2/13/24 12:41 PM, Claudiu wrote:
 
-On 2/13/24 06:28, Waiman Long wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> On 2/11/24 18:28, George Stark wrote:
->> Hello
->>
->> Excuse me, this is my 4th letter here since December 2023 and there's 
->> no response unfortunately.
->>
->>
->> Just to recall that we had the discussion in December 2023 about 
->> implementing devm_mutex_init. We came to conclusion that the only 
->> effective way to do it in include/linux/mutex.h but mutex.h requires
->> some cleanups to simplify the devm_mutex_init patch.
->> mutex.h owners proposed such a cleanup patch themselves and there's no 
->> progress since that. How can we move forward on those patches?
->>
->> Cleanup patch:
->> https://lore.kernel.org/lkml/20231216013656.1382213-1-longman@redhat.com/
->>
->> Original problem that requires devm_mutex_init and discussion:
->> https://lore.kernel.org/lkml/ZcZeRmVjEPhVPW9-@smile.fi.intel.com/T/#m0f514f8f96e18db9568f84b2df37aaf648874a4a
+> Commit c2da9408579d ("ravb: Add Rx checksum offload support for GbEth")
+> introduced support for setting GbEth features. With this the IP-specific
+> features update functions update the ndev->features individually.
 > 
-> Sorry for my late reply. My cleanup patch was sent at the later half of 
-> Dec 2023. It is probably not a good time as maintainers are either busy 
-> or taking time off. I have resent the patch again with other cleanup 
-> patches. Hopefully those patches can be merged soon.
-
-Hello Waiman.
-
-Good to see you again. I'm sorry if I was too impatient. Thanks for 
-updating your patch series.
-
+> Next commits add runtime PM support for the ravb driver. The runtime PM
+> implementation will enable/disable the IP clocks on
+> the ravb_open()/ravb_close() functions. Accessing the IP registers with
+> clocks disabled blocks the system.
 > 
-> Cheers,
-> Longman
+> The ravb_set_features() function could be executed when the Ethernet
+> interface is closed so we need to ensure we don't access IP registers while
+> the interface is down when runtime PM support will be in place.
 > 
+> For these, move the update of ndev->features to ravb_set_features() and
+> make the IP-specific features set function return int. In this way we
+> update the ndev->features only when the IP-specific features set function
+> returns success and we can avoid code duplication when introducing
+> runtime PM registers protection.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+[...]
 
--- 
-Best regards
-George
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 7a7f743a1fef..b3b91783bb7a 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2475,7 +2475,7 @@ static int ravb_change_mtu(struct net_device *ndev, int new_mtu)
+>  	return 0;
+>  }
+>  
+> -static void ravb_set_rx_csum(struct net_device *ndev, bool enable)
+> +static int ravb_set_rx_csum(struct net_device *ndev, bool enable)
+>  {
+>  	struct ravb_private *priv = netdev_priv(ndev);
+>  	unsigned long flags;
+> @@ -2492,6 +2492,8 @@ static void ravb_set_rx_csum(struct net_device *ndev, bool enable)
+>  	ravb_rcv_snd_enable(ndev);
+>  
+>  	spin_unlock_irqrestore(&priv->lock, flags);
+> +
+> +	return 0;
+>  }
+>  
+>  static int ravb_endisable_csum_gbeth(struct net_device *ndev, enum ravb_reg reg,
+
+   Wait! You're not updating the call site of ravb_set_rx_csum(), are you?
+It looks like the above 2 hunks aren't needed...
+
+[...]
+
+MBR, Sergey
 
