@@ -1,318 +1,201 @@
-Return-Path: <linux-kernel+bounces-64221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E2A7853C26
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:22:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A19B853C27
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:23:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33C9928BA32
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:22:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8F6FB21EC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:23:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6257060B9A;
-	Tue, 13 Feb 2024 20:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876B560B95;
+	Tue, 13 Feb 2024 20:23:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="UuRfTfEF"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VWmWoK1W"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B89C849C
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 20:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707855736; cv=none; b=rkjr29dvTgA7oVIFXKp+PeF6qcWYf0lB1REs9+LmBdC6afCrxYtkGsX9VwSY8Lv5xWqCNmZI/TmuS01KvfjNGTFI70JFJoRRT4yhEMY0hHN06cnBwzcw3aTcXEJMRri5+hx+XWHpTy2Yh6o07w8mfabqiTN1XndKM4GRW5+bjm8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707855736; c=relaxed/simple;
-	bh=Aaj96pAHTIwRyQeDWfr/9ULSU1FokxTnYjG2gNM7nNU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=noJyzoJsKUt/lv4tHKg8XjVKffm1nE7U3HXJlgPfQlQJJPwcRP9U6xi2ePLpQko3f8PI4YTVvv4JExw6cZhIq+w/z75O4tyx5jsshCIHZq6MHD+T8k/+Q5lY/ry3/UJ/TtHjQNPqtDmjfPEYZ7ybLcFMb7uUFOW8+eZz+crVJLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=UuRfTfEF; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-787190ab6d8so108403285a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:22:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1707855733; x=1708460533; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zbj1zy8QqmlzNiLojsCaYsf5zBj5uHHCMFq0jsBwuts=;
-        b=UuRfTfEFoNt086UM4Nhhp9LfBK9MkLfKcbmR21An4QCGCibzgWkY1gqblgC225DK/M
-         EGWSgzYmzo9qBzbp1lSrXnoGflWxZvUJd6mOQS9XKaEdqdX8/ihvGNvKQxv0+7tW/FJD
-         S06scbxcYcSs6mXywIDAkWIWWh6L72GdlPJSYA1Xt7kxJMqdjjCqRoYkOlxnlZ+k0kOK
-         c9XShdbXCaNg4xs71baOGjMim0lUziDxw5v7G0N2v1Wpt4pWDsYcO2FdOESy/dEHHzzd
-         BgXlgCuX6O5pTA1onUcBjeJk7fHZAOPrr3hdjQBlNzK28bB8JJ5aOzyT1JlUc/rEgftG
-         TT5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707855733; x=1708460533;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zbj1zy8QqmlzNiLojsCaYsf5zBj5uHHCMFq0jsBwuts=;
-        b=QCX9Yk7ama/sGVteRXwces9x8OOc/PF5nzYBtWjOUoORw3UpNUuQ+iZ2QJnUqFAFh3
-         bg35HwcVymWZFktbNPFlYwfBgOnotyajY6fB4YUOfhsOa5+9UWioiysR2ZYMVkwtJSld
-         7xaxzpnSTqKArOlKb1t+NQDaKumnizomEoDqfe5gO4P/BQyXd2sk1MXAhL8uzSW/0Wfn
-         LJJ6gd8gUigniJe6ykeD7NIqMw3vpfgJDmDdSx9oNIJxC8/giVBoKS5WV6fBsfSpICEb
-         C5n/rh1X+XLci4NuZNBSouSjtC7w+FY4DmHAyWGFoRqtuckaCb81cPnXRQwOyPngWEL9
-         B1sg==
-X-Forwarded-Encrypted: i=1; AJvYcCXpF+2lNFWcbsWBHcG3ohBYrQYzovitDf4wN9T9P6pfQI2o6/smU57c+iHkgSDx/ZSuI/EA7im5bBRrqZmiwLec+pdMbL1D92Ipb/U1
-X-Gm-Message-State: AOJu0YzGrLzt9scvrjBjrPG+u4n95jSIGdmjKutRa+gwGtjzGdsH5sv7
-	/e/74iC6i7vKA3n5/nidquT+FJCKBAK/DE1bNBh8SC3ZLEUUXPPNWPBAgvWPoHY=
-X-Google-Smtp-Source: AGHT+IGIWaKTml8GZMglfU1ZKE9O5by2hqZ6gTPJ+uUkw/X6h8kR5N9dclKsNJacPQEH0mSgwR2N/g==
-X-Received: by 2002:a37:c447:0:b0:783:d369:6e5a with SMTP id h7-20020a37c447000000b00783d3696e5amr661892qkm.76.1707855733283;
-        Tue, 13 Feb 2024 12:22:13 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUfw9ZDUUDmMtZwIJU0CB5m0P2ktFgNX3kF9qXP6+F+eQXPK52OGf0c5NqOYuaBUDYToyHEyd4IevdY+M+zji8JDxM8PCxxWKK6hQQdA63+GHUbdR2Vd/e4pJbOkYGgy29Yv7yf2J5vASv3rmJSAtsfUPi7vfm0GjPUjCd8kTeCHGK0DtDFr2YWtXHX826Hb8DI0bFYspkiKF43gdtd+s5Gfh0RHsBbziq/6EaL0eqM1Bwj0Q==
-Received: from [100.64.0.1] ([170.85.8.192])
-        by smtp.gmail.com with ESMTPSA id d9-20020a05620a166900b00783f1e600aasm3215244qko.38.2024.02.13.12.22.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 12:22:12 -0800 (PST)
-Message-ID: <ff3bd436-12f8-4cde-881d-89a005ad85c0@sifive.com>
-Date: Tue, 13 Feb 2024 14:22:11 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EFC63D5
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 20:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707855827; cv=fail; b=Zt8wm2DzpJYwOppcDkEvOxlGz2BcNR+ex1rp/EmrOr7z7yes4ZG2MqBEXuEEt4yJj1Zs2+V6BsQKjrVxTrqcsqXCCAWCQE1XaZGrx8e01bUnZdFeGcAfkLLt2CpLnQWvwt30Dsy1OELv/PJBMcaMWmWTdCw1+h3SOqagEVyrXJo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707855827; c=relaxed/simple;
+	bh=8t7N1UeRUJqX7w8VL8HRKZtEDKMVG/UMDq/sSMYVYf4=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=rJpmJG2/1UzWMcrDeJsImaGdRX8QG72oQd5oLI4gU9d3vo02E2NrVeOPEIDM7bZV1Ww9p6vIK93V/3AhQZENVwsdSFKfY38Oq8fov+wCCvSO7I1yip28TOeIiPmylW3A3pUOy4b+xGAZ7VuKfgChr5VeUevpgFGxhnZecQ9a6UY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VWmWoK1W; arc=fail smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707855826; x=1739391826;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=8t7N1UeRUJqX7w8VL8HRKZtEDKMVG/UMDq/sSMYVYf4=;
+  b=VWmWoK1WVIjouQXJNAP1s23IhRmJN8yD+Mx40lixQydCdKjsCvC1xFwv
+   l1XC8gImchSY1SdHslhhmMcrWW/S52YS8Xz1tEnNgS+91K92JGdHxvn8j
+   E0wK3X91Qs8REgAjanHRqdVTa97laS1Uvx/DfaVgpEFsuSbwk6P9grLsQ
+   /gIlumqJyC032W1e1Sd54pbodbFcEqTBzlSwURP/A6iInu5HmKOpJAbRi
+   QGIwcM4henlT1U8sGhTaXZds4sRQYBTjd4PDTwxmZFSbuERDrJAZFblNN
+   o2Wnnns5Dzqf/Bc/Uv1NzX781gavd3Xv31GnGzzO+OWye/TMbTxeV7j/q
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="13267999"
+X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
+   d="scan'208";a="13267999"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 12:23:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
+   d="scan'208";a="7630401"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Feb 2024 12:23:44 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 13 Feb 2024 12:23:44 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 13 Feb 2024 12:23:43 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 13 Feb 2024 12:23:43 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 13 Feb 2024 12:23:43 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fjhbusBKp7JxXSLNLGRNdSkhngF6tC1SCy/QHmDV4Vv1xJGe1qqeaQIOkBeVejfCrnuGaQgLkuPEweeuYp3RYBlcnJACpCNqILro6fqIlg/dyEjJB2X5TJ9MAZkR4cF/cw3Brlyki4WcQVcAGisEaHgmT7YN4Rnc+MUqfLd20kXvPsnBEdXSpLTvTjmY7/1qMtXbx/gwvqnuvGJ+mwYuKqpoZ6xIf/8T9yX1ksvP+VSiMZ6CxPH+sBKonkPrV0t+V5uVH3sviUXIgirrl0HNn+S9e6nanwShPDBnlWVUXsUir4fQTsGh+SJ8IJ1wDig1u9GE7Y6mswNEh6aOfWFGaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WmC+2GMwmvkTsiZ5eqC8WRdUuYYnKqOepxCYomNPE4w=;
+ b=mmeT84BSj+vzCwfp+ehQ3EPA5PN955QBYclAt0MpVMtYsnVddjtQSuGgnCbKHO8Xxxwgl7r1jxaPZMzuHz3XCYKcie82l8SDzooXtYQiSVopyCgDmYkTjd3qCVm8k0qApZ4u8x262kXfYotbVFgak8zAV09G2E+QaaiZlPop2ypx+Wx2K925gDoF0xOOC0D6ALyXCFXfOJAHE1FPAtNTzLGfU8hQhb/s6f7tNkm4hYb1OdUaUlA6Ezjiv9wyFSm0XyNFXe+zhWhfwN84W71VmGqv9pUQNeBHiFF9mgMTSMTbFco80ccd4oyHwDL+MhpCZkQmxZpzia7hIw9QDGTC6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
+ by DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26; Tue, 13 Feb
+ 2024 20:23:35 +0000
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::c3aa:f75e:c0ed:e15f]) by BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::c3aa:f75e:c0ed:e15f%3]) with mapi id 15.20.7270.036; Tue, 13 Feb 2024
+ 20:23:35 +0000
+Message-ID: <bb59cbaa-3c83-4445-9db0-652224c3f84a@intel.com>
+Date: Tue, 13 Feb 2024 12:23:33 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [patch v2 21/30] x86/cpu/topology: Use topology bitmaps for
+ sizing
+Content-Language: en-US
+To: Thomas Gleixner <tglx@linutronix.de>, "Zhang, Rui" <rui.zhang@intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "Raj, Ashok" <ashok.raj@intel.com>, "mhklinux@outlook.com"
+	<mhklinux@outlook.com>, "arjan@linux.intel.com" <arjan@linux.intel.com>,
+	"ray.huang@amd.com" <ray.huang@amd.com>, "thomas.lendacky@amd.com"
+	<thomas.lendacky@amd.com>, "andrew.cooper3@citrix.com"
+	<andrew.cooper3@citrix.com>, "Sivanich, Dimitri" <dimitri.sivanich@hpe.com>,
+	"Tang, Feng" <feng.tang@intel.com>, "kan.liang@linux.intel.com"
+	<kan.liang@linux.intel.com>, "peterz@infradead.org" <peterz@infradead.org>,
+	"paulmck@kernel.org" <paulmck@kernel.org>, "kprateek.nayak@amd.com"
+	<kprateek.nayak@amd.com>, "jgross@suse.com" <jgross@suse.com>,
+	"andy@infradead.org" <andy@infradead.org>, "x86@kernel.org" <x86@kernel.org>
+References: <20240118123127.055361964@linutronix.de>
+ <20240118123649.739960607@linutronix.de>
+ <7c8874d971c69fb4c22c1b771983f8d5109a9387.camel@intel.com>
+ <87fryjhmjs.ffs@tglx> <87mss5k54b.ffs@tglx>
+From: Sohil Mehta <sohil.mehta@intel.com>
+In-Reply-To: <87mss5k54b.ffs@tglx>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR07CA0095.namprd07.prod.outlook.com
+ (2603:10b6:a03:12b::36) To BYAPR11MB3320.namprd11.prod.outlook.com
+ (2603:10b6:a03:18::25)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -fixes v2 3/4] riscv: Add ISA extension parsing for Sm and
- Ss
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Jones <ajones@ventanamicro.com>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, Stefan O'Rear <sorear@fastmail.com>,
- stable@vger.kernel.org
-References: <20240213033744.4069020-1-samuel.holland@sifive.com>
- <20240213033744.4069020-4-samuel.holland@sifive.com>
- <20240213-dangle-taco-2742f6087a3e@spud>
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20240213-dangle-taco-2742f6087a3e@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|DS0PR11MB7529:EE_
+X-MS-Office365-Filtering-Correlation-Id: 98692f88-476a-440e-d94d-08dc2cd1a78a
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dEFCqNLB8YW52t1OPPc9JCucUI1sfrXtfTUYGjyeWDR8H/cBx6SZM2cgXAmPxeGHG1/49XDYb7ZXtdNk78YzLdFBsQC24kiNXIH3ZNbr5wo4/DAf+Ki4RlE9K7WpP00LonMCaw3h5pVxwMWYBNDXqB7I8UeVVxAQWAa0HrRv0Tbi0R/a2xv5IQERwUuZk6a5qkNP3rB8c4phzA2TpNMOcfcY6eUJ0gFJZOJpnTKISR0PEVJOSvGSEkvAtmtnSUdMTBJ4bYlnB0wWln01N4AnpSeOE269pZzOoI1OF38ei1Lqj/65vWwLTACAbFGl1Q6EU8H5mu5axJWe3UUMIvu/oJpRW9BlUxeCKzrKfWwIak9F+ACRktTfo7EhS39YFcgLiLa548857rbM2y2LjTTaMGsPP3MTPkq/EeEQD1Qhf7OtYADt57L05cvVpYy5UrYrmpcd9/ucXugHE0PXvNOkreSmabHIyL+m0YyJOEUfTxnpYT6Ims5sfaWLiDfvZ6i0OD0NWhdcWg7+ZHW+jvgILbSoLbaDGjfTd5KLTjAT7/0wYx72wihuWGuE26amZnYP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(366004)(346002)(376002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(7416002)(5660300002)(8936002)(44832011)(8676002)(66476007)(66946007)(66556008)(2906002)(4326008)(4744005)(36756003)(82960400001)(86362001)(38100700002)(110136005)(31696002)(316002)(478600001)(53546011)(54906003)(6512007)(6506007)(6486002)(26005)(2616005)(41300700001)(31686004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eGNhK0RCWkpuZ1FwYUpSVDhBemlGS09LelQ4aXh0T0Q4QlkrUWJHZEJuZ1ZN?=
+ =?utf-8?B?SkVtUEh0ejBvK0RsMlFycVVnakhMbWtRU0t1N0Q0MmZXYXpjK1pEVEw4U05Y?=
+ =?utf-8?B?NDNjWWp1Tk9iZlE4azczbzVKWVFmMGpQcnJVVW9JeUFzNVk4amliSnU0dTRq?=
+ =?utf-8?B?R1BndGVyMC9MMDNYTTJERjZVNTVUQkJXWU95TkJCK0N0TVc5aFFvNUgwU0dj?=
+ =?utf-8?B?OGYxT0NFM0Q4djJpZ3Jqd2lGVjZ0QThNanNkVlpLTUwwV0FaQUVWTUtEUmNa?=
+ =?utf-8?B?dnhSNVF4ajNrbWFUVnRLUnBhaGszVXQxd3E1ck03TS95SlluanNUYzZLYzVN?=
+ =?utf-8?B?SFFaenJDOEJEb1R3dWpQUFcyOEt5V016SVhCS3pYakJnNitwdllJS3ArZzJU?=
+ =?utf-8?B?K1BWM0ExV3ZoTVBFc0JVdWxHVnBlYXBVZ3ZzL0FSSjFZNHV2cFR0Zk5xemxT?=
+ =?utf-8?B?TkQ2cGVua2NvZW9xUmlrem5JYXJqNTB2TmJ3VWJPa2JEN1hYVGg3MTZMYlE5?=
+ =?utf-8?B?REp6VVVrM3BKWGU0VlRKa2JwU1pSTkhsVUJsZFFUUWRxMENwN2llRnJha0xT?=
+ =?utf-8?B?bzlYbEh4bmxnUHRCVlFYUUtOWXdSTC9adUh4ZDYxWXFwbjlXWitoNTVIVUlQ?=
+ =?utf-8?B?M3BsV21COFlIZGh5ZG1PNTdwNzhEaGorZXZKOXg5VUJsTk1vOHA3cHVVSnNG?=
+ =?utf-8?B?OEJsV2NYVVBFamlHenhsU3VVdHZUTlJpVUpuaXlVLzdjeEt0RGhUUU1pTkdn?=
+ =?utf-8?B?c1hXOUl3aHFOSFpLeWcyelpNa3VCUk5tbjdOZHdIeXNSb2Nqd2RoN040Q2Vv?=
+ =?utf-8?B?SlFrY3p0S2xEeDJJRkZUOTFNbDZuZUNMb2FRbW9VYTN4cTVDSGtHK0VxcGdj?=
+ =?utf-8?B?N3E4ZE5sUXJaMFR3UEpmaUczWnFPYXdrRDNPOXJQSW4yMzF1T01vUERQdjdI?=
+ =?utf-8?B?Y0ErK2RCQUxqaURqVjJSbWpxK1RYRkNDOG9iN3g5UGxYK1NNOHh6b0JZZWwz?=
+ =?utf-8?B?S2EwclJEdVA2T1Z2YjdrQ09KeGFMVWRFZHFBUzhOQTEyWUJ0eFFQS3dBMlUw?=
+ =?utf-8?B?dmU1N3ZnOUhkT3Z5V1RGcUthdWlOdGgxcWN3S3lwcGRHK2dDdmxaYkNpTU9V?=
+ =?utf-8?B?K3lNY0J2VC9Zei94c2xxdmhaSVVOVEFJUTgzZlVqRXFTbFlGK0NnVWp3QWpv?=
+ =?utf-8?B?UG5rc3h4eTBOSGdMajRETVRVaTBJNVBPODkzcmlZV3htN0ZXZ0l5aUNTUW1r?=
+ =?utf-8?B?ekJpSmxkTHhCMUljNlFwd3lObnRRUlhTcGNWL3ZJSEZmbE9yUm5OdDlKQUFh?=
+ =?utf-8?B?czRFK0VWMkx0M1dSRFp2VHp5NTA4RzljbnA5QlI4cXVLM2Y2WnJQWThNNXBH?=
+ =?utf-8?B?UXppMWVGRnRsdE5IRHZld214bkJ0NDBaUnFYVldSdXFRaXpoNkhzRlZnZW9R?=
+ =?utf-8?B?VFdxVWpGZEI0YmJuMkJjMDFtQWZQT3JpKzRDZDY4VExLN2duMm9EK3RpNTNN?=
+ =?utf-8?B?c25qNkVpRHJwQnd1Smlkb1RyT2U5NDZLMXY3VHlKT0pydHlydUxZVnlZMEZB?=
+ =?utf-8?B?TldHZWpjaTlLc25qbE5udFRpNmF6dnBrQXoxZk9uQjl0Q0FwTWRkellCY0Mz?=
+ =?utf-8?B?clJhYjdjaGdXNk5rRHlDNTl3WmdtWmxsOXlSMCsrdUNBczB4ajg1ajE4aERJ?=
+ =?utf-8?B?em1LUWM3QzJyMEZxclBRWVZ3aEZqa2hGUFYzcEdvT3RWYWh2eVVHaDhNWUpk?=
+ =?utf-8?B?d3FhQTIwOElHSURKcXJieXp2OE42ejh4RURLUktXNWVldFRUM0xQa1o4R2ts?=
+ =?utf-8?B?NmphemNSV0xRQTdQRXJNQTVpbGVRNWp2eVZTNUdHQlk3T1NwYnlhNkJLRXhN?=
+ =?utf-8?B?ZlZZdXQrVlRqRGF4cnJleUJEdE9SL1ExTFhIOGUyWTJKZjg0SlZmZy9aZWIw?=
+ =?utf-8?B?UXNEekNaMHN1OHRGVFhqejJnTVhVR2F5T0pHR2VtTVJFV0J4OTlrS3N0M3NK?=
+ =?utf-8?B?VExTNjlEMWN1dXUxa3QzOWMxQWVSVHErVWR5NElReEdwMmRHampzaFliWmRL?=
+ =?utf-8?B?VUtjT1ZIYnJQMENDSmE5dlJqUDhlRkhZVExveXNpY0VGQUt3WGRNaTk4bFhk?=
+ =?utf-8?Q?VIEoVQQu8RgkWp/ephj18e6u+?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98692f88-476a-440e-d94d-08dc2cd1a78a
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 20:23:35.2101
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9IDFbBZmj/1MPE7uVS69nuAZ9ZuoGDSFXEK++JS9zgWXhzdQa0IF7jItZEemYULnLszeSuAUN4hIDxZqicyovw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7529
+X-OriginatorOrg: intel.com
 
-On 2024-02-13 12:07 PM, Conor Dooley wrote:
-> On Mon, Feb 12, 2024 at 07:37:34PM -0800, Samuel Holland wrote:
->> Previously, all extension version numbers were ignored. However, the
->> version number is important for these two extensions. The simplest way
->> to implement this is to use a separate bitmap bit for each supported
->> version, with each successive version implying all of the previous ones.
->> This allows alternatives and riscv_has_extension_[un]likely() to work
->> naturally.
->>
->> To avoid duplicate extensions in /proc/cpuinfo, the new successor_id
->> field allows hiding all but the newest implemented version of an
->> extension.
->>
->> Cc: <stable@vger.kernel.org> # v6.7+
->> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
->> ---
->>
->> Changes in v2:
->>  - New patch for v2
->>
->>  arch/riscv/include/asm/cpufeature.h |  1 +
->>  arch/riscv/include/asm/hwcap.h      |  8 ++++++
->>  arch/riscv/kernel/cpu.c             |  5 ++++
->>  arch/riscv/kernel/cpufeature.c      | 42 +++++++++++++++++++++++++----
->>  4 files changed, 51 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
->> index 0bd11862b760..ac71384e7bc4 100644
->> --- a/arch/riscv/include/asm/cpufeature.h
->> +++ b/arch/riscv/include/asm/cpufeature.h
->> @@ -61,6 +61,7 @@ struct riscv_isa_ext_data {
->>  	const char *property;
->>  	const unsigned int *subset_ext_ids;
->>  	const unsigned int subset_ext_size;
->> +	const unsigned int successor_id;
->>  };
->>  
->>  extern const struct riscv_isa_ext_data riscv_isa_ext[];
->> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
->> index 5340f818746b..5b51aa1db15b 100644
->> --- a/arch/riscv/include/asm/hwcap.h
->> +++ b/arch/riscv/include/asm/hwcap.h
->> @@ -80,13 +80,21 @@
->>  #define RISCV_ISA_EXT_ZFA		71
->>  #define RISCV_ISA_EXT_ZTSO		72
->>  #define RISCV_ISA_EXT_ZACAS		73
->> +#define RISCV_ISA_EXT_SM1p11		74
->> +#define RISCV_ISA_EXT_SM1p12		75
->> +#define RISCV_ISA_EXT_SS1p11		76
->> +#define RISCV_ISA_EXT_SS1p12		77
->>  
->>  #define RISCV_ISA_EXT_MAX		128
->>  #define RISCV_ISA_EXT_INVALID		U32_MAX
->>  
->>  #ifdef CONFIG_RISCV_M_MODE
->> +#define RISCV_ISA_EXT_Sx1p11		RISCV_ISA_EXT_SM1p11
->> +#define RISCV_ISA_EXT_Sx1p12		RISCV_ISA_EXT_SM1p12
->>  #define RISCV_ISA_EXT_SxAIA		RISCV_ISA_EXT_SMAIA
->>  #else
->> +#define RISCV_ISA_EXT_Sx1p11		RISCV_ISA_EXT_SS1p11
->> +#define RISCV_ISA_EXT_Sx1p12		RISCV_ISA_EXT_SS1p12
->>  #define RISCV_ISA_EXT_SxAIA		RISCV_ISA_EXT_SSAIA
->>  #endif
->>  
->> diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
->> index d11d6320fb0d..2e6b90ed0d51 100644
->> --- a/arch/riscv/kernel/cpu.c
->> +++ b/arch/riscv/kernel/cpu.c
->> @@ -215,6 +215,11 @@ static void print_isa(struct seq_file *f, const unsigned long *isa_bitmap)
->>  		if (!__riscv_isa_extension_available(isa_bitmap, riscv_isa_ext[i].id))
->>  			continue;
->>  
->> +		/* Only show the newest implemented version of an extension */
->> +		if (riscv_isa_ext[i].successor_id != RISCV_ISA_EXT_INVALID &&
->> +		    __riscv_isa_extension_available(isa_bitmap, riscv_isa_ext[i].successor_id))
->> +			continue;
->> +
->>  		/* Only multi-letter extensions are split by underscores */
->>  		if (strnlen(riscv_isa_ext[i].name, 2) != 1)
->>  			seq_puts(f, "_");
->> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
->> index c5b13f7dd482..8e10b50120e9 100644
->> --- a/arch/riscv/kernel/cpufeature.c
->> +++ b/arch/riscv/kernel/cpufeature.c
->> @@ -113,23 +113,29 @@ static bool riscv_isa_extension_check(int id)
->>  	return true;
->>  }
->>  
->> -#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size) {	\
->> +#define _RISCV_ISA_EXT_DATA(_name, _id, _subset_exts, _subset_exts_size, _successor) {	\
->>  	.name = #_name,								\
->>  	.property = #_name,							\
->>  	.id = _id,								\
->>  	.subset_ext_ids = _subset_exts,						\
->> -	.subset_ext_size = _subset_exts_size					\
->> +	.subset_ext_size = _subset_exts_size,					\
->> +	.successor_id = _successor,						\
->>  }
->>  
->> -#define __RISCV_ISA_EXT_DATA(_name, _id) _RISCV_ISA_EXT_DATA(_name, _id, NULL, 0)
->> +#define __RISCV_ISA_EXT_DATA(_name, _id) \
->> +	_RISCV_ISA_EXT_DATA(_name, _id, NULL, 0, RISCV_ISA_EXT_INVALID)
->>  
->>  /* Used to declare pure "lasso" extension (Zk for instance) */
->>  #define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
->> -	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, ARRAY_SIZE(_bundled_exts))
->> +	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, \
->> +			    _bundled_exts, ARRAY_SIZE(_bundled_exts), RISCV_ISA_EXT_INVALID)
->>  
->>  /* Used to declare extensions that are a superset of other extensions (Zvbb for instance) */
->>  #define __RISCV_ISA_EXT_SUPERSET(_name, _id, _sub_exts) \
->> -	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts))
->> +	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts), RISCV_ISA_EXT_INVALID)
->> +
->> +#define __RISCV_ISA_EXT_VERSION(_name, _id, _preds, _preds_size, _successor) \
->> +	_RISCV_ISA_EXT_DATA(_name, _id, _preds, _preds_size, _successor)
->>  
->>  static const unsigned int riscv_zk_bundled_exts[] = {
->>  	RISCV_ISA_EXT_ZBKB,
->> @@ -201,6 +207,16 @@ static const unsigned int riscv_zvbb_exts[] = {
->>  	RISCV_ISA_EXT_ZVKB
->>  };
->>  
->> +static const unsigned int riscv_sm_ext_versions[] = {
->> +	RISCV_ISA_EXT_SM1p11,
->> +	RISCV_ISA_EXT_SM1p12,
->> +};
->> +
->> +static const unsigned int riscv_ss_ext_versions[] = {
->> +	RISCV_ISA_EXT_SS1p11,
->> +	RISCV_ISA_EXT_SS1p12,
->> +};
->> +
->>  /*
->>   * The canonical order of ISA extension names in the ISA string is defined in
->>   * chapter 27 of the unprivileged specification.
->> @@ -299,8 +315,16 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->>  	__RISCV_ISA_EXT_DATA(zvksh, RISCV_ISA_EXT_ZVKSH),
->>  	__RISCV_ISA_EXT_BUNDLE(zvksg, riscv_zvksg_bundled_exts),
->>  	__RISCV_ISA_EXT_DATA(zvkt, RISCV_ISA_EXT_ZVKT),
->> +	__RISCV_ISA_EXT_VERSION(sm1p11, RISCV_ISA_EXT_SM1p11, riscv_sm_ext_versions, 0,
->> +				RISCV_ISA_EXT_SM1p12),
->> +	__RISCV_ISA_EXT_VERSION(sm1p12, RISCV_ISA_EXT_SM1p12, riscv_sm_ext_versions, 1,
->> +				RISCV_ISA_EXT_INVALID),
->>  	__RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
->>  	__RISCV_ISA_EXT_DATA(smstateen, RISCV_ISA_EXT_SMSTATEEN),
->> +	__RISCV_ISA_EXT_VERSION(ss1p11, RISCV_ISA_EXT_SS1p11, riscv_ss_ext_versions, 0,
->> +				RISCV_ISA_EXT_SS1p12),
->> +	__RISCV_ISA_EXT_VERSION(ss1p12, RISCV_ISA_EXT_SS1p12, riscv_ss_ext_versions, 1,
->> +				RISCV_ISA_EXT_INVALID),
->>  	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
->>  	__RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
->>  	__RISCV_ISA_EXT_DATA(sstc, RISCV_ISA_EXT_SSTC),
->> @@ -414,6 +438,14 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
->>  				;
->>  
->>  			++ext_end;
->> +
->> +			/*
->> +			 * As a special case for the Sm and Ss extensions, where the version
->> +			 * number is important, include it in the extension name.
->> +			 */
->> +			if (ext_end - ext == 2 && tolower(ext[0]) == 's' &&
->> +			    (tolower(ext[1]) == 'm' || tolower(ext[1]) == 's'))
->> +				ext_end = isa;
->>  			break;
->>  		default:
->>  			/*
+On 2/12/2024 8:40 AM, Thomas Gleixner wrote:
+
+> I pushed out a new version which addresses this and also the fallout
+> Michael and Sohil reported:
 > 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-full-v3
 > 
-> Hmm, looking at all of this (especially this hack to the "old" parser),
-> I feel more like these should be promoted to a property of their own.
-> The "old" parser was designed to handle numbers, and here when you're
-> interested in the values behind the numbers (which is a first iirc), you
-> don't make any use of that. I don't really want to see a world where
 
-I had a version of this code that parsed the numbers and stored them as integers
-in `struct riscv_isainfo`. It didn't work with of_property_match_string() as
-used for riscv,isa-extensions, since that function expects the extension name to
-be the full string. Either we would need to change the code to parse a version
-number out of each string in the riscv,isa-extensions list (and make the binding
-a bunch of regexes), or we need a separate "extension" entry (and DT binding
-entry) for each supported version.
+I see the nr_cpus=1 issue resolved as well with the above set.
 
-I chose the second option, and as a consequence I didn't actually need to parse
-the integer value in the ISA string code path either.
+Please feel free to add:
 
-> we have every single iteration of smNpM under the sun in the property,
-> because there's a fair bit of churn in the isa. Granted, this applies to
-> all the various, the difference for me is the level of churn.
+Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 
-Indeed. In fact, one thought I had while looking at this code is that we should
-be ignoring any extension in the ISA string with a version < 1.0 or >= 2.0,
-since those won't be compatible with what we expect.
-
-> Or maybe we can still with the properties you have, but instead of
-> treating them like any other extension, handle these separately,
-> focusing on the numbering, so that only having the exact version
-> supported by a cpu is possible.
-
-Maybe I'm misunderstanding what you're saying here, but it is already the case
-that the DT for a CPU would only contain the exact version of the privileged ISA
-supported by that CPU.
-
-With this implementation, the fact that the integer version gets expanded to a
-series of flags is supposed to be invisible in the DT and to userspace. I
-realize I don't quite succeed there: putting "ss1p13" in the ISA string should
-work, but does not.
-
-> I'm still pretty undecided, I'd like to think about this a little bit,
-> but I think we can do better here.
-
-Sure, no problem. I'm happy to implement whatever we agree on. Though one
-consideration I had is that this is all in support of fixing a bug in v6.7, so I
-wanted the changes to be backportable.
-
-I suppose the easy way out for backporting is to check for RISCV_ISA_EXT_ZICBOZ
-for now, and then solve the larger problem once there is some other user of the
-envcfg CSR (or another Ss1p12 feature).
-
-Regards,
-Samuel
-
+Sohil
 
