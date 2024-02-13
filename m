@@ -1,153 +1,199 @@
-Return-Path: <linux-kernel+bounces-64389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4CDA853DBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:56:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4058C853E40
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:12:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F13A91C21B6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:56:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D582EB2CFDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88EFC6216A;
-	Tue, 13 Feb 2024 21:54:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1CD626C7;
+	Tue, 13 Feb 2024 21:55:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="d3/2kqYw"
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [208.88.110.44])
+	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="mr1rlhoL";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Fd2Djm86"
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D03A629F7;
-	Tue, 13 Feb 2024 21:54:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.88.110.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D185661684;
+	Tue, 13 Feb 2024 21:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707861290; cv=none; b=H5hWQJ90TAPSx2fDwBAOPwNORC3mvSeXOhG3NK9kSU1SqMn/DR1iAL5PD8RLyBWbjSCsKUv0cIGQnEtaloYMWrKWzcL+fn3iYTjFpXBRSjfSfzkSuIfcYmLHQ1y4pSMZk/b82/qCwnqo5fWgF2GphgWsw2QoNTl78tfSW54iw8I=
+	t=1707861350; cv=none; b=S8DONL/Q/1It8vb7d/2NMqqcnVICGG++jY/Kv04US5M+1SIs8Ox75xnr6ezijebSTOxd3P/cLIPNP2YvHAnR9GH+JmEAwk/GudlV0ywGujUTJGJ8cBWWtZTVGendg6PCeSwq+f38ppA1bEd6kD3U3u1vRiyfl3+JAAX7ZWBevEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707861290; c=relaxed/simple;
-	bh=reC8I3soT88Wnp0RHmuLO4VmvUlQxjALtGehyVJMbTI=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=BCedZg/IhPvkbF0BAuFXpk6GiR9z+PGj7SwMlUSI9NzAhKUA/obSu/6PpAzCyCPmHL2Em9D8H2QuB0RqlRID4KjQA4ppm53cZBst4r/hzV1JgIMawIRu0qCmQs0nxOLtjDukXjvB8cHh4yeVefU15uhN8ubpZnDqdKiZuJjY07k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com; spf=pass smtp.mailfrom=savoirfairelinux.com; dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b=d3/2kqYw; arc=none smtp.client-ip=208.88.110.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=savoirfairelinux.com
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id C95639C322F;
-	Tue, 13 Feb 2024 16:54:45 -0500 (EST)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id SIIeMPSH3Ngt; Tue, 13 Feb 2024 16:54:44 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 7950D9C45B7;
-	Tue, 13 Feb 2024 16:54:44 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 7950D9C45B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1707861284; bh=XK+F628B2WCDvCgEDVP0Ie8v1oYwQM1KHLOPEbOC1NM=;
-	h=Date:From:To:Message-ID:MIME-Version;
-	b=d3/2kqYw500kmqsBrMRqHMr/iBE9dkhrPAwl+qd9zRn661gyDrJXKwZowBnXXKnCr
-	 tYnVj1ChsSHpLYFErEb7+TvOQkY4krOKXHLEFmlr++3VE1zcWos2QWdjwf/0kjO3kd
-	 iCFIPPmSOa5HJVaCd6/VNdrVBNsN84wRwq2vb1QEb3ezXzOGhFS2CdW/nehaFwGrI9
-	 YyIGgrI4gmFYwTkQ1WPqldWDSlRe7YJHCPmiihClEA1t8dxXj6XWlE7sx9MLErKpFM
-	 jht+XM4xey3cyfoYWr2DQUZx0zEHAjk7ajAdCgGnON2T24pWTRPuVPr0yB2+NmQqRi
-	 oT6elaO1LEIDw==
-X-Virus-Scanned: amavis at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id x8jIWcJN8Oci; Tue, 13 Feb 2024 16:54:44 -0500 (EST)
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [192.168.48.237])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 41C379C322F;
-	Tue, 13 Feb 2024 16:54:44 -0500 (EST)
-Date: Tue, 13 Feb 2024 16:54:44 -0500 (EST)
-From: Charles Perry <charles.perry@savoirfairelinux.com>
-To: Xu Yilun <yilun.xu@linux.intel.com>, Kris Chaplin <kris.chaplin@amd.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, mdf <mdf@kernel.org>, 
-	Michal Simek <michal.simek@amd.com>, hao wu <hao.wu@intel.com>, 
-	yilun xu <yilun.xu@intel.com>, trix <trix@redhat.com>, 
-	krzysztof kozlowski+dt <krzysztof.kozlowski+dt@linaro.org>, 
-	Brian CODY <bcody@markem-imaje.com>, 
-	Allen VANDIVER <avandiver@markem-imaje.com>, 
-	linux-fpga <linux-fpga@vger.kernel.org>, 
-	devicetree <devicetree@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <2031953666.970772.1707861284199.JavaMail.zimbra@savoirfairelinux.com>
-In-Reply-To: <Zb9LDQP3xzrv6LWr@yilunxu-OptiPlex-7050>
-References: <20240129225602.3832449-1-charles.perry@savoirfairelinux.com> <20240129225602.3832449-2-charles.perry@savoirfairelinux.com> <9b0680b6-1952-41d3-82f4-88c60469dc3a@linaro.org> <471d9438-e2c0-4881-8ace-778c9d14669c@amd.com> <Zb9LDQP3xzrv6LWr@yilunxu-OptiPlex-7050>
-Subject: Re: [PATCH 2/3] dt-bindings: fpga: xlnx,fpga-slave-selectmap: add
- DT schema
+	s=arc-20240116; t=1707861350; c=relaxed/simple;
+	bh=/GyMLqEaIzbvTZ7xam4FQ0e1scykPoZPxEo4U3yALw8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pEQ79YLG4b8CFG5TXRRKpOyaxIW/12L+rYD/xzloLPqe9EUeKU+VAtSZ+Yaz0XeTxRCz8uZTDvmrH2AHRd0VhDNvwZxL2N1aN3qoZ7WSpFRuP9GcJ0gsNyzrbszxYQHw/VCkFPReuIP01ErancH+CE8jJkdDnP4WSoaD63Ckgl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=mr1rlhoL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Fd2Djm86; arc=none smtp.client-ip=66.111.4.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id 94E005C00B9;
+	Tue, 13 Feb 2024 16:55:46 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Tue, 13 Feb 2024 16:55:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:message-id:mime-version:reply-to
+	:reply-to:subject:subject:to:to; s=fm3; t=1707861346; x=
+	1707947746; bh=rKsJORufnnGtyC9mo4arxw/2f9LvMA7u/22qfgccp3c=; b=m
+	r1rlhoLr2CPDTqsvidZUK1X1seSyDWNlCrtq5VdswnoSB7r4Dslk2NS5/Ex2154j
+	u4r0ppFXXbbylSIwiVpj1pRT9PExZzo9rIaoFf3G241fWxGuJZ3IY1uKfBpvgWpm
+	eY6O3NgMy0niZoaPwyB2lAFa/OCK0o3hEUGxF5IFQfbBRZXsFmgUeAUDN23/FHRt
+	2XKa6BuqUlXiZXJRJMw9MeQLVQ9rWoIParVMyzU1YjOXeNY18Q45l+Hh8bJUnqa5
+	3VUq3BuZ1YkX+H0dwDuJ+vQ+CONJlprI6FfXNXZKoux5Z6evZQU+Pp4Mkgvez/vZ
+	A/rxo3iq07cjOJzf8lsbQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:message-id:mime-version:reply-to:reply-to
+	:subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm3; t=1707861346; x=1707947746; bh=r
+	KsJORufnnGtyC9mo4arxw/2f9LvMA7u/22qfgccp3c=; b=Fd2Djm86eNZq4Z3Lw
+	MptTHyTJB/A++7ca2z3/dZltN6Su0fua9dJHFOXn5UTGA0s5zv6Dx8P9bDl5DuSZ
+	enKaCtT43/48VRr9lMbrKXiqDitLlytuhvBltIBLLankuEt/pWb9XFjkxiR3/GM8
+	KgL4O+LuJ+OPToSsVJctYyrFySFW0UeQwUkZOBbKXlMJqFBtM+psqcA7JkZtg2A8
+	Iafj/K0R+HeelFUsD6lOWLbC6B0EfVphE9aIBi0J/p33joIg1rFa0bYHEjMmHWFl
+	ZatMuVRFtsDz0UQnXB2HUvRsAyOSqbfKYo1mhC34Grf/YGgzwT8KhA57a5D7b9fS
+	Rzx/A==
+X-ME-Sender: <xms:YuXLZcawUI-DQBxk4O6fVj3k1_Im8S-srfKvn1f_ofMyXtMLMuGRYQ>
+    <xme:YuXLZXZEq3bt7Xod245ANSeKVZNWcL2WjOK19zZXqHifwlFveBE8WdehAI9gSImBx
+    xl1RA1bvvMuVw_BKw>
+X-ME-Received: <xmr:YuXLZW-Cls5PWOt1uJNR8cqeHIyKLuV0sJ5eYmzyAoQ9Ak7Agcj_h3UKfB3uD2ZRlkMbVA4W7cLATS-QJIy_3z1y0cjL9vhDXHxVW9vCv6mU_OBDhZxK330o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehgdduheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofhrgggtgfesthekredtredtjeenucfhrhhomhepkghiucgj
+    rghnuceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepteduve
+    ehteehheeiteeihfejveejledtgfdvieeuiedutefftdevtdfhteevtdffnecuffhomhgr
+    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
+X-ME-Proxy: <xmx:YuXLZWqvfPT-tt657zYvNbobjkSvgtn0jzCMkDb_2jiXnE0KiWuUrw>
+    <xmx:YuXLZXqwq_ysUqTFfVs0gQOA8XabcR40rPMxodHTdqKb8lLL4FY8hQ>
+    <xmx:YuXLZURcBtMsFWG4C6ohK8xc6qgp8sTDdP8TqANLc_u5wE13HMZiHA>
+    <xmx:YuXLZe8idbP8I4VCtDUTyw3u10YZbwkP9gBvtJSKgjk9yOLIxTwcPg>
+Feedback-ID: iccd040f4:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 13 Feb 2024 16:55:45 -0500 (EST)
+From: Zi Yan <zi.yan@sent.com>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
+	linux-mm@kvack.org
+Cc: Zi Yan <ziy@nvidia.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Yang Shi <shy828301@gmail.com>,
+	Yu Zhao <yuzhao@google.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	"Zach O'Keefe" <zokeefe@google.com>,
+	Hugh Dickins <hughd@google.com>,
+	Mcgrof Chamberlain <mcgrof@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v4 0/7] Split a folio to any lower order folios
+Date: Tue, 13 Feb 2024 16:55:13 -0500
+Message-ID: <20240213215520.1048625-1-zi.yan@sent.com>
+X-Mailer: git-send-email 2.43.0
+Reply-To: Zi Yan <ziy@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: Zimbra 8.8.15_GA_4581 (ZimbraWebClient - FF120 (Linux)/8.8.15_GA_4581)
-Thread-Topic: dt-bindings: fpga: xlnx,fpga-slave-selectmap: add DT schema
-Thread-Index: nr8URtE0F+xvMtsch9fUNSxFAe+LVw==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Feb 4, 2024, at 3:30 AM, Xu Yilun yilun.xu@linux.intel.com wrote:
-> On Wed, Jan 31, 2024 at 11:03:25AM +0000, Kris Chaplin wrote:
->> Hello Krzysztof,
->> 
->> On 30/01/2024 16:09, Krzysztof Kozlowski wrote:
->> 
->> > > +
->> > > +description: |
->> > > +  Xilinx 7 Series FPGAs support a method of loading the bitstream over a
->> > > +  parallel port named the slave SelectMAP interface in the documentation. Only
->> > > +  the x8 mode is supported where data is loaded at one byte per rising edge of
->> > > +  the clock, with the MSB of each byte presented to the D0 pin.
->> > > +
->> > > +  Datasheets:
->> > > +
->> > > https://www.xilinx.com/support/documentation/user_guides/ug470_7Series_Config.pdf
->> > 
->> > I am surprised that AMD/Xilinx still did not update the document to
->> > modern naming (slave->secondary).
->> 
->> Thank you for bringing this up.
->> 
->> We are moving away from using non-inclusive technical terminology and are
->> removing non-inclusive language from our products and related collateral.
->> You will for some time find examples of non-inclusive language, especially
->> in our older products as we work to make these changes and align with
->> industry standards.  For new IP we're ensuring that we switch and stick to
->> inclusive terminology, as you may have seen with my recent w1 driver
->> submission.
->> 
->> SelectMAP is a decades-old interface and as such it is unlikely that we will
->> update this in all documentation dating back this time.  I shall however
->> look to understand what is planned here for active documentation and new
->> driver submissions.
-> 
-> Yes, I need review from AMD/Xilinx side. Especially the HW parts, and
-> some namings of variables, e.g. if xilinx-core is proper for what products
-> it supports, and won't be an issue in future.
-> 
-> Thanks,
-> Yilun
-> 
->> 
->> regards
->> Kris
+From: Zi Yan <ziy@nvidia.com>
 
-Hello,
+Hi all,
 
-I chose the "-core" suffix as it seems widely used for core logic of device 
-drivers for chips that comes in an i2c and spi flavour. It seems like "-common"
-is also widespread, let me know if you prefer that suffix.
+File folio supports any order and multi-size THP is upstreamed[1], so both
+file and anonymous folios can be >0 order. Currently, split_huge_page()
+only splits a huge page to order-0 pages, but splitting to orders higher than
+0 is going to better utilize large folios. In addition, Large Block
+Sizes in XFS support would benefit from it[2]. This patchset adds support for
+splitting a large folio to any lower order folios and uses it during file
+folio truncate operations.
 
-As for the HW parts, here's the compatibles used in the v3 patchset for 
-convenience:
-- xlnx,fpga-xc7s-selectmap
-- xlnx,fpga-xc7a-selectmap
-- xlnx,fpga-xc7k-selectmap
-- xlnx,fpga-xc7v-selectmap
+For Patch 6, Hugh did not like my approach to minimize the number of
+folios for truncate[3]. I would like to get more feedback, especially
+from FS people, on it to decide whether to keep it or not.
 
-We're trying to be a bit more specific than the spi interface which uses
-"xlnx,fpga-slave-serial"
+The patchset is on top of mm-everything-2024-02-13-01-26.
 
-Regards,
-Charles
+Changelog 
+===
+
+Since v3
+---
+1. Excluded shmem folios and pagecache folios without FS support from
+splitting to any order (per Hugh Dickins).
+2. Allowed splitting anonymous large folio to any lower order since
+multi-size THP is upstreamed.
+3. Adapted selftests code to new framework.
+
+Since v2
+---
+1. Fixed an issue in __split_page_owner() introduced during my rebase
+
+Since v1
+---
+1. Changed split_page_memcg() and split_page_owner() parameter to use order
+2. Used folio_test_pmd_mappable() in place of the equivalent code
+
+Details
+===
+
+* Patch 1 changes split_page_memcg() to use order instead of nr_pages
+* Patch 2 changes split_page_owner() to use order instead of nr_pages
+* Patch 3 and 4 add new_order parameter split_page_memcg() and
+  split_page_owner() and prepare for upcoming changes.
+* Patch 5 adds split_huge_page_to_list_to_order() to split a huge page
+  to any lower order. The original split_huge_page_to_list() calls
+  split_huge_page_to_list_to_order() with new_order = 0.
+* Patch 6 uses split_huge_page_to_list_to_order() in large pagecache folio
+  truncation instead of split the large folio all the way down to order-0.
+* Patch 7 adds a test API to debugfs and test cases in
+  split_huge_page_test selftests.
+
+Comments and/or suggestions are welcome.
+
+[1] https://lore.kernel.org/all/20231207161211.2374093-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-mm/qzbcjn4gcyxla4gwuj6smlnwknz2wvo5wrjctin6eengjfqjei@lzkxv3iy6bol/
+[3] https://lore.kernel.org/linux-mm/9dd96da-efa2-5123-20d4-4992136ef3ad@google.com/
+
+Zi Yan (7):
+  mm/memcg: use order instead of nr in split_page_memcg()
+  mm/page_owner: use order instead of nr in split_page_owner()
+  mm: memcg: make memcg huge page split support any order split.
+  mm: page_owner: add support for splitting to any order in split
+    page_owner.
+  mm: thp: split huge page to any lower order pages (except order-1).
+  mm: truncate: split huge page cache page to a non-zero order if
+    possible.
+  mm: huge_memory: enable debugfs to split huge pages to any order.
+
+ include/linux/huge_mm.h                       |  21 +-
+ include/linux/memcontrol.h                    |   4 +-
+ include/linux/page_owner.h                    |  10 +-
+ mm/huge_memory.c                              | 149 +++++++++---
+ mm/memcontrol.c                               |  10 +-
+ mm/page_alloc.c                               |   8 +-
+ mm/page_owner.c                               |   8 +-
+ mm/truncate.c                                 |  21 +-
+ .../selftests/mm/split_huge_page_test.c       | 223 +++++++++++++++++-
+ 9 files changed, 382 insertions(+), 72 deletions(-)
+
+-- 
+2.43.0
+
 
