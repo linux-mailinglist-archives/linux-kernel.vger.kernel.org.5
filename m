@@ -1,237 +1,128 @@
-Return-Path: <linux-kernel+bounces-64002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5CA28538D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D54358538D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:45:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 962311C26439
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:44:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 142811C2311C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5345FF04;
-	Tue, 13 Feb 2024 17:44:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947455FDD6
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6EF55FF01;
+	Tue, 13 Feb 2024 17:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CgP8ztxo"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD06A5F563
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:45:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707846277; cv=none; b=t3NR7VQtpYv5TrH8xi4qEzUHufEUxnDp75KbQc6AIlGJW94xbVc0JSkaADOsVQbvDjZnvYlR52FEiVpxyI8N4ycQxg56EjH8KceCViHK4dNMK2SQg+L+4YO/vBrxvtwQ5HrKhZyOgVVoZeU8JV6ncVicN00Ve1cthdNB9AKgtno=
+	t=1707846331; cv=none; b=liHc3MnRSY14cX6am5f7kdIfoZy28bumMIk5sXCiO7pMW7jrYCO4NQKmVStUcChJ4g4TIGyi2pZ8T5KeU/XLcQTRz0aNIX8fs1Az3oS9hWkvaJQg7khLbWnzQiy8YfW1IJaOSy1A8FHEK9OBl4uwqn5skEzbSN2Tuv5KNJ8eJIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707846277; c=relaxed/simple;
-	bh=QdWYq8+wrdkHNwl8Z+sh4xq2Jqr2HfgBLc1ZhKAm8Cg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qUMGmyLKiiiOdc0YtY1N838aSFw6QpjZYvX1lZWN4CkDLb2iEYFkKL42UGQxdYPI0nwJeCQS9GNpuSjfugLDl3hOTfna5FVYAF7+FIWAX4H5VLMVLPya7HUVJZ+oHts9ouBdRmIf4tZeoMPj0XjpiTysnoImyv+xHhki16tInUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0BA6B1FB;
-	Tue, 13 Feb 2024 09:45:16 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.130])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B29C13F5A1;
-	Tue, 13 Feb 2024 09:44:30 -0800 (PST)
-Date: Tue, 13 Feb 2024 17:44:23 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	David Hildenbrand <david@redhat.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-	Barry Song <21cnbao@gmail.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 25/25] arm64/mm: Automatically fold contpte mappings
-Message-ID: <Zcuqd9e359L0SVPC@FVFF77S0Q05N.cambridge.arm.com>
-References: <20240202080756.1453939-1-ryan.roberts@arm.com>
- <20240202080756.1453939-26-ryan.roberts@arm.com>
+	s=arc-20240116; t=1707846331; c=relaxed/simple;
+	bh=n03lbBp1zR0JN/uywXAdDCOyEB1rONWr55lwzpMjzLI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=uNNPP/YFsOcsFjr7GBvfsJoTaCfaDc+1483EvNMy07qUAoh9oH0LoWgeSW/TREKpb72BsEqwcVIVveqvYIHPXytz8lS7nNtze2UU7GhwQ/ULcGHdlaQLciefWRpg4s6DpYi5Saayv+N5PjB/141hn9eHLZhN1p8AxiUqXCzIsJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CgP8ztxo; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso1897221276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:45:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707846329; x=1708451129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wXlhzdNPTrDKXAkgc5vsL7hh9f5XZEfrWoq47VPOT/k=;
+        b=CgP8ztxoSfXwoKVi+fm+ly0sWz+TcvagpyoJ3eJAUA/mfpMKNMxH5zwaTDsen2HDBQ
+         wE29lKmfEvolCV+Nqty5UluuprBA+Fawoqn2NfphDoVzsxhFLSui5vOffMFgfuFzAegn
+         CYN1PIbwm5kiOfsS32RVFnxbd9i0zeoHv+3eXjfdNoHjrmXQGV1/zu4blJU3F4So3Fx5
+         6tJjJy2VlMhxgGmYd2u/WQrxUyL2mn+zPhILWfZK8Ct1/xesw9hzK1mEvO6L9APABG3Q
+         jLp2ghddQauw65iVkzHRqcGvc0zWHGxheyxuUnE3piFnXy9HhcLgWiuK2e9sLQCd46Dl
+         GX0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707846329; x=1708451129;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wXlhzdNPTrDKXAkgc5vsL7hh9f5XZEfrWoq47VPOT/k=;
+        b=OZeY93CyK+yu8PnoDqPaF4cBrWdwrhslwmebifLIUgpSu2BW4otFqWOJ47u7Ka3yXR
+         N4/dGzlUfUAiY7r9t35TtJC5iXoTE/DWre+rsD/ja09O9OFbtsl306ZDzhorFRaG8+Rq
+         UmWg9DhMwFDgX7EiSSK+1FnxCqcmWLIdrTYkZ3m2xEO+fDGuh3WR6tKUaq9UPUyNF/Lb
+         Psurhx4GspVxjuPoSAx2tuHZhGLHXLDe8IUatCcsEg3JycDI38mD/O06QFoGAJoo+vv+
+         gG2SkcDqAg5XOyKjJPR/46NiJxMHpYIAbMkCOGtFQVLZFncrho3fDbi20GMnJF0q5zgk
+         c8sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW6fOegCVpO0tw7MYs4cn0YrD8GcAHhoO7UEkR5yKLqG7R9x7ADlhQgz0BBKGivslEiRyVqYL6w87ciguWlBF3qQRGCN+DdawAXCSV2
+X-Gm-Message-State: AOJu0YyPBCExNhPtyTpZqoBvrlXLejrvL15g0zFm5fh8C5Uca5c9FqKF
+	URlQQxtFKLzTTVvHukymxu6b49U5vg3FDW7UcFDNuBHN4X/H+dM0ZKcYSH78NmcoaNNw3c+Qvgl
+	DzHaUOWh2KQztk6VLdQ==
+X-Google-Smtp-Source: AGHT+IGZTxxVMztPl41LtC95lrjWgcnvviGpN/tMTecDRzoIWpNi9hdSkUB+X9urFFRzjgntUMqgnKc15MZULdUa
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:1083:b0:dcd:2f2d:7a0f with
+ SMTP id v3-20020a056902108300b00dcd2f2d7a0fmr53739ybu.9.1707846328778; Tue,
+ 13 Feb 2024 09:45:28 -0800 (PST)
+Date: Tue, 13 Feb 2024 17:45:26 +0000
+In-Reply-To: <1e5ffefa-8c80-44b8-986f-ee574c3b3349@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202080756.1453939-26-ryan.roberts@arm.com>
+Mime-Version: 1.0
+References: <20240210-zswap-global-lru-v1-0-853473d7b0da@bytedance.com>
+ <20240210-zswap-global-lru-v1-2-853473d7b0da@bytedance.com>
+ <CAJD7tkYdEWrrQj+MFNpDR6FHc60czXcuawh3dd1rSF=QQm6+yg@mail.gmail.com> <1e5ffefa-8c80-44b8-986f-ee574c3b3349@bytedance.com>
+Message-ID: <ZcuqtiIsAmDedOqK@google.com>
+Subject: Re: [PATCH 2/2] mm/zswap: change zswap_pool kref to percpu_ref
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 08:07:56AM +0000, Ryan Roberts wrote:
-> There are situations where a change to a single PTE could cause the
-> contpte block in which it resides to become foldable (i.e. could be
-> repainted with the contiguous bit). Such situations arise, for example,
-> when user space temporarily changes protections, via mprotect, for
-> individual pages, such can be the case for certain garbage collectors.
-> 
-> We would like to detect when such a PTE change occurs. However this can
-> be expensive due to the amount of checking required. Therefore only
-> perform the checks when an indiviual PTE is modified via mprotect
-> (ptep_modify_prot_commit() -> set_pte_at() -> set_ptes(nr=1)) and only
-> when we are setting the final PTE in a contpte-aligned block.
-> 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  arch/arm64/include/asm/pgtable.h | 26 +++++++++++++
->  arch/arm64/mm/contpte.c          | 64 ++++++++++++++++++++++++++++++++
->  2 files changed, 90 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index cdc310880a3b..d3357fe4eb89 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -1192,6 +1192,8 @@ void vmemmap_update_pte(unsigned long addr, pte_t *ptep, pte_t pte);
->   * where it is possible and makes sense to do so. The PTE_CONT bit is considered
->   * a private implementation detail of the public ptep API (see below).
->   */
-> +extern void __contpte_try_fold(struct mm_struct *mm, unsigned long addr,
-> +				pte_t *ptep, pte_t pte);
->  extern void __contpte_try_unfold(struct mm_struct *mm, unsigned long addr,
->  				pte_t *ptep, pte_t pte);
->  extern pte_t contpte_ptep_get(pte_t *ptep, pte_t orig_pte);
-> @@ -1213,6 +1215,29 @@ extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
->  				unsigned long addr, pte_t *ptep,
->  				pte_t entry, int dirty);
->  
-> +static __always_inline void contpte_try_fold(struct mm_struct *mm,
-> +				unsigned long addr, pte_t *ptep, pte_t pte)
-> +{
-> +	/*
-> +	 * Only bother trying if both the virtual and physical addresses are
-> +	 * aligned and correspond to the last entry in a contig range. The core
-> +	 * code mostly modifies ranges from low to high, so this is the likely
-> +	 * the last modification in the contig range, so a good time to fold.
-> +	 * We can't fold special mappings, because there is no associated folio.
-> +	 */
-> +
-> +	const unsigned long contmask = CONT_PTES - 1;
-> +	bool valign = ((addr >> PAGE_SHIFT) & contmask) == contmask;
-> +
-> +	if (unlikely(valign)) {
-> +		bool palign = (pte_pfn(pte) & contmask) == contmask;
-> +
-> +		if (unlikely(palign &&
-> +		    pte_valid(pte) && !pte_cont(pte) && !pte_special(pte)))
-> +			__contpte_try_fold(mm, addr, ptep, pte);
-> +	}
-> +}
-> +
->  static __always_inline void contpte_try_unfold(struct mm_struct *mm,
->  				unsigned long addr, pte_t *ptep, pte_t pte)
->  {
-> @@ -1287,6 +1312,7 @@ static __always_inline void set_ptes(struct mm_struct *mm, unsigned long addr,
->  	if (likely(nr == 1)) {
->  		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
->  		__set_ptes(mm, addr, ptep, pte, 1);
-> +		contpte_try_fold(mm, addr, ptep, pte);
->  	} else {
->  		contpte_set_ptes(mm, addr, ptep, pte, nr);
->  	}
-> diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
-> index 80346108450b..2c7dafd0552a 100644
-> --- a/arch/arm64/mm/contpte.c
-> +++ b/arch/arm64/mm/contpte.c
-> @@ -67,6 +67,70 @@ static void contpte_convert(struct mm_struct *mm, unsigned long addr,
->  	__set_ptes(mm, start_addr, start_ptep, pte, CONT_PTES);
->  }
->  
-> +void __contpte_try_fold(struct mm_struct *mm, unsigned long addr,
-> +			pte_t *ptep, pte_t pte)
-> +{
-> +	/*
-> +	 * We have already checked that the virtual and pysical addresses are
-> +	 * correctly aligned for a contpte mapping in contpte_try_fold() so the
-> +	 * remaining checks are to ensure that the contpte range is fully
-> +	 * covered by a single folio, and ensure that all the ptes are valid
-> +	 * with contiguous PFNs and matching prots. We ignore the state of the
-> +	 * access and dirty bits for the purpose of deciding if its a contiguous
-> +	 * range; the folding process will generate a single contpte entry which
-> +	 * has a single access and dirty bit. Those 2 bits are the logical OR of
-> +	 * their respective bits in the constituent pte entries. In order to
-> +	 * ensure the contpte range is covered by a single folio, we must
-> +	 * recover the folio from the pfn, but special mappings don't have a
-> +	 * folio backing them. Fortunately contpte_try_fold() already checked
-> +	 * that the pte is not special - we never try to fold special mappings.
-> +	 * Note we can't use vm_normal_page() for this since we don't have the
-> +	 * vma.
-> +	 */
-> +
-> +	unsigned long folio_saddr, folio_eaddr;
-> +	unsigned long cont_saddr, cont_eaddr;
-> +	pte_t expected_pte, subpte;
-> +	struct folio *folio;
-> +	struct page *page;
-> +	unsigned long pfn;
-> +	pte_t *orig_ptep;
-> +	pgprot_t prot;
-> +
-> +	int i;
-> +
-> +	if (!mm_is_user(mm))
-> +		return;
-> +
-> +	page = pte_page(pte);
-> +	folio = page_folio(page);
-> +	folio_saddr = addr - (page - &folio->page) * PAGE_SIZE;
-> +	folio_eaddr = folio_saddr + folio_nr_pages(folio) * PAGE_SIZE;
-> +	cont_saddr = ALIGN_DOWN(addr, CONT_PTE_SIZE);
-> +	cont_eaddr = cont_saddr + CONT_PTE_SIZE;
+On Tue, Feb 13, 2024 at 10:31:16PM +0800, Chengming Zhou wrote:
+> On 2024/2/13 06:42, Yosry Ahmed wrote:
+> > On Sun, Feb 11, 2024 at 5:58=E2=80=AFAM Chengming Zhou
+> > <zhouchengming@bytedance.com> wrote:
+> >>
+> >> All zswap entries will take a reference of zswap_pool when
+> >> zswap_store(), and drop it when free. Change it to use the
+> >> percpu_ref is better for scalability performance.
+> >>
+> >> Testing kernel build in tmpfs with memory.max=3D2GB
+> >> (zswap shrinker and writeback enabled with one 50GB swapfile).
+> >>
+> >>         mm-unstable  zswap-global-lru
+> >> real    63.20        63.12
+> >> user    1061.75      1062.95
+> >> sys     268.74       264.44
+> >=20
+> > Are these numbers from a single run or the average of multiple runs?
+>=20
+> The average of 5 runs. And I just checked/compared each run result,
+> the improvement is stable. So yes, it should be a real performance gain.
+>=20
+> > It just seems that the improvement is small, and percpu refcnt is
+> > slightly less intuitive (and uses a bit more memory), so let's make
+> > sure there is a real performance gain first.
+>=20
+> Right, percpu_ref use a bit more memory which should be ok for our use ca=
+se,
+> since we almost have only one zswap_pool to be using. The performance gai=
+n is
+> for zswap_store/load hotpath.
+>=20
+> >=20
+> > It would also be useful to mention how many threads/CPUs are being used=
+ here.
+>=20
+> My bad, the testing uses 32 threads on a 128 CPUs x86-64 machine.
 
-I assume that the 's' in *_sddar is for "start", and the 'e' in *_eaddr is for
-"end". Could we use "start" and "end" directly, e.g. folio_start, folio_end?
-
-> +
-> +	if (folio_saddr > cont_saddr || folio_eaddr < cont_eaddr)
-> +		return;
-> +
-> +	pfn = pte_pfn(pte) - ((addr - cont_saddr) >> PAGE_SHIFT);
-
-IIUC this should be the same as:
-
-	pfn = ALIGN_DOWN(pte_pfn(pte), NR_CONT_PTES);
-
-.. which would align with the way we generate 'cont_saddr' above.
-
-Otherwise, this looks good to me.
-
-Mark.
-
-> +	prot = pte_pgprot(pte_mkold(pte_mkclean(pte)));
-> +	expected_pte = pfn_pte(pfn, prot);
-> +	orig_ptep = ptep;
-> +	ptep = contpte_align_down(ptep);
-> +
-> +	for (i = 0; i < CONT_PTES; i++) {
-> +		subpte = pte_mkold(pte_mkclean(__ptep_get(ptep)));
-> +		if (!pte_same(subpte, expected_pte))
-> +			return;
-> +		expected_pte = pte_advance_pfn(expected_pte, 1);
-> +		ptep++;
-> +	}
-> +
-> +	pte = pte_mkcont(pte);
-> +	contpte_convert(mm, addr, orig_ptep, pte);
-> +}
-> +EXPORT_SYMBOL(__contpte_try_fold);
-> +
->  void __contpte_try_unfold(struct mm_struct *mm, unsigned long addr,
->  			pte_t *ptep, pte_t pte)
->  {
-> -- 
-> 2.25.1
-> 
+Thanks for the clarification. Please include such details in the commit
+message.
 
