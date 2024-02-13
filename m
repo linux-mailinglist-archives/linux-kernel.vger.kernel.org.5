@@ -1,131 +1,153 @@
-Return-Path: <linux-kernel+bounces-63053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54ED3852A34
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:45:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE11852A36
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:46:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11362283F89
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:45:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B7221F228DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76577179A5;
-	Tue, 13 Feb 2024 07:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A821775E;
+	Tue, 13 Feb 2024 07:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hjN0yzWp"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wRp4y+/g"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B86417980;
-	Tue, 13 Feb 2024 07:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C003F17755
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707810338; cv=none; b=BcsXMCVDSKcSGlUV0I+82PgdhwnN+7FiwxaPIDTx6jpn1pKhuEifgDbhhZ2AVqs0YnHo6FBGTZPash/+pyyqPf1QGtAPxkTzFr5R3S+oJ7q8tziVP/ZqkoYy8GrjKOZt0KckzMqmRsFPJxTpTtXpQZ1MYWT9ps5UtGHYDhsqXfQ=
+	t=1707810370; cv=none; b=Cn05WP/V8VRRdx+v5b/ByZuoZplAloVMo/Nt6vuwOLkLw00+ZOfA4XTE4lqJdxvhaRh2wRnaZCd+XxHdeknXHySKtYT5qstArcFHXiNVgL39vpIew4fvDICrLb370Oig5WOxJvGZ/KKPdCq3DH5u1mO6hn3c+PGXhY3hO5rGLUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707810338; c=relaxed/simple;
-	bh=s/VnGkah36o5e86AM1uOTnVb660SGkn6WdUDvWapgLM=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=RRPRIxy3rktw6kSUIN0Q5pZrgjSdJnYGgOt0Sfpk7x0xtTrG07aEqxAGlseRcFyxMy82EBsHRHiko3Xpboi7AdhksMvkjp/DT11/biPthg0sW4cnrQDr/bghANbsj9PW5rw6gMv9sbAehVVXrJerNuFATi0EGMO+cFGBRa5P+Bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hjN0yzWp; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d8da50bffaso16641615ad.2;
-        Mon, 12 Feb 2024 23:45:37 -0800 (PST)
+	s=arc-20240116; t=1707810370; c=relaxed/simple;
+	bh=PbF29hTerpeueYCgRClBIMeyfQqY4j9lUKkhK8ynkQI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kQFH/kVTgm8MoCWvAAvCABNLhY/ahAGoojVkBzfwEDuH2dEnjVwqbtLXvIq+gw6ZvU6FeD1Tk5NY5AtCtPCTR+GTPrq8UcJmEiLZSIC2l8rkZH4bsg3PjhSEh+AZgeZ4DRrvr1sMLYsmGuOXHKnorAgz7KaQCMb+sU+oCPKxsHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wRp4y+/g; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-295c67ab2ccso2349834a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 23:46:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707810336; x=1708415136; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lf6TU7R23fdwJeKphz6y3AoUlEwOvpYPP6zi5/0Y1Nw=;
-        b=hjN0yzWpqs/SxzJFV3e/D94oUFEjib269EiJfwKtXgN2M8YUhmYoRpco8JxWG0ojNb
-         J7SSdHot4kIggYJcLSztBp2xiUeIzGO6gJo+SYvDEzUKoMfKtmTcLcjTSB6vlPjA8tSw
-         OSAH2+ebq6z61FaLb+0sB/e7CivFlxWCA/BtAxfGgXoOM3FBVmwPJvdTKrZJ3ln8FKog
-         4EFUsmxYAa9T1c52cc0mxw8cbaXxB3MkmuZOp5N+g6OOQg4K9P8Alz9zRnyptUMkeBE4
-         Dy3JzPoIU2w1HSuIlCQsFTt92OB94O2ReeDeTQOwe3aeZasfYzzVDKR/7CuRzYuLnYu7
-         hvUA==
+        d=linaro.org; s=google; t=1707810368; x=1708415168; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wc/cvXAJMHLqdf3OgGzlHdpWHxevmYx69ypRgOrbw4o=;
+        b=wRp4y+/gtEfFppzCMSKb2hLFGsgZTEDfWWnktQV8A10PLkaWfolNWQepNo+IOMgb/j
+         9byLsclPFVXSqkyc1FPx5loPJSqQROLN1IAdToojFu3ti18np5DUyWQ6SyG4RsP2fkAX
+         hULwyclSR0JCyrtexoADJi7kgS08QXbruYV8grLzSSVBoD5qDC4ekn8pN7HRFMWVO5x+
+         Furne9o8JfPdFZAM3vZ55ET0dZQIIQ/CN1sxWIQWNoU0M7uLhTwSCvKjFZS3s4qovq1x
+         BNoG0coWxRHjkaAuF7kCVIlLbKNCgmfLKYLkoXD+UEHUvGENlKnZlWve+9c84ElIIN3q
+         /avQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707810336; x=1708415136;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lf6TU7R23fdwJeKphz6y3AoUlEwOvpYPP6zi5/0Y1Nw=;
-        b=RMz2LwjxHKyL6dWHWg3iJ3xZu5s5hSuqe7NouqVJC/Ouiqj0DtoEJWr8EZ55FmUoLC
-         lGmXzlpNI2KAXnPw16tRI0z/TKZ1ym5rTWx3ND2vYNa2zkCE/YtIHzjJS4XFnA8Slnpt
-         dZJFlQeaa9RDKc7I1m9m9T4aoyQpZXRkoMM3BYlvd6yNCrr/il2wk6hywhp/XDJjxZR/
-         D3QeAVIAYiUy2/IIBomWpquEPbQMKwDtHKM/paCTvUTpS695ynRovQyC+/qjBOrRzyuK
-         sjMYEZibBGvydzJngNVNp3k+PxUQLNkr1TxMe/tX+R7kQuMKtLwPTj46hGZ02R6RYzgQ
-         l9+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVPDgh0IsjLkVPg38jxXtgxlv8a/Duh9i0DVTqm3AYp3gyXqSPIE3QTs4sBoUHSmadK8DDift+s4B+Vm7FR33K60kdS4bz/lx8nuTuFv2guYMWzE/0Kke57ZlBJZ84BYeK+iupMAn3f079x2LLd2Axmt05N4boWrNMONtioN3ZTUD2sD4lx8w==
-X-Gm-Message-State: AOJu0Yykvx9J4RpJCxmrhlN5ec6Kn6JYWi3DtiRpAe8/TGjkmFsLbK73
-	N6kI9SC348RjIPLPtByEIZCxnLENnQ3FF2xCYPcNKSRAwfh8ba2i
-X-Google-Smtp-Source: AGHT+IFB32NDcQmAPenodD0C/m/q3IvvehbB5VLqV5e/hF7bajsOzyb4m5wuvYgLsq7sKPW9KLr0pA==
-X-Received: by 2002:a17:902:7594:b0:1d9:f495:cfa0 with SMTP id j20-20020a170902759400b001d9f495cfa0mr7908830pll.17.1707810336465;
-        Mon, 12 Feb 2024 23:45:36 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUWfCKAy0R554PZgy+jTF7bvQinwiK40SDfAd3dbexA1oYjayA5IhibOFUs1K03rNnFvwPrTQhFUbehdd538hbKeNbbBTEVGAqAEKCFnl4tp8DnSiIjke213xXJnioacFNU8ePiXU7ifNheBw3hjJxlCQiQtJDLL2SWXJ0lfrsMcLfN2p00QXwcfc2C9O2eaeqZa43W2m7mvH+13vSGTJSjoU43+VgIzSqLchJK3zKp9qLBkQa9sdz0JQf6+Mu6zq7ZHKbhu9m4jRkpOi2NZoMYBsBwiSviIEOkzjTaec6i2jYsl51bdKJtj4IY0h87vzu0UjBxui3X56FPTD7KOfZYU13CaXx8ACIzgqmAyu05pOTkQD1P0sLdHsdT87nPGcTjTJXDXlejFn7bmv+oC7cbDQ0OI0koXWn/ZziVB2AqnrNiOL/p8HvJ
-Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id f14-20020a170902ce8e00b001d7252fef6bsm1463926plg.299.2024.02.12.23.45.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 23:45:35 -0800 (PST)
-Date: Tue, 13 Feb 2024 13:15:29 +0530
-Message-Id: <87cyt0vmcm.fsf@doe.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, hch@lst.de, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com
-Cc: martin.petersen@oracle.com, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com, John Garry <john.g.garry@oracle.com>
-Subject: Re: [PATCH 0/6] block atomic writes for XFS
-In-Reply-To: <20240124142645.9334-1-john.g.garry@oracle.com>
+        d=1e100.net; s=20230601; t=1707810368; x=1708415168;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wc/cvXAJMHLqdf3OgGzlHdpWHxevmYx69ypRgOrbw4o=;
+        b=mZqc5IPUrPmshM30Jil4nmMC+qRPLl0Y/QoWvWEa4FMDgAkef2twu/YC9IpyE3pPdk
+         v2PKRLR+YmKJVgrDEM4vS5hNsww8dRT01ZjC+di/EkQpfYwFmoBSjWMDzlJ1OEzPZVT5
+         2WCreRiLnvZDEEjHV7od7ZudMkHMMZcTAjEKZQjvCP6dAXnWq3htny02PREZzs99umgv
+         5THU98XusD/Q2KRkAihBkVlkcnLBA1faX9me4/2QUWbMI905hhVl4vQj6qwSm/sBzLJP
+         i4utWTK+97rCuamPVXZA1BsCpvh1F9MvTp1z6RiHYDphQj5ndLmLGG34nnS1gzqQLHtU
+         afsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVlz6orGLT7Ozk8wa/lsBJOZXBr3Q4bW0V38uoEu9n7XclBrmNmDbLFXUErlDBOJzMx64JOeQqWkOSAMbu+75K20sm+VcEvIAyxl/76
+X-Gm-Message-State: AOJu0Yy5sUwQx/Mk/kHrYQ+I/+Sg6Pah6h6i6gYb/Ki7gbCB6IMq9mVw
+	d7C8Kxvtd7NhAhbTZhyTRnJEVEp4543ps16LpEG3STmogvmJEq04q6Ec6MrPvdtRPzoIfPP1Wyu
+	D2eryL7TS90gFp5gTB2Fe7FmbtuSvOvlT7kCSjQ==
+X-Google-Smtp-Source: AGHT+IFdvfgjVONNLkilvrus+P4w+DyEa0NYIWoHABD8QicCZK9AR0GQ1fkksQSgeaFJKKEaqvVlPMu8yR9t9mO2kGo=
+X-Received: by 2002:a17:90a:a38b:b0:297:1927:71ed with SMTP id
+ x11-20020a17090aa38b00b00297192771edmr4510101pjp.6.1707810367904; Mon, 12 Feb
+ 2024 23:46:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240211074950.247836-1-zhaoyang.huang@unisoc.com>
+In-Reply-To: <20240211074950.247836-1-zhaoyang.huang@unisoc.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 13 Feb 2024 08:45:56 +0100
+Message-ID: <CAKfTPtDobWtDjoqvw0Q=H7DAUayQ=HNU9hu1s1JHAbKRmJaJiw@mail.gmail.com>
+Subject: Re: [PATCH] sched: make cpu_util_cfs visible
+To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>, linux-kernel@vger.kernel.org, 
+	Zhaoyang Huang <huangzhaoyang@gmail.com>, steve.kang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
 
-John Garry <john.g.garry@oracle.com> writes:
-
-> This series expands atomic write support to filesystems, specifically
-> XFS. Since XFS rtvol supports extent alignment already, support will
-> initially be added there. When XFS forcealign feature is merged, then we
-> can similarly support atomic writes for a non-rtvol filesystem.
+On Sun, 11 Feb 2024 at 08:50, zhaoyang.huang <zhaoyang.huang@unisoc.com> wrote:
 >
-> Flag FS_XFLAG_ATOMICWRITES is added as an enabling flag for atomic writes.
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 >
-> For XFS rtvol, support can be enabled through xfs_io command:
-> $xfs_io -c "chattr +W" filename
-> $xfs_io -c "lsattr -v" filename
-> [realtime, atomic-writes] filename
+> As RT, DL, IRQ time could be deemed as lost time of CFS's task, some
+> timing value want to know the distribution of how these spread
+> approximately by using utilization account value (nivcsw is not enough
+> sometimes), wheras, cpu_util_cfs is not visible out side of
+> kernel/sched, This commit would like to make it be visible.
 
-Hi John,
-
-I first took your block atomic write patch series [1] and then applied this
-series on top. I also compiled xfsprogs with chattr atomic write support from [2]. 
-
-[1]: https://lore.kernel.org/linux-nvme/20240124113841.31824-1-john.g.garry@oracle.com/T/#m4ad28b480a8e12eb51467e17208d98ca50041ff2
-[2]: https://github.com/johnpgarry/xfsprogs-dev/commits/atomicwrites/
-
-
-But while setting +W attr, I see an Invalid argument error. Is there
-anything I need to do first?
-
-root@ubuntu:~# /root/xt/xfsprogs-dev/io/xfs_io -c "chattr +W" /mnt1/test/f1
-xfs_io: cannot set flags on /mnt1/test/f1: Invalid argument
-
-root@ubuntu:~# /root/xt/xfsprogs-dev/io/xfs_io -c "lsattr -v" /mnt1/test/f1
-[realtime] /mnt1/test/f1
+We expect a user of this to be sent as part of the patchset
 
 >
-> The FS needs to be formatted with a specific extent alignment size, like:
-> mkf.xfs -r rtdev=/dev/sdb,extsize=16K -d rtinherit=1 /dev/sda
+> eg.
+> Effective part of A = Total_time * cpu_util_cfs / sched_cpu_util
 >
-> This enables 16K atomic write support. There are no checks whether the
-> underlying HW actually supports that for enabling atomic writes with
-> xfs_io, though, so statx needs to be issued for a file to know atomic
-> write limits.
+> Task's Timing value A
+> Timing start
+> |
+> |
+> preempted by RT, DL or IRQ
+> |\
+> | This period time is nonvoluntary CPU give up, need to know how long
+> |/
+> sched in again
+> |
+> |
+> |
+> Timing end
+
+You have to use *_avg with care if you want to get such figures
+because they do not only reflect the last task activation but an
+average of the past dozens of ms so you can easily get wrong figures.
+
+
 >
-
-Here you say that xfs_io does not check whether underlying HW actually
-supports atomic writes or not. So I am assuming xfs_io -c "chattr +W"
-should have just worked?
-
-Sorry, I am still in the process of going over the patches, but I thought let
-me anyways ask this first.
-
-
--ritesh
+> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> ---
+>  include/linux/sched.h | 1 +
+>  kernel/sched/sched.h  | 1 -
+>  2 files changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 77f01ac385f7..56953626526f 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -2318,6 +2318,7 @@ static inline bool owner_on_cpu(struct task_struct *owner)
+>
+>  /* Returns effective CPU energy utilization, as seen by the scheduler */
+>  unsigned long sched_cpu_util(int cpu);
+> +unsigned long cpu_util_cfs(int cpu);
+>  #endif /* CONFIG_SMP */
+>
+>  #ifdef CONFIG_RSEQ
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 04846272409c..46110409e0f3 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -3027,7 +3027,6 @@ static inline unsigned long cpu_util_dl(struct rq *rq)
+>  }
+>
+>
+> -extern unsigned long cpu_util_cfs(int cpu);
+>  extern unsigned long cpu_util_cfs_boost(int cpu);
+>
+>  static inline unsigned long cpu_util_rt(struct rq *rq)
+> --
+> 2.25.1
+>
 
