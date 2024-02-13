@@ -1,175 +1,156 @@
-Return-Path: <linux-kernel+bounces-64452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87403853EC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:33:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60ED6853E89
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:24:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30193B29E52
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:22:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 212162921AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30F962177;
-	Tue, 13 Feb 2024 22:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DC362168;
+	Tue, 13 Feb 2024 22:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="B2K4trAV"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l9BCO3Pz"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAA16215E
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA63E62143;
+	Tue, 13 Feb 2024 22:24:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707862917; cv=none; b=jtzwEkx37PzNCaMzzGML+wQ4wWvP7CfUP7HaYDBop02RUhCw3IPn4aG1tv10p2aYtOMxWkkFfqvxQW1DiADbrjVE+Tgrz3NMMXQ/M4l72DRxhXJTSnx9pbzd0u1RKRPWE5968k520qPhU2bW/PiTFsw+Vpn7b7hcuBmwG2fs5kY=
+	t=1707863044; cv=none; b=uF39VjHatjixsr5tlns1YqCEecFnE59JTdorp9yi3qdIYdhQiUnFi/eGxda6vBQhYOyS9eNf/lfS2Miz+X943qjAmb0OyeVMk0inORqP3DoNIoN6syMyKnMod7kPr6iLOQLb8w4DaWCPTSPccluZoGcZn014PlC738erNULT230=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707862917; c=relaxed/simple;
-	bh=cIwjCMqi1AkYtCHb9iJc6puv/i36jok3H6ASbTJJd/4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LAZ757onsPhICA2KCj7ZKAFHO+sUcGZtpjX+mT7z1Ny+Ud7VrAqZqEfEMWWu0LzMLnRfnfMimK5sGMNXYK/+d3pZwXEkc5uJZeQDen+cHs0xo7VZ/fb2MxpcoGTnYYdb85CA7RTZg4w1HlKtyyDdb8KStZeV+XI+4LR8BReAAMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B2K4trAV; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707862914;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lyp171DHUrojJFMT3bkx7Bt4ffX/0uqxL7T14u2Lvds=;
-	b=B2K4trAVGjJUKVxYMPppjMOkYxXI5Rdi+UQnWAMe0z9j6LKmHpVbxzX5Kcll3mwbpjgF4o
-	K4onm0YSn3TGTKjSUzTtAMHsGdoihVlg8+sGIIWVURlHxDy0+9XuNMcJu/b2MGb5WFyROH
-	HWAYALJ149HxMi+uLudrPOdMiWV+tvU=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-532-maYTjBDsPnWrpfs6VJdc7A-1; Tue, 13 Feb 2024 17:21:53 -0500
-X-MC-Unique: maYTjBDsPnWrpfs6VJdc7A-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d0be4e5cf2so52601901fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:21:52 -0800 (PST)
+	s=arc-20240116; t=1707863044; c=relaxed/simple;
+	bh=Q7yhFk4pX598SxD0gAFPG2cq1/Q1XfZlHBopnV2lvSo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h2gZsGGMXBreQ/iJ2Jgfev0gtgwOtQrWfZIOSHtLBJRZzEnyRSEWZTqNLxpMqYMR/r4gALYJSE8UZqepVwvd2RDrUmcANjHsOZfmFkRb8pKB1dJZW0yxzeQSWwF+L6vIZ96UknkAigGxMtq5HNPeelqiiLmWnC03pSNTR04OXRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l9BCO3Pz; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1db4977be03so1358845ad.1;
+        Tue, 13 Feb 2024 14:24:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707863042; x=1708467842; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MmPPVce04OmE6pjEU+43mxBTewwTDrSldoXWGdB+S6k=;
+        b=l9BCO3Pz0ZgsT495TmCSyhY3gxKFVIbTkUt+b579x2/EspyUgVlauHdFgqIaMtS4eQ
+         PAuuPlbLHPwxun5JG+ANZhEjIkMsQCiA7td7T2t5yo1t2Mz2Bgyhyh7cj6ur65wEdfho
+         CavI1O7VfJ7tmXe/qB4iXIWhJUoLQOKJbZzHbCSEwnWxgvhV/sHh/kZnZxzYSN8l1ha3
+         T0foq+UlZwxUa0wJS4QGA1PktR4zDWDQpEmWXuPCV6YN97vUzVFcRGV+vAKBarVgpS38
+         IbinwudBLUnkTqa0A4QfpbznUGPilicQLhhrclU8Km1smXcndZjaIJSItZXLFFXa+l/h
+         Vn6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707862910; x=1708467710;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lyp171DHUrojJFMT3bkx7Bt4ffX/0uqxL7T14u2Lvds=;
-        b=l6wRqPFfonUfnM8atokETvgYRxCteUMWB9jPRTHoMhjRKeQpthU/0Nqr1scfJpkNEl
-         q3+dQrHZB6qeOzOOlBtKQmv0MorBoLdcTwn3xqWORw41ZTrgw9eYLQj3FHzJx8dEtAjR
-         4UnqepV3ZqZi41x0NN+xZBvwCjcNSaHf4mh716sILa+c64f2D+A8j/QpP+R+AX6Cy+kl
-         LLLaxEIomZr/FNvaTS+QWic0IyGWb126EhYvJzyuqluKtfutRI7TLioxOYboUAoduYD1
-         cI2HNCV3DdkWs94+0C/jU1gbg1VwKdxElhsQF1AddiwhLSxAefN8ZLqb4RhXM+wDdtGT
-         lgMA==
-X-Forwarded-Encrypted: i=1; AJvYcCUL20HgvIr4sKxCozQ1ndevEtLPwu+TJdIWtRMQiB4foHYP0yU0Dhw26QO/WseAvTA74WFcBfvIgkPhZHo+UZgqVRZqNUO0amOi5zyk
-X-Gm-Message-State: AOJu0YzgJi6incT0Wgy0yYXVRCzd8EJaAax/GsytK8DyNGMdeeQtWAnc
-	U8mZBwcPQ2gs2hB/DQYXO+l/tyDRWhKEw63S+MnblSSmdmuj/naLr4MVjKdIjV7bFUhJ3bQ+VK2
-	HNduTx3+XClXRI4yKbZoKYP72mqMTAThyfYqKY0qNC9XIeMpXoxdJZNRCwDM0gw==
-X-Received: by 2002:a05:651c:204c:b0:2d0:bff6:132a with SMTP id t12-20020a05651c204c00b002d0bff6132amr543997ljo.35.1707862910655;
-        Tue, 13 Feb 2024 14:21:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEXcEWhP6R8z+wgGH2qQyNL+p6dJa+m1ttJZm5Thh399xbQdsSq/9lMj8nBk4Bq3bgZJZd8Yw==
-X-Received: by 2002:a05:651c:204c:b0:2d0:bff6:132a with SMTP id t12-20020a05651c204c00b002d0bff6132amr543981ljo.35.1707862910196;
-        Tue, 13 Feb 2024 14:21:50 -0800 (PST)
-Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
-        by smtp.gmail.com with ESMTPSA id y5-20020a7bcd85000000b00410ab50f70fsm53748wmj.15.2024.02.13.14.21.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 14:21:49 -0800 (PST)
-Message-ID: <659e1abb-40d0-42ba-ba0a-8256d7eb1c5a@redhat.com>
-Date: Tue, 13 Feb 2024 23:21:48 +0100
+        d=1e100.net; s=20230601; t=1707863042; x=1708467842;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MmPPVce04OmE6pjEU+43mxBTewwTDrSldoXWGdB+S6k=;
+        b=Mh4smeMEJzFOXnfeld4xukjlFvfzj5ajAxStxsAMknkoWYKvo+4q3O5SjYrmKw7VbU
+         zzJImmV4EMeR+qbu2HplXD86tcwycN7AMJCBSgBr5G8cYp15qqDf5DgXnjwcBRxKIo63
+         D4o2C7MZXtTjgGANRg9G5cdXDkoHYh/lfJGAKwIuTJXaxYH7CqxjsYjTCIvaaSi4frUI
+         Moe5NhHBJr0fpcAhItj4+k8Eqg4dhEVceMN003E8AiyduXnMymuODz5yJxjGT20DPJ0f
+         YWzNSr2LUYtXsJtnWJ7jTCthnyHn2T+iTS2/7wFKpZagVIgEYTuPzPHPBpyyXr5OjKW6
+         x7Zg==
+X-Forwarded-Encrypted: i=1; AJvYcCXObQ8ObDVphZM1I+qOZHYJJSux7AfFz1H9EE6Pv/p7tCafr3+aIMXrvFIED8Uati4gUy1E2ez4t23vPu+KZygXqRmyTjU5MhNT03BZr4IhJ7Mas1OTa+oG7nj2MJkAaZRaFkEB
+X-Gm-Message-State: AOJu0YzV7lllYBBhtP+s3ThMU4ytnZh29XfGB7UtRvy8vd4krPiGqD4t
+	9Lje6gsrNrWS/CPJHDfoRRmU7YSLnuHkHfB7Cm9gHjivRVvnxA89
+X-Google-Smtp-Source: AGHT+IFxIAWWVA/VRD5OF45TafGXBeA6kTytVJZ4XCV0BD7jXp9sXvvd9vxhEfjWFzOQ5wMefamshA==
+X-Received: by 2002:a17:903:1207:b0:1d9:5ef2:a562 with SMTP id l7-20020a170903120700b001d95ef2a562mr254090plh.10.1707863042047;
+        Tue, 13 Feb 2024 14:24:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXkwRA7jCuQUCYvCGX5y6jn6WOIQAvqoxyUJoInq4shQ4oAEDnLQTAPlD5c21AXpe6neVlVs8ycyq3JJnMxxjgni56SX2HHl4B9Ccyx0xyihpZAVOsLAm8aSXcw7XeXKz6oX2J78DxbcSSsaVEMpBbJ4s3Sg+7dgcIjDFxyrVdEAzgmFbYV4ZVim6aIQNp1Ly/aADUy0iqKskkXYV+Vb9zvBloQIeibN6GLC4r7OruA68stA/e2U9hYUZBQzvZk4N0RaA4YmTxM/PTi8TEvpCugz7PUwikVUoAeWnM9iy88TNhsknuF9BgDcvw=
+Received: from jmaxwell.com ([203.220.178.35])
+        by smtp.gmail.com with ESMTPSA id iz21-20020a170902ef9500b001db499c5c12sm776490plb.143.2024.02.13.14.23.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 14:24:01 -0800 (PST)
+From: Jon Maxwell <jmaxwell37@gmail.com>
+To: jesse.brandeburg@intel.com
+Cc: anthony.l.nguyen@intel.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jmaxwell37@gmail.com
+Subject: [net-next v3] intel: make module parameters readable in sys filesystem
+Date: Wed, 14 Feb 2024 09:23:44 +1100
+Message-Id: <20240213222344.195885-1-jmaxwell37@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/7] Split a folio to any lower order folios
-Content-Language: en-US
-To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
- <kernel@pankajraghav.com>, linux-mm@kvack.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
- Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Mcgrof Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240213215520.1048625-1-zi.yan@sent.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240213215520.1048625-1-zi.yan@sent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 13.02.24 22:55, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> Hi all,
-> 
-> File folio supports any order and multi-size THP is upstreamed[1], so both
-> file and anonymous folios can be >0 order. Currently, split_huge_page()
-> only splits a huge page to order-0 pages, but splitting to orders higher than
-> 0 is going to better utilize large folios. In addition, Large Block
-> Sizes in XFS support would benefit from it[2]. This patchset adds support for
-> splitting a large folio to any lower order folios and uses it during file
-> folio truncate operations.
-> 
-> For Patch 6, Hugh did not like my approach to minimize the number of
-> folios for truncate[3]. I would like to get more feedback, especially
-> from FS people, on it to decide whether to keep it or not.
+Linux users sometimes need an easy way to check current values of module
+parameters. For example the module may be manually reloaded with different
+parameters. Make these visible and readable in the /sys filesystem to allow
+that.
 
-I'm curious, would it make sense to exclude the "more" controversial 
-parts (i.e., patch #6) for now, and focus on the XFS use case only?
+Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
+---
+V2: Remove the "debug" module parameter as per Andrew Lunns suggestion.
+V3: Correctly format v2.
+ drivers/net/ethernet/intel/e100.c             | 4 ++--
+ drivers/net/ethernet/intel/igb/igb_main.c     | 2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
+index 01f0f12035caeb7ca1657387538fcebf5c608322..3fcb8daaa2437fa3fe7b98ba9f606dbbb1844e58 100644
+--- a/drivers/net/ethernet/intel/e100.c
++++ b/drivers/net/ethernet/intel/e100.c
+@@ -171,8 +171,8 @@ static int debug = 3;
+ static int eeprom_bad_csum_allow = 0;
+ static int use_io = 0;
+ module_param(debug, int, 0);
+-module_param(eeprom_bad_csum_allow, int, 0);
+-module_param(use_io, int, 0);
++module_param(eeprom_bad_csum_allow, int, 0444);
++module_param(use_io, int, 0444);
+ MODULE_PARM_DESC(debug, "Debug level (0=none,...,16=all)");
+ MODULE_PARM_DESC(eeprom_bad_csum_allow, "Allow bad eeprom checksums");
+ MODULE_PARM_DESC(use_io, "Force use of i/o access mode");
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 4df8d4153aa5f5ce7ac9dd566180d552be9f5b4f..31d0a43a908c0a4eab4fe1147064a5f5677c9f0b 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -202,7 +202,7 @@ static struct notifier_block dca_notifier = {
+ #endif
+ #ifdef CONFIG_PCI_IOV
+ static unsigned int max_vfs;
+-module_param(max_vfs, uint, 0);
++module_param(max_vfs, uint, 0444);
+ MODULE_PARM_DESC(max_vfs, "Maximum number of virtual functions to allocate per physical function");
+ #endif /* CONFIG_PCI_IOV */
+ 
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index bd541527c8c74d6922e8683e2f4493d9b361f67b..9d26ff82a397d4939cf7adea78c217e4071aa166 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -147,13 +147,13 @@ static struct notifier_block dca_notifier = {
+ 
+ #ifdef CONFIG_PCI_IOV
+ static unsigned int max_vfs;
+-module_param(max_vfs, uint, 0);
++module_param(max_vfs, uint, 0444);
+ MODULE_PARM_DESC(max_vfs,
+ 		 "Maximum number of virtual functions to allocate per physical function - default is zero and maximum value is 63. (Deprecated)");
+ #endif /* CONFIG_PCI_IOV */
+ 
+ static bool allow_unsupported_sfp;
+-module_param(allow_unsupported_sfp, bool, 0);
++module_param(allow_unsupported_sfp, bool, 0444);
+ MODULE_PARM_DESC(allow_unsupported_sfp,
+ 		 "Allow unsupported and untested SFP+ modules on 82599-based adapters");
+ 
 -- 
-Cheers,
-
-David / dhildenb
+2.39.3
 
 
