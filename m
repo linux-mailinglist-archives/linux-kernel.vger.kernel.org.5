@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-64581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F35FD854086
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:59:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBBC0854077
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:57:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A99A5285CE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:59:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A3541C220D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D3B63506;
-	Tue, 13 Feb 2024 23:57:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96DCE634E5;
+	Tue, 13 Feb 2024 23:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Zi9hkaCg"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="w5NHqP36"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306E865BD5;
-	Tue, 13 Feb 2024 23:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F22633E3;
+	Tue, 13 Feb 2024 23:57:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707868664; cv=none; b=A5sVvUCRTyio3MoWnoUxS6LuGb3TV4ek4pOFS+RgrZSIYZe6a5Cbbs3MNYQlqZnIWUkQlLzsTEwkRXubjOGsJn54Hr1wbfDuxmkwdplyqXHvLj8NAELP/V/ch0FVZLJyvmOsGCn1BPVWih/eT/849LMDdjwZE8RxJQU0irdvcqI=
+	t=1707868637; cv=none; b=nBB1PIrgomj1CTB9LqLOxr4lEoe8zIiZ5oGi1G8LBp3zHjNSG192XqIJqYqJLs1SAIYKiA1Pp/sAlfXUkSxXtYQxhmCKwiEJJEy5oNNFfLDAjnaawY0Ac6JFIYimuJSXfv59Bfdlrn8ldEN9hORWE8CGdlwkF/5up5qkprS66iA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707868664; c=relaxed/simple;
-	bh=piAU5tC1h1y3vvrNsOA2aQ3BtK64uKqiYYvZ0WADs+Y=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=i7Z3SJJUk3t0P5E1Pn7LYIXCFfqf74OiUZyFPjdaCBdEgyTutXZA/+N4i578sH8AasM2UsB0i5Us39H9v10d+DIGKbrtoKwxzt20IYF3kGWd6Vu3b3J1nsWKgrhnFwYqiv0HodkeESkS+/1chckLBfxWae1YwzTfeP1YRi27O0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Zi9hkaCg; arc=none smtp.client-ip=198.47.19.142
+	s=arc-20240116; t=1707868637; c=relaxed/simple;
+	bh=RliZgGwqkdZMf6oC5R6Ye0DRZwveQJjMq0kaUpVdYyc=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Xn6duhEc81H2MUQCsJ/dkKcG5OUKvmdkkXHO8jHYqmPuP/mPhFwC1tDG2MNmW0Pjp11JreahFGs0GpLU9TjQX728XD6GhnYZCqP4dqKmTpeNYOHSnmkiW0x3KWiksTt6HBXdUlp23Im31UhwfYLS3mET58GJPktFFoTtYYKAQlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=w5NHqP36; arc=none smtp.client-ip=198.47.23.248
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41DNv1X7010135;
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41DNv1eO011587;
 	Tue, 13 Feb 2024 17:57:01 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1707868621;
-	bh=3S3Qh1mo0rfRIPDFHYJT0K7IV8QikFSO5XW0LQrfkrc=;
-	h=From:To:CC:Subject:Date;
-	b=Zi9hkaCg+wq7kfGHtJEQSHBkhTFsyZfpwlvkxXs7D9ybRicm3kq25S/HzUUgbugpw
-	 CWZdUS25bsLcbc+diuJKKVFF1eMfngxpFwENdDTlpw8E1SrLVYM6W6EwcJyrSvvy8Y
-	 WTXmUOh+tevj4uXv3sj4r/thVsaWC9zf/gnjO8jE=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41DNv1Z2006441
+	bh=OYMUtm7mcaGUZqYkatydGnP5VB4U9ZqqxfxUI7h4/CA=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=w5NHqP36UW8VxqgJLjKK4vVsybPjPgy6SxUTycDjrPAMvGf5+sSM8c7l9rNBCbi8b
+	 QUtahuij9zVSURNEumFTxdMz6zGJOdludmf15Y+yKmsuU84gV+0DbEB+xAfFVkQLXw
+	 J2Hl83ylIEelThaxVS3RkHi8xWOJ4zdS6ASNxWkM=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41DNv1aQ074637
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Tue, 13 Feb 2024 17:57:01 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 13
  Feb 2024 17:57:01 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Tue, 13 Feb 2024 17:57:01 -0600
 Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41DNv1R4091761;
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41DNv1R5091761;
 	Tue, 13 Feb 2024 17:57:01 -0600
 From: Judith Mendez <jm@ti.com>
 To: Rob Herring <robh+dt@kernel.org>,
@@ -66,10 +67,12 @@ CC: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         <linux-kernel@vger.kernel.org>, Wadim Egorov
 	<w.egorov@phytec.de>,
         Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: [PATCH v3 0/9] Fix MMC properties on Sitara K3 devices
-Date: Tue, 13 Feb 2024 17:56:52 -0600
-Message-ID: <20240213235701.2438513-1-jm@ti.com>
+Subject: [PATCH v3 1/9] arm64: dts: ti: k3-am62a-main: Add sdhci0 instance
+Date: Tue, 13 Feb 2024 17:56:53 -0600
+Message-ID: <20240213235701.2438513-2-jm@ti.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240213235701.2438513-1-jm@ti.com>
+References: <20240213235701.2438513-1-jm@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,81 +83,51 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-This patch series aims to fix and update MMC nodes for TI
-Sitara K3 devices with the following changes.
+From: Nitin Yadav <n-yadav@ti.com>
 
-The series introduces sdhci0 and sdhci2 nodes and enables
-eMMC for AM62ax platform.
+Add sdhci0 DT node in k3-am62a-main for eMMC support. Add otap/itap
+values according to the datasheet[0], refer to Table 7-79.
 
-Also introduce fixes for MMC ITAP/OTAP values for AM64x
-platform according to device datasheet [0], and add ITAP/
-OTAP values for AM62p to enable the highest timing possible
-for MMC0 and MMC1, according to device datasheet [1].
+[0] https://www.ti.com/lit/ds/symlink/am62a3.pdf
 
-The DLL properties ti,trm-icp and ti,driver-strength-ohm
-should be removed for soft PHYs since drive strength cannot
-be changed, so remove these properties when not applicable.
-Since this fix touches non-TI boards and therefore cannot be
-tested, all tested-by's are welcome.
+Signed-off-by: Nitin Yadav <n-yadav@ti.com>
+Signed-off-by: Judith Mendez <jm@ti.com>
+---
+Changes since V3:
+- No change
+---
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-Also include a few fixes for ti,clkbuf-sel, bus-width,
-and bootph-all device tree properties in MMC nodes.
-
-This series was tested on:
-- AM62a SK
-- AM62x SK
-- AM62p SK
-- AM64x GP EVM
-- AM64x SK EVM
-- Beagleplay
-
-[0] https://www.ti.com/lit/ds/symlink/am6442.pdf
-[1] https://www.ti.com/lit/ds/symlink/am62p.pdf
-
-Fixes since V2:
-- Remove ti,driver-strength-ohm property in sdhci1 node for
- k3-am642-tqma64xxl-mbax4xxl and k3-am642-phyboard-electra-rdk board files.
-- Add Francesco's Acked-by
-
-V2: https://lore.kernel.org/linux-devicetree/20240213002416.1560357-1-jm@ti.com/
-V1: https://lore.kernel.org/linux-devicetree/22af7436-8833-4049-bdbb-f79bb3314ee8@ti.com/
-RFC: https://lore.kernel.org/linux-devicetree/c94b7399-31c0-4e7d-a616-8f29c86a27ba@ti.com/
-
-Judith Mendez (7):
-  arm64: dts: ti: k3-am62a-main: Add sdhci2 instance
-  arm64: dts: ti: k3-am64-main: Fix ITAP/OTAP values for MMC
-  arm64: dts: ti: k3-am62p: Add ITAP/OTAP values for MMC
-  arm64: dts: ti: k3-am6*: Remove DLL properties for soft PHYs
-  arm64: dts: ti: k3-am6*: Fix ti,clkbuf-sel property in MMC nodes
-  arm64: dts: ti: k3-am6*: Fix bus-width property in MMC nodes
-  arm64: dts: ti: k3-am6*: Add bootph-all property in MMC node
-
-Nitin Yadav (2):
-  arm64: dts: ti: k3-am62a-main: Add sdhci0 instance
-  arm64: dts: ti: k3-am62a7-sk: Enable eMMC support
-
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi      | 12 +++--
- .../boot/dts/ti/k3-am62-phycore-som.dtsi      |  1 -
- .../boot/dts/ti/k3-am62-verdin-dahlia.dtsi    |  1 -
- .../arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi |  1 -
- .../boot/dts/ti/k3-am62-verdin-wifi.dtsi      |  1 -
- arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi    |  2 -
- .../arm64/boot/dts/ti/k3-am625-beagleplay.dts |  4 --
- .../dts/ti/k3-am625-phyboard-lyra-rdk.dts     |  1 -
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi     | 45 ++++++++++++++++++-
- arch/arm64/boot/dts/ti/k3-am62a7-sk.dts       | 27 ++++++++++-
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     | 44 ++++++++++++++++--
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |  3 +-
- .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi |  2 -
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi      | 15 +++++--
- arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  4 +-
- .../dts/ti/k3-am642-phyboard-electra-rdk.dts  |  1 -
- arch/arm64/boot/dts/ti/k3-am642-sk.dts        |  2 -
- .../dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts    |  1 -
- 18 files changed, 129 insertions(+), 38 deletions(-)
-
-
-base-commit: 1e6bbc5185bcd113c8d2f7aa0a02f588a6bdbe5d
+diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+index 972971159a62..ce5f278235a4 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+@@ -536,6 +536,24 @@ main_gpio1: gpio@601000 {
+ 		status = "disabled";
+ 	};
+ 
++	sdhci0: mmc@fa10000 {
++		compatible = "ti,am62-sdhci";
++		reg = <0x00 0xfa10000 0x00 0x260>, <0x00 0xfa18000 0x00 0x134>;
++		interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
++		power-domains = <&k3_pds 57 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 57 5>, <&k3_clks 57 6>;
++		clock-names = "clk_ahb", "clk_xin";
++		assigned-clocks = <&k3_clks 57 6>;
++		assigned-clock-parents = <&k3_clks 57 8>;
++		bus-width = <8>;
++		mmc-hs200-1_8v;
++		ti,clkbuf-sel = <0x7>;
++		ti,otap-del-sel-legacy = <0x0>;
++		ti,otap-del-sel-mmc-hs = <0x0>;
++		ti,otap-del-sel-hs200 = <0x6>;
++		status = "disabled";
++	};
++
+ 	sdhci1: mmc@fa00000 {
+ 		compatible = "ti,am62-sdhci";
+ 		reg = <0x00 0xfa00000 0x00 0x260>, <0x00 0xfa08000 0x00 0x134>;
 -- 
 2.43.0
 
