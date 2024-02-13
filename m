@@ -1,232 +1,93 @@
-Return-Path: <linux-kernel+bounces-63355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32927852E19
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:37:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F23D4852E3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:44:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE0FA282F0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:37:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD3852836FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:44:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD8C374C9;
-	Tue, 13 Feb 2024 10:37:05 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 666E4286A6;
+	Tue, 13 Feb 2024 10:43:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="X59T67pM"
+Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DD52556E
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:37:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205A424B23
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:43:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707820625; cv=none; b=ru1QAa/aRc2qCBS+RhWNCWoWmktw1ObUYfyczq6tcbLMCDfIOb1zXA9h9QIaG62NlKVAMtK4AmymuiBbG7tzMlXP8p6tjiwr9VUTmEdYajP+Nnz48F9Z1HAQ98zEnwIuxKZ7NV0GdtaahDoA0+tXhL1pmFL97bSRXdPXu3xWPyI=
+	t=1707821038; cv=none; b=DfiMU/2wOeOVafHtdq9qF6dPlHpP5KJMxK4NSedH4FmODsD3GYKeCTrScOVkCKq4mLayyUhODjohDDQPNOuI9+33uOU22JhQSNOGTzn6dM50vU2KXsDYmZKY9oizqc4yCTuMwaml+NU1Fs/us1MT0AJGZl6kaJmbfHMzWsjUiMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707820625; c=relaxed/simple;
-	bh=Jp6tNSdjSsC9LzR+F9BEv8HFfLEkEp33evtGY9YtxYY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=JQEtFEK2jwUjZRjBz6gu2atGGzEusGVO/V4u2KARbFWeBKqM5YVP6+A5K+w7PvmF9U1AKL0UHkoiDD3ClI6QNTWS0yVTn4UhdIlM3+dqQkLpgxT1VM9hjeF1MgJ8VJpOu4/6qq/M91JutxuIwwjEXHi+nnSFYgicjxaoDo8mSOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rZq9s-0003Jw-Ku
-	for linux-kernel@vger.kernel.org; Tue, 13 Feb 2024 11:37:00 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rZq9s-000SqB-3l
-	for linux-kernel@vger.kernel.org; Tue, 13 Feb 2024 11:37:00 +0100
-Received: from dspam.blackshift.org (localhost [127.0.0.1])
-	by bjornoya.blackshift.org (Postfix) with SMTP id C6E3C28D55F
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:36:59 +0000 (UTC)
-Received: from hardanger.blackshift.org (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bjornoya.blackshift.org (Postfix) with ESMTPS id 1BC1128D525;
-	Tue, 13 Feb 2024 10:36:56 +0000 (UTC)
-Received: from [172.20.34.65] (localhost [::1])
-	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id 176c2619;
-	Tue, 13 Feb 2024 10:36:55 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Tue, 13 Feb 2024 11:36:45 +0100
-Subject: [PATCH v8 3/3] can: xilinx_can: Add ethtool stats interface for
- ECC errors
+	s=arc-20240116; t=1707821038; c=relaxed/simple;
+	bh=h3vHrYD7hhov7txanSMDe7pCpaatJhH7Xwj2ojnf8Rg=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=BXuM/AlzXJ768B5qXSHRjUWYr7YREZX7RhyQVLjkXggZhpOeswouIcaglgwvaZsVoZ6YvmdB3MjJ7Rt6KYFBltRBSeCBMvab7LEfKFtxQ4RKtrzL5Cp7uKoVrs4G8Ynd7hbQGQbI4n0HvZLTPoOoi0E1Sr2vOYSCaDM6/6jL5gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=X59T67pM; arc=none smtp.client-ip=203.205.221.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1707821027; bh=sEZ6YMGniVm+AtqGa4bZU5AbsOVmzpZP7amUT7bfhUo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=X59T67pMbYsdeIQ2s35KjiKzNz96km9WTfhgnl5Bz4b5n8iR04Y4vQY1Olg1EvJpZ
+	 fzHf9FT9sf0HRkEyRjkDHg7jwCD256Pgr2/8//uYdQXyJtMs0Jq3akXFCrEbjWylis
+	 mSdOgvcNOFGeHVSYATvm2imKQ4LHnMJVufvSZrGM=
+Received: from pek-lxu-l1.wrs.com ([36.129.58.158])
+	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
+	id 961908ED; Tue, 13 Feb 2024 18:37:33 +0800
+X-QQ-mid: xmsmtpt1707820653tv66kw34l
+Message-ID: <tencent_E2FE25978DA612195DF45DCD191D4FAF8D07@qq.com>
+X-QQ-XMAILINFO: NyTsQ4JOu2J2lMdCi18gEdOs0z7aETiwKrih2512wr3PfbM2scpmQRortbAmgR
+	 RAH/flE3RMECRy4iV0ookU809CcnopizHysyNuPqhNZ1birOD/82ycS2khAhqNoFsuFPiIgGU07f
+	 SZ4b+RaygMakxnHsfeUSRxuWGvp5O6fj3bjU98TWzuFAahFGyh/gngb2oilRB8/Ml8qXKCCYOW/a
+	 mKfxE4ZXPCaqzhk0ZhrpQ1DdhqECtyQhb9izj+2Wg4s9Zy10Cq+qLBm1NEBzqUZnJNOoiuylGLI6
+	 +CtUVTcV/AWfEphp9fs0JiVOXO0VKL2B7G+bgekbIn+DUVhd5cJfXsN325ubSTwhBcOC5nYojgH0
+	 Wssb59LhM+08nwOms2FHVQ1Z4iKl9/b1s1WZ8p5KPryDUuqLDK9XTG8WMzYzl8iR6p7HZly/2jE5
+	 7EgJLCYC5W4A06FFpLA5elwv9ApBn3qwHZmIKFKU7zP2r/yrTLfIFbsUjvEl6o9OlTOn2aWl1F3a
+	 jAQGHZdF6w3OeX/KCqU+2Hp7oJbqRep82Km5UZYyev3RyU4wqD5GZSq1xOc4UuywQKabmrXVXWhE
+	 hElCrD1PGf1E+KHS70c/1HQzZxZgnRWB24/WK1A3L23x2GXYMkdpy4OAZ9vnlUcnYoKDU9zHD3pV
+	 NBvUKNWEX0cVQO5pCv2h+UAXu/+jfaI7vZwRq1IP7L0vhJUTdwHzeRgkkc1bQsm+QL4b8+/WESVy
+	 RKJGklchCTkGL/6SacOp+nFNEIop8eo7dkWXxVyUKQDg54RFIGidaTPmb0tkqS2Kt1/3X+vuiYxD
+	 SbTx/RipNaG8Cxbd2IeUWq4Vf7b1eJrHZuF1/ORmrjmX2y+IQniQFdEvD7JAQNEfiwZMZdB+nCQ8
+	 bYYoZ9C5Xd7StO6L74h8XlT3chC6s8wyO1aL2s6VBFbI9M4cputIFicP+VuuXuUQ==
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+c2ada45c23d98d646118@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [ntfs3?] possible deadlock in ntfs_set_state (2)
+Date: Tue, 13 Feb 2024 18:37:34 +0800
+X-OQ-MSGID: <20240213103733.997747-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000998cff06113e1d91@google.com>
+References: <000000000000998cff06113e1d91@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240213-xilinx_ecc-v8-3-8d75f8b80771@pengutronix.de>
-References: <20240213-xilinx_ecc-v8-0-8d75f8b80771@pengutronix.de>
-In-Reply-To: <20240213-xilinx_ecc-v8-0-8d75f8b80771@pengutronix.de>
-To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>, 
- Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>, 
- Wolfgang Grandegger <wg@grandegger.com>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Michal Simek <michal.simek@amd.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Srinivas Goud <srinivas.goud@amd.com>
-X-Mailer: b4 0.13-dev-f0463
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4531; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=dNs+TfFXHp8UoDrintPodrh7/2sUKiVmMtrwIfjEaDA=;
- b=owEBbQGS/pANAwAKASg4oj56LbxvAcsmYgBly0ZEUHK7FW/4BO0TagCM8AasjVGSlWduY1Pdu
- 3MDqmGYmNGJATMEAAEKAB0WIQRQQLqG4LYE3Sm8Pl8oOKI+ei28bwUCZctGRAAKCRAoOKI+ei28
- b/1eB/9SIIq+eB8ulaG3zZoCZclbhuQxdvbvH87ds3WiJeZejquKSGhnvr1KSE1D1B+tnzrJJp8
- hKEA2n4z/8kuGM+n8lIfP5bJyTivOZju8zi504sGHq91HeGG53AJxjFZP7wvOJ/miL7zG/ne6Ru
- 5M1LfZrovBgSGIXokdlMy1YIKj0WVg65M8T7AIAZ9PVOzv48YYG8mNIWGRm3/HBXLJ2Q+lhMbHt
- ddhpdDL33nwUng2gHOs0BoaQ+j1tIyvFzdrk8r1tdbs+Xifv0QMLEO/XKyJuKcebteIEYJz1qwD
- DlYW2pukarxHeJA6UabmQp32YU8dJTxsREmHX8he1LiLSt8U
-X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
- fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
-From: Srinivas Goud <srinivas.goud@amd.com>
+please test deadlock in ntfs_set_state 
 
-Add ethtool stats interface for reading FIFO 1bit/2bit ECC errors
-information.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/xilinx_can.c | 64 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
-
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index af2af4eade3c..fae0120473f8 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -228,6 +228,7 @@ struct xcan_devtype_data {
-  * @transceiver:		Optional pointer to associated CAN transceiver
-  * @rstc:			Pointer to reset control
-  * @ecc_enable:			ECC enable flag
-+ * @syncp:			synchronization for ECC error stats
-  * @ecc_rx_2_bit_errors:	RXFIFO 2bit ECC count
-  * @ecc_rx_1_bit_errors:	RXFIFO 1bit ECC count
-  * @ecc_txol_2_bit_errors:	TXOLFIFO 2bit ECC count
-@@ -254,6 +255,7 @@ struct xcan_priv {
- 	struct phy *transceiver;
- 	struct reset_control *rstc;
- 	bool ecc_enable;
-+	struct u64_stats_sync syncp;
- 	u64_stats_t ecc_rx_2_bit_errors;
- 	u64_stats_t ecc_rx_1_bit_errors;
- 	u64_stats_t ecc_txol_2_bit_errors;
-@@ -347,6 +349,24 @@ static const struct can_tdc_const xcan_tdc_const_canfd2 = {
- 	.tdcf_max = 0,
- };
+diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+index 3b42938a9d3b..1dfc933b58ad 100644
+--- a/fs/ntfs3/frecord.c
++++ b/fs/ntfs3/frecord.c
+@@ -3210,7 +3210,6 @@ static bool ni_update_parent(struct ntfs_inode *ni, struct NTFS_DUP_INFO *dup,
  
-+enum xcan_stats_type {
-+	XCAN_ECC_RX_2_BIT_ERRORS,
-+	XCAN_ECC_RX_1_BIT_ERRORS,
-+	XCAN_ECC_TXOL_2_BIT_ERRORS,
-+	XCAN_ECC_TXOL_1_BIT_ERRORS,
-+	XCAN_ECC_TXTL_2_BIT_ERRORS,
-+	XCAN_ECC_TXTL_1_BIT_ERRORS,
-+};
-+
-+static const char xcan_priv_flags_strings[][ETH_GSTRING_LEN] = {
-+	[XCAN_ECC_RX_2_BIT_ERRORS] = "ecc_rx_2_bit_errors",
-+	[XCAN_ECC_RX_1_BIT_ERRORS] = "ecc_rx_1_bit_errors",
-+	[XCAN_ECC_TXOL_2_BIT_ERRORS] = "ecc_txol_2_bit_errors",
-+	[XCAN_ECC_TXOL_1_BIT_ERRORS] = "ecc_txol_1_bit_errors",
-+	[XCAN_ECC_TXTL_2_BIT_ERRORS] = "ecc_txtl_2_bit_errors",
-+	[XCAN_ECC_TXTL_1_BIT_ERRORS] = "ecc_txtl_1_bit_errors",
-+};
-+
- /**
-  * xcan_write_reg_le - Write a value to the device register little endian
-  * @priv:	Driver private data structure
-@@ -1182,6 +1202,8 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
- 		priv->write_reg(priv, XCAN_ECC_CFG_OFFSET, XCAN_ECC_CFG_REECRX_MASK |
- 				XCAN_ECC_CFG_REECTXOL_MASK | XCAN_ECC_CFG_REECTXTL_MASK);
- 
-+		u64_stats_update_begin(&priv->syncp);
-+
- 		if (isr & XCAN_IXR_E2BERX_MASK) {
- 			u64_stats_add(&priv->ecc_rx_2_bit_errors,
- 				      FIELD_GET(XCAN_ECC_2BIT_CNT_MASK, reg_rx_ecc));
-@@ -1211,6 +1233,8 @@ static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
- 			u64_stats_add(&priv->ecc_txtl_1_bit_errors,
- 				      FIELD_GET(XCAN_ECC_1BIT_CNT_MASK, reg_txtl_ecc));
+ 		/* Check simple case when parent inode equals current inode. */
+ 		if (ino_get(&fname->home) == ni->vfs_inode.i_ino) {
+-			ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
+ 			continue;
  		}
-+
-+		u64_stats_update_end(&priv->syncp);
- 	}
  
- 	if (cf.can_id) {
-@@ -1637,6 +1661,43 @@ static int xcan_get_auto_tdcv(const struct net_device *ndev, u32 *tdcv)
- 	return 0;
- }
- 
-+static void xcan_get_strings(struct net_device *ndev, u32 stringset, u8 *buf)
-+{
-+	switch (stringset) {
-+	case ETH_SS_STATS:
-+		memcpy(buf, &xcan_priv_flags_strings,
-+		       sizeof(xcan_priv_flags_strings));
-+	}
-+}
-+
-+static int xcan_get_sset_count(struct net_device *netdev, int sset)
-+{
-+	switch (sset) {
-+	case ETH_SS_STATS:
-+		return ARRAY_SIZE(xcan_priv_flags_strings);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static void xcan_get_ethtool_stats(struct net_device *ndev,
-+				   struct ethtool_stats *stats, u64 *data)
-+{
-+	struct xcan_priv *priv = netdev_priv(ndev);
-+	unsigned int start;
-+
-+	do {
-+		start = u64_stats_fetch_begin(&priv->syncp);
-+
-+		data[XCAN_ECC_RX_2_BIT_ERRORS] = u64_stats_read(&priv->ecc_rx_2_bit_errors);
-+		data[XCAN_ECC_RX_1_BIT_ERRORS] = u64_stats_read(&priv->ecc_rx_1_bit_errors);
-+		data[XCAN_ECC_TXOL_2_BIT_ERRORS] = u64_stats_read(&priv->ecc_txol_2_bit_errors);
-+		data[XCAN_ECC_TXOL_1_BIT_ERRORS] = u64_stats_read(&priv->ecc_txol_1_bit_errors);
-+		data[XCAN_ECC_TXTL_2_BIT_ERRORS] = u64_stats_read(&priv->ecc_txtl_2_bit_errors);
-+		data[XCAN_ECC_TXTL_1_BIT_ERRORS] = u64_stats_read(&priv->ecc_txtl_1_bit_errors);
-+	} while (u64_stats_fetch_retry(&priv->syncp, start));
-+}
-+
- static const struct net_device_ops xcan_netdev_ops = {
- 	.ndo_open	= xcan_open,
- 	.ndo_stop	= xcan_close,
-@@ -1646,6 +1707,9 @@ static const struct net_device_ops xcan_netdev_ops = {
- 
- static const struct ethtool_ops xcan_ethtool_ops = {
- 	.get_ts_info = ethtool_op_get_ts_info,
-+	.get_strings = xcan_get_strings,
-+	.get_sset_count = xcan_get_sset_count,
-+	.get_ethtool_stats = xcan_get_ethtool_stats,
- };
- 
- /**
-
--- 
-2.43.0
-
 
 
