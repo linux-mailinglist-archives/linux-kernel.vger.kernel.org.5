@@ -1,219 +1,166 @@
-Return-Path: <linux-kernel+bounces-63132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57225852B56
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:40:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB0E7852B61
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD50C1F23F0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:40:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86EAD2828DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0769E1B592;
-	Tue, 13 Feb 2024 08:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EC11AADE;
+	Tue, 13 Feb 2024 08:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ulUePcVn"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cD8RkokM"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E607E182D2
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4F818AEA
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707813599; cv=none; b=B2kE9G3TUleaf8cs8YsEAQ655y53I4gMz+5GYASX8NGE+lQlyKK0W4JRefo6PO8M9cQ2ew1aU2ialJNsEZJHiCSEcRpFyMLE8RySl2uF3XUsYOu1UJXLzNCse0MMc1Bn9rFFKFq0EHqy4UUkpXR831dv063Y8YctrUAmEiNt8DI=
+	t=1707813701; cv=none; b=itWLlFKtZgp7/nvBpnjvfVeJ68rbAq9heWkm67ZQq8Dno9SFaMQ3qOlshH3UR+5y1RLcWiuB738GXT2uDFcVpCvjIiEFiBZVK1VWiL4rtS5AbVfGcf/0dQQ4SMyURdaI/ZuuoS6q6KsdznT/5mkG0kHwyoVzNrMLWQgG7mRn/E0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707813599; c=relaxed/simple;
-	bh=CXODdfHRF8EcwyoTQZNwzppKR+EmBpLtqQj9CeT169k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dA4/a1hK179rY7X9PouPOjLEi0c+R9P6pt8r0Wsi26f9vlYs9lc55xpO8+IiMPbV5Atb7MiBaF4FOLOg7PHz1LMvLorbPF2zhsz9Fd9fzOx3LYL8S5JgUyRttPWpuqM0/dpZ+uZ6GL6D21Rr18MRYnfDTzqo4lo8nsJOFw4wAMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ulUePcVn; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-511898b6c9eso2321001e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:39:55 -0800 (PST)
+	s=arc-20240116; t=1707813701; c=relaxed/simple;
+	bh=x0G5S0TCLDELwGPALy+S/ZE3pe45bC/NFvjLIiD7eLo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KA16M81lEfsi9JpI08IKDRulMDi5pwQ7EZKg2I3Fr/LP2NcjEaBX87eu0F5njSe9Bf6mOT55MyCtLdmZm1hDphuxl/lywM8Nbw5Hy7WC4cEqq3eCpP1gBxxzVxi2O+/ygrD2/5Ae3AVq726VPuL08gUjGWfE2Hedmbt7QsUW2hQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cD8RkokM; arc=none smtp.client-ip=209.85.222.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7d5c25267deso1432513241.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:41:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707813594; x=1708418394; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P3RxmLsVbnbUP7U67nLjdpooWU8Ch7hTMjG3mEOZDbU=;
-        b=ulUePcVnNTD/Pl7uYqzGh7F7oKSKovOoaZ4gNWLdUQtmJ5gn2q0ciGNdb4St0XVMaB
-         LIJeHHeXxaqobYBXOjBYP93xVhAl3mN04Xaf+jW9v6ARsCffjzoD/RMbT3lNULlQPIVL
-         tcGaRryxjuMbFWyo2xSt14NqEr1ePLQqSfUtI5/fHbO9dJkMc7OZGHkqrDmU5ajz/2fi
-         49aTneSU8znX6pHCppkI2GPXK2X/7FmhoYVHx0gKU4tqpEEMg8ZgXqvJM06r+LiCX09y
-         w1YBKWNTXmV55Z3mvhla+rYNzSm8yBER5u8CGZQANlOA727WRfTLItnHSY7QMpSNDNyB
-         Sb+w==
+        d=google.com; s=20230601; t=1707813698; x=1708418498; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/mbXy4N3HeK13vhMMBdXFJntR7rVjjQU3Uf2gMWB6LA=;
+        b=cD8RkokM1PjE1AImM9WJUsRXsUCb5GV+DhzNQVXcQsW+wiaBaYmPuuJozmHzbiHOuz
+         Jv+yI7ARIgHLaOYWwT1wRnM61HTRlOurDNARQU5Cn2ksPIjXkspRg+VB5YLDm021IVDN
+         oDiQVEl07GAnHQEvnB+p2S4GYiTNKOo6r+QbcvjaFbs5g1Stq/81MW7k+ToEpgpRnJAH
+         hBNudq90OhaIsIGuUfqBRk1LN4x0m233/YDEe/AE3gNSZnuP2dg88Hc43BAk01xvZxML
+         KuPRTWXE7q6EGrcfailK8bXMZunCBe3GUxFl1P7rfPH52kpmXwduxtJFKfyUXQ4bPYHA
+         LXWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707813594; x=1708418394;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P3RxmLsVbnbUP7U67nLjdpooWU8Ch7hTMjG3mEOZDbU=;
-        b=WR/8Cq4wbI/cFsen2ilAnnio6YY9ij6+wrQr3KokgpLNtdSx15by3LMwJqt0rsjO8K
-         YRpOqR9JJZ/SkXKGIvxiW/FmV+Rq7wIb2O2AyKS8KoNlzQNF3kjEIk6VURrk/zebXYzH
-         k+jnV7hCioD3p9FOLxb/DaMpXcvLA+Z94bvq+XparxjoK5MFEFNegJoAmlgaMO+d6SkE
-         flgmQUdr5/bOqSOpTQOftCzqQY59KiuDbdkKciST2n5x0VKccQlyFx7nlzzP9TjLBI8B
-         3ZCvMl5sZDOfvNTIpjwGrETfLjGMzraLX4qBJZtOliRqJdLf6DqVAPabjNCG9bWr8QYx
-         zfIA==
-X-Forwarded-Encrypted: i=1; AJvYcCXJEmDaylk+EeP+FWQRukqZ6xqstY2feTQJ4bQ3XjySKHCi1AINVQBRdHs/XhK/VMAezmIzVunanTpSgxberAqvmYF7waLYwWT90Dpo
-X-Gm-Message-State: AOJu0YxoAfyZlk5oFx1NGlZrQROHq0I0aYUKVUa6iW5fd5Xh8A9j71wJ
-	6lInmRDCALCg8qeVdPY3PePkrdW0SIj+5irBNOMoM0q2fYpWi67rO5tC2AZsgpU=
-X-Google-Smtp-Source: AGHT+IEH3Y9V61oP0zkkNyBFwQQBwSuQrMQ1YQBzaqzcnW/20KC7jvRaJxDo3NmvpY6fgru/1HHtrA==
-X-Received: by 2002:a05:6512:328a:b0:511:4e91:4a3b with SMTP id p10-20020a056512328a00b005114e914a3bmr5133344lfe.50.1707813593931;
-        Tue, 13 Feb 2024 00:39:53 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXfAKyUSJ4CbSRGWbArh7A4ov21ceEh49P1pwWaUQGPnG0VBwNQf2xF19vLdlUIwKs/LTiz13R2p0qoByANO/yd+xc0OQsRAf1Ob0dJ47LM38oxbQmIkh83xVzjdm5ECjKD1BJLEdGJ3Vvs4c73gETWs1gZcwXt/Fo4CVv7Mzz6jPiz4a8M2RpO8lUyK3LCHM62F79dwXUNZGU+2pwYE5jMzmMYy7l9Kmu7fCCmoes8LINwbhByJJGhON0poMw7HiBFEUYXsSbIpep/5d12SSUOPkLBuli2U1cycYJ1EjLEf2KsCko6lXa9LVuIPjp2vXe5XZFJG7aYnfDo6Za560T/h7ImfM7bhMh9BbPV0bnEx0PTauodvGRt4g==
-Received: from [192.168.1.20] ([178.197.223.6])
-        by smtp.gmail.com with ESMTPSA id jg8-20020a05600ca00800b00410820995dcsm10446311wmb.23.2024.02.13.00.39.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 00:39:53 -0800 (PST)
-Message-ID: <efbd57e8-6cbb-480e-b2d5-1d064a27b3a4@linaro.org>
-Date: Tue, 13 Feb 2024 09:39:51 +0100
+        d=1e100.net; s=20230601; t=1707813698; x=1708418498;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/mbXy4N3HeK13vhMMBdXFJntR7rVjjQU3Uf2gMWB6LA=;
+        b=iTDfKTlHkKu+SKJ3FI4JTsHuM1/DvKs84RnfE6/m7QEchGmi+wTZf0MIW0N1tD8cYm
+         UFDzc6TO0c/hGEUg8fAHLXp0f5As/KELfKjQ4e20lKrPYKajFBMEJz20Jqewyyrl8DQ7
+         nc15d9CnSioguI7A7BosizqZCCGoTPMdnRvBm0q/8YxcRVF3AXqlTX/Ya1LTuLbnypXR
+         3iDRV9VHM4pCN1hk1HVQKnn+yNpIGJRLV2L5MhzBobn8ADjGnEixA8Is3wIILhedQQc9
+         7Y4/P1agFgdG2tm9IR0NVi/tICYIgvyy5rWA7QNEyYLDQqwSCD3R9fN4mFDWG/fjqWcf
+         qE7g==
+X-Gm-Message-State: AOJu0YxeCZ6EapJNKUEm3WVzNh5Im834ivhFfbI9BsheehhOdAtf6NDT
+	FNq0QD9gBL6YGIXFG04mJZGXVLTlYR2g8kOJ3j7M5Jy8y1YLznBypJqxxqu3mXqNvt+Jjn0MHWg
+	MBQhdABkGNvY9kbtGyWc7h0Q7iVQwklWaGxMI
+X-Google-Smtp-Source: AGHT+IGYN+GY+XVnj0Fu47fVRpb1MvtnGgbFxUjfMDXlJ9xY5lfjN8jQZq6RjYZnTS5e5xgmxP8X11U27CJ/ewdslBA=
+X-Received: by 2002:a67:f88f:0:b0:46d:606e:6323 with SMTP id
+ h15-20020a67f88f000000b0046d606e6323mr6029730vso.2.1707813698162; Tue, 13 Feb
+ 2024 00:41:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sa8295p: Enable tertiary
- controller and its 4 USB ports
-Content-Language: en-US
-To: Krishna Kurapati <quic_kriskura@quicinc.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
- quic_jackp@quicinc.com
-References: <20240213082724.1789096-1-quic_kriskura@quicinc.com>
- <20240213082724.1789096-3-quic_kriskura@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240213082724.1789096-3-quic_kriskura@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240212223029.30769-1-osalvador@suse.de> <20240212223029.30769-5-osalvador@suse.de>
+In-Reply-To: <20240212223029.30769-5-osalvador@suse.de>
+From: Marco Elver <elver@google.com>
+Date: Tue, 13 Feb 2024 09:41:02 +0100
+Message-ID: <CANpmjNPHkcjTwKOXca=evmXyAk_HzVc4zgYvPb7+Lu_SS4vjbA@mail.gmail.com>
+Subject: Re: [PATCH v8 4/5] mm,page_owner: Filter out stacks by a threshold
+To: Oscar Salvador <osalvador@suse.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 13/02/2024 09:27, Krishna Kurapati wrote:
-> Multiport USB controller (host-only) of SA8295 ADP has 4 Type-A ports
-> exposed for connecting peripherals. The VBUS to these peripherals is
-> provided by TPS2559QWDRCTQ1 regulators connected to these ports. Each
-> regulator has an enable pin controlled by PMM8540. Since these regulators
-> are GPIO controlled regulators, model them as fixed regulators and keep
-> them Always-On at boot since we are wakeup capable and we don't need to
-> turn them off on suspend. Also since we don't enter device mode, these
-> regulators can be kept on.
-> 
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+On Mon, 12 Feb 2024 at 23:29, Oscar Salvador <osalvador@suse.de> wrote:
+>
+> We want to be able to filter out the stacks based on a threshold we can
+> can tune.
+> By writing to 'set_threshold' file, we can adjust the threshold value.
+>
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
 > ---
->  arch/arm64/boot/dts/qcom/sa8295p-adp.dts | 83 ++++++++++++++++++++++++
->  1 file changed, 83 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sa8295p-adp.dts b/arch/arm64/boot/dts/qcom/sa8295p-adp.dts
-> index fd253942e5e5..49418843c214 100644
-> --- a/arch/arm64/boot/dts/qcom/sa8295p-adp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sa8295p-adp.dts
-> @@ -9,6 +9,7 @@
->  #include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->  #include <dt-bindings/spmi/spmi.h>
-> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->  
->  #include "sa8540p.dtsi"
->  #include "sa8540p-pmics.dtsi"
-> @@ -108,6 +109,46 @@ edp3_connector_in: endpoint {
->  			};
->  		};
->  	};
+>  mm/page_owner.c | 24 ++++++++++++++++++++++--
+>  1 file changed, 22 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/page_owner.c b/mm/page_owner.c
+> index 3e4b7cd7c8f8..c4f9e5506e93 100644
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -832,15 +832,18 @@ static void *stack_next(struct seq_file *m, void *v, loff_t *ppos)
+>         return stack;
+>  }
+>
+> +static unsigned long page_owner_stack_threshold;
 > +
-> +	regulator-usb2-vbus {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "USB2_VBUS";
-> +		gpio = <&pmm8540c_gpios 9 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&usb2_en>;
-> +		pinctrl-names = "default";
-> +		enable-active-high;
-> +		regulator-always-on;
-> +	};
+>  static int stack_print(struct seq_file *m, void *v)
+>  {
+>         char *buf;
+>         int ret = 0;
+>         struct stack *stack = v;
+>         struct stack_record *stack_record = stack->stack_record;
+> +       int stack_count = refcount_read(&stack_record->count);
+>
+>         if (!stack_record->size || stack_record->size < 0 ||
+> -           refcount_read(&stack_record->count) < 2)
+> +           stack_count < 2 || stack_count < page_owner_stack_threshold)
+>                 return 0;
+>
+>         buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
+> @@ -851,7 +854,7 @@ static int stack_print(struct seq_file *m, void *v)
+>                 goto out;
+>
+>         scnprintf(buf + ret, PAGE_SIZE - ret, "stack_count: %d\n\n",
+> -                 refcount_read(&stack_record->count));
+> +                 stack_count);
+>
+>         seq_printf(m, buf);
+>         seq_puts(m, "\n\n");
+> @@ -884,6 +887,21 @@ static const struct file_operations page_owner_stack_operations = {
+>         .release        = seq_release,
+>  };
+>
+> +static int page_owner_threshold_get(void *data, u64 *val)
+> +{
+> +       *val = page_owner_stack_threshold;
+> +       return 0;
+> +}
 > +
-> +	regulator-usb3-vbus {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "USB3_VBUS";
-> +		gpio = <&pmm8540e_gpios 5 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&usb3_en>;
-> +		pinctrl-names = "default";
-> +		enable-active-high;
-> +		regulator-always-on;
-> +	};
-> +
-> +	regulator-usb4-vbus {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "USB4_VBUS";
-> +		gpio = <&pmm8540g_gpios 5 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&usb4_en>;
-> +		pinctrl-names = "default";
-> +		enable-active-high;
-> +		regulator-always-on;
-> +	};
-> +
-> +	regulator-usb5-vbus {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "USB5_VBUS";
-> +		gpio = <&pmm8540g_gpios 9 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&usb5_en>;
-> +		pinctrl-names = "default";
-> +		enable-active-high;
-> +		regulator-always-on;
+> +static int page_owner_threshold_set(void *data, u64 val)
+> +{
+> +       page_owner_stack_threshold = val;
 
-Why all these regulators are always on? If USB controller does not probe
-for any reason, why keeping them enabled? These must not be always-on,
-but instead used by connector as VBUS supply (or by whatever you have
-there for USB).
+This could be written concurrently, so to avoid data races, you can
+use WRITE_ONCE(page_owner_stack_threshold, val) and use
+READ_ONCE(page_owner_stack_threshold) where it's read.
 
-Best regards,
-Krzysztof
-
+> +       return 0;
+> +}
+> +
+> +DEFINE_SIMPLE_ATTRIBUTE(proc_page_owner_threshold, &page_owner_threshold_get,
+> +                       &page_owner_threshold_set, "%llu");
+> +
+>  static int __init pageowner_init(void)
+>  {
+>         struct dentry *dir;
+> @@ -898,6 +916,8 @@ static int __init pageowner_init(void)
+>         dir = debugfs_create_dir("page_owner_stacks", NULL);
+>         debugfs_create_file("show_stacks", 0400, dir, NULL,
+>                             &page_owner_stack_operations);
+> +       debugfs_create_file("set_threshold", 0600, dir, NULL,
+> +                           &proc_page_owner_threshold);
+>
+>         return 0;
+>  }
+> --
+> 2.43.0
+>
 
