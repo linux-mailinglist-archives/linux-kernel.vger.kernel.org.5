@@ -1,220 +1,191 @@
-Return-Path: <linux-kernel+bounces-63606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330FB853221
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:42:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F5C85321F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:42:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CD5E1F2312E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:42:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7D99B20BC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C8056763;
-	Tue, 13 Feb 2024 13:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D8156471;
+	Tue, 13 Feb 2024 13:42:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="AR/DDjkn"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GeyQkYiV";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DN0txwQ1";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Cz85Lar8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q1zjxZoX"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F36E5646B
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4AB56444
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707831752; cv=none; b=TGQ1nO3pfsLP2Kd82Qrh45zB0KaA7qmvQFa5bxHGObDqXSUBNtsBptvaRG5QceAklNeSn5HrYIp2CSA2iVEjeWFZwaL+7i/yF2fIt3gDOMWnEk6qQP+EADzhZUEiqJv0S+xVdvL58F4iUT7rUFFx5KLbDHlwRWW6Z5LYfPMuC/E=
+	t=1707831749; cv=none; b=S3QsuZ++SJr7i6J+72m1YDJ24MkIOH4yo76EOrrqAqsw2056aUQUExHJLFiV4mTM/MV77n0r20jn21iIC0L5oII8gSPZ54IvjKL4oytm6SmRr9W16aojtAanf8RZWh+HamAWJL8NfwxStI6iUt1bVWBwltrHe3bxunlp6dM+C5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707831752; c=relaxed/simple;
-	bh=sqU8CWBYCpCtT0WVh42NGFNjFfhjI1FgaTgBLkB7j4c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MPhDDV53Itq0KK1/sf0S22v43JeeG2/FMjvxOesKprNcDA8eJfUazH2tUGrn7kXm1sVrqxnYzyUxsMRydcb7ETdSwLMRx0HkB0GbIktit8ncczHxljMNrX4kP7D6YsdioAp5ZriCGd1+Ai140e3y0EPoENmJXSVcRKZY9uketIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=AR/DDjkn; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso3596331a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 05:42:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1707831749; x=1708436549; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wqk9RnAdmzkTU6vK/TdAMH/5ZEvIKD4DovGTx4NMMSE=;
-        b=AR/DDjknVajtlN8kWc4aBj9EnxnpFAeLFSN1eEoyd3R2CKFuPkiTdDTjwVb9plqok5
-         GhoflYKN5j8sPXMLiQEDmErlych/fbN13FcODpcrDC052ZMxULIFC3JIPKaSPWss8YAY
-         Xoij1bntO7QL61pXADBeKgg5peIyBEUae2YZhSPsyEF/lmiDdpAwAogxrHA3QPCCRMlf
-         kzb05OftOJjlDf8pbdgYXG6Eg8hLnMix30K9TP92EEyUjL3DwQL93JJ3dzO3nZx0WBbq
-         28+8g95100L4N38bJ0qrnDpykXuLiOeVIHcEyydWhlB97jEOPsPwi85HyNSQM1DLxc1Q
-         btXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707831749; x=1708436549;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wqk9RnAdmzkTU6vK/TdAMH/5ZEvIKD4DovGTx4NMMSE=;
-        b=tZG+kZpHC9PrrITKeOBVPWzUJ3Jv5pFlrs1qTSVRxpe8hNWXNNHnR6J6IM7jmLC+ni
-         Sd9HkV6W2fKl07U5GXKJ2c73p/xbCEmhKTE6FbLuWg7ASfjeahnWnHPJFVk/YVAA+Ble
-         S7Ytfy33Oeo776yZ7Ltr6LpYHr2Kp7mnq2RFKZgWK7PTcN3f/q7zjGFA02265qKFDmPC
-         LkpeQHCmz8IKofBgrrYtdSE7u9pEmoHNPVceIZNBzfOQ/FIOC46X+pKEBU2pzCXxPi6H
-         fWpJ8Bmwbo6zt2NxqCmRau4OM1I5e6YWnXAXW0oLIRvrixtAlGsufZCqyhQTfxcKqfKc
-         xadA==
-X-Forwarded-Encrypted: i=1; AJvYcCUNw21w4IrBgqcJoaZUlJY/wKF9wnfQOkj9dbAgjo3OHH9XDkt9daH6p7hdVUOdUTFFQF60HwVS7xOAzx0ptJFAvAYJSIEW4WXdaSl/
-X-Gm-Message-State: AOJu0YwDkHAByNO/w8zFCC9TD80+bZrM2n2cyseSJ8YverxiwaO6fekH
-	PEUm/x+aw+pKd5zdiEYFaBYROANKn9DaCyxbvK0IuGft5Q6iuOy/4JuTcmHTvbvlvRQfkm1NPSR
-	RQ5jUmKrfoSoNzNmhc7o7gCFkdLr9SNh68PmBkg==
-X-Google-Smtp-Source: AGHT+IHfkgz90jq0P0pE2m4FPBNOBJy5rQ3Pwm/G10giSDI+WYnSqSkh78viB+HIrt0/DzkXiltUDZW4SKoQlUss6NM=
-X-Received: by 2002:a17:90a:db93:b0:297:fb7:fe1 with SMTP id
- h19-20020a17090adb9300b002970fb70fe1mr5854891pjv.46.1707831749457; Tue, 13
- Feb 2024 05:42:29 -0800 (PST)
+	s=arc-20240116; t=1707831749; c=relaxed/simple;
+	bh=B6pF8AkbyirQBxWwhsmfyiC/uceO7X471RPSpulWgVE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pGMdDOfLfT0cyrovHGBckTFCaokGR2xVnQS/cTO/x1sVnIaLN4bmyi3KBWIw5/nnatd9eTLy/EIyw6VBW0Ax+NLf/OYLKBlTCpnByJK8uR2i+Vt3ZldIqGhqokzwyZVGwIFQ94aZ2suUtgCVQ9YPgLsPP7t30RpcqB1KgtTNuLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GeyQkYiV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DN0txwQ1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Cz85Lar8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q1zjxZoX; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EE16A1FCD8;
+	Tue, 13 Feb 2024 13:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707831746; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RCSWNMriDs+O5InzTCr4S0mBv91EYSv9PrgxheazaDU=;
+	b=GeyQkYiV42wF2YZm4VgvxwiIdqvvgDxVNodjzQh4nOTZOvoEIAIZ9NcDT48vkpenIGQ0Lb
+	HX0MjJLUBLdx7HfPEPwxIhy7wHljJURDIgFilUreK0u0IIZwO3Yf5V22YJMsrNWKcBl3Tr
+	6W7fvIdwvtryMtOlIwkz3C0vhGHNLjM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707831746;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RCSWNMriDs+O5InzTCr4S0mBv91EYSv9PrgxheazaDU=;
+	b=DN0txwQ1jAfARXwEp5OXiacChwK6FI2l35/IjZKTA/Dom5cMeE5nAmOzeKzEh3mQetCpcD
+	X8Saa9zExHZNQfCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707831745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RCSWNMriDs+O5InzTCr4S0mBv91EYSv9PrgxheazaDU=;
+	b=Cz85Lar8Rb2NO2ux9p2DHypFt6Hy9ZVHGoAruwBObSWT8Rf6lUiFZ0hZwlgrh4S3fpRLCw
+	FnToGYl9eQRefiBrkru9RsuTFl+X/rCESyC9lIQsXTR/4WaPGgJZeVDmXf/Sz2Z1+PXITn
+	g/l56B9AtIhPme8VHYViDXUxUiHPoOw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707831745;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RCSWNMriDs+O5InzTCr4S0mBv91EYSv9PrgxheazaDU=;
+	b=Q1zjxZoXyeaSSO3z3Ff2CBnQvmYN3Z2xxVZdjlh0J6gmQpYXbr4BwcwQTGRscClww2tbo4
+	p5ulrklsiea4eZAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D9F781370C;
+	Tue, 13 Feb 2024 13:42:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id pQzaNMFxy2WbHAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 13 Feb 2024 13:42:25 +0000
+Message-ID: <8ff46f99-d167-448f-9aae-a634b8aae4d0@suse.cz>
+Date: Tue, 13 Feb 2024 14:42:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130175140.3834889-1-naresh.solanki@9elements.com> <cd84b051-1608-48c0-8335-b038cd236f61@roeck-us.net>
-In-Reply-To: <cd84b051-1608-48c0-8335-b038cd236f61@roeck-us.net>
-From: Naresh Solanki <naresh.solanki@9elements.com>
-Date: Tue, 13 Feb 2024 19:12:19 +0530
-Message-ID: <CABqG17jbOgAHWUemV5=VFKwufuGX_xyheTDETfJtvoOO9UWjvg@mail.gmail.com>
-Subject: Re: [PATCH] hwmon: (pmbus/mp2975) Fix IRQ masking
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Jean Delvare <jdelvare@suse.com>, mazziesaccount@gmail.com, 
-	Patrick Rudolph <patrick.rudolph@9elements.com>, linux-hwmon@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/5] mm,page_owner: Implement the tracking of the
+ stacks count
+Content-Language: en-US
+To: Oscar Salvador <osalvador@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>,
+ Alexander Potapenko <glider@google.com>
+References: <20240212223029.30769-1-osalvador@suse.de>
+ <20240212223029.30769-3-osalvador@suse.de>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240212223029.30769-3-osalvador@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-4.17 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLY(-4.00)[];
+	 BAYES_HAM(-0.08)[63.36%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -4.17
 
-Hi Guenter,
+On 2/12/24 23:30, Oscar Salvador wrote:
+> page_owner needs to increment a stack_record refcount when a new allocation
+> occurs, and decrement it on a free operation.
+> In order to do that, we need to have a way to get a stack_record from a
+> handle.
+> Implement __stack_depot_get_stack_record() which just does that, and make
+> it public so page_owner can use it.
+> 
+> Also implement {inc,dec}_stack_record_count() which increments
+> or decrements on respective allocation and free operations, via
+> __reset_page_owner() (free operation) and __set_page_owner() (alloc
+> operation).
+> 
+> Traversing all stackdepot buckets comes with its own complexity,
+> plus we would have to implement a way to mark only those stack_records
+> that were originated from page_owner, as those are the ones we are
+> interested in.
+> For that reason, page_owner maintains its own list of stack_records,
+> because traversing that list is faster than traversing all buckets
+> while keeping at the same time a low complexity.
+> inc_stack_record_count() is responsible of adding new stack_records
+> into the list stack_list.
+> 
+> Modifications on the list are protected via a spinlock with irqs
+> disabled, since this code can also be reached from IRQ context.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> ---
+>  include/linux/stackdepot.h |  9 +++++
+>  lib/stackdepot.c           |  8 +++++
+>  mm/page_owner.c            | 73 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 90 insertions(+)
+>  static inline void __set_page_owner_handle(struct page_ext *page_ext,
+> @@ -199,6 +271,7 @@ noinline void __set_page_owner(struct page *page, unsigned short order,
+>  		return;
+>  	__set_page_owner_handle(page_ext, handle, order, gfp_mask);
+>  	page_ext_put(page_ext);
+> +	inc_stack_record_count(handle);
 
+What if this is dummy handle, which means we have recursed in page owner,
+and we'll by trying to kmalloc() its struct stack and link it to the
+stack_list because it was returned for the first time? Also failure_handle.
+Could you pre-create static (not kmalloc) struct stack for these handles
+with refcount of 0 and insert them to stack_list, all during
+init_page_owner()? Bonus: no longer treating stack_list == NULL in a special
+way in add_stack_record_to_list() (although you don't need to handle it
+extra even now, AFAICS).
 
-On Wed, 31 Jan 2024 at 03:30, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Tue, Jan 30, 2024 at 11:21:39PM +0530, Naresh Solanki wrote:
-> > From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> >
-> > The MP2971/MP2973 use a custom 16bit register format for
-> > SMBALERT_MASK which doesn't follow the PMBUS specification.
-> >
-> > Map the PMBUS defined bits used by the common code onto the custom
-> > format used by MPS and since the SMBALERT_MASK is currently never read
-> > by common code only implement the mapping for write transactions.
-> >
-> > Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> > Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-> > ---
-> >  drivers/hwmon/pmbus/mp2975.c | 57 ++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 57 insertions(+)
-> >
-> >
-> > base-commit: 909d8d33f8b4664c9b6c7fd585114921af77fc2b
-> >
-> > diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
-> > index b9bb469e2d8f..788ec2c5a45f 100644
-> > --- a/drivers/hwmon/pmbus/mp2975.c
-> > +++ b/drivers/hwmon/pmbus/mp2975.c
-> > @@ -377,6 +377,62 @@ static int mp2973_read_word_data(struct i2c_client *client, int page,
-> >       return ret;
-> >  }
-> >
-> > +static int mp2973_write_word_data(struct i2c_client *client, int page,
-> > +                               int reg, u16 word)
-> > +{
-> > +     u8 target, mask;
-> > +     int ret;
-> > +
-> > +     if (reg != PMBUS_SMBALERT_MASK)
-> > +             return -ENODATA;
-> > +
-> > +     /*
-> > +      * Vendor-specific SMBALERT_MASK register with 16 maskable bits.
-> > +      */
-> > +     ret = pmbus_read_word_data(client, 0, 0, PMBUS_SMBALERT_MASK);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     target = word & 0xff;
-> > +     mask = word >> 8;
-> > +
-> > +#define SWAP(cond, bit) (ret = (cond) ? (ret & ~BIT(bit)) : (ret | BIT(bit)))
->
-> This isn't really a "SWAP", but setting or clearing of bits in "ret"
-> depending on a bit set in "cond". I don't have a good idea for a
-> better name, but either case I think a comment describing what it
-> does would be useful.
-Yes. will add below comment
-/*
- * Set/Clear 'bit' in 'ret' based on condition
- */
->
-> "ret" use is implied, but "mask" is always provided as parameter.
-> Please either provide both as arguments, or make both implied.
-Sure. Will update as:
-#define SWAP(cond, bit) ret = (mask & cond) ? (ret & ~BIT(bit)) : (ret
-| BIT(bit))
+>  }
+>  
+>  void __set_page_owner_migrate_reason(struct page *page, int reason)
 
->
-> Also, the first parameter is a bit mask, while the second parameter
-> is a bit position. Please used defines for the second parameter
-> and make it a mask as well.
-Sure will be adding defines for second parameter as well.
-#define MP2973_INVALID_DATA     8
-#define MP2973_INVALID_COMMAND  9
-#define MP2973_OTHER_COMM       5
-#define MP2973_PACKET_ERROR     7
-#define MP2973_VOLTAGE_UV       13
-#define MP2973_VOLTAGE_OV       14
-#define MP2973_IOUT_OC          11
-#define MP2973_IOUT_OC_LV       10
-#define MP2973_TEMP_OT          0
-
->
-> > +     switch (target) {
-> > +     case PMBUS_STATUS_CML:
-> > +             SWAP(mask & PB_CML_FAULT_INVALID_DATA, 8);
-> > +             SWAP(mask & PB_CML_FAULT_INVALID_COMMAND,  9);
-> > +             SWAP(mask & PB_CML_FAULT_OTHER_COMM, 5);
-> > +             SWAP(mask & PB_CML_FAULT_PACKET_ERROR, 7);
-> > +             break;
-> > +     case PMBUS_STATUS_VOUT:
-> > +             SWAP(mask & PB_VOLTAGE_UV_FAULT, 13);
-> > +             SWAP(mask & PB_VOLTAGE_OV_FAULT, 14);
-> > +             break;
-> > +     case PMBUS_STATUS_IOUT:
-> > +             SWAP(mask & PB_IOUT_OC_FAULT, 11);
-> > +             SWAP(mask & PB_IOUT_OC_LV_FAULT, 10);
-> > +             break;
-> > +     case PMBUS_STATUS_TEMPERATURE:
-> > +             SWAP(mask & PB_TEMP_OT_FAULT, 0);
-> > +             break;
-> > +     /*
-> > +      * Map remaining bits to MFR specific to let the PMBUS core mask
-> > +      * those bits by default.
-> > +      */
-> > +     case PMBUS_STATUS_MFR_SPECIFIC:
-> > +             SWAP(mask & BIT(1), 1);
-> > +             SWAP(mask & BIT(3), 3);
-> > +             SWAP(mask & BIT(4), 4);
-> > +             SWAP(mask & BIT(6), 6);
-> > +             break;
->
-> Coming back to using defines for the second parameter: The
-> above bit positions appear to be purely random. Having defines for
-> those bits will at least explain what is being masked (and hopefully
-> explain why bit 2, 12, and 15 are not covered at all).
-> For example, at least one other chip from the same vendor defines
-> bit 6 as CRC_ERROR, and the matching status register bit is bit
-> 4 (memory fault detected) in STATUS_CML. Also, it is unclear why
-> the chip would not issue any alerts when warning limits are exceeded.
-> Without knowing what the bits in SMBALERT_MASK mean it is impossible
-> to validate if the above is correct and/or complete.
-Agree. Bit 2 & 15 are reserved & will add a comment to mention that.
-For others, I will add #define as below..
-#define MP2973_VIN_UVLO         1
-#define MP2973_VIN_OVP          3
-#define MP2973_MTP_FAULT        4
-#define MP2973_MTP_BLK_TRIG     6
-#define MP2973_VOUT_MAX_MIN_WARNING 12
-
-Regards,
-Naresh
->
-> Thanks,
-> Guenter
 
