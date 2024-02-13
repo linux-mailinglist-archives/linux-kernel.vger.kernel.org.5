@@ -1,178 +1,183 @@
-Return-Path: <linux-kernel+bounces-64076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6E778539DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:25:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5146F8539E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:26:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA8EB1C226C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:25:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5C221F25E67
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6443C60B8D;
-	Tue, 13 Feb 2024 18:24:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEAF5605D8;
+	Tue, 13 Feb 2024 18:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HC9BhcIQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Z3J4L5DJ"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C4B76088C
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 18:24:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4D4604DF
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 18:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707848684; cv=none; b=cWWPxT201/W52RPtEaX/b1UfkAP1aP2WYeVU/1H02HE2+Eyc4kD7Sfpt13SPtgPvn9NfZj0C3Xx4oldqnc/XP3eNoV5ILVjr6aMSGERHVg5dNgLcbMPPYWRvXN+apI/X0DIncs0CvovjiiAT95gMwhGpFECKuDgeFvn8yyKBj5A=
+	t=1707848721; cv=none; b=ta3/JoO3KeiBPDUPNsSKUWknliKmCDLW/i5Bu/5OuNZJSbodEyFA3/0gdjsjlWO4TBxv+c0ctiKmK+X8QWzFEFDl1Df3gn1nfOOLe0LMCmkM7+Jl/PoSdKETDeIvratGHSzyNvsEGKmW1iHYsrAwGjCNi3mMjZxUcggmOd3DeyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707848684; c=relaxed/simple;
-	bh=I5zIgI+QjhRatSLfoEbbhZ6aVR0T34jHoAcGOwHYwms=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Z9Gxm8TWblX8cNnmL8PEnCbL9T6lRw0HxvyOq4cSn+Jo5KACX0hPRtrj726psAK4cFCl40vgZuP55aVwlIktP3x8Zckxyeu9y+EV7fNKUKsl4mfKwy/3oBccTFk2dpMHOn0+Ew0gmc9zWHmSDTFBa57ZzCeP6VcmXAAVLeKc+qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HC9BhcIQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 448DFC43390;
-	Tue, 13 Feb 2024 18:24:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707848684;
-	bh=I5zIgI+QjhRatSLfoEbbhZ6aVR0T34jHoAcGOwHYwms=;
-	h=From:Date:Subject:To:Cc:From;
-	b=HC9BhcIQ+NObwtf5QsVwZyOrTCF+0RQYLbPCWl0k9nK7j7t1qrSVZFxsRE8C2f6OS
-	 V3f/Zg84eOx4aCvJov0C5MVIfkY7puH4t/vHlN0LMwuWhNjiLfa7cD/6VG87rHz9sA
-	 Qf3PS0At/k2vVwP1bQQE/1T0JstsiU8bQuFaDj9sj3GnB/LAmPm5tN+cFRLX/MrEyv
-	 xiOwTazzt73c0aYEctze2VCyEoSDoXEs6Sp17QUpMFMf9kWa/JZ26bIYFfIDPc32rt
-	 FlunKZo+2u6/xnHFHQU/m3NDxU41KfZOzyVLqPaPKd06h6iE1tBPVtUKgMSLDdVpYW
-	 h1EGSyDiiAU1Q==
-From: Mark Brown <broonie@kernel.org>
-Date: Tue, 13 Feb 2024 18:24:38 +0000
-Subject: [PATCH v2] arm64/sve: Lower the maximum allocation for the SVE
- ptrace regset
+	s=arc-20240116; t=1707848721; c=relaxed/simple;
+	bh=rocOyJn1TixS9ApVLtPgDT8swYAg5BQYD/SUm6bPV7I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=IQgHHmGB8fcUh5kb2bhxqLci/kvJy6BQP9299O4sdvTzSa8ETF9kAFrjqDiZGBcMjhe2c1MUnV5/F1lItBJZFjL40uSJq8r9hLAmT2w+APxDEV6jmh2nAEf6E9SfE4cuaecq/9FSre6eUcvLA19YIG4Gta+mMbA9d1z597ApJp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Z3J4L5DJ; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41DHcmM9022982;
+	Tue, 13 Feb 2024 18:25:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=FAus3T7IYJGqYhEvbtjq5U3jGAnExYhoc5wMuQZ18s4=; b=Z3
+	J4L5DJZvuhDkpp5FqOWOBWN4fpBB2fD9XoAzturrWyuLg3ZKdBTl3ZpTFd8kctji
+	mX2+zDtaoDkLKpwULCDSqhPShs8PRVNvJq2Z6Orp+4/gBZXWsVqK4oWLu8tvK49K
+	2Ii3noHIXltgxJWC9bAqgEmODcAnXlHKLO7YREWvuJAlp1F83aTlQ5/iL4LeScOu
+	x+OORMn44Tr64maNIvPpZcOuSwG+ugt1Mp2J9qSI/9GEz4TOLpwkTSCM6vxCxue4
+	UJnKx8L2/k7wlkXyGLoFC9lnH87MPL6waAz/ijkP6e1xbjigbwKLdGIiQlE+5VD8
+	Tt+302mbqLc03Q3YpxYA==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7s392gfb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 18:25:04 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41DIP3aJ019374
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 18:25:03 GMT
+Received: from [10.110.14.146] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 13 Feb
+ 2024 10:25:02 -0800
+Message-ID: <fc28f615-eaaf-459a-96e2-fce104f77fe7@quicinc.com>
+Date: Tue, 13 Feb 2024 10:24:48 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 06/11] firmware: arm_scmi: Implement Clock
+ .is_notify_supported callback
+To: Cristian Marussi <cristian.marussi@arm.com>,
+        kernel test robot
+	<lkp@intel.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <llvm@lists.linux.dev>, <oe-kbuild-all@lists.linux.dev>,
+        <sudeep.holla@arm.com>, <vincent.guittot@linaro.org>,
+        <peng.fan@oss.nxp.com>, <michal.simek@amd.com>,
+        <quic_sibis@quicinc.com>, <souvik.chakravarty@arm.com>
+References: <20240212123233.1230090-7-cristian.marussi@arm.com>
+ <202402131047.2NVZWHma-lkp@intel.com> <ZcstL8tRVKIUFoBr@pluto>
+Content-Language: en-US
+From: Nikunj Kela <quic_nkela@quicinc.com>
+In-Reply-To: <ZcstL8tRVKIUFoBr@pluto>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240213-arm64-sve-ptrace-regset-size-v2-1-c7600ca74b9b@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAOWzy2UC/33NQQ6CMBCF4auQWTuGFkKoK+9hWBR8QqMCmSGNS
- ri71cStm0n+WXxvJYUEKB2ylQQxaJjGFHaXUTf4sQeHc2qyuS3zdNjLvSpZI3hexHdgQa9YWMM
- LbE2bO1u7ysFQImbBJTy+/KlJPQRdJnl+16L5fH9w8R+Ohg3brmi9KeqqdTheISNu+0l6arZte
- wOGU3DsyQAAAA==
-To: Will Deacon <will@kernel.org>, 
- Catalin Marinas <catalin.marinas@arm.com>
-Cc: Dave Martin <Dave.Martin@arm.com>, Oleg Nesterov <oleg@redhat.com>, 
- Al Viro <viro@zeniv.linux.org.uk>, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Doug Anderson <dianders@chromium.org>, 
- Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-a684c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4370; i=broonie@kernel.org;
- h=from:subject:message-id; bh=I5zIgI+QjhRatSLfoEbbhZ6aVR0T34jHoAcGOwHYwms=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBly7PpI4cciiXeYNP+EEVt3Y4INFoiOrI/rWmsp/ke
- 3UYsdwKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZcuz6QAKCRAk1otyXVSH0ELxB/
- 4/7F5im0GANZp1+aO+MD+khEacxi3g7TQuULUlLOSRa1Bojd1b3COou7f4YXUN0PfA2Nms6UDEGtse
- z0+0djdKCZS0xxNiE66INGT3SPlZh1evAmLNIvEgTT6FR02VAoUNj1XP8q2tF3x/eBqtUvtCt4oQjd
- 95JbNESua5OhDTwmbZ070bPLFi8LMylPmQLDy8xPyl0EVM6M+KykV4jnFDfXUJdycE43Ej6sEJy2J0
- OmLwCoRvrSzdNxk5M5/NNRpx9XjC77PdNpBbFLP6WfmN7Ik+5ZhX0F+Xjftj/wmm3MVNIAR02LAAOL
- KGimltgZ7MekxKVaCrCD6dd2SL+ZQF
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: JEWW0EYMlnqvOCxYIQU3thM012GTfpz1
+X-Proofpoint-GUID: JEWW0EYMlnqvOCxYIQU3thM012GTfpz1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-13_10,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 spamscore=0 bulkscore=0
+ phishscore=0 clxscore=1011 impostorscore=0 priorityscore=1501
+ malwarescore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401310000 definitions=main-2402130145
 
-Doug Anderson observed that ChromeOS crashes are being reported which
-include failing allocations of order 7 during core dumps due to ptrace
-allocating storage for regsets:
 
-  chrome: page allocation failure: order:7,
-          mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
-          nodemask=(null),cpuset=urgent,mems_allowed=0
-   ...
-  regset_get_alloc+0x1c/0x28
-  elf_core_dump+0x3d8/0xd8c
-  do_coredump+0xeb8/0x1378
-
-with further investigation showing that this is:
-
-   [   66.957385] DOUG: Allocating 279584 bytes
-
-which is the maximum size of the SVE regset. As Doug observes it is not
-entirely surprising that such a large allocation of contiguous memory might
-fail on a long running system.
-
-The SVE regset is currently sized to hold SVE registers with a VQ of
-SVE_VQ_MAX which is 512, substantially more than the architectural maximum
-of 16 which we might see even in a system emulating the limits of the
-architecture. Since we don't expose the size we tell the regset core
-externally let's define ARCH_SVE_VQ_MAX with the actual architectural
-maximum and use that for the regset, we'll still overallocate most of the
-time but much less so which will be helpful even if the core is fixed to
-not require contiguous allocations.
-
-Specify ARCH_SVE_VQ_MAX in terms of the maximum value that can be written
-into ZCR_ELx.LEN (where this is set in the hardware). For consistency
-update the maximum SME vector length to be specified in the same style
-while we are at it.
-
-We could also teach the ptrace core about runtime discoverable regset sizes
-but that would be a more invasive change and this is being observed in
-practical systems.
-
-Reported-by: Doug Anderson <dianders@chromium.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
-We should probably also use the actual architectural limit for the
-bitmasks we use in the VL enumeration code, though that's both a little
-bit more involved and less immediately a problem.
----
-Changes in v2:
-- Specify the value using the size of the bitfield it goes into.
-- Link to v1: https://lore.kernel.org/r/20240203-arm64-sve-ptrace-regset-size-v1-1-2c3ba1386b9e@kernel.org
----
- arch/arm64/include/asm/fpsimd.h | 12 ++++++------
- arch/arm64/kernel/ptrace.c      |  3 ++-
- 2 files changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/arch/arm64/include/asm/fpsimd.h b/arch/arm64/include/asm/fpsimd.h
-index 50e5f25d3024..481d94416d69 100644
---- a/arch/arm64/include/asm/fpsimd.h
-+++ b/arch/arm64/include/asm/fpsimd.h
-@@ -62,13 +62,13 @@ static inline void cpacr_restore(unsigned long cpacr)
-  * When we defined the maximum SVE vector length we defined the ABI so
-  * that the maximum vector length included all the reserved for future
-  * expansion bits in ZCR rather than those just currently defined by
-- * the architecture. While SME follows a similar pattern the fact that
-- * it includes a square matrix means that any allocations that attempt
-- * to cover the maximum potential vector length (such as happen with
-- * the regset used for ptrace) end up being extremely large. Define
-- * the much lower actual limit for use in such situations.
-+ * the architecture.  Using this length to allocate worst size buffers
-+ * results in excessively large allocations, and this effect is even
-+ * more pronounced for SME due to ZA.  Define more suitable VLs for
-+ * these situations.
-  */
--#define SME_VQ_MAX	16
-+#define ARCH_SVE_VQ_MAX ((ZCR_ELx_LEN_MASK >> ZCR_ELx_LEN_SHIFT) + 1)
-+#define SME_VQ_MAX	((SMCR_ELx_LEN_MASK >> SMCR_ELx_LEN_SHIFT) + 1)
- 
- struct task_struct;
- 
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index dc6cf0e37194..e3bef38fc2e2 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1500,7 +1500,8 @@ static const struct user_regset aarch64_regsets[] = {
- #ifdef CONFIG_ARM64_SVE
- 	[REGSET_SVE] = { /* Scalable Vector Extension */
- 		.core_note_type = NT_ARM_SVE,
--		.n = DIV_ROUND_UP(SVE_PT_SIZE(SVE_VQ_MAX, SVE_PT_REGS_SVE),
-+		.n = DIV_ROUND_UP(SVE_PT_SIZE(ARCH_SVE_VQ_MAX,
-+					      SVE_PT_REGS_SVE),
- 				  SVE_VQ_BYTES),
- 		.size = SVE_VQ_BYTES,
- 		.align = SVE_VQ_BYTES,
-
----
-base-commit: 41bccc98fb7931d63d03f326a746ac4d429c1dd3
-change-id: 20240202-arm64-sve-ptrace-regset-size-21b0928969e1
-
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+On 2/13/2024 12:49 AM, Cristian Marussi wrote:
+> On Tue, Feb 13, 2024 at 10:58:23AM +0800, kernel test robot wrote:
+>> Hi Cristian,
+>>
+>> kernel test robot noticed the following build errors:
+>>
+>> [auto build test ERROR on soc/for-next]
+>> [also build test ERROR on linus/master v6.8-rc4 next-20240212]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>>
+> Hi,
+>
+> this series, as stated in the cover-letter, is based off the current tip of
+>
+> 	sudeep/for-next/scmi/updates
+>
+> and particularly needs commit:
+>
+> 	9c5bc650031e firmware: arm_scmi: Rework clock domain info lookups
+>
+> from there, since it contains the missing scmi_clock_domain_lookup().
+>
+> Not_sure/dont_known if there is any way to convey this "based-on-branch"
+> info to your/any CI at the moment.
+>
+> Thanks,
+> Cristian
+Maybe add supdeep's tree in MAINTAINERS and use 'base-commit'.
+>> url:    https://github.com/intel-lab-lkp/linux/commits/Cristian-Marussi/firmware-arm_scmi-Check-for-notification-support/20240212-203727
+>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
+>> patch link:    https://lore.kernel.org/r/20240212123233.1230090-7-cristian.marussi%40arm.com
+>> patch subject: [PATCH 06/11] firmware: arm_scmi: Implement Clock .is_notify_supported callback
+>> config: hexagon-allmodconfig (https://download.01.org/0day-ci/archive/20240213/202402131047.2NVZWHma-lkp@intel.com/config)
+>> compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project c08b90c50bcac9f3f563c79491c8dbcbe7c3b574)
+>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240213/202402131047.2NVZWHma-lkp@intel.com/reproduce)
+>>
+>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>> the same patch/commit), kindly add following tags
+>> | Reported-by: kernel test robot <lkp@intel.com>
+>> | Closes: https://lore.kernel.org/oe-kbuild-all/202402131047.2NVZWHma-lkp@intel.com/
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>>> drivers/firmware/arm_scmi/clock.c:853:8: error: call to undeclared function 'scmi_clock_domain_lookup'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+>>       853 |         clk = scmi_clock_domain_lookup(ci, src_id);
+>>           |               ^
+>>>> drivers/firmware/arm_scmi/clock.c:853:6: error: incompatible integer to pointer conversion assigning to 'struct scmi_clock_info *' from 'int' [-Wint-conversion]
+>>       853 |         clk = scmi_clock_domain_lookup(ci, src_id);
+>>           |             ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     2 errors generated.
+>>
+>>
+>> vim +/scmi_clock_domain_lookup +853 drivers/firmware/arm_scmi/clock.c
+>>
+>>     842	
+>>     843	static bool scmi_clk_notify_supported(const struct scmi_protocol_handle *ph,
+>>     844					      u8 evt_id, u32 src_id)
+>>     845	{
+>>     846		bool supported;
+>>     847		struct scmi_clock_info *clk;
+>>     848		struct clock_info *ci = ph->get_priv(ph);
+>>     849	
+>>     850		if (evt_id >= ARRAY_SIZE(evt_2_cmd))
+>>     851			return false;
+>>     852	
+>>   > 853		clk = scmi_clock_domain_lookup(ci, src_id);
+>>     854		if (IS_ERR(clk))
+>>     855			return false;
+>>     856	
+>>     857		if (evt_id == SCMI_EVENT_CLOCK_RATE_CHANGED)
+>>     858			supported = clk->rate_changed_notifications;
+>>     859		else
+>>     860			supported = clk->rate_change_requested_notifications;
+>>     861	
+>>     862		return supported;
+>>     863	}
+>>     864	
+>>
+>> -- 
+>> 0-DAY CI Kernel Test Service
+>> https://github.com/intel/lkp-tests/wiki
 
