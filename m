@@ -1,82 +1,81 @@
-Return-Path: <linux-kernel+bounces-64505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F11C3853FA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:07:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 269BD853FAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:08:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3B0FB22428
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:07:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE2FF1F24E51
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B6762A02;
-	Tue, 13 Feb 2024 23:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3577E62A02;
+	Tue, 13 Feb 2024 23:07:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="M0ya3bvw"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AuTXopDN"
 Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9DD62807
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:07:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2AD6281F
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707865635; cv=none; b=SgGl/OrFkUeZd+mZ95dtgytzWayiAnAxb+hLCRhERfkW6+vzFtqLoyxbXKGBVuAox0R1Hx5EQIhwlqBoRQkKWFmf3rzfkz9YRvNgaZ7tZI3OOjlO55r9lFBu9khEPcF8Y+uthCFIGZx7PYtKw9oioAO6HLKg/dVm4j2ZEvQFstQ=
+	t=1707865670; cv=none; b=MhULNXLel4nyVWPfsDYITpwTlStk8+27PH+8zABulncuavJLEqSrtX0Ib8nrd2IQuyszqTWJk1DazfoFDHvUmnmClVP0MYwi4bQdSNvqwCFCiF1hnhcYjGsTLkgArQBYhlY4nv/F/N7nQOEcbNUFN4MaxpXuk1HxjZ2NGMs9G5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707865635; c=relaxed/simple;
-	bh=MjAOKycBPzBk4VO9jkOkv9nBTectr6pmu0X6Zna2BAc=;
+	s=arc-20240116; t=1707865670; c=relaxed/simple;
+	bh=5r8mGWxqCI6vEgqZTBMkzo4gQvTRqNCArj72zBif0wU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aoW7zd2Fy7cTGbXuJ4G+X7MUjEZjfC7rfoGJdw3J7sEt1KXa9V9NJWOD+qO2sk74CDUny5naEp1vjDKF/5+yr7QX9/a/xvt4kjTnq8SRh0VVeT73enmUyfg6U1gCKaTR8LANyKzggoC/vkGPTuGw7O7LW9BOiM4DP9x9IM2UJqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=M0ya3bvw; arc=none smtp.client-ip=209.85.219.172
+	 To:Cc:Content-Type; b=X7J3tjBPhDBxJj2TbjK/yAgmv3BRqQAfWcNLALSor91IY2mG9AkgDG5bq4regCLA/AVbb2m5WY1GCXW5e2JH6Dlb9yn1xmOzA2CXYpdsErnxhi0ud0NWEsOLbRktzhkfzK2puCWHCHEqOXvTw1Uv/YIYhTcb7etlPDs83T/SrJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AuTXopDN; arc=none smtp.client-ip=209.85.219.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc6d8bd618eso5063987276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:07:13 -0800 (PST)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dbed179f0faso196777276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:07:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707865632; x=1708470432; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707865667; x=1708470467; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MjAOKycBPzBk4VO9jkOkv9nBTectr6pmu0X6Zna2BAc=;
-        b=M0ya3bvwdjzmfbQmWgeeOPVTgAmATTw/AiXusdZXqHr87FBmqE3yJcAb36e7/dW73r
-         rkHaB4dQGzBwpztpthLfnK9yeM2PmCpRoVSo9DTKTZodwsx5w/Dt5LXuND+76+zMKTX+
-         E6A02VHP1FhCYWolYnUyXkNeuAXJnqsYmctJdpKt1LITjJUWRODA9s4bxNgGkbutb5HF
-         qBoAVjiR4Ig+M2sgxkkaaPBzarXe5/gkIBeyNB+7Kpfe8xx/K1f7RHuzfCA//AWkr0cI
-         ru86TZY+WZa8ierXsqezE8DD6V+XddnSYEvEXohoChDfIFyZ48dYPHpbWlbcFAqzOWOu
-         m96Q==
+        bh=5r8mGWxqCI6vEgqZTBMkzo4gQvTRqNCArj72zBif0wU=;
+        b=AuTXopDNGeir0vPOFVniMlL+Q3IgzlP4aI3edBaceQW/nNs/uf1Aphs3mW8BNRSa5e
+         0uq1pD1eOU04WZ8xeXHqw/XOWrifg5f02yzAvI7mqne0zlJLOxKfXCZUa/JR39MRpaaz
+         mYhhzylAU4FQgYgYRjlYbMDQeQ8yiqffqa12BKHQKaJlP3vgDq0tSg16vClgS4IK0MYD
+         p20ZVeD+cQQqALkg+CfO/Z0YKynf8YsJs4zuYrbcebPKEMmV8II2e28czbloIfGu/9Si
+         uyqDY6jmwA4wLqMkGByrKnCXtfeRYCJj8YCm63JdU+hqUmq/0EbUNLe7CnAKFPzDa5+X
+         F6Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707865632; x=1708470432;
+        d=1e100.net; s=20230601; t=1707865667; x=1708470467;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MjAOKycBPzBk4VO9jkOkv9nBTectr6pmu0X6Zna2BAc=;
-        b=a3u+yeHgHs/8HnmMs/kpOv3YePSRTILSoN9azc8X5PZzgnSR1pHaNpjIY0x6z/2/+F
-         G0N7DS8QPbFiGK/yJ+WGc6MraQzSMIPws9YvIPvTIX/DMrqFtqWrA5CJvUGehQHMnDIB
-         JSmIZDG8ryk8sr/RV1av+q8f4QXgml205k2rJFnL2aNev5CrsDLnC/bjKlYifg36oy2X
-         3QwZl/rKcJkMUiTlL7UAwvet/b/TrRDXlkkLzITJYCM6qP4uFLjWBvTLDaNzPyMn3htJ
-         kRNo15VlAWH2NRunWeA8EMtwDiZi5u5LbU3BWiQKEFySBm0zT0LJI1pJ0+DwFZxRCD6I
-         fhdA==
-X-Forwarded-Encrypted: i=1; AJvYcCVxrP951idR5RvuYR8Sg7kYYYKx8x3bYS1N8JDWBvjqnS2PcAa4bBT1jgF1ou/lnRB/HA8abzh4YbGKCtj3urpY09gzsCEy3FZ+pIpD
-X-Gm-Message-State: AOJu0YxRyUH1otiktNkcso56Npm/LkYenKTvRhhrA+8bhw+YDgq80Ahb
-	ggvHoykTvnaH1VjgCymhIjE967bhftqQIsBZWVHzJQdweemkPcHJBMkwNQJiD1zm8eyRW3jle0V
-	f3Y+7rp1u23KVzPcNr4vOGyLVeKqkOdIfD8K/aA==
-X-Google-Smtp-Source: AGHT+IH0A57JXze3tzIP18mqi1HPtHwASPch1852QaRs+J14eOrw3rz4b87JD/2SNy7XjqOkxXDiVmzM6XYJUMCpeIY=
-X-Received: by 2002:a25:8691:0:b0:dc2:232d:7fde with SMTP id
- z17-20020a258691000000b00dc2232d7fdemr792874ybk.13.1707865632236; Tue, 13 Feb
- 2024 15:07:12 -0800 (PST)
+        bh=5r8mGWxqCI6vEgqZTBMkzo4gQvTRqNCArj72zBif0wU=;
+        b=UudfSsnj9MoB/K7kfzxG/pLzvZOL/OJKzcsCALHEyq8nGvYZDSedEpLLssxu0Nm2WO
+         FKK/sVSFeDi1e4gWtaazg+dWZxVWbMcGONkWohTloF1mcsJKNm622a6l6ed7fWgnsZ2V
+         +RRVo0dwjrgU3sjsxQpaj8AQHTeLBbph77p2yrWFeawP6FuX8Iys78OdjetIrEcfziTF
+         Qxbzly+fFLWURhir1PFJaFybNzPnlJMcWr2p9Zgd2zJBs91RjyVzFyol0+/qkHYdykjL
+         Rhjswua8k4m0ZzFy6dqHgSdYEIhD9hPpDf4yZJvR+mQMUKhL4hmhkV6/tK976NzbPw0l
+         3A3w==
+X-Forwarded-Encrypted: i=1; AJvYcCW7DC5OvJrGofxM+ZcsK137pajHbqf5p6a1s6RfBNKJuhJNIoq5y/j8ysz5G3QY0bc0VRoBGTp25Krj1PoyWBCzeQpPwLXfV5Cdt1Eu
+X-Gm-Message-State: AOJu0Yyr3/gFWfh8Z31CfkkQGLPk46LrQYb2lZWPEX6t9KvXaO9qRBxG
+	Oivh//CslqMblN5pkSfge2IU6VDTCS//kr/gCnJb5FzM5cSlz9t8GGuZ7uuvkROTiGWkAb/H7Zw
+	H8TQsBc+GmYz1VDkwCMl27n896NYVuK8nUdZR6w==
+X-Google-Smtp-Source: AGHT+IED3UnYNv3qZy3wS1gN4YzhWWLxmuPdKWXeZ+oYphZhStOOlt00/JsSZJX3g5VssxQqQbR1ikxzXAYLLUPneCU=
+X-Received: by 2002:a25:be54:0:b0:dc2:2d55:4179 with SMTP id
+ d20-20020a25be54000000b00dc22d554179mr265190ybm.17.1707865667723; Tue, 13 Feb
+ 2024 15:07:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213220331.239031-1-paweldembicki@gmail.com> <20240213220331.239031-2-paweldembicki@gmail.com>
-In-Reply-To: <20240213220331.239031-2-paweldembicki@gmail.com>
+References: <20240213220331.239031-1-paweldembicki@gmail.com> <20240213220331.239031-4-paweldembicki@gmail.com>
+In-Reply-To: <20240213220331.239031-4-paweldembicki@gmail.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 14 Feb 2024 00:07:00 +0100
-Message-ID: <CACRpkdaKRPV=mRkTcOMGgnozxNS=fojWJ4nSnK1GEBSGSM9NMQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 01/15] net: dsa: vsc73xx: use
- read_poll_timeout instead delay loop
+Date: Wed, 14 Feb 2024 00:07:36 +0100
+Message-ID: <CACRpkdYxf-4PGyAcA3146_V==u3q9QYwiN25cRCt-wZrh9xocA@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 03/15] net: dsa: vsc73xx: use macros for rgmii recognition
 To: Pawel Dembicki <paweldembicki@gmail.com>
 Cc: netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>, 
 	Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
@@ -87,27 +86,16 @@ Cc: netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 11:04=E2=80=AFPM Pawel Dembicki <paweldembicki@gmai=
+On Tue, Feb 13, 2024 at 11:05=E2=80=AFPM Pawel Dembicki <paweldembicki@gmai=
 l.com> wrote:
 
-
-> This commit switches delay loop to read_poll_timeout macro during
-> Arbiter empty check in adjust link function.
->
-> As Russel King suggested:
->
-> "This [change] avoids the issue that on the last iteration, the code read=
-s
-> the register, test it, find the condition that's being waiting for is
-> false, _then_ waits and end up printing the error message - that last
-> wait is rather useless, and as the arbiter state isn't checked after
-> waiting, it could be that we had success during the last wait."
->
-> It also remove one short msleep delay.
+> It's preparation for future use. At this moment, the RGMII port is used
+> only for a connection to the MAC interface, but in the future, someone
+> could connect a PHY to it. Using the "phy_interface_mode_is_rgmii" macro
+> allows for the proper recognition of all RGMII modes.
 >
 > Suggested-by: Russell King <linux@armlinux.org.uk>
 > Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
