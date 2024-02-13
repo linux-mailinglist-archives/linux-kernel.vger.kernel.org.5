@@ -1,185 +1,132 @@
-Return-Path: <linux-kernel+bounces-63387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DD71852E9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:00:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3614E852EA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:00:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECCC11F238B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:00:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68B4F1C23AA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:00:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6C882BB12;
-	Tue, 13 Feb 2024 10:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="nQPWZMsL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="U704wtln";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="nQPWZMsL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="U704wtln"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A27D2C698;
+	Tue, 13 Feb 2024 11:00:43 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 601752BB11;
-	Tue, 13 Feb 2024 10:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C552BD1C
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707821996; cv=none; b=ChzDXEUYZDKqCBcM1uroLSFpUmlXnbeBTfB4HS5cRN/x2u0LK77OWJcGVczFcuGSpBUao3PYjrT6n4PtEf/+TteSqJPOE3C6TCWiLyDHonT6WDAT19r4dL7qaiyq+6qb7PJ66d1dyPgJG/qspUuIb1AUDjx5FaGOOsNZHPdJdh8=
+	t=1707822042; cv=none; b=ZnYGyarAsOunudCZxsTqVPwaM7ycy03gKzwxKsZ2Nsr3UvuYJQvIMMH9e2Vgnr0LD6W5l8skKnl+EFg+Zh6JNLvrl5x1iP+yayCPM96mfHL9wHQsSd2NNyLVz8UUlpkLsqh9vhtwrrHjzOwUcFHZcvx8zc69sviK7srWxiH03+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707821996; c=relaxed/simple;
-	bh=z5rLb6MsNMrDpWRnjctFpUrE7AGtrnX2KDuGHeXO7Ek=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=InMKC/WjJmBFA1bdo8J6Hd0jpXESrGsYAo0HVGkfC64t7VkMUCwL83tRP4UIwTMWMofdMDpqXCjWc2KCF+2oAHf8HQgwAhb3KjVsbHo5/jpkFdViH57ff8QnNfRqtrwpAoemMmqTisihiewgSjyTVy3aoRQny1yfO/dLd7pRgQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=nQPWZMsL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=U704wtln; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=nQPWZMsL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=U704wtln; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1707822042; c=relaxed/simple;
+	bh=+RNmFerRabSoDvfbT+rohW1J8Y7o+4ePKtvKyk/5nio=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PIi+BnKJL/mwGdi1YH2MflkknsFqIbMTxU0SPXvNjD79FO7pKjoIBEv98aLmU1KGn3Xk7zUZjq3J92Rti+HaTI24BKdBp+XJK58HN1v5hZpNhVWzGK+cmbU5aKJ/Q3Jl+h267VZ6i7L5noYDOSsX7iAzODFVsqvj/YFi3BYWwik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rZqWY-00066h-Hf; Tue, 13 Feb 2024 12:00:26 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rZqWX-000Sxb-EA; Tue, 13 Feb 2024 12:00:25 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8C0CB1FCA1;
-	Tue, 13 Feb 2024 10:59:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707821993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nssWF1i/oSbiQpzptSWDyl0IEP8C/Hz0bw8YG0ty/hY=;
-	b=nQPWZMsLWCEqCIgUH0rwcQ3Luz26DlMH6dNGQuzYmrntsG9tIvn4uhY0EgiwdEkAqE5zUg
-	r8zvr/ohbG9MMe/N8Ffo1Oczy5PlS9YatpC964fkkjiI6Euq7z9SBYeRsxwvL5eMn2D+Ar
-	Hvz9vUqRbleHSMHv5kW0PpoSWV9GI3E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707821993;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nssWF1i/oSbiQpzptSWDyl0IEP8C/Hz0bw8YG0ty/hY=;
-	b=U704wtln6aIUurJC7nEA0jrBRJ7dYOjWgJvYaW9Ay6lVzJEJXmSN25ik06tXw6WiEvVotX
-	gy23pC7EoCMp2gAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707821993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nssWF1i/oSbiQpzptSWDyl0IEP8C/Hz0bw8YG0ty/hY=;
-	b=nQPWZMsLWCEqCIgUH0rwcQ3Luz26DlMH6dNGQuzYmrntsG9tIvn4uhY0EgiwdEkAqE5zUg
-	r8zvr/ohbG9MMe/N8Ffo1Oczy5PlS9YatpC964fkkjiI6Euq7z9SBYeRsxwvL5eMn2D+Ar
-	Hvz9vUqRbleHSMHv5kW0PpoSWV9GI3E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707821993;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nssWF1i/oSbiQpzptSWDyl0IEP8C/Hz0bw8YG0ty/hY=;
-	b=U704wtln6aIUurJC7nEA0jrBRJ7dYOjWgJvYaW9Ay6lVzJEJXmSN25ik06tXw6WiEvVotX
-	gy23pC7EoCMp2gAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4DF1913404;
-	Tue, 13 Feb 2024 10:59:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id h5x7EqlLy2UVcQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 13 Feb 2024 10:59:53 +0000
-Date: Tue, 13 Feb 2024 11:59:53 +0100
-Message-ID: <87wmr8y6hi.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Wesley Cheng <quic_wcheng@quicinc.com>
-Cc: <srinivas.kandagatla@linaro.org>,
-	<mathias.nyman@intel.com>,
-	<perex@perex.cz>,
-	<conor+dt@kernel.org>,
-	<corbet@lwn.net>,
-	<lgirdwood@gmail.com>,
-	<andersson@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>,
-	<gregkh@linuxfoundation.org>,
-	<Thinh.Nguyen@synopsys.com>,
-	<broonie@kernel.org>,
-	<bgoswami@quicinc.com>,
-	<tiwai@suse.com>,
-	<robh+dt@kernel.org>,
-	<konrad.dybcio@linaro.org>,
-	<linux-kernel@vger.kernel.org>,
-	<devicetree@vger.kernel.org>,
-	<linux-sound@vger.kernel.org>,
-	<linux-usb@vger.kernel.org>,
-	<linux-arm-msm@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>,
-	<alsa-devel@alsa-project.org>
-Subject: Re: [PATCH v15 29/50] ALSA: usb-audio: qcom: Introduce QC USB SND offloading support
-In-Reply-To: <20240213005422.3121-30-quic_wcheng@quicinc.com>
-References: <20240213005422.3121-1-quic_wcheng@quicinc.com>
-	<20240213005422.3121-30-quic_wcheng@quicinc.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 03AAF28D5D3;
+	Tue, 13 Feb 2024 11:00:25 +0000 (UTC)
+Date: Tue, 13 Feb 2024 12:00:24 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Srinivas Goud <srinivas.goud@amd.com>
+Cc: wg@grandegger.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, p.zabel@pengutronix.de, git@amd.com, 
+	michal.simek@xilinx.com, linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v7 0/3] can: xilinx_can: Add ECC feature support
+Message-ID: <20240213-reactor-vertebrae-af419800fcdc-mkl@pengutronix.de>
+References: <1705059453-29099-1-git-send-email-srinivas.goud@amd.com>
+ <20240213-evasion-crevice-3faa375c1666-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=nQPWZMsL;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=U704wtln
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.76 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLe67txhfobum3fqdb5xx8e3au)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-1.75)[93.51%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[dt];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[23];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[linaro.org,intel.com,perex.cz,kernel.org,lwn.net,gmail.com,linuxfoundation.org,synopsys.com,quicinc.com,suse.com,vger.kernel.org,alsa-project.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -1.76
-X-Rspamd-Queue-Id: 8C0CB1FCA1
-X-Spam-Flag: NO
-
-On Tue, 13 Feb 2024 01:54:01 +0100,
-Wesley Cheng wrote:
-> +static int __init qc_usb_audio_offload_init(void)
-> +{
-> +	struct uaudio_qmi_svc *svc;
-> +	int ret;
-> +
-> +	svc = kzalloc(sizeof(struct uaudio_qmi_svc), GFP_KERNEL);
-> +	if (!svc)
-> +		return -ENOMEM;
-> +
-> +	svc->uaudio_wq = create_singlethread_workqueue("uaudio_svc");
-> +	if (!svc->uaudio_wq) {
-> +		ret = -ENOMEM;
-> +		goto free_svc;
-> +	}
-
-Do we need a dedicated workqueue?  I don't mind much, but an own
-workqueue isn't usually needed unless specifically required such as
-the request quantity control or isolation.
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pcfdyjxuszkxzmew"
+Content-Disposition: inline
+In-Reply-To: <20240213-evasion-crevice-3faa375c1666-mkl@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 
-thanks,
+--pcfdyjxuszkxzmew
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Takashi
+On 13.02.2024 11:22:49, Marc Kleine-Budde wrote:
+> On 12.01.2024 17:07:30, Srinivas Goud wrote:
+> > Add ECC feature support to Tx and Rx FIFOs for Xilinx CAN Controller.
+> > ECC is an IP configuration option where counter registers are added in
+> > IP for 1bit/2bit ECC errors count and reset.
+> > Also driver reports 1bit/2bit ECC errors for FIFOs based on ECC error
+> > interrupts.
+> >=20
+> > Add xlnx,has-ecc optional property for Xilinx AXI CAN controller
+> > to support ECC if the ECC block is enabled in the HW.
+> >=20
+> > Add ethtool stats interface for getting all the ECC errors information.
+> >=20
+> > There is no public documentation for it available.
+>=20
+> Lately I was using ethtool based stats, too and figured out, there's no
+> need for a spinlock, you can use a struct u64_stats_sync,
+> u64_stats_update_begin(), u64_stats_update_end(), and
+> u64_stats_fetch_retry() instead. These are no-ops on 64 bit systems and
+> sequential locks on 32 bit systems.
+>=20
+> I'll send a v8.
+
+https://lore.kernel.org/all/20240213-xilinx_ecc-v8-0-8d75f8b80771@pengutron=
+ix.de/
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--pcfdyjxuszkxzmew
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmXLS8QACgkQKDiiPnot
+vG8czQf/aG7oFJxKdh1Q53rxG1f7aBqGyD1mOGPP8tUpbBujLHlZ8bTAF8KE9qTw
+4w2mFpYKOGhsRgTf1FD4mIWemqWnlaTESbQDu3r3n8x7iP46Chj6YH6hyrWJWpAW
+/wAc5jaMCjbkEBQmHRGJxDvZ1cedH/A2St+RpO8GeLvQCkq3qsNkNqI6JwEqc9ek
+bbSViga7DX6sokcg0zmhonSrgeKDBv7gf/ZBkWTeNjlFlsjpUXN8bAbRqlt/EqRw
+M3ckdj63rdRGTwrOCqHPVYtn/VwhdNvR3vafM8iFZI/9lG9EPeJ1A5Zu+jGIr7IO
+Z8UkkTzODpkD/G411piaTJ4I+h47ow==
+=DPr0
+-----END PGP SIGNATURE-----
+
+--pcfdyjxuszkxzmew--
 
