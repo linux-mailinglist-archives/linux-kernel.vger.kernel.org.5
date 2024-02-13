@@ -1,124 +1,177 @@
-Return-Path: <linux-kernel+bounces-63964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1CB88536D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:08:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50A458536DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DFA31F2678F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:08:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 743811C227AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:09:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2F15FF04;
-	Tue, 13 Feb 2024 17:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C655FBA1;
+	Tue, 13 Feb 2024 17:09:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iCCw0gWT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="UWDbW4DF"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 121395FEEB;
-	Tue, 13 Feb 2024 17:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5407A5FB9D;
+	Tue, 13 Feb 2024 17:09:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707844082; cv=none; b=P30IqzBYnM+IIx7gdLTgrsvPJto59fFtJNe4Y93BGvfs2Tc5VGS7oy5ly3QGvMSDDupHWfnhSroLum/tTk/o5zIRlwRPmgQVzhzWt1dkELktZWrQ00yaRxhOTGFZykAaVjU6G27SxDruVVMmLOdJvIPYbN+PZOisHs7u7DTbxGE=
+	t=1707844144; cv=none; b=uOK7+KYuiz64TwAl6tn4VGrtrXbCh8kzvIe33+stpS/tZYNa8ejYCWkN9y4OsdaMkQa4FTUM6m+U/kirVLXPe6fF5t29Rl3He9EuCFVqkcquPbagZr5EmXseK7tMLlJvlkD6GlzAznOwCSGQG5/dy27gKNFb9YIc3AqI2CJSGBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707844082; c=relaxed/simple;
-	bh=kMKt48JtyhnSZZmYJ+tvCCqJgAdUtaJZ3EdoLQoxG8s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NMtiFnmue5DkO4yzaapB7Oti3qvzrl2jDEBtgmriu5tyUOeOOYFsYhT7pHJ0lAkaJap+vl54vEsvw7BTH2LeBYd8Xl/8KS+EMN1wGz8aHCOqu5kUtuTRFT5YKgMeWj8oTKBoETYf0Qz+baJbVpx3kgMiaB6OD6j6tgBIo0CDwD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iCCw0gWT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72026C433F1;
-	Tue, 13 Feb 2024 17:08:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707844081;
-	bh=kMKt48JtyhnSZZmYJ+tvCCqJgAdUtaJZ3EdoLQoxG8s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iCCw0gWTjAL16cZFq1cKkWv34iqARLorO+GqyHVEmPmfKRM7IFt5RlIGulxSTJX+L
-	 vNAsup03pZfjMdBvoSGqmT7lhjtiX0dIkIoCVZ/QdTvWUB7CyXztNE7xrPenIuZC6S
-	 +mRelsv033/oQl+98xqRrieXD3LkrMFIzlupPKBoHc1mG4B43fxU/bwRod84hDaQvx
-	 hi1BbVvZRog4Da8V5cnnokfX2mBhuNf737SUxr/QXftnZviTv+4b5bQzS2aWu0BZ5G
-	 TceR8R12VIk/+VS0N+j5eE0IohF+orI9ueQmDxwFzzKDVE4/J6VFemmWD9qRSMCSIW
-	 JI3ze1A+iHe7A==
-Date: Tue, 13 Feb 2024 09:08:00 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
-	martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com
-Subject: Re: [PATCH 2/6] fs: Add FS_XFLAG_ATOMICWRITES flag
-Message-ID: <20240213170800.GZ6184@frogsfrogsfrogs>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-3-john.g.garry@oracle.com>
- <20240202175701.GI6184@frogsfrogsfrogs>
- <28399201-e99f-4b03-b2c0-b66cc0d21ce6@oracle.com>
+	s=arc-20240116; t=1707844144; c=relaxed/simple;
+	bh=hDjPdXfN+yMLunBnu3HBhRXW2ysCyXYaOInSXjhO410=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=MWOnaNgOFEmsUaqH1jBVowCz5baf5GwQ90yRb/EEhN0EAs1JRcI2dyiQj6Ag8u/ExxD2nzcFUMdAAWIANMShWxslWVyLcwX/DpZ2xZYp1IA7JkLoKtCV1qpPzQFzfiLro6g67wvS4Y8HqJfxWq6Aq43v1MXp3nazpOisWxLQ4r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=UWDbW4DF; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41DH8nT8035273;
+	Tue, 13 Feb 2024 11:08:49 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707844129;
+	bh=OHaBar8sdC9xa0e0bmpA7en2/L+4CDhbSqeyzJZcf/M=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=UWDbW4DFSaB/Yo4M++aICZeEgnWv4jiCtCkNR6mNq6jUrOvRKRtPH8oUJiVNP+k1Q
+	 J4IAuagKeNOYCvQoR7gbP3R4zjxPNSsA5fzzhGyAvxDqb7ItZJ1q26b8mY9H5qkD8l
+	 16DYJzxWNFxfvDDZSy9w1M4d3HDRg1TNnEyU2Izo=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41DH8nEc021131
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 13 Feb 2024 11:08:49 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 13
+ Feb 2024 11:08:48 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 13 Feb 2024 11:08:48 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41DH8mHf037609;
+	Tue, 13 Feb 2024 11:08:48 -0600
+Message-ID: <af73545a-1746-4e14-a3f2-772d72e6ff97@ti.com>
+Date: Tue, 13 Feb 2024 11:08:48 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <28399201-e99f-4b03-b2c0-b66cc0d21ce6@oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] arm64: dts: ti: k3-j784s4-main: Fix mux-reg-masks in
+ serdes_ln_ctrl
+Content-Language: en-US
+To: Peter Rosin <peda@axentia.se>, Siddharth Vadapalli <s-vadapalli@ti.com>,
+        <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <c-vankar@ti.com>,
+        <srk@ti.com>
+References: <20240213080348.248916-1-s-vadapalli@ti.com>
+ <1be60db1-f292-1074-5898-801380e1fb22@axentia.se>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <1be60db1-f292-1074-5898-801380e1fb22@axentia.se>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon, Feb 05, 2024 at 12:58:30PM +0000, John Garry wrote:
-> On 02/02/2024 17:57, Darrick J. Wong wrote:
-> > On Wed, Jan 24, 2024 at 02:26:41PM +0000, John Garry wrote:
-> > > Add a flag indicating that a regular file is enabled for atomic writes.
-> > 
-> > This is a file attribute that mirrors an ondisk inode flag.  Actual
-> > support for untorn file writes (for now) depends on both the iflag and
-> > the underlying storage devices, which we can only really check at statx
-> > and pwrite time.  This is the same story as FS_XFLAG_DAX, which signals
-> > to the fs that we should try to enable the fsdax IO path on the file
-> > (instead of the regular page cache), but applications have to query
-> > STAT_ATTR_DAX to find out if they really got that IO path.
+On 2/13/24 3:19 AM, Peter Rosin wrote:
+> Hi!
 > 
-> To be clear, are you suggesting to add this info to the commit message?
-
-That and a S_ATOMICW flag for the inode that triggers the proposed
-STAT_ATTR_ATOMICWRITES flag.
-
-> > "try to enable atomic writes", perhaps? >
-> > (and the comment for FS_XFLAG_DAX ought to read "try to use DAX for IO")
+> 2024-02-13 at 09:03, Siddharth Vadapalli wrote:
+>> From: Chintan Vankar <c-vankar@ti.com>
+>>
+>> Change offset in mux-reg-masks property for serdes_ln_ctrl node
+>> since reg-mux property is used in compatible.
+>>
+>> Fixes: 2765149273f4 ("mux: mmio: use reg property when parent device is not a syscon")
+>> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+>> Acked-by: Andrew Davis <afd@ti.com>
+>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+>> ---
+>> Hello,
+>>
+>> This patch is based on linux-next tagged next-20240213.
+>> The v4 of this patch is a part of the series at:
+>> https://lore.kernel.org/r/20240131101441.1362409-1-c-vankar@ti.com/
+>>
+>> Since the v4 series mentioned above has open comments on the other
+>> patches in the series, this patch is being posted separately to unblock
+>> other dependent series which rely on the fix implemented by this patch.
+>>
+>> Changes since v4:
+>> - Rebased patch on linux-next tagged next-20240213.
+>>
+>> Regards,
+>> Siddharth.
+>>
+>>   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 12 ++++++------
+>>   1 file changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+>> index 3cb964982792..3b7f0eca977b 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+>> @@ -52,12 +52,12 @@ serdes_ln_ctrl: mux-controller@4080 {
+>>   			compatible = "reg-mux";
+>>   			reg = <0x00004080 0x30>;
+>>   			#mux-control-cells = <1>;
+>> -			mux-reg-masks = <0x4080 0x3>, <0x4084 0x3>, /* SERDES0 lane0/1 select */
+>> -					<0x4088 0x3>, <0x408c 0x3>, /* SERDES0 lane2/3 select */
+>> -					<0x4090 0x3>, <0x4094 0x3>, /* SERDES1 lane0/1 select */
+>> -					<0x4098 0x3>, <0x409c 0x3>, /* SERDES1 lane2/3 select */
+>> -					<0x40a0 0x3>, <0x40a4 0x3>, /* SERDES2 lane0/1 select */
+>> -					<0x40a8 0x3>, <0x40ac 0x3>; /* SERDES2 lane2/3 select */
+>> +			mux-reg-masks = <0x0 0x3>, <0x4 0x3>, /* SERDES0 lane0/1 select */
+>> +					<0x8 0x3>, <0xc 0x3>, /* SERDES0 lane2/3 select */
+>> +					<0x10 0x3>, <0x14 0x3>, /* SERDES1 lane0/1 select */
+>> +					<0x18 0x3>, <0x1c 0x3>, /* SERDES1 lane2/3 select */
+>> +					<0x20 0x3>, <0x24 0x3>, /* SERDES2 lane0/1 select */
+>> +					<0x28 0x3>, <0x2c 0x3>; /* SERDES2 lane2/3 select */
+>>   			idle-states = <J784S4_SERDES0_LANE0_PCIE1_LANE0>,
+>>   				      <J784S4_SERDES0_LANE1_PCIE1_LANE1>,
+>>   				      <J784S4_SERDES0_LANE2_IP3_UNUSED>,
 > 
-> To me that sounds like "try to use DAX for IO, and, if not possible, fall
-> back on some other method" - is that reality of what that flag does?
-
-As hch said, yes.
-
---D
-
-> Thanks,
-> John
-> 
-> > 
-> > --D
-> > 
-> > > 
-> > > Signed-off-by: John Garry <john.g.garry@oracle.com>
-> > > ---
-> > >   include/uapi/linux/fs.h | 1 +
-> > >   1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> > > index a0975ae81e64..b5b4e1db9576 100644
-> > > --- a/include/uapi/linux/fs.h
-> > > +++ b/include/uapi/linux/fs.h
-> > > @@ -140,6 +140,7 @@ struct fsxattr {
-> > >   #define FS_XFLAG_FILESTREAM	0x00004000	/* use filestream allocator */
-> > >   #define FS_XFLAG_DAX		0x00008000	/* use DAX for IO */
-> > >   #define FS_XFLAG_COWEXTSIZE	0x00010000	/* CoW extent size allocator hint */
-> > > +#define FS_XFLAG_ATOMICWRITES	0x00020000	/* atomic writes enabled */
-> > >   #define FS_XFLAG_HASATTR	0x80000000	/* no DIFLAG for this	*/
-> > >   /* the read-only stuff doesn't really belong here, but any other place is
-> > > -- 
-> > > 2.31.1
-> > > 
-> > > 
+> Ouch. I suspect there is a similar problem in
+> arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi:
 > 
 > 
+> 	fss: bus@47000000 {
+> 		compatible = "simple-bus";
+> 		reg = <0x0 0x47000000 0x0 0x100>;
+> 		#address-cells = <2>;
+> 		#size-cells = <2>;
+> 		ranges;
+> 
+> 		hbmc_mux: mux-controller@47000004 {
+> 			compatible = "reg-mux";
+> 			reg = <0x00 0x47000004 0x00 0x2>;
+> 			#mux-control-cells = <1>;
+> -			mux-reg-masks = <0x4 0x2>; /* HBMC select */
+> +			mux-reg-masks = <0x0 0x2>; /* HBMC select */
+> 		};
+> 
+> Who knows what non-upstreamed devices and devicetrees are affected?
+> I guess we need to revert 2765149273f4 ("mux: mmio: use reg property
+> when parent device is not a syscon") unless someone sees a sane way
+> to fix this.
+
+There are only two in-tree nodes with "reg-mux" with a reg property: the
+one this patch fixes, and the hbmc_mux you point out, both in TI devices.
+I'd say it is safe to assume we are the only users, and our non-upstreamed
+DTs depend on that patch, reverting it would cause more issues for
+out-of-tree users than just fixing the two broken nodes above.
+
+Andrew
+
+> 
+> Cheers,
+> Peter
 
