@@ -1,59 +1,71 @@
-Return-Path: <linux-kernel+bounces-62661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F94785241F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F1CA852422
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:43:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C0F128230E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:43:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59589283463
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB80626D6;
-	Tue, 13 Feb 2024 00:21:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D71627F2;
+	Tue, 13 Feb 2024 00:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n1XSa6Yp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DLwVkvXd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22946626A7;
-	Tue, 13 Feb 2024 00:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8EF626A7;
+	Tue, 13 Feb 2024 00:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783692; cv=none; b=Wv5ui4+GmSVYBm0vm5FjSYsOONvFwLkCoKaZU9SZ8Bu+zN7dEf92nPU4A6rrI4yJ+PzPYGE0kSvYxw7z2HZ0OeV/IF32wZ5YE7UsTZHgfLwXTpZdpduwZk7D1wQAccmLT3vruRM5Wb57w5mObvJaHJgXJhigiEqvypx3fgh+Q94=
+	t=1707783696; cv=none; b=rdd0mB287HV7eL4G3Py45fwOaCEyB8ryfKaoQvX6QV66iNAU4MKw0qHd47UqAv4L4CptuDXebit6TWEKamgXS5MBu3kMsL8gdRlPDR74IuB7mujnS8vY5Gql0B1aHFwCz6pvydImf1n6cYIZ5W/2+A6vtj4gmMBFzZfXy6OoTzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783692; c=relaxed/simple;
-	bh=D5FmZorhaZefGTlqcT+FkW4aV8RoGBMwO9d0EJXg7IA=;
+	s=arc-20240116; t=1707783696; c=relaxed/simple;
+	bh=g2u1j3aPbsPh2d5A6m5TpM+/8oeyM+LqEmkbciEdN4A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pS1y/ZTgAmokAIig5fT3UD+/TKo5z+l8IlyABd8VxB7+clOvQAT7ikvc3dVaJeBhBBWU3qlvwQ7FT16Fd6+AP60y5TxEJsQVArQ9GTjGf/ScOLwsXrktmAbmA9SMjITT88QBxkQ0nRZr3ZcH8mIbvajQkHWEPazqBWPSJwoV2Wc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n1XSa6Yp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70800C433C7;
-	Tue, 13 Feb 2024 00:21:30 +0000 (UTC)
+	 MIME-Version; b=nBxDZej6M6K00FtmnzhoDTh1zFr3cqjF8o7sErs0lEuRuk7tuPs93bSi/mljOxEe2LAHQCSCyObAfEBwaCdWdvAWDUXABugkdBbtHirtw0GHy94Nzyhgkp3F+vUsUClW5IGYC5nu0YYzSaUwIjbsqksJQn1Ock9pASxcpTCFOQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DLwVkvXd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 694A9C433F1;
+	Tue, 13 Feb 2024 00:21:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783691;
-	bh=D5FmZorhaZefGTlqcT+FkW4aV8RoGBMwO9d0EJXg7IA=;
+	s=k20201202; t=1707783695;
+	bh=g2u1j3aPbsPh2d5A6m5TpM+/8oeyM+LqEmkbciEdN4A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=n1XSa6YpXi1JQqIBO4OgwzXZ+2SFRNFtCEdwZaJIjTDr1CWEC6LmckwxRO+f1g7s+
-	 4YyHp13+gphWi0WaM99KjaBp46oZXF7fvBqqBf4m8yjx0qv2FP/RqvVlXuvPMl+ybl
-	 AWBRJwz39rTEJKFrAnfZuAcAdzm1FTFP361jyXAZalGnZKVz2LTl0uto35pXeOMvSL
-	 TfxhpepDgHntA0FnQ/dLMxiPt9zZJUQiDU9TQkcVBTg/gfd6LzezDQaJM/aF2GzPx0
-	 b2P1h5KALdi1iv443JJOD0xER7tQRH22jscLwCXnGRxVHB5AVQ0LtCL7hb2gT3CuNj
-	 mYxLTPBDFOe2g==
+	b=DLwVkvXdshJA++ULZAs+bWFdHGzN8rP9AyCYVFD6DPoPB2qY76GhZP5MYpadTPv4p
+	 D1758UrhWNzU3hyiqvvPyF0StSwc2NhgG3MPla7ug4xtIUwxlfjt53EM4AhKxEeYuj
+	 WZwU91sVqqbs/JBjdSAfPEdeC3fBduqw1lxLYUIfGYN6hzXwelwDecmIt6tF3Yq/WP
+	 0+sIPYqfQcOjPpScPOI7ysnaK5Oi/HVU1ngrFp9rkvuhvlyawSseoLbQm3mvSkQSYm
+	 r89wEyLTNs1uNItlN/90R/XEW22GGFa4dViGiYrG9N2xJToLalQDpBPpzZkDyhr2zt
+	 EnNoESKu7Ln6A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hannes Reinecke <hare@suse.de>,
-	Daniel Wagner <dwagner@suse.de>,
+Cc: Alice Chao <alice.chao@mediatek.com>,
+	Stanley Jhu <chu.stanley@gmail.com>,
+	Bart Van Assche <bvanassche@acm.org>,
 	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
-	james.smart@broadcom.com,
-	dick.kennedy@broadcom.com,
 	jejb@linux.ibm.com,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 30/51] scsi: lpfc: Use unsigned type for num_sge
-Date: Mon, 12 Feb 2024 19:20:07 -0500
-Message-ID: <20240213002052.670571-30-sashal@kernel.org>
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	stanley.chu@mediatek.com,
+	avri.altman@wdc.com,
+	quic_cang@quicinc.com,
+	quic_nguyenb@quicinc.com,
+	peter.wang@mediatek.com,
+	beanhuo@micron.com,
+	manivannan.sadhasivam@linaro.org,
+	quic_ziqichen@quicinc.com,
+	athierry@redhat.com,
+	linux-scsi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 31/51] scsi: ufs: core: Fix shift issue in ufshcd_clear_cmd()
+Date: Mon, 12 Feb 2024 19:20:08 -0500
+Message-ID: <20240213002052.670571-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002052.670571-1-sashal@kernel.org>
 References: <20240213002052.670571-1-sashal@kernel.org>
@@ -68,78 +80,84 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.16
 Content-Transfer-Encoding: 8bit
 
-From: Hannes Reinecke <hare@suse.de>
+From: Alice Chao <alice.chao@mediatek.com>
 
-[ Upstream commit d6c1b19153f92e95e5e1801d540e98771053afae ]
+[ Upstream commit b513d30d59bb383a6a5d6b533afcab2cee99a8f8 ]
 
-LUNs going into "failed ready running" state observed on >1T and on even
-numbers of size (2T, 4T, 6T, 8T and 10T). The issue occurs when DIF is
-enabled at the host.
+When task_tag >= 32 (in MCQ mode) and sizeof(unsigned int) == 4, 1U <<
+task_tag will out of bounds for a u32 mask. Fix this up to prevent
+SHIFT_ISSUE (bitwise shifts that are out of bounds for their data type).
 
-The kernel logs:
+[name:debug_monitors&]Unexpected kernel BRK exception at EL1
+[name:traps&]Internal error: BRK handler: 00000000f2005514 [#1] PREEMPT SMP
+[name:mediatek_cpufreq_hw&]cpufreq stop DVFS log done
+[name:mrdump&]Kernel Offset: 0x1ba5800000 from 0xffffffc008000000
+[name:mrdump&]PHYS_OFFSET: 0x80000000
+[name:mrdump&]pstate: 22400005 (nzCv daif +PAN -UAO)
+[name:mrdump&]pc : [0xffffffdbaf52bb2c] ufshcd_clear_cmd+0x280/0x288
+[name:mrdump&]lr : [0xffffffdbaf52a774] ufshcd_wait_for_dev_cmd+0x3e4/0x82c
+[name:mrdump&]sp : ffffffc0081471b0
+<snip>
+Workqueue: ufs_eh_wq_0 ufshcd_err_handler
+Call trace:
+ dump_backtrace+0xf8/0x144
+ show_stack+0x18/0x24
+ dump_stack_lvl+0x78/0x9c
+ dump_stack+0x18/0x44
+ mrdump_common_die+0x254/0x480 [mrdump]
+ ipanic_die+0x20/0x30 [mrdump]
+ notify_die+0x15c/0x204
+ die+0x10c/0x5f8
+ arm64_notify_die+0x74/0x13c
+ do_debug_exception+0x164/0x26c
+ el1_dbg+0x64/0x80
+ el1h_64_sync_handler+0x3c/0x90
+ el1h_64_sync+0x68/0x6c
+ ufshcd_clear_cmd+0x280/0x288
+ ufshcd_wait_for_dev_cmd+0x3e4/0x82c
+ ufshcd_exec_dev_cmd+0x5bc/0x9ac
+ ufshcd_verify_dev_init+0x84/0x1c8
+ ufshcd_probe_hba+0x724/0x1ce0
+ ufshcd_host_reset_and_restore+0x260/0x574
+ ufshcd_reset_and_restore+0x138/0xbd0
+ ufshcd_err_handler+0x1218/0x2f28
+ process_one_work+0x5fc/0x1140
+ worker_thread+0x7d8/0xe20
+ kthread+0x25c/0x468
+ ret_from_fork+0x10/0x20
 
-  Cannot setup S/G List for HBAIO segs 1/1 SGL 512 SCSI 256: 3 0
-
-The host lpfc driver is failing to setup scatter/gather list (protection
-data) for the I/Os.
-
-The return type lpfc_bg_setup_sgl()/lpfc_bg_setup_sgl_prot() causes the
-compiler to remove the most significant bit. Use an unsigned type instead.
-
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-[dwagner: added commit message]
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-Link: https://lore.kernel.org/r/20231220162658.12392-1-dwagner@suse.de
+Signed-off-by: Alice Chao <alice.chao@mediatek.com>
+Link: https://lore.kernel.org/r/20240205104905.24929-1-alice.chao@mediatek.com
+Reviewed-by: Stanley Jhu <chu.stanley@gmail.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_scsi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/ufs/core/ufshcd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
-index d26941b131fd..bf879d81846b 100644
---- a/drivers/scsi/lpfc/lpfc_scsi.c
-+++ b/drivers/scsi/lpfc/lpfc_scsi.c
-@@ -1918,7 +1918,7 @@ lpfc_bg_setup_bpl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
-  *
-  * Returns the number of SGEs added to the SGL.
-  **/
--static int
-+static uint32_t
- lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 		struct sli4_sge *sgl, int datasegcnt,
- 		struct lpfc_io_buf *lpfc_cmd)
-@@ -1926,8 +1926,8 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 	struct scatterlist *sgde = NULL; /* s/g data entry */
- 	struct sli4_sge_diseed *diseed = NULL;
- 	dma_addr_t physaddr;
--	int i = 0, num_sge = 0, status;
--	uint32_t reftag;
-+	int i = 0, status;
-+	uint32_t reftag, num_sge = 0;
- 	uint8_t txop, rxop;
- #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
- 	uint32_t rc;
-@@ -2099,7 +2099,7 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
-  *
-  * Returns the number of SGEs added to the SGL.
-  **/
--static int
-+static uint32_t
- lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 		struct sli4_sge *sgl, int datacnt, int protcnt,
- 		struct lpfc_io_buf *lpfc_cmd)
-@@ -2123,8 +2123,8 @@ lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
- 	uint32_t rc;
- #endif
- 	uint32_t checking = 1;
--	uint32_t dma_offset = 0;
--	int num_sge = 0, j = 2;
-+	uint32_t dma_offset = 0, num_sge = 0;
-+	int j = 2;
- 	struct sli4_hybrid_sgl *sgl_xtra = NULL;
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+index 44e0437bd19d..f6c83dcff8a8 100644
+--- a/drivers/ufs/core/ufshcd.c
++++ b/drivers/ufs/core/ufshcd.c
+@@ -2949,7 +2949,7 @@ bool ufshcd_cmd_inflight(struct scsi_cmnd *cmd)
+  */
+ static int ufshcd_clear_cmd(struct ufs_hba *hba, u32 task_tag)
+ {
+-	u32 mask = 1U << task_tag;
++	u32 mask;
+ 	unsigned long flags;
+ 	int err;
  
- 	sgpe = scsi_prot_sglist(sc);
+@@ -2967,6 +2967,8 @@ static int ufshcd_clear_cmd(struct ufs_hba *hba, u32 task_tag)
+ 		return 0;
+ 	}
+ 
++	mask = 1U << task_tag;
++
+ 	/* clear outstanding transaction before retry */
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+ 	ufshcd_utrl_clear(hba, mask);
 -- 
 2.43.0
 
