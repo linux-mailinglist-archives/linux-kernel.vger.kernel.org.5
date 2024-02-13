@@ -1,209 +1,156 @@
-Return-Path: <linux-kernel+bounces-63670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4CDD853309
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4695585330A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:26:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D3CCB231AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:25:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0D64B23329
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CCD58124;
-	Tue, 13 Feb 2024 14:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6693B57875;
+	Tue, 13 Feb 2024 14:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="peaY5gJu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3ve7YYNp";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="peaY5gJu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3ve7YYNp"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="AIaqCwPT"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C28B58119
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:25:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD3357865
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707834330; cv=none; b=pFfrSnXvxPntzU9swZJ9aYM0MuBTdb++Mt3qKoLi5Ph3+LRhnXUBrRc4WCJxKrKbqNpv93kHtIgGPRq8qY3DB9Cc/c7dx2Mpgff5O7vnXOYxOyQ/nCPYFX7wakNwAyJxGNwpNLPLfrbe/9yoIvbJP2fP0VVPH6Jxzdms4J4eGpU=
+	t=1707834350; cv=none; b=ckfnhpyjYi6YRo8A3J9gg0PjYmIeCJqF0660u3TFWE9y61ctfcSCN0ExR+j2KjoxlEI/aKtjtkRA5sb8srjfaeRoGpx0tWBfosjfsOLAMaXuzxIFyqfMGkqcR4hs7tC++kkqJzMmFe6adQQ/dnZ/pvIrHzjXOdQdu0yfzJQ/Euw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707834330; c=relaxed/simple;
-	bh=47GLH3r8Ecss8GdXJNiRzcux3kAUlP7QKTP2wmpdSxw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i7Amqpfjh7V6qWP9h4Hog3ysgsl5ZDjzMxSQZHQ6cZTaMv6juUsbef111626wK+g1kEF7Gt9nFxyF2QKhQo2x3Ui5Qd8aV+wQOQ3PQR+A4I/O+oHj67yIH0sqprFqS+radPQ5OcUAuexClC6RMTuzHaL88C+UFDt8IEfmuJ5H4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=peaY5gJu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3ve7YYNp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=peaY5gJu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3ve7YYNp; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B95B01FCDB;
-	Tue, 13 Feb 2024 14:25:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707834326; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pkBvOLVHi2de+ERnUxon6wSh8Yr7kE+kebwjXh01sD0=;
-	b=peaY5gJuPxc4TrCtINsGhmTcHGex6SOS5vhB9gGhZEWPhfKGFlg/JxrgvNZMx4b6iDhd4V
-	TzlToyjyxXV5H4WHxg/xpMa7greVATkwSezqoYuqoTdyzWUyvvRmYddWN3cV6W3O0ZBGfA
-	wT1una36u+FGKfZZAMB8qQrsvqm6dkA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707834326;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pkBvOLVHi2de+ERnUxon6wSh8Yr7kE+kebwjXh01sD0=;
-	b=3ve7YYNpOHvJkXrspWvQI4ZuMd781BYzdNLdn7LDHxk/4kk5fnEkAS9wdbVZMKQy1fSwn2
-	fR/cdqqcOZ5L/rDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707834326; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pkBvOLVHi2de+ERnUxon6wSh8Yr7kE+kebwjXh01sD0=;
-	b=peaY5gJuPxc4TrCtINsGhmTcHGex6SOS5vhB9gGhZEWPhfKGFlg/JxrgvNZMx4b6iDhd4V
-	TzlToyjyxXV5H4WHxg/xpMa7greVATkwSezqoYuqoTdyzWUyvvRmYddWN3cV6W3O0ZBGfA
-	wT1una36u+FGKfZZAMB8qQrsvqm6dkA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707834326;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pkBvOLVHi2de+ERnUxon6wSh8Yr7kE+kebwjXh01sD0=;
-	b=3ve7YYNpOHvJkXrspWvQI4ZuMd781BYzdNLdn7LDHxk/4kk5fnEkAS9wdbVZMKQy1fSwn2
-	fR/cdqqcOZ5L/rDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A498F1370C;
-	Tue, 13 Feb 2024 14:25:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8FDaJ9Z7y2UsKQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 13 Feb 2024 14:25:26 +0000
-Message-ID: <b706176a-c60a-4960-ba4a-2755c612d9c8@suse.cz>
-Date: Tue, 13 Feb 2024 15:25:26 +0100
+	s=arc-20240116; t=1707834350; c=relaxed/simple;
+	bh=X4shIH4Wr5pt55xQGZcHYq266klbBFPIeROLNWrEh60=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kDei0m6IAQFJ5uaSJTH1f1auKIxwMj0BJHyfIJSLCbmfSzL50x5Kn+CjcbJlwpsf+a3ubsfJVMXv6cKiQO78iVO6yieFQiGtuSTNV+esFng9D6kXxz4PyKIzI4cyo2yt2xHl9+JlE8jePioWh2ROPUHQ0B9qZY2iruqg5ooKBBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=AIaqCwPT; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3566c0309fso537469566b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:25:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1707834347; x=1708439147; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PyO3k1PUHkf0DTFKDVTvjkF1slnGeiMvgKzqY1R1vZo=;
+        b=AIaqCwPThS0bFSzTYbWrGmHhuYQBXRjoHhEKIJw5kkScnG5eBGYquPn8I9+33l6zxT
+         6IXgTUDe2p492MbVIO7kLloe6O0Pe+++EpvN75+wAACs0ES3Q1woYJzCN1P4PWeE7Ypd
+         Z99FYSkgE4KPUa4M1iY8Qlpj0IF48ulG7+F8DCGCZy8iXL4dUhBdabe9ONbZoKoWvS0a
+         jnNVvIWYeykNtX86EAcwC66HxRhJIHuPVu72awUaWABypEOhJkF1zJZYy8x0ks85bbO9
+         HPTUyQMRcBxk6K6pXoLUXVH2VqXAsCKeATwrCaV9bVTyTWUzHJ73zhrlS2xe77eOQwEy
+         Ka/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707834347; x=1708439147;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PyO3k1PUHkf0DTFKDVTvjkF1slnGeiMvgKzqY1R1vZo=;
+        b=GcG6EvuE0H420qyEnyhDQ9Wwbpp/Iw+ubA7iTQwx53OKerdEHWzhHpiZ04iBC+FVN2
+         8R19tunICG5Z02x/qrksul1gv0lli8UnyGHFeuviwggrnucoMna2idqZhCAo5dYX2xYw
+         MVCFhoOPxhiyAL8U+cpttG9lQOJAvNbZFuoKDksOUuJo9GbUd2HilLqMKpZjymrj6tMc
+         KywjUO4TRB6mVF7j/+gyIOylrtOcqWDdj6IYV4Sk53IF0S8CPa2WSepmObSvCMkNdTvd
+         pLloTZ52if5NsvRc6I9hccV8f9moPeuxi+0Dkds85N3DxApC+EQ+mmQVvwAbsgKCQBbM
+         em0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU/8QOdX5uN7+spdxVP0oAdSO3MjTjuSj4cpNtCWMaR0xGjLg7mJoNHAIrEKqAO3xm9hT5/EghQJTYrqgu7kjy0rl/p2PeEKGuz8J4m
+X-Gm-Message-State: AOJu0YxGmBe5OKG/WXYJaaodxH3l3gPg2d7jn9i1OcXADxvWPQggLUup
+	N3ms14DcfVycRUqvYHeUi8EqatR6cPwqPKpFV4JkInhKgQaI+iL4VjYinl6Mjwo=
+X-Google-Smtp-Source: AGHT+IEtH690NDhq0BZA5oR5pICFr2zi1bg0SnzYVaGkCrYuaggXr7BA3cC/Af5MJwiwmwG1j0Js6g==
+X-Received: by 2002:a17:906:370e:b0:a38:215c:89b with SMTP id d14-20020a170906370e00b00a38215c089bmr7288005ejc.73.1707834346621;
+        Tue, 13 Feb 2024 06:25:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVlYGAXYBwiHE3BQznOgrFzzKQBeyezWk23o9Bc6z2jRt8i3C7MyRV10Yfdg/ke27CwsgZLWRsD/kG73ElRLMI8DAo+x4rXAaBP7jWAkiP+6svR0TzGqcSsd3AuB2IR1ysHKFSgSaYnXiswAgjj07lMzFm9n352edoaLtPTu5m5IGGE
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id y21-20020a170906559500b00a34d0a865ecsm1314906ejp.163.2024.02.13.06.25.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 06:25:46 -0800 (PST)
+Date: Tue, 13 Feb 2024 15:25:44 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Stefan O'Rear <sorear@fastmail.com>
+Subject: Re: [PATCH -fixes v2 2/4] dt-bindings: riscv: Add ratified
+ privileged ISA versions
+Message-ID: <20240213-88c9d65fd2b6465fc4793f56@orel>
+References: <20240213033744.4069020-1-samuel.holland@sifive.com>
+ <20240213033744.4069020-3-samuel.holland@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 3/5] mm,page_owner: Display all stacks and their count
-Content-Language: en-US
-To: Oscar Salvador <osalvador@suse.de>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>,
- Alexander Potapenko <glider@google.com>
-References: <20240212223029.30769-1-osalvador@suse.de>
- <20240212223029.30769-4-osalvador@suse.de>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240212223029.30769-4-osalvador@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -7.83
-X-Spamd-Result: default: False [-7.83 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 REPLY(-4.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-0.986];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-2.55)[97.96%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213033744.4069020-3-samuel.holland@sifive.com>
 
-On 2/12/24 23:30, Oscar Salvador wrote:
-> This patch adds a new directory called 'page_owner_stacks' under
-> /sys/kernel/debug/, with a file called 'show_stacks' in it.
-> Reading from that file will show all stacks that were added by page_owner
-> followed by their counting, giving us a clear overview of stack <-> count
-> relationship.
+On Mon, Feb 12, 2024 at 07:37:33PM -0800, Samuel Holland wrote:
+> The baseline for the RISC-V privileged ISA is version 1.10. Using
+> features from newer versions of the privileged ISA requires the
+> supported version to be reported by platform firmware, either in the ISA
+> string (where the binding already accepts version numbers) or in the
+> riscv,isa-extensions property. So far two newer versions are ratified.
 > 
-> E.g:
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
 > 
->   prep_new_page+0xa9/0x120
->   get_page_from_freelist+0x801/0x2210
->   __alloc_pages+0x18b/0x350
->   alloc_pages_mpol+0x91/0x1f0
->   folio_alloc+0x14/0x50
->   filemap_alloc_folio+0xb2/0x100
->   __filemap_get_folio+0x14a/0x490
->   ext4_write_begin+0xbd/0x4b0 [ext4]
->   generic_perform_write+0xc1/0x1e0
->   ext4_buffered_write_iter+0x68/0xe0 [ext4]
->   ext4_file_write_iter+0x70/0x740 [ext4]
->   vfs_write+0x33d/0x420
->   ksys_write+0xa5/0xe0
->   do_syscall_64+0x80/0x160
->   entry_SYSCALL_64_after_hwframe+0x6e/0x76
->  stack_count: 4578
+> Changes in v2:
+>  - New patch for v2
 > 
-> The seq stack_{start,next} functions will iterate through the list
-> stack_list in order to print all stacks.
+>  .../devicetree/bindings/riscv/extensions.yaml | 20 +++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 > 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> index 63d81dc895e5..7faf22df01af 100644
+> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> @@ -121,6 +121,16 @@ properties:
+>              version of the privileged ISA specification.
+>  
+>          # multi-letter extensions, sorted alphanumerically
+> +        - const: sm1p11
+> +          description:
+> +            The standard Machine ISA v1.11, as ratified in the 20190608
+> +            version of the privileged ISA specification.
+> +
+> +        - const: sm1p12
+> +          description:
+> +            The standard Machine ISA v1.12, as ratified in the 20211203
+> +            version of the privileged ISA specification.
+> +
+>          - const: smaia
+>            description: |
+>              The standard Smaia supervisor-level extension for the advanced
+> @@ -134,6 +144,16 @@ properties:
+>              added by other RISC-V extensions in H/S/VS/U/VU modes and as
+>              ratified at commit a28bfae (Ratified (#7)) of riscv-state-enable.
+>  
+> +        - const: ss1p11
+> +          description:
+> +            The standard Supervisor ISA v1.11, as ratified in the 20190608
+> +            version of the privileged ISA specification.
+> +
+> +        - const: ss1p12
+> +          description:
+> +            The standard Supervisor ISA v1.12, as ratified in the 20211203
+> +            version of the privileged ISA specification.
+> +
+>          - const: ssaia
+>            description: |
+>              The standard Ssaia supervisor-level extension for the advanced
+> -- 
+> 2.43.0
+>
 
-..
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
-> +static int stack_print(struct seq_file *m, void *v)
-> +{
-> +	char *buf;
-> +	int ret = 0;
-> +	struct stack *stack = v;
-> +	struct stack_record *stack_record = stack->stack_record;
-> +
-> +	if (!stack_record->size || stack_record->size < 0 ||
-> +	    refcount_read(&stack_record->count) < 2)
-> +		return 0;
-> +
-> +	buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
-> +
-> +	ret += stack_trace_snprint(buf, PAGE_SIZE, stack_record->entries,
-> +				   stack_record->size, 0);
-> +	if (!ret)
-> +		goto out;
-> +
-> +	scnprintf(buf + ret, PAGE_SIZE - ret, "stack_count: %d\n\n",
-> +		  refcount_read(&stack_record->count));
-> +
-> +	seq_printf(m, buf);
-> +	seq_puts(m, "\n\n");
-> +out:
-> +	kfree(buf);
+Note, QEMU doesn't add these extensions to the ISA string yet, but I think
+it should start, particularly the profile CPU types which should ensure
+all the profile's mandatory extensions are added to the ISA string in
+order to avoid any confusion.
 
-Seems rather wasteful to do kzalloc/kfree so you can print into that buffer
-first and then print/copy it again using seq_printf. If you give up on using
-stack_trace_snprintf() it's not much harder to print the stack directly with
-a loop of seq_printf. See e.g. slab_debugfs_show().
-
-> +
-> +	return 0;
-> +}
-> +
-
+Thanks,
+drew
 
