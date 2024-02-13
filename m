@@ -1,117 +1,126 @@
-Return-Path: <linux-kernel+bounces-63613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9867F853242
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:50:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93CCD853244
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7C99B247DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:50:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 339181F22B48
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C958A56740;
-	Tue, 13 Feb 2024 13:50:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C6E957310;
+	Tue, 13 Feb 2024 13:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="unuQtDVq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kBNToM04"
-Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KsdzPRbb"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACBB56469;
-	Tue, 13 Feb 2024 13:50:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA7457300
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:50:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707832242; cv=none; b=no1YgM8gWTK2P+wXfeEb2djvv9WY3ZZ4b2q69BzLz5oAfX3M2tQ4FHpsjC/0I8RrPz+tiVMgbrWTJ3YME1N7Kzu332n7MDUJ5w6lin1gZ+i9q6OSF+ZZ3UdCcBCWWNxD56p3Kx9p5BKM26rYWBcBhNE4HMx79+jlAAR1+UkEjvE=
+	t=1707832252; cv=none; b=NDoEBeu6GiA84sAlShbxClBWqSjCk07L+PEXUEQcyY75YD/mgaNCnrinBwhIyFBO1R3uVasz9eCf/I7jEKwa3jUj3M36ruuogU4tvaR2wVayFB70p0nvK6hhfhPDb77Qmq6RZRHLHDckrK1lSWWnW1yQRCoM6Ft0beQzpN/Mivw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707832242; c=relaxed/simple;
-	bh=hAI/RtEnxz5YO+rPHDkMMWqK1f5rZxIZeNF15xQSoXw=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=dnDAIyds1uyyqarR9yQMf350gz1NrZzSKbFcdTPNVn/BPD49myB675bRm5ycRgomFLbhWINVObLp7xKTrrE62Eg6LaihnzKU06WyxmALrRc57hL+bu5YA7HPm75oOCXl16+nLLIq1ncnSJ5NDxFr8L0WtFAoIyTiN3iBVlDmlvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=unuQtDVq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kBNToM04; arc=none smtp.client-ip=64.147.123.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 8DB8D1800159;
-	Tue, 13 Feb 2024 08:50:38 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 13 Feb 2024 08:50:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1707832238; x=1707918638; bh=ynqNOXjR8y
-	1dh2yr8HydRPsWc2KYj/UPS0GSPXcZdiU=; b=unuQtDVqNTuLd6eR2KOS9x0LUa
-	ZCnOyrORrLf47R2Tgml79t8CZkluHqTLMsw4dhk5tii8gYRUf3DEvArA3SkRWidH
-	vpR6JtHOdPP+stRDcRlNEDBwkrMrzhTD68vgbVIepwRAYRMYisKH5f66xTu8xWsD
-	GlN8ZfrNPa4mzUzVxd1yXOG5dDTPEkVfuA/0Fiqz0NQ48g4nKLfm3mLDbq6N9os5
-	ds+H8egFdKNLln1eHLr51ElJ346MN2D000wCPT5YoPFAjyum3p198FYz/1s3mFoh
-	C8RIGC8+jmI++U1iOnCQ5HMNE5lVSXv/nuGrtmST3GaLq2VQmC1OEm4xR1+g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707832238; x=1707918638; bh=ynqNOXjR8y1dh2yr8HydRPsWc2KY
-	j/UPS0GSPXcZdiU=; b=kBNToM04RVX2Ij2JpbIfoJ6QwfFpbpKWHnmUi9nd1AAV
-	s3dqGhehPGlk2GVYGaWeZsnNN60xBbtzaYcdqU3tqUGnTMNkvWaVE9VLwxRFZLm2
-	WbH2eHGoSmu8MGS9+dBpiuN3SvJEHDmTvcBMY/wIJNKYjMzqnGGKrC7kDmNIVESE
-	6MTZH4l8rp0Pf8HlgHcMBSh+Fx30zm2b/CjkEYzdRpg/tNAzEYvU0JUomweM+CXV
-	Vf8gegPYy4zit8xsi5Ilx9FkqrEKhIXZGYOK0y7NS1klbSAibus2FVaxk/E/0KMv
-	DIv+pM9Cf61JQZLqA8NwrnDaAIwTJBkfxTaO2DqIqA==
-X-ME-Sender: <xms:rXPLZTuuIJ6_uqEaURGdk9XkQn6yzrTx6IcZG8wBk_V-aVhQXPNBQg>
-    <xme:rXPLZUdNzcC6L6GQoEgRDL0G-BM7DnGJKViCAgw9urucfXZqwVONlPdR1uEHeVUu1
-    brNeeADpJQFMaAmNMI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehgdehiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:rXPLZWwJrFEthMhfx_oM0euiMJpFtXF0iPQWKZrRavmgfZ-5dMc58w>
-    <xmx:rXPLZSN3KvNojttHd3sO1J83PKScqN6hj7ZOyCTTotB82NkcO8vwBQ>
-    <xmx:rXPLZT_wpRotExbw2dy8ZYsqyZHu9OC7aOaMyPuhtAyyybkYIJc4Yg>
-    <xmx:rnPLZZdgV-r18e77g_zOU7xbwlKtxWt0K8NW36AXEJhYE9JADAZ-gYqVvC0>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 12A16B6008F; Tue, 13 Feb 2024 08:50:37 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1707832252; c=relaxed/simple;
+	bh=H4d6QiW+KpjBQZm2ut/bIJWaNIg+UBqfjjJNfS+sVhQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G5t4ImWjz6jDkHS3VI4VzOSfDFp5j/1I/YcCOpGziHYtDes2f2PYb7deZn3TJhR9JBxyplvH00KZdFZ1PuqtJv3e0j1tE/e9SSxA5+MZKhp/XoxsC2rfaXDxXmx4Rmfuc5n0CN2YtR7S40b7aRrnf+G3G5ks8tc06jJVh1tJjd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KsdzPRbb; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so3114499276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 05:50:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707832250; x=1708437050; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EJDZaN3+N6WSLw4IYEvxsp0tQKnp1DRHMOiyVaOY74w=;
+        b=KsdzPRbbAq/nAnEYZ/+A3Lm+8sNfNPqcCgWfTrlB8D7TZrKEA+90Xk+PYTgz/B2Pb3
+         CXb0mNFOsB1HOu2VzBqbTuSknbDSPtHG+o+bMoK1UfHmDObf/qja5orWk2ORdk165raX
+         tt9X712cCYsLsp9uBdUyD3uXz8O58mPHliJHFWqKPAy2/e8L3it2J7zryaj9QmRWoJpj
+         Atm7ZQ9QL0rz7NfAmakaqFBzh2IXLJnNBAAOvm7/jqgRtXJwZDxh9YG4jx7xz2YusKLw
+         lq58CDJpciTGiOHr/geh6p9sp1OCKYeO9TEkOusliqeJ6alkv/7FhmO1RXJU13oqDuc9
+         cQew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707832250; x=1708437050;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EJDZaN3+N6WSLw4IYEvxsp0tQKnp1DRHMOiyVaOY74w=;
+        b=pOXjP7ClwCnWypUS/KbLOT7dQTWH55nUV4CRN84Y4bfi7CNg28e946ufxwK+ZEYoc3
+         NQf90SIfVF3HorT4R/9iJ8OGHA3fZL5mel2OMIm27Lub7lP/R73tGWDqrQsI1BHeSlQS
+         J/ezl5HpihYy8biQp62yE88YSdwq+02FKCyiDuvbM/ziPh9O/acbh3k9ID6ChabcxJBQ
+         IyzgbBBnfEtQcHZ6YzFlZ7/sfXzbaNItTLrFhYULjJ8kwyGL0lT05OVAmh411/iHsehg
+         iXHSqHPIvmnrzhde3UHDIU8kSWYECmq5Eli1Kwgpi2ftfhu10Ttdii1NrkB0uAYBcBwx
+         b8Xw==
+X-Forwarded-Encrypted: i=1; AJvYcCX50kWFgttisBWDN0KpMJSA8objGMCybsI+x/mnzsZsoBZcd7L613kcpxOph198Te0a2kyMgvpcA5b3pNxrGP3BufKN6hTsLwHyU3Mm
+X-Gm-Message-State: AOJu0YxEjenCkUwgGYbD1NrWPdZQlk7nLphFhjtOCPya8ar5/ONpLGs2
+	aY3VWu8a/o5hsHrPP3cIZhT4+qlpeW4nXc668asL3/thXrwhOZaP7hS2T8O23LfZUznAdz8+OHG
+	5zhc4oSjOaAuxhCKcb5dvxkhmAykZ+xvl7XBikA==
+X-Google-Smtp-Source: AGHT+IH//JrMrAcncgTbPsl96Zl5MVioD7SaPlvEvcAaeg5x1AezZYU2/UzHtnwmWGxuuLdzzWCZmu9OEPWluIHoQA8=
+X-Received: by 2002:a25:dbc8:0:b0:dcc:a58:63d9 with SMTP id
+ g191-20020a25dbc8000000b00dcc0a5863d9mr2949330ybf.44.1707832249951; Tue, 13
+ Feb 2024 05:50:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <3370c551-f24d-4d00-999a-99c229d693a9@app.fastmail.com>
-In-Reply-To: <Zctb8QOtMuIfMvDT@gondor.apana.org.au>
-References: <20240213101356.460376-1-arnd@kernel.org>
- <Zctb8QOtMuIfMvDT@gondor.apana.org.au>
-Date: Tue, 13 Feb 2024 14:50:15 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Herbert Xu" <herbert@gondor.apana.org.au>,
- "Arnd Bergmann" <arnd@kernel.org>
-Cc: "David S . Miller" <davem@davemloft.net>,
- "Russell King" <linux@armlinux.org.uk>, "Ard Biesheuvel" <ardb@kernel.org>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
- "Jussi Kivilinna" <jussi.kivilinna@iki.fi>, linux-crypto@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev
-Subject: Re: [PATCH] ARM: crypto: fix function cast warnings
-Content-Type: text/plain
+References: <20240212215534.190682-1-robdclark@gmail.com>
+In-Reply-To: <20240212215534.190682-1-robdclark@gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 13 Feb 2024 15:50:38 +0200
+Message-ID: <CAA8EJpofXjwFG3NhwSJQadoe6eR0vkX2Y4knC55b7qGn46UA_g@mail.gmail.com>
+Subject: Re: [PATCH] drm/crtc: fix uninitialized variable use even harder
+To: Rob Clark <robdclark@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jani Nikula <jani.nikula@intel.com>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Feb 13, 2024, at 13:09, Herbert Xu wrote:
-> On Tue, Feb 13, 2024 at 11:13:44AM +0100, Arnd Bergmann wrote:
->>
->> Rework the sha256/sha512 code to instead go through a trivial helper
->> function to preserve the calling conventions.
+On Mon, 12 Feb 2024 at 23:55, Rob Clark <robdclark@gmail.com> wrote:
 >
-> Why not just change the assembly function prototype?
+> From: Rob Clark <robdclark@chromium.org>
+>
+> DRM_MODESET_LOCK_ALL_BEGIN() has a hidden trap-door (aka retry loop),
+> which means we can't rely too much on variable initializers.
+>
+> Fixes: 6e455f5dcdd1 ("drm/crtc: fix uninitialized variable use")
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+> I have mixed feelings about DRM_MODESET_LOCK_ALL_BEGIN() (and friends)
+> magic.  On one hand it simplifies the deadlock/back dance.  OTOH it
+> conceals a nasty sharp edge.  Maybe it is better to have the complicated
+> restart path a bit more explicit, like it was originally.
+>
+>  drivers/gpu/drm/drm_crtc.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/drm_crtc.c b/drivers/gpu/drm/drm_crtc.c
+> index cb90e70d85e8..65f9f66933bb 100644
+> --- a/drivers/gpu/drm/drm_crtc.c
+> +++ b/drivers/gpu/drm/drm_crtc.c
+> @@ -904,6 +904,7 @@ int drm_mode_setcrtc(struct drm_device *dev, void *data,
+>         connector_set = NULL;
+>         fb = NULL;
+>         mode = NULL;
+> +       num_connectors = 0;
 
-Good idea, sent v2 now.
+Nit: I think we should move all this next to the
+DRM_MODESET_LOCK_ALL_BEGIN() and drop initialisation from the prologue
+of the function, but it's definitely a separate and more intrusive
+story.
 
-    Arnd
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+>         DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+
+
+-- 
+With best wishes
+Dmitry
 
