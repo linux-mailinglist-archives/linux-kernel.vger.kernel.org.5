@@ -1,39 +1,62 @@
-Return-Path: <linux-kernel+bounces-63557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D277185313A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:04:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 248F0853144
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26D721F2841A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:04:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4A3C1F2826C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:05:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61BD44D9F1;
-	Tue, 13 Feb 2024 13:04:08 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3BA446C6
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D53D4F5FA;
+	Tue, 13 Feb 2024 13:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="b2qooR8G"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C12B3D99E;
+	Tue, 13 Feb 2024 13:05:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707829447; cv=none; b=gbPrEFGvyMvQnwIuOGCHM6SxZBjgr67Yb4d6zPAmvBiI4Mpl2HygOED8QQVZvdjKIgU1O6bbbr2MCRt42ImucLogbJgMsGxOcHOWLkYxotdGACkqh4nH0r9bMcEW0MUmB+xZOc2jJO/fZgFaeJqrGEd68gECx/8f5M2rz3T1Agk=
+	t=1707829522; cv=none; b=TS19QZKbXP2Kqn0F7VA00wG9V+N+H/kUYc6oszQ0YS6NfeHqontd/XByaHd82KX8GOGR6mSVx1SOFfLAmDy/f1YEOjCSitLc2DGSHhvVkrCJkt52KysQoAMLZInHDyx/wvg2CWQrPMdJIrtlZtncXjLDPcw3PzRVectBEyEIrlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707829447; c=relaxed/simple;
-	bh=WEPqGvzbyehdmolW/bs56H8mGemFckdFvlBWOCKVpfI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nw594bS2HGgoBso7i2/zU9MZM4tkDtDkxFf9DlJidExrtShLMRBAq/Eg8+8EkTJ5RxcDnzUe7cal+6SM72+ZANminGRhSY+Gl0b6ei50RFfsx8Yqtc2FClkTQoPwbasnhLEcil+cbt+8f9O+9j5rUzmb7anN7c8/0IJZ6Mfy9sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23C31DA7;
-	Tue, 13 Feb 2024 05:04:39 -0800 (PST)
-Received: from [10.1.36.184] (XHFQ2J9959.cambridge.arm.com [10.1.36.184])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5908F3F762;
-	Tue, 13 Feb 2024 05:03:54 -0800 (PST)
-Message-ID: <d2ca1de5-d833-4806-a5a2-75410e1f731a@arm.com>
-Date: Tue, 13 Feb 2024 13:03:53 +0000
+	s=arc-20240116; t=1707829522; c=relaxed/simple;
+	bh=viMQpHUA0wyuSc0aYpDZXv2P8TIrUTd/nzpVXcOfqVc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UgDb+kfIw7/ePcCwBsx2O1A/vjKwqHcKAvOvda3V+vDLuvCImGfddacRvuLweu0jbvbER0PKWw9/ky1ZcUXhfJYYJGz/lEtcp0FHz6LT0tjRPGalq0MmVey5HvbWiRPmQ/FfGsXrv+fns3ZYZTicTecNzXD5jWzldBXunHu2FIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=b2qooR8G; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41DD0ZYg027948;
+	Tue, 13 Feb 2024 13:05:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=6mOL9PsbxyCYLHe4WBDlAcPGHq/NUHZ80ySMAvSLfSg=; b=b2
+	qooR8GAI+7AxuDb10TLdHXzIlOG6UKGINlldMpmpp6fY/z2M8ewhk5OFsOLQL/oO
+	VVDTxkhaOyFdrlJENeYAL98+HdWSF2hnt6iL84WlRSRLngTPXwRPLTs0mouVP3qr
+	SoPQVQR0eXGnGe7NXoR3nq7mmIJA4G4XphOQcqMBjpsnHYhNe0QKLhTYBowMFiR/
+	TT+IKhlf+fRBA2bpUE23sjmA7JamjQs0zuu0bwsBjq49IIbHIwV6l0QDbNEfE4Vs
+	lHPasbwKSh+Eq+zW80UfuMtxjzcEQMFnRWBEMACTMslbkLeZ/2N7XNCjogChYZ+U
+	PV2MRo3Ski8TPdRqUuTw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7gse2ydp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 13:05:06 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41DD554N000608
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 13:05:05 GMT
+Received: from [10.218.5.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 13 Feb
+ 2024 05:04:58 -0800
+Message-ID: <35907177-eecd-4b58-a5da-7186b0f60193@quicinc.com>
+Date: Tue, 13 Feb 2024 18:34:55 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,348 +64,250 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 19/25] arm64/mm: Wire up PTE_CONT for user mappings
-Content-Language: en-GB
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
- James Morse <james.morse@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, David Hildenbrand <david@redhat.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
- <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
- Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
- Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, linux-arm-kernel@lists.infradead.org,
- x86@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240202080756.1453939-1-ryan.roberts@arm.com>
- <20240202080756.1453939-20-ryan.roberts@arm.com>
- <ZcoIVypNwOPIX30w@FVFF77S0Q05N>
- <c899f252-dbf3-4e7b-8342-b5a5180486cd@arm.com>
- <ZctaaeVFF8TpjA8Z@FVFF77S0Q05N.cambridge.arm.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZctaaeVFF8TpjA8Z@FVFF77S0Q05N.cambridge.arm.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v4 3/5] clk: qcom: gdsc: Add set and get hwmode callbacks
+ to switch GDSC mode
+Content-Language: en-US
+To: Bjorn Andersson <andersson@kernel.org>, Abel Vesa <abel.vesa@linaro.org>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman
+	<khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, Pavel Machek
+	<pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Stanimir Varbanov
+	<stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mauro Carvalho Chehab
+	<mchehab@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-media@vger.kernel.org>
+References: <20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org>
+ <20240122-gdsc-hwctrl-v4-3-9061e8a7aa07@linaro.org>
+ <qbqsvxmnl2tuansxzr6u4vqxemw4dzrsvz2ill6qnyxdp5gtji@lsemt4asmsax>
+From: Jagadeesh Kona <quic_jkona@quicinc.com>
+In-Reply-To: <qbqsvxmnl2tuansxzr6u4vqxemw4dzrsvz2ill6qnyxdp5gtji@lsemt4asmsax>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: rNU6xjxKFa-tBEBWMTsCjmh3A4wydkXb
+X-Proofpoint-ORIG-GUID: rNU6xjxKFa-tBEBWMTsCjmh3A4wydkXb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-13_06,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 spamscore=0 clxscore=1011 phishscore=0
+ malwarescore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402130104
 
-On 13/02/2024 12:02, Mark Rutland wrote:
-> On Mon, Feb 12, 2024 at 12:59:57PM +0000, Ryan Roberts wrote:
->> On 12/02/2024 12:00, Mark Rutland wrote:
->>> Hi Ryan,
-> 
-> [...]
-> 
->>>> +static inline void set_pte(pte_t *ptep, pte_t pte)
->>>> +{
->>>> +	/*
->>>> +	 * We don't have the mm or vaddr so cannot unfold contig entries (since
->>>> +	 * it requires tlb maintenance). set_pte() is not used in core code, so
->>>> +	 * this should never even be called. Regardless do our best to service
->>>> +	 * any call and emit a warning if there is any attempt to set a pte on
->>>> +	 * top of an existing contig range.
->>>> +	 */
->>>> +	pte_t orig_pte = __ptep_get(ptep);
->>>> +
->>>> +	WARN_ON_ONCE(pte_valid_cont(orig_pte));
->>>> +	__set_pte(ptep, pte_mknoncont(pte));
->>>> +}
->>>> +
->>>> +#define set_ptes set_ptes
->>>> +static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
->>>> +				pte_t *ptep, pte_t pte, unsigned int nr)
->>>> +{
->>>> +	pte = pte_mknoncont(pte);
->>>
->>> Why do we have to clear the contiguous bit here? Is that for the same reason as
->>> set_pte(), or do we expect callers to legitimately call this with the
->>> contiguous bit set in 'pte'?
->>>
->>> I think you explained this to me in-person, and IIRC we don't expect callers to
->>> go set the bit themselves, but since it 'leaks' out to them via __ptep_get() we
->>> have to clear it here to defer the decision of whether to set/clear it when
->>> modifying entries. It would be nice if we could have a description of why/when
->>> we need to clear this, e.g. in the 'public API' comment block above.
->>
->> Yes, I think you've got it, but just to ram home the point: The PTE_CONT bit is
->> private to the architecture code and is never set directly by core code. If the
->> public API ever receives a pte that happens to have the PTE_CONT bit set, it
->> would be bad news if we then accidentally set that in the pgtable.
->>
->> Ideally, we would just uncondidtionally clear the bit before a getter returns
->> the pte (e.g. ptep_get(), ptep_get_lockless(), ptep_get_and_clear(), ...). That
->> way, the code code is guarranteed never to see a pte with the PTE_CONT bit set
->> and can therefore never accidentally pass such a pte into a setter function.
->> However, there is existing functionality that relies on being able to get a pte,
->> then pass it to pte_leaf_size(), and arch function that checks the PTE_CONT bit
->> to determine how big the leaf is. This is used in perf_get_pgtable_size().
->>
->> So to allow perf_get_pgtable_size() to continue to see the "real" page size, I
->> decided to allow PTE_CONT to leak through the getters and instead
->> unconditionally clear the bit when a pte is passed to any of the setters.
->>
->> I'll add a (slightly less verbose) comment as you suggest.
-> 
-> Great, thanks!
-> 
-> [...]
-> 
->>>> +static inline bool mm_is_user(struct mm_struct *mm)
->>>> +{
->>>> +	/*
->>>> +	 * Don't attempt to apply the contig bit to kernel mappings, because
->>>> +	 * dynamically adding/removing the contig bit can cause page faults.
->>>> +	 * These racing faults are ok for user space, since they get serialized
->>>> +	 * on the PTL. But kernel mappings can't tolerate faults.
->>>> +	 */
->>>> +	return mm != &init_mm;
->>>> +}
->>>
->>> We also have the efi_mm as a non-user mm, though I don't think we manipulate
->>> that while it is live, and I'm not sure if that needs any special handling.
->>
->> Well we never need this function in the hot (order-0 folio) path, so I think I
->> could add a check for efi_mm here with performance implication. It's probably
->> safest to explicitly exclude it? What do you think?
-> 
-> That sounds ok to me.
-> 
-> Otherwise, if we (somehow) know that we avoid calling this at all with an EFI
-> mm (e.g. because of the way we construct that), I'd be happy with a comment.
 
-We crossed streams - as per my other email, I'm confident that this is safe so
-will just add a comment.
+
+On 1/31/2024 4:30 AM, Bjorn Andersson wrote:
+> On Mon, Jan 22, 2024 at 10:47:03AM +0200, Abel Vesa wrote:
+>> From: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>
+>> Add support for set and get hwmode callbacks to switch the GDSC between
+>> SW and HW modes. Currently, the GDSC is moved to HW control mode
+>> using HW_CTRL flag and if this flag is present, GDSC is moved to HW
+>> mode as part of GDSC enable itself. The intention is to keep the
+>> HW_CTRL flag functionality as is, since many older chipsets still use
+>> this flag.
+>>
+> 
+> This provides insight into why we end up with both HW_CTRL and
+> HW_CTRL_TRIGGER. This doesn't describe why this change is needed, but
+> rather just an implementation detail.
+> 
+>> But consumer drivers also require the GDSC mode to be switched dynamically
+>> at runtime based on requirement for certain usecases. Some of these
+>> usecases are switching the GDSC to SW mode to keep it ON during the
+>> enablement of clocks that are dependent on GDSC and while programming
+>> certain configurations that require GDSC to be ON. Introduce a new
+>> HW_CTRL_TRIGGER flag to register the set_hwmode_dev and get_hwmode_dev
+>> callbacks which allows the consumer drivers to switch the GDSC back and
+>> forth between HW/SW modes dynamically at runtime using new
+>> dev_pm_genpd_set_hwmode API.
+>>
+> 
+> This still expresses the need for HW_CTRL_TRIGGER in terms of "some
+> drivers need for some use case". We don't need these many words to say:
+> "Introduce HW_CTRL_TRIGGER for client drivers that need it."
+> 
+
+Thanks Bjorn for your review.
+
+Sure will update the commit text to be more precise in next series.
 
 > 
-> Probably best to Cc Ard for whatever we do here.
-
-Ard is already on CC.
-
+> I find that it would be useful to document that every time a GDSC is
+> turned on the mode will be switched to SW...
 > 
->>>> +static inline pte_t *contpte_align_down(pte_t *ptep)
->>>> +{
->>>> +	return (pte_t *)(ALIGN_DOWN((unsigned long)ptep >> 3, CONT_PTES) << 3);
->>>
->>> I think this can be:
->>>
->>> static inline pte_t *contpte_align_down(pte_t *ptep)
->>> {
->>> 	return PTR_ALIGN_DOWN(ptep, sizeof(*ptep) * CONT_PTES);
->>> }
+>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>> ---
+>>   drivers/clk/qcom/gdsc.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++++
+>>   drivers/clk/qcom/gdsc.h |  1 +
+>>   2 files changed, 55 insertions(+)
 >>
->> Yep - that's much less ugly - thanks!
->>
->>>
->>>> +
->>>> +static void contpte_convert(struct mm_struct *mm, unsigned long addr,
->>>> +			    pte_t *ptep, pte_t pte)
->>>> +{
->>>> +	struct vm_area_struct vma = TLB_FLUSH_VMA(mm, 0);
->>>> +	unsigned long start_addr;
->>>> +	pte_t *start_ptep;
->>>> +	int i;
->>>> +
->>>> +	start_ptep = ptep = contpte_align_down(ptep);
->>>> +	start_addr = addr = ALIGN_DOWN(addr, CONT_PTE_SIZE);
->>>> +	pte = pfn_pte(ALIGN_DOWN(pte_pfn(pte), CONT_PTES), pte_pgprot(pte));
->>>> +
->>>> +	for (i = 0; i < CONT_PTES; i++, ptep++, addr += PAGE_SIZE) {
->>>> +		pte_t ptent = __ptep_get_and_clear(mm, addr, ptep);
->>>> +
->>>> +		if (pte_dirty(ptent))
->>>> +			pte = pte_mkdirty(pte);
->>>> +
->>>> +		if (pte_young(ptent))
->>>> +			pte = pte_mkyoung(pte);
->>>> +	}
->>>
->>> Not a big deal either way, but I wonder if it makes more sense to accumulate
->>> the 'ptent' dirty/young values, then modify 'pte' once, i.e.
->>>
->>> 	bool dirty = false, young = false;
->>>
->>> 	for (...) {
->>> 		pte_t ptent = __ptep_get_and_clear(mm, addr, ptep);
->>> 		dirty |= pte_dirty(ptent);
->>> 		young |= pte_young(ptent);
->>> 	}
->>>
->>> 	if (dirty)
->>> 		pte_mkdirty(pte);
->>> 	if (young)
->>> 		pte_mkyoung(pte);
->>>
->>> I suspect that might generate slightly better code, but I'm also happy with the
->>> current form if people thnk that's more legible (I have no strong feelings
->>> either way).
->>
->> I kept it this way, because its the same pattern used in arm64's hugetlbpage.c.
->> We also had the same comment against David's batching patches recently, and he
->> opted to stick with the former version:
->>
->> https://lore.kernel.org/linux-mm/d83309fa-4daa-430f-ae52-4e72162bca9a@redhat.com/
->>
->> So I'm inclined to leave it as is, since you're not insisting :)
+>> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+>> index 5358e28122ab..71626eb20101 100644
+>> --- a/drivers/clk/qcom/gdsc.c
+>> +++ b/drivers/clk/qcom/gdsc.c
+>> @@ -363,6 +363,56 @@ static int gdsc_disable(struct generic_pm_domain *domain)
+>>   	return 0;
+>>   }
+>>   
+>> +static int gdsc_set_hwmode(struct generic_pm_domain *domain, struct device *dev, bool mode)
+>> +{
+>> +	struct gdsc *sc = domain_to_gdsc(domain);
+>> +	u32 val;
+>> +	int ret;
+>> +
+>> +	if (sc->rsupply && !regulator_is_enabled(sc->rsupply)) {
 > 
-> That rationale is reasonable, and I'm fine with this as-is.
-> 
-> [...]
-> 
->>>> +pte_t contpte_ptep_get_lockless(pte_t *orig_ptep)
->>>> +{
->>>> +	/*
->>>> +	 * Gather access/dirty bits, which may be populated in any of the ptes
->>>> +	 * of the contig range. We may not be holding the PTL, so any contiguous
->>>> +	 * range may be unfolded/modified/refolded under our feet. Therefore we
->>>> +	 * ensure we read a _consistent_ contpte range by checking that all ptes
->>>> +	 * in the range are valid and have CONT_PTE set, that all pfns are
->>>> +	 * contiguous and that all pgprots are the same (ignoring access/dirty).
->>>> +	 * If we find a pte that is not consistent, then we must be racing with
->>>> +	 * an update so start again. If the target pte does not have CONT_PTE
->>>> +	 * set then that is considered consistent on its own because it is not
->>>> +	 * part of a contpte range.
->>>> +	 */
->>>> +
->>>> +	pgprot_t orig_prot;
->>>> +	unsigned long pfn;
->>>> +	pte_t orig_pte;
->>>> +	pgprot_t prot;
->>>> +	pte_t *ptep;
->>>> +	pte_t pte;
->>>> +	int i;
->>>> +
->>>> +retry:
->>>> +	orig_pte = __ptep_get(orig_ptep);
->>>> +
->>>> +	if (!pte_valid_cont(orig_pte))
->>>> +		return orig_pte;
->>>> +
->>>> +	orig_prot = pte_pgprot(pte_mkold(pte_mkclean(orig_pte)));
->>>> +	ptep = contpte_align_down(orig_ptep);
->>>> +	pfn = pte_pfn(orig_pte) - (orig_ptep - ptep);
->>>> +
->>>> +	for (i = 0; i < CONT_PTES; i++, ptep++, pfn++) {
->>>> +		pte = __ptep_get(ptep);
->>>> +		prot = pte_pgprot(pte_mkold(pte_mkclean(pte)));
->>>> +
->>>> +		if (!pte_valid_cont(pte) ||
->>>> +		   pte_pfn(pte) != pfn ||
->>>> +		   pgprot_val(prot) != pgprot_val(orig_prot))
->>>> +			goto retry;
->>>> +
->>>> +		if (pte_dirty(pte))
->>>> +			orig_pte = pte_mkdirty(orig_pte);
->>>> +
->>>> +		if (pte_young(pte))
->>>> +			orig_pte = pte_mkyoung(orig_pte);
->>>> +	}
->>>> +
->>>> +	return orig_pte;
->>>> +}
->>>> +EXPORT_SYMBOL(contpte_ptep_get_lockless);
->>>
->>> I'm struggling to convince myself that this is safe in general, as it really
->>> depends on how the caller will use this value. Which caller(s) actually care
->>> about the access/dirty bits, given those could change at any time anyway?
->>
->> I think your points below are valid, and agree we should try to make this work
->> without needing access/dirty if possible. But can you elaborate on why you don't
->> think it's safe?
-> 
-> Having mulled this over, I think it is safe as-is, and I was being overly
-> cautious.
-> 
-> I had a general fear of potential problems stemming from the fact that (a) the
-> accumulation of access/dirty bits isn't atomic and (b) the loop is unbounded.
-> From looking at how this is used today, I think (a) is essentially the same as
-> reading a stale non-contiguous entry, and I'm being overly cautious there. For
-> (b), I think that's largely a performance concern and the would only retry
-> indefinitely in the presence of mis-programmed entries or consistent racing
-> with a writer under heavy contention.
-> 
-> I think it's still desirable to avoid the accumulation in most cases (to avoid
-> redundant work and to minimize the potential for unbounded retries), but I'm
-> happy with that being a follow-up improvement.
-
-Great! I'll do the conversion to ptep_get_lockless_nosync() as a follow up series.
+> Why is this a restriction only for GDSCs supplied by regulators? I don't
+> find anything preventing this API from being called on GDSCs supplied by
+> other genpd instances.
 
 > 
->>> I took a quick scan, and AFAICT:
->>
->> Thanks for enumerating these; Saves me from having to refresh my memory :)
->>>
->>> * For perf_get_pgtable_size(), we only care about whether the entry is valid
->>>   and has the contig bit set. We could clean that up with a new interface, e.g.
->>>   something like a new ptep_get_size_lockless().
->>>
->>> * For gup_pte_range(), I'm not sure we actually need the access/dirty bits when
->>>   we look at the pte to start with, since we only care where we can logically
->>>   write to the page at that point.
->>>
->>>   I see that we later follow up with:
->>>
->>>     with pte_val(pte) != pte_val(ptep_get(ptep)))
->>>
->>>   ... is that why we need ptep_get_lockless() to accumulate the access/dirty
->>>   bits? So that shape of lockless-try...locked-compare sequence works?
->>>
->>> * For huge_pte_alloc(), arm64 doesn't select CONFIG_ARCH_WANT_GENERAL_HUGETLB,
->>>   so this doesn' seem to matter.
->>>
->>> * For __collapse_huge_page_swapin(), we only care if the pte is a swap pte,
->>>   which means the pte isn't valid, and we'll return the orig_pte as-is anyway.
->>>
->>> * For pte_range_none() the access/dirty bits don't matter.
->>>
->>> * For handle_pte_fault() I think we have the same shape of
->>>   lockless-try...locked-compare sequence as for gup_pte_range(), where we don't
->>>   care about the acess/dirty bits before we reach the locked compare step.
->>>
->>> * For ptdump_pte_entry() I think it's arguable that we should continue to
->>>   report the access/dirty bits separately for each PTE, as we have done until
->>>   now, to give an accurate representation of the contents of the translation
->>>   tables.
->>>
->>> * For swap_vma_readahead() and unuse_pte_range() we only care if the PTE is a
->>>   swap entry, the access/dirty bits don't matter.
->>>
->>> So AFAICT this only really matters for gup_pte_range() and handle_pte_fault(),
->>> and IIUC that's only so that the locklessly-loaded pte value can be compared
->>> with a subsequently locked-loaded entry (for which the access/dirty bits will
->>> be accumulated). Have I understood that correctly?
->>
->> Yes, I agree with what you are saying. My approach was to try to implement the
->> existing APIs accurately though, the argument being that it reduces the chances
->> of getting it wrong. But if you think the implementation is unsafe, then I guess
->> it blows that out of the water...
-> 
-> I think your approach makes sense, and as above I'm happy to defer the API
-> changes/additions to avoid the accumulation of access/dirty bits.
-> 
->>> If so, I wonder if we could instead do that comparison modulo the access/dirty
->>> bits, 
->>
->> I think that would work - but will need to think a bit more on it.
->>
->>> and leave ptep_get_lockless() only reading a single entry?
->>
->> I think we will need to do something a bit less fragile. ptep_get() does collect
->> the access/dirty bits so its confusing if ptep_get_lockless() doesn't IMHO. So
->> we will likely want to rename the function and make its documentation explicit
->> that it does not return those bits.
->>
->> ptep_get_lockless_noyoungdirty()? yuk... Any ideas?
->>
->> Of course if I could convince you the current implementation is safe, I might be
->> able to sidestep this optimization until a later date?
-> 
-> Yep. :)
-> 
-> Mark.
+> Also note that regulator_is_enabled() is racy, in that it tells us if
+> the regulator is currently turned on, not if we're the one holding that
+> vote. As such this might change at any moment - and hence shouldn't be
+> significant here.
+>
+Below is the consumer's sequence that switch the GDSC's b/w HW & SW modes:-
+1) Enable the GDSC in SW mode
+2) Enable required clocks
+3) Switch the GDSC to HW mode using dev_pm_genpd_set_hwmode(true)
+4) Usecase start
+5) Usecase end
+6) Switch the GDSC back to SW mode using dev_pm_genpd_set_hwmode(false)
+7) Disable clocks
+8) Disable GDSC
 
+Hence the new API dev_pm_genpd_set_hwmode() will always be called 
+between gdsc_enable() and gdsc_disable(), which ensures GDSC's parent 
+power domain/regulator is ON when this callback is being called. Also, 
+we can remove the above regulator_is_enabled() check as well.
+
+>> +		pr_err("Cannot set mode while parent is disabled\n");
+>> +		return -EIO;
+>> +	}
+>> +
+>> +	ret = gdsc_hwctrl(sc, mode);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	/* Wait for 1usec for mode transition to properly complete */
+>> +	udelay(1);
+>> +
+>> +	if (!mode) {
+>> +		ret = regmap_read(sc->regmap, sc->gdscr, &val);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		/*
+>> +		 * While switching from HW to SW mode, if GDSC is in enabled
+>> +		 * state, poll for GDSC to complete the power up.
+>> +		 */
+> 
+> I had to give this some thought, to conclude that this is relevant if HW
+> has the GDSC disabled and we're switching to SW - which would then
+> enable it. I think this comment can be improved slightly, to save the
+> reader the need for figuring out this on their own.
+> 
+
+Sure, I will improvise the comment in next series.
+
+>> +		if (!(val & SW_COLLAPSE_MASK))
+> 
+> This not being true, would imply that gdsc_disable() has been called
+> already, in which case there's no guarantee that the parent still
+> supplies power.
+> 
+> In the introduced API power on and hw control are orthogonal states, but
+> not so in this implementation. This need to made clear, to reduce future
+> surprises.
+> 
+
+Yes, above SW_COLLAPSE_MASK check is also not required and will remove 
+it in next series.
+
+>> +			return gdsc_poll_status(sc, GDSC_ON);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static bool gdsc_get_hwmode(struct generic_pm_domain *domain, struct device *dev)
+>> +{
+>> +	struct gdsc *sc = domain_to_gdsc(domain);
+>> +	u32 val;
+>> +	int ret;
+>> +
+>> +	ret = regmap_read(sc->regmap, sc->gdscr, &val);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	if (val & HW_CONTROL_MASK)
+>> +		return true;
+>> +
+>> +	return false;
+> 
+> return !!(val & HW_CONTROL_MASK);
+> 
+
+Sure, will update this in the next series.
+
+> Regards,
+> Bjorn
+> 
+>> +}
+>> +
+>>   static int gdsc_init(struct gdsc *sc)
+>>   {
+>>   	u32 mask, val;
+>> @@ -451,6 +501,10 @@ static int gdsc_init(struct gdsc *sc)
+>>   		sc->pd.power_off = gdsc_disable;
+>>   	if (!sc->pd.power_on)
+>>   		sc->pd.power_on = gdsc_enable;
+>> +	if (sc->flags & HW_CTRL_TRIGGER) {
+>> +		sc->pd.set_hwmode_dev = gdsc_set_hwmode;
+>> +		sc->pd.get_hwmode_dev = gdsc_get_hwmode;
+>> +	}
+>>   
+>>   	ret = pm_genpd_init(&sc->pd, NULL, !on);
+>>   	if (ret)
+>> diff --git a/drivers/clk/qcom/gdsc.h b/drivers/clk/qcom/gdsc.h
+>> index 803512688336..1e2779b823d1 100644
+>> --- a/drivers/clk/qcom/gdsc.h
+>> +++ b/drivers/clk/qcom/gdsc.h
+>> @@ -67,6 +67,7 @@ struct gdsc {
+>>   #define ALWAYS_ON	BIT(6)
+>>   #define RETAIN_FF_ENABLE	BIT(7)
+>>   #define NO_RET_PERIPH	BIT(8)
+>> +#define HW_CTRL_TRIGGER	BIT(9)
+>>   	struct reset_controller_dev	*rcdev;
+>>   	unsigned int			*resets;
+>>   	unsigned int			reset_count;
+>>
+>> -- 
+>> 2.34.1
+>>
+> 
 
