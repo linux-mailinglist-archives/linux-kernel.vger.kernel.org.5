@@ -1,68 +1,101 @@
-Return-Path: <linux-kernel+bounces-63853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87B86853589
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:03:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5A6F85358A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:03:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24D98B26813
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:03:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0B641C24AF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3AE15F57E;
-	Tue, 13 Feb 2024 16:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BE65F551;
+	Tue, 13 Feb 2024 16:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KKCU/dDh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Zy+f35Fj";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FE8XoO3Y";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Zy+f35Fj";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FE8XoO3Y"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA04F5F48A;
-	Tue, 13 Feb 2024 16:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CEC5F491
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:03:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707840180; cv=none; b=XnoSBgjADhEwHOKrRQaDiDidNArNsME1+dKa5NgwxJLfXmT24LjeuKBh1pwLnSacExI1BsFDAytcGfZmYCexfbQOMpST45oQSx6SdRSJEAiYZw23Eaxn1uuhaZcgEPrHQFsH1PpCNGniHz9bxT8+Hg4XN1KEFycHpAvm0nfxh4Y=
+	t=1707840220; cv=none; b=o911ngiCgETRnEZze8QJXl6OqeXf9b3ApjWNTbiGgosNzUxOaCJQg2zU/kKLChMTxM+CwArW88tSlVO6gdU0Q1VbllmJQNb7wj9JeTNX/uJ0p2ImIcCss0OouZwk2/Xn5UIoo72yK03+cHWHakT2sbthRwCnfXlrtRGfopH5/6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707840180; c=relaxed/simple;
-	bh=raewERgjnOaT1e4+EDmQFCjp+2Q+nD/RhhrjpVO2oiA=;
+	s=arc-20240116; t=1707840220; c=relaxed/simple;
+	bh=rPDyBYSXDCsz5GJMe18opVkoOGsbwpQe287yIr4tPqI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=humhp7feYN5H0bUtlYb/4pggrEEJoRN66/Y2cSWkkzU5dpB2/DS5QG7Ka6Ahm/KvqoS4OrUqBlZxx6ix4gc1Sh+BRiZNILU+WBnA/f8kArRwGVCg8GuZyISSwIM1qNsw0IJnp9zR+NiTBKj+AFjQXNfpt7RIPUW9TfGKYQVkXGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KKCU/dDh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47E84C433F1;
-	Tue, 13 Feb 2024 16:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707840179;
-	bh=raewERgjnOaT1e4+EDmQFCjp+2Q+nD/RhhrjpVO2oiA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KKCU/dDhcjf0FYDMeJlnF2d1lTWHBDod3yoygbRluKaVtF2rNY0FqBkPP3ihYEhxe
-	 MduQWcNBtMVSAEB2FPalhUAeV7tR0wd93T/iob7anoMyfGj/wHM0c5p56fXYxFl6K+
-	 xzZYE7E2PDu+x1g6LE4IZY72wFLBp4HWBtJRiwrynhTZFbpxxhuuAW7/Li71TBQIzu
-	 fKFZm9dCMp2FuUmo65A/nZ2k3XnnmWG15H6S1ZQPUokMz92sHgDDLeLNTxWL243RTJ
-	 7fdaSQbAjve1e8C5yYV7PWyQVAXyxvsVU8Itn4RADKLXkU/hyISFQ9Tn/oIheRh3OL
-	 9kadbBY5NJ6Og==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rZvFb-000000001ga-3I2Y;
-	Tue, 13 Feb 2024 17:03:15 +0100
-Date: Tue, 13 Feb 2024 17:03:15 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Doug Anderson <dianders@chromium.org>,
-	Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH] Bluetooth: qca: fix device-address endianness
-Message-ID: <ZcuSwy0quwKoZkkm@hovoldconsulting.com>
-References: <20231227180306.6319-1-johan+linaro@kernel.org>
- <Zct_tB-y7HbZU1dp@hovoldconsulting.com>
- <ZcuQ2qRX0zsLSVRL@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZmXhn/3D7G8tWT8BWufU6nu2Hps6ZNF0SALEx+KbkeLeKJL3Vwn2lkeCRbn0rGXQTef7sKXS6vnow1FmBr5GMhBTXsZcBPglsyXlYO1M1tc0Cxo5xfgDwuY6c+Jy1w1YTdkx75s7hvNd0Srl6yTSUgAUpSxnbIFQxbg/HY2Vs7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Zy+f35Fj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=FE8XoO3Y; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Zy+f35Fj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=FE8XoO3Y; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CC1A01FCE6;
+	Tue, 13 Feb 2024 16:03:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707840213; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FRNhjJkgXL7v16ZU0iS2vdAZzEHkrAUpw4bf8r6ZDEw=;
+	b=Zy+f35FjpVmxtg237HXhU3wXU4q82NcWwOfCXnQm6NcCnHtYS8itTBh5i9ty1JqgapXpIu
+	mC3lB2vZ/C9YdPgoytALScmPR/UDV1uYoHrmOdux1SFNrNZKrD+IgPYIqobqsOYR9M26BT
+	jwAWpjb+cBrbDmJ5qlfl2lFoozubtEg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707840213;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FRNhjJkgXL7v16ZU0iS2vdAZzEHkrAUpw4bf8r6ZDEw=;
+	b=FE8XoO3YAebclHOu7Kze9qUhPPIPinRmWaprVrIK6Q8n0kkOLGEEUQoD/aLo1zdKLXMUMY
+	lhf37WClN5sYdNDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707840213; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FRNhjJkgXL7v16ZU0iS2vdAZzEHkrAUpw4bf8r6ZDEw=;
+	b=Zy+f35FjpVmxtg237HXhU3wXU4q82NcWwOfCXnQm6NcCnHtYS8itTBh5i9ty1JqgapXpIu
+	mC3lB2vZ/C9YdPgoytALScmPR/UDV1uYoHrmOdux1SFNrNZKrD+IgPYIqobqsOYR9M26BT
+	jwAWpjb+cBrbDmJ5qlfl2lFoozubtEg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707840213;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FRNhjJkgXL7v16ZU0iS2vdAZzEHkrAUpw4bf8r6ZDEw=;
+	b=FE8XoO3YAebclHOu7Kze9qUhPPIPinRmWaprVrIK6Q8n0kkOLGEEUQoD/aLo1zdKLXMUMY
+	lhf37WClN5sYdNDg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 545EE1329E;
+	Tue, 13 Feb 2024 16:03:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id kUPbEdWSy2VSBQAAn2gu4w
+	(envelope-from <osalvador@suse.de>); Tue, 13 Feb 2024 16:03:33 +0000
+Date: Tue, 13 Feb 2024 17:04:38 +0100
+From: Oscar Salvador <osalvador@suse.de>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
+	Marco Elver <elver@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Alexander Potapenko <glider@google.com>
+Subject: Re: [PATCH v8 2/5] mm,page_owner: Implement the tracking of the
+ stacks count
+Message-ID: <ZcuTFo-EMWjbRsd6@localhost.localdomain>
+References: <20240212223029.30769-1-osalvador@suse.de>
+ <20240212223029.30769-3-osalvador@suse.de>
+ <8ff46f99-d167-448f-9aae-a634b8aae4d0@suse.cz>
+ <ZcuK2I6ZwFwFX-G5@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,53 +104,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZcuQ2qRX0zsLSVRL@google.com>
+In-Reply-To: <ZcuK2I6ZwFwFX-G5@localhost.localdomain>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Zy+f35Fj;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=FE8XoO3Y
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.31 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.80)[99.15%]
+X-Spam-Score: -4.31
+X-Rspamd-Queue-Id: CC1A01FCE6
+X-Spam-Flag: NO
 
-On Tue, Feb 13, 2024 at 03:55:06PM +0000, Matthias Kaehlcke wrote:
-> On Tue, Feb 13, 2024 at 03:41:56PM +0100, Johan Hovold wrote:
-> > On Wed, Dec 27, 2023 at 07:03:06PM +0100, Johan Hovold wrote:
-> > > The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
-> > > device address in MSB order when setting it using the
-> > > EDL_WRITE_BD_ADDR_OPCODE command.
+On Tue, Feb 13, 2024 at 04:29:28PM +0100, Oscar Salvador wrote:
+> I thought about giving them a refcount of 1, because we only print
+> stacks which refcount > 1 anyways, but setting it to 0 has comes with
+> the advantage of catching spurious increments, should someone call
+> refcount_inc on those (which should not really happen).
 
-> > > Reverse the little-endian address before setting it to make sure that
-> > > the address can be configured using tools like btmgmt or using the
-> > > 'local-bd-address' devicetree property.
-> > > 
-> > > Note that this can potentially break systems with boot firmware which
-> > > has started relying on the broken behaviour and is incorrectly passing
-> > > the address via devicetree in MSB order.
-> > > 
-> > > Fixes: 5c0a1001c8be ("Bluetooth: hci_qca: Add helper to set device address")
-> > > Cc: stable@vger.kernel.org      # 5.1
-> > > Cc: Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
-> > > Cc: Matthias Kaehlcke <mka@chromium.org>
-> > > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> > 
-> > Can we go ahead and merge this one to get this fixed in 6.8?
-> > 
-> > I've spoken to Bjorn Andersson at Qualcomm about this and he is in
-> > favour of doing so. The only people actually using the devicetree
-> > property should be the Chromium team and they control their own boot
-> > firmware and should be able to update it in lockstep (and Android uses
-> > some custom hacks to set the address that are not in mainline).
-> 
-> Unfortunately it's not as trivial as it sounds for Chrome OS. The boot
-> firmware is controlled by Chrome OS, however for any baseboard (e.g.
-> 'trogdor') there is a larger number binary firmware packages, one
-> for every model derived from that baseboard. There can be dozens of
-> models. Chrome OS Firmware releases are qualified and rolled out per
-> model. FW qual may involve the ODM, usually there are multiple ODMs
-> per board. In an absolute emergency it would be possible to coordinate
-> a qual and synced rollout for all models, but it's definitely
-> non-trivial in terms of operations.
+On a second thought, I think we want a refcount of 1 for these stacks
+at the beginning.
+So should we e.g: re-enter page_owner, we would increment dummy_stack's
+refcount. If refcount is 0, we will get a warning.
 
-Ok, fair enough.
 
-Could you please provide a list of the compatible strings that you guys
-currently use and I can add new compatible strings for those, while
-keeping the current ones for backwards compatibility with older boot
-firmware?
 
-Johan
+-- 
+Oscar Salvador
+SUSE Labs
 
