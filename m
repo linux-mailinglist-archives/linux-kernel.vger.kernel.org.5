@@ -1,96 +1,89 @@
-Return-Path: <linux-kernel+bounces-64563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62060854050
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:47:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43701854052
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:48:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 172BC1F239F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:47:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F398B282E67
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:48:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DD5E6313F;
-	Tue, 13 Feb 2024 23:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC5B6313C;
+	Tue, 13 Feb 2024 23:48:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rxxtW7HM"
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oR0oY9dH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E96062810
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:47:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD4E63124;
+	Tue, 13 Feb 2024 23:48:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707868061; cv=none; b=i9JxU/SdtwKF+rPUsAbIAzgf7IWd2mwbpls3tqOHtiUK7szZTPdfDB52XPM8ORWFrln0RY2pXGL2uK6X4OibHMl1y6FaLkq12fDcIIVEfiTuFBs6dK5NSGspZLBO/pAI9IEtXy08nhWrNbFh6T51WivhCxbvqLKn1glTA38TWZs=
+	t=1707868088; cv=none; b=g2Zg9cASaPuKPMbIg8l3K0Z6kELiFDYnLTich7KfpQXckCZukWyqc5ZTUqZGOpUffv+Mj+UTdThJ61Ud97RpFqC/xHniqdoWK2zR2llC22ROobVTiwUC9+msT6hIDRpzqBK860ipbkNTkbt60jglXh4OWfxuEjVq8OKKNwZ6rzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707868061; c=relaxed/simple;
-	bh=1OBCRnlZJiUNgmqrqru5Gnm9jN5M8aBjgnUT/VYI22w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UwVITXHIUbtUDZfo7CtB1Nw15Qx17QITX6CFZN1LEITYw9wd4N2VGswtvm7zIVjh0lk+bD9oGxKO2RS4RgfMNGl3vYdCU8TejRjWM6Jmw497SYUUQfvai2QyNluu4loUkj1UQ1wZaeNw1ajMflFMnxFflRW0G6+/EaZdLPGBWVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rxxtW7HM; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1fa358e9-5a39-4d03-83b4-310a08aeedd7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707868057;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dV6c9Kxgc2BZuaDPGNbAUxKGIn3whIFP96peZqimM+M=;
-	b=rxxtW7HMEYuiMkDdQcmBD3AGEttDQgWs/eXaNnHrJwOyeAVnF4LvUGpKFQM7b1QP4qq9TB
-	dWJdl7JkZFTfaMXX0Mbq9uv4NyjPPOL20RX3JGMFqq/AXT/WgWoiJKiWqHOnLNeAqnicz1
-	BT+Zb+gBPBCIQpKUFZaxgvPlj/mJhHQ=
-Date: Tue, 13 Feb 2024 15:47:29 -0800
+	s=arc-20240116; t=1707868088; c=relaxed/simple;
+	bh=iMqHLcS5+XHylKovVfwkIRUUAlQkcvIn3nwvIFAPJfg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iNTC7nKwASJVMKe4UtkvA+rWc0e54jPje/9k7xhoNduYxDvLHV1AT3Qr8IYmmZ1sWkkverOHgbtqjoQmK9RPGRApkC/MAGWWuPRv9JqK4cH4+e1UfuzPP6HiCyzfTklfn3cg+9IWVedgdm1m8R4CVzVK7ucg2nqeGSqIlbZjJyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oR0oY9dH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFB7EC433F1;
+	Tue, 13 Feb 2024 23:48:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707868087;
+	bh=iMqHLcS5+XHylKovVfwkIRUUAlQkcvIn3nwvIFAPJfg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oR0oY9dHytVgT7lURvsy69EYN06W2tEr3VLnVAGwuXR8DoaXRr99PcLqOKPYpzcY3
+	 u1hf80bcG4TjH6DwWY6coNcLyIxh+ilnqkkuF7+eJ/Zbs/tBLeWY11mYN4gwb1Ri5t
+	 zZxl+wtriekUkZbgSMtfBikOBcPhv+T5wpcvvdm/QnEam1CqhTUKmsstNFeRkYGI/g
+	 7x/XTjc9KedwWCT60vXsaL2oLFshbzdJZ+CVyLi7TpEkQgII14rsaXUWQmmJEel/vY
+	 /b1Bs7TcSJCqfLOu5Ln9F0mgVJjiAX/ReDVR4bwyCy34Nx8AIBmolRmpeDGJq2JRGA
+	 tcpGSeQ0hMjhw==
+Received: by mercury (Postfix, from userid 1000)
+	id 3E88B1061C38; Wed, 14 Feb 2024 00:48:05 +0100 (CET)
+Date: Wed, 14 Feb 2024 00:48:05 +0100
+From: Sebastian Reichel <sre@kernel.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, NXP Linux Team <linux-imx@nxp.com>, 
+	Dong Aisheng <aisheng.dong@nxp.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/17] ARM: dts: nxp: imx6ul: xnur-gpio -> xnur-gpios
+Message-ID: <wowv3yiz2xis3fafel4rkedorrh2n3iamfctyvtuwxrvdxroq2@dojgmuotvzml>
+References: <20240213010347.1075251-1-sre@kernel.org>
+ <20240213010347.1075251-13-sre@kernel.org>
+ <CAOMZO5BUzaqHEvd877te_Tgiaz+QvWrvLC_oKg+mRPzmL26pDw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 bpf-next] net: remove check in
- __cgroup_bpf_run_filter_skb
-Content-Language: en-US
-To: Oliver Crumrine <ozlinuxc@gmail.com>, Stanislav Fomichev <sdf@google.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, song@kernel.org, yonghong.song@linux.dev,
- kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <7lv62yiyvmj5a7eozv2iznglpkydkdfancgmbhiptrgvgan5sy@3fl3onchgdz3>
- <ZcpMCnJMwbgiUMmE@google.com>
- <r4mpzzib2rzcinai6ctcb32jvcbaenrjfddfcr4o6ghfvnqwct@gcmlz3pi253f>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <r4mpzzib2rzcinai6ctcb32jvcbaenrjfddfcr4o6ghfvnqwct@gcmlz3pi253f>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOMZO5BUzaqHEvd877te_Tgiaz+QvWrvLC_oKg+mRPzmL26pDw@mail.gmail.com>
 
-On 2/13/24 10:37 AM, Oliver Crumrine wrote:
-> On Mon, Feb 12, 2024 at 08:49:14AM -0800, Stanislav Fomichev wrote:
->> On 02/09, Oliver Crumrine wrote:
->>> Originally, this patch removed a redundant check in
->>> BPF_CGROUP_RUN_PROG_INET_EGRESS, as the check was already being done in
->>> the function it called, __cgroup_bpf_run_filter_skb. For v2, it was
->>> reccomended that I remove the check from __cgroup_bpf_run_filter_skb,
->>> and add the checks to the other macro that calls that function,
->>> BPF_CGROUP_RUN_PROG_INET_INGRESS.
->>>
->>> To sum it up, checking that the socket exists and that it is a full
->>> socket is now part of both macros BPF_CGROUP_RUN_PROG_INET_EGRESS and
->>> BPF_CGROUP_RUN_PROG_INET_INGRESS, and it is no longer part of the
->>> function they call, __cgroup_bpf_run_filter_skb.
->>>
->>> Signed-off-by: Oliver Crumrine <ozlinuxc@gmail.com>
->>
->> Acked-by: Stanislav Fomichev <sdf@google.com>
+Hi,
+
+On Tue, Feb 13, 2024 at 10:53:05AM -0300, Fabio Estevam wrote:
+> On Mon, Feb 12, 2024 at 10:03 PM Sebastian Reichel <sre@kernel.org> wrote:
+> > Replace all "xnur-gpio" with "xnur-gpios" in the
+> > i.MX6UL(L) Touchscreen node.
 > 
-> Quick question: My subject had "net:" in it. Should it have had "bpf:" in
-> the subject instead?
-> 
-> If yes, would this warrant another version of this patch or resending it
-> with a different subject?
+> Please explain the reason for doing this.
 
-I fixed it up with "bpf:". Applied. Thanks.
+DT binding maintainers asked to use xnur-gpios instead of xnur-gpio
+in the DT binding when converting to YAML (the -gpio suffix is
+deprecated in favour of -gpios). This updates the DT files to become
+compliant. The Linux kernel driver has already been using gpiod API
+when it was added to the kernel, so this change is backwards compatible.
 
+I will extend the description from this patch in v3.
+
+-- Sebastian
 
