@@ -1,61 +1,81 @@
-Return-Path: <linux-kernel+bounces-63313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6F7B852D88
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:10:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E932852D87
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1781A1C22C4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:10:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D17621C225B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93527225D2;
-	Tue, 13 Feb 2024 10:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36154225B2;
+	Tue, 13 Feb 2024 10:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OxfnLvrP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="bDqkAJ/A"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DBA224E6;
-	Tue, 13 Feb 2024 10:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3122224E0
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707819026; cv=none; b=tr1NuoGIev474NycY9/cmZn6Yx4kh8L7g/8QWlX9Cq7vmkw5LqR2fveXXARcXwJ/4kyiQVrnBJhfae66Ne9CPkfqYC29hN8m7B0sXHg+I37jxh1U5Mn06jGh8VrmXL5fHee898/Nbm6HBXtsMtL88wrmhSqS58K+ErlbfMJQK/I=
+	t=1707819019; cv=none; b=Bn4Ss/8i6z0c2gVHH7xDrELajSNf/qNZpFwsCW1IonLYtS7uJCE0qz2GLIID1Ib9oJ+GZagebdc4JgWYOJYbfE2Y/q1N/dqy/w9700q9NYR/aca410MUvCaXtADfjHbbcb0B6HtyxFd70fW6n1ejUPNI/FR6YhBGforxazZBJBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707819026; c=relaxed/simple;
-	bh=w5dtS5XYoH5xYbJtlCqzMWy5gRh0p5BGjVx/CjsDQco=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HbSx/K8fLM094SY4yp9+kJGykVLYv10OWOLQp8vkjXFad28e9zTFz9m18gW5OZRViIgs7mJte4lp5pzpVlv+1SGoI1I7oOPG2D+pN+h/uxK5kNX5JMPoBE60dGDR49vTawcSeTClvQlfFKt129LOIs0MzYCgQo7WOFzPg6TbKHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OxfnLvrP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73167C433F1;
-	Tue, 13 Feb 2024 10:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707819026;
-	bh=w5dtS5XYoH5xYbJtlCqzMWy5gRh0p5BGjVx/CjsDQco=;
-	h=From:To:Cc:Subject:Date:From;
-	b=OxfnLvrPJSOSHEYQr0yLc7o8hpE/rZo/D0kLg49rakf0sB5DBcUm4umlYh+7aV/5X
-	 dTUng5qFz/HCPSt5RVAxRew1c2tZyMTMPxFbhDj+ZzDUzVgnKwPBKyzHSHpzxrr+ba
-	 mi/Wie0N9GZUa6UwUSCabvjL90LZjQIDlmJboSYTmz/VONvl5c7nURFs4dkC3bTtIL
-	 hM5Z9NaZ6UY4JVhepQhHNCu2/Pj7ERGQk4aJ/zbf0kZ0ZIu5ZUFGsAL5jPqYXSxfBC
-	 IgFIizNnVifkP9IenL4xQwEa+juY/WQwsXvNtasgbIQOlN1G+IVhdtEzO32UHe20bC
-	 RZzBY1lzSWIVA==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Curtis Malainey <cujomalainey@chromium.org>,
-	Dmitry Antipov <dmantipov@yandex.ru>,
-	linux-sound@vger.kernel.org,
+	s=arc-20240116; t=1707819019; c=relaxed/simple;
+	bh=V9cYulzfYb7FqDqY0/zGsr+wR7nxlESe3HrJDyaeXPM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LNEjegZD9pWFTWrlNaZTgLhazuLU4dLJfbAvA4A3BPVrbEYChmwQDWl++2NoXsB6dYevkwYk72aGi3Wj3fR+bshsVINkm3JLR7TD8rccvhS0C0HCWDUe8zay8x+orkG/f+7oViVXQH/GiN3oN0m8wzOmUf5/BGLHKeMunYUovBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=bDqkAJ/A; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33ce20635baso34507f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 02:10:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707819015; x=1708423815; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=44veiaBqGMc5lNCdO5QoQ2ouGyAA43jz0m7IM734+yA=;
+        b=bDqkAJ/AsLSjrUQYQ/6OacG8zS2NzmUaf9MZR+iwixyJipGF4pE9bqXDYiuZvvrlEe
+         Nvh3/Dy29yPGUFbQlF1pa/xz6x/eJrgN3AinExf2GK05/21Ah9rrQ15VsmV1qqqaY5mH
+         41VD90OVwA3OzAOfJriec228hOZqtabAyp8qOiqJDezCyoMacgU7xE2G9uwrCBmy630m
+         TbfA/JVzrY2eQqVE+Gj1YXlUfD7QfMnCNQjh1GgOybiX/EIDPpcunOgVyZLTkZYT3Ky3
+         rqHnSuVW6JpDCpz6kLhtY/eNfqdm5TChO6afqlenObRU3CAt/kpJujxViuSHOh4nnLKh
+         E7VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707819015; x=1708423815;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=44veiaBqGMc5lNCdO5QoQ2ouGyAA43jz0m7IM734+yA=;
+        b=d3gwjVvafqbPVXplVu7A/lSxcIX40zzO2/WJdt/QZ3dkPRHGBza9lsrlHC+LCdiBOZ
+         IY9mkqlV3BGYtAHvpalsfeUn/iihlde8sdTKh6bpDFKcDsuStOD1csXBVK3etzuvVrmt
+         3IuaIQQ+H6Ma8Fybd6YaKP097jYtsrxR3JUwdij3nTQsapAXlApOxZjrRv+pf+TR7d3o
+         xeQDK65tW1Dxf4lr1zVV4XHps40fPr7LF9nCJ0I63ZygOTJ6P7WDfPDVkPOCto16nqRH
+         GdRVFHOQPUF1AvbL9anKjnNKmGBRq0KFg5FbBraD0nY8feuRYx/iqBsyhD5W3JJkeOyw
+         AivQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW63eWnPITCqlFJspG1op28BRYVVoFTlpy2s6HZByNO7aRYUjnN1/Hydf0P9Xp3vZVD/LG/1uhfTIqSBuLEPyW8pa9+2z3dvWCJA+ZA
+X-Gm-Message-State: AOJu0YzkQ42hoc4yG929JRJkkhLaUBbjU/mhXaXToaM9FhxPsmHvvveJ
+	nohK3vOPl92YkEzUeXTZOh02idlPgiGLF5THJdJ3dU5VXo2F0YdpdJ8J789tXtE=
+X-Google-Smtp-Source: AGHT+IF48kMd4o6kuMj09jog6IyBi+Fpq6HfXZ4TbeQ6YQ97bupfm6zbfhP0q4ah5kEaehBaGLLu3g==
+X-Received: by 2002:adf:f848:0:b0:33c:def5:1802 with SMTP id d8-20020adff848000000b0033cdef51802mr480082wrq.6.1707819015226;
+        Tue, 13 Feb 2024 02:10:15 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV8nfdwr1JotIHXrpC1l20SNFZhNapHegZmkgo0W02sYWECeFAPSysM4xhrVCDGsVj36bD3gaPGz2PhaeeGyEZP6ns/cgTrrP/mKZK+TLjBREevGCmfy5hHYluDfV9VpFVGSpNATd5Be3/+es3EvZazOY/d1uupCG7kV9BvM5kCuPWbLb/3Uu2ucFRZl3sSzD2nDiWigZjpQMBq03NfO4W2JUk=
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:f634:2e37:58a9:242a])
+        by smtp.gmail.com with ESMTPSA id dd18-20020a0560001e9200b0033b3d28ef1fsm9075805wrb.65.2024.02.13.02.10.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 02:10:14 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] ALSA: fix function cast warnings
-Date: Tue, 13 Feb 2024 11:09:56 +0100
-Message-Id: <20240213101020.459183-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [GIT PULL] gpio: immutable branch with GPIO stubs for the reset subsystem
+Date: Tue, 13 Feb 2024 11:10:00 +0100
+Message-Id: <20240213101000.16700-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,184 +84,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-clang-16 points out a control flow integrity (kcfi) issue when event
-callbacks get converted to incompatible types:
+Philipp,
 
-sound/core/seq/seq_midi.c:135:30: error: cast from 'int (*)(struct snd_rawmidi_substream *, const char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-  135 |                 snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
-      |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/core/seq/seq_virmidi.c:83:31: error: cast from 'int (*)(struct snd_rawmidi_substream *, const unsigned char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   83 |                         snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
-      |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Please pull the following changes from the GPIO tree to accommodate
+Krzysztof's reset-gpios patch series.
 
-Change these both to take a 'const void *' buffer and a 'void *' context,
-converting to the respective types in the callee. The change to 'const'
-buffers propagates to a couple of other functions.
+Thanks,
+Bartosz
 
-The code was originally added with the initial ALSA merge in linux-2.5.4.
+The following changes since commit 841c35169323cd833294798e58b9bf63fa4fa1de:
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/sound/rawmidi.h            | 3 +--
- include/sound/seq_kernel.h         | 2 +-
- sound/core/rawmidi.c               | 6 +++---
- sound/core/seq/oss/seq_oss_readq.c | 4 ++--
- sound/core/seq/oss/seq_oss_readq.h | 2 +-
- sound/core/seq/seq_memory.c        | 4 ++--
- sound/core/seq/seq_midi.c          | 5 +++--
- sound/core/seq/seq_virmidi.c       | 2 +-
- 8 files changed, 14 insertions(+), 14 deletions(-)
+  Linux 6.8-rc4 (2024-02-11 12:18:13 -0800)
 
-diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
-index f31cabf0158c..91947fb16e07 100644
---- a/include/sound/rawmidi.h
-+++ b/include/sound/rawmidi.h
-@@ -161,8 +161,7 @@ int snd_rawmidi_free(struct snd_rawmidi *rmidi);
- 
- /* callbacks */
- 
--int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
--			const unsigned char *buffer, int count);
-+int snd_rawmidi_receive(void *ptr, const void *buffer, int count);
- int snd_rawmidi_transmit_empty(struct snd_rawmidi_substream *substream);
- int snd_rawmidi_transmit_peek(struct snd_rawmidi_substream *substream,
- 			      unsigned char *buffer, int count);
-diff --git a/include/sound/seq_kernel.h b/include/sound/seq_kernel.h
-index c8621671fa70..804194d7c606 100644
---- a/include/sound/seq_kernel.h
-+++ b/include/sound/seq_kernel.h
-@@ -67,7 +67,7 @@ int snd_seq_kernel_client_ctl(int client, unsigned int cmd, void *arg);
- #define SNDRV_SEQ_EXT_USRPTR	0x80000000
- #define SNDRV_SEQ_EXT_CHAINED	0x40000000
- 
--typedef int (*snd_seq_dump_func_t)(void *ptr, void *buf, int count);
-+typedef int (*snd_seq_dump_func_t)(void *ptr, const void *buf, int count);
- int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char *buf,
- 			     int in_kernel, int size_aligned);
- int snd_seq_expand_var_event_at(const struct snd_seq_event *event, int count,
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index 1431cb997808..ad588dcf857f 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -1165,9 +1165,9 @@ static struct timespec64 get_framing_tstamp(struct snd_rawmidi_substream *substr
-  *
-  * Return: The size of read data, or a negative error code on failure.
-  */
--int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
--			const unsigned char *buffer, int count)
-+int snd_rawmidi_receive(void *ptr, const void *buffer, int count)
- {
-+	struct snd_rawmidi_substream *substream = ptr;
- 	unsigned long flags;
- 	struct timespec64 ts64 = get_framing_tstamp(substream);
- 	int result = 0, count1;
-@@ -1195,7 +1195,7 @@ int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
- 	} else if (count == 1) {	/* special case, faster code */
- 		substream->bytes++;
- 		if (runtime->avail < runtime->buffer_size) {
--			runtime->buffer[runtime->hw_ptr++] = buffer[0];
-+			runtime->buffer[runtime->hw_ptr++] = ((u8 *)buffer)[0];
- 			runtime->hw_ptr %= runtime->buffer_size;
- 			runtime->avail++;
- 			result++;
-diff --git a/sound/core/seq/oss/seq_oss_readq.c b/sound/core/seq/oss/seq_oss_readq.c
-index f0db5d3dcba4..3679938c0ad9 100644
---- a/sound/core/seq/oss/seq_oss_readq.c
-+++ b/sound/core/seq/oss/seq_oss_readq.c
-@@ -86,7 +86,7 @@ snd_seq_oss_readq_clear(struct seq_oss_readq *q)
-  * put a midi byte
-  */
- int
--snd_seq_oss_readq_puts(struct seq_oss_readq *q, int dev, unsigned char *data, int len)
-+snd_seq_oss_readq_puts(struct seq_oss_readq *q, int dev, const unsigned char *data, int len)
- {
- 	union evrec rec;
- 	int result;
-@@ -113,7 +113,7 @@ struct readq_sysex_ctx {
- 	int dev;
- };
- 
--static int readq_dump_sysex(void *ptr, void *buf, int count)
-+static int readq_dump_sysex(void *ptr, const void *buf, int count)
- {
- 	struct readq_sysex_ctx *ctx = ptr;
- 
-diff --git a/sound/core/seq/oss/seq_oss_readq.h b/sound/core/seq/oss/seq_oss_readq.h
-index 38d0c4682b29..bb99743fec7d 100644
---- a/sound/core/seq/oss/seq_oss_readq.h
-+++ b/sound/core/seq/oss/seq_oss_readq.h
-@@ -30,7 +30,7 @@ struct seq_oss_readq *snd_seq_oss_readq_new(struct seq_oss_devinfo *dp, int maxl
- void snd_seq_oss_readq_delete(struct seq_oss_readq *q);
- void snd_seq_oss_readq_clear(struct seq_oss_readq *readq);
- unsigned int snd_seq_oss_readq_poll(struct seq_oss_readq *readq, struct file *file, poll_table *wait);
--int snd_seq_oss_readq_puts(struct seq_oss_readq *readq, int dev, unsigned char *data, int len);
-+int snd_seq_oss_readq_puts(struct seq_oss_readq *readq, int dev, const unsigned char *data, int len);
- int snd_seq_oss_readq_sysex(struct seq_oss_readq *q, int dev,
- 			    struct snd_seq_event *ev);
- int snd_seq_oss_readq_put_event(struct seq_oss_readq *readq, union evrec *ev);
-diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
-index e705e7538118..3be3ee178e20 100644
---- a/sound/core/seq/seq_memory.c
-+++ b/sound/core/seq/seq_memory.c
-@@ -135,7 +135,7 @@ EXPORT_SYMBOL(snd_seq_dump_var_event);
-  * expand the variable length event to linear buffer space.
-  */
- 
--static int seq_copy_in_kernel(void *ptr, void *src, int size)
-+static int seq_copy_in_kernel(void *ptr, const void *src, int size)
- {
- 	char **bufptr = ptr;
- 
-@@ -144,7 +144,7 @@ static int seq_copy_in_kernel(void *ptr, void *src, int size)
- 	return 0;
- }
- 
--static int seq_copy_in_user(void *ptr, void *src, int size)
-+static int seq_copy_in_user(void *ptr, const void *src, int size)
- {
- 	char __user **bufptr = ptr;
- 
-diff --git a/sound/core/seq/seq_midi.c b/sound/core/seq/seq_midi.c
-index 18320a248aa7..e6547da31b09 100644
---- a/sound/core/seq/seq_midi.c
-+++ b/sound/core/seq/seq_midi.c
-@@ -94,8 +94,9 @@ static void snd_midi_input_event(struct snd_rawmidi_substream *substream)
- 	}
- }
- 
--static int dump_midi(struct snd_rawmidi_substream *substream, const char *buf, int count)
-+static int dump_midi(void *ptr, const void *buf, int count)
- {
-+	struct snd_rawmidi_substream *substream = ptr;
- 	struct snd_rawmidi_runtime *runtime;
- 	int tmp;
- 
-@@ -132,7 +133,7 @@ static int event_process_midi(struct snd_seq_event *ev, int direct,
- 			pr_debug("ALSA: seq_midi: invalid sysex event flags = 0x%x\n", ev->flags);
- 			return 0;
- 		}
--		snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
-+		snd_seq_dump_var_event(ev, dump_midi, substream);
- 		snd_midi_event_reset_decode(msynth->parser);
- 	} else {
- 		if (msynth->parser == NULL)
-diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-index 1b9260108e48..ef8536408af4 100644
---- a/sound/core/seq/seq_virmidi.c
-+++ b/sound/core/seq/seq_virmidi.c
-@@ -80,7 +80,7 @@ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
- 		if (ev->type == SNDRV_SEQ_EVENT_SYSEX) {
- 			if ((ev->flags & SNDRV_SEQ_EVENT_LENGTH_MASK) != SNDRV_SEQ_EVENT_LENGTH_VARIABLE)
- 				continue;
--			snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
-+			snd_seq_dump_var_event(ev, snd_rawmidi_receive, vmidi->substream);
- 			snd_midi_event_reset_decode(vmidi->parser);
- 		} else {
- 			len = snd_midi_event_decode(vmidi->parser, msg, sizeof(msg), ev);
--- 
-2.39.2
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-driver-h-stubs-for-v6.8-rc5
+
+for you to fetch changes up to 2df8aa3cad407044f2febdbbdf220c6dae839c79:
+
+  gpiolib: add gpio_device_get_label() stub for !GPIOLIB (2024-02-13 11:02:53 +0100)
+
+----------------------------------------------------------------
+Add missing stubs for new GPIO functions
+
+----------------------------------------------------------------
+Krzysztof Kozlowski (3):
+      gpiolib: add gpiod_to_gpio_device() stub for !GPIOLIB
+      gpiolib: add gpio_device_get_base() stub for !GPIOLIB
+      gpiolib: add gpio_device_get_label() stub for !GPIOLIB
+
+ include/linux/gpio/driver.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
