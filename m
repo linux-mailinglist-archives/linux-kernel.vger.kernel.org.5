@@ -1,114 +1,122 @@
-Return-Path: <linux-kernel+bounces-63514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C32808530A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:37:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBBDE85309E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:36:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80431280A11
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:37:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A07E21F2835E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F403EA76;
-	Tue, 13 Feb 2024 12:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB34C42079;
+	Tue, 13 Feb 2024 12:36:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="JP083YBl"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KVO9fvKU";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wHnozyNz"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33FF72E3F9;
-	Tue, 13 Feb 2024 12:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9137D42070
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707827844; cv=none; b=IAMoLRTb260G+AusXOt6rnknVZ/4Cdj2VM2KEW+67q/ntoO+KjoxUACHlqfV7l7s6bNLNuNqs3YhOvrNpUuqo7gzUhgxXjBJ2lrxIqdav8tXONlvqc4CnT1xsmzouutpkSo8XAVAuSE2txkUo01V/IecmAGP4wIKJYrrPzp29Lk=
+	t=1707827804; cv=none; b=S2K8ERQI6ZNl7Ly9/EI6lRuMJh7IWFrb2WqbDbMza5rzB6tsWcRH0AXGwAxsh9rUXgACUKAnkxriwCD+jr/25xc53ooXRDP/6iynHK2YQkQCIVVnB4eaTqm8mie+sKItMq/8XV3ifkQfsoOy2wdJS8vlU6D4TcbTb4EEobuKlCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707827844; c=relaxed/simple;
-	bh=DE/XHWHvRtXunMaKVv0ppouHZYiHawO0ONJKt/8dNns=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=qqv4OLkXAJ0vj6UIh8xayIyYfNzRQvygztHPHkdFp9XTb6/tDDZ5kMi5kfWbfMqWOHNx9ZFsWOLDTxwCW2eUQAuUWMGofUwv9hXuNQtk8CHBumKeeQUpIiHBai2O/oEDzs8UiGIXpaenWikJSlRfb8JdklzgW/pAeR71nD1pVkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=JP083YBl; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41DAHOsc007195;
-	Tue, 13 Feb 2024 13:37:03 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=WCLzMa4S8B9LE+l6Xk7TCbMua2Sf8tUF9rmm+m0Qjlk=; b=JP
-	083YBlPgUXhg+wSpAUUhfRxaA+2rpPFIKjMyywEsQGjKC3OoDajahLXEejnnThS3
-	UCuV53IRKiBQRGbmqjpMEKS5Hj6qrhRKl/L02chk/IBIZGvHe+grGXItX0iXV75U
-	Uzux9n048u2lwtdZnyVbY0K49kpoJuVfyCEV4J4S3X1eUkgj6ER49TEZ7fB0J/uT
-	VWPM9VIElouyuuH0hFAcMwCR72T28/HW0Sn9efUzR9zGEr1jnQKe+6GPt0CiboTC
-	j4I931v4D0ATAB61a5SRtR06Mwj2TUIjEFaxs2CFuYAoVs7NmxVtFS2KIr4rB8Gq
-	g9K5KW58Js2lWPD1k0Yw==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3w6kk4rgpy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 13:37:03 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 4E49240044;
-	Tue, 13 Feb 2024 13:36:59 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 988B723D407;
-	Tue, 13 Feb 2024 13:36:17 +0100 (CET)
-Received: from [10.201.22.200] (10.201.22.200) by SHFDAG1NODE3.st.com
- (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 13 Feb
- 2024 13:36:16 +0100
-Message-ID: <18ec4d01-717e-440b-bc54-8652fb68965e@foss.st.com>
-Date: Tue, 13 Feb 2024 13:36:16 +0100
+	s=arc-20240116; t=1707827804; c=relaxed/simple;
+	bh=u7Gj4MawtZchNvB4IMfRVaTsXDme7kgSGLdFK94qFWw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GL6RVRP/g/LC5AQ4ynIi/Ei9OUGWbzSOTM6LhlALGJPlNyAlY5Drm+AoULx+3TYuaJhdw5Js+d/QShR0TRA0gdtoVgfhyGUIFZi1hlytPMVIjTbgkOWl/+MLq4E1gXyNzKUMCZSvmxCsfhk5ABSYhuJDA4N6jkv2VHlmBwC679c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KVO9fvKU; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wHnozyNz; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707827800;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pb2pqQV0xUnwZMXOVMtuXzPc3E6lATgDDAmVYInJbIQ=;
+	b=KVO9fvKU4jfYtiqA6VTtqgUIfPRmafYvV9hD95YC+/7FJIc98F3a6ynNQse9woP+fYYxYq
+	Cn2+7bSlzRn1zeQetpEFXS8IgasjECZe25f60L+ZmIij70bHmjJsh/DEeOQvmngJ05FhKU
+	+Z6Iv7x1PNstbMFvLBxksbn8c1N16yBQT55YpizuJv/oT4eQvzODd3HYWQg5cIb5SiuAYv
+	HCWCKbdSwxT11pq1/o/jj061r0pB7gxF0kXCDUvlb4fQBsuqvnA9lab9Bneq+db64ORDaM
+	j6KEEdT8AA8+HSNGbkcTqiMmEoMzjStdypO2VVYGmCsbNFDp8J1HS5Ci4XxLjw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707827800;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pb2pqQV0xUnwZMXOVMtuXzPc3E6lATgDDAmVYInJbIQ=;
+	b=wHnozyNza0ssaJwmrK8QajDYWvto8xHEeJV9cUBfbUWHNhE/+8gwtoKJcPcbixESCm0MoK
+	PW6n+TVq3hXwQHBw==
+To: Costa Shulyupin <costa.shul@redhat.com>, Waiman Long
+ <longman@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH] hrtimer: select housekeeping CPU during migration
+In-Reply-To: <20240211135213.2518068-1-costa.shul@redhat.com>
+References: <20240211135213.2518068-1-costa.shul@redhat.com>
+Date: Tue, 13 Feb 2024 13:36:40 +0100
+Message-ID: <87o7ckh76v.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/12] memory: stm32-fmc2-ebi: update the driver to
- support revision 2
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>
-References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
- <20240212174822.77734-6-christophe.kerello@foss.st.com>
- <6bc91742-66d8-425b-ba40-fe5fa6ba18c4@linaro.org>
-From: Christophe Kerello <christophe.kerello@foss.st.com>
-In-Reply-To: <6bc91742-66d8-425b-ba40-fe5fa6ba18c4@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_06,2024-02-12_03,2023-05-22_02
+Content-Type: text/plain
 
+On Sun, Feb 11 2024 at 15:52, Costa Shulyupin wrote:
+> because during CPU deactivation a timer can migrate
+> to isolated CPU and break CPU isolation.
 
+That's not a sentence.
 
-On 2/13/24 08:46, Krzysztof Kozlowski wrote:
-> The function is not really readable anymore. Please split it into three
-> functions: for v1 (so original code), v2 and wrapper choosing it based
-> on revision). Or two functions and some sort of ops with function
-> pointers (so you call ops->check_clk_period). Or just parametrize the
-> registers with two different "struct reg_field" and use appropriate one
-> for given revision (the code looks the same!)
-> Or just two set of stm32_fmc2_child_props...
-> 
-> Anyway the duplicated code just two read different register is it not
-> the way to go.
+> For reference see function get_nohz_timer_target,
 
-Hi Krzysztof,
+get_nohz_timer_target()
 
-As I said in patch 4, I am going to rewrite this patch and I am going to
-use the platform data to distinguish between each variant instead of
-checking the IP revision.
+> which selects CPU for new timers from
+> housekeeping_cpumask(HK_TYPE_TIMER)
 
-Regards,
-Christophe Kerello.
+But what is the point of this statement?
+
+> Inspired by Waiman Long <longman@redhat.com>
+
+Can you please use a proper tag, i.e. Suggested-by and not invent some
+random free form text just because?
+
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+> ---
+>  kernel/time/hrtimer.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+> index f82997cf53b6..460d916e24b7 100644
+> --- a/kernel/time/hrtimer.c
+> +++ b/kernel/time/hrtimer.c
+> @@ -2227,7 +2227,7 @@ static void migrate_hrtimer_list(struct hrtimer_clock_base *old_base,
+>  int hrtimers_cpu_dying(unsigned int dying_cpu)
+>  {
+>  	struct hrtimer_cpu_base *old_base, *new_base;
+> -	int i, ncpu = cpumask_first(cpu_active_mask);
+> +	int i, ncpu = cpumask_any_and(cpu_active_mask, housekeeping(HK_TYPE_TIMER));
+>  	pr_debug("ncpu=%d, dying_cpu=%d\n", ncpu, dying_cpu);
+>  
+>  	tick_cancel_sched_timer(dying_cpu);
+
+Q: Against which tree is this supposed to apply?
+
+A: Against some private tree of yours which added the pr_debug() in a
+   previous commit.
+
+Can you please read and follow Documentation/process/ and provide
+patches which actually can be applied without fixing them up manually?
+
+Thanks,
+
+        tglx
+
+        
 
