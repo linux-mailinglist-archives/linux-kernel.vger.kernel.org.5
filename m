@@ -1,227 +1,236 @@
-Return-Path: <linux-kernel+bounces-64195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70659853BA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:52:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91C85853BA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:51:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA7D41F23FFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:52:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B60851C2673F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CD860B93;
-	Tue, 13 Feb 2024 19:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C66860894;
+	Tue, 13 Feb 2024 19:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="WCv21YYi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="oemmPk8a"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gDEY51uA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F6D60B85;
-	Tue, 13 Feb 2024 19:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707853912; cv=fail; b=I93/BO0dpDc9elulYXHpmimXoDDSwnM0yJw1mU1Debwxowj01oaz14agCBWb3YJOiS5BsaHgE3waXPCp7g9yh/7FPMpZKNXJMZvjGyxfzAs8nCRdeW2AmDLrOFKbdRUGuuyzC3z75BL4CKlb58i6Xjl3OW8ADiKTB5HstnWDnTU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707853912; c=relaxed/simple;
-	bh=2sfk9XmYE76CUZiNBwL3RqDwURTnQLoqgrSJyCZsbPU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=F83Wtg/cTZPhEUlIc6HyNgY3+Xm8zeAR2zJeeIDY0uR8FtvZudzxUHqLXOn3lJ9TheVfnie2BbRp2z7qJX0H5RSqL2qembzuCWsjcB1YYrf3Iq0CO/VDQgTPXfEtvD9swSgkBB2Sxb1TyzIynzyOe0sOsZbw5Z3amGAcLEvPmw4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=WCv21YYi; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=oemmPk8a; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41DIj3IX018242;
-	Tue, 13 Feb 2024 19:51:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=Ktwy35BjXYTXV8Vk5AV4l5is0qqQjVjVt68lL5V+Noc=;
- b=WCv21YYiPlBqianVw0PBHWBBgNTT7FKC/d1FYmm8pZWxSM6JwJ4yrGB1bLe1VbZa3qm5
- zRG+lUXr4LMvcAiLdYAS7FwZzblSjfeaqwgXknLnJoZRywwQITWC5Ep2Ub2zE6J1qGYK
- nTmUsuzRT7O89gegeiDWnN0VQMSME/Nvcdiutvl7AnvVBc+x/Zyh8oHRQHcVsNkC3fME
- c+HiOvIALkMRkJOh5h3S/JyjTtcVHzmI63OW/pA1wPLNexzOIOYGd/WN4rw1iITB613N
- gqyFrpRcgWZ54p0ZmggFGivb+7yIvzDkFk+fqyljfzgiF+kk8CgqCbnI9vHg8Pl6qoXQ Tg== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w8dyjg4nk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 19:51:30 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41DJMluk015037;
-	Tue, 13 Feb 2024 19:51:30 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w5yk7v4j0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 19:51:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F4Thb6egZg5jr7sj17ksVoNTIl+j2CBzQI1XNyl+jEc0RiaQ9xLrgXffsIVZXIPRQLYdRiSdtmKzXaA3VVbW4MQxODkAlmEN2h3RF9b5/jbplVWuLUBO3AaMOB1qHU8mlvmLv496iRKiZLOshwp7jFkGf51LYukD3htJw7b9XT/2nURbVCwHe8JJOTd4XfrsuG8NklNRTAZvYCJVsmc08rUU/nlfq6Pi4dTN7bn2EwBnALPE7thSXEeP6ZFz5DUP7eCSRsQDNk+Tze6ndRKAYqPsIJ8/NwCPbxARvsLu59jteCSTk5aaLvH2+TcqJa/V51j3jbpuFS0LbigBNzhPSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ktwy35BjXYTXV8Vk5AV4l5is0qqQjVjVt68lL5V+Noc=;
- b=YINVfAI89vKASvMsWB36DJAAMG3VujqI6sN63R27evxEYjBovAiBF5uANU39CcejGNvuewB8upWOjH4Yf9d1FOfECuHAkOzSzVtBU5Ed/gzZxxUcr4MrwkDEEINGY06dqUVQQSnpnKEHbGHPBnxHzeW3jyfEZEP7JZv74EnnjYD23fQdWKlno0eC8v3CJwcNQW2coDXtpfjx6LNNFZsxCswqahwGKiLt467PLzdlzxVRI8ZuH1a2mEfe01G+p1Edr1ZQo6Ezix1ryBkZp1lppKN1VuvOnf4uAr/EmJulKSniDYvhTMcBUcKoXQ0piO2rwUTubz0jVl81AWCor2uH5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ktwy35BjXYTXV8Vk5AV4l5is0qqQjVjVt68lL5V+Noc=;
- b=oemmPk8aKI1ouzk6Y7rGc1SujhND3lRfIdBeFFT4/bGm8EE26gKu2QV71Srs0OI/zj7xp7cJF5eQtP7XmSAy0GWwmF9baXwhTASdjgVuRWZTCOuqCO5xWdJcHOp9SxcpzR9wh6QotErlVE98fjS2H9Sq7fivK/cI3XFF3EUZbP0=
-Received: from DS0PR10MB7933.namprd10.prod.outlook.com (2603:10b6:8:1b8::15)
- by MN2PR10MB4319.namprd10.prod.outlook.com (2603:10b6:208:1d0::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Tue, 13 Feb
- 2024 19:51:27 +0000
-Received: from DS0PR10MB7933.namprd10.prod.outlook.com
- ([fe80::20c8:7efa:f9a8:7606]) by DS0PR10MB7933.namprd10.prod.outlook.com
- ([fe80::20c8:7efa:f9a8:7606%4]) with mapi id 15.20.7270.033; Tue, 13 Feb 2024
- 19:51:27 +0000
-Date: Tue, 13 Feb 2024 14:51:25 -0500
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To: Lokesh Gidra <lokeshgidra@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-        kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com,
-        david@redhat.com, axelrasmussen@google.com, bgeffon@google.com,
-        willy@infradead.org, jannh@google.com, kaleshsingh@google.com,
-        ngeoffray@google.com, timmurray@google.com, rppt@kernel.org
-Subject: Re: [PATCH v5 3/3] userfaultfd: use per-vma locks in userfaultfd
- operations
-Message-ID: <20240213195125.yhg5ti6qrchpela6@revolver>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-	Lokesh Gidra <lokeshgidra@google.com>,
-	Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com,
-	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com,
-	willy@infradead.org, jannh@google.com, kaleshsingh@google.com,
-	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org
-References: <CA+EESO5TNubw4vi08P6BO-4XKTLNVeNfjM92ieZJTd_oJt9Ygw@mail.gmail.com>
- <20240213170609.s3queephdyxzrz7j@revolver>
- <CA+EESO5URPpJj35-jQy+Lrp1EtKms8r1ri2ZY3ZOpsSJU+CScw@mail.gmail.com>
- <CAJuCfpFXWJovv6G4ou2nK2W1D2-JGb5Hw8m77-pOq4Rh24-q9A@mail.gmail.com>
- <20240213184905.tp4i2ifbglfzlwi6@revolver>
- <CAJuCfpG+8uypn3Mw0GNBj0TUM51gaSdAnGZB-RE4HdJs7dKb0A@mail.gmail.com>
- <CA+EESO6M5VudYK-CqT2snvs25dnrdTLzzKAjoSe7368X-PcFew@mail.gmail.com>
- <20240213192744.5fqwrlqz5bbvqtf5@revolver>
- <CAJuCfpEvdK-jOS9a7yv1_KnFeyu8665gFtk871ac-y+3BiMbVw@mail.gmail.com>
- <CA+EESO6TowKNh10+tzwawBemykVcVDP+_ep1fg-_RiqBzfR7ew@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+EESO6TowKNh10+tzwawBemykVcVDP+_ep1fg-_RiqBzfR7ew@mail.gmail.com>
-User-Agent: NeoMutt/20220429
-X-ClientProxiedBy: YT4PR01CA0149.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:ac::15) To DS0PR10MB7933.namprd10.prod.outlook.com
- (2603:10b6:8:1b8::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377E21CAA9
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 19:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707853894; cv=none; b=pC9IXnnyrww8h4tGnYJahG82WNyegm0d2BArQ8pq9eRcjxNMsjLpyAKSbN/eSRY8xFCSIuRaoFSL/bV3n4vi8TL+fwT3U5Gt3i4YQ22JgXOXs1W4AqDz3BALcPscZhG6iT+Iplj4F5PmeDy5k1sEMxH8lxymEzt5Tbt/NCHnaRY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707853894; c=relaxed/simple;
+	bh=Tg5MsaFqKcll3WJwQ+ui4v5KYHONfl+5tZRSv1SPzR0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=uaqpLOOkY72583yapXjMmM3hdyECBCGkTOTp8uzouMAVnsYCGw/o9rEMbu3/jkGyC/gHqnlvc53+dTApnJgQ8BlRjbEHIYUs/APK+6f3rCTus2IlU2pKoqFCl/Ilck49L12vJ0G0DEh3y/6JOq1GX+3ILo2zEmNaJktjTtEW9Y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gDEY51uA; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707853890;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tg5MsaFqKcll3WJwQ+ui4v5KYHONfl+5tZRSv1SPzR0=;
+	b=gDEY51uAgp6iNPEsGD3Mb8bsLgypd6QFtgz3kXcnzFdyehoOPpVuHk0b8nXpmaxfiPYodU
+	jwgZfVOC9dGMq9KEKRzGEm3MBfOqrwEwfH2dd06ah/pUxI0H+2VFU6MWaxK+FdfveXD6Kw
+	gziTozI/3le0dr7BxWOQbJC72h9ecOA=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-661-8xRE3NBiNQGo7ZieiSddoA-1; Tue, 13 Feb 2024 14:51:28 -0500
+X-MC-Unique: 8xRE3NBiNQGo7ZieiSddoA-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-562111cbefcso272873a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:51:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707853887; x=1708458687;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Tg5MsaFqKcll3WJwQ+ui4v5KYHONfl+5tZRSv1SPzR0=;
+        b=MJhQTFu0KL2eIdR0ZYPnHea4uX/QsSAOPghzSfi3KskOA/p7ItW8kp1StnMoQqNgZA
+         5/b6bVx0pnHnxA4rhsMbpORtsVqke2jVk669mJFKEvOFcRKMfyb8OCx9Cf5nhwgYQdlZ
+         SJU8MwdIRtQMbP/SUwt2jZS8ufN0PL966nnGf3ZmAcPmF5+bRxF5SswIAiLl703J/UjD
+         6Joq0xaje+qEQ5cjy8H43IqgK/82JhaJ+is6lagAdVFoy/5CsHsefsm03b1H2UvsRaN0
+         bwnzhu48fK1XGN2SpPGVttschY3vwOelP9VpKmORGLmBubs1VkhVm0FINaSfCWs582GX
+         XMKA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFLBZErk0TnKpn2uL1CrL3PJusknUL0OX8JXRaH+fiK2v2hCUU8TlbNS2S8mlDFdb5opuyOMDky50RZ0isMrh/Eg0ILdDtKkoPmDRr
+X-Gm-Message-State: AOJu0YzF+bYz+le6dFuA+3hk1TBOH+VVED525HA6pNjk5trN48ZMq1rO
+	BFlupTRYVlTXmEW9ysS03/N6xnXnUdodRY+Ir8B+UtkCEkNVjjK9+/NYlfuglrndvn65TmK2lm9
+	/TH9HnEBTlAXAP2JUghgkpejhxvvcwAdfuLQU5nMsjZCyOh0uzkRvz1Xd1B1E6g==
+X-Received: by 2002:a05:6402:1cb8:b0:562:50e8:6ee4 with SMTP id cz24-20020a0564021cb800b0056250e86ee4mr40877edb.35.1707853887542;
+        Tue, 13 Feb 2024 11:51:27 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHP+QVjOgTJsSEOm+C1OKWk1I48GuAsDIQjHIkXhl5MbZk9on3eQ1nH0trSu94tyk1bm40KWg==
+X-Received: by 2002:a05:6402:1cb8:b0:562:50e8:6ee4 with SMTP id cz24-20020a0564021cb800b0056250e86ee4mr40854edb.35.1707853887208;
+        Tue, 13 Feb 2024 11:51:27 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUi1vpllgnapDRdjcC78q+niYoasUsrFPOAiQ6LkfiADjrKhfTJiHmOobSo4WalnyZDiF+/YuSFXFCH7aQHVMo2n+AHz5/KpW64Ssb7y+33PzSHOFOhYnbFA1+FxRbrbuqEQ7J419oJzeOwfpdfaQ3OYNt4iA9CM4LVhANOmauuzt2RR/8TV24lXnLEgATzcUFsXfus/4WLI8PW2esejO5PFgMjA+wfAi9rywr4X8dTW7ugTBVU/Pnk1BX797PfMJA8QBJP0Pl5ZrXnwHOMv/jqOwOXd5kng2OSppY1E8CfdU13/sx+4Cz0zx4fplhwCVAr53NcY0jgV50NTAyZOXm+ZRf4s5ZwUW64IDZzThvRx+OGRw81x1Qv8jLiQuElQd5DvkC3YRw0k+my/b0T84+zBvaKgv5FQBa8YPA8jMdbGeJOsTVtkTfGuQBCCVnvd7EgNv2QVTuKCrulgThFTWcqJG4emd0f+fC8tQ7onXZcu52rqY/ff7VNqpIBFVlTjQ1nJYjuKFAGAc4Pralja7cffAYhTYXZkzHWLGyqysRHCjcDmJm12yB+n7HST4f/BItbu4p4o0O1g4463WbrggfFHFTPuEhn8MaPsQs4EslkwSJulnDsAh9vCg4KwOSKqWv2MQi/sYJhgdgFwHe0swP6QxeE99I/PzDxIb/+7DeRayeeB5CYiX2v0rEr6MJnW3M=
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id j2-20020aa7de82000000b005621b45daffsm138386edv.28.2024.02.13.11.51.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 11:51:26 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 620B010F56C8; Tue, 13 Feb 2024 20:51:26 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Benjamin Tissoires
+ <bentiss@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Benjamin Tissoires
+ <benjamin.tissoires@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jiri Kosina
+ <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
+ <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>, "open list:HID CORE LAYER"
+ <linux-input@vger.kernel.org>, "open list:DOCUMENTATION"
+ <linux-doc@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK"
+ <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
+In-Reply-To: <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
+References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
+ <87bk8pve2z.fsf@toke.dk>
+ <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+ <875xyxva9u.fsf@toke.dk>
+ <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
+ <87r0hhfudh.fsf@toke.dk>
+ <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
+ <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
+ <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
+ <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Tue, 13 Feb 2024 20:51:26 +0100
+Message-ID: <877cj8f8ht.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR10MB7933:EE_|MN2PR10MB4319:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8a533691-06ac-4d26-387f-08dc2ccd2a98
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	pAtzD0bVuRic4DRyhDxTZh4+aRTy+K5NLZeA6NvWSvnLreG08yDnzvRERSGQ64X1+WTGI2bfPpsDkouz0RXkCJZO2nERl3J/kDMg/tEVcav8ZpU5CdlPvr1mQJNrs1eTZEzRWP2cLYTMEsTugJDGl6qiJ3LDqGIdRlVH0fs9drUY6RkOHT+SpW1I0UoGaU5vzyQPKzxpD7Q8R72RVG6XbNahBBVKWaPpjKlAlAnQ0tAcANDxMtCROv5gO3ja0Xw86Pu9VXmBre7OeyEYvjFsyR58Obdofe6XZzkGbTo1+CvRY8hQSP/qlU3bb+ESMq0AiytZcYYSevgdFNcbdXi73+5tMovYeSP632T6K+Kf6LG7A85Mg8mOibrk1hLMwLAfMUF6uAOqQzmmoaBBuGUtScrFlQ9qv4fDyqOHd7OojVp8iz2qS6ddj+AvaC4cGJb3vfxGCuK5G+UjnfPiTeUYSoD2HBk9JLLNOa46otwzuoVyA8SDiUu6TBvqG9ku4c/yCe/ev3Gee4Myqg2Gb13+pDWostCC5zPQGWtQK4xQNBS5bi5Ps7zeT0rRVUx1DgMs
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7933.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(366004)(39860400002)(136003)(396003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(5660300002)(7416002)(6916009)(66946007)(8676002)(8936002)(4326008)(2906002)(66476007)(66556008)(83380400001)(1076003)(316002)(26005)(86362001)(38100700002)(6512007)(41300700001)(478600001)(6506007)(6486002)(9686003)(33716001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?z4Qwb4K+iIL4HobHmLSoonHhOBX0e3xlQbOnU6jikkxxq9PAwKP6HR5BXmBk?=
- =?us-ascii?Q?ivM8OYOUjP9uTdXG+8sgDvDRlljdvAlX1RLMUbjfFQSao0jPQHYxHwuky447?=
- =?us-ascii?Q?uqgm8K4alhPL2ayoFtGM9tnf/231hV5ojpbwLiZHgEbwDJA+10bjPfwfELDD?=
- =?us-ascii?Q?Wb8fJlH1EnggFuiQt4VjIzVozZGEOqaCberu2iq63gSzX6yCCzWbDd9vowjS?=
- =?us-ascii?Q?VqZ+DZeZvu+3S3armTDhZyJ7DcZqt5ysj0FjnxeB+TYt7rDm0s2SBNUrd8Kj?=
- =?us-ascii?Q?ohniq9QUl4JeP+wq8QsOTsYRVlPe5Q5/sPJZP/ZIA/Ay9In69y4Vtht2mhMU?=
- =?us-ascii?Q?KfOHHoC2+UulKs0UOfAf184k3USOtjzERYrMFWxrTh3z+JUN5FZrWIbafNXR?=
- =?us-ascii?Q?L5ld7PWSIxnGgKO5j2/MMOyy/wk0GzFDok2R9tTnr6KDI6+cDRfDA9muJdr8?=
- =?us-ascii?Q?XZvpwB13ufrZnFJ2LuVwqECML2SFHInDSN85FcrBor/r5VpGJaSKyB5rO6Ll?=
- =?us-ascii?Q?NZGC/AF03vzCMaH5Qq/6ZX5hGw39SMo0NSXVuhbShwgDHiXyafvr1eOmmm5V?=
- =?us-ascii?Q?FAjEF8apoI2s+/3sOx+2+vR5Fp/3yOO8YSR5wVKb2PxoBH3bbY7ZEkqegzV6?=
- =?us-ascii?Q?x4zO0iNoEIwjVjCYQH8ZM+FsNS3PdZCxZ8zPGOZdk6W3DsFngULyQ0U/MTX0?=
- =?us-ascii?Q?VMOZnP1vCDumqPV8HSQ7uzltjk9ksVGUVXv0rZPbl5818XewD9pzzgZtUCiz?=
- =?us-ascii?Q?aUELOrsrlWJKv1BsPIZQej73o2fF1oJ9cX9+OsHuHX08qTM+6tPMYNFLCPbq?=
- =?us-ascii?Q?PnqjgBim4L4pL2WFvXDX69mEIg2nksWC6oCKRVMrZSjhkmZOWk6mWe1C4TPD?=
- =?us-ascii?Q?hw1LVtSxHUCptzbvD0aViqqLcPq6dt1OGEFmCXDcyxF75jCd5kPATjTxAGBj?=
- =?us-ascii?Q?bvYfngN4eDZkvkYrmyAWF9ZeZHePWpUeqzpVEpJRROHedYdO+a3rmCPE6Fmx?=
- =?us-ascii?Q?CZrueeY/92o0AlGqPAUHWXOk34RPH5MKVwdlDhRoNdv/8x7TwtMzqEmzUoBc?=
- =?us-ascii?Q?0Vdk+WKC1fAAHxMOFyqAfPSm0cYPdmNKd1AIUON/G1nY4k1zABDHcHI9DdIP?=
- =?us-ascii?Q?lAS7Doz+8lGnsGuu5xSJTIfxzXW4R+deNgc3xaeU7VPWqQHwR7w8qhHcikmZ?=
- =?us-ascii?Q?mjAgPbJoxJifKm7HcCqbiMJ/26reynO3uuG+S5M1ObF/E8s4p/BK7ETsdc4o?=
- =?us-ascii?Q?9bUICQpEsZEPt+9J/r19xQJiDGC7UIxW4EAK9+plwMrmYqDPnQWf6b9ONX3p?=
- =?us-ascii?Q?x7mgYh0mrszdbjqaxrNaDqEIhJeVwKHymab12zAUjFRemBGppKBHAC9OnaM8?=
- =?us-ascii?Q?OziZVVUV7mDzrhwo3KB1T7IL+2PPJYlWsHKAOviW2olMgJGuuIevBOXlszCi?=
- =?us-ascii?Q?McOkx/gE+ZETSJ7EvKYQ6/Z8pBOUlRiQOAj6vwnfsUh2+Px8vqfDvtF8Ujo7?=
- =?us-ascii?Q?rZfb4GLZ2XWBi5pWxGFe4UbNrpYeShWUOivfA1e13WQdz65izLnhGH0iTe4F?=
- =?us-ascii?Q?3NwSYgFq+X34Vn1jJ8vo8YxP7PcLLCfRv6JM587wKy55A8M6ijeN9DvfHJPM?=
- =?us-ascii?Q?sw=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	0GLB1mu/Yb3AqxhTp9E2bY17QRY2M+gJf67nUmgrqUOOb/FAetz92ozY6gb/cZJxUT8mVTQVgWBUYoo7UzWbjtZxSzwmxcc1umk/GhGJuAzS7ZcDj8ppaPw2Qz4OjVQiMWsz2F/2tdDq1JcEPEfEbnV1t0l63P/4i6RpW7T0JDYCxME53jQ7XunT/8oghzy4z2/aZd+KuEPdw8HTWy6jWXTUjulJ6InXm/2qzBT8lw7sZ0t5IhUcbtRcdK25VOCoEwProoj1WXKly98y/AZmFlMvVv8U3z5bmIpn4JkmJXIa3zVpV/Fx8idZsbH8SD9M8f3i205wJNLjKZ01H+Tn3v0JkJHX10kYl5mu7VwJWbUFgvgfuQ/5yRMm+F+dAHvkqTfkCzjDxMdGPio9Ivybp9zggHrk8q1lvZpLLE72oTS5Sn0zz2QPzVlS3S87nkYUJW8nyswXSarm+C0jjT1Why7w/yWWw8//C9IhZuiz7m0mDFT7eUOghTfOYC3z68/AnWu1n3s/NaK8W4wwvjbBJ0UlqmFbf0Vppi17NUo5E046YLYrrSWpCGpxuLSx//2NmSyi5cPgt0eqTKW8GolXY/odl0hvTMo1Hnn1pVbk5X4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a533691-06ac-4d26-387f-08dc2ccd2a98
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB7933.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 19:51:27.5522
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3v+jECGxBOPmz2l5OzqH0y2O+//CxmIvAgNM42gsbhysH3G94BBdava0CRLfqUKCZl8woij2k45iE4kCeWzjkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4319
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_12,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
- phishscore=0 adultscore=0 spamscore=0 mlxlogscore=623 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402130157
-X-Proofpoint-ORIG-GUID: 0nCoDfDfgcAiikicCJLZ7GJbTc8VPNsk
-X-Proofpoint-GUID: 0nCoDfDfgcAiikicCJLZ7GJbTc8VPNsk
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-* Lokesh Gidra <lokeshgidra@google.com> [240213 14:37]:
-..
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 
-> Asking to avoid any more iterations: these functions should call the
-> currently defined ones or should replace them. For instance, should I
-> do the following:
-> 
-> #ifdef CONFIG_PER_VMA_LOCK
-> ... uffd_mfill_lock()
-> {
->         return find_and_lock_dst_vma(...);
-> }
-> #else
-> ...uffd_mfill_lock()
-> {
->        return lock_mm_and_find_dst_vma(...);
-> }
-> #endif
-> 
-> or have the function replace
-> find_and_lock_dst_vma()/lock_mm_and_find_dst_vma() ?
+> On Tue, 13 Feb 2024 at 18:46, Benjamin Tissoires <bentiss@kernel.org> wro=
+te:
+>>
+>> On Feb 12 2024, Alexei Starovoitov wrote:
+>> > On Mon, Feb 12, 2024 at 10:21=E2=80=AFAM Benjamin Tissoires
+>> > <benjamin.tissoires@redhat.com> wrote:
+>> > >
+>> > > On Mon, Feb 12, 2024 at 6:46=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rge=
+nsen <toke@redhat.com> wrote:
+>> > > >
+>> > > > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+>> > > >
+>> [...]
+>> > I agree that workqueue delegation fits into the bpf_timer concept and
+>> > a lot of code can and should be shared.
+>>
+>> Thanks Alexei for the detailed answer. I've given it an attempt but stil=
+l can not
+>> figure it out entirely.
+>>
+>> > All the lessons(bugs) learned with bpf_timer don't need to be re-disco=
+vered :)
+>> > Too bad, bpf_timer_set_callback() doesn't have a flag argument,
+>> > so we need a new kfunc to set a sleepable callback.
+>> > Maybe
+>> > bpf_timer_set_sleepable_cb() ?
+>>
+>> OK. So I guess I should drop Toke's suggestion with the bpf_timer_ini() =
+flag?
+>>
+>> > The verifier will set is_async_cb =3D true for it (like it does for re=
+gular cb-s).
+>> > And since prog->aux->sleepable is kinda "global" we need another
+>> > per subprog flag:
+>> > bool is_sleepable: 1;
+>>
+>> done (in push_callback_call())
+>>
+>> >
+>> > We can factor out a check "if (prog->aux->sleepable)" into a helper
+>> > that will check that "global" flag and another env->cur_state->in_slee=
+pable
+>> > flag that will work similar to active_rcu_lock.
+>>
+>> done (I think), cf patch 2 below
+>>
+>> > Once the verifier starts processing subprog->is_sleepable
+>> > it will set cur_state->in_sleepable =3D true;
+>> > to make all subprogs called from that cb to be recognized as sleepable=
+ too.
+>>
+>> That's the point I don't know where to put the new code.
+>>
+>
+> I think that would go in the already existing special case for
+> push_async_cb where you get the verifier state of the async callback.
+> You can make setting the boolean in that verifier state conditional on
+> whether it's your kfunc/helper you're processing taking a sleepable
+> callback.
+>
+>> It seems the best place would be in do_check(), but I am under the impre=
+ssion
+>> that the code of the callback is added at the end of the instruction lis=
+t, meaning
+>> that I do not know where it starts, and which subprog index it correspon=
+ds to.
+>>
+>> >
+>> > A bit of a challenge is what to do with global subprogs,
+>> > since they're verified lazily. They can be called from
+>> > sleepable and non-sleepable contex. Should be solvable.
+>>
+>> I must confess this is way over me (and given that I didn't even managed=
+ to make
+>> the "easy" case working, that might explain things a little :-P )
+>>
+>
+> I think it will be solvable but made somewhat difficult by the fact
+> that even if we mark subprog_info of some global_func A as
+> in_sleepable, so that we explore it as sleepable during its
+> verification, we might encounter later another global_func that calls
+> a global func, already explored as non-sleepable, in sleepable
+> context. In this case I think we need to redo the verification of that
+> global func as sleepable once again. It could be that it is called
+> from both non-sleepable and sleepable contexts, so both paths
+> (in_sleepable =3D true, and in_sleepable =3D false) need to be explored,
+> or we could reject such cases, but it might be a little restrictive.
+>
+> Some common helper global func unrelated to caller context doing some
+> auxiliary work, called from sleepable timer callback and normal main
+> subprog might be an example where rejection will be prohibitive.
+>
+> An approach might be to explore main and global subprogs once as we do
+> now, and then keep a list of global subprogs that need to be revisited
+> as in_sleepable (due to being called from a sleepable context) and
+> trigger do_check_common for them again, this might have to be repeated
+> as the list grows on each iteration, but eventually we will have
+> explored all of them as in_sleepable if need be, and the loop will
+> end. Surely, this trades off logical simplicity of verifier code with
+> redoing verification of global subprogs again.
+>
+> To add items to such a list, for each global subprog we encounter that
+> needs to be analyzed as in_sleepable, we will also collect all its
+> callee global subprogs by walking its instructions (a bit like
+> check_max_stack_depth does).
 
-Since the two have the same prototype, then you can replace the function
-names directly.
+Sorry if I'm being dense, but why is all this needed if it's already
+possible to just define the timer callback from a program type that
+allows sleeping, and then set the actual timeout from a different
+program that is not sleepable? Isn't the set_sleepable_cb() kfunc just a
+convenience then? Or did I misunderstand and it's not actually possible
+to mix callback/timer arming from different program types?
 
-The other side should take the vma and use vma->vm_mm to get the mm to
-unlock the mmap_lock in the !CONFIG_PER_VMA_LOCK.  That way those
-prototypes also match and can use the same names directly.
+-Toke
 
-move_pages() requires unlocking two VMAs or one, so pass both VMAs
-through and do the check in there.  This, unfortunately means that one
-of the VMAs will not be used in the !CONFIG_PER_VMA_LOCK case.  You
-could add an assert to ensure src_vma is locked prior to using dst_vma
-to unlock the mmap_lock(), to avoid potential bot emails.
-
-Thanks,
-Liam
 
