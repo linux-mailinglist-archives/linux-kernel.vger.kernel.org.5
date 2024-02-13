@@ -1,111 +1,102 @@
-Return-Path: <linux-kernel+bounces-64552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0D3C854037
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:39:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04290854039
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:39:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51257B24262
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:38:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3734B1C2640D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:39:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B79B063130;
-	Tue, 13 Feb 2024 23:38:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5FA63404;
+	Tue, 13 Feb 2024 23:38:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="UkTsKg3M"
-Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nSkxuw8P"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE8C63115;
-	Tue, 13 Feb 2024 23:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B106B6310B;
+	Tue, 13 Feb 2024 23:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707867521; cv=none; b=i8WJ+OulbfMKr+cIo2aYy3U2tpagvBa9Vhy+AzyIUA0uupGPtAXBWCWdUlLJ8XPuSWEr+Zf1WZK99GmBOv+qfdWL0hOxnEpyQhP87/026NKRpZoQd1lRGgVrpvoiVHIFMikbsrVwO84gArYknQARbjFouMc+0TaZg1oL038lVYE=
+	t=1707867528; cv=none; b=UXO/hxls3TItc4Jikv1Kc2s6ixbR6E/ID1C8vvzB4LXCK9d/9xRdvUM1tad+2QaLd+oR9v52FhIacfJz9T86QO8nQeNoWKWRX1ojrHKFqnMJ88MPb3IV5g1NkRrvihFM7gf8lv2Rowt52e0+nMmpV/mmupSchV8ZzBggkJGMfi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707867521; c=relaxed/simple;
-	bh=YQ1R5ZVaXDLGFd215ozQjhvZOtzMKOQ1hIF/Ckw706s=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=MzA7xUe4xZY5Lpt0aOxjVWC1LzzX7TNp2AA6R43Ih6u8pERkut5T+EJ18NiV7++Y6cMkNaW07RYX8XbtQeCogqBsF/4QAXttpWNXT7xeiLnokh6ruvmkeUWRAat3eKcVOo9+dR4j+Psqhhyfug4K2ct3Y3T8ijsFKUzG1NsZ/ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=UkTsKg3M; arc=none smtp.client-ip=212.27.42.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
-Received: from zimbra-e1-03.priv.proxad.net (unknown [172.20.243.151])
-	by smtp4-g21.free.fr (Postfix) with ESMTP id 1710B19F553;
-	Wed, 14 Feb 2024 00:38:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1707867511;
-	bh=YQ1R5ZVaXDLGFd215ozQjhvZOtzMKOQ1hIF/Ckw706s=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=UkTsKg3M6ufBbKw1N1HspN3w2fQ+vfQ+y+warM3QptlIZgAlHjHTWgkHq0jNs2Fyn
-	 70KsL0ElkRHYAD+4A9pJoc8locIokRJ4Cc0fjrju/SCOfDTcQ1F8r/Ql7TQZO39yDd
-	 qq86VESTgqLvItkKfztDCLdmfonXMgvcdn91h/HmBX4SKOfd66VQCDFrMkPQKBI/7t
-	 oDKVGV2IrIyu3UBOA6E3s3MQYYXO3sCZOInFU07YC9ysNYtDRf9uHWANUDZVCptQsv
-	 vf7gwfC66WSzls0KUvpNSvykd2HMxx3vwa6GsbzNMmh4r12S7I91JkBB4PVa2G7U3n
-	 8ARUy/LK+SKNg==
-Date: Wed, 14 Feb 2024 00:38:31 +0100 (CET)
-From: lagiraudiere@free.fr
-To: =?utf-8?Q?Jean-Lo=C3=AFc?= Charroud <lagiraudiere+linux@free.fr>
-Cc: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, 
-	Stefan Binding <sbinding@opensource.cirrus.com>, 
-	linux-sound <linux-sound@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	patches <patches@opensource.cirrus.com>
-Message-ID: <1435594585.650325975.1707867511062.JavaMail.zimbra@free.fr>
-In-Reply-To: <644212740.650323792.1707867443153.JavaMail.zimbra@free.fr>
-References: <644212740.650323792.1707867443153.JavaMail.zimbra@free.fr>
-Subject: [PATCH v3 1/3] ALSA: hda/realtek: cs35l41: Add internal speaker
- support for ASUS UM3402 with missing DSD
+	s=arc-20240116; t=1707867528; c=relaxed/simple;
+	bh=7QKrr3yoi5HndAL0PHs3321T07A51wU1UgawT2AnNWE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=kmIk9KTz9e2M29HJqJJXZZ3sWZ2ualC0ZBuOTIZkskgox+bRVVjng93xk6QJQO5kiyxFkV/f3+OudKhKWyTWtM90GghpvAyQ2eWqd6tQs4XiND3IRiwJlms3x3W576r5ETZ9iNEoZgepuo8HF0soQAqULyat3SH6mKTL/mM/+0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nSkxuw8P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85CADC43390;
+	Tue, 13 Feb 2024 23:38:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707867528;
+	bh=7QKrr3yoi5HndAL0PHs3321T07A51wU1UgawT2AnNWE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=nSkxuw8P3rwBWqCgwikdl9RfCRffS8gAeIRddtc3D1+RYtJbtBz0C/X1by1D+FVId
+	 bSxzOf3jccb2ciKiWkvWJiBenT04O0bnRVotujwjp3zVvtUNIvKqzBF53zaJVAldRv
+	 Kb5uKu48SnZZ5bVVCToWCpi+VHi5pNv64V0i2fO7nukRgZZQF7+HXqLqCZmr4mPA6d
+	 83SB1Xxa3GpnClZWowzAHej8FfPyHYflZwzdzl2z4CsBGoLRq84CcuDJySz6ahC6ar
+	 3hj2sv4vfUcAQumCMTmdrKykFj5KsqnXFEVdKZhoo9IbVVKh25yqHcxQ5437m+Sq5w
+	 bwSaNbIRQebWQ==
+From: SeongJae Park <sj@kernel.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Shuah Khan <shuah@kernel.org>,
+	SeongJae Park <sj@kernel.org>,
+	Bernd Edlinger <bernd.edlinger@hotmail.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org
+Subject: Re: [PATCH v3 4/4] selftests: damon: add access_memory to .gitignore
+Date: Tue, 13 Feb 2024 15:38:46 -0800
+Message-Id: <20240213233846.2723-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240213-selftest_gitignore-v3-4-1f812368702b@gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 9.0.0_GA_1337 (ZimbraWebClient - FF122 (Linux)/9.0.0_GA_1337)
-Thread-Topic: ALSA: hda/realtek: cs35l41: Add internal speaker support for ASUS UM3402 with missing DSD
-Thread-Index: b1DHXbQj7eN1w6/I0T0Clij1GRQ0gBIG7hii
+Content-Transfer-Encoding: 8bit
 
-Add the values for the missing DSD properties to the cs35l41 config table.
+On Tue, 13 Feb 2024 23:46:53 +0100 Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
 
-Signed-off-by: Jean-Lo=C3=AFc Charroud <lagiraudiere+linux@free.fr>
----
- sound/pci/hda/cs35l41_hda_property.c | 2 ++
- 1 file changed, 2 insertions(+)
+> This binary is missing in the .gitignore and stays as an untracked file.
+> 
+> Reported-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
+> Closes: https://lore.kernel.org/all/AS8P193MB1285C963658008F1B2702AF7E4792@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM/
+> Reviewed-by: SeongJae Park <sj@kernel.org>
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_h=
-da_property.c
-index 923c0813fa08..d8cd62ef6afc 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -102,6 +102,7 @@ static const struct cs35l41_config cs35l41_config_table=
-[] =3D {
- =09{ "10431D1F", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 1000, 4500, 24 },
- =09{ "10431DA2", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2,=
- 0, 0, 0, 0 },
- =09{ "10431E02", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2,=
- 0, 0, 0, 0 },
-+=09{ "10431E12", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 0, 0, 0 },
- =09{ "10431EE2", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1=
-, -1, 0, 0, 0 },
- =09{ "10431F12", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 1000, 4500, 24 },
- =09{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1=
-, 0, 0, 0, 0 },
-@@ -485,6 +486,7 @@ static const struct cs35l41_prop_model cs35l41_prop_mod=
-el_table[] =3D {
- =09{ "CSC3551", "10431D1F", generic_dsd_config },
- =09{ "CSC3551", "10431DA2", generic_dsd_config },
- =09{ "CSC3551", "10431E02", generic_dsd_config },
-+=09{ "CSC3551", "10431E12", generic_dsd_config },
- =09{ "CSC3551", "10431EE2", generic_dsd_config },
- =09{ "CSC3551", "10431F12", generic_dsd_config },
- =09{ "CSC3551", "10431F1F", generic_dsd_config },
---=20
-2.40.1
+Thank you, I confirmed this can cleanly be applied on mm-unstable.  But, I
+think my suggestion was to split this patch out of the patchset and send
+separately so that Andrew can carry this on mm-unstable?  Otherwise, Shuah
+would get the conflict on her tree, or Andrew would need to carry the patches
+for theremal and uevent selftests on mm-unstable.
 
+
+Thanks,
+SJ
+
+> ---
+>  tools/testing/selftests/damon/.gitignore | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/testing/selftests/damon/.gitignore b/tools/testing/selftests/damon/.gitignore
+> index d861701f0327..e65ef9d9cedc 100644
+> --- a/tools/testing/selftests/damon/.gitignore
+> +++ b/tools/testing/selftests/damon/.gitignore
+> @@ -2,3 +2,4 @@
+>  huge_count_read_write
+>  debugfs_target_ids_read_before_terminate_race
+>  debugfs_target_ids_pid_leak
+> +access_memory
+> 
+> -- 
+> 2.40.1
 
