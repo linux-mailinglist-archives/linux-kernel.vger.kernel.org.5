@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-62643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 247E98523F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:38:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41A4C8523F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57A891C21F4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:38:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA650B213D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C470560250;
-	Tue, 13 Feb 2024 00:21:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAB2D60272;
+	Tue, 13 Feb 2024 00:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YP7HXQZy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aboQWC2h"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF6860249;
-	Tue, 13 Feb 2024 00:21:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EE56025F;
+	Tue, 13 Feb 2024 00:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783667; cv=none; b=tTUGpDQNlCWPFD35zgYhTShx+FaQBx7iS9UK0NjO6g4fYfVWOGrEWJV+x3C2xtOFJ4oqFHwRR1d5/nCnS4yK35dZA6HciJ1xI7CzYy71HwM9/9Ut6y1BiOXrzhoBMxFs52bhUPFzNyQcPZ6d5sRJnxgTU5DKroUX5W2gyBOBzOM=
+	t=1707783668; cv=none; b=pD4a9u2CopA2itS/ufdXwfXxRUEzQeXtt4hTDP4AbKbBhL4W4MzyR1N4tsVh1nXbJu+tbYqa6aZcKxDmH6U+OC/hs4nm0IjQuX64EBDVwIYcQQ9OlR+jMEe+uetzxW45Hfb28o2Qy64gVt0Cxx8x9EAl07UgRF68pMgm+6qQqTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783667; c=relaxed/simple;
-	bh=5VO5ByHXA+KglQtXhuGq+fTGFxTkBcbxJ2WD86RT6oM=;
+	s=arc-20240116; t=1707783668; c=relaxed/simple;
+	bh=XJ/yE4/VzELE2NuVOHXY7KLGljvdrWPIc06nOowYOE8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DxoP/mde+K6zH2Jd/fOnO6UAUS736Idul2frryAMpaIteNecjQ64UHs6EyH9hlD2+rLLk9EVw8v+RGMkSRoh4zD6AZR2EIIObEWi4II0LAZ9lu+p2VWx6gcX70YLK2S9wP103b/9dL7rstzdlHT0ysyHADtqFpQMYuuFxMu/b9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YP7HXQZy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3991FC43390;
-	Tue, 13 Feb 2024 00:21:06 +0000 (UTC)
+	 MIME-Version; b=oI7Fv3Mge86I2T4phThTBEJ8/wy5CEalzmctodzjCyyOMOC0rwSf9udCLLNsQVr5fkDifhz4rLkjPxYvR2r4ZyzcKrO+qgFUjpBorwPaMccf1VM9956du+iO5SPPHXukmYBD8f3l6n/WZfGQ/N7Yxil9cIU5FGLUI1O05ZWh1rk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aboQWC2h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 519CAC43399;
+	Tue, 13 Feb 2024 00:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783666;
-	bh=5VO5ByHXA+KglQtXhuGq+fTGFxTkBcbxJ2WD86RT6oM=;
+	s=k20201202; t=1707783668;
+	bh=XJ/yE4/VzELE2NuVOHXY7KLGljvdrWPIc06nOowYOE8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YP7HXQZyoISYaRTE7Db2tSfMq/cOtv9ENcBUiAvqCyeutbH6z9Hvk/XqetPqyJXz6
-	 hnSLUg/ozuW1pU9Zrp+nEwvpF8xxGS7RUVSzNEoNBNLW06GQo/JAmXTAUqdZihHzzL
-	 ngTm0KM0ZPKMCnJnUh4xMb60ZtOezKI7Yf/Dh53I/easb/6aRlyytuOrppvzUSUjpf
-	 2ZMEsGmd8DnyjE3miJerAg2fGXAWqOQYntsstjuOoZisX7NgPzPfrTz9RofCIU6CBt
-	 j0caSuf6WoTwORhJL87ivYNWMnGjwhWpNoLK/bO65kiq7RG8TiLUKMFNVTEMEWkTAi
-	 Z3svvYdvlGt/Q==
+	b=aboQWC2hhxDzArMfT8BnvB9/j5iKQez4nLYTCu6rhzOloWgRw9XqLM+2rzogNqLhK
+	 wTahGSb5oHwIT0tss+cK97CVKdK5ES2ZfLUjrB0/1k40ZhEEOZKrG5K9n0JJnslD+p
+	 lkRfMC49Cg5LLOm9k0lKFLxlQuqQKMs7OHE97haGED1jsDF6mYx+Zu3JCeGF552YQZ
+	 n7y11TqHIr39m34KHVtCjt0s+4/fzwjb9iicNvsf9Jc6w+pz6fyEwkhF7TiskmEWu8
+	 dVjX06o4nhuThG/+wbz4w5u76sKu5f9heLUVQjMDL9ix1MWZ6bZdyGHCaIcuYy3Dvc
+	 UC266IzOo/lLA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
 	Sasha Levin <sashal@kernel.org>,
 	ntfs3@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 12/51] fs/ntfs3: ntfs3_forced_shutdown use int instead of bool
-Date: Mon, 12 Feb 2024 19:19:49 -0500
-Message-ID: <20240213002052.670571-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 13/51] fs/ntfs3: Add NULL ptr dereference checking at the end of attr_allocate_frame()
+Date: Mon, 12 Feb 2024 19:19:50 -0500
+Message-ID: <20240213002052.670571-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002052.670571-1-sashal@kernel.org>
 References: <20240213002052.670571-1-sashal@kernel.org>
@@ -65,68 +65,56 @@ Content-Transfer-Encoding: 8bit
 
 From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-[ Upstream commit 97ec56d390a3a0077b36cb38627f671c72dddce6 ]
+[ Upstream commit aaab47f204aaf47838241d57bf8662c8840de60a ]
+
+It is preferable to exit through the out: label because
+internal debugging functions are located there.
 
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/fsntfs.c  | 3 ++-
- fs/ntfs3/ntfs_fs.h | 6 +++---
- fs/ntfs3/super.c   | 2 +-
- 3 files changed, 6 insertions(+), 5 deletions(-)
+ fs/ntfs3/attrib.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index fbfe21dbb425..350461d8cece 100644
---- a/fs/ntfs3/fsntfs.c
-+++ b/fs/ntfs3/fsntfs.c
-@@ -853,7 +853,8 @@ void ntfs_update_mftmirr(struct ntfs_sb_info *sbi, int wait)
- 	/*
- 	 * sb can be NULL here. In this case sbi->flags should be 0 too.
- 	 */
--	if (!sb || !(sbi->flags & NTFS_FLAGS_MFTMIRR))
-+	if (!sb || !(sbi->flags & NTFS_FLAGS_MFTMIRR) ||
-+	    unlikely(ntfs3_forced_shutdown(sb)))
- 		return;
+diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
+index 4b78b669a3bd..646e2dad1b75 100644
+--- a/fs/ntfs3/attrib.c
++++ b/fs/ntfs3/attrib.c
+@@ -1743,8 +1743,10 @@ int attr_allocate_frame(struct ntfs_inode *ni, CLST frame, size_t compr_size,
+ 			le_b = NULL;
+ 			attr_b = ni_find_attr(ni, NULL, &le_b, ATTR_DATA, NULL,
+ 					      0, NULL, &mi_b);
+-			if (!attr_b)
+-				return -ENOENT;
++			if (!attr_b) {
++				err = -ENOENT;
++				goto out;
++			}
  
- 	blocksize = sb->s_blocksize;
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index 414913232eae..67ce2eedc9bd 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -62,7 +62,7 @@ enum utf16_endian;
- /* sbi->flags */
- #define NTFS_FLAGS_NODISCARD		0x00000001
- /* ntfs in shutdown state. */
--#define NTFS_FLAGS_SHUTDOWN		0x00000002
-+#define NTFS_FLAGS_SHUTDOWN_BIT		0x00000002  /* == 4*/
- /* Set when LogFile is replaying. */
- #define NTFS_FLAGS_LOG_REPLAYING	0x00000008
- /* Set when we changed first MFT's which copy must be updated in $MftMirr. */
-@@ -1001,9 +1001,9 @@ static inline struct ntfs_sb_info *ntfs_sb(struct super_block *sb)
- 	return sb->s_fs_info;
- }
+ 			attr = attr_b;
+ 			le = le_b;
+@@ -1825,13 +1827,15 @@ int attr_allocate_frame(struct ntfs_inode *ni, CLST frame, size_t compr_size,
+ ok:
+ 	run_truncate_around(run, vcn);
+ out:
+-	if (new_valid > data_size)
+-		new_valid = data_size;
++	if (attr_b) {
++		if (new_valid > data_size)
++			new_valid = data_size;
  
--static inline bool ntfs3_forced_shutdown(struct super_block *sb)
-+static inline int ntfs3_forced_shutdown(struct super_block *sb)
- {
--	return test_bit(NTFS_FLAGS_SHUTDOWN, &ntfs_sb(sb)->flags);
-+	return test_bit(NTFS_FLAGS_SHUTDOWN_BIT, &ntfs_sb(sb)->flags);
- }
+-	valid_size = le64_to_cpu(attr_b->nres.valid_size);
+-	if (new_valid != valid_size) {
+-		attr_b->nres.valid_size = cpu_to_le64(valid_size);
+-		mi_b->dirty = true;
++		valid_size = le64_to_cpu(attr_b->nres.valid_size);
++		if (new_valid != valid_size) {
++			attr_b->nres.valid_size = cpu_to_le64(valid_size);
++			mi_b->dirty = true;
++		}
+ 	}
  
- /*
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index a313b4ddee16..378e261e23b0 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -719,7 +719,7 @@ static int ntfs_show_options(struct seq_file *m, struct dentry *root)
-  */
- static void ntfs_shutdown(struct super_block *sb)
- {
--	set_bit(NTFS_FLAGS_SHUTDOWN, &ntfs_sb(sb)->flags);
-+	set_bit(NTFS_FLAGS_SHUTDOWN_BIT, &ntfs_sb(sb)->flags);
- }
- 
- /*
+ 	return err;
 -- 
 2.43.0
 
