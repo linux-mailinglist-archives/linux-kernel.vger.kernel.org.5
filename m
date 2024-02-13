@@ -1,145 +1,161 @@
-Return-Path: <linux-kernel+bounces-62915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E6018527CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:38:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D53AC8527CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:39:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60DC9285D80
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:38:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B45EB250A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:39:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D73F10A3C;
-	Tue, 13 Feb 2024 03:37:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A48AD24;
+	Tue, 13 Feb 2024 03:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="XJFJzuM6"
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rzLqbW6R"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A160BE5B
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:37:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4B4A929;
+	Tue, 13 Feb 2024 03:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707795472; cv=none; b=o1lmTC/wgCejwQTns+j1Q8dxG3SEEzhXuBn7233EyijOHQPQQ8hknNlxDfjNPLiiPJ3CCc9DjpqRSDBdRKKfKCzQ8AWDcKe7xYLst4DoN9HSdxxyk0CL+6WaD4+ljVGhMR5AfqIgtAaha4LAEebMEK/GpcRS1BqokXk7rie+XHw=
+	t=1707795502; cv=none; b=gxD8MPDNFvsDmBI2/GD2CxB4rkPH+OoYbpSul38bsgVIAmYbdvO5PXIhFV+1iLDqcp2HW5IgUd4qCBni6ByktpiajfgWpF7YbK6qCysoNJ4dXv/yM3LvHZPO9bPetxsbmPMyQeCUQPJCJ6Mu4rPo3ZwKmDl4hDq1kAgBojI4V9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707795472; c=relaxed/simple;
-	bh=+XzSJU8wJISBeAeCiej2B/wBCsa3VX7K7aJaMYWlWHo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iN2aozxKqDNW/iuAoPJAeb4pIAmGWbp/JCHDPU/5tNYCj09TuZUF5IjsUAbQvSqtubN2nWIiLeJnkwBwf0c5Zrn6iZv31V7X9u2CXb38o24/pT7XLhFG9h+IkBSMI3upbJGrEatq3M9Q/SXzGj8Rgw0OQbWwFuSvYObNR/yoMsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=XJFJzuM6; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3be9e11ee59so1944523b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 19:37:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1707795470; x=1708400270; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xt5jr7Ps3GScSgM4o7qnaO9gd+HMLeMAVDsngYj3hEM=;
-        b=XJFJzuM67MXtfpkGs0KHvLwS+pPs4cY4Qf7d8/7K691a5Wo7068Y+7x9taLX3Te7lF
-         4Zi/enU/fL4vFuVicBRhMa2tnYTB+qeXbgw28X0SPbez7cDGlsSjXL9yBuBlM3eoKo7t
-         u3s3pKV6d6nTPuJt1vgvWPwMmXa3vyNBrXXYnUS3Y7gwbemmVROA/7ZRfp3qA/6XTt2E
-         3YuiVI2Ue4kbid4qvzFPa9FJFHmBsXoapFUfmHzSRTmQGCiYO/QiJf7hqA4XGDSYxjCO
-         Zpc1GQad9l44MaDubenm0oXXheawV/OuGIK2XrFkvZMk9NoZ5Hse3uydfJFTVPgAZSZa
-         T4RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707795470; x=1708400270;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xt5jr7Ps3GScSgM4o7qnaO9gd+HMLeMAVDsngYj3hEM=;
-        b=nK0YMNrLaf3ujJjF4dTlLcqN7FcOTP/JelLqkqilAbap47N3iFt0TAKHafPmyNuqNN
-         ksBUxo8HNnU+PAyI+LvaNQZ41TZcqh9ticZVyaRfhbb8/QdmBIQDnzeXfq9M83Z2eSds
-         UTThLZTLqKHY/vrZXRLBrCdaVBrviniGWtfFWGfyvh5bBWqRMfMADnQMagLXF2d7yXD7
-         DveynSLAj/M6HpeuZHAGMI8tQBtJfwR2ULZHp1cqbbbe9VcghY23h6kkMvvEKsEttT19
-         hw/zSOyU0a//3fNAXoXGTV7duFT1H5qfCg5S18RBpEN6k7JwTqCBnvWEd0IO2FIKl79j
-         ZKVg==
-X-Forwarded-Encrypted: i=1; AJvYcCWqdnN/qKMv3esE6j0BFs115IDYx1rjaLUlsckasTXB/AVcakxwlviX6ihSSsUn/T2HNC16cIWP1kIsxi7XIQcaJbxrarU4z23IpkV2
-X-Gm-Message-State: AOJu0YzLJZg5KnSomudOOARTHObK6nq9rPwPE3vOxTBwBd2qXhJGtdM7
-	jHwS8dShqwsQMRoK8Vc2iipvYdCAWR3oFpQdAu0NMqTALJg6lpvagRble51Ef2c=
-X-Google-Smtp-Source: AGHT+IFxDqSZbCOTRS1NHVNzCKhxZQyImRcw90Jz8SlHs0SSV2MQ75bbrukIBm2CKyA3KzugicZ3nw==
-X-Received: by 2002:a05:6808:318e:b0:3c0:3e26:5259 with SMTP id cd14-20020a056808318e00b003c03e265259mr3613268oib.55.1707795470293;
-        Mon, 12 Feb 2024 19:37:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU1Rc/sB1dWFTQwmx8p2iRKVv5LgWrJCCSeKr8P6rkMbd1uH7JfQSG1Hh74JOY/jKeiuxbEy02WDs3e/g0A9q30Q69s839YsJVcUxX+VSSGNa6J9l4dlN7oNmWZViRGWfRPnJ4HGTtAfEOZMIknw36bZj+YL2HlkbpMT607pb4e7y6zq/Em6Inl3R1cLd8ht02GMlwLAyCC8dUbcCwwaoAhdKHd9WN0x4go0e/Cp4Rmx44os1Oj
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id v11-20020a056a00148b00b006e0334e3dd9sm6188633pfu.76.2024.02.12.19.37.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 19:37:49 -0800 (PST)
-From: Samuel Holland <samuel.holland@sifive.com>
-To: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Andrew Jones <ajones@ventanamicro.com>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Stefan O'Rear <sorear@fastmail.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	stable@vger.kernel.org
-Subject: [PATCH -fixes v2 4/4] riscv: Save/restore envcfg CSR during CPU suspend
-Date: Mon, 12 Feb 2024 19:37:35 -0800
-Message-ID: <20240213033744.4069020-5-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240213033744.4069020-1-samuel.holland@sifive.com>
-References: <20240213033744.4069020-1-samuel.holland@sifive.com>
+	s=arc-20240116; t=1707795502; c=relaxed/simple;
+	bh=kwHg/8yeDZh54hwz8uAm2M9HXikrnVyKxYeaYuDaks8=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=Q8rRmt3DUIjzMqxeMy4aNdVTQpFwdNe8dlv4N0YdGNKiCC13Y96Nzo//jFqQExE6tWqiGr6WbOGmuwn0xHiZlBcC4AXJRODOtJwIs6HtTDsxjDGtW1nGwn8BAlytZVvQ2lnLDsKzvanTTONr2qWuwUyQcZ/T7gV+xHIQ2mpSGWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rzLqbW6R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E887DC433F1;
+	Tue, 13 Feb 2024 03:38:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707795502;
+	bh=kwHg/8yeDZh54hwz8uAm2M9HXikrnVyKxYeaYuDaks8=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=rzLqbW6R5Hmi6zNkXMZjPbZbCym+9Q/jGRNYl8bQuDqEbNbi3JcEuyx99bWAuVXa/
+	 cDlR5/fdrVOJkdJOZBddXvKF+7QE9ahDycPrzH870c7B80/ffWazcqkjDBnorx3Nyy
+	 xkKmwizKe23xCn2UPZNQX7SBg3JQ4rjRpTjmGxvNDssdHehhgJue3EmpLcBod3losk
+	 PUETEcWgl3Q225G0zU+ypS+cZliaFo2HADSVQPBVTExlQ0bQ+shPS0niW4ZLM7pEfB
+	 ZRSoIjXrj/BB+KCD7EkaH6aFyKhCIx88GMaAnQwA4VOkAQTNipL+lOlLtcbaY6Hq0t
+	 eqtfm2fIC5A1Q==
+Date: Mon, 12 Feb 2024 21:38:20 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Rob Herring <robh@kernel.org>
+To: Sebastian Reichel <sre@kernel.org>
+Cc: linux-kernel@vger.kernel.org, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ NXP Linux Team <linux-imx@nxp.com>, Fabio Estevam <festevam@gmail.com>, 
+ devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Shawn Guo <shawnguo@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, 
+ Conor Dooley <conor+dt@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>
+In-Reply-To: <20240213010347.1075251-3-sre@kernel.org>
+References: <20240213010347.1075251-1-sre@kernel.org>
+ <20240213010347.1075251-3-sre@kernel.org>
+Message-Id: <170779549979.3767632.14798050917184496330.robh@kernel.org>
+Subject: Re: [PATCH v2 02/17] dt-bindings: bus: imx-weim: convert to YAML
 
-The value of the [ms]envcfg CSR is lost when entering a nonretentive
-idle state, so the CSR must be rewritten when resuming the CPU.
 
-Cc: <stable@vger.kernel.org> # v6.7+
-Fixes: 43c16d51a19b ("RISC-V: Enable cbo.zero in usermode")
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
+On Tue, 13 Feb 2024 02:00:51 +0100, Sebastian Reichel wrote:
+> Convert the i.MX  Wireless External Interface Module binding to YAML.
+> 
+> Signed-off-by: Sebastian Reichel <sre@kernel.org>
+> ---
+>  .../devicetree/bindings/bus/imx-weim.txt      | 117 ----------
+>  .../fsl/fsl,imx-weim-peripherals.yaml         |  36 ++++
+>  .../memory-controllers/fsl/fsl,imx-weim.yaml  | 201 ++++++++++++++++++
+>  .../mc-peripheral-props.yaml                  |   1 +
+>  .../fieldbus/arcx,anybus-controller.txt       |   2 +-
+>  5 files changed, 239 insertions(+), 118 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/bus/imx-weim.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim-peripherals.yaml
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim.yaml
+> 
 
-Changes in v2:
- - Check for privileged ISA v1.12 instead of the specific CSR
- - Use riscv_has_extension_likely() instead of new ALTERNATIVE()s
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
- arch/riscv/include/asm/suspend.h | 1 +
- arch/riscv/kernel/suspend.c      | 4 ++++
- 2 files changed, 5 insertions(+)
+yamllint warnings/errors:
 
-diff --git a/arch/riscv/include/asm/suspend.h b/arch/riscv/include/asm/suspend.h
-index 02f87867389a..491296a335d0 100644
---- a/arch/riscv/include/asm/suspend.h
-+++ b/arch/riscv/include/asm/suspend.h
-@@ -14,6 +14,7 @@ struct suspend_context {
- 	struct pt_regs regs;
- 	/* Saved and restored by high-level functions */
- 	unsigned long scratch;
-+	unsigned long envcfg;
- 	unsigned long tvec;
- 	unsigned long ie;
- #ifdef CONFIG_MMU
-diff --git a/arch/riscv/kernel/suspend.c b/arch/riscv/kernel/suspend.c
-index 239509367e42..be03615486ed 100644
---- a/arch/riscv/kernel/suspend.c
-+++ b/arch/riscv/kernel/suspend.c
-@@ -15,6 +15,8 @@
- void suspend_save_csrs(struct suspend_context *context)
- {
- 	context->scratch = csr_read(CSR_SCRATCH);
-+	if (riscv_has_extension_likely(RISCV_ISA_EXT_Sx1p12))
-+		context->envcfg = csr_read(CSR_ENVCFG);
- 	context->tvec = csr_read(CSR_TVEC);
- 	context->ie = csr_read(CSR_IE);
- 
-@@ -36,6 +38,8 @@ void suspend_save_csrs(struct suspend_context *context)
- void suspend_restore_csrs(struct suspend_context *context)
- {
- 	csr_write(CSR_SCRATCH, context->scratch);
-+	if (riscv_has_extension_likely(RISCV_ISA_EXT_Sx1p12))
-+		csr_write(CSR_ENVCFG, context->envcfg);
- 	csr_write(CSR_TVEC, context->tvec);
- 	csr_write(CSR_IE, context->ie);
- 
--- 
-2.43.0
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/bus/socionext,uniphier-system-bus.example.dtb: serial@5,200000: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/intel,ixp4xx-expansion-bus-controller.example.dtb: flash@0,0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/intel,ixp4xx-expansion-bus-controller.example.dtb: serial@1,0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/intel,ixp4xx-expansion-bus-controller.example.dtb: serial@1,0: Unevaluated properties are not allowed ('intel,ixp4xx-eb-byte-access', 'intel,ixp4xx-eb-cycle-type', 'intel,ixp4xx-eb-t3', 'intel,ixp4xx-eb-write-enable' were unexpected)
+	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/fsl/fsl,ifc.example.dtb: flash@0,0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/ingenic,nemc.example.dtb: memory-controller@13410000: ethernet@6: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/memory-controllers/ingenic,nemc.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/ingenic,nemc.example.dtb: ethernet@6: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/net/davicom,dm9000.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/ingenic,nemc.example.dtb: ethernet@6: Unevaluated properties are not allowed ('ingenic,nemc-tAH', 'ingenic,nemc-tAS', 'ingenic,nemc-tAW', 'ingenic,nemc-tBP', 'ingenic,nemc-tSTRV' were unexpected)
+	from schema $id: http://devicetree.org/schemas/net/davicom,dm9000.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.example.dtb: memory-controller@58002000: psram@0,0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/memory-controllers/st,stm32-fmc2-ebi.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.example.dtb: memory-controller@58002000: nand-controller@4,0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/memory-controllers/st,stm32-fmc2-ebi.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.example.dtb: psram@0,0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/watchdog/maxim,max63xx.example.dtb: watchdog@50000000: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/watchdog/maxim,max63xx.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/serial/serial.example.dtb: serial@1234: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/serial/8250.example.dtb: serial@80230000: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/serial/8250.example.dtb: serial@49042000: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/serial/8250.example.dtb: serial@1e787000: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/serial/8250.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/davicom,dm9000.example.dtb: ethernet@a8000000: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/net/davicom,dm9000.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/micrel,ks8851.example.dtb: ethernet@1,0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/net/micrel,ks8851.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.example.dtb: memory-controller@47034000: flash@0,0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/mtd/ti,am654-hbmc.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.example.dtb: flash@0,0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mtd-physmap.example.dtb: flash@ff000000: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mtd-physmap.example.dtb: flash@0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mtd-physmap.example.dtb: sram@2,0: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mtd-physmap.example.dtb: flash@20000000: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/mtd/mtd-physmap.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/ingenic,nand.example.dtb: memory-controller@13410000: nand-controller@1: 'fsl,weim-cs-timing' is a required property
+	from schema $id: http://devicetree.org/schemas/memory-controllers/ingenic,nemc.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240213010347.1075251-3-sre@kernel.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
