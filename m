@@ -1,197 +1,251 @@
-Return-Path: <linux-kernel+bounces-63857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94948853595
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:06:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABFE58535A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA6251C2191E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:06:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22C0CB27FE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7045F876;
-	Tue, 13 Feb 2024 16:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFD96025E;
+	Tue, 13 Feb 2024 16:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="RC+YzCK9";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="wykuj6PW"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=motorola-com.20230601.gappssmtp.com header.i=@motorola-com.20230601.gappssmtp.com header.b="Ia9esmYW"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381FF5F84C;
-	Tue, 13 Feb 2024 16:05:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796665FB8D
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:05:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707840351; cv=none; b=ZLnMncfxyf5cb79Qr9mXf1QgY+gVA1Whkg1sqbHQtFYP14eKjNG+/o/hsvmqNwiRcB86qqcc7wz6TMBiI0LJXq+k341nUcis+PreRNHfJp9iFTXsA5h2uSxVfxtb/Llg9bMnhRqS3k0YVF4n1zoKml5uFLuLZbLAqLb/PSQbG28=
+	t=1707840360; cv=none; b=LREvEabVpJNfmCwkbUvmEmZ1hF5MGH6Jr4TXkjTbsyjA5IcS80jdgrAdpuhgLzDgPw43EE07RY/Y8vYUmztjZaHZMrf0MD58+Pd5k3IsmJjiy5PsEaNOKQgW6AQKVIjA0GPczPzsl2F8wn214C9Sld2TrPFaTXgMuczKJUx4cK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707840351; c=relaxed/simple;
-	bh=76ZkJstMN7d/lrOa91yJRmUFOo1w7pwJqg2u8ceSdmA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=V/ZgC4dA/bhbtYDvcFVivFPZS9dUGd+U0igbse3XR17i0Iti+/BMhBvUoZ/L3ChZtR4Px07afe6E8VuZUp20SUSF9kOmYXi2tHmnkQ2NzImQgGxJ3i/tr4LxvoF6iWT31Zq8dhdUVGDb8gWSUwxMGSNEPokAtvi83KENYUrvqVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=RC+YzCK9; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=wykuj6PW; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1707840346;
-	bh=76ZkJstMN7d/lrOa91yJRmUFOo1w7pwJqg2u8ceSdmA=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=RC+YzCK9+TmWyGc8oHMRHccejewT+5xtcOsOvZwW+ISun1i0pl5fk64i710sfujoO
-	 ar8bFmkR3b/3LR0onAdRzZeXpruSWUKztTYsELcidDjGwpVE2iLkoSlBWvEb9MfRK6
-	 sMXZgpCW9LWLEKQ045rChXrCIsSTA2NQzD6NZgL8=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7E5D812861A8;
-	Tue, 13 Feb 2024 11:05:46 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id eQwYdNqMijvb; Tue, 13 Feb 2024 11:05:46 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1707840345;
-	bh=76ZkJstMN7d/lrOa91yJRmUFOo1w7pwJqg2u8ceSdmA=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=wykuj6PWjdyHpNBbkLohFDsLNpmkH5yKdncABXFTXCyM0uJ2iTVtOCvaZFyEdRWuG
-	 3KJ8J7aWw331i7ojUyOxe51nelVmCWCxeZpa3Y9WAUWtSgV0nupx2T+ysNGWmkTDdd
-	 ABCECKzbWdn8r0dCZcZmTg4I9Fw17pf3BMQD+bfk=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id D6AA91286197;
-	Tue, 13 Feb 2024 11:05:44 -0500 (EST)
-Message-ID: <982e19fcd71c41a162ba664281eb0a68d9dc960c.camel@HansenPartnership.com>
-Subject: Re: [RFC PATCH v2 0/4] tsm: Runtime measurement registers ABI
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: "Xing, Cedric" <cedric.xing@intel.com>, Dan Williams
-	 <dan.j.williams@intel.com>, Kuppuswamy Sathyanarayanan
-	 <sathyanarayanan.kuppuswamy@linux.intel.com>, Dan Middleton
-	 <dan.middleton@linux.intel.com>, Samuel Ortiz <sameo@rivosinc.com>
-Cc: Qinkun Bao <qinkun@google.com>, "Yao, Jiewen" <jiewen.yao@intel.com>, 
- Dionna Amalie Glaze <dionnaglaze@google.com>, biao.lu@intel.com,
- linux-coco@lists.linux.dev,  linux-integrity@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Date: Tue, 13 Feb 2024 11:05:41 -0500
-In-Reply-To: <226df539-b3f4-4099-b6a6-293fa200c536@intel.com>
-References: <a255bc36-2438-41b7-b304-bcf7a6628bef@linux.intel.com>
-	 <42e14f74d3819c95fdb97cd2e9b2829dcb1b1563.camel@HansenPartnership.com>
-	 <1557f98a-3d52-4a02-992b-4401c7c85dd7@linux.intel.com>
-	 <85b7a4a679eada1d17b311bf004c2d9e18ab5cd3.camel@HansenPartnership.com>
-	 <b8140cc8-a56b-40f6-a593-7be49db14c77@intel.com>
-	 <fe1722c3618a8216cb53b8fd3f1b7cbb6fdff5a0.camel@HansenPartnership.com>
-	 <65c2e4aa54a0_d4122947f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-	 <22088ed3-51a4-415f-932c-db84c92a2812@intel.com>
-	 <527da630-4952-4b1d-80c0-5a87997ff9fd@linux.intel.com>
-	 <332775d7218843d6cc168c963d76e6841eab5d5b.camel@HansenPartnership.com>
-	 <65c691e13a50d_afa42948a@dwillia2-xfh.jf.intel.com.notmuch>
-	 <226df539-b3f4-4099-b6a6-293fa200c536@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1707840360; c=relaxed/simple;
+	bh=j7L57yfDJOOv+ZUdMV9NCeFXUFzD3Nw58mseoOFjGSk=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=YpBcAamEntQLkKXFfNlQsJv/G2zzTEY36dHQ8z96NavR+xQ5NyXQTPSXB61gyN0zT3MktsgC+WcpiBS7w4a/k6+F+qmaK+URijtoUJBwbOGIL37v8ySDaPFnce2tSjhw86esUMw+j7zSAp98TYrtaZVTI9iar+ZWGKB/qv2qPr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola-com.20230601.gappssmtp.com header.i=@motorola-com.20230601.gappssmtp.com header.b=Ia9esmYW; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51147d0abd1so5169076e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:05:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=motorola-com.20230601.gappssmtp.com; s=20230601; t=1707840356; x=1708445156; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CEDvSvYhyauFeH8HCgsVW9bjAlPcgBCfLAOG21KUOeA=;
+        b=Ia9esmYWxK0VBMPHRamHIWkGOJs6MqccjC8mxs7G9g0MEepJTN997nGDr9nGOTcLJx
+         ehRuI4zl1XdDUP1ZWc6DyivOl3xb/nQDWMGiSzZl3gPqvjwamWV1tL2Bb8dX2KBQ2eQ5
+         qHDDnlybS73eJLRa67dEpPRNX5+MndcUzSqcfj5LqJzfX01EQ/GMlGO4r4ZC8Qjs7xjF
+         7VO8NiIAUMnKoqVqMD8fEJhATP5DH3w44DjYqDldc0gMZ5wv4XsV8QSbqvk41HvRNqIc
+         HPNyHHsuCgAd/L6DZOEwCdHPVoQhTcmn0MoRVoHXoJmFg0C9eczEj8DkC/AzDSyRp3aF
+         o7Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707840356; x=1708445156;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CEDvSvYhyauFeH8HCgsVW9bjAlPcgBCfLAOG21KUOeA=;
+        b=Q2JidTsFf2zWISE0tAQ/fDL7m1kC+gICN/r+F2Do6Z42hMmfZTgfNUN+Tb8F4kWD1m
+         NaQadgWakOgzvTbNd3QqCei38T8zb7ybIhPIKeNf0CzpI2qnxwxvHNK7cDE6IepyHDmG
+         lKEpRFi6js+gWqQq09liC8kU0HmrokPAm4OpxXrhq5+KgJRfE/Ad3CqP81Fwc2QLyC+J
+         35+9s/H0s6HqGN4TynyziNlvUqan4BhLUuGlXnLJ9bCiyfmF6fV5t8ODOJD/ZPu5iff7
+         lhPKig76nha6VeIJSfR69+cUt3r9yqQrCRgqrmX9rTI7Jx6Zw1NNgpLp0GdFsMh2gMdC
+         ppLQ==
+X-Gm-Message-State: AOJu0YyRsFCg7PDmUPFMS23JzruQNsCU7Rv+05mijDhqeBjx61/xsIhA
+	l3U64Ya7EuJUZCTm+aT90/Iy8O3wBvaCNg2eIkS4cdh9rNfsYEJJOTL+L7Pr5Ud6trOvGFC9Pcv
+	+aLAAWCDm6FcKWQXO2DE9Vr2daIbRHJe0AFsI
+X-Google-Smtp-Source: AGHT+IHYMpkxa2matGsJqOQHdcpvyUVrmAhdJnBDChaCNAXCjN5JzqoJXHX6E/S0U3nduZoXLj/LKbNruFUGLFN1u3c=
+X-Received: by 2002:a05:6512:158f:b0:511:47f7:62e0 with SMTP id
+ bp15-20020a056512158f00b0051147f762e0mr9204732lfb.21.1707840356309; Tue, 13
+ Feb 2024 08:05:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Maxwell Bland <mbland@motorola.com>
+Date: Tue, 13 Feb 2024 10:05:45 -0600
+Message-ID: <CAP5Mv+ydhk=Ob4b40ZahGMgT-5+-VEHxtmA=-LkJiEOOU+K6hw@mail.gmail.com>
+Subject: [PATCH] arm64: allow post-init vmalloc PXNTable
+To: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, catalin.marinas@arm.com, 
+	will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, 
+	akpm@linux-foundation.org, shikemeng@huaweicloud.com, david@redhat.com, 
+	rppt@kernel.org, anshuman.khandual@arm.com, willy@infradead.org, 
+	ryan.roberts@arm.com, rick.p.edgecombe@intel.com, pcc@google.com, 
+	mbland@motorola.com, mark.rutland@arm.com, rmk+kernel@armlinux.org.uk, 
+	tglx@linutronix.de, gshan@redhat.com, gregkh@linuxfoundation.org, 
+	Jonathan.Cameron@huawei.com, james.morse@arm.com, awheeler@motorola.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 2024-02-12 at 23:36 -0800, Xing, Cedric wrote:
-> On 2/9/2024 12:58 PM, Dan Williams wrote:
-> > James Bottomley wrote:
-> > > Just to correct this: IMA uses its own log format, but I think
-> > > this was a mistake long ago and the new log should use TCG2
-> > > format so all the tools know how to parse it.
-> > 
-> > Is this a chance to nudge IMA towards a standard log format? In
-> > other words, one of the goals alongside userspace consumers of the
-> > RTMR log would be for IMA to support it as well as an alternate in-
-> > kernel backend next to TPM. IMA-over-TPM continues with its current
-> > format, IMA-over-RTMR internally unifies with the log format that
-> > is shared with RTMR-user-ABI.
-> > 
-> I'm not a TCG expert. As far as I know, 
-> https://trustedcomputinggroup.org/wp-content/uploads/TCG-PC-Client-Platform-Firmware-Profile-Version-1.06-Revision-52_pub-1.pdf
->  
-> defines the event types for TCG2 logs for firmware uses only. I
-> cannot  find a spec that defines event types for OS or applications.
-> We may  reuse the firmware event types for Linux but I doubt they can
-> accommodate IMA.
+Apologies if this is a duplicate mail, it will be the last one. Moto's SMTP
+server sucks!!
 
-The TCG crypto agile log format is
+Ensures that PXNTable can be set on all table descriptors allocated
+through vmalloc. Normally, PXNTable is set only during initial memory
+mapping and does not apply thereafter, making it possible for attackers
+to target post-init allocated writable PTEs as a staging region for
+injection of their code into the kernel. Presently it is not possible to
+efficiently prevent these attacks as VMALLOC_END overlaps with _text,
+e.g.:
 
- index (32 bit),
- event tag (32 bit),
- digests array,
- sized event entry (up to 4GB)
+VMALLOC_START ffff800080000000 VMALLOC_END fffffbfff0000000
+_text         ffffb6c0c1400000 _end        ffffb6c0c3e40000
 
-So an IMA log entry can definitely be transformed into this format
-(providing someone agrees to the tag or set of tags).  The slight
-problem would be that none of the current IMA tools would understand
-it, but that could be solved over time (the kernel could use the TCG
-format internally but transform to the IMA format for the current
-securityfs IMA log).
+Setting VMALLOC_END to _text in init would resolve this issue with the
+caveat of a sizeable reduction in the size of available vmalloc memory
+due to requirements on aslr randomness. However, there are circumstances
+where this trade-off is necessary: in particular, hypervisor-level
+security monitors where 1) the microarchitecture contains race
+conditions on PTE level updates or 2) a per-PTE update verifier comes at
+a significant hit to performance.
 
-> IMHO, we don't have to follow TCG2 format because TDX is never TPM,
-> nor are any other TEEs that support runtime measurements. The
-> existing TCG2 format looks to me somewhat like ASN.1 - well defined
-> but schema is needed to decode. In contrast, JSON is a lot more
-> popular than ASN.1  nowadays because it's human readable and doesn't
-> require a schema. I just wonder if we should introduce a text based
-> log format. We could make the log a text file, in which each line is
-> an event record and the digest of the line is extended to the
-> specified runtime measurement register. The content of each line
-> could be free-form at the ABI level, but we can still recommend a
-> convention for applications - e.g., the first word/column must be an
-> URL for readers to find out the format/syntax of the rest of the
-> line. Thoughts?
+Because the address of _text is aslr-sensitive and this patch associates
+this value with VMALLOC_END, we remove the use of VMALLOC_END in a print
+statement in mm/percpu.c. However, only the format string is updated in
+crash_core.c, since we are dead at that point regardless. VMALLOC_END is
+updated in kernel/setup.c to associate the feature closely with aslr and
+region allocation code.
 
-https://xkcd.com/927/
+Signed-off-by: Maxwell Bland <mbland@motorola.com>
+---
+ arch/arm64/Kconfig                   | 13 +++++++++++++
+ arch/arm64/include/asm/pgtable.h     |  6 ++++++
+ arch/arm64/include/asm/vmalloc-pxn.h | 10 ++++++++++
+ arch/arm64/kernel/crash_core.c       |  2 +-
+ arch/arm64/kernel/setup.c            |  9 +++++++++
+ mm/percpu.c                          |  4 ++--
+ 6 files changed, 41 insertions(+), 3 deletions(-)
+ create mode 100644 arch/arm64/include/asm/vmalloc-pxn.h
 
-> > ...but be warned the above is a comment from someone who knows
-> > nothing about IMA internals, just reacting to the comment.
-> > 
-> > 
-> > > > I am wondering where will the event log be stored? Is it in the
-> > > > log_area region of CCEL table?
-> > > 
-> > > IMA stores its log in kernel memory and makes it visible in
-> > > securityfs (in the smae place as the measured boot log).  Since
-> > > this interface is using configfs, that's where I'd make the log
-> > > visible.
-> > > 
-> > > Just to add a note about how UEFI works: the measured boot log is
-> > > effectively copied into kernel memory because the UEFI memory it
-> > > once occupied is freed after exit boot services, so no UEFI
-> > > interface will suffice for the log location.
-> > > 
-> > > I'd make the file exporting it root owned but probably readable
-> > > by only the people who can also extend it (presumably enforced by
-> > > group?).
-> > 
-> > I assume EFI copying into kernel memory is ok because that log has
-> > a limited number of entries. If this RTMR log gets large I assume
-> > it needs some way cull entries that have been moved to storage.
-> > Maybe this is a problem IMA has already solved.
-> 
-> We don't have to, and are also not supposed to I guess, append to the
-> log generated by BIOS.
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index aa7c1d435139..5f1e75d70e14 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -2165,6 +2165,19 @@ config ARM64_DEBUG_PRIORITY_MASKING
+    If unsure, say N
+ endif # ARM64_PSEUDO_NMI
 
-We do actually: the EFI boot stub in the kernel appends entries for the
-initrd and command line.
++config ARM64_VMALLOC_PXN
++ bool "Ensures table descriptors pointing to kernel data are PXNTable"
++ help
++   Reduces the range of the kernel data vmalloc region to remove any
++   overlap with kernel code, making it possible to enable the PXNTable
++   bit on table descriptors allocated after the kernel's initial memory
++   mapping.
++
++   This increases the performance of security monitors which protect
++   against malicious updates to page table entries.
++
++   If unsure, say N.
++
+ config RELOCATABLE
+  bool "Build a relocatable kernel image" if EXPERT
+  select ARCH_HAS_RELR
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index 79ce70fbb751..49f64ea77c81 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -22,7 +22,9 @@
+  * and fixed mappings
+  */
+ #define VMALLOC_START (MODULES_END)
++#ifndef CONFIG_ARM64_VMALLOC_PXN
+ #define VMALLOC_END (VMEMMAP_START - SZ_256M)
++#endif
 
->  The kernel can start a new log, and potentially in a different
-> format. I think the BIOS log is exposed via securityfs today. Am I
-> correct?
+ #define vmemmap ((struct page *)VMEMMAP_START - (memstart_addr >> PAGE_SHIFT))
 
-I already said that, yes.
+@@ -35,6 +37,10 @@
+ #include <linux/sched.h>
+ #include <linux/page_table_check.h>
 
->  For the new TEE measurement log, I don't think it has to be
-> collocated with the BIOS log, because TEEs are never TPMs.
++#ifdef CONFIG_ARM64_VMALLOC_PXN
++#include <asm/vmalloc-pxn.h>
++#endif
++
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
 
-This depends.  Logs are separable by PCRs.  As in every entry for the
-same PCR could be in a separate, correctly ordered, log.  However, you
-can't have separate logs that both use the same PCR because they won't
-replay.
+diff --git a/arch/arm64/include/asm/vmalloc-pxn.h
+b/arch/arm64/include/asm/vmalloc-pxn.h
+new file mode 100644
+index 000000000000..c8c4f878eb62
+--- /dev/null
++++ b/arch/arm64/include/asm/vmalloc-pxn.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_ARM64_VMALLOC_PXN_H
++#define _ASM_ARM64_VMALLOC_PXN_H
++
++#ifdef CONFIG_ARM64_VMALLOC_PXN
++extern u64 __vmalloc_end __ro_after_init;
++#define VMALLOC_END (__vmalloc_end)
++#endif /* CONFIG_ARM64_VMALLOC_PXN */
++
++#endif /* _ASM_ARM64_VMALLOC_PXN_H */
+diff --git a/arch/arm64/kernel/crash_core.c b/arch/arm64/kernel/crash_core.c
+index 66cde752cd74..39dccae11a40 100644
+--- a/arch/arm64/kernel/crash_core.c
++++ b/arch/arm64/kernel/crash_core.c
+@@ -24,7 +24,7 @@ void arch_crash_save_vmcoreinfo(void)
+  vmcoreinfo_append_str("NUMBER(MODULES_VADDR)=0x%lx\n", MODULES_VADDR);
+  vmcoreinfo_append_str("NUMBER(MODULES_END)=0x%lx\n", MODULES_END);
+  vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
+- vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%lx\n", VMALLOC_END);
++ vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%llx\n", VMALLOC_END);
+  vmcoreinfo_append_str("NUMBER(VMEMMAP_START)=0x%lx\n", VMEMMAP_START);
+  vmcoreinfo_append_str("NUMBER(VMEMMAP_END)=0x%lx\n", VMEMMAP_END);
+  vmcoreinfo_append_str("NUMBER(kimage_voffset)=0x%llx\n",
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index 42c690bb2d60..b7ccee672743 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -54,6 +54,11 @@
+ #include <asm/xen/hypervisor.h>
+ #include <asm/mmu_context.h>
 
-James
++#ifdef CONFIG_ARM64_VMALLOC_PXN
++u64 __vmalloc_end __ro_after_init = VMEMMAP_START - SZ_256M;
++EXPORT_SYMBOL(__vmalloc_end);
++#endif /* CONFIG_ARM64_VMALLOC_PXN */
++
+ static int num_standard_resources;
+ static struct resource *standard_resources;
 
+@@ -298,6 +303,10 @@ void __init __no_sanitize_address setup_arch(char
+**cmdline_p)
 
+  kaslr_init();
 
++#ifdef CONFIG_ARM64_VMALLOC_PXN
++ __vmalloc_end = ALIGN_DOWN((u64) _text, PMD_SIZE);
++#endif
++
+  /*
+  * If know now we are going to need KPTI then use non-global
+  * mappings from the start, avoiding the cost of rewriting
+diff --git a/mm/percpu.c b/mm/percpu.c
+index 4e11fc1e6def..a902500ebfa0 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -3128,8 +3128,8 @@ int __init pcpu_embed_first_chunk(size_t
+reserved_size, size_t dyn_size,
+
+  /* warn if maximum distance is further than 75% of vmalloc space */
+  if (max_distance > VMALLOC_TOTAL * 3 / 4) {
+- pr_warn("max_distance=0x%lx too large for vmalloc space 0x%lx\n",
+- max_distance, VMALLOC_TOTAL);
++ pr_warn("max_distance=0x%lx too large for vmalloc space\n",
++ max_distance);
+ #ifdef CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK
+  /* and fail if we have fallback */
+  rc = -EINVAL;
+
+base-commit: 716f4aaa7b48a55c73d632d0657b35342b1fefd7
+-- 
+2.39.0
 
